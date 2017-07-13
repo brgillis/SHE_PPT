@@ -22,8 +22,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from SHE_GST_GalaxyImageGeneration import magic_values as sim_mv
-
 logger_name = "SHE_CTE_EstimateShear"
 
 image_tail = ".fits"
@@ -31,7 +29,7 @@ output_tail = "_shear_measurements.fits"
 
 default_stamp_size_px = 256
 
-fits_table_ID_label = sim_mv.detections_table_ID_label
+fits_table_ID_label = "ID"
 fits_table_gal_x_label = "GAL_X"
 fits_table_gal_y_label = "GAL_Y"
 fits_table_gal_g1_label = "GAL_EST_G1"

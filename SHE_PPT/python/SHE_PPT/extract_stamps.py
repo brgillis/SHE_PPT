@@ -24,9 +24,7 @@
 
 import galsim
 
-from SHE_GST_GalaxyImageGeneration import magic_values as sim_mv
-
-from SHE_CTE_ShearEstimation import magic_values as mv
+from SHE_PPT_ShearEstimation import magic_values as mv
 
 class Stamp(object):
     pass
