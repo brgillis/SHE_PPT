@@ -18,6 +18,8 @@ File: she_image.py
 
 Created on: Aug 17, 2017
 """ 
+from __future__ import division, print_function
+from future_builtins import *
 
 import numpy as np
 import astropy.io.fits # Avoid non-trivial "from" imports (as explicit is better than implicit)
@@ -43,8 +45,10 @@ class SHEImage:
    def write_to_fits(self, filepath):
       """Writes the image to disk, in form of a FITS cube
       
-         Args:
-            filepath: where it should be written
+      All the attributes of this image object are saved into the FITS file.
+      
+      Args:
+         filepath: where the FITS file should be written
       """
       pass
  
@@ -52,19 +56,23 @@ class SHEImage:
    def extract_stamp(self, x, y, stamp_size):
       """Extracts a square stamp and returns it as a new instance.
       
-         Args:
-            x: x pixel coordinate on which to center the stamp. Will be rounded to the closest int.
-            y: idem for y.
-            stamp_size: width and height of the stamp, in pixels.
+      Args:
+         x: x pixel coordinate on which to center the stamp. Will be rounded to the closest int.
+         y: idem for y.
+         stamp_size: width and height of the stamp, in pixels.
       """
       pass
         
  
- 
-   def read_from_fits(filepath):
-       """Reads an image from a file written by write_to_fits(), and returns it as a SHEImage object.
-       
-       """
+   @classmethod
+   def read_from_fits(cls, filepath):
+      """Reads an image from a file written by write_to_fits(), and returns it as a SHEImage object.
+      
+      Args:
+         filepath: from where the FITS image should be read
+      
+      """
+      pass
  
  
  
