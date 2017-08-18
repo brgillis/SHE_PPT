@@ -34,17 +34,17 @@ class SHEImage:
    def __init__(self, data_array=None, mask_array=None, filepath=None):
       """
       
-      Todo: later, use property decorator as recommended for EC code
+      Todo: later, use property decorator as recommended for EC code
       """
-      self.data_array = data_array
-      self.mask_array = mask_array
+      self.data_array = data_array
+      self.mask_array = mask_array
    
     
    def write_to_fits(self, filepath):
-      """Writes the image to disk, in form of a FITS cube
+      """Writes the image to disk, in form of a FITS cube
       
          Args:
-            filepath: where it should be written
+            filepath: where it should be written
       """
       pass
  
@@ -61,10 +61,10 @@ class SHEImage:
         
  
  
- def read_from_fits(filepath):
-   """Reads an image from a file written by write_to_fits(), and returns it as a SHEImage object.
-   
-   """
+   def read_from_fits(filepath):
+       """Reads an image from a file written by write_to_fits(), and returns it as a SHEImage object.
+       
+       """
  
  
  
