@@ -31,16 +31,16 @@ import SHE_PPT.she_image
 
 import numpy as np
 
-"""
-size = 50
-array = np.random.randn(size**2).reshape((size, size))
-mask = np.zeros(size**2).reshape((size, size))
-a = she_image.SHEImage(array, mask)
-"""
 
 class Test_she_image():
 
-    def test_test(self):
+    def test_init(self):
+         
+        size = 50
+        array = np.random.randn(size**2).reshape((size, size))
+        mask = np.zeros(size**2).reshape((size, size))
+        a = SHE_PPT.she_image.SHEImage(array, mask)
+
         assert True
 
 
