@@ -1,8 +1,8 @@
-""" @file magic_values.py
+""" @file shear_estimates_format.py
 
     Created 27 Mar 2017
 
-    Magic values for estimating shears on simulation data.
+    Values for the format of shear estimates binary fits tables.
 
     ---------------------------------------------------------------------
 
@@ -33,16 +33,12 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-logger_name = "SHE_CTE_EstimateShear"
-
 image_tail = ".fits"
 output_tail = "_shear_measurements.fits"
 
-default_stamp_size_px = 256
-
-fits_table_ID_label = "ID"
-fits_table_gal_x_label = "GAL_X"
-fits_table_gal_y_label = "GAL_Y"
-fits_table_gal_g1_label = "GAL_EST_G1"
-fits_table_gal_g2_label = "GAL_EST_G2"
-fits_table_gal_gerr_label = "GAL_GERR"
+shear_estimates_ID_label = "ID"
+shear_estimates_gal_x_label = "GAL_X"
+shear_estimates_gal_y_label = "GAL_Y"
+shear_estimates_gal_g1_label = "GAL_EST_G1"
+shear_estimates_gal_g2_label = "GAL_EST_G2"
+shear_estimates_gal_gerr_label = "GAL_GERR"
