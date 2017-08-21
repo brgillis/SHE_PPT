@@ -34,11 +34,14 @@
 """
 
 image_tail = ".fits"
-output_tail = "_shear_measurements.fits"
+shear_estimates_tail = "_shear_measurements.fits"
 
 shear_estimates_ID_label = "ID"
 shear_estimates_gal_x_label = "GAL_X"
 shear_estimates_gal_y_label = "GAL_Y"
 shear_estimates_gal_g1_label = "GAL_EST_G1"
 shear_estimates_gal_g2_label = "GAL_EST_G2"
-shear_estimates_gal_gerr_label = "GAL_GERR"
+shear_estimates_gal_g1_err_label = "GAL_G1_ERR"
+shear_estimates_gal_g2_err_label = "GAL_G2_ERR"
+shear_estimates_gal_e1_err_label = "GAL_E1_ERR"
+shear_estimates_gal_e2_err_label = "GAL_E2_ERR"
