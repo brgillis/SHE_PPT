@@ -31,8 +31,8 @@ class DetailsTableFormat(object):
         
         # Table metadata labels
         self.meta_version = ('SS_VER',None)
-        self.meta_subtracted_sky_level = ("S_SKYLV","ADU/sq_arcmin")
-        self.meta_unsubtracted_sky_level = ("US_SKYLV","ADU/sq_arcmin")
+        self.meta_subtracted_sky_level = ("S_SKYLV","ADU/arcsec^2")
+        self.meta_unsubtracted_sky_level = ("US_SKYLV","ADU/arcsec^2")
         self.meta_read_noise = ("RD_NOISE","e-/pixel")
         self.meta_gain = ("CCDGAIN","e-/ADU")
 
@@ -84,11 +84,11 @@ def make_details_table_header(subtracted_sky_level,
                               read_noise,
                               gain,):
     header = {}
-    header[details_table_format.meta_version] = mv.version_str
-    header[details_table_format.meta_subtracted_sky_level] = subtracted_sky_level
-    header[details_table_format.meta_unsubtracted_sky_level] = unsubtracted_sky_level
-    header[details_table_format.meta_read_noise] = read_noise
-    header[details_table_format.meta_gain] = gain
+    header[details_table_format.meta_version[0]] = mv.version_str
+    header[details_table_format.meta_subtracted_sky_level[0]] = subtracted_sky_level
+    header[details_table_format.meta_unsubtracted_sky_level[0]] = unsubtracted_sky_level
+    header[details_table_format.meta_read_noise[0]] = read_noise
+    header[details_table_format.meta_gain[0]] = gain
     
     return header
 
@@ -100,10 +100,14 @@ def initialise_details_table(image, options):
     
     details_table = Table(init_cols, names=get_names(details_table_format.column_data),
                           dtype=get_dtypes(details_table_format.column_data))
-    details_table.meta[details_table_format.meta_version] = mv.version_str
-    details_table.meta[details_table_format.meta_subtracted_sky_level] = image.get_param_value('subtracted_background'), 'ADU/arcsec^2'
-    details_table.meta[details_table_format.meta_unsubtracted_sky_level] = image.get_param_value('unsubtracted_background'), 'ADU/arcsec^2'
-    details_table.meta[details_table_format.meta_read_noise] = options['read_noise'], 'e-/pixel'
-    details_table.meta[details_table_format.meta_gain] = options['gain'], 'e-/ADU'
+    details_table.meta[details_table_format.meta_version[0]] = mv.version_str
+    details_table.meta[details_table_format.meta_subtracted_sky_level[0]] = (image.get_param_value('subtracted_background'),
+                                                                             details_table_format.meta_subtracted_sky_level[1])
+    details_table.meta[details_table_format.meta_unsubtracted_sky_level[0]] = (image.get_param_value('unsubtracted_background'),
+                                                                               details_table_format.meta_unsubtracted_sky_level[1])
+    details_table.meta[details_table_format.meta_read_noise[0]] = (options['read_noise'],
+                                                                   details_table_format.meta_read_noise[1])
+    details_table.meta[details_table_format.meta_gain[0]] = (options['gain'],
+                                                             details_table_format.meta_gain[1])
     
     return details_table
