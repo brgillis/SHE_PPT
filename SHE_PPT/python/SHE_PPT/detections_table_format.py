@@ -1,8 +1,8 @@
 """ @file detections_table_format.py
 
-    Created 4 Apr 2015
+    Created 22 Aug 2017
 
-    Functions related to output of details tables.
+    Format definition for detections table.
 
     ---------------------------------------------------------------------
 
