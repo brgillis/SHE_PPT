@@ -24,8 +24,6 @@ from astropy.table import Table
 
 from SHE_PPT.table_utility import get_dtypes, get_names
 
-detections_table_format_version = "0.1"
-
 class DetectionsTableFormat(object):
     """
         @brief A class defining the format for detections tables. Only the detections_table_format
@@ -39,6 +37,8 @@ class DetectionsTableFormat(object):
     """
     
     def __init__(self):
+        
+        self.__version__ = "0.1"
         
         # Table metadata labels
         self.meta_version = ('SS_VER',None)
@@ -87,7 +87,7 @@ def make_detections_table_header(subtracted_sky_level,
     """
     
     header = {}
-    header[detections_table_format.meta_version[0]] = detections_table_format_version
+    header[detections_table_format.meta_version[0]] = detections_table_format.__version__
     header[detections_table_format.meta_subtracted_sky_level[0]] = subtracted_sky_level
     header[detections_table_format.meta_unsubtracted_sky_level[0]] = unsubtracted_sky_level
     header[detections_table_format.meta_read_noise[0]] = read_noise
@@ -112,7 +112,7 @@ def initialise_detections_table(image, options):
     
     detections_table = Table(init_cols, names=get_names(detections_table_format.column_data),
                           dtype=get_dtypes(detections_table_format.column_data))
-    detections_table.meta[detections_table_format.meta_version[0]] = detections_table_format_version
+    detections_table.meta[detections_table_format.meta_version[0]] = detections_table_format.__version__
     detections_table.meta[detections_table_format.meta_subtracted_sky_level[0]] = (image.get_param_value('subtracted_background'),
                                                                                   detections_table_format.meta_subtracted_sky_level[1])
     detections_table.meta[detections_table_format.meta_unsubtracted_sky_level[0]] = (image.get_param_value('unsubtracted_background'),

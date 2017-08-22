@@ -24,8 +24,6 @@ from astropy.table import Table
 
 from SHE_PPT.table_utility import get_dtypes, get_names
 
-details_table_format_version = "0.1"
-
 class DetailsTableFormat(object):
     """
         @brief A class defining the format for galaxy details tables. Only the details_table_format
@@ -39,6 +37,8 @@ class DetailsTableFormat(object):
     """
     
     def __init__(self):
+        
+        self.__version__ = "0.1"
         
         # Table metadata labels
         self.meta_version = ('SS_VER',None)
@@ -115,7 +115,7 @@ def make_details_table_header(subtracted_sky_level,
     """
     
     header = {}
-    header[details_table_format.meta_version[0]] = details_table_format_version
+    header[details_table_format.meta_version[0]] = details_table_format.__version__
     header[details_table_format.meta_subtracted_sky_level[0]] = subtracted_sky_level
     header[details_table_format.meta_unsubtracted_sky_level[0]] = unsubtracted_sky_level
     header[details_table_format.meta_read_noise[0]] = read_noise
@@ -140,7 +140,7 @@ def initialise_details_table(image, options):
     
     details_table = Table(init_cols, names=get_names(details_table_format.column_data),
                           dtype=get_dtypes(details_table_format.column_data))
-    details_table.meta[details_table_format.meta_version[0]] = details_table_format_version
+    details_table.meta[details_table_format.meta_version[0]] = details_table_format.__version__
     details_table.meta[details_table_format.meta_subtracted_sky_level[0]] = (image.get_param_value('subtracted_background'),
                                                                              details_table_format.meta_subtracted_sky_level[1])
     details_table.meta[details_table_format.meta_unsubtracted_sky_level[0]] = (image.get_param_value('unsubtracted_background'),
