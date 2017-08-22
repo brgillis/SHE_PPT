@@ -2,7 +2,7 @@
 
     Created 21 Aug 2017
 
-    Format for galaxy details tables.
+    Format definition for galaxy details tables.
 
     ---------------------------------------------------------------------
 
@@ -26,6 +26,16 @@ from SHE_PPT import magic_values as mv
 from SHE_PPT.table_utility import get_dtypes, get_names
 
 class DetailsTableFormat(object):
+    """
+        @brief A class defining the format for galaxy details tables. Only the details_table_format
+               instance of this should generally be accessed, and it should not be changed.
+               
+        @details Metadata (for the table header) is defined by a tuple of (label, comment).
+        
+                 Columns are defined by a tuple of (label, python_dtype, fits_dtype, comment).
+                 
+                 The column_data and meta_data members provide tuples of all metadata/columns.
+    """
     
     def __init__(self):
         
@@ -35,6 +45,12 @@ class DetailsTableFormat(object):
         self.meta_unsubtracted_sky_level = ("US_SKYLV","ADU/arcsec^2")
         self.meta_read_noise = ("RD_NOISE","e-/pixel")
         self.meta_gain = ("CCDGAIN","e-/ADU")
+        
+        self.meta_data = (self.meta_version,
+                          self.meta_subtracted_sky_level,
+                          self.meta_unsubtracted_sky_level,
+                          self.meta_read_noise,
+                          self.meta_gain,)
 
         # Table column labels
         self.ID = ('ID', 'i8', 'K', None)
@@ -83,6 +99,20 @@ def make_details_table_header(subtracted_sky_level,
                               unsubtracted_sky_level,
                               read_noise,
                               gain,):
+    """
+        @brief Generate a header for a galaxy details table.
+        
+        @param subtracted_sky_level <float> Units of ADU/arcsec^2 (should we change this?)
+        
+        @param unsubtracted_sky_level <float> Units of ADU/arcsec^2 (should we change this?)
+        
+        @param read_noise <float> Units of e-/pixel
+        
+        @param gain <float> Units of e-/ADU
+        
+        @return header <dict>
+    """
+    
     header = {}
     header[details_table_format.meta_version[0]] = mv.version_str
     header[details_table_format.meta_subtracted_sky_level[0]] = subtracted_sky_level
@@ -93,6 +123,15 @@ def make_details_table_header(subtracted_sky_level,
     return header
 
 def initialise_details_table(image, options):
+    """
+        @brief Initialise a detections table.
+        
+        @param image <SHE_SIM.Image> 
+        
+        @param options <dict> Options dictionary
+        
+        @return details_table <astropy.Table>
+    """
     
     init_cols = []
     for _ in xrange(len(details_table_format.column_data)):
