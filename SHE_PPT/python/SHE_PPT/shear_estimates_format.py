@@ -1,8 +1,8 @@
 """ @file shear_estimates_format.py
 
-    Created 27 Mar 2017
+    Created 22 Aug 2017
 
-    Values for the format of shear estimates binary fits tables.
+    Format definition for shear estimates tables.
 
     ---------------------------------------------------------------------
 
@@ -33,15 +33,82 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+from astropy.table import Table
+
+from SHE_PPT.table_utility import get_dtypes, get_names
+
 image_tail = ".fits"
 shear_estimates_tail = "_shear_measurements.fits"
 
-shear_estimates_ID_label = "ID"
-shear_estimates_gal_x_label = "GAL_X"
-shear_estimates_gal_y_label = "GAL_Y"
-shear_estimates_gal_g1_label = "GAL_EST_G1"
-shear_estimates_gal_g2_label = "GAL_EST_G2"
-shear_estimates_gal_g1_err_label = "GAL_G1_ERR"
-shear_estimates_gal_g2_err_label = "GAL_G2_ERR"
-shear_estimates_gal_e1_err_label = "GAL_E1_ERR"
-shear_estimates_gal_e2_err_label = "GAL_E2_ERR"
+class ShearEstimatesTableFormat(object):
+    """
+        @brief A class defining the format for shear estimates tables. Only the shear_estimates_table_format
+               instance of this should generally be accessed, and it should not be changed.
+               
+        @details Metadata (for the table header) is defined by a tuple of (label, comment).
+        
+                 Columns are defined by a tuple of (label, python_dtype, fits_dtype, comment).
+                 
+                 The column_data and meta_data members provide tuples of all metadata/columns.
+    """
+    
+    def __init__(self):
+        
+        self.__version__ = "0.1"
+        
+        # Table metadata labels
+        self.meta_version = ('SS_VER',None)
+        
+        self.meta_data = (self.meta_version,)
+
+        # Table column labels
+        self.ID = ('ID', 'i8', 'K', None)
+        self.gal_x = ('GAL_X', 'f4', 'E', "pixels")
+        self.gal_y = ('GAL_Y', 'f4', 'E', "pixels")
+        self.gal_g1 = ('GAL_EST_G1', 'f4', 'E', None)
+        self.gal_g2 = ('GAL_EST_G2', 'f4', 'E', None)
+        self.gal_g1_err = ('GAL_G1_ERR', 'f4', 'E', None)
+        self.gal_g2_err = ('GAL_G2_ERR', 'f4', 'E', None)
+        self.gal_e1_err = ('GAL_E1_ERR', 'f4', 'E', None)
+        self.gal_e2_err = ('GAL_E2_ERR', 'f4', 'E', None)
+        
+        self.column_data = (self.ID,
+                            self.gal_x,
+                            self.gal_y,
+                            self.gal_g1,
+                            self.gal_g2,
+                            self.gal_g1_err,
+                            self.gal_g2_err,
+                            self.gal_e1_err,
+                            self.gal_e2_err,)
+        
+shear_estimates_table_format = ShearEstimatesTableFormat()
+
+def make_shear_estimates_table_header():
+    """
+        @brief Generate a header for a shear estimates table.
+        
+        @return header <dict>
+    """
+    
+    header = {}
+    header[shear_estimates_table_format.meta_version[0]] = shear_estimates_table_format.__version__
+    
+    return header
+
+def initialise_shear_estimates_table():
+    """
+        @brief Initialise a shear estimates table.
+        
+        @return shear_estimates_table <astropy.Table>
+    """
+    
+    init_cols = []
+    for _ in xrange(len(detections_table_format.column_data)):
+        init_cols.append([])
+    
+    shear_estimates_table = Table(init_cols, names=get_names(shear_estimates_table_format.column_data),
+                          dtype=get_dtypes(shear_estimates_table_format.column_data))
+    shear_estimates_table.meta[shear_estimates_table_format.meta_version[0]] = shear_estimates_table_format.__version__
+    
+    return shear_estimates_table
