@@ -24,6 +24,7 @@ Bug Fixes
 New Features
 ------------
 
+- Added format definitions for details, detections, and shear_estimates tables
 
 New config features
 -------------------
