@@ -84,7 +84,7 @@ def is_in_format(table, table_format):
         return False
     
     # Check the version is correct
-    if table.meta[table_format.m.version] != table.__version__:
+    if table.meta[table_format.m.version] != table_format.__version__:
         return False
     
     return True
