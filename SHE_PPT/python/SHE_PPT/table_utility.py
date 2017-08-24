@@ -22,6 +22,7 @@
 
 import subprocess
 from astropy.io import fits
+import numpy as np
 
 def get_comments(table_format):
     """
@@ -49,6 +50,38 @@ def get_fits_dtypes(names_and_dtypes):
     """
 
     return zip(*table_format.fits_dtypes.items())[1]
+
+def is_in_format(table, table_format):
+    """
+        @brief Checks if a table is in the given format
+        
+        @param table <astropy.table.Table>
+        
+        @param table_format <...TableFormat>
+        
+        @return <bool>
+        
+    """
+    
+    # Check that the column names are correct
+    if table.colnames != table_format.all:
+        return False
+    
+    # Check the data types are correct
+    desired_dtypes = get_dtypes(table_format)
+    for i in range(len(table.colnames)):
+        if table.dtype[i] != np.dtype(desired_dtypes):
+            return False
+        
+    # Check the metadata is correct
+    if table.meta.keys() != table_format.m.all:
+        return False
+    
+    # Check the version is correct
+    if table.meta[table_format.m.version] != table.__version__:
+        return False
+    
+    return True
 
 def add_row(table, **kwargs):
     """ Add a row to a table by packing the keyword arguments and passing them as a
