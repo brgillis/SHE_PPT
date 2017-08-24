@@ -76,10 +76,10 @@ class ShearEstimatesTableFormat(object):
         self.m = self.meta
         
         # Get the version from the meta class
-        self.__version__ = m.__version__
+        self.__version__ = self.m.__version__
         
         # Direct alias for a tuple of all metadata
-        self.meta_data = m.all
+        self.meta_data = self.m.all
 
         # Table column labels
         self.ID = "ID"
