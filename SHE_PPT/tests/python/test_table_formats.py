@@ -80,8 +80,9 @@ class TestTableFormats:
         
         empty_tables = []
         
-        # for init in self.initializers:
-        for init in [initialise_details_table]:
+        for init in self.initializers:
             empty_tables.append(init())
             
-        assert is_in_format(empty_tables[0],datf)
+        for i in range(len(self.initializers)):
+            for j in range((len(self.table_formats))):
+                assert is_in_format(empty_tables[i],self.table_formats[j]) == (i==j)
