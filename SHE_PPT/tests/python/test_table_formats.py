@@ -20,8 +20,9 @@
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 """
 
-import pytest
 import numpy as np
+import os
+import pytest
 
 from SHE_PPT.details_table_format import tf as datf, initialise_details_table
 from SHE_PPT.detections_table_format import tf as detf, initialise_detections_table
@@ -49,9 +50,17 @@ class TestTableFormats:
                             initialise_detections_table,
                             initialise_shear_estimates_table]
         
+        cls.filename_base = "test_table"
+        
+        cls.filenames = [cls.filename_base+".ecsv", cls.filename_base+".fits"]
+        
     @classmethod
     def teardown_class(cls):
         del cls.formats, cls.initializers
+        
+        for filename in cls.filenames:
+            if os.path.exists(filename):
+                os.remove(filename)
 
 
     def test_get_comments(self):
@@ -102,4 +111,56 @@ class TestTableFormats:
         assert tab[detf.psf_x][0]==10
         assert tab[detf.psf_y][0]==100
         
+    def test_output_tables(self):
         
+        # Clean up to make sure the test files don't already exist
+        for filename in self.filenames:
+            if os.path.exists(filename):
+                os.remove(filename)
+                
+        
+        tab = initialise_detections_table()
+        
+        add_row(tab, **{detf.ID: 0, detf.gal_x: 0, detf.gal_y: 1, detf.psf_x: 10, detf.psf_y: 100})
+        
+        # Try ascii output
+        output_tables(tab,self.filename_base,"ascii")
+        
+        # Did it write properly?
+        assert os.path.exists(self.filename_base+".ecsv")
+        assert not os.path.exists(self.filename_base+".fits")
+        
+        # Can we read it?
+        new_tab = Table.read(self.filename_base+".ecsv")
+        assert is_in_format(new_tab,detf)
+        assert new_tab==tab
+        
+        # Cleanup
+        os.remove(self.filename_base+".ecsv")
+        
+        # Try fits output
+        output_tables(tab,self.filename_base,"fits")
+        
+        # Did it write properly?
+        assert not os.path.exists(self.filename_base+".ecsv")
+        assert os.path.exists(self.filename_base+".fits")
+        
+        # Can we read it?
+        new_tab = Table.read(self.filename_base+".fits")
+        assert is_in_format(new_tab,detf)
+        assert new_tab==tab
+        
+        # Cleanup
+        os.remove(self.filename_base+".fits")
+        
+        # Try both output
+        output_tables(tab,self.filename_base,"both")
+        
+        # Did it write properly?
+        assert os.path.exists(self.filename_base+".ecsv")
+        assert os.path.exists(self.filename_base+".fits")
+        
+        # Cleanup
+        for filename in self.filenames:
+            if os.path.exists(filename):
+                os.remove(filename)

@@ -106,14 +106,14 @@ def add_row(table, **kwargs):
     table.add_row(vals=kwargs)
     return
 
-def output_tables(otable, file_name_base, table_tail, output_format):
+def output_tables(otable, file_name_base, output_format):
 
     if ((output_format == 'ascii') or (output_format == 'both')):
-        text_file_name = file_name_base + table_tail + ".dat"
+        text_file_name = file_name_base + ".ecsv"
         otable.write(text_file_name, format='ascii.ecsv')
 
     if ((output_format == 'fits') or (output_format == 'both')):
-        fits_file_name = file_name_base + table_tail + ".fits"
+        fits_file_name = file_name_base + ".fits"
         otable.write(fits_file_name, format='fits', overwrite=True)
 
     return
