@@ -74,7 +74,7 @@ class TestTableFormats:
     def test_get_dtypes(self):
         # Check if we get the correct dtypes list for detections tables
         
-        desired_dtypes = ("i8","f4","f4","f4","f4")
+        desired_dtypes = (">i8",">f4",">f4",">f4",">f4")
         
         assert get_dtypes(detf) == desired_dtypes
         
