@@ -147,28 +147,7 @@ class TestTableFormats:
         assert os.path.exists(self.filename_base+".fits")
         
         # Can we read it?
-        new_tab = Table.read(self.filename_base+".fits", format="fits")
-        
-        # Check that the column names are correct
-        if new_tab.colnames != detf.all:
-            assert False
-        
-        # Check the data types are correct
-        desired_dtypes = get_dtypes(detf)
-        for i in range(len(new_tab.colnames)):
-            if new_tab.dtype[i] != np.dtype(desired_dtypes[i]):
-                print(str(new_tab.dtype[i]))
-                print(np.dtype(desired_dtypes[i]))
-                assert False
-            
-        # Check the metadata is correct
-        if new_tab.meta.keys() != detf.m.all:
-            assert False
-        
-        # Check the version is correct
-        if new_tab.meta[detf.m.version] != detf.__version__:
-            assert False
-        
+        new_tab = Table.read(self.filename_base+".fits", format="fits")        
         assert is_in_format(new_tab,detf)
         assert new_tab==tab
         
