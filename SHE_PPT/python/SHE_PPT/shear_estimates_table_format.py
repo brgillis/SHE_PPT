@@ -104,15 +104,15 @@ class ShearEstimatesTableFormat(object):
                                     (self.gal_e2_err, None),
                                    )) 
         
-        self.dtypes = OrderedDict(((self.ID, "i8"),
-                                  (self.gal_x, "f4"),
-                                  (self.gal_y, "f4"),
-                                  (self.gal_g1, "f4"),
-                                  (self.gal_g2, "f4"),
-                                  (self.gal_g1_err, "f4"),
-                                  (self.gal_g2_err, "f4"),
-                                  (self.gal_e1_err, "f4"),
-                                  (self.gal_e2_err, "f4"),
+        self.dtypes = OrderedDict(((self.ID, ">i8"),
+                                  (self.gal_x, ">f4"),
+                                  (self.gal_y, ">f4"),
+                                  (self.gal_g1, ">f4"),
+                                  (self.gal_g2, ">f4"),
+                                  (self.gal_g1_err, ">f4"),
+                                  (self.gal_g2_err, ">f4"),
+                                  (self.gal_e1_err, ">f4"),
+                                  (self.gal_e2_err, ">f4"),
                                  ))
         
         self.fits_dtypes = OrderedDict(((self.ID, "K"),

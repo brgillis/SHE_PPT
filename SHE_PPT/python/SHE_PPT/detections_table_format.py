@@ -88,11 +88,11 @@ class DetectionsTableFormat(object):
                                     (self.psf_y, "pixels"),
                                    )) 
         
-        self.dtypes = OrderedDict(((self.ID, "i8"),
-                                  (self.gal_x, "f4"),
-                                  (self.gal_y, "f4"),
-                                  (self.psf_x, "f4"),
-                                  (self.psf_y, "f4"),
+        self.dtypes = OrderedDict(((self.ID, ">i8"),
+                                  (self.gal_x, ">f4"),
+                                  (self.gal_y, ">f4"),
+                                  (self.psf_x, ">f4"),
+                                  (self.psf_y, ">f4"),
                                  ))
         
         self.fits_dtypes = OrderedDict(((self.ID, "K"),
