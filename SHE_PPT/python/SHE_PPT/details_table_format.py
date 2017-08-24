@@ -65,7 +65,7 @@ class DetailsTableFormat(object):
         self.meta = DetailsTableMeta()
         
         # And a quick alias for it
-        self.m = meta
+        self.m = self.meta
         
         # Get the version from the meta class
         self.__version__ = m.__version__
