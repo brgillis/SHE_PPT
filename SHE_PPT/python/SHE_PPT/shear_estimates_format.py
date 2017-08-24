@@ -55,8 +55,8 @@ class ShearEstimatesTableMeta(object):
         self.version = "SS_VER"
         
         # Store the less-used comments in a dict
-        self.comments = OrderedDict((self.version, None),
-                                   )
+        self.comments = OrderedDict(((self.version, None),
+                                   ))
         
         # A list of columns in the desired order
         self.all = self.comments.keys()
@@ -93,7 +93,7 @@ class ShearEstimatesTableFormat(object):
         self.gal_e2_err = "GAL_E2_ERR"
         
         # Store the less-used comments, dtypes, and fits_dtypes in dicts
-        self.comments = OrderedDict((self.ID, None),
+        self.comments = OrderedDict(((self.ID, None),
                                     (self.gal_x, "pixels"),
                                     (self.gal_y, "pixels"),
                                     (self.gal_g1, None),
@@ -102,9 +102,9 @@ class ShearEstimatesTableFormat(object):
                                     (self.gal_g2_err, None),
                                     (self.gal_e1_err, None),
                                     (self.gal_e2_err, None),
-                                   ) 
+                                   )) 
         
-        self.dtypes = OrderedDict((self.ID, "i8"),
+        self.dtypes = OrderedDict(((self.ID, "i8"),
                                   (self.gal_x, "f4"),
                                   (self.gal_y, "f4"),
                                   (self.gal_g1, "f4"),
@@ -113,9 +113,9 @@ class ShearEstimatesTableFormat(object):
                                   (self.gal_g2_err, "f4"),
                                   (self.gal_e1_err, "f4"),
                                   (self.gal_e2_err, "f4"),
-                                 )
+                                 ))
         
-        self.fits_dtypes = OrderedDict((self.ID, "K"),
+        self.fits_dtypes = OrderedDict(((self.ID, "K"),
                                        (self.gal_x, "E"),
                                        (self.gal_y, "E"),
                                        (self.gal_g1, "E"),
@@ -124,7 +124,7 @@ class ShearEstimatesTableFormat(object):
                                        (self.gal_g2_err, "E"),
                                        (self.gal_e1_err, "E"),
                                        (self.gal_e2_err, "E"),
-                                      )
+                                      ))
         
         # A list of columns in the desired order
         self.all = self.comments.keys()

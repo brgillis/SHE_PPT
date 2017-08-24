@@ -43,12 +43,12 @@ class DetectionsTableMeta(object):
         self.gain = "CCDGAIN"
         
         # Store the less-used comments in a dict
-        self.comments = OrderedDict((self.version, None),
+        self.comments = OrderedDict(((self.version, None),
                                     (self.subtracted_sky_level, "ADU/arcsec^2"),
                                     (self.unsubtracted_sky_level, "ADU/arcsec^2"),
                                     (self.read_noise, "e-/pixel"),
                                     (self.gain, "e-/ADU"),
-                                   )
+                                   ))
         
         # A list of columns in the desired order
         self.all = self.comments.keys()
@@ -81,26 +81,26 @@ class DetectionsTableFormat(object):
         self.psf_y = "psf_y_center_pix"
         
         # Store the less-used comments, dtypes, and fits_dtypes in dicts
-        self.comments = OrderedDict((self.ID, None),
+        self.comments = OrderedDict(((self.ID, None),
                                     (self.gal_x, "pixels"),
                                     (self.gal_y, "pixels"),
                                     (self.psf_x, "pixels"),
                                     (self.psf_y, "pixels"),
-                                   ) 
+                                   )) 
         
-        self.dtypes = OrderedDict((self.ID, "i8"),
+        self.dtypes = OrderedDict(((self.ID, "i8"),
                                   (self.gal_x, "f4"),
                                   (self.gal_y, "f4"),
                                   (self.psf_x, "f4"),
                                   (self.psf_y, "f4"),
-                                 )
+                                 ))
         
-        self.fits_dtypes = OrderedDict((self.ID, "K"),
+        self.fits_dtypes = OrderedDict(((self.ID, "K"),
                                        (self.gal_x, "E"),
                                        (self.gal_y, "E"),
                                        (self.psf_x, "E"),
                                        (self.psf_y, "E"),
-                                      )
+                                      ))
         
         # A list of columns in the desired order
         self.all = self.comments.keys()
