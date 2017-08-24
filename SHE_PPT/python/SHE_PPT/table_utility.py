@@ -42,7 +42,7 @@ def get_dtypes(table_format):
 
     return zip(*table_format.dtypes.items())[1]
 
-def get_fits_dtypes(names_and_dtypes):
+def get_fits_dtypes(table_format):
     """
         @brief Get the data types for the table format, in the format for a fits table.
 
