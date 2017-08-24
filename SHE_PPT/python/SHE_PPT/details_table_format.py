@@ -24,7 +24,7 @@ from collections import OrderedDict
 
 from astropy.table import Table
 
-from SHE_PPT.table_utility import get_dtypes, get_names
+from SHE_PPT.table_utility import get_dtypes
 
 class DetailsTableMeta(object):
     """
