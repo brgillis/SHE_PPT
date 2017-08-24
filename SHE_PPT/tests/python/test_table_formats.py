@@ -21,10 +21,11 @@
 """
 
 import pytest
+import numpy as np
 
-from SHE_PPT.details_table_format import tf as datf
-from SHE_PPT.detections_table_format import tf as detf
-from SHE_PPT.shear_estimates_table_format import tf as setf
+from SHE_PPT.details_table_format import tf as datf, initialise_details_table
+from SHE_PPT.detections_table_format import tf as detf, initialise_detections_table
+from SHE_PPT.shear_estimates_table_format import tf as setf, initialise_shear_estimates_table
 
 from table_utility import (get_comments,
                            get_dtypes,
@@ -44,15 +45,43 @@ class TestTableFormats:
     def setup_class(cls):
         # Define a list of the table formats we'll be testing
         cls.formats = [datf,detf,setf]
+        cls.initializers = [initialise_details_table,
+                            initialise_detections_table,
+                            initialise_shear_estimates_table]
         
     @classmethod
     def teardown_class(cls):
-        del cls.formats
+        del cls.formats, cls.initializers
 
 
-    def testGetComments(self):
+    def test_get_comments(self):
         # Check if we get the correct comments list for detections tables
         
         desired_comments = [None,"pixels","pixels","pixels","pixels"]
         
         assert get_comments(detf) == desired_comments
+        
+    def test_get_dtypes(self):
+        # Check if we get the correct dtypes list for detections tables
+        
+        desired_dtypes = ["i8","f4","f4","f4","f4"]
+        
+        assert get_dtypes(detf) == desired_dtypes
+        
+    def test_get_fits_dtypes(self):
+        # Check if we get the correct fits dtypes list for detections tables
+        
+        desired_fits_dtypes = ["K","E","E","E","E"]
+        
+        assert get_fits_dtypes(detf) == desired_fits_dtypes
+        
+    def test_is_in_format(self):
+        # Test each format is detected correctly
+        
+        empty_tables = []
+        
+        # for init in self.initializers:
+        for init in [initialise_details_table]:
+            empty_tables.append(init())
+            
+        assert is_in_format(empty_tables[0],datf)

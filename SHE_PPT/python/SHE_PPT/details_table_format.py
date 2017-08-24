@@ -205,7 +205,7 @@ def make_details_table_header(subtracted_sky_level,
     
     return header
 
-def initialise_details_table(image, options):
+def initialise_details_table(image = None, options = None):
     """
         @brief Initialise a detections table.
         
@@ -223,9 +223,23 @@ def initialise_details_table(image, options):
     details_table = Table(init_cols, names=tf.all,
                           dtype=get_dtypes(tf))
     
-    details_table.meta = make_details_table_header(subtracted_sky_level = image.get_param_value('subtracted_background'),
-                                                   unsubtracted_sky_level = image.get_param_value('unsubtracted_background'),
-                                                   read_noise = options['read_noise'],
-                                                   gain = options['gain'])
+    if image is None:
+        subtracted_sky_level = None
+        unsubtracted_sky_level = None
+    else:
+        subtracted_sky_level = image.get_param_value('subtracted_background')
+        unsubtracted_sky_level = image.get_param_value('unsubtracted_background')
+    
+    if options is None:
+        read_noise = None
+        gain = None
+    else:
+        read_noise = options['read_noise']
+        gain = options['gain']
+                                                   
+    details_table.meta = make_details_table_header(subtracted_sky_level = subtracted_sky_level,
+                                                   unsubtracted_sky_level = unsubtracted_sky_level,
+                                                   read_noise = read_noise,
+                                                   gain = gain)
     
     return details_table
