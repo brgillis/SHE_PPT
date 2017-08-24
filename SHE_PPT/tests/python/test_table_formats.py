@@ -27,14 +27,14 @@ from SHE_PPT.details_table_format import tf as datf, initialise_details_table
 from SHE_PPT.detections_table_format import tf as detf, initialise_detections_table
 from SHE_PPT.shear_estimates_table_format import tf as setf, initialise_shear_estimates_table
 
-from table_utility import (get_comments,
-                           get_dtypes,
-                           get_fits_dtypes,
-                           is_in_format,
-                           add_row,
-                           output_tables,
-                           output_table_as_fits,
-                          )
+from SHE_PPT.table_utility import (get_comments,
+                                   get_dtypes,
+                                   get_fits_dtypes,
+                                   is_in_format,
+                                   add_row,
+                                   output_tables,
+                                   output_table_as_fits,
+                                  )
 class TestTableFormats:
     """
 
@@ -82,6 +82,8 @@ class TestTableFormats:
         
         for init in self.initializers:
             empty_tables.append(init())
+
+        assert len(self.initializers) == len(self.table_formats) == 3
             
         for i in range(len(self.initializers)):
             for j in range((len(self.table_formats))):
