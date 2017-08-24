@@ -157,6 +157,8 @@ class TestTableFormats:
         desired_dtypes = get_dtypes(detf)
         for i in range(len(new_tab.colnames)):
             if new_tab.dtype[i] != np.dtype(desired_dtypes[i]):
+                print(str(new_tab.dtype[i]))
+                print(np.dtype(desired_dtypes[i]))
                 assert False
             
         # Check the metadata is correct
