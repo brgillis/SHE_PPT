@@ -62,10 +62,10 @@ class DetailsTableFormat(object):
     def __init__(self):
         
         # Get the metadata (contained within its own class)
-        meta = DetailsTableMeta()
+        self.meta = DetailsTableMeta()
         
         # And a quick alias for it
-        m = meta
+        self.m = meta
         
         # Get the version from the meta class
         self.__version__ = m.__version__
@@ -74,25 +74,25 @@ class DetailsTableFormat(object):
         self.meta_data = m.all
 
         # Table column labels
-        self.ID = ('ID', 'i8', 'K', None)
-        self.gal_x = ('x_center_pix', 'f4', 'E', "pixels")
-        self.gal_y = ('y_center_pix', 'f4', 'E', "pixels")
-        self.psf_x = ('psf_x_center_pix', 'f4', 'E', "pixels")
-        self.psf_y = ('psf_y_center_pix', 'f4', 'E', "pixels")
-        self.hlr_bulge = ('hlr_bulge_arcsec', 'f4', 'E', "arcsec")
-        self.hlr_disk = ('hlr_disk_arcsec', 'f4', 'E', "arcsec")
-        self.bulge_ellipticity = ('bulge_ellipticity', 'f4', 'E', None)
-        self.bulge_axis_ratio = ('bulge_axis_ratio', 'f4', 'E', None)
-        self.bulge_fraction = ('bulge_fraction', 'f4', 'E', None)
-        self.disk_height_ratio = ('disk_height_ratio', 'f4', 'E', None)
-        self.magnitude = ('magnitude', 'f4', 'E', "VIS")
-        self.sersic_index = ('sersic_index', 'f4', 'E', None)
-        self.rotation = ('rotation', 'f4', 'E', "degrees")
-        self.spin = ('spin', 'f4', 'E', "degrees")
-        self.tilt = ('tilt', 'f4', 'E', "degrees")
-        self.shear_magnitude = ('shear_magnitude', 'f4', 'E', None)
-        self.shear_angle = ('shear_angle', 'f4', 'E', "degrees")
-        self.target_galaxy = ('is_target_galaxy', 'b1', 'L', None)
+        self.ID = "ID"
+        self.gal_x = "x_center_pix"
+        self.gal_y = "y_center_pix"
+        self.psf_x = "psf_x_center_pix"
+        self.psf_y = "psf_y_center_pix"
+        self.hlr_bulge = "hlr_bulge_arcsec"
+        self.hlr_disk = "hlr_disk_arcsec"
+        self.bulge_ellipticity = "bulge_ellipticity"
+        self.bulge_axis_ratio = "bulge_axis_ratio"
+        self.bulge_fraction = "bulge_fraction"
+        self.disk_height_ratio = "disk_height_ratio"
+        self.magnitude = "magnitude"
+        self.sersic_index = "sersic_index"
+        self.rotation = "rotation"
+        self.spin = "spin"
+        self.tilt = "tilt"
+        self.shear_magnitude = "shear_magnitude"
+        self.shear_angle = "shear_angle"
+        self.target_galaxy = "is_target_galaxy"
         
         # Store the less-used comments, dtypes, and fits_dtypes in dicts
         self.comments = OrderedDict(((self.ID, None),

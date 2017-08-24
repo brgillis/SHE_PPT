@@ -62,10 +62,10 @@ class DetectionsTableFormat(object):
     def __init__(self):
         
         # Get the metadata (contained within its own class)
-        meta = DetectionsTableMeta()
+        self.meta = DetectionsTableMeta()
         
         # And a quick alias for it
-        m = meta
+        self.m = meta
         
         # Get the version from the meta class
         self.__version__ = m.__version__
