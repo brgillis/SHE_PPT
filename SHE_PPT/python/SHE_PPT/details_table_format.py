@@ -192,7 +192,7 @@ def make_details_table_header(subtracted_sky_level,
         
         @param gain <float> Units of e-/ADU
         
-        @return header <dict>
+        @return header <OrderedDict>
     """
     
     header = OrderedDict()
@@ -217,11 +217,11 @@ def initialise_details_table(image, options):
     """
     
     init_cols = []
-    for _ in xrange(len(details_table_format.column_data)):
+    for _ in range(len(tf.all)):
         init_cols.append([])
     
-    details_table = Table(init_cols, names=get_names(details_table_format.column_data),
-                          dtype=get_dtypes(details_table_format.column_data))
+    details_table = Table(init_cols, names=tf.all,
+                          dtype=get_dtypes(tf))
     
     details_table.meta = make_details_table_header(subtracted_sky_level = image.get_param_value('subtracted_background'),
                                                    unsubtracted_sky_level = image.get_param_value('unsubtracted_background'),

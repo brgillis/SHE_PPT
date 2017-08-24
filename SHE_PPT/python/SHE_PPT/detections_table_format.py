@@ -24,7 +24,7 @@ from collections import OrderedDict
 
 from astropy.table import Table
 
-from SHE_PPT.table_utility import get_dtypes, get_names
+from SHE_PPT.table_utility import get_dtypes
 
 class DetectionsTableMeta(object):
     """
@@ -129,7 +129,7 @@ def make_detections_table_header(subtracted_sky_level,
         
         @param gain <float> Units of e-/ADU
         
-        @return header <dict>
+        @return header <OrderedDict>
     """
     
     header = OrderedDict()
@@ -154,11 +154,11 @@ def initialise_detections_table(image, options):
     """
     
     init_cols = []
-    for _ in range(len(detections_table_format.column_data)):
+    for _ in range(len(tf.all)):
         init_cols.append([])
     
-    detections_table = Table(init_cols, names=get_names(tf.column_data),
-                          dtype=get_dtypes(tf.column_data))
+    detections_table = Table(init_cols, names=tf.all,
+                          dtype=get_dtypes(tf))
     
     detections_table.meta = make_detections_table_header(subtracted_sky_level = image.get_param_value('subtracted_background'),
                                                          unsubtracted_sky_level = image.get_param_value('unsubtracted_background'),
