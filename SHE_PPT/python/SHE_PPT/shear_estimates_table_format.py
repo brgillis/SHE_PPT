@@ -158,7 +158,7 @@ def initialise_shear_estimates_table():
     """
     
     init_cols = []
-    for _ in range(len(tf.column_data)):
+    for _ in range(len(tf.all)):
         init_cols.append([])
     
     shear_estimates_table = Table(init_cols, names=tf.all,
