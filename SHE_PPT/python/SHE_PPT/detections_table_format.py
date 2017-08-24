@@ -20,20 +20,15 @@
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 """
 
+from collections import OrderedDict
+
 from astropy.table import Table
 
 from SHE_PPT.table_utility import get_dtypes, get_names
 
-class DetectionsTableFormat(object):
+class DetectionsTableMeta(object):
     """
-        @brief A class defining the format for detections tables. Only the detections_table_format
-               instance of this should generally be accessed, and it should not be changed.
-               
-        @details Metadata (for the table header) is defined by a tuple of (label, comment).
-        
-                 Columns are defined by a tuple of (label, python_dtype, fits_dtype, comment).
-                 
-                 The column_data and meta_data members provide tuples of all metadata/columns.
+        @brief A class defining the metadata for detections tables.
     """
     
     def __init__(self):
@@ -41,32 +36,76 @@ class DetectionsTableFormat(object):
         self.__version__ = "0.1"
         
         # Table metadata labels
-        self.meta_version = ('SS_VER',None)
-        self.meta_subtracted_sky_level = ("S_SKYLV","ADU/arcsec^2")
-        self.meta_unsubtracted_sky_level = ("US_SKYLV","ADU/arcsec^2")
-        self.meta_read_noise = ("RD_NOISE","e-/pixel")
-        self.meta_gain = ("CCDGAIN","e-/ADU")
+        self.version = "SS_VER"
+        self.subtracted_sky_level = "S_SKYLV"
+        self.unsubtracted_sky_level = "US_SKYLV"
+        self.read_noise = "RD_NOISE"
+        self.gain = "CCDGAIN"
         
-        self.meta_data = (self.meta_version,
-                          self.meta_subtracted_sky_level,
-                          self.meta_unsubtracted_sky_level,
-                          self.meta_read_noise,
-                          self.meta_gain,)
+        # Store the less-used comments in a dict
+        self.comments = OrderedDict((self.version, None),
+                                    (self.subtracted_sky_level, "ADU/arcsec^2"),
+                                    (self.unsubtracted_sky_level, "ADU/arcsec^2"),
+                                    (self.read_noise, "e-/pixel"),
+                                    (self.gain, "e-/ADU"),
+                                   )
+        
+        # A list of columns in the desired order
+        self.all = self.comments.keys()
 
-        # Table column labels
-        self.ID = ('ID', 'i8', 'K', None)
-        self.gal_x = ('x_center_pix', 'f4', 'E', "pixels")
-        self.gal_y = ('y_center_pix', 'f4', 'E', "pixels")
-        self.psf_x = ('psf_x_center_pix', 'f4', 'E', "pixels")
-        self.psf_y = ('psf_y_center_pix', 'f4', 'E', "pixels")
+class DetectionsTableFormat(object):
+    """
+        @brief A class defining the format for detections tables. Only the detections_table_format
+               instance of this should generally be accessed, and it should not be changed.
+    """
+    
+    def __init__(self):
         
-        self.column_data = (self.ID,
-                            self.gal_x,
-                            self.gal_y,
-                            self.psf_x,
-                            self.psf_y,)
+        # Get the metadata (contained within its own class)
+        meta = DetectionsTableMeta()
         
+        # And a quick alias for it
+        m = meta
+        
+        # Get the version from the meta class
+        self.__version__ = m.__version__
+        
+        # Direct alias for a tuple of all metadata
+        self.meta_data = m.all
+        
+        # Store the less-used comments, dtypes, and fits_dtypes in dicts
+        self.comments = OrderedDict((self.ID, None),
+                                    (self.gal_x, "pixels"),
+                                    (self.gal_y, "pixels"),
+                                    (self.psf_x, "pixels"),
+                                    (self.psf_y, "pixels"),
+                                   ) 
+        
+        self.dtypes = OrderedDict((self.ID, "i8"),
+                                  (self.gal_x, "f4"),
+                                  (self.gal_y, "f4"),
+                                  (self.psf_x, "f4"),
+                                  (self.psf_y, "f4"),
+                                 )
+        
+        self.fits_dtypes = OrderedDict((self.ID, "K"),
+                                       (self.gal_x, "E"),
+                                       (self.gal_y, "E"),
+                                       (self.psf_x, "E"),
+                                       (self.psf_y, "E"),
+                                      )
+        
+        # A list of columns in the desired order
+        self.all = self.comments.keys()
+        
+        # TODO: Write unit test to ensure self.comments.keys() == self.dtypes.keys(), etc.
+
+# Define an instance of this object that can be imported         
 detections_table_format = DetectionsTableFormat()
+
+# And a convient alias for it
+tf = detections_table_format
+
 
 def make_detections_table_header(subtracted_sky_level,
                                  unsubtracted_sky_level,
@@ -86,12 +125,13 @@ def make_detections_table_header(subtracted_sky_level,
         @return header <dict>
     """
     
-    header = {}
-    header[detections_table_format.meta_version[0]] = detections_table_format.__version__
-    header[detections_table_format.meta_subtracted_sky_level[0]] = subtracted_sky_level
-    header[detections_table_format.meta_unsubtracted_sky_level[0]] = unsubtracted_sky_level
-    header[detections_table_format.meta_read_noise[0]] = read_noise
-    header[detections_table_format.meta_gain[0]] = gain
+    header = OrderedDict()
+    
+    header[tf.m.version] = tf.__version__
+    header[tf.m.subtracted_sky_level] = (subtracted_sky_level, tf.m.comments[tf.m.subtracted_sky_level])
+    header[tf.m.unsubtracted_sky_level] = (unsubtracted_sky_level, tf.m.comments[tf.m.unsubtracted_sky_level])
+    header[tf.m.read_noise] = (read_noise, tf.m.comments[tf.m.read_noise])
+    header[tf.m.gain] = (gain, tf.m.comments[tf.m.gain])
     
     return header
 
@@ -107,19 +147,15 @@ def initialise_detections_table(image, options):
     """
     
     init_cols = []
-    for _ in xrange(len(detections_table_format.column_data)):
+    for _ in range(len(detections_table_format.column_data)):
         init_cols.append([])
     
-    detections_table = Table(init_cols, names=get_names(detections_table_format.column_data),
-                          dtype=get_dtypes(detections_table_format.column_data))
-    detections_table.meta[detections_table_format.meta_version[0]] = detections_table_format.__version__
-    detections_table.meta[detections_table_format.meta_subtracted_sky_level[0]] = (image.get_param_value('subtracted_background'),
-                                                                                  detections_table_format.meta_subtracted_sky_level[1])
-    detections_table.meta[detections_table_format.meta_unsubtracted_sky_level[0]] = (image.get_param_value('unsubtracted_background'),
-                                                                                     detections_table_format.meta_unsubtracted_sky_level[1])
-    detections_table.meta[detections_table_format.meta_read_noise[0]] = (options['read_noise'],
-                                                                         detections_table_format.meta_read_noise[1])
-    detections_table.meta[detections_table_format.meta_gain[0]] = (options['gain'],
-                                                                   detections_table_format.meta_gain[1])
+    detections_table = Table(init_cols, names=get_names(tf.column_data),
+                          dtype=get_dtypes(tf.column_data))
+    
+    detections_table.meta = make_detections_table_header(subtracted_sky_level = image.get_param_value('subtracted_background'),
+                                                         unsubtracted_sky_level = image.get_param_value('unsubtracted_background'),
+                                                         read_noise = options['read_noise'],
+                                                         gain = options['gain'])
     
     return detections_table

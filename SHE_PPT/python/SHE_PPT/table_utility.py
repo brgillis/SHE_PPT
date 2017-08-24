@@ -23,47 +23,32 @@
 import subprocess
 from astropy.io import fits
 
-from SHE_GST_GalaxyImageGeneration import magic_values as mv
+def get_comments(table_format):
+    """
+        @brief Get the comments for the table format.
 
-def get_names(names_and_dtypes):
-    """ Get the column names for the table.
-
-        Requires: (nothing)
-
-        Return: <list of strings>
+        @return tuple<string>
     """
 
-    return zip(*names_and_dtypes)[0]
+    return zip(*table_format.comments.items())[1]
 
-def get_dtypes(names_and_dtypes):
-    """ Get the data types for the table, in the format for an astropy table.
+def get_dtypes(table_format):
+    """
+        @brief Get the data types for the table format, in the format for an astropy table.
 
-        Requires: (nothing)
-
-        Return: <list of strings>
+        @return tuple<string>
     """
 
-    return zip(*names_and_dtypes)[1]
+    return zip(*table_format.dtypes.items())[1]
 
 def get_fits_dtypes(names_and_dtypes):
-    """ Get the data types for the table, in the format for a fits table
+    """
+        @brief Get the data types for the table format, in the format for a fits table.
 
-        Requires: (nothing)
-
-        Return: <list of strings>
+        @return tuple<string>
     """
 
-    return zip(*names_and_dtypes)[2]
-
-def get_comments(names_and_dtypes):
-    """ Get the comments for each column of the table
-
-        Requires: (nothing)
-
-        Return: <list of strings>
-    """
-
-    return zip(*names_and_dtypes)[3]
+    return zip(*table_format.fits_dtypes.items())[1]
 
 def add_row(table, **kwargs):
     """ Add a row to a table by packing the keyword arguments and passing them as a
@@ -82,37 +67,53 @@ def add_row(table, **kwargs):
     table.add_row(vals=kwargs)
     return
 
-def output_tables(otable, file_name_base, table_tail, format):
+def output_tables(otable, file_name_base, table_tail, output_format):
 
-    if ((format == 'ascii') or (format == 'both')):
+    if ((output_format == 'ascii') or (output_format == 'both')):
         text_file_name = file_name_base + table_tail + ".dat"
         otable.write(text_file_name, format='ascii.ecsv')
 
-    if ((format == 'fits') or (format == 'both')):
+    if ((output_format == 'fits') or (output_format == 'both')):
         fits_file_name = file_name_base + table_tail + ".fits"
         otable.write(fits_file_name, format='fits', overwrite=True)
 
     return
 
-def output_table_as_fits(table, filename, names_and_dtypes, header=None):
-    """ Output an astropy table as a fits binary table.
+def output_table_as_fits(table, filename, table_format, header=None):
+    """
+        @brief Output an astropy table as a fits binary table.
 
-        Requires: table <astropy.tables.Table> (table to be output)
-                  filename <string> (Name of file to output this table to)
+        @param table <astropy.table.Table> Table to be output
+        @param filename <string> Name of file to output this table to
+        @param table_format <...TableFormat> Table format of the table
+        @param header <dict<string>> Values to add to the output table's header
 
         Returns: (nothing)
 
         Side-effects: Overwrites the file at 'filename'
 
     """
+    
+    if header is None:
+        header = {}
+        
     fits_cols = []
-    for name, _, my_format in names_and_dtypes:
-        fits_cols.append(fits.Column(name=name, format=my_format, array=table[name]))
+    for name in table_format.all:
+        fits_cols.append(fits.Column(name=name,
+                                     format=table_format.dtype[name],
+                                     array=table[name]))
 
     # Set up the binary extension HDU with the correct data and filenames
     my_bin_hdu = fits.BinTableHDU.from_columns(fits_cols)
 
-    my_bin_hdu.header[mv.version_label] = mv.version_str
+    # Set up the header
+    
+    if not table_format.version in header:
+        my_bin_hdu.header[table_format.version] = table_format.__version__
+    
+    for item in header:
+        my_bin_hdu.header[header] = header[item]
+        
 
     # Output it to the desired filename
     my_bin_hdu.writeto(filename, clobber=True)
