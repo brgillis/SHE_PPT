@@ -76,7 +76,7 @@ def is_in_format(table, table_format):
     # Check the data types are correct
     desired_dtypes = get_dtypes(table_format)
     for i in range(len(table.colnames)):
-        if table.dtype[i] != np.dtype(desired_dtypes[i]):
+        if table.dtype[i].newbyteorder('>') != np.dtype(desired_dtypes[i]):
             return False
         
     # Check the metadata is correct
