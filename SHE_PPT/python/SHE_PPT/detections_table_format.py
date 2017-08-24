@@ -73,6 +73,13 @@ class DetectionsTableFormat(object):
         # Direct alias for a tuple of all metadata
         self.meta_data = m.all
         
+        # Column names
+        self.ID = "ID"
+        self.gal_x = "x_center_pix"
+        self.gal_y = "y_center_pix"
+        self.psf_x = "psf_x_center_pix"
+        self.psf_y = "psf_y_center_pix"
+        
         # Store the less-used comments, dtypes, and fits_dtypes in dicts
         self.comments = OrderedDict((self.ID, None),
                                     (self.gal_x, "pixels"),
