@@ -35,7 +35,6 @@ from SHE_PPT.table_utility import (get_comments,
                                    is_in_format,
                                    add_row,
                                    output_tables,
-                                   output_table_as_fits,
                                   )
 class TestTableFormats:
     """
