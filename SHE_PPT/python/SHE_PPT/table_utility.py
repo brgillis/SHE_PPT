@@ -27,6 +27,8 @@ import numpy as np
 def get_comments(table_format):
     """
         @brief Get the comments for the table format.
+        
+        @param table_format <...TableFormat>
 
         @return tuple<string>
     """
@@ -36,6 +38,8 @@ def get_comments(table_format):
 def get_dtypes(table_format):
     """
         @brief Get the data types for the table format, in the format for an astropy table.
+        
+        @param table_format <...TableFormat>
 
         @return tuple<string>
     """
@@ -45,6 +49,8 @@ def get_dtypes(table_format):
 def get_fits_dtypes(table_format):
     """
         @brief Get the data types for the table format, in the format for a fits table.
+        
+        @param table_format <...TableFormat>
 
         @return tuple<string>
     """
