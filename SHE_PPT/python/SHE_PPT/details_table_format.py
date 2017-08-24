@@ -20,20 +20,15 @@
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 """
 
+from collections import OrderedDict
+
 from astropy.table import Table
 
 from SHE_PPT.table_utility import get_dtypes, get_names
 
-class DetailsTableFormat(object):
+class DetailsTableMeta(object):
     """
-        @brief A class defining the format for galaxy details tables. Only the details_table_format
-               instance of this should generally be accessed, and it should not be changed.
-               
-        @details Metadata (for the table header) is defined by a tuple of (label, comment).
-        
-                 Columns are defined by a tuple of (label, python_dtype, fits_dtype, comment).
-                 
-                 The column_data and meta_data members provide tuples of all metadata/columns.
+        @brief A class defining the metadata for details tables.
     """
     
     def __init__(self):
@@ -41,17 +36,50 @@ class DetailsTableFormat(object):
         self.__version__ = "0.1"
         
         # Table metadata labels
-        self.meta_version = ('SS_VER',None)
-        self.meta_subtracted_sky_level = ("S_SKYLV","ADU/arcsec^2")
-        self.meta_unsubtracted_sky_level = ("US_SKYLV","ADU/arcsec^2")
-        self.meta_read_noise = ("RD_NOISE","e-/pixel")
-        self.meta_gain = ("CCDGAIN","e-/ADU")
+        self.version = "SS_VER"
+        self.subtracted_sky_level = "S_SKYLV"
+        self.unsubtracted_sky_level = "US_SKYLV"
+        self.read_noise = "RD_NOISE"
+        self.gain = "CCDGAIN"
         
-        self.meta_data = (self.meta_version,
-                          self.meta_subtracted_sky_level,
-                          self.meta_unsubtracted_sky_level,
-                          self.meta_read_noise,
-                          self.meta_gain,)
+        # Store the less-used comments in a dict
+        self.comments = OrderedDict((self.version, None),
+                                    (self.subtracted_sky_level, "ADU/arcsec^2"),
+                                    (self.unsubtracted_sky_level, "ADU/arcsec^2"),
+                                    (self.read_noise, "e-/pixel"),
+                                    (self.gain, "e-/ADU"),
+                                   )
+        
+        # A list of columns in the desired order
+        self.all = self.comments.keys()
+
+class DetailsTableFormat(object):
+    """
+        @brief A class defining the format for galaxy details tables. Only the details_table_format
+               instance of this should generally be accessed, and it should not be changed.
+    """
+    
+    def __init__(self):
+        
+        # Get the metadata (contained within its own class)
+        meta = DetailsTableMeta()
+        
+        # And a quick alias for it
+        m = meta
+        
+        # Get the version from the meta class
+        self.__version__ = m.__version__
+        
+        # Direct alias for a tuple of all metadata
+        self.meta_data = m.all
+        
+        # Store the less-used comments, dtypes, and fits_dtypes in dicts
+        self.comments = OrderedDict((self.ID, None),
+                                    (self.gal_x, "pixels"),
+                                    (self.gal_y, "pixels"),
+                                    (self.psf_x, "pixels"),
+                                    (self.psf_y, "pixels"),
+                                   ) 
 
         # Table column labels
         self.ID = ('ID', 'i8', 'K', None)
@@ -74,27 +102,80 @@ class DetailsTableFormat(object):
         self.shear_angle = ('shear_angle', 'f4', 'E', "degrees")
         self.target_galaxy = ('is_target_galaxy', 'b1', 'L', None)
         
-        self.column_data = (self.ID ,
-                            self.gal_x ,
-                            self.gal_y ,
-                            self.psf_x ,
-                            self.psf_y ,
-                            self.hlr_bulge ,
-                            self.hlr_disk ,
-                            self.bulge_ellipticity ,
-                            self.bulge_axis_ratio ,
-                            self.bulge_fraction ,
-                            self.disk_height_ratio ,
-                            self.magnitude ,
-                            self.sersic_index ,
-                            self.rotation ,
-                            self.spin ,
-                            self.tilt ,
-                            self.shear_magnitude ,
-                            self.shear_angle ,
-                            self.target_galaxy ,)
+        # Store the less-used comments, dtypes, and fits_dtypes in dicts
+        self.comments = OrderedDict((self.ID, None),
+                                    (self.gal_x, "pixels"),
+                                    (self.gal_y, "pixels"),
+                                    (self.psf_x, "pixels"),
+                                    (self.psf_y, "pixels"),
+                                    (self.hlr_bulge, "arcsec"),
+                                    (self.hlr_disk, "arcsec"),
+                                    (self.bulge_ellipticity, None),
+                                    (self.bulge_axis_ratio, None),
+                                    (self.bulge_fraction, None),
+                                    (self.disk_height_ratio, None),
+                                    (self.magnitude, "VIS"),
+                                    (self.sersic_index, None),
+                                    (self.rotation, "degrees"),
+                                    (self.spin, "degrees"),
+                                    (self.tilt, "degrees"),
+                                    (self.shear_magnitude, None),
+                                    (self.shear_angle, "degrees"),
+                                    (self.target_galaxy, None),
+                                   ) 
         
+        self.dtypes = OrderedDict((self.ID, "i8"),
+                                    (self.gal_x, "f4"),
+                                    (self.gal_y, "f4"),
+                                    (self.psf_x, "f4"),
+                                    (self.psf_y, "f4"),
+                                    (self.hlr_bulge, "f4"),
+                                    (self.hlr_disk, "f4"),
+                                    (self.bulge_ellipticity, "f4"),
+                                    (self.bulge_axis_ratio, "f4"),
+                                    (self.bulge_fraction, "f4"),
+                                    (self.disk_height_ratio, "f4"),
+                                    (self.magnitude, "f4"),
+                                    (self.sersic_index, "f4"),
+                                    (self.rotation, "f4"),
+                                    (self.spin, "f4"),
+                                    (self.tilt, "f4"),
+                                    (self.shear_magnitude, "f4"),
+                                    (self.shear_angle, "f4"),
+                                    (self.target_galaxy, "b1"),
+                                   ) 
+        
+        self.fits_dtypes = OrderedDict((self.ID, "K"),
+                                    (self.gal_x, "E"),
+                                    (self.gal_y, "E"),
+                                    (self.psf_x, "E"),
+                                    (self.psf_y, "E"),
+                                    (self.hlr_bulge, "E"),
+                                    (self.hlr_disk, "E"),
+                                    (self.bulge_ellipticity, "E"),
+                                    (self.bulge_axis_ratio, "E"),
+                                    (self.bulge_fraction, "E"),
+                                    (self.disk_height_ratio, "E"),
+                                    (self.magnitude, "E"),
+                                    (self.sersic_index, "E"),
+                                    (self.rotation, "E"),
+                                    (self.spin, "E"),
+                                    (self.tilt, "E"),
+                                    (self.shear_magnitude, "E"),
+                                    (self.shear_angle, "E"),
+                                    (self.target_galaxy, "L"),
+                                   ) 
+        
+        # A list of columns in the desired order
+        self.all = self.comments.keys()
+        
+        # TODO: Write unit test to ensure self.comments.keys() == self.dtypes.keys(), etc.
+        
+# Define an instance of this object that can be imported 
 details_table_format = DetailsTableFormat()
+
+# And a convient alias for it
+tf = details_table_format
 
 def make_details_table_header(subtracted_sky_level,
                               unsubtracted_sky_level,
@@ -114,12 +195,13 @@ def make_details_table_header(subtracted_sky_level,
         @return header <dict>
     """
     
-    header = {}
-    header[details_table_format.meta_version[0]] = details_table_format.__version__
-    header[details_table_format.meta_subtracted_sky_level[0]] = subtracted_sky_level
-    header[details_table_format.meta_unsubtracted_sky_level[0]] = unsubtracted_sky_level
-    header[details_table_format.meta_read_noise[0]] = read_noise
-    header[details_table_format.meta_gain[0]] = gain
+    header = OrderedDict()
+    
+    header[tf.m.version] = tf.__version__
+    header[tf.m.subtracted_sky_level] = (subtracted_sky_level, tf.m.comments[tf.m.subtracted_sky_level])
+    header[tf.m.unsubtracted_sky_level] = (unsubtracted_sky_level, tf.m.comments[tf.m.unsubtracted_sky_level])
+    header[tf.m.read_noise] = (read_noise, tf.m.comments[tf.m.read_noise])
+    header[tf.m.gain] = (gain, tf.m.comments[tf.m.gain])
     
     return header
 
@@ -140,14 +222,10 @@ def initialise_details_table(image, options):
     
     details_table = Table(init_cols, names=get_names(details_table_format.column_data),
                           dtype=get_dtypes(details_table_format.column_data))
-    details_table.meta[details_table_format.meta_version[0]] = details_table_format.__version__
-    details_table.meta[details_table_format.meta_subtracted_sky_level[0]] = (image.get_param_value('subtracted_background'),
-                                                                             details_table_format.meta_subtracted_sky_level[1])
-    details_table.meta[details_table_format.meta_unsubtracted_sky_level[0]] = (image.get_param_value('unsubtracted_background'),
-                                                                               details_table_format.meta_unsubtracted_sky_level[1])
-    details_table.meta[details_table_format.meta_read_noise[0]] = (options['read_noise'],
-                                                                   details_table_format.meta_read_noise[1])
-    details_table.meta[details_table_format.meta_gain[0]] = (options['gain'],
-                                                             details_table_format.meta_gain[1])
+    
+    details_table.meta = make_details_table_header(subtracted_sky_level = image.get_param_value('subtracted_background'),
+                                                   unsubtracted_sky_level = image.get_param_value('unsubtracted_background'),
+                                                   read_noise = options['read_noise'],
+                                                   gain = options['gain'])
     
     return details_table
