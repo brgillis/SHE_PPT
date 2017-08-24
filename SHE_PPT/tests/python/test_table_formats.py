@@ -83,8 +83,8 @@ class TestTableFormats:
         for init in self.initializers:
             empty_tables.append(init())
 
-        assert len(self.initializers) == len(self.table_formats) == 3
+        assert len(self.initializers) == len(self.formats) == 3
             
         for i in range(len(self.initializers)):
-            for j in range((len(self.table_formats))):
-                assert is_in_format(empty_tables[i],self.table_formats[j]) == (i==j)
+            for j in range((len(self.formats))):
+                assert is_in_format(empty_tables[i],self.formats[j]) == (i==j)
