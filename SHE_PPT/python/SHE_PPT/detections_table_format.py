@@ -135,10 +135,10 @@ def make_detections_table_header(subtracted_sky_level,
     header = OrderedDict()
     
     header[tf.m.version] = tf.__version__
-    header[tf.m.subtracted_sky_level] = (subtracted_sky_level, tf.m.comments[tf.m.subtracted_sky_level])
-    header[tf.m.unsubtracted_sky_level] = (unsubtracted_sky_level, tf.m.comments[tf.m.unsubtracted_sky_level])
-    header[tf.m.read_noise] = (read_noise, tf.m.comments[tf.m.read_noise])
-    header[tf.m.gain] = (gain, tf.m.comments[tf.m.gain])
+    header[tf.m.subtracted_sky_level] = subtracted_sky_level
+    header[tf.m.unsubtracted_sky_level] = unsubtracted_sky_level
+    header[tf.m.read_noise] = read_noise
+    header[tf.m.gain] = gain
     
     return header
 

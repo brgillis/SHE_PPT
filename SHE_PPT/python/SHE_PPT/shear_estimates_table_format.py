@@ -163,6 +163,7 @@ def initialise_shear_estimates_table():
     
     shear_estimates_table = Table(init_cols, names=tf.all,
                           dtype=get_dtypes(tf))
-    shear_estimates_table.meta[tf.m.version] = tf.__version__
+    
+    shear_estimates_table.meta = make_shear_estimates_table_header()
     
     return shear_estimates_table

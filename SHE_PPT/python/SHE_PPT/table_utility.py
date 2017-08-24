@@ -134,7 +134,7 @@ def output_table_as_fits(table, filename, table_format, header=None):
     """
     
     if header is None:
-        header = {}
+        header = OrderedDict()
         
     fits_cols = []
     for name in table_format.all:
