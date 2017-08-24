@@ -88,3 +88,18 @@ class TestTableFormats:
         for i in range(len(self.initializers)):
             for j in range((len(self.formats))):
                 assert is_in_format(empty_tables[i],self.formats[j]) == (i==j)
+                
+    def test_add_row(self):
+        # Test that we can add a row through kwargs
+        
+        tab = initialise_detections_table()
+        
+        add_row(tab, detf.ID=0, detf.gal_x=0, detf.gal_y=1, detf.psf_x=10, detf.psf_y=100)
+        
+        assert tab[detf.ID][0]==0
+        assert tab[detf.gal_x][0]==0
+        assert tab[detf.gal_y][0]==1
+        assert tab[detf.psf_x][0]==10
+        assert tab[detf.psf_y][0]==100
+        
+        
