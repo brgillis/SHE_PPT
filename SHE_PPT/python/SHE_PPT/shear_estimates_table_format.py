@@ -70,7 +70,7 @@ class ShearEstimatesTableFormat(object):
     def __init__(self):
         
         # Get the metadata (contained within its own class)
-        meta = DetectionsTableMeta()
+        meta = ShearEstimatesTableMeta()
         
         # And a quick alias for it
         m = meta
