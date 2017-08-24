@@ -132,7 +132,7 @@ class TestTableFormats:
         assert not os.path.exists(self.filename_base+".fits")
         
         # Can we read it?
-        new_tab = Table.read(self.filename_base+".ecsv")
+        new_tab = Table.read(self.filename_base+".ecsv", format="ascii.ecsv")
         assert is_in_format(new_tab,detf)
         assert new_tab==tab
         
@@ -147,7 +147,7 @@ class TestTableFormats:
         assert os.path.exists(self.filename_base+".fits")
         
         # Can we read it?
-        new_tab = Table.read(self.filename_base+".fits")
+        new_tab = Table.read(self.filename_base+".fits", format="fits")
         assert is_in_format(new_tab,detf)
         assert new_tab==tab
         
