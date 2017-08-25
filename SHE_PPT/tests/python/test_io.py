@@ -1,8 +1,8 @@
-""" @file test_utility.py
+""" @file test_io.py
 
     Created 25 Aug 2017
 
-    Unit tests relating to utility functions.
+    Unit tests relating to I/O functions.
 
     ---------------------------------------------------------------------
 
@@ -25,9 +25,12 @@ import numpy as np
 import os
 import pytest
 
-from SHE_PPT.utility import hash_any
+from SHE_PPT.io import (get_allowed_filename,
+                        write_listfile,
+                        replace_in_file,
+                        replace_multiple_in_file)
 
-class TestUtility:
+class TestIO:
     """
 
 
@@ -41,16 +44,9 @@ class TestUtility:
     def teardown_class(cls):
         pass
 
-    def test_hash_any(self):
+    def test_get_allowed_filename(self):
         
-        test_str = "my_string"
-        test_obj = ("this_is_my_tuple",1)
+        filename = get_allowed_filename( "TEST", "0", extension=".junk", release_date = "06.66")
         
-        max_length = 16
-        assert len(hash_any(test_str,max_length)) == max_length
-        assert len(hash_any(test_obj,max_length)) == max_length
-        
-        smaller_max_length = 8
-        assert hash_any(test_str,max_length)[smaller_max_length-max_length:] == hash_any(test_str,smaller_max_length)
-        assert hash_any(test_obj,max_length)[smaller_max_length-max_length:] == hash_any(test_obj,smaller_max_length)
+        assert filename=="EUC_SHE_CTE-TEST_0_06.66.junk"
         
