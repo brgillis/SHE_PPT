@@ -33,14 +33,20 @@ class DetailsTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.1"
+        self.__version__ = "0.1.1"
         
         # Table metadata labels
+        
         self.version = "SS_VER"
+        
         self.subtracted_sky_level = "S_SKYLV"
         self.unsubtracted_sky_level = "US_SKYLV"
         self.read_noise = "RD_NOISE"
         self.gain = "CCDGAIN"
+        
+        self.model_hash = "MHASH"
+        self.model_seed = "MSEED"
+        self.noise_seed = "NSEED"
         
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
@@ -48,6 +54,9 @@ class DetailsTableMeta(object):
                                      (self.unsubtracted_sky_level, "ADU/arcsec^2"),
                                      (self.read_noise, "e-/pixel"),
                                      (self.gain, "e-/ADU"),
+                                     (self.model_hash, None),
+                                     (self.model_seed, None),
+                                     (self.noise_seed, None),
                                    ))
         
         # A list of columns in the desired order
