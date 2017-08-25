@@ -196,7 +196,7 @@ class TestTableFormats:
         
         shear_estimates_table = initialise_shear_estimates_table(detections_table)
         
-        assert(shear_estimates_table[setf.m.model_hash] == detections_table[detf.m.model_hash])
-        assert(shear_estimates_table[setf.m.model_seed] == detections_table[detf.m.model_seed])
-        assert(shear_estimates_table[setf.m.noise_seed] == detections_table[detf.m.noise_seed])
+        assert(shear_estimates_table.meta[setf.m.model_hash] == detections_table.meta[detf.m.model_hash])
+        assert(shear_estimates_table.meta[setf.m.model_seed] == detections_table.meta[detf.m.model_seed])
+        assert(shear_estimates_table.meta[setf.m.noise_seed] == detections_table.meta[detf.m.noise_seed])
         
