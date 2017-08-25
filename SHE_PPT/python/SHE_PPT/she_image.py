@@ -54,7 +54,7 @@ class SHEImage:
  
       
    def extract_stamp(self, x, y, stamp_size):
-      """Extracts a square stamp and returns it as a new instance.
+      """Extracts a square stamp and returns it as a new instance (using views of numpy arrays, i.e., without making a copy)
       
       Args:
          x: x pixel coordinate on which to center the stamp. Will be rounded to the closest int.
