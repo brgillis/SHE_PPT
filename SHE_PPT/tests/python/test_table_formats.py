@@ -189,9 +189,14 @@ class TestTableFormats:
         details_table = initialise_details_table()
         
         # Try to initialize the shear_estimates table based on the detections table
+        
+        detections_table.meta[detf.m.model_hash] == -1235
+        detections_table.meta[detf.m.model_seed] == 4422
+        detections_table.meta[detf.m.noise_seed] == 11015
+        
         shear_estimates_table = initialise_shear_estimates_table(detections_table)
         
-        assert(shear_estimates_table[setf.m.model_hash] == detections_table[setf.m.model_hash])
-        assert(shear_estimates_table[setf.m.model_seed] == detections_table[setf.m.model_seed])
-        assert(shear_estimates_table[setf.m.noise_seed] == detections_table[setf.m.noise_seed])
+        assert(shear_estimates_table[setf.m.model_hash] == detections_table[detf.m.model_hash])
+        assert(shear_estimates_table[setf.m.model_seed] == detections_table[detf.m.model_seed])
+        assert(shear_estimates_table[setf.m.noise_seed] == detections_table[detf.m.noise_seed])
         
