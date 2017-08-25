@@ -44,7 +44,7 @@ def write_listfile(listfile_name, filenames):
     """
     
     with open(listfile_name, 'w') as listfile:
-        paths_json = json.dumps(filepaths)
+        paths_json = json.dumps(filenames)
         listfile.write(paths_json)
         
     return
