@@ -58,7 +58,7 @@ def read_listfile(listfile_name):
         @return filenames <list<str>> List of filenames (or tuples of filenames) read in.
     """
     
-    with open(fname,'r') as f:
+    with open(listfile_name,'r') as f:
         listobject = json.load(f)
         if len(listobject) == 0:
             return listobject
