@@ -179,7 +179,10 @@ tf = details_table_format
 def make_details_table_header(subtracted_sky_level,
                               unsubtracted_sky_level,
                               read_noise,
-                              gain,):
+                              gain,
+                              model_hash,
+                              model_seed,
+                              noise_seed,):
     """
         @brief Generate a header for a galaxy details table.
         
@@ -197,10 +200,15 @@ def make_details_table_header(subtracted_sky_level,
     header = OrderedDict()
     
     header[tf.m.version] = tf.__version__
+    
     header[tf.m.subtracted_sky_level] = subtracted_sky_level
     header[tf.m.unsubtracted_sky_level] = unsubtracted_sky_level
     header[tf.m.read_noise] = read_noise
     header[tf.m.gain] = gain
+    
+    header[tf.m.model_hash] = model_hash
+    header[tf.m.model_seed] = model_seed
+    header[tf.m.noise_seed] = noise_seed
     
     return header
 
