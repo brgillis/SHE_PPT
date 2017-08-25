@@ -28,18 +28,85 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class SHEImage:
-    """Structure to hold an image together with a mask (and maybe a noisemap ?)
+class SHEImage(object): # We need new-style classes for properties, hence inherit from object
+    """Structure to hold an image together with a mask and a noisemap.
     
+    The structure can be written into a FITS file, and stamps can be extracted.
+    The properties data, mask, and noisemap can be accessed directly.
     """
    
-    def __init__(self, data_array=None, mask_array=None, filepath=None):
-        """
+    def __init__(self, data, mask=None, noisemap=None):
+        """Initiator
       
-        Todo: later, use property decorator as recommended for EC code
+        Args:
+            data: a 2D numpy array, with indices [x,y], consistent with DS9 and SExtractor orientation conventions.
+            mask: an array of the same shape as data. Leaving None creates an empty mask
+            noisemap: an array of the same shape as data. Leaving None creates a noisemap of ones
+      
         """
-        self.data_array = data_array
-        self.mask_array = mask_array
+               
+        self.data = data # Note the tests done in the setter method
+        self.mask = mask # Note that we translate None in the setter method 
+        self.noisemap = noisemap
+        
+        logger.debug("Created {}".format(str(self)))
+    
+    
+    # We define properties of the SHEImage object, following
+    # https://euclid.roe.ac.uk/projects/codeen-users/wiki/User_Cod_Std-pythonstandard-v1-0#PNAMA-020-m-Developer-SHOULD-use-properties-to-protect-the-service-from-the-implementation
+    
+    @property
+    def data(self):
+        """The image array"""
+        return self._data
+    @data.setter
+    def data(self, data_array):
+        assert(data_array.ndim is 2) # Should probably raise exceptions instead, but this is better than nothing
+        self._data = data_array
+    @data.deleter
+    def data(self):
+        del self._data
+        
+    
+    @property
+    def mask(self):
+        """The pixel mask of the image"""
+        return self._mask
+    @mask.setter
+    def mask(self, mask_array):
+        if mask_array is None:
+            # Then we create an empty mask (all False)
+            self._mask = np.zeros(self._data.shape, dtype=bool)
+        else:
+            assert(mask_array.ndim is 2)
+            assert(mask_array.shape == self._data.shape)
+            self._mask = mask_array
+    @mask.deleter
+    def mask(self):
+        del self._mask
+        
+   
+    @property
+    def noisemap(self):
+        """A noisemap of the image"""
+        return self._noisemap
+    @noisemap.setter
+    def noisemap(self, noisemap_array):
+        if noisemap_array is None:
+            # Then we create a zero noisemap
+            self._noisemap = np.ones(self._data.shape, dtype=float)
+        else:
+            assert(noisemap_array.ndim is 2)
+            assert(noisemap_array.shape == self._data.shape)
+            self._noisemap = noisemap_array
+    @noisemap.deleter
+    def noisemap(self):
+        del self._noisemap
+        
+    def __str__(self):
+        """A short string with useful information"""
+        return "SHEImage{}".format(self.data.shape)
+   
    
     
     def write_to_fits(self, filepath):
@@ -51,6 +118,8 @@ class SHEImage:
             filepath: where the FITS file should be written
         """
         pass
+    
+        logger.info("Wrote {} to the FITS file {}".format(str(self), filepath))
  
       
     def extract_stamp(self, x, y, stamp_size):

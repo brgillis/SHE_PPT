@@ -35,12 +35,15 @@ class Test_she_image():
 
     def test_init(self):
          
-        size = 50
+        size = 5
         array = np.random.randn(size**2).reshape((size, size))
-        mask = np.zeros(size**2).reshape((size, size))
-        a = SHE_PPT.she_image.SHEImage(array, mask)
+        #array = np.random.randn(size**3).reshape((size, size, size))
 
-        assert True
+        img = SHE_PPT.she_image.SHEImage(array)
+
+        assert img.data.shape == img.mask.shape
+        assert img.data.shape == img.noisemap.shape
+    
 
 
 
