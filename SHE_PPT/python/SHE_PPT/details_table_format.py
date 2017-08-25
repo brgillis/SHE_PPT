@@ -176,13 +176,13 @@ details_table_format = DetailsTableFormat()
 # And a convient alias for it
 tf = details_table_format
 
-def make_details_table_header(subtracted_sky_level,
-                              unsubtracted_sky_level,
-                              read_noise,
-                              gain,
-                              model_hash,
-                              model_seed,
-                              noise_seed,):
+def make_details_table_header(subtracted_sky_level = None,
+                              unsubtracted_sky_level = None,
+                              read_noise = None,
+                              gain = None,
+                              model_hash = None,
+                              model_seed = None,
+                              noise_seed = None,):
     """
         @brief Generate a header for a galaxy details table.
         
@@ -193,6 +193,12 @@ def make_details_table_header(subtracted_sky_level,
         @param read_noise <float> Units of e-/pixel
         
         @param gain <float> Units of e-/ADU
+        
+        @param model_hash <int> Hash of the physical model options dictionary
+        
+        @param model_seed <int> Full seed used for the physical model for this image
+        
+        @param noise_seed <int> Seed used for generating noise for this image
         
         @return header <OrderedDict>
     """
@@ -240,13 +246,22 @@ def initialise_details_table(image = None, options = None):
     if options is None:
         read_noise = None
         gain = None
+        model_hash = None 
+        model_seed = None
+        noise_seed = None
     else:
         read_noise = options['read_noise']
         gain = options['gain']
+        model_hash = hash(frozenset(options.items()))
+        model_seed = image.get_full_seed()
+        noise_seed = options['noise_seed']
                                                    
     details_table.meta = make_details_table_header(subtracted_sky_level = subtracted_sky_level,
                                                    unsubtracted_sky_level = unsubtracted_sky_level,
                                                    read_noise = read_noise,
-                                                   gain = gain)
+                                                   gain = gain,
+                                                   model_hash = model_hash,
+                                                   model_seed = model_seed,
+                                                   noise_seed = noise_seed,)
     
     return details_table

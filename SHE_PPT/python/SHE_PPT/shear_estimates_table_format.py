@@ -37,7 +37,8 @@ from collections import OrderedDict
 
 from astropy.table import Table
 
-from SHE_PPT.table_utility import get_dtypes
+from SHE_PPT.detections_table import tf as detf
+from SHE_PPT.table_utility import get_dtypes, is_in_format
 
 image_tail = ".fits"
 shear_estimates_tail = "_shear_measurements.fits"
@@ -49,13 +50,20 @@ class ShearEstimatesTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.1"
+        self.__version__ = "0.1.1"
         
         # Table metadata labels
         self.version = "SS_VER"
         
+        self.model_hash = "MHASH"
+        self.model_seed = "MSEED"
+        self.noise_seed = "NSEED"
+        
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
+                                     (self.model_hash, None),
+                                     (self.model_seed, None),
+                                     (self.noise_seed, None),
                                    ))
         
         # A list of columns in the desired order
@@ -135,9 +143,17 @@ shear_estimates_table_format = ShearEstimatesTableFormat()
 # And a convient alias for it
 tf = shear_estimates_table_format
 
-def make_shear_estimates_table_header():
+def make_shear_estimates_table_header(model_hash = None,
+                                      model_seed = None,
+                                      noise_seed = None,):
     """
         @brief Generate a header for a shear estimates table.
+        
+        @param model_hash <int> Hash of the physical model options dictionary
+        
+        @param model_seed <int> Full seed used for the physical model for this image
+        
+        @param noise_seed <int> Seed used for generating noise for this image
         
         @return header <dict>
     """
@@ -146,14 +162,22 @@ def make_shear_estimates_table_header():
     
     header[tf.m.version] = tf.__version__
     
+    header[tf.m.model_hash] = model_hash
+    header[tf.m.model_seed] = model_seed
+    header[tf.m.noise_seed] = noise_seed
+    
     return header
 
-def initialise_shear_estimates_table():
+def initialise_shear_estimates_table(detections_table = None):
     """
-        @brief Initialise a shear estimates table.
+        @brief Initialise a shear estimates table based on a detections table
         
-        @return shear_estimates_table <astropy.Table>
+        @param detections_table <astropy.table.Table>
+        
+        @return shear_estimates_table <astropy.table.Table>
     """
+    
+    assert (detections_table is None) or (is_in_format(detections_table,detf))
     
     init_cols = []
     for _ in range(len(tf.all)):
@@ -162,6 +186,17 @@ def initialise_shear_estimates_table():
     shear_estimates_table = Table(init_cols, names=tf.all,
                           dtype=get_dtypes(tf))
     
-    shear_estimates_table.meta = make_shear_estimates_table_header()
+    if detections_table is None:
+        model_hash = None
+        model_seed = None
+        noise_seed = None
+    else:
+        model_hash = detections_table.meta[detf.m.model_hash]
+        model_seed = detections_table.meta[detf.m.model_seed]
+        noise_seed = detections_table.meta[detf.m.noise_seed]
+    
+    shear_estimates_table.meta = make_shear_estimates_table_header(model_hash = model_hash,
+                                                                   model_seed = model_seed,
+                                                                   noise_seed = noise_seed)
     
     return shear_estimates_table

@@ -33,21 +33,30 @@ class DetectionsTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.1"
+        self.__version__ = "0.1.1"
         
         # Table metadata labels
+        
         self.version = "SS_VER"
+        
         self.subtracted_sky_level = "S_SKYLV"
         self.unsubtracted_sky_level = "US_SKYLV"
         self.read_noise = "RD_NOISE"
         self.gain = "CCDGAIN"
         
+        self.model_hash = "MHASH"
+        self.model_seed = "MSEED"
+        self.noise_seed = "NSEED"
+        
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
-                                    (self.subtracted_sky_level, "ADU/arcsec^2"),
-                                    (self.unsubtracted_sky_level, "ADU/arcsec^2"),
-                                    (self.read_noise, "e-/pixel"),
-                                    (self.gain, "e-/ADU"),
+                                     (self.subtracted_sky_level, "ADU/arcsec^2"),
+                                     (self.unsubtracted_sky_level, "ADU/arcsec^2"),
+                                     (self.read_noise, "e-/pixel"),
+                                     (self.gain, "e-/ADU"),
+                                     (self.model_hash, None),
+                                     (self.model_seed, None),
+                                     (self.noise_seed, None),
                                    ))
         
         # A list of columns in the desired order
@@ -112,10 +121,13 @@ detections_table_format = DetectionsTableFormat()
 tf = detections_table_format
 
 
-def make_detections_table_header(subtracted_sky_level,
-                                 unsubtracted_sky_level,
-                                 read_noise,
-                                 gain):
+def make_detections_table_header(subtracted_sky_level = None,
+                                 unsubtracted_sky_level = None,
+                                 read_noise = None,
+                                 gain = None,
+                                 model_hash = None,
+                                 model_seed = None,
+                                 noise_seed = None,):
     """
         @brief Generate a header for a detections table.
         
@@ -127,16 +139,27 @@ def make_detections_table_header(subtracted_sky_level,
         
         @param gain <float> Units of e-/ADU
         
+        @param model_hash <int> Hash of the physical model options dictionary
+        
+        @param model_seed <int> Full seed used for the physical model for this image
+        
+        @param noise_seed <int> Seed used for generating noise for this image
+        
         @return header <OrderedDict>
     """
     
     header = OrderedDict()
     
     header[tf.m.version] = tf.__version__
+    
     header[tf.m.subtracted_sky_level] = subtracted_sky_level
     header[tf.m.unsubtracted_sky_level] = unsubtracted_sky_level
     header[tf.m.read_noise] = read_noise
     header[tf.m.gain] = gain
+    
+    header[tf.m.model_hash] = model_hash
+    header[tf.m.model_seed] = model_seed
+    header[tf.m.noise_seed] = noise_seed
     
     return header
 
@@ -168,13 +191,22 @@ def initialise_detections_table(image = None, options = None):
     if options is None:
         read_noise = None
         gain = None
+        model_hash = None 
+        model_seed = None
+        noise_seed = None
     else:
         read_noise = options['read_noise']
         gain = options['gain']
+        model_hash = hash(frozenset(options.items()))
+        model_seed = image.get_full_seed()
+        noise_seed = options['noise_seed']
     
     detections_table.meta = make_detections_table_header(subtracted_sky_level = subtracted_sky_level,
                                                          unsubtracted_sky_level = unsubtracted_sky_level,
                                                          read_noise = read_noise,
-                                                         gain = gain)
+                                                         gain = gain,
+                                                         model_hash = model_hash,
+                                                         model_seed = model_seed,
+                                                         noise_seed = noise_seed,)
     
     return detections_table
