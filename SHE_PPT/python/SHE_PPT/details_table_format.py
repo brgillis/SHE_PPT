@@ -170,8 +170,6 @@ class DetailsTableFormat(object):
         # A list of columns in the desired order
         self.all = self.comments.keys()
         
-        # TODO: Write unit test to ensure self.comments.keys() == self.dtypes.keys(), etc.
-        
 # Define an instance of this object that can be imported 
 details_table_format = DetailsTableFormat()
 

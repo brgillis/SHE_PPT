@@ -62,6 +62,23 @@ class TestTableFormats:
             if os.path.exists(filename):
                 os.remove(filename)
 
+    def test_extra_data(self):
+        # Check that the keys are assigned correctly for all extra data (eg. comments)
+        
+        # Loop over all formats
+        for tf in self.formats:
+            
+            # Check metadata comments
+            assert tf.m.comments.keys() == tf.m.all
+            
+            # Check column comments
+            assert tf.comments.keys() == tf.all
+            
+            # Check column dtypes
+            assert tf.dtypes.keys() == tf.all
+            
+            # Check column fits dtypes
+            assert tf.fits_dtypes.keys() == tf.all
 
     def test_get_comments(self):
         # Check if we get the correct comments list for detections tables
