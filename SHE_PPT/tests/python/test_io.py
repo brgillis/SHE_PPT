@@ -84,3 +84,5 @@ class TestIO:
         assert read_listfile(self.tuple_listfile_name) == tuple_list
         os.remove(self.tuple_listfile_name)
         
+    #TODO: Tests for replace_(multiple_)in_file
+        
