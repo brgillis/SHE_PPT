@@ -21,6 +21,7 @@ Created on: Aug 17, 2017
 from __future__ import division, print_function
 from future_builtins import *
 
+import os
 import numpy as np
 import astropy.io.fits # Avoid non-trivial "from" imports (as explicit is better than implicit)
 
@@ -109,17 +110,68 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
    
    
     
-    def write_to_fits(self, filepath):
-        """Writes the image to disk, in form of a FITS cube
+    def write_to_fits(self, filepath, clobber=False, **kwargs):
+        """Writes the image to disk, in form of a multi-extension FITS cube.
         
-        All the attributes of this image object are saved into the FITS file.
+        The data is written in the primary HDU, the mask in the extension 'MASK' and the noisemap in the extensions 'NOISEMAP'. 
+        All the attributes of this image object are (should be ?) saved into the FITS file.
         
         Args:
             filepath: where the FITS file should be written
+            clobber: if True, overwrites any existing file.
         """
-        pass
+        
+        if clobber is True and os.path.exists(filepath):
+            logger.info("The output file exists and will get overwritten")
+        
+        # Note that we transpose the numpy arrays, so to have the same pixel convention as DS9 and SExtractor.
+        datahdu = astropy.io.fits.PrimaryHDU(self.data.transpose())
+        maskhdu = astropy.io.fits.ImageHDU(data=self.mask.transpose().astype(np.uint8), name="MASK")
+        noisemaphdu = astropy.io.fits.ImageHDU(data=self.noisemap.transpose(), name="NOISEMAP")
+        
+        hdulist = astropy.io.fits.HDUList([datahdu, maskhdu, noisemaphdu])
+        hdulist.writeto(filepath, clobber=clobber)
+        # Note that clobber is called overwrite in the latest astropy, but backwards compatible.
     
-        logger.info("Wrote {} to the FITS file {}".format(str(self), filepath))
+        logger.info("Wrote {} to the FITS file '{}'".format(str(self), filepath))
+ 
+     
+    @classmethod
+    def read_from_fits(cls, filepath):
+        """Reads an image from a multi-extension file as written by write_to_fits(), and returns it as a SHEImage object.
+        
+        If the specified file has only one extension, it will be read anyway, and a mask and a noisemap will get created.
+        Note that the code "tranposes" the content, so that all numpy arrays of the SHEImage can be indexed with [x,y]
+        using the same convention as DS9 and SExtractor.
+      
+        Args:
+            filepath: path to the FITS file to be read
+      
+        """
+        
+        hdulist = astropy.io.fits.open(filepath)  # open a FITS file
+        nhdu = len(hdulist)
+        
+        logger.debug("Reading file '{}', with {} extensions...".format(filepath, nhdu))
+        
+        data_array = hdulist[0].data.transpose()
+        mask_array = hdulist['MASK'].data.astype(bool).transpose()
+        noisemap_array = hdulist['NOISEMAP'].data.transpose()
+        
+        
+        if nhdu == 3:
+            # We assume that this is our own format, and try to read it accordingly
+            pass
+        
+        else:
+            # We only read the primary HDU
+            logger.info("File '{}' does not contain a SHEImage.")
+            
+            
+        newimg = SHEImage(data=data_array, mask=mask_array, noisemap=noisemap_array)
+     
+        logger.info("Read {} from the file '{}'".format(str(newimg), filepath))
+        return newimg
  
       
     def extract_stamp(self, x, y, stamp_size):
@@ -133,16 +185,6 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         pass
         
     
-    @classmethod
-    def read_from_fits(cls, filepath):
-        """Reads an image from a file written by write_to_fits(), and returns it as a SHEImage object.
-      
-        Args:
-            filepath: from where the FITS image should be read
-      
-        """
-        pass
- 
- 
+
  
  
