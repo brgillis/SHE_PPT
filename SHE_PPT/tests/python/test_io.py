@@ -27,6 +27,7 @@ import pytest
 
 from SHE_PPT.io import (get_allowed_filename,
                         write_listfile,
+                        read_listfile,
                         replace_in_file,
                         replace_multiple_in_file)
 
@@ -40,11 +41,19 @@ class TestIO:
     
     @classmethod
     def setup_class(cls):
-        pass
+        cls.listfile_name = "test_listfile.junk"
+        cls.tuple_listfile_name = "test_listfile.junk"
         
     @classmethod
     def teardown_class(cls):
-        pass
+        
+        if os.path.exists(cls.listfile_name):
+            os.remove(cls.listfile_name)
+        
+        if os.path.exists(cls.tuple_listfile_name):
+            os.remove(cls.tuple_listfile_name)
+        
+        del cls.listfile_name, cls.tuple_listfile_name
 
     def test_get_allowed_filename(self):
         
@@ -61,4 +70,17 @@ class TestIO:
         sleep(1)
         new_filename = get_allowed_filename( "TEST", "0", extension=".junk", release_date = "06.66")
         assert new_filename > filename
+        
+    def test_rw_listfile(self):
+        
+        simple_list = ["file1.ext", "file2.ext", "file3.ext"]
+        tuple_list = [("file1a.ext","file1b.ext"),("file2a.ext","file2b.ext"),("file2a.ext","file2b.ext")]
+        
+        write_listfile(self.listfile_name,simple_list)
+        assert read_listfile(self.listfile_name) == simple_list
+        os.remove(self.listfile_name)
+        
+        write_listfile(self.tuple_listfile_name,tuple_list)
+        assert read_listfile(self.tuple_listfile_name) == tuple_list
+        os.remove(self.tuple_listfile_name)
         

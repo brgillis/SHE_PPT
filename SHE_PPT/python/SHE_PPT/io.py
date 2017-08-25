@@ -40,7 +40,7 @@ def write_listfile(listfile_name, filenames):
         
         @param listfile_name <str> Name of the listfile to be output.
         
-        @param filenames <list<str>> List of filenames to be put in the listfile.
+        @param filenames <list<str>> List of filenames (or tuples of filenames) to be put in the listfile.
     """
     
     with open(listfile_name, 'w') as listfile:
@@ -48,6 +48,24 @@ def write_listfile(listfile_name, filenames):
         listfile.write(paths_json)
         
     return
+
+def read_listfile(listfile_name):
+    """
+        @brief Reads a json listfile and returns a list of filenames.
+        
+        @param listfile_name <str> Name of the listfile to be read.
+        
+        @return filenames <list<str>> List of filenames (or tuples of filenames) read in.
+    """
+    
+    with open(fname,'r') as f:
+        listobject = json.load(f)
+        if len(listobject) == 0:
+            return listobject
+        if isinstance(listobject[0], list):
+            return [tuple(el) for el in listobject] 
+        else:
+            return listobject
 
 def replace_in_file(input_filename,output_filename,input_string,output_string):
     """ Replaces every occurence of $input_string in $input_filename with $output_string
