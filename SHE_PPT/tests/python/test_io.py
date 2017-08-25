@@ -30,6 +30,8 @@ from SHE_PPT.io import (get_allowed_filename,
                         replace_in_file,
                         replace_multiple_in_file)
 
+from time import sleep
+
 class TestIO:
     """
 
@@ -48,5 +50,15 @@ class TestIO:
         
         filename = get_allowed_filename( "TEST", "0", extension=".junk", release_date = "06.66")
         
-        assert filename=="EUC_SHE_CTE-TEST_0_06.66.junk"
+        expect_filename_head = "EUC_SHE_CTE-TEST_0_"
+        expect_filename_tail = ".0Z_06.66.junk"
+        
+        # Check the beginning and end are correct
+        assert filename[0:len(expect_filename_head)]==expect_filename_head
+        assert filename[-len(expect_filename_tail):]==expect_filename_tail
+        
+        # Check that if we wait a second, it will change
+        sleep(1)
+        new_filename = get_allowed_filename( "TEST", "0", extension=".junk", release_date = "06.66")
+        assert new_filename > filename
         

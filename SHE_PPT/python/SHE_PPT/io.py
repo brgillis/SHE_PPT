@@ -21,16 +21,16 @@
 """
 
 import json
-
-from FilenameProvider.FilenameProvider import createFilename
+import time
 
 def get_allowed_filename( type_name, instance_id, extension=".fits", release_date = "00.00"):
     
-    filename = createFileName("SHE",
-                              "CTE-"+type_name,
-                              extension,
-                              instance_id = instance_id,
-                              release = release_date)
+    tnow = time.gmtime()
+    
+    creation_date = (str(tnow.tm_year) + str(tnow.tm_mon) + str(tnow.tm_mday) + "T" +
+                     str(tnow.tm_hour) + str(tnow.tm_min) + str(tnow.tm_sec)+ ".0Z")
+    
+    filename = "EUC_SHE_CTE-"+type_name+"_"+instance_id+"_"+creation_date+"_"+release_date+extension
     
     return filename
 
