@@ -20,7 +20,6 @@
 File: tests/python/test_she_image.py
 
 Created on: 08/18/17
-Author: user
 """
 
 from __future__ import division, print_function

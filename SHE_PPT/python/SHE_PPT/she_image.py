@@ -29,50 +29,51 @@ logger = logging.getLogger(__name__)
 
 
 class SHEImage:
-   """Structure to hold an image together with a mask (and maybe a noisemap ?)
+    """Structure to hold an image together with a mask (and maybe a noisemap ?)
+    
+    """
    
-   """
-   
-   def __init__(self, data_array=None, mask_array=None, filepath=None):
-      """
+    def __init__(self, data_array=None, mask_array=None, filepath=None):
+        """
       
-      Todo: later, use property decorator as recommended for EC code
-      """
-      self.data_array = data_array
-      self.mask_array = mask_array
+        Todo: later, use property decorator as recommended for EC code
+        """
+        self.data_array = data_array
+        self.mask_array = mask_array
    
     
-   def write_to_fits(self, filepath):
-      """Writes the image to disk, in form of a FITS cube
-      
-      All the attributes of this image object are saved into the FITS file.
-      
-      Args:
-         filepath: where the FITS file should be written
-      """
-      pass
- 
-      
-   def extract_stamp(self, x, y, stamp_size):
-      """Extracts a square stamp and returns it as a new instance (using views of numpy arrays, i.e., without making a copy)
-      
-      Args:
-         x: x pixel coordinate on which to center the stamp. Will be rounded to the closest int.
-         y: idem for y.
-         stamp_size: width and height of the stamp, in pixels.
-      """
-      pass
+    def write_to_fits(self, filepath):
+        """Writes the image to disk, in form of a FITS cube
         
+        All the attributes of this image object are saved into the FITS file.
+        
+        Args:
+            filepath: where the FITS file should be written
+        """
+        pass
  
-   @classmethod
-   def read_from_fits(cls, filepath):
-      """Reads an image from a file written by write_to_fits(), and returns it as a SHEImage object.
       
-      Args:
-         filepath: from where the FITS image should be read
+    def extract_stamp(self, x, y, stamp_size):
+        """Extracts a square stamp and returns it as a new instance (using views of numpy arrays, i.e., without making a copy)
       
-      """
-      pass
+        Args:
+            x: x pixel coordinate on which to center the stamp. Will be rounded to the closest int.
+            y: idem for y.
+            stamp_size: width and height of the stamp, in pixels.
+        """
+        pass
+        
+    
+    @classmethod
+    def read_from_fits(cls, filepath):
+        """Reads an image from a file written by write_to_fits(), and returns it as a SHEImage object.
+      
+        Args:
+            filepath: from where the FITS image should be read
+      
+        """
+        pass
+ 
  
  
  
