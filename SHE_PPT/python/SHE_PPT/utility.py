@@ -24,7 +24,7 @@ import hashlib
 
 def hash_any(obj,max_length=None):
     """
-        @brief Hashes any immutable object into a hex string of a given length. Unlike hash(),
+        @brief Hashes any immutable object into a hex string of a given length. Unlike hash_any(),
                will be consistent in Python 3.0.
                
         @param obj

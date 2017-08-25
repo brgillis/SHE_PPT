@@ -25,6 +25,7 @@ from collections import OrderedDict
 from astropy.table import Table
 
 from SHE_PPT.table_utility import get_dtypes
+from SHE_PPT.utility import hash_any
 
 class DetectionsTableMeta(object):
     """
@@ -197,7 +198,7 @@ def initialise_detections_table(image = None, options = None):
     else:
         read_noise = options['read_noise']
         gain = options['gain']
-        model_hash = hash(frozenset(options.items()))
+        model_hash = hash_any(frozenset(options.items()))
         model_seed = image.get_full_seed()
         noise_seed = options['noise_seed']
     
