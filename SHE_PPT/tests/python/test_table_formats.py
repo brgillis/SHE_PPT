@@ -181,3 +181,17 @@ class TestTableFormats:
         for filename in self.filenames:
             if os.path.exists(filename):
                 os.remove(filename)
+                
+    def test_init(self):
+        # Test initialization methods
+        
+        detections_table = initialise_detections_table()
+        details_table = initialise_details_table()
+        
+        # Try to initialize the shear_estimates table based on the detections table
+        shear_estimates_table = initialise_shear_estimates_table(detections_table)
+        
+        assert(shear_estimates_table[setf.m.model_hash] == detections_table[setf.m.model_hash])
+        assert(shear_estimates_table[setf.m.model_seed] == detections_table[setf.m.model_seed])
+        assert(shear_estimates_table[setf.m.noise_seed] == detections_table[setf.m.noise_seed])
+        
