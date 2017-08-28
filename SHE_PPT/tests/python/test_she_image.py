@@ -29,6 +29,7 @@ import pytest
 import SHE_PPT.she_image
 
 import numpy as np
+import os
 
 
 class Test_she_image():
@@ -37,13 +38,32 @@ class Test_she_image():
          
         size = 5
         array = np.random.randn(size**2).reshape((size, size))
-        #array = np.random.randn(size**3).reshape((size, size, size))
-
+       
         img = SHE_PPT.she_image.SHEImage(array)
 
-        assert img.data.shape == img.mask.shape
-        assert img.data.shape == img.noisemap.shape
+        assert img.data.shape == (size, size)
+        assert img.mask.shape == (size, size)
+        assert img.noisemap.shape == (size, size)
     
+    def test_fits_read_write(self):
+        
+        size = 50
+        data_array = np.random.randn(size**2).reshape((size, size))
+        
+        mask_array = None
+        noisemap_array = 1.0 + 0.01*np.random.randn(size**2).reshape((size, size))
+        img = SHE_PPT.she_image.SHEImage(data_array, mask_array, noisemap_array)
+        img.mask[0:100,:]=True
 
-
+        testfilepath = "test.fits"
+        img.write_to_fits(testfilepath, clobber=False)
+        
+        rimg = SHE_PPT.she_image.SHEImage.read_from_fits(testfilepath)
+        
+        os.remove(testfilepath)
+        
+        assert np.allclose(img.data, rimg.data)
+        assert np.allclose(img.mask, rimg.mask)
+        assert np.allclose(img.noisemap, rimg.noisemap)
+        
 

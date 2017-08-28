@@ -33,7 +33,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     """Structure to hold an image together with a mask and a noisemap.
     
     The structure can be written into a FITS file, and stamps can be extracted.
-    The properties data, mask, and noisemap can be accessed directly.
+    The properties data, mask, and noisemap are meant to be accessed directly.
     """
    
     def __init__(self, data, mask=None, noisemap=None):
@@ -103,10 +103,15 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     @noisemap.deleter
     def noisemap(self):
         del self._noisemap
+    
         
     def __str__(self):
-        """A short string with useful information"""
-        return "SHEImage{}".format(self.data.shape)
+        """A short string with size information and the percentage of masked pixels"""
+        return "SHEImage({}x{}, {}%)".format(
+            self.data.shape[0],
+            self.data.shape[1], 
+            100.0*float(np.sum(self.mask))/float(np.size(self.data))
+        )
    
    
     
@@ -120,16 +125,17 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             filepath: where the FITS file should be written
             clobber: if True, overwrites any existing file.
         """
-        
-        if clobber is True and os.path.exists(filepath):
-            logger.info("The output file exists and will get overwritten")
-        
+           
         # Note that we transpose the numpy arrays, so to have the same pixel convention as DS9 and SExtractor.
         datahdu = astropy.io.fits.PrimaryHDU(self.data.transpose())
         maskhdu = astropy.io.fits.ImageHDU(data=self.mask.transpose().astype(np.uint8), name="MASK")
         noisemaphdu = astropy.io.fits.ImageHDU(data=self.noisemap.transpose(), name="NOISEMAP")
         
         hdulist = astropy.io.fits.HDUList([datahdu, maskhdu, noisemaphdu])
+        
+        if clobber is True and os.path.exists(filepath):
+            logger.info("The output file exists and will get overwritten")
+            
         hdulist.writeto(filepath, clobber=clobber)
         # Note that clobber is called overwrite in the latest astropy, but backwards compatible.
     
@@ -137,39 +143,49 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
  
      
     @classmethod
-    def read_from_fits(cls, filepath):
-        """Reads an image from a multi-extension file as written by write_to_fits(), and returns it as a SHEImage object.
+    def read_from_fits(cls, filepath, maskext='MASK', noisemapext='NOISEMAP'):
+        """Reads an image from a FITS file, such as written by write_to_fits(), and returns it as a SHEImage object.
         
-        If the specified file has only one extension, it will be read anyway, and a mask and a noisemap will get created.
-        Note that the code "tranposes" the content, so that all numpy arrays of the SHEImage can be indexed with [x,y]
-        using the same convention as DS9 and SExtractor.
+        This function can be used both to read previously saved SHEImage objects, and to import other FITS images.
+        The latter may have only one extension (in which case only the data is read, and mask and noisemap get created),
+        or different extension names (to be specified using the keyword arguments).
+        Note that the function "tranposes" all the arrays read from FITS, so that the properties of SHEImage can be
+        indexed with [x,y] using the same convention as DS9 and SExtractor.
       
         Args:
             filepath: path to the FITS file to be read
+            maskext: name of the extension containing the mask. Set it to None to not read any mask.
+            noisemapext: idem, for the noisemap
       
         """
         
         hdulist = astropy.io.fits.open(filepath)  # open a FITS file
         nhdu = len(hdulist)
         
-        logger.debug("Reading file '{}', with {} extensions...".format(filepath, nhdu))
+        logger.info("Reading file '{}', with {} extensions...".format(filepath, nhdu))
         
+        # Reading the primary extension
         data_array = hdulist[0].data.transpose()
-        mask_array = hdulist['MASK'].data.astype(bool).transpose()
-        noisemap_array = hdulist['NOISEMAP'].data.transpose()
+        if not data_array.ndim == 2: raise ValueError("Primary HDU must contain a 2D image")
         
-        
-        if nhdu == 3:
-            # We assume that this is our own format, and try to read it accordingly
-            pass
-        
-        else:
-            # We only read the primary HDU
-            logger.info("File '{}' does not contain a SHEImage.")
+        # Reading the mask
+        mask_array = None
+        if maskext is not None: 
+            try:
+                mask_array = hdulist[maskext].data.astype(bool).transpose()
+            except KeyError:
+                logger.warning("No extension '{}' found, setting mask to None!".format(maskext))
             
+        # And the noisemap
+        noisemap_array = None
+        if noisemapext is not None:
+            try:    
+                noisemap_array = hdulist[noisemapext].data.transpose()
+            except KeyError:
+                logger.warning("No extension '{}' found, setting noisemap to None!".format(noisemapext))
             
+        # Building and returning the new object    
         newimg = SHEImage(data=data_array, mask=mask_array, noisemap=noisemap_array)
-     
         logger.info("Read {} from the file '{}'".format(str(newimg), filepath))
         return newimg
  
