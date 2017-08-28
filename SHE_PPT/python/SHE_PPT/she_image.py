@@ -104,12 +104,17 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     def noisemap(self):
         del self._noisemap
     
+
+    @property
+    def shape(self): # Just a shortcut, also to stress that all arrays (data, mask, noisemap) have the same shape.
+        """The shape of the image, equivalent to self.data.shape"""
+        return self.data.shape
         
     def __str__(self):
         """A short string with size information and the percentage of masked pixels"""
         return "SHEImage({}x{}, {}%)".format(
-            self.data.shape[0],
-            self.data.shape[1], 
+            self.shape[0],
+            self.shape[1], 
             100.0*float(np.sum(self.mask))/float(np.size(self.data))
         )
    
@@ -162,7 +167,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         hdulist = astropy.io.fits.open(filepath)  # open a FITS file
         nhdu = len(hdulist)
         
-        logger.info("Reading file '{}', with {} extensions...".format(filepath, nhdu))
+        logger.debug("Reading file '{}', with {} extensions...".format(filepath, nhdu))
         
         # Reading the primary extension
         data_array = hdulist[0].data.transpose()
@@ -192,15 +197,41 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
       
     def extract_stamp(self, x, y, stamp_size):
         """Extracts a square stamp and returns it as a new instance (using views of numpy arrays, i.e., without making a copy)
-      
+        
+        The convention for the pixel-coordinates is the same as used by DS9 and SExtractor: the bottom-left pixel has
+        coordinates (0.5, 0.5), i.e., it spreads from (0.0, 0.0) to (1.0,1.0). 
+        For now, the function raises a ValueError if the stamp is not entirely within the image.
+        Change this in future, to extract on-edge stamps and reflect this by masking the non-existing pixels?
+              
         Args:
-            x: x pixel coordinate on which to center the stamp. Will be rounded to the closest int.
+            x: x pixel coordinate on which to center the stamp. Can be a float or an int.
             y: idem for y.
             stamp_size: width and height of the stamp, in pixels.
         """
-        pass
         
-    
+        stamp_size = int(round(stamp_size))
+        if stamp_size < 1:
+            raise ValueError("Value of stamp_size must at least be 1")
+        
+        # The bottom-left pixel is centered on (0.5, 0.5)
+        xmin = int(round(x - stamp_size/2.0))
+        ymin = int(round(y - stamp_size/2.0))
+        xmax = xmin + stamp_size
+        ymax = ymin + stamp_size
+        
+        # We check that these bounds are fully within the image range
+        if xmin < 0 or xmax > self.shape[0] or ymin < 0 or ymax > self.shape[1]:
+            raise ValueError("Stamp [{}:{},{}:{}], is not within image shape {}".format(xmin, xmax, ymin, ymax, self.shape))
+        
+        logger.debug("Extracting stamp [{}:{},{}:{}] from image of shape {}".format(xmin, xmax, ymin, ymax, self.shape))
+        
+        newimg = SHEImage(
+            data=self.data[xmin:xmax,ymin:ymax],
+            mask=self.mask[xmin:xmax,ymin:ymax],
+            noisemap=self.noisemap[xmin:xmax,ymin:ymax]
+            )
+        assert newimg.shape == (stamp_size, stamp_size)
+        
+        return newimg
 
- 
  
