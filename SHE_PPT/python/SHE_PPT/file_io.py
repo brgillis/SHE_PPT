@@ -1,6 +1,6 @@
-""" @file io.py
+""" @file file_io.py
 
-    Created 15 Sep 2015
+    Created 29 Aug 2017
 
     Various functions for input/output
 
@@ -23,7 +23,46 @@
 import json
 import time
 
-def get_allowed_filename( type_name, instance_id, extension=".fits", release_date = "00.00"):
+type_name_maxlen = 41
+instance_id_maxlen = 55
+
+def get_allowed_filename( type_name, instance_id, extension=".fits", release = "00.00"):
+    """
+        @brief Gets a filename in the required Euclid format.
+        
+        @param type_name <string> Label for what type of object this is. Maximum 41 characters.
+        
+        @param instance_id <string> Label for the instance of this object. Maximum 55 characters.
+        
+        @param extension <string> File extension (eg. ".fits").
+        
+        @param release_date <string> Software/data release version, in format "XX.XX" where each
+                                     X is a digit 0-9.
+    """
+    
+    # Check that the labels aren't too long
+    if len(type_name) > type_name_maxlen:
+        raise ValueError("type_name (" + type_name + ") is too long. Maximum length is " + 
+                         str(type_name_max_len) + " characters.")
+    if len(instance_id) > instance_id_maxlen:
+        raise ValueError("instance_id (" + type_name + ") is too long. Maximum length is " + 
+                         str(instance_id_maxlen) + " characters.")
+        
+    # Check that $release is in the correct format
+    good_release = True
+    if len(release) != 5 or release[2] != ".":
+        good_release = False
+    # Check each value is an integer 0-9
+    if good_release:
+        for i in (0,1,3,4):
+            try:
+                _ = int(release[i])
+            except ValueError:
+                good_release = False
+                
+    if not good_release:
+        raise ValueError("release (" + release + ") is in incorrect format. Required format is " +
+                         "XX.XX, where each X is 0-9.")
     
     tnow = time.gmtime()
     
@@ -37,6 +76,8 @@ def get_allowed_filename( type_name, instance_id, extension=".fits", release_dat
 def write_listfile(listfile_name, filenames):
     """
         @brief Writes a listfile in json format.
+        
+        @details This is copied from https://euclid.roe.ac.uk/projects/codeen-users/wiki/Pipeline_Interfaces#List-Files
         
         @param listfile_name <str> Name of the listfile to be output.
         
@@ -53,6 +94,8 @@ def read_listfile(listfile_name):
     """
         @brief Reads a json listfile and returns a list of filenames.
         
+        @details This is copied from https://euclid.roe.ac.uk/projects/codeen-users/wiki/Pipeline_Interfaces#List-Files
+        
         @param listfile_name <str> Name of the listfile to be read.
         
         @return filenames <list<str>> List of filenames (or tuples of filenames) read in.
@@ -67,17 +110,18 @@ def read_listfile(listfile_name):
         else:
             return listobject
 
-def replace_in_file(input_filename,output_filename,input_string,output_string):
-    """ Replaces every occurence of $input_string in $input_filename with $output_string
-        and prints the results to $output_filename.
+def replace_in_file( input_filename, output_filename, input_string, output_string ):
+    """ 
+        @brief Replaces every occurence of $input_string in $input_filename with $output_string
+               and prints the results to $output_filename.
         
-        Requires: input_filename <string>
-                  output_filename <string>
-                  input_string <string>
-                  output_string <string>
-                  
-        Returns: None
-        Side-effects: $output_filename is created/overwritten
+        @param input_filename <string>
+        
+        @param output_filename <string>
+        
+        @param input_string <string>
+        
+        @param output_string <string>
     """
     
     with open(output_filename, "w") as fout:
@@ -85,17 +129,18 @@ def replace_in_file(input_filename,output_filename,input_string,output_string):
             for line in fin:
                 fout.write(line.replace(input_string, output_string))
 
-def replace_multiple_in_file(input_filename,output_filename,input_strings,output_strings):
-    """ Replaces every occurence of an input_string in input_filename with the corresponding
-        output string and prints the results to $output_filename.
+def replace_multiple_in_file( input_filename, output_filename, input_strings, output_strings ):
+    """ 
+        @brief Replaces every occurence of an input_string in input_filename with the corresponding
+               output string and prints the results to $output_filename.
         
-        Requires: input_filename <string>
-                  output_filename <string>
-                  input_strings <iterable of strings>
-                  output_strings <iterable of strings>
-                  
-        Returns: None
-        Side-effects: $output_filename is created/overwritten
+        @param input_filename <string>
+        
+        @param output_filename <string>
+        
+        @param input_strings <iterable of string>
+        
+        @param output_strings <iterable of string>
     """
     
     with open(output_filename, "w") as fout:
