@@ -34,6 +34,8 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     
     The structure can be written into a FITS file, and stamps can be extracted.
     The properties data, mask, and noisemap are meant to be accessed directly.
+    Note that the shape (and size) of data, mask and noisemap cannot be modified once the object exists, as such a
+    change would probably not we wanted.
     """
    
     def __init__(self, data, mask=None, noisemap=None):
@@ -62,7 +64,20 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         return self._data
     @data.setter
     def data(self, data_array):
-        assert(data_array.ndim is 2) # Should probably raise exceptions instead, but this is better than nothing
+        # We test the dimensionality
+        if data_array.ndim is not 2:
+            raise ValueError("Data array of a SHEImage must have 2 dimensions")
+        # We test that the shape is not modified by the setter, if a shape already exists.
+        try:
+            existing_shape = self.shape
+        except AttributeError:
+            existing_shape = None
+        if existing_shape:
+            if data_array.shape != existing_shape:
+                raise ValueError("Shape of a SHEImage can not be modified. Current is {}, new data is {}.".format(
+                    existing_shape, data_array.shape
+                    ))
+        # And perform the attribution
         self._data = data_array
     @data.deleter
     def data(self):
@@ -79,8 +94,10 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             # Then we create an empty mask (all False)
             self._mask = np.zeros(self._data.shape, dtype=bool)
         else:
-            assert(mask_array.ndim is 2)
-            assert(mask_array.shape == self._data.shape)
+            if mask_array.ndim is not 2:
+                raise ValueError("The mask array must have 2 dimensions")
+            if mask_array.shape != self._data.shape:
+                raise ValueError("The mask array must have the same size as the data {}".format(self._data.shape))
             self._mask = mask_array
     @mask.deleter
     def mask(self):
@@ -97,8 +114,10 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             # Then we create a zero noisemap
             self._noisemap = np.ones(self._data.shape, dtype=float)
         else:
-            assert(noisemap_array.ndim is 2)
-            assert(noisemap_array.shape == self._data.shape)
+            if noisemap_array.ndim is not 2:
+                raise ValueError("The noisemap array must have 2 dimensions")
+            if noisemap_array.shape != self._data.shape:
+                raise ValueError("The noisemap array must have the same size as its data {}".format(self._data.shape))
             self._noisemap = noisemap_array
     @noisemap.deleter
     def noisemap(self):
@@ -156,7 +175,9 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         or different extension names (to be specified using the keyword arguments).
         Note that the function "tranposes" all the arrays read from FITS, so that the properties of SHEImage can be
         indexed with [x,y] using the same convention as DS9 and SExtractor.
-      
+        
+        We might want to add further options in future, e.g. a way to read mask and noisemap from external files.
+        
         Args:
             filepath: path to the FITS file to be read
             maskext: name of the extension containing the mask. Set it to None to not read any mask.
