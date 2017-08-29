@@ -25,11 +25,11 @@ import numpy as np
 import os
 import pytest
 
-from SHE_PPT.io import (get_allowed_filename,
-                        write_listfile,
-                        read_listfile,
-                        replace_in_file,
-                        replace_multiple_in_file)
+from SHE_PPT.file_io import (get_allowed_filename,
+                             write_listfile,
+                             read_listfile,
+                             replace_in_file,
+                             replace_multiple_in_file)
 
 from time import sleep
 
