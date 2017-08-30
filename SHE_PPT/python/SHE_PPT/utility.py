@@ -21,13 +21,18 @@
 """
 
 import hashlib
+import codecs
 
-def hash_any(obj,max_length=None):
+def hash_any(obj,format='hex',max_length=None):
     """
-        @brief Hashes any immutable object into a hex string of a given length. Unlike hash_any(),
+        @brief Hashes any immutable object into a hex string of a given length. Unlike hash(),
                will be consistent in Python 3.0.
                
         @param obj
+        
+        @param format <str> Either 'hex' for hexadecimal string or 'base64' for a base 64 string.
+                            This implementation of base64 replaces / with . so it will be
+                            filename safe.
         
         @param max_length <int> Maximum length of hex string to return
         
@@ -36,8 +41,16 @@ def hash_any(obj,max_length=None):
     
     full_hash = hashlib.sha256(repr(obj)).hexdigest()
     
+    if format=='base64':
+        # Recode it into base 64. Note that this results in a stray newline character
+        # at the end, so we remove that.
+        full_hash = codecs.encode(codecs.decode(full_hash,'hex'),'base64')[:-1]
+        
+        # This also allows the / character which we can't use, so replace it with .
+        full_hash = full_hash.replace("/",".")
+    
     if max_length is None or len(full_hash)<max_length:
         return full_hash
     else:
-        return full_hash[-max_length:]
+        return full_hash[:max_length]
     
