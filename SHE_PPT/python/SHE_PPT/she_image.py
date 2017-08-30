@@ -35,7 +35,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     The structure can be written into a FITS file, and stamps can be extracted.
     The properties data, mask, and noisemap are meant to be accessed directly.
     Note that the shape (and size) of data, mask and noisemap cannot be modified once the object exists, as such a
-    change would probably not we wanted.
+    change would probably not be wanted. If you really want to change the size of a SHEImage, make a new object.
     """
    
     def __init__(self, data, mask=None, noisemap=None):
