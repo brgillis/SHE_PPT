@@ -83,10 +83,14 @@ class Test_she_image():
     def test_extracted_stamp_is_view(self):
         """Checks that the extracted stamp is a view, not a copy"""
         
-        stamp = self.img.extract_stamp(10.0, 10.0, 5)
-        stamp.data[0,0] = -50.0
+        stamp = self.img.extract_stamp(10.5, 10.5, 3) # central pixel of stamp is index [10, 10] of the big array
+        stamp.data[1,1] = -50.0 # the central pixel, modifed both here and in img
+        
+        assert self.img.data[10, 10] == stamp.data[1, 1]
+        
     
     def test_extract_stamp_not_square(self):
+        """Testing that non-square stamps are correctly extracted"""
         
         stamp = self.img.extract_stamp(10.0, 10.0, 5)
         assert stamp.shape == (5, 5)
@@ -108,13 +112,14 @@ class Test_she_image():
         
         
     def test_extract_stamp(self):
-        """We test that the stamp extraction"""
+        """We test that the stamp extraction get the correct data"""
         
         size = 64
         array = np.random.randn(size**2).reshape((size, size))
         array[0:32,0:32] = 1.0e15 # bottom-left stamp is high and constant
         img = SHE_PPT.she_image.SHEImage(array)
         img.mask[32:64,:]=True
+        img.noisemap = 1000.0 + np.random.randn(size**2).reshape((size, size))
         
         
         # Testing extracted shape and extracted mask
@@ -122,6 +127,7 @@ class Test_she_image():
         assert eimg.shape == (32, 32)
         assert np.sum(eimg.mask) == 0 # Nothing should be masked
         assert np.std(eimg.data) < 1.0e-10
+        assert np.mean(eimg.noisemap) > 900.0 and np.mean(eimg.noisemap) < 1100.0
         
         eimg = img.extract_stamp(32+16.4, 32+15.6, 32)
         assert eimg.shape == (32, 32) 
