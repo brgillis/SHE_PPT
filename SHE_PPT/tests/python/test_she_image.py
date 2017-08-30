@@ -34,55 +34,65 @@ import os
 
 class Test_she_image():
 
-    def test_init(self):
-        """We create a SHEImage from a random data-array, and let the code make a mask and a noisemap"""
-         
-        w = 50 # width
-        h = 10 # height
-        
-        array = np.random.randn(w*h).reshape((w, h))
-       
-        img = SHE_PPT.she_image.SHEImage(array)
-        
-        assert img.shape == (w, h)
-        assert img.data.shape == (w, h)
-        assert img.mask.shape == (w, h)
-        assert img.noisemap.shape == (w, h)
-    
-        # Accessing some data, checking bounds
-        img.data[w-1, h-1] = 0.0
-        
     @classmethod
     def setup_class(cls):
-        cls.testfilepath = "test_SHEImage.fits"
+        
+        # A filename for testing the file-saving:
+        cls.testfilepath = "test_SHEImage.fits" # Will be deleted by teardown_class()
+        
+        # A SHEImage object to play with
+        cls.w = 50
+        cls.h = 20
+        array = np.random.randn(cls.w*cls.h).reshape((cls.w, cls.h))
+        cls.img = SHE_PPT.she_image.SHEImage(array)
 
     @classmethod
     def teardown_class(cls):
         if os.path.exists(cls.testfilepath):
             os.remove(cls.testfilepath)
+
+    
+       
+    def test_init(self):
+        """Test that the object created by setup_class is as expected"""
+         
+        assert self.img.shape == (self.w, self.h)
+        assert self.img.data.shape == (self.w, self.h)
+        assert self.img.mask.shape == (self.w, self.h)
+        assert self.img.noisemap.shape == (self.w, self.h)
+    
+        # Accessing some data, checking bounds
+        self.img.data[self.w-1, self.h-1] = 0.0
+        
     
     
     def test_fits_read_write(self):
-        """We save a small SHEImage, read it again, compare both, and delete the created file"""
+        """We save the small SHEImage, read it again, and compare both versions"""
         
-        size = 50
-        data_array = np.random.randn(size**2).reshape((size, size))
-        
-        mask_array = None
-        noisemap_array = 1.0 + 0.01*np.random.randn(size**2).reshape((size, size))
-        img = SHE_PPT.she_image.SHEImage(data_array, mask_array, noisemap_array)
-        img.mask[0:10,:]=True # Just to have something non-trivial
+        # To have a non-trivial image, we tweak it a bit:
+        self.img.noisemap = 1.0 + 0.01*np.random.randn(self.w*self.h).reshape((self.w, self.h))
+        self.img.mask[0:10,:]=True
 
-        img.write_to_fits(self.testfilepath, clobber=False)
+        self.img.write_to_fits(self.testfilepath, clobber=False)
         
         rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepath)
         
-        assert np.allclose(img.data, rimg.data)
-        assert np.allclose(img.mask, rimg.mask)
-        assert np.allclose(img.noisemap, rimg.noisemap)
+        assert np.allclose(self.img.data, rimg.data)
+        assert np.allclose(self.img.mask, rimg.mask)
+        assert np.allclose(self.img.noisemap, rimg.noisemap)
+    
+    
+    
+    def test_extracted_stamp_is_view(self):
+        """Checks that the extracted stamp is a view, not a copy"""
+        
+        stamp = self.img.extract_stamp(10.0, 10.0, 5)
+        stamp.data[0,0] = -50.0
+    
+    
         
     def test_extract_stamp(self):
-        """We test that the stamp extraction works"""
+        """We test that the stamp extraction"""
         
         size = 64
         array = np.random.randn(size**2).reshape((size, size))
