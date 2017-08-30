@@ -39,7 +39,6 @@ from astropy.table import Table
 
 from SHE_PPT.detections_table_format import tf as detf
 from SHE_PPT.table_utility import get_dtypes, is_in_format
-from SHE_PPT.utility import hash_any
 
 image_tail = ".fits"
 shear_estimates_tail = "_shear_measurements.fits"
