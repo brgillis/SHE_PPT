@@ -89,7 +89,14 @@ class Test_she_image():
         stamp = self.img.extract_stamp(10.0, 10.0, 5)
         stamp.data[0,0] = -50.0
     
-    
+    def test_extract_stamp_not_square(self):
+        
+        stamp = self.img.extract_stamp(10.0, 10.0, 5)
+        assert stamp.shape == (5, 5)
+        stamp = self.img.extract_stamp(10.0, 10.0, 4, 6)
+        assert stamp.shape == (4, 6)
+        
+        
         
     def test_extract_stamp(self):
         """We test that the stamp extraction"""

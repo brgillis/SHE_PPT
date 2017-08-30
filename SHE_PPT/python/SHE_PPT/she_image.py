@@ -216,29 +216,41 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         return newimg
  
       
-    def extract_stamp(self, x, y, stamp_size):
-        """Extracts a square stamp and returns it as a new instance (using views of numpy arrays, i.e., without making a copy)
+    def extract_stamp(self, x, y, width, height=None):
+        """Extracts a stamp and returns it as a new instance (using views of numpy arrays, i.e., without making a copy)
+        
+        The extracted stamp is centered on the given (x,y) coordinates and has shape (width, height).
+        To define this center, two alternative conventions are implemented.
         
         The convention for the pixel-coordinates is the same as used by DS9 and SExtractor: the bottom-left pixel has
         coordinates (0.5, 0.5), i.e., it spreads from (0.0, 0.0) to (1.0,1.0). 
+        
         For now, the function raises a ValueError if the stamp is not entirely within the image.
-        Change this in future, to extract on-edge stamps and reflect this by masking the non-existing pixels?
+        We will change this in future, to extract on-edge stamps and reflect this by masking the non-existing pixels.
               
         Args:
             x: x pixel coordinate on which to center the stamp. Can be a float or an int.
-            y: idem for y.
-            stamp_size: width and height of the stamp, in pixels.
+            y: idem for y
+            width: the width of the stamp to extract
+            height: the height. If left to None, a square stamp (width x width) will get extracted.
+            
         """
         
-        stamp_size = int(round(stamp_size))
-        if stamp_size < 1:
-            raise ValueError("Value of stamp_size must at least be 1")
+        # Should we extract a square stamp?
+        if height is None:
+            height = width
+        
+        # Checking stamp size
+        width = int(round(width))
+        height = int(round(height))
+        if width < 1 or height < 1:
+            raise ValueError("Stamp height and width must at least be 1")
         
         # The bottom-left pixel is centered on (0.5, 0.5)
-        xmin = int(round(x - stamp_size/2.0))
-        ymin = int(round(y - stamp_size/2.0))
-        xmax = xmin + stamp_size
-        ymax = ymin + stamp_size
+        xmin = int(round(x - width/2.0))
+        ymin = int(round(y - height/2.0))
+        xmax = xmin + width
+        ymax = ymin + height
         
         # We check that these bounds are fully within the image range
         if xmin < 0 or xmax > self.shape[0] or ymin < 0 or ymax > self.shape[1]:
@@ -251,7 +263,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             mask=self.mask[xmin:xmax,ymin:ymax],
             noisemap=self.noisemap[xmin:xmax,ymin:ymax]
             )
-        assert newimg.shape == (stamp_size, stamp_size)
+        assert newimg.shape == (width, height)
         
         return newimg
 
