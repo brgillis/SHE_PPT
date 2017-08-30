@@ -216,14 +216,17 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         return newimg
  
       
-    def extract_stamp(self, x, y, width, height=None):
+    def extract_stamp(self, x, y, width, height=None, indexconv="numpy"):
         """Extracts a stamp and returns it as a new instance (using views of numpy arrays, i.e., without making a copy)
         
         The extracted stamp is centered on the given (x,y) coordinates and has shape (width, height).
-        To define this center, two alternative conventions are implemented.
-        
-        The convention for the pixel-coordinates is the same as used by DS9 and SExtractor: the bottom-left pixel has
-        coordinates (0.5, 0.5), i.e., it spreads from (0.0, 0.0) to (1.0,1.0). 
+        To define the center, two alternative indexing-conventions are implemented, which differ by a small shift:
+            - "numpy" follows the natural indexing of numpy arrays. It means that the bottom-left pixel spreads
+            from (x,y) = (0.0, 0.0) to (1.0,1.0). Therefore, this pixel is centered on (0.5, 0.5)
+            - "sextractor" follows the convention from SExtractor and (identically) DS9, where the bottom-left pixel
+            spreads from (0.5, 0.5) to (1.5, 1.5), and is therefore centered on (1.0, 1.0).
+        Bottomline: if SExtractor told you that there is a galaxy at a certain position, you can use this position directly
+        to extract a stamp as long as you set indexconv="sextractor".
         
         For now, the function raises a ValueError if the stamp is not entirely within the image.
         We will change this in future, to extract on-edge stamps and reflect this by masking the non-existing pixels.
@@ -233,6 +236,8 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             y: idem for y
             width: the width of the stamp to extract
             height: the height. If left to None, a square stamp (width x width) will get extracted.
+            indexconv: {"numpy", "sextractor"} Selects the indexing convention to use to interpret the position (x,y).
+                See text above.
             
         """
         
@@ -246,9 +251,15 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         if width < 1 or height < 1:
             raise ValueError("Stamp height and width must at least be 1")
         
-        # The bottom-left pixel is centered on (0.5, 0.5)
-        xmin = int(round(x - width/2.0))
-        ymin = int(round(y - height/2.0))
+        # Dealing with the indexing conventions
+        indexconv_defs = {"numpy":0.0, "sextractor":0.5}
+        if indexconv not in indexconv_defs.keys():
+            raise ValueError("Argument indexconv must be among {}".format(indexconv_defs.keys()))
+        
+        
+        # Identifying the numpy stamp boundaries
+        xmin = int(round(x - width/2.0 - indexconv_defs[indexconv]))
+        ymin = int(round(y - height/2.0 - indexconv_defs[indexconv]))
         xmax = xmin + width
         ymax = ymin + height
         
@@ -258,6 +269,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         
         logger.debug("Extracting stamp [{}:{},{}:{}] from image of shape {}".format(xmin, xmax, ymin, ymax, self.shape))
         
+        # And extract the stamp
         newimg = SHEImage(
             data=self.data[xmin:xmax,ymin:ymax],
             mask=self.mask[xmin:xmax,ymin:ymax],
