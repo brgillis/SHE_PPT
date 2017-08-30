@@ -61,10 +61,7 @@ class Test_she_image():
         assert self.img.mask.shape == (self.w, self.h)
         assert self.img.noisemap.shape == (self.w, self.h)
     
-        # Accessing some data, checking bounds
-        self.img.data[self.w-1, self.h-1] = 0.0
-        
-    
+       
     
     def test_fits_read_write(self):
         """We save the small SHEImage, read it again, and compare both versions"""
@@ -95,6 +92,18 @@ class Test_she_image():
         assert stamp.shape == (5, 5)
         stamp = self.img.extract_stamp(10.0, 10.0, 4, 6)
         assert stamp.shape == (4, 6)
+        
+    
+    def test_extract_stamp_indexconvs(self):
+        """Test the effect of different indexconvs"""
+        
+        bottomleftpixel_numpy = self.img.extract_stamp(0.5, 0.5, 1)
+        bottomleftpixel_sex = self.img.extract_stamp(1.0, 1.0, 1, indexconv="sextractor")
+        assert bottomleftpixel_numpy.data == bottomleftpixel_sex.data
+        
+        # This should fail (it's out of bounds)
+        with pytest.raises(Exception):
+            bottomleftpixel_sex = self.img.extract_stamp(0.5, 0.5, 1, indexconv="sextractor")
         
         
         

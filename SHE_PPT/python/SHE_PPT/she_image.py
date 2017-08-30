@@ -226,7 +226,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             - "sextractor" follows the convention from SExtractor and (identically) DS9, where the bottom-left pixel
             spreads from (0.5, 0.5) to (1.5, 1.5), and is therefore centered on (1.0, 1.0).
         Bottomline: if SExtractor told you that there is a galaxy at a certain position, you can use this position directly
-        to extract a stamp as long as you set indexconv="sextractor".
+        to extract a statistically-well-centered stamp as long as you set indexconv="sextractor".
         
         For now, the function raises a ValueError if the stamp is not entirely within the image.
         We will change this in future, to extract on-edge stamps and reflect this by masking the non-existing pixels.
