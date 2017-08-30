@@ -221,8 +221,11 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         
         The extracted stamp is centered on the given (x,y) coordinates and has shape (width, height).
         To define the center, two alternative indexing-conventions are implemented, which differ by a small shift:
-            - "numpy" follows the natural indexing of numpy arrays. It means that the bottom-left pixel spreads
-            from (x,y) = (0.0, 0.0) to (1.0,1.0). Therefore, this pixel is centered on (0.5, 0.5)
+            - "numpy" follows the natural indexing of numpy arrays extended to floating-point scales.
+            It means that the bottom-left pixel spreads from (x,y) = (0.0, 0.0) to (1.0,1.0).
+            Therefore, this pixel is centered on (0.5, 0.5), and you would
+            use extract_stamp(x=0.5, y=0.5, w=1) to extract this pixel.
+            Note the difference to the usual numpy integer array indexing, where this pixel would be a[0,0]
             - "sextractor" follows the convention from SExtractor and (identically) DS9, where the bottom-left pixel
             spreads from (0.5, 0.5) to (1.5, 1.5), and is therefore centered on (1.0, 1.0).
         Bottomline: if SExtractor told you that there is a galaxy at a certain position, you can use this position directly
