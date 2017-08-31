@@ -46,11 +46,20 @@ class TestUtility:
         test_str = "my_string"
         test_obj = ("this_is_my_tuple",1)
         
+        # Check that maximum length is enforced properly
         max_length = 16
-        assert len(hash_any(test_str,max_length)) == max_length
-        assert len(hash_any(test_obj,max_length)) == max_length
+        assert len(hash_any(test_str,max_length=max_length)) == max_length
+        assert len(hash_any(test_obj,max_length=max_length)) == max_length
+        assert len(hash_any(test_obj,format="base64",max_length=max_length)) == max_length
         
         smaller_max_length = 8
-        assert hash_any(test_str,max_length)[smaller_max_length-max_length:] == hash_any(test_str,smaller_max_length)
-        assert hash_any(test_obj,max_length)[smaller_max_length-max_length:] == hash_any(test_obj,smaller_max_length)
+        assert hash_any(test_str,max_length=max_length)[:max_length-smaller_max_length] == hash_any(test_str,max_length=smaller_max_length)
+        assert hash_any(test_obj,max_length=max_length)[:max_length-smaller_max_length] == hash_any(test_obj,max_length=smaller_max_length)
+        assert (hash_any(test_obj,max_length=max_length,format="base64")[:max_length-smaller_max_length] ==
+                hash_any(test_obj,max_length=smaller_max_length,format="base64"))
+                
+        # Check that base64 encoding is working as expected - should be shorter than hex encoding
+        assert len(hash_any(test_str,format="hex")) > len(hash_any(test_str,format="base64"))
+        assert len(hash_any(test_obj,format="hex")) > len(hash_any(test_obj,format="base64"))
+        
         

@@ -198,7 +198,7 @@ def initialise_detections_table(image = None, options = None):
     else:
         read_noise = options['read_noise']
         gain = options['gain']
-        model_hash = hash_any(frozenset(options.items()))
+        model_hash = hash_any(frozenset(options.items()),format="base64")
         model_seed = image.get_full_seed()
         noise_seed = options['noise_seed']
     

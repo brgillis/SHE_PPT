@@ -1,4 +1,4 @@
-""" @file test_io.py
+""" @file test_file_io.py
 
     Created 25 Aug 2017
 
@@ -57,7 +57,7 @@ class TestIO:
 
     def test_get_allowed_filename(self):
         
-        filename = get_allowed_filename( "TEST", "0", extension=".junk", release_date = "06.66")
+        filename = get_allowed_filename( "TEST", "0", extension=".junk", release = "06.66")
         
         expect_filename_head = "EUC_SHE_CTE-TEST_0_"
         expect_filename_tail = ".0Z_06.66.junk"
@@ -68,7 +68,7 @@ class TestIO:
         
         # Check that if we wait a second, it will change
         sleep(1)
-        new_filename = get_allowed_filename( "TEST", "0", extension=".junk", release_date = "06.66")
+        new_filename = get_allowed_filename( "TEST", "0", extension=".junk", release = "06.66")
         assert new_filename > filename
         
     def test_rw_listfile(self):
