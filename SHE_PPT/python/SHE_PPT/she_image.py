@@ -199,25 +199,31 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
  
      
     @classmethod
-    def read_from_fits(cls, filepath, maskext='MASK', noisemapext='NOISEMAP'):
+    def read_from_fits(cls, filepath, mask_ext='MASK', noisemap_ext='NOISEMAP', mask_filepath=None, noisemap_filepath=None):
         """Reads an image from a FITS file, such as written by write_to_fits(), and returns it as a SHEImage object.
         
-        This function can be used both to read previously saved SHEImage objects, and to import other FITS images.
-        The latter may have only one extension (in which case only the data is read, and mask and noisemap get created),
-        or different extension names (to be specified using the keyword arguments).
-        Note that the function "tranposes" all the arrays read from FITS, so that the properties of SHEImage can be
-        indexed with [x,y] using the same convention as DS9 and SExtractor.
+        This function can be used both to read previously saved SHEImage objects (in this case, just give the filepath),
+        and to import other "foreign" FITS images.
+        Such a "foreign" FITS image may have only one extension (in which case only the data is read,
+        and mask and noisemap get default values), or different extension names (to be specified using the keyword arguments).
+        Alternatively, one can specify separate filepaths to read the mask and/or the noisemap.
         
-        We might want to add further options in future, e.g. a way to read mask and noisemap from external files.
-        
+        Note that the function "tranposes" all the arrays read from FITS, so that the array-properties of SHEImage can be
+        indexed with [x,y] using the same orientation-convention as DS9 and SExtractor uses, that is, (0,0) is bottom left.
+         
         Args:
             filepath: path to the FITS file to be read
-            maskext: name of the extension containing the mask. Set it to None to not read any mask.
-            noisemapext: idem, for the noisemap
+            mask_ext: name of the extension containing the mask.
+                Set it to None to not read any mask (except if a mask_filepath is set).
+            noisemap_ext: idem, for the noisemap
+            mask_filepath: a separate filepath to read the mask from.
+                If you use this, and the mask FITS file contains only one hdu (typically the case),
+                mask_ext is ignored. If there are several hdus, specify mask_ext.
+            noisemap_filepath: idem, for the noisemap
       
         """
         
-        hdulist = astropy.io.fits.open(filepath)  # open a FITS file
+        hdulist = astropy.io.fits.open(filepath)  # open the  FITS file
         nhdu = len(hdulist)
         
         logger.debug("Reading file '{}', with {} extensions...".format(filepath, nhdu))
@@ -234,21 +240,51 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         logger.debug("The cleaned header has {} keys".format(len(header_object.keys())))
         
         # Reading the mask
-        mask_array = None
-        if maskext is not None: 
-            try:
-                mask_array = hdulist[maskext].data.astype(np.uint8).transpose()
-            except KeyError:
-                logger.warning("No extension '{}' found, setting mask to None!".format(maskext))
+        if mask_filepath is None: # We read it either from filepath, or not at all.
+            if mask_ext is not None: 
+                mask_array = hdulist[mask_ext].data
+            else:
+                mask_array = None
+                #try: # REMOVED: better raise the exception, not just a warning.
+                #    mask_array = hdulist[mask_ext].data.astype(np.uint8).transpose()
+                #except KeyError:
+                #    logger.warning("No extension '{}' found, setting mask to None!".format(mask_ext))
+                #    mask_array = None
+        else: # We read it from the special mask_filepath
+            mask_hdulist = astropy.io.fits.open(mask_filepath)
+            logger.debug("Reading mask from file '{}'".format(mask_filepath))
+            if len(mask_hdulist) is 1:
+                mask_array = mask_hdulist[0].data
+            else:
+                mask_array = mask_hdulist[mask_ext].data
+            mask_hdulist.close()
+        # Convert it to the required type and transpose
+        if mask_array is not None:
+            mask_array = mask_array.astype(np.uint8).transpose()
             
-        # And the noisemap
-        noisemap_array = None
-        if noisemapext is not None:
-            try:    
-                noisemap_array = hdulist[noisemapext].data.transpose()
-            except KeyError:
-                logger.warning("No extension '{}' found, setting noisemap to None!".format(noisemapext))
             
+        # And same for the noisemap
+        if noisemap_filepath is None:
+            if noisemap_ext is not None:
+                noisemap_array = hdulist[noisemap_ext].data
+            else:
+                noisemap_array = None
+        else:
+            noisemap_hdulist = astropy.io.fits.open(noisemap_filepath)
+            logger.debug("Reading noisemap from file '{}'".format(noisemap_filepath))
+            if len(noisemap_hdulist) is 1:
+                noisemap_array = noisemap_hdulist[0].data
+            else:
+                noisemap_array = noisemap_hdulist[noisemap_ext].data
+            noisemap_hdulist.close()
+        # And transpose this noisemap as well
+        if noisemap_array is not None:
+            noisemap_array = noisemap_array.transpose()
+        
+        
+        # Closing the filepath-file
+        hdulist.close()    
+        
         # Building and returning the new object    
         newimg = SHEImage(data=data_array, mask=mask_array, noisemap=noisemap_array, header=header_object)
         logger.info("Read {} from the file '{}'".format(str(newimg), filepath))
