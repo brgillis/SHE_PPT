@@ -38,6 +38,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
       - .mask is a numpy array of dtype np.uint8
       - .noisemap is a numpy array
       - .header is an astropy.io.fits.Header object
+          (for an intro to those, see http://docs.astropy.org/en/stable/io/fits/#working-with-fits-headers )
     
     Note that the shape (and size) of data, mask and noisemap cannot be modified once the object exists, as such a
     change would probably not be wanted. If you really want to change the size of a SHEImage, make a new object.
@@ -182,7 +183,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         """
            
         # Note that we transpose the numpy arrays, so to have the same pixel convention as DS9 and SExtractor.
-        datahdu = astropy.io.fits.PrimaryHDU(self.data.transpose())
+        datahdu = astropy.io.fits.PrimaryHDU(self.data.transpose(), header=self.header)
         maskhdu = astropy.io.fits.ImageHDU(data=self.mask.transpose().astype(np.uint8), name="MASK")
         noisemaphdu = astropy.io.fits.ImageHDU(data=self.noisemap.transpose(), name="NOISEMAP")
         
@@ -224,6 +225,13 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         # Reading the primary extension
         data_array = hdulist[0].data.transpose()
         if not data_array.ndim == 2: raise ValueError("Primary HDU must contain a 2D image")
+        header_object = hdulist[0].header
+        logger.debug("The raw primary header has {} keys".format(len(header_object.keys())))
+        # We remove the keywords that where automatically added when saving to FITS.
+        # Instead, the user should use the SHEImage.shape or directly the arrays.
+        for keyword in ["SIMPLE", "BITPIX", "NAXIS", "NAXIS1", "NAXIS2", "EXTEND"]:
+            header_object.remove(keyword)
+        logger.debug("The cleaned header has {} keys".format(len(header_object.keys())))
         
         # Reading the mask
         mask_array = None
@@ -242,23 +250,24 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
                 logger.warning("No extension '{}' found, setting noisemap to None!".format(noisemapext))
             
         # Building and returning the new object    
-        newimg = SHEImage(data=data_array, mask=mask_array, noisemap=noisemap_array)
+        newimg = SHEImage(data=data_array, mask=mask_array, noisemap=noisemap_array, header=header_object)
         logger.info("Read {} from the file '{}'".format(str(newimg), filepath))
         return newimg
  
       
-    def extract_stamp(self, x, y, width, height=None, indexconv="numpy"):
+    def extract_stamp(self, x, y, width, height=None, indexconv="numpy", keep_header=False):
         """Extracts a stamp and returns it as a new instance (using views of numpy arrays, i.e., without making a copy)
         
         The extracted stamp is centered on the given (x,y) coordinates and has shape (width, height).
         To define the center, two alternative indexing-conventions are implemented, which differ by a small shift:
             - "numpy" follows the natural indexing of numpy arrays extended to floating-point scales.
-            It means that the bottom-left pixel spreads from (x,y) = (0.0, 0.0) to (1.0,1.0).
-            Therefore, this pixel is centered on (0.5, 0.5), and you would
-            use extract_stamp(x=0.5, y=0.5, w=1) to extract this pixel.
-            Note the difference to the usual numpy integer array indexing, where this pixel would be a[0,0]
+                It means that the bottom-left pixel spreads from (x,y) = (0.0, 0.0) to (1.0,1.0).
+                Therefore, this pixel is centered on (0.5, 0.5), and you would
+                use extract_stamp(x=0.5, y=0.5, w=1) to extract this pixel.
+                Note the difference to the usual numpy integer array indexing, where this pixel would be a[0,0]
             - "sextractor" follows the convention from SExtractor and (identically) DS9, where the bottom-left pixel
-            spreads from (0.5, 0.5) to (1.5, 1.5), and is therefore centered on (1.0, 1.0).
+                spreads from (0.5, 0.5) to (1.5, 1.5), and is therefore centered on (1.0, 1.0).
+        
         Bottomline: if SExtractor told you that there is a galaxy at a certain position, you can use this position directly
         to extract a statistically-well-centered stamp as long as you set indexconv="sextractor".
         
@@ -303,11 +312,18 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         
         logger.debug("Extracting stamp [{}:{},{}:{}] from image of shape {}".format(xmin, xmax, ymin, ymax, self.shape))
         
+        # And the header:
+        if keep_header:
+            newheader = self.header
+        else:
+            newheader = None
+        
         # And extract the stamp
         newimg = SHEImage(
             data=self.data[xmin:xmax,ymin:ymax],
             mask=self.mask[xmin:xmax,ymin:ymax],
-            noisemap=self.noisemap[xmin:xmax,ymin:ymax]
+            noisemap=self.noisemap[xmin:xmax,ymin:ymax],
+            header=newheader
             )
         assert newimg.shape == (width, height)
         

@@ -34,6 +34,7 @@ import os
 
 class Test_she_image():
 
+ 
     @classmethod
     def setup_class(cls):
         
@@ -70,7 +71,17 @@ class Test_she_image():
         assert self.img.mask[5,5] == 244
         assert self.img.boolmask[5,5] == True
         
-       
+    
+    def test_header(self):
+        """Modifying the header"""
+        self.img.header["temp1"] = (22.3, "Outside temp in degrees Celsius")
+        self.img.header["INSTR"] = ("DMK21")
+        self.img.header.set("tel", "14-inch Martini Dobson")
+        
+        assert self.img.header["TEMP1"] > 20.0 # capitalization does not matter
+        assert len(self.img.header["INSTR"]) == 5
+        
+    
     
     def test_fits_read_write(self):
         """We save the small SHEImage, read it again, and compare both versions"""
@@ -82,7 +93,6 @@ class Test_she_image():
         self.img.mask[30:40,:]=-10456.34 # will get converted and should not prevent the test from working
         
         
-
         self.img.write_to_fits(self.testfilepath, clobber=False)
         
         rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepath)
@@ -90,7 +100,11 @@ class Test_she_image():
         assert np.allclose(self.img.data, rimg.data)
         assert np.allclose(self.img.mask, rimg.mask)
         assert np.allclose(self.img.noisemap, rimg.noisemap)
-    
+        
+        # We test that the header did not get changed
+        assert len(rimg.header.keys()) == 3
+        assert str(repr(self.img.header)) == str(repr(rimg.header))
+       
     
     
     def test_extracted_stamp_is_view(self):
@@ -131,8 +145,9 @@ class Test_she_image():
         array = np.random.randn(size**2).reshape((size, size))
         array[0:32,0:32] = 1.0e15 # bottom-left stamp is high and constant
         img = SHE_PPT.she_image.SHEImage(array)
-        img.mask[32:64,:]=True
+        img.mask[32:64,:] = True
         img.noisemap = 1000.0 + np.random.randn(size**2).reshape((size, size))
+        img.header["foo"] = "bar"
         
         
         # Testing extracted shape and extracted mask
@@ -147,7 +162,12 @@ class Test_she_image():
         assert np.sum(eimg.mask) == 32*32 # This one is fully masked  
         assert np.std(eimg.data) > 1.0e-10
         
-        
+        # And the header:
+        eimg = img.extract_stamp(5, 5, 5)
+        assert len(eimg.header.keys()) == 0
+        eimg = img.extract_stamp(5, 5, 5, keep_header=True)
+        assert len(eimg.header.keys()) == 1
+
         
         
         
