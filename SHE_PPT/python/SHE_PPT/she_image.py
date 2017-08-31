@@ -91,18 +91,23 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     @mask.setter
     def mask(self, mask_array):
         if mask_array is None:
-            # Then we create an empty mask (all False)
-            self._mask = np.zeros(self._data.shape, dtype=bool)
+            # Then we create an empty mask (0 means False means not masked)
+            self._mask = np.zeros(self._data.shape, dtype=np.uint8)
         else:
             if mask_array.ndim is not 2:
                 raise ValueError("The mask array must have 2 dimensions")
             if mask_array.shape != self._data.shape:
                 raise ValueError("The mask array must have the same size as the data {}".format(self._data.shape))
+            if not mask_array.dtype == np.uint8:
+                raise ValueError("The mask array must be of np.uint8 type (it is {})".format(mask_array.dtype))
             self._mask = mask_array
     @mask.deleter
     def mask(self):
         del self._mask
-        
+    @property
+    def boolmask(self):
+        """A boolean summary of the mask, cannot be set, only get"""
+        return self._mask.astype(np.bool)
    
     @property
     def noisemap(self):
@@ -134,7 +139,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         return "SHEImage({}x{}, {}%)".format(
             self.shape[0],
             self.shape[1], 
-            100.0*float(np.sum(self.mask))/float(np.size(self.data))
+            100.0*float(np.sum(self.boolmask))/float(np.size(self.data))
         )
    
    
@@ -198,7 +203,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         mask_array = None
         if maskext is not None: 
             try:
-                mask_array = hdulist[maskext].data.astype(bool).transpose()
+                mask_array = hdulist[maskext].data.astype(np.uint8).transpose()
             except KeyError:
                 logger.warning("No extension '{}' found, setting mask to None!".format(maskext))
             

@@ -61,6 +61,15 @@ class Test_she_image():
         assert self.img.mask.shape == (self.w, self.h)
         assert self.img.noisemap.shape == (self.w, self.h)
     
+    
+    def test_mask(self):
+        """The mask is a uint8"""
+        self.img.mask[5,5]=256 # Same as 0
+        assert self.img.mask[5,5] == 0
+        self.img.mask[5,5]=-12.345
+        assert self.img.mask[5,5] == 244
+        assert self.img.boolmask[5,5] == True
+        
        
     
     def test_fits_read_write(self):
@@ -68,7 +77,11 @@ class Test_she_image():
         
         # To have a non-trivial image, we tweak it a bit:
         self.img.noisemap = 1.0 + 0.01*np.random.randn(self.w*self.h).reshape((self.w, self.h))
-        self.img.mask[0:10,:]=True
+        self.img.mask[0:10,:]=1
+        self.img.mask[10:20,:]=255
+        self.img.mask[30:40,:]=-10456.34 # will get converted and should not prevent the test from working
+        
+        
 
         self.img.write_to_fits(self.testfilepath, clobber=False)
         
