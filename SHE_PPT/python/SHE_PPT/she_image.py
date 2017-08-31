@@ -281,7 +281,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             height: the height. If left to None, a square stamp (width x width) will get extracted.
             indexconv: {"numpy", "sextractor"} Selects the indexing convention to use to interpret the position (x,y).
                 See text above.
-            keep_header: set this to True if you want the stamp to get the header of the image.
+            keep_header: set this to True if you want the stamp to get the header of the original image.
                 By default (False), the stamp gets an empty header.
             
         """
