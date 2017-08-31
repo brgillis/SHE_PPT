@@ -25,6 +25,10 @@ New Features
 ------------
 
 - Added format definitions for details, detections, and shear_estimates tables
+- Added functions for IO: get_allowed_filename(), write_listfile(), read_listfile(),
+  replace_in_file(), replace_multiple_in_file()
+- Added a function to hash any object into a hex or base64 string
+- Added SHEImage class to store image objects
 
 New config features
 -------------------
