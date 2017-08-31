@@ -30,27 +30,34 @@ logger = logging.getLogger(__name__)
 
 
 class SHEImage(object): # We need new-style classes for properties, hence inherit from object
-    """Structure to hold an image together with a mask and a noisemap.
+    """Structure to hold an image together with a mask, a noisemap, and a header (for metadata).
     
     The structure can be written into a FITS file, and stamps can be extracted.
-    The properties data, mask, and noisemap are meant to be accessed directly.
+    The properties .data, .mask, .noisemap and .header are meant to be accessed directly:
+      - .data is a numpy array
+      - .mask is a numpy array of dtype np.uint8
+      - .noisemap is a numpy array
+      - .header is an astropy.io.fits.Header object
+    
     Note that the shape (and size) of data, mask and noisemap cannot be modified once the object exists, as such a
     change would probably not be wanted. If you really want to change the size of a SHEImage, make a new object.
     """
    
-    def __init__(self, data, mask=None, noisemap=None):
+    def __init__(self, data, mask=None, noisemap=None, header=None):
         """Initiator
       
         Args:
             data: a 2D numpy array, with indices [x,y], consistent with DS9 and SExtractor orientation conventions.
-            mask: an array of the same shape as data. Leaving None creates an empty mask
-            noisemap: an array of the same shape as data. Leaving None creates a noisemap of ones
+            mask: an array of the same shape as data. Leaving None creates an empty mask.
+            noisemap: an array of the same shape as data. Leaving None creates a noisemap of ones.
+            header: an astropy.io.fits.Header object. Leaving None creates an empty header.
       
         """
                
         self.data = data # Note the tests done in the setter method
         self.mask = mask # Note that we translate None in the setter method 
         self.noisemap = noisemap
+        self.header = header
         
         logger.debug("Created {}".format(str(self)))
     
@@ -128,6 +135,25 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     def noisemap(self):
         del self._noisemap
     
+
+    @property
+    def header(self):
+        """An astropy.io.fits.Header to contain metadata"""
+        return self._header
+    @header.setter
+    def header(self, header_object):
+        if header_object is None:
+            self._header = astropy.io.fits.Header() # An empty header
+        else:
+            if isinstance(header_object, astropy.io.fits.Header): # Not very pythonic, but I suggest this to
+                # to avoid misuse, which could lead to problems when writing FITS files.
+                self._header = header_object
+            else:
+                raise ValueError("The header must be an astropy.io.fits.Header instance")
+    @header.deleter
+    def header(self):
+        del self._header
+
 
     @property
     def shape(self): # Just a shortcut, also to stress that all arrays (data, mask, noisemap) have the same shape.
