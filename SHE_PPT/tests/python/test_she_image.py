@@ -30,7 +30,9 @@ import SHE_PPT.she_image
 
 import numpy as np
 import os
+import logging
 
+logging.basicConfig(level=logging.DEBUG)
 
 class Test_she_image():
 
@@ -40,6 +42,8 @@ class Test_she_image():
         
         # A filename for testing the file-saving:
         cls.testfilepath = "test_SHEImage.fits" # Will be deleted by teardown_class()
+        # For some tests we need several files:
+        cls.testfilepaths = ["test_SHEImage_0.fits", "test_SHEImage_1.fits", "test_SHEImage_2.fits"]
         
         # A SHEImage object to play with
         cls.w = 50
@@ -49,8 +53,11 @@ class Test_she_image():
 
     @classmethod
     def teardown_class(cls):
-        if os.path.exists(cls.testfilepath):
-            os.remove(cls.testfilepath)
+        
+        # Delete all potentially created files:
+        for testfilepath in cls.testfilepaths + [cls.testfilepath]:
+            if os.path.exists(testfilepath):
+                os.remove(testfilepath)
 
     
        
@@ -106,6 +113,41 @@ class Test_she_image():
         assert str(repr(self.img.header)) == str(repr(rimg.header))
        
     
+    def test_read_from_separate_fits_files(self):
+        """At least a small test of reading from individual FITS files"""
+        
+        img = SHE_PPT.she_image.SHEImage(np.random.randn(100).reshape(10,10) + 200.0)
+        img.mask[:,:] = 1
+        img.noisemap = 1.0 + 0.01*np.random.randn(100).reshape(10,10)
+        img.write_to_fits(self.testfilepaths[0])
+        
+        img.mask[:,:] = 2
+        img.write_to_fits(self.testfilepaths[1])
+        
+        img.noisemap = 1000.0 + 0.01*np.random.randn(100).reshape(10,10)
+        img.write_to_fits(self.testfilepaths[2])
+        
+        rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepaths[0])
+        assert rimg.mask[0,0] == 1
+        
+        rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepaths[0],
+                                                         mask_ext=None,
+                                                         noisemap_ext=None)
+        assert rimg.mask[0,0] == 0
+        
+        rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepaths[0],
+                                                         mask_filepath=self.testfilepaths[1],
+                                                         noisemap_filepath=self.testfilepaths[2])
+        assert rimg.noisemap[0,0] > 500.0
+        
+        with pytest.raises(ValueError): # As the primary HDU of mask_filepath is not a np.uint8, this will fail:
+            rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepaths[0],
+                                                         mask_filepath=self.testfilepaths[1],
+                                                         noisemap_filepath=self.testfilepaths[2],
+                                                         mask_ext=None)
+        
+        
+        
     
     def test_extracted_stamp_is_view(self):
         """Checks that the extracted stamp is a view, not a copy"""
