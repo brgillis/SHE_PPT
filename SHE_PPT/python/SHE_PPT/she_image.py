@@ -163,7 +163,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         
     def __str__(self):
         """A short string with size information and the percentage of masked pixels"""
-        return "SHEImage({}x{}, {}%)".format(
+        return "SHEImage({}x{}, {}% masked)".format(
             self.shape[0],
             self.shape[1], 
             100.0*float(np.sum(self.boolmask))/float(np.size(self.data))
@@ -176,6 +176,9 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         
         The data is written in the primary HDU, the mask in the extension 'MASK' and the noisemap in the extensions 'NOISEMAP'. 
         All the attributes of this image object are (should be ?) saved into the FITS file.
+        
+        Technical note: the function "transposes" all the arrays written into the FITS file, so that the arrays will
+        get shown by DS9 using the convention that the pixel with index [0,0] is bottom left.
         
         Args:
             filepath: where the FITS file should be written
@@ -199,97 +202,103 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
  
      
     @classmethod
-    def read_from_fits(cls, filepath, mask_ext='MASK', noisemap_ext='NOISEMAP', mask_filepath=None, noisemap_filepath=None):
+    def read_from_fits(cls, filepath, data_ext='PRIMARY', mask_ext='MASK', noisemap_ext='NOISEMAP', mask_filepath=None, noisemap_filepath=None):
         """Reads an image from a FITS file, such as written by write_to_fits(), and returns it as a SHEImage object.
         
-        This function can be used both to read previously saved SHEImage objects (in this case, just give the filepath),
-        and to import other "foreign" FITS images.
-        Such a "foreign" FITS image may have only one extension (in which case only the data is read,
-        and mask and noisemap get default values), or different extension names (to be specified using the keyword arguments).
-        Alternatively, one can specify separate filepaths to read the mask and/or the noisemap.
+        This function can be used to read previously saved SHEImage objects (in this case, just give the filepath),
+        or to import other "foreign" FITS images (then you'll need the optional keyword arguments).
+        When reading from one or several of these foreign files, you can
+          - specify a specific HDU to read the mask from, e.g., by setting mask_ext='FLAG'
+          - specify a different file to read the mask from, e.g., mask_filepath='mask.fits', mask_ext=0
+          - avoid reading-in a mask, by specifying both mask_ext=None and mask_filepath=None (results in a default zero mask)
+        Idem for the noisemap
         
-        Note that the function "tranposes" all the arrays read from FITS, so that the array-properties of SHEImage can be
-        indexed with [x,y] using the same orientation-convention as DS9 and SExtractor uses, that is, (0,0) is bottom left.
+        Technical note: all the arrays read from FITS get "transposed", so that the array-properties of SHEImage can be
+        indexed with [x,y] using the same orientation-convention as DS9 and SExtractor uses, that is, [0,0] is bottom left.
          
         Args:
-            filepath: path to the FITS file to be read
-            mask_ext: name of the extension containing the mask.
-                Set it to None to not read any mask (except if a mask_filepath is set).
+            filepath: path to the FITS file containing the primary data and header to be read
+            data_ext: name or index of the primary HDU, containing the data and the header.
+            mask_ext: name or index of the extension HDU containing the mask.
+                Set both mask_ext and mask_filepath to None to not read in any mask.
             noisemap_ext: idem, for the noisemap
             mask_filepath: a separate filepath to read the mask from.
-                If you use this, and the mask FITS file contains only one hdu (typically the case),
-                mask_ext is ignored. If there are several hdus, specify mask_ext.
+                If you specify this, also set mask_ext accordingly (at least set it to 0 if the file has only one HDU).
             noisemap_filepath: idem, for the noisemap
       
         """
         
-        hdulist = astropy.io.fits.open(filepath)  # open the  FITS file
-        nhdu = len(hdulist)
-        
-        logger.debug("Reading file '{}', with {} extensions...".format(filepath, nhdu))
-        
-        # Reading the primary extension
-        data_array = hdulist[0].data.transpose()
-        if not data_array.ndim == 2: raise ValueError("Primary HDU must contain a 2D image")
-        header_object = hdulist[0].header
-        logger.debug("The raw primary header has {} keys".format(len(header_object.keys())))
-        # We remove the keywords that where automatically added when saving to FITS.
-        # Instead, the user should use the SHEImage.shape or directly the arrays.
+        # Reading the primary extension, which also contains the header
+        (data, header) = cls._get_specific_hdu_content_from_fits(filepath, ext=data_ext, return_header=True)
+        # Removing the mandatory cards (that were automatically added to the header if write_to_fits was used)
+        logger.debug("The raw primary header has {} keys".format(len(header.keys())))
         for keyword in ["SIMPLE", "BITPIX", "NAXIS", "NAXIS1", "NAXIS2", "EXTEND"]:
-            header_object.remove(keyword)
-        logger.debug("The cleaned header has {} keys".format(len(header_object.keys())))
+            header.remove(keyword)
+        logger.debug("The cleaned header has {} keys".format(len(header.keys())))
         
         # Reading the mask
-        if mask_filepath is None: # We read it either from filepath, or not at all.
-            if mask_ext is not None: 
-                mask_array = hdulist[mask_ext].data
-            else:
-                mask_array = None
-                #try: # REMOVED: better raise the exception, not just a warning.
-                #    mask_array = hdulist[mask_ext].data.astype(np.uint8).transpose()
-                #except KeyError:
-                #    logger.warning("No extension '{}' found, setting mask to None!".format(mask_ext))
-                #    mask_array = None
-        else: # We read it from the special mask_filepath
-            mask_hdulist = astropy.io.fits.open(mask_filepath)
-            logger.debug("Reading mask from file '{}'".format(mask_filepath))
-            if len(mask_hdulist) is 1:
-                mask_array = mask_hdulist[0].data
-            else:
-                mask_array = mask_hdulist[mask_ext].data
-            mask_hdulist.close()
-        # Convert it to the required type and transpose
-        if mask_array is not None:
-            mask_array = mask_array.astype(np.uint8).transpose()
-            
-            
-        # And same for the noisemap
-        if noisemap_filepath is None:
-            if noisemap_ext is not None:
-                noisemap_array = hdulist[noisemap_ext].data
-            else:
-                noisemap_array = None
-        else:
-            noisemap_hdulist = astropy.io.fits.open(noisemap_filepath)
-            logger.debug("Reading noisemap from file '{}'".format(noisemap_filepath))
-            if len(noisemap_hdulist) is 1:
-                noisemap_array = noisemap_hdulist[0].data
-            else:
-                noisemap_array = noisemap_hdulist[noisemap_ext].data
-            noisemap_hdulist.close()
-        # And transpose this noisemap as well
-        if noisemap_array is not None:
-            noisemap_array = noisemap_array.transpose()
+        mask = cls._get_secondary_data_from_fits(filepath, mask_filepath, mask_ext)
         
-        
-        # Closing the filepath-file
-        hdulist.close()    
-        
+        # Reading the noisemap
+        noisemap = cls._get_secondary_data_from_fits(filepath, noisemap_filepath, noisemap_ext)
+       
         # Building and returning the new object    
-        newimg = SHEImage(data=data_array, mask=mask_array, noisemap=noisemap_array, header=header_object)
+        newimg = SHEImage(data=data, mask=mask, noisemap=noisemap, header=header)
+        
         logger.info("Read {} from the file '{}'".format(str(newimg), filepath))
         return newimg
- 
+    
+    
+    @classmethod
+    def _get_secondary_data_from_fits(cls, primary_filepath, special_filepath, ext):
+        """Private helper for getting mask or noisemap, defining the logic of the related keyword arguments
+        
+        This function might return None, if both special_filepath and ext are None.
+        """
+        
+        outarray = None
+        if special_filepath is None:
+            if ext is not None:
+                outarray = cls._get_specific_hdu_content_from_fits(primary_filepath, ext=ext)
+        else:
+            outarray = cls._get_specific_hdu_content_from_fits(special_filepath, ext=ext)
+    
+        return outarray
+       
+    
+    @classmethod
+    def _get_specific_hdu_content_from_fits(cls, filepath, ext=None, return_header=False):
+        """Private helper to handle access to particular extensions of a FITS file
+        
+        This function either returns something not-None, or raises an exception.
+        Note that this function also takes care of transposing the data.
+        """
+        
+        logger.debug("Reading from file '{}'...".format(filepath))
+        
+        hdulist = astropy.io.fits.open(filepath)
+        nhdu = len(hdulist)
+        
+        if ext is None:
+            if nhdu > 1: # Warn the user, as the situation is not clear
+                logger.warning("File '{}' has several HDUs, but no extension was specified! Using primary HDU.".format(filepath))
+            ext = "PRIMARY"
+        
+        logger.debug("Accessing extension '{}' out of {} available HDUs...".format(ext, nhdu))
+        data = hdulist[ext].data.transpose()
+        if not data.ndim == 2:
+            raise ValueError("Primary HDU must contain a 2D image")
+        header = hdulist[ext].header
+        
+        hdulist.close()
+        
+        if return_header:
+            return (data, header)
+        else:
+            return data
+        
+         
+    
       
     def extract_stamp(self, x, y, width, height=None, indexconv="numpy", keep_header=False):
         """Extracts a stamp and returns it as a new instance (using views of numpy arrays, i.e., without making a copy)
