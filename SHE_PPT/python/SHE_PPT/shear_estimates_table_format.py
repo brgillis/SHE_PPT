@@ -91,8 +91,6 @@ class ShearEstimatesTableFormat(object):
 
         # Table column labels
         self.ID = "ID"
-        self.gal_x = "GAL_X"
-        self.gal_y = "GAL_Y"
         self.gal_g1 = "GAL_EST_G1"
         self.gal_g2 = "GAL_EST_G2"
         self.gal_g1_err = "GAL_G1_ERR"
@@ -102,8 +100,6 @@ class ShearEstimatesTableFormat(object):
         
         # Store the less-used comments, dtypes, and fits_dtypes in dicts
         self.comments = OrderedDict(((self.ID, None),
-                                    (self.gal_x, "pixels"),
-                                    (self.gal_y, "pixels"),
                                     (self.gal_g1, None),
                                     (self.gal_g2, None),
                                     (self.gal_g1_err, None),
@@ -113,8 +109,6 @@ class ShearEstimatesTableFormat(object):
                                    )) 
         
         self.dtypes = OrderedDict(((self.ID, ">i8"),
-                                  (self.gal_x, ">f4"),
-                                  (self.gal_y, ">f4"),
                                   (self.gal_g1, ">f4"),
                                   (self.gal_g2, ">f4"),
                                   (self.gal_g1_err, ">f4"),
@@ -124,8 +118,6 @@ class ShearEstimatesTableFormat(object):
                                  ))
         
         self.fits_dtypes = OrderedDict(((self.ID, "K"),
-                                       (self.gal_x, "E"),
-                                       (self.gal_y, "E"),
                                        (self.gal_g1, "E"),
                                        (self.gal_g2, "E"),
                                        (self.gal_g1_err, "E"),

@@ -16,6 +16,7 @@ Dependency Changes
 Deprecated Features
 -------------------
 
+- shear_estimates_table_format no longer includes gal_x and gal_y columns
 
 Bug Fixes
 ---------
