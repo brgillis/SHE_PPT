@@ -281,7 +281,7 @@ def initialise_shear_estimates_table(detections_table = None,
             init_cols.append([])
             dtypes.append[tf.dtypes[colname]]
     
-    shear_estimates_table = Table(init_cols, names=tf.all, dtype=dtypes)
+    shear_estimates_table = Table(init_cols, names=names, dtype=dtypes)
     
     if detections_table is None:
         model_hash = None
