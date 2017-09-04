@@ -106,7 +106,7 @@ class ShearEstimatesTableFormat(object):
         self.ID = "ID"
         set_column_properties(self.ID, dtype=">i8", fits_dtype="K")
         
-        self.gal_g1 = "GAL_EST_G1"
+        self.gal_g1 = "GAL_EST_G1" # Double
         set_column_properties(self.gal_g1)
         
         self.gal_g2 = "GAL_EST_G2"
@@ -154,6 +154,12 @@ class ShearEstimatesTableFormat(object):
         self.gal_g2_cal2 = "GAL_EST_G2_CAL2"
         set_column_properties(self.gal_g2_cal2, is_optional=True)
         
+        self.gal_b1_cal2 = "GAL_B1_CAL2"
+        set_column_properties(self.gal_b1_cal2, is_optional=True)
+        
+        self.gal_b2_cal2 = "GAL_B2_CAL2"
+        set_column_properties(self.gal_b2_cal2, is_optional=True)
+        
         self.gal_g1_cal2_err = "GAL_G1_CAL2_ERR"
         set_column_properties(self.gal_g1_cal2, is_optional=True)
         
@@ -165,12 +171,6 @@ class ShearEstimatesTableFormat(object):
         
         self.gal_e2_cal2_err = "GAL_E2_CAL2_ERR"
         set_column_properties(self.gal_e2_cal2_err, is_optional=True)
-        
-        self.gal_b1_cal2 = "GAL_B1_CAL2"
-        set_column_properties(self.gal_b1_cal1, is_optional=True)
-        
-        self.gal_b2_cal2 = "GAL_B2_CAL2"
-        set_column_properties(self.gal_b2_cal1, is_optional=True)
         
         self.gal_re = "GAL_EST_RE"
         set_column_properties(self.gal_re, is_optional=True, comment="arcsec")
