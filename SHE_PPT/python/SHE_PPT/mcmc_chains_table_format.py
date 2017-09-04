@@ -37,6 +37,7 @@ class MCMCChainsTableMeta(object):
         self.__version__ = "0.1"
         
         # Table metadata labels
+        self.version = "SS_VER"
         
         self.model_hash = "MHASH"
         self.model_seed = "MSEED"
@@ -46,7 +47,7 @@ class MCMCChainsTableMeta(object):
         self.len_chain = "LCHAIN"
         
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.version, None),
+        self.comments = OrderedDict(((self.__version__, None),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
