@@ -38,7 +38,7 @@ from collections import OrderedDict
 from astropy.table import Table
 
 from SHE_PPT.detections_table_format import tf as detf
-from SHE_PPT.table_utility import get_dtypes, is_in_format
+from SHE_PPT.table_utility import is_in_format
 
 image_tail = ".fits"
 shear_estimates_tail = "_shear_measurements.fits"
@@ -94,12 +94,15 @@ class ShearEstimatesTableFormat(object):
         self.comments = OrderedDict()
         self.dtypes = OrderedDict()
         self.fits_dtypes = OrderedDict()
+        self.lengths = OrderedDict()
         
-        def set_column_properties( name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E"):
+        def set_column_properties( name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
+                                   length=1):
             self.is_optional[name] = is_optional
             self.comments[name] = comment
             self.dtypes[name] = dtype
             self.fits_dtypes[name] = fits_dtype
+            self.lengths[name] = length
 
         # Table column labels and properties
         
@@ -279,7 +282,7 @@ def initialise_shear_estimates_table(detections_table = None,
         if (colname in tf.all_required) or (colname in optional_columns):
             names.append(colname)
             init_cols.append([])
-            dtypes.append(tf.dtypes[colname])
+            dtypes.append((tf.dtypes[colname],tf.lengths[colname]))
     
     shear_estimates_table = Table(init_cols, names=names, dtype=dtypes)
     
