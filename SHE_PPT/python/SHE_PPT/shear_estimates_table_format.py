@@ -130,6 +130,12 @@ class ShearEstimatesTableFormat(object):
         self.gal_g2_cal1 = "GAL_EST_G2_CAL1"
         set_column_properties(self.gal_g2_cal1, is_optional=True)
         
+        self.gal_b1_cal1 = "GAL_B1_CAL1"
+        set_column_properties(self.gal_b1_cal1, is_optional=True)
+        
+        self.gal_b2_cal1 = "GAL_B2_CAL1"
+        set_column_properties(self.gal_b2_cal1, is_optional=True)
+        
         self.gal_g1_cal1_err = "GAL_G1_CAL1_ERR"
         set_column_properties(self.gal_g1_cal1, is_optional=True)
         
@@ -142,23 +148,29 @@ class ShearEstimatesTableFormat(object):
         self.gal_e2_cal1_err = "GAL_E2_CAL1_ERR"
         set_column_properties(self.gal_e2_cal1_err, is_optional=True)
         
-        self.gal_g1_cal2 = "GAL_EST_G1_CAL1"
+        self.gal_g1_cal2 = "GAL_EST_G1_CAL2"
         set_column_properties(self.gal_g1_cal2, is_optional=True)
         
-        self.gal_g2_cal2 = "GAL_EST_G2_CAL1"
+        self.gal_g2_cal2 = "GAL_EST_G2_CAL2"
         set_column_properties(self.gal_g2_cal2, is_optional=True)
         
-        self.gal_g1_cal2_err = "GAL_G1_CAL1_ERR"
+        self.gal_g1_cal2_err = "GAL_G1_CAL2_ERR"
         set_column_properties(self.gal_g1_cal2, is_optional=True)
         
-        self.gal_g2_cal2_err = "GAL_G2_CAL1_ERR"
+        self.gal_g2_cal2_err = "GAL_G2_CAL2_ERR"
         set_column_properties(self.gal_g2_cal2_err, is_optional=True)
         
-        self.gal_e1_cal2_err = "GAL_E1_CAL1_ERR"
+        self.gal_e1_cal2_err = "GAL_E1_CAL2_ERR"
         set_column_properties(self.gal_e1_cal2_err, is_optional=True)
         
-        self.gal_e2_cal2_err = "GAL_E2_CAL1_ERR"
+        self.gal_e2_cal2_err = "GAL_E2_CAL2_ERR"
         set_column_properties(self.gal_e2_cal2_err, is_optional=True)
+        
+        self.gal_b1_cal2 = "GAL_B1_CAL2"
+        set_column_properties(self.gal_b1_cal1, is_optional=True)
+        
+        self.gal_b2_cal2 = "GAL_B2_CAL2"
+        set_column_properties(self.gal_b2_cal1, is_optional=True)
         
         self.gal_re = "GAL_EST_RE"
         set_column_properties(self.gal_re, is_optional=True, comment="arcsec")
