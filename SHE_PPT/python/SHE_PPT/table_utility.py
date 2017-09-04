@@ -57,6 +57,17 @@ def get_fits_dtypes(table_format):
 
     return zip(*table_format.fits_dtypes.items())[1]
 
+def get_lengths(table_format):
+    """
+        @brief Get the data lengths for the table format.
+        
+        @param table_format <...TableFormat>
+
+        @return tuple<int>
+    """
+
+    return zip(*table_format.lengths.items())[1]
+
 def is_in_format(table, table_format):
     """
         @brief Checks if a table is in the given format
