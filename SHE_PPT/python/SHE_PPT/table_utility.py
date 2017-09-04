@@ -90,7 +90,7 @@ def is_in_format(table, table_format):
         if colname not in table_format.all:
             return False
         if table.dtype[colname].newbyteorder('>') != np.dtype((table_format.dtypes[colname],
-                                                               table_format.length[colname])):
+                                                               table_format.lengths[colname])):
             return False
         
     # Check the metadata is correct
