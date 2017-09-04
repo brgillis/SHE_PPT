@@ -113,7 +113,7 @@ class ShearEstimatesTableFormat(object):
         set_column_properties(self.gal_g2)
         
         self.gal_g1_err = "GAL_G1_ERR"
-        set_column_properties(self.gal_g1, is_optional=True)
+        set_column_properties(self.gal_g1_err, is_optional=True)
         
         self.gal_g2_err = "GAL_G2_ERR"
         set_column_properties(self.gal_g2_err, is_optional=True)
