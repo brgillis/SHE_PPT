@@ -48,7 +48,7 @@ class MCMCChainsTableMeta(object):
         self.len_chain = "LCHAIN"
         
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.__version__, None),
+        self.comments = OrderedDict(((self.version, None),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
