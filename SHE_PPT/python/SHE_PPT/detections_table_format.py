@@ -34,7 +34,7 @@ class DetectionsTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.1.1"
+        self.__version__ = "0.1.2"
         
         # Table metadata labels
         
@@ -83,37 +83,42 @@ class DetectionsTableFormat(object):
         # Direct alias for a tuple of all metadata
         self.meta_data = self.m.all
         
+        # Dicts for less-used properties
+        self.is_optional = OrderedDict()
+        self.comments = OrderedDict()
+        self.dtypes = OrderedDict()
+        self.fits_dtypes = OrderedDict()
+        
+        def set_column_properties( name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E"):
+            self.is_optional[name] = is_optional
+            self.comments[name] = comment
+            self.dtypes[name] = dtype
+            self.fits_dtypes[name] = fits_dtype
+        
         # Column names
         self.ID = "ID"
+        set_column_properties(self.ID, dtype=">i8", fits_dtype="K")
+        
         self.gal_x = "x_center_pix"
+        set_column_properties(self.gal_x, comment="pixels")
+        
         self.gal_y = "y_center_pix"
+        set_column_properties(self.gal_y, comment="pixels")
+        
         self.psf_x = "psf_x_center_pix"
+        set_column_properties(self.psf_x, is_optional=True, comment="pixels")
+        
         self.psf_y = "psf_y_center_pix"
-        
-        # Store the less-used comments, dtypes, and fits_dtypes in dicts
-        self.comments = OrderedDict(((self.ID, None),
-                                    (self.gal_x, "pixels"),
-                                    (self.gal_y, "pixels"),
-                                    (self.psf_x, "pixels"),
-                                    (self.psf_y, "pixels"),
-                                   )) 
-        
-        self.dtypes = OrderedDict(((self.ID, ">i8"),
-                                  (self.gal_x, ">f4"),
-                                  (self.gal_y, ">f4"),
-                                  (self.psf_x, ">f4"),
-                                  (self.psf_y, ">f4"),
-                                 ))
-        
-        self.fits_dtypes = OrderedDict(((self.ID, "K"),
-                                       (self.gal_x, "E"),
-                                       (self.gal_y, "E"),
-                                       (self.psf_x, "E"),
-                                       (self.psf_y, "E"),
-                                      ))
+        set_column_properties(self.psf_y, is_optional=True, comment="pixels")
         
         # A list of columns in the desired order
-        self.all = self.comments.keys()
+        self.all = self.is_optional.keys()
+        
+        # A list of required columns in the desired order
+        self.all_required = []
+        for label in self.all:
+            if not self.is_optional[label]:
+                self.all_required.append(label)
 
 # Define an instance of this object that can be imported         
 detections_table_format = DetectionsTableFormat()
@@ -164,7 +169,8 @@ def make_detections_table_header(subtracted_sky_level = None,
     
     return header
 
-def initialise_detections_table(image = None, options = None):
+def initialise_detections_table(image = None, options = None,
+                                     optional_columns = None):
     """
         @brief Initialise a detections table.
         
@@ -172,15 +178,31 @@ def initialise_detections_table(image = None, options = None):
         
         @param options <dict> Options dictionary
         
+        @param optional_columns <list<str>> List of names for optional columns to include.
+               Default is gal_e1_err and gal_e2_err
+        
         @return detections_table <astropy.Table>
     """
     
-    init_cols = []
-    for _ in range(len(tf.all)):
-        init_cols.append([])
+    if optional_columns is None:
+        optional_columns = [tf.psf_x,tf.psf_y]
+    else:
+        # Check all optional columns are valid
+        for colname in optional_columns:
+            if colname not in tf.all:
+                raise ValueError("Invalid optional column name: " + colname)
     
-    detections_table = Table(init_cols, names=tf.all,
-                          dtype=get_dtypes(tf))
+    names = []
+    init_cols = []
+    dtypes = []
+    for colname in tf.all:
+        if (colname in tf.all_required) or (colname in optional_columns):
+            names.append(colname)
+            init_cols.append([])
+            dtypes.append(tf.dtypes[colname])
+    
+    detections_table = Table(init_cols, names=names,
+                             dtype=dtypes)
     
     if image is None:
         subtracted_sky_level = None
