@@ -22,6 +22,7 @@
 
 from collections import OrderedDict
 
+from SHE_PPT.detections_table_format import tf as detf
 from astropy.table import Table
 
 num_chains = 10
