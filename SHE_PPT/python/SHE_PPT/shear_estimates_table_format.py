@@ -109,7 +109,7 @@ class ShearEstimatesTableFormat(object):
         self.ID = "ID"
         set_column_properties(self.ID, dtype=">i8", fits_dtype="K")
         
-        self.gal_g1 = "GAL_EST_G1" # Double
+        self.gal_g1 = "GAL_EST_G1"
         set_column_properties(self.gal_g1, dtype=">f8", fits_dtype="D")
         
         self.gal_g2 = "GAL_EST_G2"
