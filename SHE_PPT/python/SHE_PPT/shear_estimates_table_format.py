@@ -124,6 +124,42 @@ class ShearEstimatesTableFormat(object):
         self.gal_e2_err = "GAL_E2_ERR"
         set_column_properties(self.gal_e2_err, is_optional=True)
         
+        self.gal_g1_cal1 = "GAL_EST_G1_CAL1"
+        set_column_properties(self.gal_g1_cal1, is_optional=True)
+        
+        self.gal_g2_cal1 = "GAL_EST_G2_CAL1"
+        set_column_properties(self.gal_g2_cal1, is_optional=True)
+        
+        self.gal_g1_cal1_err = "GAL_G1_CAL1_ERR"
+        set_column_properties(self.gal_g1_cal1, is_optional=True)
+        
+        self.gal_g2_cal1_err = "GAL_G2_CAL1_ERR"
+        set_column_properties(self.gal_g2_cal1_err, is_optional=True)
+        
+        self.gal_e1_cal1_err = "GAL_E1_CAL1_ERR"
+        set_column_properties(self.gal_e1_cal1_err, is_optional=True)
+        
+        self.gal_e2_cal1_err = "GAL_E2_CAL1_ERR"
+        set_column_properties(self.gal_e2_cal1_err, is_optional=True)
+        
+        self.gal_g1_cal2 = "GAL_EST_G1_CAL1"
+        set_column_properties(self.gal_g1_cal2, is_optional=True)
+        
+        self.gal_g2_cal2 = "GAL_EST_G2_CAL1"
+        set_column_properties(self.gal_g2_cal2, is_optional=True)
+        
+        self.gal_g1_cal2_err = "GAL_G1_CAL1_ERR"
+        set_column_properties(self.gal_g1_cal2, is_optional=True)
+        
+        self.gal_g2_cal2_err = "GAL_G2_CAL1_ERR"
+        set_column_properties(self.gal_g2_cal2_err, is_optional=True)
+        
+        self.gal_e1_cal2_err = "GAL_E1_CAL1_ERR"
+        set_column_properties(self.gal_e1_cal2_err, is_optional=True)
+        
+        self.gal_e2_cal2_err = "GAL_E2_CAL1_ERR"
+        set_column_properties(self.gal_e2_cal2_err, is_optional=True)
+        
         self.gal_re = "GAL_EST_RE"
         set_column_properties(self.gal_re, is_optional=True, comment="arcsec")
         
@@ -200,23 +236,40 @@ def make_shear_estimates_table_header(model_hash = None,
     
     return header
 
-def initialise_shear_estimates_table(detections_table = None):
+def initialise_shear_estimates_table(detections_table = None,
+                                     optional_columns = None):
     """
-        @brief Initialise a shear estimates table based on a detections table
+        @brief Initialise a shear estimates table based on a detections table, with the
+               desired set of optional columns
         
         @param detections_table <astropy.table.Table>
+        
+        @param optional_columns <list<str>> List of names for optional columns to include.
+               Default is gal_e1_err and gal_e2_err
         
         @return shear_estimates_table <astropy.table.Table>
     """
     
     assert (detections_table is None) or (is_in_format(detections_table,detf))
     
-    init_cols = []
-    for _ in range(len(tf.all)):
-        init_cols.append([])
+    if optional_columns is None:
+        optional_columns = [tf.gal_e1_err,tf.gal_e2_err]
+    else:
+        # Check all optional columns are valid
+        for colname in optional_columns:
+            if colname not in tf.all:
+                raise ValueError("Invalid optional column name: " + colname)
     
-    shear_estimates_table = Table(init_cols, names=tf.all,
-                          dtype=get_dtypes(tf))
+    names = []
+    init_cols = []
+    dtypes = []
+    for colnames in tf.all:
+        if colname in tf.all_required or colname in optional_columns:
+            names.append(colname)
+            init_cols.append([])
+            dtypes.append[tf.dtypes[colname]]
+    
+    shear_estimates_table = Table(init_cols, names=tf.all, dtype=dtypes)
     
     if detections_table is None:
         model_hash = None
