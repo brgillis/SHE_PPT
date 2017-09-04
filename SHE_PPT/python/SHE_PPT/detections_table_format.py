@@ -24,7 +24,6 @@ from collections import OrderedDict
 
 from astropy.table import Table
 
-from SHE_PPT.table_utility import get_dtypes
 from SHE_PPT.utility import hash_any
 
 class DetectionsTableMeta(object):
@@ -88,12 +87,15 @@ class DetectionsTableFormat(object):
         self.comments = OrderedDict()
         self.dtypes = OrderedDict()
         self.fits_dtypes = OrderedDict()
+        self.lengths = OrderedDict()
         
-        def set_column_properties( name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E"):
+        def set_column_properties( name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
+                                   length=1):
             self.is_optional[name] = is_optional
             self.comments[name] = comment
             self.dtypes[name] = dtype
             self.fits_dtypes[name] = fits_dtype
+            self.lengths[name] = length
         
         # Column names
         self.ID = "ID"
@@ -199,7 +201,7 @@ def initialise_detections_table(image = None, options = None,
         if (colname in tf.all_required) or (colname in optional_columns):
             names.append(colname)
             init_cols.append([])
-            dtypes.append(tf.dtypes[colname])
+            dtypes.append((tf.dtypes[colname],tf.lengths[colname]))
     
     detections_table = Table(init_cols, names=names,
                              dtype=dtypes)
