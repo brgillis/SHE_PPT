@@ -50,7 +50,7 @@ class ShearEstimatesTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.1.1"
+        self.__version__ = "0.1.2"
         
         # Table metadata labels
         self.version = "SS_VER"
@@ -97,6 +97,18 @@ class ShearEstimatesTableFormat(object):
         self.gal_g2_err = "GAL_G2_ERR"
         self.gal_e1_err = "GAL_E1_ERR"
         self.gal_e2_err = "GAL_E2_ERR"
+        self.gal_re = "GAL_EST_RE"
+        self.gal_re_err = "GAL_EST_RE_ERR"
+        self.gal_x = "GAL_EST_X"
+        self.gal_y = "GAL_EST_Y"
+        self.gal_x_err = "GAL_EST_X_ERR"
+        self.gal_y_err = "GAL_EST_Y_ERR"
+        self.gal_flux = "GAL_FLUX"
+        self.gal_flux_err = "GAL_FLUX_ERR"
+        self.gal_bulge_fraction = "GAL_BULGE_FRAC"
+        self.gal_bulge_fraction_err = "GAL_BULGE_FRAC_ERR"
+        self.gal_snr = "GAL_SNR"
+        self.gal_snr_err = "GAL_SNR_ERR"
         
         # Store the less-used comments, dtypes, and fits_dtypes in dicts
         self.comments = OrderedDict(((self.ID, None),
@@ -106,6 +118,18 @@ class ShearEstimatesTableFormat(object):
                                     (self.gal_g2_err, None),
                                     (self.gal_e1_err, None),
                                     (self.gal_e2_err, None),
+                                    (self.gal_re, "arcsec"),
+                                    (self.gal_re_err, "arcsec"),
+                                    (self.gal_x, "pixels"),
+                                    (self.gal_y, "pixels"),
+                                    (self.gal_x_err, "pixels"),
+                                    (self.gal_y_err, "pixels"),
+                                    (self.gal_flux, "ADU"),
+                                    (self.gal_flux_err, "ADU"),
+                                    (self.gal_bulge_fraction, None),
+                                    (self.gal_bulge_fraction_err, None),
+                                    (self.gal_snr, None),
+                                    (self.gal_snr_err, None),
                                    )) 
         
         self.dtypes = OrderedDict(((self.ID, ">i8"),
@@ -115,6 +139,18 @@ class ShearEstimatesTableFormat(object):
                                   (self.gal_g2_err, ">f4"),
                                   (self.gal_e1_err, ">f4"),
                                   (self.gal_e2_err, ">f4"),
+                                  (self.gal_re, ">f4"),
+                                  (self.gal_re_err, ">f4"),
+                                  (self.gal_x, ">f4"),
+                                  (self.gal_y, ">f4"),
+                                  (self.gal_x_err, ">f4"),
+                                  (self.gal_y_err, ">f4"),
+                                  (self.gal_flux, ">f4"),
+                                  (self.gal_flux_err, ">f4"),
+                                  (self.gal_bulge_fraction, ">f4"),
+                                  (self.gal_bulge_fraction_err, ">f4"),
+                                  (self.gal_snr, ">f4"),
+                                  (self.gal_snr_err, ">f4"),
                                  ))
         
         self.fits_dtypes = OrderedDict(((self.ID, "K"),
@@ -124,6 +160,18 @@ class ShearEstimatesTableFormat(object):
                                        (self.gal_g2_err, "E"),
                                        (self.gal_e1_err, "E"),
                                        (self.gal_e2_err, "E"),
+                                       (self.gal_re, "E"),
+                                       (self.gal_re_err, "E"),
+                                       (self.gal_x, "E"),
+                                       (self.gal_y, "E"),
+                                       (self.gal_x_err, "E"),
+                                       (self.gal_y_err, "E"),
+                                       (self.gal_flux, "E"),
+                                       (self.gal_flux_err, "E"),
+                                       (self.gal_bulge_fraction, "E"),
+                                       (self.gal_bulge_fraction_err, "E"),
+                                       (self.gal_snr, "E"),
+                                       (self.gal_snr_err, "E"),
                                       ))
         
         # A list of columns in the desired order
