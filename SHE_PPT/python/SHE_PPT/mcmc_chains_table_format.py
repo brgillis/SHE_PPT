@@ -121,7 +121,13 @@ class MCMCChainsTableFormat(object):
         set_column_properties(self.gal_bulge_fraction, length=num_chains*len_chain)
         
         self.gal_snr = "GAL_SNR"
-        set_column_properties(self.gal_snr, comment="pixels", length=num_chains*len_chain)
+        set_column_properties(self.gal_snr, length=num_chains*len_chain)
+        
+        self.gal_lr1 = "GAL_LR1"
+        set_column_properties(self.gal_lr1, length=num_chains*len_chain)
+        
+        self.gal_lr2 = "GAL_LR2"
+        set_column_properties(self.gal_lr2, length=num_chains*len_chain)
         
         # A list of columns in the desired order
         self.all = self.is_optional.keys()
