@@ -34,7 +34,7 @@ class DetailsTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.1.1"
+        self.__version__ = "0.1.2"
         
         # Table metadata labels
         
@@ -82,94 +82,88 @@ class DetailsTableFormat(object):
         
         # Direct alias for a tuple of all metadata
         self.meta_data = self.m.all
+        
+        # Dicts for less-used properties
+        self.is_optional = OrderedDict()
+        self.comments = OrderedDict()
+        self.dtypes = OrderedDict()
+        self.fits_dtypes = OrderedDict()
+        self.lengths = OrderedDict()
+        
+        def set_column_properties( name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
+                                   length=1):
+            self.is_optional[name] = is_optional
+            self.comments[name] = comment
+            self.dtypes[name] = dtype
+            self.fits_dtypes[name] = fits_dtype
+            self.lengths[name] = length
 
         # Table column labels
         self.ID = "ID"
+        set_column_properties(self.ID, dtype=">i8", fits_dtype="K")
+        
         self.gal_x = "x_center_pix"
+        set_column_properties(self.gal_x, comment="pixels")
+        
         self.gal_y = "y_center_pix"
+        set_column_properties(self.gal_y, comment="pixels")
+        
         self.psf_x = "psf_x_center_pix"
+        set_column_properties(self.psf_x, is_optional=True, comment="pixels")
+        
         self.psf_y = "psf_y_center_pix"
+        set_column_properties(self.psf_y, is_optional=True, comment="pixels")
+        
         self.hlr_bulge = "hlr_bulge_arcsec"
+        set_column_properties(self.hlr_bulge, comment="arcsec")
+        
         self.hlr_disk = "hlr_disk_arcsec"
+        set_column_properties(self.hlr_disk, comment="arcsec")
+        
         self.bulge_ellipticity = "bulge_ellipticity"
+        set_column_properties(self.bulge_ellipticity)
+        
         self.bulge_axis_ratio = "bulge_axis_ratio"
+        set_column_properties(self.bulge_axis_ratio)
+        
         self.bulge_fraction = "bulge_fraction"
+        set_column_properties(self.bulge_fraction)
+        
         self.disk_height_ratio = "disk_height_ratio"
+        set_column_properties(self.disk_height_ratio)
+        
         self.magnitude = "magnitude"
+        set_column_properties(self.magnitude, comment="VIS")
+        
         self.sersic_index = "sersic_index"
+        set_column_properties(self.sersic_index)
+        
         self.rotation = "rotation"
+        set_column_properties(self.rotation, comment="degrees")
+        
         self.spin = "spin"
+        set_column_properties(self.spin, comment="degrees")
+        
         self.tilt = "tilt"
+        set_column_properties(self.tilt, comment="degrees")
+        
         self.shear_magnitude = "shear_magnitude"
+        set_column_properties(self.shear_magnitude, dtype=">f8", fits_dtype="D")
+        
         self.shear_angle = "shear_angle"
+        set_column_properties(self.shear_angle, comment="degrees", dtype=">f8", fits_dtype="D")
+        
         self.target_galaxy = "is_target_galaxy"
-        
-        # Store the less-used comments, dtypes, and fits_dtypes in dicts
-        self.comments = OrderedDict(((self.ID, None),
-                                    (self.gal_x, "pixels"),
-                                    (self.gal_y, "pixels"),
-                                    (self.psf_x, "pixels"),
-                                    (self.psf_y, "pixels"),
-                                    (self.hlr_bulge, "arcsec"),
-                                    (self.hlr_disk, "arcsec"),
-                                    (self.bulge_ellipticity, None),
-                                    (self.bulge_axis_ratio, None),
-                                    (self.bulge_fraction, None),
-                                    (self.disk_height_ratio, None),
-                                    (self.magnitude, "VIS"),
-                                    (self.sersic_index, None),
-                                    (self.rotation, "degrees"),
-                                    (self.spin, "degrees"),
-                                    (self.tilt, "degrees"),
-                                    (self.shear_magnitude, None),
-                                    (self.shear_angle, "degrees"),
-                                    (self.target_galaxy, None),
-                                   ))
-        
-        self.dtypes = OrderedDict(((self.ID, ">i8"),
-                                    (self.gal_x, ">f4"),
-                                    (self.gal_y, ">f4"),
-                                    (self.psf_x, ">f4"),
-                                    (self.psf_y, ">f4"),
-                                    (self.hlr_bulge, ">f4"),
-                                    (self.hlr_disk, ">f4"),
-                                    (self.bulge_ellipticity, ">f4"),
-                                    (self.bulge_axis_ratio, ">f4"),
-                                    (self.bulge_fraction, ">f4"),
-                                    (self.disk_height_ratio, ">f4"),
-                                    (self.magnitude, ">f4"),
-                                    (self.sersic_index, ">f4"),
-                                    (self.rotation, ">f4"),
-                                    (self.spin, ">f4"),
-                                    (self.tilt, ">f4"),
-                                    (self.shear_magnitude, ">f4"),
-                                    (self.shear_angle, ">f4"),
-                                    (self.target_galaxy, ">b1"),
-                                   )) 
-        
-        self.fits_dtypes = OrderedDict(((self.ID, "K"),
-                                    (self.gal_x, "E"),
-                                    (self.gal_y, "E"),
-                                    (self.psf_x, "E"),
-                                    (self.psf_y, "E"),
-                                    (self.hlr_bulge, "E"),
-                                    (self.hlr_disk, "E"),
-                                    (self.bulge_ellipticity, "E"),
-                                    (self.bulge_axis_ratio, "E"),
-                                    (self.bulge_fraction, "E"),
-                                    (self.disk_height_ratio, "E"),
-                                    (self.magnitude, "E"),
-                                    (self.sersic_index, "E"),
-                                    (self.rotation, "E"),
-                                    (self.spin, "E"),
-                                    (self.tilt, "E"),
-                                    (self.shear_magnitude, "E"),
-                                    (self.shear_angle, "E"),
-                                    (self.target_galaxy, "L"),
-                                   )) 
+        set_column_properties(self.target_galaxy)
         
         # A list of columns in the desired order
-        self.all = self.comments.keys()
+        self.all = self.is_optional.keys()
+        
+        # A list of required columns in the desired order
+        self.all_required = []
+        for label in self.all:
+            if not self.is_optional[label]:
+                self.all_required.append(label)
         
 # Define an instance of this object that can be imported 
 details_table_format = DetailsTableFormat()
@@ -219,7 +213,8 @@ def make_details_table_header(subtracted_sky_level = None,
     
     return header
 
-def initialise_details_table(image = None, options = None):
+def initialise_details_table(image = None, options = None,
+                             optional_columns = None):
     """
         @brief Initialise a detections table.
         
@@ -227,15 +222,31 @@ def initialise_details_table(image = None, options = None):
         
         @param options <dict> Options dictionary
         
+        @param optional_columns <list<str>> List of names for optional columns to include.
+               Default is psf_x and psf_y
+        
         @return details_table <astropy.Table>
     """
     
-    init_cols = []
-    for _ in range(len(tf.all)):
-        init_cols.append([])
+    if optional_columns is None:
+        optional_columns = [tf.psf_x,tf.psf_y]
+    else:
+        # Check all optional columns are valid
+        for colname in optional_columns:
+            if colname not in tf.all:
+                raise ValueError("Invalid optional column name: " + colname)
     
-    details_table = Table(init_cols, names=tf.all,
-                          dtype=get_dtypes(tf))
+    names = []
+    init_cols = []
+    dtypes = []
+    for colname in tf.all:
+        if (colname in tf.all_required) or (colname in optional_columns):
+            names.append(colname)
+            init_cols.append([])
+            dtypes.append((tf.dtypes[colname],tf.lengths[colname]))
+    
+    details_table = Table(init_cols, names=names,
+                          dtype=dtypes)
     
     if image is None:
         subtracted_sky_level = None
