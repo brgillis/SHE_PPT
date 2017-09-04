@@ -275,8 +275,8 @@ def initialise_shear_estimates_table(detections_table = None,
     names = []
     init_cols = []
     dtypes = []
-    for colnames in tf.all:
-        if colname in tf.all_required or colname in optional_columns:
+    for colname in tf.all:
+        if (colname in tf.all_required) or (colname in optional_columns):
             names.append(colname)
             init_cols.append([])
             dtypes.append[tf.dtypes[colname]]
