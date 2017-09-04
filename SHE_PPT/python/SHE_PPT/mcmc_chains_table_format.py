@@ -167,7 +167,7 @@ def make_mcmc_chains_table_header(model_hash = None,
     
     return header
 
-def initialise_detections_table(detections_table = None,
+def initialise_mcmc_chains_table(detections_table = None,
                                 optional_columns = None):
     """
         @brief Initialise an mcmc chains table based on a detections table, with the
@@ -178,7 +178,7 @@ def initialise_detections_table(detections_table = None,
         @param optional_columns <list<str>> List of names for optional columns to include.
                Default is none
         
-        @return detections_table <astropy.Table>
+        @return mcmc_chains_table <astropy.Table>
     """
     
     if optional_columns is None:
