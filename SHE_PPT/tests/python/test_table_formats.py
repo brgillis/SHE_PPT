@@ -28,10 +28,12 @@ import pytest
 from SHE_PPT.details_table_format import tf as datf, initialise_details_table
 from SHE_PPT.detections_table_format import tf as detf, initialise_detections_table
 from SHE_PPT.shear_estimates_table_format import tf as setf, initialise_shear_estimates_table
+from SHE_PPT.mcmc_chains_table_format import tf as mctf, initialise_mcmc_chains_table, num_chains, len_chain
 
 from SHE_PPT.table_utility import (get_comments,
                                    get_dtypes,
                                    get_fits_dtypes,
+                                   get_lengths,
                                    is_in_format,
                                    add_row,
                                    output_tables,
@@ -45,10 +47,11 @@ class TestTableFormats:
     @classmethod
     def setup_class(cls):
         # Define a list of the table formats we'll be testing
-        cls.formats = [datf,detf,setf]
+        cls.formats = [datf,detf,setf,mctf]
         cls.initializers = [initialise_details_table,
                             initialise_detections_table,
-                            initialise_shear_estimates_table]
+                            initialise_shear_estimates_table,
+                            initialise_mcmc_chains_table]
         
         cls.filename_base = "test_table"
         
@@ -79,6 +82,9 @@ class TestTableFormats:
             
             # Check column fits dtypes
             assert tf.fits_dtypes.keys() == tf.all
+            
+            # Check column fits dtypes
+            assert tf.lengths.keys() == tf.all
 
     def test_get_comments(self):
         # Check if we get the correct comments list for detections tables
@@ -101,6 +107,15 @@ class TestTableFormats:
         
         assert get_fits_dtypes(detf) == desired_fits_dtypes
         
+    def test_get_fits_dtypes(self):
+        # Check if we get the correct lengths list for mcmc chains tables
+        
+        l = len_chain*num_chains
+        
+        desired_lengths = (1,l,l,l,l,l,l,l,l,l,l)
+        
+        assert get_lengths(mctf) == desired_lengths
+        
     def test_is_in_format(self):
         # Test each format is detected correctly
         
@@ -109,7 +124,7 @@ class TestTableFormats:
         for init in self.initializers:
             empty_tables.append(init())
 
-        assert len(self.initializers) == len(self.formats) == 3
+        assert len(self.initializers) == len(self.formats)
             
         for i in range(len(self.initializers)):
             for j in range((len(self.formats))):
@@ -188,7 +203,7 @@ class TestTableFormats:
         detections_table = initialise_detections_table()
         details_table = initialise_details_table()
         
-        # Try to initialize the shear_estimates table based on the detections table
+        # Try to initialize the shear estimates table based on the detections table
         
         detections_table.meta[detf.m.model_hash] == -1235
         detections_table.meta[detf.m.model_seed] == 4422
@@ -199,4 +214,15 @@ class TestTableFormats:
         assert(shear_estimates_table.meta[setf.m.model_hash] == detections_table.meta[detf.m.model_hash])
         assert(shear_estimates_table.meta[setf.m.model_seed] == detections_table.meta[detf.m.model_seed])
         assert(shear_estimates_table.meta[setf.m.noise_seed] == detections_table.meta[detf.m.noise_seed])
+        
+        # Try to initialize the mcmc chains table based on the detections table
+        
+        mcmc_chains_table = initialise_mcmc_chains_table(detections_table)
+        
+        assert(mcmc_chains_table.meta[setf.m.model_hash] == detections_table.meta[detf.m.model_hash])
+        assert(mcmc_chains_table.meta[setf.m.model_seed] == detections_table.meta[detf.m.model_seed])
+        assert(mcmc_chains_table.meta[setf.m.noise_seed] == detections_table.meta[detf.m.noise_seed])
+        
+        assert(mcmc_chains_table.meta[mctf.m.num_chains] == num_chains)
+        assert(mcmc_chains_table.meta[mctf.m.len_chain] == len_chain)
         
