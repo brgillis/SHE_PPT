@@ -49,11 +49,11 @@ class MCMCChainsTableMeta(object):
         
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
+                                     (self.num_chains, None),
+                                     (self.len_chain, None),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
-                                     (self.num_chains, None),
-                                     (self.len_chain, None),
                                    ))
         
         # A list of columns in the desired order
