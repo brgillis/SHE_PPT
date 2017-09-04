@@ -279,7 +279,7 @@ def initialise_shear_estimates_table(detections_table = None,
         if (colname in tf.all_required) or (colname in optional_columns):
             names.append(colname)
             init_cols.append([])
-            dtypes.append[tf.dtypes[colname]]
+            dtypes.append(tf.dtypes[colname])
     
     shear_estimates_table = Table(init_cols, names=names, dtype=dtypes)
     
