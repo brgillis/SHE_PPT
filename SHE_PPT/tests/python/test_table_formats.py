@@ -107,7 +107,7 @@ class TestTableFormats:
         
         assert get_fits_dtypes(detf) == desired_fits_dtypes
         
-    def test_get_fits_dtypes(self):
+    def test_get_lengths(self):
         # Check if we get the correct lengths list for mcmc chains tables
         
         l = len_chain*num_chains
