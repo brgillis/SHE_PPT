@@ -206,13 +206,13 @@ class ShearEstimatesTableFormat(object):
         set_column_properties(self.gal_bulge_fraction, is_optional=True)
         
         self.gal_bulge_fraction_err = "GAL_BULGE_FRAC_ERR"
-        set_column_properties(self.gal_bulge_fraction, is_optional=True)
+        set_column_properties(self.gal_bulge_fraction_err, is_optional=True)
         
         self.gal_snr = "GAL_SNR"
-        set_column_properties(self.gal_bulge_fraction, is_optional=True)
+        set_column_properties(self.gal_snr, is_optional=True)
         
         self.gal_snr_err = "GAL_SNR_ERR"
-        set_column_properties(self.gal_bulge_fraction, is_optional=True)
+        set_column_properties(self.gal_snr_err, is_optional=True)
         
         # A list of columns in the desired order
         self.all = self.is_optional.keys()
