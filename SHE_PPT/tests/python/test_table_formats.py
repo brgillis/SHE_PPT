@@ -89,21 +89,45 @@ class TestTableFormats:
     def test_get_comments(self):
         # Check if we get the correct comments list for detections tables
         
-        desired_comments = (None,"pixels","pixels","pixels","pixels")
+        desired_comments = (None,None,"pixel","pixel",
+                            "pixel","pixel","pixel","pixel","deg",
+                            "pixel**2","pixel**2","pixel","pixel","deg",
+                            "deg","deg","deg","deg","deg",
+                            "deg**2","deg**2","deg","deg","deg",
+                            "deg","deg","deg","deg","deg",
+                            "deg**2","deg**2","deg","deg","deg",
+                            "deg","deg","deg","deg","deg","deg",
+                            "VIS","VIS","pixel",None)
         
         assert get_comments(detf) == desired_comments
         
     def test_get_dtypes(self):
         # Check if we get the correct dtypes list for detections tables
         
-        desired_dtypes = (">i8",">f4",">f4",">f4",">f4")
+        desired_dtypes = (">i8",">i8",">f4",">f4",
+                            ">f4",">f4",">f4",">f4",">f4",
+                            ">f4",">f4",">f4",">f4",">f4",
+                            ">f4",">f4",">f4",">f4",">f4",
+                            ">f4",">f4",">f4",">f4",">f4",
+                            ">f4",">f4",">f4",">f4",">f4",
+                            ">f4",">f4",">f4",">f4",">f4",
+                            ">f4",">f4",">f4",">f4",">f4",">f4",
+                            ">f4",">f4",">f4",">i8")
         
         assert get_dtypes(detf) == desired_dtypes
         
     def test_get_fits_dtypes(self):
         # Check if we get the correct fits dtypes list for detections tables
         
-        desired_fits_dtypes = ("K","E","E","E","E")
+        desired_fits_dtypes = ("K","K","E","E",
+                                "E","E","E","E","E",
+                                "E","E","E","E","E",
+                                "E","E","E","E","E",
+                                "E","E","E","E","E",
+                                "E","E","E","E","E",
+                                "E","E","E","E","E",
+                                "E","E","E","E","E","E",
+                                "E","E","E","K")
         
         assert get_fits_dtypes(detf) == desired_fits_dtypes
         
