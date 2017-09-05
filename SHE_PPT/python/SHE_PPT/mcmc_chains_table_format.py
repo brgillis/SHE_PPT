@@ -94,6 +94,8 @@ class MCMCChainsTableFormat(object):
             self.dtypes[name] = dtype
             self.fits_dtypes[name] = fits_dtype
             self.lengths[name] = length
+            
+            assert name not in is_optional
         
         # Column names
         self.ID = "ID"
