@@ -50,7 +50,7 @@ class ShearEstimatesTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.1.2"
+        self.__version__ = "0.1.3"
         
         # Table metadata labels
         self.version = "SS_VER"
@@ -277,7 +277,7 @@ def initialise_shear_estimates_table(detections_table = None,
     assert (detections_table is None) or (is_in_format(detections_table,detf))
     
     if optional_columns is None:
-        optional_columns = [tf.gal_e1_err,tf.gal_e2_err]
+        optional_columns = [tf.e1_err,tf.e2_err]
     else:
         # Check all optional columns are valid
         for colname in optional_columns:
