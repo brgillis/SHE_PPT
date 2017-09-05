@@ -121,6 +121,9 @@ def add_row(table, **kwargs):
     return
 
 def output_tables(otable, file_name_base, output_format):
+    
+    if output_format not in ('ascii','fits','both'):
+        raise ValueError("Invalid output format: " + str(output_format))
 
     if ((output_format == 'ascii') or (output_format == 'both')):
         text_file_name = file_name_base + ".ecsv"
