@@ -106,7 +106,7 @@ class DetectionsTableFormat(object):
         set_column_properties(self.ID, dtype=">i8", fits_dtype="K")
         
         self.number = "NUMBER"
-        set_column_properties(self.number, dtype=">i8", fits_dtype="K")
+        set_column_properties(self.number, is_optional=True, dtype=">i8", fits_dtype="K")
         
         self.gal_x = "X_IMAGE"
         set_column_properties(self.gal_x, comment="pixel")
@@ -302,7 +302,7 @@ def initialise_detections_table(image = None, options = None,
         @param options <dict> Options dictionary
         
         @param optional_columns <list<str>> List of names for optional columns to include.
-               Default is gal_e1_err and gal_e2_err
+               Default is psf_x and psf_y
         
         @return detections_table <astropy.Table>
     """
