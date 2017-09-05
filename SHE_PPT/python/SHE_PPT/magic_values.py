@@ -34,5 +34,9 @@
 """
 
 # Header values for fits images
-scale_label = "GS_SCALE"
+gain_label = "CCDGAIN"
+scale_label = "PX_SCALE"
 stamp_size_label = "SSIZE"
+model_hash_label = "MHASH"
+model_seed_label = "MSEED"
+noise_seed_label = "NSEED"
