@@ -92,13 +92,14 @@ class DetailsTableFormat(object):
         
         def set_column_properties( name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
                                    length=1):
+            
+            assert name not in self.is_optional
+            
             self.is_optional[name] = is_optional
             self.comments[name] = comment
             self.dtypes[name] = dtype
             self.fits_dtypes[name] = fits_dtype
             self.lengths[name] = length
-            
-            assert name not in is_optional
 
         # Table column labels
         self.ID = "ID"
