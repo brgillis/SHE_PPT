@@ -112,107 +112,113 @@ class ShearEstimatesTableFormat(object):
         self.ID = "ID"
         set_column_properties(self.ID, dtype=">i8", fits_dtype="K")
         
-        self.gal_g1 = "GAL_EST_G1"
-        set_column_properties(self.gal_g1, dtype=">f8", fits_dtype="D")
+        self.g1 = "EST_G1"
+        set_column_properties(self.g1, dtype=">f8", fits_dtype="D")
         
-        self.gal_g2 = "GAL_EST_G2"
-        set_column_properties(self.gal_g2, dtype=">f8", fits_dtype="D")
+        self.g2 = "EST_G2"
+        set_column_properties(self.g2, dtype=">f8", fits_dtype="D")
         
-        self.gal_g1_err = "GAL_G1_ERR"
-        set_column_properties(self.gal_g1_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g1_err = "G1_ERR"
+        set_column_properties(self.g1_err, is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.gal_g2_err = "GAL_G2_ERR"
-        set_column_properties(self.gal_g2_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g2_err = "G2_ERR"
+        set_column_properties(self.g2_err, is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.gal_e1_err = "GAL_E1_ERR"
-        set_column_properties(self.gal_e1_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.e1_err = "E1_ERR"
+        set_column_properties(self.e1_err, is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.gal_e2_err = "GAL_E2_ERR"
-        set_column_properties(self.gal_e2_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.e2_err = "E2_ERR"
+        set_column_properties(self.e2_err, is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.gal_g1_cal1 = "GAL_EST_G1_CAL1"
-        set_column_properties(self.gal_g1_cal1, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.star_flag = "STAR_FLAG"
+        set_column_properties(self.star_flag, is_optional=True, dtype="bool", fits_dtype="L")
         
-        self.gal_g2_cal1 = "GAL_EST_G2_CAL1"
-        set_column_properties(self.gal_g2_cal1, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.fit_class = "FITCLASS"
+        set_column_properties(self.fit_class, is_optional=True, dtype=">i2", fits_dtype="I")
         
-        self.gal_b1_cal1 = "GAL_B1_CAL1"
-        set_column_properties(self.gal_b1_cal1, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g1_cal1 = "EST_G1_CAL1"
+        set_column_properties(self.g1_cal1, is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.gal_b2_cal1 = "GAL_B2_CAL1"
-        set_column_properties(self.gal_b2_cal1, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g2_cal1 = "EST_G2_CAL1"
+        set_column_properties(self.g2_cal1, is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.gal_g1_cal1_err = "GAL_G1_CAL1_ERR"
-        set_column_properties(self.gal_g1_cal1_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.b1_cal1 = "B1_CAL1"
+        set_column_properties(self.b1_cal1, is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.gal_g2_cal1_err = "GAL_G2_CAL1_ERR"
-        set_column_properties(self.gal_g2_cal1_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.b2_cal1 = "B2_CAL1"
+        set_column_properties(self.b2_cal1, is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.gal_e1_cal1_err = "GAL_E1_CAL1_ERR"
-        set_column_properties(self.gal_e1_cal1_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g1_cal1_err = "G1_CAL1_ERR"
+        set_column_properties(self.g1_cal1_err, is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.gal_e2_cal1_err = "GAL_E2_CAL1_ERR"
-        set_column_properties(self.gal_e2_cal1_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g2_cal1_err = "G2_CAL1_ERR"
+        set_column_properties(self.g2_cal1_err, is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.gal_g1_cal2 = "GAL_EST_G1_CAL2"
-        set_column_properties(self.gal_g1_cal2, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.e1_cal1_err = "E1_CAL1_ERR"
+        set_column_properties(self.e1_cal1_err, is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.gal_g2_cal2 = "GAL_EST_G2_CAL2"
-        set_column_properties(self.gal_g2_cal2, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.e2_cal1_err = "E2_CAL1_ERR"
+        set_column_properties(self.e2_cal1_err, is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.gal_b1_cal2 = "GAL_B1_CAL2"
-        set_column_properties(self.gal_b1_cal2, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g1_cal2 = "EST_G1_CAL2"
+        set_column_properties(self.g1_cal2, is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.gal_b2_cal2 = "GAL_B2_CAL2"
-        set_column_properties(self.gal_b2_cal2, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g2_cal2 = "EST_G2_CAL2"
+        set_column_properties(self.g2_cal2, is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.gal_g1_cal2_err = "GAL_G1_CAL2_ERR"
-        set_column_properties(self.gal_g1_cal2_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.b1_cal2 = "B1_CAL2"
+        set_column_properties(self.b1_cal2, is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.gal_g2_cal2_err = "GAL_G2_CAL2_ERR"
-        set_column_properties(self.gal_g2_cal2_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.b2_cal2 = "B2_CAL2"
+        set_column_properties(self.b2_cal2, is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.gal_e1_cal2_err = "GAL_E1_CAL2_ERR"
-        set_column_properties(self.gal_e1_cal2_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g1_cal2_err = "G1_CAL2_ERR"
+        set_column_properties(self.g1_cal2_err, is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.gal_e2_cal2_err = "GAL_E2_CAL2_ERR"
-        set_column_properties(self.gal_e2_cal2_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g2_cal2_err = "G2_CAL2_ERR"
+        set_column_properties(self.g2_cal2_err, is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.gal_re = "GAL_EST_RE"
-        set_column_properties(self.gal_re, is_optional=True, comment="arcsec", dtype=">f8", fits_dtype="D")
+        self.e1_cal2_err = "E1_CAL2_ERR"
+        set_column_properties(self.e1_cal2_err, is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.gal_re_err = "GAL_EST_RE_ERR"
-        set_column_properties(self.gal_re_err, is_optional=True, comment="arcsec", dtype=">f8", fits_dtype="D")
+        self.e2_cal2_err = "E2_CAL2_ERR"
+        set_column_properties(self.e2_cal2_err, is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.gal_x = "GAL_EST_X"
-        set_column_properties(self.gal_x, is_optional=True, comment="pixels")
+        self.re = "EST_RE"
+        set_column_properties(self.re, is_optional=True, comment="arcsec", dtype=">f8", fits_dtype="D")
         
-        self.gal_y = "GAL_EST_Y"
-        set_column_properties(self.gal_y, is_optional=True, comment="pixels")
+        self.re_err = "EST_RE_ERR"
+        set_column_properties(self.re_err, is_optional=True, comment="arcsec", dtype=">f8", fits_dtype="D")
         
-        self.gal_x_err = "GAL_EST_X_ERR"
-        set_column_properties(self.gal_x_err, is_optional=True, comment="pixels")
+        self.x = "EST_X"
+        set_column_properties(self.x, is_optional=True, comment="pixels")
         
-        self.gal_y_err = "GAL_EST_Y_ERR"
-        set_column_properties(self.gal_y_err, is_optional=True, comment="pixels")
+        self.y = "EST_Y"
+        set_column_properties(self.y, is_optional=True, comment="pixels")
         
-        self.gal_flux = "GAL_FLUX"
-        set_column_properties(self.gal_flux, is_optional=True, comment="ADU")
+        self.x_err = "EST_X_ERR"
+        set_column_properties(self.x_err, is_optional=True, comment="pixels")
         
-        self.gal_flux_err = "GAL_FLUX_ERR"
-        set_column_properties(self.gal_flux_err, is_optional=True, comment="ADU")
+        self.y_err = "EST_Y_ERR"
+        set_column_properties(self.y_err, is_optional=True, comment="pixels")
         
-        self.gal_bulge_fraction = "GAL_BULGE_FRAC"
-        set_column_properties(self.gal_bulge_fraction, is_optional=True)
+        self.flux = "FLUX"
+        set_column_properties(self.flux, is_optional=True, comment="ADU")
         
-        self.gal_bulge_fraction_err = "GAL_BULGE_FRAC_ERR"
-        set_column_properties(self.gal_bulge_fraction_err, is_optional=True)
+        self.flux_err = "FLUX_ERR"
+        set_column_properties(self.flux_err, is_optional=True, comment="ADU")
         
-        self.gal_snr = "GAL_SNR"
-        set_column_properties(self.gal_snr, is_optional=True)
+        self.bulge_fraction = "BULGE_FRAC"
+        set_column_properties(self.bulge_fraction, is_optional=True)
         
-        self.gal_snr_err = "GAL_SNR_ERR"
-        set_column_properties(self.gal_snr_err, is_optional=True)
+        self.bulge_fraction_err = "BULGE_FRAC_ERR"
+        set_column_properties(self.bulge_fraction_err, is_optional=True)
+        
+        self.snr = "SNR"
+        set_column_properties(self.snr, is_optional=True)
+        
+        self.snr_err = "SNR_ERR"
+        set_column_properties(self.snr_err, is_optional=True)
         
         # A list of columns in the desired order
         self.all = self.is_optional.keys()
