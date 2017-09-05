@@ -232,7 +232,7 @@ class DetectionsTableFormat(object):
         set_column_properties(self.gal_hlr, is_optional=True, comment="pixel")
         
         self.gal_flags = "FLAGS"
-        set_column_properties(self.gal_mag_err, is_optional=True, dtype=">i8", fits_dtype="K")
+        set_column_properties(self.gal_flags, is_optional=True, dtype=">i8", fits_dtype="K")
         
         # A list of columns in the desired order
         self.all = self.is_optional.keys()
