@@ -35,6 +35,7 @@ New Features
 - Added a function to hash any object into a hex or base64 string
 - Added SHEImage class to store image objects
 - Added magic_values.py containing image header labels so far
+- Added mcmc_chains_table_format.py, containing format definition for MCMC chains tables
 
 New config features
 -------------------

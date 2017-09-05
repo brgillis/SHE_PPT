@@ -57,6 +57,17 @@ def get_fits_dtypes(table_format):
 
     return zip(*table_format.fits_dtypes.items())[1]
 
+def get_lengths(table_format):
+    """
+        @brief Get the data lengths for the table format.
+        
+        @param table_format <...TableFormat>
+
+        @return tuple<int>
+    """
+
+    return zip(*table_format.lengths.items())[1]
+
 def is_in_format(table, table_format):
     """
         @brief Checks if a table is in the given format
@@ -69,14 +80,17 @@ def is_in_format(table, table_format):
         
     """
     
-    # Check that the column names are correct
-    if table.colnames != table_format.all:
-        return False
-    
-    # Check the data types are correct
-    desired_dtypes = get_dtypes(table_format)
-    for i in range(len(table.colnames)):
-        if table.dtype[i].newbyteorder('>') != np.dtype(desired_dtypes[i]):
+    # Check that all required column names are present
+    for colname in table_format.all_required:
+        if colname not in table.colnames:
+            return False
+        
+    # Check that no extra column names are present, and each present column is of the right dtype
+    for colname in table.colnames:
+        if colname not in table_format.all:
+            return False
+        if table.dtype[colname].newbyteorder('>') != np.dtype((table_format.dtypes[colname],
+                                                               table_format.lengths[colname])):
             return False
         
     # Check the metadata is correct
