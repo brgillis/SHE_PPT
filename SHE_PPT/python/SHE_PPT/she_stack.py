@@ -20,7 +20,6 @@
 File: python/SHE_PPT/she_stack.py
 
 Created on: 09/01/17
-Author: user
 """
 
 from __future__ import division, print_function
