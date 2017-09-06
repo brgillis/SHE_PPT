@@ -26,6 +26,7 @@ Author: user
 from __future__ import division, print_function
 from future_builtins import *
 
+from SHE_PPT.she_image_data import SHEImageData
 
 import logging
 logger = logging.getLogger(__name__)
@@ -33,19 +34,58 @@ logger = logging.getLogger(__name__)
 
 
 class SHEStack(object): # We need new-style classes for properties, hence inherit from object
-    """Structure to group data images, PSF images, and detection tables of multiple exposures as input to estimate_shear()"""
+    """Structure containing a list of SHEImageData objects, serving as input to the estimate_shear() methods
+    
+    Attributes
+    ----------
+    exposures : list
+        List of SHEImageData objects representing the different exposures
+    
+    
+    We might want to add an attribute 'stack' later.
+    
+    """
    
-    def __init__(self, data_images, psf_images, detection_tables):
-        """Initiator
-      
-        Args:
-            data_images: a list of SHEImage objects
-            psf_images: a corresponding list of SHEImages containing PSFs
-            detection_tables: a corresponding list of detection tables
-      
+    def __init__(self, exposures):
+        """
+        Parameters
+        ----------
+        exposures : list
+            a list of SHEImageData objects representing the different exposures
+          
         """
                
-        self.data_images = data_images
-        self.psf_images = psf_images
-        self.detection_tables = detection_tables
+        self.exposures = exposures
     
+
+    @classmethod
+    def read(cls, filepaths_list, **kwargs):
+        """Reads a SHEStack from disk
+        
+        This function successively calls SHEImageData.read() on contents of filepaths_list.
+        
+        
+        Parameters
+        ----------
+        filepaths_list : list
+            a list of lists of filepaths to the FITS files containing SHEImage objects and astropy Tables.
+            The structure is the following::
+            
+                filepath_list = [
+                    ["exp1.fits", "detections1.fits", "psf1.fits"],
+                    ["exp2.fits", "detections2.fits", "psf2.fits"],
+                    ...
+                ]
+            
+        Any kwargs are passed to the reading of the SHEImageData
+        """
+        
+        exposures = []
+        for filepaths in filepaths_list:
+            exposures.append(SHEImageData.read(*filepaths))
+        
+        return SHEStack(exposures)
+
+
+
+
