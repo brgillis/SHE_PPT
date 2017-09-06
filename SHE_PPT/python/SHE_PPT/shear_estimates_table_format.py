@@ -38,7 +38,7 @@ from collections import OrderedDict
 from astropy.table import Table
 
 from SHE_PPT.detections_table_format import tf as detf
-from SHE_PPT.table_utility import get_dtypes, is_in_format
+from SHE_PPT.table_utility import is_in_format
 
 image_tail = ".fits"
 shear_estimates_tail = "_shear_measurements.fits"
@@ -50,7 +50,7 @@ class ShearEstimatesTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.1.1"
+        self.__version__ = "0.1.3"
         
         # Table metadata labels
         self.version = "SS_VER"
@@ -88,46 +88,146 @@ class ShearEstimatesTableFormat(object):
         
         # Direct alias for a tuple of all metadata
         self.meta_data = self.m.all
+        
+        # Dicts for less-used properties
+        self.is_optional = OrderedDict()
+        self.comments = OrderedDict()
+        self.dtypes = OrderedDict()
+        self.fits_dtypes = OrderedDict()
+        self.lengths = OrderedDict()
+        
+        def set_column_properties( name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
+                                   length=1):
+            
+            assert name not in self.is_optional
+            
+            self.is_optional[name] = is_optional
+            self.comments[name] = comment
+            self.dtypes[name] = dtype
+            self.fits_dtypes[name] = fits_dtype
+            self.lengths[name] = length
 
-        # Table column labels
+        # Table column labels and properties
+        
         self.ID = "ID"
-        self.gal_g1 = "GAL_EST_G1"
-        self.gal_g2 = "GAL_EST_G2"
-        self.gal_g1_err = "GAL_G1_ERR"
-        self.gal_g2_err = "GAL_G2_ERR"
-        self.gal_e1_err = "GAL_E1_ERR"
-        self.gal_e2_err = "GAL_E2_ERR"
+        set_column_properties(self.ID, dtype=">i8", fits_dtype="K")
         
-        # Store the less-used comments, dtypes, and fits_dtypes in dicts
-        self.comments = OrderedDict(((self.ID, None),
-                                    (self.gal_g1, None),
-                                    (self.gal_g2, None),
-                                    (self.gal_g1_err, None),
-                                    (self.gal_g2_err, None),
-                                    (self.gal_e1_err, None),
-                                    (self.gal_e2_err, None),
-                                   )) 
+        self.g1 = "EST_G1"
+        set_column_properties(self.g1, dtype=">f8", fits_dtype="D")
         
-        self.dtypes = OrderedDict(((self.ID, ">i8"),
-                                  (self.gal_g1, ">f4"),
-                                  (self.gal_g2, ">f4"),
-                                  (self.gal_g1_err, ">f4"),
-                                  (self.gal_g2_err, ">f4"),
-                                  (self.gal_e1_err, ">f4"),
-                                  (self.gal_e2_err, ">f4"),
-                                 ))
+        self.g2 = "EST_G2"
+        set_column_properties(self.g2, dtype=">f8", fits_dtype="D")
         
-        self.fits_dtypes = OrderedDict(((self.ID, "K"),
-                                       (self.gal_g1, "E"),
-                                       (self.gal_g2, "E"),
-                                       (self.gal_g1_err, "E"),
-                                       (self.gal_g2_err, "E"),
-                                       (self.gal_e1_err, "E"),
-                                       (self.gal_e2_err, "E"),
-                                      ))
+        self.g1_err = "G1_ERR"
+        set_column_properties(self.g1_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        
+        self.g2_err = "G2_ERR"
+        set_column_properties(self.g2_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        
+        self.e1_err = "E1_ERR"
+        set_column_properties(self.e1_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        
+        self.e2_err = "E2_ERR"
+        set_column_properties(self.e2_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        
+        self.star_flag = "STAR_FLAG"
+        set_column_properties(self.star_flag, is_optional=True, dtype="bool", fits_dtype="L")
+        
+        self.fit_class = "FITCLASS"
+        set_column_properties(self.fit_class, is_optional=True, dtype=">i2", fits_dtype="I")
+        
+        self.g1_cal1 = "EST_G1_CAL1"
+        set_column_properties(self.g1_cal1, is_optional=True, dtype=">f8", fits_dtype="D")
+        
+        self.g2_cal1 = "EST_G2_CAL1"
+        set_column_properties(self.g2_cal1, is_optional=True, dtype=">f8", fits_dtype="D")
+        
+        self.b1_cal1 = "B1_CAL1"
+        set_column_properties(self.b1_cal1, is_optional=True, dtype=">f8", fits_dtype="D")
+        
+        self.b2_cal1 = "B2_CAL1"
+        set_column_properties(self.b2_cal1, is_optional=True, dtype=">f8", fits_dtype="D")
+        
+        self.g1_cal1_err = "G1_CAL1_ERR"
+        set_column_properties(self.g1_cal1_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        
+        self.g2_cal1_err = "G2_CAL1_ERR"
+        set_column_properties(self.g2_cal1_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        
+        self.e1_cal1_err = "E1_CAL1_ERR"
+        set_column_properties(self.e1_cal1_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        
+        self.e2_cal1_err = "E2_CAL1_ERR"
+        set_column_properties(self.e2_cal1_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        
+        self.g1_cal2 = "EST_G1_CAL2"
+        set_column_properties(self.g1_cal2, is_optional=True, dtype=">f8", fits_dtype="D")
+        
+        self.g2_cal2 = "EST_G2_CAL2"
+        set_column_properties(self.g2_cal2, is_optional=True, dtype=">f8", fits_dtype="D")
+        
+        self.b1_cal2 = "B1_CAL2"
+        set_column_properties(self.b1_cal2, is_optional=True, dtype=">f8", fits_dtype="D")
+        
+        self.b2_cal2 = "B2_CAL2"
+        set_column_properties(self.b2_cal2, is_optional=True, dtype=">f8", fits_dtype="D")
+        
+        self.g1_cal2_err = "G1_CAL2_ERR"
+        set_column_properties(self.g1_cal2_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        
+        self.g2_cal2_err = "G2_CAL2_ERR"
+        set_column_properties(self.g2_cal2_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        
+        self.e1_cal2_err = "E1_CAL2_ERR"
+        set_column_properties(self.e1_cal2_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        
+        self.e2_cal2_err = "E2_CAL2_ERR"
+        set_column_properties(self.e2_cal2_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        
+        self.re = "EST_RE"
+        set_column_properties(self.re, is_optional=True, comment="arcsec", dtype=">f8", fits_dtype="D")
+        
+        self.re_err = "EST_RE_ERR"
+        set_column_properties(self.re_err, is_optional=True, comment="arcsec", dtype=">f8", fits_dtype="D")
+        
+        self.x = "EST_X"
+        set_column_properties(self.x, is_optional=True, comment="pixels")
+        
+        self.y = "EST_Y"
+        set_column_properties(self.y, is_optional=True, comment="pixels")
+        
+        self.x_err = "EST_X_ERR"
+        set_column_properties(self.x_err, is_optional=True, comment="pixels")
+        
+        self.y_err = "EST_Y_ERR"
+        set_column_properties(self.y_err, is_optional=True, comment="pixels")
+        
+        self.flux = "FLUX"
+        set_column_properties(self.flux, is_optional=True, comment="ADU")
+        
+        self.flux_err = "FLUX_ERR"
+        set_column_properties(self.flux_err, is_optional=True, comment="ADU")
+        
+        self.bulge_fraction = "BULGE_FRAC"
+        set_column_properties(self.bulge_fraction, is_optional=True)
+        
+        self.bulge_fraction_err = "BULGE_FRAC_ERR"
+        set_column_properties(self.bulge_fraction_err, is_optional=True)
+        
+        self.snr = "SNR"
+        set_column_properties(self.snr, is_optional=True)
+        
+        self.snr_err = "SNR_ERR"
+        set_column_properties(self.snr_err, is_optional=True)
         
         # A list of columns in the desired order
-        self.all = self.comments.keys()
+        self.all = self.is_optional.keys()
+        
+        # A list of required columns in the desired order
+        self.all_required = []
+        for label in self.all:
+            if not self.is_optional[label]:
+                self.all_required.append(label)
 
 # Define an instance of this object that can be imported         
 shear_estimates_table_format = ShearEstimatesTableFormat()
@@ -160,23 +260,40 @@ def make_shear_estimates_table_header(model_hash = None,
     
     return header
 
-def initialise_shear_estimates_table(detections_table = None):
+def initialise_shear_estimates_table(detections_table = None,
+                                     optional_columns = None):
     """
-        @brief Initialise a shear estimates table based on a detections table
+        @brief Initialise a shear estimates table based on a detections table, with the
+               desired set of optional columns
         
         @param detections_table <astropy.table.Table>
+        
+        @param optional_columns <list<str>> List of names for optional columns to include.
+               Default is gal_e1_err and gal_e2_err
         
         @return shear_estimates_table <astropy.table.Table>
     """
     
     assert (detections_table is None) or (is_in_format(detections_table,detf))
     
-    init_cols = []
-    for _ in range(len(tf.all)):
-        init_cols.append([])
+    if optional_columns is None:
+        optional_columns = [tf.e1_err,tf.e2_err]
+    else:
+        # Check all optional columns are valid
+        for colname in optional_columns:
+            if colname not in tf.all:
+                raise ValueError("Invalid optional column name: " + colname)
     
-    shear_estimates_table = Table(init_cols, names=tf.all,
-                          dtype=get_dtypes(tf))
+    names = []
+    init_cols = []
+    dtypes = []
+    for colname in tf.all:
+        if (colname in tf.all_required) or (colname in optional_columns):
+            names.append(colname)
+            init_cols.append([])
+            dtypes.append((tf.dtypes[colname],tf.lengths[colname]))
+    
+    shear_estimates_table = Table(init_cols, names=names, dtype=dtypes)
     
     if detections_table is None:
         model_hash = None
