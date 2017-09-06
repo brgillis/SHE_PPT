@@ -31,17 +31,50 @@ import numpy as np
 from SHE_PPT.she_stack import SHEStack
 from SHE_PPT.she_image import SHEImage
 from SHE_PPT.detections_table_format import initialise_detections_table
+import SHE_PPT.table_utility
 
 
-class Testshe_stack(object):
+class Test_she_stack(object):
     
-    def test_init(self):
+    @classmethod
+    def setup_class(cls):
         
+        # Filenames for testing the file io, will be deleted by teardown_class
+        cls.sci_filepath_1 = "test_SHEStack_sci_SHEImage.fits"
+        cls.det_filepath_1 = "test_SHEStack_det_Table.fits"
+        cls.psf_filepath_1 = "test_SHEStack_psf_SHEImage.fits"
         
-        data_image = SHEImage(np.random.randn(100).reshape(10,10))
+
+    @classmethod
+    def teardown_class(cls):
+        
+        # Delete all potentially created files:
+        for testfilepath in [cls.sci_filepath_1, cls.det_filepath_1, cls.psf_filepath_1]:
+            if os.path.exists(testfilepath):
+                os.remove(testfilepath)
+
+
+    def test_read(self):
+        """We create the minimum required files, and read a SHEStack"""
+        
+        # Create what will be one exposure:
+        sci_image = SHEImage(np.random.randn(100).reshape(10,10))
         psf_image = SHEImage(np.random.randn(100).reshape(10,10))
-        detections_table = initialise_detections_table()
+        det_table = initialise_detections_table()
         
-        stack = SHEStack([data_image], [psf_image], [detections_table])
+        # Save those to files:
+        sci_image.write_to_fits(cls.sci_filepath_1)
+        psf_image.write_to_fits(cls.psf_filepath_1)
+        det_table.write(cls.det_filepath_1)
+        
+        
+        # Read this, directly as a SHEStack
+        
+        filepaths_list = [
+            [cls.sci_filepath_1, cls.det_filepath_1, cls.psf_filepath_1]
+            ]
+        
+        mystack = SHEStack.read(filepaths_list)
+        
         
         

@@ -29,7 +29,11 @@ import py.test
 import SHE_PPT.she_image_data
 import numpy as np
 
-class Testshe_image_data(object):
+class Test_she_image_data(object):
     
     def test_all(self):
+        """
+        Skipping this for now...
+        Note that at least it gets tested via SHEStack
+        """
         assert True
