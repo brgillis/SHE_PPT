@@ -27,6 +27,7 @@ from future_builtins import *
 
 import py.test
 
+import os
 import numpy as np
 from SHE_PPT.she_stack import SHEStack
 from SHE_PPT.she_image import SHEImage
@@ -63,18 +64,20 @@ class Test_she_stack(object):
         det_table = initialise_detections_table()
         
         # Save those to files:
-        sci_image.write_to_fits(cls.sci_filepath_1)
-        psf_image.write_to_fits(cls.psf_filepath_1)
-        det_table.write(cls.det_filepath_1)
+        sci_image.write_to_fits(self.sci_filepath_1)
+        psf_image.write_to_fits(self.psf_filepath_1)
+        det_table.write(self.det_filepath_1)
         
         
         # Read this, directly as a SHEStack
         
         filepaths_list = [
-            [cls.sci_filepath_1, cls.det_filepath_1, cls.psf_filepath_1]
+            [self.sci_filepath_1, self.det_filepath_1, self.psf_filepath_1]
             ]
         
         mystack = SHEStack.read(filepaths_list)
+        print(mystack.exposures[0].science_image)
+        
         
         
         
