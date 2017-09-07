@@ -38,6 +38,11 @@ __pycache__/
 
 # Elements make
 build.*/
+InstallArea/
 
+
+# PA/QA & Sonar
+PAQA/
+sonar-project.properties
 
 
