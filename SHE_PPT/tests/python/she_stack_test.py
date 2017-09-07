@@ -75,7 +75,7 @@ class Test_she_stack(object):
             [self.sci_filepath_1, self.det_filepath_1, self.psf_filepath_1]
             ]
         
-        mystack = SHEStack.read(filepaths_list)
+        mystack = SHEStack.read(filepaths_list, mask_ext='MASK') # Testing kwargs as well
         print(mystack.exposures[0].science_image)
         
         

@@ -81,7 +81,7 @@ class SHEStack(object): # We need new-style classes for properties, hence inheri
         
         exposures = []
         for filepaths in filepaths_list:
-            exposures.append(SHEImageData.read(*filepaths))
+            exposures.append(SHEImageData.read(*filepaths, **kwargs))
         
         return SHEStack(exposures)
 
