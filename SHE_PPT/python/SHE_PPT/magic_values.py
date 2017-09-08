@@ -40,3 +40,9 @@ stamp_size_label = "SSIZE"
 model_hash_label = "MHASH"
 model_seed_label = "MSEED"
 noise_seed_label = "NSEED"
+extname_label = "EXTNAME"
+
+# Tags for science image, noisemap, and mask
+sci_tag = "SCI"
+noisemap_tag = "RMS"
+mask_tag = "FLG"
