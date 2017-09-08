@@ -153,6 +153,9 @@ def table_to_hdu(table):
     """
     # Avoid circular imports
     from astropy.io.fits.connect import is_column_keyword, REMOVE_KEYWORDS
+    from astropy.io.fits import BinTableHDU
+    from astropy.units import Unit
+    from astropy.units.format.fits import UnitScaleError
 
     # Not all tables with mixin columns are supported
     if table.has_mixin_columns:
