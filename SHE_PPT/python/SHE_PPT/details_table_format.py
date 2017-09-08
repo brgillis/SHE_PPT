@@ -40,6 +40,8 @@ class DetailsTableMeta(object):
         
         self.version = "SS_VER"
         
+        self.detector = "DETECTOR"
+        
         self.subtracted_sky_level = "S_SKYLV"
         self.unsubtracted_sky_level = "US_SKYLV"
         self.read_noise = "RD_NOISE"
@@ -51,6 +53,7 @@ class DetailsTableMeta(object):
         
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
+                                     (self.detector, None),
                                      (self.subtracted_sky_level, "ADU/arcsec^2"),
                                      (self.unsubtracted_sky_level, "ADU/arcsec^2"),
                                      (self.read_noise, "e-/pixel"),
@@ -174,7 +177,8 @@ details_table_format = DetailsTableFormat()
 # And a convient alias for it
 tf = details_table_format
 
-def make_details_table_header(subtracted_sky_level = None,
+def make_details_table_header(detector = None,
+                              subtracted_sky_level = None,
                               unsubtracted_sky_level = None,
                               read_noise = None,
                               gain = None,
@@ -183,6 +187,8 @@ def make_details_table_header(subtracted_sky_level = None,
                               noise_seed = None,):
     """
         @brief Generate a header for a galaxy details table.
+        
+        @param detector <int?> Detector for this image, if applicable
         
         @param subtracted_sky_level <float> Units of ADU/arcsec^2 (should we change this?)
         
@@ -204,6 +210,8 @@ def make_details_table_header(subtracted_sky_level = None,
     header = OrderedDict()
     
     header[tf.m.version] = tf.__version__
+    
+    header[tf.m.detector] = detector
     
     header[tf.m.subtracted_sky_level] = subtracted_sky_level
     header[tf.m.unsubtracted_sky_level] = unsubtracted_sky_level
@@ -252,9 +260,11 @@ def initialise_details_table(image = None, options = None,
                           dtype=dtypes)
     
     if image is None:
+        detector = None
         subtracted_sky_level = None
         unsubtracted_sky_level = None
     else:
+        detector = image.get_local_ID()
         subtracted_sky_level = image.get_param_value('subtracted_background')
         unsubtracted_sky_level = image.get_param_value('unsubtracted_background')
     
@@ -271,7 +281,8 @@ def initialise_details_table(image = None, options = None,
         model_seed = image.get_full_seed()
         noise_seed = options['noise_seed']
                                                    
-    details_table.meta = make_details_table_header(subtracted_sky_level = subtracted_sky_level,
+    details_table.meta = make_details_table_header(detector = detector,
+                                                   subtracted_sky_level = subtracted_sky_level,
                                                    unsubtracted_sky_level = unsubtracted_sky_level,
                                                    read_noise = read_noise,
                                                    gain = gain,
