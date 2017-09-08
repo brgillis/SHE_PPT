@@ -152,7 +152,7 @@ def table_to_hdu(table):
         The FITS binary table HDU.
     """
     # Avoid circular imports
-    from .connect import is_column_keyword, REMOVE_KEYWORDS
+    from astropy.io.fits.connect import is_column_keyword, REMOVE_KEYWORDS
 
     # Not all tables with mixin columns are supported
     if table.has_mixin_columns:
