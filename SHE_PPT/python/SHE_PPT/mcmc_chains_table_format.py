@@ -26,7 +26,7 @@ from SHE_PPT.detections_table_format import tf as detf
 from astropy.table import Table
 
 num_chains = 10
-len_chain = 500
+len_chain = 200
 
 class MCMCChainsTableMeta(object):
     """
@@ -35,7 +35,7 @@ class MCMCChainsTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.1"
+        self.__version__ = "0.1.1"
         
         # Table metadata labels
         self.version = "SS_VER"
@@ -103,13 +103,13 @@ class MCMCChainsTableFormat(object):
         set_column_properties(self.ID, dtype=">i8", fits_dtype="K")
         
         self.gal_g1 = "GAL_EST_G1"
-        set_column_properties(self.gal_g1, dtype=">f8", fits_dtype="D", length=num_chains*len_chain)
+        set_column_properties(self.gal_g1, dtype=">f4", fits_dtype="E", length=num_chains*len_chain)
         
         self.gal_g2 = "GAL_EST_G2"
-        set_column_properties(self.gal_g2, dtype=">f8", fits_dtype="D", length=num_chains*len_chain)
+        set_column_properties(self.gal_g2, dtype=">f4", fits_dtype="E", length=num_chains*len_chain)
         
         self.gal_re = "GAL_EST_RE"
-        set_column_properties(self.gal_re, comment="arcsec", dtype=">f8", fits_dtype="D",
+        set_column_properties(self.gal_re, comment="arcsec", dtype=">f4", fits_dtype="E",
                               length=num_chains*len_chain)
         
         self.gal_x = "GAL_EST_X"
