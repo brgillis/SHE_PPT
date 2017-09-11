@@ -101,41 +101,25 @@ class MCMCChainsTableFormat(object):
             self.dtypes[name] = dtype
             self.fits_dtypes[name] = fits_dtype
             self.lengths[name] = length
+            
+            return name
         
         # Column names
-        self.ID = "ID"
-        set_column_properties(self.ID, dtype=">i8", fits_dtype="K")
+        self.ID = set_column_properties("ID", dtype=">i8", fits_dtype="K")
         
-        self.gal_g1 = "GAL_EST_G1"
-        set_column_properties(self.gal_g1, dtype=">f4", fits_dtype="E", length=num_chains*len_chain)
-        
-        self.gal_g2 = "GAL_EST_G2"
-        set_column_properties(self.gal_g2, dtype=">f4", fits_dtype="E", length=num_chains*len_chain)
-        
-        self.gal_re = "GAL_EST_RE"
-        set_column_properties(self.gal_re, comment="arcsec", dtype=">f4", fits_dtype="E",
+        self.gal_g1 = set_column_properties("GAL_EST_G1", dtype=">f4", fits_dtype="E", length=num_chains*len_chain)
+        self.gal_g2 = set_column_properties("GAL_EST_G2", dtype=">f4", fits_dtype="E", length=num_chains*len_chain)
+        self.gal_re = set_column_properties("GAL_EST_RE", comment="arcsec", dtype=">f4", fits_dtype="E",
                               length=num_chains*len_chain)
+        self.gal_x = set_column_properties("GAL_EST_X", comment="pixels", length=num_chains*len_chain)
+        self.gal_y = set_column_properties("GAL_EST_Y", comment="pixels", length=num_chains*len_chain)
         
-        self.gal_x = "GAL_EST_X"
-        set_column_properties(self.gal_x, comment="pixels", length=num_chains*len_chain)
+        self.gal_flux = set_column_properties("GAL_FLUX", comment="ADU", length=num_chains*len_chain)
+        self.gal_bulge_fraction = set_column_properties("GAL_BULGE_FRAC", length=num_chains*len_chain)
+        self.gal_snr = set_column_properties("GAL_SNR", length=num_chains*len_chain)
         
-        self.gal_y = "GAL_EST_Y"
-        set_column_properties(self.gal_y, comment="pixels", length=num_chains*len_chain)
-        
-        self.gal_flux = "GAL_FLUX"
-        set_column_properties(self.gal_flux, comment="ADU", length=num_chains*len_chain)
-        
-        self.gal_bulge_fraction = "GAL_BULGE_FRAC"
-        set_column_properties(self.gal_bulge_fraction, length=num_chains*len_chain)
-        
-        self.gal_snr = "GAL_SNR"
-        set_column_properties(self.gal_snr, length=num_chains*len_chain)
-        
-        self.gal_lr1 = "GAL_LR1"
-        set_column_properties(self.gal_lr1, length=num_chains*len_chain)
-        
-        self.gal_lr2 = "GAL_LR2"
-        set_column_properties(self.gal_lr2, length=num_chains*len_chain)
+        self.gal_lr1 = set_column_properties("GAL_LR1", length=num_chains*len_chain)
+        self.gal_lr2 = set_column_properties("GAL_LR2", length=num_chains*len_chain)
         
         # A list of columns in the desired order
         self.all = self.is_optional.keys()

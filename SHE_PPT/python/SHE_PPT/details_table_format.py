@@ -103,64 +103,38 @@ class DetailsTableFormat(object):
             self.dtypes[name] = dtype
             self.fits_dtypes[name] = fits_dtype
             self.lengths[name] = length
+            
+            return name
 
         # Table column labels
-        self.ID = "ID"
-        set_column_properties(self.ID, dtype=">i8", fits_dtype="K")
+        self.ID = set_column_properties("ID", dtype=">i8", fits_dtype="K")
         
-        self.gal_x = "x_center_pix"
-        set_column_properties(self.gal_x, comment="pixels")
+        self.gal_x = set_column_properties("x_center_pix", comment="pixels")
+        self.gal_y = set_column_properties("y_center_pix", comment="pixels")
         
-        self.gal_y = "y_center_pix"
-        set_column_properties(self.gal_y, comment="pixels")
+        self.psf_x = set_column_properties("psf_x_center_pix", is_optional=True, comment="pixels")
+        self.psf_y = set_column_properties("psf_y_center_pix", is_optional=True, comment="pixels")
         
-        self.psf_x = "psf_x_center_pix"
-        set_column_properties(self.psf_x, is_optional=True, comment="pixels")
+        self.hlr_bulge = set_column_properties("hlr_bulge_arcsec", comment="arcsec")
+        self.hlr_disk = set_column_properties("hlr_disk_arcsec", comment="arcsec")
         
-        self.psf_y = "psf_y_center_pix"
-        set_column_properties(self.psf_y, is_optional=True, comment="pixels")
+        self.bulge_ellipticity = set_column_properties("bulge_ellipticity")
+        self.bulge_axis_ratio = set_column_properties("bulge_axis_ratio")
+        self.bulge_fraction = set_column_properties("bulge_fraction")
+        self.disk_height_ratio = set_column_properties("disk_height_ratio")
         
-        self.hlr_bulge = "hlr_bulge_arcsec"
-        set_column_properties(self.hlr_bulge, comment="arcsec")
+        self.magnitude = set_column_properties("magnitude", comment="VIS")
         
-        self.hlr_disk = "hlr_disk_arcsec"
-        set_column_properties(self.hlr_disk, comment="arcsec")
+        self.sersic_index = set_column_properties("sersic_index")
         
-        self.bulge_ellipticity = "bulge_ellipticity"
-        set_column_properties(self.bulge_ellipticity)
+        self.rotation = set_column_properties("rotation", comment="degrees")
+        self.spin = set_column_properties("spin", comment="degrees")
+        self.tilt = set_column_properties("tilt", comment="degrees")
         
-        self.bulge_axis_ratio = "bulge_axis_ratio"
-        set_column_properties(self.bulge_axis_ratio)
+        self.shear_magnitude = set_column_properties("shear_magnitude", dtype=">f4", fits_dtype="E")
+        self.shear_angle = set_column_properties("shear_angle", comment="degrees", dtype=">f4", fits_dtype="E")
         
-        self.bulge_fraction = "bulge_fraction"
-        set_column_properties(self.bulge_fraction)
-        
-        self.disk_height_ratio = "disk_height_ratio"
-        set_column_properties(self.disk_height_ratio)
-        
-        self.magnitude = "magnitude"
-        set_column_properties(self.magnitude, comment="VIS")
-        
-        self.sersic_index = "sersic_index"
-        set_column_properties(self.sersic_index)
-        
-        self.rotation = "rotation"
-        set_column_properties(self.rotation, comment="degrees")
-        
-        self.spin = "spin"
-        set_column_properties(self.spin, comment="degrees")
-        
-        self.tilt = "tilt"
-        set_column_properties(self.tilt, comment="degrees")
-        
-        self.shear_magnitude = "shear_magnitude"
-        set_column_properties(self.shear_magnitude, dtype=">f8", fits_dtype="D")
-        
-        self.shear_angle = "shear_angle"
-        set_column_properties(self.shear_angle, comment="degrees", dtype=">f8", fits_dtype="D")
-        
-        self.target_galaxy = "is_target_galaxy"
-        set_column_properties(self.target_galaxy)
+        self.target_galaxy = set_column_properties("is_target_galaxy")
         
         # A list of columns in the desired order
         self.all = self.is_optional.keys()
