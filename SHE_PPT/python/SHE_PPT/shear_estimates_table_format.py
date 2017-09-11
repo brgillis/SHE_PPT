@@ -40,9 +40,6 @@ from astropy.table import Table
 from SHE_PPT.detections_table_format import tf as detf
 from SHE_PPT.table_utility import is_in_format
 
-image_tail = ".fits"
-shear_estimates_tail = "_shear_measurements.fits"
-
 class ShearEstimatesTableMeta(object):
     """
         @brief A class defining the metadata for shear estimates tables.
@@ -50,17 +47,20 @@ class ShearEstimatesTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.1.3"
+        self.__version__ = "0.1.4"
         
         # Table metadata labels
         self.version = "SS_VER"
         
-        self.model_hash = "MHASH"
-        self.model_seed = "MSEED"
-        self.noise_seed = "NSEED"
+        self.extname = mv.extname_label
+        
+        self.model_hash = mv.model_hash_label
+        self.model_seed = mv.model_seed_label
+        self.noise_seed = mv.noise_seed_label
         
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
+                                     (self.extname, "#."+mv.shear_measurements_tag),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
@@ -235,7 +235,8 @@ shear_estimates_table_format = ShearEstimatesTableFormat()
 # And a convient alias for it
 tf = shear_estimates_table_format
 
-def make_shear_estimates_table_header(model_hash = None,
+def make_shear_estimates_table_header(detector = -1,
+                                      model_hash = None,
                                       model_seed = None,
                                       noise_seed = None,):
     """
@@ -253,6 +254,8 @@ def make_shear_estimates_table_header(model_hash = None,
     header = OrderedDict()
     
     header[tf.m.version] = tf.__version__
+    
+    header[tf.m.extname] = str(detector) + "." + mv.shear_measurements_tag
     
     header[tf.m.model_hash] = model_hash
     header[tf.m.model_seed] = model_seed
