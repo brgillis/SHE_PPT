@@ -59,7 +59,7 @@ class TestIO:
         
         filename = get_allowed_filename( "TEST", "0", extension=".junk", release = "06.66")
         
-        expect_filename_head = "EUC_SHE_CTE-TEST_0_"
+        expect_filename_head = "EUC_SHE_TEST_0_"
         expect_filename_tail = ".0Z_06.66.junk"
         
         # Check the beginning and end are correct
