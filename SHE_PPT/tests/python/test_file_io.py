@@ -69,7 +69,7 @@ class TestIO:
         # Check that if we wait a second, it will change
         sleep(1)
         new_filename = get_allowed_filename( "TEST", "0", extension=".junk", release = "06.66")
-        assert new_filename > filename
+        assert new_filename != filename
         
     def test_rw_listfile(self):
         
