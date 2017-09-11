@@ -243,6 +243,8 @@ def make_shear_estimates_table_header(detector = -1,
     """
         @brief Generate a header for a shear estimates table.
         
+        @param detector <int?> Detector for this image, if applicable
+        
         @param model_hash <int> Hash of the physical model options dictionary
         
         @param model_seed <int> Full seed used for the physical model for this image
@@ -300,15 +302,18 @@ def initialise_shear_estimates_table(detections_table = None,
     shear_estimates_table = Table(init_cols, names=names, dtype=dtypes)
     
     if detections_table is None:
+        detector = -1
         model_hash = None
         model_seed = None
         noise_seed = None
     else:
+        detector = int(detections_table.meta[detf.m.model_hash].split(".")[0:-1])
         model_hash = detections_table.meta[detf.m.model_hash]
         model_seed = detections_table.meta[detf.m.model_seed]
         noise_seed = detections_table.meta[detf.m.noise_seed]
     
-    shear_estimates_table.meta = make_shear_estimates_table_header(model_hash = model_hash,
+    shear_estimates_table.meta = make_shear_estimates_table_header(detector = detector,
+                                                                   model_hash = model_hash,
                                                                    model_seed = model_seed,
                                                                    noise_seed = noise_seed)
     
