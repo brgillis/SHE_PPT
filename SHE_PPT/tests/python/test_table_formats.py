@@ -233,27 +233,19 @@ class TestTableFormats:
         
         # Test initialization methods
         
-        detections_table = initialise_detections_table(detector = detector,
-                                                       model_hash = model_hash,
-                                                       model_seed = model_seed,
-                                                       noise_seed = noise_seed)
+        detections_table = initialise_detections_table(detector = detector)
         
         assert(detections_table.meta[detf.m.extname] == extname_head + mv.detections_tag)
-        assert(detections_table.meta[detf.m.model_hash] == model_hash)
-        assert(detections_table.meta[detf.m.model_seed] == model_seed)
-        assert(detections_table.meta[detf.m.noise_seed] == noise_seed)
         
-        details_table = initialise_details_table(detector = detector,
-                                                 model_hash = model_hash,
-                                                 model_seed = model_seed,
-                                                 noise_seed = noise_seed)
+        details_table = initialise_details_table(detector = detector)
         
         assert(details_table.meta[detf.m.extname] == extname_head + mv.details_tag)
-        assert(details_table.meta[detf.m.model_hash] == model_hash)
-        assert(details_table.meta[detf.m.model_seed] == model_seed)
-        assert(details_table.meta[detf.m.noise_seed] == noise_seed)
         
         # Try to initialize the shear estimates table based on the detections table
+        
+        detections_table.meta[detf.m.model_hash] = model_hash
+        detections_table.meta[detf.m.model_seed] = model_seed
+        detections_table.meta[detf.m.noise_seed] = noise_seed
         
         shear_estimates_table = initialise_shear_estimates_table(detections_table)
         
