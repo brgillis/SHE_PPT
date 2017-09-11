@@ -177,7 +177,7 @@ details_table_format = DetailsTableFormat()
 # And a convient alias for it
 tf = details_table_format
 
-def make_details_table_header(detector = None,
+def make_details_table_header(detector = -1,
                               subtracted_sky_level = None,
                               unsubtracted_sky_level = None,
                               read_noise = None,
@@ -211,7 +211,7 @@ def make_details_table_header(detector = None,
     
     header[tf.m.version] = tf.__version__
     
-    header[tf.m.extname] = str(detector) + "." + details_tag
+    header[tf.m.extname] = str(detector) + "." + mv.details_tag
     
     header[tf.m.subtracted_sky_level] = subtracted_sky_level
     header[tf.m.unsubtracted_sky_level] = unsubtracted_sky_level
