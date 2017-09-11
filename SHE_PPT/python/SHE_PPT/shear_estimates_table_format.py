@@ -61,7 +61,7 @@ class ShearEstimatesTableMeta(object):
         
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
-                                     (self.extname, "#."+mv.shear_measurements_tag),
+                                     (self.extname, "#."+mv.shear_estimates_tag),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
@@ -258,7 +258,7 @@ def make_shear_estimates_table_header(detector = -1,
     
     header[tf.m.version] = tf.__version__
     
-    header[tf.m.extname] = str(detector) + "." + mv.shear_measurements_tag
+    header[tf.m.extname] = str(detector) + "." + mv.shear_estimates_tag
     
     header[tf.m.model_hash] = model_hash
     header[tf.m.model_seed] = model_seed
