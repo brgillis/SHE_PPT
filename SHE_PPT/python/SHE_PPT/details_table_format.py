@@ -26,6 +26,7 @@ from astropy.table import Table
 
 from SHE_PPT.table_utility import get_dtypes
 from SHE_PPT.utility import hash_any
+from SHE_PPT import magic_values as mv
 
 class DetailsTableMeta(object):
     """
@@ -40,20 +41,20 @@ class DetailsTableMeta(object):
         
         self.version = "SS_VER"
         
-        self.detector = "DETECTOR"
+        self.extname = mv.extname_label
         
         self.subtracted_sky_level = "S_SKYLV"
         self.unsubtracted_sky_level = "US_SKYLV"
         self.read_noise = "RD_NOISE"
-        self.gain = "CCDGAIN"
+        self.gain = mv.gain_label
         
-        self.model_hash = "MHASH"
-        self.model_seed = "MSEED"
-        self.noise_seed = "NSEED"
+        self.model_hash = mv.model_hash_label
+        self.model_seed = mv.model_seed_label
+        self.noise_seed = mv.noise_seed_label
         
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
-                                     (self.detector, None),
+                                     (self.extname, "#."+mv.details_tag),
                                      (self.subtracted_sky_level, "ADU/arcsec^2"),
                                      (self.unsubtracted_sky_level, "ADU/arcsec^2"),
                                      (self.read_noise, "e-/pixel"),
@@ -211,7 +212,7 @@ def make_details_table_header(detector = None,
     
     header[tf.m.version] = tf.__version__
     
-    header[tf.m.detector] = detector
+    header[tf.m.extname] = str(detector) + "." + details_tag
     
     header[tf.m.subtracted_sky_level] = subtracted_sky_level
     header[tf.m.unsubtracted_sky_level] = unsubtracted_sky_level
