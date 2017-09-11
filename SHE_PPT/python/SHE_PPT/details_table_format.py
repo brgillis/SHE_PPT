@@ -224,8 +224,10 @@ def make_details_table_header(detector = -1,
     
     return header
 
-def initialise_details_table(image = None, options = None,
-                             optional_columns = None):
+def initialise_details_table(image = None,
+                             options = None,
+                             optional_columns = None,
+                             detector = None):
     """
         @brief Initialise a detections table.
         
@@ -235,6 +237,8 @@ def initialise_details_table(image = None, options = None,
         
         @param optional_columns <list<str>> List of names for optional columns to include.
                Default is psf_x and psf_y
+        
+        @param detector <int?> Detector for this image, if applicable. Will override ID of image object if set
         
         @return details_table <astropy.Table>
     """
@@ -260,11 +264,11 @@ def initialise_details_table(image = None, options = None,
                           dtype=dtypes)
     
     if image is None:
-        detector = None
         subtracted_sky_level = None
         unsubtracted_sky_level = None
     else:
-        detector = image.get_local_ID()
+        if detector is None:
+            detector = image.get_local_ID()
         subtracted_sky_level = image.get_param_value('subtracted_background')
         unsubtracted_sky_level = image.get_param_value('unsubtracted_background')
     
