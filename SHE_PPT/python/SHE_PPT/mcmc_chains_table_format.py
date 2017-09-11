@@ -24,6 +24,7 @@ from collections import OrderedDict
 
 from SHE_PPT.detections_table_format import tf as detf
 from astropy.table import Table
+from SHE_PPT import magic_values as mv
 
 num_chains = 10
 len_chain = 200
@@ -35,20 +36,23 @@ class MCMCChainsTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.1.1"
+        self.__version__ = "0.1.2"
         
         # Table metadata labels
         self.version = "SS_VER"
         
-        self.model_hash = "MHASH"
-        self.model_seed = "MSEED"
-        self.noise_seed = "NSEED"
+        self.extname = mv.extname_label
+        
+        self.model_hash = mv.model_hash_label
+        self.model_seed = mv.model_seed_label
+        self.noise_seed = mv.noise_seed_label
         
         self.num_chains = "NCHAIN"
         self.len_chain = "LCHAIN"
         
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
+                                     (self.extname, "#."+mv.mcmc_chains_tag),
                                      (self.num_chains, None),
                                      (self.len_chain, None),
                                      (self.model_hash, None),
@@ -149,11 +153,14 @@ mcmc_chains_table_format = MCMCChainsTableFormat()
 tf = mcmc_chains_table_format
 
 
-def make_mcmc_chains_table_header(model_hash = None,
+def make_mcmc_chains_table_header(detector = -1,
+                                  model_hash = None,
                                   model_seed = None,
                                   noise_seed = None,):
     """
         @brief Generate a header for an MCMC chains table.
+        
+        @param detector <int?> Detector for this image, if applicable
         
         @param model_hash <int> Hash of the physical model options dictionary
         
@@ -167,6 +174,8 @@ def make_mcmc_chains_table_header(model_hash = None,
     header = OrderedDict()
     
     header[tf.m.version] = tf.__version__
+    
+    header[tf.m.extname] = str(detector) + "." + mv.mcmc_chains_tag
     
     header[tf.m.num_chains] = num_chains
     header[tf.m.len_chain] = len_chain
@@ -212,15 +221,18 @@ def initialise_mcmc_chains_table(detections_table = None,
                              dtype=dtypes)
     
     if detections_table is None:
+        detector = -1
         model_hash = None
         model_seed = None
         noise_seed = None
     else:
+        detector = int(detections_table.meta[detf.m.model_hash].split(".")[0:-1])
         model_hash = detections_table.meta[detf.m.model_hash]
         model_seed = detections_table.meta[detf.m.model_seed]
         noise_seed = detections_table.meta[detf.m.noise_seed]
     
-    mcmc_chains_table.meta = make_mcmc_chains_table_header(model_hash = model_hash,
+    mcmc_chains_table.meta = make_mcmc_chains_table_header(detector = detector,
+                                                           model_hash = model_hash,
                                                            model_seed = model_seed,
                                                            noise_seed = noise_seed)
     
