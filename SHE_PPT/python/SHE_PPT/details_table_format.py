@@ -24,7 +24,6 @@ from collections import OrderedDict
 
 from astropy.table import Table
 
-from SHE_PPT.table_utility import get_dtypes
 from SHE_PPT.utility import hash_any
 from SHE_PPT import magic_values as mv
 
