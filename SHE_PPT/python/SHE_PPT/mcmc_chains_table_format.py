@@ -226,7 +226,7 @@ def initialise_mcmc_chains_table(detections_table = None,
         model_seed = None
         noise_seed = None
     else:
-        detector = int(detections_table.meta[detf.m.model_hash].split(".")[0:-1])
+        detector = int(detections_table.meta[detf.m.extname].split(".")[0:-1])
         model_hash = detections_table.meta[detf.m.model_hash]
         model_seed = detections_table.meta[detf.m.model_seed]
         noise_seed = detections_table.meta[detf.m.noise_seed]
