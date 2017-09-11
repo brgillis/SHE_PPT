@@ -112,6 +112,8 @@ class BFDMomentsTableFormat(object):
         self.ID = "ID"
         set_column_properties(self.ID, dtype=">i8", fits_dtype="K")
 
+        self.XY="XY"
+        set_column_properties(self.XY,dtype="2F4",fits_dtype="2E")
         self.moments_even = "MOM_EVEN"
         set_column_properties(self.moments_even,dtype="5F4",fits_dtype="5E")
 
@@ -145,35 +147,14 @@ class BFDMomentsTableFormat(object):
         self.deriv_moments_dmudmu = "D2M_DMUDMU"
         set_column_properties(self.deriv_moments_dmudmu,is_optional=True,dtype="7F4",fits_dtype="7E")
 
-        self.x = "EST_X"
-        set_column_properties(self.x, is_optional=True, comment="pixels")
+        self.weight="WEIGHT"
+        set_column_properties(self.weight,is_optional=True,dtype="F4",fits_dtype="E")
+
+        self.jSuppress="JSUPPRESS"
+        set_column_properties(self.jSuppress,is_optional=True,dtype="F4",fits_dtype="E")
         
-        self.y = "EST_Y"
-        set_column_properties(self.y, is_optional=True, comment="pixels")
-        
-        self.x_err = "EST_X_ERR"
-        set_column_properties(self.x_err, is_optional=True, comment="pixels")
-        
-        self.y_err = "EST_Y_ERR"
-        set_column_properties(self.y_err, is_optional=True, comment="pixels")
-        
-        self.flux = "FLUX"
-        set_column_properties(self.flux, is_optional=True, comment="ADU")
-        
-        self.flux_err = "FLUX_ERR"
-        set_column_properties(self.flux_err, is_optional=True, comment="ADU")
-        
-        self.bulge_fraction = "BULGE_FRAC"
-        set_column_properties(self.bulge_fraction, is_optional=True)
-        
-        self.bulge_fraction_err = "BULGE_FRAC_ERR"
-        set_column_properties(self.bulge_fraction_err, is_optional=True)
-        
-        self.snr = "SNR"
-        set_column_properties(self.snr, is_optional=True)
-        
-        self.snr_err = "SNR_ERR"
-        set_column_properties(self.snr_err, is_optional=True)
+        self.pqr="PQR"
+        set_column_properties(self.pqr,is_optional=True,dtype="6F4",fits_dtype="E")
         
         # A list of columns in the desired order
         self.all = self.is_optional.keys()
@@ -231,10 +212,8 @@ def initialise_bfd_moments_table(detections_table = None,
     
     assert (detections_table is None) or (is_in_format(detections_table,detf))
     
-    if optional_columns is None:
-        optional_columns = [tf.e1_err,tf.e2_err]
-    else:
-        # Check all optional columns are valid
+    # Check all optional columns are valid
+    if optional_columns is not None:
         for colname in optional_columns:
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
