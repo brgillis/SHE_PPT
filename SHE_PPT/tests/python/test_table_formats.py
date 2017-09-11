@@ -29,6 +29,7 @@ from SHE_PPT.details_table_format import tf as datf, initialise_details_table
 from SHE_PPT.detections_table_format import tf as detf, initialise_detections_table
 from SHE_PPT.shear_estimates_table_format import tf as setf, initialise_shear_estimates_table
 from SHE_PPT.mcmc_chains_table_format import tf as mctf, initialise_mcmc_chains_table, num_chains, len_chain
+from SHE_PPT import magic_values as mv
 
 from SHE_PPT.table_utility import (get_comments,
                                    get_dtypes,
@@ -83,7 +84,7 @@ class TestTableFormats:
             # Check column fits dtypes
             assert tf.fits_dtypes.keys() == tf.all
             
-            # Check column fits dtypes
+            # Check column lengths
             assert tf.lengths.keys() == tf.all
 
     def test_get_comments(self):
@@ -222,30 +223,53 @@ class TestTableFormats:
                 os.remove(filename)
                 
     def test_init(self):
+        
+        detector = 15
+        model_hash = -1235
+        model_seed = 4422
+        noise_seed = 11015
+        
+        extname_head = str(detector) + "."
+        
         # Test initialization methods
         
-        detections_table = initialise_detections_table()
-        details_table = initialise_details_table()
+        detections_table = initialise_detections_table(detector = detector_ID,
+                                                       model_hash = model_hash,
+                                                       model_seed = model_seed,
+                                                       noise_seed = noise_seed)
+        
+        assert(detections_table.meta[detf.m.extname] == extname_head + mv.detections_tag)
+        assert(detections_table.meta[detf.m.model_hash] == model_hash)
+        assert(detections_table.meta[detf.m.model_seed] == model_seed)
+        assert(detections_table.meta[detf.m.noise_seed] == noise_seed)
+        
+        details_table = initialise_details_table(detector = detector_ID,
+                                                 model_hash = model_hash,
+                                                 model_seed = model_seed,
+                                                 noise_seed = noise_seed)
+        
+        assert(details_table.meta[detf.m.extname] == extname_head + mv.details_tag)
+        assert(details_table.meta[detf.m.model_hash] == model_hash)
+        assert(details_table.meta[detf.m.model_seed] == model_seed)
+        assert(details_table.meta[detf.m.noise_seed] == noise_seed)
         
         # Try to initialize the shear estimates table based on the detections table
         
-        detections_table.meta[detf.m.model_hash] == -1235
-        detections_table.meta[detf.m.model_seed] == 4422
-        detections_table.meta[detf.m.noise_seed] == 11015
-        
         shear_estimates_table = initialise_shear_estimates_table(detections_table)
         
-        assert(shear_estimates_table.meta[setf.m.model_hash] == detections_table.meta[detf.m.model_hash])
-        assert(shear_estimates_table.meta[setf.m.model_seed] == detections_table.meta[detf.m.model_seed])
-        assert(shear_estimates_table.meta[setf.m.noise_seed] == detections_table.meta[detf.m.noise_seed])
+        assert(shear_estimates_table.meta[setf.m.extname] == extname_head + mv.shear_estimates_tag)
+        assert(shear_estimates_table.meta[setf.m.model_hash] == model_hash)
+        assert(shear_estimates_table.meta[setf.m.model_seed] == model_seed)
+        assert(shear_estimates_table.meta[setf.m.noise_seed] == noise_seed)
         
         # Try to initialize the mcmc chains table based on the detections table
         
         mcmc_chains_table = initialise_mcmc_chains_table(detections_table)
         
-        assert(mcmc_chains_table.meta[setf.m.model_hash] == detections_table.meta[detf.m.model_hash])
-        assert(mcmc_chains_table.meta[setf.m.model_seed] == detections_table.meta[detf.m.model_seed])
-        assert(mcmc_chains_table.meta[setf.m.noise_seed] == detections_table.meta[detf.m.noise_seed])
+        assert(mcmc_chains_table.meta[mctf.m.extname] == extname_head + mv.mcmc_chains_tag)
+        assert(mcmc_chains_table.meta[mctf.m.model_hash] == model_hash)
+        assert(mcmc_chains_table.meta[mctf.m.model_seed] == model_seed)
+        assert(mcmc_chains_table.meta[mctf.m.noise_seed] == noise_seed)
         
         assert(mcmc_chains_table.meta[mctf.m.num_chains] == num_chains)
         assert(mcmc_chains_table.meta[mctf.m.len_chain] == len_chain)
