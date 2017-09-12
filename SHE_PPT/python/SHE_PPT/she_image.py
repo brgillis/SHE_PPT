@@ -35,7 +35,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     The structure can be written into a FITS file, and stamps can be extracted.
     The properties .data, .mask, .noisemap and .header are meant to be accessed directly:
       - .data is a numpy array
-      - .mask is a numpy array of dtype np.uint8
+      - .mask is a numpy array of dtype np.uint16
       - .noisemap is a numpy array
       - .header is an astropy.io.fits.Header object
           (for an intro to those, see http://docs.astropy.org/en/stable/io/fits/#working-with-fits-headers )
@@ -100,14 +100,14 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     def mask(self, mask_array):
         if mask_array is None:
             # Then we create an empty mask (0 means False means not masked)
-            self._mask = np.zeros(self._data.shape, dtype=np.uint8)
+            self._mask = np.zeros(self._data.shape, dtype=np.uint16)
         else:
             if mask_array.ndim is not 2:
                 raise ValueError("The mask array must have 2 dimensions")
             if mask_array.shape != self._data.shape:
                 raise ValueError("The mask array must have the same size as the data {}".format(self._data.shape))
-            if not mask_array.dtype == np.uint8:
-                raise ValueError("The mask array must be of np.uint8 type (it is {})".format(mask_array.dtype))
+            if not mask_array.dtype == np.uint16:
+                raise ValueError("The mask array must be of np.uint16 type (it is {})".format(mask_array.dtype))
             self._mask = mask_array
     @mask.deleter
     def mask(self):
@@ -296,7 +296,57 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             return (data, header)
         else:
             return data
+    
+    
+    @classmethod
+    def read_from_vis_fits(cls, filepath):
+        """Convenience function to read-in all chips of a VIS image into SHEImage objects
         
+        
+        This function does not wrap the more general `read_from_fits()`, as for efficienc
+        
+        The primary purpose of this function is not bot be flexible or forgiving, but to be safe.
+        
+        Parameters
+        ----------
+        filepath : str
+            Path to the FITS file to read
+            
+        Returns
+        -------
+        list
+            A list containing SHEImages, indexed by the extension number
+        
+        """
+         
+        logger.info("Reading VIS file '{}'...".format(filepath))
+        
+        hdulist = astropy.io.fits.open(filepath, uint=True)
+        extension_names = [hdu.name for hdu in hdulist]
+        nhdu = len(hdulist)
+        (nframes, remainder) = divmod(nhdu, 3)
+        if remainder != 0:
+            raise RuntimeError("Number of extensions in VIS file is not a multiple of 3: {}".format(str(extension_names)))
+        
+        output_list = []
+        for frame_index in range(nframes):
+            
+            # Getting all the data
+            data = hdulist["{}.SCI".format(frame_index)].data.transpose()
+            header = hdulist["{}.SCI".format(frame_index)].header
+            mask = hdulist["{}.FLG".format(frame_index)].data.transpose().astype(np.uint16)
+            noisemap = hdulist["{}.RMS".format(frame_index)].data.transpose()
+            for keyword in ["SIMPLE", "BITPIX", "NAXIS", "NAXIS1", "NAXIS2", "EXTEND", "XTENSION"]:
+                if keyword in header:
+                    header.remove(keyword)
+                
+            # Building the new object    
+            newimg = SHEImage(data=data, mask=mask, noisemap=noisemap, header=header)
+            output_list.append(newimg)
+         
+        assert len(output_list) == nframes
+        hdulist.close()
+        return output_list
          
     
       
