@@ -39,9 +39,7 @@ from astropy.table import Table
 
 from SHE_PPT.detections_table_format import tf as detf
 from SHE_PPT.table_utility import is_in_format
-
-image_tail = ".fits"
-shear_estimates_tail = "_shear_measurements.fits"
+from SHE_PPT import magic_values as mv
 
 class ShearEstimatesTableMeta(object):
     """
@@ -50,17 +48,20 @@ class ShearEstimatesTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.1.3"
+        self.__version__ = "0.1.5"
         
         # Table metadata labels
         self.version = "SS_VER"
         
-        self.model_hash = "MHASH"
-        self.model_seed = "MSEED"
-        self.noise_seed = "NSEED"
+        self.extname = mv.extname_label
+        
+        self.model_hash = mv.model_hash_label
+        self.model_seed = mv.model_seed_label
+        self.noise_seed = mv.noise_seed_label
         
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
+                                     (self.extname, "#."+mv.shear_estimates_tag),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
@@ -106,119 +107,57 @@ class ShearEstimatesTableFormat(object):
             self.dtypes[name] = dtype
             self.fits_dtypes[name] = fits_dtype
             self.lengths[name] = length
+            
+            return name
 
         # Table column labels and properties
         
-        self.ID = "ID"
-        set_column_properties(self.ID, dtype=">i8", fits_dtype="K")
+        self.ID = set_column_properties("ID", dtype=">i8", fits_dtype="K")
         
-        self.g1 = "EST_G1"
-        set_column_properties(self.g1, dtype=">f8", fits_dtype="D")
+        self.g1 = set_column_properties("EST_G1", dtype=">f8", fits_dtype="D")
+        self.g2 = set_column_properties("EST_G2", dtype=">f8", fits_dtype="D")
+        self.g1_err = set_column_properties("G1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g2_err = set_column_properties("G2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.e1_err = set_column_properties("E1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.e2_err = set_column_properties("E2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.g2 = "EST_G2"
-        set_column_properties(self.g2, dtype=">f8", fits_dtype="D")
+        self.flags = set_column_properties("FLAGS", is_optional=True, dtype="bool", fits_dtype="L")
+        self.fit_class = set_column_properties("FITCLASS", is_optional=True, dtype=">i2", fits_dtype="I")
         
-        self.g1_err = "G1_ERR"
-        set_column_properties(self.g1_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g1_cal1 = set_column_properties("EST_G1_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g2_cal1 = set_column_properties("EST_G2_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.b1_cal1 = set_column_properties("B1_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.b2_cal1 = set_column_properties("B2_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g1_cal1_err = set_column_properties("G1_CAL1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g2_cal1_err = set_column_properties("G2_CAL1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.e1_cal1_err = set_column_properties("E1_CAL1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.e2_cal1_err = set_column_properties("E2_CAL1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.g2_err = "G2_ERR"
-        set_column_properties(self.g2_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g1_cal2 = set_column_properties("EST_G1_CAL2", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g2_cal2 = set_column_properties("EST_G2_CAL2", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.b1_cal2 = set_column_properties("B1_CAL2", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.b2_cal2 = set_column_properties("B2_CAL2", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g1_cal2_err = set_column_properties("G1_CAL2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g2_cal2_err = set_column_properties("G2_CAL2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.e1_cal2_err = set_column_properties("E1_CAL2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.e2_cal2_err = set_column_properties("E2_CAL2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.e1_err = "E1_ERR"
-        set_column_properties(self.e1_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.re = set_column_properties("EST_RE", is_optional=True, comment="arcsec", dtype=">f8", fits_dtype="D")
+        self.re_err = set_column_properties("EST_RE_ERR", is_optional=True, comment="arcsec", dtype=">f8", fits_dtype="D")
         
-        self.e2_err = "E2_ERR"
-        set_column_properties(self.e2_err, is_optional=True, dtype=">f8", fits_dtype="D")
+        self.x = set_column_properties("EST_X", is_optional=True, comment="pixels")
+        self.y = set_column_properties("EST_Y", is_optional=True, comment="pixels")
+        self.x_err = set_column_properties("EST_X_ERR", is_optional=True, comment="pixels")
+        self.y_err = set_column_properties("EST_Y_ERR", is_optional=True, comment="pixels")
         
-        self.star_flag = "STAR_FLAG"
-        set_column_properties(self.star_flag, is_optional=True, dtype="bool", fits_dtype="L")
+        self.flux = set_column_properties("FLUX", is_optional=True, comment="ADU")
+        self.flux_err = set_column_properties("FLUX_ERR", is_optional=True, comment="ADU")
         
-        self.fit_class = "FITCLASS"
-        set_column_properties(self.fit_class, is_optional=True, dtype=">i2", fits_dtype="I")
+        self.bulge_fraction = set_column_properties("BULGE_FRAC", is_optional=True)
+        self.bulge_fraction_err = set_column_properties("BULGE_FRAC_ERR", is_optional=True)
         
-        self.g1_cal1 = "EST_G1_CAL1"
-        set_column_properties(self.g1_cal1, is_optional=True, dtype=">f8", fits_dtype="D")
-        
-        self.g2_cal1 = "EST_G2_CAL1"
-        set_column_properties(self.g2_cal1, is_optional=True, dtype=">f8", fits_dtype="D")
-        
-        self.b1_cal1 = "B1_CAL1"
-        set_column_properties(self.b1_cal1, is_optional=True, dtype=">f8", fits_dtype="D")
-        
-        self.b2_cal1 = "B2_CAL1"
-        set_column_properties(self.b2_cal1, is_optional=True, dtype=">f8", fits_dtype="D")
-        
-        self.g1_cal1_err = "G1_CAL1_ERR"
-        set_column_properties(self.g1_cal1_err, is_optional=True, dtype=">f8", fits_dtype="D")
-        
-        self.g2_cal1_err = "G2_CAL1_ERR"
-        set_column_properties(self.g2_cal1_err, is_optional=True, dtype=">f8", fits_dtype="D")
-        
-        self.e1_cal1_err = "E1_CAL1_ERR"
-        set_column_properties(self.e1_cal1_err, is_optional=True, dtype=">f8", fits_dtype="D")
-        
-        self.e2_cal1_err = "E2_CAL1_ERR"
-        set_column_properties(self.e2_cal1_err, is_optional=True, dtype=">f8", fits_dtype="D")
-        
-        self.g1_cal2 = "EST_G1_CAL2"
-        set_column_properties(self.g1_cal2, is_optional=True, dtype=">f8", fits_dtype="D")
-        
-        self.g2_cal2 = "EST_G2_CAL2"
-        set_column_properties(self.g2_cal2, is_optional=True, dtype=">f8", fits_dtype="D")
-        
-        self.b1_cal2 = "B1_CAL2"
-        set_column_properties(self.b1_cal2, is_optional=True, dtype=">f8", fits_dtype="D")
-        
-        self.b2_cal2 = "B2_CAL2"
-        set_column_properties(self.b2_cal2, is_optional=True, dtype=">f8", fits_dtype="D")
-        
-        self.g1_cal2_err = "G1_CAL2_ERR"
-        set_column_properties(self.g1_cal2_err, is_optional=True, dtype=">f8", fits_dtype="D")
-        
-        self.g2_cal2_err = "G2_CAL2_ERR"
-        set_column_properties(self.g2_cal2_err, is_optional=True, dtype=">f8", fits_dtype="D")
-        
-        self.e1_cal2_err = "E1_CAL2_ERR"
-        set_column_properties(self.e1_cal2_err, is_optional=True, dtype=">f8", fits_dtype="D")
-        
-        self.e2_cal2_err = "E2_CAL2_ERR"
-        set_column_properties(self.e2_cal2_err, is_optional=True, dtype=">f8", fits_dtype="D")
-        
-        self.re = "EST_RE"
-        set_column_properties(self.re, is_optional=True, comment="arcsec", dtype=">f8", fits_dtype="D")
-        
-        self.re_err = "EST_RE_ERR"
-        set_column_properties(self.re_err, is_optional=True, comment="arcsec", dtype=">f8", fits_dtype="D")
-        
-        self.x = "EST_X"
-        set_column_properties(self.x, is_optional=True, comment="pixels")
-        
-        self.y = "EST_Y"
-        set_column_properties(self.y, is_optional=True, comment="pixels")
-        
-        self.x_err = "EST_X_ERR"
-        set_column_properties(self.x_err, is_optional=True, comment="pixels")
-        
-        self.y_err = "EST_Y_ERR"
-        set_column_properties(self.y_err, is_optional=True, comment="pixels")
-        
-        self.flux = "FLUX"
-        set_column_properties(self.flux, is_optional=True, comment="ADU")
-        
-        self.flux_err = "FLUX_ERR"
-        set_column_properties(self.flux_err, is_optional=True, comment="ADU")
-        
-        self.bulge_fraction = "BULGE_FRAC"
-        set_column_properties(self.bulge_fraction, is_optional=True)
-        
-        self.bulge_fraction_err = "BULGE_FRAC_ERR"
-        set_column_properties(self.bulge_fraction_err, is_optional=True)
-        
-        self.snr = "SNR"
-        set_column_properties(self.snr, is_optional=True)
-        
-        self.snr_err = "SNR_ERR"
-        set_column_properties(self.snr_err, is_optional=True)
+        self.snr = set_column_properties("SNR", is_optional=True)
+        self.snr_err = set_column_properties("SNR_ERR", is_optional=True)
         
         # A list of columns in the desired order
         self.all = self.is_optional.keys()
@@ -235,11 +174,14 @@ shear_estimates_table_format = ShearEstimatesTableFormat()
 # And a convient alias for it
 tf = shear_estimates_table_format
 
-def make_shear_estimates_table_header(model_hash = None,
+def make_shear_estimates_table_header(detector = -1,
+                                      model_hash = None,
                                       model_seed = None,
                                       noise_seed = None,):
     """
         @brief Generate a header for a shear estimates table.
+        
+        @param detector <int?> Detector for this image, if applicable
         
         @param model_hash <int> Hash of the physical model options dictionary
         
@@ -253,6 +195,8 @@ def make_shear_estimates_table_header(model_hash = None,
     header = OrderedDict()
     
     header[tf.m.version] = tf.__version__
+    
+    header[tf.m.extname] = str(detector) + "." + mv.shear_estimates_tag
     
     header[tf.m.model_hash] = model_hash
     header[tf.m.model_seed] = model_seed
@@ -296,15 +240,18 @@ def initialise_shear_estimates_table(detections_table = None,
     shear_estimates_table = Table(init_cols, names=names, dtype=dtypes)
     
     if detections_table is None:
+        detector = -1
         model_hash = None
         model_seed = None
         noise_seed = None
     else:
+        detector = int(detections_table.meta[detf.m.extname].split(".")[0])
         model_hash = detections_table.meta[detf.m.model_hash]
         model_seed = detections_table.meta[detf.m.model_seed]
         noise_seed = detections_table.meta[detf.m.noise_seed]
     
-    shear_estimates_table.meta = make_shear_estimates_table_header(model_hash = model_hash,
+    shear_estimates_table.meta = make_shear_estimates_table_header(detector = detector,
+                                                                   model_hash = model_hash,
                                                                    model_seed = model_seed,
                                                                    noise_seed = noise_seed)
     

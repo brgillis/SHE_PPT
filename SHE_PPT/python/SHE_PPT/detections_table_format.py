@@ -25,6 +25,7 @@ from collections import OrderedDict
 from astropy.table import Table
 
 from SHE_PPT.utility import hash_any
+from SHE_PPT import magic_values as mv
 
 class DetectionsTableMeta(object):
     """
@@ -33,26 +34,26 @@ class DetectionsTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.2"
+        self.__version__ = "0.2.1"
         
         # Table metadata labels
         
         self.version = "SS_VER"
         
-        self.detector = "DETECTOR"
+        self.extname = mv.extname_label
         
         self.subtracted_sky_level = "S_SKYLV"
         self.unsubtracted_sky_level = "US_SKYLV"
         self.read_noise = "RD_NOISE"
-        self.gain = "CCDGAIN"
+        self.gain = mv.gain_label
         
-        self.model_hash = "MHASH"
-        self.model_seed = "MSEED"
-        self.noise_seed = "NSEED"
+        self.model_hash = mv.model_hash_label
+        self.model_seed = mv.model_seed_label
+        self.noise_seed = mv.noise_seed_label
         
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
-                                     (self.detector, None),
+                                     (self.extname, "#."+mv.detections_tag),
                                      (self.subtracted_sky_level, "ADU/arcsec**2"),
                                      (self.unsubtracted_sky_level, "ADU/arcsec**2"),
                                      (self.read_noise, "e-/pixel"),
@@ -102,140 +103,66 @@ class DetectionsTableFormat(object):
             self.dtypes[name] = dtype
             self.fits_dtypes[name] = fits_dtype
             self.lengths[name] = length
+            
+            return name
         
         # Column names and info
         
-        self.ID = "SOURCE_ID"
-        set_column_properties(self.ID, dtype=">i8", fits_dtype="K")
+        self.ID = set_column_properties("SOURCE_ID", dtype=">i8", fits_dtype="K")
+        self.number = set_column_properties("NUMBER", is_optional=True, dtype=">i8", fits_dtype="K")
         
-        self.number = "NUMBER"
-        set_column_properties(self.number, is_optional=True, dtype=">i8", fits_dtype="K")
+        self.gal_x = set_column_properties("X_IMAGE", comment="pixel")
+        self.gal_y = set_column_properties("Y_IMAGE", comment="pixel")
+        self.psf_x = set_column_properties("PSF_X_IMAGE", is_optional=True, comment="pixel")
+        self.psf_y = set_column_properties("PSF_Y_IMAGE", is_optional=True, comment="pixel")
+        self.gal_a = set_column_properties("A_IMAGE", is_optional=True, comment="pixel")
+        self.gal_b = set_column_properties("B_IMAGE", is_optional=True, comment="pixel")
+        self.gal_theta = set_column_properties("THETA_IMAGE", is_optional=True, comment="deg")
         
-        self.gal_x = "X_IMAGE"
-        set_column_properties(self.gal_x, comment="pixel")
+        self.gal_x2_err = set_column_properties("ERRX2_IMAGE", comment="pixel**2")
+        self.gal_y2_err = set_column_properties("ERRY2_IMAGE", comment="pixel**2")
+        self.gal_a_err = set_column_properties("ERRA_IMAGE", is_optional=True, comment="pixel")
+        self.gal_b_err = set_column_properties("ERRB_IMAGE", is_optional=True, comment="pixel")
+        self.gal_theta_err = set_column_properties("ERRTHETA_IMAGE", is_optional=True, comment="deg")
         
-        self.gal_y = "Y_IMAGE"
-        set_column_properties(self.gal_y, comment="pixel")
+        self.gal_x_world = set_column_properties("X_WORLD", is_optional=True, comment="deg")
+        self.gal_y_world = set_column_properties("Y_WORLD", is_optional=True, comment="deg")
+        self.gal_a_world = set_column_properties("A_WORLD", is_optional=True, comment="deg")
+        self.gal_b_world = set_column_properties("B_WORLD", is_optional=True, comment="deg")
+        self.gal_theta_world = set_column_properties("THETA_WORLD", is_optional=True, comment="deg")
         
-        self.psf_x = "PSF_X_IMAGE"
-        set_column_properties(self.psf_x, is_optional=True, comment="pixel")
+        self.gal_x2_world_err = set_column_properties("ERRX2_WORLD", comment="deg**2")
+        self.gal_y2_world_err = set_column_properties("ERRY2_WORLD", comment="deg**2")
+        self.gal_a_world_err = set_column_properties("ERRA_WORLD", is_optional=True, comment="deg")
+        self.gal_b_world_err = set_column_properties("ERRB_WORLD", is_optional=True, comment="deg")
+        self.gal_theta_world_err = set_column_properties("ERRTHETA_WORLD", is_optional=True, comment="deg")
         
-        self.psf_y = "PSF_Y_IMAGE"
-        set_column_properties(self.psf_y, is_optional=True, comment="pixel")
+        self.gal_xwin_world = set_column_properties("XWIN_WORLD", is_optional=True, comment="deg")
+        self.gal_ywin_world = set_column_properties("YWIN_WORLD", is_optional=True, comment="deg")
+        self.gal_awin_world = set_column_properties("AWIN_WORLD", is_optional=True, comment="deg")
+        self.gal_bwin_world = set_column_properties("BWIN_WORLD", is_optional=True, comment="deg")
+        self.gal_thetawin_world = set_column_properties("THETAWIN_WORLD", is_optional=True, comment="deg")
         
-        self.gal_a = "A_IMAGE"
-        set_column_properties(self.gal_a, is_optional=True, comment="pixel")
+        self.gal_x2win_world_err = set_column_properties("ERRX2WIN_WORLD", comment="deg**2")
+        self.gal_y2win_world_err = set_column_properties("ERRY2WIN_WORLD", comment="deg**2")
+        self.gal_awin_world_err = set_column_properties("ERRAWIN_WORLD", is_optional=True, comment="deg")
+        self.gal_bwin_world_err = set_column_properties("ERRBWIN_WORLD", is_optional=True, comment="deg")
+        self.gal_thetawin_world_err = set_column_properties("ERRTHETAWIN_WORLD", is_optional=True, comment="deg")
         
-        self.gal_b = "B_IMAGE"
-        set_column_properties(self.gal_b, is_optional=True, comment="pixel")
+        self.gal_alpha = set_column_properties("ALPHA_J2000", is_optional=True, comment="deg")
+        self.gal_delta = set_column_properties("DELTA_J2000", is_optional=True, comment="deg")
+        self.gal_theta = set_column_properties("THETA_J2000", is_optional=True, comment="deg")
+        self.gal_theta_err = set_column_properties("ERRTHETA_J2000", is_optional=True, comment="deg")
         
-        self.gal_theta = "THETA_IMAGE"
-        set_column_properties(self.gal_theta, is_optional=True, comment="deg")
+        self.gal_flux = set_column_properties("FLUX_AUTO", is_optional=True, comment="deg")
+        self.gal_flux_err = set_column_properties("FLUXERR_AUTO", is_optional=True, comment="deg")
         
-        self.gal_x2_err = "ERRX2_IMAGE"
-        set_column_properties(self.gal_x2_err, comment="pixel**2")
+        self.gal_mag = set_column_properties("MAG_AUTO", is_optional=True, comment="VIS")
+        self.gal_mag_err = set_column_properties("MAGERR_AUTO", is_optional=True, comment="VIS")
         
-        self.gal_y2_err = "ERRY2_IMAGE"
-        set_column_properties(self.gal_y2_err, comment="pixel**2")
+        self.gal_hlr = set_column_properties("FLUX_RADIUS", is_optional=True, comment="pixel")
         
-        self.gal_a_err = "ERRA_IMAGE"
-        set_column_properties(self.gal_a_err, is_optional=True, comment="pixel")
-        
-        self.gal_b_err = "ERRB_IMAGE"
-        set_column_properties(self.gal_b_err, is_optional=True, comment="pixel")
-        
-        self.gal_theta_err = "ERRTHETA_IMAGE"
-        set_column_properties(self.gal_theta_err, is_optional=True, comment="deg")
-        
-        self.gal_x_world = "X_WORLD"
-        set_column_properties(self.gal_x_world, is_optional=True, comment="deg")
-        
-        self.gal_y_world = "Y_WORLD"
-        set_column_properties(self.gal_y_world, is_optional=True, comment="deg")
-        
-        self.gal_a_world = "A_WORLD"
-        set_column_properties(self.gal_a_world, is_optional=True, comment="deg")
-        
-        self.gal_b_world = "B_WORLD"
-        set_column_properties(self.gal_b_world, is_optional=True, comment="deg")
-        
-        self.gal_theta_world = "THETA_WORLD"
-        set_column_properties(self.gal_theta_world, is_optional=True, comment="deg")
-        
-        self.gal_x2_world_err = "ERRX2_WORLD"
-        set_column_properties(self.gal_x2_world_err, comment="deg**2")
-        
-        self.gal_y2_world_err = "ERRY2_WORLD"
-        set_column_properties(self.gal_y2_world_err, comment="deg**2")
-        
-        self.gal_a_world_err = "ERRA_WORLD"
-        set_column_properties(self.gal_a_world_err, is_optional=True, comment="deg")
-        
-        self.gal_b_world_err = "ERRB_WORLD"
-        set_column_properties(self.gal_b_world_err, is_optional=True, comment="deg")
-        
-        self.gal_theta_world_err = "ERRTHETA_WORLD"
-        set_column_properties(self.gal_theta_world_err, is_optional=True, comment="deg")
-        
-        self.gal_xwin_world = "XWIN_WORLD"
-        set_column_properties(self.gal_xwin_world, is_optional=True, comment="deg")
-        
-        self.gal_ywin_world = "YWIN_WORLD"
-        set_column_properties(self.gal_ywin_world, is_optional=True, comment="deg")
-        
-        self.gal_awin_world = "AWIN_WORLD"
-        set_column_properties(self.gal_awin_world, is_optional=True, comment="deg")
-        
-        self.gal_bwin_world = "BWIN_WORLD"
-        set_column_properties(self.gal_bwin_world, is_optional=True, comment="deg")
-        
-        self.gal_thetawin_world = "THETAWIN_WORLD"
-        set_column_properties(self.gal_thetawin_world, is_optional=True, comment="deg")
-        
-        self.gal_x2win_world_err = "ERRX2WIN_WORLD"
-        set_column_properties(self.gal_x2win_world_err, comment="deg**2")
-        
-        self.gal_y2win_world_err = "ERRY2WIN_WORLD"
-        set_column_properties(self.gal_y2win_world_err, comment="deg**2")
-        
-        self.gal_awin_world_err = "ERRAWIN_WORLD"
-        set_column_properties(self.gal_awin_world_err, is_optional=True, comment="deg")
-        
-        self.gal_bwin_world_err = "ERRBWIN_WORLD"
-        set_column_properties(self.gal_bwin_world_err, is_optional=True, comment="deg")
-        
-        self.gal_thetawin_world_err = "ERRTHETAWIN_WORLD"
-        set_column_properties(self.gal_thetawin_world_err, is_optional=True, comment="deg")
-        
-        self.gal_alpha = "ALPHA_J2000"
-        set_column_properties(self.gal_alpha, is_optional=True, comment="deg")
-        
-        self.gal_delta = "DELTA_J2000"
-        set_column_properties(self.gal_delta, is_optional=True, comment="deg")
-        
-        self.gal_theta = "THETA_J2000"
-        set_column_properties(self.gal_theta, is_optional=True, comment="deg")
-        
-        self.gal_theta_err = "ERRTHETA_J2000"
-        set_column_properties(self.gal_theta_err, is_optional=True, comment="deg")
-        
-        self.gal_flux = "FLUX_AUTO"
-        set_column_properties(self.gal_flux, is_optional=True, comment="deg")
-        
-        self.gal_flux_err = "FLUXERR_AUTO"
-        set_column_properties(self.gal_flux_err, is_optional=True, comment="deg")
-        
-        self.gal_mag = "MAG_AUTO"
-        set_column_properties(self.gal_mag, is_optional=True, comment="VIS")
-        
-        self.gal_mag_err = "MAGERR_AUTO"
-        set_column_properties(self.gal_mag_err, is_optional=True, comment="VIS")
-        
-        self.gal_hlr = "FLUX_RADIUS"
-        set_column_properties(self.gal_hlr, is_optional=True, comment="pixel")
-        
-        self.gal_flags = "FLAGS"
-        set_column_properties(self.gal_flags, is_optional=True, dtype=">i8", fits_dtype="K")
+        self.gal_flags = set_column_properties("FLAGS", is_optional=True, dtype=">i8", fits_dtype="K")
         
         # A list of columns in the desired order
         self.all = self.is_optional.keys()
@@ -253,7 +180,7 @@ detections_table_format = DetectionsTableFormat()
 tf = detections_table_format
 
 
-def make_detections_table_header(detector = None,
+def make_detections_table_header(detector = -1,
                                  subtracted_sky_level = None,
                                  unsubtracted_sky_level = None,
                                  read_noise = None,
@@ -287,7 +214,7 @@ def make_detections_table_header(detector = None,
     
     header[tf.m.version] = tf.__version__
     
-    header[tf.m.detector] = detector
+    header[tf.m.extname] = str(detector) + "." + mv.detections_tag
     
     header[tf.m.subtracted_sky_level] = subtracted_sky_level
     header[tf.m.unsubtracted_sky_level] = unsubtracted_sky_level
@@ -300,8 +227,10 @@ def make_detections_table_header(detector = None,
     
     return header
 
-def initialise_detections_table(image = None, options = None,
-                                     optional_columns = None):
+def initialise_detections_table(image = None,
+                                options = None,
+                                optional_columns = None,
+                                detector = None):
     """
         @brief Initialise a detections table.
         
@@ -311,6 +240,8 @@ def initialise_detections_table(image = None, options = None,
         
         @param optional_columns <list<str>> List of names for optional columns to include.
                Default is psf_x and psf_y
+        
+        @param detector <int?> Detector for this image, if applicable. Will override ID of image object if set
         
         @return detections_table <astropy.Table>
     """
@@ -336,11 +267,11 @@ def initialise_detections_table(image = None, options = None,
                              dtype=dtypes)
     
     if image is None:
-        detector = None
         subtracted_sky_level = None
         unsubtracted_sky_level = None
     else:
-        detector = image.get_local_ID()
+        if detector is None:
+            detector = image.get_local_ID()
         subtracted_sky_level = image.get_param_value('subtracted_background')
         unsubtracted_sky_level = image.get_param_value('unsubtracted_background')
     
