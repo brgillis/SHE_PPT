@@ -26,6 +26,8 @@ from __future__ import division, print_function
 from future_builtins import *
 
 from SHE_PPT.she_image import SHEImage
+from SHE_PPT import table_utility
+from SHE_PPT import detections_table_format
 import astropy.table
 
 class SHEImageData(object): # We need new-style classes for properties, hence inherit from object
@@ -77,11 +79,20 @@ class SHEImageData(object): # We need new-style classes for properties, hence in
         psf_image = SHEImage.read_from_fits(psf_image_filepath)
         
         # And reading the detections table
-        detections_table = astropy.table.Table.read(detections_table_filepath)
+        detections_table = cls.read_detections_table(detections_table_filepath)
         
         # Building the object
         sid = SHEImageData(science_image, detections_table, psf_image)
         return sid
 
 
+    @classmethod
+    def read_detections_table(cls, filepath):
+        """Reads-in a detections table from a FITS file"""
+    
+        new_table = astropy.table.Table.read(filepath)
+        # We check its format
+        table_utility.is_in_format(new_table, detections_table_format.tf)
+    
+        return new_table
 
