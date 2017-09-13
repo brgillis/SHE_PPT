@@ -39,21 +39,24 @@ class SHEImageData(object): # We need new-style classes for properties, hence in
         The science exposure or image
     detections_table : astropy Table
         A table of sources detected the science image
-    psf_image : SHEImage
-        An image containing PSF stamps
+    bpsf_image : SHEImage
+        An image containing PSF stamps for the bulge-components of galaxies.
+    dpsf_image : SHEImage
+        Idem for the disk-components.
     """
    
-    def __init__(self, science_image, detections_table, psf_image):
+    def __init__(self, science_image, detections_table, bpsf_image, dpsf_image):
         """
         
         """
 
         self.science_image = science_image
         self.detections_table = detections_table
-        self.psf_image = psf_image
+        self.bpsf_image = bpsf_image
+        self.dpsf_image = dpsf_image
 
     @classmethod
-    def read(cls, science_image_filepath, detections_table_filepath, psf_image_filepath, **kwargs) :
+    def read(cls, science_image_filepath, detections_table_filepath, bpsf_image_filepath, dpsf_image_filepath, **kwargs) :
         """Reads-in a SHEImageData from disk
         
         Parameters
@@ -76,21 +79,34 @@ class SHEImageData(object): # We need new-style classes for properties, hence in
         
         # Reading the SHEImages
         science_image = SHEImage.read_from_fits(science_image_filepath, **kwargs)
-        psf_image = SHEImage.read_from_fits(psf_image_filepath)
+        bpsf_image = SHEImage.read_from_fits(bpsf_image_filepath)
+        dpsf_image = SHEImage.read_from_fits(dpsf_image_filepath)
         
         # And reading the detections table
         detections_table = cls.read_detections_table(detections_table_filepath)
         
         # Building the object
-        sid = SHEImageData(science_image, detections_table, psf_image)
+        sid = SHEImageData(science_image, detections_table, bpsf_image, dpsf_image)
         return sid
 
 
     @classmethod
-    def read_detections_table(cls, filepath):
-        """Reads-in a detections table from a FITS file"""
+    def read_detections_table(cls, filepath, table_ext=None):
+        """Reads-in a detections table from a FITS file
+       
+        Parameters
+        ----------
+        table_ext : str or None
+            Name of the HDU to read the table from. If None, the primary HDU is read.
+        
+        
+        """
     
-        new_table = astropy.table.Table.read(filepath)
+        if table_ext is None:
+            new_table = astropy.table.Table.read(filepath)
+        else:
+            new_table = astropy.table.Table.read(filepath, hdu=table_ext)
+        
         # We check its format
         table_utility.is_in_format(new_table, detections_table_format.tf)
     
