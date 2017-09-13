@@ -24,8 +24,8 @@ from collections import OrderedDict
 
 from astropy.table import Table
 
-from SHE_PPT.table_utility import get_dtypes
 from SHE_PPT.utility import hash_any
+from SHE_PPT import magic_values as mv
 
 class DetailsTableMeta(object):
     """
@@ -34,23 +34,26 @@ class DetailsTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.1.2"
+        self.__version__ = "0.1.3"
         
         # Table metadata labels
         
         self.version = "SS_VER"
         
+        self.extname = mv.extname_label
+        
         self.subtracted_sky_level = "S_SKYLV"
         self.unsubtracted_sky_level = "US_SKYLV"
         self.read_noise = "RD_NOISE"
-        self.gain = "CCDGAIN"
+        self.gain = mv.gain_label
         
-        self.model_hash = "MHASH"
-        self.model_seed = "MSEED"
-        self.noise_seed = "NSEED"
+        self.model_hash = mv.model_hash_label
+        self.model_seed = mv.model_seed_label
+        self.noise_seed = mv.noise_seed_label
         
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
+                                     (self.extname, "#."+mv.details_tag),
                                      (self.subtracted_sky_level, "ADU/arcsec^2"),
                                      (self.unsubtracted_sky_level, "ADU/arcsec^2"),
                                      (self.read_noise, "e-/pixel"),
@@ -100,64 +103,38 @@ class DetailsTableFormat(object):
             self.dtypes[name] = dtype
             self.fits_dtypes[name] = fits_dtype
             self.lengths[name] = length
+            
+            return name
 
         # Table column labels
-        self.ID = "ID"
-        set_column_properties(self.ID, dtype=">i8", fits_dtype="K")
+        self.ID = set_column_properties("ID", dtype=">i8", fits_dtype="K")
         
-        self.gal_x = "x_center_pix"
-        set_column_properties(self.gal_x, comment="pixels")
+        self.gal_x = set_column_properties("x_center_pix", comment="pixels")
+        self.gal_y = set_column_properties("y_center_pix", comment="pixels")
         
-        self.gal_y = "y_center_pix"
-        set_column_properties(self.gal_y, comment="pixels")
+        self.psf_x = set_column_properties("psf_x_center_pix", is_optional=True, comment="pixels")
+        self.psf_y = set_column_properties("psf_y_center_pix", is_optional=True, comment="pixels")
         
-        self.psf_x = "psf_x_center_pix"
-        set_column_properties(self.psf_x, is_optional=True, comment="pixels")
+        self.hlr_bulge = set_column_properties("hlr_bulge_arcsec", comment="arcsec")
+        self.hlr_disk = set_column_properties("hlr_disk_arcsec", comment="arcsec")
         
-        self.psf_y = "psf_y_center_pix"
-        set_column_properties(self.psf_y, is_optional=True, comment="pixels")
+        self.bulge_ellipticity = set_column_properties("bulge_ellipticity")
+        self.bulge_axis_ratio = set_column_properties("bulge_axis_ratio")
+        self.bulge_fraction = set_column_properties("bulge_fraction")
+        self.disk_height_ratio = set_column_properties("disk_height_ratio")
         
-        self.hlr_bulge = "hlr_bulge_arcsec"
-        set_column_properties(self.hlr_bulge, comment="arcsec")
+        self.magnitude = set_column_properties("magnitude", comment="VIS")
         
-        self.hlr_disk = "hlr_disk_arcsec"
-        set_column_properties(self.hlr_disk, comment="arcsec")
+        self.sersic_index = set_column_properties("sersic_index")
         
-        self.bulge_ellipticity = "bulge_ellipticity"
-        set_column_properties(self.bulge_ellipticity)
+        self.rotation = set_column_properties("rotation", comment="degrees")
+        self.spin = set_column_properties("spin", comment="degrees")
+        self.tilt = set_column_properties("tilt", comment="degrees")
         
-        self.bulge_axis_ratio = "bulge_axis_ratio"
-        set_column_properties(self.bulge_axis_ratio)
+        self.shear_magnitude = set_column_properties("shear_magnitude", dtype=">f4", fits_dtype="E")
+        self.shear_angle = set_column_properties("shear_angle", comment="degrees", dtype=">f4", fits_dtype="E")
         
-        self.bulge_fraction = "bulge_fraction"
-        set_column_properties(self.bulge_fraction)
-        
-        self.disk_height_ratio = "disk_height_ratio"
-        set_column_properties(self.disk_height_ratio)
-        
-        self.magnitude = "magnitude"
-        set_column_properties(self.magnitude, comment="VIS")
-        
-        self.sersic_index = "sersic_index"
-        set_column_properties(self.sersic_index)
-        
-        self.rotation = "rotation"
-        set_column_properties(self.rotation, comment="degrees")
-        
-        self.spin = "spin"
-        set_column_properties(self.spin, comment="degrees")
-        
-        self.tilt = "tilt"
-        set_column_properties(self.tilt, comment="degrees")
-        
-        self.shear_magnitude = "shear_magnitude"
-        set_column_properties(self.shear_magnitude, dtype=">f8", fits_dtype="D")
-        
-        self.shear_angle = "shear_angle"
-        set_column_properties(self.shear_angle, comment="degrees", dtype=">f8", fits_dtype="D")
-        
-        self.target_galaxy = "is_target_galaxy"
-        set_column_properties(self.target_galaxy)
+        self.target_galaxy = set_column_properties("is_target_galaxy")
         
         # A list of columns in the desired order
         self.all = self.is_optional.keys()
@@ -174,7 +151,8 @@ details_table_format = DetailsTableFormat()
 # And a convient alias for it
 tf = details_table_format
 
-def make_details_table_header(subtracted_sky_level = None,
+def make_details_table_header(detector = -1,
+                              subtracted_sky_level = None,
                               unsubtracted_sky_level = None,
                               read_noise = None,
                               gain = None,
@@ -183,6 +161,8 @@ def make_details_table_header(subtracted_sky_level = None,
                               noise_seed = None,):
     """
         @brief Generate a header for a galaxy details table.
+        
+        @param detector <int?> Detector for this image, if applicable
         
         @param subtracted_sky_level <float> Units of ADU/arcsec^2 (should we change this?)
         
@@ -205,6 +185,8 @@ def make_details_table_header(subtracted_sky_level = None,
     
     header[tf.m.version] = tf.__version__
     
+    header[tf.m.extname] = str(detector) + "." + mv.details_tag
+    
     header[tf.m.subtracted_sky_level] = subtracted_sky_level
     header[tf.m.unsubtracted_sky_level] = unsubtracted_sky_level
     header[tf.m.read_noise] = read_noise
@@ -216,8 +198,10 @@ def make_details_table_header(subtracted_sky_level = None,
     
     return header
 
-def initialise_details_table(image = None, options = None,
-                             optional_columns = None):
+def initialise_details_table(image = None,
+                             options = None,
+                             optional_columns = None,
+                             detector = None):
     """
         @brief Initialise a detections table.
         
@@ -227,6 +211,8 @@ def initialise_details_table(image = None, options = None,
         
         @param optional_columns <list<str>> List of names for optional columns to include.
                Default is psf_x and psf_y
+        
+        @param detector <int?> Detector for this image, if applicable. Will override ID of image object if set
         
         @return details_table <astropy.Table>
     """
@@ -255,6 +241,8 @@ def initialise_details_table(image = None, options = None,
         subtracted_sky_level = None
         unsubtracted_sky_level = None
     else:
+        if detector is None:
+            detector = image.get_local_ID()
         subtracted_sky_level = image.get_param_value('subtracted_background')
         unsubtracted_sky_level = image.get_param_value('unsubtracted_background')
     
@@ -271,7 +259,8 @@ def initialise_details_table(image = None, options = None,
         model_seed = image.get_full_seed()
         noise_seed = options['noise_seed']
                                                    
-    details_table.meta = make_details_table_header(subtracted_sky_level = subtracted_sky_level,
+    details_table.meta = make_details_table_header(detector = detector,
+                                                   subtracted_sky_level = subtracted_sky_level,
                                                    unsubtracted_sky_level = unsubtracted_sky_level,
                                                    read_noise = read_noise,
                                                    gain = gain,
