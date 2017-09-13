@@ -84,7 +84,7 @@ class SHEStack(object): # We need new-style classes for properties, hence inheri
             exposures.append(SHEImageData.read(*filepaths, **kwargs))
         
         return SHEStack(exposures)
+    
+    
 
-
-
-
+    
