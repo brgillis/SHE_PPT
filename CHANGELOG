@@ -28,12 +28,13 @@ New Features
 
 - Added the SHEImage class to hold images and related metadata
 - Added SHEImage methods to read and write from fits
-- Added SHEImage method to extract stamps 
+- Added SHEImage method to extract stamps
+- Added SHEImageData and SHEStack classes to hold images and detection tables of multiple exposures
+- Added vis_helper module to read VIS-like data from SHE_GST (and potentially SC3) into SHEImage and SHEStack objects 
 - Added format definitions for details, detections, and shear_estimates tables
 - Added functions for IO: get_allowed_filename(), write_listfile(), read_listfile(),
   replace_in_file(), replace_multiple_in_file()
 - Added a function to hash any object into a hex or base64 string
-- Added SHEImage class to store image objects
 - Added magic_values.py containing image header labels so far
 - Added mcmc_chains_table_format.py, containing format definition for MCMC chains tables
 
