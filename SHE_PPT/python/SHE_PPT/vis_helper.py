@@ -49,7 +49,7 @@ logger = logging.getLogger(__name__)
 def read_vis_ccdids(filepath):
     """Retruns a list of CCD-ID codes (i.e., whatever comes before the ".SCI" in the EXTNAME cards) of a VIS FITS image
     
-    Coding style is not very compact but we try to be safe and informative.
+    Todo: make this more general also for other (longer) ext_codes?
     
     Parameters
     ----------
