@@ -35,7 +35,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     The structure can be written into a FITS file, and stamps can be extracted.
     The properties .data, .mask, .noisemap and .header are meant to be accessed directly:
       - .data is a numpy array
-      - .mask is a numpy array of dtype np.uint16
+      - .mask is a numpy array
       - .noisemap is a numpy array
       - .header is an astropy.io.fits.Header object
           (for an intro to those, see http://docs.astropy.org/en/stable/io/fits/#working-with-fits-headers )
@@ -100,14 +100,18 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     def mask(self, mask_array):
         if mask_array is None:
             # Then we create an empty mask (0 means False means not masked)
-            self._mask = np.zeros(self._data.shape, dtype=np.uint16)
+            self._mask = np.zeros(self._data.shape, dtype=np.int32)
         else:
             if mask_array.ndim is not 2:
                 raise ValueError("The mask array must have 2 dimensions")
             if mask_array.shape != self._data.shape:
                 raise ValueError("The mask array must have the same size as the data {}".format(self._data.shape))
-            if not mask_array.dtype == np.uint16:
-                raise ValueError("The mask array must be of np.uint16 type (it is {})".format(mask_array.dtype))
+            if not mask_array.dtype == np.int32:
+                logger.warning("Recieved mask array of type '{}'. Attempting safe casting to np.int32.".format(mask_array.dtype))
+                try:
+                    mask_array = mask_array.astype(np.int32, casting='safe')
+                except:
+                    raise ValueError("The mask array must be of np.int32 type (it is {})".format(mask_array.dtype))
             self._mask = mask_array
     @mask.deleter
     def mask(self):
@@ -187,7 +191,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
            
         # Note that we transpose the numpy arrays, so to have the same pixel convention as DS9 and SExtractor.
         datahdu = astropy.io.fits.PrimaryHDU(self.data.transpose(), header=self.header)
-        maskhdu = astropy.io.fits.ImageHDU(data=self.mask.transpose().astype(np.uint8), name="MASK")
+        maskhdu = astropy.io.fits.ImageHDU(data=self.mask.transpose().astype(np.int32), name="MASK")
         noisemaphdu = astropy.io.fits.ImageHDU(data=self.noisemap.transpose(), name="NOISEMAP")
         
         hdulist = astropy.io.fits.HDUList([datahdu, maskhdu, noisemaphdu])
