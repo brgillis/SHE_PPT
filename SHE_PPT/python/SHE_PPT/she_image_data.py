@@ -26,7 +26,7 @@ from __future__ import division, print_function
 from future_builtins import *
 
 from SHE_PPT.she_image import SHEImage
-from astropy.table import Table
+import astropy.table
 
 class SHEImageData(object): # We need new-style classes for properties, hence inherit from object
     """Structure to group a science image with a corresponding detection table and PSF image
@@ -77,10 +77,11 @@ class SHEImageData(object): # We need new-style classes for properties, hence in
         psf_image = SHEImage.read_from_fits(psf_image_filepath)
         
         # And reading the detections table
-        detections_table = Table.read(detections_table_filepath)
+        detections_table = astropy.table.Table.read(detections_table_filepath)
         
         # Building the object
         sid = SHEImageData(science_image, detections_table, psf_image)
         return sid
+
 
 
