@@ -237,7 +237,8 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         # Removing the mandatory cards (that were automatically added to the header if write_to_fits was used)
         logger.debug("The raw primary header has {} keys".format(len(header.keys())))
         for keyword in ["SIMPLE", "BITPIX", "NAXIS", "NAXIS1", "NAXIS2", "EXTEND"]:
-            header.remove(keyword)
+            if keyword in header:
+                header.remove(keyword)
         logger.debug("The cleaned header has {} keys".format(len(header.keys())))
         
         # Reading the mask
