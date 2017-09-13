@@ -297,58 +297,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         else:
             return data
     
-    
-    @classmethod
-    def read_from_vis_fits(cls, filepath):
-        """Convenience function to read-in all chips of a VIS image into SHEImage objects
         
-        
-        This function does not wrap the more general `read_from_fits()`, as for efficienc
-        
-        The primary purpose of this function is not bot be flexible or forgiving, but to be safe.
-        
-        Parameters
-        ----------
-        filepath : str
-            Path to the FITS file to read
-            
-        Returns
-        -------
-        list
-            A list containing SHEImages, indexed by the extension number
-        
-        """
-         
-        logger.info("Reading VIS file '{}'...".format(filepath))
-        
-        hdulist = astropy.io.fits.open(filepath, uint=True)
-        extension_names = [hdu.name for hdu in hdulist]
-        nhdu = len(hdulist)
-        (nframes, remainder) = divmod(nhdu, 3)
-        if remainder != 0:
-            raise RuntimeError("Number of extensions in VIS file is not a multiple of 3: {}".format(str(extension_names)))
-        
-        output_list = []
-        for frame_index in range(nframes):
-            
-            # Getting all the data
-            data = hdulist["{}.SCI".format(frame_index)].data.transpose()
-            header = hdulist["{}.SCI".format(frame_index)].header
-            mask = hdulist["{}.FLG".format(frame_index)].data.transpose().astype(np.uint16)
-            noisemap = hdulist["{}.RMS".format(frame_index)].data.transpose()
-            for keyword in ["SIMPLE", "BITPIX", "NAXIS", "NAXIS1", "NAXIS2", "EXTEND", "XTENSION"]:
-                if keyword in header:
-                    header.remove(keyword)
-                
-            # Building the new object    
-            newimg = SHEImage(data=data, mask=mask, noisemap=noisemap, header=header)
-            output_list.append(newimg)
-         
-        assert len(output_list) == nframes
-        hdulist.close()
-        return output_list
-         
-    
       
     def extract_stamp(self, x, y, width, height=None, indexconv="numpy", keep_header=False):
         """Extracts a stamp and returns it as a new instance (using views of numpy arrays, i.e., without making a copy)
