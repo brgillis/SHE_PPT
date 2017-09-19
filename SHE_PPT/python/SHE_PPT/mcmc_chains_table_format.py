@@ -36,7 +36,7 @@ class MCMCChainsTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.1.2"
+        self.__version__ = "0.1.3"
         
         # Table metadata labels
         self.version = "SS_VER"
@@ -107,19 +107,19 @@ class MCMCChainsTableFormat(object):
         # Column names
         self.ID = set_column_properties("ID", dtype=">i8", fits_dtype="K")
         
-        self.gal_g1 = set_column_properties("GAL_EST_G1", dtype=">f4", fits_dtype="E", length=num_chains*len_chain)
-        self.gal_g2 = set_column_properties("GAL_EST_G2", dtype=">f4", fits_dtype="E", length=num_chains*len_chain)
-        self.gal_re = set_column_properties("GAL_EST_RE", comment="arcsec", dtype=">f4", fits_dtype="E",
+        self.gal_g1 = set_column_properties("G1_CHAIN", dtype=">f4", fits_dtype="E", length=num_chains*len_chain)
+        self.gal_g2 = set_column_properties("G2_CHAIN", dtype=">f4", fits_dtype="E", length=num_chains*len_chain)
+        self.gal_re = set_column_properties("RE_CHAIN", comment="arcsec", dtype=">f4", fits_dtype="E",
                               length=num_chains*len_chain)
-        self.gal_x = set_column_properties("GAL_EST_X", comment="pixels", length=num_chains*len_chain)
-        self.gal_y = set_column_properties("GAL_EST_Y", comment="pixels", length=num_chains*len_chain)
+        self.gal_x = set_column_properties("X_CHAIN", comment="pixels", length=num_chains*len_chain)
+        self.gal_y = set_column_properties("Y_CHAIN", comment="pixels", length=num_chains*len_chain)
         
-        self.gal_flux = set_column_properties("GAL_FLUX", comment="ADU", length=num_chains*len_chain)
-        self.gal_bulge_fraction = set_column_properties("GAL_BULGE_FRAC", length=num_chains*len_chain)
-        self.gal_snr = set_column_properties("GAL_SNR", length=num_chains*len_chain)
+        self.gal_flux = set_column_properties("FLUX_CHAIN", comment="ADU", length=num_chains*len_chain)
+        self.gal_bulge_fraction = set_column_properties("BULGE_FRAC", length=num_chains*len_chain)
+        self.gal_snr = set_column_properties("SNR_CHAIN", length=num_chains*len_chain)
         
-        self.gal_lr1 = set_column_properties("GAL_LR1", length=num_chains*len_chain)
-        self.gal_lr2 = set_column_properties("GAL_LR2", length=num_chains*len_chain)
+        self.gal_lr1 = set_column_properties("LR1_CHAIN", length=num_chains*len_chain)
+        self.gal_lr2 = set_column_properties("LR2_CHAIN", length=num_chains*len_chain)
         
         # A list of columns in the desired order
         self.all = self.is_optional.keys()
