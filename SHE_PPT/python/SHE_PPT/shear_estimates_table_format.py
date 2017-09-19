@@ -48,7 +48,7 @@ class ShearEstimatesTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.1.5"
+        self.__version__ = "0.1.6"
         
         # Table metadata labels
         self.version = "SS_VER"
@@ -112,7 +112,7 @@ class ShearEstimatesTableFormat(object):
 
         # Table column labels and properties
         
-        self.ID = set_column_properties("ID", dtype=">i8", fits_dtype="K")
+        self.ID = set_column_properties("SOURCE_ID", dtype=">i8", fits_dtype="K")
         
         self.g1 = set_column_properties("EST_G1", dtype=">f8", fits_dtype="D")
         self.g2 = set_column_properties("EST_G2", dtype=">f8", fits_dtype="D")
@@ -121,8 +121,8 @@ class ShearEstimatesTableFormat(object):
         self.e1_err = set_column_properties("E1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
         self.e2_err = set_column_properties("E2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.flags = set_column_properties("FLAGS", is_optional=True, dtype="bool", fits_dtype="L")
-        self.fit_class = set_column_properties("FITCLASS", is_optional=True, dtype=">i2", fits_dtype="I")
+        self.flags = set_column_properties("FLAGS", dtype=">i8", fits_dtype="K")
+        self.fit_class = set_column_properties("FITCLASS", dtype=">i2", fits_dtype="I")
         
         self.g1_cal1 = set_column_properties("EST_G1_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
         self.g2_cal1 = set_column_properties("EST_G2_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
