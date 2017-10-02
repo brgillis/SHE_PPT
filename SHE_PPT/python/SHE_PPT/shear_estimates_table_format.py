@@ -48,7 +48,7 @@ class ShearEstimatesTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.1.5"
+        self.__version__ = "0.1.7"
         
         # Table metadata labels
         self.version = "SS_VER"
@@ -127,20 +127,20 @@ class ShearEstimatesTableFormat(object):
 
         # Table column labels and properties
         
-        self.ID = set_column_properties("ID", dtype=">i8", fits_dtype="K")
+        self.ID = set_column_properties("SOURCE_ID", dtype=">i8", fits_dtype="K")
         
-        self.g1 = set_column_properties("EST_G1", dtype=">f8", fits_dtype="D")
-        self.g2 = set_column_properties("EST_G2", dtype=">f8", fits_dtype="D")
+        self.g1 = set_column_properties("G1", dtype=">f8", fits_dtype="D")
+        self.g2 = set_column_properties("G2", dtype=">f8", fits_dtype="D")
         self.g1_err = set_column_properties("G1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
         self.g2_err = set_column_properties("G2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
         self.e1_err = set_column_properties("E1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
         self.e2_err = set_column_properties("E2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.flags = set_column_properties("FLAGS", is_optional=True, dtype="bool", fits_dtype="L")
-        self.fit_class = set_column_properties("FITCLASS", is_optional=True, dtype=">i2", fits_dtype="I")
+        self.flags = set_column_properties("FLAGS", dtype=">i8", fits_dtype="K")
+        self.fit_class = set_column_properties("FITCLASS", dtype=">i2", fits_dtype="I")
         
-        self.g1_cal1 = set_column_properties("EST_G1_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.g2_cal1 = set_column_properties("EST_G2_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g1_cal1 = set_column_properties("G1_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g2_cal1 = set_column_properties("G2_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
         self.b1_cal1 = set_column_properties("B1_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
         self.b2_cal1 = set_column_properties("B2_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
         self.g1_cal1_err = set_column_properties("G1_CAL1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
@@ -148,8 +148,8 @@ class ShearEstimatesTableFormat(object):
         self.e1_cal1_err = set_column_properties("E1_CAL1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
         self.e2_cal1_err = set_column_properties("E2_CAL1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.g1_cal2 = set_column_properties("EST_G1_CAL2", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.g2_cal2 = set_column_properties("EST_G2_CAL2", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g1_cal2 = set_column_properties("G1_CAL2", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g2_cal2 = set_column_properties("G2_CAL2", is_optional=True, dtype=">f8", fits_dtype="D")
         self.b1_cal2 = set_column_properties("B1_CAL2", is_optional=True, dtype=">f8", fits_dtype="D")
         self.b2_cal2 = set_column_properties("B2_CAL2", is_optional=True, dtype=">f8", fits_dtype="D")
         self.g1_cal2_err = set_column_properties("G1_CAL2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
@@ -157,13 +157,13 @@ class ShearEstimatesTableFormat(object):
         self.e1_cal2_err = set_column_properties("E1_CAL2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
         self.e2_cal2_err = set_column_properties("E2_CAL2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
         
-        self.re = set_column_properties("EST_RE", is_optional=True, comment="arcsec", dtype=">f8", fits_dtype="D")
-        self.re_err = set_column_properties("EST_RE_ERR", is_optional=True, comment="arcsec", dtype=">f8", fits_dtype="D")
+        self.re = set_column_properties("RE", is_optional=True, comment="arcsec", dtype=">f8", fits_dtype="D")
+        self.re_err = set_column_properties("RE_ERR", is_optional=True, comment="arcsec", dtype=">f8", fits_dtype="D")
         
-        self.x = set_column_properties("EST_X", is_optional=True, comment="pixels")
-        self.y = set_column_properties("EST_Y", is_optional=True, comment="pixels")
-        self.x_err = set_column_properties("EST_X_ERR", is_optional=True, comment="pixels")
-        self.y_err = set_column_properties("EST_Y_ERR", is_optional=True, comment="pixels")
+        self.x = set_column_properties("X", is_optional=True, comment="pixels")
+        self.y = set_column_properties("Y", is_optional=True, comment="pixels")
+        self.x_err = set_column_properties("X_ERR", is_optional=True, comment="pixels")
+        self.y_err = set_column_properties("Y_ERR", is_optional=True, comment="pixels")
         
         self.flux = set_column_properties("FLUX", is_optional=True, comment="ADU")
         self.flux_err = set_column_properties("FLUX_ERR", is_optional=True, comment="ADU")

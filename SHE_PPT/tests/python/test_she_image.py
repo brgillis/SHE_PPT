@@ -71,12 +71,13 @@ class Test_she_image():
     
     
     def test_mask(self):
-        """The mask is a uint8"""
-        self.img.mask[5,5]=256 # Same as 0
-        assert self.img.mask[5,5] == 0
-        self.img.mask[5,5]=-12.345
-        assert self.img.mask[5,5] == 244
+        """Tests some mask functionality"""
+
+        self.img.mask[5,5]=100
         assert self.img.boolmask[5,5] == True
+        self.img.mask[5,5]=0
+        assert self.img.boolmask[5,5] == False
+        assert self.img.mask.dtype == np.int32
         
     
     def test_header(self):

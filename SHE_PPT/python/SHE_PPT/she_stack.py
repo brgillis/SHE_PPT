@@ -71,8 +71,8 @@ class SHEStack(object): # We need new-style classes for properties, hence inheri
             The structure is the following::
             
                 filepath_list = [
-                    ["exp1.fits", "detections1.fits", "psf1.fits"],
-                    ["exp2.fits", "detections2.fits", "psf2.fits"],
+                    ["exp1.fits", "detections1.fits", "bpsf1.fits", "dpsf1.fits"],
+                    ["exp2.fits", "detections2.fits", "bpsf2.fits", "dpsf2.fits"],
                     ...
                 ]
             
@@ -84,7 +84,7 @@ class SHEStack(object): # We need new-style classes for properties, hence inheri
             exposures.append(SHEImageData.read(*filepaths, **kwargs))
         
         return SHEStack(exposures)
+    
+    
 
-
-
-
+    

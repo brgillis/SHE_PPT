@@ -41,6 +41,8 @@ model_hash_label = "MHASH"
 model_seed_label = "MSEED"
 noise_seed_label = "NSEED"
 extname_label = "EXTNAME"
+dither_dx_label = "DITHERDX"
+dither_dy_label = "DITHERDY"
 
 # Tags for science image, noisemap, and mask
 sci_tag = "SCI"
