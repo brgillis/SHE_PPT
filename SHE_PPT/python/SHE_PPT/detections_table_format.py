@@ -34,7 +34,7 @@ class DetectionsTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.2.1"
+        self.__version__ = "0.2.2"
         
         # Table metadata labels
         
@@ -113,8 +113,6 @@ class DetectionsTableFormat(object):
         
         self.gal_x = set_column_properties("X_IMAGE", comment="pixel")
         self.gal_y = set_column_properties("Y_IMAGE", comment="pixel")
-        self.psf_x = set_column_properties("PSF_X_IMAGE", is_optional=True, comment="pixel")
-        self.psf_y = set_column_properties("PSF_Y_IMAGE", is_optional=True, comment="pixel")
         self.gal_a = set_column_properties("A_IMAGE", is_optional=True, comment="pixel")
         self.gal_b = set_column_properties("B_IMAGE", is_optional=True, comment="pixel")
         self.gal_theta = set_column_properties("THETA_IMAGE", is_optional=True, comment="deg")
