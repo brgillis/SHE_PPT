@@ -101,7 +101,7 @@ class PSFTableFormat(object):
         
         self.ID = set_column_properties("Object ID", dtype=">i8", fits_dtype="K")
         
-        self.ID = set_column_properties("SED template", dtype=">i8", fits_dtype="K", comment="TBD")
+        self.template = set_column_properties("SED template", dtype=">i8", fits_dtype="K", comment="TBD")
         
         self.stamp_x = set_column_properties("Image X", dtype=">i2", fits_dtype="I", comment="pixel")
         self.stamp_y = set_column_properties("Image Y", dtype=">i2", fits_dtype="I", comment="pixel")
