@@ -31,12 +31,12 @@ logger = logging.getLogger(__name__)
 
 
 
-def checkplot(img, ax=None, filepath=None):
+def plot(img, **kwargs):
     """Visualizes a SHEImage using Matplotlib
     
     """
     
-    sip.plot(img.data, img.mask, ax, filepath)
+    sip.plot(img.data, img.mask, **kwargs)
     
     
      

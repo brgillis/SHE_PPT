@@ -94,10 +94,10 @@ def draw_sky_image(si, ax, **kwargs):
     """Use imshow to draw a SkyImage to some axes
     
     """
-    default_kwargs = {"aspect":"equal", "origin":"lower", "interpolation":"none", "cmap":matplotlib.cm.get_cmap('Greys_r')}
-    updated_kwargs = default_kwargs.update(kwargs)
+    imshow_kwargs = {"aspect":"equal", "origin":"lower", "interpolation":"none", "cmap":matplotlib.cm.get_cmap('Greys_r')}
+    imshow_kwargs.update(kwargs)
     
-    return ax.imshow(si.data, vmin=si.z1, vmax=si.z2, extent=self.extent, **updated_kwargs)
+    return ax.imshow(si.data, vmin=si.z1, vmax=si.z2, extent=si.extent, **imshow_kwargs)
 
 
 
@@ -110,22 +110,28 @@ def draw_mask(si, ax, **kwargs):
     mask_bounds=[-1,0.5,1]
     mask_norm = matplotlib.colors.BoundaryNorm(mask_bounds, mask_cmap.N)
 
-    default_kwargs = {"aspect":"equal", "origin":"lower", "interpolation":"none", "alpha":0.5}
-    updated_kwargs = default_kwargs.update(kwargs)
+    imshow_kwargs = {"aspect":"equal", "origin":"lower", "interpolation":"none", "alpha":0.5}
+    imshow_kwargs.update(kwargs)
   
-    return ax.imshow(si.data, vmin=0, vmax=1, extent=self.extent, cmap=mask_cmap, norm=mask_norm, **updated_kwargs)
+    return ax.imshow(si.data, vmin=0, vmax=1, extent=si.extent, cmap=mask_cmap, norm=mask_norm, **imshow_kwargs)
     
 
-def plot(img_array, mask_array=None, ax=None, filepath=None):
+def plot(img_array, mask_array=None, ax=None, filepath=None, figsize=None, scale=1):
     """Wraps some of the functionality into a single convenient function 
     
     """
     
-    if filepath:
+    if ax is None:
         makefig = True
+    else:
+        makefig = False
         
     if makefig:
-        fig = plt.figure()
+        
+        dpi = 100.0 
+        figsize = float(scale) * np.array(img_array.shape)/dpi
+        
+        fig = plt.figure(figsize=figsize)
         ax = fig.add_subplot(111)
     
     img_si = SkyImage(img_array)
@@ -137,7 +143,7 @@ def plot(img_array, mask_array=None, ax=None, filepath=None):
         
         
     if makefig:
-        logger.info("Writing image {} to '{}'".format(str(img), filepath))
+        logger.info("Writing image to '{}'".format(filepath))
         fig.savefig(filepath, bbox_inches='tight')
         plt.close(fig)
  
