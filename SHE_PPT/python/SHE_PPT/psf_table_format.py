@@ -178,7 +178,7 @@ def initialise_psf_table(image = None,
     """
     
     if optional_columns is None:
-        optional_columns = [tf.psf_x,tf.psf_y]
+        optional_columns = []
     else:
         # Check all optional columns are valid
         for colname in optional_columns:
