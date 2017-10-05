@@ -237,7 +237,7 @@ def initialise_detections_table(image = None,
         @param options <dict> Options dictionary
         
         @param optional_columns <list<str>> List of names for optional columns to include.
-               Default is psf_x and psf_y
+               Default is none
         
         @param detector <int?> Detector for this image, if applicable. Will override ID of image object if set
         
@@ -245,7 +245,7 @@ def initialise_detections_table(image = None,
     """
     
     if optional_columns is None:
-        optional_columns = [tf.psf_x,tf.psf_y]
+        optional_columns = []
     else:
         # Check all optional columns are valid
         for colname in optional_columns:
