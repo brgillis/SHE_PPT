@@ -27,8 +27,9 @@ import pytest
 
 from SHE_PPT.details_table_format import tf as datf, initialise_details_table
 from SHE_PPT.detections_table_format import tf as detf, initialise_detections_table
-from SHE_PPT.shear_estimates_table_format import tf as setf, initialise_shear_estimates_table
 from SHE_PPT.mcmc_chains_table_format import tf as mctf, initialise_mcmc_chains_table, num_chains, len_chain
+from SHE_PPT.psf_table_format import tf as pstf, initialise_psf_table
+from SHE_PPT.shear_estimates_table_format import tf as setf, initialise_shear_estimates_table
 from SHE_PPT import magic_values as mv
 
 from SHE_PPT.table_utility import (get_comments,
@@ -48,11 +49,12 @@ class TestTableFormats:
     @classmethod
     def setup_class(cls):
         # Define a list of the table formats we'll be testing
-        cls.formats = [datf,detf,setf,mctf]
+        cls.formats = [datf,detf,setf,mctf,pstf]
         cls.initializers = [initialise_details_table,
                             initialise_detections_table,
                             initialise_shear_estimates_table,
-                            initialise_mcmc_chains_table]
+                            initialise_mcmc_chains_table,
+                            initialise_psf_table]
         
         cls.filename_base = "test_table"
         
@@ -240,6 +242,10 @@ class TestTableFormats:
         details_table = initialise_details_table(detector = detector)
         
         assert(details_table.meta[detf.m.extname] == extname_head + mv.details_tag)
+        
+        psf_table = initialise_psf_table(detector = detector)
+        
+        assert(psf_table.meta[pstf.m.extname] == extname_head + mv.psf_cat_tag)
         
         # Try to initialize the shear estimates table based on the detections table
         

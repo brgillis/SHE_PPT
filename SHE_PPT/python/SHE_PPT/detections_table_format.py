@@ -34,7 +34,7 @@ class DetectionsTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.2.1"
+        self.__version__ = "0.2.2"
         
         # Table metadata labels
         
@@ -113,8 +113,6 @@ class DetectionsTableFormat(object):
         
         self.gal_x = set_column_properties("X_IMAGE", comment="pixel")
         self.gal_y = set_column_properties("Y_IMAGE", comment="pixel")
-        self.psf_x = set_column_properties("PSF_X_IMAGE", is_optional=True, comment="pixel")
-        self.psf_y = set_column_properties("PSF_Y_IMAGE", is_optional=True, comment="pixel")
         self.gal_a = set_column_properties("A_IMAGE", is_optional=True, comment="pixel")
         self.gal_b = set_column_properties("B_IMAGE", is_optional=True, comment="pixel")
         self.gal_theta = set_column_properties("THETA_IMAGE", is_optional=True, comment="deg")
@@ -239,7 +237,7 @@ def initialise_detections_table(image = None,
         @param options <dict> Options dictionary
         
         @param optional_columns <list<str>> List of names for optional columns to include.
-               Default is psf_x and psf_y
+               Default is none
         
         @param detector <int?> Detector for this image, if applicable. Will override ID of image object if set
         
@@ -247,7 +245,7 @@ def initialise_detections_table(image = None,
     """
     
     if optional_columns is None:
-        optional_columns = [tf.psf_x,tf.psf_y]
+        optional_columns = []
     else:
         # Check all optional columns are valid
         for colname in optional_columns:
