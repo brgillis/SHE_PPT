@@ -33,21 +33,78 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import HeaderProvider.GenericHeaderProvider as HeaderProvider
-# import EuclidDmBindings.she.she_stub as she_dpd
+# import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
+# import EuclidDmBindings.she.she_stub as she_dpd # FIXME
 
 import pickle
 
 from SHE_PPT.shear_estimates_table_format import tf as setf
 
+def init():
+    """
+        Adds some extra functionality to the DpdShearEstimates product
+    """
+    
+    # binding_class = she_dpd.DpdSheShearEstimates # @FIXME
+    binding_class = DpdShearEstimatesProduct
+
+    # Add the data file name methods
+    
+    binding_class.set_BFD_file_name = __set_BFD_file_name
+    binding_class.get_BFD_file_name = __get_BFD_file_name
+    
+    binding_class.set_KSB_file_name = __set_KSB_file_name
+    binding_class.get_KSB_file_name = __get_KSB_file_name
+    
+    binding_class.set_LensMC_file_name = __set_LensMC_file_name
+    binding_class.get_LensMC_file_name = __get_LensMC_file_name
+    
+    binding_class.set_MegaLUT_file_name = __set_MegaLUT_file_name
+    binding_class.get_MegaLUT_file_name = __get_MegaLUT_file_name
+    
+    binding_class.set_REGAUSS_file_name = __set_REGAUSS_file_name
+    binding_class.get_REGAUSS_file_name = __get_REGAUSS_file_name
+
+def __set_BFD_file_name(self, file_name):
+    self.Data.BFDShearEstimates.DataContainer.FileName = file_name
+
+def __get_BFD_file_name(self):
+    return self.Data.BFDShearEstimates.DataContainer.FileName
+
+def __set_KSB_file_name(self, file_name):
+    self.Data.KSBShearEstimates.DataContainer.FileName = file_name
+
+def __get_KSB_file_name(self):
+    return self.Data.KSBShearEstimates.DataContainer.FileName
+
+def __set_LensMC_file_name(self, file_name):
+    self.Data.LensMCShearEstimates.DataContainer.FileName = file_name
+
+def __get_LensMC_file_name(self):
+    return self.Data.LensMCShearEstimates.DataContainer.FileName
+
+def __set_MegaLUT_file_name(self, file_name):
+    self.Data.MegaLUTShearEstimates.DataContainer.FileName = file_name
+
+def __get_MegaLUT_file_name(self):
+    return self.Data.MegaLUTShearEstimates.DataContainer.FileName
+
+def __set_REGAUSS_file_name(self, file_name):
+    self.Data.REGAUSSShearEstimates.DataContainer.FileName = file_name
+
+def __get_REGAUSS_file_name(self):
+    return self.Data.REGAUSSShearEstimates.DataContainer.FileName
+
 class DpdShearEstimatesProduct: # @FIXME
     def __init__(self):
         self.Header = None
         self.Data = None
+    def validateBinding(self):
+        return False
         
 class ShearEstimatesProduct: # @FIXME
     def __init__(self):
-        self.KSBShearEstimates = None
+        self.BFDShearEstimates = None
         self.KSBShearEstimates = None
         self.LensMCShearEstimates = None
         self.MegaLUTShearEstimates = None
@@ -88,11 +145,11 @@ class REGAUSSShearEstimatesProduct: # @FIXME
         self.version = None
         self.DataContainer = None
 
-def create_dpd_shear_estimates(BFD_filename,
-                               KSB_filename,
-                               LensMC_filename,
-                               MegaLUT_filename,
-                               REGAUSS_filename):
+def create_dpd_shear_estimates(BFD_filename = None,
+                               KSB_filename = None,
+                               LensMC_filename = None,
+                               MegaLUT_filename = None,
+                               REGAUSS_filename = None):
     """
         @TODO fill in docstring
     """
@@ -100,7 +157,8 @@ def create_dpd_shear_estimates(BFD_filename,
     # dpd_shear_estimates = she_dpd.DpdSheShearEstimates() # @FIXME
     dpd_shear_estimates = DpdShearEstimatesProduct()
     
-    dpd_shear_estimates.Header = HeaderProvider.createGenericHeader("SHE")
+    # dpd_shear_estimates.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
+    dpd_shear_estimates.Header = "SHE"
     
     dpd_shear_estimates.Data = create_shear_estimates(BFD_filename,
                                                        KSB_filename,
@@ -110,11 +168,11 @@ def create_dpd_shear_estimates(BFD_filename,
     
     return dpd_shear_estimates
 
-def create_shear_estimates(BFD_filename,
-                           KSB_filename,
-                           LensMC_filename,
-                           MegaLUT_filename,
-                           REGAUSS_filename):
+def create_shear_estimates(BFD_filename = None,
+                           KSB_filename = None,
+                           LensMC_filename = None,
+                           MegaLUT_filename = None,
+                           REGAUSS_filename = None):
     """
         @TODO fill in docstring
     """
@@ -220,12 +278,12 @@ def create_REGAUSS_shear_estimates(filename):
     return REGAUSS_shear_estimates
 
 def save_xml_product(product, xml_file_name):
-    with open(xml_file_name, "w") as f:
+    with open(str(xml_file_name), "w") as f:
         f.write(product.toDOM().toprettyxml(encoding="utf-8").decode("utf-8"))
 
 def read_xml_product(xml_file_name):
     # Read the xml file as a string
-    with open(xml_file_name, "r") as f:
+    with open(str(xml_file_name), "r") as f:
         xml_string = f.read()
 
     # Create a new SHE product instance using the SHE data product dictionary
@@ -234,9 +292,10 @@ def read_xml_product(xml_file_name):
     return product
 
 def save_pickled_product(product, pickled_file_name):
-    with open(pickled_file_name, "wb") as f:
+    with open(str(pickled_file_name), "wb") as f:
         pickle.dump(product,f)
 
 def read_pickled_product(pickled_file_name):
-    product = pickle.load(pickled_file_name)
+    with open(str(pickled_file_name), "rb") as f:
+        product = pickle.load(f)
     return product
