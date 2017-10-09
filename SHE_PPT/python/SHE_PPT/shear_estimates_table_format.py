@@ -49,9 +49,11 @@ class ShearEstimatesTableMeta(object):
     def __init__(self):
         
         self.__version__ = "0.1.7"
+        self.table_format = "she.shearEstimates"
         
         # Table metadata labels
         self.version = "SS_VER"
+        self.format = "SS_FMT"
         
         self.extname = mv.extname_label
         
@@ -61,6 +63,7 @@ class ShearEstimatesTableMeta(object):
         
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
+                                     (self.format, None),
                                      (self.extname, "#."+mv.shear_estimates_tag),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
@@ -195,6 +198,7 @@ def make_shear_estimates_table_header(detector = -1,
     header = OrderedDict()
     
     header[tf.m.version] = tf.__version__
+    header[tf.m.format] = tf.table_format
     
     header[tf.m.extname] = str(detector) + "." + mv.shear_estimates_tag
     
