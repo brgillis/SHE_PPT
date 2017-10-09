@@ -35,10 +35,11 @@ class PSFTableMeta(object):
     def __init__(self):
         
         self.__version__ = "0.1.0"
+        self.table_format = "she.psfTable"
         
         # Table metadata labels
-        
         self.version = "SS_VER"
+        self.format = "SS_FMT"
         
         self.extname = mv.extname_label
         
@@ -48,6 +49,7 @@ class PSFTableMeta(object):
         
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
+                                     (self.format, None),
                                      (self.extname, "#."+mv.psf_cat_tag),
                                      (self.model_hash, None),
                                      (self.model_seed, None),

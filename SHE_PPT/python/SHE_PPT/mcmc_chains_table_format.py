@@ -37,9 +37,11 @@ class MCMCChainsTableMeta(object):
     def __init__(self):
         
         self.__version__ = "0.1.3"
+        self.table_format = "she.mcmcChains"
         
         # Table metadata labels
         self.version = "SS_VER"
+        self.format = "SS_FMT"
         
         self.extname = mv.extname_label
         
@@ -52,6 +54,7 @@ class MCMCChainsTableMeta(object):
         
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
+                                     (self.format, None),
                                      (self.extname, "#."+mv.mcmc_chains_tag),
                                      (self.num_chains, None),
                                      (self.len_chain, None),
