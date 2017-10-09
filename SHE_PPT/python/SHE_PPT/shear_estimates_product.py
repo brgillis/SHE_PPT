@@ -278,12 +278,12 @@ def create_REGAUSS_shear_estimates(filename):
     return REGAUSS_shear_estimates
 
 def save_xml_product(product, xml_file_name):
-    with open(xml_file_name, "w") as f:
+    with open(str(xml_file_name), "w") as f:
         f.write(product.toDOM().toprettyxml(encoding="utf-8").decode("utf-8"))
 
 def read_xml_product(xml_file_name):
     # Read the xml file as a string
-    with open(xml_file_name, "r") as f:
+    with open(str(xml_file_name), "r") as f:
         xml_string = f.read()
 
     # Create a new SHE product instance using the SHE data product dictionary
@@ -292,9 +292,10 @@ def read_xml_product(xml_file_name):
     return product
 
 def save_pickled_product(product, pickled_file_name):
-    with open(pickled_file_name, "wb") as f:
+    with open(str(pickled_file_name), "wb") as f:
         pickle.dump(product,f)
 
 def read_pickled_product(pickled_file_name):
-    product = pickle.load(pickled_file_name)
+    with open(str(pickled_file_name), "rb") as f:
+        product = pickle.load(f)
     return product
