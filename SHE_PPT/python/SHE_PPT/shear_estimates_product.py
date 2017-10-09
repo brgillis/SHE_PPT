@@ -40,14 +40,71 @@ import pickle
 
 from SHE_PPT.shear_estimates_table_format import tf as setf
 
+def init():
+    """
+        Adds some extra functionality to the DpdShearEstimates product
+    """
+    
+    # binding_class = she_dpd.DpdSheShearEstimates # @FIXME
+    binding_class = DpdShearEstimatesProduct
+
+    # Add the data file name methods
+    
+    binding_class.set_BFD_file_name = __set_BFD_file_name
+    binding_class.get_BFD_file_name = __get_BFD_file_name
+    
+    binding_class.set_KSB_file_name = __set_KSB_file_name
+    binding_class.get_KSB_file_name = __get_KSB_file_name
+    
+    binding_class.set_LensMC_file_name = __set_LensMC_file_name
+    binding_class.get_LensMC_file_name = __get_LensMC_file_name
+    
+    binding_class.set_MegaLUT_file_name = __set_MegaLUT_file_name
+    binding_class.get_MegaLUT_file_name = __get_MegaLUT_file_name
+    
+    binding_class.set_REGAUSS_file_name = __set_REGAUSS_file_name
+    binding_class.get_REGAUSS_file_name = __get_REGAUSS_file_name
+
+def __set_BFD_file_name(self, file_name):
+    self.Data.BFDShearEstimates.DataContainer.FileName = file_name
+
+def __get_BFD_file_name(self):
+    return self.Data.BFDShearEstimates.DataContainer.FileName
+
+def __set_KSB_file_name(self, file_name):
+    self.Data.KSBShearEstimates.DataContainer.FileName = file_name
+
+def __get_KSB_file_name(self):
+    return self.Data.KSBShearEstimates.DataContainer.FileName
+
+def __set_LensMC_file_name(self, file_name):
+    self.Data.LensMCShearEstimates.DataContainer.FileName = file_name
+
+def __get_LensMC_file_name(self):
+    return self.Data.LensMCShearEstimates.DataContainer.FileName
+
+def __set_MegaLUT_file_name(self, file_name):
+    self.Data.MegaLUTShearEstimates.DataContainer.FileName = file_name
+
+def __get_MegaLUT_file_name(self):
+    return self.Data.MegaLUTShearEstimates.DataContainer.FileName
+
+def __set_REGAUSS_file_name(self, file_name):
+    self.Data.REGAUSSShearEstimates.DataContainer.FileName = file_name
+
+def __get_REGAUSS_file_name(self):
+    return self.Data.REGAUSSShearEstimates.DataContainer.FileName
+
 class DpdShearEstimatesProduct: # @FIXME
     def __init__(self):
         self.Header = None
         self.Data = None
+    def validateBinding(self):
+        return False
         
 class ShearEstimatesProduct: # @FIXME
     def __init__(self):
-        self.KSBShearEstimates = None
+        self.BFDShearEstimates = None
         self.KSBShearEstimates = None
         self.LensMCShearEstimates = None
         self.MegaLUTShearEstimates = None
@@ -88,11 +145,11 @@ class REGAUSSShearEstimatesProduct: # @FIXME
         self.version = None
         self.DataContainer = None
 
-def create_dpd_shear_estimates(BFD_filename,
-                               KSB_filename,
-                               LensMC_filename,
-                               MegaLUT_filename,
-                               REGAUSS_filename):
+def create_dpd_shear_estimates(BFD_filename = None,
+                               KSB_filename = None,
+                               LensMC_filename = None,
+                               MegaLUT_filename = None,
+                               REGAUSS_filename = None):
     """
         @TODO fill in docstring
     """
@@ -110,11 +167,11 @@ def create_dpd_shear_estimates(BFD_filename,
     
     return dpd_shear_estimates
 
-def create_shear_estimates(BFD_filename,
-                           KSB_filename,
-                           LensMC_filename,
-                           MegaLUT_filename,
-                           REGAUSS_filename):
+def create_shear_estimates(BFD_filename = None,
+                           KSB_filename = None,
+                           LensMC_filename = None,
+                           MegaLUT_filename = None,
+                           REGAUSS_filename = None):
     """
         @TODO fill in docstring
     """
