@@ -162,13 +162,11 @@ class TestTableFormats:
         
         tab = initialise_detections_table()
         
-        add_row(tab, **{detf.ID: 0, detf.gal_x: 0, detf.gal_y: 1, detf.psf_x: 10, detf.psf_y: 100})
+        add_row(tab, **{detf.ID: 0, detf.gal_x: 0, detf.gal_y: 1})
         
         assert tab[detf.ID][0]==0
         assert tab[detf.gal_x][0]==0.
         assert tab[detf.gal_y][0]==1.
-        assert tab[detf.psf_x][0]==10.
-        assert tab[detf.psf_y][0]==100.
         
     def test_output_tables(self):
         
