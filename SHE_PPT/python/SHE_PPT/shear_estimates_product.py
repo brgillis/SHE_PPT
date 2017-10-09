@@ -33,8 +33,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import HeaderProvider.GenericHeaderProvider as HeaderProvider
-# import EuclidDmBindings.she.she_stub as she_dpd
+# import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
+# import EuclidDmBindings.she.she_stub as she_dpd # FIXME
 
 import pickle
 
@@ -157,7 +157,8 @@ def create_dpd_shear_estimates(BFD_filename = None,
     # dpd_shear_estimates = she_dpd.DpdSheShearEstimates() # @FIXME
     dpd_shear_estimates = DpdShearEstimatesProduct()
     
-    dpd_shear_estimates.Header = HeaderProvider.createGenericHeader("SHE")
+    # dpd_shear_estimates.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
+    dpd_shear_estimates.Header = "SHE"
     
     dpd_shear_estimates.Data = create_shear_estimates(BFD_filename,
                                                        KSB_filename,
