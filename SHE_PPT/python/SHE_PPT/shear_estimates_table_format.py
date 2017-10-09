@@ -198,7 +198,7 @@ def make_shear_estimates_table_header(detector = -1,
     header = OrderedDict()
     
     header[tf.m.version] = tf.__version__
-    header[tf.m.format] = tf.table_format
+    header[tf.m.format] = tf.m.table_format
     
     header[tf.m.extname] = str(detector) + "." + mv.shear_estimates_tag
     

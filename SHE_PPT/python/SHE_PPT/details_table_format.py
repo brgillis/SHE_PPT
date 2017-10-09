@@ -186,6 +186,7 @@ def make_details_table_header(detector = -1,
     header = OrderedDict()
     
     header[tf.m.version] = tf.__version__
+    header[tf.m.format] = tf.m.table_format
     
     header[tf.m.extname] = str(detector) + "." + mv.details_tag
     

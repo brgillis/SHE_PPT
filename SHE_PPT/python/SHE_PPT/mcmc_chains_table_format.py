@@ -161,6 +161,7 @@ def make_mcmc_chains_table_header(detector = -1,
     header = OrderedDict()
     
     header[tf.m.version] = tf.__version__
+    header[tf.m.format] = tf.m.table_format
     
     header[tf.m.extname] = str(detector) + "." + mv.mcmc_chains_tag
     
