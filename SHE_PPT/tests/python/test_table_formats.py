@@ -93,7 +93,7 @@ class TestTableFormats:
         # Check if we get the correct comments list for detections tables
         
         desired_comments = (None,None,"pixel","pixel",
-                            "pixel","pixel","pixel","pixel","deg",
+                            "pixel","pixel","deg",
                             "pixel**2","pixel**2","pixel","pixel","deg",
                             "deg","deg","deg","deg","deg",
                             "deg**2","deg**2","deg","deg","deg",
@@ -108,7 +108,7 @@ class TestTableFormats:
         # Check if we get the correct dtypes list for detections tables
         
         desired_dtypes = (">i8",">i8",">f4",">f4",
-                            ">f4",">f4",">f4",">f4",">f4",
+                            ">f4",">f4",">f4",
                             ">f4",">f4",">f4",">f4",">f4",
                             ">f4",">f4",">f4",">f4",">f4",
                             ">f4",">f4",">f4",">f4",">f4",
@@ -123,7 +123,7 @@ class TestTableFormats:
         # Check if we get the correct fits dtypes list for detections tables
         
         desired_fits_dtypes = ("K","K","E","E",
-                                "E","E","E","E","E",
+                                "E","E","E",
                                 "E","E","E","E","E",
                                 "E","E","E","E","E",
                                 "E","E","E","E","E",
