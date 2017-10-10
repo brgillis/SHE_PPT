@@ -50,7 +50,7 @@ class TestTableFormats:
     @classmethod
     def setup_class(cls):
         # Define a list of the table formats we'll be testing
-        cls.formats = [datf,detf,setf,mctf,pstf,gp]
+        cls.formats = [datf,detf,setf,mctf,pstf,gptf]
         cls.initializers = [initialise_details_table,
                             initialise_detections_table,
                             initialise_shear_estimates_table,
