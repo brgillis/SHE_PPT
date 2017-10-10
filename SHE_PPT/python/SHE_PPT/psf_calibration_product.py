@@ -193,7 +193,7 @@ def create_she_surface_error(filename):
     she_surface_error.DataContainer.FileName = filename
     she_surface_error.DataContainer.filestatus = "PROPOSED"
     
-    return she_zernike_mode
+    return she_surface_error
     
 def create_she_detector_model():
     """
