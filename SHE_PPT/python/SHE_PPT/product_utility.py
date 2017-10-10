@@ -32,7 +32,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-
+try:
+    import EuclidDmBindings.she.she_stub as she_dpd
+    have_she_dpd = True
+except ImportError as _e:
+    have_she_dpd = False
+    
 import pickle
 
 def write_xml_product(product, xml_file_name):
@@ -46,12 +51,19 @@ def write_xml_product(product, xml_file_name):
         write_pickled_product(product, xml_file_name)
 
 def read_xml_product(xml_file_name):
-    # Read the xml file as a string
-    with open(str(xml_file_name), "r") as f:
-        xml_string = f.read()
-
-    # Create a new SHE product instance using the SHE data product dictionary
-    product = she_dpd.CreateFromDocument(xml_string)
+    
+    if have_she_dpd:
+        
+        # Read the xml file as a string
+        with open(str(xml_file_name), "r") as f:
+            xml_string = f.read()
+    
+        # Create a new SHE product instance using the SHE data product dictionary
+        product = she_dpd.CreateFromDocument(xml_string)
+        
+    else:
+        # Try reading it as a pickled product, since that's probable what it is #FIXME
+        product = read_pickled_product(xml_file_name)
 
     return product
 
