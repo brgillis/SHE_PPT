@@ -56,16 +56,16 @@ def init():
     
     return
 
-def __set_BFD_filename(self, filename):
+def __set_zernike_mode_filename(self, filename):
     self.Data.ZernikeMode.DataContainer.FileName = filename
 
-def __get_BFD_filename(self):
+def __get_zernike_mode_filename(self):
     return self.Data.ZernikeMode.DataContainer.FileName
 
-def __set_KSB_filename(self, filename):
+def __set_surface_error_filename(self, filename):
     self.Data.SurfaceError.DataContainer.FileName = filename
 
-def __get_KSB_filename(self):
+def __get_surface_error_filename(self):
     return self.Data.SurfaceError.DataContainer.FileName
         
 class DataContainer: # @FIXME
