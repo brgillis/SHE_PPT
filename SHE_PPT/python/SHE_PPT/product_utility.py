@@ -35,7 +35,7 @@
 
 import pickle
 
-def save_xml_product(product, xml_file_name):
+def write_xml_product(product, xml_file_name):
     with open(str(xml_file_name), "w") as f:
         f.write(product.toDOM().toprettyxml(encoding="utf-8").decode("utf-8"))
 
@@ -49,7 +49,7 @@ def read_xml_product(xml_file_name):
 
     return product
 
-def save_pickled_product(product, pickled_file_name):
+def write_pickled_product(product, pickled_file_name):
     with open(str(pickled_file_name), "wb") as f:
         pickle.dump(product,f)
 
