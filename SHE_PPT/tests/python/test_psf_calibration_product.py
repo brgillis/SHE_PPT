@@ -47,21 +47,21 @@ class TestPSFCalibrationProduct(object):
         product = prod.create_dpd_she_psf_calibration()
 
         # Change the fits file names
-        zm_file_name = "test_file_zm.fits" 
-        product.set_zernike_mode_file_name(zm_file_name)
-        se_file_name = "test_file_se.fits" 
-        product.set_surface_error_mode_file_name(se_file_name)
+        zm_filename = "test_file_zm.fits" 
+        product.set_zernike_mode_filename(zm_filename)
+        se_filename = "test_file_se.fits" 
+        product.set_surface_error_mode_filename(se_filename)
 
         # Save the product in an xml file
-        file_name = tmpdir.join("she_psf_calibration.xml")
-        write_pickled_product(product, file_name)
+        filename = tmpdir.join("she_psf_calibration.xml")
+        write_pickled_product(product, filename)
 
         # Read back the xml file
-        loaded_product = read_pickled_product(file_name)
+        loaded_product = read_pickled_product(filename)
 
         # Check that it's the same
-        assert loaded_product.get_zernike_mode_file_name() == zm_file_name
-        assert loaded_product.get_surface_error_mode_file_name() == se_file_name
+        assert loaded_product.get_zernike_mode_filename() == zm_filename
+        assert loaded_product.get_surface_error_mode_filename() == se_filename
         
         pass 
 
@@ -73,20 +73,20 @@ class TestPSFCalibrationProduct(object):
         product = prod.create_dpd_she_psf_calibration()
 
         # Change the fits file names
-        zm_file_name = "test_file_zm.fits" 
-        product.set_zernike_mode_file_name(zm_file_name)
-        se_file_name = "test_file_se.fits" 
-        product.set_surface_error_mode_file_name(se_file_name)
+        zm_filename = "test_file_zm.fits" 
+        product.set_zernike_mode_filename(zm_filename)
+        se_filename = "test_file_se.fits" 
+        product.set_surface_error_mode_filename(se_filename)
 
         # Save the product in a pickled file
-        file_name = tmpdir.join("she_psf_calibration.bin")
-        write_pickled_product(product, file_name)
+        filename = tmpdir.join("she_psf_calibration.bin")
+        write_pickled_product(product, filename)
 
         # Read back the pickled file
-        loaded_product = read_pickled_product(file_name)
+        loaded_product = read_pickled_product(filename)
 
         # Check that it's the same
-        assert loaded_product.get_zernike_mode_file_name() == zm_file_name
-        assert loaded_product.get_surface_error_mode_file_name() == se_file_name
+        assert loaded_product.get_zernike_mode_filename() == zm_filename
+        assert loaded_product.get_surface_error_mode_filename() == se_filename
         
         pass

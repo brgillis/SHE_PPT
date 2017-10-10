@@ -47,18 +47,18 @@ class TestShearEstimatesProduct(object):
         product = prod.create_dpd_shear_estimates()
 
         # Change the BFDShearEstimates fits file name
-        fits_file_name = "test_file.fits" 
-        product.set_BFD_file_name(fits_file_name)
+        fits_filename = "test_file.fits" 
+        product.set_BFD_filename(fits_filename)
 
         # Save the product in an XML file
-        file_name = tmpdir.join("she_shear_estimates.xml")
-        write_xml_product(product, file_name)
+        filename = tmpdir.join("she_shear_estimates.xml")
+        write_xml_product(product, filename)
 
         # Read back the XML file
-        loaded_product = read_xml_product(file_name)
+        loaded_product = read_xml_product(filename)
 
         # Check that the BFDShearEstimates fits file name coincides
-        assert loaded_product.get_BFD_file_name() == fits_file_name
+        assert loaded_product.get_BFD_filename() == fits_filename
         
         pass
 
@@ -70,17 +70,17 @@ class TestShearEstimatesProduct(object):
         product = prod.create_dpd_shear_estimates()
 
         # Change the BFDShearEstimates fits file name
-        fits_file_name = "test_file.fits" 
-        product.set_BFD_file_name(fits_file_name)
+        fits_filename = "test_file.fits" 
+        product.set_BFD_filename(fits_filename)
 
         # Save the product in a pickled file
-        file_name = tmpdir.join("she_shear_estimates.bin")
-        write_pickled_product(product, file_name)
+        filename = tmpdir.join("she_shear_estimates.bin")
+        write_pickled_product(product, filename)
 
         # Read back the pickled file
-        loaded_product = read_pickled_product(file_name)
+        loaded_product = read_pickled_product(filename)
 
         # Check that the BFDShearEstimates fits file name coincides
-        assert loaded_product.get_BFD_file_name() == fits_file_name
+        assert loaded_product.get_BFD_filename() == fits_filename
         
         pass

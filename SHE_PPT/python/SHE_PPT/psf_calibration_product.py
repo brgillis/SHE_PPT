@@ -48,24 +48,24 @@ def init():
 
     # Add the data file name methods
     
-    binding_class.set_zernike_mode_file_name = __set_zernike_mode_file_name
-    binding_class.get_zernike_mode_file_name = __get_zernike_mode_file_name
+    binding_class.set_zernike_mode_filename = __set_zernike_mode_filename
+    binding_class.get_zernike_mode_filename = __get_zernike_mode_filename
     
-    binding_class.set_surface_error_file_name = __set_surface_error_file_name
-    binding_class.get_surface_error_file_name = __get_surface_error_file_name
+    binding_class.set_surface_error_filename = __set_surface_error_filename
+    binding_class.get_surface_error_filename = __get_surface_error_filename
     
     return
 
-def __set_BFD_file_name(self, file_name):
-    self.Data.ZernikeMode.DataContainer.FileName = file_name
+def __set_BFD_filename(self, filename):
+    self.Data.ZernikeMode.DataContainer.FileName = filename
 
-def __get_BFD_file_name(self):
+def __get_BFD_filename(self):
     return self.Data.ZernikeMode.DataContainer.FileName
 
-def __set_KSB_file_name(self, file_name):
-    self.Data.SurfaceError.DataContainer.FileName = file_name
+def __set_KSB_filename(self, filename):
+    self.Data.SurfaceError.DataContainer.FileName = filename
 
-def __get_KSB_file_name(self):
+def __get_KSB_filename(self):
     return self.Data.SurfaceError.DataContainer.FileName
         
 class DataContainer: # @FIXME
@@ -113,7 +113,9 @@ class SheDiagnosticsProduct:
     def __init__(self):
         pass # @TODO - Fill in format
 
-def create_dpd_she_psf_calibration():
+def create_dpd_she_psf_calibration(timestamp = None,
+                                   zernike_mode_filename = None,
+                                   surface_error_filename = None):
     """
         @TODO fill in docstring
     """
@@ -124,11 +126,15 @@ def create_dpd_she_psf_calibration():
     # dpd_she_psf_calibration.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
     dpd_she_psf_calibration.Header = "SHE"
     
-    dpd_she_psf_calibration.Data = create_she_psf_calibration()
+    dpd_she_psf_calibration.Data = create_she_psf_calibration(timestamp,
+                                                              zernike_mode_filename,
+                                                              surface_error_filename)
     
     return dpd_she_psf_calibration
 
-def create_she_psf_calibration():
+def create_she_psf_calibration(timestamp = None,
+                               zernike_mode_filename = None,
+                               surface_error_filename = None):
     """
         @TODO fill in docstring
     """
@@ -136,7 +142,7 @@ def create_she_psf_calibration():
     # she_psf_calibration = she_dpd.ShePSFCalibrationProduct() # @FIXME
     she_psf_calibration = ShePSFCalibrationProduct()
     
-    she_psf_calibration.TimeStamp = create_she_time_stamp()
+    she_psf_calibration.TimeStamp = timestamp
     she_psf_calibration.SheTelescopeModel = create_she_telescope_model()
     she_psf_calibration.SheZernikeMode = create_she_zernike_mode(zernike_mode_filename)
     she_psf_calibration.SheSurfaceError = create_she_surface_error(surface_error_filename)
@@ -144,16 +150,6 @@ def create_she_psf_calibration():
     she_psf_calibration.SheDiagnostics = create_she_diagnostics()
     
     return she_psf_calibration
-
-def create_she_time_stamp():
-    """
-        @TODO fill in docstring
-    """
-    
-    # she_time_stamp = she_dpd.SheTimeStampProduct() # @FIXME
-    she_time_stamp = SheTimeStampProduct()
-    
-    return she_time_stamp
 
 def create_she_telescope_model():
     """
