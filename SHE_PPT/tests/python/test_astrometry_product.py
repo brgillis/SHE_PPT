@@ -20,7 +20,7 @@
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 """
 
-from SHE_PPT import shear_estimates_product as prod
+from SHE_PPT import astrometry_product as prod
 from SHE_PPT.product_utility import (read_xml_product, write_xml_product,
                                      read_pickled_product, write_pickled_product)
 
@@ -32,7 +32,7 @@ class TestShearEstimatesProduct(object):
     def test_validation(self):
         
         # Create the product
-        product = prod.create_dpd_shear_estimates()
+        product = prod.create_dpd_she_astrometry()
 
         # Check that it validates the schema
         product.validateBinding()
@@ -44,43 +44,39 @@ class TestShearEstimatesProduct(object):
         prod.init()
         
         # Create the product
-        product = prod.create_dpd_shear_estimates()
+        product = prod.create_dpd_she_astrometry()
 
-        # Change the BFDShearEstimates fits file name
-        fits_file_name = "test_file.fits" 
-        product.set_BFD_file_name(fits_file_name)
+        # TODO Change something about it here when there's something to be changed
 
-        # Save the product in an XML file
-        file_name = tmpdir.join("she_shear_estimates.xml")
-        save_xml_product(product, file_name)
+        # Save the product in an xml file
+        file_name = tmpdir.join("she_astrometry.xml")
+        prod.save_pickled_product(product, file_name)
 
-        # Read back the XML file
-        loaded_product = read_xml_product(file_name)
+        # Read back the xml file
+        loaded_product = prod.read_pickled_product(file_name)
 
-        # Check that the BFDShearEstimates fits file name coincides
-        assert loaded_product.get_BFD_file_name() == fits_file_name
+        # Check that it's the same
+        assert loaded_product == product
         
-        pass
+        pass 
 
     def test_pickle_saving_and_reading(self, tmpdir):
         
         prod.init()
         
         # Create the product
-        product = prod.create_dpd_shear_estimates()
+        product = prod.create_dpd_she_astrometry()
 
-        # Change the BFDShearEstimates fits file name
-        fits_file_name = "test_file.fits" 
-        product.set_BFD_file_name(fits_file_name)
+        # TODO Change something about it here when there's something to be changed
 
         # Save the product in a pickled file
-        file_name = tmpdir.join("she_shear_estimates.bin")
-        save_pickled_product(product, file_name)
+        file_name = tmpdir.join("she_astrometry.bin")
+        prod.save_pickled_product(product, file_name)
 
         # Read back the pickled file
-        loaded_product = read_pickled_product(file_name)
+        loaded_product = prod.read_pickled_product(file_name)
 
-        # Check that the BFDShearEstimates fits file name coincides
-        assert loaded_product.get_BFD_file_name() == fits_file_name
+        # Check that it's the same
+        assert loaded_product == product
         
         pass
