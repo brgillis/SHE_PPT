@@ -39,7 +39,7 @@ class TestShearEstimatesProduct(object):
         
         pass
 
-    def test_xml_saving_and_reading(self, tmpdir):
+    def test_xml_writing_and_reading(self, tmpdir):
         
         prod.init()
         
@@ -52,7 +52,7 @@ class TestShearEstimatesProduct(object):
 
         # Save the product in an XML file
         file_name = tmpdir.join("she_shear_estimates.xml")
-        save_xml_product(product, file_name)
+        write_xml_product(product, file_name)
 
         # Read back the XML file
         loaded_product = read_xml_product(file_name)
@@ -62,7 +62,7 @@ class TestShearEstimatesProduct(object):
         
         pass
 
-    def test_pickle_saving_and_reading(self, tmpdir):
+    def test_pickle_writing_and_reading(self, tmpdir):
         
         prod.init()
         
@@ -75,7 +75,7 @@ class TestShearEstimatesProduct(object):
 
         # Save the product in a pickled file
         file_name = tmpdir.join("she_shear_estimates.bin")
-        save_pickled_product(product, file_name)
+        write_pickled_product(product, file_name)
 
         # Read back the pickled file
         loaded_product = read_pickled_product(file_name)
