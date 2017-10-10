@@ -143,11 +143,11 @@ def create_she_psf_calibration(timestamp = None,
     she_psf_calibration = ShePSFCalibrationProduct()
     
     she_psf_calibration.TimeStamp = timestamp
-    she_psf_calibration.SheTelescopeModel = create_she_telescope_model()
-    she_psf_calibration.SheZernikeMode = create_she_zernike_mode(zernike_mode_filename)
-    she_psf_calibration.SheSurfaceError = create_she_surface_error(surface_error_filename)
-    she_psf_calibration.SheDetectorModel = create_she_detector_model()
-    she_psf_calibration.SheDiagnostics = create_she_diagnostics()
+    she_psf_calibration.TelescopeModel = create_she_telescope_model()
+    she_psf_calibration.ZernikeMode = create_she_zernike_mode(zernike_mode_filename)
+    she_psf_calibration.SurfaceError = create_she_surface_error(surface_error_filename)
+    she_psf_calibration.DetectorModel = create_she_detector_model()
+    she_psf_calibration.Diagnostics = create_she_diagnostics()
     
     return she_psf_calibration
 
