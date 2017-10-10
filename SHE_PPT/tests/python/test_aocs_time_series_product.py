@@ -1,6 +1,6 @@
 """ @file test_aocs_time_series_product.py
 
-    Created 9 Oct 2017
+    Created 10 Oct 2017
 
     Unit tests for the aocs_time_series data product.
 
