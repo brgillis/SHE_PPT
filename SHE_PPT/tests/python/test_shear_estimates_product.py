@@ -70,7 +70,7 @@ class TestShearEstimatesProduct(object):
         assert loaded_product.get_KSB_filename() == k_filename
         assert loaded_product.get_LensMC_filename() == l_filename
         assert loaded_product.get_MegaLUT_filename() == m_filename
-        assert loaded_product.get_BFD_filename() == r_filename
+        assert loaded_product.get_REGAUSS_filename() == r_filename
         
         pass
 
@@ -105,6 +105,6 @@ class TestShearEstimatesProduct(object):
         assert loaded_product.get_KSB_filename() == k_filename
         assert loaded_product.get_LensMC_filename() == l_filename
         assert loaded_product.get_MegaLUT_filename() == m_filename
-        assert loaded_product.get_BFD_filename() == r_filename
+        assert loaded_product.get_REGAUSS_filename() == r_filename
         
         pass
