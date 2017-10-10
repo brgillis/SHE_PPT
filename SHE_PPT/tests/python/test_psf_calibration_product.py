@@ -46,7 +46,11 @@ class TestPSFCalibrationProduct(object):
         # Create the product
         product = prod.create_dpd_she_psf_calibration()
 
-        # TODO Change something about it here when there's something to be changed
+        # Change the fits file names
+        zm_file_name = "test_file_zm.fits" 
+        product.set_zernike_mode_file_name(zm_file_name)
+        se_file_name = "test_file_se.fits" 
+        product.set_surface_error_mode_file_name(se_file_name)
 
         # Save the product in an xml file
         file_name = tmpdir.join("she_psf_calibration.xml")
@@ -56,6 +60,8 @@ class TestPSFCalibrationProduct(object):
         loaded_product = read_pickled_product(file_name)
 
         # Check that it's the same
+        assert loaded_product.get_zernike_mode_file_name() == zm_file_name
+        assert loaded_product.get_surface_error_mode_file_name() == se_file_name
         
         pass 
 
@@ -66,7 +72,11 @@ class TestPSFCalibrationProduct(object):
         # Create the product
         product = prod.create_dpd_she_psf_calibration()
 
-        # TODO Change something about it here when there's something to be changed
+        # Change the fits file names
+        zm_file_name = "test_file_zm.fits" 
+        product.set_zernike_mode_file_name(zm_file_name)
+        se_file_name = "test_file_se.fits" 
+        product.set_surface_error_mode_file_name(se_file_name)
 
         # Save the product in a pickled file
         file_name = tmpdir.join("she_psf_calibration.bin")
@@ -76,5 +86,7 @@ class TestPSFCalibrationProduct(object):
         loaded_product = read_pickled_product(file_name)
 
         # Check that it's the same
+        assert loaded_product.get_zernike_mode_file_name() == zm_file_name
+        assert loaded_product.get_surface_error_mode_file_name() == se_file_name
         
         pass
