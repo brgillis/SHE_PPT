@@ -53,7 +53,7 @@ class TestShearEstimatesProduct(object):
         write_pickled_product(product, file_name)
 
         # Read back the xml file
-        loaded_product = prod.read_pickled_product(file_name)
+        loaded_product = read_pickled_product(file_name)
 
         # Check that it's the same
         assert loaded_product == product
@@ -74,7 +74,7 @@ class TestShearEstimatesProduct(object):
         write_pickled_product(product, file_name)
 
         # Read back the pickled file
-        loaded_product = prod.read_pickled_product(file_name)
+        loaded_product = read_pickled_product(file_name)
 
         # Check that it's the same
         assert loaded_product == product
