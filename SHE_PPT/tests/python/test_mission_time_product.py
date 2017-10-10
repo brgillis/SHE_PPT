@@ -1,8 +1,8 @@
-""" @file test_aocs_time_series_product.py
+""" @file test_mission_time_product.py
 
     Created 10 Oct 2017
 
-    Unit tests for the aocs_time_series data product.
+    Unit tests for the mission_time data product.
 
     ---------------------------------------------------------------------
 
@@ -20,19 +20,19 @@
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 """
 
-from SHE_PPT import aocs_time_series_product as prod
+from SHE_PPT import mission_time_product as prod
 from SHE_PPT.product_utility import (read_xml_product, write_xml_product,
                                      read_pickled_product, write_pickled_product)
 
-class TestAocsTimeSeriesProduct(object):
-    """A collection of tests for the aocs_time_series data product.
+class TestMissionTimeProduct(object):
+    """A collection of tests for the mission_time data product.
 
     """ 
 
     def test_validation(self):
         
         # Create the product
-        product = prod.create_dpd_she_aocs_time_series()
+        product = prod.create_dpd_she_mission_time()
 
         # Check that it validates the schema
         product.validateBinding()
@@ -44,12 +44,12 @@ class TestAocsTimeSeriesProduct(object):
         prod.init()
         
         # Create the product
-        product = prod.create_dpd_she_aocs_time_series()
+        product = prod.create_dpd_she_mission_time()
 
         # TODO Change something about it here when there's something to be changed
 
         # Save the product in an xml file
-        file_name = tmpdir.join("she_aocs_time_series.xml")
+        file_name = tmpdir.join("she_mission_time.xml")
         write_pickled_product(product, file_name)
 
         # Read back the xml file
@@ -64,12 +64,12 @@ class TestAocsTimeSeriesProduct(object):
         prod.init()
         
         # Create the product
-        product = prod.create_dpd_she_aocs_time_series()
+        product = prod.create_dpd_she_mission_time()
 
         # TODO Change something about it here when there's something to be changed
 
         # Save the product in a pickled file
-        file_name = tmpdir.join("she_aocs_time_series.bin")
+        file_name = tmpdir.join("she_mission_time.bin")
         write_pickled_product(product, file_name)
 
         # Read back the pickled file

@@ -25,7 +25,7 @@ from SHE_PPT.product_utility import (read_xml_product, write_xml_product,
                                      read_pickled_product, write_pickled_product)
 
 class TestAstrometryProduct(object):
-    """A collection of tests for the shear estimates data product.
+    """A collection of tests for the astrometry data product.
 
     """ 
 
