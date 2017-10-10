@@ -50,7 +50,7 @@ class TestShearEstimatesProduct(object):
 
         # Save the product in an xml file
         file_name = tmpdir.join("she_astrometry.xml")
-        prod.write_pickled_product(product, file_name)
+        write_pickled_product(product, file_name)
 
         # Read back the xml file
         loaded_product = prod.read_pickled_product(file_name)
@@ -71,7 +71,7 @@ class TestShearEstimatesProduct(object):
 
         # Save the product in a pickled file
         file_name = tmpdir.join("she_astrometry.bin")
-        prod.write_pickled_product(product, file_name)
+        write_pickled_product(product, file_name)
 
         # Read back the pickled file
         loaded_product = prod.read_pickled_product(file_name)
