@@ -45,7 +45,7 @@ def init():
         Adds some extra functionality to the DpdShearEstimates product
     """
     
-    # binding_class = she_dpd.DpdSheShearEstimates # @FIXME
+    # binding_class = she_dpd.DpdShearEstimatesProduct # @FIXME
     binding_class = DpdShearEstimatesProduct
 
     # Add the data file name methods
@@ -276,26 +276,3 @@ def create_REGAUSS_shear_estimates(filename):
     REGAUSS_shear_estimates.DataContainer.filestatus = "PROPOSED"
     
     return REGAUSS_shear_estimates
-
-def save_xml_product(product, xml_file_name):
-    with open(str(xml_file_name), "w") as f:
-        f.write(product.toDOM().toprettyxml(encoding="utf-8").decode("utf-8"))
-
-def read_xml_product(xml_file_name):
-    # Read the xml file as a string
-    with open(str(xml_file_name), "r") as f:
-        xml_string = f.read()
-
-    # Create a new SHE product instance using the SHE data product dictionary
-    product = she_dpd.CreateFromDocument(xml_string)
-
-    return product
-
-def save_pickled_product(product, pickled_file_name):
-    with open(str(pickled_file_name), "wb") as f:
-        pickle.dump(product,f)
-
-def read_pickled_product(pickled_file_name):
-    with open(str(pickled_file_name), "rb") as f:
-        product = pickle.load(f)
-    return product
