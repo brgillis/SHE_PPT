@@ -42,7 +42,7 @@ import pickle
 
 from SHE_PPT.file_io import write_listfile, read_listfile
 
-def write_xml_product(product, xml_file_name):
+def write_xml_product(product, xml_file_name, listfile_file_name=None):
     try:
         with open(str(xml_file_name), "w") as f:
             f.write(product.toDOM().toprettyxml(encoding="utf-8").decode("utf-8"))
@@ -50,9 +50,9 @@ def write_xml_product(product, xml_file_name):
         if not "instance has no attribute 'toDOM'" in str(e):
             raise
         print("WARNING: XML writing is not available; falling back to pickled writing instead.")
-        write_pickled_product(product, xml_file_name)
+        write_pickled_product(product, xml_file_name, listfile_file_name)
 
-def read_xml_product(xml_file_name):
+def read_xml_product(xml_file_name, listfile_file_name=None):
     
     if have_she_dpd:
         
@@ -65,7 +65,7 @@ def read_xml_product(xml_file_name):
         
     else:
         # Try reading it as a pickled product, since that's probable what it is #FIXME
-        product = read_pickled_product(xml_file_name)
+        product = read_pickled_product(xml_file_name, listfile_file_name)
 
     return product
 
