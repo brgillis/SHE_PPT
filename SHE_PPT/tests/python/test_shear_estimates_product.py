@@ -60,10 +60,11 @@ class TestShearEstimatesProduct(object):
 
         # Save the product in an XML file
         filename = tmpdir.join("she_shear_estimates.xml")
-        write_xml_product(product, filename)
+        listfilename = tmpdir.join("she_shear_estimates.json")
+        write_xml_product(product, filename, listfilename)
 
         # Read back the XML file
-        loaded_product = read_xml_product(filename)
+        loaded_product = read_xml_product(filename, listfilename)
 
         # Check that the filenames coincide
         assert loaded_product.get_BFD_filename() == b_filename
@@ -95,10 +96,11 @@ class TestShearEstimatesProduct(object):
 
         # Save the product in a pickled file
         filename = tmpdir.join("she_shear_estimates.bin")
-        write_pickled_product(product, filename)
+        listfilename = tmpdir.join("she_shear_estimates.json")
+        write_pickled_product(product, filename, listfilename)
 
         # Read back the pickled file
-        loaded_product = read_pickled_product(filename)
+        loaded_product = read_pickled_product(filename, listfilename)
 
         # Check that the filenames coincide
         assert loaded_product.get_BFD_filename() == b_filename
