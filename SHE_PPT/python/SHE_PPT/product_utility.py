@@ -87,6 +87,9 @@ def write_pickled_product(product, pickled_file_name, listfile_file_name=None):
 
 def read_pickled_product(pickled_file_name, listfile_file_name=None):
     
+    with open(str(pickled_file_name), "rb") as f:
+        product = pickle.load(f)
+    
     if not hasattr(product,"has_files"):
         raise ValueError("Associated init() must be called for a data product before read_pickled_product can be used.")
     
@@ -97,9 +100,8 @@ def read_pickled_product(pickled_file_name, listfile_file_name=None):
             listfile_filenames = read_listfile(listfile_file_name)
     elif listfile_file_name is not None:
         raise ArgumentError("listfile_file_name cannot be supplied for products that do not point to files")
-    
-    with open(str(pickled_file_name), "rb") as f:
-        product = pickle.load(f)
+    else:
+        listfile_filenames = []
         
     # Check that the files in the listfile match those in the product
     if listfile_filenames != product.get_all_filenames():
