@@ -224,6 +224,9 @@ def make_shear_estimates_table_header(detector = -1,
     
     header[tf.m.extname] = str(detector) + "." + mv.shear_estimates_tag
     
+    header[tf.m.num_chains] = num_chains
+    header[tf.m.len_chain] = len_chain
+    
     header[tf.m.model_hash] = model_hash
     header[tf.m.model_seed] = model_seed
     header[tf.m.noise_seed] = noise_seed
