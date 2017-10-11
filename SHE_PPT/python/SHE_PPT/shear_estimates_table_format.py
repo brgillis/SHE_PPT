@@ -41,6 +41,8 @@ from SHE_PPT import magic_values as mv
 from SHE_PPT.detections_table_format import tf as detf
 from SHE_PPT.table_utility import is_in_format
 
+num_chains = 100
+len_chain = 200
 
 class ShearEstimatesTableMeta(object):
     """
@@ -49,7 +51,7 @@ class ShearEstimatesTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.1.7"
+        self.__version__ = "0.1.8"
         self.table_format = "she.shearEstimates"
         
         # Table metadata labels
@@ -176,7 +178,7 @@ class ShearEstimatesTableFormat(object):
         self.y_chain = set_column_properties("Y_CHAIN", is_optional=True, comment="pixels", length=num_chains*len_chain)
         
         self.flux_chain = set_column_properties("FLUX_CHAIN", is_optional=True, comment="ADU", length=num_chains*len_chain)
-        self.bulge_fraction_chain = set_column_properties("BULGE_FRAC", is_optional=True, length=num_chains*len_chain)
+        self.bulge_fraction_chain = set_column_properties("BULGE_FRAC_CHAIN", is_optional=True, length=num_chains*len_chain)
         self.snr_chain = set_column_properties("SNR_CHAIN", is_optional=True, length=num_chains*len_chain)
         
         self.lr1_chain = set_column_properties("LR1_CHAIN", is_optional=True, length=num_chains*len_chain)
