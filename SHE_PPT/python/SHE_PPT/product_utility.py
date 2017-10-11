@@ -40,7 +40,9 @@ except ImportError as _e:
     
 import pickle
 
-def write_xml_product(product, xml_file_name):
+from SHE_PPT.file_io import write_listfile, read_listfile
+
+def write_xml_product(product, xml_file_name, listfile_file_name=None):
     try:
         with open(str(xml_file_name), "w") as f:
             f.write(product.toDOM().toprettyxml(encoding="utf-8").decode("utf-8"))
@@ -48,9 +50,9 @@ def write_xml_product(product, xml_file_name):
         if not "instance has no attribute 'toDOM'" in str(e):
             raise
         print("WARNING: XML writing is not available; falling back to pickled writing instead.")
-        write_pickled_product(product, xml_file_name)
+        write_pickled_product(product, xml_file_name, listfile_file_name)
 
-def read_xml_product(xml_file_name):
+def read_xml_product(xml_file_name, listfile_file_name=None):
     
     if have_she_dpd:
         
@@ -63,15 +65,46 @@ def read_xml_product(xml_file_name):
         
     else:
         # Try reading it as a pickled product, since that's probable what it is #FIXME
-        product = read_pickled_product(xml_file_name)
+        product = read_pickled_product(xml_file_name, listfile_file_name)
 
     return product
 
-def write_pickled_product(product, pickled_file_name):
+def write_pickled_product(product, pickled_file_name, listfile_file_name=None):
+    
+    if not hasattr(product,"has_files"):
+        raise ValueError("Associated init() must be called for a data product before write_pickled_product can be used.")
+    
+    if product.has_files:
+        if listfile_file_name is None:
+            raise ArgumentError("listfile_file_name is required for products that point to files.")
+        else:
+            write_listfile(str(listfile_file_name), product.get_all_filenames())
+    elif listfile_file_name is not None:
+        raise ArgumentError("listfile_file_name cannot be supplied for products that do not point to files")
+    
     with open(str(pickled_file_name), "wb") as f:
         pickle.dump(product,f)
 
-def read_pickled_product(pickled_file_name):
+def read_pickled_product(pickled_file_name, listfile_file_name=None):
+    
     with open(str(pickled_file_name), "rb") as f:
         product = pickle.load(f)
+    
+    if not hasattr(product,"has_files"):
+        raise ValueError("Associated init() must be called for a data product before read_pickled_product can be used.")
+    
+    if product.has_files:
+        if listfile_file_name is None:
+            raise ArgumentError("listfile_file_name is required for products that point to files.")
+        else:
+            listfile_filenames = read_listfile(str(listfile_file_name))
+    elif listfile_file_name is not None:
+        raise ArgumentError("listfile_file_name cannot be supplied for products that do not point to files")
+    else:
+        listfile_filenames = []
+        
+    # Check that the files in the listfile match those in the product
+    if listfile_filenames != product.get_all_filenames():
+        raise Exception("Filenames in " + listfile_file_name + "do not match those in " + pickled_file_name + ".")
+    
     return product

@@ -18,19 +18,6 @@
        
     You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to    
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
@@ -50,50 +37,64 @@ def init():
 
     # Add the data file name methods
     
-    binding_class.set_BFD_file_name = __set_BFD_file_name
-    binding_class.get_BFD_file_name = __get_BFD_file_name
+    binding_class.set_BFD_filename = __set_BFD_filename
+    binding_class.get_BFD_filename = __get_BFD_filename
     
-    binding_class.set_KSB_file_name = __set_KSB_file_name
-    binding_class.get_KSB_file_name = __get_KSB_file_name
+    binding_class.set_KSB_filename = __set_KSB_filename
+    binding_class.get_KSB_filename = __get_KSB_filename
     
-    binding_class.set_LensMC_file_name = __set_LensMC_file_name
-    binding_class.get_LensMC_file_name = __get_LensMC_file_name
+    binding_class.set_LensMC_filename = __set_LensMC_filename
+    binding_class.get_LensMC_filename = __get_LensMC_filename
     
-    binding_class.set_MegaLUT_file_name = __set_MegaLUT_file_name
-    binding_class.get_MegaLUT_file_name = __get_MegaLUT_file_name
+    binding_class.set_MegaLUT_filename = __set_MegaLUT_filename
+    binding_class.get_MegaLUT_filename = __get_MegaLUT_filename
     
-    binding_class.set_REGAUSS_file_name = __set_REGAUSS_file_name
-    binding_class.get_REGAUSS_file_name = __get_REGAUSS_file_name
+    binding_class.set_REGAUSS_filename = __set_REGAUSS_filename
+    binding_class.get_REGAUSS_filename = __get_REGAUSS_filename
+    
+    binding_class.get_all_filenames = __get_all_filenames
+    
+    binding_class.has_files = True
 
-def __set_BFD_file_name(self, file_name):
-    self.Data.BFDShearEstimates.DataContainer.FileName = file_name
+def __set_BFD_filename(self, filename):
+    self.Data.BFDShearEstimates.DataContainer.FileName = filename
 
-def __get_BFD_file_name(self):
+def __get_BFD_filename(self):
     return self.Data.BFDShearEstimates.DataContainer.FileName
 
-def __set_KSB_file_name(self, file_name):
-    self.Data.KSBShearEstimates.DataContainer.FileName = file_name
+def __set_KSB_filename(self, filename):
+    self.Data.KSBShearEstimates.DataContainer.FileName = filename
 
-def __get_KSB_file_name(self):
+def __get_KSB_filename(self):
     return self.Data.KSBShearEstimates.DataContainer.FileName
 
-def __set_LensMC_file_name(self, file_name):
-    self.Data.LensMCShearEstimates.DataContainer.FileName = file_name
+def __set_LensMC_filename(self, filename):
+    self.Data.LensMCShearEstimates.DataContainer.FileName = filename
 
-def __get_LensMC_file_name(self):
+def __get_LensMC_filename(self):
     return self.Data.LensMCShearEstimates.DataContainer.FileName
 
-def __set_MegaLUT_file_name(self, file_name):
-    self.Data.MegaLUTShearEstimates.DataContainer.FileName = file_name
+def __set_MegaLUT_filename(self, filename):
+    self.Data.MegaLUTShearEstimates.DataContainer.FileName = filename
 
-def __get_MegaLUT_file_name(self):
+def __get_MegaLUT_filename(self):
     return self.Data.MegaLUTShearEstimates.DataContainer.FileName
 
-def __set_REGAUSS_file_name(self, file_name):
-    self.Data.REGAUSSShearEstimates.DataContainer.FileName = file_name
+def __set_REGAUSS_filename(self, filename):
+    self.Data.REGAUSSShearEstimates.DataContainer.FileName = filename
 
-def __get_REGAUSS_file_name(self):
+def __get_REGAUSS_filename(self):
     return self.Data.REGAUSSShearEstimates.DataContainer.FileName
+
+def __get_all_filenames(self):
+    
+    all_filenames = [self.get_BFD_filename(),
+                     self.get_KSB_filename(),
+                     self.get_LensMC_filename(),
+                     self.get_MegaLUT_filename(),
+                     self.get_REGAUSS_filename(),]
+    
+    return all_filenames
 
 class DpdShearEstimatesProduct: # @FIXME
     def __init__(self):

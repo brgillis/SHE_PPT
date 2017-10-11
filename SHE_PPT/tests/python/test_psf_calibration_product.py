@@ -1,8 +1,8 @@
-""" @file test_astrometry_product.py
+""" @file test_psf_calibration_product.py
 
     Created 10 Oct 2017
 
-    Unit tests for the astrometry data product.
+    Unit tests for the psf_calibration data product.
 
     ---------------------------------------------------------------------
 
@@ -20,19 +20,19 @@
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 """
 
-from SHE_PPT import astrometry_product as prod
+from SHE_PPT import psf_calibration_product as prod
 from SHE_PPT.product_utility import (read_xml_product, write_xml_product,
                                      read_pickled_product, write_pickled_product)
 
-class TestAstrometryProduct(object):
-    """A collection of tests for the astrometry data product.
+class TestPSFCalibrationProduct(object):
+    """A collection of tests for the psf_calibration data product.
 
     """ 
 
     def test_validation(self):
         
         # Create the product
-        product = prod.create_dpd_she_astrometry()
+        product = prod.create_dpd_she_psf_calibration()
 
         # Check that it validates the schema
         product.validateBinding()
@@ -44,18 +44,25 @@ class TestAstrometryProduct(object):
         prod.init()
         
         # Create the product
-        product = prod.create_dpd_she_astrometry()
+        product = prod.create_dpd_she_psf_calibration()
 
-        # TODO Change something about it here when there's something to be changed
+        # Change the fits file names
+        zm_filename = "test_file_zm.fits" 
+        product.set_zernike_mode_filename(zm_filename)
+        se_filename = "test_file_se.fits" 
+        product.set_surface_error_filename(se_filename)
 
         # Save the product in an xml file
-        file_name = tmpdir.join("she_astrometry.xml")
-        write_pickled_product(product, file_name)
+        filename = tmpdir.join("she_psf_calibration.xml")
+        listfilename = tmpdir.join("she_psf_calibration.json")
+        write_pickled_product(product, filename, listfilename)
 
         # Read back the xml file
-        loaded_product = read_pickled_product(file_name)
+        loaded_product = read_pickled_product(filename, listfilename)
 
         # Check that it's the same
+        assert loaded_product.get_zernike_mode_filename() == zm_filename
+        assert loaded_product.get_surface_error_filename() == se_filename
         
         pass 
 
@@ -64,17 +71,24 @@ class TestAstrometryProduct(object):
         prod.init()
         
         # Create the product
-        product = prod.create_dpd_she_astrometry()
+        product = prod.create_dpd_she_psf_calibration()
 
-        # TODO Change something about it here when there's something to be changed
+        # Change the fits file names
+        zm_filename = "test_file_zm.fits" 
+        product.set_zernike_mode_filename(zm_filename)
+        se_filename = "test_file_se.fits" 
+        product.set_surface_error_filename(se_filename)
 
         # Save the product in a pickled file
-        file_name = tmpdir.join("she_astrometry.bin")
-        write_pickled_product(product, file_name)
+        filename = tmpdir.join("she_psf_calibration.bin")
+        listfilename = tmpdir.join("she_psf_calibration.json")
+        write_pickled_product(product, filename, listfilename)
 
         # Read back the pickled file
-        loaded_product = read_pickled_product(file_name)
+        loaded_product = read_pickled_product(filename, listfilename)
 
         # Check that it's the same
+        assert loaded_product.get_zernike_mode_filename() == zm_filename
+        assert loaded_product.get_surface_error_filename() == se_filename
         
         pass

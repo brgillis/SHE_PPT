@@ -1,8 +1,8 @@
-""" @file astrometry_product.py
+""" @file aocs_time_series_product.py
 
     Created 10 Oct 2017
 
-    Functions to create and output an astrometry data product.
+    Functions to create and output an aocs_time_series data product.
 
     ---------------------------------------------------------------------
 
@@ -30,8 +30,8 @@ def init():
         Adds some extra functionality to the DpdSheAstrometry product
     """
     
-    # binding_class = she_dpd.DpdSheAstrometryProduct # @FIXME
-    binding_class = DpdSheAstrometryProduct
+    # binding_class = she_dpd.DpdSheAocsTimeSeriesProduct # @FIXME
+    binding_class = DpdSheAocsTimeSeriesProduct
     
     binding_class.get_all_filenames = __get_all_filenames
     
@@ -45,38 +45,38 @@ def __get_all_filenames(self):
     
     return all_filenames
 
-class DpdSheAstrometryProduct: # @FIXME
+class DpdSheAocsTimeSeriesProduct: # @FIXME
     def __init__(self):
         self.Header = None
         self.Data = None
     def validateBinding(self):
         return False
         
-class SheAstrometryProduct: # @FIXME
+class SheAocsTimeSeriesProduct: # @FIXME
     def __init__(self):
         pass
 
-def create_dpd_she_astrometry():
+def create_dpd_she_aocs_time_series():
     """
         @TODO fill in docstring
     """
     
-    # dpd_she_astrometry = she_dpd.DpdSheAstrometryProduct() # @FIXME
-    dpd_she_astrometry = DpdSheAstrometryProduct()
+    # dpd_she_aocs_time_series = she_dpd.DpdSheAocsTimeSeriesProduct() # @FIXME
+    dpd_she_aocs_time_series = DpdSheAocsTimeSeriesProduct()
     
-    # dpd_she_astrometry.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
-    dpd_she_astrometry.Header = "SHE"
+    # dpd_she_aocs_time_series.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
+    dpd_she_aocs_time_series.Header = "SHE"
     
-    dpd_she_astrometry.Data = create_she_astrometry()
+    dpd_she_aocs_time_series.Data = create_she_aocs_time_series()
     
-    return dpd_she_astrometry
+    return dpd_she_aocs_time_series
 
-def create_she_astrometry():
+def create_she_aocs_time_series():
     """
         @TODO fill in docstring
     """
     
-    # she_astrometry = she_dpd.SheAstrometryProduct() # @FIXME
-    she_astrometry = SheAstrometryProduct()
+    # she_aocs_time_series = she_dpd.SheAocsTimeSeriesProduct() # @FIXME
+    she_aocs_time_series = SheAocsTimeSeriesProduct()
     
-    return she_astrometry
+    return she_aocs_time_series
