@@ -116,6 +116,9 @@ class GalaxyPopulationTableFormat(object):
         self.tilt = set_column_properties("INC_ANGLE", comment="radians")
         self.rotation = set_column_properties("POS_ANGLE", comment="radians")
         
+        self.e1 = set_column_properties("E1", is_optional=True)
+        self.e2 = set_column_properties("E2", is_optional=True)
+        
         self.bulge_fd_B = set_column_properties("BULGE_FLUXDENS_B", comment="nJy")
         self.bulge_fd_B_err = set_column_properties("BULGE_FLUXDENS_B_ERR", comment="nJy")
         self.bulge_fd_V = set_column_properties("BULGE_FLUXDENS_V", comment="nJy")
