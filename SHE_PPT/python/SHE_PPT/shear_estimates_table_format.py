@@ -37,9 +37,12 @@ from collections import OrderedDict
 
 from astropy.table import Table
 
+from SHE_PPT import magic_values as mv
 from SHE_PPT.detections_table_format import tf as detf
 from SHE_PPT.table_utility import is_in_format
-from SHE_PPT import magic_values as mv
+
+num_chains = 100
+len_chain = 200
 
 class ShearEstimatesTableMeta(object):
     """
@@ -48,7 +51,7 @@ class ShearEstimatesTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.1.7"
+        self.__version__ = "0.1.8"
         self.table_format = "she.shearEstimates"
         
         # Table metadata labels
@@ -61,10 +64,15 @@ class ShearEstimatesTableMeta(object):
         self.model_seed = mv.model_seed_label
         self.noise_seed = mv.noise_seed_label
         
+        self.num_chains = "NCHAIN"
+        self.len_chain = "LCHAIN"
+        
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
                                      (self.format, None),
                                      (self.extname, "#."+mv.shear_estimates_tag),
+                                     (self.num_chains, None),
+                                     (self.len_chain, None),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
@@ -162,6 +170,20 @@ class ShearEstimatesTableFormat(object):
         self.snr = set_column_properties("SNR", is_optional=True)
         self.snr_err = set_column_properties("SNR_ERR", is_optional=True)
         
+        self.g1_chain = set_column_properties("G1_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=num_chains*len_chain)
+        self.g2_chain = set_column_properties("G2_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=num_chains*len_chain)
+        self.re_chain = set_column_properties("RE_CHAIN", is_optional=True, comment="arcsec", dtype=">f4", fits_dtype="E",
+                              length=num_chains*len_chain)
+        self.x_chain = set_column_properties("X_CHAIN", is_optional=True, comment="pixels", length=num_chains*len_chain)
+        self.y_chain = set_column_properties("Y_CHAIN", is_optional=True, comment="pixels", length=num_chains*len_chain)
+        
+        self.flux_chain = set_column_properties("FLUX_CHAIN", is_optional=True, comment="ADU", length=num_chains*len_chain)
+        self.bulge_fraction_chain = set_column_properties("BULGE_FRAC_CHAIN", is_optional=True, length=num_chains*len_chain)
+        self.snr_chain = set_column_properties("SNR_CHAIN", is_optional=True, length=num_chains*len_chain)
+        
+        self.lr1_chain = set_column_properties("LR1_CHAIN", is_optional=True, length=num_chains*len_chain)
+        self.lr2_chain = set_column_properties("LR2_CHAIN", is_optional=True, length=num_chains*len_chain)
+        
         # A list of columns in the desired order
         self.all = self.is_optional.keys()
         
@@ -201,6 +223,9 @@ def make_shear_estimates_table_header(detector = -1,
     header[tf.m.format] = tf.m.table_format
     
     header[tf.m.extname] = str(detector) + "." + mv.shear_estimates_tag
+    
+    header[tf.m.num_chains] = num_chains
+    header[tf.m.len_chain] = len_chain
     
     header[tf.m.model_hash] = model_hash
     header[tf.m.model_seed] = model_seed
