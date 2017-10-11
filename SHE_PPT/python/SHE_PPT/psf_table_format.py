@@ -1,8 +1,8 @@
-""" @file details_table_format.py
+""" @file psf_table_format.py
 
-    Created 21 Aug 2017
+    Created 29 Sep 2017
 
-    Format definition for galaxy details tables.
+    Format definition for PSF table. This is based on Chris's description in the DPDD.
 
     ---------------------------------------------------------------------
 
@@ -27,26 +27,21 @@ from astropy.table import Table
 from SHE_PPT.utility import hash_any
 from SHE_PPT import magic_values as mv
 
-class DetailsTableMeta(object):
+class PSFTableMeta(object):
     """
-        @brief A class defining the metadata for details tables.
+        @brief A class defining the metadata for PSF tables.
     """
     
     def __init__(self):
         
-        self.__version__ = "0.1.3"
-        self.table_format = "she.shearDetails"
+        self.__version__ = "0.1.0"
+        self.table_format = "she.psfTable"
         
         # Table metadata labels
         self.version = "SS_VER"
         self.format = "SS_FMT"
         
         self.extname = mv.extname_label
-        
-        self.subtracted_sky_level = "S_SKYLV"
-        self.unsubtracted_sky_level = "US_SKYLV"
-        self.read_noise = "RD_NOISE"
-        self.gain = mv.gain_label
         
         self.model_hash = mv.model_hash_label
         self.model_seed = mv.model_seed_label
@@ -55,11 +50,7 @@ class DetailsTableMeta(object):
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
                                      (self.format, None),
-                                     (self.extname, "#."+mv.details_tag),
-                                     (self.subtracted_sky_level, "ADU/arcsec^2"),
-                                     (self.unsubtracted_sky_level, "ADU/arcsec^2"),
-                                     (self.read_noise, "e-/pixel"),
-                                     (self.gain, "e-/ADU"),
+                                     (self.extname, "#."+mv.psf_cat_tag),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
@@ -68,16 +59,16 @@ class DetailsTableMeta(object):
         # A list of columns in the desired order
         self.all = self.comments.keys()
 
-class DetailsTableFormat(object):
+class PSFTableFormat(object):
     """
-        @brief A class defining the format for galaxy details tables. Only the details_table_format
+        @brief A class defining the format for detections tables. Only the detections_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
     
     def __init__(self):
         
         # Get the metadata (contained within its own class)
-        self.meta = DetailsTableMeta()
+        self.meta = PSFTableMeta()
         
         # And a quick alias for it
         self.m = self.meta
@@ -107,36 +98,21 @@ class DetailsTableFormat(object):
             self.lengths[name] = length
             
             return name
-
-        # Table column labels
-        self.ID = set_column_properties("ID", dtype=">i8", fits_dtype="K")
         
-        self.gal_x = set_column_properties("x_center_pix", comment="pixels")
-        self.gal_y = set_column_properties("y_center_pix", comment="pixels")
+        # Column names and info
         
-        self.psf_x = set_column_properties("psf_x_center_pix", is_optional=True, comment="pixels")
-        self.psf_y = set_column_properties("psf_y_center_pix", is_optional=True, comment="pixels")
+        self.ID = set_column_properties("Object ID", dtype=">i8", fits_dtype="K")
         
-        self.hlr_bulge = set_column_properties("hlr_bulge_arcsec", comment="arcsec")
-        self.hlr_disk = set_column_properties("hlr_disk_arcsec", comment="arcsec")
+        self.template = set_column_properties("SED template", dtype=">i8", fits_dtype="K", comment="TBD")
         
-        self.bulge_ellipticity = set_column_properties("bulge_ellipticity")
-        self.bulge_axis_ratio = set_column_properties("bulge_axis_ratio")
-        self.bulge_fraction = set_column_properties("bulge_fraction")
-        self.disk_height_ratio = set_column_properties("disk_height_ratio")
+        self.stamp_x = set_column_properties("Image X", dtype=">i2", fits_dtype="I", comment="pixel")
+        self.stamp_y = set_column_properties("Image Y", dtype=">i2", fits_dtype="I", comment="pixel")
         
-        self.magnitude = set_column_properties("magnitude", comment="VIS")
+        self.psf_x = set_column_properties("PSF X", dtype=">f4", fits_dtype="E", comment="pixel")
+        self.psf_y = set_column_properties("PSF Y", dtype=">f4", fits_dtype="E", comment="pixel")
         
-        self.sersic_index = set_column_properties("sersic_index")
-        
-        self.rotation = set_column_properties("rotation", comment="degrees")
-        self.spin = set_column_properties("spin", comment="degrees")
-        self.tilt = set_column_properties("tilt", comment="degrees")
-        
-        self.shear_magnitude = set_column_properties("shear_magnitude", dtype=">f4", fits_dtype="E")
-        self.shear_angle = set_column_properties("shear_angle", comment="degrees", dtype=">f4", fits_dtype="E")
-        
-        self.target_galaxy = set_column_properties("is_target_galaxy")
+        self.cal_time = set_column_properties("PSF Calibration Timestamp", dtype="S", fits_dtype="A", length=20)
+        self.field_time = set_column_properties("PSF Field Timestamp", dtype="S", fits_dtype="A", length=20)
         
         # A list of columns in the desired order
         self.all = self.is_optional.keys()
@@ -146,33 +122,22 @@ class DetailsTableFormat(object):
         for label in self.all:
             if not self.is_optional[label]:
                 self.all_required.append(label)
-        
-# Define an instance of this object that can be imported 
-details_table_format = DetailsTableFormat()
+
+# Define an instance of this object that can be imported         
+psf_table_format = PSFTableFormat()
 
 # And a convient alias for it
-tf = details_table_format
+tf = psf_table_format
 
-def make_details_table_header(detector = -1,
-                              subtracted_sky_level = None,
-                              unsubtracted_sky_level = None,
-                              read_noise = None,
-                              gain = None,
-                              model_hash = None,
-                              model_seed = None,
-                              noise_seed = None,):
+
+def make_psf_table_header(detector = -1,
+                          model_hash = None,
+                          model_seed = None,
+                          noise_seed = None,):
     """
-        @brief Generate a header for a galaxy details table.
+        @brief Generate a header for a PSF table.
         
         @param detector <int?> Detector for this image, if applicable
-        
-        @param subtracted_sky_level <float> Units of ADU/arcsec^2 (should we change this?)
-        
-        @param unsubtracted_sky_level <float> Units of ADU/arcsec^2 (should we change this?)
-        
-        @param read_noise <float> Units of e-/pixel
-        
-        @param gain <float> Units of e-/ADU
         
         @param model_hash <int> Hash of the physical model options dictionary
         
@@ -188,12 +153,7 @@ def make_details_table_header(detector = -1,
     header[tf.m.version] = tf.__version__
     header[tf.m.format] = tf.m.table_format
     
-    header[tf.m.extname] = str(detector) + "." + mv.details_tag
-    
-    header[tf.m.subtracted_sky_level] = subtracted_sky_level
-    header[tf.m.unsubtracted_sky_level] = unsubtracted_sky_level
-    header[tf.m.read_noise] = read_noise
-    header[tf.m.gain] = gain
+    header[tf.m.extname] = str(detector) + "." + mv.psf_cat_tag
     
     header[tf.m.model_hash] = model_hash
     header[tf.m.model_seed] = model_seed
@@ -201,12 +161,12 @@ def make_details_table_header(detector = -1,
     
     return header
 
-def initialise_details_table(image = None,
-                             options = None,
-                             optional_columns = None,
-                             detector = None):
+def initialise_psf_table(image = None,
+                         options = None,
+                         optional_columns = None,
+                         detector = None):
     """
-        @brief Initialise a detections table.
+        @brief Initialise a PSF table.
         
         @param image <SHE_SIM.Image> 
         
@@ -217,11 +177,11 @@ def initialise_details_table(image = None,
         
         @param detector <int?> Detector for this image, if applicable. Will override ID of image object if set
         
-        @return details_table <astropy.Table>
+        @return detections_table <astropy.Table>
     """
     
     if optional_columns is None:
-        optional_columns = [tf.psf_x,tf.psf_y]
+        optional_columns = []
     else:
         # Check all optional columns are valid
         for colname in optional_columns:
@@ -237,38 +197,23 @@ def initialise_details_table(image = None,
             init_cols.append([])
             dtypes.append((tf.dtypes[colname],tf.lengths[colname]))
     
-    details_table = Table(init_cols, names=names,
-                          dtype=dtypes)
+    psf_table = Table(init_cols, names=names, dtype=dtypes)
     
-    if image is None:
-        subtracted_sky_level = None
-        unsubtracted_sky_level = None
-    else:
-        if detector is None:
-            detector = image.get_local_ID()
-        subtracted_sky_level = image.get_param_value('subtracted_background')
-        unsubtracted_sky_level = image.get_param_value('unsubtracted_background')
+    if (image is not None) and (detector is None):
+        detector = image.get_local_ID()
     
     if options is None:
-        read_noise = None
-        gain = None
         model_hash = None 
         model_seed = None
         noise_seed = None
     else:
-        read_noise = options['read_noise']
-        gain = options['gain']
         model_hash = hash_any(frozenset(options.items()),format="base64")
         model_seed = image.get_full_seed()
         noise_seed = options['noise_seed']
-                                                   
-    details_table.meta = make_details_table_header(detector = detector,
-                                                   subtracted_sky_level = subtracted_sky_level,
-                                                   unsubtracted_sky_level = unsubtracted_sky_level,
-                                                   read_noise = read_noise,
-                                                   gain = gain,
-                                                   model_hash = model_hash,
-                                                   model_seed = model_seed,
-                                                   noise_seed = noise_seed,)
     
-    return details_table
+    psf_table.meta = make_psf_table_header(detector = detector,
+                                           model_hash = model_hash,
+                                           model_seed = model_seed,
+                                           noise_seed = noise_seed,)
+    
+    return psf_table

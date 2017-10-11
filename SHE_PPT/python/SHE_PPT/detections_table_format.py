@@ -34,11 +34,12 @@ class DetectionsTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.2.1"
+        self.__version__ = "0.2.2"
+        self.table_format = "she.shearDetections"
         
         # Table metadata labels
-        
         self.version = "SS_VER"
+        self.format = "SS_FMT"
         
         self.extname = mv.extname_label
         
@@ -53,6 +54,7 @@ class DetectionsTableMeta(object):
         
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
+                                     (self.format, None),
                                      (self.extname, "#."+mv.detections_tag),
                                      (self.subtracted_sky_level, "ADU/arcsec**2"),
                                      (self.unsubtracted_sky_level, "ADU/arcsec**2"),
@@ -113,8 +115,6 @@ class DetectionsTableFormat(object):
         
         self.gal_x = set_column_properties("X_IMAGE", comment="pixel")
         self.gal_y = set_column_properties("Y_IMAGE", comment="pixel")
-        self.psf_x = set_column_properties("PSF_X_IMAGE", is_optional=True, comment="pixel")
-        self.psf_y = set_column_properties("PSF_Y_IMAGE", is_optional=True, comment="pixel")
         self.gal_a = set_column_properties("A_IMAGE", is_optional=True, comment="pixel")
         self.gal_b = set_column_properties("B_IMAGE", is_optional=True, comment="pixel")
         self.gal_theta = set_column_properties("THETA_IMAGE", is_optional=True, comment="deg")
@@ -213,6 +213,7 @@ def make_detections_table_header(detector = -1,
     header = OrderedDict()
     
     header[tf.m.version] = tf.__version__
+    header[tf.m.format] = tf.m.table_format
     
     header[tf.m.extname] = str(detector) + "." + mv.detections_tag
     
@@ -239,7 +240,7 @@ def initialise_detections_table(image = None,
         @param options <dict> Options dictionary
         
         @param optional_columns <list<str>> List of names for optional columns to include.
-               Default is psf_x and psf_y
+               Default is none
         
         @param detector <int?> Detector for this image, if applicable. Will override ID of image object if set
         
@@ -247,7 +248,7 @@ def initialise_detections_table(image = None,
     """
     
     if optional_columns is None:
-        optional_columns = [tf.psf_x,tf.psf_y]
+        optional_columns = []
     else:
         # Check all optional columns are valid
         for colname in optional_columns:

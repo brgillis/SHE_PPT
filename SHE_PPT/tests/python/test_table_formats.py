@@ -27,8 +27,9 @@ import pytest
 
 from SHE_PPT.details_table_format import tf as datf, initialise_details_table
 from SHE_PPT.detections_table_format import tf as detf, initialise_detections_table
-from SHE_PPT.shear_estimates_table_format import tf as setf, initialise_shear_estimates_table
 from SHE_PPT.mcmc_chains_table_format import tf as mctf, initialise_mcmc_chains_table, num_chains, len_chain
+from SHE_PPT.psf_table_format import tf as pstf, initialise_psf_table
+from SHE_PPT.shear_estimates_table_format import tf as setf, initialise_shear_estimates_table
 from SHE_PPT import magic_values as mv
 
 from SHE_PPT.table_utility import (get_comments,
@@ -48,11 +49,12 @@ class TestTableFormats:
     @classmethod
     def setup_class(cls):
         # Define a list of the table formats we'll be testing
-        cls.formats = [datf,detf,setf,mctf]
+        cls.formats = [datf,detf,setf,mctf,pstf]
         cls.initializers = [initialise_details_table,
                             initialise_detections_table,
                             initialise_shear_estimates_table,
-                            initialise_mcmc_chains_table]
+                            initialise_mcmc_chains_table,
+                            initialise_psf_table]
         
         cls.filename_base = "test_table"
         
@@ -91,7 +93,7 @@ class TestTableFormats:
         # Check if we get the correct comments list for detections tables
         
         desired_comments = (None,None,"pixel","pixel",
-                            "pixel","pixel","pixel","pixel","deg",
+                            "pixel","pixel","deg",
                             "pixel**2","pixel**2","pixel","pixel","deg",
                             "deg","deg","deg","deg","deg",
                             "deg**2","deg**2","deg","deg","deg",
@@ -106,7 +108,7 @@ class TestTableFormats:
         # Check if we get the correct dtypes list for detections tables
         
         desired_dtypes = (">i8",">i8",">f4",">f4",
-                            ">f4",">f4",">f4",">f4",">f4",
+                            ">f4",">f4",">f4",
                             ">f4",">f4",">f4",">f4",">f4",
                             ">f4",">f4",">f4",">f4",">f4",
                             ">f4",">f4",">f4",">f4",">f4",
@@ -121,7 +123,7 @@ class TestTableFormats:
         # Check if we get the correct fits dtypes list for detections tables
         
         desired_fits_dtypes = ("K","K","E","E",
-                                "E","E","E","E","E",
+                                "E","E","E",
                                 "E","E","E","E","E",
                                 "E","E","E","E","E",
                                 "E","E","E","E","E",
@@ -160,13 +162,11 @@ class TestTableFormats:
         
         tab = initialise_detections_table()
         
-        add_row(tab, **{detf.ID: 0, detf.gal_x: 0, detf.gal_y: 1, detf.psf_x: 10, detf.psf_y: 100})
+        add_row(tab, **{detf.ID: 0, detf.gal_x: 0, detf.gal_y: 1})
         
         assert tab[detf.ID][0]==0
         assert tab[detf.gal_x][0]==0.
         assert tab[detf.gal_y][0]==1.
-        assert tab[detf.psf_x][0]==10.
-        assert tab[detf.psf_y][0]==100.
         
     def test_output_tables(self):
         
@@ -178,7 +178,7 @@ class TestTableFormats:
         
         tab = initialise_detections_table()
         
-        add_row(tab, **{detf.ID: 0, detf.gal_x: 0, detf.gal_y: 1, detf.psf_x: 10, detf.psf_y: 100})
+        add_row(tab, **{detf.ID: 0, detf.gal_x: 0, detf.gal_y: 1})
         
         # Try ascii output
         output_tables(tab,self.filename_base,"ascii")
@@ -240,6 +240,10 @@ class TestTableFormats:
         details_table = initialise_details_table(detector = detector)
         
         assert(details_table.meta[detf.m.extname] == extname_head + mv.details_tag)
+        
+        psf_table = initialise_psf_table(detector = detector)
+        
+        assert(psf_table.meta[pstf.m.extname] == extname_head + mv.psf_cat_tag)
         
         # Try to initialize the shear estimates table based on the detections table
         

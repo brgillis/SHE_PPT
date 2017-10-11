@@ -1,8 +1,8 @@
-""" @file output_shear_estimates.py
+""" @file product_utility.py
 
-    Created 1 Sep 2017
+    Created 10 Oct 2017
 
-    Various magic values used by the SHE PF.
+    Utility functions for data products
 
     ---------------------------------------------------------------------
 
@@ -32,27 +32,46 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+try:
+    import EuclidDmBindings.she.she_stub as she_dpd
+    have_she_dpd = True
+except ImportError as _e:
+    have_she_dpd = False
+    
+import pickle
 
-# Header values for fits images
-gain_label = "CCDGAIN"
-scale_label = "PX_SCALE"
-stamp_size_label = "SSIZE"
-model_hash_label = "MHASH"
-model_seed_label = "MSEED"
-noise_seed_label = "NSEED"
-extname_label = "EXTNAME"
-dither_dx_label = "DITHERDX"
-dither_dy_label = "DITHERDY"
+def write_xml_product(product, xml_file_name):
+    try:
+        with open(str(xml_file_name), "w") as f:
+            f.write(product.toDOM().toprettyxml(encoding="utf-8").decode("utf-8"))
+    except AttributeError as e:
+        if not "instance has no attribute 'toDOM'" in str(e):
+            raise
+        print("WARNING: XML writing is not available; falling back to pickled writing instead.")
+        write_pickled_product(product, xml_file_name)
 
-# Tags for science image, noisemap, and mask
-sci_tag = "SCI"
-noisemap_tag = "RMS"
-mask_tag = "FLG"
-segmentation_tag = "SEG"
-details_tag = "DAL"
-detections_tag = "DTC"
-shear_estimates_tag = "SHM"
-mcmc_chains_tag = "MCC"
-bulge_psf_tag = "BPSF"
-disk_psf_tag = "DPSF"
-psf_cat_tag = "PSFC"
+def read_xml_product(xml_file_name):
+    
+    if have_she_dpd:
+        
+        # Read the xml file as a string
+        with open(str(xml_file_name), "r") as f:
+            xml_string = f.read()
+    
+        # Create a new SHE product instance using the SHE data product dictionary
+        product = she_dpd.CreateFromDocument(xml_string)
+        
+    else:
+        # Try reading it as a pickled product, since that's probable what it is #FIXME
+        product = read_pickled_product(xml_file_name)
+
+    return product
+
+def write_pickled_product(product, pickled_file_name):
+    with open(str(pickled_file_name), "wb") as f:
+        pickle.dump(product,f)
+
+def read_pickled_product(pickled_file_name):
+    with open(str(pickled_file_name), "rb") as f:
+        product = pickle.load(f)
+    return product

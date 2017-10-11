@@ -1,8 +1,8 @@
-""" @file output_shear_estimates.py
+""" @file astrometry_product.py
 
-    Created 1 Sep 2017
+    Created 10 Oct 2017
 
-    Various magic values used by the SHE PF.
+    Functions to create and output an astrometry data product.
 
     ---------------------------------------------------------------------
 
@@ -33,26 +33,54 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-# Header values for fits images
-gain_label = "CCDGAIN"
-scale_label = "PX_SCALE"
-stamp_size_label = "SSIZE"
-model_hash_label = "MHASH"
-model_seed_label = "MSEED"
-noise_seed_label = "NSEED"
-extname_label = "EXTNAME"
-dither_dx_label = "DITHERDX"
-dither_dy_label = "DITHERDY"
+# import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
+# import EuclidDmBindings.she.she_stub as she_dpd # FIXME
 
-# Tags for science image, noisemap, and mask
-sci_tag = "SCI"
-noisemap_tag = "RMS"
-mask_tag = "FLG"
-segmentation_tag = "SEG"
-details_tag = "DAL"
-detections_tag = "DTC"
-shear_estimates_tag = "SHM"
-mcmc_chains_tag = "MCC"
-bulge_psf_tag = "BPSF"
-disk_psf_tag = "DPSF"
-psf_cat_tag = "PSFC"
+import pickle
+
+def init():
+    """
+        Adds some extra functionality to the DpdSheAstrometry product
+    """
+    
+    # binding_class = she_dpd.DpdSheAstrometryProduct # @FIXME
+    binding_class = DpdSheAstrometryProduct
+
+    # Add needed methods here
+    pass
+
+class DpdSheAstrometryProduct: # @FIXME
+    def __init__(self):
+        self.Header = None
+        self.Data = None
+    def validateBinding(self):
+        return False
+        
+class SheAstrometryProduct: # @FIXME
+    def __init__(self):
+        pass
+
+def create_dpd_she_astrometry():
+    """
+        @TODO fill in docstring
+    """
+    
+    # dpd_she_astrometry = she_dpd.DpdSheAstrometryProduct() # @FIXME
+    dpd_she_astrometry = DpdSheAstrometryProduct()
+    
+    # dpd_she_astrometry.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
+    dpd_she_astrometry.Header = "SHE"
+    
+    dpd_she_astrometry.Data = create_she_astrometry()
+    
+    return dpd_she_astrometry
+
+def create_she_astrometry():
+    """
+        @TODO fill in docstring
+    """
+    
+    # she_astrometry = she_dpd.SheAstrometryProduct() # @FIXME
+    she_astrometry = SheAstrometryProduct()
+    
+    return she_astrometry
