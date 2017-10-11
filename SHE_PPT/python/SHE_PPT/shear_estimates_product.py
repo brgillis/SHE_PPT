@@ -54,7 +54,7 @@ def init():
     
     binding_class.get_all_filenames = __get_all_filenames
     
-    binding_class.has_files = (len(binding_class().get_all_filenames()) > 0)
+    binding_class.has_files = True
 
 def __set_BFD_filename(self, filename):
     self.Data.BFDShearEstimates.DataContainer.FileName = filename

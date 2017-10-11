@@ -95,7 +95,7 @@ class TestShearEstimatesProduct(object):
 
         # Save the product in a pickled file
         filename = tmpdir.join("she_shear_estimates.bin")
-        listfilename = tmpdir.join("she_shear_estimates.bin")
+        listfilename = tmpdir.join("she_shear_estimates.json")
         write_pickled_product(product, filename, listfilename)
 
         # Read back the pickled file
