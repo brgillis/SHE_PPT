@@ -40,6 +40,8 @@ except ImportError as _e:
     
 import pickle
 
+from SHE_PPT.file_io import write_listfile, read_listfile
+
 def write_xml_product(product, xml_file_name):
     try:
         with open(str(xml_file_name), "w") as f:
@@ -67,11 +69,40 @@ def read_xml_product(xml_file_name):
 
     return product
 
-def write_pickled_product(product, pickled_file_name):
+def write_pickled_product(product, pickled_file_name, listfile_file_name=None):
+    
+    if not hasattr(product,"has_files"):
+        raise ValueError("Associated init() must be called for a data product before write_pickled_product can be used.")
+    
+    if product.has_files:
+        if listfile_file_name is None:
+            raise ArgumentError("listfile_file_name is required for products that point to files.")
+        else:
+            write_listfile(listfile_file_name, product.get_all_filenames())
+    elif listfile_file_name is not None:
+        raise ArgumentError("listfile_file_name cannot be supplied for products that do not point to files")
+    
     with open(str(pickled_file_name), "wb") as f:
         pickle.dump(product,f)
 
-def read_pickled_product(pickled_file_name):
+def read_pickled_product(pickled_file_name, listfile_file_name=None):
+    
+    if not hasattr(product,"has_files"):
+        raise ValueError("Associated init() must be called for a data product before read_pickled_product can be used.")
+    
+    if product.has_files:
+        if listfile_file_name is None:
+            raise ArgumentError("listfile_file_name is required for products that point to files.")
+        else:
+            listfile_filenames = read_listfile(listfile_file_name)
+    elif listfile_file_name is not None:
+        raise ArgumentError("listfile_file_name cannot be supplied for products that do not point to files")
+    
     with open(str(pickled_file_name), "rb") as f:
         product = pickle.load(f)
+        
+    # Check that the files in the listfile match those in the product
+    if listfile_filenames != product.get_all_filenames():
+        raise Exception("Filenames in " + listfile_file_name + "do not match those in " + pickled_file_name + ".")
+    
     return product
