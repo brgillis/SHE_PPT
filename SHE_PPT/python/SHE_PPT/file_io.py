@@ -215,9 +215,9 @@ def read_pickled_product(pickled_file_name, filenames=None):
             raise ArgumentError("'filenames' argument is required for products that point to files.")
         else:
             if isinstance(filenames, str):
-                listfile_filenames = read_listfile(listfile_file_name)
+                listfile_filenames = read_listfile(listfile_filenames)
             elif isinstance(filenames, py._path.local.LocalPath):
-                listfile_filenames = read_listfile(str(listfile_file_name))
+                listfile_filenames = read_listfile(str(listfile_filenames))
             else:
                 listfile_filenames = filenames
     elif filenames is not None:
