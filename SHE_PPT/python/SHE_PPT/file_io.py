@@ -214,7 +214,7 @@ def read_pickled_product(pickled_file_name, filenames=None):
             raise ArgumentError("'filenames' argument is required for products that point to files.")
         else:
             if isinstance(filenames, str):
-                listfile_filenames = read_listfile(str(listfile_file_name))
+                listfile_filenames = read_listfile(listfile_file_name)
             else:
                 listfile_filenames = filenames
     elif filenames is not None:
@@ -224,6 +224,6 @@ def read_pickled_product(pickled_file_name, filenames=None):
         
     # Check that the files in the listfile match those in the product
     if listfile_filenames != product.get_all_filenames():
-        raise Exception("Filenames in " + listfile_file_name + "do not match those in " + pickled_file_name + ".")
+        raise Exception("Filenames in " + listfile_filenames + "do not match those in " + pickled_file_name + ".")
     
     return product
