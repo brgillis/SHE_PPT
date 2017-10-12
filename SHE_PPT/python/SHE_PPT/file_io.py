@@ -26,6 +26,7 @@ try:
 except ImportError as _e:
     have_she_dpd = False
     
+import py
 import pickle
 import json
 import time
@@ -215,6 +216,8 @@ def read_pickled_product(pickled_file_name, filenames=None):
         else:
             if isinstance(filenames, str):
                 listfile_filenames = read_listfile(listfile_file_name)
+            elif isinstance(filenames, py._path.local.LocalPath):
+                listfile_filenames = read_listfile(str(listfile_file_name))
             else:
                 listfile_filenames = filenames
     elif filenames is not None:
