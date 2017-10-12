@@ -217,8 +217,8 @@ def read_pickled_product(pickled_file_name, filenames=None):
                 listfile_filenames = read_listfile(str(listfile_file_name))
             else:
                 listfile_filenames = filenames
-    elif listfile_file_name is not None:
-        raise ArgumentError("listfile_file_name cannot be supplied for products that do not point to files")
+    elif filenames is not None:
+        raise ArgumentError("filenames cannot be supplied for products that do not point to files")
     else:
         listfile_filenames = []
         
