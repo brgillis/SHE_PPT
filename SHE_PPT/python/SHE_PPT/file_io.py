@@ -201,7 +201,7 @@ def write_pickled_product(product, pickled_file_name, listfile_file_name=None):
     with open(str(pickled_file_name), "wb") as f:
         pickle.dump(product,f)
 
-def read_pickled_product(pickled_file_name, listfile_file_name=None):
+def read_pickled_product(pickled_file_name, filenames=None):
     
     with open(str(pickled_file_name), "rb") as f:
         product = pickle.load(f)
@@ -210,10 +210,13 @@ def read_pickled_product(pickled_file_name, listfile_file_name=None):
         raise ValueError("Associated init() must be called for a data product before read_pickled_product can be used.")
     
     if product.has_files:
-        if listfile_file_name is None:
-            raise ArgumentError("listfile_file_name is required for products that point to files.")
+        if filenames is None:
+            raise ArgumentError("'filenames' argument is required for products that point to files.")
         else:
-            listfile_filenames = read_listfile(str(listfile_file_name))
+            if isinstance(filenames, str):
+                listfile_filenames = read_listfile(str(listfile_file_name))
+            else:
+                listfile_filenames = filenames
     elif listfile_file_name is not None:
         raise ArgumentError("listfile_file_name cannot be supplied for products that do not point to files")
     else:
