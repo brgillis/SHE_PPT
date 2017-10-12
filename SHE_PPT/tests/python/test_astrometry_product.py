@@ -21,8 +21,8 @@
 """
 
 from SHE_PPT import astrometry_product as prod
-from SHE_PPT.product_utility import (read_xml_product, write_xml_product,
-                                     read_pickled_product, write_pickled_product)
+from SHE_PPT.file_io import (read_xml_product, write_xml_product,
+                             read_pickled_product, write_pickled_product)
 
 class TestAstrometryProduct(object):
     """A collection of tests for the astrometry data product.

@@ -21,8 +21,8 @@
 """
 
 from SHE_PPT import shear_estimates_product as prod
-from SHE_PPT.product_utility import (read_xml_product, write_xml_product,
-                                     read_pickled_product, write_pickled_product)
+from SHE_PPT.file_io import (read_xml_product, write_xml_product,
+                             read_pickled_product, write_pickled_product)
 
 class TestShearEstimatesProduct(object):
     """A collection of tests for the shear estimates data product.

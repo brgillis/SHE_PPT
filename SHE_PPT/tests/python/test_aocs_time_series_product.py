@@ -21,8 +21,8 @@
 """
 
 from SHE_PPT import aocs_time_series_product as prod
-from SHE_PPT.product_utility import (read_xml_product, write_xml_product,
-                                     read_pickled_product, write_pickled_product)
+from SHE_PPT.file_io import (read_xml_product, write_xml_product,
+                             read_pickled_product, write_pickled_product)
 
 class TestAocsTimeSeriesProduct(object):
     """A collection of tests for the aocs_time_series data product.
