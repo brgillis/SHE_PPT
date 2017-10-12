@@ -234,7 +234,8 @@ def make_shear_estimates_table_header(detector = -1,
     return header
 
 def initialise_shear_estimates_table(detections_table = None,
-                                     optional_columns = None):
+                                     optional_columns = None,
+                                     detector = None):
     """
         @brief Initialise a shear estimates table based on a detections table, with the
                desired set of optional columns
@@ -243,6 +244,8 @@ def initialise_shear_estimates_table(detections_table = None,
         
         @param optional_columns <list<str>> List of names for optional columns to include.
                Default is gal_e1_err and gal_e2_err
+               
+        @param detector <int?> Detector this table corresponds to
         
         @return shear_estimates_table <astropy.table.Table>
     """
@@ -269,12 +272,14 @@ def initialise_shear_estimates_table(detections_table = None,
     shear_estimates_table = Table(init_cols, names=names, dtype=dtypes)
     
     if detections_table is None:
-        detector = -1
+        if detector is None:
+            detector = -1
         model_hash = None
         model_seed = None
         noise_seed = None
     else:
-        detector = int(detections_table.meta[detf.m.extname].split(".")[0])
+        if detector is None:
+            detector = int(detections_table.meta[detf.m.extname].split(".")[0])
         model_hash = detections_table.meta[detf.m.model_hash]
         model_seed = detections_table.meta[detf.m.model_seed]
         noise_seed = detections_table.meta[detf.m.noise_seed]
