@@ -84,14 +84,14 @@ def __get_all_filenames(self):
     
     return all_filenames
 
-class DpdCalibrationParametersProduct: # @FIXME
+class DpdSheCalibrationParametersProduct: # @FIXME
     def __init__(self):
         self.Header = None
         self.Data = None
     def validateBinding(self):
         return False
         
-class CalibrationParametersProduct: # @FIXME
+class SheCalibrationParametersProduct: # @FIXME
     def __init__(self):
         self.KSBCalibrationParameters = None
         self.LensMCCalibrationParameters = None
@@ -103,37 +103,37 @@ class DataContainer: # @FIXME
         self.FileName = None
         self.filestatus = None
         
-class BFDCalibrationParametersProduct: # @FIXME
+class SheBFDCalibrationParametersProduct: # @FIXME
     def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
         
-class KSBCalibrationParametersProduct: # @FIXME
+class SheKSBCalibrationParametersProduct: # @FIXME
     def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
         
-class LensMCCalibrationParametersProduct: # @FIXME
+class SheLensMCCalibrationParametersProduct: # @FIXME
     def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
         
-class MegaLUTCalibrationParametersProduct: # @FIXME
+class SheMegaLUTCalibrationParametersProduct: # @FIXME
     def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
         
-class REGAUSSCalibrationParametersProduct: # @FIXME
+class SheREGAUSSCalibrationParametersProduct: # @FIXME
     def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
 
-def create_dpd_calibration_parameters(KSB_filename = None,
+def create_dpd_she_calibration_parameters(KSB_filename = None,
                                LensMC_filename = None,
                                MegaLUT_filename = None,
                                REGAUSS_filename = None):
@@ -147,7 +147,7 @@ def create_dpd_calibration_parameters(KSB_filename = None,
     # dpd_calibration_parameters.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
     dpd_calibration_parameters.Header = "SHE"
     
-    dpd_calibration_parameters.Data = create_calibration_parameters(KSB_filename,
+    dpd_calibration_parameters.Data = create_she_calibration_parameters(KSB_filename,
                                                        LensMC_filename,
                                                        MegaLUT_filename,
                                                        REGAUSS_filename)
@@ -155,9 +155,9 @@ def create_dpd_calibration_parameters(KSB_filename = None,
     return dpd_calibration_parameters
 
 # Add a useful alias
-create_calibration_parameters_product = create_dpd_calibration_parameters
+create_calibration_parameters_product = create_dpd_she_calibration_parameters
 
-def create_calibration_parameters(KSB_filename = None,
+def create_she_calibration_parameters(KSB_filename = None,
                            LensMC_filename = None,
                            MegaLUT_filename = None,
                            REGAUSS_filename = None):
@@ -166,7 +166,7 @@ def create_calibration_parameters(KSB_filename = None,
     """
     
     # calibration_parameters = she_dpd.SheCalibrationParameters() # @FIXME
-    calibration_parameters = CalibrationParametersProduct()
+    calibration_parameters = SheCalibrationParametersProduct()
     
     calibration_parameters.KSBCalibrationParameters = create_KSB_calibration_parameters(KSB_filename)
     
@@ -178,13 +178,13 @@ def create_calibration_parameters(KSB_filename = None,
     
     return calibration_parameters
 
-def create_KSB_calibration_parameters(filename):
+def create_she_KSB_calibration_parameters(filename):
     """
         @TODO fill in docstring
     """
     
     # KSB_calibration_parameters = she_dpd.SheKSBCalibrationParameters() # @FIXME
-    KSB_calibration_parameters = KSBCalibrationParametersProduct()
+    KSB_calibration_parameters = SheKSBCalibrationParametersProduct()
     
     KSB_calibration_parameters.format = "UNDEFINED"
     KSB_calibration_parameters.version = "0.0"
@@ -195,13 +195,13 @@ def create_KSB_calibration_parameters(filename):
     
     return KSB_calibration_parameters
 
-def create_LensMC_calibration_parameters(filename):
+def create_she_LensMC_calibration_parameters(filename):
     """
         @TODO fill in docstring
     """
     
     # LensMC_calibration_parameters = she_dpd.SheLensMCCalibrationParameters() # @FIXME
-    LensMC_calibration_parameters = LensMCCalibrationParametersProduct()
+    LensMC_calibration_parameters = SheLensMCCalibrationParametersProduct()
     
     LensMC_calibration_parameters.format = "UNDEFINED"
     LensMC_calibration_parameters.version = "0.0"
@@ -212,13 +212,13 @@ def create_LensMC_calibration_parameters(filename):
     
     return LensMC_calibration_parameters
 
-def create_MegaLUT_calibration_parameters(filename):
+def create_she_MegaLUT_calibration_parameters(filename):
     """
         @TODO fill in docstring
     """
     
     # MegaLUT_calibration_parameters = she_dpd.SheMegaLUTCalibrationParameters() # @FIXME
-    MegaLUT_calibration_parameters = MegaLUTCalibrationParametersProduct()
+    MegaLUT_calibration_parameters = SheMegaLUTCalibrationParametersProduct()
     
     MegaLUT_calibration_parameters.format = "UNDEFINED"
     MegaLUT_calibration_parameters.version = "0.0"
@@ -229,13 +229,13 @@ def create_MegaLUT_calibration_parameters(filename):
     
     return MegaLUT_calibration_parameters
 
-def create_REGAUSS_calibration_parameters(filename):
+def create_she_REGAUSS_calibration_parameters(filename):
     """
         @TODO fill in docstring
     """
     
     # REGAUSS_calibration_parameters = she_dpd.SheREGAUSSCalibrationParameters() # @FIXME
-    REGAUSS_calibration_parameters = REGAUSSCalibrationParametersProduct()
+    REGAUSS_calibration_parameters = SheREGAUSSCalibrationParametersProduct()
     
     REGAUSS_calibration_parameters.format = "UNDEFINED"
     REGAUSS_calibration_parameters.version = "0.0"
