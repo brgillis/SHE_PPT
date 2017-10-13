@@ -77,8 +77,7 @@ def __get_REGAUSS_filename(self):
 
 def __get_all_filenames(self):
     
-    all_filenames = [self.get_BFD_filename(),
-                     self.get_KSB_filename(),
+    all_filenames = [self.get_KSB_filename(),
                      self.get_LensMC_filename(),
                      self.get_MegaLUT_filename(),
                      self.get_REGAUSS_filename(),]
@@ -94,7 +93,6 @@ class DpdCalibrationParametersProduct: # @FIXME
         
 class CalibrationParametersProduct: # @FIXME
     def __init__(self):
-        self.BFDCalibrationParameters = None
         self.KSBCalibrationParameters = None
         self.LensMCCalibrationParameters = None
         self.MegaLUTCalibrationParameters = None
@@ -135,8 +133,7 @@ class REGAUSSCalibrationParametersProduct: # @FIXME
         self.version = None
         self.DataContainer = None
 
-def create_dpd_calibration_parameters(BFD_filename = None,
-                               KSB_filename = None,
+def create_dpd_calibration_parameters(KSB_filename = None,
                                LensMC_filename = None,
                                MegaLUT_filename = None,
                                REGAUSS_filename = None):
@@ -150,8 +147,7 @@ def create_dpd_calibration_parameters(BFD_filename = None,
     # dpd_calibration_parameters.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
     dpd_calibration_parameters.Header = "SHE"
     
-    dpd_calibration_parameters.Data = create_calibration_parameters(BFD_filename,
-                                                       KSB_filename,
+    dpd_calibration_parameters.Data = create_calibration_parameters(KSB_filename,
                                                        LensMC_filename,
                                                        MegaLUT_filename,
                                                        REGAUSS_filename)
