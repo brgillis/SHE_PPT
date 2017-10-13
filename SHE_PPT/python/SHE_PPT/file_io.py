@@ -195,11 +195,11 @@ def write_pickled_product(product, pickled_file_name, listfile_file_name=None):
     
     if product.has_files:
         if listfile_file_name is None:
-            raise ArgumentError("listfile_file_name is required for products that point to files.")
+            raise ValueError("listfile_file_name is required for products that point to files.")
         else:
             write_listfile(str(listfile_file_name), product.get_all_filenames())
     elif listfile_file_name is not None:
-        raise ArgumentError("listfile_file_name cannot be supplied for products that do not point to files")
+        raise ValueError("listfile_file_name cannot be supplied for products that do not point to files")
     
     with open(str(pickled_file_name), "wb") as f:
         pickle.dump(product,f)
@@ -214,7 +214,7 @@ def read_pickled_product(pickled_file_name, filenames=None):
     
     if product.has_files:
         if filenames is None:
-            raise ArgumentError("'filenames' argument is required for products that point to files.")
+            raise ValueError("'filenames' argument is required for products that point to files.")
         else:
             if isinstance(filenames, str):
                 listfile_filenames = read_listfile(filenames)
@@ -223,7 +223,7 @@ def read_pickled_product(pickled_file_name, filenames=None):
             else:
                 listfile_filenames = filenames
     elif filenames is not None:
-        raise ArgumentError("filenames cannot be supplied for products that do not point to files")
+        raise ValueError("filenames cannot be supplied for products that do not point to files")
     else:
         listfile_filenames = []
         
