@@ -26,6 +26,8 @@ try:
 except ImportError as _e:
     have_she_dpd = False
     
+from astropy.io import fits
+    
 import py
 import pickle
 import json
