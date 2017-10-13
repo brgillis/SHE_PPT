@@ -229,7 +229,7 @@ def read_pickled_product(pickled_file_name, filenames=None):
         
     # Check that the files in the listfile match those in the product
     if listfile_filenames != product.get_all_filenames():
-        raise Exception("Filenames in " + listfile_filenames + "do not match those in " + pickled_file_name + ".")
+        raise Exception("Filenames in " + listfile_filenames + " do not match those in " + pickled_file_name + ".")
     
     return product
     
