@@ -54,3 +54,12 @@ def hash_any(obj,format='hex',max_length=None):
     else:
         return full_hash[:max_length]
     
+def find_extension(hdulist,extname):
+    """
+        @brief Find the index of the extension of a fits HDUList with the correct EXTNAME value.
+    """
+    for i, hdu in enumerate(hdulist):
+        if hdu.header["EXTNAME"]==extname:
+            return i
+    return None
+    
