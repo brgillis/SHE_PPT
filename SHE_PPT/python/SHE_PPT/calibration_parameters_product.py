@@ -142,7 +142,7 @@ def create_dpd_she_calibration_parameters(KSB_filename = None,
     """
     
     # dpd_calibration_parameters = she_dpd.DpdSheCalibrationParameters() # @FIXME
-    dpd_calibration_parameters = DpdCalibrationParametersProduct()
+    dpd_calibration_parameters = DpdSheCalibrationParametersProduct()
     
     # dpd_calibration_parameters.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
     dpd_calibration_parameters.Header = "SHE"
