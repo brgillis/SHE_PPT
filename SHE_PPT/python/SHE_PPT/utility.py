@@ -59,6 +59,8 @@ def find_extension(hdulist,extname):
         @brief Find the index of the extension of a fits HDUList with the correct EXTNAME value.
     """
     for i, hdu in enumerate(hdulist):
+        if not "EXTNAME" in hdu.header:
+            continue
         if hdu.header["EXTNAME"]==extname:
             return i
     return None
