@@ -218,7 +218,7 @@ def read_pickled_product(pickled_file_name, filenames=None):
         else:
             if isinstance(filenames, str):
                 listfile_filenames = read_listfile(filenames)
-            elif isinstance(filenames, py._path.local.LocalPath):
+            elif isinstance(filenames, py.path.local):
                 listfile_filenames = read_listfile(str(filenames))
             else:
                 listfile_filenames = filenames
