@@ -169,6 +169,9 @@ def create_dpd_shear_estimates(BFD_filename = None,
     
     return dpd_shear_estimates
 
+# Add a useful alias
+create_shear_estimates_product = create_dpd_shear_estimates
+
 def create_shear_estimates(BFD_filename = None,
                            KSB_filename = None,
                            LensMC_filename = None,

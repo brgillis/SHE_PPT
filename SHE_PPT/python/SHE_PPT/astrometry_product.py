@@ -71,6 +71,9 @@ def create_dpd_she_astrometry():
     
     return dpd_she_astrometry
 
+# Add a useful alias
+create_astrometry_product = create_dpd_she_astrometry
+
 def create_she_astrometry():
     """
         @TODO fill in docstring

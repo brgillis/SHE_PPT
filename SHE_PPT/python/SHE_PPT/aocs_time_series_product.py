@@ -71,6 +71,9 @@ def create_dpd_she_aocs_time_series():
     
     return dpd_she_aocs_time_series
 
+# Add a useful alias
+create_aocs_time_series_product = create_dpd_she_aocs_time_series
+
 def create_she_aocs_time_series():
     """
         @TODO fill in docstring

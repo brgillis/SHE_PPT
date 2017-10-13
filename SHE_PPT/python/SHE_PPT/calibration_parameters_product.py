@@ -154,6 +154,9 @@ def create_dpd_calibration_parameters(KSB_filename = None,
     
     return dpd_calibration_parameters
 
+# Add a useful alias
+create_calibration_parameters_product = create_dpd_calibration_parameters
+
 def create_calibration_parameters(KSB_filename = None,
                            LensMC_filename = None,
                            MegaLUT_filename = None,

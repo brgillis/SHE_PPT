@@ -71,6 +71,9 @@ def create_dpd_she_mission_time():
     
     return dpd_she_mission_time
 
+# Add a useful alias
+create_mission_time_product = create_dpd_she_mission_time
+
 def create_she_mission_time():
     """
         @TODO fill in docstring

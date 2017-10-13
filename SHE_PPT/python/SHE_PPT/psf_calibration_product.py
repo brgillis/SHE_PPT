@@ -130,6 +130,9 @@ def create_dpd_she_psf_calibration(timestamp = None,
     
     return dpd_she_psf_calibration
 
+# Add a useful alias
+create_psf_calibration_product = create_dpd_she_psf_calibration
+
 def create_she_psf_calibration(timestamp = None,
                                zernike_mode_filename = None,
                                surface_error_filename = None):
