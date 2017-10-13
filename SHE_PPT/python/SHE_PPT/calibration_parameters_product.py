@@ -168,13 +168,13 @@ def create_she_calibration_parameters(KSB_filename = None,
     # calibration_parameters = she_dpd.SheCalibrationParameters() # @FIXME
     calibration_parameters = SheCalibrationParametersProduct()
     
-    calibration_parameters.KSBCalibrationParameters = create_KSB_calibration_parameters(KSB_filename)
+    calibration_parameters.KSBCalibrationParameters = create_she_KSB_calibration_parameters(KSB_filename)
     
-    calibration_parameters.LensMCCalibrationParameters = create_LensMC_calibration_parameters(LensMC_filename)
+    calibration_parameters.LensMCCalibrationParameters = create_she_LensMC_calibration_parameters(LensMC_filename)
     
-    calibration_parameters.MegaLUTCalibrationParameters = create_MegaLUT_calibration_parameters(MegaLUT_filename)
+    calibration_parameters.MegaLUTCalibrationParameters = create_she_MegaLUT_calibration_parameters(MegaLUT_filename)
     
-    calibration_parameters.REGAUSSCalibrationParameters = create_REGAUSS_calibration_parameters(REGAUSS_filename)
+    calibration_parameters.REGAUSSCalibrationParameters = create_she_REGAUSS_calibration_parameters(REGAUSS_filename)
     
     return calibration_parameters
 
