@@ -31,7 +31,7 @@ def init():
     """
     
     # binding_class = she_dpd.DpdCalibrationParametersProduct # @FIXME
-    binding_class = DpdCalibrationParametersProduct
+    binding_class = DpdSheCalibrationParametersProduct
 
     # Add the data file name methods
     
