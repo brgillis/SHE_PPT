@@ -230,3 +230,11 @@ def read_pickled_product(pickled_file_name, filenames=None):
         raise Exception("Filenames in " + listfile_filenames + "do not match those in " + pickled_file_name + ".")
     
     return product
+    
+def append_hdu(filename, hdu):
+    
+    f = fits.open(filename, mode='append')
+    try:
+        f.append(hdu)
+    finally:
+        f.close()
