@@ -35,10 +35,11 @@ class DetectionsTableMeta(object):
     def __init__(self):
         
         self.__version__ = "0.2.2"
+        self.table_format = "she.shearDetections"
         
         # Table metadata labels
-        
         self.version = "SS_VER"
+        self.format = "SS_FMT"
         
         self.extname = mv.extname_label
         
@@ -53,6 +54,7 @@ class DetectionsTableMeta(object):
         
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
+                                     (self.format, None),
                                      (self.extname, "#."+mv.detections_tag),
                                      (self.subtracted_sky_level, "ADU/arcsec**2"),
                                      (self.unsubtracted_sky_level, "ADU/arcsec**2"),
@@ -211,6 +213,7 @@ def make_detections_table_header(detector = -1,
     header = OrderedDict()
     
     header[tf.m.version] = tf.__version__
+    header[tf.m.format] = tf.m.table_format
     
     header[tf.m.extname] = str(detector) + "." + mv.detections_tag
     

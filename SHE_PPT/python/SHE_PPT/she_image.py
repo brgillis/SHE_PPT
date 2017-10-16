@@ -106,8 +106,8 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
                 raise ValueError("The mask array must have 2 dimensions")
             if mask_array.shape != self._data.shape:
                 raise ValueError("The mask array must have the same size as the data {}".format(self._data.shape))
-            if not mask_array.dtype == np.int32:
-                logger.warning("Recieved mask array of type '{}'. Attempting safe casting to np.int32.".format(mask_array.dtype))
+            if not mask_array.dtype.newbyteorder('<') == np.int32: # Quietly ignore if byte order is the only difference
+                logger.warning("Received mask array of type '{}'. Attempting safe casting to np.int32.".format(mask_array.dtype))
                 try:
                     mask_array = mask_array.astype(np.int32, casting='safe')
                 except:

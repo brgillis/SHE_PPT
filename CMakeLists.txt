@@ -6,7 +6,6 @@ find_package(ElementsProject)
 #---------------------------------------------------------------
 
 # Declare project name and version
-# elements_project(SHE_PPT 0.2 USE Elements 4.0 EuclidDmTools 1.2.9 )
 
 # FIXME - Temporary workaround of bug in old versions of Elements. Have to
 # use version 1.0 to avoid a spurious build error
