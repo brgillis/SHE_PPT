@@ -63,14 +63,15 @@ class ShearEstimatesTableMeta(object):
         self.model_hash = mv.model_hash_label
         self.model_seed = mv.model_seed_label
         self.noise_seed = mv.noise_seed_label
-        self.bfd_nlost = None
-        self.bfd_wt_n = None
-        self.bfd_wt_sigma = None
-        self.bfd_snmin=None
-        self.bfd_sigma_xy=None
-        self.bfd_sigma_flux=None
-        self.bfd_sigma_step=None
-        self.bfd_sigma_max=None
+        self.bfd_nlost = "NLOST"
+        self.bfd_wt_n = "WT_N"
+        self.bfd_wt_sigma = "WT_SIGMA"
+        self.bfd_tmpl_snmin="TMPL_SNMIN"
+        self.bfd_tmpl_sigma_xy="TMPL_SIGMA_XY"
+        self.bfd_tmpl_sigma_flux="TMPL_SIGMA_FLUX"
+        self.bfd_tmpl_sigma_step="TMPL_SIGMA_STEP"
+        self.bfd_tmpl_sigma_max="TMPL_SIGMA_MAX"
+        self.bfd_tmpl_xy_max="TMPL_XY_MAX"
         
         self.num_chains = "NCHAIN"
         self.len_chain = "LCHAIN"
@@ -87,11 +88,12 @@ class ShearEstimatesTableMeta(object):
                                      (self.bfd_nlost, None),
                                      (self.bfd_wt_n, None),
                                      (self.bfd_wt_sigma, None),
-                                     (self.bfd_snmin, None),
-                                     (self.bfd_sigma_xy, None),
-                                     (self.bfd_sigma_flux, None),
-                                     (self.bfd_sigma_step, None),
-                                     (self.bfd_sigma_max, None)))
+                                     (self.bfd_tmpl_snmin, None),
+                                     (self.bfd_tmpl_sigma_xy, None),
+                                     (self.bfd_tmpl_sigma_flux, None),
+                                     (self.bfd_tmpl_sigma_step, None),
+                                     (self.bfd_tmpl_sigma_max, None),
+                                     (self.bfd_tmpl_xy_max,None)))
         
         # A list of columns in the desired order
         self.all = self.comments.keys()
@@ -185,38 +187,23 @@ class ShearEstimatesTableFormat(object):
         self.snr = set_column_properties("SNR", is_optional=True)
         self.snr_err = set_column_properties("SNR_ERR", is_optional=True)
 
-        #adding in BFD columns as optional
-        self.bfd_xy = set_column_properties("BFD_XY",dtype="2F4",fits_dtype="2",
-                                            is_optional=True)
-        self.bfd_moments = set_column_properties("BFD_MOMENTS",dtype="7F4",fits_dtype="7E")
-        self.bfd_deriv_moments_dg1 = set_column_properties("BFD_DM_DG1",dtype="7F4",fits_dtype="7E",
-                                                           is_optional=True)
-        self.bfd_deriv_moments_dg2 = set_column_properties("BFD_DM_DG2",dtype="7F4",fits_dtype="7E",
-                                                           is_optional=True)
-        self.bfd_deriv_moments_dmu = set_column_properties("BFD_DM_DMU",dtype="7F4",fits_dtype="7E",
-                                                           is_optional=True)
-        self.bfd_2ndderiv_moments_dg1dg1 = set_column_properties("BFD_D2M_DG1DG1",dtype="7F4",
-                                                                 fits_dtype="7E",is_optional=True)
-        self.bfd_2ndderiv_moments_dg1dg2 = set_column_properties("BFD_D2M_DG1DG2",dtype="7F4",
-                                                                 fits_dtype="7E",is_optional=True)
-        self.bfd_2ndderiv_moments_dg2dg2 = set_column_properties("BFD_D2M_DG2DG2",dtype="7F4",
-                                                                 fits_dtype="7E",is_optional=True)
-        self.bfd_2ndderiv_moments_dg1dmu = set_column_properties("BFD_D2M_DG1DMU",dtype="7F4",
-                                                                 fits_dtype="7E",is_optional=True)
-        self.bfd_2ndderiv_moments_dg2dmu = set_column_properties("BFD_D2M_DG2DMU",dtype="7F4",
-                                                                 fits_dtype="7E",is_optional=True)
-        self.bfd_2ndderiv_moments_dmudmu = set_column_properties("BFD_D2M_DMUDMU",dtype="7F4",
-                                                                 fits_dtype="7E",is_optional=True)
-        self.bfd_template_weight = set_column_properties("BFD_TEMP_WEIGHT",dtype="F4",
-                                                         fits_dtype="E",is_optional=True)
-        self.bfd_jSuppress = set_column_properties("BFD_JUPPRESS",dtype="F4",
-                                                         fits_dtype="E",is_optional=True)
-        self.bfd_pqr = set_column_properties("BFD_PQR",dtype="F4",fits_dtype="E",is_optional=True)
+        #BFD specific columns
+        self.bfd_moments = set_column_properties("BFD_MOMENTS", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
+        self.bfd_deriv_moments_dg1 = set_column_properties("BFD_DM_DG1", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
+        self.bfd_deriv_moments_dg2 = set_column_properties("BFD_DM_DG2", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
+        self.bfd_deriv_moments_dmu = set_column_properties("BFD_DM_DMU", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
+        self.bfd_2ndderiv_moments_dg1dg1 = set_column_properties("BFD_D2M_DG1DG1", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
+        self.bfd_2ndderiv_moments_dg1dg2 = set_column_properties("BFD_D2M_DG1DG2", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
+        self.bfd_2ndderiv_moments_dg2dg2 = set_column_properties("BFD_D2M_DG2DG2", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
+        self.bfd_2ndderiv_moments_dg1dmu = set_column_properties("BFD_D2M_DG1DMU", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
+        self.bfd_2ndderiv_moments_dg2dmu = set_column_properties("BFD_D2M_DG2DMU", is_optional=True, dtype=">f4", fits_dtype="E", length=7) 
+        self.bfd_2ndderiv_moments_dmudmu = set_column_properties("BFD_D2M_DMUDMU", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
+        self.bfd_template_weight = set_column_properties("BFD_TMPL_WEIGHT", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.bfd_jSuppress = set_column_properties("BFD_JSUPPRESS", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.bfd_pqr = set_column_properties("BFD_PQR", is_optional=True, dtype=">f4",fits_dtype="E")
         
-        self.bfd_cov_even = set_column_properties("BFD_COV_EVEN",dtype="15F4",dtype="15E",
-                                                  is_optional=True)
-        self.bfd_cov_odd = set_column_properties("BFD_COV_ODD",dtype="3F4",dtype="3E",
-                                                  is_optional=True)
+        self.bfd_cov_even = set_column_properties("BFD_COV_EVEN", is_optional=True, dtype=">f4", fits_dtype="E", length=15)
+        self.bfd_cov_odd = set_column_properties("BFD_COV_ODD", is_optional=True, dtype=">f4", fits_dtype="E", length=3)
 
         
         self.g1_chain = set_column_properties("G1_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=num_chains*len_chain)
