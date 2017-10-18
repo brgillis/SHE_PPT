@@ -54,6 +54,8 @@ def init():
     
     binding_class.get_all_filenames = __get_all_filenames
     
+    binding_class.get_method_filename = __get_method_filename
+    
     binding_class.has_files = True
 
 def __set_BFD_filename(self, filename):
@@ -95,6 +97,21 @@ def __get_all_filenames(self):
                      self.get_REGAUSS_filename(),]
     
     return all_filenames
+
+def __get_method_filename(self, method):
+    
+    if method=="KSB":
+        return self.get_KSB_filename()
+    elif method=="LensMC":
+        return self.get_LensMC_filename()
+    elif method=="MegaLUT":
+        return self.get_MegaLUT_filename()
+    elif method=="REGAUSS":
+        return self.get_REGAUSS_filename()
+    elif method=="BFD":
+        return self.get_BFD_filename()
+    else:
+        raise ValueError("Invalid method " + str(method) + ".")
 
 class DpdShearEstimatesProduct: # @FIXME
     def __init__(self):
