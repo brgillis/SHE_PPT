@@ -32,7 +32,7 @@ class TestCalibrationParametersProduct(object):
     def test_validation(self):
         
         # Create the product
-        product = prod.create_dpd_calibration_parameters()
+        product = prod.create_dpd_she_calibration_parameters()
 
         # Check that it validates the schema
         product.validateBinding()
@@ -44,7 +44,7 @@ class TestCalibrationParametersProduct(object):
         prod.init()
         
         # Create the product
-        product = prod.create_dpd_calibration_parameters()
+        product = prod.create_dpd_she_calibration_parameters()
 
         # Change the fits filenames
         k_filename = "test_file_k.fits" 
@@ -77,7 +77,7 @@ class TestCalibrationParametersProduct(object):
         prod.init()
         
         # Create the product
-        product = prod.create_dpd_calibration_parameters()
+        product = prod.create_dpd_she_calibration_parameters()
 
         # Change the fits filenames
         k_filename = "test_file_k.fits" 
