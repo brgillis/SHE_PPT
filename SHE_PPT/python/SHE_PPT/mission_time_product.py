@@ -1,8 +1,8 @@
-""" @file astrometry_product.py
+""" @file mission_time_product.py
 
     Created 10 Oct 2017
 
-    Functions to create and output an astrometry data product.
+    Functions to create and output an mission_time data product.
 
     ---------------------------------------------------------------------
 
@@ -27,11 +27,11 @@ import pickle
 
 def init():
     """
-        Adds some extra functionality to the DpdSheAstrometry product
+        Adds some extra functionality to the DpdSheMissionTime product
     """
     
-    # binding_class = she_dpd.DpdSheAstrometryProduct # @FIXME
-    binding_class = DpdSheAstrometryProduct
+    # binding_class = she_dpd.DpdSheMissionTimeProduct # @FIXME
+    binding_class = DpdSheMissionTimeProduct
     
     binding_class.get_all_filenames = __get_all_filenames
     
@@ -45,41 +45,41 @@ def __get_all_filenames(self):
     
     return all_filenames
 
-class DpdSheAstrometryProduct: # @FIXME
+class DpdSheMissionTimeProduct: # @FIXME
     def __init__(self):
         self.Header = None
         self.Data = None
     def validateBinding(self):
         return False
         
-class SheAstrometryProduct: # @FIXME
+class SheMissionTimeProduct: # @FIXME
     def __init__(self):
         pass
 
-def create_dpd_she_astrometry():
+def create_dpd_she_mission_time():
     """
         @TODO fill in docstring
     """
     
-    # dpd_she_astrometry = she_dpd.DpdSheAstrometryProduct() # @FIXME
-    dpd_she_astrometry = DpdSheAstrometryProduct()
+    # dpd_she_mission_time = she_dpd.DpdSheMissionTimeProduct() # @FIXME
+    dpd_she_mission_time = DpdSheMissionTimeProduct()
     
-    # dpd_she_astrometry.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
-    dpd_she_astrometry.Header = "SHE"
+    # dpd_she_mission_time.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
+    dpd_she_mission_time.Header = "SHE"
     
-    dpd_she_astrometry.Data = create_she_astrometry()
+    dpd_she_mission_time.Data = create_she_mission_time()
     
-    return dpd_she_astrometry
+    return dpd_she_mission_time
 
 # Add a useful alias
-create_astrometry_product = create_dpd_she_astrometry
+create_mission_time_product = create_dpd_she_mission_time
 
-def create_she_astrometry():
+def create_she_mission_time():
     """
         @TODO fill in docstring
     """
     
-    # she_astrometry = she_dpd.SheAstrometryProduct() # @FIXME
-    she_astrometry = SheAstrometryProduct()
+    # she_mission_time = she_dpd.SheMissionTimeProduct() # @FIXME
+    she_mission_time = SheMissionTimeProduct()
     
-    return she_astrometry
+    return she_mission_time

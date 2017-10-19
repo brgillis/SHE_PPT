@@ -20,6 +20,16 @@
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 """
 
+try:
+    import EuclidDmBindings.she.she_stub as she_dpd
+    have_she_dpd = True
+except ImportError as _e:
+    have_she_dpd = False
+    
+from astropy.io import fits
+    
+import py
+import pickle
 import json
 import time
 
@@ -150,3 +160,83 @@ def replace_multiple_in_file( input_filename, output_filename, input_strings, ou
                 for input_string, output_string in zip(input_strings, output_strings):
                     new_line = new_line.replace(input_string, output_string)
                 fout.write(new_line)
+
+def write_xml_product(product, xml_file_name, listfile_file_name=None):
+    try:
+        with open(str(xml_file_name), "w") as f:
+            f.write(product.toDOM().toprettyxml(encoding="utf-8").decode("utf-8"))
+    except AttributeError as e:
+        if not "instance has no attribute 'toDOM'" in str(e):
+            raise
+        print("WARNING: XML writing is not available; falling back to pickled writing instead.")
+        write_pickled_product(product, xml_file_name, listfile_file_name)
+
+def read_xml_product(xml_file_name, listfile_file_name=None):
+    
+    if have_she_dpd:
+        
+        # Read the xml file as a string
+        with open(str(xml_file_name), "r") as f:
+            xml_string = f.read()
+    
+        # Create a new SHE product instance using the SHE data product dictionary
+        product = she_dpd.CreateFromDocument(xml_string)
+        
+    else:
+        # Try reading it as a pickled product, since that's probable what it is #FIXME
+        product = read_pickled_product(xml_file_name, listfile_file_name)
+
+    return product
+
+def write_pickled_product(product, pickled_file_name, listfile_file_name=None):
+    
+    if not hasattr(product,"has_files"):
+        raise ValueError("Associated init() must be called for a data product before write_pickled_product can be used.")
+    
+    if product.has_files:
+        if listfile_file_name is None:
+            raise ValueError("listfile_file_name is required for products that point to files.")
+        else:
+            write_listfile(str(listfile_file_name), product.get_all_filenames())
+    elif listfile_file_name is not None:
+        raise ValueError("listfile_file_name cannot be supplied for products that do not point to files")
+    
+    with open(str(pickled_file_name), "wb") as f:
+        pickle.dump(product,f)
+
+def read_pickled_product(pickled_file_name, filenames=None):
+    
+    with open(str(pickled_file_name), "rb") as f:
+        product = pickle.load(f)
+    
+    if not hasattr(product,"has_files"):
+        raise ValueError("Associated init() must be called for a data product before read_pickled_product can be used.")
+    
+    if product.has_files:
+        if filenames is None:
+            raise ValueError("'filenames' argument is required for products that point to files.")
+        else:
+            if isinstance(filenames, str):
+                listfile_filenames = read_listfile(filenames)
+            elif isinstance(filenames, py.path.local):
+                listfile_filenames = read_listfile(str(filenames))
+            else:
+                listfile_filenames = filenames
+    elif filenames is not None:
+        raise ValueError("filenames cannot be supplied for products that do not point to files")
+    else:
+        listfile_filenames = []
+        
+    # Check that the files in the listfile match those in the product
+    if listfile_filenames != product.get_all_filenames():
+        raise Exception("Filenames in " + listfile_filenames + " do not match those in " + pickled_file_name + ".")
+    
+    return product
+    
+def append_hdu(filename, hdu):
+    
+    f = fits.open(filename, mode='append')
+    try:
+        f.append(hdu)
+    finally:
+        f.close()
