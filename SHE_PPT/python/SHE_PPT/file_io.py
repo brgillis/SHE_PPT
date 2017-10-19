@@ -27,6 +27,7 @@ except ImportError as _e:
     have_she_dpd = False
     
 import json
+from os.path import join
 import pickle
 import time
 
