@@ -12,7 +12,6 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to    
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    
 #
-from astropy.units import ymin
 
 """ 
 File: she_image.py
@@ -392,13 +391,14 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             noisemap_stamp = np.zeros((width, height), dtype=self.noisemap.dtype)
             
             # Compute the bounds of the overlapping part of the stamp in the original image
-            overlap_xmin = min(xmin, 0)
-            overlap_ymin = min(ymin, 0)
-            overlap_xmax = max(xmax, self.shape[0])
-            overlap_ymax = max(ymax, self.shape[1])
-            #overlap_width = overlap_xmax - overlap_xmin
-            #overlap_height = overlap_ymax - overlap_ymin
+            overlap_xmin = max(xmin, 0)
+            overlap_ymin = max(ymin, 0)
+            overlap_xmax = min(xmax, self.shape[0])
+            overlap_ymax = min(ymax, self.shape[1])
+            overlap_width = overlap_xmax - overlap_xmin
+            overlap_height = overlap_ymax - overlap_ymin
             overlap_slice = (slice(overlap_xmin, overlap_xmax), slice(overlap_ymin, overlap_ymax))
+            logger.debug("overlap_slice: {}".format(overlap_slice))
             
             # Compute the bounds of this same overlapping part in the new stamp
             # The indexes of the stamp are simply shifted with respect to those of the orinigal image by (xmin, ymin)
@@ -407,6 +407,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             overlap_ymin_stamp = overlap_ymin - ymin
             overlap_ymax_stamp = overlap_ymax - ymin
             overlap_slice_stamp = (slice(overlap_xmin_stamp, overlap_xmax_stamp), slice(overlap_ymin_stamp, overlap_ymax_stamp))
+            
             
             # Fill the stamp arrays:
             data_stamp[overlap_slice_stamp] = self.data[overlap_slice]
@@ -420,6 +421,9 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
                 noisemap=noisemap_stamp,
                 header=newheader
             )
+            
+            if overlap_width == 0 and overlap_height == 0:
+                logger.warning("The extracted stamp is entirely outside of the image bounds!")
     
        
         assert newimg.shape == (width, height) 
