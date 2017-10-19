@@ -22,8 +22,8 @@ This file is a standalone Euclid-agnostic module to visualize and plot sky image
 To visualize Euclid objects, use the wrappers in she_image_checkplot.py
 
 """ 
-from __future__ import division, print_function
-from future_builtins import *
+#from __future__ import division, print_function
+#from future_builtins import *
 
 import os
 import numpy as np
@@ -32,6 +32,7 @@ import astropy.io.fits
 import matplotlib.pyplot as plt
 import matplotlib.cm
 import matplotlib.colors
+import matplotlib.patches
 
 import logging
 logger = logging.getLogger(__name__)
@@ -42,24 +43,40 @@ class SkyImage(object):
     
     """
     
-    def __init__(self, data):
+    def __init__(self, data, z1=None, z2=None):
         """
         
         """
                
         self.data = data
-        self.z1 = np.min(data)
-        self.z2 = np.max(data)
+        self.extent = get_extent(self.data)
+        self.set_z(z1, z2)
         
-        self.extent = (0, self.data.shape[0], 0, self.data.shape[1])
-        
-        logger.debug("Created {}".format(str(self)))
+        logger.info("Created {}".format(str(self)))
 
     def __str__(self):
         return "SkyImage{}".format(self.data.shape)
     
 
-    def set_auto_z_scale(full_sample_limit = 10000, nsig=3.0):
+    def set_z(self, z1, z2):
+        
+        if z1 is None:
+            self.z1 = np.min(self.data)
+            logger.info("Set z1 to minimum value: {}".format(self.z1))
+        else:
+            self.z1 = z1
+        if z2 is None:
+            self.z2 = np.max(self.data)
+            logger.info("Set z2 to maximum value: {}".format(self.z2))
+        else:
+            self.z2 = z2
+        
+        autolist = ["Auto", "auto"]
+        if (self.z1 in autolist) or (self.z2 in autolist):
+            self.set_auto_z_scale()
+            
+
+    def set_auto_z_scale(self, full_sample_limit = 10000, nsig=5.0):
         """Automatic z-scale determination"""
    
         #if a.size > full_sample_limit :
@@ -68,7 +85,7 @@ class SkyImage(object):
         #else :
     
         stata = self.data[:]
-        stata.shape = stata.size # Flattening the array
+        #stata.shape = (stata.size,) # Flattening the array
 
         std = stdmad(stata)
         med = np.median(stata)
@@ -86,11 +103,11 @@ class SkyImage(object):
         
         self.z2 = np.max(stata)
         
-        logger.debug("Set zscale from {} to {}".format(self.z1, self.z2))
+        logger.info("Set automatic zscale from {} to {}".format(self.z1, self.z2))
 
 
 
-def draw_sky_image(si, ax, **kwargs):
+def draw_sky_image(ax, si, **kwargs):
     """Use imshow to draw a SkyImage to some axes
     
     """
@@ -101,57 +118,173 @@ def draw_sky_image(si, ax, **kwargs):
 
 
 
-def draw_mask(si, ax, **kwargs):
+def draw_mask(ax, si, **kwargs):
     """Uses imshow to draw a binary mask to some axes
     
+    Parameters
+    si : SkyImage
+        The mask, can also be a plain 2D numpy array
+    
     """
-
+        
     mask_cmap = matplotlib.colors.ListedColormap([(1.0, 1.0, 1.0, 0.0), (1.0, 0.0, 0.0, 0.6)])
     mask_bounds=[-1,0.5,1]
     mask_norm = matplotlib.colors.BoundaryNorm(mask_bounds, mask_cmap.N)
 
     imshow_kwargs = {"aspect":"equal", "origin":"lower", "interpolation":"none", "alpha":0.5}
     imshow_kwargs.update(kwargs)
-  
-    return ax.imshow(si.data, vmin=0, vmax=1, extent=si.extent, cmap=mask_cmap, norm=mask_norm, **imshow_kwargs)
+    
+    if isinstance(si, SkyImage):
+        return ax.imshow(si.data, vmin=0, vmax=1, extent=si.extent, cmap=mask_cmap, norm=mask_norm, **imshow_kwargs)
+    else: # We can also work with simple numpy arrays
+        return ax.imshow(si, vmin=0, vmax=1, extent=get_extent(si), cmap=mask_cmap, norm=mask_norm, **imshow_kwargs)
     
 
-def plot(img_array, mask_array=None, ax=None, filepath=None, figsize=None, scale=1):
-    """Wraps some of the functionality into a single convenient function 
+def draw_ellipse(ax, x, y, a=5, b=None, angle=None, **kwargs):
+    """Draws an ellipse patch on the axes
+    
+    """
+    if b is None:
+        b = a
+    if angle is None:
+        angle = 0
+    
+    ellipse_kwargs = {"fill":False, "edgecolor":"red", "linewidth":2, "clip_box":ax.bbox}
+    ellipse_kwargs.update(kwargs)
+    
+    ellipse = matplotlib.patches.Ellipse((x, y), width=2*a, height=2*b, angle=angle, **ellipse_kwargs)
+    
+    return ax.add_artist(ellipse)
+
+def draw_g_ellipse(ax, x, y, g1, g2, sigma, **kwargs):
+    """Draws an ellipse defined by the "reduced shear" following GalSim nomenclature.
+    
+    Parameters
+    ----------
+    sigma : float
+        sigma is defined as (a+b)/2
+    
+    """
+    angle = 0.5*np.arctan2(g2, g1) * 180.0/np.pi
+    g = np.hypot(g1, g2)
+    a = (g + 1.0) * sigma
+    b = (1.0 - g) * sigma
+    return draw_ellipse(ax, x, y, a, b, angle, **kwargs)
+
+
+def draw_g_ellipses(ax, cat, x="x", y="y", g1="g1", g2="g2", sigma="sigma", **kwargs):
+    """Draws ellipses from a catalog (that is an astropy table or a list of dicts) of sources
+    
+    Parameters
+    ----------
+    cat : astropy table or list of dicts
+        The "catalog", must be iterable like a list, with each element behaving like a dict.
+    x : str
+        The key of the field (or the column name) containing the x position
+    y
+        idem
+    g1 : float
+         The g1 component of the reduced shear defining the ellipse to draw
+    g2
+        idem
+    sigma : float
+        defined as (a+b)/2 of the ellipses to draw
+    
+    """
+    for row in cat:
+        # We skip silently any masked positions
+        if getattr(row[x], "mask", False) or getattr(row[y], "mask", False):
+            continue
+        
+        draw_g_ellipse(ax, row[x], row[y], row[g1], row[g2], row[sigma], **kwargs)
+    
+
+def annotate(ax, cat, x="x", y="y", text="Hello", **kwargs):
+    """Annotates the positions (x, y) from a catalog
     
     """
     
-    if ax is None:
-        makefig = True
-    else:
-        makefig = False
-        
-    if makefig:
-        
-        dpi = 100.0 
-        figsize = float(scale) * np.array(img_array.shape)/dpi
-        
-        fig = plt.figure(figsize=figsize)
-        ax = fig.add_subplot(111)
+    annotate_kwargs = {"horizontalalignment":"left", "verticalalignment":"top", "color":"red",
+                       "xytext":(0, 0), "textcoords":'offset points'}
+    annotate_kwargs.update(**kwargs)
     
-    img_si = SkyImage(img_array)
-    draw_sky_image(img_si, ax)
+    for row in cat:
+        
+        # We skip silently any masked positions
+        if getattr(row[x], "mask", False) or getattr(row[y], "mask", False):
+            continue
+        
+        rowtext = text.format(row=row)
+        ax.annotate(rowtext,
+            xy=(row[x], row[y]),
+            **annotate_kwargs
+            )
+
+
+class SimpleFigure(object):
+    """A simple plot made from scratch. If you have only one image, and want one matplotlib figure, this should do it.
     
-    if mask_array is not None:
-        mask_si = SkyImage(mask_array)
-        draw_mask(mask_si, ax)
+    """
+    
+    def __init__(self, img_array, z1=None, z2=None, scale=1):
+        """
+
+        Parameters
+        ----------
+        img_array : numpy array
+            A 2D numpy array containing the image
+
+        scale : float
+            A scaling for the display of the image
+
+
+        """
+        
+        self.si = SkyImage(img_array, z1, z2)
+        
+        self.dpi = 72
+        self.figsize = float(scale) * np.array(img_array.shape)/self.dpi
+        
+        self.fig = plt.figure(figsize=self.figsize)
+        self.ax = self.fig.add_subplot(111)
         
         
-    if makefig:
-        logger.info("Writing image to '{}'".format(filepath))
-        fig.savefig(filepath, bbox_inches='tight')
-        plt.close(fig)
- 
+
+    def __str__(self):
+        return "SimpleFigure({})".format(str(self.si))
+    
+    def draw(self):
+        draw_sky_image(self.ax, self.si)
+        
+    def draw_g_ellipses(self, cat, **kwargs):
+        draw_g_ellipses(self.ax, cat, **kwargs)
+    
+    def annotate(self, cat, **kwargs):
+        annotate(self.ax, cat, **kwargs)
+    
+    def show(self):
+        """Update this once we settle on a minimum matplotlib version...
+        
+        """
+        logger.info("Showing {}...".format(str(self)))
+        plt.show()
+        
+    def save_to_file(self, filepath):
+        logger.info("Saving {} to '{}'...".format(str(self), filepath))
+        self.fig.savefig(filepath, bbox_inches='tight')
+   
 
 
 
 
 # Some utility functions
+
+def get_extent(a):
+    """Defines the extent with which to plot an array a (we use the numpy convention)
+    
+    """
+    return (0, a.shape[1], 0, a.shape[0])
+
     
 def stdmad(a):
     """MAD rescaled to std of normally distributed data"""
