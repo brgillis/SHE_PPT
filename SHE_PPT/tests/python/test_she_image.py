@@ -174,11 +174,7 @@ class Test_she_image():
         bottomleftpixel_numpy = self.img.extract_stamp(0.5, 0.5, 1)
         bottomleftpixel_sex = self.img.extract_stamp(1.0, 1.0, 1, indexconv="sextractor")
         assert bottomleftpixel_numpy.data == bottomleftpixel_sex.data
-        
-        # This should fail (it's out of bounds)
-        with pytest.raises(Exception):
-            bottomleftpixel_sex = self.img.extract_stamp(0.5, 0.5, 1, indexconv="sextractor")
-        
+         
         
         
     def test_extract_stamp(self):
@@ -212,8 +208,40 @@ class Test_she_image():
         assert len(eimg.header.keys()) == 1
 
         
+    def test_extract_stamp_out_of_bounds(self):
+        """We test that the stamp extraction works as desired for stamps not entirely within the image"""
         
+        array = np.array([[00,01,02,03,04], [10,11,12,13,14], [20,21,22,23,24], [30,31,32,33,34]])
+        img = SHE_PPT.she_image.SHEImage(array)
+        # This image looks like (values give xy coords...)
+        # 04 14 24 34
+        # 03 13 23 33
+        # 02 12 22 32
+        # 01 11 21 31
+        # 00 10 20 30
         
+        stamp = img.extract_stamp(0.5, 0.5, 3)
+        # This is:
+        # XX 01 11
+        # XX 00 10
+        # XX XX XX
+        assert stamp.data[2,2] == 11
+        assert stamp.data[2,1] == 10
+        assert stamp.data[0,0] == 00
+        assert stamp.boolmask[1,1] == False
+        assert stamp.boolmask[0,0] == True
+        
+        stamp = img.extract_stamp(-10.0, 20.0, 3)
+        # This one is completely out of bounds:
+        assert np.alltrue(stamp.boolmask)
+        assert np.allclose(stamp.noisemap, 0.0)
+        
+        stamp = img.extract_stamp(3.5, 1.5, 3, 1)
+        # This is
+        # 21 31 XX
+        assert stamp.data[0,0] == 21
+        assert stamp.data[1,0] == 31
+        assert stamp.boolmask[2,0] == True
         
         
         
