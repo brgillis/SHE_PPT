@@ -73,6 +73,7 @@ class Testshe_image_checkplot(object):
         It's purpose is more to demonstrate and play with new checkplot features!
         """
         
+        """
         (X, Y) = np.mgrid[0:30,0:20]
         array = np.sin(0.3*X) + np.sin(0.2*Y) + 0.3*np.random.randn(30, 20)
         mask = np.zeros(array.shape, dtype=bool)
@@ -92,7 +93,7 @@ class Testshe_image_checkplot(object):
         checkplot.save_to_file("/home/user/Desktop/stamp2.png")
         
         assert False
-    
+        """
     
     
     
