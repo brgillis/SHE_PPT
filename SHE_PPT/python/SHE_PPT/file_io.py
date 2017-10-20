@@ -26,12 +26,14 @@ try:
 except ImportError as _e:
     have_she_dpd = False
     
-from astropy.io import fits
-    
-import py
-import pickle
 import json
+from os.path import join, isfile
+import pickle
 import time
+
+from astropy.io import fits
+import py
+
 
 type_name_maxlen = 41
 instance_id_maxlen = 55
@@ -240,3 +242,47 @@ def append_hdu(filename, hdu):
         f.append(hdu)
     finally:
         f.close()
+        
+def find_file_in_path(filename, path):
+    """
+        Searches through a colon-separated path for a file and returns the qualified name of it if found,
+        None otherwise.
+    """
+
+    colon_separated_path = path.split(":")
+
+    qualified_filename = None
+
+    for test_path in colon_separated_path:
+
+        test_filename = join(test_path, filename)
+
+        if isfile(test_filename):
+            qualified_filename = test_filename
+            break
+
+    return qualified_filename
+
+def first_in_path(path):
+    """
+        Gets the first directory listed in the path.
+    """
+
+    return path.split(":")[0]
+
+def first_writable_in_path(path):
+    """
+        Gets the first directory listed in the path which we have write access for.
+    """
+
+    colon_separated_path = path.split(":")
+    
+    first_writable_dir = None
+    
+    for test_path in colon_separated_path:
+
+        if os.access(test_path, os.W_OK):
+            first_writable_dir = test_path
+            break
+
+    return first_writable_dir
