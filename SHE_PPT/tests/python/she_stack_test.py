@@ -47,6 +47,7 @@ class Test_she_stack(object):
         cls.det_filepath_1 = "test_SHEStack_det_Table.fits"
         cls.bpsf_filepath_1 = "test_SHEStack_bpsf_SHEImage.fits"
         cls.dpsf_filepath_1 = "test_SHEStack_dpsf_SHEImage.fits"
+        cls.psfc_filepath_1 = "test_SHEStack_psfc_Table.fits"
         
 
     @classmethod
@@ -73,7 +74,7 @@ class Test_she_stack(object):
         bpsf_image.write_to_fits(self.bpsf_filepath_1)
         dpsf_image.write_to_fits(self.dpsf_filepath_1)
         det_table.write(self.det_filepath_1)
-        psf_table.write_to_fits(self.psfc_filepath_1)
+        psf_table.write(self.psfc_filepath_1)
         
         
         # Read this, directly as a SHEStack
