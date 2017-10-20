@@ -23,16 +23,18 @@ Created on: 09/01/17
 """
 
 from __future__ import division, print_function
+
 from future_builtins import *
+import os
 
 import py.test
 
-import os
-import numpy as np
-from SHE_PPT.she_stack import SHEStack
-from SHE_PPT.she_image import SHEImage
 from SHE_PPT.detections_table_format import initialise_detections_table
+from SHE_PPT.psf_table_format import initialise_psf_table
+from SHE_PPT.she_image import SHEImage
+from SHE_PPT.she_stack import SHEStack
 import SHE_PPT.table_utility
+import numpy as np
 
 
 class Test_she_stack(object):
@@ -64,18 +66,21 @@ class Test_she_stack(object):
         bpsf_image = SHEImage(np.random.randn(100).reshape(10,10))
         dpsf_image = SHEImage(np.random.randn(100).reshape(10,10)) 
         det_table = initialise_detections_table()
+        psf_table = initialise_psf_table()
         
         # Save those to files:
         sci_image.write_to_fits(self.sci_filepath_1)
         bpsf_image.write_to_fits(self.bpsf_filepath_1)
         dpsf_image.write_to_fits(self.dpsf_filepath_1)
         det_table.write(self.det_filepath_1)
+        psf_table.write_to_fits(self.psfc_filepath_1)
         
         
         # Read this, directly as a SHEStack
         
         filepaths_list = [
-            [self.sci_filepath_1, self.det_filepath_1, self.bpsf_filepath_1, self.dpsf_filepath_1]
+            [self.sci_filepath_1, self.det_filepath_1, self.bpsf_filepath_1, self.dpsf_filepath_1,
+             self.psfc_filepath_1]
             ]
         
         mystack = SHEStack.read(filepaths_list, mask_ext='MASK') # Testing kwargs as well
