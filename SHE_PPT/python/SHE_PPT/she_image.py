@@ -29,6 +29,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+OUT_OF_BOUNDS_MASK_VALUE = 1
+
+
 class SHEImage(object): # We need new-style classes for properties, hence inherit from object
     """Structure to hold an image together with a mask, a noisemap, and a header (for metadata).
     
@@ -308,9 +311,9 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         """Extracts a stamp and returns it as a new instance (using views of numpy arrays, i.e., without making a copy)
         
         The extracted stamp is centered on the given (x,y) coordinates and has shape (width, height).
-        To define the center, two alternative indexing-conventions are implemented, which differ by a small shift:
-            - "numpy" follows the natural indexing of numpy arrays extended to floating-point scales.
-                It means that the bottom-left pixel spreads from (x,y) = (0.0, 0.0) to (1.0,1.0).
+        To define this center, two alternative indexing-conventions are implemented, which differ by a small shift:
+            - "numpy" follows the natural indexing of numpy arrays extended to floating-point axes.
+                The bottom-left pixel spreads from (x,y) = (0.0, 0.0) to (1.0,1.0).
                 Therefore, this pixel is centered on (0.5, 0.5), and you would
                 use extract_stamp(x=0.5, y=0.5, w=1) to extract this pixel.
                 Note the difference to the usual numpy integer array indexing, where this pixel would be a[0,0]
@@ -357,27 +360,73 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         xmax = xmin + width
         ymax = ymin + height
         
-        # We check that these bounds are fully within the image range
-        if xmin < 0 or xmax > self.shape[0] or ymin < 0 or ymax > self.shape[1]:
-            raise ValueError("Stamp [{}:{},{}:{}], is not within image shape {}".format(xmin, xmax, ymin, ymax, self.shape))
-        
-        logger.debug("Extracting stamp [{}:{},{}:{}] from image of shape {}".format(xmin, xmax, ymin, ymax, self.shape))
-        
-        # And the header:
+         # And the header:
         if keep_header:
             newheader = self.header
         else:
             newheader = None
+       
         
-        # And extract the stamp
-        newimg = SHEImage(
-            data=self.data[xmin:xmax,ymin:ymax],
-            mask=self.mask[xmin:xmax,ymin:ymax],
-            noisemap=self.noisemap[xmin:xmax,ymin:ymax],
-            header=newheader
+        # If these bounds are fully within the image range, the extraction is easy.
+        if xmin >= 0 and xmax < self.shape[0] and ymin >= 0 and ymax < self.shape[1]:
+            # We are fully within ghe image
+            logger.debug("Extracting stamp [{}:{},{}:{}] fully within image of shape {}".format(xmin, xmax, ymin, ymax, self.shape))
+            
+            newimg = SHEImage(
+                data=self.data[xmin:xmax,ymin:ymax],
+                mask=self.mask[xmin:xmax,ymin:ymax],
+                noisemap=self.noisemap[xmin:xmax,ymin:ymax],
+                header=newheader
             )
-        assert newimg.shape == (width, height)
-        
+            
+        else:
+            logger.debug("Extracting stamp [{}:{},{}:{}] not entirely within image of shape {}".format(xmin, xmax, ymin, ymax, self.shape))
+            
+            # One solution would be to pad the image and extract, but that would need a lot of memory.
+            # So instead we go for the more explicit bound computations.
+            
+            # We first create new stamps, and we will later fill part of them with slices of the original.
+            data_stamp = np.zeros((width, height), dtype=self.data.dtype)
+            mask_stamp = np.ones((width, height), dtype=self.mask.dtype) * OUT_OF_BOUNDS_MASK_VALUE
+            noisemap_stamp = np.zeros((width, height), dtype=self.noisemap.dtype)
+            
+            # Compute the bounds of the overlapping part of the stamp in the original image
+            overlap_xmin = max(xmin, 0)
+            overlap_ymin = max(ymin, 0)
+            overlap_xmax = min(xmax, self.shape[0])
+            overlap_ymax = min(ymax, self.shape[1])
+            overlap_width = overlap_xmax - overlap_xmin
+            overlap_height = overlap_ymax - overlap_ymin
+            overlap_slice = (slice(overlap_xmin, overlap_xmax), slice(overlap_ymin, overlap_ymax))
+            logger.debug("overlap_slice: {}".format(overlap_slice))
+            
+            # Compute the bounds of this same overlapping part in the new stamp
+            # The indexes of the stamp are simply shifted with respect to those of the orinigal image by (xmin, ymin)
+            overlap_xmin_stamp = overlap_xmin - xmin
+            overlap_xmax_stamp = overlap_xmax - xmin
+            overlap_ymin_stamp = overlap_ymin - ymin
+            overlap_ymax_stamp = overlap_ymax - ymin
+            overlap_slice_stamp = (slice(overlap_xmin_stamp, overlap_xmax_stamp), slice(overlap_ymin_stamp, overlap_ymax_stamp))
+            
+            
+            # Fill the stamp arrays:
+            data_stamp[overlap_slice_stamp] = self.data[overlap_slice]
+            mask_stamp[overlap_slice_stamp] = self.mask[overlap_slice]
+            noisemap_stamp[overlap_slice_stamp] = self.noisemap[overlap_slice]
+    
+            # Create the new object
+            newimg = SHEImage(
+                data=data_stamp,
+                mask=mask_stamp,
+                noisemap=noisemap_stamp,
+                header=newheader
+            )
+            
+            if overlap_width == 0 and overlap_height == 0:
+                logger.warning("The extracted stamp is entirely outside of the image bounds!")
+    
+       
+        assert newimg.shape == (width, height) 
         return newimg
 
  
