@@ -54,8 +54,13 @@ class SkyImage(object):
         
         logger.info("Created {}".format(str(self)))
 
+    @property
+    def shape(self): # Just a shortcut
+        """The shape (width, height) of the image"""
+        return self.data.shape
+    
     def __str__(self):
-        return "SkyImage{}".format(self.data.shape)
+        return "SkyImage{}".format(self.shape)
     
 
     def set_z(self, z1, z2):
@@ -111,10 +116,11 @@ def draw_sky_image(ax, si, **kwargs):
     """Use imshow to draw a SkyImage to some axes
     
     """
+    # "origin":"lower" as well as the tranpose() within the imshow arguments both combined give the right orientation
     imshow_kwargs = {"aspect":"equal", "origin":"lower", "interpolation":"none", "cmap":matplotlib.cm.get_cmap('Greys_r')}
     imshow_kwargs.update(kwargs)
     
-    return ax.imshow(si.data, vmin=si.z1, vmax=si.z2, extent=si.extent, **imshow_kwargs)
+    return ax.imshow(si.data.transpose(), vmin=si.z1, vmax=si.z2, extent=si.extent, **imshow_kwargs)
 
 
 
@@ -135,9 +141,9 @@ def draw_mask(ax, si, **kwargs):
     imshow_kwargs.update(kwargs)
     
     if isinstance(si, SkyImage):
-        return ax.imshow(si.data, vmin=0, vmax=1, extent=si.extent, cmap=mask_cmap, norm=mask_norm, **imshow_kwargs)
+        return ax.imshow(si.data.tranpose(), vmin=0, vmax=1, extent=si.extent, cmap=mask_cmap, norm=mask_norm, **imshow_kwargs)
     else: # We can also work with simple numpy arrays
-        return ax.imshow(si, vmin=0, vmax=1, extent=get_extent(si), cmap=mask_cmap, norm=mask_norm, **imshow_kwargs)
+        return ax.imshow(si.transpose(), vmin=0, vmax=1, extent=get_extent(si), cmap=mask_cmap, norm=mask_norm, **imshow_kwargs)
     
 
 def draw_ellipse(ax, x, y, a=5, b=None, angle=None, **kwargs):
@@ -248,13 +254,22 @@ class SimpleFigure(object):
         self.fig = plt.figure(figsize=self.figsize)
         self.ax = self.fig.add_subplot(111)
         
+        self.has_been_drawn = False
+        
         
 
     def __str__(self):
         return "SimpleFigure({})".format(str(self.si))
     
-    def draw(self):
-        draw_sky_image(self.ax, self.si)
+    def draw(self, si=None):
+        if si is None:
+            si = self.si
+        draw_sky_image(self.ax, si)
+        self.has_been_drawn = True
+    
+    def check_drawn(self):
+        if not self.has_been_drawn:
+            logger.warning("The SimpleFigure has not been drawn, you probably want to call draw() before showing or saving it!")
         
     def draw_g_ellipses(self, cat, **kwargs):
         draw_g_ellipses(self.ax, cat, **kwargs)
@@ -266,10 +281,12 @@ class SimpleFigure(object):
         """Update this once we settle on a minimum matplotlib version...
         
         """
+        self.check_drawn()
         logger.info("Showing {}...".format(str(self)))
         plt.show()
         
     def save_to_file(self, filepath):
+        self.check_drawn()
         logger.info("Saving {} to '{}'...".format(str(self), filepath))
         self.fig.savefig(filepath, bbox_inches='tight')
    
@@ -283,7 +300,7 @@ def get_extent(a):
     """Defines the extent with which to plot an array a (we use the numpy convention)
     
     """
-    return (0, a.shape[1], 0, a.shape[0])
+    return (0, a.shape[0], 0, a.shape[1])
 
     
 def stdmad(a):
