@@ -66,20 +66,20 @@ def draw_to_axes(img, ax, z1=None, z2=None, **kwargs):
     
     
 class Checkplot(sip.SimpleFigure):
-    """Visualizes a SHEImage using Matplotlib in a simple standalone figur
+    """Visualizes a SHEImage using Matplotlib in a simple standalone figure
     
     """
-    def __init__(self, img, z1=None, z2=None, scale=1):
+    def __init__(self, img, **kwargs):
         
         self.sheimage = img
-        sip.SimpleFigure.__init__(self, img.data, z1, z2, scale)
+        sip.SimpleFigure.__init__(self, img.data, **kwargs)
         
     
-    def draw(self):
+    def draw(self, **kwargs):
         """
         
         """
-        draw_to_axes(self.sheimage, self.ax)
+        draw_to_axes(self.sheimage, self.ax, self.z1, self.z2, **kwargs)
 
 
 

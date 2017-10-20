@@ -17,7 +17,7 @@
 #"""This script gives a small demo of the image object.
 
 """
-File: tests/python/test_she_image.py
+File: tests/python/she_image_test.py
 
 Created on: 08/18/17
 """
