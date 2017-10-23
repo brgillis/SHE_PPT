@@ -91,8 +91,8 @@ class SHEImageData(object): # We need new-style classes for properties, hence in
         dpsf_image = SHEImage.read_from_fits(dpsf_image_filepath)
         
         # And reading the detections table
-        detections_table = cls.read_detections_table(detections_table_filepath)
-        psf_table = cls.read_psf_table(psf_table_filepath)
+        detections_table = cls.read_table(detections_table_filepath, check_format="detections_table")
+        psf_table = cls.read_table(psf_table_filepath, check_format="psf_table")
         
         # Building the object
         sid = SHEImageData(science_image, detections_table, bpsf_image, dpsf_image, psf_table)
