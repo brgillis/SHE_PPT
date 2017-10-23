@@ -54,7 +54,8 @@ class Test_she_stack(object):
     def teardown_class(cls):
         
         # Delete all potentially created files:
-        for testfilepath in [cls.sci_filepath_1, cls.det_filepath_1, cls.bpsf_filepath_1, cls.dpsf_filepath_1]:
+        for testfilepath in [cls.sci_filepath_1, cls.det_filepath_1, cls.bpsf_filepath_1, cls.dpsf_filepath_1,
+                             cls.psfc_filepath_1]:
             if os.path.exists(testfilepath):
                 os.remove(testfilepath)
 
