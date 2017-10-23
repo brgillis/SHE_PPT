@@ -23,12 +23,16 @@ Created on: 09/06/17
 """
 
 from __future__ import division, print_function
+
 from future_builtins import *
 
-from SHE_PPT.she_image import SHEImage
-from SHE_PPT import table_utility
-from SHE_PPT import detections_table_format
 import astropy.table
+
+from SHE_PPT import detections_table_format
+from SHE_PPT import psf_table_format
+from SHE_PPT import table_utility
+from SHE_PPT.she_image import SHEImage
+
 
 class SHEImageData(object): # We need new-style classes for properties, hence inherit from object
     """Structure to group a science image with a corresponding detection table and PSF image
@@ -38,14 +42,16 @@ class SHEImageData(object): # We need new-style classes for properties, hence in
     science_image : SHEImage
         The science exposure or image
     detections_table : astropy Table
-        A table of sources detected the science image
+        A table of sources detected in the science image
     bpsf_image : SHEImage
         An image containing PSF stamps for the bulge-components of galaxies.
     dpsf_image : SHEImage
         Idem for the disk-components.
+    psf_table : astropy Table
+        A table of PSF locations for sources detected in the science image
     """
    
-    def __init__(self, science_image, detections_table, bpsf_image, dpsf_image):
+    def __init__(self, science_image, detections_table, bpsf_image, dpsf_image, psf_table):
         """
         
         """
@@ -54,9 +60,11 @@ class SHEImageData(object): # We need new-style classes for properties, hence in
         self.detections_table = detections_table
         self.bpsf_image = bpsf_image
         self.dpsf_image = dpsf_image
+        self.psf_table = psf_table
 
     @classmethod
-    def read(cls, science_image_filepath, detections_table_filepath, bpsf_image_filepath, dpsf_image_filepath, **kwargs) :
+    def read(cls, science_image_filepath, detections_table_filepath, bpsf_image_filepath, dpsf_image_filepath,
+             psf_table_filepath, **kwargs) :
         """Reads-in a SHEImageData from disk
         
         Parameters
@@ -84,9 +92,10 @@ class SHEImageData(object): # We need new-style classes for properties, hence in
         
         # And reading the detections table
         detections_table = cls.read_detections_table(detections_table_filepath)
+        psf_table = cls.read_psf_table(psf_table_filepath)
         
         # Building the object
-        sid = SHEImageData(science_image, detections_table, bpsf_image, dpsf_image)
+        sid = SHEImageData(science_image, detections_table, bpsf_image, dpsf_image, psf_table)
         return sid
 
 
@@ -109,6 +118,28 @@ class SHEImageData(object): # We need new-style classes for properties, hence in
         
         # We check its format
         table_utility.is_in_format(new_table, detections_table_format.tf)
+    
+        return new_table
+    
+    @classmethod
+    def read_psf_table(cls, filepath, table_ext=None):
+        """Reads-in a PSF table from a FITS file
+       
+        Parameters
+        ----------
+        table_ext : str or None
+            Name of the HDU to read the table from. If None, the primary HDU is read.
+        
+        
+        """
+    
+        if table_ext is None:
+            new_table = astropy.table.Table.read(filepath)
+        else:
+            new_table = astropy.table.Table.read(filepath, hdu=table_ext)
+        
+        # We check its format
+        table_utility.is_in_format(new_table, psf_table_format.tf)
     
         return new_table
 
