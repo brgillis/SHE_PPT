@@ -64,7 +64,7 @@ class SHEImageData(object): # We need new-style classes for properties, hence in
 
     @classmethod
     def read(cls, science_image_filepath, detections_table_filepath, bpsf_image_filepath, dpsf_image_filepath,
-             psf_table_filepath, **kwargs) :
+             psf_table_filepath=None, **kwargs) :
         """Reads-in a SHEImageData from disk
         
         Parameters
@@ -92,7 +92,8 @@ class SHEImageData(object): # We need new-style classes for properties, hence in
         
         # And reading the detections table
         detections_table = cls.read_table(detections_table_filepath, check_format="detections_table")
-        psf_table = cls.read_table(psf_table_filepath, check_format="psf_table")
+        if psf_table_filepath is not None:
+            psf_table = cls.read_table(psf_table_filepath, check_format="psf_table")
         
         # Building the object
         sid = SHEImageData(science_image, detections_table, bpsf_image, dpsf_image, psf_table)
