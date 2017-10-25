@@ -64,7 +64,7 @@ class SHEImageData(object): # We need new-style classes for properties, hence in
 
     @classmethod
     def read(cls, science_image_filepath, detections_table_filepath, bpsf_image_filepath, dpsf_image_filepath,
-             psf_table_filepath, **kwargs) :
+             psf_table_filepath=None, **kwargs) :
         """Reads-in a SHEImageData from disk
         
         Parameters
@@ -91,8 +91,9 @@ class SHEImageData(object): # We need new-style classes for properties, hence in
         dpsf_image = SHEImage.read_from_fits(dpsf_image_filepath)
         
         # And reading the detections table
-        detections_table = cls.read_detections_table(detections_table_filepath)
-        psf_table = cls.read_psf_table(psf_table_filepath)
+        detections_table = cls.read_table(detections_table_filepath, check_format="detections_table")
+        if psf_table_filepath is not None:
+            psf_table = cls.read_table(psf_table_filepath, check_format="psf_table")
         
         # Building the object
         sid = SHEImageData(science_image, detections_table, bpsf_image, dpsf_image, psf_table)
@@ -100,7 +101,7 @@ class SHEImageData(object): # We need new-style classes for properties, hence in
 
 
     @classmethod
-    def read_detections_table(cls, filepath, table_ext=None):
+    def read_table(cls, filepath, table_ext=None, check_format=None):
         """Reads-in a detections table from a FITS file
        
         Parameters
@@ -117,29 +118,13 @@ class SHEImageData(object): # We need new-style classes for properties, hence in
             new_table = astropy.table.Table.read(filepath, hdu=table_ext)
         
         # We check its format
-        table_utility.is_in_format(new_table, detections_table_format.tf)
+        if check_format is not None:
+            if check_format is "detections_table":
+                table_utility.is_in_format(new_table, detections_table_format.tf)
+            if check_format is "psf_table":
+                table_utility.is_in_format(new_table, psf_table_format.tf)
     
         return new_table
     
-    @classmethod
-    def read_psf_table(cls, filepath, table_ext=None):
-        """Reads-in a PSF table from a FITS file
-       
-        Parameters
-        ----------
-        table_ext : str or None
-            Name of the HDU to read the table from. If None, the primary HDU is read.
-        
-        
-        """
-    
-        if table_ext is None:
-            new_table = astropy.table.Table.read(filepath)
-        else:
-            new_table = astropy.table.Table.read(filepath, hdu=table_ext)
-        
-        # We check its format
-        table_utility.is_in_format(new_table, psf_table_format.tf)
-    
-        return new_table
+
 

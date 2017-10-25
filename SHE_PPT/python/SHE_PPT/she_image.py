@@ -323,18 +323,25 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         Bottomline: if SExtractor told you that there is a galaxy at a certain position, you can use this position directly
         to extract a statistically-well-centered stamp as long as you set indexconv="sextractor".
         
-        For now, the function raises a ValueError if the stamp is not entirely within the image.
-        We will change this in future, to extract on-edge stamps and reflect this by masking the non-existing pixels.
+        The stamp can be partially (or even completely) outside of the image. Pixels of the stamp outside of the image
+        will be set to zero, and masked.
+        
               
-        Args:
-            x: x pixel coordinate on which to center the stamp. Can be a float or an int.
-            y: idem for y
-            width: the width of the stamp to extract
-            height: the height. If left to None, a square stamp (width x width) will get extracted.
-            indexconv: {"numpy", "sextractor"} Selects the indexing convention to use to interpret the position (x,y).
-                See text above.
-            keep_header: set this to True if you want the stamp to get the header of the original image.
-                By default (False), the stamp gets an empty header.
+        Parameters
+        ----------
+        x : float
+            x pixel coordinate on which to center the stamp.
+        y : float
+            idem for y
+        width : int
+            the width of the stamp to extract
+        height : int
+            the height. If left to None, a square stamp (width x width) will get extracted.
+        indexconv : {"numpy", "sextractor"}
+            Selects the indexing convention to use to interpret the position (x,y). See text above.
+        keep_header : bool
+            Set this to True if you want the stamp to get the header of the original image.
+            By default (False), the stamp gets an empty header.
             
         """
         
