@@ -50,7 +50,7 @@ def init():
     
     binding_class.get_all_filenames = __get_all_filenames
     
-    binding_class.has_files = False
+    binding_class.has_files = True
     
     return
 
