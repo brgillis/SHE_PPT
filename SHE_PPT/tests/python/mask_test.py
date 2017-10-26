@@ -110,22 +110,7 @@ class Test_mask():
         
         assert (m.as_bool(self.test_mask) == desired_bool_mask).all()
         
-    def test_is_masked_with(self):
-        
-        desired_bool_mask_1 = np.array(((False, True, False),
-                                        (False, True, False)),
-                                       dtype=bool)
-        
-        assert (m.as_bool(m.is_masked_with(self.test_mask,m.masked_near_edge)) == desired_bool_mask_1).all()
-        
-        desired_bool_mask_2 = np.array(((False, False, False),
-                                        (True , False, False)),
-                                         dtype=bool)
-        
-        assert (m.as_bool(m.is_masked_with(self.test_mask,m.masked_bad_pixel)) == desired_bool_mask_2).all()
-        
-        desired_bool_mask_3 = np.array(((False, False, True),
-                                        (False, False, True)),
+    def test_is_not_masked_with(self):
                                     
         desired_bool_mask_1 = ~np.array(((False, True, False),
                                          (False, True, False)),
