@@ -273,7 +273,7 @@ def create_mer_data_storage(filename):
     mer_data_storage.DataContainer.FileName = filename
     mer_data_storage.DataContainer.filestatus = "PROPOSED"
     
-    return she_surface_error
+    return mer_data_storage
 
 def create_mer_rms_storage(filename):
     
@@ -287,7 +287,7 @@ def create_mer_rms_storage(filename):
     mer_rms_storage.DataContainer.FileName = filename
     mer_rms_storage.DataContainer.filestatus = "PROPOSED"
     
-    return she_surface_error
+    return mer_rms_storage
 
 def create_mer_flag_storage(filename):
     
@@ -301,7 +301,7 @@ def create_mer_flag_storage(filename):
     mer_flag_storage.DataContainer.FileName = filename
     mer_flag_storage.DataContainer.filestatus = "PROPOSED"
     
-    return she_surface_error
+    return mer_flag_storage
 
 def create_mer_psf_model_storage(filename):
     
@@ -315,4 +315,4 @@ def create_mer_psf_model_storage(filename):
     mer_psf_model_storage.DataContainer.FileName = filename
     mer_psf_model_storage.DataContainer.filestatus = "PROPOSED"
     
-    return she_surface_error
+    return mer_psf_model_storage
