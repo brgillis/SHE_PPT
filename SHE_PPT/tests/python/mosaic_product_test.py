@@ -58,11 +58,11 @@ class TestMosaicProduct(object):
         data_filename = "test_file_data.fits" 
         product.set_data_filename(data_filename)
         rms_filename = "test_file_rms.fits" 
-        product.set_data_filename(rms_filename)
+        product.set_rms_filename(rms_filename)
         flag_filename = "test_file_flag.fits" 
-        product.set_data_filename(flag_filename)
+        product.set_flag_filename(flag_filename)
         psf_model_filename = "test_file_psf_model.fits" 
-        product.set_data_filename(psf_model_filename)
+        product.set_psf_model_filename(psf_model_filename)
 
         # Save the product in an xml file
         filename = tmpdir.join("mer_mosaic.xml")
@@ -95,11 +95,11 @@ class TestMosaicProduct(object):
         data_filename = "test_file_data.fits" 
         product.set_data_filename(data_filename)
         rms_filename = "test_file_rms.fits" 
-        product.set_data_filename(rms_filename)
+        product.set_rms_filename(rms_filename)
         flag_filename = "test_file_flag.fits" 
-        product.set_data_filename(flag_filename)
+        product.set_flag_filename(flag_filename)
         psf_model_filename = "test_file_psf_model.fits" 
-        product.set_data_filename(psf_model_filename)
+        product.set_psf_model_filename(psf_model_filename)
 
         # Save the product in a pickled file
         filename = tmpdir.join("mer_mosaic.bin")
