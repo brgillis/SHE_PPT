@@ -65,7 +65,7 @@ masked_bad = ( masked_hot_pixel | masked_cold_pixel | masked_saturated_pixel | m
                masked_satellite_trail | masked_bleeding | masked_onboard | masked_bad_pixel |
                masked_nonlinear_pixel | masked_persistent_charge_pixel | masked_ghost |
                masked_transient_object | masked_extended_object | masked_scattered_light |
-               masked_charge_injection )
+               masked_charge_injection | masked_off_image )
 masked_suspect = ( masked_near_charge_injection | masked_near_edge )
 
 masked_suspect_or_bad = masked_suspect | masked_bad
