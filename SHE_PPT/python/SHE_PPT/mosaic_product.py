@@ -283,7 +283,7 @@ def create_mer_rms_storage(filename):
     mer_rms_storage.format = "Undefined" # @FIXME
     mer_rms_storage.version = "0.0" # @FIXME
     
-    mer_rms_storage.DataContainer = RmsContainer()
+    mer_rms_storage.DataContainer = DataContainer()
     mer_rms_storage.DataContainer.FileName = filename
     mer_rms_storage.DataContainer.filestatus = "PROPOSED"
     
@@ -297,7 +297,7 @@ def create_mer_flag_storage(filename):
     mer_flag_storage.format = "Undefined" # @FIXME
     mer_flag_storage.version = "0.0" # @FIXME
     
-    mer_flag_storage.DataContainer = FlagContainer()
+    mer_flag_storage.DataContainer = DataContainer()
     mer_flag_storage.DataContainer.FileName = filename
     mer_flag_storage.DataContainer.filestatus = "PROPOSED"
     
