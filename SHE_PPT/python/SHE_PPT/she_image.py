@@ -242,7 +242,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     @classmethod
     def read_from_fits(cls, filepath,
                        data_ext='PRIMARY', mask_ext='MASK', noisemap_ext='NOISEMAP', segmentation_map_ext='SEGMAP',
-                       mask_filepath=None, noisemap_filepath=None, segmentation_map_filename=None):
+                       mask_filepath=None, noisemap_filepath=None, segmentation_map_filepath=None):
         """Reads an image from a FITS file, such as written by write_to_fits(), and returns it as a SHEImage object.
         
         This function can be used to read previously saved SHEImage objects (in this case, just give the filepath),
