@@ -237,7 +237,7 @@ def create_mer_wcs(wcs_params):
     """
     
     # mer_wcs = mer_dpd.MerWcs() # @FIXME
-    mer_wcs = MerWcs()
+    mer_wcs = MerWcsProduct()
     
     return mer_wcs
 
@@ -247,7 +247,7 @@ def create_mer_image_spatial_footprint(image_spatial_footprint_params):
     """
     
     # mer_image_spatial_footprint = mer_dpd.MerImageSpatialFootprint() # @FIXME
-    mer_image_spatial_footprint = MerImageSpatialFootprint()
+    mer_image_spatial_footprint = MerImageSpatialFootprintProduct()
     
     return mer_image_spatial_footprint
 
@@ -257,7 +257,7 @@ def create_mer_processing_steps(processing_steps_params):
     """
     
     # mer_processing_steps = mer_dpd.MerProcessingSteps() # @FIXME
-    mer_processing_steps = MerProcessingSteps()
+    mer_processing_steps = MerProcessingStepsProduct()
     
     return mer_processing_steps
 
