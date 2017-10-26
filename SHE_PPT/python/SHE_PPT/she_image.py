@@ -29,8 +29,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 from SHE_PPT.magic_values import segmap_unnasigned_value
-
-OUT_OF_BOUNDS_MASK_VALUE = 1
+from SHE_PPT.mask import masked_off_image
 
 
 class SHEImage(object): # We need new-style classes for properties, hence inherit from object
@@ -433,7 +432,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             
             # We first create new stamps, and we will later fill part of them with slices of the original.
             data_stamp = np.zeros((width, height), dtype=self.data.dtype)
-            mask_stamp = np.ones((width, height), dtype=self.mask.dtype) * OUT_OF_BOUNDS_MASK_VALUE
+            mask_stamp = np.ones((width, height), dtype=self.mask.dtype) * masked_off_image
             noisemap_stamp = np.zeros((width, height), dtype=self.noisemap.dtype)
             segmentation_map_stamp = np.ones((width, height), dtype=self.segmentation_map.dtype) * segmap_unnasigned_value
             
