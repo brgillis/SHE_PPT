@@ -256,6 +256,7 @@ class Test_she_image():
         # This one is completely out of bounds:
         assert np.alltrue(stamp.boolmask)
         assert np.allclose(stamp.noisemap, 0.0)
+        assert np.allclose(stamp.segmentation_map, -1)
         
         stamp = img.extract_stamp(3.5, 1.5, 3, 1)
         # This is
