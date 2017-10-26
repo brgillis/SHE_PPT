@@ -236,8 +236,8 @@ def create_mer_wcs(wcs_params):
         @TODO fill in docstring
     """
     
-    # mer_wcs = mer_dpd.MerWCS() # @FIXME
-    mer_wcs = MerWCS()
+    # mer_wcs = mer_dpd.MerWcs() # @FIXME
+    mer_wcs = MerWcs()
     
     return mer_wcs
 
