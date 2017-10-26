@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 
 
 OUT_OF_BOUNDS_MASK_VALUE = 1
+UNASSIGNED_SEGMAP_VALUE = -1
 
 
 class SHEImage(object): # We need new-style classes for properties, hence inherit from object
@@ -40,6 +41,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
       - .data is a numpy array
       - .mask is a numpy array
       - .noisemap is a numpy array
+      - .segmentation_map is a numpy array
       - .header is an astropy.io.fits.Header object
           (for an intro to those, see http://docs.astropy.org/en/stable/io/fits/#working-with-fits-headers )
     
@@ -47,13 +49,14 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     change would probably not be wanted. If you really want to change the size of a SHEImage, make a new object.
     """
    
-    def __init__(self, data, mask=None, noisemap=None, header=None):
+    def __init__(self, data, mask=None, noisemap=None, segmentation_map=None, header=None):
         """Initiator
       
         Args:
-            data: a 2D numpy array, with indices [x,y], consistent with DS9 and SExtractor orientation conventions.
-            mask: an array of the same shape as data. Leaving None creates an empty mask.
-            noisemap: an array of the same shape as data. Leaving None creates a noisemap of ones.
+            data: a 2D numpy float array, with indices [x,y], consistent with DS9 and SExtractor orientation conventions.
+            mask: an int32 array of the same shape as data. Leaving None creates an empty mask.
+            noisemap: a float array of the same shape as data. Leaving None creates a noisemap of ones.
+            segmentation_map: an int32 array of the same shape as data. Leaving None creates an empty map
             header: an astropy.io.fits.Header object. Leaving None creates an empty header.
       
         """
@@ -61,6 +64,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         self.data = data # Note the tests done in the setter method
         self.mask = mask # Note that we translate None in the setter method 
         self.noisemap = noisemap
+        self.segmentation_map = segmentation_map
         self.header = header
         
         logger.debug("Created {}".format(str(self)))
@@ -142,6 +146,32 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     @noisemap.deleter
     def noisemap(self):
         del self._noisemap
+        
+    
+    @property
+    def segmentation_map(self):
+        """The segmentation map of the image"""
+        return self._segmentation_map
+    @segmentation_map.setter
+    def segmentation_map(self, segmentation_map_array):
+        if segmentation_map_array is None:
+            # Then we create an empty segmentation map (-1 means unassigned)
+            self._mask = UNASSIGNED_SEGMAP_VALUE*np.ones(self._data.shape, dtype=np.int32)
+        else:
+            if segmentation_map_array.ndim is not 2:
+                raise ValueError("The segmentation map array must have 2 dimensions")
+            if segmentation_map_array.shape != self._data.shape:
+                raise ValueError("The segmentation map array must have the same size as the data {}".format(self._data.shape))
+            if not segmentation_map_array.dtype.newbyteorder('<') == np.int32: # Quietly ignore if byte order is the only difference
+                logger.warning("Received segmentation map array of type '{}'. Attempting safe casting to np.int32.".format(segmentation_map_array.dtype))
+                try:
+                    segmentation_map_array = segmentation_map_array.astype(np.int32, casting='safe')
+                except:
+                    raise ValueError("The mask array must be of np.int32 type (it is {})".format(segmentation_map_array.dtype))
+            self._mask = segmentation_map_array
+    @segmentation_map.deleter
+    def segmentation_map(self):
+        del self._segmentation_map
     
 
     @property
@@ -196,8 +226,9 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         datahdu = astropy.io.fits.PrimaryHDU(self.data.transpose(), header=self.header)
         maskhdu = astropy.io.fits.ImageHDU(data=self.mask.transpose().astype(np.int32), name="MASK")
         noisemaphdu = astropy.io.fits.ImageHDU(data=self.noisemap.transpose(), name="NOISEMAP")
+        segmaphdu = astropy.io.fits.ImageHDU(data=self.segmentation_map.transpose().astype(np.int32), name="SEGMAP")
         
-        hdulist = astropy.io.fits.HDUList([datahdu, maskhdu, noisemaphdu])
+        hdulist = astropy.io.fits.HDUList([datahdu, maskhdu, noisemaphdu, segmaphdu])
         
         if clobber is True and os.path.exists(filepath):
             logger.info("The output file exists and will get overwritten")
@@ -209,7 +240,9 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
  
      
     @classmethod
-    def read_from_fits(cls, filepath, data_ext='PRIMARY', mask_ext='MASK', noisemap_ext='NOISEMAP', mask_filepath=None, noisemap_filepath=None):
+    def read_from_fits(cls, filepath,
+                       data_ext='PRIMARY', mask_ext='MASK', noisemap_ext='NOISEMAP', segmentation_map_ext='SEGMAP',
+                       mask_filepath=None, noisemap_filepath=None, segmentation_map_filename=None):
         """Reads an image from a FITS file, such as written by write_to_fits(), and returns it as a SHEImage object.
         
         This function can be used to read previously saved SHEImage objects (in this case, just give the filepath),
@@ -229,9 +262,11 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             mask_ext: name or index of the extension HDU containing the mask.
                 Set both mask_ext and mask_filepath to None to not read in any mask.
             noisemap_ext: idem, for the noisemap
+            segmentation_map_ext: idem, for the segmentation_map
             mask_filepath: a separate filepath to read the mask from.
                 If you specify this, also set mask_ext accordingly (at least set it to 0 if the file has only one HDU).
             noisemap_filepath: idem, for the noisemap
+            segmentation_map_filepath: idem, for the segmentation_map
       
         """
         
@@ -249,9 +284,12 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         
         # Reading the noisemap
         noisemap = cls._get_secondary_data_from_fits(filepath, noisemap_filepath, noisemap_ext)
+        
+        # Reading the noisemap
+        segmentation_map = cls._get_secondary_data_from_fits(filepath, segmentation_map_filepath, segmentation_map_ext)
        
         # Building and returning the new object    
-        newimg = SHEImage(data=data, mask=mask, noisemap=noisemap, header=header)
+        newimg = SHEImage(data=data, mask=mask, noisemap=noisemap, segmentation_map=segmentation_map, header=header)
         
         logger.info("Read {} from the file '{}'".format(str(newimg), filepath))
         return newimg
@@ -383,6 +421,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
                 data=self.data[xmin:xmax,ymin:ymax],
                 mask=self.mask[xmin:xmax,ymin:ymax],
                 noisemap=self.noisemap[xmin:xmax,ymin:ymax],
+                segmentation_map=self.segmentation_map[xmin:xmax,ymin:ymax],
                 header=newheader
             )
             
@@ -396,6 +435,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             data_stamp = np.zeros((width, height), dtype=self.data.dtype)
             mask_stamp = np.ones((width, height), dtype=self.mask.dtype) * OUT_OF_BOUNDS_MASK_VALUE
             noisemap_stamp = np.zeros((width, height), dtype=self.noisemap.dtype)
+            segmentation_map_stamp = np.ones((width, height), dtype=self.segmentation_map.dtype) * UNASSIGNED_SEGMAP_VALUE
             
             # Compute the bounds of the overlapping part of the stamp in the original image
             overlap_xmin = max(xmin, 0)
@@ -420,12 +460,14 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             data_stamp[overlap_slice_stamp] = self.data[overlap_slice]
             mask_stamp[overlap_slice_stamp] = self.mask[overlap_slice]
             noisemap_stamp[overlap_slice_stamp] = self.noisemap[overlap_slice]
+            segmentation_map_stamp[overlap_slice_stamp] = self.segmentation_map[overlap_slice]
     
             # Create the new object
             newimg = SHEImage(
                 data=data_stamp,
                 mask=mask_stamp,
                 noisemap=noisemap_stamp,
+                segmentation_map=segmentation_map_stamp,
                 header=newheader
             )
             
