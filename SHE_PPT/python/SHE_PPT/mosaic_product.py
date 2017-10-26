@@ -2,7 +2,8 @@
 
     Created 26 Oct 2017
 
-    Functions to create and output a mosaic data product.
+    Functions to create and output a mosaic data product, per details at
+    http://euclid.esac.esa.int/dm/dpdd/latest/merdpd/dpcards/mer_mosaic.html
 
     ---------------------------------------------------------------------
 
@@ -21,7 +22,7 @@
 """
 
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import EuclidDmBindings.she.she_stub as she_dpd # FIXME
+# import EuclidDmBindings.she.she_stub as mer_dpd # FIXME
 
 import pickle
 
@@ -30,8 +31,22 @@ def init():
         Adds some extra functionality to the DpdMerMosaic product
     """
     
-    # binding_class = she_dpd.DpdMerMosaicProduct # @FIXME
+    # binding_class = mer_dpd.DpdMerMosaicProduct # @FIXME
     binding_class = DpdMerMosaicProduct
+
+    # Add the data file name methods
+    
+    binding_class.set_data_filename = __set_data_filename
+    binding_class.get_data_filename = __get_data_filename
+    
+    binding_class.set_rms_filename = __set_rms_filename
+    binding_class.get_rms_filename = __get_rms_filename
+    
+    binding_class.set_flag_filename = __set_flag_filename
+    binding_class.get_flag_filename = __get_flag_filename
+    
+    binding_class.set_psf_model_filename = __set_psf_model_filename
+    binding_class.get_psf_model_filename = __get_psf_model_filename
     
     binding_class.get_all_filenames = __get_all_filenames
     
@@ -39,11 +54,43 @@ def init():
     
     return
 
+def __set_data_filename(self, filename):
+    self.Data.DataStorage.DataContainer.FileName = filename
+
+def __get_data_filename(self):
+    return self.Data.DataStorage.DataContainer.FileName
+
+def __set_rms_filename(self, filename):
+    self.Data.RmsStorage.DataContainer.FileName = filename
+
+def __get_rms_filename(self):
+    return self.Data.RmsStorage.DataContainer.FileName
+
+def __set_flag_filename(self, filename):
+    self.Data.FlagStorage.DataContainer.FileName = filename
+
+def __get_flag_filename(self):
+    return self.Data.FlagStorage.DataContainer.FileName
+
+def __set_psf_model_filename(self, filename):
+    self.Data.PsfModelStorage.DataContainer.FileName = filename
+
+def __get_psf_model_filename(self):
+    return self.Data.PsfModelStorage.DataContainer.FileName
+
 def __get_all_filenames(self):
     
-    all_filenames = []
+    all_filenames = [self.get_data_filename(),
+                     self.get_rms_filename(),
+                     self.get_flag_filename(),
+                     self.get_psf_model_filename(),]
     
     return all_filenames
+        
+class DataContainer: # @FIXME
+    def __init__(self):
+        self.FileName = None
+        self.filestatus = None
 
 class DpdMerMosaicProduct: # @FIXME
     def __init__(self):
@@ -54,32 +101,218 @@ class DpdMerMosaicProduct: # @FIXME
         
 class MerMosaicProduct: # @FIXME
     def __init__(self):
-        pass
+        self.Instrument = None
+        self.Filter = None
+        self.WCS = None
+        self.ZeroPoint = None
+        self.FieldIdList = None
+        self.ImgSpatialFootprint = None
+        self.Masks = None
+        self.DataStorage = None
+        self.RmsStorage = None
+        self.FlagStorage = None
+        self.PsfModelStorage = None
+        self.ProcessingSteps = None
+        
+class MerWCS:
+    def __init__(self):
+        pass # @TODO - Fill in format
+        
+class MerImageSpatialFootprint:
+    def __init__(self):
+        pass # @TODO - Fill in format
+        
+class MerProcessingSteps:
+    def __init__(self):
+        pass # @TODO - Fill in format
+    
+class MerDataStorage: # @FIXME
+    def __init__(self):
+        self.format = None
+        self.version = None
+        self.DataContainer = None
+    
+class MerRmsStorage: # @FIXME
+    def __init__(self):
+        self.format = None
+        self.version = None
+        self.DataContainer = None
+    
+class MerFlagStorage: # @FIXME
+    def __init__(self):
+        self.format = None
+        self.version = None
+        self.DataContainer = None
+    
+class MerPsfModelStorage: # @FIXME
+    def __init__(self):
+        self.format = None
+        self.version = None
+        self.DataContainer = None
+        
 
-def create_dpd_mer_mosaic():
+def create_dpd_mer_mosaic(instrument_name,
+                          filter,
+                          wcs_params,
+                          zeropoint,
+                          data_filename,
+                          field_id_list = None,
+                          img_spatial_footprint_params = None,
+                          masks = None,
+                          rms_filename = None,
+                          flag_filename = None,
+                          psf_model_filename = None,
+                          processing_steps_params = None
+                          ):
     """
         @TODO fill in docstring
     """
     
-    # dpd_mer_mosaic = she_dpd.DpdMerMosaicProduct() # @FIXME
+    # dpd_mer_mosaic = mer_dpd.DpdMerMosaicProduct() # @FIXME
     dpd_mer_mosaic = DpdMerMosaicProduct()
     
     # dpd_mer_mosaic.Header = HeaderProvider.createGenericHeader("MER") # FIXME
     dpd_mer_mosaic.Header = "MER"
     
-    dpd_mer_mosaic.Data = create_mer_mosaic()
+    dpd_mer_mosaic.Data = create_mer_mosaic(instrument_name = instrument_name,
+                                          filter = filter,
+                                          wcs_params = wcs_params,
+                                          zeropoint = zeropoint,
+                                          data_filename = data_filename,
+                                          field_id_list = field_id_list,
+                                          img_spatial_footprint_params = img_spatial_footprint_params,
+                                          masks = masks,
+                                          rms_filename = rms_filename,
+                                          flag_filename = flag_filename,
+                                          psf_model_filename = psf_model_filename,
+                                          processing_steps_params = processing_steps_params
+                                          )
     
     return dpd_mer_mosaic
 
 # Add a useful alias
 create_mosaic_product = create_dpd_mer_mosaic
 
-def create_mer_mosaic():
+def create_mer_mosaic(instrument_name,
+                      filter,
+                      wcs_params,
+                      zeropoint,
+                      data_filename,
+                      field_id_list,
+                      img_spatial_footprint_params,
+                      masks,
+                      rms_filename,
+                      flag_filename,
+                      psf_model_filename,
+                      processing_steps_params
+                      ):
     """
         @TODO fill in docstring
     """
     
-    # mer_mosaic = she_dpd.MerMosaicProduct() # @FIXME
+    if field_id_list is None:
+        field_id_list = []
+    
+    # mer_mosaic = mer_dpd.MerMosaicProduct() # @FIXME
     mer_mosaic = MerMosaicProduct()
     
+    mer_mosaic.Instrument = instrument_name
+    mer_mosaic.Filter = filter
+    mer_mosaic.WCS = create_mer_wcs(wcs_params)
+    mer_mosaic.ZeroPoint = zeropoint
+    mer_mosaic.FieldIdList = field_id_list
+    mer_mosaic.ImgSpatialFootprint = create_mer_image_spatial_footprint(img_spatial_footprint_params)
+    mer_mosaic.Masks = masks
+    mer_mosaic.DataStorage = create_mer_data_storage(data_filename)
+    mer_mosaic.RmsStorage = create_mer_rms_storage(rms_filename)
+    mer_mosaic.FlagStorage = create_mer_flag_storage(flag_filename)
+    mer_mosaic.PsfModelStorage = create_mer_psf_model_storage(psf_model_filename)
+    mer_mosaic.ProcessingSteps = create_mer_processing_steps(processing_steps_params)
+    
     return mer_mosaic
+
+def create_mer_wcs(wcs_params):
+    """
+        @TODO fill in docstring
+    """
+    
+    # mer_wcs = mer_dpd.MerWCS() # @FIXME
+    mer_wcs = MerWCS()
+    
+    return mer_wcs
+
+def create_mer_image_spatial_footprint(image_spatial_footprint_params):
+    """
+        @TODO fill in docstring
+    """
+    
+    # mer_image_spatial_footprint = mer_dpd.MerImageSpatialFootprint() # @FIXME
+    mer_image_spatial_footprint = MerImageSpatialFootprint()
+    
+    return mer_image_spatial_footprint
+
+def create_mer_processing_steps(processing_steps_params):
+    """
+        @TODO fill in docstring
+    """
+    
+    # mer_processing_steps = mer_dpd.MerProcessingSteps() # @FIXME
+    mer_processing_steps = MerProcessingSteps()
+    
+    return mer_processing_steps
+
+def create_mer_data_storage(filename):
+    
+    # mer_data_storage = mer_dpd.MerDataStorage() # @FIXME
+    mer_data_storage = MerDataStorageProduct()
+    
+    mer_data_storage.format = "Undefined" # @FIXME
+    mer_data_storage.version = "0.0" # @FIXME
+    
+    mer_data_storage.DataContainer = DataContainer()
+    mer_data_storage.DataContainer.FileName = filename
+    mer_data_storage.DataContainer.filestatus = "PROPOSED"
+    
+    return she_surface_error
+
+def create_mer_rms_storage(filename):
+    
+    # mer_rms_storage = mer_dpd.MerRmsStorage() # @FIXME
+    mer_rms_storage = MerRmsStorageProduct()
+    
+    mer_rms_storage.format = "Undefined" # @FIXME
+    mer_rms_storage.version = "0.0" # @FIXME
+    
+    mer_rms_storage.DataContainer = RmsContainer()
+    mer_rms_storage.DataContainer.FileName = filename
+    mer_rms_storage.DataContainer.filestatus = "PROPOSED"
+    
+    return she_surface_error
+
+def create_mer_flag_storage(filename):
+    
+    # mer_flag_storage = mer_dpd.MerFlagStorage() # @FIXME
+    mer_flag_storage = MerFlagStorageProduct()
+    
+    mer_flag_storage.format = "Undefined" # @FIXME
+    mer_flag_storage.version = "0.0" # @FIXME
+    
+    mer_flag_storage.DataContainer = FlagContainer()
+    mer_flag_storage.DataContainer.FileName = filename
+    mer_flag_storage.DataContainer.filestatus = "PROPOSED"
+    
+    return she_surface_error
+
+def create_mer_psf_model_storage(filename):
+    
+    # mer_psf_model_storage = mer_dpd.MerPsfModelStorage() # @FIXME
+    mer_psf_model_storage = MerPsfModelStorageProduct()
+    
+    mer_psf_model_storage.format = "Undefined" # @FIXME
+    mer_psf_model_storage.version = "0.0" # @FIXME
+    
+    mer_psf_model_storage.DataContainer = DataContainer()
+    mer_psf_model_storage.DataContainer.FileName = filename
+    mer_psf_model_storage.DataContainer.filestatus = "PROPOSED"
+    
+    return she_surface_error
