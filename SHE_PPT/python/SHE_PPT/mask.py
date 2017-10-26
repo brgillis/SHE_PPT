@@ -133,7 +133,7 @@ def is_not_masked_with(a, mask_value):
         mask_value: Integer mask value to test against
     """
     
-    return a & ~mask_value
+    return ~(a & mask_value)
 
 def is_not_masked_bad(a):
     """ Tests if a mask does not match the mask for all possible bad (but not just suspect) bits.
@@ -142,7 +142,7 @@ def is_not_masked_bad(a):
         a: Integer mask array to test 
     """
     
-    return a & ~masked_bad
+    return ~(a & masked_bad)
 
 def is_not_masked_suspect(a):
     """ Tests if a mask does not match the mask for all possible suspect (but not bad) bits.
@@ -151,7 +151,7 @@ def is_not_masked_suspect(a):
         a: Integer mask array to test 
     """
     
-    return a & ~masked_suspect
+    return ~(a & masked_suspect)
 
 def is_not_masked_suspect_or_bad(a):
     """ Tests if a mask does not match the mask for all possible suspect or bad bits.
@@ -160,5 +160,5 @@ def is_not_masked_suspect_or_bad(a):
         a: Integer mask array to test 
     """
     
-    return a & ~masked_suspect_or_bad
+    return ~(a & masked_suspect_or_bad)
     
