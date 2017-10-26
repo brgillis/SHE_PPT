@@ -28,9 +28,9 @@ import astropy.io.fits # Avoid non-trivial "from" imports (as explicit is better
 import logging
 logger = logging.getLogger(__name__)
 
+from SHE_PPT.magic_values import segmap_unnasigned_value
 
 OUT_OF_BOUNDS_MASK_VALUE = 1
-UNASSIGNED_SEGMAP_VALUE = -1
 
 
 class SHEImage(object): # We need new-style classes for properties, hence inherit from object
@@ -156,7 +156,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     def segmentation_map(self, segmentation_map_array):
         if segmentation_map_array is None:
             # Then we create an empty segmentation map (-1 means unassigned)
-            self._segmentation_map = UNASSIGNED_SEGMAP_VALUE*np.ones(self._data.shape, dtype=np.int32)
+            self._segmentation_map = segmap_unnasigned_value*np.ones(self._data.shape, dtype=np.int32)
         else:
             if segmentation_map_array.ndim is not 2:
                 raise ValueError("The segmentation map array must have 2 dimensions")
@@ -435,7 +435,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             data_stamp = np.zeros((width, height), dtype=self.data.dtype)
             mask_stamp = np.ones((width, height), dtype=self.mask.dtype) * OUT_OF_BOUNDS_MASK_VALUE
             noisemap_stamp = np.zeros((width, height), dtype=self.noisemap.dtype)
-            segmentation_map_stamp = np.ones((width, height), dtype=self.segmentation_map.dtype) * UNASSIGNED_SEGMAP_VALUE
+            segmentation_map_stamp = np.ones((width, height), dtype=self.segmentation_map.dtype) * segmap_unnasigned_value
             
             # Compute the bounds of the overlapping part of the stamp in the original image
             overlap_xmin = max(xmin, 0)

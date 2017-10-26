@@ -56,3 +56,6 @@ mcmc_chains_tag = "MCC"
 bulge_psf_tag = "BPSF"
 disk_psf_tag = "DPSF"
 psf_cat_tag = "PSFC"
+
+# Miscellaneous
+segmap_unnasigned_value = -1
