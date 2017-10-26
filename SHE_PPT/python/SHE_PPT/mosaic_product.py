@@ -114,37 +114,37 @@ class MerMosaicProduct: # @FIXME
         self.PsfModelStorage = None
         self.ProcessingSteps = None
         
-class MerWCS:
+class MerWcsProduct:
     def __init__(self):
         pass # @TODO - Fill in format
         
-class MerImageSpatialFootprint:
+class MerImageSpatialFootprintProduct:
     def __init__(self):
         pass # @TODO - Fill in format
         
-class MerProcessingSteps:
+class MerProcessingStepsProduct:
     def __init__(self):
         pass # @TODO - Fill in format
     
-class MerDataStorage: # @FIXME
+class MerDataStorageProduct: # @FIXME
     def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
     
-class MerRmsStorage: # @FIXME
+class MerRmsStorageProduct: # @FIXME
     def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
     
-class MerFlagStorage: # @FIXME
+class MerFlagStorageProduct: # @FIXME
     def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
     
-class MerPsfModelStorage: # @FIXME
+class MerPsfModelStorageProduct: # @FIXME
     def __init__(self):
         self.format = None
         self.version = None
