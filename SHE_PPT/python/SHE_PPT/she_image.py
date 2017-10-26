@@ -156,7 +156,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     def segmentation_map(self, segmentation_map_array):
         if segmentation_map_array is None:
             # Then we create an empty segmentation map (-1 means unassigned)
-            self._mask = UNASSIGNED_SEGMAP_VALUE*np.ones(self._data.shape, dtype=np.int32)
+            self._segmentation_map = UNASSIGNED_SEGMAP_VALUE*np.ones(self._data.shape, dtype=np.int32)
         else:
             if segmentation_map_array.ndim is not 2:
                 raise ValueError("The segmentation map array must have 2 dimensions")
@@ -168,7 +168,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
                     segmentation_map_array = segmentation_map_array.astype(np.int32, casting='safe')
                 except:
                     raise ValueError("The mask array must be of np.int32 type (it is {})".format(segmentation_map_array.dtype))
-            self._mask = segmentation_map_array
+            self._segmentation_map = segmentation_map_array
     @segmentation_map.deleter
     def segmentation_map(self):
         del self._segmentation_map
