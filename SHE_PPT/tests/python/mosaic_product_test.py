@@ -162,7 +162,7 @@ class TestMosaicProduct(object):
         write_pickled_product(product, filename, listfilename)
         
         loaded_hdu = prod.load_mosaic_hdu(filename=filename,
-                                          listfile_filename="mer_mosaic.json")
+                                          listfile_filename=listfilename)
         
         assert (loaded_hdu.data == test_array).all()
         
