@@ -27,6 +27,7 @@ import pytest
 from SHE_PPT import mosaic_product as prod
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
+import SHE_PPT.magic_values as mv
 
 class TestMosaicProduct(object):
     """A collection of tests for the mosaic data product.
@@ -152,8 +153,10 @@ class TestMosaicProduct(object):
         
         test_array = np.zeros((10,20))
         test_array[0,0] = 1
+        detector = 2
         
-        phdu = fits.PrimaryHDU(data=test_array)
+        phdu = fits.PrimaryHDU(data=test_array,
+                               header=fits.header.Header((("EXTNAME",str(detector)+"."+mv.segmentation_tag),)))
         
         data_filename = str(tmpdir.join("mosaic_data.fits"))
         phdu.writeto(data_filename, clobber=True)
@@ -165,6 +168,42 @@ class TestMosaicProduct(object):
                                           listfile_filename=listfilename)
         
         assert (loaded_hdu.data == test_array).all()
+        
+        # Now test with a multi-HDU data image
+        
+        test_array2 = np.zeros((20,40))
+        test_array2[0,0] = 2
+        detector2 = 4
+        
+        hdu2 = fits.ImageHDU(data=test_array2,
+                             header=fits.header.Header((("EXTNAME",str(detector2)+"."+mv.segmentation_tag),)))
+        
+        hdulist = fits.HDUList([phdu,hdu2])
+        hdulist.writeto(data_filename, clobber=True)
+        
+        loaded_hdu1 = prod.load_mosaic_hdu(filename=filename,
+                                           listfile_filename=listfilename,
+                                           hdu=0)
+        
+        assert (loaded_hdu1.data == test_array).all()
+        
+        loaded_hdu2 = prod.load_mosaic_hdu(filename=filename,
+                                           listfile_filename=listfilename,
+                                           hdu=1)
+        
+        assert (loaded_hdu2.data == test_array2).all()
+        
+        loaded_hdu1 = prod.load_mosaic_hdu(filename=filename,
+                                           listfile_filename=listfilename,
+                                           detector=detector)
+        
+        assert (loaded_hdu1.data == test_array).all()
+        
+        loaded_hdu2 = prod.load_mosaic_hdu(filename=filename,
+                                           listfile_filename=listfilename,
+                                           detector2=detector2)
+        
+        assert (loaded_hdu2.data == test_array2).all()
         
         pass
         
