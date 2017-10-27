@@ -140,13 +140,13 @@ class TestMosaicProduct(object):
         
         with pytest.raises(IOError):
             mosaic_hdu = prod.load_mosaic_hdu(filename="bad_filename.junk",
-                                              listfilename=listfilename)
+                                              listfile_filename=listfilename)
         with pytest.raises(IOError):
             mosaic_hdu = prod.load_mosaic_hdu(filename=filename,
-                                              listfilename="bad_filename.junk")
+                                              listfile_filename="bad_filename.junk")
         with pytest.raises(IOError):
             mosaic_hdu = prod.load_mosaic_hdu(filename=filename,
-                                              listfilename=listfilename)
+                                              listfile_filename=listfilename)
             
         # Now save it pointing to an existing fits file and check that it works
         
@@ -162,7 +162,7 @@ class TestMosaicProduct(object):
         write_pickled_product(product, filename, listfilename)
         
         loaded_hdu = prod.load_mosaic_hdu(filename=filename,
-                                          listfilename="mer_mosaic.json")
+                                          listfile_filename="mer_mosaic.json")
         
         assert (loaded_hdu.data == test_array).all()
         
