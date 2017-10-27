@@ -29,10 +29,12 @@ import os
 import pickle
 
 from SHE_PPT.file_io import read_xml_product
+from SHE_PPT.utility import find_extension
+import SHE_PPT.magic_values as mv
 
 # Convenience function to easily load the actual map
 
-def load_mosaic_hdu(filename, listfile_filename=None, dir=None, **kwargs):
+def load_mosaic_hdu(filename, listfile_filename=None, dir=None, hdu=0, detector=None, **kwargs):
     """Directly loads the mosaic image from the filename of the data product.
     
     Parameters
@@ -50,6 +52,11 @@ def load_mosaic_hdu(filename, listfile_filename=None, dir=None, **kwargs):
         Directory in which `filename` is contained. If not supplied, `filename`
         and `listfile_filename` (if supplied) will be assumed to be either
         fully-qualified or relative to the workspace.
+    hdu : int
+        Index of the HDU to load. If `detector` is supplied, this is ignored.
+    detector : int
+        ID of the detector whose HDU should be loaded. Overrides `hdu` if
+        supplied.
     **kwargs
         Keyword arguments to pass to fits.open.
         
@@ -78,7 +85,14 @@ def load_mosaic_hdu(filename, listfile_filename=None, dir=None, **kwargs):
     mosaic_product = read_xml_product(xml_file_name = os.path.join(dir,filename),
                                       listfile_file_name = qualified_listfile_filename)
     
-    mosaic_hdu = fits.open(mosaic_product.get_data_filename(),**kwargs)[0]
+    data_filename = mosaic_product.get_data_filename()
+    
+    mosaic_hdulist = fits.open(data_filename,**kwargs)
+    
+    if detector is not None:
+        hdu = find_extension(mosaic_hdulist, extension = str(detector) + "." + mv.segmentation_tag)
+        
+    mosaic_hdu = mosaic_hdulist[hdu]
     
     return mosaic_hdu
 
