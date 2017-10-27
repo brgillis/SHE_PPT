@@ -24,7 +24,61 @@
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import EuclidDmBindings.she.she_stub as mer_dpd # FIXME
 
+from astropy.io import fits
+import os
 import pickle
+
+from SHE_PPT.file_io import read_xml_product
+
+# Convenience function to easily load the actual map
+
+def load_mosaic_hdu(filename, listfile_filename=None, dir=None, **kwargs):
+    """Directly loads the mosaic image from the filename of the data product.
+    
+    Parameters
+    ----------
+    filename : str
+        Filename of the mosaic data product. If `dir` is None, `filename `must
+        be either fully-qualified or relative to the workspace. If `dir` is
+        supplied, `filename` should be only the local name of the file.
+    listfile_filename : str
+        Filename of the mosaic data product's associate listfile. If `dir` is
+        None, `listfile_filename` must be either fully-qualified or relative to
+        the workspace. If `dir` is supplied, `filename` should be only the
+        local name of the file.
+    dir : str
+        Directory in which `filename` is contained. If not supplied, `filename`
+        and `listfile_filename` (if supplied) will be assumed to be either
+        fully-qualified or relative to the workspace.
+    **kwargs
+        Keyword arguments to pass to fits.open.
+        
+    Returns
+    -------
+    mosaic_hdu : astropy.fits.PrimaryHDU
+        fits HDU containing the mosaic image and its header.
+        
+    Raises
+    ------
+    ValueError
+        Will raise a ValueError if either no such file as `filename` exists or
+        if the filename of the mosaic data contained within the product does
+        not exist.
+    """
+    
+    init()
+    
+    if dir is None:
+        dir = ""
+    
+    mosaic_product = read_xml_product(xml_file_name = os.path.join(dir,filename),
+                                      listfile_file_name = os.path.join(dir,listfile_filename))
+    
+    mosaic_hdu = fits.open(mosaic_product.get_data_filename(),**kwargs)
+    
+    return mosaic_hdu
+
+# Initialisation function, to add methods to an imported XML class
 
 def init():
     """
