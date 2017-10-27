@@ -20,6 +20,10 @@
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 """
 
+from astropy.io import fits
+import numpy as np
+import pytest
+
 from SHE_PPT import mosaic_product as prod
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
@@ -116,3 +120,51 @@ class TestMosaicProduct(object):
         assert loaded_product.get_psf_model_filename() == psf_model_filename
         
         pass
+    
+    def test_load_mosaic_hdu(self, tmpdir):
+        
+        prod.init()
+        
+        # Create and save the product with a junk filename first
+        product = prod.create_dpd_mer_mosaic(instrument_name="VIS",
+                                              filter="VIS",
+                                              wcs_params=None,
+                                              zeropoint=0,
+                                              data_filename="junk",)
+
+        filename = str(tmpdir.join("mer_mosaic.bin"))
+        listfilename = str(tmpdir.join("mer_mosaic.json"))
+        write_pickled_product(product, filename, listfilename)
+        
+        # Check that it raises a ValueError when expected
+        
+        with pytest.raises(IOError):
+            mosaic_hdu = prod.load_mosaic_hdu(filename="bad_filename.junk",
+                                              listfile_filename=listfilename)
+        with pytest.raises(IOError):
+            mosaic_hdu = prod.load_mosaic_hdu(filename=filename,
+                                              listfile_filename="bad_filename.junk")
+        with pytest.raises(IOError):
+            mosaic_hdu = prod.load_mosaic_hdu(filename=filename,
+                                              listfile_filename=listfilename)
+            
+        # Now save it pointing to an existing fits file and check that it works
+        
+        test_array = np.zeros((10,20))
+        test_array[0,0] = 1
+        
+        phdu = fits.PrimaryHDU(data=test_array)
+        
+        data_filename = str(tmpdir.join("mosaic_data.fits"))
+        phdu.writeto(data_filename, clobber=True)
+        
+        product.set_data_filename(data_filename)
+        write_pickled_product(product, filename, listfilename)
+        
+        loaded_hdu = prod.load_mosaic_hdu(filename=filename,
+                                          listfile_filename=listfilename)
+        
+        assert (loaded_hdu.data == test_array).all()
+        
+        pass
+        
