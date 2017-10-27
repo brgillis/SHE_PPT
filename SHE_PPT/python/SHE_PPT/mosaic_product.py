@@ -60,8 +60,8 @@ def load_mosaic_hdu(filename, listfile_filename=None, dir=None, **kwargs):
         
     Raises
     ------
-    ValueError
-        Will raise a ValueError if either no such file as `filename` exists or
+    IOError
+        Will raise an IOError if either no such file as `filename` exists or
         if the filename of the mosaic data contained within the product does
         not exist.
     """

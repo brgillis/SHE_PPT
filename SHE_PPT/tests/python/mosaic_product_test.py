@@ -138,13 +138,13 @@ class TestMosaicProduct(object):
         
         # Check that it raises a ValueError when expected
         
-        with pytest.raises(ValueError):
+        with pytest.raises(IOError):
             mosaic_hdu = prod.load_mosaic_hdu(filename="bad_filename.junk",
                                               listfilename="mer_mosaic.json")
-        with pytest.raises(ValueError):
+        with pytest.raises(IOError):
             mosaic_hdu = prod.load_mosaic_hdu(filename="mer_mosaic.bin",
                                               listfilename="bad_filename.junk")
-        with pytest.raises(ValueError):
+        with pytest.raises(IOError):
             mosaic_hdu = prod.load_mosaic_hdu(filename="mer_mosaic.bin",
                                               listfilename="mer_mosaic.json")
             
