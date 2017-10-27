@@ -74,7 +74,7 @@ def load_mosaic_hdu(filename, listfile_filename=None, dir=None, **kwargs):
     mosaic_product = read_xml_product(xml_file_name = os.path.join(dir,filename),
                                       listfile_file_name = os.path.join(dir,listfile_filename))
     
-    mosaic_hdu = fits.open(mosaic_product.get_data_filename(),**kwargs)
+    mosaic_hdu = fits.open(mosaic_product.get_data_filename(),**kwargs)[0]
     
     return mosaic_hdu
 
@@ -87,6 +87,11 @@ def init():
     
     # binding_class = mer_dpd.DpdMerMosaicProduct # @FIXME
     binding_class = DpdMerMosaicProduct
+    
+    if not hasattr(binding_class, "initialised"):
+        binding_class.initialised = True
+    else:
+        return
 
     # Add the data file name methods
     
