@@ -70,9 +70,13 @@ def load_mosaic_hdu(filename, listfile_filename=None, dir=None, **kwargs):
     
     if dir is None:
         dir = ""
+    if listfile_filename is None:
+        qualified_listfile_filename = None
+    else:
+        qualified_listfile_filename = os.path.join(dir,listfile_filename)
     
     mosaic_product = read_xml_product(xml_file_name = os.path.join(dir,filename),
-                                      listfile_file_name = os.path.join(dir,listfile_filename))
+                                      listfile_file_name = qualified_listfile_filename)
     
     mosaic_hdu = fits.open(mosaic_product.get_data_filename(),**kwargs)[0]
     
