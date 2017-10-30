@@ -24,7 +24,79 @@
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import EuclidDmBindings.she.she_stub as mer_dpd # FIXME
 
+from astropy.io import fits
+import os
 import pickle
+
+from SHE_PPT.file_io import read_xml_product
+from SHE_PPT.utility import find_extension
+import SHE_PPT.magic_values as mv
+
+# Convenience function to easily load the actual map
+
+def load_mosaic_hdu(filename, listfile_filename=None, dir=None, hdu=0, detector=None, **kwargs):
+    """Directly loads the mosaic image from the filename of the data product.
+    
+    Parameters
+    ----------
+    filename : str
+        Filename of the mosaic data product. If `dir` is None, `filename `must
+        be either fully-qualified or relative to the workspace. If `dir` is
+        supplied, `filename` should be only the local name of the file.
+    listfile_filename : str
+        Filename of the mosaic data product's associate listfile. If `dir` is
+        None, `listfile_filename` must be either fully-qualified or relative to
+        the workspace. If `dir` is supplied, `filename` should be only the
+        local name of the file.
+    dir : str
+        Directory in which `filename` is contained. If not supplied, `filename`
+        and `listfile_filename` (if supplied) will be assumed to be either
+        fully-qualified or relative to the workspace.
+    hdu : int
+        Index of the HDU to load. If `detector` is supplied, this is ignored.
+    detector : int
+        ID of the detector whose HDU should be loaded. Overrides `hdu` if
+        supplied.
+    **kwargs
+        Keyword arguments to pass to fits.open.
+        
+    Returns
+    -------
+    mosaic_hdu : astropy.fits.PrimaryHDU
+        fits HDU containing the mosaic image and its header.
+        
+    Raises
+    ------
+    IOError
+        Will raise an IOError if either no such file as `filename` exists or
+        if the filename of the mosaic data contained within the product does
+        not exist.
+    """
+    
+    init()
+    
+    if dir is None:
+        dir = ""
+    if listfile_filename is None:
+        qualified_listfile_filename = None
+    else:
+        qualified_listfile_filename = os.path.join(dir,listfile_filename)
+    
+    mosaic_product = read_xml_product(xml_file_name = os.path.join(dir,filename),
+                                      listfile_file_name = qualified_listfile_filename)
+    
+    data_filename = mosaic_product.get_data_filename()
+    
+    mosaic_hdulist = fits.open(data_filename,**kwargs)
+    
+    if detector is not None:
+        hdu = find_extension(mosaic_hdulist, extname = str(detector) + "." + mv.segmentation_tag)
+        
+    mosaic_hdu = mosaic_hdulist[hdu]
+    
+    return mosaic_hdu
+
+# Initialisation function, to add methods to an imported XML class
 
 def init():
     """
@@ -33,6 +105,11 @@ def init():
     
     # binding_class = mer_dpd.DpdMerMosaicProduct # @FIXME
     binding_class = DpdMerMosaicProduct
+    
+    if not hasattr(binding_class, "initialised"):
+        binding_class.initialised = True
+    else:
+        return
 
     # Add the data file name methods
     
