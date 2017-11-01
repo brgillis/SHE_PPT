@@ -29,7 +29,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 from SHE_PPT.magic_values import segmap_unnasigned_value
-from SHE_PPT.mask import masked_off_image
+from SHE_PPT.mask import (as_bool, is_masked_bad,
+                          is_masked_suspect_or_bad, masked_off_image)
 
 
 class SHEImage(object): # We need new-style classes for properties, hence inherit from object
@@ -205,7 +206,43 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             100.0*float(np.sum(self.boolmask))/float(np.size(self.data))
         )
    
-   
+    def get_object_mask(self, ID, mask_suspect=False, mask_unassigned=False)
+    {
+        """Get a mask for pixels that are either bad (and optionally suspect)
+        or don't belong to an object with a given ID.
+           
+        Arguments
+        ---------
+        ID: int
+            ID of the object for which to generate a mask
+        mask_suspect: bool
+            If True, suspect pixels will also be masked True.
+        mask_unassigned: bool
+            If True, pixels which are not assigned to any object will also be
+            masked True.
+            
+        Return
+        ------
+        object_mask: np.ndarray<bool>
+            Mask for the desired object. Values of True correspond to masked
+            pixels (bad(/suspect) or don't belong to this object).
+        """
+        # First get the boolean version of the mask for suspect/bad pixels
+        if mask_suspect:
+            pixel_mask = as_bool(is_masked_suspect_or_bad(self._mask))
+        else:
+            pixel_mask = as_bool(is_masked_bad(self._mask))
+            
+        # Now get mask for other objects
+        other_mask = (self._segmentation_map != ID)
+        if not mask_unassigned:
+            other_mask = np.logical_and(other_mask,(self._segmentation_map != segmap_unnasigned_value))
+        
+        # Combine and return the masks    
+        object_mask = np.logical_or(pixel_mask,other_mask)
+        
+        return object_mask
+    }
     
     def write_to_fits(self, filepath, clobber=False, **kwargs):
         """Writes the image to disk, in form of a multi-extension FITS cube.
