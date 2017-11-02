@@ -27,6 +27,7 @@ from future_builtins import *
 
 import pytest
 import SHE_PPT.she_image
+from SHE_PPT.magic_values import segmap_unnasigned_value
 
 import numpy as np
 import os
@@ -43,7 +44,8 @@ class Test_she_image():
         # A filename for testing the file-saving:
         cls.testfilepath = "test_SHEImage.fits" # Will be deleted by teardown_class()
         # For some tests we need several files:
-        cls.testfilepaths = ["test_SHEImage_0.fits", "test_SHEImage_1.fits", "test_SHEImage_2.fits"]
+        cls.testfilepaths = ["test_SHEImage_0.fits", "test_SHEImage_1.fits", "test_SHEImage_2.fits",
+                             "test_SHEImage_3.fits"]
         
         # A SHEImage object to play with
         cls.w = 50
@@ -78,6 +80,13 @@ class Test_she_image():
         self.img.mask[5,5]=0
         assert self.img.boolmask[5,5] == False
         assert self.img.mask.dtype == np.int32
+    
+    
+    def test_segmentation_map(self):
+        """Test that the segmentation map is set up as all segmap_unnasigned_value"""
+
+        assert np.allclose(self.img.segmentation_map,
+                           segmap_unnasigned_value*np.ones_like(self.img.data,dtype=self.img.segmentation_map.dtype))
         
     
     def test_header(self):
@@ -99,6 +108,7 @@ class Test_she_image():
         self.img.mask[0:10,:]=1
         self.img.mask[10:20,:]=255
         self.img.mask[30:40,:]=-10456.34 # will get converted and should not prevent the test from working
+        self.img.segmentation_map[10:20,20:30] = 1
         
         
         self.img.write_to_fits(self.testfilepath, clobber=False)
@@ -108,6 +118,7 @@ class Test_she_image():
         assert np.allclose(self.img.data, rimg.data)
         assert np.allclose(self.img.mask, rimg.mask)
         assert np.allclose(self.img.noisemap, rimg.noisemap)
+        assert np.allclose(self.img.segmentation_map, rimg.segmentation_map)
         
         # We test that the header did not get changed
         assert len(rimg.header.keys()) == 3
@@ -128,23 +139,30 @@ class Test_she_image():
         img.noisemap = 1000.0 + 0.01*np.random.randn(100).reshape(10,10)
         img.write_to_fits(self.testfilepaths[2])
         
+        img.segmentation_map[:,:] = 4
+        img.write_to_fits(self.testfilepaths[3])
+        
         rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepaths[0])
         assert rimg.mask[0,0] == 1
         
         rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepaths[0],
                                                          mask_ext=None,
-                                                         noisemap_ext=None)
+                                                         noisemap_ext=None,
+                                                         segmentation_map_ext=None)
         assert rimg.mask[0,0] == 0
         
         rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepaths[0],
                                                          mask_filepath=self.testfilepaths[1],
-                                                         noisemap_filepath=self.testfilepaths[2])
+                                                         noisemap_filepath=self.testfilepaths[2],
+                                                         segmentation_map_filepath=self.testfilepaths[3])
         assert rimg.noisemap[0,0] > 500.0
+        assert rimg.segmentation_map[0,0] == 4
         
         with pytest.raises(ValueError): # As the primary HDU of mask_filepath is not a np.uint8, this will fail:
             rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepaths[0],
                                                          mask_filepath=self.testfilepaths[1],
                                                          noisemap_filepath=self.testfilepaths[2],
+                                                         segmentation_map_filepath=self.testfilepaths[3],
                                                          mask_ext=None)
         
         
@@ -186,6 +204,8 @@ class Test_she_image():
         img = SHE_PPT.she_image.SHEImage(array)
         img.mask[32:64,:] = True
         img.noisemap = 1000.0 + np.random.randn(size**2).reshape((size, size))
+        img.segmentation_map[0:32,:] = 1
+        img.segmentation_map[32:64,:] = 2
         img.header["foo"] = "bar"
         
         
@@ -193,12 +213,14 @@ class Test_she_image():
         eimg = img.extract_stamp(16.4, 15.6, 32)
         assert eimg.shape == (32, 32)
         assert np.sum(eimg.mask) == 0 # Nothing should be masked
+        assert np.sum(eimg.segmentation_map) == 1*np.product(eimg.shape) # Should all belong to object 1
         assert np.std(eimg.data) < 1.0e-10
         assert np.mean(eimg.noisemap) > 900.0 and np.mean(eimg.noisemap) < 1100.0
         
         eimg = img.extract_stamp(32+16.4, 32+15.6, 32)
         assert eimg.shape == (32, 32) 
-        assert np.sum(eimg.mask) == 32*32 # This one is fully masked  
+        assert np.sum(eimg.mask) == 1*np.product(eimg.shape) # This one is fully masked  
+        assert np.sum(eimg.segmentation_map) == 2*np.product(eimg.shape) # Should all belong to object 2
         assert np.std(eimg.data) > 1.0e-10
         
         # And the header:
@@ -235,6 +257,7 @@ class Test_she_image():
         # This one is completely out of bounds:
         assert np.alltrue(stamp.boolmask)
         assert np.allclose(stamp.noisemap, 0.0)
+        assert np.allclose(stamp.segmentation_map, segmap_unnasigned_value)
         
         stamp = img.extract_stamp(3.5, 1.5, 3, 1)
         # This is
