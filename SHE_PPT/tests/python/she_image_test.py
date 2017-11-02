@@ -27,7 +27,7 @@ from future_builtins import *
 
 import pytest
 import SHE_PPT.she_image
-from SHE_PPT.magic_values import segmap_unnasigned_value
+from SHE_PPT.magic_values import segmap_unassigned_value
 
 import numpy as np
 import os
@@ -83,10 +83,10 @@ class Test_she_image():
     
     
     def test_segmentation_map(self):
-        """Test that the segmentation map is set up as all segmap_unnasigned_value"""
+        """Test that the segmentation map is set up as all segmap_unassigned_value"""
 
         assert np.allclose(self.img.segmentation_map,
-                           segmap_unnasigned_value*np.ones_like(self.img.data,dtype=self.img.segmentation_map.dtype))
+                           segmap_unassigned_value*np.ones_like(self.img.data,dtype=self.img.segmentation_map.dtype))
         
     
     def test_header(self):
@@ -257,7 +257,7 @@ class Test_she_image():
         # This one is completely out of bounds:
         assert np.alltrue(stamp.boolmask)
         assert np.allclose(stamp.noisemap, 0.0)
-        assert np.allclose(stamp.segmentation_map, segmap_unnasigned_value)
+        assert np.allclose(stamp.segmentation_map, segmap_unassigned_value)
         
         stamp = img.extract_stamp(3.5, 1.5, 3, 1)
         # This is
@@ -266,6 +266,61 @@ class Test_she_image():
         assert stamp.data[1,0] == 31
         assert stamp.boolmask[2,0] == True
         
+    def test_get_object_mask(self):
+        """Test that the get_object_mask function behaves as expected."""
         
+        import SHE_PPT.mask as m
         
+        # Create an object for testing
+        mask = np.array(((0,                 m.masked_near_edge,m.masked_off_image),
+                         (0,                 m.masked_near_edge,m.masked_off_image),
+                         (m.masked_bad_pixel,m.masked_near_edge,m.masked_off_image)),
+                        dtype=np.int32)
+
+        segmap = np.array(((0, 0, 0),
+                           (segmap_unassigned_value, segmap_unassigned_value, segmap_unassigned_value),
+                           (1, 1, 1)),
+                          dtype=np.int32)
+        img = SHE_PPT.she_image.SHEImage(data=np.zeros_like(mask),
+                                         mask=mask,
+                                         segmentation_map=segmap)
+                         
+        # Test for various possible cases
+        
+        # Don't mask suspect or unassigned
+        desired_bool_mask = np.array(((False,False,True),
+                                      (False,False,True),
+                                      (True, True, True)),
+                                     dtype=bool)
+        
+        assert (img.get_object_mask(0,mask_suspect=False,mask_unassigned=False)
+                == desired_bool_mask).all()
+        
+        # Mask suspect, not unassigned
+        desired_bool_mask = np.array(((False,True, True),
+                                      (False,True, True),
+                                      (True, True, True)),
+                                     dtype=bool)
+        
+        assert (img.get_object_mask(0,mask_suspect=True,mask_unassigned=False)
+                == desired_bool_mask).all()
+        
+        # Mask unassigned, not suspect
+        desired_bool_mask = np.array(((False,False,True),
+                                      (True ,True, True),
+                                      (True, True, True)),
+                                     dtype=bool)
+        
+        assert (img.get_object_mask(0,mask_suspect=False,mask_unassigned=True)
+                == desired_bool_mask).all()
+        
+        # Mask suspect and unassigned
+        desired_bool_mask = np.array(((False,True, True),
+                                      (True, True, True),
+                                      (True, True, True)),
+                                     dtype=bool)
+        
+        assert (img.get_object_mask(0,mask_suspect=True,mask_unassigned=True)
+                == desired_bool_mask).all()
+
 
