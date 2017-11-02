@@ -199,7 +199,7 @@ class ShearEstimatesTableFormat(object):
         self.bfd_2ndderiv_moments_dg2dmu = set_column_properties("BFD_D2M_DG2DMU", is_optional=True, dtype=">f4", fits_dtype="E", length=7) 
         self.bfd_2ndderiv_moments_dmudmu = set_column_properties("BFD_D2M_DMUDMU", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
         self.bfd_template_weight = set_column_properties("BFD_TMPL_WEIGHT", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.bfd_jSuppress = set_column_properties("BFD_JSUPPRESS", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.bfd_jsuppress = set_column_properties("BFD_JSUPPRESS", is_optional=True, dtype=">f4", fits_dtype="E")
         self.bfd_pqr = set_column_properties("BFD_PQR", is_optional=True, dtype=">f4",fits_dtype="E")
         
         self.bfd_cov_even = set_column_properties("BFD_COV_EVEN", is_optional=True, dtype=">f4", fits_dtype="E", length=15)
