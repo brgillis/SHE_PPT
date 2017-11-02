@@ -28,7 +28,7 @@ import astropy.io.fits # Avoid non-trivial "from" imports (as explicit is better
 import logging
 logger = logging.getLogger(__name__)
 
-from SHE_PPT.magic_values import segmap_unnasigned_value
+from SHE_PPT.magic_values import segmap_unassigned_value
 from SHE_PPT.mask import (as_bool, is_masked_bad,
                           is_masked_suspect_or_bad, masked_off_image)
 
@@ -156,7 +156,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     def segmentation_map(self, segmentation_map_array):
         if segmentation_map_array is None:
             # Then we create an empty segmentation map (-1 means unassigned)
-            self._segmentation_map = segmap_unnasigned_value*np.ones(self._data.shape, dtype=np.int32)
+            self._segmentation_map = segmap_unassigned_value*np.ones(self._data.shape, dtype=np.int32)
         else:
             if segmentation_map_array.ndim is not 2:
                 raise ValueError("The segmentation map array must have 2 dimensions")
@@ -206,8 +206,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             100.0*float(np.sum(self.boolmask))/float(np.size(self.data))
         )
    
-    def get_object_mask(self, ID, mask_suspect=False, mask_unassigned=False)
-    {
+    def get_object_mask(self, ID, mask_suspect=False, mask_unassigned=False):
         """Get a mask for pixels that are either bad (and optionally suspect)
         or don't belong to an object with a given ID.
            
@@ -236,13 +235,12 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         # Now get mask for other objects
         other_mask = (self._segmentation_map != ID)
         if not mask_unassigned:
-            other_mask = np.logical_and(other_mask,(self._segmentation_map != segmap_unnasigned_value))
+            other_mask = np.logical_and(other_mask,(self._segmentation_map != segmap_unassigned_value))
         
         # Combine and return the masks    
         object_mask = np.logical_or(pixel_mask,other_mask)
         
         return object_mask
-    }
     
     def write_to_fits(self, filepath, clobber=False, **kwargs):
         """Writes the image to disk, in form of a multi-extension FITS cube.
@@ -471,7 +469,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             data_stamp = np.zeros((width, height), dtype=self.data.dtype)
             mask_stamp = np.ones((width, height), dtype=self.mask.dtype) * masked_off_image
             noisemap_stamp = np.zeros((width, height), dtype=self.noisemap.dtype)
-            segmentation_map_stamp = np.ones((width, height), dtype=self.segmentation_map.dtype) * segmap_unnasigned_value
+            segmentation_map_stamp = np.ones((width, height), dtype=self.segmentation_map.dtype) * segmap_unassigned_value
             
             # Compute the bounds of the overlapping part of the stamp in the original image
             overlap_xmin = max(xmin, 0)

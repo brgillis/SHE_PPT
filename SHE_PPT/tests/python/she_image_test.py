@@ -27,7 +27,7 @@ from future_builtins import *
 
 import pytest
 import SHE_PPT.she_image
-from SHE_PPT.magic_values import segmap_unnasigned_value
+from SHE_PPT.magic_values import segmap_unassigned_value
 
 import numpy as np
 import os
@@ -83,10 +83,10 @@ class Test_she_image():
     
     
     def test_segmentation_map(self):
-        """Test that the segmentation map is set up as all segmap_unnasigned_value"""
+        """Test that the segmentation map is set up as all segmap_unassigned_value"""
 
         assert np.allclose(self.img.segmentation_map,
-                           segmap_unnasigned_value*np.ones_like(self.img.data,dtype=self.img.segmentation_map.dtype))
+                           segmap_unassigned_value*np.ones_like(self.img.data,dtype=self.img.segmentation_map.dtype))
         
     
     def test_header(self):
@@ -257,7 +257,7 @@ class Test_she_image():
         # This one is completely out of bounds:
         assert np.alltrue(stamp.boolmask)
         assert np.allclose(stamp.noisemap, 0.0)
-        assert np.allclose(stamp.segmentation_map, segmap_unnasigned_value)
+        assert np.allclose(stamp.segmentation_map, segmap_unassigned_value)
         
         stamp = img.extract_stamp(3.5, 1.5, 3, 1)
         # This is
