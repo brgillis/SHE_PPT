@@ -31,12 +31,16 @@ New Features
 - Added SHEImage method to extract stamps
 - Added SHEImageData and SHEStack classes to hold images and detection tables of multiple exposures
 - Added vis_helper module to read VIS-like data from SHE_GST (and potentially SC3) into SHEImage and SHEStack objects 
-- Added format definitions for details, detections, and shear_estimates tables
+- Added format definitions for details, detections, shear_estimates, and PSF tables
+- Added various table utility features
 - Added functions for IO: get_allowed_filename(), write_listfile(), read_listfile(),
-  replace_in_file(), replace_multiple_in_file()
+  replace_in_file(), replace_multiple_in_file(), read/write_xml/pickled_product(), append_hdu(), find_file_in_path(),
+  first_writable_in_path()
 - Added a function to hash any object into a hex or base64 string
-- Added magic_values.py containing image header labels so far
-- Added mcmc_chains_table_format.py, containing format definition for MCMC chains tables
+- Added magic_values.py containing image header labels, extname tags, and other miscellaneous values
+- Added class for mock XML data products: aocs_time_series_product, astrometry_product, calibration_parameters_product,
+  mosaic_product, psf_calibration_product, shear_estimates_product
+- Added fits utility functions find_extension() and get_detector()
 
 New config features
 -------------------
