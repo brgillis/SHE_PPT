@@ -136,7 +136,7 @@ def read_detections_table_for_vis_fits(filepath, ccdid):
     """
     detection_table_ext = str(ccdid) + ".DTC"
     
-    new_table = SHEImageData.read_detections_table(filepath, table_ext=detection_table_ext)
+    new_table = SHEImageData.read_table(filepath, table_ext=detection_table_ext, check_format="detections_table")
     
     return new_table
 
@@ -183,7 +183,7 @@ def read_shestack_from_gst_json(filepath, ccdid):
         detections_table = read_detections_table_for_vis_fits(os.path.join(absdir, dtc), ccdid=ccdid)
      
         # Building the object
-        sid = SHEImageData(science_image, detections_table, bpsf_image, dpsf_image)
+        sid = SHEImageData(science_image, detections_table, bpsf_image, dpsf_image, None)
         exposures.append(sid)
     
     logger.info("Done with loop over exposures")

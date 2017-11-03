@@ -51,7 +51,7 @@ class ShearEstimatesTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.1.8"
+        self.__version__ = "0.1.9"
         self.table_format = "she.shearEstimates"
         
         # Table metadata labels
@@ -76,6 +76,8 @@ class ShearEstimatesTableMeta(object):
         self.num_chains = "NCHAIN"
         self.len_chain = "LCHAIN"
         
+        self.validated = "VALID"
+        
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
                                      (self.format, None),
@@ -94,6 +96,9 @@ class ShearEstimatesTableMeta(object):
                                      (self.bfd_tmpl_sigma_step, None),
                                      (self.bfd_tmpl_sigma_max, None),
                                      (self.bfd_tmpl_xy_max,None)))
+                                     (self.validated, "0: Not tested; 1: Pass; -1: Fail"),
+                                   ))
+
         
         # A list of columns in the desired order
         self.all = self.comments.keys()
@@ -266,6 +271,8 @@ def make_shear_estimates_table_header(detector = -1,
     header[tf.m.model_hash] = model_hash
     header[tf.m.model_seed] = model_seed
     header[tf.m.noise_seed] = noise_seed
+    
+    header[tf.m.validated] = 0
     
     return header
 

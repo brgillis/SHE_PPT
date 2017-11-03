@@ -20,8 +20,9 @@
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 """
 
-import hashlib
 import codecs
+import hashlib
+
 
 def hash_any(obj,format='hex',max_length=None):
     """
@@ -64,4 +65,22 @@ def find_extension(hdulist,extname):
         if hdu.header["EXTNAME"]==extname:
             return i
     return None
+
+def get_detector(obj):
+    """
+        Find the detector label for a fits hdu or table.
+    """
+    
+    if hasattr(obj,"header"):
+        header = obj.header
+    elif hasattr(obj,"meta"):
+        header = obj.meta
+    else:
+        raise ValueError("Unable to determine detector - no 'header' or 'meta' attribute present.")
+    
+    extname = header["EXTNAME"]
+    
+    detector = int(extname.split(".")[0])
+    
+    return detector
     
