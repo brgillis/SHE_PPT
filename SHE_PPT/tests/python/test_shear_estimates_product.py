@@ -1,4 +1,4 @@
-""" @file test_shear_estimates_product.py
+""" @file shear_estimates_product_test.py
 
     Created 9 Oct 2017
 

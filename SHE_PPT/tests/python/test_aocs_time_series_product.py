@@ -1,4 +1,4 @@
-""" @file test_aocs_time_series_product.py
+""" @file aocs_time_series_product_test.py
 
     Created 10 Oct 2017
 

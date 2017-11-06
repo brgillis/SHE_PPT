@@ -1,4 +1,4 @@
-""" @file test_mission_time_product.py
+""" @file mission_time_product_test.py
 
     Created 10 Oct 2017
 

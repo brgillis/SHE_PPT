@@ -1,4 +1,4 @@
-""" @file test_astrometry_product.py
+""" @file astrometry_product_test.py
 
     Created 10 Oct 2017
 

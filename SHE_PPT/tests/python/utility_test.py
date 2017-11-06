@@ -1,4 +1,4 @@
-""" @file test_utility.py
+""" @file utility_test.py
 
     Created 25 Aug 2017
 

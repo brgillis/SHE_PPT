@@ -1,4 +1,4 @@
-""" @file test_psf_calibration_product.py
+""" @file psf_calibration_product_test.py
 
     Created 10 Oct 2017
 

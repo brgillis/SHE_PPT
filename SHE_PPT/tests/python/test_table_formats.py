@@ -1,4 +1,4 @@
-""" @file test_table_formats.py
+""" @file table_formats_test.py
 
     Created 24 Aug 2017
 

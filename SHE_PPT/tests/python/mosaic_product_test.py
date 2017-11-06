@@ -1,4 +1,4 @@
-""" @file test_mosaic_product.py
+""" @file mosaic_product_test.py
 
     Created 10 Oct 2017
 

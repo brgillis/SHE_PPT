@@ -1,4 +1,4 @@
-""" @file test_calibration_parameters_product.py
+""" @file calibration_parameters_product_test.py
 
     Created 13 Oct 2017
 
