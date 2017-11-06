@@ -66,12 +66,12 @@ class ShearEstimatesTableMeta(object):
         self.bfd_nlost = "NLOST"
         self.bfd_wt_n = "WT_N"
         self.bfd_wt_sigma = "WT_SIGMA"
-        self.bfd_tmpl_snmin="TMPL_SNMIN"
-        self.bfd_tmpl_sigma_xy="TMPL_SIGMA_XY"
-        self.bfd_tmpl_sigma_flux="TMPL_SIGMA_FLUX"
-        self.bfd_tmpl_sigma_step="TMPL_SIGMA_STEP"
-        self.bfd_tmpl_sigma_max="TMPL_SIGMA_MAX"
-        self.bfd_tmpl_xy_max="TMPL_XY_MAX"
+        self.bfd_tmpl_snmin="T_SNMIN"
+        self.bfd_tmpl_sigma_xy="T_SIGXY"
+        self.bfd_tmpl_sigma_flux="T_SIGFLX"
+        self.bfd_tmpl_sigma_step="T_SIGSTP"
+        self.bfd_tmpl_sigma_max="T_SIGMAX"
+        self.bfd_tmpl_xy_max="T_XYMAX"
         
         self.num_chains = "NCHAIN"
         self.len_chain = "LCHAIN"
@@ -95,9 +95,9 @@ class ShearEstimatesTableMeta(object):
                                      (self.bfd_tmpl_sigma_flux, None),
                                      (self.bfd_tmpl_sigma_step, None),
                                      (self.bfd_tmpl_sigma_max, None),
-                                     (self.bfd_tmpl_xy_max,None)))
-                                     (self.validated, "0: Not tested; 1: Pass; -1: Fail"),
-                                   ))
+                                     (self.bfd_tmpl_xy_max,None),
+                                     (self.validated, "0: Not tested; 1: Pass; -1: Fail")
+                                     ))
 
         
         # A list of columns in the desired order
@@ -205,7 +205,7 @@ class ShearEstimatesTableFormat(object):
         self.bfd_2ndderiv_moments_dmudmu = set_column_properties("BFD_D2M_DMUDMU", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
         self.bfd_template_weight = set_column_properties("BFD_TMPL_WEIGHT", is_optional=True, dtype=">f4", fits_dtype="E")
         self.bfd_jsuppress = set_column_properties("BFD_JSUPPRESS", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.bfd_pqr = set_column_properties("BFD_PQR", is_optional=True, dtype=">f4",fits_dtype="E")
+        self.bfd_pqr = set_column_properties("BFD_PQR", is_optional=True, dtype=">f4",fits_dtype="E",length=6)
         
         self.bfd_cov_even = set_column_properties("BFD_COV_EVEN", is_optional=True, dtype=">f4", fits_dtype="E", length=15)
         self.bfd_cov_odd = set_column_properties("BFD_COV_ODD", is_optional=True, dtype=">f4", fits_dtype="E", length=3)
@@ -272,6 +272,16 @@ def make_shear_estimates_table_header(detector = -1,
     header[tf.m.model_seed] = model_seed
     header[tf.m.noise_seed] = noise_seed
     
+    header[tf.m.bfd_nlost] = None
+    header[tf.m.bfd_wt_n] = None
+    header[tf.m.bfd_wt_sigma] = None
+    header[tf.m.bfd_tmpl_snmin] = None
+    header[tf.m.bfd_tmpl_sigma_xy] = None
+    header[tf.m.bfd_tmpl_sigma_flux] = None
+    header[tf.m.bfd_tmpl_sigma_step] = None
+    header[tf.m.bfd_tmpl_sigma_max] = None
+    header[tf.m.bfd_tmpl_xy_max] = None
+
     header[tf.m.validated] = 0
     
     return header
