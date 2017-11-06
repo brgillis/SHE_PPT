@@ -49,7 +49,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     change would probably not be wanted. If you really want to change the size of a SHEImage, make a new object.
     """
    
-    def __init__(self, data, mask=None, noisemap=None, segmentation_map=None, header=None):
+    def __init__(self, data, mask=None, noisemap=None, segmentation_map=None, header=None, offset=None):
         """Initiator
       
         Args:
@@ -66,6 +66,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         self.noisemap = noisemap
         self.segmentation_map = segmentation_map
         self.header = header
+        self.offset = offset
         
         logger.debug("Created {}".format(str(self)))
     
@@ -135,7 +136,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     @noisemap.setter
     def noisemap(self, noisemap_array):
         if noisemap_array is None:
-            # Then we create a zero noisemap
+            # Then we create a flat noisemap
             self._noisemap = np.ones(self._data.shape, dtype=float)
         else:
             if noisemap_array.ndim is not 2:
@@ -192,6 +193,36 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     def header(self):
         del self._header
 
+    @property
+    def offset(self):
+        """A [x_offset, y_offset] numpy array with 2 values, tracking the offset of extracted stamps
+        
+        Note that internally, this offset is stored in the header, so that it is conserved by FITS i/o.
+        """
+        if self._has_offset_in_header():
+            return np.array((self.header["SHEIOFX"], self.header["SHEIOFY"]))
+        else:
+            return np.array([0, 0])
+    @offset.setter
+    def offset(self, offset_tuple):
+        """Convenience setter of the offset values, which are stored in the header
+        
+        We only set these header values if the offset_tuple is not None.
+        """
+        if offset_tuple is not None:
+            if len(offset_tuple) is not 2:
+                raise ValueError("A SHEImage.offset must have 2 items")
+            self.header["SHEIOFX"] = (offset_tuple[0], "SHEImage x offset in pixels")
+            self.header["SHEIOFY"] = (offset_tuple[1], "SHEImage y offset in pixels")
+    
+    def _has_offset_in_header(self):
+        """Tests if the header contains the offset keywords"""
+        if "SHEIOFX" in self.header.keys() and "SHEIOFY" in self.header.keys():
+            return True
+        else:
+            return False
+   
+
 
     @property
     def shape(self): # Just a shortcut, also to stress that all arrays (data, mask, noisemap) have the same shape.
@@ -200,11 +231,15 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         
     def __str__(self):
         """A short string with size information and the percentage of masked pixels"""
-        return "SHEImage({}x{}, {}% masked)".format(
-            self.shape[0],
-            self.shape[1], 
-            100.0*float(np.sum(self.boolmask))/float(np.size(self.data))
-        )
+        
+        shape_str = "{}x{}".format(self.shape[0], self.shape[1])
+        mask_str = "{}% masked".format(100.0*float(np.sum(self.boolmask))/float(np.size(self.data)))
+        str_list = [shape_str, mask_str]
+        if self._has_offset_in_header():
+            offset_str = "offset [{}, {}]".format(*self.offset)
+            str_list.append(offset_str)
+        return "SHEImage(" + ", ".join(str_list) + ")"
+   
    
     def get_object_mask(self, ID, mask_suspect=False, mask_unassigned=False):
         """Get a mask for pixels that are either bad (and optionally suspect)
@@ -285,7 +320,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
           - specify a specific HDU to read the mask from, e.g., by setting mask_ext='FLAG'
           - specify a different file to read the mask from, e.g., mask_filepath='mask.fits', mask_ext=0
           - avoid reading-in a mask, by specifying both mask_ext=None and mask_filepath=None (results in a default zero mask)
-        Idem for the noisemap
+        Idem for the noisemap and the segmap
         
         Technical note: all the arrays read from FITS get "transposed", so that the array-properties of SHEImage can be
         indexed with [x,y] using the same orientation-convention as DS9 and SExtractor uses, that is, [0,0] is bottom left.
@@ -319,7 +354,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         # Reading the noisemap
         noisemap = cls._get_secondary_data_from_fits(filepath, noisemap_filepath, noisemap_ext)
         
-        # Reading the noisemap
+        # Reading the segmentation map
         segmentation_map = cls._get_secondary_data_from_fits(filepath, segmentation_map_filepath, segmentation_map_ext)
        
         # Building and returning the new object    
@@ -439,12 +474,15 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         xmax = xmin + width
         ymax = ymin + height
         
-         # And the header:
+        # And the header:
         if keep_header:
             newheader = self.header
         else:
             newheader = None
-       
+        
+        # And defining the offset property of the stamp, taking into account any current offset.
+        newoffset = self.offset + np.array([xmin, ymin])
+        
         
         # If these bounds are fully within the image range, the extraction is easy.
         if xmin >= 0 and xmax < self.shape[0] and ymin >= 0 and ymax < self.shape[1]:
@@ -456,7 +494,8 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
                 mask=self.mask[xmin:xmax,ymin:ymax],
                 noisemap=self.noisemap[xmin:xmax,ymin:ymax],
                 segmentation_map=self.segmentation_map[xmin:xmax,ymin:ymax],
-                header=newheader
+                header=newheader,
+                offset=newoffset
             )
             
         else:
@@ -502,7 +541,8 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
                 mask=mask_stamp,
                 noisemap=noisemap_stamp,
                 segmentation_map=segmentation_map_stamp,
-                header=newheader
+                header=newheader,
+                offset=newoffset
             )
             
             if overlap_width == 0 and overlap_height == 0:

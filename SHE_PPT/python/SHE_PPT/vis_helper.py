@@ -116,15 +116,18 @@ def read_chip_from_vis_fits(filepath, ccdid, ext_code=None):
         data_ext = str(ccdid) + ".SCI"
         mask_ext = str(ccdid) + ".FLG"
         noisemap_ext = str(ccdid) + ".RMS"
+        segmentation_map_ext = None # Not provided by VIS, to be added later
     
     else:
         data_ext = str(ccdid) + "." + ext_code
         mask_ext = None
         noisemap_ext = None
+        segmentation_map_ext = None
     
     new_image = SHEImage.read_from_fits(filepath,
-                            data_ext=data_ext, mask_ext=mask_ext, noisemap_ext=noisemap_ext,
-                            mask_filepath=None, noisemap_filepath=None)
+                            data_ext=data_ext, mask_ext=mask_ext,
+                            noisemap_ext=noisemap_ext, segmentation_map_ext=segmentation_map_ext,
+                            mask_filepath=None, noisemap_filepath=None, segmentation_map_filepath=None)
     
     return new_image
     
