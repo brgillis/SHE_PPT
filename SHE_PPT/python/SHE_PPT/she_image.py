@@ -135,7 +135,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     @noisemap.setter
     def noisemap(self, noisemap_array):
         if noisemap_array is None:
-            # Then we create a zero noisemap
+            # Then we create a flat noisemap
             self._noisemap = np.ones(self._data.shape, dtype=float)
         else:
             if noisemap_array.ndim is not 2:
