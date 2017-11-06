@@ -199,10 +199,9 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         
         Note that internally, this offset is stored in the header, so that it is conserved by FITS i/o.
         """
-        try:
+        if self._has_offset_in_header():
             return np.array((self.header["SHEIOFX"], self.header["SHEIOFY"]))
-        except KeyError:
-            logger.warning("No offset values found in header, returning (0, 0)")
+        else:
             return np.array([0, 0])
     @offset.setter
     def offset(self, offset_tuple):
@@ -215,6 +214,13 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
                 raise ValueError("A SHEImage.offset must have 2 items")
             self.header["SHEIOFX"] = (offset_tuple[0], "SHEImage x offset in pixels")
             self.header["SHEIOFY"] = (offset_tuple[1], "SHEImage y offset in pixels")
+    
+    def _has_offset_in_header(self):
+        """Tests if the header contains the offset keywords"""
+        if "SHEIOFX" in self.header.keys() and "SHEIOFY" in self.header.keys():
+            return True
+        else:
+            return False
    
 
 
@@ -225,12 +231,15 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         
     def __str__(self):
         """A short string with size information and the percentage of masked pixels"""
-        return "SHEImage({}x{}, {}% masked, offset [{}, {}])".format(
-            self.shape[0],
-            self.shape[1], 
-            100.0*float(np.sum(self.boolmask))/float(np.size(self.data)),
-            *self.offset
-        )
+        
+        shape_str = "{}x{}".format(self.shape[0], self.shape[1])
+        mask_str = "{}% masked".format(100.0*float(np.sum(self.boolmask))/float(np.size(self.data)))
+        str_list = [shape_str, mask_str]
+        if self._has_offset_in_header():
+            offset_str = "offset [{}, {}]".format(*self.offset)
+            str_list.append(offset_str)
+        return "SHEImage(" + ", ".join(str_list) + ")"
+   
    
     def get_object_mask(self, ID, mask_suspect=False, mask_unassigned=False):
         """Get a mask for pixels that are either bad (and optionally suspect)
