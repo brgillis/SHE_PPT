@@ -304,9 +304,14 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             filepath: where the FITS file should be written
             clobber: if True, overwrites any existing file.
         """
+        
+        # Set up a fits header with the wcs
+        full_header = self.wcs.to_header()
+        for label in self.header:
+            full_header[label] = self.header[label]
            
         # Note that we transpose the numpy arrays, so to have the same pixel convention as DS9 and SExtractor.
-        datahdu = astropy.io.fits.PrimaryHDU(self.data.transpose(), header=self.header)
+        datahdu = astropy.io.fits.PrimaryHDU(self.data.transpose(), header=full_header)
         maskhdu = astropy.io.fits.ImageHDU(data=self.mask.transpose().astype(np.int32), name="MASK")
         noisemaphdu = astropy.io.fits.ImageHDU(data=self.noisemap.transpose(), name="NOISEMAP")
         segmaphdu = astropy.io.fits.ImageHDU(data=self.segmentation_map.transpose().astype(np.int32), name="SEGMAP")
