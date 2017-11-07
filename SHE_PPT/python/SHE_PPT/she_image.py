@@ -367,11 +367,16 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         # Set up the WCS before we clean the header
         wcs = astropy.wcs.WCS(header)
         
+        # Get a wcs header so we know what keywords will be in it
+        wcs_header = wcs.to_header()
+        
         # Removing the mandatory cards (that were automatically added to the header if write_to_fits was used)
         logger.debug("The raw primary header has {} keys".format(len(header.keys())))
         for keyword in ["SIMPLE", "BITPIX", "NAXIS", "NAXIS1", "NAXIS2", "EXTEND"]:
             if keyword in header:
                 header.remove(keyword)
+        for keyword in wcs_header.keys():
+            header.remove(keyword)
                 
         logger.debug("The cleaned header has {} keys".format(len(header.keys())))
         
