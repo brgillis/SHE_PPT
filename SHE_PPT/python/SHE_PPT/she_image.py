@@ -233,7 +233,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     def wcs(self, wcs):
         """Convenience setter of the WCS.
         """
-        if not isinstance(wcs, astropy.wcs.WCS):
+        if not (isinstance(wcs, astropy.wcs.WCS) or (wcs is None)):
             raise TypeError("wcs must be of type astropy.wcs.WCS")
         self._wcs = wcs
 
