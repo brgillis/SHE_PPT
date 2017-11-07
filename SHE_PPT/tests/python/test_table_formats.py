@@ -147,8 +147,12 @@ class TestTableFormats:
                            1,1,1,1,1,1,1,
                            1,1,1,1,1,1,1,
                            1,1,
+                           7,7,7,7,7,7,7,7, ## BFD columns
+                           7,7,1,1,6,15,3,  ## BFD columns
                            l,l,l,l,l,l,l,l,l,l)
-        
+ 
+
+       
         assert get_lengths(setf) == desired_lengths
         
     def test_is_in_format(self):
