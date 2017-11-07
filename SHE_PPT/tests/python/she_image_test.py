@@ -362,7 +362,7 @@ class Test_she_image():
             
             ra, dec = self.img.pix2world(x,y)
             
-            assert numpy.allclose((ra,dec),(ex_ra,ex_dec))
+            assert np.allclose((ra,dec),(ex_ra,ex_dec))
 
     def test_world2pix(self):
         """Test that world2pix works properly"""
@@ -373,4 +373,4 @@ class Test_she_image():
             
             x, y = self.img.pix2world(ra,dec)
             
-            assert numpy.allclose((x,y),(ex_x,ex_y))
+            assert np.allclose((x,y),(ex_x,ex_y))
