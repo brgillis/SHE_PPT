@@ -371,6 +371,6 @@ class Test_she_image():
                                     (24, 38, 276.53931377, -71.97412809),
                                     (45, 98, 287.77080792, -69.67813884)):
             
-            x, y = self.img.pix2world(ra,dec)
+            x, y = self.img.world2pix(ra,dec)
             
             assert np.allclose((x,y),(ex_x,ex_y))
