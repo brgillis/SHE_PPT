@@ -306,9 +306,12 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         """
         
         # Set up a fits header with the wcs
-        full_header = self.wcs.to_header()
-        for label in self.header:
-            full_header[label] = self.header[label]
+        if wcs is not None:
+            full_header = self.wcs.to_header()
+            for label in self.header:
+                full_header[label] = self.header[label]
+        else:
+            full_header = self.header
            
         # Note that we transpose the numpy arrays, so to have the same pixel convention as DS9 and SExtractor.
         datahdu = astropy.io.fits.PrimaryHDU(self.data.transpose(), header=full_header)
