@@ -309,7 +309,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         if self.wcs is not None:
             full_header = self.wcs.to_header()
             for label in self.header:
-                full_header[label] = self.header[label]
+                full_header[label] = (self.header[label], self.header.comments[label])
         else:
             full_header = self.header
            
