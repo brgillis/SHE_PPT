@@ -51,7 +51,7 @@ class Test_she_image():
         # A WCS to use (taken from astropy's example)
         cls.wcs = astropy.wcs.WCS(naxis=2)
         cls.wcs.wcs.crpix = [-234.75, 8.3393]
-        cls.wcs.wcs.cdelt = numpy.array([-0.066667, 0.066667])
+        cls.wcs.wcs.cdelt = np.array([-0.066667, 0.066667])
         cls.wcs.wcs.crval = [0, -90]
         cls.wcs.wcs.ctype = ["RA---AIR", "DEC--AIR"]
         cls.wcs.wcs.set_pv([(2, 1, 45.0)])
