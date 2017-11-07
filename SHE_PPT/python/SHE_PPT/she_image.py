@@ -376,7 +376,8 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             if keyword in header:
                 header.remove(keyword)
         for keyword in wcs_header.keys():
-            header.remove(keyword)
+            if keyword in header:
+                header.remove(keyword)
                 
         logger.debug("The cleaned header has {} keys".format(len(header.keys())))
         
