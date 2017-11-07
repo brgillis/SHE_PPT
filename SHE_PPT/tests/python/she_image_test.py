@@ -29,6 +29,7 @@ import pytest
 import SHE_PPT.she_image
 from SHE_PPT.magic_values import segmap_unassigned_value
 
+import astropy.wcs
 import numpy as np
 import os
 import logging
@@ -47,11 +48,19 @@ class Test_she_image():
         cls.testfilepaths = ["test_SHEImage_0.fits", "test_SHEImage_1.fits", "test_SHEImage_2.fits",
                              "test_SHEImage_3.fits"]
         
+        # A WCS to use (taken from astropy's example)
+        cls.wcs = astropy.wcs.WCS(naxis=2)
+        cls.wcs.wcs.crpix = [-234.75, 8.3393]
+        cls.wcs.wcs.cdelt = numpy.array([-0.066667, 0.066667])
+        cls.wcs.wcs.crval = [0, -90]
+        cls.wcs.wcs.ctype = ["RA---AIR", "DEC--AIR"]
+        cls.wcs.wcs.set_pv([(2, 1, 45.0)])
+        
         # A SHEImage object to play with
         cls.w = 50
         cls.h = 20
         array = np.random.randn(cls.w*cls.h).reshape((cls.w, cls.h))
-        cls.img = SHE_PPT.she_image.SHEImage(array)
+        cls.img = SHE_PPT.she_image.SHEImage(array,wcs=cls.wcs)
 
     @classmethod
     def teardown_class(cls):
@@ -344,4 +353,24 @@ class Test_she_image():
         assert (img.get_object_mask(0,mask_suspect=True,mask_unassigned=True)
                 == desired_bool_mask).all()
 
+    def test_pix2world(self):
+        """Test that pix2world works properly"""
+        
+        for x, y, ex_ra, ex_dec in ((0, 0, 267.96547027, -73.73660749),
+                                    (24, 38, 276.53931377, -71.97412809),
+                                    (45, 98, 287.77080792, -69.67813884)):
+            
+            ra, dec = self.img.pix2world(x,y)
+            
+            assert numpy.allclose((ra,dec),(ex_ra,ex_dec))
 
+    def test_world2pix(self):
+        """Test that world2pix works properly"""
+        
+        for ex_x, ex_y, ra, dec in ((0, 0, 267.96547027, -73.73660749),
+                                    (24, 38, 276.53931377, -71.97412809),
+                                    (45, 98, 287.77080792, -69.67813884)):
+            
+            x, y = self.img.pix2world(ra,dec)
+            
+            assert numpy.allclose((x,y),(ex_x,ex_y))
