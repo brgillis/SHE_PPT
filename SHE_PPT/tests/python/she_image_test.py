@@ -225,9 +225,9 @@ class Test_she_image():
         
         # And the header:
         eimg = img.extract_stamp(5, 5, 5)
-        assert len(eimg.header.keys()) == 0
+        assert len(eimg.header.keys()) == 2 # The two offsets
         eimg = img.extract_stamp(5, 5, 5, keep_header=True)
-        assert len(eimg.header.keys()) == 1
+        assert len(eimg.header.keys()) == 3 # The offsets, and the "foo"
 
         
     def test_extract_stamp_out_of_bounds(self):
@@ -265,7 +265,28 @@ class Test_she_image():
         assert stamp.data[0,0] == 21
         assert stamp.data[1,0] == 31
         assert stamp.boolmask[2,0] == True
+
         
+    def test_offset(self):
+        """Testing the offset property"""
+        
+        size = 64
+        array = np.random.randn(size**2).reshape((size, size))
+        img = SHE_PPT.she_image.SHEImage(array)
+        
+        # Testing expected behavior of stamp extraction
+        stamp = img.extract_stamp(2.5, 3.5, 1)
+        assert stamp.offset[0] == 2
+        assert stamp.offset[1] == 3
+    
+        # Does it survive FITS io?
+        stamp.write_to_fits(self.testfilepath, clobber=True)
+        rstamp = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepath)
+        assert rstamp.offset[0] == 2
+        assert rstamp.offset[1] == 3
+        
+    
+    
     def test_get_object_mask(self):
         """Test that the get_object_mask function behaves as expected."""
         
