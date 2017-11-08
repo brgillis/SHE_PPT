@@ -60,6 +60,6 @@ class Test_mask():
         
         for x in range(6):
             for y in range(6):
-                assert id_strings[x,y] == "CCDID $X-$Y".replace("$X",str(x+1)).replace("$Y",str(x+1))
+                assert id_strings[x,y] == "CCDID $X-$Y".replace("$X",str(x+1)).replace("$Y",str(y+1))
         
 
