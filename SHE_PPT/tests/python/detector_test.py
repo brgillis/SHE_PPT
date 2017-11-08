@@ -30,7 +30,7 @@ import numpy as np
 import os
 import logging
 
-from SHE_PPT.detector_test import *
+from SHE_PPT.detector import *
 
 logging.basicConfig(level=logging.DEBUG)
 
