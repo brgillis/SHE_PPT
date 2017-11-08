@@ -24,6 +24,7 @@ from future_builtins import *
 import os
 import numpy as np
 import astropy.io.fits # Avoid non-trivial "from" imports (as explicit is better than implicit)
+import astropy.wcs
 
 import logging
 logger = logging.getLogger(__name__)
@@ -49,7 +50,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     change would probably not be wanted. If you really want to change the size of a SHEImage, make a new object.
     """
    
-    def __init__(self, data, mask=None, noisemap=None, segmentation_map=None, header=None, offset=None):
+    def __init__(self, data, mask=None, noisemap=None, segmentation_map=None, header=None, offset=None, wcs=None):
         """Initiator
       
         Args:
@@ -58,7 +59,8 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             noisemap: a float array of the same shape as data. Leaving None creates a noisemap of ones.
             segmentation_map: an int32 array of the same shape as data. Leaving None creates an empty map
             header: an astropy.io.fits.Header object. Leaving None creates an empty header.
-      
+            offset: a 1D numpy float array with two values, corresponding to the x and y offsets
+            wcs: An astropy.wcs.WCS object, containing WCS information for this image
         """
                
         self.data = data # Note the tests done in the setter method
@@ -67,6 +69,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         self.segmentation_map = segmentation_map
         self.header = header
         self.offset = offset
+        self.wcs = wcs
         
         logger.debug("Created {}".format(str(self)))
     
@@ -221,7 +224,18 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             return True
         else:
             return False
-   
+        
+    @property
+    def wcs(self): # Just a shortcut, defined as a property in case we need to change implementation later
+        """The WCS of the images"""
+        return self._wcs
+    @wcs.setter
+    def wcs(self, wcs):
+        """Convenience setter of the WCS.
+        """
+        if not (isinstance(wcs, astropy.wcs.WCS) or (wcs is None)):
+            raise TypeError("wcs must be of type astropy.wcs.WCS")
+        self._wcs = wcs
 
 
     @property
@@ -290,9 +304,17 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             filepath: where the FITS file should be written
             clobber: if True, overwrites any existing file.
         """
+        
+        # Set up a fits header with the wcs
+        if self.wcs is not None:
+            full_header = self.wcs.to_header()
+            for label in self.header:
+                full_header[label] = (self.header[label], self.header.comments[label])
+        else:
+            full_header = self.header
            
         # Note that we transpose the numpy arrays, so to have the same pixel convention as DS9 and SExtractor.
-        datahdu = astropy.io.fits.PrimaryHDU(self.data.transpose(), header=self.header)
+        datahdu = astropy.io.fits.PrimaryHDU(self.data.transpose(), header=full_header)
         maskhdu = astropy.io.fits.ImageHDU(data=self.mask.transpose().astype(np.int32), name="MASK")
         noisemaphdu = astropy.io.fits.ImageHDU(data=self.noisemap.transpose(), name="NOISEMAP")
         segmaphdu = astropy.io.fits.ImageHDU(data=self.segmentation_map.transpose().astype(np.int32), name="SEGMAP")
@@ -341,11 +363,22 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         
         # Reading the primary extension, which also contains the header
         (data, header) = cls._get_specific_hdu_content_from_fits(filepath, ext=data_ext, return_header=True)
+        
+        # Set up the WCS before we clean the header
+        wcs = astropy.wcs.WCS(header)
+        
+        # Get a wcs header so we know what keywords will be in it
+        wcs_header = wcs.to_header()
+        
         # Removing the mandatory cards (that were automatically added to the header if write_to_fits was used)
         logger.debug("The raw primary header has {} keys".format(len(header.keys())))
         for keyword in ["SIMPLE", "BITPIX", "NAXIS", "NAXIS1", "NAXIS2", "EXTEND"]:
             if keyword in header:
                 header.remove(keyword)
+        for keyword in wcs_header.keys():
+            if keyword in header:
+                header.remove(keyword)
+                
         logger.debug("The cleaned header has {} keys".format(len(header.keys())))
         
         # Reading the mask
@@ -358,7 +391,8 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         segmentation_map = cls._get_secondary_data_from_fits(filepath, segmentation_map_filepath, segmentation_map_ext)
        
         # Building and returning the new object    
-        newimg = SHEImage(data=data, mask=mask, noisemap=noisemap, segmentation_map=segmentation_map, header=header)
+        newimg = SHEImage(data=data, mask=mask, noisemap=noisemap, segmentation_map=segmentation_map, header=header,
+                          wcs=wcs)
         
         logger.info("Read {} from the file '{}'".format(str(newimg), filepath))
         return newimg
@@ -552,4 +586,64 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         assert newimg.shape == (width, height) 
         return newimg
 
+    def pix2world(self, x, y):
+        """Converts x and y pixel coordinates to ra and dec world coordinates.
+              
+        Parameters
+        ----------
+        x : float
+            x pixel coordinate
+        y : float
+            idem for y
+            
+        Raises
+        ------
+        AttributeError : if this object does not have a wcs set up
+        
+        Returns
+        -------
+        ra : float (in degrees)
+        dec : float (in degrees)
+        
+        """
+        
+        if self.wcs is None:
+            raise AttributeError("pix2world called by SHEImage object that doesn't have a WCS set up. " +
+                                 "Note that WCS isn't currently passed when extract_stamp is used, so this might be the issue.")
+            
+        ra, dec = self.wcs.wcs_pix2world(x,y,1, # "1" since we have 1-based coordinates
+                                         ra_dec_order = True) # Ensure we get ra and dec in expected order
+        
+        return ra, dec
+
+    def world2pix(self, ra, dec):
+        """Converts ra and dec world coordinates to x and y pixel coordinates
+              
+        Parameters
+        ----------
+        ra : float
+            Right Ascension (RA) world coordinate in degrees
+        dec : float
+            Declination (Dec) world coordinate in degrees
+            
+        Raises
+        ------
+        AttributeError
+            This object does not have a wcs set up
+        
+        Returns
+        -------
+        x : float
+        y : float
+        
+        """
+        
+        if self.wcs is None:
+            raise AttributeError("world2pix called by SHEImage object that doesn't have a WCS set up. " +
+                                 "Note that WCS isn't currently passed when extract_stamp is used, so this might be the issue.")
+            
+        x, y = self.wcs.wcs_world2pix(ra,dec,1, # "1" since we have 1-based coordinates
+                                      ra_dec_order = True) # Ensure we get ra and dec in expected order
+        
+        return x, y
  
