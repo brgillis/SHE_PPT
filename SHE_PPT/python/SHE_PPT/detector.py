@@ -56,7 +56,7 @@ def _get_id_string(x,y):
         idem for y
     """
     
-    return id_template.replace("$X",str(x)).replace("$Y",str(y))
+    return id_template.replace("$X",str(int(x))).replace("$Y",str(int(y)))
 
 # id_strings is a zero-indexed array of all possible id strings, useful for iteration
-id_strings = np.fromfunction(_get_id_string, (7,7))[1:,1:]
+id_strings = np.fromfunction(np.vectorize(_get_id_string), (7,7))[1:,1:]
