@@ -260,6 +260,22 @@ def find_file_in_path(filename, path):
             break
 
     return qualified_filename
+        
+def find_aux_file(filename):
+    """
+        Searches the auxiliary directory path for a file and returns a qualified name of it if found,
+        None otherwise.
+    """
+
+    return find_file_in_path(filename,os.environ['ELEMENTS_AUX_PATH'])
+        
+def find_conf_file(filename):
+    """
+        Searches the conf directory path for a file and returns a qualified name of it if found,
+        None otherwise.
+    """
+
+    return find_file_in_path(filename,os.environ['ELEMENTS_CONF_PATH'])
 
 def first_in_path(path):
     """
