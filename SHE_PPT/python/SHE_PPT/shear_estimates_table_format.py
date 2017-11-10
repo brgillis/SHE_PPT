@@ -37,7 +37,7 @@ class ShearEstimatesTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.1.9"
+        self.__version__ = "0.2"
         self.table_format = "she.shearEstimates"
         
         # Table metadata labels

@@ -33,7 +33,7 @@ class DetectionsTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.2.2"
+        self.__version__ = "0.3"
         self.table_format = "she.shearDetections"
         
         # Table metadata labels

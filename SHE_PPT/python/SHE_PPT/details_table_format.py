@@ -33,7 +33,7 @@ class DetailsTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.1.3"
+        self.__version__ = "0.2"
         self.table_format = "she.shearDetails"
         
         # Table metadata labels
