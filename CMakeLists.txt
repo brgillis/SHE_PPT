@@ -9,4 +9,4 @@ find_package(ElementsProject)
 
 # FIXME - Temporary workaround of bug in old versions of Elements. Have to
 # use version 1.0 to avoid a spurious build error
-elements_project(SHE_PPT 1.0 USE Elements 4.0 EuclidDmTools 1.2.9 )
+elements_project(SHE_PPT 1.0 USE Elements 4.0 )
