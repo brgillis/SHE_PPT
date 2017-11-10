@@ -32,7 +32,7 @@ import SHE_PPT.magic_values as mv
 
 # Convenience function to easily load the actual map
 
-def load_mosaic_hdu(filename, listfile_filename=None, dir=None, hdu=0, detector=None, **kwargs):
+def load_mosaic_hdu(filename, listfile_filename=None, dir=None, hdu=0, detector_x=1, detector_y, **kwargs):
     """Directly loads the mosaic image from the filename of the data product.
     
     Parameters
@@ -88,7 +88,7 @@ def load_mosaic_hdu(filename, listfile_filename=None, dir=None, hdu=0, detector=
     mosaic_hdulist = fits.open(data_filename,**kwargs)
     
     if detector is not None:
-        hdu = find_extension(mosaic_hdulist, extname = str(detector) + "." + mv.segmentation_tag)
+        hdu = find_extension(mosaic_hdulist, extname = dtc.get_id_string(detector_x,detector_y) + "." + mv.segmentation_tag)
         
     mosaic_hdu = mosaic_hdulist[hdu]
     
