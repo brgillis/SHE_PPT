@@ -337,8 +337,12 @@ def initialise_shear_estimates_table(detections_table = None,
     if detections_table is not None:
         if detector_x is None:
             detector_x = int(detections_table.meta[detf.m.extname][dtc.x_index])
-        if detector_x is None:
+        else:
+            detector_x = 1
+        if detector_y is None:
             detector_y = int(detections_table.meta[detf.m.extname][dtc.y_index])
+        else:
+            detector_y = 1
         if model_hash is not None:
             model_hash = detections_table.meta[detf.m.model_hash]
         if model_seed is not None:
