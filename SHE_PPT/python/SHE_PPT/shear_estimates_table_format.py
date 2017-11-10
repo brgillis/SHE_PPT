@@ -22,6 +22,7 @@ from collections import OrderedDict
 
 from astropy.table import Table
 
+from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
 from SHE_PPT.detections_table_format import tf as detf
 from SHE_PPT.table_utility import is_in_format
@@ -234,7 +235,9 @@ def make_shear_estimates_table_header(detector_x = 1,
     """
         @brief Generate a header for a shear estimates table.
         
-        @param detector <int?> Detector for this image, if applicable
+        @param detector_x <int> x-index (1-6) for detector this image was taken with
+        
+        @param detector_y <int> y-index (1-6) for detector this image was taken with
         
         @param model_hash <int> Hash of the physical model options dictionary
         
@@ -246,7 +249,7 @@ def make_shear_estimates_table_header(detector_x = 1,
     """
     
     if detector is not None:
-        logger.warn("'detector' argument is deprecated: Use detector_x and detector_y instead.")
+        logger.warn("'detector' argument for make_*_table_header is deprecated: Use detector_x and detector_y instead.")
         detector_x = detector % 6
         detector_y = detector // 6
     
@@ -255,7 +258,7 @@ def make_shear_estimates_table_header(detector_x = 1,
     header[tf.m.version] = tf.__version__
     header[tf.m.format] = tf.m.table_format
     
-    header[tf.m.extname] = get_id_string(detector_x,detector_y) + "." + mv.shear_estimates_tag
+    header[tf.m.extname] = dtc.get_id_string(detector_x,detector_y) + "." + mv.shear_estimates_tag
     
     header[tf.m.num_chains] = num_chains
     header[tf.m.len_chain] = len_chain
@@ -279,7 +282,13 @@ def make_shear_estimates_table_header(detector_x = 1,
     return header
 
 def initialise_shear_estimates_table(detections_table = None,
+                                     
                                      optional_columns = None,
+                                     detector_x = None,
+                                     detector_y = None,
+                                     model_hash = None,
+                                     model_seed = None,
+                                     noise_seed = None,
                                      detector = None):
     """
         @brief Initialise a shear estimates table based on a detections table, with the
@@ -289,13 +298,22 @@ def initialise_shear_estimates_table(detections_table = None,
         
         @param optional_columns <list<str>> List of names for optional columns to include.
                Default is gal_e1_err and gal_e2_err
+        
+        @param detector_x <int> x-index (1-6) for detector this image was taken with
+        
+        @param detector_y <int> y-index (1-6) for detector this image was taken with
                
         @param detector <int?> Detector this table corresponds to
         
         @return shear_estimates_table <astropy.table.Table>
     """
     
-    assert (detections_table is None) or (is_in_format(detections_table,detf))
+    if detector is not None:
+        logger.warn("'detector' argument for initialise_*_table is deprecated: Use detector_x and detector_y instead.")
+        detector_x = detector % 6
+        detector_y = detector // 6
+    
+    assert (detections_table is None) or (is_in_format(detections_table,detf,strict=False))
     
     if optional_columns is None:
         optional_columns = [tf.e1_err,tf.e2_err]
@@ -316,18 +334,17 @@ def initialise_shear_estimates_table(detections_table = None,
     
     shear_estimates_table = Table(init_cols, names=names, dtype=dtypes)
     
-    if detections_table is None:
-        if detector is None:
-            detector = -1
-        model_hash = None
-        model_seed = None
-        noise_seed = None
-    else:
-        if detector is None:
-            detector = int(detections_table.meta[detf.m.extname].split(".")[0])
-        model_hash = detections_table.meta[detf.m.model_hash]
-        model_seed = detections_table.meta[detf.m.model_seed]
-        noise_seed = detections_table.meta[detf.m.noise_seed]
+    if detections_table is not None:
+        if detector_x is None:
+            detector_x = int(detections_table.meta[detf.m.extname][dtc.x_index])
+        if detector_x is None:
+            detector_y = int(detections_table.meta[detf.m.extname][dtc.y_index])
+        if model_hash is not None:
+            model_hash = detections_table.meta[detf.m.model_hash]
+        if model_seed is not None:
+            model_seed = detections_table.meta[detf.m.model_seed]
+        if noise_seed is not None:
+            noise_seed = detections_table.meta[detf.m.noise_seed]
     
     shear_estimates_table.meta = make_shear_estimates_table_header(detector = detector,
                                                                    model_hash = model_hash,
