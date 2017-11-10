@@ -33,7 +33,7 @@ class PSFTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.1.0"
+        self.__version__ = "0.2"
         self.table_format = "she.psfTable"
         
         # Table metadata labels
@@ -133,7 +133,8 @@ def make_psf_table_header(detector_x = 1,
                           detector_y = 1,
                           model_hash = None,
                           model_seed = None,
-                          noise_seed = None,):
+                          noise_seed = None,
+                          detector = None):
     """
         @brief Generate a header for a PSF table.
         
@@ -147,6 +148,11 @@ def make_psf_table_header(detector_x = 1,
         
         @return header <OrderedDict>
     """
+    
+    if detector is not None:
+        logger.warn("'detector' argument for make_*_table_header is deprecated: Use detector_x and detector_y instead.")
+        detector_x = detector % 6
+        detector_y = detector // 6
     
     header = OrderedDict()
     
@@ -164,6 +170,11 @@ def make_psf_table_header(detector_x = 1,
 def initialise_psf_table(image = None,
                          options = None,
                          optional_columns = None,
+                         detector_x = 1,
+                         detector_y = 1,
+                         model_hash = None,
+                         model_seed = None,
+                         noise_seed = None,
                          detector = None):
     """
         @brief Initialise a PSF table.
@@ -179,6 +190,11 @@ def initialise_psf_table(image = None,
         
         @return detections_table <astropy.Table>
     """
+    
+    if detector is not None:
+        logger.warn("'detector' argument for initialise_*_table is deprecated: Use detector_x and detector_y instead.")
+        detector_x = detector % 6
+        detector_y = detector // 6
     
     if optional_columns is None:
         optional_columns = []
@@ -199,19 +215,27 @@ def initialise_psf_table(image = None,
     
     psf_table = Table(init_cols, names=names, dtype=dtypes)
     
-    if (image is not None) and (detector is None):
-        detector = image.get_local_ID()
+    if image is not None:
+        
+        # Get values from the image object, unless they were passed explicitly
+        
+        if detector_x or detector_y is None:
+            detector_x = image.get_local_ID() % 6
+            detector_y = image.get_local_ID() // 6
+            
+        if model_seed is None:
+            model_seed = image.get_full_seed()
     
-    if options is None:
-        model_hash = None 
-        model_seed = None
-        noise_seed = None
-    else:
-        model_hash = hash_any(frozenset(options.items()),format="base64")
-        model_seed = image.get_full_seed()
-        noise_seed = options['noise_seed']
+    if options is not None:
+        
+        # Get values from the options dict, unless they were passed explicitly
+        if model_hash is None:
+            model_hash = hash_any(frozenset(options.items()),format="base64")
+        if noise_seed is None:
+            noise_seed = options['noise_seed']
     
-    psf_table.meta = make_psf_table_header(detector = detector,
+    psf_table.meta = make_psf_table_header(detector_x = detector_x,
+                                           detector_y = detector_y,
                                            model_hash = model_hash,
                                            model_seed = model_seed,
                                            noise_seed = noise_seed,)
