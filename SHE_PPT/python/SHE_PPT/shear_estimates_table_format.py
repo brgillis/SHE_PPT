@@ -346,7 +346,8 @@ def initialise_shear_estimates_table(detections_table = None,
         if noise_seed is not None:
             noise_seed = detections_table.meta[detf.m.noise_seed]
     
-    shear_estimates_table.meta = make_shear_estimates_table_header(detector = detector,
+    shear_estimates_table.meta = make_shear_estimates_table_header(detector_x = detector_x,
+                                                                   detector_y = detector_y,
                                                                    model_hash = model_hash,
                                                                    model_seed = model_seed,
                                                                    noise_seed = noise_seed)
