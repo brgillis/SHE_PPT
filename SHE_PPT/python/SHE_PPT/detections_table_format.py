@@ -178,7 +178,8 @@ detections_table_format = DetectionsTableFormat()
 tf = detections_table_format
 
 
-def make_detections_table_header(detector = -1,
+def make_detections_table_header(detector_x = 1,
+                                 detector_y = 1,
                                  subtracted_sky_level = None,
                                  unsubtracted_sky_level = None,
                                  read_noise = None,
@@ -213,7 +214,7 @@ def make_detections_table_header(detector = -1,
     header[tf.m.version] = tf.__version__
     header[tf.m.format] = tf.m.table_format
     
-    header[tf.m.extname] = str(detector) + "." + mv.detections_tag
+    header[tf.m.extname] = get_id_string(detector_x,detector_y) + "." + mv.detections_tag
     
     header[tf.m.subtracted_sky_level] = subtracted_sky_level
     header[tf.m.unsubtracted_sky_level] = unsubtracted_sky_level

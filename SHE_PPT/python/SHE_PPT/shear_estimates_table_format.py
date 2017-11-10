@@ -225,10 +225,12 @@ shear_estimates_table_format = ShearEstimatesTableFormat()
 # And a convient alias for it
 tf = shear_estimates_table_format
 
-def make_shear_estimates_table_header(detector = -1,
+def make_shear_estimates_table_header(detector_x = 1,
+                                      detector_y = 1,
                                       model_hash = None,
                                       model_seed = None,
-                                      noise_seed = None,):
+                                      noise_seed = None,
+                                      detector = None):
     """
         @brief Generate a header for a shear estimates table.
         
@@ -243,12 +245,17 @@ def make_shear_estimates_table_header(detector = -1,
         @return header <dict>
     """
     
+    if detector is not None:
+        logger.warn("'detector' argument is deprecated: Use detector_x and detector_y instead.")
+        detector_x = detector % 6
+        detector_y = detector // 6
+    
     header = OrderedDict()
     
     header[tf.m.version] = tf.__version__
     header[tf.m.format] = tf.m.table_format
     
-    header[tf.m.extname] = str(detector) + "." + mv.shear_estimates_tag
+    header[tf.m.extname] = get_id_string(detector_x,detector_y) + "." + mv.shear_estimates_tag
     
     header[tf.m.num_chains] = num_chains
     header[tf.m.len_chain] = len_chain

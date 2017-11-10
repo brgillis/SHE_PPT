@@ -24,6 +24,7 @@ from astropy.table import Table
 
 from SHE_PPT.utility import hash_any
 from SHE_PPT import magic_values as mv
+from SHE_PPT.detector import get_id_string
 
 class PSFTableMeta(object):
     """
@@ -128,7 +129,8 @@ psf_table_format = PSFTableFormat()
 tf = psf_table_format
 
 
-def make_psf_table_header(detector = -1,
+def make_psf_table_header(detector_x = 1,
+                          detector_y = 1,
                           model_hash = None,
                           model_seed = None,
                           noise_seed = None,):
@@ -151,7 +153,7 @@ def make_psf_table_header(detector = -1,
     header[tf.m.version] = tf.__version__
     header[tf.m.format] = tf.m.table_format
     
-    header[tf.m.extname] = str(detector) + "." + mv.psf_cat_tag
+    header[tf.m.extname] = get_id_string(detector_x,detector_y) + "." + mv.psf_cat_tag
     
     header[tf.m.model_hash] = model_hash
     header[tf.m.model_seed] = model_seed
