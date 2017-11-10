@@ -24,6 +24,7 @@ from astropy.table import Table
 
 from SHE_PPT.utility import hash_any
 from SHE_PPT import magic_values as mv
+from SHE_PPT.detector import get_id_string
 
 class DetectionsTableMeta(object):
     """
@@ -186,7 +187,8 @@ def make_detections_table_header(detector_x = 1,
                                  gain = None,
                                  model_hash = None,
                                  model_seed = None,
-                                 noise_seed = None,):
+                                 noise_seed = None,
+                                 detector = None):
     """
         @brief Generate a header for a detections table.
         
@@ -209,6 +211,11 @@ def make_detections_table_header(detector_x = 1,
         @return header <OrderedDict>
     """
     
+    if detector is not None:
+        logger.warn("'detector' argument for make_*_table_header is deprecated: Use detector_x and detector_y instead.")
+        detector_x = detector % 6
+        detector_y = detector // 6
+    
     header = OrderedDict()
     
     header[tf.m.version] = tf.__version__
@@ -230,6 +237,15 @@ def make_detections_table_header(detector_x = 1,
 def initialise_detections_table(image = None,
                                 options = None,
                                 optional_columns = None,
+                                detector_x = 1,
+                                detector_y = 1,
+                                subtracted_sky_level = None,
+                                unsubtracted_sky_level = None,
+                                read_noise = None,
+                                gain = None,
+                                model_hash = None,
+                                model_seed = None,
+                                noise_seed = None,
                                 detector = None):
     """
         @brief Initialise a detections table.
@@ -245,6 +261,11 @@ def initialise_detections_table(image = None,
         
         @return detections_table <astropy.Table>
     """
+    
+    if detector is not None:
+        logger.warn("'detector' argument for initialise_*_table is deprecated: Use detector_x and detector_y instead.")
+        detector_x = detector % 6
+        detector_y = detector // 6
     
     if optional_columns is None:
         optional_columns = []
@@ -266,29 +287,38 @@ def initialise_detections_table(image = None,
     detections_table = Table(init_cols, names=names,
                              dtype=dtypes)
     
-    if image is None:
-        subtracted_sky_level = None
-        unsubtracted_sky_level = None
-    else:
-        if detector is None:
-            detector = image.get_local_ID()
-        subtracted_sky_level = image.get_param_value('subtracted_background')
-        unsubtracted_sky_level = image.get_param_value('unsubtracted_background')
+    if image is not None:
+        
+        # Get values from the image object, unless they were passed explicitly
+        
+        if detector_x or detector_y is None:
+            detector_x = image.get_local_ID() % 6
+            detector_y = image.get_local_ID() // 6
+        
+        if subtracted_sky_level is None:
+            subtracted_sky_level = image.get_param_value('subtracted_background')
+            
+        if unsubtracted_sky_level is None:
+            unsubtracted_sky_level = image.get_param_value('unsubtracted_background')
+            
+        if model_seed is None:
+            model_seed = image.get_full_seed()
     
-    if options is None:
-        read_noise = None
-        gain = None
-        model_hash = None 
-        model_seed = None
-        noise_seed = None
-    else:
-        read_noise = options['read_noise']
-        gain = options['gain']
-        model_hash = hash_any(frozenset(options.items()),format="base64")
-        model_seed = image.get_full_seed()
-        noise_seed = options['noise_seed']
+    if options is not None:
+        
+        # Get values from the options dict, unless they were passed explicitly
+        
+        if read_noise is None:
+            read_noise = options['read_noise']
+        if gain is None:
+            gain = options['gain']
+        if model_hash is None:
+            model_hash = hash_any(frozenset(options.items()),format="base64")
+        if noise_seed is None:
+            noise_seed = options['noise_seed']
     
-    detections_table.meta = make_detections_table_header(detector = detector,
+    detections_table.meta = make_detections_table_header(detector_x = detector_x,
+                                                         detector_y = detector_y,
                                                          subtracted_sky_level = subtracted_sky_level,
                                                          unsubtracted_sky_level = unsubtracted_sky_level,
                                                          read_noise = read_noise,
