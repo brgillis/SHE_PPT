@@ -20,7 +20,7 @@
 
 import os
 
-from astropy.table import Table
+from astropy.table import Column, Table
 import pytest
 
 from SHE_PPT import magic_values as mv
@@ -164,8 +164,13 @@ class TestTableFormats:
         assert len(self.initializers) == len(self.formats)
             
         for i in range(len(self.initializers)):
+            # Try strict test
             for j in range((len(self.formats))):
-                assert is_in_format(empty_tables[i],self.formats[j]) == (i==j)
+                assert is_in_format(empty_tables[i],self.formats[j],strict=True) == (i==j)
+            # Try non-strict version now
+            empty_tables[i].add_column(Column(name='new_column',data=np.zeros((0,))))
+            for j in range((len(self.formats))):
+                assert is_in_format(empty_tables[i],self.formats[j],strict=False) == (i==j)
                 
     def test_add_row(self):
         # Test that we can add a row through kwargs
