@@ -25,6 +25,7 @@ from astropy.table import Table
 from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
 from SHE_PPT.detections_table_format import tf as detf
+from SHE_PPT import detector as dtc
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.logging import getLogger
 
@@ -312,8 +313,7 @@ def initialise_shear_estimates_table(detections_table = None,
     
     if detector is not None:
         logger.warn("'detector' argument for initialise_*_table is deprecated: Use detector_x and detector_y instead.")
-        detector_x = detector % 6
-        detector_y = detector // 6
+        detector_x, detector_y = dtc.resolve_detector_xy(detector)
     
     assert (detections_table is None) or (is_in_format(detections_table,detf,strict=False))
     
@@ -337,10 +337,8 @@ def initialise_shear_estimates_table(detections_table = None,
     shear_estimates_table = Table(init_cols, names=names, dtype=dtypes)
     
     if detections_table is not None:
-        if detector_x is None:
-            detector_x = int(detections_table.meta[detf.m.extname][dtc.x_index])
-        if detector_y is None:
-            detector_y = int(detections_table.meta[detf.m.extname][dtc.y_index])
+        if detector_x is None or detector_y is None:
+            detector_x, detector_y = dtc.get_detector_xy(detections_table.meta[detf.m.extname])
         if model_hash is None:
             model_hash = detections_table.meta[detf.m.model_hash]
         if model_seed is None:
