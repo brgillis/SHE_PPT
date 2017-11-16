@@ -87,7 +87,7 @@ def load_mosaic_hdu(filename, listfile_filename=None, dir=None, hdu=0, detector_
     
     mosaic_hdulist = fits.open(data_filename,**kwargs)
     
-    if detector is not None:
+    if detector_x is not None and detector_y is not None:
         hdu = find_extension(mosaic_hdulist, extname = dtc.get_id_string(detector_x,detector_y) + "." + mv.segmentation_tag)
         
     mosaic_hdu = mosaic_hdulist[hdu]
