@@ -115,5 +115,23 @@ def detector_xy_to_int(x,y):
             raise ValueError("Invalid value passed to get_id_string: " + str(v))
         
     return 6*(y-1) + (x-1)
+
+def resolve_detector_xy(v):
+    """Resolves detector_x/y from an object of string, int, or tuple type.
+    
+    Parameters
+    ----------
+    v : str, int, or (int,int)
+        Value indicating detector
+    """
+    
+    if isinstance(v, str):
+        return get_detector_xy(v)
+    elif isinstance(v, int):
+        return detector_int_to_xy(v)
+    elif isinstance(v, tuple) and len(v)==2:
+        return v
+    else:
+        raise TypeError("v must be int, string, or tuple type.")
     
     
