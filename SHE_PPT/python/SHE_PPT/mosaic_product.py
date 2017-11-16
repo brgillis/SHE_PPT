@@ -33,7 +33,7 @@ import SHE_PPT.magic_values as mv
 
 # Convenience function to easily load the actual map
 
-def load_mosaic_hdu(filename, listfile_filename=None, dir=None, hdu=0, detector_x=1, detector_y=1, **kwargs):
+def load_mosaic_hdu(filename, listfile_filename=None, dir=None, hdu=0, detector_x=None, detector_y=None, **kwargs):
     """Directly loads the mosaic image from the filename of the data product.
     
     Parameters
