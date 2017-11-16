@@ -54,12 +54,65 @@ class Test_mask():
         
         pass
     
-    def test_id_strings(self):
+    def test_get_detector_xy(self):
         
-        assert np.shape(id_strings) == (6,6)
+        assert get_detector_xy("CCDID 3-4") == (3,4)
         
-        for x in range(6):
-            for y in range(6):
-                assert id_strings[x,y] == "CCDID $X-$Y".replace("$X",str(x+1)).replace("$Y",str(y+1))
+        assert get_detector_xy("CCDID 3-4.SCI") == (3,4)
+        
+        with pytest.raises(TypeError):
+            get_detector_xy(3)
+        
+        with pytest.raises(ValueError):
+            get_detector_xy("foo")
+            
+        pass
+    
+    def test_detector_int_to_xy(self):
+        
+        assert detector_int_to_xy(10) == (5,2)
+        
+        with pytest.raises(TypeError):
+            detector_int_to_xy("10")
+        
+        with pytest.raises(ValueError):
+            detector_int_to_xy(-1)
+        
+        with pytest.raises(ValueError):
+            detector_int_to_xy(36)
+            
+        pass
+    
+    def test_detector_xy_to_int(self):
+        
+        assert detector_xy_to_int(5,2) == 10
+        
+        with pytest.raises(TypeError):
+            detector_xy_to_int(1,"10")
+        
+        with pytest.raises(TypeError):
+            detector_xy_to_int("10",1)
+        
+        with pytest.raises(ValueError):
+            detector_xy_to_int(0,1)
+        
+        with pytest.raises(ValueError):
+            detector_xy_to_int(1,7)
+            
+        pass
+    
+    def test_resolve_detector_xy(self):
+        
+        assert resolve_detector_xy("CCDID 5-3") == (5,3)
+        assert resolve_detector_xy(16) == (5,3)
+        assert resolve_detector_xy((5,3)) == (5,3)
+        
+        with pytest.raises(TypeError):
+            resolve_detector_xy(3.1)
+        
+        with pytest.raises(TypeError):
+            resolve_detector_xy((1,2,3))
+            
+        pass
         
 
