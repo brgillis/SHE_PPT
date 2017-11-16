@@ -166,7 +166,9 @@ class TestMosaicProduct(object):
         write_pickled_product(product, filename, listfilename)
         
         loaded_hdu = prod.load_mosaic_hdu(filename=filename,
-                                          listfile_filename=listfilename)
+                                          listfile_filename=listfilename,
+                                          detector_x=detector_x,
+                                          detector_y=detector_y)
         
         assert (loaded_hdu.data == test_array).all()
         
