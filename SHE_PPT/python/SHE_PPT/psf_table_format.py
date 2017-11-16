@@ -24,7 +24,7 @@ from astropy.table import Table
 
 from SHE_PPT.utility import hash_any
 from SHE_PPT import magic_values as mv
-from SHE_PPT.detector import get_id_string
+from SHE_PPT import detector as dtc
 from SHE_PPT.logging import getLogger
 
 logger = getLogger(mv.logger_name)
@@ -162,7 +162,7 @@ def make_psf_table_header(detector_x = 1,
     header[tf.m.version] = tf.__version__
     header[tf.m.format] = tf.m.table_format
     
-    header[tf.m.extname] = get_id_string(detector_x,detector_y) + "." + mv.psf_cat_tag
+    header[tf.m.extname] = dtc.get_id_string(detector_x,detector_y) + "." + mv.psf_cat_tag
     
     header[tf.m.model_hash] = model_hash
     header[tf.m.model_seed] = model_seed
@@ -196,8 +196,7 @@ def initialise_psf_table(image = None,
     
     if detector is not None:
         logger.warn("'detector' argument for initialise_*_table is deprecated: Use detector_x and detector_y instead.")
-        detector_x = detector % 6 + 1
-        detector_y = detector // 6 + 1
+        detector_x, detector_y = dtc.resolve_detector_xy(detector)
     
     if optional_columns is None:
         optional_columns = []
@@ -223,8 +222,7 @@ def initialise_psf_table(image = None,
         # Get values from the image object, unless they were passed explicitly
         
         if detector_x or detector_y is None:
-            detector_x = image.get_local_ID() % 6 + 1
-            detector_y = image.get_local_ID() // 6 + 1
+            detector_x, detector_y = dtc.detector_int_to_xy(image.get_local_ID())
             
         if model_seed is None:
             model_seed = image.get_full_seed()
