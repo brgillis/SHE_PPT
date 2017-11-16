@@ -176,8 +176,8 @@ class TestMosaicProduct(object):
         
         test_array2 = np.zeros((20,40))
         test_array2[0,0] = 2
-        detector_x = 4
-        detector_y = 5
+        detector_x2 = 4
+        detector_y2 = 5
         
         hdu2 = fits.ImageHDU(data=test_array2,
                              header=fits.header.Header((("EXTNAME",dtc.get_id_string(detector_x2,detector_y2)
