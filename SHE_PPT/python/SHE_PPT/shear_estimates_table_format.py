@@ -312,8 +312,8 @@ def initialise_shear_estimates_table(detections_table = None,
     
     if detector is not None:
         logger.warn("'detector' argument for initialise_*_table is deprecated: Use detector_x and detector_y instead.")
-        detector_x = detector % 6
-        detector_y = detector // 6
+        detector_x = detector % 6 + 1
+        detector_y = detector // 6 + 1
     
     assert (detections_table is None) or (is_in_format(detections_table,detf,strict=False))
     

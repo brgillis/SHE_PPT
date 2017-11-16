@@ -196,8 +196,8 @@ def initialise_psf_table(image = None,
     
     if detector is not None:
         logger.warn("'detector' argument for initialise_*_table is deprecated: Use detector_x and detector_y instead.")
-        detector_x = detector % 6
-        detector_y = detector // 6
+        detector_x = detector % 6 + 1
+        detector_y = detector // 6 + 1
     
     if optional_columns is None:
         optional_columns = []
@@ -223,8 +223,8 @@ def initialise_psf_table(image = None,
         # Get values from the image object, unless they were passed explicitly
         
         if detector_x or detector_y is None:
-            detector_x = image.get_local_ID() % 6
-            detector_y = image.get_local_ID() // 6
+            detector_x = image.get_local_ID() % 6 + 1
+            detector_y = image.get_local_ID() // 6 + 1
             
         if model_seed is None:
             model_seed = image.get_full_seed()
