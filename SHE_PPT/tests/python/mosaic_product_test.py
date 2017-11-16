@@ -25,6 +25,7 @@ import pytest
 from SHE_PPT import mosaic_product as prod
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
+from SHE_PPT import detector as dtc
 import SHE_PPT.magic_values as mv
 
 class TestMosaicProduct(object):
@@ -151,10 +152,12 @@ class TestMosaicProduct(object):
         
         test_array = np.zeros((10,20))
         test_array[0,0] = 1
-        detector = 2
+        detector_x = 2
+        detector_y = 3
         
         phdu = fits.PrimaryHDU(data=test_array,
-                               header=fits.header.Header((("EXTNAME",str(detector)+"."+mv.segmentation_tag),)))
+                               header=fits.header.Header((("EXTNAME",dtc.get_id_string(detector_x,detector_y)
+                                                           +"."+mv.segmentation_tag),)))
         
         data_filename = str(tmpdir.join("mosaic_data.fits"))
         phdu.writeto(data_filename, clobber=True)
