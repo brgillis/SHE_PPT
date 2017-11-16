@@ -66,12 +66,12 @@ def get_detector_xy(id_string):
     Parameters
     ----------
     id_string : str
-        ID string (first part of EXTNAME header value for an HDU)
+        ID string (first part of EXTNAME header value for an HDU, or full EXTNAME)
     """
     
     if not isinstance(id_string, str):
         raise TypeError("id_string must be a string")
-    if len(id_string) != len(id_template):
+    if (len(id_string) != len(id_template)) and (len(id_string) != len(id_template)+4):
         raise ValueError("Improperly formatted id_string")
     
     return int(id_string[x_index]), int(id_string[y_index])
