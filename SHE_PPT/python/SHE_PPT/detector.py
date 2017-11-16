@@ -24,6 +24,10 @@ __all__ = ["get_id_string","id_strings"]
 
 id_template = "CCDID $X-$Y"
 
+# Indices of x and y detector id in the detector string
+x_index = 6
+y_index = 8
+
 def get_id_string(x,y):
     """Gets a detector ID string for a given x/y position.
     

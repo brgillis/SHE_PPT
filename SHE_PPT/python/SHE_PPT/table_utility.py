@@ -66,13 +66,15 @@ def get_lengths(table_format):
 
     return zip(*table_format.lengths.items())[1]
 
-def is_in_format(table, table_format):
+def is_in_format(table, table_format, strict=True):
     """
         @brief Checks if a table is in the given format
         
         @param table <astropy.table.Table>
         
         @param table_format <...TableFormat>
+        
+        @param strict <bool> If False, will allow the presence of extra columns
         
         @return <bool>
         
@@ -83,11 +85,12 @@ def is_in_format(table, table_format):
         if colname not in table.colnames:
             return False
         
-    # Check that no extra column names are present, and each present column is of the right dtype
+    # Check that no extra column names are present if strict==True, and each present column is of the right dtype
     for colname in table.colnames:
         if colname not in table_format.all:
-            return False
-        if table.dtype[colname].newbyteorder('>') != np.dtype((table_format.dtypes[colname],
+            if strict:
+                return False
+        elif table.dtype[colname].newbyteorder('>') != np.dtype((table_format.dtypes[colname],
                                                                table_format.lengths[colname])):
             return False
         

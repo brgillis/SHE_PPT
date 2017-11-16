@@ -25,6 +25,7 @@ import pytest
 from SHE_PPT import mosaic_product as prod
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
+from SHE_PPT import detector as dtc
 import SHE_PPT.magic_values as mv
 
 class TestMosaicProduct(object):
@@ -151,10 +152,12 @@ class TestMosaicProduct(object):
         
         test_array = np.zeros((10,20))
         test_array[0,0] = 1
-        detector = 2
+        detector_x = 2
+        detector_y = 3
         
         phdu = fits.PrimaryHDU(data=test_array,
-                               header=fits.header.Header((("EXTNAME",str(detector)+"."+mv.segmentation_tag),)))
+                               header=fits.header.Header((("EXTNAME",dtc.get_id_string(detector_x,detector_y)
+                                                           +"."+mv.segmentation_tag),)))
         
         data_filename = str(tmpdir.join("mosaic_data.fits"))
         phdu.writeto(data_filename, clobber=True)
@@ -163,7 +166,9 @@ class TestMosaicProduct(object):
         write_pickled_product(product, filename, listfilename)
         
         loaded_hdu = prod.load_mosaic_hdu(filename=filename,
-                                          listfile_filename=listfilename)
+                                          listfile_filename=listfilename,
+                                          detector_x=detector_x,
+                                          detector_y=detector_y)
         
         assert (loaded_hdu.data == test_array).all()
         
@@ -171,10 +176,12 @@ class TestMosaicProduct(object):
         
         test_array2 = np.zeros((20,40))
         test_array2[0,0] = 2
-        detector2 = 4
+        detector_x2 = 4
+        detector_y2 = 5
         
         hdu2 = fits.ImageHDU(data=test_array2,
-                             header=fits.header.Header((("EXTNAME",str(detector2)+"."+mv.segmentation_tag),)))
+                             header=fits.header.Header((("EXTNAME",dtc.get_id_string(detector_x2,detector_y2)
+                                                         +"."+mv.segmentation_tag),)))
         
         hdulist = fits.HDUList([phdu,hdu2])
         hdulist.writeto(data_filename, clobber=True)
@@ -193,13 +200,15 @@ class TestMosaicProduct(object):
         
         loaded_hdu1 = prod.load_mosaic_hdu(filename=filename,
                                            listfile_filename=listfilename,
-                                           detector=detector)
+                                           detector_x=detector_x,
+                                           detector_y=detector_y)
         
         assert (loaded_hdu1.data == test_array).all()
         
         loaded_hdu2 = prod.load_mosaic_hdu(filename=filename,
                                            listfile_filename=listfilename,
-                                           detector=detector2)
+                                           detector_x=detector_x2,
+                                           detector_y=detector_y2)
         
         assert (loaded_hdu2.data == test_array2).all()
         

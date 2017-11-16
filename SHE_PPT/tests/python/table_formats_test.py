@@ -20,7 +20,7 @@
 
 import os
 
-from astropy.table import Table
+from astropy.table import Column, Table
 import pytest
 
 from SHE_PPT import magic_values as mv
@@ -164,19 +164,26 @@ class TestTableFormats:
         assert len(self.initializers) == len(self.formats)
             
         for i in range(len(self.initializers)):
+            
+            # Try strict test
             for j in range((len(self.formats))):
-                assert is_in_format(empty_tables[i],self.formats[j]) == (i==j)
+                assert is_in_format(empty_tables[i],self.formats[j],strict=True) == (i==j)
+                
+            # Try non-strict version now
+            empty_tables[i].add_column(Column(name='new_column',data=np.zeros((0,))))
+            for j in range((len(self.formats))):
+                assert is_in_format(empty_tables[i],self.formats[j],strict=False) == (i==j)
                 
     def test_add_row(self):
         # Test that we can add a row through kwargs
         
         tab = initialise_detections_table()
         
-        add_row(tab, **{detf.ID: 0, detf.gal_x: 0, detf.gal_y: 1})
+        add_row(tab, **{detf.ID: 0, detf.gal_x_world: 0, detf.gal_y_world: 1})
         
         assert tab[detf.ID][0]==0
-        assert tab[detf.gal_x][0]==0.
-        assert tab[detf.gal_y][0]==1.
+        assert tab[detf.gal_x_world][0]==0.
+        assert tab[detf.gal_y_world][0]==1.
         
     def test_output_tables(self):
         
@@ -188,7 +195,7 @@ class TestTableFormats:
         
         tab = initialise_detections_table()
         
-        add_row(tab, **{detf.ID: 0, detf.gal_x: 0, detf.gal_y: 1})
+        add_row(tab, **{detf.ID: 0, detf.gal_x_world: 0, detf.gal_y_world: 1})
         
         # Try ascii output
         output_tables(tab,self.filename_base,"ascii")
@@ -234,24 +241,28 @@ class TestTableFormats:
                 
     def test_init(self):
         
-        detector = 15
+        detector_x = 3
+        detector_y = 2
         model_hash = -1235
         model_seed = 4422
         noise_seed = 11015
         
-        extname_head = str(detector) + "."
+        extname_head = "CCDID 3-2."
         
         # Test initialization methods
         
-        detections_table = initialise_detections_table(detector = detector)
+        detections_table = initialise_detections_table(detector_x = detector_x,
+                                                       detector_y = detector_y)
         
         assert(detections_table.meta[detf.m.extname] == extname_head + mv.detections_tag)
         
-        details_table = initialise_details_table(detector = detector)
+        details_table = initialise_details_table(detector_x = detector_x,
+                                                 detector_y = detector_y)
         
         assert(details_table.meta[detf.m.extname] == extname_head + mv.details_tag)
         
-        psf_table = initialise_psf_table(detector = detector)
+        psf_table = initialise_psf_table(detector_x = detector_x,
+                                         detector_y = detector_y)
         
         assert(psf_table.meta[pstf.m.extname] == extname_head + mv.psf_cat_tag)
         

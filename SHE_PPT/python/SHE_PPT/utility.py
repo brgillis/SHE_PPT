@@ -21,6 +21,7 @@
 import codecs
 import hashlib
 
+from SHE_PPT import detector as dtc
 
 def hash_any(obj,format='hex',max_length=None):
     """
@@ -66,7 +67,7 @@ def find_extension(hdulist,extname):
 
 def get_detector(obj):
     """
-        Find the detector label for a fits hdu or table.
+        Find the detector indices for a fits hdu or table.
     """
     
     if hasattr(obj,"header"):
@@ -78,7 +79,8 @@ def get_detector(obj):
     
     extname = header["EXTNAME"]
     
-    detector = int(extname.split(".")[0])
+    detector_x = int(extname[dtc.x_index])
+    detector_y = int(extname[dtc.y_index])
     
-    return detector
+    return detector_x, detector_y
     
