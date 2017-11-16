@@ -182,8 +182,8 @@ class TestTableFormats:
         add_row(tab, **{detf.ID: 0, detf.gal_x_world: 0, detf.gal_y_world: 1})
         
         assert tab[detf.ID][0]==0
-        assert tab[detf.gal_x][0]==0.
-        assert tab[detf.gal_y][0]==1.
+        assert tab[detf.gal_x_world][0]==0.
+        assert tab[detf.gal_y_world][0]==1.
         
     def test_output_tables(self):
         
@@ -250,7 +250,7 @@ class TestTableFormats:
         
         # Test initialization methods
         
-        detections_table = initialise_detections_table(detector_x = detector)
+        detections_table = initialise_detections_table(detector = detector)
         
         assert(detections_table.meta[detf.m.extname] == extname_head + mv.detections_tag)
         
