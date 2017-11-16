@@ -266,7 +266,6 @@ def initialise_detections_table(image = None,
     """
     
     if detector is not None:
-        logger.warn("'detector' argument for initialise_*_table is deprecated: Use detector_x and detector_y instead.")
         detector_x, detector_y = dtc.resolve_detector_xy(detector)
     
     if optional_columns is None:
