@@ -101,9 +101,9 @@ class Test_mask():
     
     def test_resolve_detector_xy(self):
         
-        assert resolve_detector_xy("CCDID 5-3") == 5,3
-        assert resolve_detector_xy(16) == 5,3
-        assert resolve_detector_xy((5,3)) == 5,3
+        assert resolve_detector_xy("CCDID 5-3") == (5,3)
+        assert resolve_detector_xy(16) == (5,3)
+        assert resolve_detector_xy((5,3)) == (5,3)
         
         with pytest.raises(TypeError):
             resolve_detector_xy(3.1)
