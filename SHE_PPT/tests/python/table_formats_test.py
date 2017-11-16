@@ -246,7 +246,7 @@ class TestTableFormats:
         model_seed = 4422
         noise_seed = 11015
         
-        extname_head = str(detector) + "."
+        extname_head = "CCDID 3-2."
         
         # Test initialization methods
         
