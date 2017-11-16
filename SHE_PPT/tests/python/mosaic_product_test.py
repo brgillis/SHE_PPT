@@ -200,13 +200,15 @@ class TestMosaicProduct(object):
         
         loaded_hdu1 = prod.load_mosaic_hdu(filename=filename,
                                            listfile_filename=listfilename,
-                                           detector=detector)
+                                           detector_x=detector_x,
+                                           detector_y=detector_y)
         
         assert (loaded_hdu1.data == test_array).all()
         
         loaded_hdu2 = prod.load_mosaic_hdu(filename=filename,
                                            listfile_filename=listfilename,
-                                           detector=detector2)
+                                           detector_x=detector_x2,
+                                           detector_y=detector_y2)
         
         assert (loaded_hdu2.data == test_array2).all()
         
