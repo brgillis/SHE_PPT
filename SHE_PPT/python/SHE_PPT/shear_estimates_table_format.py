@@ -337,18 +337,19 @@ def initialise_shear_estimates_table(detections_table = None,
     if detections_table is not None:
         if detector_x is None:
             detector_x = int(detections_table.meta[detf.m.extname][dtc.x_index])
-        else:
-            detector_x = 1
         if detector_y is None:
             detector_y = int(detections_table.meta[detf.m.extname][dtc.y_index])
-        else:
-            detector_y = 1
         if model_hash is not None:
             model_hash = detections_table.meta[detf.m.model_hash]
         if model_seed is not None:
             model_seed = detections_table.meta[detf.m.model_seed]
         if noise_seed is not None:
             noise_seed = detections_table.meta[detf.m.noise_seed]
+            
+    if detector_x is None:
+        detector_x = 1
+    if detector_y is None:
+        detector_y = 1
     
     shear_estimates_table.meta = make_shear_estimates_table_header(detector_x = detector_x,
                                                                    detector_y = detector_y,

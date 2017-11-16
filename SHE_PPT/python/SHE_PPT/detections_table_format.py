@@ -303,6 +303,11 @@ def initialise_detections_table(image = None,
             
         if model_seed is None:
             model_seed = image.get_full_seed()
+            
+    if detector_x is None:
+        detector_x = 1
+    if detector_y is None:
+        detector_y = 1
     
     if options is not None:
         
