@@ -285,7 +285,6 @@ def make_shear_estimates_table_header(detector_x = 1,
     return header
 
 def initialise_shear_estimates_table(detections_table = None,
-                                     
                                      optional_columns = None,
                                      detector_x = None,
                                      detector_y = None,
@@ -342,11 +341,11 @@ def initialise_shear_estimates_table(detections_table = None,
             detector_x = int(detections_table.meta[detf.m.extname][dtc.x_index])
         if detector_y is None:
             detector_y = int(detections_table.meta[detf.m.extname][dtc.y_index])
-        if model_hash is not None:
+        if model_hash is None:
             model_hash = detections_table.meta[detf.m.model_hash]
-        if model_seed is not None:
+        if model_seed is None:
             model_seed = detections_table.meta[detf.m.model_seed]
-        if noise_seed is not None:
+        if noise_seed is None:
             noise_seed = detections_table.meta[detf.m.noise_seed]
             
     if detector_x is None:

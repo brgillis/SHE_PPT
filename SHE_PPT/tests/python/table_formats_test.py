@@ -241,7 +241,8 @@ class TestTableFormats:
                 
     def test_init(self):
         
-        detector = 15
+        detector_x = 3
+        detector_y = 2
         model_hash = -1235
         model_seed = 4422
         noise_seed = 11015
@@ -250,15 +251,18 @@ class TestTableFormats:
         
         # Test initialization methods
         
-        detections_table = initialise_detections_table(detector = detector)
+        detections_table = initialise_detections_table(detector_x = detector_x,
+                                                       detector_y = detector_y)
         
         assert(detections_table.meta[detf.m.extname] == extname_head + mv.detections_tag)
         
-        details_table = initialise_details_table(detector = detector)
+        details_table = initialise_details_table(detector_x = detector_x,
+                                                 detector_y = detector_y)
         
         assert(details_table.meta[detf.m.extname] == extname_head + mv.details_tag)
         
-        psf_table = initialise_psf_table(detector = detector)
+        psf_table = initialise_psf_table(detector_x = detector_x,
+                                         detector_y = detector_y)
         
         assert(psf_table.meta[pstf.m.extname] == extname_head + mv.psf_cat_tag)
         
