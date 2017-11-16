@@ -44,8 +44,8 @@ def init():
     binding_class.set_LensMC_filename = __set_LensMC_filename
     binding_class.get_LensMC_filename = __get_LensMC_filename
     
-    binding_class.set_MegaLUT_filename = __set_MegaLUT_filename
-    binding_class.get_MegaLUT_filename = __get_MegaLUT_filename
+    binding_class.set_MomentsML_filename = __set_MomentsML_filename
+    binding_class.get_MomentsML_filename = __get_MomentsML_filename
     
     binding_class.set_REGAUSS_filename = __set_REGAUSS_filename
     binding_class.get_REGAUSS_filename = __get_REGAUSS_filename
@@ -74,11 +74,11 @@ def __set_LensMC_filename(self, filename):
 def __get_LensMC_filename(self):
     return self.Data.LensMCShearEstimates.DataContainer.FileName
 
-def __set_MegaLUT_filename(self, filename):
-    self.Data.MegaLUTShearEstimates.DataContainer.FileName = filename
+def __set_MomentsML_filename(self, filename):
+    self.Data.MomentsMLShearEstimates.DataContainer.FileName = filename
 
-def __get_MegaLUT_filename(self):
-    return self.Data.MegaLUTShearEstimates.DataContainer.FileName
+def __get_MomentsML_filename(self):
+    return self.Data.MomentsMLShearEstimates.DataContainer.FileName
 
 def __set_REGAUSS_filename(self, filename):
     self.Data.REGAUSSShearEstimates.DataContainer.FileName = filename
@@ -91,7 +91,7 @@ def __get_all_filenames(self):
     all_filenames = [self.get_BFD_filename(),
                      self.get_KSB_filename(),
                      self.get_LensMC_filename(),
-                     self.get_MegaLUT_filename(),
+                     self.get_MomentsML_filename(),
                      self.get_REGAUSS_filename(),]
     
     return all_filenames
@@ -102,8 +102,8 @@ def __get_method_filename(self, method):
         return self.get_KSB_filename()
     elif method=="LensMC":
         return self.get_LensMC_filename()
-    elif method=="MegaLUT":
-        return self.get_MegaLUT_filename()
+    elif method=="MomentsML":
+        return self.get_MomentsML_filename()
     elif method=="REGAUSS":
         return self.get_REGAUSS_filename()
     elif method=="BFD":
@@ -123,7 +123,7 @@ class ShearEstimatesProduct: # @FIXME
         self.BFDShearEstimates = None
         self.KSBShearEstimates = None
         self.LensMCShearEstimates = None
-        self.MegaLUTShearEstimates = None
+        self.MomentsMLShearEstimates = None
         self.REGAUSSShearEstimates = None
         
 class DataContainer: # @FIXME
@@ -149,7 +149,7 @@ class LensMCShearEstimatesProduct: # @FIXME
         self.version = None
         self.DataContainer = None
         
-class MegaLUTShearEstimatesProduct: # @FIXME
+class MomentsMLShearEstimatesProduct: # @FIXME
     def __init__(self):
         self.format = None
         self.version = None
@@ -164,7 +164,7 @@ class REGAUSSShearEstimatesProduct: # @FIXME
 def create_dpd_shear_estimates(BFD_filename = None,
                                KSB_filename = None,
                                LensMC_filename = None,
-                               MegaLUT_filename = None,
+                               MomentsML_filename = None,
                                REGAUSS_filename = None):
     """
         @TODO fill in docstring
@@ -179,7 +179,7 @@ def create_dpd_shear_estimates(BFD_filename = None,
     dpd_shear_estimates.Data = create_shear_estimates(BFD_filename,
                                                        KSB_filename,
                                                        LensMC_filename,
-                                                       MegaLUT_filename,
+                                                       MomentsML_filename,
                                                        REGAUSS_filename)
     
     return dpd_shear_estimates
@@ -190,7 +190,7 @@ create_shear_estimates_product = create_dpd_shear_estimates
 def create_shear_estimates(BFD_filename = None,
                            KSB_filename = None,
                            LensMC_filename = None,
-                           MegaLUT_filename = None,
+                           MomentsML_filename = None,
                            REGAUSS_filename = None):
     """
         @TODO fill in docstring
@@ -205,7 +205,7 @@ def create_shear_estimates(BFD_filename = None,
     
     shear_estimates.LensMCShearEstimates = create_LensMC_shear_estimates(LensMC_filename)
     
-    shear_estimates.MegaLUTShearEstimates = create_MegaLUT_shear_estimates(MegaLUT_filename)
+    shear_estimates.MomentsMLShearEstimates = create_MomentsML_shear_estimates(MomentsML_filename)
     
     shear_estimates.REGAUSSShearEstimates = create_REGAUSS_shear_estimates(REGAUSS_filename)
     
@@ -262,22 +262,22 @@ def create_LensMC_shear_estimates(filename):
     
     return LensMC_shear_estimates
 
-def create_MegaLUT_shear_estimates(filename):
+def create_MomentsML_shear_estimates(filename):
     """
         @TODO fill in docstring
     """
     
-    # MegaLUT_shear_estimates = she_dpd.SheMegaLUTShearEstimates() # @FIXME
-    MegaLUT_shear_estimates = MegaLUTShearEstimatesProduct()
+    # MomentsML_shear_estimates = she_dpd.SheMomentsMLShearEstimates() # @FIXME
+    MomentsML_shear_estimates = MomentsMLShearEstimatesProduct()
     
-    MegaLUT_shear_estimates.format = setf.m.table_format
-    MegaLUT_shear_estimates.version = setf.m.__version__
+    MomentsML_shear_estimates.format = setf.m.table_format
+    MomentsML_shear_estimates.version = setf.m.__version__
     
-    MegaLUT_shear_estimates.DataContainer = DataContainer()
-    MegaLUT_shear_estimates.DataContainer.FileName = filename
-    MegaLUT_shear_estimates.DataContainer.filestatus = "PROPOSED"
+    MomentsML_shear_estimates.DataContainer = DataContainer()
+    MomentsML_shear_estimates.DataContainer.FileName = filename
+    MomentsML_shear_estimates.DataContainer.filestatus = "PROPOSED"
     
-    return MegaLUT_shear_estimates
+    return MomentsML_shear_estimates
 
 def create_REGAUSS_shear_estimates(filename):
     """

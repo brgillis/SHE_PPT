@@ -39,8 +39,8 @@ def init():
     binding_class.set_LensMC_filename = __set_LensMC_filename
     binding_class.get_LensMC_filename = __get_LensMC_filename
     
-    binding_class.set_MegaLUT_filename = __set_MegaLUT_filename
-    binding_class.get_MegaLUT_filename = __get_MegaLUT_filename
+    binding_class.set_MomentsML_filename = __set_MomentsML_filename
+    binding_class.get_MomentsML_filename = __get_MomentsML_filename
     
     binding_class.set_REGAUSS_filename = __set_REGAUSS_filename
     binding_class.get_REGAUSS_filename = __get_REGAUSS_filename
@@ -63,11 +63,11 @@ def __set_LensMC_filename(self, filename):
 def __get_LensMC_filename(self):
     return self.Data.LensMCCalibrationParameters.DataContainer.FileName
 
-def __set_MegaLUT_filename(self, filename):
-    self.Data.MegaLUTCalibrationParameters.DataContainer.FileName = filename
+def __set_MomentsML_filename(self, filename):
+    self.Data.MomentsMLCalibrationParameters.DataContainer.FileName = filename
 
-def __get_MegaLUT_filename(self):
-    return self.Data.MegaLUTCalibrationParameters.DataContainer.FileName
+def __get_MomentsML_filename(self):
+    return self.Data.MomentsMLCalibrationParameters.DataContainer.FileName
 
 def __set_REGAUSS_filename(self, filename):
     self.Data.REGAUSSCalibrationParameters.DataContainer.FileName = filename
@@ -79,7 +79,7 @@ def __get_all_filenames(self):
     
     all_filenames = [self.get_KSB_filename(),
                      self.get_LensMC_filename(),
-                     self.get_MegaLUT_filename(),
+                     self.get_MomentsML_filename(),
                      self.get_REGAUSS_filename(),]
     
     return all_filenames
@@ -90,8 +90,8 @@ def __get_method_filename(self, method):
         return self.get_KSB_filename()
     elif method=="LensMC":
         return self.get_LensMC_filename()
-    elif method=="MegaLUT":
-        return self.get_MegaLUT_filename()
+    elif method=="MomentsML":
+        return self.get_MomentsML_filename()
     elif method=="REGAUSS":
         return self.get_REGAUSS_filename()
     elif method=="BFD":
@@ -111,7 +111,7 @@ class SheCalibrationParametersProduct: # @FIXME
     def __init__(self):
         self.KSBCalibrationParameters = None
         self.LensMCCalibrationParameters = None
-        self.MegaLUTCalibrationParameters = None
+        self.MomentsMLCalibrationParameters = None
         self.REGAUSSCalibrationParameters = None
         
 class DataContainer: # @FIXME
@@ -137,7 +137,7 @@ class SheLensMCCalibrationParametersProduct: # @FIXME
         self.version = None
         self.DataContainer = None
         
-class SheMegaLUTCalibrationParametersProduct: # @FIXME
+class SheMomentsMLCalibrationParametersProduct: # @FIXME
     def __init__(self):
         self.format = None
         self.version = None
@@ -151,7 +151,7 @@ class SheREGAUSSCalibrationParametersProduct: # @FIXME
 
 def create_dpd_she_calibration_parameters(KSB_filename = None,
                                LensMC_filename = None,
-                               MegaLUT_filename = None,
+                               MomentsML_filename = None,
                                REGAUSS_filename = None):
     """
         @TODO fill in docstring
@@ -165,7 +165,7 @@ def create_dpd_she_calibration_parameters(KSB_filename = None,
     
     dpd_calibration_parameters.Data = create_she_calibration_parameters(KSB_filename,
                                                        LensMC_filename,
-                                                       MegaLUT_filename,
+                                                       MomentsML_filename,
                                                        REGAUSS_filename)
     
     return dpd_calibration_parameters
@@ -175,7 +175,7 @@ create_calibration_parameters_product = create_dpd_she_calibration_parameters
 
 def create_she_calibration_parameters(KSB_filename = None,
                            LensMC_filename = None,
-                           MegaLUT_filename = None,
+                           MomentsML_filename = None,
                            REGAUSS_filename = None):
     """
         @TODO fill in docstring
@@ -188,7 +188,7 @@ def create_she_calibration_parameters(KSB_filename = None,
     
     calibration_parameters.LensMCCalibrationParameters = create_she_LensMC_calibration_parameters(LensMC_filename)
     
-    calibration_parameters.MegaLUTCalibrationParameters = create_she_MegaLUT_calibration_parameters(MegaLUT_filename)
+    calibration_parameters.MomentsMLCalibrationParameters = create_she_MomentsML_calibration_parameters(MomentsML_filename)
     
     calibration_parameters.REGAUSSCalibrationParameters = create_she_REGAUSS_calibration_parameters(REGAUSS_filename)
     
@@ -228,22 +228,22 @@ def create_she_LensMC_calibration_parameters(filename):
     
     return LensMC_calibration_parameters
 
-def create_she_MegaLUT_calibration_parameters(filename):
+def create_she_MomentsML_calibration_parameters(filename):
     """
         @TODO fill in docstring
     """
     
-    # MegaLUT_calibration_parameters = she_dpd.SheMegaLUTCalibrationParameters() # @FIXME
-    MegaLUT_calibration_parameters = SheMegaLUTCalibrationParametersProduct()
+    # MomentsML_calibration_parameters = she_dpd.SheMomentsMLCalibrationParameters() # @FIXME
+    MomentsML_calibration_parameters = SheMomentsMLCalibrationParametersProduct()
     
-    MegaLUT_calibration_parameters.format = "UNDEFINED"
-    MegaLUT_calibration_parameters.version = "0.0"
+    MomentsML_calibration_parameters.format = "UNDEFINED"
+    MomentsML_calibration_parameters.version = "0.0"
     
-    MegaLUT_calibration_parameters.DataContainer = DataContainer()
-    MegaLUT_calibration_parameters.DataContainer.FileName = filename
-    MegaLUT_calibration_parameters.DataContainer.filestatus = "PROPOSED"
+    MomentsML_calibration_parameters.DataContainer = DataContainer()
+    MomentsML_calibration_parameters.DataContainer.FileName = filename
+    MomentsML_calibration_parameters.DataContainer.filestatus = "PROPOSED"
     
-    return MegaLUT_calibration_parameters
+    return MomentsML_calibration_parameters
 
 def create_she_REGAUSS_calibration_parameters(filename):
     """

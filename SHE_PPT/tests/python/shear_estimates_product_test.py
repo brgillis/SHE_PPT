@@ -52,7 +52,7 @@ class TestShearEstimatesProduct(object):
         l_filename = "test_file_l.fits" 
         product.set_LensMC_filename(l_filename)
         m_filename = "test_file_m.fits" 
-        product.set_MegaLUT_filename(m_filename)
+        product.set_MomentsML_filename(m_filename)
         r_filename = "test_file_r.fits" 
         product.set_REGAUSS_filename(r_filename)
 
@@ -68,7 +68,7 @@ class TestShearEstimatesProduct(object):
         assert loaded_product.get_BFD_filename() == b_filename
         assert loaded_product.get_KSB_filename() == k_filename
         assert loaded_product.get_LensMC_filename() == l_filename
-        assert loaded_product.get_MegaLUT_filename() == m_filename
+        assert loaded_product.get_MomentsML_filename() == m_filename
         assert loaded_product.get_REGAUSS_filename() == r_filename
         
         pass
@@ -88,7 +88,7 @@ class TestShearEstimatesProduct(object):
         l_filename = "test_file_l.fits" 
         product.set_LensMC_filename(l_filename)
         m_filename = "test_file_m.fits" 
-        product.set_MegaLUT_filename(m_filename)
+        product.set_MomentsML_filename(m_filename)
         r_filename = "test_file_r.fits" 
         product.set_REGAUSS_filename(r_filename)
 
@@ -104,7 +104,7 @@ class TestShearEstimatesProduct(object):
         assert loaded_product.get_BFD_filename() == b_filename
         assert loaded_product.get_KSB_filename() == k_filename
         assert loaded_product.get_LensMC_filename() == l_filename
-        assert loaded_product.get_MegaLUT_filename() == m_filename
+        assert loaded_product.get_MomentsML_filename() == m_filename
         assert loaded_product.get_REGAUSS_filename() == r_filename
         
         pass
