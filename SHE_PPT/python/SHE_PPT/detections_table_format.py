@@ -27,7 +27,7 @@ from SHE_PPT import magic_values as mv
 from SHE_PPT.detector import get_id_string
 from SHE_PPT.logging import getLogger
 
-logger = SHE_PPT.getLogger(mv.logger_name)
+logger = getLogger(mv.logger_name)
 
 class DetectionsTableMeta(object):
     """

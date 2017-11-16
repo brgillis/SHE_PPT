@@ -28,6 +28,7 @@ import pickle
 
 from SHE_PPT.file_io import read_xml_product
 from SHE_PPT.utility import find_extension
+from SHE_PPT import detector as dtc
 import SHE_PPT.magic_values as mv
 
 # Convenience function to easily load the actual map

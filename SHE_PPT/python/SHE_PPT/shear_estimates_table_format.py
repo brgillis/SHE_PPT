@@ -28,7 +28,7 @@ from SHE_PPT.detections_table_format import tf as detf
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.logging import getLogger
 
-logger = SHE_PPT.getLogger(mv.logger_name)
+logger = getLogger(mv.logger_name)
 
 num_chains = 100
 len_chain = 200
