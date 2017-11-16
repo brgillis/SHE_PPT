@@ -21,8 +21,6 @@ from aplpy.core import Parameters
 
 import numpy as np
 
-__all__ = ["get_id_string","id_strings"]
-
 id_template = "CCDID X-Y"
 
 # Indices of x and y detector id in the detector string
@@ -132,6 +130,6 @@ def resolve_detector_xy(v):
     elif isinstance(v, tuple) and len(v)==2:
         return v
     else:
-        raise TypeError("v must be int, string, or tuple type.")
+        raise TypeError("v must be int, string, or tuple[2] type.")
     
     
