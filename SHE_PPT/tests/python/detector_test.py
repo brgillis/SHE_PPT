@@ -58,6 +58,8 @@ class Test_mask():
         
         assert get_detector_xy("CCDID 3-4") == (3,4)
         
+        assert get_detector_xy("CCDID 3-4.SCI") == (3,4)
+        
         with pytest.raises(TypeError):
             get_detector_xy(3)
         
