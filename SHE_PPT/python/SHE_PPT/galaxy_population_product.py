@@ -73,7 +73,7 @@ class DataContainer: # @FIXME
         self.FileName = None
         self.filestatus = None
 
-def create_dpd_she_galaxy_population(filename):
+def create_dpd_she_galaxy_population(filename = None):
     """
         @TODO fill in docstring
     """
@@ -91,7 +91,7 @@ def create_dpd_she_galaxy_population(filename):
 # Add a useful alias
 create_galaxy_population_product = create_dpd_she_galaxy_population
 
-def create_she_galaxy_population(filename):
+def create_she_galaxy_population(filename = None):
     """
         @TODO fill in docstring
     """
