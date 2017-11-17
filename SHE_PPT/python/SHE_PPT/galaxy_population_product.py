@@ -99,8 +99,8 @@ def create_she_galaxy_population(filename = None):
     # she_galaxy_population = she_dpd.SheGalaxyPopulationProduct() # @FIXME
     she_galaxy_population = SheGalaxyPopulationProduct()
     
-    BFD_calibration_parameters.format = "UNDEFINED"
-    BFD_calibration_parameters.version = "0.0"
+    she_galaxy_population.format = "UNDEFINED"
+    she_galaxy_population.version = "0.0"
     
     she_galaxy_population.DataContainer = DataContainer()
     she_galaxy_population.DataContainer.FileName = filename
