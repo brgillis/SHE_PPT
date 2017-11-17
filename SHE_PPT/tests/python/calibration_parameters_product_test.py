@@ -82,6 +82,8 @@ class TestCalibrationParametersProduct(object):
         # Change the fits filenames
         b_filename = "test_file_b.fits" 
         product.set_BFD_filename(b_filename)
+        k_filename = "test_file_k.fits" 
+        product.set_KSB_filename(k_filename)
         l_filename = "test_file_l.fits" 
         product.set_LensMC_filename(l_filename)
         m_filename = "test_file_m.fits" 
