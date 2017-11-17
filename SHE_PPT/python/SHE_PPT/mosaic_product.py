@@ -33,7 +33,7 @@ import SHE_PPT.magic_values as mv
 
 # Convenience function to easily load the actual map
 
-def load_mosaic_hdu(filename, listfile_filename=None, dir=None, hdu=0, detector_x=None, detector_y=None, **kwargs):
+def load_mosaic_hdu(filename, dir=None, hdu=0, detector_x=None, detector_y=None, **kwargs):
     """Directly loads the mosaic image from the filename of the data product.
     
     Parameters
@@ -42,11 +42,6 @@ def load_mosaic_hdu(filename, listfile_filename=None, dir=None, hdu=0, detector_
         Filename of the mosaic data product. If `dir` is None, `filename `must
         be either fully-qualified or relative to the workspace. If `dir` is
         supplied, `filename` should be only the local name of the file.
-    listfile_filename : str
-        Filename of the mosaic data product's associate listfile. If `dir` is
-        None, `listfile_filename` must be either fully-qualified or relative to
-        the workspace. If `dir` is supplied, `filename` should be only the
-        local name of the file.
     dir : str
         Directory in which `filename` is contained. If not supplied, `filename`
         and `listfile_filename` (if supplied) will be assumed to be either
@@ -76,13 +71,8 @@ def load_mosaic_hdu(filename, listfile_filename=None, dir=None, hdu=0, detector_
     
     if dir is None:
         dir = ""
-    if listfile_filename is None:
-        qualified_listfile_filename = None
-    else:
-        qualified_listfile_filename = os.path.join(dir,listfile_filename)
     
-    mosaic_product = read_xml_product(xml_file_name = os.path.join(dir,filename),
-                                      listfile_file_name = qualified_listfile_filename)
+    mosaic_product = read_xml_product(xml_file_name = os.path.join(dir,filename))
     
     data_filename = mosaic_product.get_data_filename()
     
