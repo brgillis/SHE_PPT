@@ -52,11 +52,10 @@ class TestPSFCalibrationProduct(object):
 
         # Save the product in an xml file
         filename = tmpdir.join("she_psf_calibration.xml")
-        listfilename = tmpdir.join("she_psf_calibration.json")
-        write_pickled_product(product, filename, listfilename)
+        write_pickled_product(product, filename)
 
         # Read back the xml file
-        loaded_product = read_pickled_product(filename, listfilename)
+        loaded_product = read_pickled_product(filename)
 
         # Check that it's the same
         assert loaded_product.get_zernike_mode_filename() == zm_filename
@@ -79,11 +78,10 @@ class TestPSFCalibrationProduct(object):
 
         # Save the product in a pickled file
         filename = tmpdir.join("she_psf_calibration.bin")
-        listfilename = tmpdir.join("she_psf_calibration.json")
-        write_pickled_product(product, filename, listfilename)
+        write_pickled_product(product, filename)
 
         # Read back the pickled file
-        loaded_product = read_pickled_product(filename, listfilename)
+        loaded_product = read_pickled_product(filename)
 
         # Check that it's the same
         assert loaded_product.get_zernike_mode_filename() == zm_filename

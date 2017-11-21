@@ -1,8 +1,8 @@
-""" @file astrometry_product.py
+""" @file p_of_e_product.py
 
-    Created 10 Oct 2017
+    Created 17 Nov 2017
 
-    Functions to create and output an astrometry data product.
+    Functions to create and output a p_of_e data product.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment      
@@ -18,6 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to    
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import EuclidDmBindings.she.she_stub as she_dpd # FIXME
 
@@ -28,8 +29,13 @@ def init():
         Adds some extra functionality to the DpdSheAstrometry product
     """
     
-    # binding_class = she_dpd.DpdSheAstrometryProduct # @FIXME
-    binding_class = DpdSheAstrometryProduct
+    # binding_class = she_dpd.DpdShePOfEProduct # @FIXME
+    binding_class = DpdShePOfEProduct
+
+    # Add the data file name methods
+    
+    binding_class.set_filename = __set_filename
+    binding_class.get_filename = __get_filename
     
     binding_class.get_all_filenames = __get_all_filenames
     
@@ -37,47 +43,67 @@ def init():
     
     return
 
+def __set_filename(self, filename):
+    self.Data.DataContainer.FileName = filename
+
+def __get_filename(self):
+    return self.Data.DataContainer.FileName
+
 def __get_all_filenames(self):
     
     all_filenames = []
     
     return all_filenames
 
-class DpdSheAstrometryProduct: # @FIXME
+class DpdShePOfEProduct: # @FIXME
     def __init__(self):
         self.Header = None
         self.Data = None
     def validateBinding(self):
         return False
         
-class SheAstrometryProduct: # @FIXME
+class ShePOfEProduct: # @FIXME
     def __init__(self):
-        pass
+        self.format = None
+        self.version = None
+        self.DataContainer = None
+        
+class DataContainer: # @FIXME
+    def __init__(self):
+        self.FileName = None
+        self.filestatus = None
 
-def create_dpd_she_astrometry():
+def create_dpd_she_p_of_e(filename = None):
     """
         @TODO fill in docstring
     """
     
-    # dpd_she_astrometry = she_dpd.DpdSheAstrometryProduct() # @FIXME
-    dpd_she_astrometry = DpdSheAstrometryProduct()
+    # dpd_she_p_of_e = she_dpd.DpdShePOfEProduct() # FIXME
+    dpd_she_p_of_e = DpdShePOfEProduct()
     
-    # dpd_she_astrometry.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
-    dpd_she_astrometry.Header = "SHE"
+    # dpd_she_p_of_e.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
+    dpd_she_p_of_e.Header = "SHE"
     
-    dpd_she_astrometry.Data = create_she_astrometry()
+    dpd_she_p_of_e.Data = create_she_p_of_e(filename)
     
-    return dpd_she_astrometry
+    return dpd_she_p_of_e
 
 # Add a useful alias
-create_astrometry_product = create_dpd_she_astrometry
+create_p_of_e_product = create_dpd_she_p_of_e
 
-def create_she_astrometry():
+def create_she_p_of_e(filename = None):
     """
         @TODO fill in docstring
     """
     
-    # she_astrometry = she_dpd.SheAstrometryProduct() # @FIXME
-    she_astrometry = SheAstrometryProduct()
+    # she_p_of_e = she_dpd.ShePOfEProduct() # @FIXME
+    she_p_of_e = ShePOfEProduct()
     
-    return she_astrometry
+    she_p_of_e.format = "UNDEFINED"
+    she_p_of_e.version = "0.0"
+    
+    she_p_of_e.DataContainer = DataContainer()
+    she_p_of_e.DataContainer.FileName = filename
+    she_p_of_e.DataContainer.filestatus = "PROPOSED"
+    
+    return she_p_of_e

@@ -70,11 +70,10 @@ class TestMosaicProduct(object):
 
         # Save the product in an xml file
         filename = tmpdir.join("mer_mosaic.xml")
-        listfilename = tmpdir.join("mer_mosaic.json")
-        write_pickled_product(product, filename, listfilename)
+        write_pickled_product(product, filename)
 
         # Read back the xml file
-        loaded_product = read_pickled_product(filename, listfilename)
+        loaded_product = read_pickled_product(filename)
 
         # Check that it's the same
         assert loaded_product.get_data_filename() == data_filename
@@ -107,11 +106,10 @@ class TestMosaicProduct(object):
 
         # Save the product in a pickled file
         filename = tmpdir.join("mer_mosaic.bin")
-        listfilename = tmpdir.join("mer_mosaic.json")
-        write_pickled_product(product, filename, listfilename)
+        write_pickled_product(product, filename)
 
         # Read back the pickled file
-        loaded_product = read_pickled_product(filename, listfilename)
+        loaded_product = read_pickled_product(filename)
 
         # Check that it's the same
         assert loaded_product.get_data_filename() == data_filename
@@ -133,20 +131,14 @@ class TestMosaicProduct(object):
                                               data_filename="junk",)
 
         filename = str(tmpdir.join("mer_mosaic.bin"))
-        listfilename = str(tmpdir.join("mer_mosaic.json"))
-        write_pickled_product(product, filename, listfilename)
+        write_pickled_product(product, filename)
         
         # Check that it raises a ValueError when expected
         
         with pytest.raises(IOError):
-            mosaic_hdu = prod.load_mosaic_hdu(filename="bad_filename.junk",
-                                              listfile_filename=listfilename)
+            mosaic_hdu = prod.load_mosaic_hdu(filename="bad_filename.junk")
         with pytest.raises(IOError):
-            mosaic_hdu = prod.load_mosaic_hdu(filename=filename,
-                                              listfile_filename="bad_filename.junk")
-        with pytest.raises(IOError):
-            mosaic_hdu = prod.load_mosaic_hdu(filename=filename,
-                                              listfile_filename=listfilename)
+            mosaic_hdu = prod.load_mosaic_hdu(filename=filename)
             
         # Now save it pointing to an existing fits file and check that it works
         
@@ -163,10 +155,9 @@ class TestMosaicProduct(object):
         phdu.writeto(data_filename, clobber=True)
         
         product.set_data_filename(data_filename)
-        write_pickled_product(product, filename, listfilename)
+        write_pickled_product(product, filename)
         
         loaded_hdu = prod.load_mosaic_hdu(filename=filename,
-                                          listfile_filename=listfilename,
                                           detector_x=detector_x,
                                           detector_y=detector_y)
         
@@ -187,26 +178,22 @@ class TestMosaicProduct(object):
         hdulist.writeto(data_filename, clobber=True)
         
         loaded_hdu1 = prod.load_mosaic_hdu(filename=filename,
-                                           listfile_filename=listfilename,
                                            hdu=0)
         
         assert (loaded_hdu1.data == test_array).all()
         
         loaded_hdu2 = prod.load_mosaic_hdu(filename=filename,
-                                           listfile_filename=listfilename,
                                            hdu=1)
         
         assert (loaded_hdu2.data == test_array2).all()
         
         loaded_hdu1 = prod.load_mosaic_hdu(filename=filename,
-                                           listfile_filename=listfilename,
                                            detector_x=detector_x,
                                            detector_y=detector_y)
         
         assert (loaded_hdu1.data == test_array).all()
         
         loaded_hdu2 = prod.load_mosaic_hdu(filename=filename,
-                                           listfile_filename=listfilename,
                                            detector_x=detector_x2,
                                            detector_y=detector_y2)
         

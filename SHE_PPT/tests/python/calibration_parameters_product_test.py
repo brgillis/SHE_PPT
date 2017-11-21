@@ -45,6 +45,8 @@ class TestCalibrationParametersProduct(object):
         product = prod.create_dpd_she_calibration_parameters()
 
         # Change the fits filenames
+        b_filename = "test_file_b.fits" 
+        product.set_BFD_filename(b_filename)
         k_filename = "test_file_k.fits" 
         product.set_KSB_filename(k_filename)
         l_filename = "test_file_l.fits" 
@@ -56,13 +58,13 @@ class TestCalibrationParametersProduct(object):
 
         # Save the product in an XML file
         filename = tmpdir.join("she_calibration_parameters.xml")
-        listfilename = tmpdir.join("she_calibration_parameters.json")
-        write_xml_product(product, filename, listfilename)
+        write_xml_product(product, filename)
 
         # Read back the XML file
-        loaded_product = read_xml_product(filename, listfilename)
+        loaded_product = read_xml_product(filename)
 
-        # Check that the filenames coincide
+        # Check that the filenames match
+        assert loaded_product.get_BFD_filename() == b_filename
         assert loaded_product.get_KSB_filename() == k_filename
         assert loaded_product.get_LensMC_filename() == l_filename
         assert loaded_product.get_MomentsML_filename() == m_filename
@@ -78,6 +80,8 @@ class TestCalibrationParametersProduct(object):
         product = prod.create_dpd_she_calibration_parameters()
 
         # Change the fits filenames
+        b_filename = "test_file_b.fits" 
+        product.set_BFD_filename(b_filename)
         k_filename = "test_file_k.fits" 
         product.set_KSB_filename(k_filename)
         l_filename = "test_file_l.fits" 
@@ -89,13 +93,13 @@ class TestCalibrationParametersProduct(object):
 
         # Save the product in a pickled file
         filename = tmpdir.join("she_calibration_parameters.bin")
-        listfilename = tmpdir.join("she_calibration_parameters.json")
-        write_pickled_product(product, filename, listfilename)
+        write_pickled_product(product, filename)
 
         # Read back the pickled file
-        loaded_product = read_pickled_product(filename, listfilename)
+        loaded_product = read_pickled_product(filename)
 
         # Check that the filenames coincide
+        assert loaded_product.get_BFD_filename() == b_filename
         assert loaded_product.get_KSB_filename() == k_filename
         assert loaded_product.get_LensMC_filename() == l_filename
         assert loaded_product.get_MomentsML_filename() == m_filename

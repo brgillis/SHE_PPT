@@ -28,10 +28,14 @@ import json
 from os.path import join, isfile
 import pickle
 import time
-
-from astropy.io import fits
 import py
 
+from astropy.io import fits
+
+from SHE_PPT.logging import getLogger
+from SHE_PPT import magic_values as mv
+
+logger = getLogger(mv.logger_name)
 
 type_name_maxlen = 41
 instance_id_maxlen = 55
@@ -161,17 +165,17 @@ def replace_multiple_in_file( input_filename, output_filename, input_strings, ou
                     new_line = new_line.replace(input_string, output_string)
                 fout.write(new_line)
 
-def write_xml_product(product, xml_file_name, listfile_file_name=None):
+def write_xml_product(product, xml_file_name):
     try:
         with open(str(xml_file_name), "w") as f:
             f.write(product.toDOM().toprettyxml(encoding="utf-8").decode("utf-8"))
     except AttributeError as e:
         if not "instance has no attribute 'toDOM'" in str(e):
             raise
-        print("WARNING: XML writing is not available; falling back to pickled writing instead.")
-        write_pickled_product(product, xml_file_name, listfile_file_name)
+        logger.warn("XML writing is not available; falling back to pickled writing instead.")
+        write_pickled_product(product, xml_file_name)
 
-def read_xml_product(xml_file_name, listfile_file_name=None):
+def read_xml_product(xml_file_name):
     
     if have_she_dpd:
         
@@ -184,52 +188,20 @@ def read_xml_product(xml_file_name, listfile_file_name=None):
         
     else:
         # Try reading it as a pickled product, since that's probable what it is #FIXME
-        product = read_pickled_product(xml_file_name, listfile_file_name)
+        logger.warn("XML reading is not available; falling back to pickled writing instead.")
+        product = read_pickled_product(xml_file_name)
 
     return product
 
-def write_pickled_product(product, pickled_file_name, listfile_file_name=None):
-    
-    if not hasattr(product,"has_files"):
-        raise ValueError("Associated init() must be called for a data product before write_pickled_product can be used.")
-    
-    if product.has_files:
-        if listfile_file_name is None:
-            raise ValueError("listfile_file_name is required for products that point to files.")
-        else:
-            write_listfile(str(listfile_file_name), product.get_all_filenames())
-    elif listfile_file_name is not None:
-        raise ValueError("listfile_file_name cannot be supplied for products that do not point to files")
-    
+def write_pickled_product(product, pickled_file_name):
+
     with open(str(pickled_file_name), "wb") as f:
         pickle.dump(product,f)
 
-def read_pickled_product(pickled_file_name, filenames=None):
+def read_pickled_product(pickled_file_name):
     
     with open(str(pickled_file_name), "rb") as f:
         product = pickle.load(f)
-    
-    if not hasattr(product,"has_files"):
-        raise ValueError("Associated init() must be called for a data product before read_pickled_product can be used.")
-    
-    if product.has_files:
-        if filenames is None:
-            raise ValueError("'filenames' argument is required for products that point to files.")
-        else:
-            if isinstance(filenames, str):
-                listfile_filenames = read_listfile(filenames)
-            elif isinstance(filenames, py.path.local):
-                listfile_filenames = read_listfile(str(filenames))
-            else:
-                listfile_filenames = filenames
-    elif filenames is not None:
-        raise ValueError("filenames cannot be supplied for products that do not point to files")
-    else:
-        listfile_filenames = []
-        
-    # Check that the files in the listfile match those in the product
-    if listfile_filenames != product.get_all_filenames():
-        raise Exception("Filenames in " + listfile_filenames + " do not match those in " + pickled_file_name + ".")
     
     return product
     
