@@ -93,11 +93,11 @@ class POfETableFormat(object):
         self.e1 = set_column_properties("E1", comment="Using flat weight function.")
         self.e2 = set_column_properties("E2", comment="Using flat weight function.")
         
-        self.bulge_e1 = set_column_properties("BULGE_E1")
-        self.bulge_e2 = set_column_properties("BULGE_E2")
+        self.bulge_e1 = set_column_properties("BULGE_E1", is_optional=True)
+        self.bulge_e2 = set_column_properties("BULGE_E2", is_optional=True)
         
-        self.disk_e1 = set_column_properties("DISK_E1")
-        self.disk_e2 = set_column_properties("DISK_E2")
+        self.disk_e1 = set_column_properties("DISK_E1", is_optional=True)
+        self.disk_e2 = set_column_properties("DISK_E2", is_optional=True)
         
         # A list of columns in the desired order
         self.all = self.is_optional.keys()
