@@ -24,12 +24,12 @@ from astropy.table import Column, Table
 import pytest
 
 from SHE_PPT import magic_values as mv
-from SHE_PPT.details_table_format import tf as datf, initialise_details_table
-from SHE_PPT.detections_table_format import tf as detf, initialise_detections_table
-from SHE_PPT.galaxy_population_table_format import tf as gptf, initialise_galaxy_population_table
-from SHE_PPT.p_of_e_table_format import tf as petf, initialise_p_of_e_table
-from SHE_PPT.psf_table_format import tf as pstf, initialise_psf_table
-from SHE_PPT.shear_estimates_table_format import tf as setf, initialise_shear_estimates_table, len_chain, num_chains
+from SHE_PPT.table_formats.details import tf as datf, initialise_details_table
+from SHE_PPT.table_formats.detections import tf as detf, initialise_detections_table
+from SHE_PPT.table_formats.galaxy_population import tf as gptf, initialise_galaxy_population_table
+from SHE_PPT.table_formats.p_of_e import tf as petf, initialise_p_of_e_table
+from SHE_PPT.table_formats.psf import tf as pstf, initialise_psf_table
+from SHE_PPT.table_formats.shear_estimates import tf as setf, initialise_shear_estimates_table, len_chain, num_chains
 from SHE_PPT.table_utility import (get_comments,
                                    get_dtypes,
                                    get_fits_dtypes,
