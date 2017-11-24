@@ -1,4 +1,4 @@
-""" @file p_of_e_product_test.py
+""" @file ksb_training_data_product_test.py
 
     Created 17 Nov 2017
 
@@ -18,11 +18,11 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to    
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from SHE_PPT import p_of_e_product as prod
+from SHE_PPT import ksb_training_data_product as prod
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
 
-class TestPOfEProduct(object):
+class TestKSBTrainingDataProduct(object):
     """A collection of tests for the shear estimates data product.
 
     """ 
@@ -30,7 +30,7 @@ class TestPOfEProduct(object):
     def test_validation(self):
         
         # Create the product
-        product = prod.create_dpd_she_p_of_e()
+        product = prod.create_dpd_she_ksb_training_data()
 
         # Check that it validates the schema
         product.validateBinding()
@@ -42,14 +42,14 @@ class TestPOfEProduct(object):
         prod.init()
         
         # Create the product
-        product = prod.create_dpd_she_p_of_e()
+        product = prod.create_dpd_she_ksb_training_data()
 
         # Change the fits filenames
         subfilename = "test_file.fits" 
         product.set_filename(subfilename)
 
         # Save the product in an XML file
-        filename = tmpdir.join("she_p_of_e.xml")
+        filename = tmpdir.join("she_ksb_training_data.xml")
         write_xml_product(product, filename)
 
         # Read back the XML file
@@ -65,14 +65,14 @@ class TestPOfEProduct(object):
         prod.init()
         
         # Create the product
-        product = prod.create_dpd_she_p_of_e()
+        product = prod.create_dpd_she_ksb_training_data()
 
         # Change the fits filenames
         subfilename = "test_file.fits" 
         product.set_filename(subfilename)
 
         # Save the product in an XML file
-        filename = tmpdir.join("she_p_of_e.xml")
+        filename = tmpdir.join("she_ksb_training_data.xml")
         write_pickled_product(product, filename)
 
         # Read back the XML file
