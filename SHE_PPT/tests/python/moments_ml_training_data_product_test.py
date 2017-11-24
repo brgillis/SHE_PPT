@@ -1,6 +1,6 @@
-""" @file regauss_training_data_product_test.py
+""" @file momentsml_training_data_product_test.py
 
-    Created 24 Nov 2017
+    Created 17 Nov 2017
 
     Unit tests for the calibration parameters data product.
 """
@@ -18,11 +18,11 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to    
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from SHE_PPT import regauss_training_data_product as prod
+from SHE_PPT import momentsml_training_data_product as prod
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
 
-class TestREGAUSSTrainingDataProduct(object):
+class TestMomentsMLTrainingDataProduct(object):
     """A collection of tests for the shear estimates data product.
 
     """ 
@@ -30,7 +30,7 @@ class TestREGAUSSTrainingDataProduct(object):
     def test_validation(self):
         
         # Create the product
-        product = prod.create_dpd_she_regauss_training_data()
+        product = prod.create_dpd_she_momentsml_training_data()
 
         # Check that it validates the schema
         product.validateBinding()
@@ -42,14 +42,14 @@ class TestREGAUSSTrainingDataProduct(object):
         prod.init()
         
         # Create the product
-        product = prod.create_dpd_she_regauss_training_data()
+        product = prod.create_dpd_she_momentsml_training_data()
 
         # Change the fits filenames
         subfilename = "test_file.fits" 
         product.set_filename(subfilename)
 
         # Save the product in an XML file
-        filename = tmpdir.join("she_regauss_training_data.xml")
+        filename = tmpdir.join("she_momentsml_training_data.xml")
         write_xml_product(product, filename)
 
         # Read back the XML file
@@ -65,14 +65,14 @@ class TestREGAUSSTrainingDataProduct(object):
         prod.init()
         
         # Create the product
-        product = prod.create_dpd_she_regauss_training_data()
+        product = prod.create_dpd_she_momentsml_training_data()
 
         # Change the fits filenames
         subfilename = "test_file.fits" 
         product.set_filename(subfilename)
 
         # Save the product in an XML file
-        filename = tmpdir.join("she_regauss_training_data.xml")
+        filename = tmpdir.join("she_momentsml_training_data.xml")
         write_pickled_product(product, filename)
 
         # Read back the XML file

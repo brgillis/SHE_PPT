@@ -1,6 +1,6 @@
 """ @file ksb_training_data_product_test.py
 
-    Created 17 Nov 2017
+    Created 24 Nov 2017
 
     Unit tests for the calibration parameters data product.
 """
