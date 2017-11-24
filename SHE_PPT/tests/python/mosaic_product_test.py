@@ -22,7 +22,7 @@ from astropy.io import fits
 import numpy as np
 import pytest
 
-from SHE_PPT import mosaic_product as prod
+from SHE_PPT.products import mosaic as prod
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
 from SHE_PPT import detector as dtc
