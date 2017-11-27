@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 from astropy.table import Table
-from SHE_PPT_ShearEstimation import magic_values as mv
+from SHE_PPT import magic_values as mv
 
 def output_shear_estimates(stamps, output_file_name, galaxies_image_file_name):
     """
