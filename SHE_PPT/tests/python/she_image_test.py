@@ -396,3 +396,26 @@ class Test_she_image():
         
             assert np.allclose(double_transformation,np.matrix([[1.,0.],[0.,1.]]),
                                rtol=1e-2,atol=1e-3)
+            
+            # Check that these can be applied successfully
+            
+            dx = 2.0
+            dy = 0.5
+            
+            new_radec = pix2world_transformation * np.matrix([[x+dx],[y+dy]])
+            new_ra = new_radec[0,0]
+            new_dec = new_radec[0,1]
+            
+            assert np.allclose((new_ra,new_dec),img.pix2world(x+dx,y+dy),
+                               rtol=1e-4,atol=1e-2)
+            
+            dra = 2.0/3600
+            ddec = 0.5/3600
+            
+            new_xy = world2pix_transformation * np.matrix([[ra+dra],[dec+ddec]])
+            new_x = new_xy[0,0]
+            new_y = new_xy[0,1]
+            
+            assert np.allclose((new_x,new_y),img.world2pix(ra+dra,dec+ddec),
+                               rtol=1e-4,atol=1e-2)
+            
