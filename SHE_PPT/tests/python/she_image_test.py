@@ -402,7 +402,7 @@ class Test_she_image():
             dx = 2.0
             dy = 0.5
             
-            new_radec = np.matrix([[ra],[dec]]) + pix2world_transformation * np.matrix([[x+dx],[y+dy]])
+            new_radec = np.matrix([[ra],[dec]]) + pix2world_transformation * np.matrix([[dx],[dy]])
             new_ra = new_radec[0,0]
             new_dec = new_radec[1,0]
             
@@ -412,7 +412,7 @@ class Test_she_image():
             dra = 2.0/3600
             ddec = 0.5/3600
             
-            new_xy = np.matrix([[x],[y]]) + world2pix_transformation * np.matrix([[ra+dra],[dec+ddec]])
+            new_xy = np.matrix([[x],[y]]) + world2pix_transformation * np.matrix([[dra],[ddec]])
             new_x = new_xy[0,0]
             new_y = new_xy[1,0]
             
