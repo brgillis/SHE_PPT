@@ -407,7 +407,7 @@ class Test_she_image():
             new_dec = new_radec[1,0]
             
             assert np.allclose((new_ra,new_dec),self.img.pix2world(x+dx,y+dy),
-                               rtol=1e-4,atol=1e-2)
+                               rtol=1e-5,atol=1e-4)
             
             dra = 2.0/3600
             ddec = 0.5/3600
@@ -417,5 +417,5 @@ class Test_she_image():
             new_y = new_xy[1,0]
             
             assert np.allclose((new_x,new_y),self.img.world2pix(ra+dra,dec+ddec),
-                               rtol=1e-4,atol=1e-2)
+                               rtol=1e-5,atol=1e-4)
             
