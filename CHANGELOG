@@ -17,7 +17,8 @@ Dependency Changes
 Deprecated Features
 -------------------
 
-- shear_estimates_table_format no longer includes gal_x and gal_y columns
+- Shear estimates table format no longer includes gal_x and gal_y columns
+- Detections table format no longer mandates inclusion of gal_x and gal_y columns
 
 Bug Fixes
 ---------
@@ -31,16 +32,23 @@ New Features
 - Added SHEImage method to extract stamps
 - Added SHEImageData and SHEStack classes to hold images and detection tables of multiple exposures
 - Added vis_helper module to read VIS-like data from SHE_GST (and potentially SC3) into SHEImage and SHEStack objects 
-- Added format definitions for details, detections, shear_estimates, and PSF tables
+- Added format definitions for details, detections, galaxy_population, P(e), PSF, and shear_estimates tables 
 - Added various table utility features
 - Added functions for IO: get_allowed_filename(), write_listfile(), read_listfile(),
   replace_in_file(), replace_multiple_in_file(), read/write_xml/pickled_product(), append_hdu(), find_file_in_path(),
   first_writable_in_path()
 - Added a function to hash any object into a hex or base64 string
 - Added magic_values.py containing image header labels, extname tags, and other miscellaneous values
-- Added class for mock XML data products: aocs_time_series_product, astrometry_product, calibration_parameters_product,
-  mosaic_product, psf_calibration_product, shear_estimates_product
+- Added classes for mock XML data products and initialiser functions for them
 - Added fits utility functions find_extension() and get_detector()
+- Detections table format now mandates inclusion of gal_x and gal_y columns
+- Added SHEImage methods to apply wcs corrections
+- Shear estimates table format now includes optional columns for BFD output
+- is_in_format() function now allows non-strict functionality (allowing the presence of columns not detailed in the
+  table format)
+- Added mask definition and functions
+- Added logging module, which automatically chooses between Elements logging if available, or python logging
+  otherwise
 
 New config features
 -------------------
