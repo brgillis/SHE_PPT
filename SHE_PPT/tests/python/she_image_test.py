@@ -380,5 +380,20 @@ class Test_she_image():
             x, y = self.img.world2pix(ra,dec)
             
             assert np.allclose((x,y),(ex_x,ex_y))
+            
+    def test_transformations(self):
+        
+        # Check that the transformations are approximately the inverses of each other
+        
+        for x, y, ra, dec in ((0, 0, 267.96547027, -73.73660749),
+                              (24, 38, 276.53931377, -71.97412809),
+                              (45, 98, 287.77080792, -69.67813884)):
+        
+            pix2world_transformation = self.img.get_pix2world_transformation(x,y)
+            world2pix_transformation = self.img.get_world2pix_transformation(ra,dec)
+            
+            double_transformation = pix2world_transformation*world2pix_transformation        
+        
+            assert np.allclose(double_transformation,np.matrix([[1.,0.],[0.,1.]])
         
         
