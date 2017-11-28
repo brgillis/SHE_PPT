@@ -728,15 +728,15 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             raise ValueError("Differentials dra and ddec must not be zero.")
         
         # We'll calculate the transformation empirically by using small steps in x and y
-        x_0, y_0 = self.pix2world(ra, dec)
-        x_px, y_px = self.pix2world(ra+dra, dec)
-        x_py, y_py = self.pix2world(ra, dec+ddec)
+        x_0, y_0 = self.world2pix(ra, dec)
+        x_pra, y_pra = self.world2pix(ra+dra, dec)
+        x_pdec, y_pdec = self.world2pix(ra, dec+ddec)
         
-        d_x_ra = (x_px - x_0) / dra
-        d_y_ra = (y_px - y_0) / dra
+        d_x_ra = (x_pra - x_0) / dra
+        d_y_ra = (y_pra - y_0) / dra
         
-        d_x_dec = (x_py - x_0) / ddec
-        d_y_dec = (y_py - y_0) / ddec
+        d_x_dec = (x_pdec - x_0) / ddec
+        d_y_dec = (y_pdec - y_0) / ddec
  
         world2pix_transformation = np.matrix( [[ d_x_ra , d_x_dec ],
                                                [ d_y_ra , d_y_dec ]]  )
