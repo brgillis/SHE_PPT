@@ -394,4 +394,5 @@ class Test_she_image():
             
             double_transformation = pix2world_transformation*world2pix_transformation        
         
-            assert np.allclose(double_transformation,np.matrix([[1.,0.],[0.,1.]]))
+            assert np.allclose(double_transformation,np.matrix([[1.,0.],[0.,1.]]),
+                               rtol=1e-3,atol=1e-4)
