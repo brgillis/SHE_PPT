@@ -611,7 +611,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             raise AttributeError("pix2world called by SHEImage object that doesn't have a WCS set up. " +
                                  "Note that WCS isn't currently passed when extract_stamp is used, so this might be the issue.")
             
-        ra, dec = self.wcs.wcs_pix2world(x,y,1, # "1" since we have 1-based coordinates
+        ra, dec = self.wcs.all_pix2world(x,y,1, # "1" since we have 1-based coordinates
                                          ra_dec_order = True) # Ensure we get ra and dec in expected order
         
         return ra, dec
@@ -642,7 +642,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
             raise AttributeError("world2pix called by SHEImage object that doesn't have a WCS set up. " +
                                  "Note that WCS isn't currently passed when extract_stamp is used, so this might be the issue.")
             
-        x, y = self.wcs.wcs_world2pix(ra,dec,1, # "1" since we have 1-based coordinates
+        x, y = self.wcs.all_world2pix(ra,dec,1, # "1" since we have 1-based coordinates
                                       ra_dec_order = True) # Ensure we get ra and dec in expected order
         
         return x, y
