@@ -29,7 +29,6 @@ import os
 from os.path import join, isfile
 import pickle
 import time
-import py
 
 from astropy.io import fits
 
@@ -58,7 +57,7 @@ def get_allowed_filename( type_name, instance_id, extension=".fits", release = "
     # Check that the labels aren't too long
     if len(type_name) > type_name_maxlen:
         raise ValueError("type_name (" + type_name + ") is too long. Maximum length is " + 
-                         str(type_name_max_len) + " characters.")
+                         str(type_name_maxlen) + " characters.")
     if len(instance_id) > instance_id_maxlen:
         raise ValueError("instance_id (" + type_name + ") is too long. Maximum length is " + 
                          str(instance_id_maxlen) + " characters.")
@@ -231,6 +230,9 @@ def find_file_in_path(filename, path):
         if isfile(test_filename):
             qualified_filename = test_filename
             break
+        
+    if qualified_filename is None:
+        raise RuntimeError("File " + str(filename) + " could not be found in path " + str(path) + ".")
 
     return qualified_filename
         
@@ -249,6 +251,21 @@ def find_conf_file(filename):
     """
 
     return find_file_in_path(filename,os.environ['ELEMENTS_CONF_PATH'])
+
+def find_file(filename,path=None):
+    """
+        Locates a file based on the presence/absence of an AUX/ or CONF/ prefix, searching in the aux or conf
+        directories respectively for it, or else the work directory if supplied.
+    """
+    
+    if filename[0:4]=="AUX/":
+        return find_aux_file(filename[4:])
+    elif filename[0:5]=="CONF/":
+        return find_conf_file(filename[5:])
+    elif path is not None:
+        return find_file_in_path(filename, path)
+    else:
+        raise ValueError("path must be supplied if filename doesn't start with AUX/ or CONF/")
 
 def first_in_path(path):
     """
