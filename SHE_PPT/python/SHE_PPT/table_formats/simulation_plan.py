@@ -86,7 +86,7 @@ class SimulationPlanTableFormat(object):
         
         # Column names and info
         
-        self.tag = set_column_properties("TAG", dtype="str", fits_dtype="10A",
+        self.tag = set_column_properties("TAG", dtype="str", fits_dtype="10A", length=10,
                                          comment="Tag to be added to file names for this batch, max length 10.")
     
         self.model_seed_min = set_column_properties("MSEED_MIN", dtype=">i8", fits_dtype="K",
