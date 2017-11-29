@@ -1,8 +1,8 @@
-""" @file simulation_config_product.py
+""" @file simulation_plan_product.py
 
     Created 17 Nov 2017
 
-    Functions to create and output a simulation_config data product.
+    Functions to create and output a simulation_plan data product.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment      
@@ -27,8 +27,8 @@ def init():
         Adds some extra functionality to the DpdSheAstrometry product
     """
     
-    # binding_class = she_dpd.DpdSheSimulationConfigProduct # @FIXME
-    binding_class = DpdSheSimulationConfigProduct
+    # binding_class = she_dpd.DpdSheSimulationPlanProduct # @FIXME
+    binding_class = DpdSheSimulationPlanProduct
 
     # Add the data file name methods
     
@@ -53,14 +53,14 @@ def __get_all_filenames(self):
     
     return all_filenames
 
-class DpdSheSimulationConfigProduct: # @FIXME
+class DpdSheSimulationPlanProduct: # @FIXME
     def __init__(self):
         self.Header = None
         self.Data = None
     def validateBinding(self):
         return False
         
-class SheSimulationConfigProduct: # @FIXME
+class SheSimulationPlanProduct: # @FIXME
     def __init__(self):
         self.format = None
         self.version = None
@@ -71,37 +71,37 @@ class DataContainer: # @FIXME
         self.FileName = None
         self.filestatus = None
 
-def create_dpd_she_simulation_config(filename = None):
+def create_dpd_she_simulation_plan(filename = None):
     """
         @TODO fill in docstring
     """
     
-    # dpd_she_simulation_config = she_dpd.DpdSheSimulationConfigProduct() # FIXME
-    dpd_she_simulation_config = DpdSheSimulationConfigProduct()
+    # dpd_she_simulation_plan = she_dpd.DpdSheSimulationPlanProduct() # FIXME
+    dpd_she_simulation_plan = DpdSheSimulationPlanProduct()
     
-    # dpd_she_simulation_config.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
-    dpd_she_simulation_config.Header = "SHE"
+    # dpd_she_simulation_plan.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
+    dpd_she_simulation_plan.Header = "SHE"
     
-    dpd_she_simulation_config.Data = create_she_simulation_config(filename)
+    dpd_she_simulation_plan.Data = create_she_simulation_plan(filename)
     
-    return dpd_she_simulation_config
+    return dpd_she_simulation_plan
 
 # Add a useful alias
-create_simulation_config_product = create_dpd_she_simulation_config
+create_simulation_plan_product = create_dpd_she_simulation_plan
 
-def create_she_simulation_config(filename = None):
+def create_she_simulation_plan(filename = None):
     """
         @TODO fill in docstring
     """
     
-    # she_simulation_config = she_dpd.SheSimulationConfigProduct() # @FIXME
-    she_simulation_config = SheSimulationConfigProduct()
+    # she_simulation_plan = she_dpd.SheSimulationPlanProduct() # @FIXME
+    she_simulation_plan = SheSimulationPlanProduct()
     
-    she_simulation_config.format = "UNDEFINED"
-    she_simulation_config.version = "0.0"
+    she_simulation_plan.format = "UNDEFINED"
+    she_simulation_plan.version = "0.0"
     
-    she_simulation_config.DataContainer = DataContainer()
-    she_simulation_config.DataContainer.FileName = filename
-    she_simulation_config.DataContainer.filestatus = "PROPOSED"
+    she_simulation_plan.DataContainer = DataContainer()
+    she_simulation_plan.DataContainer.FileName = filename
+    she_simulation_plan.DataContainer.filestatus = "PROPOSED"
     
-    return she_simulation_config
+    return she_simulation_plan

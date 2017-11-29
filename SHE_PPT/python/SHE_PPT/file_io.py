@@ -290,3 +290,5 @@ def first_writable_in_path(path):
             break
 
     return first_writable_dir
+
+
