@@ -94,8 +94,8 @@ def is_in_format(table, table_format, strict=True):
                                                                table_format.lengths[colname])):
             # Check if this is just an issue with lengths
             col_dtype = table.dtype[colname]
-            if str(col_dtype)[0]=='S':
-                col_len = int(col_dtype[1:])
+            if col_dtype.str[0]=='S':
+                col_len = int(col_dtype.str[2:])
                 if col_len<table_format.lengths[colname]:
                     # Length is shorter, likely due to saving as ascii. Allow it
                     pass
