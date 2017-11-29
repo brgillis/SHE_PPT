@@ -96,11 +96,11 @@ class SimulationPlanTableFormat(object):
         self.model_seed_step = set_column_properties("MSEED_STEP", dtype=">i8", fits_dtype="K",
                                                      comment="Model seed step for this batch.")
     
-        self.noise_seed_min = set_column_properties("MSEED_MIN", dtype=">i8", fits_dtype="K",
+        self.noise_seed_min = set_column_properties("NSEED_MIN", dtype=">i8", fits_dtype="K",
                                                     comment="Minimum model seed value for this batch.")
-        self.noise_seed_max = set_column_properties("MSEED_MAX", dtype=">i8", fits_dtype="K",
+        self.noise_seed_max = set_column_properties("NSEED_MAX", dtype=">i8", fits_dtype="K",
                                                     comment="Maximum model seed value for this batch.")
-        self.noise_seed_step = set_column_properties("MSEED_STEP", dtype=">i8", fits_dtype="K",
+        self.noise_seed_step = set_column_properties("NSEED_STEP", dtype=">i8", fits_dtype="K",
                                                      comment="Model seed step for this batch.")
         
         self.suppress_noise = set_column_properties("SUP_NOISE", dtype="bool", fits_dtype="L")
