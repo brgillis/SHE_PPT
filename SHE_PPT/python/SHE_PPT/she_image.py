@@ -646,4 +646,99 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
                                       ra_dec_order = True) # Ensure we get ra and dec in expected order
         
         return x, y
+    
+    def get_pix2world_transformation(self, x, y, dx=0.1, dy=0.1):
+        """Gets the local transformation matrix between pixel and world (ra/dec) coordinates at the specified location.
+        
+        Parameters
+        ----------
+        x : float
+            x pixel coordinate
+        y : float
+            idem for y
+        dx : float
+            Differential x step to use in calculating transformation matrix. Default 0.1 pixels
+        dy : float
+            idem for y
+            
+        Raises
+        ------
+        AttributeError
+            This object does not have a wcs set up
+        ValueError
+            dx or dy is 0
+            
+        Returns
+        -------
+        pix2world_transformation : np.matrix
+            Transformation matrix in the format [[  dra/dx ,  dra/dy ],
+                                                 [ ddec/dx , ddec/dy ]] 
+        
+        """
+        
+        if (dx==0) or (dy==0):
+            raise ValueError("Differentials dx and dy must not be zero.")
+        
+        # We'll calculate the transformation empirically by using small steps in x and y
+        ra_0, dec_0 = self.pix2world(x, y)
+        ra_px, dec_px = self.pix2world(x+dx, y)
+        ra_py, dec_py = self.pix2world(x, y+dy)
+        
+        d_ra_x = (ra_px - ra_0) / dx
+        d_dec_x = (dec_px - dec_0) / dx
+        
+        d_ra_y = (ra_py - ra_0) / dy
+        d_dec_y = (dec_py - dec_0) / dy
  
+        pix2world_transformation = np.matrix( [[  d_ra_x ,  d_ra_y ],
+                                               [ d_dec_x , d_dec_y ]]  )
+        
+        return pix2world_transformation
+    
+    def get_world2pix_transformation(self, ra, dec, dra=0.01/3600, ddec=0.01/3600):
+        """Gets the local transformation matrix between world (ra/dec) and pixel coordinates at the specified location.
+        
+        Parameters
+        ----------
+        ra : float
+            Right Ascension (RA) world coordinate in degrees
+        dec : float
+            Declination (Dec) world coordinate in degrees
+        dra : float
+            Differential ra step in degrees to use in calculating transformation matrix. Default 0.01 arcsec
+        ddec : float
+            idem for dec
+            
+        Raises
+        ------
+        AttributeError
+            This object does not have a wcs set up
+        ValueError
+            dra or ddec is 0
+            
+        Returns
+        -------
+        world2pix_transformation : np.matrix
+            Transformation matrix in the format [[ dx/dra , dx/ddec ],
+                                                 [ dy/dra , dy/ddec ]] 
+        
+        """
+        
+        if (dra==0) or (dra==0):
+            raise ValueError("Differentials dra and ddec must not be zero.")
+        
+        # We'll calculate the transformation empirically by using small steps in x and y
+        x_0, y_0 = self.world2pix(ra, dec)
+        x_pra, y_pra = self.world2pix(ra+dra, dec)
+        x_pdec, y_pdec = self.world2pix(ra, dec+ddec)
+        
+        d_x_ra = (x_pra - x_0) / dra
+        d_y_ra = (y_pra - y_0) / dra
+        
+        d_x_dec = (x_pdec - x_0) / ddec
+        d_y_dec = (y_pdec - y_0) / ddec
+ 
+        world2pix_transformation = np.matrix( [[ d_x_ra , d_x_dec ],
+                                               [ d_y_ra , d_y_dec ]]  )
+        
+        return world2pix_transformation
