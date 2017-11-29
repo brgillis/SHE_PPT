@@ -30,6 +30,7 @@ from SHE_PPT.table_formats.galaxy_population import tf as gptf, initialise_galax
 from SHE_PPT.table_formats.p_of_e import tf as petf, initialise_p_of_e_table
 from SHE_PPT.table_formats.psf import tf as pstf, initialise_psf_table
 from SHE_PPT.table_formats.shear_estimates import tf as setf, initialise_shear_estimates_table, len_chain, num_chains
+from SHE_PPT.table_formats.simulation_plan import tf as sptf, initialise_simulation_plan_table
 from SHE_PPT.table_utility import (get_comments,
                                    get_dtypes,
                                    get_fits_dtypes,
@@ -50,13 +51,14 @@ class TestTableFormats:
     @classmethod
     def setup_class(cls):
         # Define a list of the table formats we'll be testing
-        cls.formats = [datf,detf,setf,petf,pstf,gptf]
+        cls.formats = [datf,detf,setf,petf,pstf,gptf,sptf]
         cls.initializers = [initialise_details_table,
                             initialise_detections_table,
                             initialise_shear_estimates_table,
                             initialise_p_of_e_table,
                             initialise_psf_table,
-                            initialise_galaxy_population_table]
+                            initialise_galaxy_population_table,
+                            initialise_simulation_plan_table]
         
         cls.filename_base = "test_table"
         
