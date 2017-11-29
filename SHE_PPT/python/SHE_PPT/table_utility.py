@@ -92,7 +92,18 @@ def is_in_format(table, table_format, strict=True):
                 return False
         elif table.dtype[colname].newbyteorder('>') != np.dtype((table_format.dtypes[colname],
                                                                table_format.lengths[colname])):
-            return False
+            # Check if this is just an issue with lengths
+            col_dtype = table.dtype[colname]
+            if str(col_dtype)[0]=='S':
+                col_len = int(col_dtype[1:])
+                if col_len<table_format.lengths[colname]:
+                    # Length is shorter, likely due to saving as ascii. Allow it
+                    pass
+                else:
+                    # Length is too long; so the format's invalid
+                    return False
+            else:
+                return False
         
     # Check the metadata is correct
     if table.meta.keys() != table_format.m.all:
