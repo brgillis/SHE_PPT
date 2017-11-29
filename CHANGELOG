@@ -42,13 +42,14 @@ New Features
 - Added classes for mock XML data products and initialiser functions for them
 - Added fits utility functions find_extension() and get_detector()
 - Detections table format now mandates inclusion of gal_x and gal_y columns
-- Added SHEImage methods to apply wcs corrections
+- Added SHEImage methods to apply wcs corrections and get local wcs transformation matrices
 - Shear estimates table format now includes optional columns for BFD output
 - is_in_format() function now allows non-strict functionality (allowing the presence of columns not detailed in the
   table format)
 - Added mask definition and functions
 - Added logging module, which automatically chooses between Elements logging if available, or python logging
   otherwise
+
 
 New config features
 -------------------

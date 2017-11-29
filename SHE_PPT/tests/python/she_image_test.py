@@ -380,5 +380,42 @@ class Test_she_image():
             x, y = self.img.world2pix(ra,dec)
             
             assert np.allclose((x,y),(ex_x,ex_y))
+            
+    def test_transformations(self):
         
+        # Check that the transformations are approximately the inverses of each other
         
+        for x, y, ra, dec in ((0, 0, 267.96547027, -73.73660749),
+                              (24, 38, 276.53931377, -71.97412809),
+                              (45, 98, 287.77080792, -69.67813884)):
+        
+            pix2world_transformation = self.img.get_pix2world_transformation(x,y)
+            world2pix_transformation = self.img.get_world2pix_transformation(ra,dec)
+            
+            double_transformation = pix2world_transformation*world2pix_transformation        
+        
+            assert np.allclose(double_transformation,np.matrix([[1.,0.],[0.,1.]]),
+                               rtol=1e-2,atol=1e-3)
+            
+            # Check that these can be applied successfully
+            
+            dx = 2.0
+            dy = 0.5
+            
+            new_radec = np.matrix([[ra],[dec]]) + pix2world_transformation * np.matrix([[dx],[dy]])
+            new_ra = new_radec[0,0]
+            new_dec = new_radec[1,0]
+            
+            assert np.allclose((new_ra,new_dec),self.img.pix2world(x+dx,y+dy),
+                               rtol=1e-5,atol=1e-4)
+            
+            dra = 2.0/3600
+            ddec = 0.5/3600
+            
+            new_xy = np.matrix([[x],[y]]) + world2pix_transformation * np.matrix([[dra],[ddec]])
+            new_x = new_xy[0,0]
+            new_y = new_xy[1,0]
+            
+            assert np.allclose((new_x,new_y),self.img.world2pix(ra+dra,dec+ddec),
+                               rtol=1e-5,atol=1e-4)
+            
