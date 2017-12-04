@@ -23,7 +23,6 @@ Created on: 09/12/17
 """
 
 
-from future_builtins import *
 
 import py.test
 import SHE_PPT.vis_helper

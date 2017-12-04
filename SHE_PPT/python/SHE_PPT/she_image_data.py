@@ -24,7 +24,6 @@ Created on: 09/06/17
 
 
 
-from future_builtins import *
 
 import astropy.table
 

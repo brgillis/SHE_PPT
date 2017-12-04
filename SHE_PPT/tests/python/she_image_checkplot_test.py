@@ -24,7 +24,6 @@ Author: user
 """
 
 
-from future_builtins import *
 
 import py.test
 import os

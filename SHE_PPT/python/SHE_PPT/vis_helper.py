@@ -26,7 +26,6 @@ This module contains helper functions to read data (images and catalogs) into SH
 """
 
 
-from future_builtins import *
 
 
 

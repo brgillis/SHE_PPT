@@ -23,7 +23,6 @@ Created on: 26 Oct, 2017
 """
 
 
-from future_builtins import *
 
 import pytest
 import SHE_PPT.mask as m

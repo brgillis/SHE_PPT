@@ -23,7 +23,6 @@ Created on: 08/18/17
 """
 
 
-from future_builtins import *
 
 import pytest
 import SHE_PPT.she_image

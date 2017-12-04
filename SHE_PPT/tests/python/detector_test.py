@@ -23,7 +23,6 @@ Created on: 8 Nov, 2017
 """
 
 
-from future_builtins import *
 
 import pytest
 import numpy as np

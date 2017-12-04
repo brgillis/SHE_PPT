@@ -19,7 +19,6 @@ File: she_image.py
 Created on: Aug 17, 2017
 """ 
 
-from future_builtins import *
 
 import os
 import numpy as np
