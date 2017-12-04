@@ -22,10 +22,9 @@ from collections import OrderedDict
 
 from astropy.table import Table
 
-from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
-from SHE_PPT.detections_table_format import tf as detf
 from SHE_PPT import detector as dtc
+from SHE_PPT.table_formats.detections import tf as detf
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.logging import getLogger
 
