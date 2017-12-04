@@ -1,6 +1,39 @@
 Changelog for SHE_PPT Preprocessing Toolkit
 
---Versions prior to 0.1 not tracked in changelog--
+Changes from v0.2 to v0.3
+=========================
+
+API Changes
+-----------
+
+
+Dependency Changes
+------------------
+
+- Now depends on Elements 5.2.2
+
+Deprecated Features
+-------------------
+
+- Removed output_tables module and functions
+
+Bug Fixes
+---------
+
+
+New Features
+------------
+
+
+New config features
+-------------------
+
+
+Miscellaneous
+-------------
+
+- Updated to use Python 3
+
 
 Changes from v0.1 to v0.2
 =========================
@@ -61,3 +94,5 @@ Miscellaneous
 
 - Re-licensed to Euclid SGS under LGPL
 - Added README
+
+--Versions prior to 0.1 not tracked in changelog--
