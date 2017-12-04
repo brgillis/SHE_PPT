@@ -39,7 +39,7 @@ def hash_any(obj,format='hex',max_length=None):
         @return hash <str>
     """
     
-    full_hash = hashlib.sha256(repr(obj)).hexdigest()
+    full_hash = hashlib.sha256(repr(obj).encode()).hexdigest()
     
     if format=='base64':
         # Recode it into base 64. Note that this results in a stray newline character
