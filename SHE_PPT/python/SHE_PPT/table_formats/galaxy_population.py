@@ -1,4 +1,4 @@
-""" @file galaxy_population_table_format.py
+""" @file galaxy_population.py
 
     Created 10 Oct 2017
 

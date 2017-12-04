@@ -1,4 +1,4 @@
-""" @file details_table_format.py
+""" @file details.py
 
     Created 21 Aug 2017
 

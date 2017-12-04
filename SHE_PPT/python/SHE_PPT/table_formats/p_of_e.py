@@ -1,4 +1,4 @@
-""" @file p_of_e_table_format.py
+""" @file p_of_e.py
 
     Created 10 Oct 2017
 

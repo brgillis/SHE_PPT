@@ -1,4 +1,4 @@
-""" @file psf_table_format.py
+""" @file psf.py
 
     Created 29 Sep 2017
 

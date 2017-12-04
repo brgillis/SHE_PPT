@@ -1,4 +1,4 @@
-""" @file shear_estimates_table_format.py
+""" @file shear_estimates.py
 
     Created 22 Aug 2017
 
