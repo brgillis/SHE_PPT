@@ -22,7 +22,7 @@ File: tests/python/mask_test.py
 Created on: 26 Oct, 2017
 """
 
-from __future__ import division, print_function
+
 from future_builtins import *
 
 import pytest

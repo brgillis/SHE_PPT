@@ -79,19 +79,19 @@ class TestTableFormats:
         for tf in self.formats:
             
             # Check metadata comments
-            assert tf.m.comments.keys() == tf.m.all
+            assert list(tf.m.comments.keys()) == tf.m.all
             
             # Check column comments
-            assert tf.comments.keys() == tf.all
+            assert list(tf.comments.keys()) == tf.all
             
             # Check column dtypes
-            assert tf.dtypes.keys() == tf.all
+            assert list(tf.dtypes.keys()) == tf.all
             
             # Check column fits dtypes
-            assert tf.fits_dtypes.keys() == tf.all
+            assert list(tf.fits_dtypes.keys()) == tf.all
             
             # Check column lengths
-            assert tf.lengths.keys() == tf.all
+            assert list(tf.lengths.keys()) == tf.all
 
     def test_get_comments(self):
         # Check if we get the correct comments list for detections tables

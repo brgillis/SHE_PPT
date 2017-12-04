@@ -22,7 +22,7 @@ File: tests/python/vis_helper_test.py
 Created on: 09/12/17
 """
 
-from __future__ import division, print_function
+
 from future_builtins import *
 
 import py.test
