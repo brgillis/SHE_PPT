@@ -27,8 +27,7 @@ Created on: 09/06/17
 
 import astropy.table
 
-from SHE_PPT import detections_table_format
-from SHE_PPT import psf_table_format
+from SHE_PPT import table_formats
 from SHE_PPT import table_utility
 from SHE_PPT.she_image import SHEImage
 
@@ -119,9 +118,9 @@ class SHEImageData(object): # We need new-style classes for properties, hence in
         # We check its format
         if check_format is not None:
             if check_format is "detections_table":
-                table_utility.is_in_format(new_table, detections_table_format.tf)
+                table_utility.is_in_format(new_table, table_formats.detections.tf)
             if check_format is "psf_table":
-                table_utility.is_in_format(new_table, psf_table_format.tf)
+                table_utility.is_in_format(new_table, table_formats.psf.tf)
     
         return new_table
     
