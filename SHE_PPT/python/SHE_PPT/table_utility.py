@@ -91,7 +91,7 @@ def is_in_format(table, table_format, strict=True):
             if strict:
                 return False
         elif table.dtype[colname].newbyteorder('>') != np.dtype((table_format.dtypes[colname],
-                                                               table_format.lengths[colname])):
+                                                               table_format.lengths[colname])).newbyteorder('>'):
             # Check if this is just an issue with lengths
             col_dtype = table.dtype[colname]
             if col_dtype.str[1]=='U':
