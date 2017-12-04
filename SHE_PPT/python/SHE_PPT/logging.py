@@ -23,7 +23,7 @@
 try:
     import ElementsKernel.Logging as log
 except ImportError as _e:
-    import logging as log
+    from . import logging as log
     
 def getLogger(name=None):
     """

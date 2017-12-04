@@ -22,7 +22,7 @@ File: python/SHE_PPT/she_image_data.py
 Created on: 09/06/17
 """
 
-from __future__ import division, print_function
+
 
 from future_builtins import *
 

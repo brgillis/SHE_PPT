@@ -18,7 +18,7 @@ File: she_image.py
 
 Created on: Aug 17, 2017
 """ 
-from __future__ import division, print_function
+
 from future_builtins import *
 
 import os
@@ -26,7 +26,7 @@ import numpy as np
 import astropy.io.fits # Avoid non-trivial "from" imports (as explicit is better than implicit)
 import astropy.wcs
 
-import logging
+from . import logging
 logger = logging.getLogger(__name__)
 
 from SHE_PPT.magic_values import segmap_unassigned_value
@@ -220,7 +220,7 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     
     def _has_offset_in_header(self):
         """Tests if the header contains the offset keywords"""
-        if "SHEIOFX" in self.header.keys() and "SHEIOFY" in self.header.keys():
+        if "SHEIOFX" in list(self.header.keys()) and "SHEIOFY" in list(self.header.keys()):
             return True
         else:
             return False
@@ -371,15 +371,15 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         wcs_header = wcs.to_header()
         
         # Removing the mandatory cards (that were automatically added to the header if write_to_fits was used)
-        logger.debug("The raw primary header has {} keys".format(len(header.keys())))
+        logger.debug("The raw primary header has {} keys".format(len(list(header.keys()))))
         for keyword in ["SIMPLE", "BITPIX", "NAXIS", "NAXIS1", "NAXIS2", "EXTEND"]:
             if keyword in header:
                 header.remove(keyword)
-        for keyword in wcs_header.keys():
+        for keyword in list(wcs_header.keys()):
             if keyword in header:
                 header.remove(keyword)
                 
-        logger.debug("The cleaned header has {} keys".format(len(header.keys())))
+        logger.debug("The cleaned header has {} keys".format(len(list(header.keys()))))
         
         # Reading the mask
         mask = cls._get_secondary_data_from_fits(filepath, mask_filepath, mask_ext)
@@ -498,8 +498,8 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         
         # Dealing with the indexing conventions
         indexconv_defs = {"numpy":0.0, "sextractor":0.5}
-        if indexconv not in indexconv_defs.keys():
-            raise ValueError("Argument indexconv must be among {}".format(indexconv_defs.keys()))
+        if indexconv not in list(indexconv_defs.keys()):
+            raise ValueError("Argument indexconv must be among {}".format(list(indexconv_defs.keys())))
         
         
         # Identifying the numpy stamp boundaries

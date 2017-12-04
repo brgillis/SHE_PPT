@@ -59,7 +59,7 @@ class PSFTableMeta(object):
                                    ))
         
         # A list of columns in the desired order
-        self.all = self.comments.keys()
+        self.all = list(self.comments.keys())
 
 class PSFTableFormat(object):
     """
@@ -117,7 +117,7 @@ class PSFTableFormat(object):
         self.field_time = set_column_properties("PSF Field Timestamp", dtype="S", fits_dtype="A", length=20)
         
         # A list of columns in the desired order
-        self.all = self.is_optional.keys()
+        self.all = list(self.is_optional.keys())
         
         # A list of required columns in the desired order
         self.all_required = []
@@ -235,7 +235,7 @@ def initialise_psf_table(image = None,
         
         # Get values from the options dict, unless they were passed explicitly
         if model_hash is None:
-            model_hash = hash_any(frozenset(options.items()),format="base64")
+            model_hash = hash_any(frozenset(list(options.items())),format="base64")
         if noise_seed is None:
             noise_seed = options['noise_seed']
     

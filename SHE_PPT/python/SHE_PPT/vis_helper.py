@@ -25,7 +25,7 @@ This module contains helper functions to read data (images and catalogs) into SH
 
 """
 
-from __future__ import division, print_function
+
 from future_builtins import *
 
 
@@ -42,7 +42,7 @@ import astropy.table
 import os
 import json
 
-import logging
+from . import logging
 logger = logging.getLogger(__name__)
 
 

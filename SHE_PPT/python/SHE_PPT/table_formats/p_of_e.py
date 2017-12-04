@@ -44,7 +44,7 @@ class POfETableMeta(object):
                                    ))
         
         # A list of columns in the desired order
-        self.all = self.comments.keys()
+        self.all = list(self.comments.keys())
 
 class POfETableFormat(object):
     """
@@ -100,7 +100,7 @@ class POfETableFormat(object):
         self.disk_e2 = set_column_properties("DISK_E2", is_optional=True)
         
         # A list of columns in the desired order
-        self.all = self.is_optional.keys()
+        self.all = list(self.is_optional.keys())
         
         # A list of required columns in the desired order
         self.all_required = []

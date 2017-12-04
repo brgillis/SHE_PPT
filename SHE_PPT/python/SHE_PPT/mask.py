@@ -25,7 +25,7 @@ of a larger dtype). If a bool array is desired to save space, the as_bool
 function can be used to obtain this.
 """ 
 
-from __future__ import division, print_function
+
 from future_builtins import *
 
 import os

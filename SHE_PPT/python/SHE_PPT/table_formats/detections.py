@@ -68,7 +68,7 @@ class DetectionsTableMeta(object):
                                    ))
         
         # A list of columns in the desired order
-        self.all = self.comments.keys()
+        self.all = list(self.comments.keys())
 
 class DetectionsTableFormat(object):
     """
@@ -167,7 +167,7 @@ class DetectionsTableFormat(object):
         self.gal_flags = set_column_properties("FLAGS", is_optional=True, dtype=">i8", fits_dtype="K")
         
         # A list of columns in the desired order
-        self.all = self.is_optional.keys()
+        self.all = list(self.is_optional.keys())
         
         # A list of required columns in the desired order
         self.all_required = []
@@ -318,7 +318,7 @@ def initialise_detections_table(image = None,
         if gain is None:
             gain = options['gain']
         if model_hash is None:
-            model_hash = hash_any(frozenset(options.items()),format="base64")
+            model_hash = hash_any(frozenset(list(options.items())),format="base64")
         if noise_seed is None:
             noise_seed = options['noise_seed']
     

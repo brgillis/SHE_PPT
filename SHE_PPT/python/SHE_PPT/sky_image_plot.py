@@ -34,7 +34,7 @@ import matplotlib.cm
 import matplotlib.colors
 import matplotlib.patches
 
-import logging
+from . import logging
 logger = logging.getLogger(__name__)
 
 

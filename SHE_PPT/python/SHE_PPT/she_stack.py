@@ -22,12 +22,12 @@ File: python/SHE_PPT/she_stack.py
 Created on: 09/01/17
 """
 
-from __future__ import division, print_function
+
 from future_builtins import *
 
 from SHE_PPT.she_image_data import SHEImageData
 
-import logging
+from . import logging
 logger = logging.getLogger(__name__)
 
 

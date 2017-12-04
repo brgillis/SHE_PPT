@@ -42,7 +42,7 @@ class SimulationPlanTableMeta(object):
                                    ))
         
         # A list of columns in the desired order
-        self.all = self.comments.keys()
+        self.all = list(self.comments.keys())
 
 class SimulationPlanTableFormat(object):
     """
@@ -109,7 +109,7 @@ class SimulationPlanTableFormat(object):
         self.render_background = set_column_properties("RENDER_BKG", dtype="bool", fits_dtype="L")
         
         # A list of columns in the desired order
-        self.all = self.is_optional.keys()
+        self.all = list(self.is_optional.keys())
         
         # A list of required columns in the desired order
         self.all_required = []

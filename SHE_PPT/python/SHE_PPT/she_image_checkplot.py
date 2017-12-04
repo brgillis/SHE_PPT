@@ -23,14 +23,14 @@ Created on: 10/19/17
 Author: Malte Tewes
 """
 
-from __future__ import division, print_function
+
 from future_builtins import *
 
 import os
 
 from . import sky_image_plot as sip
 
-import logging
+from . import logging
 logger = logging.getLogger(__name__)
 
 

@@ -91,7 +91,7 @@ class ShearEstimatesTableMeta(object):
 
         
         # A list of columns in the desired order
-        self.all = self.comments.keys()
+        self.all = list(self.comments.keys())
 
 class ShearEstimatesTableFormat(object):
     """
@@ -216,7 +216,7 @@ class ShearEstimatesTableFormat(object):
         self.lr2_chain = set_column_properties("LR2_CHAIN", is_optional=True, length=num_chains*len_chain)
         
         # A list of columns in the desired order
-        self.all = self.is_optional.keys()
+        self.all = list(self.is_optional.keys())
         
         # A list of required columns in the desired order
         self.all_required = []

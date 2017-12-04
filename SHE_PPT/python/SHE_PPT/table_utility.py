@@ -31,7 +31,7 @@ def get_comments(table_format):
         @return tuple<string>
     """
 
-    return zip(*table_format.comments.items())[1]
+    return zip(*list(table_format.comments.items()))[1]
 
 def get_dtypes(table_format):
     """
@@ -42,7 +42,7 @@ def get_dtypes(table_format):
         @return tuple<string>
     """
 
-    return zip(*table_format.dtypes.items())[1]
+    return zip(*list(table_format.dtypes.items()))[1]
 
 def get_fits_dtypes(table_format):
     """
@@ -53,7 +53,7 @@ def get_fits_dtypes(table_format):
         @return tuple<string>
     """
 
-    return zip(*table_format.fits_dtypes.items())[1]
+    return zip(*list(table_format.fits_dtypes.items()))[1]
 
 def get_lengths(table_format):
     """
@@ -64,7 +64,7 @@ def get_lengths(table_format):
         @return tuple<int>
     """
 
-    return zip(*table_format.lengths.items())[1]
+    return zip(*list(table_format.lengths.items()))[1]
 
 def is_in_format(table, table_format, strict=True):
     """
@@ -106,7 +106,7 @@ def is_in_format(table, table_format, strict=True):
                 return False
         
     # Check the metadata is correct
-    if table.meta.keys() != table_format.m.all:
+    if list(table.meta.keys()) != table_format.m.all:
         return False
     
     # Check the format label is correct
@@ -234,7 +234,7 @@ def table_to_hdu(table):
             # Try creating a Unit to issue a warning if the unit is not FITS compliant
             Unit(col.unit, format='fits', parse_strict='warn')
 
-    for key, value in table.meta.items():
+    for key, value in list(table.meta.items()):
         if is_column_keyword(key.upper()) or key.upper() in REMOVE_KEYWORDS:
             warnings.warn(
                 "Meta-data keyword {0} will be ignored since it conflicts "
