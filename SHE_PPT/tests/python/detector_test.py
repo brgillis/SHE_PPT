@@ -22,8 +22,7 @@ File: tests/python/detector_test.py
 Created on: 8 Nov, 2017
 """
 
-from __future__ import division, print_function
-from future_builtins import *
+
 
 import pytest
 import numpy as np

@@ -21,9 +21,7 @@
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import EuclidDmBindings.she.she_stub as she_dpd # FIXME
 
-import pickle
-
-from SHE_PPT.shear_estimates_table_format import tf as setf
+from SHE_PPT.table_formats.shear_estimates import tf as setf
 
 def init():
     """

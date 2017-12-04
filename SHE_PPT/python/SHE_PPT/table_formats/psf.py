@@ -1,4 +1,4 @@
-""" @file psf_table_format.py
+""" @file psf.py
 
     Created 29 Sep 2017
 
@@ -63,7 +63,7 @@ class PSFTableMeta(object):
 
 class PSFTableFormat(object):
     """
-        @brief A class defining the format for detections tables. Only the detections_table_format
+        @brief A class defining the format for detections tables. Only the psf_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
     

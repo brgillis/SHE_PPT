@@ -26,7 +26,6 @@ This module contains helper functions to read data (images and catalogs) into SH
 """
 
 
-from future_builtins import *
 
 
 
@@ -34,8 +33,7 @@ from SHE_PPT.she_image_data import SHEImageData
 from SHE_PPT.she_image import SHEImage
 from SHE_PPT.she_stack import SHEStack
 
-from SHE_PPT import table_utility
-from SHE_PPT import detections_table_format
+from SHE_PPT import table_formats
 
 import astropy.table
 

@@ -22,15 +22,12 @@ File: tests/python/she_stack_test.py
 Created on: 09/01/17
 """
 
-from __future__ import division, print_function
-
-from future_builtins import *
 import os
 
 import py.test
 
-from SHE_PPT.detections_table_format import initialise_detections_table
-from SHE_PPT.psf_table_format import initialise_psf_table
+from SHE_PPT.table_formats.detections import initialise_detections_table
+from SHE_PPT.table_formats.psf import initialise_psf_table
 from SHE_PPT.she_image import SHEImage
 from SHE_PPT.she_stack import SHEStack
 import SHE_PPT.table_utility

@@ -23,7 +23,6 @@ Created on: 09/01/17
 """
 
 
-from future_builtins import *
 
 from SHE_PPT.she_image_data import SHEImageData
 

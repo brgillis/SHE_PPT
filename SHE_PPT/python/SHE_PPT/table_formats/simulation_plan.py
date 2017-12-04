@@ -1,4 +1,4 @@
-""" @file simulation_plan_table_format.py
+""" @file simulation_plan.py
 
     Created 29 Nov 2017
 

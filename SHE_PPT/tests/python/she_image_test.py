@@ -22,8 +22,7 @@ File: tests/python/she_image_test.py
 Created on: 08/18/17
 """
 
-from __future__ import division, print_function
-from future_builtins import *
+
 
 import pytest
 import SHE_PPT.she_image
@@ -136,7 +135,7 @@ class Test_she_image():
         assert self.img.wcs.wcs.ctype[1] == rimg.wcs.wcs.ctype[1]
         
         # We test that the header did not get changed
-        assert len(rimg.header.keys()) == 3
+        assert len(list(rimg.header.keys())) == 3
         assert str(repr(self.img.header)) == str(repr(rimg.header))
        
     
@@ -240,15 +239,15 @@ class Test_she_image():
         
         # And the header:
         eimg = img.extract_stamp(5, 5, 5)
-        assert len(eimg.header.keys()) == 2 # The two offsets
+        assert len(list(eimg.header.keys())) == 2 # The two offsets
         eimg = img.extract_stamp(5, 5, 5, keep_header=True)
-        assert len(eimg.header.keys()) == 3 # The offsets, and the "foo"
+        assert len(list(eimg.header.keys())) == 3 # The offsets, and the "foo"
 
         
     def test_extract_stamp_out_of_bounds(self):
         """We test that the stamp extraction works as desired for stamps not entirely within the image"""
         
-        array = np.array([[00,01,02,03,04], [10,11,12,13,14], [20,21,22,23,24], [30,31,32,33,34]])
+        array = np.array([[00,0o1,0o2,0o3,0o4], [10,11,12,13,14], [20,21,22,23,24], [30,31,32,33,34]])
         img = SHE_PPT.she_image.SHEImage(array)
         # This image looks like (values give xy coords...)
         # 04 14 24 34

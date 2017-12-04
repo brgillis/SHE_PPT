@@ -23,8 +23,7 @@ Created on: 10/19/17
 Author: user
 """
 
-from __future__ import division, print_function
-from future_builtins import *
+
 
 import py.test
 import os

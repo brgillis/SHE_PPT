@@ -39,7 +39,7 @@ def hash_any(obj,format='hex',max_length=None):
         @return hash <str>
     """
     
-    full_hash = hashlib.sha256(repr(obj)).hexdigest()
+    full_hash = hashlib.sha256(repr(obj).encode()).hexdigest()
     
     if format=='base64':
         # Recode it into base 64. Note that this results in a stray newline character
@@ -47,7 +47,8 @@ def hash_any(obj,format='hex',max_length=None):
         full_hash = codecs.encode(codecs.decode(full_hash,'hex'),'base64')[:-1]
         
         # This also allows the / character which we can't use, so replace it with .
-        full_hash = full_hash.replace("/",".")
+        # Also decode it into a standard string
+        full_hash = full_hash.decode().replace("/",".")
     
     if max_length is None or len(full_hash)<max_length:
         return full_hash

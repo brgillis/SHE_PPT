@@ -37,7 +37,6 @@ from SHE_PPT.table_utility import (get_comments,
                                    get_lengths,
                                    is_in_format,
                                    add_row,
-                                   output_tables,
                                   )
 import numpy as np
 
@@ -79,19 +78,19 @@ class TestTableFormats:
         for tf in self.formats:
             
             # Check metadata comments
-            assert tf.m.comments.keys() == tf.m.all
+            assert list(tf.m.comments.keys()) == tf.m.all
             
             # Check column comments
-            assert tf.comments.keys() == tf.all
+            assert list(tf.comments.keys()) == tf.all
             
             # Check column dtypes
-            assert tf.dtypes.keys() == tf.all
+            assert list(tf.dtypes.keys()) == tf.all
             
             # Check column fits dtypes
-            assert tf.fits_dtypes.keys() == tf.all
+            assert list(tf.fits_dtypes.keys()) == tf.all
             
             # Check column lengths
-            assert tf.lengths.keys() == tf.all
+            assert list(tf.lengths.keys()) == tf.all
 
     def test_get_comments(self):
         # Check if we get the correct comments list for detections tables
@@ -188,60 +187,6 @@ class TestTableFormats:
         assert tab[detf.ID][0]==0
         assert tab[detf.gal_x_world][0]==0.
         assert tab[detf.gal_y_world][0]==1.
-        
-    def test_output_tables(self):
-        
-        # Clean up to make sure the test files don't already exist
-        for filename in self.filenames:
-            if os.path.exists(filename):
-                os.remove(filename)
-                
-        
-        tab = initialise_detections_table()
-        
-        add_row(tab, **{detf.ID: 0, detf.gal_x_world: 0, detf.gal_y_world: 1})
-        
-        # Try ascii output
-        output_tables(tab,self.filename_base,"ascii")
-        
-        # Did it write properly?
-        assert os.path.exists(self.filename_base+".ecsv")
-        assert not os.path.exists(self.filename_base+".fits")
-        
-        # Can we read it?
-        new_tab = Table.read(self.filename_base+".ecsv", format="ascii.ecsv")
-        assert is_in_format(new_tab,detf)
-        assert new_tab==tab
-        
-        # Cleanup
-        os.remove(self.filename_base+".ecsv")
-        
-        # Try fits output
-        output_tables(tab,self.filename_base,"fits")
-        
-        # Did it write properly?
-        assert not os.path.exists(self.filename_base+".ecsv")
-        assert os.path.exists(self.filename_base+".fits")
-        
-        # Can we read it?
-        new_tab = Table.read(self.filename_base+".fits", format="fits")        
-        assert is_in_format(new_tab,detf)
-        assert new_tab==tab
-        
-        # Cleanup
-        os.remove(self.filename_base+".fits")
-        
-        # Try both output
-        output_tables(tab,self.filename_base,"both")
-        
-        # Did it write properly?
-        assert os.path.exists(self.filename_base+".ecsv")
-        assert os.path.exists(self.filename_base+".fits")
-        
-        # Cleanup
-        for filename in self.filenames:
-            if os.path.exists(filename):
-                os.remove(filename)
                 
     def test_init(self):
         

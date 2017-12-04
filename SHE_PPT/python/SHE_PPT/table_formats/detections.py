@@ -1,4 +1,4 @@
-""" @file detections_table_format.py
+""" @file detections.py
 
     Created 22 Aug 2017
 
