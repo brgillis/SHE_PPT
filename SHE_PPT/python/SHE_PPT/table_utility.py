@@ -31,7 +31,7 @@ def get_comments(table_format):
         @return tuple<string>
     """
 
-    return zip(*list(table_format.comments.items()))[1]
+    return list(zip(*list(table_format.comments.items())))[1]
 
 def get_dtypes(table_format):
     """
@@ -42,7 +42,7 @@ def get_dtypes(table_format):
         @return tuple<string>
     """
 
-    return zip(*list(table_format.dtypes.items()))[1]
+    return list(zip(*list(table_format.dtypes.items())))[1]
 
 def get_fits_dtypes(table_format):
     """
@@ -53,7 +53,7 @@ def get_fits_dtypes(table_format):
         @return tuple<string>
     """
 
-    return zip(*list(table_format.fits_dtypes.items()))[1]
+    return list(zip(*list(table_format.fits_dtypes.items())))[1]
 
 def get_lengths(table_format):
     """
@@ -64,7 +64,7 @@ def get_lengths(table_format):
         @return tuple<int>
     """
 
-    return zip(*list(table_format.lengths.items()))[1]
+    return list(zip(*list(table_format.lengths.items())))[1]
 
 def is_in_format(table, table_format, strict=True):
     """
