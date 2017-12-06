@@ -24,6 +24,7 @@ from astropy.table import Column, Table
 import pytest
 
 from SHE_PPT import magic_values as mv
+from SHE_PPT.table_formats.bfd_moments import tf as bfdtf, initialise_bfd_moments_table
 from SHE_PPT.table_formats.details import tf as datf, initialise_details_table
 from SHE_PPT.table_formats.detections import tf as detf, initialise_detections_table
 from SHE_PPT.table_formats.galaxy_population import tf as gptf, initialise_galaxy_population_table
@@ -50,14 +51,15 @@ class TestTableFormats:
     @classmethod
     def setup_class(cls):
         # Define a list of the table formats we'll be testing
-        cls.formats = [datf,detf,setf,petf,pstf,gptf,sptf]
+        cls.formats = [datf,detf,setf,petf,pstf,gptf,sptf,bfdtf]
         cls.initializers = [initialise_details_table,
                             initialise_detections_table,
                             initialise_shear_estimates_table,
                             initialise_p_of_e_table,
                             initialise_psf_table,
                             initialise_galaxy_population_table,
-                            initialise_simulation_plan_table]
+                            initialise_simulation_plan_table,
+                            initialise_bfd_moments_table]
         
         cls.filename_base = "test_table"
         
