@@ -40,7 +40,7 @@ class ShearEstimatesTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.2"
+        self.__version__ = "0.3"
         self.table_format = "she.shearEstimates"
         
         # Table metadata labels
@@ -52,15 +52,6 @@ class ShearEstimatesTableMeta(object):
         self.model_hash = mv.model_hash_label
         self.model_seed = mv.model_seed_label
         self.noise_seed = mv.noise_seed_label
-        self.bfd_nlost = "NLOST"
-        self.bfd_wt_n = "WT_N"
-        self.bfd_wt_sigma = "WT_SIGMA"
-        self.bfd_tmpl_snmin="T_SNMIN"
-        self.bfd_tmpl_sigma_xy="T_SIGXY"
-        self.bfd_tmpl_sigma_flux="T_SIGFLX"
-        self.bfd_tmpl_sigma_step="T_SIGSTP"
-        self.bfd_tmpl_sigma_max="T_SIGMAX"
-        self.bfd_tmpl_xy_max="T_XYMAX"
         
         self.num_chains = "NCHAIN"
         self.len_chain = "LCHAIN"
@@ -76,15 +67,6 @@ class ShearEstimatesTableMeta(object):
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
-                                     (self.bfd_nlost, None),
-                                     (self.bfd_wt_n, None),
-                                     (self.bfd_wt_sigma, None),
-                                     (self.bfd_tmpl_snmin, None),
-                                     (self.bfd_tmpl_sigma_xy, None),
-                                     (self.bfd_tmpl_sigma_flux, None),
-                                     (self.bfd_tmpl_sigma_step, None),
-                                     (self.bfd_tmpl_sigma_max, None),
-                                     (self.bfd_tmpl_xy_max,None),
                                      (self.validated, "0: Not tested; 1: Pass; -1: Fail")
                                      ))
 
@@ -138,10 +120,12 @@ class ShearEstimatesTableFormat(object):
         
         self.g1 = set_column_properties("G1", dtype=">f8", fits_dtype="D")
         self.g2 = set_column_properties("G2", dtype=">f8", fits_dtype="D")
-        self.g1_err = set_column_properties("G1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.g2_err = set_column_properties("G2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g1_err = set_column_properties("G1_ERR", is_optional=False, dtype=">f8", fits_dtype="D")
+        self.g2_err = set_column_properties("G2_ERR", is_optional=False, dtype=">f8", fits_dtype="D")
+        self.g1g2_covar = set_column_properties("G1G2_COVAR", is_optional=False, dtype=">f8", fits_dtype="D")
         self.e1_err = set_column_properties("E1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
         self.e2_err = set_column_properties("E2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.e1e2_covar = set_column_properties("G1G2_COVAR", is_optional=True, dtype=">f8", fits_dtype="D")
         
         self.flags = set_column_properties("FLAGS", dtype=">i8", fits_dtype="K")
         self.fit_class = set_column_properties("FITCLASS", dtype=">i2", fits_dtype="I")
@@ -167,10 +151,11 @@ class ShearEstimatesTableFormat(object):
         self.re = set_column_properties("RE", is_optional=True, comment="arcsec", dtype=">f8", fits_dtype="D")
         self.re_err = set_column_properties("RE_ERR", is_optional=True, comment="arcsec", dtype=">f8", fits_dtype="D")
         
-        self.x = set_column_properties("X", is_optional=True, comment="pixels")
-        self.y = set_column_properties("Y", is_optional=True, comment="pixels")
-        self.x_err = set_column_properties("X_ERR", is_optional=True, comment="pixels")
-        self.y_err = set_column_properties("Y_ERR", is_optional=True, comment="pixels")
+        self.x_world = set_column_properties("X_WORLD_CORR", is_optional=False, comment="deg")
+        self.y_world = set_column_properties("Y_WORLD_CORR", is_optional=False, comment="deg")
+        
+        self.x_world_var = set_column_properties("ERRX2_WORLD_CORR", is_optional=True, comment="deg**2")
+        self.y_world_var = set_column_properties("ERRY2_WORLD_CORR", is_optional=True, comment="deg**2")
         
         self.flux = set_column_properties("FLUX", is_optional=True, comment="ADU")
         self.flux_err = set_column_properties("FLUX_ERR", is_optional=True, comment="ADU")
@@ -180,25 +165,6 @@ class ShearEstimatesTableFormat(object):
         
         self.snr = set_column_properties("SNR", is_optional=True)
         self.snr_err = set_column_properties("SNR_ERR", is_optional=True)
-
-        #BFD specific columns
-        self.bfd_moments = set_column_properties("BFD_MOMENTS", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
-        self.bfd_deriv_moments_dg1 = set_column_properties("BFD_DM_DG1", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
-        self.bfd_deriv_moments_dg2 = set_column_properties("BFD_DM_DG2", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
-        self.bfd_deriv_moments_dmu = set_column_properties("BFD_DM_DMU", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
-        self.bfd_2ndderiv_moments_dg1dg1 = set_column_properties("BFD_D2M_DG1DG1", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
-        self.bfd_2ndderiv_moments_dg1dg2 = set_column_properties("BFD_D2M_DG1DG2", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
-        self.bfd_2ndderiv_moments_dg2dg2 = set_column_properties("BFD_D2M_DG2DG2", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
-        self.bfd_2ndderiv_moments_dg1dmu = set_column_properties("BFD_D2M_DG1DMU", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
-        self.bfd_2ndderiv_moments_dg2dmu = set_column_properties("BFD_D2M_DG2DMU", is_optional=True, dtype=">f4", fits_dtype="E", length=7) 
-        self.bfd_2ndderiv_moments_dmudmu = set_column_properties("BFD_D2M_DMUDMU", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
-        self.bfd_template_weight = set_column_properties("BFD_TMPL_WEIGHT", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.bfd_jsuppress = set_column_properties("BFD_JSUPPRESS", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.bfd_pqr = set_column_properties("BFD_PQR", is_optional=True, dtype=">f4",fits_dtype="E",length=6)
-        
-        self.bfd_cov_even = set_column_properties("BFD_COV_EVEN", is_optional=True, dtype=">f4", fits_dtype="E", length=15)
-        self.bfd_cov_odd = set_column_properties("BFD_COV_ODD", is_optional=True, dtype=">f4", fits_dtype="E", length=3)
-
         
         self.g1_chain = set_column_properties("G1_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=num_chains*len_chain)
         self.g2_chain = set_column_properties("G2_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=num_chains*len_chain)
