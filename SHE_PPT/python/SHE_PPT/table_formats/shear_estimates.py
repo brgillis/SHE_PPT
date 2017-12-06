@@ -235,16 +235,6 @@ def make_shear_estimates_table_header(detector_x = 1,
     header[tf.m.model_hash] = model_hash
     header[tf.m.model_seed] = model_seed
     header[tf.m.noise_seed] = noise_seed
-    
-    header[tf.m.bfd_nlost] = None
-    header[tf.m.bfd_wt_n] = None
-    header[tf.m.bfd_wt_sigma] = None
-    header[tf.m.bfd_tmpl_snmin] = None
-    header[tf.m.bfd_tmpl_sigma_xy] = None
-    header[tf.m.bfd_tmpl_sigma_flux] = None
-    header[tf.m.bfd_tmpl_sigma_step] = None
-    header[tf.m.bfd_tmpl_sigma_max] = None
-    header[tf.m.bfd_tmpl_xy_max] = None
 
     header[tf.m.validated] = 0
     
