@@ -125,7 +125,7 @@ class ShearEstimatesTableFormat(object):
         self.g1g2_covar = set_column_properties("G1G2_COVAR", is_optional=False, dtype=">f8", fits_dtype="D")
         self.e1_err = set_column_properties("E1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
         self.e2_err = set_column_properties("E2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.e1e2_covar = set_column_properties("G1G2_COVAR", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.e1e2_covar = set_column_properties("E1E2_COVAR", is_optional=True, dtype=">f8", fits_dtype="D")
         
         self.flags = set_column_properties("FLAGS", dtype=">i8", fits_dtype="K")
         self.fit_class = set_column_properties("FITCLASS", dtype=">i2", fits_dtype="I")
