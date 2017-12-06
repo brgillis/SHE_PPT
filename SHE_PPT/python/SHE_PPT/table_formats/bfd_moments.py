@@ -254,7 +254,7 @@ def initialise_bfd_moments_table(detections_table = None,
     assert (detections_table is None) or (is_in_format(detections_table,detf,strict=False))
     
     if optional_columns is None:
-        optional_columns = [tf.e1_err,tf.e2_err]
+        optional_columns = []
     else:
         # Check all optional columns are valid
         for colname in optional_columns:
