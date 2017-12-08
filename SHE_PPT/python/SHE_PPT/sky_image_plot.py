@@ -29,13 +29,19 @@ import os
 import numpy as np
 import astropy.io.fits
 
-import matplotlib.pyplot as plt
-import matplotlib.cm
-import matplotlib.colors
-import matplotlib.patches
-
 from . import logging
 logger = logging.getLogger(__name__)
+
+try:
+    import matplotlib.pyplot as plt
+    import matplotlib.cm
+    import matplotlib.colors
+    import matplotlib.patches
+except RuntimeError as e:
+    if "could not open display" in str(e):
+        logger.warn("Matplotlib cannot be imported; sky_image_plot module will not be available.")
+    else:
+        raise
 
 
 class SkyImage(object):
