@@ -1,8 +1,8 @@
-""" @file shear_estimates.py
+""" @file bfd_moments.py
 
-    Created 22 Aug 2017
+    Created 6 Dec 2017
 
-    Format definition for shear estimates tables.
+    Format definition for BFD moments tables.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment      
@@ -30,18 +30,15 @@ from SHE_PPT.logging import getLogger
 
 logger = getLogger(mv.logger_name)
 
-num_chains = 100
-len_chain = 200
-
-class ShearEstimatesTableMeta(object):
+class BFDMomentsTableMeta(object):
     """
         @brief A class defining the metadata for shear estimates tables.
     """
     
     def __init__(self):
         
-        self.__version__ = "0.3"
-        self.table_format = "she.shearEstimates"
+        self.__version__ = "0.1"
+        self.table_format = "she.bfdShearEstimates"
         
         # Table metadata labels
         self.version = "SS_VER"
@@ -52,9 +49,15 @@ class ShearEstimatesTableMeta(object):
         self.model_hash = mv.model_hash_label
         self.model_seed = mv.model_seed_label
         self.noise_seed = mv.noise_seed_label
-        
-        self.num_chains = "NCHAIN"
-        self.len_chain = "LCHAIN"
+        self.bfd_nlost = "NLOST"
+        self.bfd_wt_n = "WT_N"
+        self.bfd_wt_sigma = "WT_SIGMA"
+        self.bfd_tmpl_snmin="T_SNMIN"
+        self.bfd_tmpl_sigma_xy="T_SIGXY"
+        self.bfd_tmpl_sigma_flux="T_SIGFLX"
+        self.bfd_tmpl_sigma_step="T_SIGSTP"
+        self.bfd_tmpl_sigma_max="T_SIGMAX"
+        self.bfd_tmpl_xy_max="T_XYMAX"
         
         self.validated = "VALID"
         
@@ -62,11 +65,18 @@ class ShearEstimatesTableMeta(object):
         self.comments = OrderedDict(((self.version, None),
                                      (self.format, None),
                                      (self.extname, "#."+mv.shear_estimates_tag),
-                                     (self.num_chains, None),
-                                     (self.len_chain, None),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
+                                     (self.bfd_nlost, None),
+                                     (self.bfd_wt_n, None),
+                                     (self.bfd_wt_sigma, None),
+                                     (self.bfd_tmpl_snmin, None),
+                                     (self.bfd_tmpl_sigma_xy, None),
+                                     (self.bfd_tmpl_sigma_flux, None),
+                                     (self.bfd_tmpl_sigma_step, None),
+                                     (self.bfd_tmpl_sigma_max, None),
+                                     (self.bfd_tmpl_xy_max,None),
                                      (self.validated, "0: Not tested; 1: Pass; -1: Fail")
                                      ))
 
@@ -74,16 +84,16 @@ class ShearEstimatesTableMeta(object):
         # A list of columns in the desired order
         self.all = list(self.comments.keys())
 
-class ShearEstimatesTableFormat(object):
+class BFDMomentsTableFormat(object):
     """
-        @brief A class defining the format for shear estimates tables. Only the shear_estimates_table_format
+        @brief A class defining the format for shear estimates tables. Only the bfd_moments_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
     
     def __init__(self):
         
         # Get the metadata (contained within its own class)
-        self.meta = ShearEstimatesTableMeta()
+        self.meta = BFDMomentsTableMeta()
         
         # And a quick alias for it
         self.m = self.meta
@@ -118,67 +128,32 @@ class ShearEstimatesTableFormat(object):
         
         self.ID = set_column_properties("SOURCE_ID", dtype=">i8", fits_dtype="K")
         
-        self.g1 = set_column_properties("G1", dtype=">f8", fits_dtype="D")
-        self.g2 = set_column_properties("G2", dtype=">f8", fits_dtype="D")
-        self.g1_err = set_column_properties("G1_ERR", is_optional=False, dtype=">f8", fits_dtype="D")
-        self.g2_err = set_column_properties("G2_ERR", is_optional=False, dtype=">f8", fits_dtype="D")
-        self.g1g2_covar = set_column_properties("G1G2_COVAR", is_optional=False, dtype=">f8", fits_dtype="D")
-        self.e1_err = set_column_properties("E1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.e2_err = set_column_properties("E2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.e1e2_covar = set_column_properties("E1E2_COVAR", is_optional=True, dtype=">f8", fits_dtype="D")
-        
         self.flags = set_column_properties("FLAGS", dtype=">i8", fits_dtype="K")
         self.fit_class = set_column_properties("FITCLASS", dtype=">i2", fits_dtype="I")
-        
-        self.g1_cal1 = set_column_properties("G1_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.g2_cal1 = set_column_properties("G2_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.b1_cal1 = set_column_properties("B1_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.b2_cal1 = set_column_properties("B2_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.g1_cal1_err = set_column_properties("G1_CAL1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.g2_cal1_err = set_column_properties("G2_CAL1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.e1_cal1_err = set_column_properties("E1_CAL1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.e2_cal1_err = set_column_properties("E2_CAL1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
-        
-        self.g1_cal2 = set_column_properties("G1_CAL2", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.g2_cal2 = set_column_properties("G2_CAL2", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.b1_cal2 = set_column_properties("B1_CAL2", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.b2_cal2 = set_column_properties("B2_CAL2", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.g1_cal2_err = set_column_properties("G1_CAL2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.g2_cal2_err = set_column_properties("G2_CAL2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.e1_cal2_err = set_column_properties("E1_CAL2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.e2_cal2_err = set_column_properties("E2_CAL2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
-        
-        self.re = set_column_properties("RE", is_optional=True, comment="arcsec", dtype=">f8", fits_dtype="D")
-        self.re_err = set_column_properties("RE_ERR", is_optional=True, comment="arcsec", dtype=">f8", fits_dtype="D")
         
         self.x_world = set_column_properties("X_WORLD_CORR", is_optional=False, comment="deg")
         self.y_world = set_column_properties("Y_WORLD_CORR", is_optional=False, comment="deg")
         
         self.x_world_var = set_column_properties("ERRX2_WORLD_CORR", is_optional=True, comment="deg**2")
         self.y_world_var = set_column_properties("ERRY2_WORLD_CORR", is_optional=True, comment="deg**2")
+
+        #BFD specific columns
+        self.bfd_moments = set_column_properties("BFD_MOMENTS", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
+        self.bfd_deriv_moments_dg1 = set_column_properties("BFD_DM_DG1", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
+        self.bfd_deriv_moments_dg2 = set_column_properties("BFD_DM_DG2", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
+        self.bfd_deriv_moments_dmu = set_column_properties("BFD_DM_DMU", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
+        self.bfd_2ndderiv_moments_dg1dg1 = set_column_properties("BFD_D2M_DG1DG1", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
+        self.bfd_2ndderiv_moments_dg1dg2 = set_column_properties("BFD_D2M_DG1DG2", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
+        self.bfd_2ndderiv_moments_dg2dg2 = set_column_properties("BFD_D2M_DG2DG2", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
+        self.bfd_2ndderiv_moments_dg1dmu = set_column_properties("BFD_D2M_DG1DMU", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
+        self.bfd_2ndderiv_moments_dg2dmu = set_column_properties("BFD_D2M_DG2DMU", is_optional=True, dtype=">f4", fits_dtype="E", length=7) 
+        self.bfd_2ndderiv_moments_dmudmu = set_column_properties("BFD_D2M_DMUDMU", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
+        self.bfd_template_weight = set_column_properties("BFD_TMPL_WEIGHT", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.bfd_jsuppress = set_column_properties("BFD_JSUPPRESS", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.bfd_pqr = set_column_properties("BFD_PQR", is_optional=True, dtype=">f4",fits_dtype="E",length=6)
         
-        self.flux = set_column_properties("FLUX", is_optional=True, comment="ADU")
-        self.flux_err = set_column_properties("FLUX_ERR", is_optional=True, comment="ADU")
-        
-        self.bulge_fraction = set_column_properties("BULGE_FRAC", is_optional=True)
-        self.bulge_fraction_err = set_column_properties("BULGE_FRAC_ERR", is_optional=True)
-        
-        self.snr = set_column_properties("SNR", is_optional=True)
-        self.snr_err = set_column_properties("SNR_ERR", is_optional=True)
-        
-        self.g1_chain = set_column_properties("G1_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=num_chains*len_chain)
-        self.g2_chain = set_column_properties("G2_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=num_chains*len_chain)
-        self.re_chain = set_column_properties("RE_CHAIN", is_optional=True, comment="arcsec", dtype=">f4", fits_dtype="E",
-                              length=num_chains*len_chain)
-        self.x_chain = set_column_properties("X_CHAIN", is_optional=True, comment="pixels", length=num_chains*len_chain)
-        self.y_chain = set_column_properties("Y_CHAIN", is_optional=True, comment="pixels", length=num_chains*len_chain)
-        
-        self.flux_chain = set_column_properties("FLUX_CHAIN", is_optional=True, comment="ADU", length=num_chains*len_chain)
-        self.bulge_fraction_chain = set_column_properties("BULGE_FRAC_CHAIN", is_optional=True, length=num_chains*len_chain)
-        self.snr_chain = set_column_properties("SNR_CHAIN", is_optional=True, length=num_chains*len_chain)
-        
-        self.lr1_chain = set_column_properties("LR1_CHAIN", is_optional=True, length=num_chains*len_chain)
-        self.lr2_chain = set_column_properties("LR2_CHAIN", is_optional=True, length=num_chains*len_chain)
+        self.bfd_cov_even = set_column_properties("BFD_COV_EVEN", is_optional=True, dtype=">f4", fits_dtype="E", length=15)
+        self.bfd_cov_odd = set_column_properties("BFD_COV_ODD", is_optional=True, dtype=">f4", fits_dtype="E", length=3)
         
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -190,12 +165,12 @@ class ShearEstimatesTableFormat(object):
                 self.all_required.append(label)
 
 # Define an instance of this object that can be imported         
-shear_estimates_table_format = ShearEstimatesTableFormat()
+bfd_moments_table_format = BFDMomentsTableFormat()
 
 # And a convient alias for it
-tf = shear_estimates_table_format
+tf = bfd_moments_table_format
 
-def make_shear_estimates_table_header(detector_x = 1,
+def make_bfd_moments_table_header(detector_x = 1,
                                       detector_y = 1,
                                       model_hash = None,
                                       model_seed = None,
@@ -229,18 +204,25 @@ def make_shear_estimates_table_header(detector_x = 1,
     
     header[tf.m.extname] = dtc.get_id_string(detector_x,detector_y) + "." + mv.shear_estimates_tag
     
-    header[tf.m.num_chains] = num_chains
-    header[tf.m.len_chain] = len_chain
-    
     header[tf.m.model_hash] = model_hash
     header[tf.m.model_seed] = model_seed
     header[tf.m.noise_seed] = noise_seed
+    
+    header[tf.m.bfd_nlost] = None
+    header[tf.m.bfd_wt_n] = None
+    header[tf.m.bfd_wt_sigma] = None
+    header[tf.m.bfd_tmpl_snmin] = None
+    header[tf.m.bfd_tmpl_sigma_xy] = None
+    header[tf.m.bfd_tmpl_sigma_flux] = None
+    header[tf.m.bfd_tmpl_sigma_step] = None
+    header[tf.m.bfd_tmpl_sigma_max] = None
+    header[tf.m.bfd_tmpl_xy_max] = None
 
     header[tf.m.validated] = 0
     
     return header
 
-def initialise_shear_estimates_table(detections_table = None,
+def initialise_bfd_moments_table(detections_table = None,
                                      optional_columns = None,
                                      detector_x = None,
                                      detector_y = None,
@@ -263,7 +245,7 @@ def initialise_shear_estimates_table(detections_table = None,
                
         @param detector <int?> Detector this table corresponds to
         
-        @return shear_estimates_table <astropy.table.Table>
+        @return bfd_moments_table <astropy.table.Table>
     """
     
     if detector is not None:
@@ -288,7 +270,7 @@ def initialise_shear_estimates_table(detections_table = None,
             init_cols.append([])
             dtypes.append((tf.dtypes[colname],tf.lengths[colname]))
     
-    shear_estimates_table = Table(init_cols, names=names, dtype=dtypes)
+    bfd_moments_table = Table(init_cols, names=names, dtype=dtypes)
     
     if detections_table is not None:
         if detector_x is None or detector_y is None:
@@ -305,10 +287,10 @@ def initialise_shear_estimates_table(detections_table = None,
     if detector_y is None:
         detector_y = 1
     
-    shear_estimates_table.meta = make_shear_estimates_table_header(detector_x = detector_x,
+    bfd_moments_table.meta = make_bfd_moments_table_header(detector_x = detector_x,
                                                                    detector_y = detector_y,
                                                                    model_hash = model_hash,
                                                                    model_seed = model_seed,
                                                                    noise_seed = noise_seed)
     
-    return shear_estimates_table
+    return bfd_moments_table
