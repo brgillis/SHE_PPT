@@ -20,9 +20,9 @@
 
 import unittest
 from numpy.testing import assert_almost_equal
-from SHE_GST_GalaxyImageGeneration.noise import (get_sky_level_ADU_per_pixel, get_sky_level_count_per_pixel,
-                                                 get_count_lambda_per_pixel, get_read_noise_ADU_per_pixel,
-                                                 get_var_ADU_per_pixel)
+from SHE_PPT.noise import (get_sky_level_ADU_per_pixel, get_sky_level_count_per_pixel,
+                           get_count_lambda_per_pixel, get_read_noise_ADU_per_pixel,
+                           get_var_ADU_per_pixel)
 
 class NoiseTestCase(unittest.TestCase):
     

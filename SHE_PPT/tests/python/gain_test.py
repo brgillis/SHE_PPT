@@ -20,7 +20,7 @@
 
 import unittest
 from numpy.testing import assert_almost_equal
-from SHE_GST_GalaxyImageGeneration.gain import get_ADU_from_count, get_count_from_ADU
+from SHE_PPT.gain import get_ADU_from_count, get_count_from_ADU
 
 class GainTestCase(unittest.TestCase):
     
