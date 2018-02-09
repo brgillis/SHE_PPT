@@ -46,3 +46,8 @@ psf_cat_tag = "PSFC"
 
 # Miscellaneous
 segmap_unassigned_value = -1
+
+# mag_vis_zeropoint = 25.50087633632 # From ETC
+# mag_vis_zeropoint = 25.4534 # From Sami's sims' config file
+mag_vis_zeropoint = 25.6527 # From Lance's code
+mag_i_zeropoint = 25.3884 # From Lance's code
