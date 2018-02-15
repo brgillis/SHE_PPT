@@ -26,6 +26,9 @@ Bug Fixes
 New Features
 ------------
 
+- Added module 'math' for misc. math functions
+- Added module 'mdb' for utility functions to get values from the MDB 
+
 
 New config features
 -------------------
