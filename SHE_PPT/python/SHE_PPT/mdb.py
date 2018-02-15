@@ -1,4 +1,4 @@
-""" @file mdb.py
+""" @file full_mdb.py
 
     Created 15 Feb 2018
 
@@ -25,7 +25,7 @@ from SHE_PPT.file_io import find_file
 _initialised = False
 _not_inited_exception = RuntimeError("")
 
-mdb = {}
+full_mdb = {}
 
 def init(mdb_files,path=None):
     """Initialises module by loading MDB data from file(s).
@@ -52,8 +52,8 @@ def init(mdb_files,path=None):
         
     # Get and store the data in a dictionary
     full_dict = _Mdb(qualified_mdb_files).get_all()
-    mdb.clear()
-    mdb.update(full_dict)
+    full_mdb.clear()
+    full_mdb.update(full_dict)
     
     _initialised = True
     
@@ -71,7 +71,7 @@ def reset():
     None
     """
     
-    mdb.clear()
+    full_mdb.clear()
     _initialised = False
 
 def get_mdb_value(key):
@@ -91,7 +91,7 @@ def get_mdb_value(key):
     if not _initialised:
         raise _not_inited_exception
     
-    return mdb[key]['Value']
+    return full_mdb[key]['Value']
 
 def get_mdb_description(key):
     """Gets an item's description from the MDB from its key (aka title).
@@ -110,7 +110,7 @@ def get_mdb_description(key):
     if not _initialised:
         raise _not_inited_exception
     
-    return mdb[key]['Description']
+    return full_mdb[key]['Description']
 
 def get_mdb_source(key):
     """Gets an item's source from the MDB from its key (aka title).
@@ -129,7 +129,7 @@ def get_mdb_source(key):
     if not _initialised:
         raise _not_inited_exception
     
-    return mdb[key]['Source']
+    return full_mdb[key]['Source']
 
 def get_mdb_release(key):
     """Gets an item's release version from the MDB from its key (aka title).
@@ -148,7 +148,7 @@ def get_mdb_release(key):
     if not _initialised:
         raise _not_inited_exception
     
-    return mdb[key]['Release']
+    return full_mdb[key]['Release']
 
 def get_mdb_expression(key):
     """Gets an item's expression from the MDB from its key (aka title).
@@ -167,7 +167,7 @@ def get_mdb_expression(key):
     if not _initialised:
         raise _not_inited_exception
     
-    return mdb[key]['Expression']
+    return full_mdb[key]['Expression']
 
 def get_mdb_unit(key):
     """Gets an item's unit from the MDB from its key (aka title).
@@ -186,5 +186,5 @@ def get_mdb_unit(key):
     if not _initialised:
         raise _not_inited_exception
     
-    return mdb[key]['unit']
+    return full_mdb[key]['unit']
 
