@@ -11,6 +11,8 @@ Dependency Changes
 ------------------
 
 - Now depends on Elements 5.2.2
+- Now depends on DMTools 2.0
+- Now depends on MDBTools 2.0
 
 Deprecated Features
 -------------------
