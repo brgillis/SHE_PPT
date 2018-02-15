@@ -52,11 +52,27 @@ def init(mdb_files,path=None):
         
     # Get and store the data in a dictionary
     full_dict = _Mdb(qualified_mdb_files).get_all()
+    mdb.clear()
     mdb.update(full_dict)
     
     _initialised = True
     
     return
+
+def reset():
+    """Resets the MDB dictionary.
+    
+    Arguments
+    ---------
+    None
+    
+    Return
+    ------
+    None
+    """
+    
+    mdb.clear()
+    _initialised = False
 
 def get_mdb_value(key):
     """Gets an item's value from the MDB from its key (aka title).
