@@ -49,12 +49,14 @@ class ShearEstimatesTableMeta(object):
         
         self.extname = mv.extname_label
         
+        self.num_chains = "NCHAIN"
+        self.len_chain = "LCHAIN"
+        
         self.model_hash = mv.model_hash_label
         self.model_seed = mv.model_seed_label
         self.noise_seed = mv.noise_seed_label
         
-        self.num_chains = "NCHAIN"
-        self.len_chain = "LCHAIN"
+        self.obs_time = mv.obs_time_label
         
         self.validated = "VALID"
         
@@ -67,6 +69,7 @@ class ShearEstimatesTableMeta(object):
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
+                                     (self.obs_time, "Mean of all stacked exposures."),
                                      (self.validated, "0: Not tested; 1: Pass; -1: Fail")
                                      ))
 
@@ -118,6 +121,7 @@ class ShearEstimatesTableFormat(object):
         
         self.ID = set_column_properties("SOURCE_ID", dtype=">i8", fits_dtype="K")
         
+        # Measured values
         self.g1 = set_column_properties("G1", dtype=">f8", fits_dtype="D")
         self.g2 = set_column_properties("G2", dtype=">f8", fits_dtype="D")
         self.g1_err = set_column_properties("G1_ERR", is_optional=False, dtype=">f8", fits_dtype="D")
@@ -129,24 +133,6 @@ class ShearEstimatesTableFormat(object):
         
         self.flags = set_column_properties("FLAGS", dtype=">i8", fits_dtype="K")
         self.fit_class = set_column_properties("FITCLASS", dtype=">i2", fits_dtype="I")
-        
-        self.g1_cal1 = set_column_properties("G1_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.g2_cal1 = set_column_properties("G2_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.b1_cal1 = set_column_properties("B1_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.b2_cal1 = set_column_properties("B2_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.g1_cal1_err = set_column_properties("G1_CAL1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.g2_cal1_err = set_column_properties("G2_CAL1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.e1_cal1_err = set_column_properties("E1_CAL1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.e2_cal1_err = set_column_properties("E2_CAL1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
-        
-        self.g1_cal2 = set_column_properties("G1_CAL2", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.g2_cal2 = set_column_properties("G2_CAL2", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.b1_cal2 = set_column_properties("B1_CAL2", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.b2_cal2 = set_column_properties("B2_CAL2", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.g1_cal2_err = set_column_properties("G1_CAL2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.g2_cal2_err = set_column_properties("G2_CAL2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.e1_cal2_err = set_column_properties("E1_CAL2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
-        self.e2_cal2_err = set_column_properties("E2_CAL2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
         
         self.re = set_column_properties("RE", is_optional=True, comment="arcsec", dtype=">f8", fits_dtype="D")
         self.re_err = set_column_properties("RE_ERR", is_optional=True, comment="arcsec", dtype=">f8", fits_dtype="D")
@@ -166,12 +152,17 @@ class ShearEstimatesTableFormat(object):
         self.snr = set_column_properties("SNR", is_optional=True)
         self.snr_err = set_column_properties("SNR_ERR", is_optional=True)
         
+        # Data needed for validation tests
+        self.x_pix_stacked = set_column_properties("X_PIX_STACKED", is_optional=True, comment="pixels in stacked frame")
+        self.y_pix_stacked = set_column_properties("Y_PIX_STACKED", is_optional=True, comment="pixels in stacked frame")
+        
+        # LensMC chains to describe PDFs of measurements
         self.g1_chain = set_column_properties("G1_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=num_chains*len_chain)
         self.g2_chain = set_column_properties("G2_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=num_chains*len_chain)
         self.re_chain = set_column_properties("RE_CHAIN", is_optional=True, comment="arcsec", dtype=">f4", fits_dtype="E",
                               length=num_chains*len_chain)
-        self.x_chain = set_column_properties("X_CHAIN", is_optional=True, comment="pixels", length=num_chains*len_chain)
-        self.y_chain = set_column_properties("Y_CHAIN", is_optional=True, comment="pixels", length=num_chains*len_chain)
+        self.x_chain = set_column_properties("X_CHAIN", is_optional=True, comment="deg", length=num_chains*len_chain)
+        self.y_chain = set_column_properties("Y_CHAIN", is_optional=True, comment="deg", length=num_chains*len_chain)
         
         self.flux_chain = set_column_properties("FLUX_CHAIN", is_optional=True, comment="ADU", length=num_chains*len_chain)
         self.bulge_fraction_chain = set_column_properties("BULGE_FRAC_CHAIN", is_optional=True, length=num_chains*len_chain)
@@ -179,6 +170,25 @@ class ShearEstimatesTableFormat(object):
         
         self.lr1_chain = set_column_properties("LR1_CHAIN", is_optional=True, length=num_chains*len_chain)
         self.lr2_chain = set_column_properties("LR2_CHAIN", is_optional=True, length=num_chains*len_chain)
+        
+        # LensMC-specific calibrated data (will probably be deprecated once this is folded into calib. pipeline)
+        self.g1_cal1 = set_column_properties("G1_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g2_cal1 = set_column_properties("G2_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.b1_cal1 = set_column_properties("B1_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.b2_cal1 = set_column_properties("B2_CAL1", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g1_cal1_err = set_column_properties("G1_CAL1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g2_cal1_err = set_column_properties("G2_CAL1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.e1_cal1_err = set_column_properties("E1_CAL1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.e2_cal1_err = set_column_properties("E2_CAL1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
+        
+        self.g1_cal2 = set_column_properties("G1_CAL2", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g2_cal2 = set_column_properties("G2_CAL2", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.b1_cal2 = set_column_properties("B1_CAL2", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.b2_cal2 = set_column_properties("B2_CAL2", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g1_cal2_err = set_column_properties("G1_CAL2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.g2_cal2_err = set_column_properties("G2_CAL2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.e1_cal2_err = set_column_properties("E1_CAL2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.e2_cal2_err = set_column_properties("E2_CAL2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
         
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -200,6 +210,7 @@ def make_shear_estimates_table_header(detector_x = 1,
                                       model_hash = None,
                                       model_seed = None,
                                       noise_seed = None,
+                                      obs_time = None,
                                       detector = None):
     """
         @brief Generate a header for a shear estimates table.
@@ -213,6 +224,10 @@ def make_shear_estimates_table_header(detector_x = 1,
         @param model_seed <int> Full seed used for the physical model for this image
         
         @param noise_seed <int> Seed used for generating noise for this image
+        
+        @param obs_time <str> Mean observation time of the corresponding detections
+               
+        @param detector <str> Detector this table corresponds to
         
         @return header <dict>
     """
@@ -235,6 +250,8 @@ def make_shear_estimates_table_header(detector_x = 1,
     header[tf.m.model_hash] = model_hash
     header[tf.m.model_seed] = model_seed
     header[tf.m.noise_seed] = noise_seed
+    
+    header[tf.m.obs_time] = obs_time
 
     header[tf.m.validated] = 0
     
@@ -247,6 +264,7 @@ def initialise_shear_estimates_table(detections_table = None,
                                      model_hash = None,
                                      model_seed = None,
                                      noise_seed = None,
+                                     obs_time = None,
                                      detector = None):
     """
         @brief Initialise a shear estimates table based on a detections table, with the
@@ -260,8 +278,10 @@ def initialise_shear_estimates_table(detections_table = None,
         @param detector_x <int> x-index (1-6) for detector this image was taken with
         
         @param detector_y <int> y-index (1-6) for detector this image was taken with
+        
+        @param obs_time <str> Mean observation time of the corresponding detections
                
-        @param detector <int?> Detector this table corresponds to
+        @param detector <str> Detector this table corresponds to
         
         @return shear_estimates_table <astropy.table.Table>
     """
@@ -299,6 +319,8 @@ def initialise_shear_estimates_table(detections_table = None,
             model_seed = detections_table.meta[detf.m.model_seed]
         if noise_seed is None:
             noise_seed = detections_table.meta[detf.m.noise_seed]
+        if obs_time is None:
+            obs_time = detections_table.meta[detf.m.obs_time]
             
     if detector_x is None:
         detector_x = 1
@@ -309,6 +331,7 @@ def initialise_shear_estimates_table(detections_table = None,
                                                                    detector_y = detector_y,
                                                                    model_hash = model_hash,
                                                                    model_seed = model_seed,
-                                                                   noise_seed = noise_seed)
+                                                                   noise_seed = noise_seed,
+                                                                   obs_time = obs_time)
     
     return shear_estimates_table

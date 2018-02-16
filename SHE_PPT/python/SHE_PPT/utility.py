@@ -20,6 +20,7 @@
 
 import codecs
 import hashlib
+import time
 
 from SHE_PPT import detector as dtc
 
@@ -84,4 +85,14 @@ def get_detector(obj):
     detector_y = int(extname[dtc.y_index])
     
     return detector_x, detector_y
+
+def time_to_timestamp(t):
+    """
+        From a struct_time object (as from the time module), get a timestamp in the astro format.
+    """
+    
+    timestamp = (str(t.tm_year) + str(t.tm_mon) + str(t.tm_mday) + "T" +
+                 str(t.tm_hour) + str(t.tm_min) + str(t.tm_sec)+ ".0Z")
+    
+    return timestamp
     

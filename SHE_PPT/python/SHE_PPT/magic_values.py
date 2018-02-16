@@ -30,6 +30,7 @@ noise_seed_label = "NSEED"
 extname_label = "EXTNAME"
 dither_dx_label = "DITHERDX"
 dither_dy_label = "DITHERDY"
+obs_time_label = "DATE-OBS"
 
 # Tags for science image, noisemap, and mask
 sci_tag = "SCI"

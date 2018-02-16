@@ -34,6 +34,7 @@ from astropy.io import fits
 
 from SHE_PPT.logging import getLogger
 from SHE_PPT import magic_values as mv
+from SHE_PPT.utility import time_to_timestamp
 
 logger = getLogger(mv.logger_name)
 
@@ -80,8 +81,7 @@ def get_allowed_filename( type_name, instance_id, extension=".fits", release = "
     
     tnow = time.gmtime()
     
-    creation_date = (str(tnow.tm_year) + str(tnow.tm_mon) + str(tnow.tm_mday) + "T" +
-                     str(tnow.tm_hour) + str(tnow.tm_min) + str(tnow.tm_sec)+ ".0Z")
+    creation_date = time_to_timestamp(tnow)
     
     filename = "EUC_SHE_"+type_name+"_"+instance_id+"_"+creation_date+"_"+release+extension
     

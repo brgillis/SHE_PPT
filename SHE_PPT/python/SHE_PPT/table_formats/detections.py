@@ -54,6 +54,8 @@ class DetectionsTableMeta(object):
         self.model_seed = mv.model_seed_label
         self.noise_seed = mv.noise_seed_label
         
+        self.obs_time = mv.obs_time_label
+        
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
                                      (self.format, None),
@@ -65,6 +67,7 @@ class DetectionsTableMeta(object):
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
+                                     (self.obs_time, "Mean of all stacked exposures."),
                                    ))
         
         # A list of columns in the desired order
@@ -191,6 +194,7 @@ def make_detections_table_header(detector_x = 1,
                                  model_hash = None,
                                  model_seed = None,
                                  noise_seed = None,
+                                 obs_time = None,
                                  detector = None):
     """
         @brief Generate a header for a detections table.
@@ -210,6 +214,8 @@ def make_detections_table_header(detector_x = 1,
         @param model_seed <int> Full seed used for the physical model for this image
         
         @param noise_seed <int> Seed used for generating noise for this image
+        
+        @param obs_time <str> Mean observation time of the corresponding detections
         
         @return header <OrderedDict>
     """
@@ -235,6 +241,8 @@ def make_detections_table_header(detector_x = 1,
     header[tf.m.model_seed] = model_seed
     header[tf.m.noise_seed] = noise_seed
     
+    header[tf.m.obs_time] = obs_time
+    
     return header
 
 def initialise_detections_table(image = None,
@@ -249,6 +257,7 @@ def initialise_detections_table(image = None,
                                 model_hash = None,
                                 model_seed = None,
                                 noise_seed = None,
+                                obs_time = None,
                                 detector = None):
     """
         @brief Initialise a detections table.
@@ -261,6 +270,8 @@ def initialise_detections_table(image = None,
                Default is none
         
         @param detector <int?> Detector for this image, if applicable. Will override ID of image object if set
+        
+        @param obs_time <str> Mean observation time of the corresponding detections
         
         @return detections_table <astropy.Table>
     """
