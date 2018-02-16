@@ -155,6 +155,8 @@ class ShearEstimatesTableFormat(object):
         # Data needed for validation tests
         self.x_pix_stacked = set_column_properties("X_PIX_STACKED", is_optional=True, comment="pixels in stacked frame")
         self.y_pix_stacked = set_column_properties("Y_PIX_STACKED", is_optional=True, comment="pixels in stacked frame")
+        self.color = set_column_properties("COLOR", is_optional=True, comment="TBD which color to use")
+        self.sky_bg = set_column_properties("SKY_BG", is_optional=True, comment="ADU")
         
         # LensMC chains to describe PDFs of measurements
         self.g1_chain = set_column_properties("G1_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=num_chains*len_chain)
