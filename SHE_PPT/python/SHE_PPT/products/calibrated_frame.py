@@ -20,34 +20,62 @@
 
 
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import EuclidDmBindings.she.she_stub as she_dpd # FIXME
+# import EuclidDmBindings.she.she_stub as vis_dpd # FIXME
 
-import pickle
+import EuclidDmBindings.dpd.vis_stub as vis_dpd
+import HeaderProvider.GenericHeaderProvider as HeaderProvider
+import EuclidDmBindings.sys.dss_stub as dss_dict
 
 def init():
     """
         Adds some extra functionality to the DpdSheAstrometry product
     """
     
-    # binding_class = she_dpd.DpdSheCalibratedFrameProduct # @FIXME
-    binding_class = DpdSheCalibratedFrameProduct
+    binding_class = vis_dpd.DpdSheCalibratedFrameProduct
 
     # Add the data file name methods
     
     binding_class.set_filename = __set_filename
     binding_class.get_filename = __get_filename
     
+    binding_class.set_psf_filename = __set_psf_filename
+    binding_class.get_psf_filename = __get_psf_filename
+    
+    binding_class.set_bkg_filename = __set_bkg_filename
+    binding_class.get_bkg_filename = __get_bkg_filename
+    
+    binding_class.set_wgt_filename = __set_wgt_filename
+    binding_class.get_wgt_filename = __get_wgt_filename
+    
     binding_class.get_all_filenames = __get_all_filenames
     
-    binding_class.has_files = False
+    binding_class.has_files = True
     
     return
 
 def __set_filename(self, filename):
-    self.Data.DataContainer.FileName = filename
+    self.Data.DataStorage.DataContainer.FileName = filename
 
 def __get_filename(self):
-    return self.Data.DataContainer.FileName
+    return self.Data.DataStorage.DataContainer.FileName
+
+def __set_psf_filename(self, filename):
+    self.Data.PsfModelStorage.DataContainer.FileName = filename
+
+def __get_psf_filename(self):
+    return self.Data.PsfModelStorage.DataContainer.FileName
+
+def __set_bkg_filename(self, filename):
+    self.Data.BackgroundStorage.DataContainer.FileName = filename
+
+def __get_bkg_filename(self):
+    return self.Data.BackgroundStorage.DataContainer.FileName
+
+def __set_wgt_filename(self, filename):
+    self.Data.WeightStorage.DataContainer.FileName = filename
+
+def __get_wgt_filename(self):
+    return self.Data.WeightStorage.DataContainer.FileName
 
 def __get_all_filenames(self):
     
@@ -55,55 +83,77 @@ def __get_all_filenames(self):
     
     return all_filenames
 
-class DpdSheCalibratedFrameProduct: # @FIXME
-    def __init__(self):
-        self.Header = None
-        self.Data = None
-    def validateBinding(self):
-        return False
-        
-class SheCalibratedFrameProduct: # @FIXME
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-        
-class DataContainer: # @FIXME
-    def __init__(self):
-        self.FileName = None
-        self.filestatus = None
-
-def create_dpd_she_calibrated_frame(filename = None):
+def create_dpd_vis_calibrated_frame(filename = None,
+                                    psf_filename = None,
+                                    bkg_filename = None,
+                                    wgt_filename = None):
     """
         @TODO fill in docstring
     """
     
-    # dpd_she_calibrated_frame = she_dpd.DpdSheCalibratedFrameProduct() # FIXME
-    dpd_she_calibrated_frame = DpdSheCalibratedFrameProduct()
+    dpd_vis_calibrated_frame = vis_dpd.DpdSheCalibratedFrameProduct() # FIXME
     
-    # dpd_she_calibrated_frame.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
-    dpd_she_calibrated_frame.Header = "SHE"
+    dpd_vis_calibrated_frame.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
+    dpd_vis_calibrated_frame.Header = "SHE"
     
-    dpd_she_calibrated_frame.Data = create_she_calibrated_frame(filename)
+    dpd_vis_calibrated_frame.Data = create_vis_calibrated_frame(filename,
+                                                                psf_filename,
+                                                                bkg_filename,
+                                                                wgt_filename)
     
-    return dpd_she_calibrated_frame
+    return dpd_vis_calibrated_frame
 
 # Add a useful alias
-create_calibrated_frame_product = create_dpd_she_calibrated_frame
+create_calibrated_frame_product = create_dpd_vis_calibrated_frame
 
-def create_she_calibrated_frame(filename = None):
+def create_vis_calibrated_frame(filename = None,
+                                psf_filename = None,
+                                bkg_filename = None,
+                                wgt_filename = None):
     """
         @TODO fill in docstring
     """
     
-    # she_calibrated_frame = she_dpd.SheCalibratedFrameProduct() # @FIXME
-    she_calibrated_frame = SheCalibratedFrameProduct()
+    vis_calibrated_frame = vis_dpd.calibratedFrameVIS()
     
-    she_calibrated_frame.format = "UNDEFINED"
-    she_calibrated_frame.version = "0.0"
+    vis_calibrated_frame.DataStorage = create_vis_data_storage(filename,"vis.reducedFrameFitsFile")
+    vis_calibrated_frame.PsfModelStorage = create_vis_data_storage(psf_filename,"vis.reducedFrameFitsFile")
+    vis_calibrated_frame.BackgroundStorage = create_vis_data_storage(bkg_filename,"vis.reducedFrameFitsFile")
+    vis_calibrated_frame.WeightStorage = create_vis_data_storage(wgt_filename,"vis.reducedFrameFitsFile")
     
-    she_calibrated_frame.DataContainer = DataContainer()
-    she_calibrated_frame.DataContainer.FileName = filename
-    she_calibrated_frame.DataContainer.filestatus = "PROPOSED"
+    vis_calibrated_frame.Masks = create_vis_masks()
+    vis_calibrated_frame.DetectorList = create_vis_detector_list()
+    vis_calibrated_frame.ObservationSequence = create_vis_observation_sequence()
     
-    return she_calibrated_frame
+    return
+    
+def create_vis_data_storage(filename, format="UNDEFINED", version="0.0", filestatus="PROPOSED"):
+    
+    data_storage = vis_dpd.reducedFrameFitsFileVIS()
+    
+    data_storage.format = format
+    data_storage.version = version
+    
+    data_storage.DataContainer = dss_dict.DataContainer()
+    data_storage.DataContainer.FileName = filename
+    data_storage.DataContainer.filestatus = filestatus
+    
+    return data_storage
+
+def create_vis_masks():
+    
+    masks = vis_dpd.bitMaskList()
+    
+    return masks
+
+def create_vis_detector_list():
+    
+    detector_list = vis_dpd.reducedDetectorFrameListVIS()
+    
+    return detector_list
+
+def create_vis_observation_sequence():
+    
+    observation_sequence = vis_dpd.observationSequenceVIS()
+    
+    return observation_sequence
