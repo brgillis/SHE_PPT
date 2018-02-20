@@ -35,8 +35,8 @@ def init():
 
     # Add the data file name methods
     
-    binding_class.set_filename = __set_filename
-    binding_class.get_filename = __get_filename
+    binding_class.set_data_filename = __set_data_filename
+    binding_class.get_data_filename = __get_data_filename
     
     binding_class.set_psf_filename = __set_psf_filename
     binding_class.get_psf_filename = __get_psf_filename
@@ -53,10 +53,10 @@ def init():
     
     return
 
-def __set_filename(self, filename):
+def __set_data_filename(self, filename):
     self.Data.DataStorage.DataContainer.FileName = filename
 
-def __get_filename(self):
+def __get_data_filename(self):
     return self.Data.DataStorage.DataContainer.FileName
 
 def __set_psf_filename(self, filename):
@@ -79,7 +79,10 @@ def __get_wgt_filename(self):
 
 def __get_all_filenames(self):
     
-    all_filenames = []
+    all_filenames = [self.get_data_filename(),
+                     self.get_psf_filename(),
+                     self.get_bkd_filename(),
+                     self.get_wgt_filename()]
     
     return all_filenames
 
