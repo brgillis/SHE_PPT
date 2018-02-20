@@ -121,10 +121,10 @@ def create_vis_calibrated_frame(filename = None,
     
     vis_calibrated_frame = vis_pro.calibratedFrameVIS()
     
-    vis_calibrated_frame.DataStorage = create_vis_data_storage(filename,"vis.reducedFrameFitsFile")
-    vis_calibrated_frame.PsfModelStorage = create_vis_data_storage(psf_filename,"vis.reducedFrameFitsFile")
-    vis_calibrated_frame.BackgroundStorage = create_vis_data_storage(bkg_filename,"vis.reducedFrameFitsFile")
-    vis_calibrated_frame.WeightStorage = create_vis_data_storage(wgt_filename,"vis.reducedFrameFitsFile")
+    vis_calibrated_frame.DataStorage = create_vis_data_storage(filename,"vis.reducedFrameVIS")
+    vis_calibrated_frame.PsfModelStorage = create_vis_data_storage(psf_filename,"vis.reducedFrameVIS")
+    vis_calibrated_frame.BackgroundStorage = create_vis_data_storage(bkg_filename,"vis.reducedFrameVIS")
+    vis_calibrated_frame.WeightStorage = create_vis_data_storage(wgt_filename,"vis.reducedFrameVIS")
     
     vis_calibrated_frame.Masks = create_vis_masks()
     vis_calibrated_frame.DetectorList = create_vis_detector_list()
