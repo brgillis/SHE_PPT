@@ -39,7 +39,7 @@ def init():
         Adds some extra functionality to the DpdSheAstrometry product
     """
     
-    binding_class = vis_dpd.DpdCalibratedFrame
+    binding_class = vis_dpd.dpdCalibratedFrame
 
     # Add the data file name methods
     
