@@ -122,17 +122,10 @@ def create_vis_calibrated_frame(filename = None,
     vis_calibrated_frame = vis_pro.calibratedFrameVIS()
     
     vis_calibrated_frame.DataStorage = create_vis_data_storage(filename,"vis.reducedFrameVIS")
-    vis_calibrated_frame.PsfModelStorage = create_vis_data_storage(psf_filename,"vis.reducedFrameVIS")
-    vis_calibrated_frame.BackgroundStorage = create_vis_data_storage(bkg_filename,"vis.reducedFrameVIS")
-    vis_calibrated_frame.WeightStorage = create_vis_data_storage(wgt_filename,"vis.reducedFrameVIS")
-    
-    vis_calibrated_frame.Masks = create_vis_masks()
-    vis_calibrated_frame.DetectorList = create_vis_detector_list()
-    vis_calibrated_frame.ObservationSequence = create_vis_observation_sequence()
     
     return
     
-def create_vis_data_storage(filename, format="UNDEFINED", version="0.0", filestatus="PROPOSED"):
+def create_vis_data_storage(filename, format="vis.reducedFrameVIS", version="0.0", filestatus="PROPOSED"):
     
     data_storage = vis_pro.reducedFrameFitsFileVIS()
     
@@ -144,21 +137,3 @@ def create_vis_data_storage(filename, format="UNDEFINED", version="0.0", filesta
     data_storage.DataContainer.filestatus = filestatus
     
     return data_storage
-
-def create_vis_masks():
-    
-    masks = vis_pro.bitMaskList()
-    
-    return masks
-
-def create_vis_detector_list():
-    
-    detector_list = vis_pro.reducedDetectorFrameListVIS()
-    
-    return detector_list
-
-def create_vis_observation_sequence():
-    
-    observation_sequence = vis_pro.observationSequenceVIS()
-    
-    return observation_sequence
