@@ -94,7 +94,7 @@ def create_dpd_vis_calibrated_frame(filename = None,
         @TODO fill in docstring
     """
     
-    dpd_vis_calibrated_frame = vis_dpd.dpdCalibratedFrame()
+    dpd_vis_calibrated_frame = vis_dpd.DpdCalibratedFrame()
     
     dpd_vis_calibrated_frame.Header = HeaderProvider.createGenericHeader("VIS")
     dpd_vis_calibrated_frame.Header = "VIS"
@@ -117,7 +117,7 @@ def create_vis_calibrated_frame(filename = None,
         @TODO fill in docstring
     """
     
-    vis_calibrated_frame = vis_dpd.calibratedFrameVIS()
+    vis_calibrated_frame = vis_dpd.dpdCalibratedFrame()
     
     vis_calibrated_frame.DataStorage = create_vis_data_storage(filename,"vis.reducedFrameFitsFile")
     vis_calibrated_frame.PsfModelStorage = create_vis_data_storage(psf_filename,"vis.reducedFrameFitsFile")
