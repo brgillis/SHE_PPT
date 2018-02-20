@@ -30,7 +30,7 @@ class TestCalibratedFrameProduct(object):
     def test_validation(self):
         
         # Create the product
-        product = prod.create_dpd_she_calibrated_frame()
+        product = prod.create_dpd_vis_calibrated_frame()
 
         # Check that it validates the schema
         product.validateBinding()
@@ -42,14 +42,14 @@ class TestCalibratedFrameProduct(object):
         prod.init()
         
         # Create the product
-        product = prod.create_dpd_she_calibrated_frame()
+        product = prod.create_dpd_vis_calibrated_frame()
 
         # Change the fits filenames
         subfilename = "test_file.fits" 
         product.set_filename(subfilename)
 
         # Save the product in an XML file
-        filename = tmpdir.join("she_calibrated_frame.xml")
+        filename = tmpdir.join("vis_calibrated_frame.xml")
         write_xml_product(product, filename)
 
         # Read back the XML file
@@ -65,14 +65,14 @@ class TestCalibratedFrameProduct(object):
         prod.init()
         
         # Create the product
-        product = prod.create_dpd_she_calibrated_frame()
+        product = prod.create_dpd_vis_calibrated_frame()
 
         # Change the fits filenames
         subfilename = "test_file.fits" 
         product.set_filename(subfilename)
 
         # Save the product in an XML file
-        filename = tmpdir.join("she_calibrated_frame.xml")
+        filename = tmpdir.join("vis_calibrated_frame.xml")
         write_pickled_product(product, filename)
 
         # Read back the XML file
