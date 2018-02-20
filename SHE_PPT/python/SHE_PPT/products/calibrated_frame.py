@@ -139,7 +139,7 @@ def create_vis_data_storage(filename, format="UNDEFINED", version="0.0", filesta
     data_storage.format = format
     data_storage.version = version
     
-    data_storage.DataContainer = dss_dict.DataContainer()
+    data_storage.DataContainer = dss_dict.dataContainer()
     data_storage.DataContainer.FileName = filename
     data_storage.DataContainer.filestatus = filestatus
     
