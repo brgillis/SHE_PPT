@@ -56,7 +56,7 @@ class TestMDB:
         ex_expression = None
         ex_unit = 'pixel'
         
-        mdb.init(cls.filename)
+        mdb.init(self.filename)
         assert mdb.get_mdb_value(self.test_key)==ex_value
         assert mdb.get_mdb_description(self.test_key)==ex_description
         assert mdb.get_mdb_source(self.test_key)==ex_source
