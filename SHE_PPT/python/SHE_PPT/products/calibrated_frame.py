@@ -28,6 +28,9 @@ import EuclidDmBindings.pro.vis_stub as vis_pro
 from EuclidDmBindings.sys.dss_stub import dataContainer
 from EuclidDmBindings.bas.imp.eso_stub import dataProduct
 from EuclidDmBindings.ins_stub import baseInstrument 
+from EuclidDmBindings.pro import le1_stub as le1
+from EuclidDmBindings.pro.le1 import vis_stub as le1vis  
+
 
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
 
@@ -182,21 +185,47 @@ def create_vis_instrument():
 
 def create_vis_recons_orbit():
     
-    return
+    recons_orbit = le1.spacecraftOrbit()
+    
+    recons_orbit.Position = (999.0,999.0,999.0)
+    recons_orbit.Velocity = (999.0,999.0,999.0)
+    recons_orbit.SolarAspectAngle = 999.0
+    
+    return recons_orbit
 
 def create_vis_readout():
     
-    return
+    readout = le1vis.visReadoutMode()
+    
+    readout.ReadoutModeMethod = "NominalScience"
+    readout.StartTime = "2006-05-05T18:00:00"
+    readout.ParallelRegFrequency = 999.0
+    readout.SerialRegFrequency = 999.0
+    
+    return readout
 
 def create_vis_shutter_unit():
     
-    return
+    shutter_unit = le1vis.shutterUnit()
+
+    shutter_unit.Status = "OPENED"
+    
+    return shutter_unit
 
 def create_vis_calib_unit():
     
-    return
+    calib_unit = le1.calibUnit()
+    
+    calib_unit.Status = False
+    
+    return calib_unit
 
 def create_vis_charged_induced():
+    
+    charged_induced = le1vis.chargedInduced()
+    
+    charged_induced.Status = False
+    charged_induced.IntensityLevel = 999.0
     
     return
     
