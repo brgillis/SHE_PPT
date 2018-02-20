@@ -140,7 +140,7 @@ def create_vis_calibrated_frame(filename = None):
     vis_calibrated_frame.ImgType = create_img_type()
     vis_calibrated_frame.ImgNumber = 36
     vis_calibrated_frame.AxisNumber = 2
-    vis_calibrated_frame.AxisLengths = (4096,4132)
+    vis_calibrated_frame.AxisLengths = "4096 4132"
     vis_calibrated_frame.DataSize = -32
     vis_calibrated_frame.DataLength = 4096*4132
     
@@ -187,8 +187,8 @@ def create_vis_recons_orbit():
     
     recons_orbit = le1.spacecraftOrbit()
     
-    recons_orbit.Position = (999.0,999.0,999.0)
-    recons_orbit.Velocity = (999.0,999.0,999.0)
+    recons_orbit.Position = "999.0 999.0 999.0"
+    recons_orbit.Velocity = "999.0 999.0 999.0"
     recons_orbit.SolarAspectAngle = 999.0
     
     return recons_orbit
