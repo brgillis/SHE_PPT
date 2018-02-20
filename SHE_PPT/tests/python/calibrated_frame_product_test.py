@@ -46,7 +46,7 @@ class TestCalibratedFrameProduct(object):
 
         # Change the fits filenames
         subfilename = "test_file.fits" 
-        product.set_filename(subfilename)
+        product.set_data_filename(subfilename)
 
         # Save the product in an XML file
         filename = tmpdir.join("vis_calibrated_frame.xml")
@@ -56,7 +56,7 @@ class TestCalibratedFrameProduct(object):
         loaded_product = read_xml_product(filename)
 
         # Check that the filenames match
-        assert loaded_product.get_filename() == subfilename
+        assert loaded_product.get_data_filename() == subfilename
         
         pass
 
@@ -69,7 +69,7 @@ class TestCalibratedFrameProduct(object):
 
         # Change the fits filenames
         subfilename = "test_file.fits" 
-        product.set_filename(subfilename)
+        product.set_data_filename(subfilename)
 
         # Save the product in an XML file
         filename = tmpdir.join("vis_calibrated_frame.xml")
@@ -79,6 +79,6 @@ class TestCalibratedFrameProduct(object):
         loaded_product = read_pickled_product(filename)
 
         # Check that the filenames match
-        assert loaded_product.get_filename() == subfilename
+        assert loaded_product.get_data_filename() == subfilename
         
         pass
