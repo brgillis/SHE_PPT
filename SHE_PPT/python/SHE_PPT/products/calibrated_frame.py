@@ -91,10 +91,10 @@ def create_dpd_vis_calibrated_frame(filename = None,
         @TODO fill in docstring
     """
     
-    dpd_vis_calibrated_frame = vis_dpd.DpdSheCalibratedFrameProduct() # FIXME
+    dpd_vis_calibrated_frame = vis_dpd.DpdSheCalibratedFrameProduct()
     
-    dpd_vis_calibrated_frame.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
-    dpd_vis_calibrated_frame.Header = "SHE"
+    dpd_vis_calibrated_frame.Header = HeaderProvider.createGenericHeader("VIS")
+    dpd_vis_calibrated_frame.Header = "VIS"
     
     dpd_vis_calibrated_frame.Data = create_vis_calibrated_frame(filename,
                                                                 psf_filename,
