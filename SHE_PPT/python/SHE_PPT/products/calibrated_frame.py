@@ -24,7 +24,10 @@
 
 import EuclidDmBindings.dpd.vis_stub as vis_dpd
 import EuclidDmBindings.pro.vis_stub as vis_pro
-import EuclidDmBindings.sys.dss_stub as dss_dict
+
+from EuclidDmBindings.sys.dss_stub import dataContainer
+from EuclidDmBindings.bas.imp.eso_stub import dataProduct
+from EuclidDmBindings.ins_stub import baseInstrument 
 
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
 
@@ -62,22 +65,39 @@ def __get_data_filename(self):
     return self.Data.DataStorage.DataContainer.FileName
 
 def __set_psf_filename(self, filename):
-    self.Data.PsfModelStorage.DataContainer.FileName = filename
+    if not hasattr(self.Data, "PsfModelStorage"):
+        self.Data.PsfModelStorage = create_vis_data_storage(filename)
+    else:
+        self.Data.PsfModelStorage.DataContainer.FileName = filename
 
 def __get_psf_filename(self):
-    return self.Data.PsfModelStorage.DataContainer.FileName
+    if hasattr(self.Data, "PsfModelStorage"):
+        return self.Data.PsfModelStorage.DataContainer.FileName
+    return None
 
 def __set_bkg_filename(self, filename):
-    self.Data.BackgroundStorage.DataContainer.FileName = filename
+    if not hasattr(self.Data, "BackgroundStorage"):
+        self.Data.BackgroundStorage = create_vis_data_storage(filename)
+    else:
+        self.Data.BackgroundStorage.DataContainer.FileName = filename
 
 def __get_bkg_filename(self):
-    return self.Data.BackgroundStorage.DataContainer.FileName
+    if hasattr(self.Data, "BackgroundStorage"):
+        return self.Data.BackgroundStorage.DataContainer.FileName
+    else:
+        return None
 
 def __set_wgt_filename(self, filename):
-    self.Data.WeightStorage.DataContainer.FileName = filename
+    if not hasattr(self.Data, "WeightStorage"):
+        self.Data.WeightStorage = create_vis_data_storage(filename)
+    else:
+        self.Data.WeightStorage.DataContainer.FileName = filename
 
 def __get_wgt_filename(self):
-    return self.Data.WeightStorage.DataContainer.FileName
+    if hasattr(self.Data, "WeightStorage"):
+        return self.Data.WeightStorage.DataContainer.FileName
+    else:
+        return None
 
 def __get_all_filenames(self):
     
@@ -88,40 +108,95 @@ def __get_all_filenames(self):
     
     return all_filenames
 
-def create_dpd_vis_calibrated_frame(filename = None,
-                                    psf_filename = None,
-                                    bkg_filename = None,
-                                    wgt_filename = None):
+def create_dpd_vis_calibrated_frame(filename = None):
     """
         @TODO fill in docstring
     """
     
-    dpd_vis_calibrated_frame = vis_dpd.DpdCalibratedFrame()
+    dpd_vis_calibrated_frame = vis_dpd.dpdCalibratedFrame()
     
     dpd_vis_calibrated_frame.Header = HeaderProvider.createGenericHeader("VIS")
     dpd_vis_calibrated_frame.Header = "VIS"
     
-    dpd_vis_calibrated_frame.Data = create_vis_calibrated_frame(filename,
-                                                                psf_filename,
-                                                                bkg_filename,
-                                                                wgt_filename)
+    dpd_vis_calibrated_frame.Data = create_vis_calibrated_frame(filename)
     
     return dpd_vis_calibrated_frame
 
 # Add a useful alias
 create_calibrated_frame_product = create_dpd_vis_calibrated_frame
 
-def create_vis_calibrated_frame(filename = None,
-                                psf_filename = None,
-                                bkg_filename = None,
-                                wgt_filename = None):
+def create_vis_calibrated_frame(filename = None):
     """
         @TODO fill in docstring
     """
     
     vis_calibrated_frame = vis_pro.calibratedFrameVIS()
     
+    # Attributes inherited from imgBaseFrame
+    
+    vis_calibrated_frame.ImgType = create_img_type()
+    vis_calibrated_frame.ImgNumber = 36
+    vis_calibrated_frame.AxisNumber = 2
+    vis_calibrated_frame.AxisLengths = (4096,4132)
+    vis_calibrated_frame.DataSize = -32
+    vis_calibrated_frame.DataLength = 4096*4132
+    
+    # Attributes inherited from baseFrameVis
+    
+    vis_calibrated_frame.Instrument = create_vis_instrument()
+    vis_calibrated_frame.Filter = "VIS"
+    vis_calibrated_frame.InstrumentMode = "Science"
+    vis_calibrated_frame.ObservationMode = "ScienceWide"
+    vis_calibrated_frame.ReconsOrbit = create_vis_recons_orbit()
+    vis_calibrated_frame.Readout = create_vis_readout()
+    vis_calibrated_frame.ShutterUnit = create_vis_shutter_unit()
+    vis_calibrated_frame.CalibUnit = create_vis_calib_unit()
+    vis_calibrated_frame.ChargedInduced = create_vis_charged_induced()
+    
+    # Attributes unique to calibratedFrameVis
+    
     vis_calibrated_frame.DataStorage = create_vis_data_storage(filename,"vis.reducedFrameVIS")
+    
+    return
+
+def create_img_type():
+    
+    img_type = dataProduct()
+    
+    img_type.Category = "SCIENCE"
+    img_type.FirstType = "OBJECT"
+    img_type.SecondType = "SKY"
+    img_type.ThirdType = "WIDE"
+    img_type.Technique = "IMAGE"
+    
+    return img_type
+
+def create_vis_instrument():
+    
+    instrument = baseInstrument()
+    
+    instrument.InstrumentName = "VIS Instrument"
+    instrument.TelescopeName = "Telescope"
+    
+    return instrument
+
+def create_vis_recons_orbit():
+    
+    return
+
+def create_vis_readout():
+    
+    return
+
+def create_vis_shutter_unit():
+    
+    return
+
+def create_vis_calib_unit():
+    
+    return
+
+def create_vis_charged_induced():
     
     return
     
