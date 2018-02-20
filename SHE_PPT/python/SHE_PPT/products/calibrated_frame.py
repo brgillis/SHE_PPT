@@ -227,7 +227,7 @@ def create_vis_charged_induced():
     charged_induced.Status = False
     charged_induced.IntensityLevel = 999.0
     
-    return
+    return charged_induced
     
 def create_vis_data_storage(filename, format="vis.reducedFrameVIS", version="0.0", filestatus="PROPOSED"):
     
