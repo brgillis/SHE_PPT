@@ -198,7 +198,7 @@ def create_vis_readout():
     readout = le1vis.visReadoutMode()
     
     readout.ReadoutModeMethod = "NominalScience"
-    readout.StartTime = "2006-05-05T18:00:00"
+    readout.StartTime = "2006-05-05T18:00:00.000Z"
     readout.ParallelRegFrequency = 999.0
     readout.SerialRegFrequency = 999.0
     
