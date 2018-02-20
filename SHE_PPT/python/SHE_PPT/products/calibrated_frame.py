@@ -160,7 +160,7 @@ def create_vis_calibrated_frame(filename = None):
     
     vis_calibrated_frame.DataStorage = create_vis_data_storage(filename,"vis.reducedFrameVIS")
     
-    return
+    return vis_calibrated_frame
 
 def create_img_type():
     
