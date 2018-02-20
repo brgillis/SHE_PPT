@@ -236,7 +236,7 @@ def create_vis_data_storage(filename, format="vis.reducedFrameVIS", version="0.0
     data_storage.format = format
     data_storage.version = version
     
-    data_storage.DataContainer = dss_dict.dataContainer()
+    data_storage.DataContainer = dataContainer()
     data_storage.DataContainer.FileName = filename
     data_storage.DataContainer.filestatus = filestatus
     
