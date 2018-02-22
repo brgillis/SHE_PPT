@@ -305,4 +305,6 @@ def initialise_details_table(image = None,
                                                    model_seed = model_seed,
                                                    noise_seed = noise_seed,)
     
+    assert(is_in_format(details_table, tf))
+    
     return details_table

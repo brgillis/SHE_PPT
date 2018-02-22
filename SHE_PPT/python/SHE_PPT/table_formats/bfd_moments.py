@@ -293,4 +293,6 @@ def initialise_bfd_moments_table(detections_table = None,
                                                                    model_seed = model_seed,
                                                                    noise_seed = noise_seed)
     
+    assert(is_in_format(bfd_moments_table, tf))
+    
     return bfd_moments_table

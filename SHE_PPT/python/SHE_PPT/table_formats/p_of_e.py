@@ -23,6 +23,7 @@ from collections import OrderedDict
 from astropy.table import Table
 
 from SHE_PPT.utility import hash_any
+from SHE_PPT.table_utility import is_in_format
 
 class POfETableMeta(object):
     """
@@ -156,5 +157,7 @@ def initialise_p_of_e_table(optional_columns = None):
     p_of_e_table = Table(init_cols, names=names, dtype=dtypes)
     
     p_of_e_table.meta = make_p_of_e_table_header()
+    
+    assert(is_in_format(p_of_e_table, tf))
     
     return p_of_e_table

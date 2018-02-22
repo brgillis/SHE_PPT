@@ -23,6 +23,7 @@ from collections import OrderedDict
 from astropy.table import Table
 
 from SHE_PPT.utility import hash_any
+from SHE_PPT.table_utility import is_in_format
 
 class GalaxyPopulationTableMeta(object):
     """
@@ -204,5 +205,7 @@ def initialise_galaxy_population_table(optional_columns = None):
     galaxy_population_table = Table(init_cols, names=names, dtype=dtypes)
     
     galaxy_population_table.meta = make_galaxy_population_table_header()
+    
+    assert(is_in_format(galaxy_population_table, tf))
     
     return galaxy_population_table
