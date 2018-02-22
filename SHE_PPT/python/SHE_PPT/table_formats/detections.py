@@ -342,7 +342,8 @@ def initialise_detections_table(image = None,
                                                          gain = gain,
                                                          model_hash = model_hash,
                                                          model_seed = model_seed,
-                                                         noise_seed = noise_seed,)
+                                                         noise_seed = noise_seed,
+                                                         obs_time = obs_time)
     
     assert(is_in_format(detections_table, tf))
     
