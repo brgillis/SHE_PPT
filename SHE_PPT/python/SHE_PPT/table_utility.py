@@ -109,7 +109,9 @@ def is_in_format(table, table_format, strict=True):
                     # Length is shorter, likely due to saving as ascii. Allow it
                     pass
                 else:
-                    # Length is too long; so the format's invalid
+                    logger.info("Table not in correct format due to wrong length for column '" + colname + "'\n" + 
+                                "Expected: " + str(table_format.lengths[colname]) + "\n" +
+                                "Got: " + str(col_len))
                     return False
             else:
                 logger.info("Table not in correct format due to wrong type for column '" + colname + "'\n" + 
