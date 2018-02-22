@@ -21,6 +21,7 @@
 import subprocess
 from astropy.io import fits
 import numpy as np
+from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 
 logger = getLogger(mv.logger_name)
