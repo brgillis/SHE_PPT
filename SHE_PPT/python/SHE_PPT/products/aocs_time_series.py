@@ -3,8 +3,10 @@
     Created 10 Oct 2017
 
     Functions to create and output an aocs_time_series data product.
+    This describes the series of pointing errors over the course of an observation
     
-    Origin: OU-VIS (presumably - need C. Duncan to confirm)
+    Origin: OU-VIS (presumably - might need to put in a ticket to request it from them.
+    Not actually used at present though)
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment      
