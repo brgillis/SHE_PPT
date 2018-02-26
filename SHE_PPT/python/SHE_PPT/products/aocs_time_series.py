@@ -3,6 +3,8 @@
     Created 10 Oct 2017
 
     Functions to create and output an aocs_time_series data product.
+    
+    Origin: OU-VIS (presumably - need C. Duncan to confirm)
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment      

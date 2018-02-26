@@ -3,6 +3,8 @@
     Created 24 Nov 2017
 
     Functions to create and output a regauss_training_data data product.
+    
+    Origin: OU-SHE - Needs to be implemented in data model.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment      

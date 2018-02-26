@@ -3,6 +3,8 @@
     Created 10 Oct 2017
 
     Functions to create and output an mission_time data product.
+    
+    Origin: OU-VIS - Deprecated; this doesn't actually require a separate product.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment      

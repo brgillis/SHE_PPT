@@ -3,6 +3,8 @@
     Created 17 Nov 2017
 
     Functions to create and output a detections data product.
+    
+    Origin: OU-MER - FinalCatalog (TODO: Confirm) in their data model
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment      
