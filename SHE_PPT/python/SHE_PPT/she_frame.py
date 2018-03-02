@@ -57,7 +57,7 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
         self.detectors = detectors
 
     @classmethod
-    def read( cls, frame_product_filename, bkg_product_filename, seg_product_filename, **kwargs ):
+    def read( cls, frame_product_filename, bkg_product_filename, seg_product_filename, workdir, **kwargs ):
         """Reads a SHEFrame from disk
 
 
@@ -69,8 +69,8 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
             Filename of the VisFlatFrame (background) data product
         seg_product_filename : str
             Filename of the Mosaic (segmentation map) data product
-        psf_product_filename : str
-            Filename of the PSFImage data product
+        workdir : str
+            Work directory
 
         Any kwargs are passed to the reading of the SHEImageData
         """
