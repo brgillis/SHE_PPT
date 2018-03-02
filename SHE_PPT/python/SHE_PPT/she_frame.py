@@ -120,18 +120,32 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
 
                 sci_extname = mv.sci_tag + "." + id_string
                 sci_i = find_extension( frame_data_hdulist, sci_extname )
+                if sci_i is None:
+                    continue  # Don't raise here; might be just using limited number
 
                 noisemap_extname = mv.noisemap_tag + "." + id_string
                 noisemap_i = find_extension( frame_data_hdulist, noisemap_extname )
+                if noisemap_i is None:
+                    raise ValueError( "No corresponding noisemap extension found in file " + frame_data_filename + "." +
+                                     "Expected extname: " + noisemap_extname )
 
                 mask_extname = mv.mask_tag + "." + id_string
                 mask_i = find_extension( frame_data_hdulist, mask_extname )
+                if noisemap_i is None:
+                    raise ValueError( "No corresponding mask extension found in file " + frame_data_filename + "." +
+                                     "Expected extname: " + mask_extname )
 
                 bkg_extname = mv.segmentation_tag + "." + id_string
                 bkg_i = find_extension( bkg_data_hdulist, bkg_extname )
+                if noisemap_i is None:
+                    raise ValueError( "No corresponding background extension found in file " + frame_data_filename + "." +
+                                     "Expected extname: " + bkg_extname )
 
                 seg_extname = mv.segmentation_tag + "." + id_string
                 seg_i = find_extension( seg_data_hdulist, seg_extname )
+                if noisemap_i is None:
+                    raise ValueError( "No corresponding segmentation extension found in file " + frame_data_filename + "." +
+                                     "Expected extname: " + seg_extname )
 
                 detectors[( x_i, y_i )] = SHEImage( data = frame_data_hdulist[sci_i].data,
                                                     mask = frame_data_hdulist[noisemap_i].data,
