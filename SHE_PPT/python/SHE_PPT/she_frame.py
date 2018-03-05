@@ -19,7 +19,7 @@
 """
 File: python/SHE_PPT/she_frame.py
 
-Created on: 02/03/17
+Created on: 02/03/18
 """
 
 from astropy.io import fits
@@ -33,7 +33,7 @@ from astropy.wcs import WCS
 import numpy as np
 import os.path.join
 
-from . import logging
+from SHE_PPT import logging
 
 
 logger = logging.getLogger( __name__ )
@@ -80,7 +80,7 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
         y_max : int
             Maximum y-coordinate of detectors
 
-        Any kwargs are passed to the reading of the SHEImageData
+        Any kwargs are passed to the reading of the fits data
         """
 
         detectors = np.ndarray((x_max+1,y_max+1),dtype=SHEImage)
@@ -88,9 +88,8 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
         # Load in the relevant fits files
 
         # Load in the data from the primary frame
-        frame_prod = read_xml_product( frame_product_filename )
-        if not ( isinstance( frame_prod, products.calibrated_frame.DpdSheCalibratedFrameProduct ) or
-                isinstance( frame_prod, products.calibrated_frame.DpdSheStackedFrameProduct ) ):
+        frame_prod = read_xml_product( os.path.join( workdir, frame_product_filename ) )
+        if not isinstance( frame_prod, products.calibrated_frame.DpdSheCalibratedFrameProduct ):
             raise ValueError( "Data image product from " +
                              frame_product_filename + " is invalid type." )
 
@@ -100,7 +99,7 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
             frame_data_filename, mode = "denywrite", memmap = True )
 
         # Load in the data from the background frame
-        bkg_prod = read_xml_product( bkg_product_filename )
+        bkg_prod = read_xml_product( os.path.join( workdir, bkg_product_filename ) )
         if not isinstance( bkg_prod, products.background_frame.DpdSheBackgroundFrameProduct ):
             raise ValueError( "Data image product from " +
                              bkg_product_filename + " is invalid type." )
@@ -111,8 +110,8 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
             bkg_data_filename, mode = "denywrite", memmap = True )
 
         # Load in the data from the segmentation frame
-        seg_prod = read_xml_product( seg_product_filename )
-        if not isinstance( seg_prod, products.segmentation_frame.DpdSheSegmentationFrameProduct ):
+        seg_prod = read_xml_product( os.path.join( workdir, seg_product_filename ) )
+        if not isinstance( seg_prod, products.mosaic.DpdMerMosaicProduct ):
             raise ValueError( "Data image product from " +
                              seg_product_filename + " is invalid type." )
 
