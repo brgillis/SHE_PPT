@@ -22,13 +22,16 @@ File: python/SHE_PPT/she_frame.py
 Created on: 02/03/17
 """
 
+from astropy.io import fits
 from SHE_PPT import magic_values as mv
 from SHE_PPT import products
 import SHE_PPT.detector
-from SHE_PPT.she_image_data import SHEImageData
+from SHE_PPT.file_io import read_xml_product
+from SHE_PPT.she_image import SHEImage
 from SHE_PPT.utility import find_extension
 from astropy.wcs import WCS
 import numpy as np
+import os.path.join
 
 from . import logging
 
@@ -49,8 +52,8 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
         """
         Parameters
         ----------
-        detectors : dict (tuple<int,int> : SHEImageData)
-            Dictionary of the detector data
+        detectors : ndarray<SHEImage>
+            Array (1-indexed) of the detector data
 
         """
 
@@ -80,7 +83,7 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
         Any kwargs are passed to the reading of the SHEImageData
         """
 
-        detectors = {}
+        detectors = np.ndarray((x_max+1,y_max+1),dtype=SHEImage)
 
         # Load in the relevant fits files
 
@@ -91,7 +94,7 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
             raise ValueError( "Data image product from " +
                              frame_product_filename + " is invalid type." )
 
-        frame_data_filename = join( workdir, frame_prod.get_filename() )
+        frame_data_filename = os.path.join( workdir, frame_prod.get_filename() )
 
         frame_data_hdulist = fits.open( 
             frame_data_filename, mode = "denywrite", memmap = True )
@@ -113,7 +116,7 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
             raise ValueError( "Data image product from " +
                              seg_product_filename + " is invalid type." )
 
-        seg_data_filename = join( workdir, seg_prod.get_filename() )
+        seg_data_filename = os.path.join( workdir, seg_prod.get_filename() )
 
         seg_data_hdulist = fits.open( 
             seg_data_filename, mode = "denywrite", memmap = True )
@@ -152,12 +155,12 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
                     raise ValueError( "No corresponding segmentation extension found in file " + frame_data_filename + "." +
                                      "Expected extname: " + seg_extname )
 
-                detectors[( x_i, y_i )] = SHEImage( data = frame_data_hdulist[sci_i].data,
-                                                    mask = frame_data_hdulist[noisemap_i].data,
-                                                    noisemap = frame_data_hdulist[mask_i].data,
-                                                    background_map = bkg_data_hdulist[bkg_i].data,
-                                                    segmentation_map = seg_data_hdulist[seg_i].data,
-                                                    header = frame_data_hdulist[sci_i].header,
-                                                    wcs = WCS( frame_data_hdulist[sci_i].header ) )
+                detectors[ x_i, y_i ] = SHEImage( data = frame_data_hdulist[sci_i].data,
+                                                  mask = frame_data_hdulist[noisemap_i].data,
+                                                  noisemap = frame_data_hdulist[mask_i].data,
+                                                  background_map = bkg_data_hdulist[bkg_i].data,
+                                                  segmentation_map = seg_data_hdulist[seg_i].data,
+                                                  header = frame_data_hdulist[sci_i].header,
+                                                  wcs = WCS( frame_data_hdulist[sci_i].header ) )
 
         return SHEFrame( detectors )
