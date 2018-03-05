@@ -57,7 +57,8 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
         self.detectors = detectors
 
     @classmethod
-    def read( cls, frame_product_filename, bkg_product_filename, seg_product_filename, workdir, **kwargs ):
+    def read( cls, frame_product_filename, bkg_product_filename, seg_product_filename, workdir=".",
+              x_max = 6, y_max = 6, **kwargs ):
         """Reads a SHEFrame from disk
 
 
@@ -71,6 +72,10 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
             Filename of the Mosaic (segmentation map) data product
         workdir : str
             Work directory
+        x_max : int
+            Maximum x-coordinate of detectors
+        y_max : int
+            Maximum y-coordinate of detectors
 
         Any kwargs are passed to the reading of the SHEImageData
         """
@@ -113,8 +118,8 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
         seg_data_hdulist = fits.open( 
             seg_data_filename, mode = "denywrite", memmap = True )
 
-        for x_i in np.linspace( 1, 6, 6, dtype = int ):
-            for y_i in np.linspace( 1, 6, 6, dtype = int ):
+        for x_i in np.linspace( 1, x_max, x_max, dtype = int ):
+            for y_i in np.linspace( 1, y_max, y_max, dtype = int ):
 
                 id_string = SHE_PPT.detector.get_id_string( x_i, y_i )
 
