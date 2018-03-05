@@ -79,6 +79,66 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
         
         # Set the PSF catalogue to index by ID
         self.psf_catalogue.add_index(pstf.ID)
+        
+    def extract_stamp(self, x_world, y_world, width, height=None, x_buffer=0, y_buffer=0, keep_header=False):
+        """Extracts a postage stamp centred on the provided sky co-ordinates, by using each detector's WCS
+           to determine which (if any) it lies on. If x/y_buffer >0, it will also extract from a detector if
+           the position is within this many pixels of the edge of it.
+           
+           Parameters
+           ----------
+           x_world : float
+               The x sky co-ordinate (R.A.)
+           y_world : float
+               The y sky co-ordinate (Dec.)
+           width : int
+               The desired width of the postage stamp
+           height : int
+               The desired height of the postage stamp (default = width)
+           x_buffer : int
+               The size of the buffer region in pixels around a detector to extract a stamp from, x-dimension
+           y_buffer : int
+               The size of the buffer region in pixels around a detector to extract a stamp from, y-dimension
+           keep_header : bool
+               If True, will copy the detector's header to the stamp's
+               
+           Return
+           ------
+           stamp : SHEImage or None
+               The extracted stamp, or None if it was not found on any detector
+        """
+        
+        # Loop over the detectors, and use the WCS of each to determine if it's on it or not
+        found = False
+        
+        num_x, num_y = np.shape(self.detectors)
+        
+        for x_i in range(num_x):
+            for y_i in range(num_y):
+                
+                detector = self.detectors[x_i,y_i]
+                if detector is None:
+                    continue
+                
+                x, y = detector.world2pix(x_world,y_world)
+                if (x < 1-x_buffer) or (x > np.shape(detector.data)[0]+x_buffer):
+                    continue
+                if (y < 1-y_buffer) or (y > np.shape(detector.data)[1]+y_buffer):
+                    continue
+                
+                found = True
+                
+                break
+        
+            if found:
+                break
+            
+        if detector is None:
+            return None
+            
+        stamp = detector.extract_stamp(x=x,y=y,width=width,height=height,keep_header=keep_header)
+        
+        return stamp
 
     @classmethod
     def read( cls, frame_product_filename, seg_product_filename, psf_product_filename,
