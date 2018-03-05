@@ -23,18 +23,20 @@ Created on: 02/03/18
 """
 
 from astropy.io import fits
-from SHE_PPT import magic_values as mv
-from SHE_PPT import products
-import SHE_PPT.detector
-from SHE_PPT.file_io import read_xml_product
-from SHE_PPT.she_image import SHEImage
-from SHE_PPT.utility import find_extension
+from astropy.table import Table
 from astropy.wcs import WCS
 import numpy as np
 import os.path.join
 
+import SHE_PPT.detector
+from SHE_PPT.file_io import read_xml_product
 from SHE_PPT import logging
-
+from SHE_PPT import magic_values as mv
+from SHE_PPT import products
+from SHE_PPT.she_image import SHEImage
+from SHE_PPT.table_formats.psf import tf as pstf
+from SHE_PPT.table_utility import is_in_format
+from SHE_PPT.utility import find_extension
 
 logger = logging.getLogger( __name__ )
 
@@ -44,35 +46,54 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
 
     Attributes
     ----------
-    detectors : 2D array (normally 6x6, but can be otherwise if needed)
+    detectors : 2D array (normally 1-indexed 6x6, but can be otherwise if needed) of SHEImage objects
+    bulge_psf_image : SHEImage
+    disk_psf_image : SHEImage
+    psf_catalogue : astropy.table.Table
+        Table linking galaxy IDs to the positions of their corresponding psfs
+    bulge_stamp_size : int
+    disk_stamp_size : int
 
     """
 
-    def __init__( self, detectors ):
+    def __init__( self, detectors, bulge_psf_image, disk_psf_image, psf_catalogue ):
         """
         Parameters
         ----------
-        detectors : ndarray<SHEImage>
-            Array (1-indexed) of the detector data
-
+        detectors : 2D array (normally 1-indexed 6x6, but can be otherwise if needed) of SHEImage objects
+        bulge_psf_image : SHEImage
+        disk_psf_image : SHEImage
+        psf_catalogue : astropy.table.Table
+            Table linking galaxy IDs to the positions of their corresponding psfs
         """
 
+        # Initialise directly
         self.detectors = detectors
+        self.bulge_psf_image = bulge_psf_image
+        self.disk_psf_image = disk_psf_image
+        self.psf_catalogue = psf_catalogue
+        
+        # Get the stamp sizes for the bulge and disk psf images
+        self.bulge_stamp_size = bulge_psf_image.header[mv.stamp_size_label]
+        self.disk_stamp_size = disk_psf_image.header[mv.stamp_size_label]
+        
+        # Set the PSF catalogue to index by ID
+        self.psf_catalogue.add_index(pstf.ID)
 
     @classmethod
-    def read( cls, frame_product_filename, bkg_product_filename, seg_product_filename, workdir=".",
-              x_max = 6, y_max = 6, **kwargs ):
+    def read( cls, frame_product_filename, seg_product_filename, psf_product_filename,
+              workdir=".", x_max = 6, y_max = 6, **kwargs ):
         """Reads a SHEFrame from disk
 
 
         Parameters
         ----------
         frame_product_filename : str
-            Filename of the CalibratedFrame or StackedFrame data product
-        bkg_product_filename : str
-            Filename of the VisFlatFrame (background) data product
+            Filename of the CalibratedFrame data product
         seg_product_filename : str
             Filename of the Mosaic (segmentation map) data product
+        seg_product_filename : str
+            Filename of the PSF Image data product
         workdir : str
             Work directory
         x_max : int
@@ -99,12 +120,7 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
             frame_data_filename, mode = "denywrite", memmap = True )
 
         # Load in the data from the background frame
-        bkg_prod = read_xml_product( os.path.join( workdir, bkg_product_filename ) )
-        if not isinstance( bkg_prod, products.background_frame.DpdSheBackgroundFrameProduct ):
-            raise ValueError( "Data image product from " +
-                             bkg_product_filename + " is invalid type." )
-
-        bkg_data_filename = join( workdir, bkg_prod.get_filename() )
+        bkg_data_filename = os.path.join( workdir, frame_prod.get_bkg_filename() )
 
         bkg_data_hdulist = fits.open( 
             bkg_data_filename, mode = "denywrite", memmap = True )
@@ -162,4 +178,33 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
                                                   header = frame_data_hdulist[sci_i].header,
                                                   wcs = WCS( frame_data_hdulist[sci_i].header ) )
 
-        return SHEFrame( detectors )
+        # Load in the PSF data
+        psf_prod = read_xml_product( os.path.join( workdir, psf_product_filename ) )
+        if not isinstance( psf_prod, products.psf_image.DpdShePSFImageProduct ):
+            raise ValueError( "PSF image product from " +
+                             psf_product_filename + " is invalid type." )
+
+        qualified_psf_data_filename = os.path.join( workdir, psf_prod.get_filename() )
+
+        psf_data_hdulist = fits.open( 
+            qualified_psf_data_filename, mode = "denywrite", memmap = True )
+        
+        bulge_psf_i = find_extension(psf_data_hdulist, mv.bulge_psf_tag)
+        bulge_psf_image = SHEImage(data=psf_data_hdulist[bulge_psf_i].data,
+                                   header=psf_data_hdulist[bulge_psf_i].header)
+        
+        disk_psf_i = find_extension(psf_data_hdulist, mv.disk_psf_tag)
+        disk_psf_image = SHEImage(data=psf_data_hdulist[disk_psf_i].data,
+                                  header=psf_data_hdulist[disk_psf_i].header)
+        
+        psf_cat_i = find_extension(psf_data_hdulist, mv.psf_cat_tag)
+        psf_cat = Table.read( psf_data_hdulist[psf_cat_i] )
+            
+        if not is_in_format(psf_cat,pstf):
+            raise ValueError("PSF table from " + qualified_psf_data_filename + " is in invalid format.")
+
+        # Construct and return a SHEFrame object
+        return SHEFrame( detectors = detectors,
+                         bulge_psf_image = bulge_psf_image,
+                         disk_psf_image = disk_psf_image,
+                         psf_catalogue = psf_cat )

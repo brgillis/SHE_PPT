@@ -214,6 +214,6 @@ class SHEFrameStack(object): # We need new-style classes for properties, hence i
         # Construct and return a SHEFrameStack object
         return SHEFrameStack( exposures = exposures,
                               stacked_image = stacked_image,
-                              detections_catalogue = detections_catalogue)
+                              detections_catalogue = detections_catalogue )
 
     
