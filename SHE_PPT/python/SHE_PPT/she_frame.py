@@ -89,7 +89,7 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
         frame_data_filename = join( workdir, frame_prod.get_filename() )
 
         frame_data_hdulist = fits.open( 
-            frame_data_filename, mode = "readonly", memmap = True )
+            frame_data_filename, mode = "denywrite", memmap = True )
 
         # Load in the data from the background frame
         bkg_prod = read_xml_product( bkg_product_filename )
@@ -100,7 +100,7 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
         bkg_data_filename = join( workdir, bkg_prod.get_filename() )
 
         bkg_data_hdulist = fits.open( 
-            bkg_data_filename, mode = "readonly", memmap = True )
+            bkg_data_filename, mode = "denywrite", memmap = True )
 
         # Load in the data from the segmentation frame
         seg_prod = read_xml_product( seg_product_filename )
@@ -111,7 +111,7 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
         seg_data_filename = join( workdir, seg_prod.get_filename() )
 
         seg_data_hdulist = fits.open( 
-            seg_data_filename, mode = "readonly", memmap = True )
+            seg_data_filename, mode = "denywrite", memmap = True )
 
         for x_i in np.linspace( 1, 6, 6, dtype = int ):
             for y_i in np.linspace( 1, 6, 6, dtype = int ):
