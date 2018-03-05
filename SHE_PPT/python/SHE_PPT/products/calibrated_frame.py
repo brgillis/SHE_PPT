@@ -39,9 +39,8 @@ def init():
     binding_class.set_filename = __set_filename
     binding_class.get_filename = __get_filename
     
-    binding_class.get_all_filenames = __get_all_filenames
-    
-    binding_class.has_files = False
+    binding_class.set_bkg_filename = __set_filename
+    binding_class.get_bkg_filename = __get_filename
     
     return
 
@@ -51,11 +50,11 @@ def __set_filename(self, filename):
 def __get_filename(self):
     return self.Data.DataContainer.FileName
 
-def __get_all_filenames(self):
-    
-    all_filenames = []
-    
-    return all_filenames
+def __set_bkg_filename(self, filename):
+    self.Data.BkgDataContainer.FileName = filename
+
+def __get_bkg_filename(self):
+    return self.Data.BkgDataContainer.FileName
 
 class DpdSheCalibratedFrameProduct: # @FIXME
     def __init__(self):
@@ -75,7 +74,8 @@ class DataContainer: # @FIXME
         self.FileName = None
         self.filestatus = None
 
-def create_dpd_she_calibrated_frame(filename = None):
+def create_dpd_she_calibrated_frame(filename = None,
+                                    bkg_filename = None):
     """
         @TODO fill in docstring
     """
@@ -93,7 +93,8 @@ def create_dpd_she_calibrated_frame(filename = None):
 # Add a useful alias
 create_calibrated_frame_product = create_dpd_she_calibrated_frame
 
-def create_she_calibrated_frame(filename = None):
+def create_she_calibrated_frame(filename = None,
+                                bkg_filename = None):
     """
         @TODO fill in docstring
     """
@@ -107,5 +108,9 @@ def create_she_calibrated_frame(filename = None):
     she_calibrated_frame.DataContainer = DataContainer()
     she_calibrated_frame.DataContainer.FileName = filename
     she_calibrated_frame.DataContainer.filestatus = "PROPOSED"
+    
+    she_calibrated_frame.BkgDataContainer = DataContainer()
+    she_calibrated_frame.BkgDataContainer.FileName = bkg_filename
+    she_calibrated_frame.BkgDataContainer.filestatus = "PROPOSED"
     
     return she_calibrated_frame
