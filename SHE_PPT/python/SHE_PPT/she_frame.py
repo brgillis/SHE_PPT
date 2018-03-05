@@ -139,6 +139,20 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
         stamp = detector.extract_stamp(x=x,y=y,width=width,height=height,keep_header=keep_header)
         
         return stamp
+    
+    def extract_psf(self, gal_id, keep_header=False):
+        
+        row = self.psf_catalogue.loc[gal_id]
+        
+        psf_x = row[pstf.psf_x]
+        psf_y = row[pstf.psf_y]
+        
+        bulge_psf_stamp = self.bulge_psf_image.extract_stamp(x=psf_x, y=psf_y,
+                                                             width=self.bulge_stamp_size, keep_header=keep_header)
+        disk_psf_stamp = self.bulge_psf_image.extract_stamp(x=psf_x, y=psf_y,
+                                                            width=self.disk_stamp_size, keep_header=keep_header)
+        
+        return bulge_psf_stamp, disk_psf_stamp
 
     @classmethod
     def read( cls, frame_product_filename, seg_product_filename, psf_product_filename,
