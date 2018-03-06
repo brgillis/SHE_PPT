@@ -41,17 +41,21 @@ from SHE_PPT.utility import find_extension
 logger = logging.getLogger( __name__ )
 
 
-class SHEFrame( object ):  # We need new-style classes for properties, hence inherit from object
+class SHEFrame( object ):
     """Structure containing an array of SHEImageData objects, representing either an individual exposure or the stacked frame
 
     Attributes
     ----------
     detectors : 2D array (normally 1-indexed 6x6, but can be otherwise if needed) of SHEImage objects
+    
     bulge_psf_image : SHEImage
+    
     disk_psf_image : SHEImage
+    
     psf_catalogue : astropy.table.Table
         Table linking galaxy IDs to the positions of their corresponding psfs
     bulge_stamp_size : int
+    
     disk_stamp_size : int
 
     """
@@ -141,6 +145,22 @@ class SHEFrame( object ):  # We need new-style classes for properties, hence inh
         return stamp
     
     def extract_psf(self, gal_id, keep_header=False):
+        """Extracts the bulge and disk psfs for a given galaxy.
+        
+        Parameters
+        ----------
+        gal_id : int
+            ID of the galaxy
+        keep_header : bool
+            If true, the PSF image's header will be copied to the stamp's.
+        
+        Return
+        ------
+        bulge_psf_stamp : SHEImage
+        
+        disk_psf_stamp : SHEImage
+        
+        """
         
         row = self.psf_catalogue.loc[gal_id]
         
