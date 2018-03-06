@@ -39,7 +39,7 @@ from SHE_PPT.utility import find_extension
 
 logger = logging.getLogger(__name__)
 
-class SHEFrameStack(object): # We need new-style classes for properties, hence inherit from object
+class SHEFrameStack(object):
     """Structure containing all needed data shape measurement, represented as a list of SHEFrames for
     detector image data, a stacked image, a list of PSF images and catalogues, and a detections
     catalogue.
@@ -78,7 +78,71 @@ class SHEFrameStack(object): # We need new-style classes for properties, hence i
         self.stacked_image = stacked_image
         self.detections_catalogue = detections_catalogue
         
+        self.stack_pixel_size_ratio = 2 # Might have to manually calculate this later
+        
         return
+        
+    def extract_stamp_stack(self, x_world, y_world, width, height=None, x_buffer=0, y_buffer=0, keep_header=False):
+        """Extracts a postage stamp centred on the provided sky co-ordinates, by using each detector's WCS
+           to determine which (if any) it lies on. If x/y_buffer >0, it will also extract from a detector if
+           the position is within this many pixels of the edge of it.
+           
+           Parameters
+           ----------
+           x_world : float
+               The x sky co-ordinate (R.A.)
+           y_world : float
+               The y sky co-ordinate (Dec.)
+           width : int
+               The desired width of the postage stamp in pixels of the exposures
+           height : int
+               The desired height of the postage stamp in pixels of the exposures (default = width)
+           x_buffer : int
+               The size of the buffer region in pixels around a detector to extract a stamp from, x-dimension
+           y_buffer : int
+               The size of the buffer region in pixels around a detector to extract a stamp from, y-dimension
+           keep_header : bool
+               If True, will copy the detector's header to each stamp's
+               
+           Return
+           ------
+           stamp_stack : SHEImageStack
+        """
+        
+        # Extract from the stacked image first y_world=y_world,
+        
+        stack_stamp_width = self.stack_pixel_size_ratio*width
+        if height is None:
+            stack_stamp_height = None
+        else:
+            stack_stamp_height = self.stack_pixel_size_ratio * height
+            
+        stacked_image_x, stacked_image_y = self.stacked_image.world2pix(x_world,y_world)
+        
+        stacked_image_stamp = self.stacked_image.extract_stamp(x_world=stacked_image_x,
+                                                               y_world=stacked_image_y,
+                                                               width=stack_stamp_width,
+                                                               height=stack_stamp_height,
+                                                               keep_header=keep_header)
+        
+        # Get the stamps for each exposure
+        
+        exposure_stamps = []
+        for exposure in self.exposures:
+            exposure_stamps.append( exposure.extract_stamp(x_world=x_world,
+                                                           y_world=y_world,
+                                                           width=stack_stamp_width,
+                                                           height=stack_stamp_height,
+                                                           x_buffer=x_buffer,
+                                                           y_buffer=y_buffer,
+                                                           keep_header=keep_header) )
+            
+        # Create and return the stamp stack
+        
+        stamp_stack = SHEImageStack(stacked_image=stacked_image_stamp,
+                                    exposures=exposure_stamps)
+        
+        return stamp_stack
     
     @classmethod
     def _read_extension(cls, product_filename, tags=None, workdir=".", dtype=None):

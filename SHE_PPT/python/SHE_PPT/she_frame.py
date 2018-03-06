@@ -96,9 +96,9 @@ class SHEFrame( object ):
            y_world : float
                The y sky co-ordinate (Dec.)
            width : int
-               The desired width of the postage stamp
+               The desired width of the postage stamp in pixels
            height : int
-               The desired height of the postage stamp (default = width)
+               The desired height of the postage stamp in pixels (default = width)
            x_buffer : int
                The size of the buffer region in pixels around a detector to extract a stamp from, x-dimension
            y_buffer : int
