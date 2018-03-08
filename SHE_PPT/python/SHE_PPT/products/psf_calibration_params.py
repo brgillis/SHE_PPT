@@ -4,7 +4,8 @@
 
     Functions to create and output an psf_calibration_params data product.
     
-    Origin: OU-SHE - Needs to be implemented in data model. Persistent in archive.
+    Origin: OU-SHE - Output from Calibration pipeline and input to Analysis pipeline;
+    must be persistent in archive.
     
     The format here isn't finalised yet, but hopefully the needed information can all be stored in the FITS files.
 """

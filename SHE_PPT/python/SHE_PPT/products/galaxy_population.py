@@ -4,7 +4,7 @@
 
     Functions to create and output a galaxy_population data product.
     
-    Origin: OU-SHE - Needs to be implemented in data model. Persistent in archive.
+    Origin: OU-SHE - Input to Calibration pipeline; needs to be implemented in data model.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment      

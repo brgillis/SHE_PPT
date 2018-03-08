@@ -4,7 +4,7 @@
 
     Functions to create and output an psf_field_params data product.
     
-    Origin: OU-SHE - Needs to be implemented in data model. Persistent in archive.
+    Origin: OU-SHE - Internal to Analysis (and maybe Calibration) pipeline(s)
     
     This is the subset of calibration parameters which are found to change on a short timescale. The format here
     similarly isn't finalised yet, but hopefully the needed information can all be stored in the FITS files.
