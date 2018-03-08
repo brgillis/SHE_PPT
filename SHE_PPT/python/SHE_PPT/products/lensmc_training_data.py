@@ -4,7 +4,7 @@
 
     Functions to create and output a lensmc_training_data data product.
     
-    Origin: OU-SHE - Needs to be implemented in data model.
+    Origin: OU-SHE - Needs to be implemented in data model. Persistent in archive.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment      

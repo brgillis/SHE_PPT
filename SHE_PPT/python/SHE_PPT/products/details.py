@@ -5,6 +5,7 @@
     Functions to create and output a details data product.
     
     Origin: OU-SHE - Needs to be implemented in data model. (might also be implemted by SIM?)
+    Persistent in archive (might not need to be, but isn't too large that it will pose an issue)
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment      

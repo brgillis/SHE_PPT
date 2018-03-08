@@ -6,7 +6,8 @@
     http://euclid.esac.esa.int/dm/dpdd/latest/merdpd/dpcards/mer_mosaic.html
     
     Origin: OU-SHE - Needs to be implemented in data model. This version is
-    converted from MER's version, so we need a separate product for it
+    converted from MER's version, so we need a separate product for it.
+    Not persistent in archive.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment      

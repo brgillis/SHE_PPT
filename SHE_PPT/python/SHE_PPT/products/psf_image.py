@@ -4,7 +4,7 @@
 
     Functions to create and output a psf_image data product.
     
-    Origin: OU-SHE - Needs to be implemented in data model.
+    Origin: OU-SHE - Not persistent in archive; doesn't necessarily need to be implemented in data model.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment      
