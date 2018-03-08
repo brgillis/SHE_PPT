@@ -22,8 +22,7 @@ from MdbUtils.Mdb import Mdb as _Mdb
 
 from SHE_PPT.file_io import find_file
 
-_initialised = False
-_not_inited_exception = RuntimeError("")
+_not_inited_exception = RuntimeError("mdb module must be initialised with MDB xml object before use.")
 
 full_mdb = {}
 
@@ -55,8 +54,6 @@ def init(mdb_files,path=None):
     full_mdb.clear()
     full_mdb.update(full_dict)
     
-    _initialised = True
-    
     return
 
 def reset():
@@ -72,7 +69,6 @@ def reset():
     """
     
     full_mdb.clear()
-    _initialised = False
 
 def get_mdb_value(key):
     """Gets an item's value from the MDB from its key (aka title).
@@ -88,7 +84,7 @@ def get_mdb_value(key):
     
     """
     
-    if not _initialised:
+    if len(full_mdb)==0:
         raise _not_inited_exception
     
     return full_mdb[key]['Value']
@@ -107,7 +103,7 @@ def get_mdb_description(key):
     
     """
     
-    if not _initialised:
+    if len(full_mdb)==0:
         raise _not_inited_exception
     
     return full_mdb[key]['Description']
@@ -126,7 +122,7 @@ def get_mdb_source(key):
     
     """
     
-    if not _initialised:
+    if len(full_mdb)==0:
         raise _not_inited_exception
     
     return full_mdb[key]['Source']
@@ -145,7 +141,7 @@ def get_mdb_release(key):
     
     """
     
-    if not _initialised:
+    if len(full_mdb)==0:
         raise _not_inited_exception
     
     return full_mdb[key]['Release']
@@ -164,7 +160,7 @@ def get_mdb_expression(key):
     
     """
     
-    if not _initialised:
+    if len(full_mdb)==0:
         raise _not_inited_exception
     
     return full_mdb[key]['Expression']
@@ -183,7 +179,7 @@ def get_mdb_unit(key):
     
     """
     
-    if not _initialised:
+    if len(full_mdb)==0:
         raise _not_inited_exception
     
     return full_mdb[key]['unit']
