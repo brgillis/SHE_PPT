@@ -4,8 +4,7 @@
 
     Functions to create and output a simulation_config data product.
     
-    Origin: OU-SHE - Temporary product, so probably doesn't need to be implemented in
-    data model.
+    Origin: OU-SHE - Internal to Calibration pipeline.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment      

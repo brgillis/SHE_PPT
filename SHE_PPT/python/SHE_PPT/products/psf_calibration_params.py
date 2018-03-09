@@ -1,10 +1,13 @@
-""" @file psf_calibration_product.py
+""" @file psf_calibration_params_product.py
 
     Created 10 Oct 2017
 
-    Functions to create and output an psf_calibration data product.
+    Functions to create and output an psf_calibration_params data product.
     
-    Origin: OU-SHE - Needs to be implemented in data model.
+    Origin: OU-SHE - Output from Calibration pipeline and input to Analysis pipeline;
+    must be persistent in archive.
+    
+    The format here isn't finalised yet, but hopefully the needed information can all be stored in the FITS files.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment      
@@ -27,11 +30,11 @@ import pickle
 
 def init():
     """
-        Adds some extra functionality to the DpdShePSFCalibration product
+        Adds some extra functionality to the DpdShePSFCalibrationParams product
     """
     
-    # binding_class = she_dpd.DpdShePSFCalibrationProduct # @FIXME
-    binding_class = DpdShePSFCalibrationProduct
+    # binding_class = she_dpd.DpdShePSFCalibrationParamsProduct # @FIXME
+    binding_class = DpdShePSFCalibrationParamsProduct
 
     # Add the data file name methods
     
@@ -71,14 +74,14 @@ class DataContainer: # @FIXME
         self.FileName = None
         self.filestatus = None
 
-class DpdShePSFCalibrationProduct: # @FIXME
+class DpdShePSFCalibrationParamsProduct: # @FIXME
     def __init__(self):
         self.Header = None
         self.Data = None
     def validateBinding(self):
         return False
         
-class ShePSFCalibrationProduct: # @FIXME
+class ShePSFCalibrationParamsProduct: # @FIXME
     def __init__(self):
         self.TimeStamp = None
         self.TelescopeModel = None
@@ -111,46 +114,46 @@ class SheDiagnosticsProduct:
     def __init__(self):
         pass # @TODO - Fill in format
 
-def create_dpd_she_psf_calibration(timestamp = None,
+def create_dpd_she_psf_calibration_params(timestamp = None,
                                    zernike_mode_filename = None,
                                    surface_error_filename = None):
     """
         @TODO fill in docstring
     """
     
-    # dpd_she_psf_calibration = she_dpd.DpdShePSFCalibrationProduct() # @FIXME
-    dpd_she_psf_calibration = DpdShePSFCalibrationProduct()
+    # dpd_she_psf_calibration_params = she_dpd.DpdShePSFCalibrationParamsProduct() # @FIXME
+    dpd_she_psf_calibration_params = DpdShePSFCalibrationParamsProduct()
     
-    # dpd_she_psf_calibration.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
-    dpd_she_psf_calibration.Header = "SHE"
+    # dpd_she_psf_calibration_params.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
+    dpd_she_psf_calibration_params.Header = "SHE"
     
-    dpd_she_psf_calibration.Data = create_she_psf_calibration(timestamp,
+    dpd_she_psf_calibration_params.Data = create_she_psf_calibration_params(timestamp,
                                                               zernike_mode_filename,
                                                               surface_error_filename)
     
-    return dpd_she_psf_calibration
+    return dpd_she_psf_calibration_params
 
 # Add a useful alias
-create_psf_calibration_product = create_dpd_she_psf_calibration
+create_psf_calibration_params_product = create_dpd_she_psf_calibration_params
 
-def create_she_psf_calibration(timestamp = None,
+def create_she_psf_calibration_params(timestamp = None,
                                zernike_mode_filename = None,
                                surface_error_filename = None):
     """
         @TODO fill in docstring
     """
     
-    # she_psf_calibration = she_dpd.ShePSFCalibrationProduct() # @FIXME
-    she_psf_calibration = ShePSFCalibrationProduct()
+    # she_psf_calibration_params = she_dpd.ShePSFCalibrationParamsProduct() # @FIXME
+    she_psf_calibration_params = ShePSFCalibrationParamsProduct()
     
-    she_psf_calibration.TimeStamp = timestamp
-    she_psf_calibration.TelescopeModel = create_she_telescope_model()
-    she_psf_calibration.ZernikeMode = create_she_zernike_mode(zernike_mode_filename)
-    she_psf_calibration.SurfaceError = create_she_surface_error(surface_error_filename)
-    she_psf_calibration.DetectorModel = create_she_detector_model()
-    she_psf_calibration.Diagnostics = create_she_diagnostics()
+    she_psf_calibration_params.TimeStamp = timestamp
+    she_psf_calibration_params.TelescopeModel = create_she_telescope_model()
+    she_psf_calibration_params.ZernikeMode = create_she_zernike_mode(zernike_mode_filename)
+    she_psf_calibration_params.SurfaceError = create_she_surface_error(surface_error_filename)
+    she_psf_calibration_params.DetectorModel = create_she_detector_model()
+    she_psf_calibration_params.Diagnostics = create_she_diagnostics()
     
-    return she_psf_calibration
+    return she_psf_calibration_params
 
 def create_she_telescope_model():
     """
