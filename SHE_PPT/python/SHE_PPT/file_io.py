@@ -184,8 +184,12 @@ def write_xml_product(product, xml_file_name):
 def read_xml_product(xml_file_name, source="she"):
         
     # Read the xml file as a string
-    with open(str(xml_file_name), "r") as f:
-        xml_string = f.read()
+    try:
+        with open(str(xml_file_name), "r") as f:
+            xml_string = f.read()
+    except UnicodeDecodeError as e:
+        # Not actually saved as xml - revert to pickled product
+        return read_pickled_product(xml_file_name)
 
     # Create a new SHE product instance using the SHE data product dictionary
     product = dpd_sources[source].CreateFromDocument(xml_string)
