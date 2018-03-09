@@ -121,7 +121,6 @@ def create_dpd_vis_calibrated_frame(filename = None):
     dpd_vis_calibrated_frame = vis_dpd.dpdCalibratedFrame()
     
     dpd_vis_calibrated_frame.Header = HeaderProvider.createGenericHeader("VIS")
-    dpd_vis_calibrated_frame.Header = "VIS"
     
     dpd_vis_calibrated_frame.Data = create_vis_calibrated_frame(filename)
     
