@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 try:
-    import EuclidDmBindings.she.she_stub as she_dpd
+    import EuclidDmBindings.dpd.she_stub as she_dpd
     have_she_dpd = True
 except ImportError as _e:
     have_she_dpd = False
