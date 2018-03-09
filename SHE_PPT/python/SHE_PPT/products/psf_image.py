@@ -3,6 +3,8 @@
     Created 17 Nov 2017
 
     Functions to create and output a psf_image data product.
+    
+    Origin: OU-SHE - Internal to Analysis and Calibration pipelines
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment      

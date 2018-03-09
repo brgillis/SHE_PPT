@@ -3,6 +3,8 @@
     Created 9 Oct 2017
 
     Functions to create and output a shear estimates data product.
+    
+    Origin: OU-SHE - Internal to Analysis and Calibration pipelines.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment      

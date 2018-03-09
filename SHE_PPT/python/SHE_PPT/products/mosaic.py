@@ -4,6 +4,9 @@
 
     Functions to create and output a mosaic data product, per details at
     http://euclid.esac.esa.int/dm/dpdd/latest/merdpd/dpcards/mer_mosaic.html
+    
+    Origin: OU-SHE - Internal to Analysis and Calibration pipelines. This version is
+    converted from MER's version, so we need a separate product for it.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment      

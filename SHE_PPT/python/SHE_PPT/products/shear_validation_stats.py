@@ -3,6 +3,9 @@
     Created 17 Nov 2017
 
     Functions to create and output a shear_validation_stats data product.
+    
+    Origin: OU-SHE -  Output from Calibration pipeline and input to Analysis pipeline;
+    must be persistent in archive.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment      

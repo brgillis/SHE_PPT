@@ -3,6 +3,8 @@
     Created 17 Nov 2017
 
     Functions to create and output a stacked_frame data product.
+    
+    Origin: OU-VIS
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment      

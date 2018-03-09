@@ -336,4 +336,6 @@ def initialise_shear_estimates_table(detections_table = None,
                                                                    noise_seed = noise_seed,
                                                                    obs_time = obs_time)
     
+    assert(is_in_format(shear_estimates_table,tf))
+    
     return shear_estimates_table

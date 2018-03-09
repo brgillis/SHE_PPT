@@ -26,6 +26,7 @@ from SHE_PPT.utility import hash_any
 from SHE_PPT import magic_values as mv
 from SHE_PPT import detector as dtc
 from SHE_PPT.logging import getLogger
+from SHE_PPT.table_utility import is_in_format
 
 logger = getLogger(mv.logger_name)
 
@@ -341,6 +342,9 @@ def initialise_detections_table(image = None,
                                                          gain = gain,
                                                          model_hash = model_hash,
                                                          model_seed = model_seed,
-                                                         noise_seed = noise_seed,)
+                                                         noise_seed = noise_seed,
+                                                         obs_time = obs_time)
+    
+    assert(is_in_format(detections_table, tf))
     
     return detections_table

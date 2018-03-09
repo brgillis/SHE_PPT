@@ -3,6 +3,8 @@
     Created 17 Nov 2017
 
     Functions to create and output a details data product.
+    
+    Origin: OU-SHE - Internal to calibration pipeline.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment      

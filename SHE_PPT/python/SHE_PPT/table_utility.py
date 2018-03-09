@@ -21,6 +21,10 @@
 import subprocess
 from astropy.io import fits
 import numpy as np
+from SHE_PPT import magic_values as mv
+from SHE_PPT.logging import getLogger
+
+logger = getLogger(mv.logger_name)
 
 def get_comments(table_format):
     """
@@ -83,13 +87,18 @@ def is_in_format(table, table_format, strict=True):
     # Check that all required column names are present
     for colname in table_format.all_required:
         if colname not in table.colnames:
+            logger.info("Table not in correct format due to absence of required column: " + colname)
             return False
         
     # Check that no extra column names are present if strict==True, and each present column is of the right dtype
     for colname in table.colnames:
         if colname not in table_format.all:
             if strict:
+                logger.info("Table not in correct format due to presence of extra column: " + colname)
                 return False
+            else:
+                logger.info("Table not in correct format due to presence of extra column: " + colname + ", but not failing " +
+                            "check due to strict==False.")
         elif table.dtype[colname].newbyteorder('>') != np.dtype((table_format.dtypes[colname],
                                                                table_format.lengths[colname])).newbyteorder('>'):
             # Check if this is just an issue with lengths
@@ -99,22 +108,37 @@ def is_in_format(table, table_format, strict=True):
                 if col_len<table_format.lengths[colname]:
                     # Length is shorter, likely due to saving as ascii. Allow it
                     pass
-                else:
-                    # Length is too long; so the format's invalid
+                elif col_len>table_format.lengths[colname]:
+                    logger.info("Table not in correct format due to wrong length for column '" + colname + "'\n" + 
+                                "Expected: " + str(table_format.lengths[colname]) + "\n" +
+                                "Got: " + str(col_len))
                     return False
             else:
+                logger.info("Table not in correct format due to wrong type for column '" + colname + "'\n" + 
+                            "Expected: " + str(np.dtype((table_format.dtypes[colname],
+                                                               table_format.lengths[colname])).newbyteorder('>')) + "\n" +
+                            "Got: " + str(table.dtype[colname].newbyteorder('>')))
                 return False
         
     # Check the metadata is correct
     if list(table.meta.keys()) != table_format.m.all:
+        logger.info("Table not in correct format due to wrong metadata keys.\n"+
+                    "Expected: " + str(table_format.m.all) + "\n" +
+                    "Got: " + str(list(table.meta.keys())))
         return False
     
     # Check the format label is correct
     if table.meta[table_format.m.format] != table_format.m.table_format:
+        logger.info("Table not in correct format due to wrong table format label.\n"+
+                    "Expected: " + table_format.m.table_format + "\n" +
+                    "Got: " + table.meta[table_format.m.format])
         return False
     
     # Check the version is correct
     if table.meta[table_format.m.version] != table_format.__version__:
+        logger.info("Table not in correct format due to wrong table format label.\n"+
+                    "Expected: " + table_format.__version__ + "\n" +
+                    "Got: " + table.meta[table_format.m.version])
         return False
     
     return True

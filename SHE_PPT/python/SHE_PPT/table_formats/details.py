@@ -22,6 +22,7 @@ from collections import OrderedDict
 
 from astropy.table import Table
 
+from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import hash_any
 from SHE_PPT import magic_values as mv
 from SHE_PPT import detector as dtc
@@ -304,5 +305,7 @@ def initialise_details_table(image = None,
                                                    model_hash = model_hash,
                                                    model_seed = model_seed,
                                                    noise_seed = noise_seed,)
+    
+    assert(is_in_format(details_table, tf))
     
     return details_table

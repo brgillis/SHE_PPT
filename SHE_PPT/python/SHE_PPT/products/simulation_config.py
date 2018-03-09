@@ -3,6 +3,8 @@
     Created 17 Nov 2017
 
     Functions to create and output a simulation_config data product.
+    
+    Origin: OU-SHE - Internal to Calibration pipeline.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment      

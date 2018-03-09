@@ -21,6 +21,7 @@
 from collections import OrderedDict
 
 from astropy.table import Table
+from SHE_PPT.table_utility import is_in_format
 
 class SimulationPlanTableMeta(object):
     """
@@ -165,5 +166,7 @@ def initialise_simulation_plan_table(optional_columns = None):
     simulation_plan_table = Table(init_cols, names=names, dtype=dtypes)
     
     simulation_plan_table.meta = make_simulation_plan_table_header()
+    
+    assert(is_in_format(simulation_plan_table,tf))
     
     return simulation_plan_table
