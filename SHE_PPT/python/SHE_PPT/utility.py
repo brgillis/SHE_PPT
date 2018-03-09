@@ -20,9 +20,15 @@
 
 import codecs
 import hashlib
-import time
+from copy import deepcopy
+
+from astropy.wcs import WCS
+from astropy.wcs._wcs import InvalidTransformError
 
 from SHE_PPT import detector as dtc
+from SHE_PPT.logging import getLogger
+
+logger = getLogger(__name__)
 
 def hash_any(obj,format='hex',max_length=None):
     """
@@ -95,4 +101,35 @@ def time_to_timestamp(t):
                  str(t.tm_hour) + str(t.tm_min) + str(t.tm_sec)+ ".0Z")
     
     return timestamp
+
+def load_wcs(header):
+    """Create an astropy.wcs.WCS object from a FITS header, catching and correcting errors
+    due to VIS's incorrect header keywords.
     
+    This will be deprecated in the future once VIS's headers are corrected, at which point
+    it will log a warning when used.
+    """
+    
+    logger.debug("Entering load_wcs")
+    
+    try:
+        wcs = WCS(header)
+    except astropy.wcs._wcs.InvalidTransformError as e:
+        if not (str(e)=="ERROR 6 in wcsset() at line 2071 of file wcs.c:\n"+
+                "PV1_5 : Unrecognized coordinate transformation parameter.\n"):
+            raise
+        else:
+            # This is the exception we're expecting, so implement the fix and try that
+    
+            logger.debug("Expected exception encountered in load_wcs due to bug in VIS headers.")
+            
+            fixed_header = deepcopy(header)
+            fixed_header['CTYPE1'] = 'RA---TPV'
+            fixed_header['CTYPE2'] = 'DEC--TPV'
+            wcs = WCS(fixed_header)
+    
+            logger.debug("Successfully resolved bug in VIS headers.")
+    
+    logger.debug("Exiting load_wcs")
+            
+    return wcs
