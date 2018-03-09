@@ -1,8 +1,8 @@
-""" @file psf_calibration_product_test.py
+""" @file psf_field_params_product_test.py
 
     Created 10 Oct 2017
 
-    Unit tests for the psf_calibration data product.
+    Unit tests for the psf_field_params data product.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment      
@@ -18,19 +18,19 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to    
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from SHE_PPT.products import psf_calibration as prod
+from SHE_PPT.products import psf_field_params as prod
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
 
 class TestPSFCalibrationProduct(object):
-    """A collection of tests for the psf_calibration data product.
+    """A collection of tests for the psf_field_params data product.
 
     """ 
 
     def test_validation(self):
         
         # Create the product
-        product = prod.create_dpd_she_psf_calibration()
+        product = prod.create_dpd_she_psf_field_params()
 
         # Check that it validates the schema
         product.validateBinding()
@@ -42,7 +42,7 @@ class TestPSFCalibrationProduct(object):
         prod.init()
         
         # Create the product
-        product = prod.create_dpd_she_psf_calibration()
+        product = prod.create_dpd_she_psf_field_params()
 
         # Change the fits file names
         zm_filename = "test_file_zm.fits" 
@@ -51,7 +51,7 @@ class TestPSFCalibrationProduct(object):
         product.set_surface_error_filename(se_filename)
 
         # Save the product in an xml file
-        filename = tmpdir.join("she_psf_calibration.xml")
+        filename = tmpdir.join("she_psf_field_params.xml")
         write_pickled_product(product, filename)
 
         # Read back the xml file
@@ -68,7 +68,7 @@ class TestPSFCalibrationProduct(object):
         prod.init()
         
         # Create the product
-        product = prod.create_dpd_she_psf_calibration()
+        product = prod.create_dpd_she_psf_field_params()
 
         # Change the fits file names
         zm_filename = "test_file_zm.fits" 
@@ -77,7 +77,7 @@ class TestPSFCalibrationProduct(object):
         product.set_surface_error_filename(se_filename)
 
         # Save the product in a pickled file
-        filename = tmpdir.join("she_psf_calibration.bin")
+        filename = tmpdir.join("she_psf_field_params.bin")
         write_pickled_product(product, filename)
 
         # Read back the pickled file
