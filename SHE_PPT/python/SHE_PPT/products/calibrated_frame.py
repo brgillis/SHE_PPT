@@ -113,7 +113,7 @@ def __get_all_filenames(self):
     
     return all_filenames
 
-def create_dpd_vis_calibrated_frame(filename = None):
+def create_dpd_vis_calibrated_frame(filename = 'vis_calibrated_frame.fits'):
     """
         @TODO fill in docstring
     """
