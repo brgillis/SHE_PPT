@@ -41,6 +41,7 @@ class Test_she_stack(object):
         
         # Filenames for testing the file io, will be deleted by teardown_class
         cls.sci_filepath_1 = "test_SHEImageStack_sci_SHEImage.fits"
+        cls.sci_filepath_2 = "test_SHEImageStack_sci_SHEImage2.fits"
         cls.det_filepath_1 = "test_SHEImageStack_det_Table.fits"
         cls.bpsf_filepath_1 = "test_SHEImageStack_bpsf_SHEImage.fits"
         cls.dpsf_filepath_1 = "test_SHEImageStack_dpsf_SHEImage.fits"
@@ -62,15 +63,18 @@ class Test_she_stack(object):
         
         # Create what will be one exposure:
         sci_image_1 = SHEImage(np.random.randn(100).reshape(10,10))
+        sci_image_2 = SHEImage(np.random.randn(100).reshape(10,10))
         
         # Save those to files:
-        sci_image_1.write_to_fits(self.sci_filepath)
+        sci_image_1.write_to_fits(self.sci_filepath_1)
+        sci_image_2.write_to_fits(self.sci_filepath_2)
         
         
         # Read this, directly as a SHEImageStack
         
         filepaths_list = [
-            [self.sci_filepath]
+            [self.sci_filepath_1]
+            [self.sci_filepath_2]
             ]
         
         mystack = SHEImageStack.read(filepaths_list, mask_ext='MASK') # Testing kwargs as well
