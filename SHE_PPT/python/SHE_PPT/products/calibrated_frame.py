@@ -57,10 +57,6 @@ def init():
     binding_class.set_wgt_filename = __set_wgt_filename
     binding_class.get_wgt_filename = __get_wgt_filename
     
-    binding_class.get_all_filenames = __get_all_filenames
-    
-    binding_class.has_files = True
-    
     return
 
 def __set_data_filename(self, filename):
@@ -104,14 +100,11 @@ def __get_wgt_filename(self):
     else:
         return None
 
-def __get_all_filenames(self):
-    
-    all_filenames = [self.get_data_filename(),
-                     self.get_psf_filename(),
-                     self.get_bkd_filename(),
-                     self.get_wgt_filename()]
-    
-    return all_filenames
+def __set_bkg_filename(self, filename):
+    self.Data.BkgDataContainer.FileName = filename
+
+def __get_bkg_filename(self):
+    return self.Data.BkgDataContainer.FileName
 
 def create_dpd_vis_calibrated_frame(filename = 'vis_calibrated_frame.fits'):
     """
