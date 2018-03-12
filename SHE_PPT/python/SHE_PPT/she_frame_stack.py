@@ -23,7 +23,7 @@ Created on: 05/03/18
 """
 
 from astropy.io import fits
-from astropy.table import Table
+from astropy import table
 from astropy.wcs import WCS
 import os.path
 
@@ -179,7 +179,7 @@ class SHEFrameStack(object):
              stacked_bkg_product_filename,
              stacked_seg_product_filename,
              psf_listfile_filename,
-             detections_product_filename,
+             detections_listfile_filename,
              workdir = ".",
              **kwargs):
         """Reads a SHEFrameStack from relevant data products.
@@ -201,8 +201,8 @@ class SHEFrameStack(object):
             Filename of the stacked segmentation map data product
         psf_listfile_filename : str
             Filename of the listfile pointing to the psf data products
-        detections_product_filename : str
-            Filename of the detections catalog data product
+        detections_listfile_filename : str
+            Filename of the listfile pointing to the detections catalog data products
         workdir : str
             Work directory
             
@@ -264,16 +264,28 @@ class SHEFrameStack(object):
                                   header = stacked_image_header,
                                   wcs = WCS( stacked_image_header ) )
         
-        # Get the detections catalogue
-        detections_product = read_xml_product( os.path.join( workdir, detections_product_filename ) )
-        if not isinstance( detections_product, products.detections.DpdSheDetectionsProduct ):
-            raise ValueError( "Detections product from " +
-                              detections_product_filename + " is invalid type." )
+        # Load in the detections catalogues and combine them into a single catalogue
+        detections_filenames = read_listfile(os.path.join(workdir,detections_listfile_filename))
+        
+        # Load each table in turn and combine them
+        
+        detections_catalogues = []
+        
+        for detections_product_filename in detections_filenames:
+        
+            detections_product = read_xml_product( os.path.join( workdir, detections_product_filename ) )
+            if not isinstance( detections_product, products.detections.DpdSheDetectionsProduct ):
+                raise ValueError( "Detections product from " +
+                                  detections_product_filename + " is invalid type." )
+                
+            detections_catalogue = table.Table.read( os.path.join( workdir, detections_product.get_filename() ) )
+            if not is_in_format(detections_catalogue, detf):
+                raise ValueError( "Detections table from " +
+                                  detections_product.get_filename() + " is invalid type." )
             
-        detections_catalogue = Table.read( os.path.join( workdir, detections_product.get_filename() ) )
-        if not is_in_format(detections_catalogue, detf):
-            raise ValueError( "Detections table from " +
-                              detections_product.get_filename() + " is invalid type." )
+        detections_catalogues.append(detections_catalogue)
+            
+        detections_catalogue = table.vstack(detections_catalogues)
         
         # Construct and return a SHEFrameStack object
         return SHEFrameStack( exposures = exposures,
