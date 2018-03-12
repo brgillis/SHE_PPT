@@ -65,8 +65,8 @@ class Test_she_stack(object):
         sci_image_2 = SHEImage(np.random.randn(100).reshape(10,10))
         
         # Save those to files:
-        sci_image.write_to_fits(self.sci_filepath_1)
-        sci_image.write_to_fits(self.sci_filepath_2)
+        sci_image_1.write_to_fits(self.sci_filepath_1)
+        sci_image_2.write_to_fits(self.sci_filepath_2)
         
         
         # Read this, directly as a SHEImageStack
