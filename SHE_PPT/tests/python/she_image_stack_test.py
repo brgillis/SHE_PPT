@@ -73,7 +73,7 @@ class Test_she_stack(object):
         # Read this, directly as a SHEImageStack
         
         filepaths_list = [
-            [self.sci_filepath_1]
+            [self.sci_filepath_1],
             [self.sci_filepath_2]
             ]
         
