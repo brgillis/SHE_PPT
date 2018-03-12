@@ -25,7 +25,7 @@ Created on: 05/03/18
 from astropy.io import fits
 from astropy.table import Table
 from astropy.wcs import WCS
-import os.path.join
+import os.path
 
 from SHE_PPT.file_io import read_listfile, read_xml_product
 from SHE_PPT import logging

@@ -22,7 +22,7 @@ File: python/SHE_PPT/she_image_stack.py
 Created on: 09/01/17
 """
 
-import os.path.join
+import os.path
 
 from SHE_PPT.she_image import SHEImage
 
