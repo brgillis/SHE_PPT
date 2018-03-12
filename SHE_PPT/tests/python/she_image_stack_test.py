@@ -73,7 +73,7 @@ class Test_she_stack(object):
             ]
         
         mystack = SHEImageStack.read(filepaths_list, mask_ext='MASK') # Testing kwargs as well
-        print(mystack.exposures[0].science_image)
+        print(mystack.exposures[0])
         
         
         
