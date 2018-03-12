@@ -29,7 +29,7 @@ import py.test
 from SHE_PPT.table_formats.detections import initialise_detections_table
 from SHE_PPT.table_formats.psf import initialise_psf_table
 from SHE_PPT.she_image import SHEImage
-from SHE_PPT.she_stack import SHEStack
+from SHE_PPT.she_image_stack import SHEImageStack
 import SHE_PPT.table_utility
 import numpy as np
 
@@ -40,11 +40,11 @@ class Test_she_stack(object):
     def setup_class(cls):
         
         # Filenames for testing the file io, will be deleted by teardown_class
-        cls.sci_filepath_1 = "test_SHEStack_sci_SHEImage.fits"
-        cls.det_filepath_1 = "test_SHEStack_det_Table.fits"
-        cls.bpsf_filepath_1 = "test_SHEStack_bpsf_SHEImage.fits"
-        cls.dpsf_filepath_1 = "test_SHEStack_dpsf_SHEImage.fits"
-        cls.psfc_filepath_1 = "test_SHEStack_psfc_Table.fits"
+        cls.sci_filepath_1 = "test_SHEImageStack_sci_SHEImage.fits"
+        cls.det_filepath_1 = "test_SHEImageStack_det_Table.fits"
+        cls.bpsf_filepath_1 = "test_SHEImageStack_bpsf_SHEImage.fits"
+        cls.dpsf_filepath_1 = "test_SHEImageStack_dpsf_SHEImage.fits"
+        cls.psfc_filepath_1 = "test_SHEImageStack_psfc_Table.fits"
         
 
     @classmethod
@@ -58,7 +58,7 @@ class Test_she_stack(object):
 
 
     def test_read(self):
-        """We create the minimum required files, and read a SHEStack"""
+        """We create the minimum required files, and read a SHEImageStack"""
         
         # Create what will be one exposure:
         sci_image = SHEImage(np.random.randn(100).reshape(10,10))
@@ -75,14 +75,14 @@ class Test_she_stack(object):
         psf_table.write(self.psfc_filepath_1)
         
         
-        # Read this, directly as a SHEStack
+        # Read this, directly as a SHEImageStack
         
         filepaths_list = [
             [self.sci_filepath_1, self.det_filepath_1, self.bpsf_filepath_1, self.dpsf_filepath_1,
              self.psfc_filepath_1]
             ]
         
-        mystack = SHEStack.read(filepaths_list, mask_ext='MASK') # Testing kwargs as well
+        mystack = SHEImageStack.read(filepaths_list, mask_ext='MASK') # Testing kwargs as well
         print(mystack.exposures[0].science_image)
         
         
