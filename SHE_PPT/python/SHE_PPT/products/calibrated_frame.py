@@ -41,7 +41,7 @@ def init():
         Adds some extra functionality to the DpdSheAstrometry product
     """
     
-    binding_class = vis_dpd.dpdVisCalibratedFrame
+    binding_class = vis_dpd.dpdCalibratedFrame
 
     # Add the data file name methods
     
@@ -112,7 +112,7 @@ def create_dpd_vis_calibrated_frame(filename = 'vis_calibrated_frame.fits'):
         @TODO fill in docstring
     """
     
-    dpd_vis_calibrated_frame = vis_dpd.dpdVisCalibratedFrame()
+    dpd_vis_calibrated_frame = vis_dpd.dpdCalibratedFrame()
     
     dpd_vis_calibrated_frame.Header = HeaderProvider.createGenericHeader("VIS")
     
