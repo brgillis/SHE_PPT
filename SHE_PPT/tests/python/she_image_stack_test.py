@@ -42,18 +42,13 @@ class Test_she_stack(object):
         # Filenames for testing the file io, will be deleted by teardown_class
         cls.sci_filepath_1 = "test_SHEImageStack_sci_SHEImage.fits"
         cls.sci_filepath_2 = "test_SHEImageStack_sci_SHEImage2.fits"
-        cls.det_filepath_1 = "test_SHEImageStack_det_Table.fits"
-        cls.bpsf_filepath_1 = "test_SHEImageStack_bpsf_SHEImage.fits"
-        cls.dpsf_filepath_1 = "test_SHEImageStack_dpsf_SHEImage.fits"
-        cls.psfc_filepath_1 = "test_SHEImageStack_psfc_Table.fits"
         
 
     @classmethod
     def teardown_class(cls):
         
         # Delete all potentially created files:
-        for testfilepath in [cls.sci_filepath_1, cls.det_filepath_1, cls.bpsf_filepath_1, cls.dpsf_filepath_1,
-                             cls.psfc_filepath_1]:
+        for testfilepath in [cls.sci_filepath_1, cls.sci_filepath_2]:
             if os.path.exists(testfilepath):
                 os.remove(testfilepath)
 
