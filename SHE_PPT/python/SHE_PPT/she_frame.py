@@ -26,7 +26,7 @@ from astropy.io import fits
 from astropy.table import Table
 from astropy.wcs import WCS
 import numpy as np
-import os.path.join
+import os.path
 
 import SHE_PPT.detector
 from SHE_PPT.file_io import read_xml_product
