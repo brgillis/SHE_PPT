@@ -62,18 +62,15 @@ class Test_she_stack(object):
         
         # Create what will be one exposure:
         sci_image_1 = SHEImage(np.random.randn(100).reshape(10,10))
-        sci_image_2 = SHEImage(np.random.randn(100).reshape(10,10))
         
         # Save those to files:
-        sci_image_1.write_to_fits(self.sci_filepath_1)
-        sci_image_2.write_to_fits(self.sci_filepath_2)
+        sci_image_1.write_to_fits(self.sci_filepath)
         
         
         # Read this, directly as a SHEImageStack
         
         filepaths_list = [
-            [self.sci_filepath_1]
-            [self.sci_filepath_2]
+            [self.sci_filepath]
             ]
         
         mystack = SHEImageStack.read(filepaths_list, mask_ext='MASK') # Testing kwargs as well
