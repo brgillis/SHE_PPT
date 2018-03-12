@@ -45,8 +45,14 @@ class TestCalibratedFrameProduct(object):
         product = prod.create_dpd_vis_calibrated_frame()
 
         # Change the fits filenames
-        subfilename = "test_file.fits" 
-        product.set_data_filename(subfilename)
+        sub_data_filename = "test_data_file.fits" 
+        product.set_data_filename(sub_data_filename)
+        sub_psf_filename = "test_psf_file.fits" 
+        product.set_psf_filename(sub_psf_filename)
+        sub_wgt_filename = "test_wgt_file.fits" 
+        product.set_wgt_filename(sub_wgt_filename)
+        sub_bkg_filename = "test_bkg_file.fits" 
+        product.set_bkg_filename(sub_bkg_filename)
 
         # Save the product in an XML file
         filename = tmpdir.join("vis_calibrated_frame.xml")
@@ -56,7 +62,10 @@ class TestCalibratedFrameProduct(object):
         loaded_product = read_xml_product(filename)
 
         # Check that the filenames match
-        assert loaded_product.get_data_filename() == subfilename
+        assert loaded_product.get_data_filename() == sub_data_filename
+        assert loaded_product.get_psf_filename() == sub_psf_filename
+        assert loaded_product.get_wgt_filename() == sub_wgt_filename
+        assert loaded_product.get_bkg_filename() == sub_bkg_filename
         
         pass
 
@@ -68,8 +77,14 @@ class TestCalibratedFrameProduct(object):
         product = prod.create_dpd_vis_calibrated_frame()
 
         # Change the fits filenames
-        subfilename = "test_file.fits" 
-        product.set_data_filename(subfilename)
+        sub_data_filename = "test_data_file.fits" 
+        product.set_data_filename(sub_data_filename)
+        sub_psf_filename = "test_psf_file.fits" 
+        product.set_psf_filename(sub_psf_filename)
+        sub_wgt_filename = "test_wgt_file.fits" 
+        product.set_wgt_filename(sub_wgt_filename)
+        sub_bkg_filename = "test_bkg_file.fits" 
+        product.set_bkg_filename(sub_bkg_filename)
 
         # Save the product in an XML file
         filename = tmpdir.join("vis_calibrated_frame.xml")
@@ -79,6 +94,9 @@ class TestCalibratedFrameProduct(object):
         loaded_product = read_pickled_product(filename)
 
         # Check that the filenames match
-        assert loaded_product.get_data_filename() == subfilename
+        assert loaded_product.get_data_filename() == sub_data_filename
+        assert loaded_product.get_psf_filename() == sub_psf_filename
+        assert loaded_product.get_wgt_filename() == sub_wgt_filename
+        assert loaded_product.get_bkg_filename() == sub_bkg_filename
         
         pass
