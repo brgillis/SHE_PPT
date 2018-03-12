@@ -68,43 +68,44 @@ def __get_data_filename(self):
 def __set_psf_filename(self, filename):
     if not hasattr(self.Data, "PsfModelStorage"):
         self.Data.PsfModelStorage = create_vis_data_storage(filename)
+    elif self.Data.PsfModelStorage is None:
+        self.Data.PsfModelStorage = create_vis_data_storage(filename)
     else:
         self.Data.PsfModelStorage.DataContainer.FileName = filename
 
 def __get_psf_filename(self):
     if hasattr(self.Data, "PsfModelStorage"):
-        return self.Data.PsfModelStorage.DataContainer.FileName
+        if self.Data.PsfModelStorage is not None:
+            return self.Data.PsfModelStorage.DataContainer.FileName
     return None
 
 def __set_bkg_filename(self, filename):
     if not hasattr(self.Data, "BackgroundStorage"):
+        self.Data.BackgroundStorage = create_vis_data_storage(filename)
+    elif self.Data.BackgroundStorage is None:
         self.Data.BackgroundStorage = create_vis_data_storage(filename)
     else:
         self.Data.BackgroundStorage.DataContainer.FileName = filename
 
 def __get_bkg_filename(self):
     if hasattr(self.Data, "BackgroundStorage"):
-        return self.Data.BackgroundStorage.DataContainer.FileName
-    else:
-        return None
+        if self.Data.BackgroundStorage is not None:
+            return self.Data.BackgroundStorage.DataContainer.FileName
+    return None
 
 def __set_wgt_filename(self, filename):
     if not hasattr(self.Data, "WeightStorage"):
+        self.Data.WeightStorage = create_vis_data_storage(filename)
+    elif self.Data.WeightStorage is None:
         self.Data.WeightStorage = create_vis_data_storage(filename)
     else:
         self.Data.WeightStorage.DataContainer.FileName = filename
 
 def __get_wgt_filename(self):
     if hasattr(self.Data, "WeightStorage"):
-        return self.Data.WeightStorage.DataContainer.FileName
-    else:
-        return None
-
-def __set_bkg_filename(self, filename):
-    self.Data.BkgDataContainer.FileName = filename
-
-def __get_bkg_filename(self):
-    return self.Data.BkgDataContainer.FileName
+        if self.Data.WeightStorage is not None:
+            return self.Data.WeightStorage.DataContainer.FileName
+    return None
 
 def create_dpd_vis_calibrated_frame(filename = 'vis_calibrated_frame.fits'):
     """
