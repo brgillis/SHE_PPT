@@ -61,25 +61,19 @@ class Test_she_stack(object):
         """We create the minimum required files, and read a SHEImageStack"""
         
         # Create what will be one exposure:
-        sci_image = SHEImage(np.random.randn(100).reshape(10,10))
-        bpsf_image = SHEImage(np.random.randn(100).reshape(10,10))
-        dpsf_image = SHEImage(np.random.randn(100).reshape(10,10)) 
-        det_table = initialise_detections_table()
-        psf_table = initialise_psf_table()
+        sci_image_1 = SHEImage(np.random.randn(100).reshape(10,10))
+        sci_image_2 = SHEImage(np.random.randn(100).reshape(10,10))
         
         # Save those to files:
         sci_image.write_to_fits(self.sci_filepath_1)
-        bpsf_image.write_to_fits(self.bpsf_filepath_1)
-        dpsf_image.write_to_fits(self.dpsf_filepath_1)
-        det_table.write(self.det_filepath_1)
-        psf_table.write(self.psfc_filepath_1)
+        sci_image.write_to_fits(self.sci_filepath_2)
         
         
         # Read this, directly as a SHEImageStack
         
         filepaths_list = [
-            [self.sci_filepath_1, self.det_filepath_1, self.bpsf_filepath_1, self.dpsf_filepath_1,
-             self.psfc_filepath_1]
+            [self.sci_filepath_1]
+            [self.sci_filepath_2]
             ]
         
         mystack = SHEImageStack.read(filepaths_list, mask_ext='MASK') # Testing kwargs as well

@@ -75,7 +75,9 @@ class SHEImageStack(object):
         
         exposures = []
         for filenames in filename_list:
-            exposures.append(SHEImage.read_from_fits(*filenames, workdir=workdir, **kwargs))
+            exposures.append(SHEImage.read_from_fits(filepath=filenames[0],
+                                                     workdir=workdir,
+                                                     **kwargs))
             
         if stacked_image_filename is None:
             stacked_image = None
