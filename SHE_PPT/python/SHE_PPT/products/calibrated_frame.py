@@ -20,10 +20,6 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to    
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-
-# import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import EuclidDmBindings.she.she_stub as vis_dpd # FIXME
-
 import EuclidDmBindings.dpd.vis_stub as vis_dpd
 import EuclidDmBindings.pro.vis_stub as vis_pro
 
@@ -32,7 +28,6 @@ from EuclidDmBindings.bas.imp.eso_stub import dataProduct
 from EuclidDmBindings.ins_stub import baseInstrument 
 from EuclidDmBindings.pro import le1_stub as le1
 from EuclidDmBindings.pro.le1 import vis_stub as le1vis  
-
 
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
 

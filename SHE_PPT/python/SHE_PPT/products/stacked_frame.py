@@ -20,19 +20,26 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to    
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+import EuclidDmBindings.dpd.vis_stub as vis_dpd
+import EuclidDmBindings.pro.vis_stub as vis_pro
 
-# import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import EuclidDmBindings.she.she_stub as she_dpd # FIXME
+from EuclidDmBindings.bas.cot_stub import wcs, zeroPoint
+from EuclidDmBindings.bas.img_stub import imgSpatialFootprint
+from EuclidDmBindings.bas.imp_stub import projectionType
+from EuclidDmBindings.bas.imp.eso_stub import dataProduct
+from EuclidDmBindings.ins_stub import baseInstrument 
+from EuclidDmBindings.pro import le1_stub as le1
+from EuclidDmBindings.pro.le1 import vis_stub as le1vis  
+from EuclidDmBindings.sys.dss_stub import dataContainer
 
-import pickle
+import HeaderProvider.GenericHeaderProvider as HeaderProvider
 
 def init():
     """
         Adds some extra functionality to the DpdSheAstrometry product
     """
     
-    # binding_class = she_dpd.DpdSheStackedFrameProduct # @FIXME
-    binding_class = DpdSheStackedFrameProduct
+    binding_class = vis_dpd.dpdVisStackedFrame
 
     # Add the data file name methods
     
@@ -57,55 +64,90 @@ def __get_all_filenames(self):
     
     return all_filenames
 
-class DpdSheStackedFrameProduct: # @FIXME
-    def __init__(self):
-        self.Header = None
-        self.Data = None
-    def validateBinding(self):
-        return False
-        
-class SheStackedFrameProduct: # @FIXME
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-        
-class DataContainer: # @FIXME
-    def __init__(self):
-        self.FileName = None
-        self.filestatus = None
-
-def create_dpd_she_stacked_frame(filename = None):
+def create_dpd_vis_stacked_frame(filename = None):
     """
         @TODO fill in docstring
     """
     
-    # dpd_she_stacked_frame = she_dpd.DpdSheStackedFrameProduct() # FIXME
-    dpd_she_stacked_frame = DpdSheStackedFrameProduct()
+    dpd_vis_stacked_frame = vis_dpd.dpdVisStackedFrame()
     
-    # dpd_she_stacked_frame.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
-    dpd_she_stacked_frame.Header = "SHE"
+    dpd_vis_stacked_frame.Header = HeaderProvider.createGenericHeader("VIS")
     
-    dpd_she_stacked_frame.Data = create_she_stacked_frame(filename)
+    dpd_vis_stacked_frame.Data = create_vis_stacked_frame(filename)
     
-    return dpd_she_stacked_frame
+    return dpd_vis_stacked_frame
 
 # Add a useful alias
-create_stacked_frame_product = create_dpd_she_stacked_frame
+create_stacked_frame_product = create_dpd_vis_stacked_frame
 
-def create_she_stacked_frame(filename = None):
+def create_vis_stacked_frame(filename = None):
     """
         @TODO fill in docstring
     """
     
-    # she_stacked_frame = she_dpd.SheStackedFrameProduct() # @FIXME
-    she_stacked_frame = SheStackedFrameProduct()
+    vis_stacked_frame = vis_pro.visStackedFrame()
     
-    she_stacked_frame.format = "UNDEFINED"
-    she_stacked_frame.version = "0.0"
+    # Attributes inherited from baseFrameVis
     
-    she_stacked_frame.DataContainer = DataContainer()
-    she_stacked_frame.DataContainer.FileName = filename
-    she_stacked_frame.DataContainer.filestatus = "PROPOSED"
+    vis_stacked_frame.Instrument = create_vis_instrument()
+    vis_stacked_frame.Filter = "VIS"
+    vis_stacked_frame.WCS = create_vis_wcs()
+    vis_stacked_frame.ZeroPoint = create_vis_zeropoint()
+    vis_stacked_frame.ImgSpatialFootprint = None
     
-    return she_stacked_frame
+    # Attributes unique to visStackedFrame
+    
+    vis_stacked_frame.format = "UNDEFINED"
+    vis_stacked_frame.version = "0.0"
+    
+    vis_stacked_frame.DataContainer = dataContainer()
+    vis_stacked_frame.DataContainer.FileName = filename
+    vis_stacked_frame.DataContainer.filestatus = "PROPOSED"
+    
+    return vis_stacked_frame
+
+def create_vis_instrument():
+    
+    instrument = baseInstrument()
+    
+    instrument.InstrumentName = "VIS Instrument"
+    instrument.TelescopeName = "Telescope"
+    
+    return instrument
+
+def create_vis_wcs():
+    
+    vis_wcs = wcs()
+    
+    vis_wcs.CTYPE1 = create_vis_projection_type("RA","SIN")
+    vis_wcs.CTYPE2 = create_vis_projection_type("DEC","SIN")
+    
+    vis_wcs.CRVAL1 = 3.0
+    vis_wcs.CRVAL2 = 4.0
+    vis_wcs.CRPIX1 = 3.0
+    vis_wcs.CRPIX2 = 3.0
+    
+    vis_wcs.CD1_1 = 3.0
+    vis_wcs.CD1_2 = 3.0
+    vis_wcs.CD2_1 = 3.0
+    vis_wcs.CD2_2 = 3.0
+    
+    return vis_wcs
+
+def create_vis_projection_type(CoordinateType, ProjectionType):
+    
+    projection_type = projectionType()
+    
+    projection_type.CoordinateType = CoordinateType
+    projection_type.ProjectionType = ProjectionType
+    
+    return projection_type
+
+def create_vis_zeropoint():
+    
+    zeropoint = zeroPoint()
+    
+    zeropoint.Value = 23.9
+    zeropoint.Error = 0.029
+    
+    return zeropoint
