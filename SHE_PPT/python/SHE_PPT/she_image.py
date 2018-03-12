@@ -332,7 +332,8 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
     @classmethod
     def read_from_fits(cls, filepath,
                        data_ext='PRIMARY', mask_ext='MASK', noisemap_ext='NOISEMAP', segmentation_map_ext='SEGMAP',
-                       mask_filepath=None, noisemap_filepath=None, segmentation_map_filepath=None):
+                       mask_filepath=None, noisemap_filepath=None, segmentation_map_filepath=None,
+                       workdir="."):
         """Reads an image from a FITS file, such as written by write_to_fits(), and returns it as a SHEImage object.
         
         This function can be used to read previously saved SHEImage objects (in this case, just give the filepath),
@@ -357,11 +358,13 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
                 If you specify this, also set mask_ext accordingly (at least set it to 0 if the file has only one HDU).
             noisemap_filepath: idem, for the noisemap
             segmentation_map_filepath: idem, for the segmentation_map
+            workdir: The working directory, where files can be found
       
         """
         
         # Reading the primary extension, which also contains the header
-        (data, header) = cls._get_specific_hdu_content_from_fits(filepath, ext=data_ext, return_header=True)
+        qualified_filepath = os.path.join(workdir,filepath)
+        (data, header) = cls._get_specific_hdu_content_from_fits(qualified_filepath, ext=data_ext, return_header=True)
         
         # Set up the WCS before we clean the header
         wcs = astropy.wcs.WCS(header)
@@ -381,13 +384,17 @@ class SHEImage(object): # We need new-style classes for properties, hence inheri
         logger.debug("The cleaned header has {} keys".format(len(list(header.keys()))))
         
         # Reading the mask
-        mask = cls._get_secondary_data_from_fits(filepath, mask_filepath, mask_ext)
+        qualified_mask_filepath = os.path.join(workdir,filepath)
+        mask = cls._get_secondary_data_from_fits(qualified_filepath, qualified_mask_filepath, mask_ext)
         
         # Reading the noisemap
-        noisemap = cls._get_secondary_data_from_fits(filepath, noisemap_filepath, noisemap_ext)
+        qualified_noisemap_filepath = os.path.join(workdir,filepath)
+        noisemap = cls._get_secondary_data_from_fits(qualified_filepath, qualified_noisemap_filepath, noisemap_ext)
         
         # Reading the segmentation map
-        segmentation_map = cls._get_secondary_data_from_fits(filepath, segmentation_map_filepath, segmentation_map_ext)
+        qualified_segmentation_map_filepath = os.path.join(workdir,filepath)
+        segmentation_map = cls._get_secondary_data_from_fits(qualified_filepath, qualified_segmentation_map_filepath,
+                                                             segmentation_map_ext)
        
         # Building and returning the new object    
         newimg = SHEImage(data=data, mask=mask, noisemap=noisemap, segmentation_map=segmentation_map, header=header,
