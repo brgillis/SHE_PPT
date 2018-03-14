@@ -33,6 +33,7 @@ from EuclidDmBindings.pro.le1 import vis_stub as le1vis
 from EuclidDmBindings.sys.dss_stub import dataContainer
 
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
+from SHE_PPT.products.calibrated_frame import create_vis_data_storage
 
 def init():
     """
@@ -46,17 +47,13 @@ def init():
     binding_class.set_filename = __set_filename
     binding_class.get_filename = __get_filename
     
-    binding_class.get_all_filenames = __get_all_filenames
-    
-    binding_class.has_files = False
-    
     return
 
 def __set_filename(self, filename):
-    self.Data.DataContainer.FileName = filename
+    self.Data.DataStorage.DataContainer.FileName = filename
 
 def __get_filename(self):
-    return self.Data.DataContainer.FileName
+    return self.Data.DataStorage.DataContainer.FileName
 
 def __get_all_filenames(self):
     
@@ -64,7 +61,7 @@ def __get_all_filenames(self):
     
     return all_filenames
 
-def create_dpd_vis_stacked_frame(filename = None):
+def create_dpd_vis_stacked_frame(filename = "default_filename"):
     """
         @TODO fill in docstring
     """
@@ -80,7 +77,7 @@ def create_dpd_vis_stacked_frame(filename = None):
 # Add a useful alias
 create_stacked_frame_product = create_dpd_vis_stacked_frame
 
-def create_vis_stacked_frame(filename = None):
+def create_vis_stacked_frame(filename = "default_filename"):
     """
         @TODO fill in docstring
     """
@@ -100,9 +97,7 @@ def create_vis_stacked_frame(filename = None):
     vis_stacked_frame.format = "UNDEFINED"
     vis_stacked_frame.version = "0.0"
     
-    vis_stacked_frame.DataContainer = dataContainer()
-    vis_stacked_frame.DataContainer.FileName = filename
-    vis_stacked_frame.DataContainer.filestatus = "PROPOSED"
+    vis_stacked_frame.DataStorage = create_vis_data_storage(filename)
     
     return vis_stacked_frame
 
@@ -151,3 +146,16 @@ def create_vis_zeropoint():
     zeropoint.Error = 0.029
     
     return zeropoint
+    
+def create_vis_data_storage(filename, format="vis.reducedFrameVIS", version="0.0", filestatus="PROPOSED"):
+    
+    data_storage = vis_pro.reducedFrameFitsFileVIS()
+    
+    data_storage.format = format
+    data_storage.version = version
+    
+    data_storage.DataContainer = dataContainer()
+    data_storage.DataContainer.FileName = filename
+    data_storage.DataContainer.filestatus = filestatus
+    
+    return data_storage
