@@ -39,7 +39,7 @@ def get_id_string(x,y):
     
     # Check for valid values
     for v in x,y:
-        if not isinstance( v, int ):
+        if not (isinstance( v, int ) or isinstance(v, np.int8)):
             raise TypeError("Values passed to get_id_string must be int type: " + str(v) + ", type: " + str(type(v)))
         elif (v<1) or (v>6):
             raise ValueError("Invalid value passed to get_id_string: " + str(v) + ", type: " + str(type(v)))

@@ -247,8 +247,8 @@ class SHEFrame( object ):
         else:
             seg_data_hdulist = None
 
-        for x_i in np.linspace( 1, x_max, x_max, dtype = int ):
-            for y_i in np.linspace( 1, y_max, y_max, dtype = int ):
+        for x_i in np.linspace( 1, x_max, x_max, dtype = np.int8 ):
+            for y_i in np.linspace( 1, y_max, y_max, dtype = np.int8 ):
 
                 id_string = SHE_PPT.detector.get_id_string( x_i, y_i )
                 
