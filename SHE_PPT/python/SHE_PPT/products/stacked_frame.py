@@ -44,22 +44,67 @@ def init():
 
     # Add the data file name methods
     
-    binding_class.set_filename = __set_filename
-    binding_class.get_filename = __get_filename
+    binding_class.set_data_filename = __set_data_filename
+    binding_class.get_data_filename = __get_data_filename
+    
+    binding_class.set_psf_filename = __set_psf_filename
+    binding_class.get_psf_filename = __get_psf_filename
+    
+    binding_class.set_bkg_filename = __set_bkg_filename
+    binding_class.get_bkg_filename = __get_bkg_filename
+    
+    binding_class.set_wgt_filename = __set_wgt_filename
+    binding_class.get_wgt_filename = __get_wgt_filename
     
     return
 
-def __set_filename(self, filename):
+def __set_data_filename(self, filename):
     self.Data.DataStorage.DataContainer.FileName = filename
 
-def __get_filename(self):
+def __get_data_filename(self):
     return self.Data.DataStorage.DataContainer.FileName
 
-def __get_all_filenames(self):
-    
-    all_filenames = []
-    
-    return all_filenames
+def __set_psf_filename(self, filename):
+    if not hasattr(self.Data, "PsfModelStorage"):
+        self.Data.PsfModelStorage = create_vis_data_storage(filename)
+    elif self.Data.PsfModelStorage is None:
+        self.Data.PsfModelStorage = create_vis_data_storage(filename)
+    else:
+        self.Data.PsfModelStorage.DataContainer.FileName = filename
+
+def __get_psf_filename(self):
+    if hasattr(self.Data, "PsfModelStorage"):
+        if self.Data.PsfModelStorage is not None:
+            return self.Data.PsfModelStorage.DataContainer.FileName
+    return None
+
+def __set_bkg_filename(self, filename):
+    if not hasattr(self.Data, "BackgroundStorage"):
+        self.Data.BackgroundStorage = create_vis_data_storage(filename)
+    elif self.Data.BackgroundStorage is None:
+        self.Data.BackgroundStorage = create_vis_data_storage(filename)
+    else:
+        self.Data.BackgroundStorage.DataContainer.FileName = filename
+
+def __get_bkg_filename(self):
+    if hasattr(self.Data, "BackgroundStorage"):
+        if self.Data.BackgroundStorage is not None:
+            return self.Data.BackgroundStorage.DataContainer.FileName
+    return None
+
+def __set_wgt_filename(self, filename):
+    if not hasattr(self.Data, "WeightStorage"):
+        self.Data.WeightStorage = create_vis_data_storage(filename)
+    elif self.Data.WeightStorage is None:
+        self.Data.WeightStorage = create_vis_data_storage(filename)
+    else:
+        self.Data.WeightStorage.DataContainer.FileName = filename
+
+def __get_wgt_filename(self):
+    if hasattr(self.Data, "WeightStorage"):
+        if self.Data.WeightStorage is not None:
+            return self.Data.WeightStorage.DataContainer.FileName
+    return None
 
 def create_dpd_vis_stacked_frame(filename = "default_filename"):
     """
