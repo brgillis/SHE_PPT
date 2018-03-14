@@ -257,27 +257,27 @@ class SHEFrameStack(object):
             stacked_mask_data = None
         else:
             (stacked_image_header,
-             stacked_data) = cls.read_extension(stacked_image_product_filename,
-                                                tags = (mv.sci_tag, mv.noisemap_tag, mv.mask_tag),
-                                                workdir = workdir,
-                                                dtype = products.stacked_frame.vis_dpd.dpdVisStackedFrame)
+             stacked_data) = cls._read_extension(stacked_image_product_filename,
+                                                 tags = (mv.sci_tag, mv.noisemap_tag, mv.mask_tag),
+                                                 workdir = workdir,
+                                                 dtype = products.stacked_frame.vis_dpd.dpdVisStackedFrame)
              
             stacked_image_data = stacked_data[0]
             stacked_rms_data = stacked_data[1]
             stacked_mask_data = stacked_data[2]
         
-            _, stacked_bkg_data = cls.read_extension(stacked_image_product_filename,
-                                                     workdir = workdir,
-                                                     dtype = products.stacked_frame.vis_dpd.dpdVisStackedFrame,
-                                                     filetype="background")
+            _, stacked_bkg_data = cls._read_extension(stacked_image_product_filename,
+                                                      workdir = workdir,
+                                                      dtype = products.stacked_frame.vis_dpd.dpdVisStackedFrame,
+                                                      filetype="background")
         
         # Get the segmentation image
         if stacked_seg_product_filename is None:
             stacked_seg_data = None
         else:
-            _, stacked_seg_data = cls.read_extension(stacked_seg_product_filename,
-                                                     workdir = workdir,
-                                                     dtype = products.stacked_frame.vis_dpd.dpdVisStackedFrame)
+            _, stacked_seg_data = cls._read_extension(stacked_seg_product_filename,
+                                                      workdir = workdir,
+                                                      dtype = products.stacked_frame.vis_dpd.dpdVisStackedFrame)
         
         # Construct a SHEImage object for the stacked image
         stacked_image = SHEImage( data = stacked_image_data,
