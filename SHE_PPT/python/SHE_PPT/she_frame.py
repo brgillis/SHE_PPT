@@ -36,7 +36,7 @@ from SHE_PPT import products
 from SHE_PPT.she_image import SHEImage
 from SHE_PPT.table_formats.psf import tf as pstf
 from SHE_PPT.table_utility import is_in_format
-from SHE_PPT.utility import find_extension
+from SHE_PPT.utility import find_extension, load_wcs
 
 products.calibrated_frame.init()
 products.psf_image.init()
@@ -179,8 +179,14 @@ class SHEFrame( object ):
         return bulge_psf_stamp, disk_psf_stamp
 
     @classmethod
-    def read( cls, frame_product_filename, seg_product_filename, psf_product_filename,
-              workdir=".", x_max = 6, y_max = 6, **kwargs ):
+    def read( cls,
+              frame_product_filename = None,
+              seg_product_filename = None,
+              psf_product_filename = None,
+              workdir=".",
+              x_max = 6,
+              y_max = 6,
+              **kwargs ):
         """Reads a SHEFrame from disk
 
 
@@ -207,74 +213,103 @@ class SHEFrame( object ):
         # Load in the relevant fits files
 
         # Load in the data from the primary frame
-        frame_prod = read_xml_product( os.path.join( workdir, frame_product_filename ) )
-        if not isinstance( frame_prod, products.calibrated_frame.vis_dpd.dpdCalibratedFrame ):
-            raise ValueError( "Data image product from " +
-                             frame_product_filename + " is invalid type." )
-
-        frame_data_filename = os.path.join( workdir, frame_prod.get_data_filename() )
-
-        frame_data_hdulist = fits.open( 
-            frame_data_filename, mode = "denywrite", memmap = True )
-
-        # Load in the data from the background frame
-        bkg_data_filename = os.path.join( workdir, frame_prod.get_bkg_filename() )
-
-        bkg_data_hdulist = fits.open( 
-            bkg_data_filename, mode = "denywrite", memmap = True )
+        if frame_product_filename is not None:
+            frame_prod = read_xml_product( os.path.join( workdir, frame_product_filename ) )
+            if not isinstance( frame_prod, products.calibrated_frame.vis_dpd.dpdCalibratedFrame ):
+                raise ValueError( "Data image product from " +
+                                 frame_product_filename + " is invalid type." )
+    
+            frame_data_filename = os.path.join( workdir, frame_prod.get_data_filename() )
+    
+            frame_data_hdulist = fits.open( 
+                frame_data_filename, mode = "denywrite", memmap = True )
+    
+            # Load in the data from the background frame
+            bkg_data_filename = os.path.join( workdir, frame_prod.get_bkg_filename() )
+    
+            bkg_data_hdulist = fits.open( 
+                bkg_data_filename, mode = "denywrite", memmap = True )
+        else:
+            frame_data_hdulist = None
+            bkg_data_hdulist = None
 
         # Load in the data from the segmentation frame
-        seg_prod = read_xml_product( os.path.join( workdir, seg_product_filename ) )
-        if not isinstance( seg_prod, products.mosaic.DpdMerMosaicProduct ):
-            raise ValueError( "Data image product from " +
-                             seg_product_filename + " is invalid type." )
+        if seg_product_filename is not None:
+            seg_prod = read_xml_product( os.path.join( workdir, seg_product_filename ) )
+            if not isinstance( seg_prod, products.mosaic.DpdMerMosaicProduct ):
+                raise ValueError( "Data image product from " +
+                                 seg_product_filename + " is invalid type." )
 
-        seg_data_filename = os.path.join( workdir, seg_prod.get_filename() )
-
-        seg_data_hdulist = fits.open( 
-            seg_data_filename, mode = "denywrite", memmap = True )
+            seg_data_filename = os.path.join( workdir, seg_prod.get_filename() )
+    
+            seg_data_hdulist = fits.open( 
+                seg_data_filename, mode = "denywrite", memmap = True )
+        else:
+            seg_data_hdulist = None
 
         for x_i in np.linspace( 1, x_max, x_max, dtype = int ):
             for y_i in np.linspace( 1, y_max, y_max, dtype = int ):
 
                 id_string = SHE_PPT.detector.get_id_string( x_i, y_i )
+                
+                if frame_data_hdulist is not None:
 
-                sci_extname = mv.sci_tag + "." + id_string
-                sci_i = find_extension( frame_data_hdulist, sci_extname )
-                if sci_i is None:
-                    continue  # Don't raise here; might be just using limited number
+                    sci_extname = mv.sci_tag + "." + id_string
+                    sci_i = find_extension( frame_data_hdulist, sci_extname )
+                    if sci_i is None:
+                        continue  # Don't raise here; might be just using limited number
+                    detector_data = frame_data_hdulist[sci_i].data
+                    detector_header = frame_data_hdulist[sci_i].header
+                    detector_wcs = load_wcs(detector_header)
+    
+                    noisemap_extname = mv.noisemap_tag + "." + id_string
+                    noisemap_i = find_extension( frame_data_hdulist, noisemap_extname )
+                    if noisemap_i is None:
+                        raise ValueError( "No corresponding noisemap extension found in file " + frame_data_filename + "." +
+                                         "Expected extname: " + noisemap_extname )
+                    detector_noisemap = frame_data_hdulist[noisemap_i].data
+    
+                    mask_extname = mv.mask_tag + "." + id_string
+                    mask_i = find_extension( frame_data_hdulist, mask_extname )
+                    if noisemap_i is None:
+                        raise ValueError( "No corresponding mask extension found in file " + frame_data_filename + "." +
+                                         "Expected extname: " + mask_extname )
+                    detector_mask = frame_data_hdulist[mask_i].data
+                    
+                else:
+                    detector_data = None
+                    detector_header = None
+                    detector_wcs = None
+                    detector_noisemap = None
+                    detector_mask = None
+                    
+                if bkg_data_hdulist is not None:
+                    bkg_extname = mv.segmentation_tag + "." + id_string
+                    bkg_i = find_extension( bkg_data_hdulist, bkg_extname )
+                    if noisemap_i is None:
+                        raise ValueError( "No corresponding background extension found in file " + frame_data_filename + "." +
+                                         "Expected extname: " + bkg_extname )
+                    detector_background = bkg_data_hdulist[bkg_i].data
+                else:
+                    detector_background = None
 
-                noisemap_extname = mv.noisemap_tag + "." + id_string
-                noisemap_i = find_extension( frame_data_hdulist, noisemap_extname )
-                if noisemap_i is None:
-                    raise ValueError( "No corresponding noisemap extension found in file " + frame_data_filename + "." +
-                                     "Expected extname: " + noisemap_extname )
+                if seg_data_hdulist is not None:
+                    seg_extname = mv.segmentation_tag + "." + id_string
+                    seg_i = find_extension( seg_data_hdulist, seg_extname )
+                    if noisemap_i is None:
+                        raise ValueError( "No corresponding segmentation extension found in file " + frame_data_filename + "." +
+                                         "Expected extname: " + seg_extname )
+                    detector_seg_data = seg_data_hdulist[seg_i].data
+                else:
+                    detector_seg_data = None
 
-                mask_extname = mv.mask_tag + "." + id_string
-                mask_i = find_extension( frame_data_hdulist, mask_extname )
-                if noisemap_i is None:
-                    raise ValueError( "No corresponding mask extension found in file " + frame_data_filename + "." +
-                                     "Expected extname: " + mask_extname )
-
-                bkg_extname = mv.segmentation_tag + "." + id_string
-                bkg_i = find_extension( bkg_data_hdulist, bkg_extname )
-                if noisemap_i is None:
-                    raise ValueError( "No corresponding background extension found in file " + frame_data_filename + "." +
-                                     "Expected extname: " + bkg_extname )
-
-                seg_extname = mv.segmentation_tag + "." + id_string
-                seg_i = find_extension( seg_data_hdulist, seg_extname )
-                if noisemap_i is None:
-                    raise ValueError( "No corresponding segmentation extension found in file " + frame_data_filename + "." +
-                                     "Expected extname: " + seg_extname )
-
-                detectors[ x_i, y_i ] = SHEImage( data = frame_data_hdulist[sci_i].data,
-                                                  mask = frame_data_hdulist[noisemap_i].data,
-                                                  noisemap = frame_data_hdulist[mask_i].data,
-                                                  background_map = bkg_data_hdulist[bkg_i].data,
-                                                  segmentation_map = seg_data_hdulist[seg_i].data,
-                                                  header = frame_data_hdulist[sci_i].header,
-                                                  wcs = WCS( frame_data_hdulist[sci_i].header ) )
+                detectors[ x_i, y_i ] = SHEImage( data = detector_data,
+                                                  mask = detector_mask,
+                                                  noisemap = detector_noisemap,
+                                                  background_map = detector_background,
+                                                  segmentation_map = detector_seg_data,
+                                                  header = detector_header,
+                                                  wcs = detector_wcs )
 
         # Load in the PSF data
         psf_prod = read_xml_product( os.path.join( workdir, psf_product_filename ) )
