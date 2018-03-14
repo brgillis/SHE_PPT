@@ -82,11 +82,18 @@ class SHEFrame( object ):
         self.psf_catalogue = psf_catalogue
         
         # Get the stamp sizes for the bulge and disk psf images
-        self.bulge_stamp_size = bulge_psf_image.header[mv.stamp_size_label]
-        self.disk_stamp_size = disk_psf_image.header[mv.stamp_size_label]
+        if bulge_psf_image is not None:
+            self.bulge_stamp_size = bulge_psf_image.header[mv.stamp_size_label]
+        else:
+            self.bulge_stamp_size = 256
+        if bulge_psf_image is not None:
+            self.disk_stamp_size = disk_psf_image.header[mv.stamp_size_label]
+        else:
+            self.disk_stamp_size = 256
         
         # Set the PSF catalogue to index by ID
-        self.psf_catalogue.add_index(pstf.ID)
+        if self.psf_catalogue is not None:
+            self.psf_catalogue.add_index(pstf.ID)
         
     def extract_stamp(self, x_world, y_world, width, height=None, x_buffer=0, y_buffer=0, keep_header=False):
         """Extracts a postage stamp centred on the provided sky co-ordinates, by using each detector's WCS
