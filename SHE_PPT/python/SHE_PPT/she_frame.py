@@ -212,7 +212,7 @@ class SHEFrame( object ):
             raise ValueError( "Data image product from " +
                              frame_product_filename + " is invalid type." )
 
-        frame_data_filename = os.path.join( workdir, frame_prod.get_filename() )
+        frame_data_filename = os.path.join( workdir, frame_prod.get_data_filename() )
 
         frame_data_hdulist = fits.open( 
             frame_data_filename, mode = "denywrite", memmap = True )
