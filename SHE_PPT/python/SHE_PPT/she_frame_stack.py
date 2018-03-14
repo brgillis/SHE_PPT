@@ -180,12 +180,12 @@ class SHEFrameStack(object):
 
     @classmethod
     def read(cls,
-             exposure_listfile_filename,
-             seg_listfile_filename,
-             stacked_image_product_filename,
-             stacked_seg_product_filename,
-             psf_listfile_filename,
-             detections_listfile_filename,
+             exposure_listfile_filename = None,
+             seg_listfile_filename = None,
+             stacked_image_product_filename = None,
+             stacked_seg_product_filename = None,
+             psf_listfile_filename = None,
+             detections_listfile_filename = None,
              workdir = ".",
              **kwargs):
         """Reads a SHEFrameStack from relevant data products.
@@ -218,46 +218,66 @@ class SHEFrameStack(object):
         # Load in the exposures as SHEFrames first
         exposures = []
         
-        exposure_filenames = read_listfile(os.path.join(workdir,exposure_listfile_filename))
-        seg_filenames = read_listfile(os.path.join(workdir,seg_listfile_filename))
-        psf_filenames = read_listfile(os.path.join(workdir,psf_listfile_filename))
+        def read_or_none(listfile_filename):
+            if listfile_filename is None:
+                return None
+            else:
+                return read_listfile(os.path.join(workdir,listfile_filename))
+            
+        def index_or_none(filenames,index):
+            if filenames is None:
+                return None
+            else:
+                return filenames[index]
+        
+        exposure_filenames = read_or_none(exposure_listfile_filename)
+        seg_filenames = read_or_none(seg_listfile_filename)
+        psf_filenames = read_or_none(psf_listfile_filename)
         
         for exposure_i in range(len(exposure_filenames)):
             
-            qualified_exposure_filename = os.path.join(workdir,exposure_filenames[exposure_i])
-            qualified_seg_filename = os.path.join(workdir,seg_filenames[exposure_i])
-            qualified_psf_filename = os.path.join(workdir,psf_filenames[exposure_i])
+            exposure_filename = index_or_none(exposure_filenames,exposure_i)
+            seg_filename = index_or_none(seg_filenames,exposure_i)
+            psf_filename = index_or_none(psf_filenames,exposure_i)
             
-            exposure = SHEFrame.read(frame_product_filename = qualified_exposure_filename,
-                                     seg_product_filename = qualified_seg_filename,
-                                     psf_product_filename = qualified_psf_filename,
+            exposure = SHEFrame.read(frame_product_filename = exposure_filename,
+                                     seg_product_filename = seg_filename,
+                                     psf_product_filename = psf_filename,
                                      workdir=workdir)
     
             exposures.append(exposure)
             
         # Load in the stacked products now
         
-        # Get the stacked image
-        (stacked_image_header,
-         stacked_data) = cls.read_extension(stacked_image_product_filename,
-                                            tags = (mv.sci_tag, mv.noisemap_tag, mv.mask_tag),
-                                            workdir = workdir,
-                                            dtype = products.stacked_frame.vis_dpd.dpdVisStackedFrame)
-         
-        stacked_image_data = stacked_data[0]
-        stacked_rms_data = stacked_data[1]
-        stacked_mask_data = stacked_data[2]
+        # Get the stacked image and background image
+        if stacked_image_product_filename is None:
+            stacked_image_header = None
+            stacked_image_data = None
+            stacked_rms_data = None
+            stacked_mask_data = None
+        else:
+            (stacked_image_header,
+             stacked_data) = cls.read_extension(stacked_image_product_filename,
+                                                tags = (mv.sci_tag, mv.noisemap_tag, mv.mask_tag),
+                                                workdir = workdir,
+                                                dtype = products.stacked_frame.vis_dpd.dpdVisStackedFrame)
+             
+            stacked_image_data = stacked_data[0]
+            stacked_rms_data = stacked_data[1]
+            stacked_mask_data = stacked_data[2]
         
-        # Get the background image
-        _, stacked_bkg_data = cls.read_extension(stacked_image_product_filename,
-                                                 workdir = workdir,
-                                                 dtype = products.stacked_frame.vis_dpd.dpdVisStackedFrame,
-                                                 filetype="background")
+            _, stacked_bkg_data = cls.read_extension(stacked_image_product_filename,
+                                                     workdir = workdir,
+                                                     dtype = products.stacked_frame.vis_dpd.dpdVisStackedFrame,
+                                                     filetype="background")
         
         # Get the segmentation image
-        _, stacked_seg_data = cls.read_extension(stacked_seg_product_filename,
-                                                 workdir = workdir,
-                                                 dtype = products.stacked_frame.vis_dpd.dpdVisStackedFrame)
+        if stacked_seg_product_filename is None:
+            stacked_seg_data = None
+        else:
+            _, stacked_seg_data = cls.read_extension(stacked_seg_product_filename,
+                                                     workdir = workdir,
+                                                     dtype = products.stacked_frame.vis_dpd.dpdVisStackedFrame)
         
         # Construct a SHEImage object for the stacked image
         stacked_image = SHEImage( data = stacked_image_data,
@@ -269,27 +289,30 @@ class SHEFrameStack(object):
                                   wcs = load_wcs( stacked_image_header ) )
         
         # Load in the detections catalogues and combine them into a single catalogue
-        detections_filenames = read_listfile(os.path.join(workdir,detections_listfile_filename))
-        
-        # Load each table in turn and combine them
-        
-        detections_catalogues = []
-        
-        for detections_product_filename in detections_filenames:
-        
-            detections_product = read_xml_product( os.path.join( workdir, detections_product_filename ) )
-            if not isinstance( detections_product, products.detections.DpdSheDetectionsProduct ):
-                raise ValueError( "Detections product from " +
-                                  detections_product_filename + " is invalid type." )
+        if detections_listfile_filename is None:
+            detections_catalogue = None
+        else:
+            detections_filenames = read_listfile(os.path.join(workdir,detections_listfile_filename))
+            
+            # Load each table in turn and combine them
+            
+            detections_catalogues = []
+            
+            for detections_product_filename in detections_filenames:
+            
+                detections_product = read_xml_product( os.path.join( workdir, detections_product_filename ) )
+                if not isinstance( detections_product, products.detections.DpdSheDetectionsProduct ):
+                    raise ValueError( "Detections product from " +
+                                      detections_product_filename + " is invalid type." )
+                    
+                detections_catalogue = table.Table.read( os.path.join( workdir, detections_product.get_filename() ) )
+                if not is_in_format(detections_catalogue, detf):
+                    raise ValueError( "Detections table from " +
+                                      detections_product.get_filename() + " is invalid type." )
                 
-            detections_catalogue = table.Table.read( os.path.join( workdir, detections_product.get_filename() ) )
-            if not is_in_format(detections_catalogue, detf):
-                raise ValueError( "Detections table from " +
-                                  detections_product.get_filename() + " is invalid type." )
-            
-        detections_catalogues.append(detections_catalogue)
-            
-        detections_catalogue = table.vstack(detections_catalogues)
+            detections_catalogues.append(detections_catalogue)
+                
+            detections_catalogue = table.vstack(detections_catalogues)
         
         # Construct and return a SHEFrameStack object
         return SHEFrameStack( exposures = exposures,
