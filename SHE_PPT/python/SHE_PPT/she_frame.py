@@ -38,6 +38,10 @@ from SHE_PPT.table_formats.psf import tf as pstf
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import find_extension
 
+products.calibrated_frame.init()
+products.psf_image.init()
+products.mosaic.init()
+
 logger = logging.getLogger( __name__ )
 
 
