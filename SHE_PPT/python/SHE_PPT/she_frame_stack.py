@@ -160,7 +160,7 @@ class SHEFrameStack(object):
                 raise ValueError("Data image product from " + product_filename + " is invalid type.")
             
         if filetype=="science":
-            qualified_filename = os.path.join(workdir, product.get_filename())
+            qualified_filename = os.path.join(workdir, product.get_data_filename())
         elif filetype=="background":
             qualified_filename = os.path.join(workdir, product.get_bkg_filename())
         elif filetype=="weight":
