@@ -37,6 +37,10 @@ from SHE_PPT.table_formats.detections import tf as detf
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import find_extension, load_wcs
 
+products.calibrated_frame.init()
+products.detections.init()
+products.stacked_frame.init()
+
 logger = logging.getLogger(__name__)
 
 class SHEFrameStack(object):
