@@ -35,7 +35,7 @@ from SHE_PPT.she_frame import SHEFrame
 from SHE_PPT.she_image import SHEImage
 from SHE_PPT.table_formats.detections import tf as detf
 from SHE_PPT.table_utility import is_in_format
-from SHE_PPT.utility import find_extension
+from SHE_PPT.utility import find_extension, load_wcs
 
 logger = logging.getLogger(__name__)
 
@@ -145,7 +145,8 @@ class SHEFrameStack(object):
         return stamp_stack
     
     @classmethod
-    def _read_extension(cls, product_filename, tags=None, workdir=".", dtype=None):
+    def _read_extension(cls, product_filename, tags=None, workdir=".", dtype=None,
+                        filetype="science"):
         
         product = read_xml_product(os.path.join(workdir, product_filename))
         
@@ -154,7 +155,14 @@ class SHEFrameStack(object):
             if not isinstance(product, dtype):
                 raise ValueError("Data image product from " + product_filename + " is invalid type.")
             
-        qualified_filename = os.path.join(workdir, product.get_filename())
+        if filetype=="science":
+            qualified_filename = os.path.join(workdir, product.get_filename())
+        elif filetype=="background":
+            qualified_filename = os.path.join(workdir, product.get_bkg_filename())
+        elif filetype=="weight":
+            qualified_filename = os.path.join(workdir, product.get_psf_filename())
+        else:
+            raise ValueError("Invalid filetype: " + filetype)
         hdulist = fits.open(
             qualified_filename, mode="denywrite", memmap=True)
         
@@ -173,10 +181,8 @@ class SHEFrameStack(object):
     @classmethod
     def read(cls,
              exposure_listfile_filename,
-             bkg_listfile_filename,
              seg_listfile_filename,
              stacked_image_product_filename,
-             stacked_bkg_product_filename,
              stacked_seg_product_filename,
              psf_listfile_filename,
              detections_listfile_filename,
@@ -213,19 +219,16 @@ class SHEFrameStack(object):
         exposures = []
         
         exposure_filenames = read_listfile(os.path.join(workdir,exposure_listfile_filename))
-        bkg_filenames = read_listfile(os.path.join(workdir,bkg_listfile_filename))
         seg_filenames = read_listfile(os.path.join(workdir,seg_listfile_filename))
         psf_filenames = read_listfile(os.path.join(workdir,psf_listfile_filename))
         
         for exposure_i in range(len(exposure_filenames)):
             
             qualified_exposure_filename = os.path.join(workdir,exposure_filenames[exposure_i])
-            qualified_bkg_filename = os.path.join(workdir,bkg_filenames[exposure_i])
             qualified_seg_filename = os.path.join(workdir,seg_filenames[exposure_i])
             qualified_psf_filename = os.path.join(workdir,psf_filenames[exposure_i])
             
             exposure = SHEFrame.read(frame_product_filename = qualified_exposure_filename,
-                                     bkg_product_filename = qualified_bkg_filename,
                                      seg_product_filename = qualified_seg_filename,
                                      psf_product_filename = qualified_psf_filename,
                                      workdir=workdir)
@@ -239,21 +242,22 @@ class SHEFrameStack(object):
          stacked_data) = cls.read_extension(stacked_image_product_filename,
                                             tags = (mv.sci_tag, mv.noisemap_tag, mv.mask_tag),
                                             workdir = workdir,
-                                            dtype = products.stacked_frame.DpdSheStackedFrameProduct)
+                                            dtype = products.stacked_frame.vis_dpd.dpdVisStackedFrame)
          
         stacked_image_data = stacked_data[0]
         stacked_rms_data = stacked_data[1]
         stacked_mask_data = stacked_data[2]
         
         # Get the background image
-        _, stacked_bkg_data = cls.read_extension(stacked_bkg_product_filename,
+        _, stacked_bkg_data = cls.read_extension(stacked_image_product_filename,
                                                  workdir = workdir,
-                                                 dtype = products.stacked_frame.DpdSheStackedFrameProduct)
+                                                 dtype = products.stacked_frame.vis_dpd.dpdVisStackedFrame,
+                                                 filetype="background")
         
         # Get the segmentation image
         _, stacked_seg_data = cls.read_extension(stacked_seg_product_filename,
                                                  workdir = workdir,
-                                                 dtype = products.stacked_frame.DpdSheStackedFrameProduct)
+                                                 dtype = products.stacked_frame.vis_dpd.dpdVisStackedFrame)
         
         # Construct a SHEImage object for the stacked image
         stacked_image = SHEImage( data = stacked_image_data,
@@ -262,7 +266,7 @@ class SHEFrameStack(object):
                                   background_map = stacked_bkg_data,
                                   segmentation_map = stacked_seg_data,
                                   header = stacked_image_header,
-                                  wcs = WCS( stacked_image_header ) )
+                                  wcs = load_wcs( stacked_image_header ) )
         
         # Load in the detections catalogues and combine them into a single catalogue
         detections_filenames = read_listfile(os.path.join(workdir,detections_listfile_filename))
