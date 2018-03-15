@@ -291,7 +291,7 @@ class SHEFrame( object ):
                     detector_mask = None
                     
                 if bkg_data_hdulist is not None:
-                    bkg_extname = id_string + "." + mv.background_tag
+                    bkg_extname = id_string # Background has no tag
                     bkg_i = find_extension( bkg_data_hdulist, bkg_extname )
                     if noisemap_i is None:
                         raise ValueError( "No corresponding background extension found in file " + frame_data_filename + "." +
