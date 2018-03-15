@@ -114,7 +114,7 @@ def load_wcs(header):
     
     try:
         wcs = WCS(header)
-    except astropy.wcs._wcs.InvalidTransformError as e:
+    except InvalidTransformError as e:
         if not (str(e)=="ERROR 6 in wcsset() at line 2071 of file wcs.c:\n"+
                 "PV1_5 : Unrecognized coordinate transformation parameter.\n"):
             raise
