@@ -261,7 +261,7 @@ class SHEFrame( object ):
                 
                 if frame_data_hdulist is not None:
 
-                    sci_extname = mv.sci_tag + "." + id_string
+                    sci_extname = id_string + "." + mv.sci_tag
                     sci_i = find_extension( frame_data_hdulist, sci_extname )
                     if sci_i is None:
                         continue  # Don't raise here; might be just using limited number
@@ -269,16 +269,16 @@ class SHEFrame( object ):
                     detector_header = frame_data_hdulist[sci_i].header
                     detector_wcs = load_wcs(detector_header)
     
-                    noisemap_extname = mv.noisemap_tag + "." + id_string
+                    noisemap_extname = id_string + "." + mv.noisemap_tag
                     noisemap_i = find_extension( frame_data_hdulist, noisemap_extname )
                     if noisemap_i is None:
                         raise ValueError( "No corresponding noisemap extension found in file " + frame_data_filename + "." +
                                          "Expected extname: " + noisemap_extname )
                     detector_noisemap = frame_data_hdulist[noisemap_i].data
     
-                    mask_extname = mv.mask_tag + "." + id_string
+                    mask_extname = id_string + "." + mv.mask_tag
                     mask_i = find_extension( frame_data_hdulist, mask_extname )
-                    if noisemap_i is None:
+                    if mask_i is None:
                         raise ValueError( "No corresponding mask extension found in file " + frame_data_filename + "." +
                                          "Expected extname: " + mask_extname )
                     detector_mask = frame_data_hdulist[mask_i].data
@@ -291,7 +291,7 @@ class SHEFrame( object ):
                     detector_mask = None
                     
                 if bkg_data_hdulist is not None:
-                    bkg_extname = mv.segmentation_tag + "." + id_string
+                    bkg_extname = id_string + "." + mv.background_tag
                     bkg_i = find_extension( bkg_data_hdulist, bkg_extname )
                     if noisemap_i is None:
                         raise ValueError( "No corresponding background extension found in file " + frame_data_filename + "." +
@@ -301,7 +301,7 @@ class SHEFrame( object ):
                     detector_background = None
 
                 if seg_data_hdulist is not None:
-                    seg_extname = mv.segmentation_tag + "." + id_string
+                    seg_extname = id_string + "." + mv.segmentation_tag
                     seg_i = find_extension( seg_data_hdulist, seg_extname )
                     if noisemap_i is None:
                         raise ValueError( "No corresponding segmentation extension found in file " + frame_data_filename + "." +
