@@ -31,6 +31,9 @@ import numpy as np
 
 from . import logging
 
+mask_dtype = np.uint32
+seg_dtype = np.int32
+
 
 logger = logging.getLogger( __name__ )
 
@@ -122,18 +125,18 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
     def mask( self, mask_array ):
         if mask_array is None:
             # Then we create an empty mask (0 means False means not masked)
-            self._mask = np.zeros( self._data.shape, dtype = np.int32 )
+            self._mask = np.zeros( self._data.shape, dtype = mask_dtype )
         else:
             if mask_array.ndim is not 2:
                 raise ValueError( "The mask array must have 2 dimensions" )
             if mask_array.shape != self._data.shape:
                 raise ValueError( "The mask array must have the same size as the data {}".format( self._data.shape ) )
-            if not mask_array.dtype.newbyteorder( '<' ) == np.int32:  # Quietly ignore if byte order is the only difference
-                logger.warning( "Received mask array of type '{}'. Attempting safe casting to np.int32.".format( mask_array.dtype ) )
+            if not mask_array.dtype.newbyteorder( '<' ) == mask_dtype:  # Quietly ignore if byte order is the only difference
+                logger.warning( "Received mask array of type '{}'. Attempting safe casting to seg_dtype.".format( mask_array.dtype ) )
                 try:
-                    mask_array = mask_array.astype( np.int32, casting = 'safe' )
+                    mask_array = mask_array.astype( mask_dtype, casting = 'safe' )
                 except:
-                    raise ValueError( "The mask array must be of np.int32 type (it is {})".format( mask_array.dtype ) )
+                    raise ValueError( "The mask array must be of mask_dtype type (it is {})".format( mask_array.dtype ) )
             self._mask = mask_array
     @mask.deleter
     def mask( self ):
@@ -171,18 +174,18 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
     def segmentation_map( self, segmentation_map_array ):
         if segmentation_map_array is None:
             # Then we create an empty segmentation map (-1 means unassigned)
-            self._segmentation_map = segmap_unassigned_value * np.ones( self._data.shape, dtype = np.int32 )
+            self._segmentation_map = segmap_unassigned_value * np.ones( self._data.shape, dtype = seg_dtype )
         else:
             if segmentation_map_array.ndim is not 2:
                 raise ValueError( "The segmentation map array must have 2 dimensions" )
             if segmentation_map_array.shape != self._data.shape:
                 raise ValueError( "The segmentation map array must have the same size as the data {}".format( self._data.shape ) )
-            if not segmentation_map_array.dtype.newbyteorder( '<' ) == np.int32:  # Quietly ignore if byte order is the only difference
-                logger.warning( "Received segmentation map array of type '{}'. Attempting safe casting to np.int32.".format( segmentation_map_array.dtype ) )
+            if not segmentation_map_array.dtype.newbyteorder( '<' ) == seg_dtype:  # Quietly ignore if byte order is the only difference
+                logger.warning( "Received segmentation map array of type '{}'. Attempting safe casting to seg_dtype.".format( segmentation_map_array.dtype ) )
                 try:
-                    segmentation_map_array = segmentation_map_array.astype( np.int32, casting = 'safe' )
+                    segmentation_map_array = segmentation_map_array.astype( seg_dtype, casting = 'safe' )
                 except:
-                    raise ValueError( "The mask array must be of np.int32 type (it is {})".format( segmentation_map_array.dtype ) )
+                    raise ValueError( "The segmentation array must be of np.int32 type (it is {})".format( segmentation_map_array.dtype ) )
             self._segmentation_map = segmentation_map_array
     @segmentation_map.deleter
     def segmentation_map( self ):
@@ -345,9 +348,9 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
 
         # Note that we transpose the numpy arrays, so to have the same pixel convention as DS9 and SExtractor.
         datahdu = astropy.io.fits.PrimaryHDU( self.data.transpose(), header = full_header )
-        maskhdu = astropy.io.fits.ImageHDU( data = self.mask.transpose().astype( np.int32 ), name = "MASK" )
+        maskhdu = astropy.io.fits.ImageHDU( data = self.mask.transpose().astype( mask_dtype ), name = "MASK" )
         noisemaphdu = astropy.io.fits.ImageHDU( data = self.noisemap.transpose(), name = "NOISEMAP" )
-        segmaphdu = astropy.io.fits.ImageHDU( data = self.segmentation_map.transpose().astype( np.int32 ), name = "SEGMAP" )
+        segmaphdu = astropy.io.fits.ImageHDU( data = self.segmentation_map.transpose().astype( seg_dtype ), name = "SEGMAP" )
         bkgmaphdu = astropy.io.fits.ImageHDU( data = self.background_map.transpose(), name = "BKGMAP" )
 
         hdulist = astropy.io.fits.HDUList( [datahdu, maskhdu, noisemaphdu, segmaphdu, bkgmaphdu] )
