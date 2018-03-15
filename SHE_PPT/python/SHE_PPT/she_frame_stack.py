@@ -151,7 +151,7 @@ class SHEFrameStack( object ):
 
     @classmethod
     def _read_extension( cls, product_filename, tags = None, workdir = ".", dtype = None,
-                        filetype = "science" ):
+                        filetype = "science", **kwargs ):
 
         product = read_xml_product( os.path.join( workdir, product_filename ) )
 
@@ -169,7 +169,7 @@ class SHEFrameStack( object ):
         else:
             raise ValueError( "Invalid filetype: " + filetype )
         hdulist = fits.open( 
-            qualified_filename, mode = "denywrite", memmap = True )
+            qualified_filename, **kwargs )
 
         header = hdulist[0].header
 
@@ -248,7 +248,8 @@ class SHEFrameStack( object ):
             exposure = SHEFrame.read( frame_product_filename = exposure_filename,
                                      seg_product_filename = seg_filename,
                                      psf_product_filename = psf_filename,
-                                     workdir = workdir )
+                                     workdir = workdir,
+                                     **kwargs )
 
             exposures.append( exposure )
 

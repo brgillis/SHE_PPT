@@ -229,13 +229,13 @@ class SHEFrame( object ):
             frame_data_filename = os.path.join( workdir, frame_prod.get_data_filename() )
     
             frame_data_hdulist = fits.open( 
-                frame_data_filename, mode = "denywrite", memmap = True )
+                frame_data_filename, **kwargs )
     
             # Load in the data from the background frame
             bkg_data_filename = os.path.join( workdir, frame_prod.get_bkg_filename() )
     
             bkg_data_hdulist = fits.open( 
-                bkg_data_filename, mode = "denywrite", memmap = True )
+                bkg_data_filename, **kwargs )
         else:
             frame_data_hdulist = None
             bkg_data_hdulist = None
@@ -250,7 +250,7 @@ class SHEFrame( object ):
             seg_data_filename = os.path.join( workdir, seg_prod.get_filename() )
     
             seg_data_hdulist = fits.open( 
-                seg_data_filename, mode = "denywrite", memmap = True )
+                seg_data_filename, **kwargs )
         else:
             seg_data_hdulist = None
 
@@ -328,7 +328,7 @@ class SHEFrame( object ):
             qualified_psf_data_filename = os.path.join( workdir, psf_prod.get_filename() )
     
             psf_data_hdulist = fits.open( 
-                qualified_psf_data_filename, mode = "denywrite", memmap = True )
+                qualified_psf_data_filename, **kwargs )
             
             bulge_psf_i = find_extension(psf_data_hdulist, mv.bulge_psf_tag)
             bulge_psf_image = SHEImage(data=psf_data_hdulist[bulge_psf_i].data,
