@@ -286,8 +286,8 @@ class SHEFrameStack( object ):
 
         # Construct a SHEImage object for the stacked image
         stacked_image = SHEImage( data = stacked_image_data,
-                                  mask = stacked_rms_data,
-                                  noisemap = stacked_mask_data,
+                                  mask = stacked_mask_data,
+                                  noisemap = stacked_rms_data,
                                   background_map = stacked_bkg_data,
                                   segmentation_map = stacked_seg_data,
                                   header = stacked_image_header,
