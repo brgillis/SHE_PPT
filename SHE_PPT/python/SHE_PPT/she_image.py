@@ -174,7 +174,9 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
     def segmentation_map( self, segmentation_map_array ):
         if segmentation_map_array is None:
             # Then we create an empty segmentation map (-1 means unassigned)
-            self._segmentation_map = segmap_unassigned_value * np.ones( self._data.shape, dtype = seg_dtype )
+            #FIXME - workaround for memory error
+            self._segmentation_map = self._mask
+            # self._segmentation_map = segmap_unassigned_value * np.ones( self._data.shape, dtype = seg_dtype )
         else:
             if segmentation_map_array.ndim is not 2:
                 raise ValueError( "The segmentation map array must have 2 dimensions" )
