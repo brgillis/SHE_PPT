@@ -124,8 +124,8 @@ class SHEFrameStack( object ):
 
         stacked_image_x, stacked_image_y = self.stacked_image.world2pix( x_world, y_world )
 
-        stacked_image_stamp = self.stacked_image.extract_stamp( x_world = stacked_image_x,
-                                                               y_world = stacked_image_y,
+        stacked_image_stamp = self.stacked_image.extract_stamp( x = stacked_image_x,
+                                                               y = stacked_image_y,
                                                                width = stack_stamp_width,
                                                                height = stack_stamp_height,
                                                                keep_header = keep_header )
