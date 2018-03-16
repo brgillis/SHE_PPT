@@ -307,14 +307,14 @@ class SHEFrameStack( object ):
             for detections_product_filename in detections_filenames:
 
                 detections_product = read_xml_product( os.path.join( workdir, detections_product_filename ) )
-                if not isinstance( detections_product, products.detections.DpdSheDetectionsProduct ):
-                    raise ValueError( "Detections product from " +
-                                      detections_product_filename + " is invalid type." )
+#                 if not isinstance( detections_product, products.detections.DpdSheDetectionsProduct ):
+#                     raise ValueError( "Detections product from " +
+#                                       detections_product_filename + " is invalid type." )
 
                 detections_catalogue = table.Table.read( os.path.join( workdir, detections_product.get_filename() ) )
-                if not is_in_format( detections_catalogue, detf ):
-                    raise ValueError( "Detections table from " +
-                                      detections_product.get_filename() + " is invalid type." )
+#                 if not is_in_format( detections_catalogue, detf ):
+#                     raise ValueError( "Detections table from " +
+#                                       detections_product.get_filename() + " is invalid type." )
 
             detections_catalogues.append( detections_catalogue )
 
