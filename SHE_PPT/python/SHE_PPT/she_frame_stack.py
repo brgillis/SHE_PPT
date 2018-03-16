@@ -311,7 +311,7 @@ class SHEFrameStack( object ):
 #                     raise ValueError( "Detections product from " +
 #                                       detections_product_filename + " is invalid type." )
 
-                detections_catalogue = table.Table.read( os.path.join( workdir, detections_product.DataStorage.DataContainer.FileName ) )
+                detections_catalogue = table.Table.read( os.path.join( workdir, detections_product.Data.DataStorage.DataContainer.FileName ) )
 #                 if not is_in_format( detections_catalogue, detf ):
 #                     raise ValueError( "Detections table from " +
 #                                       detections_product.get_filename() + " is invalid type." )
