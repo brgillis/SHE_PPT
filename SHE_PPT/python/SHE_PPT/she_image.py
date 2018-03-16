@@ -31,7 +31,7 @@ import numpy as np
 
 from . import logging
 
-mask_dtype = np.uint32
+mask_dtype = np.int32
 seg_dtype = np.int32
 
 
@@ -132,11 +132,11 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
             if mask_array.shape != self._data.shape:
                 raise ValueError( "The mask array must have the same size as the data {}".format( self._data.shape ) )
             if not mask_array.dtype.newbyteorder( '<' ) == mask_dtype:  # Quietly ignore if byte order is the only difference
-                logger.warning( "Received mask array of type '{}'. Attempting safe casting to seg_dtype.".format( mask_array.dtype ) )
+                logger.warning( "Received mask array of type '{}'. Attempting safe casting to mask_dtype.".format( mask_array.dtype ) )
                 try:
                     mask_array = mask_array.astype( mask_dtype, casting = 'safe' )
                 except:
-                    raise ValueError( "The mask array must be of mask_dtype type (it is {})".format( mask_array.dtype ) )
+                    raise ValueError( "The mask array must be of np.uint32 type (it is {})".format( mask_array.dtype ) )
             self._mask = mask_array
     @mask.deleter
     def mask( self ):
