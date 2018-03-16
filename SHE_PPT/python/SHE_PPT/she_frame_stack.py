@@ -30,6 +30,7 @@ from SHE_PPT import products
 from SHE_PPT.file_io import read_listfile, read_xml_product
 from SHE_PPT.she_frame import SHEFrame
 from SHE_PPT.she_image import SHEImage
+from SHE_PPT.she_image_stack import SHEImageStack
 from SHE_PPT.table_formats.detections import tf as detf
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import find_extension, load_wcs
