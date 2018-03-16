@@ -317,7 +317,7 @@ class SHEFrameStack( object ):
 #                     raise ValueError( "Detections table from " +
 #                                       detections_product.get_filename() + " is invalid type." )
 
-            detections_catalogues.append( detections_catalogue )
+                detections_catalogues.append( detections_catalogue )
 
             detections_catalogue = table.vstack( detections_catalogues )
 
