@@ -326,7 +326,7 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
 
         return object_mask
 
-    def write_to_fits( self, filepath, clobber = False, **kwargs ):
+    def write_to_fits( self, filepath, clobber = False, data_only = True, **kwargs ):
         """Writes the image to disk, in form of a multi-extension FITS cube.
         
         The data is written in the primary HDU, the mask in the extension 'MASK' and the noisemap in the extensions 'NOISEMAP'. 
@@ -338,6 +338,7 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         Args:
             filepath: where the FITS file should be written
             clobber: if True, overwrites any existing file.
+            data_only: if True, will only write the data image.
         """
 
         # Set up a fits header with the wcs
@@ -350,12 +351,16 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
 
         # Note that we transpose the numpy arrays, so to have the same pixel convention as DS9 and SExtractor.
         datahdu = astropy.io.fits.PrimaryHDU( self.data.transpose(), header = full_header )
-        maskhdu = astropy.io.fits.ImageHDU( data = self.mask.transpose().astype( mask_dtype ), name = "MASK" )
-        noisemaphdu = astropy.io.fits.ImageHDU( data = self.noisemap.transpose(), name = "NOISEMAP" )
-        segmaphdu = astropy.io.fits.ImageHDU( data = self.segmentation_map.transpose().astype( seg_dtype ), name = "SEGMAP" )
-        bkgmaphdu = astropy.io.fits.ImageHDU( data = self.background_map.transpose(), name = "BKGMAP" )
+        if not data_only:
+            maskhdu = astropy.io.fits.ImageHDU( data = self.mask.transpose().astype( mask_dtype ), name = "MASK" )
+            noisemaphdu = astropy.io.fits.ImageHDU( data = self.noisemap.transpose(), name = "NOISEMAP" )
+            segmaphdu = astropy.io.fits.ImageHDU( data = self.segmentation_map.transpose().astype( seg_dtype ), name = "SEGMAP" )
+            bkgmaphdu = astropy.io.fits.ImageHDU( data = self.background_map.transpose(), name = "BKGMAP" )
 
-        hdulist = astropy.io.fits.HDUList( [datahdu, maskhdu, noisemaphdu, segmaphdu, bkgmaphdu] )
+            hdulist = astropy.io.fits.HDUList( [datahdu, maskhdu, noisemaphdu, segmaphdu, bkgmaphdu] )
+            
+        else:
+            hdulist = astropy.io.fits.HDUList( [datahdu] )
 
         if clobber is True and os.path.exists( filepath ):
             logger.info( "The output file exists and will get overwritten" )
