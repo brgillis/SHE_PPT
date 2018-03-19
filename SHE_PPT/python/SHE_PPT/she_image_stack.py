@@ -41,7 +41,7 @@ class SHEImageStack(object):
     
     """
    
-    def __init__(self, exposures, stacked_image=None):
+    def __init__(self, exposures, stacked_image=None, ra=None, dec=None, detector_indices=None):
         """
         Parameters
         ----------
@@ -49,12 +49,30 @@ class SHEImageStack(object):
             a list of SHEImageData objects representing the different exposures. Any or all may be None
         stacked_image : SHEImage or None
             The stacked image of the exposures (optional)
+        ra : float
+            Right Ascension of the centre of this stack, in degrees
+        dec : float
+            Declination of the centre of this stack, in degrees
+        detector_indices : list<tuple<int,int>>
+            List of the indices of the detectors each exposure is taken from
           
         """
                
         self.exposures = exposures
         self.stacked_image = stacked_image
-    
+        
+        self.ra = ra
+        self.dec = dec
+        
+        if detector_indices is not None:
+            self.detector_indices = detector_indices
+        else:
+            self.detector_indices =[]
+            for _ in exposures:
+                self.detector_indices.append(None)
+                
+        return
+        
 
     @classmethod
     def read(cls, filename_list, stacked_image_filename=None, workdir=".", **kwargs):
