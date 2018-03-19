@@ -153,6 +153,9 @@ class SHEFrame( object ):
             
         stamp = detector.extract_stamp(x=x,y=y,width=width,height=height,keep_header=keep_header)
         
+        # Keep the extname even if not keeping the full header
+        stamp[mv.extname_label] = detector.extname_label
+        
         return stamp
     
     def extract_psf(self, gal_id, keep_header=False):

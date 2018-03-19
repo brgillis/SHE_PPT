@@ -155,7 +155,9 @@ class SHEFrameStack( object ):
         # Create and return the stamp stack
 
         stamp_stack = SHEImageStack( stacked_image = stacked_image_stamp,
-                                     exposures = exposure_stamps )
+                                     exposures = exposure_stamps,
+                                     x_world = x_world,
+                                     y_world = y_world )
 
         return stamp_stack
 
