@@ -191,7 +191,7 @@ class SHEFrameStack( object ):
             data = []
             for tag in tags:
                 extension = find_extension( hdulist, tag )
-                data.append( hdulist[extension].data )
+                data.append( hdulist[extension].data.transpose() )
 
         return header, data
 
