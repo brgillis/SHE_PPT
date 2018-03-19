@@ -84,7 +84,7 @@ class SHEFrameStack( object ):
         self.stacked_image = stacked_image
         self.detections_catalogue = detections_catalogue
 
-        self.stack_pixel_size_ratio = 2  # Might have to manually calculate this later
+        self.stack_pixel_size_ratio = 1  # Might have to manually calculate this later
 
         return
 
