@@ -268,7 +268,7 @@ class SHEFrame( object ):
                     sci_i = find_extension( frame_data_hdulist, sci_extname )
                     if sci_i is None:
                         continue  # Don't raise here; might be just using limited number
-                    detector_data = frame_data_hdulist[sci_i].data
+                    detector_data = frame_data_hdulist[sci_i].data.transpose()
                     detector_header = frame_data_hdulist[sci_i].header
                     detector_wcs = load_wcs(detector_header)
     
@@ -277,14 +277,14 @@ class SHEFrame( object ):
                     if noisemap_i is None:
                         raise ValueError( "No corresponding noisemap extension found in file " + frame_data_filename + "." +
                                          "Expected extname: " + noisemap_extname )
-                    detector_noisemap = frame_data_hdulist[noisemap_i].data
+                    detector_noisemap = frame_data_hdulist[noisemap_i].data.transpose()
     
                     mask_extname = id_string + "." + mv.mask_tag
                     mask_i = find_extension( frame_data_hdulist, mask_extname )
                     if mask_i is None:
                         raise ValueError( "No corresponding mask extension found in file " + frame_data_filename + "." +
                                          "Expected extname: " + mask_extname )
-                    detector_mask = frame_data_hdulist[mask_i].data
+                    detector_mask = frame_data_hdulist[mask_i].data.transpose()
                     
                 else:
                     detector_data = None
@@ -299,7 +299,7 @@ class SHEFrame( object ):
                     if noisemap_i is None:
                         raise ValueError( "No corresponding background extension found in file " + frame_data_filename + "." +
                                          "Expected extname: " + bkg_extname )
-                    detector_background = bkg_data_hdulist[bkg_i].data
+                    detector_background = bkg_data_hdulist[bkg_i].data.transpose()
                 else:
                     detector_background = None
 
@@ -309,7 +309,7 @@ class SHEFrame( object ):
                     if noisemap_i is None:
                         raise ValueError( "No corresponding segmentation extension found in file " + frame_data_filename + "." +
                                          "Expected extname: " + seg_extname )
-                    detector_seg_data = seg_data_hdulist[seg_i].data
+                    detector_seg_data = seg_data_hdulist[seg_i].data.transpose()
                 else:
                     detector_seg_data = None
 
@@ -334,11 +334,11 @@ class SHEFrame( object ):
                 qualified_psf_data_filename, **kwargs )
             
             bulge_psf_i = find_extension(psf_data_hdulist, mv.bulge_psf_tag)
-            bulge_psf_image = SHEImage(data=psf_data_hdulist[bulge_psf_i].data,
+            bulge_psf_image = SHEImage(data=psf_data_hdulist[bulge_psf_i].data.transpose(),
                                        header=psf_data_hdulist[bulge_psf_i].header)
             
             disk_psf_i = find_extension(psf_data_hdulist, mv.disk_psf_tag)
-            disk_psf_image = SHEImage(data=psf_data_hdulist[disk_psf_i].data,
+            disk_psf_image = SHEImage(data=psf_data_hdulist[disk_psf_i].data.transpose(),
                                       header=psf_data_hdulist[disk_psf_i].header)
             
             psf_cat_i = find_extension(psf_data_hdulist, mv.psf_cat_tag)
