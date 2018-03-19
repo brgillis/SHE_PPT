@@ -88,7 +88,8 @@ class SHEFrameStack( object ):
 
         return
 
-    def extract_stamp_stack( self, x_world, y_world, width, height = None, x_buffer = 0, y_buffer = 0, keep_header = False ):
+    def extract_stamp_stack( self, x_world, y_world, width, height = None, x_buffer = 0, y_buffer = 0, keep_header = False,
+                             none_if_out_of_bounds = False ):
         """Extracts a postage stamp centred on the provided sky co-ordinates, by using each detector's WCS
            to determine which (if any) it lies on. If x/y_buffer >0, it will also extract from a detector if
            the position is within this many pixels of the edge of it.
@@ -109,13 +110,16 @@ class SHEFrameStack( object ):
                The size of the buffer region in pixels around a detector to extract a stamp from, y-dimension
            keep_header : bool
                If True, will copy the detector's header to each stamp's
+           none_if_out_of_bounds : bool
+               Set this to True if you want this method to return None if the stamp is entirely out of bounds of the image.
+               By default, this is set to False, which means it will instead return an entirely masked stack in that case.
                
            Return
            ------
            stamp_stack : SHEImageStack
         """
 
-        # Extract from the stacked image first y_world=y_world,
+        # Extract from the stacked image first
 
         stack_stamp_width = self.stack_pixel_size_ratio * width
         if height is None:
@@ -126,10 +130,15 @@ class SHEFrameStack( object ):
         stacked_image_x, stacked_image_y = self.stacked_image.world2pix( x_world, y_world )
 
         stacked_image_stamp = self.stacked_image.extract_stamp( x = stacked_image_x,
-                                                               y = stacked_image_y,
-                                                               width = stack_stamp_width,
-                                                               height = stack_stamp_height,
-                                                               keep_header = keep_header )
+                                                                y = stacked_image_y,
+                                                                width = stack_stamp_width,
+                                                                height = stack_stamp_height,
+                                                                keep_header = keep_header,
+                                                                none_if_out_of_bounds = none_if_out_of_bounds )
+        
+        # Return None if none_if_out_of_bounds and out of bounds of stacked image
+        if none_if_out_of_bounds and stacked_image_stamp is None:
+            return None
 
         # Get the stamps for each exposure
 
@@ -146,7 +155,7 @@ class SHEFrameStack( object ):
         # Create and return the stamp stack
 
         stamp_stack = SHEImageStack( stacked_image = stacked_image_stamp,
-                                    exposures = exposure_stamps )
+                                     exposures = exposure_stamps )
 
         return stamp_stack
 

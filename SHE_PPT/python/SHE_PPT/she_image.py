@@ -507,7 +507,8 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
 
 
 
-    def extract_stamp( self, x, y, width, height = None, indexconv = "numpy", keep_header = False ):
+    def extract_stamp( self, x, y, width, height = None, indexconv = "numpy", keep_header = False,
+                       none_if_out_of_bounds = False ):
         """Extracts a stamp and returns it as a new instance (using views of numpy arrays, i.e., without making a copy)
         
         The extracted stamp is centered on the given (x,y) coordinates and has shape (width, height).
@@ -542,6 +543,13 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         keep_header : bool
             Set this to True if you want the stamp to get the header of the original image.
             By default (False), the stamp gets an empty header.
+        none_if_out_of_bounds : bool
+            Set this to True if you want this method to return None if the stamp is entirely out of bounds of the image.
+            By default, this is set to False, which means it will instead return an entirely masked image in that case.
+            
+        Return
+        ------
+        SHEImage
             
         """
 
@@ -566,6 +574,13 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         ymin = int( round( y - height / 2.0 - indexconv_defs[indexconv] ) )
         xmax = xmin + width
         ymax = ymin + height
+        
+        # If we're returning None if out of bounds, check now so we can exit early
+        if none_if_out_of_bounds:
+            # Check if it's out of bounds
+            if ((xmax < 0) or (xmin >= self.shape[0]) and
+                (ymax < 0) or (ymin >= self.shape[1])):
+                return None
 
         # And the header:
         if keep_header:
