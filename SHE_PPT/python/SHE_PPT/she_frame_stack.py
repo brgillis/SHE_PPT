@@ -186,7 +186,7 @@ class SHEFrameStack( object ):
         header = hdulist[0].header
 
         if tags is None:
-            data = hdulist[0].data
+            data = hdulist[0].data.transpose()
         else:
             data = []
             for tag in tags:
