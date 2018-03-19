@@ -328,7 +328,8 @@ class SHEFrameStack( object ):
 
                 detections_catalogues.append( detections_catalogue )
 
-            detections_catalogue = table.vstack( detections_catalogues )
+            detections_catalogue = table.vstack( detections_catalogues,
+                                                 metadata_conflicts = "silent" ) # Conflicts are expected
 
         # Construct and return a SHEFrameStack object
         return SHEFrameStack( exposures = exposures,
