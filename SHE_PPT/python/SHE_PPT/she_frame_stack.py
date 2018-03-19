@@ -146,8 +146,8 @@ class SHEFrameStack( object ):
         for exposure in self.exposures:
             exposure_stamps.append( exposure.extract_stamp( x_world = x_world,
                                                            y_world = y_world,
-                                                           width = stack_stamp_width,
-                                                           height = stack_stamp_height,
+                                                           width = width,
+                                                           height = height,
                                                            x_buffer = x_buffer,
                                                            y_buffer = y_buffer,
                                                            keep_header = keep_header ) )
