@@ -145,12 +145,12 @@ class SHEFrameStack( object ):
         exposure_stamps = []
         for exposure in self.exposures:
             exposure_stamps.append( exposure.extract_stamp( x_world = x_world,
-                                                           y_world = y_world,
-                                                           width = width,
-                                                           height = height,
-                                                           x_buffer = x_buffer,
-                                                           y_buffer = y_buffer,
-                                                           keep_header = keep_header ) )
+                                                            y_world = y_world,
+                                                            width = width,
+                                                            height = height,
+                                                            x_buffer = x_buffer,
+                                                            y_buffer = y_buffer,
+                                                            keep_header = keep_header ) )
 
         # Create and return the stamp stack
 
@@ -195,14 +195,14 @@ class SHEFrameStack( object ):
 
     @classmethod
     def read( cls,
-             exposure_listfile_filename = None,
-             seg_listfile_filename = None,
-             stacked_image_product_filename = None,
-             stacked_seg_product_filename = None,
-             psf_listfile_filename = None,
-             detections_listfile_filename = None,
-             workdir = ".",
-             **kwargs ):
+              exposure_listfile_filename = None,
+              seg_listfile_filename = None,
+              stacked_image_product_filename = None,
+              stacked_seg_product_filename = None,
+              psf_listfile_filename = None,
+              detections_listfile_filename = None,
+              workdir = ".",
+              **kwargs ):
         """Reads a SHEFrameStack from relevant data products.
         
         
@@ -256,10 +256,10 @@ class SHEFrameStack( object ):
             psf_filename = index_or_none( psf_filenames, exposure_i )
 
             exposure = SHEFrame.read( frame_product_filename = exposure_filename,
-                                     seg_product_filename = seg_filename,
-                                     psf_product_filename = psf_filename,
-                                     workdir = workdir,
-                                     **kwargs )
+                                      seg_product_filename = seg_filename,
+                                      psf_product_filename = psf_filename,
+                                      workdir = workdir,
+                                      **kwargs )
 
             exposures.append( exposure )
 

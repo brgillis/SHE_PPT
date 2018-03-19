@@ -148,7 +148,7 @@ class SHEFrame( object ):
             if found:
                 break
             
-        if detector is None:
+        if (detector is None) or (not found):
             return None
             
         stamp = detector.extract_stamp(x=x,y=y,width=width,height=height,keep_header=keep_header)
