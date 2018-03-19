@@ -578,7 +578,7 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         # If we're returning None if out of bounds, check now so we can exit early
         if none_if_out_of_bounds:
             # Check if it's out of bounds
-            if ((xmax < 0) or (xmin >= self.shape[0]) and
+            if ((xmax < 0) or (xmin >= self.shape[0]) or
                 (ymax < 0) or (ymin >= self.shape[1])):
                 return None
 
