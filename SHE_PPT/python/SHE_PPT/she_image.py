@@ -640,11 +640,12 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
 
 
             # Fill the stamp arrays:
-            data_stamp[overlap_slice_stamp] = self.data[overlap_slice]
-            mask_stamp[overlap_slice_stamp] = self.mask[overlap_slice]
-            noisemap_stamp[overlap_slice_stamp] = self.noisemap[overlap_slice]
-            segmentation_map_stamp[overlap_slice_stamp] = self.segmentation_map[overlap_slice]
-            background_map_stamp[overlap_slice_stamp] = self.background_map[overlap_slice]
+            if (overlap_width > 0) and (overlap_height > 0): # If there is any overlap
+                data_stamp[overlap_slice_stamp] = self.data[overlap_slice]
+                mask_stamp[overlap_slice_stamp] = self.mask[overlap_slice]
+                noisemap_stamp[overlap_slice_stamp] = self.noisemap[overlap_slice]
+                segmentation_map_stamp[overlap_slice_stamp] = self.segmentation_map[overlap_slice]
+                background_map_stamp[overlap_slice_stamp] = self.background_map[overlap_slice]
 
             # Create the new object
             newimg = SHEImage( 
