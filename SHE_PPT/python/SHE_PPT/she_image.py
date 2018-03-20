@@ -731,7 +731,7 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
             raise AttributeError( "world2pix called by SHEImage object that doesn't have a WCS set up. " +
                                  "Note that WCS isn't currently passed when extract_stamp is used, so this might be the issue." )
 
-        x, y = self.wcs.all_world2pix( ra, dec, distort=distort, find=find )
+        x, y = self.wcs.sky2image( ra, dec, distort=distort, find=find )
 
         return x, y
 
