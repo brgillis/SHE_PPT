@@ -159,11 +159,12 @@ class WCS(object):
         # inverse polynomial.
         x,y = wcs.sky2image(ra,dec)
     """
-    def __init__(self, wcs, longpole=180.0, latpole=90.0, theta0=90.0):
+    def __init__(self, header, longpole=180.0, latpole=90.0, theta0=90.0):
 
         # Convert to internal dictionary and set some attributes of this
         # instance
-        self.wcs = self.ConvertWCS(wcs)
+        self.header = header
+        self.wcs = self.ConvertWCS(header)
 
         # Set these as attributes, either from above keywords or from the
         # wcs header

@@ -342,7 +342,7 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
 
         # Set up a fits header with the wcs
         if self.wcs is not None:
-            full_header = self.wcs.to_header()
+            full_header = self.wcs.header
             for label in self.header:
                 full_header[label] = ( self.header[label], self.header.comments[label] )
         else:
@@ -420,15 +420,12 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         # Set up the WCS before we clean the header
         wcs = astropy.wcs.WCS( header )
 
-        # Get a wcs header so we know what keywords will be in it
-        wcs_header = wcs.to_header()
-
         # Removing the mandatory cards (that were automatically added to the header if write_to_fits was used)
         logger.debug( "The raw primary header has {} keys".format( len( list( header.keys() ) ) ) )
         for keyword in ["SIMPLE", "BITPIX", "NAXIS", "NAXIS1", "NAXIS2", "EXTEND"]:
             if keyword in header:
                 header.remove( keyword )
-        for keyword in list( wcs_header.keys() ):
+        for keyword in list( wcs.header.keys() ):
             if keyword in header:
                 header.remove( keyword )
 
