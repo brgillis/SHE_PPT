@@ -25,6 +25,7 @@ import os
 from SHE_PPT.magic_values import segmap_unassigned_value
 from SHE_PPT.mask import ( as_bool, is_masked_bad,
                           is_masked_suspect_or_bad, masked_off_image )
+from SHE_PPT.utility import load_wcs
 import astropy.io.fits  # Avoid non-trivial "from" imports (as explicit is better than implicit)
 import SHE_PPT.wcsutil
 import numpy as np
@@ -73,7 +74,7 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
             segmentation_map: an int32 array of the same shape as data. Leaving None creates an empty map
             header: an astropy.io.fits.Header object. Leaving None creates an empty header.
             offset: a 1D numpy float array with two values, corresponding to the x and y offsets
-            wcs: An astropy.wcs.WCS object, containing WCS information for this image
+            wcs: A SHE_PPT.wcsutil.WCS object, containing WCS information for this image
         """
 
         self.data = data  # Note the tests done in the setter method
@@ -418,7 +419,7 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         ( data, header ) = cls._get_specific_hdu_content_from_fits( qualified_filepath, ext = data_ext, return_header = True )
 
         # Set up the WCS before we clean the header
-        wcs = astropy.wcs.WCS( header )
+        wcs = load_wcs( header )
 
         # Removing the mandatory cards (that were automatically added to the header if write_to_fits was used)
         logger.debug( "The raw primary header has {} keys".format( len( list( header.keys() ) ) ) )
