@@ -116,6 +116,7 @@ class Test_she_image():
         self.img.mask[30:40,:]=-10456.34 # will get converted and should not prevent the test from working
         self.img.segmentation_map[10:20,20:30] = 1
         
+        self.img.wcs = self.wcs
         
         self.img.write_to_fits(self.testfilepath, clobber=False)
         
@@ -125,6 +126,8 @@ class Test_she_image():
         assert np.allclose(self.img.mask, rimg.mask)
         assert np.allclose(self.img.noisemap, rimg.noisemap)
         assert np.allclose(self.img.segmentation_map, rimg.segmentation_map)
+        
+        assert self.img.wcs == self.rimg.wcs
         
         # We test that the header did not get changed
         assert len(list(rimg.header.keys())) == 3
