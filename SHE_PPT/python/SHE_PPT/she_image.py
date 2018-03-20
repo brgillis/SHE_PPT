@@ -268,8 +268,8 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
     def wcs( self, wcs ):
         """Convenience setter of the WCS.
         """
-        if not ( isinstance( wcs, astropy.wcs.WCS ) or ( wcs is None ) ):
-            raise TypeError( "wcs must be of type astropy.wcs.WCS" )
+        if not ( isinstance( wcs, SHE_PPT.wcsutil.WCS ) or ( wcs is None ) ):
+            raise TypeError( "wcs must be of type SHE_PPT.wcsutil.WCS" )
         self._wcs = wcs
 
 
