@@ -438,20 +438,32 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         logger.debug( "The cleaned header has {} keys".format( len( list( header.keys() ) ) ) )
 
         # Reading the mask
-        qualified_mask_filepath = os.path.join( workdir, filepath )
+        if mask_filepath is not None:
+            qualified_mask_filepath = os.path.join( workdir, mask_filepath )
+        else:
+            qualified_mask_filepath = os.path.join( workdir, filepath )
         mask = cls._get_secondary_data_from_fits( qualified_filepath, qualified_mask_filepath, mask_ext )
 
         # Reading the noisemap
-        qualified_noisemap_filepath = os.path.join( workdir, filepath )
+        if noisemap_filepath is not None:
+            qualified_noisemap_filepath = os.path.join( workdir, noisemap_filepath )
+        else:
+            qualified_noisemap_filepath = os.path.join( workdir, filepath )
         noisemap = cls._get_secondary_data_from_fits( qualified_filepath, qualified_noisemap_filepath, noisemap_ext )
 
         # Reading the segmentation map
-        qualified_segmentation_map_filepath = os.path.join( workdir, filepath )
+        if segmentation_map_filepath is not None:
+            qualified_segmentation_map_filepath = os.path.join( workdir, segmentation_map_filepath )
+        else:
+            qualified_segmentation_map_filepath = os.path.join( workdir, filepath )
         segmentation_map = cls._get_secondary_data_from_fits( qualified_filepath, qualified_segmentation_map_filepath,
                                                              segmentation_map_ext )
 
         # Reading the background map
-        qualified_background_map_filepath = os.path.join( workdir, filepath )
+        if background_map_filepath is not None:
+            qualified_background_map_filepath = os.path.join( workdir, background_map_filepath )
+        else:
+            qualified_background_map_filepath = os.path.join( workdir, filepath )
         background_map = cls._get_secondary_data_from_fits( qualified_filepath, qualified_background_map_filepath,
                                                              background_map_ext )
 
