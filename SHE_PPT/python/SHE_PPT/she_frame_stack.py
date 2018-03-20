@@ -162,7 +162,7 @@ class SHEFrameStack( object ):
         return stamp_stack
 
     @classmethod
-    def _read_extension( cls, product_filename, tags = None, workdir = ".", dtype = None,
+    def _read_product_extension( cls, product_filename, tags = None, workdir = ".", dtype = None,
                         filetype = "science", **kwargs ):
 
         product = read_xml_product( os.path.join( workdir, product_filename ) )
@@ -196,11 +196,29 @@ class SHEFrameStack( object ):
         return header, data
 
     @classmethod
+    def _read_file_extension( cls, filename, tags = None, workdir = ".", dtype = None, **kwargs ):
+        
+        hdulist = fits.open( 
+            os.path.join(workdir,filename), **kwargs )
+
+        header = hdulist[0].header
+
+        if tags is None:
+            data = hdulist[0].data.transpose()
+        else:
+            data = []
+            for tag in tags:
+                extension = find_extension( hdulist, tag )
+                data.append( hdulist[extension].data.transpose() )
+
+        return header, data
+
+    @classmethod
     def read( cls,
               exposure_listfile_filename = None,
               seg_listfile_filename = None,
               stacked_image_product_filename = None,
-              stacked_seg_product_filename = None,
+              stacked_seg_filename = None,
               psf_listfile_filename = None,
               detections_listfile_filename = None,
               workdir = ".",
@@ -215,13 +233,13 @@ class SHEFrameStack( object ):
         bkg_listfile_filename : str
             Filename of the listfile pointing to the exposure background data products
         seg_listfile_filename : str
-            Filename of the listfile pointing to the exposure segmentation map data products
+            Filename of the listfile pointing to the exposure segmentation map files
         stacked_image_product_filename :frame_prod str
             Filename of the stacked image data product
         stacked_bkg_product_filename : str
             Filename of the stacked background data product
-        stacked_seg_product_filename : str
-            Filename of the stacked segmentation map data product
+        stacked_seg_filename : str
+            Filename of the stacked segmentation map file
         psf_listfile_filename : str
             Filename of the listfile pointing to the psf data products
         detections_listfile_filename : str
@@ -258,7 +276,7 @@ class SHEFrameStack( object ):
             psf_filename = index_or_none( psf_filenames, exposure_i )
 
             exposure = SHEFrame.read( frame_product_filename = exposure_filename,
-                                      seg_product_filename = seg_filename,
+                                      seg_filename = seg_filename,
                                       psf_product_filename = psf_filename,
                                       workdir = workdir,
                                       **kwargs )
@@ -275,26 +293,26 @@ class SHEFrameStack( object ):
             stacked_mask_data = None
         else:
             ( stacked_image_header,
-             stacked_data ) = cls._read_extension( stacked_image_product_filename,
-                                                   tags = ( mv.sci_tag, mv.noisemap_tag, mv.mask_tag ),
-                                                   workdir = workdir,
-                                                   dtype = products.stacked_frame.vis_dpd.dpdVisStackedFrame )
+             stacked_data ) = cls._read_product_extension( stacked_image_product_filename,
+                                                           tags = ( mv.sci_tag, mv.noisemap_tag, mv.mask_tag ),
+                                                           workdir = workdir,
+                                                           dtype = products.stacked_frame.vis_dpd.dpdVisStackedFrame )
 
             stacked_image_data = stacked_data[0]
             stacked_rms_data = stacked_data[1]
             stacked_mask_data = stacked_data[2]
 
-            _, stacked_bkg_data = cls._read_extension( stacked_image_product_filename,
-                                                       workdir = workdir,
-                                                       dtype = products.stacked_frame.vis_dpd.dpdVisStackedFrame,
-                                                       filetype = "background" )
+            _, stacked_bkg_data = cls._read_product_extension( stacked_image_product_filename,
+                                                               workdir = workdir,
+                                                               dtype = products.stacked_frame.vis_dpd.dpdVisStackedFrame,
+                                                               filetype = "background" )
 
         # Get the segmentation image
-        if stacked_seg_product_filename is None:
+        if stacked_seg_filename is None:
             stacked_seg_data = None
         else:
-            _, stacked_seg_data = cls._read_extension( stacked_seg_product_filename,
-                                                       workdir = workdir )
+            _, stacked_seg_data = cls._read_file_extension( stacked_seg_filename,
+                                                            workdir = workdir )
 
         # Construct a SHEImage object for the stacked image
         stacked_image = SHEImage( data = stacked_image_data,
