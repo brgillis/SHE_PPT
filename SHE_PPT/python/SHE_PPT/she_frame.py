@@ -191,7 +191,7 @@ class SHEFrame( object ):
     @classmethod
     def read( cls,
               frame_product_filename = None,
-              seg_product_filename = None,
+              seg_filename = None,
               psf_product_filename = None,
               workdir=".",
               x_max = 6,
@@ -204,9 +204,9 @@ class SHEFrame( object ):
         ----------
         frame_product_filename : str
             Filename of the CalibratedFrame data product
-        seg_product_filename : str
-            Filename of the Mosaic (segmentation map) data product
-        seg_product_filename : str
+        seg_filename : str
+            Filename of the Mosaic (segmentation map) image
+        psf_product_filename : str
             Filename of the PSF Image data product
         workdir : str
             Work directory
@@ -244,16 +244,12 @@ class SHEFrame( object ):
             bkg_data_hdulist = None
 
         # Load in the data from the segmentation frame
-        if seg_product_filename is not None:
-            seg_prod = read_xml_product( os.path.join( workdir, seg_product_filename ) )
-            if not isinstance( seg_prod, products.mosaic.DpdMerMosaicProduct ):
-                raise ValueError( "Data image product from " +
-                                 seg_product_filename + " is invalid type." )
+        if seg_filename is not None:
 
-            seg_data_filename = os.path.join( workdir, seg_prod.get_filename() )
+            qualified_seg_filename = os.path.join( workdir, seg_filename )
     
             seg_data_hdulist = fits.open( 
-                seg_data_filename, **kwargs )
+                qualified_seg_filename, **kwargs )
         else:
             seg_data_hdulist = None
 
@@ -296,7 +292,7 @@ class SHEFrame( object ):
                 if bkg_data_hdulist is not None:
                     bkg_extname = id_string # Background has no tag
                     bkg_i = find_extension( bkg_data_hdulist, bkg_extname )
-                    if noisemap_i is None:
+                    if bkg_i is None:
                         raise ValueError( "No corresponding background extension found in file " + frame_data_filename + "." +
                                          "Expected extname: " + bkg_extname )
                     detector_background = bkg_data_hdulist[bkg_i].data.transpose()
@@ -306,7 +302,7 @@ class SHEFrame( object ):
                 if seg_data_hdulist is not None:
                     seg_extname = id_string + "." + mv.segmentation_tag
                     seg_i = find_extension( seg_data_hdulist, seg_extname )
-                    if noisemap_i is None:
+                    if seg_i is None:
                         raise ValueError( "No corresponding segmentation extension found in file " + frame_data_filename + "." +
                                          "Expected extname: " + seg_extname )
                     detector_seg_data = seg_data_hdulist[seg_i].data.transpose()
