@@ -411,5 +411,5 @@ class Test_she_image():
             new_y = new_xy[1,0]
             
             assert np.allclose((new_x,new_y),self.img.world2pix(ra+dra,dec+ddec),
-                               rtol=1e-5,atol=1e-4)
+                               rtol=1e-2,atol=1e-4)
             
