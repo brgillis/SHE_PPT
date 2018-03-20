@@ -49,7 +49,6 @@ license="""
 import numpy
 have_numpy=True
 
-from . import math
 import os
 import sys
 
@@ -405,13 +404,13 @@ class WCS(object):
 
         # Longpole is the longitude in the native system of the North Pole in 
         # the standard system (default = 180 degrees).
-        sp = math.sin(self.longpole*d2r)
-        cp = math.cos(self.longpole*d2r)
+        sp = numpy.sin(self.longpole*d2r)
+        cp = numpy.cos(self.longpole*d2r)
 
-        sa = math.sin(self.native_longpole)
-        ca = math.cos(self.native_longpole)
-        sd = math.sin(self.native_latpole)
-        cd = math.cos(self.native_latpole)
+        sa = numpy.sin(self.native_longpole)
+        ca = numpy.cos(self.native_longpole)
+        sd = numpy.sin(self.native_latpole)
+        cd = numpy.cos(self.native_latpole)
 
         # calculate rotation matrix 
 
@@ -713,38 +712,38 @@ class WCS(object):
         # Longpole is the longitude in the native system of the North Pole 
         # in the standard system (default = 180 degrees).
         phi_p = self.longpole/radeg
-        sp = math.sin(phi_p)
-        cp = math.cos(phi_p)
-        sd = math.sin(latitude_0)
-        cd = math.cos(latitude_0)
-        tand = math.tan(latitude_0)
+        sp = numpy.sin(phi_p)
+        cp = numpy.cos(phi_p)
+        sd = numpy.sin(latitude_0)
+        cd = numpy.cos(latitude_0)
+        tand = numpy.tan(latitude_0)
 
         if self.theta0 == 0.0:
             if latitude_0 == 0 and self.longpole == 90.0:
                 latitude_p = self.latpole
             else:
-                latitude_p = math.acos( sd/cp )
+                latitude_p = numpy.acos( sd/cp )
 
             if self.latpole != 90.0:
-                if math.fabs(self.latpole + latitude_p) < math.fabs(self.latpole - latitude_p):
+                if numpy.fabs(self.latpole + latitude_p) < numpy.fabs(self.latpole - latitude_p):
                     latitude_p = - latitude_p
 
             if (self.longpole == 180.0) or (cd == 0.0):
                 longitude_p = longitude_0
             else:
-                longitude_p = longitude_0 - math.atan2(sp/cd, -math.tan(latitude_p)*tand )
+                longitude_p = longitude_0 - numpy.atan2(sp/cd, -numpy.tan(latitude_p)*tand )
         else:
-            ctheta = math.cos(self.theta0*d2r)
-            stheta = math.sin(self.theta0*d2r)
+            ctheta = numpy.cos(self.theta0*d2r)
+            stheta = numpy.sin(self.theta0*d2r)
 
-            term1 = math.atan2( stheta, ctheta*cp )
-            term2 = math.acos( sd/( math.sqrt(1.0-ctheta*ctheta*sp*sp) ))
+            term1 = numpy.atan2( stheta, ctheta*cp )
+            term2 = numpy.acos( sd/( numpy.sqrt(1.0-ctheta*ctheta*sp*sp) ))
 
             if term2 == 0.0:
                 latitude_p = term1
             else:
-                latitude_p1 = math.fabs( (term1+term2)*r2d )
-                latitude_p2 = math.fabs( (term1-term2)*r2d )
+                latitude_p1 = numpy.fabs( (term1+term2)*r2d )
+                latitude_p2 = numpy.fabs( (term1-term2)*r2d )
 
                 if (latitude_p1 > 90.0) and (latitude_p2 > 90.0):
                     raise ValueError('No valid solution')
@@ -756,8 +755,8 @@ class WCS(object):
                     # Two valid solutions
                     latitude_p1 = (term1+term2)*r2d
                     latitude_p2 = (term1-term2)*r2d
-                    if math.fabs(self.latpole-latitude_p1) < \
-                       math.fabs(self.latpole-latitude_p2):
+                    if numpy.fabs(self.latpole-latitude_p1) < \
+                       numpy.fabs(self.latpole-latitude_p2):
                         latitude_p = term1+term2
                     else:
                         latitude_p = term1-term2
@@ -765,17 +764,17 @@ class WCS(object):
                 if (cd == 0.0):
                     longitude_p = longitude_0
                 else:
-                    sdelt = math.sin(latitude_p)
+                    sdelt = numpy.sin(latitude_p)
                     if (sdelt == 1.0):
                         longitude_p = longitude_0 - phi_p - numpy.pi
                     else:
                         if sdelt == -1.0:
                             longitude_p = longitude_0 - phi_p
                         else:
-                            sdp = math.sin(latitude_p)
-                            cdp = math.cos(latitude_p)
+                            sdp = numpy.sin(latitude_p)
+                            cdp = numpy.cos(latitude_p)
                             longitude_p = longitude_0 - \
-                                    math.atan2( (stheta-sdp*sd)/(cdp*cd), 
+                                    numpy.atan2( (stheta-sdp*sd)/(cdp*cd), 
                                                 sp*ctheta/cd )
         return longitude_p, latitude_p
 
