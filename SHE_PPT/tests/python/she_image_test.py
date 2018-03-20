@@ -354,7 +354,7 @@ class Test_she_image():
         """Test that pix2world works properly"""
         
         for x, y, ex_ra, ex_dec in ((0, 0, 52.53373984070186, -28.760675854311447),
-                                    (52.53677316085, -28.75899827058671),
+                                    (24, 38, 52.53677316085, -28.75899827058671),
                                     (1012,4111, 52.876229370322626, -28.686527560717373)):
             
             ra, dec = self.img.pix2world(x,y)
@@ -365,7 +365,7 @@ class Test_she_image():
         """Test that world2pix works properly"""
         
         for ex_x, ex_y, ra, dec in ((0, 0, 52.53373984070186, -28.760675854311447),
-                                    (52.53677316085, -28.75899827058671),
+                                    (24, 38, 52.53677316085, -28.75899827058671),
                                     (1012,4111, 52.876229370322626, -28.686527560717373)):
             
             x, y = self.img.world2pix(ra,dec)
@@ -377,7 +377,7 @@ class Test_she_image():
         # Check that the transformations are approximately the inverses of each other
         
         for x, y, ra, dec in ((0, 0, 52.53373984070186, -28.760675854311447),
-                              (52.53677316085, -28.75899827058671),
+                              (24, 38, 52.53677316085, -28.75899827058671),
                               (1012,4111, 52.876229370322626, -28.686527560717373)):
         
             pix2world_transformation = self.img.get_pix2world_transformation(x,y)
