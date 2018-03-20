@@ -53,7 +53,7 @@ try:
 except:
     have_numpy=False
 
-import math
+from . import math
 import os
 import sys
 
@@ -187,7 +187,7 @@ class WCS(object):
     def __setitem__(self, key, val):
         self.wcs[key] = val
     def keys(self):
-        return self.wcs.keys()
+        return list(self.wcs.keys())
 
     def image2sky(self, x, y, distort=True):
         """
@@ -823,7 +823,7 @@ class WCS(object):
             # Try to use the items() method to get what we want
             wcs={}
             try:
-                for k,v in wcs_in.items():
+                for k,v in list(wcs_in.items()):
                     wcs[k.lower()] = v
             except:
                 raise ValueError('Input wcs must be a numpy array '+\
