@@ -26,7 +26,7 @@ from SHE_PPT.magic_values import segmap_unassigned_value
 from SHE_PPT.mask import ( as_bool, is_masked_bad,
                           is_masked_suspect_or_bad, masked_off_image )
 import astropy.io.fits  # Avoid non-trivial "from" imports (as explicit is better than implicit)
-import astropy.wcs
+import SHE_PPT.wcsutil
 import numpy as np
 
 from . import logging
