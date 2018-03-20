@@ -206,7 +206,7 @@ class WCS(object):
         ra,dec = wcs.image2sky(x,y)
         """
         
-        arescalar=isscalar(x)
+        arescalar=numpy.isscalar(x)
         x = numpy.array(x, dtype='f8', copy=False)
         y = numpy.array(y, dtype='f8', copy=False)
 
@@ -257,7 +257,7 @@ class WCS(object):
             x,y = wcs.image2sky(ra,dec)
         """
  
-        arescalar=isscalar(lon)
+        arescalar=numpy.isscalar(lon)
         longitude  = numpy.array(lon, ndmin=1, dtype='f8', copy=False)
         latitude = numpy.array(lat, ndmin=1, dtype='f8', copy=False)
 
