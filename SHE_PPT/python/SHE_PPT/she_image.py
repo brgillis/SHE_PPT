@@ -325,7 +325,7 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
 
         return object_mask
 
-    def write_to_fits( self, filepath, clobber = False, data_only = True, **kwargs ):
+    def write_to_fits( self, filepath, clobber = False, data_only = False, **kwargs ):
         """Writes the image to disk, in form of a multi-extension FITS cube.
         
         The data is written in the primary HDU, the mask in the extension 'MASK' and the noisemap in the extensions 'NOISEMAP'. 
