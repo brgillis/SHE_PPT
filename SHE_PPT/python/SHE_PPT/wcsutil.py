@@ -1078,7 +1078,7 @@ def make_amatrix(u, v, order, constant=True):
     #n = n*n
     n=u.size
     
-    tshape = [ (order+1)*(order+2)/2-1, n ]
+    tshape = [ (order+1)*(order+2)//2-1, n ]
     if constant:
         # Extra column with ones in it for the constant term
         tshape[0] += 1
