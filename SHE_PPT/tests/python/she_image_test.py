@@ -126,12 +126,6 @@ class Test_she_image():
         assert np.allclose(self.img.noisemap, rimg.noisemap)
         assert np.allclose(self.img.segmentation_map, rimg.segmentation_map)
         
-        assert np.allclose(self.img.wcs.wcs.crpix,rimg.wcs.wcs.crpix, rtol=1e-3)
-        assert np.allclose(self.img.wcs.wcs.cdelt,rimg.wcs.wcs.cdelt, rtol=1e-3)
-        assert np.allclose(self.img.wcs.wcs.crval,rimg.wcs.wcs.crval, rtol=1e-3)
-        assert self.img.wcs.wcs.ctype[0] == rimg.wcs.wcs.ctype[0]
-        assert self.img.wcs.wcs.ctype[1] == rimg.wcs.wcs.ctype[1]
-        
         # We test that the header did not get changed
         assert len(list(rimg.header.keys())) == 3
         assert str(repr(self.img.header)) == str(repr(rimg.header))
