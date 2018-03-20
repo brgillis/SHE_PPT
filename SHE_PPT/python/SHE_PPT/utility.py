@@ -22,8 +22,7 @@ import codecs
 import hashlib
 from copy import deepcopy
 
-from astropy.wcs import WCS
-from astropy.wcs._wcs import InvalidTransformError
+from SHE_PPT.wcsutil import WCS
 
 from SHE_PPT import detector as dtc
 from SHE_PPT.logging import getLogger
@@ -112,23 +111,7 @@ def load_wcs(header):
     
     logger.debug("Entering load_wcs")
     
-    try:
-        wcs = WCS(header)
-    except InvalidTransformError as e:
-        if not (str(e)=="ERROR 6 in wcsset() at line 2071 of file wcs.c:\n"+
-                "PV1_5 : Unrecognized coordinate transformation parameter.\n"):
-            raise
-        else:
-            # This is the exception we're expecting, so implement the fix and try that
-    
-            logger.debug("Expected exception encountered in load_wcs due to bug in VIS headers.")
-            
-            fixed_header = deepcopy(header)
-            fixed_header['CTYPE1'] = 'RA---TPV'
-            fixed_header['CTYPE2'] = 'DEC--TPV'
-            wcs = WCS(fixed_header)
-    
-            logger.debug("Successfully resolved bug in VIS headers.")
+    wcs = WCS(header)
     
     logger.debug("Exiting load_wcs")
             

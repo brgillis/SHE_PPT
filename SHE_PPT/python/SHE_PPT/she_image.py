@@ -670,7 +670,7 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         assert newimg.shape == ( width, height )
         return newimg
 
-    def pix2world( self, x, y ):
+    def pix2world( self, x, y, distort=True ):
         """Converts x and y pixel coordinates to ra and dec world coordinates.
               
         Parameters
@@ -679,6 +679,8 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
             x pixel coordinate
         y : float
             idem for y
+        distort : bool
+            Use the distortion model if present
             
         Raises
         ------
@@ -695,12 +697,11 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
             raise AttributeError( "pix2world called by SHEImage object that doesn't have a WCS set up. " +
                                  "Note that WCS isn't currently passed when extract_stamp is used, so this might be the issue." )
 
-        ra, dec = self.wcs.all_pix2world( x, y, 1,  # "1" since we have 1-based coordinates
-                                         ra_dec_order = True )  # Ensure we get ra and dec in expected order
+        ra, dec = self.wcs.image2sky( x, y, distort=distort )
 
         return ra, dec
 
-    def world2pix( self, ra, dec ):
+    def world2pix( self, ra, dec, distort=True, find=True ):
         """Converts ra and dec world coordinates to x and y pixel coordinates
               
         Parameters
@@ -709,6 +710,10 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
             Right Ascension (RA) world coordinate in degrees
         dec : float
             Declination (Dec) world coordinate in degrees
+        distort : bool
+            Use the distortion model if present (default True)
+        find : bool
+            If using the distortion model, more accurately but more slowly solve the polynomial eq. (default True)
             
         Raises
         ------
@@ -726,8 +731,7 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
             raise AttributeError( "world2pix called by SHEImage object that doesn't have a WCS set up. " +
                                  "Note that WCS isn't currently passed when extract_stamp is used, so this might be the issue." )
 
-        x, y = self.wcs.all_world2pix( ra, dec, 1,  # "1" since we have 1-based coordinates
-                                      ra_dec_order = True )  # Ensure we get ra and dec in expected order
+        x, y = self.wcs.all_world2pix( ra, dec, distort=distort, find=find )
 
         return x, y
 
