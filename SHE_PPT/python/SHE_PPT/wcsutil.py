@@ -46,19 +46,15 @@ license="""
 """
 
 
-try:
-    import numpy
-    from numpy import isscalar
-    have_numpy=True
-except:
-    have_numpy=False
+import numpy
+have_numpy=True
 
 from . import math
 import os
 import sys
 
-r2d = 180.0/math.pi
-d2r = math.pi/180.0
+r2d = 180.0/numpy.pi
+d2r = numpy.pi/180.0
 
 # map the odd scamp naming scheme onto a matrix
 # I didn't figure out the formula
@@ -336,10 +332,10 @@ class WCS(object):
         latitude = numpy.zeros_like(x)
         longitude   = numpy.zeros_like(x)
 
-        latitude[:] = math.pi/2
+        latitude[:] = numpy.pi/2
 
         # radius in radians
-        r = numpy.sqrt(x*x + y*y)*math.pi/180.0
+        r = numpy.sqrt(x*x + y*y)*numpy.pi/180.0
 
         w, = numpy.where( r > 0 )
         if w.size > 0:
@@ -771,7 +767,7 @@ class WCS(object):
                 else:
                     sdelt = math.sin(latitude_p)
                     if (sdelt == 1.0):
-                        longitude_p = longitude_0 - phi_p - math.pi
+                        longitude_p = longitude_0 - phi_p - numpy.pi
                     else:
                         if sdelt == -1.0:
                             longitude_p = longitude_0 - phi_p
