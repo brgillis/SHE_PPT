@@ -419,16 +419,21 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         ( data, header ) = cls._get_specific_hdu_content_from_fits( qualified_filepath, ext = data_ext, return_header = True )
 
         # Set up the WCS before we clean the header
-        wcs = load_wcs( header )
+        try:
+            wcs = load_wcs( header )
+        except KeyError:
+            # No WCS information
+            wcs = None
 
         # Removing the mandatory cards (that were automatically added to the header if write_to_fits was used)
         logger.debug( "The raw primary header has {} keys".format( len( list( header.keys() ) ) ) )
         for keyword in ["SIMPLE", "BITPIX", "NAXIS", "NAXIS1", "NAXIS2", "EXTEND"]:
             if keyword in header:
                 header.remove( keyword )
-        for keyword in list( wcs.header.keys() ):
-            if keyword in header:
-                header.remove( keyword )
+        if wcs is not None:
+            for keyword in list( wcs.header.keys() ):
+                if keyword in header:
+                    header.remove( keyword )
 
         logger.debug( "The cleaned header has {} keys".format( len( list( header.keys() ) ) ) )
 
