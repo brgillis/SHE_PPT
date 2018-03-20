@@ -185,7 +185,8 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
             if not segmentation_map_array.dtype.newbyteorder( '<' ) == seg_dtype:  # Quietly ignore if byte order is the only difference
                 logger.warning( "Received segmentation map array of type '{}'. Attempting safe casting to seg_dtype.".format( segmentation_map_array.dtype ) )
                 try:
-                    segmentation_map_array = segmentation_map_array.astype( seg_dtype, casting = 'safe' )
+                    # segmentation_map_array = segmentation_map_array.astype( seg_dtype, casting = 'safe' ) # FIXME
+                    segmentation_map_array = segmentation_map_array.astype( seg_dtype )
                 except:
                     raise ValueError( "The segmentation array must be of np.int32 type (it is {})".format( segmentation_map_array.dtype ) )
             self._segmentation_map = segmentation_map_array
