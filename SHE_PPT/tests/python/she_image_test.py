@@ -127,7 +127,7 @@ class Test_she_image():
         assert np.allclose(self.img.noisemap, rimg.noisemap)
         assert np.allclose(self.img.segmentation_map, rimg.segmentation_map)
         
-        assert self.img.wcs == self.rimg.wcs
+        assert self.img.wcs == rimg.wcs
         
         # We test that the header did not get changed
         assert len(list(rimg.header.keys())) == 3
