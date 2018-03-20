@@ -174,21 +174,19 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
     def segmentation_map( self, segmentation_map_array ):
         if segmentation_map_array is None:
             # Then we create an empty segmentation map (-1 means unassigned)
-            #FIXME - workaround for memory error
-            self._segmentation_map = self._mask
-            # self._segmentation_map = segmap_unassigned_value * np.ones( self._data.shape, dtype = seg_dtype )
+            self._segmentation_map = segmap_unassigned_value * np.ones( self._data.shape, dtype = seg_dtype )
         else:
             if segmentation_map_array.ndim is not 2:
                 raise ValueError( "The segmentation map array must have 2 dimensions" )
             if segmentation_map_array.shape != self._data.shape:
                 raise ValueError( "The segmentation map array must have the same size as the data {}".format( self._data.shape ) )
-            if not segmentation_map_array.dtype.newbyteorder( '<' ) == seg_dtype:  # Quietly ignore if byte order is the only difference
-                logger.warning( "Received segmentation map array of type '{}'. Attempting safe casting to seg_dtype.".format( segmentation_map_array.dtype ) )
-                try:
-                    # segmentation_map_array = segmentation_map_array.astype( seg_dtype, casting = 'safe' ) # FIXME
-                    segmentation_map_array = segmentation_map_array.astype( seg_dtype )
-                except:
-                    raise ValueError( "The segmentation array must be of np.int32 type (it is {})".format( segmentation_map_array.dtype ) )
+            if False: # FIXME
+                if not segmentation_map_array.dtype.newbyteorder( '<' ) == seg_dtype:  # Quietly ignore if byte order is the only difference
+                    logger.warning( "Received segmentation map array of type '{}'. Attempting safe casting to seg_dtype.".format( segmentation_map_array.dtype ) )
+                    try:
+                        segmentation_map_array = segmentation_map_array.astype( seg_dtype, casting = 'safe' )
+                    except:
+                        raise ValueError( "The segmentation array must be of np.int32 type (it is {})".format( segmentation_map_array.dtype ) )
             self._segmentation_map = segmentation_map_array
     @segmentation_map.deleter
     def segmentation_map( self ):
