@@ -18,11 +18,17 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to    
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-try:
-    import EuclidDmBindings.she.she_stub as she_dpd
-    have_she_dpd = True
-except ImportError as _e:
-    have_she_dpd = False
+import EuclidDmBindings.dpd.she_stub as she_dpd
+import EuclidDmBindings.dpd.vis_stub as vis_dpd
+import EuclidDmBindings.dpd.mer_stub as mer_dpd
+import EuclidDmBindings.dpd.phz_stub as phz_dpd
+import EuclidDmBindings.dpd.sim_stub as sim_dpd
+
+dpd_sources = {"she":she_dpd,
+               "vis":vis_dpd,
+               "mer":mer_dpd,
+               "phz":phz_dpd,
+               "sim":sim_dpd,}
     
 import json
 import os
@@ -175,21 +181,18 @@ def write_xml_product(product, xml_file_name):
         logger.warn("XML writing is not available; falling back to pickled writing instead.")
         write_pickled_product(product, xml_file_name)
 
-def read_xml_product(xml_file_name):
-    
-    if have_she_dpd:
+def read_xml_product(xml_file_name, source="she"):
         
-        # Read the xml file as a string
+    # Read the xml file as a string
+    try:
         with open(str(xml_file_name), "r") as f:
             xml_string = f.read()
-    
-        # Create a new SHE product instance using the SHE data product dictionary
-        product = she_dpd.CreateFromDocument(xml_string)
-        
-    else:
-        # Try reading it as a pickled product, since that's probable what it is #FIXME
-        logger.warn("XML reading is not available; falling back to pickled writing instead.")
-        product = read_pickled_product(xml_file_name)
+    except UnicodeDecodeError as e:
+        # Not actually saved as xml - revert to pickled product
+        return read_pickled_product(xml_file_name)
+
+    # Create a new product instance using the proper data product dictionary
+    product = dpd_sources[source].CreateFromDocument(xml_string)
 
     return product
 

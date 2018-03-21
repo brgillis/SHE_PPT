@@ -37,10 +37,10 @@ class ShearEstimatesTableMeta( object ):
     """
         @brief A class defining the metadata for shear estimates tables.
     """
-
-    def __init__( self ):
-
-        self.__version__ = "0.3"
+    
+    def __init__(self):
+        
+        self.__version__ = "0.4"
         self.table_format = "she.shearEstimates"
 
         # Table metadata labels
@@ -122,36 +122,36 @@ class ShearEstimatesTableFormat( object ):
         self.ID = set_column_properties( "SOURCE_ID", dtype = ">i8", fits_dtype = "K" )
 
         # Measured values
-        self.g1 = set_column_properties( "G1", dtype = ">f8", fits_dtype = "D" )
-        self.g2 = set_column_properties( "G2", dtype = ">f8", fits_dtype = "D" )
-        self.g1_err = set_column_properties( "G1_ERR", is_optional = False, dtype = ">f8", fits_dtype = "D" )
-        self.g2_err = set_column_properties( "G2_ERR", is_optional = False, dtype = ">f8", fits_dtype = "D" )
-        self.g1g2_covar = set_column_properties( "G1G2_COVAR", is_optional = False, dtype = ">f8", fits_dtype = "D" )
-        self.e1_err = set_column_properties( "E1_ERR", is_optional = True, dtype = ">f8", fits_dtype = "D" )
-        self.e2_err = set_column_properties( "E2_ERR", is_optional = True, dtype = ">f8", fits_dtype = "D" )
-        self.e1e2_covar = set_column_properties( "E1E2_COVAR", is_optional = True, dtype = ">f8", fits_dtype = "D" )
-
-        self.flags = set_column_properties( "FLAGS", dtype = ">i8", fits_dtype = "K" )
-        self.fit_class = set_column_properties( "FITCLASS", dtype = ">i2", fits_dtype = "I" )
-
-        self.re = set_column_properties( "RE", is_optional = True, comment = "arcsec", dtype = ">f8", fits_dtype = "D" )
-        self.re_err = set_column_properties( "RE_ERR", is_optional = True, comment = "arcsec", dtype = ">f8", fits_dtype = "D" )
-
-        self.x_world = set_column_properties( "X_WORLD_CORR", is_optional = False, comment = "deg" )
-        self.y_world = set_column_properties( "Y_WORLD_CORR", is_optional = False, comment = "deg" )
-
-        self.x_world_var = set_column_properties( "ERRX2_WORLD_CORR", is_optional = True, comment = "deg**2" )
-        self.y_world_var = set_column_properties( "ERRY2_WORLD_CORR", is_optional = True, comment = "deg**2" )
-
-        self.flux = set_column_properties( "FLUX", is_optional = True, comment = "ADU" )
-        self.flux_err = set_column_properties( "FLUX_ERR", is_optional = True, comment = "ADU" )
-
-        self.bulge_fraction = set_column_properties( "BULGE_FRAC", is_optional = True )
-        self.bulge_fraction_err = set_column_properties( "BULGE_FRAC_ERR", is_optional = True )
-
-        self.snr = set_column_properties( "SNR", is_optional = True )
-        self.snr_err = set_column_properties( "SNR_ERR", is_optional = True )
-
+        self.g1 = set_column_properties("G1", dtype=">f8", fits_dtype="D")
+        self.g2 = set_column_properties("G2", dtype=">f8", fits_dtype="D")
+        self.g1_err = set_column_properties("G1_ERR", is_optional=False, dtype=">f8", fits_dtype="D")
+        self.g2_err = set_column_properties("G2_ERR", is_optional=False, dtype=">f8", fits_dtype="D")
+        self.g1g2_covar = set_column_properties("G1G2_COVAR", is_optional=False, dtype=">f8", fits_dtype="D")
+        self.e1_err = set_column_properties("E1_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.e2_err = set_column_properties("E2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
+        self.e1e2_covar = set_column_properties("E1E2_COVAR", is_optional=True, dtype=">f8", fits_dtype="D")
+        
+        self.flags = set_column_properties("FLAGS", dtype=">i8", fits_dtype="K")
+        self.fit_class = set_column_properties("FITCLASS", dtype=">i2", fits_dtype="I")
+        
+        self.re = set_column_properties("RE", is_optional=True, comment="arcsec", dtype=">f4", fits_dtype="E")
+        self.re_err = set_column_properties("RE_ERR", is_optional=True, comment="arcsec", dtype=">f4", fits_dtype="E")
+        
+        self.x_world = set_column_properties("X_WORLD_CORR", is_optional=False, comment="deg", dtype=">f8", fits_dtype="D")
+        self.y_world = set_column_properties("Y_WORLD_CORR", is_optional=False, comment="deg", dtype=">f8", fits_dtype="D")
+        
+        self.x_world_var = set_column_properties("ERRX2_WORLD_CORR", is_optional=True, comment="deg**2", dtype=">f8", fits_dtype="D")
+        self.y_world_var = set_column_properties("ERRY2_WORLD_CORR", is_optional=True, comment="deg**2", dtype=">f8", fits_dtype="D")
+        
+        self.flux = set_column_properties("FLUX", is_optional=True, comment="ADU")
+        self.flux_err = set_column_properties("FLUX_ERR", is_optional=True, comment="ADU")
+        
+        self.bulge_fraction = set_column_properties("BULGE_FRAC", is_optional=True)
+        self.bulge_fraction_err = set_column_properties("BULGE_FRAC_ERR", is_optional=True)
+        
+        self.snr = set_column_properties("SNR", is_optional=True)
+        self.snr_err = set_column_properties("SNR_ERR", is_optional=True)
+        
         # Data needed for validation tests
         self.x_pix_stacked = set_column_properties( "X_PIX_STACKED", is_optional = True, comment = "pixels in stacked frame" )
         self.y_pix_stacked = set_column_properties( "Y_PIX_STACKED", is_optional = True, comment = "pixels in stacked frame" )

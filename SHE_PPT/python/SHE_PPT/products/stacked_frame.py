@@ -20,92 +20,187 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to    
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+import EuclidDmBindings.dpd.vis_stub as vis_dpd
+import EuclidDmBindings.pro.vis_stub as vis_pro
 
-# import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import EuclidDmBindings.she.she_stub as she_dpd # FIXME
+from EuclidDmBindings.bas.cot_stub import wcs, zeroPoint
+from EuclidDmBindings.bas.img_stub import imgSpatialFootprint
+from EuclidDmBindings.bas.imp_stub import projectionType
+from EuclidDmBindings.bas.imp.eso_stub import dataProduct
+from EuclidDmBindings.ins_stub import baseInstrument 
+from EuclidDmBindings.pro import le1_stub as le1
+from EuclidDmBindings.pro.le1 import vis_stub as le1vis  
+from EuclidDmBindings.sys.dss_stub import dataContainer
 
-import pickle
+import HeaderProvider.GenericHeaderProvider as HeaderProvider
+from SHE_PPT.products.calibrated_frame import create_vis_data_storage
 
 def init():
     """
         Adds some extra functionality to the DpdSheAstrometry product
     """
     
-    # binding_class = she_dpd.DpdSheStackedFrameProduct # @FIXME
-    binding_class = DpdSheStackedFrameProduct
+    binding_class = vis_dpd.dpdVisStackedFrame
 
     # Add the data file name methods
     
-    binding_class.set_filename = __set_filename
-    binding_class.get_filename = __get_filename
+    binding_class.set_data_filename = __set_data_filename
+    binding_class.get_data_filename = __get_data_filename
     
-    binding_class.get_all_filenames = __get_all_filenames
+    binding_class.set_psf_filename = __set_psf_filename
+    binding_class.get_psf_filename = __get_psf_filename
     
-    binding_class.has_files = False
+    binding_class.set_bkg_filename = __set_bkg_filename
+    binding_class.get_bkg_filename = __get_bkg_filename
+    
+    binding_class.set_wgt_filename = __set_wgt_filename
+    binding_class.get_wgt_filename = __get_wgt_filename
     
     return
 
-def __set_filename(self, filename):
-    self.Data.DataContainer.FileName = filename
+def __set_data_filename(self, filename):
+    self.Data.DataStorage.DataContainer.FileName = filename
 
-def __get_filename(self):
-    return self.Data.DataContainer.FileName
+def __get_data_filename(self):
+    return self.Data.DataStorage.DataContainer.FileName
 
-def __get_all_filenames(self):
-    
-    all_filenames = []
-    
-    return all_filenames
+def __set_psf_filename(self, filename):
+    if not hasattr(self.Data, "PsfModelStorage"):
+        self.Data.PsfModelStorage = create_vis_data_storage(filename)
+    elif self.Data.PsfModelStorage is None:
+        self.Data.PsfModelStorage = create_vis_data_storage(filename)
+    else:
+        self.Data.PsfModelStorage.DataContainer.FileName = filename
 
-class DpdSheStackedFrameProduct: # @FIXME
-    def __init__(self):
-        self.Header = None
-        self.Data = None
-    def validateBinding(self):
-        return False
-        
-class SheStackedFrameProduct: # @FIXME
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-        
-class DataContainer: # @FIXME
-    def __init__(self):
-        self.FileName = None
-        self.filestatus = None
+def __get_psf_filename(self):
+    if hasattr(self.Data, "PsfModelStorage"):
+        if self.Data.PsfModelStorage is not None:
+            return self.Data.PsfModelStorage.DataContainer.FileName
+    return None
 
-def create_dpd_she_stacked_frame(filename = None):
+def __set_bkg_filename(self, filename):
+    if not hasattr(self.Data, "BackgroundStorage"):
+        self.Data.BackgroundStorage = create_vis_data_storage(filename)
+    elif self.Data.BackgroundStorage is None:
+        self.Data.BackgroundStorage = create_vis_data_storage(filename)
+    else:
+        self.Data.BackgroundStorage.DataContainer.FileName = filename
+
+def __get_bkg_filename(self):
+    if hasattr(self.Data, "BackgroundStorage"):
+        if self.Data.BackgroundStorage is not None:
+            return self.Data.BackgroundStorage.DataContainer.FileName
+    return None
+
+def __set_wgt_filename(self, filename):
+    if not hasattr(self.Data, "WeightStorage"):
+        self.Data.WeightStorage = create_vis_data_storage(filename)
+    elif self.Data.WeightStorage is None:
+        self.Data.WeightStorage = create_vis_data_storage(filename)
+    else:
+        self.Data.WeightStorage.DataContainer.FileName = filename
+
+def __get_wgt_filename(self):
+    if hasattr(self.Data, "WeightStorage"):
+        if self.Data.WeightStorage is not None:
+            return self.Data.WeightStorage.DataContainer.FileName
+    return None
+
+def create_dpd_vis_stacked_frame(filename = "default_filename"):
     """
         @TODO fill in docstring
     """
     
-    # dpd_she_stacked_frame = she_dpd.DpdSheStackedFrameProduct() # FIXME
-    dpd_she_stacked_frame = DpdSheStackedFrameProduct()
+    dpd_vis_stacked_frame = vis_dpd.dpdVisStackedFrame()
     
-    # dpd_she_stacked_frame.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
-    dpd_she_stacked_frame.Header = "SHE"
+    dpd_vis_stacked_frame.Header = HeaderProvider.createGenericHeader("VIS")
     
-    dpd_she_stacked_frame.Data = create_she_stacked_frame(filename)
+    dpd_vis_stacked_frame.Data = create_vis_stacked_frame(filename)
     
-    return dpd_she_stacked_frame
+    return dpd_vis_stacked_frame
 
 # Add a useful alias
-create_stacked_frame_product = create_dpd_she_stacked_frame
+create_stacked_frame_product = create_dpd_vis_stacked_frame
 
-def create_she_stacked_frame(filename = None):
+def create_vis_stacked_frame(filename = "default_filename"):
     """
         @TODO fill in docstring
     """
     
-    # she_stacked_frame = she_dpd.SheStackedFrameProduct() # @FIXME
-    she_stacked_frame = SheStackedFrameProduct()
+    vis_stacked_frame = vis_pro.visStackedFrame()
     
-    she_stacked_frame.format = "UNDEFINED"
-    she_stacked_frame.version = "0.0"
+    # Attributes inherited from baseFrameVis
     
-    she_stacked_frame.DataContainer = DataContainer()
-    she_stacked_frame.DataContainer.FileName = filename
-    she_stacked_frame.DataContainer.filestatus = "PROPOSED"
+    vis_stacked_frame.Instrument = create_vis_instrument()
+    vis_stacked_frame.Filter = "VIS"
+    vis_stacked_frame.WCS = create_vis_wcs()
+    vis_stacked_frame.ZeroPoint = create_vis_zeropoint()
+    vis_stacked_frame.ImgSpatialFootprint = None
     
-    return she_stacked_frame
+    # Attributes unique to visStackedFrame
+    
+    vis_stacked_frame.format = "UNDEFINED"
+    vis_stacked_frame.version = "0.0"
+    
+    vis_stacked_frame.DataStorage = create_vis_data_storage(filename)
+    
+    return vis_stacked_frame
+
+def create_vis_instrument():
+    
+    instrument = baseInstrument()
+    
+    instrument.InstrumentName = "VIS Instrument"
+    instrument.TelescopeName = "Telescope"
+    
+    return instrument
+
+def create_vis_wcs():
+    
+    vis_wcs = wcs()
+    
+    vis_wcs.CTYPE1 = create_vis_projection_type("RA","SIN")
+    vis_wcs.CTYPE2 = create_vis_projection_type("DEC","SIN")
+    
+    vis_wcs.CRVAL1 = 3.0
+    vis_wcs.CRVAL2 = 4.0
+    vis_wcs.CRPIX1 = 3.0
+    vis_wcs.CRPIX2 = 3.0
+    
+    vis_wcs.CD1_1 = 3.0
+    vis_wcs.CD1_2 = 3.0
+    vis_wcs.CD2_1 = 3.0
+    vis_wcs.CD2_2 = 3.0
+    
+    return vis_wcs
+
+def create_vis_projection_type(CoordinateType, ProjectionType):
+    
+    projection_type = projectionType()
+    
+    projection_type.CoordinateType = CoordinateType
+    projection_type.ProjectionType = ProjectionType
+    
+    return projection_type
+
+def create_vis_zeropoint():
+    
+    zeropoint = zeroPoint()
+    
+    zeropoint.Value = 23.9
+    zeropoint.Error = 0.029
+    
+    return zeropoint
+    
+def create_vis_data_storage(filename, format="vis.reducedFrameVIS", version="0.0", filestatus="PROPOSED"):
+    
+    data_storage = vis_pro.reducedFrameFitsFileVIS()
+    
+    data_storage.format = format
+    data_storage.version = version
+    
+    data_storage.DataContainer = dataContainer()
+    data_storage.DataContainer.FileName = filename
+    data_storage.DataContainer.filestatus = filestatus
+    
+    return data_storage
