@@ -179,7 +179,17 @@ def make_bfd_moments_table_header( detector_x = 1,
                                       model_hash = None,
                                       model_seed = None,
                                       noise_seed = None,
-                                      detector = None ):
+                                      detector = None,
+                                      obs_time = None,
+                                      bfd_nlost = None,
+                                      bfd_wt_n = None,
+                                      bfd_wt_sigma = None,
+                                      bfd_tmpl_snmin = None,
+                                      bfd_tmpl_sigma_xy = None,
+                                      bfd_tmpl_sigma_flux = None,
+                                      bfd_tmpl_sigma_step = None,
+                                      bfd_tmpl_sigma_max = None,
+                                      bfd_tmpl_xy_max = None, ):
     """
         @brief Generate a header for a shear estimates table.
         
@@ -212,15 +222,17 @@ def make_bfd_moments_table_header( detector_x = 1,
     header[tf.m.model_seed] = model_seed
     header[tf.m.noise_seed] = noise_seed
 
-    header[tf.m.bfd_nlost] = None
-    header[tf.m.bfd_wt_n] = None
-    header[tf.m.bfd_wt_sigma] = None
-    header[tf.m.bfd_tmpl_snmin] = None
-    header[tf.m.bfd_tmpl_sigma_xy] = None
-    header[tf.m.bfd_tmpl_sigma_flux] = None
-    header[tf.m.bfd_tmpl_sigma_step] = None
-    header[tf.m.bfd_tmpl_sigma_max] = None
-    header[tf.m.bfd_tmpl_xy_max] = None
+    header[tf.m.obs_time] = obs_time
+
+    header[tf.m.bfd_nlost] = bfd_nlost
+    header[tf.m.bfd_wt_n] = bfd_wt_n
+    header[tf.m.bfd_wt_sigma] = bfd_wt_sigma
+    header[tf.m.bfd_tmpl_snmin] = bfd_tmpl_snmin
+    header[tf.m.bfd_tmpl_sigma_xy] = bfd_tmpl_sigma_xy
+    header[tf.m.bfd_tmpl_sigma_flux] = bfd_tmpl_sigma_flux
+    header[tf.m.bfd_tmpl_sigma_step] = bfd_tmpl_sigma_step
+    header[tf.m.bfd_tmpl_sigma_max] = bfd_tmpl_sigma_max
+    header[tf.m.bfd_tmpl_xy_max] = bfd_tmpl_xy_max
 
     header[tf.m.validated] = 0
 
@@ -233,7 +245,17 @@ def initialise_bfd_moments_table( detections_table = None,
                                      model_hash = None,
                                      model_seed = None,
                                      noise_seed = None,
-                                     detector = None ):
+                                     detector = None,
+                                     obs_time = None,
+                                     bfd_nlost = None,
+                                     bfd_wt_n = None,
+                                     bfd_wt_sigma = None,
+                                     bfd_tmpl_snmin = None,
+                                     bfd_tmpl_sigma_xy = None,
+                                     bfd_tmpl_sigma_flux = None,
+                                     bfd_tmpl_sigma_step = None,
+                                     bfd_tmpl_sigma_max = None,
+                                     bfd_tmpl_xy_max = None, ):
     """
         @brief Initialise a shear estimates table based on a detections table, with the
                desired set of optional columns
@@ -295,7 +317,17 @@ def initialise_bfd_moments_table( detections_table = None,
                                                                    detector_y = detector_y,
                                                                    model_hash = model_hash,
                                                                    model_seed = model_seed,
-                                                                   noise_seed = noise_seed )
+                                                                   noise_seed = noise_seed,
+                                                                   obs_time = obs_time,
+                                                                   bfd_nlost = bfd_nlost,
+                                                                   bfd_wt_n = bfd_wt_n,
+                                                                   bfd_wt_sigma = bfd_wt_sigma,
+                                                                   bfd_tmpl_snmin = bfd_tmpl_snmin,
+                                                                   bfd_tmpl_sigma_xy = bfd_tmpl_sigma_xy,
+                                                                   bfd_tmpl_sigma_flux = bfd_tmpl_sigma_flux,
+                                                                   bfd_tmpl_sigma_step = bfd_tmpl_sigma_step,
+                                                                   bfd_tmpl_sigma_max = bfd_tmpl_sigma_max,
+                                                                   bfd_tmpl_xy_max = bfd_tmpl_xy_max, )
 
     assert( is_in_format( bfd_moments_table, tf ) )
 
