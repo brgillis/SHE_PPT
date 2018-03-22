@@ -201,7 +201,7 @@ def initialise_psf_table(image = None,
             dtype = (tf.dtypes[colname],tf.lengths[colname])
             
             if colname in init_columns:
-                init_cols.append(init_columns[colname].as_type(dtype))
+                init_cols.append(init_columns[colname])
             elif len(init_columns)>0:
                 init_cols.append(np.zeros(len(init_columns.values[0]),dtype=dtype))
             else:
