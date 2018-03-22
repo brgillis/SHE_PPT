@@ -15,6 +15,7 @@
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
+from builtins import None
 
 """
 File: python/SHE_PPT/she_frame_stack.py
@@ -407,13 +408,16 @@ class SHEFrameStack( object ):
                                                             workdir = workdir )
 
         # Construct a SHEImage object for the stacked image
-        stacked_image = SHEImage( data = stacked_image_data,
-                                  mask = stacked_mask_data,
-                                  noisemap = stacked_rms_data,
-                                  background_map = stacked_bkg_data,
-                                  segmentation_map = stacked_seg_data,
-                                  header = stacked_image_header,
-                                  wcs = load_wcs( stacked_image_header ) )
+        if stacked_image_data is None:
+            stacked_image = None
+        else:
+            stacked_image = SHEImage( data = stacked_image_data,
+                                      mask = stacked_mask_data,
+                                      noisemap = stacked_rms_data,
+                                      background_map = stacked_bkg_data,
+                                      segmentation_map = stacked_seg_data,
+                                      header = stacked_image_header,
+                                      wcs = load_wcs( stacked_image_header ) )
 
         # Load in the detections catalogues and combine them into a single catalogue
         if detections_listfile_filename is None:
