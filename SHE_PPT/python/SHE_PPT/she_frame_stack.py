@@ -22,6 +22,7 @@ File: python/SHE_PPT/she_frame_stack.py
 Created on: 05/03/18
 """
 
+from copy import deepcopy
 import os.path
 
 from SHE_PPT import logging
@@ -87,6 +88,96 @@ class SHEFrameStack( object ):
         self.stack_pixel_size_ratio = 1  # Might have to manually calculate this later
 
         return
+    
+    def extract_galaxy_stack(self, gal_id, width, *args, **kwargs):
+        """Extracts a postage stamp centred on a given galaxy in the detections tables, indexed by its ID.
+           
+           Parameters
+           ----------
+           gal_id : int
+               The galaxy's unique ID
+           width : int
+               The desired width of the postage stamp in pixels of the exposures
+           *args, **kwargs
+               Other arguments and keyword arguments are forwarded to extract_stamp_stack()
+               
+            Return
+           ------
+           stamp_stack : SHEImageStack
+        """
+        
+        row = self.detections_catalogue.loc[gal_id]
+        
+        x_world = row[detf.gal_x_world]
+        y_world = row[detf.gal_y_world]
+        
+        return self.extract_stamp_stack(x_world, y_world, width, *args, **kwargs)
+    
+    def extract_psf_stacks(self, gal_id, make_stacked_psf=False, keep_header=False):
+        """Extracts bulge and disk PSF stacks for a given galaxy in the detections catalogue.
+           
+           Parameters
+           ----------
+           gal_id : int
+               The galaxy's unique ID
+           make_stacked_psf : bool
+               If True, will create a stacked PSF through simple summation. Default False.
+           keep_header : bool
+               If True, the PSF images' headers will be copied to the stamps. Default False.
+               
+            Return
+           ------
+           bulge_psf_stack : SHEImageStack
+           disk_psf_stack : SHEImageStack
+        """
+        
+        bulge_psf_stamps = []
+        disk_psf_stamps = []
+        
+        for exposure in self.exposures:
+            
+            bulge_psf_stamp, disk_psf_stamp = exposure.extract_psf_stamp(gal_id, keep_header=keep_header)
+            
+            bulge_psf_stamps.append(bulge_psf_stamp)
+            disk_psf_stamps.append(disk_psf_stamp)
+            
+        stacked_bulge_psf = None
+        stacked_disk_psf = None
+            
+        # Make the stack if desired
+        if make_stacked_psf:
+            
+            for x in range(len(self.exposures)):
+                
+                bulge_psf_stamp = bulge_psf_stamps[x]
+                disk_psf_stamp = disk_psf_stamps[x]
+                
+                if bulge_psf_stamp is not None:
+                    
+                    if stacked_bulge_psf is None:
+                        stacked_bulge_psf = deepcopy(bulge_psf_stamp)
+                    else:
+                        stacked_bulge_psf.data += bulge_psf_stamp.data
+                    
+                    if stacked_disk_psf is None:
+                        stacked_disk_psf = deepcopy(disk_psf_stamp)
+                    else:
+                        stacked_disk_psf.data += disk_psf_stamp.data
+                        
+            # Normalize stacked PSFs
+            if stacked_bulge_psf is not None:
+                stacked_bulge_psf.data /= stacked_bulge_psf.data.sum()
+            if stacked_disk_psf is not None:
+                stacked_disk_psf.data /= stacked_disk_psf.data.sum()
+                        
+        # Construct the stacks
+        bulge_psf_stack = SHEImageStack( stacked_image = stacked_bulge_psf,
+                                         exposures = bulge_psf_stamps, )
+        disk_psf_stack = SHEImageStack( stacked_image = stacked_disk_psf,
+                                         exposures = disk_psf_stamps, )
+        
+        return bulge_psf_stack, disk_psf_stack
+                    
 
     def extract_stamp_stack( self, x_world, y_world, width, height = None, x_buffer = 0, y_buffer = 0, keep_header = False,
                              none_if_out_of_bounds = False ):

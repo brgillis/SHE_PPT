@@ -63,6 +63,22 @@ class SHEImageStack(object):
         self.y_world = y_world
                 
         return
+    
+    def is_not_empty(self):
+        """ Checks if at least one exposure isn't None """
+        
+        return (not self.is_empty())
+    
+    def is_empty(self):
+        """ Checks if all exposures are None """
+        
+        empty = True
+        for exposure in self.exposures:
+            if exposure is not None:
+                empty = False
+                break
+        
+        return empty
         
 
     @classmethod
