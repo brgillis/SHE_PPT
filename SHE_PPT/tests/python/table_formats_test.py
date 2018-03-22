@@ -209,10 +209,9 @@ class TestTableFormats:
         
         assert(details_table.meta[detf.m.extname] == extname_head + mv.details_tag)
         
-        psf_table = initialise_psf_table(detector_x = detector_x,
-                                         detector_y = detector_y)
+        psf_table = initialise_psf_table()
         
-        assert(psf_table.meta[pstf.m.extname] == extname_head + mv.psf_cat_tag)
+        assert(psf_table.meta[pstf.m.extname] == mv.psf_cat_tag)
         
         # Try to initialize the shear estimates table based on the detections table
         
