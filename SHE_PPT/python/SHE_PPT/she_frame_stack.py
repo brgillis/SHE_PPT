@@ -382,6 +382,7 @@ class SHEFrameStack( object ):
             stacked_image_data = None
             stacked_rms_data = None
             stacked_mask_data = None
+            stacked_bkg_data = None
         else:
             ( stacked_image_header,
              stacked_data ) = cls._read_product_extension( stacked_image_product_filename,
