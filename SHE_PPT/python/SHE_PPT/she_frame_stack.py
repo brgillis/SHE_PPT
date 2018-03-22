@@ -164,6 +164,12 @@ class SHEFrameStack( object ):
                     else:
                         stacked_disk_psf.data += disk_psf_stamp.data
                         
+            # Normalize stacked PSFs
+            if stacked_bulge_psf is not None:
+                stacked_bulge_psf.data /= stacked_bulge_psf.data.sum()
+            if stacked_disk_psf is not None:
+                stacked_disk_psf.data /= stacked_disk_psf.data.sum()
+                        
         # Construct the stacks
         bulge_psf_stack = SHEImageStack( stacked_image = stacked_bulge_psf,
                                          exposures = bulge_psf_stamps, )
