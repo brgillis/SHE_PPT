@@ -113,8 +113,8 @@ class PSFTableFormat(object):
         self.disk_index = set_column_properties("Disk Index", dtype=">i4", fits_dtype="J",
                                                 comment="HDU index of disk PSF image")
         
-        self.cal_time = set_column_properties("PSF Calibration Timestamp", dtype="S", fits_dtype="A", length=20, optional=True)
-        self.field_time = set_column_properties("PSF Field Timestamp", dtype="S", fits_dtype="A", length=20, optional=True)
+        self.cal_time = set_column_properties("PSF Calibration Timestamp", dtype="S", fits_dtype="A", length=20, is_optional=True)
+        self.field_time = set_column_properties("PSF Field Timestamp", dtype="S", fits_dtype="A", length=20, is_optional=True)
         
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
