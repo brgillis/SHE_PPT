@@ -87,6 +87,30 @@ class SHEFrameStack( object ):
         self.stack_pixel_size_ratio = 1  # Might have to manually calculate this later
 
         return
+    
+    def extract_galaxy_stack(self, gal_id, width, *args, **kwargs):
+        """Extracts a postage stamp centred on a given galaxy in the detections tables, indexed by its ID.
+           
+           Parameters
+           ----------
+           gal_id : int
+               The galaxy's unique ID
+           width : int
+               The desired width of the postage stamp in pixels of the exposures
+           *args, **kwargs
+               Other arguments and keyword arguments are forwarded to extract_stamp_stack()
+               
+            Return
+           ------
+           stamp_stack : SHEImageStack
+        """
+        
+        row = self.detections_catalogue.loc[gal_id]
+        
+        x_world = row[detf.gal_x_world]
+        y_world = row[detf.gal_y_world]
+        
+        return self.extract_stamp_stack(x_world, y_world, width, *args, **kwargs)
 
     def extract_stamp_stack( self, x_world, y_world, width, height = None, x_buffer = 0, y_buffer = 0, keep_header = False,
                              none_if_out_of_bounds = False ):
