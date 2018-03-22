@@ -37,8 +37,8 @@ class DetectionsTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.1"
-        self.table_format = "mer.finalCatalog"
+        self.__version__ = "0.3"
+        self.table_format = "she.shearDetections"
         
         # Table metadata labels
         self.version = "SS_VER"
@@ -116,10 +116,59 @@ class DetectionsTableFormat(object):
         
         # Column names and info
         
-        self.ID = set_column_properties("ObjectId", dtype=">i8", fits_dtype="K")
+        self.ID = set_column_properties("SOURCE_ID", dtype=">i8", fits_dtype="K")
+        self.number = set_column_properties("NUMBER", is_optional=True, dtype=">i8", fits_dtype="K")
         
-        self.gal_x_world = set_column_properties("RightAscension", is_optional=False, comment="deg")
-        self.gal_y_world = set_column_properties("Declination", is_optional=False, comment="deg")
+        self.gal_x = set_column_properties("X_IMAGE", is_optional=True, comment="pixel")
+        self.gal_y = set_column_properties("Y_IMAGE", is_optional=True, comment="pixel")
+        self.gal_a = set_column_properties("A_IMAGE", is_optional=True, comment="pixel")
+        self.gal_b = set_column_properties("B_IMAGE", is_optional=True, comment="pixel")
+        self.gal_theta = set_column_properties("THETA_IMAGE", is_optional=True, comment="deg")
+        
+        self.gal_x2_err = set_column_properties("ERRX2_IMAGE", is_optional=True, comment="pixel**2")
+        self.gal_y2_err = set_column_properties("ERRY2_IMAGE", is_optional=True, comment="pixel**2")
+        self.gal_a_err = set_column_properties("ERRA_IMAGE", is_optional=True, comment="pixel")
+        self.gal_b_err = set_column_properties("ERRB_IMAGE", is_optional=True, comment="pixel")
+        self.gal_theta_err = set_column_properties("ERRTHETA_IMAGE", is_optional=True, comment="deg")
+        
+        self.gal_x_world = set_column_properties("X_WORLD", is_optional=False, comment="deg")
+        self.gal_y_world = set_column_properties("Y_WORLD", is_optional=False, comment="deg")
+        self.gal_a_world = set_column_properties("A_WORLD", is_optional=True, comment="deg")
+        self.gal_b_world = set_column_properties("B_WORLD", is_optional=True, comment="deg")
+        self.gal_theta_world = set_column_properties("THETA_WORLD", is_optional=True, comment="deg")
+        
+        self.gal_x2_world_err = set_column_properties("ERRX2_WORLD", is_optional=True, comment="deg**2")
+        self.gal_y2_world_err = set_column_properties("ERRY2_WORLD", is_optional=True, comment="deg**2")
+        self.gal_a_world_err = set_column_properties("ERRA_WORLD", is_optional=True, comment="deg")
+        self.gal_b_world_err = set_column_properties("ERRB_WORLD", is_optional=True, comment="deg")
+        self.gal_theta_world_err = set_column_properties("ERRTHETA_WORLD", is_optional=True, comment="deg")
+        
+        self.gal_xwin_world = set_column_properties("XWIN_WORLD", is_optional=True, comment="deg")
+        self.gal_ywin_world = set_column_properties("YWIN_WORLD", is_optional=True, comment="deg")
+        self.gal_awin_world = set_column_properties("AWIN_WORLD", is_optional=True, comment="deg")
+        self.gal_bwin_world = set_column_properties("BWIN_WORLD", is_optional=True, comment="deg")
+        self.gal_thetawin_world = set_column_properties("THETAWIN_WORLD", is_optional=True, comment="deg")
+        
+        self.gal_x2win_world_err = set_column_properties("ERRX2WIN_WORLD", is_optional=True, comment="deg**2")
+        self.gal_y2win_world_err = set_column_properties("ERRY2WIN_WORLD", is_optional=True, comment="deg**2")
+        self.gal_awin_world_err = set_column_properties("ERRAWIN_WORLD", is_optional=True, comment="deg")
+        self.gal_bwin_world_err = set_column_properties("ERRBWIN_WORLD", is_optional=True, comment="deg")
+        self.gal_thetawin_world_err = set_column_properties("ERRTHETAWIN_WORLD", is_optional=True, comment="deg")
+        
+        self.gal_alpha = set_column_properties("ALPHA_J2000", is_optional=True, comment="deg")
+        self.gal_delta = set_column_properties("DELTA_J2000", is_optional=True, comment="deg")
+        self.gal_theta = set_column_properties("THETA_J2000", is_optional=True, comment="deg")
+        self.gal_theta_err = set_column_properties("ERRTHETA_J2000", is_optional=True, comment="deg")
+        
+        self.gal_flux = set_column_properties("FLUX_AUTO", is_optional=True, comment="deg")
+        self.gal_flux_err = set_column_properties("FLUXERR_AUTO", is_optional=True, comment="deg")
+        
+        self.gal_mag = set_column_properties("MAG_AUTO", is_optional=True, comment="VIS")
+        self.gal_mag_err = set_column_properties("MAGERR_AUTO", is_optional=True, comment="VIS")
+        
+        self.gal_hlr = set_column_properties("FLUX_RADIUS", is_optional=True, comment="pixel")
+        
+        self.gal_flags = set_column_properties("FLAGS", is_optional=True, dtype=">i8", fits_dtype="K")
         
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
