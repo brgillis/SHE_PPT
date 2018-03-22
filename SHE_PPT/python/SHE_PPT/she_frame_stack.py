@@ -157,12 +157,12 @@ class SHEFrameStack( object ):
                     if stacked_bulge_psf is None:
                         stacked_bulge_psf = deepcopy(bulge_psf_stamp)
                     else:
-                        stacked_bulge_psf += bulge_psf_stamp
+                        stacked_bulge_psf.data += bulge_psf_stamp.data
                     
                     if stacked_disk_psf is None:
                         stacked_disk_psf = deepcopy(disk_psf_stamp)
                     else:
-                        stacked_disk_psf += disk_psf_stamp
+                        stacked_disk_psf.data += disk_psf_stamp.data
                         
         # Construct the stacks
         bulge_psf_stack = SHEImageStack( stacked_image = stacked_bulge_psf,
