@@ -20,6 +20,7 @@
 
 import subprocess
 from astropy.io import fits
+from astropy.table import six
 import numpy as np
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
