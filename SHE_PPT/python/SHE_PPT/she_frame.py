@@ -166,7 +166,7 @@ class SHEFrame( object ):
         gal_id : int
             ID of the galaxy
         keep_header : bool
-            If true, the PSF image's header will be copied to the stamp's.
+            If True, the PSF image's header will be copied to the stamp's. Default False.
         
         Return
         ------
