@@ -37,7 +37,7 @@ class PSFTableMeta(object):
     
     def __init__(self):
         
-        self.__version__ = "0.2"
+        self.__version__ = "0.3"
         self.table_format = "she.psfTable"
         
         # Table metadata labels
@@ -53,7 +53,7 @@ class PSFTableMeta(object):
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
                                      (self.format, None),
-                                     (self.extname, "#."+mv.psf_cat_tag),
+                                     (self.extname, mv.psf_cat_tag),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
@@ -108,14 +108,13 @@ class PSFTableFormat(object):
         
         self.template = set_column_properties("SED template", dtype=">i8", fits_dtype="K", comment="TBD")
         
-        self.stamp_x = set_column_properties("Image X", dtype=">i2", fits_dtype="I", comment="pixel")
-        self.stamp_y = set_column_properties("Image Y", dtype=">i2", fits_dtype="I", comment="pixel")
+        self.bulge_index = set_column_properties("Bulge Index", dtype=">i4", fits_dtype="J",
+                                                 comment="HDU index of bulge PSF image")
+        self.disk_index = set_column_properties("Disk Index", dtype=">i4", fits_dtype="J",
+                                                comment="HDU index of disk PSF image")
         
-        self.psf_x = set_column_properties("PSF X", dtype=">f4", fits_dtype="E", comment="pixel")
-        self.psf_y = set_column_properties("PSF Y", dtype=">f4", fits_dtype="E", comment="pixel")
-        
-        self.cal_time = set_column_properties("PSF Calibration Timestamp", dtype="S", fits_dtype="A", length=20)
-        self.field_time = set_column_properties("PSF Field Timestamp", dtype="S", fits_dtype="A", length=20)
+        self.cal_time = set_column_properties("PSF Calibration Timestamp", dtype="S", fits_dtype="A", length=20, optional=True)
+        self.field_time = set_column_properties("PSF Field Timestamp", dtype="S", fits_dtype="A", length=20, optional=True)
         
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -133,12 +132,9 @@ psf_table_format = PSFTableFormat()
 tf = psf_table_format
 
 
-def make_psf_table_header(detector_x = 1,
-                          detector_y = 1,
-                          model_hash = None,
+def make_psf_table_header(model_hash = None,
                           model_seed = None,
-                          noise_seed = None,
-                          detector = None):
+                          noise_seed = None):
     """
         @brief Generate a header for a PSF table.
         
@@ -153,17 +149,12 @@ def make_psf_table_header(detector_x = 1,
         @return header <OrderedDict>
     """
     
-    if detector is not None:
-        logger.warn("'detector' argument for make_*_table_header is deprecated: Use detector_x and detector_y instead.")
-        detector_x = detector % 6
-        detector_y = detector // 6
-    
     header = OrderedDict()
     
     header[tf.m.version] = tf.__version__
     header[tf.m.format] = tf.m.table_format
     
-    header[tf.m.extname] = dtc.get_id_string(detector_x,detector_y) + "." + mv.psf_cat_tag
+    header[tf.m.extname] = mv.psf_cat_tag
     
     header[tf.m.model_hash] = model_hash
     header[tf.m.model_seed] = model_seed
@@ -174,12 +165,9 @@ def make_psf_table_header(detector_x = 1,
 def initialise_psf_table(image = None,
                          options = None,
                          optional_columns = None,
-                         detector_x = 1,
-                         detector_y = 1,
                          model_hash = None,
                          model_seed = None,
-                         noise_seed = None,
-                         detector = None):
+                         noise_seed = None):
     """
         @brief Initialise a PSF table.
         
@@ -190,13 +178,8 @@ def initialise_psf_table(image = None,
         @param optional_columns <list<str>> List of names for optional columns to include.
                Default is psf_x and psf_y
         
-        @param detector <int?> Detector for this image, if applicable. Will override ID of image object if set
-        
         @return detections_table <astropy.Table>
     """
-    
-    if detector is not None:
-        detector_x, detector_y = dtc.resolve_detector_xy(detector)
     
     if optional_columns is None:
         optional_columns = []
@@ -220,17 +203,9 @@ def initialise_psf_table(image = None,
     if image is not None:
         
         # Get values from the image object, unless they were passed explicitly
-        
-        if detector_x or detector_y is None:
-            detector_x, detector_y = dtc.detector_int_to_xy(image.get_local_ID())
             
         if model_seed is None:
             model_seed = image.get_full_seed()
-            
-    if detector_x is None:
-        detector_x = 1
-    if detector_y is None:
-        detector_y = 1
     
     if options is not None:
         
@@ -240,9 +215,7 @@ def initialise_psf_table(image = None,
         if noise_seed is None:
             noise_seed = options['noise_seed']
     
-    psf_table.meta = make_psf_table_header(detector_x = detector_x,
-                                           detector_y = detector_y,
-                                           model_hash = model_hash,
+    psf_table.meta = make_psf_table_header(model_hash = model_hash,
                                            model_seed = model_seed,
                                            noise_seed = noise_seed)
     
