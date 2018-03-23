@@ -141,7 +141,7 @@ class SHEFrameStack( object ):
         
         for exposure in self.exposures:
             
-            bulge_psf_stamp, disk_psf_stamp = exposure.extract_psf_stamp(gal_id, keep_header=keep_header)
+            bulge_psf_stamp, disk_psf_stamp = exposure.extract_psf(gal_id, keep_header=keep_header)
             
             bulge_psf_stamps.append(bulge_psf_stamp)
             disk_psf_stamps.append(disk_psf_stamp)
