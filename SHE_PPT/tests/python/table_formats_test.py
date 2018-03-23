@@ -214,10 +214,13 @@ class TestTableFormats:
         
         # Test initialization methods
         
-        detections_table = initialise_detections_table(detector_x = detector_x,
-                                                       detector_y = detector_y)
+        detections_table = initialise_detections_table(model_hash = model_hash,
+                                                       model_seed = model_seed,
+                                                       noise_seed = noise_seed)
         
-        assert(detections_table.meta[detf.m.extname] == extname_head + mv.detections_tag)
+        assert(detections_table.meta[detf.m.model_hash] == model_hash)
+        assert(detections_table.meta[detf.m.model_seed] == model_seed)
+        assert(detections_table.meta[detf.m.noise_seed] == noise_seed)
         
         details_table = initialise_details_table(detector_x = detector_x,
                                                  detector_y = detector_y)
