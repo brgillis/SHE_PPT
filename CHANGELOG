@@ -25,6 +25,7 @@ Deprecated Features
 Bug Fixes
 ---------
 
+- Detections catalogue table format now matches MER tables
 
 New Features
 ------------
