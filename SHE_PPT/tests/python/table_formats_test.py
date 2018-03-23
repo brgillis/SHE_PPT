@@ -225,7 +225,7 @@ class TestTableFormats:
         details_table = initialise_details_table(detector_x = detector_x,
                                                  detector_y = detector_y)
         
-        assert(details_table.meta[detf.m.extname] == extname_head + mv.details_tag)
+        assert(details_table.meta[datf.m.extname] == extname_head + mv.details_tag)
         
         psf_table = initialise_psf_table()
         
