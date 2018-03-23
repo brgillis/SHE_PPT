@@ -24,6 +24,7 @@ Created on: 05/03/18
 
 from copy import deepcopy
 import os.path
+import numpy as np
 
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
@@ -320,6 +321,7 @@ class SHEFrameStack( object ):
               psf_listfile_filename = None,
               detections_listfile_filename = None,
               workdir = ".",
+              clean_detections = False,
               **kwargs ):
         """Reads a SHEFrameStack from relevant data products.
         
@@ -451,6 +453,60 @@ class SHEFrameStack( object ):
 
             detections_catalogue = table.vstack( detections_catalogues,
                                                  metadata_conflicts = "silent" ) # Conflicts are expected
+            
+        # Clean the detections table if desired
+        if clean_detections:
+            
+            # First, get the limits of the frame. Use the stacked image if available
+            if stacked_image is not None:
+                test_xps = np.array((0,0,stacked_image.shape[0]+1,stacked_image.shape[0]+1))
+                test_yps = np.array((0,stacked_image.shape[1]+1,0,stacked_image.shape[1]+1))
+                          
+                test_x_worlds, test_y_worlds = stacked_image.pix2world(test_xps, test_yps)
+                
+                x_world_min = test_x_worlds.min()
+                x_world_max = test_x_worlds.max()
+                y_world_min = test_y_worlds.min()
+                y_world_max = test_y_worlds.max()
+            else:
+                # We'll have to get the test values from the detectors of each frame
+                
+                x_world_min = 1e99
+                x_world_max = -1e99
+                y_world_min = 1e99
+                y_world_max = -1e99
+                
+                for exposure in exposures:
+                    if exposure is None:
+                        continue
+                    # Only bother with detectors on the corners
+                    for ex_x in (1,6):
+                        for ex_y in (1,6):
+                            
+                            detector = exposure.detectors[ex_x,ex_y]
+                            
+                            if detector is None:
+                                continue # FIXME What if just a corner detector fails?
+                            
+                            test_xps = np.array((0,0,detector.shape[0]+1,stacked_image.shape[0]+1))
+                            test_yps = np.array((0,detector.shape[1]+1,0,stacked_image.shape[1]+1))
+                                      
+                            test_x_worlds, test_y_worlds = stacked_image.pix2world(test_xps, test_yps)
+                            
+                            x_world_min = np.min((x_world_min,test_x_worlds.min()))
+                            x_world_max = np.max((x_world_max,test_x_worlds.max()))
+                            y_world_min = np.min((y_world_min,test_y_worlds.min()))
+                            y_world_max = np.max((y_world_max,test_y_worlds.max()))
+            
+            # We have the outermost limits; now prune any values outside of them
+            bad_x_world = np.logical_or(detections_catalogue[detf.gal_x_world]<x_world_min,
+                                         detections_catalogue[detf.gal_x_world]>x_world_max)
+            bad_y_world = np.logical_or(detections_catalogue[detf.gal_y_world]<y_world_min,
+                                        detections_catalogue[detf.gal_y_world]>y_world_max)
+            
+            bad_pos = np.logical_or(bad_x_world,bad_y_world)
+            
+            detections_catalogue.remove_rows(bad_pos)
             
         # Prune out duplicate object IDs from the detections table - FIXME? after MER resolves this issue?
         pruned_detections_catalogue = table.unique(detections_catalogue,keys=detf.ID)
