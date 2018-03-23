@@ -377,7 +377,7 @@ class SHEFrameStack( object ):
 
             exposure = SHEFrame.read( frame_product_filename = exposure_filename,
                                       seg_filename = seg_filename,
-                                      psf_product_filename = psf_filename,
+                                      psf_filename = psf_filename,
                                       workdir = workdir,
                                       **kwargs )
 

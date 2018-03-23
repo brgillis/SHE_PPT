@@ -64,7 +64,7 @@ class SHEFrame( object ):
 
     """
 
-    def __init__( self, detectors, bulge_psf_image, disk_psf_image, psf_catalogue ):
+    def __init__( self, detectors, psf_data_hdulist, psf_catalogue ):
         """
         Parameters
         ----------
@@ -77,19 +77,9 @@ class SHEFrame( object ):
 
         # Initialise directly
         self.detectors = detectors
-        self.bulge_psf_image = bulge_psf_image
-        self.disk_psf_image = disk_psf_image
+        self.psf_data_hdulist = psf_data_hdulist
         self.psf_catalogue = psf_catalogue
         
-        # Get the stamp sizes for the bulge and disk psf images
-        if bulge_psf_image is not None:
-            self.bulge_stamp_size = bulge_psf_image.header[mv.stamp_size_label]
-        else:
-            self.bulge_stamp_size = 256
-        if bulge_psf_image is not None:
-            self.disk_stamp_size = disk_psf_image.header[mv.stamp_size_label]
-        else:
-            self.disk_stamp_size = 256
         
         # Set the PSF catalogue to index by ID
         if self.psf_catalogue is not None:
@@ -178,13 +168,11 @@ class SHEFrame( object ):
         
         row = self.psf_catalogue.loc[gal_id]
         
-        psf_x = row[pstf.psf_x]
-        psf_y = row[pstf.psf_y]
+        bulge_hdu = self.psf_data_hdulist[row[pstf.bulge_index]]
+        bulge_psf_stamp = SHEImage(data=bulge_hdu.data.transpose(),header=bulge_hdu.header)
         
-        bulge_psf_stamp = self.bulge_psf_image.extract_stamp(x=psf_x, y=psf_y,
-                                                             width=self.bulge_stamp_size, keep_header=keep_header)
-        disk_psf_stamp = self.bulge_psf_image.extract_stamp(x=psf_x, y=psf_y,
-                                                            width=self.disk_stamp_size, keep_header=keep_header)
+        disk_hdu = self.psf_data_hdulist[row[pstf.disk_index]]
+        disk_psf_stamp = SHEImage(data=disk_hdu.data.transpose(),header=disk_hdu.header)
         
         return bulge_psf_stamp, disk_psf_stamp
 
@@ -192,7 +180,7 @@ class SHEFrame( object ):
     def read( cls,
               frame_product_filename = None,
               seg_filename = None,
-              psf_product_filename = None,
+              psf_filename = None,
               workdir=".",
               x_max = 6,
               y_max = 6,
@@ -318,37 +306,23 @@ class SHEFrame( object ):
                                                   wcs = detector_wcs )
 
         # Load in the PSF data
-        if psf_product_filename is not None:
-            psf_prod = read_xml_product( os.path.join( workdir, psf_product_filename ) )
-            if not isinstance( psf_prod, products.psf_image.DpdShePSFImageProduct ):
-                raise ValueError( "PSF image product from " +
-                                 psf_product_filename + " is invalid type." )
+        if psf_filename is not None:
     
-            qualified_psf_data_filename = os.path.join( workdir, psf_prod.get_filename() )
+            qualified_psf_filename = os.path.join( workdir, psf_filename )
     
             psf_data_hdulist = fits.open( 
-                qualified_psf_data_filename, **kwargs )
-            
-            bulge_psf_i = find_extension(psf_data_hdulist, mv.bulge_psf_tag)
-            bulge_psf_image = SHEImage(data=psf_data_hdulist[bulge_psf_i].data.transpose(),
-                                       header=psf_data_hdulist[bulge_psf_i].header)
-            
-            disk_psf_i = find_extension(psf_data_hdulist, mv.disk_psf_tag)
-            disk_psf_image = SHEImage(data=psf_data_hdulist[disk_psf_i].data.transpose(),
-                                      header=psf_data_hdulist[disk_psf_i].header)
+                qualified_psf_filename, **kwargs )
             
             psf_cat_i = find_extension(psf_data_hdulist, mv.psf_cat_tag)
             psf_cat = Table.read( psf_data_hdulist[psf_cat_i] )
             
             if not is_in_format(psf_cat,pstf):
-                raise ValueError("PSF table from " + qualified_psf_data_filename + " is in invalid format.")
+                raise ValueError("PSF table from " + qualified_psf_filename + " is in invalid format.")
         else:
-            bulge_psf_image = None
-            disk_psf_image = None
+            psf_data_hdulist = None
             psf_cat = None
 
         # Construct and return a SHEFrame object
         return SHEFrame( detectors = detectors,
-                         bulge_psf_image = bulge_psf_image,
-                         disk_psf_image = disk_psf_image,
+                         psf_data_hdulist = psf_data_hdulist,
                          psf_catalogue = psf_cat )
