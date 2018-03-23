@@ -488,8 +488,8 @@ class SHEFrameStack( object ):
                             if detector is None:
                                 continue # FIXME What if just a corner detector fails?
                             
-                            test_xps = np.array((0,0,detector.shape[0]+1,stacked_image.shape[0]+1))
-                            test_yps = np.array((0,detector.shape[1]+1,0,stacked_image.shape[1]+1))
+                            test_xps = np.array((0,0,detector.shape[0]+1,detector.shape[0]+1))
+                            test_yps = np.array((0,detector.shape[1]+1,0,detector.shape[1]+1))
                                       
                             test_x_worlds, test_y_worlds = stacked_image.pix2world(test_xps, test_yps)
                             
