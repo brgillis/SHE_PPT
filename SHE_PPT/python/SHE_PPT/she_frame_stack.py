@@ -491,7 +491,7 @@ class SHEFrameStack( object ):
                             test_xps = np.array((0,0,detector.shape[0]+1,detector.shape[0]+1))
                             test_yps = np.array((0,detector.shape[1]+1,0,detector.shape[1]+1))
                                       
-                            test_x_worlds, test_y_worlds = stacked_image.pix2world(test_xps, test_yps)
+                            test_x_worlds, test_y_worlds = detector.pix2world(test_xps, test_yps)
                             
                             x_world_min = np.min((x_world_min,test_x_worlds.min()))
                             x_world_max = np.max((x_world_max,test_x_worlds.max()))
