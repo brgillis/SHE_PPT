@@ -86,6 +86,10 @@ class SHEFrameStack( object ):
         self.detections_catalogue = detections_catalogue
 
         self.stack_pixel_size_ratio = 1  # Might have to manually calculate this later
+        
+        # Set the detections catalogue to index by ID
+        if self.detections_catalogue is not None:
+            self.detections_catalogue.add_index(detf.ID)
 
         return
     
