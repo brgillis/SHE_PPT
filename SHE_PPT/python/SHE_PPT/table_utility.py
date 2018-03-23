@@ -71,13 +71,16 @@ def get_lengths(table_format):
 
     return list(zip(*list(table_format.lengths.items())))[1]
 
-def is_in_format(table, table_format, strict=True):
+def is_in_format(table, table_format, ignore_metadata=False, strict=True):
     """
         @brief Checks if a table is in the given format
         
         @param table <astropy.table.Table>
         
         @param table_format <...TableFormat>
+        
+        @param ignore_metadata <bool> If True, will not do any comparisons on metadata (useful if loading a table
+                   provided by another PF)
         
         @param strict <bool> If False, will allow the presence of extra columns
         
@@ -121,26 +124,27 @@ def is_in_format(table, table_format, strict=True):
                             "Got: " + str(table.dtype[colname].newbyteorder('>')))
                 return False
         
-    # Check the metadata is correct
-    if list(table.meta.keys()) != table_format.m.all:
-        logger.info("Table not in correct format due to wrong metadata keys.\n"+
-                    "Expected: " + str(table_format.m.all) + "\n" +
-                    "Got: " + str(list(table.meta.keys())))
-        return False
-    
-    # Check the format label is correct
-    if table.meta[table_format.m.format] != table_format.m.table_format:
-        logger.info("Table not in correct format due to wrong table format label.\n"+
-                    "Expected: " + table_format.m.table_format + "\n" +
-                    "Got: " + table.meta[table_format.m.format])
-        return False
-    
-    # Check the version is correct
-    if table.meta[table_format.m.version] != table_format.__version__:
-        logger.info("Table not in correct format due to wrong table format label.\n"+
-                    "Expected: " + table_format.__version__ + "\n" +
-                    "Got: " + table.meta[table_format.m.version])
-        return False
+    if not ignore_metadata:
+        # Check the metadata is correct
+        if list(table.meta.keys()) != table_format.m.all:
+            logger.info("Table not in correct format due to wrong metadata keys.\n"+
+                        "Expected: " + str(table_format.m.all) + "\n" +
+                        "Got: " + str(list(table.meta.keys())))
+            return False
+        
+        # Check the format label is correct
+        if table.meta[table_format.m.format] != table_format.m.table_format:
+            logger.info("Table not in correct format due to wrong table format label.\n"+
+                        "Expected: " + table_format.m.table_format + "\n" +
+                        "Got: " + table.meta[table_format.m.format])
+            return False
+        
+        # Check the version is correct
+        if table.meta[table_format.m.version] != table_format.__version__:
+            logger.info("Table not in correct format due to wrong table format label.\n"+
+                        "Expected: " + table_format.__version__ + "\n" +
+                        "Got: " + table.meta[table_format.m.version])
+            return False
     
     return True
 
