@@ -21,6 +21,7 @@
 from collections import OrderedDict
 
 from astropy.table import Table
+import numpy as np
 
 from SHE_PPT.utility import hash_any
 from SHE_PPT import magic_values as mv
@@ -167,7 +168,8 @@ def initialise_psf_table(image = None,
                          optional_columns = None,
                          model_hash = None,
                          model_seed = None,
-                         noise_seed = None):
+                         noise_seed = None,
+                         init_columns = {}):
     """
         @brief Initialise a PSF table.
         
@@ -195,8 +197,17 @@ def initialise_psf_table(image = None,
     for colname in tf.all:
         if (colname in tf.all_required) or (colname in optional_columns):
             names.append(colname)
-            init_cols.append([])
-            dtypes.append((tf.dtypes[colname],tf.lengths[colname]))
+            
+            dtype = (tf.dtypes[colname],tf.lengths[colname])
+            
+            if colname in init_columns:
+                init_cols.append(init_columns[colname])
+            elif len(init_columns)>0:
+                init_cols.append(np.zeros(len(init_columns.values[0]),dtype=dtype))
+            else:
+                init_cols.append([])
+            
+            dtypes.append(dtype)
     
     psf_table = Table(init_cols, names=names, dtype=dtypes)
     

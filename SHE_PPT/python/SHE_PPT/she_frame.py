@@ -97,7 +97,7 @@ class SHEFrame( object ):
         
     def extract_stamp(self, x_world, y_world, width, height=None, x_buffer=0, y_buffer=0, keep_header=False):
         """Extracts a postage stamp centred on the provided sky co-ordinates, by using each detector's WCS
-           to determine which (if any) it lies on. If x/y_buffer >0, it will also extract from a detector if
+           to determine which (if any) it lies on. If x/y_buffer > 0, it will also extract from a detector if
            the position is within this many pixels of the edge of it.
            
            Parameters

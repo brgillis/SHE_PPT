@@ -24,6 +24,7 @@ Created on: 05/03/18
 
 from copy import deepcopy
 import os.path
+import numpy as np
 
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
@@ -86,6 +87,10 @@ class SHEFrameStack( object ):
         self.detections_catalogue = detections_catalogue
 
         self.stack_pixel_size_ratio = 1  # Might have to manually calculate this later
+        
+        # Set the detections catalogue to index by ID
+        if self.detections_catalogue is not None:
+            self.detections_catalogue.add_index(detf.ID)
 
         return
     
@@ -212,24 +217,27 @@ class SHEFrameStack( object ):
 
         # Extract from the stacked image first
 
-        stack_stamp_width = self.stack_pixel_size_ratio * width
-        if height is None:
-            stack_stamp_height = None
+        if self.stacked_image is not None:
+            stack_stamp_width = self.stack_pixel_size_ratio * width
+            if height is None:
+                stack_stamp_height = None
+            else:
+                stack_stamp_height = self.stack_pixel_size_ratio * height
+    
+            stacked_image_x, stacked_image_y = self.stacked_image.world2pix( x_world, y_world )
+    
+            stacked_image_stamp = self.stacked_image.extract_stamp( x = stacked_image_x,
+                                                                    y = stacked_image_y,
+                                                                    width = stack_stamp_width,
+                                                                    height = stack_stamp_height,
+                                                                    keep_header = keep_header,
+                                                                    none_if_out_of_bounds = none_if_out_of_bounds )
+            
+            # Return None if none_if_out_of_bounds and out of bounds of stacked image
+            if none_if_out_of_bounds and stacked_image_stamp is None:
+                return None
         else:
-            stack_stamp_height = self.stack_pixel_size_ratio * height
-
-        stacked_image_x, stacked_image_y = self.stacked_image.world2pix( x_world, y_world )
-
-        stacked_image_stamp = self.stacked_image.extract_stamp( x = stacked_image_x,
-                                                                y = stacked_image_y,
-                                                                width = stack_stamp_width,
-                                                                height = stack_stamp_height,
-                                                                keep_header = keep_header,
-                                                                none_if_out_of_bounds = none_if_out_of_bounds )
-        
-        # Return None if none_if_out_of_bounds and out of bounds of stacked image
-        if none_if_out_of_bounds and stacked_image_stamp is None:
-            return None
+            stacked_image_stamp = None
 
         # Get the stamps for each exposure
 
@@ -313,6 +321,7 @@ class SHEFrameStack( object ):
               psf_listfile_filename = None,
               detections_listfile_filename = None,
               workdir = ".",
+              clean_detections = False,
               **kwargs ):
         """Reads a SHEFrameStack from relevant data products.
         
@@ -444,9 +453,66 @@ class SHEFrameStack( object ):
 
             detections_catalogue = table.vstack( detections_catalogues,
                                                  metadata_conflicts = "silent" ) # Conflicts are expected
+            
+        # Clean the detections table if desired
+        if clean_detections:
+            
+            # First, get the limits of the frame. Use the stacked image if available
+            if stacked_image is not None:
+                test_xps = np.array((0,0,stacked_image.shape[0]+1,stacked_image.shape[0]+1))
+                test_yps = np.array((0,stacked_image.shape[1]+1,0,stacked_image.shape[1]+1))
+                          
+                test_x_worlds, test_y_worlds = stacked_image.pix2world(test_xps, test_yps)
+                
+                x_world_min = test_x_worlds.min()
+                x_world_max = test_x_worlds.max()
+                y_world_min = test_y_worlds.min()
+                y_world_max = test_y_worlds.max()
+            else:
+                # We'll have to get the test values from the detectors of each frame
+                
+                x_world_min = 1e99
+                x_world_max = -1e99
+                y_world_min = 1e99
+                y_world_max = -1e99
+                
+                for exposure in exposures:
+                    if exposure is None:
+                        continue
+                    # Only bother with detectors on the corners
+                    for ex_x in (1,6):
+                        for ex_y in (1,6):
+                            
+                            detector = exposure.detectors[ex_x,ex_y]
+                            
+                            if detector is None:
+                                continue # FIXME What if just a corner detector fails?
+                            
+                            test_xps = np.array((0,0,detector.shape[0]+1,detector.shape[0]+1))
+                            test_yps = np.array((0,detector.shape[1]+1,0,detector.shape[1]+1))
+                                      
+                            test_x_worlds, test_y_worlds = detector.pix2world(test_xps, test_yps)
+                            
+                            x_world_min = np.min((x_world_min,test_x_worlds.min()))
+                            x_world_max = np.max((x_world_max,test_x_worlds.max()))
+                            y_world_min = np.min((y_world_min,test_y_worlds.min()))
+                            y_world_max = np.max((y_world_max,test_y_worlds.max()))
+            
+            # We have the outermost limits; now prune any values outside of them
+            bad_x_world = np.logical_or(detections_catalogue[detf.gal_x_world]<x_world_min,
+                                         detections_catalogue[detf.gal_x_world]>x_world_max)
+            bad_y_world = np.logical_or(detections_catalogue[detf.gal_y_world]<y_world_min,
+                                        detections_catalogue[detf.gal_y_world]>y_world_max)
+            
+            bad_pos = np.logical_or(bad_x_world,bad_y_world)
+            
+            detections_catalogue.remove_rows(bad_pos)
+            
+        # Prune out duplicate object IDs from the detections table - FIXME? after MER resolves this issue?
+        pruned_detections_catalogue = table.unique(detections_catalogue,keys=detf.ID)
 
         # Construct and return a SHEFrameStack object
         return SHEFrameStack( exposures = exposures,
                               stacked_image = stacked_image,
-                              detections_catalogue = detections_catalogue )
+                              detections_catalogue = pruned_detections_catalogue )
 

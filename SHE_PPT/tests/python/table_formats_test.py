@@ -97,45 +97,60 @@ class TestTableFormats:
     def test_get_comments(self):
         # Check if we get the correct comments list for detections tables
         
-        desired_comments = (None,None,"pixel","pixel",
-                            "pixel","pixel","deg",
-                            "pixel**2","pixel**2","pixel","pixel","deg",
-                            "deg","deg","deg","deg","deg",
-                            "deg**2","deg**2","deg","deg","deg",
-                            "deg","deg","deg","deg","deg",
-                            "deg**2","deg**2","deg","deg","deg",
-                            "deg","deg","deg","deg","deg","deg",
-                            "VIS","VIS","pixel",None)
+        desired_comments = (None,"deg","deg",
+                            None,None,None,None,None,
+                            None,None,None,None,None,
+                            None,None,None,None,None,
+                            None,None,None,None,None,
+                            None,None,None,None,None,
+                            None,None,None,None,None,
+                            None,None,None,None,None,
+                            None,None,None,None,None,
+                            None,None,None,None,None,
+                            None,None,None,None,None,
+                            None,None,None,None,None,
+                            None,None,None,None,None,
+                            None,None,None)
         
         assert get_comments(detf) == desired_comments
         
     def test_get_dtypes(self):
         # Check if we get the correct dtypes list for detections tables
         
-        desired_dtypes = (">i8",">i8",">f4",">f4",
-                            ">f4",">f4",">f4",
-                            ">f4",">f4",">f4",">f4",">f4",
-                            ">f4",">f4",">f4",">f4",">f4",
-                            ">f4",">f4",">f4",">f4",">f4",
-                            ">f4",">f4",">f4",">f4",">f4",
-                            ">f4",">f4",">f4",">f4",">f4",
-                            ">f4",">f4",">f4",">f4",">f4",">f4",
-                            ">f4",">f4",">f4",">i8")
+        desired_dtypes = (">i8",">f4",">f4",
+                          ">f4",">f4",">f4",">f4",">f4",
+                          ">f4",">f4",">f4",">f4",">f4",
+                          ">f4",">f4",">f4",">f4",">f4",
+                          ">f4",">f4",">f4",">f4",">f4",
+                          ">f4",">f4",">f4",">f4",">f4",
+                          ">f4",">f4",">f4",">f4",">f4",
+                          ">f4",">f4",">f4",">f4",">f4",
+                          ">f4",">f4",">f4",">f4",">f4",
+                          ">f4",">f4",">f4",">f4",">f4",
+                          ">f4",">f4",">f4",">f4",">f4",
+                          ">f4",">f4",">f4",">f4",">f4",
+                          ">f4",">f4",">f4",">f4",">f4",
+                          ">f4",">f4",">f4",)
         
         assert get_dtypes(detf) == desired_dtypes
         
     def test_get_fits_dtypes(self):
         # Check if we get the correct fits dtypes list for detections tables
         
-        desired_fits_dtypes = ("K","K","E","E",
-                                "E","E","E",
+        desired_fits_dtypes = ("K","E","E",
                                 "E","E","E","E","E",
                                 "E","E","E","E","E",
                                 "E","E","E","E","E",
                                 "E","E","E","E","E",
                                 "E","E","E","E","E",
-                                "E","E","E","E","E","E",
-                                "E","E","E","K")
+                                "E","E","E","E","E",
+                                "E","E","E","E","E",
+                                "E","E","E","E","E",
+                                "E","E","E","E","E",
+                                "E","E","E","E","E",
+                                "E","E","E","E","E",
+                                "E","E","E","E","E",
+                                "E","E","E")
         
         assert get_fits_dtypes(detf) == desired_fits_dtypes
         
@@ -199,15 +214,18 @@ class TestTableFormats:
         
         # Test initialization methods
         
-        detections_table = initialise_detections_table(detector_x = detector_x,
-                                                       detector_y = detector_y)
+        detections_table = initialise_detections_table(model_hash = model_hash,
+                                                       model_seed = model_seed,
+                                                       noise_seed = noise_seed)
         
-        assert(detections_table.meta[detf.m.extname] == extname_head + mv.detections_tag)
+        assert(detections_table.meta[detf.m.model_hash] == model_hash)
+        assert(detections_table.meta[detf.m.model_seed] == model_seed)
+        assert(detections_table.meta[detf.m.noise_seed] == noise_seed)
         
         details_table = initialise_details_table(detector_x = detector_x,
                                                  detector_y = detector_y)
         
-        assert(details_table.meta[detf.m.extname] == extname_head + mv.details_tag)
+        assert(details_table.meta[datf.m.extname] == extname_head + mv.details_tag)
         
         psf_table = initialise_psf_table()
         
@@ -219,7 +237,9 @@ class TestTableFormats:
         detections_table.meta[detf.m.model_seed] = model_seed
         detections_table.meta[detf.m.noise_seed] = noise_seed
         
-        shear_estimates_table = initialise_shear_estimates_table(detections_table)
+        shear_estimates_table = initialise_shear_estimates_table(detections_table,
+                                                                 detector_x = detector_x,
+                                                                 detector_y = detector_y)
         
         assert(shear_estimates_table.meta[setf.m.extname] == extname_head + mv.shear_estimates_tag)
         assert(shear_estimates_table.meta[setf.m.model_hash] == model_hash)
