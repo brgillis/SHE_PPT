@@ -451,9 +451,12 @@ class SHEFrameStack( object ):
 
             detections_catalogue = table.vstack( detections_catalogues,
                                                  metadata_conflicts = "silent" ) # Conflicts are expected
+            
+        # Prune out duplicate object IDs from the detections table - FIXME? after MER resolves this issue?
+        pruned_detections_catalogue = table.unique(detections_catalogue,keys=detf.ID)
 
         # Construct and return a SHEFrameStack object
         return SHEFrameStack( exposures = exposures,
                               stacked_image = stacked_image,
-                              detections_catalogue = detections_catalogue )
+                              detections_catalogue = pruned_detections_catalogue )
 
