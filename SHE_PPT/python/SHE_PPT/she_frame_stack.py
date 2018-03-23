@@ -216,24 +216,27 @@ class SHEFrameStack( object ):
 
         # Extract from the stacked image first
 
-        stack_stamp_width = self.stack_pixel_size_ratio * width
-        if height is None:
-            stack_stamp_height = None
+        if self.stacked_image is not None:
+            stack_stamp_width = self.stack_pixel_size_ratio * width
+            if height is None:
+                stack_stamp_height = None
+            else:
+                stack_stamp_height = self.stack_pixel_size_ratio * height
+    
+            stacked_image_x, stacked_image_y = self.stacked_image.world2pix( x_world, y_world )
+    
+            stacked_image_stamp = self.stacked_image.extract_stamp( x = stacked_image_x,
+                                                                    y = stacked_image_y,
+                                                                    width = stack_stamp_width,
+                                                                    height = stack_stamp_height,
+                                                                    keep_header = keep_header,
+                                                                    none_if_out_of_bounds = none_if_out_of_bounds )
+            
+            # Return None if none_if_out_of_bounds and out of bounds of stacked image
+            if none_if_out_of_bounds and stacked_image_stamp is None:
+                return None
         else:
-            stack_stamp_height = self.stack_pixel_size_ratio * height
-
-        stacked_image_x, stacked_image_y = self.stacked_image.world2pix( x_world, y_world )
-
-        stacked_image_stamp = self.stacked_image.extract_stamp( x = stacked_image_x,
-                                                                y = stacked_image_y,
-                                                                width = stack_stamp_width,
-                                                                height = stack_stamp_height,
-                                                                keep_header = keep_header,
-                                                                none_if_out_of_bounds = none_if_out_of_bounds )
-        
-        # Return None if none_if_out_of_bounds and out of bounds of stacked image
-        if none_if_out_of_bounds and stacked_image_stamp is None:
-            return None
+            stacked_image_stamp = None
 
         # Get the stamps for each exposure
 
