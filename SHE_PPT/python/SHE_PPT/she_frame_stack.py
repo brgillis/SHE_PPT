@@ -509,7 +509,10 @@ class SHEFrameStack( object ):
             detections_catalogue.remove_rows(bad_pos)
             
         # Prune out duplicate object IDs from the detections table - FIXME? after MER resolves this issue?
-        pruned_detections_catalogue = table.unique(detections_catalogue,keys=detf.ID)
+        if detections_catalogue is not None:
+            pruned_detections_catalogue = table.unique(detections_catalogue,keys=detf.ID)
+        else:
+            pruned_detections_catalogue = None
 
         # Construct and return a SHEFrameStack object
         return SHEFrameStack( exposures = exposures,
