@@ -134,7 +134,7 @@ class ShearEstimatesTableFormat( object ):
         self.flags = set_column_properties("FLAGS", dtype=">i8", fits_dtype="K")
         self.fit_class = set_column_properties("FITCLASS", dtype=">i2", fits_dtype="I")
         
-        self.re = set_column_properties("RE", is_optional=True, comment="arcsec", dtype=">f4", fits_dtype="E")
+        self.re = set_column_properties("RE", is_optional=False, comment="arcsec", dtype=">f4", fits_dtype="E")
         self.re_err = set_column_properties("RE_ERR", is_optional=True, comment="arcsec", dtype=">f4", fits_dtype="E")
         
         self.x_world = set_column_properties("X_WORLD_CORR", is_optional=False, comment="deg", dtype=">f8", fits_dtype="D")
@@ -149,7 +149,7 @@ class ShearEstimatesTableFormat( object ):
         self.bulge_fraction = set_column_properties("BULGE_FRAC", is_optional=True)
         self.bulge_fraction_err = set_column_properties("BULGE_FRAC_ERR", is_optional=True)
         
-        self.snr = set_column_properties("SNR", is_optional=True)
+        self.snr = set_column_properties("SNR", is_optional=False)
         self.snr_err = set_column_properties("SNR_ERR", is_optional=True)
         
         # Data needed for validation tests
