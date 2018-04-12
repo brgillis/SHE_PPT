@@ -962,4 +962,9 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
 
         rotation_angle = xy_angle - radec_angle
 
+        if rotation_angle > np.pi:
+            rotation_angle -= 2 * np.pi
+        elif rotation_angle < -np.pi:
+            rotation_angle += 2 * np.pi
+
         return rotation_angle
