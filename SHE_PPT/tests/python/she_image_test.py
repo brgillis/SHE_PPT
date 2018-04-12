@@ -384,39 +384,42 @@ class Test_she_image():
 
         # Check that the transformations are approximately the inverses of each other
 
-        for x, y, ra, dec in ( ( 0, 0, 52.53373984070186, -28.760675854311447 ),
-                              ( 24, 38, 52.53677316085, -28.75899827058671 ),
-                              ( 1012, 4111, 52.876229370322626, -28.686527560717373 ) ):
+        for spatial_ra in ( False, True ):
+            for x, y, ra, dec in ( ( 0, 0, 52.53373984070186, -28.760675854311447 ),
+                                  ( 24, 38, 52.53677316085, -28.75899827058671 ),
+                                  ( 1012, 4111, 52.876229370322626, -28.686527560717373 ) ):
 
-            pix2world_transformation = self.img.get_pix2world_transformation( x, y )
-            world2pix_transformation = self.img.get_world2pix_transformation( ra, dec )
+                pix2world_transformation = self.img.get_pix2world_transformation( x, y, spatial_ra = spatial_ra )
+                world2pix_transformation = self.img.get_world2pix_transformation( ra, dec, spatial_ra = spatial_ra )
 
-            double_transformation = pix2world_transformation * world2pix_transformation
+                double_transformation = pix2world_transformation * world2pix_transformation
 
-            assert np.allclose( double_transformation, np.matrix( [[1., 0.], [0., 1.]] ),
-                               rtol = 1e-2, atol = 1e-3 )
+                assert np.allclose( double_transformation, np.matrix( [[1., 0.], [0., 1.]] ),
+                                   rtol = 1e-2, atol = 1e-3 )
 
-            # Check that these can be applied successfully
+                if spatial_ra:
+                    continue
+                # Check that these can be applied successfully
 
-            dx = 2.0
-            dy = 0.5
+                dx = 2.0
+                dy = 0.5
 
-            new_radec = np.matrix( [[ra], [dec]] ) + pix2world_transformation * np.matrix( [[dx], [dy]] )
-            new_ra = new_radec[0, 0]
-            new_dec = new_radec[1, 0]
+                new_radec = np.matrix( [[ra], [dec]] ) + pix2world_transformation * np.matrix( [[dx], [dy]] )
+                new_ra = new_radec[0, 0]
+                new_dec = new_radec[1, 0]
 
-            assert np.allclose( ( new_ra, new_dec ), self.img.pix2world( x + dx, y + dy ),
-                               rtol = 1e-5, atol = 1e-4 )
+                assert np.allclose( ( new_ra, new_dec ), self.img.pix2world( x + dx, y + dy ),
+                                   rtol = 1e-5, atol = 1e-4 )
 
-            dra = 2.0 / 3600
-            ddec = 0.5 / 3600
+                dra = 2.0 / 3600
+                ddec = 0.5 / 3600
 
-            new_xy = np.matrix( [[x], [y]] ) + world2pix_transformation * np.matrix( [[dra], [ddec]] )
-            new_x = new_xy[0, 0]
-            new_y = new_xy[1, 0]
+                new_xy = np.matrix( [[x], [y]] ) + world2pix_transformation * np.matrix( [[dra], [ddec]] )
+                new_x = new_xy[0, 0]
+                new_y = new_xy[1, 0]
 
-            assert np.allclose( ( new_x, new_y ), self.img.world2pix( ra + dra, dec + ddec ),
-                               rtol = 1e-2, atol = 1e-4 )
+                assert np.allclose( ( new_x, new_y ), self.img.world2pix( ra + dra, dec + ddec ),
+                                   rtol = 1e-2, atol = 1e-4 )
 
     def test_rotation_angle( self ):
 
@@ -454,10 +457,10 @@ class Test_she_image():
 
             # Check they're all about the same
             assert np.allclose( pix2world_angles, pix2world_angles[0], rtol = 5e-02 )
-            assert np.allclose( world2pix_angles, pix2world_angles[0], rtol = 5e-02 )
+            assert np.allclose( world2pix_angles, world2pix_angles[0], rtol = 5e-02 )
 
             # Test the angles for each direction are opposite each other
-            assert np.allclose( pix2world_angles, np.multiply( world2pix_angles, -1 ), rtol = 5e-02 )
+            assert np.allclose( pix2world_angles, np.add( world2pix_angles, np.pi ), rtol = 5e-02 )
 
 
 
