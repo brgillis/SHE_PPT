@@ -26,11 +26,12 @@ from SHE_PPT.magic_values import segmap_unassigned_value
 from SHE_PPT.mask import ( as_bool, is_masked_bad,
                           is_masked_suspect_or_bad, masked_off_image )
 from SHE_PPT.utility import load_wcs
-import astropy.io.fits  # Avoid non-trivial "from" imports (as explicit is better than implicit)
 import SHE_PPT.wcsutil
+import astropy.io.fits  # Avoid non-trivial "from" imports (as explicit is better than implicit)
 import numpy as np
 
 from . import logging
+
 
 mask_dtype = np.int32
 seg_dtype = np.int32
@@ -181,7 +182,7 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
                 raise ValueError( "The segmentation map array must have 2 dimensions" )
             if segmentation_map_array.shape != self._data.shape:
                 raise ValueError( "The segmentation map array must have the same size as the data {}".format( self._data.shape ) )
-            if False: # FIXME
+            if False:  # FIXME
                 if not segmentation_map_array.dtype.newbyteorder( '<' ) == seg_dtype:  # Quietly ignore if byte order is the only difference
                     logger.warning( "Received segmentation map array of type '{}'. Attempting safe casting to seg_dtype.".format( segmentation_map_array.dtype ) )
                     try:
@@ -358,7 +359,7 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
             bkgmaphdu = astropy.io.fits.ImageHDU( data = self.background_map.transpose(), name = "BKGMAP" )
 
             hdulist = astropy.io.fits.HDUList( [datahdu, maskhdu, noisemaphdu, segmaphdu, bkgmaphdu] )
-            
+
         else:
             hdulist = astropy.io.fits.HDUList( [datahdu] )
 
@@ -593,12 +594,12 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         ymin = int( round( y - height / 2.0 - indexconv_defs[indexconv] ) )
         xmax = xmin + width
         ymax = ymin + height
-        
+
         # If we're returning None if out of bounds, check now so we can exit early
         if none_if_out_of_bounds:
             # Check if it's out of bounds
-            if ((xmax < 0) or (xmin >= self.shape[0]) or
-                (ymax < 0) or (ymin >= self.shape[1])):
+            if ( ( xmax < 0 ) or ( xmin >= self.shape[0] ) or
+                ( ymax < 0 ) or ( ymin >= self.shape[1] ) ):
                 return None
 
         # And the header:
@@ -659,7 +660,7 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
 
 
             # Fill the stamp arrays:
-            if (overlap_width > 0) and (overlap_height > 0): # If there is any overlap
+            if ( overlap_width > 0 ) and ( overlap_height > 0 ):  # If there is any overlap
                 data_stamp[overlap_slice_stamp] = self.data[overlap_slice]
                 mask_stamp[overlap_slice_stamp] = self.mask[overlap_slice]
                 noisemap_stamp[overlap_slice_stamp] = self.noisemap[overlap_slice]
@@ -684,7 +685,7 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         assert newimg.shape == ( width, height )
         return newimg
 
-    def pix2world( self, x, y, distort=True ):
+    def pix2world( self, x, y, distort = True ):
         """Converts x and y pixel coordinates to ra and dec world coordinates.
               
         Parameters
@@ -711,11 +712,11 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
             raise AttributeError( "pix2world called by SHEImage object that doesn't have a WCS set up. " +
                                  "Note that WCS isn't currently passed when extract_stamp is used, so this might be the issue." )
 
-        ra, dec = self.wcs.image2sky( x, y, distort=distort )
+        ra, dec = self.wcs.image2sky( x, y, distort = distort )
 
         return ra, dec
 
-    def world2pix( self, ra, dec, distort=True, find=True ):
+    def world2pix( self, ra, dec, distort = True, find = True ):
         """Converts ra and dec world coordinates to x and y pixel coordinates
               
         Parameters
@@ -745,11 +746,11 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
             raise AttributeError( "world2pix called by SHEImage object that doesn't have a WCS set up. " +
                                  "Note that WCS isn't currently passed when extract_stamp is used, so this might be the issue." )
 
-        x, y = self.wcs.sky2image( ra, dec, distort=distort, find=find )
+        x, y = self.wcs.sky2image( ra, dec, distort = distort, find = find )
 
         return x, y
 
-    def get_pix2world_transformation( self, x, y, dx = 0.1, dy = 0.1 ):
+    def get_pix2world_transformation( self, x, y, dx = 0.1, dy = 0.1, negate_ra = False ):
         """Gets the local transformation matrix between pixel and world (ra/dec) coordinates at the specified location.
         
         Parameters
@@ -762,6 +763,8 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
             Differential x step to use in calculating transformation matrix. Default 0.1 pixels
         dy : float
             idem for y
+        negate_ra : bool
+            If True, will give a matrix for the natural (-ra,dec) co-ordinates instead of (ra,dec) (default False)
             
         Raises
         ------
@@ -778,6 +781,11 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         
         """
 
+        if negate_ra:
+            ra_sign = -1
+        else:
+            ra_sign = 1
+
         if ( dx == 0 ) or ( dy == 0 ):
             raise ValueError( "Differentials dx and dy must not be zero." )
 
@@ -786,10 +794,10 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         ra_px, dec_px = self.pix2world( x + dx, y )
         ra_py, dec_py = self.pix2world( x, y + dy )
 
-        d_ra_x = ( ra_px - ra_0 ) / dx
+        d_ra_x = ra_sign * ( ra_px - ra_0 ) / dx
         d_dec_x = ( dec_px - dec_0 ) / dx
 
-        d_ra_y = ( ra_py - ra_0 ) / dy
+        d_ra_y = ra_sign * ( ra_py - ra_0 ) / dy
         d_dec_y = ( dec_py - dec_0 ) / dy
 
         pix2world_transformation = np.matrix( [[  d_ra_x , d_ra_y ],
@@ -797,7 +805,7 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
 
         return pix2world_transformation
 
-    def get_world2pix_transformation( self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600 ):
+    def get_world2pix_transformation( self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, negate_ra = False ):
         """Gets the local transformation matrix between world (ra/dec) and pixel coordinates at the specified location.
         
         Parameters
@@ -810,6 +818,8 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
             Differential ra step in degrees to use in calculating transformation matrix. Default 0.01 arcsec
         ddec : float
             idem for dec
+        negate_ra : bool
+            If True, will give a matrix from the natural (-ra,dec) co-ordinates instead of (ra,dec) (default False)
             
         Raises
         ------
@@ -826,16 +836,21 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         
         """
 
-        if ( dra == 0 ) or ( dra == 0 ):
+        if ( dra == 0 ) or ( ddec == 0 ):
             raise ValueError( "Differentials dra and ddec must not be zero." )
+
+        if negate_ra:
+            ra_sign = -1
+        else:
+            ra_sign = 1
 
         # We'll calculate the transformation empirically by using small steps in x and y
         x_0, y_0 = self.world2pix( ra, dec )
         x_pra, y_pra = self.world2pix( ra + dra, dec )
         x_pdec, y_pdec = self.world2pix( ra, dec + ddec )
 
-        d_x_ra = ( x_pra - x_0 ) / dra
-        d_y_ra = ( y_pra - y_0 ) / dra
+        d_x_ra = ra_sign * ( x_pra - x_0 ) / dra
+        d_y_ra = ra_sign * ( y_pra - y_0 ) / dra
 
         d_x_dec = ( x_pdec - x_0 ) / ddec
         d_y_dec = ( y_pdec - y_0 ) / ddec
