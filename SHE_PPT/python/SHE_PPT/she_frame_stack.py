@@ -22,7 +22,9 @@ File: python/SHE_PPT/she_frame_stack.py
 Created on: 05/03/18
 """
 
+from copy import deepcopy
 import os.path
+import numpy as np
 
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
@@ -85,8 +87,102 @@ class SHEFrameStack( object ):
         self.detections_catalogue = detections_catalogue
 
         self.stack_pixel_size_ratio = 1  # Might have to manually calculate this later
+        
+        # Set the detections catalogue to index by ID
+        if self.detections_catalogue is not None:
+            self.detections_catalogue.add_index(detf.ID)
 
         return
+    
+    def extract_galaxy_stack(self, gal_id, width, *args, **kwargs):
+        """Extracts a postage stamp centred on a given galaxy in the detections tables, indexed by its ID.
+           
+           Parameters
+           ----------
+           gal_id : int
+               The galaxy's unique ID
+           width : int
+               The desired width of the postage stamp in pixels of the exposures
+           *args, **kwargs
+               Other arguments and keyword arguments are forwarded to extract_stamp_stack()
+               
+            Return
+           ------
+           stamp_stack : SHEImageStack
+        """
+        
+        row = self.detections_catalogue.loc[gal_id]
+        
+        x_world = row[detf.gal_x_world]
+        y_world = row[detf.gal_y_world]
+        
+        return self.extract_stamp_stack(x_world, y_world, width, *args, **kwargs)
+    
+    def extract_psf_stacks(self, gal_id, make_stacked_psf=False, keep_header=False):
+        """Extracts bulge and disk PSF stacks for a given galaxy in the detections catalogue.
+           
+           Parameters
+           ----------
+           gal_id : int
+               The galaxy's unique ID
+           make_stacked_psf : bool
+               If True, will create a stacked PSF through simple summation. Default False.
+           keep_header : bool
+               If True, the PSF images' headers will be copied to the stamps. Default False.
+               
+            Return
+           ------
+           bulge_psf_stack : SHEImageStack
+           disk_psf_stack : SHEImageStack
+        """
+        
+        bulge_psf_stamps = []
+        disk_psf_stamps = []
+        
+        for exposure in self.exposures:
+            
+            bulge_psf_stamp, disk_psf_stamp = exposure.extract_psf(gal_id, keep_header=keep_header)
+            
+            bulge_psf_stamps.append(bulge_psf_stamp)
+            disk_psf_stamps.append(disk_psf_stamp)
+            
+        stacked_bulge_psf = None
+        stacked_disk_psf = None
+            
+        # Make the stack if desired
+        if make_stacked_psf:
+            
+            for x in range(len(self.exposures)):
+                
+                bulge_psf_stamp = bulge_psf_stamps[x]
+                disk_psf_stamp = disk_psf_stamps[x]
+                
+                if bulge_psf_stamp is not None:
+                    
+                    if stacked_bulge_psf is None:
+                        stacked_bulge_psf = deepcopy(bulge_psf_stamp)
+                    else:
+                        stacked_bulge_psf.data += bulge_psf_stamp.data
+                    
+                    if stacked_disk_psf is None:
+                        stacked_disk_psf = deepcopy(disk_psf_stamp)
+                    else:
+                        stacked_disk_psf.data += disk_psf_stamp.data
+                        
+            # Normalize stacked PSFs
+            if stacked_bulge_psf is not None:
+                stacked_bulge_psf.data /= stacked_bulge_psf.data.sum()
+            if stacked_disk_psf is not None:
+                stacked_disk_psf.data /= stacked_disk_psf.data.sum()
+                        
+        # Construct the stacks
+        bulge_psf_stack = SHEImageStack( stacked_image = stacked_bulge_psf,
+                                         exposures = bulge_psf_stamps, )
+        disk_psf_stack = SHEImageStack( stacked_image = stacked_disk_psf,
+                                         exposures = disk_psf_stamps, )
+        
+        return bulge_psf_stack, disk_psf_stack
+                    
 
     def extract_stamp_stack( self, x_world, y_world, width, height = None, x_buffer = 0, y_buffer = 0, keep_header = False,
                              none_if_out_of_bounds = False ):
@@ -121,24 +217,27 @@ class SHEFrameStack( object ):
 
         # Extract from the stacked image first
 
-        stack_stamp_width = self.stack_pixel_size_ratio * width
-        if height is None:
-            stack_stamp_height = None
+        if self.stacked_image is not None:
+            stack_stamp_width = self.stack_pixel_size_ratio * width
+            if height is None:
+                stack_stamp_height = None
+            else:
+                stack_stamp_height = self.stack_pixel_size_ratio * height
+    
+            stacked_image_x, stacked_image_y = self.stacked_image.world2pix( x_world, y_world )
+    
+            stacked_image_stamp = self.stacked_image.extract_stamp( x = stacked_image_x,
+                                                                    y = stacked_image_y,
+                                                                    width = stack_stamp_width,
+                                                                    height = stack_stamp_height,
+                                                                    keep_header = keep_header,
+                                                                    none_if_out_of_bounds = none_if_out_of_bounds )
+            
+            # Return None if none_if_out_of_bounds and out of bounds of stacked image
+            if none_if_out_of_bounds and stacked_image_stamp is None:
+                return None
         else:
-            stack_stamp_height = self.stack_pixel_size_ratio * height
-
-        stacked_image_x, stacked_image_y = self.stacked_image.world2pix( x_world, y_world )
-
-        stacked_image_stamp = self.stacked_image.extract_stamp( x = stacked_image_x,
-                                                                y = stacked_image_y,
-                                                                width = stack_stamp_width,
-                                                                height = stack_stamp_height,
-                                                                keep_header = keep_header,
-                                                                none_if_out_of_bounds = none_if_out_of_bounds )
-        
-        # Return None if none_if_out_of_bounds and out of bounds of stacked image
-        if none_if_out_of_bounds and stacked_image_stamp is None:
-            return None
+            stacked_image_stamp = None
 
         # Get the stamps for each exposure
 
@@ -222,6 +321,7 @@ class SHEFrameStack( object ):
               psf_listfile_filename = None,
               detections_listfile_filename = None,
               workdir = ".",
+              clean_detections = False,
               **kwargs ):
         """Reads a SHEFrameStack from relevant data products.
         
@@ -277,7 +377,7 @@ class SHEFrameStack( object ):
 
             exposure = SHEFrame.read( frame_product_filename = exposure_filename,
                                       seg_filename = seg_filename,
-                                      psf_product_filename = psf_filename,
+                                      psf_filename = psf_filename,
                                       workdir = workdir,
                                       **kwargs )
 
@@ -291,6 +391,7 @@ class SHEFrameStack( object ):
             stacked_image_data = None
             stacked_rms_data = None
             stacked_mask_data = None
+            stacked_bkg_data = None
         else:
             ( stacked_image_header,
              stacked_data ) = cls._read_product_extension( stacked_image_product_filename,
@@ -315,13 +416,16 @@ class SHEFrameStack( object ):
                                                             workdir = workdir )
 
         # Construct a SHEImage object for the stacked image
-        stacked_image = SHEImage( data = stacked_image_data,
-                                  mask = stacked_mask_data,
-                                  noisemap = stacked_rms_data,
-                                  background_map = stacked_bkg_data,
-                                  segmentation_map = stacked_seg_data,
-                                  header = stacked_image_header,
-                                  wcs = load_wcs( stacked_image_header ) )
+        if stacked_image_data is None:
+            stacked_image = None
+        else:
+            stacked_image = SHEImage( data = stacked_image_data,
+                                      mask = stacked_mask_data,
+                                      noisemap = stacked_rms_data,
+                                      background_map = stacked_bkg_data,
+                                      segmentation_map = stacked_seg_data,
+                                      header = stacked_image_header,
+                                      wcs = load_wcs( stacked_image_header ) )
 
         # Load in the detections catalogues and combine them into a single catalogue
         if detections_listfile_filename is None:
@@ -349,9 +453,69 @@ class SHEFrameStack( object ):
 
             detections_catalogue = table.vstack( detections_catalogues,
                                                  metadata_conflicts = "silent" ) # Conflicts are expected
+            
+        # Clean the detections table if desired
+        if clean_detections:
+            
+            # First, get the limits of the frame. Use the stacked image if available
+            if stacked_image is not None:
+                test_xps = np.array((0,0,stacked_image.shape[0]+1,stacked_image.shape[0]+1))
+                test_yps = np.array((0,stacked_image.shape[1]+1,0,stacked_image.shape[1]+1))
+                          
+                test_x_worlds, test_y_worlds = stacked_image.pix2world(test_xps, test_yps)
+                
+                x_world_min = test_x_worlds.min()
+                x_world_max = test_x_worlds.max()
+                y_world_min = test_y_worlds.min()
+                y_world_max = test_y_worlds.max()
+            else:
+                # We'll have to get the test values from the detectors of each frame
+                
+                x_world_min = 1e99
+                x_world_max = -1e99
+                y_world_min = 1e99
+                y_world_max = -1e99
+                
+                for exposure in exposures:
+                    if exposure is None:
+                        continue
+                    # Only bother with detectors on the corners
+                    for ex_x in (1,6):
+                        for ex_y in (1,6):
+                            
+                            detector = exposure.detectors[ex_x,ex_y]
+                            
+                            if detector is None:
+                                continue # FIXME What if just a corner detector fails?
+                            
+                            test_xps = np.array((0,0,detector.shape[0]+1,detector.shape[0]+1))
+                            test_yps = np.array((0,detector.shape[1]+1,0,detector.shape[1]+1))
+                                      
+                            test_x_worlds, test_y_worlds = detector.pix2world(test_xps, test_yps)
+                            
+                            x_world_min = np.min((x_world_min,test_x_worlds.min()))
+                            x_world_max = np.max((x_world_max,test_x_worlds.max()))
+                            y_world_min = np.min((y_world_min,test_y_worlds.min()))
+                            y_world_max = np.max((y_world_max,test_y_worlds.max()))
+            
+            # We have the outermost limits; now prune any values outside of them
+            bad_x_world = np.logical_or(detections_catalogue[detf.gal_x_world]<x_world_min,
+                                         detections_catalogue[detf.gal_x_world]>x_world_max)
+            bad_y_world = np.logical_or(detections_catalogue[detf.gal_y_world]<y_world_min,
+                                        detections_catalogue[detf.gal_y_world]>y_world_max)
+            
+            bad_pos = np.logical_or(bad_x_world,bad_y_world)
+            
+            detections_catalogue.remove_rows(bad_pos)
+            
+        # Prune out duplicate object IDs from the detections table - FIXME? after MER resolves this issue?
+        if detections_catalogue is not None:
+            pruned_detections_catalogue = table.unique(detections_catalogue,keys=detf.ID)
+        else:
+            pruned_detections_catalogue = None
 
         # Construct and return a SHEFrameStack object
         return SHEFrameStack( exposures = exposures,
                               stacked_image = stacked_image,
-                              detections_catalogue = detections_catalogue )
+                              detections_catalogue = pruned_detections_catalogue )
 

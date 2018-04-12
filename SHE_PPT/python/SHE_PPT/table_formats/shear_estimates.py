@@ -134,7 +134,7 @@ class ShearEstimatesTableFormat( object ):
         self.flags = set_column_properties("FLAGS", dtype=">i8", fits_dtype="K")
         self.fit_class = set_column_properties("FITCLASS", dtype=">i2", fits_dtype="I")
         
-        self.re = set_column_properties("RE", is_optional=True, comment="arcsec", dtype=">f4", fits_dtype="E")
+        self.re = set_column_properties("RE", is_optional=False, comment="arcsec", dtype=">f4", fits_dtype="E")
         self.re_err = set_column_properties("RE_ERR", is_optional=True, comment="arcsec", dtype=">f4", fits_dtype="E")
         
         self.x_world = set_column_properties("X_WORLD_CORR", is_optional=False, comment="deg", dtype=">f8", fits_dtype="D")
@@ -149,7 +149,7 @@ class ShearEstimatesTableFormat( object ):
         self.bulge_fraction = set_column_properties("BULGE_FRAC", is_optional=True)
         self.bulge_fraction_err = set_column_properties("BULGE_FRAC_ERR", is_optional=True)
         
-        self.snr = set_column_properties("SNR", is_optional=True)
+        self.snr = set_column_properties("SNR", is_optional=False)
         self.snr_err = set_column_properties("SNR_ERR", is_optional=True)
         
         # Data needed for validation tests
@@ -313,16 +313,12 @@ def initialise_shear_estimates_table( detections_table = None,
     shear_estimates_table = Table( init_cols, names = names, dtype = dtypes )
 
     if detections_table is not None:
-        if detector_x is None or detector_y is None:
-            detector_x, detector_y = dtc.get_detector_xy( detections_table.meta[detf.m.extname] )
-        if model_hash is None:
+        if model_hash is None and detf.m.model_hash in detections_table.meta:
             model_hash = detections_table.meta[detf.m.model_hash]
-        if model_seed is None:
+        if model_seed is None and detf.m.model_seed in detections_table.meta:
             model_seed = detections_table.meta[detf.m.model_seed]
-        if noise_seed is None:
+        if noise_seed is None and detf.m.noise_seed in detections_table.meta:
             noise_seed = detections_table.meta[detf.m.noise_seed]
-        if obs_time is None:
-            obs_time = detections_table.meta[detf.m.obs_time]
 
     if detector_x is None:
         detector_x = 1

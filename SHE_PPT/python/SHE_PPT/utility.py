@@ -111,7 +111,10 @@ def load_wcs(header):
     
     logger.debug("Entering load_wcs")
     
-    wcs = WCS(header)
+    if header is None:
+        wcs = None
+    else:
+        wcs = WCS(header)
     
     logger.debug("Exiting load_wcs")
             
