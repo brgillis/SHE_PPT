@@ -749,7 +749,7 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
 
         return x, y
 
-    def get_pix2world_transformation( self, x, y, dx = 0.1, dy = 0.1, negate_ra = False ):
+    def get_pix2world_transformation( self, x, y, dx = 0.1, dy = 0.1, spatial_ra = False ):
         """Gets the local transformation matrix between pixel and world (ra/dec) coordinates at the specified location.
         
         Parameters
@@ -762,8 +762,8 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
             Differential x step to use in calculating transformation matrix. Default 0.1 pixels
         dy : float
             idem for y
-        negate_ra : bool
-            If True, will give a matrix for the natural (-ra,dec) co-ordinates instead of (ra,dec) (default False)
+        spatial_ra : bool
+            If True, will give a matrix for (-ra*cos(dec),dec) co-ordinates instead of (ra,dec) (default False)
             
         Raises
         ------
@@ -780,11 +780,6 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         
         """
 
-        if negate_ra:
-            ra_sign = -1
-        else:
-            ra_sign = 1
-
         if ( dx == 0 ) or ( dy == 0 ):
             raise ValueError( "Differentials dx and dy must not be zero." )
 
@@ -793,10 +788,15 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         ra_px, dec_px = self.pix2world( x + dx, y )
         ra_py, dec_py = self.pix2world( x, y + dy )
 
-        d_ra_x = ra_sign * ( ra_px - ra_0 ) / dx
+        if spatial_ra:
+            ra_scale = -np.cos( dec_0 * np.pi / 180 )
+        else:
+            ra_scale = 1
+
+        d_ra_x = ra_scale * ( ra_px - ra_0 ) / dx
         d_dec_x = ( dec_px - dec_0 ) / dx
 
-        d_ra_y = ra_sign * ( ra_py - ra_0 ) / dy
+        d_ra_y = ra_scale * ( ra_py - ra_0 ) / dy
         d_dec_y = ( dec_py - dec_0 ) / dy
 
         pix2world_transformation = np.matrix( [[  d_ra_x , d_ra_y ],
@@ -804,7 +804,7 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
 
         return pix2world_transformation
 
-    def get_world2pix_transformation( self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, negate_ra = False ):
+    def get_world2pix_transformation( self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, spatial_ra = False ):
         """Gets the local transformation matrix between world (ra/dec) and pixel coordinates at the specified location.
         
         Parameters
@@ -817,8 +817,8 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
             Differential ra step in degrees to use in calculating transformation matrix. Default 0.01 arcsec
         ddec : float
             idem for dec
-        negate_ra : bool
-            If True, will give a matrix from the natural (-ra,dec) co-ordinates instead of (ra,dec) (default False)
+        spatial_ra : bool
+            If True, will give a matrix for (-ra*cos(dec),dec) co-ordinates instead of (ra,dec) (default False)
             
         Raises
         ------
@@ -838,18 +838,19 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         if ( dra == 0 ) or ( ddec == 0 ):
             raise ValueError( "Differentials dra and ddec must not be zero." )
 
-        if negate_ra:
-            ra_sign = -1
+
+        if spatial_ra:
+            ra_scale = -np.cos( dec * np.pi / 180 )
         else:
-            ra_sign = 1
+            ra_scale = 1
 
         # We'll calculate the transformation empirically by using small steps in x and y
         x_0, y_0 = self.world2pix( ra, dec )
         x_pra, y_pra = self.world2pix( ra + dra, dec )
         x_pdec, y_pdec = self.world2pix( ra, dec + ddec )
 
-        d_x_ra = ra_sign * ( x_pra - x_0 ) / dra
-        d_y_ra = ra_sign * ( y_pra - y_0 ) / dra
+        d_x_ra = ( x_pra - x_0 ) / ( dra * ra_scale )
+        d_y_ra = ( y_pra - y_0 ) / ( dra * ra_scale )
 
         d_x_dec = ( x_pdec - x_0 ) / ddec
         d_y_dec = ( y_pdec - y_0 ) / ddec
