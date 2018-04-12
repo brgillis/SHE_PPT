@@ -902,8 +902,8 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         dra = -( ra_1 - ra_0 )
         ddec = ( dec_1 - dec_0 )
 
-        xy_angle = np.atan2( dx, dy )
-        radec_angle = np.atan2( dra * cosdec, ddec )
+        xy_angle = np.arctan2( dx, dy )
+        radec_angle = np.arctan2( dra * cosdec, ddec )
 
         rotation_angle = radec_angle - xy_angle
 
@@ -952,8 +952,8 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         dx = ( x_1 - x_0 )
         dy = ( y_1 - y_0 )
 
-        xy_angle = np.atan2( dx, dy )
-        radec_angle = np.atan2( dra * cosdec, ddec )
+        xy_angle = np.arctan2( dx, dy )
+        radec_angle = np.arctan2( dra * cosdec, ddec )
 
         rotation_angle = xy_angle - radec_angle
 
