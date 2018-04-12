@@ -907,6 +907,11 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
 
         rotation_angle = radec_angle - xy_angle
 
+        if rotation_angle > np.pi:
+            rotation_angle -= 2 * np.pi
+        elif rotation_angle < -np.pi:
+            rotation_angle += 2 * np.pi
+
         return rotation_angle
 
     def get_world2pix_rotation_angle( self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, ):
