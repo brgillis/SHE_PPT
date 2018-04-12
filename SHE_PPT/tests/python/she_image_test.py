@@ -435,17 +435,29 @@ class Test_she_image():
                            ( -0.1, -0.1 ),
                            ( 0.0, -0.1 ),
                            ( 0.1, -0.1 ) ):
-                pix2world_angles.append( self.img.get_pix2world_rotation_angle( x, y, dx = dx, dy = dy ) )
-                world2pix_angles.append( self.img.get_world2pix_rotation_angle( ra, dec,
+                pix2world_angle = self.img.get_pix2world_rotation_angle( x, y, dx = dx, dy = dy )
+                if pix2world_angle < 0:
+                    pix2world_angle += 2 * np.pi
+                elif pix2world_angle > 2 * np.pi:
+                    pix2world_angle -= 2 * np.pi
+
+                world2pix_angle = self.img.get_world2pix_rotation_angle( ra, dec,
                                                                                 dra = dx / 3600,
-                                                                                ddec = dy / 3600 ) )
+                                                                                ddec = dy / 3600 )
+                if world2pix_angle < 0:
+                    world2pix_angle += 2 * np.pi
+                elif world2pix_angle > 2 * np.pi:
+                    world2pix_angle -= 2 * np.pi
+
+                pix2world_angles.append( pix2world_angle )
+                world2pix_angles.append( world2pix_angle )
 
             # Check they're all about the same
-            assert np.allclose( pix2world_angles, pix2world_angles[0] )
-            assert np.allclose( world2pix_angles, pix2world_angles[0] )
+            assert np.allclose( pix2world_angles, pix2world_angles[0], rtol = 5e-02 )
+            assert np.allclose( world2pix_angles, pix2world_angles[0], rtol = 5e-02 )
 
             # Test the angles for each direction are opposite each other
-            assert np.allclose( pix2world_angles, np.multiply( world2pix_angles, -1 ) )
+            assert np.allclose( pix2world_angles, np.multiply( world2pix_angles, -1 ), rtol = 5e-02 )
 
 
 
