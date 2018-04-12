@@ -894,7 +894,7 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         ra_0, dec_0 = self.pix2world( x, y )
         ra_1, dec_1 = self.pix2world( x + dx, y + dy )
 
-        cosdec = np.cos( dec_0 * 180 / np.pi )
+        cosdec = np.cos( dec_0 * np.pi / 180 )
 
         if cosdec <= 0.01:
             raise ValueError( "Dec too close to pole for accurate calculation." )
@@ -940,7 +940,7 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         if ( dra == 0 ) and ( ddec == 0 ):
             raise ValueError( "Differentials dx and dy must not both be zero." )
 
-        cosdec = np.cos( dec * 180 / np.pi )
+        cosdec = np.cos( dec * np.pi / 180 )
 
         if cosdec <= 0.01:
             raise ValueError( "Dec too close to pole for accurate calculation." )
