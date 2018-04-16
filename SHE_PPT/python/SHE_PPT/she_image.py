@@ -860,8 +860,9 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
 
         return world2pix_transformation
 
-    def get_pix2world_rotation_angle( self, x, y, dx = 0.1, dy = 0.0 ):
-        """Gets the local rotation angle between pixel and world (-ra/dec) coordinates at the specified location.
+    def get_pix2world_rotation( self, x, y, dx = 0.1, dy = 0.1 ):
+        """Gets the local rotation matrix between pixel and world (ra/dec) coordinates at the specified location.
+        Note that this doesn't provide the full transformation since it lacks scaling and shearing terms.
         
         Parameters
         ----------
@@ -870,9 +871,97 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         y : float
             idem for y
         dx : float
-            Differential x step to use in calculating transformation matrix. Default 0.1 pixels
+            Differential x step to use in calculating rotation matrix. Default 0.1 pixels
         dy : float
-            idem for y, except default 0 pixels
+            idem for y
+            
+        Raises
+        ------
+        AttributeError
+            This object does not have a wcs set up
+        ValueError
+            dx or dy is 0
+            
+        Returns
+        -------
+        pix2world_rotation : np.matrix
+            Transformation matrix in the format [[ cos(theta) , -sin(theta) ],
+                                                 [ sin(theta) ,  cos(theta) ]]
+            Note that due to the method of calculation, the matrix may differ very slightly from an ideal
+            rotation matrix.
+        """
+
+        # dx and dy are checked in get_pix2world_transformation, so no need to check here
+
+        pix2world_transformation = self.get_pix2world_transformation(x, y, dx, dy, spatial_ra=True)
+        
+        u, _s, vh = np.linalg.svd(pix2world_transformation)
+        
+        pix2world_rotation = u @ vh
+
+        return pix2world_rotation
+
+    def get_world2pix_rotation( self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, spatial_ra = False ):
+        """Gets the local rotation matrix between world (ra/dec) and pixel coordinates at the specified location.
+        Note that this doesn't provide the full transformation since it lacks scaling and shearing terms.
+        
+        Parameters
+        ----------
+        ra : float
+            Right Ascension (RA) world coordinate in degrees
+        dec : float
+            Declination (Dec) world coordinate in degrees
+        dra : float
+            Differential ra step in degrees to use in calculating transformation matrix. Default 0.01 arcsec
+        ddec : float
+            idem for dec
+            
+        Raises
+        ------
+        AttributeError
+            This object does not have a wcs set up
+        ValueError
+            dra or ddec is 0
+            
+        Returns
+        -------
+        world2pix_rotation : np.matrix
+            Transformation matrix in the format [[ cos(theta) , -sin(theta) ],
+                                                 [ sin(theta) ,  cos(theta) ]]
+            Note that due to the method of calculation, the matrix may differ very slightly from an ideal
+            rotation matrix.
+        
+        """
+
+        # dx and dy are checked in get_pix2world_transformation, so no need to check here
+
+        world2pix_transformation = self.get_pix2world_transformation(ra, dec, dra, ddec, spatial_ra=True)
+        
+        u, _s, vh = np.linalg.svd(world2pix_transformation)
+        
+        world2pix_rotation = u @ vh
+
+        return world2pix_rotation
+
+    def estimate_pix2world_rotation_angle( self, x, y, dx, dy ):
+        """Estimates the local rotation angle between pixel and world (-ra/dec) coordinates at the specified location.
+        Note that due to distortion in the transformation, this method is inaccurate and depends on the choice of dx
+        and dy; get_pix2world_rotation should be used instead to provide the rotation matrix. This method is retained
+        to aid testing of that method.
+        
+        Parameters
+        ----------
+        x : float
+            x pixel coordinate
+        y : float
+            idem for y
+        dx : float
+            Differential x step to use in calculating transformation matrix
+        dy : float
+            idem for y
+            
+        Note: dx and dy are required here since, due to distortion in the transformation, we can't assume the
+        rotation angle will be independent of them.
             
         Raises
         ------
@@ -910,8 +999,11 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
 
         return rotation_angle
 
-    def get_world2pix_rotation_angle( self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, ):
+    def estimate_world2pix_rotation_angle( self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, ):
         """Gets the local rotation angle between world (-ra/dec) and pixel coordinates at the specified location.
+        Note that due to distortion in the transformation, this method is inaccurate and depends on the choice of dra
+        and ddec; get_world2pix_rotation should be used instead to provide the rotation matrix. This method is retained
+        to aid testing of that method.
         
         Parameters
         ----------
@@ -920,9 +1012,12 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         dec : float
             Declination (Dec) world coordinate in degrees
         dra : float
-            Differential ra step in degrees to use in calculating transformation matrix. Default 0.01 arcsec
+            Differential ra step in degrees to use in calculating transformation matrix
         ddec : float
-            idem for dec, except default 0 arcsec
+            idem for dec
+            
+        Note: dra and ddec are required here since, due to distortion in the transformation, we can't assume the
+        rotation angle will be independent of them.
             
         Raises
         ------
