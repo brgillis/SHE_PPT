@@ -471,8 +471,8 @@ class Test_she_image():
             pix2world_rotation_matrix_2 = self.img.get_pix2world_rotation( x, y )
             world2pix_rotation_matrix_2 = self.img.get_world2pix_rotation( ra, dec )
             
-            assert np.allclose(pix2world_rotation_matrix_1,pix2world_rotation_matrix_2,rtol=0.02)
-            assert np.allclose(world2pix_rotation_matrix_1,world2pix_rotation_matrix_2,rtol=0.02)
+            assert np.allclose(pix2world_rotation_matrix_1,pix2world_rotation_matrix_2,rtol=0.02,atol=0.002)
+            assert np.allclose(world2pix_rotation_matrix_1,world2pix_rotation_matrix_2,rtol=0.02,atol=0.002)
             
             return
 

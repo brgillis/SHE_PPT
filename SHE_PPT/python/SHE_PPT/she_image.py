@@ -895,9 +895,9 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
 
         pix2world_transformation = self.get_pix2world_transformation(x, y, dx, dy, spatial_ra=True)
         
-        u, _s, vh = np.linalg.svd(pix2world_transformation)
+        u, s, vh = np.linalg.svd(pix2world_transformation)
         
-        pix2world_rotation = u @ vh
+        pix2world_rotation = vh @ u
 
         return pix2world_rotation
 
@@ -935,11 +935,11 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
 
         # dx and dy are checked in get_pix2world_transformation, so no need to check here
 
-        world2pix_transformation = self.get_pix2world_transformation(ra, dec, dra, ddec, spatial_ra=True)
+        world2pix_transformation = self.get_world2pix_transformation(ra, dec, dra, ddec, spatial_ra=True)
         
-        u, _s, vh = np.linalg.svd(world2pix_transformation)
+        u, s, vh = np.linalg.svd(world2pix_transformation)
         
-        world2pix_rotation = u @ vh
+        world2pix_rotation = vh @ u
 
         return world2pix_rotation
 
