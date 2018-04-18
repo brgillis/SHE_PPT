@@ -459,7 +459,7 @@ class Test_she_image():
             pix2world_angle = np.mean(pix2world_angles)
             world2pix_angle = np.mean(world2pix_angles)
 
-            np.testing.assert_almost_equal(pix2world_angle,world2pix_angle+np.pi)
+            assert np.isclose(pix2world_angle,world2pix_angle+np.pi)
             
             # Now, create rotation matrices for both, and check these match what we get
             # from the SVD method
