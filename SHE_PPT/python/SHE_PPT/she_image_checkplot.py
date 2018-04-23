@@ -27,15 +27,16 @@ Author: Malte Tewes
 
 import os
 
+from . import logging
 from . import sky_image_plot as sip
 
-from . import logging
-logger = logging.getLogger(__name__)
+
+logger = logging.getLogger( __name__ )
 
 
 
 
-def draw_to_axes(img, ax, z1=None, z2=None, **kwargs):
+def draw_to_axes( img, ax, z1 = None, z2 = None, **kwargs ):
     """Visualizes a SHEImage using Matplotlib on some existing Matplotlib axes
     
     This function implements a simple default style for plotting a SHEImage on some existing axes, and can therefore
@@ -56,29 +57,29 @@ def draw_to_axes(img, ax, z1=None, z2=None, **kwargs):
     z2 :
         idem for the upper bound.
     """
-       
+
     # Make a SkyImage object with the data
-    skyimage = sip.SkyImage(img.data, z1, z2)
-    sip.draw_sky_image(ax, skyimage)    
-    sip.draw_mask(ax, img.boolmask)
-    
-    
-    
-class Checkplot(sip.SimpleFigure):
+    skyimage = sip.SkyImage( img.data, z1, z2 )
+    sip.draw_sky_image( ax, skyimage )
+    sip.draw_mask( ax, img.boolmask )
+
+
+
+class Checkplot( sip.SimpleFigure ):
     """Visualizes a SHEImage using Matplotlib in a simple standalone figure
     
     """
-    def __init__(self, img, **kwargs):
-        
+    def __init__( self, img, **kwargs ):
+
         self.sheimage = img
-        sip.SimpleFigure.__init__(self, img.data, **kwargs)
-        
-    
-    def draw(self, **kwargs):
+        sip.SimpleFigure.__init__( self, img.data, **kwargs )
+
+
+    def draw( self, **kwargs ):
         """
         
         """
-        draw_to_axes(self.sheimage, self.ax, self.z1, self.z2, **kwargs)
+        draw_to_axes( self.sheimage, self.ax, self.z1, self.z2, **kwargs )
 
 
 

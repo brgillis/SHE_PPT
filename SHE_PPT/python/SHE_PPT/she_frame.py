@@ -22,21 +22,22 @@ File: python/SHE_PPT/she_frame.py
 Created on: 02/03/18
 """
 
-from astropy.io import fits
-from astropy.table import Table
-from astropy.wcs import WCS
-import numpy as np
 import os.path
 
-import SHE_PPT.detector
-from SHE_PPT.file_io import read_xml_product
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
 from SHE_PPT import products
+import SHE_PPT.detector
+from SHE_PPT.file_io import read_xml_product
 from SHE_PPT.she_image import SHEImage
 from SHE_PPT.table_formats.psf import tf as pstf
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import find_extension, load_wcs
+from astropy.io import fits
+from astropy.table import Table
+from astropy.wcs import WCS
+import numpy as np
+
 
 products.calibrated_frame.init()
 products.psf_image.init()
@@ -79,13 +80,13 @@ class SHEFrame( object ):
         self.detectors = detectors
         self.psf_data_hdulist = psf_data_hdulist
         self.psf_catalogue = psf_catalogue
-        
-        
+
+
         # Set the PSF catalogue to index by ID
         if self.psf_catalogue is not None:
-            self.psf_catalogue.add_index(pstf.ID)
-        
-    def extract_stamp(self, x_world, y_world, width, height=None, x_buffer=0, y_buffer=0, keep_header=False):
+            self.psf_catalogue.add_index( pstf.ID )
+
+    def extract_stamp( self, x_world, y_world, width, height = None, x_buffer = 0, y_buffer = 0, keep_header = False ):
         """Extracts a postage stamp centred on the provided sky co-ordinates, by using each detector's WCS
            to determine which (if any) it lies on. If x/y_buffer > 0, it will also extract from a detector if
            the position is within this many pixels of the edge of it.
@@ -112,43 +113,43 @@ class SHEFrame( object ):
            stamp : SHEImage or None
                The extracted stamp, or None if it was not found on any detector
         """
-        
+
         # Loop over the detectors, and use the WCS of each to determine if it's on it or not
         found = False
-        
-        num_x, num_y = np.shape(self.detectors)
-        
-        for x_i in range(num_x):
-            for y_i in range(num_y):
-                
-                detector = self.detectors[x_i,y_i]
+
+        num_x, num_y = np.shape( self.detectors )
+
+        for x_i in range( num_x ):
+            for y_i in range( num_y ):
+
+                detector = self.detectors[x_i, y_i]
                 if detector is None:
                     continue
-                
-                x, y = detector.world2pix(x_world,y_world)
-                if (x < 1-x_buffer) or (x > np.shape(detector.data)[0]+x_buffer):
+
+                x, y = detector.world2pix( x_world, y_world )
+                if ( x < 1 - x_buffer ) or ( x > np.shape( detector.data )[0] + x_buffer ):
                     continue
-                if (y < 1-y_buffer) or (y > np.shape(detector.data)[1]+y_buffer):
+                if ( y < 1 - y_buffer ) or ( y > np.shape( detector.data )[1] + y_buffer ):
                     continue
-                
+
                 found = True
-                
+
                 break
-        
+
             if found:
                 break
-            
-        if (detector is None) or (not found):
+
+        if ( detector is None ) or ( not found ):
             return None
-            
-        stamp = detector.extract_stamp(x=x,y=y,width=width,height=height,keep_header=keep_header)
-        
+
+        stamp = detector.extract_stamp( x = x, y = y, width = width, height = height, keep_header = keep_header )
+
         # Keep the extname even if not keeping the full header
         stamp.header[mv.extname_label] = detector.header[mv.extname_label]
-        
+
         return stamp
-    
-    def extract_psf(self, gal_id, keep_header=False):
+
+    def extract_psf( self, gal_id, keep_header = False ):
         """Extracts the bulge and disk psfs for a given galaxy.
         
         Parameters
@@ -165,15 +166,15 @@ class SHEFrame( object ):
         disk_psf_stamp : SHEImage
         
         """
-        
+
         row = self.psf_catalogue.loc[gal_id]
-        
+
         bulge_hdu = self.psf_data_hdulist[row[pstf.bulge_index]]
-        bulge_psf_stamp = SHEImage(data=bulge_hdu.data.transpose(),header=bulge_hdu.header)
-        
+        bulge_psf_stamp = SHEImage( data = bulge_hdu.data.transpose(), header = bulge_hdu.header )
+
         disk_hdu = self.psf_data_hdulist[row[pstf.disk_index]]
-        disk_psf_stamp = SHEImage(data=disk_hdu.data.transpose(),header=disk_hdu.header)
-        
+        disk_psf_stamp = SHEImage( data = disk_hdu.data.transpose(), header = disk_hdu.header )
+
         return bulge_psf_stamp, disk_psf_stamp
 
     @classmethod
@@ -181,7 +182,7 @@ class SHEFrame( object ):
               frame_product_filename = None,
               seg_filename = None,
               psf_filename = None,
-              workdir=".",
+              workdir = ".",
               x_max = 6,
               y_max = 6,
               **kwargs ):
@@ -206,7 +207,7 @@ class SHEFrame( object ):
         Any kwargs are passed to the reading of the fits data
         """
 
-        detectors = np.ndarray((x_max+1,y_max+1),dtype=SHEImage)
+        detectors = np.ndarray( ( x_max + 1, y_max + 1 ), dtype = SHEImage )
 
         # Load in the relevant fits files
 
@@ -216,15 +217,15 @@ class SHEFrame( object ):
             if not isinstance( frame_prod, products.calibrated_frame.vis_dpd.dpdCalibratedFrame ):
                 raise ValueError( "Data image product from " +
                                  frame_product_filename + " is invalid type." )
-    
+
             frame_data_filename = os.path.join( workdir, frame_prod.get_data_filename() )
-    
+
             frame_data_hdulist = fits.open( 
                 frame_data_filename, **kwargs )
-    
+
             # Load in the data from the background frame
             bkg_data_filename = os.path.join( workdir, frame_prod.get_bkg_filename() )
-    
+
             bkg_data_hdulist = fits.open( 
                 bkg_data_filename, **kwargs )
         else:
@@ -235,7 +236,7 @@ class SHEFrame( object ):
         if seg_filename is not None:
 
             qualified_seg_filename = os.path.join( workdir, seg_filename )
-    
+
             seg_data_hdulist = fits.open( 
                 qualified_seg_filename, **kwargs )
         else:
@@ -245,7 +246,7 @@ class SHEFrame( object ):
             for y_i in np.linspace( 1, y_max, y_max, dtype = np.int8 ):
 
                 id_string = SHE_PPT.detector.get_id_string( x_i, y_i )
-                
+
                 if frame_data_hdulist is not None:
 
                     sci_extname = id_string + "." + mv.sci_tag
@@ -254,31 +255,31 @@ class SHEFrame( object ):
                         continue  # Don't raise here; might be just using limited number
                     detector_data = frame_data_hdulist[sci_i].data.transpose()
                     detector_header = frame_data_hdulist[sci_i].header
-                    detector_wcs = load_wcs(detector_header)
-    
+                    detector_wcs = load_wcs( detector_header )
+
                     noisemap_extname = id_string + "." + mv.noisemap_tag
                     noisemap_i = find_extension( frame_data_hdulist, noisemap_extname )
                     if noisemap_i is None:
                         raise ValueError( "No corresponding noisemap extension found in file " + frame_data_filename + "." +
                                          "Expected extname: " + noisemap_extname )
                     detector_noisemap = frame_data_hdulist[noisemap_i].data.transpose()
-    
+
                     mask_extname = id_string + "." + mv.mask_tag
                     mask_i = find_extension( frame_data_hdulist, mask_extname )
                     if mask_i is None:
                         raise ValueError( "No corresponding mask extension found in file " + frame_data_filename + "." +
                                          "Expected extname: " + mask_extname )
                     detector_mask = frame_data_hdulist[mask_i].data.transpose()
-                    
+
                 else:
                     detector_data = None
                     detector_header = None
                     detector_wcs = None
                     detector_noisemap = None
                     detector_mask = None
-                    
+
                 if bkg_data_hdulist is not None:
-                    bkg_extname = id_string # Background has no tag
+                    bkg_extname = id_string  # Background has no tag
                     bkg_i = find_extension( bkg_data_hdulist, bkg_extname )
                     if bkg_i is None:
                         raise ValueError( "No corresponding background extension found in file " + frame_data_filename + "." +
@@ -307,17 +308,17 @@ class SHEFrame( object ):
 
         # Load in the PSF data
         if psf_filename is not None:
-    
+
             qualified_psf_filename = os.path.join( workdir, psf_filename )
-    
+
             psf_data_hdulist = fits.open( 
                 qualified_psf_filename, **kwargs )
-            
-            psf_cat_i = find_extension(psf_data_hdulist, mv.psf_cat_tag)
+
+            psf_cat_i = find_extension( psf_data_hdulist, mv.psf_cat_tag )
             psf_cat = Table.read( psf_data_hdulist[psf_cat_i] )
-            
-            if not is_in_format(psf_cat,pstf):
-                raise ValueError("PSF table from " + qualified_psf_filename + " is in invalid format.")
+
+            if not is_in_format( psf_cat, pstf ):
+                raise ValueError( "PSF table from " + qualified_psf_filename + " is in invalid format." )
         else:
             psf_data_hdulist = None
             psf_cat = None
