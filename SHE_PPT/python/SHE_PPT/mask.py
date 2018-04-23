@@ -13,7 +13,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-""" 
+"""
 File: mask.py
 
 Created on: 26 Oct, 2017
@@ -21,7 +21,7 @@ Created on: 26 Oct, 2017
 This module contains definitions of mask bits and various functions for testing
 if a mask matches certain mask bits. All the functions return arrays in the
 same data type as the mask array passed to them (or the tested mask bit if it's
-of a larger dtype). If a bool array is desired to save space, the as_bool 
+of a larger dtype). If a bool array is desired to save space, the as_bool
 function can be used to obtain this.
 """
 
@@ -60,103 +60,103 @@ masked_near_edge = 262144
 
 # Some compiled mask values for all "bad" or "suspect" cases
 
-masked_bad = ( masked_hot_pixel | masked_cold_pixel | masked_saturated_pixel | masked_cosmic_ray |
+masked_bad = (masked_hot_pixel | masked_cold_pixel | masked_saturated_pixel | masked_cosmic_ray |
                masked_satellite_trail | masked_bleeding | masked_onboard | masked_bad_pixel |
                masked_nonlinear_pixel | masked_persistent_charge_pixel | masked_ghost |
                masked_transient_object | masked_extended_object | masked_scattered_light |
-               masked_charge_injection | masked_off_image )
-masked_suspect = ( masked_near_charge_injection | masked_near_edge )
+               masked_charge_injection | masked_off_image)
+masked_suspect = (masked_near_charge_injection | masked_near_edge)
 
 masked_suspect_or_bad = masked_suspect | masked_bad
 
-def as_bool( a ):
+def as_bool(a):
     """ Converts a scalar int into a bool or an array of ints into an array of bools.
-    
+
     Args:
         a: scalar int or array of ints
     """
 
-    if np.isscalar( a ):
-        return bool( a )
+    if np.isscalar(a):
+        return bool(a)
     else:
-        return a.astype( bool )
+        return a.astype(bool)
 
 # Various convenience functions to return bools (or arrays of bools) based on a mask test
 
-def is_masked_with( a, mask_value ):
+def is_masked_with(a, mask_value):
     """ Tests if a mask matches a particular mask value (or combination). Mostly so that
     users don't have to worry about bit-comparison syntax.
-  
+
     Args:
-        a: Integer mask array to test 
+        a: Integer mask array to test
         mask_value: Integer mask value to test against
     """
 
     return a & mask_value
 
-def is_masked_bad( a ):
+def is_masked_bad(a):
     """ Tests if a mask matches the mask for all possible bad (but not just suspect) bits.
-  
+
     Args:
-        a: Integer mask array to test 
+        a: Integer mask array to test
     """
 
     return a & masked_bad
 
-def is_masked_suspect( a ):
+def is_masked_suspect(a):
     """ Tests if a mask matches the mask for all possible suspect (but not bad) bits.
-  
+
     Args:
-        a: Integer mask array to test 
+        a: Integer mask array to test
     """
 
     return a & masked_suspect
 
-def is_masked_suspect_or_bad( a ):
+def is_masked_suspect_or_bad(a):
     """ Tests if a mask matches the mask for all possible suspect or bad bits.
-  
+
     Args:
-        a: Integer mask array to test 
+        a: Integer mask array to test
     """
 
     return a & masked_suspect_or_bad
 
 # Inverse mask tests - will return true if not masked
 
-def is_not_masked_with( a, mask_value ):
+def is_not_masked_with(a, mask_value):
     """ Tests if a mask does not match a particular mask value (or combination). Mostly so that
     users don't have to worry about bit-comparison syntax.
-  
+
     Args:
-        a: Integer mask array to test 
+        a: Integer mask array to test
         mask_value: Integer mask value to test against
     """
 
-    return np.logical_not( a & mask_value )
+    return np.logical_not(a & mask_value)
 
-def is_not_masked_bad( a ):
+def is_not_masked_bad(a):
     """ Tests if a mask does not match the mask for all possible bad (but not just suspect) bits.
-  
+
     Args:
-        a: Integer mask array to test 
+        a: Integer mask array to test
     """
 
-    return np.logical_not( a & masked_bad )
+    return np.logical_not(a & masked_bad)
 
-def is_not_masked_suspect( a ):
+def is_not_masked_suspect(a):
     """ Tests if a mask does not match the mask for all possible suspect (but not bad) bits.
-  
+
     Args:
-        a: Integer mask array to test 
+        a: Integer mask array to test
     """
 
-    return np.logical_not( a & masked_suspect )
+    return np.logical_not(a & masked_suspect)
 
-def is_not_masked_suspect_or_bad( a ):
+def is_not_masked_suspect_or_bad(a):
     """ Tests if a mask does not match the mask for all possible suspect or bad bits.
-  
+
     Args:
-        a: Integer mask array to test 
+        a: Integer mask array to test
     """
 
-    return np.logical_not( a & masked_suspect_or_bad )
+    return np.logical_not(a & masked_suspect_or_bad)

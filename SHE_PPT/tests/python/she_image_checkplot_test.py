@@ -33,7 +33,7 @@ import numpy as np
 
 
 import logging
-logging.basicConfig(format='%(levelname)s: %(name)s(%(funcName)s): %(message)s', level=logging.DEBUG)
+logging.basicConfig(format = '%(levelname)s: %(name)s(%(funcName)s): %(message)s', level = logging.DEBUG)
 
 
 class Testshe_image_checkplot(object):
@@ -44,7 +44,7 @@ class Testshe_image_checkplot(object):
     @classmethod
     def setup_class(cls):
         cls.testfilepath = "test_checkplot.png"
-       
+
     @classmethod
     def teardown_class(cls):
         pass
@@ -53,54 +53,54 @@ class Testshe_image_checkplot(object):
 
     def test_checkplot(self):
         """
-        
+
         """
 
         # Get some SHEImage
-        
+
         array = np.random.randn(30, 20)
         array[4, 2] = 10
-        mask = np.zeros(array.shape, dtype=bool)
-        mask[10:15,:]=True
-        img = SHE_PPT.she_image.SHEImage(array, mask=mask)
-        
-        checkplot = SHE_PPT.she_image_checkplot.Checkplot(img, scale=20)
+        mask = np.zeros(array.shape, dtype = bool)
+        mask[10:15, :] = True
+        img = SHE_PPT.she_image.SHEImage(array, mask = mask)
+
+        checkplot = SHE_PPT.she_image_checkplot.Checkplot(img, scale = 20)
         checkplot.save_to_file(self.testfilepath)
-        
+
     def test_checkplot_interactive(self):
         """Don't leave this function in production tests!
         It's purpose is more to demonstrate and play with new checkplot features!
         """
-        
+
         """
         (X, Y) = np.mgrid[0:30,0:20]
         array = np.sin(0.3*X) + np.sin(0.2*Y) + 0.3*np.random.randn(30, 20)
         mask = np.zeros(array.shape, dtype=bool)
         mask[22:25,5:12]=True
         img = SHE_PPT.she_image.SHEImage(array, mask=mask)
-        
+
         checkplot = SHE_PPT.she_image_checkplot.Checkplot(img, z1=-1.5, z2=1.5, scale=15)
         checkplot.save_to_file("/home/user/Desktop/img.png")
-        
-        
+
+
         stamp = img.extract_stamp(0.5, 0.5, 5)
         checkplot = SHE_PPT.she_image_checkplot.Checkplot(stamp, z1=-1.5, z2=1.5, scale=20)
         checkplot.save_to_file("/home/user/Desktop/stamp1.png")
-        
+
         stamp = img.extract_stamp(30.5, 10.5, 30, 40)
         checkplot = SHE_PPT.she_image_checkplot.Checkplot(stamp, z1=-1.5, z2=1.5, scale=10)
         checkplot.save_to_file("/home/user/Desktop/stamp2.png")
-        
+
         assert False
         """
-    
-    
-    
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
+
+
 

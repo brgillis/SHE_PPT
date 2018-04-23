@@ -3,7 +3,7 @@
     Created 17 Nov 2017
 
     Functions to create and output a validated_shear_estimates data product.
-    
+
     Origin: OU-SHE - Output from Analysis pipeline; must be persistent in archive.
 """
 
@@ -45,37 +45,37 @@ def init():
 
     return
 
-def __set_filename( self, filename ):
+def __set_filename(self, filename):
     self.Data.DataContainer.FileName = filename
 
-def __get_filename( self ):
+def __get_filename(self):
     return self.Data.DataContainer.FileName
 
-def __get_all_filenames( self ):
+def __get_all_filenames(self):
 
     all_filenames = []
 
     return all_filenames
 
 class DpdSheValidatedShearEstimatesProduct:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.Header = None
         self.Data = None
-    def validateBinding( self ):
+    def validateBinding(self):
         return False
 
 class SheValidatedShearEstimatesProduct:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
 
 class DataContainer:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.FileName = None
         self.filestatus = None
 
-def create_dpd_she_validated_shear_estimates( filename = None ):
+def create_dpd_she_validated_shear_estimates(filename = None):
     """
         @TODO fill in docstring
     """
@@ -86,14 +86,14 @@ def create_dpd_she_validated_shear_estimates( filename = None ):
     # dpd_she_validated_shear_estimates.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
     dpd_she_validated_shear_estimates.Header = "SHE"
 
-    dpd_she_validated_shear_estimates.Data = create_she_validated_shear_estimates( filename )
+    dpd_she_validated_shear_estimates.Data = create_she_validated_shear_estimates(filename)
 
     return dpd_she_validated_shear_estimates
 
 # Add a useful alias
 create_validated_shear_estimates_product = create_dpd_she_validated_shear_estimates
 
-def create_she_validated_shear_estimates( filename = None ):
+def create_she_validated_shear_estimates(filename = None):
     """
         @TODO fill in docstring
     """

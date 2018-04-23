@@ -3,7 +3,7 @@
     Created 17 Nov 2017
 
     Functions to create and output a simulation_config data product.
-    
+
     Origin: OU-SHE - Internal to Calibration pipeline.
 """
 
@@ -43,37 +43,37 @@ def init():
 
     return
 
-def __set_filename( self, filename ):
+def __set_filename(self, filename):
     self.Data.DataContainer.FileName = filename
 
-def __get_filename( self ):
+def __get_filename(self):
     return self.Data.DataContainer.FileName
 
-def __get_all_filenames( self ):
+def __get_all_filenames(self):
 
     all_filenames = []
 
     return all_filenames
 
 class DpdSheSimulationConfigProduct:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.Header = None
         self.Data = None
-    def validateBinding( self ):
+    def validateBinding(self):
         return False
 
 class SheSimulationConfigProduct:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
 
 class DataContainer:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.FileName = None
         self.filestatus = None
 
-def create_dpd_she_simulation_config( filename = None ):
+def create_dpd_she_simulation_config(filename = None):
     """
         @TODO fill in docstring
     """
@@ -84,14 +84,14 @@ def create_dpd_she_simulation_config( filename = None ):
     # dpd_she_simulation_config.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
     dpd_she_simulation_config.Header = "SHE"
 
-    dpd_she_simulation_config.Data = create_she_simulation_config( filename )
+    dpd_she_simulation_config.Data = create_she_simulation_config(filename)
 
     return dpd_she_simulation_config
 
 # Add a useful alias
 create_simulation_config_product = create_dpd_she_simulation_config
 
-def create_she_simulation_config( filename = None ):
+def create_she_simulation_config(filename = None):
     """
         @TODO fill in docstring
     """

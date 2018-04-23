@@ -29,14 +29,14 @@ from astropy.table import Table
 import numpy as np
 
 
-logger = getLogger( mv.logger_name )
+logger = getLogger(mv.logger_name)
 
-class PSFTableMeta( object ):
+class PSFTableMeta(object):
     """
         @brief A class defining the metadata for PSF tables.
     """
 
-    def __init__( self ):
+    def __init__(self):
 
         self.__version__ = "0.3"
         self.table_format = "she.psfTable"
@@ -52,24 +52,24 @@ class PSFTableMeta( object ):
         self.noise_seed = mv.noise_seed_label
 
         # Store the less-used comments in a dict
-        self.comments = OrderedDict( ( ( self.version, None ),
-                                     ( self.format, None ),
-                                     ( self.extname, mv.psf_cat_tag ),
-                                     ( self.model_hash, None ),
-                                     ( self.model_seed, None ),
-                                     ( self.noise_seed, None ),
-                                   ) )
+        self.comments = OrderedDict(((self.version, None),
+                                     (self.format, None),
+                                     (self.extname, mv.psf_cat_tag),
+                                     (self.model_hash, None),
+                                     (self.model_seed, None),
+                                     (self.noise_seed, None),
+                                   ))
 
         # A list of columns in the desired order
-        self.all = list( self.comments.keys() )
+        self.all = list(self.comments.keys())
 
-class PSFTableFormat( object ):
+class PSFTableFormat(object):
     """
         @brief A class defining the format for detections tables. Only the psf_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
-    def __init__( self ):
+    def __init__(self):
 
         # Get the metadata (contained within its own class)
         self.meta = PSFTableMeta()
@@ -90,8 +90,8 @@ class PSFTableFormat( object ):
         self.fits_dtypes = OrderedDict()
         self.lengths = OrderedDict()
 
-        def set_column_properties( name, is_optional = False, comment = None, dtype = ">f4", fits_dtype = "E",
-                                   length = 1 ):
+        def set_column_properties(name, is_optional = False, comment = None, dtype = ">f4", fits_dtype = "E",
+                                   length = 1):
 
             assert name not in self.is_optional
 
@@ -105,26 +105,26 @@ class PSFTableFormat( object ):
 
         # Column names and info
 
-        self.ID = set_column_properties( "Object ID", dtype = ">i8", fits_dtype = "K" )
+        self.ID = set_column_properties("Object ID", dtype = ">i8", fits_dtype = "K")
 
-        self.template = set_column_properties( "SED template", dtype = ">i8", fits_dtype = "K", comment = "TBD" )
+        self.template = set_column_properties("SED template", dtype = ">i8", fits_dtype = "K", comment = "TBD")
 
-        self.bulge_index = set_column_properties( "Bulge Index", dtype = ">i4", fits_dtype = "J",
-                                                 comment = "HDU index of bulge PSF image" )
-        self.disk_index = set_column_properties( "Disk Index", dtype = ">i4", fits_dtype = "J",
-                                                comment = "HDU index of disk PSF image" )
+        self.bulge_index = set_column_properties("Bulge Index", dtype = ">i4", fits_dtype = "J",
+                                                 comment = "HDU index of bulge PSF image")
+        self.disk_index = set_column_properties("Disk Index", dtype = ">i4", fits_dtype = "J",
+                                                comment = "HDU index of disk PSF image")
 
-        self.cal_time = set_column_properties( "PSF Calibration Timestamp", dtype = "S", fits_dtype = "A", length = 20, is_optional = True )
-        self.field_time = set_column_properties( "PSF Field Timestamp", dtype = "S", fits_dtype = "A", length = 20, is_optional = True )
+        self.cal_time = set_column_properties("PSF Calibration Timestamp", dtype = "S", fits_dtype = "A", length = 20, is_optional = True)
+        self.field_time = set_column_properties("PSF Field Timestamp", dtype = "S", fits_dtype = "A", length = 20, is_optional = True)
 
         # A list of columns in the desired order
-        self.all = list( self.is_optional.keys() )
+        self.all = list(self.is_optional.keys())
 
         # A list of required columns in the desired order
         self.all_required = []
         for label in self.all:
             if not self.is_optional[label]:
-                self.all_required.append( label )
+                self.all_required.append(label)
 
 # Define an instance of this object that can be imported
 psf_table_format = PSFTableFormat()
@@ -133,20 +133,20 @@ psf_table_format = PSFTableFormat()
 tf = psf_table_format
 
 
-def make_psf_table_header( model_hash = None,
+def make_psf_table_header(model_hash = None,
                           model_seed = None,
-                          noise_seed = None ):
+                          noise_seed = None):
     """
         @brief Generate a header for a PSF table.
-        
+
         @param detector <int?> Detector for this image, if applicable
-        
+
         @param model_hash <int> Hash of the physical model options dictionary
-        
+
         @param model_seed <int> Full seed used for the physical model for this image
-        
+
         @param noise_seed <int> Seed used for generating noise for this image
-        
+
         @return header <OrderedDict>
     """
 
@@ -163,23 +163,23 @@ def make_psf_table_header( model_hash = None,
 
     return header
 
-def initialise_psf_table( image = None,
+def initialise_psf_table(image = None,
                          options = None,
                          optional_columns = None,
                          model_hash = None,
                          model_seed = None,
                          noise_seed = None,
-                         init_columns = {} ):
+                         init_columns = {}):
     """
         @brief Initialise a PSF table.
-        
-        @param image <SHE_SIM.Image> 
-        
+
+        @param image <SHE_SIM.Image>
+
         @param options <dict> Options dictionary
-        
+
         @param optional_columns <list<str>> List of names for optional columns to include.
                Default is psf_x and psf_y
-        
+
         @return detections_table <astropy.Table>
     """
 
@@ -189,27 +189,27 @@ def initialise_psf_table( image = None,
         # Check all optional columns are valid
         for colname in optional_columns:
             if colname not in tf.all:
-                raise ValueError( "Invalid optional column name: " + colname )
+                raise ValueError("Invalid optional column name: " + colname)
 
     names = []
     init_cols = []
     dtypes = []
     for colname in tf.all:
-        if ( colname in tf.all_required ) or ( colname in optional_columns ):
-            names.append( colname )
+        if (colname in tf.all_required) or (colname in optional_columns):
+            names.append(colname)
 
-            dtype = ( tf.dtypes[colname], tf.lengths[colname] )
+            dtype = (tf.dtypes[colname], tf.lengths[colname])
 
             if colname in init_columns:
-                init_cols.append( init_columns[colname] )
-            elif len( init_columns ) > 0:
-                init_cols.append( np.zeros( len( init_columns.values[0] ), dtype = dtype ) )
+                init_cols.append(init_columns[colname])
+            elif len(init_columns) > 0:
+                init_cols.append(np.zeros(len(init_columns.values[0]), dtype = dtype))
             else:
-                init_cols.append( [] )
+                init_cols.append([])
 
-            dtypes.append( dtype )
+            dtypes.append(dtype)
 
-    psf_table = Table( init_cols, names = names, dtype = dtypes )
+    psf_table = Table(init_cols, names = names, dtype = dtypes)
 
     if image is not None:
 
@@ -222,14 +222,14 @@ def initialise_psf_table( image = None,
 
         # Get values from the options dict, unless they were passed explicitly
         if model_hash is None:
-            model_hash = hash_any( frozenset( list( options.items() ) ), format = "base64" )
+            model_hash = hash_any(frozenset(list(options.items())), format = "base64")
         if noise_seed is None:
             noise_seed = options['noise_seed']
 
-    psf_table.meta = make_psf_table_header( model_hash = model_hash,
+    psf_table.meta = make_psf_table_header(model_hash = model_hash,
                                            model_seed = model_seed,
-                                           noise_seed = noise_seed )
+                                           noise_seed = noise_seed)
 
-    assert( is_in_format( psf_table, tf ) )
+    assert(is_in_format(psf_table, tf))
 
     return psf_table

@@ -3,7 +3,7 @@
     Created 17 Nov 2017
 
     Functions to create and output a galaxy_population data product.
-    
+
     Origin: OU-SHE - Input to Calibration pipeline; needs to be implemented in data model.
 """
 
@@ -45,37 +45,37 @@ def init():
 
     return
 
-def __set_filename( self, filename ):
+def __set_filename(self, filename):
     self.Data.DataContainer.FileName = filename
 
-def __get_filename( self ):
+def __get_filename(self):
     return self.Data.DataContainer.FileName
 
-def __get_all_filenames( self ):
+def __get_all_filenames(self):
 
     all_filenames = []
 
     return all_filenames
 
 class DpdSheGalaxyPopulationProduct:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.Header = None
         self.Data = None
-    def validateBinding( self ):
+    def validateBinding(self):
         return False
 
 class SheGalaxyPopulationProduct:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
 
 class DataContainer:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.FileName = None
         self.filestatus = None
 
-def create_dpd_she_galaxy_population( filename = None ):
+def create_dpd_she_galaxy_population(filename = None):
     """
         @TODO fill in docstring
     """
@@ -86,14 +86,14 @@ def create_dpd_she_galaxy_population( filename = None ):
     # dpd_she_galaxy_population.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
     dpd_she_galaxy_population.Header = "SHE"
 
-    dpd_she_galaxy_population.Data = create_she_galaxy_population( filename )
+    dpd_she_galaxy_population.Data = create_she_galaxy_population(filename)
 
     return dpd_she_galaxy_population
 
 # Add a useful alias
 create_galaxy_population_product = create_dpd_she_galaxy_population
 
-def create_she_galaxy_population( filename = None ):
+def create_she_galaxy_population(filename = None):
     """
         @TODO fill in docstring
     """

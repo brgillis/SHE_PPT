@@ -3,7 +3,7 @@
     Created 17 Nov 2017
 
     Functions to create and output a stacked_frame data product.
-    
+
     Origin: OU-VIS
 """
 
@@ -57,71 +57,71 @@ def init():
 
     return
 
-def __set_data_filename( self, filename ):
+def __set_data_filename(self, filename):
     self.Data.DataStorage.DataContainer.FileName = filename
 
-def __get_data_filename( self ):
+def __get_data_filename(self):
     return self.Data.DataStorage.DataContainer.FileName
 
-def __set_psf_filename( self, filename ):
-    if not hasattr( self.Data, "PsfModelStorage" ):
-        self.Data.PsfModelStorage = create_vis_data_storage( filename )
+def __set_psf_filename(self, filename):
+    if not hasattr(self.Data, "PsfModelStorage"):
+        self.Data.PsfModelStorage = create_vis_data_storage(filename)
     elif self.Data.PsfModelStorage is None:
-        self.Data.PsfModelStorage = create_vis_data_storage( filename )
+        self.Data.PsfModelStorage = create_vis_data_storage(filename)
     else:
         self.Data.PsfModelStorage.DataContainer.FileName = filename
 
-def __get_psf_filename( self ):
-    if hasattr( self.Data, "PsfModelStorage" ):
+def __get_psf_filename(self):
+    if hasattr(self.Data, "PsfModelStorage"):
         if self.Data.PsfModelStorage is not None:
             return self.Data.PsfModelStorage.DataContainer.FileName
     return None
 
-def __set_bkg_filename( self, filename ):
-    if not hasattr( self.Data, "BackgroundStorage" ):
-        self.Data.BackgroundStorage = create_vis_data_storage( filename )
+def __set_bkg_filename(self, filename):
+    if not hasattr(self.Data, "BackgroundStorage"):
+        self.Data.BackgroundStorage = create_vis_data_storage(filename)
     elif self.Data.BackgroundStorage is None:
-        self.Data.BackgroundStorage = create_vis_data_storage( filename )
+        self.Data.BackgroundStorage = create_vis_data_storage(filename)
     else:
         self.Data.BackgroundStorage.DataContainer.FileName = filename
 
-def __get_bkg_filename( self ):
-    if hasattr( self.Data, "BackgroundStorage" ):
+def __get_bkg_filename(self):
+    if hasattr(self.Data, "BackgroundStorage"):
         if self.Data.BackgroundStorage is not None:
             return self.Data.BackgroundStorage.DataContainer.FileName
     return None
 
-def __set_wgt_filename( self, filename ):
-    if not hasattr( self.Data, "WeightStorage" ):
-        self.Data.WeightStorage = create_vis_data_storage( filename )
+def __set_wgt_filename(self, filename):
+    if not hasattr(self.Data, "WeightStorage"):
+        self.Data.WeightStorage = create_vis_data_storage(filename)
     elif self.Data.WeightStorage is None:
-        self.Data.WeightStorage = create_vis_data_storage( filename )
+        self.Data.WeightStorage = create_vis_data_storage(filename)
     else:
         self.Data.WeightStorage.DataContainer.FileName = filename
 
-def __get_wgt_filename( self ):
-    if hasattr( self.Data, "WeightStorage" ):
+def __get_wgt_filename(self):
+    if hasattr(self.Data, "WeightStorage"):
         if self.Data.WeightStorage is not None:
             return self.Data.WeightStorage.DataContainer.FileName
     return None
 
-def create_dpd_vis_stacked_frame( filename = "default_filename" ):
+def create_dpd_vis_stacked_frame(filename = "default_filename"):
     """
         @TODO fill in docstring
     """
 
     dpd_vis_stacked_frame = vis_dpd.dpdVisStackedFrame()
 
-    dpd_vis_stacked_frame.Header = HeaderProvider.createGenericHeader( "VIS" )
+    dpd_vis_stacked_frame.Header = HeaderProvider.createGenericHeader("VIS")
 
-    dpd_vis_stacked_frame.Data = create_vis_stacked_frame( filename )
+    dpd_vis_stacked_frame.Data = create_vis_stacked_frame(filename)
 
     return dpd_vis_stacked_frame
 
 # Add a useful alias
 create_stacked_frame_product = create_dpd_vis_stacked_frame
 
-def create_vis_stacked_frame( filename = "default_filename" ):
+def create_vis_stacked_frame(filename = "default_filename"):
     """
         @TODO fill in docstring
     """
@@ -141,7 +141,7 @@ def create_vis_stacked_frame( filename = "default_filename" ):
     vis_stacked_frame.format = "UNDEFINED"
     vis_stacked_frame.version = "0.0"
 
-    vis_stacked_frame.DataStorage = create_vis_data_storage( filename )
+    vis_stacked_frame.DataStorage = create_vis_data_storage(filename)
 
     return vis_stacked_frame
 
@@ -158,8 +158,8 @@ def create_vis_wcs():
 
     vis_wcs = wcs()
 
-    vis_wcs.CTYPE1 = create_vis_projection_type( "RA", "SIN" )
-    vis_wcs.CTYPE2 = create_vis_projection_type( "DEC", "SIN" )
+    vis_wcs.CTYPE1 = create_vis_projection_type("RA", "SIN")
+    vis_wcs.CTYPE2 = create_vis_projection_type("DEC", "SIN")
 
     vis_wcs.CRVAL1 = 3.0
     vis_wcs.CRVAL2 = 4.0
@@ -173,7 +173,7 @@ def create_vis_wcs():
 
     return vis_wcs
 
-def create_vis_projection_type( CoordinateType, ProjectionType ):
+def create_vis_projection_type(CoordinateType, ProjectionType):
 
     projection_type = projectionType()
 
@@ -191,7 +191,7 @@ def create_vis_zeropoint():
 
     return zeropoint
 
-def create_vis_data_storage( filename, format = "vis.reducedFrameVIS", version = "0.0", filestatus = "PROPOSED" ):
+def create_vis_data_storage(filename, format = "vis.reducedFrameVIS", version = "0.0", filestatus = "PROPOSED"):
 
     data_storage = vis_pro.reducedFrameFitsFileVIS()
 

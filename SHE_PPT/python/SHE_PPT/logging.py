@@ -25,14 +25,14 @@ try:
 except ImportError as _e:
     from . import logging as log
 
-def getLogger( name = None ):
+def getLogger(name = None):
     """
         @brief Forwards a request for a logger to the proper logging module.
-        
+
         @param name
             The name of the program whose logger we want to get
-        
+
         @returns
             The logger
     """
-    return log.getLogger( name )
+    return log.getLogger(name)

@@ -19,7 +19,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-def get_ADU_from_count( c, gain ):
+def get_ADU_from_count(c, gain):
     """ Calculate the intensity in ADU from count with the given gain.
 
         @param c The electron count
@@ -30,7 +30,7 @@ def get_ADU_from_count( c, gain ):
 
     return c / gain
 
-def get_count_from_ADU( I, gain ):
+def get_count_from_ADU(I, gain):
     """ Calculate the electron count from intensity in units of ADU with the given gain.
 
         @param I The intensity in units of ADU

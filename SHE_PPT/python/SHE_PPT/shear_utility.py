@@ -20,24 +20,24 @@
 
 import math
 
-def get_g_from_e( e1, e2 ):
+def get_g_from_e(e1, e2):
     """
     @brief
         Calculates the g-style shear from e-style
-        
+
     @param e1
     @param e2
-    
+
     @return g1, g2
     """
 
-    e = math.sqrt( e1 * e1 + e2 * e2 )
-    beta = math.atan2( e2, e1 )
+    e = math.sqrt(e1 * e1 + e2 * e2)
+    beta = math.atan2(e2, e1)
 
-    r2 = ( 1. - e ) / ( 1. + e )
+    r2 = (1. - e) / (1. + e)
 
-    r = math.sqrt( r2 )
+    r = math.sqrt(r2)
 
-    g = ( 1. - r ) / ( 1. + r )
+    g = (1. - r) / (1. + r)
 
-    return g * math.cos( beta ), g * math.sin( beta )
+    return g * math.cos(beta), g * math.sin(beta)

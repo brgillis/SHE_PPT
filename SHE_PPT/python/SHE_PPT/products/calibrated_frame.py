@@ -3,7 +3,7 @@
     Created 17 Nov 2017
 
     Functions to create and output a calibrated_frame data product.
-    
+
     Origin: OU-VIS
 """
 
@@ -53,71 +53,71 @@ def init():
 
     return
 
-def __set_data_filename( self, filename ):
+def __set_data_filename(self, filename):
     self.Data.DataStorage.DataContainer.FileName = filename
 
-def __get_data_filename( self ):
+def __get_data_filename(self):
     return self.Data.DataStorage.DataContainer.FileName
 
-def __set_psf_filename( self, filename ):
-    if not hasattr( self.Data, "PsfModelStorage" ):
-        self.Data.PsfModelStorage = create_vis_data_storage( filename )
+def __set_psf_filename(self, filename):
+    if not hasattr(self.Data, "PsfModelStorage"):
+        self.Data.PsfModelStorage = create_vis_data_storage(filename)
     elif self.Data.PsfModelStorage is None:
-        self.Data.PsfModelStorage = create_vis_data_storage( filename )
+        self.Data.PsfModelStorage = create_vis_data_storage(filename)
     else:
         self.Data.PsfModelStorage.DataContainer.FileName = filename
 
-def __get_psf_filename( self ):
-    if hasattr( self.Data, "PsfModelStorage" ):
+def __get_psf_filename(self):
+    if hasattr(self.Data, "PsfModelStorage"):
         if self.Data.PsfModelStorage is not None:
             return self.Data.PsfModelStorage.DataContainer.FileName
     return None
 
-def __set_bkg_filename( self, filename ):
-    if not hasattr( self.Data, "BackgroundStorage" ):
-        self.Data.BackgroundStorage = create_vis_data_storage( filename )
+def __set_bkg_filename(self, filename):
+    if not hasattr(self.Data, "BackgroundStorage"):
+        self.Data.BackgroundStorage = create_vis_data_storage(filename)
     elif self.Data.BackgroundStorage is None:
-        self.Data.BackgroundStorage = create_vis_data_storage( filename )
+        self.Data.BackgroundStorage = create_vis_data_storage(filename)
     else:
         self.Data.BackgroundStorage.DataContainer.FileName = filename
 
-def __get_bkg_filename( self ):
-    if hasattr( self.Data, "BackgroundStorage" ):
+def __get_bkg_filename(self):
+    if hasattr(self.Data, "BackgroundStorage"):
         if self.Data.BackgroundStorage is not None:
             return self.Data.BackgroundStorage.DataContainer.FileName
     return None
 
-def __set_wgt_filename( self, filename ):
-    if not hasattr( self.Data, "WeightStorage" ):
-        self.Data.WeightStorage = create_vis_data_storage( filename )
+def __set_wgt_filename(self, filename):
+    if not hasattr(self.Data, "WeightStorage"):
+        self.Data.WeightStorage = create_vis_data_storage(filename)
     elif self.Data.WeightStorage is None:
-        self.Data.WeightStorage = create_vis_data_storage( filename )
+        self.Data.WeightStorage = create_vis_data_storage(filename)
     else:
         self.Data.WeightStorage.DataContainer.FileName = filename
 
-def __get_wgt_filename( self ):
-    if hasattr( self.Data, "WeightStorage" ):
+def __get_wgt_filename(self):
+    if hasattr(self.Data, "WeightStorage"):
         if self.Data.WeightStorage is not None:
             return self.Data.WeightStorage.DataContainer.FileName
     return None
 
-def create_dpd_vis_calibrated_frame( filename = 'vis_calibrated_frame.fits' ):
+def create_dpd_vis_calibrated_frame(filename = 'vis_calibrated_frame.fits'):
     """
         @TODO fill in docstring
     """
 
     dpd_vis_calibrated_frame = vis_dpd.dpdCalibratedFrame()
 
-    dpd_vis_calibrated_frame.Header = HeaderProvider.createGenericHeader( "VIS" )
+    dpd_vis_calibrated_frame.Header = HeaderProvider.createGenericHeader("VIS")
 
-    dpd_vis_calibrated_frame.Data = create_vis_calibrated_frame( filename )
+    dpd_vis_calibrated_frame.Data = create_vis_calibrated_frame(filename)
 
     return dpd_vis_calibrated_frame
 
 # Add a useful alias
 create_calibrated_frame_product = create_dpd_vis_calibrated_frame
 
-def create_vis_calibrated_frame( filename = None ):
+def create_vis_calibrated_frame(filename = None):
     """
         @TODO fill in docstring
     """
@@ -147,7 +147,7 @@ def create_vis_calibrated_frame( filename = None ):
 
     # Attributes unique to calibratedFrameVis
 
-    vis_calibrated_frame.DataStorage = create_vis_data_storage( filename, "vis.reducedFrameVIS" )
+    vis_calibrated_frame.DataStorage = create_vis_data_storage(filename, "vis.reducedFrameVIS")
 
     return vis_calibrated_frame
 
@@ -218,7 +218,7 @@ def create_vis_charged_induced():
 
     return charged_induced
 
-def create_vis_data_storage( filename, format = "vis.reducedFrameVIS", version = "0.0", filestatus = "PROPOSED" ):
+def create_vis_data_storage(filename, format = "vis.reducedFrameVIS", version = "0.0", filestatus = "PROPOSED"):
 
     data_storage = vis_pro.reducedFrameFitsFileVIS()
 

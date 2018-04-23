@@ -4,7 +4,7 @@
 
     Functions to create and output a stack_mosaic data product, per details at
     http://euclid.esac.esa.int/dm/dpdd/latest/merdpd/dpcards/she_stack_mosaic.html
-    
+
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines. This version is
     converted from MER's version, so we need a separate product for it.
 """
@@ -37,9 +37,9 @@ from astropy.io import fits
 
 
 # Convenience function to easily load the actual map
-def load_stack_mosaic( filename, dir = None, **kwargs ):
+def load_stack_mosaic(filename, dir = None, **kwargs):
     """Directly loads the stack_mosaic image from the filename of the data product.
-    
+
     Parameters
     ----------
     filename : str
@@ -52,12 +52,12 @@ def load_stack_mosaic( filename, dir = None, **kwargs ):
         fully-qualified or relative to the workspace.
     **kwargs
         Keyword arguments to pass to fits.open.
-        
+
     Returns
     -------
     stack_mosaic_hdu : astropy.fits.PrimaryHDU
         fits HDU containing the stack_mosaic image and its header.
-        
+
     Raises
     ------
     IOError
@@ -71,11 +71,11 @@ def load_stack_mosaic( filename, dir = None, **kwargs ):
     if dir is None:
         dir = ""
 
-    stack_mosaic_product = read_xml_product( xml_file_name = os.path.join( dir, filename ) )
+    stack_mosaic_product = read_xml_product(xml_file_name = os.path.join(dir, filename))
 
     data_filename = stack_mosaic_product.get_data_filename()
 
-    stack_mosaic_hdulist = fits.open( data_filename, **kwargs )
+    stack_mosaic_hdulist = fits.open(data_filename, **kwargs)
 
     return stack_mosaic_hdulist[0]
 
@@ -89,7 +89,7 @@ def init():
     # binding_class = she_dpd.DpdSheStackMosaicProduct # @FIXME
     binding_class = DpdSheStackMosaicProduct
 
-    if not hasattr( binding_class, "initialised" ):
+    if not hasattr(binding_class, "initialised"):
         binding_class.initialised = True
     else:
         return
@@ -101,63 +101,63 @@ def init():
 
     return
 
-def __set_data_filename( self, filename ):
+def __set_data_filename(self, filename):
     self.Data.DataStorage.DataContainer.FileName = filename
 
-def __get_data_filename( self ):
+def __get_data_filename(self):
     return self.Data.DataStorage.DataContainer.FileName
 
 class DataContainer:
-    def __init__( self ):
+    def __init__(self):
         self.FileName = None
         self.filestatus = None
 
 class DpdSheStackMosaicProduct:
-    def __init__( self ):
+    def __init__(self):
         self.Header = None
         self.Data = None
-    def validateBinding( self ):
+    def validateBinding(self):
         return True
 
 class SheStackMosaicProduct:
-    def __init__( self ):
+    def __init__(self):
         self.DataStorage = None
 
 class SheDataStorageProduct:
-    def __init__( self ):
+    def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
 
 
-def create_dpd_she_stack_mosaic( data_filename ):
+def create_dpd_she_stack_mosaic(data_filename):
     """
         @TODO fill in docstring
     """
 
     dpd_she_stack_mosaic = DpdSheStackMosaicProduct()
 
-    dpd_she_stack_mosaic.Header = HeaderProvider.createGenericHeader( "SHE" )
+    dpd_she_stack_mosaic.Header = HeaderProvider.createGenericHeader("SHE")
 
-    dpd_she_stack_mosaic.Data = create_she_stack_mosaic( data_filename = data_filename )
+    dpd_she_stack_mosaic.Data = create_she_stack_mosaic(data_filename = data_filename)
 
     return dpd_she_stack_mosaic
 
 # Add a useful alias
 create_stack_mosaic_product = create_dpd_she_stack_mosaic
 
-def create_she_stack_mosaic( data_filename ):
+def create_she_stack_mosaic(data_filename):
     """
         @TODO fill in docstring
     """
 
     she_stack_mosaic = SheStackMosaicProduct()
 
-    she_stack_mosaic.DataStorage = create_she_data_storage( data_filename )
+    she_stack_mosaic.DataStorage = create_she_data_storage(data_filename)
 
     return she_stack_mosaic
 
-def create_she_data_storage( filename ):
+def create_she_data_storage(filename):
 
     # she_data_storage = she_dpd.SheDataStorage() # @FIXME
     she_data_storage = SheDataStorageProduct()

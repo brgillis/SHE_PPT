@@ -3,7 +3,7 @@
     Created 17 Nov 2017
 
     Functions to create and output a shear_validation_stats data product.
-    
+
     Origin: OU-SHE -  Output from Calibration pipeline and input to Analysis pipeline;
     must be persistent in archive.
 """
@@ -46,37 +46,37 @@ def init():
 
     return
 
-def __set_filename( self, filename ):
+def __set_filename(self, filename):
     self.Data.DataContainer.FileName = filename
 
-def __get_filename( self ):
+def __get_filename(self):
     return self.Data.DataContainer.FileName
 
-def __get_all_filenames( self ):
+def __get_all_filenames(self):
 
     all_filenames = []
 
     return all_filenames
 
 class DpdSheShearValidationStatsProduct:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.Header = None
         self.Data = None
-    def validateBinding( self ):
+    def validateBinding(self):
         return False
 
 class SheShearValidationStatsProduct:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
 
 class DataContainer:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.FileName = None
         self.filestatus = None
 
-def create_dpd_she_shear_validation_stats( filename = None ):
+def create_dpd_she_shear_validation_stats(filename = None):
     """
         @TODO fill in docstring
     """
@@ -87,14 +87,14 @@ def create_dpd_she_shear_validation_stats( filename = None ):
     # dpd_she_shear_validation_stats.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
     dpd_she_shear_validation_stats.Header = "SHE"
 
-    dpd_she_shear_validation_stats.Data = create_she_shear_validation_stats( filename )
+    dpd_she_shear_validation_stats.Data = create_she_shear_validation_stats(filename)
 
     return dpd_she_shear_validation_stats
 
 # Add a useful alias
 create_shear_validation_stats_product = create_dpd_she_shear_validation_stats
 
-def create_she_shear_validation_stats( filename = None ):
+def create_she_shear_validation_stats(filename = None):
     """
         @TODO fill in docstring
     """

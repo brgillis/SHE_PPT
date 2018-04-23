@@ -3,7 +3,7 @@
     Created 17 Nov 2017
 
     Functions to create and output a detections data product.
-    
+
     Origin: OU-MER - FinalCatalog (TODO: Confirm) in their data model
 """
 
@@ -45,37 +45,37 @@ def init():
 
     return
 
-def __set_filename( self, filename ):
+def __set_filename(self, filename):
     self.Data.DataContainer.FileName = filename
 
-def __get_filename( self ):
+def __get_filename(self):
     return self.Data.DataContainer.FileName
 
-def __get_all_filenames( self ):
+def __get_all_filenames(self):
 
     all_filenames = []
 
     return all_filenames
 
 class DpdSheDetectionsProduct:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.Header = None
         self.Data = None
-    def validateBinding( self ):
+    def validateBinding(self):
         return False
 
 class SheDetectionsProduct:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
 
 class DataContainer:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.FileName = None
         self.filestatus = None
 
-def create_dpd_she_detections( filename = None ):
+def create_dpd_she_detections(filename = None):
     """
         @TODO fill in docstring
     """
@@ -86,14 +86,14 @@ def create_dpd_she_detections( filename = None ):
     # dpd_she_detections.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
     dpd_she_detections.Header = "SHE"
 
-    dpd_she_detections.Data = create_she_detections( filename )
+    dpd_she_detections.Data = create_she_detections(filename)
 
     return dpd_she_detections
 
 # Add a useful alias
 create_detections_product = create_dpd_she_detections
 
-def create_she_detections( filename = None ):
+def create_she_detections(filename = None):
     """
         @TODO fill in docstring
     """

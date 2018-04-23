@@ -3,7 +3,7 @@
     Created 17 Nov 2017
 
     Functions to create and output a psf_image data product.
-    
+
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines
 """
 
@@ -45,37 +45,37 @@ def init():
 
     return
 
-def __set_filename( self, filename ):
+def __set_filename(self, filename):
     self.Data.DataContainer.FileName = filename
 
-def __get_filename( self ):
+def __get_filename(self):
     return self.Data.DataContainer.FileName
 
-def __get_all_filenames( self ):
+def __get_all_filenames(self):
 
     all_filenames = []
 
     return all_filenames
 
 class DpdShePSFImageProduct:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.Header = None
         self.Data = None
-    def validateBinding( self ):
+    def validateBinding(self):
         return False
 
 class ShePSFImageProduct:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
 
 class DataContainer:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.FileName = None
         self.filestatus = None
 
-def create_dpd_she_psf_image( filename = None ):
+def create_dpd_she_psf_image(filename = None):
     """
         @TODO fill in docstring
     """
@@ -86,14 +86,14 @@ def create_dpd_she_psf_image( filename = None ):
     # dpd_she_psf_image.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
     dpd_she_psf_image.Header = "SHE"
 
-    dpd_she_psf_image.Data = create_she_psf_image( filename )
+    dpd_she_psf_image.Data = create_she_psf_image(filename)
 
     return dpd_she_psf_image
 
 # Add a useful alias
 create_psf_image_product = create_dpd_she_psf_image
 
-def create_she_psf_image( filename = None ):
+def create_she_psf_image(filename = None):
     """
         @TODO fill in docstring
     """

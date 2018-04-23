@@ -3,7 +3,7 @@
     Created 9 Oct 2017
 
     Functions to create and output a shear estimates data product.
-    
+
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines.
 """
 
@@ -56,37 +56,37 @@ def init():
 
     binding_class.has_files = True
 
-def __set_BFD_filename( self, filename ):
+def __set_BFD_filename(self, filename):
     self.Data.BFDShearEstimates.DataContainer.FileName = filename
 
-def __get_BFD_filename( self ):
+def __get_BFD_filename(self):
     return self.Data.BFDShearEstimates.DataContainer.FileName
 
-def __set_KSB_filename( self, filename ):
+def __set_KSB_filename(self, filename):
     self.Data.KSBShearEstimates.DataContainer.FileName = filename
 
-def __get_KSB_filename( self ):
+def __get_KSB_filename(self):
     return self.Data.KSBShearEstimates.DataContainer.FileName
 
-def __set_LensMC_filename( self, filename ):
+def __set_LensMC_filename(self, filename):
     self.Data.LensMCShearEstimates.DataContainer.FileName = filename
 
-def __get_LensMC_filename( self ):
+def __get_LensMC_filename(self):
     return self.Data.LensMCShearEstimates.DataContainer.FileName
 
-def __set_MomentsML_filename( self, filename ):
+def __set_MomentsML_filename(self, filename):
     self.Data.MomentsMLShearEstimates.DataContainer.FileName = filename
 
-def __get_MomentsML_filename( self ):
+def __get_MomentsML_filename(self):
     return self.Data.MomentsMLShearEstimates.DataContainer.FileName
 
-def __set_REGAUSS_filename( self, filename ):
+def __set_REGAUSS_filename(self, filename):
     self.Data.REGAUSSShearEstimates.DataContainer.FileName = filename
 
-def __get_REGAUSS_filename( self ):
+def __get_REGAUSS_filename(self):
     return self.Data.REGAUSSShearEstimates.DataContainer.FileName
 
-def __get_all_filenames( self ):
+def __get_all_filenames(self):
 
     all_filenames = [self.get_BFD_filename(),
                      self.get_KSB_filename(),
@@ -96,7 +96,7 @@ def __get_all_filenames( self ):
 
     return all_filenames
 
-def __get_method_filename( self, method ):
+def __get_method_filename(self, method):
 
     if method == "KSB":
         return self.get_KSB_filename()
@@ -109,17 +109,17 @@ def __get_method_filename( self, method ):
     elif method == "BFD":
         return self.get_BFD_filename()
     else:
-        raise ValueError( "Invalid method " + str( method ) + "." )
+        raise ValueError("Invalid method " + str(method) + ".")
 
 class DpdShearEstimatesProduct:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.Header = None
         self.Data = None
-    def validateBinding( self ):
+    def validateBinding(self):
         return False
 
 class ShearEstimatesProduct:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.BFDShearEstimates = None
         self.KSBShearEstimates = None
         self.LensMCShearEstimates = None
@@ -127,45 +127,45 @@ class ShearEstimatesProduct:  # @FIXME
         self.REGAUSSShearEstimates = None
 
 class DataContainer:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.FileName = None
         self.filestatus = None
 
 class BFDShearEstimatesProduct:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
 
 class KSBShearEstimatesProduct:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
 
 class LensMCShearEstimatesProduct:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
 
 class MomentsMLShearEstimatesProduct:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
 
 class REGAUSSShearEstimatesProduct:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
 
-def create_dpd_shear_estimates( BFD_filename = None,
+def create_dpd_shear_estimates(BFD_filename = None,
                                KSB_filename = None,
                                LensMC_filename = None,
                                MomentsML_filename = None,
-                               REGAUSS_filename = None ):
+                               REGAUSS_filename = None):
     """
         @TODO fill in docstring
     """
@@ -176,22 +176,22 @@ def create_dpd_shear_estimates( BFD_filename = None,
     # dpd_shear_estimates.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
     dpd_shear_estimates.Header = "SHE"
 
-    dpd_shear_estimates.Data = create_shear_estimates( BFD_filename,
+    dpd_shear_estimates.Data = create_shear_estimates(BFD_filename,
                                                        KSB_filename,
                                                        LensMC_filename,
                                                        MomentsML_filename,
-                                                       REGAUSS_filename )
+                                                       REGAUSS_filename)
 
     return dpd_shear_estimates
 
 # Add a useful alias
 create_shear_estimates_product = create_dpd_shear_estimates
 
-def create_shear_estimates( BFD_filename = None,
+def create_shear_estimates(BFD_filename = None,
                            KSB_filename = None,
                            LensMC_filename = None,
                            MomentsML_filename = None,
-                           REGAUSS_filename = None ):
+                           REGAUSS_filename = None):
     """
         @TODO fill in docstring
     """
@@ -199,19 +199,19 @@ def create_shear_estimates( BFD_filename = None,
     # shear_estimates = she_dpd.SheShearEstimates() # @FIXME
     shear_estimates = ShearEstimatesProduct()
 
-    shear_estimates.BFDShearEstimates = create_BFD_shear_estimates( BFD_filename )
+    shear_estimates.BFDShearEstimates = create_BFD_shear_estimates(BFD_filename)
 
-    shear_estimates.KSBShearEstimates = create_KSB_shear_estimates( KSB_filename )
+    shear_estimates.KSBShearEstimates = create_KSB_shear_estimates(KSB_filename)
 
-    shear_estimates.LensMCShearEstimates = create_LensMC_shear_estimates( LensMC_filename )
+    shear_estimates.LensMCShearEstimates = create_LensMC_shear_estimates(LensMC_filename)
 
-    shear_estimates.MomentsMLShearEstimates = create_MomentsML_shear_estimates( MomentsML_filename )
+    shear_estimates.MomentsMLShearEstimates = create_MomentsML_shear_estimates(MomentsML_filename)
 
-    shear_estimates.REGAUSSShearEstimates = create_REGAUSS_shear_estimates( REGAUSS_filename )
+    shear_estimates.REGAUSSShearEstimates = create_REGAUSS_shear_estimates(REGAUSS_filename)
 
     return shear_estimates
 
-def create_BFD_shear_estimates( filename ):
+def create_BFD_shear_estimates(filename):
     """
         @TODO fill in docstring
     """
@@ -228,7 +228,7 @@ def create_BFD_shear_estimates( filename ):
 
     return BFD_shear_estimates
 
-def create_KSB_shear_estimates( filename ):
+def create_KSB_shear_estimates(filename):
     """
         @TODO fill in docstring
     """
@@ -245,7 +245,7 @@ def create_KSB_shear_estimates( filename ):
 
     return KSB_shear_estimates
 
-def create_LensMC_shear_estimates( filename ):
+def create_LensMC_shear_estimates(filename):
     """
         @TODO fill in docstring
     """
@@ -262,7 +262,7 @@ def create_LensMC_shear_estimates( filename ):
 
     return LensMC_shear_estimates
 
-def create_MomentsML_shear_estimates( filename ):
+def create_MomentsML_shear_estimates(filename):
     """
         @TODO fill in docstring
     """
@@ -279,7 +279,7 @@ def create_MomentsML_shear_estimates( filename ):
 
     return MomentsML_shear_estimates
 
-def create_REGAUSS_shear_estimates( filename ):
+def create_REGAUSS_shear_estimates(filename):
     """
         @TODO fill in docstring
     """

@@ -4,7 +4,7 @@
 
     Functions to create and output an aocs_time_series data product.
     This describes the series of pointing errors over the course of an observation
-    
+
     Origin: OU-VIS (presumably - might need to put in a ticket to request it from them.
     Not actually used at present though, so we don't need it for SC4)
 """
@@ -42,21 +42,21 @@ def init():
 
     return
 
-def __get_all_filenames( self ):
+def __get_all_filenames(self):
 
     all_filenames = []
 
     return all_filenames
 
 class DpdSheAocsTimeSeriesProduct:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         self.Header = None
         self.Data = None
-    def validateBinding( self ):
+    def validateBinding(self):
         return False
 
 class SheAocsTimeSeriesProduct:  # @FIXME
-    def __init__( self ):
+    def __init__(self):
         pass
 
 def create_dpd_she_aocs_time_series():

@@ -21,8 +21,8 @@
 
 from SHE_PPT.gain import get_ADU_from_count, get_count_from_ADU
 
-def get_sky_level_ADU_per_pixel( sky_level_ADU_per_sq_arcsec,
-                                pixel_scale ):
+def get_sky_level_ADU_per_pixel(sky_level_ADU_per_sq_arcsec,
+                                pixel_scale):
     """ Calculate the sky level in units of ADU per pixel from the sky level per square arcsecond.
 
         @param sky_level_ADU_per_sq_arcsec The sky level in units of ADU/arcsec^2
@@ -35,9 +35,9 @@ def get_sky_level_ADU_per_pixel( sky_level_ADU_per_sq_arcsec,
 
     return sky_level_ADU_per_pixel
 
-def get_sky_level_count_per_pixel( sky_level_ADU_per_sq_arcsec,
+def get_sky_level_count_per_pixel(sky_level_ADU_per_sq_arcsec,
                                   pixel_scale,
-                                  gain ):
+                                  gain):
     """ Calculate the sky level in units of count per pixel from the sky level per square arcsecond.
 
         @param sky_level_ADU_per_sq_arcsec The sky level in units of ADU/arcsec^2
@@ -47,15 +47,15 @@ def get_sky_level_count_per_pixel( sky_level_ADU_per_sq_arcsec,
         @return The sky level in units of e-/pixel
     """
 
-    sky_level_ADU_per_pixel = get_sky_level_ADU_per_pixel( sky_level_ADU_per_sq_arcsec, pixel_scale )
-    sky_level_count_per_pixel = get_count_from_ADU( sky_level_ADU_per_pixel, gain )
+    sky_level_ADU_per_pixel = get_sky_level_ADU_per_pixel(sky_level_ADU_per_sq_arcsec, pixel_scale)
+    sky_level_count_per_pixel = get_count_from_ADU(sky_level_ADU_per_pixel, gain)
 
     return sky_level_count_per_pixel
 
-def get_count_lambda_per_pixel( pixel_value_ADU,
+def get_count_lambda_per_pixel(pixel_value_ADU,
                                sky_level_ADU_per_sq_arcsec,
                                pixel_scale,
-                               gain ):
+                               gain):
     """ Calculate the lambda of the Poisson distribution for a pixel's noise.
 
         @param pixel_value The expected value of a pixel in ADU. Can be a scalar or array
@@ -66,17 +66,17 @@ def get_count_lambda_per_pixel( pixel_value_ADU,
         @return The lambda of the Poisson distribution in units of e-
     """
 
-    pixel_value_count = get_count_from_ADU( pixel_value_ADU, gain )
+    pixel_value_count = get_count_from_ADU(pixel_value_ADU, gain)
 
-    sky_level_count_per_pixel = get_sky_level_count_per_pixel( sky_level_ADU_per_sq_arcsec,
-                                                              pixel_scale, gain )
+    sky_level_count_per_pixel = get_sky_level_count_per_pixel(sky_level_ADU_per_sq_arcsec,
+                                                              pixel_scale, gain)
 
     count_lambda = pixel_value_count + sky_level_count_per_pixel
 
     return count_lambda
 
-def get_read_noise_ADU_per_pixel( read_noise_count,
-                                 gain ):
+def get_read_noise_ADU_per_pixel(read_noise_count,
+                                 gain):
     """ Calculate the read noise per pixel in units of ADU
 
         @param read_noise_count The read noise in e-/pixel
@@ -85,15 +85,15 @@ def get_read_noise_ADU_per_pixel( read_noise_count,
         @return The read noise per pixel in units of ADU
     """
 
-    read_noise_ADU_per_pixel = get_ADU_from_count( read_noise_count, gain )
+    read_noise_ADU_per_pixel = get_ADU_from_count(read_noise_count, gain)
 
     return read_noise_ADU_per_pixel
 
-def get_var_ADU_per_pixel( pixel_value_ADU,
+def get_var_ADU_per_pixel(pixel_value_ADU,
                           sky_level_ADU_per_sq_arcsec,
                           read_noise_count,
                           pixel_scale,
-                          gain ):
+                          gain):
     """ Calculate the sigma for Gaussian-like noise in units of ADU per pixel.
 
         @param pixel_value The expected value of a pixel in ADU. Can be a scalar or array
@@ -105,11 +105,11 @@ def get_var_ADU_per_pixel( pixel_value_ADU,
         @return The sigma of the total noise in units of ADU per pixel
     """
 
-    pois_count_lambda = get_count_lambda_per_pixel( pixel_value_ADU,
-                                              sky_level_ADU_per_sq_arcsec, pixel_scale, gain )
-    pois_ADU_var = get_ADU_from_count( get_ADU_from_count( pois_count_lambda, gain ), gain )  # Apply twice since it's squared
+    pois_count_lambda = get_count_lambda_per_pixel(pixel_value_ADU,
+                                              sky_level_ADU_per_sq_arcsec, pixel_scale, gain)
+    pois_ADU_var = get_ADU_from_count(get_ADU_from_count(pois_count_lambda, gain), gain)  # Apply twice since it's squared
 
-    read_noise_ADU_sigma = get_read_noise_ADU_per_pixel( read_noise_count, gain )
+    read_noise_ADU_sigma = get_read_noise_ADU_per_pixel(read_noise_count, gain)
 
     total_var = pois_ADU_var + read_noise_ADU_sigma ** 2
 

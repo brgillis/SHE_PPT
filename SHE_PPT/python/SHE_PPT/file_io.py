@@ -44,253 +44,253 @@ dpd_sources = {"she":she_dpd,
 
 
 
-logger = getLogger( mv.logger_name )
+logger = getLogger(mv.logger_name)
 
 type_name_maxlen = 41
 instance_id_maxlen = 55
 
-def get_allowed_filename( type_name, instance_id, extension = ".fits", release = "00.00" ):
+def get_allowed_filename(type_name, instance_id, extension = ".fits", release = "00.00"):
     """
         @brief Gets a filename in the required Euclid format.
-        
+
         @param type_name <string> Label for what type of object this is. Maximum 41 characters.
-        
+
         @param instance_id <string> Label for the instance of this object. Maximum 55 characters.
-        
+
         @param extension <string> File extension (eg. ".fits").
-        
+
         @param release_date <string> Software/data release version, in format "XX.XX" where each
                                      X is a digit 0-9.
     """
 
     # Check that the labels aren't too long
-    if len( type_name ) > type_name_maxlen:
-        raise ValueError( "type_name (" + type_name + ") is too long. Maximum length is " +
-                         str( type_name_maxlen ) + " characters." )
-    if len( instance_id ) > instance_id_maxlen:
-        raise ValueError( "instance_id (" + type_name + ") is too long. Maximum length is " +
-                         str( instance_id_maxlen ) + " characters." )
+    if len(type_name) > type_name_maxlen:
+        raise ValueError("type_name (" + type_name + ") is too long. Maximum length is " +
+                         str(type_name_maxlen) + " characters.")
+    if len(instance_id) > instance_id_maxlen:
+        raise ValueError("instance_id (" + type_name + ") is too long. Maximum length is " +
+                         str(instance_id_maxlen) + " characters.")
 
     # Check that $release is in the correct format
     good_release = True
-    if len( release ) != 5 or release[2] != ".":
+    if len(release) != 5 or release[2] != ".":
         good_release = False
     # Check each value is an integer 0-9
     if good_release:
-        for i in ( 0, 1, 3, 4 ):
+        for i in (0, 1, 3, 4):
             try:
-                _ = int( release[i] )
+                _ = int(release[i])
             except ValueError:
                 good_release = False
 
     if not good_release:
-        raise ValueError( "release (" + release + ") is in incorrect format. Required format is " +
-                         "XX.XX, where each X is 0-9." )
+        raise ValueError("release (" + release + ") is in incorrect format. Required format is " +
+                         "XX.XX, where each X is 0-9.")
 
     tnow = time.gmtime()
 
-    creation_date = time_to_timestamp( tnow )
+    creation_date = time_to_timestamp(tnow)
 
     filename = "EUC_SHE_" + type_name + "_" + instance_id + "_" + creation_date + "_" + release + extension
 
     return filename
 
-def write_listfile( listfile_name, filenames ):
+def write_listfile(listfile_name, filenames):
     """
         @brief Writes a listfile in json format.
-        
+
         @details This is copied from https://euclid.roe.ac.uk/projects/codeen-users/wiki/Pipeline_Interfaces#List-Files
-        
+
         @param listfile_name <str> Name of the listfile to be output.
-        
+
         @param filenames <list<str>> List of filenames (or tuples of filenames) to be put in the listfile.
     """
 
-    with open( listfile_name, 'w' ) as listfile:
-        paths_json = json.dumps( filenames )
-        listfile.write( paths_json )
+    with open(listfile_name, 'w') as listfile:
+        paths_json = json.dumps(filenames)
+        listfile.write(paths_json)
 
     return
 
-def read_listfile( listfile_name ):
+def read_listfile(listfile_name):
     """
         @brief Reads a json listfile and returns a list of filenames.
-        
+
         @details This is copied from https://euclid.roe.ac.uk/projects/codeen-users/wiki/Pipeline_Interfaces#List-Files
-        
+
         @param listfile_name <str> Name of the listfile to be read.
-        
+
         @return filenames <list<str>> List of filenames (or tuples of filenames) read in.
     """
 
-    with open( listfile_name, 'r' ) as f:
-        listobject = json.load( f )
-        if len( listobject ) == 0:
+    with open(listfile_name, 'r') as f:
+        listobject = json.load(f)
+        if len(listobject) == 0:
             return listobject
-        if isinstance( listobject[0], list ):
-            return [tuple( el ) for el in listobject]
+        if isinstance(listobject[0], list):
+            return [tuple(el) for el in listobject]
         else:
             return listobject
 
-def replace_in_file( input_filename, output_filename, input_string, output_string ):
-    """ 
+def replace_in_file(input_filename, output_filename, input_string, output_string):
+    """
         @brief Replaces every occurence of $input_string in $input_filename with $output_string
                and prints the results to $output_filename.
-        
+
         @param input_filename <string>
-        
+
         @param output_filename <string>
-        
+
         @param input_string <string>
-        
+
         @param output_string <string>
     """
 
-    with open( output_filename, "w" ) as fout:
-        with open( input_filename, "r" ) as fin:
+    with open(output_filename, "w") as fout:
+        with open(input_filename, "r") as fin:
             for line in fin:
-                fout.write( line.replace( input_string, output_string ) )
+                fout.write(line.replace(input_string, output_string))
 
-def replace_multiple_in_file( input_filename, output_filename, input_strings, output_strings ):
-    """ 
+def replace_multiple_in_file(input_filename, output_filename, input_strings, output_strings):
+    """
         @brief Replaces every occurence of an input_string in input_filename with the corresponding
                output string and prints the results to $output_filename.
-        
+
         @param input_filename <string>
-        
+
         @param output_filename <string>
-        
+
         @param input_strings <iterable of string>
-        
+
         @param output_strings <iterable of string>
     """
 
-    with open( output_filename, "w" ) as fout:
-        with open( input_filename, "r" ) as fin:
+    with open(output_filename, "w") as fout:
+        with open(input_filename, "r") as fin:
             for line in fin:
                 new_line = line
-                for input_string, output_string in zip( input_strings, output_strings ):
-                    new_line = new_line.replace( input_string, output_string )
-                fout.write( new_line )
+                for input_string, output_string in zip(input_strings, output_strings):
+                    new_line = new_line.replace(input_string, output_string)
+                fout.write(new_line)
 
-def write_xml_product( product, xml_file_name ):
+def write_xml_product(product, xml_file_name):
     try:
-        with open( str( xml_file_name ), "w" ) as f:
-            f.write( product.toDOM().toprettyxml( encoding = "utf-8" ).decode( "utf-8" ) )
+        with open(str(xml_file_name), "w") as f:
+            f.write(product.toDOM().toprettyxml(encoding = "utf-8").decode("utf-8"))
     except AttributeError as e:
-        if not "object has no attribute 'toDOM'" in str( e ):
+        if not "object has no attribute 'toDOM'" in str(e):
             raise
-        logger.warn( "XML writing is not available; falling back to pickled writing instead." )
-        write_pickled_product( product, xml_file_name )
+        logger.warn("XML writing is not available; falling back to pickled writing instead.")
+        write_pickled_product(product, xml_file_name)
 
-def read_xml_product( xml_file_name, source = "she" ):
+def read_xml_product(xml_file_name, source = "she"):
 
     # Read the xml file as a string
     try:
-        with open( str( xml_file_name ), "r" ) as f:
+        with open(str(xml_file_name), "r") as f:
             xml_string = f.read()
     except UnicodeDecodeError as e:
         # Not actually saved as xml - revert to pickled product
-        return read_pickled_product( xml_file_name )
+        return read_pickled_product(xml_file_name)
 
     # Create a new product instance using the proper data product dictionary
-    product = dpd_sources[source].CreateFromDocument( xml_string )
+    product = dpd_sources[source].CreateFromDocument(xml_string)
 
     return product
 
-def write_pickled_product( product, pickled_file_name ):
+def write_pickled_product(product, pickled_file_name):
 
-    with open( str( pickled_file_name ), "wb" ) as f:
-        pickle.dump( product, f )
+    with open(str(pickled_file_name), "wb") as f:
+        pickle.dump(product, f)
 
-def read_pickled_product( pickled_file_name ):
+def read_pickled_product(pickled_file_name):
 
-    with open( str( pickled_file_name ), "rb" ) as f:
-        product = pickle.load( f )
+    with open(str(pickled_file_name), "rb") as f:
+        product = pickle.load(f)
 
     return product
 
-def append_hdu( filename, hdu ):
+def append_hdu(filename, hdu):
 
-    f = fits.open( filename, mode = 'append' )
+    f = fits.open(filename, mode = 'append')
     try:
-        f.append( hdu )
+        f.append(hdu)
     finally:
         f.close()
 
-def find_file_in_path( filename, path ):
+def find_file_in_path(filename, path):
     """
         Searches through a colon-separated path for a file and returns the qualified name of it if found,
         None otherwise.
     """
 
-    colon_separated_path = path.split( ":" )
+    colon_separated_path = path.split(":")
 
     qualified_filename = None
 
     for test_path in colon_separated_path:
 
-        test_filename = join( test_path, filename )
+        test_filename = join(test_path, filename)
 
-        if isfile( test_filename ):
+        if isfile(test_filename):
             qualified_filename = test_filename
             break
 
     if qualified_filename is None:
-        raise RuntimeError( "File " + str( filename ) + " could not be found in path " + str( path ) + "." )
+        raise RuntimeError("File " + str(filename) + " could not be found in path " + str(path) + ".")
 
     return qualified_filename
 
-def find_aux_file( filename ):
+def find_aux_file(filename):
     """
         Searches the auxiliary directory path for a file and returns a qualified name of it if found,
         None otherwise.
     """
 
-    return find_file_in_path( filename, os.environ['ELEMENTS_AUX_PATH'] )
+    return find_file_in_path(filename, os.environ['ELEMENTS_AUX_PATH'])
 
-def find_conf_file( filename ):
+def find_conf_file(filename):
     """
         Searches the conf directory path for a file and returns a qualified name of it if found,
         None otherwise.
     """
 
-    return find_file_in_path( filename, os.environ['ELEMENTS_CONF_PATH'] )
+    return find_file_in_path(filename, os.environ['ELEMENTS_CONF_PATH'])
 
-def find_file( filename, path = None ):
+def find_file(filename, path = None):
     """
         Locates a file based on the presence/absence of an AUX/ or CONF/ prefix, searching in the aux or conf
         directories respectively for it, or else the work directory if supplied.
     """
 
     if filename[0:4] == "AUX/":
-        return find_aux_file( filename[4:] )
+        return find_aux_file(filename[4:])
     elif filename[0:5] == "CONF/":
-        return find_conf_file( filename[5:] )
+        return find_conf_file(filename[5:])
     elif path is not None:
-        return find_file_in_path( filename, path )
+        return find_file_in_path(filename, path)
     else:
-        raise ValueError( "path must be supplied if filename doesn't start with AUX/ or CONF/" )
+        raise ValueError("path must be supplied if filename doesn't start with AUX/ or CONF/")
 
-def first_in_path( path ):
+def first_in_path(path):
     """
         Gets the first directory listed in the path.
     """
 
-    return path.split( ":" )[0]
+    return path.split(":")[0]
 
-def first_writable_in_path( path ):
+def first_writable_in_path(path):
     """
         Gets the first directory listed in the path which we have write access for.
     """
 
-    colon_separated_path = path.split( ":" )
+    colon_separated_path = path.split(":")
 
     first_writable_dir = None
 
     for test_path in colon_separated_path:
 
-        if os.access( test_path, os.W_OK ):
+        if os.access(test_path, os.W_OK):
             first_writable_dir = test_path
             break
 

@@ -27,21 +27,21 @@ import os.path
 from SHE_PPT.she_image import SHEImage
 
 from . import logging
-logger = logging.getLogger( __name__ )
+logger = logging.getLogger(__name__)
 
-class SHEImageStack( object ):
+class SHEImageStack(object):
     """Structure containing a list of SHEImage objects and optionally a stack of them
-    
+
     Attributes
     ----------
     exposures : list<SHEImage>
         List of SHEImage objects representing the different exposures
     stacked_image : SHEImage
         Stacked image of all exposures
-    
+
     """
 
-    def __init__( self, exposures, stacked_image = None, x_world = None, y_world = None ):
+    def __init__(self, exposures, stacked_image = None, x_world = None, y_world = None):
         """
         Parameters
         ----------
@@ -53,7 +53,7 @@ class SHEImageStack( object ):
             Right Ascension of the centre of this stack, in degrees
         y_world : float
             Declination of the centre of this stack, in degrees
-          
+
         """
 
         self.exposures = exposures
@@ -64,12 +64,12 @@ class SHEImageStack( object ):
 
         return
 
-    def is_not_empty( self ):
+    def is_not_empty(self):
         """ Checks if at least one exposure isn't None """
 
-        return ( not self.is_empty() )
+        return (not self.is_empty())
 
-    def is_empty( self ):
+    def is_empty(self):
         """ Checks if all exposures are None """
 
         empty = True
@@ -82,34 +82,34 @@ class SHEImageStack( object ):
 
 
     @classmethod
-    def read( cls, filename_list, stacked_image_filename = None, workdir = ".", **kwargs ):
+    def read(cls, filename_list, stacked_image_filename = None, workdir = ".", **kwargs):
         """Reads a SHEImageStack from disk
-        
+
         This function successively calls SHEImage.read_from_fits() on contents of filename_list.
-        
-        
+
+
         Parameters
         ----------
         filename_list : list
             A list of filenames to the FITS files containing SHEImage objects.
         stacked_image_filename : list
             A filename for the FITS file containing the stacked image SHEImage object
-            
+
         Any kwargs are passed to the reading of the SHEImage
         """
 
         exposures = []
         for filenames in filename_list:
-            exposures.append( SHEImage.read_from_fits( filepath = filenames[0],
+            exposures.append(SHEImage.read_from_fits(filepath = filenames[0],
                                                      workdir = workdir,
-                                                     **kwargs ) )
+                                                     **kwargs))
 
         if stacked_image_filename is None:
             stacked_image = None
         else:
-            stacked_image = SHEImage.read_from_fits( stacked_image_filename, workdir = workdir, **kwargs )
+            stacked_image = SHEImage.read_from_fits(stacked_image_filename, workdir = workdir, **kwargs)
 
-        return SHEImageStack( exposures, stacked_image )
+        return SHEImageStack(exposures, stacked_image)
 
 
 

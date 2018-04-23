@@ -24,12 +24,12 @@ from SHE_PPT.table_utility import is_in_format
 from astropy.table import Table
 
 
-class SimulationPlanTableMeta( object ):
+class SimulationPlanTableMeta(object):
     """
         @brief A class defining the metadata for simulation plan tables.
     """
 
-    def __init__( self ):
+    def __init__(self):
 
         self.__version__ = "0.1.0"
         self.table_format = "she.SimulationPlanTable"
@@ -39,20 +39,20 @@ class SimulationPlanTableMeta( object ):
         self.format = "SS_FMT"
 
         # Store the less-used comments in a dict
-        self.comments = OrderedDict( ( ( self.version, None ),
-                                     ( self.format, None ),
-                                   ) )
+        self.comments = OrderedDict(((self.version, None),
+                                     (self.format, None),
+                                   ))
 
         # A list of columns in the desired order
-        self.all = list( self.comments.keys() )
+        self.all = list(self.comments.keys())
 
-class SimulationPlanTableFormat( object ):
+class SimulationPlanTableFormat(object):
     """
         @brief A class defining the format for galaxy population priors tables. Only the simulation_plan_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
-    def __init__( self ):
+    def __init__(self):
 
         # Get the metadata (contained within its own class)
         self.meta = SimulationPlanTableMeta()
@@ -73,8 +73,8 @@ class SimulationPlanTableFormat( object ):
         self.fits_dtypes = OrderedDict()
         self.lengths = OrderedDict()
 
-        def set_column_properties( name, is_optional = False, comment = None, dtype = ">f4", fits_dtype = "E",
-                                   length = 1 ):
+        def set_column_properties(name, is_optional = False, comment = None, dtype = ">f4", fits_dtype = "E",
+                                   length = 1):
 
             assert name not in self.is_optional
 
@@ -88,36 +88,36 @@ class SimulationPlanTableFormat( object ):
 
         # Column names and info
 
-        self.tag = set_column_properties( "TAG", dtype = "str", fits_dtype = "10A", length = 10,
-                                         comment = "Tag to be added to file names for this batch, max length 10." )
+        self.tag = set_column_properties("TAG", dtype = "str", fits_dtype = "10A", length = 10,
+                                         comment = "Tag to be added to file names for this batch, max length 10.")
 
-        self.model_seed_min = set_column_properties( "MSEED_MIN", dtype = ">i8", fits_dtype = "K",
-                                                    comment = "Minimum model seed value for this batch." )
-        self.model_seed_max = set_column_properties( "MSEED_MAX", dtype = ">i8", fits_dtype = "K",
-                                                    comment = "Maximum model seed value for this batch." )
-        self.model_seed_step = set_column_properties( "MSEED_STEP", dtype = ">i8", fits_dtype = "K",
-                                                     comment = "Model seed step for this batch." )
+        self.model_seed_min = set_column_properties("MSEED_MIN", dtype = ">i8", fits_dtype = "K",
+                                                    comment = "Minimum model seed value for this batch.")
+        self.model_seed_max = set_column_properties("MSEED_MAX", dtype = ">i8", fits_dtype = "K",
+                                                    comment = "Maximum model seed value for this batch.")
+        self.model_seed_step = set_column_properties("MSEED_STEP", dtype = ">i8", fits_dtype = "K",
+                                                     comment = "Model seed step for this batch.")
 
-        self.noise_seed_min = set_column_properties( "NSEED_MIN", dtype = ">i8", fits_dtype = "K",
-                                                    comment = "Minimum model seed value for this batch." )
-        self.noise_seed_max = set_column_properties( "NSEED_MAX", dtype = ">i8", fits_dtype = "K",
-                                                    comment = "Maximum model seed value for this batch." )
-        self.noise_seed_step = set_column_properties( "NSEED_STEP", dtype = ">i8", fits_dtype = "K",
-                                                     comment = "Model seed step for this batch." )
+        self.noise_seed_min = set_column_properties("NSEED_MIN", dtype = ">i8", fits_dtype = "K",
+                                                    comment = "Minimum model seed value for this batch.")
+        self.noise_seed_max = set_column_properties("NSEED_MAX", dtype = ">i8", fits_dtype = "K",
+                                                    comment = "Maximum model seed value for this batch.")
+        self.noise_seed_step = set_column_properties("NSEED_STEP", dtype = ">i8", fits_dtype = "K",
+                                                     comment = "Model seed step for this batch.")
 
-        self.suppress_noise = set_column_properties( "SUP_NOISE", dtype = "bool", fits_dtype = "L" )
-        self.num_detectors = set_column_properties( "NUM_DETECTORS", dtype = ">i2", fits_dtype = "I" )
-        self.num_galaxies = set_column_properties( "NUM_GALAXIES", dtype = ">i2", fits_dtype = "I" )
-        self.render_background = set_column_properties( "RENDER_BKG", dtype = "bool", fits_dtype = "L" )
+        self.suppress_noise = set_column_properties("SUP_NOISE", dtype = "bool", fits_dtype = "L")
+        self.num_detectors = set_column_properties("NUM_DETECTORS", dtype = ">i2", fits_dtype = "I")
+        self.num_galaxies = set_column_properties("NUM_GALAXIES", dtype = ">i2", fits_dtype = "I")
+        self.render_background = set_column_properties("RENDER_BKG", dtype = "bool", fits_dtype = "L")
 
         # A list of columns in the desired order
-        self.all = list( self.is_optional.keys() )
+        self.all = list(self.is_optional.keys())
 
         # A list of required columns in the desired order
         self.all_required = []
         for label in self.all:
             if not self.is_optional[label]:
-                self.all_required.append( label )
+                self.all_required.append(label)
 
 # Define an instance of this object that can be imported
 simulation_plan_table_format = SimulationPlanTableFormat()
@@ -129,7 +129,7 @@ tf = simulation_plan_table_format
 def make_simulation_plan_table_header():
     """
         @brief Generate a header for a galaxy population table.
-        
+
         @return header <OrderedDict>
     """
 
@@ -140,10 +140,10 @@ def make_simulation_plan_table_header():
 
     return header
 
-def initialise_simulation_plan_table( optional_columns = None ):
+def initialise_simulation_plan_table(optional_columns = None):
     """
         @brief Initialise a galaxy population table.
-        
+
         @return simulation_plan_table <astropy.Table>
     """
 
@@ -153,21 +153,21 @@ def initialise_simulation_plan_table( optional_columns = None ):
         # Check all optional columns are valid
         for colname in optional_columns:
             if colname not in tf.all:
-                raise ValueError( "Invalid optional column name: " + colname )
+                raise ValueError("Invalid optional column name: " + colname)
 
     names = []
     init_cols = []
     dtypes = []
     for colname in tf.all:
-        if ( colname in tf.all_required ) or ( colname in optional_columns ):
-            names.append( colname )
-            init_cols.append( [] )
-            dtypes.append( ( tf.dtypes[colname], tf.lengths[colname] ) )
+        if (colname in tf.all_required) or (colname in optional_columns):
+            names.append(colname)
+            init_cols.append([])
+            dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
 
-    simulation_plan_table = Table( init_cols, names = names, dtype = dtypes )
+    simulation_plan_table = Table(init_cols, names = names, dtype = dtypes)
 
     simulation_plan_table.meta = make_simulation_plan_table_header()
 
-    assert( is_in_format( simulation_plan_table, tf ) )
+    assert(is_in_format(simulation_plan_table, tf))
 
     return simulation_plan_table
