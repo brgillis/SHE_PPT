@@ -749,7 +749,7 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
 
         return x, y
 
-    def get_pix2world_transformation( self, x, y, dx = 0.1, dy = 0.1, negate_ra = False ):
+    def get_pix2world_transformation( self, x, y, dx = 0.1, dy = 0.1, spatial_ra = False ):
         """Gets the local transformation matrix between pixel and world (ra/dec) coordinates at the specified location.
         
         Parameters
@@ -762,8 +762,8 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
             Differential x step to use in calculating transformation matrix. Default 0.1 pixels
         dy : float
             idem for y
-        negate_ra : bool
-            If True, will give a matrix for the natural (-ra,dec) co-ordinates instead of (ra,dec) (default False)
+        spatial_ra : bool
+            If True, will give a matrix for (-ra*cos(dec),dec) co-ordinates instead of (ra,dec) (default False)
             
         Raises
         ------
@@ -780,11 +780,6 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         
         """
 
-        if negate_ra:
-            ra_sign = -1
-        else:
-            ra_sign = 1
-
         if ( dx == 0 ) or ( dy == 0 ):
             raise ValueError( "Differentials dx and dy must not be zero." )
 
@@ -793,10 +788,15 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         ra_px, dec_px = self.pix2world( x + dx, y )
         ra_py, dec_py = self.pix2world( x, y + dy )
 
-        d_ra_x = ra_sign * ( ra_px - ra_0 ) / dx
+        if spatial_ra:
+            ra_scale = -np.cos( dec_0 * np.pi / 180 )
+        else:
+            ra_scale = 1
+
+        d_ra_x = ra_scale * ( ra_px - ra_0 ) / dx
         d_dec_x = ( dec_px - dec_0 ) / dx
 
-        d_ra_y = ra_sign * ( ra_py - ra_0 ) / dy
+        d_ra_y = ra_scale * ( ra_py - ra_0 ) / dy
         d_dec_y = ( dec_py - dec_0 ) / dy
 
         pix2world_transformation = np.matrix( [[  d_ra_x , d_ra_y ],
@@ -804,7 +804,7 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
 
         return pix2world_transformation
 
-    def get_world2pix_transformation( self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, negate_ra = False ):
+    def get_world2pix_transformation( self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, spatial_ra = False ):
         """Gets the local transformation matrix between world (ra/dec) and pixel coordinates at the specified location.
         
         Parameters
@@ -817,8 +817,8 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
             Differential ra step in degrees to use in calculating transformation matrix. Default 0.01 arcsec
         ddec : float
             idem for dec
-        negate_ra : bool
-            If True, will give a matrix from the natural (-ra,dec) co-ordinates instead of (ra,dec) (default False)
+        spatial_ra : bool
+            If True, will give a matrix for (-ra*cos(dec),dec) co-ordinates instead of (ra,dec) (default False)
             
         Raises
         ------
@@ -838,18 +838,19 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
         if ( dra == 0 ) or ( ddec == 0 ):
             raise ValueError( "Differentials dra and ddec must not be zero." )
 
-        if negate_ra:
-            ra_sign = -1
+
+        if spatial_ra:
+            ra_scale = -np.cos( dec * np.pi / 180 )
         else:
-            ra_sign = 1
+            ra_scale = 1
 
         # We'll calculate the transformation empirically by using small steps in x and y
         x_0, y_0 = self.world2pix( ra, dec )
         x_pra, y_pra = self.world2pix( ra + dra, dec )
         x_pdec, y_pdec = self.world2pix( ra, dec + ddec )
 
-        d_x_ra = ra_sign * ( x_pra - x_0 ) / dra
-        d_y_ra = ra_sign * ( y_pra - y_0 ) / dra
+        d_x_ra = ( x_pra - x_0 ) / ( dra * ra_scale )
+        d_y_ra = ( y_pra - y_0 ) / ( dra * ra_scale )
 
         d_x_dec = ( x_pdec - x_0 ) / ddec
         d_y_dec = ( y_pdec - y_0 ) / ddec
@@ -858,3 +859,198 @@ class SHEImage( object ):  # We need new-style classes for properties, hence inh
                                                [ d_y_ra , d_y_dec ]] )
 
         return world2pix_transformation
+
+    def get_pix2world_rotation( self, x, y, dx = 0.1, dy = 0.1 ):
+        """Gets the local rotation matrix between pixel and world (ra/dec) coordinates at the specified location.
+        Note that this doesn't provide the full transformation since it lacks scaling and shearing terms.
+        
+        Parameters
+        ----------
+        x : float
+            x pixel coordinate
+        y : float
+            idem for y
+        dx : float
+            Differential x step to use in calculating rotation matrix. Default 0.1 pixels
+        dy : float
+            idem for y
+            
+        Raises
+        ------
+        AttributeError
+            This object does not have a wcs set up
+        ValueError
+            dx or dy is 0
+            
+        Returns
+        -------
+        pix2world_rotation : np.matrix
+            Transformation matrix in the format [[ cos(theta) , -sin(theta) ],
+                                                 [ sin(theta) ,  cos(theta) ]]
+            Note that due to the method of calculation, the matrix may differ very slightly from an ideal
+            rotation matrix.
+        """
+
+        # dx and dy are checked in get_pix2world_transformation, so no need to check here
+
+        pix2world_transformation = self.get_pix2world_transformation(x, y, dx, dy, spatial_ra=True)
+        
+        u, s, vh = np.linalg.svd(pix2world_transformation)
+        
+        pix2world_rotation = vh @ u
+
+        return pix2world_rotation
+
+    def get_world2pix_rotation( self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, spatial_ra = False ):
+        """Gets the local rotation matrix between world (ra/dec) and pixel coordinates at the specified location.
+        Note that this doesn't provide the full transformation since it lacks scaling and shearing terms.
+        
+        Parameters
+        ----------
+        ra : float
+            Right Ascension (RA) world coordinate in degrees
+        dec : float
+            Declination (Dec) world coordinate in degrees
+        dra : float
+            Differential ra step in degrees to use in calculating transformation matrix. Default 0.01 arcsec
+        ddec : float
+            idem for dec
+            
+        Raises
+        ------
+        AttributeError
+            This object does not have a wcs set up
+        ValueError
+            dra or ddec is 0
+            
+        Returns
+        -------
+        world2pix_rotation : np.matrix
+            Transformation matrix in the format [[ cos(theta) , -sin(theta) ],
+                                                 [ sin(theta) ,  cos(theta) ]]
+            Note that due to the method of calculation, the matrix may differ very slightly from an ideal
+            rotation matrix.
+        
+        """
+
+        # dx and dy are checked in get_pix2world_transformation, so no need to check here
+
+        world2pix_transformation = self.get_world2pix_transformation(ra, dec, dra, ddec, spatial_ra=True)
+        
+        u, s, vh = np.linalg.svd(world2pix_transformation)
+        
+        world2pix_rotation = vh @ u
+
+        return world2pix_rotation
+
+    def estimate_pix2world_rotation_angle( self, x, y, dx, dy ):
+        """Estimates the local rotation angle between pixel and world (-ra/dec) coordinates at the specified location.
+        Note that due to distortion in the transformation, this method is inaccurate and depends on the choice of dx
+        and dy; get_pix2world_rotation should be used instead to provide the rotation matrix. This method is retained
+        to aid testing of that method.
+        
+        Parameters
+        ----------
+        x : float
+            x pixel coordinate
+        y : float
+            idem for y
+        dx : float
+            Differential x step to use in calculating transformation matrix
+        dy : float
+            idem for y
+            
+        Note: dx and dy are required here since, due to distortion in the transformation, we can't assume the
+        rotation angle will be independent of them.
+            
+        Raises
+        ------
+        AttributeError
+            This object does not have a wcs set up
+        ValueError
+            dx and dy are 0, or dec is too close to pole
+            
+        Returns
+        -------
+        rotation_angle : float
+            Rotation angle from pixel coords to world coords in radians
+        
+        """
+
+        if ( dx == 0 ) and ( dy == 0 ):
+            raise ValueError( "Differentials dx and dy must not both be zero." )
+
+        # We'll calculate the transformation empirically by using small steps in x and y
+        ra_0, dec_0 = self.pix2world( x, y )
+        ra_1, dec_1 = self.pix2world( x + dx, y + dy )
+
+        cosdec = np.cos( dec_0 * np.pi / 180 )
+
+        if cosdec <= 0.01:
+            raise ValueError( "Dec too close to pole for accurate calculation." )
+
+        dra = -( ra_1 - ra_0 )
+        ddec = ( dec_1 - dec_0 )
+
+        xy_angle = np.arctan2( dx, dy )
+        radec_angle = np.arctan2( dra * cosdec, ddec )
+
+        rotation_angle = radec_angle - xy_angle
+
+        return rotation_angle
+
+    def estimate_world2pix_rotation_angle( self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, ):
+        """Gets the local rotation angle between world (-ra/dec) and pixel coordinates at the specified location.
+        Note that due to distortion in the transformation, this method is inaccurate and depends on the choice of dra
+        and ddec; get_world2pix_rotation should be used instead to provide the rotation matrix. This method is retained
+        to aid testing of that method.
+        
+        Parameters
+        ----------
+        ra : float
+            Right Ascension (RA) world coordinate in degrees
+        dec : float
+            Declination (Dec) world coordinate in degrees
+        dra : float
+            Differential ra step in degrees to use in calculating transformation matrix
+        ddec : float
+            idem for dec
+            
+        Note: dra and ddec are required here since, due to distortion in the transformation, we can't assume the
+        rotation angle will be independent of them.
+            
+        Raises
+        ------
+        AttributeError
+            This object does not have a wcs set up
+        ValueError
+            dra and ddec are 0, or dec is too close to pole
+            
+        Returns
+        -------
+        rotation_angle : float
+            Rotation angle from world coords to pixel coords in radians
+        
+        """
+
+        if ( dra == 0 ) and ( ddec == 0 ):
+            raise ValueError( "Differentials dx and dy must not both be zero." )
+
+        cosdec = np.cos( dec * np.pi / 180 )
+
+        if cosdec <= 0.01:
+            raise ValueError( "Dec too close to pole for accurate calculation." )
+
+        # We'll calculate the transformation empirically by using small steps in x and y
+        x_0, y_0 = self.world2pix( ra, dec )
+        x_1, y_1 = self.world2pix( ra - dra , dec + ddec )
+
+        dx = ( x_1 - x_0 )
+        dy = ( y_1 - y_0 )
+
+        xy_angle = np.arctan2( dx, dy )
+        radec_angle = np.arctan2( dra * cosdec, ddec )
+
+        rotation_angle = xy_angle - radec_angle
+
+        return rotation_angle
