@@ -5,17 +5,17 @@
     Various magic values used by the SHE PF.
 """
 
-# Copyright (C) 2012-2020 Euclid Science Ground Segment      
-#        
-# This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General    
-# Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)    
-# any later version.    
-#        
-# This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied    
-# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more    
-# details.    
-#        
-# You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to    
+# Copyright (C) 2012-2020 Euclid Science Ground Segment
+#
+# This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+# Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+# any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 logger_name = "SHE_PPT"
@@ -30,11 +30,13 @@ noise_seed_label = "NSEED"
 extname_label = "EXTNAME"
 dither_dx_label = "DITHERDX"
 dither_dy_label = "DITHERDY"
+obs_time_label = "DATE-OBS"
 
 # Tags for science image, noisemap, and mask
 sci_tag = "SCI"
 noisemap_tag = "RMS"
 mask_tag = "FLG"
+background_tag = "BKG"
 segmentation_tag = "SEG"
 details_tag = "DAL"
 detections_tag = "DTC"
@@ -46,3 +48,8 @@ psf_cat_tag = "PSFC"
 
 # Miscellaneous
 segmap_unassigned_value = -1
+
+# mag_vis_zeropoint = 25.50087633632 # From ETC
+# mag_vis_zeropoint = 25.4534 # From Sami's sims' config file
+mag_vis_zeropoint = 25.6527  # From Lance's code
+mag_i_zeropoint = 25.3884  # From Lance's code

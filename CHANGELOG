@@ -6,23 +6,33 @@ Changes from v0.2 to v0.3
 API Changes
 -----------
 
+- Interface to data for shear measurements now handled through SHEFrameStack class
 
 Dependency Changes
 ------------------
 
 - Now depends on Elements 5.2.2
+- Now depends on DMTools 2.0.2
+- Now depends on MDBTools 2.0.2
 
 Deprecated Features
 -------------------
 
 - Removed output_tables module and functions
+- Removed she_image_data class (functionality now contained within she_frame_stack)
+- Removed vis_helper (functionality now contained within she_frame_stack)
 
 Bug Fixes
 ---------
 
+- Detections catalogue table format now matches MER tables
 
 New Features
 ------------
+
+- Added module 'math' for misc. math functions
+- Added module 'mdb' for utility functions to get values from the MDB
+- Added module 'wcsutils' to calculate wcs properly in line with VIS's headers
 
 
 New config features

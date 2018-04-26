@@ -29,62 +29,51 @@ import py.test
 from SHE_PPT.table_formats.detections import initialise_detections_table
 from SHE_PPT.table_formats.psf import initialise_psf_table
 from SHE_PPT.she_image import SHEImage
-from SHE_PPT.she_stack import SHEStack
+from SHE_PPT.she_image_stack import SHEImageStack
 import SHE_PPT.table_utility
 import numpy as np
 
 
 class Test_she_stack(object):
-    
+
     @classmethod
     def setup_class(cls):
-        
+
         # Filenames for testing the file io, will be deleted by teardown_class
-        cls.sci_filepath_1 = "test_SHEStack_sci_SHEImage.fits"
-        cls.det_filepath_1 = "test_SHEStack_det_Table.fits"
-        cls.bpsf_filepath_1 = "test_SHEStack_bpsf_SHEImage.fits"
-        cls.dpsf_filepath_1 = "test_SHEStack_dpsf_SHEImage.fits"
-        cls.psfc_filepath_1 = "test_SHEStack_psfc_Table.fits"
-        
+        cls.sci_filepath_1 = "test_SHEImageStack_sci_SHEImage.fits"
+        cls.sci_filepath_2 = "test_SHEImageStack_sci_SHEImage2.fits"
+
 
     @classmethod
     def teardown_class(cls):
-        
+
         # Delete all potentially created files:
-        for testfilepath in [cls.sci_filepath_1, cls.det_filepath_1, cls.bpsf_filepath_1, cls.dpsf_filepath_1,
-                             cls.psfc_filepath_1]:
+        for testfilepath in [cls.sci_filepath_1, cls.sci_filepath_2]:
             if os.path.exists(testfilepath):
                 os.remove(testfilepath)
 
 
     def test_read(self):
-        """We create the minimum required files, and read a SHEStack"""
-        
+        """We create the minimum required files, and read a SHEImageStack"""
+
         # Create what will be one exposure:
-        sci_image = SHEImage(np.random.randn(100).reshape(10,10))
-        bpsf_image = SHEImage(np.random.randn(100).reshape(10,10))
-        dpsf_image = SHEImage(np.random.randn(100).reshape(10,10)) 
-        det_table = initialise_detections_table()
-        psf_table = initialise_psf_table()
-        
+        sci_image_1 = SHEImage(np.random.randn(100).reshape(10, 10))
+        sci_image_2 = SHEImage(np.random.randn(100).reshape(10, 10))
+
         # Save those to files:
-        sci_image.write_to_fits(self.sci_filepath_1)
-        bpsf_image.write_to_fits(self.bpsf_filepath_1)
-        dpsf_image.write_to_fits(self.dpsf_filepath_1)
-        det_table.write(self.det_filepath_1)
-        psf_table.write(self.psfc_filepath_1)
-        
-        
-        # Read this, directly as a SHEStack
-        
+        sci_image_1.write_to_fits(self.sci_filepath_1)
+        sci_image_2.write_to_fits(self.sci_filepath_2)
+
+
+        # Read this, directly as a SHEImageStack
+
         filepaths_list = [
-            [self.sci_filepath_1, self.det_filepath_1, self.bpsf_filepath_1, self.dpsf_filepath_1,
-             self.psfc_filepath_1]
+            [self.sci_filepath_1],
+            [self.sci_filepath_2]
             ]
-        
-        mystack = SHEStack.read(filepaths_list, mask_ext='MASK') # Testing kwargs as well
-        print(mystack.exposures[0].science_image)
-        
-        
-        
-        
+
+        mystack = SHEImageStack.read(filepaths_list, mask_ext = 'MASK')  # Testing kwargs as well
+        print(mystack.exposures[0])
+
+
+
