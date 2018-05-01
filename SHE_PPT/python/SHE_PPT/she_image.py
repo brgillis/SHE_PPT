@@ -901,7 +901,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
 
         return pix2world_rotation
 
-    def get_world2pix_rotation(self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, spatial_ra = False):
+    def get_world2pix_rotation(self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600):
         """Gets the local rotation matrix between world (ra/dec) and pixel coordinates at the specified location.
         Note that this doesn't provide the full transformation since it lacks scaling and shearing terms.
 
