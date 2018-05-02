@@ -2,6 +2,7 @@ from SHE_PPT import file_io
 from SHE_PPT.she_frame_stack import SHEFrameStack
 import os.path
 import pdb
+from timeit import default_timer as timer
 
 workdir = "/home/brg/Data/sc3-workdir"
 
@@ -13,12 +14,20 @@ stacked_frame_mosaic_filename = "EUC_SHE_SHE_Mosaic_Stack_2018315T15328.0Z_00.00
 
 detections_listfile_name = "DetectionsCatalogs.json"
 
+start = timer()
+
 frame_stack = SHEFrameStack.read( exposure_listfile_filename = exposure_listfile_name,
                                   seg_listfile_filename = exposure_mosaics_listfile_name,
                                   stacked_image_product_filename = stacked_frame_filename,
                                   stacked_seg_filename = stacked_frame_mosaic_filename,
                                   detections_listfile_filename = detections_listfile_name,
                                   workdir = workdir )
+
+stop = timer()
+
+print("Time elapsed for reading: " + str((stop-start)))
+
+exit()
 
 cat = frame_stack.detections_catalogue
 
