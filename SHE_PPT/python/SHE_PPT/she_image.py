@@ -674,7 +674,8 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
                 segmentation_map = segmentation_map_stamp,
                 background_map = background_map_stamp,
                 header = newheader,
-                offset = newoffset
+                offset = newoffset,
+                wcs = self.wcs,
             )
 
             if overlap_width == 0 and overlap_height == 0:
@@ -710,6 +711,11 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
         if self.wcs is None:
             raise AttributeError("pix2world called by SHEImage object that doesn't have a WCS set up. " +
                                  "Note that WCS isn't currently passed when extract_stamp is used, so this might be the issue.")
+            
+        # Correct for offset if applicable
+        if self.offset is not None:
+            x += self.offset[0]
+            y += self.offset[1]
 
         ra, dec = self.wcs.image2sky(x, y, distort = distort)
 
@@ -746,6 +752,11 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
                                  "Note that WCS isn't currently passed when extract_stamp is used, so this might be the issue.")
 
         x, y = self.wcs.sky2image(ra, dec, distort = distort, find = find)
+            
+        # Correct for offset if applicable
+        if self.offset is not None:
+            x -= self.offset[0]
+            y -= self.offset[1]
 
         return x, y
 
@@ -892,6 +903,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
         """
 
         # dx and dy are checked in get_pix2world_transformation, so no need to check here
+        # It also handles the addition of the offset to x and y
 
         pix2world_transformation = self.get_pix2world_transformation(x, y, dx, dy, spatial_ra = True)
 
