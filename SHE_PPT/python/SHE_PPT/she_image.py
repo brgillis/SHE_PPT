@@ -623,7 +623,8 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
                 segmentation_map = self.segmentation_map[xmin:xmax, ymin:ymax],
                 background_map = self.background_map[xmin:xmax, ymin:ymax],
                 header = newheader,
-                offset = newoffset
+                offset = newoffset,
+                wcs = self.wcs,
             )
 
         else:
