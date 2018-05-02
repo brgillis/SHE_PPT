@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-#"""This script gives a small demo of the image object.
+# """This script gives a small demo of the image object.
 
 """
 File: tests/python/mask_test.py
@@ -31,126 +31,126 @@ import numpy as np
 import os
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level = logging.DEBUG)
 
 class Test_mask():
 
- 
+
     @classmethod
     def setup_class(cls):
 
-        cls.test_mask = np.array(((0,                 m.masked_near_edge,m.masked_off_image),
-                                  (m.masked_bad_pixel,m.masked_near_edge,m.masked_off_image)),
-                                 dtype=np.int32)
+        cls.test_mask = np.array(((0, m.masked_near_edge, m.masked_off_image),
+                                  (m.masked_bad_pixel, m.masked_near_edge, m.masked_off_image)),
+                                 dtype = np.int32)
 
     @classmethod
     def teardown_class(cls):
-        
+
         del cls.test_mask
 
-    
-       
+
+
     def test_as_bool(self):
-        
+
         desired_bool_mask = np.array(((False, True, True),
                                       (True , True, True)),
-                                     dtype=bool)
-        
+                                     dtype = bool)
+
         assert (m.as_bool(self.test_mask) == desired_bool_mask).all()
-        
+
     def test_is_masked_with(self):
-        
+
         desired_bool_mask_1 = np.array(((False, True, False),
                                         (False, True, False)),
-                                       dtype=bool)
-        
-        assert (m.as_bool(m.is_masked_with(self.test_mask,m.masked_near_edge)) == desired_bool_mask_1).all()
-        
+                                       dtype = bool)
+
+        assert (m.as_bool(m.is_masked_with(self.test_mask, m.masked_near_edge)) == desired_bool_mask_1).all()
+
         desired_bool_mask_2 = np.array(((False, False, False),
                                         (True , False, False)),
-                                         dtype=bool)
-        
-        assert (m.as_bool(m.is_masked_with(self.test_mask,m.masked_bad_pixel)) == desired_bool_mask_2).all()
-        
+                                         dtype = bool)
+
+        assert (m.as_bool(m.is_masked_with(self.test_mask, m.masked_bad_pixel)) == desired_bool_mask_2).all()
+
         desired_bool_mask_3 = np.array(((False, False, True),
                                         (False, False, True)),
-                                         dtype=bool)
-        
-        assert (m.as_bool(m.is_masked_with(self.test_mask,m.masked_off_image)) == desired_bool_mask_3).all()
-        
+                                         dtype = bool)
+
+        assert (m.as_bool(m.is_masked_with(self.test_mask, m.masked_off_image)) == desired_bool_mask_3).all()
+
     def test_is_masked_bad(self):
-        
+
         desired_bool_mask = np.array(((False, False, True),
                                       (True , False, True)),
-                                     dtype=bool)
-        
+                                     dtype = bool)
+
         assert (m.as_bool(m.is_masked_bad(self.test_mask)) == desired_bool_mask).all()
-        
+
     def test_is_masked_suspect(self):
-        
+
         desired_bool_mask = np.array(((False, True, False),
                                       (False, True, False)),
-                                     dtype=bool)
-        
+                                     dtype = bool)
+
         assert (m.as_bool(m.is_masked_suspect(self.test_mask)) == desired_bool_mask).all()
-        
+
     def test_is_masked_suspect_or_bad(self):
-        
+
         desired_bool_mask = np.array(((False, True, True),
                                       (True , True, True)),
-                                     dtype=bool)
-        
+                                     dtype = bool)
+
         assert (m.as_bool(m.is_masked_suspect_or_bad(self.test_mask)) == desired_bool_mask).all()
-        
+
     def test_is_not_masked_with(self):
         ol_mask = np.array(((False, True, True),
                                       (True , True, True)),
-                                     dtype=bool)
-        
+                                     dtype = bool)
+
         assert (m.as_bool(self.test_mask) == desired_bool_mask).all()
-        
+
     def test_is_not_masked_with(self):
-                                    
+
         desired_bool_mask_1 = ~np.array(((False, True, False),
                                          (False, True, False)),
-                                        dtype=bool)
-        
-        assert (m.as_bool(m.is_not_masked_with(self.test_mask,m.masked_near_edge)) == desired_bool_mask_1).all()
-        
+                                        dtype = bool)
+
+        assert (m.as_bool(m.is_not_masked_with(self.test_mask, m.masked_near_edge)) == desired_bool_mask_1).all()
+
         desired_bool_mask_2 = ~np.array(((False, False, False),
                                          (True , False, False)),
-                                          dtype=bool)
-        
-        assert (m.as_bool(m.is_not_masked_with(self.test_mask,m.masked_bad_pixel)) == desired_bool_mask_2).all()
-        
+                                          dtype = bool)
+
+        assert (m.as_bool(m.is_not_masked_with(self.test_mask, m.masked_bad_pixel)) == desired_bool_mask_2).all()
+
         desired_bool_mask_3 = ~np.array(((False, False, True),
                                          (False, False, True)),
-                                          dtype=bool)
-        
-        assert (m.as_bool(m.is_not_masked_with(self.test_mask,m.masked_off_image)) == desired_bool_mask_3).all()
-        
+                                          dtype = bool)
+
+        assert (m.as_bool(m.is_not_masked_with(self.test_mask, m.masked_off_image)) == desired_bool_mask_3).all()
+
     def test_is_not_masked_bad(self):
-        
+
         desired_bool_mask = ~np.array(((False, False, True),
                                        (True , False, True)),
-                                      dtype=bool)
-        
+                                      dtype = bool)
+
         assert (m.as_bool(m.is_not_masked_bad(self.test_mask)) == desired_bool_mask).all()
-        
+
     def test_is_not_masked_suspect(self):
-        
+
         desired_bool_mask = ~np.array(((False, True, False),
                                       (False, True, False)),
-                                     dtype=bool)
-        
+                                     dtype = bool)
+
         assert (m.as_bool(m.is_not_masked_suspect(self.test_mask)) == desired_bool_mask).all()
-        
+
     def test_is_not_masked_suspect_or_bad(self):
-        
+
         desired_bool_mask = ~np.array(((False, True, True),
                                        (True , True, True)),
-                                      dtype=bool)
-        
+                                      dtype = bool)
+
         assert (m.as_bool(m.is_not_masked_suspect_or_bad(self.test_mask)) == desired_bool_mask).all()
-        
+
 

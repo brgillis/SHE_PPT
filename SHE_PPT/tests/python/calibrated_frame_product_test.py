@@ -18,17 +18,17 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from SHE_PPT.file_io import ( read_xml_product, write_xml_product,
-                             read_pickled_product, write_pickled_product )
+from SHE_PPT.file_io import (read_xml_product, write_xml_product,
+                             read_pickled_product, write_pickled_product)
 from SHE_PPT.products import calibrated_frame as prod
 
 
-class TestCalibratedFrameProduct( object ):
+class TestCalibratedFrameProduct(object):
     """A collection of tests for the shear estimates data product.
 
     """
 
-    def test_validation( self ):
+    def test_validation(self):
 
         # Create the product
         product = prod.create_dpd_vis_calibrated_frame()
@@ -38,7 +38,7 @@ class TestCalibratedFrameProduct( object ):
 
         pass
 
-    def test_xml_writing_and_reading( self, tmpdir ):
+    def test_xml_writing_and_reading(self, tmpdir):
 
         # Bypassing test for now FIXME
         return
@@ -50,20 +50,20 @@ class TestCalibratedFrameProduct( object ):
 
         # Change the fits filenames
         sub_data_filename = "test_data_file.fits"
-        product.set_data_filename( sub_data_filename )
+        product.set_data_filename(sub_data_filename)
         sub_psf_filename = "test_psf_file.fits"
-        product.set_psf_filename( sub_psf_filename )
+        product.set_psf_filename(sub_psf_filename)
         sub_wgt_filename = "test_wgt_file.fits"
-        product.set_wgt_filename( sub_wgt_filename )
+        product.set_wgt_filename(sub_wgt_filename)
         sub_bkg_filename = "test_bkg_file.fits"
-        product.set_bkg_filename( sub_bkg_filename )
+        product.set_bkg_filename(sub_bkg_filename)
 
         # Save the product in an XML file
-        filename = tmpdir.join( "vis_calibrated_frame.xml" )
-        write_xml_product( product, filename )
+        filename = tmpdir.join("vis_calibrated_frame.xml")
+        write_xml_product(product, filename)
 
         # Read back the XML file
-        loaded_product = read_xml_product( filename )
+        loaded_product = read_xml_product(filename)
 
         # Check that the filenames match
         assert loaded_product.get_data_filename() == sub_data_filename
