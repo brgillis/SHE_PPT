@@ -709,8 +709,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
         """
 
         if self.wcs is None:
-            raise AttributeError("pix2world called by SHEImage object that doesn't have a WCS set up. " +
-                                 "Note that WCS isn't currently passed when extract_stamp is used, so this might be the issue.")
+            raise AttributeError("pix2world called by SHEImage object that doesn't have a WCS set up.")
             
         # Correct for offset if applicable
         if self.offset is not None:
@@ -748,8 +747,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
         """
 
         if self.wcs is None:
-            raise AttributeError("world2pix called by SHEImage object that doesn't have a WCS set up. " +
-                                 "Note that WCS isn't currently passed when extract_stamp is used, so this might be the issue.")
+            raise AttributeError("world2pix called by SHEImage object that doesn't have a WCS set up.")
 
         x, y = self.wcs.sky2image(ra, dec, distort = distort, find = find)
             
