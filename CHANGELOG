@@ -18,6 +18,8 @@ Bug Fixes
 New Features
 ------------
 
+- WCS information is now passed to extracted stamps of SHEImages, and they take into account the
+  offset to make proper calculations
 
 New config features
 -------------------
