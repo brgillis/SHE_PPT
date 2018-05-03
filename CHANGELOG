@@ -20,6 +20,8 @@ New Features
 
 - WCS information is now passed to extracted stamps of SHEImages, and they take into account the
   offset to make proper calculations
+- Added function get_data_filename to file_io module - this will automatically resolve either an
+  XML data container or raw data file to the name of the raw data file if possible.
 
 New config features
 -------------------

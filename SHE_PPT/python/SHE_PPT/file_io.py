@@ -24,25 +24,11 @@ from os.path import join, isfile
 import pickle
 import time
 
-import EuclidDmBindings.dpd.mer_stub as mer_dpd
-import EuclidDmBindings.dpd.phz_stub as phz_dpd
 import EuclidDmBindings.dpd.she_stub as she_dpd
-import EuclidDmBindings.dpd.sim_stub as sim_dpd
-import EuclidDmBindings.dpd.vis_stub as vis_dpd
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.utility import time_to_timestamp
 from astropy.io import fits
-
-
-dpd_sources = {"she":she_dpd,
-               "vis":vis_dpd,
-               "mer":mer_dpd,
-               "phz":phz_dpd,
-               "sim":sim_dpd, }
-
-
-
 
 logger = getLogger(mv.logger_name)
 
@@ -183,18 +169,22 @@ def write_xml_product(product, xml_file_name):
         logger.warn("XML writing is not available; falling back to pickled writing instead.")
         write_pickled_product(product, xml_file_name)
 
-def read_xml_product(xml_file_name, source = "she"):
+def read_xml_product(xml_file_name, allow_pickled=True):
 
     # Read the xml file as a string
     try:
         with open(str(xml_file_name), "r") as f:
             xml_string = f.read()
-    except UnicodeDecodeError as e:
-        # Not actually saved as xml - revert to pickled product
-        return read_pickled_product(xml_file_name)
+    except UnicodeDecodeError as _e:
+        # Not actually saved as xml
+        if allow_pickled:
+            # Revert to pickled product
+            return read_pickled_product(xml_file_name)
+        else:
+            raise
 
     # Create a new product instance using the proper data product dictionary
-    product = dpd_sources[source].CreateFromDocument(xml_string)
+    product = she_dpd.CreateFromDocument(xml_string)
 
     return product
 
@@ -295,5 +285,40 @@ def first_writable_in_path(path):
             break
 
     return first_writable_dir
+
+def get_data_filename(filename,workdir="."):
+    """ Given the unqualified name of a file and the work directory, determine if it's an XML data
+        product or not, and get the filename of its DataContainer if so; otherwise, just return
+        the input filename. In either case, the unqualified filename is returned.
+        
+        This script is intended to help smooth the transition from using raw data files as
+        input/output to data products.
+    """
+    
+    # First, see if we can open this as an XML data product
+    try:
+        prod = read_xml_product(filename,allow_pickled=False)
+        
+        # If we get here, it is indeed an XML data product. Has it been monkey-patched
+        # to have a get_filename method?
+        
+        if hasattr(prod, "get_filename"):
+            return prod.get_filename()
+        elif hasattr(prod, "get_data_filename"): # or a get_data_filename method?
+            return prod.get_data_filename()
+        
+        # Check if the filename exists in the default location
+        try:
+            return prod.Data.DataStorage.DataContainer.FileName
+        except AttributeError as _e:
+            raise AttributeError("Data product does not have filename stored in the expected " +
+                                 "location (self.Data.DataStorage.DataContainer.FileName. " +
+                                 "In order to use get_data_filename with this product, the " +
+                                 "product's class must be monkey-patched to have a get_filename " +
+                                 "or get_data_filename method.")
+        
+    except UnicodeDecodeError as _e:
+        # Not an XML file - so presumably it's a raw data file; return the input filename
+        return filename
 
 
