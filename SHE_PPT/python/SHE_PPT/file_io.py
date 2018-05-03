@@ -298,7 +298,9 @@ def get_data_filename(filename,workdir="."):
     
     # First, see if we can open this as an XML data product
     try:
-        prod = read_xml_product(filename,allow_pickled=False)
+        qualified_filename = join(workdir,filename)
+        
+        prod = read_xml_product(qualified_filename,allow_pickled=False)
         
         # If we get here, it is indeed an XML data product. Has it been monkey-patched
         # to have a get_filename method?
