@@ -23,6 +23,7 @@ import os
 from os.path import join, isfile
 import pickle
 import time
+from xml.sax._exceptions import SAXParseException
 
 import EuclidDmBindings.dpd.she_stub as she_dpd
 from SHE_PPT import magic_values as mv
@@ -318,6 +319,9 @@ def get_data_filename(filename,workdir="."):
                                  "or get_data_filename method.")
         
     except UnicodeDecodeError as _e:
+        # Not an XML file - so presumably it's a raw data file; return the input filename
+        return filename
+    except SAXParseException as _e:
         # Not an XML file - so presumably it's a raw data file; return the input filename
         return filename
 
