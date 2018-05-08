@@ -686,7 +686,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
         assert newimg.shape == (width, height)
         return newimg
 
-    def pix2world(self, x, y):
+    def pix2world(self, x, y, origin=0):
         """Converts x and y pixel coordinates to ra and dec world coordinates.
 
         Parameters
@@ -695,6 +695,11 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             x pixel coordinate
         y : float
             idem for y
+        origin : int
+            Coordinate in the upper left corner of the image.
+            In FITS and Fortran standards, this is 1.
+            In Numpy and C standards this is 0.
+            (from astropy.wcs)
 
         Raises
         ------
@@ -715,11 +720,11 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             x += self.offset[0]
             y += self.offset[1]
 
-        ra, dec = self.wcs.all_pix2world(x, y)
+        ra, dec = self.wcs.all_pix2world(x, y, origin)
 
         return ra, dec
 
-    def world2pix(self, ra, dec, distort = True, find = True):
+    def world2pix(self, ra, dec, origin=0):
         """Converts ra and dec world coordinates to x and y pixel coordinates
 
         Parameters
@@ -728,6 +733,11 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             Right Ascension (RA) world coordinate in degrees
         dec : float
             Declination (Dec) world coordinate in degrees
+        origin : int
+            Coordinate in the upper left corner of the image.
+            In FITS and Fortran standards, this is 1.
+            In Numpy and C standards this is 0.
+            (from astropy.wcs)
 
         Raises
         ------
@@ -744,7 +754,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
         if self.wcs is None:
             raise AttributeError("world2pix called by SHEImage object that doesn't have a WCS set up.")
 
-        x, y = self.wcs.all_world2pix(ra, dec)
+        x, y = self.wcs.all_world2pix(ra, dec, origin)
             
         # Correct for offset if applicable
         if self.offset is not None:
