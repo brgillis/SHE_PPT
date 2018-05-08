@@ -26,7 +26,7 @@ from SHE_PPT.magic_values import segmap_unassigned_value
 from SHE_PPT.mask import (as_bool, is_masked_bad,
                           is_masked_suspect_or_bad, masked_off_image)
 from SHE_PPT.utility import load_wcs
-import SHE_PPT.wcsutil
+import astropy.wcs
 import astropy.io.fits  # Avoid non-trivial "from" imports (as explicit is better than implicit)
 import numpy as np
 
@@ -74,7 +74,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             segmentation_map: an int32 array of the same shape as data. Leaving None creates an empty map
             header: an astropy.io.fits.Header object. Leaving None creates an empty header.
             offset: a 1D numpy float array with two values, corresponding to the x and y offsets
-            wcs: A SHE_PPT.wcsutil.WCS object, containing WCS information for this image
+            wcs: An astropy.wcs.WCS object, containing WCS information for this image
         """
 
         self.data = data  # Note the tests done in the setter method
@@ -268,8 +268,8 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
     def wcs(self, wcs):
         """Convenience setter of the WCS.
         """
-        if not (isinstance(wcs, SHE_PPT.wcsutil.WCS) or (wcs is None)):
-            raise TypeError("wcs must be of type SHE_PPT.wcsutil.WCS")
+        if not (isinstance(wcs, astropy.wcs.WCS) or (wcs is None)):
+            raise TypeError("wcs must be of type astropy.wcs.WCS")
         self._wcs = wcs
 
 
@@ -686,7 +686,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
         assert newimg.shape == (width, height)
         return newimg
 
-    def pix2world(self, x, y, distort = True):
+    def pix2world(self, x, y):
         """Converts x and y pixel coordinates to ra and dec world coordinates.
 
         Parameters
@@ -695,8 +695,6 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             x pixel coordinate
         y : float
             idem for y
-        distort : bool
-            Use the distortion model if present
 
         Raises
         ------
@@ -717,7 +715,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             x += self.offset[0]
             y += self.offset[1]
 
-        ra, dec = self.wcs.image2sky(x, y, distort = distort)
+        ra, dec = self.wcs.all_pix2world(x, y)
 
         return ra, dec
 
@@ -730,10 +728,6 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             Right Ascension (RA) world coordinate in degrees
         dec : float
             Declination (Dec) world coordinate in degrees
-        distort : bool
-            Use the distortion model if present (default True)
-        find : bool
-            If using the distortion model, more accurately but more slowly solve the polynomial eq. (default True)
 
         Raises
         ------
@@ -750,7 +744,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
         if self.wcs is None:
             raise AttributeError("world2pix called by SHEImage object that doesn't have a WCS set up.")
 
-        x, y = self.wcs.sky2image(ra, dec, distort = distort, find = find)
+        x, y = self.wcs.all_world2pix(ra, dec)
             
         # Correct for offset if applicable
         if self.offset is not None:
