@@ -31,7 +31,7 @@ import pytest
 from SHE_PPT import file_io
 from SHE_PPT.magic_values import segmap_unassigned_value
 import SHE_PPT.she_image
-from SHE_PPT.wcsutil import WCS
+from astropy.wcs import WCS
 import numpy as np
 
 

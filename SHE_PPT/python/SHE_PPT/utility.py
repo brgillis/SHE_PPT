@@ -24,7 +24,7 @@ import hashlib
 
 from SHE_PPT import detector as dtc
 from SHE_PPT.logging import getLogger
-from SHE_PPT.wcsutil import WCS
+from astropy.wcs import WCS
 
 
 logger = getLogger(__name__)
