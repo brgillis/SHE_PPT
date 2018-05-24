@@ -101,7 +101,7 @@ def time_to_timestamp(t):
 
     return timestamp
 
-def load_wcs(header,apply_sc3_fix=True):
+def load_wcs(header,apply_sc3_fix=False):
     """Create an astropy.wcs.WCS object from a FITS header, catching and correcting errors
     due to VIS's incorrect header keywords.
 
