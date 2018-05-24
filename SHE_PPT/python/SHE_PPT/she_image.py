@@ -385,7 +385,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
                         segmentation_map_filepath = None,
                         background_map_filepath = None,
                         workdir = ".",
-                        apply_sc3_fix = True): # Change to False when we move on to SC4
+                        apply_sc3_fix = False):
         """Reads an image from a FITS file, such as written by write_to_fits(), and returns it as a SHEImage object.
 
         This function can be used to read previously saved SHEImage objects (in this case, just give the filepath),
