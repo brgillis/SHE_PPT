@@ -345,7 +345,8 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
         if self.wcs is not None:
             full_header = self.wcs.to_header()
             for label in self.header:
-                full_header[label] = (self.header[label], self.header.comments[label])
+                if label not in full_header: # Don't overwrite any coming from the WCS
+                    full_header[label] = (self.header[label], self.header.comments[label])
         else:
             full_header = self.header
 

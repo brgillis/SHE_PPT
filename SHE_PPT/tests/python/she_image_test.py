@@ -52,7 +52,7 @@ class Test_she_image():
         # A WCS to use (from the auxdir)
         header_file = file_io.find_file("AUX/SHE_PPT/tpv_header.bin")
         header = file_io.read_pickled_product(header_file)
-        cls.wcs = WCS (header)
+        cls.wcs = WCS(header)
 
         # A SHEImage object to play with
         cls.w = 50
