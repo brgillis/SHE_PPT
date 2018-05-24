@@ -383,7 +383,8 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
                         noisemap_filepath = None,
                         segmentation_map_filepath = None,
                         background_map_filepath = None,
-                        workdir = "."):
+                        workdir = ".",
+                        apply_sc3_fix = True): # Change to False when we move on to SC4
         """Reads an image from a FITS file, such as written by write_to_fits(), and returns it as a SHEImage object.
 
         This function can be used to read previously saved SHEImage objects (in this case, just give the filepath),
@@ -411,6 +412,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             segmentation_map_filepath: idem, for the segmentation_map
             background_map_filepath: idem, for the background_map
             workdir: The working directory, where files can be found
+            apply_sc3_fix: Whether or not to apply fix for bad headers used in SC3 data
 
         """
 
@@ -420,7 +422,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
 
         # Set up the WCS before we clean the header
         try:
-            wcs = load_wcs(header)
+            wcs = load_wcs(header,apply_sc3_fix=apply_sc3_fix)
         except KeyError:
             # No WCS information
             wcs = None

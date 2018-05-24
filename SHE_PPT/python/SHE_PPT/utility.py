@@ -101,7 +101,7 @@ def time_to_timestamp(t):
 
     return timestamp
 
-def load_wcs(header):
+def load_wcs(header,apply_sc3_fix=True):
     """Create an astropy.wcs.WCS object from a FITS header, catching and correcting errors
     due to VIS's incorrect header keywords.
 
@@ -115,25 +115,26 @@ def load_wcs(header):
         wcs = None
     else:
 
-        # fix VIS bug in WCS (won't be needed in future releases)
-        # uses TPV (Scamp like WCS) instead of TAN projection,
-        # which would break the subsequent line
-        # source: LensMC and https://euclid.roe.ac.uk/issues/7409
-        if 'TAN' in header['CTYPE1'] or header['CTYPE2']:
-            header['CTYPE1'] = 'RA---TPV'
-            header['CTYPE2'] = 'DEC--TPV'
-        if 'PC1_1' in header:
-            header.remove('PC1_1')
-        if 'PC1_2' in header:
-            header.remove('PC1_2')
-        if 'PC2_1' in header:
-            header.remove('PC2_1')
-        if 'PC2_2' in header:
-            header.remove('PC2_2')
-        if 'CDELT1' in header:
-            header.remove('CDELT1')
-        if 'CDELT2' in header:
-            header.remove('CDELT2')
+        if apply_sc3_fix:
+            # fix VIS bug in WCS (won't be needed in future releases)
+            # uses TPV (Scamp like WCS) instead of TAN projection,
+            # which would break the subsequent line
+            # source: LensMC and https://euclid.roe.ac.uk/issues/7409
+            if 'TAN' in header['CTYPE1'] or header['CTYPE2']:
+                header['CTYPE1'] = 'RA---TPV'
+                header['CTYPE2'] = 'DEC--TPV'
+            if 'PC1_1' in header:
+                header.remove('PC1_1')
+            if 'PC1_2' in header:
+                header.remove('PC1_2')
+            if 'PC2_1' in header:
+                header.remove('PC2_1')
+            if 'PC2_2' in header:
+                header.remove('PC2_2')
+            if 'CDELT1' in header:
+                header.remove('CDELT1')
+            if 'CDELT2' in header:
+                header.remove('CDELT2')
 
         wcs = WCS(header)
 
