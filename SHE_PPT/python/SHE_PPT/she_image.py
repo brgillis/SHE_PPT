@@ -431,7 +431,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             if keyword in header:
                 header.remove(keyword)
         if wcs is not None:
-            for keyword in list(wcs.header.keys()):
+            for keyword in list(wcs.to_header().keys()):
                 if keyword in header:
                     header.remove(keyword)
 
