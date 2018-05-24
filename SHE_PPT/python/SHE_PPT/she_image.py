@@ -763,7 +763,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
 
         return x, y
 
-    def get_pix2world_transformation(self, x, y, dx = 0.1, dy = 0.1, spatial_ra = False):
+    def get_pix2world_transformation(self, x, y, dx = 0.1, dy = 0.1, spatial_ra = False, origin = 0):
         """Gets the local transformation matrix between pixel and world (ra/dec) coordinates at the specified location.
 
         Parameters
@@ -778,6 +778,11 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             idem for y
         spatial_ra : bool
             If True, will give a matrix for (-ra*cos(dec),dec) co-ordinates instead of (ra,dec) (default False)
+        origin : int
+            Coordinate in the upper left corner of the image.
+            In FITS and Fortran standards, this is 1.
+            In Numpy and C standards this is 0.
+            (from astropy.wcs)
 
         Raises
         ------
@@ -798,9 +803,9 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             raise ValueError("Differentials dx and dy must not be zero.")
 
         # We'll calculate the transformation empirically by using small steps in x and y
-        ra_0, dec_0 = self.pix2world(x, y)
-        ra_px, dec_px = self.pix2world(x + dx, y)
-        ra_py, dec_py = self.pix2world(x, y + dy)
+        ra_0, dec_0 = self.pix2world(x, y, origin=origin)
+        ra_px, dec_px = self.pix2world(x + dx, y, origin=origin)
+        ra_py, dec_py = self.pix2world(x, y + dy, origin=origin)
 
         if spatial_ra:
             ra_scale = -np.cos(dec_0 * np.pi / 180)
@@ -818,7 +823,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
 
         return pix2world_transformation
 
-    def get_world2pix_transformation(self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, spatial_ra = False):
+    def get_world2pix_transformation(self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, spatial_ra = False, origin = 0):
         """Gets the local transformation matrix between world (ra/dec) and pixel coordinates at the specified location.
 
         Parameters
@@ -833,6 +838,8 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             idem for dec
         spatial_ra : bool
             If True, will give a matrix for (-ra*cos(dec),dec) co-ordinates instead of (ra,dec) (default False)
+        origin : int
+            Unused for this method; left in to prevent user surprise
 
         Raises
         ------
@@ -874,7 +881,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
 
         return world2pix_transformation
 
-    def get_pix2world_rotation(self, x, y, dx = 0.1, dy = 0.1):
+    def get_pix2world_rotation(self, x, y, dx = 0.1, dy = 0.1, origin = 0):
         """Gets the local rotation matrix between pixel and world (ra/dec) coordinates at the specified location.
         Note that this doesn't provide the full transformation since it lacks scaling and shearing terms.
 
@@ -888,6 +895,11 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             Differential x step to use in calculating rotation matrix. Default 0.1 pixels
         dy : float
             idem for y
+        origin : int
+            Coordinate in the upper left corner of the image.
+            In FITS and Fortran standards, this is 1.
+            In Numpy and C standards this is 0.
+            (from astropy.wcs)
 
         Raises
         ------
@@ -908,7 +920,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
         # dx and dy are checked in get_pix2world_transformation, so no need to check here
         # It also handles the addition of the offset to x and y
 
-        pix2world_transformation = self.get_pix2world_transformation(x, y, dx, dy, spatial_ra = True)
+        pix2world_transformation = self.get_pix2world_transformation(x, y, dx, dy, spatial_ra = True, origin=origin)
 
         u, s, vh = np.linalg.svd(pix2world_transformation)
 
@@ -916,7 +928,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
 
         return pix2world_rotation
 
-    def get_world2pix_rotation(self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600):
+    def get_world2pix_rotation(self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, origin = 0):
         """Gets the local rotation matrix between world (ra/dec) and pixel coordinates at the specified location.
         Note that this doesn't provide the full transformation since it lacks scaling and shearing terms.
 
@@ -930,6 +942,8 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             Differential ra step in degrees to use in calculating transformation matrix. Default 0.01 arcsec
         ddec : float
             idem for dec
+        origin : int
+            Unused for this method; left in to prevent user surprise
 
         Raises
         ------
@@ -958,7 +972,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
 
         return world2pix_rotation
 
-    def estimate_pix2world_rotation_angle(self, x, y, dx, dy):
+    def estimate_pix2world_rotation_angle(self, x, y, dx, dy, origin = 0):
         """Estimates the local rotation angle between pixel and world (-ra/dec) coordinates at the specified location.
         Note that due to distortion in the transformation, this method is inaccurate and depends on the choice of dx
         and dy; get_pix2world_rotation should be used instead to provide the rotation matrix. This method is retained
@@ -974,6 +988,11 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             Differential x step to use in calculating transformation matrix
         dy : float
             idem for y
+        origin : int
+            Coordinate in the upper left corner of the image.
+            In FITS and Fortran standards, this is 1.
+            In Numpy and C standards this is 0.
+            (from astropy.wcs)
 
         Note: dx and dy are required here since, due to distortion in the transformation, we can't assume the
         rotation angle will be independent of them.
@@ -996,8 +1015,8 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             raise ValueError("Differentials dx and dy must not both be zero.")
 
         # We'll calculate the transformation empirically by using small steps in x and y
-        ra_0, dec_0 = self.pix2world(x, y)
-        ra_1, dec_1 = self.pix2world(x + dx, y + dy)
+        ra_0, dec_0 = self.pix2world(x, y, origin=origin)
+        ra_1, dec_1 = self.pix2world(x + dx, y + dy, origin=origin)
 
         cosdec = np.cos(dec_0 * np.pi / 180)
 
@@ -1014,7 +1033,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
 
         return rotation_angle
 
-    def estimate_world2pix_rotation_angle(self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600,):
+    def estimate_world2pix_rotation_angle(self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, origin = 0):
         """Gets the local rotation angle between world (-ra/dec) and pixel coordinates at the specified location.
         Note that due to distortion in the transformation, this method is inaccurate and depends on the choice of dra
         and ddec; get_world2pix_rotation should be used instead to provide the rotation matrix. This method is retained
