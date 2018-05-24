@@ -343,7 +343,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
 
         # Set up a fits header with the wcs
         if self.wcs is not None:
-            full_header = self.wcs.header
+            full_header = self.wcs.to_header()
             for label in self.header:
                 full_header[label] = (self.header[label], self.header.comments[label])
         else:
