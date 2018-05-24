@@ -185,6 +185,7 @@ class SHEFrame(object):
               workdir = ".",
               x_max = 6,
               y_max = 6,
+              apply_sc3_fix = False,
               **kwargs):
         """Reads a SHEFrame from disk
 
@@ -203,6 +204,8 @@ class SHEFrame(object):
             Maximum x-coordinate of detectors
         y_max : int
             Maximum y-coordinate of detectors
+        apply_sc3_fix : bool
+            Whether or not to apply fix for bad headers in SC3 VIS data
 
         Any kwargs are passed to the reading of the fits data
         """
@@ -255,7 +258,7 @@ class SHEFrame(object):
                         continue  # Don't raise here; might be just using limited number
                     detector_data = frame_data_hdulist[sci_i].data.transpose()
                     detector_header = frame_data_hdulist[sci_i].header
-                    detector_wcs = load_wcs(detector_header)
+                    detector_wcs = load_wcs(detector_header,apply_sc3_fix=apply_sc3_fix)
 
                     noisemap_extname = id_string + "." + mv.noisemap_tag
                     noisemap_i = find_extension(frame_data_hdulist, noisemap_extname)
