@@ -23,7 +23,6 @@ import subprocess
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from astropy.io import fits
-from astropy.table import six
 import numpy as np
 
 
@@ -198,98 +197,7 @@ def table_to_hdu(table):
     table_hdu : `~astropy.io.fits.BinTableHDU`
         The FITS binary table HDU.
     """
-    # Avoid circular imports
-    from astropy.io.fits.connect import is_column_keyword, REMOVE_KEYWORDS
-    from astropy.io.fits import BinTableHDU
-    from astropy.units import Unit
-    from astropy.units.format.fits import UnitScaleError
-
-    # Not all tables with mixin columns are supported
-    if table.has_mixin_columns:
-        # Import is done here, in order to avoid it at build time as erfa is not
-        # yet available then.
-        from ...table.column import BaseColumn
-
-        # Only those columns which are instances of BaseColumn or Quantity can be written
-        unsupported_cols = table.columns.not_isinstance((BaseColumn, Quantity))
-        if unsupported_cols:
-            unsupported_names = [col.info.name for col in unsupported_cols]
-            raise ValueError('cannot write table with mixin column(s) {0}'
-                         .format(unsupported_names))
-
-    # Create a new HDU object
-    if table.masked:
-        # float column's default mask value needs to be Nan
-        for column in six.itervalues(table.columns):
-            fill_value = column.get_fill_value()
-            if column.dtype.kind == 'f' and np.allclose(fill_value, 1e20):
-                column.set_fill_value(np.nan)
-
-        table_hdu = BinTableHDU.from_columns(np.array(table.filled()))
-        for col in table_hdu.columns:
-            # Binary FITS tables support TNULL *only* for integer data columns
-            # TODO: Determine a schema for handling non-integer masked columns
-            # in FITS (if at all possible)
-            int_formats = ('B', 'I', 'J', 'K')
-            if not (col.format in int_formats or
-                    col.format.p_format in int_formats):
-                continue
-
-            # The astype is necessary because if the string column is less
-            # than one character, the fill value will be N/A by default which
-            # is too long, and so no values will get masked.
-            fill_value = table[col.name].get_fill_value()
-
-            col.null = fill_value.astype(table[col.name].dtype)
-    else:
-        table_hdu = BinTableHDU.from_columns(np.array(table.filled()))
-
-    # Set units for output HDU
-    for col in table_hdu.columns:
-        unit = table[col.name].unit
-        if unit is not None:
-            try:
-                col.unit = unit.to_string(format = 'fits')
-            except UnitScaleError:
-                scale = unit.scale
-                raise UnitScaleError(
-                    "The column '{0}' could not be stored in FITS format "
-                    "because it has a scale '({1})' that "
-                    "is not recognized by the FITS standard. Either scale "
-                    "the data or change the units.".format(col.name, str(scale)))
-            except ValueError:
-                warnings.warn(
-                    "The unit '{0}' could not be saved to FITS format".format(
-                        unit.to_string()), AstropyUserWarning)
-
-            # Try creating a Unit to issue a warning if the unit is not FITS compliant
-            Unit(col.unit, format = 'fits', parse_strict = 'warn')
-
-    for key, value in list(table.meta.items()):
-        if is_column_keyword(key.upper()) or key.upper() in REMOVE_KEYWORDS:
-            warnings.warn(
-                "Meta-data keyword {0} will be ignored since it conflicts "
-                "with a FITS reserved keyword".format(key), AstropyUserWarning)
-
-        # Convert to FITS format
-        if key == 'comments':
-            key = 'comment'
-
-        if isinstance(value, list):
-            for item in value:
-                try:
-                    table_hdu.header.append((key, item))
-                except ValueError:
-                    warnings.warn(
-                        "Attribute `{0}` of type {1} cannot be added to "
-                        "FITS Header - skipping".format(key, type(value)),
-                        AstropyUserWarning)
-        else:
-            try:
-                table_hdu.header[key] = value
-            except ValueError:
-                warnings.warn(
-                    "Attribute `{0}` of type {1} cannot be added to FITS "
-                    "Header - skipping".format(key, type(value)),
-                    AstropyUserWarning)
-    return table_hdu
+    
+    logger.warn("Using deprecated table_to_hdu function. Use astropy.io.fits.table_to_hdu instead.")
+    
+    return fits.table_to_hdu(table)

@@ -31,7 +31,7 @@ import pytest
 from SHE_PPT import file_io
 from SHE_PPT.magic_values import segmap_unassigned_value
 import SHE_PPT.she_image
-from SHE_PPT.wcsutil import WCS
+from astropy.wcs import WCS
 import numpy as np
 
 
@@ -52,7 +52,7 @@ class Test_she_image():
         # A WCS to use (from the auxdir)
         header_file = file_io.find_file("AUX/SHE_PPT/tpv_header.bin")
         header = file_io.read_pickled_product(header_file)
-        cls.wcs = WCS (header)
+        cls.wcs = WCS(header)
 
         # A SHEImage object to play with
         cls.w = 50
@@ -247,7 +247,7 @@ class Test_she_image():
     def test_extract_stamp_out_of_bounds(self):
         """We test that the stamp extraction works as desired for stamps not entirely within the image"""
 
-        array = np.array([[00, 0o1, 0o2, 0o3, 0o4], [10, 11, 12, 13, 14], [20, 21, 22, 23, 24], [30, 31, 32, 33, 34]])
+        array = np.array([[0, 1, 2, 3, 4], [10, 11, 12, 13, 14], [20, 21, 22, 23, 24], [30, 31, 32, 33, 34]])
         img = SHE_PPT.she_image.SHEImage(array)
         # This image looks like (values give xy coords...)
         # 04 14 24 34
@@ -263,7 +263,7 @@ class Test_she_image():
         # XX XX XX
         assert stamp.data[2, 2] == 11
         assert stamp.data[2, 1] == 10
-        assert stamp.data[0, 0] == 00
+        assert stamp.data[0, 0] ==  0
         assert stamp.boolmask[1, 1] == False
         assert stamp.boolmask[0, 0] == True
 
@@ -361,24 +361,30 @@ class Test_she_image():
     def test_pix2world(self):
         """Test that pix2world works properly"""
 
+        # Test with values coming from calculation assuming origin=1
         for x, y, ex_ra, ex_dec in ((0, 0, 52.53373984070186, -28.760675854311447),
                                     (24, 38, 52.53677316085, -28.75899827058671),
                                     (1012, 4111, 52.876229370322626, -28.686527560717373)):
 
-            ra, dec = self.img.pix2world(x, y)
+            ra0, dec0 = self.img.pix2world(x+1, y+1, origin=0)
+            assert np.allclose((ra0, dec0), (ex_ra, ex_dec))
 
-            assert np.allclose((ra, dec), (ex_ra, ex_dec))
+            ra1, dec1 = self.img.pix2world(x, y, origin=1)
+            assert np.allclose((ra1, dec1), (ex_ra, ex_dec))
 
     def test_world2pix(self):
         """Test that world2pix works properly"""
 
+        # Test with values coming from calculation assuming origin=1
         for ex_x, ex_y, ra, dec in ((0, 0, 52.53373984070186, -28.760675854311447),
                                     (24, 38, 52.53677316085, -28.75899827058671),
                                     (1012, 4111, 52.876229370322626, -28.686527560717373)):
 
-            x, y = self.img.world2pix(ra, dec)
+            x0, y0 = self.img.world2pix(ra, dec, origin=0)
+            assert np.allclose((x0+1, y0+1), (ex_x, ex_y))
 
-            assert np.allclose((x, y), (ex_x, ex_y))
+            x1, y1 = self.img.world2pix(ra, dec, origin=1)
+            assert np.allclose((x1, y1), (ex_x, ex_y))
 
     def test_transformations(self):
 
@@ -389,8 +395,8 @@ class Test_she_image():
                                   (24, 38, 52.53677316085, -28.75899827058671),
                                   (1012, 4111, 52.876229370322626, -28.686527560717373)):
 
-                pix2world_transformation = self.img.get_pix2world_transformation(x, y, spatial_ra = spatial_ra)
-                world2pix_transformation = self.img.get_world2pix_transformation(ra, dec, spatial_ra = spatial_ra)
+                pix2world_transformation = self.img.get_pix2world_transformation(x, y, spatial_ra = spatial_ra, origin=1)
+                world2pix_transformation = self.img.get_world2pix_transformation(ra, dec, spatial_ra = spatial_ra, origin=1)
 
                 double_transformation = pix2world_transformation * world2pix_transformation
 
@@ -418,7 +424,7 @@ class Test_she_image():
                 new_x = new_xy[0, 0]
                 new_y = new_xy[1, 0]
 
-                assert np.allclose((new_x, new_y), self.img.world2pix(ra + dra, dec + ddec),
+                assert np.allclose((new_x, new_y), self.img.world2pix(ra + dra, dec + ddec, origin=1),
                                    rtol = 1e-2, atol = 1e-4)
 
     def test_rotation(self):
@@ -438,7 +444,7 @@ class Test_she_image():
                            (-0.1, -0.1),
                            (0.0, -0.1),
                            (0.1, -0.1)):
-                pix2world_angle = self.img.estimate_pix2world_rotation_angle(x, y, dx = dx, dy = dy)
+                pix2world_angle = self.img.estimate_pix2world_rotation_angle(x, y, dx = dx, dy = dy, origin=1)
                 if pix2world_angle < 0:
                     pix2world_angle += 2 * np.pi
                 elif pix2world_angle > 2 * np.pi:
@@ -446,7 +452,8 @@ class Test_she_image():
 
                 world2pix_angle = self.img.estimate_world2pix_rotation_angle(ra, dec,
                                                                                 dra = dx / 3600,
-                                                                                ddec = dy / 3600)
+                                                                                ddec = dy / 3600,
+                                                                                origin=1)
                 if world2pix_angle < 0:
                     world2pix_angle += 2 * np.pi
                 elif world2pix_angle > 2 * np.pi:
@@ -468,8 +475,8 @@ class Test_she_image():
             world2pix_rotation_matrix_1 = np.matrix([[np.cos(world2pix_angle), -np.sin(world2pix_angle)],
                                                      [np.sin(world2pix_angle), np.cos(world2pix_angle)]])
 
-            pix2world_rotation_matrix_2 = self.img.get_pix2world_rotation(x, y)
-            world2pix_rotation_matrix_2 = self.img.get_world2pix_rotation(ra, dec)
+            pix2world_rotation_matrix_2 = self.img.get_pix2world_rotation(x, y, origin=1)
+            world2pix_rotation_matrix_2 = self.img.get_world2pix_rotation(ra, dec, origin=1)
 
             assert np.allclose(pix2world_rotation_matrix_1, pix2world_rotation_matrix_2, rtol = 0.02, atol = 0.002)
             assert np.allclose(world2pix_rotation_matrix_1, world2pix_rotation_matrix_2, rtol = 0.02, atol = 0.002)

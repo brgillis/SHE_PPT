@@ -322,6 +322,7 @@ class SHEFrameStack(object):
               detections_listfile_filename = None,
               workdir = ".",
               clean_detections = False,
+              apply_sc3_fix = False,
               **kwargs):
         """Reads a SHEFrameStack from relevant data products.
 
@@ -346,6 +347,8 @@ class SHEFrameStack(object):
             Filename of the listfile pointing to the detections catalog data products
         workdir : str
             Work directory
+        apply_sc3_fix : bool
+            Whether or not to apply fix for bad headers in SC3 VIS data
 
         Any kwargs are passed to the reading of the fits objects
         """
@@ -379,6 +382,7 @@ class SHEFrameStack(object):
                                       seg_filename = seg_filename,
                                       psf_filename = psf_filename,
                                       workdir = workdir,
+                                      apply_sc3_fix = apply_sc3_fix,
                                       **kwargs)
 
             exposures.append(exposure)
