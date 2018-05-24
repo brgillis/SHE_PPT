@@ -424,7 +424,7 @@ class Test_she_image():
                 new_x = new_xy[0, 0]
                 new_y = new_xy[1, 0]
 
-                assert np.allclose((new_x, new_y), self.img.world2pix(ra + dra, dec + ddec),
+                assert np.allclose((new_x, new_y), self.img.world2pix(ra + dra, dec + ddec, origin=1),
                                    rtol = 1e-2, atol = 1e-4)
 
     def test_rotation(self):
