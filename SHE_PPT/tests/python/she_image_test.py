@@ -129,6 +129,24 @@ class Test_she_image():
         assert np.allclose(self.img.segmentation_map, rimg.segmentation_map)
 
         # Check the wcs behaves the same
+        for x, y, ra, dec in ((0, 0, 52.53373984070186, -28.760675854311447),
+                              (24, 38, 52.53677316085, -28.75899827058671),
+                              (1012, 4111, 52.876229370322626, -28.686527560717373)):
+
+            # Note - not testing here that we recover proper ra/dec or x/y, since that's covered in separate test
+            # Just testing WCS from writing/reading is the same here
+            
+            ra1, dec1 = self.img.pix2world(x,y,origin=1)
+            ra2, dec2 = rimg.pix2world(x,y,origin=1)
+
+            assert np.allclose((ra1,dec1),(ra2,dec2))
+            
+            x1, y1 = self.img.world2pix(ra,dec,origin=1)
+            x2, y2 = rimg.world2pix(ra,dec,origin=1)
+
+            assert np.allclose((x1,y1),(x2,y2))
+        
+        # Also check the transformation matrices match up
         assert np.allclose(self.img.get_world2pix_transformation(0, 0),
                            rimg.get_world2pix_transformation(0, 0))
         assert np.allclose(self.img.get_pix2world_transformation(0, 0),
