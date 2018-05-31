@@ -115,42 +115,39 @@ def create_dpd_vis_calibrated_frame(filename = 'vis_calibrated_frame.fits'):
 
     return dpd_vis_calibrated_frame
 
-def init_storage(data_storage, filename, filestatus):
+def init_storage(type, filename, format, version, filestatus):
+    
+    data_storage = type()
+
+    data_storage.format = format
+    data_storage.version = version
 
     data_storage.DataContainer = dataContainer()
     data_storage.DataContainer.FileName = filename
     data_storage.DataContainer.filestatus = filestatus
     
-    return
+    return data_storage
 
-def create_vis_data_storage(filename, filestatus = "PROPOSED"):
+def create_vis_data_storage(filename, format = "vis.calibratedFrame", version = "0.1", filestatus = "PROPOSED"):
 
-    data_storage = vis_pro.visCalibratedStorageFitsFile()
-
-    init_storage(data_storage,filename,filestatus)
+    data_storage = init_storage(vis_pro.visCalibratedStorageFitsFile,filename,format,version,filestatus)
 
     return data_storage
 
-def create_vis_psf_storage(filename, filestatus = "PROPOSED"):
+def create_vis_psf_storage(filename, format = "vis.calibratedFrame", version = "0.1", filestatus = "PROPOSED"):
 
-    data_storage = vis_pro.visPsfModelStorageFitsFile()
-
-    init_storage(data_storage,filename,filestatus)
+    data_storage = init_storage(vis_pro.visPsfModelStorageFitsFile,filename,format,version,filestatus)
 
     return data_storage
 
-def create_vis_bkg_storage(filename, filestatus = "PROPOSED"):
+def create_vis_bkg_storage(filename, format = "vis.calibratedFrame", version = "0.1", filestatus = "PROPOSED"):
 
-    data_storage = vis_pro.visBackgroundStorageFitsFile()
-
-    init_storage(data_storage,filename,filestatus)
+    data_storage = init_storage(vis_pro.visBackgroundStorageFitsFile,filename,format,version,filestatus)
 
     return data_storage
 
-def create_vis_wgt_storage(filename, filestatus = "PROPOSED"):
+def create_vis_wgt_storage(filename, format = "vis.calibratedFrame", version = "0.1", filestatus = "PROPOSED"):
 
-    data_storage = vis_pro.visWeightStorageFitsFile()
-
-    init_storage(data_storage,filename,filestatus)
+    data_storage = init_storage(vis_pro.visWeightStorageFitsFile,filename,format,version,filestatus)
 
     return data_storage
