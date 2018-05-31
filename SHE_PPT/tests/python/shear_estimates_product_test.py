@@ -37,11 +37,11 @@ class TestShearEstimatesProduct(object):
         m_filename = "test_file_m.fits"
         r_filename = "test_file_r.fits"
         
-        product = prod.create_dpd_she_validated_shear_estimates(BFD_filename = b_filename,
-                                                               KSB_filename = k_filename,
-                                                               LensMC_filename = l_filename,
-                                                               MomentsML_filename = m_filename,
-                                                               REGAUSS_filename = r_filename)
+        product = prod.create_dpd_shear_estimates(BFD_filename = b_filename,
+                                                  KSB_filename = k_filename,
+                                                  LensMC_filename = l_filename,
+                                                  MomentsML_filename = m_filename,
+                                                  REGAUSS_filename = r_filename)
 
         # Create the product
         product = prod.create_dpd_shear_estimates()
