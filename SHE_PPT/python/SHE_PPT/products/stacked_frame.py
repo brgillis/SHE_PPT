@@ -24,7 +24,7 @@ from EuclidDmBindings.bas.cot_stub import wcs, zeroPoint
 from EuclidDmBindings.bas.img_stub import imgSpatialFootprint
 from EuclidDmBindings.bas.imp.eso_stub import dataProduct
 from EuclidDmBindings.bas.imp_stub import projectionType
-from EuclidDmBindings.dpd.vis.calibratedframe_stub import DpdVisStackedFrame
+from EuclidDmBindings.dpd.vis.visstackedframe_stub import DpdVisStackedFrame
 from EuclidDmBindings.ins_stub import baseInstrument
 from EuclidDmBindings.pro import le1_stub as le1
 from EuclidDmBindings.pro.le1 import vis_stub as le1vis
