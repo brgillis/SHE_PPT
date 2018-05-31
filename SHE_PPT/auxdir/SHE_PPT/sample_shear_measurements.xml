@@ -66,5 +66,10 @@
 				<FileName>default_filename.fits</FileName>
 			</DataContainer>
 		</MomentsMlShearEstimates>
+		<RegaussShearEstimates format="she.regaussShearEstimates" version="0.1">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>default_filename.fits</FileName>
+			</DataContainer>
+		</RegaussShearEstimates>
 	</Data>
 </ns1:DpdShearMeasurement>
