@@ -1,0 +1,55 @@
+<?xml version="1.0" ?>
+<ns1:DpdValidatedShearMeasurement xmlns:ns1="http://euclid.esa.org/schema/dpd/she/validatedshearmeasurement">
+	<Header>
+		<ProductId>1527787250.3967283</ProductId>
+		<ProductType>XXXX</ProductType>
+		<SoftwareName>XXXX</SoftwareName>
+		<SoftwareRelease>XXXX</SoftwareRelease>
+		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
+		<PipelineRun>XXXX</PipelineRun>
+		<ExitStatusCode>0</ExitStatusCode>
+		<DataModelVersion>1.8.0</DataModelVersion>
+		<MinDataModelVersion>1.8.0</MinDataModelVersion>
+		<ScientificCustodian>SHE</ScientificCustodian>
+		<AccessRights>
+			<EuclidConsortiumRead>true</EuclidConsortiumRead>
+			<EuclidConsortiumWrite>true</EuclidConsortiumWrite>
+			<ScientificGroupRead>true</ScientificGroupRead>
+			<ScientificGroupWrite>true</ScientificGroupWrite>
+		</AccessRights>
+		<Curator/>
+		<Creator>LOCAL</Creator>
+		<CreationDate>2018-05-31T17:25:26.298Z</CreationDate>
+	</Header>
+	<Data>
+		<IdCatalog>0</IdCatalog>
+		<CatalogCoverage>
+			<SpatialCoverage/>
+		</CatalogCoverage>
+		<CatalogStorage>
+			<CatalogFileStorage>
+				<Id>foo</Id>
+				<FileFormat>FITS</FileFormat>
+				<FileNumber>0</FileNumber>
+				<StorageSpace>
+					<Id>foo</Id>
+					<DataContainer filestatus="PROPOSED">
+						<FileName>foo</FileName>
+					</DataContainer>
+				</StorageSpace>
+			</CatalogFileStorage>
+		</CatalogStorage>
+		<CatalogDescription>
+			<CatalogDataProduct>foo</CatalogDataProduct>
+			<PathToCatalogDefinition>foo</PathToCatalogDefinition>
+			<CatalogFormatBase>she.validatedShearMeasurement</CatalogFormatBase>
+			<CatalogFormatHDU>1</CatalogFormatHDU>
+			<CatalogFitsColumnsDefinition>she.validatedShearMeasurement</CatalogFitsColumnsDefinition>
+		</CatalogDescription>
+		<ValidatedShearMeasurementFile format="she.validatedShearMeasurement" version="0.1">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>foo.fits</FileName>
+			</DataContainer>
+		</ValidatedShearMeasurementFile>
+	</Data>
+</ns1:DpdValidatedShearMeasurement>

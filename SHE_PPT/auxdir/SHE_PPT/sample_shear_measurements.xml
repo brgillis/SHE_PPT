@@ -1,0 +1,70 @@
+<?xml version="1.0" ?>
+<ns1:DpdShearMeasurement xmlns:ns1="http://euclid.esa.org/schema/dpd/she/shearmeasurement">
+	<Header>
+		<ProductId>foo</ProductId>
+		<ProductType>foo</ProductType>
+		<SoftwareName>foo</SoftwareName>
+		<SoftwareRelease>foo</SoftwareRelease>
+		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
+		<PipelineRun>foo</PipelineRun>
+		<ExitStatusCode>foo</ExitStatusCode>
+		<DataModelVersion>foo</DataModelVersion>
+		<MinDataModelVersion>foo</MinDataModelVersion>
+		<ScientificCustodian>SHE</ScientificCustodian>
+		<AccessRights>
+			<EuclidConsortiumRead>true</EuclidConsortiumRead>
+			<EuclidConsortiumWrite>true</EuclidConsortiumWrite>
+			<ScientificGroupRead>true</ScientificGroupRead>
+			<ScientificGroupWrite>false</ScientificGroupWrite>
+		</AccessRights>
+		<Curator/>
+		<Creator>SHE</Creator>
+		<CreationDate>2018-05-31T17:34:49.945Z</CreationDate>
+	</Header>
+	<Data>
+		<IdCatalog>0</IdCatalog>
+		<CatalogCoverage>
+			<SpatialCoverage/>
+		</CatalogCoverage>
+		<CatalogStorage>
+			<CatalogFileStorage>
+				<Id>0</Id>
+				<FileFormat>FITS</FileFormat>
+				<FileNumber>0</FileNumber>
+				<StorageSpace>
+					<Id>0</Id>
+					<DataContainer filestatus="PROPOSED">
+						<FileName>default_filename.fits</FileName>
+					</DataContainer>
+				</StorageSpace>
+			</CatalogFileStorage>
+		</CatalogStorage>
+		<CatalogDescription>
+			<CatalogDataProduct>foo</CatalogDataProduct>
+			<PathToCatalogDefinition>foo</PathToCatalogDefinition>
+			<CatalogFormatBase>she.validatedShearMeasurement</CatalogFormatBase>
+			<CatalogFormatHDU>1</CatalogFormatHDU>
+			<CatalogFitsColumnsDefinition>foo</CatalogFitsColumnsDefinition>
+		</CatalogDescription>
+		<BfdMoments format="she.bfdMoments" version="0.1">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>default_filename.fits</FileName>
+			</DataContainer>
+		</BfdMoments>
+		<KsbShearEstimates format="she.ksbShearEstimates" version="0.1">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>default_filename.fits</FileName>
+			</DataContainer>
+		</KsbShearEstimates>
+		<LensMcShearEstimates format="she.lensMcShearEstimates" version="0.1">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>default_filename.fits</FileName>
+			</DataContainer>
+		</LensMcShearEstimates>
+		<MomentsMlShearEstimates format="she.momentsMlShearEstimates" version="0.1">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>default_filename.fits</FileName>
+			</DataContainer>
+		</MomentsMlShearEstimates>
+	</Data>
+</ns1:DpdShearMeasurement>
