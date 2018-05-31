@@ -114,11 +114,11 @@ def __get_method_filename(self, method):
     else:
         raise ValueError("Invalid method " + str(method) + ".")
 
-def create_dpd_shear_estimates(BFD_filename = None,
-                               KSB_filename = None,
-                               LensMC_filename = None,
-                               MomentsML_filename = None,
-                               REGAUSS_filename = None):
+def create_dpd_shear_estimates(BFD_filename = "",
+                               KSB_filename = "",
+                               LensMC_filename = "",
+                               MomentsML_filename = "",
+                               REGAUSS_filename = ""):
     """
         @TODO fill in docstring
     """
@@ -138,11 +138,11 @@ def create_dpd_shear_estimates(BFD_filename = None,
 # Add a useful alias
 create_shear_estimates_product = create_dpd_shear_estimates
 
-def create_shear_estimates(BFD_filename = None,
-                           KSB_filename = None,
-                           LensMC_filename = None,
-                           MomentsML_filename = None,
-                           REGAUSS_filename = None):
+def create_shear_estimates(BFD_filename,
+                           KSB_filename,
+                           LensMC_filename,
+                           MomentsML_filename,
+                           REGAUSS_filename):
     """
         @TODO fill in docstring
     """
