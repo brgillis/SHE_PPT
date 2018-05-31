@@ -48,10 +48,10 @@ def init():
     return
 
 def __set_filename(self, filename):
-    self.Data.DataContainer.FileName = filename
+    self.Data.ValidatedShearMeasurementFile.DataContainer.FileName = filename
 
 def __get_filename(self):
-    return self.Data.DataContainer.FileName
+    return self.Data.ValidatedShearMeasurementFile.DataContainer.FileName
 
 def __get_all_filenames(self):
 
