@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
-from EuclidDmBindings.dpd.she.validatedshearmeasurement_stub import DpdValidatedShearMeasurement
+from EuclidDmBindings.dpd.she.raw.validatedshearmeasurement_stub import dpdValidatedShearMeasurement
 
 from copy import deepcopy
 
@@ -34,7 +34,7 @@ def init():
         Adds some extra functionality to the DpdSheAstrometry product
     """
 
-    binding_class = DpdValidatedShearMeasurement
+    binding_class = dpdValidatedShearMeasurement
 
     # Add the data file name methods
 

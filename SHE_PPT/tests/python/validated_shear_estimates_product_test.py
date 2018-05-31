@@ -75,7 +75,7 @@ class TestValidatedShearEstimatesProduct(object):
         filename = tmpdir.join("she_validated_shear_estimates.xml")
         write_pickled_product(product, filename)
 
-        # Read back the XML file
+        # Read back the pickled file
         loaded_product = read_pickled_product(filename)
 
         # Check that the filenames match
