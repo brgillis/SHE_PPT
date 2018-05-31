@@ -83,8 +83,8 @@ def create_she_validated_shear_estimates(filename):
     she_validated_shear_estimates.format = "she.validatedShearMeasurement"
     she_validated_shear_estimates.version = "0.1"
 
-    she_validated_shear_estimates.DataContainer = dataContainer()
-    she_validated_shear_estimates.DataContainer.FileName = filename
-    she_validated_shear_estimates.DataContainer.filestatus = "PROPOSED"
+    she_validated_shear_estimates.ValidatedShearMeasurementFile = dataContainer()
+    she_validated_shear_estimates.ValidatedShearMeasurementFile.FileName = filename
+    she_validated_shear_estimates.ValidatedShearMeasurementFile.filestatus = "PROPOSED"
 
     return she_validated_shear_estimates
