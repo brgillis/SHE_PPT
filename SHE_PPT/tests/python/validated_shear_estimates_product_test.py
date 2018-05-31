@@ -28,14 +28,20 @@ class TestValidatedShearEstimatesProduct(object):
     """
 
     def test_validation(self):
+        
+        prod.init()
 
         # Create the product
-        product = prod.create_dpd_she_validated_shear_estimates()
+        subfilename = "foo.fits"
+        product = prod.create_dpd_she_validated_shear_estimates(filename=subfilename)
 
         # Check that it validates the schema
         product.validateBinding()
+        
+        # Check that it was inited with the proper filename
+        assert product.get_filename() == subfilename
 
-        pass
+        return
 
     def test_xml_writing_and_reading(self, tmpdir):
 
@@ -54,29 +60,6 @@ class TestValidatedShearEstimatesProduct(object):
 
         # Read back the XML file
         loaded_product = read_xml_product(filename)
-
-        # Check that the filenames match
-        assert loaded_product.get_filename() == subfilename
-
-        pass
-
-    def test_pickle_writing_and_reading(self, tmpdir):
-
-        prod.init()
-
-        # Create the product
-        product = prod.create_dpd_she_validated_shear_estimates()
-
-        # Change the fits filenames
-        subfilename = "test_file.fits"
-        product.set_filename(subfilename)
-
-        # Save the product in an XML file
-        filename = tmpdir.join("she_validated_shear_estimates.xml")
-        write_pickled_product(product, filename)
-
-        # Read back the XML file
-        loaded_product = read_pickled_product(filename)
 
         # Check that the filenames match
         assert loaded_product.get_filename() == subfilename
