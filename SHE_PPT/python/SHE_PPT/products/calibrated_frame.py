@@ -134,19 +134,19 @@ def create_vis_data_storage(filename, format = "vis.calibratedFrame", version = 
 
     return data_storage
 
-def create_vis_psf_storage(filename, format = "vis.calibratedFrame", version = "0.1", filestatus = "PROPOSED"):
+def create_vis_psf_storage(filename, format = "vis.psfModel", version = "0.1", filestatus = "PROPOSED"):
 
     data_storage = init_storage(vis_pro.visPsfModelStorageFitsFile,filename,format,version,filestatus)
 
     return data_storage
 
-def create_vis_bkg_storage(filename, format = "vis.calibratedFrame", version = "0.1", filestatus = "PROPOSED"):
+def create_vis_bkg_storage(filename, format = "vis.backgroundMap", version = "0.1", filestatus = "PROPOSED"):
 
     data_storage = init_storage(vis_pro.visBackgroundStorageFitsFile,filename,format,version,filestatus)
 
     return data_storage
 
-def create_vis_wgt_storage(filename, format = "vis.calibratedFrame", version = "0.1", filestatus = "PROPOSED"):
+def create_vis_wgt_storage(filename, format = "vis.weightMap", version = "0.1", filestatus = "PROPOSED"):
 
     data_storage = init_storage(vis_pro.visWeightStorageFitsFile,filename,format,version,filestatus)
 
