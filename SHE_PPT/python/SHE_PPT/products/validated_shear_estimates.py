@@ -80,12 +80,21 @@ def create_she_validated_shear_estimates(filename):
 
     she_validated_shear_estimates = she_pro.validatedShearMeasurement()
 
-    she_validated_shear_estimates.ValidatedShearMeasurementFile = she_pro.validatedShearMeasurementFile()
-    she_validated_shear_estimates.ValidatedShearMeasurementFile.format = "she.validatedShearMeasurement"
-    she_validated_shear_estimates.ValidatedShearMeasurementFile.version = "0.1"
-
-    she_validated_shear_estimates.ValidatedShearMeasurementFile.DataContainer = dataContainer()
-    she_validated_shear_estimates.ValidatedShearMeasurementFile.DataContainer.FileName = filename
-    she_validated_shear_estimates.ValidatedShearMeasurementFile.DataContainer.filestatus = "PROPOSED"
+    she_validated_shear_estimates.ValidatedShearMeasurementFile = create_validated_shear_measurement_file(filename)
 
     return she_validated_shear_estimates
+
+def create_validated_shear_measurement_file(filename):
+    """
+        @TODO fill in docstring
+    """
+    
+    validated_shear_measurement_file = she_pro.validatedShearMeasurementFile()
+    validated_shear_measurement_file.format = "she.validatedShearMeasurement"
+    validated_shear_measurement_file.version = "0.1"
+
+    validated_shear_measurement_file.DataContainer = dataContainer()
+    validated_shear_measurement_file.DataContainer.FileName = filename
+    validated_shear_measurement_file.DataContainer.filestatus = "PROPOSED"
+    
+    return validated_shear_measurement_file
