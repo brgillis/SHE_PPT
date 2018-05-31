@@ -23,8 +23,6 @@
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
 from EuclidDmBindings.dpd.she.raw.validatedshearmeasurement_stub import dpdValidatedShearMeasurement
 
-from copy import deepcopy
-
 from SHE_PPT.file_io import read_xml_product, find_aux_file
 
 sample_file_name = "SHE_PPT/sample_validated_shear_measurements.xml"
