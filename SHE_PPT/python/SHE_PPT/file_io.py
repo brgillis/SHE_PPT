@@ -25,7 +25,8 @@ import pickle
 import time
 from xml.sax._exceptions import SAXParseException
 
-import EuclidDmBindings.dpd.she_stub as she_dpd
+from EuclidDmBindings.sys_stub import CreateFromDocument
+
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.utility import time_to_timestamp
@@ -139,7 +140,7 @@ def replace_in_file(input_filename, output_filename, input_string, output_string
                 fout.write(line.replace(input_string, output_string))
 
 def replace_multiple_in_file(input_filename, output_filename, input_strings, output_strings):
-    """
+    """she_dpd
         @brief Replaces every occurence of an input_string in input_filename with the corresponding
                output string and prints the results to $output_filename.
 
@@ -185,7 +186,7 @@ def read_xml_product(xml_file_name, allow_pickled=True):
             raise
 
     # Create a new product instance using the proper data product dictionary
-    product = she_dpd.CreateFromDocument(xml_string)
+    product = CreateFromDocument(xml_string)
 
     return product
 
