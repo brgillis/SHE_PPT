@@ -27,8 +27,6 @@ from EuclidDmBindings.dpd.she.shearmeasurement_stub import DpdShearMeasurement
 
 from EuclidDmBindings.sys.dss_stub import dataContainer
 
-from SHE_PPT.table_formats.shear_estimates import tf as setf
-
 def init():
     """
         Adds some extra functionality to the DpdShearEstimates product
