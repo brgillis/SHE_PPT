@@ -230,7 +230,7 @@ def create_REGAUSS_shear_estimates(filename):
         @TODO fill in docstring
     """
 
-    REGAUSS_shear_estimates = she_pro.regaussShearEstimates
+    REGAUSS_shear_estimates = she_pro.regaussShearEstimates()
 
     REGAUSS_shear_estimates.format = "she.regaussShearEstimates"
     REGAUSS_shear_estimates.version = "0.1"
