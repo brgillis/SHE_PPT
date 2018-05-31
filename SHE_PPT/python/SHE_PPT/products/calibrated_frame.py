@@ -115,7 +115,7 @@ def create_dpd_vis_calibrated_frame(filename = 'vis_calibrated_frame.fits'):
 
     return dpd_vis_calibrated_frame
 
-def init_storage(data_storage, filename, format, version, filestatus):
+def init_storage(data_storage, filename, filestatus):
 
     data_storage.DataContainer = dataContainer()
     data_storage.DataContainer.FileName = filename
@@ -127,7 +127,7 @@ def create_vis_data_storage(filename, filestatus = "PROPOSED"):
 
     data_storage = vis_pro.visCalibratedStorageFitsFile()
 
-    init_storage(data_storage,filename,format,version,filestatus)
+    init_storage(data_storage,filename,filestatus)
 
     return data_storage
 
@@ -135,7 +135,7 @@ def create_vis_psf_storage(filename, filestatus = "PROPOSED"):
 
     data_storage = vis_pro.visPsfModelStorageFitsFile()
 
-    init_storage(data_storage,filename,format,version,filestatus)
+    init_storage(data_storage,filename,filestatus)
 
     return data_storage
 
@@ -143,7 +143,7 @@ def create_vis_bkg_storage(filename, filestatus = "PROPOSED"):
 
     data_storage = vis_pro.visBackgroundStorageFitsFile()
 
-    init_storage(data_storage,filename,format,version,filestatus)
+    init_storage(data_storage,filename,filestatus)
 
     return data_storage
 
@@ -151,6 +151,6 @@ def create_vis_wgt_storage(filename, filestatus = "PROPOSED"):
 
     data_storage = vis_pro.visWeightStorageFitsFile()
 
-    init_storage(data_storage,filename,format,version,filestatus)
+    init_storage(data_storage,filename,filestatus)
 
     return data_storage
