@@ -122,7 +122,7 @@ def create_vis_calibrated_frame(filename = None):
         @TODO fill in docstring
     """
 
-    vis_calibrated_frame = vis_pro.calibratedFrameVIS()
+    vis_calibrated_frame = vis_pro.visCalibratedFrame()
 
     # Attributes inherited from imgBaseFrame
 
