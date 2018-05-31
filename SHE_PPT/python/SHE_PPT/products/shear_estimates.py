@@ -20,8 +20,14 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-# import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import EuclidDmBindings.she.she_stub as she_dpd # FIXME
+import HeaderProvider.GenericHeaderProvider as HeaderProvider
+
+import EuclidDmBindings.pro.she_stub as she_pro
+from EuclidDmBindings.dpd.she.shearmeasurement_stub import DpdShearMeasurement
+
+
+
+from EuclidDmBindings.sys.dss_stub import dataContainer
 
 from SHE_PPT.table_formats.shear_estimates import tf as setf
 
@@ -30,8 +36,7 @@ def init():
         Adds some extra functionality to the DpdShearEstimates product
     """
 
-    # binding_class = she_dpd.DpdShearEstimatesProduct # @FIXME
-    binding_class = DpdShearEstimatesProduct
+    binding_class = DpdShearMeasurement
 
     # Add the data file name methods
 
@@ -111,56 +116,6 @@ def __get_method_filename(self, method):
     else:
         raise ValueError("Invalid method " + str(method) + ".")
 
-class DpdShearEstimatesProduct:  # @FIXME
-    def __init__(self):
-        self.Header = None
-        self.Data = None
-    def validateBinding(self):
-        return False
-
-class ShearEstimatesProduct:  # @FIXME
-    def __init__(self):
-        self.BFDShearEstimates = None
-        self.KSBShearEstimates = None
-        self.LensMCShearEstimates = None
-        self.MomentsMLShearEstimates = None
-        self.REGAUSSShearEstimates = None
-
-class DataContainer:  # @FIXME
-    def __init__(self):
-        self.FileName = None
-        self.filestatus = None
-
-class BFDShearEstimatesProduct:  # @FIXME
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-
-class KSBShearEstimatesProduct:  # @FIXME
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-
-class LensMCShearEstimatesProduct:  # @FIXME
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-
-class MomentsMLShearEstimatesProduct:  # @FIXME
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-
-class REGAUSSShearEstimatesProduct:  # @FIXME
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-
 def create_dpd_shear_estimates(BFD_filename = None,
                                KSB_filename = None,
                                LensMC_filename = None,
@@ -170,11 +125,9 @@ def create_dpd_shear_estimates(BFD_filename = None,
         @TODO fill in docstring
     """
 
-    # dpd_shear_estimates = she_dpd.DpdSheShearEstimates() # @FIXME
-    dpd_shear_estimates = DpdShearEstimatesProduct()
+    dpd_shear_estimates = DpdShearMeasurement()
 
-    # dpd_shear_estimates.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
-    dpd_shear_estimates.Header = "SHE"
+    dpd_shear_estimates.Header = HeaderProvider.createGenericHeader("SHE")
 
     dpd_shear_estimates.Data = create_shear_estimates(BFD_filename,
                                                        KSB_filename,
@@ -196,18 +149,17 @@ def create_shear_estimates(BFD_filename = None,
         @TODO fill in docstring
     """
 
-    # shear_estimates = she_dpd.SheShearEstimates() # @FIXME
-    shear_estimates = ShearEstimatesProduct()
+    shear_estimates = she_pro.shearMeasurement()
 
-    shear_estimates.BFDShearEstimates = create_BFD_shear_estimates(BFD_filename)
+    shear_estimates.BfdMoments = create_BFD_shear_estimates(BFD_filename)
 
-    shear_estimates.KSBShearEstimates = create_KSB_shear_estimates(KSB_filename)
+    shear_estimates.KsbShearEstimates = create_KSB_shear_estimates(KSB_filename)
 
-    shear_estimates.LensMCShearEstimates = create_LensMC_shear_estimates(LensMC_filename)
+    shear_estimates.LensMcShearEstimates = create_LensMC_shear_estimates(LensMC_filename)
 
-    shear_estimates.MomentsMLShearEstimates = create_MomentsML_shear_estimates(MomentsML_filename)
+    shear_estimates.MomentsMlShearEstimates = create_MomentsML_shear_estimates(MomentsML_filename)
 
-    shear_estimates.REGAUSSShearEstimates = create_REGAUSS_shear_estimates(REGAUSS_filename)
+    shear_estimates.RegaussShearEstimates = create_REGAUSS_shear_estimates(REGAUSS_filename)
 
     return shear_estimates
 
@@ -216,13 +168,12 @@ def create_BFD_shear_estimates(filename):
         @TODO fill in docstring
     """
 
-    # BFD_shear_estimates = she_dpd.SheBFDShearEstimates() # @FIXME
-    BFD_shear_estimates = BFDShearEstimatesProduct()
+    BFD_shear_estimates = she_pro.bfdMoments()
 
-    BFD_shear_estimates.format = setf.m.table_format
-    BFD_shear_estimates.version = setf.m.__version__
+    BFD_shear_estimates.format = "she.bfdMoments"
+    BFD_shear_estimates.version = "0.1"
 
-    BFD_shear_estimates.DataContainer = DataContainer()
+    BFD_shear_estimates.DataContainer = dataContainer()
     BFD_shear_estimates.DataContainer.FileName = filename
     BFD_shear_estimates.DataContainer.filestatus = "PROPOSED"
 
@@ -233,13 +184,12 @@ def create_KSB_shear_estimates(filename):
         @TODO fill in docstring
     """
 
-    # KSB_shear_estimates = she_dpd.SheKSBShearEstimates() # @FIXME
-    KSB_shear_estimates = KSBShearEstimatesProduct()
+    KSB_shear_estimates = she_pro.ksbShearEstimates()
 
-    KSB_shear_estimates.format = setf.m.table_format
-    KSB_shear_estimates.version = setf.m.__version__
+    KSB_shear_estimates.format = "she.ksbShearEstimates"
+    KSB_shear_estimates.version = "0.1"
 
-    KSB_shear_estimates.DataContainer = DataContainer()
+    KSB_shear_estimates.DataContainer = dataContainer()
     KSB_shear_estimates.DataContainer.FileName = filename
     KSB_shear_estimates.DataContainer.filestatus = "PROPOSED"
 
@@ -250,13 +200,12 @@ def create_LensMC_shear_estimates(filename):
         @TODO fill in docstring
     """
 
-    # LensMC_shear_estimates = she_dpd.SheLensMCShearEstimates() # @FIXME
-    LensMC_shear_estimates = LensMCShearEstimatesProduct()
+    LensMC_shear_estimates = she_pro.lensMcShearEstimates()
 
-    LensMC_shear_estimates.format = setf.m.table_format
-    LensMC_shear_estimates.version = setf.m.__version__
+    LensMC_shear_estimates.format = "she.lensMcShearEstimates"
+    LensMC_shear_estimates.version = "0.1"
 
-    LensMC_shear_estimates.DataContainer = DataContainer()
+    LensMC_shear_estimates.DataContainer = dataContainer()
     LensMC_shear_estimates.DataContainer.FileName = filename
     LensMC_shear_estimates.DataContainer.filestatus = "PROPOSED"
 
@@ -267,13 +216,12 @@ def create_MomentsML_shear_estimates(filename):
         @TODO fill in docstring
     """
 
-    # MomentsML_shear_estimates = she_dpd.SheMomentsMLShearEstimates() # @FIXME
-    MomentsML_shear_estimates = MomentsMLShearEstimatesProduct()
+    MomentsML_shear_estimates = she_pro.momentsMlShearEstimates()
 
-    MomentsML_shear_estimates.format = setf.m.table_format
-    MomentsML_shear_estimates.version = setf.m.__version__
+    MomentsML_shear_estimates.format = "she.momentsMlShearEstimates"
+    MomentsML_shear_estimates.version = "0.1"
 
-    MomentsML_shear_estimates.DataContainer = DataContainer()
+    MomentsML_shear_estimates.DataContainer = dataContainer()
     MomentsML_shear_estimates.DataContainer.FileName = filename
     MomentsML_shear_estimates.DataContainer.filestatus = "PROPOSED"
 
@@ -284,13 +232,12 @@ def create_REGAUSS_shear_estimates(filename):
         @TODO fill in docstring
     """
 
-    # REGAUSS_shear_estimates = she_dpd.SheREGAUSSShearEstimates() # @FIXME
-    REGAUSS_shear_estimates = REGAUSSShearEstimatesProduct()
+    REGAUSS_shear_estimates = she_pro.regaussShearEstimates
 
-    REGAUSS_shear_estimates.format = setf.m.table_format
-    REGAUSS_shear_estimates.version = setf.m.__version__
+    REGAUSS_shear_estimates.format = "she.regaussShearEstimates"
+    REGAUSS_shear_estimates.version = "0.1"
 
-    REGAUSS_shear_estimates.DataContainer = DataContainer()
+    REGAUSS_shear_estimates.DataContainer = dataContainer()
     REGAUSS_shear_estimates.DataContainer.FileName = filename
     REGAUSS_shear_estimates.DataContainer.filestatus = "PROPOSED"
 
