@@ -126,6 +126,12 @@ def create_dpd_shear_estimates(BFD_filename = "",
 
     # Overwrite the header with a new one to update the creation date (among other things)
     dpd_shear_estimates.Header = HeaderProvider.createGenericHeader("SHE")
+    
+    __set_BFD_filename(dpd_shear_estimates, BFD_filename)
+    __set_KSB_filename(dpd_shear_estimates, KSB_filename)
+    __set_LensMC_filename(dpd_shear_estimates, LensMC_filename)
+    __set_MomentsML_filename(dpd_shear_estimates, MomentsML_filename)
+    __set_REGAUSS_filename(dpd_shear_estimates, REGAUSS_filename)
 
     return dpd_shear_estimates
 
