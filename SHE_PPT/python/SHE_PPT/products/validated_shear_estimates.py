@@ -32,7 +32,7 @@ def init():
         Adds some extra functionality to the DpdSheAstrometry product
     """
 
-    binding_class = DpdValidatedShearMeasurement()
+    binding_class = DpdValidatedShearMeasurement
 
     # Add the data file name methods
 
@@ -62,7 +62,7 @@ def create_dpd_she_validated_shear_estimates(filename = ""):
         @TODO fill in docstring
     """
 
-    dpd_she_validated_shear_estimates = DpdValidatedShearMeasurement
+    dpd_she_validated_shear_estimates = DpdValidatedShearMeasurement()
 
     dpd_she_validated_shear_estimates.Header = HeaderProvider.createGenericHeader("SHE")
 
