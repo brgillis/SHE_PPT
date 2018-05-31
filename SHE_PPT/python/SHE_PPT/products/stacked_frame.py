@@ -24,7 +24,7 @@ from EuclidDmBindings.bas.cot_stub import wcs, zeroPoint
 from EuclidDmBindings.bas.img_stub import imgSpatialFootprint
 from EuclidDmBindings.bas.imp.eso_stub import dataProduct
 from EuclidDmBindings.bas.imp_stub import projectionType
-import EuclidDmBindings.dpd.vis_stub as vis_dpd
+from EuclidDmBindings.dpd.vis.calibratedframe_stub import DpdVisStackedFrame
 from EuclidDmBindings.ins_stub import baseInstrument
 from EuclidDmBindings.pro import le1_stub as le1
 from EuclidDmBindings.pro.le1 import vis_stub as le1vis
@@ -39,7 +39,7 @@ def init():
         Adds some extra functionality to the DpdSheAstrometry product
     """
 
-    binding_class = vis_dpd.dpdVisStackedFrame
+    binding_class = DpdVisStackedFrame
 
     # Add the data file name methods
 
@@ -110,7 +110,7 @@ def create_dpd_vis_stacked_frame(filename = "default_filename"):
         @TODO fill in docstring
     """
 
-    dpd_vis_stacked_frame = vis_dpd.dpdVisStackedFrame()
+    dpd_vis_stacked_frame = DpdVisStackedFrame
 
     dpd_vis_stacked_frame.Header = HeaderProvider.createGenericHeader("VIS")
 
