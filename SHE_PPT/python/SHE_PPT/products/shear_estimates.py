@@ -59,34 +59,34 @@ def init():
     binding_class.has_files = True
 
 def __set_BFD_filename(self, filename):
-    self.Data.BFDShearEstimates.DataContainer.FileName = filename
+    self.Data.BfdMoments.DataContainer.FileName = filename
 
 def __get_BFD_filename(self):
-    return self.Data.BFDShearEstimates.DataContainer.FileName
+    return self.Data.BfdMoments.DataContainer.FileName
 
 def __set_KSB_filename(self, filename):
-    self.Data.KSBShearEstimates.DataContainer.FileName = filename
+    self.Data.KsbShearEstimates.DataContainer.FileName = filename
 
 def __get_KSB_filename(self):
-    return self.Data.KSBShearEstimates.DataContainer.FileName
+    return self.Data.KsbShearEstimates.DataContainer.FileName
 
 def __set_LensMC_filename(self, filename):
-    self.Data.LensMCShearEstimates.DataContainer.FileName = filename
+    self.Data.LensMcShearEstimates.DataContainer.FileName = filename
 
 def __get_LensMC_filename(self):
-    return self.Data.LensMCShearEstimates.DataContainer.FileName
+    return self.Data.LensMcShearEstimates.DataContainer.FileName
 
 def __set_MomentsML_filename(self, filename):
-    self.Data.MomentsMLShearEstimates.DataContainer.FileName = filename
+    self.Data.MomentsMlShearEstimates.DataContainer.FileName = filename
 
 def __get_MomentsML_filename(self):
-    return self.Data.MomentsMLShearEstimates.DataContainer.FileName
+    return self.Data.MomentsMlShearEstimates.DataContainer.FileName
 
 def __set_REGAUSS_filename(self, filename):
-    self.Data.REGAUSSShearEstimates.DataContainer.FileName = filename
+    self.Data.RegaussShearEstimates.DataContainer.FileName = filename
 
 def __get_REGAUSS_filename(self):
-    return self.Data.REGAUSSShearEstimates.DataContainer.FileName
+    return self.Data.RegaussShearEstimates.DataContainer.FileName
 
 def __get_all_filenames(self):
 
