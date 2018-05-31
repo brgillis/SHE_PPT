@@ -28,14 +28,20 @@ class TestValidatedShearEstimatesProduct(object):
     """
 
     def test_validation(self):
+        
+        prod.init()
 
         # Create the product
-        product = prod.create_dpd_she_validated_shear_estimates()
+        subfilename = "foo.fits"
+        product = prod.create_dpd_she_validated_shear_estimates(filename=subfilename)
 
         # Check that it validates the schema
         product.validateBinding()
+        
+        # Check that it was inited with the proper filename
+        assert product.get_filename() == subfilename
 
-        pass
+        return
 
     def test_xml_writing_and_reading(self, tmpdir):
 

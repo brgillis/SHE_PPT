@@ -117,7 +117,7 @@ def create_dpd_vis_calibrated_frame(filename = 'vis_calibrated_frame.fits'):
 
 def create_vis_data_storage(filename, format = "vis.reducedFrameVIS", version = "0.0", filestatus = "PROPOSED"):
 
-    data_storage = vis_pro.reducedFrameFitsFileVIS()
+    data_storage = vis_pro.visReducedFrameFitsFile()
 
     data_storage.format = format
     data_storage.version = version

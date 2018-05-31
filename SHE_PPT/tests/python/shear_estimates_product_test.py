@@ -28,12 +28,33 @@ class TestShearEstimatesProduct(object):
     """
 
     def test_validation(self):
+        
+        prod.init()
+        
+        b_filename = "test_file_b.fits"
+        k_filename = "test_file_k.fits"
+        l_filename = "test_file_l.fits"
+        m_filename = "test_file_m.fits"
+        r_filename = "test_file_r.fits"
+        
+        product = prod.create_dpd_she_validated_shear_estimates(BFD_filename = b_filename,
+                                                               KSB_filename = k_filename,
+                                                               LensMC_filename = l_filename,
+                                                               MomentsML_filename = m_filename,
+                                                               REGAUSS_filename = r_filename)
 
         # Create the product
         product = prod.create_dpd_shear_estimates()
 
         # Check that it validates the schema
         product.validateBinding()
+        
+        # Check that it was inited with the proper filenames
+        assert product.get_BFD_filename() == b_filename
+        assert product.get_KSB_filename() == k_filename
+        assert product.get_LensMC_filename() == l_filename
+        assert product.get_MomentsML_filename() == m_filename
+        assert product.get_REGAUSS_filename() == r_filename
 
         pass
 
