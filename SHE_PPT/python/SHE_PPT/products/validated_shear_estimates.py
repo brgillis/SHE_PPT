@@ -21,11 +21,13 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
-
-import EuclidDmBindings.pro.she_stub as she_pro
 from EuclidDmBindings.dpd.she.validatedshearmeasurement_stub import DpdValidatedShearMeasurement
 
-from EuclidDmBindings.sys.dss_stub import dataContainer
+from copy import deepcopy
+
+from SHE_PPT.file_io import read_xml_product, find_aux_file
+
+sample_file_name = "SHE_PPT/sample_validated_shear_measurements.xml"
 
 def init():
     """
@@ -57,44 +59,17 @@ def __get_all_filenames(self):
 
     return all_filenames
 
-def create_dpd_she_validated_shear_estimates(filename = ""):
+def create_dpd_she_validated_shear_estimates(filename = "default_filename.fits"):
     """
         @TODO fill in docstring
     """
 
-    dpd_she_validated_shear_estimates = DpdValidatedShearMeasurement()
+    dpd_she_validated_shear_estimates = read_xml_product(find_aux_file(sample_file_name), allow_pickled=False)
 
+    # Overwrite the header with a new one to update the creation date (among other things)
     dpd_she_validated_shear_estimates.Header = HeaderProvider.createGenericHeader("SHE")
-
-    dpd_she_validated_shear_estimates.Data = create_she_validated_shear_estimates(filename)
 
     return dpd_she_validated_shear_estimates
 
 # Add a useful alias
 create_validated_shear_estimates_product = create_dpd_she_validated_shear_estimates
-
-def create_she_validated_shear_estimates(filename):
-    """
-        @TODO fill in docstring
-    """
-
-    she_validated_shear_estimates = she_pro.validatedShearMeasurement()
-
-    she_validated_shear_estimates.ValidatedShearMeasurementFile = create_validated_shear_measurement_file(filename)
-
-    return she_validated_shear_estimates
-
-def create_validated_shear_measurement_file(filename):
-    """
-        @TODO fill in docstring
-    """
-    
-    validated_shear_measurement_file = she_pro.validatedShearMeasurementFile()
-    validated_shear_measurement_file.format = "she.validatedShearMeasurement"
-    validated_shear_measurement_file.version = "0.1"
-
-    validated_shear_measurement_file.DataContainer = dataContainer()
-    validated_shear_measurement_file.DataContainer.FileName = filename
-    validated_shear_measurement_file.DataContainer.filestatus = "PROPOSED"
-    
-    return validated_shear_measurement_file
