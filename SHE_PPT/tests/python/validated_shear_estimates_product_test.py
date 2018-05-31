@@ -59,26 +59,3 @@ class TestValidatedShearEstimatesProduct(object):
         assert loaded_product.get_filename() == subfilename
 
         pass
-
-    def test_pickle_writing_and_reading(self, tmpdir):
-
-        prod.init()
-
-        # Create the product
-        product = prod.create_dpd_she_validated_shear_estimates()
-
-        # Change the fits filenames
-        subfilename = "test_file.fits"
-        product.set_filename(subfilename)
-
-        # Save the product in an XML file
-        filename = tmpdir.join("she_validated_shear_estimates.xml")
-        write_pickled_product(product, filename)
-
-        # Read back the pickled file
-        loaded_product = read_pickled_product(filename)
-
-        # Check that the filenames match
-        assert loaded_product.get_filename() == subfilename
-
-        pass
