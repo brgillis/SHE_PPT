@@ -71,38 +71,4 @@ class TestShearEstimatesProduct(object):
         assert loaded_product.get_REGAUSS_filename() == r_filename
 
         pass
-
-    def test_pickle_writing_and_reading(self, tmpdir):
-
-        prod.init()
-
-        # Create the product
-        product = prod.create_dpd_shear_estimates()
-
-        # Change the fits filenames
-        b_filename = "test_file_b.fits"
-        product.set_BFD_filename(b_filename)
-        k_filename = "test_file_k.fits"
-        product.set_KSB_filename(k_filename)
-        l_filename = "test_file_l.fits"
-        product.set_LensMC_filename(l_filename)
-        m_filename = "test_file_m.fits"
-        product.set_MomentsML_filename(m_filename)
-        r_filename = "test_file_r.fits"
-        product.set_REGAUSS_filename(r_filename)
-
-        # Save the product in a pickled file
-        filename = tmpdir.join("she_shear_estimates.bin")
-        write_pickled_product(product, filename)
-
-        # Read back the pickled file
-        loaded_product = read_pickled_product(filename)
-
-        # Check that the filenames coincide
-        assert loaded_product.get_BFD_filename() == b_filename
-        assert loaded_product.get_KSB_filename() == k_filename
-        assert loaded_product.get_LensMC_filename() == l_filename
-        assert loaded_product.get_MomentsML_filename() == m_filename
-        assert loaded_product.get_REGAUSS_filename() == r_filename
-
-        pass
+    

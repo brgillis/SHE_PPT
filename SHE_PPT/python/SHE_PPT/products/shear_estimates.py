@@ -22,17 +22,18 @@
 
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
 
-import EuclidDmBindings.pro.she_stub as she_pro
-from EuclidDmBindings.dpd.she.shearmeasurement_stub import DpdShearMeasurement
+from EuclidDmBindings.dpd.she.raw.shearmeasurement_stub import dpdShearMeasurement
 
-from EuclidDmBindings.sys.dss_stub import dataContainer
+from SHE_PPT.file_io import read_xml_product, find_aux_file
+
+sample_file_name = "SHE_PPT/sample_shear_measurements.xml"
 
 def init():
     """
         Adds some extra functionality to the DpdShearEstimates product
     """
 
-    binding_class = DpdShearMeasurement
+    binding_class = dpdShearMeasurement
 
     # Add the data file name methods
 
@@ -121,120 +122,12 @@ def create_dpd_shear_estimates(BFD_filename = "",
         @TODO fill in docstring
     """
 
-    dpd_shear_estimates = DpdShearMeasurement()
+    dpd_shear_estimates = read_xml_product(find_aux_file(sample_file_name), allow_pickled=False)
 
+    # Overwrite the header with a new one to update the creation date (among other things)
     dpd_shear_estimates.Header = HeaderProvider.createGenericHeader("SHE")
-
-    dpd_shear_estimates.Data = create_shear_estimates(BFD_filename,
-                                                       KSB_filename,
-                                                       LensMC_filename,
-                                                       MomentsML_filename,
-                                                       REGAUSS_filename)
 
     return dpd_shear_estimates
 
 # Add a useful alias
 create_shear_estimates_product = create_dpd_shear_estimates
-
-def create_shear_estimates(BFD_filename,
-                           KSB_filename,
-                           LensMC_filename,
-                           MomentsML_filename,
-                           REGAUSS_filename):
-    """
-        @TODO fill in docstring
-    """
-
-    shear_estimates = she_pro.shearMeasurement()
-
-    shear_estimates.BfdMoments = create_BFD_shear_estimates(BFD_filename)
-
-    shear_estimates.KsbShearEstimates = create_KSB_shear_estimates(KSB_filename)
-
-    shear_estimates.LensMcShearEstimates = create_LensMC_shear_estimates(LensMC_filename)
-
-    shear_estimates.MomentsMlShearEstimates = create_MomentsML_shear_estimates(MomentsML_filename)
-
-    shear_estimates.RegaussShearEstimates = create_REGAUSS_shear_estimates(REGAUSS_filename)
-
-    return shear_estimates
-
-def create_BFD_shear_estimates(filename):
-    """
-        @TODO fill in docstring
-    """
-
-    BFD_shear_estimates = she_pro.bfdMoments()
-
-    BFD_shear_estimates.format = "she.bfdMoments"
-    BFD_shear_estimates.version = "0.1"
-
-    BFD_shear_estimates.DataContainer = dataContainer()
-    BFD_shear_estimates.DataContainer.FileName = filename
-    BFD_shear_estimates.DataContainer.filestatus = "PROPOSED"
-
-    return BFD_shear_estimates
-
-def create_KSB_shear_estimates(filename):
-    """
-        @TODO fill in docstring
-    """
-
-    KSB_shear_estimates = she_pro.ksbShearEstimates()
-
-    KSB_shear_estimates.format = "she.ksbShearEstimates"
-    KSB_shear_estimates.version = "0.1"
-
-    KSB_shear_estimates.DataContainer = dataContainer()
-    KSB_shear_estimates.DataContainer.FileName = filename
-    KSB_shear_estimates.DataContainer.filestatus = "PROPOSED"
-
-    return KSB_shear_estimates
-
-def create_LensMC_shear_estimates(filename):
-    """
-        @TODO fill in docstring
-    """
-
-    LensMC_shear_estimates = she_pro.lensMcShearEstimates()
-
-    LensMC_shear_estimates.format = "she.lensMcShearEstimates"
-    LensMC_shear_estimates.version = "0.1"
-
-    LensMC_shear_estimates.DataContainer = dataContainer()
-    LensMC_shear_estimates.DataContainer.FileName = filename
-    LensMC_shear_estimates.DataContainer.filestatus = "PROPOSED"
-
-    return LensMC_shear_estimates
-
-def create_MomentsML_shear_estimates(filename):
-    """
-        @TODO fill in docstring
-    """
-
-    MomentsML_shear_estimates = she_pro.momentsMlShearEstimates()
-
-    MomentsML_shear_estimates.format = "she.momentsMlShearEstimates"
-    MomentsML_shear_estimates.version = "0.1"
-
-    MomentsML_shear_estimates.DataContainer = dataContainer()
-    MomentsML_shear_estimates.DataContainer.FileName = filename
-    MomentsML_shear_estimates.DataContainer.filestatus = "PROPOSED"
-
-    return MomentsML_shear_estimates
-
-def create_REGAUSS_shear_estimates(filename):
-    """
-        @TODO fill in docstring
-    """
-
-    REGAUSS_shear_estimates = she_pro.regaussShearEstimates()
-
-    REGAUSS_shear_estimates.format = "she.regaussShearEstimates"
-    REGAUSS_shear_estimates.version = "0.1"
-
-    REGAUSS_shear_estimates.DataContainer = dataContainer()
-    REGAUSS_shear_estimates.DataContainer.FileName = filename
-    REGAUSS_shear_estimates.DataContainer.filestatus = "PROPOSED"
-
-    return REGAUSS_shear_estimates
