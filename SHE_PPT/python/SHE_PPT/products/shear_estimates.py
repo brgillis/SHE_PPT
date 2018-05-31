@@ -23,7 +23,7 @@
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
 
 import EuclidDmBindings.pro.she_stub as she_pro
-from EuclidDmBindings.dpd.she_stub import DpdShearMeasurement
+from EuclidDmBindings.dpd.she.shearmeasurement_stub import DpdShearMeasurement
 
 from EuclidDmBindings.sys.dss_stub import dataContainer
 
