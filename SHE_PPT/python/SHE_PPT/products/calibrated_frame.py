@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 from EuclidDmBindings.bas.imp.eso_stub import dataProduct
-import EuclidDmBindings.dpd.vis_stub as vis_dpd
+from EuclidDmBindings.dpd.vis.calibratedframe_stub import DpdVisCalibratedFrame
 from EuclidDmBindings.ins_stub import baseInstrument
 from EuclidDmBindings.pro import le1_stub as le1
 from EuclidDmBindings.pro.le1 import vis_stub as le1vis
@@ -35,7 +35,7 @@ def init():
         Adds some extra functionality to the DpdSheAstrometry product
     """
 
-    binding_class = vis_dpd.dpdCalibratedFrame
+    binding_class = DpdVisCalibratedFrame
 
     # Add the data file name methods
 
@@ -106,7 +106,7 @@ def create_dpd_vis_calibrated_frame(filename = 'vis_calibrated_frame.fits'):
         @TODO fill in docstring
     """
 
-    dpd_vis_calibrated_frame = vis_dpd.dpdCalibratedFrame()
+    dpd_vis_calibrated_frame = DpdVisCalibratedFrame
 
     dpd_vis_calibrated_frame.Header = HeaderProvider.createGenericHeader("VIS")
 
