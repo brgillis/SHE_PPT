@@ -47,7 +47,7 @@ class TestStackedFrameProduct(object):
 
         # Change the fits filenames
         subfilename = "test_file.fits"
-        product.set_filename(subfilename)
+        product.set_data_filename(subfilename)
 
         # Save the product in an XML file
         filename = tmpdir.join("she_stacked_frame.xml")
