@@ -31,7 +31,7 @@ class TestStackedFrameProduct(object):
     def test_validation(self):
 
         # Create the product
-        product = prod.create_dpd_she_stacked_frame()
+        product = prod.create_dpd_vis_stacked_frame()
 
         # Check that it validates the schema
         product.validateBinding()
@@ -43,7 +43,7 @@ class TestStackedFrameProduct(object):
         prod.init()
 
         # Create the product
-        product = prod.create_dpd_she_stacked_frame()
+        product = prod.create_dpd_vis_stacked_frame()
 
         # Change the fits filenames
         subfilename = "test_file.fits"
