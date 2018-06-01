@@ -52,11 +52,7 @@ class TestMosaicProduct(object):
         prod.init()
 
         # Create the product
-        product = prod.create_dpd_mer_mosaic(instrument_name = "VIS",
-                                              filter = "VIS",
-                                              wcs_params = None,
-                                              zeropoint = 0,
-                                              data_filename = "junk",)
+        product = prod.create_dpd_mer_mosaic(data_filename = "junk",)
 
         # Change the fits file names
         data_filename = "test_file_data.fits"
@@ -88,11 +84,7 @@ class TestMosaicProduct(object):
         prod.init()
 
         # Create and save the product with a junk filename first
-        product = prod.create_dpd_mer_mosaic(instrument_name = "VIS",
-                                              filter = "VIS",
-                                              wcs_params = None,
-                                              zeropoint = 0,
-                                              data_filename = "junk",)
+        product = prod.create_dpd_mer_mosaic(data_filename = "junk",)
 
         filename = str(tmpdir.join("mer_mosaic.bin"))
         write_pickled_product(product, filename)
