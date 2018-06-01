@@ -30,7 +30,7 @@ from EuclidDmBindings.dpd.mer.raw.segmentationmap_stub import dpdMerSegmentation
 from SHE_PPT.file_io import read_xml_product, find_aux_file
 from SHE_PPT.utility import find_extension
 
-sample_file_name = "SHE_PPT/sample_mer_catalog.xml"
+sample_file_name = "SHE_PPT/sample_segmentation_map.xml"
 
 
 # Convenience function to easily load the actual map
