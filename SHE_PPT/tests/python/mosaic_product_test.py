@@ -53,12 +53,6 @@ class TestMosaicProduct(object):
         # Change the fits file names
         data_filename = "test_file_data.fits"
         product.set_data_filename(data_filename)
-        rms_filename = "test_file_rms.fits"
-        product.set_rms_filename(rms_filename)
-        flag_filename = "test_file_flag.fits"
-        product.set_flag_filename(flag_filename)
-        psf_model_filename = "test_file_psf_model.fits"
-        product.set_psf_model_filename(psf_model_filename)
 
         # Save the product in an xml file
         filename = tmpdir.join("mer_mosaic.xml")
@@ -69,9 +63,6 @@ class TestMosaicProduct(object):
 
         # Check that it's the same
         assert loaded_product.get_data_filename() == data_filename
-        assert loaded_product.get_rms_filename() == rms_filename
-        assert loaded_product.get_flag_filename() == flag_filename
-        assert loaded_product.get_psf_model_filename() == psf_model_filename
 
         pass
 

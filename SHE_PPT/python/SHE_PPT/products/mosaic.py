@@ -105,15 +105,6 @@ def init():
     binding_class.set_data_filename = __set_data_filename
     binding_class.get_data_filename = __get_data_filename
 
-    binding_class.set_rms_filename = __set_rms_filename
-    binding_class.get_rms_filename = __get_rms_filename
-
-    binding_class.set_flag_filename = __set_flag_filename
-    binding_class.get_flag_filename = __get_flag_filename
-
-    binding_class.set_psf_model_filename = __set_psf_model_filename
-    binding_class.get_psf_model_filename = __get_psf_model_filename
-
     binding_class.get_all_filenames = __get_all_filenames
 
     binding_class.has_files = True
@@ -126,37 +117,13 @@ def __set_data_filename(self, filename):
 def __get_data_filename(self):
     return self.Data.DataStorage.DataContainer.FileName
 
-def __set_rms_filename(self, filename):
-    self.Data.RmsStorage.DataContainer.FileName = filename
-
-def __get_rms_filename(self):
-    return self.Data.RmsStorage.DataContainer.FileName
-
-def __set_flag_filename(self, filename):
-    self.Data.FlagStorage.DataContainer.FileName = filename
-
-def __get_flag_filename(self):
-    return self.Data.FlagStorage.DataContainer.FileName
-
-def __set_psf_model_filename(self, filename):
-    self.Data.PsfModelStorage.DataContainer.FileName = filename
-
-def __get_psf_model_filename(self):
-    return self.Data.PsfModelStorage.DataContainer.FileName
-
 def __get_all_filenames(self):
 
-    all_filenames = [self.get_data_filename(),
-                     self.get_rms_filename(),
-                     self.get_flag_filename(),
-                     self.get_psf_model_filename(), ]
+    all_filenames = [self.get_data_filename(), ]
 
     return all_filenames
 
-def create_dpd_mer_mosaic(data_filename,
-                          rms_filename = None,
-                          flag_filename = None,
-                          psf_model_filename = None,
+def create_dpd_mer_mosaic(data_filename = "",
                           ):
     """
         @TODO fill in docstring

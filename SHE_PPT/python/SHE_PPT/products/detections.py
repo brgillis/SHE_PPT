@@ -45,10 +45,10 @@ def init():
     return
 
 def __set_filename(self, filename):
-    self.Data.DataContainer.FileName = filename
+    self.Data.DataStorage.DataContainer.FileName = filename
 
 def __get_filename(self):
-    return self.Data.DataContainer.FileName
+    return self.Data.DataStorage.DataContainer.FileName
 
 def __get_all_filenames(self):
 
