@@ -22,9 +22,10 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 from astropy.io import fits
+import os
 
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
-from EuclidDmBindings.dpd.mer.raw.segmentationmap_stub import DpdMerSegmentationMap
+from EuclidDmBindings.dpd.mer.raw.segmentationmap_stub import dpdMerSegmentationMap
 
 from SHE_PPT.file_io import read_xml_product, find_aux_file
 from SHE_PPT.utility import find_extension
@@ -92,7 +93,7 @@ def init():
         Adds some extra functionality to the DpdMerSegmentationMap product
     """
 
-    binding_class = DpdMerSegmentationMap
+    binding_class = dpdMerSegmentationMap
 
     if not hasattr(binding_class, "initialised"):
         binding_class.initialised = True

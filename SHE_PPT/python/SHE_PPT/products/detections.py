@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
-from EuclidDmBindings.dpd.mer.raw.finalcatalog_stub import DpdMerFinalCatalog
+from EuclidDmBindings.dpd.mer.raw.finalcatalog_stub import dpdMerFinalCatalog
 
 from SHE_PPT.file_io import read_xml_product, find_aux_file
 
@@ -31,7 +31,7 @@ def init():
     """
         Adds some extra functionality to the DpdSheAstrometry product
     """
-    binding_class = DpdMerFinalCatalog
+    binding_class = dpdMerFinalCatalog
 
     # Add the data file name methods
 
