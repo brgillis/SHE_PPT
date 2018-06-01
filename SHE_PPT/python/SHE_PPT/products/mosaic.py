@@ -27,6 +27,7 @@ import os
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
 from EuclidDmBindings.dpd.mer.raw.segmentationmap_stub import dpdMerSegmentationMap
 
+from SHE_PPT import detector as dtc
 from SHE_PPT.file_io import read_xml_product, find_aux_file
 from SHE_PPT.utility import find_extension
 
