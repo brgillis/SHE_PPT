@@ -217,7 +217,7 @@ class SHEFrame(object):
         # Load in the data from the primary frame
         if frame_product_filename is not None:
             frame_prod = read_xml_product(os.path.join(workdir, frame_product_filename))
-            if not isinstance(frame_prod, products.calibrated_frame.vis_dpd.dpdCalibratedFrame):
+            if not isinstance(frame_prod, products.calibrated_frame.dpdVisCalibratedFrame):
                 raise ValueError("Data image product from " +
                                  frame_product_filename + " is invalid type.")
 
