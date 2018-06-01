@@ -20,7 +20,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from EuclidDmBindings.dpd.vis.visstackedframe_stub import DpdVisStackedFrame
+from EuclidDmBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
 
 from SHE_PPT.products.calibrated_frame import (create_vis_psf_storage,
@@ -36,7 +36,7 @@ def init():
         Adds some extra functionality to the DpdSheAstrometry product
     """
 
-    binding_class = DpdVisStackedFrame
+    binding_class = dpdVisStackedFrame
 
     # Add the data file name methods
 
