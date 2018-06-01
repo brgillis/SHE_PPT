@@ -118,5 +118,20 @@
 				<FileName>default_filename.fits</FileName>
 			</DataContainer>
 		</DataStorage>
+		<PsfModelStorage format="vis.psfModel" version="0.1">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>default_filename.fits</FileName>
+			</DataContainer>
+		</PsfModelStorage>
+		<BackgroundStorage format="vis.backgroundMap" version="0.1">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>default_filename.fits</FileName>
+			</DataContainer>
+		</BackgroundStorage>
+		<WeightStorage format="vis.weightMap" version="0.1">
+			<DataContainer filestatus="PROCESSING">
+				<FileName>default_filename.fits</FileName>
+			</DataContainer>
+		</WeightStorage>
 	</Data>
 </ns1:DpdVisCalibratedFrame>
