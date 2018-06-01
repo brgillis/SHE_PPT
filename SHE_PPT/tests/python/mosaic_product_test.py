@@ -36,11 +36,7 @@ class TestMosaicProduct(object):
     def test_validation(self):
 
         # Create the product
-        product = prod.create_dpd_mer_mosaic(instrument_name = "VIS",
-                                              filter = "VIS",
-                                              wcs_params = None,
-                                              zeropoint = 0,
-                                              data_filename = "junk",)
+        product = prod.create_dpd_mer_mosaic(data_filename = "junk",)
 
         # Check that it validates the schema
         product.validateBinding()
