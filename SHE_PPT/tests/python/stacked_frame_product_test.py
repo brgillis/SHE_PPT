@@ -30,9 +30,6 @@ class TestStackedFrameProduct(object):
 
     def test_validation(self):
 
-        # Bypassing test for now FIXME
-        return
-
         # Create the product
         product = prod.create_dpd_she_stacked_frame()
 
@@ -42,9 +39,6 @@ class TestStackedFrameProduct(object):
         pass
 
     def test_xml_writing_and_reading(self, tmpdir):
-
-        # Bypassing test for now FIXME
-        return
 
         prod.init()
 

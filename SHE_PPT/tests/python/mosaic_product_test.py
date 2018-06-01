@@ -83,42 +83,6 @@ class TestMosaicProduct(object):
 
         pass
 
-    def test_pickle_writing_and_reading(self, tmpdir):
-
-        prod.init()
-
-        # Create the product
-        product = prod.create_dpd_mer_mosaic(instrument_name = "VIS",
-                                              filter = "VIS",
-                                              wcs_params = None,
-                                              zeropoint = 0,
-                                              data_filename = "junk",)
-
-        # Change the fits file names
-        data_filename = "test_file_data.fits"
-        product.set_data_filename(data_filename)
-        rms_filename = "test_file_rms.fits"
-        product.set_rms_filename(rms_filename)
-        flag_filename = "test_file_flag.fits"
-        product.set_flag_filename(flag_filename)
-        psf_model_filename = "test_file_psf_model.fits"
-        product.set_psf_model_filename(psf_model_filename)
-
-        # Save the product in a pickled file
-        filename = tmpdir.join("mer_mosaic.bin")
-        write_pickled_product(product, filename)
-
-        # Read back the pickled file
-        loaded_product = read_pickled_product(filename)
-
-        # Check that it's the same
-        assert loaded_product.get_data_filename() == data_filename
-        assert loaded_product.get_rms_filename() == rms_filename
-        assert loaded_product.get_flag_filename() == flag_filename
-        assert loaded_product.get_psf_model_filename() == psf_model_filename
-
-        pass
-
     def test_load_mosaic_hdu(self, tmpdir):
 
         prod.init()
