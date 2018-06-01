@@ -18,8 +18,8 @@
 			<ScientificGroupWrite>false</ScientificGroupWrite>
 		</AccessRights>
 		<Curator/>
-		<Creator>SHE</Creator>
-		<CreationDate>2018-05-31T18:04:34.993Z</CreationDate>
+		<Creator>foo</Creator>
+		<CreationDate>2018-06-01T13:24:34.334Z</CreationDate>
 	</Header>
 	<Data>
 		<ImgType>
@@ -31,9 +31,9 @@
 		</ImgType>
 		<ImgNumber>0</ImgNumber>
 		<AxisNumber>0</AxisNumber>
-		<AxisLengths>0</AxisLengths>
+		<AxisLengths>0 0 0 0</AxisLengths>
 		<DataSize>8</DataSize>
-		<DataLength>16924672</DataLength>
+		<DataLength>0</DataLength>
 		<Instrument>
 			<InstrumentName>foo</InstrumentName>
 			<TelescopeName>foo</TelescopeName>
@@ -64,15 +64,15 @@
 		<DetectorList>
 			<Detector>
 				<DetectorId>foo</DetectorId>
-				<Gain>3.4</Gain>
+				<Gain>0.0</Gain>
 				<WCS>
 					<CTYPE1>
 						<CoordinateType>RA</CoordinateType>
-						<ProjectionType>TPV</ProjectionType>
+						<ProjectionType>TAN</ProjectionType>
 					</CTYPE1>
 					<CTYPE2>
 						<CoordinateType>DEC</CoordinateType>
-						<ProjectionType>TPV</ProjectionType>
+						<ProjectionType>TAN</ProjectionType>
 					</CTYPE2>
 					<CRVAL1>0.0</CRVAL1>
 					<CRVAL2>0.0</CRVAL2>
@@ -91,7 +91,7 @@
 			</Detector>
 		</DetectorList>
 		<InstrumentMode>Science</InstrumentMode>
-		<ObservationMode>ScienceWide</ObservationMode>
+		<ObservationMode>ScienceDeep</ObservationMode>
 		<ReconsOrbit>
 			<Position>0.0 0.0 0.0</Position>
 			<Velocity>0.0 0.0 0.0</Velocity>
@@ -99,7 +99,7 @@
 		</ReconsOrbit>
 		<Readout>
 			<ReadoutModeMethod>NominalScience</ReadoutModeMethod>
-			<StartTime>2018-05-31T18:06:35.427Z</StartTime>
+			<StartTime>2018-06-01T13:25:25.358Z</StartTime>
 			<ParallelRegFrequency>0.0</ParallelRegFrequency>
 			<SerialRegFrequency>0.0</SerialRegFrequency>
 		</Readout>
@@ -113,11 +113,6 @@
 			<Status>false</Status>
 			<IntensityLevel>0.0</IntensityLevel>
 		</ChargedInduced>
-		<DataStorage format="vis.calibratedFrame" version="0.1">
-			<DataContainer filestatus="PROPOSED">
-				<FileName>default_filename.fits</FileName>
-			</DataContainer>
-		</DataStorage>
 		<PsfModelStorage format="vis.psfModel" version="0.1">
 			<DataContainer filestatus="PROPOSED">
 				<FileName>default_filename.fits</FileName>
@@ -129,9 +124,14 @@
 			</DataContainer>
 		</BackgroundStorage>
 		<WeightStorage format="vis.weightMap" version="0.1">
-			<DataContainer filestatus="PROCESSING">
+			<DataContainer filestatus="PROPOSED">
 				<FileName>default_filename.fits</FileName>
 			</DataContainer>
 		</WeightStorage>
+		<DataStorage format="vis.calibratedFrame" version="0.1">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>default_filename.fits</FileName>
+			</DataContainer>
+		</DataStorage>
 	</Data>
 </ns1:DpdVisCalibratedFrame>
