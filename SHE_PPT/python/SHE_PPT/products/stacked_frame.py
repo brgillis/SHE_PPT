@@ -36,7 +36,7 @@ def init():
         Adds some extra functionality to the DpdSheAstrometry product
     """
 
-    binding_class = dpdVisStackedFrame
+    binding_class = DpdVisStackedFrame
 
     # Add the data file name methods
 
