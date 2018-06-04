@@ -56,6 +56,7 @@ def init():
     binding_class.get_all_filenames = __get_all_filenames
 
     binding_class.get_method_filename = __get_method_filename
+    binding_class.set_method_filename = __set_method_filename
 
     binding_class.has_files = True
 
