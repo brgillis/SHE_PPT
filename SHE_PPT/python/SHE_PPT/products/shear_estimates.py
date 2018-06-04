@@ -63,7 +63,7 @@ def init():
 def __set_BFD_filename(self, filename):
     if filename is None:
         if hasattr(self.Data, "BfdMoments"):
-            delattr(self.Data, "BfdMoments")
+            self.Data.BfdMoments = None
         return
     else:
         if not hasattr(self.Data, "BfdMoments"):
@@ -85,7 +85,7 @@ def __get_BFD_filename(self):
 def __set_KSB_filename(self, filename):
     if filename is None:
         if hasattr(self.Data, "KsbShearEstimates"):
-            delattr(self.Data, "KsbShearEstimates")
+            self.Data.KsbShearEstimates = None
         return
     else:
         if not hasattr(self.Data, "KsbShearEstimates"):
@@ -107,7 +107,7 @@ def __get_KSB_filename(self):
 def __set_LensMC_filename(self, filename):
     if filename is None:
         if hasattr(self.Data, "LensMcShearEstimates"):
-            delattr(self.Data, "LensMcShearEstimates")
+            self.Data.LensMcShearEstimates = None
         return
     else:
         if not hasattr(self.Data, "LensMcShearEstimates"):
@@ -129,7 +129,7 @@ def __get_LensMC_filename(self):
 def __set_MomentsML_filename(self, filename):
     if filename is None:
         if hasattr(self.Data, "MomentsMlShearEstimates"):
-            delattr(self.Data, "MomentsMlShearEstimates")
+            self.Data.MomentsMlShearEstimates = None
         return
     else:
         if not hasattr(self.Data, "MomentsMlShearEstimates"):
@@ -151,7 +151,7 @@ def __get_MomentsML_filename(self):
 def __set_REGAUSS_filename(self, filename):
     if filename is None:
         if hasattr(self.Data, "RegaussShearEstimates"):
-            delattr(self.Data, "RegaussShearEstimates")
+            self.Data.RegaussShearEstimates = None
         return
     else:
         if not hasattr(self.Data, "RegaussShearEstimates"):
