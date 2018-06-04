@@ -401,7 +401,7 @@ class SHEFrameStack(object):
              stacked_data) = cls._read_product_extension(stacked_image_product_filename,
                                                            tags = (mv.sci_tag, mv.noisemap_tag, mv.mask_tag),
                                                            workdir = workdir,
-                                                           dtype = products.stacked_frame.vis_dpd.dpdVisStackedFrame)
+                                                           dtype = products.stacked_frame.dpdVisStackedFrame)
 
             stacked_image_data = stacked_data[0]
             stacked_rms_data = stacked_data[1]
@@ -409,7 +409,7 @@ class SHEFrameStack(object):
 
             _, stacked_bkg_data = cls._read_product_extension(stacked_image_product_filename,
                                                                workdir = workdir,
-                                                               dtype = products.stacked_frame.vis_dpd.dpdVisStackedFrame,
+                                                               dtype = products.stacked_frame.dpdVisStackedFrame,
                                                                filetype = "background")
 
         # Get the segmentation image
