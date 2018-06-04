@@ -60,12 +60,18 @@ def init():
     binding_class.has_files = True
 
 def __set_BFD_filename(self, filename):
-    if not hasattr(self.Data, "BfdMoments"):
-        self.Data.BfdMoments = create_bfd_moments(filename)
-    elif self.Data.BfdMoments is None:
-        self.Data.BfdMoments = create_bfd_moments(filename)
+    if filename is None:
+        if hasattr(self.Data, "BfdMoments"):
+            delattr(self.Data, "BfdMoments")
+        return
     else:
-        self.Data.BfdMoments.DataContainer.FileName = filename
+        if not hasattr(self.Data, "BfdMoments"):
+            self.Data.BfdMoments = create_bfd_moments(filename)
+        elif self.Data.BfdMoments is None:
+            self.Data.BfdMoments = create_bfd_moments(filename)
+        else:
+            self.Data.BfdMoments.DataContainer.FileName = filename
+        return
 
 def __get_BFD_filename(self):
     if not hasattr(self.Data, "BfdMoments"):
@@ -76,12 +82,18 @@ def __get_BFD_filename(self):
         return self.Data.BfdMoments.DataContainer.FileName
 
 def __set_KSB_filename(self, filename):
-    if not hasattr(self.Data, "KsbShearEstimates"):
-        self.Data.KsbShearEstimates = create_ksb_estimates(filename)
-    elif self.Data.KsbShearEstimates is None:
-        self.Data.KsbShearEstimates = create_ksb_estimates(filename)
+    if filename is None:
+        if hasattr(self.Data, "KsbShearEstimates"):
+            delattr(self.Data, "KsbShearEstimates")
+        return
     else:
-        self.Data.KsbShearEstimates.DataContainer.FileName = filename
+        if not hasattr(self.Data, "KsbShearEstimates"):
+            self.Data.KsbShearEstimates = create_ksb_estimates(filename)
+        elif self.Data.KsbShearEstimates is None:
+            self.Data.KsbShearEstimates = create_ksb_estimates(filename)
+        else:
+            self.Data.KsbShearEstimates.DataContainer.FileName = filename
+        return
 
 def __get_KSB_filename(self):
     if not hasattr(self.Data, "KsbShearEstimates"):
@@ -92,12 +104,18 @@ def __get_KSB_filename(self):
         return self.Data.KsbShearEstimates.DataContainer.FileName
 
 def __set_LensMC_filename(self, filename):
-    if not hasattr(self.Data, "LensMcShearEstimates"):
-        self.Data.LensMcShearEstimates = create_lensmc_estimates(filename)
-    elif self.Data.LensMcShearEstimates is None:
-        self.Data.LensMcShearEstimates = create_lensmc_estimates(filename)
+    if filename is None:
+        if hasattr(self.Data, "LensMcShearEstimates"):
+            delattr(self.Data, "LensMcShearEstimates")
+        return
     else:
-        self.Data.LensMcShearEstimates.DataContainer.FileName = filename
+        if not hasattr(self.Data, "LensMcShearEstimates"):
+            self.Data.LensMcShearEstimates = create_lensmc_estimates(filename)
+        elif self.Data.LensMcShearEstimates is None:
+            self.Data.LensMcShearEstimates = create_lensmc_estimates(filename)
+        else:
+            self.Data.LensMcShearEstimates.DataContainer.FileName = filename
+        return
 
 def __get_LensMC_filename(self):
     if not hasattr(self.Data, "LensMcShearEstimates"):
@@ -108,12 +126,18 @@ def __get_LensMC_filename(self):
         return self.Data.LensMcShearEstimates.DataContainer.FileName
 
 def __set_MomentsML_filename(self, filename):
-    if not hasattr(self.Data, "MomentsMlShearEstimates"):
-        self.Data.MomentsMlShearEstimates = create_momentsml_estimates(filename)
-    elif self.Data.MomentsMlShearEstimates is None:
-        self.Data.MomentsMlShearEstimates = create_momentsml_estimates(filename)
+    if filename is None:
+        if hasattr(self.Data, "MomentsMlShearEstimates"):
+            delattr(self.Data, "MomentsMlShearEstimates")
+        return
     else:
-        self.Data.MomentsMlShearEstimates.DataContainer.FileName = filename
+        if not hasattr(self.Data, "MomentsMlShearEstimates"):
+            self.Data.MomentsMlShearEstimates = create_momentsml_estimates(filename)
+        elif self.Data.MomentsMlShearEstimates is None:
+            self.Data.MomentsMlShearEstimates = create_momentsml_estimates(filename)
+        else:
+            self.Data.MomentsMlShearEstimates.DataContainer.FileName = filename
+        return
 
 def __get_MomentsML_filename(self):
     if not hasattr(self.Data, "MomentsMlShearEstimates"):
@@ -124,12 +148,18 @@ def __get_MomentsML_filename(self):
         return self.Data.MomentsMlShearEstimates.DataContainer.FileName
 
 def __set_REGAUSS_filename(self, filename):
-    if not hasattr(self.Data, "RegaussShearEstimates"):
-        self.Data.RegaussShearEstimates = create_regauss_estimates(filename)
-    elif self.Data.RegaussShearEstimates is None:
-        self.Data.RegaussShearEstimates = create_regauss_estimates(filename)
+    if filename is None:
+        if hasattr(self.Data, "RegaussShearEstimates"):
+            delattr(self.Data, "RegaussShearEstimates")
+        return
     else:
-        self.Data.RegaussShearEstimates.DataContainer.FileName = filename
+        if not hasattr(self.Data, "RegaussShearEstimates"):
+            self.Data.RegaussShearEstimates = create_regauss_estimates(filename)
+        elif self.Data.RegaussShearEstimates is None:
+            self.Data.RegaussShearEstimates = create_regauss_estimates(filename)
+        else:
+            self.Data.RegaussShearEstimates.DataContainer.FileName = filename
+        return
 
 def __get_REGAUSS_filename(self):
     if not hasattr(self.Data, "RegaussShearEstimates"):
