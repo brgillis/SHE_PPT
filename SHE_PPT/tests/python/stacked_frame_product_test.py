@@ -30,11 +30,8 @@ class TestStackedFrameProduct(object):
 
     def test_validation(self):
 
-        # Bypassing test for now FIXME
-        return
-
         # Create the product
-        product = prod.create_dpd_she_stacked_frame()
+        product = prod.create_dpd_vis_stacked_frame()
 
         # Check that it validates the schema
         product.validateBinding()
@@ -43,17 +40,14 @@ class TestStackedFrameProduct(object):
 
     def test_xml_writing_and_reading(self, tmpdir):
 
-        # Bypassing test for now FIXME
-        return
-
         prod.init()
 
         # Create the product
-        product = prod.create_dpd_she_stacked_frame()
+        product = prod.create_dpd_vis_stacked_frame()
 
         # Change the fits filenames
         subfilename = "test_file.fits"
-        product.set_filename(subfilename)
+        product.set_data_filename(subfilename)
 
         # Save the product in an XML file
         filename = tmpdir.join("she_stacked_frame.xml")
@@ -63,6 +57,6 @@ class TestStackedFrameProduct(object):
         loaded_product = read_xml_product(filename)
 
         # Check that the filenames match
-        assert loaded_product.get_filename() == subfilename
+        assert loaded_product.get_data_filename() == subfilename
 
         pass

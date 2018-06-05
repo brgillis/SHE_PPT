@@ -19,5 +19,8 @@ installed in the directory /home/user/Work/Projects/SHE_PPT.
 
 3) Dependencies
 
-- Elements build system
-- Euclid data model bindings (in a future version)
+- Elements 5.2.2
+- EuclidDmBindings 2.1.0
+- DMTools 2.1.0
+- MDBTools 2.1.0)
+

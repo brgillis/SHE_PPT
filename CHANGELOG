@@ -1,6 +1,48 @@
 Changelog for SHE_PPT Preprocessing Toolkit
 
-Changes from v0.2 to v0.3
+Changes from v0.4 to v0.6
+=========================
+
+API Changes
+-----------
+
+Dependency Changes
+------------------
+
+- Now depends on EuclidDmBindings 2.1.0
+- Now depends on DMTools 2.1.0
+- Now depends on MDBTools 2.1.0)
+
+
+Deprecated Features
+-------------------
+
+Bug Fixes
+---------
+
+- Misc. bug fixes related to handling of WCS information and correcting/not correcting for
+  SC3 data
+
+New Features
+------------
+
+- WCS information is now passed to extracted stamps of SHEImages, and they take into account the
+  offset to make proper calculations
+- Added function get_data_filename to file_io module - this will automatically resolve either an
+  XML data container or raw data file to the name of the raw data file if possible.
+
+New config features
+-------------------
+
+
+Miscellaneous
+-------------
+
+- The following data products now create and read proper XML files: calibrated_frame, detections,
+  mosaic, shear_estimates, stacked_frame, validated_shear_estimates
+
+
+Changes from v0.2 to v0.4
 =========================
 
 API Changes

@@ -20,19 +20,19 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+import HeaderProvider.GenericHeaderProvider as HeaderProvider
+from EuclidDmBindings.dpd.she.raw.validatedshearmeasurement_stub import dpdValidatedShearMeasurement
 
-# import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import EuclidDmBindings.she.she_stub as she_dpd # FIXME
+from SHE_PPT.file_io import read_xml_product, find_aux_file
 
-import pickle
+sample_file_name = "SHE_PPT/sample_validated_shear_measurements.xml"
 
 def init():
     """
         Adds some extra functionality to the DpdSheAstrometry product
     """
 
-    # binding_class = she_dpd.DpdSheValidatedShearEstimatesProduct # @FIXME
-    binding_class = DpdSheValidatedShearEstimatesProduct
+    binding_class = dpdValidatedShearMeasurement
 
     # Add the data file name methods
 
@@ -46,10 +46,10 @@ def init():
     return
 
 def __set_filename(self, filename):
-    self.Data.DataContainer.FileName = filename
+    self.Data.ValidatedShearMeasurementFile.DataContainer.FileName = filename
 
 def __get_filename(self):
-    return self.Data.DataContainer.FileName
+    return self.Data.ValidatedShearMeasurementFile.DataContainer.FileName
 
 def __get_all_filenames(self):
 
@@ -57,55 +57,19 @@ def __get_all_filenames(self):
 
     return all_filenames
 
-class DpdSheValidatedShearEstimatesProduct:  # @FIXME
-    def __init__(self):
-        self.Header = None
-        self.Data = None
-    def validateBinding(self):
-        return False
-
-class SheValidatedShearEstimatesProduct:  # @FIXME
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-
-class DataContainer:  # @FIXME
-    def __init__(self):
-        self.FileName = None
-        self.filestatus = None
-
-def create_dpd_she_validated_shear_estimates(filename = None):
+def create_dpd_she_validated_shear_estimates(filename = "default_filename.fits"):
     """
         @TODO fill in docstring
     """
 
-    # dpd_she_validated_shear_estimates = she_dpd.DpdSheValidatedShearEstimatesProduct() # FIXME
-    dpd_she_validated_shear_estimates = DpdSheValidatedShearEstimatesProduct()
+    dpd_she_validated_shear_estimates = read_xml_product(find_aux_file(sample_file_name), allow_pickled=False)
 
-    # dpd_she_validated_shear_estimates.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
-    dpd_she_validated_shear_estimates.Header = "SHE"
-
-    dpd_she_validated_shear_estimates.Data = create_she_validated_shear_estimates(filename)
+    # Overwrite the header with a new one to update the creation date (among other things)
+    dpd_she_validated_shear_estimates.Header = HeaderProvider.createGenericHeader("SHE")
+    
+    __set_filename(dpd_she_validated_shear_estimates, filename)
 
     return dpd_she_validated_shear_estimates
 
 # Add a useful alias
 create_validated_shear_estimates_product = create_dpd_she_validated_shear_estimates
-
-def create_she_validated_shear_estimates(filename = None):
-    """
-        @TODO fill in docstring
-    """
-
-    # she_validated_shear_estimates = she_dpd.SheValidatedShearEstimatesProduct() # @FIXME
-    she_validated_shear_estimates = SheValidatedShearEstimatesProduct()
-
-    she_validated_shear_estimates.format = "UNDEFINED"
-    she_validated_shear_estimates.version = "0.0"
-
-    she_validated_shear_estimates.DataContainer = DataContainer()
-    she_validated_shear_estimates.DataContainer.FileName = filename
-    she_validated_shear_estimates.DataContainer.filestatus = "PROPOSED"
-
-    return she_validated_shear_estimates

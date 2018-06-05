@@ -26,7 +26,7 @@ from SHE_PPT.magic_values import segmap_unassigned_value
 from SHE_PPT.mask import (as_bool, is_masked_bad,
                           is_masked_suspect_or_bad, masked_off_image)
 from SHE_PPT.utility import load_wcs
-import SHE_PPT.wcsutil
+import astropy.wcs
 import astropy.io.fits  # Avoid non-trivial "from" imports (as explicit is better than implicit)
 import numpy as np
 
@@ -74,7 +74,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             segmentation_map: an int32 array of the same shape as data. Leaving None creates an empty map
             header: an astropy.io.fits.Header object. Leaving None creates an empty header.
             offset: a 1D numpy float array with two values, corresponding to the x and y offsets
-            wcs: A SHE_PPT.wcsutil.WCS object, containing WCS information for this image
+            wcs: An astropy.wcs.WCS object, containing WCS information for this image
         """
 
         self.data = data  # Note the tests done in the setter method
@@ -268,8 +268,8 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
     def wcs(self, wcs):
         """Convenience setter of the WCS.
         """
-        if not (isinstance(wcs, SHE_PPT.wcsutil.WCS) or (wcs is None)):
-            raise TypeError("wcs must be of type SHE_PPT.wcsutil.WCS")
+        if not (isinstance(wcs, astropy.wcs.WCS) or (wcs is None)):
+            raise TypeError("wcs must be of type astropy.wcs.WCS")
         self._wcs = wcs
 
 
@@ -343,9 +343,10 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
 
         # Set up a fits header with the wcs
         if self.wcs is not None:
-            full_header = self.wcs.header
+            full_header = self.wcs.to_header()
             for label in self.header:
-                full_header[label] = (self.header[label], self.header.comments[label])
+                if label not in full_header: # Don't overwrite any coming from the WCS
+                    full_header[label] = (self.header[label], self.header.comments[label])
         else:
             full_header = self.header
 
@@ -383,7 +384,8 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
                         noisemap_filepath = None,
                         segmentation_map_filepath = None,
                         background_map_filepath = None,
-                        workdir = "."):
+                        workdir = ".",
+                        apply_sc3_fix = False):
         """Reads an image from a FITS file, such as written by write_to_fits(), and returns it as a SHEImage object.
 
         This function can be used to read previously saved SHEImage objects (in this case, just give the filepath),
@@ -411,6 +413,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             segmentation_map_filepath: idem, for the segmentation_map
             background_map_filepath: idem, for the background_map
             workdir: The working directory, where files can be found
+            apply_sc3_fix: Whether or not to apply fix for bad headers used in SC3 data
 
         """
 
@@ -420,7 +423,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
 
         # Set up the WCS before we clean the header
         try:
-            wcs = load_wcs(header)
+            wcs = load_wcs(header,apply_sc3_fix=apply_sc3_fix)
         except KeyError:
             # No WCS information
             wcs = None
@@ -431,7 +434,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             if keyword in header:
                 header.remove(keyword)
         if wcs is not None:
-            for keyword in list(wcs.header.keys()):
+            for keyword in list(wcs.to_header().keys()):
                 if keyword in header:
                     header.remove(keyword)
 
@@ -623,7 +626,8 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
                 segmentation_map = self.segmentation_map[xmin:xmax, ymin:ymax],
                 background_map = self.background_map[xmin:xmax, ymin:ymax],
                 header = newheader,
-                offset = newoffset
+                offset = newoffset,
+                wcs = self.wcs,
             )
 
         else:
@@ -674,7 +678,8 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
                 segmentation_map = segmentation_map_stamp,
                 background_map = background_map_stamp,
                 header = newheader,
-                offset = newoffset
+                offset = newoffset,
+                wcs = self.wcs,
             )
 
             if overlap_width == 0 and overlap_height == 0:
@@ -684,7 +689,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
         assert newimg.shape == (width, height)
         return newimg
 
-    def pix2world(self, x, y, distort = True):
+    def pix2world(self, x, y, origin=0):
         """Converts x and y pixel coordinates to ra and dec world coordinates.
 
         Parameters
@@ -693,8 +698,11 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             x pixel coordinate
         y : float
             idem for y
-        distort : bool
-            Use the distortion model if present
+        origin : int
+            Coordinate in the upper left corner of the image.
+            In FITS and Fortran standards, this is 1.
+            In Numpy and C standards this is 0.
+            (from astropy.wcs)
 
         Raises
         ------
@@ -708,14 +716,18 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
         """
 
         if self.wcs is None:
-            raise AttributeError("pix2world called by SHEImage object that doesn't have a WCS set up. " +
-                                 "Note that WCS isn't currently passed when extract_stamp is used, so this might be the issue.")
+            raise AttributeError("pix2world called by SHEImage object that doesn't have a WCS set up.")
+            
+        # Correct for offset if applicable
+        if self.offset is not None:
+            x += self.offset[0]
+            y += self.offset[1]
 
-        ra, dec = self.wcs.image2sky(x, y, distort = distort)
+        ra, dec = self.wcs.all_pix2world(x, y, origin)
 
         return ra, dec
 
-    def world2pix(self, ra, dec, distort = True, find = True):
+    def world2pix(self, ra, dec, origin=0):
         """Converts ra and dec world coordinates to x and y pixel coordinates
 
         Parameters
@@ -724,10 +736,11 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             Right Ascension (RA) world coordinate in degrees
         dec : float
             Declination (Dec) world coordinate in degrees
-        distort : bool
-            Use the distortion model if present (default True)
-        find : bool
-            If using the distortion model, more accurately but more slowly solve the polynomial eq. (default True)
+        origin : int
+            Coordinate in the upper left corner of the image.
+            In FITS and Fortran standards, this is 1.
+            In Numpy and C standards this is 0.
+            (from astropy.wcs)
 
         Raises
         ------
@@ -742,14 +755,18 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
         """
 
         if self.wcs is None:
-            raise AttributeError("world2pix called by SHEImage object that doesn't have a WCS set up. " +
-                                 "Note that WCS isn't currently passed when extract_stamp is used, so this might be the issue.")
+            raise AttributeError("world2pix called by SHEImage object that doesn't have a WCS set up.")
 
-        x, y = self.wcs.sky2image(ra, dec, distort = distort, find = find)
+        x, y = self.wcs.all_world2pix(ra, dec, origin)
+            
+        # Correct for offset if applicable
+        if self.offset is not None:
+            x -= self.offset[0]
+            y -= self.offset[1]
 
         return x, y
 
-    def get_pix2world_transformation(self, x, y, dx = 0.1, dy = 0.1, spatial_ra = False):
+    def get_pix2world_transformation(self, x, y, dx = 0.1, dy = 0.1, spatial_ra = False, origin = 0):
         """Gets the local transformation matrix between pixel and world (ra/dec) coordinates at the specified location.
 
         Parameters
@@ -764,6 +781,11 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             idem for y
         spatial_ra : bool
             If True, will give a matrix for (-ra*cos(dec),dec) co-ordinates instead of (ra,dec) (default False)
+        origin : int
+            Coordinate in the upper left corner of the image.
+            In FITS and Fortran standards, this is 1.
+            In Numpy and C standards this is 0.
+            (from astropy.wcs)
 
         Raises
         ------
@@ -784,9 +806,9 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             raise ValueError("Differentials dx and dy must not be zero.")
 
         # We'll calculate the transformation empirically by using small steps in x and y
-        ra_0, dec_0 = self.pix2world(x, y)
-        ra_px, dec_px = self.pix2world(x + dx, y)
-        ra_py, dec_py = self.pix2world(x, y + dy)
+        ra_0, dec_0 = self.pix2world(x, y, origin=origin)
+        ra_px, dec_px = self.pix2world(x + dx, y, origin=origin)
+        ra_py, dec_py = self.pix2world(x, y + dy, origin=origin)
 
         if spatial_ra:
             ra_scale = -np.cos(dec_0 * np.pi / 180)
@@ -804,7 +826,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
 
         return pix2world_transformation
 
-    def get_world2pix_transformation(self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, spatial_ra = False):
+    def get_world2pix_transformation(self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, spatial_ra = False, origin = 0):
         """Gets the local transformation matrix between world (ra/dec) and pixel coordinates at the specified location.
 
         Parameters
@@ -819,6 +841,8 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             idem for dec
         spatial_ra : bool
             If True, will give a matrix for (-ra*cos(dec),dec) co-ordinates instead of (ra,dec) (default False)
+        origin : int
+            Unused for this method; left in to prevent user surprise
 
         Raises
         ------
@@ -860,7 +884,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
 
         return world2pix_transformation
 
-    def get_pix2world_rotation(self, x, y, dx = 0.1, dy = 0.1):
+    def get_pix2world_rotation(self, x, y, dx = 0.1, dy = 0.1, origin = 0):
         """Gets the local rotation matrix between pixel and world (ra/dec) coordinates at the specified location.
         Note that this doesn't provide the full transformation since it lacks scaling and shearing terms.
 
@@ -874,6 +898,11 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             Differential x step to use in calculating rotation matrix. Default 0.1 pixels
         dy : float
             idem for y
+        origin : int
+            Coordinate in the upper left corner of the image.
+            In FITS and Fortran standards, this is 1.
+            In Numpy and C standards this is 0.
+            (from astropy.wcs)
 
         Raises
         ------
@@ -892,8 +921,9 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
         """
 
         # dx and dy are checked in get_pix2world_transformation, so no need to check here
+        # It also handles the addition of the offset to x and y
 
-        pix2world_transformation = self.get_pix2world_transformation(x, y, dx, dy, spatial_ra = True)
+        pix2world_transformation = self.get_pix2world_transformation(x, y, dx, dy, spatial_ra = True, origin=origin)
 
         u, s, vh = np.linalg.svd(pix2world_transformation)
 
@@ -901,7 +931,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
 
         return pix2world_rotation
 
-    def get_world2pix_rotation(self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, spatial_ra = False):
+    def get_world2pix_rotation(self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, origin = 0):
         """Gets the local rotation matrix between world (ra/dec) and pixel coordinates at the specified location.
         Note that this doesn't provide the full transformation since it lacks scaling and shearing terms.
 
@@ -915,6 +945,8 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             Differential ra step in degrees to use in calculating transformation matrix. Default 0.01 arcsec
         ddec : float
             idem for dec
+        origin : int
+            Unused for this method; left in to prevent user surprise
 
         Raises
         ------
@@ -943,7 +975,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
 
         return world2pix_rotation
 
-    def estimate_pix2world_rotation_angle(self, x, y, dx, dy):
+    def estimate_pix2world_rotation_angle(self, x, y, dx, dy, origin = 0):
         """Estimates the local rotation angle between pixel and world (-ra/dec) coordinates at the specified location.
         Note that due to distortion in the transformation, this method is inaccurate and depends on the choice of dx
         and dy; get_pix2world_rotation should be used instead to provide the rotation matrix. This method is retained
@@ -959,6 +991,11 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             Differential x step to use in calculating transformation matrix
         dy : float
             idem for y
+        origin : int
+            Coordinate in the upper left corner of the image.
+            In FITS and Fortran standards, this is 1.
+            In Numpy and C standards this is 0.
+            (from astropy.wcs)
 
         Note: dx and dy are required here since, due to distortion in the transformation, we can't assume the
         rotation angle will be independent of them.
@@ -981,8 +1018,8 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
             raise ValueError("Differentials dx and dy must not both be zero.")
 
         # We'll calculate the transformation empirically by using small steps in x and y
-        ra_0, dec_0 = self.pix2world(x, y)
-        ra_1, dec_1 = self.pix2world(x + dx, y + dy)
+        ra_0, dec_0 = self.pix2world(x, y, origin=origin)
+        ra_1, dec_1 = self.pix2world(x + dx, y + dy, origin=origin)
 
         cosdec = np.cos(dec_0 * np.pi / 180)
 
@@ -999,7 +1036,7 @@ class SHEImage(object):  # We need new-style classes for properties, hence inher
 
         return rotation_angle
 
-    def estimate_world2pix_rotation_angle(self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600,):
+    def estimate_world2pix_rotation_angle(self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, origin = 0):
         """Gets the local rotation angle between world (-ra/dec) and pixel coordinates at the specified location.
         Note that due to distortion in the transformation, this method is inaccurate and depends on the choice of dra
         and ddec; get_world2pix_rotation should be used instead to provide the rotation matrix. This method is retained
