@@ -412,8 +412,12 @@ class SHEFrameStack(object):
         if stacked_seg_filename is None:
             stacked_seg_data = None
         else:
-            _, stacked_seg_data = cls._read_file_extension(stacked_seg_filename,
-                                                            workdir = workdir)
+            try:
+                _, stacked_seg_data = cls._read_file_extension(stacked_seg_filename,
+                                                               workdir = workdir)
+            except FileNotFoundError as e:
+                logger.warn(str(e))
+                stacked_seg_data = None
 
         # Construct a SHEImage object for the stacked image
         if stacked_image_data is None:
