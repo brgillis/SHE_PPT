@@ -237,8 +237,11 @@ class SHEFrame(object):
 
             qualified_seg_filename = os.path.join(workdir, seg_filename)
 
-            seg_data_hdulist = fits.open(
-                qualified_seg_filename, **kwargs)
+            try:
+                seg_data_hdulist = fits.open(qualified_seg_filename, **kwargs)
+            except FileNotFoundError as e:
+                logger.warn(str(e))
+                seg_data_hdulist = None
         else:
             seg_data_hdulist = None
 
