@@ -30,7 +30,7 @@ from astropy.table import Table
 
 logger = getLogger(mv.logger_name)
 
-num_chains = 100
+num_chains = 1
 len_chain = 200
 
 class ShearEstimatesTableMeta(object):
