@@ -134,6 +134,8 @@ def create_dpd_mer_mosaic(data_filename = "",
     dpd_mer_mosaic = read_xml_product(find_aux_file(sample_file_name), allow_pickled=False)
 
     dpd_mer_mosaic.Header = HeaderProvider.createGenericHeader("SHE")
+    
+    __set_data_filename(dpd_mer_mosaic,data_filename)
 
     return dpd_mer_mosaic
 
