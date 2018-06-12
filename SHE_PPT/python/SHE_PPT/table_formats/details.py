@@ -114,8 +114,8 @@ class DetailsTableFormat(object):
         # Table column labels
         self.ID = set_column_properties("ID", dtype = ">i8", fits_dtype = "K")
 
-        self.gal_x = set_column_properties("x_center_pix", comment = "pixels")
-        self.gal_y = set_column_properties("y_center_pix", comment = "pixels")
+        self.gal_ra = set_column_properties("x_world", comment = "ra (deg)")
+        self.gal_dec = set_column_properties("y_world", comment = "dec (deg)")
 
         self.hlr_bulge = set_column_properties("hlr_bulge_arcsec", comment = "arcsec")
         self.hlr_disk = set_column_properties("hlr_disk_arcsec", comment = "arcsec")
