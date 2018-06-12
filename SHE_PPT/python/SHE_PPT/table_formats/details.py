@@ -117,9 +117,6 @@ class DetailsTableFormat(object):
         self.gal_x = set_column_properties("x_center_pix", comment = "pixels")
         self.gal_y = set_column_properties("y_center_pix", comment = "pixels")
 
-        self.psf_x = set_column_properties("psf_x_center_pix", is_optional = True, comment = "pixels")
-        self.psf_y = set_column_properties("psf_y_center_pix", is_optional = True, comment = "pixels")
-
         self.hlr_bulge = set_column_properties("hlr_bulge_arcsec", comment = "arcsec")
         self.hlr_disk = set_column_properties("hlr_disk_arcsec", comment = "arcsec")
 
@@ -127,6 +124,8 @@ class DetailsTableFormat(object):
         self.bulge_axis_ratio = set_column_properties("bulge_axis_ratio")
         self.bulge_fraction = set_column_properties("bulge_fraction")
         self.disk_height_ratio = set_column_properties("disk_height_ratio")
+        
+        self.z = set_column_properties("redshift")
 
         self.magnitude = set_column_properties("magnitude", comment = "VIS")
 
