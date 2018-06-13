@@ -37,7 +37,7 @@ logger = getLogger(mv.logger_name)
 type_name_maxlen = 41
 instance_id_maxlen = 55
 
-def get_allowed_filename(type_name, instance_id, extension = ".fits", release = "00.00"):
+def get_allowed_filename(type_name, instance_id, extension = ".fits", release = "00.03"):
     """
         @brief Gets a filename in the required Euclid format.
 
