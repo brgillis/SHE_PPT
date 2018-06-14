@@ -231,7 +231,7 @@ def make_detections_table_header(model_hash = None,
 
     return header
 
-def initialise_detections_table(image = None,
+def initialise_detections_table(image_group_phl = None,
                                 options = None,
                                 optional_columns = None,
                                 model_hash = None,
@@ -240,7 +240,7 @@ def initialise_detections_table(image = None,
     """
         @brief Initialise a detections table.
 
-        @param image <SHE_SIM.Image>
+        @param image_group_phl <SHE_SIM.ImageGroup>
 
         @param options <dict> Options dictionary
 
@@ -274,12 +274,12 @@ def initialise_detections_table(image = None,
     detections_table = Table(init_cols, names = names,
                              dtype = dtypes)
 
-    if image is not None:
+    if image_group_phl is not None:
 
         # Get values from the image object, unless they were passed explicitly
 
         if model_seed is None:
-            model_seed = image.get_full_seed()
+            model_seed = image_group_phl.get_full_seed()
 
     if options is not None:
 

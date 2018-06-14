@@ -44,8 +44,6 @@ class DetailsTableMeta(object):
         self.version = "SS_VER"
         self.format = "SS_FMT"
 
-        self.extname = mv.extname_label
-
         self.subtracted_sky_level = "S_SKYLV"
         self.unsubtracted_sky_level = "US_SKYLV"
         self.read_noise = "RD_NOISE"
@@ -58,7 +56,6 @@ class DetailsTableMeta(object):
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
                                      (self.format, None),
-                                     (self.extname, "#." + mv.details_tag),
                                      (self.subtracted_sky_level, "ADU/arcsec^2"),
                                      (self.unsubtracted_sky_level, "ADU/arcsec^2"),
                                      (self.read_noise, "e-/pixel"),
@@ -155,20 +152,15 @@ details_table_format = DetailsTableFormat()
 # And a convient alias for it
 tf = details_table_format
 
-def make_details_table_header(detector_x = 1,
-                              detector_y = 1,
-                              subtracted_sky_level = None,
+def make_details_table_header(subtracted_sky_level = None,
                               unsubtracted_sky_level = None,
                               read_noise = None,
                               gain = None,
                               model_hash = None,
                               model_seed = None,
-                              noise_seed = None,
-                              detector = None):
+                              noise_seed = None):
     """
         @brief Generate a header for a galaxy details table.
-
-        @param detector <int?> Detector for this image, if applicable
 
         @param subtracted_sky_level <float> Units of ADU/arcsec^2 (should we change this?)
 
@@ -187,17 +179,10 @@ def make_details_table_header(detector_x = 1,
         @return header <OrderedDict>
     """
 
-    if detector is not None:
-        logger.warn("'detector' argument for make_*_table_header is deprecated: Use detector_x and detector_y instead.")
-        detector_x = detector % 6
-        detector_y = detector // 6
-
     header = OrderedDict()
 
     header[tf.m.version] = tf.__version__
     header[tf.m.format] = tf.m.table_format
-
-    header[tf.m.extname] = dtc.get_id_string(detector_x, detector_y) + "." + mv.details_tag
 
     header[tf.m.subtracted_sky_level] = subtracted_sky_level
     header[tf.m.unsubtracted_sky_level] = unsubtracted_sky_level
@@ -210,23 +195,20 @@ def make_details_table_header(detector_x = 1,
 
     return header
 
-def initialise_details_table(image = None,
+def initialise_details_table(image_group_phl = None,
                              options = None,
                              optional_columns = None,
-                             detector_x = 1,
-                             detector_y = 1,
                              subtracted_sky_level = None,
                              unsubtracted_sky_level = None,
                              read_noise = None,
                              gain = None,
                              model_hash = None,
                              model_seed = None,
-                             noise_seed = None,
-                             detector = None):
+                             noise_seed = None,):
     """
         @brief Initialise a detections table.
 
-        @param image <SHE_SIM.Image>
+        @param image_phl <SHE_SIM.Image>
 
         @param options <dict> Options dictionary
 
@@ -237,9 +219,6 @@ def initialise_details_table(image = None,
 
         @return details_table <astropy.Table>
     """
-
-    if detector is not None:
-        detector_x, detector_y = dtc.resolve_detector_xy(detector)
 
     if optional_columns is None:
         optional_columns = []
@@ -261,26 +240,18 @@ def initialise_details_table(image = None,
     details_table = Table(init_cols, names = names,
                           dtype = dtypes)
 
-    if image is not None:
+    if image_group_phl is not None:
 
-        # Get values from the image object, unless they were passed explicitly
-
-        if detector_x or detector_y is None:
-            detector_x, detector_y = dtc.detector_int_to_xy(image.get_local_ID())
+        # Get values from the image group object, unless they were passed explicitly
 
         if subtracted_sky_level is None:
-            subtracted_sky_level = image.get_param_value('subtracted_background')
+            subtracted_sky_level = image_group_phl.get_param_value('subtracted_background')
 
         if unsubtracted_sky_level is None:
-            unsubtracted_sky_level = image.get_param_value('unsubtracted_background')
+            unsubtracted_sky_level = image_group_phl.get_param_value('unsubtracted_background')
 
         if model_seed is None:
-            model_seed = image.get_full_seed()
-
-    if detector_x is None:
-        detector_x = 1
-    if detector_y is None:
-        detector_y = 1
+            model_seed = image_group_phl.get_full_seed()
 
     if options is not None:
 
@@ -295,9 +266,7 @@ def initialise_details_table(image = None,
         if noise_seed is None:
             noise_seed = options['noise_seed']
 
-    details_table.meta = make_details_table_header(detector_x = detector_x,
-                                                   detector_y = detector_y,
-                                                   subtracted_sky_level = subtracted_sky_level,
+    details_table.meta = make_details_table_header(subtracted_sky_level = subtracted_sky_level,
                                                    unsubtracted_sky_level = unsubtracted_sky_level,
                                                    read_noise = read_noise,
                                                    gain = gain,
