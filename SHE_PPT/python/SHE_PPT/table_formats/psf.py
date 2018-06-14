@@ -218,7 +218,7 @@ def initialise_psf_table(image = None,
 
         # Get values from the options dict, unless they were passed explicitly
         if model_hash is None:
-            model_hash = hash_any(frozenset(list(options.items())), format = "base64")
+            model_hash = hash_any(options.items(), format = "base64")
         if noise_seed is None:
             noise_seed = options['noise_seed']
 

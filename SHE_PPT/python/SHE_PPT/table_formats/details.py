@@ -262,7 +262,7 @@ def initialise_details_table(image_group_phl = None,
         if gain is None:
             gain = options['gain']
         if model_hash is None:
-            model_hash = hash_any(frozenset(list(options.items())), format = "base64")
+            model_hash = hash_any(options.items(), format = "base64")
         if noise_seed is None:
             noise_seed = options['noise_seed']
 
