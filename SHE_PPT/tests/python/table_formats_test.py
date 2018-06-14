@@ -97,7 +97,7 @@ class TestTableFormats:
     def test_get_comments(self):
         # Check if we get the correct comments list for detections tables
 
-        desired_comments = (None, "deg", "deg",
+        desired_comments = (None, None, "deg", "deg",
                             None, None, None, None, None,
                             None, None, None, None, None,
                             None, None, None, None, None,
@@ -117,7 +117,7 @@ class TestTableFormats:
     def test_get_dtypes(self):
         # Check if we get the correct dtypes list for detections tables
 
-        desired_dtypes = (">i8", ">f4", ">f4",
+        desired_dtypes = (">i8", ">i4", ">f4", ">f4",
                           ">f4", ">f4", ">f4", ">f4", ">f4",
                           ">f4", ">f4", ">f4", ">f4", ">f4",
                           ">f4", ">f4", ">f4", ">f4", ">f4",
@@ -137,7 +137,7 @@ class TestTableFormats:
     def test_get_fits_dtypes(self):
         # Check if we get the correct fits dtypes list for detections tables
 
-        desired_fits_dtypes = ("K", "E", "E",
+        desired_fits_dtypes = ( "K", "J", "E", "E",
                                 "E", "E", "E", "E", "E",
                                 "E", "E", "E", "E", "E",
                                 "E", "E", "E", "E", "E",
