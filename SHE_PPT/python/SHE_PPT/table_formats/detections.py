@@ -279,7 +279,7 @@ def initialise_detections_table(image_group_phl = None,
         # Get values from the image object, unless they were passed explicitly
 
         if model_seed is None:
-            model_seed = image_group_phl.get_full_seed()
+            model_seed = image_group_phl.get_seed()
 
     if options is not None:
 

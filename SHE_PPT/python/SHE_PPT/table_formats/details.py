@@ -251,7 +251,7 @@ def initialise_details_table(image_group_phl = None,
             unsubtracted_sky_level = image_group_phl.get_param_value('unsubtracted_background')
 
         if model_seed is None:
-            model_seed = image_group_phl.get_full_seed()
+            model_seed = image_group_phl.get_seed()
 
     if options is not None:
 
