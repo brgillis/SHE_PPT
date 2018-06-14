@@ -212,7 +212,7 @@ def initialise_psf_table(image = None,
     psf_table = Table(init_cols, names = names, dtype = dtypes)
 
     if image is not None and model_seed is None:
-            model_seed = image.get_full_seed()
+            model_seed = image.get_seed()
 
     if options is not None:
 
