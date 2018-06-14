@@ -185,6 +185,8 @@ class DetectionsTableFormat(object):
         self.PositionAngle = set_column_properties("PositionAngle", is_optional = True, comment = None)
 
         self.Ellipticity = set_column_properties("Ellipticity", is_optional = True, comment = None)
+        
+        self.MagStarGal = set_column_properties("MAG_STARGAL_SEP", is_optional=True, comment = None)
 
 
         # A list of columns in the desired order
