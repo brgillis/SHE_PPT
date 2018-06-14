@@ -102,6 +102,8 @@ class DetectionsTableFormat(object):
         # Column names and info
 
         self.ID = set_column_properties("ObjectId", dtype = ">i8", fits_dtype = "K")
+        
+        self.seg_ID = set_column_properties("SEGMENTATION_MAP_ID", is_optional=True, dtype = ">i4", fits_dtype="j")
 
         self.gal_x_world = set_column_properties("RightAscension", is_optional = False, comment = "deg")
         self.gal_y_world = set_column_properties("Declination", is_optional = False, comment = "deg")
