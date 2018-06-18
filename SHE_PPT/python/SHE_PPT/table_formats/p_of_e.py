@@ -21,7 +21,6 @@
 from collections import OrderedDict
 
 from SHE_PPT.table_utility import is_in_format
-from SHE_PPT.utility import hash_any
 from astropy.table import Table
 
 
