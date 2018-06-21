@@ -26,7 +26,8 @@ from scipy.stats import linregress
 
 import pytest
 
-from SHE_PPT.math import linregress_with_errors
+from SHE_PPT.math import (linregress_with_errors,
+                          LinregressStatistics, LinregressResults)
 import numpy as np
 
 
@@ -85,11 +86,13 @@ class Test_math():
         slope_errs = np.zeros(n_test)
         intercept_errs = np.zeros(n_test)
         slope_intercept_covars = np.zeros(n_test)
+        lstats = []
 
         for i in range(n_test):
             yz = np.random.randn(n)
             y = base_y + y_err * yz
 
+            # Get and save the regression results for this run
             regress_results = linregress_with_errors(x, y, y_err)
 
             slopes[i] = regress_results.slope
@@ -97,6 +100,9 @@ class Test_math():
             slope_errs[i] = regress_results.slope_err
             intercept_errs[i] = regress_results.intercept_err
             slope_intercept_covars[i] = regress_results.slope_intercept_covar
+
+            # Also save statistics to test that that works
+            lstats.append(LinregressStatistics(x, y, y_err))
 
         # Get mean results
         slope_mean = np.mean(slopes)
@@ -112,3 +118,15 @@ class Test_math():
         assert_almost_equal(intercept_std, np.mean(intercept_errs), decimal=2)
         assert_almost_equal(
             slope_intercept_cov, np.mean(slope_intercept_covars), decimal=2)
+
+        # Now check if it works the same by compiling statistics
+        combined_results = LinregressResults(lstats)
+        assert_almost_equal(combined_results.slope, ex_slope, decimal=2)
+        assert_almost_equal(
+            combined_results.intercept, ex_intercept, decimal=2)
+        assert_almost_equal(
+            combined_results.slope_err, np.mean(slope_errs), decimal=2)
+        assert_almost_equal(
+            combined_results.intercept_err, np.mean(intercept_errs), decimal=2)
+        assert_almost_equal(
+            combined_results.slope_intercept_covar, np.mean(slope_intercept_covars), decimal=2)
