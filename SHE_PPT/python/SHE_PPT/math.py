@@ -22,7 +22,115 @@
 import numpy as np
 
 
-def linregress_with_errors(x, y, y_err):
+class LinregressStatistics(object):
+
+    def __init__(self, lx=None, ly=None, ly_err=None):
+        """Initialises and calculates statistics as member variables.
+        """
+
+        if lx is None or ly is None:
+            # Initialise empty
+            self.w = None
+            self.xm = None
+            self.x2m = None
+            self.ym = None
+            self.xym = None
+        else:
+            # Calculate statistics
+
+            if ly_err is None:
+                ly_err = np.ones_like(self.lx)
+
+            lw = self.ly_err ** 2
+
+            # Calculate needed statistics
+            self.w = lw.sum()
+            self.xm = np.average(lx, weights=lw)
+            self.x2m = np.average(lx**2, weights=lw)
+            self.ym = np.average(ly, weights=lw)
+            self.xym = np.average(lx * ly, weights=lw)
+
+        return
+
+
+class LinregressResults(object):
+
+    def __init__(self, lstats=None):
+
+        if lstats is None:
+
+            # Initialise empty
+            self.slope = None
+            self.intercept = None
+            self.slope_err = None
+            self.intercept_err = None
+            self.slope_intercept_covar
+
+            return
+
+        elif isinstance(lstats, list):
+
+            # We have a list of stats, so combine them
+            stats = self.combine_lstats(lstats)
+
+        elif isinstance(lstats, LinregressStatistics):
+
+            # Just calculate from this object
+            stats = lstats
+
+        dx2m = stats.x2m - stats.xm**2
+        dxym = stats.xym - stats.xm * stats.ym
+
+        self.slope = dxym / dx2m
+
+        self.intercept = stats.ym - stats.xm * self.slope
+
+        self.slope_err = np.sqrt(1. / (stats.w * dx2m))
+
+        self.intercept_err = np.sqrt(
+            (1.0 + stats.xm ** 2 / dx2m) / stats.w)
+
+        self.slope_intercept_covar = -stats.xm / \
+            (stats.w * dx2m)
+
+    @classmethod
+    def combine_lstats(cls, lstats):
+
+        # Set up arrays for each value
+        n = len(lstats)
+        lw = np.zeroes(n, dtype=float)
+        lxm = np.zeroes(n, dtype=float)
+        lx2m = np.zeroes(n, dtype=float)
+        lym = np.zeroes(n, dtype=float)
+        lxym = np.zeroes(n, dtype=float)
+
+        # Fill in each array
+        for i in range(n):
+            lw[i] = lstats[i].w
+            lxm[i] = lstats[i].xm
+            lx2m[i] = lstats[i].x2m
+            lym[i] = lstats[i].lym
+            lxym[i] = lstats[i].lxym
+
+        # Fill in an output object with weighted sums
+        stats = LinregressStatistics()
+        stats.w = lw.sum()
+        stats.xm = np.average(lxm, weights=lw)
+        stats.x2m = np.average(lx2m, weights=lw)
+        stats.ym = np.average(lym, weights=lw)
+        stats.xym = np.average(lxym, weights=lw)
+
+        return stats
+
+
+def get_linregress_statistics(x, y, y_err=None):
+    """Functional interface to get a linear regression statistics object.
+    """
+
+    return LinregressStatistics(x, y, y_err=None)
+
+
+def linregress_with_errors(x, y, y_err=None):
     """
     @brief
         Perform a linear regression with errors on the y values
@@ -34,35 +142,13 @@ def linregress_with_errors(x, y, y_err):
     @param y <np.ndarray>
     @param y_err <np.ndarray>
 
-    @return slope <float>,
-            intercept <float>,
-            slope_err <float>,
-            intercept_err <float>,
-            slope_intercept_covar <float>
+    @return results <LinregressResults>
     """
 
-    y_weights = y_err ** -2
-    total_weight = y_weights.sum()
+    stats = LinregressStatistics(x, y, y_err)
+    results = LinregressResults(stats)
 
-    x_weighted_mean = np.average(x, weights=y_weights)
-    y_weighted_mean = np.average(y, weights=y_weights)
-
-    dx = x - x_weighted_mean
-    dy = y - y_weighted_mean
-
-    dx2_weighted_mean = np.average(dx ** 2, weights=y_weights)
-    dxdy_weighted_mean = np.average(dx * dy, weights=y_weights)
-
-    slope = dxdy_weighted_mean / dx2_weighted_mean
-    intercept = y_weighted_mean - x_weighted_mean * slope
-
-    slope_err = np.sqrt(1. / (total_weight * dx2_weighted_mean))
-    intercept_err = np.sqrt(
-        (1.0 + x_weighted_mean ** 2 / dx2_weighted_mean) / total_weight)
-    slope_intercept_covar = -x_weighted_mean / \
-        (total_weight * dx2_weighted_mean)
-
-    return slope, intercept, slope_err, intercept_err, slope_intercept_covar
+    return results
 
 
 def decompose_transformation_matrix(m):
