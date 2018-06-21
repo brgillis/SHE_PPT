@@ -228,7 +228,8 @@ def create_dpd_shear_bias_statistics(BFD_g1_statistics=None,
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)
-    dpd_shear_bias_stats.Header = HeaderProvider.createGenericHeader("SHE")
+    # dpd_shear_bias_stats.Header = HeaderProvider.createGenericHeader("SHE")
+    dpd_shear_bias_stats.Header = "SHE"
     dpd_shear_bias_stats.Data = ShearBiasStatistics()
 
     __set_BFD_statistics(
