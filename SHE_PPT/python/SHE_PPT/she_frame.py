@@ -81,12 +81,11 @@ class SHEFrame(object):
         self.psf_data_hdulist = psf_data_hdulist
         self.psf_catalogue = psf_catalogue
 
-
         # Set the PSF catalogue to index by ID
         if self.psf_catalogue is not None:
             self.psf_catalogue.add_index(pstf.ID)
 
-    def extract_stamp(self, x_world, y_world, width, height = None, x_buffer = 0, y_buffer = 0, keep_header = False):
+    def extract_stamp(self, x_world, y_world, width, height=None, x_buffer=0, y_buffer=0, keep_header=False):
         """Extracts a postage stamp centred on the provided sky co-ordinates, by using each detector's WCS
            to determine which (if any) it lies on. If x/y_buffer > 0, it will also extract from a detector if
            the position is within this many pixels of the edge of it.
@@ -114,7 +113,8 @@ class SHEFrame(object):
                The extracted stamp, or None if it was not found on any detector
         """
 
-        # Loop over the detectors, and use the WCS of each to determine if it's on it or not
+        # Loop over the detectors, and use the WCS of each to determine if it's
+        # on it or not
         found = False
 
         num_x, num_y = np.shape(self.detectors)
@@ -142,14 +142,15 @@ class SHEFrame(object):
         if (detector is None) or (not found):
             return None
 
-        stamp = detector.extract_stamp(x = x, y = y, width = width, height = height, keep_header = keep_header)
+        stamp = detector.extract_stamp(
+            x=x, y=y, width=width, height=height, keep_header=keep_header)
 
         # Keep the extname even if not keeping the full header
         stamp.header[mv.extname_label] = detector.header[mv.extname_label]
 
         return stamp
 
-    def extract_psf(self, gal_id, keep_header = False):
+    def extract_psf(self, gal_id, keep_header=False):
         """Extracts the bulge and disk psfs for a given galaxy.
 
         Parameters
@@ -170,23 +171,25 @@ class SHEFrame(object):
         row = self.psf_catalogue.loc[gal_id]
 
         bulge_hdu = self.psf_data_hdulist[row[pstf.bulge_index]]
-        bulge_psf_stamp = SHEImage(data = bulge_hdu.data.transpose(), header = bulge_hdu.header)
+        bulge_psf_stamp = SHEImage(
+            data=bulge_hdu.data.transpose(), header=bulge_hdu.header)
 
         disk_hdu = self.psf_data_hdulist[row[pstf.disk_index]]
-        disk_psf_stamp = SHEImage(data = disk_hdu.data.transpose(), header = disk_hdu.header)
+        disk_psf_stamp = SHEImage(
+            data=disk_hdu.data.transpose(), header=disk_hdu.header)
 
         return bulge_psf_stamp, disk_psf_stamp
 
     @classmethod
     def read(cls,
-              frame_product_filename = None,
-              seg_filename = None,
-              psf_filename = None,
-              workdir = ".",
-              x_max = 6,
-              y_max = 6,
-              apply_sc3_fix = False,
-              **kwargs):
+             frame_product_filename=None,
+             seg_filename=None,
+             psf_filename=None,
+             workdir=".",
+             x_max=6,
+             y_max=6,
+             apply_sc3_fix=False,
+             **kwargs):
         """Reads a SHEFrame from disk
 
 
@@ -210,24 +213,27 @@ class SHEFrame(object):
         Any kwargs are passed to the reading of the fits data
         """
 
-        detectors = np.ndarray((x_max + 1, y_max + 1), dtype = SHEImage)
+        detectors = np.ndarray((x_max + 1, y_max + 1), dtype=SHEImage)
 
         # Load in the relevant fits files
 
         # Load in the data from the primary frame
         if frame_product_filename is not None:
-            frame_prod = read_xml_product(os.path.join(workdir, frame_product_filename))
+            frame_prod = read_xml_product(
+                os.path.join(workdir, frame_product_filename))
             if not isinstance(frame_prod, products.calibrated_frame.dpdVisCalibratedFrame):
                 raise ValueError("Data image product from " +
                                  frame_product_filename + " is invalid type.")
 
-            frame_data_filename = os.path.join(workdir, frame_prod.get_data_filename())
+            frame_data_filename = os.path.join(
+                workdir, frame_prod.get_data_filename())
 
             frame_data_hdulist = fits.open(
                 frame_data_filename, **kwargs)
 
             # Load in the data from the background frame
-            bkg_data_filename = os.path.join(workdir, frame_prod.get_bkg_filename())
+            bkg_data_filename = os.path.join(
+                workdir, frame_prod.get_bkg_filename())
 
             bkg_data_hdulist = fits.open(
                 bkg_data_filename, **kwargs)
@@ -248,8 +254,8 @@ class SHEFrame(object):
         else:
             seg_data_hdulist = None
 
-        for x_i in np.linspace(1, x_max, x_max, dtype = np.int8):
-            for y_i in np.linspace(1, y_max, y_max, dtype = np.int8):
+        for x_i in np.linspace(1, x_max, x_max, dtype=np.int8):
+            for y_i in np.linspace(1, y_max, y_max, dtype=np.int8):
 
                 id_string = SHE_PPT.detector.get_id_string(x_i, y_i)
 
@@ -258,17 +264,21 @@ class SHEFrame(object):
                     sci_extname = id_string + "." + mv.sci_tag
                     sci_i = find_extension(frame_data_hdulist, sci_extname)
                     if sci_i is None:
-                        continue  # Don't raise here; might be just using limited number
+                        # Don't raise here; might be just using limited number
+                        continue
                     detector_data = frame_data_hdulist[sci_i].data.transpose()
                     detector_header = frame_data_hdulist[sci_i].header
-                    detector_wcs = load_wcs(detector_header,apply_sc3_fix=apply_sc3_fix)
+                    detector_wcs = load_wcs(
+                        detector_header, apply_sc3_fix=apply_sc3_fix)
 
                     noisemap_extname = id_string + "." + mv.noisemap_tag
-                    noisemap_i = find_extension(frame_data_hdulist, noisemap_extname)
+                    noisemap_i = find_extension(
+                        frame_data_hdulist, noisemap_extname)
                     if noisemap_i is None:
                         raise ValueError("No corresponding noisemap extension found in file " + frame_data_filename + "." +
                                          "Expected extname: " + noisemap_extname)
-                    detector_noisemap = frame_data_hdulist[noisemap_i].data.transpose()
+                    detector_noisemap = frame_data_hdulist[
+                        noisemap_i].data.transpose()
 
                     mask_extname = id_string + "." + mv.mask_tag
                     mask_i = find_extension(frame_data_hdulist, mask_extname)
@@ -290,7 +300,8 @@ class SHEFrame(object):
                     if bkg_i is None:
                         raise ValueError("No corresponding background extension found in file " + frame_data_filename + "." +
                                          "Expected extname: " + bkg_extname)
-                    detector_background = bkg_data_hdulist[bkg_i].data.transpose()
+                    detector_background = bkg_data_hdulist[
+                        bkg_i].data.transpose()
                 else:
                     detector_background = None
 
@@ -300,17 +311,18 @@ class SHEFrame(object):
                     if seg_i is None:
                         raise ValueError("No corresponding segmentation extension found in file " + frame_data_filename + "." +
                                          "Expected extname: " + seg_extname)
-                    detector_seg_data = seg_data_hdulist[seg_i].data.transpose()
+                    detector_seg_data = seg_data_hdulist[
+                        seg_i].data.transpose()
                 else:
                     detector_seg_data = None
 
-                detectors[ x_i, y_i ] = SHEImage(data = detector_data,
-                                                  mask = detector_mask,
-                                                  noisemap = detector_noisemap,
-                                                  background_map = detector_background,
-                                                  segmentation_map = detector_seg_data,
-                                                  header = detector_header,
-                                                  wcs = detector_wcs)
+                detectors[x_i, y_i] = SHEImage(data=detector_data,
+                                               mask=detector_mask,
+                                               noisemap=detector_noisemap,
+                                               background_map=detector_background,
+                                               segmentation_map=detector_seg_data,
+                                               header=detector_header,
+                                               wcs=detector_wcs)
 
         # Load in the PSF data
         if psf_filename is not None:
@@ -324,12 +336,13 @@ class SHEFrame(object):
             psf_cat = Table.read(psf_data_hdulist[psf_cat_i])
 
             if not is_in_format(psf_cat, pstf):
-                raise ValueError("PSF table from " + qualified_psf_filename + " is in invalid format.")
+                raise ValueError(
+                    "PSF table from " + qualified_psf_filename + " is in invalid format.")
         else:
             psf_data_hdulist = None
             psf_cat = None
 
         # Construct and return a SHEFrame object
-        return SHEFrame(detectors = detectors,
-                         psf_data_hdulist = psf_data_hdulist,
-                         psf_catalogue = psf_cat)
+        return SHEFrame(detectors=detectors,
+                        psf_data_hdulist=psf_data_hdulist,
+                        psf_catalogue=psf_cat)

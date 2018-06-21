@@ -16,7 +16,8 @@
 # details.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
 
 from collections import OrderedDict
 
@@ -41,10 +42,11 @@ class SimulationPlanTableMeta(object):
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
                                      (self.format, None),
-                                   ))
+                                     ))
 
         # A list of columns in the desired order
         self.all = list(self.comments.keys())
+
 
 class SimulationPlanTableFormat(object):
     """
@@ -73,8 +75,8 @@ class SimulationPlanTableFormat(object):
         self.fits_dtypes = OrderedDict()
         self.lengths = OrderedDict()
 
-        def set_column_properties(name, is_optional = False, comment = None, dtype = ">f4", fits_dtype = "E",
-                                   length = 1):
+        def set_column_properties(name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
+                                  length=1):
 
             assert name not in self.is_optional
 
@@ -88,27 +90,31 @@ class SimulationPlanTableFormat(object):
 
         # Column names and info
 
-        self.tag = set_column_properties("TAG", dtype = "str", fits_dtype = "10A", length = 10,
-                                         comment = "Tag to be added to file names for this batch, max length 10.")
+        self.tag = set_column_properties("TAG", dtype="str", fits_dtype="10A", length=10,
+                                         comment="Tag to be added to file names for this batch, max length 10.")
 
-        self.model_seed_min = set_column_properties("MSEED_MIN", dtype = ">i8", fits_dtype = "K",
-                                                    comment = "Minimum model seed value for this batch.")
-        self.model_seed_max = set_column_properties("MSEED_MAX", dtype = ">i8", fits_dtype = "K",
-                                                    comment = "Maximum model seed value for this batch.")
-        self.model_seed_step = set_column_properties("MSEED_STEP", dtype = ">i8", fits_dtype = "K",
-                                                     comment = "Model seed step for this batch.")
+        self.model_seed_min = set_column_properties("MSEED_MIN", dtype=">i8", fits_dtype="K",
+                                                    comment="Minimum model seed value for this batch.")
+        self.model_seed_max = set_column_properties("MSEED_MAX", dtype=">i8", fits_dtype="K",
+                                                    comment="Maximum model seed value for this batch.")
+        self.model_seed_step = set_column_properties("MSEED_STEP", dtype=">i8", fits_dtype="K",
+                                                     comment="Model seed step for this batch.")
 
-        self.noise_seed_min = set_column_properties("NSEED_MIN", dtype = ">i8", fits_dtype = "K",
-                                                    comment = "Minimum model seed value for this batch.")
-        self.noise_seed_max = set_column_properties("NSEED_MAX", dtype = ">i8", fits_dtype = "K",
-                                                    comment = "Maximum model seed value for this batch.")
-        self.noise_seed_step = set_column_properties("NSEED_STEP", dtype = ">i8", fits_dtype = "K",
-                                                     comment = "Model seed step for this batch.")
+        self.noise_seed_min = set_column_properties("NSEED_MIN", dtype=">i8", fits_dtype="K",
+                                                    comment="Minimum model seed value for this batch.")
+        self.noise_seed_max = set_column_properties("NSEED_MAX", dtype=">i8", fits_dtype="K",
+                                                    comment="Maximum model seed value for this batch.")
+        self.noise_seed_step = set_column_properties("NSEED_STEP", dtype=">i8", fits_dtype="K",
+                                                     comment="Model seed step for this batch.")
 
-        self.suppress_noise = set_column_properties("SUP_NOISE", dtype = "bool", fits_dtype = "L")
-        self.num_detectors = set_column_properties("NUM_DETECTORS", dtype = ">i2", fits_dtype = "I")
-        self.num_galaxies = set_column_properties("NUM_GALAXIES", dtype = ">i2", fits_dtype = "I")
-        self.render_background = set_column_properties("RENDER_BKG", dtype = "bool", fits_dtype = "L")
+        self.suppress_noise = set_column_properties(
+            "SUP_NOISE", dtype="bool", fits_dtype="L")
+        self.num_detectors = set_column_properties(
+            "NUM_DETECTORS", dtype=">i2", fits_dtype="I")
+        self.num_galaxies = set_column_properties(
+            "NUM_GALAXIES", dtype=">i2", fits_dtype="I")
+        self.render_background = set_column_properties(
+            "RENDER_BKG", dtype="bool", fits_dtype="L")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -140,7 +146,8 @@ def make_simulation_plan_table_header():
 
     return header
 
-def initialise_simulation_plan_table(optional_columns = None):
+
+def initialise_simulation_plan_table(optional_columns=None):
     """
         @brief Initialise a galaxy population table.
 
@@ -164,7 +171,7 @@ def initialise_simulation_plan_table(optional_columns = None):
             init_cols.append([])
             dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
 
-    simulation_plan_table = Table(init_cols, names = names, dtype = dtypes)
+    simulation_plan_table = Table(init_cols, names=names, dtype=dtypes)
 
     simulation_plan_table.meta = make_simulation_plan_table_header()
 

@@ -18,7 +18,8 @@
 # details.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
 
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
 from EuclidDmBindings.dpd.she.raw.validatedshearmeasurement_stub import dpdValidatedShearMeasurement
@@ -26,6 +27,7 @@ from EuclidDmBindings.dpd.she.raw.validatedshearmeasurement_stub import dpdValid
 from SHE_PPT.file_io import read_xml_product, find_aux_file
 
 sample_file_name = "SHE_PPT/sample_validated_shear_measurements.xml"
+
 
 def init():
     """
@@ -45,11 +47,14 @@ def init():
 
     return
 
+
 def __set_filename(self, filename):
     self.Data.ValidatedShearMeasurementFile.DataContainer.FileName = filename
 
+
 def __get_filename(self):
     return self.Data.ValidatedShearMeasurementFile.DataContainer.FileName
+
 
 def __get_all_filenames(self):
 
@@ -57,16 +62,20 @@ def __get_all_filenames(self):
 
     return all_filenames
 
-def create_dpd_she_validated_shear_estimates(filename = "default_filename.fits"):
+
+def create_dpd_she_validated_shear_estimates(filename="default_filename.fits"):
     """
         @TODO fill in docstring
     """
 
-    dpd_she_validated_shear_estimates = read_xml_product(find_aux_file(sample_file_name), allow_pickled=False)
+    dpd_she_validated_shear_estimates = read_xml_product(
+        find_aux_file(sample_file_name), allow_pickled=False)
 
-    # Overwrite the header with a new one to update the creation date (among other things)
-    dpd_she_validated_shear_estimates.Header = HeaderProvider.createGenericHeader("SHE")
-    
+    # Overwrite the header with a new one to update the creation date (among
+    # other things)
+    dpd_she_validated_shear_estimates.Header = HeaderProvider.createGenericHeader(
+        "SHE")
+
     __set_filename(dpd_she_validated_shear_estimates, filename)
 
     return dpd_she_validated_shear_estimates

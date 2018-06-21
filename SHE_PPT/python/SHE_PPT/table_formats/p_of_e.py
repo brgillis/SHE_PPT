@@ -16,7 +16,8 @@
 # details.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
 
 from collections import OrderedDict
 
@@ -41,10 +42,11 @@ class POfETableMeta(object):
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
                                      (self.format, None),
-                                   ))
+                                     ))
 
         # A list of columns in the desired order
         self.all = list(self.comments.keys())
+
 
 class POfETableFormat(object):
     """
@@ -73,8 +75,8 @@ class POfETableFormat(object):
         self.fits_dtypes = OrderedDict()
         self.lengths = OrderedDict()
 
-        def set_column_properties(name, is_optional = False, comment = None, dtype = ">f4", fits_dtype = "E",
-                                   length = 1):
+        def set_column_properties(name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
+                                  length=1):
 
             assert name not in self.is_optional
 
@@ -88,16 +90,19 @@ class POfETableFormat(object):
 
         # Column names and info
 
-        self.ID = set_column_properties("ID", dtype = ">i8", fits_dtype = "K", comment = "Link to galaxy population table.")
+        self.ID = set_column_properties(
+            "ID", dtype=">i8", fits_dtype="K", comment="Link to galaxy population table.")
 
-        self.e1 = set_column_properties("E1", comment = "Using flat weight function.")
-        self.e2 = set_column_properties("E2", comment = "Using flat weight function.")
+        self.e1 = set_column_properties(
+            "E1", comment="Using flat weight function.")
+        self.e2 = set_column_properties(
+            "E2", comment="Using flat weight function.")
 
-        self.bulge_e1 = set_column_properties("BULGE_E1", is_optional = True)
-        self.bulge_e2 = set_column_properties("BULGE_E2", is_optional = True)
+        self.bulge_e1 = set_column_properties("BULGE_E1", is_optional=True)
+        self.bulge_e2 = set_column_properties("BULGE_E2", is_optional=True)
 
-        self.disk_e1 = set_column_properties("DISK_E1", is_optional = True)
-        self.disk_e2 = set_column_properties("DISK_E2", is_optional = True)
+        self.disk_e1 = set_column_properties("DISK_E1", is_optional=True)
+        self.disk_e2 = set_column_properties("DISK_E2", is_optional=True)
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -129,7 +134,8 @@ def make_p_of_e_table_header():
 
     return header
 
-def initialise_p_of_e_table(optional_columns = None):
+
+def initialise_p_of_e_table(optional_columns=None):
     """
         @brief Initialise a galaxy population table.
 
@@ -153,7 +159,7 @@ def initialise_p_of_e_table(optional_columns = None):
             init_cols.append([])
             dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
 
-    p_of_e_table = Table(init_cols, names = names, dtype = dtypes)
+    p_of_e_table = Table(init_cols, names=names, dtype=dtypes)
 
     p_of_e_table.meta = make_p_of_e_table_header()
 

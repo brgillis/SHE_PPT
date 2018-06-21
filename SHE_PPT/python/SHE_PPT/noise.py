@@ -17,9 +17,11 @@
 # details.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
 
 from SHE_PPT.gain import get_ADU_from_count, get_count_from_ADU
+
 
 def get_sky_level_ADU_per_pixel(sky_level_ADU_per_sq_arcsec,
                                 pixel_scale):
@@ -35,6 +37,7 @@ def get_sky_level_ADU_per_pixel(sky_level_ADU_per_sq_arcsec,
 
     return sky_level_ADU_per_pixel
 
+
 def get_sky_level_count_per_pixel(sky_level_ADU_per_sq_arcsec,
                                   pixel_scale,
                                   gain):
@@ -47,10 +50,13 @@ def get_sky_level_count_per_pixel(sky_level_ADU_per_sq_arcsec,
         @return The sky level in units of e-/pixel
     """
 
-    sky_level_ADU_per_pixel = get_sky_level_ADU_per_pixel(sky_level_ADU_per_sq_arcsec, pixel_scale)
-    sky_level_count_per_pixel = get_count_from_ADU(sky_level_ADU_per_pixel, gain)
+    sky_level_ADU_per_pixel = get_sky_level_ADU_per_pixel(
+        sky_level_ADU_per_sq_arcsec, pixel_scale)
+    sky_level_count_per_pixel = get_count_from_ADU(
+        sky_level_ADU_per_pixel, gain)
 
     return sky_level_count_per_pixel
+
 
 def get_count_lambda_per_pixel(pixel_value_ADU,
                                sky_level_ADU_per_sq_arcsec,
@@ -75,6 +81,7 @@ def get_count_lambda_per_pixel(pixel_value_ADU,
 
     return count_lambda
 
+
 def get_read_noise_ADU_per_pixel(read_noise_count,
                                  gain):
     """ Calculate the read noise per pixel in units of ADU
@@ -88,6 +95,7 @@ def get_read_noise_ADU_per_pixel(read_noise_count,
     read_noise_ADU_per_pixel = get_ADU_from_count(read_noise_count, gain)
 
     return read_noise_ADU_per_pixel
+
 
 def get_var_ADU_per_pixel(pixel_value_ADU,
                           sky_level_ADU_per_sq_arcsec,
@@ -106,8 +114,9 @@ def get_var_ADU_per_pixel(pixel_value_ADU,
     """
 
     pois_count_lambda = get_count_lambda_per_pixel(pixel_value_ADU,
-                                              sky_level_ADU_per_sq_arcsec, pixel_scale, gain)
-    pois_ADU_var = get_ADU_from_count(get_ADU_from_count(pois_count_lambda, gain), gain)  # Apply twice since it's squared
+                                                   sky_level_ADU_per_sq_arcsec, pixel_scale, gain)
+    pois_ADU_var = get_ADU_from_count(get_ADU_from_count(
+        pois_count_lambda, gain), gain)  # Apply twice since it's squared
 
     read_noise_ADU_sigma = get_read_noise_ADU_per_pixel(read_noise_count, gain)
 

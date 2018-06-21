@@ -21,12 +21,14 @@
 # details.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
 
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import EuclidDmBindings.she.she_stub as she_dpd # FIXME
 
 import pickle
+
 
 def init():
     """
@@ -50,17 +52,22 @@ def init():
 
     return
 
+
 def __set_zernike_mode_filename(self, filename):
     self.Data.ZernikeMode.DataContainer.FileName = filename
+
 
 def __get_zernike_mode_filename(self):
     return self.Data.ZernikeMode.DataContainer.FileName
 
+
 def __set_surface_error_filename(self, filename):
     self.Data.SurfaceError.DataContainer.FileName = filename
 
+
 def __get_surface_error_filename(self):
     return self.Data.SurfaceError.DataContainer.FileName
+
 
 def __get_all_filenames(self):
 
@@ -69,19 +76,26 @@ def __get_all_filenames(self):
 
     return all_filenames
 
+
 class DataContainer:  # @FIXME
+
     def __init__(self):
         self.FileName = None
         self.filestatus = None
 
+
 class DpdShePSFCalibrationParamsProduct:  # @FIXME
+
     def __init__(self):
         self.Header = None
         self.Data = None
+
     def validateBinding(self):
         return False
 
+
 class ShePSFCalibrationParamsProduct:  # @FIXME
+
     def __init__(self):
         self.TimeStamp = None
         self.TelescopeModel = None
@@ -90,70 +104,88 @@ class ShePSFCalibrationParamsProduct:  # @FIXME
         self.DetectorModel = None
         self.Diagnostics = None
 
+
 class SheTelescopeModelProduct:  # @FIXME
+
     def __init__(self):
         pass  # @TODO - Fill in format
+
 
 class SheZernikeModeProduct:  # @FIXME
+
     def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
+
 
 class SheSurfaceErrorProduct:
+
     def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
 
+
 class SheDetectorModelProduct:
+
     def __init__(self):
         pass  # @TODO - Fill in format
+
 
 class SheDiagnosticsProduct:
+
     def __init__(self):
         pass  # @TODO - Fill in format
 
-def create_dpd_she_psf_calibration_params(timestamp = None,
-                                   zernike_mode_filename = None,
-                                   surface_error_filename = None):
+
+def create_dpd_she_psf_calibration_params(timestamp=None,
+                                          zernike_mode_filename=None,
+                                          surface_error_filename=None):
     """
         @TODO fill in docstring
     """
 
-    # dpd_she_psf_calibration_params = she_dpd.DpdShePSFCalibrationParamsProduct() # @FIXME
+    # dpd_she_psf_calibration_params =
+    # she_dpd.DpdShePSFCalibrationParamsProduct() # @FIXME
     dpd_she_psf_calibration_params = DpdShePSFCalibrationParamsProduct()
 
-    # dpd_she_psf_calibration_params.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
+    # dpd_she_psf_calibration_params.Header =
+    # HeaderProvider.createGenericHeader("SHE") # FIXME
     dpd_she_psf_calibration_params.Header = "SHE"
 
     dpd_she_psf_calibration_params.Data = create_she_psf_calibration_params(timestamp,
-                                                              zernike_mode_filename,
-                                                              surface_error_filename)
+                                                                            zernike_mode_filename,
+                                                                            surface_error_filename)
 
     return dpd_she_psf_calibration_params
 
 # Add a useful alias
 create_psf_calibration_params_product = create_dpd_she_psf_calibration_params
 
-def create_she_psf_calibration_params(timestamp = None,
-                               zernike_mode_filename = None,
-                               surface_error_filename = None):
+
+def create_she_psf_calibration_params(timestamp=None,
+                                      zernike_mode_filename=None,
+                                      surface_error_filename=None):
     """
         @TODO fill in docstring
     """
 
-    # she_psf_calibration_params = she_dpd.ShePSFCalibrationParamsProduct() # @FIXME
+    # she_psf_calibration_params = she_dpd.ShePSFCalibrationParamsProduct() #
+    # @FIXME
     she_psf_calibration_params = ShePSFCalibrationParamsProduct()
 
     she_psf_calibration_params.TimeStamp = timestamp
     she_psf_calibration_params.TelescopeModel = create_she_telescope_model()
-    she_psf_calibration_params.ZernikeMode = create_she_zernike_mode(zernike_mode_filename)
-    she_psf_calibration_params.SurfaceError = create_she_surface_error(surface_error_filename)
+    she_psf_calibration_params.ZernikeMode = create_she_zernike_mode(
+        zernike_mode_filename)
+    she_psf_calibration_params.SurfaceError = create_she_surface_error(
+        surface_error_filename)
     she_psf_calibration_params.DetectorModel = create_she_detector_model()
     she_psf_calibration_params.Diagnostics = create_she_diagnostics()
 
     return she_psf_calibration_params
+
 
 def create_she_telescope_model():
     """
@@ -164,6 +196,7 @@ def create_she_telescope_model():
     she_telescope_model = SheTelescopeModelProduct()
 
     return she_telescope_model
+
 
 def create_she_zernike_mode(filename):
     """
@@ -182,6 +215,7 @@ def create_she_zernike_mode(filename):
 
     return she_zernike_mode
 
+
 def create_she_surface_error(filename):
     """
         @TODO fill in docstring
@@ -199,6 +233,7 @@ def create_she_surface_error(filename):
 
     return she_surface_error
 
+
 def create_she_detector_model():
     """
         @TODO fill in docstring
@@ -209,6 +244,7 @@ def create_she_detector_model():
 
     return she_detector_model
 
+
 def create_she_diagnostics():
     """
         @TODO fill in docstring
@@ -218,4 +254,3 @@ def create_she_diagnostics():
     she_diagnostics = SheDiagnosticsProduct()
 
     return she_diagnostics
-

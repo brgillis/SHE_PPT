@@ -19,7 +19,8 @@
 # details.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
 
 from astropy.io import fits
 import os
@@ -36,7 +37,7 @@ sample_file_name = "SHE_PPT/sample_segmentation_map.xml"
 
 
 # Convenience function to easily load the actual map
-def load_mosaic_hdu(filename, dir = None, hdu = 0, detector_x = None, detector_y = None, **kwargs):
+def load_mosaic_hdu(filename, dir=None, hdu=0, detector_x=None, detector_y=None, **kwargs):
     """Directly loads the mosaic image from the filename of the data product.
 
     Parameters
@@ -75,20 +76,23 @@ def load_mosaic_hdu(filename, dir = None, hdu = 0, detector_x = None, detector_y
     if dir is None:
         dir = ""
 
-    mosaic_product = read_xml_product(xml_file_name = os.path.join(dir, filename))
+    mosaic_product = read_xml_product(
+        xml_file_name=os.path.join(dir, filename))
 
     data_filename = mosaic_product.get_data_filename()
 
     mosaic_hdulist = fits.open(data_filename, **kwargs)
 
     if detector_x is not None and detector_y is not None:
-        hdu = find_extension(mosaic_hdulist, extname = dtc.get_id_string(detector_x, detector_y) + "." + mv.segmentation_tag)
+        hdu = find_extension(mosaic_hdulist, extname=dtc.get_id_string(
+            detector_x, detector_y) + "." + mv.segmentation_tag)
 
     mosaic_hdu = mosaic_hdulist[hdu]
 
     return mosaic_hdu
 
 # Initialisation function, to add methods to an imported XML class
+
 
 def init():
     """
@@ -113,11 +117,14 @@ def init():
 
     return
 
+
 def __set_data_filename(self, filename):
     self.Data.DataStorage.DataContainer.FileName = filename
 
+
 def __get_data_filename(self):
     return self.Data.DataStorage.DataContainer.FileName
+
 
 def __get_all_filenames(self):
 
@@ -125,17 +132,19 @@ def __get_all_filenames(self):
 
     return all_filenames
 
-def create_dpd_mer_mosaic(data_filename = "",
+
+def create_dpd_mer_mosaic(data_filename="",
                           ):
     """
         @TODO fill in docstring
     """
 
-    dpd_mer_mosaic = read_xml_product(find_aux_file(sample_file_name), allow_pickled=False)
+    dpd_mer_mosaic = read_xml_product(
+        find_aux_file(sample_file_name), allow_pickled=False)
 
     dpd_mer_mosaic.Header = HeaderProvider.createGenericHeader("SHE")
-    
-    __set_data_filename(dpd_mer_mosaic,data_filename)
+
+    __set_data_filename(dpd_mer_mosaic, data_filename)
 
     return dpd_mer_mosaic
 

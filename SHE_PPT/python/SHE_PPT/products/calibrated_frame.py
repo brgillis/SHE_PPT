@@ -18,7 +18,8 @@
 # details.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
 
 from EuclidDmBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
@@ -53,11 +54,14 @@ def init():
 
     return
 
+
 def __set_data_filename(self, filename):
     self.Data.DataStorage.DataContainer.FileName = filename
 
+
 def __get_data_filename(self):
     return self.Data.DataStorage.DataContainer.FileName
+
 
 def __set_psf_filename(self, filename):
     if not hasattr(self.Data, "PsfModelStorage"):
@@ -67,11 +71,13 @@ def __set_psf_filename(self, filename):
     else:
         self.Data.PsfModelStorage.DataContainer.FileName = filename
 
+
 def __get_psf_filename(self):
     if hasattr(self.Data, "PsfModelStorage"):
         if self.Data.PsfModelStorage is not None:
             return self.Data.PsfModelStorage.DataContainer.FileName
     return None
+
 
 def __set_bkg_filename(self, filename):
     if not hasattr(self.Data, "BackgroundStorage"):
@@ -81,11 +87,13 @@ def __set_bkg_filename(self, filename):
     else:
         self.Data.BackgroundStorage.DataContainer.FileName = filename
 
+
 def __get_bkg_filename(self):
     if hasattr(self.Data, "BackgroundStorage"):
         if self.Data.BackgroundStorage is not None:
             return self.Data.BackgroundStorage.DataContainer.FileName
     return None
+
 
 def __set_wgt_filename(self, filename):
     if not hasattr(self.Data, "WeightStorage"):
@@ -95,28 +103,33 @@ def __set_wgt_filename(self, filename):
     else:
         self.Data.WeightStorage.DataContainer.FileName = filename
 
+
 def __get_wgt_filename(self):
     if hasattr(self.Data, "WeightStorage"):
         if self.Data.WeightStorage is not None:
             return self.Data.WeightStorage.DataContainer.FileName
     return None
 
-def create_dpd_vis_calibrated_frame(filename = 'vis_calibrated_frame.fits'):
+
+def create_dpd_vis_calibrated_frame(filename='vis_calibrated_frame.fits'):
     """
         @TODO fill in docstring
     """
 
-    dpd_vis_calibrated_frame = read_xml_product(find_aux_file(sample_file_name), allow_pickled=False)
+    dpd_vis_calibrated_frame = read_xml_product(
+        find_aux_file(sample_file_name), allow_pickled=False)
 
-    # Overwrite the header with a new one to update the creation date (among other things)
+    # Overwrite the header with a new one to update the creation date (among
+    # other things)
     dpd_vis_calibrated_frame.Header = HeaderProvider.createGenericHeader("SHE")
-    
-    __set_data_filename(dpd_vis_calibrated_frame,filename)
+
+    __set_data_filename(dpd_vis_calibrated_frame, filename)
 
     return dpd_vis_calibrated_frame
 
+
 def init_storage(type, filename, format, version, filestatus):
-    
+
     data_storage = type()
 
     data_storage.format = format
@@ -125,29 +138,37 @@ def init_storage(type, filename, format, version, filestatus):
     data_storage.DataContainer = dataContainer()
     data_storage.DataContainer.FileName = filename
     data_storage.DataContainer.filestatus = filestatus
-    
-    return data_storage
-
-def create_vis_data_storage(filename, format = "vis.calibratedFrame", version = "0.1", filestatus = "PROPOSED"):
-
-    data_storage = init_storage(vis_pro.visCalibratedStorageFitsFile,filename,format,version,filestatus)
 
     return data_storage
 
-def create_vis_psf_storage(filename, format = "vis.psfModel", version = "0.1", filestatus = "PROPOSED"):
 
-    data_storage = init_storage(vis_pro.visPsfModelStorageFitsFile,filename,format,version,filestatus)
+def create_vis_data_storage(filename, format="vis.calibratedFrame", version="0.1", filestatus="PROPOSED"):
 
-    return data_storage
-
-def create_vis_bkg_storage(filename, format = "vis.backgroundMap", version = "0.1", filestatus = "PROPOSED"):
-
-    data_storage = init_storage(vis_pro.visBackgroundStorageFitsFile,filename,format,version,filestatus)
+    data_storage = init_storage(
+        vis_pro.visCalibratedStorageFitsFile, filename, format, version, filestatus)
 
     return data_storage
 
-def create_vis_wgt_storage(filename, format = "vis.weightMap", version = "0.1", filestatus = "PROPOSED"):
 
-    data_storage = init_storage(vis_pro.visWeightStorageFitsFile,filename,format,version,filestatus)
+def create_vis_psf_storage(filename, format="vis.psfModel", version="0.1", filestatus="PROPOSED"):
+
+    data_storage = init_storage(
+        vis_pro.visPsfModelStorageFitsFile, filename, format, version, filestatus)
+
+    return data_storage
+
+
+def create_vis_bkg_storage(filename, format="vis.backgroundMap", version="0.1", filestatus="PROPOSED"):
+
+    data_storage = init_storage(
+        vis_pro.visBackgroundStorageFitsFile, filename, format, version, filestatus)
+
+    return data_storage
+
+
+def create_vis_wgt_storage(filename, format="vis.weightMap", version="0.1", filestatus="PROPOSED"):
+
+    data_storage = init_storage(
+        vis_pro.visWeightStorageFitsFile, filename, format, version, filestatus)
 
     return data_storage

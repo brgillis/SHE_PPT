@@ -16,7 +16,8 @@
 # details.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
 
 import codecs
 from copy import deepcopy
@@ -29,7 +30,8 @@ from astropy.wcs import WCS
 
 logger = getLogger(__name__)
 
-def hash_any(obj, format = 'hex', max_length = None):
+
+def hash_any(obj, format='hex', max_length=None):
     """
         @brief Hashes any immutable object into a hex string of a given length. Unlike hash(),
                will be consistent in Python 3.0.
@@ -50,7 +52,8 @@ def hash_any(obj, format = 'hex', max_length = None):
     if format == 'base64':
         # Recode it into base 64. Note that this results in a stray newline character
         # at the end, so we remove that.
-        full_hash = codecs.encode(codecs.decode(full_hash, 'hex'), 'base64')[:-1]
+        full_hash = codecs.encode(
+            codecs.decode(full_hash, 'hex'), 'base64')[:-1]
 
         # This also allows the / character which we can't use, so replace it with .
         # Also decode it into a standard string
@@ -60,6 +63,7 @@ def hash_any(obj, format = 'hex', max_length = None):
         return full_hash
     else:
         return full_hash[:max_length]
+
 
 def find_extension(hdulist, extname):
     """
@@ -72,6 +76,7 @@ def find_extension(hdulist, extname):
             return i
     return None
 
+
 def get_detector(obj):
     """
         Find the detector indices for a fits hdu or table.
@@ -82,7 +87,8 @@ def get_detector(obj):
     elif hasattr(obj, "meta"):
         header = obj.meta
     else:
-        raise ValueError("Unable to determine detector - no 'header' or 'meta' attribute present.")
+        raise ValueError(
+            "Unable to determine detector - no 'header' or 'meta' attribute present.")
 
     extname = header["EXTNAME"]
 
@@ -90,6 +96,7 @@ def get_detector(obj):
     detector_y = int(extname[dtc.y_index])
 
     return detector_x, detector_y
+
 
 def time_to_timestamp(t):
     """
@@ -101,7 +108,8 @@ def time_to_timestamp(t):
 
     return timestamp
 
-def load_wcs(header,apply_sc3_fix=False):
+
+def load_wcs(header, apply_sc3_fix=False):
     """Create an astropy.wcs.WCS object from a FITS header, catching and correcting errors
     due to VIS's incorrect header keywords.
 
