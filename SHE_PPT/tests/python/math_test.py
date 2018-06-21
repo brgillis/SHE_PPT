@@ -59,4 +59,4 @@ class Test_math():
 
         assert_almost_equal(unweighted_results.slope, slope)
         assert_almost_equal(unweighted_results.intercept, intercept)
-        assert_almost_equal(unweighted_results.slope_err, slope_err)
+        assert_almost_equal(unweighted_results.intercept_err, intercept_err)
