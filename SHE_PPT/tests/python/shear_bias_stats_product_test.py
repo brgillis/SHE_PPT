@@ -101,6 +101,8 @@ class TestShearEstimatesProduct(object):
 
         prod.init()
 
+        n = 10
+
         # Create the product
         product = prod.create_dpd_shear_bias_statistics()
 
