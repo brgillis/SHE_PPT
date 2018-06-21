@@ -192,18 +192,18 @@ def __get_method_statistics(self, method):
         raise ValueError("Invalid method " + str(method) + ".")
 
 
-def __set_method_statistics(self, method, statistics):
+def __set_method_statistics(self, method, g1_statistics, g2_statistics):
 
     if method == "KSB":
-        return self.set_KSB_statistics(statistics)
+        return self.set_KSB_statistics(g1_statistics, g2_statistics)
     elif method == "LensMC":
-        return self.set_LensMC_statistics(statistics)
+        return self.set_LensMC_statistics(g1_statistics, g2_statistics)
     elif method == "MomentsML":
-        return self.set_MomentsML_statistics(statistics)
+        return self.set_MomentsML_statistics(g1_statistics, g2_statistics)
     elif method == "REGAUSS":
-        return self.set_REGAUSS_statistics(statistics)
+        return self.set_REGAUSS_statistics(g1_statistics, g2_statistics)
     elif method == "BFD":
-        return self.set_BFD_statistics(statistics)
+        return self.set_BFD_statistics(g1_statistics, g2_statistics)
     else:
         raise ValueError("Invalid method " + str(method) + ".")
 
