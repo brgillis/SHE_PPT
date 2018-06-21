@@ -36,6 +36,9 @@ class dpdShearBiasStatistics(object):
         self.Header = None
         self.Data = None
 
+    def validateBinding(self):
+        return True
+
 
 class ShearBiasStatistics(object):
 
@@ -205,16 +208,16 @@ def __set_method_statistics(self, method, statistics):
         raise ValueError("Invalid method " + str(method) + ".")
 
 
-def create_dpd_shear_estimates(BFD_g1_statistics=None,
-                               BFD_g2_statistics=None,
-                               KSB_g1_statistics=None,
-                               KSB_g2_statistics=None,
-                               LensMC_g1_statistics=None,
-                               LensMC_g2_statistics=None,
-                               MomentsML_g1_statistics=None,
-                               MomentsML_g2_statistics=None,
-                               REGAUSS_g1_statistics=None,
-                               REGAUSS_g2_statistics=None):
+def create_dpd_shear_bias_statistics(BFD_g1_statistics=None,
+                                     BFD_g2_statistics=None,
+                                     KSB_g1_statistics=None,
+                                     KSB_g2_statistics=None,
+                                     LensMC_g1_statistics=None,
+                                     LensMC_g2_statistics=None,
+                                     MomentsML_g1_statistics=None,
+                                     MomentsML_g2_statistics=None,
+                                     REGAUSS_g1_statistics=None,
+                                     REGAUSS_g2_statistics=None):
     """
         @TODO fill in docstring
     """
