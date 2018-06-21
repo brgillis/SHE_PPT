@@ -70,7 +70,7 @@ class Test_math():
         ex_slope = 0.3
         ex_intercept = 10.2
         n = 10
-        n_test = 100
+        n_test = 1000
 
         x = np.linspace(0, n - 1, num=n, endpoint=True, dtype=float)
         base_y = ex_intercept + ex_slope * x
