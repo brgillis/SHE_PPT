@@ -80,11 +80,11 @@ class Test_math():
         y_err = np.random.random(n)
 
         # Run a set of tests
-        slopes = np.zeroes(n)
-        intercepts = np.zeroes(n)
-        slope_errs = np.zeroes(n)
-        intercept_errs = np.zeroes(n)
-        slope_intercept_covars = np.zeroes(n)
+        slopes = np.zeros(n)
+        intercepts = np.zeros(n)
+        slope_errs = np.zeros(n)
+        intercept_errs = np.zeros(n)
+        slope_intercept_covars = np.zeros(n)
 
         for i in range(n_test):
             yz = np.random.randn(n)
