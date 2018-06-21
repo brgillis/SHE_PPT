@@ -55,7 +55,7 @@ class Test_math():
         # Test it matches results for regular regression if we don't use
         # weights
         unweighted_results = linregress_with_errors(x, y)
-        slope, intercept, _, _, slope_err = stats.linregress(x, y)
+        slope, intercept, _, _, slope_err = linregress(x, y)
 
         assert_almost_equal(unweighted_results.slope, slope)
         assert_almost_equal(unweighted_results.intercept, intercept)
