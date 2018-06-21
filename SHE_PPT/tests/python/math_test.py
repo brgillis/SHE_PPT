@@ -32,7 +32,7 @@ import numpy as np
 
 class Test_math():
 
-    def test_linregress_with_errors(self):
+    def test_linregress_with_errors_simple(self):
         """Unit test of linregress_with_errors.
         """
 
@@ -59,3 +59,55 @@ class Test_math():
 
         assert_almost_equal(unweighted_results.slope, slope)
         assert_almost_equal(unweighted_results.intercept, intercept)
+
+    def test_linregress_with_errors_full(self):
+        """Unit test of linregress_with_errors that does a full simulation
+           to test results.
+        """
+
+        # Set up test input
+
+        ex_slope = 0.3
+        ex_intercept = 104.2
+        n = 10
+        n_test = 100
+
+        x = np.linspace(0, n - 1, num=n, endpoint=True, dtype=float)
+        base_y = ex_intercept + ex_slope * x
+
+        np.random.seed(1234)
+
+        y_err = np.random.random(n)
+
+        # Run a set of tests
+        slopes = np.zeroes(n)
+        intercepts = np.zeroes(n)
+        slope_errs = np.zeroes(n)
+        intercept_errs = np.zeroes(n)
+        slope_intercept_covars = np.zeroes(n)
+
+        for i in range(n_test):
+            yz = np.random.randn(n)
+            y = base_y + y_err * yz
+
+            regress_results = linregress_with_errors(x, y, y_err)
+
+            slopes[i] = regress_results.slope
+            intercepts[i] = regress_results.intercept
+            slope_errs[i] = regress_results.slope_err
+            intercept_errs[i] = regress_results.slope_err
+            slope_intercept_covars[i] = regress_results.slope_intercept_covar
+
+        # Get mean results
+        slope_mean = np.mean(slopes)
+        slope_std = np.std(slopes)
+        intercept_mean = np.mean(intercepts)
+        intercept_std = np.std(intercepts)
+
+        # Check the results are reasonable
+        assert_almost_equal(slope_mean, ex_slope)
+        assert_almost_equal(intercept_mean, ex_intercept)
+        assert_almost_equal(slope_std, np.mean(slope_errs))
+        assert_almost_equal(intercept_std, np.mean(intercept_errs))
+
+        # TODO check covar
