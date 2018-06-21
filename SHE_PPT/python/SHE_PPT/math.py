@@ -109,8 +109,8 @@ class LinregressResults(object):
             lw[i] = lstats[i].w
             lxm[i] = lstats[i].xm
             lx2m[i] = lstats[i].x2m
-            lym[i] = lstats[i].lym
-            lxym[i] = lstats[i].lxym
+            lym[i] = lstats[i].ym
+            lxym[i] = lstats[i].xym
 
         # Fill in an output object with weighted sums
         stats = LinregressStatistics()
