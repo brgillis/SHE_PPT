@@ -125,8 +125,8 @@ class Test_math():
         assert_almost_equal(
             combined_results.intercept, ex_intercept, decimal=2)
         assert_almost_equal(
-            combined_results.slope_err, np.mean(slope_errs), decimal=2)
+            combined_results.slope_err, np.mean(slope_errs) / np.sqrt(n_test), decimal=2)
         assert_almost_equal(
-            combined_results.intercept_err, np.mean(intercept_errs), decimal=2)
+            combined_results.intercept_err, np.mean(intercept_errs) / np.sqrt(n_test), decimal=2)
         assert_almost_equal(
             combined_results.slope_intercept_covar, np.mean(slope_intercept_covars), decimal=2)
