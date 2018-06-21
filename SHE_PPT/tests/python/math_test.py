@@ -68,7 +68,7 @@ class Test_math():
         # Set up test input
 
         ex_slope = 0.3
-        ex_intercept = 104.2
+        ex_intercept = 10.2
         n = 10
         n_test = 100
 
