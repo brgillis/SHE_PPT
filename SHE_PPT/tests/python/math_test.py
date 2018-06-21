@@ -103,11 +103,12 @@ class Test_math():
         slope_std = np.std(slopes)
         intercept_mean = np.mean(intercepts)
         intercept_std = np.std(intercepts)
+        slope_intercept_cov = np.cov(slopes, intercepts)[0, 1]
 
         # Check the results are reasonable
         assert_almost_equal(slope_mean, ex_slope, decimal=2)
         assert_almost_equal(intercept_mean, ex_intercept, decimal=2)
         assert_almost_equal(slope_std, np.mean(slope_errs), decimal=2)
         assert_almost_equal(intercept_std, np.mean(intercept_errs), decimal=2)
-
-        # TODO check covar
+        assert_almost_equal(
+            slope_intercept_cov, np.mean(slope_intercept_covars), decimal=2)
