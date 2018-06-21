@@ -18,19 +18,20 @@
 # details.
 #
 # You shouldF have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
 
 import numpy as np
 
 
-def get_I_from_SN(galaxy_SN             ,
-             galaxy_stddev_arcsec  ,
-             psf_stddev_arcsec     ,
-             sky_level_subtracted  ,
-             sky_level_unsubtracted,
-             read_noise            ,
-             pixel_scale           ,
-             gain):
+def get_I_from_SN(galaxy_SN,
+                  galaxy_stddev_arcsec,
+                  psf_stddev_arcsec,
+                  sky_level_subtracted,
+                  sky_level_unsubtracted,
+                  read_noise,
+                  pixel_scale,
+                  gain):
     """
         @brief
             Estimates galaxy intensity (in ADU) from signal-to-noise ratio.
@@ -66,24 +67,31 @@ def get_I_from_SN(galaxy_SN             ,
     # Estimate the half-light radius of the galaxy (using the magic number 0.674490, which represents the
     # sigma for a Gaussian which contains half the distribution), and use it to calculate the area within
     # the half-light aperture in arcsec
-    size_of_gal = np.pi * 0.674490 * ((galaxy_stddev_arcsec) ** 2 + (psf_stddev_arcsec) ** 2)
+    size_of_gal = np.pi * 0.674490 * \
+        ((galaxy_stddev_arcsec) ** 2 + (psf_stddev_arcsec) ** 2)
 
     # Calculate the sky noise and read noise in the half-light aperture, remembering that noise scales with
     # the sqrt of area.
 
     # Sky level is given initially in ADU/arcsec^2. So we convert to counts by multiplying by gain, then
-    # take the sqrt of counts to get noise (assuming it's Poisson). Then we scale by sqrt(size_of_gal).
-    sky_noise_behind_galaxy = np.sqrt((sky_level_subtracted + sky_level_unsubtracted) * gain * size_of_gal)
+    # take the sqrt of counts to get noise (assuming it's Poisson). Then we
+    # scale by sqrt(size_of_gal).
+    sky_noise_behind_galaxy = np.sqrt(
+        (sky_level_subtracted + sky_level_unsubtracted) * gain * size_of_gal)
 
     # Read noise is given initially in counts/pixel. So we convert to counts per arcsec (using just pixel_scale,
-    # not pixel_scale^2 since it scales with sqrt(area), and then scale by sqrt(size_of_gal)
+    # not pixel_scale^2 since it scales with sqrt(area), and then scale by
+    # sqrt(size_of_gal)
     read_noise_behind_galaxy = read_noise * np.sqrt(size_of_gal) / pixel_scale
 
     # Total noise is sum in quadrature of the two components
-    background_noise = np.sqrt(sky_noise_behind_galaxy ** 2 + read_noise_behind_galaxy ** 2)
+    background_noise = np.sqrt(
+        sky_noise_behind_galaxy ** 2 + read_noise_behind_galaxy ** 2)
 
     # The galaxy's S/N is calculated from both its own Poisson noise and the background noise within its
-    # half-light aperture. This can be analytically inverted to give the expression below.
-    I = galaxy_SN * (galaxy_SN + np.sqrt(4 * background_noise ** 2 + galaxy_SN ** 2))
+    # half-light aperture. This can be analytically inverted to give the
+    # expression below.
+    I = galaxy_SN * \
+        (galaxy_SN + np.sqrt(4 * background_noise ** 2 + galaxy_SN ** 2))
 
     return I

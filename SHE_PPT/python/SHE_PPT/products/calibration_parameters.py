@@ -19,12 +19,14 @@
 # details.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
 
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import EuclidDmBindings.she.she_stub as she_dpd # FIXME
 
 import pickle
+
 
 def init():
     """
@@ -57,35 +59,46 @@ def init():
 
     binding_class.has_files = True
 
+
 def __set_BFD_filename(self, filename):
     self.Data.BFDCalibrationParameters.DataContainer.FileName = filename
+
 
 def __get_BFD_filename(self):
     return self.Data.BFDCalibrationParameters.DataContainer.FileName
 
+
 def __set_KSB_filename(self, filename):
     self.Data.KSBCalibrationParameters.DataContainer.FileName = filename
+
 
 def __get_KSB_filename(self):
     return self.Data.KSBCalibrationParameters.DataContainer.FileName
 
+
 def __set_LensMC_filename(self, filename):
     self.Data.LensMCCalibrationParameters.DataContainer.FileName = filename
+
 
 def __get_LensMC_filename(self):
     return self.Data.LensMCCalibrationParameters.DataContainer.FileName
 
+
 def __set_MomentsML_filename(self, filename):
     self.Data.MomentsMLCalibrationParameters.DataContainer.FileName = filename
+
 
 def __get_MomentsML_filename(self):
     return self.Data.MomentsMLCalibrationParameters.DataContainer.FileName
 
+
 def __set_REGAUSS_filename(self, filename):
     self.Data.REGAUSSCalibrationParameters.DataContainer.FileName = filename
 
+
 def __get_REGAUSS_filename(self):
     return self.Data.REGAUSSCalibrationParameters.DataContainer.FileName
+
 
 def __get_all_filenames(self):
 
@@ -96,6 +109,7 @@ def __get_all_filenames(self):
                      self.get_REGAUSS_filename(), ]
 
     return all_filenames
+
 
 def __get_method_filename(self, method):
 
@@ -114,13 +128,17 @@ def __get_method_filename(self, method):
 
 
 class DpdSheCalibrationParametersProduct:  # @FIXME
+
     def __init__(self):
         self.Header = None
         self.Data = None
+
     def validateBinding(self):
         return False
 
+
 class SheCalibrationParametersProduct:  # @FIXME
+
     def __init__(self):
         self.BFDCalibrationParameters = None
         self.KSBCalibrationParameters = None
@@ -128,54 +146,69 @@ class SheCalibrationParametersProduct:  # @FIXME
         self.MomentsMLCalibrationParameters = None
         self.REGAUSSCalibrationParameters = None
 
+
 class DataContainer:  # @FIXME
+
     def __init__(self):
         self.FileName = None
         self.filestatus = None
 
+
 class SheBFDCalibrationParametersProduct:  # @FIXME
+
     def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
+
 
 class SheKSBCalibrationParametersProduct:  # @FIXME
+
     def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
+
 
 class SheLensMCCalibrationParametersProduct:  # @FIXME
+
     def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
+
 
 class SheMomentsMLCalibrationParametersProduct:  # @FIXME
+
     def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
+
 
 class SheREGAUSSCalibrationParametersProduct:  # @FIXME
+
     def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
 
-def create_dpd_she_calibration_parameters(BFD_filename = None,
-                                          KSB_filename = None,
-                                          LensMC_filename = None,
-                                          MomentsML_filename = None,
-                                          REGAUSS_filename = None):
+
+def create_dpd_she_calibration_parameters(BFD_filename=None,
+                                          KSB_filename=None,
+                                          LensMC_filename=None,
+                                          MomentsML_filename=None,
+                                          REGAUSS_filename=None):
     """
         @TODO fill in docstring
     """
 
-    # dpd_calibration_parameters = she_dpd.DpdSheCalibrationParameters() # @FIXME
+    # dpd_calibration_parameters = she_dpd.DpdSheCalibrationParameters() #
+    # @FIXME
     dpd_calibration_parameters = DpdSheCalibrationParametersProduct()
 
-    # dpd_calibration_parameters.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
+    # dpd_calibration_parameters.Header =
+    # HeaderProvider.createGenericHeader("SHE") # FIXME
     dpd_calibration_parameters.Header = "SHE"
 
     dpd_calibration_parameters.Data = create_she_calibration_parameters(BFD_filename,
@@ -189,11 +222,12 @@ def create_dpd_she_calibration_parameters(BFD_filename = None,
 # Add a useful alias
 create_calibration_parameters_product = create_dpd_she_calibration_parameters
 
-def create_she_calibration_parameters(BFD_filename = None,
-                                      KSB_filename = None,
-                                      LensMC_filename = None,
-                                      MomentsML_filename = None,
-                                      REGAUSS_filename = None):
+
+def create_she_calibration_parameters(BFD_filename=None,
+                                      KSB_filename=None,
+                                      LensMC_filename=None,
+                                      MomentsML_filename=None,
+                                      REGAUSS_filename=None):
     """
         @TODO fill in docstring
     """
@@ -201,24 +235,31 @@ def create_she_calibration_parameters(BFD_filename = None,
     # calibration_parameters = she_dpd.SheCalibrationParameters() # @FIXME
     calibration_parameters = SheCalibrationParametersProduct()
 
-    calibration_parameters.BFDCalibrationParameters = create_she_BFD_calibration_parameters(BFD_filename)
+    calibration_parameters.BFDCalibrationParameters = create_she_BFD_calibration_parameters(
+        BFD_filename)
 
-    calibration_parameters.KSBCalibrationParameters = create_she_KSB_calibration_parameters(KSB_filename)
+    calibration_parameters.KSBCalibrationParameters = create_she_KSB_calibration_parameters(
+        KSB_filename)
 
-    calibration_parameters.LensMCCalibrationParameters = create_she_LensMC_calibration_parameters(LensMC_filename)
+    calibration_parameters.LensMCCalibrationParameters = create_she_LensMC_calibration_parameters(
+        LensMC_filename)
 
-    calibration_parameters.MomentsMLCalibrationParameters = create_she_MomentsML_calibration_parameters(MomentsML_filename)
+    calibration_parameters.MomentsMLCalibrationParameters = create_she_MomentsML_calibration_parameters(
+        MomentsML_filename)
 
-    calibration_parameters.REGAUSSCalibrationParameters = create_she_REGAUSS_calibration_parameters(REGAUSS_filename)
+    calibration_parameters.REGAUSSCalibrationParameters = create_she_REGAUSS_calibration_parameters(
+        REGAUSS_filename)
 
     return calibration_parameters
+
 
 def create_she_BFD_calibration_parameters(filename):
     """
         @TODO fill in docstring
     """
 
-    # BFD_calibration_parameters = she_dpd.SheBFDCalibrationParameters() # @FIXME
+    # BFD_calibration_parameters = she_dpd.SheBFDCalibrationParameters() #
+    # @FIXME
     BFD_calibration_parameters = SheBFDCalibrationParametersProduct()
 
     BFD_calibration_parameters.format = "UNDEFINED"
@@ -230,12 +271,14 @@ def create_she_BFD_calibration_parameters(filename):
 
     return BFD_calibration_parameters
 
+
 def create_she_KSB_calibration_parameters(filename):
     """
         @TODO fill in docstring
     """
 
-    # KSB_calibration_parameters = she_dpd.SheKSBCalibrationParameters() # @FIXME
+    # KSB_calibration_parameters = she_dpd.SheKSBCalibrationParameters() #
+    # @FIXME
     KSB_calibration_parameters = SheKSBCalibrationParametersProduct()
 
     KSB_calibration_parameters.format = "UNDEFINED"
@@ -247,12 +290,14 @@ def create_she_KSB_calibration_parameters(filename):
 
     return KSB_calibration_parameters
 
+
 def create_she_LensMC_calibration_parameters(filename):
     """
         @TODO fill in docstring
     """
 
-    # LensMC_calibration_parameters = she_dpd.SheLensMCCalibrationParameters() # @FIXME
+    # LensMC_calibration_parameters = she_dpd.SheLensMCCalibrationParameters()
+    # # @FIXME
     LensMC_calibration_parameters = SheLensMCCalibrationParametersProduct()
 
     LensMC_calibration_parameters.format = "UNDEFINED"
@@ -264,12 +309,14 @@ def create_she_LensMC_calibration_parameters(filename):
 
     return LensMC_calibration_parameters
 
+
 def create_she_MomentsML_calibration_parameters(filename):
     """
         @TODO fill in docstring
     """
 
-    # MomentsML_calibration_parameters = she_dpd.SheMomentsMLCalibrationParameters() # @FIXME
+    # MomentsML_calibration_parameters =
+    # she_dpd.SheMomentsMLCalibrationParameters() # @FIXME
     MomentsML_calibration_parameters = SheMomentsMLCalibrationParametersProduct()
 
     MomentsML_calibration_parameters.format = "UNDEFINED"
@@ -281,12 +328,14 @@ def create_she_MomentsML_calibration_parameters(filename):
 
     return MomentsML_calibration_parameters
 
+
 def create_she_REGAUSS_calibration_parameters(filename):
     """
         @TODO fill in docstring
     """
 
-    # REGAUSS_calibration_parameters = she_dpd.SheREGAUSSCalibrationParameters() # @FIXME
+    # REGAUSS_calibration_parameters =
+    # she_dpd.SheREGAUSSCalibrationParameters() # @FIXME
     REGAUSS_calibration_parameters = SheREGAUSSCalibrationParametersProduct()
 
     REGAUSS_calibration_parameters.format = "UNDEFINED"

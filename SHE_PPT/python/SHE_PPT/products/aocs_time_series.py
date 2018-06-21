@@ -20,13 +20,15 @@
 # details.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
 
 
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import EuclidDmBindings.she.she_stub as she_dpd # FIXME
 
 import pickle
+
 
 def init():
     """
@@ -42,22 +44,29 @@ def init():
 
     return
 
+
 def __get_all_filenames(self):
 
     all_filenames = []
 
     return all_filenames
 
+
 class DpdSheAocsTimeSeriesProduct:  # @FIXME
+
     def __init__(self):
         self.Header = None
         self.Data = None
+
     def validateBinding(self):
         return False
 
+
 class SheAocsTimeSeriesProduct:  # @FIXME
+
     def __init__(self):
         pass
+
 
 def create_dpd_she_aocs_time_series():
     """
@@ -67,7 +76,8 @@ def create_dpd_she_aocs_time_series():
     # dpd_she_aocs_time_series = she_dpd.DpdSheAocsTimeSeriesProduct() # @FIXME
     dpd_she_aocs_time_series = DpdSheAocsTimeSeriesProduct()
 
-    # dpd_she_aocs_time_series.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
+    # dpd_she_aocs_time_series.Header =
+    # HeaderProvider.createGenericHeader("SHE") # FIXME
     dpd_she_aocs_time_series.Header = "SHE"
 
     dpd_she_aocs_time_series.Data = create_she_aocs_time_series()
@@ -76,6 +86,7 @@ def create_dpd_she_aocs_time_series():
 
 # Add a useful alias
 create_aocs_time_series_product = create_dpd_she_aocs_time_series
+
 
 def create_she_aocs_time_series():
     """

@@ -16,7 +16,8 @@
 # details.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
 
 from collections import OrderedDict
 
@@ -29,6 +30,7 @@ from astropy.table import Table
 
 
 logger = getLogger(mv.logger_name)
+
 
 class DetectionsTableMeta(object):
     """
@@ -61,18 +63,22 @@ class DetectionsTableMeta(object):
         self.comments = OrderedDict(((self.version, None),
                                      (self.format, None),
                                      (self.extname, "#." + mv.detections_tag),
-                                     (self.subtracted_sky_level, "ADU/arcsec**2"),
-                                     (self.unsubtracted_sky_level, "ADU/arcsec**2"),
+                                     (self.subtracted_sky_level,
+                                      "ADU/arcsec**2"),
+                                     (self.unsubtracted_sky_level,
+                                      "ADU/arcsec**2"),
                                      (self.read_noise, "e-/pixel"),
                                      (self.gain, "e-/ADU"),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
-                                     (self.obs_time, "Mean of all stacked exposures."),
-                                   ))
+                                     (self.obs_time,
+                                      "Mean of all stacked exposures."),
+                                     ))
 
         # A list of columns in the desired order
         self.all = list(self.comments.keys())
+
 
 class DetectionsTableFormat(object):
     """
@@ -101,8 +107,8 @@ class DetectionsTableFormat(object):
         self.fits_dtypes = OrderedDict()
         self.lengths = OrderedDict()
 
-        def set_column_properties(name, is_optional = False, comment = None, dtype = ">f4", fits_dtype = "E",
-                                   length = 1):
+        def set_column_properties(name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
+                                  length=1):
 
             assert name not in self.is_optional
 
@@ -116,59 +122,101 @@ class DetectionsTableFormat(object):
 
         # Column names and info
 
-        self.ID = set_column_properties("SOURCE_ID", dtype = ">i8", fits_dtype = "K")
-        self.number = set_column_properties("NUMBER", is_optional = True, dtype = ">i8", fits_dtype = "K")
+        self.ID = set_column_properties(
+            "SOURCE_ID", dtype=">i8", fits_dtype="K")
+        self.number = set_column_properties(
+            "NUMBER", is_optional=True, dtype=">i8", fits_dtype="K")
 
-        self.gal_x = set_column_properties("X_IMAGE", is_optional = True, comment = "pixel")
-        self.gal_y = set_column_properties("Y_IMAGE", is_optional = True, comment = "pixel")
-        self.gal_a = set_column_properties("A_IMAGE", is_optional = True, comment = "pixel")
-        self.gal_b = set_column_properties("B_IMAGE", is_optional = True, comment = "pixel")
-        self.gal_theta = set_column_properties("THETA_IMAGE", is_optional = True, comment = "deg")
+        self.gal_x = set_column_properties(
+            "X_IMAGE", is_optional=True, comment="pixel")
+        self.gal_y = set_column_properties(
+            "Y_IMAGE", is_optional=True, comment="pixel")
+        self.gal_a = set_column_properties(
+            "A_IMAGE", is_optional=True, comment="pixel")
+        self.gal_b = set_column_properties(
+            "B_IMAGE", is_optional=True, comment="pixel")
+        self.gal_theta = set_column_properties(
+            "THETA_IMAGE", is_optional=True, comment="deg")
 
-        self.gal_x2_err = set_column_properties("ERRX2_IMAGE", is_optional = True, comment = "pixel**2")
-        self.gal_y2_err = set_column_properties("ERRY2_IMAGE", is_optional = True, comment = "pixel**2")
-        self.gal_a_err = set_column_properties("ERRA_IMAGE", is_optional = True, comment = "pixel")
-        self.gal_b_err = set_column_properties("ERRB_IMAGE", is_optional = True, comment = "pixel")
-        self.gal_theta_err = set_column_properties("ERRTHETA_IMAGE", is_optional = True, comment = "deg")
+        self.gal_x2_err = set_column_properties(
+            "ERRX2_IMAGE", is_optional=True, comment="pixel**2")
+        self.gal_y2_err = set_column_properties(
+            "ERRY2_IMAGE", is_optional=True, comment="pixel**2")
+        self.gal_a_err = set_column_properties(
+            "ERRA_IMAGE", is_optional=True, comment="pixel")
+        self.gal_b_err = set_column_properties(
+            "ERRB_IMAGE", is_optional=True, comment="pixel")
+        self.gal_theta_err = set_column_properties(
+            "ERRTHETA_IMAGE", is_optional=True, comment="deg")
 
-        self.gal_x_world = set_column_properties("X_WORLD", is_optional = False, comment = "deg")
-        self.gal_y_world = set_column_properties("Y_WORLD", is_optional = False, comment = "deg")
-        self.gal_a_world = set_column_properties("A_WORLD", is_optional = True, comment = "deg")
-        self.gal_b_world = set_column_properties("B_WORLD", is_optional = True, comment = "deg")
-        self.gal_theta_world = set_column_properties("THETA_WORLD", is_optional = True, comment = "deg")
+        self.gal_x_world = set_column_properties(
+            "X_WORLD", is_optional=False, comment="deg")
+        self.gal_y_world = set_column_properties(
+            "Y_WORLD", is_optional=False, comment="deg")
+        self.gal_a_world = set_column_properties(
+            "A_WORLD", is_optional=True, comment="deg")
+        self.gal_b_world = set_column_properties(
+            "B_WORLD", is_optional=True, comment="deg")
+        self.gal_theta_world = set_column_properties(
+            "THETA_WORLD", is_optional=True, comment="deg")
 
-        self.gal_x2_world_err = set_column_properties("ERRX2_WORLD", is_optional = True, comment = "deg**2")
-        self.gal_y2_world_err = set_column_properties("ERRY2_WORLD", is_optional = True, comment = "deg**2")
-        self.gal_a_world_err = set_column_properties("ERRA_WORLD", is_optional = True, comment = "deg")
-        self.gal_b_world_err = set_column_properties("ERRB_WORLD", is_optional = True, comment = "deg")
-        self.gal_theta_world_err = set_column_properties("ERRTHETA_WORLD", is_optional = True, comment = "deg")
+        self.gal_x2_world_err = set_column_properties(
+            "ERRX2_WORLD", is_optional=True, comment="deg**2")
+        self.gal_y2_world_err = set_column_properties(
+            "ERRY2_WORLD", is_optional=True, comment="deg**2")
+        self.gal_a_world_err = set_column_properties(
+            "ERRA_WORLD", is_optional=True, comment="deg")
+        self.gal_b_world_err = set_column_properties(
+            "ERRB_WORLD", is_optional=True, comment="deg")
+        self.gal_theta_world_err = set_column_properties(
+            "ERRTHETA_WORLD", is_optional=True, comment="deg")
 
-        self.gal_xwin_world = set_column_properties("XWIN_WORLD", is_optional = True, comment = "deg")
-        self.gal_ywin_world = set_column_properties("YWIN_WORLD", is_optional = True, comment = "deg")
-        self.gal_awin_world = set_column_properties("AWIN_WORLD", is_optional = True, comment = "deg")
-        self.gal_bwin_world = set_column_properties("BWIN_WORLD", is_optional = True, comment = "deg")
-        self.gal_thetawin_world = set_column_properties("THETAWIN_WORLD", is_optional = True, comment = "deg")
+        self.gal_xwin_world = set_column_properties(
+            "XWIN_WORLD", is_optional=True, comment="deg")
+        self.gal_ywin_world = set_column_properties(
+            "YWIN_WORLD", is_optional=True, comment="deg")
+        self.gal_awin_world = set_column_properties(
+            "AWIN_WORLD", is_optional=True, comment="deg")
+        self.gal_bwin_world = set_column_properties(
+            "BWIN_WORLD", is_optional=True, comment="deg")
+        self.gal_thetawin_world = set_column_properties(
+            "THETAWIN_WORLD", is_optional=True, comment="deg")
 
-        self.gal_x2win_world_err = set_column_properties("ERRX2WIN_WORLD", is_optional = True, comment = "deg**2")
-        self.gal_y2win_world_err = set_column_properties("ERRY2WIN_WORLD", is_optional = True, comment = "deg**2")
-        self.gal_awin_world_err = set_column_properties("ERRAWIN_WORLD", is_optional = True, comment = "deg")
-        self.gal_bwin_world_err = set_column_properties("ERRBWIN_WORLD", is_optional = True, comment = "deg")
-        self.gal_thetawin_world_err = set_column_properties("ERRTHETAWIN_WORLD", is_optional = True, comment = "deg")
+        self.gal_x2win_world_err = set_column_properties(
+            "ERRX2WIN_WORLD", is_optional=True, comment="deg**2")
+        self.gal_y2win_world_err = set_column_properties(
+            "ERRY2WIN_WORLD", is_optional=True, comment="deg**2")
+        self.gal_awin_world_err = set_column_properties(
+            "ERRAWIN_WORLD", is_optional=True, comment="deg")
+        self.gal_bwin_world_err = set_column_properties(
+            "ERRBWIN_WORLD", is_optional=True, comment="deg")
+        self.gal_thetawin_world_err = set_column_properties(
+            "ERRTHETAWIN_WORLD", is_optional=True, comment="deg")
 
-        self.gal_alpha = set_column_properties("ALPHA_J2000", is_optional = True, comment = "deg")
-        self.gal_delta = set_column_properties("DELTA_J2000", is_optional = True, comment = "deg")
-        self.gal_theta = set_column_properties("THETA_J2000", is_optional = True, comment = "deg")
-        self.gal_theta_err = set_column_properties("ERRTHETA_J2000", is_optional = True, comment = "deg")
+        self.gal_alpha = set_column_properties(
+            "ALPHA_J2000", is_optional=True, comment="deg")
+        self.gal_delta = set_column_properties(
+            "DELTA_J2000", is_optional=True, comment="deg")
+        self.gal_theta = set_column_properties(
+            "THETA_J2000", is_optional=True, comment="deg")
+        self.gal_theta_err = set_column_properties(
+            "ERRTHETA_J2000", is_optional=True, comment="deg")
 
-        self.gal_flux = set_column_properties("FLUX_AUTO", is_optional = True, comment = "deg")
-        self.gal_flux_err = set_column_properties("FLUXERR_AUTO", is_optional = True, comment = "deg")
+        self.gal_flux = set_column_properties(
+            "FLUX_AUTO", is_optional=True, comment="deg")
+        self.gal_flux_err = set_column_properties(
+            "FLUXERR_AUTO", is_optional=True, comment="deg")
 
-        self.gal_mag = set_column_properties("MAG_AUTO", is_optional = True, comment = "VIS")
-        self.gal_mag_err = set_column_properties("MAGERR_AUTO", is_optional = True, comment = "VIS")
+        self.gal_mag = set_column_properties(
+            "MAG_AUTO", is_optional=True, comment="VIS")
+        self.gal_mag_err = set_column_properties(
+            "MAGERR_AUTO", is_optional=True, comment="VIS")
 
-        self.gal_hlr = set_column_properties("FLUX_RADIUS", is_optional = True, comment = "pixel")
+        self.gal_hlr = set_column_properties(
+            "FLUX_RADIUS", is_optional=True, comment="pixel")
 
-        self.gal_flags = set_column_properties("FLAGS", is_optional = True, dtype = ">i8", fits_dtype = "K")
+        self.gal_flags = set_column_properties(
+            "FLAGS", is_optional=True, dtype=">i8", fits_dtype="K")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -186,17 +234,17 @@ detections_table_format = DetectionsTableFormat()
 tf = detections_table_format
 
 
-def make_detections_table_header(detector_x = 1,
-                                 detector_y = 1,
-                                 subtracted_sky_level = None,
-                                 unsubtracted_sky_level = None,
-                                 read_noise = None,
-                                 gain = None,
-                                 model_hash = None,
-                                 model_seed = None,
-                                 noise_seed = None,
-                                 obs_time = None,
-                                 detector = None):
+def make_detections_table_header(detector_x=1,
+                                 detector_y=1,
+                                 subtracted_sky_level=None,
+                                 unsubtracted_sky_level=None,
+                                 read_noise=None,
+                                 gain=None,
+                                 model_hash=None,
+                                 model_seed=None,
+                                 noise_seed=None,
+                                 obs_time=None,
+                                 detector=None):
     """
         @brief Generate a header for a detections table.
 
@@ -222,7 +270,8 @@ def make_detections_table_header(detector_x = 1,
     """
 
     if detector is not None:
-        logger.warn("'detector' argument for make_*_table_header is deprecated: Use detector_x and detector_y instead.")
+        logger.warn(
+            "'detector' argument for make_*_table_header is deprecated: Use detector_x and detector_y instead.")
         detector_x = detector % 6
         detector_y = detector // 6
 
@@ -231,7 +280,8 @@ def make_detections_table_header(detector_x = 1,
     header[tf.m.version] = tf.__version__
     header[tf.m.format] = tf.m.table_format
 
-    header[tf.m.extname] = dtc.get_id_string(detector_x, detector_y) + "." + mv.detections_tag
+    header[tf.m.extname] = dtc.get_id_string(
+        detector_x, detector_y) + "." + mv.detections_tag
 
     header[tf.m.subtracted_sky_level] = subtracted_sky_level
     header[tf.m.unsubtracted_sky_level] = unsubtracted_sky_level
@@ -246,20 +296,21 @@ def make_detections_table_header(detector_x = 1,
 
     return header
 
-def initialise_detections_table(image = None,
-                                options = None,
-                                optional_columns = None,
-                                detector_x = 1,
-                                detector_y = 1,
-                                subtracted_sky_level = None,
-                                unsubtracted_sky_level = None,
-                                read_noise = None,
-                                gain = None,
-                                model_hash = None,
-                                model_seed = None,
-                                noise_seed = None,
-                                obs_time = None,
-                                detector = None):
+
+def initialise_detections_table(image=None,
+                                options=None,
+                                optional_columns=None,
+                                detector_x=1,
+                                detector_y=1,
+                                subtracted_sky_level=None,
+                                unsubtracted_sky_level=None,
+                                read_noise=None,
+                                gain=None,
+                                model_hash=None,
+                                model_seed=None,
+                                noise_seed=None,
+                                obs_time=None,
+                                detector=None):
     """
         @brief Initialise a detections table.
 
@@ -297,21 +348,24 @@ def initialise_detections_table(image = None,
             init_cols.append([])
             dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
 
-    detections_table = Table(init_cols, names = names,
-                             dtype = dtypes)
+    detections_table = Table(init_cols, names=names,
+                             dtype=dtypes)
 
     if image is not None:
 
         # Get values from the image object, unless they were passed explicitly
 
         if detector_x or detector_y is None:
-            detector_x, detector_y = dtc.detector_int_to_xy(image.get_local_ID())
+            detector_x, detector_y = dtc.detector_int_to_xy(
+                image.get_local_ID())
 
         if subtracted_sky_level is None:
-            subtracted_sky_level = image.get_param_value('subtracted_background')
+            subtracted_sky_level = image.get_param_value(
+                'subtracted_background')
 
         if unsubtracted_sky_level is None:
-            unsubtracted_sky_level = image.get_param_value('unsubtracted_background')
+            unsubtracted_sky_level = image.get_param_value(
+                'unsubtracted_background')
 
         if model_seed is None:
             model_seed = image.get_full_seed()
@@ -330,20 +384,20 @@ def initialise_detections_table(image = None,
         if gain is None:
             gain = options['gain']
         if model_hash is None:
-            model_hash = hash_any(options.items(), format = "base64")
+            model_hash = hash_any(options.items(), format="base64")
         if noise_seed is None:
             noise_seed = options['noise_seed']
 
-    detections_table.meta = make_detections_table_header(detector_x = detector_x,
-                                                         detector_y = detector_y,
-                                                         subtracted_sky_level = subtracted_sky_level,
-                                                         unsubtracted_sky_level = unsubtracted_sky_level,
-                                                         read_noise = read_noise,
-                                                         gain = gain,
-                                                         model_hash = model_hash,
-                                                         model_seed = model_seed,
-                                                         noise_seed = noise_seed,
-                                                         obs_time = obs_time)
+    detections_table.meta = make_detections_table_header(detector_x=detector_x,
+                                                         detector_y=detector_y,
+                                                         subtracted_sky_level=subtracted_sky_level,
+                                                         unsubtracted_sky_level=unsubtracted_sky_level,
+                                                         read_noise=read_noise,
+                                                         gain=gain,
+                                                         model_hash=model_hash,
+                                                         model_seed=model_seed,
+                                                         noise_seed=noise_seed,
+                                                         obs_time=obs_time)
 
     assert(is_in_format(detections_table, tf))
 

@@ -16,7 +16,8 @@
 # details.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
 
 from collections import OrderedDict
 
@@ -41,10 +42,11 @@ class GalaxyPopulationTableMeta(object):
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
                                      (self.format, None),
-                                   ))
+                                     ))
 
         # A list of columns in the desired order
         self.all = list(self.comments.keys())
+
 
 class GalaxyPopulationTableFormat(object):
     """
@@ -73,8 +75,8 @@ class GalaxyPopulationTableFormat(object):
         self.fits_dtypes = OrderedDict()
         self.lengths = OrderedDict()
 
-        def set_column_properties(name, is_optional = False, comment = None, dtype = ">f4", fits_dtype = "E",
-                                   length = 1):
+        def set_column_properties(name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
+                                  length=1):
 
             assert name not in self.is_optional
 
@@ -88,10 +90,10 @@ class GalaxyPopulationTableFormat(object):
 
         # Column names and info
 
-        self.ID = set_column_properties("ID", dtype = ">i8", fits_dtype = "K")
+        self.ID = set_column_properties("ID", dtype=">i8", fits_dtype="K")
 
-        self.ra = set_column_properties("RA", comment = "deg")
-        self.dec = set_column_properties("DEC", comment = "deg")
+        self.ra = set_column_properties("RA", comment="deg")
+        self.dec = set_column_properties("DEC", comment="deg")
 
         self.zp = set_column_properties("Z_PHOT")
         self.zs = set_column_properties("Z_SPEC")
@@ -105,47 +107,75 @@ class GalaxyPopulationTableFormat(object):
         self.two_component_dof = set_column_properties("DOF_1C")
         self.two_component_dof = set_column_properties("DOF_2C")
 
-        self.bulge_hlr = set_column_properties("HLR_BULGE", comment = "arcsec")
-        self.disk_length = set_column_properties("RS_DISK", comment = "arcsec")
+        self.bulge_hlr = set_column_properties("HLR_BULGE", comment="arcsec")
+        self.disk_length = set_column_properties("RS_DISK", comment="arcsec")
 
-        self.x = set_column_properties("X_IMAGE", comment = "pixel")
-        self.y = set_column_properties("Y_IMAGE", comment = "pixel")
+        self.x = set_column_properties("X_IMAGE", comment="pixel")
+        self.y = set_column_properties("Y_IMAGE", comment="pixel")
 
-        self.tilt = set_column_properties("INC_ANGLE", comment = "radians")
-        self.rotation = set_column_properties("POS_ANGLE", comment = "radians")
+        self.tilt = set_column_properties("INC_ANGLE", comment="radians")
+        self.rotation = set_column_properties("POS_ANGLE", comment="radians")
 
-        self.e1 = set_column_properties("E1", is_optional = True)
-        self.e2 = set_column_properties("E2", is_optional = True)
+        self.e1 = set_column_properties("E1", is_optional=True)
+        self.e2 = set_column_properties("E2", is_optional=True)
 
-        self.bulge_fd_B = set_column_properties("BULGE_FLUXDENS_B", comment = "nJy")
-        self.bulge_fd_B_err = set_column_properties("BULGE_FLUXDENS_B_ERR", comment = "nJy")
-        self.bulge_fd_V = set_column_properties("BULGE_FLUXDENS_V", comment = "nJy")
-        self.bulge_fd_V_err = set_column_properties("BULGE_FLUXDENS_V_ERR", comment = "nJy")
-        self.bulge_fd_I = set_column_properties("BULGE_FLUXDENS_I", comment = "nJy")
-        self.bulge_fd_I_err = set_column_properties("BULGE_FLUXDENS_I_ERR", comment = "nJy")
-        self.bulge_fd_Z = set_column_properties("BULGE_FLUXDENS_Z", comment = "nJy")
-        self.bulge_fd_Z_err = set_column_properties("BULGE_FLUXDENS_Z_ERR", comment = "nJy")
-        self.bulge_fd_Y = set_column_properties("BULGE_FLUXDENS_Y", comment = "nJy")
-        self.bulge_fd_Y_err = set_column_properties("BULGE_FLUXDENS_Y_ERR", comment = "nJy")
-        self.bulge_fd_J = set_column_properties("BULGE_FLUXDENS_J", comment = "nJy")
-        self.bulge_fd_J_err = set_column_properties("BULGE_FLUXDENS_J_ERR", comment = "nJy")
-        self.bulge_fd_H = set_column_properties("BULGE_FLUXDENS_H", comment = "nJy")
-        self.bulge_fd_H_err = set_column_properties("BULGE_FLUXDENS_H_ERR", comment = "nJy")
+        self.bulge_fd_B = set_column_properties(
+            "BULGE_FLUXDENS_B", comment="nJy")
+        self.bulge_fd_B_err = set_column_properties(
+            "BULGE_FLUXDENS_B_ERR", comment="nJy")
+        self.bulge_fd_V = set_column_properties(
+            "BULGE_FLUXDENS_V", comment="nJy")
+        self.bulge_fd_V_err = set_column_properties(
+            "BULGE_FLUXDENS_V_ERR", comment="nJy")
+        self.bulge_fd_I = set_column_properties(
+            "BULGE_FLUXDENS_I", comment="nJy")
+        self.bulge_fd_I_err = set_column_properties(
+            "BULGE_FLUXDENS_I_ERR", comment="nJy")
+        self.bulge_fd_Z = set_column_properties(
+            "BULGE_FLUXDENS_Z", comment="nJy")
+        self.bulge_fd_Z_err = set_column_properties(
+            "BULGE_FLUXDENS_Z_ERR", comment="nJy")
+        self.bulge_fd_Y = set_column_properties(
+            "BULGE_FLUXDENS_Y", comment="nJy")
+        self.bulge_fd_Y_err = set_column_properties(
+            "BULGE_FLUXDENS_Y_ERR", comment="nJy")
+        self.bulge_fd_J = set_column_properties(
+            "BULGE_FLUXDENS_J", comment="nJy")
+        self.bulge_fd_J_err = set_column_properties(
+            "BULGE_FLUXDENS_J_ERR", comment="nJy")
+        self.bulge_fd_H = set_column_properties(
+            "BULGE_FLUXDENS_H", comment="nJy")
+        self.bulge_fd_H_err = set_column_properties(
+            "BULGE_FLUXDENS_H_ERR", comment="nJy")
 
-        self.disk_fd_B = set_column_properties("DISK_FLUXDENS_B", comment = "nJy")
-        self.disk_fd_B_err = set_column_properties("DISK_FLUXDENS_B_ERR", comment = "nJy")
-        self.disk_fd_V = set_column_properties("DISK_FLUXDENS_V", comment = "nJy")
-        self.disk_fd_V_err = set_column_properties("DISK_FLUXDENS_V_ERR", comment = "nJy")
-        self.disk_fd_I = set_column_properties("DISK_FLUXDENS_I", comment = "nJy")
-        self.disk_fd_I_err = set_column_properties("DISK_FLUXDENS_I_ERR", comment = "nJy")
-        self.disk_fd_Z = set_column_properties("DISK_FLUXDENS_Z", comment = "nJy")
-        self.disk_fd_Z_err = set_column_properties("DISK_FLUXDENS_Z_ERR", comment = "nJy")
-        self.disk_fd_Y = set_column_properties("DISK_FLUXDENS_Y", comment = "nJy")
-        self.disk_fd_Y_err = set_column_properties("DISK_FLUXDENS_Y_ERR", comment = "nJy")
-        self.disk_fd_J = set_column_properties("DISK_FLUXDENS_J", comment = "nJy")
-        self.disk_fd_J_err = set_column_properties("DISK_FLUXDENS_J_ERR", comment = "nJy")
-        self.disk_fd_H = set_column_properties("DISK_FLUXDENS_H", comment = "nJy")
-        self.disk_fd_H_err = set_column_properties("DISK_FLUXDENS_H_ERR", comment = "nJy")
+        self.disk_fd_B = set_column_properties(
+            "DISK_FLUXDENS_B", comment="nJy")
+        self.disk_fd_B_err = set_column_properties(
+            "DISK_FLUXDENS_B_ERR", comment="nJy")
+        self.disk_fd_V = set_column_properties(
+            "DISK_FLUXDENS_V", comment="nJy")
+        self.disk_fd_V_err = set_column_properties(
+            "DISK_FLUXDENS_V_ERR", comment="nJy")
+        self.disk_fd_I = set_column_properties(
+            "DISK_FLUXDENS_I", comment="nJy")
+        self.disk_fd_I_err = set_column_properties(
+            "DISK_FLUXDENS_I_ERR", comment="nJy")
+        self.disk_fd_Z = set_column_properties(
+            "DISK_FLUXDENS_Z", comment="nJy")
+        self.disk_fd_Z_err = set_column_properties(
+            "DISK_FLUXDENS_Z_ERR", comment="nJy")
+        self.disk_fd_Y = set_column_properties(
+            "DISK_FLUXDENS_Y", comment="nJy")
+        self.disk_fd_Y_err = set_column_properties(
+            "DISK_FLUXDENS_Y_ERR", comment="nJy")
+        self.disk_fd_J = set_column_properties(
+            "DISK_FLUXDENS_J", comment="nJy")
+        self.disk_fd_J_err = set_column_properties(
+            "DISK_FLUXDENS_J_ERR", comment="nJy")
+        self.disk_fd_H = set_column_properties(
+            "DISK_FLUXDENS_H", comment="nJy")
+        self.disk_fd_H_err = set_column_properties(
+            "DISK_FLUXDENS_H_ERR", comment="nJy")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -177,7 +207,8 @@ def make_galaxy_population_table_header():
 
     return header
 
-def initialise_galaxy_population_table(optional_columns = None):
+
+def initialise_galaxy_population_table(optional_columns=None):
     """
         @brief Initialise a galaxy population table.
 
@@ -201,7 +232,7 @@ def initialise_galaxy_population_table(optional_columns = None):
             init_cols.append([])
             dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
 
-    galaxy_population_table = Table(init_cols, names = names, dtype = dtypes)
+    galaxy_population_table = Table(init_cols, names=names, dtype=dtypes)
 
     galaxy_population_table.meta = make_galaxy_population_table_header()
 

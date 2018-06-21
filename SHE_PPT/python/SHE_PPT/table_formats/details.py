@@ -16,7 +16,8 @@
 # details.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
 
 from collections import OrderedDict
 
@@ -28,6 +29,7 @@ from astropy.table import Table
 
 
 logger = getLogger(mv.logger_name)
+
 
 class DetailsTableMeta(object):
     """
@@ -55,17 +57,20 @@ class DetailsTableMeta(object):
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
                                      (self.format, None),
-                                     (self.subtracted_sky_level, "ADU/arcsec^2"),
-                                     (self.unsubtracted_sky_level, "ADU/arcsec^2"),
+                                     (self.subtracted_sky_level,
+                                      "ADU/arcsec^2"),
+                                     (self.unsubtracted_sky_level,
+                                      "ADU/arcsec^2"),
                                      (self.read_noise, "e-/pixel"),
                                      (self.gain, "e-/ADU"),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
-                                   ))
+                                     ))
 
         # A list of columns in the desired order
         self.all = list(self.comments.keys())
+
 
 class DetailsTableFormat(object):
     """
@@ -94,8 +99,8 @@ class DetailsTableFormat(object):
         self.fits_dtypes = OrderedDict()
         self.lengths = OrderedDict()
 
-        def set_column_properties(name, is_optional = False, comment = None, dtype = ">f4", fits_dtype = "E",
-                                   length = 1):
+        def set_column_properties(name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
+                                  length=1):
 
             assert name not in self.is_optional
 
@@ -108,31 +113,35 @@ class DetailsTableFormat(object):
             return name
 
         # Table column labels
-        self.ID = set_column_properties("ID", dtype = ">i8", fits_dtype = "K")
+        self.ID = set_column_properties("ID", dtype=">i8", fits_dtype="K")
 
-        self.ra = set_column_properties("x_world", comment = "ra (deg)")
-        self.dec = set_column_properties("y_world", comment = "dec (deg)")
+        self.ra = set_column_properties("x_world", comment="ra (deg)")
+        self.dec = set_column_properties("y_world", comment="dec (deg)")
 
-        self.hlr_bulge = set_column_properties("hlr_bulge_arcsec", comment = "arcsec")
-        self.hlr_disk = set_column_properties("hlr_disk_arcsec", comment = "arcsec")
+        self.hlr_bulge = set_column_properties(
+            "hlr_bulge_arcsec", comment="arcsec")
+        self.hlr_disk = set_column_properties(
+            "hlr_disk_arcsec", comment="arcsec")
 
         self.bulge_ellipticity = set_column_properties("bulge_ellipticity")
         self.bulge_axis_ratio = set_column_properties("bulge_axis_ratio")
         self.bulge_fraction = set_column_properties("bulge_fraction")
         self.disk_height_ratio = set_column_properties("disk_height_ratio")
-        
+
         self.z = set_column_properties("redshift")
 
-        self.magnitude = set_column_properties("magnitude", comment = "VIS")
+        self.magnitude = set_column_properties("magnitude", comment="VIS")
 
         self.sersic_index = set_column_properties("sersic_index")
 
-        self.rotation = set_column_properties("rotation", comment = "degrees")
-        self.spin = set_column_properties("spin", comment = "degrees")
-        self.tilt = set_column_properties("tilt", comment = "degrees")
+        self.rotation = set_column_properties("rotation", comment="degrees")
+        self.spin = set_column_properties("spin", comment="degrees")
+        self.tilt = set_column_properties("tilt", comment="degrees")
 
-        self.shear_magnitude = set_column_properties("shear_magnitude", dtype = ">f4", fits_dtype = "E")
-        self.shear_angle = set_column_properties("shear_angle", comment = "degrees", dtype = ">f4", fits_dtype = "E")
+        self.shear_magnitude = set_column_properties(
+            "shear_magnitude", dtype=">f4", fits_dtype="E")
+        self.shear_angle = set_column_properties(
+            "shear_angle", comment="degrees", dtype=">f4", fits_dtype="E")
 
         self.target_galaxy = set_column_properties("is_target_galaxy")
 
@@ -151,13 +160,14 @@ details_table_format = DetailsTableFormat()
 # And a convient alias for it
 tf = details_table_format
 
-def make_details_table_header(subtracted_sky_level = None,
-                              unsubtracted_sky_level = None,
-                              read_noise = None,
-                              gain = None,
-                              model_hash = None,
-                              model_seed = None,
-                              noise_seed = None):
+
+def make_details_table_header(subtracted_sky_level=None,
+                              unsubtracted_sky_level=None,
+                              read_noise=None,
+                              gain=None,
+                              model_hash=None,
+                              model_seed=None,
+                              noise_seed=None):
     """
         @brief Generate a header for a galaxy details table.
 
@@ -194,16 +204,17 @@ def make_details_table_header(subtracted_sky_level = None,
 
     return header
 
-def initialise_details_table(image_group_phl = None,
-                             options = None,
-                             optional_columns = None,
-                             subtracted_sky_level = None,
-                             unsubtracted_sky_level = None,
-                             read_noise = None,
-                             gain = None,
-                             model_hash = None,
-                             model_seed = None,
-                             noise_seed = None,):
+
+def initialise_details_table(image_group_phl=None,
+                             options=None,
+                             optional_columns=None,
+                             subtracted_sky_level=None,
+                             unsubtracted_sky_level=None,
+                             read_noise=None,
+                             gain=None,
+                             model_hash=None,
+                             model_seed=None,
+                             noise_seed=None,):
     """
         @brief Initialise a detections table.
 
@@ -236,18 +247,21 @@ def initialise_details_table(image_group_phl = None,
             init_cols.append([])
             dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
 
-    details_table = Table(init_cols, names = names,
-                          dtype = dtypes)
+    details_table = Table(init_cols, names=names,
+                          dtype=dtypes)
 
     if image_group_phl is not None:
 
-        # Get values from the image group object, unless they were passed explicitly
+        # Get values from the image group object, unless they were passed
+        # explicitly
 
         if subtracted_sky_level is None:
-            subtracted_sky_level = image_group_phl.get_param_value('subtracted_background')
+            subtracted_sky_level = image_group_phl.get_param_value(
+                'subtracted_background')
 
         if unsubtracted_sky_level is None:
-            unsubtracted_sky_level = image_group_phl.get_param_value('unsubtracted_background')
+            unsubtracted_sky_level = image_group_phl.get_param_value(
+                'unsubtracted_background')
 
         if model_seed is None:
             model_seed = image_group_phl.get_seed()
@@ -261,17 +275,17 @@ def initialise_details_table(image_group_phl = None,
         if gain is None:
             gain = options['gain']
         if model_hash is None:
-            model_hash = hash_any(options.items(), format = "base64")
+            model_hash = hash_any(options.items(), format="base64")
         if noise_seed is None:
             noise_seed = options['noise_seed']
 
-    details_table.meta = make_details_table_header(subtracted_sky_level = subtracted_sky_level,
-                                                   unsubtracted_sky_level = unsubtracted_sky_level,
-                                                   read_noise = read_noise,
-                                                   gain = gain,
-                                                   model_hash = model_hash,
-                                                   model_seed = model_seed,
-                                                   noise_seed = noise_seed,)
+    details_table.meta = make_details_table_header(subtracted_sky_level=subtracted_sky_level,
+                                                   unsubtracted_sky_level=unsubtracted_sky_level,
+                                                   read_noise=read_noise,
+                                                   gain=gain,
+                                                   model_hash=model_hash,
+                                                   model_seed=model_seed,
+                                                   noise_seed=noise_seed,)
 
     assert(is_in_format(details_table, tf))
 
