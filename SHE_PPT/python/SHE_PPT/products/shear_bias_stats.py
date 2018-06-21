@@ -245,7 +245,7 @@ def create_dpd_shear_bias_statistics(BFD_g1_statistics=None,
     return dpd_shear_bias_stats
 
 # Add a useful alias
-create_shear_estimates_product = create_dpd_shear_estimates
+create_shear_bias_statistics_product = create_dpd_shear_bias_statistics
 
 
 def create_bfd_statistics(g1_statistics, g2_statistics):
