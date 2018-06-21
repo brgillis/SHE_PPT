@@ -123,11 +123,11 @@ class LinregressResults(object):
         return stats
 
 
-def get_linregress_statistics(x, y, y_err=None):
+def get_linregress_statistics(lx, ly, ly_err=None):
     """Functional interface to get a linear regression statistics object.
     """
 
-    return LinregressStatistics(x, y, y_err=None)
+    return LinregressStatistics(lx=lx, ly=ly, ly_err=ly_err)
 
 
 def combine_linregress_statistics(lstats):
@@ -135,7 +135,7 @@ def combine_linregress_statistics(lstats):
        into the result of a regression.
     """
 
-    return LinregressResults(lstats)
+    return LinregressResults(lstats=lstats)
 
 
 def linregress_with_errors(x, y, y_err=None):
