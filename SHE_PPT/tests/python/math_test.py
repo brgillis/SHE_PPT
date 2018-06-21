@@ -95,7 +95,7 @@ class Test_math():
             slopes[i] = regress_results.slope
             intercepts[i] = regress_results.intercept
             slope_errs[i] = regress_results.slope_err
-            intercept_errs[i] = regress_results.slope_err
+            intercept_errs[i] = regress_results.intercept_err
             slope_intercept_covars[i] = regress_results.slope_intercept_covar
 
         # Get mean results
