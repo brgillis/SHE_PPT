@@ -42,8 +42,8 @@ class TestShearEstimatesProduct(object):
             x1 = np.linspace(0, n - 1, n, endpoint=True)
             x2 = np.linspace(0, n - 1, n, endpoint=True)
             y_err = 0.25 * np.ones_like(x1)
-            y1 = x1 + np.randn(n) * y_err
-            y2 = x2 + np.randn(n) * y_err
+            y1 = x1 + np.random.randn(n) * y_err
+            y2 = x2 + np.random.randn(n) * y_err
 
             stats[method] = (LinregressStatistics(x1, y1, y_err),
                              LinregressStatistics(x2, y2, y_err),)
@@ -86,8 +86,8 @@ class TestShearEstimatesProduct(object):
             x1 = np.linspace(0, n - 1, n, endpoint=True)
             x2 = np.linspace(0, n - 1, n, endpoint=True)
             y_err = 0.25 * np.ones_like(x1)
-            y1 = x1 + np.randn(n) * y_err
-            y2 = x2 + np.randn(n) * y_err
+            y1 = x1 + np.random.randn(n) * y_err
+            y2 = x2 + np.random.randn(n) * y_err
 
             stats2[method] = (LinregressStatistics(x1, y1, y_err),
                               LinregressStatistics(x2, y2, y_err),)
@@ -111,8 +111,8 @@ class TestShearEstimatesProduct(object):
             x1 = np.linspace(0, n - 1, n, endpoint=True)
             x2 = np.linspace(0, n - 1, n, endpoint=True)
             y_err = 0.25 * np.ones_like(x1)
-            y1 = x1 + np.randn(n) * y_err
-            y2 = x2 + np.randn(n) * y_err
+            y1 = x1 + np.random.randn(n) * y_err
+            y2 = x2 + np.random.randn(n) * y_err
 
             stats[method] = (LinregressStatistics(x1, y1, y_err),
                              LinregressStatistics(x2, y2, y_err),)
