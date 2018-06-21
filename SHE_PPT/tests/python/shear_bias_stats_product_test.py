@@ -146,12 +146,20 @@ class TestShearEstimatesProduct(object):
 
         # Check that the products coincide
         assert loaded_product.get_BFD_statistics()[0].ym == stats["BFD"][0].ym
+        assert loaded_product.get_BFD_statistics()[1].ym == stats["BFD"][1].ym
         assert loaded_product.get_KSB_statistics()[0].ym == stats["KSB"][0].ym
+        assert loaded_product.get_KSB_statistics()[1].ym == stats["KSB"][1].ym
         assert loaded_product.get_LensMC_statistics()[0].ym == stats[
             "LensMC"][0].ym
+        assert loaded_product.get_LensMC_statistics()[1].ym == stats[
+            "LensMC"][1].ym
         assert loaded_product.get_MomentsML_statistics()[0].ym == stats[
             "MomentsML"][0].ym
+        assert loaded_product.get_MomentsML_statistics()[1].ym == stats[
+            "MomentsML"][1].ym
         assert loaded_product.get_REGAUSS_statistics()[0].ym == stats[
             "REGAUSS"][0].ym
+        assert loaded_product.get_REGAUSS_statistics()[1].ym == stats[
+            "REGAUSS"][1].ym
 
         pass
