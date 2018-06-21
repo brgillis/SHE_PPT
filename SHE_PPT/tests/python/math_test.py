@@ -27,6 +27,7 @@ from scipy.stats import linregress
 import pytest
 
 from SHE_PPT.math import linregress_with_errors
+import numpy as np
 
 
 class Test_math():
