@@ -41,7 +41,7 @@ class LinregressStatistics(object):
             if ly_err is None:
                 ly_err = np.ones_like(self.lx)
 
-            lw = self.ly_err ** -2
+            lw = ly_err ** -2
 
             # Calculate needed statistics
             self.w = lw.sum()
