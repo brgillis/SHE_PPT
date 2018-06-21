@@ -27,7 +27,7 @@ from scipy.stats import linregress
 import pytest
 
 from SHE_PPT.math import (linregress_with_errors,
-                          LinregressStatistics, LinregressResults)
+                          get_linregress_statistics, combine_linregress_statistics,)
 import numpy as np
 
 
@@ -102,7 +102,7 @@ class Test_math():
             slope_intercept_covars[i] = regress_results.slope_intercept_covar
 
             # Also save statistics to test that that works
-            lstats.append(LinregressStatistics(x, y, y_err))
+            lstats.append(get_linregress_statistics(x, y, y_err))
 
         # Get mean results
         slope_mean = np.mean(slopes)
@@ -120,7 +120,7 @@ class Test_math():
             slope_intercept_cov, np.mean(slope_intercept_covars), decimal=2)
 
         # Now check if it works the same by compiling statistics
-        combined_results = LinregressResults(lstats)
+        combined_results = combine_linregress_statistics(lstats)
         assert_almost_equal(combined_results.slope, ex_slope, decimal=2)
         assert_almost_equal(
             combined_results.intercept, ex_intercept, decimal=2)

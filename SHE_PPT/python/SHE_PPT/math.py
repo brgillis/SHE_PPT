@@ -130,6 +130,14 @@ def get_linregress_statistics(x, y, y_err=None):
     return LinregressStatistics(x, y, y_err=None)
 
 
+def combine_linregress_statistics(lstats):
+    """Functional interface to combine linear regression statistics objects
+       into the result of a regression.
+    """
+
+    return LinregressResults(lstats)
+
+
 def linregress_with_errors(x, y, y_err=None):
     """
     @brief
