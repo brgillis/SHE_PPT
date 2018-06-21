@@ -102,19 +102,38 @@ class TestShearEstimatesProduct(object):
         prod.init()
 
         # Create the product
-        product = prod.create_dpd_shear_estimates()
+        product = prod.create_dpd_shear_bias_statistics()
 
-        # Change the fits filenames
-        b_filename = "test_file_b.fits"
-        product.set_BFD_filename(b_filename)
-        k_filename = "test_file_k.fits"
-        product.set_KSB_filename(k_filename)
-        l_filename = "test_file_l.fits"
-        product.set_LensMC_filename(l_filename)
-        m_filename = "test_file_m.fits"
-        product.set_MomentsML_filename(m_filename)
-        r_filename = "test_file_r.fits"
-        product.set_REGAUSS_filename(r_filename)
+        stats = {}
+        for method in ("BFD", "KSB", "LensMC", "MomentsML", "REGAUSS"):
+            x1 = np.linspace(0, n - 1, n, endpoint=True)
+            x2 = np.linspace(0, n - 1, n, endpoint=True)
+            y_err = 0.25 * np.ones_like(x1)
+            y1 = x1 + np.randn(n) * y_err
+            y2 = x2 + np.randn(n) * y_err
+
+            stats[method] = (LinregressStatistics(x1, y1, y_err),
+                             LinregressStatistics(x2, y2, y_err),)
+
+        # Create the product
+        product = prod.create_dpd_shear_bias_statistics(BFD_g1_statistics=stats["BFD"][0],
+                                                        BFD_g2_statistics=stats[
+                                                            "BFD"][1],
+                                                        KSB_g1_statistics=stats[
+                                                            "KSB"][0],
+                                                        KSB_g2_statistics=stats[
+                                                            "KSB"][1],
+                                                        LensMC_g1_statistics=stats[
+                                                            "LensMC"][0],
+                                                        LensMC_g2_statistics=stats[
+                                                            "LensMC"][1],
+                                                        MomentsML_g1_statistics=stats[
+                                                            "MomentsML"][0],
+                                                        MomentsML_g2_statistics=stats[
+                                                            "MomentsML"][1],
+                                                        REGAUSS_g1_statistics=stats[
+                                                            "REGAUSS"][0],
+                                                        REGAUSS_g2_statistics=stats["REGAUSS"][1])
 
         # Save the product in an XML file
         filename = tmpdir.join("she_shear_estimates.xml")
@@ -124,10 +143,10 @@ class TestShearEstimatesProduct(object):
         loaded_product = read_xml_product(filename)
 
         # Check that the filenames coincide
-        assert loaded_product.get_BFD_filename() == b_filename
-        assert loaded_product.get_KSB_filename() == k_filename
-        assert loaded_product.get_LensMC_filename() == l_filename
-        assert loaded_product.get_MomentsML_filename() == m_filename
-        assert loaded_product.get_REGAUSS_filename() == r_filename
+        assert loaded_product.get_BFD_statistics() == stats["BFD"]
+        assert loaded_product.get_KSB_statistics() == stats["KSB"]
+        assert loaded_product.get_LensMC_statistics() == stats["LensMC"]
+        assert loaded_product.get_MomentsML_statistics() == stats["MomentsML"]
+        assert loaded_product.get_REGAUSS_statistics() == stats["REGAUSS"]
 
         pass
