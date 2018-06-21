@@ -98,11 +98,11 @@ class LinregressResults(object):
 
         # Set up arrays for each value
         n = len(lstats)
-        lw = np.zeroes(n, dtype=float)
-        lxm = np.zeroes(n, dtype=float)
-        lx2m = np.zeroes(n, dtype=float)
-        lym = np.zeroes(n, dtype=float)
-        lxym = np.zeroes(n, dtype=float)
+        lw = np.zeros(n, dtype=float)
+        lxm = np.zeros(n, dtype=float)
+        lx2m = np.zeros(n, dtype=float)
+        lym = np.zeros(n, dtype=float)
+        lxym = np.zeros(n, dtype=float)
 
         # Fill in each array
         for i in range(n):
