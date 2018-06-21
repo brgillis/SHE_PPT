@@ -144,11 +144,14 @@ class TestShearEstimatesProduct(object):
         # Read back the XML file
         loaded_product = read_xml_product(filename)
 
-        # Check that the filenames coincide
-        assert loaded_product.get_BFD_statistics() == stats["BFD"]
-        assert loaded_product.get_KSB_statistics() == stats["KSB"]
-        assert loaded_product.get_LensMC_statistics() == stats["LensMC"]
-        assert loaded_product.get_MomentsML_statistics() == stats["MomentsML"]
-        assert loaded_product.get_REGAUSS_statistics() == stats["REGAUSS"]
+        # Check that the products coincide
+        assert loaded_product.get_BFD_statistics()[0].ym == stats["BFD"][0].ym
+        assert loaded_product.get_KSB_statistics()[0].ym == stats["KSB"][0].ym
+        assert loaded_product.get_LensMC_statistics()[0].ym == stats[
+            "LensMC"][0].ym
+        assert loaded_product.get_MomentsML_statistics()[0].ym == stats[
+            "MomentsML"][0].ym
+        assert loaded_product.get_REGAUSS_statistics()[0].ym == stats[
+            "REGAUSS"][0].ym
 
         pass
