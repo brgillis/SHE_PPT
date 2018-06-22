@@ -93,7 +93,7 @@ class TestShearBiasMeasurementsProduct(object):
             measurements2[method] = (BiasMeasurements(linregress_with_errors(x1, y1, y_err)),
                                      BiasMeasurements(linregress_with_errors(x2, y2, y_err)),)
 
-            product.set_method_bias_measurements(method, *stats2[method])
+            product.set_method_bias_measurements(method, *measurements2[method])
             assert product.get_method_bias_measurements(
                 method) == measurements2[method]
 
