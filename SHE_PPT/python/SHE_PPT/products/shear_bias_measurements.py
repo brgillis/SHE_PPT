@@ -208,16 +208,16 @@ def __set_method_bias_measurements(self, method, g1_bias_measurements, g2_bias_m
         raise ValueError("Invalid method " + str(method) + ".")
 
 
-def create_dpd_shear_bias_bias_measurements(BFD_g1_bias_measurements=None,
-                                            BFD_g2_bias_measurements=None,
-                                            KSB_g1_bias_measurements=None,
-                                            KSB_g2_bias_measurements=None,
-                                            LensMC_g1_bias_measurements=None,
-                                            LensMC_g2_bias_measurements=None,
-                                            MomentsML_g1_bias_measurements=None,
-                                            MomentsML_g2_bias_measurements=None,
-                                            REGAUSS_g1_bias_measurements=None,
-                                            REGAUSS_g2_bias_measurements=None):
+def create_dpd_shear_bias_measurements(BFD_g1_bias_measurements=None,
+                                       BFD_g2_bias_measurements=None,
+                                       KSB_g1_bias_measurements=None,
+                                       KSB_g2_bias_measurements=None,
+                                       LensMC_g1_bias_measurements=None,
+                                       LensMC_g2_bias_measurements=None,
+                                       MomentsML_g1_bias_measurements=None,
+                                       MomentsML_g2_bias_measurements=None,
+                                       REGAUSS_g1_bias_measurements=None,
+                                       REGAUSS_g2_bias_measurements=None):
     """
         @TODO fill in docstring
     """
@@ -246,7 +246,7 @@ def create_dpd_shear_bias_bias_measurements(BFD_g1_bias_measurements=None,
     return dpd_shear_bias_stats
 
 # Add a useful alias
-create_shear_bias_bias_measurements_product = create_dpd_shear_bias_bias_measurements
+create_shear_bias_measurements_product = create_dpd_shear_bias_measurements
 
 
 def create_bfd_bias_measurements(g1_bias_measurements, g2_bias_measurements):
