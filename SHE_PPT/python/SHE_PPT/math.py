@@ -123,6 +123,27 @@ class LinregressResults(object):
         return stats
 
 
+class BiasMeasurements(object):
+    """Class for expressing bias measurements. Similar to LinregressResults
+       except in terms of m and c.
+    """
+
+    def __init__(self, linregress_results=None):
+
+        if linregress_results is None:
+            self.m = None
+            self.m_err = None
+            self.c = None
+            self.c_err = None
+        else:
+            self.m = linregress_results.slope - 1
+            self.m_err = linregress_results.slope_err
+            self.c = linregress_results.intercept
+            self.c_err = linregress_results.intercept_err
+
+        return
+
+
 def get_linregress_statistics(lx, ly, ly_err=None):
     """Functional interface to get a linear regression statistics object.
     """

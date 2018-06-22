@@ -7,7 +7,7 @@
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines.
 """
 
-__updated__ = "2018-06-21"
+__updated__ = "2018-06-22"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -24,7 +24,7 @@ __updated__ = "2018-06-21"
 # Boston, MA 02110-1301 USA
 
 # from EuclidDmBindings.dpd.she.raw.shearmeasurement_stub import dpdShearBiasStatistics
-import HeaderProvider.GenericHeaderProvider as HeaderProvider
+# import HeaderProvider.GenericHeaderProvider as HeaderProvider
 # from SHE_PPT.file_io import read_xml_product, find_aux_file
 
 # Temporary class definitions
