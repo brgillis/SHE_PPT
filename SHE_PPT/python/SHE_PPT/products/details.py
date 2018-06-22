@@ -38,8 +38,8 @@ def init():
 
     # Add the data file name methods
 
-    binding_class.set_filename = __set_data_filename
-    binding_class.get_filename = __get_data_filename
+    binding_class.set_data_filename = __set_data_filename
+    binding_class.get_data_filename = __get_data_filename
 
     binding_class.get_all_filenames = __get_all_filenames
 
