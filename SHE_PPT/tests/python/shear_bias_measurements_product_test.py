@@ -95,7 +95,7 @@ class TestShearBiasMeasurementsProduct(object):
 
             product.set_method_bias_measurements(method, *stats2[method])
             assert product.get_method_bias_measurements(
-                method) == stats2[method]
+                method) == measurements2[method]
 
         pass
 
