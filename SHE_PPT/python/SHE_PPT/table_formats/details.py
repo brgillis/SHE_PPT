@@ -21,11 +21,12 @@
 
 from collections import OrderedDict
 
+from astropy.table import Table
+
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import hash_any
-from astropy.table import Table
 
 
 logger = getLogger(mv.logger_name)
@@ -38,7 +39,7 @@ class DetailsTableMeta(object):
 
     def __init__(self):
 
-        self.__version__ = "0.2"
+        self.__version__ = "0.3"
         self.table_format = "she.shearDetails"
 
         # Table metadata labels
@@ -113,37 +114,35 @@ class DetailsTableFormat(object):
             return name
 
         # Table column labels
-        self.ID = set_column_properties("ID", dtype=">i8", fits_dtype="K")
+        self.ID = set_column_properties("OBJECT_ID", dtype=">i8", fits_dtype="K")
 
-        self.ra = set_column_properties("x_world", comment="ra (deg)")
-        self.dec = set_column_properties("y_world", comment="dec (deg)")
+        self.ra = set_column_properties("RIGHT_ASCENSION", comment="ra (deg)")
+        self.dec = set_column_properties("DECLINATION", comment="dec (deg)")
 
         self.hlr_bulge = set_column_properties(
-            "hlr_bulge_arcsec", comment="arcsec")
+            "HLR_BULGE", comment="arcsec")
         self.hlr_disk = set_column_properties(
-            "hlr_disk_arcsec", comment="arcsec")
+            "HLR_DISK", comment="arcsec")
 
-        self.bulge_ellipticity = set_column_properties("bulge_ellipticity")
-        self.bulge_axis_ratio = set_column_properties("bulge_axis_ratio")
-        self.bulge_fraction = set_column_properties("bulge_fraction")
-        self.disk_height_ratio = set_column_properties("disk_height_ratio")
+        self.bulge_ellipticity = set_column_properties("BULGE_ELLIPTICITY")
+        self.bulge_axis_ratio = set_column_properties("BULGE_AXIS_RATIO")
+        self.bulge_fraction = set_column_properties("BULGE_FRACTION")
+        self.disk_height_ratio = set_column_properties("DISK_HEIGHT_RATIO")
 
-        self.z = set_column_properties("redshift")
+        self.z = set_column_properties("REDSHIFT")
 
-        self.magnitude = set_column_properties("magnitude", comment="VIS")
+        self.magnitude = set_column_properties("MAGNITUDE", comment="VIS filter")
 
-        self.sersic_index = set_column_properties("sersic_index")
+        self.sersic_index = set_column_properties("SERSIC_INDEX")
 
-        self.rotation = set_column_properties("rotation", comment="degrees")
-        self.spin = set_column_properties("spin", comment="degrees")
-        self.tilt = set_column_properties("tilt", comment="degrees")
+        self.rotation = set_column_properties("ROTATION", comment="[deg]")
+        self.spin = set_column_properties("SPIN", comment="[deg]")
+        self.tilt = set_column_properties("TILT", comment="[deg]")
 
-        self.shear_magnitude = set_column_properties(
-            "shear_magnitude", dtype=">f4", fits_dtype="E")
-        self.shear_angle = set_column_properties(
-            "shear_angle", comment="degrees", dtype=">f4", fits_dtype="E")
+        self.g1 = set_column_properties("G1_WORLD")
+        self.g2 = set_column_properties("G2_WORLD")
 
-        self.target_galaxy = set_column_properties("is_target_galaxy")
+        self.target_galaxy = set_column_properties("is_target_galaxy", dtype="bool", fits_dtype="L")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
