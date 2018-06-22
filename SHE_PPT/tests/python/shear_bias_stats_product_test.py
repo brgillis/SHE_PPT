@@ -26,8 +26,8 @@ from SHE_PPT.products import shear_bias_stats as prod
 import numpy as np
 
 
-class TestShearEstimatesProduct(object):
-    """A collection of tests for the shear estimates data product.
+class TestShearBiasStatsProduct(object):
+    """A collection of tests for the shear bias statistics data product.
 
     """
 
