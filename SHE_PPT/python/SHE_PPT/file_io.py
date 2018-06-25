@@ -26,12 +26,13 @@ import pickle
 import time
 from xml.sax._exceptions import SAXParseException
 
-from EuclidDmBindings.sys_stub import CreateFromDocument
+from astropy.io import fits
 
+from EuclidDmBindings.sys_stub import CreateFromDocument
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.utility import time_to_timestamp
-from astropy.io import fits
+
 
 logger = getLogger(mv.logger_name)
 
@@ -72,6 +73,10 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release="00.
                 _ = int(release[i])
             except ValueError:
                 good_release = False
+
+    # Check the extenstion starts with "." and silently fix if it doesn't
+    if not extension[0] == ".":
+        extension = "." + extension
 
     if not good_release:
         raise ValueError("release (" + release + ") is in incorrect format. Required format is " +
