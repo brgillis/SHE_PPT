@@ -24,16 +24,27 @@ Author: user
 """
 
 
+import logging
+import os
 
 import py.test
-import os
-import SHE_PPT.she_image_checkplot
+
 import SHE_PPT.she_image
+import SHE_PPT.she_image_checkplot
 import numpy as np
 
 
-import logging
-logging.basicConfig(format = '%(levelname)s: %(name)s(%(funcName)s): %(message)s', level = logging.DEBUG)
+try:
+    import matplotlib.pyplot as plt
+    import matplotlib.cm
+    import matplotlib.colors
+    import matplotlib.patches
+    disable_tests = False
+except RuntimeError as e:
+    disable_tests = True
+
+
+logging.basicConfig(format='%(levelname)s: %(name)s(%(funcName)s): %(message)s', level=logging.DEBUG)
 
 
 class Testshe_image_checkplot(object):
@@ -56,15 +67,18 @@ class Testshe_image_checkplot(object):
 
         """
 
+        if disable_tests:
+            return
+
         # Get some SHEImage
 
         array = np.random.randn(30, 20)
         array[4, 2] = 10
-        mask = np.zeros(array.shape, dtype = bool)
+        mask = np.zeros(array.shape, dtype=bool)
         mask[10:15, :] = True
-        img = SHE_PPT.she_image.SHEImage(array, mask = mask)
+        img = SHE_PPT.she_image.SHEImage(array, mask=mask)
 
-        checkplot = SHE_PPT.she_image_checkplot.Checkplot(img, scale = 20)
+        checkplot = SHE_PPT.she_image_checkplot.Checkplot(img, scale=20)
         checkplot.save_to_file(self.testfilepath)
 
     def test_checkplot_interactive(self):
@@ -73,6 +87,10 @@ class Testshe_image_checkplot(object):
         """
 
         """
+        
+        if disable_tests:
+            return
+            
         (X, Y) = np.mgrid[0:30,0:20]
         array = np.sin(0.3*X) + np.sin(0.2*Y) + 0.3*np.random.randn(30, 20)
         mask = np.zeros(array.shape, dtype=bool)
@@ -93,14 +111,3 @@ class Testshe_image_checkplot(object):
 
         assert False
         """
-
-
-
-
-
-
-
-
-
-
-
