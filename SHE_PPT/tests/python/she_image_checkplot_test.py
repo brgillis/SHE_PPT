@@ -68,7 +68,7 @@ class Testshe_image_checkplot(object):
         """
 
         if disable_tests:
-            return True
+            return
 
         # Get some SHEImage
 
@@ -89,7 +89,7 @@ class Testshe_image_checkplot(object):
         """
         
         if disable_tests:
-            return True
+            return
             
         (X, Y) = np.mgrid[0:30,0:20]
         array = np.sin(0.3*X) + np.sin(0.2*Y) + 0.3*np.random.randn(30, 20)
