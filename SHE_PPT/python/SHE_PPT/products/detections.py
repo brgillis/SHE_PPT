@@ -18,7 +18,8 @@
 # details.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
 
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
 from EuclidDmBindings.dpd.mer.raw.finalcatalog_stub import dpdMerFinalCatalog
@@ -26,6 +27,7 @@ from EuclidDmBindings.dpd.mer.raw.finalcatalog_stub import dpdMerFinalCatalog
 from SHE_PPT.file_io import read_xml_product, find_aux_file
 
 sample_file_name = "SHE_PPT/sample_mer_catalog.xml"
+
 
 def init():
     """
@@ -44,11 +46,14 @@ def init():
 
     return
 
+
 def __set_filename(self, filename):
     self.Data.DataStorage.DataContainer.FileName = filename
 
+
 def __get_filename(self):
     return self.Data.DataStorage.DataContainer.FileName
+
 
 def __get_all_filenames(self):
 
@@ -56,12 +61,14 @@ def __get_all_filenames(self):
 
     return all_filenames
 
-def create_dpd_she_detections(filename = None):
+
+def create_dpd_she_detections(filename=None):
     """
         @TODO fill in docstring
     """
 
-    dpd_she_detections = read_xml_product(find_aux_file(sample_file_name), allow_pickled=False)
+    dpd_she_detections = read_xml_product(
+        find_aux_file(sample_file_name), allow_pickled=False)
 
     dpd_she_detections.Header = HeaderProvider.createGenericHeader("SHE")
 

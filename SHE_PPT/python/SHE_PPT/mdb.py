@@ -16,17 +16,20 @@
 # details.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
 
 from MdbUtils.Mdb import Mdb as _Mdb
 
 from SHE_PPT.file_io import find_file
 
-_not_inited_exception = RuntimeError("mdb module must be initialised with MDB xml object before use.")
+_not_inited_exception = RuntimeError(
+    "mdb module must be initialised with MDB xml object before use.")
 
 full_mdb = {}
 
-def init(mdb_files, path = None):
+
+def init(mdb_files, path=None):
     """Initialises module by loading MDB data from file(s).
 
     Arguments
@@ -56,6 +59,7 @@ def init(mdb_files, path = None):
 
     return
 
+
 def reset():
     """Resets the MDB dictionary.
 
@@ -69,6 +73,7 @@ def reset():
     """
 
     full_mdb.clear()
+
 
 def get_mdb_value(key):
     """Gets an item's value from the MDB from its key (aka title).
@@ -89,6 +94,7 @@ def get_mdb_value(key):
 
     return full_mdb[key]['Value']
 
+
 def get_mdb_description(key):
     """Gets an item's description from the MDB from its key (aka title).
 
@@ -107,6 +113,7 @@ def get_mdb_description(key):
         raise _not_inited_exception
 
     return full_mdb[key]['Description']
+
 
 def get_mdb_source(key):
     """Gets an item's source from the MDB from its key (aka title).
@@ -127,6 +134,7 @@ def get_mdb_source(key):
 
     return full_mdb[key]['Source']
 
+
 def get_mdb_release(key):
     """Gets an item's release version from the MDB from its key (aka title).
 
@@ -145,6 +153,7 @@ def get_mdb_release(key):
         raise _not_inited_exception
 
     return full_mdb[key]['Release']
+
 
 def get_mdb_expression(key):
     """Gets an item's expression from the MDB from its key (aka title).
@@ -165,6 +174,7 @@ def get_mdb_expression(key):
 
     return full_mdb[key]['Expression']
 
+
 def get_mdb_unit(key):
     """Gets an item's unit from the MDB from its key (aka title).
 
@@ -183,4 +193,3 @@ def get_mdb_unit(key):
         raise _not_inited_exception
 
     return full_mdb[key]['unit']
-

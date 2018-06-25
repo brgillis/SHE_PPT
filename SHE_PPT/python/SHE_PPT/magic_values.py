@@ -16,7 +16,8 @@
 # details.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
 
 logger_name = "SHE_PPT"
 
@@ -42,6 +43,7 @@ details_tag = "DAL"
 detections_tag = "DTC"
 shear_estimates_tag = "SHM"
 mcmc_chains_tag = "MCC"
+psf_im_tag = "PSF"
 bulge_psf_tag = "BPSF"
 disk_psf_tag = "DPSF"
 psf_cat_tag = "PSFC"

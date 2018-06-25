@@ -9,7 +9,8 @@
 # details.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
 
 """ @file detector.py
 
@@ -26,6 +27,7 @@ id_template = "CCDID X-Y"
 x_index = 6
 y_index = 8
 
+
 def get_id_string(x, y):
     """Gets a detector ID string for a given x/y position.
 
@@ -40,11 +42,14 @@ def get_id_string(x, y):
     # Check for valid values
     for v in x, y:
         if not (isinstance(v, int) or isinstance(v, np.int8)):
-            raise TypeError("Values passed to get_id_string must be int type: " + str(v) + ", type: " + str(type(v)))
+            raise TypeError(
+                "Values passed to get_id_string must be int type: " + str(v) + ", type: " + str(type(v)))
         elif (v < 1) or (v > 6):
-            raise ValueError("Invalid value passed to get_id_string: " + str(v) + ", type: " + str(type(v)))
+            raise ValueError(
+                "Invalid value passed to get_id_string: " + str(v) + ", type: " + str(type(v)))
 
     return _get_id_string(x, y)
+
 
 def _get_id_string(x, y):
     """Gets a detector ID string for a given x/y position, without checking
@@ -59,6 +64,7 @@ def _get_id_string(x, y):
     """
 
     return id_template.replace("X", str(int(x))).replace("Y", str(int(y)))
+
 
 def get_detector_xy(id_string):
     """Gets the x and y position of a detector from its ID string.
@@ -75,6 +81,7 @@ def get_detector_xy(id_string):
         raise ValueError("Improperly formatted id_string")
 
     return int(id_string[x_index]), int(id_string[y_index])
+
 
 def detector_int_to_xy(i):
     """For handling depecrated definition of the detector, gives x/y position
@@ -93,6 +100,7 @@ def detector_int_to_xy(i):
 
     return i % 6 + 1, i // 6 + 1
 
+
 def detector_xy_to_int(x, y):
     """For handling depecrated definition of the detector, gives integer
     value from x/y position.
@@ -107,11 +115,14 @@ def detector_xy_to_int(x, y):
 
     for v in x, y:
         if not isinstance(v, int):
-            raise TypeError("Values passed to get_id_string must be int type: " + str(v))
+            raise TypeError(
+                "Values passed to get_id_string must be int type: " + str(v))
         elif (v < 1) or (v > 6):
-            raise ValueError("Invalid value passed to get_id_string: " + str(v))
+            raise ValueError(
+                "Invalid value passed to get_id_string: " + str(v))
 
     return 6 * (y - 1) + (x - 1)
+
 
 def resolve_detector_xy(v):
     """Resolves detector_x/y from an object of string, int, or tuple type.
@@ -130,4 +141,3 @@ def resolve_detector_xy(v):
         return v
     else:
         raise TypeError("v must be int, string, or tuple[2] type.")
-

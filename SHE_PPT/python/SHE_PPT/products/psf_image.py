@@ -18,13 +18,15 @@
 # details.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
 
 
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import EuclidDmBindings.she.she_stub as she_dpd # FIXME
 
 import pickle
+
 
 def init():
     """
@@ -45,11 +47,14 @@ def init():
 
     return
 
+
 def __set_filename(self, filename):
     self.Data.DataContainer.FileName = filename
 
+
 def __get_filename(self):
     return self.Data.DataContainer.FileName
+
 
 def __get_all_filenames(self):
 
@@ -57,25 +62,33 @@ def __get_all_filenames(self):
 
     return all_filenames
 
+
 class DpdShePSFImageProduct:  # @FIXME
+
     def __init__(self):
         self.Header = None
         self.Data = None
+
     def validateBinding(self):
         return False
 
+
 class ShePSFImageProduct:  # @FIXME
+
     def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
 
+
 class DataContainer:  # @FIXME
+
     def __init__(self):
         self.FileName = None
         self.filestatus = None
 
-def create_dpd_she_psf_image(filename = None):
+
+def create_dpd_she_psf_image(filename=None):
     """
         @TODO fill in docstring
     """
@@ -83,7 +96,8 @@ def create_dpd_she_psf_image(filename = None):
     # dpd_she_psf_image = she_dpd.DpdShePSFImageProduct() # FIXME
     dpd_she_psf_image = DpdShePSFImageProduct()
 
-    # dpd_she_psf_image.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
+    # dpd_she_psf_image.Header = HeaderProvider.createGenericHeader("SHE") #
+    # FIXME
     dpd_she_psf_image.Header = "SHE"
 
     dpd_she_psf_image.Data = create_she_psf_image(filename)
@@ -93,7 +107,8 @@ def create_dpd_she_psf_image(filename = None):
 # Add a useful alias
 create_psf_image_product = create_dpd_she_psf_image
 
-def create_she_psf_image(filename = None):
+
+def create_she_psf_image(filename=None):
     """
         @TODO fill in docstring
     """

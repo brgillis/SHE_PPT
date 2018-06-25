@@ -14,7 +14,8 @@
 # details.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
 
 import glob
 from os.path import dirname, basename, isfile
@@ -23,7 +24,7 @@ from . import *
 
 
 modules = glob.glob(dirname(__file__) + "/*.py")
-__all__ = [ basename(f)[:-3] for f in modules if isfile(f) and not f.endswith('__init__.py')]
+__all__ = [basename(f)[:-3]
+           for f in modules if isfile(f) and not f.endswith('__init__.py')]
 
 del modules, dirname, basename, isfile, glob
-

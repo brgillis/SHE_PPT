@@ -26,17 +26,18 @@ function can be used to obtain this.
 """
 
 
-
 import os
 import numpy as np
 
-# Mask format - increment version whenever there are non-trivial changes to this file
+# Mask format - increment version whenever there are non-trivial changes
+# to this file
 
 mask_fmt_label = "MSK_FMT_V"
 mask_fmt_version = "0.2"
 
 
-# Mask values - taken from definition at https://euclid.roe.ac.uk/projects/eucrma/wiki/ImageBitMasks?parent=20120410UserStories
+# Mask values - taken from definition at
+# https://euclid.roe.ac.uk/projects/eucrma/wiki/ImageBitMasks?parent=20120410UserStories
 
 masked_hot_pixel = 1
 masked_cold_pixel = 2
@@ -61,13 +62,14 @@ masked_near_edge = 262144
 # Some compiled mask values for all "bad" or "suspect" cases
 
 masked_bad = (masked_hot_pixel | masked_cold_pixel | masked_saturated_pixel | masked_cosmic_ray |
-               masked_satellite_trail | masked_bleeding | masked_onboard | masked_bad_pixel |
-               masked_nonlinear_pixel | masked_persistent_charge_pixel | masked_ghost |
-               masked_transient_object | masked_extended_object | masked_scattered_light |
-               masked_charge_injection | masked_off_image)
+              masked_satellite_trail | masked_bleeding | masked_onboard | masked_bad_pixel |
+              masked_nonlinear_pixel | masked_persistent_charge_pixel | masked_ghost |
+              masked_transient_object | masked_extended_object | masked_scattered_light |
+              masked_charge_injection | masked_off_image)
 masked_suspect = (masked_near_charge_injection | masked_near_edge)
 
 masked_suspect_or_bad = masked_suspect | masked_bad
+
 
 def as_bool(a):
     """ Converts a scalar int into a bool or an array of ints into an array of bools.
@@ -81,7 +83,9 @@ def as_bool(a):
     else:
         return a.astype(bool)
 
-# Various convenience functions to return bools (or arrays of bools) based on a mask test
+# Various convenience functions to return bools (or arrays of bools) based
+# on a mask test
+
 
 def is_masked_with(a, mask_value):
     """ Tests if a mask matches a particular mask value (or combination). Mostly so that
@@ -94,6 +98,7 @@ def is_masked_with(a, mask_value):
 
     return a & mask_value
 
+
 def is_masked_bad(a):
     """ Tests if a mask matches the mask for all possible bad (but not just suspect) bits.
 
@@ -103,6 +108,7 @@ def is_masked_bad(a):
 
     return a & masked_bad
 
+
 def is_masked_suspect(a):
     """ Tests if a mask matches the mask for all possible suspect (but not bad) bits.
 
@@ -111,6 +117,7 @@ def is_masked_suspect(a):
     """
 
     return a & masked_suspect
+
 
 def is_masked_suspect_or_bad(a):
     """ Tests if a mask matches the mask for all possible suspect or bad bits.
@@ -123,6 +130,7 @@ def is_masked_suspect_or_bad(a):
 
 # Inverse mask tests - will return true if not masked
 
+
 def is_not_masked_with(a, mask_value):
     """ Tests if a mask does not match a particular mask value (or combination). Mostly so that
     users don't have to worry about bit-comparison syntax.
@@ -134,6 +142,7 @@ def is_not_masked_with(a, mask_value):
 
     return np.logical_not(a & mask_value)
 
+
 def is_not_masked_bad(a):
     """ Tests if a mask does not match the mask for all possible bad (but not just suspect) bits.
 
@@ -143,6 +152,7 @@ def is_not_masked_bad(a):
 
     return np.logical_not(a & masked_bad)
 
+
 def is_not_masked_suspect(a):
     """ Tests if a mask does not match the mask for all possible suspect (but not bad) bits.
 
@@ -151,6 +161,7 @@ def is_not_masked_suspect(a):
     """
 
     return np.logical_not(a & masked_suspect)
+
 
 def is_not_masked_suspect_or_bad(a):
     """ Tests if a mask does not match the mask for all possible suspect or bad bits.

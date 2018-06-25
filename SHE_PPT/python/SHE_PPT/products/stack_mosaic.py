@@ -20,7 +20,8 @@
 # details.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
 
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import EuclidDmBindings.she.she_stub as she_dpd # FIXME
@@ -37,7 +38,7 @@ from astropy.io import fits
 
 
 # Convenience function to easily load the actual map
-def load_stack_mosaic(filename, dir = None, **kwargs):
+def load_stack_mosaic(filename, dir=None, **kwargs):
     """Directly loads the stack_mosaic image from the filename of the data product.
 
     Parameters
@@ -71,7 +72,8 @@ def load_stack_mosaic(filename, dir = None, **kwargs):
     if dir is None:
         dir = ""
 
-    stack_mosaic_product = read_xml_product(xml_file_name = os.path.join(dir, filename))
+    stack_mosaic_product = read_xml_product(
+        xml_file_name=os.path.join(dir, filename))
 
     data_filename = stack_mosaic_product.get_data_filename()
 
@@ -80,6 +82,7 @@ def load_stack_mosaic(filename, dir = None, **kwargs):
     return stack_mosaic_hdulist[0]
 
 # Initialisation function, to add methods to an imported XML class
+
 
 def init():
     """
@@ -101,29 +104,40 @@ def init():
 
     return
 
+
 def __set_data_filename(self, filename):
     self.Data.DataStorage.DataContainer.FileName = filename
+
 
 def __get_data_filename(self):
     return self.Data.DataStorage.DataContainer.FileName
 
+
 class DataContainer:
+
     def __init__(self):
         self.FileName = None
         self.filestatus = None
 
+
 class DpdSheStackMosaicProduct:
+
     def __init__(self):
         self.Header = None
         self.Data = None
+
     def validateBinding(self):
         return True
 
+
 class SheStackMosaicProduct:
+
     def __init__(self):
         self.DataStorage = None
 
+
 class SheDataStorageProduct:
+
     def __init__(self):
         self.format = None
         self.version = None
@@ -139,12 +153,14 @@ def create_dpd_she_stack_mosaic(data_filename):
 
     dpd_she_stack_mosaic.Header = HeaderProvider.createGenericHeader("SHE")
 
-    dpd_she_stack_mosaic.Data = create_she_stack_mosaic(data_filename = data_filename)
+    dpd_she_stack_mosaic.Data = create_she_stack_mosaic(
+        data_filename=data_filename)
 
     return dpd_she_stack_mosaic
 
 # Add a useful alias
 create_stack_mosaic_product = create_dpd_she_stack_mosaic
+
 
 def create_she_stack_mosaic(data_filename):
     """
@@ -156,6 +172,7 @@ def create_she_stack_mosaic(data_filename):
     she_stack_mosaic.DataStorage = create_she_data_storage(data_filename)
 
     return she_stack_mosaic
+
 
 def create_she_data_storage(filename):
 

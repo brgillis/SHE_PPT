@@ -16,11 +16,11 @@
 # details.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
 
 from collections import OrderedDict
 
-from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format
@@ -30,6 +30,7 @@ import numpy as np
 
 
 logger = getLogger(mv.logger_name)
+
 
 class PSFTableMeta(object):
     """
@@ -58,10 +59,11 @@ class PSFTableMeta(object):
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
-                                   ))
+                                     ))
 
         # A list of columns in the desired order
         self.all = list(self.comments.keys())
+
 
 class PSFTableFormat(object):
     """
@@ -90,8 +92,8 @@ class PSFTableFormat(object):
         self.fits_dtypes = OrderedDict()
         self.lengths = OrderedDict()
 
-        def set_column_properties(name, is_optional = False, comment = None, dtype = ">f4", fits_dtype = "E",
-                                   length = 1):
+        def set_column_properties(name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
+                                  length=1):
 
             assert name not in self.is_optional
 
@@ -105,17 +107,21 @@ class PSFTableFormat(object):
 
         # Column names and info
 
-        self.ID = set_column_properties("Object ID", dtype = ">i8", fits_dtype = "K")
+        self.ID = set_column_properties(
+            "Object ID", dtype=">i8", fits_dtype="K")
 
-        self.template = set_column_properties("SED template", dtype = ">i8", fits_dtype = "K", comment = "TBD")
+        self.template = set_column_properties(
+            "SED template", dtype=">i8", fits_dtype="K", comment="TBD")
 
-        self.bulge_index = set_column_properties("Bulge Index", dtype = ">i4", fits_dtype = "J",
-                                                 comment = "HDU index of bulge PSF image")
-        self.disk_index = set_column_properties("Disk Index", dtype = ">i4", fits_dtype = "J",
-                                                comment = "HDU index of disk PSF image")
+        self.bulge_index = set_column_properties("Bulge Index", dtype=">i4", fits_dtype="J",
+                                                 comment="HDU index of bulge PSF image")
+        self.disk_index = set_column_properties("Disk Index", dtype=">i4", fits_dtype="J",
+                                                comment="HDU index of disk PSF image")
 
-        self.cal_time = set_column_properties("PSF Calibration Timestamp", dtype = "S", fits_dtype = "A", length = 20, is_optional = True)
-        self.field_time = set_column_properties("PSF Field Timestamp", dtype = "S", fits_dtype = "A", length = 20, is_optional = True)
+        self.cal_time = set_column_properties(
+            "PSF Calibration Timestamp", dtype="S", fits_dtype="A", length=20, is_optional=True)
+        self.field_time = set_column_properties(
+            "PSF Field Timestamp", dtype="S", fits_dtype="A", length=20, is_optional=True)
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -133,9 +139,9 @@ psf_table_format = PSFTableFormat()
 tf = psf_table_format
 
 
-def make_psf_table_header(model_hash = None,
-                          model_seed = None,
-                          noise_seed = None):
+def make_psf_table_header(model_hash=None,
+                          model_seed=None,
+                          noise_seed=None):
     """
         @brief Generate a header for a PSF table.
 
@@ -163,13 +169,14 @@ def make_psf_table_header(model_hash = None,
 
     return header
 
-def initialise_psf_table(image = None,
-                         options = None,
-                         optional_columns = None,
-                         model_hash = None,
-                         model_seed = None,
-                         noise_seed = None,
-                         init_columns = {}):
+
+def initialise_psf_table(image=None,
+                         options=None,
+                         optional_columns=None,
+                         model_hash=None,
+                         model_seed=None,
+                         noise_seed=None,
+                         init_columns={}):
     """
         @brief Initialise a PSF table.
 
@@ -203,32 +210,29 @@ def initialise_psf_table(image = None,
             if colname in init_columns:
                 init_cols.append(init_columns[colname])
             elif len(init_columns) > 0:
-                init_cols.append(np.zeros(len(init_columns.values[0]), dtype = dtype))
+                init_cols.append(
+                    np.zeros(len(init_columns.values[0]), dtype=dtype))
             else:
                 init_cols.append([])
 
             dtypes.append(dtype)
 
-    psf_table = Table(init_cols, names = names, dtype = dtypes)
+    psf_table = Table(init_cols, names=names, dtype=dtypes)
 
-    if image is not None:
-
-        # Get values from the image object, unless they were passed explicitly
-
-        if model_seed is None:
-            model_seed = image.get_full_seed()
+    if image is not None and model_seed is None:
+        model_seed = image.get_seed()
 
     if options is not None:
 
         # Get values from the options dict, unless they were passed explicitly
         if model_hash is None:
-            model_hash = hash_any(frozenset(list(options.items())), format = "base64")
+            model_hash = hash_any(options.items(), format="base64")
         if noise_seed is None:
             noise_seed = options['noise_seed']
 
-    psf_table.meta = make_psf_table_header(model_hash = model_hash,
-                                           model_seed = model_seed,
-                                           noise_seed = noise_seed)
+    psf_table.meta = make_psf_table_header(model_hash=model_hash,
+                                           model_seed=model_seed,
+                                           noise_seed=noise_seed)
 
     assert(is_in_format(psf_table, tf))
 

@@ -16,7 +16,8 @@
 # details.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
 
 import json
 import os
@@ -25,19 +26,21 @@ import pickle
 import time
 from xml.sax._exceptions import SAXParseException
 
-from EuclidDmBindings.sys_stub import CreateFromDocument
+from astropy.io import fits
 
+from EuclidDmBindings.sys_stub import CreateFromDocument
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.utility import time_to_timestamp
-from astropy.io import fits
+
 
 logger = getLogger(mv.logger_name)
 
 type_name_maxlen = 41
 instance_id_maxlen = 55
 
-def get_allowed_filename(type_name, instance_id, extension = ".fits", release = "00.00"):
+
+def get_allowed_filename(type_name, instance_id, extension=".fits", release="00.03"):
     """
         @brief Gets a filename in the required Euclid format.
 
@@ -71,6 +74,10 @@ def get_allowed_filename(type_name, instance_id, extension = ".fits", release = 
             except ValueError:
                 good_release = False
 
+    # Check the extenstion starts with "." and silently fix if it doesn't
+    if not extension[0] == ".":
+        extension = "." + extension
+
     if not good_release:
         raise ValueError("release (" + release + ") is in incorrect format. Required format is " +
                          "XX.XX, where each X is 0-9.")
@@ -79,9 +86,11 @@ def get_allowed_filename(type_name, instance_id, extension = ".fits", release = 
 
     creation_date = time_to_timestamp(tnow)
 
-    filename = "EUC_SHE_" + type_name + "_" + instance_id + "_" + creation_date + "_" + release + extension
+    filename = "EUC_SHE_" + type_name + "_" + instance_id + \
+        "_" + creation_date + "_" + release + extension
 
     return filename
+
 
 def write_listfile(listfile_name, filenames):
     """
@@ -99,6 +108,7 @@ def write_listfile(listfile_name, filenames):
         listfile.write(paths_json)
 
     return
+
 
 def read_listfile(listfile_name):
     """
@@ -120,6 +130,7 @@ def read_listfile(listfile_name):
         else:
             return listobject
 
+
 def replace_in_file(input_filename, output_filename, input_string, output_string):
     """
         @brief Replaces every occurence of $input_string in $input_filename with $output_string
@@ -138,6 +149,7 @@ def replace_in_file(input_filename, output_filename, input_string, output_string
         with open(input_filename, "r") as fin:
             for line in fin:
                 fout.write(line.replace(input_string, output_string))
+
 
 def replace_multiple_in_file(input_filename, output_filename, input_strings, output_strings):
     """she_dpd
@@ -161,15 +173,19 @@ def replace_multiple_in_file(input_filename, output_filename, input_strings, out
                     new_line = new_line.replace(input_string, output_string)
                 fout.write(new_line)
 
+
 def write_xml_product(product, xml_file_name):
     try:
         with open(str(xml_file_name), "w") as f:
-            f.write(product.toDOM().toprettyxml(encoding = "utf-8").decode("utf-8"))
+            f.write(
+                product.toDOM().toprettyxml(encoding="utf-8").decode("utf-8"))
     except AttributeError as e:
         if not "object has no attribute 'toDOM'" in str(e):
             raise
-        logger.warn("XML writing is not available; falling back to pickled writing instead.")
+        logger.warn(
+            "XML writing is not available; falling back to pickled writing instead.")
         write_pickled_product(product, xml_file_name)
+
 
 def read_xml_product(xml_file_name, allow_pickled=True):
 
@@ -190,10 +206,12 @@ def read_xml_product(xml_file_name, allow_pickled=True):
 
     return product
 
+
 def write_pickled_product(product, pickled_file_name):
 
     with open(str(pickled_file_name), "wb") as f:
         pickle.dump(product, f)
+
 
 def read_pickled_product(pickled_file_name):
 
@@ -202,13 +220,15 @@ def read_pickled_product(pickled_file_name):
 
     return product
 
+
 def append_hdu(filename, hdu):
 
-    f = fits.open(filename, mode = 'append')
+    f = fits.open(filename, mode='append')
     try:
         f.append(hdu)
     finally:
         f.close()
+
 
 def find_file_in_path(filename, path):
     """
@@ -229,9 +249,11 @@ def find_file_in_path(filename, path):
             break
 
     if qualified_filename is None:
-        raise RuntimeError("File " + str(filename) + " could not be found in path " + str(path) + ".")
+        raise RuntimeError(
+            "File " + str(filename) + " could not be found in path " + str(path) + ".")
 
     return qualified_filename
+
 
 def find_aux_file(filename):
     """
@@ -241,6 +263,7 @@ def find_aux_file(filename):
 
     return find_file_in_path(filename, os.environ['ELEMENTS_AUX_PATH'])
 
+
 def find_conf_file(filename):
     """
         Searches the conf directory path for a file and returns a qualified name of it if found,
@@ -249,7 +272,8 @@ def find_conf_file(filename):
 
     return find_file_in_path(filename, os.environ['ELEMENTS_CONF_PATH'])
 
-def find_file(filename, path = None):
+
+def find_file(filename, path=None):
     """
         Locates a file based on the presence/absence of an AUX/ or CONF/ prefix, searching in the aux or conf
         directories respectively for it, or else the work directory if supplied.
@@ -262,7 +286,9 @@ def find_file(filename, path = None):
     elif path is not None:
         return find_file_in_path(filename, path)
     else:
-        raise ValueError("path must be supplied if filename doesn't start with AUX/ or CONF/")
+        raise ValueError(
+            "path must be supplied if filename doesn't start with AUX/ or CONF/")
+
 
 def first_in_path(path):
     """
@@ -270,6 +296,7 @@ def first_in_path(path):
     """
 
     return path.split(":")[0]
+
 
 def first_writable_in_path(path):
     """
@@ -288,29 +315,31 @@ def first_writable_in_path(path):
 
     return first_writable_dir
 
-def get_data_filename(filename,workdir="."):
+
+def get_data_filename(filename, workdir="."):
     """ Given the unqualified name of a file and the work directory, determine if it's an XML data
         product or not, and get the filename of its DataContainer if so; otherwise, just return
         the input filename. In either case, the unqualified filename is returned.
-        
+
         This script is intended to help smooth the transition from using raw data files as
         input/output to data products.
     """
-    
+
     # First, see if we can open this as an XML data product
     try:
-        qualified_filename = join(workdir,filename)
-        
-        prod = read_xml_product(qualified_filename,allow_pickled=False)
-        
+        qualified_filename = find_file(filename, workdir)
+
+        prod = read_xml_product(qualified_filename, allow_pickled=True)
+
         # If we get here, it is indeed an XML data product. Has it been monkey-patched
         # to have a get_filename method?
-        
+
         if hasattr(prod, "get_filename"):
             return prod.get_filename()
-        elif hasattr(prod, "get_data_filename"): # or a get_data_filename method?
+        # or a get_data_filename method?
+        elif hasattr(prod, "get_data_filename"):
             return prod.get_data_filename()
-        
+
         # Check if the filename exists in the default location
         try:
             return prod.Data.DataStorage.DataContainer.FileName
@@ -320,12 +349,12 @@ def get_data_filename(filename,workdir="."):
                                  "In order to use get_data_filename with this product, the " +
                                  "product's class must be monkey-patched to have a get_filename " +
                                  "or get_data_filename method.")
-        
+
     except UnicodeDecodeError as _e:
-        # Not an XML file - so presumably it's a raw data file; return the input filename
+        # Not an XML file - so presumably it's a raw data file; return the
+        # input filename
         return filename
     except SAXParseException as _e:
-        # Not an XML file - so presumably it's a raw data file; return the input filename
+        # Not an XML file - so presumably it's a raw data file; return the
+        # input filename
         return filename
-
-
