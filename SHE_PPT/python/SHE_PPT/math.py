@@ -64,7 +64,7 @@ class LinregressResults(object):
             self.intercept = None
             self.slope_err = None
             self.intercept_err = None
-            self.slope_intercept_covar
+            self.slope_intercept_covar = None
 
             return
 
@@ -135,11 +135,13 @@ class BiasMeasurements(object):
             self.m_err = None
             self.c = None
             self.c_err = None
+            self.mc_covar = None
         else:
             self.m = linregress_results.slope - 1
             self.m_err = linregress_results.slope_err
             self.c = linregress_results.intercept
             self.c_err = linregress_results.intercept_err
+            self.mc_covar = self.slope_intercept_covar
 
         return
 
