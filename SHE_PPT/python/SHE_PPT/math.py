@@ -141,7 +141,7 @@ class BiasMeasurements(object):
             self.m_err = linregress_results.slope_err
             self.c = linregress_results.intercept
             self.c_err = linregress_results.intercept_err
-            self.mc_covar = self.slope_intercept_covar
+            self.mc_covar = linregress_results.slope_intercept_covar
 
         return
 

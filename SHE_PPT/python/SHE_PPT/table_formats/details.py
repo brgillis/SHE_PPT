@@ -39,7 +39,7 @@ class DetailsTableMeta(object):
 
     def __init__(self):
 
-        self.__version__ = "0.3"
+        self.__version__ = "0.3.1"
         self.table_format = "she.shearDetails"
 
         # Table metadata labels
@@ -115,6 +115,8 @@ class DetailsTableFormat(object):
 
         # Table column labels
         self.ID = set_column_properties("OBJECT_ID", dtype=">i8", fits_dtype="K")
+
+        self.group_ID = set_column_properties("GROUP_ID", dtype=">i8", fits_dtype="K")
 
         self.ra = set_column_properties("RIGHT_ASCENSION", comment="ra (deg)")
         self.dec = set_column_properties("DECLINATION", comment="dec (deg)")
