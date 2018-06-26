@@ -33,14 +33,10 @@ import SHE_PPT.she_image
 import SHE_PPT.she_image_checkplot
 import numpy as np
 
-
-try:
-    import matplotlib.pyplot as plt
-    import matplotlib.cm
-    import matplotlib.colors
-    import matplotlib.patches
+# Disable tests if we don't have a display
+if 'DISPLAY' in os.environ:
     disable_tests = False
-except RuntimeError as e:
+else:
     disable_tests = True
 
 
