@@ -23,11 +23,10 @@
 
 from EuclidDmBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
-
+from SHE_PPT.file_io import read_xml_product, find_aux_file
 from SHE_PPT.products.calibrated_frame import (create_vis_psf_storage,
                                                create_vis_bkg_storage, create_vis_wgt_storage)
 
-from SHE_PPT.file_io import read_xml_product, find_aux_file
 
 sample_file_name = "SHE_PPT/sample_stacked_frame.xml"
 
@@ -112,7 +111,9 @@ def __get_wgt_filename(self):
     return None
 
 
-def create_dpd_vis_stacked_frame(filename="default_filename"):
+def create_dpd_vis_stacked_frame(data_filename="default_data_filename.fits",
+                                 bkg_filename="default_bkg_filename.fits",
+                                 wgt_filename="default_wgt_filename.fits"):
     """
         @TODO fill in docstring
     """
@@ -121,6 +122,10 @@ def create_dpd_vis_stacked_frame(filename="default_filename"):
         find_aux_file(sample_file_name), allow_pickled=False)
 
     dpd_vis_stacked_frame.Header = HeaderProvider.createGenericHeader("VIS")
+
+    dpd_vis_stacked_frame.set_data_filename(data_filename)
+    dpd_vis_stacked_frame.set_bkg_filename(bkg_filename)
+    dpd_vis_stacked_frame.set_wgt_filename(wgt_filename)
 
     return dpd_vis_stacked_frame
 
