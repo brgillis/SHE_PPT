@@ -22,11 +22,11 @@
 # Boston, MA 02110-1301 USA
 
 from EuclidDmBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
-import HeaderProvider.GenericHeaderProvider as HeaderProvider
 import EuclidDmBindings.pro.vis_stub as vis_pro
 from EuclidDmBindings.sys.dss_stub import dataContainer
-
+import HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT.file_io import read_xml_product, find_aux_file
+
 
 sample_file_name = "SHE_PPT/sample_calibrated_frame.xml"
 
@@ -111,7 +111,9 @@ def __get_wgt_filename(self):
     return None
 
 
-def create_dpd_vis_calibrated_frame(filename='vis_calibrated_frame.fits'):
+def create_dpd_vis_calibrated_frame(data_filename='default_filename.fits',
+                                    bkg_filename=None,
+                                    wgt_filename=None):
     """
         @TODO fill in docstring
     """
@@ -123,7 +125,11 @@ def create_dpd_vis_calibrated_frame(filename='vis_calibrated_frame.fits'):
     # other things)
     dpd_vis_calibrated_frame.Header = HeaderProvider.createGenericHeader("SHE")
 
-    __set_data_filename(dpd_vis_calibrated_frame, filename)
+    dpd_vis_calibrated_frame.set_data_filename(dpd_vis_calibrated_frame, data_filename)
+    if bkg_filename is not None:
+        dpd_vis_calibrated_frame.set_bkg_filename(dpd_vis_calibrated_frame, data_filename)
+    if wgt_filename is not None:
+        dpd_vis_calibrated_frame.set_wgt_filename(dpd_vis_calibrated_frame, data_filename)
 
     return dpd_vis_calibrated_frame
 
