@@ -127,9 +127,9 @@ def create_dpd_vis_calibrated_frame(data_filename='default_filename.fits',
 
     dpd_vis_calibrated_frame.set_data_filename(dpd_vis_calibrated_frame, data_filename)
     if bkg_filename is not None:
-        dpd_vis_calibrated_frame.set_bkg_filename(dpd_vis_calibrated_frame, data_filename)
+        dpd_vis_calibrated_frame.set_bkg_filename(dpd_vis_calibrated_frame, bkg_filename)
     if wgt_filename is not None:
-        dpd_vis_calibrated_frame.set_wgt_filename(dpd_vis_calibrated_frame, data_filename)
+        dpd_vis_calibrated_frame.set_wgt_filename(dpd_vis_calibrated_frame, wgt_filename)
 
     return dpd_vis_calibrated_frame
 
