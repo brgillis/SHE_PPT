@@ -24,6 +24,10 @@ Created on: 02/03/18
 
 import os.path
 
+from astropy.io import fits
+from astropy.table import Table
+from astropy.wcs import WCS
+
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
 from SHE_PPT import products
@@ -33,9 +37,6 @@ from SHE_PPT.she_image import SHEImage
 from SHE_PPT.table_formats.psf import tf as pstf
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import find_extension, load_wcs
-from astropy.io import fits
-from astropy.table import Table
-from astropy.wcs import WCS
 import numpy as np
 
 
@@ -183,8 +184,8 @@ class SHEFrame(object):
     @classmethod
     def read(cls,
              frame_product_filename=None,
-             seg_filename=None,
-             psf_filename=None,
+             seg_product_filename=None,
+             psf_product_filename=None,
              workdir=".",
              x_max=6,
              y_max=6,
@@ -197,8 +198,8 @@ class SHEFrame(object):
         ----------
         frame_product_filename : str
             Filename of the CalibratedFrame data product
-        seg_filename : str
-            Filename of the Mosaic (segmentation map) image
+        seg_product_filename : str
+            Filename of the Mosaic (segmentation map) data product
         psf_product_filename : str
             Filename of the PSF Image data product
         workdir : str
@@ -242,9 +243,18 @@ class SHEFrame(object):
             bkg_data_hdulist = None
 
         # Load in the data from the segmentation frame
-        if seg_filename is not None:
+        if seg_product_filename is not None:
 
-            qualified_seg_filename = os.path.join(workdir, seg_filename)
+            seg_prod = read_xml_product(
+                os.path.join(workdir, seg_product_filename))
+            if not isinstance(seg_prod, products.mosaic.dpdMerSegmentationMap):
+                raise ValueError("Data image product from " +
+                                 seg_product_filename + " is invalid type.")
+
+            seg_data_filename = os.path.join(
+                workdir, seg_prod.get_data_filename())
+
+            qualified_seg_filename = os.path.join(workdir, seg_data_filename)
 
             try:
                 seg_data_hdulist = fits.open(qualified_seg_filename, **kwargs)
@@ -325,9 +335,18 @@ class SHEFrame(object):
                                                wcs=detector_wcs)
 
         # Load in the PSF data
-        if psf_filename is not None:
+        if psf_product_filename is not None:
 
-            qualified_psf_filename = os.path.join(workdir, psf_filename)
+            psf_prod = read_xml_product(
+                os.path.join(workdir, psf_product_filename))
+            if not isinstance(seg_prod, products.psf_image.DpdShePSFImageProduct):
+                raise ValueError("Data image product from " +
+                                 seg_product_filename + " is invalid type.")
+
+            psf_data_filename = os.path.join(
+                workdir, psf_prod.get_data_filename())
+
+            qualified_psf_filename = os.path.join(workdir, psf_data_filename)
 
             psf_data_hdulist = fits.open(
                 qualified_psf_filename, **kwargs)

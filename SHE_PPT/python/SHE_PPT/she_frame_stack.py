@@ -25,6 +25,10 @@ Created on: 05/03/18
 from copy import deepcopy
 import os.path
 
+from astropy import table
+from astropy.io import fits
+from astropy.wcs import WCS
+
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
 from SHE_PPT import products
@@ -35,9 +39,6 @@ from SHE_PPT.she_image_stack import SHEImageStack
 from SHE_PPT.table_formats.detections import tf as detf
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import find_extension, load_wcs
-from astropy import table
-from astropy.io import fits
-from astropy.wcs import WCS
 import numpy as np
 
 
@@ -286,7 +287,8 @@ class SHEFrameStack(object):
             qualified_filename = os.path.join(
                 workdir, product.get_psf_filename())
         else:
-            raise ValueError("Invalid filetype: " + filetype)
+            qualified_filename = os.path.join(
+                workdir, product.get_data_filename())
         hdulist = fits.open(
             qualified_filename, **kwargs)
 
@@ -325,7 +327,7 @@ class SHEFrameStack(object):
              exposure_listfile_filename=None,
              seg_listfile_filename=None,
              stacked_image_product_filename=None,
-             stacked_seg_filename=None,
+             stacked_seg_product_filename=None,
              psf_listfile_filename=None,
              detections_listfile_filename=None,
              workdir=".",
@@ -387,8 +389,8 @@ class SHEFrameStack(object):
             psf_filename = index_or_none(psf_filenames, exposure_i)
 
             exposure = SHEFrame.read(frame_product_filename=exposure_filename,
-                                     seg_filename=seg_filename,
-                                     psf_filename=psf_filename,
+                                     seg_product_filename=seg_filename,
+                                     psf_product_filename=psf_filename,
                                      workdir=workdir,
                                      apply_sc3_fix=apply_sc3_fix,
                                      **kwargs)
@@ -422,12 +424,13 @@ class SHEFrameStack(object):
                                                               filetype="background")
 
         # Get the segmentation image
-        if stacked_seg_filename is None:
+        if stacked_seg_product_filename is None:
             stacked_seg_data = None
         else:
             try:
-                _, stacked_seg_data = cls._read_file_extension(stacked_seg_filename,
-                                                               workdir=workdir)
+                _, stacked_seg_data = cls._read_product_extension(stacked_seg_product_filename,
+                                                                  workdir=workdir,
+                                                                  dtype=products.stack_mosaic.DpdSheStackMosaicProduct)
             except FileNotFoundError as e:
                 logger.warn(str(e))
                 stacked_seg_data = None

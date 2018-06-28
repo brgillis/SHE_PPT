@@ -38,8 +38,8 @@ def init():
 
     # Add the data file name methods
 
-    binding_class.set_filename = __set_filename
-    binding_class.get_filename = __get_filename
+    binding_class.set_data_filename = __set_data_filename
+    binding_class.get_data_filename = __get_data_filename
 
     binding_class.get_all_filenames = __get_all_filenames
 
@@ -48,11 +48,11 @@ def init():
     return
 
 
-def __set_filename(self, filename):
+def __set_data_filename(self, filename):
     self.Data.DataContainer.FileName = filename
 
 
-def __get_filename(self):
+def __get_data_filename(self):
     return self.Data.DataContainer.FileName
 
 
