@@ -26,7 +26,6 @@ import os.path
 
 from astropy.io import fits
 from astropy.table import Table
-from astropy.wcs import WCS
 
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
@@ -248,7 +247,7 @@ class SHEFrame(object):
             seg_prod = read_xml_product(
                 os.path.join(workdir, seg_product_filename))
             if not isinstance(seg_prod, products.mosaic.dpdMerSegmentationMap):
-                raise ValueError("Data image product from " +
+                raise ValueError("Segmentation map product from " +
                                  seg_product_filename + " is invalid type.")
 
             seg_data_filename = os.path.join(
@@ -339,9 +338,9 @@ class SHEFrame(object):
 
             psf_prod = read_xml_product(
                 os.path.join(workdir, psf_product_filename))
-            if not isinstance(seg_prod, products.psf_image.DpdShePSFImageProduct):
+            if not isinstance(psf_prod, products.psf_image.DpdShePSFImageProduct):
                 raise ValueError("Data image product from " +
-                                 seg_product_filename + " is invalid type.")
+                                 psf_product_filename + " is invalid type.")
 
             psf_data_filename = os.path.join(
                 workdir, psf_prod.get_data_filename())
