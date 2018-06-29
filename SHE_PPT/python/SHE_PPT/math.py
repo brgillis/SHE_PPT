@@ -87,17 +87,21 @@ class LinregressResults(object):
         dx2m = stats.x2m - stats.xm**2
         dxym = stats.xym - stats.xm * stats.ym
 
-        self.slope = dxym / dx2m
+        if dx2m == 0:
+            self.slope = np.inf
+            self.intercept = np.nan
+        else:
+            self.slope = dxym / dx2m
+            self.intercept = stats.ym - stats.xm * self.slope
 
-        self.intercept = stats.ym - stats.xm * self.slope
-
-        self.slope_err = np.sqrt(1. / (stats.w * dx2m))
-
-        self.intercept_err = np.sqrt(
-            (1.0 + stats.xm ** 2 / dx2m) / stats.w)
-
-        self.slope_intercept_covar = -stats.xm / \
-            (stats.w * dx2m)
+        if dx2m == 0 or stats.w == 0:
+            self.slope_err = np.inf
+            self.intercept_err = np.nan
+            self.slope_intercept_covar = np.nan
+        else:
+            self.slope_err = np.sqrt(1. / (stats.w * dx2m))
+            self.intercept_err = np.sqrt((1.0 + stats.xm ** 2 / dx2m) / stats.w)
+            self.slope_intercept_covar = -stats.xm / (stats.w * dx2m)
 
     @classmethod
     def combine_lstats(cls, lstats):
