@@ -87,14 +87,14 @@ class LinregressResults(object):
         dx2m = stats.x2m - stats.xm**2
         dxym = stats.xym - stats.xm * stats.ym
 
-        if dx2m == 0:
+        if dx2m <= 0:
             self.slope = np.inf
             self.intercept = np.nan
         else:
             self.slope = dxym / dx2m
             self.intercept = stats.ym - stats.xm * self.slope
 
-        if dx2m == 0 or stats.w == 0:
+        if dx2m <= 0 or stats.w == 0:
             self.slope_err = np.inf
             self.intercept_err = np.nan
             self.slope_intercept_covar = np.nan
