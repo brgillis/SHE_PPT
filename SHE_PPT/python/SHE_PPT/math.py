@@ -45,10 +45,16 @@ class LinregressStatistics(object):
 
             # Calculate needed statistics
             self.w = lw.sum()
-            self.xm = np.average(lx, weights=lw)
-            self.x2m = np.average(lx**2, weights=lw)
-            self.ym = np.average(ly, weights=lw)
-            self.xym = np.average(lx * ly, weights=lw)
+            if self.w <= 0:  # Catch for bad data
+                self.xm = 0
+                self.x2m = 0
+                self.ym = 0
+                self.xym = 0
+            else:
+                self.xm = np.average(lx, weights=lw)
+                self.x2m = np.average(lx**2, weights=lw)
+                self.ym = np.average(ly, weights=lw)
+                self.xym = np.average(lx * ly, weights=lw)
 
         return
 
