@@ -51,10 +51,10 @@ class LinregressStatistics(object):
                 self.ym = 0
                 self.xym = 0
             else:
-                self.xm = np.nanmean(lx * lw) / self.w
-                self.x2m = np.nanmean(lx**2 * lw) / self.w
-                self.ym = np.nanmean(ly * lw) / self.w
-                self.xym = np.nanmean(lx * ly * lw) / self.w
+                self.xm = np.nansum(lx * lw) / self.w
+                self.x2m = np.nansum(lx**2 * lw) / self.w
+                self.ym = np.nansum(ly * lw) / self.w
+                self.xym = np.nansum(lx * ly * lw) / self.w
 
         return
 
@@ -125,10 +125,10 @@ class LinregressResults(object):
         # Fill in an output object with weighted sums
         stats = LinregressStatistics()
         stats.w = lw.sum()
-        stats.xm = np.nanmean(lxm * lw) / lw.sum()
-        stats.x2m = np.nanmean(lx2m * lw) / lw.sum()
-        stats.ym = np.nanmean(lym * lw) / lw.sum()
-        stats.xym = np.nanmean(lxym * lw) / lw.sum()
+        stats.xm = np.nansum(lxm * lw) / lw.sum()
+        stats.x2m = np.nansum(lx2m * lw) / lw.sum()
+        stats.ym = np.nansum(lym * lw) / lw.sum()
+        stats.xym = np.nansum(lxym * lw) / lw.sum()
 
         return stats
 
