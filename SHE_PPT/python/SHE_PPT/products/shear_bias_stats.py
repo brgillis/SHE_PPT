@@ -7,7 +7,7 @@
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines.
 """
 
-__updated__ = "2018-06-22"
+__updated__ = "2018-07-02"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -254,12 +254,12 @@ def create_bfd_statistics(g1_statistics, g2_statistics):
         @TODO fill in docstring
     """
 
-    BFD_shear_estimates = MethodShearBiasStatistics()
+    BFD_shear_statistics = MethodShearBiasStatistics()
 
-    BFD_shear_estimates.G1Statistics = g1_statistics
-    BFD_shear_estimates.G2Statistics = g2_statistics
+    BFD_shear_statistics.G1Statistics = g1_statistics
+    BFD_shear_statistics.G2Statistics = g2_statistics
 
-    return BFD_shear_estimates
+    return BFD_shear_statistics
 
 
 def create_ksb_statistics(g1_statistics, g2_statistics):
@@ -267,12 +267,12 @@ def create_ksb_statistics(g1_statistics, g2_statistics):
         @TODO fill in docstring
     """
 
-    KSB_shear_estimates = MethodShearBiasStatistics()
+    KSB_shear_statistics = MethodShearBiasStatistics()
 
-    KSB_shear_estimates.G1Statistics = g1_statistics
-    KSB_shear_estimates.G2Statistics = g2_statistics
+    KSB_shear_statistics.G1Statistics = g1_statistics
+    KSB_shear_statistics.G2Statistics = g2_statistics
 
-    return KSB_shear_estimates
+    return KSB_shear_statistics
 
 
 def create_lensmc_statistics(g1_statistics, g2_statistics):
@@ -280,12 +280,12 @@ def create_lensmc_statistics(g1_statistics, g2_statistics):
         @TODO fill in docstring
     """
 
-    LensMC_shear_estimates = MethodShearBiasStatistics()
+    LensMC_shear_statistics = MethodShearBiasStatistics()
 
-    LensMC_shear_estimates.G1Statistics = g1_statistics
-    LensMC_shear_estimates.G2Statistics = g2_statistics
+    LensMC_shear_statistics.G1Statistics = g1_statistics
+    LensMC_shear_statistics.G2Statistics = g2_statistics
 
-    return LensMC_shear_estimates
+    return LensMC_shear_statistics
 
 
 def create_momentsml_statistics(g1_statistics, g2_statistics):
@@ -293,12 +293,12 @@ def create_momentsml_statistics(g1_statistics, g2_statistics):
         @TODO fill in docstring
     """
 
-    MomentsML_shear_estimates = MethodShearBiasStatistics()
+    MomentsML_shear_statistics = MethodShearBiasStatistics()
 
-    MomentsML_shear_estimates.G1Statistics = g1_statistics
-    MomentsML_shear_estimates.G2Statistics = g2_statistics
+    MomentsML_shear_statistics.G1Statistics = g1_statistics
+    MomentsML_shear_statistics.G2Statistics = g2_statistics
 
-    return MomentsML_shear_estimates
+    return MomentsML_shear_statistics
 
 
 def create_regauss_statistics(g1_statistics, g2_statistics):
@@ -306,9 +306,9 @@ def create_regauss_statistics(g1_statistics, g2_statistics):
         @TODO fill in docstring
     """
 
-    REGAUSS_shear_estimates = MethodShearBiasStatistics()
+    REGAUSS_shear_statistics = MethodShearBiasStatistics()
 
-    REGAUSS_shear_estimates.G1Statistics = g1_statistics
-    REGAUSS_shear_estimates.G2Statistics = g2_statistics
+    REGAUSS_shear_statistics.G1Statistics = g1_statistics
+    REGAUSS_shear_statistics.G2Statistics = g2_statistics
 
-    return REGAUSS_shear_estimates
+    return REGAUSS_shear_statistics
