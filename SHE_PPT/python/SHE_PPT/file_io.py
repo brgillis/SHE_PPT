@@ -22,6 +22,7 @@
 import json
 import os
 from os.path import join, isfile
+from pickle import UnpicklingError
 import pickle
 import time
 from xml.sax._exceptions import SAXParseException
@@ -356,5 +357,9 @@ def get_data_filename(filename, workdir="."):
         return filename
     except SAXParseException as _e:
         # Not an XML file - so presumably it's a raw data file; return the
+        # input filename
+        return filename
+    except UnpicklingError as _e:
+        # Not an XML or pickled file - so presumably it's a raw data file; return the
         # input filename
         return filename
