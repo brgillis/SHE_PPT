@@ -57,6 +57,6 @@ class TestDetectionsProduct(object):
         loaded_product = read_xml_product(filename)
 
         # Check that the filenames match
-        assert loaded_product.get_filename() == subfilename
+        assert loaded_product.get_data_filename() == subfilename
 
         pass
