@@ -22,6 +22,8 @@ from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
 from SHE_PPT.products import stacked_frame as prod
 
+prod.init()
+
 
 class TestStackedFrameProduct(object):
     """A collection of tests for the shear estimates data product.
@@ -39,8 +41,6 @@ class TestStackedFrameProduct(object):
         pass
 
     def test_xml_writing_and_reading(self, tmpdir):
-
-        prod.init()
 
         # Create the product
         product = prod.create_dpd_vis_stacked_frame()

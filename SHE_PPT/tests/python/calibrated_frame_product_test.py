@@ -29,16 +29,16 @@ class TestCalibratedFrameProduct(object):
     """
 
     def test_validation(self):
-        
+
         prod.init()
 
         # Create the product
         subfilename = "foo.fits"
-        product = prod.create_dpd_vis_calibrated_frame(filename=subfilename)
+        product = prod.create_dpd_vis_calibrated_frame(data_filename=subfilename)
 
         # Check that it validates the schema
         product.validateBinding()
-        
+
         # Check that it was inited with the proper filename
         assert product.get_data_filename() == subfilename
 

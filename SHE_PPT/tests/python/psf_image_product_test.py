@@ -18,9 +18,10 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from SHE_PPT.products import psf_image as prod
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
+from SHE_PPT.products import psf_image as prod
+
 
 class TestPSFImageProduct(object):
     """A collection of tests for the shear estimates data product.
@@ -46,7 +47,7 @@ class TestPSFImageProduct(object):
 
         # Change the fits filenames
         subfilename = "test_file.fits"
-        product.set_filename(subfilename)
+        product.set_data_filename(subfilename)
 
         # Save the product in an XML file
         filename = tmpdir.join("she_psf_image.xml")
@@ -69,7 +70,7 @@ class TestPSFImageProduct(object):
 
         # Change the fits filenames
         subfilename = "test_file.fits"
-        product.set_filename(subfilename)
+        product.set_data_filename(subfilename)
 
         # Save the product in an XML file
         filename = tmpdir.join("she_psf_image.xml")
