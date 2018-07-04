@@ -284,6 +284,11 @@ def find_file(filename, path=None):
         return find_aux_file(filename[4:])
     elif filename[0:5] == "CONF/":
         return find_conf_file(filename[5:])
+    elif filename[0] == "/":
+        if not os.path.exists(filename):
+            raise RuntimeError("File " + filename + " cannot be found.")
+        else:
+            return filename
     elif path is not None:
         return find_file_in_path(filename, path)
     else:
