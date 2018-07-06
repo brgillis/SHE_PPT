@@ -19,12 +19,12 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+from datetime import datetime
 import json
 import os
 from os.path import join, isfile
 from pickle import UnpicklingError
 import pickle
-import time
 from xml.sax._exceptions import SAXParseException
 
 from astropy.io import fits
@@ -83,7 +83,7 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release="00.
         raise ValueError("release (" + release + ") is in incorrect format. Required format is " +
                          "XX.XX, where each X is 0-9.")
 
-    tnow = time.gmtime()
+    tnow = datetime.now()
 
     creation_date = time_to_timestamp(tnow)
 

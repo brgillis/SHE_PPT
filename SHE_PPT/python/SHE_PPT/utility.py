@@ -23,9 +23,10 @@ import codecs
 from copy import deepcopy
 import hashlib
 
+from astropy.wcs import WCS
+
 from SHE_PPT import detector as dtc
 from SHE_PPT.logging import getLogger
-from astropy.wcs import WCS
 
 
 logger = getLogger(__name__)
@@ -100,11 +101,11 @@ def get_detector(obj):
 
 def time_to_timestamp(t):
     """
-        From a struct_time object (as from the time module), get a timestamp in the astro format.
+        From a datetime object, get a timestamp in the astro format.
     """
 
-    timestamp = (str(t.tm_year) + str(t.tm_mon) + str(t.tm_mday) + "T" +
-                 str(t.tm_hour) + str(t.tm_min) + str(t.tm_sec) + ".0Z")
+    timestamp = (str(t.year) + str(t.month) + str(t.day) + "T" +
+                 str(t.hour) + str(t.minute) + str(t.second) + "." + str(t.microsecond // 100000) + "Z")
 
     return timestamp
 
