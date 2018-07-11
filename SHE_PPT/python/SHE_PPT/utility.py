@@ -180,7 +180,7 @@ def get_arguments_string(args, cmd=None):
             continue
         
         # Add it to the arg_string
-        arg_string += "--" + arg.strip() + " " + str(arglib[arg]).strip()
+        arg_string += "--" + arg.strip() + " " + str(arglib[arg]).strip() + " "
         
     # Clean trailing space
     arg_string = arg_string.strip()
