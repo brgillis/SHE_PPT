@@ -101,7 +101,7 @@ class TestUtility:
                 return
 
         test_bool_args = TestBoolArgs()
-        bool_arg_string = get_arguments_string(test_bool_args, store_true=["stt,stf"], store_false=["sff,sft"])
+        bool_arg_string = get_arguments_string(test_bool_args, store_true=["stt", "stf"], store_false=["sff", "sft"])
         assert ((bool_arg_string == "--stt --sff") or
                 (bool_arg_string == "--sff --stt"))
 
