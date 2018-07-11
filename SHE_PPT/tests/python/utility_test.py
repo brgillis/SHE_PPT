@@ -68,7 +68,7 @@ class TestUtility:
         class TestArgs(object):
             def __init__(self):
                 self.foo = "bar"
-                self.foobar = "barfoo " # Test it strips this
+                self.foobar = ["bar", "foo "]
                 return
             
         test_args = TestArgs()
@@ -77,18 +77,18 @@ class TestUtility:
         arg_string = get_arguments_string(test_args)
         
         # Have to test both possible orders of arguments since it's indeterminate
-        assert ((arg_string == "--foo bar --foobar barfoo") or
-                (arg_string == "--foobar barfoo --foo bar"))
+        assert ((arg_string == "--foo bar --foobar bar foo") or
+                (arg_string == "--foobar bar foo --foo bar"))
         
         # Test with a command string
         cmd_string = get_arguments_string(test_args, cmd="run")
-        assert ((cmd_string == "run --foo bar --foobar barfoo") or
-                (cmd_string == "run --foobar barfoo --foo bar"))
+        assert ((cmd_string == "run --foo bar --foobar bar foo") or
+                (cmd_string == "run --foobar bar foo --foo bar"))
         
         # Test it strips the command string properly
         cmd_string2 = get_arguments_string(test_args, cmd="run ")
-        assert ((cmd_string2 == "run --foo bar --foobar barfoo") or
-                (cmd_string2 == "run --foobar barfoo --foo bar"))
+        assert ((cmd_string2 == "run --foo bar --foobar bar foo") or
+                (cmd_string2 == "run --foobar bar foo --foo bar"))
         
         return
 
