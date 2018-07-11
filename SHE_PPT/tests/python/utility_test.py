@@ -18,12 +18,14 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from astropy.table import Table
-import numpy as np
 import os
 import pytest
 
-from SHE_PPT.utility import hash_any
+from astropy.table import Table
+
+from SHE_PPT.utility import hash_any, get_arguments_string
+import numpy as np
+
 
 class TestUtility:
     """
@@ -59,5 +61,35 @@ class TestUtility:
         # Check that base64 encoding is working as expected - should be shorter than hex encoding
         assert len(hash_any(test_str, format = "hex")) > len(hash_any(test_str, format = "base64"))
         assert len(hash_any(test_obj, format = "hex")) > len(hash_any(test_obj, format = "base64"))
+        
+    def test_get_arguments_string(self):
+        
+        # Set up a mock arguments object
+        class TestArgs(object):
+            def __init__(self):
+                self.foo = "bar"
+                self.foobar = "barfoo " # Test it strips this
+                return
+            
+        test_args = TestArgs()
+        
+        # Test with no command string
+        arg_string = get_arguments_string(test_args)
+        
+        # Have to test both possible orders of arguments since it's indeterminate
+        assert ((arg_string == "--foo bar --foobar barfoo") or
+                (arg_string == "--foobar barfoo --foo bar"))
+        
+        # Test with a command string
+        cmd_string = get_arguments_string(test_args, cmd="run")
+        assert ((cmd_string == "run --foo bar --foobar barfoo") or
+                (cmd_string == "run --foobar barfoo --foo bar"))
+        
+        # Test it strips the command string properly
+        cmd_string2 = get_arguments_string(test_args, cmd="run ")
+        assert ((cmd_string2 == "run --foo bar --foobar barfoo") or
+                (cmd_string2 == "run --foobar barfoo --foo bar"))
+        
+        return
 
 
