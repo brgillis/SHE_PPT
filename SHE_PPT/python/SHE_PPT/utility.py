@@ -24,6 +24,7 @@ from copy import deepcopy
 import hashlib
 
 from astropy.wcs import WCS
+from future.builtins.misc import isinstance
 
 from SHE_PPT import detector as dtc
 from SHE_PPT.logging import getLogger
@@ -175,12 +176,21 @@ def get_arguments_string(args, cmd=None):
     # Loop over all arguments
     for arg in arglib:
         
+        val = arglib[arg]
+        
         # Skip if it's private or the value is None
-        if arg[0]=="_" or arglib[arg] is None:
+        if arg[0]=="_" or val is None:
             continue
         
-        # Add it to the arg_string
-        arg_string += "--" + arg.strip() + " " + str(arglib[arg]).strip() + " "
+        # Add arg to arg string
+        arg_string += "--" + arg.strip() + " " 
+        
+        # Properly handle lists of values
+        if isinstance(val,list):
+            for subval in val:
+                arg_string += str(subval).strip() + " "
+        else:
+            arg_string += str(val).strip() + " "
         
     # Clean trailing space
     arg_string = arg_string.strip()
