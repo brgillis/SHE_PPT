@@ -150,3 +150,39 @@ def load_wcs(header, apply_sc3_fix=False):
     logger.debug("Exiting load_wcs")
 
     return wcs
+
+def get_arguments_string(args, cmd=None):
+    """Turns an args variable (as from parse_args) into a string that can be used for execution.
+    
+    Parameters
+    ----------
+    args : <object> Any object with attributes, as from parse_args
+    cmd : <str> If not none, will be put at the beginning of the output string followed by a space
+    
+    Return
+    ------
+    <str> String of all needed commands
+    
+    """
+
+    if cmd is not None:
+        arg_string = cmd.strip() + " "
+    else:
+        arg_string = ""
+    
+    arglib = vars(args)
+    
+    # Loop over all arguments
+    for arg in arglib:
+        
+        # Skip if it's private
+        if arg[0]=="_":
+            continue
+        
+        # Add it to the arg_string
+        arg_string += "--" + arg + " " + str(arglib[arg])
+        
+    # Clean trailing space
+    arg_string = arg_string.strip()
+    
+    return arg_string
