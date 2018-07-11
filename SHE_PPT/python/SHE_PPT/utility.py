@@ -175,8 +175,8 @@ def get_arguments_string(args, cmd=None):
     # Loop over all arguments
     for arg in arglib:
         
-        # Skip if it's private
-        if arg[0]=="_":
+        # Skip if it's private or the value is None
+        if arg[0]=="_" or arglib[arg] is None:
             continue
         
         # Add it to the arg_string
