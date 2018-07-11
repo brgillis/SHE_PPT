@@ -82,13 +82,13 @@ class TestUtility:
         
         # Test with a command string
         cmd_string = get_arguments_string(test_args, cmd="run")
-        assert ((arg_string == "run --foo bar --foobar barfoo") or
-                (arg_string == "run --foobar barfoo --foo bar"))
+        assert ((cmd_string == "run --foo bar --foobar barfoo") or
+                (cmd_string == "run --foobar barfoo --foo bar"))
         
         # Test it strips the command string properly
-        cmd_string = get_arguments_string(test_args, cmd="run ")
-        assert ((arg_string == "run --foo bar --foobar barfoo") or
-                (arg_string == "run --foobar barfoo --foo bar"))
+        cmd_string2 = get_arguments_string(test_args, cmd="run ")
+        assert ((cmd_string2 == "run --foo bar --foobar barfoo") or
+                (cmd_string2 == "run --foobar barfoo --foo bar"))
         
         return
 
