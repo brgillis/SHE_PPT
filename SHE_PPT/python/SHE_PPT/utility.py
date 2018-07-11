@@ -23,11 +23,10 @@ import codecs
 from copy import deepcopy
 import hashlib
 
-from astropy.wcs import WCS
-from future.builtins.misc import isinstance
-
 from SHE_PPT import detector as dtc
 from SHE_PPT.logging import getLogger
+from astropy.wcs import WCS
+from future.builtins.misc import isinstance
 
 
 logger = getLogger(__name__)
@@ -152,47 +151,66 @@ def load_wcs(header, apply_sc3_fix=False):
 
     return wcs
 
-def get_arguments_string(args, cmd=None):
+
+def get_arguments_string(args, cmd=None, store_true=None, store_false=None):
     """Turns an args variable (as from parse_args) into a string that can be used for execution.
-    
+
     Parameters
     ----------
     args : <object> Any object with attributes, as from parse_args
     cmd : <str> If not none, will be put at the beginning of the output string followed by a space
-    
+
     Return
     ------
     <str> String of all needed commands
-    
+
     """
+
+    # Set up defaults
+    if store_true is None:
+        store_true = []
+    if store_false is None:
+        store_false = []
 
     if cmd is not None:
         arg_string = cmd.strip() + " "
     else:
         arg_string = ""
-    
+
     arglib = vars(args)
-    
+
     # Loop over all arguments
     for arg in arglib:
-        
+
         val = arglib[arg]
-        
+
         # Skip if it's private or the value is None
-        if arg[0]=="_" or val is None:
+        if arg[0] == "_" or val is None:
             continue
-        
+
+        # Properly handle bools for store_true/false cases
+        if isinstance(val, bool):
+            if arg in store_true:
+                if val:
+                    arg_string += "--" + arg.strip() + " "
+            elif arg in store_false:
+                if not val:
+                    arg_string += "--" + arg.strip() + " "
+            else:
+                arg_string += "--" + arg.strip() + " " + str(val).strip() + " "
+            continue
+
         # Add arg to arg string
-        arg_string += "--" + arg.strip() + " " 
-        
+        arg_string += "--" + arg.strip() + " "
+
         # Properly handle lists of values
-        if isinstance(val,list):
+        if isinstance(val, list):
             for subval in val:
                 arg_string += str(subval).strip() + " "
         else:
             arg_string += str(val).strip() + " "
-        
+
     # Clean trailing space
     arg_string = arg_string.strip()
-    
+
     return arg_string
