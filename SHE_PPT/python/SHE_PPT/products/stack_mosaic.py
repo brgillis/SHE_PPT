@@ -102,6 +102,8 @@ def init():
     binding_class.set_data_filename = __set_data_filename
     binding_class.get_data_filename = __get_data_filename
 
+    binding_class.get_all_filenames = __get_all_filenames
+
     return
 
 
@@ -111,6 +113,13 @@ def __set_data_filename(self, filename):
 
 def __get_data_filename(self):
     return self.Data.DataStorage.DataContainer.FileName
+
+
+def __get_all_filenames(self):
+
+    all_filenames = [self.get_data_filename(), ]
+
+    return all_filenames
 
 
 class DataContainer:

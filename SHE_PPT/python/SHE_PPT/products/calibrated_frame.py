@@ -52,6 +52,8 @@ def init():
     binding_class.set_wgt_filename = __set_wgt_filename
     binding_class.get_wgt_filename = __get_wgt_filename
 
+    binding_class.get_all_filenames = __get_all_filenames
+
     return
 
 
@@ -109,6 +111,16 @@ def __get_wgt_filename(self):
         if self.Data.WeightStorage is not None:
             return self.Data.WeightStorage.DataContainer.FileName
     return None
+
+
+def __get_all_filenames(self):
+
+    all_filenames = [self.get_data_filename(),
+                     self.get_psf_filename(),
+                     self.get_bkg_filename(),
+                     self.get_wgt_filename(), ]
+
+    return all_filenames
 
 
 def create_dpd_vis_calibrated_frame(data_filename='default_filename.fits',
