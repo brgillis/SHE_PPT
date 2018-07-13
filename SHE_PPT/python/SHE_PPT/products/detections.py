@@ -42,7 +42,7 @@ def init():
 
     binding_class.get_all_filenames = __get_all_filenames
 
-    binding_class.has_files = False
+    binding_class.has_files = True
 
     return
 
@@ -57,7 +57,7 @@ def __get_data_filename(self):
 
 def __get_all_filenames(self):
 
-    all_filenames = []
+    all_filenames = [self.get_data_filename(), ]
 
     return all_filenames
 
@@ -76,6 +76,7 @@ def create_dpd_she_detections(data_filename=None):
         dpd_she_detections.set_data_filename(data_filename)
 
     return dpd_she_detections
+
 
 # Add a useful alias
 create_detections_product = create_dpd_she_detections
