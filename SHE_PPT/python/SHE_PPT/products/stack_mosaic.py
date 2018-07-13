@@ -151,12 +151,14 @@ def create_dpd_she_stack_mosaic(data_filename):
 
     dpd_she_stack_mosaic = DpdSheStackMosaicProduct()
 
-    dpd_she_stack_mosaic.Header = HeaderProvider.createGenericHeader("SHE")
+    # dpd_she_stack_mosaic.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
+    dpd_she_stack_mosaic.Header = None
 
     dpd_she_stack_mosaic.Data = create_she_stack_mosaic(
         data_filename=data_filename)
 
     return dpd_she_stack_mosaic
+
 
 # Add a useful alias
 create_stack_mosaic_product = create_dpd_she_stack_mosaic
