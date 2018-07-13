@@ -26,7 +26,6 @@ import hashlib
 from SHE_PPT import detector as dtc
 from SHE_PPT.logging import getLogger
 from astropy.wcs import WCS
-from future.builtins.misc import isinstance
 
 
 logger = getLogger(__name__)
