@@ -25,8 +25,6 @@
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import EuclidDmBindings.she.she_stub as she_dpd # FIXME
 
-import pickle
-
 
 def init():
     """
@@ -43,7 +41,7 @@ def init():
 
     binding_class.get_all_filenames = __get_all_filenames
 
-    binding_class.has_files = False
+    binding_class.has_files = True
 
     return
 
@@ -58,7 +56,7 @@ def __get_data_filename(self):
 
 def __get_all_filenames(self):
 
-    all_filenames = []
+    all_filenames = [self.get_data_filename()]
 
     return all_filenames
 
@@ -103,6 +101,7 @@ def create_dpd_she_psf_image(filename=None):
     dpd_she_psf_image.Data = create_she_psf_image(filename)
 
     return dpd_she_psf_image
+
 
 # Add a useful alias
 create_psf_image_product = create_dpd_she_psf_image
