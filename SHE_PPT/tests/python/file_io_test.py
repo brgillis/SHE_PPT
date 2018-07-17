@@ -19,16 +19,15 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 import os
-from time import sleep
-
-from astropy.table import Table
 import pytest
+from time import sleep
 
 from SHE_PPT.file_io import (get_allowed_filename,
                              write_listfile,
                              read_listfile,
                              replace_in_file,
-                             replace_multiple_in_file)
+                             replace_multiple_in_file, get_instance_id)
+from astropy.table import Table
 import numpy as np
 
 
@@ -56,7 +55,9 @@ class TestIO:
 
     def test_get_allowed_filename(self):
 
-        filename = get_allowed_filename("TEST", "0", extension=".junk", release="06.66")
+        instance_id = "instance"
+
+        filename = get_allowed_filename("TEST", instance_id, extension=".junk", release="06.66")
 
         expect_filename_head = "EUC_SHE_TEST_0_"
         expect_filename_tail = "Z_06.66.junk"
@@ -65,9 +66,11 @@ class TestIO:
         assert filename[0:len(expect_filename_head)] == expect_filename_head
         assert filename[-len(expect_filename_tail):] == expect_filename_tail
 
+        assert get_instance_id(filename) == instance_id
+
         # Check that if we wait a tenth of a second, it will change
         sleep(0.1)
-        new_filename = get_allowed_filename("TEST", "0", extension=".junk", release="06.66")
+        new_filename = get_allowed_filename("TEST", instance_id, extension=".junk", release="06.66")
         assert new_filename != filename
 
     def test_rw_listfile(self):

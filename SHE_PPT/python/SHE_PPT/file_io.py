@@ -27,12 +27,11 @@ from pickle import UnpicklingError
 import pickle
 from xml.sax._exceptions import SAXParseException
 
-from astropy.io import fits
-
 from EuclidDmBindings.sys_stub import CreateFromDocument
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.utility import time_to_timestamp
+from astropy.io import fits
 
 
 logger = getLogger(mv.logger_name)
@@ -91,6 +90,16 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release="00.
         "_" + creation_date + "_" + release + extension
 
     return filename
+
+
+def get_instance_id(filename):
+    """ From a Euclid-compliant filename, return the string corresponding to the instance ID.
+    """
+
+    split_filename = filename.split('_')
+    instance_id = split_filename[-3]
+
+    return instance_id
 
 
 def write_listfile(listfile_name, filenames):
