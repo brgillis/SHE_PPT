@@ -24,9 +24,6 @@ Created on: 02/03/18
 
 import os.path
 
-from astropy.io import fits
-from astropy.table import Table
-
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
 from SHE_PPT import products
@@ -36,6 +33,8 @@ from SHE_PPT.she_image import SHEImage
 from SHE_PPT.table_formats.psf import tf as pstf
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import find_extension, load_wcs
+from astropy.io import fits
+from astropy.table import Table
 import numpy as np
 
 
@@ -231,15 +230,22 @@ class SHEFrame(object):
             frame_data_hdulist = fits.open(
                 frame_data_filename, **kwargs)
 
-            # Load in the data from the background frame
+            # Load in the data from the background and weight frames
             bkg_data_filename = os.path.join(
                 workdir, frame_prod.get_bkg_filename())
 
             bkg_data_hdulist = fits.open(
                 bkg_data_filename, **kwargs)
+
+            wgt_data_filename = os.path.join(
+                workdir, frame_prod.get_wgt_filename())
+
+            wgt_data_hdulist = fits.open(
+                wgt_data_filename, **kwargs)
         else:
             frame_data_hdulist = None
             bkg_data_hdulist = None
+            wgt_data_hdulist = None
 
         # Load in the data from the segmentation frame
         if seg_product_filename is not None:
@@ -309,10 +315,19 @@ class SHEFrame(object):
                     if bkg_i is None:
                         raise ValueError("No corresponding background extension found in file " + frame_data_filename + "." +
                                          "Expected extname: " + bkg_extname)
-                    detector_background = bkg_data_hdulist[
-                        bkg_i].data.transpose()
+                    detector_background = bkg_data_hdulist[bkg_i].data.transpose()
                 else:
                     detector_background = None
+
+                if wgt_data_hdulist is not None:
+                    wgt_extname = id_string  # Background has no tag
+                    wgt_i = find_extension(wgt_data_hdulist, wgt_extname)
+                    if wgt_i is None:
+                        raise ValueError("No corresponding weight extension found in file " + frame_data_filename + "." +
+                                         "Expected extname: " + wgt_extname)
+                    detector_weight = wgt_data_hdulist[wgt_i].data.transpose()
+                else:
+                    detector_weight = None
 
                 if seg_data_hdulist is not None:
                     seg_extname = id_string + "." + mv.segmentation_tag
@@ -329,6 +344,7 @@ class SHEFrame(object):
                                                mask=detector_mask,
                                                noisemap=detector_noisemap,
                                                background_map=detector_background,
+                                               weight_map=detector_weight,
                                                segmentation_map=detector_seg_data,
                                                header=detector_header,
                                                wcs=detector_wcs)
