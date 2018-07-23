@@ -19,8 +19,6 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 import os
-
-from astropy.table import Column, Table
 import pytest
 
 from SHE_PPT import magic_values as mv
@@ -28,6 +26,7 @@ from SHE_PPT.table_formats.bfd_moments import tf as bfdtf, initialise_bfd_moment
 from SHE_PPT.table_formats.details import tf as datf, initialise_details_table
 from SHE_PPT.table_formats.detections import tf as detf, initialise_detections_table
 from SHE_PPT.table_formats.galaxy_population import tf as gptf, initialise_galaxy_population_table
+from SHE_PPT.table_formats.ksb_training import tf as kttf, initialise_ksb_training_table
 from SHE_PPT.table_formats.p_of_e import tf as petf, initialise_p_of_e_table
 from SHE_PPT.table_formats.psf import tf as pstf, initialise_psf_table
 from SHE_PPT.table_formats.shear_estimates import tf as setf, initialise_shear_estimates_table, len_chain, num_chains
@@ -38,7 +37,8 @@ from SHE_PPT.table_utility import (get_comments,
                                    get_lengths,
                                    is_in_format,
                                    add_row,
-                                  )
+                                   )
+from astropy.table import Column, Table
 import numpy as np
 
 
@@ -51,7 +51,7 @@ class TestTableFormats:
     @classmethod
     def setup_class(cls):
         # Define a list of the table formats we'll be testing
-        cls.formats = [datf, detf, setf, petf, pstf, gptf, sptf, bfdtf]
+        cls.formats = [datf, detf, setf, petf, pstf, gptf, sptf, bfdtf, kttf]
         cls.initializers = [initialise_details_table,
                             initialise_detections_table,
                             initialise_shear_estimates_table,
@@ -59,7 +59,8 @@ class TestTableFormats:
                             initialise_psf_table,
                             initialise_galaxy_population_table,
                             initialise_simulation_plan_table,
-                            initialise_bfd_moments_table]
+                            initialise_bfd_moments_table,
+                            initialise_ksb_training_table]
 
         cls.filename_base = "test_table"
 
@@ -137,20 +138,20 @@ class TestTableFormats:
     def test_get_fits_dtypes(self):
         # Check if we get the correct fits dtypes list for detections tables
 
-        desired_fits_dtypes = ( "K", "J", "E", "E",
-                                "E", "E", "E", "E", "E",
-                                "E", "E", "E", "E", "E",
-                                "E", "E", "E", "E", "E",
-                                "E", "E", "E", "E", "E",
-                                "E", "E", "E", "E", "E",
-                                "E", "E", "E", "E", "E",
-                                "E", "E", "E", "E", "E",
-                                "E", "E", "E", "E", "E",
-                                "E", "E", "E", "E", "E",
-                                "E", "E", "E", "E", "E",
-                                "E", "E", "E", "E", "E",
-                                "E", "E", "E", "E", "E",
-                                "E", "E", "E", "E",)
+        desired_fits_dtypes = ("K", "J", "E", "E",
+                               "E", "E", "E", "E", "E",
+                               "E", "E", "E", "E", "E",
+                               "E", "E", "E", "E", "E",
+                               "E", "E", "E", "E", "E",
+                               "E", "E", "E", "E", "E",
+                               "E", "E", "E", "E", "E",
+                               "E", "E", "E", "E", "E",
+                               "E", "E", "E", "E", "E",
+                               "E", "E", "E", "E", "E",
+                               "E", "E", "E", "E", "E",
+                               "E", "E", "E", "E", "E",
+                               "E", "E", "E", "E", "E",
+                               "E", "E", "E", "E",)
 
         assert get_fits_dtypes(detf) == desired_fits_dtypes
 
@@ -165,8 +166,6 @@ class TestTableFormats:
                            l, l, l, l, l, l, l, l, l, l,
                            1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
                            1, 1, 1, 1, 1, 1,)
-
-
 
         assert get_lengths(setf) == desired_lengths
 
@@ -184,12 +183,12 @@ class TestTableFormats:
 
             # Try strict test
             for j in range((len(self.formats))):
-                assert is_in_format(empty_tables[i], self.formats[j], strict = True) == (i == j)
+                assert is_in_format(empty_tables[i], self.formats[j], strict=True) == (i == j)
 
             # Try non-strict version now
-            empty_tables[i].add_column(Column(name = 'new_column', data = np.zeros((0,))))
+            empty_tables[i].add_column(Column(name='new_column', data=np.zeros((0,))))
             for j in range((len(self.formats))):
-                assert is_in_format(empty_tables[i], self.formats[j], strict = False) == (i == j)
+                assert is_in_format(empty_tables[i], self.formats[j], strict=False) == (i == j)
 
     def test_add_row(self):
         # Test that we can add a row through kwargs
@@ -212,17 +211,17 @@ class TestTableFormats:
 
         # Test initialization methods
 
-        detections_table = initialise_detections_table(model_hash = model_hash,
-                                                       model_seed = model_seed,
-                                                       noise_seed = noise_seed)
+        detections_table = initialise_detections_table(model_hash=model_hash,
+                                                       model_seed=model_seed,
+                                                       noise_seed=noise_seed)
 
         assert(detections_table.meta[detf.m.model_hash] == model_hash)
         assert(detections_table.meta[detf.m.model_seed] == model_seed)
         assert(detections_table.meta[detf.m.noise_seed] == noise_seed)
 
-        details_table = initialise_details_table(model_hash = model_hash,
-                                                 model_seed = model_seed,
-                                                 noise_seed = noise_seed)
+        details_table = initialise_details_table(model_hash=model_hash,
+                                                 model_seed=model_seed,
+                                                 noise_seed=noise_seed)
 
         psf_table = initialise_psf_table()
 
@@ -242,4 +241,3 @@ class TestTableFormats:
 
         assert(shear_estimates_table.meta[setf.m.num_chains] == num_chains)
         assert(shear_estimates_table.meta[setf.m.len_chain] == len_chain)
-
