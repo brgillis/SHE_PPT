@@ -94,7 +94,7 @@ class KsbTrainingTableFormat(object):
                                         comment="ID of this object in the galaxy population priors table.")
         self.e1 = set_column_properties("E1", dtype=">f4", fits_dtype="E",
                                         comment="Mean ellipticity measurement of this object, component 1")
-        self.e2 = set_column_properties("E1", dtype=">f4", fits_dtype="E",
+        self.e2 = set_column_properties("E2", dtype=">f4", fits_dtype="E",
                                         comment="Mean ellipticity measurement of this object, component 2")
 
         # A list of columns in the desired order
