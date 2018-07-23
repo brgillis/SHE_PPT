@@ -52,6 +52,8 @@ def init():
     binding_class.set_wgt_filename = __set_wgt_filename
     binding_class.get_wgt_filename = __get_wgt_filename
 
+    binding_class.get_all_filenames = __get_all_filenames
+
     return
 
 
@@ -111,6 +113,16 @@ def __get_wgt_filename(self):
     return None
 
 
+def __get_all_filenames(self):
+
+    all_filenames = [self.get_data_filename(),
+                     self.get_psf_filename(),
+                     self.get_bkg_filename(),
+                     self.get_wgt_filename(), ]
+
+    return all_filenames
+
+
 def create_dpd_vis_stacked_frame(data_filename="default_data_filename.fits",
                                  bkg_filename="default_bkg_filename.fits",
                                  wgt_filename="default_wgt_filename.fits"):
@@ -128,6 +140,7 @@ def create_dpd_vis_stacked_frame(data_filename="default_data_filename.fits",
     dpd_vis_stacked_frame.set_wgt_filename(wgt_filename)
 
     return dpd_vis_stacked_frame
+
 
 # Add a useful alias
 create_stacked_frame_product = create_dpd_vis_stacked_frame

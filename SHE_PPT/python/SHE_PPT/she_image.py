@@ -26,14 +26,14 @@ from SHE_PPT.magic_values import segmap_unassigned_value
 from SHE_PPT.mask import (as_bool, is_masked_bad,
                           is_masked_suspect_or_bad, masked_off_image)
 from SHE_PPT.utility import load_wcs
-import astropy.wcs
-# Avoid non-trivial "from" imports (as explicit is better than implicit)
 import astropy.io.fits
+import astropy.wcs
 import numpy as np
 
 from . import logging
 
 
+# Avoid non-trivial "from" imports (as explicit is better than implicit)
 allowed_int_dtypes = (
     np.int8, np.int16, np.int32, np.uint8, np.uint16, np.uint32)
 
@@ -64,6 +64,7 @@ class SHEImage(object):
                  noisemap=None,
                  segmentation_map=None,
                  background_map=None,
+                 weight_map=None,
                  header=None,
                  offset=None,
                  wcs=None,):
@@ -84,6 +85,7 @@ class SHEImage(object):
         self.noisemap = noisemap
         self.segmentation_map = segmentation_map
         self.background_map = background_map
+        self.weight_map = weight_map
         self.header = header
         self.offset = offset
         self.wcs = wcs
@@ -236,6 +238,29 @@ class SHEImage(object):
     @background_map.deleter
     def background_map(self):
         del self._background_map
+
+    @property
+    def weight_map(self):
+        """A weight map of the image"""
+        return self._weight_map
+
+    @weight_map.setter
+    def weight_map(self, weight_map_array):
+        if weight_map_array is None:
+            # Then we create a flat, one weight map
+            self._weight_map = np.ones(self._data.shape, dtype=float)
+        else:
+            if weight_map_array.ndim is not 2:
+                raise ValueError(
+                    "The weight map array must have 2 dimensions")
+            if weight_map_array.shape != self._data.shape:
+                raise ValueError(
+                    "The weight map array must have the same size as its data {}".format(self._data.shape))
+            self._weight_map = weight_map_array
+
+    @weight_map.deleter
+    def weight_map(self):
+        del self._weight_map
 
     @property
     def header(self):
@@ -402,9 +427,11 @@ class SHEImage(object):
                 data=self.segmentation_map.transpose().astype(np.int32), name="SEGMAP")
             bkgmaphdu = astropy.io.fits.ImageHDU(
                 data=self.background_map.transpose(), name="BKGMAP")
+            wgtmaphdu = astropy.io.fits.ImageHDU(
+                data=self.weight_map.transpose(), name="WGTMAP")
 
             hdulist = astropy.io.fits.HDUList(
-                [datahdu, maskhdu, noisemaphdu, segmaphdu, bkgmaphdu])
+                [datahdu, maskhdu, noisemaphdu, segmaphdu, bkgmaphdu, wgtmaphdu])
 
         else:
             hdulist = astropy.io.fits.HDUList([datahdu])
@@ -427,10 +454,12 @@ class SHEImage(object):
                        noisemap_ext='NOISEMAP',
                        segmentation_map_ext='SEGMAP',
                        background_map_ext='BKGMAP',
+                       weight_map_ext='WGTMAP',
                        mask_filepath=None,
                        noisemap_filepath=None,
                        segmentation_map_filepath=None,
                        background_map_filepath=None,
+                       weight_map_filepath=None,
                        workdir=".",
                        apply_sc3_fix=False):
         """Reads an image from a FITS file, such as written by write_to_fits(), and returns it as a SHEImage object.
@@ -454,11 +483,13 @@ class SHEImage(object):
             noisemap_ext: idem, for the noisemap
             segmentation_map_ext: idem, for the segmentation_map
             background_map_ext: idem, for the background_map
+            weight_map_ext: idem, for the weight_map
             mask_filepath: a separate filepath to read the mask from.
                 If you specify this, also set mask_ext accordingly (at least set it to 0 if the file has only one HDU).
             noisemap_filepath: idem, for the noisemap
             segmentation_map_filepath: idem, for the segmentation_map
             background_map_filepath: idem, for the background_map
+            weight_map_filepath: idem, for the weight_map
             workdir: The working directory, where files can be found
             apply_sc3_fix: Whether or not to apply fix for bad headers used in SC3 data
 
@@ -525,11 +556,19 @@ class SHEImage(object):
             qualified_background_map_filepath = None
         background_map = cls._get_secondary_data_from_fits(qualified_filepath, qualified_background_map_filepath,
                                                            background_map_ext)
+        # Reading the weight map
+        if weight_map_filepath is not None:
+            qualified_weight_map_filepath = os.path.join(
+                workdir, weight_map_filepath)
+        else:
+            qualified_weight_map_filepath = None
+        weight_map = cls._get_secondary_data_from_fits(qualified_filepath, qualified_weight_map_filepath,
+                                                       weight_map_ext)
 
         # Building and returning the new object
         newimg = SHEImage(data=data, mask=mask, noisemap=noisemap, segmentation_map=segmentation_map,
-                          background_map=background_map, header=header,
-                          wcs=wcs)
+                          background_map=background_map, weight_map=weight_map,
+                          header=header, wcs=wcs)
 
         logger.info("Read {} from the file '{}'".format(str(newimg), filepath))
         return newimg
@@ -684,6 +723,7 @@ class SHEImage(object):
                 noisemap=self.noisemap[xmin:xmax, ymin:ymax],
                 segmentation_map=self.segmentation_map[xmin:xmax, ymin:ymax],
                 background_map=self.background_map[xmin:xmax, ymin:ymax],
+                weight_map=self.weight_map[xmin:xmax, ymin:ymax],
                 header=newheader,
                 offset=newoffset,
                 wcs=self.wcs,
@@ -707,6 +747,8 @@ class SHEImage(object):
                 (width, height), dtype=self.segmentation_map.dtype) * segmap_unassigned_value
             background_map_stamp = np.zeros(
                 (width, height), dtype=self.background_map.dtype)
+            weight_map_stamp = np.zeros(
+                (width, height), dtype=self.weight_map.dtype)
 
             # Compute the bounds of the overlapping part of the stamp in the
             # original image
@@ -741,6 +783,8 @@ class SHEImage(object):
                     overlap_slice_stamp] = self.segmentation_map[overlap_slice]
                 background_map_stamp[
                     overlap_slice_stamp] = self.background_map[overlap_slice]
+                weight_map_stamp[
+                    overlap_slice_stamp] = self.weight_map[overlap_slice]
 
             # Create the new object
             newimg = SHEImage(
@@ -749,6 +793,7 @@ class SHEImage(object):
                 noisemap=noisemap_stamp,
                 segmentation_map=segmentation_map_stamp,
                 background_map=background_map_stamp,
+                weight_map=weight_map_stamp,
                 header=newheader,
                 offset=newoffset,
                 wcs=self.wcs,
