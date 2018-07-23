@@ -41,6 +41,8 @@ def init():
 
     binding_class.set_filename = __set_filename
     binding_class.get_filename = __get_filename
+    binding_class.set_data_filename = __set_filename
+    binding_class.get_data_filename = __get_filename
 
     binding_class.get_all_filenames = __get_all_filenames
 
@@ -105,6 +107,7 @@ def create_dpd_she_ksb_training_data(filename=None):
     dpd_she_ksb_training_data.Data = create_she_ksb_training_data(filename)
 
     return dpd_she_ksb_training_data
+
 
 # Add a useful alias
 create_ksb_training_data_product = create_dpd_she_ksb_training_data
