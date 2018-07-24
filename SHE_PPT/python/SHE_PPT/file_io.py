@@ -190,7 +190,7 @@ def write_xml_product(product, xml_file_name):
             f.write(
                 product.toDOM().toprettyxml(encoding="utf-8").decode("utf-8"))
     except AttributeError as e:
-        if not "object has no attribute 'toDOM'" in str(e):
+        if not "has no attribute 'toDOM'" in str(e):
             raise
         logger.warn(
             "XML writing is not available; falling back to pickled writing instead.")
