@@ -61,7 +61,7 @@ def __get_filename(self):
 
 def __get_all_filenames(self):
 
-    all_filenames = []
+    all_filenames = [self.get_data_filename()]
 
     return all_filenames
 

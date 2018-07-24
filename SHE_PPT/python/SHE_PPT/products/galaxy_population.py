@@ -40,6 +40,8 @@ def init():
 
     binding_class.set_filename = __set_filename
     binding_class.get_filename = __get_filename
+    binding_class.set_data_filename = __set_filename
+    binding_class.get_data_filename = __get_filename
 
     binding_class.get_all_filenames = __get_all_filenames
 
@@ -58,7 +60,7 @@ def __get_filename(self):
 
 def __get_all_filenames(self):
 
-    all_filenames = []
+    all_filenames = [self.get_data_filename(), ]
 
     return all_filenames
 
@@ -104,6 +106,7 @@ def create_dpd_she_galaxy_population(filename=None):
     dpd_she_galaxy_population.Data = create_she_galaxy_population(filename)
 
     return dpd_she_galaxy_population
+
 
 # Add a useful alias
 create_galaxy_population_product = create_dpd_she_galaxy_population
