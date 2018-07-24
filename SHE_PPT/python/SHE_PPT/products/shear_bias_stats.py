@@ -89,20 +89,18 @@ def init():
     binding_class.has_files = False
 
 
-def __set_BFD_statistics(self, g1_statistics, g2_statistics):
-    self.Data.BfdStatistics = create_bfd_statistics(
-        g1_statistics, g2_statistics)
+def __set_BFD_statistics(self, bfd_statistics):
+    self.Data.BfdStatistics = create_bfd_statistics(bfd_statistics)
     return
 
 
 def __get_BFD_statistics(self):
     if not hasattr(self.Data, "BfdStatistics"):
-        return None, None
+        return None
     elif self.Data.BfdStatistics is None:
-        return None, None
+        return None
     else:
-        return (self.Data.BfdStatistics.G1Statistics,
-                self.Data.BfdStatistics.G2Statistics,)
+        return (self.Data.BfdStatistics.bfd_statistics)
 
 
 def __set_KSB_statistics(self, g1_statistics, g2_statistics):
@@ -203,13 +201,12 @@ def __set_method_statistics(self, method, g1_statistics, g2_statistics):
     elif method == "REGAUSS":
         return self.set_REGAUSS_statistics(g1_statistics, g2_statistics)
     elif method == "BFD":
-        return self.set_BFD_statistics(g1_statistics, g2_statistics)
+        return self.set_BFD_statistics(bfd_statistics)
     else:
         raise ValueError("Invalid method " + str(method) + ".")
 
 
-def create_dpd_shear_bias_statistics(BFD_g1_statistics=None,
-                                     BFD_g2_statistics=None,
+def create_dpd_shear_bias_statistics(BFD_bfd_statistics=None,
                                      KSB_g1_statistics=None,
                                      KSB_g2_statistics=None,
                                      LensMC_g1_statistics=None,
@@ -233,7 +230,7 @@ def create_dpd_shear_bias_statistics(BFD_g1_statistics=None,
     dpd_shear_bias_stats.Data = ShearBiasStatistics()
 
     __set_BFD_statistics(
-        dpd_shear_bias_stats, BFD_g1_statistics, BFD_g2_statistics)
+        dpd_shear_bias_stats, BFD_bfd_statistics)
     __set_KSB_statistics(
         dpd_shear_bias_stats, KSB_g1_statistics, KSB_g2_statistics)
     __set_LensMC_statistics(
@@ -245,19 +242,19 @@ def create_dpd_shear_bias_statistics(BFD_g1_statistics=None,
 
     return dpd_shear_bias_stats
 
+
 # Add a useful alias
 create_shear_bias_statistics_product = create_dpd_shear_bias_statistics
 
 
-def create_bfd_statistics(g1_statistics, g2_statistics):
+def create_bfd_statistics(bfd_statistics):
     """
         @TODO fill in docstring
     """
 
     BFD_shear_statistics = MethodShearBiasStatistics()
 
-    BFD_shear_statistics.G1Statistics = g1_statistics
-    BFD_shear_statistics.G2Statistics = g2_statistics
+    BFD_shear_statistics.bfd_statistics = bfd_statistics
 
     return BFD_shear_statistics
 
