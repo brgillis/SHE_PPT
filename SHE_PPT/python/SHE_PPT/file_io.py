@@ -203,6 +203,9 @@ def read_xml_product(xml_file_name, allow_pickled=True):
     try:
         with open(str(xml_file_name), "r") as f:
             xml_string = f.read()
+
+        # Create a new product instance using the proper data product dictionary
+        product = CreateFromDocument(xml_string)
     except UnicodeDecodeError as _e:
         # Not actually saved as xml
         if allow_pickled:
@@ -210,9 +213,13 @@ def read_xml_product(xml_file_name, allow_pickled=True):
             return read_pickled_product(xml_file_name)
         else:
             raise
-
-    # Create a new product instance using the proper data product dictionary
-    product = CreateFromDocument(xml_string)
+    except SAXParseException as _e:
+        # Not actually saved as xml
+        if allow_pickled:
+            # Revert to pickled product
+            return read_pickled_product(xml_file_name)
+        else:
+            raise
 
     return product
 
