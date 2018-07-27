@@ -40,7 +40,7 @@ type_name_maxlen = 41
 instance_id_maxlen = 55
 
 
-def get_allowed_filename(type_name, instance_id, extension=".fits", release="00.03"):
+def get_allowed_filename(type_name, instance_id, extension=".fits", release="00.03", subdir="data"):
     """
         @brief Gets a filename in the required Euclid format.
 
@@ -89,7 +89,12 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release="00.
     filename = "EUC_SHE_" + type_name + "_" + instance_id + \
         "_" + creation_date + "_" + release + extension
 
-    return filename
+    if subdir is not None:
+        qualified_filename = join(subdir, filename)
+    else:
+        qualified_filename = filename
+
+    return qualified_filename
 
 
 def get_instance_id(filename):
