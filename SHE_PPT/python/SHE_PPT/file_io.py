@@ -64,7 +64,7 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
                          str(processing_function_maxlen) + " characters.")
 
     # Check that $type_name isn't too long
-    if re.match("^[0-9A-Z.-+]{1," + str(type_name_maxlen) + "}$", type_name) is None:
+    if re.match("^[0-9A-Z.\-+]{1," + str(type_name_maxlen) + "}$", type_name) is None:
         raise ValueError("type_name (" + type_name +
                          ") is too long or includes invalid characters. Maximum length is " +
                          str(type_name_maxlen) + " characters.")
@@ -84,7 +84,7 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
             # $release is good, so add it to $full_instance_id
             full_instance_id += "-" + release
 
-    if re.match("^[0-9A-Z.-+]{1," + str(instance_id_maxlen) + "}$", full_instance_id) is None:
+    if re.match("^[0-9A-Z.\-+]{1," + str(instance_id_maxlen) + "}$", full_instance_id) is None:
         raise ValueError("instance_id including timestamp and release (" + full_instance_id +
                          ") is too long or includes invalid characters. Maximum length is " +
                          str(instance_id_maxlen) + " characters.")
