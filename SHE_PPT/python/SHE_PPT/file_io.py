@@ -59,13 +59,14 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
     """
 
     # Check that $processing_function isn't too long
-    if len(processing_function) > processing_function_maxlen:
+    if re.match("^[0-9A-Z._+]{1," + str(processing_function_maxlen) + "}$", processing_function) is None:
         raise ValueError("processing_function (" + processing_function + ") is too long. Maximum length is " +
                          str(processing_function_maxlen) + " characters.")
 
     # Check that $type_name isn't too long
-    if len(type_name) > type_name_maxlen:
-        raise ValueError("type_name (" + type_name + ") is too long. Maximum length is " +
+    if re.match("^[0-9A-Z.-+]{1," + str(type_name_maxlen) + "}$", type_name) is None:
+        raise ValueError("type_name (" + type_name +
+                         ") is too long or includes invalid characters. Maximum length is " +
                          str(type_name_maxlen) + " characters.")
 
     # Determine the full instance_id before checking its length
@@ -83,20 +84,16 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
             # $release is good, so add it to $full_instance_id
             full_instance_id += "-" + release
 
-    if len(full_instance_id) > instance_id_maxlen:
+    if re.match("^[0-9A-Z.-+]{1," + str(instance_id_maxlen) + "}$", full_instance_id) is None:
         raise ValueError("instance_id including timestamp and release (" + full_instance_id +
-                         ") is too long. Maximum length is " + str(instance_id_maxlen) + " characters.")
+                         ") is too long or includes invalid characters. Maximum length is " +
+                         str(instance_id_maxlen) + " characters.")
 
     # Check the extension starts with "." and silently fix if it doesn't
     if not extension[0] == ".":
         extension = "." + extension
 
     filename = ("EUC-" + processing_function.upper() + "-" + type_name.upper() + "-" + full_instance_id + extension)
-
-    # Check no forbidden characters are in the filename
-    for char in filename_forbidden_chars:
-        if char in filename:
-            raise ValueError("Forbidden character '" + char + "' found in filename (" + filename + ")")
 
     if subdir is not None:
         qualified_filename = join(subdir, filename)
