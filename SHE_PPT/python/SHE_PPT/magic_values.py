@@ -23,7 +23,7 @@ logger_name = "SHE_PPT"
 
 # Header values for fits images
 gain_label = "CCDGAIN"
-scale_label = "PX_SCALE"
+scale_label = "GS_SCALE"
 stamp_size_label = "SSIZE"
 model_hash_label = "MHASH"
 model_seed_label = "MSEED"
