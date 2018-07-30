@@ -213,3 +213,22 @@ def get_arguments_string(args, cmd=None, store_true=None, store_false=None):
     arg_string = arg_string.strip()
 
     return arg_string
+
+
+def run_only_once(function):
+    """Decorator so that the function it decorates will only execute one time. Useful for logging warnings, when you
+       only want to warn for something the first time.
+    """
+
+    # Define a wrapper function that only runs if it hasn't already
+    def wrapper(*args, **kwargs):
+        if not wrapper.already_run:
+            wrapper.already_run = True
+            return function(*args, **kwargs)
+        else:
+            return None
+
+    # Set wrapper as not having already run
+    wrapper.already_run = False
+
+    return wrapper
