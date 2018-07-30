@@ -86,7 +86,7 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
     if not extension[0] == ".":
         extension = "." + extension
 
-    filename = ("EUC-" + processing_function + "-" + type_name + "-" + instance_id + extension)
+    filename = ("EUC-" + processing_function + "-" + type_name + "-" + full_instance_id + extension)
 
     if subdir is not None:
         qualified_filename = join(subdir, filename)
