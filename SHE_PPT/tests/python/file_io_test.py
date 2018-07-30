@@ -66,8 +66,6 @@ class TestIO:
         assert filename[0:len(expect_filename_head)] == expect_filename_head
         assert filename[-len(expect_filename_tail):] == expect_filename_tail
 
-        assert get_instance_id(filename) == instance_id
-
         # Check that if we wait a tenth of a second, it will change
         sleep(0.1)
         new_filename = get_allowed_filename("TEST", instance_id, extension=".junk", release="06.66")
