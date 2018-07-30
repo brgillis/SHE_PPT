@@ -96,16 +96,6 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
     return qualified_filename
 
 
-def get_instance_id(filename):
-    """ From a Euclid-compliant filename, return the string corresponding to the instance ID.
-    """
-
-    split_filename = filename.split('_')
-    instance_id = split_filename[-3]
-
-    return instance_id
-
-
 def write_listfile(listfile_name, filenames):
     """
         @brief Writes a listfile in json format.
