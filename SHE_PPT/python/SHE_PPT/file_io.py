@@ -59,11 +59,13 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
     """
 
     # Check that $processing_function isn't too long
+    processing_function = processing_function.upper()
     if re.match("^[0-9A-Z._+]{1," + str(processing_function_maxlen) + "}$", processing_function) is None:
         raise ValueError("processing_function (" + processing_function + ") is too long. Maximum length is " +
                          str(processing_function_maxlen) + " characters.")
 
     # Check that $type_name isn't too long
+    type_name = type_name.upper()
     if re.match("^[0-9A-Z.-+]{1," + str(type_name_maxlen) + "}$", type_name) is None:
         raise ValueError("type_name (" + type_name +
                          ") is too long or includes invalid characters. Maximum length is " +
@@ -93,7 +95,7 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
     if not extension[0] == ".":
         extension = "." + extension
 
-    filename = ("EUC-" + processing_function.upper() + "-" + type_name.upper() + "-" + full_instance_id + extension)
+    filename = ("EUC-" + processing_function + "-" + type_name + "-" + full_instance_id + extension)
 
     if subdir is not None:
         qualified_filename = join(subdir, filename)
