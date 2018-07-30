@@ -26,7 +26,10 @@ from SHE_PPT.file_io import (get_allowed_filename,
                              write_listfile,
                              read_listfile,
                              replace_in_file,
-                             replace_multiple_in_file)
+                             replace_multiple_in_file,
+                             type_name_maxlen,
+                             instance_id_maxlen,
+                             processing_function_maxlen)
 from astropy.table import Table
 import numpy as np
 
@@ -70,6 +73,33 @@ class TestIO:
         sleep(0.1)
         new_filename = get_allowed_filename("test", instance_id, extension=".junk", release="06.66", subdir="subdir")
         assert new_filename != filename
+
+        # Test that it raises when we expect it to
+
+        # Test for forbidden character
+        with pytest.raises(ValueError):
+            get_allowed_filename("test*", instance_id, extension=".junk", release="06.66", subdir="subdir")
+        with pytest.raises(ValueError):
+            get_allowed_filename("test", instance_id + "/", extension=".junk", release="06.66", subdir="subdir")
+
+        # Test for bad release
+        with pytest.raises(ValueError):
+            get_allowed_filename("test", instance_id, extension=".junk", release="06.666", subdir="subdir")
+        with pytest.raises(ValueError):
+            get_allowed_filename("test", instance_id, extension=".junk", release="06.6a", subdir="subdir")
+        with pytest.raises(ValueError):
+            get_allowed_filename("test", instance_id, extension=".junk", release="06.", subdir="subdir")
+
+        # Test for too long
+        with pytest.raises(ValueError):
+            get_allowed_filename("t" * (type_name_maxlen + 1), instance_id,
+                                 extension=".junk", release="06.", subdir="subdir")
+        with pytest.raises(ValueError):
+            get_allowed_filename("test", "i" * (instance_id_maxlen + 1),
+                                 extension=".junk", release=None, subdir="subdir", timestamp=False)
+        with pytest.raises(ValueError):
+            get_allowed_filename("test", instance_id, extension=".junk", release="06.", subdir="subdir",
+                                 processing_function="p" * (processing_function_maxlen + 1))
 
     def test_rw_listfile(self):
 

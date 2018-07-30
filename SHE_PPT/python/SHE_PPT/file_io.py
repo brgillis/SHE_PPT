@@ -39,6 +39,7 @@ logger = getLogger(mv.logger_name)
 
 type_name_maxlen = 15
 instance_id_maxlen = 39
+processing_function_maxlen = 4
 filename_forbidden_chars = ["/", "\\", ":", "*", "%", "|", "'", '"', "<", ">", "@", "&"]
 
 
@@ -57,7 +58,12 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
                                      X is a digit 0-9.
     """
 
-    # Check that the type name isn't too long
+    # Check that $processing_function isn't too long
+    if len(processing_function) > processing_function_maxlen:
+        raise ValueError("processing_function (" + processing_function + ") is too long. Maximum length is " +
+                         str(processing_function_maxlen) + " characters.")
+
+    # Check that $type_name isn't too long
     if len(type_name) > type_name_maxlen:
         raise ValueError("type_name (" + type_name + ") is too long. Maximum length is " +
                          str(type_name_maxlen) + " characters.")
