@@ -32,6 +32,7 @@ extname_label = "EXTNAME"
 dither_dx_label = "DITHERDX"
 dither_dy_label = "DITHERDY"
 obs_time_label = "DATE-OBS"
+field_id_label = "FIELDID"
 
 # Tags for science image, noisemap, and mask
 sci_tag = "SCI"
