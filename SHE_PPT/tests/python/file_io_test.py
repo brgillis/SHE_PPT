@@ -57,9 +57,9 @@ class TestIO:
 
         instance_id = "instance"
 
-        filename = get_allowed_filename("TEST", instance_id, extension=".junk", release="06.66", subdir="subdir")
+        filename = get_allowed_filename("test", instance_id, extension=".junk", release="06.66", subdir="subdir")
 
-        expect_filename_head = "subdir/EUC-SHE-TEST-instance-"
+        expect_filename_head = "subdir/EUC-SHE-TEST-INSTANCE-"
         expect_filename_tail = "Z-06.66.junk"
 
         # Check the beginning and end are correct
@@ -68,7 +68,7 @@ class TestIO:
 
         # Check that if we wait a tenth of a second, it will change
         sleep(0.1)
-        new_filename = get_allowed_filename("TEST", instance_id, extension=".junk", release="06.66", subdir="subdir")
+        new_filename = get_allowed_filename("test", instance_id, extension=".junk", release="06.66", subdir="subdir")
         assert new_filename != filename
 
     def test_rw_listfile(self):
