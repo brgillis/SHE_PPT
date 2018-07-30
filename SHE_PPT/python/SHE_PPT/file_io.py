@@ -39,7 +39,6 @@ logger = getLogger(mv.logger_name)
 
 type_name_maxlen = 15
 instance_id_maxlen = 39
-timestamp_len = 16  # Length for time down to 10th of second
 filename_forbidden_chars = ["/", "\\", ":", "*", "%", "|", "'", '"', "<", ">", "@", "&"]
 
 
@@ -64,7 +63,7 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
                          str(type_name_maxlen) + " characters.")
 
     # Determine the full instance_id before checking its length
-    full_instance_id = instance_id
+    full_instance_id = instance_id.upper()  # Silently shift to upper-case
     if timestamp:
         tnow = datetime.now()
         creation_date = time_to_timestamp(tnow)
@@ -82,11 +81,16 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
         raise ValueError("instance_id including timestamp and release (" + full_instance_id +
                          ") is too long. Maximum length is " + str(instance_id_maxlen) + " characters.")
 
-    # Check the extenstion starts with "." and silently fix if it doesn't
+    # Check the extension starts with "." and silently fix if it doesn't
     if not extension[0] == ".":
         extension = "." + extension
 
-    filename = ("EUC-" + processing_function + "-" + type_name + "-" + full_instance_id + extension)
+    filename = ("EUC-" + processing_function.upper() + "-" + type_name.upper() + "-" + full_instance_id + extension)
+
+    # Check no forbidden characters are in the filename
+    for char in filename_forbidden_chars:
+        if char in filename:
+            raise ValueError("Forbidden character '" + char + "' found in filename (" + filename + ")")
 
     if subdir is not None:
         qualified_filename = join(subdir, filename)
