@@ -26,7 +26,7 @@ from SHE_PPT.file_io import (get_allowed_filename,
                              write_listfile,
                              read_listfile,
                              replace_in_file,
-                             replace_multiple_in_file, get_instance_id)
+                             replace_multiple_in_file)
 from astropy.table import Table
 import numpy as np
 
@@ -68,7 +68,7 @@ class TestIO:
 
         # Check that if we wait a tenth of a second, it will change
         sleep(0.1)
-        new_filename = get_allowed_filename("TEST", instance_id, extension=".junk", release="06.66")
+        new_filename = get_allowed_filename("TEST", instance_id, extension=".junk", release="06.66", subdir="subdir")
         assert new_filename != filename
 
     def test_rw_listfile(self):
