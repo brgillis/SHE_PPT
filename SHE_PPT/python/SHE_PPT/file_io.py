@@ -25,6 +25,7 @@ import os
 from os.path import join, isfile
 from pickle import UnpicklingError
 import pickle
+import re
 from xml.sax._exceptions import SAXParseException
 
 from EuclidDmBindings.sys_stub import CreateFromDocument
@@ -36,17 +37,20 @@ from astropy.io import fits
 
 logger = getLogger(mv.logger_name)
 
-type_name_maxlen = 41
-instance_id_maxlen = 55
+type_name_maxlen = 15
+instance_id_maxlen = 39
+processing_function_maxlen = 4
+filename_forbidden_chars = ["/", "\\", ":", "*", "%", "|", "'", '"', "<", ">", "@", "&"]
 
 
-def get_allowed_filename(type_name, instance_id, extension=".fits", release="00.03", subdir="data"):
+def get_allowed_filename(type_name, instance_id, extension=".fits", release=None, subdir="data",
+                         processing_function="SHE", timestamp=True):
     """
         @brief Gets a filename in the required Euclid format.
 
-        @param type_name <string> Label for what type of object this is. Maximum 41 characters.
+        @param type_name <string> Label for what type of object this is. Maximum 15 characters.
 
-        @param instance_id <string> Label for the instance of this object. Maximum 55 characters.
+        @param instance_id <string> Label for the instance of this object. Maximum 39 characters.
 
         @param extension <string> File extension (eg. ".fits").
 
@@ -54,40 +58,45 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release="00.
                                      X is a digit 0-9.
     """
 
-    # Check that the labels aren't too long
+    # Check that $processing_function isn't too long
+    if len(processing_function) > processing_function_maxlen:
+        raise ValueError("processing_function (" + processing_function + ") is too long. Maximum length is " +
+                         str(processing_function_maxlen) + " characters.")
+
+    # Check that $type_name isn't too long
     if len(type_name) > type_name_maxlen:
         raise ValueError("type_name (" + type_name + ") is too long. Maximum length is " +
                          str(type_name_maxlen) + " characters.")
-    if len(instance_id) > instance_id_maxlen:
-        raise ValueError("instance_id (" + type_name + ") is too long. Maximum length is " +
-                         str(instance_id_maxlen) + " characters.")
 
-    # Check that $release is in the correct format
-    good_release = True
-    if len(release) != 5 or release[2] != ".":
-        good_release = False
-    # Check each value is an integer 0-9
-    if good_release:
-        for i in (0, 1, 3, 4):
-            try:
-                _ = int(release[i])
-            except ValueError:
-                good_release = False
+    # Determine the full instance_id before checking its length
+    full_instance_id = instance_id.upper()  # Silently shift to upper-case
+    if timestamp:
+        tnow = datetime.now()
+        creation_date = time_to_timestamp(tnow)
+        full_instance_id += "-" + creation_date
+    if release is not None:
+        # Check that $release is in the correct format
+        if re.match("^[0-9]{1,2}\.[0-9]{1,2}$", release) is None:
+            raise ValueError("release (" + release + ") is in incorrect format. Required format is " +
+                             "X.X, where each X is 0-99.")
+        else:
+            # $release is good, so add it to $full_instance_id
+            full_instance_id += "-" + release
 
-    # Check the extenstion starts with "." and silently fix if it doesn't
+    if len(full_instance_id) > instance_id_maxlen:
+        raise ValueError("instance_id including timestamp and release (" + full_instance_id +
+                         ") is too long. Maximum length is " + str(instance_id_maxlen) + " characters.")
+
+    # Check the extension starts with "." and silently fix if it doesn't
     if not extension[0] == ".":
         extension = "." + extension
 
-    if not good_release:
-        raise ValueError("release (" + release + ") is in incorrect format. Required format is " +
-                         "XX.XX, where each X is 0-9.")
+    filename = ("EUC-" + processing_function.upper() + "-" + type_name.upper() + "-" + full_instance_id + extension)
 
-    tnow = datetime.now()
-
-    creation_date = time_to_timestamp(tnow)
-
-    filename = "EUC_SHE_" + type_name + "_" + instance_id + \
-        "_" + creation_date + "_" + release + extension
+    # Check no forbidden characters are in the filename
+    for char in filename_forbidden_chars:
+        if char in filename:
+            raise ValueError("Forbidden character '" + char + "' found in filename (" + filename + ")")
 
     if subdir is not None:
         qualified_filename = join(subdir, filename)
@@ -95,16 +104,6 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release="00.
         qualified_filename = filename
 
     return qualified_filename
-
-
-def get_instance_id(filename):
-    """ From a Euclid-compliant filename, return the string corresponding to the instance ID.
-    """
-
-    split_filename = filename.split('_')
-    instance_id = split_filename[-3]
-
-    return instance_id
 
 
 def write_listfile(listfile_name, filenames):
