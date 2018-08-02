@@ -18,6 +18,7 @@
 # Boston, MA 02110-1301 USA
 
 import glob
+import importlib
 from os.path import dirname, basename, isfile
 
 
@@ -29,6 +30,7 @@ from . import *
 
 for f in modules:
     if isfile(f) and not f.endswith('__init__.py'):
-        f.init()
+        m = importlib.import_module(basename(f)[:-3])
+        m.init()
 
 del modules, dirname, basename, isfile, glob
