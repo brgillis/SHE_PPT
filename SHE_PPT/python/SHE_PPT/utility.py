@@ -84,9 +84,10 @@ def hash_any(obj, format='hex', max_length=None):
 
     if not (format[0:3] == 'int' or format[0:4] == 'uint'):
         if max_length is None or len(full_hash) < max_length:
-            return full_hash
+            pass
         else:
-            return full_hash[:max_length]
+            full_hash = full_hash[:max_length]
+    return full_hash
 
 
 def find_extension(hdulist, extname):
