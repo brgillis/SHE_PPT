@@ -18,13 +18,17 @@
 # Boston, MA 02110-1301 USA
 
 import glob
+import importlib
 from os.path import dirname, basename, isfile
 
 
 modules = glob.glob(dirname(__file__) + "/*.py")
-__all__ = [basename(f)[:-3]
-           for f in modules if isfile(f) and not f.endswith('__init__.py')]
+__all__ = [basename(f)[:-3] for f in modules if isfile(f) and not f.endswith('__init__.py')]
 
 from . import *
+
+for f in modules:
+    if isfile(f) and not f.endswith('__init__.py'):
+        globals()[basename(f)[:-3]].init()
 
 del modules, dirname, basename, isfile, glob

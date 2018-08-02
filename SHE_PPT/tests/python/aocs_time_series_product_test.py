@@ -39,8 +39,6 @@ class TestAocsTimeSeriesProduct(object):
 
     def test_xml_writing_and_reading(self, tmpdir):
 
-        prod.init()
-
         # Create the product
         product = prod.create_dpd_she_aocs_time_series()
 
@@ -58,8 +56,6 @@ class TestAocsTimeSeriesProduct(object):
         pass
 
     def test_pickle_writing_and_reading(self, tmpdir):
-
-        prod.init()
 
         # Create the product
         product = prod.create_dpd_she_aocs_time_series()

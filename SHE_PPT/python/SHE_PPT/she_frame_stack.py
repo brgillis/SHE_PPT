@@ -25,10 +25,6 @@ Created on: 05/03/18
 from copy import deepcopy
 import os.path
 
-from astropy import table
-from astropy.io import fits
-from astropy.wcs import WCS
-
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
 from SHE_PPT import products
@@ -39,12 +35,11 @@ from SHE_PPT.she_image_stack import SHEImageStack
 from SHE_PPT.table_formats.detections import tf as detf
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import find_extension, load_wcs
+from astropy import table
+from astropy.io import fits
+from astropy.wcs import WCS
 import numpy as np
 
-
-products.calibrated_frame.init()
-products.detections.init()
-products.stacked_frame.init()
 
 logger = logging.getLogger(__name__)
 

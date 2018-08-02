@@ -33,8 +33,6 @@ class TestShearBiasStatsProduct(object):
 
     def test_validation(self):
 
-        prod.init()
-
         n = 10
 
         stats = {}
@@ -98,8 +96,6 @@ class TestShearBiasStatsProduct(object):
         pass
 
     def test_xml_writing_and_reading(self, tmpdir):
-
-        prod.init()
 
         n = 10
 

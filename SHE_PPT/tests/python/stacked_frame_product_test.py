@@ -22,8 +22,6 @@ from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
 from SHE_PPT.products import stacked_frame as prod
 
-prod.init()
-
 
 class TestStackedFrameProduct(object):
     """A collection of tests for the shear estimates data product.
