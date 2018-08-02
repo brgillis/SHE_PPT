@@ -38,9 +38,10 @@ def hash_any(obj, format='hex', max_length=None):
 
         @param obj
 
-        @param format <str> Either 'hex' for hexadecimal string or 'base64' for a base 64 string.
-                            This implementation of base64 replaces / with . so it will be
-                            filename safe.
+        @param format <str> 'hex' for hexadecimal string, 'base64' for a base 64 string
+                            (This implementation of base64 replaces / with . so it will be
+                            filename safe), 'int' for an integer, 'int8', 'int16', etc. for
+                            an unsigned integer of a given maximum size.
 
         @param max_length <int> Maximum length of hex string to return
 
@@ -58,11 +59,34 @@ def hash_any(obj, format='hex', max_length=None):
         # This also allows the / character which we can't use, so replace it with .
         # Also decode it into a standard string
         full_hash = full_hash.decode().replace("/", ".")
+    elif format[0:3] == 'int' or format[0:4] == 'uint':
+        int_hash = int("0x" + full_hash, 0)
+        if format == 'int' or format == 'uint':
+            full_hash = int_hash
+        else:
+            if format[0] == 'i':
+                start = 3
+                signed = True
+            else:
+                start = 4
+                signed = False
 
-    if max_length is None or len(full_hash) < max_length:
-        return full_hash
+            # Get the power from the portion after the 'int' part
+            power = int(format[start:])
+            mod = 2**power
+            full_hash = int_hash % mod
+
+            # If signed, subtract half the modulus
+            if signed:
+                full_hash -= mod // 2
     else:
-        return full_hash[:max_length]
+        raise ValueError("Unknown format: " + str(format))
+
+    if not format[0:3] == 'int':
+        if max_length is None or len(full_hash) < max_length:
+            return full_hash
+        else:
+            return full_hash[:max_length]
 
 
 def find_extension(hdulist, extname):
