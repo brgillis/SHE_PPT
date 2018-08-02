@@ -37,11 +37,6 @@ from astropy.io import fits
 from astropy.table import Table
 import numpy as np
 
-
-products.calibrated_frame.init()
-products.psf_image.init()
-products.mosaic.init()
-
 logger = logging.getLogger(__name__)
 
 
