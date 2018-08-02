@@ -27,4 +27,8 @@ __all__ = [basename(f)[:-3]
 
 from . import *
 
+for f in modules:
+    if isfile(f) and not f.endswith('__init__.py'):
+        f.init()
+
 del modules, dirname, basename, isfile, glob
