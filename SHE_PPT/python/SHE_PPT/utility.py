@@ -82,7 +82,7 @@ def hash_any(obj, format='hex', max_length=None):
     else:
         raise ValueError("Unknown format: " + str(format))
 
-    if not format[0:3] == 'int':
+    if not (format[0:3] == 'int' or format[0:4] == 'uint'):
         if max_length is None or len(full_hash) < max_length:
             return full_hash
         else:
