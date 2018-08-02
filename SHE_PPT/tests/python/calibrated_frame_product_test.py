@@ -30,8 +30,6 @@ class TestCalibratedFrameProduct(object):
 
     def test_validation(self):
 
-        prod.init()
-
         # Create the product
         subfilename = "foo.fits"
         product = prod.create_dpd_vis_calibrated_frame(data_filename=subfilename)
@@ -45,8 +43,6 @@ class TestCalibratedFrameProduct(object):
         pass
 
     def test_xml_writing_and_reading(self, tmpdir):
-
-        prod.init()
 
         # Create the product
         product = prod.create_dpd_vis_calibrated_frame()

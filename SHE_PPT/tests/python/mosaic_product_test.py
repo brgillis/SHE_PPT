@@ -45,8 +45,6 @@ class TestMosaicProduct(object):
 
     def test_xml_writing_and_reading(self, tmpdir):
 
-        prod.init()
-
         # Create the product
         product = prod.create_dpd_mer_mosaic(data_filename = "junk",)
 
@@ -67,8 +65,6 @@ class TestMosaicProduct(object):
         pass
 
     def test_load_mosaic_hdu(self, tmpdir):
-
-        prod.init()
 
         # Create and save the product with a junk filename first
         product = prod.create_dpd_mer_mosaic(data_filename = "junk",)

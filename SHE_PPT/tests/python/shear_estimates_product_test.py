@@ -58,8 +58,6 @@ class TestShearEstimatesProduct(object):
 
     def test_xml_writing_and_reading(self, tmpdir):
 
-        prod.init()
-
         # Create the product
         product = prod.create_dpd_shear_estimates()
 
