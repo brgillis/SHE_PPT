@@ -50,6 +50,8 @@ def hash_any(obj, format='hex', max_length=None):
 
     full_hash = hashlib.sha256(repr(obj).encode()).hexdigest()
 
+    if format == 'hex':
+        pass  # Hex is default behavior
     if format == 'base64':
         # Recode it into base 64. Note that this results in a stray newline character
         # at the end, so we remove that.
