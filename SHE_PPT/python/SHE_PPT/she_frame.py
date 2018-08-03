@@ -34,8 +34,10 @@ from SHE_PPT.table_formats.psf import tf as pstf
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import find_extension, load_wcs
 from astropy.io import fits
+from astropy.io.fits import HDUList, BinTableHDU, ImageHDU, PrimaryHDU
 from astropy.table import Table
 import numpy as np
+
 
 logger = logging.getLogger(__name__)
 
@@ -358,8 +360,17 @@ class SHEFrame(object):
 
             qualified_psf_filename = os.path.join(workdir, psf_data_filename)
 
-            psf_data_hdulist = fits.open(
-                qualified_psf_filename, **kwargs)
+            input_psf_data_hdulist = fits.open(qualified_psf_filename, **kwargs)
+            psf_data_hdulist = HDUList()
+            for i in range(len(input_psf_data_hdulist)):
+                if i == 0:
+                    psf_data_hdulist.append(PrimaryHDU())
+                elif i == 1:
+                    psf_data_hdulist.append(BinTableHDU(data=input_psf_data_hdulist[i].data,
+                                                        header=input_psf_data_hdulist[i].header))
+                else:
+                    psf_data_hdulist.append(ImageHDU(data=input_psf_data_hdulist[i].data,
+                                                     header=input_psf_data_hdulist[i].header))
 
             psf_cat_i = find_extension(psf_data_hdulist, mv.psf_cat_tag)
             psf_cat = Table.read(psf_data_hdulist[psf_cat_i])
