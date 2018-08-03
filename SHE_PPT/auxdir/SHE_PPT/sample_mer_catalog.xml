@@ -1,60 +1,247 @@
 <?xml version="1.0" ?>
 <ns1:DpdMerFinalCatalog xmlns:ns1="http://euclid.esa.org/schema/dpd/mer/finalcatalog">
 	<Header>
-		<ProductId>foo</ProductId>
-		<ProductType>foo</ProductType>
-		<SoftwareName>foo</SoftwareName>
-		<SoftwareRelease>foo</SoftwareRelease>
-		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
-		<PipelineRun>foo</PipelineRun>
-		<ExitStatusCode>foo</ExitStatusCode>
-		<DataModelVersion>foo</DataModelVersion>
-		<MinDataModelVersion>foo</MinDataModelVersion>
-		<ScientificCustodian>MER</ScientificCustodian>
+		<ProductId>O1M</ProductId>
+		<ProductType>Uce</ProductType>
+		<SoftwareName>Yd5</SoftwareName>
+		<SoftwareRelease>b9CP</SoftwareRelease>
+		<ManualValidationStatus>INVALID</ManualValidationStatus>
+		<ExpirationDate>2018-08-03T16:32:14.968Z</ExpirationDate>
+		<PipelineRun>V2e</PipelineRun>
+		<ExitStatusCode>Rd0</ExitStatusCode>
+		<DataModelVersion>yFn</DataModelVersion>
+		<MinDataModelVersion>CFsN</MinDataModelVersion>
+		<ScientificCustodian>LE3TD</ScientificCustodian>
 		<AccessRights>
 			<EuclidConsortiumRead>true</EuclidConsortiumRead>
 			<EuclidConsortiumWrite>true</EuclidConsortiumWrite>
 			<ScientificGroupRead>true</ScientificGroupRead>
 			<ScientificGroupWrite>false</ScientificGroupWrite>
 		</AccessRights>
-		<Curator/>
-		<Creator>foo</Creator>
-		<CreationDate>2018-06-01T13:08:09.777Z</CreationDate>
+		<Curator>
+			<Name>8FL</Name>
+			<Email>someOne@someplace.com</Email>
+		</Curator>
+		<ToBePublished>false</ToBePublished>
+		<Published>true</Published>
+		<Creator>AOK</Creator>
+		<CreationDate>2018-08-03T16:32:14.974Z</CreationDate>
 	</Header>
 	<Data>
-		<IdCatalog>0</IdCatalog>
+		<IdCatalog>-2051656756</IdCatalog>
 		<CatalogCoverage>
-			<SpatialCoverage/>
+			<SpatialCoverage>
+				<Polygon>
+					<Vertex>
+						<Position coordUnit="Ohm">
+							<C1 unit="Hz">1.0</C1>
+							<C2 unit="kmyr/s">0.0</C2>
+						</Position>
+						<SmallCircle>
+							<Pole coordUnit="Pa">
+								<C1 unit="lx">1.0</C1>
+								<C2 unit="lx">1.0</C2>
+							</Pole>
+						</SmallCircle>
+					</Vertex>
+				</Polygon>
+			</SpatialCoverage>
+			<SpectralCoverage>
+				<Filter>
+					<Name>DECAM_Y</Name>
+					<MagId>M</MagId>
+					<CentralWavelength>-4.0</CentralWavelength>
+					<MinWavelength>-10.0</MinWavelength>
+					<MaxWavelength>-4.0</MaxWavelength>
+					<Reference>LiT</Reference>
+					<HasFringes>1198954580</HasFringes>
+				</Filter>
+			</SpectralCoverage>
 		</CatalogCoverage>
 		<CatalogStorage>
 			<CatalogFileStorage>
-				<Id>foo</Id>
+				<Id>sxI</Id>
+				<PartitioningColumn>
+					<Name>MLT</Name>
+					<Label>tZL</Label>
+					<Type>variableLengthArray</Type>
+					<VariableLength>
+						<FieldNumber>-1637268140</FieldNumber>
+						<MaxElements>1806490837</MaxElements>
+						<Offset>405011721</Offset>
+						<CatalogPropertyDataType>boolean</CatalogPropertyDataType>
+					</VariableLength>
+					<Cardinality>1883034668</Cardinality>
+					<NullValue>AMZ</NullValue>
+					<Unit>m/s2</Unit>
+					<Description>vnl</Description>
+					<UCD>Q|phys.composition.massLightRatio</UCD>
+					<Utype>aVt</Utype>
+				</PartitioningColumn>
+				<CatalogMetadataStorage>
+					<Id>1228526136</Id>
+					<CatalogMetadataElement>
+						<Key>Eq7</Key>
+						<Value>fj9</Value>
+					</CatalogMetadataElement>
+				</CatalogMetadataStorage>
 				<FileFormat>FITS</FileFormat>
-				<FileNumber>0</FileNumber>
+				<FileNumber>810204821</FileNumber>
 				<StorageSpace>
-					<Id>foo</Id>
-					<DataContainer filestatus="PROPOSED">
-						<FileName>default_catalog_filename.fits</FileName>
+					<Id>qRf</Id>
+					<Range>
+						<MinValue>jpP</MinValue>
+						<MaxValue>1SJ</MaxValue>
+						<SelectionFilter>Cfy</SelectionFilter>
+					</Range>
+					<DataContainer filestatus="DELETED">
+						<FileName>1uQGVK1uN6nKk9YwFXa2Y0heIZZ</FileName>
 					</DataContainer>
 				</StorageSpace>
 			</CatalogFileStorage>
+			<CatalogDBStorage>
+				<Id>3yB</Id>
+				<IdType>
+					<Name>MZs</Name>
+					<Label>wED</Label>
+					<Type>complex64</Type>
+					<VariableLength>
+						<FieldNumber>-149767506</FieldNumber>
+						<MaxElements>-1432826914</MaxElements>
+						<Offset>-1734403439</Offset>
+						<CatalogPropertyDataType>multicharacter</CatalogPropertyDataType>
+					</VariableLength>
+					<Cardinality>-1357414087</Cardinality>
+					<NullValue>p6d</NullValue>
+					<Unit>d</Unit>
+					<Description>aLY</Description>
+					<UCD>Q|phys.mol.dipole</UCD>
+					<Utype>bvi</Utype>
+				</IdType>
+				<TableName>9tI</TableName>
+				<ConnectionString>zIh</ConnectionString>
+				<StorageDataType>Vj5</StorageDataType>
+				<IndexColumn>
+					<Name>cmW</Name>
+					<Label>1li</Label>
+					<Type>float64</Type>
+					<VariableLength>
+						<FieldNumber>439627444</FieldNumber>
+						<MaxElements>-1593691002</MaxElements>
+						<Offset>1336159193</Offset>
+						<CatalogPropertyDataType>int8</CatalogPropertyDataType>
+					</VariableLength>
+					<Cardinality>61293597</Cardinality>
+					<NullValue>wie</NullValue>
+					<Unit>mag/arcsec2</Unit>
+					<Description>6Yh</Description>
+					<UCD>V|pos.pm</UCD>
+					<Utype>sD3</Utype>
+				</IndexColumn>
+				<ParentCatalogId>-71422052</ParentCatalogId>
+				<SelectionRange>
+					<MinValue>6w5</MinValue>
+					<MaxValue>V6a</MaxValue>
+					<SelectionFilter>zJ8</SelectionFilter>
+				</SelectionRange>
+			</CatalogDBStorage>
 		</CatalogStorage>
 		<CatalogDescription>
-			<CatalogDataProduct>foo</CatalogDataProduct>
-			<PathToCatalogDefinition>foo</PathToCatalogDefinition>
-			<CatalogFormatBase>mer.finalCatalog</CatalogFormatBase>
-			<CatalogFormatHDU>1</CatalogFormatHDU>
-			<CatalogFitsColumnsDefinition>foo</CatalogFitsColumnsDefinition>
+			<CatalogDataProduct>Y9S</CatalogDataProduct>
+			<PathToCatalogDefinition>nS4</PathToCatalogDefinition>
+			<CatalogFormatBase>phz.biasCorrectionMap</CatalogFormatBase>
+			<CatalogFormatHDU>-299192158</CatalogFormatHDU>
+			<CatalogFitsColumnsDefinition>UtHQYBu8iqDvHBZsSfhBrQVtcCeZ</CatalogFitsColumnsDefinition>
+			<PartitioningColumn>
+				<Name>zD1</Name>
+				<Label>aJu</Label>
+				<Type>character</Type>
+				<VariableLength>
+					<FieldNumber>1427893613</FieldNumber>
+					<MaxElements>649508550</MaxElements>
+					<Offset>-596325598</Offset>
+					<CatalogPropertyDataType>complex64</CatalogPropertyDataType>
+				</VariableLength>
+				<Cardinality>-1255427816</Cardinality>
+				<NullValue>eDd</NullValue>
+				<Unit>cy</Unit>
+				<Description>hFl</Description>
+				<UCD>S|em.radio.6-12GHz</UCD>
+				<Utype>gnI</Utype>
+			</PartitioningColumn>
 		</CatalogDescription>
 		<FilterList>
 			<Filter>
-				<Name>Undefined</Name>
+				<Name>OMEGACAM_g</Name>
+				<MagId>K</MagId>
+				<CentralWavelength>4.0</CentralWavelength>
+				<MinWavelength>-9.0</MinWavelength>
+				<MaxWavelength>0.0</MaxWavelength>
+				<Reference>5H4</Reference>
+				<HasFringes>-1868037912</HasFringes>
 			</Filter>
 		</FilterList>
+		<TileIndex>-5765397276099961994</TileIndex>
+		<ObservationIdList>1</ObservationIdList>
 		<DataStorage format="mer.finalCatalog" version="0.2">
-			<DataContainer filestatus="PROPOSED">
-				<FileName>default_filename.fits</FileName>
+			<DataContainer filestatus="DELETED">
+				<FileName>InnfSSfTzhOsoAp37bJiqwTIbQy5D5bPAO6mlxxFt8u1EA8e1IK5vZNoXbQBVSHHOTqV4pnpN1jaHTDu94Rxpp6uhtUozfiX0Yy</FileName>
 			</DataContainer>
 		</DataStorage>
+		<QualityParams>
+			<ObjectCount flagged="false">0</ObjectCount>
+			<PsfFraction flagged="false">0.0</PsfFraction>
+			<MinFluxVIS flagged="false">0.0</MinFluxVIS>
+			<MaxFluxVIS flagged="false">1.0</MaxFluxVIS>
+			<ModeFluxVIS flagged="true">0.0</ModeFluxVIS>
+			<MinFluxErrVIS flagged="false">840.0</MinFluxErrVIS>
+			<MaxFluxErrVIS flagged="true">0.0</MaxFluxErrVIS>
+			<ModeFluxErrVIS flagged="false">1.0</ModeFluxErrVIS>
+			<NoFluxFractionVIS flagged="true">0.0</NoFluxFractionVIS>
+			<SatObjectFractionVIS flagged="true">0.0</SatObjectFractionVIS>
+			<MinFluxNIRJ flagged="false">0.0</MinFluxNIRJ>
+			<MaxFluxNIRJ flagged="true">1.0</MaxFluxNIRJ>
+			<ModeFluxNIRJ flagged="false">0.0</ModeFluxNIRJ>
+			<MinFluxErrNIRJ flagged="true">0.0</MinFluxErrNIRJ>
+			<MaxFluxErrNIRJ flagged="false">1.0</MaxFluxErrNIRJ>
+			<ModeFluxErrNIRJ flagged="false">1.0</ModeFluxErrNIRJ>
+			<NoFluxFractionNIRJ flagged="true">1.0</NoFluxFractionNIRJ>
+			<SatObjectFractionNIRJ flagged="true">1.0</SatObjectFractionNIRJ>
+		</QualityParams>
+		<ProcessingSteps>
+			<ProcessingStep>
+				<Name>v2p</Name>
+				<ProgramName>N5m</ProgramName>
+				<SoftwareVersion>KVK</SoftwareVersion>
+				<ParametersList>
+					<Param>
+						<Key>YAB</Key>
+                        <Value>E9A</Value>
+						<Description>R60</Description>
+						<StringValue>E9A</StringValue>
+						<Unit>GZ9</Unit>
+					</Param>
+				</ParametersList>
+				<ProcessExecuted>false</ProcessExecuted>
+				<ExitCode>fcg</ExitCode>
+				<LogFile filestatus="ARCHIVED">
+					<FileName>M44dmuJ3YpIjArp4h4cDlrQi9icSdGuyOQq5UiMZ3e16iLdNffQ2</FileName>
+				</LogFile>
+				<OutputDataFileList>o40kAG6bAm4JgKm7kPE7T6YeSiknt53RX12utOCNrw89beAxXCmmty0hUw1QMJ9kAZoVn</OutputDataFileList>
+			</ProcessingStep>
+		</ProcessingSteps>
 	</Data>
+	<QualityFlags>
+		<DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
+		<AuxiliaryFlags flagName="9To" flagged="false" maxLimit="1.0" minLimit="4.0" xpath="WTe">true</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Param>
+			<Key>iVJ</Key>
+            <Value>7tS</Value>
+			<Description>rhK</Description>
+			<StringValue>7tS</StringValue>
+			<Unit>lOn</Unit>
+		</Param>
+	</Parameters>
 </ns1:DpdMerFinalCatalog>
