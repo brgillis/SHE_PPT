@@ -76,7 +76,7 @@ def get_lengths(table_format):
     return list(zip(*list(table_format.lengths.items())))[1]
 
 
-def is_in_format(table, table_format, ignore_metadata=False, strict=True):
+def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbose=False):
     """
         @brief Checks if a table is in the given format
 
@@ -89,6 +89,8 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True):
 
         @param strict <bool> If False, will allow the presence of extra columns
 
+        @param verbose <bool> If True, will specify reasons tables fail the format check.
+
         @return <bool>
 
     """
@@ -96,8 +98,9 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True):
     # Check that all required column names are present
     for colname in table_format.all_required:
         if colname not in table.colnames:
-            logger.info(
-                "Table not in correct format due to absence of required column: " + colname)
+            if verbose:
+                logger.info(
+                    "Table not in correct format due to absence of required column: " + colname)
             return False
 
     # Check that no extra column names are present if strict==True, and each
@@ -109,8 +112,9 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True):
                     "Table not in correct format due to presence of extra column: " + colname)
                 return False
             else:
-                logger.info("Table not in correct format due to presence of extra column: " + colname + ", but not failing " +
-                            "check due to strict==False.")
+                if verbose:
+                    logger.info("Table not in correct format due to presence of extra column: " + colname + ", but not failing " +
+                                "check due to strict==False.")
         elif table.dtype[colname].newbyteorder('>') != np.dtype((table_format.dtypes[colname],
                                                                  table_format.lengths[colname])).newbyteorder('>'):
             # Check if this is just an issue with lengths
@@ -122,37 +126,42 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True):
                     # it
                     pass
                 elif col_len > table_format.lengths[colname]:
-                    logger.info("Table not in correct format due to wrong length for column '" + colname + "'\n" +
-                                "Expected: " + str(table_format.lengths[colname]) + "\n" +
-                                "Got: " + str(col_len))
+                    if verbose:
+                        logger.info("Table not in correct format due to wrong length for column '" + colname + "'\n" +
+                                    "Expected: " + str(table_format.lengths[colname]) + "\n" +
+                                    "Got: " + str(col_len))
                     return False
             else:
-                logger.info("Table not in correct format due to wrong type for column '" + colname + "'\n" +
-                            "Expected: " + str(np.dtype((table_format.dtypes[colname],
-                                                         table_format.lengths[colname])).newbyteorder('>')) + "\n" +
-                            "Got: " + str(table.dtype[colname].newbyteorder('>')))
+                if verbose:
+                    logger.info("Table not in correct format due to wrong type for column '" + colname + "'\n" +
+                                "Expected: " + str(np.dtype((table_format.dtypes[colname],
+                                                             table_format.lengths[colname])).newbyteorder('>')) + "\n" +
+                                "Got: " + str(table.dtype[colname].newbyteorder('>')))
                 return False
 
     if not ignore_metadata:
         # Check the metadata is correct
         if list(table.meta.keys()) != table_format.m.all:
-            logger.info("Table not in correct format due to wrong metadata keys.\n" +
-                        "Expected: " + str(table_format.m.all) + "\n" +
-                        "Got: " + str(list(table.meta.keys())))
+            if verbose:
+                logger.info("Table not in correct format due to wrong metadata keys.\n" +
+                            "Expected: " + str(table_format.m.all) + "\n" +
+                            "Got: " + str(list(table.meta.keys())))
             return False
 
         # Check the format label is correct
         if table.meta[table_format.m.format] != table_format.m.table_format:
-            logger.info("Table not in correct format due to wrong table format label.\n" +
-                        "Expected: " + table_format.m.table_format + "\n" +
-                        "Got: " + table.meta[table_format.m.format])
+            if verbose:
+                logger.info("Table not in correct format due to wrong table format label.\n" +
+                            "Expected: " + table_format.m.table_format + "\n" +
+                            "Got: " + table.meta[table_format.m.format])
             return False
 
         # Check the version is correct
         if table.meta[table_format.m.version] != table_format.__version__:
-            logger.info("Table not in correct format due to wrong table format label.\n" +
-                        "Expected: " + table_format.__version__ + "\n" +
-                        "Got: " + table.meta[table_format.m.version])
+            if verbose:
+                logger.info("Table not in correct format due to wrong table format label.\n" +
+                            "Expected: " + table_format.__version__ + "\n" +
+                            "Got: " + table.meta[table_format.m.version])
             return False
 
     return True
