@@ -48,6 +48,8 @@ class TestCalibratedFrameProduct(object):
         """Test that all filenames in a default product are empty.
         """
         
+        prod.init()
+        
         product = prod.create_dpd_vis_calibrated_frame()
         
         for filename in product.get_all_filenames():

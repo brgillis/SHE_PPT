@@ -60,7 +60,9 @@ class TestShearEstimatesProduct(object):
         """Test that all filenames in a default product are empty.
         """
         
-        product = prod.create_dpd_vis_calibrated_frame()
+        prod.init()
+        
+        product = prod.create_dpd_shear_estimates()
         
         for filename in product.get_all_filenames():
             assert filename==""
