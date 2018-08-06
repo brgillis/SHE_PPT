@@ -174,12 +174,14 @@ def replace_multiple_in_file(input_filename, output_filename, input_strings, out
                 fout.write(new_line)
 
 
-def write_xml_product(product, xml_file_name):
+def write_xml_product(product, xml_file_name, allow_pickled=True):
     try:
         with open(str(xml_file_name), "w") as f:
             f.write(
                 product.toDOM().toprettyxml(encoding="utf-8").decode("utf-8"))
     except AttributeError as e:
+        if not allow_pickled:
+            raise
         if not "object has no attribute 'toDOM'" in str(e):
             raise
         logger.warn(
