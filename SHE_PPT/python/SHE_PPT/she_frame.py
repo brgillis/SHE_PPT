@@ -24,6 +24,10 @@ Created on: 02/03/18
 
 import os.path
 
+from astropy.io import fits
+from astropy.io.fits import HDUList, BinTableHDU, ImageHDU, PrimaryHDU
+from astropy.table import Table
+
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
 from SHE_PPT import products
@@ -33,9 +37,6 @@ from SHE_PPT.she_image import SHEImage
 from SHE_PPT.table_formats.psf import tf as pstf
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import find_extension, load_wcs
-from astropy.io import fits
-from astropy.io.fits import HDUList, BinTableHDU, ImageHDU, PrimaryHDU
-from astropy.table import Table
 import numpy as np
 
 
@@ -164,7 +165,13 @@ class SHEFrame(object):
 
         """
 
-        row = self.psf_catalogue.loc[gal_id]
+        try:
+            row = self.psf_catalogue.loc[gal_id]
+        except ValueError as e:
+            if not str(e)=="Cannot create TableLoc object with no indices":
+                raise
+            self.psf_catalogue.add_index(pstf.ID)
+            row = self.psf_catalogue.loc[gal_id]
 
         bulge_hdu = self.psf_data_hdulist[row[pstf.bulge_index]]
         bulge_psf_stamp = SHEImage(
