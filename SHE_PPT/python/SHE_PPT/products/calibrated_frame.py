@@ -123,7 +123,10 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-def create_dpd_vis_calibrated_frame(filename=''):
+def create_dpd_vis_calibrated_frame(filename='',
+                                    psf_filename='',
+                                    bkg_filename='',
+                                    wgt_filename=''):
     """
         @TODO fill in docstring
     """
@@ -136,6 +139,9 @@ def create_dpd_vis_calibrated_frame(filename=''):
     dpd_vis_calibrated_frame.Header = HeaderProvider.createGenericHeader("SHE")
 
     __set_data_filename(dpd_vis_calibrated_frame, filename)
+    __set_psf_filename(dpd_vis_calibrated_frame, psf_filename)
+    __set_bkg_filename(dpd_vis_calibrated_frame, bkg_filename)
+    __set_wgt_filename(dpd_vis_calibrated_frame, wgt_filename)
 
     return dpd_vis_calibrated_frame
 
