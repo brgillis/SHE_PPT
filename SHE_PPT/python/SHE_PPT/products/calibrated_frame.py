@@ -52,6 +52,8 @@ def init():
     binding_class.set_wgt_filename = __set_wgt_filename
     binding_class.get_wgt_filename = __get_wgt_filename
 
+    binding_class.get_all_filenames = __get_all_filenames
+
     return
 
 
@@ -111,7 +113,20 @@ def __get_wgt_filename(self):
     return None
 
 
-def create_dpd_vis_calibrated_frame(filename='vis_calibrated_frame.fits'):
+def __get_all_filenames(self):
+
+    all_filenames = [self.get_data_filename(),
+                     self.get_psf_filename(),
+                     self.get_bkg_filename(),
+                     self.get_wgt_filename(), ]
+
+    return all_filenames
+
+
+def create_dpd_vis_calibrated_frame(filename='',
+                                    psf_filename='',
+                                    bkg_filename='',
+                                    wgt_filename=''):
     """
         @TODO fill in docstring
     """
@@ -124,6 +139,9 @@ def create_dpd_vis_calibrated_frame(filename='vis_calibrated_frame.fits'):
     dpd_vis_calibrated_frame.Header = HeaderProvider.createGenericHeader("SHE")
 
     __set_data_filename(dpd_vis_calibrated_frame, filename)
+    __set_psf_filename(dpd_vis_calibrated_frame, psf_filename)
+    __set_bkg_filename(dpd_vis_calibrated_frame, bkg_filename)
+    __set_wgt_filename(dpd_vis_calibrated_frame, wgt_filename)
 
     return dpd_vis_calibrated_frame
 
