@@ -65,7 +65,7 @@ class TestShearEstimatesProduct(object):
         product = prod.create_dpd_shear_estimates()
         
         for filename in product.get_all_filenames():
-            assert filename==""
+            assert filename=="" or filename is None
             
         return
 
