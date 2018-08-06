@@ -55,6 +55,17 @@ class TestShearEstimatesProduct(object):
         assert product.get_REGAUSS_filename() == r_filename
 
         pass
+    
+    def test_default_filenames(self):
+        """Test that all filenames in a default product are empty.
+        """
+        
+        product = prod.create_dpd_vis_calibrated_frame()
+        
+        for filename in product.get_all_filenames():
+            assert filename==""
+            
+        return
 
     def test_xml_writing_and_reading(self, tmpdir):
 
