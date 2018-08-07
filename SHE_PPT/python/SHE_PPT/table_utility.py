@@ -111,7 +111,10 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
     for colname in table.colnames:
 
         col_dtype = table.dtype[colname].newbyteorder('>')
-        ex_dtype = np.dtype((table_format.dtypes[colname], table_format.lengths[colname])).newbyteorder('>')
+        try:
+            ex_dtype = np.dtype((table_format.dtypes[colname], table_format.lengths[colname])).newbyteorder('>')
+        except Exception:
+            pass
 
         if colname not in table_format.all:
             if strict:
