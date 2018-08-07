@@ -141,7 +141,7 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
                     elif verbose:
                         logger.info("Not failing check due to strict==False.")
             # Is it an issue with a bool column being read as a string?
-            if col_dtype.str[1] == 'U' and ex_dtype.str == '|b1':
+            elif col_dtype.str[1] == 'U' and ex_dtype.str == '|b1':
                 if fix_bool:
                     col = Column(data=np.empty_like(table[colname].data, dtype=bool))
                     for i in range(len(col)):
