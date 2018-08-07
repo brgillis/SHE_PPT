@@ -154,6 +154,10 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
                                                                  table_format.lengths[colname])).newbyteorder('>')) + "\n" +
                                     "Got: " + str(table.dtype[colname].newbyteorder('>')))
                     return False
+            # Is it an issue with int or float size?
+            elif strict == False:
+                if col_dtype.str[1] == ex_dtype.str[1] and (col_dtype[1] == 'i' or col_dtype[1] == 'f'):
+                    pass
             else:
                 if verbose:
                     logger.info("Table not in correct format due to wrong type for column '" + colname + "'\n" +
