@@ -21,7 +21,7 @@
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
-from astropy.table import six
+from astropy.table import six, Column
 import numpy as np
 
 
@@ -76,7 +76,8 @@ def get_lengths(table_format):
     return list(zip(*list(table_format.lengths.items())))[1]
 
 
-def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbose=False):
+def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbose=False,
+                 fix_bool=True):
     """
         @brief Checks if a table is in the given format
 
@@ -90,6 +91,8 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
         @param strict <bool> If False, will allow the presence of extra columns
 
         @param verbose <bool> If True, will specify reasons tables fail the format check.
+
+        @param fix_bool <bool> If True, will fix any bool columns that were read incorrectly as strings
 
         @return <bool>
 
@@ -106,6 +109,10 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
     # Check that no extra column names are present if strict==True, and each
     # present column is of the right dtype
     for colname in table.colnames:
+
+        col_dtype = table.dtype[colname].newbyteorder('>')
+        ex_dtype = np.dtype((table_format.dtypes[colname], table_format.lengths[colname])).newbyteorder('>')
+
         if colname not in table_format.all:
             if strict:
                 logger.info(
@@ -115,22 +122,42 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
                 if verbose:
                     logger.info("Table not in correct format due to presence of extra column: " + colname + ", but not failing " +
                                 "check due to strict==False.")
-        elif table.dtype[colname].newbyteorder('>') != np.dtype((table_format.dtypes[colname],
-                                                                 table_format.lengths[colname])).newbyteorder('>'):
+
+        elif col_dtype != ex_dtype:
+
             # Check if this is just an issue with lengths
-            col_dtype = table.dtype[colname]
-            if col_dtype.str[1] == 'U':
+            if col_dtype.str[1] == 'U' and ex_dtype.str[1] == 'U':
                 col_len = int(col_dtype.str[2:])
                 if col_len < table_format.lengths[colname]:
-                    # Length is shorter, likely due to saving as ascii. Allow
-                    # it
+                    # Length is shorter, likely due to saving as ascii. Allow it
                     pass
                 elif col_len > table_format.lengths[colname]:
                     if verbose:
                         logger.info("Table not in correct format due to wrong length for column '" + colname + "'\n" +
                                     "Expected: " + str(table_format.lengths[colname]) + "\n" +
                                     "Got: " + str(col_len))
+                    if strict:
+                        return False
+                    elif verbose:
+                        logger.info("Not failing check due to strict==False.")
+            # Is it an issue with a bool column being read as a string?
+            elif col_dtype.str[1] == 'U' and ex_dtype.str == '|b1':
+                if fix_bool:
+                    col = Column(data=np.empty_like(table[colname].data, dtype=bool))
+                    for i in range(len(col)):
+                        col[i] = (table[colname] == "True" or table[colname] == "true" or table[colname] == "1")
+                    table.replace_column(colname, col)
+                else:
+                    if verbose:
+                        logger.info("Table not in correct format due to wrong type for column '" + colname + "'\n" +
+                                    "Expected: " + str(np.dtype((table_format.dtypes[colname],
+                                                                 table_format.lengths[colname])).newbyteorder('>')) + "\n" +
+                                    "Got: " + str(table.dtype[colname].newbyteorder('>')))
                     return False
+            # Is it an issue with int or float size?
+            elif strict == False:
+                if col_dtype.str[1] == ex_dtype.str[1] and (col_dtype.str[1] == 'i' or col_dtype.str[1] == 'f'):
+                    pass
             else:
                 if verbose:
                     logger.info("Table not in correct format due to wrong type for column '" + colname + "'\n" +
