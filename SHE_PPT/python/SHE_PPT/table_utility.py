@@ -122,15 +122,17 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
             if col_dtype.str[1] == 'U':
                 col_len = int(col_dtype.str[2:])
                 if col_len < table_format.lengths[colname]:
-                    # Length is shorter, likely due to saving as ascii. Allow
-                    # it
+                    # Length is shorter, likely due to saving as ascii. Allow it
                     pass
                 elif col_len > table_format.lengths[colname]:
                     if verbose:
                         logger.info("Table not in correct format due to wrong length for column '" + colname + "'\n" +
                                     "Expected: " + str(table_format.lengths[colname]) + "\n" +
                                     "Got: " + str(col_len))
-                    return False
+                    if strict:
+                        return False
+                    elif verbose:
+                        logger.info("Not failing check due to strict==False.")
             else:
                 if verbose:
                     logger.info("Table not in correct format due to wrong type for column '" + colname + "'\n" +
