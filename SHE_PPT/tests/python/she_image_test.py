@@ -352,7 +352,7 @@ class Test_she_image():
                                       (True, True, True)),
                                      dtype=bool)
 
-        assert (img.get_object_mask(0, mask_suspect=True, mask_unassigned=True)
+        assert (img.get_object_mask(1, mask_suspect=True, mask_unassigned=True)
                 == desired_bool_mask).all()
 
     def test_pix2world(self):
