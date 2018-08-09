@@ -86,3 +86,76 @@ def archive_product(product_filename, archive_dir, workdir):
                     "Exception was: " + str(e))
 
     return
+
+
+def read_config(config_filename, workdir="."):
+    """ Reads in a generic configuration file to a dictionary. Note that all arguments will be read as strings.
+
+        Parameters
+        ----------
+        config_filename : string
+            The workspace-relative name of the config file.
+        workdir : string
+            The working directory.
+    """
+
+    config_dict = {}
+
+    qualified_config_filename = os.path.join(workdir, config_filename)
+
+    with open(qualified_config_filename, 'r') as config_file:
+
+        # Read in the file, except for comment lines
+        for config_line in config_file:
+
+            stripped_line = config_line.strip()
+
+            # Ignore comment or empty lines
+            if (config_line[0] == '#') or (len(stripped_line) == 0):
+                continue
+
+            # Ignore comment portion
+            noncomment_line = config_line.split('#')[0]
+
+            # Get the key and value from the line
+            equal_split_line = noncomment_line.split('=')
+
+            key = equal_split_line[0].strip()
+
+            # In case the value contains an = char
+            value = noncomment_line.replace(equal_split_line[0] + '=', '').strip()
+
+            config_dict[key] = value
+
+        # End for config_line in config_file:
+
+    # End with open(qualified_config_filename, 'r') as config_file:
+
+    return config_dict
+
+
+def write_config(config_dict, config_filename, workdir="."):
+    """ Writes a dictionary to a configuration file.
+
+        Parameters
+        ----------
+        config_dict : string
+            The config dictionary to write out.
+        config_filename : string
+            The desired workspace-relative name of the config file.
+        workdir : string
+            The working directory.
+    """
+
+    qualified_config_filename = os.path.join(workdir, config_filename)
+
+    if os.path.exists(qualified_config_filename):
+        os.remove(qualified_config_filename)
+
+    with open(qualified_config_filename, 'w') as config_file:
+
+        # Write out each entry in a line
+        for key in config_dict:
+            config_file.write(str(key) + " = " + str(config_dict[key]) + "\n")
+
+    return
