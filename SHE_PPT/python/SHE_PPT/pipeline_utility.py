@@ -86,3 +86,49 @@ def archive_product(product_filename, archive_dir, workdir):
                     "Exception was: " + str(e))
 
     return
+
+
+def read_config(config_filename, workdir="."):
+    """ Reads in a generic configuration file to a dictionary. Note that all arguments will be read as strings.
+
+        Parameters
+        ----------
+        config_filename : string
+            The workspace-relative name of the config file.
+        workdir : string
+            The working directory.
+    """
+
+    config_dict = {}
+
+    qualified_config_filename = os.path.join(config_filename, workdir)
+
+    with open(qualified_config_filename, 'r') as config_file:
+
+        # Read in the file, except for comment lines
+        for config_line in config_file:
+
+            stripped_line = config_line.strip()
+
+            # Ignore comment or empty lines
+            if (config_line[0] == '#') or (len(stripped_line) > 0):
+                continue
+
+            # Ignore comment portion
+            noncomment_line = config_line.split('#')[0]
+
+            # Get the key and value from the line
+            equal_split_line = noncomment_line.split('=')
+
+            key = equal_split_line[0].strip()
+
+            # In case the value contains an = char
+            value = noncomment_line.replace(equal_split_line[0] + '=', '').strip()
+
+            config_dict[key] = value
+
+        # End for config_line in config_file:
+
+    # End with open(qualified_config_filename, 'r') as config_file:
+
+    return config_dict
