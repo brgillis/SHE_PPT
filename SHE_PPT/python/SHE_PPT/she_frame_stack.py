@@ -109,7 +109,14 @@ class SHEFrameStack(object):
            stamp_stack : SHEImageStack
         """
 
-        row = self.detections_catalogue.loc[gal_id]
+        # Need to put this in a try block in case the index wasn't properly set
+        try:
+            row = self.detections_catalogue.loc[gal_id]
+        except ValueError as e:
+            if not "Cannot create TableLoc object with no indices" in str(e):
+                raise
+            self.detections_catalogue.add_index(detf.ID)
+            row = self.detections_catalogue.loc[gal_id]
 
         x_world = row[detf.gal_x_world]
         y_world = row[detf.gal_y_world]
