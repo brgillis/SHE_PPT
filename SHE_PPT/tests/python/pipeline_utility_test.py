@@ -58,7 +58,7 @@ class TestUtility:
 
         # Test that we can parse a more complicated file
         test2_filename = "test2.txt"
-        with open(test2_filename, "w") as fo:
+        with open(os.path.join(self.workdir, test2_filename), "w") as fo:
             fo.write("foo = bar\n" +
                      "foobar = barfoo\n" +
                      "boo = far # nope\n" +
