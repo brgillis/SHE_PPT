@@ -99,6 +99,10 @@ def read_config(config_filename, workdir="."):
             The working directory.
     """
 
+    # Return None if input filename is None
+    if config_filename is None:
+        return None
+
     config_dict = {}
 
     qualified_config_filename = os.path.join(workdir, config_filename)
@@ -146,6 +150,10 @@ def write_config(config_dict, config_filename, workdir="."):
         workdir : string
             The working directory.
     """
+
+    # Silently return if dict and filename are None
+    if config_dict is None and config_filename is None:
+        return
 
     qualified_config_filename = os.path.join(workdir, config_filename)
 
