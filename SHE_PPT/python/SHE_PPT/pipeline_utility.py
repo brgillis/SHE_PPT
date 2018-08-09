@@ -101,7 +101,7 @@ def read_config(config_filename, workdir="."):
 
     config_dict = {}
 
-    qualified_config_filename = os.path.join(config_filename, workdir)
+    qualified_config_filename = os.path.join(workdir, config_filename)
 
     with open(qualified_config_filename, 'r') as config_file:
 
@@ -147,7 +147,7 @@ def write_config(config_dict, config_filename, workdir="."):
             The working directory.
     """
 
-    qualified_config_filename = os.path.join(config_filename, workdir)
+    qualified_config_filename = os.path.join(workdir, config_filename)
 
     if os.path.exists(qualified_config_filename):
         os.remove(qualified_config_filename)
