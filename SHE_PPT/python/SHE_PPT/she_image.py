@@ -351,14 +351,14 @@ class SHEImage(object):
             str_list.append(offset_str)
         return "SHEImage(" + ", ".join(str_list) + ")"
 
-    def get_object_mask(self, ID, mask_suspect=False, mask_unassigned=False):
+    def get_object_mask(self, seg_id, mask_suspect=False, mask_unassigned=False):
         """Get a mask for pixels that are either bad (and optionally suspect)
         or don't belong to an object with a given ID.
 
         Arguments
         ---------
-        ID: int
-            ID of the object for which to generate a mask
+        seg_id: int
+            Segmentation map ID of the object for which to generate a mask
         mask_suspect: bool
             If True, suspect pixels will also be masked True.
         mask_unassigned: bool
@@ -378,7 +378,7 @@ class SHEImage(object):
             pixel_mask = as_bool(is_masked_bad(self._mask))
 
         # Now get mask for other objects
-        other_mask = (self._segmentation_map != ID)
+        other_mask = (self._segmentation_map != seg_id)
         if not mask_unassigned:
             other_mask = np.logical_and(
                 other_mask, (self._segmentation_map != segmap_unassigned_value))
