@@ -132,3 +132,30 @@ def read_config(config_filename, workdir="."):
     # End with open(qualified_config_filename, 'r') as config_file:
 
     return config_dict
+
+
+def write_config(config_dict, config_filename, workdir="."):
+    """ Writes a dictionary to a configuration file.
+
+        Parameters
+        ----------
+        config_dict : string
+            The config dictionary to write out.
+        config_filename : string
+            The desired workspace-relative name of the config file.
+        workdir : string
+            The working directory.
+    """
+
+    qualified_config_filename = os.path.join(config_filename, workdir)
+
+    if os.path.exists(qualified_config_filename):
+        os.remove(qualified_config_filename)
+
+    with open(qualified_config_filename, 'w') as config_file:
+
+        # Write out each entry in a line
+        for key in config_dict:
+            config_file.write(str(key) + " = " + str(config_dict[key]) + "\n")
+
+    return
