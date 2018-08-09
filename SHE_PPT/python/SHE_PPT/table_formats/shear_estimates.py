@@ -246,6 +246,12 @@ class ShearEstimatesTableFormat(object):
         self.e2_cal2_err = set_column_properties(
             "E2_CAL2_ERR", is_optional=True, dtype=">f8", fits_dtype="D")
 
+        self.chi2 = set_column_properties(
+            "CHI2", is_optional=True, dtype=">f8", fits_dtype="D")
+
+        self.dof = set_column_properties(
+            "DOF", is_optional=True, dtype=">i8", fits_dtype="K")
+
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
 
@@ -254,6 +260,7 @@ class ShearEstimatesTableFormat(object):
         for label in self.all:
             if not self.is_optional[label]:
                 self.all_required.append(label)
+
 
 # Define an instance of this object that can be imported
 shear_estimates_table_format = ShearEstimatesTableFormat()

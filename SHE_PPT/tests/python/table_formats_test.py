@@ -165,7 +165,7 @@ class TestTableFormats:
                            1, 1, 1, 1, 1, 1, 1,
                            l, l, l, l, l, l, l, l, l, l,
                            1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                           1, 1, 1, 1, 1, 1,)
+                           1, 1, 1, 1, 1, 1, 1, 1)
 
         assert get_lengths(setf) == desired_lengths
 
