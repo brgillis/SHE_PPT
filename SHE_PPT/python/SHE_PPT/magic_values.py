@@ -51,7 +51,8 @@ disk_psf_tag = "DPSF"
 psf_cat_tag = "PSFC"
 
 # Miscellaneous
-segmap_unassigned_value = -1
+segmap_unassigned_value = 0
+segmap_other_value = -1
 short_instance_id_maxlen = 17
 
 # mag_vis_zeropoint = 25.50087633632 # From ETC
