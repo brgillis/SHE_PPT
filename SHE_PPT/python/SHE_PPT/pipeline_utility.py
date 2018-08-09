@@ -111,7 +111,7 @@ def read_config(config_filename, workdir="."):
             stripped_line = config_line.strip()
 
             # Ignore comment or empty lines
-            if (config_line[0] == '#') or (len(stripped_line) > 0):
+            if (config_line[0] == '#') or (len(stripped_line) == 0):
                 continue
 
             # Ignore comment portion
