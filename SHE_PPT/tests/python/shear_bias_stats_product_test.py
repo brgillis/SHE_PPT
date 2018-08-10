@@ -139,10 +139,10 @@ class TestShearBiasStatsProduct(object):
 
         # Save the product in an XML file
         filename = tmpdir.join("she_shear_estimates.xml")
-        write_xml_product(product, filename)
+        write_xml_product(product, filename, allow_pickled=False)
 
         # Read back the XML file
-        loaded_product = read_xml_product(filename)
+        loaded_product = read_xml_product(filename, allow_pickled=False)
 
         # Check that the products coincide
         assert loaded_product.get_BFD_statistics()[0].ym == stats["BFD"][0].ym

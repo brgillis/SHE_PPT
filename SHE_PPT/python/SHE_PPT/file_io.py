@@ -190,7 +190,7 @@ def write_xml_product(product, xml_file_name, allow_pickled=True):
 
 
 def read_xml_product(xml_file_name, allow_pickled=True):
-
+    # @TODO: Should allow_pickled be False by default?
     # Read the xml file as a string
     try:
         with open(str(xml_file_name), "r") as f:
@@ -360,3 +360,37 @@ def get_data_filename(filename, workdir="."):
         # Not an XML file - so presumably it's a raw data file; return the
         # input filename
         return filename
+
+def update_xml_with_value(filename):
+    """ Updates xml files with value 
+    
+    Checks for <Key><\Key> not followed by <Value><\Value> 
+    """
+    lines=open(filename).readlines()
+    keyLines=[ii for ii,line in enumerate(lines) if '<Key>' in line]
+    badLines = [idx for idx in keyLines if '<Value>' not in lines[idx+1]]
+    if badLines:
+        print("%s has incorrect parameter settings, missing <Value> in lines: %s"
+              % (filename,','.join(map(str,badLines))))
+        # Do update
+        for ii,idx in enumerate(badLines):
+            # Check next 3 lines for String/Int etc Value
+            
+            info=[line for line in lines[idx+1+ii:min(idx+4+ii,len(lines)-1)] if 'Value>' in line]
+            newLine=None
+            nDefaults=0
+            if info:
+                dataValue=info[0].split('Value>')[1].split('<')[0]
+                if len(dataValue)>0:
+                    newLine=lines[idx+ii].split('<Key>')[0]+'<Value>%s</Value>\n' % dataValue
+                    
+            if not newLine:
+                # Add random string...
+                newLine=lines[idx+ii].split('<Key>')[0]+'<Value>dkhf</Value>\n'
+                nDefaults+=1
+            lines=lines[:idx+ii+1]+[newLine]+lines[idx+ii+1:]
+            open(filename,'w').writelines(lines)
+            print('Updated %s lines in %s: nDefaults=%s' % 
+                  (len(badLines),filename,nDefaults))
+    else:
+        print('No updates required')

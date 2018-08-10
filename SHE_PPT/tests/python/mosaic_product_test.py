@@ -23,8 +23,7 @@ import numpy as np
 import pytest
 
 from SHE_PPT.products import mosaic as prod
-from SHE_PPT.file_io import (read_xml_product, write_xml_product,
-                             read_xml_product, write_xml_product)
+from SHE_PPT.file_io import (read_xml_product, write_xml_product)
 from SHE_PPT import detector as dtc
 import SHE_PPT.magic_values as mv
 
@@ -56,10 +55,10 @@ class TestMosaicProduct(object):
 
         # Save the product in an xml file
         filename = tmpdir.join("mer_mosaic.xml")
-        write_xml_product(product, filename)
+        write_xml_product(product, filename, allow_pickled=False)
 
         # Read back the xml file
-        loaded_product = read_xml_product(filename)
+        loaded_product = read_xml_product(filename, allow_pickled=False)
 
         # Check that it's the same
         assert loaded_product.get_data_filename() == data_filename
@@ -74,7 +73,7 @@ class TestMosaicProduct(object):
         product = prod.create_dpd_mer_mosaic(data_filename = "junk",)
 
         filename = str(tmpdir.join("mer_mosaic.bin"))
-        write_xml_product(product, filename)
+        write_xml_product(product, filename, allow_pickled=False)
 
         # Check that it raises a ValueError when expected
 
@@ -98,7 +97,7 @@ class TestMosaicProduct(object):
         phdu.writeto(data_filename, clobber = True)
 
         product.set_data_filename(data_filename)
-        write_xml_product(product, filename)
+        write_xml_product(product, filename, allow_pickled=False)
 
         loaded_hdu = prod.load_mosaic_hdu(filename = filename,
                                           detector_x = detector_x,

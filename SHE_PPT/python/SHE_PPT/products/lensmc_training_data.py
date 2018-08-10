@@ -22,20 +22,23 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-
-# import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import EuclidDmBindings.she.she_stub as she_dpd # FIXME
-
+import HeaderProvider.GenericHeaderProvider as HeaderProvider 
+from SHE_PPT.file_io import read_xml_product, find_aux_file
+from EuclidDmBindings.dpd.she.shearlensmctraining_stub import dpdShearLensMCTraining
 import pickle
+
+sample_file_name = "SHE_PPT/sample_lensmc_training.xml"
+
+
 
 
 def init():
     """
-        Adds some extra functionality to the DpdSheAstrometry product
+        Initialisers for LensMC training
     """
 
     # binding_class = she_dpd.DpdSheLensMCTrainingDataProduct # @FIXME
-    binding_class = DpdSheLensMCTrainingDataProduct
+    binding_class = dpdShearLensMCTraining
 
     # Add the data file name methods
 
@@ -50,11 +53,11 @@ def init():
 
 
 def __set_filename(self, filename):
-    self.Data.DataContainer.FileName = filename
+    self.Data.ShearLensMCTrainingFile.DataContainer.FileName = filename
 
 
 def __get_filename(self):
-    return self.Data.DataContainer.FileName
+    return self.Data.ShearLensMCTrainingFile.DataContainer.FileName
 
 
 def __get_all_filenames(self):
@@ -96,15 +99,16 @@ def create_dpd_she_lensmc_training_data(filename=None):
 
     # dpd_she_lensmc_training_data = she_dpd.DpdSheLensMCTrainingDataProduct()
     # # FIXME
-    dpd_she_lensmc_training_data = DpdSheLensMCTrainingDataProduct()
+    dpd_she_lensmc_training_data = read_xml_product(
+        find_aux_file(sample_file_name))
 
-    # dpd_she_lensmc_training_data.Header =
-    # HeaderProvider.createGenericHeader("SHE") # FIXME
-    dpd_she_lensmc_training_data.Header = "SHE"
+    dpd_she_lensmc_training_data.Header = HeaderProvider.createGenericHeader("SHE") 
 
-    dpd_she_lensmc_training_data.Data = create_she_lensmc_training_data(
-        filename)
+    #dpd_she_lensmc_training_data.Data = create_she_lensmc_training_data(
+    #    filename)
 
+    if filename:
+        __set_filename(dpd_she_lensmc_training_data,filename)
     return dpd_she_lensmc_training_data
 
 # Add a useful alias

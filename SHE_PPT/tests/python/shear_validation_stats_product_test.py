@@ -50,10 +50,10 @@ class TestShearValidationStatsProduct(object):
 
         # Save the product in an XML file
         filename = tmpdir.join("she_shear_validation_stats.xml")
-        write_xml_product(product, filename)
+        write_xml_product(product, filename, allow_pickled=False)
 
         # Read back the XML file
-        loaded_product = read_xml_product(filename)
+        loaded_product = read_xml_product(filename, allow_pickled=False)
 
         # Check that the filenames match
         assert loaded_product.get_filename() == subfilename

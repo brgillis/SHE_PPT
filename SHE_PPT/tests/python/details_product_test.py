@@ -24,7 +24,7 @@ from SHE_PPT.products import details as prod
 
 
 class TestDetailsProduct(object):
-    """A collection of tests for the shear estimates data product.
+    """ ????
 
     """
 
@@ -51,10 +51,10 @@ class TestDetailsProduct(object):
 
         # Save the product in an XML file
         filename = tmpdir.join("she_details.xml")
-        write_xml_product(product, filename)
+        write_xml_product(product, filename, allow_pickled=False)
 
         # Read back the XML file
-        loaded_product = read_xml_product(filename)
+        loaded_product = read_xml_product(filename,allow_pickled=False)
 
         # Check that the filenames match
         assert loaded_product.get_data_filename() == subfilename
