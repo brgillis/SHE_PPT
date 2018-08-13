@@ -19,10 +19,11 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 import os
+
+from astropy.table import Table
 import pytest
 
 from SHE_PPT.utility import hash_any, get_arguments_string
-from astropy.table import Table
 import numpy as np
 
 
@@ -104,5 +105,14 @@ class TestUtility:
         bool_arg_string = get_arguments_string(test_bool_args, store_true=["stt", "stf"], store_false=["sff", "sft"])
         assert ((bool_arg_string == "--stt --sff") or
                 (bool_arg_string == "--sff --stt"))
+        
+        # Test if it properly puts quotes around args with spaces in them
+        test_space_args = TestArgs()
+        test_space_args.foo = "b a r"
+        test_space_args.foobar = ["bar", "f o o"]
+        
+        space_arg_string = get_arguments_string(test_space_args)
+        assert ((space_arg_string == '--foo "b a r" --foobar bar "f o o"') or
+                (space_arg_string == '--foobar bar "f o o" --foo "b a r"'))
 
         return
