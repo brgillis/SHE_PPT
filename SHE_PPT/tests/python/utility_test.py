@@ -111,7 +111,7 @@ class TestUtility:
         test_space_args.foo = "b a r"
         test_space_args.foobar = ["bar", "f o o"]
         
-        space_arg_string = get_arguments_string(test_args)
+        space_arg_string = get_arguments_string(test_space_args)
         assert ((space_arg_string == '--foo "b a r" --foobar bar "f o o"') or
                 (space_arg_string == '--foobar bar "f o o" --foo "b a r"'))
 
