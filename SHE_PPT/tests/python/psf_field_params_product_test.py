@@ -52,10 +52,10 @@ class TestPSFCalibrationProduct(object):
 
         # Save the product in an xml file
         filename = tmpdir.join("she_psf_field_params.xml")
-        write_xml_product(product, filename, allow_pickled=False)
+        write_xml_product(product, filename)
 
         # Read back the xml file
-        loaded_product = read_xml_product(filename, allow_pickled=False)
+        loaded_product = read_xml_product(filename)
 
         # Check that it's the same
         assert loaded_product.get_zernike_mode_filename() == zm_filename

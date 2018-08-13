@@ -31,7 +31,7 @@ sample_file_name = "SHE_PPT/sample_validated_shear_measurements.xml"
 
 def init():
     """
-        Adds some extra functionality to the DpdSheAstrometry product
+        ValidatedShearMeasurement
     """
 
     binding_class = dpdValidatedShearMeasurement
@@ -76,7 +76,8 @@ def create_dpd_she_validated_shear_estimates(filename="default_filename.fits"):
     dpd_she_validated_shear_estimates.Header = HeaderProvider.createGenericHeader(
         "SHE")
 
-    __set_filename(dpd_she_validated_shear_estimates, filename)
+    if filename:
+        __set_filename(dpd_she_validated_shear_estimates, filename)
 
     return dpd_she_validated_shear_estimates
 

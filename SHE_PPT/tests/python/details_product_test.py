@@ -51,10 +51,10 @@ class TestDetailsProduct(object):
 
         # Save the product in an XML file
         filename = tmpdir.join("she_details.xml")
-        write_xml_product(product, filename, allow_pickled=False)
+        write_xml_product(product, filename)
 
         # Read back the XML file
-        loaded_product = read_xml_product(filename,allow_pickled=False)
+        loaded_product = read_xml_product(filename)
 
         # Check that the filenames match
         assert loaded_product.get_data_filename() == subfilename
