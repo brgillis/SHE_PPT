@@ -27,11 +27,10 @@ Author: user
 import logging
 import os
 
-import py.test
-
 import SHE_PPT.she_image
 import SHE_PPT.she_image_checkplot
 import numpy as np
+import py.test
 
 # Disable tests if we don't have a display
 if 'DISPLAY' in os.environ:
@@ -77,6 +76,7 @@ class Testshe_image_checkplot(object):
         checkplot = SHE_PPT.she_image_checkplot.Checkplot(img, scale=20)
         checkplot.save_to_file(self.testfilepath)
 
+    @pytest.mark.skip(reason="No display available on CODEEN, so not expected to work on master branch")
     def test_checkplot_interactive(self):
         """Don't leave this function in production tests!
         It's purpose is more to demonstrate and play with new checkplot features!
