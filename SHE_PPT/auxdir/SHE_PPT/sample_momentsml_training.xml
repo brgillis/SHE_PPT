@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<ns1:DpdShearMomentsMLTraining xmlns:ns1="http://euclid.esa.org/schema/dpd/she/shearmomentsmltraining">
+	<Header>
+		<ProductId>B6V</ProductId>
+		<ProductType>moB</ProductType>
+		<SoftwareName>aSC</SoftwareName>
+		<SoftwareRelease>IqGte</SoftwareRelease>
+		<ManualValidationStatus>INVALID</ManualValidationStatus>
+		<ExpirationDate>2018-08-10T14:08:15.947Z</ExpirationDate>
+		<PipelineRun>vvZ</PipelineRun>
+		<ExitStatusCode>IFL</ExitStatusCode>
+		<DataModelVersion>zbu</DataModelVersion>
+		<MinDataModelVersion>yRd</MinDataModelVersion>
+		<ScientificCustodian>VIS</ScientificCustodian>
+		<AccessRights>
+			<EuclidConsortiumRead>false</EuclidConsortiumRead>
+			<EuclidConsortiumWrite>false</EuclidConsortiumWrite>
+			<ScientificGroupRead>false</ScientificGroupRead>
+			<ScientificGroupWrite>true</ScientificGroupWrite>
+		</AccessRights>
+		<Curator>
+			<Name>QTk</Name>
+			<Email>someOne@someplace.com</Email>
+		</Curator>
+		<ToBePublished>false</ToBePublished>
+		<Published>false</Published>
+		<Creator>C3l</Creator>
+		<CreationDate>2018-08-10T14:08:15.953Z</CreationDate>
+	</Header>
+	<Data filestatus="PROPOSED">
+		<FileName>AJzPtOvJmsFWxoAjM4HeV7pq8c29WaSO2l70SF7tiz3zdZkNMd02nxBolgeXcZDRd28XRkZbFMm1iYTigRU6oMmI</FileName>
+	</Data>
+	<QualityFlags>
+		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true</DummyFlag>
+		<AuxiliaryFlags flagName="33R" flagged="true" maxLimit="-5.0" minLimit="-2.0" xpath="9p9">true</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Param>
+			<Key>SBb</Key>
+			<Value>yJd</Value>
+			<Description>Tkx</Description>
+			<StringValue>yJd</StringValue>
+			<Unit>t6I</Unit>
+		</Param>
+	</Parameters>
+</ns1:DpdShearMomentsMLTraining>

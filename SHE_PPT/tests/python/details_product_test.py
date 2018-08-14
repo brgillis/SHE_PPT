@@ -24,7 +24,7 @@ from SHE_PPT.products import details as prod
 
 
 class TestDetailsProduct(object):
-    """A collection of tests for the shear estimates data product.
+    """ ????
 
     """
 

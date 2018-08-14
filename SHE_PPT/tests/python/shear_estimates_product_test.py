@@ -54,6 +54,19 @@ class TestShearEstimatesProduct(object):
         assert product.get_REGAUSS_filename() == r_filename
 
         pass
+    
+    def test_default_filenames(self):
+        """Test that all filenames in a default product are empty.
+        """
+        
+        prod.init()
+        
+        product = prod.create_dpd_shear_estimates()
+        
+        for filename in product.get_all_filenames():
+            assert filename=="" or filename is None
+            
+        return
 
     def test_xml_writing_and_reading(self, tmpdir):
 
@@ -74,10 +87,10 @@ class TestShearEstimatesProduct(object):
 
         # Save the product in an XML file
         filename = tmpdir.join("she_shear_estimates.xml")
-        write_xml_product(product, filename)
+        write_xml_product(product, filename, allow_pickled=False)
 
         # Read back the XML file
-        loaded_product = read_xml_product(filename)
+        loaded_product = read_xml_product(filename, allow_pickled=False)
 
         # Check that the filenames coincide
         assert loaded_product.get_BFD_filename() == b_filename

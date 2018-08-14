@@ -23,19 +23,20 @@
 # Boston, MA 02110-1301 USA
 
 
-# import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import EuclidDmBindings.she.she_stub as she_dpd # FIXME
+import HeaderProvider.GenericHeaderProvider as HeaderProvider 
+from SHE_PPT.file_io import read_xml_product, find_aux_file
+from EuclidDmBindings.dpd.she.shearksbtraining_stub import dpdShearKSBTraining
 
 import pickle
 
+sample_file_name = "SHE_PPT/sample_ksb_training.xml"
 
 def init():
     """
         Adds some extra functionality to the DpdSheAstrometry product
     """
 
-    # binding_class = she_dpd.DpdSheKSBTrainingDataProduct # @FIXME
-    binding_class = DpdSheKSBTrainingDataProduct
+    binding_class = dpdShearKSBTraining
 
     # Add the data file name methods
 
@@ -52,11 +53,11 @@ def init():
 
 
 def __set_filename(self, filename):
-    self.Data.DataContainer.FileName = filename
+    self.Data.ShearKSBTrainingFile.DataContainer.FileName = filename
 
 
 def __get_filename(self):
-    return self.Data.DataContainer.FileName
+    return self.Data.ShearKSBTrainingFile.DataContainer.FileName
 
 
 def __get_all_filenames(self):
@@ -66,29 +67,29 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-class DpdSheKSBTrainingDataProduct:  # @FIXME
+#class DpdSheKSBTrainingDataProduct:  # @FIXME
 
-    def __init__(self):
-        self.Header = None
-        self.Data = None
+#    def __init__(self):
+#        self.Header = None
+#        self.Data = None
 
-    def validateBinding(self):
-        return False
-
-
-class SheKSBTrainingDataProduct:  # @FIXME
-
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
+#    def validateBinding(self):
+#        return False
 
 
-class DataContainer:  # @FIXME
+#class SheKSBTrainingDataProduct:  # @FIXME
 
-    def __init__(self):
-        self.FileName = None
-        self.filestatus = None
+#    def __init__(self):
+#        self.format = None
+#        self.version = None
+#        self.DataContainer = None
+
+
+#class DataContainer:  # @FIXME
+
+#    def __init__(self):
+#        self.FileName = None
+#        self.filestatus = None
 
 
 def create_dpd_she_ksb_training_data(filename=None):
@@ -98,13 +99,21 @@ def create_dpd_she_ksb_training_data(filename=None):
 
     # dpd_she_ksb_training_data = she_dpd.DpdSheKSBTrainingDataProduct() #
     # FIXME
-    dpd_she_ksb_training_data = DpdSheKSBTrainingDataProduct()
+    dpd_she_ksb_training_data = read_xml_product(
+        find_aux_file(sample_file_name), allow_pickled=False)
+
+    # Overwrite the header with a new one to update the creation date (among
+    # other things)
+    dpd_she_ksb_training_data.Header = HeaderProvider.createGenericHeader("SHE")
+
+    if filename:
+        __set_filename(dpd_she_ksb_training_data,filename)
 
     # dpd_she_ksb_training_data.Header =
     # HeaderProvider.createGenericHeader("SHE") # FIXME
-    dpd_she_ksb_training_data.Header = "SHE"
+    #dpd_she_ksb_training_data.Header = "SHE"
 
-    dpd_she_ksb_training_data.Data = create_she_ksb_training_data(filename)
+    #dpd_she_ksb_training_data.Data = create_she_ksb_training_data(filename)
 
     return dpd_she_ksb_training_data
 

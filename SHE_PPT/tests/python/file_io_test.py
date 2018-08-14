@@ -29,7 +29,10 @@ from SHE_PPT.file_io import (get_allowed_filename,
                              replace_multiple_in_file,
                              type_name_maxlen,
                              instance_id_maxlen,
-                             processing_function_maxlen)
+                             processing_function_maxlen,
+                             find_aux_file,
+                             update_xml_with_value,
+                             read_xml_product)
 from astropy.table import Table
 import numpy as np
 
@@ -115,3 +118,25 @@ class TestIO:
         os.remove(self.tuple_listfile_name)
 
     # TODO: Tests for replace_(multiple_)in_file
+
+    def test_update_xml_with_value(self):
+        """ Creates simple xml file
+        Updates with <Value> 
+
+        """
+        from EuclidDmBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
+
+        test_filename = find_aux_file('SHE_PPT/sample_stacked_frame.xml')
+
+        product = read_xml_product(test_filename)
+        product.validateBinding()
+        lines = open(test_filename).readlines()
+        nLines = len(lines)
+        lines = [line for ii, line in enumerate(lines) if not ('<Value>' in line and '<Key>' in lines[ii - 1])]
+        if len(lines) < nLines:
+            temp_test_filename = 'temp_test.xml'
+            open(temp_test_filename, 'w').writelines(lines)
+
+            update_xml_with_value(temp_test_filename)
+            product = read_xml_product(temp_test_filename)
+        product.validateBinding()

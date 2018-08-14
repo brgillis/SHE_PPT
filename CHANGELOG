@@ -9,9 +9,9 @@ API Changes
 Dependency Changes
 ------------------
 
-- Now depends on EuclidDmBindings 2.1.0
-- Now depends on DMTools 2.1.0
-- Now depends on MDBTools 2.1.0)
+- Now depends on EuclidDmBindings 2.2.1
+- Now depends on DMTools 2.2.1
+- Now depends on MDBTools 2.2.1)
 
 
 Deprecated Features
