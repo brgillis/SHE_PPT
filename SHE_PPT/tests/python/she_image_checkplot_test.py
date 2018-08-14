@@ -26,11 +26,11 @@ Author: user
 
 import logging
 import os
+import pytest
 
 import SHE_PPT.she_image
 import SHE_PPT.she_image_checkplot
 import numpy as np
-import py.test
 
 # Disable tests if we don't have a display
 if 'DISPLAY' in os.environ:
