@@ -23,19 +23,21 @@
 # Boston, MA 02110-1301 USA
 
 
-# import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import EuclidDmBindings.she.she_stub as she_dpd # FIXME
+import HeaderProvider.GenericHeaderProvider as HeaderProvider 
+from EuclidDmBindings.dpd.she.raw.regausstraining_stub import dpdRegaussTraining
+from SHE_PPT.file_io import read_xml_product, find_aux_file
 
 import pickle
 
+
+sample_file_name = 'SHE_PPT/sample_regauss_training.xml'
 
 def init():
     """
         Adds some extra functionality to the DpdSheAstrometry product
     """
 
-    # binding_class = she_dpd.DpdSheREGAUSSTrainingDataProduct # @FIXME
-    binding_class = DpdSheREGAUSSTrainingDataProduct
+    binding_class = dpdRegaussTraining
 
     # Add the data file name methods
 
@@ -50,11 +52,11 @@ def init():
 
 
 def __set_filename(self, filename):
-    self.Data.DataContainer.FileName = filename
+    self.Data.RegaussTrainingFile.DataContainer.FileName = filename
 
 
 def __get_filename(self):
-    return self.Data.DataContainer.FileName
+    return self.Data.RegaussTrainingFile.DataContainer.FileName
 
 
 def __get_all_filenames(self):
@@ -96,14 +98,17 @@ def create_dpd_she_regauss_training_data(filename=None):
 
     # dpd_she_regauss_training_data =
     # she_dpd.DpdSheREGAUSSTrainingDataProduct() # FIXME
-    dpd_she_regauss_training_data = DpdSheREGAUSSTrainingDataProduct()
+    dpd_she_regauss_training_data = read_xml_product(
+        find_aux_file(sample_file_name), allow_pickled=False)
 
-    # dpd_she_regauss_training_data.Header =
-    # HeaderProvider.createGenericHeader("SHE") # FIXME
-    dpd_she_regauss_training_data.Header = "SHE"
+    dpd_she_regauss_training_data.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
 
-    dpd_she_regauss_training_data.Data = create_she_regauss_training_data(
-        filename)
+
+    #dpd_she_regauss_training_data.Data = create_she_regauss_training_data(
+    #    filename)
+    
+    if filename:
+        __set_filename(dpd_she_regauss_training_data,filename)
 
     return dpd_she_regauss_training_data
 
