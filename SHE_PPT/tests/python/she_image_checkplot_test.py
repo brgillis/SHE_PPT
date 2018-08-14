@@ -61,6 +61,7 @@ class Testshe_image_checkplot(object):
         if os.path.exists(cls.testfilepath):
             os.remove(cls.testfilepath)
 
+    @pytest.mark.skip(reason="No display available on CODEEN, so not expected to work on master branch")
     def test_checkplot(self):
         """
 
@@ -86,20 +87,14 @@ class Testshe_image_checkplot(object):
         It's purpose is more to demonstrate and play with new checkplot features!
         """
 
-        """
-        
-        if disable_tests:
-            return
-            
-        (X, Y) = np.mgrid[0:30,0:20]
-        array = np.sin(0.3*X) + np.sin(0.2*Y) + 0.3*np.random.randn(30, 20)
+        (X, Y) = np.mgrid[0:30, 0:20]
+        array = np.sin(0.3 * X) + np.sin(0.2 * Y) + 0.3 * np.random.randn(30, 20)
         mask = np.zeros(array.shape, dtype=bool)
-        mask[22:25,5:12]=True
+        mask[22:25, 5:12] = True
         img = SHE_PPT.she_image.SHEImage(array, mask=mask)
 
         checkplot = SHE_PPT.she_image_checkplot.Checkplot(img, z1=-1.5, z2=1.5, scale=15)
         checkplot.save_to_file("/home/user/Desktop/img.png")
-
 
         stamp = img.extract_stamp(0.5, 0.5, 5)
         checkplot = SHE_PPT.she_image_checkplot.Checkplot(stamp, z1=-1.5, z2=1.5, scale=20)
@@ -109,5 +104,4 @@ class Testshe_image_checkplot(object):
         checkplot = SHE_PPT.she_image_checkplot.Checkplot(stamp, z1=-1.5, z2=1.5, scale=10)
         checkplot.save_to_file("/home/user/Desktop/stamp2.png")
 
-        assert False
-        """
+        return
