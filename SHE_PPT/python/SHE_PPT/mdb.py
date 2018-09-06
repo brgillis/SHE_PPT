@@ -193,3 +193,22 @@ def get_mdb_unit(key):
         raise _not_inited_exception
 
     return full_mdb[key]['unit']
+
+# MDB keys stored as variables
+
+# Environmental constants
+
+BoltzmannConstant = "Environment.Constant.BoltzmannConstant"
+AvogadroConstant = "Environment.Constant.AvogadroConstant"
+ElectronMass = "Environment.Constant.ElectronMass"
+BohrRadiusConstant = "Environment.Constant.BohrRadiusConstant"
+VelocityOfLightConstantVacuum = "Environment.Constant.VelocityOfLightConstantVacuum"
+AstronomicalUnit2Meter = "Environment.Constant.AstronomicalUnit2Meter"
+ElementaryChargeConstant = "Environment.Constant.ElementaryChargeConstant"
+Day2Second = "Environment.Constant.Day2Second"
+MolarGasConstant = "Environment.Constant.MolarGasConstant"
+Degree2Radian = "Environment.Constant.Degree2Radian"
+AtomicMassConstant = "Environment.Constant.AtomicMassConstant"
+PlanckConstant = "Environment.Constant.PlanckConstant"
+
+
