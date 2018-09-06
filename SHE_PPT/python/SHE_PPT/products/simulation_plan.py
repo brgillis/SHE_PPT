@@ -27,7 +27,8 @@
 
 def init():
     """
-        Adds some extra functionality to the DpdSheAstrometry product
+        ????
+        
     """
 
     # binding_class = she_dpd.DpdSheSimulationPlanProduct # @FIXME

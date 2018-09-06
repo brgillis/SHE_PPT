@@ -18,9 +18,10 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from SHE_PPT.products import validated_shear_estimates as prod
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
+from SHE_PPT.products import validated_shear_estimates as prod
+
 
 class TestValidatedShearEstimatesProduct(object):
     """A collection of tests for the shear estimates data product.
@@ -28,8 +29,6 @@ class TestValidatedShearEstimatesProduct(object):
     """
 
     def test_validation(self):
-        
-        prod.init()
 
         # Create the product
         subfilename = "foo.fits"
@@ -37,15 +36,13 @@ class TestValidatedShearEstimatesProduct(object):
 
         # Check that it validates the schema
         product.validateBinding()
-        
+
         # Check that it was inited with the proper filename
         assert product.get_filename() == subfilename
 
         return
 
     def test_xml_writing_and_reading(self, tmpdir):
-
-        prod.init()
 
         # Create the product
         product = prod.create_dpd_she_validated_shear_estimates()
@@ -56,10 +53,10 @@ class TestValidatedShearEstimatesProduct(object):
 
         # Save the product in an XML file
         filename = tmpdir.join("she_validated_shear_estimates.xml")
-        write_xml_product(product, filename)
+        write_xml_product(product, filename, allow_pickled=False)
 
         # Read back the XML file
-        loaded_product = read_xml_product(filename)
+        loaded_product = read_xml_product(filename, allow_pickled=False)
 
         # Check that the filenames match
         assert loaded_product.get_filename() == subfilename

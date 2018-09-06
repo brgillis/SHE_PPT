@@ -25,10 +25,6 @@ Created on: 05/03/18
 from copy import deepcopy
 import os.path
 
-from astropy import table
-from astropy.io import fits
-from astropy.wcs import WCS
-
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
 from SHE_PPT import products
@@ -39,12 +35,11 @@ from SHE_PPT.she_image_stack import SHEImageStack
 from SHE_PPT.table_formats.detections import tf as detf
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import find_extension, load_wcs
+from astropy import table
+from astropy.io import fits
+from astropy.wcs import WCS
 import numpy as np
 
-
-products.calibrated_frame.init()
-products.detections.init()
-products.stacked_frame.init()
 
 logger = logging.getLogger(__name__)
 
@@ -114,7 +109,14 @@ class SHEFrameStack(object):
            stamp_stack : SHEImageStack
         """
 
-        row = self.detections_catalogue.loc[gal_id]
+        # Need to put this in a try block in case the index wasn't properly set
+        try:
+            row = self.detections_catalogue.loc[gal_id]
+        except ValueError as e:
+            if not "Cannot create TableLoc object with no indices" in str(e):
+                raise
+            self.detections_catalogue.add_index(detf.ID)
+            row = self.detections_catalogue.loc[gal_id]
 
         x_world = row[detf.gal_x_world]
         y_world = row[detf.gal_y_world]

@@ -39,8 +39,6 @@ class TestSimulationPlanProduct(object):
 
     def test_xml_writing_and_reading(self, tmpdir):
 
-        prod.init()
-
         # Create the product
         product = prod.create_dpd_she_simulation_plan()
 
@@ -61,8 +59,6 @@ class TestSimulationPlanProduct(object):
         pass
 
     def test_pickle_writing_and_reading(self, tmpdir):
-
-        prod.init()
 
         # Create the product
         product = prod.create_dpd_she_simulation_plan()

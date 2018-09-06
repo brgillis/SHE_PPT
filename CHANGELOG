@@ -1,5 +1,33 @@
 Changelog for SHE_PPT Preprocessing Toolkit
 
+Changes from v0.6 to v0.8
+=========================
+
+TODO: Update CHANGELOG
+
+API Changes
+-----------
+
+Dependency Changes
+------------------
+
+
+Deprecated Features
+-------------------
+
+Bug Fixes
+---------
+
+New Features
+------------
+
+New config features
+-------------------
+
+
+Miscellaneous
+-------------
+
 Changes from v0.4 to v0.6
 =========================
 
@@ -9,9 +37,9 @@ API Changes
 Dependency Changes
 ------------------
 
-- Now depends on EuclidDmBindings 2.1.0
-- Now depends on DMTools 2.1.0
-- Now depends on MDBTools 2.1.0)
+- Now depends on EuclidDmBindings 2.2.1
+- Now depends on DMTools 2.2.1
+- Now depends on MDBTools 2.2.1)
 
 
 Deprecated Features

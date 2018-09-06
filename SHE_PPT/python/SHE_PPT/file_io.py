@@ -25,6 +25,7 @@ import os
 from os.path import join, isfile
 from pickle import UnpicklingError
 import pickle
+import re
 from xml.sax._exceptions import SAXParseException
 
 from EuclidDmBindings.sys_stub import CreateFromDocument
@@ -36,17 +37,20 @@ from astropy.io import fits
 
 logger = getLogger(mv.logger_name)
 
-type_name_maxlen = 41
-instance_id_maxlen = 55
+type_name_maxlen = 15
+instance_id_maxlen = 39
+processing_function_maxlen = 4
+filename_forbidden_chars = ["/", "\\", ":", "*", "%", "|", "'", '"', "<", ">", "@", "&"]
 
 
-def get_allowed_filename(type_name, instance_id, extension=".fits", release="00.03"):
+def get_allowed_filename(type_name, instance_id, extension=".fits", release=None, subdir="data",
+                         processing_function="SHE", timestamp=True):
     """
         @brief Gets a filename in the required Euclid format.
 
-        @param type_name <string> Label for what type of object this is. Maximum 41 characters.
+        @param type_name <string> Label for what type of object this is. Maximum 15 characters.
 
-        @param instance_id <string> Label for the instance of this object. Maximum 55 characters.
+        @param instance_id <string> Label for the instance of this object. Maximum 39 characters.
 
         @param extension <string> File extension (eg. ".fits").
 
@@ -54,52 +58,51 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release="00.
                                      X is a digit 0-9.
     """
 
-    # Check that the labels aren't too long
-    if len(type_name) > type_name_maxlen:
-        raise ValueError("type_name (" + type_name + ") is too long. Maximum length is " +
+    # Check that $processing_function isn't too long
+    processing_function = processing_function.upper()
+    if re.match("^[0-9A-Z._+]{1," + str(processing_function_maxlen) + "}$", processing_function) is None:
+        raise ValueError("processing_function (" + processing_function + ") is too long. Maximum length is " +
+                         str(processing_function_maxlen) + " characters.")
+
+    # Check that $type_name isn't too long
+    type_name = type_name.upper()
+    if re.match("^[0-9A-Z.\-+]{1," + str(type_name_maxlen) + "}$", type_name) is None:
+        raise ValueError("type_name (" + type_name +
+                         ") is too long or includes invalid characters. Maximum length is " +
                          str(type_name_maxlen) + " characters.")
-    if len(instance_id) > instance_id_maxlen:
-        raise ValueError("instance_id (" + type_name + ") is too long. Maximum length is " +
+
+    # Determine the full instance_id before checking its length
+    full_instance_id = instance_id.upper()  # Silently shift to upper-case
+    if timestamp:
+        tnow = datetime.now()
+        creation_date = time_to_timestamp(tnow)
+        full_instance_id += "-" + creation_date
+    if release is not None:
+        # Check that $release is in the correct format
+        if re.match("^[0-9]{1,2}\.[0-9]{1,2}$", release) is None:
+            raise ValueError("release (" + release + ") is in incorrect format. Required format is " +
+                             "X.X, where each X is 0-99.")
+        else:
+            # $release is good, so add it to $full_instance_id
+            full_instance_id += "-" + release
+
+    if re.match("^[0-9A-Z.\-+]{1," + str(instance_id_maxlen) + "}$", full_instance_id) is None:
+        raise ValueError("instance_id including timestamp and release (" + full_instance_id +
+                         ") is too long or includes invalid characters. Maximum length is " +
                          str(instance_id_maxlen) + " characters.")
 
-    # Check that $release is in the correct format
-    good_release = True
-    if len(release) != 5 or release[2] != ".":
-        good_release = False
-    # Check each value is an integer 0-9
-    if good_release:
-        for i in (0, 1, 3, 4):
-            try:
-                _ = int(release[i])
-            except ValueError:
-                good_release = False
-
-    # Check the extenstion starts with "." and silently fix if it doesn't
+    # Check the extension starts with "." and silently fix if it doesn't
     if not extension[0] == ".":
         extension = "." + extension
 
-    if not good_release:
-        raise ValueError("release (" + release + ") is in incorrect format. Required format is " +
-                         "XX.XX, where each X is 0-9.")
+    filename = ("EUC-" + processing_function + "-" + type_name + "-" + full_instance_id + extension)
 
-    tnow = datetime.now()
+    if subdir is not None:
+        qualified_filename = join(subdir, filename)
+    else:
+        qualified_filename = filename
 
-    creation_date = time_to_timestamp(tnow)
-
-    filename = "EUC_SHE_" + type_name + "_" + instance_id + \
-        "_" + creation_date + "_" + release + extension
-
-    return filename
-
-
-def get_instance_id(filename):
-    """ From a Euclid-compliant filename, return the string corresponding to the instance ID.
-    """
-
-    split_filename = filename.split('_')
-    instance_id = split_filename[-3]
-
-    return instance_id
+    return qualified_filename
 
 
 def write_listfile(listfile_name, filenames):
@@ -184,13 +187,15 @@ def replace_multiple_in_file(input_filename, output_filename, input_strings, out
                 fout.write(new_line)
 
 
-def write_xml_product(product, xml_file_name):
+def write_xml_product(product, xml_file_name, allow_pickled=True):
     try:
         with open(str(xml_file_name), "w") as f:
             f.write(
                 product.toDOM().toprettyxml(encoding="utf-8").decode("utf-8"))
     except AttributeError as e:
-        if not "has no attribute 'toDOM'" in str(e):
+        if not allow_pickled:
+            raise
+        if not "object has no attribute 'toDOM'" in str(e):
             raise
         logger.warn(
             "XML writing is not available; falling back to pickled writing instead.")
@@ -198,7 +203,7 @@ def write_xml_product(product, xml_file_name):
 
 
 def read_xml_product(xml_file_name, allow_pickled=True):
-
+    # @TODO: Should allow_pickled be False by default?
     # Read the xml file as a string
     try:
         with open(str(xml_file_name), "r") as f:
@@ -206,14 +211,7 @@ def read_xml_product(xml_file_name, allow_pickled=True):
 
         # Create a new product instance using the proper data product dictionary
         product = CreateFromDocument(xml_string)
-    except UnicodeDecodeError as _e:
-        # Not actually saved as xml
-        if allow_pickled:
-            # Revert to pickled product
-            return read_pickled_product(xml_file_name)
-        else:
-            raise
-    except SAXParseException as _e:
+    except (UnicodeDecodeError, SAXParseException) as _e:
         # Not actually saved as xml
         if allow_pickled:
             # Revert to pickled product
@@ -372,15 +370,42 @@ def get_data_filename(filename, workdir="."):
                                  "product's class must be monkey-patched to have a get_filename " +
                                  "or get_data_filename method.")
 
-    except UnicodeDecodeError as _e:
+    except (UnicodeDecodeError, SAXParseException, UnpicklingError) as _e:
         # Not an XML file - so presumably it's a raw data file; return the
         # input filename
         return filename
-    except SAXParseException as _e:
-        # Not an XML file - so presumably it's a raw data file; return the
-        # input filename
-        return filename
-    except UnpicklingError as _e:
-        # Not an XML or pickled file - so presumably it's a raw data file; return the
-        # input filename
-        return filename
+
+
+def update_xml_with_value(filename):
+    """ Updates xml files with value 
+
+    Checks for <Key><\Key> not followed by <Value><\Value> 
+    """
+    lines = open(filename).readlines()
+    keyLines = [ii for ii, line in enumerate(lines) if '<Key>' in line]
+    badLines = [idx for idx in keyLines if '<Value>' not in lines[idx + 1]]
+    if badLines:
+        print("%s has incorrect parameter settings, missing <Value> in lines: %s"
+              % (filename, ','.join(map(str, badLines))))
+        # Do update
+        for ii, idx in enumerate(badLines):
+            # Check next 3 lines for String/Int etc Value
+
+            info = [line for line in lines[idx + 1 + ii:min(idx + 4 + ii, len(lines) - 1)] if 'Value>' in line]
+            newLine = None
+            nDefaults = 0
+            if info:
+                dataValue = info[0].split('Value>')[1].split('<')[0]
+                if len(dataValue) > 0:
+                    newLine = lines[idx + ii].split('<Key>')[0] + '<Value>%s</Value>\n' % dataValue
+
+            if not newLine:
+                # Add random string...
+                newLine = lines[idx + ii].split('<Key>')[0] + '<Value>dkhf</Value>\n'
+                nDefaults += 1
+            lines = lines[:idx + ii + 1] + [newLine] + lines[idx + ii + 1:]
+            open(filename, 'w').writelines(lines)
+            print('Updated %s lines in %s: nDefaults=%s' %
+                  (len(badLines), filename, nDefaults))
+    else:
+        print('No updates required')

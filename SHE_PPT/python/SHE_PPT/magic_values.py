@@ -23,7 +23,7 @@ logger_name = "SHE_PPT"
 
 # Header values for fits images
 gain_label = "CCDGAIN"
-scale_label = "PX_SCALE"
+scale_label = "GS_SCALE"
 stamp_size_label = "SSIZE"
 model_hash_label = "MHASH"
 model_seed_label = "MSEED"
@@ -32,6 +32,7 @@ extname_label = "EXTNAME"
 dither_dx_label = "DITHERDX"
 dither_dy_label = "DITHERDY"
 obs_time_label = "DATE-OBS"
+field_id_label = "FIELDID"
 
 # Tags for science image, noisemap, and mask
 sci_tag = "SCI"
@@ -50,7 +51,9 @@ disk_psf_tag = "DPSF"
 psf_cat_tag = "PSFC"
 
 # Miscellaneous
-segmap_unassigned_value = -1
+segmap_unassigned_value = 0
+segmap_other_value = -1
+short_instance_id_maxlen = 17
 
 # mag_vis_zeropoint = 25.50087633632 # From ETC
 # mag_vis_zeropoint = 25.4534 # From Sami's sims' config file

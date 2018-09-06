@@ -234,7 +234,8 @@ def create_she_calibration_parameters(BFD_filename=None,
 
     # calibration_parameters = she_dpd.SheCalibrationParameters() # @FIXME
     calibration_parameters = SheCalibrationParametersProduct()
-
+    
+    # Read these in from 
     calibration_parameters.BFDCalibrationParameters = create_she_BFD_calibration_parameters(
         BFD_filename)
 

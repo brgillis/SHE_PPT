@@ -76,7 +76,7 @@ class LinregressResults(object):
 
             return
 
-        elif isinstance(lstats, list):
+        elif isinstance(lstats, list) or isinstance(lstats,np.ndarray):
 
             # We have a list of stats, so combine them
             stats = self.combine_lstats(lstats)

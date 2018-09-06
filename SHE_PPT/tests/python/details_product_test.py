@@ -24,7 +24,7 @@ from SHE_PPT.products import details as prod
 
 
 class TestDetailsProduct(object):
-    """A collection of tests for the shear estimates data product.
+    """ ????
 
     """
 
@@ -39,8 +39,6 @@ class TestDetailsProduct(object):
         pass
 
     def test_xml_writing_and_reading(self, tmpdir):
-
-        prod.init()
 
         # Create the product
         product = prod.create_dpd_she_details()
@@ -62,8 +60,6 @@ class TestDetailsProduct(object):
         pass
 
     def test_pickle_writing_and_reading(self, tmpdir):
-
-        prod.init()
 
         # Create the product
         product = prod.create_dpd_she_details()

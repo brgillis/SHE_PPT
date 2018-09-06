@@ -24,6 +24,10 @@ Created on: 02/03/18
 
 import os.path
 
+from astropy.io import fits
+from astropy.io.fits import HDUList, BinTableHDU, ImageHDU, PrimaryHDU
+from astropy.table import Table
+
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
 from SHE_PPT import products
@@ -33,14 +37,8 @@ from SHE_PPT.she_image import SHEImage
 from SHE_PPT.table_formats.psf import tf as pstf
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import find_extension, load_wcs
-from astropy.io import fits
-from astropy.table import Table
 import numpy as np
 
-
-products.calibrated_frame.init()
-products.psf_image.init()
-products.mosaic.init()
 
 logger = logging.getLogger(__name__)
 
@@ -167,7 +165,13 @@ class SHEFrame(object):
 
         """
 
-        row = self.psf_catalogue.loc[gal_id]
+        try:
+            row = self.psf_catalogue.loc[gal_id]
+        except ValueError as e:
+            if not str(e)=="Cannot create TableLoc object with no indices":
+                raise
+            self.psf_catalogue.add_index(pstf.ID)
+            row = self.psf_catalogue.loc[gal_id]
 
         bulge_hdu = self.psf_data_hdulist[row[pstf.bulge_index]]
         bulge_psf_stamp = SHEImage(
@@ -363,8 +367,17 @@ class SHEFrame(object):
 
             qualified_psf_filename = os.path.join(workdir, psf_data_filename)
 
-            psf_data_hdulist = fits.open(
-                qualified_psf_filename, **kwargs)
+            input_psf_data_hdulist = fits.open(qualified_psf_filename, **kwargs)
+            psf_data_hdulist = HDUList()
+            for i in range(len(input_psf_data_hdulist)):
+                if i == 0:
+                    psf_data_hdulist.append(PrimaryHDU())
+                elif i == 1:
+                    psf_data_hdulist.append(BinTableHDU(data=input_psf_data_hdulist[i].data,
+                                                        header=input_psf_data_hdulist[i].header))
+                else:
+                    psf_data_hdulist.append(ImageHDU(data=input_psf_data_hdulist[i].data,
+                                                     header=input_psf_data_hdulist[i].header))
 
             psf_cat_i = find_extension(psf_data_hdulist, mv.psf_cat_tag)
             psf_cat = Table.read(psf_data_hdulist[psf_cat_i])

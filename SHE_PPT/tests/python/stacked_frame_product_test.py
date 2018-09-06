@@ -22,8 +22,6 @@ from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
 from SHE_PPT.products import stacked_frame as prod
 
-prod.init()
-
 
 class TestStackedFrameProduct(object):
     """A collection of tests for the shear estimates data product.
@@ -51,10 +49,10 @@ class TestStackedFrameProduct(object):
 
         # Save the product in an XML file
         filename = tmpdir.join("she_stacked_frame.xml")
-        write_xml_product(product, filename)
+        write_xml_product(product, filename, allow_pickled=False)
 
         # Read back the XML file
-        loaded_product = read_xml_product(filename)
+        loaded_product = read_xml_product(filename, allow_pickled=False)
 
         # Check that the filenames match
         assert loaded_product.get_data_filename() == subfilename

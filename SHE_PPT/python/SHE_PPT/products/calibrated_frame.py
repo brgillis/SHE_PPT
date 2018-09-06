@@ -123,9 +123,10 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-def create_dpd_vis_calibrated_frame(data_filename='default_filename.fits',
-                                    bkg_filename=None,
-                                    wgt_filename=None):
+def create_dpd_vis_calibrated_frame(data_filename='',
+                                    psf_filename='',
+                                    bkg_filename='',
+                                    wgt_filename=''):
     """
         @TODO fill in docstring
     """
@@ -137,11 +138,10 @@ def create_dpd_vis_calibrated_frame(data_filename='default_filename.fits',
     # other things)
     dpd_vis_calibrated_frame.Header = HeaderProvider.createGenericHeader("SHE")
 
-    dpd_vis_calibrated_frame.set_data_filename(data_filename)
-    if bkg_filename is not None:
-        dpd_vis_calibrated_frame.set_bkg_filename(bkg_filename)
-    if wgt_filename is not None:
-        dpd_vis_calibrated_frame.set_wgt_filename(wgt_filename)
+    __set_data_filename(dpd_vis_calibrated_frame, data_filename)
+    __set_psf_filename(dpd_vis_calibrated_frame, psf_filename)
+    __set_bkg_filename(dpd_vis_calibrated_frame, bkg_filename)
+    __set_wgt_filename(dpd_vis_calibrated_frame, wgt_filename)
 
     return dpd_vis_calibrated_frame
 
