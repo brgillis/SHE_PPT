@@ -201,6 +201,7 @@ def __set_method_statistics(self, method, g1_statistics, g2_statistics):
     elif method == "REGAUSS":
         return self.set_REGAUSS_statistics(g1_statistics, g2_statistics)
     elif method == "BFD":
+        bfd_statistics=g1_statistics
         return self.set_BFD_statistics(bfd_statistics)
     else:
         raise ValueError("Invalid method " + str(method) + ".")

@@ -19,8 +19,6 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-from builtins import None
-
 import numpy as np
 
 
@@ -207,7 +205,7 @@ class BFDSumResults(object):
                        [stats.A14,stats.A24,stats.A34,stats.A44]])
         Cinv=np.linalg.inv(C)
         Q_P=np.matrix([[stats.b1],[stats.b2],[stats.b3],[stats.b4]])
-        if do_g1=True:
+        if do_g1 == True:
             self.slope=(Cinv*Q_P)[0,0]-1.0
             self.intercept=(Cinv*Q_P)[1,0]
             self.slope_err=(np.sqrt(Cinv[0,0]))
