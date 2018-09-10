@@ -100,7 +100,7 @@ def __get_BFD_statistics(self):
     elif self.Data.BfdStatistics is None:
         return None
     else:
-        return (self.Data.BfdStatistics.bfd_statistics)
+        return (self.Data.BfdStatistics.G1Statistics)
 
 
 def __set_KSB_statistics(self, g1_statistics, g2_statistics):
@@ -252,10 +252,10 @@ def create_bfd_statistics(bfd_statistics):
     """
         @TODO fill in docstring
     """
-
+    # BFD statistics info saved to G1statistics
     BFD_shear_statistics = MethodShearBiasStatistics()
 
-    BFD_shear_statistics.bfd_statistics = bfd_statistics
+    BFD_shear_statistics.G1Statistics = bfd_statistics
 
     return BFD_shear_statistics
 

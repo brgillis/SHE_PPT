@@ -190,7 +190,7 @@ class BFDSumResults(object):
             return
 
         elif isinstance(lstats, list):
-
+            
             # We have a list of stats, so combine them
             stats = self.combine_lstats(lstats)
 
@@ -205,14 +205,15 @@ class BFDSumResults(object):
                        [stats.A14,stats.A24,stats.A34,stats.A44]])
         Cinv=np.linalg.inv(C)
         Q_P=np.matrix([[stats.b1],[stats.b2],[stats.b3],[stats.b4]])
+
         if do_g1 == True:
-            self.slope=(Cinv*Q_P)[0,0]-1.0
+            self.slope=(Cinv*Q_P)[0,0]
             self.intercept=(Cinv*Q_P)[1,0]
             self.slope_err=(np.sqrt(Cinv[0,0]))
             self.intercept_err=np.sqrt(Cinv[1,1])
             self.slope_intercept_covar=Cinv[0,1]
         else:
-            self.slope=(Cinv*Q_P)[2,0]-1.0
+            self.slope=(Cinv*Q_P)[2,0]
             self.intercept=(Cinv*Q_P)[3,0]
             self.slope_err=(np.sqrt(Cinv[2,2]))
             self.intercept_err=np.sqrt(Cinv[3,3])
@@ -227,25 +228,38 @@ class BFDSumResults(object):
          
        # Fill in an output object with weighted sums
         stats = BFDSumStatistics()
+        stats.b1 = 0.
+        stats.b2 = 0.
+        stats.b3 = 0.
+        stats.b4 = 0.
+        stats.A11 = 0.
+        stats.A12 = 0.
+        stats.A13 = 0.
+        stats.A14 = 0.
+        stats.A22 = 0.
+        stats.A23 = 0.
+        stats.A24 = 0.
+        stats.A33 = 0.
+        stats.A34 = 0.
+        stats.A44 = 0.
 
         # Fill in each array
         for i in range(n):
             stats.b1 += lstats[i].b1
-            statsb2 = lstats[i].b2
-            statsb3 = lstats[i].b3
-            statsb4 = lstats[i].b4
-            statsA11 = lstats[i].A11
-            statsA12 = lstats[i].A12
-            statsA13 = lstats[i].A13
-            statsA14 = lstats[i].A14
-            statsA22 = lstats[i].A22
-            statsA23 = lstats[i].A23
-            statsA24 = lstats[i].A24
-            statsA33 = lstats[i].A33
-            statsA34 = lstats[i].A34
-            statsA44 = lstats[i].A44
+            stats.b2 += lstats[i].b2
+            stats.b3 += lstats[i].b3
+            stats.b4 += lstats[i].b4
+            stats.A11 += lstats[i].A11
+            stats.A12 += lstats[i].A12
+            stats.A13 += lstats[i].A13
+            stats.A14 += lstats[i].A14
+            stats.A22 += lstats[i].A22
+            stats.A23 += lstats[i].A23
+            stats.A24 += lstats[i].A24
+            stats.A33 += lstats[i].A33
+            stats.A34 += lstats[i].A34
+            stats.A44 += lstats[i].A44
 
-        
         return stats
 
 class BiasMeasurements(object):
