@@ -18,12 +18,13 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from astropy.table import Table
-import numpy as np
 import os
 import pytest
 
 from SHE_PPT import mdb
+from astropy.table import Table
+import numpy as np
+
 
 class TestMDB:
     """
@@ -47,7 +48,8 @@ class TestMDB:
         return
 
     def test_get_mdb_details(self):
-        # Test it works when initialised
+        """ Test that the mdb methods work when initialised
+        """
 
         ex_value = 4136
         ex_description = 'This is the minimum number of pixels in the longest dimension of the VIS focal plane. Due to the injection line inserted in the long \n                direction of the CCD format, the active array is split in 2 equal active arrays, with 4 inactive pixels in the middle for injection line.'
@@ -65,7 +67,8 @@ class TestMDB:
         assert mdb.get_mdb_unit(self.test_key) == ex_unit
 
     def test_get_mdb_exceptions(self):
-        # Test it raises when not initialised
+        """ Test that the mdb methods raise when not initialised
+        """
         mdb.reset()
 
         with pytest.raises(RuntimeError):
@@ -81,4 +84,23 @@ class TestMDB:
         with pytest.raises(RuntimeError):
             mdb.get_mdb_unit(self.test_key)
 
+    def test_mdb_keys(self):
+        """ Test that each key in the mdb_keys object corresponds to a real key in the MDB.
+        """
 
+        mdb.init(self.filename)
+
+        # For each key we've assigned an attribute for
+        for key_name in vars(mdb.mdb_keys):
+
+            # Get the value of this attribute, which should be the up-to-date key name
+            key = getattr(mdb.mdb_keys, key_name)
+
+            # Try to get the value of this key in the MDB
+            try:
+                mdb.get_mdb_value(self.test_key)
+            except KeyError as e:
+                raise KeyError("Key \"" + key + "\" from mdb_keys attribute \"" + key_name + "\" not found in " +
+                               "MDB dictionary. Check that it and the MDB are up-to-date.")
+
+        return
