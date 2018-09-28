@@ -23,10 +23,9 @@ import codecs
 from copy import deepcopy
 import hashlib
 
-from astropy.wcs import WCS
-
 from SHE_PPT import detector as dtc
 from SHE_PPT.logging import getLogger
+from astropy.wcs import WCS
 
 
 logger = getLogger(__name__)
@@ -230,19 +229,25 @@ def get_arguments_string(args, cmd=None, store_true=None, store_false=None):
         # Add arg to arg string
         arg_string += "--" + arg.strip() + " "
 
+        stripped_val = str(val).strip()
+
         # Properly handle lists of values
         if isinstance(val, list):
             for subval in val:
                 # Put quotes around each subval if it includes a space
-                if " " in str(subval).strip():
-                    arg_string += '"' + str(subval).strip() + '" '
+                stripped_subval = str(subval).strip()
+                if " " in stripped_subval:
+                    arg_string += '"' + stripped_subval + '" '
                 else:
-                    arg_string += str(subval).strip() + " "
-        elif " " in str(val).strip():
+                    arg_string += stripped_subval + " "
+        elif " " in stripped_val:
             # If there's a space in val and it's not a list, put quotes around it
-            arg_string += '"' + str(val).strip() + '" '
+            arg_string += '"' + stripped_val + '" '
+        elif stripped_val == "":
+            # If it's an empty string, output quotes instead of nothing
+            arg_string += '""'
         else:
-            arg_string += str(val).strip() + " "
+            arg_string += stripped_val + " "
 
     # Clean trailing space
     arg_string = arg_string.strip()
