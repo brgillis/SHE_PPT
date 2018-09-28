@@ -21,11 +21,12 @@
 
 from collections import OrderedDict
 
+from astropy.table import Table
+
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import hash_any
-from astropy.table import Table
 
 
 logger = getLogger(mv.logger_name)
@@ -232,13 +233,13 @@ class DetectionsTableFormat(object):
             "FlagIextOmegaCAM", is_optional=True, comment=None)
 
         self.FlagVIS = set_column_properties(
-            "FlagVIS ", is_optional=True, comment=None)
+            "FlagVIS", is_optional=True, comment=None)
         self.FlagY = set_column_properties(
-            "FlagY   ", is_optional=True, comment=None)
+            "FlagY", is_optional=True, comment=None)
         self.FlagJ = set_column_properties(
-            "FlagJ   ", is_optional=True, comment=None)
+            "FlagJ", is_optional=True, comment=None)
         self.FlagH = set_column_properties(
-            "FlagH   ", is_optional=True, comment=None)
+            "FlagH", is_optional=True, comment=None)
 
         self.DeblendingFlag = set_column_properties(
             "DeblendingFlag", is_optional=True, comment=None)
@@ -246,10 +247,10 @@ class DetectionsTableFormat(object):
             "StarFlag", is_optional=True, comment=None)
 
         self.MuMax = set_column_properties(
-            "MuMax   ", is_optional=True, comment=None)
+            "MuMax", is_optional=True, comment=None)
 
         self.Isoarea = set_column_properties(
-            "Isoarea ", is_optional=True, comment=None)
+            "Isoarea", is_optional=True, comment=None)
 
         self.PositionAngle = set_column_properties(
             "PositionAngle", is_optional=True, comment=None)
