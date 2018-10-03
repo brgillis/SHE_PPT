@@ -72,7 +72,8 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
                          str(type_name_maxlen) + " characters.")
 
     # Determine the full instance_id before checking its length
-    full_instance_id = instance_id.upper()  # Silently shift to upper-case
+    # Silently shift to upper-case
+    full_instance_id = instance_id.upper()
     if timestamp:
         tnow = datetime.now()
         creation_date = time_to_timestamp(tnow)

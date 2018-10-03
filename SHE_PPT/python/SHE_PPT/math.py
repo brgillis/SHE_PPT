@@ -45,7 +45,9 @@ class LinregressStatistics(object):
 
             # Calculate needed statistics
             self.w = lw.sum()
-            if self.w <= 0:  # Catch for bad data
+
+            # Catch for bad data
+            if self.w <= 0:
                 self.xm = 0
                 self.x2m = 0
                 self.ym = 0
@@ -74,7 +76,7 @@ class LinregressResults(object):
 
             return
 
-        elif isinstance(lstats, list) or isinstance(lstats,np.ndarray):
+        elif isinstance(lstats, list) or isinstance(lstats, np.ndarray):
 
             # We have a list of stats, so combine them
             stats = self.combine_lstats(lstats)
