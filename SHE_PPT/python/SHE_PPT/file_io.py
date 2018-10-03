@@ -377,35 +377,36 @@ def get_data_filename(filename, workdir="."):
 
 
 def update_xml_with_value(filename):
-    r""" Updates xml files with value 
+    r""" Updates xml files with value
 
-    Checks for <Key><\Key> not followed by <Value><\Value> 
+    Checks for <Key><\Key> not followed by <Value><\Value>
     r"""
+
     lines = open(filename).readlines()
-    keyLines = [ii for ii, line in enumerate(lines) if '<Key>' in line]
-    badLines = [idx for idx in keyLines if '<Value>' not in lines[idx + 1]]
-    if badLines:
+    key_lines = [ii for ii, line in enumerate(lines) if '<Key>' in line]
+    bad_lines = [idx for idx in key_lines if '<Value>' not in lines[idx + 1]]
+    if bad_lines:
         print("%s has incorrect parameter settings, missing <Value> in lines: %s"
-              % (filename, ','.join(map(str, badLines))))
+              % (filename, ','.join(map(str, bad_lines))))
         # Do update
-        for ii, idx in enumerate(badLines):
+        for ii, idx in enumerate(bad_lines):
             # Check next 3 lines for String/Int etc Value
 
             info = [line for line in lines[idx + 1 + ii:min(idx + 4 + ii, len(lines) - 1)] if 'Value>' in line]
-            newLine = None
-            nDefaults = 0
+            new_line = None
+            n_defaults = 0
             if info:
-                dataValue = info[0].split('Value>')[1].split('<')[0]
-                if len(dataValue) > 0:
-                    newLine = lines[idx + ii].split('<Key>')[0] + '<Value>%s</Value>\n' % dataValue
+                data_value = info[0].split('Value>')[1].split('<')[0]
+                if len(data_value) > 0:
+                    new_line = lines[idx + ii].split('<Key>')[0] + '<Value>%s</Value>\n' % data_value
 
-            if not newLine:
+            if not new_line:
                 # Add random string...
-                newLine = lines[idx + ii].split('<Key>')[0] + '<Value>dkhf</Value>\n'
-                nDefaults += 1
-            lines = lines[:idx + ii + 1] + [newLine] + lines[idx + ii + 1:]
+                new_line = lines[idx + ii].split('<Key>')[0] + '<Value>dkhf</Value>\n'
+                n_defaults += 1
+            lines = lines[:idx + ii + 1] + [new_line] + lines[idx + ii + 1:]
             open(filename, 'w').writelines(lines)
-            print('Updated %s lines in %s: nDefaults=%s' %
-                  (len(badLines), filename, nDefaults))
+            print('Updated %s lines in %s: n_defaults=%s' %
+                  (len(bad_lines), filename, n_defaults))
     else:
         print('No updates required')
