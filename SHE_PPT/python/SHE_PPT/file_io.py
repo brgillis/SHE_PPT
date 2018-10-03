@@ -66,27 +66,28 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
 
     # Check that $type_name isn't too long
     type_name = type_name.upper()
-    if re.match("^[0-9A-Z.\-+]{1," + str(type_name_maxlen) + "}$", type_name) is None:
+    if re.match(r"^[0-9A-Z.-+]{1," + str(type_name_maxlen) + "}$", type_name) is None:
         raise ValueError("type_name (" + type_name +
                          ") is too long or includes invalid characters. Maximum length is " +
                          str(type_name_maxlen) + " characters.")
 
     # Determine the full instance_id before checking its length
-    full_instance_id = instance_id.upper()  # Silently shift to upper-case
+    # Silently shift to upper-case
+    full_instance_id = instance_id.upper()
     if timestamp:
         tnow = datetime.now()
         creation_date = time_to_timestamp(tnow)
         full_instance_id += "-" + creation_date
     if release is not None:
         # Check that $release is in the correct format
-        if re.match("^[0-9]{1,2}\.[0-9]{1,2}$", release) is None:
+        if re.match(r"^[0-9]{1,2}.[0-9]{1,2}$", release) is None:
             raise ValueError("release (" + release + ") is in incorrect format. Required format is " +
                              "X.X, where each X is 0-99.")
         else:
             # $release is good, so add it to $full_instance_id
             full_instance_id += "-" + release
 
-    if re.match("^[0-9A-Z.\-+]{1," + str(instance_id_maxlen) + "}$", full_instance_id) is None:
+    if re.match(r"^[0-9A-Z.-+]{1," + str(instance_id_maxlen) + "}$", full_instance_id) is None:
         raise ValueError("instance_id including timestamp and release (" + full_instance_id +
                          ") is too long or includes invalid characters. Maximum length is " +
                          str(instance_id_maxlen) + " characters.")
@@ -377,35 +378,36 @@ def get_data_filename(filename, workdir="."):
 
 
 def update_xml_with_value(filename):
-    """ Updates xml files with value 
+    r""" Updates xml files with value
 
-    Checks for <Key><\Key> not followed by <Value><\Value> 
-    """
+    Checks for <Key><\Key> not followed by <Value><\Value>
+    r"""
+
     lines = open(filename).readlines()
-    keyLines = [ii for ii, line in enumerate(lines) if '<Key>' in line]
-    badLines = [idx for idx in keyLines if '<Value>' not in lines[idx + 1]]
-    if badLines:
+    key_lines = [ii for ii, line in enumerate(lines) if '<Key>' in line]
+    bad_lines = [idx for idx in key_lines if '<Value>' not in lines[idx + 1]]
+    if bad_lines:
         print("%s has incorrect parameter settings, missing <Value> in lines: %s"
-              % (filename, ','.join(map(str, badLines))))
+              % (filename, ','.join(map(str, bad_lines))))
         # Do update
-        for ii, idx in enumerate(badLines):
+        for ii, idx in enumerate(bad_lines):
             # Check next 3 lines for String/Int etc Value
 
             info = [line for line in lines[idx + 1 + ii:min(idx + 4 + ii, len(lines) - 1)] if 'Value>' in line]
-            newLine = None
-            nDefaults = 0
+            new_line = None
+            n_defaults = 0
             if info:
-                dataValue = info[0].split('Value>')[1].split('<')[0]
-                if len(dataValue) > 0:
-                    newLine = lines[idx + ii].split('<Key>')[0] + '<Value>%s</Value>\n' % dataValue
+                data_value = info[0].split('Value>')[1].split('<')[0]
+                if len(data_value) > 0:
+                    new_line = lines[idx + ii].split('<Key>')[0] + '<Value>%s</Value>\n' % data_value
 
-            if not newLine:
+            if not new_line:
                 # Add random string...
-                newLine = lines[idx + ii].split('<Key>')[0] + '<Value>dkhf</Value>\n'
-                nDefaults += 1
-            lines = lines[:idx + ii + 1] + [newLine] + lines[idx + ii + 1:]
+                new_line = lines[idx + ii].split('<Key>')[0] + '<Value>dkhf</Value>\n'
+                n_defaults += 1
+            lines = lines[:idx + ii + 1] + [new_line] + lines[idx + ii + 1:]
             open(filename, 'w').writelines(lines)
-            print('Updated %s lines in %s: nDefaults=%s' %
-                  (len(badLines), filename, nDefaults))
+            print('Updated %s lines in %s: n_defaults=%s' %
+                  (len(bad_lines), filename, n_defaults))
     else:
         print('No updates required')

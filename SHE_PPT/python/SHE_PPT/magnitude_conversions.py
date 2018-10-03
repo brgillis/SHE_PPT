@@ -82,15 +82,15 @@ def get_I(I_parameter, parameter_type, gain, exp_time):
         @return The measured intensity
     """
 
-    if(parameter_type == 'intensity'):
+    if parameter_type == 'intensity':
         return I_parameter
-    elif(parameter_type == 'count'):
+    elif parameter_type == 'count':
         return get_ADU_from_count(I_parameter, gain)
-    elif(parameter_type == 'flux'):
+    elif parameter_type == 'flux':
         return get_ADU_from_count(I_parameter * exp_time, gain)
-    elif(parameter_type == 'mag_vis'):
+    elif parameter_type == 'mag_vis':
         return get_ADU_from_count(get_count_from_mag_vis(I_parameter, exp_time=exp_time), gain)
-    elif(parameter_type == 'mag_i'):
+    elif parameter_type == 'mag_i':
         return get_ADU_from_count(get_count_from_mag_i(I_parameter, exp_time=exp_time), gain)
     else:
         raise Exception(
