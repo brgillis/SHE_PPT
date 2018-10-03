@@ -66,7 +66,7 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
 
     # Check that $type_name isn't too long
     type_name = type_name.upper()
-    if re.match("^[0-9A-Z.\-+]{1," + str(type_name_maxlen) + "}$", type_name) is None:
+    if re.match(r"^[0-9A-Z.-+]{1," + str(type_name_maxlen) + "}$", type_name) is None:
         raise ValueError("type_name (" + type_name +
                          ") is too long or includes invalid characters. Maximum length is " +
                          str(type_name_maxlen) + " characters.")
@@ -79,14 +79,14 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
         full_instance_id += "-" + creation_date
     if release is not None:
         # Check that $release is in the correct format
-        if re.match("^[0-9]{1,2}\.[0-9]{1,2}$", release) is None:
+        if re.match(r"^[0-9]{1,2}.[0-9]{1,2}$", release) is None:
             raise ValueError("release (" + release + ") is in incorrect format. Required format is " +
                              "X.X, where each X is 0-99.")
         else:
             # $release is good, so add it to $full_instance_id
             full_instance_id += "-" + release
 
-    if re.match("^[0-9A-Z.\-+]{1," + str(instance_id_maxlen) + "}$", full_instance_id) is None:
+    if re.match(r"^[0-9A-Z.-+]{1," + str(instance_id_maxlen) + "}$", full_instance_id) is None:
         raise ValueError("instance_id including timestamp and release (" + full_instance_id +
                          ") is too long or includes invalid characters. Maximum length is " +
                          str(instance_id_maxlen) + " characters.")
@@ -377,10 +377,10 @@ def get_data_filename(filename, workdir="."):
 
 
 def update_xml_with_value(filename):
-    """ Updates xml files with value 
+    r""" Updates xml files with value 
 
     Checks for <Key><\Key> not followed by <Value><\Value> 
-    """
+    r"""
     lines = open(filename).readlines()
     keyLines = [ii for ii, line in enumerate(lines) if '<Key>' in line]
     badLines = [idx for idx in keyLines if '<Value>' not in lines[idx + 1]]
