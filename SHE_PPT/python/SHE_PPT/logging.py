@@ -21,13 +21,15 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+import os
+
 try:
     import ElementsKernel.Logging as log
 except ImportError as _e:
     from . import logging as log
 
 
-def getLogger(name=None):
+def getLogger(name):
     """
         @brief Forwards a request for a logger to the proper logging module.
 
@@ -37,4 +39,4 @@ def getLogger(name=None):
         @returns
             The logger
     """
-    return log.getLogger(name)
+    return log.getLogger(str(name) + "[" + str(os.getpid()) + "]")

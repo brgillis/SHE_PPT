@@ -44,9 +44,8 @@ def get_id_string(x, y):
         if not (isinstance(v, int) or isinstance(v, np.int8)):
             raise TypeError(
                 "Values passed to get_id_string must be int type: " + str(v) + ", type: " + str(type(v)))
-        elif (v < 1) or (v > 6):
-            raise ValueError(
-                "Invalid value passed to get_id_string: " + str(v) + ", type: " + str(type(v)))
+        elif v < 1 or v > 6:
+            raise ValueError("Invalid value passed to get_id_string: " + str(v) + ", type: " + str(type(v)))
 
     return _get_id_string(x, y)
 
@@ -77,7 +76,7 @@ def get_detector_xy(id_string):
 
     if not isinstance(id_string, str):
         raise TypeError("id_string must be a string")
-    if (len(id_string) != len(id_template)) and (len(id_string) != len(id_template) + 4):
+    if len(id_string) != len(id_template) and len(id_string) != len(id_template) + 4:
         raise ValueError("Improperly formatted id_string")
 
     return int(id_string[x_index]), int(id_string[y_index])
@@ -95,7 +94,7 @@ def detector_int_to_xy(i):
 
     if not isinstance(i, int):
         raise TypeError("i must be of int type.")
-    if (i < 0) or (i > 35):
+    if i < 0 or i > 35:
         raise ValueError("i must be in range 0-35")
 
     return i % 6 + 1, i // 6 + 1
@@ -117,7 +116,7 @@ def detector_xy_to_int(x, y):
         if not isinstance(v, int):
             raise TypeError(
                 "Values passed to get_id_string must be int type: " + str(v))
-        elif (v < 1) or (v > 6):
+        elif v < 1 or v > 6:
             raise ValueError(
                 "Invalid value passed to get_id_string: " + str(v))
 
