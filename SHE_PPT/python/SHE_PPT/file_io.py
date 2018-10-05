@@ -28,11 +28,12 @@ import pickle
 import re
 from xml.sax._exceptions import SAXParseException
 
+from astropy.io import fits
+
 from EuclidDmBindings.sys_stub import CreateFromDocument
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.utility import time_to_timestamp
-from astropy.io import fits
 
 
 logger = getLogger(mv.logger_name)
@@ -60,13 +61,13 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
 
     # Check that $processing_function isn't too long
     processing_function = processing_function.upper()
-    if re.match("^[0-9A-Z._+]{1," + str(processing_function_maxlen) + "}$", processing_function) is None:
+    if re.match(r"^[0-9A-Z\._+]{1," + str(processing_function_maxlen) + "}$", processing_function) is None:
         raise ValueError("processing_function (" + processing_function + ") is too long. Maximum length is " +
                          str(processing_function_maxlen) + " characters.")
 
     # Check that $type_name isn't too long
     type_name = type_name.upper()
-    if re.match(r"^[0-9A-Z.-+]{1," + str(type_name_maxlen) + "}$", type_name) is None:
+    if re.match(r"^[0-9A-Z\.\-+]{1," + str(type_name_maxlen) + "}$", type_name) is None:
         raise ValueError("type_name (" + type_name +
                          ") is too long or includes invalid characters. Maximum length is " +
                          str(type_name_maxlen) + " characters.")
@@ -87,7 +88,7 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
             # $release is good, so add it to $full_instance_id
             full_instance_id += "-" + release
 
-    if re.match(r"^[0-9A-Z.-+]{1," + str(instance_id_maxlen) + "}$", full_instance_id) is None:
+    if re.match(r"^[0-9A-Z\.\-+]{1," + str(instance_id_maxlen) + "}$", full_instance_id) is None:
         raise ValueError("instance_id including timestamp and release (" + full_instance_id +
                          ") is too long or includes invalid characters. Maximum length is " +
                          str(instance_id_maxlen) + " characters.")
