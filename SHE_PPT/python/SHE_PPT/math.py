@@ -178,7 +178,7 @@ class BFDSumResults(object):
 
     def __init__(self, lstats=None,do_g1=True):
 
-        if lstats is None:
+        if (lstats is None) or (lstats[0] is None):
 
             # Initialise empty
             self.slope = None
