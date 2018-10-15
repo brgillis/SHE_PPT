@@ -36,7 +36,7 @@ class TestMDB:
     def setup_class(cls):
 
         cls.test_key = "SpaceSegment.Instrument.VIS.VISDetectorPixelLongDimensionFormat"
-        cls.filename = "AUX/SHE_PPT/EUC_MDB_MISSIONCONFIGURATION-SC3_2017-06-01T121200.00Z_01.01.xml"
+        cls.filename = "AUX/SHE_PPT/sample_mdb.xml"
 
         return
 
