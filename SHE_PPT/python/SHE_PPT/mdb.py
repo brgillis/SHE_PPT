@@ -22,14 +22,17 @@
 from MdbUtils.Mdb import Mdb as _Mdb
 
 from SHE_PPT.file_io import find_file
+from SHE_PPT.logging import getLogger
 
 _not_inited_exception = RuntimeError(
     "mdb module must be initialised with MDB xml object before use.")
 
 full_mdb = {}
 
+default_mdb_file = "AUX/SHE_PPT/sample_mdb.xml"
 
-def init(mdb_files, path=None):
+
+def init(mdb_files=None, path=None):
     """Initialises module by loading MDB data from file(s).
 
     Arguments
@@ -43,6 +46,8 @@ def init(mdb_files, path=None):
 
     """
 
+    logger = getLogger(__name__)
+
     # Resolve the filename (or list of files) to find their qualified paths
     if isinstance(mdb_files, str):
         qualified_mdb_files = find_file(mdb_files, path)
@@ -51,6 +56,11 @@ def init(mdb_files, path=None):
         for mdb_file in mdb_files:
             qualified_mdb_file = find_file(mdb_file, path)
             qualified_mdb_files.append(qualified_mdb_file)
+    elif mdb_files is None:
+        qualified_mdb_files = find_file(default_mdb_file)
+        logger.warn("No MDB file specified. Using default file at " + qualified_mdb_files)
+    else:
+        raise TypeError("Invalid type for mdb_files object passed to SHE_PPT.mdb.init(): " + str(mdb_files))
 
     # Get and store the data in a dictionary
     full_dict = _Mdb(qualified_mdb_files).get_all()
@@ -203,116 +213,116 @@ class MDBKeys(object):
 
         # Environmental constants
 
-        self.VelocityOfLightConstantVacuum = "Environment.Constant.VelocityOfLightConstantVacuum"
-        self.AstronomicalUnit2Meter = "Environment.Constant.AstronomicalUnit2Meter"
-        self.Day2Second = "Environment.Constant.Day2Second"
-        self.Degree2Radian = "Environment.Constant.Degree2Radian"
+        self.velocity_of_light_constant_vacuum = "Environment.Constant.VelocityOfLightConstantVacuum"
+        self.astronomical_unit_2_meter = "Environment.Constant.AstronomicalUnit2Meter"
+        self.day_2_second = "Environment.Constant.Day2Second"
+        self.degree_2_radian = "Environment.Constant.Degree2Radian"
 
         # SpaceSegment.PLM
 
-        self.TelescopeVISFoVCentreXscNominal = "TelescopeVISFoVCentreXscNominal"
-        self.TelescopeVISFoVCentreYscNominal = "TelescopeVISFoVCentreYscNominal"
-        self.TelescopeVISFOVXsc = "TelescopeVISFOVXsc"
-        self.TelescopeVISFOVYsc = "TelescopeVISFOVYsc"
-        self.TelescopeVISLocalFocalLengthCentre = "TelescopeVISLocalFocalLengthCentre"
-        self.TelescopeVISParaxialFocalRatio = "TelescopeVISParaxialFocalRatio"
-        self.TelescopeVISPlatescale = "TelescopeVISPlatescale"
-        self.TelescopeVISPSFEllipticity = "TelescopeVISPSFEllipticity"
-        self.TelescopeVISPSFEllipticityStability = "TelescopeVISPSFEllipticityStability"
-        self.TelescopeVISPSFFWHM = "TelescopeVISPSFFWHM"
-        self.TelescopeVISPSFLambdaParameterAlpha = "TelescopeVISPSFLambdaParameterAlpha"
-        self.TelescopeVISPSFR2 = "TelescopeVISPSFR2"
-        self.TelescopeVISPSFR2Stability = "TelescopeVISPSFR2Stability"
+        self.telescope_vis_fov_centre_xsc_nominal = "SpaceSegment.PLM.TelescopeVISFoVCentreXscNominal"
+        self.telescope_vis_fov_centre_ysc_nominal = "SpaceSegment.PLM.TelescopeVISFoVCentreYscNominal"
+        self.telescope_vis_fov_xsc = "SpaceSegment.PLM.TelescopeVISFOVXsc"
+        self.telescope_vis_fov_ysc = "SpaceSegment.PLM.TelescopeVISFOVYsc"
+        self.telescope_vis_local_focal_length_centre = "SpaceSegment.PLM.TelescopeVISLocalFocalLengthCentre"
+        self.telescope_vis_paraxial_focal_ratio = "SpaceSegment.PLM.TelescopeVISParaxialFocalRatio"
+        self.telescope_vis_platescale = "SpaceSegment.PLM.TelescopeVISPlatescale"
+        self.telescope_vis_psf_ellipticity = "SpaceSegment.PLM.TelescopeVISPSFEllipticity"
+        self.telescope_vis_psf_ellipticity_stability = "SpaceSegment.PLM.TelescopeVISPSFEllipticityStability"
+        self.telescope_vis_psf_fwhm = "SpaceSegment.PLM.TelescopeVISPSFFWHM"
+        self.telescope_vis_psf_lambda_parameter_alpha = "SpaceSegment.PLM.TelescopeVISPSFLambdaParameterAlpha"
+        self.telescope_vis_psf_r2 = "SpaceSegment.PLM.TelescopeVISPSFR2"
+        self.telescope_vis_psf_r2_stability = "SpaceSegment.PLM.TelescopeVISPSFR2Stability"
 
         #   SpaceSegment.SVM
 
-        self.DitherStepAngularError = "DitherStepAngularError"
-        self.DitherStepAngularMinimum = "DitherStepAngularMinimum"
-        self.MaxField2FieldOverlap = "MaxField2FieldOverlap"
-        self.MinField2FieldOverlap = "MinField2FieldOverlap"
-        self.NominalScienceObservationSequenceDuration = "MinField2FieldOverlap"
+        self.dither_step_angular_error = "SpaceSegment.SVM.DitherStepAngularError"
+        self.dither_step_angular_minimum = "SpaceSegment.SVM.DitherStepAngularMinimum"
+        self.max_field_2_field_overlap = "SpaceSegment.SVM.MaxField2FieldOverlap"
+        self.min_field_2_field_overlap = "SpaceSegment.SVM.MinField2FieldOverlap"
+        self.nominal_science_observation_sequence_duration = "SpaceSegment.SVM.MinField2FieldOverlap"
 
         # SpaceSegment.Instrument.VIS
 
-        self.ShutterClosingDuration = "ShutterClosingDuration"
-        self.ShutterOpeningDuration = "ShutterOpeningDuration"
-        self.VISADCDynamics = "VISADCDynamics"
-        self.CUUniformityMapNormalised = "CUUniformityMapNormalised"
-        self.VISAveragePixelSizemicron = "VISAveragePixelSizemicron"
-        self.VISCCDChargeInjection = "VISCCDChargeInjection"
-        self.VISCCDColumn = "VISCCDColumn"
-        self.VISCCDDefectsColumnEOL = "VISCCDDefectsColumnEOL"
-        self.VISCCDDefectsTotalSpotsEOL = "VISCCDDefectsTotalSpotsEOL"
-        self.VISCCDDefectsTrapsEOL = "VISCCDDefectsTrapsEOL"
-        self.VISCCDDefectsWhiteSpotsBOL = "VISCCDDefectsWhiteSpotsBOL"
-        self.VISCCDDefectsWhiteSpotsEOL = "VISCCDDefectsWhiteSpotsEOL"
-        self.VISCCDGapLongDimensionNominalImage = "VISCCDGapLongDimensionNominalImage"
-        self.VISCCDGapShortDimensionNominalImage = "VISCCDGapShortDimensionNominalImage"
-        self.VISCCDNumber = "VISCCDNumber"
-        self.VISCCDQuadrantList = "VISCCDQuadrantList"
-        self.VISCCDRow = "VISCCDRow"
-        self.VISDarkCurrent = "VISDarkCurrent"
-        self.VISDataCompression = "VISDataCompression"
-        self.VISDetectorActivePixelLongDimensionFormat = "VISDetectorActivePixelLongDimensionFormat"
-        self.VISDetectorActivePixelShortDimensionFormat = "VISDetectorActivePixelShortDimensionFormat"
-        self.VISDetectorOverscanx = "VISDetectorOverscanx"
-        self.VISDetectorPixelLongDimensionFormat = "VISDetectorPixelLongDimensionFormat"
-        self.VISDetectorPrescanx = "VISDetectorPrescanx"
-        self.VISExposureTime = "VISExposureTime"
-        self.VISExposureTimeKnowledgeError = "VISExposureTimeKnowledgeError"
-        self.VISFocalPlaneAssemblyLongDimensionMaxImage = "VISFocalPlaneAssemblyLongDimensionMaxImage"
-        self.VISFocalPlaneAssemblyShortDimensionMaxImage = "VISFocalPlaneAssemblyShortDimensionMaxImage"
-        self.VISGain = "VISGain"
-        self.VISReadoutNoise = "VISReadoutNoise"
-        self.VISDistortionMaps = "VISDistortionMaps"
-        self.CTIParallelAcsMode = "CTIParallelAcsMode"
-        self.CTIParallelClockingMode = "CTIParallelClockingMode"
-        self.CTIParallelExpress = "CTIParallelExpress"
-        self.CTIParallelNIterations = "CTIParallelNIterations"
-        self.CTIParallelNLevels = "CTIParallelNLevels"
-        self.CTIParallelNSpecies = "CTIParallelNSpecies"
-        self.CTIParallelReadOutOffset = "CTIParallelReadOutOffset"
-        self.CTIParallelTrapDensity = "CTIParallelTrapDensity"
-        self.CTIParallelTrapLifeTime = "CTIParallelTrapLifeTime"
-        self.CTIParallelWellDepth = "CTIParallelWellDepth"
-        self.CTIParallelWellFillPower = "CTIParallelWellFillPower"
-        self.CTIParallelWellNotchDepth = "CTIParallelWellNotchDepth"
-        self.CTISerialAcsMode = "CTISerialAcsMode"
-        self.CTISerialClockingMode = "CTISerialClockingMode"
-        self.CTISerialExpress = "CTISerialExpress"
-        self.CTISerialNIterations = "CTISerialNIterations"
-        self.CTISerialNLevels = "CTISerialNLevels"
-        self.CTISerialNSpecies = "CTISerialNSpecies"
-        self.CTISerialReadOutOffset = "CTISerialReadOutOffset"
-        self.CTISerialTrapDensity = "CTISerialTrapDensity"
-        self.CTISerialTrapLifeTime = "CTISerialTrapLifeTime"
-        self.CTISerialWellDepth = "CTISerialWellDepth"
-        self.CTISerialWellFillPower = "CTISerialWellFillPower"
-        self.CTISerialWellNotchDepth = "CTISerialWellNotchDepth"
-        self.FWHMInt0 = "FWHMInt0"
-        self.FWHMxaInt1x = "FWHMxaInt1x"
-        self.FWHMxalambda1x = "FWHMxalambda1x"
-        self.FWHMxbInt1x = "FWHMxbInt1x"
-        self.FWHMxblambda1x = "FWHMxblambda1x"
-        self.FWHMyaInt1y = "FWHMyaInt1y"
-        self.FWHMyalambda1y = "FWHMyalambda1y"
-        self.FWHMybInt1y = "FWHMybInt1y"
-        self.FWHMyblambda1y = "FWHMyblambda1y"
-        self.GhostModel = "GhostModel"
-        self.GhostModelPositionMatrixA = "GhostModelPositionMatrixA"
-        self.GhostModelPositionMatrixB = "GhostModelPositionMatrixB"
-        self.GhostModelShiftX = "GhostModelShiftX"
-        self.GhostModelShiftY = "GhostModelShiftY"
-        self.GhostModelStarBrightness = "GhostModelStarBrightness"
-        self.MeanDetectorQuantumEfficiencyCBENominalEOL = "MeanDetectorQuantumEfficiencyCBENominalEOL"
-        self.NL_P1 = "NL_P1"
-        self.NL_P2 = "NL_P2"
-        self.NL_P3 = "NL_P3"
-        self.NLFWC = "NLFWC"
-        self.CCDFullWellCapacityEOL = "CCDFullWellCapacityEOL"
-        self.DistortionModel = "DistortionModel"
-        self.VISOpticsAOCSPixelDetectorPSF = "VISOpticsAOCSPixelDetectorPSF"
-        self.PRNU = "PRNU"
+        self.shutter_closing_duration = "SpaceSegment.Instrument.VIS.ShutterClosingDuration"
+        self.shutter_opening_duration = "SpaceSegment.Instrument.VIS.ShutterOpeningDuration"
+        self.vis_adc_dynamics = "SpaceSegment.Instrument.VIS.VISADCDynamics"
+        self.cu_uniformity_map_normalised = "SpaceSegment.Instrument.VIS.CUUniformityMapNormalised"
+        self.vis_average_pixel_sizemicron = "SpaceSegment.Instrument.VIS.VISAveragePixelSizemicron"
+        self.vis_ccd_charge_injection = "SpaceSegment.Instrument.VIS.VISCCDChargeInjection"
+        self.vis_ccd_column = "SpaceSegment.Instrument.VIS.VISCCDColumn"
+        self.vis_ccd_defects_column_eol = "SpaceSegment.Instrument.VIS.VISCCDDefectsColumnEOL"
+        self.vis_ccd_defects_total_spots_eol = "SpaceSegment.Instrument.VIS.VISCCDDefectsTotalSpotsEOL"
+        self.vis_ccd_defects_traps_eol = "SpaceSegment.Instrument.VIS.VISCCDDefectsTrapsEOL"
+        self.vis_ccd_defects_white_spots_bol = "SpaceSegment.Instrument.VIS.VISCCDDefectsWhiteSpotsBOL"
+        self.vis_ccd_defects_white_spots_eol = "SpaceSegment.Instrument.VIS.VISCCDDefectsWhiteSpotsEOL"
+        self.vis_ccd_gap_long_dimension_nominal_image = "SpaceSegment.Instrument.VIS.VISCCDGapLongDimensionNominalImage"
+        self.vis_ccd_gap_short_dimension_nominal_image = "SpaceSegment.Instrument.VIS.VISCCDGapShortDimensionNominalImage"
+        self.vis_ccd_number = "SpaceSegment.Instrument.VIS.VISCCDNumber"
+        self.vis_ccd_quadrant_list = "SpaceSegment.Instrument.VIS.VISCCDQuadrantList"
+        self.vis_ccd_row = "SpaceSegment.Instrument.VIS.VISCCDRow"
+        self.vis_dark_current = "SpaceSegment.Instrument.VIS.VISDarkCurrent"
+        self.vis_data_compression = "SpaceSegment.Instrument.VIS.VISDataCompression"
+        self.vis_detector_active_pixel_long_dimension_format = "SpaceSegment.Instrument.VIS.VISDetectorActivePixelLongDimensionFormat"
+        self.vis_detector_active_pixel_short_dimension_format = "SpaceSegment.Instrument.VIS.VISDetectorActivePixelShortDimensionFormat"
+        self.vis_detector_overscanx = "SpaceSegment.Instrument.VIS.VISDetectorOverscanx"
+        self.vis_detector_pixel_long_dimension_format = "SpaceSegment.Instrument.VIS.VISDetectorPixelLongDimensionFormat"
+        self.vis_detector_prescanx = "SpaceSegment.Instrument.VIS.VISDetectorPrescanx"
+        self.vis_exposure_time = "SpaceSegment.Instrument.VIS.VISExposureTime"
+        self.vis_exposure_time_knowledge_error = "SpaceSegment.Instrument.VIS.VISExposureTimeKnowledgeError"
+        self.vis_focal_plane_assembly_long_dimension_max_image = "SpaceSegment.Instrument.VIS.VISFocalPlaneAssemblyLongDimensionMaxImage"
+        self.vis_focal_plane_assembly_short_dimension_max_image = "SpaceSegment.Instrument.VIS.VISFocalPlaneAssemblyShortDimensionMaxImage"
+        self.vis_gain = "SpaceSegment.Instrument.VIS.VISGain"
+        self.vis_readout_noise = "SpaceSegment.Instrument.VIS.VISReadoutNoise"
+        self.vis_distortion_maps = "SpaceSegment.Instrument.VIS.VISDistortionMaps"
+        self.cti_parallel_acs_mode = "SpaceSegment.Instrument.VIS.CTIParallelAcsMode"
+        self.cti_parallel_clocking_mode = "SpaceSegment.Instrument.VIS.CTIParallelClockingMode"
+        self.cti_parallel_express = "SpaceSegment.Instrument.VIS.CTIParallelExpress"
+        self.cti_parallel_niterations = "SpaceSegment.Instrument.VIS.CTIParallelNIterations"
+        self.cti_parallel_nlevels = "SpaceSegment.Instrument.VIS.CTIParallelNLevels"
+        self.cti_parallel_nspecies = "SpaceSegment.Instrument.VIS.CTIParallelNSpecies"
+        self.cti_parallel_read_out_offset = "SpaceSegment.Instrument.VIS.CTIParallelReadOutOffset"
+        self.cti_parallel_trap_density = "SpaceSegment.Instrument.VIS.CTIParallelTrapDensity"
+        self.cti_parallel_trap_life_time = "SpaceSegment.Instrument.VIS.CTIParallelTrapLifeTime"
+        self.cti_parallel_well_depth = "SpaceSegment.Instrument.VIS.CTIParallelWellDepth"
+        self.cti_parallel_well_fill_power = "SpaceSegment.Instrument.VIS.CTIParallelWellFillPower"
+        self.cti_parallel_well_notch_depth = "SpaceSegment.Instrument.VIS.CTIParallelWellNotchDepth"
+        self.cti_serial_acs_mode = "SpaceSegment.Instrument.VIS.CTISerialAcsMode"
+        self.cti_serial_clocking_mode = "SpaceSegment.Instrument.VIS.CTISerialClockingMode"
+        self.cti_serial_express = "SpaceSegment.Instrument.VIS.CTISerialExpress"
+        self.cti_serial_niterations = "SpaceSegment.Instrument.VIS.CTISerialNIterations"
+        self.cti_serial_nlevels = "SpaceSegment.Instrument.VIS.CTISerialNLevels"
+        self.cti_serial_nspecies = "SpaceSegment.Instrument.VIS.CTISerialNSpecies"
+        self.cti_serial_read_out_offset = "SpaceSegment.Instrument.VIS.CTISerialReadOutOffset"
+        self.cti_serial_trap_density = "SpaceSegment.Instrument.VIS.CTISerialTrapDensity"
+        self.cti_serial_trap_life_time = "SpaceSegment.Instrument.VIS.CTISerialTrapLifeTime"
+        self.cti_serial_well_depth = "SpaceSegment.Instrument.VIS.CTISerialWellDepth"
+        self.cti_serial_well_fill_power = "SpaceSegment.Instrument.VIS.CTISerialWellFillPower"
+        self.cti_serial_well_notch_depth = "SpaceSegment.Instrument.VIS.CTISerialWellNotchDepth"
+        self.fwhm_int_0 = "SpaceSegment.Instrument.VIS.FWHMInt0"
+        self.fwhm_xa_int_1x = "SpaceSegment.Instrument.VIS.FWHMxaInt1x"
+        self.fwhm_xa_lambda_1x = "SpaceSegment.Instrument.VIS.FWHMxalambda1x"
+        self.fwhm_xb_int_1x = "SpaceSegment.Instrument.VIS.FWHMxbInt1x"
+        self.fwhm_xb_lambda_1x = "SpaceSegment.Instrument.VIS.FWHMxblambda1x"
+        self.fwhm_ya_int_1y = "SpaceSegment.Instrument.VIS.FWHMyaInt1y"
+        self.fwhm_ya_lambda_1y = "SpaceSegment.Instrument.VIS.FWHMyalambda1y"
+        self.fwhm_yb_int_1y = "SpaceSegment.Instrument.VIS.FWHMybInt1y"
+        self.fwhm_yb_lambda_1y = "SpaceSegment.Instrument.VIS.FWHMyblambda1y"
+        self.ghost_model = "SpaceSegment.Instrument.VIS.GhostModel"
+        self.ghost_model_position_matrix_a = "SpaceSegment.Instrument.VIS.GhostModelPositionMatrixA"
+        self.ghost_model_position_matrix_b = "SpaceSegment.Instrument.VIS.GhostModelPositionMatrixB"
+        self.ghost_model_shift_x = "SpaceSegment.Instrument.VIS.GhostModelShiftX"
+        self.ghost_model_shift_y = "SpaceSegment.Instrument.VIS.GhostModelShiftY"
+        self.ghost_model_star_brightness = "SpaceSegment.Instrument.VIS.GhostModelStarBrightness"
+        self.mean_detector_quantum_efficiency_cbenominal_eol = "SpaceSegment.Instrument.VIS.MeanDetectorQuantumEfficiencyCBENominalEOL"
+        self.nl_p1 = "SpaceSegment.Instrument.VIS.NL_P1"
+        self.nl_p2 = "SpaceSegment.Instrument.VIS.NL_P2"
+        self.nl_p3 = "SpaceSegment.Instrument.VIS.NL_P3"
+        self.nlfwc = "SpaceSegment.Instrument.VIS.NLFWC"
+        self.ccd_full_well_capacity_eol = "SpaceSegment.Instrument.VIS.CCDFullWellCapacityEOL"
+        self.distortion_model = "SpaceSegment.Instrument.VIS.DistortionModel"
+        self.vis_optics_aocspixel_detector_psf = "SpaceSegment.Instrument.VIS.VISOpticsAOCSPixelDetectorPSF"
+        self.prnu = "SpaceSegment.Instrument.VIS.PRNU"
 
 
 mdb_keys = MDBKeys()
