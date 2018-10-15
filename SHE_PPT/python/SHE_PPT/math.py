@@ -134,6 +134,7 @@ class LinregressResults(object):
 
         return stats
 
+
 class BFDSumStatistics(object):
 
     def __init__(self, sums=None):
@@ -173,12 +174,12 @@ class BFDSumStatistics(object):
             self.A34 = sums['A34']
             self.A44 = sums['A44']
 
- 
         return
-    
+
+
 class BFDSumResults(object):
 
-    def __init__(self, lstats=None,do_g1=True):
+    def __init__(self, lstats=None, do_g1=True):
 
         if (lstats is None) or (lstats[0] is None):
 
@@ -192,7 +193,7 @@ class BFDSumResults(object):
             return
 
         elif isinstance(lstats, list):
-            
+
             # We have a list of stats, so combine them
             stats = self.combine_lstats(lstats)
 
@@ -201,34 +202,33 @@ class BFDSumResults(object):
             # Just calculate from this object
             stats = lstats
 
-        C = np.matrix([[stats.A11,stats.A12,stats.A13,stats.A14],
-                       [stats.A12,stats.A22,stats.A23,stats.A24],
-                       [stats.A13,stats.A23,stats.A33,stats.A34],
-                       [stats.A14,stats.A24,stats.A34,stats.A44]])
-        Cinv=np.linalg.inv(C)
-        Q_P=np.matrix([[stats.b1],[stats.b2],[stats.b3],[stats.b4]])
+        C = np.matrix([[stats.A11, stats.A12, stats.A13, stats.A14],
+                       [stats.A12, stats.A22, stats.A23, stats.A24],
+                       [stats.A13, stats.A23, stats.A33, stats.A34],
+                       [stats.A14, stats.A24, stats.A34, stats.A44]])
+        Cinv = np.linalg.inv(C)
+        Q_P = np.matrix([[stats.b1], [stats.b2], [stats.b3], [stats.b4]])
 
         if do_g1 == True:
-            self.slope=(Cinv*Q_P)[0,0]
-            self.intercept=(Cinv*Q_P)[1,0]
-            self.slope_err=(np.sqrt(Cinv[0,0]))
-            self.intercept_err=np.sqrt(Cinv[1,1])
-            self.slope_intercept_covar=Cinv[0,1]
+            self.slope = (Cinv * Q_P)[0, 0]
+            self.intercept = (Cinv * Q_P)[1, 0]
+            self.slope_err = (np.sqrt(Cinv[0, 0]))
+            self.intercept_err = np.sqrt(Cinv[1, 1])
+            self.slope_intercept_covar = Cinv[0, 1]
         else:
-            self.slope=(Cinv*Q_P)[2,0]
-            self.intercept=(Cinv*Q_P)[3,0]
-            self.slope_err=(np.sqrt(Cinv[2,2]))
-            self.intercept_err=np.sqrt(Cinv[3,3])
-            self.slope_intercept_covar=Cinv[2,3]
-
+            self.slope = (Cinv * Q_P)[2, 0]
+            self.intercept = (Cinv * Q_P)[3, 0]
+            self.slope_err = (np.sqrt(Cinv[2, 2]))
+            self.intercept_err = np.sqrt(Cinv[3, 3])
+            self.slope_intercept_covar = Cinv[2, 3]
 
     @classmethod
     def combine_lstats(cls, lstats):
 
         # Set up arrays for each value
         n = len(lstats)
-         
-       # Fill in an output object with weighted sums
+
+        # Fill in an output object with weighted sums
         stats = BFDSumStatistics()
         stats.b1 = 0.
         stats.b2 = 0.
@@ -264,6 +264,7 @@ class BFDSumResults(object):
 
         return stats
 
+
 class BiasMeasurements(object):
     """Class for expressing bias measurements. Similar to LinregressResults
        except in terms of m and c.
@@ -293,6 +294,7 @@ def get_linregress_statistics(lx, ly, ly_err=None):
 
     return LinregressStatistics(lx=lx, ly=ly, ly_err=ly_err)
 
+
 def get_bfd_sum_statistics(sums):
     """Functional interface to get a BFD Sum statistics object.
     """
@@ -307,12 +309,14 @@ def combine_linregress_statistics(lstats):
 
     return LinregressResults(lstats=lstats)
 
-def combine_bfd_sum_statistics(lstats,do_g1=True):
+
+def combine_bfd_sum_statistics(lstats, do_g1=True):
     """Functional interface to combine linear regression statistics objects
        into the result of a regression.
     """
 
-    return BFDSumResults(lstats=lstats,do_g1=do_g1)
+    return BFDSumResults(lstats=lstats, do_g1=do_g1)
+
 
 def linregress_with_errors(x, y, y_err=None):
     """

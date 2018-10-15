@@ -7,7 +7,7 @@
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines.
 """
 
-__updated__ = "2018-07-02"
+__updated__ = "2018-10-15"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -201,7 +201,7 @@ def __set_method_statistics(self, method, g1_statistics, g2_statistics):
     elif method == "REGAUSS":
         return self.set_REGAUSS_statistics(g1_statistics, g2_statistics)
     elif method == "BFD":
-        bfd_statistics=g1_statistics
+        bfd_statistics = g1_statistics
         return self.set_BFD_statistics(bfd_statistics)
     else:
         raise ValueError("Invalid method " + str(method) + ".")
