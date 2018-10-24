@@ -1,11 +1,12 @@
 """
-    @file get_I_from_SN.py
+    @file signal_to_noise.py
 
     Created 23 Jul 2015
 
-    Contains function "get_I_from_SN" to estimate the required intensity of
-    a galaxy to provide a given signal-to-noise.
+    Contains functions related to signal-to-noise (SN) calculations.
 """
+
+__updated__ = "2018-10-24"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -21,7 +22,59 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+import galsim
+
+from SHE_PPT.logging import getLogger
 import numpy as np
+
+
+logger = getLogger(__name__)
+
+
+def get_SN_of_image(galaxy_image,
+                    gain,
+                    sigma_sky=None,
+                    *args,
+                    **kwargs):
+    """Calculates the S/N of a galaxy, when give a galsim image or numpy array as input.
+
+    Follows formulae in section 4.2 of Tewes et al. 2018 (https://arxiv.org/pdf/1807.02120.pdf)
+
+    Parameters
+    ----------
+    galaxy_data : np.ndarray or galsim.Image
+        Array containing galaxy image
+    gain : float
+        The gain of the image in e-/ADU
+    sigma_sky : float
+        Noise of the sky background. If not provided, will be estimated from pixels along the edge of the image.
+    *args, **kwargs 
+        Arguments to be passed to galsim.hsm.FindAdaptiveMoments
+
+    Return
+    ------
+    signal_to_noise : float
+
+    """
+
+    # Turn the galaxy_image into a galsim.Image if necessary
+    if isinstance(galaxy_image, np.ndarray):
+        galaxy_image = galsim.Image(galaxy_image)
+
+    # Estimate sigma_sky if necessary
+    if sigma_sky is None:
+        sky_pixels = np.concatenate((galaxy_image.array[0:-2, 0],
+                                     galaxy_image.array[-1, 0:-2],
+                                     galaxy_image.array[1:-1, -1],
+                                     galaxy_image.array[0, 1:-1]))
+
+        sigma_sky = 1.4826 * np.median(np.abs(sky_pixels - np.median(sky_pixels)))
+
+    moments = galsim.hsm.FindAdaptiveMom(galaxy_image, *args, **kwargs)
+
+    a_eff = np.pi * (3 * moments.moments_sigma * np.sqrt(2 * np.ln(2)))
+
+    signal_to_noise = gain * moments.moments_amp / np.sqrt(G * moments.moments_amp + a_eff * (gain * sigma_sky)**2)
 
 
 def get_I_from_SN(galaxy_SN,
