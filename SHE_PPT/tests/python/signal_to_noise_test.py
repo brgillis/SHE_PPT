@@ -29,7 +29,7 @@ from SHE_PPT.signal_to_noise import get_SN_of_image
 from SHE_PPT.table_formats.detections import tf as detf
 import numpy as np
 
-ex_signal_to_noises = [0, 0]
+ex_signal_to_noises = [17.128722416373463, 207.67650514133481]
 
 she_frame_location = "AUX/SHE_PPT/test_she_frame_stack_simple.bin"
 
@@ -65,6 +65,6 @@ class TestCase:
                 signal_to_noise_estimates.append(get_SN_of_image(exposure.data - exposure.background_map,
                                                                  gain=gain))
 
-            assert np.allclose(signal_to_noise_estimates, ex_signal_to_noises[row[detf.ID]])
+            assert np.allclose(signal_to_noise_estimates, ex_signal_to_noises[row[detf.ID]],rtol=0.3)
 
         return
