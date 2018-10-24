@@ -134,7 +134,7 @@ class DetailsTableFormat(object):
 
         self.magnitude = set_column_properties("MAGNITUDE", comment="VIS filter")
 
-        self.snr = set_column_properties("SNR")
+        self.snr = set_column_properties("SNR", comment="Sum in quadrature over detections")
 
         self.sersic_index = set_column_properties("SERSIC_INDEX")
 
