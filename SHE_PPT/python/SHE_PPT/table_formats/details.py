@@ -21,12 +21,11 @@
 
 from collections import OrderedDict
 
-from astropy.table import Table
-
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import hash_any
+from astropy.table import Table
 
 
 logger = getLogger(mv.logger_name)
@@ -135,6 +134,8 @@ class DetailsTableFormat(object):
 
         self.magnitude = set_column_properties("MAGNITUDE", comment="VIS filter")
 
+        self.snr = set_column_properties("SNR")
+
         self.sersic_index = set_column_properties("SERSIC_INDEX")
 
         self.rotation = set_column_properties("ROTATION", comment="[deg]")
@@ -154,6 +155,7 @@ class DetailsTableFormat(object):
         for label in self.all:
             if not self.is_optional[label]:
                 self.all_required.append(label)
+
 
 # Define an instance of this object that can be imported
 details_table_format = DetailsTableFormat()
