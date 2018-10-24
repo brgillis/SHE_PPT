@@ -65,6 +65,6 @@ class TestCase:
                 signal_to_noise_estimates.append(get_SN_of_image(exposure.data - exposure.background_map,
                                                                  gain=gain))
 
-            np.assert_allclose(signal_to_noise_estimates, ex_signal_to_noises[row[detf.ID]])
+            assert np.allclose(signal_to_noise_estimates, ex_signal_to_noises[row[detf.ID]])
 
         return
