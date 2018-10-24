@@ -246,6 +246,12 @@ def get_arguments_string(args, cmd=None, store_true=None, store_false=None):
         elif stripped_val == "":
             # If it's an empty string, output quotes instead of nothing
             arg_string += '"" '
+        elif stripped_val == "log_file":
+            # Correct for Elements somehow switching log-file to log_file
+            arg_string += "log-file "
+        elif stripped_val == "log_level":
+            # Correct for Elements somehow switching log-level to log_level
+            arg_string += "log-level "
         else:
             arg_string += stripped_val + " "
 
