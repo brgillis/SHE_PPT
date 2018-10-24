@@ -76,6 +76,8 @@ def get_SN_of_image(galaxy_image,
 
     signal_to_noise = gain * moments.moments_amp / np.sqrt(gain * moments.moments_amp + a_eff * (gain * sigma_sky)**2)
 
+    return signal_to_noise
+
 
 def get_I_from_SN(galaxy_SN,
                   galaxy_stddev_arcsec,
