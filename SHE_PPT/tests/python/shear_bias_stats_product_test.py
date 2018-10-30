@@ -5,6 +5,8 @@
     Unit tests for the shear estimates data product.
 """
 
+__updated__ = "2018-10-15"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -21,7 +23,7 @@
 
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
-from SHE_PPT.math import LinregressStatistics
+from SHE_PPT.math import LinregressStatistics, BFDSumStatistics
 from SHE_PPT.products import shear_bias_stats as prod
 import numpy as np
 
@@ -34,6 +36,20 @@ class TestShearBiasStatsProduct(object):
     def test_validation(self):
 
         n = 10
+        sums_for_bfd = {'b1': 1.0,
+                        'b2': 1.0,
+                        'b3': 1.0,
+                        'b4': 1.0,
+                        'A11': 1.0,
+                        'A12': 1.0,
+                        'A13': 1.0,
+                        'A14': 1.0,
+                        'A22': 1.0,
+                        'A23': 1.0,
+                        'A24': 1.0,
+                        'A33': 1.0,
+                        'A34': 1.0,
+                        'A44': 1.0}
 
         stats = {}
         for method in ("BFD", "KSB", "LensMC", "MomentsML", "REGAUSS"):
@@ -43,13 +59,13 @@ class TestShearBiasStatsProduct(object):
             y1 = x1 + np.random.randn(n) * y_err
             y2 = x2 + np.random.randn(n) * y_err
 
-            stats[method] = (LinregressStatistics(x1, y1, y_err),
-                             LinregressStatistics(x2, y2, y_err),)
-
+            if not method == "BFD":
+                stats[method] = (LinregressStatistics(x1, y1, y_err),
+                                 LinregressStatistics(x2, y2, y_err),)
+            else:
+                stats[method] = (BFDSumStatistics(sums_for_bfd), None)
         # Create the product
-        product = prod.create_dpd_shear_bias_statistics(BFD_g1_statistics=stats["BFD"][0],
-                                                        BFD_g2_statistics=stats[
-                                                            "BFD"][1],
+        product = prod.create_dpd_shear_bias_statistics(BFD_bfd_statistics=stats["BFD"][0],
                                                         KSB_g1_statistics=stats[
                                                             "KSB"][0],
                                                         KSB_g2_statistics=stats[
@@ -70,7 +86,7 @@ class TestShearBiasStatsProduct(object):
         product.validateBinding()
 
         # Check that it was inited with the proper values
-        assert product.get_BFD_statistics() == stats["BFD"]
+        assert product.get_BFD_statistics() == stats["BFD"][0]
         assert product.get_KSB_statistics() == stats["KSB"]
         assert product.get_LensMC_statistics() == stats["LensMC"]
         assert product.get_MomentsML_statistics() == stats["MomentsML"]
@@ -79,26 +95,46 @@ class TestShearBiasStatsProduct(object):
         # Check the general get method works#
         stats2 = {}
         for method in ("BFD", "KSB", "LensMC", "MomentsML", "REGAUSS"):
-            assert product.get_method_statistics(method) == stats[method]
-
+            if not method == 'BFD':
+                assert product.get_method_statistics(method) == stats[method]
+            else:
+                assert product.get_method_statistics(method) == stats[method][0]
             x1 = np.linspace(0, n - 1, n, endpoint=True)
             x2 = np.linspace(0, n - 1, n, endpoint=True)
             y_err = 0.25 * np.ones_like(x1)
             y1 = x1 + np.random.randn(n) * y_err
             y2 = x2 + np.random.randn(n) * y_err
-
-            stats2[method] = (LinregressStatistics(x1, y1, y_err),
-                              LinregressStatistics(x2, y2, y_err),)
+            if not method == 'BFD':
+                stats2[method] = (LinregressStatistics(x1, y1, y_err),
+                                  LinregressStatistics(x2, y2, y_err),)
+            else:
+                stats2[method] = (BFDSumStatistics(sums_for_bfd), None)
 
             product.set_method_statistics(method, *stats2[method])
-            assert product.get_method_statistics(method) == stats2[method]
 
+            if not method == 'BFD':
+                assert product.get_method_statistics(method) == stats2[method]
+            else:
+                assert product.get_method_statistics(method) == stats2[method][0]
         pass
 
     def test_xml_writing_and_reading(self, tmpdir):
 
         n = 10
-
+        sums_for_bfd = {'b1': 1.0,
+                        'b2': 1.0,
+                        'b3': 1.0,
+                        'b4': 1.0,
+                        'A11': 1.0,
+                        'A12': 1.0,
+                        'A13': 1.0,
+                        'A14': 1.0,
+                        'A22': 1.0,
+                        'A23': 1.0,
+                        'A24': 1.0,
+                        'A33': 1.0,
+                        'A34': 1.0,
+                        'A44': 1.0}
         # Create the product
         product = prod.create_dpd_shear_bias_statistics()
 
@@ -109,14 +145,13 @@ class TestShearBiasStatsProduct(object):
             y_err = 0.25 * np.ones_like(x1)
             y1 = x1 + np.random.randn(n) * y_err
             y2 = x2 + np.random.randn(n) * y_err
-
-            stats[method] = (LinregressStatistics(x1, y1, y_err),
-                             LinregressStatistics(x2, y2, y_err),)
-
+            if not method == 'BFD':
+                stats[method] = (LinregressStatistics(x1, y1, y_err),
+                                 LinregressStatistics(x2, y2, y_err),)
+            else:
+                stats[method] = (BFDSumStatistics(sums_for_bfd), None)
         # Create the product
-        product = prod.create_dpd_shear_bias_statistics(BFD_g1_statistics=stats["BFD"][0],
-                                                        BFD_g2_statistics=stats[
-                                                            "BFD"][1],
+        product = prod.create_dpd_shear_bias_statistics(BFD_bfd_statistics=stats["BFD"][0],
                                                         KSB_g1_statistics=stats[
                                                             "KSB"][0],
                                                         KSB_g2_statistics=stats[
@@ -141,8 +176,7 @@ class TestShearBiasStatsProduct(object):
         loaded_product = read_xml_product(filename)
 
         # Check that the products coincide
-        assert loaded_product.get_BFD_statistics()[0].ym == stats["BFD"][0].ym
-        assert loaded_product.get_BFD_statistics()[1].ym == stats["BFD"][1].ym
+        assert loaded_product.get_BFD_statistics().A11 == stats["BFD"][0].A11
         assert loaded_product.get_KSB_statistics()[0].ym == stats["KSB"][0].ym
         assert loaded_product.get_KSB_statistics()[1].ym == stats["KSB"][1].ym
         assert loaded_product.get_LensMC_statistics()[0].ym == stats[
