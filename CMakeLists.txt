@@ -7,4 +7,4 @@ find_package(ElementsProject)
 
 # Declare project name and version
 
-elements_project(SHE_PPT 0.8.1 USE Elements 5.2.2 EuclidDmBindings 2.2.1 DMTools 2.2.1 MDBTools 2.2.1)
+elements_project(SHE_PPT 0.8.2 USE Elements 5.2.2 EuclidDmBindings 2.2.1 DMTools 2.2.1 MDBTools 2.2.1)
