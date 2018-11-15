@@ -15,22 +15,22 @@
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 # """This script gives a small demo of the image object.
-
 """
 File: tests/python/she_image_test.py
 
 Created on: 08/18/17
 """
 
-
+from copy import deepcopy
 import logging
 import os
+
+from astropy.wcs import WCS
 import pytest
 
 from SHE_PPT import file_io
 from SHE_PPT.magic_values import segmap_unassigned_value
 import SHE_PPT.she_image
-from astropy.wcs import WCS
 import numpy as np
 
 
@@ -480,3 +480,15 @@ class Test_she_image():
             assert np.allclose(world2pix_rotation_matrix_1, world2pix_rotation_matrix_2, rtol=0.02, atol=0.002)
 
             return
+        
+    def test_equality(self):
+        
+        # Test we get equal when we expect it
+        img_copy = deepcopy(cls.img)
+        assert img==img_copy
+        
+        # Test we get inequal when we change the copy
+        img_copy.data += 1
+        assert img!=img_copy
+        
+        return
