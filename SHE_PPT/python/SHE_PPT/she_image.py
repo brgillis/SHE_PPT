@@ -361,8 +361,6 @@ class SHEImage(object):
                 return bool(lhs!=rhs)
             except ValueError as _e:
                 return (lhs!=rhs).all()
-            
-        import pdb; pdb.set_trace()
         
         if neq(self.data, rhs.data): return False
         if neq(self.mask, rhs.mask): return False
