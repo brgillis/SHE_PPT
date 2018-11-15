@@ -81,6 +81,22 @@ class SHEFrame(object):
         # Set the PSF catalogue to index by ID
         if self.psf_catalogue is not None:
             self.psf_catalogue.add_index(pstf.ID)
+    
+    def __eq__(self,rhs):
+        """Equality test for SHEFrame class.
+        """
+        
+        def neq(lhs,rhs):
+            try:
+                return bool(lhs!=rhs)
+            except ValueError as _e:
+                return (lhs!=rhs).all()
+        
+        if neq(self.detectors, rhs.detectors): return False
+        if neq(self.psf_data_hdulist, rhs.psf_data_hdulist): return False
+        if neq(self.psf_catalogue, rhs.psf_catalogue): return False
+        
+        return True
 
     def extract_stamp(self, x_world, y_world, width, height=None, x_buffer=0, y_buffer=0, keep_header=False):
         """Extracts a postage stamp centred on the provided sky co-ordinates, by using each detector's WCS
