@@ -370,7 +370,12 @@ class SHEImage(object):
         if neq(self.weight_map, rhs.weight_map): return False
         if neq(self.header, rhs.header): return False
         if neq(self.offset, rhs.offset): return False
-        if neq(self.wcs.to_header(), rhs.wcs.to_header()): return False
+        if neq(self.wcs, rhs.wcs):
+            try:
+                if neq(self.wcs.to_header(), rhs.wcs.to_header()): return False
+            except AttributeError:
+                # In this case, only one is None, so return False
+                return False
         
         return True
 
