@@ -356,17 +356,25 @@ class SHEImage(object):
         """Equality test for SHEImage class.
         """
         
-        if self.data != rhs.data: return False
-        if self.mask != rhs.mask: return False
-        if self.noisemap != rhs.noisemap: return False
-        if self.background_map != rhs.background_map: return False
-        if self.segmentation_map != rhs.segmentation_map: return False
-        if self.weight_map != rhs.weight_map: return False
-        if self.header != rhs.header: return False
-        if self.offset != rhs.offset: return False
-        if self.wcs != rhs.wcs: return False
+        def neq(lhs,rhs):
+            try:
+                return bool(lhs!=rhs)
+            except ValueError as _e:
+                return (lhs!=rhs).all()
+            
+        import pdb; pdb.set_trace()
         
-        return False
+        if neq(self.data, rhs.data): return False
+        if neq(self.mask, rhs.mask): return False
+        if neq(self.noisemap, rhs.noisemap): return False
+        if neq(self.background_map, rhs.background_map): return False
+        if neq(self.segmentation_map, rhs.segmentation_map): return False
+        if neq(self.weight_map, rhs.weight_map): return False
+        if neq(self.header, rhs.header): return False
+        if neq(self.offset, rhs.offset): return False
+        if neq(self.wcs.to_header(), rhs.wcs.to_header()): return False
+        
+        return True
 
     def get_object_mask(self, seg_id, mask_suspect=False, mask_unassigned=False):
         """Get a mask for pixels that are either bad (and optionally suspect)
