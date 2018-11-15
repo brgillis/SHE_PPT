@@ -92,9 +92,29 @@ class SHEFrame(object):
             except ValueError as _e:
                 return (lhs!=rhs).all()
         
+        def psf_hdulist_neq(lhs,rhs):
+            
+            if lhs is None and rhs is None:
+                return False
+            elif (lhs is None) != (rhs is None):
+                return True
+            
+            if len(lhs) != len(rhs): return True
+            try:
+                for i in range(len(lhs)):
+                    if (lhs[i].data is None) != (rhs[i].data is None):
+                        return True
+                    if not lhs[i].data is None:
+                        if (lhs[i].data != rhs[i].data).any(): return True
+                    if lhs[i].header != rhs[i].header: return True
+            except AttributeError as _e2:
+                # At least one isn't the right type
+                return True
+            return False
+        
         if neq(self.detectors, rhs.detectors): return False
-        if neq(self.psf_data_hdulist, rhs.psf_data_hdulist): return False
         if neq(self.psf_catalogue, rhs.psf_catalogue): return False
+        if psf_hdulist_neq(self.psf_data_hdulist, rhs.psf_data_hdulist): return False
         
         return True
 
