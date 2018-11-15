@@ -22,12 +22,13 @@ Created on: Aug 17, 2017
 
 import os
 
+import astropy.io.fits
+import astropy.wcs
+
 from SHE_PPT.magic_values import segmap_unassigned_value
 from SHE_PPT.mask import (as_bool, is_masked_bad,
                           is_masked_suspect_or_bad, masked_off_image)
 from SHE_PPT.utility import load_wcs
-import astropy.io.fits
-import astropy.wcs
 import numpy as np
 
 from . import logging
@@ -350,6 +351,22 @@ class SHEImage(object):
             offset_str = "offset [{}, {}]".format(*self.offset)
             str_list.append(offset_str)
         return "SHEImage(" + ", ".join(str_list) + ")"
+    
+    def __eq__(self,rhs):
+        """Equality test for SHEImage class.
+        """
+        
+        if self.data != rhs.data: return False
+        if self.mask != rhs.mask: return False
+        if self.noisemap != rhs.noisemap: return False
+        if self.background_map != rhs.background_map: return False
+        if self.segmentation_map != rhs.segmentation_map: return False
+        if self.weight_map != rhs.weight_map: return False
+        if self.header != rhs.header: return False
+        if self.offset != rhs.offset: return False
+        if self.wcs != rhs.wcs: return False
+        
+        return False
 
     def get_object_mask(self, seg_id, mask_suspect=False, mask_unassigned=False):
         """Get a mask for pixels that are either bad (and optionally suspect)

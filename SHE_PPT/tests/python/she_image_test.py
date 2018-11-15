@@ -484,11 +484,11 @@ class Test_she_image():
     def test_equality(self):
         
         # Test we get equal when we expect it
-        img_copy = deepcopy(cls.img)
-        assert img==img_copy
+        img_copy = deepcopy(self.img)
+        assert self.img==img_copy
         
         # Test we get inequal when we change the copy
         img_copy.data += 1
-        assert img!=img_copy
+        assert self.img!=img_copy
         
         return
