@@ -412,3 +412,4 @@ def update_xml_with_value(filename):
                   (len(bad_lines), filename, n_defaults))
     else:
         print('No updates required')
+

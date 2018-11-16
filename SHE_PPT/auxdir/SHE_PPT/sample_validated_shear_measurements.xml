@@ -1,46 +1,46 @@
 <?xml version="1.0" ?>
 <ns1:DpdValidatedShearMeasurement xmlns:ns1="http://euclid.esa.org/schema/dpd/she/validatedshearmeasurement">
 	<Header>
-		<ProductId>DyB</ProductId>
-		<ProductType>RFD</ProductType>
-		<SoftwareName>unO</SoftwareName>
-		<SoftwareRelease>eTPP</SoftwareRelease>
-		<ManualValidationStatus>INVALID</ManualValidationStatus>
-		<ExpirationDate>2018-08-11T17:40:27.131Z</ExpirationDate>
-		<PipelineRun>oUx</PipelineRun>
-		<ExitStatusCode>CL3</ExitStatusCode>
-		<DataModelVersion>0R52e</DataModelVersion>
-		<MinDataModelVersion>jfIF7</MinDataModelVersion>
-		<ScientificCustodian>EXTSUBARU</ScientificCustodian>
+		<ProductId>kDp</ProductId>
+		<ProductType>d3j</ProductType>
+		<SoftwareName>eeX</SoftwareName>
+		<SoftwareRelease>HTVp</SoftwareRelease>
+		<ManualValidationStatus>VALID</ManualValidationStatus>
+		<ExpirationDate>2018-11-16T16:03:03.722Z</ExpirationDate>
+		<PipelineRun>OZ8</PipelineRun>
+		<ExitStatusCode>H82</ExitStatusCode>
+		<DataModelVersion>bZskf</DataModelVersion>
+		<MinDataModelVersion>uyrU</MinDataModelVersion>
+		<ScientificCustodian>LE3CS</ScientificCustodian>
 		<AccessRights>
-			<EuclidConsortiumRead>true</EuclidConsortiumRead>
-			<EuclidConsortiumWrite>false</EuclidConsortiumWrite>
-			<ScientificGroupRead>true</ScientificGroupRead>
-			<ScientificGroupWrite>false</ScientificGroupWrite>
+			<EuclidConsortiumRead>false</EuclidConsortiumRead>
+			<EuclidConsortiumWrite>true</EuclidConsortiumWrite>
+			<ScientificGroupRead>false</ScientificGroupRead>
+			<ScientificGroupWrite>true</ScientificGroupWrite>
 		</AccessRights>
 		<Curator>
-			<Name>B48</Name>
-			<Email>someOne@someplace.com</Email>
+			<Name>KC2</Name>
+			<Email>I7OSo6HodbGbSdArAHgjp5VLQL@gCST.a&lt;N</Email>
 		</Curator>
 		<ToBePublished>false</ToBePublished>
-		<Published>true</Published>
-		<Creator>zPt</Creator>
-		<CreationDate>2018-08-11T17:40:27.137Z</CreationDate>
+		<Published>false</Published>
+		<Creator>BxG</Creator>
+		<CreationDate>2018-11-16T16:03:03.728Z</CreationDate>
 	</Header>
 	<Data>
-		<IdCatalog>1895064093</IdCatalog>
+		<IdCatalog>1405585554</IdCatalog>
 		<CatalogCoverage>
 			<SpatialCoverage>
 				<Polygon>
 					<Vertex>
-						<Position coordUnit="mK">
-							<C1 unit="cd">1.0</C1>
-							<C2 unit="uJy">1.0</C2>
+						<Position coordUnit="CelsiusDeg">
+							<C1 unit="particles/s/cm2">0.0</C1>
+							<C2 unit="m/s2">1.0</C2>
 						</Position>
 						<SmallCircle>
-							<Pole coordUnit="km">
+							<Pole coordUnit="Ry">
 								<C1 unit="keV">0.0</C1>
-								<C2 unit="m3/kh/s2">1.0</C2>
+								<C2 unit="m2/s">0.0</C2>
 							</Pole>
 						</SmallCircle>
 					</Vertex>
@@ -48,145 +48,144 @@
 			</SpatialCoverage>
 			<SpectralCoverage>
 				<Filter>
-					<Name>OMEGACAM_u</Name>
-					<MagId>H</MagId>
-					<CentralWavelength>-1.0</CentralWavelength>
-					<MinWavelength>7.0</MinWavelength>
-					<MaxWavelength>1.0</MaxWavelength>
-					<Reference>ERQ</Reference>
-					<HasFringes>-594049197</HasFringes>
+					<Name>SUBARU_i</Name>
+					<MagId>N</MagId>
+					<CentralWavelength>0.0</CentralWavelength>
+					<MinWavelength>1.0</MinWavelength>
+					<MaxWavelength>6.0</MaxWavelength>
+					<Reference>uqo</Reference>
+					<HasFringes>-1817073970</HasFringes>
 				</Filter>
 			</SpectralCoverage>
 		</CatalogCoverage>
 		<CatalogStorage>
 			<CatalogFileStorage>
-				<Id>eGp</Id>
+				<Id>PW2</Id>
 				<PartitioningColumn>
-					<Name>Sph</Name>
-					<Label>iMX</Label>
+					<Name>bHD</Name>
+					<Label>IA9</Label>
 					<Type>boolean</Type>
 					<VariableLength>
-						<FieldNumber>1602515074</FieldNumber>
-						<MaxElements>1499036759</MaxElements>
-						<Offset>292063349</Offset>
-						<CatalogPropertyDataType>multicharacter</CatalogPropertyDataType>
+						<FieldNumber>-404179981</FieldNumber>
+						<MaxElements>-869394887</MaxElements>
+						<Offset>-355343539</Offset>
+						<CatalogPropertyDataType>int64</CatalogPropertyDataType>
 					</VariableLength>
-					<Cardinality>604007555</Cardinality>
-					<NullValue>QFM</NullValue>
-					<Unit>cy</Unit>
-					<Description>E5G</Description>
-					<UCD>P|arith.grad</UCD>
-					<Utype>EFC</Utype>
+					<Cardinality>197913665</Cardinality>
+					<NullValue>7oI</NullValue>
+					<Unit>mol</Unit>
+					<Description>x2E</Description>
+					<UCD>Q|instr.det.qe</UCD>
+					<Utype>dvk</Utype>
 				</PartitioningColumn>
 				<CatalogMetadataStorage>
-					<Id>53025168</Id>
+					<Id>-502739994</Id>
 					<CatalogMetadataElement>
-						<Key>2B5</Key>
-						<Value>vPl</Value>
+						<Key>tO3</Key>
+						<Value>5fE</Value>
 					</CatalogMetadataElement>
 				</CatalogMetadataStorage>
-				<FileFormat>VOTable</FileFormat>
-				<FileNumber>1017347711</FileNumber>
+				<FileFormat>ASCII</FileFormat>
+				<FileNumber>-43212278</FileNumber>
 				<StorageSpace>
-					<Id>44z</Id>
+					<Id>Tdi</Id>
 					<Range>
-						<MinValue>h5l</MinValue>
-						<MaxValue>PqF</MaxValue>
-						<SelectionFilter>wJG</SelectionFilter>
+						<MinValue>M9d</MinValue>
+						<MaxValue>MMx</MaxValue>
+						<SelectionFilter>47a</SelectionFilter>
 					</Range>
-					<DataContainer filestatus="COMMITTED">
-						<FileName>92G1t9e8gBDJEzbRxL1Abk4Wc0HB0yWEEhN</FileName>
+					<DataContainer filestatus="PROCESSING">
+						<FileName>0U3rhmRN3KN8YwpQW8RBn64sIbivnQKAWIESx7XoPpbbvubpUkmLuhnGirKjJpiiVKM1KrCTqrSJ5qSR12NXJR8bLCaB0z9DIhIi3c4DntibSkZt4ePbt586e</FileName>
 					</DataContainer>
 				</StorageSpace>
 			</CatalogFileStorage>
 			<CatalogDBStorage>
-				<Id>shX</Id>
+				<Id>aiA</Id>
 				<IdType>
-					<Name>vb0</Name>
-					<Label>JOv</Label>
-					<Type>int16</Type>
+					<Name>M0F</Name>
+					<Label>Mrf</Label>
+					<Type>complex32</Type>
 					<VariableLength>
-						<FieldNumber>2031340749</FieldNumber>
-						<MaxElements>-1662134512</MaxElements>
-						<Offset>-1773467216</Offset>
-						<CatalogPropertyDataType>float32</CatalogPropertyDataType>
+						<FieldNumber>2008932686</FieldNumber>
+						<MaxElements>-627774855</MaxElements>
+						<Offset>1060136653</Offset>
+						<CatalogPropertyDataType>boolean</CatalogPropertyDataType>
 					</VariableLength>
-					<Cardinality>1402922392</Cardinality>
-					<NullValue>VvC</NullValue>
-					<Unit>Mstars/deg2</Unit>
-					<Description>752</Description>
-					<UCD>Q|time.epoch</UCD>
-					<Utype>9oL</Utype>
+					<Cardinality>1972266281</Cardinality>
+					<NullValue>vBm</NullValue>
+					<Unit>km/s</Unit>
+					<Description>qDp</Description>
+					<UCD>E|phot.flux.density.sb</UCD>
+					<Utype>aIG</Utype>
 				</IdType>
-				<TableName>kIi</TableName>
-				<ConnectionString>Ya0</ConnectionString>
-				<StorageDataType>6xp</StorageDataType>
+				<TableName>htQ</TableName>
+				<ConnectionString>s1h</ConnectionString>
+				<StorageDataType>Aet</StorageDataType>
 				<IndexColumn>
-					<Name>eqF</Name>
-					<Label>UFb</Label>
-					<Type>boolean</Type>
+					<Name>FI3</Name>
+					<Label>520</Label>
+					<Type>float32</Type>
 					<VariableLength>
-						<FieldNumber>859319200</FieldNumber>
-						<MaxElements>-1208792018</MaxElements>
-						<Offset>1544228421</Offset>
-						<CatalogPropertyDataType>multicharacter</CatalogPropertyDataType>
+						<FieldNumber>1877396558</FieldNumber>
+						<MaxElements>-846679889</MaxElements>
+						<Offset>-139291946</Offset>
+						<CatalogPropertyDataType>boolean</CatalogPropertyDataType>
 					</VariableLength>
-					<Cardinality>-417164465</Cardinality>
-					<NullValue>uAE</NullValue>
-					<Unit>photon</Unit>
-					<Description>r4Z</Description>
-					<UCD>Q|obs.param</UCD>
-					<Utype>OJ8</Utype>
+					<Cardinality>1340394496</Cardinality>
+					<NullValue>bBU</NullValue>
+					<Unit>keV</Unit>
+					<Description>f0g</Description>
+					<UCD>Q|time.phase</UCD>
+					<Utype>Zhi</Utype>
 				</IndexColumn>
-				<ParentCatalogId>-1644331134</ParentCatalogId>
+				<ParentCatalogId>-934710636</ParentCatalogId>
 				<SelectionRange>
-					<MinValue>9e0</MinValue>
-					<MaxValue>3lt</MaxValue>
-					<SelectionFilter>zsn</SelectionFilter>
+					<MinValue>AiR</MinValue>
+					<MaxValue>a2w</MaxValue>
+					<SelectionFilter>3dJ</SelectionFilter>
 				</SelectionRange>
 			</CatalogDBStorage>
 		</CatalogStorage>
 		<CatalogDescription>
-			<CatalogDataProduct>LJE</CatalogDataProduct>
-			<PathToCatalogDefinition>n1o</PathToCatalogDefinition>
-			<CatalogFormatBase>le1.visRawImage</CatalogFormatBase>
-			<CatalogFormatHDU>-787724159</CatalogFormatHDU>
-			<CatalogFitsColumnsDefinition>qhDaMrAADnKgJfoevAn8ZR0atbEEBWa77OyLj8C</CatalogFitsColumnsDefinition>
+			<CatalogDataProduct>LC5</CatalogDataProduct>
+			<PathToCatalogDefinition>vc5</PathToCatalogDefinition>
+			<CatalogFormatBase>nir.largeFlat</CatalogFormatBase>
+			<CatalogFormatHDU>-1083876638</CatalogFormatHDU>
+			<CatalogFitsColumnsDefinition>vnAMrE7ceNi4ktCv2nXjUivnjpvSzIQHxmj5QtU4LULYE</CatalogFitsColumnsDefinition>
 			<PartitioningColumn>
-				<Name>yzx</Name>
-				<Label>gp4</Label>
-				<Type>boolean</Type>
+				<Name>NdH</Name>
+				<Label>sL1</Label>
+				<Type>int8</Type>
 				<VariableLength>
-					<FieldNumber>-606477333</FieldNumber>
-					<MaxElements>1983266862</MaxElements>
-					<Offset>-146582628</Offset>
-					<CatalogPropertyDataType>character</CatalogPropertyDataType>
+					<FieldNumber>1816085061</FieldNumber>
+					<MaxElements>-1574319252</MaxElements>
+					<Offset>-1326415081</Offset>
+					<CatalogPropertyDataType>variableLengthArray</CatalogPropertyDataType>
 				</VariableLength>
-				<Cardinality>-871783001</Cardinality>
-				<NullValue>KZq</NullValue>
-				<Unit>kmyr/s</Unit>
-				<Description>lCL</Description>
-				<UCD>Q|phys.atmol.configuration</UCD>
-				<Utype>KRX</Utype>
+				<Cardinality>497877119</Cardinality>
+				<NullValue>xlP</NullValue>
+				<Unit>arcsec/yr</Unit>
+				<Description>IYz</Description>
+				<UCD>Q|phys.veloc.pulsat</UCD>
+				<Utype>f9J</Utype>
 			</PartitioningColumn>
 		</CatalogDescription>
 		<ValidatedShearMeasurementFile format="she.validatedShearMeasurement" version="0.1">
-			<DataContainer filestatus="PROPOSED">
-				<FileName>651yh0sepgbF8IAXwVsQbgXxCb3ZJhUDjYo4PcPU44jTKTk1W7o0welMj38phAjOmMrX84eU7SOzbfM6H1u8h7kTOfC50MltmUrozv0yzInpAWqtj2YA</FileName>
+			<DataContainer filestatus="ARCHIVED">
+				<FileName>GveiOPaCyEieRFWXpOvIHf8lhun1</FileName>
 			</DataContainer>
 		</ValidatedShearMeasurementFile>
 	</Data>
 	<QualityFlags>
 		<DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
-		<AuxiliaryFlags flagName="8lI" flagged="false" maxLimit="7.0" minLimit="4.0" xpath="Jk5">true</AuxiliaryFlags>
+		<AuxiliaryFlags flagName="rWu" flagged="false" maxLimit="6.0" minLimit="5.0" xpath="fFy">true</AuxiliaryFlags>
 	</QualityFlags>
 	<Parameters>
 		<Param>
-			<Key>U15</Key>
-			<Value>zTS</Value>
-			<Description>71O</Description>
-			<StringValue>zTS</StringValue>
-			<Unit>Om4</Unit>
+			<Key>OlG</Key>
+			<Description>bqP</Description>
+			<StringValue>8mV</StringValue>
+			<Unit>rRL</Unit>
 		</Param>
 	</Parameters>
 </ns1:DpdValidatedShearMeasurement>
