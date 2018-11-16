@@ -351,6 +351,42 @@ class SHEImage(object):
             str_list.append(offset_str)
         return "SHEImage(" + ", ".join(str_list) + ")"
 
+    def __eq__(self, rhs):
+        """Equality test for SHEImage class.
+        """
+
+        def neq(lhs, rhs):
+            try:
+                return bool(lhs != rhs)
+            except ValueError as _e:
+                return (lhs != rhs).any()
+
+        if neq(self.data, rhs.data):
+            return False
+        if neq(self.mask, rhs.mask):
+            return False
+        if neq(self.noisemap, rhs.noisemap):
+            return False
+        if neq(self.background_map, rhs.background_map):
+            return False
+        if neq(self.segmentation_map, rhs.segmentation_map):
+            return False
+        if neq(self.weight_map, rhs.weight_map):
+            return False
+        if neq(self.header, rhs.header):
+            return False
+        if neq(self.offset, rhs.offset):
+            return False
+        if neq(self.wcs, rhs.wcs):
+            try:
+                if neq(self.wcs.to_header(), rhs.wcs.to_header()):
+                    return False
+            except AttributeError:
+                # In this case, only one is None, so return False
+                return False
+
+        return True
+
     def get_object_mask(self, seg_id, mask_suspect=False, mask_unassigned=False):
         """Get a mask for pixels that are either bad (and optionally suspect)
         or don't belong to an object with a given ID.
