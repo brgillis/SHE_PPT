@@ -1,150 +1,150 @@
 <?xml version="1.0" ?>
 <ns1:DpdVisStackedFrame xmlns:ns1="http://euclid.esa.org/schema/dpd/vis/visstackedframe">
 	<Header>
-		<ProductId>BeW</ProductId>
-		<ProductType>false</ProductType>
-		<SoftwareName>h54</SoftwareName>
-		<SoftwareRelease>4jwu</SoftwareRelease>
+		<ProductId>YBh</ProductId>
+		<ProductType>LuO</ProductType>
+		<SoftwareName>K7y</SoftwareName>
+		<SoftwareRelease>aVj</SoftwareRelease>
 		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
-		<ExpirationDate>2018-08-03T16:22:24.646Z</ExpirationDate>
-		<PipelineRun>BUK</PipelineRun>
-		<ExitStatusCode>hvx</ExitStatusCode>
-		<DataModelVersion>pUu</DataModelVersion>
-		<MinDataModelVersion>P6h9m</MinDataModelVersion>
-		<ScientificCustodian>SHE</ScientificCustodian>
+		<ExpirationDate>2018-11-16T16:45:39.938Z</ExpirationDate>
+		<PipelineRun>pmk</PipelineRun>
+		<ExitStatusCode>JXp</ExitStatusCode>
+		<DataModelVersion>hfuG</DataModelVersion>
+		<MinDataModelVersion>W0BU</MinDataModelVersion>
+		<ScientificCustodian>LE3NGS</ScientificCustodian>
 		<AccessRights>
 			<EuclidConsortiumRead>true</EuclidConsortiumRead>
 			<EuclidConsortiumWrite>false</EuclidConsortiumWrite>
-			<ScientificGroupRead>false</ScientificGroupRead>
-			<ScientificGroupWrite>true</ScientificGroupWrite>
+			<ScientificGroupRead>true</ScientificGroupRead>
+			<ScientificGroupWrite>false</ScientificGroupWrite>
 		</AccessRights>
 		<Curator>
-			<Name>jvf</Name>
-			<Email>someOne@someplace.com</Email>
+			<Name>Hsc</Name>
+			<Email>T3cW9TIYwLCKAwehBjRQ@Wlf4Hg5.pc|G\X{.hE)x(W$rdT9=aah+:+E'e6f'w</Email>
 		</Curator>
 		<ToBePublished>true</ToBePublished>
 		<Published>true</Published>
-		<Creator>vch</Creator>
-		<CreationDate>2018-08-03T16:22:24.651Z</CreationDate>
+		<Creator>9wG</Creator>
+		<CreationDate>2018-11-16T16:45:39.943Z</CreationDate>
 	</Header>
 	<Data>
 		<ExposureTime>
-			<Value>-7.0</Value>
+			<Value>2.0</Value>
 			<Unit>rad</Unit>
 		</ExposureTime>
 		<ImgType>
-			<Category>TEST</Category>
-			<FirstType>SELF_CALIBRATION</FirstType>
-			<SecondType>LAMP</SecondType>
-			<ThirdType>CALIBRATION</ThirdType>
-			<Technique>SPECTROIMAGE</Technique>
+			<Category>CALIB</Category>
+			<FirstType>OBJECT</FirstType>
+			<SecondType>DOME</SecondType>
+			<ThirdType>OTHER</ThirdType>
+			<Technique>OTHER</Technique>
 		</ImgType>
 		<ImgArea>
-			<Name>jFfNvQyNYxp8ZoGZF12mrEtR377wLiYvv7VvqnJiHtWelioPDZYeiUYmmIv5mkLHyE9yCsjVIrvK9CurFAonDuZVPEy3L6zhp</Name>
+			<Name>U26iE7rfSgQeeUy21</Name>
 		</ImgArea>
-		<ImgNumber>1009144243</ImgNumber>
-		<AxisNumber>-776517216</AxisNumber>
-		<AxisLengths>3 4 5</AxisLengths>
-		<DataSize>16</DataSize>
-		<DataLength>-1377035953</DataLength>
+		<ImgNumber>1961840151</ImgNumber>
+		<AxisNumber>-1131452808</AxisNumber>
+		<AxisLengths>0</AxisLengths>
+		<DataSize>32</DataSize>
+		<DataLength>1658867801</DataLength>
 		<ImgStatistics>
-			<Min>-10.0</Min>
-			<Max>-7.0</Max>
-			<Mean>-6.0</Mean>
-			<Stdev>6.0</Stdev>
-			<Median>-5.0</Median>
-			<MinX>-102324800</MinX>
-			<MinY>1234207931</MinY>
-			<MaxX>1251162793</MaxX>
-			<MaxY>1966450368</MaxY>
-			<NPix>994161890840421892</NPix>
-			<XLower>1540254451</XLower>
-			<YLower>1586157819</YLower>
-			<XUpper>6247908</XUpper>
-			<YUpper>-481192651</YUpper>
+			<Min>-5.0</Min>
+			<Max>0.0</Max>
+			<Mean>-9.0</Mean>
+			<Stdev>-5.0</Stdev>
+			<Median>4.0</Median>
+			<MinX>656417217</MinX>
+			<MinY>-1442589804</MinY>
+			<MaxX>1089464945</MaxX>
+			<MaxY>-1247661579</MaxY>
+			<NPix>753160722552723638</NPix>
+			<XLower>1984209763</XLower>
+			<YLower>1706181271</YLower>
+			<XUpper>178523749</XUpper>
+			<YUpper>398666129</YUpper>
 		</ImgStatistics>
 		<Instrument>
-			<InstrumentName>VhWmNexZjPMccAetLMYawjzZaylmKwlxhALpywQ93OUWASXsAeOj1N0VWt3rJUXOAGaeVv4IFuTxF2TtsVp8fvO2hGgCcVENydF</InstrumentName>
-			<TelescopeName>esWZC7wPfDlVfoFkGPmsUp0FTPTb0o1grmBlhDndoZJNoOSBN08IiY5DJR2OxL8xzNfV15EMx5sTWcWtUJJumeyvr0q7sEO7F</TelescopeName>
+			<InstrumentName>G8sMG</InstrumentName>
+			<TelescopeName>JDb8MCvXRn9MmteN0vdFJDlIXUsYAB2bBfeO6rxFggObBOK0tAV2wXvjS6e995W3N6MmEI8UWuAkGfKU8vBFqPPK82</TelescopeName>
 		</Instrument>
 		<Filter>
-			<Name>NIR_H</Name>
-			<MagId>Y</MagId>
-			<CentralWavelength>6.0</CentralWavelength>
-			<MinWavelength>3.0</MinWavelength>
-			<MaxWavelength>8.0</MaxWavelength>
-			<Reference>Xe7</Reference>
-			<HasFringes>-314343852</HasFringes>
+			<Name>LSST_Y</Name>
+			<MagId>H</MagId>
+			<CentralWavelength>0.0</CentralWavelength>
+			<MinWavelength>-5.0</MinWavelength>
+			<MaxWavelength>-4.0</MaxWavelength>
+			<Reference>f4V</Reference>
+			<HasFringes>120174947</HasFringes>
 		</Filter>
 		<WCS>
 			<CTYPE1>
 				<CoordinateType>DEC</CoordinateType>
-				<ProjectionType>LOG</ProjectionType>
+				<ProjectionType>TPV</ProjectionType>
 			</CTYPE1>
 			<CTYPE2>
-				<CoordinateType>DEC</CoordinateType>
-				<ProjectionType>CSC</ProjectionType>
+				<CoordinateType>RA</CoordinateType>
+				<ProjectionType>TSC</ProjectionType>
 			</CTYPE2>
-			<CRVAL1>-6.0</CRVAL1>
-			<CRVAL2>-3.0</CRVAL2>
-			<CRPIX1>0.0</CRPIX1>
-			<CRPIX2>8.0</CRPIX2>
-			<CD1_1>-10.0</CD1_1>
-			<CD1_2>-7.0</CD1_2>
-			<CD2_1>8.0</CD2_1>
-			<CD2_2>7.0</CD2_2>
+			<CRVAL1>9.0</CRVAL1>
+			<CRVAL2>2.0</CRVAL2>
+			<CRPIX1>3.0</CRPIX1>
+			<CRPIX2>7.0</CRPIX2>
+			<CD1_1>-8.0</CD1_1>
+			<CD1_2>-10.0</CD1_2>
+			<CD2_1>4.0</CD2_1>
+			<CD2_2>-6.0</CD2_2>
 			<NonLinearCoeffs>
 				<NonLinearTPVAstromCoeffs>
-					<PV1_0>1.0</PV1_0>
-					<PV1_1>4.0</PV1_1>
-					<PV1_2>-4.0</PV1_2>
-					<PV1_3>-1.0</PV1_3>
-					<PV1_4>-4.0</PV1_4>
-					<PV1_5>-5.0</PV1_5>
-					<PV1_6>0.0</PV1_6>
-					<PV1_7>5.0</PV1_7>
-					<PV1_8>1.0</PV1_8>
-					<PV1_9>-6.0</PV1_9>
-					<PV1_10>2.0</PV1_10>
-					<PV2_0>-3.0</PV2_0>
-					<PV2_1>-2.0</PV2_1>
-					<PV2_2>-4.0</PV2_2>
-					<PV2_3>-6.0</PV2_3>
-					<PV2_4>-1.0</PV2_4>
-					<PV2_5>6.0</PV2_5>
-					<PV2_6>7.0</PV2_6>
-					<PV2_7>-7.0</PV2_7>
+					<PV1_0>-2.0</PV1_0>
+					<PV1_1>-5.0</PV1_1>
+					<PV1_2>-7.0</PV1_2>
+					<PV1_3>-3.0</PV1_3>
+					<PV1_4>6.0</PV1_4>
+					<PV1_5>-3.0</PV1_5>
+					<PV1_6>8.0</PV1_6>
+					<PV1_7>4.0</PV1_7>
+					<PV1_8>0.0</PV1_8>
+					<PV1_9>6.0</PV1_9>
+					<PV1_10>0.0</PV1_10>
+					<PV2_0>3.0</PV2_0>
+					<PV2_1>-4.0</PV2_1>
+					<PV2_2>-7.0</PV2_2>
+					<PV2_3>4.0</PV2_3>
+					<PV2_4>-7.0</PV2_4>
+					<PV2_5>-7.0</PV2_5>
+					<PV2_6>5.0</PV2_6>
+					<PV2_7>-5.0</PV2_7>
 					<PV2_8>1.0</PV2_8>
-					<PV2_9>-3.0</PV2_9>
-					<PV2_10>-9.0</PV2_10>
+					<PV2_9>-1.0</PV2_9>
+					<PV2_10>3.0</PV2_10>
 				</NonLinearTPVAstromCoeffs>
 			</NonLinearCoeffs>
-			<DetectorId>cFtUHIhS017FxihUrRvMHmHMtn3Lyay1jMIlzikQzEdGlMW2qShr9WGmMNRsSwMiremLlVs700fPd</DetectorId>
+			<DetectorId>legWVqOtd4B1YpNbci6NRHRG5a1W0QR1KofioLnLqFiZcQ7BRqZ4LgsgPTT4ZqqifOjhbQTuIqQd035zZmkZX</DetectorId>
 		</WCS>
 		<ZeroPoint unit="mag">
 			<ZeroPointType>absolute</ZeroPointType>
-			<Value>-9.0</Value>
-			<Error>4.0</Error>
-			<Comment>iwo</Comment>
+			<Value>-1.0</Value>
+			<Error>8.0</Error>
+			<Comment>zcW</Comment>
 			<ValidityRange>
-				<Name>WdS</Name>
-				<Type>8QN</Type>
-				<TimestampStart>2018-08-03T16:22:24.699Z</TimestampStart>
-				<TimestampEnd>2018-08-03T16:22:24.699Z</TimestampEnd>
+				<Name>ZGU</Name>
+				<Type>kR5</Type>
+				<TimestampStart>2018-11-16T16:45:39.989Z</TimestampStart>
+				<TimestampEnd>2018-11-16T16:45:39.99Z</TimestampEnd>
 			</ValidityRange>
-			<DetectorId>jm7RCNgQ7CSumCRsMw6Nvs7kaFc2JQzk8k</DetectorId>
+			<DetectorId>CdTAPUV9D7XuqfXGYv</DetectorId>
 		</ZeroPoint>
 		<ImgSpatialFootprint>
 			<Polygon>
 				<Vertex>
-					<Position coordUnit="Angstrom/pixel">
-						<C1 unit="T">0.0</C1>
-						<C2 unit="W/m2">0.0</C2>
+					<Position coordUnit="mas">
+						<C1 unit="m3/kh/s2">1.0</C1>
+						<C2 unit="Ry">1.0</C2>
 					</Position>
 					<SmallCircle>
-						<Pole coordUnit="mas">
-							<C1 unit="Angstrom/pixel">0.0</C1>
-							<C2 unit="GHz">1.0</C2>
+						<Pole coordUnit="solMass">
+							<C1 unit="S">0.0</C1>
+							<C2 unit="K">0.0</C2>
 						</Pole>
 					</SmallCircle>
 				</Vertex>
@@ -168,72 +168,71 @@
 			<ScatteredLightPixelMask decBit="16384" hexBit="0x00004000"/>
 			<ChargeInjectionPixelMask decBit="32768" hexBit="0x00008000"/>
 			<NearChargeInjectionPixelMask decBit="65536" hexBit="0x00010000"/>
-			<UserDefinedPixelMask decBit="33554432" hexBit="0x40000000"/>
+			<UserDefinedPixelMask decBit="536870912" hexBit="0x20000000"/>
 		</Masks>
-		<ObservationId>-57707143571461069</ObservationId>
-		<DitherObservation>5144755435599703872</DitherObservation>
+		<ObservationId>-4982481178827191568</ObservationId>
+		<DitherObservation>-127793227894194498</DitherObservation>
 		<DateRange>
-			<Name>ATZ</Name>
-			<Type>u8h</Type>
-			<TimestampStart>2018-08-03T16:22:24.662Z</TimestampStart>
-			<TimestampEnd>2018-08-03T16:22:24.663Z</TimestampEnd>
+			<Name>wD8</Name>
+			<Type>gAF</Type>
+			<TimestampStart>2018-11-16T16:45:39.953Z</TimestampStart>
+			<TimestampEnd>2018-11-16T16:45:39.953Z</TimestampEnd>
 		</DateRange>
 		<DataStorage format="vis.stackedImage" version="0.1">
-			<DataContainer filestatus="PROPOSED">
-				<FileName>dqpKHjnhueRsQTuAN6rpKUy8yuQoHeiLFGLVzt184VIYlIxiL7WUkd7nyplD7GkyQNlDrbxpU9dtcVAmruOtZ6cryY7wdzLSFhP3HyaSVihh7vRVCSQjYs</FileName>
+			<DataContainer filestatus="PROCESSING">
+				<FileName>L4Z7jduu9F6zHmnaoP2h9U6jTawIFBsX6aIBSLJuUEtpwjeJu8dRS1NiDZXmPibywvE</FileName>
 			</DataContainer>
 		</DataStorage>
 		<PsfModelStorage format="vis.psfModel" version="0.1">
-			<DataContainer filestatus="VALIDATED">
-				<FileName>t4OSAmxdN2kp64yokDMVHaTfsA8sIOvrEXHpEno0Aztj8KUJQv2HEBh4pbmomX9MiMom5FAuM0l6C3ExIbGa76swhpzJj2L4zUozv7dyhFaIcq8Sh4LnznjdJ</FileName>
+			<DataContainer filestatus="PROPOSED">
+				<FileName>hKmiqC6oOUW6nksSByEapxaiELJouYLP7eglVJf9NEnZJThubBp9j8rKKRX2STx7bE195T5dVIWP1xufahpEPPa9VrTA18Oly6rjhLquh4zXEM9SGohg</FileName>
 			</DataContainer>
 		</PsfModelStorage>
 		<BackgroundStorage format="vis.backgroundMap" version="0.1">
-			<DataContainer filestatus="PROPOSED">
-				<FileName>GpdJvAibqb0TrmyDBPeqthD1cW9agPiwnvCWcjWuExd3KDqtbTrM3KhSVCc0kyPLSg9Tc5FXvwfMeg132N</FileName>
+			<DataContainer filestatus="COMMITTED">
+				<FileName>ssGEk62Z9rEIQTKGhZ0iYEHSRvClHHI1vXz4t5aDxyllM3qNOSN</FileName>
 			</DataContainer>
 		</BackgroundStorage>
 		<WeightStorage format="vis.weightMap" version="0.1">
 			<DataContainer filestatus="COMMITTED">
-				<FileName>kW</FileName>
+				<FileName>D0TiomBfbE</FileName>
 			</DataContainer>
 		</WeightStorage>
 		<QualityParams>
-			<Mean flagged="true">0.0</Mean>
+			<Mean flagged="false">1.0</Mean>
 			<Median flagged="false">1.0</Median>
-			<Mode flagged="false">0.0</Mode>
-			<StDev flagged="true">0.0</StDev>
-			<Min flagged="false">0.0</Min>
-			<Max flagged="false">1.0</Max>
+			<Mode flagged="true">0.0</Mode>
+			<StDev flagged="false">0.0</StDev>
+			<Min flagged="true">0.0</Min>
+			<Max flagged="true">0.0</Max>
 			<PixelCount flagged="true">0</PixelCount>
-			<Level flagged="false">0.0</Level>
-			<MaskedPixelFraction flagged="false">1.0</MaskedPixelFraction>
+			<Level flagged="true">1.0</Level>
+			<MaskedPixelFraction flagged="true">1.0</MaskedPixelFraction>
 			<HotPixelCount flagged="true">0</HotPixelCount>
-			<DeadPixelCount flagged="false">1</DeadPixelCount>
-			<GhostPixelCount flagged="true">1</GhostPixelCount>
+			<DeadPixelCount flagged="true">1</DeadPixelCount>
+			<GhostPixelCount flagged="false">1</GhostPixelCount>
 			<CosmicRayPixelCount flagged="true">1</CosmicRayPixelCount>
-			<StDevDiff flagged="false">0.0</StDevDiff>
-			<SubWinFlatness flagged="true">0.0</SubWinFlatness>
-			<FourierFreq flagged="true">311.0</FourierFreq>
-			<FourierFreqPower flagged="false">0.0</FourierFreqPower>
+			<StDevDiff flagged="false">1.0</StDevDiff>
+			<SubWinFlatness flagged="false">0.0</SubWinFlatness>
+			<FourierFreq flagged="false">1.0</FourierFreq>
+			<FourierFreqPower flagged="true">1.0</FourierFreqPower>
 			<SigmaClipMode flagged="false">1</SigmaClipMode>
-			<PercentileLevel flagged="true">0.0</PercentileLevel>
-			<ChiFit flagged="false">0.0</ChiFit>
-			<Temperature flagged="true">1.0</Temperature>
-			<SignalToNoiseRatio flagged="false">1.0</SignalToNoiseRatio>
+			<PercentileLevel flagged="false">1.0</PercentileLevel>
+			<ChiFit flagged="false">1.0</ChiFit>
+			<Temperature flagged="false">1.0</Temperature>
+			<SignalToNoiseRatio flagged="true">1.0</SignalToNoiseRatio>
 		</QualityParams>
 	</Data>
 	<QualityFlags>
-		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true</DummyFlag>
-		<AuxiliaryFlags flagName="rBb" flagged="true" maxLimit="-9.0" minLimit="5.0" xpath="WaM">true</AuxiliaryFlags>
+		<DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true</DummyFlag>
+		<AuxiliaryFlags flagName="ZiS" flagged="false" maxLimit="9.0" minLimit="-8.0" xpath="HTl">true</AuxiliaryFlags>
 	</QualityFlags>
 	<Parameters>
 		<Param>
-			<Key>Bdl</Key>
-            <Value>dhs</Value>
-			<Description>abI</Description>
-			<StringValue>Gja</StringValue>
-			<Unit>epj</Unit>
+			<Key>GrY</Key>
+			<Description>RmX</Description>
+			<StringValue>Mqo</StringValue>
+			<Unit>QCJ</Unit>
 		</Param>
 	</Parameters>
 </ns1:DpdVisStackedFrame>

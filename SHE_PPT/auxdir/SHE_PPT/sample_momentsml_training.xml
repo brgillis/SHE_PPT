@@ -1,46 +1,45 @@
 <?xml version="1.0" ?>
 <ns1:DpdShearMomentsMLTraining xmlns:ns1="http://euclid.esa.org/schema/dpd/she/shearmomentsmltraining">
 	<Header>
-		<ProductId>B6V</ProductId>
-		<ProductType>moB</ProductType>
-		<SoftwareName>aSC</SoftwareName>
-		<SoftwareRelease>IqGte</SoftwareRelease>
-		<ManualValidationStatus>INVALID</ManualValidationStatus>
-		<ExpirationDate>2018-08-10T14:08:15.947Z</ExpirationDate>
-		<PipelineRun>vvZ</PipelineRun>
-		<ExitStatusCode>IFL</ExitStatusCode>
-		<DataModelVersion>zbu</DataModelVersion>
-		<MinDataModelVersion>yRd</MinDataModelVersion>
-		<ScientificCustodian>VIS</ScientificCustodian>
+		<ProductId>tCa</ProductId>
+		<ProductType>false</ProductType>
+		<SoftwareName>i7k</SoftwareName>
+		<SoftwareRelease>1FD2</SoftwareRelease>
+		<ManualValidationStatus>VALID</ManualValidationStatus>
+		<ExpirationDate>2018-11-16T16:00:13.184Z</ExpirationDate>
+		<PipelineRun>vF0</PipelineRun>
+		<ExitStatusCode>SOX</ExitStatusCode>
+		<DataModelVersion>iWjy</DataModelVersion>
+		<MinDataModelVersion>auHni</MinDataModelVersion>
+		<ScientificCustodian>LE3MWS</ScientificCustodian>
 		<AccessRights>
 			<EuclidConsortiumRead>false</EuclidConsortiumRead>
 			<EuclidConsortiumWrite>false</EuclidConsortiumWrite>
 			<ScientificGroupRead>false</ScientificGroupRead>
-			<ScientificGroupWrite>true</ScientificGroupWrite>
+			<ScientificGroupWrite>false</ScientificGroupWrite>
 		</AccessRights>
 		<Curator>
-			<Name>QTk</Name>
-			<Email>someOne@someplace.com</Email>
+			<Name>Lkx</Name>
+			<Email>H7pfmRhWUPmGFrDg84EsEAONdD1zByZvKNf@s4V6RhPgR8plhA3ImNHeaRAoQznQIqjeS.e321&lt;o&amp;4[npr;sG:hjL^8(QH4w\=1&gt;*e\{&lt;Qc</Email>
 		</Curator>
 		<ToBePublished>false</ToBePublished>
 		<Published>false</Published>
-		<Creator>C3l</Creator>
-		<CreationDate>2018-08-10T14:08:15.953Z</CreationDate>
+		<Creator>v2D</Creator>
+		<CreationDate>2018-11-16T16:00:13.19Z</CreationDate>
 	</Header>
-	<Data filestatus="PROPOSED">
-		<FileName>AJzPtOvJmsFWxoAjM4HeV7pq8c29WaSO2l70SF7tiz3zdZkNMd02nxBolgeXcZDRd28XRkZbFMm1iYTigRU6oMmI</FileName>
+	<Data filestatus="DELETED">
+		<FileName>R7vAsQK7dqh4AmY5HjahbZh0Y0</FileName>
 	</Data>
 	<QualityFlags>
-		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true</DummyFlag>
-		<AuxiliaryFlags flagName="33R" flagged="true" maxLimit="-5.0" minLimit="-2.0" xpath="9p9">true</AuxiliaryFlags>
+		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
+		<AuxiliaryFlags flagName="bpy" flagged="false" maxLimit="9.0" minLimit="-1.0" xpath="IUT">true</AuxiliaryFlags>
 	</QualityFlags>
 	<Parameters>
 		<Param>
-			<Key>SBb</Key>
-			<Value>yJd</Value>
-			<Description>Tkx</Description>
-			<StringValue>yJd</StringValue>
-			<Unit>t6I</Unit>
+			<Key>BJ8</Key>
+			<Description>OvJ</Description>
+			<StringValue>je6</StringValue>
+			<Unit>gHU</Unit>
 		</Param>
 	</Parameters>
 </ns1:DpdShearMomentsMLTraining>
