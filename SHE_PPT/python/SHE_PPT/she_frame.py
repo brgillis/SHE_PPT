@@ -24,10 +24,6 @@ Created on: 02/03/18
 
 import os.path
 
-from astropy.io import fits
-from astropy.io.fits import HDUList, BinTableHDU, ImageHDU, PrimaryHDU
-from astropy.table import Table
-
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
 from SHE_PPT import products
@@ -37,6 +33,9 @@ from SHE_PPT.she_image import SHEImage
 from SHE_PPT.table_formats.psf import tf as pstf
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import find_extension, load_wcs
+from astropy.io import fits
+from astropy.io.fits import HDUList, BinTableHDU, ImageHDU, PrimaryHDU
+from astropy.table import Table
 import numpy as np
 
 
@@ -81,41 +80,47 @@ class SHEFrame(object):
         # Set the PSF catalogue to index by ID
         if self.psf_catalogue is not None:
             self.psf_catalogue.add_index(pstf.ID)
-    
-    def __eq__(self,rhs):
+
+    def __eq__(self, rhs):
         """Equality test for SHEFrame class.
         """
-        
-        def neq(lhs,rhs):
+
+        def neq(lhs, rhs):
             try:
-                return bool(lhs!=rhs)
+                return bool(lhs != rhs)
             except ValueError as _e:
-                return (lhs!=rhs).all()
-        
-        def psf_hdulist_neq(lhs,rhs):
-            
+                return (lhs != rhs).any()
+
+        def psf_hdulist_neq(lhs, rhs):
+
             if lhs is None and rhs is None:
                 return False
             elif (lhs is None) != (rhs is None):
                 return True
-            
-            if len(lhs) != len(rhs): return True
+
+            if len(lhs) != len(rhs):
+                return True
             try:
                 for i in range(len(lhs)):
                     if (lhs[i].data is None) != (rhs[i].data is None):
                         return True
                     if not lhs[i].data is None:
-                        if (lhs[i].data != rhs[i].data).any(): return True
-                    if lhs[i].header != rhs[i].header: return True
+                        if (lhs[i].data != rhs[i].data).any():
+                            return True
+                    if lhs[i].header != rhs[i].header:
+                        return True
             except AttributeError as _e2:
                 # At least one isn't the right type
                 return True
             return False
-        
-        if neq(self.detectors, rhs.detectors): return False
-        if neq(self.psf_catalogue, rhs.psf_catalogue): return False
-        if psf_hdulist_neq(self.psf_data_hdulist, rhs.psf_data_hdulist): return False
-        
+
+        if neq(self.detectors, rhs.detectors):
+            return False
+        if neq(self.psf_catalogue, rhs.psf_catalogue):
+            return False
+        if psf_hdulist_neq(self.psf_data_hdulist, rhs.psf_data_hdulist):
+            return False
+
         return True
 
     def extract_stamp(self, x_world, y_world, width, height=None, x_buffer=0, y_buffer=0, keep_header=False):
@@ -204,7 +209,7 @@ class SHEFrame(object):
         try:
             row = self.psf_catalogue.loc[gal_id]
         except ValueError as e:
-            if not str(e)=="Cannot create TableLoc object with no indices":
+            if not str(e) == "Cannot create TableLoc object with no indices":
                 raise
             self.psf_catalogue.add_index(pstf.ID)
             row = self.psf_catalogue.loc[gal_id]

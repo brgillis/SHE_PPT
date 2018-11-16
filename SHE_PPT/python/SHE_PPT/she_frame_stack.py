@@ -25,10 +25,6 @@ Created on: 05/03/18
 from copy import deepcopy
 import os.path
 
-from astropy import table
-from astropy.io import fits
-from astropy.wcs import WCS
-
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
 from SHE_PPT import products
@@ -39,6 +35,9 @@ from SHE_PPT.she_image_stack import SHEImageStack
 from SHE_PPT.table_formats.detections import tf as detf
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import find_extension, load_wcs
+from astropy import table
+from astropy.io import fits
+from astropy.wcs import WCS
 import numpy as np
 
 
@@ -92,34 +91,40 @@ class SHEFrameStack(object):
             self.detections_catalogue.add_index(detf.ID)
 
         return
-    
-    def __eq__(self,rhs):
+
+    def __eq__(self, rhs):
         """Equality test for SHEFrame class.
         """
-        
-        def neq(lhs,rhs):
+
+        def neq(lhs, rhs):
             try:
-                return bool(lhs!=rhs)
+                return bool(lhs != rhs)
             except ValueError as _e:
-                return (lhs!=rhs).all()
-        
-        def list_neq(lhs,rhs):
-            
+                return (lhs != rhs).any()
+
+        def list_neq(lhs, rhs):
+
             if lhs is None and rhs is None:
                 return False
             elif (lhs is None) != (rhs is None):
                 return True
-            
-            if len(lhs) != len(rhs): return True
+
+            if len(lhs) != len(rhs):
+                return True
             for i in range(len(lhs)):
-                if lhs[i] != rhs[i]: return True
+                if lhs[i] != rhs[i]:
+                    return True
             return False
-        
-        if list_neq(self.exposures, rhs.exposures): return False
-        if neq(self.stacked_image, rhs.stacked_image): return False
-        if neq(self.detections_catalogue, rhs.detections_catalogue): return False
-        if neq(self.stack_pixel_size_ratio, rhs.stack_pixel_size_ratio): return False
-        
+
+        if list_neq(self.exposures, rhs.exposures):
+            return False
+        if neq(self.stacked_image, rhs.stacked_image):
+            return False
+        if neq(self.detections_catalogue, rhs.detections_catalogue):
+            return False
+        if neq(self.stack_pixel_size_ratio, rhs.stack_pixel_size_ratio):
+            return False
+
         return True
 
     def extract_galaxy_stack(self, gal_id, width, *args, **kwargs):

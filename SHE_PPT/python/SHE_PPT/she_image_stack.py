@@ -64,22 +64,26 @@ class SHEImageStack(object):
         self.y_world = y_world
 
         return
-    
-    def __eq__(self,rhs):
+
+    def __eq__(self, rhs):
         """Equality test for SHEImageStack class.
         """
-        
-        def neq(lhs,rhs):
+
+        def neq(lhs, rhs):
             try:
-                return bool(lhs!=rhs)
+                return bool(lhs != rhs)
             except ValueError as _e:
-                return (lhs!=rhs).all()
-        
-        if neq(self.exposures, rhs.exposures): return False
-        if neq(self.stacked_image, rhs.stacked_image): return False
-        if neq(self.x_world, rhs.x_world): return False
-        if neq(self.y_world, rhs.y_world): return False
-        
+                return (lhs != rhs).any()
+
+        if neq(self.exposures, rhs.exposures):
+            return False
+        if neq(self.stacked_image, rhs.stacked_image):
+            return False
+        if neq(self.x_world, rhs.x_world):
+            return False
+        if neq(self.y_world, rhs.y_world):
+            return False
+
         return True
 
     def is_not_empty(self):
