@@ -255,6 +255,8 @@ def get_arguments_string(args, cmd=None, store_true=None, store_false=None):
         elif stripped_val == "":
             # If it's an empty string, output quotes instead of nothing
             arg_string += '"" '
+        else:
+            arg_string += stripped_val + " "
 
     # Clean trailing space
     arg_string = arg_string.strip()
