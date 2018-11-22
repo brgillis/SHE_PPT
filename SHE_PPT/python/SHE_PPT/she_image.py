@@ -22,12 +22,13 @@ Created on: Aug 17, 2017
 
 import os
 
+import astropy.io.fits
+import astropy.wcs
+
 from SHE_PPT.magic_values import segmap_unassigned_value
 from SHE_PPT.mask import (as_bool, is_masked_bad,
                           is_masked_suspect_or_bad, masked_off_image)
 from SHE_PPT.utility import load_wcs
-import astropy.io.fits
-import astropy.wcs
 import numpy as np
 
 from . import logging
@@ -921,7 +922,7 @@ class SHEImage(object):
 
         return x, y
 
-    def get_pix2world_transformation(self, x, y, dx=0.1, dy=0.1, spatial_ra=False, origin=0):
+    def get_pix2world_transformation(self, x, y, dx=0.1, dy=0.1, spatial_ra=False, origin=0, norm=False):
         """Gets the local transformation matrix between pixel and world (ra/dec) coordinates at the specified location.
 
         Parameters
@@ -941,6 +942,8 @@ class SHEImage(object):
             In FITS and Fortran standards, this is 1.
             In Numpy and C standards this is 0.
             (from astropy.wcs)
+        norm : bool
+            If True, will divide the result by the determinant, resulting in the area-free transformation (default False)
 
         Raises
         ------
@@ -979,10 +982,15 @@ class SHEImage(object):
 
         pix2world_transformation = np.matrix([[d_ra_x, d_ra_y],
                                               [d_dec_x, d_dec_y]])
+        
+        if norm:
+            det = np.linalg.det(pix2world_transformation)
+            pix2world_transformation /= np.sqrt(np.sign(det)*det)
 
         return pix2world_transformation
 
-    def get_world2pix_transformation(self, ra, dec, dra=0.01 / 3600, ddec=0.01 / 3600, spatial_ra=False, origin=0):
+    def get_world2pix_transformation(self, ra, dec, dra=0.01 / 3600, ddec=0.01 / 3600, spatial_ra=False, origin=0,
+                                     norm=False):
         """Gets the local transformation matrix between world (ra/dec) and pixel coordinates at the specified location.
 
         Parameters
@@ -999,6 +1007,8 @@ class SHEImage(object):
             If True, will give a matrix for (-ra*cos(dec),dec) co-ordinates instead of (ra,dec) (default False)
         origin : int
             Unused for this method; left in to prevent user surprise
+        norm : bool
+            If True, will divide the result by the determinant, resulting in the area-free transformation (default False)
 
         Raises
         ------
@@ -1037,6 +1047,10 @@ class SHEImage(object):
 
         world2pix_transformation = np.matrix([[d_x_ra, d_x_dec],
                                               [d_y_ra, d_y_dec]])
+        
+        if norm:
+            det = np.linalg.det(world2pix_transformation)
+            world2pix_transformation /= np.sqrt(np.sign(det)*det)
 
         return world2pix_transformation
 
