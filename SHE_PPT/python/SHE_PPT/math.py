@@ -44,7 +44,7 @@ class LinregressStatistics(object):
             lw = ly_err ** -2
 
             # Calculate needed statistics
-            self.w = lw.sum()
+            self.w = np.nansum(lw)
 
             # Catch for bad data
             if self.w <= 0:
