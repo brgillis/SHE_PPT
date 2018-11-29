@@ -263,12 +263,14 @@ class SHEFrame(object):
             else:
                 return os.path.join(a, b)
 
-        def open_or_none(filename):
+        def open_or_none(filename, memmap=None):
             qualified_filename = join_or_none(workdir, filename)
             if qualified_filename is None:
                 return None
             else:
                 try:
+                    if memmap is not None:
+                        kwargs["memmap"] = memmap
                     return fits.open(qualified_filename, **kwargs)
                 except FileNotFoundError as e:
                     logger.warn(e)
@@ -308,6 +310,9 @@ class SHEFrame(object):
         else:
             seg_data_hdulist = None
 
+        # Keep an extra hdulist ready in case we need to apply a workaround for SC3 data
+        tmp_frame_data_hdulist = None
+
         for x_i in np.linspace(1, x_max, x_max, dtype=np.int8):
             for y_i in np.linspace(1, y_max, y_max, dtype=np.int8):
 
@@ -339,7 +344,18 @@ class SHEFrame(object):
                     if mask_i is None:
                         raise ValueError("No corresponding mask extension found in file " + frame_prod.get_data_filename() + "." +
                                          "Expected extname: " + mask_extname)
-                    detector_mask = frame_data_hdulist[mask_i].data.transpose()
+                    try:
+                        detector_mask = frame_data_hdulist[mask_i].data.transpose()
+                    except ValueError as e:
+                        # If using SC3 data, make an exception for an error here
+                        if not apply_sc3_fix or "Cannot load a memory-mapped image" not in str(e):
+                            raise
+                        logger.warn(str(e))
+
+                        if tmp_frame_data_hdulist is None:
+                            tmp_frame_data_hdulist = open_or_none(frame_prod.get_data_filename(), memmap=False)
+
+                        detector_mask = tmp_frame_data_hdulist[mask_i].data.transpose()
 
                 else:
                     detector_data = None
