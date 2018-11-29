@@ -31,8 +31,8 @@ logger = getLogger(__name__)
 
 
 def hash_any(obj, format='hex', max_length=None):
-    """Hashes any immutable object into a hex string of a given length. Unlike hash(),
-    will be consistent in Python 3.0.
+    """Hashes any immutable object into a hex string of a given length. Unlike hash(), will be consistent in Python
+    3.0.
 
     Parameters
     ----------
@@ -95,8 +95,7 @@ def hash_any(obj, format='hex', max_length=None):
 
 
 def find_extension(hdulist, extname):
-    """
-        @brief Find the index of the extension of a fits HDUList with the correct EXTNAME value.
+    """Find the index of the extension of a fits HDUList with the correct EXTNAME value.
     """
     for i, hdu in enumerate(hdulist):
         if not "EXTNAME" in hdu.header:
@@ -107,8 +106,7 @@ def find_extension(hdulist, extname):
 
 
 def get_detector(obj):
-    """
-        Find the detector indices for a fits hdu or table.
+    """Find the detector indices for a fits hdu or table.
     """
 
     if hasattr(obj, "header"):
@@ -128,8 +126,7 @@ def get_detector(obj):
 
 
 def time_to_timestamp(t):
-    """
-        From a datetime object, get a timestamp in the astro format.
+    """From a datetime object, get a timestamp in the astro format.
     """
 
     timestamp = (str(t.year) + str(t.month) + str(t.day) + "T" +
@@ -190,7 +187,7 @@ def get_arguments_string(args, cmd=None, store_true=None, store_false=None):
 
     Return
     ------
-    <str> String of all needed commands
+    String of all needed commands
 
     """
 
@@ -268,7 +265,7 @@ def get_arguments_string(args, cmd=None, store_true=None, store_false=None):
 
 def run_only_once(function):
     """Decorator so that the function it decorates will only execute one time. Useful for logging warnings, when you
-       only want to warn for something the first time.
+    only want to warn for something the first time.
     """
 
     # Define a wrapper function that only runs if it hasn't already
