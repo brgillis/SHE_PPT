@@ -515,7 +515,7 @@ class SHEFrameStack(object):
 
                 # See if it's just a single catalogue, which we can handle
                 detections_product = read_xml_product(
-                    os.path.join(workdir, detections_product_filename))
+                    os.path.join(workdir, detections_listfile_filename))
                 detections_catalogue = table.Table.read(
                     os.path.join(workdir, detections_product.Data.DataStorage.DataContainer.FileName))
 
