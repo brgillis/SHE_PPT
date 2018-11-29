@@ -15,7 +15,6 @@
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
-from numpy.distutils.fcompiler import none
 
 """
 File: python/SHE_PPT/she_frame.py
@@ -260,7 +259,7 @@ class SHEFrame(object):
 
         def join_or_none(a, b):
             if a is None or b is None:
-                return none
+                return None
             else:
                 return os.path.join(a, b)
 
