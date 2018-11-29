@@ -489,31 +489,34 @@ class SHEFrameStack(object):
         if detections_listfile_filename is None:
             detections_catalogue = None
         else:
-            detections_filenames = read_listfile(
-                os.path.join(workdir, detections_listfile_filename))
+            try:
+                detections_filenames = read_listfile(
+                    os.path.join(workdir, detections_listfile_filename))
 
-            # Load each table in turn and combine them
+                # Load each table in turn and combine them
 
-            detections_catalogues = []
+                detections_catalogues = []
 
-            for detections_product_filename in detections_filenames:
+                for detections_product_filename in detections_filenames:
 
+                    detections_product = read_xml_product(
+                        os.path.join(workdir, detections_product_filename))
+
+                    detections_catalogue = table.Table.read(
+                        os.path.join(workdir, detections_product.Data.DataStorage.DataContainer.FileName))
+
+                    detections_catalogues.append(detections_catalogue)
+
+                detections_catalogue = table.vstack(detections_catalogues,
+                                                    metadata_conflicts="silent")  # Conflicts are expected
+            except RuntimeError as e:
+                logger.warn(str(e))
+
+                # See if it's just a single catalogue, which we can handle
                 detections_product = read_xml_product(
                     os.path.join(workdir, detections_product_filename))
-#                 if not isinstance( detections_product, products.detections.DpdSheDetectionsProduct ):
-#                     raise ValueError( "Detections product from " +
-# detections_product_filename + " is invalid type." )
-
                 detections_catalogue = table.Table.read(
                     os.path.join(workdir, detections_product.Data.DataStorage.DataContainer.FileName))
-#                 if not is_in_format( detections_catalogue, detf ):
-#                     raise ValueError( "Detections table from " +
-# detections_product.get_filename() + " is invalid type." )
-
-                detections_catalogues.append(detections_catalogue)
-
-            detections_catalogue = table.vstack(detections_catalogues,
-                                                metadata_conflicts="silent")  # Conflicts are expected
 
         # Clean the detections table if desired
         if clean_detections:
