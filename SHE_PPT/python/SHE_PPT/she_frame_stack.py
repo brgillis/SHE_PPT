@@ -23,6 +23,7 @@ Created on: 05/03/18
 """
 
 from copy import deepcopy
+from json.decoder import JSONDecodeError
 import os.path
 
 from SHE_PPT import logging
@@ -509,7 +510,7 @@ class SHEFrameStack(object):
 
                 detections_catalogue = table.vstack(detections_catalogues,
                                                     metadata_conflicts="silent")  # Conflicts are expected
-            except RuntimeError as e:
+            except JSONDecodeError as e:
                 logger.warn(str(e))
 
                 # See if it's just a single catalogue, which we can handle
