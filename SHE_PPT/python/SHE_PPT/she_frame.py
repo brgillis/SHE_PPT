@@ -32,7 +32,7 @@ from SHE_PPT.file_io import read_xml_product
 from SHE_PPT.she_image import SHEImage
 from SHE_PPT.table_formats.psf import tf as pstf
 from SHE_PPT.table_utility import is_in_format
-from SHE_PPT.utility import find_extension, load_wcs
+from SHE_PPT.utility import find_extension, load_wcs, run_only_once
 from astropy.io import fits
 from astropy.io.fits import HDUList, BinTableHDU, ImageHDU, PrimaryHDU
 from astropy.table import Table
@@ -350,7 +350,7 @@ class SHEFrame(object):
                         # If using SC3 data, make an exception for an error here
                         if not apply_sc3_fix or "Cannot load a memory-mapped image" not in str(e):
                             raise
-                        logger.warn(str(e))
+                        warn_cannot_memmap(e)
 
                         if tmp_frame_data_hdulist is None:
                             tmp_frame_data_hdulist = open_or_none(frame_prod.get_data_filename(), memmap=False)
@@ -444,3 +444,9 @@ class SHEFrame(object):
         return SHEFrame(detectors=detectors,
                         psf_data_hdulist=psf_data_hdulist,
                         psf_catalogue=psf_cat)
+
+
+@run_only_once()
+def warn_cannot_memmap(e):
+    logger.warn(str(e))
+    return
