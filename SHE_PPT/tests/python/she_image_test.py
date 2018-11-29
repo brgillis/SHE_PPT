@@ -401,6 +401,22 @@ class Test_she_image():
                 assert np.allclose(double_transformation, np.matrix([[1., 0.], [0., 1.]]),
                                    rtol=1e-2, atol=1e-3)
 
+                # Check for the normalized transformations as well
+                normed_pix2world_transformation = self.img.get_pix2world_transformation(x, y, spatial_ra=spatial_ra, origin=1,
+                                                                                        norm=True)
+                normed_world2pix_transformation = self.img.get_world2pix_transformation(
+                    ra, dec, spatial_ra=spatial_ra, origin=1, norm=True)
+
+                normed_double_transformation = pix2world_transformation * world2pix_transformation
+
+                assert np.allclose(normed_double_transformation, np.matrix([[1., 0.], [0., 1.]]),
+                                   rtol=1e-2, atol=1e-3)
+                
+                # These should also all have a determinant of 1 or -1
+                
+                assert np.isclose(np.abs(np.linalg.det(normed_pix2world_transformation)),1.)
+                assert np.isclose(np.abs(np.linalg.det(normed_world2pix_transformation)),1.)
+
                 if spatial_ra:
                     continue
                 # Check that these can be applied successfully
