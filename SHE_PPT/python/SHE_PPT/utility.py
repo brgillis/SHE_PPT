@@ -20,7 +20,6 @@
 # Boston, MA 02110-1301 USA
 
 import codecs
-from copy import deepcopy
 import hashlib
 
 from SHE_PPT import detector as dtc
@@ -32,20 +31,23 @@ logger = getLogger(__name__)
 
 
 def hash_any(obj, format='hex', max_length=None):
-    """
-        @brief Hashes any immutable object into a hex string of a given length. Unlike hash(),
-               will be consistent in Python 3.0.
+    """Hashes any immutable object into a hex string of a given length. Unlike hash(),
+    will be consistent in Python 3.0.
 
-        @param obj
+    Parameters
+    ----------
+    obj : Any immutable
+        The object to be hashed
+    format : str
+        'hex' for hexadecimal string, 'base64' for a base 64 string (This implementation of base64 replaces '/' with
+        '.' so it will be filename safe), 'int'/'uint' for (un)signed integer, '(u)int8', '(u)int16', etc. for
+        (un)signed integer of a given maximum size,
+    max_length : int
+        If format is 'hex' or 'base64', this limits the maximum length of the string to return
 
-        @param format <str> 'hex' for hexadecimal string, 'base64' for a base 64 string
-                            (This implementation of base64 replaces / with . so it will be
-                            filename safe), 'int' for an integer, 'int8', 'int16', etc. for
-                            an unsigned integer of a given maximum size.
-
-        @param max_length <int> Maximum length of hex string to return
-
-        @return hash <str>
+    Return
+    ------
+    hash : str (if format is 'hex' or 'base64') or desired integer type
     """
 
     full_hash = hashlib.sha256(repr(obj).encode()).hexdigest()
