@@ -65,8 +65,8 @@ class TestIO:
 
         filename = get_allowed_filename("test", instance_id, extension=".junk", release="06.66", subdir="subdir")
 
-        expect_filename_head = "subdir/EUC-SHE-TEST-INSTANCE-"
-        expect_filename_tail = "Z-06.66.junk"
+        expect_filename_head = "subdir/EUC_SHE_TEST_INSTANCE_"
+        expect_filename_tail = "Z_06.66.junk"
 
         # Check the beginning and end are correct
         assert filename[0:len(expect_filename_head)] == expect_filename_head
