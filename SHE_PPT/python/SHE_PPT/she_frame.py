@@ -310,9 +310,6 @@ class SHEFrame(object):
         else:
             seg_data_hdulist = None
 
-        # Keep an extra hdulist ready in case we need to apply a workaround for SC3 data
-        tmp_frame_data_hdulist = None
-
         for x_i in np.linspace(1, x_max, x_max, dtype=np.int8):
             for y_i in np.linspace(1, y_max, y_max, dtype=np.int8):
 
@@ -352,10 +349,7 @@ class SHEFrame(object):
                             raise
                         warn_cannot_memmap(e)
 
-                        if tmp_frame_data_hdulist is None:
-                            tmp_frame_data_hdulist = open_or_none(frame_prod.get_data_filename(), memmap=False)
-
-                        detector_mask = tmp_frame_data_hdulist[mask_i].data.transpose()
+                        detector_mask = None
 
                 else:
                     detector_data = None
