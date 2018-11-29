@@ -15,6 +15,7 @@
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
+from numpy.distutils.fcompiler import none
 
 """
 File: python/SHE_PPT/she_frame.py
@@ -257,6 +258,23 @@ class SHEFrame(object):
         Any kwargs are passed to the reading of the fits data
         """
 
+        def join_or_none(a, b):
+            if a is None or b is None:
+                return none
+            else:
+                return os.path.join(a, b)
+
+        def open_or_none(filename):
+            qualified_filename = join_or_none(workdir, filename)
+            if qualified_filename is None:
+                return None
+            else:
+                try:
+                    return fits.open(qualified_filename, **kwargs)
+                except FileNotFoundError as e:
+                    logger.warn(e)
+                    return None
+
         detectors = np.ndarray((x_max + 1, y_max + 1), dtype=SHEImage)
 
         # Load in the relevant fits files
@@ -269,24 +287,10 @@ class SHEFrame(object):
                 raise ValueError("Data image product from " +
                                  frame_product_filename + " is invalid type.")
 
-            frame_data_filename = os.path.join(
-                workdir, frame_prod.get_data_filename())
-
-            frame_data_hdulist = fits.open(
-                frame_data_filename, **kwargs)
-
-            # Load in the data from the background and weight frames
-            bkg_data_filename = os.path.join(
-                workdir, frame_prod.get_bkg_filename())
-
-            bkg_data_hdulist = fits.open(
-                bkg_data_filename, **kwargs)
-
-            wgt_data_filename = os.path.join(
-                workdir, frame_prod.get_wgt_filename())
-
-            wgt_data_hdulist = fits.open(
-                wgt_data_filename, **kwargs)
+            # Load in the data from the science, background, and weight frames
+            frame_data_hdulist = open_or_none(frame_prod.get_data_filename())
+            bkg_data_hdulist = open_or_none(frame_prod.get_bkg_filename())
+            wgt_data_hdulist = open_or_none(frame_prod.get_wgt_filename())
         else:
             frame_data_hdulist = None
             bkg_data_hdulist = None
@@ -301,16 +305,7 @@ class SHEFrame(object):
                 raise ValueError("Segmentation map product from " +
                                  seg_product_filename + " is invalid type.")
 
-            seg_data_filename = os.path.join(
-                workdir, seg_prod.get_data_filename())
-
-            qualified_seg_filename = os.path.join(workdir, seg_data_filename)
-
-            try:
-                seg_data_hdulist = fits.open(qualified_seg_filename, **kwargs)
-            except FileNotFoundError as e:
-                logger.warn(str(e))
-                seg_data_hdulist = None
+            seg_data_hdulist = open_or_none(seg_prod.get_data_filename())
         else:
             seg_data_hdulist = None
 
@@ -335,7 +330,7 @@ class SHEFrame(object):
                     noisemap_i = find_extension(
                         frame_data_hdulist, noisemap_extname)
                     if noisemap_i is None:
-                        raise ValueError("No corresponding noisemap extension found in file " + frame_data_filename + "." +
+                        raise ValueError("No corresponding noisemap extension found in file " + frame_prod.get_data_filename() + "." +
                                          "Expected extname: " + noisemap_extname)
                     detector_noisemap = frame_data_hdulist[
                         noisemap_i].data.transpose()
@@ -343,7 +338,7 @@ class SHEFrame(object):
                     mask_extname = id_string + "." + mv.mask_tag
                     mask_i = find_extension(frame_data_hdulist, mask_extname)
                     if mask_i is None:
-                        raise ValueError("No corresponding mask extension found in file " + frame_data_filename + "." +
+                        raise ValueError("No corresponding mask extension found in file " + frame_prod.get_data_filename() + "." +
                                          "Expected extname: " + mask_extname)
                     detector_mask = frame_data_hdulist[mask_i].data.transpose()
 
@@ -358,7 +353,7 @@ class SHEFrame(object):
                     bkg_extname = id_string  # Background has no tag
                     bkg_i = find_extension(bkg_data_hdulist, bkg_extname)
                     if bkg_i is None:
-                        raise ValueError("No corresponding background extension found in file " + frame_data_filename + "." +
+                        raise ValueError("No corresponding background extension found in file " + frame_prod.get_data_filename() + "." +
                                          "Expected extname: " + bkg_extname)
                     detector_background = bkg_data_hdulist[bkg_i].data.transpose()
                 else:
@@ -368,7 +363,7 @@ class SHEFrame(object):
                     wgt_extname = id_string  # Background has no tag
                     wgt_i = find_extension(wgt_data_hdulist, wgt_extname)
                     if wgt_i is None:
-                        raise ValueError("No corresponding weight extension found in file " + frame_data_filename + "." +
+                        raise ValueError("No corresponding weight extension found in file " + frame_prod.get_data_filename() + "." +
                                          "Expected extname: " + wgt_extname)
                     detector_weight = wgt_data_hdulist[wgt_i].data.transpose()
                 else:
@@ -378,7 +373,7 @@ class SHEFrame(object):
                     seg_extname = id_string + "." + mv.segmentation_tag
                     seg_i = find_extension(seg_data_hdulist, seg_extname)
                     if seg_i is None:
-                        raise ValueError("No corresponding segmentation extension found in file " + frame_data_filename + "." +
+                        raise ValueError("No corresponding segmentation extension found in file " + frame_prod.get_data_filename() + "." +
                                          "Expected extname: " + seg_extname)
                     detector_seg_data = seg_data_hdulist[
                         seg_i].data.transpose()
