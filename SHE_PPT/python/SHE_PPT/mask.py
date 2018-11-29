@@ -72,10 +72,15 @@ masked_suspect_or_bad = masked_suspect | masked_bad
 
 
 def as_bool(a):
-    """ Converts a scalar int into a bool or an array of ints into an array of bools.
+    """Converts a scalar int into a bool or an array of ints into an array of bools.
 
-    Args:
-        a: scalar int or array of ints
+    Parameters
+    ----------
+    a : scalar int or array of ints
+
+    Returns
+    -------
+    bool or array of bools
     """
 
     if np.isscalar(a):
@@ -91,9 +96,17 @@ def is_masked_with(a, mask_value):
     """ Tests if a mask matches a particular mask value (or combination). Mostly so that
     users don't have to worry about bit-comparison syntax.
 
-    Args:
-        a: Integer mask array to test
-        mask_value: Integer mask value to test against
+    Parameters
+    ----------
+    a : np.ndarray<int>
+        Integer mask array to test
+    mask_value : int
+        Integer mask value to test against
+
+    Returns
+    -------
+    np.ndarray<int>
+        Array with non-zero values for pixels which match the supplied mask value, zero for other pixels.
     """
 
     return a & mask_value
@@ -102,8 +115,15 @@ def is_masked_with(a, mask_value):
 def is_masked_bad(a):
     """ Tests if a mask matches the mask for all possible bad (but not just suspect) bits.
 
-    Args:
-        a: Integer mask array to test
+    Parameters
+    ----------
+    a : np.ndarray<int>
+        Integer mask array to test
+
+    Returns
+    -------
+    np.ndarray<int>
+        Array with non-zero values for bad pixels, zero values for good or suspect pixels.
     """
 
     return a & masked_bad
@@ -112,8 +132,15 @@ def is_masked_bad(a):
 def is_masked_suspect(a):
     """ Tests if a mask matches the mask for all possible suspect (but not bad) bits.
 
-    Args:
-        a: Integer mask array to test
+    Parameters
+    ----------
+    a : np.ndarray<int>
+        Integer mask array to test
+
+    Returns
+    -------
+    np.ndarray<int>
+        Array with non-zero values for suspect pixels, zero values for good or bad pixels.
     """
 
     return a & masked_suspect
@@ -122,8 +149,15 @@ def is_masked_suspect(a):
 def is_masked_suspect_or_bad(a):
     """ Tests if a mask matches the mask for all possible suspect or bad bits.
 
-    Args:
-        a: Integer mask array to test
+    Parameters
+    ----------
+    a : np.ndarray<int>
+        Integer mask array to test
+
+    Returns
+    -------
+    np.ndarray<int>
+        Array with non-zero values for bad or suspect pixels, zero values for good pixels.
     """
 
     return a & masked_suspect_or_bad
@@ -135,9 +169,17 @@ def is_not_masked_with(a, mask_value):
     """ Tests if a mask does not match a particular mask value (or combination). Mostly so that
     users don't have to worry about bit-comparison syntax.
 
-    Args:
-        a: Integer mask array to test
-        mask_value: Integer mask value to test against
+    Parameters
+    ----------
+    a : np.ndarray<int>
+        Integer mask array to test
+    mask_value : int
+        Integer mask value to test against
+
+    Returns
+    -------
+    np.ndarray<bool>
+        Array with False for pixels which match the supplied mask value, True for other pixels.
     """
 
     return np.logical_not(a & mask_value)
@@ -146,8 +188,15 @@ def is_not_masked_with(a, mask_value):
 def is_not_masked_bad(a):
     """ Tests if a mask does not match the mask for all possible bad (but not just suspect) bits.
 
-    Args:
-        a: Integer mask array to test
+    Parameters
+    ----------
+    a : np.ndarray<int>
+        Integer mask array to test
+
+    Returns
+    -------
+    np.ndarray<bool>
+        Array with False for bad pixels, True for good or suspect pixels.
     """
 
     return np.logical_not(a & masked_bad)
@@ -156,8 +205,15 @@ def is_not_masked_bad(a):
 def is_not_masked_suspect(a):
     """ Tests if a mask does not match the mask for all possible suspect (but not bad) bits.
 
-    Args:
-        a: Integer mask array to test
+    Parameters
+    ----------
+    a : np.ndarray<int>
+        Integer mask array to test
+
+    Returns
+    -------
+    np.ndarray<bool>
+        Array with False for suspect pixels, True for good or bad pixels.
     """
 
     return np.logical_not(a & masked_suspect)
@@ -166,8 +222,15 @@ def is_not_masked_suspect(a):
 def is_not_masked_suspect_or_bad(a):
     """ Tests if a mask does not match the mask for all possible suspect or bad bits.
 
-    Args:
-        a: Integer mask array to test
+    Parameters
+    ----------
+    a : np.ndarray<int>
+        Integer mask array to test
+
+    Returns
+    -------
+    np.ndarray<bool>
+        Array with False for bad or suspect pixels, True for good pixels.
     """
 
     return np.logical_not(a & masked_suspect_or_bad)
