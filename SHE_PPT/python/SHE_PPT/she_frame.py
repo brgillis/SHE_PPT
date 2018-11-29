@@ -440,7 +440,7 @@ class SHEFrame(object):
                         psf_catalogue=psf_cat)
 
 
-@run_only_once()
+@run_only_once
 def warn_cannot_memmap(e):
     logger.warn(str(e))
     return
