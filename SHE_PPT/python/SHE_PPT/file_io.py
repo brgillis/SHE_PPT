@@ -70,7 +70,8 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
     full_instance_id = instance_id.upper()
     if timestamp:
         tnow = datetime.now()
-        creation_date = time_to_timestamp(tnow)
+        # Format doesn't allow a '.' here, so we replace it with 'P'
+        creation_date = time_to_timestamp(tnow).replace('.', 'P')
         full_instance_id += "-" + creation_date
 
     # Check the extension doesn't start with "." and silently fix if it does
