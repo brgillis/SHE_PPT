@@ -96,12 +96,12 @@ class TestIO:
         # Test for too long
         with pytest.raises(ValueError):
             get_allowed_filename("t" * (type_name_maxlen + 1), instance_id,
-                                 extension=".junk", release="06.", subdir="subdir")
+                                 extension=".junk", release="06.66", subdir="subdir")
         with pytest.raises(ValueError):
             get_allowed_filename("test", "i" * (instance_id_maxlen + 1),
-                                 extension=".junk", release=None, subdir="subdir", timestamp=True)
+                                 extension=".junk", release="06.66", subdir="subdir", timestamp=True)
         with pytest.raises(ValueError):
-            get_allowed_filename("test", instance_id, extension=".junk", release="06.", subdir="subdir",
+            get_allowed_filename("test", instance_id, extension=".junk", release="06.66", subdir="subdir",
                                  processing_function="p" * (processing_function_maxlen + 1))
 
     def test_rw_listfile(self):

@@ -39,7 +39,7 @@ from astropy.io import fits
 logger = getLogger(mv.logger_name)
 
 type_name_maxlen = 45
-instance_id_maxlen = 39
+instance_id_maxlen = 36
 processing_function_maxlen = 4
 
 
@@ -53,7 +53,7 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
     type_name : str
         Label for what type of object this is. Maximum 45 characters.
     instance_id : str
-        Label for the instance of this object. Maximum 39 characters.
+        Label for the instance of this object. Maximum 36 characters if timestamp==True, 55 if False
     extension : str
         File extension (eg. ".fits").
     release : str
