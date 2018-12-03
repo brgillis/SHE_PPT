@@ -12,6 +12,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
+from copy import deepcopy
 
 """
 File: she_image.py
@@ -24,6 +25,7 @@ import os
 
 import astropy.io.fits
 import astropy.wcs
+import galsim
 
 from SHE_PPT.magic_values import segmap_unassigned_value
 from SHE_PPT.mask import (as_bool, is_masked_bad,
@@ -90,6 +92,8 @@ class SHEImage(object):
         self.header = header
         self.offset = offset
         self.wcs = wcs
+        
+        self.galsim_wcs = None
 
         logger.debug("Created {}".format(str(self)))
 
@@ -285,6 +289,7 @@ class SHEImage(object):
     @header.deleter
     def header(self):
         del self._header
+        self._galsim_wcs = None
 
     @property
     def offset(self):
@@ -332,6 +337,42 @@ class SHEImage(object):
         if not (isinstance(wcs, astropy.wcs.WCS) or (wcs is None)):
             raise TypeError("wcs must be of type astropy.wcs.WCS")
         self._wcs = wcs
+        
+        # Unload the galsim wcs
+        self._galsim_wcs = None
+
+    @wcs.deleter
+    def wcs(self):
+        del self._wcs
+        self._galsim_wcs = None
+        
+    @property
+    def galsim_wcs(self):
+        """Get a GalSim-style WCS, which has some functions that astropy's lacks"""
+        
+        # If not already loaded, load it
+        if self._galsim_wcs is None:
+            # Load from the header if possible
+            if self.header is not None and len(self.header)>0:
+                self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.header)[0]
+            elif self.wcs is not None:
+                self.galsim_wcs = galsim.wcs.readFromFitsHeader(self.wcs.to_header())[0]
+            else:
+                raise ValueError("SHEImage must have a WCS set up or a WCS in its header in order to get a GalSim WCS.")
+        
+        return self._galsim_wcs
+
+    @galsim_wcs.setter
+    def galsim_wcs(self, galsim_wcs):
+        """Convenience setter of the GalSim WCS.
+        """
+        if not (isinstance(galsim_wcs, galsim.wcs.BaseWCS) or (galsim_wcs is None)):
+            raise TypeError("wcs must be of type galsim.wcs.BaseWCS")
+        self._galsim_wcs = galsim_wcs
+
+    @galsim_wcs.deleter
+    def galsim_wcs(self):
+        del self._galsim_wcs
 
     @property
     # Just a shortcut, also to stress that all arrays (data, mask, noisemap)
@@ -442,12 +483,11 @@ class SHEImage(object):
 
         # Set up a fits header with the wcs
         if self.wcs is not None:
-            full_header = self.wcs.to_header()
-            for label in self.header:
-                # Don't overwrite any coming from the WCS
-                if label not in full_header:
-                    full_header[label] = (
-                        self.header[label], self.header.comments[label])
+            wcs_header = self.wcs.to_header()
+            full_header = deepcopy(self.header)
+            for label in wcs_header:
+                # Overwrite any coming from the WCS
+                full_header[label] = (wcs_header[label], wcs_header.comments[label])
         else:
             full_header = self.header
 
@@ -1147,6 +1187,71 @@ class SHEImage(object):
         world2pix_rotation = vh @ u
 
         return world2pix_rotation
+
+    def get_pix2world_decomposition(self, x, y):
+        """Gets the local WCS decomposition between image (x/y) and world (ra/dec) coordinates at the specified location.
+
+        Parameters
+        ----------
+        x : float
+            x pixel coordinate
+        y : float
+            idem for y
+
+        Raises
+        ------
+        AttributeError
+            This object does not have a wcs set up
+
+        Returns
+        -------
+        (scale, shear, theta, flip)
+        scale : float
+            Scale factor of the decomposition
+        shear : galsim.Shear
+        theta : galsim.Angle
+        flip : bool
+        
+        Note: Since shear and rotation are noncommutative, the rotation operation must be applied before shear.
+        
+        """
+
+        local_wcs = self.galsim_wcs.local(image_pos=galsim.PositionD(x,y))
+
+        # We need to use the inverse of the local wcs to get the pix2world decomposition
+        return local_wcs.inverse().getDecomposition()
+
+    def get_world2pix_decomposition(self, ra, dec):
+        """Gets the local WCS decomposition between world (ra/dec) and pixel coordinates at the specified location.
+
+        Parameters
+        ----------
+        ra : float
+            Right Ascension (RA) world coordinate in degrees
+        dec : float
+            Declination (Dec) world coordinate in degrees
+
+        Raises
+        ------
+        AttributeError
+            This object does not have a wcs set up
+
+        Returns
+        -------
+        (scale, shear, theta, flip)
+        scale : float
+            Scale factor of the decomposition
+        shear : galsim.Shear
+        theta : galsim.Angle
+        flip : bool
+        
+        Note: Since shear and rotation are noncommutative, the rotation operation must be applied before shear.
+        
+        """
+
+        local_wcs = self.galsim_wcs.local(world_pos=galsim.CelestialCoord(ra*galsim.degrees,dec*galsim.degrees))
+
+        return local_wcs.getDecomposition()
 
     def estimate_pix2world_rotation_angle(self, x, y, dx, dy, origin=0):
         """Estimates the local rotation angle between pixel and world (-ra/dec) coordinates at the specified location.
