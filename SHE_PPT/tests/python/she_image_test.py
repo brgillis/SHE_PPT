@@ -26,6 +26,7 @@ import logging
 import os
 
 from astropy.wcs import WCS
+import galsim
 import pytest
 
 from SHE_PPT import file_io
@@ -57,7 +58,7 @@ class Test_she_image():
         cls.w = 50
         cls.h = 20
         array = np.random.randn(cls.w * cls.h).reshape((cls.w, cls.h))
-        cls.img = SHE_PPT.she_image.SHEImage(array, wcs=cls.wcs)
+        cls.img = SHE_PPT.she_image.SHEImage(array, header=header, wcs=cls.wcs)
 
     @classmethod
     def teardown_class(cls):
@@ -496,6 +497,73 @@ class Test_she_image():
             assert np.allclose(world2pix_rotation_matrix_1, world2pix_rotation_matrix_2, rtol=0.02, atol=0.002)
 
             return
+        
+    def test_galsim_wcs(self):
+        """Test that we can generate and use a GalSim-style WCS."""
+        
+        # Make a copy of the image so we can modify it safely
+        img = deepcopy(self.img)
+        
+        # Test getting the WCS from the header
+        img.wcs = None
+
+        # Test with values coming from calculation assuming origin=1
+        for x, y, ra, dec in ((0, 0, 52.53373984070186, -28.760675854311447),
+                              (24, 38, 52.53677316085, -28.75899827058671),
+                              (1012, 4111, 52.876229370322626, -28.686527560717373)):
+
+            xy_pos = img.galsim_wcs.toImage(galsim.CelestialCoord(ra*galsim.degrees,dec*galsim.degrees))
+            assert np.allclose((xy_pos.x, xy_pos.y), (x, y))
+            radec_pos = img.galsim_wcs.toWorld(galsim.PositionD(x,y))
+            # Need to divide out units for numpy to understand the values
+            assert np.allclose((radec_pos.ra/galsim.degrees, radec_pos.dec/galsim.degrees), (ra, dec))
+        
+        # Make another copy of the image so we can start fresh
+        img = deepcopy(self.img)
+        
+        # Test getting the WCS from the astropy WCS
+        img.header = None
+
+        # Test with values coming from calculation assuming origin=1
+        for x, y, ra, dec in ((0, 0, 52.53373984070186, -28.760675854311447),
+                                    (24, 38, 52.53677316085, -28.75899827058671),
+                                    (1012, 4111, 52.876229370322626, -28.686527560717373)):
+
+            xy_pos = img.galsim_wcs.toImage(galsim.CelestialCoord(ra*galsim.degrees,dec*galsim.degrees))
+            assert np.allclose((xy_pos.x, xy_pos.y), (x, y))
+            radec_pos = img.galsim_wcs.toWorld(galsim.PositionD(x,y))
+            # Need to divide out units for numpy to understand the values
+            assert np.allclose((radec_pos.ra/galsim.degrees, radec_pos.dec/galsim.degrees), (ra, dec))
+            
+        return
+            
+    def test_decomposition(self):
+        """Test that we can get the expected local decomposition of a WCS."""
+
+        # Test with values coming from calculation assuming origin=1
+        for x, y, ra, dec in ((0, 0, 52.53373984070186, -28.760675854311447),
+                              (24, 38, 52.53677316085, -28.75899827058671),
+                              (1012, 4111, 52.876229370322626, -28.686527560717373)):
+
+            world2pix_decomposition = self.img.get_world2pix_decomposition(ra,dec)
+            pix2world_decomposition = self.img.get_pix2world_decomposition(x,y)
+            
+            # Check the scales are inverses
+            assert np.isclose(world2pix_decomposition[0],1./pix2world_decomposition[0])
+            
+            # TODO: Check the shears are correct
+            
+            # Check the angles are opposite (need to divide out units for numpy to understand the values)
+            assert np.isclose(world2pix_decomposition[2]/galsim.degrees,-pix2world_decomposition[2]/galsim.degrees)
+            
+            # Check the flip is the same
+            assert world2pix_decomposition[3] == pix2world_decomposition[3]
+            
+            # Check the angle matches what we get in the rotation matrix
+            pix2world_rotation_matrix = self.img.get_pix2world_rotation(x, y, origin=1)
+            assert np.isclose(pix2world_decomposition[2].cos(),pix2world_rotation_matrix[0,0],rtol=1e-4)
+            assert np.isclose(pix2world_decomposition[2].sin(),pix2world_rotation_matrix[1,0],rtol=1e-4)
+        
         
     def test_equality(self):
         

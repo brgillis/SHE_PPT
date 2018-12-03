@@ -7,6 +7,8 @@ TODO: Update CHANGELOG
 
 API Changes
 -----------
+- Added galsim_wcs attribute to SHEImage
+- Added get_world2pix_decomposition and get_pix2world_decomposition methods to SHEImage
 
 Dependency Changes
 ------------------
