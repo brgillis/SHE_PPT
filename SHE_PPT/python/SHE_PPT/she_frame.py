@@ -15,14 +15,18 @@
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
-
 """
 File: python/SHE_PPT/she_frame.py
 
 Created on: 02/03/18
 """
 
+from copy import deepcopy
 import os.path
+
+from astropy.io import fits
+from astropy.io.fits import HDUList, BinTableHDU, ImageHDU, PrimaryHDU
+from astropy.table import Table
 
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
@@ -33,9 +37,6 @@ from SHE_PPT.she_image import SHEImage
 from SHE_PPT.table_formats.psf import tf as pstf
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import find_extension, load_wcs, run_only_once
-from astropy.io import fits
-from astropy.io.fits import HDUList, BinTableHDU, ImageHDU, PrimaryHDU
-from astropy.table import Table
 import numpy as np
 
 
@@ -269,9 +270,10 @@ class SHEFrame(object):
                 return None
             else:
                 try:
+                    tmp_kwargs = deepcopy(kwargs)
                     if memmap is not None:
-                        kwargs["memmap"] = memmap
-                    return fits.open(qualified_filename, **kwargs)
+                        tmp_kwargs["memmap"] = memmap
+                    return fits.open(qualified_filename, **tmp_kwargs)
                 except FileNotFoundError as e:
                     logger.warn(e)
                     return None
