@@ -194,7 +194,7 @@ class SHEImage(object):
     @segmentation_map.setter
     def segmentation_map(self, segmentation_map_array):
         if segmentation_map_array is None:
-            # Then we create an empty segmentation map (-1 means unassigned)
+            # Then we create an empty segmentation map)
             self._segmentation_map = segmap_unassigned_value * \
                 np.ones(self._data.shape, dtype=np.int32)
         else:
@@ -252,8 +252,7 @@ class SHEImage(object):
     @weight_map.setter
     def weight_map(self, weight_map_array):
         if weight_map_array is None:
-            # Then we create a flat, one weight map
-            self._weight_map = np.ones(self._data.shape, dtype=float)
+            self._weight_map = None
         else:
             if weight_map_array.ndim is not 2:
                 raise ValueError(
@@ -504,11 +503,15 @@ class SHEImage(object):
                 data=self.segmentation_map.transpose().astype(np.int32), name="SEGMAP")
             bkgmaphdu = astropy.io.fits.ImageHDU(
                 data=self.background_map.transpose(), name="BKGMAP")
-            wgtmaphdu = astropy.io.fits.ImageHDU(
-                data=self.weight_map.transpose(), name="WGTMAP")
-
-            hdulist = astropy.io.fits.HDUList(
-                [datahdu, maskhdu, noisemaphdu, segmaphdu, bkgmaphdu, wgtmaphdu])
+            if self.weight_map is not None:
+                wgtmaphdu = astropy.io.fits.ImageHDU(
+                    data=self.weight_map.transpose(), name="WGTMAP")
+                hdulist = astropy.io.fits.HDUList(
+                    [datahdu, maskhdu, noisemaphdu, segmaphdu, bkgmaphdu, wgtmaphdu])
+            else:
+                hdulist = astropy.io.fits.HDUList(
+                    [datahdu, maskhdu, noisemaphdu, segmaphdu, bkgmaphdu])
+                
 
         else:
             hdulist = astropy.io.fits.HDUList([datahdu])
@@ -793,6 +796,11 @@ class SHEImage(object):
             # We are fully within ghe image
             logger.debug("Extracting stamp [{}:{},{}:{}] fully within image of shape {}".format(
                 xmin, xmax, ymin, ymax, self.shape))
+            
+            if self.weight_map is None:
+                new_weight_map = None
+            else:
+                new_weight_map = self.weight_map[xmin:xmax, ymin:ymax]
 
             newimg = SHEImage(
                 data=self.data[xmin:xmax, ymin:ymax],
@@ -800,7 +808,7 @@ class SHEImage(object):
                 noisemap=self.noisemap[xmin:xmax, ymin:ymax],
                 segmentation_map=self.segmentation_map[xmin:xmax, ymin:ymax],
                 background_map=self.background_map[xmin:xmax, ymin:ymax],
-                weight_map=self.weight_map[xmin:xmax, ymin:ymax],
+                weight_map=new_weight_map,
                 header=newheader,
                 offset=newoffset,
                 wcs=self.wcs,
@@ -824,8 +832,11 @@ class SHEImage(object):
                 (width, height), dtype=self.segmentation_map.dtype) * segmap_unassigned_value
             background_map_stamp = np.zeros(
                 (width, height), dtype=self.background_map.dtype)
-            weight_map_stamp = np.zeros(
-                (width, height), dtype=self.weight_map.dtype)
+            if self.weight_map is None:
+                weight_map_stamp = None
+            else:
+                weight_map_stamp = np.zeros(
+                    (width, height), dtype=self.weight_map.dtype)
 
             # Compute the bounds of the overlapping part of the stamp in the
             # original image
@@ -860,8 +871,9 @@ class SHEImage(object):
                     overlap_slice_stamp] = self.segmentation_map[overlap_slice]
                 background_map_stamp[
                     overlap_slice_stamp] = self.background_map[overlap_slice]
-                weight_map_stamp[
-                    overlap_slice_stamp] = self.weight_map[overlap_slice]
+                if self.weight_map is not None:
+                    weight_map_stamp[
+                        overlap_slice_stamp] = self.weight_map[overlap_slice]
 
             # Create the new object
             newimg = SHEImage(
