@@ -535,6 +535,33 @@ class Test_she_image():
             # Need to divide out units for numpy to understand the values
             assert np.allclose((radec_pos.ra/galsim.degrees, radec_pos.dec/galsim.degrees), (ra, dec))
             
+        # Test with an OffsetWCS as well
+        
+        # Make another copy of the image so we can start fresh
+        img = deepcopy(self.img)
+        
+        test_scale = 0.1
+        test_x_offset = 100
+        test_y_offset = 200
+        test_x_im = 15
+        test_y_im = 45
+        
+        test_x_world = test_x_offset + test_scale*test_x_im
+        test_y_world = test_y_offset + test_scale*test_y_im
+        
+        img.galsim_wcs = galsim.wcs.OffsetWCS(scale=test_scale,
+                                              origin=galsim.PositionD(0.,0.),
+                                              world_origin=galsim.PositionD(test_x_offset,test_y_offset))
+        
+        im_pos = galsim.PositionD(test_x_im,test_y_im)
+        world_pos = galsim.PositionD(test_x_world,test_y_world)
+        
+        test_world_pos = img.galsim_wcs.toWorld(im_pos)
+        test_im_pos = img.galsim_wcs.toImage(world_pos)
+        
+        assert np.allclose((im_pos.x,im_pos.y),(test_im_pos.x,test_im_pos.y))
+        assert np.allclose((world_pos.x,world_pos.y),(test_world_pos.x,test_world_pos.y))
+            
         return
             
     def test_decomposition(self):
@@ -551,7 +578,7 @@ class Test_she_image():
             # Check the scales are inverses
             assert np.isclose(world2pix_decomposition[0],1./pix2world_decomposition[0])
             
-            # TODO: Check the shears are correct
+            # Shear is checked for the non-celestial WCS
             
             # Check the angles are opposite (need to divide out units for numpy to understand the values)
             assert np.isclose(world2pix_decomposition[2]/galsim.degrees,-pix2world_decomposition[2]/galsim.degrees)
@@ -562,7 +589,29 @@ class Test_she_image():
             # Check the angle matches what we get in the rotation matrix
             pix2world_rotation_matrix = self.img.get_pix2world_rotation(x, y, origin=1)
             assert np.isclose(pix2world_decomposition[2].cos(),pix2world_rotation_matrix[0,0],rtol=1e-4)
-            assert np.isclose(pix2world_decomposition[2].sin(),pix2world_rotation_matrix[1,0],rtol=1e-4)
+            assert np.isclose(pix2world_decomposition[2].sin(),pix2world_rotation_matrix[0,1],rtol=1e-4)
+            
+        # Test with a simple Shear WCS
+        
+        # Make a copy of the image so we can modify it safely
+        img = deepcopy(self.img)
+        
+        w2p_g1 = 0.1
+        w2p_g2 = 0.2
+        p2w_scale = 0.01
+        
+        w2p_shear = galsim.Shear(g1=w2p_g1,g2=w2p_g2)
+        
+        img.galsim_wcs = galsim.wcs.ShearWCS(scale=p2w_scale,shear=w2p_shear)
+        
+        test_w2p_scale, test_w2p_shear, test_w2p_theta, test_w2p_flip = img.get_world2pix_decomposition(0,0)
+        test_p2w_scale, test_p2w_shear, test_p2w_theta, test_p2w_flip = img.get_pix2world_decomposition(0,0)
+        
+        assert np.isclose(test_w2p_scale,1./p2w_scale)
+        assert np.allclose((w2p_shear.g1,w2p_shear.g2),(test_w2p_shear.g1,test_w2p_shear.g2))
+        
+        assert np.isclose(test_p2w_scale,p2w_scale)
+        assert np.allclose((-w2p_shear.g1,-w2p_shear.g2),(test_p2w_shear.g1,test_p2w_shear.g2))
         
         
     def test_equality(self):
