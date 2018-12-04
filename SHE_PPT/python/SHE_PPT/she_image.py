@@ -1212,14 +1212,18 @@ class SHEImage(object):
         theta : galsim.Angle
         flip : bool
         
-        Note: Since shear and rotation are noncommutative, the rotation operation must be applied before shear.
+        Note 1: Since shear and rotation are noncommutative, the rotation operation must be applied before shear.
+        
+        Note 2: If testing against a galsim.wcs.ShearWCS class, note that the shear defined as input to that class
+          is the world-to-pixel shear, while the scale is the pixel-to-world scale, which can lead to some confusion
+          if decomposed.
         
         """
 
-        local_wcs = self.galsim_wcs.local(image_pos=galsim.PositionD(x,y))
+        local_wcs = self.galsim_wcs.jacobian(image_pos=galsim.PositionD(x,y))
 
         # We need to use the inverse of the local wcs to get the pix2world decomposition
-        return local_wcs.inverse().getDecomposition()
+        return local_wcs.getDecomposition()
 
     def get_world2pix_decomposition(self, ra, dec):
         """Gets the local WCS decomposition between world (ra/dec) and pixel coordinates at the specified location.
@@ -1245,13 +1249,22 @@ class SHEImage(object):
         theta : galsim.Angle
         flip : bool
         
-        Note: Since shear and rotation are noncommutative, the rotation operation must be applied before shear.
+        Note 1: Since shear and rotation are noncommutative, the rotation operation must be applied before shear.
+        
+        Note 2: If testing against a galsim.wcs.ShearWCS class, note that the shear defined as input to that class
+          is the world-to-pixel shear, while the scale is the pixel-to-world scale, which can lead to some confusion
+          if decomposed.
         
         """
+        
+        if isinstance(self.galsim_wcs,galsim.wcs.CelestialWCS):
+            world_pos = galsim.CelestialCoord(ra*galsim.degrees,dec*galsim.degrees)
+        else:
+            world_pos = galsim.PositionD(ra,dec)
 
-        local_wcs = self.galsim_wcs.local(world_pos=galsim.CelestialCoord(ra*galsim.degrees,dec*galsim.degrees))
+        local_wcs = self.galsim_wcs.jacobian(world_pos=world_pos)
 
-        return local_wcs.getDecomposition()
+        return local_wcs.inverse().getDecomposition()
 
     def estimate_pix2world_rotation_angle(self, x, y, dx, dy, origin=0):
         """Estimates the local rotation angle between pixel and world (-ra/dec) coordinates at the specified location.
