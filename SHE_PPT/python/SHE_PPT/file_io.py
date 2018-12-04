@@ -28,12 +28,13 @@ import pickle
 import re
 from xml.sax._exceptions import SAXParseException
 
+from astropy.io import fits
+
 from EuclidDmBindings.sys_stub import CreateFromDocument
 from FilenameProvider.FilenameProvider import createFilename
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.utility import time_to_timestamp
-from astropy.io import fits
 
 
 logger = getLogger(mv.logger_name)
@@ -43,7 +44,7 @@ instance_id_maxlen = 37
 processing_function_maxlen = 4
 
 
-def get_allowed_filename(type_name, instance_id, extension=".fits", release=None, subdir="data",
+def get_allowed_filename(type_name, instance_id, extension=".fits", release="00.05", subdir="data",
                          processing_function="SHE", timestamp=True):
     """Gets a filename in the required Euclid format. Now mostly a pass-through to the official version, with
     tweaks to silently shift arguments to upper-case.
