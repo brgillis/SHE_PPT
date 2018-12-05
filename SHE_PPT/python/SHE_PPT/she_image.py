@@ -12,31 +12,29 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
-from copy import deepcopy
-
 """
 File: she_image.py
 
 Created on: Aug 17, 2017
 """
+# Avoid non-trivial "from" imports (as explicit is better than implicit)
 
-
+from copy import deepcopy
 import os
 
-import astropy.io.fits
-import astropy.wcs
 import galsim
 
 from SHE_PPT.magic_values import segmap_unassigned_value
 from SHE_PPT.mask import (as_bool, is_masked_bad,
                           is_masked_suspect_or_bad, masked_off_image)
 from SHE_PPT.utility import load_wcs
+import astropy.io.fits
+import astropy.wcs
 import numpy as np
 
 from . import logging
 
 
-# Avoid non-trivial "from" imports (as explicit is better than implicit)
 allowed_int_dtypes = (
     np.int8, np.int16, np.int32, np.uint8, np.uint16, np.uint32)
 
@@ -92,7 +90,7 @@ class SHEImage(object):
         self.header = header
         self.offset = offset
         self.wcs = wcs
-        
+
         self.galsim_wcs = None
 
         logger.debug("Created {}".format(str(self)))
@@ -336,7 +334,7 @@ class SHEImage(object):
         if not (isinstance(wcs, astropy.wcs.WCS) or (wcs is None)):
             raise TypeError("wcs must be of type astropy.wcs.WCS")
         self._wcs = wcs
-        
+
         # Unload the galsim wcs
         self._galsim_wcs = None
 
@@ -344,21 +342,21 @@ class SHEImage(object):
     def wcs(self):
         del self._wcs
         self._galsim_wcs = None
-        
+
     @property
     def galsim_wcs(self):
         """Get a GalSim-style WCS, which has some functions that astropy's lacks"""
-        
+
         # If not already loaded, load it
         if self._galsim_wcs is None:
             # Load from the header if possible
-            if self.header is not None and len(self.header)>0:
+            if self.header is not None and len(self.header) > 0:
                 self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.header)[0]
             elif self.wcs is not None:
                 self.galsim_wcs = galsim.wcs.readFromFitsHeader(self.wcs.to_header())[0]
             else:
                 raise ValueError("SHEImage must have a WCS set up or a WCS in its header in order to get a GalSim WCS.")
-        
+
         return self._galsim_wcs
 
     @galsim_wcs.setter
@@ -511,7 +509,6 @@ class SHEImage(object):
             else:
                 hdulist = astropy.io.fits.HDUList(
                     [datahdu, maskhdu, noisemaphdu, segmaphdu, bkgmaphdu])
-                
 
         else:
             hdulist = astropy.io.fits.HDUList([datahdu])
@@ -642,8 +639,11 @@ class SHEImage(object):
                 workdir, weight_map_filepath)
         else:
             qualified_weight_map_filepath = None
-        weight_map = cls._get_secondary_data_from_fits(qualified_filepath, qualified_weight_map_filepath,
-                                                       weight_map_ext)
+        try:
+            weight_map = cls._get_secondary_data_from_fits(qualified_filepath, qualified_weight_map_filepath,
+                                                           weight_map_ext)
+        except KeyError:
+            weight_map = None
 
         # Building and returning the new object
         newimg = SHEImage(data=data, mask=mask, noisemap=noisemap, segmentation_map=segmentation_map,
@@ -796,7 +796,7 @@ class SHEImage(object):
             # We are fully within ghe image
             logger.debug("Extracting stamp [{}:{},{}:{}] fully within image of shape {}".format(
                 xmin, xmax, ymin, ymax, self.shape))
-            
+
             if self.weight_map is None:
                 new_weight_map = None
             else:
@@ -1034,10 +1034,10 @@ class SHEImage(object):
 
         pix2world_transformation = np.matrix([[d_ra_x, d_ra_y],
                                               [d_dec_x, d_dec_y]])
-        
+
         if norm:
             det = np.linalg.det(pix2world_transformation)
-            pix2world_transformation /= np.sqrt(np.sign(det)*det)
+            pix2world_transformation /= np.sqrt(np.sign(det) * det)
 
         return pix2world_transformation
 
@@ -1099,10 +1099,10 @@ class SHEImage(object):
 
         world2pix_transformation = np.matrix([[d_x_ra, d_x_dec],
                                               [d_y_ra, d_y_dec]])
-        
+
         if norm:
             det = np.linalg.det(world2pix_transformation)
-            world2pix_transformation /= np.sqrt(np.sign(det)*det)
+            world2pix_transformation /= np.sqrt(np.sign(det) * det)
 
         return world2pix_transformation
 
@@ -1223,16 +1223,16 @@ class SHEImage(object):
         shear : galsim.Shear
         theta : galsim.Angle
         flip : bool
-        
+
         Note 1: Since shear and rotation are noncommutative, the rotation operation must be applied before shear.
-        
+
         Note 2: If testing against a galsim.wcs.ShearWCS class, note that the shear defined as input to that class
           is the world-to-pixel shear, while the scale is the pixel-to-world scale, which can lead to some confusion
           if decomposed.
-        
+
         """
 
-        local_wcs = self.galsim_wcs.jacobian(image_pos=galsim.PositionD(x,y))
+        local_wcs = self.galsim_wcs.jacobian(image_pos=galsim.PositionD(x, y))
 
         # We need to use the inverse of the local wcs to get the pix2world decomposition
         return local_wcs.getDecomposition()
@@ -1260,19 +1260,19 @@ class SHEImage(object):
         shear : galsim.Shear
         theta : galsim.Angle
         flip : bool
-        
+
         Note 1: Since shear and rotation are noncommutative, the rotation operation must be applied before shear.
-        
+
         Note 2: If testing against a galsim.wcs.ShearWCS class, note that the shear defined as input to that class
           is the world-to-pixel shear, while the scale is the pixel-to-world scale, which can lead to some confusion
           if decomposed.
-        
+
         """
-        
-        if isinstance(self.galsim_wcs,galsim.wcs.CelestialWCS):
-            world_pos = galsim.CelestialCoord(ra*galsim.degrees,dec*galsim.degrees)
+
+        if isinstance(self.galsim_wcs, galsim.wcs.CelestialWCS):
+            world_pos = galsim.CelestialCoord(ra * galsim.degrees, dec * galsim.degrees)
         else:
-            world_pos = galsim.PositionD(ra,dec)
+            world_pos = galsim.PositionD(ra, dec)
 
         local_wcs = self.galsim_wcs.jacobian(world_pos=world_pos)
 
