@@ -98,7 +98,7 @@ class TestIO:
             get_allowed_filename("t" * (type_name_maxlen + 1), instance_id,
                                  extension=".junk", release="06.66", subdir="subdir")
         with pytest.raises(ValueError):
-            get_allowed_filename("test", "i" * (instance_id_maxlen + 1),
+            get_allowed_filename("test", "i" * (instance_id_maxlen + 3),
                                  extension=".junk", release="06.66", subdir="subdir", timestamp=True)
         with pytest.raises(ValueError):
             get_allowed_filename("test", instance_id, extension=".junk", release="06.66", subdir="subdir",
