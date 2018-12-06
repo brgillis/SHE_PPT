@@ -371,7 +371,7 @@ class Test_she_image():
 
         # And the header:
         eimg = img.extract_stamp(5, 5, 5)
-        assert len(list(eimg.header.keys())) == 2  # The two offsets
+        assert eimg.header is None
         eimg = img.extract_stamp(5, 5, 5, keep_header=True)
         assert len(list(eimg.header.keys())) == 3  # The offsets, and the "foo"
 
