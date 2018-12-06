@@ -279,27 +279,7 @@ class SHEImage(object):
             if isinstance(header_object, astropy.io.fits.Header):
                 # to avoid misuse, which could lead to problems when writing
                 # FITS files.
-
-                if "SHEIOFX" in header_object and "SHEIOFY" in header_object:
-                    # If offset is stored in the header, update the offset property
-                    self._header = deepcopy(header_object)
-                    self.offset = (self.header["SHEIOFX"], self.header["SHEIOFY"])
-
-                elif ("SHEIOFX" in header_object) != ("SHEIOFY" in header_object):
-                    # If only one is stored in the header, raise an exception
-                    raise ValueError("Header passed to SHEImage.header setter has only one of SHEIOFX and " +
-                                     "SHEIOFY keywords. Must have both or neither.")
-
-                else:
-                    # If no offset in the header, add it to that
-                    self._header = deepcopy(header_object)
-                    try:
-                        self._header["SHEIOFX"] = (self.offset[0], "SHEImage x offset in pixels")
-                        self._header["SHEIOFY"] = (self.offset[1], "SHEImage y offset in pixels")
-                    except AttributeError:
-                        # This will occur if the offset isn't set up yet, so use default values
-                        self._header["SHEIOFX"] = (0., "SHEImage x offset in pixels")
-                        self._header["SHEIOFY"] = (0., "SHEImage y offset in pixels")
+                self._header = header_object
             else:
                 raise ValueError("The header must be an astropy.io.fits.Header instance")
 
@@ -330,11 +310,6 @@ class SHEImage(object):
                 raise ValueError("A SHEImage.offset must have 2 items")
             else:
                 self._offset = np.array(offset_tuple, dtype=float)
-
-        # Set the offset in the header if the header exists
-        if self.header is not None:
-            self.header["SHEIOFX"] = (self._offset[0], "SHEImage x offset in pixels")
-            self.header["SHEIOFY"] = (self._offset[1], "SHEImage y offset in pixels")
 
     @property
     # Just a shortcut, defined as a property in case we need to change
@@ -515,7 +490,11 @@ class SHEImage(object):
         elif self.header is None:
             full_header = astropy.io.fits.Header()  # An empty header
         else:
-            full_header = self.header
+            full_header = deepcopy(self.header)
+
+        # Add offset data to the header
+        full_header["SHEIOFX"] = self.offset[0]
+        full_header["SHEIOFY"] = self.offset[1]
 
         # Note that we transpose the numpy arrays, so to have the same pixel
         # convention as DS9 and SExtractor.
@@ -688,10 +667,18 @@ class SHEImage(object):
             weight_map = cls._get_secondary_data_from_fits(qualified_filepath, qualified_weight_map_filepath,
                                                            weight_map_ext)
 
+        # Getting the offset from the header
+        if not "SHEIOFX" in header and "SHEIOFY" in header:
+            offset = np.array([0., 0.])
+        else:
+            offset = np.array([header["SHEIOFX"], header["SHEIOFY"]])
+            header.remove("SHEIOFX")
+            header.remove("SHEIOFY")
+
         # Building and returning the new object
         newimg = SHEImage(data=data, mask=mask, noisemap=noisemap, segmentation_map=segmentation_map,
                           background_map=background_map, weight_map=weight_map,
-                          header=header, wcs=wcs)
+                          header=header, offset=offset, wcs=wcs)
 
         logger.info("Read {} from the file '{}'".format(str(newimg), filepath))
         return newimg
