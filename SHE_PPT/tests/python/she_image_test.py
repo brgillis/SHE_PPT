@@ -373,7 +373,7 @@ class Test_she_image():
         eimg = img.extract_stamp(5, 5, 5)
         assert eimg.header is None
         eimg = img.extract_stamp(5, 5, 5, keep_header=True)
-        assert len(list(eimg.header.keys())) == 3  # The "foo"
+        assert len(list(eimg.header.keys())) == 1  # The "foo"
 
         # Test setting or not setting default properties for an extracted stamp
         simple_img = SHE_PPT.she_image.SHEImage(array)
