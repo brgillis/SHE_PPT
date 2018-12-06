@@ -221,23 +221,27 @@ class Test_she_image():
     def test_fits_read_write(self):
         """We save the small SHEImage, read it again, and compare both versions"""
 
+        img = deepcopy(self.img)
+
         # To have a non-trivial image, we tweak it a bit:
-        self.img.noisemap = 1.0 + 0.01 * np.random.randn(self.w * self.h).reshape((self.w, self.h))
-        self.img.mask[0:10, :] = 1
-        self.img.mask[10:20, :] = 255
-        self.img.mask[30:40, :] = -10456.34  # will get converted and should not prevent the test from working
-        self.img.segmentation_map[10:20, 20:30] = 1
+        img.noisemap = 1.0 + 0.01 * np.random.randn(self.w * self.h).reshape((self.w, self.h))
+        img.add_default_mask()
+        img.mask[0:10, :] = 1
+        img.mask[10:20, :] = 255
+        img.mask[30:40, :] = -10456.34  # will get converted and should not prevent the test from working
+        img.add_default_segmentation_map()
+        img.segmentation_map[10:20, 20:30] = 1
 
-        self.img.wcs = self.wcs
+        img.wcs = self.wcs
 
-        self.img.write_to_fits(self.testfilepath, clobber=False)
+        img.write_to_fits(self.testfilepath, clobber=False)
 
         rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepath)
 
-        assert np.allclose(self.img.data, rimg.data)
-        assert np.allclose(self.img.mask, rimg.mask)
-        assert np.allclose(self.img.noisemap, rimg.noisemap)
-        assert np.allclose(self.img.segmentation_map, rimg.segmentation_map)
+        assert np.allclose(img.data, rimg.data)
+        assert np.allclose(img.mask, rimg.mask)
+        assert np.allclose(img.noisemap, rimg.noisemap)
+        assert np.allclose(img.segmentation_map, rimg.segmentation_map)
 
         # Check the wcs behaves the same
         for x, y, ra, dec in ((0, 0, 52.53373984070186, -28.760675854311447),
@@ -247,31 +251,31 @@ class Test_she_image():
             # Note - not testing here that we recover proper ra/dec or x/y, since that's covered in separate test
             # Just testing WCS from writing/reading is the same here
 
-            ra1, dec1 = self.img.pix2world(x, y, origin=1)
+            ra1, dec1 = img.pix2world(x, y, origin=1)
             ra2, dec2 = rimg.pix2world(x, y, origin=1)
 
             assert np.allclose((ra1, dec1), (ra2, dec2))
 
-            x1, y1 = self.img.world2pix(ra, dec, origin=1)
+            x1, y1 = img.world2pix(ra, dec, origin=1)
             x2, y2 = rimg.world2pix(ra, dec, origin=1)
 
             assert np.allclose((x1, y1), (x2, y2))
 
         # Also check the transformation matrices match up
-        assert np.allclose(self.img.get_world2pix_transformation(0, 0),
+        assert np.allclose(img.get_world2pix_transformation(0, 0),
                            rimg.get_world2pix_transformation(0, 0))
-        assert np.allclose(self.img.get_pix2world_transformation(0, 0),
+        assert np.allclose(img.get_pix2world_transformation(0, 0),
                            rimg.get_pix2world_transformation(0, 0))
 
         # We test that the header did not get changed # FIXME disabled for now
         # assert len(list(rimg.header.keys())) == 3
-        # assert str(repr(self.img.header)) == str(repr(rimg.header))
+        # assert str(repr(img.header)) == str(repr(rimg.header))
 
     def test_read_from_separate_fits_files(self):
         """At least a small test of reading from individual FITS files"""
 
         img = SHE_PPT.she_image.SHEImage(np.random.randn(100).reshape(10, 10) + 200.0)
-        img.mask[:, :] = 1
+        img.mask = np.ones_like(img.data, dtype=np.int32)
         img.noisemap = 1.0 + 0.01 * np.random.randn(100).reshape(10, 10)
         img.write_to_fits(self.testfilepaths[0])
 
@@ -281,7 +285,7 @@ class Test_she_image():
         img.noisemap = 1000.0 + 0.01 * np.random.randn(100).reshape(10, 10)
         img.write_to_fits(self.testfilepaths[2])
 
-        img.segmentation_map[:, :] = 4
+        img.segmentation_map = 4 * np.ones_like(img.data, dtype=np.int32)
         img.write_to_fits(self.testfilepaths[3])
 
         rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepaths[0])
@@ -337,6 +341,7 @@ class Test_she_image():
         array = np.random.randn(size ** 2).reshape((size, size))
         array[0:32, 0:32] = 1.0e15  # bottom-left stamp is high and constant
         img = SHE_PPT.she_image.SHEImage(array)
+        img.add_default_mask()
         img.mask[32:64, :] = True
         img.noisemap = 1000.0 + np.random.randn(size ** 2).reshape((size, size))
         img.segmentation_map[0:32, :] = 1
