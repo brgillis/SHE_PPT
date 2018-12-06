@@ -919,7 +919,7 @@ class SHEImage(object):
             data_stamp = np.zeros((width, height), dtype=self.data.dtype)
 
             # Always create a mask stamp if partially off-image
-            mask_stamp = np.ones((width, height), dtype=self.mask.dtype) * masked_off_image
+            mask_stamp = np.ones((width, height), dtype=np.int32) * masked_off_image
 
             if self.noisemap is None:
                 noisemap_stamp = None
