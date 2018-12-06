@@ -340,12 +340,19 @@ class Test_she_image():
         size = 64
         array = np.random.randn(size ** 2).reshape((size, size))
         array[0:32, 0:32] = 1.0e15  # bottom-left stamp is high and constant
+
         img = SHE_PPT.she_image.SHEImage(array)
+
         img.add_default_mask()
         img.mask[32:64, :] = True
+
         img.noisemap = 1000.0 + np.random.randn(size ** 2).reshape((size, size))
+
+        img.add_default_segmentation_map()
         img.segmentation_map[0:32, :] = 1
         img.segmentation_map[32:64, :] = 2
+
+        img.add_default_header()
         img.header["foo"] = "bar"
 
         # Testing extracted shape and extracted mask
