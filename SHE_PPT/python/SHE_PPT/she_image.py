@@ -1246,16 +1246,18 @@ class SHEImage(object):
 
         return pix2world_transformation
 
-    def get_world2pix_transformation(self, ra, dec, dra=0.01 / 3600, ddec=0.01 / 3600, spatial_ra=False, origin=0,
+    def get_world2pix_transformation(self, ra=None, dec=None, dra=0.01 / 3600, ddec=0.01 / 3600, spatial_ra=False, origin=0,
                                      norm=False):
         """Gets the local transformation matrix between world (ra/dec) and pixel coordinates at the specified location.
 
         Parameters
         ----------
         ra : float
-            Right Ascension (RA) world coordinate in degrees
+            Right Ascension (RA) world coordinate in degrees. If both this and dec are None, will default to centre of
+            image
         dec : float
-            Declination (Dec) world coordinate in degrees
+            Declination (Dec) world coordinate in degrees. If both this and ra are None, will default to centre of
+            image
         dra : float
             Differential ra step in degrees to use in calculating transformation matrix. Default 0.01 arcsec
         ddec : float
@@ -1284,6 +1286,15 @@ class SHEImage(object):
 
         if (dra == 0) or (ddec == 0):
             raise ValueError("Differentials dra and ddec must not be zero.")
+
+        if ra is None and dec is None:
+            x = (self.shape[0] - 1) / 2.
+            y = (self.shape[1] - 1) / 2.
+
+            ra, dec = self.pix2world(x, y, origin=0)
+        elif (ra is None) != (dec is None):
+            raise ValueError("In get_world2pix_transformation, either both ra and dec must be specified or both " +
+                             "must be None/unspecified.")
 
         if spatial_ra:
             ra_scale = -np.cos(dec * np.pi / 180)
@@ -1346,17 +1357,6 @@ class SHEImage(object):
             Note that due to the method of calculation, the matrix may differ very slightly from an ideal
             rotation matrix.
         """
-
-        # If x or y isn't provided, use the centre of the image
-        if x is None:
-            x = (self.shape[0] - 1) / 2.
-        if y is None:
-            y = (self.shape[1] - 1) / 2.
-
-        # Correct for offset if applicable
-        if self.offset is not None:
-            x += self.offset[0]
-            y += self.offset[1]
 
         # dx and dy are checked in get_pix2world_transformation, so no need to check here
         # It also handles the addition of the offset to x and y
@@ -1495,6 +1495,15 @@ class SHEImage(object):
           if decomposed.
 
         """
+
+        if ra is None and dec is None:
+            x = (self.shape[0] - 1) / 2.
+            y = (self.shape[1] - 1) / 2.
+
+            ra, dec = self.pix2world(x, y, origin=0)
+        elif (ra is None) != (dec is None):
+            raise ValueError("In get_world2pix_transformation, either both ra and dec must be specified or both " +
+                             "must be None/unspecified.")
 
         if isinstance(self.galsim_wcs, galsim.wcs.CelestialWCS):
             world_pos = galsim.CelestialCoord(ra * galsim.degrees, dec * galsim.degrees)
