@@ -744,7 +744,7 @@ class SHEImage(object):
             return data
 
     def extract_stamp(self, x, y, width, height=None, indexconv="numpy", keep_header=False,
-                      none_if_out_of_bounds=False):
+                      none_if_out_of_bounds=False, force_all_properties=False):
         """Extracts a stamp and returns it as a new instance (using views of numpy arrays, i.e., without making a copy)
 
         The extracted stamp is centered on the given (x,y) coordinates and has shape (width, height).
@@ -757,8 +757,8 @@ class SHEImage(object):
             - "sextractor" follows the convention from SExtractor and (identically) DS9, where the bottom-left pixel
                 spreads from (0.5, 0.5) to (1.5, 1.5), and is therefore centered on (1.0, 1.0).
 
-        Bottomline: if SExtractor told you that there is a galaxy at a certain position, you can use this position directly
-        to extract a statistically-well-centered stamp as long as you set indexconv="sextractor".
+        Bottom line: if SExtractor told you that there is a galaxy at a certain position, you can use this position
+        directly to extract a statistically-well-centered stamp as long as you set indexconv="sextractor".
 
         The stamp can be partially (or even completely) outside of the image. Pixels of the stamp outside of the image
         will be set to zero, and masked.
@@ -780,8 +780,12 @@ class SHEImage(object):
             Set this to True if you want the stamp to get the header of the original image.
             By default (False), the stamp gets an empty header.
         none_if_out_of_bounds : bool
-            Set this to True if you want this method to return None if the stamp is entirely out of bounds of the image.
-            By default, this is set to False, which means it will instead return an entirely masked image in that case.
+            Set this to True if you want this method to return None if the stamp is entirely out of bounds of the
+            image. By default, this is set to False, which means it will instead return an entirely masked image in
+            that case.
+        force_all_properties : bool
+            Set this to True if you want to ensure that all properties of the stamp exist, even if they don't for
+            the parent. This will fill them in with default values.
 
         Return
         ------
@@ -821,13 +825,13 @@ class SHEImage(object):
 
         # And the header:
         if keep_header:
-            newheader = self.header
+            new_header = self.header
         else:
-            newheader = None
+            new_header = None
 
         # And defining the offset property of the stamp, taking into account
         # any current offset.
-        newoffset = self.offset + np.array([xmin, ymin])
+        new_offset = self.offset + np.array([xmin, ymin])
 
         # If these bounds are fully within the image range, the extraction is
         # easy.
@@ -836,6 +840,26 @@ class SHEImage(object):
             logger.debug("Extracting stamp [{}:{},{}:{}] fully within image of shape {}".format(
                 xmin, xmax, ymin, ymax, self.shape))
 
+            if self.mask is None:
+                new_mask = None
+            else:
+                new_mask = self.mask[xmin:xmax, ymin:ymax]
+
+            if self.noisemap is None:
+                new_noisemap = None
+            else:
+                new_noisemap = self.noisemap[xmin:xmax, ymin:ymax]
+
+            if self.segmentation_map is None:
+                new_segmentation_map = None
+            else:
+                new_segmentation_map = self.segmentation_map[xmin:xmax, ymin:ymax]
+
+            if self.background_map is None:
+                new_background_map = None
+            else:
+                new_background_map = self.background_map[xmin:xmax, ymin:ymax]
+
             if self.weight_map is None:
                 new_weight_map = None
             else:
@@ -843,13 +867,13 @@ class SHEImage(object):
 
             newimg = SHEImage(
                 data=self.data[xmin:xmax, ymin:ymax],
-                mask=self.mask[xmin:xmax, ymin:ymax],
-                noisemap=self.noisemap[xmin:xmax, ymin:ymax],
-                segmentation_map=self.segmentation_map[xmin:xmax, ymin:ymax],
-                background_map=self.background_map[xmin:xmax, ymin:ymax],
+                mask=new_mask,
+                noisemap=new_noisemap,
+                segmentation_map=new_segmentation_map,
+                background_map=new_background_map,
                 weight_map=new_weight_map,
-                header=newheader,
-                offset=newoffset,
+                header=new_header,
+                offset=new_offset,
                 wcs=self.wcs,
             )
 
@@ -859,23 +883,6 @@ class SHEImage(object):
 
             # One solution would be to pad the image and extract, but that would need a lot of memory.
             # So instead we go for the more explicit bound computations.
-
-            # We first create new stamps, and we will later fill part of them
-            # with slices of the original.
-            data_stamp = np.zeros((width, height), dtype=self.data.dtype)
-            mask_stamp = np.ones(
-                (width, height), dtype=self.mask.dtype) * masked_off_image
-            noisemap_stamp = np.zeros(
-                (width, height), dtype=self.noisemap.dtype)
-            segmentation_map_stamp = np.ones(
-                (width, height), dtype=self.segmentation_map.dtype) * segmap_unassigned_value
-            background_map_stamp = np.zeros(
-                (width, height), dtype=self.background_map.dtype)
-            if self.weight_map is None:
-                weight_map_stamp = None
-            else:
-                weight_map_stamp = np.zeros(
-                    (width, height), dtype=self.weight_map.dtype)
 
             # Compute the bounds of the overlapping part of the stamp in the
             # original image
@@ -899,20 +906,50 @@ class SHEImage(object):
             overlap_slice_stamp = (slice(overlap_xmin_stamp, overlap_xmax_stamp), slice(
                 overlap_ymin_stamp, overlap_ymax_stamp))
 
+            # We first create new stamps, and we will later fill part of them
+            # with slices of the original.
+            data_stamp = np.zeros((width, height), dtype=self.data.dtype)
+
+            if self.mask is None:
+                mask_stamp = None
+            else:
+                mask_stamp = np.ones((width, height), dtype=self.mask.dtype) * masked_off_image
+
+            if self.noisemap is None:
+                noisemap_stamp = None
+            else:
+                noisemap_stamp = np.zeros((width, height), dtype=self.noisemap.dtype)
+
+            if self.segmentation_map is None:
+                segmentation_map_stamp = None
+            else:
+                segmentation_map_stamp = np.ones(
+                    (width, height), dtype=self.segmentation_map.dtype) * segmap_unassigned_value
+
+            if self.background_map is None:
+                background_map_stamp = None
+            else:
+                background_map_stamp = np.zeros((width, height), dtype=self.background_map.dtype)
+
+            if self.weight_map is None:
+                weight_map_stamp = None
+            else:
+                weight_map_stamp = np.zeros((width, height), dtype=self.weight_map.dtype)
+
             # Fill the stamp arrays:
             # If there is any overlap
             if (overlap_width > 0) and (overlap_height > 0):
                 data_stamp[overlap_slice_stamp] = self.data[overlap_slice]
-                mask_stamp[overlap_slice_stamp] = self.mask[overlap_slice]
-                noisemap_stamp[overlap_slice_stamp] = self.noisemap[
-                    overlap_slice]
-                segmentation_map_stamp[
-                    overlap_slice_stamp] = self.segmentation_map[overlap_slice]
-                background_map_stamp[
-                    overlap_slice_stamp] = self.background_map[overlap_slice]
+                if self.mask is not None:
+                    mask_stamp[overlap_slice_stamp] = self.mask[overlap_slice]
+                if self.noisemap is not None:
+                    noisemap_stamp[overlap_slice_stamp] = self.noisemap[overlap_slice]
+                if self.segmentation_map is not None:
+                    segmentation_map_stamp[overlap_slice_stamp] = self.segmentation_map[overlap_slice]
+                if self.background_map is not None:
+                    background_map_stamp[overlap_slice_stamp] = self.background_map[overlap_slice]
                 if self.weight_map is not None:
-                    weight_map_stamp[
-                        overlap_slice_stamp] = self.weight_map[overlap_slice]
+                    weight_map_stamp[overlap_slice_stamp] = self.weight_map[overlap_slice]
 
             # Create the new object
             newimg = SHEImage(
@@ -922,16 +959,25 @@ class SHEImage(object):
                 segmentation_map=segmentation_map_stamp,
                 background_map=background_map_stamp,
                 weight_map=weight_map_stamp,
-                header=newheader,
-                offset=newoffset,
+                header=new_header,
+                offset=new_offset,
                 wcs=self.wcs,
             )
 
             if overlap_width == 0 and overlap_height == 0:
-                logger.warning(
-                    "The extracted stamp is entirely outside of the image bounds!")
+                logger.warning("The extracted stamp is entirely outside of the image bounds!")
 
         assert newimg.shape == (width, height)
+
+        # If we're forcing all properties, add defaults now
+        newimg.add_default_mask(force=False)
+        newimg.add_default_noisemap(force=False)
+        newimg.add_default_segmentation_map(force=False)
+        newimg.add_default_background_map(force=False)
+        newimg.add_default_weight_map(force=False)
+        newimg.add_default_header(force=False)
+        newimg.add_default_wcs(force=False)
+
         return newimg
 
     def pix2world(self, x, y, origin=0):
