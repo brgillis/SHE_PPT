@@ -423,9 +423,14 @@ class Test_she_image():
         assert stamp.boolmask[1, 1] == False
         assert stamp.boolmask[0, 0] == True
 
+        img.add_default_mask()
+        img.add_default_noisemap()
+        img.add_default_segmentation_map()
         stamp = img.extract_stamp(-10.0, 20.0, 3)
         # This one is completely out of bounds:
         assert np.alltrue(stamp.boolmask)
+        assert np.allclose(stamp.noisemap, 0.0)
+        assert np.allclose(stamp.segmentation_map, segmap_unassigned_value)
 
         stamp = img.extract_stamp(3.5, 1.5, 3, 1)
         # This is
