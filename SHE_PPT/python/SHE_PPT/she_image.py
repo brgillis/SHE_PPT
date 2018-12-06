@@ -918,10 +918,8 @@ class SHEImage(object):
             # with slices of the original.
             data_stamp = np.zeros((width, height), dtype=self.data.dtype)
 
-            if self.mask is None:
-                mask_stamp = None
-            else:
-                mask_stamp = np.ones((width, height), dtype=self.mask.dtype) * masked_off_image
+            # Always create a mask stamp if partially off-image
+            mask_stamp = np.ones((width, height), dtype=self.mask.dtype) * masked_off_image
 
             if self.noisemap is None:
                 noisemap_stamp = None
@@ -950,6 +948,8 @@ class SHEImage(object):
                 data_stamp[overlap_slice_stamp] = self.data[overlap_slice]
                 if self.mask is not None:
                     mask_stamp[overlap_slice_stamp] = self.mask[overlap_slice]
+                else:
+                    mask_stamp[overlap_slice_stamp] = 0
                 if self.noisemap is not None:
                     noisemap_stamp[overlap_slice_stamp] = self.noisemap[overlap_slice]
                 if self.segmentation_map is not None:
