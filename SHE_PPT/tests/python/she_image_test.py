@@ -302,7 +302,8 @@ class Test_she_image():
             rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepaths[0],
                                                              mask_filepath=self.testfilepaths[1],
                                                              noisemap_filepath=self.testfilepaths[2],
-                                                             segmentation_map_filepath=self.testfilepaths[3])
+                                                             segmentation_map_filepath=self.testfilepaths[3],
+                                                             mask_ext=None)
 
     def test_extracted_stamp_is_view(self):
         """Checks that the extracted stamp is a view, not a copy"""
