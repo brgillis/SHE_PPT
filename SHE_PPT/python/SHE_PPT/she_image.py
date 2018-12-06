@@ -459,17 +459,23 @@ class SHEImage(object):
             Mask for the desired object. Values of True correspond to masked
             pixels (bad(/suspect) or don't belong to this object).
         """
+        # Raise an exception if the mask or segmentation map is None
+        if self.mask is None:
+            raise ValueError("Cannot get an object mask when mask is None")
+        if self.segmentation_map is None:
+            raise ValueError("Cannot get an object mask when segmentation_map is None")
+
         # First get the boolean version of the mask for suspect/bad pixels
         if mask_suspect:
-            pixel_mask = as_bool(is_masked_suspect_or_bad(self._mask))
+            pixel_mask = as_bool(is_masked_suspect_or_bad(self.mask))
         else:
-            pixel_mask = as_bool(is_masked_bad(self._mask))
+            pixel_mask = as_bool(is_masked_bad(self.mask))
 
         # Now get mask for other objects
-        other_mask = (self._segmentation_map != seg_id)
+        other_mask = (self.segmentation_map != seg_id)
         if not mask_unassigned:
             other_mask = np.logical_and(
-                other_mask, (self._segmentation_map != segmap_unassigned_value))
+                other_mask, (self.segmentation_map != segmap_unassigned_value))
 
         # Combine and return the masks
         object_mask = np.logical_or(pixel_mask, other_mask)
@@ -498,6 +504,8 @@ class SHEImage(object):
             for label in wcs_header:
                 # Overwrite any coming from the WCS
                 full_header[label] = (wcs_header[label], wcs_header.comments[label])
+        elif self.header is None:
+            full_header = astropy.io.fits.Header()  # An empty header
         else:
             full_header = self.header
 
@@ -505,36 +513,40 @@ class SHEImage(object):
         # convention as DS9 and SExtractor.
         datahdu = astropy.io.fits.PrimaryHDU(
             self.data.transpose(), header=full_header)
+
+        hdulist = astropy.io.fits.HDUList([datahdu])
+
         if not data_only:
-            maskhdu = astropy.io.fits.ImageHDU(
-                data=self.mask.transpose().astype(np.int32), name="MASK")
-            noisemaphdu = astropy.io.fits.ImageHDU(
-                data=self.noisemap.transpose(), name="NOISEMAP")
-            segmaphdu = astropy.io.fits.ImageHDU(
-                data=self.segmentation_map.transpose().astype(np.int32), name="SEGMAP")
-            bkgmaphdu = astropy.io.fits.ImageHDU(
-                data=self.background_map.transpose(), name="BKGMAP")
+
+            if self.mask is not None:
+                maskhdu = astropy.io.fits.ImageHDU(
+                    data=self.mask.transpose(), name="MASK")
+                hdulist.append(maskhdu)
+            if self.mask is not None:
+                noisemaphdu = astropy.io.fits.ImageHDU(
+                    data=self.noisemap.transpose(), name="NOISEMAP")
+                hdulist.append(noisemaphdu)
+            if self.mask is not None:
+                segmaphdu = astropy.io.fits.ImageHDU(
+                    data=self.segmentation_map.transpose(), name="SEGMAP")
+                hdulist.append(segmaphdu)
+            if self.mask is not None:
+                bkgmaphdu = astropy.io.fits.ImageHDU(
+                    data=self.background_map.transpose(), name="BKGMAP")
+                hdulist.append(bkgmaphdu)
             if self.weight_map is not None:
                 wgtmaphdu = astropy.io.fits.ImageHDU(
                     data=self.weight_map.transpose(), name="WGTMAP")
-                hdulist = astropy.io.fits.HDUList(
-                    [datahdu, maskhdu, noisemaphdu, segmaphdu, bkgmaphdu, wgtmaphdu])
-            else:
-                hdulist = astropy.io.fits.HDUList(
-                    [datahdu, maskhdu, noisemaphdu, segmaphdu, bkgmaphdu])
-
-        else:
-            hdulist = astropy.io.fits.HDUList([datahdu])
+                hdulist.append(wgtmaphdu)
 
         if clobber is True and os.path.exists(filepath):
-            logger.info("The output file exists and will get overwritten")
+            logger.debug("The output file exists and will get overwritten")
 
         hdulist.writeto(filepath, clobber=clobber)
         # Note that clobber is called overwrite in the latest astropy, but
         # backwards compatible.
 
-        logger.info(
-            "Wrote {} to the FITS file '{}'".format(str(self), filepath))
+        logger.debug("Wrote {} to the FITS file '{}'".format(str(self), filepath))
 
     @classmethod
     def read_from_fits(cls,
