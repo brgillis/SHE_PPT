@@ -82,7 +82,7 @@ class SHEImage(object):
         """
 
         self.data = data  # Note the tests done in the setter method
-        self.mask = mask  # Note that we translate None in the setter method
+        self.mask = mask
         self.noisemap = noisemap
         self.segmentation_map = segmentation_map
         self.background_map = background_map
@@ -134,8 +134,7 @@ class SHEImage(object):
     @mask.setter
     def mask(self, mask_array):
         if mask_array is None:
-            # Then we create an empty mask (0 means False means not masked)
-            self._mask = np.zeros(self._data.shape, dtype=np.int32)
+            self._mask = None
         else:
             if mask_array.ndim is not 2:
                 raise ValueError("The mask array must have 2 dimensions")
@@ -150,7 +149,7 @@ class SHEImage(object):
                     mask_array = mask_array.astype(np.int32, casting='safe')
                 except:
                     raise ValueError(
-                        "The mask array must be of np.int32 type (it is {})".format(mask_array.dtype))
+                        "The mask array must be of integer type (it is {})".format(mask_array.dtype))
             self._mask = mask_array
 
     @mask.deleter
@@ -160,7 +159,10 @@ class SHEImage(object):
     @property
     def boolmask(self):
         """A boolean summary of the mask, cannot be set, only get"""
-        return self._mask.astype(np.bool)
+        if self.mask is None:
+            return None
+        else:
+            return self.mask.astype(np.bool)
 
     @property
     def noisemap(self):
@@ -170,8 +172,7 @@ class SHEImage(object):
     @noisemap.setter
     def noisemap(self, noisemap_array):
         if noisemap_array is None:
-            # Then we create a flat noisemap
-            self._noisemap = np.ones(self._data.shape, dtype=float)
+            self._noisemap = None
         else:
             if noisemap_array.ndim is not 2:
                 raise ValueError("The noisemap array must have 2 dimensions")
@@ -192,9 +193,7 @@ class SHEImage(object):
     @segmentation_map.setter
     def segmentation_map(self, segmentation_map_array):
         if segmentation_map_array is None:
-            # Then we create an empty segmentation map)
-            self._segmentation_map = segmap_unassigned_value * \
-                np.ones(self._data.shape, dtype=np.int32)
+            self._segmentation_map = None
         else:
             if segmentation_map_array.ndim is not 2:
                 raise ValueError(
@@ -227,8 +226,7 @@ class SHEImage(object):
     @background_map.setter
     def background_map(self, background_map_array):
         if background_map_array is None:
-            # Then we create a flat, zero background map
-            self._background_map = np.zeros(self._data.shape, dtype=float)
+            self._background_map = None
         else:
             if background_map_array.ndim is not 2:
                 raise ValueError(
@@ -271,33 +269,49 @@ class SHEImage(object):
 
     @header.setter
     def header(self, header_object):
+        """Setter for the header of this image. Note that since the offset is stored in the header,
+           it's always deepcopied when set to avoid surprisingly changing the input.
+        """
         if header_object is None:
-            self._header = astropy.io.fits.Header()  # An empty header
+            self._header = None
+            # self._header = astropy.io.fits.Header()  # An empty header
         else:
             # Not very pythonic, but I suggest this to
             if isinstance(header_object, astropy.io.fits.Header):
                 # to avoid misuse, which could lead to problems when writing
                 # FITS files.
-                self._header = header_object
+
+                if "SHEIOFX" in header_object and "SHEIOFY" in header_object:
+                    # If offset is stored in the header, update the offset property
+                    self._header = deepcopy(header_object)
+                    self.offset = (self.header["SHEIOFX"], self.header["SHEIOFY"])
+
+                elif ("SHEIOFX" in header_object) != ("SHEIOFY" in header_object):
+                    # If only one is stored in the header, raise an exception
+                    raise ValueError("Header passed to SHEImage.header setter has only one of SHEIOFX and " +
+                                     "SHEIOFY keywords. Must have both or neither.")
+
+                else:
+                    # If no offset in the header, add it to that
+                    self._header = deepcopy(header_object)
+                    self._header["SHEIOFX"] = (self.offset[0], "SHEImage x offset in pixels")
+                    self._header["SHEIOFY"] = (self.offset[1], "SHEImage y offset in pixels")
             else:
-                raise ValueError(
-                    "The header must be an astropy.io.fits.Header instance")
+                raise ValueError("The header must be an astropy.io.fits.Header instance")
+
+        return
 
     @header.deleter
     def header(self):
         del self._header
-        self._galsim_wcs = None
+        if hasattr(self, "_galsim_wcs"):
+            self._galsim_wcs = None
 
     @property
     def offset(self):
         """A [x_offset, y_offset] numpy array with 2 values, tracking the offset of extracted stamps
-
-        Note that internally, this offset is stored in the header, so that it is conserved by FITS i/o.
         """
-        if self._has_offset_in_header():
-            return np.array((self.header["SHEIOFX"], self.header["SHEIOFY"]))
-        else:
-            return np.array([0, 0])
+        return self._offset
 
     @offset.setter
     def offset(self, offset_tuple):
@@ -305,20 +319,18 @@ class SHEImage(object):
 
         We only set these header values if the offset_tuple is not None.
         """
-        if offset_tuple is not None:
+        if offset_tuple is None:
+            self._offset = np.array([0., 0.], dtype=float)
+        else:
             if len(offset_tuple) is not 2:
                 raise ValueError("A SHEImage.offset must have 2 items")
-            self.header["SHEIOFX"] = (
-                offset_tuple[0], "SHEImage x offset in pixels")
-            self.header["SHEIOFY"] = (
-                offset_tuple[1], "SHEImage y offset in pixels")
+            else:
+                self._offset = np.array(offset_tuple, dtype=float)
 
-    def _has_offset_in_header(self):
-        """Tests if the header contains the offset keywords"""
-        if "SHEIOFX" in list(self.header.keys()) and "SHEIOFY" in list(self.header.keys()):
-            return True
-        else:
-            return False
+        # Set the offset in the header if the header exists
+        if self.header is not None:
+            self.header["SHEIOFX"] = (self._offset[0], "SHEImage x offset in pixels")
+            self.header["SHEIOFY"] = (self._offset[1], "SHEImage y offset in pixels")
 
     @property
     # Just a shortcut, defined as a property in case we need to change
@@ -341,7 +353,8 @@ class SHEImage(object):
     @wcs.deleter
     def wcs(self):
         del self._wcs
-        self._galsim_wcs = None
+        if hasattr(self, "_galsim_wcs"):
+            self._galsim_wcs = None
 
     @property
     def galsim_wcs(self):
