@@ -399,12 +399,16 @@ class SHEImage(object):
         """A short string with size information and the percentage of masked pixels"""
 
         shape_str = "{}x{}".format(self.shape[0], self.shape[1])
-        mask_str = "{}% masked".format(
-            100.0 * float(np.sum(self.boolmask)) / float(np.size(self.data)))
-        str_list = [shape_str, mask_str]
-        if self._has_offset_in_header():
-            offset_str = "offset [{}, {}]".format(*self.offset)
-            str_list.append(offset_str)
+        str_list = [shape_str]
+
+        if self.mask is not None:
+            mask_str = "{}% masked".format(
+                100.0 * float(np.sum(self.boolmask)) / float(np.size(self.data)))
+            str_list.append(mask_str)
+
+        offset_str = "offset [{}, {}]".format(*self.offset)
+        str_list.append(offset_str)
+
         return "SHEImage(" + ", ".join(str_list) + ")"
 
     def __eq__(self, rhs):
