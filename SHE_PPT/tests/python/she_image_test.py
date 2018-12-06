@@ -291,9 +291,6 @@ class Test_she_image():
         rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepaths[0])
         assert rimg.mask[0, 0] == 1
 
-        rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepaths[0])
-        assert rimg.mask[0, 0] == 0
-
         rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepaths[0],
                                                          mask_filepath=self.testfilepaths[1],
                                                          noisemap_filepath=self.testfilepaths[2],
