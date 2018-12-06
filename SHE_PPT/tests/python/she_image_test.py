@@ -80,9 +80,6 @@ class Test_she_image():
         assert self.img.background_map is None
         assert self.img.weight_map is None
 
-        assert self.img.mask.shape == (self.w, self.h)
-        assert self.img.noisemap.shape == (self.w, self.h)
-
     def test_mask(self):
         """Tests some mask functionality"""
 
@@ -93,6 +90,7 @@ class Test_she_image():
         assert img.mask.dtype == np.int32
         assert img.mask[5, 5] == 0
         assert img.boolmask[5, 5] == False
+        assert img.mask.shape == (self.w, self.h)
 
         # Check that boolmask works if we change the mask
         img.mask[5, 5] = 100
@@ -117,6 +115,7 @@ class Test_she_image():
         img.add_default_noisemap(force=True)
         assert img.noisemap.dtype == float
         assert np.allclose(img.noisemap, np.zeros_like(img.data, dtype=img.noisemap.dtype))
+        assert img.noisemap.shape == (self.w, self.h)
 
         # Check that non-forcibly adding a default noisemap doesn't affect the existing noisemap
         img.noisemap[5, 5] = 1.
@@ -139,6 +138,7 @@ class Test_she_image():
         assert img.segmentation_map.dtype == np.int32
         assert np.allclose(img.segmentation_map,
                            segmap_unassigned_value * np.ones_like(img.data, dtype=img.segmentation_map.dtype))
+        assert img.segmentation_map.shape == (self.w, self.h)
 
         # Check that non-forcibly adding a default segmentation_map doesn't affect the existing segmentation_map
         img.segmentation_map[5, 5] = 100
@@ -160,9 +160,10 @@ class Test_she_image():
         img.add_default_weight_map(force=True)
         assert img.weight_map.dtype == float
         assert np.allclose(img.weight_map, np.ones_like(img.data, dtype=img.weight_map.dtype))
+        assert img.weight_map.shape == (self.w, self.h)
 
         # Check that non-forcibly adding a default weight_map doesn't affect the existing weight_map
-        img.weight_map[5, 5] = 1.
+        img.weight_map[5, 5] = 0.
         img.add_default_weight_map(force=False)
         assert np.isclose(img.weight_map[5, 5], 0.)
 
@@ -183,7 +184,7 @@ class Test_she_image():
         img.header["INSTR"] = ("DMK21")
         img.header.set("tel", "14-inch Martini Dobson")
 
-        assert self.img.header["TEMP1"] > 20.0  # capitalization does not matter
+        assert img.header["TEMP1"] > 20.0  # capitalization does not matter
         assert len(img.header["INSTR"]) == 5
 
         # Check that non-forcibly adding a default header doesn't affect the existing header
@@ -212,7 +213,7 @@ class Test_she_image():
         assert np.isclose(img.wcs.wcs.cdelt[0], 2.)
 
         # Check that forcibly adding a default wcs does affect the existing wcs
-        img.add_default_header(force=True)
+        img.add_default_wcs(force=True)
         assert np.isclose(img.wcs.wcs.cdelt[0], 1.)
 
         return
