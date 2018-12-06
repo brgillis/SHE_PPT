@@ -24,14 +24,14 @@ Created on: 08/18/17
 from copy import deepcopy
 import logging
 import os
-
-from astropy.wcs import WCS
-import galsim
 import pytest
+
+import galsim
 
 from SHE_PPT import file_io
 from SHE_PPT.magic_values import segmap_unassigned_value
 import SHE_PPT.she_image
+from astropy.wcs import WCS
 import numpy as np
 
 
@@ -73,32 +73,149 @@ class Test_she_image():
 
         assert self.img.shape == (self.w, self.h)
         assert self.img.data.shape == (self.w, self.h)
+
+        assert self.img.mask is None
+        assert self.img.noisemap is None
+        assert self.img.segmentation_map is None
+        assert self.img.background_map is None
+        assert self.img.weight_map is None
+
         assert self.img.mask.shape == (self.w, self.h)
         assert self.img.noisemap.shape == (self.w, self.h)
 
     def test_mask(self):
         """Tests some mask functionality"""
 
-        self.img.mask[5, 5] = 100
-        assert self.img.boolmask[5, 5] == True
-        self.img.mask[5, 5] = 0
-        assert self.img.boolmask[5, 5] == False
-        assert self.img.mask.dtype == np.int32
+        img = deepcopy(self.img)
+
+        # Add a default mask and check its data type and values
+        img.add_default_mask(force=True)
+        assert img.mask.dtype == np.int32
+        assert img.mask[5, 5] == 0
+        assert img.boolmask[5, 5] == False
+
+        # Check that boolmask works if we change the mask
+        img.mask[5, 5] = 100
+        assert img.boolmask[5, 5] == True
+
+        # Check that non-forcibly adding a default mask doesn't affect the existing mask
+        img.add_default_mask(force=False)
+        assert img.boolmask[5, 5] == True
+
+        # Check that forcibly adding a default mask does affect the existing mask
+        img.add_default_mask(force=True)
+        assert img.boolmask[5, 5] == False
+
+        return
+
+    def test_noisemap(self):
+        """Test that the noisemap behaves appropriately."""
+
+        img = deepcopy(self.img)
+
+        # Add a default noisemap and check its data type and values
+        img.add_default_noisemap(force=True)
+        assert img.noisemap.dtype == float
+        assert np.allclose(img.noisemap, np.zeros_like(img.data, dtype=img.noisemap.dtype))
+
+        # Check that non-forcibly adding a default noisemap doesn't affect the existing noisemap
+        img.noisemap[5, 5] = 1.
+        img.add_default_noisemap(force=False)
+        assert np.isclose(img.noisemap[5, 5], 1.)
+
+        # Check that forcibly adding a default noisemap does affect the existing noisemap
+        img.add_default_noisemap(force=True)
+        assert np.isclose(img.noisemap[5, 5], 0.)
+
+        return
 
     def test_segmentation_map(self):
-        """Test that the segmentation map is set up as all segmap_unassigned_value"""
+        """Test that the segmentation map behaves appropriately."""
 
-        assert np.allclose(self.img.segmentation_map,
-                           segmap_unassigned_value * np.ones_like(self.img.data, dtype=self.img.segmentation_map.dtype))
+        img = deepcopy(self.img)
+
+        # Add a default segmentation_map and check its data type and values
+        img.add_default_segmentation_map(force=True)
+        assert img.segmentation_map.dtype == np.int32
+        assert np.allclose(img.segmentation_map,
+                           segmap_unassigned_value * np.ones_like(img.data, dtype=img.segmentation_map.dtype))
+
+        # Check that non-forcibly adding a default segmentation_map doesn't affect the existing segmentation_map
+        img.segmentation_map[5, 5] = 100
+        img.add_default_segmentation_map(force=False)
+        assert img.segmentation_map[5, 5] == 100
+
+        # Check that forcibly adding a default segmentation_map does affect the existing segmentation_map
+        img.add_default_segmentation_map(force=True)
+        assert img.segmentation_map[5, 5] == 0
+
+        return
+
+    def test_weight_map(self):
+        """Test that the weight_map behaves appropriately."""
+
+        img = deepcopy(self.img)
+
+        # Add a default weight_map and check its data type and values
+        img.add_default_weight_map(force=True)
+        assert img.weight_map.dtype == float
+        assert np.allclose(img.weight_map, np.ones_like(img.data, dtype=img.weight_map.dtype))
+
+        # Check that non-forcibly adding a default weight_map doesn't affect the existing weight_map
+        img.weight_map[5, 5] = 1.
+        img.add_default_weight_map(force=False)
+        assert np.isclose(img.weight_map[5, 5], 0.)
+
+        # Check that forcibly adding a default weight_map does affect the existing weight_map
+        img.add_default_weight_map(force=True)
+        assert np.isclose(img.weight_map[5, 5], 1.)
+
+        return
 
     def test_header(self):
-        """Modifying the header"""
-        self.img.header["temp1"] = (22.3, "Outside temp in degrees Celsius")
-        self.img.header["INSTR"] = ("DMK21")
-        self.img.header.set("tel", "14-inch Martini Dobson")
+        """Test the header behaves as expected."""
+
+        img = deepcopy(self.img)
+
+        img.add_default_header(force=True)
+
+        img.header["temp1"] = (22.3, "Outside temp in degrees Celsius")
+        img.header["INSTR"] = ("DMK21")
+        img.header.set("tel", "14-inch Martini Dobson")
 
         assert self.img.header["TEMP1"] > 20.0  # capitalization does not matter
-        assert len(self.img.header["INSTR"]) == 5
+        assert len(img.header["INSTR"]) == 5
+
+        # Check that non-forcibly adding a default header doesn't affect the existing header
+        img.add_default_header(force=False)
+        assert "INSTR" in img.header
+
+        # Check that forcibly adding a default header does affect the existing header
+        img.add_default_header(force=True)
+        assert "INSTR" not in img.header
+
+        return
+
+    def test_wcs_default(self):
+        """Test the default wcs behaves as expected."""
+
+        img = deepcopy(self.img)
+
+        img.add_default_wcs(force=True)
+
+        assert np.allclose(img.wcs.wcs.cdelt, np.array([1., 1.]))
+        assert np.allclose(img.wcs.wcs.crval, np.array([0., 0.]))
+
+        # Check that non-forcibly adding a default wcs doesn't affect the existing wcs
+        img.wcs.wcs.cdelt[0] = 2.
+        img.add_default_wcs(force=False)
+        assert np.isclose(img.wcs.wcs.cdelt[0], 2.)
+
+        # Check that forcibly adding a default wcs does affect the existing wcs
+        img.add_default_header(force=True)
+        assert np.isclose(img.wcs.wcs.cdelt[0], 1.)
+
+        return
 
     def test_fits_read_write(self):
         """We save the small SHEImage, read it again, and compare both versions"""
@@ -244,6 +361,31 @@ class Test_she_image():
         assert len(list(eimg.header.keys())) == 2  # The two offsets
         eimg = img.extract_stamp(5, 5, 5, keep_header=True)
         assert len(list(eimg.header.keys())) == 3  # The offsets, and the "foo"
+
+        # Test setting or not setting default properties for an extracted stamp
+        simple_img = SHE_PPT.she_image.SHEImage(array)
+
+        simple_stamp = simple_img.extract_stamp(16.4, 15.6, 32)
+
+        assert simple_stamp.mask is None
+        assert simple_stamp.noisemap is None
+        assert simple_stamp.segmentation_map is None
+        assert simple_stamp.background_map is None
+        assert simple_stamp.weight_map is None
+        assert simple_stamp.header is None
+        assert simple_stamp.wcs is None
+
+        default_stamp = simple_img.extract_stamp(16.4, 15.6, 32, force_all_properties=True)
+
+        assert default_stamp.mask is not None
+        assert default_stamp.noisemap is not None
+        assert default_stamp.segmentation_map is not None
+        assert default_stamp.background_map is not None
+        assert default_stamp.weight_map is not None
+        assert default_stamp.header is not None
+        assert default_stamp.wcs is not None
+
+        return
 
     def test_extract_stamp_out_of_bounds(self):
         """We test that the stamp extraction works as desired for stamps not entirely within the image"""
@@ -412,11 +554,11 @@ class Test_she_image():
 
                 assert np.allclose(normed_double_transformation, np.matrix([[1., 0.], [0., 1.]]),
                                    rtol=1e-2, atol=1e-3)
-                
+
                 # These should also all have a determinant of 1 or -1
-                
-                assert np.isclose(np.abs(np.linalg.det(normed_pix2world_transformation)),1.)
-                assert np.isclose(np.abs(np.linalg.det(normed_world2pix_transformation)),1.)
+
+                assert np.isclose(np.abs(np.linalg.det(normed_pix2world_transformation)), 1.)
+                assert np.isclose(np.abs(np.linalg.det(normed_world2pix_transformation)), 1.)
 
                 if spatial_ra:
                     continue
@@ -497,13 +639,13 @@ class Test_she_image():
             assert np.allclose(world2pix_rotation_matrix_1, world2pix_rotation_matrix_2, rtol=0.02, atol=0.002)
 
             return
-        
+
     def test_galsim_wcs(self):
         """Test that we can generate and use a GalSim-style WCS."""
-        
+
         # Make a copy of the image so we can modify it safely
         img = deepcopy(self.img)
-        
+
         # Test getting the WCS from the header
         img.wcs = None
 
@@ -512,58 +654,58 @@ class Test_she_image():
                               (24, 38, 52.53677316085, -28.75899827058671),
                               (1012, 4111, 52.876229370322626, -28.686527560717373)):
 
-            xy_pos = img.galsim_wcs.toImage(galsim.CelestialCoord(ra*galsim.degrees,dec*galsim.degrees))
+            xy_pos = img.galsim_wcs.toImage(galsim.CelestialCoord(ra * galsim.degrees, dec * galsim.degrees))
             assert np.allclose((xy_pos.x, xy_pos.y), (x, y))
-            radec_pos = img.galsim_wcs.toWorld(galsim.PositionD(x,y))
+            radec_pos = img.galsim_wcs.toWorld(galsim.PositionD(x, y))
             # Need to divide out units for numpy to understand the values
-            assert np.allclose((radec_pos.ra/galsim.degrees, radec_pos.dec/galsim.degrees), (ra, dec))
-        
+            assert np.allclose((radec_pos.ra / galsim.degrees, radec_pos.dec / galsim.degrees), (ra, dec))
+
         # Make another copy of the image so we can start fresh
         img = deepcopy(self.img)
-        
+
         # Test getting the WCS from the astropy WCS
         img.header = None
 
         # Test with values coming from calculation assuming origin=1
         for x, y, ra, dec in ((0, 0, 52.53373984070186, -28.760675854311447),
-                                    (24, 38, 52.53677316085, -28.75899827058671),
-                                    (1012, 4111, 52.876229370322626, -28.686527560717373)):
+                              (24, 38, 52.53677316085, -28.75899827058671),
+                              (1012, 4111, 52.876229370322626, -28.686527560717373)):
 
-            xy_pos = img.galsim_wcs.toImage(galsim.CelestialCoord(ra*galsim.degrees,dec*galsim.degrees))
+            xy_pos = img.galsim_wcs.toImage(galsim.CelestialCoord(ra * galsim.degrees, dec * galsim.degrees))
             assert np.allclose((xy_pos.x, xy_pos.y), (x, y))
-            radec_pos = img.galsim_wcs.toWorld(galsim.PositionD(x,y))
+            radec_pos = img.galsim_wcs.toWorld(galsim.PositionD(x, y))
             # Need to divide out units for numpy to understand the values
-            assert np.allclose((radec_pos.ra/galsim.degrees, radec_pos.dec/galsim.degrees), (ra, dec))
-            
+            assert np.allclose((radec_pos.ra / galsim.degrees, radec_pos.dec / galsim.degrees), (ra, dec))
+
         # Test with an OffsetWCS as well
-        
+
         # Make another copy of the image so we can start fresh
         img = deepcopy(self.img)
-        
+
         test_scale = 0.1
         test_x_offset = 100
         test_y_offset = 200
         test_x_im = 15
         test_y_im = 45
-        
-        test_x_world = test_x_offset + test_scale*test_x_im
-        test_y_world = test_y_offset + test_scale*test_y_im
-        
+
+        test_x_world = test_x_offset + test_scale * test_x_im
+        test_y_world = test_y_offset + test_scale * test_y_im
+
         img.galsim_wcs = galsim.wcs.OffsetWCS(scale=test_scale,
-                                              origin=galsim.PositionD(0.,0.),
-                                              world_origin=galsim.PositionD(test_x_offset,test_y_offset))
-        
-        im_pos = galsim.PositionD(test_x_im,test_y_im)
-        world_pos = galsim.PositionD(test_x_world,test_y_world)
-        
+                                              origin=galsim.PositionD(0., 0.),
+                                              world_origin=galsim.PositionD(test_x_offset, test_y_offset))
+
+        im_pos = galsim.PositionD(test_x_im, test_y_im)
+        world_pos = galsim.PositionD(test_x_world, test_y_world)
+
         test_world_pos = img.galsim_wcs.toWorld(im_pos)
         test_im_pos = img.galsim_wcs.toImage(world_pos)
-        
-        assert np.allclose((im_pos.x,im_pos.y),(test_im_pos.x,test_im_pos.y))
-        assert np.allclose((world_pos.x,world_pos.y),(test_world_pos.x,test_world_pos.y))
-            
+
+        assert np.allclose((im_pos.x, im_pos.y), (test_im_pos.x, test_im_pos.y))
+        assert np.allclose((world_pos.x, world_pos.y), (test_world_pos.x, test_world_pos.y))
+
         return
-            
+
     def test_decomposition(self):
         """Test that we can get the expected local decomposition of a WCS."""
 
@@ -572,56 +714,56 @@ class Test_she_image():
                               (24, 38, 52.53677316085, -28.75899827058671),
                               (1012, 4111, 52.876229370322626, -28.686527560717373)):
 
-            world2pix_decomposition = self.img.get_world2pix_decomposition(ra,dec)
-            pix2world_decomposition = self.img.get_pix2world_decomposition(x,y)
-            
+            world2pix_decomposition = self.img.get_world2pix_decomposition(ra, dec)
+            pix2world_decomposition = self.img.get_pix2world_decomposition(x, y)
+
             # Check the scales are inverses
-            assert np.isclose(world2pix_decomposition[0],1./pix2world_decomposition[0])
-            
+            assert np.isclose(world2pix_decomposition[0], 1. / pix2world_decomposition[0])
+
             # Shear is checked for the non-celestial WCS
-            
+
             # Check the angles are opposite (need to divide out units for numpy to understand the values)
-            assert np.isclose(world2pix_decomposition[2]/galsim.degrees,-pix2world_decomposition[2]/galsim.degrees)
-            
+            assert np.isclose(world2pix_decomposition[2] / galsim.degrees, -
+                              pix2world_decomposition[2] / galsim.degrees)
+
             # Check the flip is the same
             assert world2pix_decomposition[3] == pix2world_decomposition[3]
-            
+
             # Check the angle matches what we get in the rotation matrix
             pix2world_rotation_matrix = self.img.get_pix2world_rotation(x, y, origin=1)
-            assert np.isclose(pix2world_decomposition[2].cos(),pix2world_rotation_matrix[0,0],rtol=1e-4)
-            assert np.isclose(pix2world_decomposition[2].sin(),pix2world_rotation_matrix[0,1],rtol=1e-4)
-            
+            assert np.isclose(pix2world_decomposition[2].cos(), pix2world_rotation_matrix[0, 0], rtol=1e-4)
+            assert np.isclose(pix2world_decomposition[2].sin(), pix2world_rotation_matrix[0, 1], rtol=1e-4)
+
         # Test with a simple Shear WCS
-        
+
         # Make a copy of the image so we can modify it safely
         img = deepcopy(self.img)
-        
+
         w2p_g1 = 0.1
         w2p_g2 = 0.2
         p2w_scale = 0.01
-        
-        w2p_shear = galsim.Shear(g1=w2p_g1,g2=w2p_g2)
-        
-        img.galsim_wcs = galsim.wcs.ShearWCS(scale=p2w_scale,shear=w2p_shear)
-        
-        test_w2p_scale, test_w2p_shear, test_w2p_theta, test_w2p_flip = img.get_world2pix_decomposition(0,0)
-        test_p2w_scale, test_p2w_shear, test_p2w_theta, test_p2w_flip = img.get_pix2world_decomposition(0,0)
-        
-        assert np.isclose(test_w2p_scale,1./p2w_scale)
-        assert np.allclose((w2p_shear.g1,w2p_shear.g2),(test_w2p_shear.g1,test_w2p_shear.g2))
-        
-        assert np.isclose(test_p2w_scale,p2w_scale)
-        assert np.allclose((-w2p_shear.g1,-w2p_shear.g2),(test_p2w_shear.g1,test_p2w_shear.g2))
-        
-        
+
+        w2p_shear = galsim.Shear(g1=w2p_g1, g2=w2p_g2)
+
+        img.galsim_wcs = galsim.wcs.ShearWCS(scale=p2w_scale, shear=w2p_shear)
+
+        test_w2p_scale, test_w2p_shear, test_w2p_theta, test_w2p_flip = img.get_world2pix_decomposition(0, 0)
+        test_p2w_scale, test_p2w_shear, test_p2w_theta, test_p2w_flip = img.get_pix2world_decomposition(0, 0)
+
+        assert np.isclose(test_w2p_scale, 1. / p2w_scale)
+        assert np.allclose((w2p_shear.g1, w2p_shear.g2), (test_w2p_shear.g1, test_w2p_shear.g2))
+
+        assert np.isclose(test_p2w_scale, p2w_scale)
+        assert np.allclose((-w2p_shear.g1, -w2p_shear.g2), (test_p2w_shear.g1, test_p2w_shear.g2))
+
     def test_equality(self):
-        
+
         # Test we get equal when we expect it
         img_copy = deepcopy(self.img)
-        assert self.img==img_copy
-        
+        assert self.img == img_copy
+
         # Test we get inequal when we change the copy
         img_copy.data += 1
-        assert self.img!=img_copy
-        
+        assert self.img != img_copy
+
         return
