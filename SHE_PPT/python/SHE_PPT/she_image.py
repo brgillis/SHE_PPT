@@ -274,7 +274,6 @@ class SHEImage(object):
         """
         if header_object is None:
             self._header = None
-            # self._header = astropy.io.fits.Header()  # An empty header
         else:
             # Not very pythonic, but I suggest this to
             if isinstance(header_object, astropy.io.fits.Header):
@@ -970,15 +969,125 @@ class SHEImage(object):
         assert newimg.shape == (width, height)
 
         # If we're forcing all properties, add defaults now
-        newimg.add_default_mask(force=False)
-        newimg.add_default_noisemap(force=False)
-        newimg.add_default_segmentation_map(force=False)
-        newimg.add_default_background_map(force=False)
-        newimg.add_default_weight_map(force=False)
-        newimg.add_default_header(force=False)
-        newimg.add_default_wcs(force=False)
+        if force_all_properties:
+            newimg.add_default_mask(force=False)
+            newimg.add_default_noisemap(force=False)
+            newimg.add_default_segmentation_map(force=False)
+            newimg.add_default_background_map(force=False)
+            newimg.add_default_weight_map(force=False)
+            newimg.add_default_header(force=False)
+            newimg.add_default_wcs(force=False)
 
         return newimg
+
+    def add_default_mask(self, force=False):
+        """Adds a default mask to this object (all unmasked). If force=True, will overwrite an existing mask. 
+        """
+
+        if self.mask is not None:
+            if force == True:
+                logger.debug("Overwriting existing mask with default.")
+            else:
+                logger.debug("Not overwriting existing mask with default.")
+                return
+
+        self.mask = np.zeros_like(self.data, dtype=np.int32)
+
+        return
+
+    def add_default_noisemap(self, force=False):
+        """Adds a default noisemap to this object (all 0.). If force=True, will overwrite an existing noisemap. 
+        """
+
+        if self.noisemap is not None:
+            if force == True:
+                logger.debug("Overwriting existing noisemap with default.")
+            else:
+                logger.debug("Not overwriting existing noisemap with default.")
+                return
+
+        self.noisemap = np.zeros_like(self.data, dtype=float)
+
+        return
+
+    def add_default_segmentation_map(self, force=False):
+        """Adds a default segmentation_map to this object (all unassigned). If force=True, will overwrite an existing
+        segmentation_map. 
+        """
+
+        if self.segmentation_map is not None:
+            if force == True:
+                logger.debug("Overwriting existing segmentation_map with default.")
+            else:
+                logger.debug("Not overwriting existing segmentation_map with default.")
+                return
+
+        self.segmentation_map = segmap_unassigned_value * np.ones_like(self.data, dtype=np.int32)
+
+        return
+
+    def add_default_background_map(self, force=False):
+        """Adds a default background_map to this object (all 0.). If force=True, will overwrite an existing
+        background_map. 
+        """
+
+        if self.background_map is not None:
+            if force == True:
+                logger.debug("Overwriting existing background_map with default.")
+            else:
+                logger.debug("Not overwriting existing background_map with default.")
+                return
+
+        self.background_map = np.zeros_like(self.data, dtype=float)
+
+        return
+
+    def add_default_weight_map(self, force=False):
+        """Adds a default weight_map to this object (all 0.). If force=True, will overwrite an existing
+        weight_map. 
+        """
+
+        if self.weight_map is not None:
+            if force == True:
+                logger.debug("Overwriting existing weight_map with default.")
+            else:
+                logger.debug("Not overwriting existing weight_map with default.")
+                return
+
+        self.weight_map = np.ones_like(self.data, dtype=float)
+
+        return
+
+    def add_default_header(self, force=False):
+        """Adds a default header to this object (only required values). If force=True, will overwrite an existing
+        header. 
+        """
+
+        if self.header is not None:
+            if force == True:
+                logger.debug("Overwriting existing header with default.")
+            else:
+                logger.debug("Not overwriting existing header with default.")
+                return
+
+        self.header = astropy.io.fits.Header()
+
+        return
+
+    def add_default_wcs(self, force=False):
+        """Adds a default wcs to this object (pixel scale 1.0). If force=True, will overwrite an existing wcs.
+        """
+
+        if self.wcs is not None:
+            if force == True:
+                logger.debug("Overwriting existing wcs with default.")
+            else:
+                logger.debug("Not overwriting existing wcs with default.")
+                return
+
+        self.wcs = astropy.wcs.WCS(astropy.io.fits.Header())
+
+        return
 
     def pix2world(self, x, y, origin=0):
         """Converts x and y pixel coordinates to ra and dec world coordinates.
