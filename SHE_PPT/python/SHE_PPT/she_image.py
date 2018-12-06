@@ -1209,6 +1209,11 @@ class SHEImage(object):
         if (dx == 0) or (dy == 0):
             raise ValueError("Differentials dx and dy must not be zero.")
 
+        # Correct for offset if applicable
+        if self.offset is not None:
+            x += self.offset[0]
+            y += self.offset[1]
+
         # We'll calculate the transformation empirically by using small steps
         # in x and y
         ra_0, dec_0 = self.pix2world(x, y, origin=origin)
@@ -1336,6 +1341,11 @@ class SHEImage(object):
             rotation matrix.
         """
 
+        # Correct for offset if applicable
+        if self.offset is not None:
+            x += self.offset[0]
+            y += self.offset[1]
+
         # dx and dy are checked in get_pix2world_transformation, so no need to check here
         # It also handles the addition of the offset to x and y
 
@@ -1426,6 +1436,11 @@ class SHEImage(object):
 
         """
 
+        # Correct for offset if applicable
+        if self.offset is not None:
+            x += self.offset[0]
+            y += self.offset[1]
+
         local_wcs = self.galsim_wcs.jacobian(image_pos=galsim.PositionD(x, y))
 
         # We need to use the inverse of the local wcs to get the pix2world decomposition
@@ -1510,6 +1525,11 @@ class SHEImage(object):
             Rotation angle from pixel coords to world coords in radians
 
         """
+
+        # Correct for offset if applicable
+        if self.offset is not None:
+            x += self.offset[0]
+            y += self.offset[1]
 
         if (dx == 0) and (dy == 0):
             raise ValueError("Differentials dx and dy must not both be zero.")
