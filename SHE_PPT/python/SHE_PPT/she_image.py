@@ -1168,13 +1168,13 @@ class SHEImage(object):
 
         return x, y
 
-    def get_pix2world_transformation(self, x, y, dx=0.1, dy=0.1, spatial_ra=False, origin=0, norm=False):
+    def get_pix2world_transformation(self, x=None, y=None, dx=0.1, dy=0.1, spatial_ra=False, origin=0, norm=False):
         """Gets the local transformation matrix between pixel and world (ra/dec) coordinates at the specified location.
 
         Parameters
         ----------
         x : float
-            x pixel coordinate
+            x pixel coordinate. If not provided, will use centre of image
         y : float
             idem for y
         dx : float
@@ -1208,6 +1208,12 @@ class SHEImage(object):
 
         if (dx == 0) or (dy == 0):
             raise ValueError("Differentials dx and dy must not be zero.")
+
+        # If x or y isn't provided, use the centre of the image
+        if x is None:
+            x = (self.shape[0] - 1) / 2.
+        if y is None:
+            y = (self.shape[1] - 1) / 2.
 
         # Correct for offset if applicable
         if self.offset is not None:
@@ -1341,6 +1347,12 @@ class SHEImage(object):
             rotation matrix.
         """
 
+        # If x or y isn't provided, use the centre of the image
+        if x is None:
+            x = (self.shape[0] - 1) / 2.
+        if y is None:
+            y = (self.shape[1] - 1) / 2.
+
         # Correct for offset if applicable
         if self.offset is not None:
             x += self.offset[0]
@@ -1435,6 +1447,12 @@ class SHEImage(object):
           if decomposed.
 
         """
+
+        # If x or y isn't provided, use the centre of the image
+        if x is None:
+            x = (self.shape[0] - 1) / 2.
+        if y is None:
+            y = (self.shape[1] - 1) / 2.
 
         # Correct for offset if applicable
         if self.offset is not None:
