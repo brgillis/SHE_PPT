@@ -577,23 +577,38 @@ class SHEImage(object):
         Technical note: all the arrays read from FITS get "transposed", so that the array-properties of SHEImage can be
         indexed with [x,y] using the same orientation-convention as DS9 and SExtractor uses, that is, [0,0] is bottom left.
 
-        Args:
-            filepath: path to the FITS file containing the primary data and header to be read
-            data_ext: name or index of the primary HDU, containing the data and the header.
-            mask_ext: name or index of the extension HDU containing the mask.
-                Set both mask_ext and mask_filepath to None to not read in any mask.
-            noisemap_ext: idem, for the noisemap
-            segmentation_map_ext: idem, for the segmentation_map
-            background_map_ext: idem, for the background_map
-            weight_map_ext: idem, for the weight_map
-            mask_filepath: a separate filepath to read the mask from.
-                If you specify this, also set mask_ext accordingly (at least set it to 0 if the file has only one HDU).
-            noisemap_filepath: idem, for the noisemap
-            segmentation_map_filepath: idem, for the segmentation_map
-            background_map_filepath: idem, for the background_map
-            weight_map_filepath: idem, for the weight_map
-            workdir: The working directory, where files can be found
-            apply_sc3_fix: Whether or not to apply fix for bad headers used in SC3 data
+        Parameters
+        ----------
+        filepath: str
+            path to the FITS file containing the primary data and header to be read
+        data_ext: str
+            name or index of the primary HDU, containing the data and the header.
+        mask_ext: str
+            name or index of the extension HDU containing the mask.
+            Set both mask_ext and mask_filepath to None to not read in any mask.
+        noisemap_ext: str
+            idem, for the noisemap
+        segmentation_map_ext: str
+            idem, for the segmentation_map
+        background_map_ext: str
+            idem, for the background_map
+        weight_map_ext: str
+            idem, for the weight_map
+        mask_filepath: str
+            a separate filepath to read the mask from.
+            If you specify this, also set mask_ext accordingly (at least set it to 0 if the file has only one HDU).
+        noisemap_filepath: str
+            idem, for the noisemap
+        segmentation_map_filepath: str
+            idem, for the segmentation_map
+        background_map_filepath: str
+            idem, for the background_map
+        weight_map_filepath: str
+            idem, for the weight_map
+        workdir: str
+            The working directory, where files can be found
+        apply_sc3_fix: bool
+            Whether or not to apply fix for bad headers used in SC3 data
 
         """
 
@@ -611,8 +626,7 @@ class SHEImage(object):
 
         # Removing the mandatory cards (that were automatically added to the
         # header if write_to_fits was used)
-        logger.debug(
-            "The raw primary header has {} keys".format(len(list(header.keys()))))
+        logger.debug("The raw primary header has {} keys".format(len(list(header.keys()))))
         for keyword in ["SIMPLE", "BITPIX", "NAXIS", "NAXIS1", "NAXIS2", "EXTEND"]:
             if keyword in header:
                 header.remove(keyword)
@@ -621,8 +635,7 @@ class SHEImage(object):
                 if keyword in header:
                     header.remove(keyword)
 
-        logger.debug(
-            "The cleaned header has {} keys".format(len(list(header.keys()))))
+        logger.debug("The cleaned header has {} keys".format(len(list(header.keys()))))
 
         # Reading the mask
         if mask_filepath is not None:
@@ -664,11 +677,8 @@ class SHEImage(object):
                 workdir, weight_map_filepath)
         else:
             qualified_weight_map_filepath = None
-        try:
             weight_map = cls._get_secondary_data_from_fits(qualified_filepath, qualified_weight_map_filepath,
                                                            weight_map_ext)
-        except KeyError:
-            weight_map = None
 
         # Building and returning the new object
         newimg = SHEImage(data=data, mask=mask, noisemap=noisemap, segmentation_map=segmentation_map,
@@ -682,17 +692,22 @@ class SHEImage(object):
     def _get_secondary_data_from_fits(cls, primary_filepath, special_filepath, ext):
         """Private helper for getting mask or noisemap, defining the logic of the related keyword arguments
 
-        This function might return None, if both special_filepath and ext are None.
+        This function might return None, if both special_filepath and ext are None, or if the extension doesn't
+        exist in the file.
         """
 
         outarray = None
+
         if special_filepath is None:
-            if ext is not None:
-                outarray = cls._get_specific_hdu_content_from_fits(
-                    primary_filepath, ext=ext)
+            filepath = primary_filepath
         else:
-            outarray = cls._get_specific_hdu_content_from_fits(
-                special_filepath, ext=ext)
+            filepath = special_filepath
+
+        try:
+            outarray = cls._get_specific_hdu_content_from_fits(filepath, ext=ext)
+        except KeyError:
+            logger.debug("Extension " + str(ext) + " not found in fits file " + filepath + ".")
+            return None
 
         return outarray
 
@@ -715,8 +730,7 @@ class SHEImage(object):
                     "File '{}' has several HDUs, but no extension was specified! Using primary HDU.".format(filepath))
             ext = "PRIMARY"
 
-        logger.debug(
-            "Accessing extension '{}' out of {} available HDUs...".format(ext, nhdu))
+        logger.debug("Accessing extension '{}' out of {} available HDUs...".format(ext, nhdu))
         data = hdulist[ext].data.transpose()
         if not data.ndim == 2:
             raise ValueError("Primary HDU must contain a 2D image")
