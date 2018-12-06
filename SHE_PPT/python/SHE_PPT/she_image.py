@@ -530,15 +530,15 @@ class SHEImage(object):
                 maskhdu = astropy.io.fits.ImageHDU(
                     data=self.mask.transpose(), name="MASK")
                 hdulist.append(maskhdu)
-            if self.mask is not None:
+            if self.noisemap is not None:
                 noisemaphdu = astropy.io.fits.ImageHDU(
                     data=self.noisemap.transpose(), name="NOISEMAP")
                 hdulist.append(noisemaphdu)
-            if self.mask is not None:
+            if self.segmentation_map is not None:
                 segmaphdu = astropy.io.fits.ImageHDU(
                     data=self.segmentation_map.transpose(), name="SEGMAP")
                 hdulist.append(segmaphdu)
-            if self.mask is not None:
+            if self.background_map is not None:
                 bkgmaphdu = astropy.io.fits.ImageHDU(
                     data=self.background_map.transpose(), name="BKGMAP")
                 hdulist.append(bkgmaphdu)
