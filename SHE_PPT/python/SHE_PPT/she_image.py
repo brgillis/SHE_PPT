@@ -293,8 +293,13 @@ class SHEImage(object):
                 else:
                     # If no offset in the header, add it to that
                     self._header = deepcopy(header_object)
-                    self._header["SHEIOFX"] = (self.offset[0], "SHEImage x offset in pixels")
-                    self._header["SHEIOFY"] = (self.offset[1], "SHEImage y offset in pixels")
+                    try:
+                        self._header["SHEIOFX"] = (self.offset[0], "SHEImage x offset in pixels")
+                        self._header["SHEIOFY"] = (self.offset[1], "SHEImage y offset in pixels")
+                    except AttributeError:
+                        # This will occur if the offset isn't set up yet, so use default values
+                        self._header["SHEIOFX"] = (0., "SHEImage x offset in pixels")
+                        self._header["SHEIOFY"] = (0., "SHEImage y offset in pixels")
             else:
                 raise ValueError("The header must be an astropy.io.fits.Header instance")
 
