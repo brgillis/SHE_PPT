@@ -23,7 +23,7 @@ import os
 from astropy.table import Table
 import pytest
 
-from ElementsServices.DataSync import downloadTestData
+from ElementsServices.DataSync import downloadTestData, localTestFile
 from SHE_PPT import magic_values as mv
 from SHE_PPT import mdb
 import numpy as np
@@ -41,7 +41,7 @@ class TestMDB:
         cls.test_key = "SpaceSegment.Instrument.VIS.VISDetectorPixelLongDimensionFormat"
         
         downloadTestData("testdata/sync.conf", "testdata/test_mdb.txt")
-        cls.filename = os.path.join(mv.test_datadir,"sample_mdb.xml")
+        cls.filename = localTestFile(mv.test_datadir,"sample_mdb.xml")
 
         return
 

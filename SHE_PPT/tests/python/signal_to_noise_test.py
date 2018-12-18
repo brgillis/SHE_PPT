@@ -23,7 +23,7 @@ __updated__ = "2018-12-18"
 from os.path import join
 import pytest
 
-from ElementsServices.DataSync import downloadTestData
+from ElementsServices.DataSync import downloadTestData, localTestFile
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.file_io import read_pickled_product, find_file
@@ -45,7 +45,7 @@ class TestCase:
         self.workdir = tmpdir.strpath
         self.logdir = join(tmpdir.strpath, "logs")
         downloadTestData("testdata/sync.conf", "testdata/test_data_stack.txt")
-        self.data_stack_filename = join(mv.test_datadir,"test_data_stack.bin")
+        self.data_stack_filename = localTestFile(mv.test_datadir,"test_data_stack.bin")
 
         return
 
