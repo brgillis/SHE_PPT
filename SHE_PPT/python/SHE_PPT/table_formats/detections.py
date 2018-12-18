@@ -21,12 +21,11 @@
 
 from collections import OrderedDict
 
-from astropy.table import Table
-
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import hash_any
+from astropy.table import Table
 
 
 logger = getLogger(mv.logger_name)
@@ -104,162 +103,177 @@ class DetectionsTableFormat(object):
 
         # Column names and info
 
-        self.ID = set_column_properties(
-            "ObjectId", dtype=">i8", fits_dtype="K")
+        self.ID = set_column_properties("OBJECT_ID", dtype=">i8", fits_dtype="K")
 
-        self.seg_ID = set_column_properties(
-            "SEGMENTATION_MAP_ID", is_optional=True, dtype=">i4", fits_dtype="J")
+        self.seg_ID = set_column_properties("SEGMENTATION_MAP_ID", dtype=">i8", fits_dtype="K")
 
-        self.gal_x_world = set_column_properties(
-            "RightAscension", is_optional=False, comment="deg")
-        self.gal_y_world = set_column_properties(
-            "Declination", is_optional=False, comment="deg")
+        self.gal_x_world = set_column_properties("RIGHT_ASCENSION", is_optional=False, comment="deg")
+        self.gal_y_world = set_column_properties("DECLINATION", is_optional=False, comment="deg")
 
-        self.FluxGextDECamAper = set_column_properties(
-            "FluxGextDECamAper", is_optional=True, comment=None)
-        self.FluxRextDECamAper = set_column_properties(
-            "FluxRextDECamAper", is_optional=True, comment=None)
-        self.FluxIextDECamAper = set_column_properties(
-            "FluxIextDECamAper", is_optional=True, comment=None)
-        self.FluxZextDECamAper = set_column_properties(
-            "FluxZextDECamAper", is_optional=True, comment=None)
-        self.FluxYextDECamAper = set_column_properties(
-            "FluxYextDECamAper", is_optional=True, comment=None)
+        self.MAG_G_EXT_DECAM_APER = set_column_properties("MAG_G_EXT_DECAM_APER", is_optional=True, comment=None)
+        self.MAG_R_EXT_DECAM_APER = set_column_properties("MAG_R_EXT_DECAM_APER", is_optional=True, comment=None)
+        self.MAG_I_EXT_DECAM_APER = set_column_properties("MAG_I_EXT_DECAM_APER", is_optional=True, comment=None)
+        self.MAG_Z_EXT_DECAM_APER = set_column_properties("MAG_Z_EXT_DECAM_APER", is_optional=True, comment=None)
 
-        self.FluxUextOmegaCAMAper = set_column_properties(
-            "FluxUextOmegaCAMAper", is_optional=True, comment=None)
-        self.FluxGextOmegaCAMAper = set_column_properties(
-            "FluxGextOmegaCAMAper", is_optional=True, comment=None)
-        self.FluxRextOmegaCAMAper = set_column_properties(
-            "FluxRextOmegaCAMAper", is_optional=True, comment=None)
-        self.FluxIextOmegaCAMAper = set_column_properties(
-            "FluxIextOmegaCAMAper", is_optional=True, comment=None)
+        self.MAG_U_EXT_OMEGACAM_APER = set_column_properties("MAG_U_EXT_OMEGACAM_APER", is_optional=True, comment=None)
+        self.MAG_G_EXT_OMEGACAM_APER = set_column_properties("MAG_G_EXT_OMEGACAM_APER", is_optional=True, comment=None)
+        self.MAG_R_EXT_OMEGACAM_APER = set_column_properties("MAG_R_EXT_OMEGACAM_APER", is_optional=True, comment=None)
+        self.MAG_I_EXT_OMEGACAM_APER = set_column_properties("MAG_I_EXT_OMEGACAM_APER", is_optional=True, comment=None)
 
-        self.FluxVISAper = set_column_properties(
-            "FluxVISAper", is_optional=True, comment=None)
-        self.FluxYAper = set_column_properties(
-            "FluxYAper", is_optional=True, comment=None)
-        self.FluxJAper = set_column_properties(
-            "FluxJAper", is_optional=True, comment=None)
-        self.FluxHAper = set_column_properties(
-            "FluxHAper", is_optional=True, comment=None)
+        self.MAG_U_EXT_LSST_APER = set_column_properties("MAG_U_EXT_LSST_APER", is_optional=True, comment=None)
+        self.MAG_G_EXT_LSST_APER = set_column_properties("MAG_G_EXT_LSST_APER", is_optional=True, comment=None)
+        self.MAG_R_EXT_LSST_APER = set_column_properties("MAG_R_EXT_LSST_APER", is_optional=True, comment=None)
+        self.MAG_I_EXT_LSST_APER = set_column_properties("MAG_I_EXT_LSST_APER", is_optional=True, comment=None)
+        self.MAG_Z_EXT_LSST_APER = set_column_properties("MAG_Z_EXT_LSST_APER", is_optional=True, comment=None)
 
-        self.FluxerrGextDECamAper = set_column_properties(
-            "FluxerrGextDECamAper", is_optional=True, comment=None)
-        self.FluxerrRextDECamAper = set_column_properties(
-            "FluxerrRextDECamAper", is_optional=True, comment=None)
-        self.FluxerrIextDECamAper = set_column_properties(
-            "FluxerrIextDECamAper", is_optional=True, comment=None)
-        self.FluxerrZextDECamAper = set_column_properties(
-            "FluxerrZextDECamAper", is_optional=True, comment=None)
-        self.FluxerrYextDECamAper = set_column_properties(
-            "FluxerrYextDECamAper", is_optional=True, comment=None)
+        self.MAG_VIS_APER = set_column_properties("MAG_VIS_APER", is_optional=True, comment=None)
+        self.MAG_Y_APER = set_column_properties("MAG_Y_APER", is_optional=True, comment=None)
+        self.MAG_J_APER = set_column_properties("MAG_J_APER", is_optional=True, comment=None)
+        self.MAG_H_APER = set_column_properties("MAG_H_APER", is_optional=True, comment=None)
 
-        self.FluxerrUextOmegaCAMAper = set_column_properties(
-            "FluxerrUextOmegaCAMAper", is_optional=True, comment=None)
-        self.FluxerrGextOmegaCAMAper = set_column_properties(
-            "FluxerrGextOmegaCAMAper", is_optional=True, comment=None)
-        self.FluxerrRextOmegaCAMAper = set_column_properties(
-            "FluxerrRextOmegaCAMAper", is_optional=True, comment=None)
-        self.FluxerrIextOmegaCAMAper = set_column_properties(
-            "FluxerrIextOmegaCAMAper", is_optional=True, comment=None)
+        self.MAGERR_G_EXT_DECAM_APER = set_column_properties("MAGERR_G_EXT_DECAM_APER", is_optional=True, comment=None)
+        self.MAGERR_R_EXT_DECAM_APER = set_column_properties("MAGERR_R_EXT_DECAM_APER", is_optional=True, comment=None)
+        self.MAGERR_I_EXT_DECAM_APER = set_column_properties("MAGERR_I_EXT_DECAM_APER", is_optional=True, comment=None)
+        self.MAGERR_Z_EXT_DECAM_APER = set_column_properties("MAGERR_Z_EXT_DECAM_APER", is_optional=True, comment=None)
 
-        self.FluxerrVISAper = set_column_properties(
-            "FluxerrVISAper", is_optional=True, comment=None)
-        self.FluxerrYAper = set_column_properties(
-            "FluxerrYAper", is_optional=True, comment=None)
-        self.FluxerrJAper = set_column_properties(
-            "FluxerrJAper", is_optional=True, comment=None)
-        self.FluxerrHAper = set_column_properties(
-            "FluxerrHAper", is_optional=True, comment=None)
+        self.MAGERR_U_EXT_OMEGACAM_APER = set_column_properties(
+            "MAGERR_U_EXT_OMEGACAM_APER", is_optional=True, comment=None)
+        self.MAGERR_G_EXT_OMEGACAM_APER = set_column_properties(
+            "MAGERR_G_EXT_OMEGACAM_APER", is_optional=True, comment=None)
+        self.MAGERR_R_EXT_OMEGACAM_APER = set_column_properties(
+            "MAGERR_R_EXT_OMEGACAM_APER", is_optional=True, comment=None)
+        self.MAGERR_I_EXT_OMEGACAM_APER = set_column_properties(
+            "MAGERR_I_EXT_OMEGACAM_APER", is_optional=True, comment=None)
 
-        self.FluxGextDECamTphot = set_column_properties(
-            "FluxGextDECamTphot", is_optional=True, comment=None)
-        self.FluxRextDECamTphot = set_column_properties(
-            "FluxRextDECamTphot", is_optional=True, comment=None)
-        self.FluxIextDECamTphot = set_column_properties(
-            "FluxIextDECamTphot", is_optional=True, comment=None)
-        self.FluxZextDECamTphot = set_column_properties(
-            "FluxZextDECamTphot", is_optional=True, comment=None)
-        self.FluxYextDECamTphot = set_column_properties(
-            "FluxYextDECamTphot", is_optional=True, comment=None)
+        self.MAGERR_U_EXT_LSST_APER = set_column_properties("MAGERR_U_EXT_LSST_APER", is_optional=True, comment=None)
+        self.MAGERR_G_EXT_LSST_APER = set_column_properties("MAGERR_G_EXT_LSST_APER", is_optional=True, comment=None)
+        self.MAGERR_R_EXT_LSST_APER = set_column_properties("MAGERR_R_EXT_LSST_APER", is_optional=True, comment=None)
+        self.MAGERR_I_EXT_LSST_APER = set_column_properties("MAGERR_I_EXT_LSST_APER", is_optional=True, comment=None)
+        self.MAGERR_Z_EXT_LSST_APER = set_column_properties("MAGERR_Z_EXT_LSST_APER", is_optional=True, comment=None)
 
-        self.FluxUextOmegaCAMTphot = set_column_properties(
-            "FluxUextOmegaCAMTphot", is_optional=True, comment=None)
-        self.FluxGextOmegaCAMTphot = set_column_properties(
-            "FluxGextOmegaCAMTphot", is_optional=True, comment=None)
-        self.FluxRextOmegaCAMTphot = set_column_properties(
-            "FluxRextOmegaCAMTphot", is_optional=True, comment=None)
-        self.FluxIextOmegaCAMTphot = set_column_properties(
-            "FluxIextOmegaCAMTphot", is_optional=True, comment=None)
-        self.FluxerrGextDECamTphot = set_column_properties(
-            "FluxerrGextDECamTphot", is_optional=True, comment=None)
-        self.FluxerrRextDECamTphot = set_column_properties(
-            "FluxerrRextDECamTphot", is_optional=True, comment=None)
-        self.FluxerrIextDECamTphot = set_column_properties(
-            "FluxerrIextDECamTphot", is_optional=True, comment=None)
-        self.FluxerrZextDECamTphot = set_column_properties(
-            "FluxerrZextDECamTphot", is_optional=True, comment=None)
-        self.FluxerrYextDECamTphot = set_column_properties(
-            "FluxerrYextDECamTphot", is_optional=True, comment=None)
+        self.MAGERR_VIS_APER = set_column_properties("MAGERR_VIS_APER", is_optional=True, comment=None)
+        self.MAGERR_Y_APER = set_column_properties("MAGERR_Y_APER", is_optional=True, comment=None)
+        self.MAGERR_J_APER = set_column_properties("MAGERR_J_APER", is_optional=True, comment=None)
+        self.MAGERR_H_APER = set_column_properties("MAGERR_H_APER", is_optional=True, comment=None)
 
-        self.FluxerrUextOmegaCAMTphot = set_column_properties(
-            "FluxerrUextOmegaCAMTphot", is_optional=True, comment=None)
-        self.FluxerrGextOmegaCAMTphot = set_column_properties(
-            "FluxerrGextOmegaCAMTphot", is_optional=True, comment=None)
-        self.FluxerrRextOmegaCAMTphot = set_column_properties(
-            "FluxerrRextOmegaCAMTphot", is_optional=True, comment=None)
-        self.FluxerrIextOmegaCAMTphot = set_column_properties(
-            "FluxerrIextOmegaCAMTphot", is_optional=True, comment=None)
+        self.SN_G_EXT_DECAM_APER = set_column_properties("SN_G_EXT_DECAM_APER", is_optional=True, comment=None)
+        self.SN_R_EXT_DECAM_APER = set_column_properties("SN_R_EXT_DECAM_APER", is_optional=True, comment=None)
+        self.SN_I_EXT_DECAM_APER = set_column_properties("SN_I_EXT_DECAM_APER", is_optional=True, comment=None)
+        self.SN_Z_EXT_DECAM_APER = set_column_properties("SN_Z_EXT_DECAM_APER", is_optional=True, comment=None)
 
-        self.FlagGextDECam = set_column_properties(
-            "FlagGextDECam", is_optional=True, comment=None)
-        self.FlagRextDECam = set_column_properties(
-            "FlagRextDECam", is_optional=True, comment=None)
-        self.FlagIextDECam = set_column_properties(
-            "FlagIextDECam", is_optional=True, comment=None)
-        self.FlagZextDECam = set_column_properties(
-            "FlagZextDECam", is_optional=True, comment=None)
-        self.FlagYextDECam = set_column_properties(
-            "FlagYextDECam", is_optional=True, comment=None)
+        self.SN_U_EXT_OMEGACAM_APER = set_column_properties("SN_U_EXT_OMEGACAM_APER", is_optional=True, comment=None)
+        self.SN_G_EXT_OMEGACAM_APER = set_column_properties("SN_G_EXT_OMEGACAM_APER", is_optional=True, comment=None)
+        self.SN_R_EXT_OMEGACAM_APER = set_column_properties("SN_R_EXT_OMEGACAM_APER", is_optional=True, comment=None)
+        self.SN_I_EXT_OMEGACAM_APER = set_column_properties("SN_I_EXT_OMEGACAM_APER", is_optional=True, comment=None)
 
-        self.FlagUextOmegaCAM = set_column_properties(
-            "FlagUextOmegaCAM", is_optional=True, comment=None)
-        self.FlagGextOmegaCAM = set_column_properties(
-            "FlagGextOmegaCAM", is_optional=True, comment=None)
-        self.FlagRextOmegaCAM = set_column_properties(
-            "FlagRextOmegaCAM", is_optional=True, comment=None)
-        self.FlagIextOmegaCAM = set_column_properties(
-            "FlagIextOmegaCAM", is_optional=True, comment=None)
+        self.SN_U_EXT_LSST_APER = set_column_properties("SN_U_EXT_LSST_APER", is_optional=True, comment=None)
+        self.SN_G_EXT_LSST_APER = set_column_properties("SN_G_EXT_LSST_APER", is_optional=True, comment=None)
+        self.SN_R_EXT_LSST_APER = set_column_properties("SN_R_EXT_LSST_APER", is_optional=True, comment=None)
+        self.SN_I_EXT_LSST_APER = set_column_properties("SN_I_EXT_LSST_APER", is_optional=True, comment=None)
+        self.SN_Z_EXT_LSST_APER = set_column_properties("SN_Z_EXT_LSST_APER", is_optional=True, comment=None)
 
-        self.FlagVIS = set_column_properties(
-            "FlagVIS", is_optional=True, comment=None)
-        self.FlagY = set_column_properties(
-            "FlagY", is_optional=True, comment=None)
-        self.FlagJ = set_column_properties(
-            "FlagJ", is_optional=True, comment=None)
-        self.FlagH = set_column_properties(
-            "FlagH", is_optional=True, comment=None)
+        self.SN_VIS_APER = set_column_properties("SN_VIS_APER", is_optional=True, comment=None)
+        self.SN_Y_APER = set_column_properties("SN_Y_APER", is_optional=True, comment=None)
+        self.SN_J_APER = set_column_properties("SN_J_APER", is_optional=True, comment=None)
+        self.SN_H_APER = set_column_properties("SN_H_APER", is_optional=True, comment=None)
 
-        self.DeblendingFlag = set_column_properties(
-            "DeblendingFlag", is_optional=True, comment=None)
-        self.StarFlag = set_column_properties(
-            "StarFlag", is_optional=True, comment=None)
+        self.MAG_G_EXT_DECAM_TOTAL = set_column_properties("MAG_G_EXT_DECAM_TOTAL", is_optional=True, comment=None)
+        self.MAG_R_EXT_DECAM_TOTAL = set_column_properties("MAG_R_EXT_DECAM_TOTAL", is_optional=True, comment=None)
+        self.MAG_I_EXT_DECAM_TOTAL = set_column_properties("MAG_I_EXT_DECAM_TOTAL", is_optional=True, comment=None)
+        self.MAG_Z_EXT_DECAM_TOTAL = set_column_properties("MAG_Z_EXT_DECAM_TOTAL", is_optional=True, comment=None)
 
-        self.MuMax = set_column_properties(
-            "MuMax", is_optional=True, comment=None)
+        self.MAG_U_EXT_OMEGACAM_TOTAL = set_column_properties(
+            "MAG_U_EXT_OMEGACAM_TOTAL", is_optional=True, comment=None)
+        self.MAG_G_EXT_OMEGACAM_TOTAL = set_column_properties(
+            "MAG_G_EXT_OMEGACAM_TOTAL", is_optional=True, comment=None)
+        self.MAG_R_EXT_OMEGACAM_TOTAL = set_column_properties(
+            "MAG_R_EXT_OMEGACAM_TOTAL", is_optional=True, comment=None)
+        self.MAG_I_EXT_OMEGACAM_TOTAL = set_column_properties(
+            "MAG_I_EXT_OMEGACAM_TOTAL", is_optional=True, comment=None)
+
+        self.MAG_U_EXT_LSST_TOTAL = set_column_properties("MAG_U_EXT_LSST_TOTAL", is_optional=True, comment=None)
+        self.MAG_G_EXT_LSST_TOTAL = set_column_properties("MAG_G_EXT_LSST_TOTAL", is_optional=True, comment=None)
+        self.MAG_R_EXT_LSST_TOTAL = set_column_properties("MAG_R_EXT_LSST_TOTAL", is_optional=True, comment=None)
+        self.MAG_I_EXT_LSST_TOTAL = set_column_properties("MAG_I_EXT_LSST_TOTAL", is_optional=True, comment=None)
+        self.MAG_Z_EXT_LSST_TOTAL = set_column_properties("MAG_Z_EXT_LSST_TOTAL", is_optional=True, comment=None)
+
+        self.MAG_VIS_TOTAL = set_column_properties("MAG_VIS_TOTAL", is_optional=True, comment=None)
+        self.MAG_Y_TOTAL = set_column_properties("MAG_Y_TOTAL", is_optional=True, comment=None)
+        self.MAG_J_TOTAL = set_column_properties("MAG_J_TOTAL", is_optional=True, comment=None)
+        self.MAG_H_TOTAL = set_column_properties("MAG_H_TOTAL", is_optional=True, comment=None)
+
+        self.MAG_NIR_STACK_APER = set_column_properties("MAG_NIR_STACK_APER", is_optional=True, comment=None)
+        self.MAGERR_NIR_STACK_APER = set_column_properties("MAGERR_NIR_STACK_APER", is_optional=True, comment=None)
+        self.SN_NIR_STACK_APER = set_column_properties("SN_NIR_STACK_APER", is_optional=True, comment=None)
+
+        self.MAGERR_G_EXT_DECAM_TOTAL = set_column_properties(
+            "MAGERR_G_EXT_DECAM_TOTAL", is_optional=True, comment=None)
+        self.MAGERR_R_EXT_DECAM_TOTAL = set_column_properties(
+            "MAGERR_R_EXT_DECAM_TOTAL", is_optional=True, comment=None)
+        self.MAGERR_I_EXT_DECAM_TOTAL = set_column_properties(
+            "MAGERR_I_EXT_DECAM_TOTAL", is_optional=True, comment=None)
+        self.MAGERR_Z_EXT_DECAM_TOTAL = set_column_properties(
+            "MAGERR_Z_EXT_DECAM_TOTAL", is_optional=True, comment=None)
+
+        self.MAGERR_U_EXT_OMEGACAM_TOTAL = set_column_properties(
+            "MAGERR_U_EXT_OMEGACAM_TOTAL", is_optional=True, comment=None)
+        self.MAGERR_G_EXT_OMEGACAM_TOTAL = set_column_properties(
+            "MAGERR_G_EXT_OMEGACAM_TOTAL", is_optional=True, comment=None)
+        self.MAGERR_R_EXT_OMEGACAM_TOTAL = set_column_properties(
+            "MAGERR_R_EXT_OMEGACAM_TOTAL", is_optional=True, comment=None)
+        self.MAGERR_I_EXT_OMEGACAM_TOTAL = set_column_properties(
+            "MAGERR_I_EXT_OMEGACAM_TOTAL", is_optional=True, comment=None)
+
+        self.MAGERR_U_EXT_LSST_TOTAL = set_column_properties("MAGERR_U_EXT_LSST_TOTAL", is_optional=True, comment=None)
+        self.MAGERR_G_EXT_LSST_TOTAL = set_column_properties("MAGERR_G_EXT_LSST_TOTAL", is_optional=True, comment=None)
+        self.MAGERR_R_EXT_LSST_TOTAL = set_column_properties("MAGERR_R_EXT_LSST_TOTAL", is_optional=True, comment=None)
+        self.MAGERR_I_EXT_LSST_TOTAL = set_column_properties("MAGERR_I_EXT_LSST_TOTAL", is_optional=True, comment=None)
+        self.MAGERR_Z_EXT_LSST_TOTAL = set_column_properties("MAGERR_Z_EXT_LSST_TOTAL", is_optional=True, comment=None)
+
+        self.MAGERR_VIS_TOTAL = set_column_properties("MAGERR_VIS_TOTAL", is_optional=True, comment=None)
+        self.MAGERR_Y_TOTAL = set_column_properties("MAGERR_Y_TOTAL", is_optional=True, comment=None)
+        self.MAGERR_J_TOTAL = set_column_properties("MAGERR_J_TOTAL", is_optional=True, comment=None)
+        self.MAGERR_H_TOTAL = set_column_properties("MAGERR_H_TOTAL", is_optional=True, comment=None)
+
+        self.SN_G_EXT_DECAM_TOTAL = set_column_properties("SN_G_EXT_DECAM_TOTAL", is_optional=True, comment=None)
+        self.SN_R_EXT_DECAM_TOTAL = set_column_properties("SN_R_EXT_DECAM_TOTAL", is_optional=True, comment=None)
+        self.SN_I_EXT_DECAM_TOTAL = set_column_properties("SN_I_EXT_DECAM_TOTAL", is_optional=True, comment=None)
+        self.SN_Z_EXT_DECAM_TOTAL = set_column_properties("SN_Z_EXT_DECAM_TOTAL", is_optional=True, comment=None)
+
+        self.SN_U_EXT_OMEGACAM_TOTAL = set_column_properties("SN_U_EXT_OMEGACAM_TOTAL", is_optional=True, comment=None)
+        self.SN_G_EXT_OMEGACAM_TOTAL = set_column_properties("SN_G_EXT_OMEGACAM_TOTAL", is_optional=True, comment=None)
+        self.SN_R_EXT_OMEGACAM_TOTAL = set_column_properties("SN_R_EXT_OMEGACAM_TOTAL", is_optional=True, comment=None)
+        self.SN_I_EXT_OMEGACAM_TOTAL = set_column_properties("SN_I_EXT_OMEGACAM_TOTAL", is_optional=True, comment=None)
+
+        self.SN_U_EXT_LSST_TOTAL = set_column_properties("SN_U_EXT_LSST_TOTAL", is_optional=True, comment=None)
+        self.SN_G_EXT_LSST_TOTAL = set_column_properties("SN_G_EXT_LSST_TOTAL", is_optional=True, comment=None)
+        self.SN_R_EXT_LSST_TOTAL = set_column_properties("SN_R_EXT_LSST_TOTAL", is_optional=True, comment=None)
+        self.SN_I_EXT_LSST_TOTAL = set_column_properties("SN_I_EXT_LSST_TOTAL", is_optional=True, comment=None)
+        self.SN_Z_EXT_LSST_TOTAL = set_column_properties("SN_Z_EXT_LSST_TOTAL", is_optional=True, comment=None)
+
+        self.SN_VIS_TOTAL = set_column_properties("SN_VIS_TOTAL", is_optional=True, comment=None)
+        self.SN_Y_TOTAL = set_column_properties("SN_Y_TOTAL", is_optional=True, comment=None)
+        self.SN_J_TOTAL = set_column_properties("SN_J_TOTAL", is_optional=True, comment=None)
+        self.SN_H_TOTAL = set_column_properties("SN_H_TOTAL", is_optional=True, comment=None)
+
+        self.MAG_VIS_PSF = set_column_properties("MAG_VIS_PSF", is_optional=True, comment=None)
+        self.MAGERR_VIS_PSF = set_column_properties("MAGERR_VIS_PSF", is_optional=True, comment=None)
+        self.SN_VIS_PSF = set_column_properties("SN_VIS_PSF", is_optional=True, comment=None)
+
+        self.MAG_DETECTION_TOTAL = set_column_properties("MAG_DETECTION_TOTAL", is_optional=True, comment=None)
+        self.MAGERR_DETECTION_TOTAL = set_column_properties("MAGERR_DETECTION_TOTAL", is_optional=True, comment=None)
+        self.SN_DETECTION_TOTAL = set_column_properties("SN_DETECTION_TOTAL", is_optional=True, comment=None)
+
+        self.VARIABILITY_FLAG = set_column_properties("VARIABILITY_FLAG", is_optional=True, comment=None)
+        self.BINARY_FLAG = set_column_properties("BINARY_FLAG", is_optional=True, comment=None)
+        self.STAR_FLAG = set_column_properties("STAR_FLAG", is_optional=True, comment=None)
+        self.STAR_PROB = set_column_properties("STAR_PROB", is_optional=True, comment=None)
+        self.MAG_STARGAL_SEP = set_column_properties("MAG_STARGAL_SEP", is_optional=True, comment=None)
+        self.DET_QUALITY_FLAG = set_column_properties("DET_QUALITY_FLAG", is_optional=True, comment=None)
+        self.MU_MAX = set_column_properties("MU_MAX", is_optional=True, comment=None)
 
         self.Isoarea = set_column_properties(
             "Isoarea", is_optional=True, comment=None)
-
-        self.PositionAngle = set_column_properties(
-            "PositionAngle", is_optional=True, comment=None)
-
-        self.Ellipticity = set_column_properties(
-            "Ellipticity", is_optional=True, comment=None)
-
-        self.MagStarGal = set_column_properties(
-            "MAG_STARGAL_SEP", is_optional=True, comment=None)
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -269,6 +283,7 @@ class DetectionsTableFormat(object):
         for label in self.all:
             if not self.is_optional[label]:
                 self.all_required.append(label)
+
 
 # Define an instance of this object that can be imported
 detections_table_format = DetectionsTableFormat()

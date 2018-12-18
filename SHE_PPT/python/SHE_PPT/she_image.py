@@ -12,31 +12,29 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
-from copy import deepcopy
-
 """
 File: she_image.py
 
 Created on: Aug 17, 2017
 """
+# Avoid non-trivial "from" imports (as explicit is better than implicit)
 
-
+from copy import deepcopy
 import os
 
-import astropy.io.fits
-import astropy.wcs
 import galsim
 
 from SHE_PPT.magic_values import segmap_unassigned_value
 from SHE_PPT.mask import (as_bool, is_masked_bad,
                           is_masked_suspect_or_bad, masked_off_image)
 from SHE_PPT.utility import load_wcs
+import astropy.io.fits
+import astropy.wcs
 import numpy as np
 
 from . import logging
 
 
-# Avoid non-trivial "from" imports (as explicit is better than implicit)
 allowed_int_dtypes = (
     np.int8, np.int16, np.int32, np.uint8, np.uint16, np.uint32)
 
@@ -84,7 +82,7 @@ class SHEImage(object):
         """
 
         self.data = data  # Note the tests done in the setter method
-        self.mask = mask  # Note that we translate None in the setter method
+        self.mask = mask
         self.noisemap = noisemap
         self.segmentation_map = segmentation_map
         self.background_map = background_map
@@ -92,7 +90,7 @@ class SHEImage(object):
         self.header = header
         self.offset = offset
         self.wcs = wcs
-        
+
         self.galsim_wcs = None
 
         logger.debug("Created {}".format(str(self)))
@@ -136,8 +134,7 @@ class SHEImage(object):
     @mask.setter
     def mask(self, mask_array):
         if mask_array is None:
-            # Then we create an empty mask (0 means False means not masked)
-            self._mask = np.zeros(self._data.shape, dtype=np.int32)
+            self._mask = None
         else:
             if mask_array.ndim is not 2:
                 raise ValueError("The mask array must have 2 dimensions")
@@ -152,7 +149,7 @@ class SHEImage(object):
                     mask_array = mask_array.astype(np.int32, casting='safe')
                 except:
                     raise ValueError(
-                        "The mask array must be of np.int32 type (it is {})".format(mask_array.dtype))
+                        "The mask array must be of integer type (it is {})".format(mask_array.dtype))
             self._mask = mask_array
 
     @mask.deleter
@@ -162,7 +159,10 @@ class SHEImage(object):
     @property
     def boolmask(self):
         """A boolean summary of the mask, cannot be set, only get"""
-        return self._mask.astype(np.bool)
+        if self.mask is None:
+            return None
+        else:
+            return self.mask.astype(np.bool)
 
     @property
     def noisemap(self):
@@ -172,8 +172,7 @@ class SHEImage(object):
     @noisemap.setter
     def noisemap(self, noisemap_array):
         if noisemap_array is None:
-            # Then we create a flat noisemap
-            self._noisemap = np.ones(self._data.shape, dtype=float)
+            self._noisemap = None
         else:
             if noisemap_array.ndim is not 2:
                 raise ValueError("The noisemap array must have 2 dimensions")
@@ -194,9 +193,7 @@ class SHEImage(object):
     @segmentation_map.setter
     def segmentation_map(self, segmentation_map_array):
         if segmentation_map_array is None:
-            # Then we create an empty segmentation map)
-            self._segmentation_map = segmap_unassigned_value * \
-                np.ones(self._data.shape, dtype=np.int32)
+            self._segmentation_map = None
         else:
             if segmentation_map_array.ndim is not 2:
                 raise ValueError(
@@ -229,8 +226,7 @@ class SHEImage(object):
     @background_map.setter
     def background_map(self, background_map_array):
         if background_map_array is None:
-            # Then we create a flat, zero background map
-            self._background_map = np.zeros(self._data.shape, dtype=float)
+            self._background_map = None
         else:
             if background_map_array.ndim is not 2:
                 raise ValueError(
@@ -273,8 +269,11 @@ class SHEImage(object):
 
     @header.setter
     def header(self, header_object):
+        """Setter for the header of this image. Note that since the offset is stored in the header,
+           it's always deepcopied when set to avoid surprisingly changing the input.
+        """
         if header_object is None:
-            self._header = astropy.io.fits.Header()  # An empty header
+            self._header = None
         else:
             # Not very pythonic, but I suggest this to
             if isinstance(header_object, astropy.io.fits.Header):
@@ -282,24 +281,21 @@ class SHEImage(object):
                 # FITS files.
                 self._header = header_object
             else:
-                raise ValueError(
-                    "The header must be an astropy.io.fits.Header instance")
+                raise ValueError("The header must be an astropy.io.fits.Header instance")
+
+        return
 
     @header.deleter
     def header(self):
         del self._header
-        self._galsim_wcs = None
+        if hasattr(self, "_galsim_wcs"):
+            self._galsim_wcs = None
 
     @property
     def offset(self):
         """A [x_offset, y_offset] numpy array with 2 values, tracking the offset of extracted stamps
-
-        Note that internally, this offset is stored in the header, so that it is conserved by FITS i/o.
         """
-        if self._has_offset_in_header():
-            return np.array((self.header["SHEIOFX"], self.header["SHEIOFY"]))
-        else:
-            return np.array([0, 0])
+        return self._offset
 
     @offset.setter
     def offset(self, offset_tuple):
@@ -307,20 +303,13 @@ class SHEImage(object):
 
         We only set these header values if the offset_tuple is not None.
         """
-        if offset_tuple is not None:
+        if offset_tuple is None:
+            self._offset = np.array([0., 0.], dtype=float)
+        else:
             if len(offset_tuple) is not 2:
                 raise ValueError("A SHEImage.offset must have 2 items")
-            self.header["SHEIOFX"] = (
-                offset_tuple[0], "SHEImage x offset in pixels")
-            self.header["SHEIOFY"] = (
-                offset_tuple[1], "SHEImage y offset in pixels")
-
-    def _has_offset_in_header(self):
-        """Tests if the header contains the offset keywords"""
-        if "SHEIOFX" in list(self.header.keys()) and "SHEIOFY" in list(self.header.keys()):
-            return True
-        else:
-            return False
+            else:
+                self._offset = np.array(offset_tuple, dtype=float)
 
     @property
     # Just a shortcut, defined as a property in case we need to change
@@ -336,29 +325,30 @@ class SHEImage(object):
         if not (isinstance(wcs, astropy.wcs.WCS) or (wcs is None)):
             raise TypeError("wcs must be of type astropy.wcs.WCS")
         self._wcs = wcs
-        
+
         # Unload the galsim wcs
         self._galsim_wcs = None
 
     @wcs.deleter
     def wcs(self):
         del self._wcs
-        self._galsim_wcs = None
-        
+        if hasattr(self, "_galsim_wcs"):
+            self._galsim_wcs = None
+
     @property
     def galsim_wcs(self):
         """Get a GalSim-style WCS, which has some functions that astropy's lacks"""
-        
+
         # If not already loaded, load it
         if self._galsim_wcs is None:
             # Load from the header if possible
-            if self.header is not None and len(self.header)>0:
+            if self.header is not None and len(self.header) > 0:
                 self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.header)[0]
             elif self.wcs is not None:
                 self.galsim_wcs = galsim.wcs.readFromFitsHeader(self.wcs.to_header())[0]
             else:
                 raise ValueError("SHEImage must have a WCS set up or a WCS in its header in order to get a GalSim WCS.")
-        
+
         return self._galsim_wcs
 
     @galsim_wcs.setter
@@ -384,12 +374,16 @@ class SHEImage(object):
         """A short string with size information and the percentage of masked pixels"""
 
         shape_str = "{}x{}".format(self.shape[0], self.shape[1])
-        mask_str = "{}% masked".format(
-            100.0 * float(np.sum(self.boolmask)) / float(np.size(self.data)))
-        str_list = [shape_str, mask_str]
-        if self._has_offset_in_header():
-            offset_str = "offset [{}, {}]".format(*self.offset)
-            str_list.append(offset_str)
+        str_list = [shape_str]
+
+        if self.mask is not None:
+            mask_str = "{}% masked".format(
+                100.0 * float(np.sum(self.boolmask)) / float(np.size(self.data)))
+            str_list.append(mask_str)
+
+        offset_str = "offset [{}, {}]".format(*self.offset)
+        str_list.append(offset_str)
+
         return "SHEImage(" + ", ".join(str_list) + ")"
 
     def __eq__(self, rhs):
@@ -448,17 +442,23 @@ class SHEImage(object):
             Mask for the desired object. Values of True correspond to masked
             pixels (bad(/suspect) or don't belong to this object).
         """
+        # Raise an exception if the mask or segmentation map is None
+        if self.mask is None:
+            raise ValueError("Cannot get an object mask when mask is None")
+        if self.segmentation_map is None:
+            raise ValueError("Cannot get an object mask when segmentation_map is None")
+
         # First get the boolean version of the mask for suspect/bad pixels
         if mask_suspect:
-            pixel_mask = as_bool(is_masked_suspect_or_bad(self._mask))
+            pixel_mask = as_bool(is_masked_suspect_or_bad(self.mask))
         else:
-            pixel_mask = as_bool(is_masked_bad(self._mask))
+            pixel_mask = as_bool(is_masked_bad(self.mask))
 
         # Now get mask for other objects
-        other_mask = (self._segmentation_map != seg_id)
+        other_mask = (self.segmentation_map != seg_id)
         if not mask_unassigned:
             other_mask = np.logical_and(
-                other_mask, (self._segmentation_map != segmap_unassigned_value))
+                other_mask, (self.segmentation_map != segmap_unassigned_value))
 
         # Combine and return the masks
         object_mask = np.logical_or(pixel_mask, other_mask)
@@ -487,44 +487,53 @@ class SHEImage(object):
             for label in wcs_header:
                 # Overwrite any coming from the WCS
                 full_header[label] = (wcs_header[label], wcs_header.comments[label])
+        elif self.header is None:
+            full_header = astropy.io.fits.Header()  # An empty header
         else:
-            full_header = self.header
+            full_header = deepcopy(self.header)
+
+        # Add offset data to the header
+        full_header["SHEIOFX"] = self.offset[0]
+        full_header["SHEIOFY"] = self.offset[1]
 
         # Note that we transpose the numpy arrays, so to have the same pixel
         # convention as DS9 and SExtractor.
         datahdu = astropy.io.fits.PrimaryHDU(
             self.data.transpose(), header=full_header)
+
+        hdulist = astropy.io.fits.HDUList([datahdu])
+
         if not data_only:
-            maskhdu = astropy.io.fits.ImageHDU(
-                data=self.mask.transpose().astype(np.int32), name="MASK")
-            noisemaphdu = astropy.io.fits.ImageHDU(
-                data=self.noisemap.transpose(), name="NOISEMAP")
-            segmaphdu = astropy.io.fits.ImageHDU(
-                data=self.segmentation_map.transpose().astype(np.int32), name="SEGMAP")
-            bkgmaphdu = astropy.io.fits.ImageHDU(
-                data=self.background_map.transpose(), name="BKGMAP")
+
+            if self.mask is not None:
+                maskhdu = astropy.io.fits.ImageHDU(
+                    data=self.mask.transpose(), name="MASK")
+                hdulist.append(maskhdu)
+            if self.noisemap is not None:
+                noisemaphdu = astropy.io.fits.ImageHDU(
+                    data=self.noisemap.transpose(), name="NOISEMAP")
+                hdulist.append(noisemaphdu)
+            if self.segmentation_map is not None:
+                segmaphdu = astropy.io.fits.ImageHDU(
+                    data=self.segmentation_map.transpose(), name="SEGMAP")
+                hdulist.append(segmaphdu)
+            if self.background_map is not None:
+                bkgmaphdu = astropy.io.fits.ImageHDU(
+                    data=self.background_map.transpose(), name="BKGMAP")
+                hdulist.append(bkgmaphdu)
             if self.weight_map is not None:
                 wgtmaphdu = astropy.io.fits.ImageHDU(
                     data=self.weight_map.transpose(), name="WGTMAP")
-                hdulist = astropy.io.fits.HDUList(
-                    [datahdu, maskhdu, noisemaphdu, segmaphdu, bkgmaphdu, wgtmaphdu])
-            else:
-                hdulist = astropy.io.fits.HDUList(
-                    [datahdu, maskhdu, noisemaphdu, segmaphdu, bkgmaphdu])
-                
-
-        else:
-            hdulist = astropy.io.fits.HDUList([datahdu])
+                hdulist.append(wgtmaphdu)
 
         if clobber is True and os.path.exists(filepath):
-            logger.info("The output file exists and will get overwritten")
+            logger.debug("The output file exists and will get overwritten")
 
         hdulist.writeto(filepath, clobber=clobber)
         # Note that clobber is called overwrite in the latest astropy, but
         # backwards compatible.
 
-        logger.info(
-            "Wrote {} to the FITS file '{}'".format(str(self), filepath))
+        logger.debug("Wrote {} to the FITS file '{}'".format(str(self), filepath))
 
     @classmethod
     def read_from_fits(cls,
@@ -555,23 +564,38 @@ class SHEImage(object):
         Technical note: all the arrays read from FITS get "transposed", so that the array-properties of SHEImage can be
         indexed with [x,y] using the same orientation-convention as DS9 and SExtractor uses, that is, [0,0] is bottom left.
 
-        Args:
-            filepath: path to the FITS file containing the primary data and header to be read
-            data_ext: name or index of the primary HDU, containing the data and the header.
-            mask_ext: name or index of the extension HDU containing the mask.
-                Set both mask_ext and mask_filepath to None to not read in any mask.
-            noisemap_ext: idem, for the noisemap
-            segmentation_map_ext: idem, for the segmentation_map
-            background_map_ext: idem, for the background_map
-            weight_map_ext: idem, for the weight_map
-            mask_filepath: a separate filepath to read the mask from.
-                If you specify this, also set mask_ext accordingly (at least set it to 0 if the file has only one HDU).
-            noisemap_filepath: idem, for the noisemap
-            segmentation_map_filepath: idem, for the segmentation_map
-            background_map_filepath: idem, for the background_map
-            weight_map_filepath: idem, for the weight_map
-            workdir: The working directory, where files can be found
-            apply_sc3_fix: Whether or not to apply fix for bad headers used in SC3 data
+        Parameters
+        ----------
+        filepath: str
+            path to the FITS file containing the primary data and header to be read
+        data_ext: str
+            name or index of the primary HDU, containing the data and the header.
+        mask_ext: str
+            name or index of the extension HDU containing the mask.
+            Set both mask_ext and mask_filepath to None to not read in any mask.
+        noisemap_ext: str
+            idem, for the noisemap
+        segmentation_map_ext: str
+            idem, for the segmentation_map
+        background_map_ext: str
+            idem, for the background_map
+        weight_map_ext: str
+            idem, for the weight_map
+        mask_filepath: str
+            a separate filepath to read the mask from.
+            If you specify this, also set mask_ext accordingly (at least set it to 0 if the file has only one HDU).
+        noisemap_filepath: str
+            idem, for the noisemap
+        segmentation_map_filepath: str
+            idem, for the segmentation_map
+        background_map_filepath: str
+            idem, for the background_map
+        weight_map_filepath: str
+            idem, for the weight_map
+        workdir: str
+            The working directory, where files can be found
+        apply_sc3_fix: bool
+            Whether or not to apply fix for bad headers used in SC3 data
 
         """
 
@@ -589,8 +613,7 @@ class SHEImage(object):
 
         # Removing the mandatory cards (that were automatically added to the
         # header if write_to_fits was used)
-        logger.debug(
-            "The raw primary header has {} keys".format(len(list(header.keys()))))
+        logger.debug("The raw primary header has {} keys".format(len(list(header.keys()))))
         for keyword in ["SIMPLE", "BITPIX", "NAXIS", "NAXIS1", "NAXIS2", "EXTEND"]:
             if keyword in header:
                 header.remove(keyword)
@@ -599,8 +622,7 @@ class SHEImage(object):
                 if keyword in header:
                     header.remove(keyword)
 
-        logger.debug(
-            "The cleaned header has {} keys".format(len(list(header.keys()))))
+        logger.debug("The cleaned header has {} keys".format(len(list(header.keys()))))
 
         # Reading the mask
         if mask_filepath is not None:
@@ -642,13 +664,21 @@ class SHEImage(object):
                 workdir, weight_map_filepath)
         else:
             qualified_weight_map_filepath = None
-        weight_map = cls._get_secondary_data_from_fits(qualified_filepath, qualified_weight_map_filepath,
-                                                       weight_map_ext)
+            weight_map = cls._get_secondary_data_from_fits(qualified_filepath, qualified_weight_map_filepath,
+                                                           weight_map_ext)
+
+        # Getting the offset from the header
+        if not "SHEIOFX" in header and "SHEIOFY" in header:
+            offset = np.array([0., 0.])
+        else:
+            offset = np.array([header["SHEIOFX"], header["SHEIOFY"]])
+            header.remove("SHEIOFX")
+            header.remove("SHEIOFY")
 
         # Building and returning the new object
         newimg = SHEImage(data=data, mask=mask, noisemap=noisemap, segmentation_map=segmentation_map,
                           background_map=background_map, weight_map=weight_map,
-                          header=header, wcs=wcs)
+                          header=header, offset=offset, wcs=wcs)
 
         logger.info("Read {} from the file '{}'".format(str(newimg), filepath))
         return newimg
@@ -657,17 +687,22 @@ class SHEImage(object):
     def _get_secondary_data_from_fits(cls, primary_filepath, special_filepath, ext):
         """Private helper for getting mask or noisemap, defining the logic of the related keyword arguments
 
-        This function might return None, if both special_filepath and ext are None.
+        This function might return None, if both special_filepath and ext are None, or if the extension doesn't
+        exist in the file.
         """
 
         outarray = None
+
         if special_filepath is None:
-            if ext is not None:
-                outarray = cls._get_specific_hdu_content_from_fits(
-                    primary_filepath, ext=ext)
+            filepath = primary_filepath
         else:
-            outarray = cls._get_specific_hdu_content_from_fits(
-                special_filepath, ext=ext)
+            filepath = special_filepath
+
+        try:
+            outarray = cls._get_specific_hdu_content_from_fits(filepath, ext=ext)
+        except KeyError:
+            logger.debug("Extension " + str(ext) + " not found in fits file " + filepath + ".")
+            return None
 
         return outarray
 
@@ -690,8 +725,7 @@ class SHEImage(object):
                     "File '{}' has several HDUs, but no extension was specified! Using primary HDU.".format(filepath))
             ext = "PRIMARY"
 
-        logger.debug(
-            "Accessing extension '{}' out of {} available HDUs...".format(ext, nhdu))
+        logger.debug("Accessing extension '{}' out of {} available HDUs...".format(ext, nhdu))
         data = hdulist[ext].data.transpose()
         if not data.ndim == 2:
             raise ValueError("Primary HDU must contain a 2D image")
@@ -705,7 +739,7 @@ class SHEImage(object):
             return data
 
     def extract_stamp(self, x, y, width, height=None, indexconv="numpy", keep_header=False,
-                      none_if_out_of_bounds=False):
+                      none_if_out_of_bounds=False, force_all_properties=False):
         """Extracts a stamp and returns it as a new instance (using views of numpy arrays, i.e., without making a copy)
 
         The extracted stamp is centered on the given (x,y) coordinates and has shape (width, height).
@@ -718,8 +752,8 @@ class SHEImage(object):
             - "sextractor" follows the convention from SExtractor and (identically) DS9, where the bottom-left pixel
                 spreads from (0.5, 0.5) to (1.5, 1.5), and is therefore centered on (1.0, 1.0).
 
-        Bottomline: if SExtractor told you that there is a galaxy at a certain position, you can use this position directly
-        to extract a statistically-well-centered stamp as long as you set indexconv="sextractor".
+        Bottom line: if SExtractor told you that there is a galaxy at a certain position, you can use this position
+        directly to extract a statistically-well-centered stamp as long as you set indexconv="sextractor".
 
         The stamp can be partially (or even completely) outside of the image. Pixels of the stamp outside of the image
         will be set to zero, and masked.
@@ -741,8 +775,12 @@ class SHEImage(object):
             Set this to True if you want the stamp to get the header of the original image.
             By default (False), the stamp gets an empty header.
         none_if_out_of_bounds : bool
-            Set this to True if you want this method to return None if the stamp is entirely out of bounds of the image.
-            By default, this is set to False, which means it will instead return an entirely masked image in that case.
+            Set this to True if you want this method to return None if the stamp is entirely out of bounds of the
+            image. By default, this is set to False, which means it will instead return an entirely masked image in
+            that case.
+        force_all_properties : bool
+            Set this to True if you want to ensure that all properties of the stamp exist, even if they don't for
+            the parent. This will fill them in with default values.
 
         Return
         ------
@@ -782,13 +820,13 @@ class SHEImage(object):
 
         # And the header:
         if keep_header:
-            newheader = self.header
+            new_header = self.header
         else:
-            newheader = None
+            new_header = None
 
         # And defining the offset property of the stamp, taking into account
         # any current offset.
-        newoffset = self.offset + np.array([xmin, ymin])
+        new_offset = self.offset + np.array([xmin, ymin])
 
         # If these bounds are fully within the image range, the extraction is
         # easy.
@@ -796,7 +834,27 @@ class SHEImage(object):
             # We are fully within ghe image
             logger.debug("Extracting stamp [{}:{},{}:{}] fully within image of shape {}".format(
                 xmin, xmax, ymin, ymax, self.shape))
-            
+
+            if self.mask is None:
+                new_mask = None
+            else:
+                new_mask = self.mask[xmin:xmax, ymin:ymax]
+
+            if self.noisemap is None:
+                new_noisemap = None
+            else:
+                new_noisemap = self.noisemap[xmin:xmax, ymin:ymax]
+
+            if self.segmentation_map is None:
+                new_segmentation_map = None
+            else:
+                new_segmentation_map = self.segmentation_map[xmin:xmax, ymin:ymax]
+
+            if self.background_map is None:
+                new_background_map = None
+            else:
+                new_background_map = self.background_map[xmin:xmax, ymin:ymax]
+
             if self.weight_map is None:
                 new_weight_map = None
             else:
@@ -804,13 +862,13 @@ class SHEImage(object):
 
             newimg = SHEImage(
                 data=self.data[xmin:xmax, ymin:ymax],
-                mask=self.mask[xmin:xmax, ymin:ymax],
-                noisemap=self.noisemap[xmin:xmax, ymin:ymax],
-                segmentation_map=self.segmentation_map[xmin:xmax, ymin:ymax],
-                background_map=self.background_map[xmin:xmax, ymin:ymax],
+                mask=new_mask,
+                noisemap=new_noisemap,
+                segmentation_map=new_segmentation_map,
+                background_map=new_background_map,
                 weight_map=new_weight_map,
-                header=newheader,
-                offset=newoffset,
+                header=new_header,
+                offset=new_offset,
                 wcs=self.wcs,
             )
 
@@ -820,23 +878,6 @@ class SHEImage(object):
 
             # One solution would be to pad the image and extract, but that would need a lot of memory.
             # So instead we go for the more explicit bound computations.
-
-            # We first create new stamps, and we will later fill part of them
-            # with slices of the original.
-            data_stamp = np.zeros((width, height), dtype=self.data.dtype)
-            mask_stamp = np.ones(
-                (width, height), dtype=self.mask.dtype) * masked_off_image
-            noisemap_stamp = np.zeros(
-                (width, height), dtype=self.noisemap.dtype)
-            segmentation_map_stamp = np.ones(
-                (width, height), dtype=self.segmentation_map.dtype) * segmap_unassigned_value
-            background_map_stamp = np.zeros(
-                (width, height), dtype=self.background_map.dtype)
-            if self.weight_map is None:
-                weight_map_stamp = None
-            else:
-                weight_map_stamp = np.zeros(
-                    (width, height), dtype=self.weight_map.dtype)
 
             # Compute the bounds of the overlapping part of the stamp in the
             # original image
@@ -860,20 +901,50 @@ class SHEImage(object):
             overlap_slice_stamp = (slice(overlap_xmin_stamp, overlap_xmax_stamp), slice(
                 overlap_ymin_stamp, overlap_ymax_stamp))
 
+            # We first create new stamps, and we will later fill part of them
+            # with slices of the original.
+            data_stamp = np.zeros((width, height), dtype=self.data.dtype)
+
+            # Always create a mask stamp if partially off-image
+            mask_stamp = np.ones((width, height), dtype=np.int32) * masked_off_image
+
+            if self.noisemap is None:
+                noisemap_stamp = None
+            else:
+                noisemap_stamp = np.zeros((width, height), dtype=self.noisemap.dtype)
+
+            if self.segmentation_map is None:
+                segmentation_map_stamp = None
+            else:
+                segmentation_map_stamp = np.ones(
+                    (width, height), dtype=self.segmentation_map.dtype) * segmap_unassigned_value
+
+            if self.background_map is None:
+                background_map_stamp = None
+            else:
+                background_map_stamp = np.zeros((width, height), dtype=self.background_map.dtype)
+
+            if self.weight_map is None:
+                weight_map_stamp = None
+            else:
+                weight_map_stamp = np.zeros((width, height), dtype=self.weight_map.dtype)
+
             # Fill the stamp arrays:
             # If there is any overlap
             if (overlap_width > 0) and (overlap_height > 0):
                 data_stamp[overlap_slice_stamp] = self.data[overlap_slice]
-                mask_stamp[overlap_slice_stamp] = self.mask[overlap_slice]
-                noisemap_stamp[overlap_slice_stamp] = self.noisemap[
-                    overlap_slice]
-                segmentation_map_stamp[
-                    overlap_slice_stamp] = self.segmentation_map[overlap_slice]
-                background_map_stamp[
-                    overlap_slice_stamp] = self.background_map[overlap_slice]
+                if self.mask is not None:
+                    mask_stamp[overlap_slice_stamp] = self.mask[overlap_slice]
+                else:
+                    mask_stamp[overlap_slice_stamp] = 0
+                if self.noisemap is not None:
+                    noisemap_stamp[overlap_slice_stamp] = self.noisemap[overlap_slice]
+                if self.segmentation_map is not None:
+                    segmentation_map_stamp[overlap_slice_stamp] = self.segmentation_map[overlap_slice]
+                if self.background_map is not None:
+                    background_map_stamp[overlap_slice_stamp] = self.background_map[overlap_slice]
                 if self.weight_map is not None:
-                    weight_map_stamp[
-                        overlap_slice_stamp] = self.weight_map[overlap_slice]
+                    weight_map_stamp[overlap_slice_stamp] = self.weight_map[overlap_slice]
 
             # Create the new object
             newimg = SHEImage(
@@ -883,17 +954,136 @@ class SHEImage(object):
                 segmentation_map=segmentation_map_stamp,
                 background_map=background_map_stamp,
                 weight_map=weight_map_stamp,
-                header=newheader,
-                offset=newoffset,
+                header=new_header,
+                offset=new_offset,
                 wcs=self.wcs,
             )
 
             if overlap_width == 0 and overlap_height == 0:
-                logger.warning(
-                    "The extracted stamp is entirely outside of the image bounds!")
+                logger.warning("The extracted stamp is entirely outside of the image bounds!")
 
         assert newimg.shape == (width, height)
+
+        # If we're forcing all properties, add defaults now
+        if force_all_properties:
+            newimg.add_default_mask(force=False)
+            newimg.add_default_noisemap(force=False)
+            newimg.add_default_segmentation_map(force=False)
+            newimg.add_default_background_map(force=False)
+            newimg.add_default_weight_map(force=False)
+            newimg.add_default_header(force=False)
+            newimg.add_default_wcs(force=False)
+
         return newimg
+
+    def add_default_mask(self, force=False):
+        """Adds a default mask to this object (all unmasked). If force=True, will overwrite an existing mask. 
+        """
+
+        if self.mask is not None:
+            if force == True:
+                logger.debug("Overwriting existing mask with default.")
+            else:
+                logger.debug("Not overwriting existing mask with default.")
+                return
+
+        self.mask = np.zeros_like(self.data, dtype=np.int32)
+
+        return
+
+    def add_default_noisemap(self, force=False):
+        """Adds a default noisemap to this object (all 0.). If force=True, will overwrite an existing noisemap. 
+        """
+
+        if self.noisemap is not None:
+            if force == True:
+                logger.debug("Overwriting existing noisemap with default.")
+            else:
+                logger.debug("Not overwriting existing noisemap with default.")
+                return
+
+        self.noisemap = np.zeros_like(self.data, dtype=float)
+
+        return
+
+    def add_default_segmentation_map(self, force=False):
+        """Adds a default segmentation_map to this object (all unassigned). If force=True, will overwrite an existing
+        segmentation_map. 
+        """
+
+        if self.segmentation_map is not None:
+            if force == True:
+                logger.debug("Overwriting existing segmentation_map with default.")
+            else:
+                logger.debug("Not overwriting existing segmentation_map with default.")
+                return
+
+        self.segmentation_map = segmap_unassigned_value * np.ones_like(self.data, dtype=np.int32)
+
+        return
+
+    def add_default_background_map(self, force=False):
+        """Adds a default background_map to this object (all 0.). If force=True, will overwrite an existing
+        background_map. 
+        """
+
+        if self.background_map is not None:
+            if force == True:
+                logger.debug("Overwriting existing background_map with default.")
+            else:
+                logger.debug("Not overwriting existing background_map with default.")
+                return
+
+        self.background_map = np.zeros_like(self.data, dtype=float)
+
+        return
+
+    def add_default_weight_map(self, force=False):
+        """Adds a default weight_map to this object (all 0.). If force=True, will overwrite an existing
+        weight_map. 
+        """
+
+        if self.weight_map is not None:
+            if force == True:
+                logger.debug("Overwriting existing weight_map with default.")
+            else:
+                logger.debug("Not overwriting existing weight_map with default.")
+                return
+
+        self.weight_map = np.ones_like(self.data, dtype=float)
+
+        return
+
+    def add_default_header(self, force=False):
+        """Adds a default header to this object (only required values). If force=True, will overwrite an existing
+        header. 
+        """
+
+        if self.header is not None:
+            if force == True:
+                logger.debug("Overwriting existing header with default.")
+            else:
+                logger.debug("Not overwriting existing header with default.")
+                return
+
+        self.header = astropy.io.fits.Header()
+
+        return
+
+    def add_default_wcs(self, force=False):
+        """Adds a default wcs to this object (pixel scale 1.0). If force=True, will overwrite an existing wcs.
+        """
+
+        if self.wcs is not None:
+            if force == True:
+                logger.debug("Overwriting existing wcs with default.")
+            else:
+                logger.debug("Not overwriting existing wcs with default.")
+                return
+
+        self.wcs = astropy.wcs.WCS(astropy.io.fits.Header())
+
+        return
 
     def pix2world(self, x, y, origin=0):
         """Converts x and y pixel coordinates to ra and dec world coordinates.
@@ -974,13 +1164,13 @@ class SHEImage(object):
 
         return x, y
 
-    def get_pix2world_transformation(self, x, y, dx=0.1, dy=0.1, spatial_ra=False, origin=0, norm=False):
+    def get_pix2world_transformation(self, x=None, y=None, dx=0.1, dy=0.1, spatial_ra=False, origin=0, norm=False):
         """Gets the local transformation matrix between pixel and world (ra/dec) coordinates at the specified location.
 
         Parameters
         ----------
         x : float
-            x pixel coordinate
+            x pixel coordinate. If not provided, will use centre of image
         y : float
             idem for y
         dx : float
@@ -1015,6 +1205,17 @@ class SHEImage(object):
         if (dx == 0) or (dy == 0):
             raise ValueError("Differentials dx and dy must not be zero.")
 
+        # If x or y isn't provided, use the centre of the image
+        if x is None:
+            x = (self.shape[0] - 1) / 2.
+        if y is None:
+            y = (self.shape[1] - 1) / 2.
+
+        # Correct for offset if applicable
+        if self.offset is not None:
+            x += self.offset[0]
+            y += self.offset[1]
+
         # We'll calculate the transformation empirically by using small steps
         # in x and y
         ra_0, dec_0 = self.pix2world(x, y, origin=origin)
@@ -1034,23 +1235,25 @@ class SHEImage(object):
 
         pix2world_transformation = np.matrix([[d_ra_x, d_ra_y],
                                               [d_dec_x, d_dec_y]])
-        
+
         if norm:
             det = np.linalg.det(pix2world_transformation)
-            pix2world_transformation /= np.sqrt(np.sign(det)*det)
+            pix2world_transformation /= np.sqrt(np.sign(det) * det)
 
         return pix2world_transformation
 
-    def get_world2pix_transformation(self, ra, dec, dra=0.01 / 3600, ddec=0.01 / 3600, spatial_ra=False, origin=0,
+    def get_world2pix_transformation(self, ra=None, dec=None, dra=0.01 / 3600, ddec=0.01 / 3600, spatial_ra=False, origin=0,
                                      norm=False):
         """Gets the local transformation matrix between world (ra/dec) and pixel coordinates at the specified location.
 
         Parameters
         ----------
         ra : float
-            Right Ascension (RA) world coordinate in degrees
+            Right Ascension (RA) world coordinate in degrees. If both this and dec are None, will default to centre of
+            image
         dec : float
-            Declination (Dec) world coordinate in degrees
+            Declination (Dec) world coordinate in degrees. If both this and ra are None, will default to centre of
+            image
         dra : float
             Differential ra step in degrees to use in calculating transformation matrix. Default 0.01 arcsec
         ddec : float
@@ -1080,6 +1283,15 @@ class SHEImage(object):
         if (dra == 0) or (ddec == 0):
             raise ValueError("Differentials dra and ddec must not be zero.")
 
+        if ra is None and dec is None:
+            x = (self.shape[0] - 1) / 2.
+            y = (self.shape[1] - 1) / 2.
+
+            ra, dec = self.pix2world(x, y, origin=0)
+        elif (ra is None) != (dec is None):
+            raise ValueError("In get_world2pix_transformation, either both ra and dec must be specified or both " +
+                             "must be None/unspecified.")
+
         if spatial_ra:
             ra_scale = -np.cos(dec * np.pi / 180)
         else:
@@ -1099,10 +1311,10 @@ class SHEImage(object):
 
         world2pix_transformation = np.matrix([[d_x_ra, d_x_dec],
                                               [d_y_ra, d_y_dec]])
-        
+
         if norm:
             det = np.linalg.det(world2pix_transformation)
-            world2pix_transformation /= np.sqrt(np.sign(det)*det)
+            world2pix_transformation /= np.sqrt(np.sign(det) * det)
 
         return world2pix_transformation
 
@@ -1223,16 +1435,27 @@ class SHEImage(object):
         shear : galsim.Shear
         theta : galsim.Angle
         flip : bool
-        
+
         Note 1: Since shear and rotation are noncommutative, the rotation operation must be applied before shear.
-        
+
         Note 2: If testing against a galsim.wcs.ShearWCS class, note that the shear defined as input to that class
           is the world-to-pixel shear, while the scale is the pixel-to-world scale, which can lead to some confusion
           if decomposed.
-        
+
         """
 
-        local_wcs = self.galsim_wcs.jacobian(image_pos=galsim.PositionD(x,y))
+        # If x or y isn't provided, use the centre of the image
+        if x is None:
+            x = (self.shape[0] - 1) / 2.
+        if y is None:
+            y = (self.shape[1] - 1) / 2.
+
+        # Correct for offset if applicable
+        if self.offset is not None:
+            x += self.offset[0]
+            y += self.offset[1]
+
+        local_wcs = self.galsim_wcs.jacobian(image_pos=galsim.PositionD(x, y))
 
         # We need to use the inverse of the local wcs to get the pix2world decomposition
         return local_wcs.getDecomposition()
@@ -1260,19 +1483,28 @@ class SHEImage(object):
         shear : galsim.Shear
         theta : galsim.Angle
         flip : bool
-        
+
         Note 1: Since shear and rotation are noncommutative, the rotation operation must be applied before shear.
-        
+
         Note 2: If testing against a galsim.wcs.ShearWCS class, note that the shear defined as input to that class
           is the world-to-pixel shear, while the scale is the pixel-to-world scale, which can lead to some confusion
           if decomposed.
-        
+
         """
-        
-        if isinstance(self.galsim_wcs,galsim.wcs.CelestialWCS):
-            world_pos = galsim.CelestialCoord(ra*galsim.degrees,dec*galsim.degrees)
+
+        if ra is None and dec is None:
+            x = (self.shape[0] - 1) / 2.
+            y = (self.shape[1] - 1) / 2.
+
+            ra, dec = self.pix2world(x, y, origin=0)
+        elif (ra is None) != (dec is None):
+            raise ValueError("In get_world2pix_transformation, either both ra and dec must be specified or both " +
+                             "must be None/unspecified.")
+
+        if isinstance(self.galsim_wcs, galsim.wcs.CelestialWCS):
+            world_pos = galsim.CelestialCoord(ra * galsim.degrees, dec * galsim.degrees)
         else:
-            world_pos = galsim.PositionD(ra,dec)
+            world_pos = galsim.PositionD(ra, dec)
 
         local_wcs = self.galsim_wcs.jacobian(world_pos=world_pos)
 
@@ -1316,6 +1548,11 @@ class SHEImage(object):
             Rotation angle from pixel coords to world coords in radians
 
         """
+
+        # Correct for offset if applicable
+        if self.offset is not None:
+            x += self.offset[0]
+            y += self.offset[1]
 
         if (dx == 0) and (dy == 0):
             raise ValueError("Differentials dx and dy must not both be zero.")
