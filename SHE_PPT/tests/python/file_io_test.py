@@ -19,8 +19,10 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 import os
-import pytest
 from time import sleep
+
+from astropy.table import Table
+import pytest
 
 from SHE_PPT.file_io import (get_allowed_filename,
                              write_listfile,
@@ -33,7 +35,6 @@ from SHE_PPT.file_io import (get_allowed_filename,
                              find_aux_file,
                              update_xml_with_value,
                              read_xml_product)
-from astropy.table import Table
 import numpy as np
 
 
@@ -65,7 +66,7 @@ class TestIO:
 
         filename = get_allowed_filename("test", instance_id, extension=".junk", release="06.66", subdir="subdir")
 
-        expect_filename_head = "subdir/EUC_SHE_TEST_INSTANCE-"
+        expect_filename_head = "subdir/EUC_SHE_TEST_INSTANCE_"
         expect_filename_tail = "Z_06.66.junk"
 
         # Check the beginning and end are correct

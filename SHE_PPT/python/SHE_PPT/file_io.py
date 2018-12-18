@@ -34,18 +34,21 @@ from EuclidDmBindings.sys_stub import CreateFromDocument
 from FilenameProvider.FilenameProvider import createFilename
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
-from SHE_PPT.utility import time_to_timestamp
+from SHE_PPT.utility import run_only_once
 
 
 logger = getLogger(mv.logger_name)
 
 type_name_maxlen = 45
-instance_id_maxlen = 37
+instance_id_maxlen = 55
 processing_function_maxlen = 4
 
+@run_only_once
+def warn_deprecated_timestamp():
+    logger.warn("The use of the 'timestamp' kwarg in get_allowed_filename is deprecated and will be removed in a future version.")
 
 def get_allowed_filename(type_name, instance_id, extension=".fits", release="00.05", subdir="data",
-                         processing_function="SHE", timestamp=True):
+                         processing_function="SHE", timestamp=None):
     """Gets a filename in the required Euclid format. Now mostly a pass-through to the official version, with
     tweaks to silently shift arguments to upper-case.
 
@@ -69,11 +72,8 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release="00.
 
     # Silently shift instance_id to upper-case, and add timestamp if desired
     full_instance_id = instance_id.upper()
-    if timestamp:
-        tnow = datetime.now()
-        # Format doesn't allow a '.' here, so we replace it with 'P'
-        creation_date = time_to_timestamp(tnow).replace('.', 'P')
-        full_instance_id += "-" + creation_date
+    if timestamp is not None:
+        warn_deprecated_timestamp()
 
     # Check the extension doesn't start with "." and silently fix if it does
     if extension[0] == ".":
