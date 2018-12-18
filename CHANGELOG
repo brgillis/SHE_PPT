@@ -21,6 +21,7 @@ Deprecated Features
 Bug Fixes
 ---------
 - SHEImage transformation and rotation matrix methods now behave properly with respect to offset
+- Fixed duplicate timestamps in filenames
 
 New Features
 ------------
