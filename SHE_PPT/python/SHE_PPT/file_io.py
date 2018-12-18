@@ -30,6 +30,7 @@ from xml.sax._exceptions import SAXParseException
 
 from astropy.io import fits
 
+from ElementsServices.DataSync import downloadTestData, localTestFile
 from EuclidDmBindings.sys_stub import CreateFromDocument
 from FilenameProvider.FilenameProvider import createFilename
 from SHE_PPT import magic_values as mv
@@ -275,6 +276,28 @@ def find_conf_file(filename):
 
     return find_file_in_path(filename, os.environ['ELEMENTS_CONF_PATH'])
 
+def find_web_file(filename):
+    """
+        Searches on WebDAV for a file. If found, downloads it and returns the qualified name of it.
+        If it isn't found, returns None.
+    """
+    
+    filelist = os.path.join(mv.test_datadir,os.path.splitext(filename)[0]+"_list.txt")
+    
+    try:
+        with open(filelist, 'w') as fo:
+            fo.write(filename + "\n")
+    
+        downloadTestData("testdata/sync.conf", filelist)
+        qualified_filename = localTestFile(mv.test_datadir,filename)
+    except:
+        qualified_filename = None
+    finally:
+        if os.path.exists(filelist):
+            os.remove(filelist)
+            
+    return qualified_filename
+
 
 def find_file(filename, path=None):
     """
@@ -282,7 +305,9 @@ def find_file(filename, path=None):
         directories respectively for it, or else the work directory if supplied.
     """
 
-    if filename[0:4] == "AUX/":
+    if filename[0:4] == "WEB/":
+        return find_web_file(filename[4:])
+    elif filename[0:4] == "AUX/":
         return find_aux_file(filename[4:])
     elif filename[0:5] == "CONF/":
         return find_conf_file(filename[5:])
