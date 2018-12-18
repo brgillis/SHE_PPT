@@ -19,10 +19,13 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 import os
+
+from astropy.table import Table
 import pytest
 
+from ElementsServices.DataSync import downloadTestData
+from SHE_PPT import magic_values as mv
 from SHE_PPT import mdb
-from astropy.table import Table
 import numpy as np
 
 
@@ -36,7 +39,9 @@ class TestMDB:
     def setup_class(cls):
 
         cls.test_key = "SpaceSegment.Instrument.VIS.VISDetectorPixelLongDimensionFormat"
-        cls.filename = "AUX/SHE_PPT/sample_mdb.xml"
+        
+        downloadTestData("testdata/sync.conf", "testdata/test_mdb.txt")
+        cls.filename = os.path.join(mv.test_datadir,"sample_mdb.xml")
 
         return
 

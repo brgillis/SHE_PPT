@@ -29,7 +29,7 @@ _not_inited_exception = RuntimeError(
 
 full_mdb = {}
 
-default_mdb_file = "AUX/SHE_PPT/sample_mdb.xml"
+default_mdb_file = None
 
 
 def init(mdb_files=None, path=None):
