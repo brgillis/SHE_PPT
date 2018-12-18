@@ -5,7 +5,7 @@
     Unit tests for the control shear estimation methods.
 """
 
-__updated__ = "2018-10-24"
+__updated__ = "2018-12-18"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -23,6 +23,8 @@ __updated__ = "2018-10-24"
 from os.path import join
 import pytest
 
+from ElementsServices.DataSync import downloadTestData
+
 from SHE_PPT import magic_values as mv
 from SHE_PPT.file_io import read_pickled_product, find_file
 from SHE_PPT.signal_to_noise import get_SN_of_image
@@ -30,8 +32,6 @@ from SHE_PPT.table_formats.detections import tf as detf
 import numpy as np
 
 ex_signal_to_noises = [17.128722416373463, 207.67650514133481]
-
-she_frame_location = "AUX/SHE_PPT/test_she_frame_stack_simple.bin"
 
 
 class TestCase:
@@ -44,6 +44,8 @@ class TestCase:
     def setup(self, tmpdir):
         self.workdir = tmpdir.strpath
         self.logdir = join(tmpdir.strpath, "logs")
+        downloadTestData("testdata/sync.conf", "testdata/test_data_stack.txt")
+        self.data_stack_filename = join(mv.test_datadir,"test_data_stack.bin")
 
         return
 
@@ -52,7 +54,7 @@ class TestCase:
         """
 
         # Read in the test data
-        she_frame = read_pickled_product(find_file(she_frame_location))
+        she_frame = read_pickled_product(find_file(self.data_stack_filename))
 
         gain = she_frame.exposures[0].detectors[1, 1].header[mv.gain_label]
 
