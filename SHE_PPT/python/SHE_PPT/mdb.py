@@ -29,7 +29,7 @@ _not_inited_exception = RuntimeError(
 
 full_mdb = {}
 
-default_mdb_file = None
+default_mdb_file = "WEB/sample_mdb.xml"
 
 
 def init(mdb_files=None, path=None):
