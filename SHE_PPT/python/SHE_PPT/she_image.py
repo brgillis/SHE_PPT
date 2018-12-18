@@ -22,14 +22,14 @@ Created on: Aug 17, 2017
 from copy import deepcopy
 import os
 
+import astropy.io.fits
+import astropy.wcs
 import galsim
 
 from SHE_PPT.magic_values import segmap_unassigned_value
 from SHE_PPT.mask import (as_bool, is_masked_bad,
                           is_masked_suspect_or_bad, masked_off_image)
 from SHE_PPT.utility import load_wcs
-import astropy.io.fits
-import astropy.wcs
 import numpy as np
 
 from . import logging
@@ -1117,8 +1117,8 @@ class SHEImage(object):
 
         # Correct for offset if applicable
         if self.offset is not None:
-            x += self.offset[0]
-            y += self.offset[1]
+            x = x + self.offset[0]
+            y = y + self.offset[1]
 
         ra, dec = self.wcs.all_pix2world(x, y, origin)
 
@@ -1159,8 +1159,8 @@ class SHEImage(object):
 
         # Correct for offset if applicable
         if self.offset is not None:
-            x -= self.offset[0]
-            y -= self.offset[1]
+            x = x - self.offset[0]
+            y = y - self.offset[1]
 
         return x, y
 
@@ -1213,8 +1213,8 @@ class SHEImage(object):
 
         # Correct for offset if applicable
         if self.offset is not None:
-            x += self.offset[0]
-            y += self.offset[1]
+            x = x + self.offset[0]
+            y = y + self.offset[1]
 
         # We'll calculate the transformation empirically by using small steps
         # in x and y
@@ -1452,8 +1452,8 @@ class SHEImage(object):
 
         # Correct for offset if applicable
         if self.offset is not None:
-            x += self.offset[0]
-            y += self.offset[1]
+            x = x + self.offset[0]
+            y = y + self.offset[1]
 
         local_wcs = self.galsim_wcs.jacobian(image_pos=galsim.PositionD(x, y))
 
@@ -1551,8 +1551,8 @@ class SHEImage(object):
 
         # Correct for offset if applicable
         if self.offset is not None:
-            x += self.offset[0]
-            y += self.offset[1]
+            x = x + self.offset[0]
+            y = y + self.offset[1]
 
         if (dx == 0) and (dy == 0):
             raise ValueError("Differentials dx and dy must not both be zero.")
