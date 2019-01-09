@@ -282,7 +282,7 @@ def find_web_file(filename):
         If it isn't found, returns None.
     """
     
-    filelist = os.path.join(mv.test_datadir,os.path.splitext(filename)[0]+"_list.txt")
+    filelist = os.path.join(mv.test_datadir,os.path.splitext(os.path.split(filename)[-1])[0]+"_list.txt")
     
     try:
         with open(filelist, 'w') as fo:
