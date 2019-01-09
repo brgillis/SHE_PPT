@@ -282,7 +282,9 @@ def find_web_file(filename):
         If it isn't found, returns None.
     """
     
-    filelist = os.path.splitext(os.path.split(filename)[-1])[0]+"_list.txt"
+    filelist = os.path.join(os.getcwd(),os.path.splitext(os.path.split(filename)[-1])[0]+"_list.txt")
+    
+    logger.debug("Writing filelist to " + filelist)
     
     try:
         with open(filelist, 'w') as fo:
@@ -290,10 +292,12 @@ def find_web_file(filename):
     
         downloadTestData("testdata/sync.conf", filelist)
         qualified_filename = localTestFile(mv.test_datadir,filename)
-    except:
+    except Exception as e:
+        logger.warn("Could not download test data. Exception: " + str(e))
         qualified_filename = None
     finally:
         if os.path.exists(filelist):
+            logger.debug("Cleaning up " + filelist)
             os.remove(filelist)
             
     return qualified_filename
