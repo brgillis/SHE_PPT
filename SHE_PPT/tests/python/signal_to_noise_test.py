@@ -5,7 +5,7 @@
     Unit tests for the control shear estimation methods.
 """
 
-__updated__ = "2018-12-18"
+__updated__ = "2019-01-09"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -45,7 +45,7 @@ class TestCase:
         self.workdir = tmpdir.strpath
         self.logdir = join(tmpdir.strpath, "logs")
         downloadTestData("testdata/sync.conf", "testdata/test_data_stack.txt")
-        self.data_stack_filename = localTestFile(mv.test_datadir,"test_data_stack.bin")
+        self.data_stack_filename = localTestFile(mv.test_datadir,"SHE_PPT/test_data_stack.bin")
 
         return
 

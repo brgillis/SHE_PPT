@@ -41,7 +41,7 @@ class TestMDB:
         cls.test_key = "SpaceSegment.Instrument.VIS.VISDetectorPixelLongDimensionFormat"
         
         downloadTestData("testdata/sync.conf", "testdata/test_mdb.txt")
-        cls.filename = localTestFile(mv.test_datadir,"sample_mdb.xml")
+        cls.filename = localTestFile(mv.test_datadir,"SHE_PPT/sample_mdb.xml")
 
         return
 
