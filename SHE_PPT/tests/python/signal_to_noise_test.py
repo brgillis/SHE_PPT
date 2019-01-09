@@ -33,6 +33,7 @@ import numpy as np
 
 ex_signal_to_noises = [59, 32, 24, 28.5]
 
+she_frame_location = "WEB/SHE_PPT/test_data_stack.bin"
 
 class TestCase:
     """
@@ -44,8 +45,6 @@ class TestCase:
     def setup(self, tmpdir):
         self.workdir = tmpdir.strpath
         self.logdir = join(tmpdir.strpath, "logs")
-        downloadTestData("testdata/sync.conf", "testdata/test_data_stack.txt")
-        self.data_stack_filename = localTestFile(mv.test_datadir,"SHE_PPT/test_data_stack.bin")
 
         return
 
@@ -54,7 +53,7 @@ class TestCase:
         """
 
         # Read in the test data
-        she_frame = read_pickled_product(find_file(self.data_stack_filename))
+        she_frame = read_pickled_product(find_file(she_frame_location))
 
         gain = she_frame.exposures[0].detectors[1, 1].header[mv.gain_label]
 
