@@ -292,9 +292,8 @@ def find_web_file(filename):
     
         downloadTestData("testdata/sync.conf", filelist)
         qualified_filename = localTestFile(mv.test_datadir,filename)
-    except Exception as e:
-        logger.warn("Could not download test data. Exception: " + str(e))
-        qualified_filename = None
+    except:
+        raise
     finally:
         if os.path.exists(filelist):
             logger.debug("Cleaning up " + filelist)
