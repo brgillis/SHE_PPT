@@ -19,6 +19,8 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 import os
+
+from astropy.table import Column, Table
 import pytest
 
 from SHE_PPT import magic_values as mv
@@ -31,14 +33,7 @@ from SHE_PPT.table_formats.p_of_e import tf as petf, initialise_p_of_e_table
 from SHE_PPT.table_formats.psf import tf as pstf, initialise_psf_table
 from SHE_PPT.table_formats.shear_estimates import tf as setf, initialise_shear_estimates_table, len_chain, num_chains
 from SHE_PPT.table_formats.simulation_plan import tf as sptf, initialise_simulation_plan_table
-from SHE_PPT.table_utility import (get_comments,
-                                   get_dtypes,
-                                   get_fits_dtypes,
-                                   get_lengths,
-                                   is_in_format,
-                                   add_row,
-                                   )
-from astropy.table import Column, Table
+from SHE_PPT.table_utility import is_in_format, add_row
 import numpy as np
 
 
@@ -94,80 +89,6 @@ class TestTableFormats:
 
             # Check column lengths
             assert list(tf.lengths.keys()) == tf.all
-
-    def test_get_comments(self):
-        # Check if we get the correct comments list for detections tables
-
-        desired_comments = (None, None, "deg", "deg",
-                            None, None, None, None, None,
-                            None, None, None, None, None,
-                            None, None, None, None, None,
-                            None, None, None, None, None,
-                            None, None, None, None, None,
-                            None, None, None, None, None,
-                            None, None, None, None, None,
-                            None, None, None, None, None,
-                            None, None, None, None, None,
-                            None, None, None, None, None,
-                            None, None, None, None, None,
-                            None, None, None, None, None,
-                            None, None, None, None,)
-
-        assert get_comments(detf) == desired_comments
-
-    def test_get_dtypes(self):
-        # Check if we get the correct dtypes list for detections tables
-
-        desired_dtypes = (">i8", ">i4", ">f4", ">f4",
-                          ">f4", ">f4", ">f4", ">f4", ">f4",
-                          ">f4", ">f4", ">f4", ">f4", ">f4",
-                          ">f4", ">f4", ">f4", ">f4", ">f4",
-                          ">f4", ">f4", ">f4", ">f4", ">f4",
-                          ">f4", ">f4", ">f4", ">f4", ">f4",
-                          ">f4", ">f4", ">f4", ">f4", ">f4",
-                          ">f4", ">f4", ">f4", ">f4", ">f4",
-                          ">f4", ">f4", ">f4", ">f4", ">f4",
-                          ">f4", ">f4", ">f4", ">f4", ">f4",
-                          ">f4", ">f4", ">f4", ">f4", ">f4",
-                          ">f4", ">f4", ">f4", ">f4", ">f4",
-                          ">f4", ">f4", ">f4", ">f4", ">f4",
-                          ">f4", ">f4", ">f4", ">f4",)
-
-        assert get_dtypes(detf) == desired_dtypes
-
-    def test_get_fits_dtypes(self):
-        # Check if we get the correct fits dtypes list for detections tables
-
-        desired_fits_dtypes = ("K", "J", "E", "E",
-                               "E", "E", "E", "E", "E",
-                               "E", "E", "E", "E", "E",
-                               "E", "E", "E", "E", "E",
-                               "E", "E", "E", "E", "E",
-                               "E", "E", "E", "E", "E",
-                               "E", "E", "E", "E", "E",
-                               "E", "E", "E", "E", "E",
-                               "E", "E", "E", "E", "E",
-                               "E", "E", "E", "E", "E",
-                               "E", "E", "E", "E", "E",
-                               "E", "E", "E", "E", "E",
-                               "E", "E", "E", "E", "E",
-                               "E", "E", "E", "E",)
-
-        assert get_fits_dtypes(detf) == desired_fits_dtypes
-
-    def test_get_lengths(self):
-        # Check if we get the correct lengths list for shear estimates tables
-
-        l = len_chain * num_chains
-
-        desired_lengths = (1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                           1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                           1, 1, 1, 1, 1, 1, 1,
-                           l, l, l, l, l, l, l, l, l, l,
-                           1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                           1, 1, 1, 1, 1, 1, 1, 1)
-
-        assert get_lengths(setf) == desired_lengths
 
     def test_is_in_format(self):
         # Test each format is detected correctly

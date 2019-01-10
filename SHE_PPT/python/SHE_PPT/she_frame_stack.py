@@ -23,6 +23,7 @@ Created on: 05/03/18
 """
 
 from copy import deepcopy
+from json.decoder import JSONDecodeError
 import os.path
 
 from SHE_PPT import logging
@@ -91,6 +92,41 @@ class SHEFrameStack(object):
             self.detections_catalogue.add_index(detf.ID)
 
         return
+
+    def __eq__(self, rhs):
+        """Equality test for SHEFrame class.
+        """
+
+        def neq(lhs, rhs):
+            try:
+                return bool(lhs != rhs)
+            except ValueError as _e:
+                return (lhs != rhs).any()
+
+        def list_neq(lhs, rhs):
+
+            if lhs is None and rhs is None:
+                return False
+            elif (lhs is None) != (rhs is None):
+                return True
+
+            if len(lhs) != len(rhs):
+                return True
+            for i in range(len(lhs)):
+                if lhs[i] != rhs[i]:
+                    return True
+            return False
+
+        if list_neq(self.exposures, rhs.exposures):
+            return False
+        if neq(self.stacked_image, rhs.stacked_image):
+            return False
+        if neq(self.detections_catalogue, rhs.detections_catalogue):
+            return False
+        if neq(self.stack_pixel_size_ratio, rhs.stack_pixel_size_ratio):
+            return False
+
+        return True
 
     def extract_galaxy_stack(self, gal_id, width, *args, **kwargs):
         """Extracts a postage stamp centred on a given galaxy in the detections tables, indexed by its ID.
@@ -454,31 +490,34 @@ class SHEFrameStack(object):
         if detections_listfile_filename is None:
             detections_catalogue = None
         else:
-            detections_filenames = read_listfile(
-                os.path.join(workdir, detections_listfile_filename))
+            try:
+                detections_filenames = read_listfile(
+                    os.path.join(workdir, detections_listfile_filename))
 
-            # Load each table in turn and combine them
+                # Load each table in turn and combine them
 
-            detections_catalogues = []
+                detections_catalogues = []
 
-            for detections_product_filename in detections_filenames:
+                for detections_product_filename in detections_filenames:
 
+                    detections_product = read_xml_product(
+                        os.path.join(workdir, detections_product_filename))
+
+                    detections_catalogue = table.Table.read(
+                        os.path.join(workdir, detections_product.Data.DataStorage.DataContainer.FileName))
+
+                    detections_catalogues.append(detections_catalogue)
+
+                detections_catalogue = table.vstack(detections_catalogues,
+                                                    metadata_conflicts="silent")  # Conflicts are expected
+            except JSONDecodeError as e:
+                logger.warn(str(e))
+
+                # See if it's just a single catalogue, which we can handle
                 detections_product = read_xml_product(
-                    os.path.join(workdir, detections_product_filename))
-#                 if not isinstance( detections_product, products.detections.DpdSheDetectionsProduct ):
-#                     raise ValueError( "Detections product from " +
-# detections_product_filename + " is invalid type." )
-
+                    os.path.join(workdir, detections_listfile_filename))
                 detections_catalogue = table.Table.read(
                     os.path.join(workdir, detections_product.Data.DataStorage.DataContainer.FileName))
-#                 if not is_in_format( detections_catalogue, detf ):
-#                     raise ValueError( "Detections table from " +
-# detections_product.get_filename() + " is invalid type." )
-
-                detections_catalogues.append(detections_catalogue)
-
-            detections_catalogue = table.vstack(detections_catalogues,
-                                                metadata_conflicts="silent")  # Conflicts are expected
 
         # Clean the detections table if desired
         if clean_detections:

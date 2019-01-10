@@ -1,5 +1,38 @@
 Changelog for SHE_PPT Preprocessing Toolkit
 
+Changes from v0.8 to v1.0
+=========================
+
+TODO: Update CHANGELOG
+
+API Changes
+-----------
+- Added galsim_wcs attribute to SHEImage
+- Added get_world2pix_decomposition and get_pix2world_decomposition methods to SHEImage
+- SHEImage now has methods to add default properties
+
+Dependency Changes
+------------------
+
+
+Deprecated Features
+-------------------
+
+Bug Fixes
+---------
+- SHEImage transformation and rotation matrix methods now behave properly with respect to offset
+- Fixed duplicate timestamps in filenames
+
+New Features
+------------
+
+New config features
+-------------------
+
+Miscellaneous
+-------------
+- SHEImage now can have None for all properties except data and offset
+
 Changes from v0.6 to v0.8
 =========================
 

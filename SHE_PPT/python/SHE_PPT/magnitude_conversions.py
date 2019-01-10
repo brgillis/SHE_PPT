@@ -20,7 +20,6 @@
 # Boston, MA 02110-1301 USA
 
 from SHE_PPT.gain import get_ADU_from_count, get_count_from_ADU
-from SHE_PPT.get_I_from_SN import get_I_from_SN
 import SHE_PPT.magic_values as mv
 import numpy as np
 

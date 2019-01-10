@@ -20,7 +20,6 @@
 # Boston, MA 02110-1301 USA
 
 import codecs
-from copy import deepcopy
 import hashlib
 
 from SHE_PPT import detector as dtc
@@ -32,20 +31,23 @@ logger = getLogger(__name__)
 
 
 def hash_any(obj, format='hex', max_length=None):
-    """
-        @brief Hashes any immutable object into a hex string of a given length. Unlike hash(),
-               will be consistent in Python 3.0.
+    """Hashes any immutable object into a hex string of a given length. Unlike hash(), will be consistent in Python
+    3.0.
 
-        @param obj
+    Parameters
+    ----------
+    obj : Any immutable
+        The object to be hashed
+    format : str
+        'hex' for hexadecimal string, 'base64' for a base 64 string (This implementation of base64 replaces '/' with
+        '.' so it will be filename safe), 'int'/'uint' for (un)signed integer, '(u)int8', '(u)int16', etc. for
+        (un)signed integer of a given maximum size,
+    max_length : int
+        If format is 'hex' or 'base64', this limits the maximum length of the string to return
 
-        @param format <str> 'hex' for hexadecimal string, 'base64' for a base 64 string
-                            (This implementation of base64 replaces / with . so it will be
-                            filename safe), 'int' for an integer, 'int8', 'int16', etc. for
-                            an unsigned integer of a given maximum size.
-
-        @param max_length <int> Maximum length of hex string to return
-
-        @return hash <str>
+    Return
+    ------
+    hash : str (if format is 'hex' or 'base64') or desired integer type
     """
 
     full_hash = hashlib.sha256(repr(obj).encode()).hexdigest()
@@ -93,8 +95,7 @@ def hash_any(obj, format='hex', max_length=None):
 
 
 def find_extension(hdulist, extname):
-    """
-        @brief Find the index of the extension of a fits HDUList with the correct EXTNAME value.
+    """Find the index of the extension of a fits HDUList with the correct EXTNAME value.
     """
     for i, hdu in enumerate(hdulist):
         if not "EXTNAME" in hdu.header:
@@ -105,8 +106,7 @@ def find_extension(hdulist, extname):
 
 
 def get_detector(obj):
-    """
-        Find the detector indices for a fits hdu or table.
+    """Find the detector indices for a fits hdu or table.
     """
 
     if hasattr(obj, "header"):
@@ -126,8 +126,7 @@ def get_detector(obj):
 
 
 def time_to_timestamp(t):
-    """
-        From a datetime object, get a timestamp in the astro format.
+    """From a datetime object, get a timestamp in the astro format.
     """
 
     timestamp = (str(t.year) + str(t.month) + str(t.day) + "T" +
@@ -188,7 +187,7 @@ def get_arguments_string(args, cmd=None, store_true=None, store_false=None):
 
     Return
     ------
-    <str> String of all needed commands
+    String of all needed commands
 
     """
 
@@ -227,7 +226,16 @@ def get_arguments_string(args, cmd=None, store_true=None, store_false=None):
             continue
 
         # Add arg to arg string
-        arg_string += "--" + arg.strip() + " "
+        stripped_arg = arg.strip()
+
+        if stripped_arg == "log_file":
+            # Correct for Elements somehow switching log-file to log_file
+            arg_string += "--" + "log-file" + " "
+        elif stripped_arg == "log_level":
+            # Correct for Elements somehow switching log-level to log_level
+            arg_string += "--" + "log-level" + " "
+        else:
+            arg_string += "--" + stripped_arg + " "
 
         stripped_val = str(val).strip()
 
@@ -246,12 +254,6 @@ def get_arguments_string(args, cmd=None, store_true=None, store_false=None):
         elif stripped_val == "":
             # If it's an empty string, output quotes instead of nothing
             arg_string += '"" '
-        elif stripped_val == "log_file":
-            # Correct for Elements somehow switching log-file to log_file
-            arg_string += "log-file "
-        elif stripped_val == "log_level":
-            # Correct for Elements somehow switching log-level to log_level
-            arg_string += "log-level "
         else:
             arg_string += stripped_val + " "
 
@@ -263,7 +265,7 @@ def get_arguments_string(args, cmd=None, store_true=None, store_false=None):
 
 def run_only_once(function):
     """Decorator so that the function it decorates will only execute one time. Useful for logging warnings, when you
-       only want to warn for something the first time.
+    only want to warn for something the first time.
     """
 
     # Define a wrapper function that only runs if it hasn't already

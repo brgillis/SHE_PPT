@@ -30,74 +30,61 @@ from xml.sax._exceptions import SAXParseException
 
 from astropy.io import fits
 
+from ElementsServices.DataSync import downloadTestData, localTestFile
 from EuclidDmBindings.sys_stub import CreateFromDocument
+from FilenameProvider.FilenameProvider import createFilename
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
-from SHE_PPT.utility import time_to_timestamp
+from SHE_PPT.utility import run_only_once
 
 
 logger = getLogger(mv.logger_name)
 
-type_name_maxlen = 15
-instance_id_maxlen = 39
+type_name_maxlen = 45
+instance_id_maxlen = 55
 processing_function_maxlen = 4
-filename_forbidden_chars = ["/", "\\", ":", "*", "%", "|", "'", '"', "<", ">", "@", "&"]
 
+@run_only_once
+def warn_deprecated_timestamp():
+    logger.warn("The use of the 'timestamp' kwarg in get_allowed_filename is deprecated and will be removed in a future version.")
 
-def get_allowed_filename(type_name, instance_id, extension=".fits", release=None, subdir="data",
-                         processing_function="SHE", timestamp=True):
+def get_allowed_filename(type_name, instance_id, extension=".fits", release="00.05", subdir="data",
+                         processing_function="SHE", timestamp=None):
+    """Gets a filename in the required Euclid format. Now mostly a pass-through to the official version, with
+    tweaks to silently shift arguments to upper-case.
+
+    Parameters
+    ----------
+    type_name : str
+        Label for what type of object this is. Maximum 45 characters.
+    instance_id : str
+        Label for the instance of this object. Maximum 37 characters if timestamp==True, 55 if False
+    extension : str
+        File extension (eg. ".fits").
+    release : str
+        Software/data release version, in format "XX.XX" where each X is a digit 0-9.
+    subdir : str
+        Subdirectory of work directory in which this file will be (default "data")
+    processing_function : str
+        Label for the processing function which created this file.
+    timestamp : bool
+        If True, will append a timestamp to the instance_id
     """
-        @brief Gets a filename in the required Euclid format.
 
-        @param type_name <string> Label for what type of object this is. Maximum 15 characters.
-
-        @param instance_id <string> Label for the instance of this object. Maximum 39 characters.
-
-        @param extension <string> File extension (eg. ".fits").
-
-        @param release_date <string> Software/data release version, in format "XX.XX" where each
-                                     X is a digit 0-9.
-    """
-
-    # Check that $processing_function isn't too long
-    processing_function = processing_function.upper()
-    if re.match(r"^[0-9A-Z\._+]{1," + str(processing_function_maxlen) + "}$", processing_function) is None:
-        raise ValueError("processing_function (" + processing_function + ") is too long. Maximum length is " +
-                         str(processing_function_maxlen) + " characters.")
-
-    # Check that $type_name isn't too long
-    type_name = type_name.upper()
-    if re.match(r"^[0-9A-Z\.\-+]{1," + str(type_name_maxlen) + "}$", type_name) is None:
-        raise ValueError("type_name (" + type_name +
-                         ") is too long or includes invalid characters. Maximum length is " +
-                         str(type_name_maxlen) + " characters.")
-
-    # Determine the full instance_id before checking its length
-    # Silently shift to upper-case
+    # Silently shift instance_id to upper-case, and add timestamp if desired
     full_instance_id = instance_id.upper()
-    if timestamp:
-        tnow = datetime.now()
-        creation_date = time_to_timestamp(tnow)
-        full_instance_id += "-" + creation_date
-    if release is not None:
-        # Check that $release is in the correct format
-        if re.match(r"^[0-9]{1,2}.[0-9]{1,2}$", release) is None:
-            raise ValueError("release (" + release + ") is in incorrect format. Required format is " +
-                             "X.X, where each X is 0-99.")
-        else:
-            # $release is good, so add it to $full_instance_id
-            full_instance_id += "-" + release
+    if timestamp is not None:
+        warn_deprecated_timestamp()
 
-    if re.match(r"^[0-9A-Z\.\-+]{1," + str(instance_id_maxlen) + "}$", full_instance_id) is None:
-        raise ValueError("instance_id including timestamp and release (" + full_instance_id +
-                         ") is too long or includes invalid characters. Maximum length is " +
-                         str(instance_id_maxlen) + " characters.")
+    # Check the extension doesn't start with "." and silently fix if it does
+    if extension[0] == ".":
+        extension = extension[1:]
 
-    # Check the extension starts with "." and silently fix if it doesn't
-    if not extension[0] == ".":
-        extension = "." + extension
-
-    filename = ("EUC-" + processing_function + "-" + type_name + "-" + full_instance_id + extension)
+    filename = createFilename(processing_function=processing_function,
+                              data_product_type=type_name.upper(),
+                              instance_id=full_instance_id,
+                              extension=extension,
+                              release=release)
 
     if subdir is not None:
         qualified_filename = join(subdir, filename)
@@ -289,6 +276,31 @@ def find_conf_file(filename):
 
     return find_file_in_path(filename, os.environ['ELEMENTS_CONF_PATH'])
 
+def find_web_file(filename):
+    """
+        Searches on WebDAV for a file. If found, downloads it and returns the qualified name of it.
+        If it isn't found, returns None.
+    """
+    
+    filelist = os.path.join(os.getcwd(),os.path.splitext(os.path.split(filename)[-1])[0]+"_list.txt")
+    
+    logger.debug("Writing filelist to " + filelist)
+    
+    try:
+        with open(filelist, 'w') as fo:
+            fo.write(filename + "\n")
+    
+        downloadTestData("testdata/sync.conf", filelist)
+        qualified_filename = localTestFile(mv.test_datadir,filename)
+    except:
+        raise
+    finally:
+        if os.path.exists(filelist):
+            logger.debug("Cleaning up " + filelist)
+            os.remove(filelist)
+            
+    return qualified_filename
+
 
 def find_file(filename, path=None):
     """
@@ -296,7 +308,9 @@ def find_file(filename, path=None):
         directories respectively for it, or else the work directory if supplied.
     """
 
-    if filename[0:4] == "AUX/":
+    if filename[0:4] == "WEB/":
+        return find_web_file(filename[4:])
+    elif filename[0:4] == "AUX/":
         return find_aux_file(filename[4:])
     elif filename[0:5] == "CONF/":
         return find_conf_file(filename[5:])

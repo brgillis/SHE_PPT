@@ -11,7 +11,7 @@ elements_install_python_modules()
 # elements_add_python_program(... ...)
 
 # Install the configuration files
-# elements_install_conf_files()
+elements_install_conf_files()
 
 # Install the auxiliary files
 elements_install_aux_files()

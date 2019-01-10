@@ -19,61 +19,14 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+from astropy.table import six, Column
+
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
-from astropy.table import six, Column
 import numpy as np
 
 
 logger = getLogger(mv.logger_name)
-
-
-def get_comments(table_format):
-    """
-        @brief Get the comments for the table format.
-
-        @param table_format <...TableFormat>
-
-        @return tuple<string>
-    """
-
-    return list(zip(*list(table_format.comments.items())))[1]
-
-
-def get_dtypes(table_format):
-    """
-        @brief Get the data types for the table format, in the format for an astropy table.
-
-        @param table_format <...TableFormat>
-
-        @return tuple<string>
-    """
-
-    return list(zip(*list(table_format.dtypes.items())))[1]
-
-
-def get_fits_dtypes(table_format):
-    """
-        @brief Get the data types for the table format, in the format for a fits table.
-
-        @param table_format <...TableFormat>
-
-        @return tuple<string>
-    """
-
-    return list(zip(*list(table_format.fits_dtypes.items())))[1]
-
-
-def get_lengths(table_format):
-    """
-        @brief Get the data lengths for the table format.
-
-        @param table_format <...TableFormat>
-
-        @return tuple<int>
-    """
-
-    return list(zip(*list(table_format.lengths.items())))[1]
 
 
 def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbose=False,
