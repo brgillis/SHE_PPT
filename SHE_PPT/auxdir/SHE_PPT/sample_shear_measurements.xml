@@ -1,46 +1,46 @@
 <?xml version="1.0" ?>
 <ns1:DpdShearMeasurement xmlns:ns1="http://euclid.esa.org/schema/dpd/she/shearmeasurement">
 	<Header>
-		<ProductId>Pgb</ProductId>
-		<ProductType>Co8</ProductType>
-		<SoftwareName>Om1</SoftwareName>
-		<SoftwareRelease>fXs</SoftwareRelease>
+		<ProductId>qzG</ProductId>
+		<ProductType>Gik</ProductType>
+		<SoftwareName>boc</SoftwareName>
+		<SoftwareRelease>OOGL</SoftwareRelease>
 		<ManualValidationStatus>VALID</ManualValidationStatus>
-		<ExpirationDate>2018-11-16T15:52:31.381Z</ExpirationDate>
-		<PipelineRun>Dr4</PipelineRun>
-		<ExitStatusCode>jcB</ExitStatusCode>
-		<DataModelVersion>kb4Q</DataModelVersion>
-		<MinDataModelVersion>KpUSy</MinDataModelVersion>
-		<ScientificCustodian>SIM</ScientificCustodian>
+		<ExpirationDate>2019-01-09T17:52:28.418Z</ExpirationDate>
+		<PipelineRun>WJm</PipelineRun>
+		<ExitStatusCode>I42</ExitStatusCode>
+		<DataModelVersion>YN1D</DataModelVersion>
+		<MinDataModelVersion>TteJ1</MinDataModelVersion>
+		<ScientificCustodian>LE3IST</ScientificCustodian>
 		<AccessRights>
 			<EuclidConsortiumRead>true</EuclidConsortiumRead>
-			<EuclidConsortiumWrite>false</EuclidConsortiumWrite>
-			<ScientificGroupRead>false</ScientificGroupRead>
-			<ScientificGroupWrite>true</ScientificGroupWrite>
+			<EuclidConsortiumWrite>true</EuclidConsortiumWrite>
+			<ScientificGroupRead>true</ScientificGroupRead>
+			<ScientificGroupWrite>false</ScientificGroupWrite>
 		</AccessRights>
 		<Curator>
-			<Name>uBe</Name>
-			<Email>x9p5YKknOjOfysPcJ7GKNFMbZ@dhQniIWYra4hfe45kP60zM2M.lQ,P,~;~y&amp;'['W3e,7lxkAf1cOz+:u.V</Email>
+			<Name>ST8</Name>
+			<Email>RJVq4Ei139T1Q8JBEZ5baVRgD@7iutmEcpLAjYSPCNbkoccRvO295ogwlDMGaGwFkdWU4QNC3.)4~xSvAvrr&lt;</Email>
 		</Curator>
 		<ToBePublished>false</ToBePublished>
-		<Published>true</Published>
-		<Creator>4oq</Creator>
-		<CreationDate>2018-11-16T15:52:31.388Z</CreationDate>
+		<Published>false</Published>
+		<Creator>QPB</Creator>
+		<CreationDate>2019-01-09T17:52:28.437Z</CreationDate>
 	</Header>
 	<Data>
-		<IdCatalog>467504586</IdCatalog>
+		<IdCatalog>408413020</IdCatalog>
 		<CatalogCoverage>
 			<SpatialCoverage>
 				<Polygon>
 					<Vertex>
-						<Position coordUnit="count">
-							<C1 unit="W">0.0</C1>
-							<C2 unit="rad/day">0.0</C2>
+						<Position coordUnit="mas-2">
+							<C1 unit="MHz">1.0</C1>
+							<C2 unit="J/m3/K4">1.0</C2>
 						</Position>
 						<SmallCircle>
-							<Pole coordUnit="particles/s/cm2">
-								<C1 unit="rad">1.0</C1>
-								<C2 unit="solMass">1.0</C2>
+							<Pole coordUnit="m/s2">
+								<C1 unit="km/s">1.0</C1>
+								<C2 unit="stars">1.0</C2>
 							</Pole>
 						</SmallCircle>
 					</Vertex>
@@ -48,164 +48,164 @@
 			</SpatialCoverage>
 			<SpectralCoverage>
 				<Filter>
-					<Name>LSST_u</Name>
-					<MagId>i</MagId>
-					<CentralWavelength>-9.0</CentralWavelength>
-					<MinWavelength>-3.0</MinWavelength>
-					<MaxWavelength>2.0</MaxWavelength>
-					<Reference>QYE</Reference>
-					<HasFringes>579114771</HasFringes>
+					<Name>DECAM_z</Name>
+					<MagId>M</MagId>
+					<CentralWavelength>8.0</CentralWavelength>
+					<MinWavelength>2.0</MinWavelength>
+					<MaxWavelength>6.0</MaxWavelength>
+					<Reference>GCw</Reference>
+					<HasFringes>-575337441</HasFringes>
 				</Filter>
 			</SpectralCoverage>
 		</CatalogCoverage>
 		<CatalogStorage>
 			<CatalogFileStorage>
-				<Id>cbq</Id>
+				<Id>X2H</Id>
 				<PartitioningColumn>
-					<Name>WNO</Name>
-					<Label>I4R</Label>
-					<Type>complex64</Type>
+					<Name>3xe</Name>
+					<Label>PJu</Label>
+					<Type>int16</Type>
 					<VariableLength>
-						<FieldNumber>-144020378</FieldNumber>
-						<MaxElements>-1767707155</MaxElements>
-						<Offset>408851355</Offset>
-						<CatalogPropertyDataType>int32</CatalogPropertyDataType>
+						<FieldNumber>-410318877</FieldNumber>
+						<MaxElements>1109415308</MaxElements>
+						<Offset>926729819</Offset>
+						<CatalogPropertyDataType>variableLengthArray</CatalogPropertyDataType>
 					</VariableLength>
-					<Cardinality>-767810819</Cardinality>
-					<NullValue>k0E</NullValue>
-					<Unit>yr</Unit>
-					<Description>x2b</Description>
-					<UCD>S|em.IR.8-15um</UCD>
-					<Utype>y8w</Utype>
+					<Cardinality>-514490605</Cardinality>
+					<NullValue>oHe</NullValue>
+					<Unit>W</Unit>
+					<Description>wW1</Description>
+					<UCD>E|spect.dopplerVeloc.opt</UCD>
+					<Utype>Eei</Utype>
 				</PartitioningColumn>
 				<CatalogMetadataStorage>
-					<Id>-228907831</Id>
+					<Id>359782468</Id>
 					<CatalogMetadataElement>
-						<Key>gAF</Key>
-						<Value>Egq</Value>
+						<Key>Jmc</Key>
+						<Value>f6U</Value>
 					</CatalogMetadataElement>
 				</CatalogMetadataStorage>
-				<FileFormat>TSV</FileFormat>
-				<FileNumber>-282886616</FileNumber>
+				<FileFormat>CSV</FileFormat>
+				<FileNumber>-564572517</FileNumber>
 				<StorageSpace>
-					<Id>NNw</Id>
+					<Id>BgG</Id>
 					<Range>
-						<MinValue>XEr</MinValue>
-						<MaxValue>9sK</MaxValue>
-						<SelectionFilter>UO9</SelectionFilter>
+						<MinValue>3ba</MinValue>
+						<MaxValue>Qyo</MaxValue>
+						<SelectionFilter>Dap</SelectionFilter>
 					</Range>
-					<DataContainer filestatus="ARCHIVED">
-						<FileName>f</FileName>
+					<DataContainer filestatus="COMMITTED">
+						<FileName>WDMNigwoegA2RxQudsoXJKnfXzvrjJEeJTxeVCn1GAABI68wJ3X0eljCOROhak605z7n9MCx2D0KHgMDMl</FileName>
 					</DataContainer>
 				</StorageSpace>
 			</CatalogFileStorage>
 			<CatalogDBStorage>
-				<Id>YwY</Id>
+				<Id>DK2</Id>
 				<IdType>
-					<Name>UtZ</Name>
-					<Label>NX5</Label>
-					<Type>float64</Type>
+					<Name>P8R</Name>
+					<Label>uoZ</Label>
+					<Type>int16</Type>
 					<VariableLength>
-						<FieldNumber>-227070024</FieldNumber>
-						<MaxElements>-1321702338</MaxElements>
-						<Offset>-307284483</Offset>
-						<CatalogPropertyDataType>int32</CatalogPropertyDataType>
+						<FieldNumber>149351061</FieldNumber>
+						<MaxElements>-774007225</MaxElements>
+						<Offset>684737902</Offset>
+						<CatalogPropertyDataType>character</CatalogPropertyDataType>
 					</VariableLength>
-					<Cardinality>-499511696</Cardinality>
-					<NullValue>kBw</NullValue>
-					<Unit>arcmin</Unit>
-					<Description>hWB</Description>
-					<UCD>Q|phys.mol.dipole.magnetic</UCD>
-					<Utype>cer</Utype>
+					<Cardinality>1742580324</Cardinality>
+					<NullValue>phc</NullValue>
+					<Unit>m/s</Unit>
+					<Description>5er</Description>
+					<UCD>E|phot.flux.density</UCD>
+					<Utype>GCw</Utype>
 				</IdType>
-				<TableName>qGz</TableName>
-				<ConnectionString>yru</ConnectionString>
-				<StorageDataType>P9r</StorageDataType>
+				<TableName>yst</TableName>
+				<ConnectionString>LSt</ConnectionString>
+				<StorageDataType>SNh</StorageDataType>
 				<IndexColumn>
-					<Name>a39</Name>
-					<Label>10c</Label>
-					<Type>float64</Type>
+					<Name>JL9</Name>
+					<Label>14x</Label>
+					<Type>variableLengthArray</Type>
 					<VariableLength>
-						<FieldNumber>-1332492108</FieldNumber>
-						<MaxElements>-2118024451</MaxElements>
-						<Offset>1453548888</Offset>
-						<CatalogPropertyDataType>float32</CatalogPropertyDataType>
+						<FieldNumber>-1520098645</FieldNumber>
+						<MaxElements>1908779966</MaxElements>
+						<Offset>1427152530</Offset>
+						<CatalogPropertyDataType>complex32</CatalogPropertyDataType>
 					</VariableLength>
-					<Cardinality>1957128957</Cardinality>
-					<NullValue>JJp</NullValue>
-					<Unit>kpc</Unit>
-					<Description>1ES</Description>
-					<UCD>C|phot.color</UCD>
-					<Utype>zK4</Utype>
+					<Cardinality>1844870752</Cardinality>
+					<NullValue>lEX</NullValue>
+					<Unit>km/s/kpc</Unit>
+					<Description>dXd</Description>
+					<UCD>Q|phys.gauntFactor</UCD>
+					<Utype>Y6E</Utype>
 				</IndexColumn>
-				<ParentCatalogId>2119895446</ParentCatalogId>
+				<ParentCatalogId>1516113696</ParentCatalogId>
 				<SelectionRange>
-					<MinValue>zDM</MinValue>
-					<MaxValue>hFA</MaxValue>
-					<SelectionFilter>U1v</SelectionFilter>
+					<MinValue>h8X</MinValue>
+					<MaxValue>4oG</MaxValue>
+					<SelectionFilter>wJv</SelectionFilter>
 				</SelectionRange>
 			</CatalogDBStorage>
 		</CatalogStorage>
 		<CatalogDescription>
-			<CatalogDataProduct>1Q5</CatalogDataProduct>
-			<PathToCatalogDefinition>p6R</PathToCatalogDefinition>
-			<CatalogFormatBase>sim.detectorFlatMap</CatalogFormatBase>
-			<CatalogFormatHDU>-297980409</CatalogFormatHDU>
-			<CatalogFitsColumnsDefinition>JhW17cY3dCHX9ikoXZG62zogiISVt1HzemYzUFg9i5LHbUYFE4BC2gzvcyeA5pc2dE1MF3gXV6GxcjZ55PnPINJZ4sdyQ1PMU</CatalogFitsColumnsDefinition>
+			<CatalogDataProduct>Qvo</CatalogDataProduct>
+			<PathToCatalogDefinition>mAp</PathToCatalogDefinition>
+			<CatalogFormatBase>nir.masterDark</CatalogFormatBase>
+			<CatalogFormatHDU>688856950</CatalogFormatHDU>
+			<CatalogFitsColumnsDefinition>HNtCQzvkhgbAK1rHmmQ0POB40OVF</CatalogFitsColumnsDefinition>
 			<PartitioningColumn>
-				<Name>nMm</Name>
-				<Label>Sdg</Label>
-				<Type>float64</Type>
+				<Name>pum</Name>
+				<Label>Lgl</Label>
+				<Type>int32</Type>
 				<VariableLength>
-					<FieldNumber>880573279</FieldNumber>
-					<MaxElements>-221547501</MaxElements>
-					<Offset>-1858619341</Offset>
-					<CatalogPropertyDataType>boolean</CatalogPropertyDataType>
+					<FieldNumber>-799234782</FieldNumber>
+					<MaxElements>-36167837</MaxElements>
+					<Offset>1084316188</Offset>
+					<CatalogPropertyDataType>int16</CatalogPropertyDataType>
 				</VariableLength>
-				<Cardinality>1642308194</Cardinality>
-				<NullValue>Uq3</NullValue>
-				<Unit>arcsec/um</Unit>
-				<Description>fXD</Description>
-				<UCD>Q|pos</UCD>
-				<Utype>QMI</Utype>
+				<Cardinality>-553793975</Cardinality>
+				<NullValue>YX4</NullValue>
+				<Unit>lyr</Unit>
+				<Description>ptr</Description>
+				<UCD>Q|phys.size.radius</UCD>
+				<Utype>CVI</Utype>
 			</PartitioningColumn>
 		</CatalogDescription>
 		<BfdMoments format="she.bfdMoments" version="0.1">
-			<DataContainer filestatus="DELETED">
-				<FileName>lYq7iJaGrV3zmQHgbm2l1O3tbU</FileName>
+			<DataContainer filestatus="VALIDATED">
+				<FileName>fkG</FileName>
 			</DataContainer>
 		</BfdMoments>
 		<KsbShearEstimates format="she.ksbShearEstimates" version="0.1">
-			<DataContainer filestatus="DELETED">
-				<FileName>IOE4CKzjwbdtsdGNqBCPtKFIFJZl</FileName>
+			<DataContainer filestatus="PROPOSED">
+				<FileName>6ES4</FileName>
 			</DataContainer>
 		</KsbShearEstimates>
 		<LensMcShearEstimates format="she.lensMcShearEstimates" version="0.1">
-			<DataContainer filestatus="PROPOSED">
-				<FileName>sNJA1327S3Hv6lvth67tH9rfEOlnpXialXp4FBs6wBFm18syh56SA4x1Wmxjz4jzLC9VPM3Y7nIo94fK1Jxr6E0xmS6z6tv</FileName>
+			<DataContainer filestatus="PROCESSING">
+				<FileName>Lvy97cEy3a9I4xkjlaGrFlINn3qiGD0grDxtZVFVZt9uP5zkWJfx8u5FZcTmpxMis8wRETM57KiUUC7J9JqptmnuQ3KAreZZ</FileName>
 			</DataContainer>
 		</LensMcShearEstimates>
 		<MomentsMlShearEstimates format="she.momentsMlShearEstimates" version="0.1">
-			<DataContainer filestatus="PROCESSING">
-				<FileName>S</FileName>
+			<DataContainer filestatus="ARCHIVED">
+				<FileName>5ioEGb3095boLb01hbY1zlsupqNamBJ156NaC7TdOhDtKbhFSLV4iD6L152HVUYBHN1Nu7jfVe6MLHHNfFW4lRgN1fPy</FileName>
 			</DataContainer>
 		</MomentsMlShearEstimates>
 		<RegaussShearEstimates format="she.regaussShearEstimates" version="0.1">
-			<DataContainer filestatus="PROCESSING">
-				<FileName>BzhY22OuiKMuJHutriI66Mjed4wBlBiwYp3LGy2MDwVOYFZ7XFvJ2WcijeoLg</FileName>
+			<DataContainer filestatus="PROPOSED">
+				<FileName>atEypXmiRXnTakSYHhAtG8rgzHefa1cC6gbV</FileName>
 			</DataContainer>
 		</RegaussShearEstimates>
 	</Data>
 	<QualityFlags>
 		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
-		<AuxiliaryFlags flagName="xLQ" flagged="true" maxLimit="-4.0" minLimit="9.0" xpath="ZO5">true</AuxiliaryFlags>
+		<AuxiliaryFlags flagName="IcX" flagged="true" maxLimit="0.0" minLimit="-4.0" xpath="dZL">true</AuxiliaryFlags>
 	</QualityFlags>
 	<Parameters>
 		<Param>
-			<Key>Wwh</Key>
-			<Description>rnw</Description>
-			<StringValue>2pl</StringValue>
-			<Unit>Zoe</Unit>
+			<Key>2A6</Key>
+			<Description>woj</Description>
+			<StringValue>Peh</StringValue>
+			<Unit>bov</Unit>
 		</Param>
 	</Parameters>
 </ns1:DpdShearMeasurement>
