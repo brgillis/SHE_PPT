@@ -107,8 +107,8 @@ class DetectionsTableFormat(object):
 
         self.seg_ID = set_column_properties("SEGMENTATION_MAP_ID", dtype=">i8", fits_dtype="K")
 
-        self.gal_x_world = set_column_properties("RIGHT_ASCENSION", dtype=">f8",, is_optional=False, comment="deg")
-        self.gal_y_world = set_column_properties("DECLINATION", dtype=">f8",, is_optional=False, comment="deg")
+        self.gal_x_world = set_column_properties("RIGHT_ASCENSION", dtype=">f8", is_optional=False, comment="deg")
+        self.gal_y_world = set_column_properties("DECLINATION", dtype=">f8", is_optional=False, comment="deg")
 
         self.MAG_G_EXT_DECAM_APER = set_column_properties("MAG_G_EXT_DECAM_APER", is_optional=True, comment=None)
         self.MAG_R_EXT_DECAM_APER = set_column_properties("MAG_R_EXT_DECAM_APER", is_optional=True, comment=None)
