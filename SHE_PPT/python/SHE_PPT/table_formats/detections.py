@@ -275,7 +275,7 @@ class DetectionsTableFormat(object):
         self.MU_MAX = set_column_properties("MU_MAX", is_optional=True, comment=None)
 
         self.Isoarea = set_column_properties(
-            "Isoarea", is_optional=True, comment=None)
+            "ISOAREA", is_optional=True, comment=None)
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
