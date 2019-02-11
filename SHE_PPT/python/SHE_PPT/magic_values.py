@@ -33,6 +33,11 @@ dither_dx_label = "DITHERDX"
 dither_dy_label = "DITHERDY"
 obs_time_label = "DATE-OBS"
 field_id_label = "FIELDID"
+psf_state_identity_label = "OPTID"
+
+# Special values for tables
+psf_zm_identity = "zfit"
+psf_tm_identity = "tmfit"
 
 # Tags for science image, noisemap, and mask
 sci_tag = "SCI"
@@ -49,6 +54,8 @@ psf_im_tag = "PSF"
 bulge_psf_tag = "BPSF"
 disk_psf_tag = "DPSF"
 psf_cat_tag = "PSFC"
+psf_zm_state_tag = "PSFZS"
+psf_tm_state_tag = "PSFTS"
 
 # Miscellaneous
 segmap_unassigned_value = 0
