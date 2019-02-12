@@ -303,6 +303,49 @@ class SHEFrameStack(object):
 
         return stamp_stack
 
+    def get_fov_coords(self, x_world, y_world, x_buffer=0, y_buffer=0, none_if_out_of_bounds=False):
+        """ Calculates the Field-of-View (FOV) co-ordinates of a given sky position for each exposure, and
+            returns a list of (fov_x, fov_y) tuples. If the position isn't present in a given, None will be
+            returned in that list index.
+
+            Parameters
+            ----------
+            x_world : float
+                The x sky co-ordinate (R.A.)
+            y_world : float
+                The y sky co-ordinate (Dec.)
+            x_buffer : int
+                The size of the buffer region in pixels around a detector to get the co-ordinate from, x-dimension
+            y_buffer : int
+                The size of the buffer region in pixels around a detector to get the co-ordinate from, y-dimension
+            none_if_out_of_bounds : bool
+                Set this to True if you want this method to return None if the position is entirely out of bounds of
+                the image. By default, this is set to False, which means it will instead return a list of Nones in
+                that case instead.
+
+            Return
+            ------
+            fov_coords_list : list<tuple<float,float> or None>
+                A list of (fov_x, fov_y) tuples if present in an exposure, or None if not present.
+        """
+
+        # Get the positions for each exposure
+        found = False
+        fov_coords_list = []
+        for exposure in self.exposures:
+            fov_coords = exposure.get_fov_coord(x_world=x_world,
+                                                y_world=y_world,
+                                                x_buffer=x_buffer,
+                                                y_buffer=y_buffer)
+            if fov_coords is not None:
+                found = True
+            fov_coords_list.append(fov_coords)
+
+        # Return the resulting list (or None if not found and desired)
+        if none_if_out_of_bounds and not found:
+            fov_coords_list = None
+        return fov_coords_list
+
     @classmethod
     def _read_product_extension(cls, product_filename, tags=None, workdir=".", dtype=None,
                                 filetype="science", **kwargs):
