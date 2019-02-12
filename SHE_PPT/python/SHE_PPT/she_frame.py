@@ -61,21 +61,31 @@ class SHEFrame(object):
 
     """
 
-    def __init__(self, detectors, psf_data_hdulist, psf_catalogue):
+    def __init__(self,
+                 detectors,
+                 psf_data_hdulist=None,
+                 psf_catalogue=None,
+                 parent_frame_stack=None):
         """
         Parameters
         ----------
-        detectors : 2D array (normally 1-indexed 6x6, but can be otherwise if needed) of SHEImage objects
-        bulge_psf_image : SHEImage
-        disk_psf_image : SHEImage
+        detectors : np.ndarray<SHE_PPT.she_image.SHEImage>
+            2D array (normally 1-indexed 6x6, but can be otherwise if needed) of SHEImage objects
+        psf_data_hdulist : astropy.fits.HDUList
+            HDUList containing bulge and PSF HDUs
         psf_catalogue : astropy.table.Table
             Table linking galaxy IDs to the positions of their corresponding psfs
+        parent_frame_stack : SHE_PPT.she_frame_stack.SHEFrameStack
+            Reference to parent SHEFrameStack object if it exists; None otherwise
         """
 
         # Initialise directly
         self.detectors = detectors
         self.psf_data_hdulist = psf_data_hdulist
         self.psf_catalogue = psf_catalogue
+
+        # References to parent objects
+        self.parent_frame_stack = parent_frame_stack
 
         # Set the PSF catalogue to index by ID
         if self.psf_catalogue is not None:
