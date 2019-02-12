@@ -44,19 +44,46 @@ logger = logging.getLogger(__name__)
 
 # We need new-style classes for properties, hence inherit from object
 class SHEImage(object):
-    """Structure to hold an image together with a mask, a noisemap, and a header (for metadata).
+    """ Structure to hold an image together with a mask, a noisemap, and a header (for metadata).
 
-    The structure can be written into a FITS file, and stamps can be extracted.
-    The properties .data, .mask, .noisemap and .header are meant to be accessed directly:
-      - .data is a numpy array
-      - .mask is a numpy array
-      - .noisemap is a numpy array
-      - .segmentation_map is a numpy array
-      - .header is an astropy.io.fits.Header object
-          (for an intro to those, see http://docs.astropy.org/en/stable/io/fits/#working-with-fits-headers )
+        The structure can be written into a FITS file, and stamps can be extracted.
+        The properties .data, .mask, .noisemap and .header are meant to be accessed directly:
+          - .data is a numpy array
+          - .mask is a numpy array
+          - .noisemap is a numpy array
+          - .segmentation_map is a numpy array
+          - .header is an astropy.io.fits.Header object
+              (for an intro to those, see http://docs.astropy.org/en/stable/io/fits/#working-with-fits-headers )
 
-    Note that the shape (and size) of data, mask and noisemap cannot be modified once the object exists, as such a
-    change would probably not be wanted. If you really want to change the size of a SHEImage, make a new object.
+        Note that the shape (and size) of data, mask and noisemap cannot be modified once the object exists, as such a
+        change would probably not be wanted. If you really want to change the size of a SHEImage, make a new object.
+
+        Parameters
+        ----------
+        data : np.ndarray<float>
+            A 2D array, with indices [x,y], consistent with DS9 and SExtractor orientation conventions
+        mask : np.ndarray<np.int32>
+            A 2D array of the same shape as data
+        noisemap : np.ndarray<float>
+            A 2D array of the same shape as data
+        segmentation_map : np.ndarray<np.int32>
+            A 2D array of the same shape as data
+        background_map : np.ndarray<float>
+            A 2D array of the same shape as data
+        weight_map : np.ndarray<float>
+            A 2D array of the same shape as data
+        header : astropy.io.fits.Header
+            Leaving None creates an empty header.
+        offset : tuple<float,float>
+            x, y offsets
+        wcs : astropy.wcs.WCS object
+            An astropy WCS for this image
+        parent_frame_stack : SHE_PPT.she_frame_stack.SHEFrameStack
+            Reference to the parent SHEFrameStack, if it exists; None otherwise
+        parent_frame : SHE_PPT.parent_frame.SHEFrameStack
+            Reference to the parent SHEFrame, if it exists; None otherwise
+        parent_image_stack : SHE_PPT.parent_image_stack.SHEImageStack
+            Reference to the parent SHEImageStack, if it exists; None otherwise
     """
 
     def __init__(self,
@@ -68,17 +95,38 @@ class SHEImage(object):
                  weight_map=None,
                  header=None,
                  offset=None,
-                 wcs=None,):
-        """Initiator
+                 wcs=None,
+                 parent_frame_stack=None,
+                 parent_frame=None,
+                 parent_image_stack=None):
+        """ Initialiser for a SHEImage object
 
-        Args:
-            data: a 2D numpy float array, with indices [x,y], consistent with DS9 and SExtractor orientation conventions.
-            mask: an int32 array of the same shape as data. Leaving None creates an empty mask.
-            noisemap: a float array of the same shape as data. Leaving None creates a noisemap of ones.
-            segmentation_map: an int32 array of the same shape as data. Leaving None creates an empty map
-            header: an astropy.io.fits.Header object. Leaving None creates an empty header.
-            offset: a 1D numpy float array with two values, corresponding to the x and y offsets
-            wcs: An astropy.wcs.WCS object, containing WCS information for this image
+            Parameters
+            ----------
+            data : np.ndarray<float>
+                A 2D array, with indices [x,y], consistent with DS9 and SExtractor orientation conventions
+            mask : np.ndarray<np.int32>
+                A 2D array of the same shape as data
+            noisemap : np.ndarray<float>
+                A 2D array of the same shape as data
+            segmentation_map : np.ndarray<np.int32>
+                A 2D array of the same shape as data
+            background_map : np.ndarray<float>
+                A 2D array of the same shape as data
+            weight_map : np.ndarray<float>
+                A 2D array of the same shape as data
+            header : astropy.io.fits.Header
+                Leaving None creates an empty header.
+            offset : tuple<float,float>
+                x, y offsets
+            wcs : astropy.wcs.WCS object
+                An astropy WCS for this image
+            parent_frame_stack : SHE_PPT.she_frame_stack.SHEFrameStack
+                Reference to the parent SHEFrameStack, if it exists; None otherwise
+            parent_frame : SHE_PPT.parent_frame.SHEFrameStack
+                Reference to the parent SHEFrame, if it exists; None otherwise
+            parent_image_stack : SHE_PPT.parent_image_stack.SHEImageStack
+                Reference to the parent SHEImageStack, if it exists; None otherwise
         """
 
         # Public values
@@ -91,6 +139,11 @@ class SHEImage(object):
         self.header = header
         self.offset = offset
         self.wcs = wcs
+
+        # References to parent objects
+        self.parent_frame_stack = parent_frame_stack
+        self.parent_frame = parent_frame
+        self.parent_image_stack = parent_image_stack
 
         # Cached values
         self.galsim_wcs = None
@@ -117,9 +170,13 @@ class SHEImage(object):
         self.det_dx = self.detector_pixels_x * self.pixelsize_um + self.gap_dx
         self.det_dy = self.detector_pixels_y * self.pixelsize_um + self.gap_dy
 
-        # TODO: Handle if header isn't present
-        self.det_iy = self.header['CCDID'][0]
-        self.det_ix = self.header['CCDID'][2]
+        if self.header is None or 'CCDID' not in self.header:
+            # If no header, assume we're using detector 1-1
+            self.det_ix = 1
+            self.det_iy = 1
+        else:
+            self.det_iy = self.header['CCDID'][0]
+            self.det_ix = self.header['CCDID'][2]
 
         self.fov_offset_x = -0.5 * (self.detector_columns * self.det_dx - self.gap_dx) + self.det_ix * self.det_dx
         self.fov_offset_y = -0.5 * (self.detector_rows * self.det_dy - self.gap_dy) + self.det_iy * self.det_dy
