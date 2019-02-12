@@ -24,10 +24,6 @@ Created on: 02/03/18
 from copy import deepcopy
 import os.path
 
-from astropy.io import fits
-from astropy.io.fits import HDUList, BinTableHDU, ImageHDU, PrimaryHDU
-from astropy.table import Table
-
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
 from SHE_PPT import products
@@ -37,6 +33,9 @@ from SHE_PPT.she_image import SHEImage
 from SHE_PPT.table_formats.psf import tf as pstf
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import find_extension, load_wcs, run_only_once
+from astropy.io import fits
+from astropy.io.fits import HDUList, BinTableHDU, ImageHDU, PrimaryHDU
+from astropy.table import Table
 import numpy as np
 
 
@@ -227,6 +226,59 @@ class SHEFrame(object):
             data=disk_hdu.data.transpose(), header=disk_hdu.header)
 
         return bulge_psf_stamp, disk_psf_stamp
+
+    def get_fov_coords(self, x_world, y_world, x_buffer=0, y_buffer=0):
+        """ Calculates the Field-of-View (FOV) co-ordinates of a given sky position, and returns a (fov_x, fov_y)
+            tuple. If the position isn't present in the exposure, None will be returned instead.
+
+            Parameters
+            ----------
+            x_world : float
+                The x sky co-ordinate (R.A.)
+            y_world : float
+                The y sky co-ordinate (Dec.)
+            x_buffer : int
+                The size of the buffer region in pixels around a detector to get the co-ordinate from, x-dimension
+            y_buffer : int
+                The size of the buffer region in pixels around a detector to get the co-ordinate from, y-dimension
+
+            Return
+            ------
+            fov_coords : tuple<float,float> or None
+                A (fov_x, fov_y) tuple if present, or None if not present.
+        """
+
+        # Loop over the detectors, and use the WCS of each to determine if it's on it or not
+        found = False
+
+        num_x, num_y = np.shape(self.detectors)
+
+        for x_i in range(num_x):
+            for y_i in range(num_y):
+
+                detector = self.detectors[x_i, y_i]
+                if detector is None:
+                    continue
+
+                x, y = detector.world2pix(x_world, y_world)
+                if (x < 1 - x_buffer) or (x > detector.shape[0] + x_buffer):
+                    continue
+                if (y < 1 - y_buffer) or (y > detector.shape[1] + y_buffer):
+                    continue
+
+                found = True
+
+                break
+
+            if found:
+                break
+
+        if (detector is None) or (not found):
+            return None
+
+        # Get the co-ordinates from the detector's method
+        fov_coords = detector.get_fov_coords(x=x, y=y,)
+        return fov_coords
 
     @classmethod
     def read(cls,

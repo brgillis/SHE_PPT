@@ -305,7 +305,7 @@ class SHEFrameStack(object):
 
     def get_fov_coords(self, x_world, y_world, x_buffer=0, y_buffer=0, none_if_out_of_bounds=False):
         """ Calculates the Field-of-View (FOV) co-ordinates of a given sky position for each exposure, and
-            returns a list of (fov_x, fov_y) tuples. If the position isn't present in a given, None will be
+            returns a list of (fov_x, fov_y) tuples. If the position isn't present in a given exposure, None will be
             returned in that list index.
 
             Parameters
@@ -333,10 +333,10 @@ class SHEFrameStack(object):
         found = False
         fov_coords_list = []
         for exposure in self.exposures:
-            fov_coords = exposure.get_fov_coord(x_world=x_world,
-                                                y_world=y_world,
-                                                x_buffer=x_buffer,
-                                                y_buffer=y_buffer)
+            fov_coords = exposure.get_fov_coords(x_world=x_world,
+                                                 y_world=y_world,
+                                                 x_buffer=x_buffer,
+                                                 y_buffer=y_buffer)
             if fov_coords is not None:
                 found = True
             fov_coords_list.append(fov_coords)
