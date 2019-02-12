@@ -22,14 +22,14 @@ Created on: Aug 17, 2017
 from copy import deepcopy
 import os
 
-import astropy.io.fits
-import astropy.wcs
 import galsim
 
 from SHE_PPT.magic_values import segmap_unassigned_value
 from SHE_PPT.mask import (as_bool, is_masked_bad,
                           is_masked_suspect_or_bad, masked_off_image)
 from SHE_PPT.utility import load_wcs
+import astropy.io.fits
+import astropy.wcs
 import numpy as np
 
 from . import logging
@@ -81,6 +81,7 @@ class SHEImage(object):
             wcs: An astropy.wcs.WCS object, containing WCS information for this image
         """
 
+        # Public values
         self.data = data  # Note the tests done in the setter method
         self.mask = mask
         self.noisemap = noisemap
@@ -91,7 +92,37 @@ class SHEImage(object):
         self.offset = offset
         self.wcs = wcs
 
+        # Cached values
         self.galsim_wcs = None
+
+        # Private values - TODO: Get these from MDB
+        # gap in um between adjacent detectors in the horizontal direction,
+        # including inactive pixels from the detector's edges on both sides
+        self.detector_gap_x = 3000
+        # gap in um between adjacent detectors in the vertical direction,
+        # including inactive pixels from the detector's edges on both sides
+        self.detector_gap_y = 6000
+
+        self.detector_pixels_x = 2048  # number of pixel columns per detector
+        self.detector_pixels_y = 2048  # number of pixel rows per detector
+
+        self.detector_activepixels_x = 2040  # number of active pixel columns per detector
+        self.detector_activepixels_y = 2040  # number of active pixel rows per detector
+
+        self.pixelsize_um = 18  # edge length of a pixel in micrometres
+
+        # gap between detector pixel areas (active and inactive)
+        self.gap_dx = self.detector_gap_x - (self.detector_pixels_x - self.detector_activepixels_x) * self.pixelsize_um
+        self.gap_dy = self.detector_gap_y - (self.detector_pixels_x - self.detector_activepixels_x) * self.pixelsize_um
+        self.det_dx = self.detector_pixels_x * self.pixelsize_um + self.gap_dx
+        self.det_dy = self.detector_pixels_y * self.pixelsize_um + self.gap_dy
+
+        # TODO: Handle if header isn't present
+        self.det_iy = self.header['CCDID'][0]
+        self.det_ix = self.header['CCDID'][2]
+
+        self.fov_offset_x = -0.5 * (self.detector_columns * self.det_dx - self.gap_dx) + self.det_ix * self.det_dx
+        self.fov_offset_y = -0.5 * (self.detector_rows * self.det_dy - self.gap_dy) + self.det_iy * self.det_dy
 
         logger.debug("Created {}".format(str(self)))
 
