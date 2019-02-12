@@ -24,7 +24,7 @@ import os
 
 import galsim
 
-from SHE_PPT.magic_values import segmap_unassigned_value
+from SHE_PPT import magic_values as mv
 from SHE_PPT.mask import (as_bool, is_masked_bad,
                           is_masked_suspect_or_bad, masked_off_image)
 from SHE_PPT.utility import load_wcs
@@ -170,13 +170,13 @@ class SHEImage(object):
         self.det_dx = self.detector_pixels_x * self.pixelsize_um + self.gap_dx
         self.det_dy = self.detector_pixels_y * self.pixelsize_um + self.gap_dy
 
-        if self.header is None or 'CCDID' not in self.header:
+        if self.header is None or mv.ccdid_label not in self.header:
             # If no header, assume we're using detector 1-1
             self.det_ix = 1
             self.det_iy = 1
         else:
-            self.det_iy = self.header['CCDID'][0]
-            self.det_ix = self.header['CCDID'][2]
+            self.det_iy = self.header[mv.ccdid_label][0]
+            self.det_ix = self.header[mv.ccdid_label][2]
 
         self.fov_offset_x = -0.5 * (self.detector_columns * self.det_dx - self.gap_dx) + self.det_ix * self.det_dx
         self.fov_offset_y = -0.5 * (self.detector_rows * self.det_dy - self.gap_dy) + self.det_iy * self.det_dy
@@ -546,7 +546,7 @@ class SHEImage(object):
         other_mask = (self.segmentation_map != seg_id)
         if not mask_unassigned:
             other_mask = np.logical_and(
-                other_mask, (self.segmentation_map != segmap_unassigned_value))
+                other_mask, (self.segmentation_map != mv.segmap_unassigned_value))
 
         # Combine and return the masks
         object_mask = np.logical_or(pixel_mask, other_mask)
@@ -1005,7 +1005,7 @@ class SHEImage(object):
                 segmentation_map_stamp = None
             else:
                 segmentation_map_stamp = np.ones(
-                    (width, height), dtype=self.segmentation_map.dtype) * segmap_unassigned_value
+                    (width, height), dtype=self.segmentation_map.dtype) * mv.segmap_unassigned_value
 
             if self.background_map is None:
                 background_map_stamp = None
@@ -1106,7 +1106,7 @@ class SHEImage(object):
                 logger.debug("Not overwriting existing segmentation_map with default.")
                 return
 
-        self.segmentation_map = segmap_unassigned_value * np.ones_like(self.data, dtype=np.int32)
+        self.segmentation_map = mv.segmap_unassigned_value * np.ones_like(self.data, dtype=np.int32)
 
         return
 

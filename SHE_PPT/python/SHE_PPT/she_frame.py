@@ -91,6 +91,36 @@ class SHEFrame(object):
         if self.psf_catalogue is not None:
             self.psf_catalogue.add_index(pstf.ID)
 
+    @property
+    def detectors(self):
+        return self._detectors
+
+    @detectors.setter
+    def detectors(self, detectors):
+
+        # We test the dimensionality
+        if detectors.ndim is not 2:
+            raise ValueError("Detectors array of a SHEFrame must have 2 dimensions")
+
+        # Check that the size is as expected
+        if np.shape(detectors)[0] > 7 or np.shape(detectors)[1] > 7:
+            raise ValueError("Detectors array can have maximum shape (7,7)")
+
+        # Perform the attribution
+        self._detectors = detectors
+
+        # Set this as the parent for all detectors
+        for detector in self._detectors:
+            detector.parent_frame = self
+
+        return
+
+    @detectors.deleter
+    def detectors(self):
+        for detector in self._detectors:
+            del detector
+        del self._detectors
+
     def __eq__(self, rhs):
         """Equality test for SHEFrame class.
         """
@@ -193,11 +223,12 @@ class SHEFrame(object):
         stamp = detector.extract_stamp(
             x=x, y=y, width=width, height=height, keep_header=keep_header)
 
-        # Keep the extname even if not keeping the full header
+        # Keep the extname and CCDID even if not keeping the full header
         if stamp.header is None:
             stamp.add_default_header()
         if detector.header is not None:
             stamp.header[mv.extname_label] = detector.header[mv.extname_label]
+            stamp.header[mv.ccdid_label] = detector.header[mv.ccdid_label]
 
         return stamp
 
@@ -228,12 +259,16 @@ class SHEFrame(object):
             row = self.psf_catalogue.loc[gal_id]
 
         bulge_hdu = self.psf_data_hdulist[row[pstf.bulge_index]]
-        bulge_psf_stamp = SHEImage(
-            data=bulge_hdu.data.transpose(), header=bulge_hdu.header)
+        bulge_psf_stamp = SHEImage(data=bulge_hdu.data.transpose(),
+                                   header=bulge_hdu.header,
+                                   parent_frame_stack=self.parent_frame_stack,
+                                   parent_frame=self)
 
         disk_hdu = self.psf_data_hdulist[row[pstf.disk_index]]
-        disk_psf_stamp = SHEImage(
-            data=disk_hdu.data.transpose(), header=disk_hdu.header)
+        disk_psf_stamp = SHEImage(data=disk_hdu.data.transpose(),
+                                  header=disk_hdu.header,
+                                  parent_frame_stack=self.parent_frame_stack,
+                                  parent_frame=self)
 
         return bulge_psf_stamp, disk_psf_stamp
 
