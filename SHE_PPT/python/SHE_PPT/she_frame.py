@@ -24,6 +24,10 @@ Created on: 02/03/18
 from copy import deepcopy
 import os.path
 
+from astropy.io import fits
+from astropy.io.fits import HDUList, BinTableHDU, ImageHDU, PrimaryHDU
+from astropy.table import Table
+
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
 from SHE_PPT import products
@@ -33,9 +37,6 @@ from SHE_PPT.she_image import SHEImage
 from SHE_PPT.table_formats.psf import tf as pstf
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import find_extension, load_wcs, run_only_once
-from astropy.io import fits
-from astropy.io.fits import HDUList, BinTableHDU, ImageHDU, PrimaryHDU
-from astropy.table import Table
 import numpy as np
 
 
@@ -111,7 +112,9 @@ class SHEFrame(object):
 
         # Set this as the parent for all detectors
         for detector in self._detectors:
-            detector.parent_frame = self
+            if detector is not None:
+                detector.parent_frame = self
+                detector.parent_frame_stack = self.parent_frame_stack
 
         return
 
