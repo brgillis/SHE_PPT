@@ -24,7 +24,6 @@ import os
 
 from ElementsKernel.Logging import getLogger
 from MdbUtils.Mdb import Mdb
-import numpy as np
 
 
 # We'll store telescope details in a module-level object which can be updated from the MDB
@@ -48,6 +47,11 @@ class VisDetectorSpecs(object):
 
         self.pixelsize_um = 12  # edge length of a pixel in micrometres
         
+        self.fov_x_offset_deg = 0
+        self.fov_y_offset_deg = 0
+        
+        self.fov_scale_arcsec_per_pixel = 0.1 
+        
         self.calc_specs()
         
         return
@@ -61,6 +65,11 @@ class VisDetectorSpecs(object):
         # gap between detector pixel areas
         self.det_dx = self.detector_pixels_x * self.pixelsize_um + self.gap_dx
         self.det_dy = self.detector_pixels_y * self.pixelsize_um + self.gap_dy
+        
+        # FOV scale
+        self.fov_scale_deg_per_um = self.fov_scale_arcsec_per_pixel / 3600 * self.pixelsize_um = 12
+        
+        return
         
 vis_det_specs = VisDetectorSpecs()
         
@@ -152,7 +161,7 @@ def get_fov_coords(xp, yp, det_ix, det_iy, detector_orientation=0):
         Return
         ------
         fov_x, fov_y : float, float
-            Field-of-view co-ordinates
+            Field-of-view co-ordinates in degrees
     """
     
     # Check for valid det_ix and det_iy
@@ -170,7 +179,12 @@ def get_fov_coords(xp, yp, det_ix, det_iy, detector_orientation=0):
     cos_o = math.cos(detector_orientation)
     sin_o = math.sin(detector_orientation)
     
-    fov_x=offset_x+vis_det_specs.pixelsize_um*(vis_det_specs.detector_pixels_x/2 + cos_o*xpc - sin_o*ypc);
-    fov_y=offset_y+vis_det_specs.pixelsize_um*(vis_det_specs.detector_pixels_y/2 + sin_o*xpc+cos_o*ypc);
+    # Get positions on the focal plane
+    foc_x=offset_x+vis_det_specs.pixelsize_um*(vis_det_specs.detector_pixels_x/2 + cos_o*xpc - sin_o*ypc);
+    foc_y=offset_y+vis_det_specs.pixelsize_um*(vis_det_specs.detector_pixels_y/2 + sin_o*xpc+cos_o*ypc);
+    
+    # Convert from position on the focal plane to the field-of-view
+    fov_x = vis_det_specs.fov_x_offset_deg + vis_det_specs.fov_scale_deg_per_um*foc_x
+    fov_y = vis_det_specs.fov_y_offset_deg + vis_det_specs.fov_scale_deg_per_um*foc_y
 
     return fov_x, fov_y;
