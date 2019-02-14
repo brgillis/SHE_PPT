@@ -144,14 +144,79 @@ def load_vis_detector_specs(mdb_dict=None, mdb_files=None, path=None):
 
     return
 
-def get_fov_coords(xp, yp, det_ix, det_iy, detector_orientation=0):
+def get_vis_focal_plane_coords_from_detector(det_xp, det_yp, det_ix, det_iy, detector_orientation=0):
+    """ Convert VIS detector pixel co-ordinates to focal_plane co-ordinates.
+    
+        Parameters
+        ----------
+        det_xp : float
+            x pixel co-ordinate in the detector frame. Not enforced to actually be on the detector
+        det_yp : float
+            y pixel co-ordinate in the detector frame. Not enforced to actually be on the detector
+        det_ix : int
+            x index of the detector's position. Must be between 1 and 6
+        det_iy : int
+            y index of the detector's position. Must be between 1 and 6
+        detector_orientation : float
+            Orientation of the detector relative to the field-of-view in radians. Default=0
+            
+        Return
+        ------
+        foc_x, foc_y : float, float
+            VIS focal plane co-ordinates in um
+    """
+    
+    # Check for valid det_ix and det_iy
+    if det_ix not in (1,2,3,4,5,6) or det_iy not in (1,2,3,4,5,6):
+        raise ValueError("det_ix and det_iy must be in (1,2,3,4,5,6).") 
+    
+    offset_x=-0.5*(6*vis_det_specs.det_dx-vis_det_specs.gap_dx)+det_ix*vis_det_specs.det_dx
+    offset_y=-0.5*(6*vis_det_specs.det_dy-vis_det_specs.gap_dy)+det_iy*vis_det_specs.det_dy
+    
+    # Get pixel distances relative to centre of the detector
+    xpc = det_xp - vis_det_specs.detector_pixels_x/2
+    ypc = det_yp - vis_det_specs.detector_pixels_y/2
+    
+    # Get cos and sin of orientation angle
+    cos_o = math.cos(detector_orientation)
+    sin_o = math.sin(detector_orientation)
+    
+    # Get positions on the focal plane
+    foc_x=offset_x+vis_det_specs.pixelsize_um*(vis_det_specs.detector_pixels_x/2 + cos_o*xpc - sin_o*ypc);
+    foc_y=offset_y+vis_det_specs.pixelsize_um*(vis_det_specs.detector_pixels_y/2 + sin_o*xpc + cos_o*ypc);
+    
+    return foc_x, foc_y
+
+def get_vis_fov_coords_from_focal_plane(foc_x, foc_y):
     """ Convert detector pixel co-ordinates to field-of-view co-ordinates.
     
         Parameters
         ----------
-        xp : float
+        foc_x : float
+            Focal plane x co-ordinate in um
+        foc_y : float
+            Focal plane y co-ordinate in um
+            
+        Return
+        ------
+        fov_x, fov_y : float, float
+            Field-of-view co-ordinates in degrees
+    """
+    
+    # Convert from position on the focal plane to the field-of-view
+    fov_x = vis_det_specs.fov_x_offset_deg + vis_det_specs.fov_scale_deg_per_um*foc_x
+    fov_y = vis_det_specs.fov_y_offset_deg + vis_det_specs.fov_scale_deg_per_um*foc_y
+
+    return fov_x, fov_y
+
+def get_vis_fov_coords_from_detector(det_xp, det_yp, det_ix, det_iy, detector_orientation=0):
+    """ Convert detector pixel co-ordinates to field-of-view co-ordinates.
+    
+        Parameters
+        ----------
+        det_xp : float
             x pixel co-ordinate in the detector frame. Not enforced to actually be on the detector
-        yp : float
+        det_yp : float
             y pixel co-ordinate in the detector frame. Not enforced to actually be on the detector
         det_ix : int
             x index of the detector's position. Must be between 1 and 6
@@ -166,27 +231,8 @@ def get_fov_coords(xp, yp, det_ix, det_iy, detector_orientation=0):
             Field-of-view co-ordinates in degrees
     """
     
-    # Check for valid det_ix and det_iy
-    if det_ix not in (1,2,3,4,5,6) or det_iy not in (1,2,3,4,5,6):
-        raise ValueError("det_ix and det_iy must be in (1,2,3,4,5,6).") 
+    foc_x, foc_y = get_vis_focal_plane_coords_from_detector(det_xp, det_yp, det_ix, det_iy, detector_orientation)
     
-    offset_x=-0.5*(6*vis_det_specs.det_dx-vis_det_specs.gap_dx)+det_ix*vis_det_specs.det_dx
-    offset_y=-0.5*(6*vis_det_specs.det_dy-vis_det_specs.gap_dy)+det_iy*vis_det_specs.det_dy
+    fov_x, fov_y = get_vis_fov_coords_from_focal_plane(foc_x, foc_y)
     
-    # Get pixel distances relative to centre of the detector
-    xpc = xp - vis_det_specs.detector_pixels_x/2
-    ypc = yp - vis_det_specs.detector_pixels_y/2
-    
-    # Get cos and sin of orientation angle
-    cos_o = math.cos(detector_orientation)
-    sin_o = math.sin(detector_orientation)
-    
-    # Get positions on the focal plane
-    foc_x=offset_x+vis_det_specs.pixelsize_um*(vis_det_specs.detector_pixels_x/2 + cos_o*xpc - sin_o*ypc);
-    foc_y=offset_y+vis_det_specs.pixelsize_um*(vis_det_specs.detector_pixels_y/2 + sin_o*xpc + cos_o*ypc);
-    
-    # Convert from position on the focal plane to the field-of-view
-    fov_x = vis_det_specs.fov_x_offset_deg + vis_det_specs.fov_scale_deg_per_um*foc_x
-    fov_y = vis_det_specs.fov_y_offset_deg + vis_det_specs.fov_scale_deg_per_um*foc_y
-
-    return fov_x, fov_y;
+    return fov_x, fov_y
