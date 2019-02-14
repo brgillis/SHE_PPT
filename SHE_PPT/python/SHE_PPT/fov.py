@@ -72,8 +72,8 @@ class VisDetectorSpecs(DetectorSpecs):
 
         # Field of view offsets - Note that these aren't in the MDB at present, so have to be changed
         # manually.
-        self.fov_x_offset_deg = 0.
-        self.fov_y_offset_deg = 0.804
+        self.fov_x_offset_deg = 0.822
+        self.fov_y_offset_deg = 0.
 
         self.fov_scale_arcsec_per_pixel = 0.1
 
@@ -109,9 +109,9 @@ class NispDetectorSpecs(DetectorSpecs):
         # Field of view offsets - Note that these aren't in the MDB at present, so have to be changed
         # manually.
         self.fov_x_offset_deg = 0.
-        self.fov_y_offset_deg = 0.804
+        self.fov_y_offset_deg = 0.
 
-        self.fov_scale_arcsec_per_pixel = 0.1
+        self.fov_scale_arcsec_per_pixel = 0.15
 
         self.calc_specs()
 
@@ -219,6 +219,10 @@ def load_vis_detector_specs(mdb_dict=None,
     vis_det_specs.ndet_y = vis_det_specs.ndet_x
 
     assert vis_det_specs.ndet_x * vis_det_specs.ndet_y == ndet
+    
+    # FOV offset
+    vis_det_specs.fov_x_offset_deg = mdb_dict["SpaceSegment.PLM.TelescopeVISFoVCentreXscNominal"]['Value']
+    vis_det_specs.fov_y_offset_deg = mdb_dict["SpaceSegment.PLM.TelescopeVISFoVCentreYscNominal"]['Value']
 
     # edge length of a pixel in micrometres
     vis_det_specs.pixelsize_um = mdb_dict["SpaceSegment.Instrument.VIS.VISAveragePixelSizemicron"]['Value']
@@ -268,8 +272,13 @@ def load_nisp_detector_specs(mdb_dict=None,
 
     # Number of detector columns in x and y dimensions
     ndet = int(mdb_dict["SpaceSegment.Instrument.NISP.NISPDetectorNumber"]['Value'])
-    vis_det_specs.ndet_x = int(math.sqrt(ndet))
-    vis_det_specs.ndet_y = vis_det_specs.ndet_x
+    nisp_det_specs.ndet_x = int(math.sqrt(ndet))
+    nisp_det_specs.ndet_y = vis_det_specs.ndet_x
+    
+    # NISP FOV offset not in the MDB at present
+    # nisp_det_specs.fov_x_offset_deg = mdb_dict["SpaceSegment.PLM.TelescopeNISPFOVCentreXscNominal"]['Value']
+    # nisp_det_specs.fov_y_offset_deg = mdb_dict["SpaceSegment.PLM.TelescopeNISPFOVCentreYscNominal"]['Value']
+    
 
     assert vis_det_specs.ndet_x * vis_det_specs.ndet_y == ndet
 
