@@ -4,7 +4,7 @@ File: fov.py
 Created on: 13 Feb, 2019
 """
 
-__updated__ = "2019-02-13"
+__updated__ = "2019-02-14"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -47,8 +47,10 @@ class VisDetectorSpecs(object):
 
         self.pixelsize_um = 12  # edge length of a pixel in micrometres
         
-        self.fov_x_offset_deg = 0
-        self.fov_y_offset_deg = 0
+        # Field of view offsets - Note that these aren't in the MDB at present, so have to be changed
+        # manually.
+        self.fov_x_offset_deg = 0.
+        self.fov_y_offset_deg = 0.804
         
         self.fov_scale_arcsec_per_pixel = 0.1 
         
@@ -181,7 +183,7 @@ def get_fov_coords(xp, yp, det_ix, det_iy, detector_orientation=0):
     
     # Get positions on the focal plane
     foc_x=offset_x+vis_det_specs.pixelsize_um*(vis_det_specs.detector_pixels_x/2 + cos_o*xpc - sin_o*ypc);
-    foc_y=offset_y+vis_det_specs.pixelsize_um*(vis_det_specs.detector_pixels_y/2 + sin_o*xpc+cos_o*ypc);
+    foc_y=offset_y+vis_det_specs.pixelsize_um*(vis_det_specs.detector_pixels_y/2 + sin_o*xpc + cos_o*ypc);
     
     # Convert from position on the focal plane to the field-of-view
     fov_x = vis_det_specs.fov_x_offset_deg + vis_det_specs.fov_scale_deg_per_um*foc_x
