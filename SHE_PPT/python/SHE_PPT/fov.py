@@ -70,8 +70,7 @@ class VisDetectorSpecs(DetectorSpecs):
         self.ndet_x = 6
         self.ndet_y = 6
 
-        # Field of view offsets - Note that these aren't in the MDB at present, so have to be changed
-        # manually.
+        # Field of view offsets
         self.fov_x_offset_deg = 0.822
         self.fov_y_offset_deg = 0.
 
