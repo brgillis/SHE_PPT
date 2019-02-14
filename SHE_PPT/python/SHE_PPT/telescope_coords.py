@@ -1,5 +1,5 @@
 """
-File: fov.py
+File: telescope_coords.py
 
 Created on: 13 Feb, 2019
 """
@@ -93,8 +93,8 @@ class NispDetectorSpecs(DetectorSpecs):
         # including inactive pixels from the detector's edges on both sides
         self.gap_dy = 11879
 
-        self.detector_pixels_x = 2048  # number of pixel columns per detector
-        self.detector_pixels_y = 2048  # number of pixel rows per detector
+        self.detector_pixels_x = 2040  # number of pixel columns per detector
+        self.detector_pixels_y = 2040  # number of pixel rows per detector
 
         self.detector_activepixels_x = 2040  # number of active pixel columns per detector
         self.detector_activepixels_y = 2040  # number of active pixel rows per detector
