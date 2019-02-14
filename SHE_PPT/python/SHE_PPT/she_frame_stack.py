@@ -26,6 +26,10 @@ from copy import deepcopy
 from json.decoder import JSONDecodeError
 import os.path
 
+from astropy import table
+from astropy.io import fits
+from astropy.wcs import WCS
+
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
 from SHE_PPT import products
@@ -36,9 +40,6 @@ from SHE_PPT.she_image_stack import SHEImageStack
 from SHE_PPT.table_formats.detections import tf as detf
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import find_extension, load_wcs
-from astropy import table
-from astropy.io import fits
-from astropy.wcs import WCS
 import numpy as np
 
 
@@ -92,6 +93,41 @@ class SHEFrameStack(object):
             self.detections_catalogue.add_index(detf.ID)
 
         return
+    
+    @property
+    def exposures(self):
+        return self._exposures
+    
+    @exposures.setter
+    def exposures(self, exposures):
+        self._exposures = exposures
+        
+        # Set this as the parent frame stack for each exposure
+        for exposure in self._exposures:
+            if exposure is not None:
+                exposure.parent_frame_stack = self
+                
+    @exposures.deleter
+    def exposures(self):
+        for exposure in self._exposures:
+            del exposure
+        del self._exposures
+    
+    @property
+    def stacked_image(self):
+        return self._exposures
+    
+    @stacked_image.setter
+    def stacked_image(self, stacked_image):
+        self._stacked_image = stacked_image
+        
+        # Set this as the parent frame stack for the stacked image
+        self._stacked_image.parent_frame_stack = self
+        self._stacked_image.parent_frame = None
+                
+    @stacked_image.deleter
+    def stacked_image(self):
+        del self._stacked_image
 
     def __eq__(self, rhs):
         """Equality test for SHEFrame class.
@@ -302,6 +338,49 @@ class SHEFrameStack(object):
                                     y_world=y_world)
 
         return stamp_stack
+
+    def get_fov_coords(self, x_world, y_world, x_buffer=0, y_buffer=0, none_if_out_of_bounds=False):
+        """ Calculates the Field-of-View (FOV) co-ordinates of a given sky position for each exposure, and
+            returns a list of (fov_x, fov_y) tuples. If the position isn't present in a given exposure, None will be
+            returned in that list index.
+
+            Parameters
+            ----------
+            x_world : float
+                The x sky co-ordinate (R.A.)
+            y_world : float
+                The y sky co-ordinate (Dec.)
+            x_buffer : int
+                The size of the buffer region in pixels around a detector to get the co-ordinate from, x-dimension
+            y_buffer : int
+                The size of the buffer region in pixels around a detector to get the co-ordinate from, y-dimension
+            none_if_out_of_bounds : bool
+                Set this to True if you want this method to return None if the position is entirely out of bounds of
+                the image. By default, this is set to False, which means it will instead return a list of Nones in
+                that case instead.
+
+            Return
+            ------
+            fov_coords_list : list<tuple<float,float> or None>
+                A list of (fov_x, fov_y) tuples if present in an exposure, or None if not present.
+        """
+
+        # Get the positions for each exposure
+        found = False
+        fov_coords_list = []
+        for exposure in self.exposures:
+            fov_coords = exposure.get_fov_coords(x_world=x_world,
+                                                 y_world=y_world,
+                                                 x_buffer=x_buffer,
+                                                 y_buffer=y_buffer)
+            if fov_coords is not None:
+                found = True
+            fov_coords_list.append(fov_coords)
+
+        # Return the resulting list (or None if not found and desired)
+        if none_if_out_of_bounds and not found:
+            fov_coords_list = None
+        return fov_coords_list
 
     @classmethod
     def _read_product_extension(cls, product_filename, tags=None, workdir=".", dtype=None,

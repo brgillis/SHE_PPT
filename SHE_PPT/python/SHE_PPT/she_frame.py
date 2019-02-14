@@ -62,15 +62,22 @@ class SHEFrame(object):
 
     """
 
-    def __init__(self, detectors, psf_data_hdulist, psf_catalogue):
+    def __init__(self,
+                 detectors,
+                 psf_data_hdulist=None,
+                 psf_catalogue=None,
+                 parent_frame_stack=None):
         """
         Parameters
         ----------
-        detectors : 2D array (normally 1-indexed 6x6, but can be otherwise if needed) of SHEImage objects
-        bulge_psf_image : SHEImage
-        disk_psf_image : SHEImage
+        detectors : np.ndarray<SHE_PPT.she_image.SHEImage>
+            2D array (normally 1-indexed 6x6, but can be otherwise if needed) of SHEImage objects
+        psf_data_hdulist : astropy.fits.HDUList
+            HDUList containing bulge and PSF HDUs
         psf_catalogue : astropy.table.Table
             Table linking galaxy IDs to the positions of their corresponding psfs
+        parent_frame_stack : SHE_PPT.she_frame_stack.SHEFrameStack
+            Reference to parent SHEFrameStack object if it exists; None otherwise
         """
 
         # Initialise directly
@@ -78,9 +85,44 @@ class SHEFrame(object):
         self.psf_data_hdulist = psf_data_hdulist
         self.psf_catalogue = psf_catalogue
 
+        # References to parent objects
+        self.parent_frame_stack = parent_frame_stack
+
         # Set the PSF catalogue to index by ID
         if self.psf_catalogue is not None:
             self.psf_catalogue.add_index(pstf.ID)
+
+    @property
+    def detectors(self):
+        return self._detectors
+
+    @detectors.setter
+    def detectors(self, detectors):
+
+        # We test the dimensionality
+        if detectors.ndim is not 2:
+            raise ValueError("Detectors array of a SHEFrame must have 2 dimensions")
+
+        # Check that the size is as expected
+        if np.shape(detectors)[0] > 7 or np.shape(detectors)[1] > 7:
+            raise ValueError("Detectors array can have maximum shape (7,7)")
+
+        # Perform the attribution
+        self._detectors = detectors
+
+        # Set this as the parent for all detectors
+        for detector in self._detectors:
+            if detector is not None:
+                detector.parent_frame = self
+                detector.parent_frame_stack = self.parent_frame_stack
+
+        return
+
+    @detectors.deleter
+    def detectors(self):
+        for detector in self._detectors:
+            del detector
+        del self._detectors
 
     def __eq__(self, rhs):
         """Equality test for SHEFrame class.
@@ -184,11 +226,12 @@ class SHEFrame(object):
         stamp = detector.extract_stamp(
             x=x, y=y, width=width, height=height, keep_header=keep_header)
 
-        # Keep the extname even if not keeping the full header
+        # Keep the extname and CCDID even if not keeping the full header
         if stamp.header is None:
             stamp.add_default_header()
         if detector.header is not None:
             stamp.header[mv.extname_label] = detector.header[mv.extname_label]
+            stamp.header[mv.ccdid_label] = detector.header[mv.ccdid_label]
 
         return stamp
 
@@ -219,14 +262,71 @@ class SHEFrame(object):
             row = self.psf_catalogue.loc[gal_id]
 
         bulge_hdu = self.psf_data_hdulist[row[pstf.bulge_index]]
-        bulge_psf_stamp = SHEImage(
-            data=bulge_hdu.data.transpose(), header=bulge_hdu.header)
+        bulge_psf_stamp = SHEImage(data=bulge_hdu.data.transpose(),
+                                   header=bulge_hdu.header,
+                                   parent_frame_stack=self.parent_frame_stack,
+                                   parent_frame=self)
 
         disk_hdu = self.psf_data_hdulist[row[pstf.disk_index]]
-        disk_psf_stamp = SHEImage(
-            data=disk_hdu.data.transpose(), header=disk_hdu.header)
+        disk_psf_stamp = SHEImage(data=disk_hdu.data.transpose(),
+                                  header=disk_hdu.header,
+                                  parent_frame_stack=self.parent_frame_stack,
+                                  parent_frame=self)
 
         return bulge_psf_stamp, disk_psf_stamp
+
+    def get_fov_coords(self, x_world, y_world, x_buffer=0, y_buffer=0):
+        """ Calculates the Field-of-View (FOV) co-ordinates of a given sky position, and returns a (fov_x, fov_y)
+            tuple. If the position isn't present in the exposure, None will be returned instead.
+
+            Parameters
+            ----------
+            x_world : float
+                The x sky co-ordinate (R.A.)
+            y_world : float
+                The y sky co-ordinate (Dec.)
+            x_buffer : int
+                The size of the buffer region in pixels around a detector to get the co-ordinate from, x-dimension
+            y_buffer : int
+                The size of the buffer region in pixels around a detector to get the co-ordinate from, y-dimension
+
+            Return
+            ------
+            fov_coords : tuple<float,float> or None
+                A (fov_x, fov_y) tuple if present, or None if not present.
+        """
+
+        # Loop over the detectors, and use the WCS of each to determine if it's on it or not
+        found = False
+
+        num_x, num_y = np.shape(self.detectors)
+
+        for x_i in range(num_x):
+            for y_i in range(num_y):
+
+                detector = self.detectors[x_i, y_i]
+                if detector is None:
+                    continue
+
+                x, y = detector.world2pix(x_world, y_world)
+                if (x < 1 - x_buffer) or (x > detector.shape[0] + x_buffer):
+                    continue
+                if (y < 1 - y_buffer) or (y > detector.shape[1] + y_buffer):
+                    continue
+
+                found = True
+
+                break
+
+            if found:
+                break
+
+        if (detector is None) or (not found):
+            return None
+
+        # Get the co-ordinates from the detector's method
+        fov_coords = detector.get_fov_coords(x=x, y=y,)
+        return fov_coords
 
     @classmethod
     def read(cls,
