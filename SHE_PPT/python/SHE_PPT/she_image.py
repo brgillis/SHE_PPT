@@ -22,14 +22,14 @@ Created on: Aug 17, 2017
 from copy import deepcopy
 import os
 
-import astropy.io.fits
-import astropy.wcs
 import galsim
 
-from SHE_PPT.magic_values import segmap_unassigned_value
+from SHE_PPT import magic_values as mv
 from SHE_PPT.mask import (as_bool, is_masked_bad,
                           is_masked_suspect_or_bad, masked_off_image)
 from SHE_PPT.utility import load_wcs
+import astropy.io.fits
+import astropy.wcs
 import numpy as np
 
 from . import logging
@@ -44,19 +44,46 @@ logger = logging.getLogger(__name__)
 
 # We need new-style classes for properties, hence inherit from object
 class SHEImage(object):
-    """Structure to hold an image together with a mask, a noisemap, and a header (for metadata).
+    """ Structure to hold an image together with a mask, a noisemap, and a header (for metadata).
 
-    The structure can be written into a FITS file, and stamps can be extracted.
-    The properties .data, .mask, .noisemap and .header are meant to be accessed directly:
-      - .data is a numpy array
-      - .mask is a numpy array
-      - .noisemap is a numpy array
-      - .segmentation_map is a numpy array
-      - .header is an astropy.io.fits.Header object
-          (for an intro to those, see http://docs.astropy.org/en/stable/io/fits/#working-with-fits-headers )
+        The structure can be written into a FITS file, and stamps can be extracted.
+        The properties .data, .mask, .noisemap and .header are meant to be accessed directly:
+          - .data is a numpy array
+          - .mask is a numpy array
+          - .noisemap is a numpy array
+          - .segmentation_map is a numpy array
+          - .header is an astropy.io.fits.Header object
+              (for an intro to those, see http://docs.astropy.org/en/stable/io/fits/#working-with-fits-headers )
 
-    Note that the shape (and size) of data, mask and noisemap cannot be modified once the object exists, as such a
-    change would probably not be wanted. If you really want to change the size of a SHEImage, make a new object.
+        Note that the shape (and size) of data, mask and noisemap cannot be modified once the object exists, as such a
+        change would probably not be wanted. If you really want to change the size of a SHEImage, make a new object.
+
+        Parameters
+        ----------
+        data : np.ndarray<float>
+            A 2D array, with indices [x,y], consistent with DS9 and SExtractor orientation conventions
+        mask : np.ndarray<np.int32>
+            A 2D array of the same shape as data
+        noisemap : np.ndarray<float>
+            A 2D array of the same shape as data
+        segmentation_map : np.ndarray<np.int32>
+            A 2D array of the same shape as data
+        background_map : np.ndarray<float>
+            A 2D array of the same shape as data
+        weight_map : np.ndarray<float>
+            A 2D array of the same shape as data
+        header : astropy.io.fits.Header
+            Leaving None creates an empty header.
+        offset : tuple<float,float>
+            x, y offsets
+        wcs : astropy.wcs.WCS object
+            An astropy WCS for this image
+        parent_frame_stack : SHE_PPT.she_frame_stack.SHEFrameStack
+            Reference to the parent SHEFrameStack, if it exists; None otherwise
+        parent_frame : SHE_PPT.parent_frame.SHEFrameStack
+            Reference to the parent SHEFrame, if it exists; None otherwise
+        parent_image_stack : SHE_PPT.parent_image_stack.SHEImageStack
+            Reference to the parent SHEImageStack, if it exists; None otherwise
     """
 
     def __init__(self,
@@ -68,19 +95,41 @@ class SHEImage(object):
                  weight_map=None,
                  header=None,
                  offset=None,
-                 wcs=None,):
-        """Initiator
+                 wcs=None,
+                 parent_frame_stack=None,
+                 parent_frame=None,
+                 parent_image_stack=None):
+        """ Initialiser for a SHEImage object
 
-        Args:
-            data: a 2D numpy float array, with indices [x,y], consistent with DS9 and SExtractor orientation conventions.
-            mask: an int32 array of the same shape as data. Leaving None creates an empty mask.
-            noisemap: a float array of the same shape as data. Leaving None creates a noisemap of ones.
-            segmentation_map: an int32 array of the same shape as data. Leaving None creates an empty map
-            header: an astropy.io.fits.Header object. Leaving None creates an empty header.
-            offset: a 1D numpy float array with two values, corresponding to the x and y offsets
-            wcs: An astropy.wcs.WCS object, containing WCS information for this image
+            Parameters
+            ----------
+            data : np.ndarray<float>
+                A 2D array, with indices [x,y], consistent with DS9 and SExtractor orientation conventions
+            mask : np.ndarray<np.int32>
+                A 2D array of the same shape as data
+            noisemap : np.ndarray<float>
+                A 2D array of the same shape as data
+            segmentation_map : np.ndarray<np.int32>
+                A 2D array of the same shape as data
+            background_map : np.ndarray<float>
+                A 2D array of the same shape as data
+            weight_map : np.ndarray<float>
+                A 2D array of the same shape as data
+            header : astropy.io.fits.Header
+                Leaving None creates an empty header.
+            offset : tuple<float,float>
+                x, y offsets
+            wcs : astropy.wcs.WCS object
+                An astropy WCS for this image
+            parent_frame_stack : SHE_PPT.she_frame_stack.SHEFrameStack
+                Reference to the parent SHEFrameStack, if it exists; None otherwise
+            parent_frame : SHE_PPT.parent_frame.SHEFrameStack
+                Reference to the parent SHEFrame, if it exists; None otherwise
+            parent_image_stack : SHE_PPT.parent_image_stack.SHEImageStack
+                Reference to the parent SHEImageStack, if it exists; None otherwise
         """
 
+        # Public values
         self.data = data  # Note the tests done in the setter method
         self.mask = mask
         self.noisemap = noisemap
@@ -91,7 +140,46 @@ class SHEImage(object):
         self.offset = offset
         self.wcs = wcs
 
+        # References to parent objects
+        self.parent_frame_stack = parent_frame_stack
+        self.parent_frame = parent_frame
+        self.parent_image_stack = parent_image_stack
+
+        # Cached values
         self.galsim_wcs = None
+
+        # Private values - TODO: Get these from MDB
+        # gap in um between adjacent detectors in the horizontal direction,
+        # including inactive pixels from the detector's edges on both sides
+        self.detector_gap_x = 3000
+        # gap in um between adjacent detectors in the vertical direction,
+        # including inactive pixels from the detector's edges on both sides
+        self.detector_gap_y = 6000
+
+        self.detector_pixels_x = 2048  # number of pixel columns per detector
+        self.detector_pixels_y = 2048  # number of pixel rows per detector
+
+        self.detector_activepixels_x = 2040  # number of active pixel columns per detector
+        self.detector_activepixels_y = 2040  # number of active pixel rows per detector
+
+        self.pixelsize_um = 18  # edge length of a pixel in micrometres
+
+        # gap between detector pixel areas (active and inactive)
+        self.gap_dx = self.detector_gap_x - (self.detector_pixels_x - self.detector_activepixels_x) * self.pixelsize_um
+        self.gap_dy = self.detector_gap_y - (self.detector_pixels_x - self.detector_activepixels_x) * self.pixelsize_um
+        self.det_dx = self.detector_pixels_x * self.pixelsize_um + self.gap_dx
+        self.det_dy = self.detector_pixels_y * self.pixelsize_um + self.gap_dy
+
+        if self.header is None or mv.ccdid_label not in self.header:
+            # If no header, assume we're using detector 1-1
+            self.det_ix = 1
+            self.det_iy = 1
+        else:
+            self.det_iy = self.header[mv.ccdid_label][0]
+            self.det_ix = self.header[mv.ccdid_label][2]
+
+        self.fov_offset_x = -0.5 * (self.detector_columns * self.det_dx - self.gap_dx) + self.det_ix * self.det_dx
+        self.fov_offset_y = -0.5 * (self.detector_rows * self.det_dy - self.gap_dy) + self.det_iy * self.det_dy
 
         logger.debug("Created {}".format(str(self)))
 
@@ -458,7 +546,7 @@ class SHEImage(object):
         other_mask = (self.segmentation_map != seg_id)
         if not mask_unassigned:
             other_mask = np.logical_and(
-                other_mask, (self.segmentation_map != segmap_unassigned_value))
+                other_mask, (self.segmentation_map != mv.segmap_unassigned_value))
 
         # Combine and return the masks
         object_mask = np.logical_or(pixel_mask, other_mask)
@@ -917,7 +1005,7 @@ class SHEImage(object):
                 segmentation_map_stamp = None
             else:
                 segmentation_map_stamp = np.ones(
-                    (width, height), dtype=self.segmentation_map.dtype) * segmap_unassigned_value
+                    (width, height), dtype=self.segmentation_map.dtype) * mv.segmap_unassigned_value
 
             if self.background_map is None:
                 background_map_stamp = None
@@ -1018,7 +1106,7 @@ class SHEImage(object):
                 logger.debug("Not overwriting existing segmentation_map with default.")
                 return
 
-        self.segmentation_map = segmap_unassigned_value * np.ones_like(self.data, dtype=np.int32)
+        self.segmentation_map = mv.segmap_unassigned_value * np.ones_like(self.data, dtype=np.int32)
 
         return
 
