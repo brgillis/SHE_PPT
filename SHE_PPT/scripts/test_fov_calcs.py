@@ -1,6 +1,7 @@
 from SHE_PPT import telescope_coords as tc
 from SHE_PPT.file_io import find_file
 from astropy.table import Table
+import numpy as np
 
 mdb_filename = "WEB/SHE_PPT/sample_mdb.xml"
 qualified_mdb_filename = find_file(mdb_filename)
@@ -21,7 +22,7 @@ for (det_specs, instrument) in ((tc.vis_det_specs, "VIS"), (tc.nisp_det_specs, "
     det_iy_max = det_specs.ndet_x
 
     # Initialise a table to store results
-    coord_table = Table(colnames=["XP", "YP", "DET_X", "DET_Y", "FOV_X", "FOV_Y"])
+    coord_table = Table(names=["XP", "YP", "DET_X", "DET_Y", "FOV_X", "FOV_Y"])
 
     # Calculate for each corner of each detector
     for det_ix in np.linspace(det_ix_min, det_ix_max, 1, endpoint=True, dtype=int):
