@@ -41,7 +41,7 @@ class DetectorSpecs(object):
         self.det_dy = self.detector_pixels_y * self.pixelsize_um + self.gap_dy
 
         # FOV scale
-        self.fov_scale_deg_per_um = self.fov_scale_arcsec_per_pixel / 3600 * self.pixelsize_um
+        self.fov_scale_deg_per_um = self.fov_scale_arcsec_per_pixel / 3600 / self.pixelsize_um
 
         return
 
@@ -330,8 +330,8 @@ def get_focal_plane_coords_from_detector(det_xp,
     if det_ix not in det_range_x or det_iy not in det_range_y:
         raise ValueError("det_ix and det_iy must be in (1,2,3,4,5,6).")
 
-    offset_x = -0.5 * (det_specs.ndet_x * det_specs.det_dx - det_specs.gap_dx) + det_ix * det_specs.det_dx
-    offset_y = -0.5 * (det_specs.ndet_y * det_specs.det_dy - det_specs.gap_dy) + det_iy * det_specs.det_dy
+    offset_x = -0.5 * (det_specs.ndet_x * det_specs.det_dx - det_specs.gap_dx) + (det_ix - 1) * det_specs.det_dx
+    offset_y = -0.5 * (det_specs.ndet_y * det_specs.det_dy - det_specs.gap_dy) + (det_iy - 1) * det_specs.det_dy
 
     # Get pixel distances relative to centre of the detector
     xpc = det_xp - det_specs.detector_pixels_x / 2
