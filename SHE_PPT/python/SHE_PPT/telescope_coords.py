@@ -110,7 +110,7 @@ class NispDetectorSpecs(DetectorSpecs):
         self.fov_x_offset_deg = 0.811
         self.fov_y_offset_deg = 0.
 
-        self.fov_scale_arcsec_per_pixel = 0.15
+        self.fov_scale_arcsec_per_pixel = 0.3
 
         self.calc_specs()
 
