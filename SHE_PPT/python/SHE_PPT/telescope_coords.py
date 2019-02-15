@@ -326,7 +326,7 @@ def get_focal_plane_coords_from_detector(det_xp,
 
     # Check for valid det_ix and det_iy
     det_range_x = np.add(1, range(det_specs.ndet_x))
-    det_range_y = np.add(1, range(det_specs.ndet_x))
+    det_range_y = np.add(1, range(det_specs.ndet_y))
     if det_ix not in det_range_x or det_iy not in det_range_y:
         raise ValueError("det_ix and det_iy must be in (1,2,3,4,5,6).")
 
