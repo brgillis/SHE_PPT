@@ -25,8 +25,8 @@ for (det_specs, instrument) in ((tc.vis_det_specs, "VIS"), (tc.nisp_det_specs, "
     coord_table = Table(names=["XP", "YP", "DET_X", "DET_Y", "FOV_X", "FOV_Y"])
 
     # Calculate for each corner of each detector
-    for det_ix in np.linspace(det_ix_min, det_ix_max, 1, endpoint=True, dtype=int):
-        for det_iy in np.linspace(det_iy_min, det_iy_max, 1, endpoint=True, dtype=int):
+    for det_ix in np.linspace(det_ix_min, det_ix_max, (det_ix_max-det_ix_min+1), endpoint=True, dtype=int):
+        for det_iy in np.linspace(det_iy_min, det_iy_max, (det_iy_max-det_iy_min+1), endpoint=True, dtype=int):
             for xp in (xp_min, xp_max):
                 for yp in (yp_min, yp_max):
                     # Calculate the coords
@@ -44,4 +44,4 @@ for (det_specs, instrument) in ((tc.vis_det_specs, "VIS"), (tc.nisp_det_specs, "
                                          "FOV_Y": fov_y})
 
     # Save the table
-    coord_table.write(instrument + "_coords.fits")
+    coord_table.write(instrument + "_coords.fits", overwrite=True)
