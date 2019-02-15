@@ -34,7 +34,7 @@ for (det_specs, instrument) in ((tc.vis_det_specs, "VIS"), (tc.nisp_det_specs, "
                                                                    det_yp=yp,
                                                                    det_ix=det_ix,
                                                                    det_iy=det_iy,
-                                                                   instrument="VIS")
+                                                                   instrument=instrument)
                     # Store it in the table
                     coord_table.add_row({"XP": xp,
                                          "YP": yp,
