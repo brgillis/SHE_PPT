@@ -41,7 +41,7 @@ class DetectorSpecs(object):
         self.det_dy = self.detector_pixels_y * self.pixelsize_um + self.gap_dy
 
         # FOV scale
-        self.fov_scale_deg_per_um = self.fov_scale_arcsec_per_pixel / 3600 * self.pixelsize_um = 12
+        self.fov_scale_deg_per_um = self.fov_scale_arcsec_per_pixel / 3600 * self.pixelsize_um
 
         return
 

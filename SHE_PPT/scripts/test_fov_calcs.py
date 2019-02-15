@@ -44,5 +44,3 @@ for (det_specs, instrument) in ((tc.vis_det_specs, "VIS"), (tc.nisp_det_specs, "
 
     # Save the table
     coord_table.write(instrument + "_coords.fits")
-
-return
