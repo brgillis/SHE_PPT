@@ -148,28 +148,6 @@ class SHEImage(object):
         # Cached values
         self.galsim_wcs = None
 
-        # Private values - TODO: Get these from MDB
-        # gap in um between adjacent detectors in the horizontal direction,
-        # including inactive pixels from the detector's edges on both sides
-        self.detector_gap_x = 3000
-        # gap in um between adjacent detectors in the vertical direction,
-        # including inactive pixels from the detector's edges on both sides
-        self.detector_gap_y = 6000
-
-        self.detector_pixels_x = 2048  # number of pixel columns per detector
-        self.detector_pixels_y = 2048  # number of pixel rows per detector
-
-        self.detector_activepixels_x = 2040  # number of active pixel columns per detector
-        self.detector_activepixels_y = 2040  # number of active pixel rows per detector
-
-        self.pixelsize_um = 18  # edge length of a pixel in micrometres
-
-        # gap between detector pixel areas (active and inactive)
-        self.gap_dx = self.detector_gap_x - (self.detector_pixels_x - self.detector_activepixels_x) * self.pixelsize_um
-        self.gap_dy = self.detector_gap_y - (self.detector_pixels_x - self.detector_activepixels_x) * self.pixelsize_um
-        self.det_dx = self.detector_pixels_x * self.pixelsize_um + self.gap_dx
-        self.det_dy = self.detector_pixels_y * self.pixelsize_um + self.gap_dy
-
         if self.header is None or mv.ccdid_label not in self.header:
             # If no header, assume we're using detector 1-1
             self.det_ix = 1
@@ -177,9 +155,6 @@ class SHEImage(object):
         else:
             self.det_iy = self.header[mv.ccdid_label][0]
             self.det_ix = self.header[mv.ccdid_label][2]
-
-        self.fov_offset_x = -0.5 * (self.detector_columns * self.det_dx - self.gap_dx) + self.det_ix * self.det_dx
-        self.fov_offset_y = -0.5 * (self.detector_rows * self.det_dy - self.gap_dy) + self.det_iy * self.det_dy
 
         logger.debug("Created {}".format(str(self)))
 
