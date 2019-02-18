@@ -4,7 +4,7 @@ File: telescope_coords.py
 Created on: 13 Feb, 2019
 """
 
-__updated__ = "2019-02-15"
+__updated__ = "2019-02-18"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -71,7 +71,7 @@ class VisDetectorSpecs(DetectorSpecs):
         self.ndet_y = 6
 
         # Field of view offsets
-        self.fov_x_offset_deg = 0.8045
+        self.fov_x_offset_deg = 0.822
         self.fov_y_offset_deg = 0.
 
         self.fov_scale_arcsec_per_pixel = 0.1
@@ -107,10 +107,10 @@ class NispDetectorSpecs(DetectorSpecs):
 
         # Field of view offsets - Note that these aren't in the MDB at present, so have to be changed
         # manually.
-        self.fov_x_offset_deg = 0.811
+        self.fov_x_offset_deg = 0.
         self.fov_y_offset_deg = 0.
 
-        self.fov_scale_arcsec_per_pixel = 0.3
+        self.fov_scale_arcsec_per_pixel = 0.15
 
         self.calc_specs()
 
@@ -218,10 +218,10 @@ def load_vis_detector_specs(mdb_dict=None,
     vis_det_specs.ndet_y = vis_det_specs.ndet_x
 
     assert vis_det_specs.ndet_x * vis_det_specs.ndet_y == ndet
-
+    
     # FOV offset
-    vis_det_specs.fov_x_offset_deg = mdb_dict["SpaceSegment.PLM.TelescopeVISFoVCentreYscNominal"]['Value']
-    vis_det_specs.fov_y_offset_deg = mdb_dict["SpaceSegment.PLM.TelescopeVISFoVCentreXscNominal"]['Value']
+    vis_det_specs.fov_x_offset_deg = mdb_dict["SpaceSegment.PLM.TelescopeVISFoVCentreXscNominal"]['Value']
+    vis_det_specs.fov_y_offset_deg = mdb_dict["SpaceSegment.PLM.TelescopeVISFoVCentreYscNominal"]['Value']
 
     # edge length of a pixel in micrometres
     vis_det_specs.pixelsize_um = mdb_dict["SpaceSegment.Instrument.VIS.VISAveragePixelSizemicron"]['Value']
@@ -272,13 +272,13 @@ def load_nisp_detector_specs(mdb_dict=None,
     # Number of detector columns in x and y dimensions
     ndet = int(mdb_dict["SpaceSegment.Instrument.NISP.NISPDetectorNumber"]['Value'])
     nisp_det_specs.ndet_x = int(math.sqrt(ndet))
-    nisp_det_specs.ndet_y = vis_det_specs.ndet_x
+    nisp_det_specs.ndet_y = nisp_det_specs.ndet_x
 
+    assert nisp_det_specs.ndet_x * nisp_det_specs.ndet_y == ndet
+    
     # NISP FOV offset not in the MDB at present
     # nisp_det_specs.fov_x_offset_deg = mdb_dict["SpaceSegment.PLM.TelescopeNISPFOVCentreXscNominal"]['Value']
     # nisp_det_specs.fov_y_offset_deg = mdb_dict["SpaceSegment.PLM.TelescopeNISPFOVCentreYscNominal"]['Value']
-
-    assert vis_det_specs.ndet_x * vis_det_specs.ndet_y == ndet
 
     # edge length of a pixel in micrometres
     nisp_det_specs.pixelsize_um = mdb_dict["SpaceSegment.Instrument.NISP.NISPAveragePixelSize"]['Value']
@@ -328,10 +328,10 @@ def get_focal_plane_coords_from_detector(det_xp,
     det_range_x = np.add(1, range(det_specs.ndet_x))
     det_range_y = np.add(1, range(det_specs.ndet_y))
     if det_ix not in det_range_x or det_iy not in det_range_y:
-        raise ValueError("det_ix and det_iy must be in (1,2,3,4,5,6).")
+        raise ValueError("det_ix and det_iy must be in " + str(det_range_x) + " and " + str(det_range_y) + ".")
 
-    offset_x = -0.5 * (det_specs.ndet_x * det_specs.det_dx - det_specs.gap_dx) + (det_ix - 1) * det_specs.det_dx
-    offset_y = -0.5 * (det_specs.ndet_y * det_specs.det_dy - det_specs.gap_dy) + (det_iy - 1) * det_specs.det_dy
+    offset_x = -0.5 * (det_specs.ndet_x * det_specs.det_dx - det_specs.gap_dx) + (det_ix-1) * det_specs.det_dx
+    offset_y = -0.5 * (det_specs.ndet_y * det_specs.det_dy - det_specs.gap_dy) + (det_iy-1) * det_specs.det_dy
 
     # Get pixel distances relative to centre of the detector
     xpc = det_xp - det_specs.detector_pixels_x / 2
