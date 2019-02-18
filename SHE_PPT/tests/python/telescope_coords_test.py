@@ -72,8 +72,8 @@ class TestTelescopeCoords:
         telescope_coords.load_vis_detector_specs(mdb_files=self.mdb_filename)
         
         # Check the VIS values are as expected
-        assert np.isclose(telescope_coords.vis_det_specs.gap_dx == 1468)
-        assert np.isclose(telescope_coords.vis_det_specs.gap_dy == 7528)
+        assert np.isclose(telescope_coords.vis_det_specs.gap_dx, 1468)
+        assert np.isclose(telescope_coords.vis_det_specs.gap_dy, 7528)
 
         assert telescope_coords.vis_det_specs.detector_pixels_x == 4096
         assert telescope_coords.vis_det_specs.detector_pixels_y == 4136
@@ -81,20 +81,20 @@ class TestTelescopeCoords:
         assert telescope_coords.vis_det_specs.detector_activepixels_x == 4096
         assert telescope_coords.vis_det_specs.detector_activepixels_y == 4132
 
-        assert np.isclose(telescope_coords.vis_det_specs.pixelsize_um == 12)
+        assert np.isclose(telescope_coords.vis_det_specs.pixelsize_um, 12)
 
         assert telescope_coords.vis_det_specs.ndet_x == 6
         assert telescope_coords.vis_det_specs.ndet_y == 6
  
-        assert np.isclose(telescope_coords.vis_det_specs.fov_x_offset_deg == 0.822)
-        assert np.isclose(telescope_coords.vis_det_specs.fov_y_offset_deg == 0.)
+        assert np.isclose(telescope_coords.vis_det_specs.fov_x_offset_deg, 0.822)
+        assert np.isclose(telescope_coords.vis_det_specs.fov_y_offset_deg, 0.)
         
         # Test loading back NISP specs from the MDB
         telescope_coords.load_nisp_detector_specs(mdb_files=self.mdb_filename)
         
         # Check the NISP values are as expected
-        assert np.isclose(telescope_coords.nisp_det_specs.gap_dx == 5939.5)
-        assert np.isclose(telescope_coords.nisp_det_specs.gap_dy == 11879)
+        assert np.isclose(telescope_coords.nisp_det_specs.gap_dx, 5939.5)
+        assert np.isclose(telescope_coords.nisp_det_specs.gap_dy, 11879)
 
         assert telescope_coords.nisp_det_specs.detector_pixels_x == 2040
         assert telescope_coords.nisp_det_specs.detector_pixels_y == 2040
@@ -102,13 +102,13 @@ class TestTelescopeCoords:
         assert telescope_coords.nisp_det_specs.detector_activepixels_x == 2040
         assert telescope_coords.nisp_det_specs.detector_activepixels_y == 2040
 
-        assert np.isclose(telescope_coords.nisp_det_specs.pixelsize_um == 18)
+        assert np.isclose(telescope_coords.nisp_det_specs.pixelsize_um,18)
 
-        assert telescope_coords.nisp_det_specs.ndet_x == 6
-        assert telescope_coords.nisp_det_specs.ndet_y == 6
+        assert telescope_coords.nisp_det_specs.ndet_x == 4
+        assert telescope_coords.nisp_det_specs.ndet_y == 4
  
-        assert np.isclose(telescope_coords.nisp_det_specs.fov_x_offset_deg == 0.)
-        assert np.isclose(telescope_coords.nisp_det_specs.fov_y_offset_deg == 0.)
+        assert np.isclose(telescope_coords.nisp_det_specs.fov_x_offset_deg, 0.)
+        assert np.isclose(telescope_coords.nisp_det_specs.fov_y_offset_deg, 0.)
         
         return
     
@@ -125,10 +125,10 @@ class TestTelescopeCoords:
         det_ix = 4
         det_iy = 2
         
-        ex_foc_x = 0
-        ex_foc_y = 0
-        ex_fov_x = 0
-        ex_fov_y = 0
+        ex_foc_x = 17642.0
+        ex_foc_y = -100008.0
+        ex_fov_x = 0.8628379629629629
+        ex_fov_y = -0.23149999999999998
         
         foc_x, foc_y = telescope_coords.get_focal_plane_coords_from_detector(det_xp=det_xp,
                                                                              det_yp=det_yp,
@@ -159,10 +159,10 @@ class TestTelescopeCoords:
         return
     
     
-    def test_vis_coords(self):
+    def test_nisp_coords(self):
         
         # Load values from the MDB first
-        telescope_coords.load_vis_detector_specs(mdb_files=self.mdb_filename)
+        telescope_coords.load_nisp_detector_specs(mdb_files=self.mdb_filename)
         
         # Mock test - don't have real values to compare to yet
         
@@ -172,10 +172,10 @@ class TestTelescopeCoords:
         det_ix = 4
         det_iy = 2
         
-        ex_foc_x = 0
-        ex_foc_y = 0
-        ex_fov_x = 0
-        ex_fov_y = 0
+        ex_foc_x = 70991.25
+        ex_foc_y = -26837.5
+        ex_fov_x = 0.1643315972222222
+        ex_fov_y = -0.06212384259259259
         
         foc_x, foc_y = telescope_coords.get_focal_plane_coords_from_detector(det_xp=det_xp,
                                                                              det_yp=det_yp,
