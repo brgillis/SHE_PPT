@@ -113,7 +113,7 @@ class SHEFrameStack(object):
     
     @property
     def stacked_image(self):
-        return self._exposures
+        return self._stacked_image
     
     @stacked_image.setter
     def stacked_image(self, stacked_image):
