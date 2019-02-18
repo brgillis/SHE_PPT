@@ -129,6 +129,11 @@ class SHEImage(object):
                 Reference to the parent SHEImageStack, if it exists; None otherwise
         """
 
+        # References to parent objects
+        self.parent_frame_stack = parent_frame_stack
+        self.parent_frame = parent_frame
+        self.parent_image_stack = parent_image_stack
+
         # Public values
         self.data = data  # Note the tests done in the setter method
         self.mask = mask
@@ -139,11 +144,6 @@ class SHEImage(object):
         self.header = header
         self.offset = offset
         self.wcs = wcs
-
-        # References to parent objects
-        self.parent_frame_stack = parent_frame_stack
-        self.parent_frame = parent_frame
-        self.parent_image_stack = parent_image_stack
 
         # Cached values
         self.galsim_wcs = None

@@ -80,13 +80,13 @@ class SHEFrame(object):
             Reference to parent SHEFrameStack object if it exists; None otherwise
         """
 
+        # References to parent objects
+        self.parent_frame_stack = parent_frame_stack
+
         # Initialise directly
         self.detectors = detectors
         self.psf_data_hdulist = psf_data_hdulist
         self.psf_catalogue = psf_catalogue
-
-        # References to parent objects
-        self.parent_frame_stack = parent_frame_stack
 
         # Set the PSF catalogue to index by ID
         if self.psf_catalogue is not None:
