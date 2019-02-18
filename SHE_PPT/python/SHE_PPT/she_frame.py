@@ -111,7 +111,7 @@ class SHEFrame(object):
         self._detectors = detectors
 
         # Set this as the parent for all detectors
-        for detector in self._detectors:
+        for detector in self._detectors.flatten():
             if detector is not None:
                 detector.parent_frame = self
                 detector.parent_frame_stack = self.parent_frame_stack
@@ -120,7 +120,7 @@ class SHEFrame(object):
 
     @detectors.deleter
     def detectors(self):
-        for detector in self._detectors:
+        for detector in self._detectors.flatten():
             del detector
         del self._detectors
 
