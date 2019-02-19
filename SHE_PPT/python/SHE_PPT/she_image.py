@@ -1189,6 +1189,11 @@ class SHEImage(object):
 
         ra, dec = self.wcs.all_pix2world(x, y, origin)
 
+        # If input was scalars, output scalars
+        if (not hasattr(x, '__len__')) and (not hasattr(y, '__len__')):
+            ra = float(ra)
+            dec = float(dec)
+
         return ra, dec
 
     def world2pix(self, ra, dec, origin=0):
@@ -1228,6 +1233,11 @@ class SHEImage(object):
         if self.offset is not None:
             x = x - self.offset[0]
             y = y - self.offset[1]
+
+        # If input was scalars, output scalars
+        if (not hasattr(ra, '__len__')) and (not hasattr(dec, '__len__')):
+            x = float(x)
+            y = float(y)
 
         return x, y
 
