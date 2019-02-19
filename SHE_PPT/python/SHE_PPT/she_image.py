@@ -1475,13 +1475,14 @@ class SHEImage(object):
 
         return world2pix_rotation
 
-    def get_pix2world_decomposition(self, x, y):
-        """Gets the local WCS decomposition between image (x/y) and world (ra/dec) coordinates at the specified location.
+    def get_pix2world_decomposition(self, x=None, y=None):
+        """Gets the local WCS decomposition between image (x/y) and world (ra/dec) coordinates at the specified
+        location.
 
         Parameters
         ----------
         x : float
-            x pixel coordinate
+            x pixel coordinate. If None, will use centre
         y : float
             idem for y
 
@@ -1523,7 +1524,7 @@ class SHEImage(object):
         # We need to use the inverse of the local wcs to get the pix2world decomposition
         return local_wcs.getDecomposition()
 
-    def get_world2pix_decomposition(self, ra, dec):
+    def get_world2pix_decomposition(self, ra=None, dec=None):
         """Gets the local WCS decomposition between world (ra/dec) and pixel coordinates at the specified location.
 
         Parameters
@@ -1532,6 +1533,7 @@ class SHEImage(object):
             Right Ascension (RA) world coordinate in degrees
         dec : float
             Declination (Dec) world coordinate in degrees
+        If both ra and dec are None, will use the centre of the image
 
         Raises
         ------
