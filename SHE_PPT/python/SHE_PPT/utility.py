@@ -22,9 +22,10 @@
 import codecs
 import hashlib
 
+from astropy.wcs import WCS
+
 from SHE_PPT import detector as dtc
 from SHE_PPT.logging import getLogger
-from astropy.wcs import WCS
 
 
 logger = getLogger(__name__)
@@ -154,7 +155,7 @@ def load_wcs(header, apply_sc3_fix=False):
             # uses TPV (Scamp like WCS) instead of TAN projection,
             # which would break the subsequent line
             # source: LensMC and https://euclid.roe.ac.uk/issues/7409
-            if 'TAN' in header['CTYPE1'] or header['CTYPE2']:
+            if 'TAN' in header['CTYPE1'] or 'TAN' in header['CTYPE2']:
                 header['CTYPE1'] = 'RA---TPV'
                 header['CTYPE2'] = 'DEC--TPV'
             if 'PC1_1' in header:

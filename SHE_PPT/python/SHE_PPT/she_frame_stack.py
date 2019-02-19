@@ -28,7 +28,6 @@ import os.path
 
 from astropy import table
 from astropy.io import fits
-from astropy.wcs import WCS
 
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
@@ -38,7 +37,6 @@ from SHE_PPT.she_frame import SHEFrame
 from SHE_PPT.she_image import SHEImage
 from SHE_PPT.she_image_stack import SHEImageStack
 from SHE_PPT.table_formats.detections import tf as detf
-from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import find_extension, load_wcs
 import numpy as np
 
@@ -115,7 +113,7 @@ class SHEFrameStack(object):
     
     @property
     def stacked_image(self):
-        return self._exposures
+        return self._stacked_image
     
     @stacked_image.setter
     def stacked_image(self, stacked_image):

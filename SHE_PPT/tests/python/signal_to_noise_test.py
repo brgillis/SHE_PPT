@@ -5,7 +5,7 @@
     Unit tests for the control shear estimation methods.
 """
 
-__updated__ = "2019-01-09"
+__updated__ = "2019-02-18"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -31,7 +31,7 @@ from SHE_PPT.signal_to_noise import get_SN_of_image
 from SHE_PPT.table_formats.detections import tf as detf
 import numpy as np
 
-ex_signal_to_noises = [59, 32, 24, 28.5]
+ex_signal_to_noises = [59, 59, 22, 24]
 
 she_frame_location = "WEB/SHE_PPT/test_data_stack.bin"
 

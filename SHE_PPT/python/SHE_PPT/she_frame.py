@@ -80,13 +80,13 @@ class SHEFrame(object):
             Reference to parent SHEFrameStack object if it exists; None otherwise
         """
 
+        # References to parent objects
+        self.parent_frame_stack = parent_frame_stack
+
         # Initialise directly
         self.detectors = detectors
         self.psf_data_hdulist = psf_data_hdulist
         self.psf_catalogue = psf_catalogue
-
-        # References to parent objects
-        self.parent_frame_stack = parent_frame_stack
 
         # Set the PSF catalogue to index by ID
         if self.psf_catalogue is not None:
@@ -111,7 +111,7 @@ class SHEFrame(object):
         self._detectors = detectors
 
         # Set this as the parent for all detectors
-        for detector in self._detectors:
+        for detector in self._detectors.flatten():
             if detector is not None:
                 detector.parent_frame = self
                 detector.parent_frame_stack = self.parent_frame_stack
@@ -120,7 +120,7 @@ class SHEFrame(object):
 
     @detectors.deleter
     def detectors(self):
-        for detector in self._detectors:
+        for detector in self._detectors.flatten():
             del detector
         del self._detectors
 
