@@ -22,14 +22,14 @@ Created on: Aug 17, 2017
 from copy import deepcopy
 import os
 
-import astropy.io.fits
-import astropy.wcs
 import galsim
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.mask import (as_bool, is_masked_bad,
                           is_masked_suspect_or_bad, masked_off_image)
 from SHE_PPT.utility import load_wcs
+import astropy.io.fits
+import astropy.wcs
 import numpy as np
 
 from . import logging
@@ -144,6 +144,10 @@ class SHEImage(object):
         self.header = header
         self.offset = offset
         self.wcs = wcs
+
+        # If no WCS is provided, try to set one up from the header
+        if self.wcs is None and self.header is not None:
+            self.wcs = astropy.wcs.WCS(self.header)
 
         # Cached values
         self.galsim_wcs = None
