@@ -30,6 +30,7 @@ flag_fmt_label = "FLG_FMT_V"
 flag_fmt_version = "0.1"
 
 # Fitclas values for what we believe the object is
+
 fitclass_galaxy = 0
 fitclass_star = 1
 fitclass_unknown = 2
@@ -61,3 +62,24 @@ flag_corrupt_training_data = 2**20
 flag_no_calibration_data = 2**21
 flag_corrupt_calibration_data = 2**22
 flag_bad_calibration = 2**23
+
+# Utility functions
+
+
+def combine_flags(*flags):
+    """ Returns an integer with the bit flags combined into one value.
+    """
+
+    combined_flags = 0
+
+    for flag in flags:
+        combined_flags |= flag
+
+    return combined_flags
+
+
+def is_flagged_by(a, flag):
+    """ Checks if a value is flagged with a given bit.
+    """
+
+    return bool(a & flag)
