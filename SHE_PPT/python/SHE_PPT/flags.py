@@ -23,17 +23,20 @@ This module contains definitions of flag bits and fitclass values.
 
 import numpy as np
 
+
 # Flag format - increment version whenever there are non-trivial changes
 # to this file
 
 flag_fmt_label = "FLG_FMT_V"
 flag_fmt_version = "0.1"
 
+
 # Fitclas values for what we believe the object is
 
 fitclass_galaxy = 0
 fitclass_star = 1
 fitclass_unknown = 2
+
 
 # Flag values for the status of an attempted shear estimation
 
@@ -63,8 +66,8 @@ flag_no_calibration_data = 2**21
 flag_corrupt_calibration_data = 2**22
 flag_bad_calibration = 2**23
 
-# Utility functions
 
+# Utility functions
 
 def combine_flags(*flags):
     """ Returns an integer with the bit flags combined into one value.
@@ -78,8 +81,15 @@ def combine_flags(*flags):
     return combined_flags
 
 
-def is_flagged_by(a, flag):
+def is_flagged_with(a, flag):
     """ Checks if a value is flagged with a given bit.
     """
 
     return bool(a & flag)
+
+
+def is_not_flagged_with(a, flag):
+    """ Checks if a value is not flagged with a given bit.
+    """
+
+    return not bool(a & flag)
