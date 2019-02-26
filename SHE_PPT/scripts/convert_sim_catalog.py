@@ -55,7 +55,7 @@ def main():
 
     sim_gal_cat = Table.read(find_file(args.gal_cat, path=args.source_dir))
 
-    if args.star_car is None:
+    if args.star_cat is None:
         sim_star_cat = None
     else:
         sim_star_cat = Table.read(find_file(args.star_cat, path=args.source_dir))
@@ -91,14 +91,14 @@ def main():
         # Get a list of the good galaxies
         observed_star_mask = sim_star_cat['VIS'] <= args.max_mag_vis
 
-        num_stars = len(sim_gal_cat['unique_star_id'][observed_star_mask])
+        num_stars = len(sim_star_cat['unique_star_id'][observed_star_mask])
 
         obj_star_cat = initialise_detections_table(optional_columns=[detf.SHE_FLAG, detf.STAR_FLAG, detf.STAR_PROB],
                                                    init_cols={detf.ID: np.linspace(1, num_gals, num_gals, endpoint=True,
                                                                                    dtype=detf.dtypes[detf.ID]),
-                                                              detf.gal_x_world: sim_gal_cat['RA2000.0'][observed_star_mask].data.astype(
+                                                              detf.gal_x_world: sim_star_cat['RA2000.0'][observed_star_mask].data.astype(
                                                                   detf.dtypes[detf.gal_x_world]),
-                                                              detf.gal_y_world: sim_gal_cat['DEC2000.0'][observed_star_mask].data.astype(
+                                                              detf.gal_y_world: sim_star_cat['DEC2000.0'][observed_star_mask].data.astype(
                                                                   detf.dtypes[detf.gal_y_world]),
                                                               detf.seg_ID: np.linspace(1, num_gals, num_gals, endpoint=True,
                                                                                        dtype=detf.dtypes[detf.seg_ID]),
