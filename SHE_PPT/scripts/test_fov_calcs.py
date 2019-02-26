@@ -1,3 +1,17 @@
+# Copyright (C) 2012-2020 Euclid Science Ground Segment
+#
+# This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+# Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+# any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
+
 from SHE_PPT import telescope_coords as tc
 from SHE_PPT.file_io import find_file
 from astropy.table import Table
@@ -25,8 +39,8 @@ for (det_specs, instrument) in ((tc.vis_det_specs, "VIS"), (tc.nisp_det_specs, "
     coord_table = Table(names=["XP", "YP", "DET_X", "DET_Y", "FOV_X", "FOV_Y"])
 
     # Calculate for each corner of each detector
-    for det_ix in np.linspace(det_ix_min, det_ix_max, (det_ix_max-det_ix_min+1), endpoint=True, dtype=int):
-        for det_iy in np.linspace(det_iy_min, det_iy_max, (det_iy_max-det_iy_min+1), endpoint=True, dtype=int):
+    for det_ix in np.linspace(det_ix_min, det_ix_max, (det_ix_max - det_ix_min + 1), endpoint=True, dtype=int):
+        for det_iy in np.linspace(det_iy_min, det_iy_max, (det_iy_max - det_iy_min + 1), endpoint=True, dtype=int):
             for xp in (xp_min, xp_max):
                 for yp in (yp_min, yp_max):
                     # Calculate the coords

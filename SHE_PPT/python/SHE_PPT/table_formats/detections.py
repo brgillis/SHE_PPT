@@ -310,7 +310,8 @@ def initialise_detections_table(image_group_phl=None,
                                 optional_columns=None,
                                 model_hash=None,
                                 model_seed=None,
-                                noise_seed=None):
+                                noise_seed=None,
+                                init_cols=None):
     """
         @brief Initialise a detections table.
 
@@ -320,10 +321,6 @@ def initialise_detections_table(image_group_phl=None,
 
         @param optional_columns <list<str>> List of names for optional columns to include.
                Default is none
-
-        @param detector <int?> Detector for this image, if applicable. Will override ID of image object if set
-
-        @param obs_time <str> Mean observation time of the corresponding detections
 
         @return detections_table <astropy.Table>
     """
@@ -337,12 +334,14 @@ def initialise_detections_table(image_group_phl=None,
                 raise ValueError("Invalid optional column name: " + colname)
 
     names = []
-    init_cols = []
+    if init_cols is None:
+        init_cols = {}
     dtypes = []
     for colname in tf.all:
         if (colname in tf.all_required) or (colname in optional_columns):
             names.append(colname)
-            init_cols.append([])
+            if colname not in init_cols:
+                init_cols[colname] = []
             dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
 
     detections_table = Table(init_cols, names=names,
