@@ -1,3 +1,11 @@
+""" convert_sim_catalog.py
+
+    Created: 2019/02/26
+
+"""
+
+__updated__ = "2019-02-26"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
