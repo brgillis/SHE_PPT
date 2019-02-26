@@ -94,21 +94,21 @@ def main():
         num_stars = len(sim_star_cat['unique_star_id'][observed_star_mask])
 
         obj_star_cat = initialise_detections_table(optional_columns=[detf.SHE_FLAG, detf.STAR_FLAG, detf.STAR_PROB],
-                                                   init_cols={detf.ID: np.linspace(1, num_gals, num_gals, endpoint=True,
+                                                   init_cols={detf.ID: np.linspace(1, num_stars, num_stars, endpoint=True,
                                                                                    dtype=detf.dtypes[detf.ID]),
                                                               detf.gal_x_world: sim_star_cat['RA2000.0'][observed_star_mask].data.astype(
                                                                   detf.dtypes[detf.gal_x_world]),
                                                               detf.gal_y_world: sim_star_cat['DEC2000.0'][observed_star_mask].data.astype(
                                                                   detf.dtypes[detf.gal_y_world]),
-                                                              detf.seg_ID: np.linspace(1, num_gals, num_gals, endpoint=True,
+                                                              detf.seg_ID: np.linspace(1, num_stars, num_stars, endpoint=True,
                                                                                        dtype=detf.dtypes[detf.seg_ID]),
-                                                              detf.vis_det: np.ones(num_gals,
+                                                              detf.vis_det: np.ones(num_stars,
                                                                                     dtype=detf.dtypes[detf.vis_det]),
-                                                              detf.SHE_FLAG: np.zeros(num_gals,
+                                                              detf.SHE_FLAG: np.zeros(num_stars,
                                                                                       dtype=detf.dtypes[detf.SHE_FLAG]),
-                                                              detf.STAR_FLAG: np.ones(num_gals,
+                                                              detf.STAR_FLAG: np.ones(num_stars,
                                                                                       dtype=detf.dtypes[detf.STAR_FLAG]),
-                                                              detf.STAR_PROB: np.ones(num_gals,
+                                                              detf.STAR_PROB: np.ones(num_stars,
                                                                                       dtype=detf.dtypes[detf.STAR_PROB]),
                                                               })
 
@@ -117,15 +117,15 @@ def main():
         obj_cat = obj_gal_cat
 
     # Create a data product for the output
-    obj_cat_filename = get_allowed_filename(type_name="FINAL_CATALOG",
-                                            instance_id="FROM_SIM",
+    obj_cat_filename = get_allowed_filename(type_name="FINAL-CATALOG",
+                                            instance_id="TU-CONV",
                                             extension=".fits",
                                             release="00.09",
                                             subdir=None,
                                             processing_function="MER")
     obj_cat_prod = products.detections.create_detections_product(obj_cat_filename)
 
-    write_xml_product(obj_cat_prod, join(args.obj_cat, args.dest_dir))
+    write_xml_product(obj_cat_prod, join(args.dest_dir,args.obj_cat))
 
     # Write out the table
     obj_cat.write(obj_cat_filename, overwrite=True)
