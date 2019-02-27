@@ -12,17 +12,15 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
-from Program_Files.GalSim.devel.external.update_parametric_fits import failure
 
 """
 File: flags.py
 
 Created on: 21 Feb, 2019
 
-This module contains definitions of flag bits and fitclass values.
+This module contains definitions of flag bits and fitclass values, as defined by
+https://euclid.roe.ac.uk/projects/sgsshear/wiki/ShearMeasurementFlags
 """
-
-import numpy as np
 
 
 # Flag format - increment version whenever there are non-trivial changes
