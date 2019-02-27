@@ -20,6 +20,8 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+__updated__ = "2019-02-27"
+
 
 def get_ADU_from_count(c, gain):
     """ Calculate the intensity in ADU from count with the given gain.

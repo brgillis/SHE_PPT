@@ -1,3 +1,15 @@
+"""
+File: mask.py
+
+Created on: 26 Oct, 2017
+
+This module contains definitions of mask bits and various functions for testing
+if a mask matches certain mask bits. All the functions return arrays in the
+same data type as the mask array passed to them (or the tested mask bit if it's
+of a larger dtype). If a bool array is desired to save space, the as_bool
+function can be used to obtain this.
+"""
+
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -13,17 +25,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-"""
-File: mask.py
-
-Created on: 26 Oct, 2017
-
-This module contains definitions of mask bits and various functions for testing
-if a mask matches certain mask bits. All the functions return arrays in the
-same data type as the mask array passed to them (or the tested mask bit if it's
-of a larger dtype). If a bool array is desired to save space, the as_bool
-function can be used to obtain this.
-"""
+__updated__ = "2019-02-27"
 
 
 import os

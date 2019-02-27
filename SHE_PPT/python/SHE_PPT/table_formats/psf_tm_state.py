@@ -20,13 +20,14 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-from collections import OrderedDict
+__updated__ = "2019-02-27"
 
-from astropy.table import Table
+from collections import OrderedDict
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format
+from astropy.table import Table
 import numpy as np
 
 
@@ -47,7 +48,7 @@ class PsfTmStateTableMeta(object):
         self.format = "SS_FMT"
 
         self.extname = mv.extname_label
-        
+
         self.identity = mv.psf_state_identity_label
 
         self.model_hash = mv.model_hash_label
@@ -115,7 +116,7 @@ class PsfTmStateTableFormat(object):
                         "M3TCON", "M2TZ", "M2TX", "M2TY",
                         "M2RX", "M2RY", "M3TZ", "M3TX",
                         "M3TY", "M3RX", "M3RY"]:
-            setattr(self,colname.lower(),set_column_properties(name=colname))
+            setattr(self, colname.lower(), set_column_properties(name=colname))
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -125,6 +126,7 @@ class PsfTmStateTableFormat(object):
         for label in self.all:
             if not self.is_optional[label]:
                 self.all_required.append(label)
+
 
 # Define an instance of this object that can be imported
 psf_table_format = PsfTmStateTableFormat()
@@ -137,7 +139,7 @@ def make_psf_tm_state_table_header(model_hash=None,
                                    model_seed=None,
                                    noise_seed=None):
     """Generate a header for a PSF TM State table.
-    
+
     Parameters
     ----------
     model_hash : str
@@ -174,7 +176,7 @@ def initialise_psf_tm_state_table(model_hash=None,
                                   optional_columns=None,
                                   init_columns={}):
     """Initialise a PSF TM State table.
-    
+
     Parameters
     ----------
     model_hash : str

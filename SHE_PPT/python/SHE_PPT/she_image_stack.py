@@ -1,3 +1,9 @@
+"""
+File: python/SHE_PPT/she_image_stack.py
+
+Created on: 09/01/17
+"""
+
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -16,11 +22,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-"""
-File: python/SHE_PPT/she_image_stack.py
-
-Created on: 09/01/17
-"""
+__updated__ = "2019-02-27"
 
 import os.path
 

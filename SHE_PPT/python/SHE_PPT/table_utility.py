@@ -19,10 +19,11 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-from astropy.table import six, Column
+__updated__ = "2019-02-27"
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
+from astropy.table import six, Column
 import numpy as np
 
 

@@ -21,6 +21,8 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+__updated__ = "2019-02-27"
+
 from EuclidDmBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
 import EuclidDmBindings.pro.vis_stub as vis_pro
 from EuclidDmBindings.sys.dss_stub import dataContainer

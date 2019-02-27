@@ -22,16 +22,18 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-from astropy.io import fits
+__updated__ = "2019-02-27"
+
 import os
 
-import HeaderProvider.GenericHeaderProvider as HeaderProvider
 from EuclidDmBindings.dpd.mer.raw.segmentationmap_stub import dpdMerSegmentationMap
-
+import HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
 from SHE_PPT.file_io import read_xml_product, find_aux_file
 from SHE_PPT.utility import find_extension
+from astropy.io import fits
+
 
 sample_file_name = "SHE_PPT/sample_segmentation_map.xml"
 
@@ -147,6 +149,7 @@ def create_dpd_mer_mosaic(data_filename="",
     __set_data_filename(dpd_mer_mosaic, data_filename)
 
     return dpd_mer_mosaic
+
 
 # Add a useful alias
 create_mosaic_product = create_dpd_mer_mosaic

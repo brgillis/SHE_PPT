@@ -4,8 +4,6 @@ File: telescope_coords.py
 Created on: 13 Feb, 2019
 """
 
-__updated__ = "2019-02-18"
-
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -18,6 +16,8 @@ __updated__ = "2019-02-18"
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+
+__updated__ = "2019-02-27"
 
 import math
 import os
@@ -218,7 +218,7 @@ def load_vis_detector_specs(mdb_dict=None,
     vis_det_specs.ndet_y = vis_det_specs.ndet_x
 
     assert vis_det_specs.ndet_x * vis_det_specs.ndet_y == ndet
-    
+
     # FOV offset
     vis_det_specs.fov_x_offset_deg = mdb_dict["SpaceSegment.PLM.TelescopeVISFoVCentreXscNominal"]['Value']
     vis_det_specs.fov_y_offset_deg = mdb_dict["SpaceSegment.PLM.TelescopeVISFoVCentreYscNominal"]['Value']
@@ -275,7 +275,7 @@ def load_nisp_detector_specs(mdb_dict=None,
     nisp_det_specs.ndet_y = nisp_det_specs.ndet_x
 
     assert nisp_det_specs.ndet_x * nisp_det_specs.ndet_y == ndet
-    
+
     # NISP FOV offset not in the MDB at present
     # nisp_det_specs.fov_x_offset_deg = mdb_dict["SpaceSegment.PLM.TelescopeNISPFOVCentreXscNominal"]['Value']
     # nisp_det_specs.fov_y_offset_deg = mdb_dict["SpaceSegment.PLM.TelescopeNISPFOVCentreYscNominal"]['Value']
@@ -330,8 +330,8 @@ def get_focal_plane_coords_from_detector(det_xp,
     if det_ix not in det_range_x or det_iy not in det_range_y:
         raise ValueError("det_ix and det_iy must be in " + str(det_range_x) + " and " + str(det_range_y) + ".")
 
-    offset_x = -0.5 * (det_specs.ndet_x * det_specs.det_dx - det_specs.gap_dx) + (det_ix-1) * det_specs.det_dx
-    offset_y = -0.5 * (det_specs.ndet_y * det_specs.det_dy - det_specs.gap_dy) + (det_iy-1) * det_specs.det_dy
+    offset_x = -0.5 * (det_specs.ndet_x * det_specs.det_dx - det_specs.gap_dx) + (det_ix - 1) * det_specs.det_dx
+    offset_y = -0.5 * (det_specs.ndet_y * det_specs.det_dy - det_specs.gap_dy) + (det_iy - 1) * det_specs.det_dy
 
     # Get pixel distances relative to centre of the detector
     xpc = det_xp - det_specs.detector_pixels_x / 2

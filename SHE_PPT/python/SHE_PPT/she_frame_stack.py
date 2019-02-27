@@ -1,3 +1,9 @@
+"""
+File: python/SHE_PPT/she_frame_stack.py
+
+Created on: 05/03/18
+"""
+
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -16,18 +22,11 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-"""
-File: python/SHE_PPT/she_frame_stack.py
-
-Created on: 05/03/18
-"""
+__updated__ = "2019-02-27"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
 import os.path
-
-from astropy import table
-from astropy.io import fits
 
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
@@ -38,6 +37,8 @@ from SHE_PPT.she_image import SHEImage
 from SHE_PPT.she_image_stack import SHEImageStack
 from SHE_PPT.table_formats.detections import tf as detf
 from SHE_PPT.utility import find_extension, load_wcs
+from astropy import table
+from astropy.io import fits
 import numpy as np
 
 
@@ -91,38 +92,38 @@ class SHEFrameStack(object):
             self.detections_catalogue.add_index(detf.ID)
 
         return
-    
+
     @property
     def exposures(self):
         return self._exposures
-    
+
     @exposures.setter
     def exposures(self, exposures):
         self._exposures = exposures
-        
+
         # Set this as the parent frame stack for each exposure
         for exposure in self._exposures:
             if exposure is not None:
                 exposure.parent_frame_stack = self
-                
+
     @exposures.deleter
     def exposures(self):
         for exposure in self._exposures:
             del exposure
         del self._exposures
-    
+
     @property
     def stacked_image(self):
         return self._stacked_image
-    
+
     @stacked_image.setter
     def stacked_image(self, stacked_image):
         self._stacked_image = stacked_image
-        
+
         # Set this as the parent frame stack for the stacked image
         self._stacked_image.parent_frame_stack = self
         self._stacked_image.parent_frame = None
-                
+
     @stacked_image.deleter
     def stacked_image(self):
         del self._stacked_image

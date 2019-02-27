@@ -22,15 +22,19 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+__updated__ = "2019-02-27"
+
 
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import EuclidDmBindings.she.she_stub as she_dpd # FIXME
 
 
-import HeaderProvider.GenericHeaderProvider as HeaderProvider 
-from SHE_PPT.file_io import read_xml_product, find_aux_file
-from EuclidDmBindings.dpd.she.shearmomentsmltraining_stub import dpdShearMomentsMLTraining
 import pickle
+
+from EuclidDmBindings.dpd.she.shearmomentsmltraining_stub import dpdShearMomentsMLTraining
+import HeaderProvider.GenericHeaderProvider as HeaderProvider
+from SHE_PPT.file_io import read_xml_product, find_aux_file
+
 
 sample_file_name = "SHE_PPT/sample_momentsml_training.xml"
 
@@ -103,16 +107,17 @@ def create_dpd_she_momentsml_training_data(filename=None):
     # dpd_she_momentsml_training_data =
     # she_dpd.DpdSheMomentsMLTrainingDataProduct() # FIXME
     dpd_she_momentsml_training_data = read_xml_product(
-        find_aux_file(sample_file_name),allow_pickled=False)
+        find_aux_file(sample_file_name), allow_pickled=False)
 
-    dpd_she_momentsml_training_data.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
+    dpd_she_momentsml_training_data.Header = HeaderProvider.createGenericHeader("SHE")  # FIXME
 
-    #dpd_she_momentsml_training_data.Data = create_she_momentsml_training_data(
+    # dpd_she_momentsml_training_data.Data = create_she_momentsml_training_data(
     #    filename)
 
     if filename:
-        __set_filename(dpd_she_momentsml_training_data,filename)
+        __set_filename(dpd_she_momentsml_training_data, filename)
     return dpd_she_momentsml_training_data
+
 
 # Add a useful alias
 create_momentsml_training_data_product = create_dpd_she_momentsml_training_data

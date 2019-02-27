@@ -19,13 +19,14 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+__updated__ = "2019-02-27"
+
 import codecs
 import hashlib
 
-from astropy.wcs import WCS
-
 from SHE_PPT import detector as dtc
 from SHE_PPT.logging import getLogger
+from astropy.wcs import WCS
 
 
 logger = getLogger(__name__)

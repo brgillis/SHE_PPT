@@ -19,6 +19,8 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+__updated__ = "2019-02-27"
+
 from datetime import datetime
 import json
 import os
@@ -28,14 +30,13 @@ import pickle
 import re
 from xml.sax._exceptions import SAXParseException
 
-from astropy.io import fits
-
 from ElementsServices.DataSync import downloadTestData, localTestFile
 from EuclidDmBindings.sys_stub import CreateFromDocument
 from FilenameProvider.FilenameProvider import createFilename
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.utility import run_only_once
+from astropy.io import fits
 
 
 logger = getLogger(mv.logger_name)
@@ -44,9 +45,11 @@ type_name_maxlen = 45
 instance_id_maxlen = 55
 processing_function_maxlen = 4
 
+
 @run_only_once
 def warn_deprecated_timestamp():
     logger.warn("The use of the 'timestamp' kwarg in get_allowed_filename is deprecated and will be removed in a future version.")
+
 
 def get_allowed_filename(type_name, instance_id, extension=".fits", release="00.05", subdir="data",
                          processing_function="SHE", timestamp=None):
@@ -276,29 +279,30 @@ def find_conf_file(filename):
 
     return find_file_in_path(filename, os.environ['ELEMENTS_CONF_PATH'])
 
+
 def find_web_file(filename):
     """
         Searches on WebDAV for a file. If found, downloads it and returns the qualified name of it.
         If it isn't found, returns None.
     """
-    
-    filelist = os.path.join(os.getcwd(),os.path.splitext(os.path.split(filename)[-1])[0]+"_list.txt")
-    
+
+    filelist = os.path.join(os.getcwd(), os.path.splitext(os.path.split(filename)[-1])[0] + "_list.txt")
+
     logger.debug("Writing filelist to " + filelist)
-    
+
     try:
         with open(filelist, 'w') as fo:
             fo.write(filename + "\n")
-    
+
         downloadTestData("testdata/sync.conf", filelist)
-        qualified_filename = localTestFile(mv.test_datadir,filename)
+        qualified_filename = localTestFile(mv.test_datadir, filename)
     except:
         raise
     finally:
         if os.path.exists(filelist):
             logger.debug("Cleaning up " + filelist)
             os.remove(filelist)
-            
+
     return qualified_filename
 
 

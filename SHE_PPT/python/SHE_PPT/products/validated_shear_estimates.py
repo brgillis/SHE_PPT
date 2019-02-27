@@ -21,10 +21,12 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-import HeaderProvider.GenericHeaderProvider as HeaderProvider
-from EuclidDmBindings.dpd.she.raw.validatedshearmeasurement_stub import dpdValidatedShearMeasurement
+__updated__ = "2019-02-27"
 
+from EuclidDmBindings.dpd.she.raw.validatedshearmeasurement_stub import dpdValidatedShearMeasurement
+import HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT.file_io import read_xml_product, find_aux_file
+
 
 sample_file_name = "SHE_PPT/sample_validated_shear_measurements.xml"
 
@@ -80,6 +82,7 @@ def create_dpd_she_validated_shear_estimates(filename="default_filename.fits"):
         __set_filename(dpd_she_validated_shear_estimates, filename)
 
     return dpd_she_validated_shear_estimates
+
 
 # Add a useful alias
 create_validated_shear_estimates_product = create_dpd_she_validated_shear_estimates

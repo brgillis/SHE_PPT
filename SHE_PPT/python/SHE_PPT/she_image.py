@@ -1,3 +1,9 @@
+"""
+File: she_image.py
+
+Created on: Aug 17, 2017
+"""
+
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -12,11 +18,9 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
-"""
-File: she_image.py
 
-Created on: Aug 17, 2017
-"""
+__updated__ = "2019-02-27"
+
 # Avoid non-trivial "from" imports (as explicit is better than implicit)
 
 from copy import deepcopy

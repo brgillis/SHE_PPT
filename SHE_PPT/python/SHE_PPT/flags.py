@@ -1,3 +1,12 @@
+"""
+File: flags.py
+
+Created on: 21 Feb, 2019
+
+This module contains definitions of flag bits and fitclass values, as defined by
+https://euclid.roe.ac.uk/projects/sgsshear/wiki/ShearMeasurementFlags
+"""
+
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -13,14 +22,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-"""
-File: flags.py
-
-Created on: 21 Feb, 2019
-
-This module contains definitions of flag bits and fitclass values, as defined by
-https://euclid.roe.ac.uk/projects/sgsshear/wiki/ShearMeasurementFlags
-"""
+__updated__ = "2019-02-27"
 
 
 # Flag format - increment version whenever there are non-trivial changes

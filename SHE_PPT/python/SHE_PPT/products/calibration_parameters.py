@@ -22,6 +22,8 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+__updated__ = "2019-02-27"
+
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import EuclidDmBindings.she.she_stub as she_dpd # FIXME
 
@@ -219,6 +221,7 @@ def create_dpd_she_calibration_parameters(BFD_filename=None,
 
     return dpd_calibration_parameters
 
+
 # Add a useful alias
 create_calibration_parameters_product = create_dpd_she_calibration_parameters
 
@@ -234,8 +237,8 @@ def create_she_calibration_parameters(BFD_filename=None,
 
     # calibration_parameters = she_dpd.SheCalibrationParameters() # @FIXME
     calibration_parameters = SheCalibrationParametersProduct()
-    
-    # Read these in from 
+
+    # Read these in from
     calibration_parameters.BFDCalibrationParameters = create_she_BFD_calibration_parameters(
         BFD_filename)
 

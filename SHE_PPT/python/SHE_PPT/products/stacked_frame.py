@@ -21,6 +21,8 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+__updated__ = "2019-02-27"
+
 from EuclidDmBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT.file_io import read_xml_product, find_aux_file

@@ -22,14 +22,18 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+__updated__ = "2019-02-27"
 
-import HeaderProvider.GenericHeaderProvider as HeaderProvider 
-from SHE_PPT.file_io import read_xml_product, find_aux_file
-from EuclidDmBindings.dpd.she.shearksbtraining_stub import dpdShearKSBTraining
 
 import pickle
 
+from EuclidDmBindings.dpd.she.shearksbtraining_stub import dpdShearKSBTraining
+import HeaderProvider.GenericHeaderProvider as HeaderProvider
+from SHE_PPT.file_io import read_xml_product, find_aux_file
+
+
 sample_file_name = "SHE_PPT/sample_ksb_training.xml"
+
 
 def init():
     """
@@ -67,7 +71,7 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-#class DpdSheKSBTrainingDataProduct:  # @FIXME
+# class DpdSheKSBTrainingDataProduct:  # @FIXME
 
 #    def __init__(self):
 #        self.Header = None
@@ -77,7 +81,7 @@ def __get_all_filenames(self):
 #        return False
 
 
-#class SheKSBTrainingDataProduct:  # @FIXME
+# class SheKSBTrainingDataProduct:  # @FIXME
 
 #    def __init__(self):
 #        self.format = None
@@ -85,7 +89,7 @@ def __get_all_filenames(self):
 #        self.DataContainer = None
 
 
-#class DataContainer:  # @FIXME
+# class DataContainer:  # @FIXME
 
 #    def __init__(self):
 #        self.FileName = None
@@ -107,7 +111,7 @@ def create_dpd_she_ksb_training_data(filename=None):
     dpd_she_ksb_training_data.Header = HeaderProvider.createGenericHeader("SHE")
 
     if filename:
-        __set_filename(dpd_she_ksb_training_data,filename)
+        __set_filename(dpd_she_ksb_training_data, filename)
 
     # dpd_she_ksb_training_data.Header =
     # HeaderProvider.createGenericHeader("SHE") # FIXME
