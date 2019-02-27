@@ -18,9 +18,9 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-import os
+__updated__ = "2019-02-27"
 
-from astropy.table import Column, Table
+import os
 import pytest
 
 from SHE_PPT import magic_values as mv
@@ -36,6 +36,7 @@ from SHE_PPT.table_formats.psf_zm_state import tf as zmtf, initialise_psf_zm_sta
 from SHE_PPT.table_formats.shear_estimates import tf as setf, initialise_shear_estimates_table, len_chain, num_chains
 from SHE_PPT.table_formats.simulation_plan import tf as sptf, initialise_simulation_plan_table
 from SHE_PPT.table_utility import is_in_format, add_row
+from astropy.table import Column, Table
 import numpy as np
 
 
@@ -59,7 +60,7 @@ class TestTableFormats:
                             initialise_bfd_moments_table,
                             initialise_ksb_training_table,
                             initialise_psf_zm_state_table,
-                            initialise_psf_tm_state_table,]
+                            initialise_psf_tm_state_table, ]
 
         cls.filename_base = "test_table"
 

@@ -18,6 +18,8 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+__updated__ = "2019-02-27"
+
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
 from SHE_PPT.products import calibrated_frame as prod
@@ -41,18 +43,18 @@ class TestCalibratedFrameProduct(object):
         assert product.get_data_filename() == subfilename
 
         pass
-    
+
     def test_default_filenames(self):
         """Test that all filenames in a default product are empty.
         """
-        
+
         prod.init()
-        
+
         product = prod.create_dpd_vis_calibrated_frame()
-        
+
         for filename in product.get_all_filenames():
-            assert filename=="" or filename is None
-            
+            assert filename == "" or filename is None
+
         return
 
     def test_xml_writing_and_reading(self, tmpdir):

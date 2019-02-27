@@ -18,11 +18,15 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-import unittest
+__updated__ = "2019-02-27"
+
 from numpy.testing import assert_almost_equal
+import unittest
+
 from SHE_PPT.noise import (get_sky_level_ADU_per_pixel, get_sky_level_count_per_pixel,
                            get_count_lambda_per_pixel, get_read_noise_ADU_per_pixel,
                            get_var_ADU_per_pixel)
+
 
 class NoiseTestCase(unittest.TestCase):
 
@@ -82,4 +86,3 @@ class NoiseTestCase(unittest.TestCase):
                                                   self.gain)
 
         assert_almost_equal(var_ADU_per_pixel, self.var_ADU_per_pixel)
-

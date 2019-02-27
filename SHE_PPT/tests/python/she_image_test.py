@@ -1,3 +1,9 @@
+"""
+File: tests/python/she_image_test.py
+
+Created on: 08/18/17
+"""
+
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -15,11 +21,8 @@
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 # """This script gives a small demo of the image object.
-"""
-File: tests/python/she_image_test.py
 
-Created on: 08/18/17
-"""
+__updated__ = "2019-02-27"
 
 from copy import deepcopy
 import logging

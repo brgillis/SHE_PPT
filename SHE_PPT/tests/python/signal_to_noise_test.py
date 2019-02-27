@@ -5,8 +5,6 @@
     Unit tests for the control shear estimation methods.
 """
 
-__updated__ = "2019-02-18"
-
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -19,6 +17,8 @@ __updated__ = "2019-02-18"
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+
+__updated__ = "2019-02-27"
 
 from os.path import join
 import pytest
@@ -34,6 +34,7 @@ import numpy as np
 ex_signal_to_noises = [59, 59, 22, 24]
 
 she_frame_location = "WEB/SHE_PPT/test_data_stack.bin"
+
 
 class TestCase:
     """
@@ -66,6 +67,6 @@ class TestCase:
                 signal_to_noise_estimates.append(get_SN_of_image(exposure.data - exposure.background_map,
                                                                  gain=gain))
 
-            assert np.allclose(signal_to_noise_estimates, ex_signal_to_noises[i],rtol=0.1)
+            assert np.allclose(signal_to_noise_estimates, ex_signal_to_noises[i], rtol=0.1)
 
         return

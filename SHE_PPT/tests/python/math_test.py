@@ -19,16 +19,17 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+__updated__ = "2019-02-27"
+
 import logging
 from numpy.testing import assert_almost_equal
 import os
-from scipy.stats import linregress
-
 import pytest
 
 from SHE_PPT.math import (linregress_with_errors,
                           get_linregress_statistics, combine_linregress_statistics,)
 import numpy as np
+from scipy.stats import linregress
 
 
 class Test_math():

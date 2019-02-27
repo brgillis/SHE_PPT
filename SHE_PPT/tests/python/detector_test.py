@@ -1,3 +1,9 @@
+"""
+File: tests/python/detector_test.py
+
+Created on: 8 Nov, 2017
+"""
+
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -16,22 +22,19 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 # """This script gives a small demo of the image object.
 
-"""
-File: tests/python/detector_test.py
-
-Created on: 8 Nov, 2017
-"""
+__updated__ = "2019-02-27"
 
 
-
-import pytest
-import numpy as np
-import os
 import logging
+import os
+import pytest
 
 from SHE_PPT.detector import *
+import numpy as np
 
-logging.basicConfig(level = logging.DEBUG)
+
+logging.basicConfig(level=logging.DEBUG)
+
 
 class Test_mask():
 
@@ -113,5 +116,3 @@ class Test_mask():
             resolve_detector_xy((1, 2, 3))
 
         pass
-
-
