@@ -127,7 +127,7 @@ class Test_she_image():
 
         # Check that forcibly adding a default noisemap does affect the existing noisemap
         img.add_default_noisemap(force=True)
-        assert np.isclose(img.noisemap[5, 5], 0.)
+        assert np.isclose(img.noisemap[5, 5], 4.5 / 3.1)
 
         # Check that the noisemap is calculated correctly when a background map is present
         img.background_map = 1000 * np.ones_like(img.data, dtype=float)
