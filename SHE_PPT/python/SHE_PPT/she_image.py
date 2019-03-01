@@ -19,7 +19,7 @@ Created on: Aug 17, 2017
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-03-01"
 
 # Avoid non-trivial "from" imports (as explicit is better than implicit)
 
@@ -29,9 +29,10 @@ import os
 import galsim
 
 from SHE_PPT import magic_values as mv
+from SHE_PPT import mdb
 from SHE_PPT.mask import (as_bool, is_masked_bad,
                           is_masked_suspect_or_bad, masked_off_image)
-from SHE_PPT.utility import load_wcs
+from SHE_PPT.utility import load_wcs, run_only_once
 import astropy.io.fits
 import astropy.wcs
 import numpy as np
@@ -1073,7 +1074,26 @@ class SHEImage(object):
                 logger.debug("Not overwriting existing noisemap with default.")
                 return
 
-        self.noisemap = np.zeros_like(self.data, dtype=float)
+        # Try to calculate the noisemap
+
+        # Get the gain and read_noise from the MDB if possible
+        try:
+            gain = mdb.get_mdb_value(mdb.mdb_keys.vis_gain)
+            read_noise = mdb.get_mdb_value(mdb.mdb_keys.vis_readout_noise)
+        except RuntimeError as e:
+            if not "mdb module must be initialised with MDB xml object before use." in str(e):
+                raise
+            warn_mdb_not_loaded()
+            # Use default values for gain and read_noise
+            gain = 3.1
+            read_noise = 4.5
+
+        # Start by setting to the read noise level
+        self.noisemap = read_noise / gain * np.ones_like(self.data, dtype=float)
+
+        # Check if we have a background map
+        if self.background_map is not None:
+            self.noisemap += np.sqrt(self.background_map / gain)
 
         return
 
@@ -1716,3 +1736,8 @@ class SHEImage(object):
         rotation_angle = xy_angle - radec_angle
 
         return rotation_angle
+
+
+@run_only_once
+def warn_mdb_not_loaded():
+    logger.warn("MDB is not loaded, so default values will be assumed in calculating a noisemap.")
