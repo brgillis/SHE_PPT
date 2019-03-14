@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-03-14"
 
 from collections import OrderedDict
 
@@ -186,15 +186,17 @@ class DetectionsTableFormat(object):
         setattr(self, "BLENDED_ASSOCIATIONS", set_column_properties(
             "BLENDED_ASSOCIATIONS", dtype=">i8", length=5, fits_dtype="5K", comment="", is_optional=True))
         # Flag for objects SHE wants to remove
-        setattr(self, "SHE_FLAG", set_column_properties("SHE_FLAG", fits_dtype="I", comment="", is_optional=True))
+        setattr(self, "SHE_FLAG", set_column_properties(
+            "SHE_FLAG", dtype=">i2", fits_dtype="I", comment="", is_optional=True))
         # Variability flag
         setattr(self, "VARIABILITY_FLAG", set_column_properties(
-            "VARIABILITY_FLAG", fits_dtype="I", comment="", is_optional=True))
+            "VARIABILITY_FLAG", dtype=">i2", fits_dtype="I", comment="", is_optional=True))
         # Binary star flag
         setattr(self, "BINARY_FLAG", set_column_properties(
-            "BINARY_FLAG", fits_dtype="I", comment="", is_optional=True))
+            "BINARY_FLAG", dtype=">i2", fits_dtype="I", comment="", is_optional=True))
         # Star flag
-        setattr(self, "STAR_FLAG", set_column_properties("STAR_FLAG", fits_dtype="I", comment="", is_optional=True))
+        setattr(self, "STAR_FLAG", set_column_properties("STAR_FLAG",
+                                                         dtype=">i2", fits_dtype="I", comment="", is_optional=True))
         # Star probability
         setattr(self, "STAR_PROB", set_column_properties("STAR_PROB", fits_dtype="E", comment="", is_optional=True))
         # Magnitude used to compute the star probability (old MAG_AUTO)
@@ -202,7 +204,7 @@ class DetectionsTableFormat(object):
             "MAG_STARGAL_SEP", fits_dtype="E", comment="mag", is_optional=True))
         # Possible corruption of MAG_STARGAL_SEP flags
         setattr(self, "DET_QUALITY_FLAG", set_column_properties(
-            "DET_QUALITY_FLAG", fits_dtype="I", comment="", is_optional=True))
+            "DET_QUALITY_FLAG", dtype=">i2", fits_dtype="I", comment="", is_optional=True))
         # Semimajo axis
         setattr(self, "A_IMAGE", set_column_properties("A_IMAGE", fits_dtype="E", comment="pix", is_optional=True))
         # MU_MAX values
