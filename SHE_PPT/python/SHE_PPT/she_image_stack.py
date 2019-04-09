@@ -22,9 +22,9 @@ Created on: 09/01/17
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-04-09"
 
-import os.path
+import weakref
 
 from SHE_PPT.she_image import SHEImage
 
@@ -44,7 +44,7 @@ class SHEImageStack(object):
 
     """
 
-    def __init__(self, exposures, stacked_image=None, x_world=None, y_world=None):
+    def __init__(self, exposures, stacked_image=None, x_world=None, y_world=None, parent_frame_stack=None):
         """
         Parameters
         ----------
@@ -56,8 +56,12 @@ class SHEImageStack(object):
             Right Ascension of the centre of this stack, in degrees
         y_world : float
             Declination of the centre of this stack, in degrees
-
+        parent_frame_stack : SHE_PPT.she_frame_stack.SHEFrameStack
+            Reference to parent SHEFrameStack object if it exists; None otherwise
         """
+
+        # References to parent objects
+        self.parent_frame_stack = parent_frame_stack
 
         self.exposures = exposures
         self.stacked_image = stacked_image
@@ -66,6 +70,20 @@ class SHEImageStack(object):
         self.y_world = y_world
 
         return
+
+    @property
+    def parent_frame_stack(self):
+        return self._parent_frame_stack()
+
+    @parent_frame_stack.setter
+    def parent_frame_stack(self, parent_frame_stack):
+
+        # Use a weak reference so we don't keep the parent alive indefinitely
+        self._parent_frame_stack = weakref.ref(parent_frame_stack)
+
+    @parent_frame_stack.deleter
+    def parent_frame_stack(self):
+        self._parent_frame_stack = lambda: None
 
     def __eq__(self, rhs):
         """Equality test for SHEImageStack class.

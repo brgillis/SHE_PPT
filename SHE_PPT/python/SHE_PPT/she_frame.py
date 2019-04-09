@@ -22,10 +22,11 @@ Created on: 02/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-04-09"
 
 from copy import deepcopy
 import os.path
+import weakref
 
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
@@ -124,7 +125,21 @@ class SHEFrame(object):
     def detectors(self):
         for detector in self._detectors.flatten():
             del detector
-        del self._detectors
+        self._detectors = None
+
+    @property
+    def parent_frame_stack(self):
+        return self._parent_frame_stack()
+
+    @parent_frame_stack.setter
+    def parent_frame_stack(self, parent_frame_stack):
+
+        # Use a weak reference so we don't keep the parent alive indefinitely
+        self._parent_frame_stack = weakref.ref(parent_frame_stack)
+
+    @parent_frame_stack.deleter
+    def parent_frame_stack(self):
+        self._parent_frame_stack = lambda: None
 
     def __eq__(self, rhs):
         """Equality test for SHEFrame class.

@@ -19,12 +19,13 @@ Created on: Aug 17, 2017
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2019-03-01"
+__updated__ = "2019-04-09"
 
 # Avoid non-trivial "from" imports (as explicit is better than implicit)
 
 from copy import deepcopy
 import os
+import weakref
 
 import galsim
 
@@ -169,6 +170,48 @@ class SHEImage(object):
 
     # We define properties of the SHEImage object, following
     # https://euclid.roe.ac.uk/projects/codeen-users/wiki/User_Cod_Std-pythonstandard-v1-0#PNAMA-020-m-Developer-SHOULD-use-properties-to-protect-the-service-from-the-implementation
+
+    @property
+    def parent_frame_stack(self):
+        return self._parent_frame_stack()
+
+    @parent_frame_stack.setter
+    def parent_frame_stack(self, parent_frame_stack):
+
+        # Use a weak reference so we don't keep the parent alive indefinitely
+        self._parent_frame_stack = weakref.ref(parent_frame_stack)
+
+    @parent_frame_stack.deleter
+    def parent_frame_stack(self):
+        self._parent_frame_stack = lambda: None
+
+    @property
+    def parent_frame(self):
+        return self._parent_frame()
+
+    @parent_frame.setter
+    def parent_frame(self, parent_frame):
+
+        # Use a weak reference so we don't keep the parent alive indefinitely
+        self._parent_frame = weakref.ref(parent_frame)
+
+    @parent_frame.deleter
+    def parent_frame(self):
+        self._parent_frame = lambda: None
+
+    @property
+    def parent_image_stack(self):
+        return self._parent_image_stack()
+
+    @parent_image_stack.setter
+    def parent_image_stack(self, parent_image_stack):
+
+        # Use a weak reference so we don't keep the parent alive indefinitely
+        self._parent_image_stack = weakref.ref(parent_image_stack)
+
+    @parent_image_stack.deleter
+    def parent_image_stack(self):
+        self._parent_image_stack = lambda: None
 
     @property
     def data(self):
