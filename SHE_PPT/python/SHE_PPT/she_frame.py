@@ -134,8 +134,11 @@ class SHEFrame(object):
     @parent_frame_stack.setter
     def parent_frame_stack(self, parent_frame_stack):
 
-        # Use a weak reference so we don't keep the parent alive indefinitely
-        self._parent_frame_stack = weakref.ref(parent_frame_stack)
+        if parent_frame_stack is None:
+            self._parent_frame_stack = lambda: None
+        else:
+            # Use a weak reference so we don't keep the parent alive indefinitely
+            self._parent_frame_stack = weakref.ref(parent_frame_stack)
 
     @parent_frame_stack.deleter
     def parent_frame_stack(self):

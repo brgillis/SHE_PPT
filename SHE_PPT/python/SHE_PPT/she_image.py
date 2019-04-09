@@ -104,7 +104,8 @@ class SHEImage(object):
                  wcs=None,
                  parent_frame_stack=None,
                  parent_frame=None,
-                 parent_image_stack=None):
+                 parent_image_stack=None,
+                 parent_image=None):
         """ Initialiser for a SHEImage object
 
             Parameters
@@ -133,12 +134,15 @@ class SHEImage(object):
                 Reference to the parent SHEFrame, if it exists; None otherwise
             parent_image_stack : SHE_PPT.parent_image_stack.SHEImageStack
                 Reference to the parent SHEImageStack, if it exists; None otherwise
+            parent_image_stack : SHE_PPT.parent_image_stack.SHEImageStack
+                Reference to the parent SHEImage, if it exists; None otherwise
         """
 
         # References to parent objects
         self.parent_frame_stack = parent_frame_stack
         self.parent_frame = parent_frame
         self.parent_image_stack = parent_image_stack
+        self.parent_image = parent_image
 
         # Public values
         self.data = data  # Note the tests done in the setter method
@@ -178,8 +182,11 @@ class SHEImage(object):
     @parent_frame_stack.setter
     def parent_frame_stack(self, parent_frame_stack):
 
-        # Use a weak reference so we don't keep the parent alive indefinitely
-        self._parent_frame_stack = weakref.ref(parent_frame_stack)
+        if parent_frame_stack is None:
+            self._parent_frame_stack = lambda: None
+        else:
+            # Use a weak reference so we don't keep the parent alive indefinitely
+            self._parent_frame_stack = weakref.ref(parent_frame_stack)
 
     @parent_frame_stack.deleter
     def parent_frame_stack(self):
@@ -192,8 +199,11 @@ class SHEImage(object):
     @parent_frame.setter
     def parent_frame(self, parent_frame):
 
-        # Use a weak reference so we don't keep the parent alive indefinitely
-        self._parent_frame = weakref.ref(parent_frame)
+        if parent_frame is None:
+            self._parent_frame = lambda: None
+        else:
+            # Use a weak reference so we don't keep the parent alive indefinitely
+            self._parent_frame = weakref.ref(parent_frame)
 
     @parent_frame.deleter
     def parent_frame(self):
@@ -206,12 +216,32 @@ class SHEImage(object):
     @parent_image_stack.setter
     def parent_image_stack(self, parent_image_stack):
 
-        # Use a weak reference so we don't keep the parent alive indefinitely
-        self._parent_image_stack = weakref.ref(parent_image_stack)
+        if parent_image_stack is None:
+            self._parent_image_stack = lambda: None
+        else:
+            # Use a weak reference so we don't keep the parent alive indefinitely
+            self._parent_image_stack = weakref.ref(parent_image_stack)
 
     @parent_image_stack.deleter
     def parent_image_stack(self):
         self._parent_image_stack = lambda: None
+
+    @property
+    def parent_image(self):
+        return self._parent_image()
+
+    @parent_image.setter
+    def parent_image(self, parent_image):
+
+        if parent_image is None:
+            self._parent_image = lambda: None
+        else:
+            # Use a weak reference so we don't keep the parent alive indefinitely
+            self._parent_image = weakref.ref(parent_image)
+
+    @parent_image.deleter
+    def parent_image(self):
+        self._parent_image = lambda: None
 
     @property
     def data(self):
