@@ -22,7 +22,7 @@ Created on: 05/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-04-09"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
@@ -254,9 +254,11 @@ class SHEFrameStack(object):
 
         # Construct the stacks
         bulge_psf_stack = SHEImageStack(stacked_image=stacked_bulge_psf,
-                                        exposures=bulge_psf_stamps,)
+                                        exposures=bulge_psf_stamps,
+                                        parent_frame_stack=self)
         disk_psf_stack = SHEImageStack(stacked_image=stacked_disk_psf,
-                                       exposures=disk_psf_stamps,)
+                                       exposures=disk_psf_stamps,
+                                       parent_frame_stack=self)
 
         return bulge_psf_stack, disk_psf_stack
 
@@ -334,7 +336,8 @@ class SHEFrameStack(object):
         stamp_stack = SHEImageStack(stacked_image=stacked_image_stamp,
                                     exposures=exposure_stamps,
                                     x_world=x_world,
-                                    y_world=y_world)
+                                    y_world=y_world,
+                                    parent_frame_stack=self)
 
         return stamp_stack
 
