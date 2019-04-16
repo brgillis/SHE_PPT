@@ -37,7 +37,10 @@ class ConfigKeys(Enum):
 
     OID_BATCH_SIZE = "SHE_CTE_ObjectIdSplit_batch_size"
 
-    REMAP_MAX_THREADS = "SHE_MER_RemapMosaic_max_threads"
+    REMAP_NUM_THREADS_EXP = "SHE_MER_RemapMosaic_num_threads_exposures"
+    REMAP_NUM_SWARP_THREADS_EXP = "SHE_MER_RemapMosaic_num_swarp_threads_exposures"
+    REMAP_NUM_THREADS_STACK = "SHE_MER_RemapMosaic_num_threads_stack"
+    REMAP_NUM_SWARP_THREADS_STACK = "SHE_MER_RemapMosaic_num_swarp_threads_stack"
 
     CBM_CLEANUP = "SHE_CTE_CleanupBiasMeasurement_cleanup"
 
