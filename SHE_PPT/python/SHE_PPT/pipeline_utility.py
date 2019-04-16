@@ -18,14 +18,36 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-04-16"
 
+from enum import Enum
 import os
 from shutil import copyfile
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.file_io import read_xml_product
 from SHE_PPT.logging import getLogger
+
+
+class config_keys(Enum):
+    """ An Enum of all allowed keys for pipeline_config files.
+    """
+
+    ES_METHODS = "SHE_CTE_EstimateShear_methods"
+
+    OID_BATCH_SIZE = "SHE_CTE_ObjectIdSplit_batch_size"
+
+    REMAP_MAX_THREADS = "SHE_MER_RemapMosaic_max_threads"
+
+    CBM_CLEANUP = "SHE_CTE_CleanupBiasMeasurement_cleanup"
+
+    MB_ARCHIVE_DIR = "SHE_CTE_MeasureBias_archive_dir"
+    MB_WEBDAV_ARCHIVE = "SHE_CTE_MeasureBias_webdav_archive"
+    MB_WEBDAV_DIR = "SHE_CTE_MeasureBias_webdav_dir"
+
+    MS_ARCHIVE_DIR = "SHE_CTE_MeasureStatistics_archive_dir"
+    MS_WEBDAV_ARCHIVE = "SHE_CTE_MeasureStatistics_webdav_archive"
+    MS_WEBDAV_DIR = "SHE_CTE_MeasureStatistics_webdav_dir"
 
 
 def archive_product(product_filename, archive_dir, workdir):
