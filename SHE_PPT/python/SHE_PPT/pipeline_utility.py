@@ -194,6 +194,15 @@ def write_config(config_dict, config_filename, workdir="."):
 
         # Write out each entry in a line
         for key in config_dict:
+
+            # Check that the key is allowed
+            if not key in config_keys:
+                err_string = ("Invalid key found in pipeline config dict: " +
+                              key + ". Allowed keys are: ")
+                for allowed_key in config_keys:
+                    err_string += "\n--" + allowed_key.value
+                raise ValueError(err_string)
+
             config_file.write(str(key) + " = " + str(config_dict[key]) + "\n")
 
     return
