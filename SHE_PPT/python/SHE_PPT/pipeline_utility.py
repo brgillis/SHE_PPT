@@ -29,7 +29,7 @@ from SHE_PPT.file_io import read_xml_product
 from SHE_PPT.logging import getLogger
 
 
-class config_keys(Enum):
+class ConfigKeys(Enum):
     """ An Enum of all allowed keys for pipeline_config files.
     """
 
@@ -149,10 +149,10 @@ def read_config(config_filename, workdir="."):
             key = equal_split_line[0].strip()
 
             # Check that the key is allowed
-            if not key in config_keys:
+            if not key in list(map(str, ConfigKeys)):
                 err_string = ("Invalid key found in pipeline config file " + qualified_config_filename + ": " +
                               key + ". Allowed keys are: ")
-                for allowed_key in config_keys:
+                for allowed_key in ConfigKeys:
                     err_string += "\n--" + allowed_key.value
                 raise ValueError(err_string)
 
@@ -196,10 +196,10 @@ def write_config(config_dict, config_filename, workdir="."):
         for key in config_dict:
 
             # Check that the key is allowed
-            if not key in config_keys:
+            if not key in list(map(str, ConfigKeys)):
                 err_string = ("Invalid key found in pipeline config dict: " +
                               key + ". Allowed keys are: ")
-                for allowed_key in config_keys:
+                for allowed_key in ConfigKeys:
                     err_string += "\n--" + allowed_key.value
                 raise ValueError(err_string)
 
