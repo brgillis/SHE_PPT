@@ -67,7 +67,7 @@ class TestUtility:
                      "# ignore this = ignore\n" +
                      "\n" +
                      "SHE_CTE_CleanupBiasMeasurement_cleanup=True\n" +
-                     "CTE_MeasureBias_archive_dir=/my/dir/ #==2\n")
+                     "SHE_CTE_MeasureBias_archive_dir=/my/dir/ #==2\n")
 
         read_dict2 = read_config(test2_filename, workdir=self.workdir)
 
