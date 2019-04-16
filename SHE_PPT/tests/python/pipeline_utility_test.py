@@ -75,7 +75,7 @@ class TestUtility:
         assert read_dict2["SHE_CTE_ObjectIdSplit_batch_size"] == "26"
         assert read_dict2["SHE_MER_RemapMosaic_max_threads"] == "8"
         assert read_dict2["SHE_CTE_CleanupBiasMeasurement_cleanup"] == "True"
-        assert read_dict2["CTE_MeasureBias_archive_dir"] == "/my/dir/"
+        assert read_dict2["SHE_CTE_MeasureBias_archive_dir"] == "/my/dir/"
         assert "ignore this" not in read_dict2
 
         return
