@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-04-16"
 
 import os
 import pytest
@@ -48,33 +48,34 @@ class TestUtility:
 
         # Test we get out of the file what we put in
 
-        test_dict = {"foo": "bar", "foobar": "barfoo"}
+        test_dict = {"SHE_CTE_EstimateShear_methods": "KSB", "SHE_CTE_ObjectIdSplit_batch_size": "26"}
         test1_filename = "test1.txt"
 
         write_config(test_dict, test1_filename, workdir=self.workdir)
 
         read_dict1 = read_config(test1_filename, workdir=self.workdir)
 
-        assert read_dict1["foo"] == "bar"
-        assert read_dict1["foobar"] == "barfoo"
+        assert read_dict1["SHE_CTE_EstimateShear_methods"] == "KSB"
+        assert read_dict1["SHE_CTE_ObjectIdSplit_batch_size"] == "26"
 
         # Test that we can parse a more complicated file
         test2_filename = "test2.txt"
         with open(os.path.join(self.workdir, test2_filename), "w") as fo:
-            fo.write("foo = bar\n" +
-                     "foobar = barfoo\n" +
-                     "boo = far # nope\n" +
+            fo.write("SHE_CTE_EstimateShear_methods = KSB\n" +
+                     "SHE_CTE_ObjectIdSplit_batch_size = 26\n" +
+                     "SHE_MER_RemapMosaic_max_threads = 8 # nope\n" +
                      "# ignore this = ignore\n" +
-                     "bah=gah\n" +
-                     "fah=too=three\n")
+                     "\n" +
+                     "SHE_CTE_CleanupBiasMeasurement_cleanup=True\n" +
+                     "CTE_MeasureBias_archive_dir=/my/dir/ #==2\n")
 
         read_dict2 = read_config(test2_filename, workdir=self.workdir)
 
-        assert read_dict2["foo"] == "bar"
-        assert read_dict2["foobar"] == "barfoo"
-        assert read_dict2["boo"] == "far"
-        assert read_dict2["bah"] == "gah"
-        assert read_dict2["fah"] == "too=three"
+        assert read_dict2["SHE_CTE_EstimateShear_methods"] == "KSB"
+        assert read_dict2["SHE_CTE_ObjectIdSplit_batch_size"] == "26"
+        assert read_dict2["SHE_MER_RemapMosaic_max_threads"] == "8"
+        assert read_dict2["SHE_CTE_CleanupBiasMeasurement_cleanup"] == "True"
+        assert read_dict2["CTE_MeasureBias_archive_dir"] == "/my/dir/"
         assert "ignore this" not in read_dict2
 
         return
