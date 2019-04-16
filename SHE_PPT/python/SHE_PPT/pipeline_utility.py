@@ -49,6 +49,10 @@ class ConfigKeys(Enum):
     MS_WEBDAV_ARCHIVE = "SHE_CTE_MeasureStatistics_webdav_archive"
     MS_WEBDAV_DIR = "SHE_CTE_MeasureStatistics_webdav_dir"
 
+    @classmethod
+    def is_allowed_value(cls, value):
+        return value in [item.value for item in cls]
+
 
 def archive_product(product_filename, archive_dir, workdir):
     """ Copies an already-written data product to an archive directory.
@@ -149,7 +153,7 @@ def read_config(config_filename, workdir="."):
             key = equal_split_line[0].strip()
 
             # Check that the key is allowed
-            if not key in list(map(str, ConfigKeys)):
+            if not ConfigKeys.is_allowed_value(key):
                 err_string = ("Invalid key found in pipeline config file " + qualified_config_filename + ": " +
                               key + ". Allowed keys are: ")
                 for allowed_key in ConfigKeys:
@@ -196,7 +200,7 @@ def write_config(config_dict, config_filename, workdir="."):
         for key in config_dict:
 
             # Check that the key is allowed
-            if not key in list(map(str, ConfigKeys)):
+            if not ConfigKeys.is_allowed_value(key):
                 err_string = ("Invalid key found in pipeline config dict: " +
                               key + ". Allowed keys are: ")
                 for allowed_key in ConfigKeys:
