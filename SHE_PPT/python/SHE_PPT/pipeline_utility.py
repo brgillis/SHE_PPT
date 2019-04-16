@@ -148,6 +148,14 @@ def read_config(config_filename, workdir="."):
 
             key = equal_split_line[0].strip()
 
+            # Check that the key is allowed
+            if not key in config_keys:
+                err_string = ("Invalid key found in pipeline config file " + qualified_config_filename + ": " +
+                              key + ". Allowed keys are: ")
+                for allowed_key in config_keys:
+                    err_string += "\n--" + allowed_key.value
+                raise ValueError(err_string)
+
             # In case the value contains an = char
             value = noncomment_line.replace(equal_split_line[0] + '=', '').strip()
 
