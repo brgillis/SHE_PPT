@@ -63,7 +63,7 @@ class TestUtility:
         with open(os.path.join(self.workdir, test2_filename), "w") as fo:
             fo.write("SHE_CTE_EstimateShear_methods = KSB\n" +
                      "SHE_CTE_ObjectIdSplit_batch_size = 26\n" +
-                     "SHE_MER_RemapMosaic_max_threads = 8 # nope\n" +
+                     "SHE_MER_RemapMosaic_num_threads_exposures = 8 # nope\n" +
                      "# ignore this = ignore\n" +
                      "\n" +
                      "SHE_CTE_CleanupBiasMeasurement_cleanup=True\n" +
@@ -73,7 +73,7 @@ class TestUtility:
 
         assert read_dict2["SHE_CTE_EstimateShear_methods"] == "KSB"
         assert read_dict2["SHE_CTE_ObjectIdSplit_batch_size"] == "26"
-        assert read_dict2["SHE_MER_RemapMosaic_max_threads"] == "8"
+        assert read_dict2["SHE_MER_RemapMosaic_num_threads_exposures"] == "8"
         assert read_dict2["SHE_CTE_CleanupBiasMeasurement_cleanup"] == "True"
         assert read_dict2["SHE_CTE_MeasureBias_archive_dir"] == "/my/dir/"
         assert "ignore this" not in read_dict2
