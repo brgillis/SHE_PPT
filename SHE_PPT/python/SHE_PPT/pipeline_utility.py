@@ -242,7 +242,7 @@ def get_conditional_product(filename, workdir="."):
             raise ValueError("File " + qualified_filename + " is a listfile with more than one file listed, and " +
                              "is an invalid input to get_conditional_product.")
 
-    except json.decoder.JSONDecodeError:
+    except (json.decoder.JSONDecodeError, UnicodeDecodeError):
 
         # This isn't a listfile, so try to open and return it
         return read_xml_product(qualified_filename)
