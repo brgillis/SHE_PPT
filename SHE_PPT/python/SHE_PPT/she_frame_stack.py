@@ -22,7 +22,7 @@ Created on: 05/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2019-04-09"
+__updated__ = "2019-04-19"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
@@ -120,9 +120,10 @@ class SHEFrameStack(object):
     def stacked_image(self, stacked_image):
         self._stacked_image = stacked_image
 
-        # Set this as the parent frame stack for the stacked image
-        self._stacked_image.parent_frame_stack = self
-        self._stacked_image.parent_frame = None
+        if self._stacked_image is not None:
+            # Set this as the parent frame stack for the stacked image
+            self._stacked_image.parent_frame_stack = self
+            self._stacked_image.parent_frame = None
 
     @stacked_image.deleter
     def stacked_image(self):
