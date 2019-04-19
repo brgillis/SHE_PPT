@@ -130,12 +130,34 @@ def read_config(config_filename, workdir="."):
     """
 
     # Return None if input filename is None
-    if config_filename is None:
+    if config_filename is None or config_filename is "None" or config_filename is "":
         return None
 
-    config_dict = {}
-
     qualified_config_filename = os.path.join(workdir, config_filename)
+
+    try:
+
+        filelist = read_listfile(qualified_config_filename)
+
+        # If we get here, it is a listfile. If no files in it, return None. If one, return that. If more than one,
+        # raise an exception
+        if len(filelist) == 0:
+            return None
+        elif len(filelist) == 1:
+            return _read_config(qualified_config_filename)
+        else:
+            raise ValueError("File " + qualified_config_filename + " is a listfile with more than one file listed, and " +
+                             "is an invalid input to read_config.")
+
+    except (json.decoder.JSONDecodeError, UnicodeDecodeError):
+
+        # This isn't a listfile, so try to open and return it
+        return _read_config(qualified_config_filename)
+
+
+def _read_config(qualified_config_filename):
+
+    config_dict = {}
 
     with open(qualified_config_filename, 'r') as config_file:
 
