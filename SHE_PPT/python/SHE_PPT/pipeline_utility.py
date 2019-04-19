@@ -144,7 +144,7 @@ def read_config(config_filename, workdir="."):
         if len(filelist) == 0:
             return None
         elif len(filelist) == 1:
-            return _read_config(qualified_config_filename)
+            return _read_config(find_file(filelist[0], workdir))
         else:
             raise ValueError("File " + qualified_config_filename + " is a listfile with more than one file listed, and " +
                              "is an invalid input to read_config.")
