@@ -131,7 +131,7 @@ def read_config(config_filename, workdir="."):
 
     # Return None if input filename is None
     if config_filename is None or config_filename is "None" or config_filename is "":
-        return None
+        return {}
 
     qualified_config_filename = os.path.join(workdir, config_filename)
 
@@ -142,7 +142,7 @@ def read_config(config_filename, workdir="."):
         # If we get here, it is a listfile. If no files in it, return None. If one, return that. If more than one,
         # raise an exception
         if len(filelist) == 0:
-            return None
+            return {}
         elif len(filelist) == 1:
             return _read_config(find_file(filelist[0], workdir))
         else:

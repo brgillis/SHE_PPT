@@ -72,11 +72,11 @@ class TestUtility:
 
         # Check we get expected results from trying to read in other variants
 
-        assert read_config(None, workdir=self.workdir) is None
-        assert read_config("", workdir=self.workdir) is None
-        assert read_config("None", workdir=self.workdir) is None
+        assert read_config(None, workdir=self.workdir) == {}
+        assert read_config("", workdir=self.workdir) == {}
+        assert read_config("None", workdir=self.workdir) == {}
 
-        assert read_config(lf0_filename, workdir=self.workdir) is None
+        assert read_config(lf0_filename, workdir=self.workdir) == {}
         assert read_config(lf1_filename, workdir=self.workdir) == read_dict1
         with pytest.raises(ValueError):
             read_config(lf2_filename, workdir=self.workdir)
