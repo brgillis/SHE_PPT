@@ -23,7 +23,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-04-19"
 
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import EuclidDmBindings.she.she_stub as she_dpd # FIXME
@@ -153,7 +153,8 @@ def create_dpd_she_exposure_mosaic(data_filename):
 
     dpd_she_exposure_mosaic = DpdSheExposureMosaicProduct()
 
-    dpd_she_exposure_mosaic.Header = HeaderProvider.createGenericHeader("SHE")
+    # dpd_she_exposure_mosaic.Header = HeaderProvider.createGenericHeader("SHE")
+    dpd_she_exposure_mosaic.Header = None
 
     dpd_she_exposure_mosaic.Data = create_she_exposure_mosaic(
         data_filename=data_filename)
