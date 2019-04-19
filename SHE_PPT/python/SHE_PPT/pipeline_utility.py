@@ -21,13 +21,13 @@
 __updated__ = "2019-04-19"
 
 from enum import Enum
+import json.decoder
 import os
 from shutil import copyfile
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.file_io import read_xml_product, read_listfile, find_file
 from SHE_PPT.logging import getLogger
-import json.decoder.JSONDecodeError
 
 
 class ConfigKeys(Enum):
