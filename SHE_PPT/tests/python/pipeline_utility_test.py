@@ -18,12 +18,14 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-04-16"
+__updated__ = "2019-04-19"
 
 import os
 import pytest
 
-from SHE_PPT.pipeline_utility import read_config, write_config
+from SHE_PPT import products
+from SHE_PPT.file_io import write_xml_product, read_xml_product, write_listfile
+from SHE_PPT.pipeline_utility import read_config, write_config, get_conditional_product
 
 
 class TestUtility:
@@ -79,3 +81,38 @@ class TestUtility:
         assert "ignore this" not in read_dict2
 
         return
+
+    def test_get_conditional_product(self):
+
+        # We'll set up some test files to work with, using the object_id_list product
+
+        product_filename = "object_id_list.xml"
+        lf0_filename = "empty_listfile.json"
+        lf1_filename = "one_listfile.json"
+        lf2_filename = "two_listfile.json"
+
+        object_ids = [1, 2]
+
+        product = products.object_id_list.create_object_id_list_product(object_ids)
+        write_xml_product(product, os.path.join(self.workdir, product_filename))
+
+        write_listfile(lf0_filename, [])
+        write_listfile(lf1_filename, [product_filename])
+        write_listfile(lf2_filename, [product_filename, product_filename])
+
+        # Test that we get the expected result in each case
+
+        assert get_conditional_product(None, workdir=self.workdir) is None
+        assert get_conditional_product("", workdir=self.workdir) is None
+        assert get_conditional_product("None", workdir=self.workdir) is None
+
+        assert get_conditional_product(product_filename, workdir=self.workdir).get_id_list == object_ids
+
+        assert get_conditional_product(lf0_filename, workdir=self.workdir) is None
+        assert get_conditional_product(lf1_filename, workdir=self.workdir).get_id_list == object_ids
+        with pytest.raises(ValueError):
+            get_conditional_product(lf2_filename, workdir=self.workdir)
+
+        return
+
+        assert get_conditional_product(lf2_filename, workdir=self.workdir)

@@ -18,15 +18,16 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-04-16"
+__updated__ = "2019-04-19"
 
 from enum import Enum
 import os
 from shutil import copyfile
 
 from SHE_PPT import magic_values as mv
-from SHE_PPT.file_io import read_xml_product
+from SHE_PPT.file_io import read_xml_product, read_listfile, find_file
 from SHE_PPT.logging import getLogger
+import json.decoder.JSONDecodeError
 
 
 class ConfigKeys(Enum):
@@ -213,3 +214,35 @@ def write_config(config_dict, config_filename, workdir="."):
             config_file.write(str(key) + " = " + str(config_dict[key]) + "\n")
 
     return
+
+
+def get_conditional_product(filename, workdir="."):
+    """ Returns None in all cases where a data product isn't provided, otherwise read and return the data
+        product.
+    """
+
+    # First check for None
+    if filename is None or filename is "None" or filename is "":
+        return None
+
+    # Find the file, and check if it's a listfile
+    qualified_filename = find_file(filename, workdir)
+
+    try:
+
+        filelist = read_listfile(qualified_filename)
+
+        # If we get here, it is a listfile. If no files in it, return None. If one, return that. If more than one,
+        # raise an exception
+        if len(filelist) == 0:
+            return None
+        elif len(filelist) == 1:
+            return read_xml_product(find_file(filelist[0], workdir))
+        else:
+            raise ValueError("File " + qualified_filename + " is a listfile with more than one file listed, and " +
+                             "is an invalid input to get_conditional_product.")
+
+    except json.decoder.JSONDecodeError:
+
+        # This isn't a listfile, so try to open and return it
+        return read_xml_product(qualified_filename)
