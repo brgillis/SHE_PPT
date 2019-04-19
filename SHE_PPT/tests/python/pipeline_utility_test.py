@@ -96,9 +96,9 @@ class TestUtility:
         product = products.object_id_list.create_object_id_list_product(object_ids)
         write_xml_product(product, os.path.join(self.workdir, product_filename))
 
-        write_listfile(lf0_filename, [])
-        write_listfile(lf1_filename, [product_filename])
-        write_listfile(lf2_filename, [product_filename, product_filename])
+        write_listfile(os.path.join(self.workdir, lf0_filename), [])
+        write_listfile(os.path.join(self.workdir, lf1_filename), [product_filename])
+        write_listfile(os.path.join(self.workdir, lf2_filename), [product_filename, product_filename])
 
         # Test that we get the expected result in each case
 
