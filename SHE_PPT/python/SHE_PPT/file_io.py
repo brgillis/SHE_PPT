@@ -19,15 +19,13 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-04-19"
 
-from datetime import datetime
 import json
 import os
 from os.path import join, isfile
 from pickle import UnpicklingError
 import pickle
-import re
 from xml.sax._exceptions import SAXParseException
 
 from ElementsServices.DataSync import downloadTestData, localTestFile
@@ -37,6 +35,7 @@ from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.utility import run_only_once
 from astropy.io import fits
+import numpy as np
 
 
 logger = getLogger(mv.logger_name)
@@ -131,7 +130,11 @@ def read_listfile(listfile_name):
         if len(listobject) == 0:
             return listobject
         if isinstance(listobject[0], list):
-            return [tuple(el) for el in listobject]
+            tupled_list = [tuple(el) for el in listobject]
+            if np.all([len(t) == 1 for t in tupled_list]):
+                return [t[0] for t in tupled_list]
+            else:
+                return tupled_list
         else:
             return listobject
 
