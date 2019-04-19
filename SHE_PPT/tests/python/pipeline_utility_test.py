@@ -114,5 +114,3 @@ class TestUtility:
             get_conditional_product(lf2_filename, workdir=self.workdir)
 
         return
-
-        assert get_conditional_product(lf2_filename, workdir=self.workdir)
