@@ -51,14 +51,35 @@ class TestUtility:
         # Test we get out of the file what we put in
 
         test_dict = {"SHE_CTE_EstimateShear_methods": "KSB", "SHE_CTE_ObjectIdSplit_batch_size": "26"}
+
         test1_filename = "test1.txt"
+
+        lf0_filename = "empty_listfile.json"
+        lf1_filename = "one_listfile.json"
+        lf2_filename = "two_listfile.json"
 
         write_config(test_dict, test1_filename, workdir=self.workdir)
 
+        write_listfile(os.path.join(self.workdir, lf0_filename), [])
+        write_listfile(os.path.join(self.workdir, lf1_filename), [test1_filename])
+        write_listfile(os.path.join(self.workdir, lf2_filename), [test1_filename, test1_filename])
+
         read_dict1 = read_config(test1_filename, workdir=self.workdir)
 
+        # Check it's been read in correctly
         assert read_dict1["SHE_CTE_EstimateShear_methods"] == "KSB"
         assert read_dict1["SHE_CTE_ObjectIdSplit_batch_size"] == "26"
+
+        # Check we get expected results from trying to read in other variants
+
+        assert read_config(None, workdir=self.workdir) is None
+        assert read_config("", workdir=self.workdir) is None
+        assert read_config("None", workdir=self.workdir) is None
+
+        assert read_config(lf0_filename, workdir=self.workdir) is None
+        assert read_config(lf1_filename, workdir=self.workdir) == read_dict1
+        with pytest.raises(ValueError):
+            read_config(lf2_filename, workdir=self.workdir)
 
         # Test that we can parse a more complicated file
         test2_filename = "test2.txt"
