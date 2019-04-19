@@ -106,10 +106,10 @@ class TestUtility:
         assert get_conditional_product("", workdir=self.workdir) is None
         assert get_conditional_product("None", workdir=self.workdir) is None
 
-        assert get_conditional_product(product_filename, workdir=self.workdir).get_id_list == object_ids
+        assert get_conditional_product(product_filename, workdir=self.workdir).get_id_list() == object_ids
 
         assert get_conditional_product(lf0_filename, workdir=self.workdir) is None
-        assert get_conditional_product(lf1_filename, workdir=self.workdir).get_id_list == object_ids
+        assert get_conditional_product(lf1_filename, workdir=self.workdir).get_id_list() == object_ids
         with pytest.raises(ValueError):
             get_conditional_product(lf2_filename, workdir=self.workdir)
 
