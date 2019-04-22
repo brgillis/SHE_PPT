@@ -22,7 +22,7 @@ Created on: 02/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2019-04-09"
+__updated__ = "2019-04-22"
 
 from copy import deepcopy
 import os.path
@@ -427,7 +427,7 @@ class SHEFrame(object):
 
             seg_prod = read_xml_product(
                 os.path.join(workdir, seg_product_filename))
-            if not isinstance(seg_prod, products.mosaic.dpdMerSegmentationMap):
+            if not isinstance(seg_prod, products.exposure_mosaic.DpdSheExposureMosaicProduct):
                 raise ValueError("Segmentation map product from " +
                                  seg_product_filename + " is invalid type.")
 
