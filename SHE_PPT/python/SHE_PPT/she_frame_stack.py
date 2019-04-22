@@ -22,7 +22,7 @@ Created on: 05/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2019-04-19"
+__updated__ = "2019-04-22"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
@@ -532,7 +532,8 @@ class SHEFrameStack(object):
                                                          tags=(
                                                              mv.sci_tag, mv.noisemap_tag, mv.mask_tag),
                                                          workdir=workdir,
-                                                         dtype=products.stacked_frame.dpdVisStackedFrame)
+                                                         dtype=products.stacked_frame.dpdVisStackedFrame,
+                                                         **kwargs)
 
             stacked_image_data = stacked_data[0]
             stacked_rms_data = stacked_data[1]
@@ -541,7 +542,8 @@ class SHEFrameStack(object):
             _, stacked_bkg_data = cls._read_product_extension(stacked_image_product_filename,
                                                               workdir=workdir,
                                                               dtype=products.stacked_frame.dpdVisStackedFrame,
-                                                              filetype="background")
+                                                              filetype="background",
+                                                              **kwargs)
 
         # Get the segmentation image
         if stacked_seg_product_filename is None:
@@ -550,7 +552,8 @@ class SHEFrameStack(object):
             try:
                 _, stacked_seg_data = cls._read_product_extension(stacked_seg_product_filename,
                                                                   workdir=workdir,
-                                                                  dtype=products.stack_mosaic.DpdSheStackMosaicProduct)
+                                                                  dtype=products.stack_mosaic.DpdSheStackMosaicProduct,
+                                                                  **kwargs)
             except FileNotFoundError as e:
                 logger.warn(str(e))
                 stacked_seg_data = None
