@@ -509,8 +509,7 @@ class SHEFrame(object):
                     if seg_i is None:
                         raise ValueError("No corresponding segmentation extension found in file " + frame_prod.get_data_filename() + "." +
                                          "Expected extname: " + seg_extname)
-                    detector_seg_data = seg_data_hdulist[
-                        seg_i].data.transpose()
+                    detector_seg_data = seg_data_hdulist[seg_i].data.transpose()
                 else:
                     detector_seg_data = None
 
