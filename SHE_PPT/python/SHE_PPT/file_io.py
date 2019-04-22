@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-04-19"
+__updated__ = "2019-04-22"
 
 import json
 import os
@@ -33,7 +33,7 @@ from EuclidDmBindings.sys_stub import CreateFromDocument
 from FilenameProvider.FilenameProvider import createFilename
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
-from SHE_PPT.utility import run_only_once
+from SHE_PPT.utility import run_only_once, get_release_from_version
 from astropy.io import fits
 import numpy as np
 
@@ -50,7 +50,7 @@ def warn_deprecated_timestamp():
     logger.warn("The use of the 'timestamp' kwarg in get_allowed_filename is deprecated and will be removed in a future version.")
 
 
-def get_allowed_filename(type_name, instance_id, extension=".fits", release="00.05", subdir="data",
+def get_allowed_filename(type_name, instance_id, extension=".fits", release=None, version=None, subdir="data",
                          processing_function="SHE", timestamp=None):
     """Gets a filename in the required Euclid format. Now mostly a pass-through to the official version, with
     tweaks to silently shift arguments to upper-case.
@@ -64,7 +64,11 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release="00.
     extension : str
         File extension (eg. ".fits").
     release : str
-        Software/data release version, in format "XX.XX" where each X is a digit 0-9.
+        Software/data release version, in format "XX.XX" where each X is a digit 0-9. Either this or version must be
+        supplied.
+    version : str
+        Software/data release version, in format "X.X(.Y)" where each X is an integer 0-99. Either this or release must
+        be supplied.
     subdir : str
         Subdirectory of work directory in which this file will be (default "data")
     processing_function : str
@@ -72,6 +76,14 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release="00.
     timestamp : bool
         If True, will append a timestamp to the instance_id
     """
+
+    # Check we have just one of release and version
+    if (release is None) == (version is None):
+        raise ValueError("Exactly one of release or version must be supplied to get_allowed_filename.")
+
+    # If given version, convert it to release format
+    if version is not None:
+        release = get_release_from_version(version)
 
     # Silently shift instance_id to upper-case, and add timestamp if desired
     full_instance_id = instance_id.upper()
