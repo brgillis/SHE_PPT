@@ -19,7 +19,7 @@ Created on: Aug 17, 2017
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2019-04-09"
+__updated__ = "2019-04-22"
 
 # Avoid non-trivial "from" imports (as explicit is better than implicit)
 
@@ -170,7 +170,7 @@ class SHEImage(object):
             self.det_iy = self.header[mv.ccdid_label][0]
             self.det_ix = self.header[mv.ccdid_label][2]
 
-        logger.debug("Created {}".format(str(self)))
+        # logger.debug("Created {}".format(str(self)))
 
     # We define properties of the SHEImage object, following
     # https://euclid.roe.ac.uk/projects/codeen-users/wiki/User_Cod_Std-pythonstandard-v1-0#PNAMA-020-m-Developer-SHOULD-use-properties-to-protect-the-service-from-the-implementation
