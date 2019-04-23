@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-04-19"
+__updated__ = "2019-04-23"
 
 from enum import Enum
 import json.decoder
@@ -183,7 +183,7 @@ def _read_config(qualified_config_filename):
                 err_string = ("Invalid key found in pipeline config file " + qualified_config_filename + ": " +
                               key + ". Allowed keys are: ")
                 for allowed_key in ConfigKeys:
-                    err_string += "\n--" + allowed_key.value
+                    err_string += "\n  " + allowed_key.value
                 raise ValueError(err_string)
 
             # In case the value contains an = char
