@@ -81,7 +81,8 @@ class SHEFrameStack(object):
         """
 
         self.exposures = exposures
-        self.stacked_image = stacked_image
+        if stacked_image:
+            self.stacked_image = stacked_image
         self.detections_catalogue = detections_catalogue
 
         # Might have to manually calculate this later
@@ -341,7 +342,8 @@ class SHEFrameStack(object):
 
         return stamp_stack
 
-    def get_fov_coords(self, x_world, y_world, x_buffer=0, y_buffer=0, none_if_out_of_bounds=False):
+    def get_fov_coords(self, x_world, y_world, x_buffer=0, y_buffer=0, none_if_out_of_bounds=False,
+                       return_det_coords_too=False):
         """ Calculates the Field-of-View (FOV) co-ordinates of a given sky position for each exposure, and
             returns a list of (fov_x, fov_y) tuples. If the position isn't present in a given exposure, None will be
             returned in that list index.
@@ -360,6 +362,9 @@ class SHEFrameStack(object):
                 Set this to True if you want this method to return None if the position is entirely out of bounds of
                 the image. By default, this is set to False, which means it will instead return a list of Nones in
                 that case instead.
+            return_det_coords_too : bool
+                If true return namedtuple of x_fov, y_fov, detno_x, detno_y, x_det, y_det   
+
 
             Return
             ------
@@ -374,7 +379,8 @@ class SHEFrameStack(object):
             fov_coords = exposure.get_fov_coords(x_world=x_world,
                                                  y_world=y_world,
                                                  x_buffer=x_buffer,
-                                                 y_buffer=y_buffer)
+                                                 y_buffer=y_buffer,
+                                                 return_det_coords_too=return_det_coords_too)
             if fov_coords is not None:
                 found = True
             fov_coords_list.append(fov_coords)
@@ -515,7 +521,6 @@ class SHEFrameStack(object):
                                      **kwargs)
 
             exposures.append(exposure)
-
         # Load in the stacked products now
 
         # Get the stacked image and background image
@@ -675,7 +680,6 @@ class SHEFrameStack(object):
                 detections_catalogue, keys=detf.ID)
         else:
             pruned_detections_catalogue = None
-
         # Construct and return a SHEFrameStack object
         return SHEFrameStack(exposures=exposures,
                              stacked_image=stacked_image,

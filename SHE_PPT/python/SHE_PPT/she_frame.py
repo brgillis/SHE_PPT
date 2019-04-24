@@ -37,6 +37,7 @@ from SHE_PPT.she_image import SHEImage
 from SHE_PPT.table_formats.psf import tf as pstf
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import find_extension, load_wcs, run_only_once
+import SHE_PPT.telescope_coords as tc
 from astropy.io import fits
 from astropy.io.fits import HDUList, BinTableHDU, ImageHDU, PrimaryHDU
 from astropy.table import Table
@@ -295,7 +296,8 @@ class SHEFrame(object):
 
         return bulge_psf_stamp, disk_psf_stamp
 
-    def get_fov_coords(self, x_world, y_world, x_buffer=0, y_buffer=0):
+    def get_fov_coords(self, x_world, y_world, x_buffer=0, y_buffer=0,
+        return_det_coords_too=False):
         """ Calculates the Field-of-View (FOV) co-ordinates of a given sky position, and returns a (fov_x, fov_y)
             tuple. If the position isn't present in the exposure, None will be returned instead.
 
@@ -309,6 +311,8 @@ class SHEFrame(object):
                 The size of the buffer region in pixels around a detector to get the co-ordinate from, x-dimension
             y_buffer : int
                 The size of the buffer region in pixels around a detector to get the co-ordinate from, y-dimension
+            return_det_coords_too : bool
+                If true return namedtuple of x_fov, y_fov, detno_x, detno_y, x_det, y_det   
 
             Return
             ------
@@ -345,9 +349,22 @@ class SHEFrame(object):
             return None
 
         # Get the co-ordinates from the detector's method
-        fov_coords = detector.get_fov_coords(x=x, y=y,)
-        return fov_coords
-
+        # @FIXME: no SHEImage.get_fov_coords() method...
+        #fov_coords = detector.get_fov_coords(x=x, y=y,)
+        #return fov_coords
+        # @TODO: Return detector and x,y in namedtuple
+        # return x,y
+        # @TODO: orientation
+        
+        x_fov,y_fov=tc.get_fov_coords_from_detector(
+            x,y,x_i,y_i,'VIS')
+        if return_det_coords_too:
+            CoordTuple=namedtuple("CoordTuple","x_fov y_fov detno_x detno_y x_det y_det")
+            return CoordTuple(*[x_fov,y_fov,x_i,y_i,x,y])
+        else:
+            return (x_fov,y_fov)
+    
+    
     @classmethod
     def read(cls,
              frame_product_filename=None,
