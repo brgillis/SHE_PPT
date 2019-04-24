@@ -19,6 +19,8 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+__updated__ = "2019-02-27"
+
 logger_name = "SHE_PPT"
 
 # Header values for fits images
@@ -29,10 +31,16 @@ model_hash_label = "MHASH"
 model_seed_label = "MSEED"
 noise_seed_label = "NSEED"
 extname_label = "EXTNAME"
+ccdid_label = "CCDID"
 dither_dx_label = "DITHERDX"
 dither_dy_label = "DITHERDY"
 obs_time_label = "DATE-OBS"
 field_id_label = "FIELDID"
+psf_state_identity_label = "OPTID"
+
+# Special values for tables
+psf_zm_identity = "zfit"
+psf_tm_identity = "tmfit"
 
 # Tags for science image, noisemap, and mask
 sci_tag = "SCI"
@@ -49,6 +57,8 @@ psf_im_tag = "PSF"
 bulge_psf_tag = "BPSF"
 disk_psf_tag = "DPSF"
 psf_cat_tag = "PSFC"
+psf_zm_state_tag = "PSFZS"
+psf_tm_state_tag = "PSFTS"
 
 # Miscellaneous
 segmap_unassigned_value = 0

@@ -18,14 +18,15 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-import os
+__updated__ = "2019-02-27"
 
-from astropy.table import Table
+import os
 import pytest
 
 from ElementsServices.DataSync import downloadTestData, localTestFile
 from SHE_PPT import magic_values as mv
 from SHE_PPT import mdb
+from astropy.table import Table
 import numpy as np
 
 
@@ -39,9 +40,9 @@ class TestMDB:
     def setup_class(cls):
 
         cls.test_key = "SpaceSegment.Instrument.VIS.VISDetectorPixelLongDimensionFormat"
-        
+
         downloadTestData("testdata/sync.conf", "testdata/test_mdb.txt")
-        cls.filename = localTestFile(mv.test_datadir,"SHE_PPT/sample_mdb.xml")
+        cls.filename = localTestFile(mv.test_datadir, "SHE_PPT/sample_mdb.xml")
 
         return
 

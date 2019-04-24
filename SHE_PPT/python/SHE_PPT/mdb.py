@@ -19,6 +19,8 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+__updated__ = "2019-02-27"
+
 from MdbUtils.Mdb import Mdb as _Mdb
 
 from SHE_PPT.file_io import find_file

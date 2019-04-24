@@ -18,9 +18,13 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-import unittest
+__updated__ = "2019-02-27"
+
 from numpy.testing import assert_almost_equal
+import unittest
+
 from SHE_PPT.gain import get_ADU_from_count, get_count_from_ADU
+
 
 class GainTestCase(unittest.TestCase):
 
@@ -36,4 +40,3 @@ class GainTestCase(unittest.TestCase):
     def test_get_count_from_ADU(self):
         check_count = get_count_from_ADU(self.ADU, self.gain)
         assert_almost_equal(check_count, self.count)
-

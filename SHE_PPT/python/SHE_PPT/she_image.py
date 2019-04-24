@@ -1,3 +1,9 @@
+"""
+File: she_image.py
+
+Created on: Aug 17, 2017
+"""
+
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -12,24 +18,24 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
-"""
-File: she_image.py
 
-Created on: Aug 17, 2017
-"""
+__updated__ = "2019-04-22"
+
 # Avoid non-trivial "from" imports (as explicit is better than implicit)
 
 from copy import deepcopy
 import os
+import weakref
 
-import astropy.io.fits
-import astropy.wcs
 import galsim
 
-from SHE_PPT.magic_values import segmap_unassigned_value
+from SHE_PPT import magic_values as mv
+from SHE_PPT import mdb
 from SHE_PPT.mask import (as_bool, is_masked_bad,
                           is_masked_suspect_or_bad, masked_off_image)
-from SHE_PPT.utility import load_wcs
+from SHE_PPT.utility import load_wcs, run_only_once
+import astropy.io.fits
+import astropy.wcs
 import numpy as np
 
 from . import logging
@@ -44,19 +50,46 @@ logger = logging.getLogger(__name__)
 
 # We need new-style classes for properties, hence inherit from object
 class SHEImage(object):
-    """Structure to hold an image together with a mask, a noisemap, and a header (for metadata).
+    """ Structure to hold an image together with a mask, a noisemap, and a header (for metadata).
 
-    The structure can be written into a FITS file, and stamps can be extracted.
-    The properties .data, .mask, .noisemap and .header are meant to be accessed directly:
-      - .data is a numpy array
-      - .mask is a numpy array
-      - .noisemap is a numpy array
-      - .segmentation_map is a numpy array
-      - .header is an astropy.io.fits.Header object
-          (for an intro to those, see http://docs.astropy.org/en/stable/io/fits/#working-with-fits-headers )
+        The structure can be written into a FITS file, and stamps can be extracted.
+        The properties .data, .mask, .noisemap and .header are meant to be accessed directly:
+          - .data is a numpy array
+          - .mask is a numpy array
+          - .noisemap is a numpy array
+          - .segmentation_map is a numpy array
+          - .header is an astropy.io.fits.Header object
+              (for an intro to those, see http://docs.astropy.org/en/stable/io/fits/#working-with-fits-headers )
 
-    Note that the shape (and size) of data, mask and noisemap cannot be modified once the object exists, as such a
-    change would probably not be wanted. If you really want to change the size of a SHEImage, make a new object.
+        Note that the shape (and size) of data, mask and noisemap cannot be modified once the object exists, as such a
+        change would probably not be wanted. If you really want to change the size of a SHEImage, make a new object.
+
+        Parameters
+        ----------
+        data : np.ndarray<float>
+            A 2D array, with indices [x,y], consistent with DS9 and SExtractor orientation conventions
+        mask : np.ndarray<np.int32>
+            A 2D array of the same shape as data
+        noisemap : np.ndarray<float>
+            A 2D array of the same shape as data
+        segmentation_map : np.ndarray<np.int32>
+            A 2D array of the same shape as data
+        background_map : np.ndarray<float>
+            A 2D array of the same shape as data
+        weight_map : np.ndarray<float>
+            A 2D array of the same shape as data
+        header : astropy.io.fits.Header
+            Leaving None creates an empty header.
+        offset : tuple<float,float>
+            x, y offsets
+        wcs : astropy.wcs.WCS object
+            An astropy WCS for this image
+        parent_frame_stack : SHE_PPT.she_frame_stack.SHEFrameStack
+            Reference to the parent SHEFrameStack, if it exists; None otherwise
+        parent_frame : SHE_PPT.parent_frame.SHEFrameStack
+            Reference to the parent SHEFrame, if it exists; None otherwise
+        parent_image_stack : SHE_PPT.parent_image_stack.SHEImageStack
+            Reference to the parent SHEImageStack, if it exists; None otherwise
     """
 
     def __init__(self,
@@ -68,19 +101,50 @@ class SHEImage(object):
                  weight_map=None,
                  header=None,
                  offset=None,
-                 wcs=None,):
-        """Initiator
+                 wcs=None,
+                 parent_frame_stack=None,
+                 parent_frame=None,
+                 parent_image_stack=None,
+                 parent_image=None):
+        """ Initialiser for a SHEImage object
 
-        Args:
-            data: a 2D numpy float array, with indices [x,y], consistent with DS9 and SExtractor orientation conventions.
-            mask: an int32 array of the same shape as data. Leaving None creates an empty mask.
-            noisemap: a float array of the same shape as data. Leaving None creates a noisemap of ones.
-            segmentation_map: an int32 array of the same shape as data. Leaving None creates an empty map
-            header: an astropy.io.fits.Header object. Leaving None creates an empty header.
-            offset: a 1D numpy float array with two values, corresponding to the x and y offsets
-            wcs: An astropy.wcs.WCS object, containing WCS information for this image
+            Parameters
+            ----------
+            data : np.ndarray<float>
+                A 2D array, with indices [x,y], consistent with DS9 and SExtractor orientation conventions
+            mask : np.ndarray<np.int32>
+                A 2D array of the same shape as data
+            noisemap : np.ndarray<float>
+                A 2D array of the same shape as data
+            segmentation_map : np.ndarray<np.int32>
+                A 2D array of the same shape as data
+            background_map : np.ndarray<float>
+                A 2D array of the same shape as data
+            weight_map : np.ndarray<float>
+                A 2D array of the same shape as data
+            header : astropy.io.fits.Header
+                Leaving None creates an empty header.
+            offset : tuple<float,float>
+                x, y offsets
+            wcs : astropy.wcs.WCS object
+                An astropy WCS for this image
+            parent_frame_stack : SHE_PPT.she_frame_stack.SHEFrameStack
+                Reference to the parent SHEFrameStack, if it exists; None otherwise
+            parent_frame : SHE_PPT.parent_frame.SHEFrameStack
+                Reference to the parent SHEFrame, if it exists; None otherwise
+            parent_image_stack : SHE_PPT.parent_image_stack.SHEImageStack
+                Reference to the parent SHEImageStack, if it exists; None otherwise
+            parent_image_stack : SHE_PPT.parent_image_stack.SHEImageStack
+                Reference to the parent SHEImage, if it exists; None otherwise
         """
 
+        # References to parent objects
+        self.parent_frame_stack = parent_frame_stack
+        self.parent_frame = parent_frame
+        self.parent_image_stack = parent_image_stack
+        self.parent_image = parent_image
+
+        # Public values
         self.data = data  # Note the tests done in the setter method
         self.mask = mask
         self.noisemap = noisemap
@@ -91,12 +155,93 @@ class SHEImage(object):
         self.offset = offset
         self.wcs = wcs
 
+        # If no WCS is provided, try to set one up from the header
+        if self.wcs is None and self.header is not None:
+            self.wcs = astropy.wcs.WCS(self.header)
+
+        # Cached values
         self.galsim_wcs = None
 
-        logger.debug("Created {}".format(str(self)))
+        if self.header is None or mv.ccdid_label not in self.header:
+            # If no header, assume we're using detector 1-1
+            self.det_ix = 1
+            self.det_iy = 1
+        else:
+            self.det_iy = self.header[mv.ccdid_label][0]
+            self.det_ix = self.header[mv.ccdid_label][2]
+
+        # logger.debug("Created {}".format(str(self)))
 
     # We define properties of the SHEImage object, following
     # https://euclid.roe.ac.uk/projects/codeen-users/wiki/User_Cod_Std-pythonstandard-v1-0#PNAMA-020-m-Developer-SHOULD-use-properties-to-protect-the-service-from-the-implementation
+
+    @property
+    def parent_frame_stack(self):
+        return self._parent_frame_stack()
+
+    @parent_frame_stack.setter
+    def parent_frame_stack(self, parent_frame_stack):
+
+        if parent_frame_stack is None:
+            self._parent_frame_stack = lambda: None
+        else:
+            # Use a weak reference so we don't keep the parent alive indefinitely
+            self._parent_frame_stack = weakref.ref(parent_frame_stack)
+
+    @parent_frame_stack.deleter
+    def parent_frame_stack(self):
+        self._parent_frame_stack = lambda: None
+
+    @property
+    def parent_frame(self):
+        return self._parent_frame()
+
+    @parent_frame.setter
+    def parent_frame(self, parent_frame):
+
+        if parent_frame is None:
+            self._parent_frame = lambda: None
+        else:
+            # Use a weak reference so we don't keep the parent alive indefinitely
+            self._parent_frame = weakref.ref(parent_frame)
+
+    @parent_frame.deleter
+    def parent_frame(self):
+        self._parent_frame = lambda: None
+
+    @property
+    def parent_image_stack(self):
+        return self._parent_image_stack()
+
+    @parent_image_stack.setter
+    def parent_image_stack(self, parent_image_stack):
+
+        if parent_image_stack is None:
+            self._parent_image_stack = lambda: None
+        else:
+            # Use a weak reference so we don't keep the parent alive indefinitely
+            self._parent_image_stack = weakref.ref(parent_image_stack)
+
+    @parent_image_stack.deleter
+    def parent_image_stack(self):
+        self._parent_image_stack = lambda: None
+
+    @property
+    def parent_image(self):
+        return self._parent_image()
+
+    @parent_image.setter
+    def parent_image(self, parent_image):
+
+        if parent_image is None:
+            self._parent_image = lambda: None
+        else:
+            # Use a weak reference so we don't keep the parent alive indefinitely
+            self._parent_image = weakref.ref(parent_image)
+
+    @parent_image.deleter
+    def parent_image(self):
+        self._parent_image = lambda: None
 
     @property
     def data(self):
@@ -458,7 +603,7 @@ class SHEImage(object):
         other_mask = (self.segmentation_map != seg_id)
         if not mask_unassigned:
             other_mask = np.logical_and(
-                other_mask, (self.segmentation_map != segmap_unassigned_value))
+                other_mask, (self.segmentation_map != mv.segmap_unassigned_value))
 
         # Combine and return the masks
         object_mask = np.logical_or(pixel_mask, other_mask)
@@ -917,7 +1062,7 @@ class SHEImage(object):
                 segmentation_map_stamp = None
             else:
                 segmentation_map_stamp = np.ones(
-                    (width, height), dtype=self.segmentation_map.dtype) * segmap_unassigned_value
+                    (width, height), dtype=self.segmentation_map.dtype) * mv.segmap_unassigned_value
 
             if self.background_map is None:
                 background_map_stamp = None
@@ -1002,7 +1147,26 @@ class SHEImage(object):
                 logger.debug("Not overwriting existing noisemap with default.")
                 return
 
-        self.noisemap = np.zeros_like(self.data, dtype=float)
+        # Try to calculate the noisemap
+
+        # Get the gain and read_noise from the MDB if possible
+        try:
+            gain = mdb.get_mdb_value(mdb.mdb_keys.vis_gain)
+            read_noise = mdb.get_mdb_value(mdb.mdb_keys.vis_readout_noise)
+        except RuntimeError as e:
+            if not "mdb module must be initialised with MDB xml object before use." in str(e):
+                raise
+            warn_mdb_not_loaded()
+            # Use default values for gain and read_noise
+            gain = 3.1
+            read_noise = 4.5
+
+        # Start by setting to the read noise level
+        self.noisemap = read_noise / gain * np.ones_like(self.data, dtype=float)
+
+        # Check if we have a background map
+        if self.background_map is not None:
+            self.noisemap += np.sqrt(self.background_map / gain)
 
         return
 
@@ -1018,7 +1182,7 @@ class SHEImage(object):
                 logger.debug("Not overwriting existing segmentation_map with default.")
                 return
 
-        self.segmentation_map = segmap_unassigned_value * np.ones_like(self.data, dtype=np.int32)
+        self.segmentation_map = mv.segmap_unassigned_value * np.ones_like(self.data, dtype=np.int32)
 
         return
 
@@ -1122,6 +1286,11 @@ class SHEImage(object):
 
         ra, dec = self.wcs.all_pix2world(x, y, origin)
 
+        # If input was scalars, output scalars
+        if (not hasattr(x, '__len__')) and (not hasattr(y, '__len__')):
+            ra = float(ra)
+            dec = float(dec)
+
         return ra, dec
 
     def world2pix(self, ra, dec, origin=0):
@@ -1161,6 +1330,11 @@ class SHEImage(object):
         if self.offset is not None:
             x = x - self.offset[0]
             y = y - self.offset[1]
+
+        # If input was scalars, output scalars
+        if (not hasattr(ra, '__len__')) and (not hasattr(dec, '__len__')):
+            x = float(x)
+            y = float(y)
 
         return x, y
 
@@ -1412,13 +1586,14 @@ class SHEImage(object):
 
         return world2pix_rotation
 
-    def get_pix2world_decomposition(self, x, y):
-        """Gets the local WCS decomposition between image (x/y) and world (ra/dec) coordinates at the specified location.
+    def get_pix2world_decomposition(self, x=None, y=None):
+        """Gets the local WCS decomposition between image (x/y) and world (ra/dec) coordinates at the specified
+        location.
 
         Parameters
         ----------
         x : float
-            x pixel coordinate
+            x pixel coordinate. If None, will use centre
         y : float
             idem for y
 
@@ -1460,7 +1635,7 @@ class SHEImage(object):
         # We need to use the inverse of the local wcs to get the pix2world decomposition
         return local_wcs.getDecomposition()
 
-    def get_world2pix_decomposition(self, ra, dec):
+    def get_world2pix_decomposition(self, ra=None, dec=None):
         """Gets the local WCS decomposition between world (ra/dec) and pixel coordinates at the specified location.
 
         Parameters
@@ -1469,6 +1644,7 @@ class SHEImage(object):
             Right Ascension (RA) world coordinate in degrees
         dec : float
             Declination (Dec) world coordinate in degrees
+        If both ra and dec are None, will use the centre of the image
 
         Raises
         ------
@@ -1633,3 +1809,8 @@ class SHEImage(object):
         rotation_angle = xy_angle - radec_angle
 
         return rotation_angle
+
+
+@run_only_once
+def warn_mdb_not_loaded():
+    logger.warn("MDB is not loaded, so default values will be assumed in calculating a noisemap.")

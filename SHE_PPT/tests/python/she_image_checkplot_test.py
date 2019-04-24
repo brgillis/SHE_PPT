@@ -1,3 +1,10 @@
+"""
+File: tests/python/she_image_checkplot_test.py
+
+Created on: 10/19/17
+Author: Malte Tewes
+"""
+
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -16,12 +23,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-"""
-File: tests/python/she_image_checkplot_test.py
-
-Created on: 10/19/17
-Author: user
-"""
+__updated__ = "2019-02-27"
 
 
 import logging

@@ -19,6 +19,8 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+__updated__ = "2019-02-27"
+
 from collections import OrderedDict
 
 from SHE_PPT.table_utility import is_in_format

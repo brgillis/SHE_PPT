@@ -1,8 +1,24 @@
-from SHE_PPT import file_io
-from SHE_PPT.she_frame_stack import SHEFrameStack
+# Copyright (C) 2012-2020 Euclid Science Ground Segment
+#
+# This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+# Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+# any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
+
 import os.path
 import pdb
 from timeit import default_timer as timer
+
+from SHE_PPT import file_io
+from SHE_PPT.she_frame_stack import SHEFrameStack
+
 
 workdir = "/home/brg/Data/sc3-workdir"
 
@@ -16,16 +32,16 @@ detections_listfile_name = "DetectionsCatalogs.json"
 
 start = timer()
 
-frame_stack = SHEFrameStack.read( exposure_listfile_filename = exposure_listfile_name,
-                                  seg_listfile_filename = exposure_mosaics_listfile_name,
-                                  stacked_image_product_filename = stacked_frame_filename,
-                                  stacked_seg_filename = stacked_frame_mosaic_filename,
-                                  detections_listfile_filename = detections_listfile_name,
-                                  workdir = workdir)
+frame_stack = SHEFrameStack.read(exposure_listfile_filename=exposure_listfile_name,
+                                 seg_listfile_filename=exposure_mosaics_listfile_name,
+                                 stacked_image_product_filename=stacked_frame_filename,
+                                 stacked_seg_filename=stacked_frame_mosaic_filename,
+                                 detections_listfile_filename=detections_listfile_name,
+                                 workdir=workdir)
 
 stop = timer()
 
-print("Time elapsed for reading: " + str((stop-start)))
+print("Time elapsed for reading: " + str((stop - start)))
 
 exit()
 
@@ -42,7 +58,7 @@ while num_output < 10:
     ra = row['RightAscension']
     dec = row['Declination']
 
-    image_stack = frame_stack.extract_stamp_stack(ra, dec, 300, none_if_out_of_bounds = True)
+    image_stack = frame_stack.extract_stamp_stack(ra, dec, 300, none_if_out_of_bounds=True)
 
     if image_stack is None:
         continue
@@ -50,7 +66,7 @@ while num_output < 10:
     image_stack.stacked_image.header['CEN_XW'] = ra
     image_stack.stacked_image.header['CEN_YW'] = dec
 
-    image_stack.stacked_image.write_to_fits('test_stack_' + str(num_output) + '.fits', clobber = True, data_only = False)
+    image_stack.stacked_image.write_to_fits('test_stack_' + str(num_output) + '.fits', clobber=True, data_only=False)
     print("Printed image " + str(num_output) + ".")
 
     for x in range(4):
@@ -61,8 +77,8 @@ while num_output < 10:
             exposure.header['CEN_XW'] = ra
             exposure.header['CEN_YW'] = dec
 
-            exposure.write_to_fits('test_stack_' + str(num_output) + '_' + str(x) + '.fits', clobber = True, data_only = False)
+            exposure.write_to_fits('test_stack_' + str(num_output) + '_' +
+                                   str(x) + '.fits', clobber=True, data_only=False)
             print("Printed image " + str(num_output) + '_' + str(x) + ".")
 
     num_output += 1
-

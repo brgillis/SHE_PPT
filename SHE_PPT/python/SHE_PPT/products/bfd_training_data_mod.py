@@ -22,20 +22,23 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+__updated__ = "2019-02-27"
+
 
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import EuclidDmBindings.she.she_stub as she_dpd # FIXME
 
-import pickle
 import os
-from SHE_PPT.file_io import find_aux_file,read_xml_product
-import EuclidDmBindings.bas.cot_stub as cot_dict
-import EuclidDmBindings.bas.cat_stub as cat_dict
-import EuclidDmBindings.bas.imp.stc_stub as stc_dict
-import EuclidDmBindings.bas.dtd_stub as dtd_dict
-from EuclidDmBindings.dpd.she.shearbfdtraining_stub import dpdShearBFDTraining
+import pickle
 
+import EuclidDmBindings.bas.cat_stub as cat_dict
+import EuclidDmBindings.bas.cot_stub as cot_dict
+import EuclidDmBindings.bas.dtd_stub as dtd_dict
+import EuclidDmBindings.bas.imp.stc_stub as stc_dict
+from EuclidDmBindings.dpd.she.shearbfdtraining_stub import dpdShearBFDTraining
+from SHE_PPT.file_io import find_aux_file, read_xml_product
 from sphinx.websupport import storage
+
 
 def init():
     """
@@ -87,8 +90,7 @@ class DpdSheBFDTrainingDataProduct(dpdShearBFDTraining):  # @FIXME
             self.Data = prod.Data
             #self.QualityFlags = prod.QualityFlags
             #self.Parameters = prod.Parameters
-        
-        
+
     def validateBinding(self):
         return False
 
@@ -101,7 +103,7 @@ class SheBFDTrainingDataProduct:  # @FIXME
             self.format = None
             self.version = None
             self.ShearBFDTrainingFile = None
-            
+
 
 class DataContainer:  # @FIXME
 
@@ -124,11 +126,10 @@ def create_dpd_she_bfd_training_data(filename=None):
     if os.path.exists(testXmlFile):
         print("Reading %s" % testXmlFile)
         she_bfd_training_data = read_xml_product(testXmlFile, allow_pickled=False)
-        print("PID: ",she_bfd_training_data.Header.ProductId)
-        print("CATID: ",she_bfd_training_data.Data.IdCatalog)
-        print("FN: ",she_bfd_training_data.Data.ShearBFDTrainingFile.DataContainer.FileName)
-       
-        
+        print("PID: ", she_bfd_training_data.Header.ProductId)
+        print("CATID: ", she_bfd_training_data.Data.IdCatalog)
+        print("FN: ", she_bfd_training_data.Data.ShearBFDTrainingFile.DataContainer.FileName)
+
     else:
 
         # dpd_she_bfd_training_data.Header =
@@ -139,10 +140,11 @@ def create_dpd_she_bfd_training_data(filename=None):
         dpd_she_bfd_training_data.Data = create_she_bfd_training_data(filename)
 
     #dpd_she_bfd_training_data.QualityFlags = create_she_bfd_training_qf()
-    
+
     #dpd_she_bfd_training_data.Parameters = create_she_bfd_training_param()
 
     return dpd_she_bfd_training_data
+
 
 # Add a useful alias
 create_bfd_training_data_product = create_dpd_she_bfd_training_data
@@ -165,23 +167,24 @@ def create_she_bfd_training_data(filename=None):
     she_bfd_training_data.DataContainer = DataContainer()
     she_bfd_training_data.DataContainer.FileName = filename
     she_bfd_training_data.DataContainer.filestatus = "PROPOSED"
-    
-    # @TODO:  Need to add in the catalog 
-    
+
+    # @TODO:  Need to add in the catalog
+
     she_bfd_training_data.IdCatalog = "1"
     she_bfd_training_data.CatalogCoverage = create_catalog_coverage()
     she_bfd_training_data.CatalogStorage = create_catalog_storage()
     she_bfd_training_data.CatalogDescription = create_catalog_description()
     return she_bfd_training_data
 
+
 def create_catalog_coverage():
     """
     bas.cat, bas.cot,bas.imp.stc
     Use CatalogCoverage includes spatial footprint bas.cot.SpatialFootprint and 
     SpectralFootprint (optional)
-    
+
     """
-    
+
     cover = cat_dict.catalogCoverage()
     cover.SpatialCoverage = cot_dict.spatialFootprint()
     cover.SpatialCoverage.Polygon = stc_dict.polygonType()
@@ -190,34 +193,36 @@ def create_catalog_coverage():
     #cover.SpatialCoverage.Polygon.Vertex.Position = dtd_dict.double2Type()
     #cover.SpatialCoverage.Polygon.Vertex.Position.C1 = "0."
     #cover.SpatialCoverage.Polygon.Vertex.Position.C2 = "0."
-    
+
     return cover
+
 
 def create_catalog_storage():
     """
     Uses bas.cat 
     Sets up catalogue storage binding.
-    
+
     """
     storage = cat_dict.catalogStorage()
     storage.CatalogFileStorage = cat_dict.catalogFileStorage()
     #storage.CatalogFileStorage.Id = "CFSId"
-    #storage.CatalogFileStorage.FileFormat = "ASCII" 
+    #storage.CatalogFileStorage.FileFormat = "ASCII"
     #storage.CatalogFileStorage.FileNumber = "1"
     #storage.CatalogFileStorage.StorageSpace = cat_dict.catalogPartitionStorage()
     #storage.CatalogFileStorage.StorageSpace.Id = "CFS_SSId"
     #storage.CatalogFileStorage.StorageSpace.DataContainer = DataContainer()
     #storage.CatalogFileStorage.StorageSpace.DataContainer.FileName = "tmp.ascii"
     #storage.CatalogFileStorage.StorageSpace.DataContainer.filestatus = "PROPOSED"
-    
+
     return storage
+
 
 def create_catalog_description():
     """
-    
+
     Sets up catalog description initialiser
     """
-    
+
     descrip = cat_dict.catalogDescription()
     descrip.CatalogDataProduct = "Prod"
     descrip.PathToCatalogDefinition = "Path"

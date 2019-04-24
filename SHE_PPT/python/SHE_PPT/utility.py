@@ -19,6 +19,8 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+__updated__ = "2019-04-22"
+
 import codecs
 import hashlib
 
@@ -94,6 +96,28 @@ def hash_any(obj, format='hex', max_length=None):
     return full_hash
 
 
+def get_release_from_version(version):
+    """Gets a 'release' format string ('XX.XX' where X is 0-9) from a 'version' format string ('X.X(.Y)', where each X is
+       0-99, and Y is any integer).
+    """
+
+    period_split_version = version.split('.')
+
+    # Cast parts of the version string to int to check validity
+    major_version = int(period_split_version[0])
+    minor_version = int(period_split_version[1])
+
+    if major_version < 0 or major_version > 99 or minor_version < 0 or minor_version > 99:
+        raise ValueError("version (" + version + ") is in incorrect format. Format must be 'X.X.X', where each X is " +
+                         "0-99.")
+
+    # Ensure the string is two characters long for both the major and minor version
+    major_version_string = str(major_version) if major_version > 9 else "0" + str(major_version)
+    minor_version_string = str(minor_version) if minor_version > 9 else "0" + str(minor_version)
+
+    return major_version_string + "." + minor_version_string
+
+
 def find_extension(hdulist, extname):
     """Find the index of the extension of a fits HDUList with the correct EXTNAME value.
     """
@@ -154,7 +178,7 @@ def load_wcs(header, apply_sc3_fix=False):
             # uses TPV (Scamp like WCS) instead of TAN projection,
             # which would break the subsequent line
             # source: LensMC and https://euclid.roe.ac.uk/issues/7409
-            if 'TAN' in header['CTYPE1'] or header['CTYPE2']:
+            if 'TAN' in header['CTYPE1'] or 'TAN' in header['CTYPE2']:
                 header['CTYPE1'] = 'RA---TPV'
                 header['CTYPE2'] = 'DEC--TPV'
             if 'PC1_1' in header:

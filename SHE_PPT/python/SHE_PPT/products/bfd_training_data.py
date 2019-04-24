@@ -22,11 +22,15 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+__updated__ = "2019-02-27"
 
-import HeaderProvider.GenericHeaderProvider as HeaderProvider 
-from SHE_PPT.file_io import read_xml_product, find_aux_file
-from EuclidDmBindings.dpd.she.shearbfdtraining_stub import dpdShearBFDTraining
+
 import pickle
+
+from EuclidDmBindings.dpd.she.shearbfdtraining_stub import dpdShearBFDTraining
+import HeaderProvider.GenericHeaderProvider as HeaderProvider
+from SHE_PPT.file_io import read_xml_product, find_aux_file
+
 
 sample_file_name = "SHE_PPT/sample_bfd_training.xml"
 
@@ -52,7 +56,7 @@ def init():
 
 
 def __set_filename(self, filename):
-    # @TODO: Update 
+    # @TODO: Update
     self.Data.ShearBFDTrainingFile.DataContainer.FileName = filename
 
 
@@ -68,7 +72,7 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-#class DpdSheBFDTrainingDataProduct:  # @FIXME
+# class DpdSheBFDTrainingDataProduct:  # @FIXME
 
 #    def __init__(self):
 #        self.Header = None
@@ -78,7 +82,7 @@ def __get_all_filenames(self):
 #        return False
 
 
-#class SheBFDTrainingDataProduct:  # @FIXME
+# class SheBFDTrainingDataProduct:  # @FIXME
 
 #    def __init__(self):
 #        self.format = None
@@ -86,13 +90,11 @@ def __get_all_filenames(self):
 #        self.DataContainer = None
 
 
-#class DataContainer:  # @FIXME
+# class DataContainer:  # @FIXME
 
 #    def __init__(self):
 #        self.FileName = None
 #        self.filestatus = None
-
-
 
 
 def create_dpd_she_bfd_training_data(filename=None):
@@ -110,9 +112,10 @@ def create_dpd_she_bfd_training_data(filename=None):
     dpd_she_bfd_training_data.Header = HeaderProvider.createGenericHeader("SHE")
 
     if filename:
-        __set_filename(dpd_she_bfd_training_data,filename)
-    
+        __set_filename(dpd_she_bfd_training_data, filename)
+
     return dpd_she_bfd_training_data
+
 
 # Add a useful alias
 create_bfd_training_data_product = create_dpd_she_bfd_training_data

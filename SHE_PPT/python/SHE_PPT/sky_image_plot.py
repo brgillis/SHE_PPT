@@ -1,3 +1,13 @@
+"""
+File: sky_image_plot.py
+Created on: Sep 3, 2017
+Author: Malte Tewes
+
+This file is a standalone Euclid-agnostic module to visualize and plot sky images with matplotlib.
+To visualize Euclid objects, use the wrappers in she_image_checkplot.py
+
+"""
+
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -13,17 +23,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-"""
-File: sky_image_plot.py
-Created on: Sep 3, 2017
-Author: Malte Tewes
-
-This file is a standalone Euclid-agnostic module to visualize and plot sky images with matplotlib.
-To visualize Euclid objects, use the wrappers in she_image_checkplot.py
-
-"""
-# from __future__ import division, print_function
-# from future_builtins import *
+__updated__ = "2019-02-27"
 
 import os
 

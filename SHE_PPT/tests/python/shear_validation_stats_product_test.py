@@ -18,11 +18,14 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from SHE_PPT.products import shear_validation_stats as prod
-from SHE_PPT.file_io import (read_xml_product, write_xml_product,
-                             read_pickled_product, write_pickled_product)
+__updated__ = "2019-02-27"
 
 import pytest
+
+from SHE_PPT.file_io import (read_xml_product, write_xml_product,
+                             read_pickled_product, write_pickled_product)
+from SHE_PPT.products import shear_validation_stats as prod
+
 
 class TestShearValidationStatsProduct(object):
     """A collection of tests for the shear estimates data product.
@@ -59,8 +62,7 @@ class TestShearValidationStatsProduct(object):
         assert loaded_product.get_filename() == subfilename
 
         pass
-    
-    
+
     @pytest.mark.skip(reason="Pickled files produced from xml generated products cannot be read - why?")
     def test_pickle_writing_and_reading(self, tmpdir):
 

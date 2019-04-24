@@ -1,12 +1,11 @@
-""" @file aocs_time_series_product.py
+""" @file object_id_list.py
 
-    Created 10 Oct 2017
+    Created 14 Mar 2019
 
-    Functions to create and output an aocs_time_series data product.
-    This describes the series of pointing errors over the course of an observation
+    Functions to create and output an object_id_list data product, which contains a list of the object IDs that
+    we want to process in a given thread.
 
-    Origin: OU-VIS (presumably - might need to put in a ticket to request it from them.
-    Not actually used at present though, so we don't need it for SC4)
+    Origin: OU-SHE
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -23,24 +22,23 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-03-14"
 
 
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import EuclidDmBindings.she.she_stub as she_dpd # FIXME
 
-import pickle
-
 
 def init():
     """
-        Adds some extra functionality to the DpdSheAstrometry product
+        Adds some extra functionality to the DpdSheObjectIdList product
     """
 
-    # binding_class = she_dpd.DpdSheAocsTimeSeriesProduct # @FIXME
-    binding_class = DpdSheAocsTimeSeriesProduct
+    # binding_class = she_dpd.DpdSheObjectIdList # @FIXME
+    binding_class = DpdSheObjectIdList
 
     binding_class.get_all_filenames = __get_all_filenames
+    binding_class.get_id_list = __get_id_list
 
     binding_class.has_files = False
 
@@ -54,7 +52,12 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-class DpdSheAocsTimeSeriesProduct:  # @FIXME
+def __get_id_list(self):
+
+    return self.Data.id_list
+
+
+class DpdSheObjectIdList:  # @FIXME
 
     def __init__(self):
         self.Header = None
@@ -64,39 +67,46 @@ class DpdSheAocsTimeSeriesProduct:  # @FIXME
         return False
 
 
-class SheAocsTimeSeriesProduct:  # @FIXME
+class SheObjectIdList:  # @FIXME
 
     def __init__(self):
+
+        self.id_list = None
+
         pass
 
 
-def create_dpd_she_aocs_time_series():
+def create_dpd_she_object_id_list(id_list=None):
     """
         @TODO fill in docstring
     """
 
-    # dpd_she_aocs_time_series = she_dpd.DpdSheAocsTimeSeriesProduct() # @FIXME
-    dpd_she_aocs_time_series = DpdSheAocsTimeSeriesProduct()
+    # dpd_she_object_id_list = she_dpd.DpdSheObjectIdList() # @FIXME
+    dpd_she_object_id_list = DpdSheObjectIdList()
 
-    # dpd_she_aocs_time_series.Header =
-    # HeaderProvider.createGenericHeader("SHE") # FIXME
-    dpd_she_aocs_time_series.Header = "SHE"
+    # dpd_she_object_id_list.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
+    dpd_she_object_id_list.Header = "SHE"
 
-    dpd_she_aocs_time_series.Data = create_she_aocs_time_series()
+    dpd_she_object_id_list.Data = create_she_object_id_list(id_list)
 
-    return dpd_she_aocs_time_series
+    return dpd_she_object_id_list
 
 
 # Add a useful alias
-create_aocs_time_series_product = create_dpd_she_aocs_time_series
+create_object_id_list_product = create_dpd_she_object_id_list
 
 
-def create_she_aocs_time_series():
+def create_she_object_id_list(id_list=None):
     """
         @TODO fill in docstring
     """
 
-    # she_aocs_time_series = she_dpd.SheAocsTimeSeriesProduct() # @FIXME
-    she_aocs_time_series = SheAocsTimeSeriesProduct()
+    # she_object_id_list = she_dpd.SheObjectIdList() # @FIXME
+    she_object_id_list = SheObjectIdList()
 
-    return she_aocs_time_series
+    if id_list is None:
+        she_object_id_list.id_list = []
+    else:
+        she_object_id_list.id_list = id_list
+
+    return she_object_id_list

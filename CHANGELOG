@@ -25,6 +25,7 @@ Bug Fixes
 
 New Features
 ------------
+- Added table formats for PSF Zernike-mode state and PSF Telescope Model state
 
 New config features
 -------------------

@@ -20,6 +20,8 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+__updated__ = "2019-02-27"
+
 from SHE_PPT.gain import get_ADU_from_count, get_count_from_ADU
 
 

@@ -1,3 +1,9 @@
+"""
+File: tests/python/she_image_test.py
+
+Created on: 08/18/17
+"""
+
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -15,11 +21,8 @@
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 # """This script gives a small demo of the image object.
-"""
-File: tests/python/she_image_test.py
 
-Created on: 08/18/17
-"""
+__updated__ = "2019-03-01"
 
 from copy import deepcopy
 import logging
@@ -114,7 +117,7 @@ class Test_she_image():
         # Add a default noisemap and check its data type and values
         img.add_default_noisemap(force=True)
         assert img.noisemap.dtype == float
-        assert np.allclose(img.noisemap, np.zeros_like(img.data, dtype=img.noisemap.dtype))
+        assert np.allclose(img.noisemap, 4.5 / 3.1 * np.ones_like(img.data, dtype=img.noisemap.dtype))
         assert img.noisemap.shape == (self.w, self.h)
 
         # Check that non-forcibly adding a default noisemap doesn't affect the existing noisemap
@@ -124,7 +127,13 @@ class Test_she_image():
 
         # Check that forcibly adding a default noisemap does affect the existing noisemap
         img.add_default_noisemap(force=True)
-        assert np.isclose(img.noisemap[5, 5], 0.)
+        assert np.isclose(img.noisemap[5, 5], 4.5 / 3.1)
+
+        # Check that the noisemap is calculated correctly when a background map is present
+        img.background_map = 1000 * np.ones_like(img.data, dtype=float)
+        img.add_default_noisemap(force=True)
+        assert np.allclose(img.noisemap, (4.5 / 3.1) + np.sqrt(1000 / 3.1) *
+                           np.ones_like(img.data, dtype=img.noisemap.dtype))
 
         return
 

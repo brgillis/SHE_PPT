@@ -18,11 +18,11 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-import os
-from time import sleep
+__updated__ = "2019-02-27"
 
-from astropy.table import Table
+import os
 import pytest
+from time import sleep
 
 from SHE_PPT.file_io import (get_allowed_filename,
                              write_listfile,
@@ -35,6 +35,7 @@ from SHE_PPT.file_io import (get_allowed_filename,
                              find_aux_file,
                              update_xml_with_value,
                              read_xml_product)
+from astropy.table import Table
 import numpy as np
 
 

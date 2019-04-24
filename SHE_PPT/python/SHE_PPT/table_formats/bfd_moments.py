@@ -19,6 +19,8 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+__updated__ = "2019-02-27"
+
 from collections import OrderedDict
 
 from SHE_PPT import detector as dtc
@@ -193,6 +195,7 @@ class BFDMomentsTableFormat(object):
         for label in self.all:
             if not self.is_optional[label]:
                 self.all_required.append(label)
+
 
 # Define an instance of this object that can be imported
 bfd_moments_table_format = BFDMomentsTableFormat()

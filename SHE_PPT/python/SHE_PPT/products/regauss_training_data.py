@@ -22,15 +22,18 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+__updated__ = "2019-02-27"
 
-import HeaderProvider.GenericHeaderProvider as HeaderProvider 
-from EuclidDmBindings.dpd.she.raw.regausstraining_stub import dpdRegaussTraining
-from SHE_PPT.file_io import read_xml_product, find_aux_file
 
 import pickle
 
+from EuclidDmBindings.dpd.she.raw.regausstraining_stub import dpdRegaussTraining
+import HeaderProvider.GenericHeaderProvider as HeaderProvider
+from SHE_PPT.file_io import read_xml_product, find_aux_file
+
 
 sample_file_name = 'SHE_PPT/sample_regauss_training.xml'
+
 
 def init():
     """
@@ -103,14 +106,13 @@ def create_dpd_she_regauss_training_data(filename=None):
     dpd_she_regauss_training_data = read_xml_product(
         find_aux_file(sample_file_name), allow_pickled=False)
 
-    dpd_she_regauss_training_data.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
+    dpd_she_regauss_training_data.Header = HeaderProvider.createGenericHeader("SHE")  # FIXME
 
-
-    #dpd_she_regauss_training_data.Data = create_she_regauss_training_data(
+    # dpd_she_regauss_training_data.Data = create_she_regauss_training_data(
     #    filename)
-    
+
     if filename:
-        __set_filename(dpd_she_regauss_training_data,filename)
+        __set_filename(dpd_she_regauss_training_data, filename)
 
     return dpd_she_regauss_training_data
 

@@ -21,6 +21,8 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+__updated__ = "2019-02-27"
+
 
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import EuclidDmBindings.she.she_stub as she_dpd # FIXME
@@ -28,7 +30,7 @@
 def init():
     """
         ????
-        
+
     """
 
     # binding_class = she_dpd.DpdSheSimulationPlanProduct # @FIXME
@@ -101,6 +103,7 @@ def create_dpd_she_simulation_plan(filename=None):
     dpd_she_simulation_plan.Data = create_she_simulation_plan(filename)
 
     return dpd_she_simulation_plan
+
 
 # Add a useful alias
 create_simulation_plan_product = create_dpd_she_simulation_plan

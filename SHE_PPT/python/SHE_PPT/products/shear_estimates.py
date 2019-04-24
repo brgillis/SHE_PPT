@@ -21,6 +21,8 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+__updated__ = "2019-02-27"
+
 from EuclidDmBindings.dpd.she.raw.shearmeasurement_stub import dpdShearMeasurement
 import EuclidDmBindings.pro.she_stub as she_pro
 from EuclidDmBindings.sys.dss_stub import dataContainer
@@ -253,6 +255,7 @@ def create_dpd_shear_estimates(BFD_filename="",
     __set_REGAUSS_filename(dpd_shear_estimates, REGAUSS_filename)
 
     return dpd_shear_estimates
+
 
 # Add a useful alias
 create_shear_estimates_product = create_dpd_shear_estimates

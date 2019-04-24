@@ -1,3 +1,10 @@
+""" @file detector.py
+
+    Created 8 Nov 2017
+
+    Magic values and functions related to detector IDs in FITS headers.
+"""
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -12,12 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-""" @file detector.py
-
-    Created 8 Nov 2017
-
-    Magic values and functions related to detector IDs in FITS headers.
-"""
+__updated__ = "2019-02-27"
 
 import numpy as np
 

@@ -7,7 +7,7 @@
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines.
 """
 
-__updated__ = "2018-06-22"
+__updated__ = "2019-02-27"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -22,6 +22,8 @@ __updated__ = "2018-06-22"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
+
+__updated__ = "2019-02-27"
 
 # from EuclidDmBindings.dpd.she.raw.shearmeasurement_stub import dpdShearBiasMeasurements
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider
@@ -244,6 +246,7 @@ def create_dpd_shear_bias_measurements(BFD_g1_bias_measurements=None,
         dpd_shear_bias_stats, REGAUSS_g1_bias_measurements, REGAUSS_g2_bias_measurements)
 
     return dpd_shear_bias_stats
+
 
 # Add a useful alias
 create_shear_bias_measurements_product = create_dpd_shear_bias_measurements

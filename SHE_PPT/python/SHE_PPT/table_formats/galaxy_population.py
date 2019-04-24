@@ -19,6 +19,8 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+__updated__ = "2019-02-27"
+
 from collections import OrderedDict
 
 from SHE_PPT.table_utility import is_in_format
@@ -185,6 +187,7 @@ class GalaxyPopulationTableFormat(object):
         for label in self.all:
             if not self.is_optional[label]:
                 self.all_required.append(label)
+
 
 # Define an instance of this object that can be imported
 galaxy_population_table_format = GalaxyPopulationTableFormat()
