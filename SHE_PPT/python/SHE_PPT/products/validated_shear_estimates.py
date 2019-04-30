@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-04-24"
 
 from EuclidDmBindings.dpd.she.raw.validatedshearmeasurement_stub import dpdValidatedShearMeasurement
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
@@ -43,9 +43,12 @@ def init():
     binding_class.set_filename = __set_filename
     binding_class.get_filename = __get_filename
 
+    binding_class.set_data_filename = __set_filename
+    binding_class.get_data_filename = __get_filename
+
     binding_class.get_all_filenames = __get_all_filenames
 
-    binding_class.has_files = False
+    binding_class.has_files = True
 
     return
 
@@ -60,12 +63,12 @@ def __get_filename(self):
 
 def __get_all_filenames(self):
 
-    all_filenames = []
+    all_filenames = [self.get_filename()]
 
     return all_filenames
 
 
-def create_dpd_she_validated_shear_estimates(filename="default_filename.fits"):
+def create_dpd_she_validated_shear_estimates(filename="None"):
     """
         @TODO fill in docstring
     """
@@ -75,11 +78,9 @@ def create_dpd_she_validated_shear_estimates(filename="default_filename.fits"):
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)
-    dpd_she_validated_shear_estimates.Header = HeaderProvider.createGenericHeader(
-        "SHE")
+    dpd_she_validated_shear_estimates.Header = HeaderProvider.createGenericHeader("SHE")
 
-    if filename:
-        __set_filename(dpd_she_validated_shear_estimates, filename)
+    dpd_she_validated_shear_estimates.set_filename(filename)
 
     return dpd_she_validated_shear_estimates
 
