@@ -27,6 +27,7 @@ __updated__ = "2019-04-09"
 from copy import deepcopy
 import os.path
 import weakref
+from collections import namedtuple
 
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
@@ -359,7 +360,9 @@ class SHEFrame(object):
         x_fov,y_fov=tc.get_fov_coords_from_detector(
             x,y,x_i,y_i,'VIS')
         if return_det_coords_too:
-            CoordTuple=namedtuple("CoordTuple","x_fov y_fov detno_x detno_y x_det y_det")
+            # Do as astropy Table
+            CoordTuple=namedtuple("CoordTuple",
+                "x_fov y_fov detno_x detno_y x_det y_det")
             return CoordTuple(*[x_fov,y_fov,x_i,y_i,x,y])
         else:
             return (x_fov,y_fov)
