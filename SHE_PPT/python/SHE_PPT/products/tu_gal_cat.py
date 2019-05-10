@@ -1,0 +1,54 @@
+""" @file tu_gal_cat.py
+
+    Created 10 May 2019
+
+    Code to help with reading in and using a DpdGalaxyCatalogProduct
+
+    Origin: OU-SIM - Galaxy Catalog Product
+"""
+
+# Copyright (C) 2012-2020 Euclid Science Ground Segment
+#
+# This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+# Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+# any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA 02110-1301 USA
+
+__updated__ = "2019-05-10"
+
+from EuclidDmBindings.dpd.sim.raw.galaxycatalogproduct_stub import dpdGalaxyCatalogProduct
+
+
+def init():
+    """
+        Adds some extra functionality to the dpdGalaxyCatalogProduct class
+    """
+    binding_class = dpdGalaxyCatalogProduct
+
+    # Add the data file name methods
+
+    binding_class.get_data_filenames = __get_data_filenames
+    binding_class.get_filenames = __get_data_filenames
+    binding_class.get_all_filenames = __get_data_filenames
+
+    binding_class.has_files = True
+
+    return
+
+
+def __get_data_filenames(self):
+
+    data_filenames = []
+
+    for galaxy_catalog in self.Data.SetOfGalaxyCatalogs:
+        filename = galaxy_catalog.GalaxyCatalogFitsFile.DataContainer.FileName
+        data_filenames.append(filename)
+
+    return data_filenames
