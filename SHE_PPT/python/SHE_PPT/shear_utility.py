@@ -23,10 +23,13 @@ __updated__ = "2019-05-14"
 
 import math
 
+import galsim
 from galsim.wcs import BaseWCS as GalsimWCS
+
 from SHE_PPT.she_image import SHEImage
 from astropy.wcs import WCS as AstropyWCS
 import numpy as np
+from scipy.optimize import minimize
 
 
 class ShearEstimate(object):
