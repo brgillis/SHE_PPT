@@ -114,8 +114,6 @@ class TestCase:
                                        g2=tot_shear.g2,
                                        g1_err=gerr,
                                        g2_err=gerr,
-                                       re=1,
-                                       snr=20,
                                        x=0,
                                        y=0)
 
@@ -159,8 +157,6 @@ class TestCase:
                                            g2=tot_shear.g2,
                                            g1_err=gerr,
                                            g2_err=gerr,
-                                           re=1,
-                                           snr=20,
                                            x=0,
                                            y=0)
 
@@ -215,8 +211,6 @@ class TestCase:
                                        g2=tot_shear.g2,
                                        g1_err=gerr,
                                        g2_err=gerr,
-                                       re=1,
-                                       snr=20,
                                        x=0,
                                        y=0)
 
