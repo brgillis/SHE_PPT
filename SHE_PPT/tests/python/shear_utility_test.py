@@ -113,9 +113,7 @@ class TestCase:
         shear_estimate = ShearEstimate(g1=tot_shear.g1,
                                        g2=tot_shear.g2,
                                        g1_err=gerr,
-                                       g2_err=gerr,
-                                       x=0,
-                                       y=0)
+                                       g2_err=gerr,)
 
         # Create a mock SHEImage stamp for testing
         gs_header = galsim.FitsHeader()
@@ -156,9 +154,7 @@ class TestCase:
             shear_estimate = ShearEstimate(g1=tot_shear.g1,
                                            g2=tot_shear.g2,
                                            g1_err=gerr,
-                                           g2_err=gerr,
-                                           x=0,
-                                           y=0)
+                                           g2_err=gerr,)
 
             # Create a mock SHEImage stamp for testing
             gs_header = galsim.FitsHeader()
@@ -210,9 +206,7 @@ class TestCase:
         shear_estimate = ShearEstimate(g1=tot_shear.g1,
                                        g2=tot_shear.g2,
                                        g1_err=gerr,
-                                       g2_err=gerr,
-                                       x=0,
-                                       y=0)
+                                       g2_err=gerr,)
 
         # Create a mock SHEImage stamp for testing
         gs_header = galsim.FitsHeader()
