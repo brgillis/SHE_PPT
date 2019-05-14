@@ -213,7 +213,8 @@ class TestCase:
         # Create a ShearEstimate object for testing
         shear_estimate = ShearEstimate(g1=tot_shear.g1,
                                        g2=tot_shear.g2,
-                                       gerr=gerr,
+                                       g1_err=gerr,
+                                       g2_err=gerr,
                                        re=1,
                                        snr=20,
                                        x=0,
