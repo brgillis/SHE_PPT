@@ -4,7 +4,6 @@
 
     Miscellaneous utility functions related to shear measurements
 """
-from Program_Files.GalSim.devel.lsst.treering_flat import wcs
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
