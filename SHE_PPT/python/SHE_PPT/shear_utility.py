@@ -23,9 +23,9 @@ __updated__ = "2019-05-14"
 
 import math
 
+from galsim.wcs import BaseWCS as GalsimWCS
 from SHE_PPT.she_image import SHEImage
-import astropy.wcs.WCS
-import galsim.wcs.BaseWCS
+from astropy.wcs import WCS as AstropyWCS
 import numpy as np
 
 
@@ -115,9 +115,9 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
         stamp = SHEImage(data=np.zeros((1, 1)))
 
         # Add the WCS to the stamp
-        if isinstance(wcs, astropy.wcs.WCS):
+        if isinstance(wcs, AstropyWCS):
             stamp.wcs = wcs
-        elif isinstance(wcs, galsim.wcs.BaseWCS):
+        elif isinstance(wcs, GalsimWCS):
             stamp.galsim_wcs = wcs
         else:
             raise TypeError("wcs is of invalid type: " + str(type(wcs)))
