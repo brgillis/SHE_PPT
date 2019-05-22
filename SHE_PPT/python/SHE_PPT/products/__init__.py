@@ -21,6 +21,7 @@ import glob
 import importlib
 from os.path import dirname, basename, isfile
 
+# Import all modules in this package when we import it
 
 modules = glob.glob(dirname(__file__) + "/*.py")
 __all__ = [basename(f)[:-3] for f in modules if isfile(f) and not f.endswith('__init__.py')]
