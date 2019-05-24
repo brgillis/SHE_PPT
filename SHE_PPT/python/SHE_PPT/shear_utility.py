@@ -189,7 +189,7 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
     if sim_sc4_fix:
         # If applying the fix, return here
         shear_estimate.g1 = rot_est_shear.g1
-        shear_estimate.g2 = rot_est_shear.g1
+        shear_estimate.g2 = rot_est_shear.g2
 
         return
 
