@@ -22,7 +22,7 @@ Created on: 02/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2019-04-22"
+__updated__ = "2019-05-27"
 
 from copy import deepcopy
 import os.path
@@ -34,12 +34,14 @@ from SHE_PPT import products
 import SHE_PPT.detector
 from SHE_PPT.file_io import read_xml_product
 from SHE_PPT.she_image import SHEImage
+from SHE_PPT.table_formats.detections import tf as detf
 from SHE_PPT.table_formats.psf import tf as pstf
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import find_extension, load_wcs, run_only_once
 from astropy.io import fits
 from astropy.io.fits import HDUList, BinTableHDU, ImageHDU, PrimaryHDU
 from astropy.table import Table
+from astropy.wcs import WCS
 import numpy as np
 
 
@@ -353,10 +355,11 @@ class SHEFrame(object):
              frame_product_filename=None,
              seg_product_filename=None,
              psf_product_filename=None,
+             detections_catalogue=None,
+             prune_images=False,
              workdir=".",
              x_max=6,
              y_max=6,
-             apply_sc3_fix=False,
              **kwargs):
         """Reads a SHEFrame from disk
 
@@ -369,6 +372,10 @@ class SHEFrame(object):
             Filename of the Mosaic (segmentation map) data product
         psf_product_filename : str
             Filename of the PSF Image data product
+        detections_catalogue : astropy.table.Table
+            The detections catalogue - only needed if prune_images=True
+        prune_images : bool
+            If True, will only load images where at least one object from the detections catalogue is present
         workdir : str
             Work directory
         x_max : int
@@ -380,6 +387,32 @@ class SHEFrame(object):
 
         Any kwargs are passed to the reading of the fits data
         """
+
+        # Check if we're pruning images that we have a detections catalogue, and if so, load in positions
+        if prune_images:
+            if detections_catalogue is None:
+                raise TypeError("If prune_images==True, detections_catalogue must be supplied.")
+            ra_list = detections_catalogue[detf.gal_x_world].data
+            dec_list = detections_catalogue[detf.gal_y_world].data
+
+            def check_for_objects(header, buffer=4):
+
+                wcs = WCS(header)
+
+                xp_max = header['NAXIS1'] - 1
+                yp_max = header['NAXIS2'] - 1
+
+                x_list, y_list = wcs.all_world2pix(ra_list, dec_list, 0)
+
+                good_x = np.logical_and(x_list > -buffer, x_list < xp_max + buffer)
+                good_y = np.logical_and(y_list > -buffer, y_list < yp_max + buffer)
+
+                good_objs = np.logical_and(good_x, good_y)
+
+                return good_objs.any()
+        else:
+            def check_for_objects(*_args, **_kwargs):
+                return True
 
         def join_or_none(a, b):
             if a is None or b is None:
@@ -447,10 +480,15 @@ class SHEFrame(object):
                     if sci_i is None:
                         # Don't raise here; might be just using limited number
                         continue
-                    detector_data = frame_data_hdulist[sci_i].data.transpose()
+
                     detector_header = frame_data_hdulist[sci_i].header
-                    detector_wcs = load_wcs(
-                        detector_header, apply_sc3_fix=apply_sc3_fix)
+
+                    # Check for objects, and skip if none are on this detector
+                    if not check_for_objects(detector_header):
+                        continue
+
+                    detector_data = frame_data_hdulist[sci_i].data.transpose()
+                    detector_wcs = load_wcs(detector_header)
 
                     noisemap_extname = id_string + "." + mv.noisemap_tag
                     noisemap_i = find_extension(
@@ -469,8 +507,7 @@ class SHEFrame(object):
                     try:
                         detector_mask = frame_data_hdulist[mask_i].data.transpose()
                     except ValueError as e:
-                        # If using SC3 data, make an exception for an error here
-                        if not apply_sc3_fix or "Cannot load a memory-mapped image" not in str(e):
+                        if "Cannot load a memory-mapped image" not in str(e):
                             raise
                         warn_cannot_memmap(e)
 
