@@ -22,7 +22,7 @@ Created on: 05/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2019-04-22"
+__updated__ = "2019-05-27"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
@@ -450,9 +450,8 @@ class SHEFrameStack(object):
              stacked_seg_product_filename=None,
              psf_listfile_filename=None,
              detections_listfile_filename=None,
+             object_id_list_product_filename=None,
              workdir=".",
-             clean_detections=False,
-             apply_sc3_fix=False,
              **kwargs):
         """Reads a SHEFrameStack from relevant data products.
 
@@ -475,10 +474,12 @@ class SHEFrameStack(object):
             Filename of the listfile pointing to the psf data products
         detections_listfile_filename : str
             Filename of the listfile pointing to the detections catalog data products
+        object_id_list_product_filename : str
+            Filename of the product containing the object IDs we want to process. If provided, the detections table
+            will be pruned to only contain these objects, and only detectors with at least one object in from the
+            list in them will be loaded.
         workdir : str
             Work directory
-        apply_sc3_fix : bool
-            Whether or not to apply fix for bad headers in SC3 VIS data
 
         Any kwargs are passed to the reading of the fits objects
         """
