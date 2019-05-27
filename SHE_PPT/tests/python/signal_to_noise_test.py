@@ -20,6 +20,7 @@
 
 __updated__ = "2019-05-27"
 
+import os
 from os.path import join
 import pytest
 
