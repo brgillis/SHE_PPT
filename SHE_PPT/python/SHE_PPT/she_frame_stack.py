@@ -515,6 +515,7 @@ class SHEFrameStack(object):
                     # If we have no object id list, stack them all
                     detections_catalogue = table.vstack(detections_catalogues,
                                                         metadata_conflicts="silent")  # Conflicts are expected
+                    prune_images = False
                 else:
                     # If we do have an object id list, construct a new table with just the desired rows
                     rows_to_use = []
@@ -530,6 +531,8 @@ class SHEFrameStack(object):
 
                     for row in rows_to_use:
                         detections_catalogue.add_row(row)
+
+                    prune_images = True
 
                     logger.info("Finished pruning list of galaxy objects to loop over")
 
@@ -579,7 +582,8 @@ class SHEFrameStack(object):
                                      seg_product_filename=seg_filename,
                                      psf_product_filename=psf_filename,
                                      workdir=workdir,
-                                     apply_sc3_fix=apply_sc3_fix,
+                                     detections_catalogue=detections_catalogue,
+                                     prune_images=prune_images,
                                      **kwargs)
 
             exposures.append(exposure)
