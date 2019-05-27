@@ -36,7 +36,7 @@ from SHE_PPT.table_formats.shear_estimates import tf as setf
 import numpy as np
 
 
-ex_signal_to_noises = [59, 59, 22, 24]
+ex_signal_to_noises = [59, 32]
 
 test_data_location = "/tmp"
 
