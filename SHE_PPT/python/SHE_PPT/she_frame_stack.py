@@ -31,7 +31,7 @@ import os.path
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
 from SHE_PPT import products
-from SHE_PPT.file_io import read_listfile, read_xml_product
+from SHE_PPT.file_io import read_listfile, read_xml_product, find_file
 from SHE_PPT.she_frame import SHEFrame
 from SHE_PPT.she_image import SHEImage
 from SHE_PPT.she_image_stack import SHEImageStack
@@ -484,6 +484,72 @@ class SHEFrameStack(object):
         Any kwargs are passed to the reading of the fits objects
         """
 
+        # Read in the Object ID list if present
+        if object_id_list_product_filename is not None:
+            object_id_list_product = read_xml_product(find_file(object_id_list_product_filename, path=workdir))
+            object_id_list = object_id_list_product.get_id_list()
+        else:
+            object_id_list = None
+
+        # Load in the detections catalogues and combine them into a single catalogue
+        if detections_listfile_filename is None:
+            detections_catalogue = None
+        else:
+            try:
+                detections_filenames = read_listfile(find_file(detections_listfile_filename, path=workdir))
+
+                # Load each table in turn and combine them
+
+                detections_catalogues = []
+
+                for detections_product_filename in detections_filenames:
+
+                    detections_product = read_xml_product(os.path.join(workdir, detections_product_filename))
+
+                    detections_catalogue = table.Table.read(
+                        os.path.join(workdir, detections_product.get_data_filename()))
+
+                    detections_catalogues.append(detections_catalogue)
+
+                if object_id_list is None:
+                    # If we have no object id list, stack them all
+                    detections_catalogue = table.vstack(detections_catalogues,
+                                                        metadata_conflicts="silent")  # Conflicts are expected
+                else:
+                    # If we do have an object id list, construct a new table with just the desired rows
+                    rows_to_use = []
+
+                    # loop over detections_catalog and make list of indices not in our object_id list
+                    for cat in detections_catalogues:
+                        for row in cat:
+                            if row[detf.ID] in object_id_list:
+                                rows_to_use.append(row)
+
+                    detections_catalogue = table.Table(names=detections_catalogues[0].colnames,
+                                                       dtype=[detections_catalogues[0].dtype[n] for n in detections_catalogues[0].colnames])
+
+                    for row in rows_to_use:
+                        detections_catalogue.add_row(row)
+
+                    logger.info("Finished pruning list of galaxy objects to loop over")
+
+            except JSONDecodeError as e:
+                logger.warn(str(e))
+
+                # See if it's just a single catalogue, which we can handle
+                detections_product = read_xml_product(
+                    os.path.join(workdir, detections_listfile_filename))
+                detections_catalogue = table.Table.read(
+                    os.path.join(workdir, detections_product.Data.DataStorage.DataContainer.FileName))
+
+        # Prune out duplicate object IDs from the detections table - FIXME?
+        # after MER resolves this issue?
+        if detections_catalogue is not None:
+            pruned_detections_catalogue = table.unique(
+                detections_catalogue, keys=detf.ID)
+        else:
+            pruned_detections_catalogue = None
+
         # Load in the exposures as SHEFrames first
         exposures = []
 
@@ -570,116 +636,6 @@ class SHEFrameStack(object):
                                      segmentation_map=stacked_seg_data,
                                      header=stacked_image_header,
                                      wcs=load_wcs(stacked_image_header))
-
-        # Load in the detections catalogues and combine them into a single
-        # catalogue
-        if detections_listfile_filename is None:
-            detections_catalogue = None
-        else:
-            try:
-                detections_filenames = read_listfile(
-                    os.path.join(workdir, detections_listfile_filename))
-
-                # Load each table in turn and combine them
-
-                detections_catalogues = []
-
-                for detections_product_filename in detections_filenames:
-
-                    detections_product = read_xml_product(
-                        os.path.join(workdir, detections_product_filename))
-
-                    detections_catalogue = table.Table.read(
-                        os.path.join(workdir, detections_product.Data.DataStorage.DataContainer.FileName))
-
-                    detections_catalogues.append(detections_catalogue)
-
-                detections_catalogue = table.vstack(detections_catalogues,
-                                                    metadata_conflicts="silent")  # Conflicts are expected
-            except JSONDecodeError as e:
-                logger.warn(str(e))
-
-                # See if it's just a single catalogue, which we can handle
-                detections_product = read_xml_product(
-                    os.path.join(workdir, detections_listfile_filename))
-                detections_catalogue = table.Table.read(
-                    os.path.join(workdir, detections_product.Data.DataStorage.DataContainer.FileName))
-
-        # Clean the detections table if desired
-        if clean_detections:
-
-            # First, get the limits of the frame. Use the stacked image if
-            # available
-            if stacked_image is not None:
-                test_xps = np.array(
-                    (0, 0, stacked_image.shape[0] + 1, stacked_image.shape[0] + 1))
-                test_yps = np.array(
-                    (0, stacked_image.shape[1] + 1, 0, stacked_image.shape[1] + 1))
-
-                test_x_worlds, test_y_worlds = stacked_image.pix2world(
-                    test_xps, test_yps)
-
-                x_world_min = test_x_worlds.min()
-                x_world_max = test_x_worlds.max()
-                y_world_min = test_y_worlds.min()
-                y_world_max = test_y_worlds.max()
-            else:
-                # We'll have to get the test values from the detectors of each
-                # frame
-
-                x_world_min = 1e99
-                x_world_max = -1e99
-                y_world_min = 1e99
-                y_world_max = -1e99
-
-                for exposure in exposures:
-                    if exposure is None:
-                        continue
-                    # Only bother with detectors on the corners
-                    for ex_x in (1, 6):
-                        for ex_y in (1, 6):
-
-                            detector = exposure.detectors[ex_x, ex_y]
-
-                            if detector is None:
-                                # FIXME What if just a corner detector fails?
-                                continue
-
-                            test_xps = np.array(
-                                (0, 0, detector.shape[0] + 1, detector.shape[0] + 1))
-                            test_yps = np.array(
-                                (0, detector.shape[1] + 1, 0, detector.shape[1] + 1))
-
-                            test_x_worlds, test_y_worlds = detector.pix2world(
-                                test_xps, test_yps)
-
-                            x_world_min = np.min(
-                                (x_world_min, test_x_worlds.min()))
-                            x_world_max = np.max(
-                                (x_world_max, test_x_worlds.max()))
-                            y_world_min = np.min(
-                                (y_world_min, test_y_worlds.min()))
-                            y_world_max = np.max(
-                                (y_world_max, test_y_worlds.max()))
-
-            # We have the outermost limits; now prune any values outside of
-            # them
-            bad_x_world = np.logical_or(detections_catalogue[detf.gal_x_world] < x_world_min,
-                                        detections_catalogue[detf.gal_x_world] > x_world_max)
-            bad_y_world = np.logical_or(detections_catalogue[detf.gal_y_world] < y_world_min,
-                                        detections_catalogue[detf.gal_y_world] > y_world_max)
-
-            bad_pos = np.logical_or(bad_x_world, bad_y_world)
-
-            detections_catalogue.remove_rows(bad_pos)
-
-        # Prune out duplicate object IDs from the detections table - FIXME?
-        # after MER resolves this issue?
-        if detections_catalogue is not None:
-            pruned_detections_catalogue = table.unique(
-                detections_catalogue, keys=detf.ID)
-        else:
-            pruned_detections_catalogue = None
 
         # Construct and return a SHEFrameStack object
         return SHEFrameStack(exposures=exposures,
