@@ -37,6 +37,8 @@ import numpy as np
 
 ex_signal_to_noises = [59, 59, 22, 24]
 
+test_data_location = "/tmp"
+
 data_images_filename="data/data_images.json"
 segmentation_images_filename="data/segmentation_images.json"
 stacked_image_filename="data/stacked_image.xml"
