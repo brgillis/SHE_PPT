@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-05-14"
+__updated__ = "2019-05-24"
 
 import math
 
@@ -79,7 +79,8 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
                                        x=None,
                                        y=None,
                                        ra=None,
-                                       dec=None,):
+                                       dec=None,
+                                       sim_sc4_fix=False):
     """Corrects (in-place) a shear_estimate object for the shear and rotation information contained within the
     provided WCS (or provided stamp's wcs). Note that this function ignores any flipping, so if e.g. transforming
     from image to sky coordinates, the resulting shear will be in the (-R.A.,Dec.) frame, not (R.A.,Dec.).
@@ -182,6 +183,13 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
         shear_estimate.g1g2_covar = np.inf
 
         shear_estimate.flags |= flags.flag_too_large_shear
+
+        return
+
+    if sim_sc4_fix:
+        # If applying the fix, return here
+        shear_estimate.g1 = rot_est_shear.g1
+        shear_estimate.g2 = rot_est_shear.g2
 
         return
 
