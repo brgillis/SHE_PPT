@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-05-27"
+__updated__ = "2019-06-06"
 
 from enum import Enum
 import json.decoder
@@ -38,6 +38,7 @@ class ConfigKeys(Enum):
 
     OID_BATCH_SIZE = "SHE_CTE_ObjectIdSplit_batch_size"
     OID_MAX_BATCHES = "SHE_CTE_ObjectIdSplit_max_batches"
+    OID_IDS = "SHE_CTE_ObjectIdSplit_ids"
 
     REMAP_NUM_THREADS_EXP = "SHE_MER_RemapMosaic_num_threads_exposures"
     REMAP_NUM_SWARP_THREADS_EXP = "SHE_MER_RemapMosaic_num_swarp_threads_exposures"
