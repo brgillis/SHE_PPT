@@ -213,7 +213,7 @@ def write_xml_product(product, xml_filename, workdir=".", allow_pickled=True):
 
     # Check if the product has a catalog file object, and set the name and write a dummy one if necessary
     try:
-        cat_filename = product.Data.CatalogStorage.CatalogFileStorage.StorageSpace.DataContainer.FileName
+        cat_filename = product.Data.CatalogStorage.CatalogFileStorage.StorageSpace[0].DataContainer.FileName
         if cat_filename == "None":
             # Create a name for the catalog file
             cat_filename = get_allowed_filename(type_name="CAT", instance_id="0", extension=".csv",
