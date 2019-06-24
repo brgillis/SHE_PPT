@@ -199,9 +199,8 @@ def replace_multiple_in_file(input_filename, output_filename, input_strings, out
 
 def write_xml_product(product, xml_filename, workdir=".", allow_pickled=True):
 
-    # If provided a LocalPath, silently turn it into a string
-    if isinstance(xml_filename, py._path.local.LocalPath):
-        xml_filename = str(xml_filename)
+    # Silently coerce input into a string
+    xml_filename = str(xml_filename)
 
     # Check if the product has a ProductId, and set it if necessary
     try:
@@ -248,9 +247,8 @@ def write_xml_product(product, xml_filename, workdir=".", allow_pickled=True):
 
 def read_xml_product(xml_filename, workdir=".", allow_pickled=True):
 
-    # If provided a LocalPath, silently turn it into a string
-    if isinstance(xml_filename, py._path.local.LocalPath):
-        xml_filename = str(xml_filename)
+    # Silently coerce input into a string
+    xml_filename = str(xml_filename)
 
     qualified_xml_filename = find_file(xml_filename, workdir)
 
@@ -273,9 +271,8 @@ def read_xml_product(xml_filename, workdir=".", allow_pickled=True):
 
 def write_pickled_product(product, pickled_filename, workdir="."):
 
-    # If provided a LocalPath, silently turn it into a string
-    if isinstance(pickled_filename, py._path.local.LocalPath):
-        pickled_filename = str(pickled_filename)
+    # Silently coerce input into a string
+    pickled_filename = str(pickled_filename)
 
     if pickled_filename[0] == "/":
         qualified_pickled_filename = pickled_filename
@@ -288,9 +285,8 @@ def write_pickled_product(product, pickled_filename, workdir="."):
 
 def read_pickled_product(pickled_filename, workdir="."):
 
-    # If provided a LocalPath, silently turn it into a string
-    if isinstance(pickled_filename, py._path.local.LocalPath):
-        pickled_filename = str(pickled_filename)
+    # Silently coerce input into a string
+    pickled_filename = str(pickled_filename)
 
     qualified_pickled_filename = find_file(pickled_filename, workdir)
 
@@ -384,9 +380,8 @@ def find_file(filename, path=None):
         directories respectively for it, or else the work directory if supplied.
     """
 
-    # If provided a LocalPath, silently turn it into a string
-    if isinstance(filename, py._path.local.LocalPath):
-        filename = str(filename)
+    # Silently coerce input into a string
+    filename = str(filename)
 
     if filename[0:4] == "WEB/":
         return find_web_file(filename[4:])
