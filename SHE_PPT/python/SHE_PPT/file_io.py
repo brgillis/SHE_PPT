@@ -218,6 +218,7 @@ def write_xml_product(product, xml_filename, workdir=".", allow_pickled=True):
             # Create a name for the catalog file
             cat_filename = get_allowed_filename(type_name="CAT", instance_id="0", extension=".csv",
                                                 version=SHE_PPT.__version__, subdir=None)
+            product.Data.CatalogStorage.CatalogFileStorage.StorageSpace[0].DataContainer.FileName = cat_filename
 
         # Check if the catalogue exists, and create it if necessary
         qualified_cat_filename = os.path.join(workdir, cat_filename)
