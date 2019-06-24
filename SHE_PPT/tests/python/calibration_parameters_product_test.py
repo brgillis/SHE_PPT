@@ -58,8 +58,7 @@ class TestCalibrationParametersProduct(object):
         product.set_REGAUSS_filename(r_filename)
 
         # Save the product in an XML file
-        filename = tmpdir.join("she_calibration_parameters.xml")
-        write_xml_product(product, filename)
+        write_xml_product(product, she_calibration_parameters.xml, workdir=str(tmpdir))
 
         # Read back the XML file
         loaded_product = read_xml_product(filename)

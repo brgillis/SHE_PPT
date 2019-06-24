@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-06-24"
 
 import pytest
 
@@ -52,8 +52,7 @@ class TestBFDTrainingDataProduct(object):
         product.set_filename(subfilename)
 
         # Save the product in an XML file
-        filename = tmpdir.join("she_bfd_training_data.xml")
-        write_xml_product(product, filename, allow_pickled=False)
+        write_xml_product(product, "she_bfd_training_data.xml", workdir=str(tmpdir), allow_pickled=False)
 
         # Read back the XML file
         loaded_product = read_xml_product(filename, allow_pickled=False)

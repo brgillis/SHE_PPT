@@ -8,7 +8,7 @@
 
 """
 
-__updated__ = "2019-02-26"
+__updated__ = "2019-06-24"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -137,7 +137,7 @@ def main():
                                             processing_function="MER")
     obj_cat_prod = products.detections.create_detections_product(obj_cat_filename)
 
-    write_xml_product(obj_cat_prod, join(args.dest_dir,args.obj_cat))
+    write_xml_product(obj_cat_prod, args.obj_cat, workdir=args.dest_dir)
 
     # Write out the table
     obj_cat.write(obj_cat_filename, overwrite=True)

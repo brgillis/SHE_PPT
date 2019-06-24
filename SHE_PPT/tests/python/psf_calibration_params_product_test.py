@@ -52,8 +52,7 @@ class TestPSFCalibrationProduct(object):
         product.set_surface_error_filename(se_filename)
 
         # Save the product in an xml file
-        filename = tmpdir.join("she_psf_calibration_params.xml")
-        write_xml_product(product, filename)
+        write_xml_product(product, she_psf_calibration_params.xml, workdir=str(tmpdir))
 
         # Read back the xml file
         loaded_product = read_xml_product(filename)

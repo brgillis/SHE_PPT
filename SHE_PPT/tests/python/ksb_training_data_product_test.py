@@ -52,8 +52,7 @@ class TestKSBTrainingDataProduct(object):
         product.set_filename(subfilename)
 
         # Save the product in an XML file
-        filename = tmpdir.join("she_ksb_training_data.xml")
-        write_xml_product(product, filename, allow_pickled=False)
+        write_xml_product(product, she_ksb_training_data.xml, workdir=str(tmpdir), allow_pickled=False)
 
         # Read back the XML file
         loaded_product = read_xml_product(filename, allow_pickled=False)

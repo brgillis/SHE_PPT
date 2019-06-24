@@ -55,8 +55,7 @@ class TestMosaicProduct(object):
         product.set_data_filename(data_filename)
 
         # Save the product in an xml file
-        filename = tmpdir.join("mer_mosaic.xml")
-        write_xml_product(product, filename, allow_pickled=False)
+        write_xml_product(product, mer_mosaic.xml, workdir=str(tmpdir), allow_pickled=False)
 
         # Read back the xml file
         loaded_product = read_xml_product(filename, allow_pickled=False)

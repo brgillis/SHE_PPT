@@ -88,8 +88,7 @@ class TestShearEstimatesProduct(object):
         product.set_REGAUSS_filename(r_filename)
 
         # Save the product in an XML file
-        filename = tmpdir.join("she_shear_estimates.xml")
-        write_xml_product(product, filename, allow_pickled=False)
+        write_xml_product(product, she_shear_estimates.xml, workdir=str(tmpdir), allow_pickled=False)
 
         # Read back the XML file
         loaded_product = read_xml_product(filename, allow_pickled=False)

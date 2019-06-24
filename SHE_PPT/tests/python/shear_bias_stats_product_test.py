@@ -169,8 +169,7 @@ class TestShearBiasStatsProduct(object):
                                                         REGAUSS_g2_statistics=stats["REGAUSS"][1])
 
         # Save the product in an XML file
-        filename = tmpdir.join("she_shear_estimates.xml")
-        write_xml_product(product, filename)
+        write_xml_product(product, she_shear_estimates.xml, workdir=str(tmpdir))
 
         # Read back the XML file
         loaded_product = read_xml_product(filename)

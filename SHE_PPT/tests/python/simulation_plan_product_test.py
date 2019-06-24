@@ -50,8 +50,7 @@ class TestSimulationPlanProduct(object):
         product.set_filename(subfilename)
 
         # Save the product in an XML file
-        filename = tmpdir.join("she_simulation_plan.xml")
-        write_xml_product(product, filename)
+        write_xml_product(product, she_simulation_plan.xml, workdir=str(tmpdir))
 
         # Read back the XML file
         loaded_product = read_xml_product(filename)

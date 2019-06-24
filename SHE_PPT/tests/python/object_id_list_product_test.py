@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-03-14"
+__updated__ = "2019-06-24"
 
 import os
 import pytest
@@ -66,11 +66,10 @@ class TestObjectIdList(object):
         product = prod.create_dpd_she_object_id_list(self.ex_ids)
 
         # Save the product in an xml file
-        file_name = os.path.join(self.workdir, self.filename)
-        write_xml_product(product, file_name, allow_pickled=False)
+        write_xml_product(product, self.filename, workdir=self.workdir, allow_pickled=False)
 
         # Read back the xml file
-        loaded_product = read_xml_product(file_name, allow_pickled=False)
+        loaded_product = read_xml_product(self.filename, workdir=self.workdir, allow_pickled=False)
 
         # Check that it's the same
         assert loaded_product.get_id_list() == product.get_id_list()
@@ -83,11 +82,10 @@ class TestObjectIdList(object):
         product = prod.create_dpd_she_object_id_list(self.ex_ids)
 
         # Save the product in an xml file
-        file_name = os.path.join(self.workdir, self.filename)
-        write_pickled_product(product, file_name)
+        write_pickled_product(product, self.filename, workdir=self.workdir)
 
         # Read back the pickled file
-        loaded_product = read_pickled_product(file_name)
+        loaded_product = read_pickled_product(self.filename, workdir=self.workdir)
 
         # Check that it's the same
         assert loaded_product.get_id_list() == product.get_id_list()

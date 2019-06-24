@@ -115,7 +115,7 @@ class TestUtility:
         object_ids = [1, 2]
 
         product = products.object_id_list.create_object_id_list_product(object_ids)
-        write_xml_product(product, os.path.join(self.workdir, product_filename))
+        write_xml_product(product, product_filename, workdir=self.workdir)
 
         write_listfile(os.path.join(self.workdir, lf0_filename), [])
         write_listfile(os.path.join(self.workdir, lf1_filename), [product_filename])
