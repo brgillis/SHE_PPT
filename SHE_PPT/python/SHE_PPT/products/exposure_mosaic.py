@@ -76,7 +76,7 @@ def load_exposure_mosaic(filename, dir=None, **kwargs):
         dir = ""
 
     exposure_mosaic_product = read_xml_product(
-        xml_file_name=os.path.join(dir, filename), allow_pickled=False)
+        xml_filename=os.path.join(dir, filename), allow_pickled=False)
 
     data_filename = exposure_mosaic_product.get_data_filename()
 

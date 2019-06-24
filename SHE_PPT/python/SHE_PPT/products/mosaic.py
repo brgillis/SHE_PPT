@@ -79,7 +79,7 @@ def load_mosaic_hdu(filename, dir=None, hdu=0, detector_x=None, detector_y=None,
         dir = ""
 
     mosaic_product = read_xml_product(
-        xml_file_name=os.path.join(dir, filename), allow_pickled=False)
+        xml_filename=os.path.join(dir, filename), allow_pickled=False)
 
     data_filename = mosaic_product.get_data_filename()
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <ns1:DpdShearMomentsMLTraining xmlns:ns1="http://euclid.esa.org/schema/dpd/she/shearmomentsmltraining">
 	<Header>
-		<ProductId>tCa</ProductId>
+		<ProductId>None</ProductId>
 		<ProductType>false</ProductType>
 		<SoftwareName>i7k</SoftwareName>
 		<SoftwareRelease>1FD2</SoftwareRelease>
@@ -27,7 +27,7 @@
 		<Creator>v2D</Creator>
 		<CreationDate>2018-11-16T16:00:13.19Z</CreationDate>
 	</Header>
-	<Data filestatus="DELETED">
+	<Data filestatus="PROPOSED">
 		<FileName>R7vAsQK7dqh4AmY5HjahbZh0Y0</FileName>
 	</Data>
 	<QualityFlags>

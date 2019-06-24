@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <ns1:DpdMerFinalCatalog xmlns:ns1="http://euclid.esa.org/schema/dpd/mer/finalcatalog">
 	<Header>
-		<ProductId>k3R</ProductId>
+		<ProductId>None</ProductId>
 		<ProductType>false</ProductType>
 		<SoftwareName>Ski</SoftwareName>
 		<SoftwareRelease>W3lTN</SoftwareRelease>
@@ -94,7 +94,7 @@
 						<MaxValue>817</MaxValue>
 						<SelectionFilter>Idx</SelectionFilter>
 					</Range>
-					<DataContainer filestatus="COMMITTED">
+					<DataContainer filestatus="PROPOSED">
 						<FileName>JLD6dnmt9ZEQ3TXX0b60mzndHmITtXo5sQ75</FileName>
 					</DataContainer>
 				</StorageSpace>
@@ -198,14 +198,14 @@
 				</ParametersList>
 				<ProcessExecuted>true</ProcessExecuted>
 				<ExitCode>5GD</ExitCode>
-				<LogFile filestatus="COMMITTED">
+				<LogFile filestatus="PROPOSED">
 					<FileName>Wr06KE9KgW0Oa3ha2d3AYk81ky443uSSjaISaHNrUMYjwzaQDU7kXm</FileName>
 				</LogFile>
 				<OutputDataFileList>TfUXtfmMhOcdyao8KYVKRApk0Mo8JfsGWmJhfHFftLC0tSyYeLjnehEwufABPjL7o0IkaJwzcMik4QkNo4da</OutputDataFileList>
 			</ProcessingStep>
 		</ProcessingSteps>
 		<DataStorage format="mer.finalCatalog" version="0.2">
-			<DataContainer filestatus="COMMITTED">
+			<DataContainer filestatus="PROPOSED">
 				<FileName>LHdnnf9ggzPqAAsGHRDuMe</FileName>
 			</DataContainer>
 		</DataStorage>
