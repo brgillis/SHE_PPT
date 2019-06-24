@@ -94,8 +94,8 @@
 						<MaxValue>MMx</MaxValue>
 						<SelectionFilter>47a</SelectionFilter>
 					</Range>
-					<DataContainer filestatus="PROCESSING">
-						<FileName>0U3rhmRN3KN8YwpQW8RBn64sIbivnQKAWIESx7XoPpbbvubpUkmLuhnGirKjJpiiVKM1KrCTqrSJ5qSR12NXJR8bLCaB0z9DIhIi3c4DntibSkZt4ePbt586e</FileName>
+					<DataContainer filestatus="PROPOSED">
+						<FileName>dummy_catalog.csv</FileName>
 					</DataContainer>
 				</StorageSpace>
 			</CatalogFileStorage>
@@ -171,7 +171,7 @@
 			</PartitioningColumn>
 		</CatalogDescription>
 		<ValidatedShearMeasurementFile format="she.validatedShearMeasurement" version="0.1">
-			<DataContainer filestatus="ARCHIVED">
+			<DataContainer filestatus="PROPOSED">
 				<FileName>GveiOPaCyEieRFWXpOvIHf8lhun1</FileName>
 			</DataContainer>
 		</ValidatedShearMeasurementFile>

@@ -253,12 +253,12 @@
 			</DataContainer>
 		</PsfModelStorage>
 		<BackgroundStorage format="vis.backgroundMap" version="0.1">
-			<DataContainer filestatus="ARCHIVED">
+			<DataContainer filestatus="PROPOSED">
 				<FileName>hdlugj4lSTUKP3P1L2p751H4tRovtV5</FileName>
 			</DataContainer>
 		</BackgroundStorage>
 		<WeightStorage format="vis.weightMap" version="0.1">
-			<DataContainer filestatus="PROCESSING">
+			<DataContainer filestatus="PROPOSED">
 				<FileName>TznuwYUE56pQlWviOEJDDTi3Rt0Na06oIMZvnRhCxNbfJJ1EH24CLVAIvXOYIprnKC6k89Ff2MnkmKbIT7p7hp6WFtjV2oQvh5n3Jqt6z</FileName>
 			</DataContainer>
 		</WeightStorage>

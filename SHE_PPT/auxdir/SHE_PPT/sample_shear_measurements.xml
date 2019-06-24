@@ -94,8 +94,8 @@
 						<MaxValue>Qyo</MaxValue>
 						<SelectionFilter>Dap</SelectionFilter>
 					</Range>
-					<DataContainer filestatus="COMMITTED">
-						<FileName>WDMNigwoegA2RxQudsoXJKnfXzvrjJEeJTxeVCn1GAABI68wJ3X0eljCOROhak605z7n9MCx2D0KHgMDMl</FileName>
+					<DataContainer filestatus="PROPOSED">
+						<FileName>dummy_catalog.csv</FileName>
 					</DataContainer>
 				</StorageSpace>
 			</CatalogFileStorage>
@@ -171,7 +171,7 @@
 			</PartitioningColumn>
 		</CatalogDescription>
 		<BfdMoments format="she.bfdMoments" version="0.1">
-			<DataContainer filestatus="VALIDATED">
+			<DataContainer filestatus="PROPOSED">
 				<FileName>fkG</FileName>
 			</DataContainer>
 		</BfdMoments>
@@ -181,12 +181,12 @@
 			</DataContainer>
 		</KsbShearEstimates>
 		<LensMcShearEstimates format="she.lensMcShearEstimates" version="0.1">
-			<DataContainer filestatus="PROCESSING">
+			<DataContainer filestatus="PROPOSED">
 				<FileName>Lvy97cEy3a9I4xkjlaGrFlINn3qiGD0grDxtZVFVZt9uP5zkWJfx8u5FZcTmpxMis8wRETM57KiUUC7J9JqptmnuQ3KAreZZ</FileName>
 			</DataContainer>
 		</LensMcShearEstimates>
 		<MomentsMlShearEstimates format="she.momentsMlShearEstimates" version="0.1">
-			<DataContainer filestatus="ARCHIVED">
+			<DataContainer filestatus="PROPOSED">
 				<FileName>5ioEGb3095boLb01hbY1zlsupqNamBJ156NaC7TdOhDtKbhFSLV4iD6L152HVUYBHN1Nu7jfVe6MLHHNfFW4lRgN1fPy</FileName>
 			</DataContainer>
 		</MomentsMlShearEstimates>

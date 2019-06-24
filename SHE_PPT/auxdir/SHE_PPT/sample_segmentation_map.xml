@@ -138,12 +138,12 @@
 			</Polygon>
 		</ImgSpatialFootprint>
 		<DataStorage format="mer.segmentationMap" version="0.2">
-			<DataContainer filestatus="DELETED">
+			<DataContainer filestatus="PROPOSED">
 				<FileName>l2mk2ApXs8PWm5X0RDIkrHfYwFkFV8avXJySbqgZxsEllOglX9ysKbo2lee9HEHkQ8JozgREhdy6yR6G0SZ0</FileName>
 			</DataContainer>
 		</DataStorage>
 		<ConvolutionKernelStorage>
-			<DataContainer filestatus="PROCESSING">
+			<DataContainer filestatus="PROPOSED">
 				<FileName>jd0QfUPjIKPA0wiozdQVn5ucHU9nYqH</FileName>
 			</DataContainer>
 		</ConvolutionKernelStorage>

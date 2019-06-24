@@ -94,8 +94,8 @@
 						<MaxValue>Feu</MaxValue>
 						<SelectionFilter>tNZ</SelectionFilter>
 					</Range>
-					<DataContainer filestatus="COMMITTED">
-						<FileName>JoOUTTteKKD4ymeG1oU80SGl1zLnz98Lq2q67syx3mP2o3T7oImnjLYANdsFvM2d6ozVSnYHJCm</FileName>
+					<DataContainer filestatus="PROPOSED">
+						<FileName>dummy_catalog.csv</FileName>
 					</DataContainer>
 				</StorageSpace>
 			</CatalogFileStorage>
@@ -171,7 +171,7 @@
 			</PartitioningColumn>
 		</CatalogDescription>
 		<RegaussTrainingFile format="she.regaussTraining" version="0.1">
-			<DataContainer filestatus="ARCHIVED">
+			<DataContainer filestatus="PROPOSED">
 				<FileName>H6876McRuf3s9Y02bAreOYDqF4CdD5VzjVVY9rDvdlup6CBSGuZOtf8K</FileName>
 			</DataContainer>
 		</RegaussTrainingFile>

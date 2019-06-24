@@ -94,8 +94,8 @@
 						<MaxValue>Xxk</MaxValue>
 						<SelectionFilter>QxR</SelectionFilter>
 					</Range>
-					<DataContainer filestatus="VALIDATED">
-						<FileName>3MP2IruY05wnkA90VyvxKn3N2Xss</FileName>
+					<DataContainer filestatus="PROPOSED">
+						<FileName>dummy_catalog.csv</FileName>
 					</DataContainer>
 				</StorageSpace>
 			</CatalogFileStorage>
@@ -171,7 +171,7 @@
 			</PartitioningColumn>
 		</CatalogDescription>
 		<ShearKSBTrainingFile format="she.shearKSBTraining" version="0.1">
-			<DataContainer filestatus="ARCHIVED">
+			<DataContainer filestatus="PROPOSED">
 				<FileName>FasrENV5N7N9nZ3ObQ1YdwOMyb0e2vhkrHRrEJsVLORr0hoV8l1FUYRsSVRHsjGGY1agPkUuut20LCB6g3pnBP6rXwn7jXpN9AR1fCWFVNMRg6nJPZpcst1yYtt9h</FileName>
 			</DataContainer>
 		</ShearKSBTrainingFile>

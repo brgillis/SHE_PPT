@@ -94,8 +94,8 @@
 						<MaxValue>RnW</MaxValue>
 						<SelectionFilter>Pl4</SelectionFilter>
 					</Range>
-					<DataContainer filestatus="COMMITTED">
-						<FileName>XAptkDdYCp3yVczbrqpTpsEml6WJkqmV8rTuY04ubSvHzc5x7htIs7izpYgFjiees1dD1n5Wp8BhRpX9koMaetPr6pzC8Hc1icA5VjdprMElrStor4P2ka4</FileName>
+					<DataContainer filestatus="PROPOSED">
+						<FileName>dummy_catalog.csv</FileName>
 					</DataContainer>
 				</StorageSpace>
 			</CatalogFileStorage>
@@ -171,7 +171,7 @@
 			</PartitioningColumn>
 		</CatalogDescription>
 		<ShearBFDTrainingFile format="she.shearBFDTraining" version="0.1">
-			<DataContainer filestatus="COMMITTED">
+			<DataContainer filestatus="PROPOSED">
 				<FileName>4U2SFp43ZQBJo83lczJ3vRGNl8BNY7xsOpTT7vnCbuCTCwB0UObwLlBfriYpGakKeOn5jUIWPZVYTojgkChohg9srKo9NDZT2jMfwfOW1dYXUn</FileName>
 			</DataContainer>
 		</ShearBFDTrainingFile>

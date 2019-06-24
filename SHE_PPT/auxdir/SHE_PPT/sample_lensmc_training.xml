@@ -94,8 +94,8 @@
 						<MaxValue>I2K</MaxValue>
 						<SelectionFilter>744</SelectionFilter>
 					</Range>
-					<DataContainer filestatus="PROCESSING">
-						<FileName>1o8bHAysuP6</FileName>
+					<DataContainer filestatus="PROPOSED">
+						<FileName>dummy_catalog.csv</FileName>
 					</DataContainer>
 				</StorageSpace>
 			</CatalogFileStorage>
@@ -171,7 +171,7 @@
 			</PartitioningColumn>
 		</CatalogDescription>
 		<ShearLensMCTrainingFile format="she.lensMcShearEstimates" version="0.1">
-			<DataContainer filestatus="VALIDATED">
+			<DataContainer filestatus="PROPOSED">
 				<FileName>wmdBOUnjpvkrI2howUA</FileName>
 			</DataContainer>
 		</ShearLensMCTrainingFile>
