@@ -19,8 +19,9 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-04-22"
+__updated__ = "2019-06-24"
 
+from datetime import datetime
 import json
 import os
 from os.path import join, isfile
@@ -32,8 +33,9 @@ from ElementsServices.DataSync import downloadTestData, localTestFile
 from EuclidDmBindings.sys_stub import CreateFromDocument
 from FilenameProvider.FilenameProvider import createFilename
 from SHE_PPT import magic_values as mv
+import SHE_PPT
 from SHE_PPT.logging import getLogger
-from SHE_PPT.utility import run_only_once, get_release_from_version
+from SHE_PPT.utility import run_only_once, get_release_from_version, time_to_timestamp
 from astropy.io import fits
 import numpy as np
 
@@ -194,11 +196,41 @@ def replace_multiple_in_file(input_filename, output_filename, input_strings, out
                 fout.write(new_line)
 
 
-def write_xml_product(product, xml_file_name, allow_pickled=True):
+def write_xml_product(product, xml_filename, workdir=".", allow_pickled=True):
+
+    # Check if the product has a ProductId, and set it if necessary
     try:
-        with open(str(xml_file_name), "w") as f:
-            f.write(
-                product.toDOM().toprettyxml(encoding="utf-8").decode("utf-8"))
+        if product.Header.ProductId == "None":
+            # Set the product ID to a timestamp
+            t = datetime.now()
+            product.Header.ProductId = time_to_timestamp(t)
+    except AttributeError as e:
+        pass
+
+    # Check if the product has a catalog file object, and set the name and write a dummy one if necessary
+    try:
+        cat_filename = product.Data.CatalogStorage.CatalogFileStorage.StorageSpace.DataContainer.FileName
+        if cat_filename == "None":
+            # Create a name for the catalog file
+            cat_filename = get_allowed_filename(type_name="CAT", instance_id="0", extension=".csv",
+                                                version=SHE_PPT.__version__)
+
+        # Check if the catalogue exists, and create it if necessary
+        qualified_cat_filename = os.path.join(workdir, cat_filename)
+        if not os.path.isfile(qualified_cat_filename):
+            open(qualified_cat_filename, 'a').close()
+
+    except AttributeError as e:
+        pass
+
+    if xml_filename[0] == "/":
+        qualified_xml_filename = xml_filename
+    else:
+        qualified_xml_filename = os.path.join(workdir, xml_filename)
+
+    try:
+        with open(str(qualified_xml_filename), "w") as f:
+            f.write(product.toDOM().toprettyxml(encoding="utf-8").decode("utf-8"))
     except AttributeError as e:
         if not allow_pickled:
             raise
@@ -206,14 +238,17 @@ def write_xml_product(product, xml_file_name, allow_pickled=True):
             raise
         logger.warn(
             "XML writing is not available; falling back to pickled writing instead.")
-        write_pickled_product(product, xml_file_name)
+        write_pickled_product(product, qualified_xml_filename)
 
 
-def read_xml_product(xml_file_name, allow_pickled=True):
+def read_xml_product(xml_filename, workdir=".", allow_pickled=True):
     # @TODO: Should allow_pickled be False by default?
     # Read the xml file as a string
+
+    qualified_xml_filename = find_file(xml_filename, workdir)
+
     try:
-        with open(str(xml_file_name), "r") as f:
+        with open(str(qualified_xml_filename), "r") as f:
             xml_string = f.read()
 
         # Create a new product instance using the proper data product dictionary
@@ -222,22 +257,29 @@ def read_xml_product(xml_file_name, allow_pickled=True):
         # Not actually saved as xml
         if allow_pickled:
             # Revert to pickled product
-            return read_pickled_product(xml_file_name)
+            return read_pickled_product(qualified_xml_filename)
         else:
             raise
 
     return product
 
 
-def write_pickled_product(product, pickled_file_name):
+def write_pickled_product(product, pickled_filename, workdir="."):
 
-    with open(str(pickled_file_name), "wb") as f:
+    if pickled_filename[0] == "/":
+        qualified_pickled_filename = pickled_filename
+    else:
+        qualified_pickled_filename = os.path.join(workdir, pickled_filename)
+
+    with open(str(qualified_pickled_filename), "wb") as f:
         pickle.dump(product, f)
 
 
-def read_pickled_product(pickled_file_name):
+def read_pickled_product(pickled_filename, workdir="."):
 
-    with open(str(pickled_file_name), "rb") as f:
+    qualified_pickled_filename = find_file(pickled_filename, workdir)
+
+    with open(str(qualified_pickled_filename), "rb") as f:
         product = pickle.load(f)
 
     return product
