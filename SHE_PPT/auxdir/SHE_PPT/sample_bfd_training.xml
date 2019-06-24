@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <ns1:DpdShearBFDTraining xmlns:ns1="http://euclid.esa.org/schema/dpd/she/shearbfdtraining">
 	<Header>
-		<ProductId>M1z</ProductId>
+		<ProductId>None</ProductId>
 		<ProductType>ura</ProductType>
 		<SoftwareName>OrL</SoftwareName>
 		<SoftwareRelease>alzwy</SoftwareRelease>
@@ -95,7 +95,7 @@
       <SelectionFilter>QxR</SelectionFilter>
      </Range>
      <DataContainer filestatus="PROPOSED">
-      <FileName>dummy_catalog.csv</FileName>
+      <FileName>None</FileName>
      </DataContainer>
     </StorageSpace>
    </CatalogFileStorage>

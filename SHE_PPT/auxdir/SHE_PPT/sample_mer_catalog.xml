@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <ns1:DpdMerFinalCatalog xmlns:ns1="http://euclid.esa.org/schema/dpd/mer/finalcatalog">
 	<Header>
-		<ProductId>k3R</ProductId>
+		<ProductId>None</ProductId>
 		<ProductType>false</ProductType>
 		<SoftwareName>Ski</SoftwareName>
 		<SoftwareRelease>W3lTN</SoftwareRelease>

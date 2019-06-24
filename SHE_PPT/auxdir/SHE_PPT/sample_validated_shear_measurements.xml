@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <ns1:DpdValidatedShearMeasurement xmlns:ns1="http://euclid.esa.org/schema/dpd/she/validatedshearmeasurement">
 	<Header>
-		<ProductId>kDp</ProductId>
+		<ProductId>None</ProductId>
 		<ProductType>d3j</ProductType>
 		<SoftwareName>eeX</SoftwareName>
 		<SoftwareRelease>HTVp</SoftwareRelease>
@@ -95,7 +95,7 @@
       <SelectionFilter>QxR</SelectionFilter>
      </Range>
      <DataContainer filestatus="PROPOSED">
-      <FileName>dummy_catalog.csv</FileName>
+      <FileName>None</FileName>
      </DataContainer>
     </StorageSpace>
    </CatalogFileStorage>

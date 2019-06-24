@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <ns1:DpdVisCalibratedFrame xmlns:ns1="http://euclid.esa.org/schema/dpd/vis/calibratedframe">
 	<Header>
-		<ProductId>UGv</ProductId>
+		<ProductId>None</ProductId>
 		<ProductType>true</ProductType>
 		<SoftwareName>DSf</SoftwareName>
 		<SoftwareRelease>aLq</SoftwareRelease>

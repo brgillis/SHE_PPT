@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <ns1:DpdShearLensMCTraining xmlns:ns1="http://euclid.esa.org/schema/dpd/she/shearlensmctraining">
 	<Header>
-		<ProductId>imW</ProductId>
+		<ProductId>None</ProductId>
 		<ProductType>false</ProductType>
 		<SoftwareName>PAx</SoftwareName>
 		<SoftwareRelease>vtI</SoftwareRelease>
@@ -95,7 +95,7 @@
       <SelectionFilter>QxR</SelectionFilter>
      </Range>
      <DataContainer filestatus="PROPOSED">
-      <FileName>dummy_catalog.csv</FileName>
+      <FileName>None</FileName>
      </DataContainer>
     </StorageSpace>
    </CatalogFileStorage>

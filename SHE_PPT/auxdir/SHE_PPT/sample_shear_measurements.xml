@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <ns1:DpdShearMeasurement xmlns:ns1="http://euclid.esa.org/schema/dpd/she/shearmeasurement">
 	<Header>
-		<ProductId>qzG</ProductId>
+		<ProductId>None</ProductId>
 		<ProductType>Gik</ProductType>
 		<SoftwareName>boc</SoftwareName>
 		<SoftwareRelease>OOGL</SoftwareRelease>
@@ -95,7 +95,7 @@
       <SelectionFilter>QxR</SelectionFilter>
      </Range>
      <DataContainer filestatus="PROPOSED">
-      <FileName>dummy_catalog.csv</FileName>
+      <FileName>None</FileName>
      </DataContainer>
     </StorageSpace>
    </CatalogFileStorage>

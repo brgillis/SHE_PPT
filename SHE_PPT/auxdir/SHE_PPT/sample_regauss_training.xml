@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <ns1:DpdRegaussTraining xmlns:ns1="http://euclid.esa.org/schema/dpd/she/regausstraining">
 	<Header>
-		<ProductId>Pyj</ProductId>
+		<ProductId>None</ProductId>
 		<ProductType>qKw</ProductType>
 		<SoftwareName>3mq</SoftwareName>
 		<SoftwareRelease>LVQeD</SoftwareRelease>
@@ -95,7 +95,7 @@
       <SelectionFilter>QxR</SelectionFilter>
      </Range>
      <DataContainer filestatus="PROPOSED">
-      <FileName>dummy_catalog.csv</FileName>
+      <FileName>None</FileName>
      </DataContainer>
     </StorageSpace>
    </CatalogFileStorage>

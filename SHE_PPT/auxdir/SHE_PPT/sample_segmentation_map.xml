@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <ns1:DpdMerSegmentationMap xmlns:ns1="http://euclid.esa.org/schema/dpd/mer/segmentationmap">
 	<Header>
-		<ProductId>uf0</ProductId>
+		<ProductId>None</ProductId>
 		<ProductType>Efx</ProductType>
 		<SoftwareName>Xxj</SoftwareName>
 		<SoftwareRelease>vBHXl</SoftwareRelease>
