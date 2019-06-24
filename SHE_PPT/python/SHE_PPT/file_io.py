@@ -38,6 +38,7 @@ from SHE_PPT.logging import getLogger
 from SHE_PPT.utility import run_only_once, get_release_from_version, time_to_timestamp
 from astropy.io import fits
 import numpy as np
+import py
 
 
 logger = getLogger(mv.logger_name)
@@ -197,6 +198,9 @@ def replace_multiple_in_file(input_filename, output_filename, input_strings, out
 
 
 def write_xml_product(product, xml_filename, workdir=".", allow_pickled=True):
+
+    if isinstance(xml_filename, py._path.local.LocalPath):
+        xml_filename = str(xml_filename)
 
     # Check if the product has a ProductId, and set it if necessary
     try:
