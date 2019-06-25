@@ -142,7 +142,7 @@ class TestShearBiasMeasurementsProduct(object):
         write_xml_product(product, filename, workdir=str(tmpdir))
 
         # Read back the XML file
-        loaded_product = read_xml_product(filename)
+        loaded_product = read_xml_product(filename, workdir=str(tmpdir))
 
         # Check that the products coincide
         assert loaded_product.get_BFD_bias_measurements()[0].m == measurements["BFD"][0].m
