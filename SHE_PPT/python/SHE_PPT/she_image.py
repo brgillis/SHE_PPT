@@ -19,7 +19,7 @@ Created on: Aug 17, 2017
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2019-05-03"
+__updated__ = "2019-06-25"
 
 # Avoid non-trivial "from" imports (as explicit is better than implicit)
 
@@ -487,10 +487,10 @@ class SHEImage(object):
         # If not already loaded, load it
         if self._galsim_wcs is None:
             # Load from the header if possible
-            if self.header is not None and len(self.header) > 0:
-                self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.header)[0]
-            elif self.wcs is not None:
+            if self.wcs is not None:
                 self.galsim_wcs = galsim.wcs.readFromFitsHeader(self.wcs.to_header())[0]
+            elif self.header is not None and len(self.header) > 0:
+                self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.header)[0]
             else:
                 raise ValueError("SHEImage must have a WCS set up or a WCS in its header in order to get a GalSim WCS.")
 
