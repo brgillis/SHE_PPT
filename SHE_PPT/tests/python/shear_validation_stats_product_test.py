@@ -74,8 +74,8 @@ class TestShearValidationStatsProduct(object):
         product.set_filename(subfilename)
 
         # Save the product in an XML file
-        filename = tmpdir.join("she_shear_validation_stats.xml")
-        write_pickled_product(product, filename)
+        filename = "she_shear_validation_stats.xml"
+        write_pickled_product(product, filename,workdir=str(tmpdir))
 
         # Read back the XML file
         loaded_product = read_pickled_product(filename)

@@ -54,7 +54,8 @@ class TestValidatedShearEstimatesProduct(object):
         product.set_filename(subfilename)
 
         # Save the product in an XML file
-        write_xml_product(product, "she_validated_shear_estimates.xml", workdir=str(tmpdir), allow_pickled=False)
+        filename = "she_validated_shear_estimates.xml"
+        write_xml_product(product, filename, workdir=str(tmpdir), allow_pickled=False)
 
         # Read back the XML file
         loaded_product = read_xml_product(filename, allow_pickled=False)

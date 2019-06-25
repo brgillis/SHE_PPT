@@ -76,8 +76,8 @@ class TestPSFCalibrationProduct(object):
         product.set_surface_error_filename(se_filename)
 
         # Save the product in a pickled file
-        filename = tmpdir.join("she_psf_field_params.bin")
-        write_pickled_product(product, filename)
+        filename = "she_psf_field_params.bin"
+        write_pickled_product(product, filename,workdir=str(tmpdir))
 
         # Read back the pickled file
         loaded_product = read_pickled_product(filename)

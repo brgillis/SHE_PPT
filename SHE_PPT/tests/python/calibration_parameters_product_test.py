@@ -91,8 +91,8 @@ class TestCalibrationParametersProduct(object):
         product.set_REGAUSS_filename(r_filename)
 
         # Save the product in a pickled file
-        filename = tmpdir.join("she_calibration_parameters.bin")
-        write_pickled_product(product, filename)
+        filename = "she_calibration_parameters.bin"
+        write_pickled_product(product, filename,workdir=str(tmpdir))
 
         # Read back the pickled file
         loaded_product = read_pickled_product(filename)
