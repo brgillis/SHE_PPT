@@ -19,7 +19,7 @@ Created on: Aug 17, 2017
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2019-04-22"
+__updated__ = "2019-05-03"
 
 # Avoid non-trivial "from" imports (as explicit is better than implicit)
 
@@ -1015,6 +1015,7 @@ class SHEImage(object):
                 header=new_header,
                 offset=new_offset,
                 wcs=self.wcs,
+                parent_image=self,
             )
 
         else:
@@ -1102,6 +1103,7 @@ class SHEImage(object):
                 header=new_header,
                 offset=new_offset,
                 wcs=self.wcs,
+                parent_image=self,
             )
 
             if overlap_width == 0 and overlap_height == 0:
