@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-06-25"
 
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
@@ -50,7 +50,8 @@ class TestPSFImageProduct(object):
         product.set_data_filename(subfilename)
 
         # Save the product in an XML file
-        write_xml_product(product, she_psf_image.xml, workdir=str(tmpdir))
+        filename = "she_psf_image.xml"
+        write_xml_product(product, filename, workdir=str(tmpdir))
 
         # Read back the XML file
         loaded_product = read_xml_product(filename)

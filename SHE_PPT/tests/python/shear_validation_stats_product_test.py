@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-06-25"
 
 import pytest
 
@@ -52,7 +52,8 @@ class TestShearValidationStatsProduct(object):
         product.set_filename(subfilename)
 
         # Save the product in an XML file
-        write_xml_product(product, she_shear_validation_stats.xml, workdir=str(tmpdir))
+        filename = "she_shear_validation_stats.xml"
+        write_xml_product(product, filename, workdir=str(tmpdir))
 
         # Read back the XML file
         loaded_product = read_xml_product(filename)
