@@ -91,7 +91,7 @@ class TestShearEstimatesProduct(object):
         write_xml_product(product, "she_shear_estimates.xml", workdir=str(tmpdir), allow_pickled=False)
 
         # Read back the XML file
-        loaded_product = read_xml_product(filename, allow_pickled=False)
+        loaded_product = read_xml_product("she_shear_estimates.xml", workdir=str(tmpdir), allow_pickled=False)
 
         # Check that the filenames coincide
         assert loaded_product.get_BFD_filename() == b_filename

@@ -55,7 +55,7 @@ class TestREGAUSSTrainingDataProduct(object):
         write_xml_product(product, "she_regauss_training_data.xml", workdir=str(tmpdir), allow_pickled=False)
 
         # Read back the XML file
-        loaded_product = read_xml_product(filename, allow_pickled=False)
+        loaded_product = read_xml_product("she_regauss_training_data.xml", workdir=str(tmpdir), allow_pickled=False)
 
         # Check that the filenames match
         assert loaded_product.get_filename() == subfilename
