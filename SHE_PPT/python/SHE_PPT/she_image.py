@@ -1679,15 +1679,12 @@ class SHEImage(object):
             raise ValueError("In get_world2pix_transformation, either both ra and dec must be specified or both " +
                              "must be None/unspecified.")
 
-        try:
+        if isinstance(self.galsim_wcs, galsim.wcs.CelestialWCS):
             world_pos = galsim.CelestialCoord(ra * galsim.degrees, dec * galsim.degrees)
-            local_wcs = self.galsim_wcs.jacobian(world_pos=world_pos)
-        except ValueError as e:
-            if not "WCS does not have longitude type" in str(e):
-                raise
-            # Try with a linear WCS
+        else:
             world_pos = galsim.PositionD(ra, dec)
-            local_wcs = self.galsim_wcs.jacobian(world_pos=world_pos)
+
+        local_wcs = self.galsim_wcs.jacobian(world_pos=world_pos)
 
         return local_wcs.inverse().getDecomposition()
 
