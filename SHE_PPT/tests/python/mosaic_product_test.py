@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-06-24"
+__updated__ = "2019-06-25"
 
 import pytest
 
@@ -55,7 +55,7 @@ class TestMosaicProduct(object):
         product.set_data_filename(data_filename)
 
         # Save the product in an xml file
-        write_xml_product(product, mer_mosaic.xml, workdir=str(tmpdir), allow_pickled=False)
+        write_xml_product(product, "mer_mosaic.xml", workdir=str(tmpdir), allow_pickled=False)
 
         # Read back the xml file
         loaded_product = read_xml_product(filename, allow_pickled=False)
