@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-05-14"
+__updated__ = "2019-06-25"
 
 import pytest
 
@@ -117,10 +117,14 @@ class TestCase:
 
         # Create a mock SHEImage stamp for testing
         gs_header = galsim.FitsHeader()
-        galsim.ShearWCS(shear=wcs_shear, scale=1.0).writeToFitsHeader(gs_header, galsim.BoundsI(1, 1, 2, 2))
+        galsim_wcs = galsim.ShearWCS(shear=wcs_shear, scale=1.0)
+        galsim_wcs.writeToFitsHeader(gs_header, galsim.BoundsI(1, 1, 2, 2))
+
         ap_header = fits.Header(gs_header.header)
         mock_stamp = SHEImage(data=np.zeros((1, 1)), offset=np.array((0., 0.)),
                               header=ap_header)
+
+        mock_stamp.galsim_wcs = galsim_wcs
 
         # Try correcting the shear estimate
         correct_for_wcs_shear_and_rotation(shear_estimate, mock_stamp)
@@ -164,6 +168,8 @@ class TestCase:
             ap_header = fits.Header(gs_header.header)
             mock_stamp = SHEImage(data=np.zeros((1, 1)), offset=np.array((0., 0.)),
                                   header=ap_header)
+
+            mock_stamp.galsim_wcs = wcs
 
             # Try correcting the shear estimate
             correct_for_wcs_shear_and_rotation(shear_estimate, mock_stamp)
@@ -216,6 +222,8 @@ class TestCase:
         ap_header = fits.Header(gs_header.header)
         mock_stamp = SHEImage(data=np.zeros((1, 1)), offset=np.array((0., 0.)),
                               header=ap_header)
+
+        mock_stamp.galsim_wcs = wcs
 
         # Try correcting the shear estimate
         correct_for_wcs_shear_and_rotation(shear_estimate, mock_stamp)
