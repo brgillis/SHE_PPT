@@ -95,7 +95,7 @@ class TestCalibrationParametersProduct(object):
         write_pickled_product(product, filename,workdir=str(tmpdir))
 
         # Read back the pickled file
-        loaded_product = read_pickled_product(filename)
+        loaded_product = read_pickled_product(filename, workdir=str(tmpdir))
 
         # Check that the filenames coincide
         assert loaded_product.get_BFD_filename() == b_filename

@@ -80,7 +80,7 @@ class TestPSFCalibrationProduct(object):
         write_pickled_product(product, filename,workdir=str(tmpdir))
 
         # Read back the pickled file
-        loaded_product = read_pickled_product(filename)
+        loaded_product = read_pickled_product(filename, workdir=str(tmpdir))
 
         # Check that it's the same
         assert loaded_product.get_zernike_mode_filename() == zm_filename

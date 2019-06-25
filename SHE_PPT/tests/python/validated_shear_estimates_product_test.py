@@ -58,7 +58,7 @@ class TestValidatedShearEstimatesProduct(object):
         write_xml_product(product, filename, workdir=str(tmpdir), allow_pickled=False)
 
         # Read back the XML file
-        loaded_product = read_xml_product(filename, allow_pickled=False)
+        loaded_product = read_xml_product(filename, workdir=str(tmpdir), allow_pickled=False)
 
         # Check that the filenames match
         assert loaded_product.get_filename() == subfilename

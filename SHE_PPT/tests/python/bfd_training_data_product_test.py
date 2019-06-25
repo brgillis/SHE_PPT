@@ -76,7 +76,7 @@ class TestBFDTrainingDataProduct(object):
         write_pickled_product(product, filename,workdir=str(tmpdir))
 
         # Read back the XML file
-        loaded_product = read_pickled_product(filename)
+        loaded_product = read_pickled_product(filename, workdir=str(tmpdir))
 
         # Check that the filenames match
         assert loaded_product.get_filename() == subfilename
