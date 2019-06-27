@@ -249,17 +249,17 @@
 		</ChargedInduced>
 		<PsfModelStorage format="vis.psfModel" version="0.1">
 			<DataContainer filestatus="PROPOSED">
-				<FileName>d</FileName>
+				<FileName>None</FileName>
 			</DataContainer>
 		</PsfModelStorage>
 		<BackgroundStorage format="vis.backgroundMap" version="0.1">
 			<DataContainer filestatus="PROPOSED">
-				<FileName>hdlugj4lSTUKP3P1L2p751H4tRovtV5</FileName>
+				<FileName>None</FileName>
 			</DataContainer>
 		</BackgroundStorage>
 		<WeightStorage format="vis.weightMap" version="0.1">
 			<DataContainer filestatus="PROPOSED">
-				<FileName>TznuwYUE56pQlWviOEJDDTi3Rt0Na06oIMZvnRhCxNbfJJ1EH24CLVAIvXOYIprnKC6k89Ff2MnkmKbIT7p7hp6WFtjV2oQvh5n3Jqt6z</FileName>
+				<FileName>None</FileName>
 			</DataContainer>
 		</WeightStorage>
 		<ObservationSequence>
@@ -279,7 +279,7 @@
 		</ObservationDateTime>
 		<DataStorage format="vis.calibratedFrame" version="0.1">
 			<DataContainer filestatus="PROPOSED">
-				<FileName>7Y</FileName>
+				<FileName>None</FileName>
 			</DataContainer>
 		</DataStorage>
 		<QualityParams>

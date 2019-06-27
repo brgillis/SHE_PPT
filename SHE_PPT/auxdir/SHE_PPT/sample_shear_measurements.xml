@@ -172,27 +172,27 @@
   </CatalogDescription>
 		<BfdMoments format="she.bfdMoments" version="0.1">
 			<DataContainer filestatus="PROPOSED">
-				<FileName>fkG</FileName>
+				<FileName>None</FileName>
 			</DataContainer>
 		</BfdMoments>
 		<KsbShearEstimates format="she.ksbShearEstimates" version="0.1">
 			<DataContainer filestatus="PROPOSED">
-				<FileName>6ES4</FileName>
+				<FileName>None</FileName>
 			</DataContainer>
 		</KsbShearEstimates>
 		<LensMcShearEstimates format="she.lensMcShearEstimates" version="0.1">
 			<DataContainer filestatus="PROPOSED">
-				<FileName>Lvy97cEy3a9I4xkjlaGrFlINn3qiGD0grDxtZVFVZt9uP5zkWJfx8u5FZcTmpxMis8wRETM57KiUUC7J9JqptmnuQ3KAreZZ</FileName>
+				<FileName>None</FileName>
 			</DataContainer>
 		</LensMcShearEstimates>
 		<MomentsMlShearEstimates format="she.momentsMlShearEstimates" version="0.1">
 			<DataContainer filestatus="PROPOSED">
-				<FileName>5ioEGb3095boLb01hbY1zlsupqNamBJ156NaC7TdOhDtKbhFSLV4iD6L152HVUYBHN1Nu7jfVe6MLHHNfFW4lRgN1fPy</FileName>
+				<FileName>None</FileName>
 			</DataContainer>
 		</MomentsMlShearEstimates>
 		<RegaussShearEstimates format="she.regaussShearEstimates" version="0.1">
 			<DataContainer filestatus="PROPOSED">
-				<FileName>atEypXmiRXnTakSYHhAtG8rgzHefa1cC6gbV</FileName>
+				<FileName>None</FileName>
 			</DataContainer>
 		</RegaussShearEstimates>
 	</Data>

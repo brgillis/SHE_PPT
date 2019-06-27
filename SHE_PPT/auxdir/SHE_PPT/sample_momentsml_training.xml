@@ -28,7 +28,7 @@
 		<CreationDate>2018-11-16T16:00:13.19Z</CreationDate>
 	</Header>
 	<Data filestatus="PROPOSED">
-		<FileName>R7vAsQK7dqh4AmY5HjahbZh0Y0</FileName>
+		<FileName>None</FileName>
 	</Data>
 	<QualityFlags>
 		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>

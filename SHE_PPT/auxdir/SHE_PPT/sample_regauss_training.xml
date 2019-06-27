@@ -172,7 +172,7 @@
   </CatalogDescription>
 		<RegaussTrainingFile format="she.regaussTraining" version="0.1">
 			<DataContainer filestatus="PROPOSED">
-				<FileName>H6876McRuf3s9Y02bAreOYDqF4CdD5VzjVVY9rDvdlup6CBSGuZOtf8K</FileName>
+				<FileName>None</FileName>
 			</DataContainer>
 		</RegaussTrainingFile>
 	</Data>
