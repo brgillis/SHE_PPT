@@ -1698,14 +1698,21 @@ class SHEImage(object):
                 self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.header)[0]
                 
                 if self.galsim_wcs.isPixelScale() and np.isclose(self.galsim_wcs.scale,1.0):
-                    raise ValueError("Galsim WCS seems to not have been loaded correctly.")
+                    
+                    # Don't have the information in this stamp's header - check for a parent image
+                    if self.parent_image is not None:
+                        self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.parent_image.header)[0]
+                        if self.galsim_wcs.isPixelScale() and np.isclose(self.galsim_wcs.scale,1.0):
+                            raise ValueError("Galsim WCS seems to not have been loaded correctly.")
+                    else:
+                        raise ValueError("Galsim WCS seems to not have been loaded correctly.")
                 
                 if isinstance(self.galsim_wcs, galsim.wcs.CelestialWCS):
                     world_pos = galsim.CelestialCoord(ra * galsim.degrees, dec * galsim.degrees)
                 else:
                     world_pos = galsim.PositionD(ra, dec)
     
-                    local_wcs = self.galsim_wcs.jacobian(world_pos=world_pos)
+                local_wcs = self.galsim_wcs.jacobian(world_pos=world_pos)
 
         return local_wcs.inverse().getDecomposition()
 
