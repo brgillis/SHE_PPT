@@ -199,19 +199,19 @@
 				<ProcessExecuted>true</ProcessExecuted>
 				<ExitCode>5GD</ExitCode>
 				<LogFile filestatus="PROPOSED">
-					<FileName>Wr06KE9KgW0Oa3ha2d3AYk81ky443uSSjaISaHNrUMYjwzaQDU7kXm</FileName>
+					<FileName>None</FileName>
 				</LogFile>
 				<OutputDataFileList>TfUXtfmMhOcdyao8KYVKRApk0Mo8JfsGWmJhfHFftLC0tSyYeLjnehEwufABPjL7o0IkaJwzcMik4QkNo4da</OutputDataFileList>
 			</ProcessingStep>
 		</ProcessingSteps>
 		<DataStorage format="mer.finalCatalog" version="0.2">
 			<DataContainer filestatus="PROPOSED">
-				<FileName>LHdnnf9ggzPqAAsGHRDuMe</FileName>
+				<FileName>None</FileName>
 			</DataContainer>
 		</DataStorage>
 		<CutoutsCatalogStorage format="mer.cutoutsCatalog" version="0.2">
 			<DataContainer filestatus="PROPOSED">
-				<FileName>e9zbJ44lOA7CXL</FileName>
+				<FileName>None</FileName>
 			</DataContainer>
 		</CutoutsCatalogStorage>
 		<QualityParams>
