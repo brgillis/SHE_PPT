@@ -22,7 +22,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-06-28"
 
 
 import pickle
@@ -67,7 +67,7 @@ def __get_filename(self):
 
 def __get_all_filenames(self):
 
-    all_filenames = []
+    all_filenames = [__get_filename(self)]
 
     return all_filenames
 
