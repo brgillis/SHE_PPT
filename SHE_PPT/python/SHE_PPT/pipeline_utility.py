@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-06-06"
+__updated__ = "2019-07-08"
 
 from enum import Enum
 import json.decoder
@@ -48,6 +48,7 @@ class ConfigKeys(Enum):
     CBM_CLEANUP = "SHE_CTE_CleanupBiasMeasurement_cleanup"
 
     MB_ARCHIVE_DIR = "SHE_CTE_MeasureBias_archive_dir"
+    MB_NUM_THREADS = "SHE_CTE_MeasureBias_number_threads"
     MB_WEBDAV_ARCHIVE = "SHE_CTE_MeasureBias_webdav_archive"
     MB_WEBDAV_DIR = "SHE_CTE_MeasureBias_webdav_dir"
 
