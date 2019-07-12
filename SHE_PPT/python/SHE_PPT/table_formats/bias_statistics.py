@@ -23,12 +23,11 @@ __updated__ = "2019-07-12"
 
 from collections import OrderedDict
 
-from astropy.table import Table
-
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.math import LinregressStatistics, BiasMeasurements
 from SHE_PPT.table_utility import is_in_format
+from astropy.table import Table
 import numpy as np
 
 
@@ -48,19 +47,19 @@ class BiasStatisticsTableMeta(object):
         # Table metadata labels
         self.version = "SS_VER"
         self.format = "SS_FMT"
-        
+
         # Metadata specific to this table format
-        
+
         self.ID = "Unspecified"
-        
+
         self.method = "Unspecified"
-        
+
         self.m1 = np.NaN
         self.m1_err = np.NaN
         self.c1 = np.NaN
         self.c1_err = np.NaN
         self.m1c1_covar = np.NaN
-        
+
         self.m2 = np.NaN
         self.m2_err = np.NaN
         self.c2 = np.NaN
@@ -155,7 +154,7 @@ def make_bias_statistics_table_header(ID=None,
                                       g2_bias_measurements=None):
     """
     Generate a header for a bias statistics table.
-    
+
     Parameters
     ----------
     ID : str (max 20 characters)
@@ -166,7 +165,7 @@ def make_bias_statistics_table_header(ID=None,
         Bias measurements object for g1 component of shear
     g2_bias_measurements : SHE_PPT.math.BiasMeasurements
         Bias measurements object for g2 component of shear
-    
+
     Return
     ------
     header : OrderedDict
@@ -182,7 +181,7 @@ def make_bias_statistics_table_header(ID=None,
         header[tf.m.method] = method
     else:
         raise TypeError("method must be 'KSB', 'REGAUSS', 'MomentsML', or 'LensMC', or else 'Unspecified'")
-    
+
     if g1_bias_measurements is None:
         header[tf.m.m1] = 0
         header[tf.m.m1_err] = 1e99
@@ -195,7 +194,7 @@ def make_bias_statistics_table_header(ID=None,
         header[tf.m.c1] = g1_bias_measurements.c
         header[tf.m.c1_err] = g1_bias_measurements.c_err
         header[tf.m.m1c1_covar] = g1_bias_measurements.mc_covar
-    
+
     if g2_bias_measurements is None:
         header[tf.m.m2] = 0
         header[tf.m.m2_err] = 2e99
@@ -225,7 +224,7 @@ def initialise_bias_statistics_table(optional_columns=None,
                                      ):
     """
     Initialise a bias statistics table.
-    
+
     Parameters
     ----------
     ID : str (max 20 characters)
@@ -242,7 +241,7 @@ def initialise_bias_statistics_table(optional_columns=None,
         List (or otherwise) of LinregressStatistics objects for g1 bias statistics
     g2_bias_statistics : iterable<SHE_PPT.math.LinregressStatistics>
         List (or otherwise) of LinregressStatistics objects for g2 bias statistics
-    
+
     Return
     ------
     bias_statistics_table : astropy.table.Table
@@ -273,9 +272,9 @@ def initialise_bias_statistics_table(optional_columns=None,
                                                                    method=method,
                                                                    g1_bias_measurements=g1_bias_measurements,
                                                                    g2_bias_measurements=g2_bias_measurements,)
-    
+
     # Check validity of initial values
-    
+
     if run_IDs is None:
         run_IDs = []
         len_run_IDs = 0
@@ -286,7 +285,7 @@ def initialise_bias_statistics_table(optional_columns=None,
             # If it isn't iterable, silently coerce into a list
             run_IDs = [run_IDs]
             len_run_IDs = 1
-    
+
     if g1_bias_statistics is None:
         g1_bias_statistics = []
         len_g1_bias_statistics = 0
@@ -297,7 +296,7 @@ def initialise_bias_statistics_table(optional_columns=None,
             # If it isn't iterable, silently coerce into a list
             g1_bias_statistics = [g1_bias_statistics]
             len_g1_bias_statistics = 1
-    
+
     if g1_bias_statistics is None:
         g1_bias_statistics = []
         len_g2_bias_statistics = 0
@@ -308,27 +307,27 @@ def initialise_bias_statistics_table(optional_columns=None,
             # If it isn't iterable, silently coerce into a list
             g2_bias_statistics = [g2_bias_statistics]
             len_g2_bias_statistics = 1
-            
+
     # Check lengths are sensible
-    if not len_g1_bias_statistics==len_g2_bias_statistics:
+    if not len_g1_bias_statistics == len_g2_bias_statistics:
         raise ValueError("g1_bias_statistics and g2_bias_statistics must have the same length")
     else:
         num_rows = len_g1_bias_statistics
-    
-    if num_rows>0:
+
+    if num_rows > 0:
         if tf.ID in names:
-            if len_run_IDs==1:
+            if len_run_IDs == 1:
                 run_IDs *= num_rows
-            elif not len_run_IDs==num_rows:
+            elif not len_run_IDs == num_rows:
                 raise ValueError("run_IDs different length from bias statistics")
-        elif not len_run_IDs==0:
+        elif not len_run_IDs == 0:
             raise ValueError("run_IDs supplied, but not in optional columns")
-        
+
     # Add a row for each statistics object
     for row_index in range(num_rows):
         g1_bias_stats = g1_bias_statistics[row_index]
         g2_bias_stats = g2_bias_statistics[row_index]
-        
+
         new_row = {tf.w1: g1_bias_stats.w,
                    tf.xm1: g1_bias_stats.xm,
                    tf.x2m1: g1_bias_stats.x2m,
@@ -338,14 +337,72 @@ def initialise_bias_statistics_table(optional_columns=None,
                    tf.xm2: g2_bias_stats.xm,
                    tf.x2m2: g2_bias_stats.x2m,
                    tf.ym2: g2_bias_stats.ym,
-                   tf.xym2: g2_bias_stats.xym,}
-        
-        if not len_run_IDs==0:
+                   tf.xym2: g2_bias_stats.xym, }
+
+        if not len_run_IDs == 0:
             new_row[tf.ID] = run_IDs[row_index]
-            
+
         bias_statistics_table.add_row(vals=new_row)
-    
+
     # Check we meet the requirements of the table format
     assert(is_in_format(bias_statistics_table, tf))
 
     return bias_statistics_table
+
+# Utility functions related to this table format
+
+
+def get_bias_statistics(table, compress=False):
+    """
+
+    Gets the bias statistics from a table, in the format of a pair of lists of LinregressStatistics objects.
+
+    Parameters
+    ----------
+    table : astropy.table.Table (in bias_statistics format)
+    compress : bool
+        If True and if table has only one row, will return results as objects, not lists
+
+    Return
+    ------
+    tuple<list<LinregressStatistics>,list<LinregressStatistics>> : tuple of g1, g2 bias statistics lists
+
+    """
+
+    if not is_in_format(table, tf, ignore_metadata=True, strict=False):
+        raise ValueError("table must be in bias_statistics format for get_bias_statistics method")
+
+    l_g1_bias_statistics = []
+    l_g2_bias_statistics = []
+
+    for row in table:
+
+        # Get g1 stats
+
+        g1_bias_statistics = LinregressStatistics()
+
+        g1_bias_statistics.w = row[tf.w1]
+        g1_bias_statistics.xm = row[tf.xm1]
+        g1_bias_statistics.x2m = row[tf.x2m1]
+        g1_bias_statistics.ym = row[tf.ym1]
+        g1_bias_statistics.y2m = row[tf.y2m1]
+
+        l_g1_bias_statistics.append(g1_bias_statistics)
+
+        # Get g2 stats
+
+        g2_bias_statistics = LinregressStatistics()
+
+        g2_bias_statistics.w = row[tf.w2]
+        g2_bias_statistics.xm = row[tf.xm2]
+        g2_bias_statistics.x2m = row[tf.x2m2]
+        g2_bias_statistics.ym = row[tf.ym2]
+        g2_bias_statistics.y2m = row[tf.y2m2]
+
+        l_g2_bias_statistics.append(g1_bias_statistics)
+
+    # Compress if desired
+    if compress and len(l_g1_bias_statistics) == 1:
+        return l_g1_bias_statistics[0], l_g2_bias_statistics[0]
+
+    return l_g1_bias_statistics, l_g2_bias_statistics
