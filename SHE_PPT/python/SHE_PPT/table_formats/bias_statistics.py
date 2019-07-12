@@ -194,12 +194,14 @@ def make_bias_statistics_table_header(ID=None,
         header[tf.m.c1] = g1_bias_measurements.c
         header[tf.m.c1_err] = g1_bias_measurements.c_err
         header[tf.m.m1c1_covar] = g1_bias_measurements.mc_covar
+    else:
+        raise TypeError("g1_bias_measurements must be of type BiasMeasurements")
 
     if g2_bias_measurements is None:
         header[tf.m.m2] = 0
-        header[tf.m.m2_err] = 2e99
+        header[tf.m.m2_err] = 1e99
         header[tf.m.c2] = 0
-        header[tf.m.c2_err] = 2e99
+        header[tf.m.c2_err] = 1e99
         header[tf.m.m2c2_covar] = 0
     elif isinstance(g2_bias_measurements, BiasMeasurements):
         header[tf.m.m2] = g2_bias_measurements.m
