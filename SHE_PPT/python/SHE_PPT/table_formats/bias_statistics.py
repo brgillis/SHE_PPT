@@ -299,8 +299,8 @@ def initialise_bias_statistics_table(optional_columns=None,
             g1_bias_statistics = [g1_bias_statistics]
             len_g1_bias_statistics = 1
 
-    if g1_bias_statistics is None:
-        g1_bias_statistics = []
+    if g2_bias_statistics is None:
+        g2_bias_statistics = []
         len_g2_bias_statistics = 0
     else:
         try:
