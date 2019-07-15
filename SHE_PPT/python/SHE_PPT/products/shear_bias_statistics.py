@@ -185,7 +185,7 @@ def __set_method_bias_statistics(self, method, stats, workdir="."):
 
     # Make sure the subdirectory for the file exists
     if not os.path.exists(qualified_subfolder_name):
-        os.makedirs(qualified_subfolder_name, dir_fd=None)
+        os.makedirs(qualified_subfolder_name)
 
     new_filename = get_allowed_filename(type_name=method.upper() + "", instance_id=str(
         os.getpid()), extension=".fits", version=SHE_PPT.__version__, subdir=subfolder_name)
