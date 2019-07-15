@@ -247,6 +247,10 @@ def __set_KSB_bias_statistics(self, stats, workdir="."):
     return __set_method_bias_statistics(self, method="KSB", stats=stats, workdir=workdir)
 
 
+def __get_KSB_bias_statistics(self, workdir="."):
+    return __get_method_bias_statistics(self, method="KSB", workdir=workdir)
+
+
 def __set_LensMC_bias_statistics_filename(self, filename):
     __set_method_bias_statistics_filename(self, method="LensMC", filename=filename)
     return
@@ -258,6 +262,10 @@ def __get_LensMC_bias_statistics_filename(self):
 
 def __set_LensMC_bias_statistics(self, stats, workdir="."):
     return __set_method_bias_statistics(self, method="LensMC", stats=stats, workdir=workdir)
+
+
+def __get_LensMC_bias_statistics(self, workdir="."):
+    return __get_method_bias_statistics(self, method="LensMC", workdir=workdir)
 
 
 def __set_MomentsML_bias_statistics_filename(self, filename):
@@ -273,6 +281,10 @@ def __set_MomentsML_bias_statistics(self, stats, workdir="."):
     return __set_method_bias_statistics(self, method="MomentsML", stats=stats, workdir=workdir)
 
 
+def __get_MomentsML_bias_statistics(self, workdir="."):
+    return __get_method_bias_statistics(self, method="MomentsML", workdir=workdir)
+
+
 def __set_REGAUSS_bias_statistics_filename(self, filename):
     __set_method_bias_statistics_filename(self, method="REGAUSS", filename=filename)
     return
@@ -284,6 +296,10 @@ def __get_REGAUSS_bias_statistics_filename(self):
 
 def __set_REGAUSS_bias_statistics(self, stats, workdir="."):
     return __set_method_bias_statistics(self, method="REGAUSS", stats=stats, workdir=workdir)
+
+
+def __get_REGAUSS_bias_statistics(self, workdir="."):
+    return __get_method_bias_statistics(self, method="REGAUSS", workdir=workdir)
 
 
 def __get_all_filenames(self):
@@ -353,9 +369,9 @@ def create_dpd_shear_bias_statistics_from_stats(BFD_bias_statistics=None,
     return dpd_shear_bias_stats
 
 
-# Add a useful alias
-
+# Add useful aliases
 create_shear_bias_statistics_product = create_dpd_shear_bias_statistics
+create_shear_bias_statistics_product_from_stats = create_dpd_shear_bias_statistics_from_stats
 
 
 # Creation functions
