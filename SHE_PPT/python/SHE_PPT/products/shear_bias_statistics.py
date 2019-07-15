@@ -151,7 +151,7 @@ def __get_method_bias_statistics_filename(self, method):
     if bias_statistics is None:
         return None
 
-    filename = bias_statistics.DataContainer.Filename
+    filename = bias_statistics.DataContainer.FileName
 
     if filename == "None":
         return None
