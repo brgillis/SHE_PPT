@@ -157,15 +157,21 @@ class TestShearBiasStatsProduct(object):
 
         # Check that the products coincide
         assert np.isclose(loaded_product.get_BFD_bias_statistics(workdir=workdir).A11, stats["BFD"].A11)
-        assert np.isclose(loaded_product.get_KSB_bias_statistics(workdir=workdir)[0].ym, stats["KSB"][0].ym)
-        assert np.isclose(loaded_product.get_KSB_bias_statistics(workdir=workdir)[1].ym, stats["KSB"][1].ym)
-        assert np.isclose(loaded_product.get_LensMC_bias_statistics(workdir=workdir)[0].ym, stats["LensMC"][0].ym)
-        assert np.isclose(loaded_product.get_LensMC_bias_statistics(workdir=workdir)[1].ym, stats["LensMC"][1].ym)
-        assert np.isclose(loaded_product.get_MomentsML_bias_statistics(
-            workdir=workdir)[0].ym, stats["MomentsML"][0].ym)
-        assert np.isclose(loaded_product.get_MomentsML_bias_statistics(
-            workdir=workdir)[1].ym, stats["MomentsML"][1].ym)
-        assert np.isclose(loaded_product.get_REGAUSS_bias_statistics(workdir=workdir)[0].ym, stats["REGAUSS"][0].ym)
-        assert np.isclose(loaded_product.get_REGAUSS_bias_statistics(workdir=workdir)[1].ym, stats["REGAUSS"][1].ym)
+
+        for val in ("b1", "b2", "b3", "b4", "A11", "A12", "A13", "A14", "A22", "A23", "A24", "A33", "A34", "A44"):
+
+            assert np.isclose(getattr(loaded_product.get_BFD_bias_statistics(workdir=workdir), val),
+                              getattr(stats["BFD"], val))
+
+        for val in ("w", "xm", "x2m", "ym", "xym"):
+            for loaded_object, original_object in ((loaded_product.get_KSB_bias_statistics(workdir=workdir), stats["KSB"]),
+                                                   (loaded_product.get_LensMC_bias_statistics(
+                                                       workdir=workdir), stats["LensMC"]),
+                                                   (loaded_product.get_MomentsML_bias_statistics(
+                                                       workdir=workdir), stats["MomentsML"]),
+                                                   (loaded_product.get_REGAUSS_bias_statistics(workdir=workdir), stats["REGAUSS"])):
+
+                assert np.isclose(getattr(loaded_object[0], val), getattr(original_object[0], val))
+                assert np.isclose(getattr(loaded_object[1], val), getattr(original_object[1], val))
 
         return
