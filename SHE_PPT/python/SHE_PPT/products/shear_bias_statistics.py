@@ -177,8 +177,18 @@ def __set_method_bias_statistics(self, method, stats, workdir="."):
         return
 
     # Create a new file to store the statistics
+
+    subfolder_number = os.getpid() % 256
+    subfolder_name = "data/s" + str(subfolder_number)
+
+    qualified_subfolder_name = os.path.join(workdir, subfolder_name)
+
+    # Make sure the subdirectory for the file exists
+    if not os.path.exists(qualified_subfolder_name):
+        os.makedirs(qualified_subfolder_name, dir_fd=None)
+
     new_filename = get_allowed_filename(type_name=method.upper() + "", instance_id=str(
-        os.getpid()), extension=".fits", version=SHE_PPT.__version__)
+        os.getpid()), extension=".fits", version=SHE_PPT.__version__, subdir=subfolder_name)
 
     # Create the file using the statistics
     if method == "BFD":
@@ -190,6 +200,7 @@ def __set_method_bias_statistics(self, method, stats, workdir="."):
                                                                  g2_bias_statistics=stats[1])
 
     qualified_new_filename = os.path.join(workdir, new_filename)
+
     bias_statistics_table.write(qualified_new_filename)
 
     # Set the filename for the object
