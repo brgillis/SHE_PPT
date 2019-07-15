@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-07-12"
+__updated__ = "2019-07-15"
 
 from collections import OrderedDict
 
@@ -28,7 +28,6 @@ from SHE_PPT.logging import getLogger
 from SHE_PPT.math import LinregressStatistics, BiasMeasurements
 from SHE_PPT.table_utility import is_in_format
 from astropy.table import Table
-import numpy as np
 
 
 logger = getLogger(mv.logger_name)

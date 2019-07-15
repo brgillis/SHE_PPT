@@ -28,7 +28,6 @@ from SHE_PPT.logging import getLogger
 from SHE_PPT.math import LinregressStatistics, BiasMeasurements
 from SHE_PPT.table_utility import is_in_format
 from astropy.table import Table
-import numpy as np
 
 
 logger = getLogger(mv.logger_name)
@@ -398,7 +397,7 @@ def get_bias_statistics(table, compress=False):
         g1_bias_statistics.xm = row[tf.xm1]
         g1_bias_statistics.x2m = row[tf.x2m1]
         g1_bias_statistics.ym = row[tf.ym1]
-        g1_bias_statistics.y2m = row[tf.y2m1]
+        g1_bias_statistics.xym = row[tf.xym1]
 
         l_g1_bias_statistics.append(g1_bias_statistics)
 
@@ -410,7 +409,7 @@ def get_bias_statistics(table, compress=False):
         g2_bias_statistics.xm = row[tf.xm2]
         g2_bias_statistics.x2m = row[tf.x2m2]
         g2_bias_statistics.ym = row[tf.ym2]
-        g2_bias_statistics.y2m = row[tf.y2m2]
+        g2_bias_statistics.xym = row[tf.xym2]
 
         l_g2_bias_statistics.append(g1_bias_statistics)
 
