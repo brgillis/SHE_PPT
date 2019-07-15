@@ -79,11 +79,22 @@ class TestShearBiasStatsProduct(object):
         product.validateBinding()
 
         # Check that it was inited with the proper values
-        assert product.get_BFD_bias_statistics(workdir=workdir) == stats["BFD"]
-        assert product.get_KSB_bias_statistics(workdir=workdir) == stats["KSB"]
-        assert product.get_LensMC_bias_statistics(workdir=workdir) == stats["LensMC"]
-        assert product.get_MomentsML_bias_statistics(workdir=workdir) == stats["MomentsML"]
-        assert product.get_REGAUSS_bias_statistics(workdir=workdir) == stats["REGAUSS"]
+
+        for val in ("b1", "b2", "b3", "b4", "A11", "A12", "A13", "A14", "A22", "A23", "A24", "A33", "A34", "A44"):
+
+            assert np.isclose(getattr(product.get_BFD_bias_statistics(workdir=workdir), val),
+                              getattr(stats["BFD"], val))
+
+        for val in ("w", "xm", "x2m", "ym", "xym"):
+            for new_object, original_object in ((product.get_KSB_bias_statistics(workdir=workdir), stats["KSB"]),
+                                                (product.get_LensMC_bias_statistics(
+                                                    workdir=workdir), stats["LensMC"]),
+                                                (product.get_MomentsML_bias_statistics(
+                                                    workdir=workdir), stats["MomentsML"]),
+                                                (product.get_REGAUSS_bias_statistics(workdir=workdir), stats["REGAUSS"])):
+
+                assert np.isclose(getattr(new_object[0], val), getattr(original_object[0], val))
+                assert np.isclose(getattr(new_object[1], val), getattr(original_object[1], val))
 
         # Check the general get method works
         stats2 = {}
@@ -97,12 +108,28 @@ class TestShearBiasStatsProduct(object):
             if not method == 'BFD':
                 stats2[method] = (LinregressStatistics(x1, y1, y_err),
                                   LinregressStatistics(x2, y2, y_err),)
+
+                product.set_method_statistics(method, stats2[method], workdir=workdir)
+
+                for val in ("w", "xm", "x2m", "ym", "xym"):
+                    for new_object, original_object in ((product.get_KSB_bias_statistics(workdir=workdir), stats2["KSB"]),
+                                                        (product.get_LensMC_bias_statistics(
+                                                            workdir=workdir), stats2["LensMC"]),
+                                                        (product.get_MomentsML_bias_statistics(
+                                                            workdir=workdir), stats2["MomentsML"]),
+                                                        (product.get_REGAUSS_bias_statistics(workdir=workdir), stats2["REGAUSS"])):
+
+                        assert np.isclose(getattr(new_object[0], val), getattr(original_object[0], val))
+                        assert np.isclose(getattr(new_object[1], val), getattr(original_object[1], val))
             else:
                 stats2[method] = BFDSumStatistics(sums_for_bfd)
 
-            product.set_method_statistics(method, stats2[method], workdir=workdir)
+                product.set_method_statistics(method, stats2[method], workdir=workdir)
 
-            assert product.get_method_statistics(method, workdir=workdir) == stats2[method]
+                for val in ("b1", "b2", "b3", "b4", "A11", "A12", "A13", "A14", "A22", "A23", "A24", "A33", "A34", "A44"):
+
+                    assert np.isclose(getattr(product.get_BFD_bias_statistics(workdir=workdir), val),
+                                      getattr(stats["BFD"], val))
 
         return
 
@@ -156,7 +183,6 @@ class TestShearBiasStatsProduct(object):
         loaded_product = read_xml_product(filename, workdir=workdir)
 
         # Check that the products coincide
-        assert np.isclose(loaded_product.get_BFD_bias_statistics(workdir=workdir).A11, stats["BFD"].A11)
 
         for val in ("b1", "b2", "b3", "b4", "A11", "A12", "A13", "A14", "A22", "A23", "A24", "A33", "A34", "A44"):
 
