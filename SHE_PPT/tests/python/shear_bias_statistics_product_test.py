@@ -99,7 +99,6 @@ class TestShearBiasStatsProduct(object):
         # Check the general get method works
         stats2 = {}
         for method in ("BFD", "KSB", "LensMC", "MomentsML", "REGAUSS"):
-            assert product.get_method_bias_statistics(method, workdir=workdir) == stats[method]
             x1 = np.linspace(0, n - 1, n, endpoint=True)
             x2 = np.linspace(0, n - 1, n, endpoint=True)
             y_err = 0.25 * np.ones_like(x1)
