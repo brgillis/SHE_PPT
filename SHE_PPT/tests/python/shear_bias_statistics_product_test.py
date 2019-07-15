@@ -156,7 +156,7 @@ class TestShearBiasStatsProduct(object):
         loaded_product = read_xml_product(filename, workdir=workdir)
 
         # Check that the products coincide
-        assert loaded_product.get_BFD_bias_statistics(workdir=workdir).A11 == stats["BFD"][0].A11
+        assert loaded_product.get_BFD_bias_statistics(workdir=workdir).A11 == stats["BFD"].A11
         assert loaded_product.get_KSB_bias_statistics(workdir=workdir)[0].ym == stats["KSB"][0].ym
         assert loaded_product.get_KSB_bias_statistics(workdir=workdir)[1].ym == stats["KSB"][1].ym
         assert loaded_product.get_LensMC_bias_statistics(workdir=workdir)[0].ym == stats["LensMC"][0].ym
