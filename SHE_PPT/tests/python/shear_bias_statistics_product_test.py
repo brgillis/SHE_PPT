@@ -34,7 +34,9 @@ class TestShearBiasStatsProduct(object):
 
     """
 
-    def test_validation(self):
+    def test_validation(self, tmpdir):
+
+        workdir = str(tmpdir)
 
         n = 10
         sums_for_bfd = {'b1': 1.0,
@@ -66,30 +68,27 @@ class TestShearBiasStatsProduct(object):
             else:
                 stats[method] = BFDSumStatistics(sums_for_bfd)
         # Create the product
-        product = prod.create_dpd_shear_bias_statistics(BFD_statistics=stats["BFD"],
-                                                        KSB_g1_statistics=stats["KSB"][0],
-                                                        KSB_g2_statistics=stats["KSB"][1],
-                                                        LensMC_g1_statistics=stats["LensMC"][0],
-                                                        LensMC_g2_statistics=stats["LensMC"][1],
-                                                        MomentsML_g1_statistics=stats["MomentsML"][0],
-                                                        MomentsML_g2_statistics=stats["MomentsML"][1],
-                                                        REGAUSS_g1_statistics=stats["REGAUSS"][0],
-                                                        REGAUSS_g2_statistics=stats["REGAUSS"][1])
+        product = prod.create_dpd_shear_bias_statistics_from_stats(BFD_statistics=stats["BFD"],
+                                                                   KSB_statistics=stats["KSB"],
+                                                                   LensMC_statistics=stats["LensMC"],
+                                                                   MomentsML_statistics=stats["MomentsML"],
+                                                                   REGAUSS_statistics=stats["REGAUSS"],
+                                                                   workdir=workdir)
 
         # Check that it validates the schema
         product.validateBinding()
 
         # Check that it was inited with the proper values
-        assert product.get_BFD_statistics() == stats["BFD"]
-        assert product.get_KSB_statistics() == stats["KSB"]
-        assert product.get_LensMC_statistics() == stats["LensMC"]
-        assert product.get_MomentsML_statistics() == stats["MomentsML"]
-        assert product.get_REGAUSS_statistics() == stats["REGAUSS"]
+        assert product.get_BFD_statistics(workdir=workdir) == stats["BFD"]
+        assert product.get_KSB_statistics(workdir=workdir) == stats["KSB"]
+        assert product.get_LensMC_statistics(workdir=workdir) == stats["LensMC"]
+        assert product.get_MomentsML_statistics(workdir=workdir) == stats["MomentsML"]
+        assert product.get_REGAUSS_statistics(workdir=workdir) == stats["REGAUSS"]
 
         # Check the general get method works
         stats2 = {}
         for method in ("BFD", "KSB", "LensMC", "MomentsML", "REGAUSS"):
-            assert product.get_method_statistics(method) == stats[method]
+            assert product.get_method_statistics(method, workdir=workdir) == stats[method]
             x1 = np.linspace(0, n - 1, n, endpoint=True)
             x2 = np.linspace(0, n - 1, n, endpoint=True)
             y_err = 0.25 * np.ones_like(x1)
@@ -101,13 +100,15 @@ class TestShearBiasStatsProduct(object):
             else:
                 stats2[method] = BFDSumStatistics(sums_for_bfd)
 
-            product.set_method_statistics(method, *stats2[method])
+            product.set_method_statistics(method, stats2[method], workdir=workdir)
 
-            assert product.get_method_statistics(method) == stats2[method]
+            assert product.get_method_statistics(method, workdir=workdir) == stats2[method]
 
         return
 
     def test_xml_writing_and_reading(self, tmpdir):
+
+        workdir = str(tmpdir)
 
         n = 10
         sums_for_bfd = {'b1': 1.0,
@@ -140,22 +141,19 @@ class TestShearBiasStatsProduct(object):
             else:
                 stats[method] = BFDSumStatistics(sums_for_bfd)
         # Create the product
-        product = prod.create_dpd_shear_bias_statistics(BFD_statistics=stats["BFD"],
-                                                        KSB_g1_statistics=stats["KSB"][0],
-                                                        KSB_g2_statistics=stats["KSB"][1],
-                                                        LensMC_g1_statistics=stats["LensMC"][0],
-                                                        LensMC_g2_statistics=stats["LensMC"][1],
-                                                        MomentsML_g1_statistics=stats["MomentsML"][0],
-                                                        MomentsML_g2_statistics=stats["MomentsML"][1],
-                                                        REGAUSS_g1_statistics=stats["REGAUSS"][0],
-                                                        REGAUSS_g2_statistics=stats["REGAUSS"][1])
+        product = prod.create_dpd_shear_bias_statistics_from_stats(BFD_statistics=stats["BFD"],
+                                                                   KSB_statistics=stats["KSB"],
+                                                                   LensMC_statistics=stats["LensMC"],
+                                                                   MomentsML_statistics=stats["MomentsML"],
+                                                                   REGAUSS_statistics=stats["REGAUSS"],
+                                                                   workdir=workdir)
 
         # Save the product in an XML file
         filename = "she_shear_estimates.xml"
-        write_xml_product(product, filename, workdir=str(tmpdir))
+        write_xml_product(product, filename, workdir=workdir)
 
         # Read back the XML file
-        loaded_product = read_xml_product(filename, workdir=str(tmpdir))
+        loaded_product = read_xml_product(filename, workdir=workdir)
 
         # Check that the products coincide
         assert loaded_product.get_BFD_statistics().A11 == stats["BFD"][0].A11
