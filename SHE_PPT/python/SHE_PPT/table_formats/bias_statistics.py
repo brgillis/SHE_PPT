@@ -50,26 +50,37 @@ class BiasStatisticsTableMeta(object):
 
         # Metadata specific to this table format
 
-        self.ID = "Unspecified"
+        self.ID = "ID"
 
-        self.method = "Unspecified"
+        self.method = "METHOD"
 
-        self.m1 = np.NaN
-        self.m1_err = np.NaN
-        self.c1 = np.NaN
-        self.c1_err = np.NaN
-        self.m1c1_covar = np.NaN
+        self.m1 = "BM_M1"
+        self.m1_err = "BM_M1E"
+        self.c1 = "BM_C1"
+        self.c1_err = "BM_C1E"
+        self.m1c1_covar = "BM_M1C1C"
 
-        self.m2 = np.NaN
-        self.m2_err = np.NaN
-        self.c2 = np.NaN
-        self.c2_err = np.NaN
-        self.m2c2_covar = np.NaN
+        self.m2 = "BM_M2"
+        self.m2_err = "BM_M2E"
+        self.c2 = "BM_C2"
+        self.c2_err = "BM_C2E"
+        self.m2c2_covar = "BM_M2C2C"
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
                                      (self.format, None),
-                                     (self.method, "One of 'KSB', 'REGAUSS', 'MomentsML', or 'LensMC', or else 'Unspecified'.")))
+                                     (self.ID, None),
+                                     (self.method, "One of 'KSB', 'REGAUSS', 'MomentsML', or 'LensMC', or else 'Unspecified'."),
+                                     (self.m1, None),
+                                     (self.m1_err, None),
+                                     (self.c1, None),
+                                     (self.c1_err, None),
+                                     (self.m1c1_covar, None),
+                                     (self.m2, None),
+                                     (self.m2_err, None),
+                                     (self.c2, None),
+                                     (self.c2_err, None),
+                                     (self.m2c2_covar, None),))
 
         # A list of columns in the desired order
         self.all = list(self.comments.keys())

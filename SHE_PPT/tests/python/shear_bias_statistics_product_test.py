@@ -68,11 +68,11 @@ class TestShearBiasStatsProduct(object):
             else:
                 stats[method] = BFDSumStatistics(sums_for_bfd)
         # Create the product
-        product = prod.create_dpd_shear_bias_statistics_from_stats(BFD_statistics=stats["BFD"],
-                                                                   KSB_statistics=stats["KSB"],
-                                                                   LensMC_statistics=stats["LensMC"],
-                                                                   MomentsML_statistics=stats["MomentsML"],
-                                                                   REGAUSS_statistics=stats["REGAUSS"],
+        product = prod.create_dpd_shear_bias_statistics_from_stats(BFD_bias_statistics=stats["BFD"],
+                                                                   KSB_bias_statistics=stats["KSB"],
+                                                                   LensMC_bias_statistics=stats["LensMC"],
+                                                                   MomentsML_bias_statistics=stats["MomentsML"],
+                                                                   REGAUSS_bias_statistics=stats["REGAUSS"],
                                                                    workdir=workdir)
 
         # Check that it validates the schema
@@ -141,11 +141,11 @@ class TestShearBiasStatsProduct(object):
             else:
                 stats[method] = BFDSumStatistics(sums_for_bfd)
         # Create the product
-        product = prod.create_dpd_shear_bias_statistics_from_stats(BFD_statistics=stats["BFD"],
-                                                                   KSB_statistics=stats["KSB"],
-                                                                   LensMC_statistics=stats["LensMC"],
-                                                                   MomentsML_statistics=stats["MomentsML"],
-                                                                   REGAUSS_statistics=stats["REGAUSS"],
+        product = prod.create_dpd_shear_bias_statistics_from_stats(BFD_bias_statistics=stats["BFD"],
+                                                                   KSB_bias_statistics=stats["KSB"],
+                                                                   LensMC_bias_statistics=stats["LensMC"],
+                                                                   MomentsML_bias_statistics=stats["MomentsML"],
+                                                                   REGAUSS_bias_statistics=stats["REGAUSS"],
                                                                    workdir=workdir)
 
         # Save the product in an XML file
