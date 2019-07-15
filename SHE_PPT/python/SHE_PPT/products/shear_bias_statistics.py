@@ -29,7 +29,17 @@ __updated__ = "2019-07-15"
 
 # Temporary class definitions
 
+import os
+
 import SHE_PPT
+from SHE_PPT.file_io import get_allowed_filename, find_file
+from SHE_PPT.logging import getLogger
+from SHE_PPT.table_formats.bfd_bias_statistics import initialise_bfd_bias_statistics_table, get_bfd_bias_statistics
+from SHE_PPT.table_formats.bias_statistics import initialise_bias_statistics_table, get_bias_statistics
+from astropy.table import Table
+
+
+logger = getLogger(__name__)
 
 
 class dpdShearBiasStatistics(object):
@@ -45,11 +55,11 @@ class dpdShearBiasStatistics(object):
 class ShearBiasStatistics(object):  # @FIXME
 
     def __init__(self):
-        self.BfdBiasMeasurements = None
-        self.KsbBiasMeasurements = None
-        self.LensMcBiasMeasurements = None
-        self.MomentsMlBiasMeasurements = None
-        self.RegaussBiasMeasurements = None
+        self.BfdBiasStatistics = None
+        self.KsbBiasStatistics = None
+        self.LensMcBiasStatistics = None
+        self.MomentsMlBiasStatistics = None
+        self.RegaussBiasStatistics = None
 
 
 class MethodShearBiasStatistics(object):  # @FIXME
@@ -74,119 +84,206 @@ def init():
 
     binding_class = dpdShearBiasStatistics
 
-    # Add the statistics methods
+    # Add the methods to the class
+
+    binding_class.set_method_bias_statistics_filename = __set_method_bias_statistics_filename
+    binding_class.get_method_bias_statistics_filename = __get_method_bias_statistics_filename
+
+    binding_class.set_method_bias_statistics = __set_method_bias_statistics
+    binding_class.get_method_bias_statistics = __get_method_bias_statistics
+
+    # Add methods for specific shear estimation methods
 
     binding_class.set_BFD_bias_statistics_filename = __set_BFD_bias_statistics_filename
     binding_class.get_BFD_bias_statistics_filename = __get_BFD_bias_statistics_filename
 
+    binding_class.set_BFD_bias_statistics = __set_BFD_bias_statistics
+    binding_class.get_BFD_bias_statistics = __get_BFD_bias_statistics
+
     binding_class.set_KSB_bias_statistics_filename = __set_KSB_bias_statistics_filename
     binding_class.get_KSB_bias_statistics_filename = __get_KSB_bias_statistics_filename
+
+    binding_class.set_KSB_bias_statistics = __set_KSB_bias_statistics
+    binding_class.get_KSB_bias_statistics = __get_KSB_bias_statistics
 
     binding_class.set_LensMC_bias_statistics_filename = __set_LensMC_bias_statistics_filename
     binding_class.get_LensMC_bias_statistics_filename = __get_LensMC_bias_statistics_filename
 
+    binding_class.set_LensMC_bias_statistics = __set_LensMC_bias_statistics
+    binding_class.get_LensMC_bias_statistics = __get_LensMC_bias_statistics
+
     binding_class.set_MomentsML_bias_statistics_filename = __set_MomentsML_bias_statistics_filename
     binding_class.get_MomentsML_bias_statistics_filename = __get_MomentsML_bias_statistics_filename
+
+    binding_class.set_MomentsML_bias_statistics = __set_MomentsML_bias_statistics
+    binding_class.get_MomentsML_bias_statistics = __get_MomentsML_bias_statistics
 
     binding_class.set_REGAUSS_bias_statistics_filename = __set_REGAUSS_bias_statistics_filename
     binding_class.get_REGAUSS_bias_statistics_filename = __get_REGAUSS_bias_statistics_filename
 
-    binding_class.get_all_filenames = __get_all_filenames
+    binding_class.set_REGAUSS_bias_statistics = __set_REGAUSS_bias_statistics
+    binding_class.get_REGAUSS_bias_statistics = __get_REGAUSS_bias_statistics
 
-    binding_class.get_method_bias_statistics_filename = __get_method_bias_statistics_filename
-    binding_class.set_method_bias_statistics_filename = __set_method_bias_statistics_filename
+    binding_class.get_all_filenames = __get_all_filenames
 
     binding_class.has_files = True
 
 
+# Define a dictionary of the member names for the bias statistics of each method
+bias_statistics_switcher = {"KSB": "BfdBiasStatistics",
+                            "LensMC": "KsbBiasStatistics",
+                            "MomentsML": "LensMcBiasStatistics",
+                            "REGAUSS": "MomentsMlBiasStatistics",
+                            "BFD": "RegaussBiasStatistics", }
+
+
+def __set_method_bias_statistics_filename(self, method, filename):
+
+    setattr(self.Data, bias_statistics_switcher[method], create_method_shear_bias_statistics(filename))
+
+    return
+
+
+def __get_method_bias_statistics_filename(self, method):
+
+    bias_statistics = getattr(self.Data, bias_statistics_switcher[method])
+
+    if bias_statistics is None:
+        return None
+
+    filename = bias_statistics.DataContainer.Filename
+
+    if filename == "None":
+        return None
+    else:
+        return filename
+
+
+def __set_method_bias_statistics(self, method, stats, workdir="."):
+
+    # If a previous file exists, delete it
+    old_filename = __get_method_bias_statistics_filename(self, method)
+    if old_filename is not None:
+        qualified_old_filename = os.path.join(workdir, old_filename)
+        if os.path.exists(qualified_old_filename):
+            try:
+                os.remove(qualified_old_filename)
+            except Exception:
+                logger.warn("Deprecated file " + qualified_old_filename + " cannot be deleted.")
+
+    # Handle if the new statistics object is None
+    if stats is None:
+        setattr(self.Data, bias_statistics_switcher[method], None)
+        return
+
+    # Create a new file to store the statistics
+    new_filename = get_allowed_filename(type_name=method.upper() + "", instance_id=str(
+        os.getpid()), extension=".fits", version=SHE_PPT.__version__)
+
+    # Create the file using the statistics
+    if method == "BFD":
+        bias_statistics_table = initialise_bfd_bias_statistics_table(method=method,
+                                                                     bfd_bias_statistics=stats)
+    else:
+        bias_statistics_table = initialise_bias_statistics_table(method=method,
+                                                                 g1_bias_statistics=stats[0],
+                                                                 g2_bias_statistics=stats[1])
+
+    qualified_new_filename = os.path.join(workdir, new_filename)
+    bias_statistics_table.write(qualified_new_filename)
+
+    # Set the filename for the object
+    setattr(self.Data, bias_statistics_switcher[method], create_method_shear_bias_statistics(new_filename))
+
+    return
+
+
+def __get_method_bias_statistics(self, method, workdir="."):
+
+    filename = __get_method_bias_statistics_filename(self, method)
+
+    if filename is None:
+        return None
+
+    qualified_filename = find_file(filename, path=workdir)
+
+    bias_statistics_table = Table.read(qualified_filename)
+
+    if method == "BFD":
+        bias_statistics = get_bfd_bias_statistics(bias_statistics_table, compress=True)
+    else:
+        bias_statistics = get_bias_statistics(bias_statistics_table, compress=True)
+
+    return bias_statistics
+
+
 def __set_BFD_bias_statistics_filename(self, filename):
-    self.Data.BfdBiasMeasurements = create_method_shear_bias_statistics(filename)
+    __set_method_bias_statistics_filename(self, method="BFD", filename=filename)
     return
 
 
 def __get_BFD_bias_statistics_filename(self):
+    return __get_method_bias_statistics_filename(self, method="BFD")
 
-    if not hasattr(self.Data, "BfdBiasMeasurements"):
-        return None
 
-    filename = self.Data.BfdBiasMeasurements.DataContainer.Filename
+def __set_BFD_bias_statistics(self, stats, workdir="."):
+    return __set_method_bias_statistics(self, method="BFD", stats=stats, workdir=workdir)
 
-    if filename == "None":
-        return None
-    else:
-        return filename
+
+def __get_BFD_bias_statistics(self, workdir="."):
+    return __get_method_bias_statistics(self, method="BFD", workdir=workdir)
 
 
 def __set_KSB_bias_statistics_filename(self, filename):
-    self.Data.KsbBiasMeasurements = create_method_shear_bias_statistics(filename)
+    __set_method_bias_statistics_filename(self, method="KSB", filename=filename)
     return
 
 
 def __get_KSB_bias_statistics_filename(self):
+    return __get_method_bias_statistics_filename(self, method="KSB")
 
-    if not hasattr(self.Data, "KsbBiasMeasurements"):
-        return None
 
-    filename = self.Data.KsbBiasMeasurements.DataContainer.Filename
-
-    if filename == "None":
-        return None
-    else:
-        return filename
+def __set_KSB_bias_statistics(self, stats, workdir="."):
+    return __set_method_bias_statistics(self, method="KSB", stats=stats, workdir=workdir)
 
 
 def __set_LensMC_bias_statistics_filename(self, filename):
-    self.Data.LensMcBiasMeasurements = create_method_shear_bias_statistics(filename)
+    __set_method_bias_statistics_filename(self, method="LensMC", filename=filename)
     return
 
 
 def __get_LensMC_bias_statistics_filename(self):
+    return __get_method_bias_statistics_filename(self, method="LensMC")
 
-    if not hasattr(self.Data, "LensMcBiasMeasurements"):
-        return None
 
-    filename = self.Data.LensMcBiasMeasurements.DataContainer.Filename
-
-    if filename == "None":
-        return None
-    else:
-        return filename
+def __set_LensMC_bias_statistics(self, stats, workdir="."):
+    return __set_method_bias_statistics(self, method="LensMC", stats=stats, workdir=workdir)
 
 
 def __set_MomentsML_bias_statistics_filename(self, filename):
-    self.Data.MomentsMlBiasMeasurements = create_method_shear_bias_statistics(filename)
+    __set_method_bias_statistics_filename(self, method="MomentsML", filename=filename)
     return
 
 
 def __get_MomentsML_bias_statistics_filename(self):
+    return __get_method_bias_statistics_filename(self, method="MomentsML")
 
-    if not hasattr(self.Data, "MomentsMlBiasMeasurements"):
-        return None
 
-    filename = self.Data.MomentsMlBiasMeasurements.DataContainer.Filename
-
-    if filename == "None":
-        return None
-    else:
-        return filename
+def __set_MomentsML_bias_statistics(self, stats, workdir="."):
+    return __set_method_bias_statistics(self, method="MomentsML", stats=stats, workdir=workdir)
 
 
 def __set_REGAUSS_bias_statistics_filename(self, filename):
-    self.Data.RegaussBiasMeasurements = create_method_shear_bias_statistics(filename)
+    __set_method_bias_statistics_filename(self, method="REGAUSS", filename=filename)
     return
 
 
 def __get_REGAUSS_bias_statistics_filename(self):
+    return __get_method_bias_statistics_filename(self, method="REGAUSS")
 
-    if not hasattr(self.Data, "RegaussBiasMeasurements"):
-        return None
 
-    filename = self.Data.RegaussBiasMeasurements.DataContainer.Filename
-
-    if filename == "None":
-        return None
-    else:
-        return filename
+def __set_REGAUSS_bias_statistics(self, stats, workdir="."):
+    return __set_method_bias_statistics(self, method="REGAUSS", stats=stats, workdir=workdir)
 
 
 def __get_all_filenames(self):
@@ -198,34 +295,6 @@ def __get_all_filenames(self):
                      __get_REGAUSS_bias_statistics_filename(self), ]
 
     return all_filenames
-
-
-def __get_method_bias_statistics_filename(self, method):
-
-    switcher = {"KSB": self.get_KSB_bias_statistics_filename,
-                "LensMC": self.get_LensMC_bias_statistics_filename,
-                "MomentsML": self.get_MomentsML_bias_statistics_filename,
-                "REGAUSS": self.get_REGAUSS_bias_statistics_filename,
-                "BFD": self.get_BFD_bias_statistics_filename, }
-
-    try:
-        return switcher[method]()
-    except KeyError:
-        ValueError("Invalid method " + str(method) + ".")
-
-
-def __set_method_bias_statistics_filename(self, method, filename):
-
-    switcher = {"KSB": self.set_KSB_bias_statistics_filename,
-                "LensMC": self.set_LensMC_bias_statistics_filename,
-                "MomentsML": self.set_MomentsML_bias_statistics_filename,
-                "REGAUSS": self.set_REGAUSS_bias_statistics_filename,
-                "BFD": self.set_BFD_bias_statistics_filename, }
-
-    try:
-        return switcher[method](filename)
-    except KeyError:
-        ValueError("Invalid method " + str(method) + ".")
 
 
 def create_dpd_shear_bias_statistics(BFD_bias_statistics_filename=None,
@@ -256,6 +325,34 @@ def create_dpd_shear_bias_statistics(BFD_bias_statistics_filename=None,
     return dpd_shear_bias_stats
 
 
+def create_dpd_shear_bias_statistics_from_stats(BFD_bias_statistics=None,
+                                                KSB_bias_statistics=None,
+                                                LensMC_bias_statistics=None,
+                                                MomentsML_bias_statistics=None,
+                                                REGAUSS_bias_statistics=None,
+                                                workdir="."):
+    """
+        @TODO fill in docstring
+    """
+
+    # dpd_shear_bias_stats = read_xml_product(find_aux_file(sample_file_name), allow_pickled=False)
+    dpd_shear_bias_stats = dpdShearBiasStatistics()
+
+    # Overwrite the header with a new one to update the creation date (among other things)
+    # dpd_shear_bias_stats.Header = HeaderProvider.createGenericHeader("SHE")
+    dpd_shear_bias_stats.Header = "SHE"
+    dpd_shear_bias_stats.Data = ShearBiasStatistics()
+
+    # Set the statistics for each method
+    dpd_shear_bias_stats.set_BFD_bias_statistics(BFD_bias_statistics, workdir=workdir)
+    dpd_shear_bias_stats.set_KSB_bias_statistics(KSB_bias_statistics, workdir=workdir)
+    dpd_shear_bias_stats.set_LensMC_bias_statistics(LensMC_bias_statistics, workdir=workdir)
+    dpd_shear_bias_stats.set_MomentsML_bias_statistics(MomentsML_bias_statistics, workdir=workdir)
+    dpd_shear_bias_stats.set_REGAUSS_bias_statistics(REGAUSS_bias_statistics, workdir=workdir)
+
+    return dpd_shear_bias_stats
+
+
 # Add a useful alias
 
 create_shear_bias_statistics_product = create_dpd_shear_bias_statistics
@@ -264,6 +361,9 @@ create_shear_bias_statistics_product = create_dpd_shear_bias_statistics
 # Creation functions
 
 def create_method_shear_bias_statistics(filename):
+
+    if filename is None:
+        return None
 
     method_shear_estimates = MethodShearBiasStatistics()
 

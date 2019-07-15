@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-07-12"
+__updated__ = "2019-07-15"
 
 from collections import OrderedDict
 
@@ -351,8 +351,8 @@ def initialise_bias_statistics_table(optional_columns=None,
 
     return bias_statistics_table
 
-# Utility functions related to this table format
 
+# Utility functions related to this table format
 
 def get_bias_statistics(table, compress=False):
     """
