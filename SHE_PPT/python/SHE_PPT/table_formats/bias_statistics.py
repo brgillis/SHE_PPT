@@ -411,7 +411,7 @@ def get_bias_statistics(table, compress=False):
         g2_bias_statistics.ym = row[tf.ym2]
         g2_bias_statistics.xym = row[tf.xym2]
 
-        l_g2_bias_statistics.append(g1_bias_statistics)
+        l_g2_bias_statistics.append(g2_bias_statistics)
 
     # Compress if desired
     if compress and len(l_g1_bias_statistics) == 1:
