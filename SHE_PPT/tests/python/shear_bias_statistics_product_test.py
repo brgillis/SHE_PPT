@@ -109,17 +109,6 @@ class TestShearBiasStatsProduct(object):
                                   LinregressStatistics(x2, y2, y_err),)
 
                 product.set_method_bias_statistics(method, stats2[method], workdir=workdir)
-
-                for val in ("w", "xm", "x2m", "ym", "xym"):
-                    for new_object, original_object in ((product.get_KSB_bias_statistics(workdir=workdir), stats2["KSB"]),
-                                                        (product.get_LensMC_bias_statistics(
-                                                            workdir=workdir), stats2["LensMC"]),
-                                                        (product.get_MomentsML_bias_statistics(
-                                                            workdir=workdir), stats2["MomentsML"]),
-                                                        (product.get_REGAUSS_bias_statistics(workdir=workdir), stats2["REGAUSS"])):
-
-                        assert np.isclose(getattr(new_object[0], val), getattr(original_object[0], val))
-                        assert np.isclose(getattr(new_object[1], val), getattr(original_object[1], val))
             else:
                 stats2[method] = BFDSumStatistics(sums_for_bfd)
 
@@ -129,6 +118,18 @@ class TestShearBiasStatsProduct(object):
 
                     assert np.isclose(getattr(product.get_BFD_bias_statistics(workdir=workdir), val),
                                       getattr(stats["BFD"], val))
+
+        for method in ("KSB", "LensMC", "MomentsML", "REGAUSS"):
+            for val in ("w", "xm", "x2m", "ym", "xym"):
+                for new_object, original_object in ((product.get_KSB_bias_statistics(workdir=workdir), stats2["KSB"]),
+                                                    (product.get_LensMC_bias_statistics(
+                                                        workdir=workdir), stats2["LensMC"]),
+                                                    (product.get_MomentsML_bias_statistics(
+                                                        workdir=workdir), stats2["MomentsML"]),
+                                                    (product.get_REGAUSS_bias_statistics(workdir=workdir), stats2["REGAUSS"])):
+
+                    assert np.isclose(getattr(new_object[0], val), getattr(original_object[0], val))
+                    assert np.isclose(getattr(new_object[1], val), getattr(original_object[1], val))
 
         return
 
