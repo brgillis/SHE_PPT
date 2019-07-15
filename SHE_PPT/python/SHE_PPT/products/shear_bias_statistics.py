@@ -7,7 +7,7 @@
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines.
 """
 
-__updated__ = "2019-07-12"
+__updated__ = "2019-07-15"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -28,6 +28,8 @@ __updated__ = "2019-07-12"
 # from SHE_PPT.file_io import read_xml_product, find_aux_file
 
 # Temporary class definitions
+
+import SHE_PPT
 
 
 class dpdShearBiasStatistics(object):
@@ -98,78 +100,93 @@ def init():
 
 
 def __set_BFD_bias_statistics_filename(self, filename):
-    self.Data.BfdBiasMeasurements = create_bfd_bias_statistics(filename)
+    self.Data.BfdBiasMeasurements = create_method_shear_bias_statistics(filename)
     return
 
 
 def __get_BFD_bias_statistics_filename(self):
+
     if not hasattr(self.Data, "BfdBiasMeasurements"):
-        return None, None
-    elif self.Data.BfdBiasMeasurements is None:
-        return None, None
+        return None
+
+    filename = self.Data.BfdBiasMeasurements.DataContainer.Filename
+
+    if filename == "None":
+        return None
     else:
-        return (self.Data.BfdBiasMeasurements.G1BiasMeasurements,
-                self.Data.BfdBiasMeasurements.G2BiasMeasurements,)
+        return filename
 
 
 def __set_KSB_bias_statistics_filename(self, filename):
-    self.Data.KsbBiasMeasurements = create_ksb_bias_statistics(filename)
+    self.Data.KsbBiasMeasurements = create_method_shear_bias_statistics(filename)
     return
 
 
 def __get_KSB_bias_statistics_filename(self):
+
     if not hasattr(self.Data, "KsbBiasMeasurements"):
-        return None, None
-    elif self.Data.KsbBiasMeasurements is None:
-        return None, None
+        return None
+
+    filename = self.Data.KsbBiasMeasurements.DataContainer.Filename
+
+    if filename == "None":
+        return None
     else:
-        return (self.Data.KsbBiasMeasurements.G1BiasMeasurements,
-                self.Data.KsbBiasMeasurements.G2BiasMeasurements,)
+        return filename
 
 
 def __set_LensMC_bias_statistics_filename(self, filename):
-    self.Data.LensMcBiasMeasurements = create_lensmc_bias_statistics(filename)
+    self.Data.LensMcBiasMeasurements = create_method_shear_bias_statistics(filename)
     return
 
 
 def __get_LensMC_bias_statistics_filename(self):
+
     if not hasattr(self.Data, "LensMcBiasMeasurements"):
-        return None, None
-    elif self.Data.LensMcBiasMeasurements is None:
-        return None, None
+        return None
+
+    filename = self.Data.LensMcBiasMeasurements.DataContainer.Filename
+
+    if filename == "None":
+        return None
     else:
-        return (self.Data.LensMcBiasMeasurements.G1BiasMeasurements,
-                self.Data.LensMcBiasMeasurements.G2BiasMeasurements,)
+        return filename
 
 
 def __set_MomentsML_bias_statistics_filename(self, filename):
-    self.Data.MomentsMlBiasMeasurements = create_momentsml_bias_statistics(filename)
+    self.Data.MomentsMlBiasMeasurements = create_method_shear_bias_statistics(filename)
     return
 
 
 def __get_MomentsML_bias_statistics_filename(self):
+
     if not hasattr(self.Data, "MomentsMlBiasMeasurements"):
-        return None, None
-    elif self.Data.MomentsMlBiasMeasurements is None:
-        return None, None
+        return None
+
+    filename = self.Data.MomentsMlBiasMeasurements.DataContainer.Filename
+
+    if filename == "None":
+        return None
     else:
-        return (self.Data.MomentsMlBiasMeasurements.G1BiasMeasurements,
-                self.Data.MomentsMlBiasMeasurements.G2BiasMeasurements,)
+        return filename
 
 
 def __set_REGAUSS_bias_statistics_filename(self, filename):
-    self.Data.RegaussBiasMeasurements = create_regauss_bias_statistics(filename)
+    self.Data.RegaussBiasMeasurements = create_method_shear_bias_statistics(filename)
     return
 
 
 def __get_REGAUSS_bias_statistics_filename(self):
+
     if not hasattr(self.Data, "RegaussBiasMeasurements"):
-        return None, None
-    elif self.Data.RegaussBiasMeasurements is None:
-        return None, None
+        return None
+
+    filename = self.Data.RegaussBiasMeasurements.DataContainer.Filename
+
+    if filename == "None":
+        return None
     else:
-        return (self.Data.RegaussBiasMeasurements.G1BiasMeasurements,
-                self.Data.RegaussBiasMeasurements.G2BiasMeasurements,)
+        return filename
 
 
 def __get_all_filenames(self):
@@ -181,46 +198,37 @@ def __get_all_filenames(self):
 
 def __get_method_bias_statistics_filename(self, method):
 
-    if method == "KSB":
-        return self.get_KSB_bias_statistics_filename()
-    elif method == "LensMC":
-        return self.get_LensMC_bias_statistics_filename()
-    elif method == "MomentsML":
-        return self.get_MomentsML_bias_statistics_filename()
-    elif method == "REGAUSS":
-        return self.get_REGAUSS_bias_statistics_filename()
-    elif method == "BFD":
-        return self.get_BFD_bias_statistics_filename()
-    else:
-        raise ValueError("Invalid method " + str(method) + ".")
+    switcher = {"KSB": self.get_KSB_bias_statistics_filename,
+                "LensMC": self.get_LensMC_bias_statistics_filename,
+                "MomentsML": self.get_MomentsML_bias_statistics_filename,
+                "REGAUSS": self.get_REGAUSS_bias_statistics_filename,
+                "BFD": self.get_BFD_bias_statistics_filename, }
+
+    try:
+        return switcher[method]()
+    except KeyError:
+        ValueError("Invalid method " + str(method) + ".")
 
 
-def __set_method_bias_statistics_filename(self, method, g1_bias_statistics, g2_bias_statistics):
+def __set_method_bias_statistics_filename(self, method, filename):
 
-    if method == "KSB":
-        return self.set_KSB_bias_statistics_filename(g1_bias_statistics, g2_bias_statistics)
-    elif method == "LensMC":
-        return self.set_LensMC_bias_statistics_filename(g1_bias_statistics, g2_bias_statistics)
-    elif method == "MomentsML":
-        return self.set_MomentsML_bias_statistics_filename(g1_bias_statistics, g2_bias_statistics)
-    elif method == "REGAUSS":
-        return self.set_REGAUSS_bias_statistics_filename(g1_bias_statistics, g2_bias_statistics)
-    elif method == "BFD":
-        return self.set_BFD_bias_statistics_filename(g1_bias_statistics, g2_bias_statistics)
-    else:
-        raise ValueError("Invalid method " + str(method) + ".")
+    switcher = {"KSB": self.set_KSB_bias_statistics_filename,
+                "LensMC": self.set_LensMC_bias_statistics_filename,
+                "MomentsML": self.set_MomentsML_bias_statistics_filename,
+                "REGAUSS": self.set_REGAUSS_bias_statistics_filename,
+                "BFD": self.set_BFD_bias_statistics_filename, }
+
+    try:
+        return switcher[method](filename)
+    except KeyError:
+        ValueError("Invalid method " + str(method) + ".")
 
 
-def create_dpd_shear_bias_statistics(BFD_g1_bias_statistics=None,
-                                     BFD_g2_bias_statistics=None,
-                                     KSB_g1_bias_statistics=None,
-                                     KSB_g2_bias_statistics=None,
-                                     LensMC_g1_bias_statistics=None,
-                                     LensMC_g2_bias_statistics=None,
-                                     MomentsML_g1_bias_statistics=None,
-                                     MomentsML_g2_bias_statistics=None,
-                                     REGAUSS_g1_bias_statistics=None,
-                                     REGAUSS_g2_bias_statistics=None):
+def create_dpd_shear_bias_statistics(BFD_bias_statistics_filename=None,
+                                     KSB_bias_statistics_filename=None,
+                                     LensMC_bias_statistics_filename=None,
+                                     MomentsML_bias_statistics_filename=None,
+                                     REGAUSS_bias_statistics_filename=None,):
     """
         @TODO fill in docstring
     """
@@ -235,84 +243,38 @@ def create_dpd_shear_bias_statistics(BFD_g1_bias_statistics=None,
     dpd_shear_bias_stats.Header = "SHE"
     dpd_shear_bias_stats.Data = ShearBiasStatistics()
 
-    __set_BFD_bias_statistics_filename(
-        dpd_shear_bias_stats, BFD_g1_bias_statistics, BFD_g2_bias_statistics)
-    __set_KSB_bias_statistics_filename(
-        dpd_shear_bias_stats, KSB_g1_bias_statistics, KSB_g2_bias_statistics)
-    __set_LensMC_bias_statistics_filename(
-        dpd_shear_bias_stats, LensMC_g1_bias_statistics, LensMC_g2_bias_statistics)
-    __set_MomentsML_bias_statistics_filename(
-        dpd_shear_bias_stats, MomentsML_g1_bias_statistics, MomentsML_g2_bias_statistics)
-    __set_REGAUSS_bias_statistics_filename(
-        dpd_shear_bias_stats, REGAUSS_g1_bias_statistics, REGAUSS_g2_bias_statistics)
+    dpd_shear_bias_stats.set_BFD_bias_statistics_filename(BFD_bias_statistics_filename)
+    dpd_shear_bias_stats.set_KSB_bias_statistics_filename(KSB_bias_statistics_filename)
+    dpd_shear_bias_stats.set_LensMC_bias_statistics_filename(LensMC_bias_statistics_filename)
+    dpd_shear_bias_stats.set_MomentsML_bias_statistics_filename(MomentsML_bias_statistics_filename)
+    dpd_shear_bias_stats.set_REGAUSS_bias_statistics_filename(REGAUSS_bias_statistics_filename)
 
     return dpd_shear_bias_stats
 
 
 # Add a useful alias
+
 create_shear_bias_statistics_product = create_dpd_shear_bias_statistics
 
 
-def create_bfd_bias_statistics(g1_bias_statistics, g2_bias_statistics):
-    """
-        @TODO fill in docstring
-    """
+# Creation functions
 
-    BFD_shear_estimates = MethodShearBiasStatistics()
+def create_method_shear_bias_statistics(filename):
 
-    BFD_shear_estimates.G1BiasMeasurements = g1_bias_statistics
-    BFD_shear_estimates.G2BiasMeasurements = g2_bias_statistics
+    method_shear_estimates = MethodShearBiasStatistics()
 
-    return BFD_shear_estimates
+    method_shear_estimates.format = "fits"
+    method_shear_estimates.version = SHE_PPT.__version__
+    method_shear_estimates.DataContainer = create_data_container(filename)
 
-
-def create_ksb_bias_statistics(g1_bias_statistics, g2_bias_statistics):
-    """
-        @TODO fill in docstring
-    """
-
-    KSB_shear_estimates = MethodShearBiasStatistics()
-
-    KSB_shear_estimates.G1BiasMeasurements = g1_bias_statistics
-    KSB_shear_estimates.G2BiasMeasurements = g2_bias_statistics
-
-    return KSB_shear_estimates
+    return method_shear_estimates
 
 
-def create_lensmc_bias_statistics(g1_bias_statistics, g2_bias_statistics):
-    """
-        @TODO fill in docstring
-    """
+def create_data_container(filename):
 
-    LensMC_shear_estimates = MethodShearBiasStatistics()
+    data_container = DataContainer()
 
-    LensMC_shear_estimates.G1BiasMeasurements = g1_bias_statistics
-    LensMC_shear_estimates.G2BiasMeasurements = g2_bias_statistics
+    data_container.FileName = filename
+    data_container.filestatus = "PROPOSED"
 
-    return LensMC_shear_estimates
-
-
-def create_momentsml_bias_statistics(g1_bias_statistics, g2_bias_statistics):
-    """
-        @TODO fill in docstring
-    """
-
-    MomentsML_shear_estimates = MethodShearBiasStatistics()
-
-    MomentsML_shear_estimates.G1BiasMeasurements = g1_bias_statistics
-    MomentsML_shear_estimates.G2BiasMeasurements = g2_bias_statistics
-
-    return MomentsML_shear_estimates
-
-
-def create_regauss_bias_statistics(g1_bias_statistics, g2_bias_statistics):
-    """
-        @TODO fill in docstring
-    """
-
-    REGAUSS_shear_estimates = MethodShearBiasStatistics()
-
-    REGAUSS_shear_estimates.G1BiasMeasurements = g1_bias_statistics
-    REGAUSS_shear_estimates.G2BiasMeasurements = g2_bias_statistics
-
-    return REGAUSS_shear_estimates
+    return data_container
