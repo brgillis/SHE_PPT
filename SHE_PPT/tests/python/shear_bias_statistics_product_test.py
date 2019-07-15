@@ -79,11 +79,11 @@ class TestShearBiasStatsProduct(object):
         product.validateBinding()
 
         # Check that it was inited with the proper values
-        assert product.get_BFD_statistics(workdir=workdir) == stats["BFD"]
-        assert product.get_KSB_statistics(workdir=workdir) == stats["KSB"]
-        assert product.get_LensMC_statistics(workdir=workdir) == stats["LensMC"]
-        assert product.get_MomentsML_statistics(workdir=workdir) == stats["MomentsML"]
-        assert product.get_REGAUSS_statistics(workdir=workdir) == stats["REGAUSS"]
+        assert product.get_BFD_bias_statistics(workdir=workdir) == stats["BFD"]
+        assert product.get_KSB_bias_statistics(workdir=workdir) == stats["KSB"]
+        assert product.get_LensMC_bias_statistics(workdir=workdir) == stats["LensMC"]
+        assert product.get_MomentsML_bias_statistics(workdir=workdir) == stats["MomentsML"]
+        assert product.get_REGAUSS_bias_statistics(workdir=workdir) == stats["REGAUSS"]
 
         # Check the general get method works
         stats2 = {}
