@@ -191,7 +191,11 @@ def __get_REGAUSS_bias_statistics_filename(self):
 
 def __get_all_filenames(self):
 
-    all_filenames = []
+    all_filenames = [__get_BFD_bias_statistics_filename(self),
+                     __get_KSB_bias_statistics_filename(self),
+                     __get_LensMC_bias_statistics_filename(self),
+                     __get_MomentsML_bias_statistics_filename(self),
+                     __get_REGAUSS_bias_statistics_filename(self), ]
 
     return all_filenames
 
