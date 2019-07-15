@@ -349,7 +349,7 @@ def initialise_bfd_bias_statistics_table(optional_columns=None,
         bfd_bias_statistics_table.add_row(vals=new_row)
 
     # Check we meet the requirements of the table format
-    assert(is_in_format(bfd_bias_statistics_table, tf, verbose=True))
+    assert(is_in_format(bfd_bias_statistics_table, tf))
 
     return bfd_bias_statistics_table
 
