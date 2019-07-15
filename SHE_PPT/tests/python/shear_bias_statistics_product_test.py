@@ -99,7 +99,7 @@ class TestShearBiasStatsProduct(object):
         # Check the general get method works
         stats2 = {}
         for method in ("BFD", "KSB", "LensMC", "MomentsML", "REGAUSS"):
-            assert product.get_method_statistics(method, workdir=workdir) == stats[method]
+            assert product.get_method_bias_statistics(method, workdir=workdir) == stats[method]
             x1 = np.linspace(0, n - 1, n, endpoint=True)
             x2 = np.linspace(0, n - 1, n, endpoint=True)
             y_err = 0.25 * np.ones_like(x1)
@@ -109,7 +109,7 @@ class TestShearBiasStatsProduct(object):
                 stats2[method] = (LinregressStatistics(x1, y1, y_err),
                                   LinregressStatistics(x2, y2, y_err),)
 
-                product.set_method_statistics(method, stats2[method], workdir=workdir)
+                product.set_method_bias_statistics(method, stats2[method], workdir=workdir)
 
                 for val in ("w", "xm", "x2m", "ym", "xym"):
                     for new_object, original_object in ((product.get_KSB_bias_statistics(workdir=workdir), stats2["KSB"]),
@@ -124,7 +124,7 @@ class TestShearBiasStatsProduct(object):
             else:
                 stats2[method] = BFDSumStatistics(sums_for_bfd)
 
-                product.set_method_statistics(method, stats2[method], workdir=workdir)
+                product.set_method_bias_statistics(method, stats2[method], workdir=workdir)
 
                 for val in ("b1", "b2", "b3", "b4", "A11", "A12", "A13", "A14", "A22", "A23", "A24", "A33", "A34", "A44"):
 
