@@ -19,15 +19,16 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-07-15"
+__updated__ = "2019-07-16"
 
 from collections import OrderedDict
+
+from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.math import LinregressStatistics, BiasMeasurements
 from SHE_PPT.table_utility import is_in_format
-from astropy.table import Table
 
 
 logger = getLogger(mv.logger_name)
@@ -406,3 +407,43 @@ def get_bfd_bias_statistics(table, compress=False):
         return l_bfd_bias_statistics[0]
 
     return l_bfd_bias_statistics
+
+def get_bfd_bias_measurements(table):
+    """
+
+    Gets the bias measurements from a table, in the format of a pair of BiasMeasurements objects.
+
+    Parameters
+    ----------
+    table : astropy.table.Table (in bfd_bias_statistics format)
+
+    Return
+    ------
+    tuple<BiasMeasurements,BiasMeasurements> : tuple of g1, g2 bias measurements
+
+    """
+
+    if not is_in_format(table, tf, ignore_metadata=True, strict=False):
+        raise ValueError("table must be in bfd_bias_statistics format for get_bfd_bias_measurements method")
+
+    # Get g1 bias measurements
+
+    g1_bias_measurements = BiasMeasurements()
+
+    g1_bias_measurements.m = table.meta[tf.m.m1]
+    g1_bias_measurements.m_err = table.meta[tf.m.m1_err]
+    g1_bias_measurements.c = table.meta[tf.m.c1]
+    g1_bias_measurements.c_err = table.meta[tf.m.c1_err]
+    g1_bias_measurements.mc_covar = table.meta[tf.m.m1c1_covar]
+
+    # Get g2 bias measurements
+
+    g2_bias_measurements = BiasMeasurements()
+
+    g2_bias_measurements.m = table.meta[tf.m.m2]
+    g2_bias_measurements.m_err = table.meta[tf.m.m2_err]
+    g2_bias_measurements.c = table.meta[tf.m.c2]
+    g2_bias_measurements.c_err = table.meta[tf.m.c2_err]
+    g2_bias_measurements.mc_covar = table.meta[tf.m.m2c2_covar]
+
+    return g1_bias_measurements, g2_bias_measurements
