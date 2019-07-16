@@ -24,7 +24,7 @@ __updated__ = "2019-07-16"
 import SHE_PPT
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
-from SHE_PPT.math import LinregressStatistics, BFDSumStatistics, BiasMeasurements
+from SHE_PPT.math import LinregressStatistics, BFDSumStatistics, BiasMeasurements, linregress_with_errors
 from SHE_PPT.products import shear_bias_statistics as prod
 import numpy as np
 
