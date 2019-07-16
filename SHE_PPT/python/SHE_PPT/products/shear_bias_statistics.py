@@ -7,7 +7,7 @@
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines.
 """
 
-__updated__ = "2019-07-15"
+__updated__ = "2019-07-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -31,12 +31,13 @@ __updated__ = "2019-07-15"
 
 import os
 
+from astropy.table import Table
+
 import SHE_PPT
 from SHE_PPT.file_io import get_allowed_filename, find_file
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_formats.bfd_bias_statistics import initialise_bfd_bias_statistics_table, get_bfd_bias_statistics
-from SHE_PPT.table_formats.bias_statistics import initialise_bias_statistics_table, get_bias_statistics
-from astropy.table import Table
+from SHE_PPT.table_formats.bias_statistics import initialise_bias_statistics_table, get_bias_statistics, get_bias_measurements
 
 
 logger = getLogger(__name__)
@@ -84,13 +85,18 @@ def init():
 
     binding_class = dpdShearBiasStatistics
 
-    # Add the methods to the class
+    # Add useful methods to the class
+    
+    # Add general methods
 
     binding_class.set_method_bias_statistics_filename = __set_method_bias_statistics_filename
     binding_class.get_method_bias_statistics_filename = __get_method_bias_statistics_filename
 
     binding_class.set_method_bias_statistics = __set_method_bias_statistics
     binding_class.get_method_bias_statistics = __get_method_bias_statistics
+
+    binding_class.set_method_bias_measurements = __set_method_bias_measurements
+    binding_class.get_method_bias_measurements = __get_method_bias_measurements
 
     # Add methods for specific shear estimation methods
 
@@ -100,11 +106,17 @@ def init():
     binding_class.set_BFD_bias_statistics = __set_BFD_bias_statistics
     binding_class.get_BFD_bias_statistics = __get_BFD_bias_statistics
 
+    binding_class.set_BFD_bias_measurements = __set_BFD_bias_measurements
+    binding_class.get_BFD_bias_measurements = __get_BFD_bias_measurements
+
     binding_class.set_KSB_bias_statistics_filename = __set_KSB_bias_statistics_filename
     binding_class.get_KSB_bias_statistics_filename = __get_KSB_bias_statistics_filename
 
     binding_class.set_KSB_bias_statistics = __set_KSB_bias_statistics
     binding_class.get_KSB_bias_statistics = __get_KSB_bias_statistics
+
+    binding_class.set_KSB_bias_measurements = __set_KSB_bias_measurements
+    binding_class.get_KSB_bias_measurements = __get_KSB_bias_measurements
 
     binding_class.set_LensMC_bias_statistics_filename = __set_LensMC_bias_statistics_filename
     binding_class.get_LensMC_bias_statistics_filename = __get_LensMC_bias_statistics_filename
@@ -112,17 +124,26 @@ def init():
     binding_class.set_LensMC_bias_statistics = __set_LensMC_bias_statistics
     binding_class.get_LensMC_bias_statistics = __get_LensMC_bias_statistics
 
+    binding_class.set_LensMC_bias_measurements = __set_LensMC_bias_measurements
+    binding_class.get_LensMC_bias_measurements = __get_LensMC_bias_measurements
+
     binding_class.set_MomentsML_bias_statistics_filename = __set_MomentsML_bias_statistics_filename
     binding_class.get_MomentsML_bias_statistics_filename = __get_MomentsML_bias_statistics_filename
 
     binding_class.set_MomentsML_bias_statistics = __set_MomentsML_bias_statistics
     binding_class.get_MomentsML_bias_statistics = __get_MomentsML_bias_statistics
 
+    binding_class.set_MomentsML_bias_measurements = __set_MomentsML_bias_measurements
+    binding_class.get_MomentsML_bias_measurements = __get_MomentsML_bias_measurements
+
     binding_class.set_REGAUSS_bias_statistics_filename = __set_REGAUSS_bias_statistics_filename
     binding_class.get_REGAUSS_bias_statistics_filename = __get_REGAUSS_bias_statistics_filename
 
     binding_class.set_REGAUSS_bias_statistics = __set_REGAUSS_bias_statistics
     binding_class.get_REGAUSS_bias_statistics = __get_REGAUSS_bias_statistics
+
+    binding_class.set_REGAUSS_bias_measurements = __set_REGAUSS_bias_measurements
+    binding_class.get_REGAUSS_bias_measurements = __get_REGAUSS_bias_measurements
 
     binding_class.get_all_filenames = __get_all_filenames
 
@@ -228,6 +249,72 @@ def __get_method_bias_statistics(self, method, workdir="."):
     return bias_statistics
 
 
+def __set_method_bias_measurements(self, method, measurements, workdir="."):
+
+    filename = None
+    qualified_filename = None
+    
+    # If a previous file exists, we'll use it
+    old_filename = __get_method_bias_statistics_filename(self, method)
+    if old_filename is not None:
+        qualified_old_filename = os.path.join(workdir, old_filename)
+        if os.path.exists(qualified_old_filename):
+            filename = old_filename
+            qualified_filename = qualified_old_filename
+            
+            bias_statistics_table = Table.read(qualified_filename)
+            
+    # If no file exists, we'll have to create one
+    if filename is None:
+
+        subfolder_number = os.getpid() % 256
+        subfolder_name = "data/s" + str(subfolder_number)
+    
+        qualified_subfolder_name = os.path.join(workdir, subfolder_name)
+    
+        # Make sure the subdirectory for the file exists
+        if not os.path.exists(qualified_subfolder_name):
+            os.makedirs(qualified_subfolder_name)
+    
+        filename = get_allowed_filename(type_name=method.upper() + "", instance_id=str(
+            os.getpid()), extension=".fits", version=SHE_PPT.__version__, subdir=subfolder_name)
+        qualified_filename = os.path.join(workdir,filename)
+            
+        # Create the file using the measurements
+        if method == "BFD":
+            bias_statistics_table = initialise_bfd_bias_statistics_table(method=method,
+                                                                         g1_bias_measurements=measurements[0],
+                                                                         g2_bias_measurements=measurements[1])
+        else:
+            bias_statistics_table = initialise_bias_statistics_table(method=method,
+                                                                     g1_bias_measurements=measurements[0],
+                                                                     g2_bias_measurements=measurements[1])
+
+        # Set the filename for the object
+        setattr(self.Data, bias_statistics_switcher[method], create_method_shear_bias_statistics(filename))
+
+    # Write the (updated) table
+    bias_statistics_table.write(qualified_filename)
+
+    return
+
+
+def __get_method_bias_measurements(self, method, workdir="."):
+
+    filename = __get_method_bias_statistics_filename(self, method)
+
+    if filename is None:
+        return None
+
+    qualified_filename = find_file(filename, path=workdir)
+
+    bias_statistics_table = Table.read(qualified_filename)
+
+    bias_measurements = get_bias_measurements(bias_statistics_table)
+
+    return bias_measurements
+
+
 def __set_BFD_bias_statistics_filename(self, filename):
     __set_method_bias_statistics_filename(self, method="BFD", filename=filename)
     return
@@ -243,6 +330,14 @@ def __set_BFD_bias_statistics(self, stats, workdir="."):
 
 def __get_BFD_bias_statistics(self, workdir="."):
     return __get_method_bias_statistics(self, method="BFD", workdir=workdir)
+
+
+def __set_BFD_bias_measurements(self, stats, workdir="."):
+    return __set_method_bias_measurements(self, method="BFD", stats=stats, workdir=workdir)
+
+
+def __get_BFD_bias_measurements(self, workdir="."):
+    return __get_method_bias_measurements(self, method="BFD", workdir=workdir)
 
 
 def __set_KSB_bias_statistics_filename(self, filename):
@@ -262,6 +357,14 @@ def __get_KSB_bias_statistics(self, workdir="."):
     return __get_method_bias_statistics(self, method="KSB", workdir=workdir)
 
 
+def __set_KSB_bias_measurements(self, stats, workdir="."):
+    return __set_method_bias_measurements(self, method="KSB", stats=stats, workdir=workdir)
+
+
+def __get_KSB_bias_measurements(self, workdir="."):
+    return __get_method_bias_measurements(self, method="KSB", workdir=workdir)
+
+
 def __set_LensMC_bias_statistics_filename(self, filename):
     __set_method_bias_statistics_filename(self, method="LensMC", filename=filename)
     return
@@ -277,6 +380,14 @@ def __set_LensMC_bias_statistics(self, stats, workdir="."):
 
 def __get_LensMC_bias_statistics(self, workdir="."):
     return __get_method_bias_statistics(self, method="LensMC", workdir=workdir)
+
+
+def __set_LensMC_bias_measurements(self, stats, workdir="."):
+    return __set_method_bias_measurements(self, method="LensMC", stats=stats, workdir=workdir)
+
+
+def __get_LensMC_bias_measurements(self, workdir="."):
+    return __get_method_bias_measurements(self, method="LensMC", workdir=workdir)
 
 
 def __set_MomentsML_bias_statistics_filename(self, filename):
@@ -296,6 +407,14 @@ def __get_MomentsML_bias_statistics(self, workdir="."):
     return __get_method_bias_statistics(self, method="MomentsML", workdir=workdir)
 
 
+def __set_MomentsML_bias_measurements(self, stats, workdir="."):
+    return __set_method_bias_measurements(self, method="MomentsML", stats=stats, workdir=workdir)
+
+
+def __get_MomentsML_bias_measurements(self, workdir="."):
+    return __get_method_bias_measurements(self, method="MomentsML", workdir=workdir)
+
+
 def __set_REGAUSS_bias_statistics_filename(self, filename):
     __set_method_bias_statistics_filename(self, method="REGAUSS", filename=filename)
     return
@@ -311,6 +430,14 @@ def __set_REGAUSS_bias_statistics(self, stats, workdir="."):
 
 def __get_REGAUSS_bias_statistics(self, workdir="."):
     return __get_method_bias_statistics(self, method="REGAUSS", workdir=workdir)
+
+
+def __set_REGAUSS_bias_measurements(self, stats, workdir="."):
+    return __set_method_bias_measurements(self, method="REGAUSS", stats=stats, workdir=workdir)
+
+
+def __get_REGAUSS_bias_measurements(self, workdir="."):
+    return __get_method_bias_measurements(self, method="REGAUSS", workdir=workdir)
 
 
 def __get_all_filenames(self):
