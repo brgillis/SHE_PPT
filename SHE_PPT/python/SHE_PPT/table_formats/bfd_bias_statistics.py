@@ -27,7 +27,7 @@ from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
-from SHE_PPT.math import LinregressStatistics, BiasMeasurements
+from SHE_PPT.math import LinregressStatistics, BiasMeasurements, BFDSumResults
 from SHE_PPT.table_utility import is_in_format
 
 
@@ -285,12 +285,6 @@ def initialise_bfd_bias_statistics_table(optional_columns=None,
     # Create the table
     bfd_bias_statistics_table = Table(init_cols, names=names, dtype=dtypes)
 
-    # Create the table's header
-    bfd_bias_statistics_table.meta = make_bfd_bias_statistics_table_header(ID=ID,
-                                                                           method=method,
-                                                                           g1_bias_measurements=g1_bias_measurements,
-                                                                           g2_bias_measurements=g2_bias_measurements,)
-
     # Check validity of initial values
 
     if run_IDs is None:
@@ -348,6 +342,18 @@ def initialise_bfd_bias_statistics_table(optional_columns=None,
             new_row[tf.ID] = run_IDs[row_index]
 
         bfd_bias_statistics_table.add_row(vals=new_row)
+        
+    # If we weren't given specific bias measurements, calculate them from the statistics
+    if g1_bias_measurements is None and bfd_bias_statistics is not None:
+        g1_bias_measurements = BiasMeasurements(BFDSumResults([bfd_bias_statistics], do_g1=True))
+    if g2_bias_measurements is None and bfd_bias_statistics is not None:
+        g2_bias_measurements = BiasMeasurements(BFDSumResults([bfd_bias_statistics], do_g1=False))
+
+    # Create the table's header
+    bfd_bias_statistics_table.meta = make_bfd_bias_statistics_table_header(ID=ID,
+                                                                           method=method,
+                                                                           g1_bias_measurements=g1_bias_measurements,
+                                                                           g2_bias_measurements=g2_bias_measurements,)
 
     # Check we meet the requirements of the table format
     assert(is_in_format(bfd_bias_statistics_table, tf))
