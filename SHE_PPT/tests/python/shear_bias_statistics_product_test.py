@@ -19,12 +19,12 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-07-15"
+__updated__ = "2019-07-16"
 
 import SHE_PPT
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
-from SHE_PPT.math import LinregressStatistics, BFDSumStatistics
+from SHE_PPT.math import LinregressStatistics, BFDSumStatistics, BiasMeasurements
 from SHE_PPT.products import shear_bias_statistics as prod
 import numpy as np
 
@@ -54,6 +54,7 @@ class TestShearBiasStatsProduct(object):
                         'A34': 1.0,
                         'A44': 1.0}
 
+        measurements = {}
         stats = {}
         for method in ("BFD", "KSB", "LensMC", "MomentsML", "REGAUSS"):
             x1 = np.linspace(0, n - 1, n, endpoint=True)
@@ -67,6 +68,10 @@ class TestShearBiasStatsProduct(object):
                                  LinregressStatistics(x2, y2, y_err),)
             else:
                 stats[method] = BFDSumStatistics(sums_for_bfd)
+                
+            measurements[method] = (BiasMeasurements(linregress_with_errors(x1, y1, y_err)),
+                                    BiasMeasurements(linregress_with_errors(x2, y2, y_err)),)
+            
         # Create the product
         product = prod.create_dpd_shear_bias_statistics_from_stats(BFD_bias_statistics=stats["BFD"],
                                                                    KSB_bias_statistics=stats["KSB"],
@@ -80,11 +85,13 @@ class TestShearBiasStatsProduct(object):
 
         # Check that it was inited with the proper values
 
+        # Check BFD's statistics are correct
         for val in ("b1", "b2", "b3", "b4", "A11", "A12", "A13", "A14", "A22", "A23", "A24", "A33", "A34", "A44"):
 
             assert np.isclose(getattr(product.get_BFD_bias_statistics(workdir=workdir), val),
                               getattr(stats["BFD"], val))
 
+        # Check the other methods' statistics are correct
         for val in ("w", "xm", "x2m", "ym", "xym"):
             for new_object, original_object in ((product.get_KSB_bias_statistics(workdir=workdir), stats["KSB"]),
                                                 (product.get_LensMC_bias_statistics(
@@ -95,9 +102,26 @@ class TestShearBiasStatsProduct(object):
 
                 assert np.isclose(getattr(new_object[0], val), getattr(original_object[0], val))
                 assert np.isclose(getattr(new_object[1], val), getattr(original_object[1], val))
+                
+        # Check that all the bias measurements are correct
+        for val in ("m", "m_err", "c", "c_err", "mc_covar"):
+            for new_object, original_object in ((product.get_BFD_bias_measurements(workdir=workdir), measurements["BFD"]),
+                                                (product.get_KSB_bias_measurements(workdir=workdir), measurements["KSB"]),
+                                                (product.get_LensMC_bias_measurements(
+                                                    workdir=workdir), measurements["LensMC"]),
+                                                (product.get_MomentsML_bias_measurements(
+                                                    workdir=workdir), measurements["MomentsML"]),
+                                                (product.get_REGAUSS_bias_measurements(workdir=workdir), measurements["REGAUSS"])):
 
-        # Check the general get method works
+                assert np.isclose(getattr(new_object[0], val), getattr(original_object[0], val))
+                assert np.isclose(getattr(new_object[1], val), getattr(original_object[1], val))
+                
+        # Check all the bias measurements are correct
+        
+
+        # Check the general get and set methods work
         stats2 = {}
+        measurements = {}
         for method in ("BFD", "KSB", "LensMC", "MomentsML", "REGAUSS"):
             x1 = np.linspace(0, n - 1, n, endpoint=True)
             x2 = np.linspace(0, n - 1, n, endpoint=True)
@@ -118,6 +142,9 @@ class TestShearBiasStatsProduct(object):
 
                     assert np.isclose(getattr(product.get_BFD_bias_statistics(workdir=workdir), val),
                                       getattr(stats["BFD"], val))
+                    
+            measurements2[method] = (BiasMeasurements(linregress_with_errors(x1, y1, y_err)),
+                                     BiasMeasurements(linregress_with_errors(x2, y2, y_err)),)
 
         for method in ("KSB", "LensMC", "MomentsML", "REGAUSS"):
             for val in ("w", "xm", "x2m", "ym", "xym"):
@@ -130,8 +157,19 @@ class TestShearBiasStatsProduct(object):
 
                     assert np.isclose(getattr(new_object[0], val), getattr(original_object[0], val))
                     assert np.isclose(getattr(new_object[1], val), getattr(original_object[1], val))
+                
+        # Check that all the bias measurements are correct
+        for val in ("m", "m_err", "c", "c_err", "mc_covar"):
+            for new_object, original_object in ((product.get_BFD_bias_measurements(workdir=workdir), measurements2["BFD"]),
+                                                (product.get_KSB_bias_measurements(workdir=workdir), measurements2["KSB"]),
+                                                (product.get_LensMC_bias_measurements(
+                                                    workdir=workdir), measurements2["LensMC"]),
+                                                (product.get_MomentsML_bias_measurements(
+                                                    workdir=workdir), measurements2["MomentsML"]),
+                                                (product.get_REGAUSS_bias_measurements(workdir=workdir), measurements2["REGAUSS"])):
 
-        return
+                assert np.isclose(getattr(new_object[0], val), getattr(original_object[0], val))
+                assert np.isclose(getattr(new_object[1], val), getattr(original_object[1], val))
 
     def test_xml_writing_and_reading(self, tmpdir):
 
