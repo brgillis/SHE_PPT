@@ -21,13 +21,19 @@
 
 __updated__ = "2019-07-17"
 
+import os
+
+from astropy.table import Table
+
 import SHE_PPT
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
 from SHE_PPT.math import LinregressStatistics, BFDSumStatistics, BiasMeasurements, linregress_with_errors
 from SHE_PPT.products import shear_bias_statistics as prod
+from SHE_PPT.table_formats.bias_statistics import calculate_bias_measurements
 import numpy as np
 
+seed = 10245
 
 class TestShearBiasStatsProduct(object):
     """A collection of tests for the shear bias statistics data product.
@@ -37,6 +43,7 @@ class TestShearBiasStatsProduct(object):
     def test_validation(self, tmpdir):
 
         workdir = str(tmpdir)
+        np.random.seed(seed)
 
         n = 10
         sums_for_bfd = {'b1': 1.0,
@@ -116,8 +123,6 @@ class TestShearBiasStatsProduct(object):
                 assert np.isclose(getattr(new_object[0], val), getattr(original_object[0], val))
                 assert np.isclose(getattr(new_object[1], val), getattr(original_object[1], val))
                 
-        # Check all the bias measurements are correct
-        
 
         # Check the general get and set methods work
         stats2 = {}
@@ -158,7 +163,7 @@ class TestShearBiasStatsProduct(object):
                     assert np.isclose(getattr(new_object[0], val), getattr(original_object[0], val))
                     assert np.isclose(getattr(new_object[1], val), getattr(original_object[1], val))
                 
-        # Check that all the bias measurements are correct
+        # Check that all the updated bias measurements are correct
         # TODO: Add test of BFD
         for val in ("m", "m_err", "c", "c_err", "mc_covar"):
             for new_object, original_object in ((product.get_KSB_bias_measurements(workdir=workdir), measurements2["KSB"]),
@@ -170,6 +175,24 @@ class TestShearBiasStatsProduct(object):
 
                 assert np.isclose(getattr(new_object[0], val), getattr(original_object[0], val))
                 assert np.isclose(getattr(new_object[1], val), getattr(original_object[1], val))
+                
+        # Check that all the calculated bias measurements are correct
+        # TODO: Add test of BFD
+        for val in ("m", "m_err", "c", "c_err", "mc_covar"):
+            for filename, method in ((product.get_KSB_bias_statistics_filename(), "KSB"),
+                                     (product.get_LensMC_bias_statistics_filename(), "LensMC"),
+                                     (product.get_MomentsML_bias_statistics_filename(), "MomentsML"),
+                                     (product.get_REGAUSS_bias_statistics_filename(), "REGAUSS")):
+                
+                table = Table.read(os.path.join(workdir,filename))
+                
+                new_object = calculate_bias_measurements(table, update=False)
+                original_object = measurements2[method]
+
+                assert np.isclose(getattr(new_object[0], val), getattr(original_object[0], val),
+                                  rtol=1e-4, atol=1e-5), "Method: " + method
+                assert np.isclose(getattr(new_object[1], val), getattr(original_object[1], val),
+                                  rtol=1e-4, atol=1e-5), "Method: " + method
 
     def test_xml_writing_and_reading(self, tmpdir):
 
