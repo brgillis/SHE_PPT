@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-07-17"
 
 import numpy as np
 
@@ -183,7 +183,7 @@ class BFDSumResults(object):
 
     def __init__(self, lstats=None, do_g1=True):
 
-        if (lstats is None) or (lstats[0] is None):
+        if (lstats is None) or (len(lstats)==0) or (lstats[0] is None):
 
             # Initialise empty
             self.slope = None
