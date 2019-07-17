@@ -1,4 +1,4 @@
-""" @file bias_statistics.py
+""" @file bfd_bias_statistics.py
 
     Created 12 July 2019
 
@@ -27,23 +27,23 @@ from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
-from SHE_PPT.math import LinregressStatistics, LinregressResults, BiasMeasurements
-from SHE_PPT.table_formats.bfd_bias_statistics import tf as bfdtf
+from SHE_PPT.math import LinregressStatistics, BiasMeasurements, BFDSumResults
 from SHE_PPT.table_utility import is_in_format
+import numpy as np
 
 
 logger = getLogger(mv.logger_name)
 
 
-class BiasStatisticsTableMeta(object):
+class BFDBiasStatisticsTableMeta(object):
     """
-        @brief A class defining the metadata for bias statistics tables.
+        @brief A class defining the metadata for BFD bias statistics tables.
     """
 
     def __init__(self):
 
         self.__version__ = "0.1"
-        self.table_format = "she.biasStatistics"
+        self.table_format = "she.BFDBiasStatistics"
 
         # Table metadata labels
         self.version = "SS_VER"
@@ -71,7 +71,7 @@ class BiasStatisticsTableMeta(object):
         self.comments = OrderedDict(((self.version, None),
                                      (self.format, None),
                                      (self.ID, None),
-                                     (self.method, "One of 'KSB', 'REGAUSS', 'MomentsML', or 'LensMC', or else 'Unspecified'."),
+                                     (self.method, "Must be 'BFD'"),
                                      (self.m1, None),
                                      (self.m1_err, None),
                                      (self.c1, None),
@@ -87,16 +87,16 @@ class BiasStatisticsTableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class BiasStatisticsTableFormat(object):
+class BFDBiasStatisticsTableFormat(object):
     """
-        @brief A class defining the format for bias statistics tables. Only the bias_statistics_table_format
+        @brief A class defining the format for bias statistics tables. Only the bfd_bias_statistics_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
     def __init__(self):
 
         # Get the metadata (contained within its own class)
-        self.meta = BiasStatisticsTableMeta()
+        self.meta = BFDBiasStatisticsTableMeta()
 
         # And a quick alias for it
         self.m = self.meta
@@ -131,17 +131,21 @@ class BiasStatisticsTableFormat(object):
 
         self.ID = set_column_properties("RUN_ID", dtype="S", fits_dtype="A", length=20, is_optional=True)
 
-        self.w1 = set_column_properties("W1", dtype=">f4", fits_dtype="E")
-        self.xm1 = set_column_properties("XM1", dtype=">f4", fits_dtype="E")
-        self.x2m1 = set_column_properties("X2M1", dtype=">f4", fits_dtype="E")
-        self.ym1 = set_column_properties("YM1", dtype=">f4", fits_dtype="E")
-        self.xym1 = set_column_properties("XY1", dtype=">f4", fits_dtype="E")
+        self.b1 = set_column_properties("B1", dtype=">f4", fits_dtype="E")
+        self.b2 = set_column_properties("B2", dtype=">f4", fits_dtype="E")
+        self.b3 = set_column_properties("B3", dtype=">f4", fits_dtype="E")
+        self.b4 = set_column_properties("B4", dtype=">f4", fits_dtype="E")
 
-        self.w2 = set_column_properties("W2", dtype=">f4", fits_dtype="E")
-        self.xm2 = set_column_properties("XM2", dtype=">f4", fits_dtype="E")
-        self.x2m2 = set_column_properties("X2M2", dtype=">f4", fits_dtype="E")
-        self.ym2 = set_column_properties("YM2", dtype=">f4", fits_dtype="E")
-        self.xym2 = set_column_properties("XY2", dtype=">f4", fits_dtype="E")
+        self.A11 = set_column_properties("A11", dtype=">f4", fits_dtype="E")
+        self.A12 = set_column_properties("A12", dtype=">f4", fits_dtype="E")
+        self.A13 = set_column_properties("A13", dtype=">f4", fits_dtype="E")
+        self.A14 = set_column_properties("A14", dtype=">f4", fits_dtype="E")
+        self.A22 = set_column_properties("A22", dtype=">f4", fits_dtype="E")
+        self.A23 = set_column_properties("A23", dtype=">f4", fits_dtype="E")
+        self.A24 = set_column_properties("A24", dtype=">f4", fits_dtype="E")
+        self.A33 = set_column_properties("A33", dtype=">f4", fits_dtype="E")
+        self.A34 = set_column_properties("A34", dtype=">f4", fits_dtype="E")
+        self.A44 = set_column_properties("A44", dtype=">f4", fits_dtype="E")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -154,16 +158,16 @@ class BiasStatisticsTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-bias_statistics_table_format = BiasStatisticsTableFormat()
+bfd_bias_statistics_table_format = BFDBiasStatisticsTableFormat()
 
 # And a convient alias for it
-tf = bias_statistics_table_format
+tf = bfd_bias_statistics_table_format
 
 
-def make_bias_statistics_table_header(ID=None,
-                                      method='Unspecified',
-                                      g1_bias_measurements=None,
-                                      g2_bias_measurements=None):
+def make_bfd_bias_statistics_table_header(ID=None,
+                                          method='BFD',
+                                          g1_bias_measurements=None,
+                                          g2_bias_measurements=None):
     """
     Generate a header for a bias statistics table.
 
@@ -189,10 +193,10 @@ def make_bias_statistics_table_header(ID=None,
     header[tf.m.format] = tf.m.table_format
 
     header[tf.m.ID] = str(ID)
-    if method in ('KSB', 'REGAUSS', 'MomentsML', 'LensMC', 'Unspecified'):
+    if method == 'BFD':
         header[tf.m.method] = method
     else:
-        raise TypeError("method must be 'KSB', 'REGAUSS', 'MomentsML', or 'LensMC', or else 'Unspecified'")
+        raise TypeError("method must be 'BFD'")
 
     if g1_bias_measurements is None:
         header[tf.m.m1] = 0
@@ -207,7 +211,7 @@ def make_bias_statistics_table_header(ID=None,
         header[tf.m.c1_err] = g1_bias_measurements.c_err
         header[tf.m.m1c1_covar] = g1_bias_measurements.mc_covar
     else:
-        raise TypeError("g1_bias_measurements must be of type BiasMeasurements")
+        raise TypeError("g2_bias_measurements must be of type BiasMeasurements")
 
     if g2_bias_measurements is None:
         header[tf.m.m2] = 0
@@ -227,15 +231,14 @@ def make_bias_statistics_table_header(ID=None,
     return header
 
 
-def initialise_bias_statistics_table(optional_columns=None,
-                                     ID=None,
-                                     method='Unspecified',
-                                     g1_bias_measurements=None,
-                                     g2_bias_measurements=None,
-                                     run_IDs=None,
-                                     g1_bias_statistics=None,
-                                     g2_bias_statistics=None,
-                                     ):
+def initialise_bfd_bias_statistics_table(optional_columns=None,
+                                         ID=None,
+                                         method='BFD',
+                                         g1_bias_measurements=None,
+                                         g2_bias_measurements=None,
+                                         run_IDs=None,
+                                         bfd_bias_statistics=None,
+                                         ):
     """
     Initialise a bias statistics table.
 
@@ -251,15 +254,17 @@ def initialise_bias_statistics_table(optional_columns=None,
         Bias measurements object for g2 component of shear
     ID : iterable<str (max 20 characters)>
         List (or otherwise) of IDs associated with each shear statistics object
-    g1_bias_statistics : iterable<SHE_PPT.math.LinregressStatistics>
-        List (or otherwise) of LinregressStatistics objects for g1 bias statistics
-    g2_bias_statistics : iterable<SHE_PPT.math.LinregressStatistics>
-        List (or otherwise) of LinregressStatistics objects for g2 bias statistics
+    bfd_bias_statistics : iterable<SHE_PPT.math.BFDSumStatistics>
+        List (or otherwise) of BFDSumStatistics objects for BFD bias statistics
 
     Return
     ------
-    bias_statistics_table : astropy.table.Table
+    bfd_bias_statistics_table : astropy.table.Table
     """
+
+    # Rename internal representation of bfd_bias_statistics to l_bfd_bias_statistics for consistency
+    l_bfd_bias_statistics = bfd_bias_statistics
+    del bfd_bias_statistics
 
     if optional_columns is None:
         optional_columns = []
@@ -279,7 +284,7 @@ def initialise_bias_statistics_table(optional_columns=None,
             dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
 
     # Create the table
-    bias_statistics_table = Table(init_cols, names=names, dtype=dtypes)
+    bfd_bias_statistics_table = Table(init_cols, names=names, dtype=dtypes)
 
     # Check validity of initial values
 
@@ -294,140 +299,127 @@ def initialise_bias_statistics_table(optional_columns=None,
             run_IDs = [run_IDs]
             len_run_IDs = 1
 
-    if g1_bias_statistics is None:
-        g1_bias_statistics = []
-        len_g1_bias_statistics = 0
+    if l_bfd_bias_statistics is None:
+        l_bfd_bias_statistics = []
+        len_bfd_bias_statistics = 0
     else:
         try:
-            len_g1_bias_statistics = len(g1_bias_statistics)
+            len_bfd_bias_statistics = len(l_bfd_bias_statistics)
         except TypeError:
             # If it isn't iterable, silently coerce into a list
-            g1_bias_statistics = [g1_bias_statistics]
-            len_g1_bias_statistics = 1
+            l_bfd_bias_statistics = [l_bfd_bias_statistics]
+            len_bfd_bias_statistics = 1
 
-    if g2_bias_statistics is None:
-        g2_bias_statistics = []
-        len_g2_bias_statistics = 0
-    else:
-        try:
-            len_g2_bias_statistics = len(g2_bias_statistics)
-        except TypeError:
-            # If it isn't iterable, silently coerce into a list
-            g2_bias_statistics = [g2_bias_statistics]
-            len_g2_bias_statistics = 1
-
-    # Check lengths are sensible
-    if not len_g1_bias_statistics == len_g2_bias_statistics:
-        raise ValueError("g1_bias_statistics and g2_bias_statistics must have the same length")
-    else:
-        num_rows = len_g1_bias_statistics
-
-    if num_rows > 0:
+    if len_bfd_bias_statistics > 0:
         if tf.ID in names:
             if len_run_IDs == 1:
-                run_IDs *= num_rows
-            elif not len_run_IDs == num_rows:
+                run_IDs *= len_bfd_bias_statistics
+            elif not len_run_IDs == len_bfd_bias_statistics:
                 raise ValueError("run_IDs different length from bias statistics")
         elif not len_run_IDs == 0:
             raise ValueError("run_IDs supplied, but not in optional columns")
-        
-    # If we weren't given specific bias measurements, calculate them from the statistics
-    if g1_bias_measurements is None and g1_bias_statistics is not None:
-        g1_bias_measurements = BiasMeasurements(LinregressResults(g1_bias_statistics))
-    if g2_bias_measurements is None and g2_bias_statistics is not None:
-        g2_bias_measurements = BiasMeasurements(LinregressResults(g2_bias_statistics))
-
-    # Create the table's header
-    bias_statistics_table.meta = make_bias_statistics_table_header(ID=ID,
-                                                                   method=method,
-                                                                   g1_bias_measurements=g1_bias_measurements,
-                                                                   g2_bias_measurements=g2_bias_measurements,)
 
     # Add a row for each statistics object
-    for row_index in range(num_rows):
-        g1_bias_stats = g1_bias_statistics[row_index]
-        g2_bias_stats = g2_bias_statistics[row_index]
+    for row_index in range(len_bfd_bias_statistics):
+        bfd_bias_statistics = l_bfd_bias_statistics[row_index]
 
-        new_row = {tf.w1: g1_bias_stats.w,
-                   tf.xm1: g1_bias_stats.xm,
-                   tf.x2m1: g1_bias_stats.x2m,
-                   tf.ym1: g1_bias_stats.ym,
-                   tf.xym1: g1_bias_stats.xym,
-                   tf.w2: g2_bias_stats.w,
-                   tf.xm2: g2_bias_stats.xm,
-                   tf.x2m2: g2_bias_stats.x2m,
-                   tf.ym2: g2_bias_stats.ym,
-                   tf.xym2: g2_bias_stats.xym, }
+        new_row = {tf.b1: bfd_bias_statistics.b1,
+                   tf.b2: bfd_bias_statistics.b2,
+                   tf.b3: bfd_bias_statistics.b3,
+                   tf.b4: bfd_bias_statistics.b4,
+                   tf.A11: bfd_bias_statistics.A11,
+                   tf.A12: bfd_bias_statistics.A12,
+                   tf.A13: bfd_bias_statistics.A13,
+                   tf.A14: bfd_bias_statistics.A14,
+                   tf.A22: bfd_bias_statistics.A22,
+                   tf.A23: bfd_bias_statistics.A23,
+                   tf.A24: bfd_bias_statistics.A24,
+                   tf.A33: bfd_bias_statistics.A33,
+                   tf.A34: bfd_bias_statistics.A34,
+                   tf.A44: bfd_bias_statistics.A44,
+                   }
 
         if not len_run_IDs == 0:
             new_row[tf.ID] = run_IDs[row_index]
 
-        bias_statistics_table.add_row(vals=new_row)
+        bfd_bias_statistics_table.add_row(vals=new_row)
+        
+    # If we weren't given specific bias measurements, calculate them from the statistics
+    try:
+        if g1_bias_measurements is None and l_bfd_bias_statistics is not None:
+            g1_bias_measurements = BiasMeasurements(BFDSumResults(l_bfd_bias_statistics, do_g1=True))
+        if g2_bias_measurements is None and l_bfd_bias_statistics is not None:
+            g2_bias_measurements = BiasMeasurements(BFDSumResults(l_bfd_bias_statistics, do_g1=False))
+    except np.linalg.linalg.LinAlgError:
+        # Can't calculate bias statistics
+        pass
+
+    # Create the table's header
+    bfd_bias_statistics_table.meta = make_bfd_bias_statistics_table_header(ID=ID,
+                                                                           method=method,
+                                                                           g1_bias_measurements=g1_bias_measurements,
+                                                                           g2_bias_measurements=g2_bias_measurements,)
 
     # Check we meet the requirements of the table format
-    assert(is_in_format(bias_statistics_table, tf))
+    assert(is_in_format(bfd_bias_statistics_table, tf))
 
-    return bias_statistics_table
+    return bfd_bias_statistics_table
 
 
 # Utility functions related to this table format
 
-def get_bias_statistics(table, compress=False):
+def get_bfd_bias_statistics(table, compress=False):
     """
 
-    Gets the bias statistics from a table, in the format of a pair of lists of LinregressStatistics objects.
+    Gets the bias statistics from a table, in the format of a list of BFDSumStatistics objects.
 
     Parameters
     ----------
-    table : astropy.table.Table (in bias_statistics format)
+    table : astropy.table.Table (in bfd_bias_statistics format)
     compress : bool
-        If True and if table has only one row, will return results as objects, not lists
+        If True and if table has only one row, will return result as object, not list
 
     Return
     ------
-    tuple<list<LinregressStatistics>,list<LinregressStatistics>> : tuple of g1, g2 bias statistics lists
+    list<BFDSumStatistics> : list of BFDSumStatistics objects
 
     """
 
     if not is_in_format(table, tf, ignore_metadata=True, strict=False):
-        raise ValueError("table must be in bias_statistics format for get_bias_statistics method")
+        raise ValueError("table must be in bfd_bias_statistics format for get_bfd_bias_statistics method")
 
-    l_g1_bias_statistics = []
-    l_g2_bias_statistics = []
+    l_bfd_bias_statistics = []
 
     for row in table:
 
         # Get g1 stats
 
-        g1_bias_statistics = LinregressStatistics()
+        bfd_bias_statistics = LinregressStatistics()
 
-        g1_bias_statistics.w = row[tf.w1]
-        g1_bias_statistics.xm = row[tf.xm1]
-        g1_bias_statistics.x2m = row[tf.x2m1]
-        g1_bias_statistics.ym = row[tf.ym1]
-        g1_bias_statistics.xym = row[tf.xym1]
+        bfd_bias_statistics.b1 = row[tf.b1]
+        bfd_bias_statistics.b2 = row[tf.b2]
+        bfd_bias_statistics.b3 = row[tf.b3]
+        bfd_bias_statistics.b4 = row[tf.b4]
+        bfd_bias_statistics.A11 = row[tf.A11]
+        bfd_bias_statistics.A12 = row[tf.A12]
+        bfd_bias_statistics.A13 = row[tf.A13]
+        bfd_bias_statistics.A14 = row[tf.A14]
+        bfd_bias_statistics.A22 = row[tf.A22]
+        bfd_bias_statistics.A23 = row[tf.A23]
+        bfd_bias_statistics.A24 = row[tf.A24]
+        bfd_bias_statistics.A33 = row[tf.A33]
+        bfd_bias_statistics.A34 = row[tf.A34]
+        bfd_bias_statistics.A44 = row[tf.A44]
 
-        l_g1_bias_statistics.append(g1_bias_statistics)
-
-        # Get g2 stats
-
-        g2_bias_statistics = LinregressStatistics()
-
-        g2_bias_statistics.w = row[tf.w2]
-        g2_bias_statistics.xm = row[tf.xm2]
-        g2_bias_statistics.x2m = row[tf.x2m2]
-        g2_bias_statistics.ym = row[tf.ym2]
-        g2_bias_statistics.xym = row[tf.xym2]
-
-        l_g2_bias_statistics.append(g2_bias_statistics)
+        l_bfd_bias_statistics.append(bfd_bias_statistics)
 
     # Compress if desired
-    if compress and len(l_g1_bias_statistics) == 1:
-        return l_g1_bias_statistics[0], l_g2_bias_statistics[0]
+    if compress and len(l_bfd_bias_statistics) == 1:
+        return l_bfd_bias_statistics[0]
 
-    return l_g1_bias_statistics, l_g2_bias_statistics
+    return l_bfd_bias_statistics
 
-def calculate_bias_measurements(table, update=False):
+def calculate_bfd_bias_measurements(table, update=False):
     """
 
     Calculates the bias measurements from the data in a table and returns them in the format of a pair of
@@ -441,13 +433,17 @@ def calculate_bias_measurements(table, update=False):
     Return
     ------
     tuple<BiasMeasurements,BiasMeasurements> : tuple of g1, g2 bias measurements
+    
+    Raise
+    -----
+    Will raise numpy.linalg.linalg.LinAlgError if bias measurements cannot be calculated
 
     """
     
-    g1_bias_statistics, g2_bias_statistics = get_bias_statistics(table)
+    bfd_bias_statistics = get_bfd_bias_statistics(table)
     
-    g1_bias_measurements = BiasMeasurements(LinregressResults(g1_bias_statistics))
-    g2_bias_measurements = BiasMeasurements(LinregressResults(g2_bias_statistics))
+    g1_bias_measurements = BiasMeasurements(BFDSumResults([bfd_bias_statistics], do_g1=True))
+    g2_bias_measurements = BiasMeasurements(BFDSumResults([bfd_bias_statistics], do_g1=False))
     
     if update:
         
@@ -465,14 +461,14 @@ def calculate_bias_measurements(table, update=False):
         
     return g1_bias_measurements, g2_bias_measurements
 
-def get_bias_measurements(table):
+def get_bfd_bias_measurements(table):
     """
 
-    Gets the bias measurements from a table's header, in the format of a pair of BiasMeasurements objects.
+    Gets the bias measurements from a table, in the format of a pair of BiasMeasurements objects.
 
     Parameters
     ----------
-    table : astropy.table.Table (in bias_statistics or bfd_bias_statistics format)
+    table : astropy.table.Table (in bfd_bias_statistics format)
 
     Return
     ------
@@ -480,9 +476,8 @@ def get_bias_measurements(table):
 
     """
 
-    if not (is_in_format(table, tf, ignore_metadata=True, strict=False) or
-            is_in_format(table, bfdtf, ignore_metadata=True, strict=False)):
-        raise ValueError("table must be in bias_statistics or bfd_bias_statistics format for get_bias_measurements method")
+    if not is_in_format(table, tf, ignore_metadata=True, strict=False):
+        raise ValueError("table must be in bfd_bias_statistics format for get_bfd_bias_measurements method")
 
     # Get g1 bias measurements
 
