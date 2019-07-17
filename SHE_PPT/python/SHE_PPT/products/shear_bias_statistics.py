@@ -235,7 +235,10 @@ def __get_method_bias_statistics(self, method, workdir="."):
     filename = __get_method_bias_statistics_filename(self, method)
 
     if filename is None:
-        return None, None
+        if method=="BFD":
+            return None
+        else:
+            return None, None
 
     qualified_filename = find_file(filename, path=workdir)
 
