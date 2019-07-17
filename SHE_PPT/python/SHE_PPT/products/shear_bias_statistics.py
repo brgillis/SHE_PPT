@@ -209,8 +209,10 @@ def __set_method_bias_statistics(self, method, stats, workdir="."):
     if not os.path.exists(qualified_subfolder_name):
         os.makedirs(qualified_subfolder_name)
 
-    new_filename = get_allowed_filename(type_name=method.upper() + "", instance_id=str(
-        os.getpid()), extension=".fits", version=SHE_PPT.__version__, subdir=subfolder_name)
+    instance_id = hash_any(stats, format='base64')
+    instance_id_fn = instance_id[0:17].replace('.', '-').replace('+', '-')
+    new_filename = get_allowed_filename(type_name=method.upper() + "", instance_id=instance_id_fn,
+                                        extension=".fits", version=SHE_PPT.__version__, subdir=subfolder_name)
 
     # Create the file using the statistics
     if method == "BFD":

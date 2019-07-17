@@ -281,7 +281,10 @@ class BiasMeasurements(object):
             self.c_err = None
             self.mc_covar = None
         else:
-            self.m = linregress_results.slope - 1
+            if linregress_results.slope is None:
+                self.m = None
+            else:
+                self.m = linregress_results.slope - 1
             self.m_err = linregress_results.slope_err
             self.c = linregress_results.intercept
             self.c_err = linregress_results.intercept_err
