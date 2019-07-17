@@ -419,6 +419,48 @@ def get_bfd_bias_statistics(table, compress=False):
 
     return l_bfd_bias_statistics
 
+def calculate_bfd_bias_measurements(table, update=False):
+    """
+
+    Calculates the bias measurements from the data in a table and returns them in the format of a pair of
+    BiasMeasurements objects.
+
+    Parameters
+    ----------
+    table : astropy.table.Table (in bias_statistics format)
+    update : If True, will update the values in the table's header to the new measurements (default False)
+
+    Return
+    ------
+    tuple<BiasMeasurements,BiasMeasurements> : tuple of g1, g2 bias measurements
+    
+    Raise
+    -----
+    Will raise numpy.linalg.linalg.LinAlgError if bias measurements cannot be calculated
+
+    """
+    
+    bfd_bias_statistics = get_bfd_bias_statistics(table)
+    
+    g1_bias_measurements = BiasMeasurements(BFDSumResults([bfd_bias_statistics], do_g1=True))
+    g2_bias_measurements = BiasMeasurements(BFDSumResults([bfd_bias_statistics], do_g1=False))
+    
+    if update:
+        
+        table.meta[tf.m.m1] = g1_bias_measurements.m
+        table.meta[tf.m.m1_err] = g1_bias_measurements.m_err
+        table.meta[tf.m.c1] = g1_bias_measurements.c
+        table.meta[tf.m.c1_err] = g1_bias_measurements.c_err
+        table.meta[tf.m.m1c1_covar] = g1_bias_measurements.mc_covar
+        
+        table.meta[tf.m.m2] = g2_bias_measurements.m
+        table.meta[tf.m.m2_err] = g2_bias_measurements.m_err
+        table.meta[tf.m.c2] = g2_bias_measurements.c
+        table.meta[tf.m.c2_err] = g2_bias_measurements.c_err
+        table.meta[tf.m.m2c2_covar] = g2_bias_measurements.mc_covar
+        
+    return g1_bias_measurements, g2_bias_measurements
+
 def get_bfd_bias_measurements(table):
     """
 
