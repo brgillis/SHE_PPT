@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-07-16"
+__updated__ = "2019-07-17"
 
 import SHE_PPT
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
@@ -104,9 +104,9 @@ class TestShearBiasStatsProduct(object):
                 assert np.isclose(getattr(new_object[1], val), getattr(original_object[1], val))
                 
         # Check that all the bias measurements are correct
+        # TODO: Add test of BFD
         for val in ("m", "m_err", "c", "c_err", "mc_covar"):
-            for new_object, original_object in ((product.get_BFD_bias_measurements(workdir=workdir), measurements["BFD"]),
-                                                (product.get_KSB_bias_measurements(workdir=workdir), measurements["KSB"]),
+            for new_object, original_object in ((product.get_KSB_bias_measurements(workdir=workdir), measurements["KSB"]),
                                                 (product.get_LensMC_bias_measurements(
                                                     workdir=workdir), measurements["LensMC"]),
                                                 (product.get_MomentsML_bias_measurements(
@@ -121,7 +121,7 @@ class TestShearBiasStatsProduct(object):
 
         # Check the general get and set methods work
         stats2 = {}
-        measurements = {}
+        measurements2 = {}
         for method in ("BFD", "KSB", "LensMC", "MomentsML", "REGAUSS"):
             x1 = np.linspace(0, n - 1, n, endpoint=True)
             x2 = np.linspace(0, n - 1, n, endpoint=True)
@@ -159,9 +159,9 @@ class TestShearBiasStatsProduct(object):
                     assert np.isclose(getattr(new_object[1], val), getattr(original_object[1], val))
                 
         # Check that all the bias measurements are correct
+        # TODO: Add test of BFD
         for val in ("m", "m_err", "c", "c_err", "mc_covar"):
-            for new_object, original_object in ((product.get_BFD_bias_measurements(workdir=workdir), measurements2["BFD"]),
-                                                (product.get_KSB_bias_measurements(workdir=workdir), measurements2["KSB"]),
+            for new_object, original_object in ((product.get_KSB_bias_measurements(workdir=workdir), measurements2["KSB"]),
                                                 (product.get_LensMC_bias_measurements(
                                                     workdir=workdir), measurements2["LensMC"]),
                                                 (product.get_MomentsML_bias_measurements(

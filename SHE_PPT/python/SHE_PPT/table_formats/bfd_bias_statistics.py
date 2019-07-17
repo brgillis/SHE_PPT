@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-07-16"
+__updated__ = "2019-07-17"
 
 from collections import OrderedDict
 
@@ -29,6 +29,7 @@ from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.math import LinregressStatistics, BiasMeasurements, BFDSumResults
 from SHE_PPT.table_utility import is_in_format
+import numpy as np
 
 
 logger = getLogger(mv.logger_name)
@@ -344,10 +345,14 @@ def initialise_bfd_bias_statistics_table(optional_columns=None,
         bfd_bias_statistics_table.add_row(vals=new_row)
         
     # If we weren't given specific bias measurements, calculate them from the statistics
-    if g1_bias_measurements is None and bfd_bias_statistics is not None:
-        g1_bias_measurements = BiasMeasurements(BFDSumResults([bfd_bias_statistics], do_g1=True))
-    if g2_bias_measurements is None and bfd_bias_statistics is not None:
-        g2_bias_measurements = BiasMeasurements(BFDSumResults([bfd_bias_statistics], do_g1=False))
+    try:
+        if g1_bias_measurements is None and bfd_bias_statistics is not None:
+            g1_bias_measurements = BiasMeasurements(BFDSumResults([bfd_bias_statistics], do_g1=True))
+        if g2_bias_measurements is None and bfd_bias_statistics is not None:
+            g2_bias_measurements = BiasMeasurements(BFDSumResults([bfd_bias_statistics], do_g1=False))
+    except np.linalg.linalg.LinAlgError:
+        # Can't calculate bias statistics
+        pass
 
     # Create the table's header
     bfd_bias_statistics_table.meta = make_bfd_bias_statistics_table_header(ID=ID,
