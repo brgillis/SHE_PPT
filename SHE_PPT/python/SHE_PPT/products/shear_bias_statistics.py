@@ -7,7 +7,7 @@
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines.
 """
 
-__updated__ = "2019-07-16"
+__updated__ = "2019-07-17"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -235,7 +235,7 @@ def __get_method_bias_statistics(self, method, workdir="."):
     filename = __get_method_bias_statistics_filename(self, method)
 
     if filename is None:
-        return None
+        return None, None
 
     qualified_filename = find_file(filename, path=workdir)
 
