@@ -200,11 +200,15 @@ def make_bias_statistics_table_header(ID=None,
         header[tf.m.c1_err] = ""
         header[tf.m.m1c1_covar] = ""
     elif isinstance(g1_bias_measurements, BiasMeasurements):
-        header[tf.m.m1] = g1_bias_measurements.m
-        header[tf.m.m1_err] = g1_bias_measurements.m_err
-        header[tf.m.c1] = g1_bias_measurements.c
-        header[tf.m.c1_err] = g1_bias_measurements.c_err
-        header[tf.m.m1c1_covar] = g1_bias_measurements.mc_covar
+        for key, val in ((tf.m.m1, g1_bias_measurements.m),
+                         (tf.m.m1_err, g1_bias_measurements.m_err),
+                         (tf.m.c1, g1_bias_measurements.c),
+                         (tf.m.c1_err, g1_bias_measurements.c_err),
+                         (tf.m.m1c1_covar, g1_bias_measurements.mc_covar),):
+            if np.isinf(val) or np.isnan(val):
+                header[key] = ""
+            else:
+                header[key] = val
     else:
         raise TypeError("g1_bias_measurements must be of type BiasMeasurements")
 
@@ -215,11 +219,15 @@ def make_bias_statistics_table_header(ID=None,
         header[tf.m.c2_err] = ""
         header[tf.m.m2c2_covar] = ""
     elif isinstance(g2_bias_measurements, BiasMeasurements):
-        header[tf.m.m2] = g2_bias_measurements.m
-        header[tf.m.m2_err] = g2_bias_measurements.m_err
-        header[tf.m.c2] = g2_bias_measurements.c
-        header[tf.m.c2_err] = g2_bias_measurements.c_err
-        header[tf.m.m2c2_covar] = g2_bias_measurements.mc_covar
+        for key, val in ((tf.m.m2, g2_bias_measurements.m),
+                         (tf.m.m2_err, g2_bias_measurements.m_err),
+                         (tf.m.c2, g2_bias_measurements.c),
+                         (tf.m.c2_err, g2_bias_measurements.c_err),
+                         (tf.m.m2c2_covar, g2_bias_measurements.mc_covar),):
+            if np.isinf(val) or np.isnan(val):
+                header[key] = ""
+            else:
+                header[key] = val
     else:
         raise TypeError("g2_bias_measurements must be of type BiasMeasurements")
 
