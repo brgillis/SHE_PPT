@@ -29,6 +29,7 @@ from SHE_PPT.math import LinregressStatistics, LinregressResults, BiasMeasuremen
 from SHE_PPT.table_formats.bfd_bias_statistics import tf as bfdtf
 from SHE_PPT.table_utility import is_in_format
 from astropy.table import Table
+import numpy as np
 
 
 logger = getLogger(mv.logger_name)
