@@ -209,8 +209,10 @@ def make_bfd_bias_statistics_table_header(ID=None,
                          (tf.m.c1, g1_bias_measurements.c),
                          (tf.m.c1_err, g1_bias_measurements.c_err),
                          (tf.m.m1c1_covar, g1_bias_measurements.mc_covar),):
-            if np.isinf(val) or np.isnan(val):
-                header[key] = ""
+            if np.isinf(val):
+                header[key] = "Inf"
+            elif np.isnan(val):
+                header[key] = "NaN"
             else:
                 header[key] = val
     else:
@@ -228,8 +230,10 @@ def make_bfd_bias_statistics_table_header(ID=None,
                          (tf.m.c2, g2_bias_measurements.c),
                          (tf.m.c2_err, g2_bias_measurements.c_err),
                          (tf.m.m2c2_covar, g2_bias_measurements.mc_covar),):
-            if np.isinf(val) or np.isnan(val):
-                header[key] = ""
+            if np.isinf(val):
+                header[key] = "Inf"
+            elif np.isnan(val):
+                header[key] = "NaN"
             else:
                 header[key] = val
     else:
