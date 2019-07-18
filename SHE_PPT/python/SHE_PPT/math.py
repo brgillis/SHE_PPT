@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-07-17"
+__updated__ = "2019-07-18"
 
 import numpy as np
 
@@ -183,7 +183,7 @@ class BFDSumResults(object):
 
     def __init__(self, lstats=None, do_g1=True):
 
-        if (lstats is None) or (len(lstats)==0) or (lstats[0] is None):
+        if (lstats is None) or (len(lstats) == 0) or (lstats[0] is None):
 
             # Initialise empty
             self.slope = None
@@ -194,15 +194,15 @@ class BFDSumResults(object):
 
             return
 
-        elif isinstance(lstats, list):
-
-            # We have a list of stats, so combine them
-            stats = self.combine_lstats(lstats)
-
         elif isinstance(lstats, BFDSumStatistics):
 
             # Just calculate from this object
             stats = lstats
+
+        else:
+
+            # We have a list of stats, so combine them
+            stats = self.combine_lstats(lstats)
 
         C = np.matrix([[stats.A11, stats.A12, stats.A13, stats.A14],
                        [stats.A12, stats.A22, stats.A23, stats.A24],
