@@ -19,16 +19,15 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-07-17"
+__updated__ = "2019-07-18"
 
 from collections import OrderedDict
-
-from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.math import LinregressStatistics, BiasMeasurements, BFDSumResults
 from SHE_PPT.table_utility import is_in_format
+from astropy.table import Table
 import numpy as np
 
 
@@ -199,11 +198,11 @@ def make_bfd_bias_statistics_table_header(ID=None,
         raise TypeError("method must be 'BFD'")
 
     if g1_bias_measurements is None:
-        header[tf.m.m1] = 0
-        header[tf.m.m1_err] = 1e99
-        header[tf.m.c1] = 0
-        header[tf.m.c1_err] = 1e99
-        header[tf.m.m1c1_covar] = 0
+        header[tf.m.m1] = ""
+        header[tf.m.m1_err] = ""
+        header[tf.m.c1] = ""
+        header[tf.m.c1_err] = ""
+        header[tf.m.m1c1_covar] = ""
     elif isinstance(g1_bias_measurements, BiasMeasurements):
         header[tf.m.m1] = g1_bias_measurements.m
         header[tf.m.m1_err] = g1_bias_measurements.m_err
@@ -214,11 +213,11 @@ def make_bfd_bias_statistics_table_header(ID=None,
         raise TypeError("g2_bias_measurements must be of type BiasMeasurements")
 
     if g2_bias_measurements is None:
-        header[tf.m.m2] = 0
-        header[tf.m.m2_err] = 1e99
-        header[tf.m.c2] = 0
-        header[tf.m.c2_err] = 1e99
-        header[tf.m.m2c2_covar] = 0
+        header[tf.m.m2] = ""
+        header[tf.m.m2_err] = ""
+        header[tf.m.c2] = ""
+        header[tf.m.c2_err] = ""
+        header[tf.m.m2c2_covar] = ""
     elif isinstance(g2_bias_measurements, BiasMeasurements):
         header[tf.m.m2] = g2_bias_measurements.m
         header[tf.m.m2_err] = g2_bias_measurements.m_err
@@ -343,7 +342,7 @@ def initialise_bfd_bias_statistics_table(optional_columns=None,
             new_row[tf.ID] = run_IDs[row_index]
 
         bfd_bias_statistics_table.add_row(vals=new_row)
-        
+
     # If we weren't given specific bias measurements, calculate them from the statistics
     try:
         if g1_bias_measurements is None and l_bfd_bias_statistics is not None:
@@ -419,6 +418,7 @@ def get_bfd_bias_statistics(table, compress=False):
 
     return l_bfd_bias_statistics
 
+
 def calculate_bfd_bias_measurements(table, update=False):
     """
 
@@ -433,33 +433,34 @@ def calculate_bfd_bias_measurements(table, update=False):
     Return
     ------
     tuple<BiasMeasurements,BiasMeasurements> : tuple of g1, g2 bias measurements
-    
+
     Raise
     -----
     Will raise numpy.linalg.linalg.LinAlgError if bias measurements cannot be calculated
 
     """
-    
+
     bfd_bias_statistics = get_bfd_bias_statistics(table)
-    
+
     g1_bias_measurements = BiasMeasurements(BFDSumResults([bfd_bias_statistics], do_g1=True))
     g2_bias_measurements = BiasMeasurements(BFDSumResults([bfd_bias_statistics], do_g1=False))
-    
+
     if update:
-        
+
         table.meta[tf.m.m1] = g1_bias_measurements.m
         table.meta[tf.m.m1_err] = g1_bias_measurements.m_err
         table.meta[tf.m.c1] = g1_bias_measurements.c
         table.meta[tf.m.c1_err] = g1_bias_measurements.c_err
         table.meta[tf.m.m1c1_covar] = g1_bias_measurements.mc_covar
-        
+
         table.meta[tf.m.m2] = g2_bias_measurements.m
         table.meta[tf.m.m2_err] = g2_bias_measurements.m_err
         table.meta[tf.m.c2] = g2_bias_measurements.c
         table.meta[tf.m.c2_err] = g2_bias_measurements.c_err
         table.meta[tf.m.m2c2_covar] = g2_bias_measurements.mc_covar
-        
+
     return g1_bias_measurements, g2_bias_measurements
+
 
 def get_bfd_bias_measurements(table):
     """

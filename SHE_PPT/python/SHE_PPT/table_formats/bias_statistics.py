@@ -19,17 +19,16 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-07-17"
+__updated__ = "2019-07-18"
 
 from collections import OrderedDict
-
-from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.math import LinregressStatistics, LinregressResults, BiasMeasurements
 from SHE_PPT.table_formats.bfd_bias_statistics import tf as bfdtf
 from SHE_PPT.table_utility import is_in_format
+from astropy.table import Table
 
 
 logger = getLogger(mv.logger_name)
@@ -195,11 +194,11 @@ def make_bias_statistics_table_header(ID=None,
         raise TypeError("method must be 'KSB', 'REGAUSS', 'MomentsML', or 'LensMC', or else 'Unspecified'")
 
     if g1_bias_measurements is None:
-        header[tf.m.m1] = 0
-        header[tf.m.m1_err] = 1e99
-        header[tf.m.c1] = 0
-        header[tf.m.c1_err] = 1e99
-        header[tf.m.m1c1_covar] = 0
+        header[tf.m.m1] = ""
+        header[tf.m.m1_err] = ""
+        header[tf.m.c1] = ""
+        header[tf.m.c1_err] = ""
+        header[tf.m.m1c1_covar] = ""
     elif isinstance(g1_bias_measurements, BiasMeasurements):
         header[tf.m.m1] = g1_bias_measurements.m
         header[tf.m.m1_err] = g1_bias_measurements.m_err
@@ -210,11 +209,11 @@ def make_bias_statistics_table_header(ID=None,
         raise TypeError("g1_bias_measurements must be of type BiasMeasurements")
 
     if g2_bias_measurements is None:
-        header[tf.m.m2] = 0
-        header[tf.m.m2_err] = 1e99
-        header[tf.m.c2] = 0
-        header[tf.m.c2_err] = 1e99
-        header[tf.m.m2c2_covar] = 0
+        header[tf.m.m2] = ""
+        header[tf.m.m2_err] = ""
+        header[tf.m.c2] = ""
+        header[tf.m.c2_err] = ""
+        header[tf.m.m2c2_covar] = ""
     elif isinstance(g2_bias_measurements, BiasMeasurements):
         header[tf.m.m2] = g2_bias_measurements.m
         header[tf.m.m2_err] = g2_bias_measurements.m_err
@@ -330,7 +329,7 @@ def initialise_bias_statistics_table(optional_columns=None,
                 raise ValueError("run_IDs different length from bias statistics")
         elif not len_run_IDs == 0:
             raise ValueError("run_IDs supplied, but not in optional columns")
-        
+
     # If we weren't given specific bias measurements, calculate them from the statistics
     if g1_bias_measurements is None and g1_bias_statistics is not None:
         g1_bias_measurements = BiasMeasurements(LinregressResults(g1_bias_statistics))
@@ -427,6 +426,7 @@ def get_bias_statistics(table, compress=False):
 
     return l_g1_bias_statistics, l_g2_bias_statistics
 
+
 def calculate_bias_measurements(table, update=False):
     """
 
@@ -443,27 +443,28 @@ def calculate_bias_measurements(table, update=False):
     tuple<BiasMeasurements,BiasMeasurements> : tuple of g1, g2 bias measurements
 
     """
-    
+
     g1_bias_statistics, g2_bias_statistics = get_bias_statistics(table)
-    
+
     g1_bias_measurements = BiasMeasurements(LinregressResults(g1_bias_statistics))
     g2_bias_measurements = BiasMeasurements(LinregressResults(g2_bias_statistics))
-    
+
     if update:
-        
+
         table.meta[tf.m.m1] = g1_bias_measurements.m
         table.meta[tf.m.m1_err] = g1_bias_measurements.m_err
         table.meta[tf.m.c1] = g1_bias_measurements.c
         table.meta[tf.m.c1_err] = g1_bias_measurements.c_err
         table.meta[tf.m.m1c1_covar] = g1_bias_measurements.mc_covar
-        
+
         table.meta[tf.m.m2] = g2_bias_measurements.m
         table.meta[tf.m.m2_err] = g2_bias_measurements.m_err
         table.meta[tf.m.c2] = g2_bias_measurements.c
         table.meta[tf.m.c2_err] = g2_bias_measurements.c_err
         table.meta[tf.m.m2c2_covar] = g2_bias_measurements.mc_covar
-        
+
     return g1_bias_measurements, g2_bias_measurements
+
 
 def get_bias_measurements(table):
     """
