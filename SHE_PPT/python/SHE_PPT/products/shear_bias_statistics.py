@@ -35,7 +35,7 @@ import SHE_PPT
 from SHE_PPT.file_io import get_allowed_filename, find_file
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_formats.bfd_bias_statistics import initialise_bfd_bias_statistics_table, get_bfd_bias_statistics
-from SHE_PPT.table_formats.bias_statistics import initialise_bias_statistics_table, get_bias_statistics, get_bias_measurements
+from SHE_PPT.table_formats.bias_statistics import tf, initialise_bias_statistics_table, get_bias_statistics, get_bias_measurements
 from SHE_PPT.utility import hash_any
 from astropy.table import Table
 
@@ -259,53 +259,55 @@ def __set_method_bias_measurements(self, method, measurements, workdir="."):
     filename = None
     qualified_filename = None
 
+    subfolder_number = os.getpid() % 256
+    subfolder_name = "data/s" + str(subfolder_number)
+
+    qualified_subfolder_name = os.path.join(workdir, subfolder_name)
+
+    # Make sure the subdirectory for the file exists
+    if not os.path.exists(qualified_subfolder_name):
+        os.makedirs(qualified_subfolder_name)
+
+    instance_id = hash_any(measurements, format='base64')
+    instance_id_fn = instance_id[0:17].replace('.', '-').replace('+', '-')
+    filename = get_allowed_filename(type_name=method.upper() + "", instance_id=instance_id_fn,
+                                    extension=".fits", version=SHE_PPT.__version__, subdir=subfolder_name)
+    qualified_filename = os.path.join(workdir, filename)
+
+    # Create the file using the measurements
+    if method == "BFD":
+        bias_statistics_table = initialise_bfd_bias_statistics_table(method=method,
+                                                                     g1_bias_measurements=measurements[0],
+                                                                     g2_bias_measurements=measurements[1])
+    else:
+        bias_statistics_table = initialise_bias_statistics_table(method=method,
+                                                                 g1_bias_measurements=measurements[0],
+                                                                 g2_bias_measurements=measurements[1])
+
     # If a previous file exists, we'll use it
+
     old_filename = __get_method_bias_statistics_filename(self, method)
     if old_filename is not None:
         qualified_old_filename = os.path.join(workdir, old_filename)
         if os.path.exists(qualified_old_filename):
+
             filename = old_filename
             qualified_filename = qualified_old_filename
 
-            bias_statistics_table = Table.read(qualified_filename)
+            # Copy over the data we set up in the table header to this file
+            old_bias_statistics_table = Table.read(qualified_filename)
+            old_bias_statistics_table.meta = bias_statistics_table.meta
+            bias_statistics_table = old_bias_statistics_table
 
             try:
                 os.remove(qualified_old_filename)
             except Exception:
                 logger.warn("Deprecated file " + qualified_old_filename + " cannot be deleted.")
 
-    # If no file exists, we'll have to create one
-    if filename is None:
+    # Set the filename for the object
+    setattr(self.Data, bias_statistics_switcher[method], create_method_shear_bias_statistics(filename))
 
-        subfolder_number = os.getpid() % 256
-        subfolder_name = "data/s" + str(subfolder_number)
-
-        qualified_subfolder_name = os.path.join(workdir, subfolder_name)
-
-        # Make sure the subdirectory for the file exists
-        if not os.path.exists(qualified_subfolder_name):
-            os.makedirs(qualified_subfolder_name)
-
-        instance_id = hash_any(measurements, format='base64')
-        instance_id_fn = instance_id[0:17].replace('.', '-').replace('+', '-')
-        filename = get_allowed_filename(type_name=method.upper() + "", instance_id=instance_id_fn,
-                                        extension=".fits", version=SHE_PPT.__version__, subdir=subfolder_name)
-        qualified_filename = os.path.join(workdir, filename)
-
-        # Create the file using the measurements
-        if method == "BFD":
-            bias_statistics_table = initialise_bfd_bias_statistics_table(method=method,
-                                                                         g1_bias_measurements=measurements[0],
-                                                                         g2_bias_measurements=measurements[1])
-        else:
-            bias_statistics_table = initialise_bias_statistics_table(method=method,
-                                                                     g1_bias_measurements=measurements[0],
-                                                                     g2_bias_measurements=measurements[1])
-
-        # Set the filename for the object
-        setattr(self.Data, bias_statistics_switcher[method], create_method_shear_bias_statistics(filename))
-
-    # Write the (updated) table
+    # Write the table
     bias_statistics_table.write(qualified_filename)
 
     return
