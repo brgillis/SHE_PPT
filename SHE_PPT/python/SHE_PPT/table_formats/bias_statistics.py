@@ -331,9 +331,9 @@ def initialise_bias_statistics_table(optional_columns=None,
             raise ValueError("run_IDs supplied, but not in optional columns")
 
     # If we weren't given specific bias measurements, calculate them from the statistics
-    if g1_bias_measurements is None and g1_bias_statistics is not None:
+    if g1_bias_measurements is None and len(g1_bias_statistics) > 0:
         g1_bias_measurements = BiasMeasurements(LinregressResults(g1_bias_statistics))
-    if g2_bias_measurements is None and g2_bias_statistics is not None:
+    if g2_bias_measurements is None and len(g2_bias_statistics) > 0:
         g2_bias_measurements = BiasMeasurements(LinregressResults(g2_bias_statistics))
 
     # Create the table's header

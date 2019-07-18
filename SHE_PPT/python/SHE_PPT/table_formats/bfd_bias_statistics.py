@@ -345,9 +345,9 @@ def initialise_bfd_bias_statistics_table(optional_columns=None,
 
     # If we weren't given specific bias measurements, calculate them from the statistics
     try:
-        if g1_bias_measurements is None and l_bfd_bias_statistics is not None:
+        if g1_bias_measurements is None and len(l_bfd_bias_statistics) > 0:
             g1_bias_measurements = BiasMeasurements(BFDSumResults(l_bfd_bias_statistics, do_g1=True))
-        if g2_bias_measurements is None and l_bfd_bias_statistics is not None:
+        if g2_bias_measurements is None and len(l_bfd_bias_statistics) > 0:
             g2_bias_measurements = BiasMeasurements(BFDSumResults(l_bfd_bias_statistics, do_g1=False))
     except np.linalg.linalg.LinAlgError:
         # Can't calculate bias statistics
