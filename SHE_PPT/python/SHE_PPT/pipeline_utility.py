@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-07-08"
+__updated__ = "2019-07-23"
 
 from enum import Enum
 import json.decoder
@@ -44,6 +44,8 @@ class ConfigKeys(Enum):
     REMAP_NUM_SWARP_THREADS_EXP = "SHE_MER_RemapMosaic_num_swarp_threads_exposures"
     REMAP_NUM_THREADS_STACK = "SHE_MER_RemapMosaic_num_threads_stack"
     REMAP_NUM_SWARP_THREADS_STACK = "SHE_MER_RemapMosaic_num_swarp_threads_stack"
+
+    SEM_NUM_THREADS = "SHE_CTE_ShearEstimatesMerge_number_threads"
 
     CBM_CLEANUP = "SHE_CTE_CleanupBiasMeasurement_cleanup"
 
