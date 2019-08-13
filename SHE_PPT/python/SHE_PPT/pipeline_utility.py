@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-07-23"
+__updated__ = "2019-08-06"
 
 from enum import Enum
 import json.decoder
@@ -111,6 +111,12 @@ def archive_product(product_filename, archive_dir, workdir):
                 if data_filename is not None and data_filename != "default_filename.fits" and data_filename != "":
                     qualified_data_filename = os.path.join(workdir, data_filename)
                     qualified_archive_data_filename = os.path.join(full_archive_dir, data_filename)
+
+                    # The filename will likely also contain a subdir, so figure that out
+                    full_archive_data_subpath = os.path.split(qualified_archive_data_filename)[0]
+                    if not os.path.exists(full_archive_data_subpath):
+                        os.makedirs(full_archive_data_subpath)
+                        
                     copyfile(qualified_data_filename, qualified_archive_data_filename)
 
         else:
