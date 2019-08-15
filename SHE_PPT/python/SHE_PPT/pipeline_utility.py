@@ -18,14 +18,17 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-06"
+__updated__ = "2019-08-15"
 
 from enum import Enum
 import json.decoder
 import os
+from pickle import UnpicklingError
 from shutil import copyfile
+from xml.sax._exceptions import SAXParseException
 
 from SHE_PPT import magic_values as mv
+from SHE_PPT import products
 from SHE_PPT.file_io import read_xml_product, read_listfile, find_file
 from SHE_PPT.logging import getLogger
 
@@ -155,7 +158,7 @@ def read_config(config_filename, workdir="."):
         if len(filelist) == 0:
             return {}
         elif len(filelist) == 1:
-            return _read_config(find_file(filelist[0], workdir))
+            return _read_config_product(filelist[0], workdir)
         else:
             raise ValueError("File " + qualified_config_filename + " is a listfile with more than one file listed, and " +
                              "is an invalid input to read_config.")
@@ -163,10 +166,25 @@ def read_config(config_filename, workdir="."):
     except (json.decoder.JSONDecodeError, UnicodeDecodeError):
 
         # This isn't a listfile, so try to open and return it
-        return _read_config(qualified_config_filename)
+        return _read_config_product(config_filename, workdir)
 
+def _read_config_product(config_filename, workdir):
+    
+    # Try to read in as a data product
+    try:
+        p = read_xml_product(config_filename, workdir)
+        
+        config_data_filename = p.get_data_filename()
+        
+        return _read_config_file(find_file(config_data_filename,workdir))
+        
+    except (UnicodeDecodeError, SAXParseException, UnpicklingError) as _e:
+        
+        # Try to read it as a plain text file
+        return _read_config_file(find_file(config_filename,workdir))
+        
 
-def _read_config(qualified_config_filename):
+def _read_config_file(qualified_config_filename):
 
     config_dict = {}
 
