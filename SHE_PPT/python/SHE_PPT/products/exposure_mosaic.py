@@ -23,7 +23,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-04-29"
+__updated__ = "2019-08-15"
 
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import EuclidDmBindings.she.she_stub as she_dpd # FIXME
@@ -36,6 +36,7 @@ from astropy.io import fits
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT import detector as dtc
 from SHE_PPT.file_io import read_xml_product
+from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 import SHE_PPT.magic_values as mv
 from SHE_PPT.utility import find_extension
 
@@ -114,11 +115,11 @@ def init():
 
 
 def __set_data_filename(self, filename):
-    self.Data.DataStorage.DataContainer.FileName = filename
+    set_data_filename_of_product(self, filename)
 
 
 def __get_data_filename(self):
-    return self.Data.DataStorage.DataContainer.FileName
+    return get_data_filename_from_product(self)
 
 
 def __get_all_filenames(self):

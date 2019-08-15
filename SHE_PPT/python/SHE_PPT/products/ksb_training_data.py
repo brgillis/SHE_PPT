@@ -22,14 +22,14 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-08-15"
 
 
 import pickle
 
 from EuclidDmBindings.dpd.she.shearksbtraining_stub import dpdShearKSBTraining
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
-from SHE_PPT.file_io import read_xml_product, find_aux_file
+from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 
 
 sample_file_name = "SHE_PPT/sample_ksb_training.xml"
@@ -57,11 +57,11 @@ def init():
 
 
 def __set_filename(self, filename):
-    self.Data.ShearKSBTrainingFile.DataContainer.FileName = filename
+    set_data_filename_of_product(self, filename, "ShearKSBTrainingFile")
 
 
 def __get_filename(self):
-    return self.Data.ShearKSBTrainingFile.DataContainer.FileName
+    return get_data_filename_from_product(self, "ShearKSBTrainingFile")
 
 
 def __get_all_filenames(self):

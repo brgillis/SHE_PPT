@@ -21,11 +21,11 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-04-24"
+__updated__ = "2019-08-15"
 
 from EuclidDmBindings.dpd.she.raw.validatedshearmeasurement_stub import dpdValidatedShearMeasurement
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
-from SHE_PPT.file_io import read_xml_product, find_aux_file
+from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 
 
 sample_file_name = "SHE_PPT/sample_validated_shear_measurements.xml"
@@ -54,11 +54,11 @@ def init():
 
 
 def __set_filename(self, filename):
-    self.Data.ValidatedShearMeasurementFile.DataContainer.FileName = filename
+    set_data_filename_of_product(self, filename, "ValidatedShearMeasurementFile")
 
 
 def __get_filename(self):
-    return self.Data.ValidatedShearMeasurementFile.DataContainer.FileName
+    return get_data_filename_from_product(self, "ValidatedShearMeasurementFile")
 
 
 def __get_all_filenames(self):

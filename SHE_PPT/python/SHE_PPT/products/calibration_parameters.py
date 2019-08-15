@@ -22,12 +22,13 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-08-15"
 
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import EuclidDmBindings.she.she_stub as she_dpd # FIXME
-
 import pickle
+
+from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 
 
 def init():
@@ -63,43 +64,43 @@ def init():
 
 
 def __set_BFD_filename(self, filename):
-    self.Data.BFDCalibrationParameters.DataContainer.FileName = filename
+    set_data_filename_of_product(self, filename, "BFDCalibrationParameters")
 
 
 def __get_BFD_filename(self):
-    return self.Data.BFDCalibrationParameters.DataContainer.FileName
+    return get_data_filename_from_product(self, "BFDCalibrationParameters")
 
 
 def __set_KSB_filename(self, filename):
-    self.Data.KSBCalibrationParameters.DataContainer.FileName = filename
+    set_data_filename_of_product(self, filename, "KSBCalibrationParameters")
 
 
 def __get_KSB_filename(self):
-    return self.Data.KSBCalibrationParameters.DataContainer.FileName
+    return get_data_filename_from_product(self, "KSBCalibrationParameters")
 
 
 def __set_LensMC_filename(self, filename):
-    self.Data.LensMCCalibrationParameters.DataContainer.FileName = filename
+    set_data_filename_of_product(self, filename, "LensMCCalibrationParameters")
 
 
 def __get_LensMC_filename(self):
-    return self.Data.LensMCCalibrationParameters.DataContainer.FileName
+    return get_data_filename_from_product(self, "LensMCCalibrationParameters")
 
 
 def __set_MomentsML_filename(self, filename):
-    self.Data.MomentsMLCalibrationParameters.DataContainer.FileName = filename
+    set_data_filename_of_product(self, filename, "MomentsMLCalibrationParameters")
 
 
 def __get_MomentsML_filename(self):
-    return self.Data.MomentsMLCalibrationParameters.DataContainer.FileName
+    return get_data_filename_from_product(self, "MomentsMLCalibrationParameters")
 
 
 def __set_REGAUSS_filename(self, filename):
-    self.Data.REGAUSSCalibrationParameters.DataContainer.FileName = filename
+    set_data_filename_of_product(self, filename, "REGAUSSCalibrationParameters")
 
 
 def __get_REGAUSS_filename(self):
-    return self.Data.REGAUSSCalibrationParameters.DataContainer.FileName
+    return get_data_filename_from_product(self, "REGAUSSCalibrationParameters")
 
 
 def __get_all_filenames(self):

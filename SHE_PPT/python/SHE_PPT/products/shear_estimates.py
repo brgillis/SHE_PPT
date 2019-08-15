@@ -21,13 +21,13 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-08-15"
 
 from EuclidDmBindings.dpd.she.raw.shearmeasurement_stub import dpdShearMeasurement
 import EuclidDmBindings.pro.she_stub as she_pro
 from EuclidDmBindings.sys.dss_stub import dataContainer
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
-from SHE_PPT.file_io import read_xml_product, find_aux_file
+from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 
 
 sample_file_name = "SHE_PPT/sample_shear_measurements.xml"
@@ -69,124 +69,90 @@ def __set_BFD_filename(self, filename):
     if filename is None:
         if hasattr(self.Data, "BfdMoments"):
             self.Data.BfdMoments = None
-        return
     else:
-        if not hasattr(self.Data, "BfdMoments"):
+        if not hasattr(self.Data, "BfdMoments") or self.Data.BfdMoments is None:
             self.Data.BfdMoments = create_bfd_moments(filename)
-        elif self.Data.BfdMoments is None:
-            self.Data.BfdMoments = create_bfd_moments(filename)
-        else:
-            self.Data.BfdMoments.DataContainer.FileName = filename
-        return
+        set_data_filename_of_product(self, filename, "BfdMoments")
+    return
 
 
 def __get_BFD_filename(self):
-    if not hasattr(self.Data, "BfdMoments"):
-        return None
-    elif self.Data.BfdMoments is None:
+    if not hasattr(self.Data, "BfdMoments") or self.Data.BfdMoments is None:
         return None
     else:
-        return self.Data.BfdMoments.DataContainer.FileName
+        return get_data_filename_from_product(self, "BfdMoments")
 
 
 def __set_KSB_filename(self, filename):
     if filename is None:
         if hasattr(self.Data, "KsbShearEstimates"):
             self.Data.KsbShearEstimates = None
-        return
     else:
-        if not hasattr(self.Data, "KsbShearEstimates"):
+        if not hasattr(self.Data, "KsbShearEstimates") or self.Data.KsbShearEstimates is None:
             self.Data.KsbShearEstimates = create_ksb_estimates(filename)
-        elif self.Data.KsbShearEstimates is None:
-            self.Data.KsbShearEstimates = create_ksb_estimates(filename)
-        else:
-            self.Data.KsbShearEstimates.DataContainer.FileName = filename
-        return
+        set_data_filename_of_product(self, filename, "KsbShearEstimates")
+    return
 
 
 def __get_KSB_filename(self):
-    if not hasattr(self.Data, "KsbShearEstimates"):
-        return None
-    elif self.Data.KsbShearEstimates is None:
+    if not hasattr(self.Data, "KsbShearEstimates") or self.Data.KsbShearEstimates is None:
         return None
     else:
-        return self.Data.KsbShearEstimates.DataContainer.FileName
+        return get_data_filename_from_product(self, "KsbShearEstimates")
 
 
 def __set_LensMC_filename(self, filename):
     if filename is None:
         if hasattr(self.Data, "LensMcShearEstimates"):
             self.Data.LensMcShearEstimates = None
-        return
     else:
-        if not hasattr(self.Data, "LensMcShearEstimates"):
+        if not hasattr(self.Data, "LensMcShearEstimates") or self.Data.LensMcShearEstimates is None:
             self.Data.LensMcShearEstimates = create_lensmc_estimates(filename)
-        elif self.Data.LensMcShearEstimates is None:
-            self.Data.LensMcShearEstimates = create_lensmc_estimates(filename)
-        else:
-            self.Data.LensMcShearEstimates.DataContainer.FileName = filename
-        return
+        set_data_filename_of_product(self, filename, "LensMcShearEstimates")
+    return
 
 
 def __get_LensMC_filename(self):
-    if not hasattr(self.Data, "LensMcShearEstimates"):
-        return None
-    elif self.Data.LensMcShearEstimates is None:
+    if not hasattr(self.Data, "LensMcShearEstimates") or self.Data.LensMcShearEstimates is None:
         return None
     else:
-        return self.Data.LensMcShearEstimates.DataContainer.FileName
+        return get_data_filename_from_product(self, "LensMcShearEstimates")
 
 
 def __set_MomentsML_filename(self, filename):
     if filename is None:
         if hasattr(self.Data, "MomentsMlShearEstimates"):
             self.Data.MomentsMlShearEstimates = None
-        return
     else:
-        if not hasattr(self.Data, "MomentsMlShearEstimates"):
-            self.Data.MomentsMlShearEstimates = create_momentsml_estimates(
-                filename)
-        elif self.Data.MomentsMlShearEstimates is None:
-            self.Data.MomentsMlShearEstimates = create_momentsml_estimates(
-                filename)
-        else:
-            self.Data.MomentsMlShearEstimates.DataContainer.FileName = filename
-        return
+        if not hasattr(self.Data, "MomentsMlShearEstimates") or self.Data.MomentsMlShearEstimates is None:
+            self.Data.MomentsMlShearEstimates = create_momentsml_estimates(filename)
+        set_data_filename_of_product(self, filename, "MomentsMlShearEstimates")
+    return
 
 
 def __get_MomentsML_filename(self):
-    if not hasattr(self.Data, "MomentsMlShearEstimates"):
-        return None
-    elif self.Data.MomentsMlShearEstimates is None:
+    if not hasattr(self.Data, "MomentsMlShearEstimates") or self.Data.MomentsMlShearEstimates is None:
         return None
     else:
-        return self.Data.MomentsMlShearEstimates.DataContainer.FileName
+        return get_data_filename_from_product(self, "MomentsMlShearEstimates")
 
 
 def __set_REGAUSS_filename(self, filename):
     if filename is None:
         if hasattr(self.Data, "RegaussShearEstimates"):
             self.Data.RegaussShearEstimates = None
-        return
     else:
-        if not hasattr(self.Data, "RegaussShearEstimates"):
-            self.Data.RegaussShearEstimates = create_regauss_estimates(
-                filename)
-        elif self.Data.RegaussShearEstimates is None:
-            self.Data.RegaussShearEstimates = create_regauss_estimates(
-                filename)
-        else:
-            self.Data.RegaussShearEstimates.DataContainer.FileName = filename
-        return
+        if not hasattr(self.Data, "RegaussShearEstimates") or self.Data.RegaussShearEstimates is None:
+            self.Data.RegaussShearEstimates = create_regauss_estimates(filename)
+        set_data_filename_of_product(self, filename, "RegaussShearEstimates")
+    return
 
 
 def __get_REGAUSS_filename(self):
-    if not hasattr(self.Data, "RegaussShearEstimates"):
-        return None
-    elif self.Data.RegaussShearEstimates is None:
+    if not hasattr(self.Data, "RegaussShearEstimates") or self.Data.RegaussShearEstimates is None:
         return None
     else:
-        return self.Data.RegaussShearEstimates.DataContainer.FileName
+        return get_data_filename_from_product(self, "RegaussShearEstimates")
 
 
 def __get_all_filenames(self):

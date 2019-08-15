@@ -7,7 +7,7 @@
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines.
 """
 
-__updated__ = "2019-07-18"
+__updated__ = "2019-08-15"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -25,19 +25,20 @@ __updated__ = "2019-07-18"
 
 # from EuclidDmBindings.dpd.she.raw.shearmeasurement_stub import dpdShearBiasStatistics
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider
-# from SHE_PPT.file_io import read_xml_product, find_aux_file
+# from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 
 # Temporary class definitions
 
 import os
 
+from astropy.table import Table
+
 import SHE_PPT
-from SHE_PPT.file_io import get_allowed_filename, find_file
+from SHE_PPT.file_io import get_allowed_filename, find_file, get_data_filename_from_product, set_data_filename_of_product
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_formats.bfd_bias_statistics import initialise_bfd_bias_statistics_table, get_bfd_bias_statistics
 from SHE_PPT.table_formats.bias_statistics import tf, initialise_bias_statistics_table, get_bias_statistics, get_bias_measurements
 from SHE_PPT.utility import hash_any
-from astropy.table import Table
 
 
 logger = getLogger(__name__)
@@ -160,7 +161,10 @@ bias_statistics_switcher = {"KSB": "BfdBiasStatistics",
 
 def __set_method_bias_statistics_filename(self, method, filename):
 
-    setattr(self.Data, bias_statistics_switcher[method], create_method_shear_bias_statistics(filename))
+    if getattr(self.Data, bias_statistics_switcher[method]) is None:
+        setattr(self.Data, bias_statistics_switcher[method], create_method_shear_bias_statistics(filename))
+    
+    set_data_filename_of_product(self, filename, bias_statistics_switcher[method])
 
     return
 
@@ -172,9 +176,9 @@ def __get_method_bias_statistics_filename(self, method):
     if bias_statistics is None:
         return None
 
-    filename = bias_statistics.DataContainer.FileName
+    filename = get_data_filename_from_product(self, bias_statistics_switcher[method])
 
-    if filename == "None":
+    if filename == "None" or filename=="data/None":
         return None
     else:
         return filename

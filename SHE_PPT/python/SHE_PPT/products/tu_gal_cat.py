@@ -21,9 +21,11 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-05-10"
+__updated__ = "2019-08-15"
 
 from EuclidDmBindings.dpd.sim.raw.galaxycatalogproduct_stub import dpdGalaxyCatalogProduct
+
+from SHE_PPT.file_io import filename_include_data_subdir, data_subdir, len_data_subdir
 
 
 def init():
@@ -48,7 +50,21 @@ def __get_data_filenames(self):
     data_filenames = []
 
     for galaxy_catalog in self.Data.SetOfGalaxyCatalogs:
-        filename = galaxy_catalog.GalaxyCatalogFitsFile.DataContainer.FileName
-        data_filenames.append(filename)
+        
+        data_filename = galaxy_catalog.GalaxyCatalogFitsFile.DataContainer.FileName
+    
+        if filename_include_data_subdir:
+            
+            # Silently force the filename returned to start with "data/" regardless of whether the returned value does
+            if data_filename[0:len_data_subdir]!=data_subdir:
+                data_filename = data_subdir + data_filename
+            
+        else:
+            
+            # Silently force the filename returned to NOT start with "data/" regardless of whether the returned value does
+            if data_filename[0:len_data_subdir]==data_subdir:
+                data_filename = data_filename.replace(data_subdir,"",1)
+            
+        data_filenames.append(data_filename)
 
     return data_filenames
