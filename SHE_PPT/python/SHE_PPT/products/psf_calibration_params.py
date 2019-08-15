@@ -57,19 +57,19 @@ def init():
 
 
 def __set_zernike_mode_filename(self, filename):
-    self.Data.ZernikeMode.DataContainer.FileName = filename
+    set_data_filename_of_product(self, filename, "ZernikeMode")
 
 
 def __get_zernike_mode_filename(self):
-    return self.Data.ZernikeMode.DataContainer.FileName
+    return get_data_filename_from_product(self, "ZernikeMode")
 
 
 def __set_surface_error_filename(self, filename):
-    self.Data.SurfaceError.DataContainer.FileName = filename
+    set_data_filename_of_product(self, filename, "SurfaceError")
 
 
 def __get_surface_error_filename(self):
-    return self.Data.SurfaceError.DataContainer.FileName
+    return get_data_filename_from_product(self, "SurfaceError")
 
 
 def __get_all_filenames(self):

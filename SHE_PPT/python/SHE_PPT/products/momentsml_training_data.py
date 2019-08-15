@@ -62,11 +62,11 @@ def init():
 
 
 def __set_data_filename(self, filename):
-    set_data_filename_of_product(self, filename)
+    set_data_filename_of_product(self, filename, -1)
 
 
 def __get_data_filename(self):
-    return get_data_filename_from_product(self)
+    return get_data_filename_from_product(self, -1)
 
 
 def __get_all_filenames(self):
@@ -117,7 +117,7 @@ def create_dpd_she_momentsml_training_data(filename=None):
     #    filename)
 
     if filename:
-        __set_filename(dpd_she_momentsml_training_data, filename)
+        __set_data_filename(dpd_she_momentsml_training_data, filename)
     return dpd_she_momentsml_training_data
 
 

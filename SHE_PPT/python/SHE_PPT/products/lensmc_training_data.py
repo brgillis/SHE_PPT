@@ -57,11 +57,11 @@ def init():
 
 
 def __set_filename(self, filename):
-    set_data_filename_of_product(self, filename)
+    set_data_filename_of_product(self, filename, "ShearLensMCTrainingFile")
 
 
 def __get_filename(self):
-    return get_data_filename_from_product(self)
+    return get_data_filename_from_product(self, "ShearLensMCTrainingFile")
 
 
 def __get_all_filenames(self):
@@ -103,8 +103,7 @@ def create_dpd_she_lensmc_training_data(filename=None):
 
     # dpd_she_lensmc_training_data = she_dpd.DpdSheLensMCTrainingDataProduct()
     # # FIXME
-    dpd_she_lensmc_training_data = read_xml_product(
-        find_aux_file(sample_file_name))
+    dpd_she_lensmc_training_data = read_xml_product(find_aux_file(sample_file_name))
 
     dpd_she_lensmc_training_data.Header = HeaderProvider.createGenericHeader("SHE")
 

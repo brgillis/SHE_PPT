@@ -65,11 +65,11 @@ class TestCalibrationParametersProduct(object):
         loaded_product = read_xml_product(filename, workdir=str(tmpdir))
 
         # Check that the filenames match
-        assert loaded_product.get_BFD_filename() == b_filename
-        assert loaded_product.get_KSB_filename() == k_filename
-        assert loaded_product.get_LensMC_filename() == l_filename
-        assert loaded_product.get_MomentsML_filename() == m_filename
-        assert loaded_product.get_REGAUSS_filename() == r_filename
+        assert loaded_product.get_BFD_filename() == "data/"+b_filename
+        assert loaded_product.get_KSB_filename() == "data/"+k_filename
+        assert loaded_product.get_LensMC_filename() == "data/"+l_filename
+        assert loaded_product.get_MomentsML_filename() == "data/"+m_filename
+        assert loaded_product.get_REGAUSS_filename() == "data/"+r_filename
 
         pass
 
@@ -98,10 +98,10 @@ class TestCalibrationParametersProduct(object):
         loaded_product = read_pickled_product(filename, workdir=str(tmpdir))
 
         # Check that the filenames coincide
-        assert loaded_product.get_BFD_filename() == b_filename
-        assert loaded_product.get_KSB_filename() == k_filename
-        assert loaded_product.get_LensMC_filename() == l_filename
-        assert loaded_product.get_MomentsML_filename() == m_filename
-        assert loaded_product.get_REGAUSS_filename() == r_filename
+        assert loaded_product.get_BFD_filename() == "data/"+b_filename
+        assert loaded_product.get_KSB_filename() == "data/"+k_filename
+        assert loaded_product.get_LensMC_filename() == "data/"+l_filename
+        assert loaded_product.get_MomentsML_filename() == "data/"+m_filename
+        assert loaded_product.get_REGAUSS_filename() == "data/"+r_filename
 
         pass

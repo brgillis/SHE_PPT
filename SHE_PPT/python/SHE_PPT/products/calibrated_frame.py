@@ -60,11 +60,11 @@ def init():
 
 
 def __set_data_filename(self, filename):
-    set_data_filename_of_product(self, filename)
+    set_data_filename_of_product(self, filename, "DataStorage")
 
 
 def __get_data_filename(self):
-    return get_data_filename_from_product(self)
+    return get_data_filename_from_product(self, "DataStorage")
 
 
 def __set_psf_filename(self, filename):

@@ -164,7 +164,8 @@ def __set_method_bias_statistics_filename(self, method, filename):
     if getattr(self.Data, bias_statistics_switcher[method]) is None:
         setattr(self.Data, bias_statistics_switcher[method], create_method_shear_bias_statistics(filename))
     
-    set_data_filename_of_product(self, filename, bias_statistics_switcher[method])
+    if filename is not None:
+        set_data_filename_of_product(self, filename, bias_statistics_switcher[method])
 
     return
 

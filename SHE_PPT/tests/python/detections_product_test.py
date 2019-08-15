@@ -56,6 +56,6 @@ class TestDetectionsProduct(object):
         loaded_product = read_xml_product("she_detections.xml", workdir=str(tmpdir), allow_pickled=False)
 
         # Check that the filenames match
-        assert loaded_product.get_data_filename() == subfilename
+        assert loaded_product.get_data_filename() == "data/"+subfilename
 
         pass

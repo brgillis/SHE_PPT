@@ -61,7 +61,7 @@ class TestMosaicProduct(object):
         loaded_product = read_xml_product("mer_mosaic.xml", workdir=str(tmpdir), allow_pickled=False)
 
         # Check that it's the same
-        assert loaded_product.get_data_filename() == data_filename
+        assert loaded_product.get_data_filename() == "data/"+data_filename
 
         pass
 

@@ -59,8 +59,8 @@ class TestPSFCalibrationProduct(object):
         loaded_product = read_xml_product(filename, workdir=str(tmpdir))
 
         # Check that it's the same
-        assert loaded_product.get_zernike_mode_filename() == zm_filename
-        assert loaded_product.get_surface_error_filename() == se_filename
+        assert loaded_product.get_zernike_mode_filename() == "data/"+zm_filename
+        assert loaded_product.get_surface_error_filename() == "data/"+se_filename
 
         pass
 
@@ -83,7 +83,7 @@ class TestPSFCalibrationProduct(object):
         loaded_product = read_pickled_product(filename, workdir=str(tmpdir))
 
         # Check that it's the same
-        assert loaded_product.get_zernike_mode_filename() == zm_filename
-        assert loaded_product.get_surface_error_filename() == se_filename
+        assert loaded_product.get_zernike_mode_filename() == "data/"+zm_filename
+        assert loaded_product.get_surface_error_filename() == "data/"+se_filename
 
         pass

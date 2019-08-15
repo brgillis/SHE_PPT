@@ -59,7 +59,7 @@ class TestShearValidationStatsProduct(object):
         loaded_product = read_xml_product(filename, workdir=str(tmpdir))
 
         # Check that the filenames match
-        assert loaded_product.get_filename() == subfilename
+        assert loaded_product.get_filename() == "data/" + subfilename
 
         pass
 
@@ -81,6 +81,6 @@ class TestShearValidationStatsProduct(object):
         loaded_product = read_pickled_product(filename, workdir=str(tmpdir))
 
         # Check that the filenames match
-        assert loaded_product.get_filename() == subfilename
+        assert loaded_product.get_filename() == "data/" + subfilename
 
         pass
