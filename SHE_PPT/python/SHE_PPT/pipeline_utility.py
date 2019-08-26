@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-15"
+__updated__ = "2019-08-26"
 
 from enum import Enum
 import json.decoder
@@ -288,7 +288,7 @@ def get_conditional_product(filename, workdir="."):
         if len(filelist) == 0:
             return None
         elif len(filelist) == 1:
-            return read_xml_product(find_file(filelist[0], workdir))
+            return read_xml_product(filelist[0], workdir)
         else:
             raise ValueError("File " + qualified_filename + " is a listfile with more than one file listed, and " +
                              "is an invalid input to get_conditional_product.")
