@@ -296,4 +296,4 @@ def get_conditional_product(filename, workdir="."):
     except (json.decoder.JSONDecodeError, UnicodeDecodeError):
 
         # This isn't a listfile, so try to open and return it
-        return read_xml_product(qualified_filename)
+        return read_xml_product(qualified_filename, workdir)
