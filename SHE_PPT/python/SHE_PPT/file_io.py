@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-15"
+__updated__ = "2019-08-27"
 
 from datetime import datetime
 import json
@@ -226,7 +226,7 @@ def write_xml_product(product, xml_filename, workdir=".", allow_pickled=True):
             product.Data.CatalogStorage.CatalogFileStorage.StorageSpace[0].DataContainer.FileName = cat_filename
 
         # Check if the catalogue exists, and create it if necessary
-        qualified_cat_filename = os.path.join(workdir, cat_filename)
+        qualified_cat_filename = os.path.join(workdir, "data/"+cat_filename)
         if not os.path.isfile(qualified_cat_filename):
             open(qualified_cat_filename, 'a').close()
 
