@@ -226,6 +226,11 @@ def write_xml_product(product, xml_filename, workdir=".", allow_pickled=True):
             product.Data.CatalogStorage.CatalogFileStorage.StorageSpace[0].DataContainer.FileName = cat_filename
 
         # Check if the catalogue exists, and create it if necessary
+        
+        datadir = os.path.join(workdir, "data/")
+        if not os.path.isdir(datadir):
+            os.makedirs(datadir)
+        
         qualified_cat_filename = os.path.join(workdir, "data/"+cat_filename)
         if not os.path.isfile(qualified_cat_filename):
             open(qualified_cat_filename, 'a').close()
