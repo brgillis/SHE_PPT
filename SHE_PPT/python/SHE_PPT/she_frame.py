@@ -334,6 +334,8 @@ class SHEFrame(object):
                     continue
 
                 x, y = detector.world2pix(x_world, y_world)
+                print("DET ARRAY IDS: ",x_i,y_i)
+                print("DET POS: ",x,y)
                 if (x < 1 - x_buffer) or (x > detector.shape[0] + x_buffer):
                     continue
                 if (y < 1 - y_buffer) or (y > detector.shape[1] + y_buffer):
