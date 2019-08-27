@@ -376,7 +376,7 @@ class SHEFrameStack(object):
         found = False
         fov_coords_list = []
         for exposure in self.exposures:
-            print("EXP DET: ",exposure.detectors)
+            print("EXP DET: ",np.shape(exposure.detectors))
             fov_coords = exposure.get_fov_coords(x_world=x_world,
                                                  y_world=y_world,
                                                  x_buffer=x_buffer,
