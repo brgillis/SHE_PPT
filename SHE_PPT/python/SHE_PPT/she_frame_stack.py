@@ -514,7 +514,9 @@ class SHEFrameStack(object):
                 for detections_product_filename in detections_filenames:
 
                     detections_product = read_xml_product(os.path.join(workdir, detections_product_filename))
-                    print("DP: ",workdir,detections_product_filename,detections_product.get_data_filename())
+                    logger.info("DP: %s, %s, %s" % (workdir,
+                        detections_product_filename,
+                        detections_product.get_data_filename()))
                     detections_catalogue = table.Table.read(
                         os.path.join(workdir, detections_product.get_data_filename()))
 
