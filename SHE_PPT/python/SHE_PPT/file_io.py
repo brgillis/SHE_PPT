@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-08-27"
 
 from datetime import datetime
 import json
@@ -27,16 +27,19 @@ import os
 from os.path import join, isfile
 from pickle import UnpicklingError
 import pickle
-import re
 from xml.sax._exceptions import SAXParseException
+
+from astropy.io import fits
+import py
 
 from ElementsServices.DataSync import downloadTestData, localTestFile
 from EuclidDmBindings.sys_stub import CreateFromDocument
 from FilenameProvider.FilenameProvider import createFilename
 from SHE_PPT import magic_values as mv
+import SHE_PPT
 from SHE_PPT.logging import getLogger
-from SHE_PPT.utility import run_only_once
-from astropy.io import fits
+from SHE_PPT.utility import run_only_once, get_release_from_version, time_to_timestamp
+import numpy as np
 
 
 logger = getLogger(mv.logger_name)
@@ -45,13 +48,17 @@ type_name_maxlen = 45
 instance_id_maxlen = 55
 processing_function_maxlen = 4
 
+filename_include_data_subdir = False
+data_subdir = "data/"
+len_data_subdir = len(data_subdir)
+
 
 @run_only_once
 def warn_deprecated_timestamp():
     logger.warn("The use of the 'timestamp' kwarg in get_allowed_filename is deprecated and will be removed in a future version.")
 
 
-def get_allowed_filename(type_name, instance_id, extension=".fits", release="00.05", subdir="data",
+def get_allowed_filename(type_name, instance_id, extension=".fits", release=None, version=None, subdir="data",
                          processing_function="SHE", timestamp=None):
     """Gets a filename in the required Euclid format. Now mostly a pass-through to the official version, with
     tweaks to silently shift arguments to upper-case.
@@ -65,7 +72,11 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release="00.
     extension : str
         File extension (eg. ".fits").
     release : str
-        Software/data release version, in format "XX.XX" where each X is a digit 0-9.
+        Software/data release version, in format "XX.XX" where each X is a digit 0-9. Either this or version must be
+        supplied.
+    version : str
+        Software/data release version, in format "X.X(.Y)" where each X is an integer 0-99. Either this or release must
+        be supplied.
     subdir : str
         Subdirectory of work directory in which this file will be (default "data")
     processing_function : str
@@ -73,6 +84,14 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release="00.
     timestamp : bool
         If True, will append a timestamp to the instance_id
     """
+
+    # Check we have just one of release and version
+    if (release is None) == (version is None):
+        raise ValueError("Exactly one of release or version must be supplied to get_allowed_filename.")
+
+    # If given version, convert it to release format
+    if version is not None:
+        release = get_release_from_version(version)
 
     # Silently shift instance_id to upper-case, and add timestamp if desired
     full_instance_id = instance_id.upper()
@@ -131,7 +150,11 @@ def read_listfile(listfile_name):
         if len(listobject) == 0:
             return listobject
         if isinstance(listobject[0], list):
-            return [tuple(el) for el in listobject]
+            tupled_list = [tuple(el) for el in listobject]
+            if np.all([len(t) == 1 for t in tupled_list]):
+                return [t[0] for t in tupled_list]
+            else:
+                return tupled_list
         else:
             return listobject
 
@@ -179,11 +202,50 @@ def replace_multiple_in_file(input_filename, output_filename, input_strings, out
                 fout.write(new_line)
 
 
-def write_xml_product(product, xml_file_name, allow_pickled=True):
+def write_xml_product(product, xml_filename, workdir=".", allow_pickled=True):
+
+    # Silently coerce input into a string
+    xml_filename = str(xml_filename)
+
+    # Check if the product has a ProductId, and set it if necessary
     try:
-        with open(str(xml_file_name), "w") as f:
-            f.write(
-                product.toDOM().toprettyxml(encoding="utf-8").decode("utf-8"))
+        if product.Header.ProductId == "None":
+            # Set the product ID to a timestamp
+            t = datetime.now()
+            product.Header.ProductId = time_to_timestamp(t)
+    except AttributeError as e:
+        pass
+
+    # Check if the product has a catalog file object, and set the name and write a dummy one if necessary
+    try:
+        cat_filename = product.Data.CatalogStorage.CatalogFileStorage.StorageSpace[0].DataContainer.FileName
+        if cat_filename == "None":
+            # Create a name for the catalog file
+            cat_filename = get_allowed_filename(type_name="CAT", instance_id="0", extension=".csv",
+                                                version=SHE_PPT.__version__, subdir=None)
+            product.Data.CatalogStorage.CatalogFileStorage.StorageSpace[0].DataContainer.FileName = cat_filename
+
+        # Check if the catalogue exists, and create it if necessary
+        
+        datadir = os.path.join(workdir, "data/")
+        if not os.path.isdir(datadir):
+            os.makedirs(datadir)
+        
+        qualified_cat_filename = os.path.join(workdir, "data/"+cat_filename)
+        if not os.path.isfile(qualified_cat_filename):
+            open(qualified_cat_filename, 'a').close()
+
+    except AttributeError as e:
+        pass
+
+    if xml_filename[0] == "/":
+        qualified_xml_filename = xml_filename
+    else:
+        qualified_xml_filename = os.path.join(workdir, xml_filename)
+
+    try:
+        with open(str(qualified_xml_filename), "w") as f:
+            f.write(product.toDOM().toprettyxml(encoding="utf-8").decode("utf-8"))
     except AttributeError as e:
         if not allow_pickled:
             raise
@@ -191,14 +253,18 @@ def write_xml_product(product, xml_file_name, allow_pickled=True):
             raise
         logger.warn(
             "XML writing is not available; falling back to pickled writing instead.")
-        write_pickled_product(product, xml_file_name)
+        write_pickled_product(product, qualified_xml_filename)
 
 
-def read_xml_product(xml_file_name, allow_pickled=True):
-    # @TODO: Should allow_pickled be False by default?
-    # Read the xml file as a string
+def read_xml_product(xml_filename, workdir=".", allow_pickled=True):
+
+    # Silently coerce input into a string
+    xml_filename = str(xml_filename)
+
+    qualified_xml_filename = find_file(xml_filename, workdir)
+
     try:
-        with open(str(xml_file_name), "r") as f:
+        with open(str(qualified_xml_filename), "r") as f:
             xml_string = f.read()
 
         # Create a new product instance using the proper data product dictionary
@@ -207,22 +273,35 @@ def read_xml_product(xml_file_name, allow_pickled=True):
         # Not actually saved as xml
         if allow_pickled:
             # Revert to pickled product
-            return read_pickled_product(xml_file_name)
+            return read_pickled_product(qualified_xml_filename)
         else:
             raise
 
     return product
 
 
-def write_pickled_product(product, pickled_file_name):
+def write_pickled_product(product, pickled_filename, workdir="."):
 
-    with open(str(pickled_file_name), "wb") as f:
+    # Silently coerce input into a string
+    pickled_filename = str(pickled_filename)
+
+    if pickled_filename[0] == "/":
+        qualified_pickled_filename = pickled_filename
+    else:
+        qualified_pickled_filename = os.path.join(workdir, pickled_filename)
+
+    with open(str(qualified_pickled_filename), "wb") as f:
         pickle.dump(product, f)
 
 
-def read_pickled_product(pickled_file_name):
+def read_pickled_product(pickled_filename, workdir="."):
 
-    with open(str(pickled_file_name), "rb") as f:
+    # Silently coerce input into a string
+    pickled_filename = str(pickled_filename)
+
+    qualified_pickled_filename = find_file(pickled_filename, workdir)
+
+    with open(str(qualified_pickled_filename), "rb") as f:
         product = pickle.load(f)
 
     return product
@@ -311,6 +390,9 @@ def find_file(filename, path=None):
         Locates a file based on the presence/absence of an AUX/ or CONF/ prefix, searching in the aux or conf
         directories respectively for it, or else the work directory if supplied.
     """
+
+    # Silently coerce input into a string
+    filename = str(filename)
 
     if filename[0:4] == "WEB/":
         return find_web_file(filename[4:])
@@ -433,3 +515,52 @@ def update_xml_with_value(filename):
                   (len(bad_lines), filename, n_defaults))
     else:
         print('No updates required')
+        
+def get_data_filename_from_product(p, attr_name=None):
+    """ Helper function to get a data filename from a product, adjusting for whether to include the data subdir as desired.
+    """
+    
+    if attr_name is None or attr_name==0:
+        data_filename = p.Data.DataContainer.FileName
+    elif attr_name == -1:
+        data_filename = p.Data.FileName
+    else:
+        data_filename = getattr(p.Data,attr_name).DataContainer.FileName
+        
+    if data_filename is None:
+        return None
+        
+    # Silently force the filename returned to start with "data/" regardless of whether the returned value does, unless it's absolute
+    if len(data_filename)>0 and (data_filename[0:len_data_subdir]==data_subdir or data_filename[0]=="/"):
+        return data_filename
+    else:
+        return data_subdir + data_filename
+        
+def set_data_filename_of_product(p, data_filename, attr_name=None):
+    """ Helper function to set a data filename of a product, adjusting for whether to include the data subdir as desired.
+    """
+    
+    if data_filename is not None and len(data_filename)>0 and data_filename[0]!="/":
+            if filename_include_data_subdir:
+                
+                # Silently force the filename returned to start with "data/" regardless of whether the returned value does
+                if data_filename[0:len_data_subdir]!=data_subdir:
+                    data_filename = data_subdir + data_filename
+                
+            else:
+                
+                # Silently force the filename returned to NOT start with "data/" regardless of whether the returned value does
+                if data_filename[0:len_data_subdir]==data_subdir:
+                    data_filename = data_filename.replace(data_subdir,"",1)
+    
+    if attr_name is None or attr_name==0:
+        p.Data.DataContainer.FileName = data_filename
+    elif attr_name == -1:
+        p.Data.FileName = data_filename
+    else:
+        getattr(p.Data,attr_name).DataContainer.FileName = data_filename
+    
+    return
+        
+    
+    

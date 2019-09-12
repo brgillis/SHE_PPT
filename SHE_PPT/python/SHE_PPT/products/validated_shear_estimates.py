@@ -21,11 +21,11 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-08-15"
 
 from EuclidDmBindings.dpd.she.raw.validatedshearmeasurement_stub import dpdValidatedShearMeasurement
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
-from SHE_PPT.file_io import read_xml_product, find_aux_file
+from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 
 
 sample_file_name = "SHE_PPT/sample_validated_shear_measurements.xml"
@@ -43,29 +43,32 @@ def init():
     binding_class.set_filename = __set_filename
     binding_class.get_filename = __get_filename
 
+    binding_class.set_data_filename = __set_filename
+    binding_class.get_data_filename = __get_filename
+
     binding_class.get_all_filenames = __get_all_filenames
 
-    binding_class.has_files = False
+    binding_class.has_files = True
 
     return
 
 
 def __set_filename(self, filename):
-    self.Data.ValidatedShearMeasurementFile.DataContainer.FileName = filename
+    set_data_filename_of_product(self, filename, "ValidatedShearMeasurementFile")
 
 
 def __get_filename(self):
-    return self.Data.ValidatedShearMeasurementFile.DataContainer.FileName
+    return get_data_filename_from_product(self, "ValidatedShearMeasurementFile")
 
 
 def __get_all_filenames(self):
 
-    all_filenames = []
+    all_filenames = [self.get_filename()]
 
     return all_filenames
 
 
-def create_dpd_she_validated_shear_estimates(filename="default_filename.fits"):
+def create_dpd_she_validated_shear_estimates(filename="None"):
     """
         @TODO fill in docstring
     """
@@ -75,11 +78,9 @@ def create_dpd_she_validated_shear_estimates(filename="default_filename.fits"):
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)
-    dpd_she_validated_shear_estimates.Header = HeaderProvider.createGenericHeader(
-        "SHE")
+    dpd_she_validated_shear_estimates.Header = HeaderProvider.createGenericHeader("SHE")
 
-    if filename:
-        __set_filename(dpd_she_validated_shear_estimates, filename)
+    dpd_she_validated_shear_estimates.set_filename(filename)
 
     return dpd_she_validated_shear_estimates
 

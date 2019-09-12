@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-06-25"
 
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
@@ -58,18 +58,18 @@ class TestCalibrationParametersProduct(object):
         product.set_REGAUSS_filename(r_filename)
 
         # Save the product in an XML file
-        filename = tmpdir.join("she_calibration_parameters.xml")
-        write_xml_product(product, filename)
+        filename = "she_calibration_parameters.xml"
+        write_xml_product(product, filename, workdir=str(tmpdir))
 
         # Read back the XML file
-        loaded_product = read_xml_product(filename)
+        loaded_product = read_xml_product(filename, workdir=str(tmpdir))
 
         # Check that the filenames match
-        assert loaded_product.get_BFD_filename() == b_filename
-        assert loaded_product.get_KSB_filename() == k_filename
-        assert loaded_product.get_LensMC_filename() == l_filename
-        assert loaded_product.get_MomentsML_filename() == m_filename
-        assert loaded_product.get_REGAUSS_filename() == r_filename
+        assert loaded_product.get_BFD_filename() == "data/"+b_filename
+        assert loaded_product.get_KSB_filename() == "data/"+k_filename
+        assert loaded_product.get_LensMC_filename() == "data/"+l_filename
+        assert loaded_product.get_MomentsML_filename() == "data/"+m_filename
+        assert loaded_product.get_REGAUSS_filename() == "data/"+r_filename
 
         pass
 
@@ -91,17 +91,17 @@ class TestCalibrationParametersProduct(object):
         product.set_REGAUSS_filename(r_filename)
 
         # Save the product in a pickled file
-        filename = tmpdir.join("she_calibration_parameters.bin")
-        write_pickled_product(product, filename)
+        filename = "she_calibration_parameters.bin"
+        write_pickled_product(product, filename,workdir=str(tmpdir))
 
         # Read back the pickled file
-        loaded_product = read_pickled_product(filename)
+        loaded_product = read_pickled_product(filename, workdir=str(tmpdir))
 
         # Check that the filenames coincide
-        assert loaded_product.get_BFD_filename() == b_filename
-        assert loaded_product.get_KSB_filename() == k_filename
-        assert loaded_product.get_LensMC_filename() == l_filename
-        assert loaded_product.get_MomentsML_filename() == m_filename
-        assert loaded_product.get_REGAUSS_filename() == r_filename
+        assert loaded_product.get_BFD_filename() == "data/"+b_filename
+        assert loaded_product.get_KSB_filename() == "data/"+k_filename
+        assert loaded_product.get_LensMC_filename() == "data/"+l_filename
+        assert loaded_product.get_MomentsML_filename() == "data/"+m_filename
+        assert loaded_product.get_REGAUSS_filename() == "data/"+r_filename
 
         pass

@@ -22,7 +22,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-08-15"
 
 
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
@@ -31,13 +31,14 @@ __updated__ = "2019-02-27"
 import os
 import pickle
 
+from sphinx.websupport import storage
+
 import EuclidDmBindings.bas.cat_stub as cat_dict
 import EuclidDmBindings.bas.cot_stub as cot_dict
 import EuclidDmBindings.bas.dtd_stub as dtd_dict
 import EuclidDmBindings.bas.imp.stc_stub as stc_dict
 from EuclidDmBindings.dpd.she.shearbfdtraining_stub import dpdShearBFDTraining
-from SHE_PPT.file_io import find_aux_file, read_xml_product
-from sphinx.websupport import storage
+from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product, get_data_filename_from_product, set_data_filename_of_product
 
 
 def init():
@@ -61,11 +62,13 @@ def init():
 
 
 def __set_filename(self, filename):
-    self.Data.ShearBFDTrainingFile.DataContainer.FileName = filename
+    # @TODO: Update
+    set_data_filename_of_product(self, filename, "ShearBFDTrainingFile")
 
 
 def __get_filename(self):
-    return self.Data.ShearBFDTrainingFile.DataContainer.FileName
+    # @TODO: Update
+    return get_data_filename_from_product(self, "ShearBFDTrainingFile")
 
 
 def __get_all_filenames(self):

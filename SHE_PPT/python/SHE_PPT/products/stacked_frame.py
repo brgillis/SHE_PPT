@@ -21,11 +21,11 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-08-15"
 
 from EuclidDmBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
-from SHE_PPT.file_io import read_xml_product, find_aux_file
+from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 from SHE_PPT.products.calibrated_frame import (create_vis_psf_storage,
                                                create_vis_bkg_storage, create_vis_wgt_storage)
 
@@ -41,6 +41,9 @@ def init():
     binding_class = dpdVisStackedFrame
 
     # Add the data file name methods
+
+    binding_class.set_filename = __set_data_filename
+    binding_class.get_filename = __get_data_filename
 
     binding_class.set_data_filename = __set_data_filename
     binding_class.get_data_filename = __get_data_filename
@@ -60,58 +63,46 @@ def init():
 
 
 def __set_data_filename(self, filename):
-    self.Data.DataStorage.DataContainer.FileName = filename
+    set_data_filename_of_product(self, filename, "DataStorage")
 
 
 def __get_data_filename(self):
-    return self.Data.DataStorage.DataContainer.FileName
+    return get_data_filename_from_product(self, "DataStorage")
 
 
 def __set_psf_filename(self, filename):
-    if not hasattr(self.Data, "PsfModelStorage"):
+    if not hasattr(self.Data, "PsfModelStorage") or self.Data.PsfModelStorage is None:
         self.Data.PsfModelStorage = create_vis_psf_storage(filename)
-    elif self.Data.PsfModelStorage is None:
-        self.Data.PsfModelStorage = create_vis_psf_storage(filename)
-    else:
-        self.Data.PsfModelStorage.DataContainer.FileName = filename
+    set_data_filename_of_product(self, filename, "PsfModelStorage")
 
 
 def __get_psf_filename(self):
-    if hasattr(self.Data, "PsfModelStorage"):
-        if self.Data.PsfModelStorage is not None:
-            return self.Data.PsfModelStorage.DataContainer.FileName
+    if hasattr(self.Data, "PsfModelStorage") and self.Data.PsfModelStorage is not None:
+        return get_data_filename_from_product(self, "PsfModelStorage")
     return None
 
 
 def __set_bkg_filename(self, filename):
-    if not hasattr(self.Data, "BackgroundStorage"):
+    if not hasattr(self.Data, "BackgroundStorage") or self.Data.BackgroundStorage is None:
         self.Data.BackgroundStorage = create_vis_bkg_storage(filename)
-    elif self.Data.BackgroundStorage is None:
-        self.Data.BackgroundStorage = create_vis_bkg_storage(filename)
-    else:
-        self.Data.BackgroundStorage.DataContainer.FileName = filename
+    set_data_filename_of_product(self, filename, "BackgroundStorage")
 
 
 def __get_bkg_filename(self):
-    if hasattr(self.Data, "BackgroundStorage"):
-        if self.Data.BackgroundStorage is not None:
-            return self.Data.BackgroundStorage.DataContainer.FileName
+    if hasattr(self.Data, "BackgroundStorage") and self.Data.BackgroundStorage is not None:
+        return get_data_filename_from_product(self, "BackgroundStorage")
     return None
 
 
 def __set_wgt_filename(self, filename):
-    if not hasattr(self.Data, "WeightStorage"):
+    if not hasattr(self.Data, "WeightStorage") or self.Data.WeightStorage is None:
         self.Data.WeightStorage = create_vis_wgt_storage(filename)
-    elif self.Data.WeightStorage is None:
-        self.Data.WeightStorage = create_vis_wgt_storage(filename)
-    else:
-        self.Data.WeightStorage.DataContainer.FileName = filename
+    set_data_filename_of_product(self, filename, "WeightStorage")
 
 
 def __get_wgt_filename(self):
-    if hasattr(self.Data, "WeightStorage"):
-        if self.Data.WeightStorage is not None:
-            return self.Data.WeightStorage.DataContainer.FileName
+    if hasattr(self.Data, "WeightStorage") and self.Data.WeightStorage is not None:
+        return get_data_filename_from_product(self, "WeightStorage")
     return None
 
 

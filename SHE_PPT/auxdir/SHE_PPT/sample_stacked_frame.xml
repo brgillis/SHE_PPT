@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <ns1:DpdVisStackedFrame xmlns:ns1="http://euclid.esa.org/schema/dpd/vis/visstackedframe">
 	<Header>
-		<ProductId>YBh</ProductId>
+		<ProductId>None</ProductId>
 		<ProductType>LuO</ProductType>
 		<SoftwareName>K7y</SoftwareName>
 		<SoftwareRelease>aVj</SoftwareRelease>
@@ -179,23 +179,23 @@
 			<TimestampEnd>2018-11-16T16:45:39.953Z</TimestampEnd>
 		</DateRange>
 		<DataStorage format="vis.stackedImage" version="0.1">
-			<DataContainer filestatus="PROCESSING">
-				<FileName>L4Z7jduu9F6zHmnaoP2h9U6jTawIFBsX6aIBSLJuUEtpwjeJu8dRS1NiDZXmPibywvE</FileName>
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
 			</DataContainer>
 		</DataStorage>
 		<PsfModelStorage format="vis.psfModel" version="0.1">
 			<DataContainer filestatus="PROPOSED">
-				<FileName>hKmiqC6oOUW6nksSByEapxaiELJouYLP7eglVJf9NEnZJThubBp9j8rKKRX2STx7bE195T5dVIWP1xufahpEPPa9VrTA18Oly6rjhLquh4zXEM9SGohg</FileName>
+				<FileName>None</FileName>
 			</DataContainer>
 		</PsfModelStorage>
 		<BackgroundStorage format="vis.backgroundMap" version="0.1">
-			<DataContainer filestatus="COMMITTED">
-				<FileName>ssGEk62Z9rEIQTKGhZ0iYEHSRvClHHI1vXz4t5aDxyllM3qNOSN</FileName>
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
 			</DataContainer>
 		</BackgroundStorage>
 		<WeightStorage format="vis.weightMap" version="0.1">
-			<DataContainer filestatus="COMMITTED">
-				<FileName>D0TiomBfbE</FileName>
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
 			</DataContainer>
 		</WeightStorage>
 		<QualityParams>

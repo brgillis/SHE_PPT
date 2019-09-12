@@ -18,12 +18,14 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-04-16"
+__updated__ = "2019-04-19"
 
 import os
 import pytest
 
-from SHE_PPT.pipeline_utility import read_config, write_config
+from SHE_PPT import products
+from SHE_PPT.file_io import write_xml_product, read_xml_product, write_listfile
+from SHE_PPT.pipeline_utility import read_config, write_config, get_conditional_product
 
 
 class TestUtility:
@@ -49,14 +51,35 @@ class TestUtility:
         # Test we get out of the file what we put in
 
         test_dict = {"SHE_CTE_EstimateShear_methods": "KSB", "SHE_CTE_ObjectIdSplit_batch_size": "26"}
+
         test1_filename = "test1.txt"
+
+        lf0_filename = "empty_listfile.json"
+        lf1_filename = "one_listfile.json"
+        lf2_filename = "two_listfile.json"
 
         write_config(test_dict, test1_filename, workdir=self.workdir)
 
+        write_listfile(os.path.join(self.workdir, lf0_filename), [])
+        write_listfile(os.path.join(self.workdir, lf1_filename), [test1_filename])
+        write_listfile(os.path.join(self.workdir, lf2_filename), [test1_filename, test1_filename])
+
         read_dict1 = read_config(test1_filename, workdir=self.workdir)
 
+        # Check it's been read in correctly
         assert read_dict1["SHE_CTE_EstimateShear_methods"] == "KSB"
         assert read_dict1["SHE_CTE_ObjectIdSplit_batch_size"] == "26"
+
+        # Check we get expected results from trying to read in other variants
+
+        assert read_config(None, workdir=self.workdir) == {}
+        assert read_config("", workdir=self.workdir) == {}
+        assert read_config("None", workdir=self.workdir) == {}
+
+        assert read_config(lf0_filename, workdir=self.workdir) == {}
+        assert read_config(lf1_filename, workdir=self.workdir) == read_dict1
+        with pytest.raises(ValueError):
+            read_config(lf2_filename, workdir=self.workdir)
 
         # Test that we can parse a more complicated file
         test2_filename = "test2.txt"
@@ -77,5 +100,38 @@ class TestUtility:
         assert read_dict2["SHE_CTE_CleanupBiasMeasurement_cleanup"] == "True"
         assert read_dict2["SHE_CTE_MeasureBias_archive_dir"] == "/my/dir/"
         assert "ignore this" not in read_dict2
+
+        return
+
+    def test_get_conditional_product(self):
+
+        # We'll set up some test files to work with, using the object_id_list product
+
+        product_filename = "object_id_list.xml"
+        lf0_filename = "empty_listfile.json"
+        lf1_filename = "one_listfile.json"
+        lf2_filename = "two_listfile.json"
+
+        object_ids = [1, 2]
+
+        product = products.object_id_list.create_object_id_list_product(object_ids)
+        write_xml_product(product, product_filename, workdir=self.workdir)
+
+        write_listfile(os.path.join(self.workdir, lf0_filename), [])
+        write_listfile(os.path.join(self.workdir, lf1_filename), [product_filename])
+        write_listfile(os.path.join(self.workdir, lf2_filename), [product_filename, product_filename])
+
+        # Test that we get the expected result in each case
+
+        assert get_conditional_product(None, workdir=self.workdir) is None
+        assert get_conditional_product("", workdir=self.workdir) is None
+        assert get_conditional_product("None", workdir=self.workdir) is None
+
+        assert get_conditional_product(product_filename, workdir=self.workdir).get_id_list() == object_ids
+
+        assert get_conditional_product(lf0_filename, workdir=self.workdir) is None
+        assert get_conditional_product(lf1_filename, workdir=self.workdir).get_id_list() == object_ids
+        with pytest.raises(ValueError):
+            get_conditional_product(lf2_filename, workdir=self.workdir)
 
         return

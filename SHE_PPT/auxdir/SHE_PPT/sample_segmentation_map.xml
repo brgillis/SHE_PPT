@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <ns1:DpdMerSegmentationMap xmlns:ns1="http://euclid.esa.org/schema/dpd/mer/segmentationmap">
 	<Header>
-		<ProductId>uf0</ProductId>
+		<ProductId>None</ProductId>
 		<ProductType>Efx</ProductType>
 		<SoftwareName>Xxj</SoftwareName>
 		<SoftwareRelease>vBHXl</SoftwareRelease>
@@ -138,13 +138,13 @@
 			</Polygon>
 		</ImgSpatialFootprint>
 		<DataStorage format="mer.segmentationMap" version="0.2">
-			<DataContainer filestatus="DELETED">
-				<FileName>l2mk2ApXs8PWm5X0RDIkrHfYwFkFV8avXJySbqgZxsEllOglX9ysKbo2lee9HEHkQ8JozgREhdy6yR6G0SZ0</FileName>
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
 			</DataContainer>
 		</DataStorage>
 		<ConvolutionKernelStorage>
-			<DataContainer filestatus="PROCESSING">
-				<FileName>jd0QfUPjIKPA0wiozdQVn5ucHU9nYqH</FileName>
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
 			</DataContainer>
 		</ConvolutionKernelStorage>
 		<QualityParams>
@@ -166,7 +166,7 @@
 				<ProcessExecuted>true</ProcessExecuted>
 				<ExitCode>Wgh</ExitCode>
 				<LogFile filestatus="PROPOSED">
-					<FileName>ws9yNC1aw1yvz7a5erd</FileName>
+					<FileName>None</FileName>
 				</LogFile>
 				<OutputDataFileList>20zLyiZuEHQD9XNtJI162Qvn0</OutputDataFileList>
 			</ProcessingStep>

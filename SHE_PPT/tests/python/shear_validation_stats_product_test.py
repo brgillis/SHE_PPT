@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-06-25"
 
 import pytest
 
@@ -52,14 +52,14 @@ class TestShearValidationStatsProduct(object):
         product.set_filename(subfilename)
 
         # Save the product in an XML file
-        filename = tmpdir.join("she_shear_validation_stats.xml")
-        write_xml_product(product, filename)
+        filename = "she_shear_validation_stats.xml"
+        write_xml_product(product, filename, workdir=str(tmpdir))
 
         # Read back the XML file
-        loaded_product = read_xml_product(filename)
+        loaded_product = read_xml_product(filename, workdir=str(tmpdir))
 
         # Check that the filenames match
-        assert loaded_product.get_filename() == subfilename
+        assert loaded_product.get_filename() == "data/" + subfilename
 
         pass
 
@@ -74,13 +74,13 @@ class TestShearValidationStatsProduct(object):
         product.set_filename(subfilename)
 
         # Save the product in an XML file
-        filename = tmpdir.join("she_shear_validation_stats.xml")
-        write_pickled_product(product, filename)
+        filename = "she_shear_validation_stats.xml"
+        write_pickled_product(product, filename,workdir=str(tmpdir))
 
         # Read back the XML file
-        loaded_product = read_pickled_product(filename)
+        loaded_product = read_pickled_product(filename, workdir=str(tmpdir))
 
         # Check that the filenames match
-        assert loaded_product.get_filename() == subfilename
+        assert loaded_product.get_filename() == "data/" + subfilename
 
         pass

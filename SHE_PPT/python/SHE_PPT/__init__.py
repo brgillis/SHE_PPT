@@ -28,3 +28,5 @@ __all__ = [basename(f)[:-3]
            for f in modules if isfile(f) and not f.endswith('__init__.py')]
 
 del modules, dirname, basename, isfile, glob
+
+__version__ = "1.1"

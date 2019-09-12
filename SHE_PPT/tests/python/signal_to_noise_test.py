@@ -18,22 +18,34 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-05-27"
 
+import os
 from os.path import join
 import pytest
 
 from ElementsServices.DataSync import downloadTestData, localTestFile
-
 from SHE_PPT import magic_values as mv
+from SHE_PPT import mdb
 from SHE_PPT.file_io import read_pickled_product, find_file
+from SHE_PPT.logging import getLogger
+from SHE_PPT.she_frame_stack import SHEFrameStack
 from SHE_PPT.signal_to_noise import get_SN_of_image
 from SHE_PPT.table_formats.detections import tf as detf
+from SHE_PPT.table_formats.shear_estimates import tf as setf
 import numpy as np
 
-ex_signal_to_noises = [59, 59, 22, 24]
 
-she_frame_location = "WEB/SHE_PPT/test_data_stack.bin"
+ex_signal_to_noises = [59, 32]
+
+test_data_location = "/tmp"
+
+data_images_filename="data/data_images.json"
+segmentation_images_filename="data/segmentation_images.json"
+stacked_image_filename="data/stacked_image.xml"
+stacked_segmentation_image_filename="data/stacked_segm_image.xml"
+psf_images_and_tables_filename="data/psf_images_and_tables.json"
+detections_tables_filename="data/detections_tables.json"
 
 
 class TestCase:
@@ -44,23 +56,43 @@ class TestCase:
 
     @pytest.fixture(autouse=True)
     def setup(self, tmpdir):
-        self.workdir = tmpdir.strpath
-        self.logdir = join(tmpdir.strpath, "logs")
 
-        return
+        # Download the MDB from WebDAV
+        downloadTestData("testdata/sync.conf", "testdata/test_mdb.txt")
+        mdb.init(localTestFile(test_data_location, "SHE_PPT/sample_mdb.xml"))
+        assert os.path.isfile(localTestFile(test_data_location, "SHE_PPT/sample_mdb.xml")), f"Cannot find file: SHE_PPT/sample_mdb.xml"
+        
+        # Download the data stack files from WebDAV
+        downloadTestData("testdata/sync.conf", "testdata/test_data_stack.txt")
+        self.qualified_data_images_filename = localTestFile(test_data_location, "SHE_CTE/data/data_images.json")
+        assert os.path.isfile(self.qualified_data_images_filename), f"Cannot find file: {self.qualified_data_images_filename}"
+        
+        # Get the workdir based on where the data images listfile is
+        self.workdir, datadir = os.path.split(os.path.split(self.qualified_data_images_filename)[0])
+        assert datadir=="data", f"Data directory is not as expected in {self.qualified_data_images_filename}"
+        self.logdir = os.path.join(self.workdir, "logs")
+
+        # Read in the test data
+        self.data_stack = SHEFrameStack.read(exposure_listfile_filename=data_images_filename,
+                                             seg_listfile_filename=segmentation_images_filename,
+                                             stacked_image_product_filename=stacked_image_filename,
+                                             stacked_seg_product_filename=stacked_segmentation_image_filename,
+                                             psf_listfile_filename=psf_images_and_tables_filename,
+                                             detections_listfile_filename=detections_tables_filename,
+                                             workdir=self.workdir,
+                                             clean_detections=True,
+                                             memmap=True,
+                                             mode='denywrite')
 
     def test_get_signal_to_noise(self):
         """Test that the interface for the KSB method works properly.
         """
 
-        # Read in the test data
-        she_frame = read_pickled_product(find_file(she_frame_location))
-
-        gain = she_frame.exposures[0].detectors[1, 1].header[mv.gain_label]
+        gain = self.data_stack.exposures[0].detectors[1, 1].header[mv.gain_label]
 
         # Get the S/N for each galaxy
-        for i, row in enumerate(she_frame.detections_catalogue):
-            gal_stack = she_frame.extract_galaxy_stack(row[detf.ID], width=128)
+        for i, row in enumerate(self.data_stack.detections_catalogue):
+            gal_stack = self.data_stack.extract_galaxy_stack(row[detf.ID], width=128)
 
             signal_to_noise_estimates = []
             for exposure in gal_stack.exposures:

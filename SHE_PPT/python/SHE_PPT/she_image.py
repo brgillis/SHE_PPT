@@ -19,7 +19,7 @@ Created on: Aug 17, 2017
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2019-04-09"
+__updated__ = "2019-06-27"
 
 # Avoid non-trivial "from" imports (as explicit is better than implicit)
 
@@ -27,6 +27,8 @@ from copy import deepcopy
 import os
 import weakref
 
+import astropy.io.fits
+import astropy.wcs
 import galsim
 
 from SHE_PPT import magic_values as mv
@@ -34,8 +36,6 @@ from SHE_PPT import mdb
 from SHE_PPT.mask import (as_bool, is_masked_bad,
                           is_masked_suspect_or_bad, masked_off_image)
 from SHE_PPT.utility import load_wcs, run_only_once
-import astropy.io.fits
-import astropy.wcs
 import numpy as np
 
 from . import logging
@@ -170,7 +170,7 @@ class SHEImage(object):
             self.det_iy = self.header[mv.ccdid_label][0]
             self.det_ix = self.header[mv.ccdid_label][2]
 
-        logger.debug("Created {}".format(str(self)))
+        # logger.debug("Created {}".format(str(self)))
 
     # We define properties of the SHEImage object, following
     # https://euclid.roe.ac.uk/projects/codeen-users/wiki/User_Cod_Std-pythonstandard-v1-0#PNAMA-020-m-Developer-SHOULD-use-properties-to-protect-the-service-from-the-implementation
@@ -487,10 +487,10 @@ class SHEImage(object):
         # If not already loaded, load it
         if self._galsim_wcs is None:
             # Load from the header if possible
-            if self.header is not None and len(self.header) > 0:
+            if self.wcs is not None:
+                self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.wcs.to_header())[0]
+            elif self.header is not None and len(self.header) > 0:
                 self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.header)[0]
-            elif self.wcs is not None:
-                self.galsim_wcs = galsim.wcs.readFromFitsHeader(self.wcs.to_header())[0]
             else:
                 raise ValueError("SHEImage must have a WCS set up or a WCS in its header in order to get a GalSim WCS.")
 
@@ -1015,6 +1015,7 @@ class SHEImage(object):
                 header=new_header,
                 offset=new_offset,
                 wcs=self.wcs,
+                parent_image=self,
             )
 
         else:
@@ -1102,6 +1103,7 @@ class SHEImage(object):
                 header=new_header,
                 offset=new_offset,
                 wcs=self.wcs,
+                parent_image=self,
             )
 
             if overlap_width == 0 and overlap_height == 0:
@@ -1677,12 +1679,40 @@ class SHEImage(object):
             raise ValueError("In get_world2pix_transformation, either both ra and dec must be specified or both " +
                              "must be None/unspecified.")
 
-        if isinstance(self.galsim_wcs, galsim.wcs.CelestialWCS):
-            world_pos = galsim.CelestialCoord(ra * galsim.degrees, dec * galsim.degrees)
-        else:
-            world_pos = galsim.PositionD(ra, dec)
-
-        local_wcs = self.galsim_wcs.jacobian(world_pos=world_pos)
+        try:
+            if isinstance(self.galsim_wcs, galsim.wcs.CelestialWCS):
+                world_pos = galsim.CelestialCoord(ra * galsim.degrees, dec * galsim.degrees)
+            else:
+                world_pos = galsim.PositionD(ra, dec)
+    
+            local_wcs = self.galsim_wcs.jacobian(world_pos=world_pos)
+        except ValueError as e:
+            if not "WCS does not have longitude type" in str(e):
+                raise
+            if len(self.header) > 0:
+                
+                # If we hit this bug, read the WCS directly from the header
+                
+                warn_galsim_wcs_bug_workaround()
+                
+                self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.header)[0]
+                
+                if self.galsim_wcs.isPixelScale() and np.isclose(self.galsim_wcs.scale,1.0):
+                    
+                    # Don't have the information in this stamp's header - check for a parent image
+                    if self.parent_image is not None:
+                        self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.parent_image.header)[0]
+                        if self.galsim_wcs.isPixelScale() and np.isclose(self.galsim_wcs.scale,1.0):
+                            raise ValueError("Galsim WCS seems to not have been loaded correctly.")
+                    else:
+                        raise ValueError("Galsim WCS seems to not have been loaded correctly.")
+                
+                if isinstance(self.galsim_wcs, galsim.wcs.CelestialWCS):
+                    world_pos = galsim.CelestialCoord(ra * galsim.degrees, dec * galsim.degrees)
+                else:
+                    world_pos = galsim.PositionD(ra, dec)
+    
+                local_wcs = self.galsim_wcs.jacobian(world_pos=world_pos)
 
         return local_wcs.inverse().getDecomposition()
 
@@ -1814,3 +1844,7 @@ class SHEImage(object):
 @run_only_once
 def warn_mdb_not_loaded():
     logger.warn("MDB is not loaded, so default values will be assumed in calculating a noisemap.")
+
+@run_only_once
+def warn_galsim_wcs_bug_workaround():
+    logger.warn("Hit bug with GalSim WCS. Applying workaround.")

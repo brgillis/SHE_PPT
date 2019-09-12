@@ -18,14 +18,18 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-04-16"
+__updated__ = "2019-08-26"
 
 from enum import Enum
+import json.decoder
 import os
+from pickle import UnpicklingError
 from shutil import copyfile
+from xml.sax._exceptions import SAXParseException
 
 from SHE_PPT import magic_values as mv
-from SHE_PPT.file_io import read_xml_product
+from SHE_PPT import products
+from SHE_PPT.file_io import read_xml_product, read_listfile, find_file
 from SHE_PPT.logging import getLogger
 
 
@@ -36,15 +40,20 @@ class ConfigKeys(Enum):
     ES_METHODS = "SHE_CTE_EstimateShear_methods"
 
     OID_BATCH_SIZE = "SHE_CTE_ObjectIdSplit_batch_size"
+    OID_MAX_BATCHES = "SHE_CTE_ObjectIdSplit_max_batches"
+    OID_IDS = "SHE_CTE_ObjectIdSplit_ids"
 
     REMAP_NUM_THREADS_EXP = "SHE_MER_RemapMosaic_num_threads_exposures"
     REMAP_NUM_SWARP_THREADS_EXP = "SHE_MER_RemapMosaic_num_swarp_threads_exposures"
     REMAP_NUM_THREADS_STACK = "SHE_MER_RemapMosaic_num_threads_stack"
     REMAP_NUM_SWARP_THREADS_STACK = "SHE_MER_RemapMosaic_num_swarp_threads_stack"
 
+    SEM_NUM_THREADS = "SHE_CTE_ShearEstimatesMerge_number_threads"
+
     CBM_CLEANUP = "SHE_CTE_CleanupBiasMeasurement_cleanup"
 
     MB_ARCHIVE_DIR = "SHE_CTE_MeasureBias_archive_dir"
+    MB_NUM_THREADS = "SHE_CTE_MeasureBias_number_threads"
     MB_WEBDAV_ARCHIVE = "SHE_CTE_MeasureBias_webdav_archive"
     MB_WEBDAV_DIR = "SHE_CTE_MeasureBias_webdav_dir"
 
@@ -105,6 +114,12 @@ def archive_product(product_filename, archive_dir, workdir):
                 if data_filename is not None and data_filename != "default_filename.fits" and data_filename != "":
                     qualified_data_filename = os.path.join(workdir, data_filename)
                     qualified_archive_data_filename = os.path.join(full_archive_dir, data_filename)
+
+                    # The filename will likely also contain a subdir, so figure that out
+                    full_archive_data_subpath = os.path.split(qualified_archive_data_filename)[0]
+                    if not os.path.exists(full_archive_data_subpath):
+                        os.makedirs(full_archive_data_subpath)
+                        
                     copyfile(qualified_data_filename, qualified_archive_data_filename)
 
         else:
@@ -129,12 +144,49 @@ def read_config(config_filename, workdir="."):
     """
 
     # Return None if input filename is None
-    if config_filename is None:
-        return None
-
-    config_dict = {}
+    if config_filename is None or config_filename is "None" or config_filename is "":
+        return {}
 
     qualified_config_filename = os.path.join(workdir, config_filename)
+
+    try:
+
+        filelist = read_listfile(qualified_config_filename)
+
+        # If we get here, it is a listfile. If no files in it, return None. If one, return that. If more than one,
+        # raise an exception
+        if len(filelist) == 0:
+            return {}
+        elif len(filelist) == 1:
+            return _read_config_product(filelist[0], workdir)
+        else:
+            raise ValueError("File " + qualified_config_filename + " is a listfile with more than one file listed, and " +
+                             "is an invalid input to read_config.")
+
+    except (json.decoder.JSONDecodeError, UnicodeDecodeError):
+
+        # This isn't a listfile, so try to open and return it
+        return _read_config_product(config_filename, workdir)
+
+def _read_config_product(config_filename, workdir):
+    
+    # Try to read in as a data product
+    try:
+        p = read_xml_product(config_filename, workdir)
+        
+        config_data_filename = p.get_data_filename()
+        
+        return _read_config_file(find_file(config_data_filename,workdir))
+        
+    except (UnicodeDecodeError, SAXParseException, UnpicklingError) as _e:
+        
+        # Try to read it as a plain text file
+        return _read_config_file(find_file(config_filename,workdir))
+        
+
+def _read_config_file(qualified_config_filename):
+
+    config_dict = {}
 
     with open(qualified_config_filename, 'r') as config_file:
 
@@ -160,7 +212,7 @@ def read_config(config_filename, workdir="."):
                 err_string = ("Invalid key found in pipeline config file " + qualified_config_filename + ": " +
                               key + ". Allowed keys are: ")
                 for allowed_key in ConfigKeys:
-                    err_string += "\n--" + allowed_key.value
+                    err_string += "\n  " + allowed_key.value
                 raise ValueError(err_string)
 
             # In case the value contains an = char
@@ -213,3 +265,35 @@ def write_config(config_dict, config_filename, workdir="."):
             config_file.write(str(key) + " = " + str(config_dict[key]) + "\n")
 
     return
+
+
+def get_conditional_product(filename, workdir="."):
+    """ Returns None in all cases where a data product isn't provided, otherwise read and return the data
+        product.
+    """
+
+    # First check for None
+    if filename is None or filename is "None" or filename is "":
+        return None
+
+    # Find the file, and check if it's a listfile
+    qualified_filename = find_file(filename, workdir)
+
+    try:
+
+        filelist = read_listfile(qualified_filename)
+
+        # If we get here, it is a listfile. If no files in it, return None. If one, return that. If more than one,
+        # raise an exception
+        if len(filelist) == 0:
+            return None
+        elif len(filelist) == 1:
+            return read_xml_product(filelist[0], workdir)
+        else:
+            raise ValueError("File " + qualified_filename + " is a listfile with more than one file listed, and " +
+                             "is an invalid input to get_conditional_product.")
+
+    except (json.decoder.JSONDecodeError, UnicodeDecodeError):
+
+        # This isn't a listfile, so try to open and return it
+        return read_xml_product(qualified_filename, workdir)

@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-08-15"
 
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
@@ -40,7 +40,7 @@ class TestValidatedShearEstimatesProduct(object):
         product.validateBinding()
 
         # Check that it was inited with the proper filename
-        assert product.get_filename() == subfilename
+        assert product.get_filename() == "data/"+subfilename
 
         return
 
@@ -54,13 +54,13 @@ class TestValidatedShearEstimatesProduct(object):
         product.set_filename(subfilename)
 
         # Save the product in an XML file
-        filename = tmpdir.join("she_validated_shear_estimates.xml")
-        write_xml_product(product, filename, allow_pickled=False)
+        filename = "she_validated_shear_estimates.xml"
+        write_xml_product(product, filename, workdir=str(tmpdir), allow_pickled=False)
 
         # Read back the XML file
-        loaded_product = read_xml_product(filename, allow_pickled=False)
+        loaded_product = read_xml_product(filename, workdir=str(tmpdir), allow_pickled=False)
 
         # Check that the filenames match
-        assert loaded_product.get_filename() == subfilename
+        assert loaded_product.get_filename() == "data/" + subfilename
 
         pass

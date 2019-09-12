@@ -22,17 +22,18 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-08-15"
 
 import os
+
+from astropy.io import fits
 
 from EuclidDmBindings.dpd.mer.raw.segmentationmap_stub import dpdMerSegmentationMap
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
-from SHE_PPT.file_io import read_xml_product, find_aux_file
+from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 from SHE_PPT.utility import find_extension
-from astropy.io import fits
 
 
 sample_file_name = "SHE_PPT/sample_segmentation_map.xml"
@@ -79,7 +80,7 @@ def load_mosaic_hdu(filename, dir=None, hdu=0, detector_x=None, detector_y=None,
         dir = ""
 
     mosaic_product = read_xml_product(
-        xml_file_name=os.path.join(dir, filename), allow_pickled=False)
+        xml_filename=os.path.join(dir, filename), allow_pickled=False)
 
     data_filename = mosaic_product.get_data_filename()
 
@@ -110,6 +111,9 @@ def init():
 
     # Add the data file name methods
 
+    binding_class.set_filename = __set_data_filename
+    binding_class.get_filename = __get_data_filename
+
     binding_class.set_data_filename = __set_data_filename
     binding_class.get_data_filename = __get_data_filename
 
@@ -121,11 +125,11 @@ def init():
 
 
 def __set_data_filename(self, filename):
-    self.Data.DataStorage.DataContainer.FileName = filename
+    set_data_filename_of_product(self, filename, "DataStorage")
 
 
 def __get_data_filename(self):
-    return self.Data.DataStorage.DataContainer.FileName
+    return get_data_filename_from_product(self, "DataStorage")
 
 
 def __get_all_filenames(self):

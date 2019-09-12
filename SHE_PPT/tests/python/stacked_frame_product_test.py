@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-06-25"
 
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
@@ -50,13 +50,12 @@ class TestStackedFrameProduct(object):
         product.set_data_filename(subfilename)
 
         # Save the product in an XML file
-        filename = tmpdir.join("she_stacked_frame.xml")
-        write_xml_product(product, filename, allow_pickled=False)
+        write_xml_product(product, "she_stacked_frame.xml", workdir=str(tmpdir), allow_pickled=False)
 
         # Read back the XML file
-        loaded_product = read_xml_product(filename, allow_pickled=False)
+        loaded_product = read_xml_product("she_stacked_frame.xml", workdir=str(tmpdir), allow_pickled=False)
 
         # Check that the filenames match
-        assert loaded_product.get_data_filename() == subfilename
+        assert loaded_product.get_data_filename() == "data/"+subfilename
 
         pass

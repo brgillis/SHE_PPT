@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2019-06-25"
 
 import pytest
 
@@ -55,14 +55,13 @@ class TestMosaicProduct(object):
         product.set_data_filename(data_filename)
 
         # Save the product in an xml file
-        filename = tmpdir.join("mer_mosaic.xml")
-        write_xml_product(product, filename, allow_pickled=False)
+        write_xml_product(product, "mer_mosaic.xml", workdir=str(tmpdir), allow_pickled=False)
 
         # Read back the xml file
-        loaded_product = read_xml_product(filename, allow_pickled=False)
+        loaded_product = read_xml_product("mer_mosaic.xml", workdir=str(tmpdir), allow_pickled=False)
 
         # Check that it's the same
-        assert loaded_product.get_data_filename() == data_filename
+        assert loaded_product.get_data_filename() == "data/"+data_filename
 
         pass
 
@@ -74,9 +73,9 @@ class TestMosaicProduct(object):
         filename = str(tmpdir.join("mer_mosaic.bin"))
         write_xml_product(product, filename, allow_pickled=False)
 
-        # Check that it raises a ValueError when expected
+        # Check that it raises exceptions when expected
 
-        with pytest.raises(IOError):
+        with pytest.raises(RuntimeError):
             mosaic_hdu = prod.load_mosaic_hdu(filename="bad_filename.junk")
         with pytest.raises(IOError):
             mosaic_hdu = prod.load_mosaic_hdu(filename=filename)
