@@ -631,6 +631,7 @@ class SHEImage(object):
             full_header = deepcopy(self.header)
             for label in wcs_header:
                 # Overwrite any coming from the WCS
+                print("LAB: ",label,wcs_header[label],wcs_header.comments[label],full_header)
                 full_header[label] = (wcs_header[label], wcs_header.comments[label])
         elif self.header is None:
             full_header = astropy.io.fits.Header()  # An empty header
