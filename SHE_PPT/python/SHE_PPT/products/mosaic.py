@@ -29,7 +29,7 @@ import os
 from astropy.io import fits
 
 from ST_DataModelBindings.dpd.mer.raw.segmentationmap_stub import dpdMerSegmentationMap
-import HeaderProvider.GenericHeaderProvider as HeaderProvider
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product

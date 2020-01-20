@@ -26,7 +26,7 @@
 __updated__ = "2019-02-27"
 
 
-# import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
+# import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
 
 import pickle
