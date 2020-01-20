@@ -372,9 +372,9 @@ def find_web_file(filename):
         with open(filelist, 'w') as fo:
             fo.write(filename + "\n")
 
-        DataSync sync("testdata/sync.conf", filelist)
+        sync = DataSync("testdata/sync.conf", filelist)
         sync.download()
-        
+
         qualified_filename = sync.absolutePath(filename)
     except:
         raise
