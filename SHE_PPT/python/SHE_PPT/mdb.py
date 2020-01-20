@@ -23,7 +23,7 @@ __updated__ = "2020-01-20"
 
 from SHE_PPT.file_io import find_file
 from SHE_PPT.logging import getLogger
-from ST_DM_MDBTools import Mdb
+from ST_DM_MDBTools.Mdb import Mdb
 
 
 _not_inited_exception = RuntimeError(
