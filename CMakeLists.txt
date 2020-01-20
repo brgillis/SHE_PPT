@@ -7,5 +7,4 @@ find_package(ElementsProject)
 
 # Declare project name and version
 
-elements_project(SHE_PPT 1.3 USE Elements 5.8 EuclidDmBindings 2.2.3 DMTools 2.2.3 MDBTools 2.2.3
-                 CT_TestDataManager 1.0)
+elements_project(SHE_PPT 1.3 USE Elements 5.8 ST_DataModelBindings 7.0.0)
