@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-05-27"
+__updated__ = "2020-01-20"
 
 import os
 from os.path import join
@@ -58,12 +58,21 @@ class TestCase:
     def setup(self, tmpdir):
 
         # Download the MDB from WebDAV
-        downloadTestData("testdata/sync.conf", "testdata/test_mdb.txt")
-        mdb.init(localTestFile(test_data_location, "SHE_PPT/sample_mdb.xml"))
-        assert os.path.isfile(localTestFile(test_data_location, "SHE_PPT/sample_mdb.xml")), f"Cannot find file: SHE_PPT/sample_mdb.xml"
+
+        self.sync_mdb = DataSync("testdata/sync.conf", "testdata/test_mdb.txt")
+        self.sync_mdb.download()
+        self.mdb_filename = self.sync.absolutePath("SHE_PPT/sample_mdb.xml")
+        
+        assert os.path.isfile(self.mdb_filename), f"Cannot find file: SHE_PPT/sample_mdb.xml"
+        
+        mdb.init(self.mdb_filename)
         
         # Download the data stack files from WebDAV
-        downloadTestData("testdata/sync.conf", "testdata/test_data_stack.txt")
+
+        self.sync_datastack = DataSync("testdata/sync.conf", "testdata/test_data_stack.txt")
+        self.sync_datastack.download()
+        self.qualified_data_images_filename = self.sync.absolutePath("SHE_CTE/data/data_images.json")
+        
         self.qualified_data_images_filename = localTestFile(test_data_location, "SHE_CTE/data/data_images.json")
         assert os.path.isfile(self.qualified_data_images_filename), f"Cannot find file: {self.qualified_data_images_filename}"
         
