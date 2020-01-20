@@ -23,7 +23,7 @@ import math
 import os
 
 from ElementsKernel.Logging import getLogger
-from ST_DM_MDBTools import Mdb
+from ST_DM_MDBTools.Mdb import Mdb
 import numpy as np
 
 
