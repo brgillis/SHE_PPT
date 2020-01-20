@@ -78,7 +78,7 @@ def create_dpd_she_validated_shear_estimates(filename="None"):
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)
-    dpd_she_validated_shear_estimates.Header = HeaderProvider.createGenericHeader("SHE")
+    dpd_she_validated_shear_estimates.Header = HeaderProvider.create_generic_header("SHE")
 
     dpd_she_validated_shear_estimates.set_filename(filename)
 

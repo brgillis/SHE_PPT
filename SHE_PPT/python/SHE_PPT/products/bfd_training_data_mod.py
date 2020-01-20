@@ -136,7 +136,7 @@ def create_dpd_she_bfd_training_data(filename=None):
     else:
 
         # dpd_she_bfd_training_data.Header =
-        # HeaderProvider.createGenericHeader("SHE") # FIXME
+        # HeaderProvider.create_generic_header("SHE") # FIXME
         dpd_she_bfd_training_data.Header = "SHE"
 
         # @FIXME: Needs serious updating.

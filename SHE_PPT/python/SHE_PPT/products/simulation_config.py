@@ -100,7 +100,7 @@ def create_dpd_she_simulation_config(filename=None):
     dpd_she_simulation_config = DpdSheSimulationConfigProduct()
 
     # dpd_she_simulation_config.Header =
-    # HeaderProvider.createGenericHeader("SHE") # FIXME
+    # HeaderProvider.create_generic_header("SHE") # FIXME
     dpd_she_simulation_config.Header = "SHE"
 
     dpd_she_simulation_config.Data = create_she_simulation_config(filename)

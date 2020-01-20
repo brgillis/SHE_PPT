@@ -153,7 +153,7 @@ def create_dpd_she_psf_field_params(timestamp=None,
     dpd_she_psf_field_params = DpdShePSFFieldParamsProduct()
 
     # dpd_she_psf_field_params.Header =
-    # HeaderProvider.createGenericHeader("SHE") # FIXME
+    # HeaderProvider.create_generic_header("SHE") # FIXME
     dpd_she_psf_field_params.Header = "SHE"
 
     dpd_she_psf_field_params.Data = create_she_psf_field_params(timestamp,

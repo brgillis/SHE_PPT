@@ -100,7 +100,7 @@ def create_dpd_she_psf_image(filename=None):
     # dpd_she_psf_image = she_dpd.DpdShePSFImageProduct() # FIXME
     dpd_she_psf_image = DpdShePSFImageProduct()
 
-    # dpd_she_psf_image.Header = HeaderProvider.createGenericHeader("SHE") #
+    # dpd_she_psf_image.Header = HeaderProvider.create_generic_header("SHE") #
     # FIXME
     dpd_she_psf_image.Header = "SHE"
 

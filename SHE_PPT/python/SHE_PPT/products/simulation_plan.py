@@ -101,7 +101,7 @@ def create_dpd_she_simulation_plan(filename=None):
     dpd_she_simulation_plan = DpdSheSimulationPlanProduct()
 
     # dpd_she_simulation_plan.Header =
-    # HeaderProvider.createGenericHeader("SHE") # FIXME
+    # HeaderProvider.create_generic_header("SHE") # FIXME
     dpd_she_simulation_plan.Header = "SHE"
 
     dpd_she_simulation_plan.Data = create_she_simulation_plan(filename)

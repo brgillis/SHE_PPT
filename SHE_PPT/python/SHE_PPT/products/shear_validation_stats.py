@@ -105,7 +105,7 @@ def create_dpd_she_shear_validation_stats(filename=None):
     dpd_she_shear_validation_stats = DpdSheShearValidationStatsProduct()
 
     # dpd_she_shear_validation_stats.Header =
-    # HeaderProvider.createGenericHeader("SHE") # FIXME
+    # HeaderProvider.create_generic_header("SHE") # FIXME
     dpd_she_shear_validation_stats.Header = "SHE"
 
     dpd_she_shear_validation_stats.Data = create_she_shear_validation_stats(

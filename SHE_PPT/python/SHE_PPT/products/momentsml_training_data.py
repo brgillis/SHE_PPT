@@ -111,7 +111,7 @@ def create_dpd_she_momentsml_training_data(filename=None):
     dpd_she_momentsml_training_data = read_xml_product(
         find_aux_file(sample_file_name), allow_pickled=False)
 
-    dpd_she_momentsml_training_data.Header = HeaderProvider.createGenericHeader("SHE")  # FIXME
+    dpd_she_momentsml_training_data.Header = HeaderProvider.create_generic_header("SHE")  # FIXME
 
     # dpd_she_momentsml_training_data.Data = create_she_momentsml_training_data(
     #    filename)

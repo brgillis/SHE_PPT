@@ -165,7 +165,7 @@ def create_dpd_she_stack_mosaic(data_filename):
 
     dpd_she_stack_mosaic = DpdSheStackMosaicProduct()
 
-    # dpd_she_stack_mosaic.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
+    # dpd_she_stack_mosaic.Header = HeaderProvider.create_generic_header("SHE") # FIXME
     dpd_she_stack_mosaic.Header = None
 
     dpd_she_stack_mosaic.Data = create_she_stack_mosaic(

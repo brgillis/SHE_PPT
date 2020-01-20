@@ -103,7 +103,7 @@ def create_dpd_she_galaxy_population(filename=None):
     dpd_she_galaxy_population = DpdSheGalaxyPopulationProduct()
 
     # dpd_she_galaxy_population.Header =
-    # HeaderProvider.createGenericHeader("SHE") # FIXME
+    # HeaderProvider.create_generic_header("SHE") # FIXME
     dpd_she_galaxy_population.Header = "SHE"
 
     dpd_she_galaxy_population.Data = create_she_galaxy_population(filename)

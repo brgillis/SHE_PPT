@@ -211,7 +211,7 @@ def create_dpd_she_calibration_parameters(BFD_filename=None,
     dpd_calibration_parameters = DpdSheCalibrationParametersProduct()
 
     # dpd_calibration_parameters.Header =
-    # HeaderProvider.createGenericHeader("SHE") # FIXME
+    # HeaderProvider.create_generic_header("SHE") # FIXME
     dpd_calibration_parameters.Header = "SHE"
 
     dpd_calibration_parameters.Data = create_she_calibration_parameters(BFD_filename,

@@ -135,7 +135,7 @@ def create_dpd_vis_calibrated_frame(data_filename='',
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)
-    dpd_vis_calibrated_frame.Header = HeaderProvider.createGenericHeader("SHE")
+    dpd_vis_calibrated_frame.Header = HeaderProvider.create_generic_header("SHE")
 
     __set_data_filename(dpd_vis_calibrated_frame, data_filename)
     __set_psf_filename(dpd_vis_calibrated_frame, psf_filename)

@@ -167,7 +167,7 @@ def create_dpd_she_exposure_mosaic(data_filename):
 
     dpd_she_exposure_mosaic = DpdSheExposureMosaicProduct()
 
-    # dpd_she_exposure_mosaic.Header = HeaderProvider.createGenericHeader("SHE")
+    # dpd_she_exposure_mosaic.Header = HeaderProvider.create_generic_header("SHE")
     dpd_she_exposure_mosaic.Header = None
 
     dpd_she_exposure_mosaic.Data = create_she_exposure_mosaic(

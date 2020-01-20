@@ -110,7 +110,7 @@ def create_dpd_she_bfd_training_data(filename=None):
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)
-    dpd_she_bfd_training_data.Header = HeaderProvider.createGenericHeader("SHE")
+    dpd_she_bfd_training_data.Header = HeaderProvider.create_generic_header("SHE")
 
     if filename:
         __set_filename(dpd_she_bfd_training_data, filename)

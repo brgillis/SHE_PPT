@@ -103,7 +103,7 @@ def create_dpd_she_details(filename=None):
     # dpd_she_details = she_dpd.DpdSheDetailsProduct() # FIXME
     dpd_she_details = DpdSheDetailsProduct()
 
-    # dpd_she_details.Header = HeaderProvider.createGenericHeader("SHE") #
+    # dpd_she_details.Header = HeaderProvider.create_generic_header("SHE") #
     # FIXME
     dpd_she_details.Header = "SHE"
 

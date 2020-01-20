@@ -154,7 +154,7 @@ def create_dpd_she_psf_calibration_params(timestamp=None,
     dpd_she_psf_calibration_params = DpdShePSFCalibrationParamsProduct()
 
     # dpd_she_psf_calibration_params.Header =
-    # HeaderProvider.createGenericHeader("SHE") # FIXME
+    # HeaderProvider.create_generic_header("SHE") # FIXME
     dpd_she_psf_calibration_params.Header = "SHE"
 
     dpd_she_psf_calibration_params.Data = create_she_psf_calibration_params(timestamp,

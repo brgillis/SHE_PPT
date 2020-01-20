@@ -105,7 +105,7 @@ def create_dpd_she_lensmc_training_data(filename=None):
     # # FIXME
     dpd_she_lensmc_training_data = read_xml_product(find_aux_file(sample_file_name))
 
-    dpd_she_lensmc_training_data.Header = HeaderProvider.createGenericHeader("SHE")
+    dpd_she_lensmc_training_data.Header = HeaderProvider.create_generic_header("SHE")
 
     # dpd_she_lensmc_training_data.Data = create_she_lensmc_training_data(
     #    filename)
