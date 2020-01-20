@@ -99,12 +99,12 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
     if extension[0] == ".":
         extension = extension[1:]
 
-    filename = FileNameProvider.get_allowed_filename(processing_function=processing_function,
-                                                     type_name=type_name.upper(),
-                                                     instance_id=instance_id,
-                                                     extension=extension,
-                                                     release=release,
-                                                     timestamp=timestamp)
+    filename = FileNameProvider().get_allowed_filename(processing_function=processing_function,
+                                                       type_name=type_name.upper(),
+                                                       instance_id=instance_id,
+                                                       extension=extension,
+                                                       release=release,
+                                                       timestamp=timestamp)
 
     if subdir is not None:
         qualified_filename = join(subdir, filename)
