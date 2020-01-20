@@ -45,8 +45,6 @@ class TestMDB:
 
         cls.test_key = "SpaceSegment.Instrument.VIS.VISDetectorPixelLongDimensionFormat"
 
-        downloadTestData("testdata/sync.conf", "testdata/test_mdb.txt")
-
         return
 
     @classmethod
