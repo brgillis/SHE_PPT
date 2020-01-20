@@ -65,7 +65,7 @@ def init(mdb_files=None, path=None):
         raise TypeError("Invalid type for mdb_files object passed to SHE_PPT.mdb.init(): " + str(mdb_files))
 
     # Get and store the data in a dictionary
-    full_dict = _Mdb(qualified_mdb_files).get_all()
+    full_dict = Mdb(qualified_mdb_files).get_all()
     full_mdb.clear()
     full_mdb.update(full_dict)
 
