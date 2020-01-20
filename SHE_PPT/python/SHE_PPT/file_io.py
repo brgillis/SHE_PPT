@@ -93,15 +93,15 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
         release = get_release_from_version(version)
 
     # Silently shift instance_id to upper-case
-    full_instance_id = instance_id.upper()
+    instance_id = instance_id.upper()
 
     # Check the extension doesn't start with "." and silently fix if it does
     if extension[0] == ".":
         extension = extension[1:]
 
     filename = FileNameProvider.get_allowed_filename(processing_function=processing_function,
-                                                     data_product_type=type_name.upper(),
-                                                     instance_id=full_instance_id,
+                                                     type_name=type_name.upper(),
+                                                     instance_id=instance_id,
                                                      extension=extension,
                                                      release=release,
                                                      timestamp=timestamp)
