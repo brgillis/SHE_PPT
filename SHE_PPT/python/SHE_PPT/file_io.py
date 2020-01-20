@@ -30,11 +30,11 @@ import pickle
 from xml.sax._exceptions import SAXParseException
 
 from ElementsServices.DataSync import DataSync
-from FilenameProvider.FilenameProvider import createFilename
 from SHE_PPT import magic_values as mv
 import SHE_PPT
 from SHE_PPT.logging import getLogger
 from SHE_PPT.utility import run_only_once, get_release_from_version, time_to_timestamp
+from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider
 from ST_DataModelBindings.sys_stub import CreateFromDocument
 from astropy.io import fits
 import numpy as np
@@ -58,7 +58,7 @@ def warn_deprecated_timestamp():
 
 
 def get_allowed_filename(type_name, instance_id, extension=".fits", release=None, version=None, subdir="data",
-                         processing_function="SHE", timestamp=None):
+                         processing_function="SHE", timestamp=True):
     """Gets a filename in the required Euclid format. Now mostly a pass-through to the official version, with
     tweaks to silently shift arguments to upper-case.
 
@@ -92,20 +92,19 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
     if version is not None:
         release = get_release_from_version(version)
 
-    # Silently shift instance_id to upper-case, and add timestamp if desired
+    # Silently shift instance_id to upper-case
     full_instance_id = instance_id.upper()
-    if timestamp is not None:
-        warn_deprecated_timestamp()
 
     # Check the extension doesn't start with "." and silently fix if it does
     if extension[0] == ".":
         extension = extension[1:]
 
-    filename = createFilename(processing_function=processing_function,
-                              data_product_type=type_name.upper(),
-                              instance_id=full_instance_id,
-                              extension=extension,
-                              release=release)
+    filename = FileNameProvider.get_allowed_filename(processing_function=processing_function,
+                                                     data_product_type=type_name.upper(),
+                                                     instance_id=full_instance_id,
+                                                     extension=extension,
+                                                     release=release,
+                                                     timestamp=timestamp)
 
     if subdir is not None:
         qualified_filename = join(subdir, filename)
