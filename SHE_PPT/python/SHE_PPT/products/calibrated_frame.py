@@ -23,9 +23,9 @@
 
 __updated__ = "2019-08-15"
 
-from EuclidDmBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
-import EuclidDmBindings.pro.vis_stub as vis_pro
-from EuclidDmBindings.sys.dss_stub import dataContainer
+from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
+import ST_DataModelBindings.pro.vis_stub as vis_pro
+from ST_DataModelBindings.sys.dss_stub import dataContainer
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 

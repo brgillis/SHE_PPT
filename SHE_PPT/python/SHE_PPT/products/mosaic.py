@@ -28,7 +28,7 @@ import os
 
 from astropy.io import fits
 
-from EuclidDmBindings.dpd.mer.raw.segmentationmap_stub import dpdMerSegmentationMap
+from ST_DataModelBindings.dpd.mer.raw.segmentationmap_stub import dpdMerSegmentationMap
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv

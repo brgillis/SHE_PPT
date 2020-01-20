@@ -33,7 +33,7 @@ from astropy.io import fits
 import py
 
 from ElementsServices.DataSync import downloadTestData, localTestFile
-from EuclidDmBindings.sys_stub import CreateFromDocument
+from ST_DataModelBindings.sys_stub import CreateFromDocument
 from FilenameProvider.FilenameProvider import createFilename
 from SHE_PPT import magic_values as mv
 import SHE_PPT

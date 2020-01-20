@@ -26,7 +26,7 @@ __updated__ = "2019-03-14"
 
 
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import EuclidDmBindings.she.she_stub as she_dpd # FIXME
+# import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
 
 
 def init():

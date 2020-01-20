@@ -26,12 +26,12 @@ __updated__ = "2019-08-15"
 
 
 # import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import EuclidDmBindings.she.she_stub as she_dpd # FIXME
+# import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
 
 
 import pickle
 
-from EuclidDmBindings.dpd.she.shearmomentsmltraining_stub import dpdShearMomentsMLTraining
+from ST_DataModelBindings.dpd.she.shearmomentsmltraining_stub import dpdShearMomentsMLTraining
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 

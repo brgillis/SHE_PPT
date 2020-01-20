@@ -23,7 +23,7 @@
 
 __updated__ = "2019-08-15"
 
-from EuclidDmBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
+from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
 import HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 from SHE_PPT.products.calibrated_frame import (create_vis_psf_storage,
