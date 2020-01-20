@@ -24,7 +24,7 @@ import os
 from os.path import join
 import pytest
 
-from ElementsServices.DataSync import downloadTestData, localTestFile
+from ElementsServices.DataSync import DataSync
 from SHE_PPT import magic_values as mv
 from SHE_PPT import mdb
 from SHE_PPT.file_io import read_pickled_product, find_file
