@@ -19,12 +19,12 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
-
-from MdbUtils.Mdb import Mdb as _Mdb
+__updated__ = "2020-01-20"
 
 from SHE_PPT.file_io import find_file
 from SHE_PPT.logging import getLogger
+from ST_DM_MDBTools import Mdb
+
 
 _not_inited_exception = RuntimeError(
     "mdb module must be initialised with MDB xml object before use.")
