@@ -73,7 +73,6 @@ class TestCase:
         self.sync_datastack.download()
         self.qualified_data_images_filename = self.sync_datastack.absolutePath("SHE_CTE/data/data_images.json")
         
-        self.qualified_data_images_filename = localTestFile(test_data_location, "SHE_CTE/data/data_images.json")
         assert os.path.isfile(self.qualified_data_images_filename), f"Cannot find file: {self.qualified_data_images_filename}"
         
         # Get the workdir based on where the data images listfile is
