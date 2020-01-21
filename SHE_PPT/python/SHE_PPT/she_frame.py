@@ -431,7 +431,7 @@ class SHEFrame(object):
                         tmp_kwargs["memmap"] = memmap
                     return fits.open(qualified_filename, **tmp_kwargs)
                 except FileNotFoundError as e:
-                    logger.warn(e)
+                    logger.warning(e)
                     return None
 
         detectors = np.ndarray((x_max + 1, y_max + 1), dtype=SHEImage)
@@ -603,5 +603,5 @@ class SHEFrame(object):
 
 @run_only_once
 def warn_cannot_memmap(e):
-    logger.warn(str(e))
+    logger.warning(str(e))
     return

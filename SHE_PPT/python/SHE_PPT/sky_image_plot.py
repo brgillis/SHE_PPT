@@ -42,7 +42,7 @@ try:
     import matplotlib.patches
 except RuntimeError as e:
     if "could not open display" in str(e):
-        logger.warn(
+        logger.warning(
             "Matplotlib cannot be imported; sky_image_plot module will not be available.")
     else:
         raise

@@ -123,10 +123,10 @@ def archive_product(product_filename, archive_dir, workdir):
                     copyfile(qualified_data_filename, qualified_archive_data_filename)
 
         else:
-            logger.warn("Product " + qualified_filename + " has no 'get_all_filenames' method.")
+            logger.warning("Product " + qualified_filename + " has no 'get_all_filenames' method.")
 
     except Exception as e:
-        logger.warn("Failsafe exception block triggered when trying to save statistics product in archive. " +
+        logger.warning("Failsafe exception block triggered when trying to save statistics product in archive. " +
                     "Exception was: " + str(e))
 
     return

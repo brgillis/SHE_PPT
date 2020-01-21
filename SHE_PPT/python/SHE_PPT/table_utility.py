@@ -261,7 +261,7 @@ def table_to_hdu(table):
                     "is not recognized by the FITS standard. Either scale "
                     "the data or change the units.".format(col.name, str(scale)))
             except ValueError:
-                warnings.warn(
+                warnings.warning(
                     "The unit '{0}' could not be saved to FITS format".format(
                         unit.to_string()), AstropyUserWarning)
 
@@ -271,7 +271,7 @@ def table_to_hdu(table):
 
     for key, value in list(table.meta.items()):
         if is_column_keyword(key.upper()) or key.upper() in REMOVE_KEYWORDS:
-            warnings.warn(
+            warnings.warning(
                 "Meta-data keyword {0} will be ignored since it conflicts "
                 "with a FITS reserved keyword".format(key), AstropyUserWarning)
 
@@ -284,7 +284,7 @@ def table_to_hdu(table):
                 try:
                     table_hdu.header.append((key, item))
                 except ValueError:
-                    warnings.warn(
+                    warnings.warning(
                         "Attribute `{0}` of type {1} cannot be added to "
                         "FITS Header - skipping".format(key, type(value)),
                         AstropyUserWarning)
@@ -292,7 +292,7 @@ def table_to_hdu(table):
             try:
                 table_hdu.header[key] = value
             except ValueError:
-                warnings.warn(
+                warnings.warning(
                     "Attribute `{0}` of type {1} cannot be added to FITS "
                     "Header - skipping".format(key, type(value)),
                     AstropyUserWarning)
