@@ -273,7 +273,7 @@ def make_detections_table_header(detector_x=1,
     """
 
     if detector is not None:
-        logger.warn(
+        logger.warning(
             "'detector' argument for make_*_table_header is deprecated: Use detector_x and detector_y instead.")
         detector_x = detector % 6
         detector_y = detector // 6

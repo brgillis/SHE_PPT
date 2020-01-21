@@ -195,7 +195,7 @@ def __set_method_bias_statistics(self, method, stats, workdir="."):
             try:
                 os.remove(qualified_old_filename)
             except Exception:
-                logger.warn("Deprecated file " + qualified_old_filename + " cannot be deleted.")
+                logger.warning("Deprecated file " + qualified_old_filename + " cannot be deleted.")
 
     # Handle if the new statistics object is None
     if stats is None:
@@ -307,7 +307,7 @@ def __set_method_bias_measurements(self, method, measurements, workdir="."):
             try:
                 os.remove(qualified_old_filename)
             except Exception:
-                logger.warn("Deprecated file " + qualified_old_filename + " cannot be deleted.")
+                logger.warning("Deprecated file " + qualified_old_filename + " cannot be deleted.")
 
     # Set the filename for the object
     setattr(self.Data, bias_statistics_switcher[method], create_method_shear_bias_statistics(filename))

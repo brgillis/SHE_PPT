@@ -60,7 +60,7 @@ def init(mdb_files=None, path=None):
             qualified_mdb_files.append(qualified_mdb_file)
     elif mdb_files is None:
         qualified_mdb_files = find_file(default_mdb_file)
-        logger.warn("No MDB file specified. Using default file at " + qualified_mdb_files)
+        logger.warning("No MDB file specified. Using default file at " + qualified_mdb_files)
     else:
         raise TypeError("Invalid type for mdb_files object passed to SHE_PPT.mdb.init(): " + str(mdb_files))
 

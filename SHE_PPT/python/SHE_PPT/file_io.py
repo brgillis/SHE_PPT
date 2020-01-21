@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-01-20"
+__updated__ = "2020-01-21"
 
 from datetime import datetime
 import json
@@ -38,7 +38,6 @@ from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider
 from ST_DataModelBindings.sys_stub import CreateFromDocument
 from astropy.io import fits
 import numpy as np
-import py
 
 
 logger = getLogger(mv.logger_name)
@@ -54,7 +53,8 @@ len_data_subdir = len(data_subdir)
 
 @run_only_once
 def warn_deprecated_timestamp():
-    logger.warn("The use of the 'timestamp' kwarg in get_allowed_filename is deprecated and will be removed in a future version.")
+    logger.warning(
+        "The use of the 'timestamp' kwarg in get_allowed_filename is deprecated and will be removed in a future version.")
 
 
 def get_allowed_filename(type_name, instance_id, extension=".fits", release=None, version=None, subdir="data",
@@ -249,7 +249,7 @@ def write_xml_product(product, xml_filename, workdir=".", allow_pickled=True):
             raise
         if not "object has no attribute 'toDOM'" in str(e):
             raise
-        logger.warn(
+        logger.warning(
             "XML writing is not available; falling back to pickled writing instead.")
         write_pickled_product(product, qualified_xml_filename)
 
