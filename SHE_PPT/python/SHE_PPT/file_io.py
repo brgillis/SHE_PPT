@@ -19,15 +19,17 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-01-21"
+__updated__ = "2020-01-27"
 
 from datetime import datetime
 import json
 import os
-from os.path import join, isfile
+from os.path import join, exists
 from pickle import UnpicklingError
 import pickle
 from xml.sax._exceptions import SAXParseException
+
+from astropy.io import fits
 
 from ElementsServices.DataSync import DataSync
 from SHE_PPT import magic_values as mv
@@ -36,7 +38,6 @@ from SHE_PPT.logging import getLogger
 from SHE_PPT.utility import run_only_once, get_release_from_version, time_to_timestamp
 from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider
 from ST_DataModelBindings.sys_stub import CreateFromDocument
-from astropy.io import fits
 import numpy as np
 
 
@@ -328,7 +329,7 @@ def find_file_in_path(filename, path):
 
         test_filename = join(test_path, filename)
 
-        if isfile(test_filename):
+        if exists(test_filename):
             qualified_filename = test_filename
             break
 
