@@ -237,7 +237,8 @@ def create_dpd_shear_estimates(BFD_filename="",
                                KSB_filename="",
                                LensMC_filename="",
                                MomentsML_filename="",
-                               REGAUSS_filename=""):
+                               REGAUSS_filename="",
+                               spatial_footprint=None):
     """
         @TODO fill in docstring
     """
@@ -254,6 +255,8 @@ def create_dpd_shear_estimates(BFD_filename="",
     __set_LensMC_filename(dpd_shear_estimates, LensMC_filename)
     __set_MomentsML_filename(dpd_shear_estimates, MomentsML_filename)
     __set_REGAUSS_filename(dpd_shear_estimates, REGAUSS_filename)
+    if spatial_footprint is not None:
+        __set_spatial_footprint(dpd_shear_estimates, spatial_footprint)
 
     return dpd_shear_estimates
 
