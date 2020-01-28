@@ -79,17 +79,20 @@ def __set_spatial_footprint(self, p):
     """
 
     # Figure out how the spatial footprint was passed to us
-    if isinstance(p, polygonType):
+    if isinstance(p, str):
+        # If we got a filepath, read it in and apply this function to the read-in product
+        return __set_spatial_footprint(self, read_xml_product(p))
+    elif isinstance(p, polygonType):
         poly = p
-    if hasattr(p, "Polygon"):
+    elif hasattr(p, "Polygon"):
         poly = p.Polygon
     elif hasattr(p, "Data") and hasattr(p.Data, "ImgSpatialFootprint"):
         poly = p.Data.ImgSpatialFootprint.Polygon
     elif hasattr(p, "Data") and hasattr(p.Data, "CatalogCoverage"):
         poly = p.Data.CatalogCoverage.SpatialCoverage.Polygon
     else:
-        raise TypeError("For set_spatial_footprint, must be provided a spatial footprint or a product which has it. " +
-                        "Received: " + str(type(p)))
+        raise TypeError("For set_spatial_footprint, must be provided a spatial footprint, a product which has it, " +
+                        "or the path to such a product. Received: " + str(type(p)))
 
     self.Data.CatalogCoverage.SpatialCoverage.Polygon = poly
 
