@@ -21,13 +21,15 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-15"
+__updated__ = "2020-01-28"
 
+from SHE_PPT.file_io import (read_xml_product, find_aux_file, get_data_filename_from_product,
+                             set_data_filename_of_product)
+from ST_DM_HeaderProvider import GenericHeaderProvider as HeaderProvider
+from ST_DataModelBindings.bas.imp.raw.stc_stub import polygonType
 from ST_DataModelBindings.dpd.she.raw.shearmeasurement_stub import dpdShearMeasurement
-import ST_DataModelBindings.pro.she_stub as she_pro
+from ST_DataModelBindings.pro import she_stub as she_pro
 from ST_DataModelBindings.sys.dss_stub import dataContainer
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
-from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 
 
 sample_file_name = "SHE_PPT/sample_shear_measurements.xml"
@@ -61,6 +63,9 @@ def init():
 
     binding_class.get_method_filename = __get_method_filename
     binding_class.set_method_filename = __set_method_filename
+
+    binding_class.get_spatial_footprint = __get_spatial_footprint
+    binding_class.set_spatial_footprint = __set_spatial_footprint
 
     binding_class.has_files = True
 
@@ -196,6 +201,36 @@ def __set_method_filename(self, method, filename):
         return self.set_BFD_filename(filename)
     else:
         raise ValueError("Invalid method " + str(method) + ".")
+
+
+def __set_spatial_footprint(self, p):
+    """ Set the spatial footprint. p can be either the spatial footprint, or
+        another product which has a spatial footprint defined.
+    """
+
+    # Figure out how the spatial footprint was passed to us
+    if isinstance(p, polygonType):
+        poly = p
+    if hasattr(p, "Polygon"):
+        poly = p.Polygon
+    elif hasattr(p, "Data") and hasattr(p.Data, "ImgSpatialFootprint"):
+        poly = p.Data.ImgSpatialFootprint.Polygon
+    elif hasattr(p, "Data") and hasattr(p.Data, "CatalogCoverage"):
+        poly = p.Data.CatalogCoverage.SpatialCoverage.Polygon
+    else:
+        raise TypeError("For set_spatial_footprint, must be provided a spatial footprint or a product which has it. " +
+                        "Received: " + str(type(p)))
+
+    self.Data.CatalogCoverage.SpatialCoverage.Polygon = poly
+
+    return
+
+
+def __get_spatial_footprint(self):
+    """ Get the spatial footprint as a polygonType object.
+    """
+
+    return self.Data.CatalogCoverage.SpatialCoverage.Polygon
 
 
 def create_dpd_shear_estimates(BFD_filename="",
