@@ -23,8 +23,8 @@
 
 __updated__ = "2019-08-15"
 
-from EuclidDmBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
-import HeaderProvider.GenericHeaderProvider as HeaderProvider
+from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 from SHE_PPT.products.calibrated_frame import (create_vis_psf_storage,
                                                create_vis_bkg_storage, create_vis_wgt_storage)
@@ -126,7 +126,7 @@ def create_dpd_vis_stacked_frame(data_filename="default_data_filename.fits",
     dpd_vis_stacked_frame = read_xml_product(
         find_aux_file(sample_file_name), allow_pickled=False)
 
-    dpd_vis_stacked_frame.Header = HeaderProvider.createGenericHeader("VIS")
+    dpd_vis_stacked_frame.Header = HeaderProvider.create_generic_header("VIS")
 
     dpd_vis_stacked_frame.set_data_filename(data_filename)
     dpd_vis_stacked_frame.set_bkg_filename(bkg_filename)

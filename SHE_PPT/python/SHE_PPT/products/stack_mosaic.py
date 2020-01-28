@@ -25,15 +25,15 @@
 
 __updated__ = "2019-08-15"
 
-# import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import EuclidDmBindings.she.she_stub as she_dpd # FIXME
+# import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
+# import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
 
 import os
 import pickle
 
 from astropy.io import fits
 
-import HeaderProvider.GenericHeaderProvider as HeaderProvider
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT import detector as dtc
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 import SHE_PPT.magic_values as mv
@@ -165,7 +165,7 @@ def create_dpd_she_stack_mosaic(data_filename):
 
     dpd_she_stack_mosaic = DpdSheStackMosaicProduct()
 
-    # dpd_she_stack_mosaic.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
+    # dpd_she_stack_mosaic.Header = HeaderProvider.create_generic_header("SHE") # FIXME
     dpd_she_stack_mosaic.Header = None
 
     dpd_she_stack_mosaic.Data = create_she_stack_mosaic(

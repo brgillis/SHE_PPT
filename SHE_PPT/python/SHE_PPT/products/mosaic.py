@@ -28,8 +28,8 @@ import os
 
 from astropy.io import fits
 
-from EuclidDmBindings.dpd.mer.raw.segmentationmap_stub import dpdMerSegmentationMap
-import HeaderProvider.GenericHeaderProvider as HeaderProvider
+from ST_DataModelBindings.dpd.mer.raw.segmentationmap_stub import dpdMerSegmentationMap
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
@@ -148,7 +148,7 @@ def create_dpd_mer_mosaic(data_filename="",
     dpd_mer_mosaic = read_xml_product(
         find_aux_file(sample_file_name), allow_pickled=False)
 
-    dpd_mer_mosaic.Header = HeaderProvider.createGenericHeader("SHE")
+    dpd_mer_mosaic.Header = HeaderProvider.create_generic_header("SHE")
 
     __set_data_filename(dpd_mer_mosaic, data_filename)
 

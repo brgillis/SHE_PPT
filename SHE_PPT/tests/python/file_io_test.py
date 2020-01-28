@@ -126,7 +126,7 @@ class TestIO:
         Updates with <Value> 
 
         """
-        from EuclidDmBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
+        from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
 
         test_filename = find_aux_file('SHE_PPT/sample_stacked_frame.xml')
 

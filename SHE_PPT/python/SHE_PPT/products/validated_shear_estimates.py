@@ -23,8 +23,8 @@
 
 __updated__ = "2019-08-15"
 
-from EuclidDmBindings.dpd.she.raw.validatedshearmeasurement_stub import dpdValidatedShearMeasurement
-import HeaderProvider.GenericHeaderProvider as HeaderProvider
+from ST_DataModelBindings.dpd.she.raw.validatedshearmeasurement_stub import dpdValidatedShearMeasurement
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 
 
@@ -78,7 +78,7 @@ def create_dpd_she_validated_shear_estimates(filename="None"):
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)
-    dpd_she_validated_shear_estimates.Header = HeaderProvider.createGenericHeader("SHE")
+    dpd_she_validated_shear_estimates.Header = HeaderProvider.create_generic_header("SHE")
 
     dpd_she_validated_shear_estimates.set_filename(filename)
 

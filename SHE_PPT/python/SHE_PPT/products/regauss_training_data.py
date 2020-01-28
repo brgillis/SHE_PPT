@@ -27,8 +27,8 @@ __updated__ = "2019-08-15"
 
 import pickle
 
-from EuclidDmBindings.dpd.she.raw.regausstraining_stub import dpdRegaussTraining
-import HeaderProvider.GenericHeaderProvider as HeaderProvider
+from ST_DataModelBindings.dpd.she.raw.regausstraining_stub import dpdRegaussTraining
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 
 
@@ -106,7 +106,7 @@ def create_dpd_she_regauss_training_data(filename=None):
     dpd_she_regauss_training_data = read_xml_product(
         find_aux_file(sample_file_name), allow_pickled=False)
 
-    dpd_she_regauss_training_data.Header = HeaderProvider.createGenericHeader("SHE")  # FIXME
+    dpd_she_regauss_training_data.Header = HeaderProvider.create_generic_header("SHE")  # FIXME
 
     # dpd_she_regauss_training_data.Data = create_she_regauss_training_data(
     #    filename)

@@ -19,26 +19,26 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-01-21"
+__updated__ = "2020-01-27"
 
 from datetime import datetime
 import json
 import os
-from os.path import join, isfile
+from os.path import join, exists
 from pickle import UnpicklingError
 import pickle
 from xml.sax._exceptions import SAXParseException
 
-from ElementsServices.DataSync import downloadTestData, localTestFile
-from EuclidDmBindings.sys_stub import CreateFromDocument
-from FilenameProvider.FilenameProvider import createFilename
+from astropy.io import fits
+
+from ElementsServices.DataSync import DataSync
 from SHE_PPT import magic_values as mv
 import SHE_PPT
 from SHE_PPT.logging import getLogger
 from SHE_PPT.utility import run_only_once, get_release_from_version, time_to_timestamp
-from astropy.io import fits
+from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider
+from ST_DataModelBindings.sys_stub import CreateFromDocument
 import numpy as np
-import py
 
 
 logger = getLogger(mv.logger_name)
@@ -59,7 +59,7 @@ def warn_deprecated_timestamp():
 
 
 def get_allowed_filename(type_name, instance_id, extension=".fits", release=None, version=None, subdir="data",
-                         processing_function="SHE", timestamp=None):
+                         processing_function="SHE", timestamp=True):
     """Gets a filename in the required Euclid format. Now mostly a pass-through to the official version, with
     tweaks to silently shift arguments to upper-case.
 
@@ -93,20 +93,19 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
     if version is not None:
         release = get_release_from_version(version)
 
-    # Silently shift instance_id to upper-case, and add timestamp if desired
-    full_instance_id = instance_id.upper()
-    if timestamp is not None:
-        warn_deprecated_timestamp()
+    # Silently shift instance_id to upper-case
+    instance_id = instance_id.upper()
 
     # Check the extension doesn't start with "." and silently fix if it does
     if extension[0] == ".":
         extension = extension[1:]
 
-    filename = createFilename(processing_function=processing_function,
-                              data_product_type=type_name.upper(),
-                              instance_id=full_instance_id,
-                              extension=extension,
-                              release=release)
+    filename = FileNameProvider().get_allowed_filename(processing_function=processing_function,
+                                                       type_name=type_name.upper(),
+                                                       instance_id=instance_id,
+                                                       extension=extension,
+                                                       release=release,
+                                                       timestamp=timestamp)
 
     if subdir is not None:
         qualified_filename = join(subdir, filename)
@@ -330,7 +329,7 @@ def find_file_in_path(filename, path):
 
         test_filename = join(test_path, filename)
 
-        if isfile(test_filename):
+        if exists(test_filename):
             qualified_filename = test_filename
             break
 
@@ -373,8 +372,10 @@ def find_web_file(filename):
         with open(filelist, 'w') as fo:
             fo.write(filename + "\n")
 
-        downloadTestData("testdata/sync.conf", filelist)
-        qualified_filename = localTestFile(mv.test_datadir, filename)
+        sync = DataSync("testdata/sync.conf", filelist)
+        sync.download()
+
+        qualified_filename = sync.absolutePath(filename)
     except:
         raise
     finally:

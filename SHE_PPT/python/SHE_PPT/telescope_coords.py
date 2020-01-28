@@ -17,13 +17,13 @@ Created on: 13 Feb, 2019
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-01-20"
 
 import math
 import os
 
 from ElementsKernel.Logging import getLogger
-from MdbUtils.Mdb import Mdb
+from ST_DM_MDBTools.Mdb import Mdb
 import numpy as np
 
 

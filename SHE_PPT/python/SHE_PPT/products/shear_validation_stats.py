@@ -25,8 +25,8 @@
 __updated__ = "2019-08-15"
 
 
-# import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import EuclidDmBindings.she.she_stub as she_dpd # FIXME
+# import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
+# import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
 
 import pickle
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
@@ -105,7 +105,7 @@ def create_dpd_she_shear_validation_stats(filename=None):
     dpd_she_shear_validation_stats = DpdSheShearValidationStatsProduct()
 
     # dpd_she_shear_validation_stats.Header =
-    # HeaderProvider.createGenericHeader("SHE") # FIXME
+    # HeaderProvider.create_generic_header("SHE") # FIXME
     dpd_she_shear_validation_stats.Header = "SHE"
 
     dpd_she_shear_validation_stats.Data = create_she_shear_validation_stats(
