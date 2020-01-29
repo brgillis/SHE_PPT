@@ -21,11 +21,13 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-15"
+__updated__ = "2020-01-28"
 
+from SHE_PPT.file_io import (read_xml_product, find_aux_file, get_data_filename_from_product,
+                             set_data_filename_of_product)
+from ST_DM_HeaderProvider import GenericHeaderProvider as HeaderProvider
+from ST_DataModelBindings.bas.imp.raw.stc_stub import polygonType
 from ST_DataModelBindings.dpd.she.raw.validatedshearmeasurement_stub import dpdValidatedShearMeasurement
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
-from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 
 
 sample_file_name = "SHE_PPT/sample_validated_shear_measurements.xml"
@@ -48,6 +50,9 @@ def init():
 
     binding_class.get_all_filenames = __get_all_filenames
 
+    binding_class.get_spatial_footprint = __get_spatial_footprint
+    binding_class.set_spatial_footprint = __set_spatial_footprint
+
     binding_class.has_files = True
 
     return
@@ -68,7 +73,41 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-def create_dpd_she_validated_shear_estimates(filename="None"):
+def __set_spatial_footprint(self, p):
+    """ Set the spatial footprint. p can be either the spatial footprint, or
+        another product which has a spatial footprint defined.
+    """
+
+    # Figure out how the spatial footprint was passed to us
+    if isinstance(p, str):
+        # If we got a filepath, read it in and apply this function to the read-in product
+        return __set_spatial_footprint(self, read_xml_product(p))
+    elif isinstance(p, polygonType):
+        poly = p
+    elif hasattr(p, "Polygon"):
+        poly = p.Polygon
+    elif hasattr(p, "Data") and hasattr(p.Data, "ImgSpatialFootprint"):
+        poly = p.Data.ImgSpatialFootprint.Polygon
+    elif hasattr(p, "Data") and hasattr(p.Data, "CatalogCoverage"):
+        poly = p.Data.CatalogCoverage.SpatialCoverage.Polygon
+    else:
+        raise TypeError("For set_spatial_footprint, must be provided a spatial footprint, a product which has it, " +
+                        "or the path to such a product. Received: " + str(type(p)))
+
+    self.Data.CatalogCoverage.SpatialCoverage.Polygon = poly
+
+    return
+
+
+def __get_spatial_footprint(self):
+    """ Get the spatial footprint as a polygonType object.
+    """
+
+    return self.Data.CatalogCoverage.SpatialCoverage.Polygon
+
+
+def create_dpd_she_validated_shear_estimates(filename="None",
+                                             spatial_footprint=None):
     """
         @TODO fill in docstring
     """
@@ -80,7 +119,9 @@ def create_dpd_she_validated_shear_estimates(filename="None"):
     # other things)
     dpd_she_validated_shear_estimates.Header = HeaderProvider.create_generic_header("SHE")
 
-    dpd_she_validated_shear_estimates.set_filename(filename)
+    __set_filename(dpd_she_validated_shear_estimates, filename)
+    if spatial_footprint is not None:
+        __set_spatial_footprint(dpd_she_validated_shear_estimates, spatial_footprint)
 
     return dpd_she_validated_shear_estimates
 
