@@ -26,8 +26,8 @@
 __updated__ = "2019-02-27"
 
 
-# import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import EuclidDmBindings.she.she_stub as she_dpd # FIXME
+# import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
+# import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
 
 import pickle
 
@@ -79,7 +79,7 @@ def create_dpd_she_aocs_time_series():
     dpd_she_aocs_time_series = DpdSheAocsTimeSeriesProduct()
 
     # dpd_she_aocs_time_series.Header =
-    # HeaderProvider.createGenericHeader("SHE") # FIXME
+    # HeaderProvider.create_generic_header("SHE") # FIXME
     dpd_she_aocs_time_series.Header = "SHE"
 
     dpd_she_aocs_time_series.Data = create_she_aocs_time_series()

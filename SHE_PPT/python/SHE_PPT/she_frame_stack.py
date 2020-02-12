@@ -548,7 +548,7 @@ class SHEFrameStack(object):
                     logger.info("Finished pruning list of galaxy objects to loop over")
 
             except JSONDecodeError as e:
-                logger.warn(str(e))
+                logger.warning(str(e))
 
                 # See if it's just a single catalogue, which we can handle
                 detections_product = read_xml_product(
@@ -636,7 +636,7 @@ class SHEFrameStack(object):
                                                                   dtype=products.stack_mosaic.DpdSheStackMosaicProduct,
                                                                   **kwargs)
             except FileNotFoundError as e:
-                logger.warn(str(e))
+                logger.warning(str(e))
                 stacked_seg_data = None
 
         # Construct a SHEImage object for the stacked image

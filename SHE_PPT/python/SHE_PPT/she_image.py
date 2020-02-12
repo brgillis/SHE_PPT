@@ -1843,8 +1843,8 @@ class SHEImage(object):
 
 @run_only_once
 def warn_mdb_not_loaded():
-    logger.warn("MDB is not loaded, so default values will be assumed in calculating a noisemap.")
+    logger.warning("MDB is not loaded, so default values will be assumed in calculating a noisemap.")
 
 @run_only_once
 def warn_galsim_wcs_bug_workaround():
-    logger.warn("Hit bug with GalSim WCS. Applying workaround.")
+    logger.warning("Hit bug with GalSim WCS. Applying workaround.")

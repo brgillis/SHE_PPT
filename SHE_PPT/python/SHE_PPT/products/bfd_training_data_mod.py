@@ -25,19 +25,19 @@
 __updated__ = "2019-08-15"
 
 
-# import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import EuclidDmBindings.she.she_stub as she_dpd # FIXME
+# import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
+# import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
 
 import os
 import pickle
 
 from sphinx.websupport import storage
 
-import EuclidDmBindings.bas.cat_stub as cat_dict
-import EuclidDmBindings.bas.cot_stub as cot_dict
-import EuclidDmBindings.bas.dtd_stub as dtd_dict
-import EuclidDmBindings.bas.imp.stc_stub as stc_dict
-from EuclidDmBindings.dpd.she.shearbfdtraining_stub import dpdShearBFDTraining
+import ST_DataModelBindings.bas.cat_stub as cat_dict
+import ST_DataModelBindings.bas.cot_stub as cot_dict
+import ST_DataModelBindings.bas.dtd_stub as dtd_dict
+import ST_DataModelBindings.bas.imp.stc_stub as stc_dict
+from ST_DataModelBindings.dpd.she.shearbfdtraining_stub import dpdShearBFDTraining
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product, get_data_filename_from_product, set_data_filename_of_product
 
 
@@ -136,7 +136,7 @@ def create_dpd_she_bfd_training_data(filename=None):
     else:
 
         # dpd_she_bfd_training_data.Header =
-        # HeaderProvider.createGenericHeader("SHE") # FIXME
+        # HeaderProvider.create_generic_header("SHE") # FIXME
         dpd_she_bfd_training_data.Header = "SHE"
 
         # @FIXME: Needs serious updating.

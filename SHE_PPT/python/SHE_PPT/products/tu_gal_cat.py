@@ -23,7 +23,7 @@
 
 __updated__ = "2019-08-15"
 
-from EuclidDmBindings.dpd.sim.raw.galaxycatalogproduct_stub import dpdGalaxyCatalogProduct
+from ST_DataModelBindings.dpd.sim.raw.galaxycatalogproduct_stub import dpdGalaxyCatalogProduct
 
 from SHE_PPT.file_io import filename_include_data_subdir, data_subdir, len_data_subdir
 

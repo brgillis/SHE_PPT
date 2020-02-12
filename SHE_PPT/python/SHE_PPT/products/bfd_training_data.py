@@ -27,8 +27,8 @@ __updated__ = "2019-08-15"
 
 import pickle
 
-from EuclidDmBindings.dpd.she.shearbfdtraining_stub import dpdShearBFDTraining
-import HeaderProvider.GenericHeaderProvider as HeaderProvider
+from ST_DataModelBindings.dpd.she.shearbfdtraining_stub import dpdShearBFDTraining
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 
 
@@ -110,7 +110,7 @@ def create_dpd_she_bfd_training_data(filename=None):
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)
-    dpd_she_bfd_training_data.Header = HeaderProvider.createGenericHeader("SHE")
+    dpd_she_bfd_training_data.Header = HeaderProvider.create_generic_header("SHE")
 
     if filename:
         __set_filename(dpd_she_bfd_training_data, filename)

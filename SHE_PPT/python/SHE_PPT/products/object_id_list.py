@@ -25,8 +25,8 @@
 __updated__ = "2019-03-14"
 
 
-# import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import EuclidDmBindings.she.she_stub as she_dpd # FIXME
+# import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
+# import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
 
 
 def init():
@@ -84,7 +84,7 @@ def create_dpd_she_object_id_list(id_list=None):
     # dpd_she_object_id_list = she_dpd.DpdSheObjectIdList() # @FIXME
     dpd_she_object_id_list = DpdSheObjectIdList()
 
-    # dpd_she_object_id_list.Header = HeaderProvider.createGenericHeader("SHE") # FIXME
+    # dpd_she_object_id_list.Header = HeaderProvider.create_generic_header("SHE") # FIXME
     dpd_she_object_id_list.Header = "SHE"
 
     dpd_she_object_id_list.Data = create_she_object_id_list(id_list)

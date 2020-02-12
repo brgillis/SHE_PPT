@@ -25,14 +25,14 @@
 __updated__ = "2019-08-15"
 
 
-# import HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import EuclidDmBindings.she.she_stub as she_dpd # FIXME
+# import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
+# import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
 
 
 import pickle
 
-from EuclidDmBindings.dpd.she.shearmomentsmltraining_stub import dpdShearMomentsMLTraining
-import HeaderProvider.GenericHeaderProvider as HeaderProvider
+from ST_DataModelBindings.dpd.she.shearmomentsmltraining_stub import dpdShearMomentsMLTraining
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 
 
@@ -111,7 +111,7 @@ def create_dpd_she_momentsml_training_data(filename=None):
     dpd_she_momentsml_training_data = read_xml_product(
         find_aux_file(sample_file_name), allow_pickled=False)
 
-    dpd_she_momentsml_training_data.Header = HeaderProvider.createGenericHeader("SHE")  # FIXME
+    dpd_she_momentsml_training_data.Header = HeaderProvider.create_generic_header("SHE")  # FIXME
 
     # dpd_she_momentsml_training_data.Data = create_she_momentsml_training_data(
     #    filename)

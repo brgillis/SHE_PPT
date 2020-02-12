@@ -19,26 +19,25 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-27"
+__updated__ = "2020-01-27"
 
 from datetime import datetime
 import json
 import os
-from os.path import join, isfile
+from os.path import join, exists
 from pickle import UnpicklingError
 import pickle
 from xml.sax._exceptions import SAXParseException
 
 from astropy.io import fits
-import py
 
-from ElementsServices.DataSync import downloadTestData, localTestFile
-from EuclidDmBindings.sys_stub import CreateFromDocument
-from FilenameProvider.FilenameProvider import createFilename
+from ElementsServices.DataSync import DataSync
 from SHE_PPT import magic_values as mv
 import SHE_PPT
 from SHE_PPT.logging import getLogger
 from SHE_PPT.utility import run_only_once, get_release_from_version, time_to_timestamp
+from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider
+from ST_DataModelBindings.sys_stub import CreateFromDocument
 import numpy as np
 
 
@@ -55,11 +54,12 @@ len_data_subdir = len(data_subdir)
 
 @run_only_once
 def warn_deprecated_timestamp():
-    logger.warn("The use of the 'timestamp' kwarg in get_allowed_filename is deprecated and will be removed in a future version.")
+    logger.warning(
+        "The use of the 'timestamp' kwarg in get_allowed_filename is deprecated and will be removed in a future version.")
 
 
 def get_allowed_filename(type_name, instance_id, extension=".fits", release=None, version=None, subdir="data",
-                         processing_function="SHE", timestamp=None):
+                         processing_function="SHE", timestamp=True):
     """Gets a filename in the required Euclid format. Now mostly a pass-through to the official version, with
     tweaks to silently shift arguments to upper-case.
 
@@ -93,20 +93,19 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
     if version is not None:
         release = get_release_from_version(version)
 
-    # Silently shift instance_id to upper-case, and add timestamp if desired
-    full_instance_id = instance_id.upper()
-    if timestamp is not None:
-        warn_deprecated_timestamp()
+    # Silently shift instance_id to upper-case
+    instance_id = instance_id.upper()
 
     # Check the extension doesn't start with "." and silently fix if it does
     if extension[0] == ".":
         extension = extension[1:]
 
-    filename = createFilename(processing_function=processing_function,
-                              data_product_type=type_name.upper(),
-                              instance_id=full_instance_id,
-                              extension=extension,
-                              release=release)
+    filename = FileNameProvider().get_allowed_filename(processing_function=processing_function,
+                                                       type_name=type_name.upper(),
+                                                       instance_id=instance_id,
+                                                       extension=extension,
+                                                       release=release,
+                                                       timestamp=timestamp)
 
     if subdir is not None:
         qualified_filename = join(subdir, filename)
@@ -226,12 +225,12 @@ def write_xml_product(product, xml_filename, workdir=".", allow_pickled=True):
             product.Data.CatalogStorage.CatalogFileStorage.StorageSpace[0].DataContainer.FileName = cat_filename
 
         # Check if the catalogue exists, and create it if necessary
-        
+
         datadir = os.path.join(workdir, "data/")
         if not os.path.isdir(datadir):
             os.makedirs(datadir)
-        
-        qualified_cat_filename = os.path.join(workdir, "data/"+cat_filename)
+
+        qualified_cat_filename = os.path.join(workdir, "data/" + cat_filename)
         if not os.path.isfile(qualified_cat_filename):
             open(qualified_cat_filename, 'a').close()
 
@@ -251,7 +250,7 @@ def write_xml_product(product, xml_filename, workdir=".", allow_pickled=True):
             raise
         if not "object has no attribute 'toDOM'" in str(e):
             raise
-        logger.warn(
+        logger.warning(
             "XML writing is not available; falling back to pickled writing instead.")
         write_pickled_product(product, qualified_xml_filename)
 
@@ -330,7 +329,7 @@ def find_file_in_path(filename, path):
 
         test_filename = join(test_path, filename)
 
-        if isfile(test_filename):
+        if exists(test_filename):
             qualified_filename = test_filename
             break
 
@@ -373,8 +372,10 @@ def find_web_file(filename):
         with open(filelist, 'w') as fo:
             fo.write(filename + "\n")
 
-        downloadTestData("testdata/sync.conf", filelist)
-        qualified_filename = localTestFile(mv.test_datadir, filename)
+        sync = DataSync("testdata/sync.conf", filelist)
+        sync.download()
+
+        qualified_filename = sync.absolutePath(filename)
     except:
         raise
     finally:
@@ -515,52 +516,54 @@ def update_xml_with_value(filename):
                   (len(bad_lines), filename, n_defaults))
     else:
         print('No updates required')
-        
+
+
 def get_data_filename_from_product(p, attr_name=None):
     """ Helper function to get a data filename from a product, adjusting for whether to include the data subdir as desired.
     """
-    
-    if attr_name is None or attr_name==0:
+
+    if attr_name is None or attr_name == 0:
         data_filename = p.Data.DataContainer.FileName
     elif attr_name == -1:
         data_filename = p.Data.FileName
     else:
-        data_filename = getattr(p.Data,attr_name).DataContainer.FileName
-        
+        data_filename = getattr(p.Data, attr_name).DataContainer.FileName
+
     if data_filename is None:
         return None
-        
-    # Silently force the filename returned to start with "data/" regardless of whether the returned value does, unless it's absolute
-    if len(data_filename)>0 and (data_filename[0:len_data_subdir]==data_subdir or data_filename[0]=="/"):
+
+    # Silently force the filename returned to start with "data/" regardless of
+    # whether the returned value does, unless it's absolute
+    if len(data_filename) > 0 and (data_filename[0:len_data_subdir] == data_subdir or data_filename[0] == "/"):
         return data_filename
     else:
         return data_subdir + data_filename
-        
+
+
 def set_data_filename_of_product(p, data_filename, attr_name=None):
     """ Helper function to set a data filename of a product, adjusting for whether to include the data subdir as desired.
     """
-    
-    if data_filename is not None and len(data_filename)>0 and data_filename[0]!="/":
-            if filename_include_data_subdir:
-                
-                # Silently force the filename returned to start with "data/" regardless of whether the returned value does
-                if data_filename[0:len_data_subdir]!=data_subdir:
-                    data_filename = data_subdir + data_filename
-                
-            else:
-                
-                # Silently force the filename returned to NOT start with "data/" regardless of whether the returned value does
-                if data_filename[0:len_data_subdir]==data_subdir:
-                    data_filename = data_filename.replace(data_subdir,"",1)
-    
-    if attr_name is None or attr_name==0:
+
+    if data_filename is not None and len(data_filename) > 0 and data_filename[0] != "/":
+        if filename_include_data_subdir:
+
+                # Silently force the filename returned to start with "data/" regardless of
+                # whether the returned value does
+            if data_filename[0:len_data_subdir] != data_subdir:
+                data_filename = data_subdir + data_filename
+
+        else:
+
+            # Silently force the filename returned to NOT start with "data/"
+            # regardless of whether the returned value does
+            if data_filename[0:len_data_subdir] == data_subdir:
+                data_filename = data_filename.replace(data_subdir, "", 1)
+
+    if attr_name is None or attr_name == 0:
         p.Data.DataContainer.FileName = data_filename
     elif attr_name == -1:
         p.Data.FileName = data_filename
     else:
-        getattr(p.Data,attr_name).DataContainer.FileName = data_filename
-    
+        getattr(p.Data, attr_name).DataContainer.FileName = data_filename
+
     return
-        
-    
-    

@@ -23,8 +23,8 @@ __updated__ = "2019-08-15"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-# from EuclidDmBindings.dpd.she.raw.shearmeasurement_stub import dpdShearBiasStatistics
-# import HeaderProvider.GenericHeaderProvider as HeaderProvider
+# from ST_DataModelBindings.dpd.she.raw.shearmeasurement_stub import dpdShearBiasStatistics
+# import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 # from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 
 # Temporary class definitions
@@ -195,7 +195,7 @@ def __set_method_bias_statistics(self, method, stats, workdir="."):
             try:
                 os.remove(qualified_old_filename)
             except Exception:
-                logger.warn("Deprecated file " + qualified_old_filename + " cannot be deleted.")
+                logger.warning("Deprecated file " + qualified_old_filename + " cannot be deleted.")
 
     # Handle if the new statistics object is None
     if stats is None:
@@ -307,7 +307,7 @@ def __set_method_bias_measurements(self, method, measurements, workdir="."):
             try:
                 os.remove(qualified_old_filename)
             except Exception:
-                logger.warn("Deprecated file " + qualified_old_filename + " cannot be deleted.")
+                logger.warning("Deprecated file " + qualified_old_filename + " cannot be deleted.")
 
     # Set the filename for the object
     setattr(self.Data, bias_statistics_switcher[method], create_method_shear_bias_statistics(filename))
@@ -485,7 +485,7 @@ def create_dpd_shear_bias_statistics(BFD_bias_statistics_filename=None,
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)
-    # dpd_shear_bias_stats.Header = HeaderProvider.createGenericHeader("SHE")
+    # dpd_shear_bias_stats.Header = HeaderProvider.create_generic_header("SHE")
     dpd_shear_bias_stats.Header = "SHE"
     dpd_shear_bias_stats.Data = ShearBiasStatistics()
 
@@ -512,7 +512,7 @@ def create_dpd_shear_bias_statistics_from_stats(BFD_bias_statistics=None,
     dpd_shear_bias_stats = dpdShearBiasStatistics()
 
     # Overwrite the header with a new one to update the creation date (among other things)
-    # dpd_shear_bias_stats.Header = HeaderProvider.createGenericHeader("SHE")
+    # dpd_shear_bias_stats.Header = HeaderProvider.create_generic_header("SHE")
     dpd_shear_bias_stats.Header = "SHE"
     dpd_shear_bias_stats.Data = ShearBiasStatistics()
 
