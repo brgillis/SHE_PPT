@@ -399,26 +399,18 @@ in your "get_fov_coords_from_focal_plane()" function.
         # ? rotate before or after offset..
         # Try rotate before, i.e. 
     
-        #fov_x = det_specs.fov_x_offset_deg - det_specs.fov_scale_deg_per_um * foc_y
-        #fov_y = det_specs.fov_y_offset_deg + det_specs.fov_scale_deg_per_um * foc_x
+        fov_x = det_specs.fov_x_offset_deg - det_specs.fov_scale_deg_per_um * foc_y
+        fov_y = det_specs.fov_y_offset_deg + det_specs.fov_scale_deg_per_um * foc_x
 
     elif instrument == "NISP":
         det_specs = nisp_det_specs
         
+        fov_x = det_specs.fov_x_offset_deg + det_specs.fov_scale_deg_per_um * foc_x
+        fov_y = det_specs.fov_y_offset_deg + det_specs.fov_scale_deg_per_um * foc_y
+
+        
     else:
         raise ValueError("Invalid instrument value: " + str(instrument) + ". Allowed values are \"VIS\" and \"NISP\"")
-    
-    fov_x = det_specs.fov_x_offset_deg + det_specs.fov_scale_deg_per_um * foc_x
-    fov_y = det_specs.fov_y_offset_deg + det_specs.fov_scale_deg_per_um * foc_y
-
-    # Try rotate after:
-    if instrument == "VIS":
-        fov_x2=-fov_y
-        fov_y=fov_x
-        fov_x=fov_x2
-        del fov_x2
-    
-
 
     return fov_x, fov_y
 

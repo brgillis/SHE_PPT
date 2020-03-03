@@ -81,8 +81,8 @@ class SHEFrameStack(object):
         """
 
         self.exposures = exposures
-        if stacked_image:
-            self.stacked_image = stacked_image
+        #if stacked_image:
+        self.stacked_image = stacked_image
         self.detections_catalogue = detections_catalogue
 
         # Might have to manually calculate this later

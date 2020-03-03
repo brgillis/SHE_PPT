@@ -130,8 +130,8 @@ class TestTelescopeCoords:
 
         ex_foc_x = 17642.0
         ex_foc_y = -100008.0
-        ex_fov_x = 0.8628379629629629
-        ex_fov_y = -0.23149999999999998
+        ex_fov_x = 1.0535
+        ex_fov_y = 0.040837962
 
         foc_x, foc_y = telescope_coords.get_focal_plane_coords_from_detector(det_xp=det_xp,
                                                                              det_yp=det_yp,

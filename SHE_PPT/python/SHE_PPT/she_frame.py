@@ -358,7 +358,6 @@ class SHEFrame(object):
         # @TODO: Return detector and x,y in namedtuple
         # return x,y
         # @TODO: orientation
-        
         x_fov,y_fov=tc.get_fov_coords_from_detector(
             x,y,x_i,y_i,'VIS')
         if return_det_coords_too:
