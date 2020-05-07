@@ -399,8 +399,9 @@ in your "get_fov_coords_from_focal_plane()" function.
         # ? rotate before or after offset..
         # Try rotate before, i.e. 
     
-        fov_x = det_specs.fov_x_offset_deg - det_specs.fov_scale_deg_per_um * foc_y
-        fov_y = det_specs.fov_y_offset_deg + det_specs.fov_scale_deg_per_um * foc_x
+        # @NOTE: MDB has fov_x and fov_y the incorrect way around.
+        fov_y = det_specs.fov_x_offset_deg + det_specs.fov_scale_deg_per_um * foc_y
+        fov_x = det_specs.fov_y_offset_deg - det_specs.fov_scale_deg_per_um * foc_x
 
     elif instrument == "NISP":
         det_specs = nisp_det_specs

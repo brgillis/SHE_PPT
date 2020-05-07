@@ -21,12 +21,14 @@
 __updated__ = "2020-01-20"
 
 import os
+from   operator  import itemgetter
 
 import pytest
 
 from ElementsServices.DataSync import DataSync
 from SHE_PPT import telescope_coords
 import numpy as np
+from SHE_PPT.file_io import find_aux_file
 
 
 class TestTelescopeCoords:
@@ -115,6 +117,7 @@ class TestTelescopeCoords:
 
         return
 
+    # @pytest.mark.skip(reason="Turn off until understand coord transforms")
     def test_vis_coords(self):
 
         # Load values from the MDB first
@@ -130,8 +133,8 @@ class TestTelescopeCoords:
 
         ex_foc_x = 17642.0
         ex_foc_y = -100008.0
-        ex_fov_x = 1.0535
-        ex_fov_y = 0.040837962
+        ex_fov_x = -0.040837962 # Old: 1.0535
+        ex_fov_y = 0.5905 # Old: 0.040837962
 
         foc_x, foc_y = telescope_coords.get_focal_plane_coords_from_detector(det_xp=det_xp,
                                                                              det_yp=det_yp,
@@ -204,3 +207,30 @@ class TestTelescopeCoords:
         assert np.isclose(fov_y2, ex_fov_y)
 
         return
+
+    def test_vis_coords_range(self):
+
+        # Load values from the MDB first
+        telescope_coords.load_vis_detector_specs(mdb_files=self.mdb_filename)
+
+        # Read in coords from file
+        elvis_sim_fov_fpa_filename=find_aux_file('SHE_PPT/testFovToFPA_noOffset.dat')
+        # fov_x,fov_y,fpa_x,fpa_y
+        lines=open(elvis_sim_fov_fpa_filename).readlines()
+        fov_to_fpa_data =np.array([[float(pt) 
+            for pt in line.strip().split(',')] 
+            for line in lines if not line.startswith('#')])
+        full_data=[]
+        for fov_elv_x,fov_elv_y,fpa_elv_x,fpa_elv_y in fov_to_fpa_data:
+            # Go from fpa_x,fpa_y --> fov2_x,fov2_y 
+            if fpa_elv_x>-10000000. and fpa_elv_y>-10000000.:
+                # Convert to mm? 
+                fov2_x,fov2_y=telescope_coords.get_fov_coords_from_focal_plane(
+                    fpa_elv_x,fpa_elv_y,'VIS')
+                full_data.append((fov_elv_x,fov_elv_y,fpa_elv_x,fpa_elv_y,
+                    fov2_x,fov2_y,(fov2_x-fov_elv_x),(fov2_y-fov_elv_y)))
+        
+        assert np.mean([dt[6] for dt in full_data])<0.001
+        assert (np.mean([dt[7] for dt in full_data])-0.822)<0.001
+        
+        
