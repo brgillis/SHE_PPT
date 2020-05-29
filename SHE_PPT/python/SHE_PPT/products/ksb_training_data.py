@@ -27,7 +27,7 @@ __updated__ = "2019-08-15"
 
 import pickle
 
-from ST_DataModelBindings.dpd.she.shearksbtraining_stub import dpdShearKSBTraining
+from ST_DataModelBindings.dpd.she.ksbtraining_stub  import dpdSheKsbTraining
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 

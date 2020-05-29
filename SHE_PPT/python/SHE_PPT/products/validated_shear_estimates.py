@@ -27,7 +27,7 @@ from SHE_PPT.file_io import (read_xml_product, find_aux_file, get_data_filename_
                              set_data_filename_of_product)
 from ST_DM_HeaderProvider import GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.bas.imp.raw.stc_stub import polygonType
-from ST_DataModelBindings.dpd.she.raw.validatedshearmeasurement_stub import dpdValidatedShearMeasurement
+from ST_DataModelBindings.dpd.she.raw.validatedmeasurements_stub import dpdSheValidatedMeasurements
 
 
 sample_file_name = "SHE_PPT/sample_validated_shear_measurements.xml"
@@ -38,7 +38,7 @@ def init():
         ValidatedShearMeasurement
     """
 
-    binding_class = dpdValidatedShearMeasurement
+    binding_class = dpdSheValidatedMeasurements
 
     # Add the data file name methods
 

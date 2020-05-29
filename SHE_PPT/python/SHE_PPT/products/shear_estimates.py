@@ -27,7 +27,7 @@ from SHE_PPT.file_io import (read_xml_product, find_aux_file, get_data_filename_
                              set_data_filename_of_product)
 from ST_DM_HeaderProvider import GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.bas.imp.raw.stc_stub import polygonType
-from ST_DataModelBindings.dpd.she.raw.shearmeasurement_stub import dpdShearMeasurement
+from ST_DataModelBindings.dpd.she.measurements_stub import dpdSheMeasurements
 from ST_DataModelBindings.pro import she_stub as she_pro
 from ST_DataModelBindings.sys.dss_stub import dataContainer
 
@@ -40,7 +40,7 @@ def init():
         Adds some extra functionality to the DpdShearEstimates product
     """
 
-    binding_class = dpdShearMeasurement
+    binding_class = dpdSheMeasurements
 
     # Add the data file name methods
 

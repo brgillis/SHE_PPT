@@ -31,7 +31,7 @@ __updated__ = "2019-08-15"
 
 import pickle
 
-from ST_DataModelBindings.dpd.she.shearmomentsmltraining_stub import dpdShearMomentsMLTraining
+from ST_DataModelBindings.dpd.she.momentsmltraining_stub import dpdSheMomentsMlTraining
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 
@@ -45,7 +45,7 @@ def init():
     """
 
     # binding_class = she_dpd.DpdSheMomentsMLTrainingDataProduct # @FIXME
-    binding_class = dpdShearMomentsMLTraining
+    binding_class = dpdSheMomentsMlTraining
 
     # Add the data file name methods
 
