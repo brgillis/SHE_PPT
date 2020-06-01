@@ -40,7 +40,7 @@ def init():
         Adds some extra functionality to the DpdSheAstrometry product
     """
 
-    binding_class = dpdShearKSBTraining
+    binding_class = dpdSheKsbTraining
 
     # Add the data file name methods
 

@@ -31,14 +31,16 @@ __updated__ = "2019-08-15"
 import os
 import pickle
 
-from sphinx.websupport import storage
-
 import ST_DataModelBindings.bas.cat_stub as cat_dict
 import ST_DataModelBindings.bas.cot_stub as cot_dict
 import ST_DataModelBindings.bas.dtd_stub as dtd_dict
 import ST_DataModelBindings.bas.imp.stc_stub as stc_dict
-from ST_DataModelBindings.dpd.she.shearbfdtraining_stub import dpdShearBFDTraining
-from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product, get_data_filename_from_product, set_data_filename_of_product
+from ST_DataModelBindings.dpd.she.bfdtraining_stub import dpdSheBfdTraining
+from SHE_PPT.file_io import (read_xml_product, find_aux_file,
+                             get_data_filename_from_product,
+                             set_data_filename_of_product,
+                             get_data_filename_from_product,
+                             set_data_filename_of_product)
 
 
 def init():
@@ -46,8 +48,7 @@ def init():
         Adds some extra functionality to the DpdSheAstrometry product
     """
 
-    # binding_class = she_dpd.DpdSheBFDTrainingDataProduct # @FIXME
-    binding_class = DpdSheBFDTrainingDataProduct
+    binding_class = dpdSheBfdTraining
 
     # Add the data file name methods
 
@@ -78,7 +79,7 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-class DpdSheBFDTrainingDataProduct(dpdShearBFDTraining):  # @FIXME
+class DpdSheBFDTrainingDataProduct(dpdSheBfdTraining):  # @FIXME
 
     def __init__(self):
         testXmlFile = find_aux_file('SHE_PPT/test_bfdtraining.xml')
