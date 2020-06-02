@@ -1,0 +1,90 @@
+<?xml version="1.0" ?>
+<ns1:DpdSheExpectedShearValidationStatistics xmlns:ns1="http://euclid.esa.org/schema/dpd/she/expectedshearvalidationstatistics">
+	<Header>
+		<ProductId>e5288559-b96e-46b3-bf76-add55091b9fd</ProductId>
+		<ProductType>8Poeg</ProductType>
+		<SoftwareName>EFjTh</SoftwareName>
+		<SoftwareRelease>yEODz</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>98ked</EuclidPipelineSoftwareRelease>
+		<ProdSDC>14Yw6MhhqDjEmqnq8stSz09SCHXkRbs39Pj63LUV34FKGkCzyZ5hHNC</ProdSDC>
+		<DataSetRelease>ZWDel</DataSetRelease>
+		<Purpose>REPROCESSING</Purpose>
+		<PlanId>dXwy7</PlanId>
+		<PPOId>9QLgK</PPOId>
+		<PipelineDefinitionId>Viu2k</PipelineDefinitionId>
+		<PipelineRun>lJQUq</PipelineRun>
+		<ExitStatusCode>WxLvS</ExitStatusCode>
+		<ManualValidationStatus>INVALID</ManualValidationStatus>
+		<ExpirationDate>2020-06-01T14:51:57.903Z</ExpirationDate>
+		<ToBePublished>true</ToBePublished>
+		<Published>false</Published>
+		<Curator>SHE</Curator>
+		<CreationDate>2020-06-01T14:51:57.904Z</CreationDate>
+	</Header>
+	<Data>
+		<SpatialCoverage>
+			<Polygon>
+				<Vertex>
+					<Position coordUnit="N">
+						<C1 unit="mag/kpc">0.0</C1>
+						<C2 unit="pc">0.0</C2>
+					</Position>
+					<SmallCircle>
+						<Pole coordUnit="T">
+							<C1 unit="km/s/Mpc">0.0</C1>
+							<C2 unit="eV">1.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</Polygon>
+			<Circle>
+				<Center coordUnit="uNewton/kg">
+					<C1 unit="s">0.0</C1>
+					<C2 unit="Myr">1.0</C2>
+				</Center>
+				<Radius unit="Hz">0.0</Radius>
+			</Circle>
+			<BBox>
+				<RaCenter unit="mag/arcsec2">1.0</RaCenter>
+				<DecCenter unit="ph">1.0</DecCenter>
+				<RaHalfWidth unit="m3/s2">0.0</RaHalfWidth>
+				<DecHalfWidth unit="W/m2/K4">0.0</DecHalfWidth>
+			</BBox>
+		</SpatialCoverage>
+		<SpectralCoverage>
+			<Filter>
+				<Name>DECAM_i</Name>
+				<MagId>Y</MagId>
+				<CentralWavelength>-10.0</CentralWavelength>
+				<MinWavelength>-6.0</MinWavelength>
+				<MaxWavelength>-3.0</MaxWavelength>
+				<Reference>P9FFE</Reference>
+				<HasFringes>85268162</HasFringes>
+			</Filter>
+		</SpectralCoverage>
+		<CatalogDescription>
+			<CatalogOrigin>SIMULATED_WIDE</CatalogOrigin>
+			<CatalogType>PROXY</CatalogType>
+			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
+			<CatalogName>Placeholder</CatalogName>
+			<CatalogFormatHDU>1</CatalogFormatHDU>
+		</CatalogDescription>
+		<DataStorage>
+			<DataContainer filestatus="ARCHIVED_ONLINE">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+	</Data>
+	<QualityFlags>
+		<DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
+		<AuxiliaryFlags flagName="p9qc9" flagged="false" maxLimit="-4.0" minLimit="3.0" xpath="sOWBU">true</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>UznCF</Key>
+			<Description>5w5mc</Description>
+			<StringValue>Y7hRc</StringValue>
+			<Unit>CCUNl</Unit>
+		</Parameter>
+	</Parameters>
+</ns1:DpdSheExpectedShearValidationStatistics>

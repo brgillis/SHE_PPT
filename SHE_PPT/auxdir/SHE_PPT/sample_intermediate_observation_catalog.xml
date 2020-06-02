@@ -1,0 +1,99 @@
+<?xml version="1.0" ?>
+<ns1:DpdSheIntermediateObservationCatalog xmlns:ns1="http://euclid.esa.org/schema/dpd/she/intermediateobservationcatalog">
+	<Header>
+		<ProductId>3a29af4d-094d-4d76-96fd-657e5a3d6be8</ProductId>
+		<ProductType>7z4pz</ProductType>
+		<SoftwareName>srzTN</SoftwareName>
+		<SoftwareRelease>qGIO</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>vYZ4</EuclidPipelineSoftwareRelease>
+		<ProdSDC>DPtEyQ1wU9WHK1ApMzoiKjaOx9kdcZ4mVd0mqzkwmtEhtvP1EvZDs8Gs</ProdSDC>
+		<DataSetRelease>v51tf</DataSetRelease>
+		<Purpose>INTERMEDIATE_DATA_RELEASE</Purpose>
+		<PlanId>wMqgl</PlanId>
+		<PPOId>2iEHv</PPOId>
+		<PipelineDefinitionId>de7Br</PipelineDefinitionId>
+		<PipelineRun>H6uMv</PipelineRun>
+		<ExitStatusCode>qPWXs</ExitStatusCode>
+		<ManualValidationStatus>VALID</ManualValidationStatus>
+		<ExpirationDate>2020-06-01T15:32:48.995Z</ExpirationDate>
+		<ToBePublished>true</ToBePublished>
+		<Published>false</Published>
+		<Curator>SHE</Curator>
+		<CreationDate>2020-06-01T15:32:48.996Z</CreationDate>
+	</Header>
+	<Data>
+		<SpatialCoverage>
+			<Polygon>
+				<Vertex>
+					<Position coordUnit="m/s2">
+						<C1 unit="min">0.0</C1>
+						<C2 unit="stars">0.0</C2>
+					</Position>
+					<SmallCircle>
+						<Pole coordUnit="ph">
+							<C1 unit="km">0.0</C1>
+							<C2 unit="Hz">1.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</Polygon>
+			<Circle>
+				<Center coordUnit="um">
+					<C1 unit="Ry">1.0</C1>
+					<C2 unit="J/mol/K">1.0</C2>
+				</Center>
+				<Radius unit="solRad">1.0</Radius>
+			</Circle>
+			<BBox>
+				<RaCenter unit="ct">1.0</RaCenter>
+				<DecCenter unit="pixel">1.0</DecCenter>
+				<RaHalfWidth unit="J/mol/K">0.0</RaHalfWidth>
+				<DecHalfWidth unit="Hz">0.0</DecHalfWidth>
+			</BBox>
+		</SpatialCoverage>
+		<SpectralCoverage>
+			<Filter>
+				<Name>NIR_J</Name>
+				<MagId>UNKNOWN</MagId>
+				<CentralWavelength>9.0</CentralWavelength>
+				<MinWavelength>0.0</MinWavelength>
+				<MaxWavelength>2.0</MaxWavelength>
+				<Reference>lTlWy</Reference>
+				<HasFringes>-97767178</HasFringes>
+			</Filter>
+		</SpectralCoverage>
+		<CatalogDescription>
+			<CatalogOrigin>MASTER_DEEP</CatalogOrigin>
+			<CatalogType>NOT_PROXY</CatalogType>
+			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
+			<CatalogName>Intermediate</CatalogName>
+			<CatalogFormatHDU>1</CatalogFormatHDU>
+		</CatalogDescription>
+		<ObservationId>-705529667874924408</ObservationId>
+		<IntData>0</IntData>
+		<FloatData>0.0</FloatData>
+		<StringData>otMyY</StringData>
+		<DataStorage>
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+		<ExtraDataStorage>
+			<DataContainer filestatus="ARCHIVED_ONLINE">
+				<FileName>None</FileName>
+			</DataContainer>
+		</ExtraDataStorage>
+	</Data>
+	<QualityFlags>
+		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
+		<AuxiliaryFlags flagName="G12VY" flagged="true" maxLimit="-9.0" minLimit="-5.0" xpath="SQ07X">false</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>cbmuz</Key>
+			<Description>UVVNy</Description>
+			<StringValue>Ks2eA</StringValue>
+			<Unit>MX9Dh</Unit>
+		</Parameter>
+	</Parameters>
+</ns1:DpdSheIntermediateObservationCatalog>

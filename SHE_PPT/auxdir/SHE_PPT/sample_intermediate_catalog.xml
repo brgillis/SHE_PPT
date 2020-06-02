@@ -1,0 +1,98 @@
+<?xml version="1.0" ?>
+<ns1:DpdSheIntermediateCatalog xmlns:ns1="http://euclid.esa.org/schema/dpd/she/intermediatecatalog">
+	<Header>
+		<ProductId>60652fb4-5437-4cc1-b323-f82321d2e6ad</ProductId>
+		<ProductType>BvCBG</ProductType>
+		<SoftwareName>d0Lku</SoftwareName>
+		<SoftwareRelease>I4ov</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>5X8</EuclidPipelineSoftwareRelease>
+		<ProdSDC>gTcKpvyFvD8PCrECbm8fMEigMQVqlPhazMEo2frkR2C</ProdSDC>
+		<DataSetRelease>wXi9d</DataSetRelease>
+		<Purpose>INTERMEDIATE_DATA_RELEASE</Purpose>
+		<PlanId>IrrtI</PlanId>
+		<PPOId>Jd3RQ</PPOId>
+		<PipelineDefinitionId>2l8bO</PipelineDefinitionId>
+		<PipelineRun>cbEIn</PipelineRun>
+		<ExitStatusCode>hkg7E</ExitStatusCode>
+		<ManualValidationStatus>VALID</ManualValidationStatus>
+		<ExpirationDate>2020-06-01T15:29:01.938Z</ExpirationDate>
+		<ToBePublished>true</ToBePublished>
+		<Published>true</Published>
+		<Curator>SHE</Curator>
+		<CreationDate>2020-06-01T15:29:01.939Z</CreationDate>
+	</Header>
+	<Data>
+		<SpatialCoverage>
+			<Polygon>
+				<Vertex>
+					<Position coordUnit="sr">
+						<C1 unit="rad/s">1.0</C1>
+						<C2 unit="arcsec2">0.0</C2>
+					</Position>
+					<SmallCircle>
+						<Pole coordUnit="Myr">
+							<C1 unit="1/m">0.0</C1>
+							<C2 unit="rad/day">0.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</Polygon>
+			<Circle>
+				<Center coordUnit="mas-2">
+					<C1 unit="photon">1.0</C1>
+					<C2 unit="Mstars">1.0</C2>
+				</Center>
+				<Radius unit="m2">1.0</Radius>
+			</Circle>
+			<BBox>
+				<RaCenter unit="mag/arcsec2">0.0</RaCenter>
+				<DecCenter unit="pc">1.0</DecCenter>
+				<RaHalfWidth unit="a">1.0</RaHalfWidth>
+				<DecHalfWidth unit="1/m">1.0</DecHalfWidth>
+			</BBox>
+		</SpatialCoverage>
+		<SpectralCoverage>
+			<Filter>
+				<Name>Undefined</Name>
+				<MagId>U</MagId>
+				<CentralWavelength>9.0</CentralWavelength>
+				<MinWavelength>-6.0</MinWavelength>
+				<MaxWavelength>8.0</MaxWavelength>
+				<Reference>1eIqe</Reference>
+				<HasFringes>-588845676</HasFringes>
+			</Filter>
+		</SpectralCoverage>
+		<CatalogDescription>
+			<CatalogOrigin>UNKNOWN</CatalogOrigin>
+			<CatalogType>PROXY</CatalogType>
+			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
+			<CatalogName>Intermediate</CatalogName>
+			<CatalogFormatHDU>1</CatalogFormatHDU>
+		</CatalogDescription>
+		<IntData>0</IntData>
+		<FloatData>0.0</FloatData>
+		<StringData>d8M2E</StringData>
+		<DataStorage>
+			<DataContainer filestatus="ARCHIVED_CERNVMFS">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+		<ExtraDataStorage>
+			<DataContainer filestatus="ARCHIVED_CERNVMFS">
+				<FileName>None</FileName>
+			</DataContainer>
+		</ExtraDataStorage>
+	</Data>
+	<QualityFlags>
+		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
+		<AuxiliaryFlags flagName="ndYuh" flagged="true" maxLimit="7.0" minLimit="-4.0" xpath="1rdqo">true</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>IMd5V</Key>
+			<Description>Cp54c</Description>
+			<StringValue>RoJFP</StringValue>
+			<Unit>jW5Hk</Unit>
+		</Parameter>
+	</Parameters>
+</ns1:DpdSheIntermediateCatalog>

@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<ns1:DpdSheBfdCalibration xmlns:ns1="http://euclid.esa.org/schema/dpd/she/bfdcalibration">
+	<Header>
+		<ProductId>65ddbe08-18a0-4671-b36d-cca74cb020dd</ProductId>
+		<ProductType>iC0Vo</ProductType>
+		<SoftwareName>VxoA6</SoftwareName>
+		<SoftwareRelease>rHx8X</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>ctXMZ</EuclidPipelineSoftwareRelease>
+		<ProdSDC>OiZQYQqonFyaXjWbtb4HQ78X8LVYU2H</ProdSDC>
+		<DataSetRelease>m6i9S</DataSetRelease>
+		<Purpose>QUICK_RELEASE</Purpose>
+		<PlanId>OyoPW</PlanId>
+		<PPOId>An1CZ</PPOId>
+		<PipelineDefinitionId>BtP3c</PipelineDefinitionId>
+		<PipelineRun>eqPNL</PipelineRun>
+		<ExitStatusCode>rZlxB</ExitStatusCode>
+		<ManualValidationStatus>INVALID</ManualValidationStatus>
+		<ExpirationDate>2020-06-01T14:35:30.501Z</ExpirationDate>
+		<ToBePublished>true</ToBePublished>
+		<Published>true</Published>
+		<Curator>SHE</Curator>
+		<CreationDate>2020-06-01T14:35:30.502Z</CreationDate>
+	</Header>
+	<Data>
+		<ValidityRange>
+			<Name>Dummy</Name>
+			<Type>SheBfdCalibration</Type>
+			<TimestampStart>2020-06-01T14:35:30.503Z</TimestampStart>
+			<TimestampEnd>9999-06-01T14:35:30.504Z</TimestampEnd>
+		</ValidityRange>
+		<DataStorage>
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+	</Data>
+	<QualityFlags>
+		<DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true</DummyFlag>
+		<AuxiliaryFlags flagName="uepnN" flagged="true" maxLimit="-1.0" minLimit="-8.0" xpath="jySHT">true</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>qhkKV</Key>
+			<Description>k2dQI</Description>
+			<StringValue>Zy3Ov</StringValue>
+			<Unit>701o6</Unit>
+		</Parameter>
+	</Parameters>
+</ns1:DpdSheBfdCalibration>

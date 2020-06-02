@@ -1,0 +1,68 @@
+<?xml version="1.0" ?>
+<ns1:DpdSheCommonCalibration xmlns:ns1="http://euclid.esa.org/schema/dpd/she/commoncalibration">
+	<Header>
+		<ProductId>c6e75e8d-3b8c-4e73-8257-e3f99da58fd7</ProductId>
+		<ProductType>3e5Bd</ProductType>
+		<SoftwareName>nSut2</SoftwareName>
+		<SoftwareRelease>wZ7</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>tqL</EuclidPipelineSoftwareRelease>
+		<ProdSDC>gjFecMwzQBLoOoMT7qA</ProdSDC>
+		<DataSetRelease>ZTv7e</DataSetRelease>
+		<Purpose>REPROCESSING</Purpose>
+		<PlanId>SdJya</PlanId>
+		<PPOId>OSkg1</PPOId>
+		<PipelineDefinitionId>uZrWK</PipelineDefinitionId>
+		<PipelineRun>bcaOT</PipelineRun>
+		<ExitStatusCode>fLymW</ExitStatusCode>
+		<ManualValidationStatus>VALID</ManualValidationStatus>
+		<ExpirationDate>2020-06-01T14:48:08.455Z</ExpirationDate>
+		<Published>false</Published>
+		<Curator>SHE</Curator>
+		<CreationDate>2020-06-01T14:48:08.457Z</CreationDate>
+	</Header>
+	<Data>
+		<ValidityRange>
+			<Name>Dummy</Name>
+			<Type>SheCommonCalibration</Type>
+			<TimestampStart>2020-06-01T14:48:08.458Z</TimestampStart>
+			<TimestampEnd>9999-06-01T14:48:08.458Z</TimestampEnd>
+		</ValidityRange>
+		<BfdCalibrationStorage format="she.commonCalibration" version="8.0">
+			<DataContainer filestatus="ARCHIVED_OFFLINE">
+				<FileName>None</FileName>
+			</DataContainer>
+		</BfdCalibrationStorage>
+		<KsbCalibrationStorage format="she.commonCalibration" version="8.0">
+			<DataContainer filestatus="">
+				<FileName>None</FileName>
+			</DataContainer>
+		</KsbCalibrationStorage>
+		<LensMcCalibrationStorage format="she.commonCalibration" version="8.0">
+			<DataContainer filestatus="ARCHIVED_CERNVMFS">
+				<FileName>None</FileName>
+			</DataContainer>
+		</LensMcCalibrationStorage>
+		<MomentsMlCalibrationStorage format="she.commonCalibration" version="8.0">
+			<DataContainer filestatus="ARCHIVED_OFFLINE">
+				<FileName>None</FileName>
+			</DataContainer>
+		</MomentsMlCalibrationStorage>
+		<RegaussCalibrationStorage format="she.commonCalibration" version="8.0">
+			<DataContainer filestatus="ARCHIVED_CERNVMFS">
+				<FileName>None</FileName>
+			</DataContainer>
+		</RegaussCalibrationStorage>
+	</Data>
+	<QualityFlags>
+		<DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
+		<AuxiliaryFlags flagName="faZaS" flagged="false" maxLimit="9.0" minLimit="-8.0" xpath="iOXlh">true</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>pzlDy</Key>
+			<Description>CciAX</Description>
+			<StringValue>hyDvT</StringValue>
+			<Unit>OXd9D</Unit>
+		</Parameter>
+	</Parameters>
+</ns1:DpdSheCommonCalibration>

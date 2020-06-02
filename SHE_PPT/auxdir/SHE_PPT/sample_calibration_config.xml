@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<ns1:DpdSheCalibrationConfig xmlns:ns1="http://euclid.esa.org/schema/dpd/she/calibrationconfig">
+	<Header>
+		<ProductId>e7b078bc-a24d-4798-9802-e92a4a46ccab</ProductId>
+		<ProductType>5cCRI</ProductType>
+		<SoftwareName>Eq8gJ</SoftwareName>
+		<SoftwareRelease>1Rxs8</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>28YJ5</EuclidPipelineSoftwareRelease>
+		<ProdSDC>m4fkJzaWJss7fi4q6NO89hgj4TzoizcWYuml7fOl5XmOaKaeV05QDiZo48p73ZC0nV9hVWSU2K03rmoJ9nyVXb2jMMccs2FMTr1G8Q5lyS9eauvIOYDLoAfqOB5</ProdSDC>
+		<DataSetRelease>sdRX6</DataSetRelease>
+		<Purpose>VALIDATION</Purpose>
+		<PlanId>h85Ej</PlanId>
+		<PPOId>0WzXQ</PPOId>
+		<PipelineDefinitionId>ncalA</PipelineDefinitionId>
+		<PipelineRun>fwgi7</PipelineRun>
+		<ExitStatusCode>o8wWp</ExitStatusCode>
+		<ManualValidationStatus>VALID</ManualValidationStatus>
+		<ExpirationDate>2020-06-01T14:47:38.674Z</ExpirationDate>
+		<ToBePublished>false</ToBePublished>
+		<Published>true</Published>
+		<Curator>SHE</Curator>
+		<CreationDate>2020-06-01T14:47:38.676Z</CreationDate>
+	</Header>
+	<Data>
+		<DataStorage>
+			<DataContainer filestatus="ARCHIVED_CERNVMFS">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+	</Data>
+	<QualityFlags>
+		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
+		<AuxiliaryFlags flagName="h72WL" flagged="false" maxLimit="-2.0" minLimit="8.0" xpath="4OXUA">true</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>n3ADr</Key>
+			<Description>yx0Wh</Description>
+			<StringValue>Q2yqX</StringValue>
+			<Unit>A9uJx</Unit>
+		</Parameter>
+	</Parameters>
+</ns1:DpdSheCalibrationConfig>
