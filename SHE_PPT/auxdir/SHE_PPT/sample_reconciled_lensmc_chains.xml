@@ -1,0 +1,93 @@
+<?xml version="1.0" ?>
+<ns1:DpdSheReconciledLensMcChains xmlns:ns1="http://euclid.esa.org/schema/dpd/she/reconciledlensmcchains">
+	<Header>
+		<ProductId>9ec0a392-0c1d-4d89-a410-bd970cf4b5cc</ProductId>
+		<ProductType>QRaxm</ProductType>
+		<SoftwareName>76YbF</SoftwareName>
+		<SoftwareRelease>Dy70P</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>MGbb</EuclidPipelineSoftwareRelease>
+		<ProdSDC>mDee7skdB2Y9lsMPVcU6vbRmXuKfDeBIQEREkW5DGwkIxyrauUzZ3ZqZjqOe7AmQih0zwZxqzE0XjdFDvjP4KQd2Jeoh2TWRqip</ProdSDC>
+		<DataSetRelease>qlt7j</DataSetRelease>
+		<Purpose>UNKNOWN</Purpose>
+		<PlanId>RfuQX</PlanId>
+		<PPOId>uO2OU</PPOId>
+		<PipelineDefinitionId>mCiUk</PipelineDefinitionId>
+		<PipelineRun>JVxlV</PipelineRun>
+		<ExitStatusCode>YnCxa</ExitStatusCode>
+		<ManualValidationStatus>VALID</ManualValidationStatus>
+		<ExpirationDate>2020-06-03T15:56:34.316Z</ExpirationDate>
+		<ToBePublished>true</ToBePublished>
+		<Published>false</Published>
+		<Curator>SHE</Curator>
+		<CreationDate>2020-06-03T15:56:34.318Z</CreationDate>
+	</Header>
+	<Data>
+		<SpatialCoverage>
+			<Polygon>
+				<Vertex>
+					<Position coordUnit="1/m">
+						<C1 unit="mas/year">0.0</C1>
+						<C2 unit="JD">0.0</C2>
+					</Position>
+					<SmallCircle>
+						<Pole coordUnit="W/m2/K4">
+							<C1 unit="J">0.0</C1>
+							<C2 unit="pixel**2">1.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</Polygon>
+			<Circle>
+				<Center coordUnit="uarcsec">
+					<C1 unit="Wb">0.0</C1>
+					<C2 unit="W/m/K">1.0</C2>
+				</Center>
+				<Radius unit="W/m2">0.0</Radius>
+			</Circle>
+			<BBox>
+				<RaCenter unit="Myr">0.0</RaCenter>
+				<DecCenter unit="h">1.0</DecCenter>
+				<RaHalfWidth unit="W/m2/K4">0.0</RaHalfWidth>
+				<DecHalfWidth unit="min">0.0</DecHalfWidth>
+			</BBox>
+		</SpatialCoverage>
+		<SpectralCoverage>
+			<Filter>
+				<Name>JST</Name>
+				<MagId>Q</MagId>
+				<CentralWavelength>-7.0</CentralWavelength>
+				<MinWavelength>-2.0</MinWavelength>
+				<MaxWavelength>-6.0</MaxWavelength>
+				<Reference>G4Q2H</Reference>
+				<HasFringes>-400371463</HasFringes>
+			</Filter>
+		</SpectralCoverage>
+		<CatalogDescription>
+			<CatalogOrigin>SIMULATED_WIDE</CatalogOrigin>
+			<CatalogType>NOT_PROXY</CatalogType>
+			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
+			<CatalogName>Rec-LensMC-Chains</CatalogName>
+			<CatalogFormatHDU>1</CatalogFormatHDU>
+		</CatalogDescription>
+		<TileIndex>1891583065609084547</TileIndex>
+		<DataStorage format="she.lensMcChains" version="8.0">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+		<Valid>INVALID</Valid>
+		<ObservationIdList>-1</ObservationIdList>
+	</Data>
+	<QualityFlags>
+		<DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
+		<AuxiliaryFlags flagName="QMjw8" flagged="true" maxLimit="7.0" minLimit="8.0" xpath="gVOYx">true</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>tiwXq</Key>
+			<Description>jZnHv</Description>
+			<StringValue>TOVx7</StringValue>
+			<Unit>SnEL6</Unit>
+		</Parameter>
+	</Parameters>
+</ns1:DpdSheReconciledLensMcChains>

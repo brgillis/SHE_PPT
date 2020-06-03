@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<ns1:DpdSheMomentsMlTrainingConfig xmlns:ns1="http://euclid.esa.org/schema/dpd/she/momentsmltrainingconfig">
+	<Header>
+		<ProductId>53345772-5518-4ba0-9b86-e1cec7c38387</ProductId>
+		<ProductType>sCx1E</ProductType>
+		<SoftwareName>wxHV9</SoftwareName>
+		<SoftwareRelease>gtSa7</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>fKvK</EuclidPipelineSoftwareRelease>
+		<ProdSDC>arvjPzuFWJAJAnjxDPBVhjYGaND6T6ejqOjyzBpgt1</ProdSDC>
+		<DataSetRelease>3sAWa</DataSetRelease>
+		<Purpose>UNKNOWN</Purpose>
+		<PlanId>W7Rc6</PlanId>
+		<PPOId>nEZnT</PPOId>
+		<PipelineDefinitionId>Ilu54</PipelineDefinitionId>
+		<PipelineRun>eHEBl</PipelineRun>
+		<ExitStatusCode>ojRyi</ExitStatusCode>
+		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
+		<ExpirationDate>2020-06-03T15:44:13.489Z</ExpirationDate>
+		<ToBePublished>true</ToBePublished>
+		<Published>false</Published>
+		<Curator>SHE</Curator>
+		<CreationDate>2020-06-03T15:44:13.49Z</CreationDate>
+	</Header>
+	<Data>
+		<DataStorage>
+			<DataContainer filestatus="ARCHIVED_OFFLINE">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+	</Data>
+	<QualityFlags>
+		<DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
+		<AuxiliaryFlags flagName="LCQoe" flagged="false" maxLimit="-4.0" minLimit="-1.0" xpath="nrrsp">true</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>Dn3OQ</Key>
+			<Description>SFVrl</Description>
+			<StringValue>dUiFS</StringValue>
+			<Unit>7K0Se</Unit>
+		</Parameter>
+	</Parameters>
+</ns1:DpdSheMomentsMlTrainingConfig>

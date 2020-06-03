@@ -1,0 +1,96 @@
+<?xml version="1.0" ?>
+<ns1:DpdSheLensMcCalibration xmlns:ns1="http://euclid.esa.org/schema/dpd/she/lensmccalibration">
+	<Header>
+		<ProductId>39bf18ac-8fba-43b0-9109-79d6a030cd38</ProductId>
+		<ProductType>SZh9z</ProductType>
+		<SoftwareName>DZ8Ox</SoftwareName>
+		<SoftwareRelease>DCqO</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>DdNHX</EuclidPipelineSoftwareRelease>
+		<ProdSDC>dZjxsGy2EKkGKVQW7gR2iZU3XJWpcagHQ</ProdSDC>
+		<DataSetRelease>6tvGL</DataSetRelease>
+		<Purpose>ON_THE_FLY</Purpose>
+		<PlanId>DyMMZ</PlanId>
+		<PPOId>ybhoH</PPOId>
+		<PipelineDefinitionId>wM2sy</PipelineDefinitionId>
+		<PipelineRun>vVjJk</PipelineRun>
+		<ExitStatusCode>jn2DQ</ExitStatusCode>
+		<ManualValidationStatus>INVALID</ManualValidationStatus>
+		<ExpirationDate>2020-06-03T15:12:18.409Z</ExpirationDate>
+		<ToBePublished>false</ToBePublished>
+		<Published>true</Published>
+		<Curator>SHE</Curator>
+		<CreationDate>2020-06-03T15:12:18.41Z</CreationDate>
+	</Header>
+	<Data>
+		<SpatialCoverage>
+			<Polygon>
+				<Vertex>
+					<Position coordUnit="mol">
+						<C1 unit="lx">1.0</C1>
+						<C2 unit="mas">0.0</C2>
+					</Position>
+					<SmallCircle>
+						<Pole coordUnit="ADU">
+							<C1 unit="ph">0.0</C1>
+							<C2 unit="Angstrom">0.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</Polygon>
+			<Circle>
+				<Center coordUnit="s">
+					<C1 unit="m/s">0.0</C1>
+					<C2 unit="kHz">0.0</C2>
+				</Center>
+				<Radius unit="W/m2/K4">0.0</Radius>
+			</Circle>
+			<BBox>
+				<RaCenter unit="W">0.0</RaCenter>
+				<DecCenter unit="count">1.0</DecCenter>
+				<RaHalfWidth unit="mV">1.0</RaHalfWidth>
+				<DecHalfWidth unit="m3/s2">0.0</DecHalfWidth>
+			</BBox>
+		</SpatialCoverage>
+		<SpectralCoverage>
+			<Filter>
+				<Name>NIR_Y</Name>
+				<MagId>J</MagId>
+				<CentralWavelength>4.0</CentralWavelength>
+				<MinWavelength>-5.0</MinWavelength>
+				<MaxWavelength>7.0</MaxWavelength>
+				<Reference>QF7rL</Reference>
+				<HasFringes>-1689958592</HasFringes>
+			</Filter>
+		</SpectralCoverage>
+		<CatalogDescription>
+			<CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
+			<CatalogType>PROXY</CatalogType>
+			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
+			<CatalogName>LensMC-Calibration</CatalogName>
+			<CatalogFormatHDU>1</CatalogFormatHDU>
+		</CatalogDescription>
+		<ValidityRange>
+			<Name>Dummy</Name>
+			<Type>sheLensMcCalibration</Type>
+			<TimestampStart>2020-06-03T15:12:18.421Z</TimestampStart>
+			<TimestampEnd>9999-06-03T15:12:18.421Z</TimestampEnd>
+		</ValidityRange>
+		<DataStorage format="she.lensMcMeasurements" version="8.0">
+			<DataContainer filestatus="">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+	</Data>
+	<QualityFlags>
+		<DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true</DummyFlag>
+		<AuxiliaryFlags flagName="zCO1k" flagged="false" maxLimit="-8.0" minLimit="1.0" xpath="ZJ8FE">false</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>Ml4Iv</Key>
+			<Description>EJ2Jw</Description>
+			<StringValue>vi86o</StringValue>
+			<Unit>NNofQ</Unit>
+		</Parameter>
+	</Parameters>
+</ns1:DpdSheLensMcCalibration>

@@ -1,45 +1,96 @@
 <?xml version="1.0" ?>
-<ns1:DpdShearMomentsMLTraining xmlns:ns1="http://euclid.esa.org/schema/dpd/she/shearmomentsmltraining">
+<ns1:DpdSheMomentsMlTraining xmlns:ns1="http://euclid.esa.org/schema/dpd/she/momentsmltraining">
 	<Header>
-		<ProductId>None</ProductId>
-		<ProductType>false</ProductType>
-		<SoftwareName>i7k</SoftwareName>
-		<SoftwareRelease>1FD2</SoftwareRelease>
+		<ProductId>0a558107-ac36-45fd-9462-1a38d6e77ac7</ProductId>
+		<ProductType>ygWdJ</ProductType>
+		<SoftwareName>TbfiQ</SoftwareName>
+		<SoftwareRelease>LaxV</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>V8kz</EuclidPipelineSoftwareRelease>
+		<ProdSDC>8KbsSZeic9Qm4tuS5B002E20zCpG8iUf13i8XEI3BPW66n09xbHJFGsq24mjXfjiBCAF7ODTVUo7RYW7jQfAdcujA1WIh8OgKdHSClXFTYChVp9c0S0c1MKdowAkVc</ProdSDC>
+		<DataSetRelease>4fRs8</DataSetRelease>
+		<Purpose>DATA_RELEASE</Purpose>
+		<PlanId>kxOO7</PlanId>
+		<PPOId>fLBw5</PPOId>
+		<PipelineDefinitionId>WQGj5</PipelineDefinitionId>
+		<PipelineRun>VQ7NV</PipelineRun>
+		<ExitStatusCode>uCb5j</ExitStatusCode>
 		<ManualValidationStatus>VALID</ManualValidationStatus>
-		<ExpirationDate>2018-11-16T16:00:13.184Z</ExpirationDate>
-		<PipelineRun>vF0</PipelineRun>
-		<ExitStatusCode>SOX</ExitStatusCode>
-		<DataModelVersion>iWjy</DataModelVersion>
-		<MinDataModelVersion>auHni</MinDataModelVersion>
-		<ScientificCustodian>LE3MWS</ScientificCustodian>
-		<AccessRights>
-			<EuclidConsortiumRead>false</EuclidConsortiumRead>
-			<EuclidConsortiumWrite>false</EuclidConsortiumWrite>
-			<ScientificGroupRead>false</ScientificGroupRead>
-			<ScientificGroupWrite>false</ScientificGroupWrite>
-		</AccessRights>
-		<Curator>
-			<Name>Lkx</Name>
-			<Email>H7pfmRhWUPmGFrDg84EsEAONdD1zByZvKNf@s4V6RhPgR8plhA3ImNHeaRAoQznQIqjeS.e321&lt;o&amp;4[npr;sG:hjL^8(QH4w\=1&gt;*e\{&lt;Qc</Email>
-		</Curator>
+		<ExpirationDate>2020-06-03T15:42:28.955Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>
-		<Published>false</Published>
-		<Creator>v2D</Creator>
-		<CreationDate>2018-11-16T16:00:13.19Z</CreationDate>
+		<Published>true</Published>
+		<Curator>SHE</Curator>
+		<CreationDate>2020-06-03T15:42:28.957Z</CreationDate>
 	</Header>
-	<Data filestatus="PROPOSED">
-		<FileName>None</FileName>
+	<Data>
+		<SpatialCoverage>
+			<Polygon>
+				<Vertex>
+					<Position coordUnit="lyr">
+						<C1 unit="a">0.0</C1>
+						<C2 unit="kg">0.0</C2>
+					</Position>
+					<SmallCircle>
+						<Pole coordUnit="uJy">
+							<C1 unit="erg">1.0</C1>
+							<C2 unit="CelsiusDeg">1.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</Polygon>
+			<Circle>
+				<Center coordUnit="J/mol/K">
+					<C1 unit="um">1.0</C1>
+					<C2 unit="R">1.0</C2>
+				</Center>
+				<Radius unit="mK">0.0</Radius>
+			</Circle>
+			<BBox>
+				<RaCenter unit="Pa">0.0</RaCenter>
+				<DecCenter unit="arcmin">1.0</DecCenter>
+				<RaHalfWidth unit="H">1.0</RaHalfWidth>
+				<DecHalfWidth unit="km/s">0.0</DecHalfWidth>
+			</BBox>
+		</SpatialCoverage>
+		<SpectralCoverage>
+			<Filter>
+				<Name>OMEGACAM_i</Name>
+				<MagId>G</MagId>
+				<CentralWavelength>-4.0</CentralWavelength>
+				<MinWavelength>-6.0</MinWavelength>
+				<MaxWavelength>-2.0</MaxWavelength>
+				<Reference>6SUK2</Reference>
+				<HasFringes>-792714803</HasFringes>
+			</Filter>
+		</SpectralCoverage>
+		<CatalogDescription>
+			<CatalogOrigin>RANDOM_WIDE</CatalogOrigin>
+			<CatalogType>NOT_PROXY</CatalogType>
+			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
+			<CatalogName>Placeholder</CatalogName>
+			<CatalogFormatHDU>1</CatalogFormatHDU>
+		</CatalogDescription>
+		<ValidityRange>
+			<Name>Dummy</Name>
+			<Type>sheMomentsMlTraining</Type>
+			<TimestampStart>2020-06-03T15:42:28.968Z</TimestampStart>
+			<TimestampEnd>9999-06-03T15:42:28.968Z</TimestampEnd>
+		</ValidityRange>
+		<DataStorage>
+			<DataContainer filestatus="ARCHIVED_ONLINE">
+				<FileName>s7SmpzEPvo5Wa4oA37qBugPwcCORQu70y6zkJXIy8jLl66nObdiXWgYhCUnAXAnwLZs5OViYpveSKpXU1NYSFqdOZLNoINKnSTwxoT6GReMWSjIJ7O5xOR1h2G</FileName>
+			</DataContainer>
+		</DataStorage>
 	</Data>
 	<QualityFlags>
-		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
-		<AuxiliaryFlags flagName="bpy" flagged="false" maxLimit="9.0" minLimit="-1.0" xpath="IUT">true</AuxiliaryFlags>
+		<DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true</DummyFlag>
+		<AuxiliaryFlags flagName="NDGoE" flagged="false" maxLimit="1.0" minLimit="0.0" xpath="RT35D">true</AuxiliaryFlags>
 	</QualityFlags>
 	<Parameters>
-		<Param>
-			<Key>BJ8</Key>
-			<Description>OvJ</Description>
-			<StringValue>je6</StringValue>
-			<Unit>gHU</Unit>
-		</Param>
+		<Parameter>
+			<Key>2zswy</Key>
+			<Description>WAzgf</Description>
+			<StringValue>q82AC</StringValue>
+			<Unit>CoUjc</Unit>
+		</Parameter>
 	</Parameters>
-</ns1:DpdShearMomentsMLTraining>
+</ns1:DpdSheMomentsMlTraining>

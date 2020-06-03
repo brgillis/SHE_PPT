@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<ns1:DpdShePsfAnalysisConfig xmlns:ns1="http://euclid.esa.org/schema/dpd/she/psfanalysisconfig">
+	<Header>
+		<ProductId>8c2bca1a-13f4-41e5-87fd-9b7e73ec83b2</ProductId>
+		<ProductType>8NdJi</ProductType>
+		<SoftwareName>ZEO0C</SoftwareName>
+		<SoftwareRelease>KwW</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>uGHc</EuclidPipelineSoftwareRelease>
+		<ProdSDC>H2BCheICqpR7gdTrkdfgwuqxMatWtF9y1nQYjkqZoU</ProdSDC>
+		<DataSetRelease>KgPWE</DataSetRelease>
+		<Purpose>REPROCESSING</Purpose>
+		<PlanId>cB9Hj</PlanId>
+		<PPOId>tQn3h</PPOId>
+		<PipelineDefinitionId>17aCa</PipelineDefinitionId>
+		<PipelineRun>vvVIg</PipelineRun>
+		<ExitStatusCode>OGclv</ExitStatusCode>
+		<ManualValidationStatus>VALID</ManualValidationStatus>
+		<ExpirationDate>2020-06-03T15:52:45.306Z</ExpirationDate>
+		<ToBePublished>false</ToBePublished>
+		<Published>true</Published>
+		<Curator>SHE</Curator>
+		<CreationDate>2020-06-03T15:52:45.307Z</CreationDate>
+	</Header>
+	<Data>
+		<DataStorage>
+			<DataContainer filestatus="ARCHIVED_CERNVMFS">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+	</Data>
+	<QualityFlags>
+		<DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
+		<AuxiliaryFlags flagName="0z7MN" flagged="false" maxLimit="-9.0" minLimit="7.0" xpath="j8Jzu">true</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>L4uMx</Key>
+			<Description>876Lz</Description>
+			<StringValue>kCPoK</StringValue>
+			<Unit>gF2eF</Unit>
+		</Parameter>
+	</Parameters>
+</ns1:DpdShePsfAnalysisConfig>
