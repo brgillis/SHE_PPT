@@ -45,47 +45,42 @@ class BFDMomentsTableMeta(object):
         self.table_format = "she.bfdShearEstimates"
 
         # Table metadata labels
-        self.version = "SS_VER"
-        self.format = "SS_FMT"
-
-        self.extname = mv.extname_label
-
+        self.fits_vers = "FITS_VER"
+        #self.format = "SS_FMT"
+        self.fits_def = "FITS_DEF"
+        #self.extname = mv.extname_label
+        self.sflagvers="SFLAGVERS"
         self.model_hash = mv.model_hash_label
         self.model_seed = mv.model_seed_label
         self.noise_seed = mv.noise_seed_label
-
-        self.obs_time = mv.obs_time_label
-
-        self.bfd_nlost = "NLOST"
-        self.bfd_wt_n = "WT_N"
-        self.bfd_wt_sigma = "WT_SIGMA"
-        self.bfd_tmpl_snmin = "T_SNMIN"
-        self.bfd_tmpl_sigma_xy = "T_SIGXY"
-        self.bfd_tmpl_sigma_flux = "T_SIGFLX"
-        self.bfd_tmpl_sigma_step = "T_SIGSTP"
-        self.bfd_tmpl_sigma_max = "T_SIGMAX"
-        self.bfd_tmpl_xy_max = "T_XYMAX"
+        self.obs_id = 0
+        self.date_obs = mv.obs_time_label
+        self.tile_id = 0
+        self.nlost = "NLOST"
+        self.wt_n = "WT_N"
+        self.wt_sigma = "WT_SIGMA"
+        #self.bfd_tmpl_snmin = "T_SNMIN"
+        #self.bfd_tmpl_sigma_xy = "T_SIGXY"
+        #self.bfd_tmpl_sigma_flux = "T_SIGFLX"
+        #self.bfd_tmpl_sigma_step = "T_SIGSTP"
+        #self.bfd_tmpl_sigma_max = "T_SIGMAX"
+        #self.bfd_tmpl_xy_max = "T_XYMAX"
 
         self.validated = "VALID"
 
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.version, None),
-                                     (self.format, None),
-                                     (self.extname,
-                                      "#." + mv.shear_estimates_tag),
+        self.comments = OrderedDict(((self.fits_vers, None),
+                                     (self.fits_def, None),
+                                     (self.sflagvers,None),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
-                                     (self.obs_time, None),
-                                     (self.bfd_nlost, None),
-                                     (self.bfd_wt_n, None),
-                                     (self.bfd_wt_sigma, None),
-                                     (self.bfd_tmpl_snmin, None),
-                                     (self.bfd_tmpl_sigma_xy, None),
-                                     (self.bfd_tmpl_sigma_flux, None),
-                                     (self.bfd_tmpl_sigma_step, None),
-                                     (self.bfd_tmpl_sigma_max, None),
-                                     (self.bfd_tmpl_xy_max, None),
+                                     (self.obs_id,None),
+                                     (self.date_obs, None),
+                                     (self.tile_id, None),
+                                     (self.nlost, None),
+                                     (self.wt_n, None),
+                                     (self.wt_sigma, None),
                                      (self.validated,
                                       "0: Not tested; 1: Pass; -1: Fail")
                                      ))
@@ -137,55 +132,32 @@ class BFDMomentsTableFormat(object):
         # Table column labels and properties
 
         self.ID = set_column_properties(
-            "SOURCE_ID", dtype=">i8", fits_dtype="K")
+            "OBJECT_ID", dtype=">i8", fits_dtype="K")
 
-        self.flags = set_column_properties(
-            "FLAGS", dtype=">i8", fits_dtype="K")
+        self.fit_flags = set_column_properties(
+            "SHE_BFD_FIT_FLAGS", dtype=">i8", fits_dtype="K")
+        self.val_flags = set_column_properties(
+            "SHE_BFD_VAL_FLAGS", dtype=">i8", fits_dtype="K")
         self.fit_class = set_column_properties(
-            "FITCLASS", dtype=">i2", fits_dtype="I")
-
-        self.x_world = set_column_properties(
-            "X_WORLD_CORR", is_optional=False, comment="deg")
-        self.y_world = set_column_properties(
-            "Y_WORLD_CORR", is_optional=False, comment="deg")
-
-        self.x_world_var = set_column_properties(
-            "ERRX2_WORLD_CORR", is_optional=True, comment="deg**2")
-        self.y_world_var = set_column_properties(
-            "ERRY2_WORLD_CORR", is_optional=True, comment="deg**2")
+            "SHE_BFD_FIT_CLASS", dtype=">i2", fits_dtype="I")
+        self.updated_ra = set_column_properties(
+            "SHE_BFD_UPDATED_RA", is_optional=False, comment="deg")
+        self.updated_ra_err = set_column_properties(
+            "SHE_BFD_UPDATED_RA_ERR", is_optional=False, comment="deg")
+        self.updated_dec = set_column_properties(
+            "SHE_BFD_UPDATED_DEC", is_optional=True, comment="deg**2")
+        self.updated_dec_err = set_column_properties(
+            "SHE_BFD_UPDATED_DEC_ERR", is_optional=True, comment="deg**2")
 
         # BFD specific columns
         self.bfd_moments = set_column_properties(
-            "BFD_MOMENTS", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
-        self.bfd_deriv_moments_dg1 = set_column_properties(
-            "BFD_DM_DG1", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
-        self.bfd_deriv_moments_dg2 = set_column_properties(
-            "BFD_DM_DG2", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
-        self.bfd_deriv_moments_dmu = set_column_properties(
-            "BFD_DM_DMU", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
-        self.bfd_2ndderiv_moments_dg1dg1 = set_column_properties(
-            "BFD_D2M_DG1DG1", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
-        self.bfd_2ndderiv_moments_dg1dg2 = set_column_properties(
-            "BFD_D2M_DG1DG2", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
-        self.bfd_2ndderiv_moments_dg2dg2 = set_column_properties(
-            "BFD_D2M_DG2DG2", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
-        self.bfd_2ndderiv_moments_dg1dmu = set_column_properties(
-            "BFD_D2M_DG1DMU", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
-        self.bfd_2ndderiv_moments_dg2dmu = set_column_properties(
-            "BFD_D2M_DG2DMU", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
-        self.bfd_2ndderiv_moments_dmudmu = set_column_properties(
-            "BFD_D2M_DMUDMU", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
-        self.bfd_template_weight = set_column_properties(
-            "BFD_TMPL_WEIGHT", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.bfd_jsuppress = set_column_properties(
-            "BFD_JSUPPRESS", is_optional=True, dtype=">f4", fits_dtype="E")
+            "SHE_BFD_MOMENTS", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
         self.bfd_pqr = set_column_properties(
-            "BFD_PQR", is_optional=True, dtype=">f4", fits_dtype="E", length=6)
-
+            "SHE_BFD_PQR", is_optional=True, dtype=">f4", fits_dtype="E", length=6)
         self.bfd_cov_even = set_column_properties(
-            "BFD_COV_EVEN", is_optional=True, dtype=">f4", fits_dtype="E", length=15)
+            "SHE_BFD_COV_EVEN", is_optional=True, dtype=">f4", fits_dtype="E", length=15)
         self.bfd_cov_odd = set_column_properties(
-            "BFD_COV_ODD", is_optional=True, dtype=">f4", fits_dtype="E", length=3)
+            "SHE_BFD_COV_ODD", is_optional=True, dtype=">f4", fits_dtype="E", length=3)
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -206,20 +178,19 @@ tf = bfd_moments_table_format
 
 def make_bfd_moments_table_header(detector_x=1,
                                   detector_y=1,
+                                  detector=None,
+                                  fits_ver=None,
+                                  fits_def=None,
+                                  sflagvers=None,
                                   model_hash=None,
                                   model_seed=None,
                                   noise_seed=None,
-                                  detector=None,
-                                  obs_time=None,
-                                  bfd_nlost=None,
-                                  bfd_wt_n=None,
-                                  bfd_wt_sigma=None,
-                                  bfd_tmpl_snmin=None,
-                                  bfd_tmpl_sigma_xy=None,
-                                  bfd_tmpl_sigma_flux=None,
-                                  bfd_tmpl_sigma_step=None,
-                                  bfd_tmpl_sigma_max=None,
-                                  bfd_tmpl_xy_max=None,):
+                                  obs_id=None,
+                                  date_obs=None,
+                                  tile_id=None,
+                                  nlost=None,
+                                  wt_n=None,
+                                  wt_sigma=None):
     """
         @brief Generate a header for a shear estimates table.
 
@@ -244,28 +215,22 @@ def make_bfd_moments_table_header(detector_x=1,
 
     header = OrderedDict()
 
-    header[tf.m.version] = tf.__version__
-    header[tf.m.format] = tf.m.table_format
-
-    header[tf.m.extname] = dtc.get_id_string(
-        detector_x, detector_y) + "." + mv.shear_estimates_tag
-
+    header[tf.m.fits_vers] = tf.__version__
+    header[tf.m.fits_def] = fits_def
+    header[tf.m.sflagvers] = sflagvers
+    
     header[tf.m.model_hash] = model_hash
     header[tf.m.model_seed] = model_seed
     header[tf.m.noise_seed] = noise_seed
+    
+    header[tf.m.obs_id] = obs_id
+    header[tf.m.date_obs] = date_obs
+    header[tf.m.tile_id] = tile_id
 
-    header[tf.m.obs_time] = obs_time
-
-    header[tf.m.bfd_nlost] = bfd_nlost
-    header[tf.m.bfd_wt_n] = bfd_wt_n
-    header[tf.m.bfd_wt_sigma] = bfd_wt_sigma
-    header[tf.m.bfd_tmpl_snmin] = bfd_tmpl_snmin
-    header[tf.m.bfd_tmpl_sigma_xy] = bfd_tmpl_sigma_xy
-    header[tf.m.bfd_tmpl_sigma_flux] = bfd_tmpl_sigma_flux
-    header[tf.m.bfd_tmpl_sigma_step] = bfd_tmpl_sigma_step
-    header[tf.m.bfd_tmpl_sigma_max] = bfd_tmpl_sigma_max
-    header[tf.m.bfd_tmpl_xy_max] = bfd_tmpl_xy_max
-
+    header[tf.m.nlost] = nlost
+    header[tf.m.wt_n] = wt_n
+    header[tf.m.wt_sigma] = wt_sigma
+    
     header[tf.m.validated] = 0
 
     return header
@@ -275,20 +240,19 @@ def initialise_bfd_moments_table(detections_table=None,
                                  optional_columns=None,
                                  detector_x=None,
                                  detector_y=None,
+                                 detector=None,
+                                 fits_def=None,
+                                 sflagvers=None,
                                  model_hash=None,
                                  model_seed=None,
                                  noise_seed=None,
-                                 detector=None,
-                                 obs_time=None,
-                                 bfd_nlost=None,
-                                 bfd_wt_n=None,
-                                 bfd_wt_sigma=None,
-                                 bfd_tmpl_snmin=None,
-                                 bfd_tmpl_sigma_xy=None,
-                                 bfd_tmpl_sigma_flux=None,
-                                 bfd_tmpl_sigma_step=None,
-                                 bfd_tmpl_sigma_max=None,
-                                 bfd_tmpl_xy_max=None,):
+                                 obs_id=None,
+                                 date_obs=None,
+                                 tile_id=None,
+                                 nlost=None,
+                                 wt_n=None,
+                                 wt_sigma=None,
+                                 ):
     """
         @brief Initialise a shear estimates table based on a detections table, with the
                desired set of optional columns
@@ -350,20 +314,19 @@ def initialise_bfd_moments_table(detections_table=None,
 
     bfd_moments_table.meta = make_bfd_moments_table_header(detector_x=detector_x,
                                                            detector_y=detector_y,
+                                                           detector=detector,
+                                                           fits_def=fits_def,
+                                                           sflagvers=sflagvers,
                                                            model_hash=model_hash,
                                                            model_seed=model_seed,
                                                            noise_seed=noise_seed,
-                                                           obs_time=obs_time,
-                                                           bfd_nlost=bfd_nlost,
-                                                           bfd_wt_n=bfd_wt_n,
-                                                           bfd_wt_sigma=bfd_wt_sigma,
-                                                           bfd_tmpl_snmin=bfd_tmpl_snmin,
-                                                           bfd_tmpl_sigma_xy=bfd_tmpl_sigma_xy,
-                                                           bfd_tmpl_sigma_flux=bfd_tmpl_sigma_flux,
-                                                           bfd_tmpl_sigma_step=bfd_tmpl_sigma_step,
-                                                           bfd_tmpl_sigma_max=bfd_tmpl_sigma_max,
-                                                           bfd_tmpl_xy_max=bfd_tmpl_xy_max,)
-
+                                                           obs_id=obs_id,
+                                                           date_obs=date_obs,
+                                                           tile_id=tile_id,
+                                                           nlost=nlost,
+                                                           wt_n=wt_n,
+                                                           wt_sigma=wt_sigma)
+                     
     assert(is_in_format(bfd_moments_table, tf))
 
     return bfd_moments_table
