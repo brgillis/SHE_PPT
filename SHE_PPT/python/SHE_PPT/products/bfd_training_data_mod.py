@@ -64,12 +64,12 @@ def init():
 
 def __set_filename(self, filename):
     # @TODO: Update
-    set_data_filename_of_product(self, filename, "ShearBFDTrainingFile")
+    set_data_filename_of_product(self, filename, "DataStorage")
 
 
 def __get_filename(self):
     # @TODO: Update
-    return get_data_filename_from_product(self, "ShearBFDTrainingFile")
+    return get_data_filename_from_product(self, "DataStorage")
 
 
 def __get_all_filenames(self):
@@ -106,7 +106,7 @@ class SheBFDTrainingDataProduct:  # @FIXME
         if not os.path.exists(testXmlFile):
             self.format = None
             self.version = None
-            self.ShearBFDTrainingFile = None
+            self.DataStorage = None
 
 
 class DataContainer:  # @FIXME
@@ -132,7 +132,7 @@ def create_dpd_she_bfd_training_data(filename=None):
         she_bfd_training_data = read_xml_product(testXmlFile, allow_pickled=False)
         print("PID: ", she_bfd_training_data.Header.ProductId)
         print("CATID: ", she_bfd_training_data.Data.IdCatalog)
-        print("FN: ", she_bfd_training_data.Data.ShearBFDTrainingFile.DataContainer.FileName)
+        print("FN: ", she_bfd_training_data.Data.DataStorage.DataContainer.FileName)
 
     else:
 

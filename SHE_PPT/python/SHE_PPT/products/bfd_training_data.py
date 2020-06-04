@@ -59,11 +59,11 @@ def init():
 
 
 def __set_filename(self, filename):
-    set_data_filename_of_product(self, filename, "ShearBFDTrainingFile")
+    set_data_filename_of_product(self, filename, "DataStorage")
 
 
 def __get_filename(self):
-    return get_data_filename_from_product(self, "ShearBFDTrainingFile")
+    return get_data_filename_from_product(self, "DataStorage")
 
 
 def __get_all_filenames(self):
