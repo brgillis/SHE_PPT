@@ -42,7 +42,7 @@ class lensMcMeasurementsTableMeta(object):
     def __init__(self):
 
         self.__version__ = "8.0"
-        self.table_format = "she.lens_mcSMeasurements"
+        self.table_format = "she.lens_mcMeasurements"
 
         # Table metadata labels
         self.fits_vers = "FITS_VER"
