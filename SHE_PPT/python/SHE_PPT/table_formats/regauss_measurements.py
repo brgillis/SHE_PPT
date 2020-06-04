@@ -1,8 +1,8 @@
-""" @file momentsml_measurements.py
+""" @file regauss_measurements.py
 
     Created 6 Dec 2017
 
-    Format definition for momentsml measurements tables.
+    Format definition for regauss measurements tables.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -34,7 +34,7 @@ from astropy.table import Table
 logger = getLogger(mv.logger_name)
 
 
-class momentsmlMeasurementsTableMeta(object):
+class regaussMeasurementsTableMeta(object):
     """
         @brief A class defining the metadata for shear estimates tables.
     """
@@ -42,7 +42,7 @@ class momentsmlMeasurementsTableMeta(object):
     def __init__(self):
 
         self.__version__ = "8.0"
-        self.table_format = "she.momentsmlMeasurements"
+        self.table_format = "she.regaussMeasurements"
 
         # Table metadata labels
         self.fits_vers = "FITS_VER"
@@ -77,16 +77,16 @@ class momentsmlMeasurementsTableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class momentsmlMeasurementsTableFormat(object):
+class regaussMeasurementsTableFormat(object):
     """
-        @brief A class defining the format for shear estimates tables. Only the momentsml_measurements_table_format
+        @brief A class defining the format for shear estimates tables. Only the regauss_measurements_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
     def __init__(self):
 
         # Get the metadata (contained within its own class)
-        self.meta = momentsmlMeasurementsTableMeta()
+        self.meta = regaussMeasurementsTableMeta()
 
         # And a quick alias for it
         self.m = self.meta
@@ -123,55 +123,59 @@ class momentsmlMeasurementsTableFormat(object):
             "OBJECT_ID", dtype=">i8", fits_dtype="K")
 
         self.fit_flags = set_column_properties(
-            "SHE_MOMENTSML_FIT_FLAGS", dtype=">i8", fits_dtype="K")
+            "SHE_REGAUSS_FIT_FLAGS", dtype=">i8", fits_dtype="K")
         self.val_flags = set_column_properties(
-            "SHE_MOMENTSML_VAL_FLAGS", dtype=">i8", fits_dtype="K")
+            "SHE_REGAUSS_VAL_FLAGS", dtype=">i8", fits_dtype="K")
         self.fit_class = set_column_properties(
-            "SHE_MOMENTSML_FIT_CLASS", dtype=">i2", fits_dtype="I")
+            "SHE_REGAUSS_FIT_CLASS", dtype=">i2", fits_dtype="I")
         
-        self.momentsml_g1 = set_column_properties(
-            "SHE_MOMENTSML_G1", dtype=">f4", fits_dtype="E")
-        self.momentsml_g1_w = set_column_properties(
-            "SHE_MOMENTSML_G1_W", dtype=">f4", fits_dtype="E")
-        self.momentsml_g2 = set_column_properties(
-            "SHE_MOMENTSML_G2", dtype=">f4", fits_dtype="E")
-        self.momentsml_g2_w = set_column_properties(
-            "SHE_MOMENTSML_G2_W", dtype=">f4", fits_dtype="E")
-        self.momentsml_wgt = set_column_properties(
-            "SHE_MOMENTSML_WEIGHT", dtype=">f4", fits_dtype="E")
-        self.momentsml_g1_unc = set_column_properties(
-            "SHE_MOMENTSML_G1_UNCAL", dtype=">f4", fits_dtype="E")
-        self.momentsml_g1_unc_w = set_column_properties(
-            "SHE_MOMENTSML_G1_UNCAL_W", dtype=">f4", fits_dtype="E")
-        self.momentsml_g2_unc = set_column_properties(
-            "SHE_MOMENTSML_G2_UNCAL", dtype=">f4", fits_dtype="E")
-        self.momentsml_g2_unc_w = set_column_properties(
-            "SHE_MOMENTSML_G2_UNCAL_W", dtype=">f4", fits_dtype="E")
-        self.momentsml_wgt_unc = set_column_properties(
-            "SHE_MOMENTSML_WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
+        self.regauss_g1 = set_column_properties(
+            "SHE_REGAUSS_G1", dtype=">f4", fits_dtype="E")
+        self.regauss_g1_err = set_column_properties(
+            "SHE_REGAUSS_G1_ERR", dtype=">f4", fits_dtype="E")
+        self.regauss_g2 = set_column_properties(
+            "SHE_REGAUSS_G2", dtype=">f4", fits_dtype="E")
+        self.regauss_g2_err = set_column_properties(
+            "SHE_REGAUSS_G2_ERR", dtype=">f4", fits_dtype="E")
+        self.regauss_g1g2_cov = set_column_properties(
+            "SHE_REGAUSS_G1G2_COVAR", dtype=">f4", fits_dtype="E")
+        self.regauss_wgt = set_column_properties(
+            "SHE_REGAUSS_WEIGHT", dtype=">f4", fits_dtype="E")
+        self.regauss_g1_unc = set_column_properties(
+            "SHE_REGAUSS_G1_UNCAL", dtype=">f4", fits_dtype="E")
+        self.regauss_g1_unc_err = set_column_properties(
+            "SHE_REGAUSS_G1_UNCAL_ERR", dtype=">f4", fits_dtype="E")
+        self.regauss_g2_unc = set_column_properties(
+            "SHE_REGAUSS_G2_UNCAL", dtype=">f4", fits_dtype="E")
+        self.regauss_g2_unc_err = set_column_properties(
+            "SHE_REGAUSS_G2_UNCAL_ERR", dtype=">f4", fits_dtype="E")
+        self.regauss_g1g2_unc_cov = set_column_properties(
+            "SHE_REGAUSS_G1G2_UNCALCOVAR", dtype=">f4", fits_dtype="E")  
+        self.regauss_wgt_unc = set_column_properties(
+            "SHE_REGAUSS_WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
     
         self.updated_ra = set_column_properties(
-            "SHE_MOMENTSML_UPDATED_RA", is_optional=False, comment="deg")
+            "SHE_REGAUSS_UPDATED_RA", is_optional=False, comment="deg")
         self.updated_ra_err = set_column_properties(
-            "SHE_MOMENTSML_UPDATED_RA_ERR", is_optional=False, comment="deg")
+            "SHE_REGAUSS_UPDATED_RA_ERR", is_optional=False, comment="deg")
         self.updated_dec = set_column_properties(
-            "SHE_MOMENTSML_UPDATED_DEC", is_optional=True, comment="deg")
+            "SHE_REGAUSS_UPDATED_DEC", is_optional=True, comment="deg")
         self.updated_dec_err = set_column_properties(
-            "SHE_MOMENTSML_UPDATED_DEC_ERR", is_optional=True, comment="deg")
+            "SHE_REGAUSS_UPDATED_DEC_ERR", is_optional=True, comment="deg")
 
-        # momentsml specific columns
-        self.momentsml_re = set_column_properties(
-            "SHE_MOMENTSML_RE", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.momentsml_re_err = set_column_properties(
-            "SHE_MOMENTSML_RE_ERR", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.momentsml_flux = set_column_properties(
-            "SHE_MOMENTSML_FLUX", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.momentsml_snr = set_column_properties(
-            "SHE_MOMENTSML_SNR", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.momentsml_sersic = set_column_properties(
-            "SHE_MOMENTSML_SERSIC_INDEX", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.momentsml_nexp = set_column_properties(
-            "SHE_MOMENTSML_NEXP", is_optional=True, dtype=">f4", fits_dtype="E")
+        # regauss specific columns
+        self.regauss_re = set_column_properties(
+            "SHE_REGAUSS_RE", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.regauss_re_err = set_column_properties(
+            "SHE_REGAUSS_RE_ERR", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.regauss_flux = set_column_properties(
+            "SHE_REGAUSS_FLUX", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.regauss_flux_err = set_column_properties(
+            "SHE_REGAUSS_FLUX_ERR", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.regauss_snr = set_column_properties(
+            "SHE_REGAUSS_SNR", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.regauss_snr_err = set_column_properties(
+            "SHE_REGAUSS_SNR_ERR", is_optional=True, dtype=">f4", fits_dtype="E")
         
 
         # A list of columns in the desired order
@@ -185,13 +189,13 @@ class momentsmlMeasurementsTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-momentsml_measurements_table_format = momentsmlmeasurementsTableFormat()
+regauss_measurements_table_format = regaussmeasurementsTableFormat()
 
 # And a convient alias for it
-tf = momentsml_measurements_table_format
+tf = regauss_measurements_table_format
 
 
-def make_momentsml_measurements_table_header(detector_x=1,
+def make_regauss_measurements_table_header(detector_x=1,
                                   detector_y=1,
                                   detector=None,
                                   fits_ver=None,
@@ -244,7 +248,7 @@ def make_momentsml_measurements_table_header(detector_x=1,
     return header
 
 
-def initialise_momentsml_measurements_table(detections_table=None,
+def initialise_regauss_measurements_table(detections_table=None,
                                  optional_columns=None,
                                  detector_x=None,
                                  detector_y=None,
@@ -273,7 +277,7 @@ def initialise_momentsml_measurements_table(detections_table=None,
 
         @param detector <int?> Detector this table corresponds to
 
-        @return momentsml_measurements_table <astropy.table.Table>
+        @return regauss_measurements_table <astropy.table.Table>
     """
 
     if detector is not None:
@@ -299,7 +303,7 @@ def initialise_momentsml_measurements_table(detections_table=None,
             init_cols.append([])
             dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
 
-    momentsml_measurements_table = Table(init_cols, names=names, dtype=dtypes)
+    regauss_measurements_table = Table(init_cols, names=names, dtype=dtypes)
 
     if detections_table is not None:
         if detector_x is None or detector_y is None:
@@ -317,7 +321,7 @@ def initialise_momentsml_measurements_table(detections_table=None,
     if detector_y is None:
         detector_y = 1
 
-    momentsml_measurements_table.meta = make_momentsml_measurements_table_header(detector_x=detector_x,
+    regauss_measurements_table.meta = make_regauss_measurements_table_header(detector_x=detector_x,
                                                            detector_y=detector_y,
                                                            detector=detector,
                                                            fits_def=fits_def,
@@ -329,6 +333,6 @@ def initialise_momentsml_measurements_table(detections_table=None,
                                                            date_obs=date_obs,
                                                            tile_id=tile_id)
                      
-    assert(is_in_format(momentsml_measurements_table, tf))
+    assert(is_in_format(regauss_measurements_table, tf))
 
-    return momentsml_measurements_table
+    return regauss_measurements_table
