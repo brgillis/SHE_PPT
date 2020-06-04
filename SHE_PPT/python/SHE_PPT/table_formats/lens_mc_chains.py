@@ -1,8 +1,8 @@
-""" @file ksb_measurements.py
+""" @file lens_mc_chains.py
 
     Created 6 Dec 2017
 
-    Format definition for ksb measurements tables.
+    Format definition for lens_mc chains tables.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -34,7 +34,7 @@ from astropy.table import Table
 logger = getLogger(mv.logger_name)
 
 
-class ksbMeasurementsTableMeta(object):
+class lensMcChainsTableMeta(object):
     """
         @brief A class defining the metadata for shear estimates tables.
     """
@@ -42,7 +42,7 @@ class ksbMeasurementsTableMeta(object):
     def __init__(self):
 
         self.__version__ = "8.0"
-        self.table_format = "she.ksbSMeasurements"
+        self.table_format = "she.lensMcChains"
 
         # Table metadata labels
         self.fits_vers = "FITS_VER"
@@ -56,6 +56,7 @@ class ksbMeasurementsTableMeta(object):
         self.obs_id = 0
         self.date_obs = mv.obs_time_label
         self.tile_id = 0
+        self.lchain = 0
         
         self.validated = "VALID"
 
@@ -69,6 +70,7 @@ class ksbMeasurementsTableMeta(object):
                                      (self.obs_id,None),
                                      (self.date_obs, None),
                                      (self.tile_id, None),
+                                     (self.lchain,0),
                                      (self.validated,
                                       "0: Not tested; 1: Pass; -1: Fail")
                                      ))
@@ -77,16 +79,16 @@ class ksbMeasurementsTableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class ksbMeasurementsTableFormat(object):
+class lensMcChainsTableFormat(object):
     """
-        @brief A class defining the format for shear estimates tables. Only the ksb_measurements_table_format
+        @brief A class defining the format for shear estimates tables. Only the lens_mc_chains_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
     def __init__(self):
 
         # Get the metadata (contained within its own class)
-        self.meta = ksbMeasurementsTableMeta()
+        self.meta = lens_mcChainsTableMeta()
 
         # And a quick alias for it
         self.m = self.meta
@@ -123,59 +125,39 @@ class ksbMeasurementsTableFormat(object):
             "OBJECT_ID", dtype=">i8", fits_dtype="K")
 
         self.fit_flags = set_column_properties(
-            "SHE_KSB_FIT_FLAGS", dtype=">i8", fits_dtype="K")
+            "SHE_LENSMC_FIT_FLAGS", dtype=">i8", fits_dtype="K")
         self.val_flags = set_column_properties(
-            "SHE_KSB_VAL_FLAGS", dtype=">i8", fits_dtype="K")
+            "SHE_LENSMC_VAL_FLAGS", dtype=">i8", fits_dtype="K")
         self.fit_class = set_column_properties(
-            "SHE_KSB_FIT_CLASS", dtype=">i2", fits_dtype="I")
+            "SHE_LENSMC_FIT_CLASS", dtype=">i2", fits_dtype="I")
         
-        self.ksb_g1 = set_column_properties(
-            "SHE_KSB_G1", dtype=">f4", fits_dtype="E")
-        self.ksb_g1_err = set_column_properties(
-            "SHE_KSB_G1_ERR", dtype=">f4", fits_dtype="E")
-        self.ksb_g2 = set_column_properties(
-            "SHE_KSB_G2", dtype=">f4", fits_dtype="E")
-        self.ksb_g2_err = set_column_properties(
-            "SHE_KSB_G2_ERR", dtype=">f4", fits_dtype="E")
-        self.ksb_g1g2_cov = set_column_properties(
-            "SHE_KSB_G1G2_COVAR", dtype=">f4", fits_dtype="E")
-        self.ksb_wgt = set_column_properties(
-            "SHE_KSB_WEIGHT", dtype=">f4", fits_dtype="E")
-        self.ksb_g1_unc = set_column_properties(
-            "SHE_KSB_G1_UNCAL", dtype=">f4", fits_dtype="E")
-        self.ksb_g1_unc_err = set_column_properties(
-            "SHE_KSB_G1_UNCAL_ERR", dtype=">f4", fits_dtype="E")
-        self.ksb_g2_unc = set_column_properties(
-            "SHE_KSB_G2_UNCAL", dtype=">f4", fits_dtype="E")
-        self.ksb_g2_unc_err = set_column_properties(
-            "SHE_KSB_G2_UNCAL_ERR", dtype=">f4", fits_dtype="E")
-        self.ksb_g1g2_unc_cov = set_column_properties(
-            "SHE_KSB_G1G2_UNCAL_COVAR", dtype=">f4", fits_dtype="E")
-        self.ksb_wgt_unc = set_column_properties(
-            "SHE_KSB_WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
-    
+        self.lens_mc_g1_chn = set_column_properties(
+            "SHE_LENSMC_G1_CHAIN", dtype=">f4", fits_dtype="E", length=200)
+        self.lens_mc_g2_chn = set_column_properties(
+            "SHE_LENSMC_G2_CHAIN", dtype=">f4", fits_dtype="E", length=200)
+        
         self.updated_ra = set_column_properties(
-            "SHE_KSB_UPDATED_RA", is_optional=False, comment="deg")
-        self.updated_ra_err = set_column_properties(
-            "SHE_KSB_UPDATED_RA_ERR", is_optional=False, comment="deg")
+            "SHE_LENSMC_UPDATED_RA_CHAIN", is_optional=False, comment="deg", fits_dtype="D", length=200)
         self.updated_dec = set_column_properties(
-            "SHE_KSB_UPDATED_DEC", is_optional=True, comment="deg")
-        self.updated_dec_err = set_column_properties(
-            "SHE_KSB_UPDATED_DEC_ERR", is_optional=True, comment="deg")
-
-        # ksb specific columns
-        self.ksb_re = set_column_properties(
-            "SHE_KSB_RE", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.ksb_re_err = set_column_properties(
-            "SHE_KSB_RE_ERR", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.ksb_flux = set_column_properties(
-            "SHE_KSB_FLUX", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.ksb_flux_err = set_column_properties(
-            "SHE_KSB_FLUX_ERR", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.ksb_snr = set_column_properties(
-            "SHE_KSB_SNR", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.ksb_snr_err = set_column_properties(
-            "SHE_KSB_SNR_ERR", is_optional=True, dtype=">f4", fits_dtype="E")
+            "SHE_LENSMC_UPDATED_DEC_CHAIN", is_optional=True, comment="deg", fits_dtype="D", length=200)
+        
+        # lens_mc specific columns
+        self.lens_mc_re = set_column_properties(
+            "SHE_LENSMC_RE_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=200)
+        self.lens_mc_flux = set_column_properties(
+            "SHE_LENSMC_FLUX_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=200)
+        self.lens_mc_bulge_frac = set_column_properties(
+            "SHE_LENSMC_BULGE_FRAC_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=200)
+        self.lens_mc_snr = set_column_properties(
+            "SHE_LENSMC_SNR_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=200)
+        self.lens_mc_lr = set_column_properties(
+            "SHE_LENSMC_LR_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=200)
+        self.lens_mc_chi2 = set_column_properties(
+            "SHE_LENSMC_CHI2", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.lens_mc_dof = set_column_properties(
+            "SHE_LENSMC_DOF", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.lens_mc_acc = set_column_properties(
+            "SHE_LENSMC_ACCEPTANCE", is_optional=True, dtype=">f4", fits_dtype="E")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -188,13 +170,13 @@ class ksbMeasurementsTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-ksb_measurements_table_format = ksbmeasurementsTableFormat()
+lens_mc_chains_table_format = lens_mcchainsTableFormat()
 
 # And a convient alias for it
-tf = ksb_measurements_table_format
+tf = lens_mc_chains_table_format
 
 
-def make_ksb_measurements_table_header(detector_x=1,
+def make_lens_mc_chains_table_header(detector_x=1,
                                   detector_y=1,
                                   detector=None,
                                   fits_ver=None,
@@ -205,7 +187,8 @@ def make_ksb_measurements_table_header(detector_x=1,
                                   noise_seed=None,
                                   obs_id=None,
                                   date_obs=None,
-                                  tile_id=None,):
+                                  tile_id=None,
+                                  lchain=None):
     """
         @brief Generate a header for a shear estimates table.
 
@@ -241,13 +224,13 @@ def make_ksb_measurements_table_header(detector_x=1,
     header[tf.m.obs_id] = obs_id
     header[tf.m.date_obs] = date_obs
     header[tf.m.tile_id] = tile_id
-    
+    header[tf.m.lchain] = lchain
     header[tf.m.validated] = 0
 
     return header
 
 
-def initialise_ksb_measurements_table(detections_table=None,
+def initialise_lens_mc_chains_table(detections_table=None,
                                  optional_columns=None,
                                  detector_x=None,
                                  detector_y=None,
@@ -260,6 +243,7 @@ def initialise_ksb_measurements_table(detections_table=None,
                                  obs_id=None,
                                  date_obs=None,
                                  tile_id=None,
+                                 lchain=None,
                                  ):
     """
         @brief Initialise a shear estimates table based on a detections table, with the
@@ -276,7 +260,7 @@ def initialise_ksb_measurements_table(detections_table=None,
 
         @param detector <int?> Detector this table corresponds to
 
-        @return ksb_measurements_table <astropy.table.Table>
+        @return lens_mc_chains_table <astropy.table.Table>
     """
 
     if detector is not None:
@@ -302,7 +286,7 @@ def initialise_ksb_measurements_table(detections_table=None,
             init_cols.append([])
             dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
 
-    ksb_measurements_table = Table(init_cols, names=names, dtype=dtypes)
+    lens_mc_chains_table = Table(init_cols, names=names, dtype=dtypes)
 
     if detections_table is not None:
         if detector_x is None or detector_y is None:
@@ -320,7 +304,7 @@ def initialise_ksb_measurements_table(detections_table=None,
     if detector_y is None:
         detector_y = 1
 
-    ksb_measurements_table.meta = make_ksb_measurements_table_header(detector_x=detector_x,
+    lens_mc_chains_table.meta = make_lens_mc_chains_table_header(detector_x=detector_x,
                                                            detector_y=detector_y,
                                                            detector=detector,
                                                            fits_def=fits_def,
@@ -330,8 +314,9 @@ def initialise_ksb_measurements_table(detections_table=None,
                                                            noise_seed=noise_seed,
                                                            obs_id=obs_id,
                                                            date_obs=date_obs,
-                                                           tile_id=tile_id)
+                                                           tile_id=tile_id,
+                                                           lchain=lchain)
                      
-    assert(is_in_format(ksb_measurements_table, tf))
+    assert(is_in_format(lens_mc_chains_table, tf))
 
-    return ksb_measurements_table
+    return lens_mc_chains_table
