@@ -63,13 +63,13 @@
 			</Filter>
 		</SpectralCoverage>
 		<CatalogDescription>
-			<CatalogOrigin>SIMULATED_WIDE</CatalogOrigin>
+			<CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
 			<CatalogType>NOT_PROXY</CatalogType>
 			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-			<CatalogName>LensMC-Chains</CatalogName>
+			<CatalogName>She-Lensmc-Chains</CatalogName>
 			<CatalogFormatHDU>1</CatalogFormatHDU>
 		</CatalogDescription>
-		<ObservationId>5931744137632715191</ObservationId>
+		<ObservationId>-1</ObservationId>
 		<DataStorage format="she.lensMcChains" version="8.0">
 			<DataContainer filestatus="DELETED">
 				<FileName>None</FileName>

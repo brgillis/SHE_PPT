@@ -63,10 +63,10 @@
 			</Filter>
 		</SpectralCoverage>
 		<CatalogDescription>
-			<CatalogOrigin>MASTER_DEEP</CatalogOrigin>
+			<CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
 			<CatalogType>PROXY</CatalogType>
 			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-			<CatalogName>SHE-Star</CatalogName>
+			<CatalogName>She-Star</CatalogName>
 			<CatalogFormatHDU>1</CatalogFormatHDU>
 		</CatalogDescription>
 		<ObservationId>-1</ObservationId>

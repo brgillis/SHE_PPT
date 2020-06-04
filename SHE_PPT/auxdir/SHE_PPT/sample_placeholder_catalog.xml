@@ -66,12 +66,12 @@
 			<CatalogOrigin>RANDOM_WIDE</CatalogOrigin>
 			<CatalogType>PROXY</CatalogType>
 			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-			<CatalogName>Placeholder</CatalogName>
+			<CatalogName>She-Placeholder</CatalogName>
 			<CatalogFormatHDU>1</CatalogFormatHDU>
 		</CatalogDescription>
 		<IntData>0</IntData>
 		<FloatData>0.0</FloatData>
-		<StringData>iEXoQ</StringData>
+		<StringData></StringData>
 		<DataStorage>
 			<DataContainer filestatus="PROPOSED">
 				<FileName>None</FileName>

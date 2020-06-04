@@ -66,7 +66,7 @@
 			<CatalogOrigin>MASTER_DEEP</CatalogOrigin>
 			<CatalogType>PROXY</CatalogType>
 			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-			<CatalogName>REGAUSS-Training</CatalogName>
+			<CatalogName>She-Regauss-Training</CatalogName>
 			<CatalogFormatHDU>1</CatalogFormatHDU>
 		</CatalogDescription>
 		<ValidityRange>

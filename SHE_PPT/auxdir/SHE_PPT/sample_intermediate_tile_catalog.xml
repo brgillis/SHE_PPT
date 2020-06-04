@@ -66,13 +66,13 @@
 			<CatalogOrigin>OTHERS</CatalogOrigin>
 			<CatalogType>PROXY</CatalogType>
 			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-			<CatalogName>Intermediate</CatalogName>
+			<CatalogName>She-Intermediate</CatalogName>
 			<CatalogFormatHDU>1</CatalogFormatHDU>
 		</CatalogDescription>
-		<TileIndex>-4315753770454378652</TileIndex>
+		<TileIndex>-1</TileIndex>
 		<IntData>0</IntData>
 		<FloatData>0.0</FloatData>
-		<StringData>jNWOU</StringData>
+		<StringData></StringData>
 		<DataStorage>
 			<DataContainer filestatus="ARCHIVED_CERNVMFS">
 				<FileName>None</FileName>

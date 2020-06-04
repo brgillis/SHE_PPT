@@ -66,10 +66,10 @@
 			<CatalogOrigin>SIMULATED_WIDE</CatalogOrigin>
 			<CatalogType>NOT_PROXY</CatalogType>
 			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-			<CatalogName>Placeholder</CatalogName>
+			<CatalogName>She-Placeholder</CatalogName>
 			<CatalogFormatHDU>1</CatalogFormatHDU>
 		</CatalogDescription>
-		<TileIndex>-7482384647085553891</TileIndex>
+		<TileIndex>-1</TileIndex>
 		<IntData>0</IntData>
 		<FloatData>0.0</FloatData>
 		<StringData>zocGU</StringData>

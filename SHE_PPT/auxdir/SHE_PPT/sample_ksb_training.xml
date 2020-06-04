@@ -63,10 +63,10 @@
 			</Filter>
 		</SpectralCoverage>
 		<CatalogDescription>
-			<CatalogOrigin>SIMULATED_WIDE</CatalogOrigin>
+			<CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
 			<CatalogType>NOT_PROXY</CatalogType>
 			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-			<CatalogName>KSB-Training</CatalogName>
+			<CatalogName>She-Ksb-Training</CatalogName>
 			<CatalogFormatHDU>1</CatalogFormatHDU>
 		</CatalogDescription>
 		<ValidityRange>

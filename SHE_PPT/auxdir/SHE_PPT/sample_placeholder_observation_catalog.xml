@@ -66,13 +66,13 @@
 			<CatalogOrigin>RANDOM_WIDE</CatalogOrigin>
 			<CatalogType>NOT_PROXY</CatalogType>
 			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-			<CatalogName>Placeholder</CatalogName>
+			<CatalogName>She-Placeholder</CatalogName>
 			<CatalogFormatHDU>1</CatalogFormatHDU>
 		</CatalogDescription>
-		<ObservationId>5663637414169334581</ObservationId>
+		<ObservationId>-1</ObservationId>
 		<IntData>0</IntData>
 		<FloatData>0.0</FloatData>
-		<StringData>NBRUr</StringData>
+		<StringData></StringData>
 		<DataStorage>
 			<DataContainer filestatus="PROPOSED">
 				<FileName>None</FileName>
