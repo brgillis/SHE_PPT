@@ -1,0 +1,97 @@
+<?xml version="1.0" ?>
+<ns1:DpdSheStarCatalog xmlns:ns1="http://euclid.esa.org/schema/dpd/she/starcatalog">
+	<Header>
+		<ProductId>8c990381-66fe-4000-956d-1e8089aebe11</ProductId>
+		<ProductType>uOgTi</ProductType>
+		<SoftwareName>nqFgJ</SoftwareName>
+		<SoftwareRelease>Q76</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>l2mD</EuclidPipelineSoftwareRelease>
+		<ProdSDC>4Fm</ProdSDC>
+		<DataSetRelease>rOpbT</DataSetRelease>
+		<Purpose>UNKNOWN</Purpose>
+		<PlanId>YPrVr</PlanId>
+		<PPOId>bF5pA</PPOId>
+		<PipelineDefinitionId>1tGoK</PipelineDefinitionId>
+		<PipelineRun>iE9oZ</PipelineRun>
+		<ExitStatusCode>RPPli</ExitStatusCode>
+		<ManualValidationStatus>VALID</ManualValidationStatus>
+		<ExpirationDate>2020-06-04T14:55:48.831Z</ExpirationDate>
+		<ToBePublished>true</ToBePublished>
+		<Published>false</Published>
+		<Curator>SHE</Curator>
+		<CreationDate>2020-06-04T14:55:48.835Z</CreationDate>
+	</Header>
+	<Data>
+		<SpatialCoverage>
+			<Polygon>
+				<Vertex>
+					<Position coordUnit="J/K">
+						<C1 unit="yr">0.0</C1>
+						<C2 unit="Hz">0.0</C2>
+					</Position>
+					<SmallCircle>
+						<Pole coordUnit="s">
+							<C1 unit="ct">1.0</C1>
+							<C2 unit="Myr">1.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</Polygon>
+			<Circle>
+				<Center coordUnit="C">
+					<C1 unit="MeV">0.0</C1>
+					<C2 unit="mol">0.0</C2>
+				</Center>
+				<Radius unit="W/m2">1.0</Radius>
+			</Circle>
+			<BBox>
+				<RaCenter unit="min">1.0</RaCenter>
+				<DecCenter unit="c/y">1.0</DecCenter>
+				<RaHalfWidth unit="km/s/Mpc">0.0</RaHalfWidth>
+				<DecHalfWidth unit="m/s">0.0</DecHalfWidth>
+			</BBox>
+		</SpatialCoverage>
+		<SpectralCoverage>
+			<Filter>
+				<Name>BLANCO</Name>
+				<MagId>H</MagId>
+				<CentralWavelength>2.0</CentralWavelength>
+				<MinWavelength>-5.0</MinWavelength>
+				<MaxWavelength>1.0</MaxWavelength>
+				<Reference>ov0Fz</Reference>
+				<HasFringes>1234444020</HasFringes>
+			</Filter>
+		</SpectralCoverage>
+		<CatalogDescription>
+			<CatalogOrigin>MASTER_DEEP</CatalogOrigin>
+			<CatalogType>PROXY</CatalogType>
+			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
+			<CatalogName>SHE-Star</CatalogName>
+			<CatalogFormatHDU>1</CatalogFormatHDU>
+		</CatalogDescription>
+		<ObservationId>-1</ObservationId>
+		<DataStorage format="she.starCatalog" version="8.0">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+		<ExposureProductId>-1</ExposureProductId>
+		<ObservationDateTime>
+			<OBT>2020-06-04T14:55:48.858Z</OBT>
+			<UTC>2020-06-04T14:55:48.858Z</UTC>
+			<MJD>-1.0</MJD>
+		</ObservationDateTime>
+	</Data>
+	<QualityFlags>
+		<DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true</DummyFlag>
+		<AuxiliaryFlags flagName="v3BJv" flagged="true" maxLimit="-3.0" minLimit="-6.0" xpath="X4Taz">false</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>sDKfd</Key>
+			<Description>EV2D7</Description>
+			<StringValue>Av4KG</StringValue>
+			<Unit>AzEye</Unit>
+		</Parameter>
+	</Parameters>
+</ns1:DpdSheStarCatalog>
