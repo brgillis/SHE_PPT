@@ -63,41 +63,41 @@
 			</Filter>
 		</SpectralCoverage>
 		<CatalogDescription>
-			<CatalogOrigin>UNKNOWN</CatalogOrigin>
+			<CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
 			<CatalogType>NOT_PROXY</CatalogType>
 			<PathToCatalogFile>Data.DataStorage.BfdMoments.FileName</PathToCatalogFile>
-			<CatalogName>BFD-Moments</CatalogName>
+			<CatalogName>She-Rec-Bfd-Moments</CatalogName>
 			<CatalogFormatHDU>1</CatalogFormatHDU>
 		</CatalogDescription>
 		<CatalogDescription>
-			<CatalogOrigin>MASTER_WIDE</CatalogOrigin>
+			<CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
 			<CatalogType>NOT_PROXY</CatalogType>
 			<PathToCatalogFile>Data.DataStorage.KsbShearMeasurements.FileName</PathToCatalogFile>
-			<CatalogName>Sim-Galaxy-Catalog</CatalogName>
-			<CatalogFormatHDU>-457683083</CatalogFormatHDU>
+			<CatalogName>She-Rec-Ksb-Shear</CatalogName>
+			<CatalogFormatHDU>1</CatalogFormatHDU>
 		</CatalogDescription>
 		<CatalogDescription>
-			<CatalogOrigin>OTHERS</CatalogOrigin>
+			<CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
 			<CatalogType>PROXY</CatalogType>
 			<PathToCatalogFile>Data.DataStorage.LensMcShearMeasurements.FileName</PathToCatalogFile>
-			<CatalogName>Spe-Spectro-Line-Catalog</CatalogName>
-			<CatalogFormatHDU>1160240879</CatalogFormatHDU>
+			<CatalogName>She-Rec-Lensmc-Shear</CatalogName>
+			<CatalogFormatHDU>1</CatalogFormatHDU>
 		</CatalogDescription>
 		<CatalogDescription>
 			<CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
 			<CatalogType>PROXY</CatalogType>
 			<PathToCatalogFile>Data.DataStorage.MomentsMlShearMeasurements.FileName</PathToCatalogFile>
-			<CatalogName>Spe-Spectro-Classification-Catalog</CatalogName>
-			<CatalogFormatHDU>-43149104</CatalogFormatHDU>
+			<CatalogName>She-Rec-Momentsml-Shear</CatalogName>
+			<CatalogFormatHDU>1</CatalogFormatHDU>
 		</CatalogDescription>
 		<CatalogDescription>
-			<CatalogOrigin>EXTERNAL</CatalogOrigin>
+			<CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
 			<CatalogType>PROXY</CatalogType>
 			<PathToCatalogFile>Data.DataStorage.RegaussShearMeasurements.FileName</PathToCatalogFile>
-			<CatalogName>KSB-Training</CatalogName>
-			<CatalogFormatHDU>1105051999</CatalogFormatHDU>
+			<CatalogName>She-Rec-Regauss-Shear</CatalogName>
+			<CatalogFormatHDU>1</CatalogFormatHDU>
 		</CatalogDescription>
-		<TileIndex>-1907734670845598757</TileIndex>
+		<TileIndex>-1</TileIndex>
 		<BfdMoments>
 			<DataStorage format="she.bfdMoments" version="8.0">
 				<DataContainer filestatus="ARCHIVED_CERNVMFS">
@@ -138,7 +138,7 @@
 			</DataStorage>
 			<Valid>VALID</Valid>
 		</RegaussShearMeasurements>
-		<ObservationIdList>1</ObservationIdList>
+		<ObservationIdList>-1</ObservationIdList>
 	</Data>
 	<QualityFlags>
 		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true</DummyFlag>

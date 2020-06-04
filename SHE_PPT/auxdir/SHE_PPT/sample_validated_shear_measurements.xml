@@ -63,38 +63,38 @@
 			</Filter>
 		</SpectralCoverage>
 		<CatalogDescription>
-			<CatalogOrigin>RANDOM_WIDE</CatalogOrigin>
+			<CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
 			<CatalogType>PROXY</CatalogType>
 			<PathToCatalogFile>Data.DataStorage.BfdMoments.FileName</PathToCatalogFile>
-			<CatalogName>Val-BFD-Moments</CatalogName>
+			<CatalogName>She-Val-Bfd-Moments</CatalogName>
 			<CatalogFormatHDU>1</CatalogFormatHDU>
 		</CatalogDescription>
 		<CatalogDescription>
-			<CatalogOrigin>SIMULATED_WIDE</CatalogOrigin>
+			<CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
 			<CatalogType>PROXY</CatalogType>
 			<PathToCatalogFile>Data.DataStorage.KsbShear.FileName</PathToCatalogFile>
-			<CatalogName>Val-KSB-Shear</CatalogName>
+			<CatalogName>She-Val-Ksb-Shear</CatalogName>
 			<CatalogFormatHDU>1</CatalogFormatHDU>
 		</CatalogDescription>
 		<CatalogDescription>
-			<CatalogOrigin>OTHERS</CatalogOrigin>
+			<CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
 			<CatalogType>NOT_PROXY</CatalogType>
 			<PathToCatalogFile>Data.DataStorage.LensMcShear.FileName</PathToCatalogFile>
-			<CatalogName>Val-LensMC-Shear</CatalogName>
+			<CatalogName>She-Val-Lensmc-Shear</CatalogName>
 			<CatalogFormatHDU>1</CatalogFormatHDU>
 		</CatalogDescription>
 		<CatalogDescription>
-			<CatalogOrigin>RANDOM_DEEP</CatalogOrigin>
+			<CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
 			<CatalogType>PROXY</CatalogType>
 			<PathToCatalogFile>Data.DataStorage.MomentsMlShear.FileName</PathToCatalogFile>
-			<CatalogName>Val-MomentsML-Shear</CatalogName>
+			<CatalogName>She-Val-Momentsml-Shear</CatalogName>
 			<CatalogFormatHDU>1</CatalogFormatHDU>
 		</CatalogDescription>
 		<CatalogDescription>
-			<CatalogOrigin>SIMULATED_WIDE</CatalogOrigin>
+			<CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
 			<CatalogType>PROXY</CatalogType>
 			<PathToCatalogFile>Data.DataStorage.RegaussShear.FileName</PathToCatalogFile>
-			<CatalogName>Val-REGAUSS-Shear</CatalogName>
+			<CatalogName>She-Val-Regauss-Shear</CatalogName>
 			<CatalogFormatHDU>1</CatalogFormatHDU>
 		</CatalogDescription>
 		<ObservationId>1</ObservationId>
