@@ -77,7 +77,7 @@ def __set_BFD_filename(self, filename):
     else:
         if not hasattr(self.Data, "BfdMoments") or self.Data.BfdMoments is None:
             self.Data.BfdMoments = create_bfd_moments(filename)
-        set_data_filename_of_product(self, filename, "BfdMoments")
+        set_data_filename_of_product(self, filename, "BfdMoments.DataStorage")
     return
 
 
@@ -85,7 +85,7 @@ def __get_BFD_filename(self):
     if not hasattr(self.Data, "BfdMoments") or self.Data.BfdMoments is None:
         return None
     else:
-        return get_data_filename_from_product(self, "BfdMoments")
+        return get_data_filename_from_product(self, "BfdMoments.DataStorage")
 
 
 def __set_KSB_filename(self, filename):
@@ -95,7 +95,7 @@ def __set_KSB_filename(self, filename):
     else:
         if not hasattr(self.Data, "KsbShearEstimates") or self.Data.KsbShearEstimates is None:
             self.Data.KsbShearEstimates = create_ksb_estimates(filename)
-        set_data_filename_of_product(self, filename, "KsbShearEstimates")
+        set_data_filename_of_product(self, filename, "KsbShearEstimates.DataStorage")
     return
 
 
@@ -103,7 +103,7 @@ def __get_KSB_filename(self):
     if not hasattr(self.Data, "KsbShearEstimates") or self.Data.KsbShearEstimates is None:
         return None
     else:
-        return get_data_filename_from_product(self, "KsbShearEstimates")
+        return get_data_filename_from_product(self, "KsbShearEstimates.DataStorage")
 
 
 def __set_LensMC_filename(self, filename):
@@ -113,7 +113,7 @@ def __set_LensMC_filename(self, filename):
     else:
         if not hasattr(self.Data, "LensMcShearEstimates") or self.Data.LensMcShearEstimates is None:
             self.Data.LensMcShearEstimates = create_lensmc_estimates(filename)
-        set_data_filename_of_product(self, filename, "LensMcShearEstimates")
+        set_data_filename_of_product(self, filename, "LensMcShearEstimates.DataStorage")
     return
 
 
@@ -121,7 +121,7 @@ def __get_LensMC_filename(self):
     if not hasattr(self.Data, "LensMcShearEstimates") or self.Data.LensMcShearEstimates is None:
         return None
     else:
-        return get_data_filename_from_product(self, "LensMcShearEstimates")
+        return get_data_filename_from_product(self, "LensMcShearEstimates.DataStorage")
 
 
 def __set_MomentsML_filename(self, filename):
@@ -131,7 +131,7 @@ def __set_MomentsML_filename(self, filename):
     else:
         if not hasattr(self.Data, "MomentsMlShearEstimates") or self.Data.MomentsMlShearEstimates is None:
             self.Data.MomentsMlShearEstimates = create_momentsml_estimates(filename)
-        set_data_filename_of_product(self, filename, "MomentsMlShearEstimates")
+        set_data_filename_of_product(self, filename, "MomentsMlShearEstimates.DataStorage")
     return
 
 
@@ -139,7 +139,7 @@ def __get_MomentsML_filename(self):
     if not hasattr(self.Data, "MomentsMlShearEstimates") or self.Data.MomentsMlShearEstimates is None:
         return None
     else:
-        return get_data_filename_from_product(self, "MomentsMlShearEstimates")
+        return get_data_filename_from_product(self, "MomentsMlShearEstimates.DataStorage")
 
 
 def __set_REGAUSS_filename(self, filename):
@@ -149,7 +149,7 @@ def __set_REGAUSS_filename(self, filename):
     else:
         if not hasattr(self.Data, "RegaussShearEstimates") or self.Data.RegaussShearEstimates is None:
             self.Data.RegaussShearEstimates = create_regauss_estimates(filename)
-        set_data_filename_of_product(self, filename, "RegaussShearEstimates")
+        set_data_filename_of_product(self, filename, "RegaussShearEstimates.DataStorage")
     return
 
 
@@ -157,7 +157,7 @@ def __get_REGAUSS_filename(self):
     if not hasattr(self.Data, "RegaussShearEstimates") or self.Data.RegaussShearEstimates is None:
         return None
     else:
-        return get_data_filename_from_product(self, "RegaussShearEstimates")
+        return get_data_filename_from_product(self, "RegaussShearEstimates.DataStorage")
 
 
 def __get_all_filenames(self):
@@ -273,14 +273,17 @@ def create_bfd_moments(filename):
         @TODO fill in docstring
     """
 
-    BFD_shear_estimates = she_pro.bfdMoments()
+    BFD_shear_estimates = she_pro.sheBfdMoments()
 
     BFD_shear_estimates.format = "she.bfdMoments"
     BFD_shear_estimates.version = "0.1"
+    
+    BFD_shear_estimates.DataStorage = she_pro.sheBfdMomentsFile()
+    BFD_shear_estimates.Valid = "UNKNOWN"
 
-    BFD_shear_estimates.DataContainer = dataContainer()
-    BFD_shear_estimates.DataContainer.FileName = filename
-    BFD_shear_estimates.DataContainer.filestatus = "PROPOSED"
+    BFD_shear_estimates.DataStorage.DataContainer = dataContainer()
+    BFD_shear_estimates.DataStorage.DataContainer.FileName = filename
+    BFD_shear_estimates.DataStorage.DataContainer.filestatus = "PROPOSED"
 
     return BFD_shear_estimates
 
