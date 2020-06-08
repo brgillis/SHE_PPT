@@ -1,8 +1,8 @@
-""" @file ksb_training.py
+""" @file regauss_training.py
 
     Created 23 July 2018
 
-    Format definition for a table containing KSB training data.
+    Format definition for a table containing REGAUSS training data.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -52,7 +52,7 @@ class KsbTrainingTableMeta(object):
 
 class KsbTrainingTableFormat(object):
     """
-        @brief A class defining the format for galaxy population priors tables. Only the ksb_training_table_format
+        @brief A class defining the format for galaxy population priors tables. Only the regauss_training_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
@@ -94,13 +94,13 @@ class KsbTrainingTableFormat(object):
 
         self.id = set_column_properties("OBJECT_ID", dtype=">i8", fits_dtype="K",
                                         comment="ID of this object in the galaxy population priors table.")
-        self.e1 = set_column_properties("SHE_KSB_TRAINING_E1", dtype=">f4", fits_dtype="E",
+        self.e1 = set_column_properties("SHE_REGAUSS_E1", dtype=">f4", fits_dtype="E",
                                         comment="Mean ellipticity measurement of this object, component 1")
-        self.e2 = set_column_properties("SHE_KSB_TRAINING_E2", dtype=">f4", fits_dtype="E",
+        self.e2 = set_column_properties("SHE_REGAUSS_E2", dtype=">f4", fits_dtype="E",
                                         comment="Mean ellipticity measurement of this object, component 2")
-        self.e1_err = set_column_properties("SHE_KSB_TRAINING_E1_ERR", dtype=">f4", fits_dtype="E",
+        self.e1_err = set_column_properties("SHE_REGAUSS_E1_ERR", dtype=">f4", fits_dtype="E",
                                         comment="Error on mean ellipticity measurement of this object, component 1")
-        self.e2_err = set_column_properties("SHE_KSB_TRAINING_E2_ERR", dtype=">f4", fits_dtype="E",
+        self.e2_err = set_column_properties("SHE_REGAUSS_E2_ERR", dtype=">f4", fits_dtype="E",
                                         comment="Error on mean ellipticity measurement of this object, component 2")
 
         # A list of columns in the desired order
@@ -114,13 +114,13 @@ class KsbTrainingTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-ksb_training_table_format = KsbTrainingTableFormat()
+regauss_training_table_format = KsbTrainingTableFormat()
 
 # And a convient alias for it
-tf = ksb_training_table_format
+tf = regauss_training_table_format
 
 
-def make_ksb_training_table_header():
+def make_regauss_training_table_header():
     """
         @brief Generate a header for a galaxy population table.
 
@@ -135,11 +135,11 @@ def make_ksb_training_table_header():
     return header
 
 
-def initialise_ksb_training_table(optional_columns=None):
+def initialise_regauss_training_table(optional_columns=None):
     """
         @brief Initialise a galaxy population table.
 
-        @return ksb_training_table <astropy.Table>
+        @return regauss_training_table <astropy.Table>
     """
 
     if optional_columns is None:
@@ -159,10 +159,10 @@ def initialise_ksb_training_table(optional_columns=None):
             init_cols.append([])
             dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
 
-    ksb_training_table = Table(init_cols, names=names, dtype=dtypes)
+    regauss_training_table = Table(init_cols, names=names, dtype=dtypes)
 
-    ksb_training_table.meta = make_ksb_training_table_header()
+    regauss_training_table.meta = make_regauss_training_table_header()
 
-    assert(is_in_format(ksb_training_table, tf))
+    assert(is_in_format(regauss_training_table, tf))
 
-    return ksb_training_table
+    return regauss_training_table
