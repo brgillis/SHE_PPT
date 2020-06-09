@@ -24,13 +24,11 @@
 
 __updated__ = "2019-08-15"
 
-
 import pickle
 
 from ST_DataModelBindings.dpd.she.ksbtraining_stub  import dpdSheKsbTraining
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
-
 
 sample_file_name = "SHE_PPT/sample_ksb_training.xml"
 
@@ -70,7 +68,6 @@ def __get_all_filenames(self):
 
     return all_filenames
 
-
 # class DpdSheKSBTrainingDataProduct:  # @FIXME
 
 #    def __init__(self):
@@ -80,14 +77,12 @@ def __get_all_filenames(self):
 #    def validateBinding(self):
 #        return False
 
-
 # class SheKSBTrainingDataProduct:  # @FIXME
 
 #    def __init__(self):
 #        self.format = None
 #        self.version = None
 #        self.DataContainer = None
-
 
 # class DataContainer:  # @FIXME
 
@@ -115,9 +110,9 @@ def create_dpd_she_ksb_training_data(filename=None):
 
     # dpd_she_ksb_training_data.Header =
     # HeaderProvider.create_generic_header("SHE") # FIXME
-    #dpd_she_ksb_training_data.Header = "SHE"
+    # dpd_she_ksb_training_data.Header = "SHE"
 
-    #dpd_she_ksb_training_data.Data = create_she_ksb_training_data(filename)
+    # dpd_she_ksb_training_data.Data = create_she_ksb_training_data(filename)
 
     return dpd_she_ksb_training_data
 

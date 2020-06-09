@@ -24,7 +24,6 @@
 
 __updated__ = "2019-03-14"
 
-
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
 

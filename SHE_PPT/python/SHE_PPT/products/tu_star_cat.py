@@ -27,6 +27,7 @@ from ST_DataModelBindings.dpd.sim.raw.starscatalogproduct_stub import dpdStarsCa
 
 from SHE_PPT.file_io import filename_include_data_subdir, data_subdir, len_data_subdir
 
+
 def init():
     """
         Adds some extra functionality to the dpdStarsCatalogProduct class
@@ -49,21 +50,21 @@ def __get_data_filenames(self):
     data_filenames = []
 
     for star_catalog in self.Data.SetOfStarCatalogs:
-        
+
         data_filename = star_catalog.StarCatalogFitsFile.DataContainer.FileName
-    
+
         if filename_include_data_subdir:
-            
+
             # Silently force the filename returned to start with "data/" regardless of whether the returned value does
-            if data_filename[0:len_data_subdir]!=data_subdir:
+            if data_filename[0:len_data_subdir] != data_subdir:
                 data_filename = data_subdir + data_filename
-            
+
         else:
-            
+
             # Silently force the filename returned to NOT start with "data/" regardless of whether the returned value does
-            if data_filename[0:len_data_subdir]==data_subdir:
-                data_filename = data_filename.replace(data_subdir,"",1)
-                
+            if data_filename[0:len_data_subdir] == data_subdir:
+                data_filename = data_filename.replace(data_subdir, "", 1)
+
         data_filenames.append(data_filename)
 
     return data_filenames

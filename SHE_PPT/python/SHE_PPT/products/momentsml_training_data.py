@@ -24,17 +24,14 @@
 
 __updated__ = "2019-08-15"
 
-
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
-
 
 import pickle
 
 from ST_DataModelBindings.dpd.she.momentsmltraining_stub import dpdSheMomentsMlTraining
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
-
 
 sample_file_name = "SHE_PPT/sample_momentsml_training.xml"
 

@@ -29,7 +29,6 @@ from ST_DM_HeaderProvider import GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.bas.imp.raw.stc_stub import polygonType
 from ST_DataModelBindings.dpd.she.raw.validatedmeasurements_stub import dpdSheValidatedMeasurements
 
-
 sample_file_name = "SHE_PPT/sample_validated_shear_measurements.xml"
 
 

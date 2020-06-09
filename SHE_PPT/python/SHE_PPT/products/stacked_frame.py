@@ -29,7 +29,6 @@ from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_f
 from SHE_PPT.products.calibrated_frame import (create_vis_psf_storage,
                                                create_vis_bkg_storage, create_vis_wgt_storage)
 
-
 sample_file_name = "SHE_PPT/sample_stacked_frame.xml"
 
 

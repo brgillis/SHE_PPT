@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-01-28"
+__updated__ = "2020-06-09"
 
 from SHE_PPT.file_io import (read_xml_product, find_aux_file, get_data_filename_from_product,
                              set_data_filename_of_product)
@@ -30,7 +30,6 @@ from ST_DataModelBindings.bas.imp.raw.stc_stub import polygonType
 from ST_DataModelBindings.dpd.she.measurements_stub import dpdSheMeasurements
 from ST_DataModelBindings.pro import she_stub as she_pro
 from ST_DataModelBindings.sys.dss_stub import dataContainer
-
 
 sample_file_name = "SHE_PPT/sample_shear_measurements.xml"
 
@@ -277,7 +276,7 @@ def create_bfd_moments(filename):
 
     BFD_shear_estimates.format = "she.bfdMoments"
     BFD_shear_estimates.version = "0.1"
-    
+
     BFD_shear_estimates.DataStorage = she_pro.sheBfdMomentsFile()
     BFD_shear_estimates.Valid = "UNKNOWN"
 

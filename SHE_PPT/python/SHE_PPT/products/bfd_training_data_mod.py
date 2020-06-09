@@ -24,7 +24,6 @@
 
 __updated__ = "2019-08-15"
 
-
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
 
@@ -86,14 +85,14 @@ class DpdSheBFDTrainingDataProduct(dpdSheBfdTraining):  # @FIXME
         if not os.path.exists(testXmlFile):
             self.Header = None
             self.Data = None
-            #self.QualityFlags = None
-            #self.Parameters = None
+            # self.QualityFlags = None
+            # self.Parameters = None
         else:
             prod = read_xml_product(testXmlFile, allow_pickled=False)
             self.Header = prod.Header
             self.Data = prod.Data
-            #self.QualityFlags = prod.QualityFlags
-            #self.Parameters = prod.Parameters
+            # self.QualityFlags = prod.QualityFlags
+            # self.Parameters = prod.Parameters
 
     def validateBinding(self):
         return False
@@ -143,9 +142,9 @@ def create_dpd_she_bfd_training_data(filename=None):
         # @FIXME: Needs serious updating.
         dpd_she_bfd_training_data.Data = create_she_bfd_training_data(filename)
 
-    #dpd_she_bfd_training_data.QualityFlags = create_she_bfd_training_qf()
+    # dpd_she_bfd_training_data.QualityFlags = create_she_bfd_training_qf()
 
-    #dpd_she_bfd_training_data.Parameters = create_she_bfd_training_param()
+    # dpd_she_bfd_training_data.Parameters = create_she_bfd_training_param()
 
     return dpd_she_bfd_training_data
 
@@ -193,10 +192,10 @@ def create_catalog_coverage():
     cover.SpatialCoverage = cot_dict.spatialFootprint()
     cover.SpatialCoverage.Polygon = stc_dict.polygonType()
     # Define multiple vertices - check code for vertexType() -- gitlab
-    #cover.SpatialCoverage.Polygon.Vertex = stc_dict.vertexType()
-    #cover.SpatialCoverage.Polygon.Vertex.Position = dtd_dict.double2Type()
-    #cover.SpatialCoverage.Polygon.Vertex.Position.C1 = "0."
-    #cover.SpatialCoverage.Polygon.Vertex.Position.C2 = "0."
+    # cover.SpatialCoverage.Polygon.Vertex = stc_dict.vertexType()
+    # cover.SpatialCoverage.Polygon.Vertex.Position = dtd_dict.double2Type()
+    # cover.SpatialCoverage.Polygon.Vertex.Position.C1 = "0."
+    # cover.SpatialCoverage.Polygon.Vertex.Position.C2 = "0."
 
     return cover
 
@@ -209,14 +208,14 @@ def create_catalog_storage():
     """
     storage = cat_dict.catalogStorage()
     storage.CatalogFileStorage = cat_dict.catalogFileStorage()
-    #storage.CatalogFileStorage.Id = "CFSId"
-    #storage.CatalogFileStorage.FileFormat = "ASCII"
-    #storage.CatalogFileStorage.FileNumber = "1"
-    #storage.CatalogFileStorage.StorageSpace = cat_dict.catalogPartitionStorage()
-    #storage.CatalogFileStorage.StorageSpace.Id = "CFS_SSId"
-    #storage.CatalogFileStorage.StorageSpace.DataContainer = DataContainer()
-    #storage.CatalogFileStorage.StorageSpace.DataContainer.FileName = "tmp.ascii"
-    #storage.CatalogFileStorage.StorageSpace.DataContainer.filestatus = "PROPOSED"
+    # storage.CatalogFileStorage.Id = "CFSId"
+    # storage.CatalogFileStorage.FileFormat = "ASCII"
+    # storage.CatalogFileStorage.FileNumber = "1"
+    # storage.CatalogFileStorage.StorageSpace = cat_dict.catalogPartitionStorage()
+    # storage.CatalogFileStorage.StorageSpace.Id = "CFS_SSId"
+    # storage.CatalogFileStorage.StorageSpace.DataContainer = DataContainer()
+    # storage.CatalogFileStorage.StorageSpace.DataContainer.FileName = "tmp.ascii"
+    # storage.CatalogFileStorage.StorageSpace.DataContainer.filestatus = "PROPOSED"
 
     return storage
 
