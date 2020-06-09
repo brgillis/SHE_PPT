@@ -23,7 +23,7 @@ __updated__ = "2019-02-27"
 import os
 import pytest
 
-from SHE_PPT.utility import hash_any, get_arguments_string
+from SHE_PPT.utility import get_nested_attr, set_nested_attr, hash_any, get_arguments_string
 from astropy.table import Table
 import numpy as np
 
@@ -41,6 +41,40 @@ class TestUtility:
     @classmethod
     def teardown_class(cls):
         pass
+    
+    def test_get_set_nested_attr(self):
+            
+        class DoubleNestedClass(object):
+            def __init__(self):
+                self.subsubval = "foo"
+        
+        class NestedClass(object):
+            def __init__(self):
+                self.subobj = DoubleNestedClass() 
+                self.subval = "bar"
+                
+        class ContainingClass(object):
+            def __init__(self):
+                self.obj = NestedClass()
+                self.val = "me"
+                
+        c = ContainingClass()
+        
+        # Check basic get_nested_attr functionality
+        assert get_nested_attr(c,"val")=="me"
+        assert get_nested_attr(c,"obj.subval")=="bar"
+        assert get_nested_attr(c,"obj.subobj.subsubval")=="foo"
+        
+        # Check set_nested_attr functionality
+        set_nested_attr(c,"val",15)
+        set_nested_attr(c,"obj.subval","Fif.teen")
+        set_nested_attr(c,"obj.subobj.subsubval",(5,"t.e.e.n"))
+        
+        assert get_nested_attr(c,"val")==15
+        assert get_nested_attr(c,"obj.subval")=="Fif.teen"
+        assert get_nested_attr(c,"obj.subobj.subsubval")==(5,"t.e.e.n")
+        
+        return
 
     def test_hash_any(self):
 
