@@ -557,7 +557,7 @@ class Test_she_image():
                 world2pix_transformation = self.img.get_world2pix_transformation(
                     ra, dec, spatial_ra=spatial_ra, origin=1)
 
-                double_transformation = pix2world_transformation * world2pix_transformation
+                double_transformation = pix2world_transformation @ world2pix_transformation
 
                 assert np.allclose(double_transformation, np.array([[1., 0.], [0., 1.]]),
                                    rtol=1e-2, atol=1e-3)
@@ -568,7 +568,7 @@ class Test_she_image():
                 normed_world2pix_transformation = self.img.get_world2pix_transformation(
                     ra, dec, spatial_ra=spatial_ra, origin=1, norm=True)
 
-                normed_double_transformation = pix2world_transformation * world2pix_transformation
+                normed_double_transformation = pix2world_transformation @ world2pix_transformation
 
                 assert np.allclose(normed_double_transformation, np.array([[1., 0.], [0., 1.]]),
                                    rtol=1e-2, atol=1e-3)
@@ -585,7 +585,7 @@ class Test_she_image():
                 dx = 2.0
                 dy = 0.5
 
-                new_radec = np.array([[ra], [dec]]) + pix2world_transformation * np.array([[dx], [dy]])
+                new_radec = np.array([[ra], [dec]]) + pix2world_transformation @ np.array([[dx], [dy]])
                 new_ra = new_radec[0, 0]
                 new_dec = new_radec[1, 0]
 
@@ -595,7 +595,7 @@ class Test_she_image():
                 dra = 2.0 / 3600
                 ddec = 0.5 / 3600
 
-                new_xy = np.array([[x], [y]]) + world2pix_transformation * np.array([[dra], [ddec]])
+                new_xy = np.array([[x], [y]]) + world2pix_transformation @ np.array([[dra], [ddec]])
                 new_x = new_xy[0, 0]
                 new_y = new_xy[1, 0]
 
