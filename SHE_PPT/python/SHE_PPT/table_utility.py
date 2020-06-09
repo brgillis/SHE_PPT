@@ -19,15 +19,15 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-09"
+
+from astropy.io.fits import table_to_hdu as astropy_table_to_hdu
+from astropy.table import Column
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.utility import run_only_once
-from astropy.table import Column
-from astropy.io.fits import table_to_hdu as astropy_table_to_hdu
 import numpy as np
-
 
 logger = getLogger(mv.logger_name)
 
@@ -68,7 +68,7 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
 
         col_dtype = table.dtype[colname].newbyteorder('>')
         try:
-            ex_dtype = np.dtype((table_format.dtypes[colname], table_format.lengths[colname])).newbyteorder('>')
+            ex_dtype = np.dtype((table_format.dtypes[colname], (table_format.lengths[colname],))).newbyteorder('>')
         except Exception:
             pass
 
@@ -110,7 +110,7 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
                     if verbose:
                         logger.info("Table not in correct format due to wrong type for column '" + colname + "'\n" +
                                     "Expected: " + str(np.dtype((table_format.dtypes[colname],
-                                                                 table_format.lengths[colname])).newbyteorder('>')) + "\n" +
+                                                                 (table_format.lengths[colname],))).newbyteorder('>')) + "\n" +
                                     "Got: " + str(table.dtype[colname].newbyteorder('>')))
                     return False
             # Is it an issue with int or float size?
@@ -121,7 +121,7 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
                 if verbose:
                     logger.info("Table not in correct format due to wrong type for column '" + colname + "'\n" +
                                 "Expected: " + str(np.dtype((table_format.dtypes[colname],
-                                                             table_format.lengths[colname])).newbyteorder('>')) + "\n" +
+                                                             (table_format.lengths[colname],))).newbyteorder('>')) + "\n" +
                                 "Got: " + str(table.dtype[colname].newbyteorder('>')))
                 return False
 
@@ -185,9 +185,11 @@ def output_tables(otable, file_name_base, output_format):
 
     return
 
+
 @run_only_once
 def warn_deprecated_table_to_hdu():
     logger.warning("SHE_PPT.table_to_hdu is now deprecated. Please use astropy.io.fits.table_to_hdu instead")
+
 
 def table_to_hdu(table):
     """

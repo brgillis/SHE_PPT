@@ -18,9 +18,11 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-09"
 
 import os
+
+from astropy.table import Column, Table
 import pytest
 
 from SHE_PPT import magic_values as mv
@@ -36,7 +38,6 @@ from SHE_PPT.table_formats.psf_zm_state import tf as zmtf, initialise_psf_zm_sta
 from SHE_PPT.table_formats.shear_estimates import tf as setf, initialise_shear_estimates_table, len_chain, num_chains
 from SHE_PPT.table_formats.simulation_plan import tf as sptf, initialise_simulation_plan_table
 from SHE_PPT.table_utility import is_in_format, add_row
-from astropy.table import Column, Table
 import numpy as np
 
 
@@ -133,8 +134,6 @@ class TestTableFormats:
         model_seed = 4422
         noise_seed = 11015
 
-        extname_head = "CCDID 3-2."
-
         # Test initialization methods
 
         detections_table = initialise_detections_table(model_hash=model_hash,
@@ -145,9 +144,9 @@ class TestTableFormats:
         assert(detections_table.meta[detf.m.model_seed] == model_seed)
         assert(detections_table.meta[detf.m.noise_seed] == noise_seed)
 
-        details_table = initialise_details_table(model_hash=model_hash,
-                                                 model_seed=model_seed,
-                                                 noise_seed=noise_seed)
+        _details_table = initialise_details_table(model_hash=model_hash,
+                                                  model_seed=model_seed,
+                                                  noise_seed=noise_seed)
 
         psf_table = initialise_psf_table()
 

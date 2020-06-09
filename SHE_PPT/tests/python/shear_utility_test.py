@@ -18,11 +18,11 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-06-25"
+__updated__ = "2020-06-09"
 
-import pytest
-
+from astropy.io import fits
 import galsim
+import pytest
 
 from SHE_PPT import flags
 from SHE_PPT import mdb
@@ -30,7 +30,6 @@ from SHE_PPT.file_io import find_file
 from SHE_PPT.magic_values import scale_label, gain_label
 from SHE_PPT.she_image import SHEImage
 from SHE_PPT.shear_utility import ShearEstimate, correct_for_wcs_shear_and_rotation
-from astropy.io import fits
 import numpy as np
 
 
@@ -198,12 +197,12 @@ class TestCase:
 
         gal_shear_rotated = galsim.Shear(g1=0.3, g2=-0.5)
 
-        shear_matrix = np.matrix([[1 + wcs_shear.g1, wcs_shear.g2],
+        shear_matrix = np.array([[1 + wcs_shear.g1, wcs_shear.g2],
                                   [wcs_shear.g2, 1 - wcs_shear.g1]])
-        rotation_matrix = np.matrix([[costheta, -sintheta],
+        rotation_matrix = np.array([[costheta, -sintheta],
                                      [sintheta, costheta]])
 
-        transform_matrix = 1.0 / np.sqrt(1 - wcs_shear.g1**2 - wcs_shear.g2**2) * shear_matrix @ rotation_matrix
+        transform_matrix = 1.0 / np.sqrt(1 - wcs_shear.g1 ** 2 - wcs_shear.g2 ** 2) * shear_matrix @ rotation_matrix
 
         # Ordering is important here. Galaxy shear is in reality applied first, so it's last in addition
         tot_shear = wcs_shear + gal_shear_rotated

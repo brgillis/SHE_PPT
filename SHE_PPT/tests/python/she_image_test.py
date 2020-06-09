@@ -22,21 +22,20 @@ Created on: 08/18/17
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 # """This script gives a small demo of the image object.
 
-__updated__ = "2019-03-01"
+__updated__ = "2020-06-09"
 
 from copy import deepcopy
 import logging
 import os
-import pytest
 
+from astropy.wcs import WCS
 import galsim
+import pytest
 
 from SHE_PPT import file_io
 from SHE_PPT.magic_values import segmap_unassigned_value
 import SHE_PPT.she_image
-from astropy.wcs import WCS
 import numpy as np
-
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -243,7 +242,7 @@ class Test_she_image():
 
         img.wcs = self.wcs
 
-        img.write_to_fits(self.testfilepath, clobber=False)
+        img.write_to_fits(self.testfilepath, overwrite=False)
 
         rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepath)
 
@@ -455,7 +454,7 @@ class Test_she_image():
         assert stamp.offset[1] == 3
 
         # Does it survive FITS io?
-        stamp.write_to_fits(self.testfilepath, clobber=True)
+        stamp.write_to_fits(self.testfilepath, overwrite=True)
         rstamp = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepath)
         assert rstamp.offset[0] == 2
         assert rstamp.offset[1] == 3
@@ -560,7 +559,7 @@ class Test_she_image():
 
                 double_transformation = pix2world_transformation * world2pix_transformation
 
-                assert np.allclose(double_transformation, np.matrix([[1., 0.], [0., 1.]]),
+                assert np.allclose(double_transformation, np.array([[1., 0.], [0., 1.]]),
                                    rtol=1e-2, atol=1e-3)
 
                 # Check for the normalized transformations as well
@@ -571,7 +570,7 @@ class Test_she_image():
 
                 normed_double_transformation = pix2world_transformation * world2pix_transformation
 
-                assert np.allclose(normed_double_transformation, np.matrix([[1., 0.], [0., 1.]]),
+                assert np.allclose(normed_double_transformation, np.array([[1., 0.], [0., 1.]]),
                                    rtol=1e-2, atol=1e-3)
 
                 # These should also all have a determinant of 1 or -1
@@ -586,7 +585,7 @@ class Test_she_image():
                 dx = 2.0
                 dy = 0.5
 
-                new_radec = np.matrix([[ra], [dec]]) + pix2world_transformation * np.matrix([[dx], [dy]])
+                new_radec = np.array([[ra], [dec]]) + pix2world_transformation * np.array([[dx], [dy]])
                 new_ra = new_radec[0, 0]
                 new_dec = new_radec[1, 0]
 
@@ -596,7 +595,7 @@ class Test_she_image():
                 dra = 2.0 / 3600
                 ddec = 0.5 / 3600
 
-                new_xy = np.matrix([[x], [y]]) + world2pix_transformation * np.matrix([[dra], [ddec]])
+                new_xy = np.array([[x], [y]]) + world2pix_transformation * np.array([[dra], [ddec]])
                 new_x = new_xy[0, 0]
                 new_y = new_xy[1, 0]
 
@@ -646,10 +645,10 @@ class Test_she_image():
 
             # Now, create rotation matrices for both, and check these match what we get
             # from the SVD method
-            pix2world_rotation_matrix_1 = np.matrix([[np.cos(pix2world_angle), -np.sin(pix2world_angle)],
-                                                     [np.sin(pix2world_angle), np.cos(pix2world_angle)]])
-            world2pix_rotation_matrix_1 = np.matrix([[np.cos(world2pix_angle), -np.sin(world2pix_angle)],
-                                                     [np.sin(world2pix_angle), np.cos(world2pix_angle)]])
+            pix2world_rotation_matrix_1 = np.array([[np.cos(pix2world_angle), -np.sin(pix2world_angle)],
+                                                    [np.sin(pix2world_angle), np.cos(pix2world_angle)]])
+            world2pix_rotation_matrix_1 = np.array([[np.cos(world2pix_angle), -np.sin(world2pix_angle)],
+                                                    [np.sin(world2pix_angle), np.cos(world2pix_angle)]])
 
             pix2world_rotation_matrix_2 = self.img.get_pix2world_rotation(x, y, origin=1)
             world2pix_rotation_matrix_2 = self.img.get_world2pix_rotation(ra, dec, origin=1)

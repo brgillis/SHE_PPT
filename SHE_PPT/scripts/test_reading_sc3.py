@@ -66,7 +66,7 @@ while num_output < 10:
     image_stack.stacked_image.header['CEN_XW'] = ra
     image_stack.stacked_image.header['CEN_YW'] = dec
 
-    image_stack.stacked_image.write_to_fits('test_stack_' + str(num_output) + '.fits', clobber=True, data_only=False)
+    image_stack.stacked_image.write_to_fits('test_stack_' + str(num_output) + '.fits', overwrite=True, data_only=False)
     print("Printed image " + str(num_output) + ".")
 
     for x in range(4):
@@ -78,7 +78,7 @@ while num_output < 10:
             exposure.header['CEN_YW'] = dec
 
             exposure.write_to_fits('test_stack_' + str(num_output) + '_' +
-                                   str(x) + '.fits', clobber=True, data_only=False)
+                                   str(x) + '.fits', overwrite=True, data_only=False)
             print("Printed image " + str(num_output) + '_' + str(x) + ".")
 
     num_output += 1

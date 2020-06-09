@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-07-18"
+__updated__ = "2020-06-09"
 
 import numpy as np
 
@@ -56,7 +56,7 @@ class LinregressStatistics(object):
                 self.xym = 0
             else:
                 self.xm = np.nansum(lx * lw) / self.w
-                self.x2m = np.nansum(lx**2 * lw) / self.w
+                self.x2m = np.nansum(lx ** 2 * lw) / self.w
                 self.ym = np.nansum(ly * lw) / self.w
                 self.xym = np.nansum(lx * ly * lw) / self.w
 
@@ -88,7 +88,7 @@ class LinregressResults(object):
             # Just calculate from this object
             stats = lstats
 
-        dx2m = stats.x2m - stats.xm**2
+        dx2m = stats.x2m - stats.xm ** 2
         dxym = stats.xym - stats.xm * stats.ym
 
         if dx2m <= 0:
@@ -204,12 +204,12 @@ class BFDSumResults(object):
             # We have a list of stats, so combine them
             stats = self.combine_lstats(lstats)
 
-        C = np.matrix([[stats.A11, stats.A12, stats.A13, stats.A14],
+        C = np.array([[stats.A11, stats.A12, stats.A13, stats.A14],
                        [stats.A12, stats.A22, stats.A23, stats.A24],
                        [stats.A13, stats.A23, stats.A33, stats.A34],
                        [stats.A14, stats.A24, stats.A34, stats.A44]])
         Cinv = np.linalg.inv(C)
-        Q_P = np.matrix([[stats.b1], [stats.b2], [stats.b3], [stats.b4]])
+        Q_P = np.array([[stats.b1], [stats.b2], [stats.b3], [stats.b4]])
 
         if do_g1 == True:
             self.slope = (Cinv * Q_P)[0, 0]
@@ -349,23 +349,23 @@ def decompose_transformation_matrix(m):
 
     Parameters
     ----------
-    m : 2x2 np.matrix
+    m : 2x2 np.array
 
     Returns
     -------
-    s : 2x2 np.matrix
+    s : 2x2 np.array
         Scale matrix
-    r : 2x2 np.matrix
+    r : 2x2 np.array
         Rotation matrix
     """
 
     s0 = np.sqrt(m[0, 0] ** 2 + m[1, 0] ** 2)
     s1 = np.sqrt(m[0, 1] ** 2 + m[1, 1] ** 2)
 
-    s = np.matrix([[s0, 0],
-                   [0, s1]])
+    s = np.array([[s0, 0],
+                  [0, s1]])
 
-    r = np.matrix([[m[0, 0] / s0, m[0, 1] / s1],
-                   [m[1, 0] / s0, m[1, 1] / s1]])
+    r = np.array([[m[0, 0] / s0, m[0, 1] / s1],
+                  [m[1, 0] / s0, m[1, 1] / s1]])
 
     return s, r
