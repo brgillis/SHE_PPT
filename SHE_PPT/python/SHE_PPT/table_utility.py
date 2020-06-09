@@ -68,7 +68,11 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
 
         col_dtype = table.dtype[colname].newbyteorder('>')
         try:
-            ex_dtype = np.dtype((table_format.dtypes[colname], (table_format.lengths[colname],))).newbyteorder('>')
+            length = table_format.lengths[colname]
+            if length == 1:
+                ex_dtype = np.dtype((table_format.dtypes[colname])).newbyteorder('>')
+            else:
+                ex_dtype = np.dtype((table_format.dtypes[colname], length)).newbyteorder('>')
         except Exception:
             pass
 
@@ -109,8 +113,7 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
                 else:
                     if verbose:
                         logger.info("Table not in correct format due to wrong type for column '" + colname + "'\n" +
-                                    "Expected: " + str(np.dtype((table_format.dtypes[colname],
-                                                                 (table_format.lengths[colname],))).newbyteorder('>')) + "\n" +
+                                    "Expected: " + ex_dtype + "\n" +
                                     "Got: " + str(table.dtype[colname].newbyteorder('>')))
                     return False
             # Is it an issue with int or float size?
@@ -120,8 +123,7 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
             else:
                 if verbose:
                     logger.info("Table not in correct format due to wrong type for column '" + colname + "'\n" +
-                                "Expected: " + str(np.dtype((table_format.dtypes[colname],
-                                                             (table_format.lengths[colname],))).newbyteorder('>')) + "\n" +
+                                "Expected: " + ex_dtype + "\n" +
                                 "Got: " + str(table.dtype[colname].newbyteorder('>')))
                 return False
 
