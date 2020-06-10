@@ -150,23 +150,16 @@ def make_psf_tm_state_table_header(data_type="FIELD"):
 
     Parameters
     ----------
-    model_hash : str
-        Hash of the physical model options dictionary, if applicable
-    model_seed : int
-        Full seed used for the physical model for this image, if applicable
-    noise_seed : int
-        Seed used for generating noise for this image, if applicable
-
+    data_type : Is it field or calibration
+    
+    
     Return
     ------
     header : OrderedDict
     """
 
-    if data_type=="FIELD":
-        tf=tff
-    else:
-        tf=tfc
-
+    tf = tff if data_type=="FIELD" else tfc
+    
     header = OrderedDict()
 
     header[tf.m.version] = tf.__version__
@@ -182,12 +175,8 @@ def initialise_psf_tm_state_table(data_type="FIELD",optional_columns=None,
 
     Parameters
     ----------
-    model_hash : str
-        Hash of the physical model options dictionary, if applicable
-    model_seed : int
-        Full seed used for the physical model for this image, if applicable
-    noise_seed : int
-        Seed used for generating noise for this image, if applicable
+    data_type : str
+        Is it FIELD or CALIB
     optional_columns : <list<str>>
         List of names for optional columns to include.
     init_columns : dict<str:array>
@@ -198,10 +187,7 @@ def initialise_psf_tm_state_table(data_type="FIELD",optional_columns=None,
     psf_tm_state_table : astropy.Table
     """
 
-    if data_type=="FIELD":
-        tf=tff
-    else:
-        tf=tfc
+    tf = tff if data_type=="FIELD" else tfc
 
     if optional_columns is None:
         optional_columns = []
@@ -232,9 +218,7 @@ def initialise_psf_tm_state_table(data_type="FIELD",optional_columns=None,
 
     psf_tm_state_table = Table(init_cols, names=names, dtype=dtypes)
 
-    psf_tm_state_table.meta = make_psf_tm_state_table_header(model_hash=model_hash,
-                                                             model_seed=model_seed,
-                                                             noise_seed=noise_seed)
+    psf_tm_state_table.meta = make_psf_tm_state_table_header(data_type)
 
     assert(is_in_format(psf_tm_state_table, tf))
 

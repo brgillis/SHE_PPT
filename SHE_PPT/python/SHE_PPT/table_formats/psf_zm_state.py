@@ -38,31 +38,29 @@ class PsfZmStateTableMeta(object):
     """ A class defining the metadata for PSF ZM state tables.
     """
 
+    data_type = "FIELD"
+
     def __init__(self):
 
-        self.__version__ = "0.1"
-        self.table_format = "she.PsfZmStateTable"
+        self.__version__ = "8.0"
+        
+        self.main_data_type = ("she.psfFieldParameters" 
+                               if self.data_type=="FIELD" else 
+                               "she.psfCalibrationParameters")
+        self.table_format = "%s.SheZernikeModeParams" % self.main_data_type
 
+  
         # Table metadata labels
         self.version = "SS_VER"
         self.format = "SS_FMT"
 
         self.extname = mv.extname_label
 
-        self.identity = mv.psf_state_identity_label
-
-        self.model_hash = mv.model_hash_label
-        self.model_seed = mv.model_seed_label
-        self.noise_seed = mv.noise_seed_label
-
+ 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
                                      (self.format, None),
                                      (self.extname, None),
-                                     (self.identity, "Zernike-mode fit or Telescope Model fit"),
-                                     (self.model_hash, None),
-                                     (self.model_seed, None),
-                                     (self.noise_seed, None),
                                      ))
 
         # A list of columns in the desired order
@@ -75,7 +73,7 @@ class PsfZmStateTableFormat(object):
                instance of this should generally be accessed, and it should not be changed.
     """
 
-    def __init__(self):
+    def __init__(self, data_type="FIELD"):
 
         # Get the metadata (contained within its own class)
         self.meta = PsfZmStateTableMeta()
@@ -111,8 +109,15 @@ class PsfZmStateTableFormat(object):
 
         # Column names and info
 
-        for i in range(45):
-            setattr(self, "zm_" + str(i), set_column_properties(name=str(i)))
+        self.fovrngx = set_column_properties(
+            "SHE_PSF_%s_FOVRNGX" % self.data_type, dtype=">f4", fits_dtype="E", length=2)
+        self.fovrngy = set_column_properties(
+            "SHE_PSF_%s_FOVRNGY" % self.data_type, dtype=">f4", fits_dtype="E", length=2)
+        self.zer_ply_amp = set_column_properties(
+            "SHE_PSF_%s_ZNKPLYAMP" % self.data_type, dtype=">f4", 
+            fits_dtype="E", length=50)
+        
+            
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -125,30 +130,30 @@ class PsfZmStateTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-psf_table_format = PsfZmStateTableFormat()
+psf_table_format_field = PsfZmStateTableFormat("FIELD")
+psf_table_format_calib = PsfZmStateTableFormat("CAL")
 
-# And a convient alias for it
-tf = psf_table_format
+# And a convenient alias for it
+# Can define multiple aliases if slightly different types
+
+tff = psf_table_format_field
+tfc = psf_table_format_calib
 
 
-def make_psf_zm_state_table_header(model_hash=None,
-                                   model_seed=None,
-                                   noise_seed=None):
+def make_psf_zm_state_table_header(data_type="FIELD"):
     """Generate a header for a PSF ZM State table.
 
     Parameters
     ----------
-    model_hash : str
-        Hash of the physical model options dictionary, if applicable
-    model_seed : int
-        Full seed used for the physical model for this image, if applicable
-    noise_seed : int
-        Seed used for generating noise for this image, if applicable
-
+    data_type : Is it field or calibration
+    
     Return
     ------
     header : OrderedDict
     """
+    
+    tf = tff if data_type=="FIELD" else tfc
+    
 
     header = OrderedDict()
 
@@ -166,21 +171,15 @@ def make_psf_zm_state_table_header(model_hash=None,
     return header
 
 
-def initialise_psf_zm_state_table(model_hash=None,
-                                  model_seed=None,
-                                  noise_seed=None,
+def initialise_psf_zm_state_table(data_type="FIELD",
                                   optional_columns=None,
                                   init_columns={}):
     """Initialise a PSF ZM State table.
 
     Parameters
     ----------
-    model_hash : str
-        Hash of the physical model options dictionary, if applicable
-    model_seed : int
-        Full seed used for the physical model for this image, if applicable
-    noise_seed : int
-        Seed used for generating noise for this image, if applicable
+    data_type : str 
+        Is if FIELD or CALIB
     optional_columns : <list<str>>
         List of names for optional columns to include.
     init_columns : dict<str:array>
@@ -190,6 +189,8 @@ def initialise_psf_zm_state_table(model_hash=None,
     ------
     psf_zm_state_table : astropy.Table
     """
+    
+    tf = tff if data_type=="FIELD" else tfc
 
     if optional_columns is None:
         optional_columns = []
@@ -220,9 +221,7 @@ def initialise_psf_zm_state_table(model_hash=None,
 
     psf_zm_state_table = Table(init_cols, names=names, dtype=dtypes)
 
-    psf_zm_state_table.meta = make_psf_zm_state_table_header(model_hash=model_hash,
-                                                             model_seed=model_seed,
-                                                             noise_seed=noise_seed)
+    psf_zm_state_table.meta = make_psf_zm_state_table_header(data_type)
 
     assert(is_in_format(psf_zm_state_table, tf))
 
