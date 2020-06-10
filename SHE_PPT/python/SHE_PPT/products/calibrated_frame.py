@@ -29,7 +29,6 @@ from ST_DataModelBindings.sys.dss_stub import dataContainer
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 
-
 sample_file_name = "SHE_PPT/sample_calibrated_frame.xml"
 
 
@@ -72,7 +71,7 @@ def __set_psf_filename(self, filename):
         self.Data.PsfModelStorage = create_vis_psf_storage()
 
     set_data_filename_of_product(self, filename, "PsfModelStorage")
-    
+
     return
 
 
@@ -87,7 +86,7 @@ def __set_bkg_filename(self, filename):
         self.Data.BackgroundStorage = create_vis_bkg_storage(filename)
 
     set_data_filename_of_product(self, filename, "BackgroundStorage")
-    
+
     return
 
 
@@ -102,7 +101,7 @@ def __set_wgt_filename(self, filename):
         self.Data.WeightStorage = create_vis_wgt_storage(filename)
 
     set_data_filename_of_product(self, filename, "WeightStorage")
-    
+
     return
 
 

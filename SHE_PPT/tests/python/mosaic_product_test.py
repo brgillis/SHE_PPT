@@ -92,7 +92,7 @@ class TestMosaicProduct(object):
                                                            + "." + mv.segmentation_tag),)))
 
         data_filename = str(tmpdir.join("mosaic_data.fits"))
-        phdu.writeto(data_filename, clobber=True)
+        phdu.writeto(data_filename, overwrite=True)
 
         product.set_data_filename(data_filename)
         write_xml_product(product, filename, allow_pickled=False)
@@ -115,7 +115,7 @@ class TestMosaicProduct(object):
                                                          + "." + mv.segmentation_tag),)))
 
         hdulist = fits.HDUList([phdu, hdu2])
-        hdulist.writeto(data_filename, clobber=True)
+        hdulist.writeto(data_filename, overwrite=True)
 
         loaded_hdu1 = prod.load_mosaic_hdu(filename=filename,
                                            hdu=0)

@@ -35,7 +35,6 @@ from SHE_PPT import magic_values as mv
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 from SHE_PPT.utility import find_extension
 
-
 sample_file_name = "SHE_PPT/sample_segmentation_map.xml"
 
 

@@ -66,13 +66,13 @@
 			<CatalogOrigin>MASTER_DEEP</CatalogOrigin>
 			<CatalogType>NOT_PROXY</CatalogType>
 			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-			<CatalogName>Intermediate</CatalogName>
+			<CatalogName>She-Intermediate</CatalogName>
 			<CatalogFormatHDU>1</CatalogFormatHDU>
 		</CatalogDescription>
-		<ObservationId>-705529667874924408</ObservationId>
+		<ObservationId>-1</ObservationId>
 		<IntData>0</IntData>
 		<FloatData>0.0</FloatData>
-		<StringData>otMyY</StringData>
+		<StringData></StringData>
 		<DataStorage>
 			<DataContainer filestatus="PROPOSED">
 				<FileName>None</FileName>

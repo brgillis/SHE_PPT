@@ -31,6 +31,19 @@ from astropy.wcs import WCS
 
 logger = getLogger(__name__)
 
+def get_nested_attr(obj, attr):
+    if not "." in attr:
+        return getattr(obj, attr)
+    else:
+        head, tail = attr.split('.', 1)
+        return get_nested_attr(getattr(obj,head), tail)
+
+def set_nested_attr(obj, attr, val):
+    if not "." in attr:
+        return setattr(obj, attr, val)
+    else:
+        head, tail = attr.split('.', 1)
+        return set_nested_attr(getattr(obj,head), tail, val)
 
 def hash_any(obj, format='hex', max_length=None):
     """Hashes any immutable object into a hex string of a given length. Unlike hash(), will be consistent in Python

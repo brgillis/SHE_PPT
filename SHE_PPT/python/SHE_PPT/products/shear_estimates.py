@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-01-28"
+__updated__ = "2020-06-09"
 
 from SHE_PPT.file_io import (read_xml_product, find_aux_file, get_data_filename_from_product,
                              set_data_filename_of_product)
@@ -31,13 +31,12 @@ from ST_DataModelBindings.dpd.she.measurements_stub import dpdSheMeasurements
 from ST_DataModelBindings.pro import she_stub as she_pro
 from ST_DataModelBindings.sys.dss_stub import dataContainer
 
-
 sample_file_name = "SHE_PPT/sample_shear_measurements.xml"
 
 
 def init():
     """
-        Adds some extra functionality to the DpdShearEstimates product
+        Adds some extra functionality to the DpdShearMeasurements product
     """
 
     binding_class = dpdSheMeasurements
@@ -77,7 +76,7 @@ def __set_BFD_filename(self, filename):
     else:
         if not hasattr(self.Data, "BfdMoments") or self.Data.BfdMoments is None:
             self.Data.BfdMoments = create_bfd_moments(filename)
-        set_data_filename_of_product(self, filename, "BfdMoments")
+        set_data_filename_of_product(self, filename, "BfdMoments.DataStorage")
     return
 
 
@@ -85,79 +84,79 @@ def __get_BFD_filename(self):
     if not hasattr(self.Data, "BfdMoments") or self.Data.BfdMoments is None:
         return None
     else:
-        return get_data_filename_from_product(self, "BfdMoments")
+        return get_data_filename_from_product(self, "BfdMoments.DataStorage")
 
 
 def __set_KSB_filename(self, filename):
     if filename is None:
-        if hasattr(self.Data, "KsbShearEstimates"):
-            self.Data.KsbShearEstimates = None
+        if hasattr(self.Data, "KsbShearMeasurements"):
+            self.Data.KsbShearMeasurements = None
     else:
-        if not hasattr(self.Data, "KsbShearEstimates") or self.Data.KsbShearEstimates is None:
-            self.Data.KsbShearEstimates = create_ksb_estimates(filename)
-        set_data_filename_of_product(self, filename, "KsbShearEstimates")
+        if not hasattr(self.Data, "KsbShearMeasurements") or self.Data.KsbShearMeasurements is None:
+            self.Data.KsbShearMeasurements = create_ksb_estimates(filename)
+        set_data_filename_of_product(self, filename, "KsbShearMeasurements.DataStorage")
     return
 
 
 def __get_KSB_filename(self):
-    if not hasattr(self.Data, "KsbShearEstimates") or self.Data.KsbShearEstimates is None:
+    if not hasattr(self.Data, "KsbShearMeasurements") or self.Data.KsbShearMeasurements is None:
         return None
     else:
-        return get_data_filename_from_product(self, "KsbShearEstimates")
+        return get_data_filename_from_product(self, "KsbShearMeasurements.DataStorage")
 
 
 def __set_LensMC_filename(self, filename):
     if filename is None:
-        if hasattr(self.Data, "LensMcShearEstimates"):
-            self.Data.LensMcShearEstimates = None
+        if hasattr(self.Data, "LensMcShearMeasurements"):
+            self.Data.LensMcShearMeasurements = None
     else:
-        if not hasattr(self.Data, "LensMcShearEstimates") or self.Data.LensMcShearEstimates is None:
-            self.Data.LensMcShearEstimates = create_lensmc_estimates(filename)
-        set_data_filename_of_product(self, filename, "LensMcShearEstimates")
+        if not hasattr(self.Data, "LensMcShearMeasurements") or self.Data.LensMcShearMeasurements is None:
+            self.Data.LensMcShearMeasurements = create_lensmc_estimates(filename)
+        set_data_filename_of_product(self, filename, "LensMcShearMeasurements.DataStorage")
     return
 
 
 def __get_LensMC_filename(self):
-    if not hasattr(self.Data, "LensMcShearEstimates") or self.Data.LensMcShearEstimates is None:
+    if not hasattr(self.Data, "LensMcShearMeasurements") or self.Data.LensMcShearMeasurements is None:
         return None
     else:
-        return get_data_filename_from_product(self, "LensMcShearEstimates")
+        return get_data_filename_from_product(self, "LensMcShearMeasurements.DataStorage")
 
 
 def __set_MomentsML_filename(self, filename):
     if filename is None:
-        if hasattr(self.Data, "MomentsMlShearEstimates"):
-            self.Data.MomentsMlShearEstimates = None
+        if hasattr(self.Data, "MomentsMlShearMeasurements"):
+            self.Data.MomentsMlShearMeasurements = None
     else:
-        if not hasattr(self.Data, "MomentsMlShearEstimates") or self.Data.MomentsMlShearEstimates is None:
-            self.Data.MomentsMlShearEstimates = create_momentsml_estimates(filename)
-        set_data_filename_of_product(self, filename, "MomentsMlShearEstimates")
+        if not hasattr(self.Data, "MomentsMlShearMeasurements") or self.Data.MomentsMlShearMeasurements is None:
+            self.Data.MomentsMlShearMeasurements = create_momentsml_estimates(filename)
+        set_data_filename_of_product(self, filename, "MomentsMlShearMeasurements.DataStorage")
     return
 
 
 def __get_MomentsML_filename(self):
-    if not hasattr(self.Data, "MomentsMlShearEstimates") or self.Data.MomentsMlShearEstimates is None:
+    if not hasattr(self.Data, "MomentsMlShearMeasurements") or self.Data.MomentsMlShearMeasurements is None:
         return None
     else:
-        return get_data_filename_from_product(self, "MomentsMlShearEstimates")
+        return get_data_filename_from_product(self, "MomentsMlShearMeasurements.DataStorage")
 
 
 def __set_REGAUSS_filename(self, filename):
     if filename is None:
-        if hasattr(self.Data, "RegaussShearEstimates"):
-            self.Data.RegaussShearEstimates = None
+        if hasattr(self.Data, "RegaussShearMeasurements"):
+            self.Data.RegaussShearMeasurements = None
     else:
-        if not hasattr(self.Data, "RegaussShearEstimates") or self.Data.RegaussShearEstimates is None:
-            self.Data.RegaussShearEstimates = create_regauss_estimates(filename)
-        set_data_filename_of_product(self, filename, "RegaussShearEstimates")
+        if not hasattr(self.Data, "RegaussShearMeasurements") or self.Data.RegaussShearMeasurements is None:
+            self.Data.RegaussShearMeasurements = create_regauss_estimates(filename)
+        set_data_filename_of_product(self, filename, "RegaussShearMeasurements.DataStorage")
     return
 
 
 def __get_REGAUSS_filename(self):
-    if not hasattr(self.Data, "RegaussShearEstimates") or self.Data.RegaussShearEstimates is None:
+    if not hasattr(self.Data, "RegaussShearMeasurements") or self.Data.RegaussShearMeasurements is None:
         return None
     else:
-        return get_data_filename_from_product(self, "RegaussShearEstimates")
+        return get_data_filename_from_product(self, "RegaussShearMeasurements.DataStorage")
 
 
 def __get_all_filenames(self):
@@ -273,14 +272,17 @@ def create_bfd_moments(filename):
         @TODO fill in docstring
     """
 
-    BFD_shear_estimates = she_pro.bfdMoments()
+    BFD_shear_estimates = she_pro.sheBfdMoments()
 
     BFD_shear_estimates.format = "she.bfdMoments"
     BFD_shear_estimates.version = "0.1"
 
-    BFD_shear_estimates.DataContainer = dataContainer()
-    BFD_shear_estimates.DataContainer.FileName = filename
-    BFD_shear_estimates.DataContainer.filestatus = "PROPOSED"
+    BFD_shear_estimates.DataStorage = she_pro.sheBfdMomentsFile()
+    BFD_shear_estimates.Valid = "UNKNOWN"
+
+    BFD_shear_estimates.DataStorage.DataContainer = dataContainer()
+    BFD_shear_estimates.DataStorage.DataContainer.FileName = filename
+    BFD_shear_estimates.DataStorage.DataContainer.filestatus = "PROPOSED"
 
     return BFD_shear_estimates
 
@@ -290,9 +292,9 @@ def create_ksb_estimates(filename):
         @TODO fill in docstring
     """
 
-    KSB_shear_estimates = she_pro.ksbShearEstimates()
+    KSB_shear_estimates = she_pro.sheKsbShearMeasurements()
 
-    KSB_shear_estimates.format = "she.ksbShearEstimates"
+    KSB_shear_estimates.format = "she.ksbShearMeasurements"
     KSB_shear_estimates.version = "0.1"
 
     KSB_shear_estimates.DataContainer = dataContainer()
@@ -307,9 +309,9 @@ def create_lensmc_estimates(filename):
         @TODO fill in docstring
     """
 
-    LensMC_shear_estimates = she_pro.lensMcShearEstimates()
+    LensMC_shear_estimates = she_pro.sheLensMcShearMeasurements()
 
-    LensMC_shear_estimates.format = "she.lensMcShearEstimates"
+    LensMC_shear_estimates.format = "she.lensMcShearMeasurements"
     LensMC_shear_estimates.version = "0.1"
 
     LensMC_shear_estimates.DataContainer = dataContainer()
@@ -324,9 +326,9 @@ def create_momentsml_estimates(filename):
         @TODO fill in docstring
     """
 
-    MomentsML_shear_estimates = she_pro.momentsMlShearEstimates()
+    MomentsML_shear_estimates = she_pro.sheMomentsMlShearMeasurements()
 
-    MomentsML_shear_estimates.format = "she.momentsMlShearEstimates"
+    MomentsML_shear_estimates.format = "she.momentsMlShearMeasurements"
     MomentsML_shear_estimates.version = "0.1"
 
     MomentsML_shear_estimates.DataContainer = dataContainer()
@@ -341,9 +343,9 @@ def create_regauss_estimates(filename):
         @TODO fill in docstring
     """
 
-    REGAUSS_shear_estimates = she_pro.regaussShearEstimates()
+    REGAUSS_shear_estimates = she_pro.sheRegaussShearMeasurements()
 
-    REGAUSS_shear_estimates.format = "she.regaussShearEstimates"
+    REGAUSS_shear_estimates.format = "she.regaussShearMeasurements"
     REGAUSS_shear_estimates.version = "0.1"
 
     REGAUSS_shear_estimates.DataContainer = dataContainer()

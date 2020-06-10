@@ -50,21 +50,21 @@ def __get_data_filenames(self):
     data_filenames = []
 
     for galaxy_catalog in self.Data.SetOfGalaxyCatalogs:
-        
+
         data_filename = galaxy_catalog.GalaxyCatalogFitsFile.DataContainer.FileName
-    
+
         if filename_include_data_subdir:
-            
+
             # Silently force the filename returned to start with "data/" regardless of whether the returned value does
-            if data_filename[0:len_data_subdir]!=data_subdir:
+            if data_filename[0:len_data_subdir] != data_subdir:
                 data_filename = data_subdir + data_filename
-            
+
         else:
-            
+
             # Silently force the filename returned to NOT start with "data/" regardless of whether the returned value does
-            if data_filename[0:len_data_subdir]==data_subdir:
-                data_filename = data_filename.replace(data_subdir,"",1)
-            
+            if data_filename[0:len_data_subdir] == data_subdir:
+                data_filename = data_filename.replace(data_subdir, "", 1)
+
         data_filenames.append(data_filename)
 
     return data_filenames

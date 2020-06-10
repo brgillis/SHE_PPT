@@ -73,7 +73,7 @@
 				<CatalogOrigin>OTHERS</CatalogOrigin>
 				<CatalogType>PROXY</CatalogType>
 				<PathToCatalogFile>Data.EuclidizedHSTImageCatalog.DataStorage.FileName</PathToCatalogFile>
-				<CatalogName>Euclidized-HST</CatalogName>
+				<CatalogName>She-Euclidized-Hst</CatalogName>
 				<CatalogFormatHDU>1</CatalogFormatHDU>
 			</CatalogDescription>
 			<DataStorage filestatus="ARCHIVED_CERNVMFS">

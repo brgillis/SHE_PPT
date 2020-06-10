@@ -66,7 +66,7 @@
 			<CatalogOrigin>OTHERS</CatalogOrigin>
 			<CatalogType>PROXY</CatalogType>
 			<PathToCatalogFile>Data.DataStorageList[0].DataContainer.FileName</PathToCatalogFile>
-			<CatalogName>Galaxy-Population</CatalogName>
+			<CatalogName>She-Galaxy-Population</CatalogName>
 			<CatalogFormatHDU>1</CatalogFormatHDU>
 		</CatalogDescription>
 		<ValidityRange>

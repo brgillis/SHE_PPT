@@ -1,191 +1,96 @@
 <?xml version="1.0" ?>
-<ns1:DpdShearLensMCTraining xmlns:ns1="http://euclid.esa.org/schema/dpd/she/shearlensmctraining">
+<ns1:DpdSheLensMcTraining xmlns:ns1="http://euclid.esa.org/schema/dpd/she/lensmctraining">
 	<Header>
-		<ProductId>None</ProductId>
-		<ProductType>false</ProductType>
-		<SoftwareName>PAx</SoftwareName>
-		<SoftwareRelease>vtI</SoftwareRelease>
-		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
-		<ExpirationDate>2018-11-16T15:50:02.637Z</ExpirationDate>
-		<PipelineRun>tU7</PipelineRun>
-		<ExitStatusCode>Y1a</ExitStatusCode>
-		<DataModelVersion>0d5s</DataModelVersion>
-		<MinDataModelVersion>nyEN0</MinDataModelVersion>
-		<ScientificCustodian>LE3SLS</ScientificCustodian>
-		<AccessRights>
-			<EuclidConsortiumRead>false</EuclidConsortiumRead>
-			<EuclidConsortiumWrite>false</EuclidConsortiumWrite>
-			<ScientificGroupRead>true</ScientificGroupRead>
-			<ScientificGroupWrite>false</ScientificGroupWrite>
-		</AccessRights>
-		<Curator>
-			<Name>VdN</Name>
-			<Email>TvY@Wgm4gS4JYUPob4FIm9alo8fINl52iBskDS9I2MZgEL.7a4=|L</Email>
-		</Curator>
-		<ToBePublished>true</ToBePublished>
+		<ProductId>03a1dc83-3605-4496-9562-7331e9b18316</ProductId>
+		<ProductType>ZnLjz</ProductType>
+		<SoftwareName>9dn5P</SoftwareName>
+		<SoftwareRelease>xpWR</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>16rd</EuclidPipelineSoftwareRelease>
+		<ProdSDC>MS1XE2wP02</ProdSDC>
+		<DataSetRelease>nEGEH</DataSetRelease>
+		<Purpose>TEST</Purpose>
+		<PlanId>Fd2e3</PlanId>
+		<PPOId>dTVl0</PPOId>
+		<PipelineDefinitionId>cJrLZ</PipelineDefinitionId>
+		<PipelineRun>YROYP</PipelineRun>
+		<ExitStatusCode>DTTif</ExitStatusCode>
+		<ManualValidationStatus>VALID</ManualValidationStatus>
+		<ExpirationDate>2020-06-03T15:13:25.786Z</ExpirationDate>
+		<ToBePublished>false</ToBePublished>
 		<Published>false</Published>
-		<Creator>ZSS</Creator>
-		<CreationDate>2018-11-16T15:50:02.643Z</CreationDate>
+		<Curator>SHE</Curator>
+		<CreationDate>2020-06-03T15:13:25.788Z</CreationDate>
 	</Header>
 	<Data>
-		<IdCatalog>-1920228105</IdCatalog>
-  <CatalogCoverage>
-   <SpatialCoverage>
-    <Polygon>
-     <Vertex>
-      <Position coordUnit="GHz">
-       <C1 unit="mol">0.0</C1>
-       <C2 unit="rad/s">0.0</C2>
-      </Position>
-      <SmallCircle>
-       <Pole coordUnit="Angstrom">
-        <C1 unit="nm">1.0</C1>
-        <C2 unit="J">1.0</C2>
-       </Pole>
-      </SmallCircle>
-     </Vertex>
-    </Polygon>
-   </SpatialCoverage>
-   <SpectralCoverage>
-    <Filter>
-     <Name>DECAM_g</Name>
-     <MagId>J</MagId>
-     <CentralWavelength>5.0</CentralWavelength>
-     <MinWavelength>0.0</MinWavelength>
-     <MaxWavelength>-1.0</MaxWavelength>
-     <Reference>Kjo</Reference>
-     <HasFringes>-1879092973</HasFringes>
-    </Filter>
-   </SpectralCoverage>
-  </CatalogCoverage>
-  <CatalogStorage>
-   <CatalogFileStorage>
-    <Id>2xh</Id>
-    <PartitioningColumn>
-     <Name>NKj</Name>
-     <Label>Yae</Label>
-     <Type>boolean</Type>
-     <VariableLength>
-      <FieldNumber>-2057981849</FieldNumber>
-      <MaxElements>-1993257391</MaxElements>
-      <Offset>-1483929090</Offset>
-      <CatalogPropertyDataType>int32</CatalogPropertyDataType>
-     </VariableLength>
-     <Cardinality>-796779005</Cardinality>
-     <NullValue>CiQ</NullValue>
-     <Unit>Ry</Unit>
-     <Description>cGY</Description>
-     <UCD>Q|pos.cartesian.z</UCD>
-     <Utype>DGk</Utype>
-    </PartitioningColumn>
-    <CatalogMetadataStorage>
-     <Id>556014289</Id>
-     <CatalogMetadataElement>
-      <Key>rzE</Key>
-      <Value>O0B</Value>
-     </CatalogMetadataElement>
-    </CatalogMetadataStorage>
-    <FileFormat>gzippedCSV</FileFormat>
-    <FileNumber>-1937079325</FileNumber>
-    <StorageSpace>
-     <Id>woO</Id>
-     <Range>
-      <MinValue>B3h</MinValue>
-      <MaxValue>Xxk</MaxValue>
-      <SelectionFilter>QxR</SelectionFilter>
-     </Range>
-     <DataContainer filestatus="PROPOSED">
-      <FileName>None</FileName>
-     </DataContainer>
-    </StorageSpace>
-   </CatalogFileStorage>
-   <CatalogDBStorage>
-    <Id>bYe</Id>
-    <IdType>
-     <Name>gJJ</Name>
-     <Label>p7z</Label>
-     <Type>float32</Type>
-     <VariableLength>
-      <FieldNumber>758645668</FieldNumber>
-      <MaxElements>-710747029</MaxElements>
-      <Offset>2115731345</Offset>
-      <CatalogPropertyDataType>complex64</CatalogPropertyDataType>
-     </VariableLength>
-     <Cardinality>-1728440249</Cardinality>
-     <NullValue>HQ7</NullValue>
-     <Unit>mag/kpc</Unit>
-     <Description>x1f</Description>
-     <UCD>E|spect.line.asymmetry</UCD>
-     <Utype>TVI</Utype>
-    </IdType>
-    <TableName>h9N</TableName>
-    <ConnectionString>HGk</ConnectionString>
-    <StorageDataType>KMM</StorageDataType>
-    <IndexColumn>
-     <Name>KbM</Name>
-     <Label>QRZ</Label>
-     <Type>character</Type>
-     <VariableLength>
-      <FieldNumber>-1395960898</FieldNumber>
-      <MaxElements>-2093162189</MaxElements>
-      <Offset>-641337552</Offset>
-      <CatalogPropertyDataType>complex64</CatalogPropertyDataType>
-     </VariableLength>
-     <Cardinality>-1040145985</Cardinality>
-     <NullValue>3N0</NullValue>
-     <Unit>GHz</Unit>
-     <Description>Qpu</Description>
-     <UCD>Q|phys.mol.dipole.magnetic</UCD>
-     <Utype>WDD</Utype>
-    </IndexColumn>
-    <ParentCatalogId>1732107985</ParentCatalogId>
-    <SelectionRange>
-     <MinValue>3aW</MinValue>
-     <MaxValue>Lgp</MaxValue>
-     <SelectionFilter>4Y2</SelectionFilter>
-    </SelectionRange>
-   </CatalogDBStorage>
-  </CatalogStorage>
-  <CatalogDescription>
-   <CatalogDataProduct>ziG</CatalogDataProduct>
-   <PathToCatalogDefinition>6Uv</PathToCatalogDefinition>
-   <CatalogFormatBase>vis.masterBias</CatalogFormatBase>
-   <CatalogFormatHDU>-1835707934</CatalogFormatHDU>
-   <CatalogFitsColumnsDefinition>BH9TaydOkd9ySCUIBEVdUf0DtoQ9jbJP3kdwMDp3bohZQJVEq51b5r5M91Kzdu8qKQBG2</CatalogFitsColumnsDefinition>
-   <PartitioningColumn>
-    <Name>Za3</Name>
-    <Label>l7s</Label>
-    <Type>int8</Type>
-    <VariableLength>
-     <FieldNumber>428145116</FieldNumber>
-     <MaxElements>2008664002</MaxElements>
-     <Offset>487179277</Offset>
-     <CatalogPropertyDataType>float64</CatalogPropertyDataType>
-    </VariableLength>
-    <Cardinality>254329509</Cardinality>
-    <NullValue>wAx</NullValue>
-    <Unit>deg</Unit>
-    <Description>jrB</Description>
-    <UCD>V|pos.pm</UCD>
-    <Utype>cpl</Utype>
-   </PartitioningColumn>
-  </CatalogDescription>
-		<ShearLensMCTrainingFile format="she.lensMcShearEstimates" version="0.1">
-			<DataContainer filestatus="PROPOSED">
+		<SpatialCoverage>
+			<Polygon>
+				<Vertex>
+					<Position coordUnit="Mstars/deg2">
+						<C1 unit="kpc">1.0</C1>
+						<C2 unit="J/m2">1.0</C2>
+					</Position>
+					<SmallCircle>
+						<Pole coordUnit="uNewton/kg">
+							<C1 unit="arcsec/um">0.0</C1>
+							<C2 unit="d">0.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</Polygon>
+			<Circle>
+				<Center coordUnit="m2/s2">
+					<C1 unit="u">1.0</C1>
+					<C2 unit="1/m">0.0</C2>
+				</Center>
+				<Radius unit="arcsec/um">1.0</Radius>
+			</Circle>
+			<BBox>
+				<RaCenter unit="J/m3/K4">1.0</RaCenter>
+				<DecCenter unit="c/y">1.0</DecCenter>
+				<RaHalfWidth unit="deg/day">0.0</RaHalfWidth>
+				<DecHalfWidth unit="solRad">0.0</DecHalfWidth>
+			</BBox>
+		</SpatialCoverage>
+		<SpectralCoverage>
+			<Filter>
+				<Name>VIS</Name>
+				<MagId>K</MagId>
+				<CentralWavelength>2.0</CentralWavelength>
+				<MinWavelength>1.0</MinWavelength>
+				<MaxWavelength>3.0</MaxWavelength>
+				<Reference>ZeUFg</Reference>
+				<HasFringes>1560078002</HasFringes>
+			</Filter>
+		</SpectralCoverage>
+		<CatalogDescription>
+			<CatalogOrigin>MEASURED_DEEP</CatalogOrigin>
+			<CatalogType>PROXY</CatalogType>
+			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
+			<CatalogName>She-Lensmc-Training</CatalogName>
+			<CatalogFormatHDU>1</CatalogFormatHDU>
+		</CatalogDescription>
+		<ValidityRange>
+			<Name>Dummy</Name>
+			<Type>sheLensMcTraining</Type>
+			<TimestampStart>2020-06-03T15:13:25.799Z</TimestampStart>
+			<TimestampEnd>9999-06-03T15:13:25.799Z</TimestampEnd>
+		</ValidityRange>
+		<DataStorage format="she.lensMcMeasurements" version="8.0">
+			<DataContainer filestatus="">
 				<FileName>None</FileName>
 			</DataContainer>
-		</ShearLensMCTrainingFile>
+		</DataStorage>
 	</Data>
 	<QualityFlags>
 		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
-		<AuxiliaryFlags flagName="Tax" flagged="false" maxLimit="-3.0" minLimit="8.0" xpath="tKv">true</AuxiliaryFlags>
+		<AuxiliaryFlags flagName="WaIaX" flagged="false" maxLimit="-8.0" minLimit="1.0" xpath="j2zvs">false</AuxiliaryFlags>
 	</QualityFlags>
 	<Parameters>
-		<Param>
-			<Key>MR1</Key>
-			<Description>qCR</Description>
-			<StringValue>BJH</StringValue>
-			<Unit>BrF</Unit>
-		</Param>
+		<Parameter>
+			<Key>lSTtZ</Key>
+			<Description>dmPmu</Description>
+			<StringValue>dfYEY</StringValue>
+			<Unit>uuxWT</Unit>
+		</Parameter>
 	</Parameters>
-</ns1:DpdShearLensMCTraining>
+</ns1:DpdSheLensMcTraining>

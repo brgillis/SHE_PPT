@@ -348,7 +348,7 @@ def read_fits(filepath):
     return a
 
 
-def write_fits(a, filepath, clobber=True):
+def write_fits(a, filepath, overwrite=True):
     """Writes a simple 2D numpy array into a FITS file
 
     As for read_fits, a transposition is applied to conserve the orientation.
@@ -357,12 +357,12 @@ def write_fits(a, filepath, clobber=True):
     ----------
     a : array
     filepath : str
-    clobber : bool
+    overwrite : bool
         Set this to False if an existing file should not be overwritten
 
     """
-    if os.path.exists(filepath) and clobber:
+    if os.path.exists(filepath) and overwrite:
         logger.info("File %s exists, I will overwrite it!" % (filepath))
 
-    astropy.io.fits.writeto(filepath, a.transpose(), clobber=clobber)
+    astropy.io.fits.writeto(filepath, a.transpose(), overwrite=overwrite)
     logger.info("Wrote %s array into %s" % (a.shape, filepath))

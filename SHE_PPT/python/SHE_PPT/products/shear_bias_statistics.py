@@ -40,7 +40,6 @@ from SHE_PPT.table_formats.bfd_bias_statistics import initialise_bfd_bias_statis
 from SHE_PPT.table_formats.bias_statistics import tf, initialise_bias_statistics_table, get_bias_statistics, get_bias_measurements
 from SHE_PPT.utility import hash_any
 
-
 logger = getLogger(__name__)
 
 
@@ -163,7 +162,7 @@ def __set_method_bias_statistics_filename(self, method, filename):
 
     if getattr(self.Data, bias_statistics_switcher[method]) is None:
         setattr(self.Data, bias_statistics_switcher[method], create_method_shear_bias_statistics(filename))
-    
+
     if filename is not None:
         set_data_filename_of_product(self, filename, bias_statistics_switcher[method])
 
@@ -179,7 +178,7 @@ def __get_method_bias_statistics_filename(self, method):
 
     filename = get_data_filename_from_product(self, bias_statistics_switcher[method])
 
-    if filename == "None" or filename=="data/None":
+    if filename == "None" or filename == "data/None":
         return None
     else:
         return filename
@@ -530,8 +529,8 @@ def create_dpd_shear_bias_statistics_from_stats(BFD_bias_statistics=None,
 create_shear_bias_statistics_product = create_dpd_shear_bias_statistics
 create_shear_bias_statistics_product_from_stats = create_dpd_shear_bias_statistics_from_stats
 
-
 # Creation functions
+
 
 def create_method_shear_bias_statistics(filename):
 

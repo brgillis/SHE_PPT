@@ -30,7 +30,6 @@ from ST_DataModelBindings.dpd.she.lensmctraining_stub import dpdSheLensMcTrainin
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 
-
 sample_file_name = "SHE_PPT/sample_lensmc_training.xml"
 
 
@@ -56,11 +55,11 @@ def init():
 
 
 def __set_filename(self, filename):
-    set_data_filename_of_product(self, filename, "ShearLensMCTrainingFile")
+    set_data_filename_of_product(self, filename, "DataStorage")
 
 
 def __get_filename(self):
-    return get_data_filename_from_product(self, "ShearLensMCTrainingFile")
+    return get_data_filename_from_product(self, "DataStorage")
 
 
 def __get_all_filenames(self):
