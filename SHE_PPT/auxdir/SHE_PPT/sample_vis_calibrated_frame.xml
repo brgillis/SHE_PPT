@@ -1,0 +1,392 @@
+<?xml version="1.0" ?>
+<ns1:DpdVisCalibratedFrame xmlns:ns1="http://euclid.esa.org/schema/dpd/vis/calibratedframe">
+	<Header>
+		<ProductId>7118e865-14db-43c7-ad3b-dfa6647078ce</ProductId>
+		<ProductType>X9r8B</ProductType>
+		<SoftwareName>SPRB4</SoftwareName>
+		<SoftwareRelease>chg</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>E4P</EuclidPipelineSoftwareRelease>
+		<ProdSDC>ENWPSt1weWqXnycBCEvafLgIQAESR58TVZw1fll8AhdK4o5Zq3Ue4ajw0LCotpXHmIDvjYa0pQMdaO29UW7XMqeUwNx</ProdSDC>
+		<DataSetRelease>3cni2</DataSetRelease>
+		<Purpose>PRODUCTION</Purpose>
+		<PlanId>JdUDI</PlanId>
+		<PPOId>MAOav</PPOId>
+		<PipelineDefinitionId>TJm6a</PipelineDefinitionId>
+		<PipelineRun>AaqCD</PipelineRun>
+		<ExitStatusCode>I1bJ8</ExitStatusCode>
+		<ManualValidationStatus>VALID</ManualValidationStatus>
+		<ExpirationDate>2020-06-10T15:00:36.656Z</ExpirationDate>
+		<ToBePublished>false</ToBePublished>
+		<Published>true</Published>
+		<Curator>SHE</Curator>
+		<CreationDate>2020-06-10T15:00:36.657Z</CreationDate>
+	</Header>
+	<Data>
+		<ExposureTime>
+			<Value>565.0</Value>
+			<Unit>s</Unit>
+		</ExposureTime>
+		<ImgType>
+			<Category>SCIENCE</Category>
+			<FirstType>STD</FirstType>
+			<SecondType>SKY</SecondType>
+			<ThirdType>WIDE</ThirdType>
+			<Technique>IMAGE</Technique>
+		</ImgType>
+		<ImgArea>
+			<Name>Simulated</Name>
+		</ImgArea>
+		<ImgNumber>36</ImgNumber>
+		<AxisNumber>2</AxisNumber>
+		<AxisLengths>4096 4136</AxisLengths>
+		<DataSize>-32</DataSize>
+		<DataLength>542113792</DataLength>
+		<ImgStatistics>
+			<Min>4.0</Min>
+			<Max>6.0</Max>
+			<Mean>-7.0</Mean>
+			<Stdev>2.0</Stdev>
+			<Median>-4.0</Median>
+			<MinX>0</MinX>
+			<MinY>0</MinY>
+			<MaxX>4096</MaxX>
+			<MaxY>4132</MaxY>
+			<NPix>16924672</NPix>
+			<XLower>-1</XLower>
+			<YLower>-1</YLower>
+			<XUpper>-1</XUpper>
+			<YUpper>-1</YUpper>
+		</ImgStatistics>
+		<Instrument>
+			<InstrumentName>JPCAM</InstrumentName>
+			<TelescopeName>BLANCO</TelescopeName>
+		</Instrument>
+		<Filter>
+			<Name>JST</Name>
+			<MagId>N</MagId>
+			<CentralWavelength>2.0</CentralWavelength>
+			<MinWavelength>-9.0</MinWavelength>
+			<MaxWavelength>-6.0</MaxWavelength>
+			<Reference>B8Xsc</Reference>
+			<HasFringes>1047050584</HasFringes>
+		</Filter>
+		<ImgSpatialFootprint>
+			<Polygon>
+				<Vertex>
+					<Position coordUnit="J/m3/K4">
+						<C1 unit="solRad">1.0</C1>
+						<C2 unit="uarcsec">0.0</C2>
+					</Position>
+					<SmallCircle>
+						<Pole coordUnit="kmyr/s">
+							<C1 unit="m/s">1.0</C1>
+							<C2 unit="keV">0.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</Polygon>
+			<Circle>
+				<Center coordUnit="deg">
+					<C1 unit="c/y">0.0</C1>
+					<C2 unit="km/s/Mpc">0.0</C2>
+				</Center>
+				<Radius unit="arcsec/yr">0.0</Radius>
+			</Circle>
+			<BBox>
+				<RaCenter unit="ppm/K">0.0</RaCenter>
+				<DecCenter unit="J">1.0</DecCenter>
+				<RaHalfWidth unit="R">0.0</RaHalfWidth>
+				<DecHalfWidth unit="T">0.0</DecHalfWidth>
+			</BBox>
+		</ImgSpatialFootprint>
+		<Masks>
+			<HotPixelMask decBit="1" hexBit="0x00000001"/>
+			<ColdPixelMask decBit="2" hexBit="0x00000002"/>
+			<SaturatedPixelMask decBit="4" hexBit="0x00000004"/>
+			<CosmicRayPixelMask decBit="8" hexBit="0x00000008"/>
+			<SatelliteTrailPixelMask decBit="16" hexBit="0x00000010"/>
+			<InterpolatedPixelMask decBit="32" hexBit="0x00000020"/>
+			<BleedingPixelMask decBit="64" hexBit="0x00000040"/>
+			<OnBoardPixelMask decBit="128" hexBit="0x00000080"/>
+			<BadPixelMask decBit="256" hexBit="0x00000100"/>
+			<NonLinearPixelMask decBit="512" hexBit="0x00000200"/>
+			<PersistentChargePixelMask decBit="1024" hexBit="0x00000400"/>
+			<GhostPixelMask decBit="2048" hexBit="0x00000800"/>
+			<TransientObjectPixelMask decBit="4096" hexBit="0x00001000"/>
+			<ExtendedObjectPixelMask decBit="8192" hexBit="0x00002000"/>
+			<ScatteredLightPixelMask decBit="16384" hexBit="0x00004000"/>
+			<ChargeInjectionPixelMask decBit="32768" hexBit="0x00008000"/>
+			<NearChargeInjectionPixelMask decBit="65536" hexBit="0x00010000"/>
+			<SaturatedXTalkGhostPixelMask decBit="131072" hexBit="0x00020000"/>
+			<StarSignalPixelMask decBit="262144" hexBit="0x00040000"/>
+			<UserDefinedPixelMask decBit="33554432" hexBit="0x10000000"/>
+		</Masks>
+		<DetectorList>
+			<Detector>
+				<DetectorId>jzodbWoCejy20N0bZLMfOGo3lunR</DetectorId>
+				<Gain>4.0</Gain>
+				<WCS>
+					<CTYPE1>
+						<CoordinateType>RA</CoordinateType>
+						<ProjectionType>STG</ProjectionType>
+					</CTYPE1>
+					<CTYPE2>
+						<CoordinateType>DEC</CoordinateType>
+						<ProjectionType>TPV</ProjectionType>
+					</CTYPE2>
+					<CRVAL1>5.0</CRVAL1>
+					<CRVAL2>-2.0</CRVAL2>
+					<CRPIX1>-4.0</CRPIX1>
+					<CRPIX2>-2.0</CRPIX2>
+					<CD1_1>-6.0</CD1_1>
+					<CD1_2>-9.0</CD1_2>
+					<CD2_1>9.0</CD2_1>
+					<CD2_2>2.0</CD2_2>
+					<NonLinearCoeffs>
+						<NonLinearTPVAstromCoeffs>
+							<PV1_0>-1.0</PV1_0>
+							<PV1_1>1.0</PV1_1>
+							<PV1_2>-5.0</PV1_2>
+							<PV1_3>-9.0</PV1_3>
+							<PV1_4>-8.0</PV1_4>
+							<PV1_5>8.0</PV1_5>
+							<PV1_6>-4.0</PV1_6>
+							<PV1_7>9.0</PV1_7>
+							<PV1_8>3.0</PV1_8>
+							<PV1_9>-4.0</PV1_9>
+							<PV1_10>3.0</PV1_10>
+							<PV2_0>-4.0</PV2_0>
+							<PV2_1>2.0</PV2_1>
+							<PV2_2>1.0</PV2_2>
+							<PV2_3>4.0</PV2_3>
+							<PV2_4>-3.0</PV2_4>
+							<PV2_5>-7.0</PV2_5>
+							<PV2_6>-4.0</PV2_6>
+							<PV2_7>-8.0</PV2_7>
+							<PV2_8>6.0</PV2_8>
+							<PV2_9>-5.0</PV2_9>
+							<PV2_10>3.0</PV2_10>
+						</NonLinearTPVAstromCoeffs>
+					</NonLinearCoeffs>
+					<DetectorId>NGUgtPbsLArdX3SgdJNED</DetectorId>
+				</WCS>
+				<ZeroPoint unit="mag">
+					<ZeroPointType>relative</ZeroPointType>
+					<Value>-8.0</Value>
+					<Error>-5.0</Error>
+					<Comment>lyQ8N</Comment>
+					<ValidityRange>
+						<Name>k87yJ</Name>
+						<Type>akuSX</Type>
+						<TimestampStart>2020-06-10T15:00:36.724Z</TimestampStart>
+						<TimestampEnd>2020-06-10T15:00:36.724Z</TimestampEnd>
+					</ValidityRange>
+					<DetectorId>xqs</DetectorId>
+				</ZeroPoint>
+				<ReadoutNoise>0.0</ReadoutNoise>
+				<Saturation>-387472232</Saturation>
+				<BiasLevel>-4.0</BiasLevel>
+				<ImgSpatialFootprint>
+					<Polygon>
+						<Vertex>
+							<Position coordUnit="kHz">
+								<C1 unit="particles/s/cm2">0.0</C1>
+								<C2 unit="mag/kpc">1.0</C2>
+							</Position>
+							<SmallCircle>
+								<Pole coordUnit="Angstrom">
+									<C1 unit="AU">1.0</C1>
+									<C2 unit="ppm/K">1.0</C2>
+								</Pole>
+							</SmallCircle>
+						</Vertex>
+					</Polygon>
+					<Circle>
+						<Center coordUnit="uNewton/kg">
+							<C1 unit="mas-2">0.0</C1>
+							<C2 unit="sr">0.0</C2>
+						</Center>
+						<Radius unit="nm">1.0</Radius>
+					</Circle>
+					<BBox>
+						<RaCenter unit="1/m">1.0</RaCenter>
+						<DecCenter unit="deg">1.0</DecCenter>
+						<RaHalfWidth unit="mag/kpc">1.0</RaHalfWidth>
+						<DecHalfWidth unit="uNewton/kg">1.0</DecHalfWidth>
+					</BBox>
+				</ImgSpatialFootprint>
+			</Detector>
+		</DetectorList>
+		<ObservationDateTime>
+			<OBT>2020-06-10T15:00:36.66Z</OBT>
+			<UTC>2020-06-10T15:00:36.661Z</UTC>
+			<MJD>-5.0</MJD>
+		</ObservationDateTime>
+		<ObservationSequence>
+			<FieldId>-1</FieldId>
+			<ObservationId>-1</ObservationId>
+			<DitherObservation>0</DitherObservation>
+			<PointingId>-1</PointingId>
+			<Exposure>-1</Exposure>
+			<TotalExposure>-1</TotalExposure>
+			<ObjectId>N/A</ObjectId>
+			<ObjectName>N/A</ObjectName>
+		</ObservationSequence>
+		<DateRange>
+			<Name>N/A</Name>
+			<Type>N/A</Type>
+			<TimestampStart>2020-06-10T15:00:36.663Z</TimestampStart>
+			<TimestampEnd>2020-06-10T15:00:36.664Z</TimestampEnd>
+		</DateRange>
+		<InstrumentMode>Science</InstrumentMode>
+		<CompressionAlgorithm>NO_COMPRESSION</CompressionAlgorithm>
+		<FrameChecksum>-1</FrameChecksum>
+		<CommandedFPAPointing type="BottomLeft">
+			<RA>0.0</RA>
+			<Dec>0.0</Dec>
+			<PositionAngle>0.0</PositionAngle>
+		</CommandedFPAPointing>
+		<ReconsFPAPointing type="Center">
+			<RA>0.0</RA>
+			<Dec>0.0</Dec>
+			<PositionAngle>0.0</PositionAngle>
+		</ReconsFPAPointing>
+		<PredictedOrbit>
+			<Position>3.0 4.0 5.0</Position>
+			<Velocity>3.0 4.0 5.0</Velocity>
+			<SolarAspectAngle>2.0</SolarAspectAngle>
+		</PredictedOrbit>
+		<ReconsOrbit>
+			<Position>3.0 4.0 5.0</Position>
+			<Velocity>3.0 4.0 5.0</Velocity>
+			<SolarAspectAngle>3.0</SolarAspectAngle>
+		</ReconsOrbit>
+		<Readout>
+			<VerticalStart>-1</VerticalStart>
+			<VerticalEnd>-1</VerticalEnd>
+			<IdleTime>
+				<Value>-1.0</Value>
+				<Unit>s</Unit>
+			</IdleTime>
+			<ROEConfigurationTableId>-1</ROEConfigurationTableId>
+		</Readout>
+		<ShutterUnit>
+			<ConfigSINETableId>-1</ConfigSINETableId>
+			<ConfigFreqTableId>-1</ConfigFreqTableId>
+			<ConfigShortFreqTableId>-1</ConfigShortFreqTableId>
+			<ShutterUnitConfigurationStatus>NOT_INITIALISED</ShutterUnitConfigurationStatus>
+		</ShutterUnit>
+		<CalibUnit>
+			<Status>true</Status>
+			<Duration>
+				<Value>-1.0</Value>
+				<Unit>s</Unit>
+			</Duration>
+			<Led>
+				<LedId>N/A</LedId>
+				<Status>false</Status>
+				<Current>
+					<Value>-1.0</Value>
+					<Unit>S</Unit>
+				</Current>
+			</Led>
+		</CalibUnit>
+		<ChargedInduced>
+			<Status>true</Status>
+			<Parameters>
+				<InjectionDrainLowBias>
+					<Value>6.0</Value>
+					<Unit>J/m3/K4</Unit>
+				</InjectionDrainLowBias>
+				<InjectionDrainPulseDuration>
+					<Value>2.0</Value>
+					<Unit>cd</Unit>
+				</InjectionDrainPulseDuration>
+				<InjectionDrainLowPulseDelay>
+					<Value>0.0</Value>
+					<Unit>stars</Unit>
+				</InjectionDrainLowPulseDelay>
+				<InjectionGate1Voltage>
+					<Value>0.0</Value>
+					<Unit>GeV</Unit>
+				</InjectionGate1Voltage>
+				<InjectionGate2Voltage>
+					<Value>4.0</Value>
+					<Unit>solRad</Unit>
+				</InjectionGate2Voltage>
+				<InjectedLinesCount>-1</InjectedLinesCount>
+				<NonInjectedLinesCount>-1</NonInjectedLinesCount>
+				<VerticalStart>-1</VerticalStart>
+				<VerticalEnd>-1</VerticalEnd>
+			</Parameters>
+		</ChargedInduced>
+		<WLQ2Exposures>
+			<PRNUCorrectedExposure format="vis.wlq2PRNUCorrection" version="0.1">
+				<DataContainer filestatus="ARCHIVED_OFFLINE">
+					<FileName>None</FileName>
+				</DataContainer>
+			</PRNUCorrectedExposure>
+		</WLQ2Exposures>
+		<PsfModelStorage format="vis.psfModel" version="0.1">
+			<DataContainer filestatus="ARCHIVED_CERNVMFS">
+				<FileName>None</FileName>
+			</DataContainer>
+		</PsfModelStorage>
+		<BackgroundStorage format="vis.backgroundMap" version="0.1">
+			<DataContainer filestatus="">
+				<FileName>None</FileName>
+			</DataContainer>
+		</BackgroundStorage>
+		<WeightStorage format="vis.weightMap" version="0.1">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</WeightStorage>
+		<XTalkStorage>
+			<DataContainer filestatus="ARCHIVED_ONLINE">
+				<FileName>None</FileName>
+			</DataContainer>
+		</XTalkStorage>
+		<DataStorage format="vis.calibratedFrame" version="0.1">
+			<DataContainer filestatus="DELETED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+		<QualityParams>
+			<Mean flagged="true">1.0</Mean>
+			<Median flagged="false">1.0</Median>
+			<Mode flagged="true">0.0</Mode>
+			<StDev flagged="false">0.0</StDev>
+			<Min flagged="true">1.0</Min>
+			<Max flagged="true">1.0</Max>
+			<PixelCount flagged="false">1</PixelCount>
+			<Level flagged="false">1.0</Level>
+			<MaskedPixelFraction flagged="false">0.0</MaskedPixelFraction>
+			<HotPixelCount flagged="false">0</HotPixelCount>
+			<DeadPixelCount flagged="false">0</DeadPixelCount>
+			<GhostPixelCount flagged="false">1</GhostPixelCount>
+			<CosmicRayPixelCount flagged="true">1</CosmicRayPixelCount>
+			<StDevDiff flagged="true">1.0</StDevDiff>
+			<SubWinFlatness flagged="true">0.0</SubWinFlatness>
+			<FourierFreq flagged="true">1.0</FourierFreq>
+			<FourierFreqPower flagged="true">0.0</FourierFreqPower>
+			<SigmaClipMode flagged="false">1</SigmaClipMode>
+			<PercentileLevel flagged="false">1.0</PercentileLevel>
+			<ChiFit flagged="true">1.0</ChiFit>
+			<Temperature flagged="true">0.0</Temperature>
+			<SignalToNoiseRatio flagged="false">1.0</SignalToNoiseRatio>
+		</QualityParams>
+	</Data>
+	<QualityFlags>
+		<DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
+		<AuxiliaryFlags flagName="GaEKU" flagged="false" maxLimit="-7.0" minLimit="-3.0" xpath="KyerY">false</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>97E49</Key>
+			<Description>eEQmF</Description>
+			<StringValue>hTL4c</StringValue>
+			<Unit>e3yj1</Unit>
+		</Parameter>
+	</Parameters>
+</ns1:DpdVisCalibratedFrame>
