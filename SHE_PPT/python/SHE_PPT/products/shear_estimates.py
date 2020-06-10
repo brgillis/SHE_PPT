@@ -36,10 +36,10 @@ sample_file_name = "SHE_PPT/sample_shear_measurements.xml"
 
 def init():
     """
-        Adds some extra functionality to the dpdSheValidatedMeasurements product
+        Adds some extra functionality to the dpdSheMeasurements product
     """
 
-    binding_class = dpdSheValidatedMeasurements
+    binding_class = dpdSheMeasurements
 
     # Add the data file name methods
 
