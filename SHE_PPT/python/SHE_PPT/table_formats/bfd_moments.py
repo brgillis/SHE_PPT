@@ -41,8 +41,8 @@ class BFDMomentsTableMeta(object):
 
     def __init__(self):
 
-        self.__version__ = "0.3"
-        self.table_format = "she.bfdShearEstimates"
+        self.__version__ = "8.0"
+        self.table_format = "she.bfdMoments"
 
         # Table metadata labels
         self.fits_vers = "FITS_VER"
@@ -59,12 +59,7 @@ class BFDMomentsTableMeta(object):
         self.nlost = "NLOST"
         self.wt_n = "WT_N"
         self.wt_sigma = "WT_SIGMA"
-        #self.bfd_tmpl_snmin = "T_SNMIN"
-        #self.bfd_tmpl_sigma_xy = "T_SIGXY"
-        #self.bfd_tmpl_sigma_flux = "T_SIGFLX"
-        #self.bfd_tmpl_sigma_step = "T_SIGSTP"
-        #self.bfd_tmpl_sigma_max = "T_SIGMAX"
-        #self.bfd_tmpl_xy_max = "T_XYMAX"
+        
 
         self.validated = "VALID"
 
@@ -145,9 +140,9 @@ class BFDMomentsTableFormat(object):
         self.updated_ra_err = set_column_properties(
             "SHE_BFD_UPDATED_RA_ERR", is_optional=False, comment="deg")
         self.updated_dec = set_column_properties(
-            "SHE_BFD_UPDATED_DEC", is_optional=True, comment="deg**2")
+            "SHE_BFD_UPDATED_DEC", is_optional=True, comment="deg")
         self.updated_dec_err = set_column_properties(
-            "SHE_BFD_UPDATED_DEC_ERR", is_optional=True, comment="deg**2")
+            "SHE_BFD_UPDATED_DEC_ERR", is_optional=True, comment="deg")
 
         # BFD specific columns
         self.bfd_moments = set_column_properties(
