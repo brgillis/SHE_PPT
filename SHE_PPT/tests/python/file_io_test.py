@@ -18,11 +18,13 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-10"
 
 import os
-import pytest
 from time import sleep
+
+from astropy.table import Table
+import pytest
 
 from SHE_PPT.file_io import (get_allowed_filename,
                              write_listfile,
@@ -35,7 +37,6 @@ from SHE_PPT.file_io import (get_allowed_filename,
                              find_aux_file,
                              update_xml_with_value,
                              read_xml_product)
-from astropy.table import Table
 import numpy as np
 
 
@@ -128,7 +129,7 @@ class TestIO:
         """
         from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
 
-        test_filename = find_aux_file('SHE_PPT/sample_stacked_frame.xml')
+        test_filename = find_aux_file('SHE_PPT/sample_vis_stacked_frame.xml')
 
         product = read_xml_product(test_filename)
         product.validateBinding()

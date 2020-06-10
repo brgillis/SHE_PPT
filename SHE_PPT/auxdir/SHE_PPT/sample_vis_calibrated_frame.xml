@@ -320,13 +320,6 @@
 				<VerticalEnd>-1</VerticalEnd>
 			</Parameters>
 		</ChargedInduced>
-		<WLQ2Exposures>
-			<PRNUCorrectedExposure format="vis.wlq2PRNUCorrection" version="0.1">
-				<DataContainer filestatus="ARCHIVED_OFFLINE">
-					<FileName>None</FileName>
-				</DataContainer>
-			</PRNUCorrectedExposure>
-		</WLQ2Exposures>
 		<PsfModelStorage format="vis.psfModel" version="0.1">
 			<DataContainer filestatus="ARCHIVED_CERNVMFS">
 				<FileName>None</FileName>
@@ -342,11 +335,6 @@
 				<FileName>None</FileName>
 			</DataContainer>
 		</WeightStorage>
-		<XTalkStorage>
-			<DataContainer filestatus="ARCHIVED_ONLINE">
-				<FileName>None</FileName>
-			</DataContainer>
-		</XTalkStorage>
 		<DataStorage format="vis.calibratedFrame" version="0.1">
 			<DataContainer filestatus="DELETED">
 				<FileName>None</FileName>
