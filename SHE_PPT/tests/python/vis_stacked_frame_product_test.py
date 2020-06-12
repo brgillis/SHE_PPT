@@ -1,4 +1,4 @@
-""" @file stacked_frame_product_test.py
+""" @file vis_stacked_frame_product_test.py
 
     Created 17 Nov 2017
 
@@ -18,11 +18,11 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-06-25"
+__updated__ = "2020-06-12"
 
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
-from SHE_PPT.products import stacked_frame as prod
+from SHE_PPT.products import vis_stacked_frame as prod
 
 
 class TestStackedFrameProduct(object):
@@ -56,6 +56,6 @@ class TestStackedFrameProduct(object):
         loaded_product = read_xml_product("she_stacked_frame.xml", workdir=str(tmpdir), allow_pickled=False)
 
         # Check that the filenames match
-        assert loaded_product.get_data_filename() == "data/"+subfilename
+        assert loaded_product.get_data_filename() == "data/" + subfilename
 
         pass

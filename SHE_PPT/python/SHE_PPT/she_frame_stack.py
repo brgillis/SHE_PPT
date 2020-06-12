@@ -603,7 +603,7 @@ class SHEFrameStack(object):
                                                          tags=(
                                                              mv.sci_tag, mv.noisemap_tag, mv.mask_tag),
                                                          workdir=workdir,
-                                                         dtype=products.stacked_frame.dpdVisStackedFrame,
+                                                         dtype=products.vis_stacked_frame.dpdVisStackedFrame,
                                                          **kwargs)
 
             stacked_image_data = stacked_data[0]
@@ -612,7 +612,7 @@ class SHEFrameStack(object):
 
             _, stacked_bkg_data = cls._read_product_extension(stacked_image_product_filename,
                                                               workdir=workdir,
-                                                              dtype=products.stacked_frame.dpdVisStackedFrame,
+                                                              dtype=products.vis_stacked_frame.dpdVisStackedFrame,
                                                               filetype="background",
                                                               **kwargs)
 
