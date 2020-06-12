@@ -1,4 +1,4 @@
-""" @file mosaic_product.py
+""" @file mer_segmentation_map.py
 
     Created 26 Oct 2017
 
@@ -22,7 +22,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-10"
+__updated__ = "2020-06-12"
 
 import os
 
