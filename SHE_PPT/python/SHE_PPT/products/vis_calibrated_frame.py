@@ -1,4 +1,4 @@
-""" @file calibrated_frame_product.py
+""" @file vis_calibrated_frame.py
 
     Created 17 Nov 2017
 
@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-10"
+__updated__ = "2020-06-12"
 
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider

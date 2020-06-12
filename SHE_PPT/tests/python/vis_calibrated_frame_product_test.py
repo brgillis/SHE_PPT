@@ -18,11 +18,11 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-15"
+__updated__ = "2020-06-12"
 
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
-from SHE_PPT.products import calibrated_frame as prod
+from SHE_PPT.products import vis_calibrated_frame as prod
 
 
 class TestCalibratedFrameProduct(object):
@@ -40,7 +40,7 @@ class TestCalibratedFrameProduct(object):
         product.validateBinding()
 
         # Check that it was inited with the proper filename
-        assert product.get_data_filename() == "data/"+subfilename
+        assert product.get_data_filename() == "data/" + subfilename
 
         pass
 
@@ -53,7 +53,7 @@ class TestCalibratedFrameProduct(object):
         product = prod.create_dpd_vis_calibrated_frame()
 
         for filename in product.get_all_filenames():
-            assert filename == "data/" or filename is None or filename=="data/None"
+            assert filename == "data/" or filename is None or filename == "data/None"
 
         return
 
@@ -79,9 +79,9 @@ class TestCalibratedFrameProduct(object):
         loaded_product = read_xml_product("vis_calibrated_frame.xml", workdir=str(tmpdir), allow_pickled=False)
 
         # Check that the filenames match
-        assert loaded_product.get_data_filename() == "data/"+sub_data_filename
-        assert loaded_product.get_psf_filename() == "data/"+sub_psf_filename
-        assert loaded_product.get_wgt_filename() == "data/"+sub_wgt_filename
-        assert loaded_product.get_bkg_filename() == "data/"+sub_bkg_filename
+        assert loaded_product.get_data_filename() == "data/" + sub_data_filename
+        assert loaded_product.get_psf_filename() == "data/" + sub_psf_filename
+        assert loaded_product.get_wgt_filename() == "data/" + sub_wgt_filename
+        assert loaded_product.get_bkg_filename() == "data/" + sub_bkg_filename
 
         pass
