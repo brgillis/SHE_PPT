@@ -1,4 +1,4 @@
-""" @file regauss_training_data_product.py
+""" @file she_regauss_training.py
 
     Created 24 Nov 2017
 
@@ -22,13 +22,13 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-15"
+__updated__ = "2020-06-16"
 
 import pickle
 
-from ST_DataModelBindings.dpd.she.raw.regausstraining_stub import dpdSheRegaussTraining
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
+from ST_DataModelBindings.dpd.she.raw.regausstraining_stub import dpdSheRegaussTraining
 
 sample_file_name = 'SHE_PPT/sample_regauss_training.xml'
 
@@ -94,45 +94,45 @@ class DataContainer:  # @FIXME
         self.filestatus = None
 
 
-def create_dpd_she_regauss_training_data(filename=None):
+def create_dpd_she_regauss_training(filename=None):
     """
         @TODO fill in docstring
     """
 
-    # dpd_she_regauss_training_data =
+    # dpd_she_regauss_training =
     # she_dpd.DpdSheREGAUSSTrainingDataProduct() # FIXME
-    dpd_she_regauss_training_data = read_xml_product(
+    dpd_she_regauss_training = read_xml_product(
         find_aux_file(sample_file_name), allow_pickled=False)
 
-    dpd_she_regauss_training_data.Header = HeaderProvider.create_generic_header("SHE")  # FIXME
+    dpd_she_regauss_training.Header = HeaderProvider.create_generic_header("SHE")  # FIXME
 
-    # dpd_she_regauss_training_data.Data = create_she_regauss_training_data(
+    # dpd_she_regauss_training.Data = create_she_regauss_training(
     #    filename)
 
     if filename:
-        __set_filename(dpd_she_regauss_training_data, filename)
+        __set_filename(dpd_she_regauss_training, filename)
 
-    return dpd_she_regauss_training_data
+    return dpd_she_regauss_training
 
 
 # Add a useful alias
-create_regauss_training_data_product = create_dpd_she_regauss_training_data
+create_regauss_training_data_product = create_dpd_she_regauss_training
 
 
-def create_she_regauss_training_data(filename=None):
+def create_she_regauss_training(filename=None):
     """
         @TODO fill in docstring
     """
 
-    # she_regauss_training_data = she_dpd.SheREGAUSSTrainingDataProduct() #
+    # she_regauss_training = she_dpd.SheREGAUSSTrainingDataProduct() #
     # @FIXME
-    she_regauss_training_data = SheREGAUSSTrainingDataProduct()
+    she_regauss_training = SheREGAUSSTrainingDataProduct()
 
-    she_regauss_training_data.format = "UNDEFINED"
-    she_regauss_training_data.version = "0.0"
+    she_regauss_training.format = "UNDEFINED"
+    she_regauss_training.version = "0.0"
 
-    she_regauss_training_data.DataContainer = DataContainer()
-    she_regauss_training_data.DataContainer.FileName = filename
-    she_regauss_training_data.DataContainer.filestatus = "PROPOSED"
+    she_regauss_training.DataContainer = DataContainer()
+    she_regauss_training.DataContainer.FileName = filename
+    she_regauss_training.DataContainer.filestatus = "PROPOSED"
 
-    return she_regauss_training_data
+    return she_regauss_training
