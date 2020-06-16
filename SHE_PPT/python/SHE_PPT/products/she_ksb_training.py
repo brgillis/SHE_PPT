@@ -1,4 +1,4 @@
-""" @file ksb_training_data_product.py
+""" @file she_ksb_training.py
 
     Created 24 Nov 2017
 
@@ -22,13 +22,13 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-15"
+__updated__ = "2020-06-16"
 
 import pickle
 
-from ST_DataModelBindings.dpd.she.ksbtraining_stub  import dpdSheKsbTraining
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
+from ST_DataModelBindings.dpd.she.ksbtraining_stub  import dpdSheKsbTraining
 
 sample_file_name = "SHE_PPT/sample_ksb_training.xml"
 
@@ -91,49 +91,49 @@ def __get_all_filenames(self):
 #        self.filestatus = None
 
 
-def create_dpd_she_ksb_training_data(filename=None):
+def create_dpd_ksb_training_data(filename=None):
     """
         @TODO fill in docstring
     """
 
-    # dpd_she_ksb_training_data = she_dpd.DpdSheKSBTrainingDataProduct() #
+    # dpd_ksb_training_data = she_dpd.DpdSheKSBTrainingDataProduct() #
     # FIXME
-    dpd_she_ksb_training_data = read_xml_product(
+    dpd_ksb_training_data = read_xml_product(
         find_aux_file(sample_file_name), allow_pickled=False)
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)
-    dpd_she_ksb_training_data.Header = HeaderProvider.create_generic_header("SHE")
+    dpd_ksb_training_data.Header = HeaderProvider.create_generic_header("SHE")
 
     if filename:
-        __set_filename(dpd_she_ksb_training_data, filename)
+        __set_filename(dpd_ksb_training_data, filename)
 
-    # dpd_she_ksb_training_data.Header =
+    # dpd_ksb_training_data.Header =
     # HeaderProvider.create_generic_header("SHE") # FIXME
-    # dpd_she_ksb_training_data.Header = "SHE"
+    # dpd_ksb_training_data.Header = "SHE"
 
-    # dpd_she_ksb_training_data.Data = create_she_ksb_training_data(filename)
+    # dpd_ksb_training_data.Data = create_ksb_training_data(filename)
 
-    return dpd_she_ksb_training_data
+    return dpd_ksb_training_data
 
 
 # Add a useful alias
-create_ksb_training_data_product = create_dpd_she_ksb_training_data
+create_ksb_training_data_product = create_dpd_ksb_training_data
 
 
-def create_she_ksb_training_data(filename=None):
+def create_ksb_training_data(filename=None):
     """
         @TODO fill in docstring
     """
 
-    # she_ksb_training_data = she_dpd.SheKSBTrainingDataProduct() # @FIXME
-    she_ksb_training_data = SheKSBTrainingDataProduct()
+    # ksb_training_data = she_dpd.SheKSBTrainingDataProduct() # @FIXME
+    ksb_training_data = SheKSBTrainingDataProduct()
 
-    she_ksb_training_data.format = "UNDEFINED"
-    she_ksb_training_data.version = "0.0"
+    ksb_training_data.format = "UNDEFINED"
+    ksb_training_data.version = "0.0"
 
-    she_ksb_training_data.DataContainer = DataContainer()
-    she_ksb_training_data.DataContainer.FileName = filename
-    she_ksb_training_data.DataContainer.filestatus = "PROPOSED"
+    ksb_training_data.DataContainer = DataContainer()
+    ksb_training_data.DataContainer.FileName = filename
+    ksb_training_data.DataContainer.filestatus = "PROPOSED"
 
-    return she_ksb_training_data
+    return ksb_training_data
