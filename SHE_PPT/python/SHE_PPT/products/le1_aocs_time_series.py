@@ -1,4 +1,4 @@
-""" @file aocs_time_series_product.py
+""" @file le1_aocs_time_series.py
 
     Created 10 Oct 2017
 
@@ -23,7 +23,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-16"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
@@ -33,11 +33,11 @@ import pickle
 
 def init():
     """
-        Adds some extra functionality to the DpdSheAstrometry product
+        Adds some extra functionality to the DpdLe1AocsTimeSeriesProduct product
     """
 
-    # binding_class = she_dpd.DpdSheAocsTimeSeriesProduct # @FIXME
-    binding_class = DpdSheAocsTimeSeriesProduct
+    # binding_class = she_dpd.DpdLe1AocsTimeSeriesProduct # @FIXME
+    binding_class = DpdLe1AocsTimeSeriesProduct
 
     binding_class.get_all_filenames = __get_all_filenames
 
@@ -53,7 +53,7 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-class DpdSheAocsTimeSeriesProduct:  # @FIXME
+class DpdLe1AocsTimeSeriesProduct:  # @FIXME
 
     def __init__(self):
         self.Header = None
@@ -63,39 +63,39 @@ class DpdSheAocsTimeSeriesProduct:  # @FIXME
         return False
 
 
-class SheAocsTimeSeriesProduct:  # @FIXME
+class Le1AocsTimeSeriesProduct:  # @FIXME
 
     def __init__(self):
         pass
 
 
-def create_dpd_she_aocs_time_series():
+def create_dpd_le1_aocs_time_series():
     """
         @TODO fill in docstring
     """
 
-    # dpd_she_aocs_time_series = she_dpd.DpdSheAocsTimeSeriesProduct() # @FIXME
-    dpd_she_aocs_time_series = DpdSheAocsTimeSeriesProduct()
+    # dpd_le1_aocs_time_series = she_dpd.DpdLe1AocsTimeSeriesProduct() # @FIXME
+    dpd_le1_aocs_time_series = DpdLe1AocsTimeSeriesProduct()
 
-    # dpd_she_aocs_time_series.Header =
+    # dpd_le1_aocs_time_series.Header =
     # HeaderProvider.create_generic_header("SHE") # FIXME
-    dpd_she_aocs_time_series.Header = "SHE"
+    dpd_le1_aocs_time_series.Header = "SHE"
 
-    dpd_she_aocs_time_series.Data = create_she_aocs_time_series()
+    dpd_le1_aocs_time_series.Data = create_le1_aocs_time_series()
 
-    return dpd_she_aocs_time_series
+    return dpd_le1_aocs_time_series
 
 
 # Add a useful alias
-create_aocs_time_series_product = create_dpd_she_aocs_time_series
+create_aocs_time_series_product = create_dpd_le1_aocs_time_series
 
 
-def create_she_aocs_time_series():
+def create_le1_aocs_time_series():
     """
         @TODO fill in docstring
     """
 
-    # she_aocs_time_series = she_dpd.SheAocsTimeSeriesProduct() # @FIXME
-    she_aocs_time_series = SheAocsTimeSeriesProduct()
+    # le1_aocs_time_series = she_dpd.Le1AocsTimeSeriesProduct() # @FIXME
+    le1_aocs_time_series = Le1AocsTimeSeriesProduct()
 
-    return she_aocs_time_series
+    return le1_aocs_time_series

@@ -1,8 +1,8 @@
-""" @file aocs_time_series_product_test.py
+""" @file le1_aocs_time_series_product_test.py
 
     Created 10 Oct 2017
 
-    Unit tests for the aocs_time_series data product.
+    Unit tests for the le1_aocs_time_series data product.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -18,11 +18,11 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-16"
 
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
-from SHE_PPT.products import aocs_time_series as prod
+from SHE_PPT.products import le1_aocs_time_series as prod
 
 
 class TestAocsTimeSeriesProduct(object):
@@ -33,17 +33,17 @@ class TestAocsTimeSeriesProduct(object):
     def test_validation(self):
 
         # Create the product
-        product = prod.create_dpd_she_aocs_time_series()
+        product = prod.create_dpd_le1_aocs_time_series()
 
         # Check that it validates the schema
         product.validateBinding()
 
-        pass
+        return
 
     def test_xml_writing_and_reading(self, tmpdir):
 
         # Create the product
-        product = prod.create_dpd_she_aocs_time_series()
+        product = prod.create_dpd_le1_aocs_time_series()
 
         # TODO Change something about it here when there's something to be changed
 
@@ -56,12 +56,12 @@ class TestAocsTimeSeriesProduct(object):
 
         # Check that it's the same
 
-        pass
+        return
 
     def test_pickle_writing_and_reading(self, tmpdir):
 
         # Create the product
-        product = prod.create_dpd_she_aocs_time_series()
+        product = prod.create_dpd_le1_aocs_time_series()
 
         # TODO Change something about it here when there's something to be changed
 
@@ -74,4 +74,4 @@ class TestAocsTimeSeriesProduct(object):
 
         # Check that it's the same
 
-        pass
+        return
