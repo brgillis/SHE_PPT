@@ -1,4 +1,4 @@
-""" @file momentsml_training_data_product_test.py
+""" @file she_momentsml_training_product_test.py
 
     Created 17 Nov 2017
 
@@ -18,13 +18,13 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-06-25"
+__updated__ = "2020-06-16"
 
 import pytest
 
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
-from SHE_PPT.products import momentsml_training_data as prod
+from SHE_PPT.products import she_momentsml_training as prod
 
 
 class TestMomentsMLTrainingDataProduct(object):
@@ -35,7 +35,7 @@ class TestMomentsMLTrainingDataProduct(object):
     def test_validation(self):
 
         # Create the product
-        product = prod.create_dpd_she_momentsml_training_data()
+        product = prod.create_dpd_she_momentsml_training()
 
         # Check that it validates the schema
         product.validateBinding()
@@ -45,17 +45,17 @@ class TestMomentsMLTrainingDataProduct(object):
     def test_xml_writing_and_reading(self, tmpdir):
 
         # Create the product
-        product = prod.create_dpd_she_momentsml_training_data()
+        product = prod.create_dpd_she_momentsml_training()
 
         # Change the fits filenames
         subfilename = "test_file.fits"
         product.set_filename(subfilename)
 
         # Save the product in an XML file
-        write_xml_product(product, "she_momentsml_training_data.xml", workdir=str(tmpdir), allow_pickled=False)
+        write_xml_product(product, "she_momentsml_training.xml", workdir=str(tmpdir), allow_pickled=False)
 
         # Read back the XML file
-        loaded_product = read_xml_product("she_momentsml_training_data.xml", workdir=str(tmpdir), allow_pickled=False)
+        loaded_product = read_xml_product("she_momentsml_training.xml", workdir=str(tmpdir), allow_pickled=False)
 
         # Check that the filenames match
         assert loaded_product.get_filename() == "data/" + subfilename
@@ -66,15 +66,15 @@ class TestMomentsMLTrainingDataProduct(object):
     def test_pickle_writing_and_reading(self, tmpdir):
 
         # Create the product
-        product = prod.create_dpd_she_momentsml_training_data()
+        product = prod.create_dpd_she_momentsml_training()
 
         # Change the fits filenames
         subfilename = "test_file.fits"
         product.set_filename(subfilename)
 
         # Save the product in an XML file
-        filename = "she_momentsml_training_data.xml"
-        write_pickled_product(product, filename,workdir=str(tmpdir))
+        filename = "she_momentsml_training.xml"
+        write_pickled_product(product, filename, workdir=str(tmpdir))
 
         # Read back the XML file
         loaded_product = read_pickled_product(filename, workdir=str(tmpdir))
