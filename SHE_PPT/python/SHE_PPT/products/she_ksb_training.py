@@ -91,34 +91,34 @@ def __get_all_filenames(self):
 #        self.filestatus = None
 
 
-def create_dpd_ksb_training_data(filename=None):
+def create_dpd_she_ksb_training(filename=None):
     """
         @TODO fill in docstring
     """
 
-    # dpd_ksb_training_data = she_dpd.DpdSheKSBTrainingDataProduct() #
+    # dpd_she_ksb_training = she_dpd.DpdSheKSBTrainingDataProduct() #
     # FIXME
-    dpd_ksb_training_data = read_xml_product(
+    dpd_she_ksb_training = read_xml_product(
         find_aux_file(sample_file_name), allow_pickled=False)
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)
-    dpd_ksb_training_data.Header = HeaderProvider.create_generic_header("SHE")
+    dpd_she_ksb_training.Header = HeaderProvider.create_generic_header("SHE")
 
     if filename:
-        __set_filename(dpd_ksb_training_data, filename)
+        __set_filename(dpd_she_ksb_training, filename)
 
-    # dpd_ksb_training_data.Header =
+    # dpd_she_ksb_training.Header =
     # HeaderProvider.create_generic_header("SHE") # FIXME
-    # dpd_ksb_training_data.Header = "SHE"
+    # dpd_she_ksb_training.Header = "SHE"
 
-    # dpd_ksb_training_data.Data = create_ksb_training_data(filename)
+    # dpd_she_ksb_training.Data = create_ksb_training_data(filename)
 
-    return dpd_ksb_training_data
+    return dpd_she_ksb_training
 
 
 # Add a useful alias
-create_ksb_training_data_product = create_dpd_ksb_training_data
+create_ksb_training_data_product = create_dpd_she_ksb_training
 
 
 def create_ksb_training_data(filename=None):
