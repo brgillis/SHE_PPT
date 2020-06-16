@@ -1,4 +1,4 @@
-""" @file lensmc_training_data_product.py
+""" @file she_lensmc_training.py
 
     Created 24 Nov 2017
 
@@ -22,13 +22,13 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-15"
+__updated__ = "2020-06-16"
 
 import pickle
 
-from ST_DataModelBindings.dpd.she.lensmctraining_stub import dpdSheLensMcTraining
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
+from ST_DataModelBindings.dpd.she.lensmctraining_stub import dpdSheLensMcTraining
 
 sample_file_name = "SHE_PPT/sample_lensmc_training.xml"
 
@@ -94,43 +94,43 @@ class DataContainer:  # @FIXME
         self.filestatus = None
 
 
-def create_dpd_she_lensmc_training_data(filename=None):
+def create_dpd_she_lensmc_training(filename=None):
     """
         @TODO fill in docstring
     """
 
-    # dpd_she_lensmc_training_data = she_dpd.DpdSheLensMCTrainingDataProduct()
+    # dpd_she_lensmc_training = she_dpd.DpdSheLensMCTrainingDataProduct()
     # # FIXME
-    dpd_she_lensmc_training_data = read_xml_product(find_aux_file(sample_file_name))
+    dpd_she_lensmc_training = read_xml_product(find_aux_file(sample_file_name))
 
-    dpd_she_lensmc_training_data.Header = HeaderProvider.create_generic_header("SHE")
+    dpd_she_lensmc_training.Header = HeaderProvider.create_generic_header("SHE")
 
-    # dpd_she_lensmc_training_data.Data = create_she_lensmc_training_data(
+    # dpd_she_lensmc_training.Data = create_she_lensmc_training(
     #    filename)
 
     if filename:
-        __set_filename(dpd_she_lensmc_training_data, filename)
-    return dpd_she_lensmc_training_data
+        __set_filename(dpd_she_lensmc_training, filename)
+    return dpd_she_lensmc_training
 
 
 # Add a useful alias
-create_lensmc_training_data_product = create_dpd_she_lensmc_training_data
+create_lensmc_training_data_product = create_dpd_she_lensmc_training
 
 
-def create_she_lensmc_training_data(filename=None):
+def create_she_lensmc_training(filename=None):
     """
         @TODO fill in docstring
     """
 
-    # she_lensmc_training_data = she_dpd.SheLensMCTrainingDataProduct() #
+    # she_lensmc_training = she_dpd.SheLensMCTrainingDataProduct() #
     # @FIXME
-    she_lensmc_training_data = SheLensMCTrainingDataProduct()
+    she_lensmc_training = SheLensMCTrainingDataProduct()
 
-    she_lensmc_training_data.format = "UNDEFINED"
-    she_lensmc_training_data.version = "0.0"
+    she_lensmc_training.format = "UNDEFINED"
+    she_lensmc_training.version = "0.0"
 
-    she_lensmc_training_data.DataContainer = DataContainer()
-    she_lensmc_training_data.DataContainer.FileName = filename
-    she_lensmc_training_data.DataContainer.filestatus = "PROPOSED"
+    she_lensmc_training.DataContainer = DataContainer()
+    she_lensmc_training.DataContainer.FileName = filename
+    she_lensmc_training.DataContainer.filestatus = "PROPOSED"
 
-    return she_lensmc_training_data
+    return she_lensmc_training
