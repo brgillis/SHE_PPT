@@ -1,4 +1,4 @@
-""" @file bfd_training_product_test.py
+""" @file she_bfd_training_product_test.py
 
     Created 24 Nov 2017
 
