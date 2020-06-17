@@ -61,7 +61,6 @@ class PsfZmStateTableMeta(object):
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
                                      (self.format, None),
-                                     (self.extname, None),
                                      ))
 
         # A list of columns in the desired order
@@ -164,9 +163,9 @@ def make_psf_zm_state_table_header(data_type="FIELD"):
     header[tf.m.version] = tf.__version__
     header[tf.m.format] = tf.m.table_format
 
-    header[tf.m.extname] = mv.psf_zm_state_tag
+    #header[tf.m.extname] = mv.psf_zm_state_tag
 
-    header[tf.m.identity] = mv.psf_zm_identity
+    #header[tf.m.identity] = mv.psf_zm_identity
 
     return header
 

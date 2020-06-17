@@ -61,7 +61,6 @@ class PsfPdStateTableMeta(object):
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
                                      (self.format, None),
-                                     (self.extname, None),
                                      ))
 
         # A list of columns in the desired order
