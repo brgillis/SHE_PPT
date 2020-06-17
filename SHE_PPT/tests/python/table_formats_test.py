@@ -29,12 +29,12 @@ from SHE_PPT import magic_values as mv
 from SHE_PPT.table_formats.bfd_moments import tf as bfdtf, initialise_bfd_moments_table
 from SHE_PPT.table_formats.details import tf as datf, initialise_details_table
 from SHE_PPT.table_formats.detections import tf as detf, initialise_detections_table
-from SHE_PPT.table_formats.galaxy_population import tf as gptf, initialise_galaxy_population_table
+from SHE_PPT.table_formats.galaxy_population_priors import tf as gptf, initialise_galaxy_population_table
 from SHE_PPT.table_formats.ksb_training import tf as kttf, initialise_ksb_training_table
 from SHE_PPT.table_formats.p_of_e import tf as petf, initialise_p_of_e_table
 from SHE_PPT.table_formats.psf import tf as pstf, initialise_psf_table
-from SHE_PPT.table_formats.psf_tm_state import tf as tmtf, initialise_psf_tm_state_table
-from SHE_PPT.table_formats.psf_zm_state import tf as zmtf, initialise_psf_zm_state_table
+from SHE_PPT.table_formats.psf_tm_state import tff as tmtf, tfc as tmtc, initialise_psf_tm_state_table
+from SHE_PPT.table_formats.psf_zm_state import tff as zmtf, tfc as zmtc, initialise_psf_zm_state_table
 from SHE_PPT.table_formats.shear_estimates import tf as setf, initialise_shear_estimates_table, len_chain, num_chains
 from SHE_PPT.table_formats.simulation_plan import tf as sptf, initialise_simulation_plan_table
 from SHE_PPT.table_utility import is_in_format, add_row

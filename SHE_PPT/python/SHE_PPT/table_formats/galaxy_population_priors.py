@@ -264,7 +264,7 @@ def initialise_galaxy_population_table(optional_columns=None):
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    names = []
+    names = [] 
     init_cols = []
     dtypes = []
     for colname in tf.all:
