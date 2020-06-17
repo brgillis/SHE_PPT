@@ -45,8 +45,8 @@ class BFDMomentsTableMeta(object):
         self.table_format = "she.bfdMoments"
 
         # Table metadata labels
-        self.fits_vers = "FITS_VER"
-        #self.format = "SS_FMT"
+        self.version = "FITS_VER"
+        self.format = "SS_FMT"
         self.fits_def = "FITS_DEF"
         #self.extname = mv.extname_label
         self.sflagvers="SFLAGVERS"
@@ -64,7 +64,8 @@ class BFDMomentsTableMeta(object):
         self.validated = "VALID"
 
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_vers, None),
+        self.comments = OrderedDict(((self.version, None),
+                                     (self.format, None),
                                      (self.fits_def, None),
                                      (self.sflagvers,None),
                                      (self.model_hash, None),
@@ -208,7 +209,8 @@ def make_bfd_moments_table_header(detector_x=1,
  
     header = OrderedDict()
 
-    header[tf.m.fits_vers] = tf.__version__
+    header[tf.m.version] = tf.__version__
+    header[tf.m.format] = tf.m.table_format
     header[tf.m.fits_def] = fits_def
     header[tf.m.sflagvers] = sflagvers
     
