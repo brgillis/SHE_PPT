@@ -234,7 +234,12 @@ galaxy_population_table_format = GalaxyPopulationPriorsTableFormat()
 tf = galaxy_population_table_format
 
 
-def make_galaxy_population_table_header():
+def make_galaxy_population_table_header(cnd_field=None,
+                                        tscope=None,
+                                        detect=None,
+                                        date_hst=None,
+                                        data_ver=None,
+                                        date_cnd=None):
     """
         @brief Generate a header for a galaxy population table.
 
@@ -245,11 +250,22 @@ def make_galaxy_population_table_header():
 
     header[tf.m.version] = tf.__version__
     header[tf.m.format] = tf.m.table_format
-
+    header[tf.m.cnd_field] = cnd_field
+    header[tf.m.tscope] = tscope
+    header[tf.m.detect] = detect
+    header[tf.m.date_hst] = date_hst
+    header[tf.m.data_ver] = data_ver
+    header[tf.m.date_cnd] = date_cnd
     return header
 
 
-def initialise_galaxy_population_table(optional_columns=None):
+def initialise_galaxy_population_table(optional_columns=None,
+                                       cnd_field=None,
+                                       tscope=None,
+                                       detect=None,
+                                       date_hst=None,
+                                       data_ver=None,
+                                       date_cnd=None):
     """
         @brief Initialise a galaxy population table.
 
@@ -275,7 +291,9 @@ def initialise_galaxy_population_table(optional_columns=None):
 
     galaxy_population_table = Table(init_cols, names=names, dtype=dtypes)
 
-    galaxy_population_table.meta = make_galaxy_population_table_header()
+    galaxy_population_table.meta = make_galaxy_population_table_header(
+        cnd_field=cnd_field,tscope=tscope,detect=detect,
+        date_hst=date_hst,data_ver=data_ver,date_cnd=date_cnd)
     
     assert(is_in_format(galaxy_population_table, tf))
 
