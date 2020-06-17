@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-09"
+__updated__ = "2020-06-10"
 
 from SHE_PPT.file_io import (read_xml_product, find_aux_file, get_data_filename_from_product,
                              set_data_filename_of_product)
@@ -36,7 +36,7 @@ sample_file_name = "SHE_PPT/sample_shear_measurements.xml"
 
 def init():
     """
-        Adds some extra functionality to the DpdShearMeasurements product
+        Adds some extra functionality to the dpdSheMeasurements product
     """
 
     binding_class = dpdSheMeasurements

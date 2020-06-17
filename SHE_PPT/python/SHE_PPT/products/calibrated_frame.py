@@ -21,15 +21,15 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-15"
+__updated__ = "2020-06-10"
 
+from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
 import ST_DataModelBindings.pro.vis_stub as vis_pro
 from ST_DataModelBindings.sys.dss_stub import dataContainer
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
-from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 
-sample_file_name = "SHE_PPT/sample_calibrated_frame.xml"
+sample_file_name = "SHE_PPT/sample_vis_calibrated_frame.xml"
 
 
 def init():
