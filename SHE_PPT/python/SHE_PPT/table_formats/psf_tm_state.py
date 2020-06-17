@@ -216,7 +216,7 @@ def initialise_psf_tm_state_table(data_type="FIELD",optional_columns=None,
             else:
                 init_cols.append([])
 
-            dtypes.append(dtype)
+            dtypes.append(dtype) 
 
     psf_tm_state_table = Table(init_cols, names=names, dtype=dtypes)
 
