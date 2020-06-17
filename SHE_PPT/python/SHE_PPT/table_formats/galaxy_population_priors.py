@@ -23,6 +23,8 @@ __updated__ = "2019-02-27"
 
 from collections import OrderedDict
 
+from SHE_PPT import magic_values as mv
+from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format
 from astropy.table import Table
 
@@ -120,10 +122,10 @@ class GalaxyPopulationPriorsTableFormat(object):
             "SHE_GALPOP_Z_SPEC")
         
         self.iab = set_column_properties(
-            "SHE_GALPOP_I_AB", comment="mag", dtype+">f4", fits_dtype="E")
+            "SHE_GALPOP_I_AB", comment="mag", dtype=">f4", fits_dtype="E")
         
         self.vab = set_column_properties(
-            "SHE_GALPOP_V_AB", comment="mag", dtype+">f4", fits_dtype="E")
+            "SHE_GALPOP_V_AB", comment="mag", dtype=">f4", fits_dtype="E")
         
         self.sers_sing_fit = set_column_properties(
             "SHE_GALPOP_N_SERSIC_SINGLE_FIT", dtype=">f4", fits_dtype="E")
@@ -274,7 +276,7 @@ def initialise_galaxy_population_table(optional_columns=None):
     galaxy_population_table = Table(init_cols, names=names, dtype=dtypes)
 
     galaxy_population_table.meta = make_galaxy_population_table_header()
-
+    
     assert(is_in_format(galaxy_population_table, tf))
 
     return galaxy_population_table

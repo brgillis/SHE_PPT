@@ -189,7 +189,7 @@ class regaussMeasurementsTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-regauss_measurements_table_format = regaussmeasurementsTableFormat()
+regauss_measurements_table_format = regaussMeasurementsTableFormat()
 
 # And a convient alias for it
 tf = regauss_measurements_table_format

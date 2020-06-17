@@ -77,7 +77,7 @@ class lensMcMeasurementsTableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class lens_mcMeasurementsTableFormat(object):
+class lensMcMeasurementsTableFormat(object):
     """
         @brief A class defining the format for shear estimates tables. Only the lens_mc_measurements_table_format
                instance of this should generally be accessed, and it should not be changed.
@@ -86,7 +86,7 @@ class lens_mcMeasurementsTableFormat(object):
     def __init__(self):
 
         # Get the metadata (contained within its own class)
-        self.meta = lens_mcMeasurementsTableMeta()
+        self.meta = lensMcMeasurementsTableMeta()
 
         # And a quick alias for it
         self.m = self.meta
@@ -208,7 +208,7 @@ class lens_mcMeasurementsTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-lens_mc_measurements_table_format = lens_mcmeasurementsTableFormat()
+lens_mc_measurements_table_format = lensMcMeasurementsTableFormat()
 
 # And a convient alias for it
 tf = lens_mc_measurements_table_format
@@ -245,8 +245,6 @@ def make_lens_mc_measurements_table_header(detector_x=1,
     if detector is not None:
         logger.warning(
             "'detector' argument for make_*_table_header is deprecated: Use detector_x and detector_y instead.")
-        detector_x = detector % 6
-        detector_y = detector // 6
 
     header = OrderedDict()
 

@@ -40,8 +40,9 @@ class PsfPdStateTableMeta(object):
 
     data_type = "FIELD"
 
-    def __init__(self):
+    def __init__(self, data_type):
 
+        self.data_type = data_type
         self.__version__ = "8.0"
         
         self.main_data_type = ("she.psfFieldParameters" 
@@ -73,11 +74,14 @@ class PsfPdStateTableFormat(object):
                instance of this should generally be accessed, and it should not be changed.
     """
 
+    data_type = "FIELD"
+
     def __init__(self, data_type="FIELD"):
 
+        self.data_type=data_type
         # Get the metadata (contained within its own class)
-        self.meta = PsfPdStateTableMeta()
-
+        self.meta = PsfPdStateTableMeta(self.data_type)
+        
         # And a quick alias for it
         self.m = self.meta
 
@@ -110,7 +114,7 @@ class PsfPdStateTableFormat(object):
         # Column names and info
 
         self.id = set_column_properties(
-            "OBJECT_ID" % self.data_type, dtype=">i8", fits_dtype="K")
+            "OBJECT_ID", dtype=">i8", fits_dtype="K")
         self.chisq = set_column_properties(
             "SHE_PSF_%s_CHISQ" % self.data_type, dtype=">f4", fits_dtype="E")
          
@@ -159,10 +163,6 @@ def make_psf_pd_state_table_header(data_type="FIELD"):
     header[tf.m.extname] = mv.psf_pd_state_tag
 
     header[tf.m.identity] = mv.psf_pd_identity
-
-    header[tf.m.model_hash] = model_hash
-    header[tf.m.model_seed] = model_seed
-    header[tf.m.noise_seed] = noise_seed
 
     return header
 

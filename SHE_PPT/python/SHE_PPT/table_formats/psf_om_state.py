@@ -40,8 +40,9 @@ class PsfOmStateTableMeta(object):
 
     data_type = "CAL"
     
-    def __init__(self):
+    def __init__(self, data_type):
 
+        self.data_type=data_type
         self.__version__ = "8.0"
         
         self.main_data_type = ("she.psfFieldParameters" 
@@ -71,13 +72,14 @@ class PsfOmStateTableFormat(object):
                instance of this should generally be accessed, and it should not be changed.
     """
 
+    data_type = "CAL"
     def __init__(self, data_type="CAL"):
 
         # Get the metadata (contained within its own class)
         
         self.data_type = data_type
 
-        self.meta = PsfOmStateTableMeta()
+        self.meta = PsfOmStateTableMeta(self.data_type)
 
         # And a quick alias for it
         self.m = self.meta

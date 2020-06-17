@@ -210,7 +210,7 @@ class commonCalibrationTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-common_calibration_table_format = commoncalibrationTableFormat()
+common_calibration_table_format = commonCalibrationTableFormat()
 
 # And a convient alias for it
 tf = common_calibration_table_format
@@ -232,11 +232,6 @@ def make_common_calibration_table_header(detector_x=1,
         @return header <dict>
     """
 
-    if detector is not None:
-        logger.warning(
-            "'detector' argument for make_*_table_header is deprecated: Use detector_x and detector_y instead.")
-        detector_x = detector % 6
-        detector_y = detector // 6
 
     header = OrderedDict()
 

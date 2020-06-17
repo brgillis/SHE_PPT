@@ -185,7 +185,7 @@ class momentsmlMeasurementsTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-momentsml_measurements_table_format = momentsmlmeasurementsTableFormat()
+momentsml_measurements_table_format = momentsmlMeasurementsTableFormat()
 
 # And a convient alias for it
 tf = momentsml_measurements_table_format
@@ -222,8 +222,6 @@ def make_momentsml_measurements_table_header(detector_x=1,
     if detector is not None:
         logger.warning(
             "'detector' argument for make_*_table_header is deprecated: Use detector_x and detector_y instead.")
-        detector_x = detector % 6
-        detector_y = detector // 6
 
     header = OrderedDict()
 

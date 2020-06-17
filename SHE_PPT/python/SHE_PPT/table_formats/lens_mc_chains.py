@@ -88,7 +88,7 @@ class lensMcChainsTableFormat(object):
     def __init__(self):
 
         # Get the metadata (contained within its own class)
-        self.meta = lens_mcChainsTableMeta()
+        self.meta = lensMcChainsTableMeta()
 
         # And a quick alias for it
         self.m = self.meta
@@ -170,7 +170,7 @@ class lensMcChainsTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-lens_mc_chains_table_format = lens_mcchainsTableFormat()
+lens_mc_chains_table_format = lensMcChainsTableFormat()
 
 # And a convient alias for it
 tf = lens_mc_chains_table_format

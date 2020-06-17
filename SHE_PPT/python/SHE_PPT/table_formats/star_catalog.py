@@ -127,7 +127,7 @@ class StarCatalogTableFormat(object):
             "SHE_STARCAT_UPDATED_DEC_ERR", comment="deg", dtype=">f8", fits_dtype="E")
         self.flux = set_column_properties(
             "SHE_STARCAT_FLUX", dtype=">f4", fits_dtype="E")
-        sefl.flux_err = set_column_properties(
+        self.flux_err = set_column_properties(
             "SHE_STARCAT_FLUX_ERR", dtype=">f4", fits_dtype="E")
                 
         self.e1 = set_column_properties("SHE_STARCAT_E1", dtype=">f4", fits_dtype="E",

@@ -205,9 +205,7 @@ def make_bfd_moments_table_header(detector_x=1,
     if detector is not None:
         logger.warning(
             "'detector' argument for make_*_table_header is deprecated: Use detector_x and detector_y instead.")
-        detector_x = detector % 6
-        detector_y = detector // 6
-
+ 
     header = OrderedDict()
 
     header[tf.m.fits_vers] = tf.__version__

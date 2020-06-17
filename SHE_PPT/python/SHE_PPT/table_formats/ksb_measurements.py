@@ -188,7 +188,7 @@ class ksbMeasurementsTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-ksb_measurements_table_format = ksbmeasurementsTableFormat()
+ksb_measurements_table_format = ksbMeasurementsTableFormat()
 
 # And a convient alias for it
 tf = ksb_measurements_table_format
