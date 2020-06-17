@@ -224,4 +224,4 @@ def initialise_psf_tm_state_table(data_type="FIELD",optional_columns=None,
 
     assert(is_in_format(psf_tm_state_table, tf))
 
-    return psf_tm_state_table
+    return psf_tm_state_table 
