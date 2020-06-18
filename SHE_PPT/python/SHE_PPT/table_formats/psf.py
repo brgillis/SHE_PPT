@@ -129,9 +129,9 @@ class PSFTableFormat(object):
             "SHE_PSF_Y", dtype=">f4", fits_dtype="E")
        
         self.cal_time = set_column_properties(
-            "SHE_PSF_CALIB_TIME", dtype="S", fits_dtype="A", length=20, is_optional=True)
+            "SHE_PSF_CALIB_TIME", dtype="S", fits_dtype="A", length=20)
         self.field_time = set_column_properties(
-            "SHE_PSF_FIELD_TIME", dtype="S", fits_dtype="A", length=20, is_optional=True)
+            "SHE_PSF_FIELD_TIME", dtype="S", fits_dtype="A", length=20)
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
