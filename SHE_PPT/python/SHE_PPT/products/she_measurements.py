@@ -1,4 +1,4 @@
-""" @file shear_estimates_product.py
+""" @file she_measurements.py
 
     Created 9 Oct 2017
 
@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-10"
+__updated__ = "2020-06-18"
 
 from SHE_PPT.file_io import (read_xml_product, find_aux_file, get_data_filename_from_product,
                              set_data_filename_of_product)
@@ -235,7 +235,7 @@ def __get_spatial_footprint(self):
     return self.Data.CatalogCoverage.SpatialCoverage.Polygon
 
 
-def create_dpd_shear_estimates(BFD_filename="",
+def create_dpd_she_measurements(BFD_filename="",
                                KSB_filename="",
                                LensMC_filename="",
                                MomentsML_filename="",
@@ -245,26 +245,26 @@ def create_dpd_shear_estimates(BFD_filename="",
         @TODO fill in docstring
     """
 
-    dpd_shear_estimates = read_xml_product(
+    dpd_she_measurements = read_xml_product(
         find_aux_file(sample_file_name), allow_pickled=False)
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)
-    dpd_shear_estimates.Header = HeaderProvider.create_generic_header("SHE")
+    dpd_she_measurements.Header = HeaderProvider.create_generic_header("SHE")
 
-    __set_BFD_filename(dpd_shear_estimates, BFD_filename)
-    __set_KSB_filename(dpd_shear_estimates, KSB_filename)
-    __set_LensMC_filename(dpd_shear_estimates, LensMC_filename)
-    __set_MomentsML_filename(dpd_shear_estimates, MomentsML_filename)
-    __set_REGAUSS_filename(dpd_shear_estimates, REGAUSS_filename)
+    __set_BFD_filename(dpd_she_measurements, BFD_filename)
+    __set_KSB_filename(dpd_she_measurements, KSB_filename)
+    __set_LensMC_filename(dpd_she_measurements, LensMC_filename)
+    __set_MomentsML_filename(dpd_she_measurements, MomentsML_filename)
+    __set_REGAUSS_filename(dpd_she_measurements, REGAUSS_filename)
     if spatial_footprint is not None:
-        __set_spatial_footprint(dpd_shear_estimates, spatial_footprint)
+        __set_spatial_footprint(dpd_she_measurements, spatial_footprint)
 
-    return dpd_shear_estimates
+    return dpd_she_measurements
 
 
 # Add a useful alias
-create_shear_estimates_product = create_dpd_shear_estimates
+create_she_measurements_product = create_dpd_she_measurements
 
 
 def create_bfd_moments(filename):
@@ -272,19 +272,19 @@ def create_bfd_moments(filename):
         @TODO fill in docstring
     """
 
-    BFD_shear_estimates = she_pro.sheBfdMoments()
+    BFD_she_measurements = she_pro.sheBfdMoments()
 
-    BFD_shear_estimates.format = "she.bfdMoments"
-    BFD_shear_estimates.version = "0.1"
+    BFD_she_measurements.format = "she.bfdMoments"
+    BFD_she_measurements.version = "0.1"
 
-    BFD_shear_estimates.DataStorage = she_pro.sheBfdMomentsFile()
-    BFD_shear_estimates.Valid = "UNKNOWN"
+    BFD_she_measurements.DataStorage = she_pro.sheBfdMomentsFile()
+    BFD_she_measurements.Valid = "UNKNOWN"
 
-    BFD_shear_estimates.DataStorage.DataContainer = dataContainer()
-    BFD_shear_estimates.DataStorage.DataContainer.FileName = filename
-    BFD_shear_estimates.DataStorage.DataContainer.filestatus = "PROPOSED"
+    BFD_she_measurements.DataStorage.DataContainer = dataContainer()
+    BFD_she_measurements.DataStorage.DataContainer.FileName = filename
+    BFD_she_measurements.DataStorage.DataContainer.filestatus = "PROPOSED"
 
-    return BFD_shear_estimates
+    return BFD_she_measurements
 
 
 def create_ksb_estimates(filename):
@@ -292,16 +292,16 @@ def create_ksb_estimates(filename):
         @TODO fill in docstring
     """
 
-    KSB_shear_estimates = she_pro.sheKsbShearMeasurements()
+    KSB_she_measurements = she_pro.sheKsbShearMeasurements()
 
-    KSB_shear_estimates.format = "she.ksbShearMeasurements"
-    KSB_shear_estimates.version = "0.1"
+    KSB_she_measurements.format = "she.ksbShearMeasurements"
+    KSB_she_measurements.version = "0.1"
 
-    KSB_shear_estimates.DataContainer = dataContainer()
-    KSB_shear_estimates.DataContainer.FileName = filename
-    KSB_shear_estimates.DataContainer.filestatus = "PROPOSED"
+    KSB_she_measurements.DataContainer = dataContainer()
+    KSB_she_measurements.DataContainer.FileName = filename
+    KSB_she_measurements.DataContainer.filestatus = "PROPOSED"
 
-    return KSB_shear_estimates
+    return KSB_she_measurements
 
 
 def create_lensmc_estimates(filename):
@@ -309,16 +309,16 @@ def create_lensmc_estimates(filename):
         @TODO fill in docstring
     """
 
-    LensMC_shear_estimates = she_pro.sheLensMcShearMeasurements()
+    LensMC_she_measurements = she_pro.sheLensMcShearMeasurements()
 
-    LensMC_shear_estimates.format = "she.lensMcShearMeasurements"
-    LensMC_shear_estimates.version = "0.1"
+    LensMC_she_measurements.format = "she.lensMcShearMeasurements"
+    LensMC_she_measurements.version = "0.1"
 
-    LensMC_shear_estimates.DataContainer = dataContainer()
-    LensMC_shear_estimates.DataContainer.FileName = filename
-    LensMC_shear_estimates.DataContainer.filestatus = "PROPOSED"
+    LensMC_she_measurements.DataContainer = dataContainer()
+    LensMC_she_measurements.DataContainer.FileName = filename
+    LensMC_she_measurements.DataContainer.filestatus = "PROPOSED"
 
-    return LensMC_shear_estimates
+    return LensMC_she_measurements
 
 
 def create_momentsml_estimates(filename):
@@ -326,16 +326,16 @@ def create_momentsml_estimates(filename):
         @TODO fill in docstring
     """
 
-    MomentsML_shear_estimates = she_pro.sheMomentsMlShearMeasurements()
+    MomentsML_she_measurements = she_pro.sheMomentsMlShearMeasurements()
 
-    MomentsML_shear_estimates.format = "she.momentsMlShearMeasurements"
-    MomentsML_shear_estimates.version = "0.1"
+    MomentsML_she_measurements.format = "she.momentsMlShearMeasurements"
+    MomentsML_she_measurements.version = "0.1"
 
-    MomentsML_shear_estimates.DataContainer = dataContainer()
-    MomentsML_shear_estimates.DataContainer.FileName = filename
-    MomentsML_shear_estimates.DataContainer.filestatus = "PROPOSED"
+    MomentsML_she_measurements.DataContainer = dataContainer()
+    MomentsML_she_measurements.DataContainer.FileName = filename
+    MomentsML_she_measurements.DataContainer.filestatus = "PROPOSED"
 
-    return MomentsML_shear_estimates
+    return MomentsML_she_measurements
 
 
 def create_regauss_estimates(filename):
@@ -343,13 +343,13 @@ def create_regauss_estimates(filename):
         @TODO fill in docstring
     """
 
-    REGAUSS_shear_estimates = she_pro.sheRegaussShearMeasurements()
+    REGAUSS_she_measurements = she_pro.sheRegaussShearMeasurements()
 
-    REGAUSS_shear_estimates.format = "she.regaussShearMeasurements"
-    REGAUSS_shear_estimates.version = "0.1"
+    REGAUSS_she_measurements.format = "she.regaussShearMeasurements"
+    REGAUSS_she_measurements.version = "0.1"
 
-    REGAUSS_shear_estimates.DataContainer = dataContainer()
-    REGAUSS_shear_estimates.DataContainer.FileName = filename
-    REGAUSS_shear_estimates.DataContainer.filestatus = "PROPOSED"
+    REGAUSS_she_measurements.DataContainer = dataContainer()
+    REGAUSS_she_measurements.DataContainer.FileName = filename
+    REGAUSS_she_measurements.DataContainer.filestatus = "PROPOSED"
 
-    return REGAUSS_shear_estimates
+    return REGAUSS_she_measurements
