@@ -570,7 +570,7 @@ class SHEFrame(object):
 
             psf_data_filename = os.path.join(
                 workdir, psf_prod.get_data_filename())
-
+            
             qualified_psf_filename = os.path.join(workdir, psf_data_filename)
 
             input_psf_data_hdulist = fits.open(qualified_psf_filename, **kwargs)

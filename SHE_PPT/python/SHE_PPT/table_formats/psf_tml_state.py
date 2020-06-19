@@ -1,4 +1,4 @@
-""" @file psf_zm_state.py
+""" @file psf_tml_state.py
 
     Created 11 Feb 2019
 
@@ -34,7 +34,7 @@ import numpy as np
 logger = getLogger(mv.logger_name)
 
 
-class PsfZmStateTableMeta(object):
+class PsfTmlStateTableMeta(object):
     """ A class defining the metadata for PSF ZM state tables.
     """
 
@@ -48,7 +48,7 @@ class PsfZmStateTableMeta(object):
         self.main_data_type = ("she.psfFieldParameters" 
                                if self.data_type=="FIELD" else 
                                "she.psfCalibrationParameters")
-        self.table_format = "%s.SheZernikeModeParams" % self.main_data_type
+        self.table_format = "%s.SheTelescopeModelParams" % self.main_data_type
 
   
         # Table metadata labels
@@ -67,9 +67,9 @@ class PsfZmStateTableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class PsfZmStateTableFormat(object):
+class PsfTmlStateTableFormat(object):
     """
-        @brief A class defining the format for PSF ZM state tables. Only the psf_zm_state_table_format
+        @brief A class defining the format for PSF ZM state tables. Only the psf_tml_state_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
@@ -79,7 +79,7 @@ class PsfZmStateTableFormat(object):
 
         self.data_type = data_type
         # Get the metadata (contained within its own class)
-        self.meta = PsfZmStateTableMeta(self.data_type)
+        self.meta = PsfTmlStateTableMeta(self.data_type)
 
         # And a quick alias for it
         self.m = self.meta
@@ -112,10 +112,6 @@ class PsfZmStateTableFormat(object):
 
         # Column names and info
 
-        self.fovrngx = set_column_properties(
-            "SHE_PSF_%s_FOVRNGX" % self.data_type, dtype=">f4", fits_dtype="E", length=2)
-        self.fovrngy = set_column_properties(
-            "SHE_PSF_%s_FOVRNGY" % self.data_type, dtype=">f4", fits_dtype="E", length=2)
         self.zer_ply_amp = set_column_properties(
             "SHE_PSF_%s_ZNKPLYAMP" % self.data_type, dtype=">f4", 
             fits_dtype="E", length=50)
@@ -133,8 +129,8 @@ class PsfZmStateTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-psf_table_format_field = PsfZmStateTableFormat("FIELD")
-psf_table_format_calib = PsfZmStateTableFormat("CAL")
+psf_table_format_field = PsfTmlStateTableFormat("FIELD")
+psf_table_format_calib = PsfTmlStateTableFormat("CAL")
 
 # And a convenient alias for it
 # Can define multiple aliases if slightly different types
@@ -143,7 +139,7 @@ tff = psf_table_format_field
 tfc = psf_table_format_calib
 
 
-def make_psf_zm_state_table_header(data_type="FIELD"):
+def make_psf_tml_state_table_header(data_type="FIELD"):
     """Generate a header for a PSF ZM State table.
 
     Parameters
@@ -163,14 +159,15 @@ def make_psf_zm_state_table_header(data_type="FIELD"):
     header[tf.m.version] = tf.__version__
     header[tf.m.format] = tf.m.table_format
 
-    #header[tf.m.extname] = mv.psf_zm_state_tag
+    header[tf.m.extname] = mv.psf_tml_state_tag
 
-    #header[tf.m.identity] = mv.psf_zm_identity
+    header[tf.m.identity] = mv.psf_tml_identity
+
 
     return header
 
 
-def initialise_psf_zm_state_table(data_type="FIELD",
+def initialise_psf_tml_state_table(data_type="FIELD",
                                   optional_columns=None,
                                   init_columns={}):
     """Initialise a PSF ZM State table.
@@ -186,7 +183,7 @@ def initialise_psf_zm_state_table(data_type="FIELD",
 
     Return
     ------
-    psf_zm_state_table : astropy.Table
+    psf_tml_state_table : astropy.Table
     """
     
     tf = tff if data_type=="FIELD" else tfc
@@ -218,10 +215,10 @@ def initialise_psf_zm_state_table(data_type="FIELD",
 
             dtypes.append(dtype)
 
-    psf_zm_state_table = Table(init_cols, names=names, dtype=dtypes)
+    psf_tml_state_table = Table(init_cols, names=names, dtype=dtypes)
 
-    psf_zm_state_table.meta = make_psf_zm_state_table_header(data_type)
+    psf_tml_state_table.meta = make_psf_tml_state_table_header(data_type)
 
-    assert(is_in_format(psf_zm_state_table, tf))
+    assert(is_in_format(psf_tml_state_table, tf))
 
-    return psf_zm_state_table
+    return psf_tml_state_table

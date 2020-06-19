@@ -78,7 +78,7 @@ class TestCase:
         self.workdir, datadir = os.path.split(os.path.split(self.qualified_data_images_filename)[0])
         assert datadir == "data", f"Data directory is not as expected in {self.qualified_data_images_filename}"
         self.logdir = os.path.join(self.workdir, "logs")
-
+        
         # Read in the test data
         self.data_stack = SHEFrameStack.read(exposure_listfile_filename=data_images_filename,
                                              seg_listfile_filename=segmentation_images_filename,

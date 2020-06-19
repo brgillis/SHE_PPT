@@ -1,8 +1,8 @@
-""" @file bfd_moments.py
+""" @file lens_mc_measurements.py
 
     Created 6 Dec 2017
 
-    Format definition for BFD moments tables.
+    Format definition for lens_mc measurements tables.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -34,7 +34,7 @@ from astropy.table import Table
 logger = getLogger(mv.logger_name)
 
 
-class BFDMomentsTableMeta(object):
+class lensMcMeasurementsTableMeta(object):
     """
         @brief A class defining the metadata for shear estimates tables.
     """
@@ -42,11 +42,11 @@ class BFDMomentsTableMeta(object):
     def __init__(self):
 
         self.__version__ = "8.0"
-        self.table_format = "she.bfdMoments"
+        self.table_format = "she.lens_mcMeasurements"
 
         # Table metadata labels
-        self.version = "FITS_VER"
-        self.format = "SS_FMT"
+        self.fits_vers = "FITS_VER"
+        #self.format = "SS_FMT"
         self.fits_def = "FITS_DEF"
         #self.extname = mv.extname_label
         self.sflagvers="SFLAGVERS"
@@ -56,16 +56,11 @@ class BFDMomentsTableMeta(object):
         self.obs_id = 0
         self.date_obs = mv.obs_time_label
         self.tile_id = 0
-        self.nlost = "NLOST"
-        self.wt_n = "WT_N"
-        self.wt_sigma = "WT_SIGMA"
         
-
         self.validated = "VALID"
 
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.version, None),
-                                     (self.format, None),
+        self.comments = OrderedDict(((self.fits_vers, None),
                                      (self.fits_def, None),
                                      (self.sflagvers,None),
                                      (self.model_hash, None),
@@ -74,9 +69,6 @@ class BFDMomentsTableMeta(object):
                                      (self.obs_id,None),
                                      (self.date_obs, None),
                                      (self.tile_id, None),
-                                     (self.nlost, None),
-                                     (self.wt_n, None),
-                                     (self.wt_sigma, None),
                                      (self.validated,
                                       "0: Not tested; 1: Pass; -1: Fail")
                                      ))
@@ -85,16 +77,16 @@ class BFDMomentsTableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class BFDMomentsTableFormat(object):
+class lensMcMeasurementsTableFormat(object):
     """
-        @brief A class defining the format for shear estimates tables. Only the bfd_moments_table_format
+        @brief A class defining the format for shear estimates tables. Only the lens_mc_measurements_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
     def __init__(self):
 
         # Get the metadata (contained within its own class)
-        self.meta = BFDMomentsTableMeta()
+        self.meta = lensMcMeasurementsTableMeta()
 
         # And a quick alias for it
         self.m = self.meta
@@ -131,29 +123,79 @@ class BFDMomentsTableFormat(object):
             "OBJECT_ID", dtype=">i8", fits_dtype="K")
 
         self.fit_flags = set_column_properties(
-            "SHE_BFD_FIT_FLAGS", dtype=">i8", fits_dtype="K")
+            "SHE_LENSMC_FIT_FLAGS", dtype=">i8", fits_dtype="K")
         self.val_flags = set_column_properties(
-            "SHE_BFD_VAL_FLAGS", dtype=">i8", fits_dtype="K")
+            "SHE_LENSMC_VAL_FLAGS", dtype=">i8", fits_dtype="K")
         self.fit_class = set_column_properties(
-            "SHE_BFD_FIT_CLASS", dtype=">i2", fits_dtype="I")
+            "SHE_LENSMC_FIT_CLASS", dtype=">i2", fits_dtype="I")
+        
+        self.lens_mc_gal_pval = set_column_properties(
+            "SHE_LENSMC_GAL_PVALUE", dtype=">i2", fits_dtype="I")        
+        self.lens_mc_g1 = set_column_properties(
+            "SHE_LENSMC_G1", dtype=">f4", fits_dtype="E")
+        self.lens_mc_g1_err = set_column_properties(
+            "SHE_LENSMC_G1_ERR", dtype=">f4", fits_dtype="E")
+        self.lens_mc_g2 = set_column_properties(
+            "SHE_LENSMC_G2", dtype=">f4", fits_dtype="E")
+        self.lens_mc_g2_err = set_column_properties(
+            "SHE_LENSMC_G2_ERR", dtype=">f4", fits_dtype="E")
+        self.lens_mc_g1g2_cov = set_column_properties(
+            "SHE_LENSMC_G1G2_COVAR", dtype=">f4", fits_dtype="E")
+        self.lens_mc_wgt = set_column_properties(
+            "SHE_LENSMC_WEIGHT", dtype=">f4", fits_dtype="E")
+        self.lens_mc_g1_unc = set_column_properties(
+            "SHE_LENSMC_G1_UNCAL", dtype=">f4", fits_dtype="E")
+        self.lens_mc_g1_unc_err = set_column_properties(
+            "SHE_LENSMC_G1_UNCAL_ERR", dtype=">f4", fits_dtype="E")
+        self.lens_mc_g2_unc = set_column_properties(
+            "SHE_LENSMC_G2_UNCAL", dtype=">f4", fits_dtype="E")
+        self.lens_mc_g2_unc_err = set_column_properties(
+            "SHE_LENSMC_G2_UNCAL_ERR", dtype=">f4", fits_dtype="E")
+        self.lens_mc_g1g2_unc_cov = set_column_properties(
+            "SHE_LENSMC_G1G2_UNCAL_COVAR", dtype=">f4", fits_dtype="E")
+        self.lens_mc_wgt_unc = set_column_properties(
+            "SHE_LENSMC_WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
+    
         self.updated_ra = set_column_properties(
-            "SHE_BFD_UPDATED_RA", is_optional=False, comment="deg")
+            "SHE_LENSMC_UPDATED_RA", is_optional=False, comment="deg")
         self.updated_ra_err = set_column_properties(
-            "SHE_BFD_UPDATED_RA_ERR", is_optional=False, comment="deg")
+            "SHE_LENSMC_UPDATED_RA_ERR", is_optional=False, comment="deg")
         self.updated_dec = set_column_properties(
-            "SHE_BFD_UPDATED_DEC", is_optional=True, comment="deg")
+            "SHE_LENSMC_UPDATED_DEC", is_optional=True, comment="deg")
         self.updated_dec_err = set_column_properties(
-            "SHE_BFD_UPDATED_DEC_ERR", is_optional=True, comment="deg")
+            "SHE_LENSMC_UPDATED_DEC_ERR", is_optional=True, comment="deg")
 
-        # BFD specific columns
-        self.bfd_moments = set_column_properties(
-            "SHE_BFD_MOMENTS", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
-        self.bfd_pqr = set_column_properties(
-            "SHE_BFD_PQR", is_optional=True, dtype=">f4", fits_dtype="E", length=6)
-        self.bfd_cov_even = set_column_properties(
-            "SHE_BFD_COV_EVEN", is_optional=True, dtype=">f4", fits_dtype="E", length=15)
-        self.bfd_cov_odd = set_column_properties(
-            "SHE_BFD_COV_ODD", is_optional=True, dtype=">f4", fits_dtype="E", length=3)
+        # lens_mc specific columns
+        self.lens_mc_re = set_column_properties(
+            "SHE_LENSMC_RE", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.lens_mc_re_err = set_column_properties(
+            "SHE_LENSMC_RE_ERR", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.lens_mc_flux = set_column_properties(
+            "SHE_LENSMC_FLUX", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.lens_mc_flux_err = set_column_properties(
+            "SHE_LENSMC_FLUX_ERR", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.lens_mc_blg_frc = set_column_properties(
+            "SHE_LENSMC_BULGE_FRAC", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.lens_mc_blg_frc_err = set_column_properties(
+            "SHE_LENSMC_BULGE_FRAC_ERR", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.lens_mc_snr = set_column_properties(
+            "SHE_LENSMC_SNR", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.lens_mc_snr_err = set_column_properties(
+            "SHE_LENSMC_SNR_ERR", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.lens_mc_chi2 = set_column_properties(
+            "SHE_LENSMC_CHI2", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.lens_mc_dof = set_column_properties(
+            "SHE_LENSMC_DOF", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.lens_mc_acc = set_column_properties(
+            "SHE_LENSMC_ACCEPTANCE", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.lens_mc_nexp = set_column_properties(
+            "SHE_LENSMC_NEXP", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.lens_mc_m1_ical = set_column_properties(
+            "SHE_LENSMC_M1_ICAL", is_optional=True, dtype=">f4", fits_dtype="E")
+        self.lens_mc_m2_ical = set_column_properties(
+            "SHE_LENSMC_M2_ICAL", is_optional=True, dtype=">f4", fits_dtype="E")
+
+
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -166,13 +208,13 @@ class BFDMomentsTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-bfd_moments_table_format = BFDMomentsTableFormat()
+lens_mc_measurements_table_format = lensMcMeasurementsTableFormat()
 
 # And a convient alias for it
-tf = bfd_moments_table_format
+tf = lens_mc_measurements_table_format
 
 
-def make_bfd_moments_table_header(detector_x=1,
+def make_lens_mc_measurements_table_header(detector_x=1,
                                   detector_y=1,
                                   detector=None,
                                   fits_ver=None,
@@ -183,10 +225,7 @@ def make_bfd_moments_table_header(detector_x=1,
                                   noise_seed=None,
                                   obs_id=None,
                                   date_obs=None,
-                                  tile_id=None,
-                                  nlost=None,
-                                  wt_n=None,
-                                  wt_sigma=None):
+                                  tile_id=None,):
     """
         @brief Generate a header for a shear estimates table.
 
@@ -206,11 +245,10 @@ def make_bfd_moments_table_header(detector_x=1,
     if detector is not None:
         logger.warning(
             "'detector' argument for make_*_table_header is deprecated: Use detector_x and detector_y instead.")
- 
+
     header = OrderedDict()
 
-    header[tf.m.version] = tf.__version__
-    header[tf.m.format] = tf.m.table_format
+    header[tf.m.fits_vers] = tf.__version__
     header[tf.m.fits_def] = fits_def
     header[tf.m.sflagvers] = sflagvers
     
@@ -221,17 +259,13 @@ def make_bfd_moments_table_header(detector_x=1,
     header[tf.m.obs_id] = obs_id
     header[tf.m.date_obs] = date_obs
     header[tf.m.tile_id] = tile_id
-
-    header[tf.m.nlost] = nlost
-    header[tf.m.wt_n] = wt_n
-    header[tf.m.wt_sigma] = wt_sigma
     
     header[tf.m.validated] = 0
 
     return header
 
 
-def initialise_bfd_moments_table(detections_table=None,
+def initialise_lens_mc_measurements_table(detections_table=None,
                                  optional_columns=None,
                                  detector_x=None,
                                  detector_y=None,
@@ -244,9 +278,6 @@ def initialise_bfd_moments_table(detections_table=None,
                                  obs_id=None,
                                  date_obs=None,
                                  tile_id=None,
-                                 nlost=None,
-                                 wt_n=None,
-                                 wt_sigma=None,
                                  ):
     """
         @brief Initialise a shear estimates table based on a detections table, with the
@@ -263,7 +294,7 @@ def initialise_bfd_moments_table(detections_table=None,
 
         @param detector <int?> Detector this table corresponds to
 
-        @return bfd_moments_table <astropy.table.Table>
+        @return lens_mc_measurements_table <astropy.table.Table>
     """
 
     if detector is not None:
@@ -289,7 +320,7 @@ def initialise_bfd_moments_table(detections_table=None,
             init_cols.append([])
             dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
 
-    bfd_moments_table = Table(init_cols, names=names, dtype=dtypes)
+    lens_mc_measurements_table = Table(init_cols, names=names, dtype=dtypes)
 
     if detections_table is not None:
         if detector_x is None or detector_y is None:
@@ -307,7 +338,7 @@ def initialise_bfd_moments_table(detections_table=None,
     if detector_y is None:
         detector_y = 1
 
-    bfd_moments_table.meta = make_bfd_moments_table_header(detector_x=detector_x,
+    lens_mc_measurements_table.meta = make_lens_mc_measurements_table_header(detector_x=detector_x,
                                                            detector_y=detector_y,
                                                            detector=detector,
                                                            fits_def=fits_def,
@@ -317,11 +348,8 @@ def initialise_bfd_moments_table(detections_table=None,
                                                            noise_seed=noise_seed,
                                                            obs_id=obs_id,
                                                            date_obs=date_obs,
-                                                           tile_id=tile_id,
-                                                           nlost=nlost,
-                                                           wt_n=wt_n,
-                                                           wt_sigma=wt_sigma)
+                                                           tile_id=tile_id)
                      
-    assert(is_in_format(bfd_moments_table, tf))
+    assert(is_in_format(lens_mc_measurements_table, tf))
 
-    return bfd_moments_table
+    return lens_mc_measurements_table

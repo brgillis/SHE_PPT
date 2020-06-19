@@ -1,9 +1,8 @@
-""" @file psf_zm_state.py
+""" @file regauss_training.py
 
-    Created 11 Feb 2019
+    Created 23 July 2018
 
-    Format definition for PSF Zernike Mode state table. This is based on Chris's description in the DPDD and
-    implementation in his code.
+    Format definition for a table containing REGAUSS training data.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -24,40 +23,24 @@ __updated__ = "2019-02-27"
 
 from collections import OrderedDict
 
-from SHE_PPT import magic_values as mv
-from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format
 from astropy.table import Table
-import numpy as np
 
 
-logger = getLogger(mv.logger_name)
-
-
-class PsfZmStateTableMeta(object):
-    """ A class defining the metadata for PSF ZM state tables.
+class KsbTrainingTableMeta(object):
+    """
+        @brief A class defining the metadata for simulation plan tables.
     """
 
-    data_type = "FIELD"
+    def __init__(self):
 
-    def __init__(self, data_type):
-
-        self.data_type = data_type
         self.__version__ = "8.0"
-        
-        self.main_data_type = ("she.psfFieldParameters" 
-                               if self.data_type=="FIELD" else 
-                               "she.psfCalibrationParameters")
-        self.table_format = "%s.SheZernikeModeParams" % self.main_data_type
+        self.table_format = "she.KsbTrainingTable"
 
-  
         # Table metadata labels
         self.version = "SS_VER"
         self.format = "SS_FMT"
 
-        self.extname = mv.extname_label
-
- 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
                                      (self.format, None),
@@ -67,19 +50,16 @@ class PsfZmStateTableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class PsfZmStateTableFormat(object):
+class KsbTrainingTableFormat(object):
     """
-        @brief A class defining the format for PSF ZM state tables. Only the psf_zm_state_table_format
+        @brief A class defining the format for galaxy population priors tables. Only the regauss_training_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
-    data_type = "FIELD"
-    
-    def __init__(self, data_type="FIELD"):
+    def __init__(self):
 
-        self.data_type = data_type
         # Get the metadata (contained within its own class)
-        self.meta = PsfZmStateTableMeta(self.data_type)
+        self.meta = KsbTrainingTableMeta()
 
         # And a quick alias for it
         self.m = self.meta
@@ -112,15 +92,16 @@ class PsfZmStateTableFormat(object):
 
         # Column names and info
 
-        self.fovrngx = set_column_properties(
-            "SHE_PSF_%s_FOVRNGX" % self.data_type, dtype=">f4", fits_dtype="E", length=2)
-        self.fovrngy = set_column_properties(
-            "SHE_PSF_%s_FOVRNGY" % self.data_type, dtype=">f4", fits_dtype="E", length=2)
-        self.zer_ply_amp = set_column_properties(
-            "SHE_PSF_%s_ZNKPLYAMP" % self.data_type, dtype=">f4", 
-            fits_dtype="E", length=50)
-        
-            
+        self.id = set_column_properties("OBJECT_ID", dtype=">i8", fits_dtype="K",
+                                        comment="ID of this object in the galaxy population priors table.")
+        self.e1 = set_column_properties("SHE_REGAUSS_E1", dtype=">f4", fits_dtype="E",
+                                        comment="Mean ellipticity measurement of this object, component 1")
+        self.e2 = set_column_properties("SHE_REGAUSS_E2", dtype=">f4", fits_dtype="E",
+                                        comment="Mean ellipticity measurement of this object, component 2")
+        self.e1_err = set_column_properties("SHE_REGAUSS_E1_ERR", dtype=">f4", fits_dtype="E",
+                                        comment="Error on mean ellipticity measurement of this object, component 1")
+        self.e2_err = set_column_properties("SHE_REGAUSS_E2_ERR", dtype=">f4", fits_dtype="E",
+                                        comment="Error on mean ellipticity measurement of this object, component 2")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -133,63 +114,33 @@ class PsfZmStateTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-psf_table_format_field = PsfZmStateTableFormat("FIELD")
-psf_table_format_calib = PsfZmStateTableFormat("CAL")
+regauss_training_table_format = KsbTrainingTableFormat()
 
-# And a convenient alias for it
-# Can define multiple aliases if slightly different types
-
-tff = psf_table_format_field
-tfc = psf_table_format_calib
+# And a convient alias for it
+tf = regauss_training_table_format
 
 
-def make_psf_zm_state_table_header(data_type="FIELD"):
-    """Generate a header for a PSF ZM State table.
-
-    Parameters
-    ----------
-    data_type : Is it field or calibration
-    
-    Return
-    ------
-    header : OrderedDict
+def make_regauss_training_table_header():
     """
-    
-    tf = tff if data_type=="FIELD" else tfc
-    
+        @brief Generate a header for a galaxy population table.
+
+        @return header <OrderedDict>
+    """
 
     header = OrderedDict()
 
     header[tf.m.version] = tf.__version__
     header[tf.m.format] = tf.m.table_format
 
-    #header[tf.m.extname] = mv.psf_zm_state_tag
-
-    #header[tf.m.identity] = mv.psf_zm_identity
-
     return header
 
 
-def initialise_psf_zm_state_table(data_type="FIELD",
-                                  optional_columns=None,
-                                  init_columns={}):
-    """Initialise a PSF ZM State table.
-
-    Parameters
-    ----------
-    data_type : str 
-        Is if FIELD or CALIB
-    optional_columns : <list<str>>
-        List of names for optional columns to include.
-    init_columns : dict<str:array>
-        Dictionary of columns to initialise the table with
-
-    Return
-    ------
-    psf_zm_state_table : astropy.Table
+def initialise_regauss_training_table(optional_columns=None):
     """
-    
-    tf = tff if data_type=="FIELD" else tfc
+        @brief Initialise a galaxy population table.
+
+        @return regauss_training_table <astropy.Table>
+    """
 
     if optional_columns is None:
         optional_columns = []
@@ -205,23 +156,13 @@ def initialise_psf_zm_state_table(data_type="FIELD",
     for colname in tf.all:
         if (colname in tf.all_required) or (colname in optional_columns):
             names.append(colname)
+            init_cols.append([])
+            dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
 
-            dtype = (tf.dtypes[colname], tf.lengths[colname])
+    regauss_training_table = Table(init_cols, names=names, dtype=dtypes)
 
-            if colname in init_columns:
-                init_cols.append(init_columns[colname])
-            elif len(init_columns) > 0:
-                init_cols.append(
-                    np.zeros(len(init_columns.values[0]), dtype=dtype))
-            else:
-                init_cols.append([])
+    regauss_training_table.meta = make_regauss_training_table_header()
 
-            dtypes.append(dtype)
+    assert(is_in_format(regauss_training_table, tf))
 
-    psf_zm_state_table = Table(init_cols, names=names, dtype=dtypes)
-
-    psf_zm_state_table.meta = make_psf_zm_state_table_header(data_type)
-
-    assert(is_in_format(psf_zm_state_table, tf))
-
-    return psf_zm_state_table
+    return regauss_training_table

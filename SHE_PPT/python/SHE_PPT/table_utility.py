@@ -53,7 +53,6 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
         @return <bool>
 
     """
-
     # Check that all required column names are present
     for colname in table_format.all_required:
         if colname not in table.colnames:

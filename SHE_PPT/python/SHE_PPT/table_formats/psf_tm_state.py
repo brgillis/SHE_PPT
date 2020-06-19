@@ -38,10 +38,17 @@ class PsfTmStateTableMeta(object):
     """ A class defining the metadata for PSF TM state tables.
     """
 
-    def __init__(self):
+    data_type = "FIELD"
+    
+    def __init__(self, data_type):
 
-        self.__version__ = "0.1"
-        self.table_format = "she.PsfTmStateTable"
+        self.data_type = data_type
+        self.__version__ = "8.0"
+        
+        self.main_data_type = ("she.psfFieldParameters" 
+                               if self.data_type=="FIELD" else 
+                               "she.psfCalibrationParameters")
+        self.table_format = "%s.SheTelescopeModeParams" % self.main_data_type
 
         # Table metadata labels
         self.version = "SS_VER"
@@ -49,20 +56,9 @@ class PsfTmStateTableMeta(object):
 
         self.extname = mv.extname_label
 
-        self.identity = mv.psf_state_identity_label
-
-        self.model_hash = mv.model_hash_label
-        self.model_seed = mv.model_seed_label
-        self.noise_seed = mv.noise_seed_label
-
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
                                      (self.format, None),
-                                     (self.extname, None),
-                                     (self.identity, "Zernike-mode fit or Telescope Model fit"),
-                                     (self.model_hash, None),
-                                     (self.model_seed, None),
-                                     (self.noise_seed, None),
                                      ))
 
         # A list of columns in the desired order
@@ -75,10 +71,14 @@ class PsfTmStateTableFormat(object):
                instance of this should generally be accessed, and it should not be changed.
     """
 
-    def __init__(self):
+    data_type = "FIELD"
+    def __init__(self, data_type="FIELD"):
 
         # Get the metadata (contained within its own class)
-        self.meta = PsfTmStateTableMeta()
+        
+        self.data_type = data_type
+
+        self.meta = PsfTmStateTableMeta(self.data_type)
 
         # And a quick alias for it
         self.m = self.meta
@@ -95,7 +95,7 @@ class PsfTmStateTableFormat(object):
         self.dtypes = OrderedDict()
         self.fits_dtypes = OrderedDict()
         self.lengths = OrderedDict()
-
+        
         def set_column_properties(name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
                                   length=1):
 
@@ -110,13 +110,17 @@ class PsfTmStateTableFormat(object):
             return name
 
         # Column names and info
+        # @TODO: option for FIELD/CALIB - use self.data_type
+        
+
 
         for colname in ["M1TRAD", "M2TRAD", "FOM1TFRN", "FOM2TFRN",
-                        "M3TRAD", "DicTFRN", "M1TCON", "M2TCON",
-                        "M3TCON", "M2TZ", "M2TX", "M2TY",
-                        "M2RX", "M2RY", "M3TZ", "M3TX",
+                        "M3TRAD", "DIC_TFRN", "M1TCON", "M2TZ",
+                        "M2TX", "M2TY", "M2RX", "M2RY", "M3TZ", "M3TX",
                         "M3TY", "M3RX", "M3RY"]:
-            setattr(self, colname.lower(), set_column_properties(name=colname))
+            setattr(self, colname.lower(), 
+                    set_column_properties(name=self.get_colname(colname),
+                        dtype=">f4", fits_dtype="E"))
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -127,64 +131,53 @@ class PsfTmStateTableFormat(object):
             if not self.is_optional[label]:
                 self.all_required.append(label)
 
-
+    def get_colname(self, colname):
+        """ Get full column name
+        """
+        return "SHE_PSF_%s_%s" % (self.data_type,colname)
+        
 # Define an instance of this object that can be imported
-psf_table_format = PsfTmStateTableFormat()
+psf_table_format_field = PsfTmStateTableFormat("FIELD")
+psf_table_format_calib = PsfTmStateTableFormat("CAL")
 
-# And a convient alias for it
-tf = psf_table_format
+# And a convenient alias for it
+# Can define multiple aliases if slightly different types
 
+tff = psf_table_format_field
+tfc = psf_table_format_calib
 
-def make_psf_tm_state_table_header(model_hash=None,
-                                   model_seed=None,
-                                   noise_seed=None):
+def make_psf_tm_state_table_header(data_type="FIELD"):
     """Generate a header for a PSF TM State table.
 
     Parameters
     ----------
-    model_hash : str
-        Hash of the physical model options dictionary, if applicable
-    model_seed : int
-        Full seed used for the physical model for this image, if applicable
-    noise_seed : int
-        Seed used for generating noise for this image, if applicable
-
+    data_type : Is it field or calibration
+    
+    
     Return
     ------
     header : OrderedDict
     """
 
+    tf = tff if data_type=="FIELD" else tfc
+    
     header = OrderedDict()
 
     header[tf.m.version] = tf.__version__
     header[tf.m.format] = tf.m.table_format
 
-    header[tf.m.extname] = mv.psf_tm_state_tag
-
-    header[tf.m.identity] = mv.psf_tm_identity
-
-    header[tf.m.model_hash] = model_hash
-    header[tf.m.model_seed] = model_seed
-    header[tf.m.noise_seed] = noise_seed
-
+    
     return header
 
 
-def initialise_psf_tm_state_table(model_hash=None,
-                                  model_seed=None,
-                                  noise_seed=None,
-                                  optional_columns=None,
+def initialise_psf_tm_state_table(data_type="FIELD",optional_columns=None,
                                   init_columns={}):
     """Initialise a PSF TM State table.
 
     Parameters
     ----------
-    model_hash : str
-        Hash of the physical model options dictionary, if applicable
-    model_seed : int
-        Full seed used for the physical model for this image, if applicable
-    noise_seed : int
-        Seed used for generating noise for this image, if applicable
+    data_type : str
+        Is it FIELD or CALIB
     optional_columns : <list<str>>
         List of names for optional columns to include.
     init_columns : dict<str:array>
@@ -194,6 +187,8 @@ def initialise_psf_tm_state_table(model_hash=None,
     ------
     psf_tm_state_table : astropy.Table
     """
+
+    tf = tff if data_type=="FIELD" else tfc
 
     if optional_columns is None:
         optional_columns = []
@@ -220,14 +215,12 @@ def initialise_psf_tm_state_table(model_hash=None,
             else:
                 init_cols.append([])
 
-            dtypes.append(dtype)
+            dtypes.append(dtype) 
 
     psf_tm_state_table = Table(init_cols, names=names, dtype=dtypes)
 
-    psf_tm_state_table.meta = make_psf_tm_state_table_header(model_hash=model_hash,
-                                                             model_seed=model_seed,
-                                                             noise_seed=noise_seed)
+    psf_tm_state_table.meta = make_psf_tm_state_table_header(data_type)
 
     assert(is_in_format(psf_tm_state_table, tf))
 
-    return psf_tm_state_table
+    return psf_tm_state_table 
