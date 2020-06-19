@@ -119,19 +119,23 @@ class PSFTableFormat(object):
 
         self.template = set_column_properties(
             "SHE_PSF_SED_TEMPLATE", dtype=">i8", fits_dtype="K")
+        self.bulge_idx = set_column_properties(
+            "SHE_PSF_BULGE_IDX", dtype=">i4", fits_dtype="J")
+        self.disk_idx = set_column_properties(
+            "SHE_PSF_DISK_IDX", dtype=">i4", fits_dtype="J")
         self.image_x = set_column_properties(
-            "SHE_PSF_IMAGE_X", dtype=">i4", fits_dtype="I")
+            "SHE_PSF_IMAGE_X", dtype=">i2", fits_dtype="I")
         self.image_y = set_column_properties(
-            "SHE_PSF_IMAGE_Y", dtype=">i4", fits_dtype="I")
+            "SHE_PSF_IMAGE_Y", dtype=">i2", fits_dtype="I")
         self.x = set_column_properties(
             "SHE_PSF_X", dtype=">f4", fits_dtype="E")
         self.y = set_column_properties(
             "SHE_PSF_Y", dtype=">f4", fits_dtype="E")
        
         self.cal_time = set_column_properties(
-            "SHE_PSF_CALIB_TIME", dtype="S", fits_dtype="A", length=20)
+            "SHE_PSF_CALIB_TIME", dtype="str", fits_dtype="A", length=20)
         self.field_time = set_column_properties(
-            "SHE_PSF_FIELD_TIME", dtype="S", fits_dtype="A", length=20)
+            "SHE_PSF_FIELD_TIME", dtype="str", fits_dtype="A", length=20)
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
