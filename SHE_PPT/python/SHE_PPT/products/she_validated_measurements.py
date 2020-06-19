@@ -1,4 +1,4 @@
-""" @file shear_estimates_product.py
+""" @file she_validated_measurements.py
 
     Created 9 Oct 2017
 
@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-10"
+__updated__ = "2020-06-18"
 
 from SHE_PPT.file_io import (read_xml_product, find_aux_file, get_data_filename_from_product,
                              set_data_filename_of_product)
@@ -235,7 +235,7 @@ def __get_spatial_footprint(self):
     return self.Data.CatalogCoverage.SpatialCoverage.Polygon
 
 
-def create_dpd_validated_shear_estimates(BFD_filename="",
+def create_dpd_she_validated_measurements(BFD_filename="",
                                          KSB_filename="",
                                          LensMC_filename="",
                                          MomentsML_filename="",
@@ -245,26 +245,26 @@ def create_dpd_validated_shear_estimates(BFD_filename="",
         @TODO fill in docstring
     """
 
-    dpd_validated_shear_estimates = read_xml_product(
+    dpd_she_validated_measurements = read_xml_product(
         find_aux_file(sample_file_name), allow_pickled=False)
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)
-    dpd_validated_shear_estimates.Header = HeaderProvider.create_generic_header("SHE")
+    dpd_she_validated_measurements.Header = HeaderProvider.create_generic_header("SHE")
 
-    __set_BFD_filename(dpd_validated_shear_estimates, BFD_filename)
-    __set_KSB_filename(dpd_validated_shear_estimates, KSB_filename)
-    __set_LensMC_filename(dpd_validated_shear_estimates, LensMC_filename)
-    __set_MomentsML_filename(dpd_validated_shear_estimates, MomentsML_filename)
-    __set_REGAUSS_filename(dpd_validated_shear_estimates, REGAUSS_filename)
+    __set_BFD_filename(dpd_she_validated_measurements, BFD_filename)
+    __set_KSB_filename(dpd_she_validated_measurements, KSB_filename)
+    __set_LensMC_filename(dpd_she_validated_measurements, LensMC_filename)
+    __set_MomentsML_filename(dpd_she_validated_measurements, MomentsML_filename)
+    __set_REGAUSS_filename(dpd_she_validated_measurements, REGAUSS_filename)
     if spatial_footprint is not None:
-        __set_spatial_footprint(dpd_validated_shear_estimates, spatial_footprint)
+        __set_spatial_footprint(dpd_she_validated_measurements, spatial_footprint)
 
-    return dpd_validated_shear_estimates
+    return dpd_she_validated_measurements
 
 
 # Add a useful alias
-create_validated_shear_estimates_product = create_dpd_validated_shear_estimates
+create_she_validated_measurements_product = create_dpd_she_validated_measurements
 
 
 def create_bfd_moments(filename):
