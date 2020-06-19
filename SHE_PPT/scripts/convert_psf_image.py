@@ -25,8 +25,8 @@ __updated__ = "2019-06-24"
 # Boston, MA 02110-1301 USA
 
 import argparse
+import os
 
-from os.path import join
 from SHE_PPT import products
 from SHE_PPT.file_io import find_file, get_allowed_filename, write_xml_product
 from SHE_PPT.table_formats.psf import initialise_psf_table
@@ -51,6 +51,8 @@ def main():
                         help="Directory in which psf-images are contained (default '.').")
     
     # Output arguments
+    parser.add_argument('--dest_dir', default='.', type=str,
+                        help="Directory in which output psf-images are contained (default '.').")
     parser.add_argument('--out_psf_image', default="obj_cat.xml", type=str,
                         help="Target Final PSF image product to be created (default psf_model_image.xml)")
     
@@ -90,10 +92,12 @@ def main():
 
     print("OPI: ",obj_psf_image)
     # Create a data product for the output
-    psf_image_output_filename = psf_image_filename.replace('.fits','_output.fits')
-    #obj_cat_prod = products.detections.create_detections_product(obj_cat_filename)
+    psf_image_output_filename = os.path.join(args.dest_dir, os.path.basename(psf_image_filename))
+    
+    obj_cat_prod = products.detections.create_detections_product(os.path.join('data',os.path.basename(psf_image_output_filename)))
 
-    #write_xml_product(obj_cat_prod, args.obj_cat, workdir=args.dest_dir)
+    out_psf_image= psf_image_output_filename.replace('PSF','P-PSF').replace('.fits','.xml')
+    write_xml_product(obj_cat_prod, out_psf_image, workdir=args.dest_dir)
     print("OUT: ",psf_image_output_filename)
     # Write out the table
     out_hdulist=fits.HDUList([hdulist[0],hdulist[2],hdulist[3],
