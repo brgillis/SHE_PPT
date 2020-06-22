@@ -81,6 +81,7 @@ class SHEFrameStack(object):
         """
 
         self.exposures = exposures
+        #if stacked_image:
         self.stacked_image = stacked_image
         self.detections_catalogue = detections_catalogue
 
@@ -342,7 +343,8 @@ class SHEFrameStack(object):
 
         return stamp_stack
 
-    def get_fov_coords(self, x_world, y_world, x_buffer=0, y_buffer=0, none_if_out_of_bounds=False):
+    def get_fov_coords(self, x_world, y_world, x_buffer=0, y_buffer=0, none_if_out_of_bounds=False,
+                       return_det_coords_too=False):
         """ Calculates the Field-of-View (FOV) co-ordinates of a given sky position for each exposure, and
             returns a list of (fov_x, fov_y) tuples. If the position isn't present in a given exposure, None will be
             returned in that list index.
@@ -361,6 +363,9 @@ class SHEFrameStack(object):
                 Set this to True if you want this method to return None if the position is entirely out of bounds of
                 the image. By default, this is set to False, which means it will instead return a list of Nones in
                 that case instead.
+            return_det_coords_too : bool
+                If true return namedtuple of x_fov, y_fov, detno_x, detno_y, x_det, y_det   
+
 
             Return
             ------
@@ -372,10 +377,14 @@ class SHEFrameStack(object):
         found = False
         fov_coords_list = []
         for exposure in self.exposures:
+            #print("EXP DET: ",np.shape(exposure.detectors),return_det_coords_too)
+            #print("XW: ",x_world, y_world)
             fov_coords = exposure.get_fov_coords(x_world=x_world,
                                                  y_world=y_world,
                                                  x_buffer=x_buffer,
-                                                 y_buffer=y_buffer)
+                                                 y_buffer=y_buffer,
+                                                 return_det_coords_too=return_det_coords_too)
+            #print("FVC: ",fov_coords)
             if fov_coords is not None:
                 found = True
             fov_coords_list.append(fov_coords)
@@ -505,7 +514,9 @@ class SHEFrameStack(object):
                 for detections_product_filename in detections_filenames:
 
                     detections_product = read_xml_product(os.path.join(workdir, detections_product_filename))
-
+                    logger.info("DP: %s, %s, %s" % (workdir,
+                        detections_product_filename,
+                        detections_product.get_data_filename()))
                     detections_catalogue = table.Table.read(
                         os.path.join(workdir, detections_product.get_data_filename()))
 
@@ -587,7 +598,6 @@ class SHEFrameStack(object):
                                      **kwargs)
 
             exposures.append(exposure)
-
         # Load in the stacked products now
 
         # Get the stacked image and background image
@@ -640,6 +650,7 @@ class SHEFrameStack(object):
                                      segmentation_map=stacked_seg_data,
                                      header=stacked_image_header,
                                      wcs=load_wcs(stacked_image_header))
+
 
         # Construct and return a SHEFrameStack object
         return SHEFrameStack(exposures=exposures,
