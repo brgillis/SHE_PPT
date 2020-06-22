@@ -22,12 +22,17 @@ Created on: 02/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2019-05-27"
+__updated__ = "2020-06-22"
 
+from collections import namedtuple
 from copy import deepcopy
 import os.path
 import weakref
-from collections import namedtuple
+
+from astropy.io import fits
+from astropy.io.fits import HDUList, BinTableHDU, ImageHDU, PrimaryHDU
+from astropy.table import Table
+from astropy.wcs import WCS
 
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
@@ -38,14 +43,9 @@ from SHE_PPT.she_image import SHEImage
 from SHE_PPT.table_formats.detections import tf as detf
 from SHE_PPT.table_formats.psf import tf as pstf
 from SHE_PPT.table_utility import is_in_format
-from SHE_PPT.utility import find_extension, load_wcs, run_only_once
 import SHE_PPT.telescope_coords as tc
-from astropy.io import fits
-from astropy.io.fits import HDUList, BinTableHDU, ImageHDU, PrimaryHDU
-from astropy.table import Table
-from astropy.wcs import WCS
+from SHE_PPT.utility import find_extension, load_wcs, run_only_once
 import numpy as np
-
 
 logger = logging.getLogger(__name__)
 
@@ -353,22 +353,21 @@ class SHEFrame(object):
 
         # Get the co-ordinates from the detector's method
         # @FIXME: no SHEImage.get_fov_coords() method...
-        #fov_coords = detector.get_fov_coords(x=x, y=y,)
-        #return fov_coords
+        # fov_coords = detector.get_fov_coords(x=x, y=y,)
+        # return fov_coords
         # @TODO: Return detector and x,y in namedtuple
         # return x,y
         # @TODO: orientation
-        x_fov,y_fov=tc.get_fov_coords_from_detector(
-            x,y,x_i,y_i,'VIS')
+        x_fov, y_fov = tc.get_fov_coords_from_detector(
+            x, y, x_i, y_i, 'VIS')
         if return_det_coords_too:
             # Do as astropy Table
-            CoordTuple=namedtuple("CoordTuple",
+            CoordTuple = namedtuple("CoordTuple",
                 "x_fov y_fov detno_x detno_y x_det y_det")
-            return CoordTuple(*[x_fov,y_fov,x_i,y_i,x,y])
+            return CoordTuple(*[x_fov, y_fov, x_i, y_i, x, y])
         else:
-            return (x_fov,y_fov)
-    
-    
+            return (x_fov, y_fov)
+
     @classmethod
     def read(cls,
              frame_product_filename=None,
@@ -429,7 +428,9 @@ class SHEFrame(object):
                 good_objs = np.logical_and(good_x, good_y)
 
                 return good_objs.any()
+
         else:
+
             def check_for_objects(*_args, **_kwargs):
                 return True
 
@@ -479,7 +480,7 @@ class SHEFrame(object):
 
             seg_prod = read_xml_product(
                 os.path.join(workdir, seg_product_filename))
-            if not isinstance(seg_prod, products.exposure_mosaic.DpdSheExposureMosaicProduct):
+            if not isinstance(seg_prod, products.she_exposure_segmentation_map.DpdSheExposureSegmentationMapProduct):
                 raise ValueError("Segmentation map product from " +
                                  seg_product_filename + " is invalid type.")
 
@@ -589,7 +590,7 @@ class SHEFrame(object):
 
             psf_data_filename = os.path.join(
                 workdir, psf_prod.get_data_filename())
-            
+
             qualified_psf_filename = os.path.join(workdir, psf_data_filename)
 
             input_psf_data_hdulist = fits.open(qualified_psf_filename, **kwargs)
