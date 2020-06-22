@@ -461,7 +461,7 @@ class SHEFrame(object):
         if frame_product_filename is not None:
             frame_prod = read_xml_product(
                 os.path.join(workdir, frame_product_filename))
-            if not isinstance(frame_prod, products.calibrated_frame.dpdVisCalibratedFrame):
+            if not isinstance(frame_prod, products.vis_calibrated_frame.dpdVisCalibratedFrame):
                 raise ValueError("Data image product from " +
                                  frame_product_filename + " is invalid type.")
 
@@ -589,7 +589,7 @@ class SHEFrame(object):
 
             psf_data_filename = os.path.join(
                 workdir, psf_prod.get_data_filename())
-
+            
             qualified_psf_filename = os.path.join(workdir, psf_data_filename)
 
             input_psf_data_hdulist = fits.open(qualified_psf_filename, **kwargs)

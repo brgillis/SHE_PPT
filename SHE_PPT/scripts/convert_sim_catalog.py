@@ -135,7 +135,7 @@ def main():
                                             release="00.09",
                                             subdir=None,
                                             processing_function="MER")
-    obj_cat_prod = products.detections.create_detections_product(obj_cat_filename)
+    obj_cat_prod = products.mer_final_catalog.create_detections_product(obj_cat_filename)
 
     write_xml_product(obj_cat_prod, args.obj_cat, workdir=args.dest_dir)
 

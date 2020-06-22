@@ -19,7 +19,7 @@ Created on: Aug 17, 2017
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2019-06-27"
+__updated__ = "2020-06-09"
 
 # Avoid non-trivial "from" imports (as explicit is better than implicit)
 
@@ -40,10 +40,8 @@ import numpy as np
 
 from . import logging
 
-
 allowed_int_dtypes = (
     np.int8, np.int16, np.int32, np.uint8, np.uint16, np.uint32)
-
 
 logger = logging.getLogger(__name__)
 
@@ -610,7 +608,7 @@ class SHEImage(object):
 
         return object_mask
 
-    def write_to_fits(self, filepath, clobber=False, data_only=False, **kwargs):
+    def write_to_fits(self, filepath, overwrite=False, data_only=False, **kwargs):
         """Writes the image to disk, in form of a multi-extension FITS cube.
 
         The data is written in the primary HDU, the mask in the extension 'MASK' and the noisemap in the extensions 'NOISEMAP'.
@@ -621,7 +619,7 @@ class SHEImage(object):
 
         Args:
             filepath: where the FITS file should be written
-            clobber: if True, overwrites any existing file.
+            overwrite: if True, overwrites any existing file.
             data_only: if True, will only write the data image.
         """
 
@@ -671,11 +669,11 @@ class SHEImage(object):
                     data=self.weight_map.transpose(), name="WGTMAP")
                 hdulist.append(wgtmaphdu)
 
-        if clobber is True and os.path.exists(filepath):
+        if overwrite is True and os.path.exists(filepath):
             logger.debug("The output file exists and will get overwritten")
 
-        hdulist.writeto(filepath, clobber=clobber)
-        # Note that clobber is called overwrite in the latest astropy, but
+        hdulist.writeto(filepath, overwrite=overwrite)
+        # Note that overwrite is called overwrite in the latest astropy, but
         # backwards compatible.
 
         logger.debug("Wrote {} to the FITS file '{}'".format(str(self), filepath))
@@ -1372,7 +1370,7 @@ class SHEImage(object):
 
         Returns
         -------
-        pix2world_transformation : np.matrix
+        pix2world_transformation : np.array
             Transformation matrix in the format [[  dra/dx ,  dra/dy ],
                                                  [ ddec/dx , ddec/dy ]]
 
@@ -1409,8 +1407,8 @@ class SHEImage(object):
         d_ra_y = ra_scale * (ra_py - ra_0) / dy
         d_dec_y = (dec_py - dec_0) / dy
 
-        pix2world_transformation = np.matrix([[d_ra_x, d_ra_y],
-                                              [d_dec_x, d_dec_y]])
+        pix2world_transformation = np.array([[d_ra_x, d_ra_y],
+                                             [d_dec_x, d_dec_y]])
 
         if norm:
             det = np.linalg.det(pix2world_transformation)
@@ -1450,7 +1448,7 @@ class SHEImage(object):
 
         Returns
         -------
-        world2pix_transformation : np.matrix
+        world2pix_transformation : np.array
             Transformation matrix in the format [[ dx/dra , dx/ddec ],
                                                  [ dy/dra , dy/ddec ]]
 
@@ -1485,8 +1483,8 @@ class SHEImage(object):
         d_x_dec = (x_pdec - x_0) / ddec
         d_y_dec = (y_pdec - y_0) / ddec
 
-        world2pix_transformation = np.matrix([[d_x_ra, d_x_dec],
-                                              [d_y_ra, d_y_dec]])
+        world2pix_transformation = np.array([[d_x_ra, d_x_dec],
+                                             [d_y_ra, d_y_dec]])
 
         if norm:
             det = np.linalg.det(world2pix_transformation)
@@ -1523,7 +1521,7 @@ class SHEImage(object):
 
         Returns
         -------
-        pix2world_rotation : np.matrix
+        pix2world_rotation : np.array
             Transformation matrix in the format [[ cos(theta) , -sin(theta) ],
                                                  [ sin(theta) ,  cos(theta) ]]
             Note that due to the method of calculation, the matrix may differ very slightly from an ideal
@@ -1568,7 +1566,7 @@ class SHEImage(object):
 
         Returns
         -------
-        world2pix_rotation : np.matrix
+        world2pix_rotation : np.array
             Transformation matrix in the format [[ cos(theta) , -sin(theta) ],
                                                  [ sin(theta) ,  cos(theta) ]]
             Note that due to the method of calculation, the matrix may differ very slightly from an ideal
@@ -1684,34 +1682,34 @@ class SHEImage(object):
                 world_pos = galsim.CelestialCoord(ra * galsim.degrees, dec * galsim.degrees)
             else:
                 world_pos = galsim.PositionD(ra, dec)
-    
+
             local_wcs = self.galsim_wcs.jacobian(world_pos=world_pos)
         except ValueError as e:
             if not "WCS does not have longitude type" in str(e):
                 raise
             if len(self.header) > 0:
-                
+
                 # If we hit this bug, read the WCS directly from the header
-                
+
                 warn_galsim_wcs_bug_workaround()
-                
+
                 self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.header)[0]
-                
-                if self.galsim_wcs.isPixelScale() and np.isclose(self.galsim_wcs.scale,1.0):
-                    
+
+                if self.galsim_wcs.isPixelScale() and np.isclose(self.galsim_wcs.scale, 1.0):
+
                     # Don't have the information in this stamp's header - check for a parent image
                     if self.parent_image is not None:
                         self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.parent_image.header)[0]
-                        if self.galsim_wcs.isPixelScale() and np.isclose(self.galsim_wcs.scale,1.0):
+                        if self.galsim_wcs.isPixelScale() and np.isclose(self.galsim_wcs.scale, 1.0):
                             raise ValueError("Galsim WCS seems to not have been loaded correctly.")
                     else:
                         raise ValueError("Galsim WCS seems to not have been loaded correctly.")
-                
+
                 if isinstance(self.galsim_wcs, galsim.wcs.CelestialWCS):
                     world_pos = galsim.CelestialCoord(ra * galsim.degrees, dec * galsim.degrees)
                 else:
                     world_pos = galsim.PositionD(ra, dec)
-    
+
                 local_wcs = self.galsim_wcs.jacobian(world_pos=world_pos)
 
         return local_wcs.inverse().getDecomposition()
@@ -1844,6 +1842,7 @@ class SHEImage(object):
 @run_only_once
 def warn_mdb_not_loaded():
     logger.warning("MDB is not loaded, so default values will be assumed in calculating a noisemap.")
+
 
 @run_only_once
 def warn_galsim_wcs_bug_workaround():

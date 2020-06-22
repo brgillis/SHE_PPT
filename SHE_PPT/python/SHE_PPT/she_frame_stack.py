@@ -83,14 +83,14 @@ class SHEFrameStack(object):
         self.exposures = exposures
         #if stacked_image:
         self.stacked_image = stacked_image
-        self.detections_catalogue = detections_catalogue
+        self.mer_final_catalog_catalogue = detections_catalogue
 
         # Might have to manually calculate this later
         self.stack_pixel_size_ratio = 1
 
         # Set the detections catalogue to index by ID
-        if self.detections_catalogue is not None:
-            self.detections_catalogue.add_index(detf.ID)
+        if self.mer_final_catalog_catalogue is not None:
+            self.mer_final_catalog_catalogue.add_index(detf.ID)
 
         return
 
@@ -158,7 +158,7 @@ class SHEFrameStack(object):
             return False
         if neq(self.stacked_image, rhs.stacked_image):
             return False
-        if neq(self.detections_catalogue, rhs.detections_catalogue):
+        if neq(self.mer_final_catalog_catalogue, rhs.mer_final_catalog_catalogue):
             return False
         if neq(self.stack_pixel_size_ratio, rhs.stack_pixel_size_ratio):
             return False
@@ -184,12 +184,12 @@ class SHEFrameStack(object):
 
         # Need to put this in a try block in case the index wasn't properly set
         try:
-            row = self.detections_catalogue.loc[gal_id]
+            row = self.mer_final_catalog_catalogue.loc[gal_id]
         except ValueError as e:
             if not "Cannot create TableLoc object with no indices" in str(e):
                 raise
-            self.detections_catalogue.add_index(detf.ID)
-            row = self.detections_catalogue.loc[gal_id]
+            self.mer_final_catalog_catalogue.add_index(detf.ID)
+            row = self.mer_final_catalog_catalogue.loc[gal_id]
 
         x_world = row[detf.gal_x_world]
         y_world = row[detf.gal_y_world]
@@ -613,7 +613,7 @@ class SHEFrameStack(object):
                                                          tags=(
                                                              mv.sci_tag, mv.noisemap_tag, mv.mask_tag),
                                                          workdir=workdir,
-                                                         dtype=products.stacked_frame.dpdVisStackedFrame,
+                                                         dtype=products.vis_stacked_frame.dpdVisStackedFrame,
                                                          **kwargs)
 
             stacked_image_data = stacked_data[0]
@@ -622,7 +622,7 @@ class SHEFrameStack(object):
 
             _, stacked_bkg_data = cls._read_product_extension(stacked_image_product_filename,
                                                               workdir=workdir,
-                                                              dtype=products.stacked_frame.dpdVisStackedFrame,
+                                                              dtype=products.vis_stacked_frame.dpdVisStackedFrame,
                                                               filetype="background",
                                                               **kwargs)
 

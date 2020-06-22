@@ -18,15 +18,17 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-22"
 
 import os
-import pytest
 import shutil
 
-from SHE_PPT.utility import (hash_any, get_arguments_string,
-                             process_directory,get_all_files)
 from astropy.table import Table
+import pytest
+
+from SHE_PPT.utility import (get_nested_attr, set_nested_attr,
+                             hash_any, get_arguments_string,
+                             process_directory, get_all_files)
 import numpy as np
 
 
@@ -43,6 +45,43 @@ class TestUtility:
     @classmethod
     def teardown_class(cls):
         pass
+
+    def test_get_set_nested_attr(self):
+
+        class DoubleNestedClass(object):
+
+            def __init__(self):
+                self.subsubval = "foo"
+
+        class NestedClass(object):
+
+            def __init__(self):
+                self.subobj = DoubleNestedClass()
+                self.subval = "bar"
+
+        class ContainingClass(object):
+
+            def __init__(self):
+                self.obj = NestedClass()
+                self.val = "me"
+
+        c = ContainingClass()
+
+        # Check basic get_nested_attr functionality
+        assert get_nested_attr(c, "val") == "me"
+        assert get_nested_attr(c, "obj.subval") == "bar"
+        assert get_nested_attr(c, "obj.subobj.subsubval") == "foo"
+
+        # Check set_nested_attr functionality
+        set_nested_attr(c, "val", 15)
+        set_nested_attr(c, "obj.subval", "Fif.teen")
+        set_nested_attr(c, "obj.subobj.subsubval", (5, "t.e.e.n"))
+
+        assert get_nested_attr(c, "val") == 15
+        assert get_nested_attr(c, "obj.subval") == "Fif.teen"
+        assert get_nested_attr(c, "obj.subobj.subsubval") == (5, "t.e.e.n")
+
+        return
 
     def test_hash_any(self):
 
@@ -71,6 +110,7 @@ class TestUtility:
 
         # Set up a mock arguments object
         class TestArgs(object):
+
             def __init__(self):
                 self.foo = "bar"
                 self.foobar = ["bar", "foo "]
@@ -97,6 +137,7 @@ class TestUtility:
 
         # Try with store_true/false
         class TestBoolArgs(object):
+
             def __init__(self):
                 self.stt = True
                 self.stf = False
@@ -123,47 +164,46 @@ class TestUtility:
     def test_process_directory(self):
         """
         """
-        test_dir=os.path.join(os.getenv('HOME'),'fgdyteihth')
+        test_dir = os.path.join(os.getenv('HOME'), 'fgdyteihth')
         os.mkdir(test_dir)
-        subdir_name1='sub_a'
-        os.mkdir(os.path.join(test_dir,subdir_name1))
-        #subdir_name2='sub_b'
-        #os.mkdir(os.path.join(test_dir,subdir_name2))
-        file_name1='file1.txt'
-        file_name2='file2.txt'
-        open(os.path.join(test_dir,file_name1),'w').writelines(['1\n'])
-        open(os.path.join(test_dir,file_name2),'w').writelines(['2\n'])
-        file_list,sbdir_list=process_directory(test_dir)
-        assert len(file_list)==2
-        assert len(sbdir_list)==1
+        subdir_name1 = 'sub_a'
+        os.mkdir(os.path.join(test_dir, subdir_name1))
+        # subdir_name2='sub_b'
+        # os.mkdir(os.path.join(test_dir,subdir_name2))
+        file_name1 = 'file1.txt'
+        file_name2 = 'file2.txt'
+        open(os.path.join(test_dir, file_name1), 'w').writelines(['1\n'])
+        open(os.path.join(test_dir, file_name2), 'w').writelines(['2\n'])
+        file_list, sbdir_list = process_directory(test_dir)
+        assert len(file_list) == 2
+        assert len(sbdir_list) == 1
         shutil.rmtree(test_dir)
-        
+
     def test_get_all_files(self):
         """
         """
-        test_dir=os.path.join(os.getenv('HOME'),'fgdytedggdsth')
+        test_dir = os.path.join(os.getenv('HOME'), 'fgdytedggdsth')
         os.mkdir(test_dir)
-        subdir_name1='sub_a'
-        os.mkdir(os.path.join(test_dir,subdir_name1))
-        subdir_name2='sub_b'
-        os.mkdir(os.path.join(test_dir,subdir_name2))
-        file_name1='file1.txt'
-        file_name2='file2.txt'
-        open(os.path.join(test_dir,file_name1),'w').writelines(['1\n'])
-        open(os.path.join(test_dir,file_name2),'w').writelines(['2\n'])
-        file_name3='file3.txt'
-        file_name4='file4.txt'
-        open(os.path.join(test_dir,subdir_name1,file_name3),'w').writelines(['1\n'])
-        open(os.path.join(test_dir,subdir_name2,file_name4),'w').writelines(['2\n'])
-        subdir_name3='sub_b1'
-        os.mkdir(os.path.join(test_dir,subdir_name2,subdir_name3))
-        file_name5='file5.txt'
-        open(os.path.join(test_dir,subdir_name2,subdir_name3,file_name5),'w').writelines(['1\n'])
-        
-        file_list=get_all_files(test_dir)
-        assert len(file_list)==5
-        
-        for ii,fName in enumerate(sorted(file_list)):
-            assert os.path.basename(fName)=='file%s.txt' % (ii+1)
+        subdir_name1 = 'sub_a'
+        os.mkdir(os.path.join(test_dir, subdir_name1))
+        subdir_name2 = 'sub_b'
+        os.mkdir(os.path.join(test_dir, subdir_name2))
+        file_name1 = 'file1.txt'
+        file_name2 = 'file2.txt'
+        open(os.path.join(test_dir, file_name1), 'w').writelines(['1\n'])
+        open(os.path.join(test_dir, file_name2), 'w').writelines(['2\n'])
+        file_name3 = 'file3.txt'
+        file_name4 = 'file4.txt'
+        open(os.path.join(test_dir, subdir_name1, file_name3), 'w').writelines(['1\n'])
+        open(os.path.join(test_dir, subdir_name2, file_name4), 'w').writelines(['2\n'])
+        subdir_name3 = 'sub_b1'
+        os.mkdir(os.path.join(test_dir, subdir_name2, subdir_name3))
+        file_name5 = 'file5.txt'
+        open(os.path.join(test_dir, subdir_name2, subdir_name3, file_name5), 'w').writelines(['1\n'])
+
+        file_list = get_all_files(test_dir)
+        assert len(file_list) == 5
+
+        for ii, fName in enumerate(sorted(file_list)):
+            assert os.path.basename(fName) == 'file%s.txt' % (ii + 1)
         shutil.rmtree(test_dir)
-    

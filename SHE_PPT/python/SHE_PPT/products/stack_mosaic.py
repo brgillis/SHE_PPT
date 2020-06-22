@@ -112,6 +112,7 @@ def init():
 
     return
 
+
 def __set_data_filename(self, filename):
     set_data_filename_of_product(self, filename, "DataStorage")
 

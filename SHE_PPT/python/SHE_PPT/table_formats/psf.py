@@ -41,8 +41,8 @@ class PSFTableMeta(object):
 
     def __init__(self):
 
-        self.__version__ = "0.3"
-        self.table_format = "she.psfTable"
+        self.__version__ = "8.0"
+        self.table_format = "she.psfModelImage.shePsfC"
 
         # Table metadata labels
         self.version = "SS_VER"
@@ -50,17 +50,22 @@ class PSFTableMeta(object):
 
         self.extname = mv.extname_label
 
-        self.model_hash = mv.model_hash_label
-        self.model_seed = mv.model_seed_label
-        self.noise_seed = mv.noise_seed_label
+        #self.model_hash = mv.model_hash_label
+        #self.model_seed = mv.model_seed_label
+        #self.noise_seed = mv.noise_seed_label
+        self.cal_prod = "CAL_PROD"
+        self.cal_time = "CAL_TIME"
+        self.fld_prod = "FLD_PROD"
+        self.fld_time = "FLD_TIME"
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
                                      (self.format, None),
                                      (self.extname, mv.psf_cat_tag),
-                                     (self.model_hash, None),
-                                     (self.model_seed, None),
-                                     (self.noise_seed, None),
+                                     (self.cal_prod, None),
+                                     (self.cal_time, None),
+                                     (self.fld_prod, None),
+                                     (self.fld_time,None)
                                      ))
 
         # A list of columns in the desired order
@@ -110,20 +115,27 @@ class PSFTableFormat(object):
         # Column names and info
 
         self.ID = set_column_properties(
-            "Object ID", dtype=">i8", fits_dtype="K")
+            "OBJECT_ID", dtype=">i8", fits_dtype="K")
 
         self.template = set_column_properties(
-            "SED template", dtype=">i8", fits_dtype="K", comment="TBD")
-
-        self.bulge_index = set_column_properties("Bulge Index", dtype=">i4", fits_dtype="J",
-                                                 comment="HDU index of bulge PSF image")
-        self.disk_index = set_column_properties("Disk Index", dtype=">i4", fits_dtype="J",
-                                                comment="HDU index of disk PSF image")
-
+            "SHE_PSF_SED_TEMPLATE", dtype=">i8", fits_dtype="K")
+        self.bulge_idx = set_column_properties(
+            "SHE_PSF_BULGE_IDX", dtype=">i4", fits_dtype="J")
+        self.disk_idx = set_column_properties(
+            "SHE_PSF_DISK_IDX", dtype=">i4", fits_dtype="J")
+        self.image_x = set_column_properties(
+            "SHE_PSF_IMAGE_X", dtype=">i2", fits_dtype="I")
+        self.image_y = set_column_properties(
+            "SHE_PSF_IMAGE_Y", dtype=">i2", fits_dtype="I")
+        self.x = set_column_properties(
+            "SHE_PSF_X", dtype=">f4", fits_dtype="E")
+        self.y = set_column_properties(
+            "SHE_PSF_Y", dtype=">f4", fits_dtype="E")
+       
         self.cal_time = set_column_properties(
-            "PSF Calibration Timestamp", dtype="S", fits_dtype="A", length=20, is_optional=True)
+            "SHE_PSF_CALIB_TIME", dtype="str", fits_dtype="A", length=20)
         self.field_time = set_column_properties(
-            "PSF Field Timestamp", dtype="S", fits_dtype="A", length=20, is_optional=True)
+            "SHE_PSF_FIELD_TIME", dtype="str", fits_dtype="A", length=20)
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -142,19 +154,11 @@ psf_table_format = PSFTableFormat()
 tf = psf_table_format
 
 
-def make_psf_table_header(model_hash=None,
-                          model_seed=None,
-                          noise_seed=None):
+def make_psf_table_header(cal_prod,cal_time,fld_prod,fld_time):
     """
         @brief Generate a header for a PSF table.
 
         @param detector <int?> Detector for this image, if applicable
-
-        @param model_hash <int> Hash of the physical model options dictionary
-
-        @param model_seed <int> Full seed used for the physical model for this image
-
-        @param noise_seed <int> Seed used for generating noise for this image
 
         @return header <OrderedDict>
     """
@@ -166,19 +170,22 @@ def make_psf_table_header(model_hash=None,
 
     header[tf.m.extname] = mv.psf_cat_tag
 
-    header[tf.m.model_hash] = model_hash
-    header[tf.m.model_seed] = model_seed
-    header[tf.m.noise_seed] = noise_seed
-
+    header[tf.m.cal_prod] = cal_prod
+    header[tf.m.cal_time] = cal_time
+    header[tf.m.fld_prod] = fld_prod
+    header[tf.m.fld_time] = fld_time
+    
+    
     return header
 
 
 def initialise_psf_table(image=None,
                          options=None,
                          optional_columns=None,
-                         model_hash=None,
-                         model_seed=None,
-                         noise_seed=None,
+                         cal_prod=None,
+                         cal_time=None,
+                         fld_prod=None,
+                         fld_time=None,
                          init_columns={}):
     """
         @brief Initialise a PSF table.
@@ -221,21 +228,12 @@ def initialise_psf_table(image=None,
             dtypes.append(dtype)
 
     psf_table = Table(init_cols, names=names, dtype=dtypes)
+    
 
-    if image is not None and model_seed is None:
-        model_seed = image.get_seed()
-
-    if options is not None:
-
-        # Get values from the options dict, unless they were passed explicitly
-        if model_hash is None:
-            model_hash = hash_any(options.items(), format="base64")
-        if noise_seed is None:
-            noise_seed = options['noise_seed']
-
-    psf_table.meta = make_psf_table_header(model_hash=model_hash,
-                                           model_seed=model_seed,
-                                           noise_seed=noise_seed)
+    psf_table.meta = make_psf_table_header(cal_prod=cal_prod,
+                                           cal_time=cal_time,
+                                           fld_prod=fld_prod,
+                                           fld_time=fld_time)
 
     assert(is_in_format(psf_table, tf))
 

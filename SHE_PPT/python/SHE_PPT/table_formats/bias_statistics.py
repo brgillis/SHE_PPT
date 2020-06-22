@@ -129,7 +129,7 @@ class BiasStatisticsTableFormat(object):
 
         # Table column labels and properties
 
-        self.ID = set_column_properties("RUN_ID", dtype="S", fits_dtype="A", length=20, is_optional=True)
+        self.ID = set_column_properties("RUN_ID", dtype="str", fits_dtype="A", length=20, is_optional=True)
 
         self.w1 = set_column_properties("W1", dtype=">f4", fits_dtype="E")
         self.xm1 = set_column_properties("XM1", dtype=">f4", fits_dtype="E")

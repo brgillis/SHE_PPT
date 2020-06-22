@@ -19,18 +19,18 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-05-24"
+__updated__ = "2020-06-09"
 
 import math
 
+from astropy.wcs import WCS as AstropyWCS
 import galsim
 from galsim.wcs import BaseWCS as GalsimWCS
+from scipy.optimize import minimize
 
 from SHE_PPT import flags
 from SHE_PPT.she_image import SHEImage
-from astropy.wcs import WCS as AstropyWCS
 import numpy as np
-from scipy.optimize import minimize
 
 
 class ShearEstimate(object):
@@ -139,14 +139,14 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
     _scale, w2p_shear, w2p_theta, _w2p_flip = stamp.get_world2pix_decomposition()
 
     # Set up the shear as a matrix
-    g_pix_polar = np.matrix([[shear_estimate.g1], [shear_estimate.g2]])
+    g_pix_polar = np.array([[shear_estimate.g1], [shear_estimate.g2]])
 
     # We first have to rotate into the proper frame
     sintheta = w2p_theta.sin()
     costheta = w2p_theta.cos()
 
     # Get the reverse rotation matrix
-    p2w_rotation_matrix = np.matrix([[costheta, sintheta], [-sintheta, costheta]])
+    p2w_rotation_matrix = np.array([[costheta, sintheta], [-sintheta, costheta]])
 
     double_p2w_rotation_matrix = p2w_rotation_matrix @ p2w_rotation_matrix  # 2x2 so it's commutative
     g_world_polar = double_p2w_rotation_matrix @ g_pix_polar
@@ -154,8 +154,8 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
     # TODO: Update errors from the WCS shear
 
     # Update errors from the WCS rotation
-    covar_pix = np.matrix([[shear_estimate.g1_err**2, shear_estimate.g1g2_covar],
-                           [shear_estimate.g1g2_covar, shear_estimate.g2_err**2]])
+    covar_pix = np.array([[shear_estimate.g1_err ** 2, shear_estimate.g1g2_covar],
+                           [shear_estimate.g1g2_covar, shear_estimate.g2_err ** 2]])
     covar_world = double_p2w_rotation_matrix @ covar_pix @ double_p2w_rotation_matrix.transpose()
 
     # Update error and covar values in the shear_estimate object
@@ -198,12 +198,12 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
         g2 = g[1]
         try:
             res_shear = w2p_shear + galsim.Shear(g1=g1, g2=g2)
-            dist2 = (rot_est_shear.g1 - res_shear.g1)**2 + (rot_est_shear.g2 - res_shear.g2)**2
+            dist2 = (rot_est_shear.g1 - res_shear.g1) ** 2 + (rot_est_shear.g2 - res_shear.g2) ** 2
         except ValueError as e:
             if not "Requested shear exceeds 1" in str(e):
                 raise
             # Requested a too-high shear value, so return an appropriately high distance
-            dist2 = (w2p_shear.g1 + g1 - rot_est_shear.g1)**2 + (w2p_shear.g2 + g2 - rot_est_shear.g2)**2
+            dist2 = (w2p_shear.g1 + g1 - rot_est_shear.g1) ** 2 + (w2p_shear.g2 + g2 - rot_est_shear.g2) ** 2
         return dist2
 
     fitting_result = minimize(get_shear_adding_diff, np.array((0, 0)))

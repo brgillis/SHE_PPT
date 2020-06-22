@@ -34,7 +34,7 @@ class KsbTrainingTableMeta(object):
 
     def __init__(self):
 
-        self.__version__ = "0.1.0"
+        self.__version__ = "8.0"
         self.table_format = "she.KsbTrainingTable"
 
         # Table metadata labels
@@ -92,12 +92,16 @@ class KsbTrainingTableFormat(object):
 
         # Column names and info
 
-        self.id = set_column_properties("ID", dtype=">i8", fits_dtype="K",
+        self.id = set_column_properties("OBJECT_ID", dtype=">i8", fits_dtype="K",
                                         comment="ID of this object in the galaxy population priors table.")
-        self.e1 = set_column_properties("E1", dtype=">f4", fits_dtype="E",
+        self.e1 = set_column_properties("SHE_KSB_TRAINING_E1", dtype=">f4", fits_dtype="E",
                                         comment="Mean ellipticity measurement of this object, component 1")
-        self.e2 = set_column_properties("E2", dtype=">f4", fits_dtype="E",
+        self.e2 = set_column_properties("SHE_KSB_TRAINING_E2", dtype=">f4", fits_dtype="E",
                                         comment="Mean ellipticity measurement of this object, component 2")
+        self.e1_err = set_column_properties("SHE_KSB_TRAINING_E1_ERR", dtype=">f4", fits_dtype="E",
+                                        comment="Error on mean ellipticity measurement of this object, component 1")
+        self.e2_err = set_column_properties("SHE_KSB_TRAINING_E2_ERR", dtype=">f4", fits_dtype="E",
+                                        comment="Error on mean ellipticity measurement of this object, component 2")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())

@@ -18,25 +18,26 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-09"
 
 import os
+
+from astropy.table import Column, Table
 import pytest
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.table_formats.bfd_moments import tf as bfdtf, initialise_bfd_moments_table
 from SHE_PPT.table_formats.details import tf as datf, initialise_details_table
 from SHE_PPT.table_formats.detections import tf as detf, initialise_detections_table
-from SHE_PPT.table_formats.galaxy_population import tf as gptf, initialise_galaxy_population_table
+from SHE_PPT.table_formats.galaxy_population_priors import tf as gptf, initialise_galaxy_population_table
 from SHE_PPT.table_formats.ksb_training import tf as kttf, initialise_ksb_training_table
 from SHE_PPT.table_formats.p_of_e import tf as petf, initialise_p_of_e_table
 from SHE_PPT.table_formats.psf import tf as pstf, initialise_psf_table
-from SHE_PPT.table_formats.psf_tm_state import tf as tmtf, initialise_psf_tm_state_table
-from SHE_PPT.table_formats.psf_zm_state import tf as zmtf, initialise_psf_zm_state_table
+from SHE_PPT.table_formats.psf_tm_state import tff as tmtf, tfc as tmtc, initialise_psf_tm_state_table
+from SHE_PPT.table_formats.psf_zm_state import tff as zmtf, tfc as zmtc, initialise_psf_zm_state_table
 from SHE_PPT.table_formats.shear_estimates import tf as setf, initialise_shear_estimates_table, len_chain, num_chains
 from SHE_PPT.table_formats.simulation_plan import tf as sptf, initialise_simulation_plan_table
 from SHE_PPT.table_utility import is_in_format, add_row
-from astropy.table import Column, Table
 import numpy as np
 
 
@@ -133,8 +134,6 @@ class TestTableFormats:
         model_seed = 4422
         noise_seed = 11015
 
-        extname_head = "CCDID 3-2."
-
         # Test initialization methods
 
         detections_table = initialise_detections_table(model_hash=model_hash,
@@ -145,9 +144,9 @@ class TestTableFormats:
         assert(detections_table.meta[detf.m.model_seed] == model_seed)
         assert(detections_table.meta[detf.m.noise_seed] == noise_seed)
 
-        details_table = initialise_details_table(model_hash=model_hash,
-                                                 model_seed=model_seed,
-                                                 noise_seed=noise_seed)
+        _details_table = initialise_details_table(model_hash=model_hash,
+                                                  model_seed=model_seed,
+                                                  noise_seed=noise_seed)
 
         psf_table = initialise_psf_table()
 

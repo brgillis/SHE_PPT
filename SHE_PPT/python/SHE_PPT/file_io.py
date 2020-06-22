@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-01-27"
+__updated__ = "2020-06-09"
 
 from datetime import datetime
 import json
@@ -35,11 +35,10 @@ from ElementsServices.DataSync import DataSync
 from SHE_PPT import magic_values as mv
 import SHE_PPT
 from SHE_PPT.logging import getLogger
-from SHE_PPT.utility import run_only_once, get_release_from_version, time_to_timestamp
+from SHE_PPT.utility import run_only_once, get_release_from_version, time_to_timestamp, get_nested_attr
 from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider
 from ST_DataModelBindings.sys_stub import CreateFromDocument
 import numpy as np
-
 
 logger = getLogger(mv.logger_name)
 
@@ -527,7 +526,7 @@ def get_data_filename_from_product(p, attr_name=None):
     elif attr_name == -1:
         data_filename = p.Data.FileName
     else:
-        data_filename = getattr(p.Data, attr_name).DataContainer.FileName
+        data_filename = get_nested_attr(p.Data, attr_name).DataContainer.FileName
 
     if data_filename is None:
         return None
@@ -547,8 +546,8 @@ def set_data_filename_of_product(p, data_filename, attr_name=None):
     if data_filename is not None and len(data_filename) > 0 and data_filename[0] != "/":
         if filename_include_data_subdir:
 
-                # Silently force the filename returned to start with "data/" regardless of
-                # whether the returned value does
+            # Silently force the filename returned to start with "data/" regardless of
+            # whether the returned value does
             if data_filename[0:len_data_subdir] != data_subdir:
                 data_filename = data_subdir + data_filename
 
@@ -564,6 +563,6 @@ def set_data_filename_of_product(p, data_filename, attr_name=None):
     elif attr_name == -1:
         p.Data.FileName = data_filename
     else:
-        getattr(p.Data, attr_name).DataContainer.FileName = data_filename
+        get_nested_attr(p.Data, attr_name).DataContainer.FileName = data_filename
 
     return
