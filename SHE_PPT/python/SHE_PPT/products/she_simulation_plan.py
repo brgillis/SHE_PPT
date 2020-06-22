@@ -1,10 +1,8 @@
-""" @file simulation_plan_product.py
+""" @file she_simulation_plant.py
 
     Created 17 Nov 2017
 
-    Functions to create and output a simulation_plan data product.
-
-    Origin: OU-SHE - Input to Analysis pipeline; must be persistent in archive.
+    Functions to create and output a she_simulation_plan data product.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -21,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-15"
+__updated__ = "2020-06-22"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
