@@ -1,8 +1,8 @@
-""" @file shear_validation_stats_product.py
+""" @file she_expected_shear_validation_statistics.py
 
     Created 17 Nov 2017
 
-    Functions to create and output a shear_validation_stats data product.
+    Functions to create and output a she_expected_shear_validation_statistics data product.
 
     Origin: OU-SHE -  Output from Calibration pipeline and input to Analysis pipeline;
     must be persistent in archive.
@@ -22,7 +22,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-15"
+__updated__ = "2020-06-22"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
@@ -36,8 +36,8 @@ def init():
         Adds some extra functionality to the DpdSheAstrometry product
     """
 
-    # binding_class = she_dpd.DpdSheShearValidationStatsProduct # @FIXME
-    binding_class = DpdSheShearValidationStatsProduct
+    # binding_class = she_dpd.DpdSheExpectedShearValidationStatistics # @FIXME
+    binding_class = DpdSheExpectedShearValidationStatistics
 
     # Add the data file name methods
 
@@ -69,7 +69,7 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-class DpdSheShearValidationStatsProduct:  # @FIXME
+class DpdSheExpectedShearValidationStatistics:  # @FIXME
 
     def __init__(self):
         self.Header = None
@@ -94,43 +94,43 @@ class DataContainer:  # @FIXME
         self.filestatus = None
 
 
-def create_dpd_she_shear_validation_stats(filename=None):
+def create_dpd_she_expected_shear_validation_statistics(filename=None):
     """
         @TODO fill in docstring
     """
 
-    # dpd_she_shear_validation_stats =
-    # she_dpd.DpdSheShearValidationStatsProduct() # FIXME
-    dpd_she_shear_validation_stats = DpdSheShearValidationStatsProduct()
+    # dpd_she_expected_shear_validation_statistics =
+    # she_dpd.DpdSheExpectedShearValidationStatistics() # FIXME
+    dpd_she_expected_shear_validation_statistics = DpdSheExpectedShearValidationStatistics()
 
-    # dpd_she_shear_validation_stats.Header =
+    # dpd_she_expected_shear_validation_statistics.Header =
     # HeaderProvider.create_generic_header("SHE") # FIXME
-    dpd_she_shear_validation_stats.Header = "SHE"
+    dpd_she_expected_shear_validation_statistics.Header = "SHE"
 
-    dpd_she_shear_validation_stats.Data = create_she_shear_validation_stats(
+    dpd_she_expected_shear_validation_statistics.Data = create_she_expected_shear_validation_statistics(
         filename)
 
-    return dpd_she_shear_validation_stats
+    return dpd_she_expected_shear_validation_statistics
 
 
 # Add a useful alias
-create_shear_validation_stats_product = create_dpd_she_shear_validation_stats
+create_expected_shear_validation_statistics_product = create_dpd_she_expected_shear_validation_statistics
 
 
-def create_she_shear_validation_stats(filename=None):
+def create_she_expected_shear_validation_statistics(filename=None):
     """
         @TODO fill in docstring
     """
 
-    # she_shear_validation_stats = she_dpd.SheShearValidationStatsProduct() #
+    # she_expected_shear_validation_statistics = she_dpd.SheShearValidationStatsProduct() #
     # @FIXME
-    she_shear_validation_stats = SheShearValidationStatsProduct()
+    she_expected_shear_validation_statistics = SheShearValidationStatsProduct()
 
-    she_shear_validation_stats.format = "UNDEFINED"
-    she_shear_validation_stats.version = "0.0"
+    she_expected_shear_validation_statistics.format = "UNDEFINED"
+    she_expected_shear_validation_statistics.version = "0.0"
 
-    she_shear_validation_stats.DataContainer = DataContainer()
-    she_shear_validation_stats.DataContainer.FileName = filename
-    she_shear_validation_stats.DataContainer.filestatus = "PROPOSED"
+    she_expected_shear_validation_statistics.DataContainer = DataContainer()
+    she_expected_shear_validation_statistics.DataContainer.FileName = filename
+    she_expected_shear_validation_statistics.DataContainer.filestatus = "PROPOSED"
 
-    return she_shear_validation_stats
+    return she_expected_shear_validation_statistics
