@@ -1,9 +1,9 @@
-""" @file stack_mosaic_product.py
+""" @file she_stack_segmentation_map.py
 
     Created 26 Oct 2017
 
-    Functions to create and output a stack_mosaic data product, per details at
-    http://euclid.esac.esa.int/dm/dpdd/latest/merdpd/dpcards/she_stack_mosaic.html
+    Functions to create and output a stack_segmentation_map data product, per details at
+    http://euclid.esac.esa.int/dm/dpdd/latest/merdpd/dpcards/she_stack_segmentation_map.html
 
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines. This version is
     converted from MER's version, so we need a separate product for it.
@@ -23,7 +23,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-15"
+__updated__ = "2020-06-22"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
@@ -33,21 +33,21 @@ import pickle
 
 from astropy.io import fits
 
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT import detector as dtc
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 import SHE_PPT.magic_values as mv
 from SHE_PPT.utility import find_extension
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 
 
 # Convenience function to easily load the actual map
-def load_stack_mosaic(filename, dir=None, **kwargs):
-    """Directly loads the stack_mosaic image from the filename of the data product.
+def load_stack_segmentation_map(filename, dir=None, **kwargs):
+    """Directly loads the stack_segmentation_map image from the filename of the data product.
 
     Parameters
     ----------
     filename : str
-        Filename of the stack_mosaic data product. If `dir` is None, `filename `must
+        Filename of the stack_segmentation_map data product. If `dir` is None, `filename `must
         be either fully-qualified or relative to the workspace. If `dir` is
         supplied, `filename` should be only the local name of the file.
     dir : str
@@ -59,14 +59,14 @@ def load_stack_mosaic(filename, dir=None, **kwargs):
 
     Returns
     -------
-    stack_mosaic_hdu : astropy.fits.PrimaryHDU
-        fits HDU containing the stack_mosaic image and its header.
+    stack_segmentation_map_hdu : astropy.fits.PrimaryHDU
+        fits HDU containing the stack_segmentation_map image and its header.
 
     Raises
     ------
     IOError
         Will raise an IOError if either no such file as `filename` exists or
-        if the filename of the stack_mosaic data contained within the product does
+        if the filename of the stack_segmentation_map data contained within the product does
         not exist.
     """
 
@@ -75,25 +75,25 @@ def load_stack_mosaic(filename, dir=None, **kwargs):
     if dir is None:
         dir = ""
 
-    stack_mosaic_product = read_xml_product(
+    stack_segmentation_map_product = read_xml_product(
         xml_filename=os.path.join(dir, filename), allow_pickled=False)
 
-    data_filename = stack_mosaic_product.get_data_filename()
+    data_filename = stack_segmentation_map_product.get_data_filename()
 
-    stack_mosaic_hdulist = fits.open(data_filename, **kwargs)
+    stack_segmentation_map_hdulist = fits.open(data_filename, **kwargs)
 
-    return stack_mosaic_hdulist[0]
+    return stack_segmentation_map_hdulist[0]
 
 # Initialisation function, to add methods to an imported XML class
 
 
 def init():
     """
-        Adds some extra functionality to the DpdSheStackMosaic product
+        Adds some extra functionality to the DpdSheStackSegmentationMap product
     """
 
-    # binding_class = she_dpd.DpdSheStackMosaicProduct # @FIXME
-    binding_class = DpdSheStackMosaicProduct
+    # binding_class = she_dpd.DpdSheStackSegmentationMapProduct # @FIXME
+    binding_class = DpdSheStackSegmentationMapProduct
 
     if not hasattr(binding_class, "initialised"):
         binding_class.initialised = True
@@ -135,7 +135,7 @@ class DataContainer:
         self.filestatus = None
 
 
-class DpdSheStackMosaicProduct:
+class DpdSheStackSegmentationMapProduct:
 
     def __init__(self):
         self.Header = None
@@ -145,7 +145,7 @@ class DpdSheStackMosaicProduct:
         return True
 
 
-class SheStackMosaicProduct:
+class SheStackSegmentationMapProduct:
 
     def __init__(self):
         self.DataStorage = None
@@ -159,39 +159,39 @@ class SheDataStorageProduct:
         self.DataContainer = None
 
 
-def create_dpd_she_stack_mosaic(data_filename):
+def create_dpd_she_stack_segmentation_map(data_filename="None"):
     """
         @TODO fill in docstring
     """
 
-    dpd_she_stack_mosaic = DpdSheStackMosaicProduct()
+    dpd_she_stack_segmentation_map = DpdSheStackSegmentationMapProduct()
 
-    # dpd_she_stack_mosaic.Header = HeaderProvider.create_generic_header("SHE") # FIXME
-    dpd_she_stack_mosaic.Header = None
+    # dpd_she_stack_segmentation_map.Header = HeaderProvider.create_generic_header("SHE") # FIXME
+    dpd_she_stack_segmentation_map.Header = None
 
-    dpd_she_stack_mosaic.Data = create_she_stack_mosaic(
+    dpd_she_stack_segmentation_map.Data = create_she_stack_segmentation_map(
         data_filename=data_filename)
 
-    return dpd_she_stack_mosaic
+    return dpd_she_stack_segmentation_map
 
 
 # Add a useful alias
-create_stack_mosaic_product = create_dpd_she_stack_mosaic
+create_stack_segmentation_map_product = create_dpd_she_stack_segmentation_map
 
 
-def create_she_stack_mosaic(data_filename):
+def create_she_stack_segmentation_map(data_filename="None"):
     """
         @TODO fill in docstring
     """
 
-    she_stack_mosaic = SheStackMosaicProduct()
+    she_stack_segmentation_map = SheStackSegmentationMapProduct()
 
-    she_stack_mosaic.DataStorage = create_she_data_storage(data_filename)
+    she_stack_segmentation_map.DataStorage = create_she_data_storage(data_filename)
 
-    return she_stack_mosaic
+    return she_stack_segmentation_map
 
 
-def create_she_data_storage(filename):
+def create_she_data_storage(filename="None"):
 
     # she_data_storage = she_dpd.SheDataStorage() # @FIXME
     she_data_storage = SheDataStorageProduct()

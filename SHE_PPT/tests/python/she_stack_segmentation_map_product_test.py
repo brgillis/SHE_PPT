@@ -1,8 +1,8 @@
-""" @file she_exposure_segmentation_map_product_test.py
+""" @file she_stack_segmentation_map_product_test.py
 
     Created 13 Oct 2017
 
-    Unit tests for the exposure segmentation map data product.
+    Unit tests for the she stack segmentation map data product.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -22,18 +22,18 @@ __updated__ = "2020-06-22"
 
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
-from SHE_PPT.products import she_exposure_segmentation_map as prod
+from SHE_PPT.products import she_stack_segmentation_map as prod
 
 
 class TestExposureSegmentationMapProduct(object):
-    """A collection of tests for the she_exposure_segmentation_map data product.
+    """A collection of tests for the she_stack_segmentation_map data product.
 
     """
 
     def test_validation(self):
 
         # Create the product
-        product = prod.create_dpd_she_exposure_segmentation_map()
+        product = prod.create_dpd_she_stack_segmentation_map()
 
         # Check that it validates the schema
         product.validateBinding()
@@ -43,14 +43,14 @@ class TestExposureSegmentationMapProduct(object):
     def test_xml_writing_and_reading(self, tmpdir):
 
         # Create the product
-        product = prod.create_dpd_she_exposure_segmentation_map()
+        product = prod.create_dpd_she_stack_segmentation_map()
 
         # Change the fits filenames
         data_filename = "test_file.fits"
         product.set_filename(data_filename)
 
         # Save the product in an XML file
-        filename = "she_exposure_segmentation_map.xml"
+        filename = "she_stack_segmentation_map.xml"
         write_xml_product(product, filename, workdir=str(tmpdir))
 
         # Read back the XML file
@@ -64,18 +64,18 @@ class TestExposureSegmentationMapProduct(object):
     def test_pickle_writing_and_reading(self, tmpdir):
 
         # Create the product
-        product = prod.create_dpd_she_exposure_segmentation_map()
+        product = prod.create_dpd_she_stack_segmentation_map()
 
         # Change the fits filenames
         data_filename = "test_file.fits"
         product.set_filename(data_filename)
 
         # Save the product in an XML file
-        filename = "she_exposure_segmentation_map.xml"
+        filename = "she_stack_segmentation_map.xml"
         write_xml_product(product, filename, workdir=str(tmpdir))
 
         # Save the product in a pickled file
-        filename = "she_exposure_segmentation_map.bin"
+        filename = "she_stack_segmentation_map.bin"
         write_pickled_product(product, filename, workdir=str(tmpdir))
 
         # Read back the pickled file
