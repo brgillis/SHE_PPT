@@ -1,8 +1,8 @@
-""" @file object_id_list.py
+""" @file she_object_id_list.py
 
     Created 14 Mar 2019
 
-    Functions to create and output an object_id_list data product, which contains a list of the object IDs that
+    Functions to create and output an she_object_id_list data product, which contains a list of the object IDs that
     we want to process in a given thread.
 
     Origin: OU-SHE
@@ -22,7 +22,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-03-14"
+__updated__ = "2020-06-22"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME

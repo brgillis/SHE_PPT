@@ -1,8 +1,8 @@
-""" @file object_id_list_product_test.py
+""" @file she_object_id_list_product_test.py
 
     Created 14 Mar 2019
 
-    Unit tests for the object_id_list data product.
+    Unit tests for the she_object_id_list data product.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -18,18 +18,18 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-06-24"
+__updated__ = "2020-06-22"
 
 import os
 import pytest
 
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
-from SHE_PPT.products import object_id_list as prod
+from SHE_PPT.products import she_object_id_list as prod
 
 
 class TestObjectIdList(object):
-    """A collection of tests for the object_id_list data product.
+    """A collection of tests for the she_object_id_list data product.
 
     """
 
