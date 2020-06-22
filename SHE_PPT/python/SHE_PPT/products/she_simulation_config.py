@@ -1,8 +1,8 @@
-""" @file simulation_config_product.py
+""" @file she_simulation_config_product.py
 
     Created 17 Nov 2017
 
-    Functions to create and output a simulation_config data product.
+    Functions to create and output a she_simulation_config data product.
 
     Origin: OU-SHE - Internal to Calibration pipeline.
 """
@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-15"
+__updated__ = "2020-06-22"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME

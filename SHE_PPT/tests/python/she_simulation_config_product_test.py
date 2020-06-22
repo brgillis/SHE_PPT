@@ -1,4 +1,4 @@
-""" @file simulation_config_product_test.py
+""" @file she_simulation_config_product_test.py
 
     Created 17 Nov 2017
 
@@ -18,11 +18,11 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-06-25"
+__updated__ = "2020-06-22"
 
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
-from SHE_PPT.products import simulation_config as prod
+from SHE_PPT.products import she_simulation_config as prod
 
 
 class TestSimulationConfigProduct(object):
@@ -72,7 +72,7 @@ class TestSimulationConfigProduct(object):
 
         # Save the product in an XML file
         filename = "she_simulation_config.xml"
-        write_pickled_product(product, filename,workdir=str(tmpdir))
+        write_pickled_product(product, filename, workdir=str(tmpdir))
 
         # Read back the XML file
         loaded_product = read_pickled_product(filename, workdir=str(tmpdir))
