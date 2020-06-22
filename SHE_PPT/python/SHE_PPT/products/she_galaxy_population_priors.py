@@ -1,8 +1,8 @@
-""" @file galaxy_population_product.py
+""" @file she_galaxy_population_priors.py
 
     Created 17 Nov 2017
 
-    Functions to create and output a galaxy_population data product.
+    Functions to create and output a galaxy_population_priors priors data product.
 
     Origin: OU-SHE - Input to Calibration pipeline; needs to be implemented in data model.
 """
@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-15"
+__updated__ = "2020-06-22"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
@@ -35,8 +35,8 @@ def init():
         ?????
     """
 
-    # binding_class = she_dpd.DpdSheGalaxyPopulationProduct # @FIXME
-    binding_class = DpdSheGalaxyPopulationProduct
+    # binding_class = she_dpd.DpdSheGalaxyPopulationPriorsProduct # @FIXME
+    binding_class = DpdSheGalaxyPopulationPriorsProduct
 
     # Add the data file name methods
 
@@ -67,7 +67,7 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-class DpdSheGalaxyPopulationProduct:  # @FIXME
+class DpdSheGalaxyPopulationPriorsProduct:  # @FIXME
 
     def __init__(self):
         self.Header = None
@@ -77,7 +77,7 @@ class DpdSheGalaxyPopulationProduct:  # @FIXME
         return False
 
 
-class SheGalaxyPopulationProduct:  # @FIXME
+class SheGalaxyPopulationPriorsProduct:  # @FIXME
 
     def __init__(self):
         self.format = None
@@ -92,41 +92,41 @@ class DataContainer:  # @FIXME
         self.filestatus = None
 
 
-def create_dpd_she_galaxy_population(filename=None):
+def create_dpd_she_galaxy_population_priors(filename=None):
     """
         @TODO fill in docstring
     """
 
-    # dpd_she_galaxy_population = she_dpd.DpdSheGalaxyPopulationProduct() #
+    # dpd_she_galaxy_population_priors = she_dpd.DpdSheGalaxyPopulationPriorsProduct() #
     # FIXME
-    dpd_she_galaxy_population = DpdSheGalaxyPopulationProduct()
+    dpd_she_galaxy_population_priors = DpdSheGalaxyPopulationPriorsProduct()
 
-    # dpd_she_galaxy_population.Header =
+    # dpd_she_galaxy_population_priors.Header =
     # HeaderProvider.create_generic_header("SHE") # FIXME
-    dpd_she_galaxy_population.Header = "SHE"
+    dpd_she_galaxy_population_priors.Header = "SHE"
 
-    dpd_she_galaxy_population.Data = create_she_galaxy_population(filename)
+    dpd_she_galaxy_population_priors.Data = create_she_galaxy_population_priors(filename)
 
-    return dpd_she_galaxy_population
+    return dpd_she_galaxy_population_priors
 
 
 # Add a useful alias
-create_galaxy_population_product = create_dpd_she_galaxy_population
+create_galaxy_population_priors_product = create_dpd_she_galaxy_population_priors
 
 
-def create_she_galaxy_population(filename=None):
+def create_she_galaxy_population_priors(filename=None):
     """
         @TODO fill in docstring
     """
 
-    # she_galaxy_population = she_dpd.SheGalaxyPopulationProduct() # @FIXME
-    she_galaxy_population = SheGalaxyPopulationProduct()
+    # she_galaxy_population_priors = she_dpd.SheGalaxyPopulationPriorsProduct() # @FIXME
+    she_galaxy_population_priors = SheGalaxyPopulationPriorsProduct()
 
-    she_galaxy_population.format = "UNDEFINED"
-    she_galaxy_population.version = "0.0"
+    she_galaxy_population_priors.format = "UNDEFINED"
+    she_galaxy_population_priors.version = "0.0"
 
-    she_galaxy_population.DataContainer = DataContainer()
-    she_galaxy_population.DataContainer.FileName = filename
-    she_galaxy_population.DataContainer.filestatus = "PROPOSED"
+    she_galaxy_population_priors.DataContainer = DataContainer()
+    she_galaxy_population_priors.DataContainer.FileName = filename
+    she_galaxy_population_priors.DataContainer.filestatus = "PROPOSED"
 
-    return she_galaxy_population
+    return she_galaxy_population_priors

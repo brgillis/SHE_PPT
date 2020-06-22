@@ -1,4 +1,4 @@
-""" @file galaxy_population_product_test.py
+""" @file she_galaxy_population_priors_product_test.py
 
     Created 17 Nov 2017
 
@@ -18,11 +18,11 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-06-25"
+__updated__ = "2020-06-22"
 
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
-from SHE_PPT.products import galaxy_population as prod
+from SHE_PPT.products import she_galaxy_population_priors as prod
 
 
 class TestGalaxyPopulationProduct(object):
@@ -33,7 +33,7 @@ class TestGalaxyPopulationProduct(object):
     def test_validation(self):
 
         # Create the product
-        product = prod.create_dpd_she_galaxy_population()
+        product = prod.create_dpd_she_galaxy_population_priors()
 
         # Check that it validates the schema
         product.validateBinding()
@@ -43,14 +43,14 @@ class TestGalaxyPopulationProduct(object):
     def test_xml_writing_and_reading(self, tmpdir):
 
         # Create the product
-        product = prod.create_dpd_she_galaxy_population()
+        product = prod.create_dpd_she_galaxy_population_priors()
 
         # Change the fits filenames
         subfilename = "test_file.fits"
         product.set_filename(subfilename)
 
         # Save the product in an XML file
-        filename = "she_galaxy_population.xml"
+        filename = "she_galaxy_population_priors.xml"
         write_xml_product(product, filename, workdir=str(tmpdir))
 
         # Read back the XML file
@@ -64,15 +64,15 @@ class TestGalaxyPopulationProduct(object):
     def test_pickle_writing_and_reading(self, tmpdir):
 
         # Create the product
-        product = prod.create_dpd_she_galaxy_population()
+        product = prod.create_dpd_she_galaxy_population_priors()
 
         # Change the fits filenames
         subfilename = "test_file.fits"
         product.set_filename(subfilename)
 
         # Save the product in an XML file
-        filename = "she_galaxy_population.xml"
-        write_pickled_product(product, filename,workdir=str(tmpdir))
+        filename = "she_galaxy_population_priors.xml"
+        write_pickled_product(product, filename, workdir=str(tmpdir))
 
         # Read back the XML file
         loaded_product = read_pickled_product(filename, workdir=str(tmpdir))
