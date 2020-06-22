@@ -1,9 +1,38 @@
-Changelog for SHE_PPT Preprocessing Toolkit
+Changelog for SHE_PPT
+
+Changes from v1.0 to v8.0
+=========================
+
+API Changes
+-----------
+- Names of data product modules updated to standardized format and to match data model
+- Table formats updated to match SC8 Data Model
+
+Dependency Changes
+------------------
+- Now depends on Elements 5.10.0
+- Now depends on ST_DataModelBindings 8.0.2 and ST_DataModelTools 8.0.2
+
+Deprecated Features
+-------------------
+- she_bfd_training_mod implementation of data model class construction
+- table_to_hdu function (now contained within astropy) - marked as deprecated, not removed yet
+
+Bug Fixes
+---------
+
+New Features
+------------
+
+New config features
+-------------------
+
+Miscellaneous
+-------------
+- Various code and comment cleanup
 
 Changes from v0.8 to v1.0
 =========================
-
-TODO: Update CHANGELOG
 
 API Changes
 -----------
