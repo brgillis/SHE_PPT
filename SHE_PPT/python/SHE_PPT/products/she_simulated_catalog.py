@@ -1,8 +1,8 @@
-""" @file details_product.py
+""" @file she_simulated_catalog.py
 
     Created 17 Nov 2017
 
-    Functions to create and output a details data product.
+    Functions to create and output a simulated_catalog data product.
 
     Origin: OU-SHE - Internal to calibration pipeline.
 """
@@ -15,13 +15,13 @@
 #
 # This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 # warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-# details.
+# simulated_catalog.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-15"
+__updated__ = "2020-06-22"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
@@ -36,8 +36,8 @@ def init():
 
     """
 
-    # binding_class = she_dpd.DpdSheDetailsProduct # @FIXME
-    binding_class = DpdSheDetailsProduct
+    # binding_class = she_dpd.DpdSheSimulatedCatalogProduct # @FIXME
+    binding_class = DpdSheSimulatedCatalogProduct
 
     # Add the data file name methods
 
@@ -69,7 +69,7 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-class DpdSheDetailsProduct:  # @FIXME
+class DpdSheSimulatedCatalogProduct:  # @FIXME
 
     def __init__(self):
         self.Header = None
@@ -79,7 +79,7 @@ class DpdSheDetailsProduct:  # @FIXME
         return False
 
 
-class SheDetailsProduct:  # @FIXME
+class SheSimulatedCatalogProduct:  # @FIXME
 
     def __init__(self):
         self.format = None
@@ -94,40 +94,40 @@ class DataContainer:  # @FIXME
         self.filestatus = None
 
 
-def create_dpd_she_details(filename=None):
+def create_dpd_she_simulated_catalog(filename=None):
     """
         @TODO fill in docstring
     """
 
-    # dpd_she_details = she_dpd.DpdSheDetailsProduct() # FIXME
-    dpd_she_details = DpdSheDetailsProduct()
+    # dpd_she_simulated_catalog = she_dpd.DpdSheSimulatedCatalogProduct() # FIXME
+    dpd_she_simulated_catalog = DpdSheSimulatedCatalogProduct()
 
-    # dpd_she_details.Header = HeaderProvider.create_generic_header("SHE") #
+    # dpd_she_simulated_catalog.Header = HeaderProvider.create_generic_header("SHE") #
     # FIXME
-    dpd_she_details.Header = "SHE"
+    dpd_she_simulated_catalog.Header = "SHE"
 
-    dpd_she_details.Data = create_she_details(filename)
+    dpd_she_simulated_catalog.Data = create_she_simulated_catalog(filename)
 
-    return dpd_she_details
+    return dpd_she_simulated_catalog
 
 
 # Add a useful alias
-create_details_product = create_dpd_she_details
+create_simulated_catalog_product = create_dpd_she_simulated_catalog
 
 
-def create_she_details(filename=None):
+def create_she_simulated_catalog(filename=None):
     """
         @TODO fill in docstring
     """
 
-    # she_details = she_dpd.DpdSheDetailsProduct() # @FIXME
-    she_details = SheDetailsProduct()
+    # she_simulated_catalog = she_dpd.DpdSheSimulatedCatalogProduct() # @FIXME
+    she_simulated_catalog = SheSimulatedCatalogProduct()
 
-    she_details.format = "UNDEFINED"
-    she_details.version = "0.0"
+    she_simulated_catalog.format = "UNDEFINED"
+    she_simulated_catalog.version = "0.0"
 
-    she_details.DataContainer = DataContainer()
-    she_details.DataContainer.FileName = filename
-    she_details.DataContainer.filestatus = "PROPOSED"
+    she_simulated_catalog.DataContainer = DataContainer()
+    she_simulated_catalog.DataContainer.FileName = filename
+    she_simulated_catalog.DataContainer.filestatus = "PROPOSED"
 
-    return she_details
+    return she_simulated_catalog

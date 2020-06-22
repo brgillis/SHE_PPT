@@ -1,4 +1,4 @@
-""" @file details_product_test.py
+""" @file simulated_catalog_product_test.py
 
     Created 17 Nov 2017
 
@@ -13,16 +13,16 @@
 #
 # This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 # warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-# details.
+# simulated_catalog.
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-06-25"
+__updated__ = "2020-06-22"
 
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
-from SHE_PPT.products import details as prod
+from SHE_PPT.products import she_simulated_catalog as prod
 
 
 class TestDetailsProduct(object):
@@ -33,7 +33,7 @@ class TestDetailsProduct(object):
     def test_validation(self):
 
         # Create the product
-        product = prod.create_dpd_she_details()
+        product = prod.create_dpd_she_simulated_catalog()
 
         # Check that it validates the schema
         product.validateBinding()
@@ -43,41 +43,41 @@ class TestDetailsProduct(object):
     def test_xml_writing_and_reading(self, tmpdir):
 
         # Create the product
-        product = prod.create_dpd_she_details()
+        product = prod.create_dpd_she_simulated_catalog()
 
         # Change the fits filenames
         subfilename = "test_file.fits"
         product.set_data_filename(subfilename)
 
         # Save the product in an XML file
-        filename = "she_details.xml"
+        filename = "she_simulated_catalog.xml"
         write_xml_product(product, filename, workdir=str(tmpdir))
 
         # Read back the XML file
         loaded_product = read_xml_product(filename, workdir=str(tmpdir))
 
         # Check that the filenames match
-        assert loaded_product.get_data_filename() == "data/"+subfilename
+        assert loaded_product.get_data_filename() == "data/" + subfilename
 
         pass
 
     def test_pickle_writing_and_reading(self, tmpdir):
 
         # Create the product
-        product = prod.create_dpd_she_details()
+        product = prod.create_dpd_she_simulated_catalog()
 
         # Change the fits filenames
         subfilename = "test_file.fits"
         product.set_data_filename(subfilename)
 
         # Save the product in an XML file
-        filename = "she_details.xml"
-        write_pickled_product(product, filename,workdir=str(tmpdir))
+        filename = "she_simulated_catalog.xml"
+        write_pickled_product(product, filename, workdir=str(tmpdir))
 
         # Read back the XML file
         loaded_product = read_pickled_product(filename, workdir=str(tmpdir))
 
         # Check that the filenames match
-        assert loaded_product.get_data_filename() == "data/"+subfilename
+        assert loaded_product.get_data_filename() == "data/" + subfilename
 
         pass
