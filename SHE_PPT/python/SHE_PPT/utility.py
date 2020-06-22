@@ -23,6 +23,7 @@ __updated__ = "2019-04-22"
 
 import codecs
 import hashlib
+import os
 
 from SHE_PPT import detector as dtc
 from SHE_PPT.logging import getLogger
@@ -317,3 +318,38 @@ def run_only_once(function):
     wrapper.already_run = False
 
     return wrapper
+
+def get_all_files(directory_name):
+    """
+    """
+    full_file_list=[]
+    dir_list=[directory_name]
+    is_complete=False
+    while not is_complete:
+        new_dir_list=[]
+        for dir_name in dir_list:
+            file_list,sb_dir_list=process_directory(
+                dir_name)
+            full_file_list+=[os.path.join(dir_name,fname) 
+                             for fname in file_list]
+            if sb_dir_list:
+                new_dir_list+=[os.path.join(dir_name,sb_dir)
+                    for sb_dir in sb_dir_list]
+        dir_list=new_dir_list
+        is_complete=len(dir_list)==0
+        
+    return full_file_list
+
+
+def process_directory(directory_name):
+    """ Check for files, subdirectories
+    
+    """
+    file_list=[]
+    subdir_list=[]
+    for file_name in os.listdir(directory_name):
+        if os.path.isdir(os.path.join(directory_name,file_name)):
+            subdir_list.append(file_name)
+        elif not file_name.startswith('.'):
+            file_list.append(file_name)
+    return file_list,subdir_list

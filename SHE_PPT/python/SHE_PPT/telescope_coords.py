@@ -315,6 +315,9 @@ def get_focal_plane_coords_from_detector(det_xp,
         ------
         foc_x, foc_y : float, float
             VIS focal plane co-ordinates in um
+            
+            
+ 
     """
 
     if instrument == "VIS":
@@ -342,6 +345,9 @@ def get_focal_plane_coords_from_detector(det_xp,
     sin_o = math.sin(detector_orientation)
 
     # Get positions on the focal plane
+    # @TODO: IF VIS revert, x,y? and careful about sign.
+    # How do we test this?????
+    # Are there some numbers??? 
     foc_x = offset_x + det_specs.pixelsize_um * (det_specs.detector_pixels_x / 2 + cos_o * xpc - sin_o * ypc)
     foc_y = offset_y + det_specs.pixelsize_um * (det_specs.detector_pixels_y / 2 + sin_o * xpc + cos_o * ypc)
 
@@ -366,18 +372,46 @@ def get_fov_coords_from_focal_plane(foc_x,
         ------
         fov_x, fov_y : float, float
             Field-of-view co-ordinates in degrees
+            
+            
+        @fixme:
+        ISSUE 56: ??
+        I've started reading it and it lacks a function, which would be called
+"get_detector_coords_from_focal_plane()" using your naming convention, and
+I've started writing it, but I miss some details on the VIS reference frames
+you're using. There is the detector frame in pixels, the focal plane frame in
+micrometres (which I assume is centered on the center of the focal plane), and
+the field of view frame, in degrees, which origin is offset from the focal
+plane center by -0.822 degrees along the X axis.
+        
+         My concern is that usually the VIS FOV frame has its Y axis along the X FPA
+axis, and the FOV X axis is along -Y FPA, and I don't see this transformation
+in your "get_fov_coords_from_focal_plane()" function.
+        
+        I don't think that's correct, unfortunately. The rotation is between the focal plane and the FoV, while the orientation parameter rotates between the focal plane and the detectors. It might appear to solve our problem, but would get us into trouble later when the focal plane to FoV conversion is made more accurate
     """
 
+    # Convert from position on the focal plane to the field-of-view
+    
     if instrument == "VIS":
         det_specs = vis_det_specs
+        
+        # ? rotate before or after offset..
+        # Try rotate before, i.e. 
+    
+        # @NOTE: MDB has fov_x and fov_y the incorrect way around.
+        fov_y = det_specs.fov_x_offset_deg + det_specs.fov_scale_deg_per_um * foc_y
+        fov_x = det_specs.fov_y_offset_deg - det_specs.fov_scale_deg_per_um * foc_x
+
     elif instrument == "NISP":
         det_specs = nisp_det_specs
+        
+        fov_x = det_specs.fov_x_offset_deg + det_specs.fov_scale_deg_per_um * foc_x
+        fov_y = det_specs.fov_y_offset_deg + det_specs.fov_scale_deg_per_um * foc_y
+
+        
     else:
         raise ValueError("Invalid instrument value: " + str(instrument) + ". Allowed values are \"VIS\" and \"NISP\"")
-
-    # Convert from position on the focal plane to the field-of-view
-    fov_x = det_specs.fov_x_offset_deg + det_specs.fov_scale_deg_per_um * foc_x
-    fov_y = det_specs.fov_y_offset_deg + det_specs.fov_scale_deg_per_um * foc_y
 
     return fov_x, fov_y
 
@@ -404,6 +438,8 @@ def get_fov_coords_from_detector(det_xp,
             Which instrument to calculate for - either "VIS" or "NISP"
         detector_orientation : float
             Orientation of the detector relative to the field-of-view in radians. Default=0
+
+            
 
         Return
         ------
