@@ -1,4 +1,4 @@
-""" @file shear_bias_statistics.py
+""" @file she_bias_statistics.py
 
     Created 22 June 2018
 
@@ -7,7 +7,7 @@
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines.
 """
 
-__updated__ = "2019-08-15"
+__updated__ = "2020-06-22"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -23,7 +23,7 @@ __updated__ = "2019-08-15"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-# from ST_DataModelBindings.dpd.she.raw.shearmeasurement_stub import dpdShearBiasStatistics
+# from ST_DataModelBindings.dpd.she.raw.shearmeasurement_stub import dpdSheBiasStatistics
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 # from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 
@@ -43,7 +43,7 @@ from SHE_PPT.utility import hash_any
 logger = getLogger(__name__)
 
 
-class dpdShearBiasStatistics(object):
+class dpdSheBiasStatistics(object):
 
     def __init__(self):
         self.Header = None
@@ -53,7 +53,7 @@ class dpdShearBiasStatistics(object):
         return True
 
 
-class ShearBiasStatistics(object):  # @FIXME
+class SheBiasStatistics(object):  # @FIXME
 
     def __init__(self):
         self.BfdBiasStatistics = None
@@ -63,7 +63,7 @@ class ShearBiasStatistics(object):  # @FIXME
         self.RegaussBiasStatistics = None
 
 
-class MethodShearBiasStatistics(object):  # @FIXME
+class MethodSheBiasStatistics(object):  # @FIXME
 
     def __init__(self):
         self.format = None
@@ -80,10 +80,10 @@ class DataContainer:  # @FIXME
 
 def init():
     """
-        Adds some extra functionality to the dpdShearBiasStatistics product
+        Adds some extra functionality to the dpdSheBiasStatistics product
     """
 
-    binding_class = dpdShearBiasStatistics
+    binding_class = dpdSheBiasStatistics
 
     # Add useful methods to the class
 
@@ -161,7 +161,7 @@ bias_statistics_switcher = {"KSB": "BfdBiasStatistics",
 def __set_method_bias_statistics_filename(self, method, filename):
 
     if getattr(self.Data, bias_statistics_switcher[method]) is None:
-        setattr(self.Data, bias_statistics_switcher[method], create_method_shear_bias_statistics(filename))
+        setattr(self.Data, bias_statistics_switcher[method], create_method_she_bias_statistics(filename))
 
     if filename is not None:
         set_data_filename_of_product(self, filename, bias_statistics_switcher[method])
@@ -231,7 +231,7 @@ def __set_method_bias_statistics(self, method, stats, workdir="."):
     bias_statistics_table.write(qualified_new_filename)
 
     # Set the filename for the object
-    setattr(self.Data, bias_statistics_switcher[method], create_method_shear_bias_statistics(new_filename))
+    setattr(self.Data, bias_statistics_switcher[method], create_method_she_bias_statistics(new_filename))
 
     return
 
@@ -309,7 +309,7 @@ def __set_method_bias_measurements(self, method, measurements, workdir="."):
                 logger.warning("Deprecated file " + qualified_old_filename + " cannot be deleted.")
 
     # Set the filename for the object
-    setattr(self.Data, bias_statistics_switcher[method], create_method_shear_bias_statistics(filename))
+    setattr(self.Data, bias_statistics_switcher[method], create_method_she_bias_statistics(filename))
 
     # Write the table
     bias_statistics_table.write(qualified_filename)
@@ -469,7 +469,7 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-def create_dpd_shear_bias_statistics(BFD_bias_statistics_filename=None,
+def create_dpd_she_bias_statistics(BFD_bias_statistics_filename=None,
                                      KSB_bias_statistics_filename=None,
                                      LensMC_bias_statistics_filename=None,
                                      MomentsML_bias_statistics_filename=None,
@@ -480,13 +480,13 @@ def create_dpd_shear_bias_statistics(BFD_bias_statistics_filename=None,
 
     # dpd_shear_bias_stats = read_xml_product(
     #     find_aux_file(sample_file_name), allow_pickled=False)
-    dpd_shear_bias_stats = dpdShearBiasStatistics()
+    dpd_shear_bias_stats = dpdSheBiasStatistics()
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)
     # dpd_shear_bias_stats.Header = HeaderProvider.create_generic_header("SHE")
     dpd_shear_bias_stats.Header = "SHE"
-    dpd_shear_bias_stats.Data = ShearBiasStatistics()
+    dpd_shear_bias_stats.Data = SheBiasStatistics()
 
     dpd_shear_bias_stats.set_BFD_bias_statistics_filename(BFD_bias_statistics_filename)
     dpd_shear_bias_stats.set_KSB_bias_statistics_filename(KSB_bias_statistics_filename)
@@ -497,7 +497,7 @@ def create_dpd_shear_bias_statistics(BFD_bias_statistics_filename=None,
     return dpd_shear_bias_stats
 
 
-def create_dpd_shear_bias_statistics_from_stats(BFD_bias_statistics=None,
+def create_dpd_she_bias_statistics_from_stats(BFD_bias_statistics=None,
                                                 KSB_bias_statistics=None,
                                                 LensMC_bias_statistics=None,
                                                 MomentsML_bias_statistics=None,
@@ -508,12 +508,12 @@ def create_dpd_shear_bias_statistics_from_stats(BFD_bias_statistics=None,
     """
 
     # dpd_shear_bias_stats = read_xml_product(find_aux_file(sample_file_name), allow_pickled=False)
-    dpd_shear_bias_stats = dpdShearBiasStatistics()
+    dpd_shear_bias_stats = dpdSheBiasStatistics()
 
     # Overwrite the header with a new one to update the creation date (among other things)
     # dpd_shear_bias_stats.Header = HeaderProvider.create_generic_header("SHE")
     dpd_shear_bias_stats.Header = "SHE"
-    dpd_shear_bias_stats.Data = ShearBiasStatistics()
+    dpd_shear_bias_stats.Data = SheBiasStatistics()
 
     # Set the statistics for each method
     dpd_shear_bias_stats.set_BFD_bias_statistics(BFD_bias_statistics, workdir=workdir)
@@ -526,18 +526,18 @@ def create_dpd_shear_bias_statistics_from_stats(BFD_bias_statistics=None,
 
 
 # Add useful aliases
-create_shear_bias_statistics_product = create_dpd_shear_bias_statistics
-create_shear_bias_statistics_product_from_stats = create_dpd_shear_bias_statistics_from_stats
+create_she_bias_statistics_product = create_dpd_she_bias_statistics
+create_she_bias_statistics_product_from_stats = create_dpd_she_bias_statistics_from_stats
 
 # Creation functions
 
 
-def create_method_shear_bias_statistics(filename):
+def create_method_she_bias_statistics(filename):
 
     if filename is None:
         return None
 
-    method_shear_estimates = MethodShearBiasStatistics()
+    method_shear_estimates = MethodSheBiasStatistics()
 
     method_shear_estimates.format = "fits"
     method_shear_estimates.version = SHE_PPT.__version__

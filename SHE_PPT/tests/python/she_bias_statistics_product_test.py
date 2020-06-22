@@ -1,4 +1,4 @@
-""" @file shear_bias_statistics_product_test.py
+""" @file she_bias_statistics_product_test.py
 
     Created 15 July 2019
 
@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-07-17"
+__updated__ = "2020-06-22"
 
 import os
 
@@ -29,11 +29,12 @@ import SHE_PPT
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
 from SHE_PPT.math import LinregressStatistics, BFDSumStatistics, BiasMeasurements, linregress_with_errors
-from SHE_PPT.products import shear_bias_statistics as prod
+from SHE_PPT.products import she_bias_statistics as prod
 from SHE_PPT.table_formats.bias_statistics import calculate_bias_measurements
 import numpy as np
 
 seed = 10245
+
 
 class TestShearBiasStatsProduct(object):
     """A collection of tests for the shear bias statistics data product.
@@ -75,12 +76,12 @@ class TestShearBiasStatsProduct(object):
                                  LinregressStatistics(x2, y2, y_err),)
             else:
                 stats[method] = BFDSumStatistics(sums_for_bfd)
-                
+
             measurements[method] = (BiasMeasurements(linregress_with_errors(x1, y1, y_err)),
                                     BiasMeasurements(linregress_with_errors(x2, y2, y_err)),)
-            
+
         # Create the product
-        product = prod.create_dpd_shear_bias_statistics_from_stats(BFD_bias_statistics=stats["BFD"],
+        product = prod.create_dpd_she_bias_statistics_from_stats(BFD_bias_statistics=stats["BFD"],
                                                                    KSB_bias_statistics=stats["KSB"],
                                                                    LensMC_bias_statistics=stats["LensMC"],
                                                                    MomentsML_bias_statistics=stats["MomentsML"],
@@ -109,7 +110,7 @@ class TestShearBiasStatsProduct(object):
 
                 assert np.isclose(getattr(new_object[0], val), getattr(original_object[0], val))
                 assert np.isclose(getattr(new_object[1], val), getattr(original_object[1], val))
-                
+
         # Check that all the bias measurements are correct
         # TODO: Add test of BFD
         for val in ("m", "m_err", "c", "c_err", "mc_covar"):
@@ -122,7 +123,6 @@ class TestShearBiasStatsProduct(object):
 
                 assert np.isclose(getattr(new_object[0], val), getattr(original_object[0], val))
                 assert np.isclose(getattr(new_object[1], val), getattr(original_object[1], val))
-                
 
         # Check the general get and set methods work
         stats2 = {}
@@ -147,7 +147,7 @@ class TestShearBiasStatsProduct(object):
 
                     assert np.isclose(getattr(product.get_BFD_bias_statistics(workdir=workdir), val),
                                       getattr(stats["BFD"], val))
-                    
+
             measurements2[method] = (BiasMeasurements(linregress_with_errors(x1, y1, y_err)),
                                      BiasMeasurements(linregress_with_errors(x2, y2, y_err)),)
 
@@ -162,7 +162,7 @@ class TestShearBiasStatsProduct(object):
 
                     assert np.isclose(getattr(new_object[0], val), getattr(original_object[0], val))
                     assert np.isclose(getattr(new_object[1], val), getattr(original_object[1], val))
-                
+
         # Check that all the updated bias measurements are correct
         # TODO: Add test of BFD
         for val in ("m", "m_err", "c", "c_err", "mc_covar"):
@@ -175,7 +175,7 @@ class TestShearBiasStatsProduct(object):
 
                 assert np.isclose(getattr(new_object[0], val), getattr(original_object[0], val))
                 assert np.isclose(getattr(new_object[1], val), getattr(original_object[1], val))
-                
+
         # Check that all the calculated bias measurements are correct
         # TODO: Add test of BFD
         for val in ("m", "m_err", "c", "c_err", "mc_covar"):
@@ -183,9 +183,9 @@ class TestShearBiasStatsProduct(object):
                                      (product.get_LensMC_bias_statistics_filename(), "LensMC"),
                                      (product.get_MomentsML_bias_statistics_filename(), "MomentsML"),
                                      (product.get_REGAUSS_bias_statistics_filename(), "REGAUSS")):
-                
-                table = Table.read(os.path.join(workdir,filename))
-                
+
+                table = Table.read(os.path.join(workdir, filename))
+
                 new_object = calculate_bias_measurements(table, update=False)
                 original_object = measurements2[method]
 
@@ -214,7 +214,7 @@ class TestShearBiasStatsProduct(object):
                         'A34': 1.0,
                         'A44': 1.0}
         # Create the product
-        product = prod.create_dpd_shear_bias_statistics()
+        product = prod.create_dpd_she_bias_statistics()
 
         stats = {}
         for method in ("BFD", "KSB", "LensMC", "MomentsML", "REGAUSS"):
@@ -229,7 +229,7 @@ class TestShearBiasStatsProduct(object):
             else:
                 stats[method] = BFDSumStatistics(sums_for_bfd)
         # Create the product
-        product = prod.create_dpd_shear_bias_statistics_from_stats(BFD_bias_statistics=stats["BFD"],
+        product = prod.create_dpd_she_bias_statistics_from_stats(BFD_bias_statistics=stats["BFD"],
                                                                    KSB_bias_statistics=stats["KSB"],
                                                                    LensMC_bias_statistics=stats["LensMC"],
                                                                    MomentsML_bias_statistics=stats["MomentsML"],
