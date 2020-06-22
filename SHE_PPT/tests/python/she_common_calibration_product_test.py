@@ -1,4 +1,4 @@
-""" @file calibration_parameters_product_test.py
+""" @file common_calibration_product_test.py
 
     Created 13 Oct 2017
 
@@ -18,11 +18,11 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-06-25"
+__updated__ = "2020-06-22"
 
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
-from SHE_PPT.products import calibration_parameters as prod
+from SHE_PPT.products import she_common_calibration as prod
 
 
 class TestCalibrationParametersProduct(object):
@@ -33,7 +33,7 @@ class TestCalibrationParametersProduct(object):
     def test_validation(self):
 
         # Create the product
-        product = prod.create_dpd_she_calibration_parameters()
+        product = prod.create_dpd_she_common_calibration()
 
         # Check that it validates the schema
         product.validateBinding()
@@ -43,7 +43,7 @@ class TestCalibrationParametersProduct(object):
     def test_xml_writing_and_reading(self, tmpdir):
 
         # Create the product
-        product = prod.create_dpd_she_calibration_parameters()
+        product = prod.create_dpd_she_common_calibration()
 
         # Change the fits filenames
         b_filename = "test_file_b.fits"
@@ -58,25 +58,25 @@ class TestCalibrationParametersProduct(object):
         product.set_REGAUSS_filename(r_filename)
 
         # Save the product in an XML file
-        filename = "she_calibration_parameters.xml"
+        filename = "she_common_calibration.xml"
         write_xml_product(product, filename, workdir=str(tmpdir))
 
         # Read back the XML file
         loaded_product = read_xml_product(filename, workdir=str(tmpdir))
 
         # Check that the filenames match
-        assert loaded_product.get_BFD_filename() == "data/"+b_filename
-        assert loaded_product.get_KSB_filename() == "data/"+k_filename
-        assert loaded_product.get_LensMC_filename() == "data/"+l_filename
-        assert loaded_product.get_MomentsML_filename() == "data/"+m_filename
-        assert loaded_product.get_REGAUSS_filename() == "data/"+r_filename
+        assert loaded_product.get_BFD_filename() == "data/" + b_filename
+        assert loaded_product.get_KSB_filename() == "data/" + k_filename
+        assert loaded_product.get_LensMC_filename() == "data/" + l_filename
+        assert loaded_product.get_MomentsML_filename() == "data/" + m_filename
+        assert loaded_product.get_REGAUSS_filename() == "data/" + r_filename
 
         pass
 
     def test_pickle_writing_and_reading(self, tmpdir):
 
         # Create the product
-        product = prod.create_dpd_she_calibration_parameters()
+        product = prod.create_dpd_she_common_calibration()
 
         # Change the fits filenames
         b_filename = "test_file_b.fits"
@@ -91,17 +91,17 @@ class TestCalibrationParametersProduct(object):
         product.set_REGAUSS_filename(r_filename)
 
         # Save the product in a pickled file
-        filename = "she_calibration_parameters.bin"
-        write_pickled_product(product, filename,workdir=str(tmpdir))
+        filename = "she_common_calibration.bin"
+        write_pickled_product(product, filename, workdir=str(tmpdir))
 
         # Read back the pickled file
         loaded_product = read_pickled_product(filename, workdir=str(tmpdir))
 
         # Check that the filenames coincide
-        assert loaded_product.get_BFD_filename() == "data/"+b_filename
-        assert loaded_product.get_KSB_filename() == "data/"+k_filename
-        assert loaded_product.get_LensMC_filename() == "data/"+l_filename
-        assert loaded_product.get_MomentsML_filename() == "data/"+m_filename
-        assert loaded_product.get_REGAUSS_filename() == "data/"+r_filename
+        assert loaded_product.get_BFD_filename() == "data/" + b_filename
+        assert loaded_product.get_KSB_filename() == "data/" + k_filename
+        assert loaded_product.get_LensMC_filename() == "data/" + l_filename
+        assert loaded_product.get_MomentsML_filename() == "data/" + m_filename
+        assert loaded_product.get_REGAUSS_filename() == "data/" + r_filename
 
         pass

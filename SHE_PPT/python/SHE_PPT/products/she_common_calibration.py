@@ -1,4 +1,4 @@
-""" @file calibration_parameters_product.py
+""" @file she_common_calibration.py
 
     Created 13 Oct 2017
 
@@ -22,7 +22,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-15"
+__updated__ = "2020-06-22"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
@@ -33,11 +33,11 @@ from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_f
 
 def init():
     """
-        Adds some extra functionality to the DpdCalibrationParameters product
+        Adds some extra functionality to the DpdSheCommonCalibration product
     """
 
     # binding_class = she_dpd.DpdCalibrationParametersProduct # @FIXME
-    binding_class = DpdSheCalibrationParametersProduct
+    binding_class = DpdSheCommonCalibrationProduct
 
     # Add the data file name methods
 
@@ -130,7 +130,7 @@ def __get_method_filename(self, method):
         raise ValueError("Invalid method " + str(method) + ".")
 
 
-class DpdSheCalibrationParametersProduct:  # @FIXME
+class DpdSheCommonCalibrationProduct:  # @FIXME
 
     def __init__(self):
         self.Header = None
@@ -140,7 +140,7 @@ class DpdSheCalibrationParametersProduct:  # @FIXME
         return False
 
 
-class SheCalibrationParametersProduct:  # @FIXME
+class SheCommonCalibrationProduct:  # @FIXME
 
     def __init__(self):
         self.BFDCalibrationParameters = None
@@ -197,7 +197,7 @@ class SheREGAUSSCalibrationParametersProduct:  # @FIXME
         self.DataContainer = None
 
 
-def create_dpd_she_calibration_parameters(BFD_filename=None,
+def create_dpd_she_common_calibration(BFD_filename=None,
                                           KSB_filename=None,
                                           LensMC_filename=None,
                                           MomentsML_filename=None,
@@ -206,15 +206,15 @@ def create_dpd_she_calibration_parameters(BFD_filename=None,
         @TODO fill in docstring
     """
 
-    # dpd_calibration_parameters = she_dpd.DpdSheCalibrationParameters() #
+    # dpd_calibration_parameters = she_dpd.DpdSheCommonCalibration() #
     # @FIXME
-    dpd_calibration_parameters = DpdSheCalibrationParametersProduct()
+    dpd_calibration_parameters = DpdSheCommonCalibrationProduct()
 
     # dpd_calibration_parameters.Header =
     # HeaderProvider.create_generic_header("SHE") # FIXME
     dpd_calibration_parameters.Header = "SHE"
 
-    dpd_calibration_parameters.Data = create_she_calibration_parameters(BFD_filename,
+    dpd_calibration_parameters.Data = create_she_common_calibration(BFD_filename,
                                                                         KSB_filename,
                                                                         LensMC_filename,
                                                                         MomentsML_filename,
@@ -224,10 +224,10 @@ def create_dpd_she_calibration_parameters(BFD_filename=None,
 
 
 # Add a useful alias
-create_calibration_parameters_product = create_dpd_she_calibration_parameters
+create_calibration_parameters_product = create_dpd_she_common_calibration
 
 
-def create_she_calibration_parameters(BFD_filename=None,
+def create_she_common_calibration(BFD_filename=None,
                                       KSB_filename=None,
                                       LensMC_filename=None,
                                       MomentsML_filename=None,
@@ -236,8 +236,8 @@ def create_she_calibration_parameters(BFD_filename=None,
         @TODO fill in docstring
     """
 
-    # calibration_parameters = she_dpd.SheCalibrationParameters() # @FIXME
-    calibration_parameters = SheCalibrationParametersProduct()
+    # calibration_parameters = she_dpd.SheCommonCalibration() # @FIXME
+    calibration_parameters = SheCommonCalibrationProduct()
 
     # Read these in from
     calibration_parameters.BFDCalibrationParameters = create_she_BFD_calibration_parameters(
