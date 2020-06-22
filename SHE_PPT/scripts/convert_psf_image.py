@@ -66,19 +66,18 @@ def main():
     
     psf_image_filename=find_file(args.psf_image, path=args.source_dir)
     hdulist = fits.open(psf_image_filename)
-    print("HDU: ",hdulist.info())
     sim_psf_image = Table.read(psf_image_filename)
 
-    print("SPI: ",sim_psf_image, psf_image_filename)
     
     num_gals = len(sim_psf_image['Object ID'])
     
-    print("NUM GALS: ",num_gals)
     
     stringArray = np.array(['TT' for _ii in range(num_gals)])
     # Initialize the output table with the desired columns
     obj_psf_image = initialise_psf_table(init_columns={pstf.ID: sim_psf_image['Object ID'],
                                                     pstf.template: sim_psf_image['SED template'],
+                                                    pstf.bulge_idx: sim_psf_image['Bulge Index'],
+                                                    pstf.disk_idx: sim_psf_image['Disk Index'],
                                                     pstf.image_x:np.linspace(1, num_gals, num_gals, endpoint=True,
                                                                                   dtype=pstf.dtypes[pstf.image_x]),
                                                     pstf.image_y:np.linspace(1, num_gals, num_gals, endpoint=True,
@@ -90,18 +89,16 @@ def main():
                                                     pstf.cal_time:stringArray,
                                                     pstf.field_time:stringArray})
 
-    print("OPI: ",obj_psf_image)
     # Create a data product for the output
     psf_image_output_filename = os.path.join(args.dest_dir, os.path.basename(psf_image_filename))
     
-    obj_cat_prod = products.detections.create_detections_product(os.path.join('data',os.path.basename(psf_image_output_filename)))
+    obj_cat_prod = products.psf_image.create_psf_image_product(os.path.join('data',os.path.basename(psf_image_output_filename)))
 
     out_psf_image= psf_image_output_filename.replace('PSF','P-PSF').replace('.fits','.xml')
     write_xml_product(obj_cat_prod, out_psf_image, workdir=args.dest_dir)
-    print("OUT: ",psf_image_output_filename)
     # Write out the table
-    out_hdulist=fits.HDUList([hdulist[0],hdulist[2],hdulist[3],
-                              fits.table_to_hdu(obj_psf_image)])
+    out_hdulist=fits.HDUList([hdulist[0],
+                    fits.table_to_hdu(obj_psf_image),hdulist[2],hdulist[3]])
     out_hdulist.info()
     out_hdulist.writeto(psf_image_output_filename, overwrite=True)
 
