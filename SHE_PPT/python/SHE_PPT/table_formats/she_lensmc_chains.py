@@ -1,8 +1,8 @@
-""" @file lens_mc_chains.py
+""" @file she_lensmc_chains.py
 
     Created 6 Dec 2017
 
-    Format definition for lens_mc chains tables.
+    Format definition for lensmc chains tables.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -19,19 +19,22 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-23"
 
 from collections import OrderedDict
+
+from astropy.table import Table
 
 from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_formats.detections import tf as detf
 from SHE_PPT.table_utility import is_in_format
-from astropy.table import Table
-
 
 logger = getLogger(mv.logger_name)
+
+num_chains = 1
+len_chain = 200
 
 
 class lensMcChainsTableMeta(object):
@@ -46,10 +49,10 @@ class lensMcChainsTableMeta(object):
 
         # Table metadata labels
         self.fits_vers = "FITS_VER"
-        #self.format = "SS_FMT"
+        # self.format = "SS_FMT"
         self.fits_def = "FITS_DEF"
-        #self.extname = mv.extname_label
-        self.sflagvers="SFLAGVERS"
+        # self.extname = mv.extname_label
+        self.sflagvers = "SFLAGVERS"
         self.model_hash = mv.model_hash_label
         self.model_seed = mv.model_seed_label
         self.noise_seed = mv.noise_seed_label
@@ -57,20 +60,20 @@ class lensMcChainsTableMeta(object):
         self.date_obs = mv.obs_time_label
         self.tile_id = 0
         self.lchain = 0
-        
+
         self.validated = "VALID"
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_vers, None),
                                      (self.fits_def, None),
-                                     (self.sflagvers,None),
+                                     (self.sflagvers, None),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
-                                     (self.obs_id,None),
+                                     (self.obs_id, None),
                                      (self.date_obs, None),
                                      (self.tile_id, None),
-                                     (self.lchain,0),
+                                     (self.lchain, 0),
                                      (self.validated,
                                       "0: Not tested; 1: Pass; -1: Fail")
                                      ))
@@ -81,7 +84,7 @@ class lensMcChainsTableMeta(object):
 
 class lensMcChainsTableFormat(object):
     """
-        @brief A class defining the format for shear estimates tables. Only the lens_mc_chains_table_format
+        @brief A class defining the format for shear estimates tables. Only the lensmc_chains_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
@@ -130,33 +133,33 @@ class lensMcChainsTableFormat(object):
             "SHE_LENSMC_VAL_FLAGS", dtype=">i8", fits_dtype="K")
         self.fit_class = set_column_properties(
             "SHE_LENSMC_FIT_CLASS", dtype=">i2", fits_dtype="I")
-        
-        self.lens_mc_g1_chn = set_column_properties(
-            "SHE_LENSMC_G1_CHAIN", dtype=">f4", fits_dtype="E", length=200)
-        self.lens_mc_g2_chn = set_column_properties(
-            "SHE_LENSMC_G2_CHAIN", dtype=">f4", fits_dtype="E", length=200)
-        
+
+        self.lensmc_g1_chn = set_column_properties(
+            "SHE_LENSMC_G1_CHAIN", dtype=">f4", fits_dtype="E", length=num_chains * len_chain)
+        self.lensmc_g2_chn = set_column_properties(
+            "SHE_LENSMC_G2_CHAIN", dtype=">f4", fits_dtype="E", length=num_chains * len_chain)
+
         self.updated_ra = set_column_properties(
-            "SHE_LENSMC_UPDATED_RA_CHAIN", is_optional=False, comment="deg", fits_dtype="D", length=200)
+            "SHE_LENSMC_UPDATED_RA_CHAIN", is_optional=False, comment="deg", fits_dtype="D", length=num_chains * len_chain)
         self.updated_dec = set_column_properties(
-            "SHE_LENSMC_UPDATED_DEC_CHAIN", is_optional=True, comment="deg", fits_dtype="D", length=200)
-        
-        # lens_mc specific columns
-        self.lens_mc_re = set_column_properties(
-            "SHE_LENSMC_RE_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=200)
-        self.lens_mc_flux = set_column_properties(
-            "SHE_LENSMC_FLUX_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=200)
-        self.lens_mc_bulge_frac = set_column_properties(
-            "SHE_LENSMC_BULGE_FRAC_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=200)
-        self.lens_mc_snr = set_column_properties(
-            "SHE_LENSMC_SNR_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=200)
-        self.lens_mc_lr = set_column_properties(
-            "SHE_LENSMC_LR_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=200)
-        self.lens_mc_chi2 = set_column_properties(
+            "SHE_LENSMC_UPDATED_DEC_CHAIN", is_optional=True, comment="deg", fits_dtype="D", length=num_chains * len_chain)
+
+        # lensmc specific columns
+        self.lensmc_re = set_column_properties(
+            "SHE_LENSMC_RE_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=num_chains * len_chain)
+        self.lensmc_flux = set_column_properties(
+            "SHE_LENSMC_FLUX_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=num_chains * len_chain)
+        self.lensmc_bulge_frac = set_column_properties(
+            "SHE_LENSMC_BULGE_FRAC_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=num_chains * len_chain)
+        self.lensmc_snr = set_column_properties(
+            "SHE_LENSMC_SNR_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=num_chains * len_chain)
+        self.lensmc_lr = set_column_properties(
+            "SHE_LENSMC_LR_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=num_chains * len_chain)
+        self.lensmc_chi2 = set_column_properties(
             "SHE_LENSMC_CHI2", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.lens_mc_dof = set_column_properties(
+        self.lensmc_dof = set_column_properties(
             "SHE_LENSMC_DOF", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.lens_mc_acc = set_column_properties(
+        self.lensmc_acc = set_column_properties(
             "SHE_LENSMC_ACCEPTANCE", is_optional=True, dtype=">f4", fits_dtype="E")
 
         # A list of columns in the desired order
@@ -170,13 +173,13 @@ class lensMcChainsTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-lens_mc_chains_table_format = lensMcChainsTableFormat()
+lensmc_chains_table_format = lensMcChainsTableFormat()
 
 # And a convient alias for it
-tf = lens_mc_chains_table_format
+tf = lensmc_chains_table_format
 
 
-def make_lens_mc_chains_table_header(detector_x=1,
+def make_lensmc_chains_table_header(detector_x=1,
                                   detector_y=1,
                                   detector=None,
                                   fits_ver=None,
@@ -216,11 +219,11 @@ def make_lens_mc_chains_table_header(detector_x=1,
     header[tf.m.fits_vers] = tf.__version__
     header[tf.m.fits_def] = fits_def
     header[tf.m.sflagvers] = sflagvers
-    
+
     header[tf.m.model_hash] = model_hash
     header[tf.m.model_seed] = model_seed
     header[tf.m.noise_seed] = noise_seed
-    
+
     header[tf.m.obs_id] = obs_id
     header[tf.m.date_obs] = date_obs
     header[tf.m.tile_id] = tile_id
@@ -230,7 +233,7 @@ def make_lens_mc_chains_table_header(detector_x=1,
     return header
 
 
-def initialise_lens_mc_chains_table(detections_table=None,
+def initialise_lensmc_chains_table(detections_table=None,
                                  optional_columns=None,
                                  detector_x=None,
                                  detector_y=None,
@@ -260,7 +263,7 @@ def initialise_lens_mc_chains_table(detections_table=None,
 
         @param detector <int?> Detector this table corresponds to
 
-        @return lens_mc_chains_table <astropy.table.Table>
+        @return lensmc_chains_table <astropy.table.Table>
     """
 
     if detector is not None:
@@ -286,7 +289,7 @@ def initialise_lens_mc_chains_table(detections_table=None,
             init_cols.append([])
             dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
 
-    lens_mc_chains_table = Table(init_cols, names=names, dtype=dtypes)
+    lensmc_chains_table = Table(init_cols, names=names, dtype=dtypes)
 
     if detections_table is not None:
         if detector_x is None or detector_y is None:
@@ -304,7 +307,7 @@ def initialise_lens_mc_chains_table(detections_table=None,
     if detector_y is None:
         detector_y = 1
 
-    lens_mc_chains_table.meta = make_lens_mc_chains_table_header(detector_x=detector_x,
+    lensmc_chains_table.meta = make_lensmc_chains_table_header(detector_x=detector_x,
                                                            detector_y=detector_y,
                                                            detector=detector,
                                                            fits_def=fits_def,
@@ -316,7 +319,7 @@ def initialise_lens_mc_chains_table(detections_table=None,
                                                            date_obs=date_obs,
                                                            tile_id=tile_id,
                                                            lchain=lchain)
-                     
-    assert(is_in_format(lens_mc_chains_table, tf))
 
-    return lens_mc_chains_table
+    assert(is_in_format(lensmc_chains_table, tf))
+
+    return lensmc_chains_table

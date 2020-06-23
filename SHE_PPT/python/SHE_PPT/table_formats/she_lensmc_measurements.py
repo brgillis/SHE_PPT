@@ -1,8 +1,8 @@
-""" @file lens_mc_measurements.py
+""" @file she_lensmc_measurements.py
 
     Created 6 Dec 2017
 
-    Format definition for lens_mc measurements tables.
+    Format definition for lensmc measurements tables.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -19,17 +19,17 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-23"
 
 from collections import OrderedDict
+
+from astropy.table import Table
 
 from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_formats.detections import tf as detf
 from SHE_PPT.table_utility import is_in_format
-from astropy.table import Table
-
 
 logger = getLogger(mv.logger_name)
 
@@ -42,31 +42,31 @@ class lensMcMeasurementsTableMeta(object):
     def __init__(self):
 
         self.__version__ = "8.0"
-        self.table_format = "she.lens_mcMeasurements"
+        self.table_format = "she.lensmcMeasurements"
 
         # Table metadata labels
         self.fits_vers = "FITS_VER"
-        #self.format = "SS_FMT"
+        # self.format = "SS_FMT"
         self.fits_def = "FITS_DEF"
-        #self.extname = mv.extname_label
-        self.sflagvers="SFLAGVERS"
+        # self.extname = mv.extname_label
+        self.sflagvers = "SFLAGVERS"
         self.model_hash = mv.model_hash_label
         self.model_seed = mv.model_seed_label
         self.noise_seed = mv.noise_seed_label
         self.obs_id = 0
         self.date_obs = mv.obs_time_label
         self.tile_id = 0
-        
+
         self.validated = "VALID"
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_vers, None),
                                      (self.fits_def, None),
-                                     (self.sflagvers,None),
+                                     (self.sflagvers, None),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
-                                     (self.obs_id,None),
+                                     (self.obs_id, None),
                                      (self.date_obs, None),
                                      (self.tile_id, None),
                                      (self.validated,
@@ -79,7 +79,7 @@ class lensMcMeasurementsTableMeta(object):
 
 class lensMcMeasurementsTableFormat(object):
     """
-        @brief A class defining the format for shear estimates tables. Only the lens_mc_measurements_table_format
+        @brief A class defining the format for shear estimates tables. Only the lensmc_measurements_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
@@ -128,34 +128,34 @@ class lensMcMeasurementsTableFormat(object):
             "SHE_LENSMC_VAL_FLAGS", dtype=">i8", fits_dtype="K")
         self.fit_class = set_column_properties(
             "SHE_LENSMC_FIT_CLASS", dtype=">i2", fits_dtype="I")
-        
-        self.lens_mc_gal_pval = set_column_properties(
-            "SHE_LENSMC_GAL_PVALUE", dtype=">i2", fits_dtype="I")        
-        self.lens_mc_g1 = set_column_properties(
+
+        self.lensmc_gal_pval = set_column_properties(
+            "SHE_LENSMC_GAL_PVALUE", dtype=">i2", fits_dtype="I")
+        self.lensmc_g1 = set_column_properties(
             "SHE_LENSMC_G1", dtype=">f4", fits_dtype="E")
-        self.lens_mc_g1_err = set_column_properties(
+        self.lensmc_g1_err = set_column_properties(
             "SHE_LENSMC_G1_ERR", dtype=">f4", fits_dtype="E")
-        self.lens_mc_g2 = set_column_properties(
+        self.lensmc_g2 = set_column_properties(
             "SHE_LENSMC_G2", dtype=">f4", fits_dtype="E")
-        self.lens_mc_g2_err = set_column_properties(
+        self.lensmc_g2_err = set_column_properties(
             "SHE_LENSMC_G2_ERR", dtype=">f4", fits_dtype="E")
-        self.lens_mc_g1g2_cov = set_column_properties(
+        self.lensmc_g1g2_cov = set_column_properties(
             "SHE_LENSMC_G1G2_COVAR", dtype=">f4", fits_dtype="E")
-        self.lens_mc_wgt = set_column_properties(
+        self.lensmc_wgt = set_column_properties(
             "SHE_LENSMC_WEIGHT", dtype=">f4", fits_dtype="E")
-        self.lens_mc_g1_unc = set_column_properties(
+        self.lensmc_g1_unc = set_column_properties(
             "SHE_LENSMC_G1_UNCAL", dtype=">f4", fits_dtype="E")
-        self.lens_mc_g1_unc_err = set_column_properties(
+        self.lensmc_g1_unc_err = set_column_properties(
             "SHE_LENSMC_G1_UNCAL_ERR", dtype=">f4", fits_dtype="E")
-        self.lens_mc_g2_unc = set_column_properties(
+        self.lensmc_g2_unc = set_column_properties(
             "SHE_LENSMC_G2_UNCAL", dtype=">f4", fits_dtype="E")
-        self.lens_mc_g2_unc_err = set_column_properties(
+        self.lensmc_g2_unc_err = set_column_properties(
             "SHE_LENSMC_G2_UNCAL_ERR", dtype=">f4", fits_dtype="E")
-        self.lens_mc_g1g2_unc_cov = set_column_properties(
+        self.lensmc_g1g2_unc_cov = set_column_properties(
             "SHE_LENSMC_G1G2_UNCAL_COVAR", dtype=">f4", fits_dtype="E")
-        self.lens_mc_wgt_unc = set_column_properties(
+        self.lensmc_wgt_unc = set_column_properties(
             "SHE_LENSMC_WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
-    
+
         self.updated_ra = set_column_properties(
             "SHE_LENSMC_UPDATED_RA", is_optional=False, comment="deg")
         self.updated_ra_err = set_column_properties(
@@ -165,37 +165,35 @@ class lensMcMeasurementsTableFormat(object):
         self.updated_dec_err = set_column_properties(
             "SHE_LENSMC_UPDATED_DEC_ERR", is_optional=True, comment="deg")
 
-        # lens_mc specific columns
-        self.lens_mc_re = set_column_properties(
+        # lensmc specific columns
+        self.lensmc_re = set_column_properties(
             "SHE_LENSMC_RE", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.lens_mc_re_err = set_column_properties(
+        self.lensmc_re_err = set_column_properties(
             "SHE_LENSMC_RE_ERR", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.lens_mc_flux = set_column_properties(
+        self.lensmc_flux = set_column_properties(
             "SHE_LENSMC_FLUX", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.lens_mc_flux_err = set_column_properties(
+        self.lensmc_flux_err = set_column_properties(
             "SHE_LENSMC_FLUX_ERR", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.lens_mc_blg_frc = set_column_properties(
+        self.lensmc_blg_frc = set_column_properties(
             "SHE_LENSMC_BULGE_FRAC", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.lens_mc_blg_frc_err = set_column_properties(
+        self.lensmc_blg_frc_err = set_column_properties(
             "SHE_LENSMC_BULGE_FRAC_ERR", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.lens_mc_snr = set_column_properties(
+        self.lensmc_snr = set_column_properties(
             "SHE_LENSMC_SNR", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.lens_mc_snr_err = set_column_properties(
+        self.lensmc_snr_err = set_column_properties(
             "SHE_LENSMC_SNR_ERR", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.lens_mc_chi2 = set_column_properties(
+        self.lensmc_chi2 = set_column_properties(
             "SHE_LENSMC_CHI2", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.lens_mc_dof = set_column_properties(
+        self.lensmc_dof = set_column_properties(
             "SHE_LENSMC_DOF", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.lens_mc_acc = set_column_properties(
+        self.lensmc_acc = set_column_properties(
             "SHE_LENSMC_ACCEPTANCE", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.lens_mc_nexp = set_column_properties(
+        self.lensmc_nexp = set_column_properties(
             "SHE_LENSMC_NEXP", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.lens_mc_m1_ical = set_column_properties(
+        self.lensmc_m1_ical = set_column_properties(
             "SHE_LENSMC_M1_ICAL", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.lens_mc_m2_ical = set_column_properties(
+        self.lensmc_m2_ical = set_column_properties(
             "SHE_LENSMC_M2_ICAL", is_optional=True, dtype=">f4", fits_dtype="E")
-
-
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -208,13 +206,13 @@ class lensMcMeasurementsTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-lens_mc_measurements_table_format = lensMcMeasurementsTableFormat()
+lensmc_measurements_table_format = lensMcMeasurementsTableFormat()
 
 # And a convient alias for it
-tf = lens_mc_measurements_table_format
+tf = lensmc_measurements_table_format
 
 
-def make_lens_mc_measurements_table_header(detector_x=1,
+def make_lensmc_measurements_table_header(detector_x=1,
                                   detector_y=1,
                                   detector=None,
                                   fits_ver=None,
@@ -251,21 +249,21 @@ def make_lens_mc_measurements_table_header(detector_x=1,
     header[tf.m.fits_vers] = tf.__version__
     header[tf.m.fits_def] = fits_def
     header[tf.m.sflagvers] = sflagvers
-    
+
     header[tf.m.model_hash] = model_hash
     header[tf.m.model_seed] = model_seed
     header[tf.m.noise_seed] = noise_seed
-    
+
     header[tf.m.obs_id] = obs_id
     header[tf.m.date_obs] = date_obs
     header[tf.m.tile_id] = tile_id
-    
+
     header[tf.m.validated] = 0
 
     return header
 
 
-def initialise_lens_mc_measurements_table(detections_table=None,
+def initialise_lensmc_measurements_table(detections_table=None,
                                  optional_columns=None,
                                  detector_x=None,
                                  detector_y=None,
@@ -294,7 +292,7 @@ def initialise_lens_mc_measurements_table(detections_table=None,
 
         @param detector <int?> Detector this table corresponds to
 
-        @return lens_mc_measurements_table <astropy.table.Table>
+        @return lensmc_measurements_table <astropy.table.Table>
     """
 
     if detector is not None:
@@ -320,7 +318,7 @@ def initialise_lens_mc_measurements_table(detections_table=None,
             init_cols.append([])
             dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
 
-    lens_mc_measurements_table = Table(init_cols, names=names, dtype=dtypes)
+    lensmc_measurements_table = Table(init_cols, names=names, dtype=dtypes)
 
     if detections_table is not None:
         if detector_x is None or detector_y is None:
@@ -338,7 +336,7 @@ def initialise_lens_mc_measurements_table(detections_table=None,
     if detector_y is None:
         detector_y = 1
 
-    lens_mc_measurements_table.meta = make_lens_mc_measurements_table_header(detector_x=detector_x,
+    lensmc_measurements_table.meta = make_lensmc_measurements_table_header(detector_x=detector_x,
                                                            detector_y=detector_y,
                                                            detector=detector,
                                                            fits_def=fits_def,
@@ -349,7 +347,7 @@ def initialise_lens_mc_measurements_table(detections_table=None,
                                                            obs_id=obs_id,
                                                            date_obs=date_obs,
                                                            tile_id=tile_id)
-                     
-    assert(is_in_format(lens_mc_measurements_table, tf))
 
-    return lens_mc_measurements_table
+    assert(is_in_format(lensmc_measurements_table, tf))
+
+    return lensmc_measurements_table

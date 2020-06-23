@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-09"
+__updated__ = "2020-06-23"
 
 import os
 
@@ -26,17 +26,18 @@ from astropy.table import Column, Table
 import pytest
 
 from SHE_PPT import magic_values as mv
-from SHE_PPT.table_formats.bfd_moments import tf as bfdtf, initialise_bfd_moments_table
-from SHE_PPT.table_formats.details import tf as datf, initialise_details_table
-from SHE_PPT.table_formats.detections import tf as detf, initialise_detections_table
-from SHE_PPT.table_formats.galaxy_population_priors import tf as gptf, initialise_galaxy_population_table
-from SHE_PPT.table_formats.ksb_training import tf as kttf, initialise_ksb_training_table
-from SHE_PPT.table_formats.p_of_e import tf as petf, initialise_p_of_e_table
-from SHE_PPT.table_formats.psf import tf as pstf, initialise_psf_table
-from SHE_PPT.table_formats.psf_tm_state import tff as tmtf, tfc as tmtc, initialise_psf_tm_state_table
-from SHE_PPT.table_formats.psf_zm_state import tff as zmtf, tfc as zmtc, initialise_psf_zm_state_table
-from SHE_PPT.table_formats.shear_estimates import tf as setf, initialise_shear_estimates_table, len_chain, num_chains
-from SHE_PPT.table_formats.simulation_plan import tf as sptf, initialise_simulation_plan_table
+from SHE_PPT.table_formats.mer_final_catalog import tf as detf, initialise_detections_table
+from SHE_PPT.table_formats.she_bfd_moments import tf as bfdtf, initialise_bfd_moments_table
+from SHE_PPT.table_formats.she_galaxy_population_priors import tf as gptf, initialise_galaxy_population_table
+from SHE_PPT.table_formats.she_ksb_training import tf as kttf, initialise_ksb_training_table
+from SHE_PPT.table_formats.she_lensmc_chains import tf as lctf, initialise_lensmc_chains_table, len_chain, num_chains
+from SHE_PPT.table_formats.she_lensmc_measurements import tf as lmtf, initialise_lensmc_measurements_table
+from SHE_PPT.table_formats.she_p_of_e import tf as petf, initialise_p_of_e_table
+from SHE_PPT.table_formats.she_psf_model_image import tf as pstf, initialise_psf_table
+from SHE_PPT.table_formats.she_psf_tm_state import tff as tmtf, tfc as tmtc, initialise_psf_tm_state_table
+from SHE_PPT.table_formats.she_psf_zm_state import tff as zmtf, tfc as zmtc, initialise_psf_zm_state_table
+from SHE_PPT.table_formats.she_simulated_catalog import tf as datf, initialise_details_table
+from SHE_PPT.table_formats.she_simulation_plan import tf as sptf, initialise_simulation_plan_table
 from SHE_PPT.table_utility import is_in_format, add_row
 import numpy as np
 
@@ -50,7 +51,7 @@ class TestTableFormats:
     @classmethod
     def setup_class(cls):
         # Define a list of the table formats we'll be testing
-        cls.formats = [datf, detf, setf, petf, pstf, gptf, sptf, bfdtf, kttf, zmtf, tmtf]
+        cls.formats = [datf, detf, lmtf, petf, pstf, gptf, sptf, bfdtf, kttf, zmtf, tmtf]
         cls.initializers = [initialise_details_table,
                             initialise_detections_table,
                             initialise_shear_estimates_table,
