@@ -22,18 +22,19 @@ Created on: 09/01/17
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-23"
 
 from copy import deepcopy
 import os
 
+import py.test
+
 from SHE_PPT.she_image import SHEImage
 from SHE_PPT.she_image_stack import SHEImageStack
-from SHE_PPT.table_formats.detections import initialise_detections_table
-from SHE_PPT.table_formats.psf import initialise_psf_table
+from SHE_PPT.table_formats.mer_final_catalog import initialise_detections_table
+from SHE_PPT.table_formats.she_psf_model_image import initialise_psf_table
 import SHE_PPT.table_utility
 import numpy as np
-import py.test
 
 
 class Test_she_stack(object):

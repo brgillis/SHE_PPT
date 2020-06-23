@@ -19,16 +19,16 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-03-14"
+__updated__ = "2020-06-23"
 
 from collections import OrderedDict
+
+from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import hash_any
-from astropy.table import Table
-
 
 logger = getLogger(mv.logger_name)
 
@@ -46,6 +46,7 @@ class DetectionsTableMeta(object):
         # Table metadata labels
         self.version = "SS_VER"
         self.format = "SS_FMT"
+        self.extname = mv.extname_label
 
         self.model_hash = mv.model_hash_label
         self.model_seed = mv.model_seed_label

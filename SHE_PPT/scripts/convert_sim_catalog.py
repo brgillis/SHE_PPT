@@ -29,8 +29,8 @@ import argparse
 from os.path import join
 from SHE_PPT import products
 from SHE_PPT.file_io import find_file, get_allowed_filename, write_xml_product
-from SHE_PPT.table_formats.detections import initialise_detections_table
-from SHE_PPT.table_formats.detections import tf as detf
+from SHE_PPT.table_formats.mer_final_catalog import initialise_detections_table
+from SHE_PPT.table_formats.mer_final_catalog import tf as detf
 from astropy.table import Table, vstack
 import numpy as np
 

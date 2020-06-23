@@ -28,7 +28,7 @@ from astropy.table import Table
 from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
-from SHE_PPT.table_formats.detections import tf as detf
+from SHE_PPT.table_formats.mer_final_catalog import tf as detf
 from SHE_PPT.table_utility import is_in_format
 
 logger = getLogger(mv.logger_name)
@@ -45,10 +45,12 @@ class lensMcMeasurementsTableMeta(object):
         self.table_format = "she.lensmcMeasurements"
 
         # Table metadata labels
+        self.version = "SS_VER"
+        self.format = "SS_FMT"
+
+        # Table metadata labels
         self.fits_vers = "FITS_VER"
-        # self.format = "SS_FMT"
         self.fits_def = "FITS_DEF"
-        # self.extname = mv.extname_label
         self.sflagvers = "SFLAGVERS"
         self.model_hash = mv.model_hash_label
         self.model_seed = mv.model_seed_label
@@ -60,7 +62,9 @@ class lensMcMeasurementsTableMeta(object):
         self.validated = "VALID"
 
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_vers, None),
+        self.comments = OrderedDict(((self.version, None),
+                                     (self.format, None),
+                                     (self.fits_vers, None),
                                      (self.fits_def, None),
                                      (self.sflagvers, None),
                                      (self.model_hash, None),
@@ -212,9 +216,7 @@ lensmc_measurements_table_format = lensMcMeasurementsTableFormat()
 tf = lensmc_measurements_table_format
 
 
-def make_lensmc_measurements_table_header(detector_x=1,
-                                  detector_y=1,
-                                  detector=None,
+def make_lensmc_measurements_table_header(
                                   fits_ver=None,
                                   fits_def=None,
                                   sflagvers=None,
@@ -227,10 +229,6 @@ def make_lensmc_measurements_table_header(detector_x=1,
     """
         @brief Generate a header for a shear estimates table.
 
-        @param detector_x <int> x-index (1-6) for detector this image was taken with
-
-        @param detector_y <int> y-index (1-6) for detector this image was taken with
-
         @param model_hash <int> Hash of the physical model options dictionary
 
         @param model_seed <int> Full seed used for the physical model for this image
@@ -240,11 +238,10 @@ def make_lensmc_measurements_table_header(detector_x=1,
         @return header <dict>
     """
 
-    if detector is not None:
-        logger.warning(
-            "'detector' argument for make_*_table_header is deprecated: Use detector_x and detector_y instead.")
-
     header = OrderedDict()
+
+    header[tf.m.version] = tf.__version__
+    header[tf.m.format] = tf.m.table_format
 
     header[tf.m.fits_vers] = tf.__version__
     header[tf.m.fits_def] = fits_def
@@ -265,9 +262,6 @@ def make_lensmc_measurements_table_header(detector_x=1,
 
 def initialise_lensmc_measurements_table(detections_table=None,
                                  optional_columns=None,
-                                 detector_x=None,
-                                 detector_y=None,
-                                 detector=None,
                                  fits_def=None,
                                  sflagvers=None,
                                  model_hash=None,
@@ -286,17 +280,10 @@ def initialise_lensmc_measurements_table(detections_table=None,
         @param optional_columns <list<str>> List of names for optional columns to include.
                Default is gal_e1_err and gal_e2_err
 
-        @param detector_x <int> x-index (1-6) for detector this image was taken with
-
-        @param detector_y <int> y-index (1-6) for detector this image was taken with
-
         @param detector <int?> Detector this table corresponds to
 
         @return lensmc_measurements_table <astropy.table.Table>
     """
-
-    if detector is not None:
-        detector_x, detector_y = dtc.resolve_detector_xy(detector)
 
     assert (detections_table is None) or (
         is_in_format(detections_table, detf, strict=False))
@@ -321,9 +308,6 @@ def initialise_lensmc_measurements_table(detections_table=None,
     lensmc_measurements_table = Table(init_cols, names=names, dtype=dtypes)
 
     if detections_table is not None:
-        if detector_x is None or detector_y is None:
-            detector_x, detector_y = dtc.get_detector_xy(
-                detections_table.meta[detf.m.extname])
         if model_hash is None:
             model_hash = detections_table.meta[detf.m.model_hash]
         if model_seed is None:
@@ -331,14 +315,7 @@ def initialise_lensmc_measurements_table(detections_table=None,
         if noise_seed is None:
             noise_seed = detections_table.meta[detf.m.noise_seed]
 
-    if detector_x is None:
-        detector_x = 1
-    if detector_y is None:
-        detector_y = 1
-
-    lensmc_measurements_table.meta = make_lensmc_measurements_table_header(detector_x=detector_x,
-                                                           detector_y=detector_y,
-                                                           detector=detector,
+    lensmc_measurements_table.meta = make_lensmc_measurements_table_header(
                                                            fits_def=fits_def,
                                                            sflagvers=sflagvers,
                                                            model_hash=model_hash,
@@ -348,6 +325,6 @@ def initialise_lensmc_measurements_table(detections_table=None,
                                                            date_obs=date_obs,
                                                            tile_id=tile_id)
 
-    assert(is_in_format(lensmc_measurements_table, tf))
+    assert(is_in_format(lensmc_measurements_table, tf, verbose=True))
 
     return lensmc_measurements_table

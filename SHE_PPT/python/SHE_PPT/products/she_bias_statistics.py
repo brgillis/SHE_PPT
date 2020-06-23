@@ -7,7 +7,7 @@
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines.
 """
 
-__updated__ = "2020-06-22"
+__updated__ = "2020-06-23"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -36,8 +36,8 @@ from astropy.table import Table
 import SHE_PPT
 from SHE_PPT.file_io import get_allowed_filename, find_file, get_data_filename_from_product, set_data_filename_of_product
 from SHE_PPT.logging import getLogger
-from SHE_PPT.table_formats.bfd_bias_statistics import initialise_bfd_bias_statistics_table, get_bfd_bias_statistics
-from SHE_PPT.table_formats.bias_statistics import tf, initialise_bias_statistics_table, get_bias_statistics, get_bias_measurements
+from SHE_PPT.table_formats.she_bfd_bias_statistics import initialise_bfd_bias_statistics_table, get_bfd_bias_statistics
+from SHE_PPT.table_formats.she_bias_statistics import tf, initialise_bias_statistics_table, get_bias_statistics, get_bias_measurements
 from SHE_PPT.utility import hash_any
 
 logger = getLogger(__name__)

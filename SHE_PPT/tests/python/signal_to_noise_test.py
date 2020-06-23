@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-10"
+__updated__ = "2020-06-23"
 
 import os
 from os.path import join
@@ -31,8 +31,7 @@ from SHE_PPT.file_io import read_pickled_product, find_file
 from SHE_PPT.logging import getLogger
 from SHE_PPT.she_frame_stack import SHEFrameStack
 from SHE_PPT.signal_to_noise import get_SN_of_image
-from SHE_PPT.table_formats.detections import tf as detf
-from SHE_PPT.table_formats.shear_estimates import tf as setf
+from SHE_PPT.table_formats.mer_final_catalog import tf as detf
 import numpy as np
 
 ex_signal_to_noises = [59, 32]
@@ -78,7 +77,7 @@ class TestCase:
         self.workdir, datadir = os.path.split(os.path.split(self.qualified_data_images_filename)[0])
         assert datadir == "data", f"Data directory is not as expected in {self.qualified_data_images_filename}"
         self.logdir = os.path.join(self.workdir, "logs")
-        
+
         # Read in the test data
         self.data_stack = SHEFrameStack.read(exposure_listfile_filename=data_images_filename,
                                              seg_listfile_filename=segmentation_images_filename,

@@ -35,7 +35,7 @@ from SHE_PPT.file_io import read_listfile, read_xml_product, find_file
 from SHE_PPT.she_frame import SHEFrame
 from SHE_PPT.she_image import SHEImage
 from SHE_PPT.she_image_stack import SHEImageStack
-from SHE_PPT.table_formats.detections import tf as detf
+from SHE_PPT.table_formats.mer_final_catalog import tf as detf
 from SHE_PPT.utility import find_extension, load_wcs
 from astropy import table
 from astropy.io import fits

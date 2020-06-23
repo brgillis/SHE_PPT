@@ -28,7 +28,7 @@ from astropy.table import Table
 from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
-from SHE_PPT.table_formats.detections import tf as detf
+from SHE_PPT.table_formats.mer_final_catalog import tf as detf
 from SHE_PPT.table_utility import is_in_format
 
 logger = getLogger(mv.logger_name)
@@ -48,10 +48,13 @@ class lensMcChainsTableMeta(object):
         self.table_format = "she.lensMcChains"
 
         # Table metadata labels
+        self.version = "SS_VER"
+        self.format = "SS_FMT"
+
+        # Table metadata labels
         self.fits_vers = "FITS_VER"
-        # self.format = "SS_FMT"
         self.fits_def = "FITS_DEF"
-        # self.extname = mv.extname_label
+        self.extname = mv.extname_label
         self.sflagvers = "SFLAGVERS"
         self.model_hash = mv.model_hash_label
         self.model_seed = mv.model_seed_label
@@ -59,12 +62,15 @@ class lensMcChainsTableMeta(object):
         self.obs_id = 0
         self.date_obs = mv.obs_time_label
         self.tile_id = 0
-        self.lchain = 0
+        self.num_chains = "NCHAIN"
+        self.len_chain = "LCHAIN"
 
         self.validated = "VALID"
 
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_vers, None),
+        self.comments = OrderedDict(((self.version, None),
+                                     (self.format, None),
+                                     (self.fits_vers, None),
                                      (self.fits_def, None),
                                      (self.sflagvers, None),
                                      (self.model_hash, None),
@@ -73,7 +79,8 @@ class lensMcChainsTableMeta(object):
                                      (self.obs_id, None),
                                      (self.date_obs, None),
                                      (self.tile_id, None),
-                                     (self.lchain, 0),
+                                     (self.num_chains, None),
+                                     (self.len_chain, None),
                                      (self.validated,
                                       "0: Not tested; 1: Pass; -1: Fail")
                                      ))
@@ -179,9 +186,7 @@ lensmc_chains_table_format = lensMcChainsTableFormat()
 tf = lensmc_chains_table_format
 
 
-def make_lensmc_chains_table_header(detector_x=1,
-                                  detector_y=1,
-                                  detector=None,
+def make_lensmc_chains_table_header(
                                   fits_ver=None,
                                   fits_def=None,
                                   sflagvers=None,
@@ -190,8 +195,7 @@ def make_lensmc_chains_table_header(detector_x=1,
                                   noise_seed=None,
                                   obs_id=None,
                                   date_obs=None,
-                                  tile_id=None,
-                                  lchain=None):
+                                  tile_id=None):
     """
         @brief Generate a header for a shear estimates table.
 
@@ -208,13 +212,10 @@ def make_lensmc_chains_table_header(detector_x=1,
         @return header <dict>
     """
 
-    if detector is not None:
-        logger.warning(
-            "'detector' argument for make_*_table_header is deprecated: Use detector_x and detector_y instead.")
-        detector_x = detector % 6
-        detector_y = detector // 6
-
     header = OrderedDict()
+
+    header[tf.m.version] = tf.__version__
+    header[tf.m.format] = tf.m.table_format
 
     header[tf.m.fits_vers] = tf.__version__
     header[tf.m.fits_def] = fits_def
@@ -227,7 +228,10 @@ def make_lensmc_chains_table_header(detector_x=1,
     header[tf.m.obs_id] = obs_id
     header[tf.m.date_obs] = date_obs
     header[tf.m.tile_id] = tile_id
-    header[tf.m.lchain] = lchain
+
+    header[tf.m.num_chains] = num_chains
+    header[tf.m.len_chain] = len_chain
+
     header[tf.m.validated] = 0
 
     return header
@@ -235,9 +239,6 @@ def make_lensmc_chains_table_header(detector_x=1,
 
 def initialise_lensmc_chains_table(detections_table=None,
                                  optional_columns=None,
-                                 detector_x=None,
-                                 detector_y=None,
-                                 detector=None,
                                  fits_def=None,
                                  sflagvers=None,
                                  model_hash=None,
@@ -246,7 +247,6 @@ def initialise_lensmc_chains_table(detections_table=None,
                                  obs_id=None,
                                  date_obs=None,
                                  tile_id=None,
-                                 lchain=None,
                                  ):
     """
         @brief Initialise a shear estimates table based on a detections table, with the
@@ -265,9 +265,6 @@ def initialise_lensmc_chains_table(detections_table=None,
 
         @return lensmc_chains_table <astropy.table.Table>
     """
-
-    if detector is not None:
-        detector_x, detector_y = dtc.resolve_detector_xy(detector)
 
     assert (detections_table is None) or (
         is_in_format(detections_table, detf, strict=False))
@@ -292,9 +289,6 @@ def initialise_lensmc_chains_table(detections_table=None,
     lensmc_chains_table = Table(init_cols, names=names, dtype=dtypes)
 
     if detections_table is not None:
-        if detector_x is None or detector_y is None:
-            detector_x, detector_y = dtc.get_detector_xy(
-                detections_table.meta[detf.m.extname])
         if model_hash is None:
             model_hash = detections_table.meta[detf.m.model_hash]
         if model_seed is None:
@@ -302,14 +296,7 @@ def initialise_lensmc_chains_table(detections_table=None,
         if noise_seed is None:
             noise_seed = detections_table.meta[detf.m.noise_seed]
 
-    if detector_x is None:
-        detector_x = 1
-    if detector_y is None:
-        detector_y = 1
-
-    lensmc_chains_table.meta = make_lensmc_chains_table_header(detector_x=detector_x,
-                                                           detector_y=detector_y,
-                                                           detector=detector,
+    lensmc_chains_table.meta = make_lensmc_chains_table_header(
                                                            fits_def=fits_def,
                                                            sflagvers=sflagvers,
                                                            model_hash=model_hash,
@@ -317,8 +304,7 @@ def initialise_lensmc_chains_table(detections_table=None,
                                                            noise_seed=noise_seed,
                                                            obs_id=obs_id,
                                                            date_obs=date_obs,
-                                                           tile_id=tile_id,
-                                                           lchain=lchain)
+                                                           tile_id=tile_id,)
 
     assert(is_in_format(lensmc_chains_table, tf))
 

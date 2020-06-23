@@ -22,7 +22,7 @@ Created on: 02/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2020-06-22"
+__updated__ = "2020-06-23"
 
 from collections import namedtuple
 from copy import deepcopy
@@ -40,8 +40,8 @@ from SHE_PPT import products
 import SHE_PPT.detector
 from SHE_PPT.file_io import read_xml_product
 from SHE_PPT.she_image import SHEImage
-from SHE_PPT.table_formats.detections import tf as detf
-from SHE_PPT.table_formats.psf import tf as pstf
+from SHE_PPT.table_formats.mer_final_catalog import tf as detf
+from SHE_PPT.table_formats.she_psf_model_image import tf as pstf
 from SHE_PPT.table_utility import is_in_format
 import SHE_PPT.telescope_coords as tc
 from SHE_PPT.utility import find_extension, load_wcs, run_only_once

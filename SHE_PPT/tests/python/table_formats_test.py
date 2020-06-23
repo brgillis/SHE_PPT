@@ -54,7 +54,7 @@ class TestTableFormats:
         cls.formats = [datf, detf, lmtf, petf, pstf, gptf, sptf, bfdtf, kttf, zmtf, tmtf]
         cls.initializers = [initialise_details_table,
                             initialise_detections_table,
-                            initialise_shear_estimates_table,
+                            initialise_lensmc_measurements_table,
                             initialise_p_of_e_table,
                             initialise_psf_table,
                             initialise_galaxy_population_table,
@@ -68,6 +68,8 @@ class TestTableFormats:
 
         cls.filenames = [cls.filename_base + ".ecsv", cls.filename_base + ".fits"]
 
+        return
+
     @classmethod
     def teardown_class(cls):
         del cls.formats, cls.initializers
@@ -75,6 +77,8 @@ class TestTableFormats:
         for filename in cls.filenames:
             if os.path.exists(filename):
                 os.remove(filename)
+
+        return
 
     def test_extra_data(self):
         # Check that the keys are assigned correctly for all extra data (eg. comments)
@@ -97,6 +101,8 @@ class TestTableFormats:
             # Check column lengths
             assert list(tf.lengths.keys()) == tf.all
 
+        return
+
     def test_is_in_format(self):
         # Test each format is detected correctly
 
@@ -118,6 +124,8 @@ class TestTableFormats:
             for j in range((len(self.formats))):
                 assert is_in_format(empty_tables[i], self.formats[j], strict=False) == (i == j)
 
+        return
+
     def test_add_row(self):
         # Test that we can add a row through kwargs
 
@@ -128,6 +136,8 @@ class TestTableFormats:
         assert tab[detf.ID][0] == 0
         assert tab[detf.gal_x_world][0] == 0.
         assert tab[detf.gal_y_world][0] == 1.
+
+        return
 
     def test_init(self):
 
@@ -159,11 +169,19 @@ class TestTableFormats:
         detections_table.meta[detf.m.model_seed] = model_seed
         detections_table.meta[detf.m.noise_seed] = noise_seed
 
-        shear_estimates_table = initialise_shear_estimates_table(detections_table)
+        shear_estimates_table = initialise_lensmc_measurements_table(detections_table)
 
-        assert(shear_estimates_table.meta[setf.m.model_hash] == model_hash)
-        assert(shear_estimates_table.meta[setf.m.model_seed] == model_seed)
-        assert(shear_estimates_table.meta[setf.m.noise_seed] == noise_seed)
+        assert(shear_estimates_table.meta[lmtf.m.model_hash] == model_hash)
+        assert(shear_estimates_table.meta[lmtf.m.model_seed] == model_seed)
+        assert(shear_estimates_table.meta[lmtf.m.noise_seed] == noise_seed)
 
-        assert(shear_estimates_table.meta[setf.m.num_chains] == num_chains)
-        assert(shear_estimates_table.meta[setf.m.len_chain] == len_chain)
+        shear_chains_table = initialise_lensmc_chains_table(detections_table)
+
+        assert(shear_chains_table.meta[lmtf.m.model_hash] == model_hash)
+        assert(shear_chains_table.meta[lmtf.m.model_seed] == model_seed)
+        assert(shear_chains_table.meta[lmtf.m.noise_seed] == noise_seed)
+
+        assert(shear_chains_table.meta[lctf.m.num_chains] == num_chains)
+        assert(shear_chains_table.meta[lctf.m.len_chain] == len_chain)
+
+        return
