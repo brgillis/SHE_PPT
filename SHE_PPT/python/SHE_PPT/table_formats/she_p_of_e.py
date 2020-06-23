@@ -27,6 +27,7 @@ from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.table_utility import is_in_format
+from SHE_PPT.flags import she_flag_version
 
 fits_version = "8.0"
 fits_def = "she.pOfE"

@@ -30,6 +30,7 @@ from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_formats.mer_final_catalog import tf as detf
 from SHE_PPT.table_utility import is_in_format
+from SHE_PPT.flags import she_flag_version
 
 fits_version = "8.0"
 fits_def = "she.regaussMeasurements"
@@ -196,9 +197,6 @@ tf = regauss_measurements_table_format
 
 
 def make_regauss_measurements_table_header(
-                                  fits_ver=None,
-                                  fits_def=None,
-                                  she_flag_version=None,
                                   model_hash=None,
                                   model_seed=None,
                                   noise_seed=None,
@@ -238,8 +236,6 @@ def make_regauss_measurements_table_header(
 
 def initialise_regauss_measurements_table(detections_table=None,
                                  optional_columns=None,
-                                 fits_def=None,
-                                 she_flag_version=None,
                                  model_hash=None,
                                  model_seed=None,
                                  noise_seed=None,
@@ -290,8 +286,6 @@ def initialise_regauss_measurements_table(detections_table=None,
             noise_seed = detections_table.meta[detf.m.noise_seed]
 
     regauss_measurements_table.meta = make_regauss_measurements_table_header(
-                                                           fits_def=fits_def,
-                                                           she_flag_version=she_flag_version,
                                                            model_hash=model_hash,
                                                            model_seed=model_seed,
                                                            noise_seed=noise_seed,

@@ -27,6 +27,7 @@ from astropy.table import Table
 
 from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
+from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_formats.mer_final_catalog import tf as detf
 from SHE_PPT.table_utility import is_in_format
@@ -65,7 +66,6 @@ class lensMcChainsTableMeta(object):
         self.obs_id = mv.obs_id_label
         self.date_obs = mv.obs_time_label
         self.tile_id = mv.tile_id_label
-        self.num_chains = "NCHAIN"
         self.len_chain = "LCHAIN"
 
         self.valid = mv.valid_label
@@ -82,7 +82,6 @@ class lensMcChainsTableMeta(object):
                                      (self.obs_id, None),
                                      (self.date_obs, None),
                                      (self.tile_id, None),
-                                     (self.num_chains, None),
                                      (self.len_chain, None),
                                      (self.valid,
                                       "0: Not tested; 1: Pass; -1: Fail")
@@ -190,9 +189,6 @@ tf = lensmc_chains_table_format
 
 
 def make_lensmc_chains_table_header(
-                                  fits_ver=None,
-                                  fits_def=None,
-                                  she_flag_version=None,
                                   model_hash=None,
                                   model_seed=None,
                                   noise_seed=None,
@@ -232,18 +228,17 @@ def make_lensmc_chains_table_header(
     header[tf.m.date_obs] = date_obs
     header[tf.m.tile_id] = tile_id
 
-    header[tf.m.num_chains] = num_chains
     header[tf.m.len_chain] = len_chain
 
     header[tf.m.fits_def] = fits_def
+
+    header[tf.m.valid] = "UNKNOWN"
 
     return header
 
 
 def initialise_lensmc_chains_table(detections_table=None,
                                  optional_columns=None,
-                                 fits_def=None,
-                                 she_flag_version=None,
                                  model_hash=None,
                                  model_seed=None,
                                  noise_seed=None,
@@ -300,8 +295,6 @@ def initialise_lensmc_chains_table(detections_table=None,
             noise_seed = detections_table.meta[detf.m.noise_seed]
 
     lensmc_chains_table.meta = make_lensmc_chains_table_header(
-                                                           fits_def=fits_def,
-                                                           she_flag_version=she_flag_version,
                                                            model_hash=model_hash,
                                                            model_seed=model_seed,
                                                            noise_seed=noise_seed,
@@ -309,6 +302,6 @@ def initialise_lensmc_chains_table(detections_table=None,
                                                            date_obs=date_obs,
                                                            tile_id=tile_id,)
 
-    assert(is_in_format(lensmc_chains_table, tf))
+    assert(is_in_format(lensmc_chains_table, tf, verbose=True))
 
     return lensmc_chains_table

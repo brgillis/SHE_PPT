@@ -30,6 +30,7 @@ from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_formats.mer_final_catalog import tf as detf
 from SHE_PPT.table_utility import is_in_format
+from SHE_PPT.flags import she_flag_version
 
 fits_version = "8.0"
 fits_def = "she.momentsmlMeasurements"
@@ -190,13 +191,7 @@ momentsml_measurements_table_format = momentsmlMeasurementsTableFormat()
 tf = momentsml_measurements_table_format
 
 
-def make_momentsml_measurements_table_header(detector_x=1,
-                                  detector_y=1,
-                                  detector=None,
-                                  fits_ver=None,
-                                  fits_def=None,
-                                  she_flag_version=None,
-                                  model_hash=None,
+def make_momentsml_measurements_table_header(model_hash=None,
                                   model_seed=None,
                                   noise_seed=None,
                                   obs_id=None,
@@ -217,10 +212,6 @@ def make_momentsml_measurements_table_header(detector_x=1,
 
         @return header <dict>
     """
-
-    if detector is not None:
-        logger.warning(
-            "'detector' argument for make_*_table_header is deprecated: Use detector_x and detector_y instead.")
 
     header = OrderedDict()
 
@@ -243,11 +234,6 @@ def make_momentsml_measurements_table_header(detector_x=1,
 
 def initialise_momentsml_measurements_table(detections_table=None,
                                  optional_columns=None,
-                                 detector_x=None,
-                                 detector_y=None,
-                                 detector=None,
-                                 fits_def=None,
-                                 she_flag_version=None,
                                  model_hash=None,
                                  model_seed=None,
                                  noise_seed=None,
@@ -273,9 +259,6 @@ def initialise_momentsml_measurements_table(detections_table=None,
         @return momentsml_measurements_table <astropy.table.Table>
     """
 
-    if detector is not None:
-        detector_x, detector_y = dtc.resolve_detector_xy(detector)
-
     assert (detections_table is None) or (
         is_in_format(detections_table, detf, strict=False))
 
@@ -299,9 +282,6 @@ def initialise_momentsml_measurements_table(detections_table=None,
     momentsml_measurements_table = Table(init_cols, names=names, dtype=dtypes)
 
     if detections_table is not None:
-        if detector_x is None or detector_y is None:
-            detector_x, detector_y = dtc.get_detector_xy(
-                detections_table.meta[detf.m.extname])
         if model_hash is None:
             model_hash = detections_table.meta[detf.m.model_hash]
         if model_seed is None:
@@ -309,17 +289,7 @@ def initialise_momentsml_measurements_table(detections_table=None,
         if noise_seed is None:
             noise_seed = detections_table.meta[detf.m.noise_seed]
 
-    if detector_x is None:
-        detector_x = 1
-    if detector_y is None:
-        detector_y = 1
-
-    momentsml_measurements_table.meta = make_momentsml_measurements_table_header(detector_x=detector_x,
-                                                           detector_y=detector_y,
-                                                           detector=detector,
-                                                           fits_def=fits_def,
-                                                           she_flag_version=she_flag_version,
-                                                           model_hash=model_hash,
+    momentsml_measurements_table.meta = make_momentsml_measurements_table_header(model_hash=model_hash,
                                                            model_seed=model_seed,
                                                            noise_seed=noise_seed,
                                                            obs_id=obs_id,

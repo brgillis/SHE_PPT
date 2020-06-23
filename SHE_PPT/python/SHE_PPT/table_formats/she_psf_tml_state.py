@@ -27,6 +27,7 @@ from collections import OrderedDict
 from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
+from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format
 import numpy as np
@@ -154,7 +155,7 @@ def make_psf_tml_state_table_header(data_type="FIELD"):
     header = OrderedDict()
 
     header[tf.m.fits_version] = tf.__version__
-    header[tf.m.fits_def] = fits_def
+    header[tf.m.fits_def] = tf.m.table_format
 
     header[tf.m.extname] = mv.psf_tml_state_tag
 

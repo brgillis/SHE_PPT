@@ -181,7 +181,6 @@ class TestTableFormats:
         assert(shear_chains_table.meta[lmtf.m.model_seed] == model_seed)
         assert(shear_chains_table.meta[lmtf.m.noise_seed] == noise_seed)
 
-        assert(shear_chains_table.meta[lctf.m.num_chains] == num_chains)
         assert(shear_chains_table.meta[lctf.m.len_chain] == len_chain)
 
         return

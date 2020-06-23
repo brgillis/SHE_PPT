@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-09"
+__updated__ = "2020-06-23"
 
 from astropy.io.fits import table_to_hdu as astropy_table_to_hdu
 from astropy.table import Column
@@ -139,16 +139,16 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
         if table.meta[table_format.m.fits_def] != table_format.m.table_format:
             if verbose:
                 logger.info("Table not in correct format due to wrong table format label.\n" +
-                            "Expected: " + table_format.m.table_format + "\n" +
-                            "Got: " + table.meta[table_format.m.fits_def])
+                            "Expected: " + str(table_format.m.table_format) + "\n" +
+                            "Got: " + str(table.meta[table_format.m.fits_def]))
             return False
 
         # Check the version is correct
         if table.meta[table_format.m.fits_version] != table_format.__version__:
             if verbose:
                 logger.info("Table not in correct format due to wrong table format label.\n" +
-                            "Expected: " + table_format.__version__ + "\n" +
-                            "Got: " + table.meta[table_format.m.fits_version])
+                            "Expected: " + str(table_format.__version__) + "\n" +
+                            "Got: " + str(table.meta[table_format.m.fits_version]))
             return False
 
     return True

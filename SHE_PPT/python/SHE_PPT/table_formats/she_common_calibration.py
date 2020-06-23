@@ -27,6 +27,7 @@ from astropy.table import Table
 
 from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
+from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_formats.mer_final_catalog import tf as detf
 from SHE_PPT.table_utility import is_in_format
@@ -217,12 +218,7 @@ common_calibration_table_format = commonCalibrationTableFormat()
 tf = common_calibration_table_format
 
 
-def make_common_calibration_table_header(detector_x=1,
-                                  detector_y=1,
-                                  detector=None,
-                                  fits_ver=None,
-                                  fits_def=None,
-                                  ):
+def make_common_calibration_table_header():
     """
         @brief Generate a header for a shear estimates table.
 
@@ -243,10 +239,6 @@ def make_common_calibration_table_header(detector_x=1,
 
 def initialise_common_calibration_table(detections_table=None,
                                  optional_columns=None,
-                                 detector_x=None,
-                                 detector_y=None,
-                                 detector=None,
-                                 fits_def=None,
                                  ):
     """
         @brief Initialise a shear estimates table based on a detections table, with the
@@ -265,9 +257,6 @@ def initialise_common_calibration_table(detections_table=None,
 
         @return common_calibration_table <astropy.table.Table>
     """
-
-    if detector is not None:
-        detector_x, detector_y = dtc.resolve_detector_xy(detector)
 
     assert (detections_table is None) or (
         is_in_format(detections_table, detf, strict=False))
@@ -291,20 +280,7 @@ def initialise_common_calibration_table(detections_table=None,
 
     common_calibration_table = Table(init_cols, names=names, dtype=dtypes)
 
-    if detections_table is not None:
-        if detector_x is None or detector_y is None:
-            detector_x, detector_y = dtc.get_detector_xy(
-                detections_table.meta[detf.m.extname])
-
-    if detector_x is None:
-        detector_x = 1
-    if detector_y is None:
-        detector_y = 1
-
-    common_calibration_table.meta = make_common_calibration_table_header(detector_x=detector_x,
-                                                           detector_y=detector_y,
-                                                           detector=detector,
-                                                           fits_def=fits_def)
+    common_calibration_table.meta = make_common_calibration_table_header(fits_def=fits_def)
 
     assert(is_in_format(common_calibration_table, tf))
 
