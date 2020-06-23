@@ -19,17 +19,20 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-23"
 
 from collections import OrderedDict
+
+from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import hash_any
-from astropy.table import Table
 import numpy as np
 
+fits_version = "8.0"
+fits_def = "she.psfModelImage.shePsfC"
 
 logger = getLogger(mv.logger_name)
 
@@ -42,30 +45,25 @@ class PSFTableMeta(object):
     def __init__(self):
 
         self.__version__ = fits_version
-        self.table_format = "she.psfModelImage.shePsfC"
+        self.table_format = fits_def
 
         # Table metadata labels
-        self.version = "SS_VER"
-        self.format = "SS_FMT"
+        self.fits_version = mv.fits_version_label
+        self.fits_def = mv.fits_def_label
 
-        self.extname = mv.extname_label
-
-        #self.model_hash = mv.model_hash_label
-        #self.model_seed = mv.model_seed_label
-        #self.noise_seed = mv.noise_seed_label
         self.cal_prod = "CAL_PROD"
         self.cal_time = "CAL_TIME"
         self.fld_prod = "FLD_PROD"
         self.fld_time = "FLD_TIME"
 
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.version, None),
-                                     (self.format, None),
+        self.comments = OrderedDict(((self.fits_version, None),
+                                     (self.fits_def, None),
                                      (self.extname, mv.psf_cat_tag),
                                      (self.cal_prod, None),
                                      (self.cal_time, None),
                                      (self.fld_prod, None),
-                                     (self.fld_time,None)
+                                     (self.fld_time, None)
                                      ))
 
         # A list of columns in the desired order
@@ -131,7 +129,7 @@ class PSFTableFormat(object):
             "SHE_PSF_X", dtype=">f4", fits_dtype="E")
         self.y = set_column_properties(
             "SHE_PSF_Y", dtype=">f4", fits_dtype="E")
-       
+
         self.cal_time = set_column_properties(
             "SHE_PSF_CALIB_TIME", dtype="str", fits_dtype="A", length=20)
         self.field_time = set_column_properties(
@@ -154,7 +152,7 @@ psf_table_format = PSFTableFormat()
 tf = psf_table_format
 
 
-def make_psf_table_header(cal_prod,cal_time,fld_prod,fld_time):
+def make_psf_table_header(cal_prod, cal_time, fld_prod, fld_time):
     """
         @brief Generate a header for a PSF table.
 
@@ -165,8 +163,8 @@ def make_psf_table_header(cal_prod,cal_time,fld_prod,fld_time):
 
     header = OrderedDict()
 
-    header[tf.m.version] = tf.__version__
-    header[tf.m.format] = tf.m.table_format
+    header[tf.m.fits_version] = tf.__version__
+    header[tf.m.fits_def] = fits_def
 
     header[tf.m.extname] = mv.psf_cat_tag
 
@@ -174,8 +172,7 @@ def make_psf_table_header(cal_prod,cal_time,fld_prod,fld_time):
     header[tf.m.cal_time] = cal_time
     header[tf.m.fld_prod] = fld_prod
     header[tf.m.fld_time] = fld_time
-    
-    
+
     return header
 
 
@@ -228,7 +225,6 @@ def initialise_psf_table(image=None,
             dtypes.append(dtype)
 
     psf_table = Table(init_cols, names=names, dtype=dtypes)
-    
 
     psf_table.meta = make_psf_table_header(cal_prod=cal_prod,
                                            cal_time=cal_time,

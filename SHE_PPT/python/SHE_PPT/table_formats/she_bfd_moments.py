@@ -32,7 +32,7 @@ from SHE_PPT.table_formats.mer_final_catalog import tf as detf
 from SHE_PPT.table_utility import is_in_format
 
 fits_version = "8.0"
-fits_version = "she.bfdMoments"
+fits_def = "she.bfdMoments"
 
 logger = getLogger(mv.logger_name)
 
@@ -45,11 +45,11 @@ class BFDMomentsTableMeta(object):
     def __init__(self):
 
         self.__version__ = fits_version
-        self.table_format = "she.bfdMoments"
+        self.table_format = fits_def
 
         # Table metadata labels
         self.version = "FITS_VER"
-        self.format = "SS_FMT"
+        self.fits_def = mv.fits_def_label
         self.fits_def = mv.fits_def_label
         # self.extname = mv.extname_label
         self.she_flag_version = mv.she_flag_version_label
@@ -66,8 +66,8 @@ class BFDMomentsTableMeta(object):
         self.valid = mv.valid_label
 
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.version, None),
-                                     (self.format, None),
+        self.comments = OrderedDict(((self.fits_version, None),
+                                     (self.fits_def, None),
                                      (self.fits_def, None),
                                      (self.she_flag_version, None),
                                      (self.model_hash, None),
@@ -211,8 +211,8 @@ def make_bfd_moments_table_header(detector_x=1,
 
     header = OrderedDict()
 
-    header[tf.m.version] = tf.__version__
-    header[tf.m.format] = tf.m.table_format
+    header[tf.m.fits_version] = tf.__version__
+    header[tf.m.fits_def] = fits_def
     header[tf.m.fits_def] = fits_def
     header[tf.m.she_flag_version] = she_flag_version
 

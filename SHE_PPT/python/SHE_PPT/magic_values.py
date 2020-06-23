@@ -43,6 +43,10 @@ tile_id_label = "TILE_ID"
 valid_label = "VALID"
 psf_state_identity_label = "OPTID"
 
+# Fits definitions
+psf_field_param_def = "she.psfFieldParameters"
+psf_calib_param_def = "she.psfCalibrationParameters"
+
 # Special values for tables
 psf_zm_identity = "zfit"
 psf_tm_identity = "tmfit"

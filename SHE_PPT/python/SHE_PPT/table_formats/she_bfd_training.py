@@ -31,7 +31,8 @@ from SHE_PPT.logging import getLogger
 from SHE_PPT.table_formats.mer_final_catalog import tf as detf
 from SHE_PPT.table_utility import is_in_format
 
-fits_version = "she.bfdTraining"
+fits_version = "8.0"
+fits_def = "she.bfdTraining"
 
 
 class KsbTrainingTableMeta(object):
@@ -42,11 +43,11 @@ class KsbTrainingTableMeta(object):
     def __init__(self):
 
         self.__version__ = fits_version
-        self.table_format = "she.KsbTrainingTable"
+        self.table_format = fits_def
 
         # Table metadata labels
-        self.version = "SS_VER"
-        self.format = "SS_FMT"
+        self.fits_version = mv.fits_version_label
+        self.fits_def = mv.fits_def_label
 
         self.she_flag_version = mv.she_flag_version_label
         self.model_hash = mv.model_hash_label
@@ -67,8 +68,8 @@ class KsbTrainingTableMeta(object):
         self.valid = mv.valid_label
 
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.version, None),
-                                     (self.format, None),
+        self.comments = OrderedDict(((self.fits_version, None),
+                                     (self.fits_def, None),
                                      (self.she_flag_version, None),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
@@ -202,8 +203,8 @@ def make_bfd_training_table_header():
 
     header = OrderedDict()
 
-    header[tf.m.version] = tf.__version__
-    header[tf.m.format] = tf.m.table_format
+    header[tf.m.fits_version] = tf.__version__
+    header[tf.m.fits_def] = fits_def
 
     return header
 

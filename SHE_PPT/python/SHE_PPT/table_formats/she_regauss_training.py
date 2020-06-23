@@ -19,12 +19,16 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-23"
 
 from collections import OrderedDict
 
-from SHE_PPT.table_utility import is_in_format
 from astropy.table import Table
+
+from SHE_PPT.table_utility import is_in_format
+
+fits_version = "8.0"
+fits_def = "she.regaussTraining"
 
 
 class KsbTrainingTableMeta(object):
@@ -35,15 +39,15 @@ class KsbTrainingTableMeta(object):
     def __init__(self):
 
         self.__version__ = fits_version
-        self.table_format = "she.KsbTrainingTable"
+        self.table_format = fits_def
 
         # Table metadata labels
-        self.version = "SS_VER"
-        self.format = "SS_FMT"
+        self.fits_version = mv.fits_version_label
+        self.fits_def = mv.fits_def_label
 
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.version, None),
-                                     (self.format, None),
+        self.comments = OrderedDict(((self.fits_version, None),
+                                     (self.fits_def, None),
                                      ))
 
         # A list of columns in the desired order
@@ -129,8 +133,8 @@ def make_regauss_training_table_header():
 
     header = OrderedDict()
 
-    header[tf.m.version] = tf.__version__
-    header[tf.m.format] = tf.m.table_format
+    header[tf.m.fits_version] = tf.__version__
+    header[tf.m.fits_def] = fits_def
 
     return header
 

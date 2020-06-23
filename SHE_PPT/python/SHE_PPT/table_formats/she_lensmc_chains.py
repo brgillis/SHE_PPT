@@ -32,7 +32,7 @@ from SHE_PPT.table_formats.mer_final_catalog import tf as detf
 from SHE_PPT.table_utility import is_in_format
 
 fits_version = "8.0"
-fits_version = "she."
+fits_def = "she.lensmcChains"
 
 num_chains = 1
 len_chain = 200
@@ -48,11 +48,11 @@ class lensMcChainsTableMeta(object):
     def __init__(self):
 
         self.__version__ = fits_version
-        self.table_format = "she.lensMcChains"
+        self.table_format = fits_def
 
         # Table metadata labels
-        self.version = "SS_VER"
-        self.format = "SS_FMT"
+        self.fits_version = mv.fits_version_label
+        self.fits_def = mv.fits_def_label
 
         # Table metadata labels
         self.fits_version = mv.fits_version_label
@@ -71,8 +71,8 @@ class lensMcChainsTableMeta(object):
         self.valid = mv.valid_label
 
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.version, None),
-                                     (self.format, None),
+        self.comments = OrderedDict(((self.fits_version, None),
+                                     (self.fits_def, None),
                                      (self.fits_version, None),
                                      (self.fits_def, None),
                                      (self.she_flag_version, None),
@@ -217,8 +217,8 @@ def make_lensmc_chains_table_header(
 
     header = OrderedDict()
 
-    header[tf.m.version] = tf.__version__
-    header[tf.m.format] = tf.m.table_format
+    header[tf.m.fits_version] = tf.__version__
+    header[tf.m.fits_def] = fits_def
 
     header[tf.m.fits_vers] = tf.__version__
     header[tf.m.fits_def] = fits_def

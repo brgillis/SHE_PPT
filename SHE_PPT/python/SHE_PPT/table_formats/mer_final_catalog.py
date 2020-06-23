@@ -30,8 +30,8 @@ from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import hash_any
 
-fits_version = "8.0"
-fits_version = "mer.finalCatalog"
+fits_version = "0.3"
+fits_def = "mer.finalCatalog"
 
 logger = getLogger(mv.logger_name)
 
@@ -43,12 +43,12 @@ class DetectionsTableMeta(object):
 
     def __init__(self):
 
-        self.__version__ = "0.1"
-        self.table_format = "mer.finalCatalog"
+        self.__version__ = fits_version
+        self.table_format = fits_def
 
         # Table metadata labels
-        self.version = "SS_VER"
-        self.format = "SS_FMT"
+        self.fits_version = mv.fits_version_label
+        self.fits_def = mv.fits_def_label
         self.extname = mv.extname_label
 
         self.model_hash = mv.model_hash_label
@@ -56,8 +56,8 @@ class DetectionsTableMeta(object):
         self.noise_seed = mv.noise_seed_label
 
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.version, None),
-                                     (self.format, None),
+        self.comments = OrderedDict(((self.fits_version, None),
+                                     (self.fits_def, None),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
@@ -303,8 +303,8 @@ def make_detections_table_header(model_hash=None,
 
     header = OrderedDict()
 
-    header[tf.m.version] = tf.__version__
-    header[tf.m.format] = tf.m.table_format
+    header[tf.m.fits_version] = tf.__version__
+    header[tf.m.fits_def] = fits_def
 
     header[tf.m.model_hash] = model_hash
     header[tf.m.model_seed] = model_seed

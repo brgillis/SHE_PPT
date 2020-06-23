@@ -45,22 +45,22 @@ class PsfZmStateTableMeta(object):
         self.data_type = data_type
         self.__version__ = fits_version
         
-        self.main_data_type = ("she.psfFieldParameters" 
+        self.main_data_type = (mv.psf_field_param_def 
                                if self.data_type=="FIELD" else 
-                               "she.psfCalibrationParameters")
+                               mv.psf_calib_param_def)
         self.table_format = "%s.SheZernikeModeParams" % self.main_data_type
 
   
         # Table metadata labels
-        self.version = "SS_VER"
-        self.format = "SS_FMT"
+        self.fits_version = mv.fits_version_label
+        self.fits_def = mv.fits_def_label
 
         self.extname = mv.extname_label
 
  
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.version, None),
-                                     (self.format, None),
+        self.comments = OrderedDict(((self.fits_version, None),
+                                     (self.fits_def, None),
                                      ))
 
         # A list of columns in the desired order
@@ -160,8 +160,8 @@ def make_psf_zm_state_table_header(data_type="FIELD"):
 
     header = OrderedDict()
 
-    header[tf.m.version] = tf.__version__
-    header[tf.m.format] = tf.m.table_format
+    header[tf.m.fits_version] = tf.__version__
+    header[tf.m.fits_def] = fits_def
 
     #header[tf.m.extname] = mv.psf_zm_state_tag
 

@@ -19,16 +19,19 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-23"
 
 from collections import OrderedDict
+
+from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import hash_any
-from astropy.table import Table
 
+fits_version = "8.0"
+fits_def = "she.simulatedCatalog"
 
 logger = getLogger(mv.logger_name)
 
@@ -40,12 +43,12 @@ class DetailsTableMeta(object):
 
     def __init__(self):
 
-        self.__version__ = "0.3.1"
-        self.table_format = "she.shearDetails"
+        self.__version__ = fits_version
+        self.table_format = fits_def
 
         # Table metadata labels
-        self.version = "SS_VER"
-        self.format = "SS_FMT"
+        self.fits_version = mv.fits_version_label
+        self.fits_def = mv.fits_def_label
 
         self.subtracted_sky_level = "S_SKYLV"
         self.unsubtracted_sky_level = "US_SKYLV"
@@ -57,8 +60,8 @@ class DetailsTableMeta(object):
         self.noise_seed = mv.noise_seed_label
 
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.version, None),
-                                     (self.format, None),
+        self.comments = OrderedDict(((self.fits_version, None),
+                                     (self.fits_def, None),
                                      (self.subtracted_sky_level,
                                       "ADU/arcsec^2"),
                                      (self.unsubtracted_sky_level,
@@ -195,8 +198,8 @@ def make_details_table_header(subtracted_sky_level=None,
 
     header = OrderedDict()
 
-    header[tf.m.version] = tf.__version__
-    header[tf.m.format] = tf.m.table_format
+    header[tf.m.fits_version] = tf.__version__
+    header[tf.m.fits_def] = fits_def
 
     header[tf.m.subtracted_sky_level] = subtracted_sky_level
     header[tf.m.unsubtracted_sky_level] = unsubtracted_sky_level

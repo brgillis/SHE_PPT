@@ -49,8 +49,8 @@ class BiasStatisticsTableMeta(object):
         self.table_format = fits_def
 
         # Table metadata labels
-        self.version = "SS_VER"
-        self.format = "SS_FMT"
+        self.fits_version = mv.fits_version_label
+        self.fits_def = mv.fits_def_label
 
         # Metadata specific to this table format
 
@@ -71,8 +71,8 @@ class BiasStatisticsTableMeta(object):
         self.m2c2_covar = "BM_M2C2C"
 
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.version, None),
-                                     (self.format, None),
+        self.comments = OrderedDict(((self.fits_version, None),
+                                     (self.fits_def, None),
                                      (self.ID, None),
                                      (self.method, "One of 'KSB', 'REGAUSS', 'MomentsML', or 'LensMC', or else 'Unspecified'."),
                                      (self.m1, None),
@@ -188,8 +188,8 @@ def make_bias_statistics_table_header(ID=None,
 
     header = OrderedDict()
 
-    header[tf.m.version] = tf.__version__
-    header[tf.m.format] = tf.m.table_format
+    header[tf.m.fits_version] = tf.__version__
+    header[tf.m.fits_def] = fits_def
 
     header[tf.m.ID] = str(ID)
     if method in ('KSB', 'REGAUSS', 'MomentsML', 'LensMC', 'Unspecified'):

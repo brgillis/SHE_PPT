@@ -19,17 +19,20 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-23"
 
 from collections import OrderedDict
+
+from astropy.table import Table
 
 from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_formats.mer_final_catalog import tf as detf
 from SHE_PPT.table_utility import is_in_format
-from astropy.table import Table
 
+fits_version = "8.0"
+fits_def = "she.regaussMeasurements"
 
 logger = getLogger(mv.logger_name)
 
@@ -46,9 +49,7 @@ class regaussMeasurementsTableMeta(object):
 
         # Table metadata labels
         self.fits_version = mv.fits_version_label
-        #self.format = "SS_FMT"
         self.fits_def = mv.fits_def_label
-        #self.extname = mv.extname_label
         self.she_flag_version = mv.she_flag_version_label
         self.model_hash = mv.model_hash_label
         self.model_seed = mv.model_seed_label
@@ -56,17 +57,17 @@ class regaussMeasurementsTableMeta(object):
         self.obs_id = mv.obs_id_label
         self.date_obs = mv.obs_time_label
         self.tile_id = mv.tile_id_label
-        
+
         self.valid = mv.valid_label
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_version, None),
                                      (self.fits_def, None),
-                                     (self.she_flag_version,None),
+                                     (self.she_flag_version, None),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
-                                     (self.obs_id,None),
+                                     (self.obs_id, None),
                                      (self.date_obs, None),
                                      (self.tile_id, None),
                                      (self.valid,
@@ -128,7 +129,7 @@ class regaussMeasurementsTableFormat(object):
             "SHE_REGAUSS_VAL_FLAGS", dtype=">i8", fits_dtype="K")
         self.fit_class = set_column_properties(
             "SHE_REGAUSS_FIT_CLASS", dtype=">i2", fits_dtype="I")
-        
+
         self.regauss_g1 = set_column_properties(
             "SHE_REGAUSS_G1", dtype=">f4", fits_dtype="E")
         self.regauss_g1_err = set_column_properties(
@@ -150,10 +151,10 @@ class regaussMeasurementsTableFormat(object):
         self.regauss_g2_unc_err = set_column_properties(
             "SHE_REGAUSS_G2_UNCAL_ERR", dtype=">f4", fits_dtype="E")
         self.regauss_g1g2_unc_cov = set_column_properties(
-            "SHE_REGAUSS_G1G2_UNCALCOVAR", dtype=">f4", fits_dtype="E")  
+            "SHE_REGAUSS_G1G2_UNCALCOVAR", dtype=">f4", fits_dtype="E")
         self.regauss_wgt_unc = set_column_properties(
             "SHE_REGAUSS_WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
-    
+
         self.updated_ra = set_column_properties(
             "SHE_REGAUSS_UPDATED_RA", is_optional=False, comment="deg")
         self.updated_ra_err = set_column_properties(
@@ -176,7 +177,6 @@ class regaussMeasurementsTableFormat(object):
             "SHE_REGAUSS_SNR", is_optional=True, dtype=">f4", fits_dtype="E")
         self.regauss_snr_err = set_column_properties(
             "SHE_REGAUSS_SNR_ERR", is_optional=True, dtype=">f4", fits_dtype="E")
-        
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -234,15 +234,15 @@ def make_regauss_measurements_table_header(detector_x=1,
     header[tf.m.fits_vers] = tf.__version__
     header[tf.m.fits_def] = fits_def
     header[tf.m.she_flag_version] = she_flag_version
-    
+
     header[tf.m.model_hash] = model_hash
     header[tf.m.model_seed] = model_seed
     header[tf.m.noise_seed] = noise_seed
-    
+
     header[tf.m.obs_id] = obs_id
     header[tf.m.date_obs] = date_obs
     header[tf.m.tile_id] = tile_id
-    
+
     header[tf.m.fits_def] = fits_def
 
     return header
@@ -332,7 +332,7 @@ def initialise_regauss_measurements_table(detections_table=None,
                                                            obs_id=obs_id,
                                                            date_obs=date_obs,
                                                            tile_id=tile_id)
-                     
+
     assert(is_in_format(regauss_measurements_table, tf))
 
     return regauss_measurements_table

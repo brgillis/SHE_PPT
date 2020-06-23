@@ -20,16 +20,18 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-23"
 
 from collections import OrderedDict
+
+from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format
-from astropy.table import Table
 import numpy as np
 
+fits_version = "8.0"
 
 logger = getLogger(mv.logger_name)
 
@@ -39,26 +41,24 @@ class PsfDmStateTableMeta(object):
     """
 
     data_type = "CAL"
-    
+
     def __init__(self, data_type):
 
         self.data_type = data_type
         self.__version__ = fits_version
-        
-        self.main_data_type = ("she.psfFieldParameters" 
-                               if self.data_type=="FIELD" else 
-                               "she.psfCalibrationParameters")
-        self.table_format = "%s.SheDetectorModelParams" % self.main_data_type
+
+        self.main_data_type = (mv.psf_field_param_def
+                               if self.data_type == "FIELD" else
+                               mv.psf_calib_param_def)
+        self.table_format = "%s.SheOtherModelParams" % self.main_data_type
 
         # Table metadata labels
-        self.version = "SS_VER"
-        self.format = "SS_FMT"
-
-        self.extname = mv.extname_label
+        self.fits_version = mv.fits_version_label
+        self.fits_def = mv.fits_def_label
 
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.version, None),
-                                     (self.format, None),
+        self.comments = OrderedDict(((self.fits_version, None),
+                                     (self.fits_def, None),
                                      ))
 
         # A list of columns in the desired order
@@ -71,12 +71,12 @@ class PsfDmStateTableFormat(object):
                instance of this should generally be accessed, and it should not be changed.
     """
 
-    data_type="CAL"
+    data_type = "CAL"
 
     def __init__(self, data_type="CAL"):
 
         # Get the metadata (contained within its own class)
-        
+
         self.data_type = data_type
 
         self.meta = PsfDmStateTableMeta(self.data_type)
@@ -96,7 +96,7 @@ class PsfDmStateTableFormat(object):
         self.dtypes = OrderedDict()
         self.fits_dtypes = OrderedDict()
         self.lengths = OrderedDict()
-        
+
         def set_column_properties(name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
                                   length=1):
 
@@ -112,11 +112,9 @@ class PsfDmStateTableFormat(object):
 
         # Column names and info
         # @TODO: option for FIELD/CALIB - use self.data_type
-        
-
 
         for colname in []:
-            setattr(self, colname.lower(), 
+            setattr(self, colname.lower(),
                     set_column_properties(name=self.get_colname(colname),
                         dtype=">f4", fits_dtype="E"))
 
@@ -132,8 +130,9 @@ class PsfDmStateTableFormat(object):
     def get_colname(self, colname):
         """ Get full column name
         """
-        return "SHE_PSF_%s_%s" % (self.data_type,colname)
-        
+        return "SHE_PSF_%s_%s" % (self.data_type, colname)
+
+
 # Define an instance of this object that can be imported
 psf_table_format_field = PsfDmStateTableFormat("FIELD")
 psf_table_format_calib = PsfDmStateTableFormat("CAL")
@@ -143,6 +142,7 @@ psf_table_format_calib = PsfDmStateTableFormat("CAL")
 
 tff = psf_table_format_field
 tfc = psf_table_format_calib
+
 
 def make_psf_dm_state_table_header(data_type="FIELD"):
     """Generate a header for a PSF DM State table.
@@ -157,18 +157,17 @@ def make_psf_dm_state_table_header(data_type="FIELD"):
     header : OrderedDict
     """
 
-    tf = tff if data_type=="FIELD" else tfc
-    
+    tf = tff if data_type == "FIELD" else tfc
+
     header = OrderedDict()
 
-    header[tf.m.version] = tf.__version__
-    header[tf.m.format] = tf.m.table_format
+    header[tf.m.fits_version] = tf.__version__
+    header[tf.m.fits_def] = fits_def
 
-    
     return header
 
 
-def initialise_psf_dm_state_table(data_type="FIELD",optional_columns=None,
+def initialise_psf_dm_state_table(data_type="FIELD", optional_columns=None,
                                   init_columns={}):
     """Initialise a PSF TM State table.
 
@@ -186,7 +185,7 @@ def initialise_psf_dm_state_table(data_type="FIELD",optional_columns=None,
     psf_dm_state_table : astropy.Table
     """
 
-    tf = tff if data_type=="FIELD" else tfc
+    tf = tff if data_type == "FIELD" else tfc
 
     if optional_columns is None:
         optional_columns = []

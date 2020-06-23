@@ -48,9 +48,7 @@ class momentsmlMeasurementsTableMeta(object):
 
         # Table metadata labels
         self.fits_version = mv.fits_version_label
-        # self.format = "SS_FMT"
         self.fits_def = mv.fits_def_label
-        # self.extname = mv.extname_label
         self.she_flag_version = mv.she_flag_version_label
         self.model_hash = mv.model_hash_label
         self.model_seed = mv.model_seed_label

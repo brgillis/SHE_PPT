@@ -19,12 +19,16 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-23"
 
 from collections import OrderedDict
 
-from SHE_PPT.table_utility import is_in_format
 from astropy.table import Table
+
+from SHE_PPT.table_utility import is_in_format
+
+fits_version = "8.0"
+fits_def = "she.starCatalog"
 
 
 class StarCatalogTableMeta(object):
@@ -35,24 +39,24 @@ class StarCatalogTableMeta(object):
     def __init__(self):
 
         self.__version__ = fits_version
-        self.table_format = "she.starCatalog"
+        self.table_format = fits_def
 
         # Table metadata labels
-        self.version = "SS_VER"
-        self.format = "SS_FMT"
-        
-        self.roll_ang = 0. 
-        self.exp_pid = "EXP_PID" 
-        self.obs_id = mv.obs_id_label 
-        self.date_obs = "DATE_OBS" 
-        
+        self.fits_version = mv.fits_version_label
+        self.fits_def = mv.fits_def_label
+
+        self.roll_ang = 0.
+        self.exp_pid = "EXP_PID"
+        self.obs_id = mv.obs_id_label
+        self.date_obs = "DATE_OBS"
+
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.version, None),
-                                     (self.format, None),
+        self.comments = OrderedDict(((self.fits_version, None),
+                                     (self.fits_def, None),
                                      (self.roll_ang, None),
                                      (self.exp_pid, None),
                                      (self.obs_id, None),
-                                     (self.date_obs,None),
+                                     (self.date_obs, None),
                                      ))
 
         # A list of columns in the desired order
@@ -104,7 +108,7 @@ class StarCatalogTableFormat(object):
         self.id = set_column_properties(
             "OBJECT_ID", dtype=">i8", fits_dtype="K",
             comment="ID of this object in the galaxy population priors table.")
-        
+
         self.det_x = set_column_properties(
             "SHE_STARCAT_DET_X", dtype=">i4", fits_dtype="I")
         self.det_y = set_column_properties(
@@ -129,7 +133,7 @@ class StarCatalogTableFormat(object):
             "SHE_STARCAT_FLUX", dtype=">f4", fits_dtype="E")
         self.flux_err = set_column_properties(
             "SHE_STARCAT_FLUX_ERR", dtype=">f4", fits_dtype="E")
-                
+
         self.e1 = set_column_properties("SHE_STARCAT_E1", dtype=">f4", fits_dtype="E",
                                         comment="Mean ellipticity measurement of this object, component 1")
         self.e2 = set_column_properties("SHE_STARCAT_E2", dtype=">f4", fits_dtype="E",
@@ -138,8 +142,6 @@ class StarCatalogTableFormat(object):
                                         comment="Error on mean ellipticity measurement of this object, component 1")
         self.e2_err = set_column_properties("SHE_STARCAT_E2_ERR", dtype=">f4", fits_dtype="E",
                                         comment="Error on mean ellipticity measurement of this object, component 2")
-
-            
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -158,7 +160,7 @@ star_catalog_table_format = StarCatalogTableFormat()
 tf = star_catalog_table_format
 
 
-def make_star_catalog_table_header(roll_ang,exp_pid,obs_id,date_obs):
+def make_star_catalog_table_header(roll_ang, exp_pid, obs_id, date_obs):
     """
         @brief Generate a header for a galaxy population table.
 
@@ -167,8 +169,8 @@ def make_star_catalog_table_header(roll_ang,exp_pid,obs_id,date_obs):
 
     header = OrderedDict()
 
-    header[tf.m.version] = tf.__version__
-    header[tf.m.format] = tf.m.table_format
+    header[tf.m.fits_version] = tf.__version__
+    header[tf.m.fits_def] = fits_def
     header[tf.m.roll_ang] = roll_ang
     header[tf.m.exp_pid] = exp_pid
     header[tf.m.obs_id] = obs_id
@@ -176,7 +178,7 @@ def make_star_catalog_table_header(roll_ang,exp_pid,obs_id,date_obs):
     return header
 
 
-def initialise_star_catalog_table(roll_ang,exp_pid,obs_id,date_obs,
+def initialise_star_catalog_table(roll_ang, exp_pid, obs_id, date_obs,
                                   optional_columns=None):
     """
         @brief Initialise a galaxy population table.
@@ -204,7 +206,7 @@ def initialise_star_catalog_table(roll_ang,exp_pid,obs_id,date_obs,
     star_catalog_table = Table(init_cols, names=names, dtype=dtypes)
 
     star_catalog_table.meta = make_star_catalog_table_header(
-        roll_ang,exp_pid,obs_id,date_obs)
+        roll_ang, exp_pid, obs_id, date_obs)
 
     assert(is_in_format(star_catalog_table, tf))
 

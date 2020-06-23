@@ -31,7 +31,8 @@ from SHE_PPT.logging import getLogger
 from SHE_PPT.table_formats.mer_final_catalog import tf as detf
 from SHE_PPT.table_utility import is_in_format
 
-fits_version = "she.commonCalibration"
+fits_version = "8.0"
+fits_def = "she.commonCalibration"
 
 logger = getLogger(mv.logger_name)
 
@@ -44,11 +45,11 @@ class commonCalibrationTableMeta(object):
     def __init__(self):
 
         self.__version__ = fits_version
-        self.table_format = "she.commonCalibration"
+        self.table_format = fits_def
 
         # Table metadata labels
         self.fits_version = mv.fits_version_label
-        # self.format = "SS_FMT"
+        # self.fits_def = mv.fits_def_label
         self.fits_def = mv.fits_def_label
         # self.extname = mv.extname_label
 

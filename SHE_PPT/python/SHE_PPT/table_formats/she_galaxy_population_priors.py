@@ -29,7 +29,8 @@ from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format
 
-fits_version = "she.galaxyPopulationPrior"
+fits_version = "8.0"
+fits_def = "she.galaxyPopulationPriors"
 
 
 class GalaxyPopulationPriorsTableMeta(object):
@@ -40,11 +41,11 @@ class GalaxyPopulationPriorsTableMeta(object):
     def __init__(self):
 
         self.__version__ = fits_version
-        self.table_format = "she.galaxyPopulationPriors"
+        self.table_format = fits_def
 
         # Table metadata labels
-        self.version = "SS_VER"
-        self.format = "SS_FMT"
+        self.fits_version = mv.fits_version_label
+        self.fits_def = mv.fits_def_label
 
         self.cnd_field = "CNDFIELD"
         self.tscope = "TSCOPE"
@@ -54,8 +55,8 @@ class GalaxyPopulationPriorsTableMeta(object):
         self.date_cnd = "DATE_CND"
 
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.version, None),
-                                     (self.format, None),
+        self.comments = OrderedDict(((self.fits_version, None),
+                                     (self.fits_def, None),
                                      (self.cnd_field, None),
                                      (self.tscope, None),
                                      (self.detect, None),
@@ -249,8 +250,8 @@ def make_galaxy_population_table_header(cnd_field=None,
 
     header = OrderedDict()
 
-    header[tf.m.version] = tf.__version__
-    header[tf.m.format] = tf.m.table_format
+    header[tf.m.fits_version] = tf.__version__
+    header[tf.m.fits_def] = fits_def
     header[tf.m.cnd_field] = cnd_field
     header[tf.m.tscope] = tscope
     header[tf.m.detect] = detect
