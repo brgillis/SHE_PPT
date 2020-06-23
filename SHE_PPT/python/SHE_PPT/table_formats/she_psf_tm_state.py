@@ -20,16 +20,18 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-23"
 
 from collections import OrderedDict
+
+from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format
-from astropy.table import Table
 import numpy as np
 
+fits_version = "8.0"
 
 logger = getLogger(mv.logger_name)
 
@@ -39,14 +41,14 @@ class PsfTmStateTableMeta(object):
     """
 
     data_type = "FIELD"
-    
+
     def __init__(self, data_type):
 
         self.data_type = data_type
         self.__version__ = fits_version
-        
-        self.main_data_type = (mv.psf_field_param_def 
-                               if self.data_type=="FIELD" else 
+
+        self.main_data_type = (mv.psf_field_param_def
+                               if self.data_type == "FIELD" else
                                mv.psf_calib_param_def)
         self.table_format = "%s.SheTelescopeModeParams" % self.main_data_type
 
@@ -72,10 +74,11 @@ class PsfTmStateTableFormat(object):
     """
 
     data_type = "FIELD"
+
     def __init__(self, data_type="FIELD"):
 
         # Get the metadata (contained within its own class)
-        
+
         self.data_type = data_type
 
         self.meta = PsfTmStateTableMeta(self.data_type)
@@ -95,7 +98,7 @@ class PsfTmStateTableFormat(object):
         self.dtypes = OrderedDict()
         self.fits_dtypes = OrderedDict()
         self.lengths = OrderedDict()
-        
+
         def set_column_properties(name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
                                   length=1):
 
@@ -111,14 +114,12 @@ class PsfTmStateTableFormat(object):
 
         # Column names and info
         # @TODO: option for FIELD/CALIB - use self.data_type
-        
-
 
         for colname in ["M1TRAD", "M2TRAD", "FOM1TFRN", "FOM2TFRN",
                         "M3TRAD", "DIC_TFRN", "M1TCON", "M2TZ",
                         "M2TX", "M2TY", "M2RX", "M2RY", "M3TZ", "M3TX",
                         "M3TY", "M3RX", "M3RY"]:
-            setattr(self, colname.lower(), 
+            setattr(self, colname.lower(),
                     set_column_properties(name=self.get_colname(colname),
                         dtype=">f4", fits_dtype="E"))
 
@@ -134,8 +135,9 @@ class PsfTmStateTableFormat(object):
     def get_colname(self, colname):
         """ Get full column name
         """
-        return "SHE_PSF_%s_%s" % (self.data_type,colname)
-        
+        return "SHE_PSF_%s_%s" % (self.data_type, colname)
+
+
 # Define an instance of this object that can be imported
 psf_table_format_field = PsfTmStateTableFormat("FIELD")
 psf_table_format_calib = PsfTmStateTableFormat("CAL")
@@ -145,6 +147,7 @@ psf_table_format_calib = PsfTmStateTableFormat("CAL")
 
 tff = psf_table_format_field
 tfc = psf_table_format_calib
+
 
 def make_psf_tm_state_table_header(data_type="FIELD"):
     """Generate a header for a PSF TM State table.
@@ -159,18 +162,17 @@ def make_psf_tm_state_table_header(data_type="FIELD"):
     header : OrderedDict
     """
 
-    tf = tff if data_type=="FIELD" else tfc
-    
+    tf = tff if data_type == "FIELD" else tfc
+
     header = OrderedDict()
 
     header[tf.m.fits_version] = tf.__version__
     header[tf.m.fits_def] = fits_def
 
-    
     return header
 
 
-def initialise_psf_tm_state_table(data_type="FIELD",optional_columns=None,
+def initialise_psf_tm_state_table(data_type="FIELD", optional_columns=None,
                                   init_columns={}):
     """Initialise a PSF TM State table.
 
@@ -188,7 +190,7 @@ def initialise_psf_tm_state_table(data_type="FIELD",optional_columns=None,
     psf_tm_state_table : astropy.Table
     """
 
-    tf = tff if data_type=="FIELD" else tfc
+    tf = tff if data_type == "FIELD" else tfc
 
     if optional_columns is None:
         optional_columns = []
@@ -215,7 +217,7 @@ def initialise_psf_tm_state_table(data_type="FIELD",optional_columns=None,
             else:
                 init_cols.append([])
 
-            dtypes.append(dtype) 
+            dtypes.append(dtype)
 
     psf_tm_state_table = Table(init_cols, names=names, dtype=dtypes)
 
@@ -223,4 +225,4 @@ def initialise_psf_tm_state_table(data_type="FIELD",optional_columns=None,
 
     assert(is_in_format(psf_tm_state_table, tf))
 
-    return psf_tm_state_table 
+    return psf_tm_state_table

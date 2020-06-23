@@ -224,7 +224,7 @@ def make_momentsml_measurements_table_header(detector_x=1,
 
     header = OrderedDict()
 
-    header[tf.m.fits_vers] = tf.__version__
+    header[tf.m.fits_version] = tf.__version__
     header[tf.m.fits_def] = fits_def
     header[tf.m.she_flag_version] = she_flag_version
 

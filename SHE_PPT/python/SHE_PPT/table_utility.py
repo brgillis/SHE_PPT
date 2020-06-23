@@ -136,19 +136,19 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
             return False
 
         # Check the format label is correct
-        if table.meta[table_format.m.format] != table_format.m.table_format:
+        if table.meta[table_format.m.fits_def] != table_format.m.table_format:
             if verbose:
                 logger.info("Table not in correct format due to wrong table format label.\n" +
                             "Expected: " + table_format.m.table_format + "\n" +
-                            "Got: " + table.meta[table_format.m.format])
+                            "Got: " + table.meta[table_format.m.fits_def])
             return False
 
         # Check the version is correct
-        if table.meta[table_format.m.version] != table_format.__version__:
+        if table.meta[table_format.m.fits_version] != table_format.__version__:
             if verbose:
                 logger.info("Table not in correct format due to wrong table format label.\n" +
                             "Expected: " + table_format.__version__ + "\n" +
-                            "Got: " + table.meta[table_format.m.version])
+                            "Got: " + table.meta[table_format.m.fits_version])
             return False
 
     return True

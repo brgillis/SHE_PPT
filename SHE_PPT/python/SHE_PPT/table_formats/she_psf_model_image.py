@@ -51,6 +51,8 @@ class PSFTableMeta(object):
         self.fits_version = mv.fits_version_label
         self.fits_def = mv.fits_def_label
 
+        self.extname = mv.extname_label
+
         self.cal_prod = "CAL_PROD"
         self.cal_time = "CAL_TIME"
         self.fld_prod = "FLD_PROD"

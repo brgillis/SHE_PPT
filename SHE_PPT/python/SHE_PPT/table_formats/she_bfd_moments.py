@@ -48,10 +48,8 @@ class BFDMomentsTableMeta(object):
         self.table_format = fits_def
 
         # Table metadata labels
-        self.version = "FITS_VER"
+        self.fits_version = mv.fits_version_label
         self.fits_def = mv.fits_def_label
-        self.fits_def = mv.fits_def_label
-        # self.extname = mv.extname_label
         self.she_flag_version = mv.she_flag_version_label
         self.model_hash = mv.model_hash_label
         self.model_seed = mv.model_seed_label

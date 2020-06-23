@@ -235,7 +235,7 @@ def make_common_calibration_table_header(detector_x=1,
 
     header = OrderedDict()
 
-    header[tf.m.fits_vers] = tf.__version__
+    header[tf.m.fits_version] = tf.__version__
     header[tf.m.fits_def] = fits_def
 
     return header

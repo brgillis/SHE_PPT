@@ -20,16 +20,18 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-23"
 
 from collections import OrderedDict
+
+from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format
-from astropy.table import Table
 import numpy as np
 
+fits_version = "8.0"
 
 logger = getLogger(mv.logger_name)
 
@@ -44,20 +46,18 @@ class PsfPdStateTableMeta(object):
 
         self.data_type = data_type
         self.__version__ = fits_version
-        
-        self.main_data_type = (mv.psf_field_param_def 
-                               if self.data_type=="FIELD" else 
+
+        self.main_data_type = (mv.psf_field_param_def
+                               if self.data_type == "FIELD" else
                                mv.psf_calib_param_def)
         self.table_format = "%s.ShePsfDiagnostics" % self.main_data_type
 
-  
         # Table metadata labels
         self.fits_version = mv.fits_version_label
         self.fits_def = mv.fits_def_label
 
         self.extname = mv.extname_label
 
- 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_version, None),
                                      (self.fits_def, None),
@@ -77,10 +77,10 @@ class PsfPdStateTableFormat(object):
 
     def __init__(self, data_type="FIELD"):
 
-        self.data_type=data_type
+        self.data_type = data_type
         # Get the metadata (contained within its own class)
         self.meta = PsfPdStateTableMeta(self.data_type)
-        
+
         # And a quick alias for it
         self.m = self.meta
 
@@ -116,7 +116,6 @@ class PsfPdStateTableFormat(object):
             "OBJECT_ID", dtype=">i8", fits_dtype="K")
         self.chisq = set_column_properties(
             "SHE_PSF_%s_CHISQ" % self.data_type, dtype=">f4", fits_dtype="E")
-         
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -150,9 +149,8 @@ def make_psf_pd_state_table_header(data_type="FIELD"):
     ------
     header : OrderedDict
     """
-    
-    tf = tff if data_type=="FIELD" else tfc
-    
+
+    tf = tff if data_type == "FIELD" else tfc
 
     header = OrderedDict()
 
@@ -184,8 +182,8 @@ def initialise_psf_pd_state_table(data_type="FIELD",
     ------
     psf_pd_state_table : astropy.Table
     """
-    
-    tf = tff if data_type=="FIELD" else tfc
+
+    tf = tff if data_type == "FIELD" else tfc
 
     if optional_columns is None:
         optional_columns = []
