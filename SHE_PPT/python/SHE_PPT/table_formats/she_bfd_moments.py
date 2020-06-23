@@ -211,7 +211,6 @@ def make_bfd_moments_table_header(detector_x=1,
 
     header[tf.m.fits_version] = tf.__version__
     header[tf.m.fits_def] = fits_def
-    header[tf.m.fits_def] = fits_def
     header[tf.m.she_flag_version] = she_flag_version
 
     header[tf.m.model_hash] = model_hash
@@ -226,7 +225,7 @@ def make_bfd_moments_table_header(detector_x=1,
     header[tf.m.wt_n] = wt_n
     header[tf.m.wt_sigma] = wt_sigma
 
-    header[tf.m.fits_def] = fits_def
+    header[tf.m.valid] = "UNKNOWN"
 
     return header
 

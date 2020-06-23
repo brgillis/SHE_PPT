@@ -246,8 +246,6 @@ def make_lensmc_measurements_table_header(
     header[tf.m.fits_version] = tf.__version__
     header[tf.m.fits_def] = fits_def
 
-    header[tf.m.fits_version] = tf.__version__
-    header[tf.m.fits_def] = fits_def
     header[tf.m.she_flag_version] = she_flag_version
 
     header[tf.m.model_hash] = model_hash
@@ -258,7 +256,7 @@ def make_lensmc_measurements_table_header(
     header[tf.m.date_obs] = date_obs
     header[tf.m.tile_id] = tile_id
 
-    header[tf.m.fits_def] = fits_def
+    header[tf.m.valid] = "UNKNOWN"
 
     return header
 

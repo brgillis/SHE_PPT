@@ -245,7 +245,7 @@ def make_ksb_measurements_table_header(detector_x=1,
     header[tf.m.date_obs] = date_obs
     header[tf.m.tile_id] = tile_id
 
-    header[tf.m.fits_def] = fits_def
+    header[tf.m.valid] = "UNKNOWN"
 
     return header
 
