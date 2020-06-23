@@ -41,35 +41,35 @@ class regaussMeasurementsTableMeta(object):
 
     def __init__(self):
 
-        self.__version__ = "8.0"
+        self.__version__ = fits_version
         self.table_format = "she.regaussMeasurements"
 
         # Table metadata labels
-        self.fits_vers = "FITS_VER"
+        self.fits_version = mv.fits_version_label
         #self.format = "SS_FMT"
-        self.fits_def = "FITS_DEF"
+        self.fits_def = mv.fits_def_label
         #self.extname = mv.extname_label
-        self.sflagvers="SFLAGVERS"
+        self.she_flag_version = mv.she_flag_version_label
         self.model_hash = mv.model_hash_label
         self.model_seed = mv.model_seed_label
         self.noise_seed = mv.noise_seed_label
-        self.obs_id = 0
+        self.obs_id = mv.obs_id_label
         self.date_obs = mv.obs_time_label
-        self.tile_id = 0
+        self.tile_id = mv.tile_id_label
         
-        self.validated = "VALID"
+        self.valid = mv.valid_label
 
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_vers, None),
+        self.comments = OrderedDict(((self.fits_version, None),
                                      (self.fits_def, None),
-                                     (self.sflagvers,None),
+                                     (self.she_flag_version,None),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
                                      (self.obs_id,None),
                                      (self.date_obs, None),
                                      (self.tile_id, None),
-                                     (self.validated,
+                                     (self.valid,
                                       "0: Not tested; 1: Pass; -1: Fail")
                                      ))
 
@@ -200,7 +200,7 @@ def make_regauss_measurements_table_header(detector_x=1,
                                   detector=None,
                                   fits_ver=None,
                                   fits_def=None,
-                                  sflagvers=None,
+                                  she_flag_version=None,
                                   model_hash=None,
                                   model_seed=None,
                                   noise_seed=None,
@@ -233,7 +233,7 @@ def make_regauss_measurements_table_header(detector_x=1,
 
     header[tf.m.fits_vers] = tf.__version__
     header[tf.m.fits_def] = fits_def
-    header[tf.m.sflagvers] = sflagvers
+    header[tf.m.she_flag_version] = she_flag_version
     
     header[tf.m.model_hash] = model_hash
     header[tf.m.model_seed] = model_seed
@@ -243,7 +243,7 @@ def make_regauss_measurements_table_header(detector_x=1,
     header[tf.m.date_obs] = date_obs
     header[tf.m.tile_id] = tile_id
     
-    header[tf.m.validated] = 0
+    header[tf.m.fits_def] = fits_def
 
     return header
 
@@ -254,7 +254,7 @@ def initialise_regauss_measurements_table(detections_table=None,
                                  detector_y=None,
                                  detector=None,
                                  fits_def=None,
-                                 sflagvers=None,
+                                 she_flag_version=None,
                                  model_hash=None,
                                  model_seed=None,
                                  noise_seed=None,
@@ -325,7 +325,7 @@ def initialise_regauss_measurements_table(detections_table=None,
                                                            detector_y=detector_y,
                                                            detector=detector,
                                                            fits_def=fits_def,
-                                                           sflagvers=sflagvers,
+                                                           she_flag_version=she_flag_version,
                                                            model_hash=model_hash,
                                                            model_seed=model_seed,
                                                            noise_seed=noise_seed,

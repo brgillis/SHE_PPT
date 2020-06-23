@@ -19,14 +19,17 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-23"
 
 from collections import OrderedDict
+
+from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format
-from astropy.table import Table
+
+fits_version = "she.galaxyPopulationPrior"
 
 
 class GalaxyPopulationPriorsTableMeta(object):
@@ -36,7 +39,7 @@ class GalaxyPopulationPriorsTableMeta(object):
 
     def __init__(self):
 
-        self.__version__ = "8.0"
+        self.__version__ = fits_version
         self.table_format = "she.galaxyPopulationPriors"
 
         # Table metadata labels
@@ -49,7 +52,6 @@ class GalaxyPopulationPriorsTableMeta(object):
         self.date_hst = "DATE_HST"
         self.data_ver = "DATA_VER"
         self.date_cnd = "DATE_CND"
- 
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
@@ -120,13 +122,13 @@ class GalaxyPopulationPriorsTableFormat(object):
             "SHE_GALPOP_Z_PHOT")
         self.zs = set_column_properties(
             "SHE_GALPOP_Z_SPEC")
-        
+
         self.iab = set_column_properties(
             "SHE_GALPOP_I_AB", comment="mag", dtype=">f4", fits_dtype="E")
-        
+
         self.vab = set_column_properties(
             "SHE_GALPOP_V_AB", comment="mag", dtype=">f4", fits_dtype="E")
-        
+
         self.sers_sing_fit = set_column_properties(
             "SHE_GALPOP_N_SERSIC_SINGLE_FIT", dtype=">f4", fits_dtype="E")
         self.sers_two_fit = set_column_properties(
@@ -216,7 +218,6 @@ class GalaxyPopulationPriorsTableFormat(object):
         self.disk_fd_f160w_err = set_column_properties(
             "SHE_GALPOP_FLUX_ERR_DISK_NJY_F160W", comment="nJy", dtype=">f4", fits_dtype="E")
 
- 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
 
@@ -280,7 +281,7 @@ def initialise_galaxy_population_table(optional_columns=None,
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    names = [] 
+    names = []
     init_cols = []
     dtypes = []
     for colname in tf.all:
@@ -292,9 +293,9 @@ def initialise_galaxy_population_table(optional_columns=None,
     galaxy_population_table = Table(init_cols, names=names, dtype=dtypes)
 
     galaxy_population_table.meta = make_galaxy_population_table_header(
-        cnd_field=cnd_field,tscope=tscope,detect=detect,
-        date_hst=date_hst,data_ver=data_ver,date_cnd=date_cnd)
-    
+        cnd_field=cnd_field, tscope=tscope, detect=detect,
+        date_hst=date_hst, data_ver=data_ver, date_cnd=date_cnd)
+
     assert(is_in_format(galaxy_population_table, tf))
 
     return galaxy_population_table

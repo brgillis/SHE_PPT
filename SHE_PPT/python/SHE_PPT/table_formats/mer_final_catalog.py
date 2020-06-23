@@ -30,6 +30,9 @@ from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.utility import hash_any
 
+fits_version = "8.0"
+fits_version = "mer.finalCatalog"
+
 logger = getLogger(mv.logger_name)
 
 

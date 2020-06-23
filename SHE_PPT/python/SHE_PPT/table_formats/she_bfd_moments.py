@@ -19,17 +19,20 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-23"
 
 from collections import OrderedDict
+
+from astropy.table import Table
 
 from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_formats.mer_final_catalog import tf as detf
 from SHE_PPT.table_utility import is_in_format
-from astropy.table import Table
 
+fits_version = "8.0"
+fits_version = "she.bfdMoments"
 
 logger = getLogger(mv.logger_name)
 
@@ -41,43 +44,42 @@ class BFDMomentsTableMeta(object):
 
     def __init__(self):
 
-        self.__version__ = "8.0"
+        self.__version__ = fits_version
         self.table_format = "she.bfdMoments"
 
         # Table metadata labels
         self.version = "FITS_VER"
         self.format = "SS_FMT"
-        self.fits_def = "FITS_DEF"
-        #self.extname = mv.extname_label
-        self.sflagvers="SFLAGVERS"
+        self.fits_def = mv.fits_def_label
+        # self.extname = mv.extname_label
+        self.she_flag_version = mv.she_flag_version_label
         self.model_hash = mv.model_hash_label
         self.model_seed = mv.model_seed_label
         self.noise_seed = mv.noise_seed_label
-        self.obs_id = 0
+        self.obs_id = mv.obs_id_label
         self.date_obs = mv.obs_time_label
-        self.tile_id = 0
+        self.tile_id = mv.tile_id_label
         self.nlost = "NLOST"
         self.wt_n = "WT_N"
         self.wt_sigma = "WT_SIGMA"
-        
 
-        self.validated = "VALID"
+        self.valid = mv.valid_label
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
                                      (self.format, None),
                                      (self.fits_def, None),
-                                     (self.sflagvers,None),
+                                     (self.she_flag_version, None),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
-                                     (self.obs_id,None),
+                                     (self.obs_id, None),
                                      (self.date_obs, None),
                                      (self.tile_id, None),
                                      (self.nlost, None),
                                      (self.wt_n, None),
                                      (self.wt_sigma, None),
-                                     (self.validated,
+                                     (self.valid,
                                       "0: Not tested; 1: Pass; -1: Fail")
                                      ))
 
@@ -177,7 +179,7 @@ def make_bfd_moments_table_header(detector_x=1,
                                   detector=None,
                                   fits_ver=None,
                                   fits_def=None,
-                                  sflagvers=None,
+                                  she_flag_version=None,
                                   model_hash=None,
                                   model_seed=None,
                                   noise_seed=None,
@@ -206,18 +208,18 @@ def make_bfd_moments_table_header(detector_x=1,
     if detector is not None:
         logger.warning(
             "'detector' argument for make_*_table_header is deprecated: Use detector_x and detector_y instead.")
- 
+
     header = OrderedDict()
 
     header[tf.m.version] = tf.__version__
     header[tf.m.format] = tf.m.table_format
     header[tf.m.fits_def] = fits_def
-    header[tf.m.sflagvers] = sflagvers
-    
+    header[tf.m.she_flag_version] = she_flag_version
+
     header[tf.m.model_hash] = model_hash
     header[tf.m.model_seed] = model_seed
     header[tf.m.noise_seed] = noise_seed
-    
+
     header[tf.m.obs_id] = obs_id
     header[tf.m.date_obs] = date_obs
     header[tf.m.tile_id] = tile_id
@@ -225,8 +227,8 @@ def make_bfd_moments_table_header(detector_x=1,
     header[tf.m.nlost] = nlost
     header[tf.m.wt_n] = wt_n
     header[tf.m.wt_sigma] = wt_sigma
-    
-    header[tf.m.validated] = 0
+
+    header[tf.m.fits_def] = fits_def
 
     return header
 
@@ -237,7 +239,7 @@ def initialise_bfd_moments_table(detections_table=None,
                                  detector_y=None,
                                  detector=None,
                                  fits_def=None,
-                                 sflagvers=None,
+                                 she_flag_version=None,
                                  model_hash=None,
                                  model_seed=None,
                                  noise_seed=None,
@@ -311,7 +313,7 @@ def initialise_bfd_moments_table(detections_table=None,
                                                            detector_y=detector_y,
                                                            detector=detector,
                                                            fits_def=fits_def,
-                                                           sflagvers=sflagvers,
+                                                           she_flag_version=she_flag_version,
                                                            model_hash=model_hash,
                                                            model_seed=model_seed,
                                                            noise_seed=noise_seed,
@@ -321,7 +323,7 @@ def initialise_bfd_moments_table(detections_table=None,
                                                            nlost=nlost,
                                                            wt_n=wt_n,
                                                            wt_sigma=wt_sigma)
-                     
+
     assert(is_in_format(bfd_moments_table, tf))
 
     return bfd_moments_table

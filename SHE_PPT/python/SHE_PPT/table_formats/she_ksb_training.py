@@ -19,12 +19,15 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-23"
 
 from collections import OrderedDict
 
-from SHE_PPT.table_utility import is_in_format
 from astropy.table import Table
+
+from SHE_PPT.table_utility import is_in_format
+
+fits_version = "she."
 
 
 class KsbTrainingTableMeta(object):
@@ -34,7 +37,7 @@ class KsbTrainingTableMeta(object):
 
     def __init__(self):
 
-        self.__version__ = "8.0"
+        self.__version__ = fits_version
         self.table_format = "she.KsbTrainingTable"
 
         # Table metadata labels

@@ -34,7 +34,7 @@ class StarCatalogTableMeta(object):
 
     def __init__(self):
 
-        self.__version__ = "8.0"
+        self.__version__ = fits_version
         self.table_format = "she.starCatalog"
 
         # Table metadata labels
@@ -43,7 +43,7 @@ class StarCatalogTableMeta(object):
         
         self.roll_ang = 0. 
         self.exp_pid = "EXP_PID" 
-        self.obs_id = "OBS_ID" 
+        self.obs_id = mv.obs_id_label 
         self.date_obs = "DATE_OBS" 
         
         # Store the less-used comments in a dict

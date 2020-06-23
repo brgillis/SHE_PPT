@@ -19,17 +19,19 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-23"
 
 from collections import OrderedDict
+
+from astropy.table import Table
 
 from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_formats.mer_final_catalog import tf as detf
 from SHE_PPT.table_utility import is_in_format
-from astropy.table import Table
 
+fits_version = "she.commonCalibration"
 
 logger = getLogger(mv.logger_name)
 
@@ -41,18 +43,17 @@ class commonCalibrationTableMeta(object):
 
     def __init__(self):
 
-        self.__version__ = "8.0"
+        self.__version__ = fits_version
         self.table_format = "she.commonCalibration"
 
         # Table metadata labels
-        self.fits_vers = "FITS_VER"
-        #self.format = "SS_FMT"
-        self.fits_def = "FITS_DEF"
-        #self.extname = mv.extname_label
-        
+        self.fits_version = mv.fits_version_label
+        # self.format = "SS_FMT"
+        self.fits_def = mv.fits_def_label
+        # self.extname = mv.extname_label
 
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_vers, None),
+        self.comments = OrderedDict(((self.fits_version, None),
                                      (self.fits_def, None),))
 
         # A list of columns in the desired order
@@ -101,7 +102,6 @@ class commonCalibrationTableFormat(object):
 
         # Table column labels and properties
 
-        
         self.f0_min = set_column_properties(
             "SHE_CC_F0_MIN", dtype=">f4", fits_dtype="E")
         self.f0_max = set_column_properties(
@@ -232,12 +232,11 @@ def make_common_calibration_table_header(detector_x=1,
         @return header <dict>
     """
 
-
     header = OrderedDict()
 
     header[tf.m.fits_vers] = tf.__version__
     header[tf.m.fits_def] = fits_def
-    
+
     return header
 
 
@@ -305,7 +304,7 @@ def initialise_common_calibration_table(detections_table=None,
                                                            detector_y=detector_y,
                                                            detector=detector,
                                                            fits_def=fits_def)
-                     
+
     assert(is_in_format(common_calibration_table, tf))
 
     return common_calibration_table

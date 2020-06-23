@@ -34,7 +34,7 @@ class KsbTrainingTableMeta(object):
 
     def __init__(self):
 
-        self.__version__ = "8.0"
+        self.__version__ = fits_version
         self.table_format = "she.KsbTrainingTable"
 
         # Table metadata labels

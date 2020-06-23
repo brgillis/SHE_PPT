@@ -43,7 +43,7 @@ class PsfOmStateTableMeta(object):
     def __init__(self, data_type):
 
         self.data_type=data_type
-        self.__version__ = "8.0"
+        self.__version__ = fits_version
         
         self.main_data_type = ("she.psfFieldParameters" 
                                if self.data_type=="FIELD" else 

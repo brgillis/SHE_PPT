@@ -19,16 +19,20 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-23"
 
 from collections import OrderedDict
+
+from astropy.table import Table
 
 from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_formats.mer_final_catalog import tf as detf
 from SHE_PPT.table_utility import is_in_format
-from astropy.table import Table
+
+fits_version = "she.bfdTraining"
+
 
 class KsbTrainingTableMeta(object):
     """
@@ -37,20 +41,20 @@ class KsbTrainingTableMeta(object):
 
     def __init__(self):
 
-        self.__version__ = "8.0"
+        self.__version__ = fits_version
         self.table_format = "she.KsbTrainingTable"
 
         # Table metadata labels
         self.version = "SS_VER"
         self.format = "SS_FMT"
 
-        self.sflagvers="SFLAGVERS"
+        self.she_flag_version = mv.she_flag_version_label
         self.model_hash = mv.model_hash_label
         self.model_seed = mv.model_seed_label
         self.noise_seed = mv.noise_seed_label
-        self.obs_id = 0
+        self.obs_id = mv.obs_id_label
         self.date_obs = mv.obs_time_label
-        self.tile_id = 0
+        self.tile_id = mv.tile_id_label
         self.nlost = "NLOST"
         self.wt_n = "WT_N"
         self.wt_sigma = "WT_SIGMA"
@@ -60,16 +64,16 @@ class KsbTrainingTableMeta(object):
         self.bfd_tmpl_sigma_step = "T_SIGSTP"
         self.bfd_tmpl_sigma_max = "T_SIGMAX"
         self.bfd_tmpl_xy_max = "T_XYMAX"
-        self.validated = "VALID"
-        
+        self.valid = mv.valid_label
+
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
                                      (self.format, None),
-                                     (self.sflagvers,None),
+                                     (self.she_flag_version, None),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
-                                     (self.obs_id,None),
+                                     (self.obs_id, None),
                                      (self.date_obs, None),
                                      (self.tile_id, None),
                                      (self.nlost, None),
@@ -81,7 +85,7 @@ class KsbTrainingTableMeta(object):
                                      (self.bfd_tmpl_sigma_step, None),
                                      (self.bfd_tmpl_sigma_max, None),
                                      (self.bfd_tmpl_xy_max, None),
-                                     (self.validated,
+                                     (self.valid,
                                       "0: Not tested; 1: Pass; -1: Fail")))
 
         # A list of columns in the desired order
@@ -170,9 +174,8 @@ class KsbTrainingTableFormat(object):
         self.tmp_wgt = set_column_properties(
             "SHE_BFD_TRAINING_TMPL_WEIGHT" , dtype=">f4", fits_dtype="E")
         self.jsupp = set_column_properties(
-            "SHE_BFD_TRAINING_JSUPPRESS" , dtype=">f4", fits_dtype="E") 
+            "SHE_BFD_TRAINING_JSUPPRESS" , dtype=">f4", fits_dtype="E")
 
-        
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
 

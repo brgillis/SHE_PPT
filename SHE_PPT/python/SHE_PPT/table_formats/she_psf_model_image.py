@@ -41,7 +41,7 @@ class PSFTableMeta(object):
 
     def __init__(self):
 
-        self.__version__ = "8.0"
+        self.__version__ = fits_version
         self.table_format = "she.psfModelImage.shePsfC"
 
         # Table metadata labels

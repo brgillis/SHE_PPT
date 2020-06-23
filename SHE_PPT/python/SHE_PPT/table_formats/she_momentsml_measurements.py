@@ -19,17 +19,20 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-23"
 
 from collections import OrderedDict
+
+from astropy.table import Table
 
 from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_formats.mer_final_catalog import tf as detf
 from SHE_PPT.table_utility import is_in_format
-from astropy.table import Table
 
+fits_version = "8.0"
+fits_def = "she.momentsmlMeasurements"
 
 logger = getLogger(mv.logger_name)
 
@@ -41,35 +44,34 @@ class momentsmlMeasurementsTableMeta(object):
 
     def __init__(self):
 
-        self.__version__ = "8.0"
-        self.table_format = "she.momentsmlMeasurements"
+        self.__version__ = fits_version
 
         # Table metadata labels
-        self.fits_vers = "FITS_VER"
-        #self.format = "SS_FMT"
-        self.fits_def = "FITS_DEF"
-        #self.extname = mv.extname_label
-        self.sflagvers="SFLAGVERS"
+        self.fits_version = mv.fits_version_label
+        # self.format = "SS_FMT"
+        self.fits_def = mv.fits_def_label
+        # self.extname = mv.extname_label
+        self.she_flag_version = mv.she_flag_version_label
         self.model_hash = mv.model_hash_label
         self.model_seed = mv.model_seed_label
         self.noise_seed = mv.noise_seed_label
-        self.obs_id = 0
+        self.obs_id = mv.obs_id_label
         self.date_obs = mv.obs_time_label
-        self.tile_id = 0
-        
-        self.validated = "VALID"
+        self.tile_id = mv.tile_id_label
+
+        self.valid = mv.valid_label
 
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_vers, None),
+        self.comments = OrderedDict(((self.fits_version, None),
                                      (self.fits_def, None),
-                                     (self.sflagvers,None),
+                                     (self.she_flag_version, None),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
-                                     (self.obs_id,None),
+                                     (self.obs_id, None),
                                      (self.date_obs, None),
                                      (self.tile_id, None),
-                                     (self.validated,
+                                     (self.valid,
                                       "0: Not tested; 1: Pass; -1: Fail")
                                      ))
 
@@ -128,7 +130,7 @@ class momentsmlMeasurementsTableFormat(object):
             "SHE_MOMENTSML_VAL_FLAGS", dtype=">i8", fits_dtype="K")
         self.fit_class = set_column_properties(
             "SHE_MOMENTSML_FIT_CLASS", dtype=">i2", fits_dtype="I")
-        
+
         self.momentsml_g1 = set_column_properties(
             "SHE_MOMENTSML_G1", dtype=">f4", fits_dtype="E")
         self.momentsml_g1_w = set_column_properties(
@@ -149,7 +151,7 @@ class momentsmlMeasurementsTableFormat(object):
             "SHE_MOMENTSML_G2_UNCAL_W", dtype=">f4", fits_dtype="E")
         self.momentsml_wgt_unc = set_column_properties(
             "SHE_MOMENTSML_WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
-    
+
         self.updated_ra = set_column_properties(
             "SHE_MOMENTSML_UPDATED_RA", is_optional=False, comment="deg")
         self.updated_ra_err = set_column_properties(
@@ -172,7 +174,6 @@ class momentsmlMeasurementsTableFormat(object):
             "SHE_MOMENTSML_SERSIC_INDEX", is_optional=True, dtype=">f4", fits_dtype="E")
         self.momentsml_nexp = set_column_properties(
             "SHE_MOMENTSML_NEXP", is_optional=True, dtype=">f4", fits_dtype="E")
-        
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -196,7 +197,7 @@ def make_momentsml_measurements_table_header(detector_x=1,
                                   detector=None,
                                   fits_ver=None,
                                   fits_def=None,
-                                  sflagvers=None,
+                                  she_flag_version=None,
                                   model_hash=None,
                                   model_seed=None,
                                   noise_seed=None,
@@ -227,17 +228,17 @@ def make_momentsml_measurements_table_header(detector_x=1,
 
     header[tf.m.fits_vers] = tf.__version__
     header[tf.m.fits_def] = fits_def
-    header[tf.m.sflagvers] = sflagvers
-    
+    header[tf.m.she_flag_version] = she_flag_version
+
     header[tf.m.model_hash] = model_hash
     header[tf.m.model_seed] = model_seed
     header[tf.m.noise_seed] = noise_seed
-    
+
     header[tf.m.obs_id] = obs_id
     header[tf.m.date_obs] = date_obs
     header[tf.m.tile_id] = tile_id
-    
-    header[tf.m.validated] = 0
+
+    header[tf.m.fits_def] = fits_def
 
     return header
 
@@ -248,7 +249,7 @@ def initialise_momentsml_measurements_table(detections_table=None,
                                  detector_y=None,
                                  detector=None,
                                  fits_def=None,
-                                 sflagvers=None,
+                                 she_flag_version=None,
                                  model_hash=None,
                                  model_seed=None,
                                  noise_seed=None,
@@ -319,14 +320,14 @@ def initialise_momentsml_measurements_table(detections_table=None,
                                                            detector_y=detector_y,
                                                            detector=detector,
                                                            fits_def=fits_def,
-                                                           sflagvers=sflagvers,
+                                                           she_flag_version=she_flag_version,
                                                            model_hash=model_hash,
                                                            model_seed=model_seed,
                                                            noise_seed=noise_seed,
                                                            obs_id=obs_id,
                                                            date_obs=date_obs,
                                                            tile_id=tile_id)
-                     
+
     assert(is_in_format(momentsml_measurements_table, tf))
 
     return momentsml_measurements_table

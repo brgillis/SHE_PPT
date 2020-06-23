@@ -19,11 +19,14 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-23"
 
 logger_name = "SHE_PPT"
 
 # Header values for fits images
+fits_version_label = "FITS_VER"
+fits_def_label = "FITS_DEF"
+she_flag_version_label = "SFLAGVER"
 gain_label = "CCDGAIN"
 scale_label = "GS_SCALE"
 stamp_size_label = "SSIZE"
@@ -34,8 +37,10 @@ extname_label = "EXTNAME"
 ccdid_label = "CCDID"
 dither_dx_label = "DITHERDX"
 dither_dy_label = "DITHERDY"
-obs_time_label = "DATE-OBS"
-field_id_label = "FIELDID"
+obs_id_label = "OBS_ID"
+obs_time_label = "DATE_OBS"
+tile_id_label = "TILE_ID"
+valid_label = "VALID"
 psf_state_identity_label = "OPTID"
 
 # Special values for tables

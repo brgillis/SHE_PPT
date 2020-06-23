@@ -32,6 +32,9 @@ from SHE_PPT.table_formats.she_bfd_bias_statistics import tf as bfdtf
 from SHE_PPT.table_utility import is_in_format
 import numpy as np
 
+fits_version = "8.0"
+fits_def = "she.biasStatistics"
+
 logger = getLogger(mv.logger_name)
 
 
@@ -42,8 +45,8 @@ class BiasStatisticsTableMeta(object):
 
     def __init__(self):
 
-        self.__version__ = "0.1"
-        self.table_format = "she.biasStatistics"
+        self.__version__ = fits_version
+        self.table_format = fits_def
 
         # Table metadata labels
         self.version = "SS_VER"

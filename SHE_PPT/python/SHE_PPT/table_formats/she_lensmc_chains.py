@@ -31,10 +31,13 @@ from SHE_PPT.logging import getLogger
 from SHE_PPT.table_formats.mer_final_catalog import tf as detf
 from SHE_PPT.table_utility import is_in_format
 
-logger = getLogger(mv.logger_name)
+fits_version = "8.0"
+fits_version = "she."
 
 num_chains = 1
 len_chain = 200
+
+logger = getLogger(mv.logger_name)
 
 
 class lensMcChainsTableMeta(object):
@@ -44,7 +47,7 @@ class lensMcChainsTableMeta(object):
 
     def __init__(self):
 
-        self.__version__ = "8.0"
+        self.__version__ = fits_version
         self.table_format = "she.lensMcChains"
 
         # Table metadata labels
@@ -52,27 +55,27 @@ class lensMcChainsTableMeta(object):
         self.format = "SS_FMT"
 
         # Table metadata labels
-        self.fits_vers = "FITS_VER"
-        self.fits_def = "FITS_DEF"
+        self.fits_version = mv.fits_version_label
+        self.fits_def = mv.fits_def_label
         self.extname = mv.extname_label
-        self.sflagvers = "SFLAGVERS"
+        self.she_flag_version = "SFLAGVERS"
         self.model_hash = mv.model_hash_label
         self.model_seed = mv.model_seed_label
         self.noise_seed = mv.noise_seed_label
-        self.obs_id = 0
+        self.obs_id = mv.obs_id_label
         self.date_obs = mv.obs_time_label
-        self.tile_id = 0
+        self.tile_id = mv.tile_id_label
         self.num_chains = "NCHAIN"
         self.len_chain = "LCHAIN"
 
-        self.validated = "VALID"
+        self.valid = mv.valid_label
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.version, None),
                                      (self.format, None),
-                                     (self.fits_vers, None),
+                                     (self.fits_version, None),
                                      (self.fits_def, None),
-                                     (self.sflagvers, None),
+                                     (self.she_flag_version, None),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
@@ -81,7 +84,7 @@ class lensMcChainsTableMeta(object):
                                      (self.tile_id, None),
                                      (self.num_chains, None),
                                      (self.len_chain, None),
-                                     (self.validated,
+                                     (self.valid,
                                       "0: Not tested; 1: Pass; -1: Fail")
                                      ))
 
@@ -189,7 +192,7 @@ tf = lensmc_chains_table_format
 def make_lensmc_chains_table_header(
                                   fits_ver=None,
                                   fits_def=None,
-                                  sflagvers=None,
+                                  she_flag_version=None,
                                   model_hash=None,
                                   model_seed=None,
                                   noise_seed=None,
@@ -219,7 +222,7 @@ def make_lensmc_chains_table_header(
 
     header[tf.m.fits_vers] = tf.__version__
     header[tf.m.fits_def] = fits_def
-    header[tf.m.sflagvers] = sflagvers
+    header[tf.m.she_flag_version] = she_flag_version
 
     header[tf.m.model_hash] = model_hash
     header[tf.m.model_seed] = model_seed
@@ -232,7 +235,7 @@ def make_lensmc_chains_table_header(
     header[tf.m.num_chains] = num_chains
     header[tf.m.len_chain] = len_chain
 
-    header[tf.m.validated] = 0
+    header[tf.m.fits_def] = fits_def
 
     return header
 
@@ -240,7 +243,7 @@ def make_lensmc_chains_table_header(
 def initialise_lensmc_chains_table(detections_table=None,
                                  optional_columns=None,
                                  fits_def=None,
-                                 sflagvers=None,
+                                 she_flag_version=None,
                                  model_hash=None,
                                  model_seed=None,
                                  noise_seed=None,
@@ -298,7 +301,7 @@ def initialise_lensmc_chains_table(detections_table=None,
 
     lensmc_chains_table.meta = make_lensmc_chains_table_header(
                                                            fits_def=fits_def,
-                                                           sflagvers=sflagvers,
+                                                           she_flag_version=she_flag_version,
                                                            model_hash=model_hash,
                                                            model_seed=model_seed,
                                                            noise_seed=noise_seed,
