@@ -145,12 +145,26 @@ class TestTableFormats:
 
             # Try strict test
             for j in range((len(self.formats))):
-                assert is_in_format(empty_tables[i], self.formats[j], strict=True) == (i == j)
+                if i == j and not is_in_format(empty_tables[i], self.formats[j], strict=True):
+                    raise Exception("Table format " + self.formats[j].m.table_format +
+                                    " doesn't initialize a valid table" +
+                                    " in strict test.")
+                elif i != j and  is_in_format(empty_tables[i], self.formats[j], strict=True):
+                    raise Exception("Table format " + self.formats[j].m.table_format +
+                                    " resolves true for tables of format " + self.formats[i].m.table_format +
+                                    " in strict test.")
 
             # Try non-strict version now
             empty_tables[i].add_column(Column(name='new_column', data=np.zeros((0,))))
             for j in range((len(self.formats))):
-                assert is_in_format(empty_tables[i], self.formats[j], strict=False) == (i == j)
+                if i == j and not is_in_format(empty_tables[i], self.formats[j], strict=True):
+                    raise Exception("Table format " + self.formats[j].m.table_format +
+                                    " doesn't initialize a valid table" +
+                                    " in non-strict test.")
+                elif i != j and  is_in_format(empty_tables[i], self.formats[j], strict=True):
+                    raise Exception("Table format " + self.formats[j].m.table_format +
+                                    " resolves true for tables of format " + self.formats[i].m.table_format +
+                                    " in non-strict test.")
 
         return
 

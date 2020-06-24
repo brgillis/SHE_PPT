@@ -217,6 +217,6 @@ def initialise_psf_pd_state_table(data_type="FIELD",
 
     psf_pd_state_table.meta = make_psf_pd_state_table_header(data_type)
 
-    assert(is_in_format(psf_pd_state_table, tf, verbose=True))
+    assert(is_in_format(psf_pd_state_table, tf))
 
     return psf_pd_state_table

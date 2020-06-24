@@ -224,6 +224,6 @@ def initialise_psf_dm_state_table(data_type="FIELD", optional_columns=None,
 
     psf_dm_state_table.meta = make_psf_dm_state_table_header(data_type)
 
-    assert(is_in_format(psf_dm_state_table, tf, verbose=True))
+    assert(is_in_format(psf_dm_state_table, tf))
 
     return psf_dm_state_table
