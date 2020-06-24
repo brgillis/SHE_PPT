@@ -31,7 +31,7 @@ from SHE_PPT.file_io import read_pickled_product, find_file
 from SHE_PPT.logging import getLogger
 from SHE_PPT.she_frame_stack import SHEFrameStack
 from SHE_PPT.signal_to_noise import get_SN_of_image
-from SHE_PPT.table_formats.mer_final_catalog import tf as detf
+from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
 import numpy as np
 
 ex_signal_to_noises = [59, 32]
@@ -43,7 +43,7 @@ segmentation_images_filename = "data/segmentation_images.json"
 stacked_image_filename = "data/stacked_image.xml"
 stacked_segmentation_image_filename = "data/stacked_segm_image.xml"
 psf_images_and_tables_filename = "data/psf_images_and_tables.json"
-detections_tables_filename = "data/detections_tables.json"
+mer_final_catalogs_filename = "data/mer_final_catalogs.json"
 
 
 class TestCase:
@@ -84,7 +84,7 @@ class TestCase:
                                              stacked_image_product_filename=stacked_image_filename,
                                              stacked_seg_product_filename=stacked_segmentation_image_filename,
                                              psf_listfile_filename=psf_images_and_tables_filename,
-                                             detections_listfile_filename=detections_tables_filename,
+                                             detections_listfile_filename=mer_final_catalogs_filename,
                                              workdir=self.workdir,
                                              clean_detections=True,
                                              memmap=True,
@@ -98,7 +98,7 @@ class TestCase:
 
         # Get the S/N for each galaxy
         for i, row in enumerate(self.data_stack.mer_final_catalog_catalogue):
-            gal_stack = self.data_stack.extract_galaxy_stack(row[detf.ID], width=128)
+            gal_stack = self.data_stack.extract_galaxy_stack(row[mfc_tf.ID], width=128)
 
             signal_to_noise_estimates = []
             for exposure in gal_stack.exposures:

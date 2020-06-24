@@ -262,7 +262,7 @@ def make_galaxy_population_table_header(cnd_field=None,
     return header
 
 
-def initialise_galaxy_population_table(optional_columns=None,
+def initialise_galaxy_population_priors_table(optional_columns=None,
                                        cnd_field=None,
                                        telescope=None,
                                        detector=None,

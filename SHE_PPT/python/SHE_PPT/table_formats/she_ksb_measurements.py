@@ -29,7 +29,7 @@ from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
 from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
-from SHE_PPT.table_formats.mer_final_catalog import tf as detf
+from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
 from SHE_PPT.table_utility import is_in_format
 
 fits_version = "8.0"
@@ -237,7 +237,7 @@ def make_ksb_measurements_table_header(model_hash=None,
     return header
 
 
-def initialise_ksb_measurements_table(detections_table=None,
+def initialise_ksb_measurements_table(mer_final_catalog=None,
                                  optional_columns=None,
                                  model_hash=None,
                                  model_seed=None,
@@ -250,7 +250,7 @@ def initialise_ksb_measurements_table(detections_table=None,
         @brief Initialise a shear estimates table based on a detections table, with the
                desired set of optional columns
 
-        @param detections_table <astropy.table.Table>
+        @param mer_final_catalog <astropy.table.Table>
 
         @param optional_columns <list<str>> List of names for optional columns to include.
                Default is gal_e1_err and gal_e2_err
@@ -264,8 +264,8 @@ def initialise_ksb_measurements_table(detections_table=None,
         @return ksb_measurements_table <astropy.table.Table>
     """
 
-    assert (detections_table is None) or (
-        is_in_format(detections_table, detf, strict=False))
+    assert (mer_final_catalog is None) or (
+        is_in_format(mer_final_catalog, mfc_tf, strict=False))
 
     if optional_columns is None:
         optional_columns = []
@@ -286,13 +286,13 @@ def initialise_ksb_measurements_table(detections_table=None,
 
     ksb_measurements_table = Table(init_cols, names=names, dtype=dtypes)
 
-    if detections_table is not None:
+    if mer_final_catalog is not None:
         if model_hash is None:
-            model_hash = detections_table.meta[detf.m.model_hash]
+            model_hash = mer_final_catalog.meta[mfc_tf.m.model_hash]
         if model_seed is None:
-            model_seed = detections_table.meta[detf.m.model_seed]
+            model_seed = mer_final_catalog.meta[mfc_tf.m.model_seed]
         if noise_seed is None:
-            noise_seed = detections_table.meta[detf.m.noise_seed]
+            noise_seed = mer_final_catalog.meta[mfc_tf.m.noise_seed]
 
     ksb_measurements_table.meta = make_ksb_measurements_table_header(model_hash=model_hash,
                                                            model_seed=model_seed,

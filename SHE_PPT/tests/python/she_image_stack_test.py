@@ -31,7 +31,7 @@ import py.test
 
 from SHE_PPT.she_image import SHEImage
 from SHE_PPT.she_image_stack import SHEImageStack
-from SHE_PPT.table_formats.mer_final_catalog import initialise_detections_table
+from SHE_PPT.table_formats.mer_final_catalog import initialise_mer_final_catalog
 from SHE_PPT.table_formats.she_psf_model_image import initialise_psf_table
 import SHE_PPT.table_utility
 import numpy as np

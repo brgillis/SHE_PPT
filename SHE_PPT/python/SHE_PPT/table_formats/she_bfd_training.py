@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-23"
+__updated__ = "2020-06-24"
 
 from collections import OrderedDict
 
@@ -27,10 +27,11 @@ from astropy.table import Table
 
 from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
-from SHE_PPT.logging import getLogger
-from SHE_PPT.table_formats.mer_final_catalog import tf as detf
-from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.flags import she_flag_version
+from SHE_PPT.logging import getLogger
+from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
+from SHE_PPT.table_utility import is_in_format
+import numpy as np
 
 fits_version = "8.0"
 fits_def = "she.bfdTraining"
@@ -195,7 +196,12 @@ bfd_training_table_format = KsbTrainingTableFormat()
 tf = bfd_training_table_format
 
 
-def make_bfd_training_table_header():
+def make_bfd_training_table_header(model_hash=None,
+                                   model_seed=None,
+                                   noise_seed=None,
+                                   observation_id=None,
+                                   observation_time=None,
+                                   tile_id=None):
     """
         @brief Generate a header for a galaxy population table.
 
@@ -206,11 +212,36 @@ def make_bfd_training_table_header():
 
     header[tf.m.fits_version] = tf.__version__
     header[tf.m.fits_def] = fits_def
+    header[tf.m.she_flag_version] = she_flag_version
+
+    header[tf.m.model_hash] = model_hash
+    header[tf.m.model_seed] = model_seed
+    header[tf.m.noise_seed] = noise_seed
+    header[tf.m.observation_id] = observation_id
+    header[tf.m.observation_time] = observation_time
+    header[tf.m.tile_id] = tile_id
+
+    header[tf.m.nlost] = 0
+    header[tf.m.wt_n] = 0
+    header[tf.m.wt_sigma] = np.NaN
+    header[tf.m.bfd_tmpl_snmin] = np.NaN
+    header[tf.m.bfd_tmpl_sigma_xy] = np.NaN
+    header[tf.m.bfd_tmpl_sigma_flux] = np.NaN
+    header[tf.m.bfd_tmpl_sigma_step] = np.NaN
+    header[tf.m.bfd_tmpl_sigma_max] = np.NaN
+    header[tf.m.bfd_tmpl_xy_max] = np.NaN
+    header[tf.m.valid] = "UNKNOWN"
 
     return header
 
 
-def initialise_bfd_training_table(optional_columns=None):
+def initialise_bfd_training_table(optional_columns=None,
+                                  model_hash=None,
+                                  model_seed=None,
+                                  noise_seed=None,
+                                  observation_id=None,
+                                  observation_time=None,
+                                  tile_id=None):
     """
         @brief Initialise a galaxy population table.
 
@@ -236,8 +267,13 @@ def initialise_bfd_training_table(optional_columns=None):
 
     bfd_training_table = Table(init_cols, names=names, dtype=dtypes)
 
-    bfd_training_table.meta = make_bfd_training_table_header()
+    bfd_training_table.meta = make_bfd_training_table_header(model_hash=model_hash,
+                                                             model_seed=model_seed,
+                                                             noise_seed=noise_seed,
+                                                             observation_id=observation_id,
+                                                             observation_time=observation_time,
+                                                             tile_id=tile_id)
 
-    assert(is_in_format(bfd_training_table, tf))
+    assert(is_in_format(bfd_training_table, tf, verbose=True))
 
     return bfd_training_table

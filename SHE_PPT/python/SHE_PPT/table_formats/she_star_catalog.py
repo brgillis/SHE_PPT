@@ -162,7 +162,7 @@ star_catalog_table_format = StarCatalogTableFormat()
 tf = star_catalog_table_format
 
 
-def make_star_catalog_table_header(roll_ang, exposure_product_id, observation_id, observation_time):
+def make_star_catalog_header(roll_ang, exposure_product_id, observation_id, observation_time):
     """
         @brief Generate a header for a galaxy population table.
 
@@ -180,7 +180,7 @@ def make_star_catalog_table_header(roll_ang, exposure_product_id, observation_id
     return header
 
 
-def initialise_star_catalog_table(roll_ang, exposure_product_id, observation_id, observation_time,
+def initialise_star_catalog(roll_ang, exposure_product_id, observation_id, observation_time,
                                   optional_columns=None):
     """
         @brief Initialise a galaxy population table.

@@ -19,16 +19,16 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-23"
+__updated__ = "2020-06-24"
 
 from collections import OrderedDict
 
 from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
+from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format
-from SHE_PPT.flags import she_flag_version
 from SHE_PPT.utility import hash_any
 
 fits_version = "0.3"
@@ -70,7 +70,7 @@ class DetectionsTableMeta(object):
 
 class DetectionsTableFormat(object):
     """
-        @brief A class defining the format for detections tables. Only the detections_table_format
+        @brief A class defining the format for detections tables. Only the mer_final_catalog_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
@@ -281,13 +281,13 @@ class DetectionsTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-detections_table_format = DetectionsTableFormat()
+mer_final_catalog_format = DetectionsTableFormat()
 
 # And a convient alias for it
-tf = detections_table_format
+tf = mer_final_catalog_format
 
 
-def make_detections_table_header(model_hash=None,
+def make_mer_final_catalog_header(model_hash=None,
                                  model_seed=None,
                                  noise_seed=None):
     """
@@ -314,7 +314,7 @@ def make_detections_table_header(model_hash=None,
     return header
 
 
-def initialise_detections_table(image_group_phl=None,
+def initialise_mer_final_catalog(image_group_phl=None,
                                 options=None,
                                 optional_columns=None,
                                 model_hash=None,
@@ -331,7 +331,7 @@ def initialise_detections_table(image_group_phl=None,
         @param optional_columns <list<str>> List of names for optional columns to include.
                Default is none
 
-        @return detections_table <astropy.Table>
+        @return mer_final_catalog <astropy.Table>
     """
 
     if optional_columns is None:
@@ -353,7 +353,7 @@ def initialise_detections_table(image_group_phl=None,
                 init_cols[colname] = []
             dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
 
-    detections_table = Table(init_cols, names=names,
+    mer_final_catalog = Table(init_cols, names=names,
                              dtype=dtypes)
 
     if image_group_phl is not None:
@@ -372,10 +372,10 @@ def initialise_detections_table(image_group_phl=None,
         if noise_seed is None:
             noise_seed = options['noise_seed']
 
-    detections_table.meta = make_detections_table_header(model_hash=model_hash,
+    mer_final_catalog.meta = make_mer_final_catalog_header(model_hash=model_hash,
                                                          model_seed=model_seed,
                                                          noise_seed=noise_seed)
 
-    assert(is_in_format(detections_table, tf))
+    assert(is_in_format(mer_final_catalog, tf))
 
-    return detections_table
+    return mer_final_catalog

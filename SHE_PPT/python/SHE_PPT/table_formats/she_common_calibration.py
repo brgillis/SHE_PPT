@@ -29,7 +29,7 @@ from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
 from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
-from SHE_PPT.table_formats.mer_final_catalog import tf as detf
+from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
 from SHE_PPT.table_utility import is_in_format
 
 fits_version = "8.0"
@@ -235,14 +235,14 @@ def make_common_calibration_table_header():
     return header
 
 
-def initialise_common_calibration_table(detections_table=None,
+def initialise_common_calibration_table(mer_final_catalog=None,
                                  optional_columns=None,
                                  ):
     """
         @brief Initialise a shear estimates table based on a detections table, with the
                desired set of optional columns
 
-        @param detections_table <astropy.table.Table>
+        @param mer_final_catalog <astropy.table.Table>
 
         @param optional_columns <list<str>> List of names for optional columns to include.
                Default is gal_e1_err and gal_e2_err
@@ -256,8 +256,8 @@ def initialise_common_calibration_table(detections_table=None,
         @return common_calibration_table <astropy.table.Table>
     """
 
-    assert (detections_table is None) or (
-        is_in_format(detections_table, detf, strict=False))
+    assert (mer_final_catalog is None) or (
+        is_in_format(mer_final_catalog, mfc_tf, strict=False))
 
     if optional_columns is None:
         optional_columns = []

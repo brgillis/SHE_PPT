@@ -40,7 +40,7 @@ from SHE_PPT import products
 import SHE_PPT.detector
 from SHE_PPT.file_io import read_xml_product
 from SHE_PPT.she_image import SHEImage
-from SHE_PPT.table_formats.mer_final_catalog import tf as detf
+from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
 from SHE_PPT.table_formats.she_psf_model_image import tf as pstf
 from SHE_PPT.table_utility import is_in_format
 import SHE_PPT.telescope_coords as tc
@@ -410,8 +410,8 @@ class SHEFrame(object):
         if prune_images:
             if detections_catalogue is None:
                 raise TypeError("If prune_images==True, detections_catalogue must be supplied.")
-            ra_list = detections_catalogue[detf.gal_x_world].data
-            dec_list = detections_catalogue[detf.gal_y_world].data
+            ra_list = detections_catalogue[mfc_tf.gal_x_world].data
+            dec_list = detections_catalogue[mfc_tf.gal_y_world].data
 
             def check_for_objects(header, buffer=4):
 

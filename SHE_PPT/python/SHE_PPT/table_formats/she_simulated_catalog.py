@@ -214,7 +214,7 @@ def make_details_table_header(subtracted_sky_level=None,
     return header
 
 
-def initialise_details_table(image_group_phl=None,
+def initialise_simulated_catalog(image_group_phl=None,
                              options=None,
                              optional_columns=None,
                              subtracted_sky_level=None,

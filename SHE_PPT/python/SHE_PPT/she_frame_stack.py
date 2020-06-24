@@ -35,7 +35,7 @@ from SHE_PPT.file_io import read_listfile, read_xml_product, find_file
 from SHE_PPT.she_frame import SHEFrame
 from SHE_PPT.she_image import SHEImage
 from SHE_PPT.she_image_stack import SHEImageStack
-from SHE_PPT.table_formats.mer_final_catalog import tf as detf
+from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
 from SHE_PPT.utility import find_extension, load_wcs
 from astropy import table
 from astropy.io import fits
@@ -90,7 +90,7 @@ class SHEFrameStack(object):
 
         # Set the detections catalogue to index by ID
         if self.mer_final_catalog_catalogue is not None:
-            self.mer_final_catalog_catalogue.add_index(detf.ID)
+            self.mer_final_catalog_catalogue.add_index(mfc_tf.ID)
 
         return
 
@@ -188,11 +188,11 @@ class SHEFrameStack(object):
         except ValueError as e:
             if not "Cannot create TableLoc object with no indices" in str(e):
                 raise
-            self.mer_final_catalog_catalogue.add_index(detf.ID)
+            self.mer_final_catalog_catalogue.add_index(mfc_tf.ID)
             row = self.mer_final_catalog_catalogue.loc[gal_id]
 
-        x_world = row[detf.gal_x_world]
-        y_world = row[detf.gal_y_world]
+        x_world = row[mfc_tf.gal_x_world]
+        y_world = row[mfc_tf.gal_y_world]
 
         return self.extract_stamp_stack(x_world, y_world, width, *args, **kwargs)
 
@@ -534,7 +534,7 @@ class SHEFrameStack(object):
                     # loop over detections_catalog and make list of indices not in our object_id list
                     for cat in detections_catalogues:
                         for row in cat:
-                            if row[detf.ID] in object_id_list:
+                            if row[mfc_tf.ID] in object_id_list:
                                 rows_to_use.append(row)
 
                     detections_catalogue = table.Table(names=detections_catalogues[0].colnames,
@@ -560,7 +560,7 @@ class SHEFrameStack(object):
         # after MER resolves this issue?
         if detections_catalogue is not None:
             pruned_detections_catalogue = table.unique(
-                detections_catalogue, keys=detf.ID)
+                detections_catalogue, keys=mfc_tf.ID)
         else:
             pruned_detections_catalogue = None
 

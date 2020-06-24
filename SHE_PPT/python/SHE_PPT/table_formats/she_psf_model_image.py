@@ -197,7 +197,7 @@ def initialise_psf_table(image=None,
         @param optional_columns <list<str>> List of names for optional columns to include.
                Default is psf_x and psf_y
 
-        @return detections_table <astropy.Table>
+        @return mer_final_catalog <astropy.Table>
     """
 
     if optional_columns is None:
