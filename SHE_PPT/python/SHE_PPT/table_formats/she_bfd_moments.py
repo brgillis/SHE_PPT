@@ -55,8 +55,8 @@ class BFDMomentsTableMeta(object):
         self.model_hash = mv.model_hash_label
         self.model_seed = mv.model_seed_label
         self.noise_seed = mv.noise_seed_label
-        self.obs_id = mv.obs_id_label
-        self.date_obs = mv.obs_time_label
+        self.observation_id = mv.obs_id_label
+        self.observation_time = mv.obs_time_label
         self.tile_id = mv.tile_id_label
         self.nlost = "NLOST"
         self.wt_n = "WT_N"
@@ -72,8 +72,8 @@ class BFDMomentsTableMeta(object):
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
-                                     (self.obs_id, None),
-                                     (self.date_obs, None),
+                                     (self.observation_id, None),
+                                     (self.observation_time, None),
                                      (self.tile_id, None),
                                      (self.nlost, None),
                                      (self.wt_n, None),
@@ -176,8 +176,8 @@ tf = bfd_moments_table_format
 def make_bfd_moments_table_header(model_hash=None,
                                   model_seed=None,
                                   noise_seed=None,
-                                  obs_id=None,
-                                  date_obs=None,
+                                  observation_id=None,
+                                  observation_time=None,
                                   tile_id=None,
                                   nlost=None,
                                   wt_n=None,
@@ -208,8 +208,8 @@ def make_bfd_moments_table_header(model_hash=None,
     header[tf.m.model_seed] = model_seed
     header[tf.m.noise_seed] = noise_seed
 
-    header[tf.m.obs_id] = obs_id
-    header[tf.m.date_obs] = date_obs
+    header[tf.m.observation_id] = observation_id
+    header[tf.m.observation_time] = observation_time
     header[tf.m.tile_id] = tile_id
 
     header[tf.m.nlost] = nlost
@@ -226,8 +226,8 @@ def initialise_bfd_moments_table(detections_table=None,
                                  model_hash=None,
                                  model_seed=None,
                                  noise_seed=None,
-                                 obs_id=None,
-                                 date_obs=None,
+                                 observation_id=None,
+                                 observation_time=None,
                                  tile_id=None,
                                  nlost=None,
                                  wt_n=None,
@@ -284,8 +284,8 @@ def initialise_bfd_moments_table(detections_table=None,
     bfd_moments_table.meta = make_bfd_moments_table_header(model_hash=model_hash,
                                                            model_seed=model_seed,
                                                            noise_seed=noise_seed,
-                                                           obs_id=obs_id,
-                                                           date_obs=date_obs,
+                                                           observation_id=observation_id,
+                                                           observation_time=observation_time,
                                                            tile_id=tile_id,
                                                            nlost=nlost,
                                                            wt_n=wt_n,

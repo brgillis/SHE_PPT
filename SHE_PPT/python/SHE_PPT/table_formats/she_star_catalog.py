@@ -19,15 +19,15 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-23"
+__updated__ = "2020-06-24"
 
 from collections import OrderedDict
 
 from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
-from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.flags import she_flag_version
+from SHE_PPT.table_utility import is_in_format
 
 fits_version = "8.0"
 fits_def = "she.starCatalog"
@@ -47,18 +47,18 @@ class StarCatalogTableMeta(object):
         self.fits_version = mv.fits_version_label
         self.fits_def = mv.fits_def_label
 
-        self.roll_ang = 0.
-        self.exp_pid = "EXP_PID"
-        self.obs_id = mv.obs_id_label
-        self.date_obs = "DATE_OBS"
+        self.roll_ang = "ROLLANGL"
+        self.exposure_product_id = "EXP_PID"
+        self.observation_id = mv.obs_id_label
+        self.observation_time = mv.obs_time_label
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_version, None),
                                      (self.fits_def, None),
                                      (self.roll_ang, None),
-                                     (self.exp_pid, None),
-                                     (self.obs_id, None),
-                                     (self.date_obs, None),
+                                     (self.exposure_product_id, None),
+                                     (self.observation_id, None),
+                                     (self.observation_time, None),
                                      ))
 
         # A list of columns in the desired order
@@ -162,7 +162,7 @@ star_catalog_table_format = StarCatalogTableFormat()
 tf = star_catalog_table_format
 
 
-def make_star_catalog_table_header(roll_ang, exp_pid, obs_id, date_obs):
+def make_star_catalog_table_header(roll_ang, exposure_product_id, observation_id, observation_time):
     """
         @brief Generate a header for a galaxy population table.
 
@@ -174,13 +174,13 @@ def make_star_catalog_table_header(roll_ang, exp_pid, obs_id, date_obs):
     header[tf.m.fits_version] = tf.__version__
     header[tf.m.fits_def] = fits_def
     header[tf.m.roll_ang] = roll_ang
-    header[tf.m.exp_pid] = exp_pid
-    header[tf.m.obs_id] = obs_id
-    header[tf.m.date_obs] = date_obs
+    header[tf.m.exposure_product_id] = exposure_product_id
+    header[tf.m.observation_id] = observation_id
+    header[tf.m.observation_time] = observation_time
     return header
 
 
-def initialise_star_catalog_table(roll_ang, exp_pid, obs_id, date_obs,
+def initialise_star_catalog_table(roll_ang, exposure_product_id, observation_id, observation_time,
                                   optional_columns=None):
     """
         @brief Initialise a galaxy population table.
@@ -208,7 +208,7 @@ def initialise_star_catalog_table(roll_ang, exp_pid, obs_id, date_obs,
     star_catalog_table = Table(init_cols, names=names, dtype=dtypes)
 
     star_catalog_table.meta = make_star_catalog_table_header(
-        roll_ang, exp_pid, obs_id, date_obs)
+        roll_ang, exposure_product_id, observation_id, observation_time)
 
     assert(is_in_format(star_catalog_table, tf))
 

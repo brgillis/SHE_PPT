@@ -19,16 +19,16 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-23"
+__updated__ = "2020-06-24"
 
 from collections import OrderedDict
 
 from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
+from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format
-from SHE_PPT.flags import she_flag_version
 
 fits_version = "8.0"
 fits_def = "she.galaxyPopulationPriors"
@@ -49,21 +49,21 @@ class GalaxyPopulationPriorsTableMeta(object):
         self.fits_def = mv.fits_def_label
 
         self.cnd_field = "CNDFIELD"
-        self.tscope = "TSCOPE"
-        self.detect = "DETECTOR"
+        self.telescope = "TSCOPE"
+        self.detector = "DETECTOR"
         self.date_hst = "DATE_HST"
-        self.data_ver = "DATA_VER"
-        self.date_cnd = "DATE_CND"
+        self.data_version = "DATA_VER"
+        self.date_candels = "DATE_CND"
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_version, None),
                                      (self.fits_def, None),
                                      (self.cnd_field, None),
-                                     (self.tscope, None),
-                                     (self.detect, None),
+                                     (self.telescope, None),
+                                     (self.detector, None),
                                      (self.date_hst, None),
-                                     (self.data_ver, None),
-                                     (self.date_cnd, None),
+                                     (self.data_version, None),
+                                     (self.date_candels, None),
                                      ))
 
         # A list of columns in the desired order
@@ -238,11 +238,11 @@ tf = galaxy_population_table_format
 
 
 def make_galaxy_population_table_header(cnd_field=None,
-                                        tscope=None,
-                                        detect=None,
+                                        telescope=None,
+                                        detector=None,
                                         date_hst=None,
-                                        data_ver=None,
-                                        date_cnd=None):
+                                        data_version=None,
+                                        date_candels=None):
     """
         @brief Generate a header for a galaxy population table.
 
@@ -254,21 +254,21 @@ def make_galaxy_population_table_header(cnd_field=None,
     header[tf.m.fits_version] = tf.__version__
     header[tf.m.fits_def] = fits_def
     header[tf.m.cnd_field] = cnd_field
-    header[tf.m.tscope] = tscope
-    header[tf.m.detect] = detect
+    header[tf.m.telescope] = telescope
+    header[tf.m.detector] = detector
     header[tf.m.date_hst] = date_hst
-    header[tf.m.data_ver] = data_ver
-    header[tf.m.date_cnd] = date_cnd
+    header[tf.m.data_version] = data_version
+    header[tf.m.date_candels] = date_candels
     return header
 
 
 def initialise_galaxy_population_table(optional_columns=None,
                                        cnd_field=None,
-                                       tscope=None,
-                                       detect=None,
+                                       telescope=None,
+                                       detector=None,
                                        date_hst=None,
-                                       data_ver=None,
-                                       date_cnd=None):
+                                       data_version=None,
+                                       date_candels=None):
     """
         @brief Initialise a galaxy population table.
 
@@ -295,8 +295,8 @@ def initialise_galaxy_population_table(optional_columns=None,
     galaxy_population_table = Table(init_cols, names=names, dtype=dtypes)
 
     galaxy_population_table.meta = make_galaxy_population_table_header(
-        cnd_field=cnd_field, tscope=tscope, detect=detect,
-        date_hst=date_hst, data_ver=data_ver, date_cnd=date_cnd)
+        cnd_field=cnd_field, telescope=telescope, detector=detector,
+        date_hst=date_hst, data_version=data_version, date_candels=date_candels)
 
     assert(is_in_format(galaxy_population_table, tf))
 

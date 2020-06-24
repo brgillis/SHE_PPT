@@ -54,8 +54,8 @@ class KsbTrainingTableMeta(object):
         self.model_hash = mv.model_hash_label
         self.model_seed = mv.model_seed_label
         self.noise_seed = mv.noise_seed_label
-        self.obs_id = mv.obs_id_label
-        self.date_obs = mv.obs_time_label
+        self.observation_id = mv.obs_id_label
+        self.observation_time = mv.obs_time_label
         self.tile_id = mv.tile_id_label
         self.nlost = "NLOST"
         self.wt_n = "WT_N"
@@ -75,8 +75,8 @@ class KsbTrainingTableMeta(object):
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
-                                     (self.obs_id, None),
-                                     (self.date_obs, None),
+                                     (self.observation_id, None),
+                                     (self.observation_time, None),
                                      (self.tile_id, None),
                                      (self.nlost, None),
                                      (self.wt_n, None),

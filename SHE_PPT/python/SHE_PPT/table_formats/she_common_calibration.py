@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-23"
+__updated__ = "2020-06-24"
 
 from collections import OrderedDict
 
@@ -50,9 +50,7 @@ class commonCalibrationTableMeta(object):
 
         # Table metadata labels
         self.fits_version = mv.fits_version_label
-        # self.fits_def = mv.fits_def_label
         self.fits_def = mv.fits_def_label
-        # self.extname = mv.extname_label
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_version, None),

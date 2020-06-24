@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-23"
+__updated__ = "2020-06-24"
 
 from collections import OrderedDict
 
@@ -27,10 +27,10 @@ from astropy.table import Table
 
 from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
+from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_formats.mer_final_catalog import tf as detf
 from SHE_PPT.table_utility import is_in_format
-from SHE_PPT.flags import she_flag_version
 
 fits_version = "8.0"
 fits_def = "she.lensmcMeasurements"
@@ -52,15 +52,12 @@ class lensMcMeasurementsTableMeta(object):
         self.fits_version = mv.fits_version_label
         self.fits_def = mv.fits_def_label
 
-        # Table metadata labels
-        self.fits_version = mv.fits_version_label
-        self.fits_def = mv.fits_def_label
-        self.she_flag_version = "SFLAGVERS"
+        self.she_flag_version = mv.she_flag_version_label
         self.model_hash = mv.model_hash_label
         self.model_seed = mv.model_seed_label
         self.noise_seed = mv.noise_seed_label
-        self.obs_id = mv.obs_id_label
-        self.date_obs = mv.obs_time_label
+        self.observation_id = mv.obs_id_label
+        self.observation_time = mv.obs_time_label
         self.tile_id = mv.tile_id_label
 
         self.valid = mv.valid_label
@@ -74,8 +71,8 @@ class lensMcMeasurementsTableMeta(object):
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
-                                     (self.obs_id, None),
-                                     (self.date_obs, None),
+                                     (self.observation_id, None),
+                                     (self.observation_time, None),
                                      (self.tile_id, None),
                                      (self.valid,
                                       "0: Not tested; 1: Pass; -1: Fail")
@@ -224,8 +221,8 @@ def make_lensmc_measurements_table_header(
                                   model_hash=None,
                                   model_seed=None,
                                   noise_seed=None,
-                                  obs_id=None,
-                                  date_obs=None,
+                                  observation_id=None,
+                                  observation_time=None,
                                   tile_id=None,):
     """
         @brief Generate a header for a shear estimates table.
@@ -250,8 +247,8 @@ def make_lensmc_measurements_table_header(
     header[tf.m.model_seed] = model_seed
     header[tf.m.noise_seed] = noise_seed
 
-    header[tf.m.obs_id] = obs_id
-    header[tf.m.date_obs] = date_obs
+    header[tf.m.observation_id] = observation_id
+    header[tf.m.observation_time] = observation_time
     header[tf.m.tile_id] = tile_id
 
     header[tf.m.valid] = "UNKNOWN"
@@ -264,8 +261,8 @@ def initialise_lensmc_measurements_table(detections_table=None,
                                  model_hash=None,
                                  model_seed=None,
                                  noise_seed=None,
-                                 obs_id=None,
-                                 date_obs=None,
+                                 observation_id=None,
+                                 observation_time=None,
                                  tile_id=None,
                                  ):
     """
@@ -316,10 +313,10 @@ def initialise_lensmc_measurements_table(detections_table=None,
                                                            model_hash=model_hash,
                                                            model_seed=model_seed,
                                                            noise_seed=noise_seed,
-                                                           obs_id=obs_id,
-                                                           date_obs=date_obs,
+                                                           observation_id=observation_id,
+                                                           observation_time=observation_time,
                                                            tile_id=tile_id)
 
-    assert(is_in_format(lensmc_measurements_table, tf, verbose=True))
+    assert(is_in_format(lensmc_measurements_table, tf))
 
     return lensmc_measurements_table

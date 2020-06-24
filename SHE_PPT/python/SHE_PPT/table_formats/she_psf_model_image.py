@@ -19,16 +19,16 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-23"
+__updated__ = "2020-06-24"
 
 from collections import OrderedDict
 
 from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
+from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format
-from SHE_PPT.flags import she_flag_version
 from SHE_PPT.utility import hash_any
 import numpy as np
 
@@ -54,18 +54,18 @@ class PSFTableMeta(object):
 
         self.extname = mv.extname_label
 
-        self.cal_prod = "CAL_PROD"
-        self.cal_time = "CAL_TIME"
-        self.fld_prod = "FLD_PROD"
+        self.calibration_product = "CAL_PROD"
+        self.calibration_time = "CAL_TIME"
+        self.field_product = "FLD_PROD"
         self.fld_time = "FLD_TIME"
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_version, None),
                                      (self.fits_def, None),
                                      (self.extname, mv.psf_cat_tag),
-                                     (self.cal_prod, None),
-                                     (self.cal_time, None),
-                                     (self.fld_prod, None),
+                                     (self.calibration_product, None),
+                                     (self.calibration_time, None),
+                                     (self.field_product, None),
                                      (self.fld_time, None)
                                      ))
 
@@ -133,7 +133,7 @@ class PSFTableFormat(object):
         self.y = set_column_properties(
             "SHE_PSF_Y", dtype=">f4", fits_dtype="E")
 
-        self.cal_time = set_column_properties(
+        self.calibration_time = set_column_properties(
             "SHE_PSF_CALIB_TIME", dtype="str", fits_dtype="A", length=20)
         self.field_time = set_column_properties(
             "SHE_PSF_FIELD_TIME", dtype="str", fits_dtype="A", length=20)
@@ -155,7 +155,7 @@ psf_table_format = PSFTableFormat()
 tf = psf_table_format
 
 
-def make_psf_table_header(cal_prod, cal_time, fld_prod, fld_time):
+def make_psf_table_header(calibration_product, calibration_time, field_product, fld_time):
     """
         @brief Generate a header for a PSF table.
 
@@ -171,9 +171,9 @@ def make_psf_table_header(cal_prod, cal_time, fld_prod, fld_time):
 
     header[tf.m.extname] = mv.psf_cat_tag
 
-    header[tf.m.cal_prod] = cal_prod
-    header[tf.m.cal_time] = cal_time
-    header[tf.m.fld_prod] = fld_prod
+    header[tf.m.calibration_product] = calibration_product
+    header[tf.m.calibration_time] = calibration_time
+    header[tf.m.field_product] = field_product
     header[tf.m.fld_time] = fld_time
 
     return header
@@ -182,9 +182,9 @@ def make_psf_table_header(cal_prod, cal_time, fld_prod, fld_time):
 def initialise_psf_table(image=None,
                          options=None,
                          optional_columns=None,
-                         cal_prod=None,
-                         cal_time=None,
-                         fld_prod=None,
+                         calibration_product=None,
+                         calibration_time=None,
+                         field_product=None,
                          fld_time=None,
                          init_columns={}):
     """
@@ -229,9 +229,9 @@ def initialise_psf_table(image=None,
 
     psf_table = Table(init_cols, names=names, dtype=dtypes)
 
-    psf_table.meta = make_psf_table_header(cal_prod=cal_prod,
-                                           cal_time=cal_time,
-                                           fld_prod=fld_prod,
+    psf_table.meta = make_psf_table_header(calibration_product=calibration_product,
+                                           calibration_time=calibration_time,
+                                           field_product=field_product,
                                            fld_time=fld_time)
 
     assert(is_in_format(psf_table, tf))
