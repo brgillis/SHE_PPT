@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-23"
+__updated__ = "2020-06-24"
 
 logger_name = "SHE_PPT"
 
@@ -48,8 +48,12 @@ psf_field_param_def = "she.psfFieldParameters"
 psf_calib_param_def = "she.psfCalibrationParameters"
 
 # Special values for tables
-psf_zm_identity = "zfit"
+psf_dm_identity = "dmfit"
+psf_om_identity = "omfit"
+psf_pd_identity = "pdfit"
 psf_tm_identity = "tmfit"
+psf_tml_identity = "tmlfit"
+psf_zm_identity = "zfit"
 
 # Tags for science image, noisemap, and mask
 sci_tag = "SCI"
@@ -66,8 +70,12 @@ psf_im_tag = "PSF"
 bulge_psf_tag = "BPSF"
 disk_psf_tag = "DPSF"
 psf_cat_tag = "PSFC"
-psf_zm_state_tag = "PSFZS"
-psf_tm_state_tag = "PSFTS"
+psf_dm_state_tag = "PSFDM"
+psf_om_state_tag = "PSFOM"
+psf_pd_state_tag = "PSFPD"
+psf_tm_state_tag = "PSFTM"
+psf_tml_state_tag = "PSFTL"
+psf_zm_state_tag = "PSFZ"
 
 # Miscellaneous
 segmap_unassigned_value = 0

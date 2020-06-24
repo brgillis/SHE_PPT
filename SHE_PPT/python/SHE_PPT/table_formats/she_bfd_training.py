@@ -274,6 +274,6 @@ def initialise_bfd_training_table(optional_columns=None,
                                                              observation_time=observation_time,
                                                              tile_id=tile_id)
 
-    assert(is_in_format(bfd_training_table, tf, verbose=True))
+    assert(is_in_format(bfd_training_table, tf))
 
     return bfd_training_table

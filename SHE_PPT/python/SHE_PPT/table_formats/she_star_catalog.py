@@ -67,7 +67,7 @@ class StarCatalogTableMeta(object):
 
 class StarCatalogTableFormat(object):
     """
-        @brief A class defining the format for galaxy population priors tables. Only the star_catalog_table_format
+        @brief A class defining the format for galaxy population priors tables. Only the star_catalog_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
@@ -156,10 +156,10 @@ class StarCatalogTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-star_catalog_table_format = StarCatalogTableFormat()
+star_catalog_format = StarCatalogTableFormat()
 
 # And a convient alias for it
-tf = star_catalog_table_format
+tf = star_catalog_format
 
 
 def make_star_catalog_header(roll_ang, exposure_product_id, observation_id, observation_time):
@@ -180,12 +180,15 @@ def make_star_catalog_header(roll_ang, exposure_product_id, observation_id, obse
     return header
 
 
-def initialise_star_catalog(roll_ang, exposure_product_id, observation_id, observation_time,
-                                  optional_columns=None):
+def initialise_star_catalog(roll_ang=None,
+                            exposure_product_id=None,
+                            observation_id=None,
+                            observation_time=None,
+                            optional_columns=None):
     """
         @brief Initialise a galaxy population table.
 
-        @return star_catalog_table <astropy.Table>
+        @return star_catalog <astropy.Table>
     """
 
     if optional_columns is None:
@@ -205,11 +208,11 @@ def initialise_star_catalog(roll_ang, exposure_product_id, observation_id, obser
             init_cols.append([])
             dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
 
-    star_catalog_table = Table(init_cols, names=names, dtype=dtypes)
+    star_catalog = Table(init_cols, names=names, dtype=dtypes)
 
-    star_catalog_table.meta = make_star_catalog_table_header(
+    star_catalog.meta = make_star_catalog_header(
         roll_ang, exposure_product_id, observation_id, observation_time)
 
-    assert(is_in_format(star_catalog_table, tf))
+    assert(is_in_format(star_catalog, tf))
 
-    return star_catalog_table
+    return star_catalog

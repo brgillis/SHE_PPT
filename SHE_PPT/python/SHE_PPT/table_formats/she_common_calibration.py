@@ -278,7 +278,7 @@ def initialise_common_calibration_table(mer_final_catalog=None,
 
     common_calibration_table = Table(init_cols, names=names, dtype=dtypes)
 
-    common_calibration_table.meta = make_common_calibration_table_header(fits_def=fits_def)
+    common_calibration_table.meta = make_common_calibration_table_header()
 
     assert(is_in_format(common_calibration_table, tf))
 

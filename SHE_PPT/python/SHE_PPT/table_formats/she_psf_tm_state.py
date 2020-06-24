@@ -20,7 +20,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-23"
+__updated__ = "2020-06-24"
 
 from collections import OrderedDict
 
@@ -52,6 +52,7 @@ class PsfTmStateTableMeta(object):
                                if self.data_type == "FIELD" else
                                mv.psf_calib_param_def)
         self.table_format = "%s.SheTelescopeModeParams" % self.main_data_type
+        self.identity = mv.psf_tm_identity
 
         # Table metadata labels
         self.fits_version = mv.fits_version_label
@@ -62,6 +63,7 @@ class PsfTmStateTableMeta(object):
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_version, None),
                                      (self.fits_def, None),
+                                     (self.extname, None),
                                      ))
 
         # A list of columns in the desired order
@@ -169,6 +171,7 @@ def make_psf_tm_state_table_header(data_type="FIELD"):
 
     header[tf.m.fits_version] = tf.__version__
     header[tf.m.fits_def] = tf.m.table_format
+    header[tf.m.extname] = mv.psf_tm_state_tag
 
     return header
 

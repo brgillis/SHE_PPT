@@ -20,7 +20,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-23"
+__updated__ = "2020-06-24"
 
 from collections import OrderedDict
 
@@ -52,6 +52,7 @@ class PsfPdStateTableMeta(object):
                                if self.data_type == "FIELD" else
                                mv.psf_calib_param_def)
         self.table_format = "%s.ShePsfDiagnostics" % self.main_data_type
+        self.identity = mv.psf_pd_identity
 
         # Table metadata labels
         self.fits_version = mv.fits_version_label
@@ -62,6 +63,7 @@ class PsfPdStateTableMeta(object):
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_version, None),
                                      (self.fits_def, None),
+                                     (self.extname, None),
                                      ))
 
         # A list of columns in the desired order
@@ -160,8 +162,6 @@ def make_psf_pd_state_table_header(data_type="FIELD"):
 
     header[tf.m.extname] = mv.psf_pd_state_tag
 
-    header[tf.m.identity] = mv.psf_pd_identity
-
     return header
 
 
@@ -217,6 +217,6 @@ def initialise_psf_pd_state_table(data_type="FIELD",
 
     psf_pd_state_table.meta = make_psf_pd_state_table_header(data_type)
 
-    assert(is_in_format(psf_pd_state_table, tf))
+    assert(is_in_format(psf_pd_state_table, tf, verbose=True))
 
     return psf_pd_state_table

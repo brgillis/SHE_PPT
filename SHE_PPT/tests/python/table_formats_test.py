@@ -145,7 +145,7 @@ class TestTableFormats:
 
             # Try strict test
             for j in range((len(self.formats))):
-                assert is_in_format(empty_tables[i], self.formats[j], strict=True, verbose=True) == (i == j)
+                assert is_in_format(empty_tables[i], self.formats[j], strict=True) == (i == j)
 
             # Try non-strict version now
             empty_tables[i].add_column(Column(name='new_column', data=np.zeros((0,))))
