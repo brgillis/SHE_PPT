@@ -11,7 +11,7 @@ API Changes
 Dependency Changes
 ------------------
 - Now depends on Elements 5.10.0
-- Now depends on ST_DataModelBindings 8.0.2 and ST_DataModelTools 8.0.2
+- Now depends on ST_DataModelBindings 8.0.3 and ST_DataModelTools 8.0.3
 
 Deprecated Features
 -------------------
