@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-22"
+__updated__ = "2020-06-25"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
@@ -32,8 +32,8 @@ def init():
 
     """
 
-    # binding_class = she_dpd.DpdSheSimulationPlanProduct # @FIXME
-    binding_class = DpdSheSimulationPlanProduct
+    # binding_class = she_dpd.DpdSheSimulationPlan # @FIXME
+    binding_class = DpdSheSimulationPlan
 
     # Add the data file name methods
 
@@ -65,7 +65,7 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-class DpdSheSimulationPlanProduct:  # @FIXME
+class DpdSheSimulationPlan:  # @FIXME
 
     def __init__(self):
         self.Header = None
@@ -75,7 +75,7 @@ class DpdSheSimulationPlanProduct:  # @FIXME
         return False
 
 
-class SheSimulationPlanProduct:  # @FIXME
+class SheSimulationPlan:  # @FIXME
 
     def __init__(self):
         self.format = None
@@ -95,8 +95,8 @@ def create_dpd_she_simulation_plan(filename=None):
         @TODO fill in docstring
     """
 
-    # dpd_she_simulation_plan = she_dpd.DpdSheSimulationPlanProduct() # FIXME
-    dpd_she_simulation_plan = DpdSheSimulationPlanProduct()
+    # dpd_she_simulation_plan = she_dpd.DpdSheSimulationPlan() # FIXME
+    dpd_she_simulation_plan = DpdSheSimulationPlan()
 
     # dpd_she_simulation_plan.Header =
     # HeaderProvider.create_generic_header("SHE") # FIXME
@@ -116,8 +116,8 @@ def create_she_simulation_plan(filename=None):
         @TODO fill in docstring
     """
 
-    # she_simulation_plan = she_dpd.SheSimulationPlanProduct() # @FIXME
-    she_simulation_plan = SheSimulationPlanProduct()
+    # she_simulation_plan = she_dpd.SheSimulationPlan() # @FIXME
+    she_simulation_plan = SheSimulationPlan()
 
     she_simulation_plan.format = "UNDEFINED"
     she_simulation_plan.version = "0.0"

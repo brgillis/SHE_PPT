@@ -22,11 +22,14 @@ Created on: 05/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2019-05-27"
+__updated__ = "2020-06-25"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
 import os.path
+
+from astropy import table
+from astropy.io import fits
 
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
@@ -37,10 +40,7 @@ from SHE_PPT.she_image import SHEImage
 from SHE_PPT.she_image_stack import SHEImageStack
 from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
 from SHE_PPT.utility import find_extension, load_wcs
-from astropy import table
-from astropy.io import fits
 import numpy as np
-
 
 logger = logging.getLogger(__name__)
 
@@ -81,7 +81,7 @@ class SHEFrameStack(object):
         """
 
         self.exposures = exposures
-        #if stacked_image:
+        # if stacked_image:
         self.stacked_image = stacked_image
         self.mer_final_catalog_catalogue = detections_catalogue
 
@@ -377,14 +377,14 @@ class SHEFrameStack(object):
         found = False
         fov_coords_list = []
         for exposure in self.exposures:
-            #print("EXP DET: ",np.shape(exposure.detectors),return_det_coords_too)
-            #print("XW: ",x_world, y_world)
+            # print("EXP DET: ",np.shape(exposure.detectors),return_det_coords_too)
+            # print("XW: ",x_world, y_world)
             fov_coords = exposure.get_fov_coords(x_world=x_world,
                                                  y_world=y_world,
                                                  x_buffer=x_buffer,
                                                  y_buffer=y_buffer,
                                                  return_det_coords_too=return_det_coords_too)
-            #print("FVC: ",fov_coords)
+            # print("FVC: ",fov_coords)
             if fov_coords is not None:
                 found = True
             fov_coords_list.append(fov_coords)
@@ -633,7 +633,7 @@ class SHEFrameStack(object):
             try:
                 _, stacked_seg_data = cls._read_product_extension(stacked_seg_product_filename,
                                                                   workdir=workdir,
-                                                                  dtype=products.stack_mosaic.DpdSheStackMosaicProduct,
+                                                                  dtype=products.she_stack_segmentation_map.DpdSheStackSegmentationMap,
                                                                   **kwargs)
             except FileNotFoundError as e:
                 logger.warning(str(e))
@@ -650,7 +650,6 @@ class SHEFrameStack(object):
                                      segmentation_map=stacked_seg_data,
                                      header=stacked_image_header,
                                      wcs=load_wcs(stacked_image_header))
-
 
         # Construct and return a SHEFrameStack object
         return SHEFrameStack(exposures=exposures,

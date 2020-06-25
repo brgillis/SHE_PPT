@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-22"
+__updated__ = "2020-06-25"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME

@@ -22,7 +22,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-22"
+__updated__ = "2020-06-25"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
@@ -79,7 +79,7 @@ class DpdSheExpectedShearValidationStatistics:  # @FIXME
         return False
 
 
-class SheShearValidationStatsProduct:  # @FIXME
+class SheShearValidationStats:  # @FIXME
 
     def __init__(self):
         self.format = None
@@ -122,9 +122,9 @@ def create_she_expected_shear_validation_statistics(filename=None):
         @TODO fill in docstring
     """
 
-    # she_expected_shear_validation_statistics = she_dpd.SheShearValidationStatsProduct() #
+    # she_expected_shear_validation_statistics = she_dpd.SheShearValidationStats() #
     # @FIXME
-    she_expected_shear_validation_statistics = SheShearValidationStatsProduct()
+    she_expected_shear_validation_statistics = SheShearValidationStats()
 
     she_expected_shear_validation_statistics.format = "UNDEFINED"
     she_expected_shear_validation_statistics.version = "0.0"

@@ -22,7 +22,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-16"
+__updated__ = "2020-06-25"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
@@ -41,7 +41,6 @@ def init():
         Initialisers for MomentsML training set.
     """
 
-    # binding_class = she_dpd.DpdSheMomentsMLTrainingDataProduct # @FIXME
     binding_class = dpdSheMomentsMlTraining
 
     # Add the data file name methods
@@ -73,45 +72,15 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-class DpdSheMomentsMLTrainingDataProduct:  # @FIXME
-
-    def __init__(self):
-        self.Header = None
-        self.Data = None
-
-    def validateBinding(self):
-        return False
-
-
-class SheMomentsMLTrainingDataProduct:  # @FIXME
-
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-
-
-class DataContainer:  # @FIXME
-
-    def __init__(self):
-        self.FileName = None
-        self.filestatus = None
-
-
 def create_dpd_she_momentsml_training(filename=None):
     """
         @TODO fill in docstring
     """
 
-    # dpd_she_momentsml_training =
-    # she_dpd.DpdSheMomentsMLTrainingDataProduct() # FIXME
     dpd_she_momentsml_training = read_xml_product(
         find_aux_file(sample_file_name), allow_pickled=False)
 
     dpd_she_momentsml_training.Header = HeaderProvider.create_generic_header("SHE")  # FIXME
-
-    # dpd_she_momentsml_training.Data = create_she_momentsml_training(
-    #    filename)
 
     if filename:
         __set_data_filename(dpd_she_momentsml_training, filename)
@@ -120,22 +89,3 @@ def create_dpd_she_momentsml_training(filename=None):
 
 # Add a useful alias
 create_momentsml_training_data_product = create_dpd_she_momentsml_training
-
-
-def create_she_momentsml_training(filename=None):
-    """
-        @TODO fill in docstring
-    """
-
-    # she_momentsml_training = she_dpd.SheMomentsMLTrainingDataProduct()
-    # # @FIXME
-    she_momentsml_training = SheMomentsMLTrainingDataProduct()
-
-    she_momentsml_training.format = "UNDEFINED"
-    she_momentsml_training.version = "0.0"
-
-    she_momentsml_training.DataContainer = DataContainer()
-    she_momentsml_training.DataContainer.FileName = filename
-    she_momentsml_training.DataContainer.filestatus = "PROPOSED"
-
-    return she_momentsml_training

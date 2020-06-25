@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-22"
+__updated__ = "2020-06-25"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
@@ -35,8 +35,8 @@ def init():
         ?????
     """
 
-    # binding_class = she_dpd.DpdSheGalaxyPopulationPriorsProduct # @FIXME
-    binding_class = DpdSheGalaxyPopulationPriorsProduct
+    # binding_class = she_dpd.DpdSheGalaxyPopulationPriors # @FIXME
+    binding_class = DpdSheGalaxyPopulationPriors
 
     # Add the data file name methods
 
@@ -67,7 +67,7 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-class DpdSheGalaxyPopulationPriorsProduct:  # @FIXME
+class DpdSheGalaxyPopulationPriors:  # @FIXME
 
     def __init__(self):
         self.Header = None
@@ -77,7 +77,7 @@ class DpdSheGalaxyPopulationPriorsProduct:  # @FIXME
         return False
 
 
-class SheGalaxyPopulationPriorsProduct:  # @FIXME
+class SheGalaxyPopulationPriors:  # @FIXME
 
     def __init__(self):
         self.format = None
@@ -97,9 +97,9 @@ def create_dpd_she_galaxy_population_priors(filename=None):
         @TODO fill in docstring
     """
 
-    # dpd_she_galaxy_population_priors = she_dpd.DpdSheGalaxyPopulationPriorsProduct() #
+    # dpd_she_galaxy_population_priors = she_dpd.DpdSheGalaxyPopulationPriors() #
     # FIXME
-    dpd_she_galaxy_population_priors = DpdSheGalaxyPopulationPriorsProduct()
+    dpd_she_galaxy_population_priors = DpdSheGalaxyPopulationPriors()
 
     # dpd_she_galaxy_population_priors.Header =
     # HeaderProvider.create_generic_header("SHE") # FIXME
@@ -119,8 +119,8 @@ def create_she_galaxy_population_priors(filename=None):
         @TODO fill in docstring
     """
 
-    # she_galaxy_population_priors = she_dpd.SheGalaxyPopulationPriorsProduct() # @FIXME
-    she_galaxy_population_priors = SheGalaxyPopulationPriorsProduct()
+    # she_galaxy_population_priors = she_dpd.SheGalaxyPopulationPriors() # @FIXME
+    she_galaxy_population_priors = SheGalaxyPopulationPriors()
 
     she_galaxy_population_priors.format = "UNDEFINED"
     she_galaxy_population_priors.version = "0.0"

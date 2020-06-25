@@ -23,7 +23,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-22"
+__updated__ = "2020-06-25"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
@@ -93,8 +93,8 @@ def init():
         Adds some extra functionality to the DpdSheExposureSegmentationMap product
     """
 
-    # binding_class = she_dpd.DpdSheExposureSegmentationMapProduct # @FIXME
-    binding_class = DpdSheExposureSegmentationMapProduct
+    # binding_class = she_dpd.DpdSheExposureSegmentationMap # @FIXME
+    binding_class = DpdSheExposureSegmentationMap
 
     if not hasattr(binding_class, "initialised"):
         binding_class.initialised = True
@@ -136,7 +136,7 @@ class DataContainer:
         self.filestatus = None
 
 
-class DpdSheExposureSegmentationMapProduct:
+class DpdSheExposureSegmentationMap:
 
     def __init__(self):
         self.Header = None
@@ -146,13 +146,13 @@ class DpdSheExposureSegmentationMapProduct:
         return True
 
 
-class SheExposureSegmentationMapProduct:
+class SheExposureSegmentationMap:
 
     def __init__(self):
         self.DataStorage = None
 
 
-class SheDataStorageProduct:
+class SheDataStorage:
 
     def __init__(self):
         self.format = None
@@ -165,7 +165,7 @@ def create_dpd_she_exposure_segmentation_map(data_filename="None"):
         @TODO fill in docstring
     """
 
-    dpd_she_exposure_segmentation_map = DpdSheExposureSegmentationMapProduct()
+    dpd_she_exposure_segmentation_map = DpdSheExposureSegmentationMap()
 
     # dpd_she_exposure_segmentation_map.Header = HeaderProvider.create_generic_header("SHE")
     dpd_she_exposure_segmentation_map.Header = None
@@ -185,7 +185,7 @@ def create_she_exposure_segmentation_map(data_filename="None"):
         @TODO fill in docstring
     """
 
-    she_exposure_segmentation_map = SheExposureSegmentationMapProduct()
+    she_exposure_segmentation_map = SheExposureSegmentationMap()
 
     she_exposure_segmentation_map.DataStorage = create_she_data_storage(data_filename)
 
@@ -195,7 +195,7 @@ def create_she_exposure_segmentation_map(data_filename="None"):
 def create_she_data_storage(filename):
 
     # she_data_storage = she_dpd.SheDataStorage() # @FIXME
-    she_data_storage = SheDataStorageProduct()
+    she_data_storage = SheDataStorage()
 
     she_data_storage.format = "Undefined"  # @FIXME
     she_data_storage.version = "0.0"  # @FIXME

@@ -22,7 +22,7 @@ Created on: 02/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2020-06-23"
+__updated__ = "2020-06-25"
 
 from collections import namedtuple
 from copy import deepcopy
@@ -480,7 +480,7 @@ class SHEFrame(object):
 
             seg_prod = read_xml_product(
                 os.path.join(workdir, seg_product_filename))
-            if not isinstance(seg_prod, products.she_exposure_segmentation_map.DpdSheExposureSegmentationMapProduct):
+            if not isinstance(seg_prod, products.she_exposure_segmentation_map.DpdSheExposureSegmentationMap):
                 raise ValueError("Segmentation map product from " +
                                  seg_product_filename + " is invalid type.")
 
@@ -584,7 +584,7 @@ class SHEFrame(object):
 
             psf_prod = read_xml_product(
                 os.path.join(workdir, psf_product_filename))
-            if not isinstance(psf_prod, products.psf_image.DpdShePSFImageProduct):
+            if not isinstance(psf_prod, products.she_psf_model_image.DpdShePsfModelImage):
                 raise ValueError("Data image product from " +
                                  psf_product_filename + " is invalid type.")
 

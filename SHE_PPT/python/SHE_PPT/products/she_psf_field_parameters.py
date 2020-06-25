@@ -97,7 +97,7 @@ class DpdShePsfFieldParameters:  # @FIXME
         return False
 
 
-class ShePsfFieldParametersProduct:  # @FIXME
+class ShePsfFieldParameters:  # @FIXME
 
     def __init__(self):
         self.TimeStamp = None
@@ -108,13 +108,13 @@ class ShePsfFieldParametersProduct:  # @FIXME
         self.Diagnostics = None
 
 
-class SheTelescopeModelProduct:  # @FIXME
+class SheTelescopeModel:  # @FIXME
 
     def __init__(self):
         pass  # @TODO - Fill in format
 
 
-class SheZernikeModeProduct:  # @FIXME
+class SheZernikeMode:  # @FIXME
 
     def __init__(self):
         self.format = None
@@ -122,7 +122,7 @@ class SheZernikeModeProduct:  # @FIXME
         self.DataContainer = None
 
 
-class SheSurfaceErrorProduct:
+class SheSurfaceError:
 
     def __init__(self):
         self.format = None
@@ -130,13 +130,13 @@ class SheSurfaceErrorProduct:
         self.DataContainer = None
 
 
-class SheDetectorModelProduct:
+class SheDetectorModel:
 
     def __init__(self):
         pass  # @TODO - Fill in format
 
 
-class SheDiagnosticsProduct:
+class SheDiagnostics:
 
     def __init__(self):
         pass  # @TODO - Fill in format
@@ -174,8 +174,8 @@ def create_she_psf_field_parameters(timestamp=None,
         @TODO fill in docstring
     """
 
-    # she_psf_field_parameters = she_dpd.ShePsfFieldParametersProduct() # @FIXME
-    she_psf_field_parameters = ShePsfFieldParametersProduct()
+    # she_psf_field_parameters = she_dpd.ShePsfFieldParameters() # @FIXME
+    she_psf_field_parameters = ShePsfFieldParameters()
 
     she_psf_field_parameters.TimeStamp = timestamp
     she_psf_field_parameters.TelescopeModel = create_she_telescope_model()
@@ -194,8 +194,8 @@ def create_she_telescope_model():
         @TODO fill in docstring
     """
 
-    # she_telescope_model = she_dpd.SheTelescopeModelProduct() # @FIXME
-    she_telescope_model = SheTelescopeModelProduct()
+    # she_telescope_model = she_dpd.SheTelescopeModel() # @FIXME
+    she_telescope_model = SheTelescopeModel()
 
     return she_telescope_model
 
@@ -205,8 +205,8 @@ def create_she_zernike_mode(filename):
         @TODO fill in docstring
     """
 
-    # she_zernike_mode = she_dpd.SheZernikeModeProduct() # @FIXME
-    she_zernike_mode = SheZernikeModeProduct()
+    # she_zernike_mode = she_dpd.SheZernikeMode() # @FIXME
+    she_zernike_mode = SheZernikeMode()
 
     she_zernike_mode.format = "Undefined"  # @FIXME
     she_zernike_mode.version = "0.0"  # @FIXME
@@ -223,8 +223,8 @@ def create_she_surface_error(filename):
         @TODO fill in docstring
     """
 
-    # she_surface_error = she_dpd.SheSurfaceErrorProduct() # @FIXME
-    she_surface_error = SheSurfaceErrorProduct()
+    # she_surface_error = she_dpd.SheSurfaceError() # @FIXME
+    she_surface_error = SheSurfaceError()
 
     she_surface_error.format = "Undefined"  # @FIXME
     she_surface_error.version = "0.0"  # @FIXME
@@ -241,8 +241,8 @@ def create_she_detector_model():
         @TODO fill in docstring
     """
 
-    # she_detector_model = she_dpd.SheDetectorModelProduct() # @FIXME
-    she_detector_model = SheDetectorModelProduct()
+    # she_detector_model = she_dpd.SheDetectorModel() # @FIXME
+    she_detector_model = SheDetectorModel()
 
     return she_detector_model
 
@@ -252,7 +252,7 @@ def create_she_diagnostics():
         @TODO fill in docstring
     """
 
-    # she_diagnostics = she_dpd.SheDiagnosticsProduct() # @FIXME
-    she_diagnostics = SheDiagnosticsProduct()
+    # she_diagnostics = she_dpd.SheDiagnostics() # @FIXME
+    she_diagnostics = SheDiagnostics()
 
     return she_diagnostics

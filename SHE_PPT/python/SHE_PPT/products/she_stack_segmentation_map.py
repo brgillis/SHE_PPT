@@ -92,8 +92,8 @@ def init():
         Adds some extra functionality to the DpdSheStackSegmentationMap product
     """
 
-    # binding_class = she_dpd.DpdSheStackSegmentationMapProduct # @FIXME
-    binding_class = DpdSheStackSegmentationMapProduct
+    # binding_class = she_dpd.DpdSheStackSegmentationMap # @FIXME
+    binding_class = DpdSheStackSegmentationMap
 
     if not hasattr(binding_class, "initialised"):
         binding_class.initialised = True
@@ -135,7 +135,7 @@ class DataContainer:
         self.filestatus = None
 
 
-class DpdSheStackSegmentationMapProduct:
+class DpdSheStackSegmentationMap:
 
     def __init__(self):
         self.Header = None
@@ -145,13 +145,13 @@ class DpdSheStackSegmentationMapProduct:
         return True
 
 
-class SheStackSegmentationMapProduct:
+class SheStackSegmentationMap:
 
     def __init__(self):
         self.DataStorage = None
 
 
-class SheDataStorageProduct:
+class SheDataStorage:
 
     def __init__(self):
         self.format = None
@@ -164,7 +164,7 @@ def create_dpd_she_stack_segmentation_map(data_filename="None"):
         @TODO fill in docstring
     """
 
-    dpd_she_stack_segmentation_map = DpdSheStackSegmentationMapProduct()
+    dpd_she_stack_segmentation_map = DpdSheStackSegmentationMap()
 
     # dpd_she_stack_segmentation_map.Header = HeaderProvider.create_generic_header("SHE") # FIXME
     dpd_she_stack_segmentation_map.Header = None
@@ -184,7 +184,7 @@ def create_she_stack_segmentation_map(data_filename="None"):
         @TODO fill in docstring
     """
 
-    she_stack_segmentation_map = SheStackSegmentationMapProduct()
+    she_stack_segmentation_map = SheStackSegmentationMap()
 
     she_stack_segmentation_map.DataStorage = create_she_data_storage(data_filename)
 
@@ -194,7 +194,7 @@ def create_she_stack_segmentation_map(data_filename="None"):
 def create_she_data_storage(filename="None"):
 
     # she_data_storage = she_dpd.SheDataStorage() # @FIXME
-    she_data_storage = SheDataStorageProduct()
+    she_data_storage = SheDataStorage()
 
     she_data_storage.format = "Undefined"  # @FIXME
     she_data_storage.version = "0.0"  # @FIXME

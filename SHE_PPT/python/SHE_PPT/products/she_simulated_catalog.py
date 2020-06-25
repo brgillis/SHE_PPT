@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-22"
+__updated__ = "2020-06-25"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
@@ -36,8 +36,8 @@ def init():
 
     """
 
-    # binding_class = she_dpd.DpdSheSimulatedCatalogProduct # @FIXME
-    binding_class = DpdSheSimulatedCatalogProduct
+    # binding_class = she_dpd.DpdSheSimulatedCatalog # @FIXME
+    binding_class = DpdSheSimulatedCatalog
 
     # Add the data file name methods
 
@@ -69,7 +69,7 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-class DpdSheSimulatedCatalogProduct:  # @FIXME
+class DpdSheSimulatedCatalog:  # @FIXME
 
     def __init__(self):
         self.Header = None
@@ -79,7 +79,7 @@ class DpdSheSimulatedCatalogProduct:  # @FIXME
         return False
 
 
-class SheSimulatedCatalogProduct:  # @FIXME
+class SheSimulatedCatalog:  # @FIXME
 
     def __init__(self):
         self.format = None
@@ -99,8 +99,8 @@ def create_dpd_she_simulated_catalog(filename=None):
         @TODO fill in docstring
     """
 
-    # dpd_she_simulated_catalog = she_dpd.DpdSheSimulatedCatalogProduct() # FIXME
-    dpd_she_simulated_catalog = DpdSheSimulatedCatalogProduct()
+    # dpd_she_simulated_catalog = she_dpd.DpdSheSimulatedCatalog() # FIXME
+    dpd_she_simulated_catalog = DpdSheSimulatedCatalog()
 
     # dpd_she_simulated_catalog.Header = HeaderProvider.create_generic_header("SHE") #
     # FIXME
@@ -120,8 +120,8 @@ def create_she_simulated_catalog(filename=None):
         @TODO fill in docstring
     """
 
-    # she_simulated_catalog = she_dpd.DpdSheSimulatedCatalogProduct() # @FIXME
-    she_simulated_catalog = SheSimulatedCatalogProduct()
+    # she_simulated_catalog = she_dpd.DpdSheSimulatedCatalog() # @FIXME
+    she_simulated_catalog = SheSimulatedCatalog()
 
     she_simulated_catalog.format = "UNDEFINED"
     she_simulated_catalog.version = "0.0"
