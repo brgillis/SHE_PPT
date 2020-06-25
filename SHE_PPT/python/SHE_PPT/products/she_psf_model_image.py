@@ -1,8 +1,8 @@
-""" @file psf_image_product.py
+""" @file she_psf_model_image_product.py
 
     Created 17 Nov 2017
 
-    Functions to create and output a psf_image data product.
+    Functions to create and output a she_psf_model_image data product.
 
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines
 """
@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-15"
+__updated__ = "2020-06-25"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
@@ -33,8 +33,8 @@ def init():
         Adds some extra functionality to the DpdSheAstrometry product
     """
 
-    # binding_class = she_dpd.DpdShePSFImageProduct # @FIXME
-    binding_class = DpdShePSFImageProduct
+    # binding_class = she_dpd.DpdShePsfModelImage # @FIXME
+    binding_class = DpdShePsfModelImage
 
     # Add the data file name methods
 
@@ -66,7 +66,7 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-class DpdShePSFImageProduct:  # @FIXME
+class DpdShePsfModelImage:  # @FIXME
 
     def __init__(self):
         self.Header = None
@@ -76,7 +76,7 @@ class DpdShePSFImageProduct:  # @FIXME
         return False
 
 
-class ShePSFImageProduct:  # @FIXME
+class ShePsfModelImage:  # @FIXME
 
     def __init__(self):
         self.format = None
@@ -91,40 +91,40 @@ class DataContainer:  # @FIXME
         self.filestatus = None
 
 
-def create_dpd_she_psf_image(filename=None):
+def create_dpd_she_psf_model_image(filename=None):
     """
         @TODO fill in docstring
     """
 
-    # dpd_she_psf_image = she_dpd.DpdShePSFImageProduct() # FIXME
-    dpd_she_psf_image = DpdShePSFImageProduct()
+    # dpd_she_psf_model_image = she_dpd.DpdShePsfModelImage() # FIXME
+    dpd_she_psf_model_image = DpdShePsfModelImage()
 
-    # dpd_she_psf_image.Header = HeaderProvider.create_generic_header("SHE") #
+    # dpd_she_psf_model_image.Header = HeaderProvider.create_generic_header("SHE") #
     # FIXME
-    dpd_she_psf_image.Header = "SHE"
+    dpd_she_psf_model_image.Header = "SHE"
 
-    dpd_she_psf_image.Data = create_she_psf_image(filename)
+    dpd_she_psf_model_image.Data = create_she_psf_model_image(filename)
 
-    return dpd_she_psf_image
+    return dpd_she_psf_model_image
 
 
 # Add a useful alias
-create_psf_image_product = create_dpd_she_psf_image
+create_psf_model_image_product = create_dpd_she_psf_model_image
 
 
-def create_she_psf_image(filename=None):
+def create_she_psf_model_image(filename=None):
     """
         @TODO fill in docstring
     """
 
-    # she_psf_image = she_dpd.ShePSFImageProduct() # @FIXME
-    she_psf_image = ShePSFImageProduct()
+    # she_psf_model_image = she_dpd.ShePsfModelImage() # @FIXME
+    she_psf_model_image = ShePsfModelImage()
 
-    she_psf_image.format = "UNDEFINED"
-    she_psf_image.version = "0.0"
+    she_psf_model_image.format = "UNDEFINED"
+    she_psf_model_image.version = "0.0"
 
-    she_psf_image.DataContainer = DataContainer()
-    she_psf_image.DataContainer.FileName = filename
-    she_psf_image.DataContainer.filestatus = "PROPOSED"
+    she_psf_model_image.DataContainer = DataContainer()
+    she_psf_model_image.DataContainer.FileName = filename
+    she_psf_model_image.DataContainer.filestatus = "PROPOSED"
 
-    return she_psf_image
+    return she_psf_model_image

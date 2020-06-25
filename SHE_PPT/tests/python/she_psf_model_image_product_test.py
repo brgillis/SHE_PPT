@@ -1,4 +1,4 @@
-""" @file psf_image_product_test.py
+""" @file she_psf_model_image_product_test.py
 
     Created 17 Nov 2017
 
@@ -18,11 +18,11 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-06-25"
+__updated__ = "2020-06-25"
 
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
-from SHE_PPT.products import psf_image as prod
+from SHE_PPT.products import she_psf_model_image as prod
 
 
 class TestPSFImageProduct(object):
@@ -33,7 +33,7 @@ class TestPSFImageProduct(object):
     def test_validation(self):
 
         # Create the product
-        product = prod.create_dpd_she_psf_image()
+        product = prod.create_dpd_she_psf_model_image()
 
         # Check that it validates the schema
         product.validateBinding()
@@ -43,41 +43,41 @@ class TestPSFImageProduct(object):
     def test_xml_writing_and_reading(self, tmpdir):
 
         # Create the product
-        product = prod.create_dpd_she_psf_image()
+        product = prod.create_dpd_she_psf_model_image()
 
         # Change the fits filenames
         subfilename = "test_file.fits"
         product.set_data_filename(subfilename)
 
         # Save the product in an XML file
-        filename = "she_psf_image.xml"
+        filename = "she_psf_model_image.xml"
         write_xml_product(product, filename, workdir=str(tmpdir))
 
         # Read back the XML file
         loaded_product = read_xml_product(filename, workdir=str(tmpdir))
 
         # Check that the filenames match
-        assert loaded_product.get_data_filename() == "data/"+subfilename
+        assert loaded_product.get_data_filename() == "data/" + subfilename
 
         pass
 
     def test_pickle_writing_and_reading(self, tmpdir):
 
         # Create the product
-        product = prod.create_dpd_she_psf_image()
+        product = prod.create_dpd_she_psf_model_image()
 
         # Change the fits filenames
         subfilename = "test_file.fits"
         product.set_data_filename(subfilename)
 
         # Save the product in an XML file
-        filename = "she_psf_image.xml"
-        write_pickled_product(product, filename,workdir=str(tmpdir))
+        filename = "she_psf_model_image.xml"
+        write_pickled_product(product, filename, workdir=str(tmpdir))
 
         # Read back the XML file
         loaded_product = read_pickled_product(filename, workdir=str(tmpdir))
 
         # Check that the filenames match
-        assert loaded_product.get_data_filename() == "data/"+subfilename
+        assert loaded_product.get_data_filename() == "data/" + subfilename
 
         pass

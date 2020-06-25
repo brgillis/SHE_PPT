@@ -1,8 +1,8 @@
-""" @file psf_field_params_product.py
+""" @file she_psf_field_parameters_product.py
 
     Created 10 Oct 2017
 
-    Functions to create and output an psf_field_params data product.
+    Functions to create and output an she_psf_field_parameters data product.
 
     Origin: OU-SHE - Internal to Analysis (and maybe Calibration) pipeline(s)
 
@@ -24,7 +24,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-15"
+__updated__ = "2020-06-25"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
@@ -35,11 +35,11 @@ from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_f
 
 def init():
     """
-        Adds some extra functionality to the DpdShePSFFieldParams product
+        Adds some extra functionality to the DpdShePsfFieldParameters product
     """
 
-    # binding_class = she_dpd.DpdShePSFFieldParamsProduct # @FIXME
-    binding_class = DpdShePSFFieldParamsProduct
+    # binding_class = she_dpd.DpdShePsfFieldParameters # @FIXME
+    binding_class = DpdShePsfFieldParameters
 
     # Add the data file name methods
 
@@ -87,7 +87,7 @@ class DataContainer:  # @FIXME
         self.filestatus = None
 
 
-class DpdShePSFFieldParamsProduct:  # @FIXME
+class DpdShePsfFieldParameters:  # @FIXME
 
     def __init__(self):
         self.Header = None
@@ -97,7 +97,7 @@ class DpdShePSFFieldParamsProduct:  # @FIXME
         return False
 
 
-class ShePSFFieldParamsProduct:  # @FIXME
+class ShePsfFieldParametersProduct:  # @FIXME
 
     def __init__(self):
         self.TimeStamp = None
@@ -142,51 +142,51 @@ class SheDiagnosticsProduct:
         pass  # @TODO - Fill in format
 
 
-def create_dpd_she_psf_field_params(timestamp=None,
+def create_dpd_she_psf_field_parameters(timestamp=None,
                                     zernike_mode_filename=None,
                                     surface_error_filename=None):
     """
         @TODO fill in docstring
     """
 
-    # dpd_she_psf_field_params = she_dpd.DpdShePSFFieldParamsProduct() # @FIXME
-    dpd_she_psf_field_params = DpdShePSFFieldParamsProduct()
+    # dpd_she_psf_field_parameters = she_dpd.DpdShePsfFieldParameters() # @FIXME
+    dpd_she_psf_field_parameters = DpdShePsfFieldParameters()
 
-    # dpd_she_psf_field_params.Header =
+    # dpd_she_psf_field_parameters.Header =
     # HeaderProvider.create_generic_header("SHE") # FIXME
-    dpd_she_psf_field_params.Header = "SHE"
+    dpd_she_psf_field_parameters.Header = "SHE"
 
-    dpd_she_psf_field_params.Data = create_she_psf_field_params(timestamp,
+    dpd_she_psf_field_parameters.Data = create_she_psf_field_parameters(timestamp,
                                                                 zernike_mode_filename,
                                                                 surface_error_filename)
 
-    return dpd_she_psf_field_params
+    return dpd_she_psf_field_parameters
 
 
 # Add a useful alias
-create_psf_field_params_product = create_dpd_she_psf_field_params
+create_psf_field_parameters_product = create_dpd_she_psf_field_parameters
 
 
-def create_she_psf_field_params(timestamp=None,
+def create_she_psf_field_parameters(timestamp=None,
                                 zernike_mode_filename=None,
                                 surface_error_filename=None):
     """
         @TODO fill in docstring
     """
 
-    # she_psf_field_params = she_dpd.ShePSFFieldParamsProduct() # @FIXME
-    she_psf_field_params = ShePSFFieldParamsProduct()
+    # she_psf_field_parameters = she_dpd.ShePsfFieldParametersProduct() # @FIXME
+    she_psf_field_parameters = ShePsfFieldParametersProduct()
 
-    she_psf_field_params.TimeStamp = timestamp
-    she_psf_field_params.TelescopeModel = create_she_telescope_model()
-    she_psf_field_params.ZernikeMode = create_she_zernike_mode(
+    she_psf_field_parameters.TimeStamp = timestamp
+    she_psf_field_parameters.TelescopeModel = create_she_telescope_model()
+    she_psf_field_parameters.ZernikeMode = create_she_zernike_mode(
         zernike_mode_filename)
-    she_psf_field_params.SurfaceError = create_she_surface_error(
+    she_psf_field_parameters.SurfaceError = create_she_surface_error(
         surface_error_filename)
-    she_psf_field_params.DetectorModel = create_she_detector_model()
-    she_psf_field_params.Diagnostics = create_she_diagnostics()
+    she_psf_field_parameters.DetectorModel = create_she_detector_model()
+    she_psf_field_parameters.Diagnostics = create_she_diagnostics()
 
-    return she_psf_field_params
+    return she_psf_field_parameters
 
 
 def create_she_telescope_model():
