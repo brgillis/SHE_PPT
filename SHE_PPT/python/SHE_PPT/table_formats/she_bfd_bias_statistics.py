@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-24"
+__updated__ = "2020-06-25"
 
 from collections import OrderedDict
 
@@ -38,7 +38,7 @@ fits_def = "bfdBiasStatistics"
 logger = getLogger(mv.logger_name)
 
 
-class BFDBiasStatisticsTableMeta(object):
+class SheBfdBiasStatisticsMeta(object):
     """
         @brief A class defining the metadata for BFD bias statistics tables.
     """
@@ -90,7 +90,7 @@ class BFDBiasStatisticsTableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class BFDBiasStatisticsTableFormat(object):
+class SheBfdBiasStatisticsFormat(object):
     """
         @brief A class defining the format for bias statistics tables. Only the bfd_bias_statistics_table_format
                instance of this should generally be accessed, and it should not be changed.
@@ -99,7 +99,7 @@ class BFDBiasStatisticsTableFormat(object):
     def __init__(self):
 
         # Get the metadata (contained within its own class)
-        self.meta = BFDBiasStatisticsTableMeta()
+        self.meta = SheBfdBiasStatisticsMeta()
 
         # And a quick alias for it
         self.m = self.meta
@@ -161,7 +161,7 @@ class BFDBiasStatisticsTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-bfd_bias_statistics_table_format = BFDBiasStatisticsTableFormat()
+bfd_bias_statistics_table_format = SheBfdBiasStatisticsFormat()
 
 # And a convient alias for it
 tf = bfd_bias_statistics_table_format

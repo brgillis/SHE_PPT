@@ -20,7 +20,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-24"
+__updated__ = "2020-06-25"
 
 from collections import OrderedDict
 
@@ -37,7 +37,7 @@ fits_version = "8.0"
 logger = getLogger(mv.logger_name)
 
 
-class PsfTmStateTableMeta(object):
+class ShePsfTmStateMeta(object):
     """ A class defining the metadata for PSF TM state tables.
     """
 
@@ -70,7 +70,7 @@ class PsfTmStateTableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class PsfTmStateTableFormat(object):
+class ShePsfTmStateFormat(object):
     """
         @brief A class defining the format for PSF TM state tables. Only the psf_tm_state_table_format
                instance of this should generally be accessed, and it should not be changed.
@@ -84,7 +84,7 @@ class PsfTmStateTableFormat(object):
 
         self.data_type = data_type
 
-        self.meta = PsfTmStateTableMeta(self.data_type)
+        self.meta = ShePsfTmStateMeta(self.data_type)
 
         # And a quick alias for it
         self.m = self.meta
@@ -142,8 +142,8 @@ class PsfTmStateTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-psf_table_format_field = PsfTmStateTableFormat("FIELD")
-psf_table_format_calib = PsfTmStateTableFormat("CAL")
+psf_table_format_field = ShePsfTmStateFormat("FIELD")
+psf_table_format_calib = ShePsfTmStateFormat("CAL")
 
 # And a convenient alias for it
 # Can define multiple aliases if slightly different types

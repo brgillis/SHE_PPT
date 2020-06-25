@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-24"
+__updated__ = "2020-06-25"
 
 from collections import OrderedDict
 
@@ -34,7 +34,7 @@ fits_version = "8.0"
 fits_def = "she.galaxyPopulationPriors"
 
 
-class GalaxyPopulationPriorsTableMeta(object):
+class SheGalaxyPopulationPriorsMeta(object):
     """
         @brief A class defining the metadata for PSF tables.
     """
@@ -70,7 +70,7 @@ class GalaxyPopulationPriorsTableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class GalaxyPopulationPriorsTableFormat(object):
+class SheGalaxyPopulationPriorsFormat(object):
     """
         @brief A class defining the format for galaxy population priors tables. Only the galaxy_population_table_format
                instance of this should generally be accessed, and it should not be changed.
@@ -79,7 +79,7 @@ class GalaxyPopulationPriorsTableFormat(object):
     def __init__(self):
 
         # Get the metadata (contained within its own class)
-        self.meta = GalaxyPopulationPriorsTableMeta()
+        self.meta = SheGalaxyPopulationPriorsMeta()
 
         # And a quick alias for it
         self.m = self.meta
@@ -231,7 +231,7 @@ class GalaxyPopulationPriorsTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-galaxy_population_table_format = GalaxyPopulationPriorsTableFormat()
+galaxy_population_table_format = SheGalaxyPopulationPriorsFormat()
 
 # And a convient alias for it
 tf = galaxy_population_table_format

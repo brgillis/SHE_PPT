@@ -19,21 +19,21 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-23"
+__updated__ = "2020-06-25"
 
 from collections import OrderedDict
 
 from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
-from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.flags import she_flag_version
+from SHE_PPT.table_utility import is_in_format
 
 fits_version = "8.0"
 fits_def = "she.pOfE"
 
 
-class POfETableMeta(object):
+class ShePOfEMeta(object):
     """
         @brief A class defining the metadata for PSF tables.
     """
@@ -56,7 +56,7 @@ class POfETableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class POfETableFormat(object):
+class ShePOfEFormat(object):
     """
         @brief A class defining the format for galaxy population priors tables. Only the p_of_e_table_format
                instance of this should generally be accessed, and it should not be changed.
@@ -65,7 +65,7 @@ class POfETableFormat(object):
     def __init__(self):
 
         # Get the metadata (contained within its own class)
-        self.meta = POfETableMeta()
+        self.meta = ShePOfEMeta()
 
         # And a quick alias for it
         self.m = self.meta
@@ -123,7 +123,7 @@ class POfETableFormat(object):
 
 
 # Define an instance of this object that can be imported
-p_of_e_table_format = POfETableFormat()
+p_of_e_table_format = ShePOfEFormat()
 
 # And a convient alias for it
 tf = p_of_e_table_format

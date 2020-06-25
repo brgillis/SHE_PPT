@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-24"
+__updated__ = "2020-06-25"
 
 from collections import OrderedDict
 
@@ -38,7 +38,7 @@ fits_def = "she.ksbMeasurements"
 logger = getLogger(mv.logger_name)
 
 
-class ksbMeasurementsTableMeta(object):
+class SheKsbMeasurementsMeta(object):
     """
         @brief A class defining the metadata for shear estimates tables.
     """
@@ -79,7 +79,7 @@ class ksbMeasurementsTableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class ksbMeasurementsTableFormat(object):
+class SheKsbMeasurementsFormat(object):
     """
         @brief A class defining the format for shear estimates tables. Only the ksb_measurements_table_format
                instance of this should generally be accessed, and it should not be changed.
@@ -88,7 +88,7 @@ class ksbMeasurementsTableFormat(object):
     def __init__(self):
 
         # Get the metadata (contained within its own class)
-        self.meta = ksbMeasurementsTableMeta()
+        self.meta = SheKsbMeasurementsMeta()
 
         # And a quick alias for it
         self.m = self.meta
@@ -190,7 +190,7 @@ class ksbMeasurementsTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-ksb_measurements_table_format = ksbMeasurementsTableFormat()
+ksb_measurements_table_format = SheKsbMeasurementsFormat()
 
 # And a convient alias for it
 tf = ksb_measurements_table_format

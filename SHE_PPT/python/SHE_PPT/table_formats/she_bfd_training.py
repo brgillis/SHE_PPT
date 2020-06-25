@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-24"
+__updated__ = "2020-06-25"
 
 from collections import OrderedDict
 
@@ -37,7 +37,7 @@ fits_version = "8.0"
 fits_def = "she.bfdTraining"
 
 
-class KsbTrainingTableMeta(object):
+class BfdTrainingMeta(object):
     """
         @brief A class defining the metadata for simulation plan tables.
     """
@@ -95,7 +95,7 @@ class KsbTrainingTableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class KsbTrainingTableFormat(object):
+class BfdTrainingFormat(object):
     """
         @brief A class defining the format for galaxy population priors tables. Only the bfd_training_table_format
                instance of this should generally be accessed, and it should not be changed.
@@ -104,7 +104,7 @@ class KsbTrainingTableFormat(object):
     def __init__(self):
 
         # Get the metadata (contained within its own class)
-        self.meta = KsbTrainingTableMeta()
+        self.meta = BfdTrainingMeta()
 
         # And a quick alias for it
         self.m = self.meta
@@ -190,7 +190,7 @@ class KsbTrainingTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-bfd_training_table_format = KsbTrainingTableFormat()
+bfd_training_table_format = BfdTrainingFormat()
 
 # And a convient alias for it
 tf = bfd_training_table_format

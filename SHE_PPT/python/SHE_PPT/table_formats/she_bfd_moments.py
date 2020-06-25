@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-23"
+__updated__ = "2020-06-25"
 
 from collections import OrderedDict
 
@@ -38,7 +38,7 @@ fits_def = "she.bfdMoments"
 logger = getLogger(mv.logger_name)
 
 
-class BFDMomentsTableMeta(object):
+class BfdMomentsMeta(object):
     """
         @brief A class defining the metadata for shear estimates tables.
     """
@@ -86,7 +86,7 @@ class BFDMomentsTableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class BFDMomentsTableFormat(object):
+class BfdMomentsFormat(object):
     """
         @brief A class defining the format for shear estimates tables. Only the bfd_moments_table_format
                instance of this should generally be accessed, and it should not be changed.
@@ -95,7 +95,7 @@ class BFDMomentsTableFormat(object):
     def __init__(self):
 
         # Get the metadata (contained within its own class)
-        self.meta = BFDMomentsTableMeta()
+        self.meta = BfdMomentsMeta()
 
         # And a quick alias for it
         self.m = self.meta
@@ -167,7 +167,7 @@ class BFDMomentsTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-bfd_moments_table_format = BFDMomentsTableFormat()
+bfd_moments_table_format = BfdMomentsFormat()
 
 # And a convient alias for it
 tf = bfd_moments_table_format

@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-24"
+__updated__ = "2020-06-25"
 
 from collections import OrderedDict
 
@@ -33,7 +33,7 @@ fits_version = "8.0"
 fits_def = "she.starCatalog"
 
 
-class StarCatalogTableMeta(object):
+class SheStarCatalogMeta(object):
     """
         @brief A class defining the metadata for simulation plan tables.
     """
@@ -65,7 +65,7 @@ class StarCatalogTableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class StarCatalogTableFormat(object):
+class SheStarCatalogFormat(object):
     """
         @brief A class defining the format for galaxy population priors tables. Only the star_catalog_format
                instance of this should generally be accessed, and it should not be changed.
@@ -74,7 +74,7 @@ class StarCatalogTableFormat(object):
     def __init__(self):
 
         # Get the metadata (contained within its own class)
-        self.meta = StarCatalogTableMeta()
+        self.meta = SheStarCatalogMeta()
 
         # And a quick alias for it
         self.m = self.meta
@@ -156,7 +156,7 @@ class StarCatalogTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-star_catalog_format = StarCatalogTableFormat()
+star_catalog_format = SheStarCatalogFormat()
 
 # And a convient alias for it
 tf = star_catalog_format

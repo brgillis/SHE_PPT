@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-24"
+__updated__ = "2020-06-25"
 
 from collections import OrderedDict
 
@@ -37,7 +37,7 @@ fits_def = "mer.finalCatalog"
 logger = getLogger(mv.logger_name)
 
 
-class DetectionsTableMeta(object):
+class MerFinalCatalogMeta(object):
     """
         @brief A class defining the metadata for detections tables.
     """
@@ -68,7 +68,7 @@ class DetectionsTableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class DetectionsTableFormat(object):
+class MerFinalCatalogFormat(object):
     """
         @brief A class defining the format for detections tables. Only the mer_final_catalog_format
                instance of this should generally be accessed, and it should not be changed.
@@ -77,7 +77,7 @@ class DetectionsTableFormat(object):
     def __init__(self):
 
         # Get the metadata (contained within its own class)
-        self.meta = DetectionsTableMeta()
+        self.meta = MerFinalCatalogMeta()
 
         # And a quick alias for it
         self.m = self.meta
@@ -281,7 +281,7 @@ class DetectionsTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-mer_final_catalog_format = DetectionsTableFormat()
+mer_final_catalog_format = MerFinalCatalogFormat()
 
 # And a convient alias for it
 tf = mer_final_catalog_format

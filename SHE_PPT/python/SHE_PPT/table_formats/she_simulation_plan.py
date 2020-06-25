@@ -19,21 +19,21 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-23"
+__updated__ = "2020-06-25"
 
 from collections import OrderedDict
 
 from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
-from SHE_PPT.table_utility import is_in_format
 from SHE_PPT.flags import she_flag_version
+from SHE_PPT.table_utility import is_in_format
 
 fits_version = "8.0"
 fits_def = "she.simulationPlan"
 
 
-class SimulationPlanTableMeta(object):
+class SheSimulationPlanMeta(object):
     """
         @brief A class defining the metadata for simulation plan tables.
     """
@@ -56,7 +56,7 @@ class SimulationPlanTableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class SimulationPlanTableFormat(object):
+class SheSimulationPlanFormat(object):
     """
         @brief A class defining the format for galaxy population priors tables. Only the simulation_plan_table_format
                instance of this should generally be accessed, and it should not be changed.
@@ -65,7 +65,7 @@ class SimulationPlanTableFormat(object):
     def __init__(self):
 
         # Get the metadata (contained within its own class)
-        self.meta = SimulationPlanTableMeta()
+        self.meta = SheSimulationPlanMeta()
 
         # And a quick alias for it
         self.m = self.meta
@@ -135,7 +135,7 @@ class SimulationPlanTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-simulation_plan_table_format = SimulationPlanTableFormat()
+simulation_plan_table_format = SheSimulationPlanFormat()
 
 # And a convient alias for it
 tf = simulation_plan_table_format

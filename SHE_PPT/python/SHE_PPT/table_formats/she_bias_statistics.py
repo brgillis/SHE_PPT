@@ -19,18 +19,18 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-23"
+__updated__ = "2020-06-25"
 
 from collections import OrderedDict
 
 from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
+from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
 from SHE_PPT.math import LinregressStatistics, LinregressResults, BiasMeasurements
 from SHE_PPT.table_formats.she_bfd_bias_statistics import tf as bfdtf
 from SHE_PPT.table_utility import is_in_format
-from SHE_PPT.flags import she_flag_version
 import numpy as np
 
 fits_version = "8.0"
@@ -39,7 +39,7 @@ fits_def = "she.biasStatistics"
 logger = getLogger(mv.logger_name)
 
 
-class BiasStatisticsTableMeta(object):
+class SheBiasStatisticsMeta(object):
     """
         @brief A class defining the metadata for bias statistics tables.
     """
@@ -91,7 +91,7 @@ class BiasStatisticsTableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class BiasStatisticsTableFormat(object):
+class SheBiasStatisticsFormat(object):
     """
         @brief A class defining the format for bias statistics tables. Only the bias_statistics_table_format
                instance of this should generally be accessed, and it should not be changed.
@@ -100,7 +100,7 @@ class BiasStatisticsTableFormat(object):
     def __init__(self):
 
         # Get the metadata (contained within its own class)
-        self.meta = BiasStatisticsTableMeta()
+        self.meta = SheBiasStatisticsMeta()
 
         # And a quick alias for it
         self.m = self.meta
@@ -158,7 +158,7 @@ class BiasStatisticsTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-bias_statistics_table_format = BiasStatisticsTableFormat()
+bias_statistics_table_format = SheBiasStatisticsFormat()
 
 # And a convient alias for it
 tf = bias_statistics_table_format

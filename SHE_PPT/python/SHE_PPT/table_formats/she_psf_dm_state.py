@@ -37,7 +37,7 @@ fits_version = "8.0"
 logger = getLogger(mv.logger_name)
 
 
-class PsfDmStateTableMeta(object):
+class ShePsfDmStateMeta(object):
     """ A class defining the metadata for PSF TM state tables.
     """
 
@@ -70,7 +70,7 @@ class PsfDmStateTableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class PsfDmStateTableFormat(object):
+class ShePsfDmStateFormat(object):
     """
         @brief A class defining the format for PSF TM state tables. Only the psf_dm_state_table_format
                instance of this should generally be accessed, and it should not be changed.
@@ -84,7 +84,7 @@ class PsfDmStateTableFormat(object):
 
         self.data_type = data_type
 
-        self.meta = PsfDmStateTableMeta(self.data_type)
+        self.meta = ShePsfDmStateMeta(self.data_type)
 
         # And a quick alias for it
         self.m = self.meta
@@ -139,8 +139,8 @@ class PsfDmStateTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-psf_table_format_field = PsfDmStateTableFormat("FIELD")
-psf_table_format_calib = PsfDmStateTableFormat("CAL")
+psf_table_format_field = ShePsfDmStateFormat("FIELD")
+psf_table_format_calib = ShePsfDmStateFormat("CAL")
 
 # And a convenient alias for it
 # Can define multiple aliases if slightly different types

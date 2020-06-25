@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-24"
+__updated__ = "2020-06-25"
 
 from collections import OrderedDict
 
@@ -41,7 +41,7 @@ len_chain = 200
 logger = getLogger(mv.logger_name)
 
 
-class lensMcChainsTableMeta(object):
+class SheLensMcChainsMeta(object):
     """
         @brief A class defining the metadata for shear estimates tables.
     """
@@ -87,7 +87,7 @@ class lensMcChainsTableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class lensMcChainsTableFormat(object):
+class SheLensMcChainsFormat(object):
     """
         @brief A class defining the format for shear estimates tables. Only the lensmc_chains_table_format
                instance of this should generally be accessed, and it should not be changed.
@@ -96,7 +96,7 @@ class lensMcChainsTableFormat(object):
     def __init__(self):
 
         # Get the metadata (contained within its own class)
-        self.meta = lensMcChainsTableMeta()
+        self.meta = SheLensMcChainsMeta()
 
         # And a quick alias for it
         self.m = self.meta
@@ -178,7 +178,7 @@ class lensMcChainsTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-lensmc_chains_table_format = lensMcChainsTableFormat()
+lensmc_chains_table_format = SheLensMcChainsFormat()
 
 # And a convient alias for it
 tf = lensmc_chains_table_format

@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-24"
+__updated__ = "2020-06-25"
 
 from collections import OrderedDict
 
@@ -38,7 +38,7 @@ fits_def = "she.commonCalibration"
 logger = getLogger(mv.logger_name)
 
 
-class commonCalibrationTableMeta(object):
+class SheCommonCalibrationMeta(object):
     """
         @brief A class defining the metadata for shear estimates tables.
     """
@@ -60,7 +60,7 @@ class commonCalibrationTableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class commonCalibrationTableFormat(object):
+class SheCommonCalibrationFormat(object):
     """
         @brief A class defining the format for shear estimates tables. Only the common_calibration_table_format
                instance of this should generally be accessed, and it should not be changed.
@@ -69,7 +69,7 @@ class commonCalibrationTableFormat(object):
     def __init__(self):
 
         # Get the metadata (contained within its own class)
-        self.meta = commonCalibrationTableMeta()
+        self.meta = SheCommonCalibrationMeta()
 
         # And a quick alias for it
         self.m = self.meta
@@ -210,7 +210,7 @@ class commonCalibrationTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-common_calibration_table_format = commonCalibrationTableFormat()
+common_calibration_table_format = SheCommonCalibrationFormat()
 
 # And a convient alias for it
 tf = common_calibration_table_format

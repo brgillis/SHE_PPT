@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-24"
+__updated__ = "2020-06-25"
 
 from collections import OrderedDict
 
@@ -38,7 +38,7 @@ fits_def = "she.lensmcMeasurements"
 logger = getLogger(mv.logger_name)
 
 
-class lensMcMeasurementsTableMeta(object):
+class SheLensMcMeasurementsMeta(object):
     """
         @brief A class defining the metadata for shear estimates tables.
     """
@@ -82,7 +82,7 @@ class lensMcMeasurementsTableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class lensMcMeasurementsTableFormat(object):
+class SheLensMcMeasurementsFormat(object):
     """
         @brief A class defining the format for shear estimates tables. Only the lensmc_measurements_table_format
                instance of this should generally be accessed, and it should not be changed.
@@ -91,7 +91,7 @@ class lensMcMeasurementsTableFormat(object):
     def __init__(self):
 
         # Get the metadata (contained within its own class)
-        self.meta = lensMcMeasurementsTableMeta()
+        self.meta = SheLensMcMeasurementsMeta()
 
         # And a quick alias for it
         self.m = self.meta
@@ -211,7 +211,7 @@ class lensMcMeasurementsTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-lensmc_measurements_table_format = lensMcMeasurementsTableFormat()
+lensmc_measurements_table_format = SheLensMcMeasurementsFormat()
 
 # And a convient alias for it
 tf = lensmc_measurements_table_format

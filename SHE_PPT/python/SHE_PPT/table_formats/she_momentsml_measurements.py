@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-24"
+__updated__ = "2020-06-25"
 
 from collections import OrderedDict
 
@@ -38,7 +38,7 @@ fits_def = "she.momentsmlMeasurements"
 logger = getLogger(mv.logger_name)
 
 
-class momentsmlMeasurementsTableMeta(object):
+class SheMomentsMlMeasurementsMeta(object):
     """
         @brief A class defining the metadata for shear estimates tables.
     """
@@ -79,7 +79,7 @@ class momentsmlMeasurementsTableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class momentsmlMeasurementsTableFormat(object):
+class SheMomentsMlMeasurementsFormat(object):
     """
         @brief A class defining the format for shear estimates tables. Only the momentsml_measurements_table_format
                instance of this should generally be accessed, and it should not be changed.
@@ -88,7 +88,7 @@ class momentsmlMeasurementsTableFormat(object):
     def __init__(self):
 
         # Get the metadata (contained within its own class)
-        self.meta = momentsmlMeasurementsTableMeta()
+        self.meta = SheMomentsMlMeasurementsMeta()
 
         # And a quick alias for it
         self.m = self.meta
@@ -186,7 +186,7 @@ class momentsmlMeasurementsTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-momentsml_measurements_table_format = momentsmlMeasurementsTableFormat()
+momentsml_measurements_table_format = SheMomentsMlMeasurementsFormat()
 
 # And a convient alias for it
 tf = momentsml_measurements_table_format

@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-23"
+__updated__ = "2020-06-25"
 
 from collections import OrderedDict
 
@@ -27,10 +27,10 @@ from astropy.table import Table
 
 from SHE_PPT import detector as dtc
 from SHE_PPT import magic_values as mv
+from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
 from SHE_PPT.table_utility import is_in_format
-from SHE_PPT.flags import she_flag_version
 
 fits_version = "8.0"
 fits_def = "she.regaussMeasurements"
@@ -38,7 +38,7 @@ fits_def = "she.regaussMeasurements"
 logger = getLogger(mv.logger_name)
 
 
-class regaussMeasurementsTableMeta(object):
+class SheRegaussMeasurementsMeta(object):
     """
         @brief A class defining the metadata for shear estimates tables.
     """
@@ -79,7 +79,7 @@ class regaussMeasurementsTableMeta(object):
         self.all = list(self.comments.keys())
 
 
-class regaussMeasurementsTableFormat(object):
+class SheRegaussMeasurementsFormat(object):
     """
         @brief A class defining the format for shear estimates tables. Only the regauss_measurements_table_format
                instance of this should generally be accessed, and it should not be changed.
@@ -88,7 +88,7 @@ class regaussMeasurementsTableFormat(object):
     def __init__(self):
 
         # Get the metadata (contained within its own class)
-        self.meta = regaussMeasurementsTableMeta()
+        self.meta = SheRegaussMeasurementsMeta()
 
         # And a quick alias for it
         self.m = self.meta
@@ -190,7 +190,7 @@ class regaussMeasurementsTableFormat(object):
 
 
 # Define an instance of this object that can be imported
-regauss_measurements_table_format = regaussMeasurementsTableFormat()
+regauss_measurements_table_format = SheRegaussMeasurementsFormat()
 
 # And a convient alias for it
 tf = regauss_measurements_table_format
