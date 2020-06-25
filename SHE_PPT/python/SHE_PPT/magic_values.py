@@ -19,11 +19,14 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2020-06-24"
 
 logger_name = "SHE_PPT"
 
 # Header values for fits images
+fits_version_label = "FITS_VER"
+fits_def_label = "FITS_DEF"
+she_flag_version_label = "SFLAGVER"
 gain_label = "CCDGAIN"
 scale_label = "GS_SCALE"
 stamp_size_label = "SSIZE"
@@ -34,13 +37,23 @@ extname_label = "EXTNAME"
 ccdid_label = "CCDID"
 dither_dx_label = "DITHERDX"
 dither_dy_label = "DITHERDY"
-obs_time_label = "DATE-OBS"
-field_id_label = "FIELDID"
+obs_id_label = "OBS_ID"
+obs_time_label = "DATE_OBS"
+tile_id_label = "TILE_ID"
+valid_label = "VALID"
 psf_state_identity_label = "OPTID"
 
+# Fits definitions
+psf_field_param_def = "she.psfFieldParameters"
+psf_calib_param_def = "she.psfCalibrationParameters"
+
 # Special values for tables
-psf_zm_identity = "zfit"
+psf_dm_identity = "dmfit"
+psf_om_identity = "omfit"
+psf_pd_identity = "pdfit"
 psf_tm_identity = "tmfit"
+psf_tml_identity = "tmlfit"
+psf_zm_identity = "zfit"
 
 # Tags for science image, noisemap, and mask
 sci_tag = "SCI"
@@ -57,8 +70,12 @@ psf_im_tag = "PSF"
 bulge_psf_tag = "BPSF"
 disk_psf_tag = "DPSF"
 psf_cat_tag = "PSFC"
-psf_zm_state_tag = "PSFZS"
-psf_tm_state_tag = "PSFTS"
+psf_dm_state_tag = "PSFDM"
+psf_om_state_tag = "PSFOM"
+psf_pd_state_tag = "PSFPD"
+psf_tm_state_tag = "PSFTM"
+psf_tml_state_tag = "PSFTL"
+psf_zm_state_tag = "PSFZ"
 
 # Miscellaneous
 segmap_unassigned_value = 0

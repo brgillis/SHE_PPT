@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-09"
+__updated__ = "2020-06-25"
 
 import os
 
@@ -26,17 +26,43 @@ from astropy.table import Column, Table
 import pytest
 
 from SHE_PPT import magic_values as mv
-from SHE_PPT.table_formats.bfd_moments import tf as bfdtf, initialise_bfd_moments_table
-from SHE_PPT.table_formats.details import tf as datf, initialise_details_table
-from SHE_PPT.table_formats.detections import tf as detf, initialise_detections_table
-from SHE_PPT.table_formats.galaxy_population_priors import tf as gptf, initialise_galaxy_population_table
-from SHE_PPT.table_formats.ksb_training import tf as kttf, initialise_ksb_training_table
-from SHE_PPT.table_formats.p_of_e import tf as petf, initialise_p_of_e_table
-from SHE_PPT.table_formats.psf import tf as pstf, initialise_psf_table
-from SHE_PPT.table_formats.psf_tm_state import tff as tmtf, tfc as tmtc, initialise_psf_tm_state_table
-from SHE_PPT.table_formats.psf_zm_state import tff as zmtf, tfc as zmtc, initialise_psf_zm_state_table
-from SHE_PPT.table_formats.shear_estimates import tf as setf, initialise_shear_estimates_table, len_chain, num_chains
-from SHE_PPT.table_formats.simulation_plan import tf as sptf, initialise_simulation_plan_table
+from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf, initialise_mer_final_catalog
+from SHE_PPT.table_formats.she_bfd_bias_statistics import tf as bfdb_tf, initialise_bfd_bias_statistics_table
+from SHE_PPT.table_formats.she_bfd_moments import tf as bfdm_tf, initialise_bfd_moments_table
+from SHE_PPT.table_formats.she_bfd_training import tf as bfdt_tf, initialise_bfd_training_table
+from SHE_PPT.table_formats.she_bias_statistics import tf as bs_tf, initialise_bias_statistics_table
+from SHE_PPT.table_formats.she_common_calibration import tf as cc_tf, initialise_common_calibration_table
+from SHE_PPT.table_formats.she_galaxy_population_priors import tf as gpp_tf, initialise_galaxy_population_priors_table
+from SHE_PPT.table_formats.she_ksb_measurements import tf as ksbm_tf, initialise_ksb_measurements_table
+from SHE_PPT.table_formats.she_ksb_training import tf as ksbt_tf, initialise_ksb_training_table
+from SHE_PPT.table_formats.she_lensmc_chains import tf as lmcc_tf, initialise_lensmc_chains_table, len_chain
+from SHE_PPT.table_formats.she_lensmc_measurements import tf as lmcm_tf, initialise_lensmc_measurements_table
+from SHE_PPT.table_formats.she_momentsml_measurements import tf as mmlm_tf, initialise_momentsml_measurements_table
+from SHE_PPT.table_formats.she_p_of_e import tf as poe_tf, initialise_p_of_e_table
+from SHE_PPT.table_formats.she_psf_dm_state import (tff as psfdmf_tf, tfc as psfdmc_tf,
+                                                    initialise_psf_field_dm_state_table,
+                                                    initialise_psf_calibration_dm_state_table)
+from SHE_PPT.table_formats.she_psf_model_image import tf as psfm_tf, initialise_psf_table
+from SHE_PPT.table_formats.she_psf_om_state import (tff as psfomf_tf, tfc as psfomc_tf,
+                                                    initialise_psf_field_om_state_table,
+                                                    initialise_psf_calibration_om_state_table)
+from SHE_PPT.table_formats.she_psf_pd_state import (tff as psfpdf_tf, tfc as psfpdc_tf,
+                                                    initialise_psf_field_pd_state_table,
+                                                    initialise_psf_calibration_pd_state_table)
+from SHE_PPT.table_formats.she_psf_tm_state import (tff as psftmf_tf, tfc as psftmc_tf,
+                                                    initialise_psf_field_tm_state_table,
+                                                    initialise_psf_calibration_tm_state_table)
+from SHE_PPT.table_formats.she_psf_tml_state import (tff as psftmlf_tf, tfc as psftmlc_tf,
+                                                    initialise_psf_field_tml_state_table,
+                                                    initialise_psf_calibration_tml_state_table)
+from SHE_PPT.table_formats.she_psf_zm_state import (tff as psfzmf_tf, tfc as psfzmc_tf,
+                                                    initialise_psf_field_zm_state_table,
+                                                    initialise_psf_calibration_zm_state_table)
+from SHE_PPT.table_formats.she_regauss_measurements import tf as regm_tf, initialise_regauss_measurements_table
+from SHE_PPT.table_formats.she_regauss_training import tf as regt_tf, initialise_regauss_training_table
+from SHE_PPT.table_formats.she_simulated_catalog import tf as simc_tf, initialise_simulated_catalog
+from SHE_PPT.table_formats.she_simulation_plan import tf as simp_tf, initialise_simulation_plan_table
+from SHE_PPT.table_formats.she_star_catalog import tf as sc_tf, initialise_star_catalog
 from SHE_PPT.table_utility import is_in_format, add_row
 import numpy as np
 
@@ -50,22 +76,47 @@ class TestTableFormats:
     @classmethod
     def setup_class(cls):
         # Define a list of the table formats we'll be testing
-        cls.formats = [datf, detf, setf, petf, pstf, gptf, sptf, bfdtf, kttf, zmtf, tmtf]
-        cls.initializers = [initialise_details_table,
-                            initialise_detections_table,
-                            initialise_shear_estimates_table,
-                            initialise_p_of_e_table,
-                            initialise_psf_table,
-                            initialise_galaxy_population_table,
-                            initialise_simulation_plan_table,
-                            initialise_bfd_moments_table,
-                            initialise_ksb_training_table,
-                            initialise_psf_zm_state_table,
-                            initialise_psf_tm_state_table, ]
+        cls.formats_and_initializers = [(bfdb_tf, initialise_bfd_bias_statistics_table),
+                                        (bfdm_tf, initialise_bfd_moments_table),
+                                        (bfdt_tf, initialise_bfd_training_table),
+                                        (bs_tf, initialise_bias_statistics_table),
+                                        (cc_tf, initialise_common_calibration_table),
+                                        (gpp_tf, initialise_galaxy_population_priors_table),
+                                        (ksbm_tf, initialise_ksb_measurements_table),
+                                        (ksbt_tf, initialise_ksb_training_table),
+                                        (lmcc_tf, initialise_lensmc_chains_table),
+                                        (lmcm_tf, initialise_lensmc_measurements_table),
+                                        (mfc_tf, initialise_mer_final_catalog),
+                                        (mmlm_tf, initialise_momentsml_measurements_table),
+                                        (poe_tf, initialise_p_of_e_table),
+                                        (psfdmf_tf, initialise_psf_field_dm_state_table),
+                                        (psfdmc_tf, initialise_psf_calibration_dm_state_table),
+                                        (psfm_tf, initialise_psf_table),
+                                        (psfomf_tf, initialise_psf_field_om_state_table),
+                                        (psfomc_tf, initialise_psf_calibration_om_state_table),
+                                        (psfpdf_tf, initialise_psf_field_pd_state_table),
+                                        (psfpdc_tf, initialise_psf_calibration_pd_state_table),
+                                        (psftmf_tf, initialise_psf_field_tm_state_table),
+                                        (psftmc_tf, initialise_psf_calibration_tm_state_table),
+                                        (psftmlf_tf, initialise_psf_field_tml_state_table),
+                                        (psftmlc_tf, initialise_psf_calibration_tml_state_table),
+                                        (psfzmf_tf, initialise_psf_field_zm_state_table),
+                                        (psfzmc_tf, initialise_psf_calibration_zm_state_table),
+                                        (regm_tf, initialise_regauss_measurements_table),
+                                        (regt_tf, initialise_regauss_training_table),
+                                        (simc_tf, initialise_simulated_catalog),
+                                        (simp_tf, initialise_simulation_plan_table),
+                                        (sc_tf, initialise_star_catalog),
+                                        ]
+                                        # (, ),
+
+        cls.formats, cls.initializers = zip(*cls.formats_and_initializers)
 
         cls.filename_base = "test_table"
 
         cls.filenames = [cls.filename_base + ".ecsv", cls.filename_base + ".fits"]
+
+        return
 
     @classmethod
     def teardown_class(cls):
@@ -74,6 +125,8 @@ class TestTableFormats:
         for filename in cls.filenames:
             if os.path.exists(filename):
                 os.remove(filename)
+
+        return
 
     def test_extra_data(self):
         # Check that the keys are assigned correctly for all extra data (eg. comments)
@@ -96,6 +149,8 @@ class TestTableFormats:
             # Check column lengths
             assert list(tf.lengths.keys()) == tf.all
 
+        return
+
     def test_is_in_format(self):
         # Test each format is detected correctly
 
@@ -110,23 +165,41 @@ class TestTableFormats:
 
             # Try strict test
             for j in range((len(self.formats))):
-                assert is_in_format(empty_tables[i], self.formats[j], strict=True) == (i == j)
+                if i == j and not is_in_format(empty_tables[i], self.formats[j], strict=True):
+                    raise Exception("Table format " + self.formats[j].m.table_format +
+                                    " doesn't initialize a valid table" +
+                                    " in strict test.")
+                elif i != j and is_in_format(empty_tables[i], self.formats[j], strict=True):
+                    raise Exception("Table format " + self.formats[j].m.table_format +
+                                    " resolves true for tables of format " + self.formats[i].m.table_format +
+                                    " in strict test.")
 
             # Try non-strict version now
             empty_tables[i].add_column(Column(name='new_column', data=np.zeros((0,))))
             for j in range((len(self.formats))):
-                assert is_in_format(empty_tables[i], self.formats[j], strict=False) == (i == j)
+                if i == j and not is_in_format(empty_tables[i], self.formats[j], strict=False):
+                    raise Exception("Table format " + self.formats[j].m.table_format +
+                                    " doesn't initialize a valid table" +
+                                    " in non-strict test.")
+                elif i != j and is_in_format(empty_tables[i], self.formats[j], strict=False):
+                    raise Exception("Table format " + self.formats[j].m.table_format +
+                                    " resolves true for tables of format " + self.formats[i].m.table_format +
+                                    " in non-strict test.")
+
+        return
 
     def test_add_row(self):
         # Test that we can add a row through kwargs
 
-        tab = initialise_detections_table()
+        tab = initialise_mer_final_catalog()
 
-        add_row(tab, **{detf.ID: 0, detf.gal_x_world: 0, detf.gal_y_world: 1})
+        add_row(tab, **{mfc_tf.ID: 0, mfc_tf.gal_x_world: 0, mfc_tf.gal_y_world: 1})
 
-        assert tab[detf.ID][0] == 0
-        assert tab[detf.gal_x_world][0] == 0.
-        assert tab[detf.gal_y_world][0] == 1.
+        assert tab[mfc_tf.ID][0] == 0
+        assert tab[mfc_tf.gal_x_world][0] == 0.
+        assert tab[mfc_tf.gal_y_world][0] == 1.
+
+        return
 
     def test_init(self):
 
@@ -136,33 +209,40 @@ class TestTableFormats:
 
         # Test initialization methods
 
-        detections_table = initialise_detections_table(model_hash=model_hash,
+        mer_final_catalog = initialise_mer_final_catalog(model_hash=model_hash,
                                                        model_seed=model_seed,
                                                        noise_seed=noise_seed)
 
-        assert(detections_table.meta[detf.m.model_hash] == model_hash)
-        assert(detections_table.meta[detf.m.model_seed] == model_seed)
-        assert(detections_table.meta[detf.m.noise_seed] == noise_seed)
+        assert(mer_final_catalog.meta[mfc_tf.m.model_hash] == model_hash)
+        assert(mer_final_catalog.meta[mfc_tf.m.model_seed] == model_seed)
+        assert(mer_final_catalog.meta[mfc_tf.m.noise_seed] == noise_seed)
 
-        _details_table = initialise_details_table(model_hash=model_hash,
+        _details_table = initialise_simulated_catalog(model_hash=model_hash,
                                                   model_seed=model_seed,
                                                   noise_seed=noise_seed)
 
         psf_table = initialise_psf_table()
 
-        assert(psf_table.meta[pstf.m.extname] == mv.psf_cat_tag)
+        assert(psf_table.meta[psfm_tf.m.extname] == mv.psf_cat_tag)
 
         # Try to initialize the shear estimates table based on the detections table
 
-        detections_table.meta[detf.m.model_hash] = model_hash
-        detections_table.meta[detf.m.model_seed] = model_seed
-        detections_table.meta[detf.m.noise_seed] = noise_seed
+        mer_final_catalog.meta[mfc_tf.m.model_hash] = model_hash
+        mer_final_catalog.meta[mfc_tf.m.model_seed] = model_seed
+        mer_final_catalog.meta[mfc_tf.m.noise_seed] = noise_seed
 
-        shear_estimates_table = initialise_shear_estimates_table(detections_table)
+        shear_estimates_table = initialise_lensmc_measurements_table(mer_final_catalog)
 
-        assert(shear_estimates_table.meta[setf.m.model_hash] == model_hash)
-        assert(shear_estimates_table.meta[setf.m.model_seed] == model_seed)
-        assert(shear_estimates_table.meta[setf.m.noise_seed] == noise_seed)
+        assert(shear_estimates_table.meta[lmcm_tf.m.model_hash] == model_hash)
+        assert(shear_estimates_table.meta[lmcm_tf.m.model_seed] == model_seed)
+        assert(shear_estimates_table.meta[lmcm_tf.m.noise_seed] == noise_seed)
 
-        assert(shear_estimates_table.meta[setf.m.num_chains] == num_chains)
-        assert(shear_estimates_table.meta[setf.m.len_chain] == len_chain)
+        shear_chains_table = initialise_lensmc_chains_table(mer_final_catalog)
+
+        assert(shear_chains_table.meta[lmcm_tf.m.model_hash] == model_hash)
+        assert(shear_chains_table.meta[lmcm_tf.m.model_seed] == model_seed)
+        assert(shear_chains_table.meta[lmcm_tf.m.noise_seed] == noise_seed)
+
+        assert(shear_chains_table.meta[lmcc_tf.m.len_chain] == len_chain)
+
+        return

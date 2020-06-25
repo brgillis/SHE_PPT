@@ -22,7 +22,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-16"
+__updated__ = "2020-06-25"
 
 import pickle
 
@@ -38,7 +38,6 @@ def init():
         Adds some extra functionality to the DpdSheAstrometry product
     """
 
-    # binding_class = she_dpd.DpdSheBFDTrainingDataProduct # @FIXME
     binding_class = dpdSheBfdTraining
 
     # Add the data file name methods
@@ -70,36 +69,12 @@ def __get_all_filenames(self):
 
     return all_filenames
 
-# class DpdSheBFDTrainingDataProduct:  # @FIXME
-
-#    def __init__(self):
-#        self.Header = None
-#        self.Data = None
-
-#    def validateBinding(self):
-#        return False
-
-# class SheBFDTrainingDataProduct:  # @FIXME
-
-#    def __init__(self):
-#        self.format = None
-#        self.version = None
-#        self.DataContainer = None
-
-# class DataContainer:  # @FIXME
-
-#    def __init__(self):
-#        self.FileName = None
-#        self.filestatus = None
-
 
 def create_dpd_she_bfd_training(filename=None):
     """
         @TODO fill in docstring
     """
 
-    # dpd_she_bfd_training = she_dpd.DpdSheBFDTrainingDataProduct() #
-    # FIXME
     dpd_she_bfd_training = read_xml_product(
         find_aux_file(sample_file_name), allow_pickled=False)
 
@@ -115,21 +90,3 @@ def create_dpd_she_bfd_training(filename=None):
 
 # Add a useful alias
 create_bfd_training_product = create_dpd_she_bfd_training
-
-
-def create_she_bfd_training(filename=None):
-    """
-        @TODO fill in docstring
-    """
-
-    # she_bfd_training = she_dpd.SheBFDTrainingDataProduct() # @FIXME
-    she_bfd_training = SheBFDTrainingDataProduct()
-
-    she_bfd_training.format = "UNDEFINED"
-    she_bfd_training.version = "0.0"
-
-    she_bfd_training.DataContainer = DataContainer()
-    she_bfd_training.DataContainer.FileName = filename
-    she_bfd_training.DataContainer.filestatus = "PROPOSED"
-
-    return she_bfd_training

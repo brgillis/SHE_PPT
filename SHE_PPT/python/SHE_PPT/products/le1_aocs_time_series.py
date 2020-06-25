@@ -23,7 +23,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-16"
+__updated__ = "2020-06-25"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
@@ -33,11 +33,11 @@ import pickle
 
 def init():
     """
-        Adds some extra functionality to the DpdLe1AocsTimeSeriesProduct product
+        Adds some extra functionality to the DpdLe1AocsTimeSeries product
     """
 
-    # binding_class = she_dpd.DpdLe1AocsTimeSeriesProduct # @FIXME
-    binding_class = DpdLe1AocsTimeSeriesProduct
+    # binding_class = she_dpd.DpdLe1AocsTimeSeries # @FIXME
+    binding_class = DpdLe1AocsTimeSeries
 
     binding_class.get_all_filenames = __get_all_filenames
 
@@ -53,7 +53,7 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-class DpdLe1AocsTimeSeriesProduct:  # @FIXME
+class DpdLe1AocsTimeSeries:  # @FIXME
 
     def __init__(self):
         self.Header = None
@@ -63,7 +63,7 @@ class DpdLe1AocsTimeSeriesProduct:  # @FIXME
         return False
 
 
-class Le1AocsTimeSeriesProduct:  # @FIXME
+class Le1AocsTimeSeries:  # @FIXME
 
     def __init__(self):
         pass
@@ -74,8 +74,8 @@ def create_dpd_le1_aocs_time_series():
         @TODO fill in docstring
     """
 
-    # dpd_le1_aocs_time_series = she_dpd.DpdLe1AocsTimeSeriesProduct() # @FIXME
-    dpd_le1_aocs_time_series = DpdLe1AocsTimeSeriesProduct()
+    # dpd_le1_aocs_time_series = she_dpd.DpdLe1AocsTimeSeries() # @FIXME
+    dpd_le1_aocs_time_series = DpdLe1AocsTimeSeries()
 
     # dpd_le1_aocs_time_series.Header =
     # HeaderProvider.create_generic_header("SHE") # FIXME
@@ -95,7 +95,7 @@ def create_le1_aocs_time_series():
         @TODO fill in docstring
     """
 
-    # le1_aocs_time_series = she_dpd.Le1AocsTimeSeriesProduct() # @FIXME
-    le1_aocs_time_series = Le1AocsTimeSeriesProduct()
+    # le1_aocs_time_series = she_dpd.Le1AocsTimeSeries() # @FIXME
+    le1_aocs_time_series = Le1AocsTimeSeries()
 
     return le1_aocs_time_series

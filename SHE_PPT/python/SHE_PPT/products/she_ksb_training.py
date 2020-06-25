@@ -22,7 +22,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-16"
+__updated__ = "2020-06-25"
 
 import pickle
 
@@ -68,36 +68,12 @@ def __get_all_filenames(self):
 
     return all_filenames
 
-# class DpdSheKSBTrainingDataProduct:  # @FIXME
-
-#    def __init__(self):
-#        self.Header = None
-#        self.Data = None
-
-#    def validateBinding(self):
-#        return False
-
-# class SheKSBTrainingDataProduct:  # @FIXME
-
-#    def __init__(self):
-#        self.format = None
-#        self.version = None
-#        self.DataContainer = None
-
-# class DataContainer:  # @FIXME
-
-#    def __init__(self):
-#        self.FileName = None
-#        self.filestatus = None
-
 
 def create_dpd_she_ksb_training(filename=None):
     """
         @TODO fill in docstring
     """
 
-    # dpd_she_ksb_training = she_dpd.DpdSheKSBTrainingDataProduct() #
-    # FIXME
     dpd_she_ksb_training = read_xml_product(
         find_aux_file(sample_file_name), allow_pickled=False)
 
@@ -108,32 +84,8 @@ def create_dpd_she_ksb_training(filename=None):
     if filename:
         __set_filename(dpd_she_ksb_training, filename)
 
-    # dpd_she_ksb_training.Header =
-    # HeaderProvider.create_generic_header("SHE") # FIXME
-    # dpd_she_ksb_training.Header = "SHE"
-
-    # dpd_she_ksb_training.Data = create_ksb_training_data(filename)
-
     return dpd_she_ksb_training
 
 
 # Add a useful alias
 create_ksb_training_data_product = create_dpd_she_ksb_training
-
-
-def create_ksb_training_data(filename=None):
-    """
-        @TODO fill in docstring
-    """
-
-    # ksb_training_data = she_dpd.SheKSBTrainingDataProduct() # @FIXME
-    ksb_training_data = SheKSBTrainingDataProduct()
-
-    ksb_training_data.format = "UNDEFINED"
-    ksb_training_data.version = "0.0"
-
-    ksb_training_data.DataContainer = DataContainer()
-    ksb_training_data.DataContainer.FileName = filename
-    ksb_training_data.DataContainer.filestatus = "PROPOSED"
-
-    return ksb_training_data

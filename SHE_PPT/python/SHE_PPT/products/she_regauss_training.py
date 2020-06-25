@@ -22,7 +22,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-19"
+__updated__ = "2020-06-25"
 
 import pickle
 
@@ -69,7 +69,7 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-class DpdSheREGAUSSTrainingDataProduct:  # @FIXME
+class DpdSheRegaussTraining:  # @FIXME
 
     def __init__(self):
         self.Header = None
@@ -79,7 +79,7 @@ class DpdSheREGAUSSTrainingDataProduct:  # @FIXME
         return False
 
 
-class SheREGAUSSTrainingDataProduct:  # @FIXME
+class SheRegaussTraining:  # @FIXME
 
     def __init__(self):
         self.format = None
@@ -99,15 +99,10 @@ def create_dpd_she_regauss_training(filename=None):
         @TODO fill in docstring
     """
 
-    # dpd_she_regauss_training =
-    # she_dpd.DpdSheREGAUSSTrainingDataProduct() # FIXME
     dpd_she_regauss_training = read_xml_product(
         find_aux_file(sample_file_name), allow_pickled=False)
 
     dpd_she_regauss_training.Header = HeaderProvider.create_generic_header("SHE")  # FIXME
-
-    # dpd_she_regauss_training.Data = create_she_regauss_training(
-    #    filename)
 
     if filename:
         __set_filename(dpd_she_regauss_training, filename)
@@ -117,22 +112,3 @@ def create_dpd_she_regauss_training(filename=None):
 
 # Add a useful alias
 create_regauss_training_data_product = create_dpd_she_regauss_training
-
-
-def create_she_regauss_training(filename=None):
-    """
-        @TODO fill in docstring
-    """
-
-    # she_regauss_training = she_dpd.SheREGAUSSTrainingDataProduct() #
-    # @FIXME
-    she_regauss_training = SheREGAUSSTrainingDataProduct()
-
-    she_regauss_training.format = "UNDEFINED"
-    she_regauss_training.version = "0.0"
-
-    she_regauss_training.DataContainer = DataContainer()
-    she_regauss_training.DataContainer.FileName = filename
-    she_regauss_training.DataContainer.filestatus = "PROPOSED"
-
-    return she_regauss_training

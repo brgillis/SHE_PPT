@@ -22,7 +22,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-16"
+__updated__ = "2020-06-25"
 
 import pickle
 
@@ -69,7 +69,7 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-class DpdSheLensMCTrainingDataProduct:  # @FIXME
+class DpdSheLensMcTraining:  # @FIXME
 
     def __init__(self):
         self.Header = None
@@ -79,7 +79,7 @@ class DpdSheLensMCTrainingDataProduct:  # @FIXME
         return False
 
 
-class SheLensMCTrainingDataProduct:  # @FIXME
+class SheLensMcTraining:  # @FIXME
 
     def __init__(self):
         self.format = None
@@ -99,8 +99,6 @@ def create_dpd_she_lensmc_training(filename=None):
         @TODO fill in docstring
     """
 
-    # dpd_she_lensmc_training = she_dpd.DpdSheLensMCTrainingDataProduct()
-    # # FIXME
     dpd_she_lensmc_training = read_xml_product(find_aux_file(sample_file_name))
 
     dpd_she_lensmc_training.Header = HeaderProvider.create_generic_header("SHE")
@@ -122,9 +120,7 @@ def create_she_lensmc_training(filename=None):
         @TODO fill in docstring
     """
 
-    # she_lensmc_training = she_dpd.SheLensMCTrainingDataProduct() #
-    # @FIXME
-    she_lensmc_training = SheLensMCTrainingDataProduct()
+    she_lensmc_training = SheLensMcTraining()
 
     she_lensmc_training.format = "UNDEFINED"
     she_lensmc_training.version = "0.0"
