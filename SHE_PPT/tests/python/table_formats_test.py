@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-24"
+__updated__ = "2020-06-25"
 
 import os
 
@@ -39,12 +39,25 @@ from SHE_PPT.table_formats.she_lensmc_chains import tf as lmcc_tf, initialise_le
 from SHE_PPT.table_formats.she_lensmc_measurements import tf as lmcm_tf, initialise_lensmc_measurements_table
 from SHE_PPT.table_formats.she_momentsml_measurements import tf as mmlm_tf, initialise_momentsml_measurements_table
 from SHE_PPT.table_formats.she_p_of_e import tf as poe_tf, initialise_p_of_e_table
-from SHE_PPT.table_formats.she_psf_dm_state import tff as psfdmf_tf, tfc as dmtc, initialise_psf_dm_state_table
+from SHE_PPT.table_formats.she_psf_dm_state import (tff as psfdmf_tf, tfc as psfdmc_tf,
+                                                    initialise_psf_field_dm_state_table,
+                                                    initialise_psf_calibration_dm_state_table)
 from SHE_PPT.table_formats.she_psf_model_image import tf as psfm_tf, initialise_psf_table
-from SHE_PPT.table_formats.she_psf_om_state import tff as psfomf_tf, tfc as omtc_tf, initialise_psf_om_state_table
-from SHE_PPT.table_formats.she_psf_pd_state import tff as psfpdf_tf, tfc as pdtc_tf, initialise_psf_pd_state_table
-from SHE_PPT.table_formats.she_psf_tm_state import tff as psftmf_tf, tfc as tmtc_tf, initialise_psf_tm_state_table
-from SHE_PPT.table_formats.she_psf_zm_state import tff as psfzmf_tf, tfc as psfzmc_tf, initialise_psf_zm_state_table
+from SHE_PPT.table_formats.she_psf_om_state import (tff as psfomf_tf, tfc as psfomc_tf,
+                                                    initialise_psf_field_om_state_table,
+                                                    initialise_psf_calibration_om_state_table)
+from SHE_PPT.table_formats.she_psf_pd_state import (tff as psfpdf_tf, tfc as psfpdc_tf,
+                                                    initialise_psf_field_pd_state_table,
+                                                    initialise_psf_calibration_pd_state_table)
+from SHE_PPT.table_formats.she_psf_tm_state import (tff as psftmf_tf, tfc as psftmc_tf,
+                                                    initialise_psf_field_tm_state_table,
+                                                    initialise_psf_calibration_tm_state_table)
+from SHE_PPT.table_formats.she_psf_tml_state import (tff as psftmlf_tf, tfc as psftmlc_tf,
+                                                    initialise_psf_field_tml_state_table,
+                                                    initialise_psf_calibration_tml_state_table)
+from SHE_PPT.table_formats.she_psf_zm_state import (tff as psfzmf_tf, tfc as psfzmc_tf,
+                                                    initialise_psf_field_zm_state_table,
+                                                    initialise_psf_calibration_zm_state_table)
 from SHE_PPT.table_formats.she_regauss_measurements import tf as regm_tf, initialise_regauss_measurements_table
 from SHE_PPT.table_formats.she_regauss_training import tf as regt_tf, initialise_regauss_training_table
 from SHE_PPT.table_formats.she_simulated_catalog import tf as simc_tf, initialise_simulated_catalog
@@ -76,12 +89,19 @@ class TestTableFormats:
                                         (mfc_tf, initialise_mer_final_catalog),
                                         (mmlm_tf, initialise_momentsml_measurements_table),
                                         (poe_tf, initialise_p_of_e_table),
-                                        (psfdmf_tf, initialise_psf_dm_state_table),
+                                        (psfdmf_tf, initialise_psf_field_dm_state_table),
+                                        (psfdmc_tf, initialise_psf_calibration_dm_state_table),
                                         (psfm_tf, initialise_psf_table),
-                                        (psfomf_tf, initialise_psf_om_state_table),
-                                        (psfpdf_tf, initialise_psf_pd_state_table),
-                                        (psftmf_tf, initialise_psf_tm_state_table),
-                                        (psfzmf_tf, initialise_psf_zm_state_table),
+                                        (psfomf_tf, initialise_psf_field_om_state_table),
+                                        (psfomc_tf, initialise_psf_calibration_om_state_table),
+                                        (psfpdf_tf, initialise_psf_field_pd_state_table),
+                                        (psfpdc_tf, initialise_psf_calibration_pd_state_table),
+                                        (psftmf_tf, initialise_psf_field_tm_state_table),
+                                        (psftmc_tf, initialise_psf_calibration_tm_state_table),
+                                        (psftmlf_tf, initialise_psf_field_tml_state_table),
+                                        (psftmlc_tf, initialise_psf_calibration_tml_state_table),
+                                        (psfzmf_tf, initialise_psf_field_zm_state_table),
+                                        (psfzmc_tf, initialise_psf_calibration_zm_state_table),
                                         (regm_tf, initialise_regauss_measurements_table),
                                         (regt_tf, initialise_regauss_training_table),
                                         (simc_tf, initialise_simulated_catalog),

@@ -218,3 +218,23 @@ def initialise_psf_tml_state_table(data_type="FIELD",
     assert(is_in_format(psf_tml_state_table, tf))
 
     return psf_tml_state_table
+
+# Initialisers for field/calibration variants
+
+
+def initialise_psf_field_tml_state_table(optional_columns=None,
+                                        init_columns=None):
+
+    if init_columns is None:
+        init_columns = {}
+    return initialise_psf_tml_state_table(data_type="FIELD", optional_columns=optional_columns,
+                                  init_columns=init_columns)
+
+
+def initialise_psf_calibration_tml_state_table(optional_columns=None,
+                                              init_columns=None):
+
+    if init_columns is None:
+        init_columns = {}
+    return initialise_psf_tml_state_table(data_type="CALIB", optional_columns=optional_columns,
+                                  init_columns=init_columns)

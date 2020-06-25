@@ -227,3 +227,23 @@ def initialise_psf_dm_state_table(data_type="FIELD", optional_columns=None,
     assert(is_in_format(psf_dm_state_table, tf))
 
     return psf_dm_state_table
+
+# Initialisers for field/calibration variants
+
+
+def initialise_psf_field_dm_state_table(optional_columns=None,
+                                        init_columns=None):
+
+    if init_columns is None:
+        init_columns = {}
+    return initialise_psf_dm_state_table(data_type="FIELD", optional_columns=optional_columns,
+                                  init_columns=init_columns)
+
+
+def initialise_psf_calibration_dm_state_table(optional_columns=None,
+                                              init_columns=None):
+
+    if init_columns is None:
+        init_columns = {}
+    return initialise_psf_dm_state_table(data_type="CALIB", optional_columns=optional_columns,
+                                  init_columns=init_columns)
