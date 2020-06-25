@@ -28,7 +28,7 @@ import pickle
 
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
-from ST_DataModelBindings.dpd.she.bfdtraining_stub import DpdSheBfdTraining
+from ST_DataModelBindings.dpd.she.bfdtraining_stub import dpdSheBfdTraining
 
 sample_file_name = "SHE_PPT/sample_bfd_training.xml"
 
@@ -38,7 +38,7 @@ def init():
         Adds some extra functionality to the DpdSheAstrometry product
     """
 
-    binding_class = DpdSheBfdTraining
+    binding_class = dpdSheBfdTraining
 
     # Add the data file name methods
 
