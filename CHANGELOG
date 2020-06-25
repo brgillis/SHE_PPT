@@ -5,7 +5,7 @@ Changes from v1.0 to v8.0
 
 API Changes
 -----------
-- Names of data product modules updated to standardized format and to match data model
+- Names of data product and table format modules updated to standardized format and to match data model
 - Table formats updated to match SC8 Data Model
 
 Dependency Changes
@@ -30,6 +30,7 @@ New config features
 Miscellaneous
 -------------
 - Various code and comment cleanup
+- Table format testing made more thorough
 
 Changes from v0.8 to v1.4
 =========================
