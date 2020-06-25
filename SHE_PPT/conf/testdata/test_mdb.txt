@@ -1,1 +1,1 @@
-SHE_PPT_v8/sample_mdb.xml
+SHE_PPT_8_0/sample_mdb.xml
