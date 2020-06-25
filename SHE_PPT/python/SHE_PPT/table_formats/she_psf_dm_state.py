@@ -20,7 +20,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-24"
+__updated__ = "2020-06-25"
 
 from collections import OrderedDict
 
@@ -51,7 +51,7 @@ class PsfDmStateTableMeta(object):
         self.main_data_type = (mv.psf_field_param_def
                                if self.data_type == "FIELD" else
                                mv.psf_calib_param_def)
-        self.table_format = "%s.SheOtherModelParams" % self.main_data_type
+        self.table_format = "%s.SheDetectorModelParams" % self.main_data_type
         self.identity = mv.psf_dm_identity
 
         # Table metadata labels
