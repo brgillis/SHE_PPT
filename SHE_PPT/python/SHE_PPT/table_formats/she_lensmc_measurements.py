@@ -144,21 +144,21 @@ class SheLensMcMeasurementsFormat(object):
             "SHE_LENSMC_G2", dtype=">f4", fits_dtype="E")
         self.g2_err = set_column_properties(
             "SHE_LENSMC_G2_ERR", dtype=">f4", fits_dtype="E")
-        self.g1g2_cov = set_column_properties(
+        self.g1g2_covar = set_column_properties(
             "SHE_LENSMC_G1G2_COVAR", dtype=">f4", fits_dtype="E")
-        self.wgt = set_column_properties(
+        self.weight = set_column_properties(
             "SHE_LENSMC_WEIGHT", dtype=">f4", fits_dtype="E")
-        self.g1_unc = set_column_properties(
+        self.g1_uncal = set_column_properties(
             "SHE_LENSMC_G1_UNCAL", dtype=">f4", fits_dtype="E")
-        self.g1_unc_err = set_column_properties(
+        self.g1_uncal_err = set_column_properties(
             "SHE_LENSMC_G1_UNCAL_ERR", dtype=">f4", fits_dtype="E")
-        self.g2_unc = set_column_properties(
+        self.g2_uncal = set_column_properties(
             "SHE_LENSMC_G2_UNCAL", dtype=">f4", fits_dtype="E")
-        self.g2_unc_err = set_column_properties(
+        self.g2_uncal_err = set_column_properties(
             "SHE_LENSMC_G2_UNCAL_ERR", dtype=">f4", fits_dtype="E")
-        self.g1g2_unc_cov = set_column_properties(
+        self.g1g2_uncal_cov = set_column_properties(
             "SHE_LENSMC_G1G2_UNCAL_COVAR", dtype=">f4", fits_dtype="E")
-        self.wgt_unc = set_column_properties(
+        self.weight_uncal = set_column_properties(
             "SHE_LENSMC_WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
 
         self.updated_ra = set_column_properties(
@@ -179,9 +179,9 @@ class SheLensMcMeasurementsFormat(object):
             "SHE_LENSMC_FLUX", is_optional=True, dtype=">f4", fits_dtype="E")
         self.flux_err = set_column_properties(
             "SHE_LENSMC_FLUX_ERR", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.blg_frc = set_column_properties(
+        self.bulge_frac = set_column_properties(
             "SHE_LENSMC_BULGE_FRAC", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.blg_frc_err = set_column_properties(
+        self.bulge_frac_err = set_column_properties(
             "SHE_LENSMC_BULGE_FRAC_ERR", is_optional=True, dtype=">f4", fits_dtype="E")
         self.snr = set_column_properties(
             "SHE_LENSMC_SNR", is_optional=True, dtype=">f4", fits_dtype="E")
