@@ -1,4 +1,4 @@
-""" @file detections.py
+""" @mer_final_catalog.py
 
     Created 22 Aug 2017
 
