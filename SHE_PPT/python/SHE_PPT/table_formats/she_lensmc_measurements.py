@@ -161,13 +161,13 @@ class SheLensMcMeasurementsFormat(object):
         self.weight_uncal = set_column_properties(
             "SHE_LENSMC_WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
 
-        self.updated_ra = set_column_properties(
+        self.ra = set_column_properties(
             "SHE_LENSMC_UPDATED_RA", is_optional=False, comment="deg")
-        self.updated_ra_err = set_column_properties(
+        self.ra_err = set_column_properties(
             "SHE_LENSMC_UPDATED_RA_ERR", is_optional=False, comment="deg")
-        self.updated_dec = set_column_properties(
+        self.dec = set_column_properties(
             "SHE_LENSMC_UPDATED_DEC", is_optional=True, comment="deg")
-        self.updated_dec_err = set_column_properties(
+        self.dec_err = set_column_properties(
             "SHE_LENSMC_UPDATED_DEC_ERR", is_optional=True, comment="deg")
 
         # lensmc specific columns
