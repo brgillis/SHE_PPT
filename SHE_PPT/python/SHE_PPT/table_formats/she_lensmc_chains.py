@@ -139,9 +139,9 @@ class SheLensMcChainsFormat(object):
         self.fit_class = set_column_properties(
             "SHE_LENSMC_FIT_CLASS", dtype=">i2", fits_dtype="I")
 
-        self.lensmc_g1_chn = set_column_properties(
+        self.g1 = set_column_properties(
             "SHE_LENSMC_G1_CHAIN", dtype=">f4", fits_dtype="E", length=num_chains * len_chain)
-        self.lensmc_g2_chn = set_column_properties(
+        self.g2 = set_column_properties(
             "SHE_LENSMC_G2_CHAIN", dtype=">f4", fits_dtype="E", length=num_chains * len_chain)
 
         self.updated_ra = set_column_properties(
@@ -150,21 +150,21 @@ class SheLensMcChainsFormat(object):
             "SHE_LENSMC_UPDATED_DEC_CHAIN", is_optional=True, comment="deg", fits_dtype="D", length=num_chains * len_chain)
 
         # lensmc specific columns
-        self.lensmc_re = set_column_properties(
+        self.re = set_column_properties(
             "SHE_LENSMC_RE_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=num_chains * len_chain)
-        self.lensmc_flux = set_column_properties(
+        self.flux = set_column_properties(
             "SHE_LENSMC_FLUX_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=num_chains * len_chain)
-        self.lensmc_bulge_frac = set_column_properties(
+        self.bulge_frac = set_column_properties(
             "SHE_LENSMC_BULGE_FRAC_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=num_chains * len_chain)
-        self.lensmc_snr = set_column_properties(
+        self.snr = set_column_properties(
             "SHE_LENSMC_SNR_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=num_chains * len_chain)
-        self.lensmc_lr = set_column_properties(
+        self.lr = set_column_properties(
             "SHE_LENSMC_LR_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=num_chains * len_chain)
-        self.lensmc_chi2 = set_column_properties(
+        self.chi2 = set_column_properties(
             "SHE_LENSMC_CHI2", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.lensmc_dof = set_column_properties(
+        self.dof = set_column_properties(
             "SHE_LENSMC_DOF", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.lensmc_acc = set_column_properties(
+        self.acc = set_column_properties(
             "SHE_LENSMC_ACCEPTANCE", is_optional=True, dtype=">f4", fits_dtype="E")
 
         # A list of columns in the desired order
