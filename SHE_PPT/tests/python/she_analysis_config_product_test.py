@@ -40,7 +40,7 @@ class TestLensMCTrainingDataProduct(object):
         # Check that it validates the schema
         product.validateBinding()
 
-        pass
+        return
 
     def test_xml_writing_and_reading(self, tmpdir):
 
@@ -60,26 +60,4 @@ class TestLensMCTrainingDataProduct(object):
         # Check that the filenames match
         assert loaded_product.get_filename() == "data/" + subfilename
 
-        pass
-
-    @pytest.mark.skip(reason="Pickled files produced from xml generated products cannot be read - why?")
-    def test_pickle_writing_and_reading(self, tmpdir):
-
-        # Create the product
-        product = prod.create_dpd_she_analysis_config()
-
-        # Change the fits filenames
-        subfilename = "test_file.fits"
-        product.set_filename(subfilename)
-
-        # Save the product in an XML file
-        filename = "she_analysis_config.xml"
-        write_pickled_product(product, filename, workdir=str(tmpdir))
-
-        # Read back the XML file
-        loaded_product = read_pickled_product(filename, workdir=str(tmpdir))
-
-        # Check that the filenames match
-        assert loaded_product.get_filename() == "data/" + subfilename
-
-        pass
+        return

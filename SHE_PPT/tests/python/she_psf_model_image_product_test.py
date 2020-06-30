@@ -38,7 +38,7 @@ class TestPSFImageProduct(object):
         # Check that it validates the schema
         product.validateBinding()
 
-        pass
+        return
 
     def test_xml_writing_and_reading(self, tmpdir):
 
@@ -59,7 +59,7 @@ class TestPSFImageProduct(object):
         # Check that the filenames match
         assert loaded_product.get_data_filename() == "data/" + subfilename
 
-        pass
+        return
 
     def test_pickle_writing_and_reading(self, tmpdir):
 
@@ -80,4 +80,4 @@ class TestPSFImageProduct(object):
         # Check that the filenames match
         assert loaded_product.get_data_filename() == "data/" + subfilename
 
-        pass
+        return

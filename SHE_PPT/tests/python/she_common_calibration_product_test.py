@@ -38,7 +38,7 @@ class TestCalibrationParametersProduct(object):
         # Check that it validates the schema
         product.validateBinding()
 
-        pass
+        return
 
     def test_xml_writing_and_reading(self, tmpdir):
 
@@ -71,7 +71,7 @@ class TestCalibrationParametersProduct(object):
         assert loaded_product.get_MomentsML_filename() == "data/" + m_filename
         assert loaded_product.get_REGAUSS_filename() == "data/" + r_filename
 
-        pass
+        return
 
     def test_pickle_writing_and_reading(self, tmpdir):
 
@@ -104,4 +104,4 @@ class TestCalibrationParametersProduct(object):
         assert loaded_product.get_MomentsML_filename() == "data/" + m_filename
         assert loaded_product.get_REGAUSS_filename() == "data/" + r_filename
 
-        pass
+        return

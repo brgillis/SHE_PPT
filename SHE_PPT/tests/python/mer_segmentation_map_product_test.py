@@ -43,7 +43,7 @@ class TestMosaicProduct(object):
         # Check that it validates the schema
         product.validateBinding()
 
-        pass
+        return
 
     def test_xml_writing_and_reading(self, tmpdir):
 
@@ -63,7 +63,7 @@ class TestMosaicProduct(object):
         # Check that it's the same
         assert loaded_product.get_data_filename() == "data/" + data_filename
 
-        pass
+        return
 
     def test_load_mosaic_hdu(self, tmpdir):
 
@@ -139,4 +139,4 @@ class TestMosaicProduct(object):
 
         assert (loaded_hdu2.data == test_array2).all()
 
-        pass
+        return

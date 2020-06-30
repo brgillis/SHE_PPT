@@ -38,7 +38,7 @@ class TestPSFCalibrationProduct(object):
         # Check that it validates the schema
         product.validateBinding()
 
-        pass
+        return
 
     def test_xml_writing_and_reading(self, tmpdir):
 
@@ -62,7 +62,7 @@ class TestPSFCalibrationProduct(object):
         assert loaded_product.get_zernike_mode_filename() == "data/" + zm_filename
         assert loaded_product.get_surface_error_filename() == "data/" + se_filename
 
-        pass
+        return
 
     def test_pickle_writing_and_reading(self, tmpdir):
 
@@ -86,4 +86,4 @@ class TestPSFCalibrationProduct(object):
         assert loaded_product.get_zernike_mode_filename() == "data/" + zm_filename
         assert loaded_product.get_surface_error_filename() == "data/" + se_filename
 
-        pass
+        return
