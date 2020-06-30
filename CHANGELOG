@@ -21,7 +21,8 @@ New Features
 ------------
 - Added data product definitions for: she_analysis_config, she_bfd_calibration, she_ksb_calibration, 
   she_lensmc_calibration, she_momentsml_calibration, she_regauss_calibration
-- The following data product definitions now properly use XML bindings: she_common_calibration
+- The following data product definitions now properly use XML bindings: she_common_calibration,
+  she_psf_calibration_parameters, she_psf_field_parameters
 
 New config features
 -------------------

@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-06-30"
 
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
@@ -46,10 +46,8 @@ class TestPSFCalibrationProduct(object):
         product = prod.create_dpd_she_psf_field_parameters()
 
         # Change the fits file names
-        zm_filename = "test_file_zm.fits"
-        product.set_zernike_mode_filename(zm_filename)
-        se_filename = "test_file_se.fits"
-        product.set_surface_error_filename(se_filename)
+        data_filename = "test_file.fits"
+        product.set_data_filename(data_filename)
 
         # Save the product in an xml file
         filename = "she_psf_field_parameters.xml"
@@ -59,31 +57,6 @@ class TestPSFCalibrationProduct(object):
         loaded_product = read_xml_product(filename, workdir=str(tmpdir))
 
         # Check that it's the same
-        assert loaded_product.get_zernike_mode_filename() == "data/" + zm_filename
-        assert loaded_product.get_surface_error_filename() == "data/" + se_filename
-
-        return
-
-    def test_pickle_writing_and_reading(self, tmpdir):
-
-        # Create the product
-        product = prod.create_dpd_she_psf_field_parameters()
-
-        # Change the fits file names
-        zm_filename = "test_file_zm.fits"
-        product.set_zernike_mode_filename(zm_filename)
-        se_filename = "test_file_se.fits"
-        product.set_surface_error_filename(se_filename)
-
-        # Save the product in a pickled file
-        filename = "she_psf_field_parameters.bin"
-        write_pickled_product(product, filename, workdir=str(tmpdir))
-
-        # Read back the pickled file
-        loaded_product = read_pickled_product(filename, workdir=str(tmpdir))
-
-        # Check that it's the same
-        assert loaded_product.get_zernike_mode_filename() == "data/" + zm_filename
-        assert loaded_product.get_surface_error_filename() == "data/" + se_filename
+        assert loaded_product.get_data_filename() == "data/" + data_filename
 
         return
