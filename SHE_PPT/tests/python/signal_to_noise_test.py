@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-06-30"
 
 import os
 from os.path import join
@@ -38,12 +38,12 @@ ex_signal_to_noises = [59, 32]
 
 test_data_location = "/tmp"
 
-data_images_filename = "data/vis_calibrated_frames.json"
-segmentation_images_filename = "data/she_exposure_reprojected_segmentation_maps.json"
-stacked_image_filename = "data/vis_stacked_image.xml"
-stacked_segmentation_image_filename = "data/she_stack_reprojected_segmentation_map.xml"
-psf_images_and_tables_filename = "data/she_psf_model_images.json"
-mer_final_catalogs_filename = "data/mer_final_catalogs.json"
+data_images_filename = "vis_calibrated_frames.json"
+segmentation_images_filename = "she_exposure_reprojected_segmentation_maps.json"
+stacked_image_filename = "vis_stacked_image.xml"
+stacked_segmentation_image_filename = "she_stack_reprojected_segmentation_map.xml"
+psf_images_and_tables_filename = "she_psf_model_images.json"
+mer_final_catalogs_filename = "mer_final_catalogs.json"
 
 
 class TestCase:
@@ -69,13 +69,12 @@ class TestCase:
 
         self.sync_datastack = DataSync("testdata/sync.conf", "testdata/test_data_stack.txt")
         self.sync_datastack.download()
-        self.qualified_data_images_filename = self.sync_datastack.absolutePath("SHE_CTE_8_0/" + data_images_filename)
+        self.qualified_data_images_filename = self.sync_datastack.absolutePath("SHE_CTE_8_1/" + data_images_filename)
 
         assert os.path.isfile(self.qualified_data_images_filename), f"Cannot find file: {self.qualified_data_images_filename}"
 
         # Get the workdir based on where the data images listfile is
-        self.workdir, datadir = os.path.split(os.path.split(self.qualified_data_images_filename)[0])
-        assert datadir == "data", f"Data directory is not as expected in {self.qualified_data_images_filename}"
+        self.workdir = os.path.split(self.qualified_data_images_filename)[0]
         self.logdir = os.path.join(self.workdir, "logs")
 
         # Read in the test data
