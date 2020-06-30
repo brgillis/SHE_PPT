@@ -1,8 +1,8 @@
-""" @file she_bfd_training.py
+""" @file she_bfd_calibration.py
 
     Created 24 Nov 2017
 
-    Functions to create and output a bfd_training data product.
+    Functions to create and output a bfd_calibration data product.
 
     Origin: OU-SHE - Needs to be implemented in data model. Output from Calibration pipeline
     and input to Analysis pipeline; must be persistent in archive.
@@ -28,17 +28,17 @@ import pickle
 
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
-from ST_DataModelBindings.dpd.she.bfdtraining_stub import dpdSheBfdTraining
+from ST_DataModelBindings.dpd.she.bfdcalibration_stub import dpdSheBfdCalibration
 
-sample_file_name = "SHE_PPT/sample_bfd_training.xml"
+sample_file_name = "SHE_PPT/sample_bfd_calibration.xml"
 
 
 def init():
     """
-        Adds some extra functionality to the dpdSheBfdTraining product
+        Adds some extra functionality to the dpdSheBfdCalibration product
     """
 
-    binding_class = dpdSheBfdTraining
+    binding_class = dpdSheBfdCalibration
 
     # Add the data file name methods
 
@@ -70,23 +70,23 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-def create_dpd_she_bfd_training(filename=None):
+def create_dpd_she_bfd_calibration(filename=None):
     """
         @TODO fill in docstring
     """
 
-    dpd_she_bfd_training = read_xml_product(
+    dpd_she_bfd_calibration = read_xml_product(
         find_aux_file(sample_file_name), allow_pickled=False)
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)
-    dpd_she_bfd_training.Header = HeaderProvider.create_generic_header("SHE")
+    dpd_she_bfd_calibration.Header = HeaderProvider.create_generic_header("SHE")
 
     if filename:
-        __set_filename(dpd_she_bfd_training, filename)
+        __set_filename(dpd_she_bfd_calibration, filename)
 
-    return dpd_she_bfd_training
+    return dpd_she_bfd_calibration
 
 
 # Add a useful alias
-create_bfd_training_product = create_dpd_she_bfd_training
+create_bfd_calibration_product = create_dpd_she_bfd_calibration
