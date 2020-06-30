@@ -22,7 +22,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-06-30"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
@@ -45,10 +45,10 @@ def init():
 
     # Add the data file name methods
 
-    binding_class.set_filename = __set_filename
-    binding_class.get_filename = __get_filename
-    binding_class.set_data_filename = __set_filename
-    binding_class.get_data_filename = __get_filename
+    binding_class.set_filename = __set_data_filename
+    binding_class.get_filename = __get_data_filename
+    binding_class.set_data_filename = __set_data_filename
+    binding_class.get_data_filename = __get_data_filename
 
     binding_class.get_all_filenames = __get_all_filenames
 
@@ -57,11 +57,11 @@ def init():
     return
 
 
-def __set_filename(self, filename):
+def __set_data_filename(self, filename):
     set_data_filename_of_product(self, filename, "DataStorage")
 
 
-def __get_filename(self):
+def __get_data_filename(self):
     return get_data_filename_from_product(self, "DataStorage")
 
 
