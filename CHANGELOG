@@ -19,7 +19,8 @@ Bug Fixes
 
 New Features
 ------------
-- Added data product definitions for: she_analysis_config, she_bfd_calibration
+- Added data product definitions for: she_analysis_config, she_bfd_calibration, she_lensmc_calibration,
+  she_momentsml_calibration
 - The following data product definitions now properly use XML bindings: she_common_calibration
 
 New config features
