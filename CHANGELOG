@@ -30,6 +30,7 @@ Miscellaneous
 -------------
 - Location of MDB file on WebDAV moved to SHE_CTE directory
 - Cleaned up locations of test files on WebDAV to match standard locations
+- Cleaned up test modules
 
 Changes from v1.4 to v8.0
 =========================
