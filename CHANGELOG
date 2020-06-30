@@ -16,6 +16,7 @@ Deprecated Features
 Bug Fixes
 ---------
 - Filename initialiser for MomentsML Training now works
+- Various fits file formats in data models fixed
 
 New Features
 ------------

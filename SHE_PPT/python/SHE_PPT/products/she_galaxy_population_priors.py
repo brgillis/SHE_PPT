@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-06-30"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
@@ -122,8 +122,8 @@ def create_she_galaxy_population_priors(filename=None):
     # she_galaxy_population_priors = she_dpd.SheGalaxyPopulationPriors() # @FIXME
     she_galaxy_population_priors = SheGalaxyPopulationPriors()
 
-    she_galaxy_population_priors.format = "UNDEFINED"
-    she_galaxy_population_priors.version = "0.0"
+    she_galaxy_population_priors.format = "she.galaxyPopulationPriors"
+    she_galaxy_population_priors.version = "8.0"
 
     she_galaxy_population_priors.DataContainer = DataContainer()
     she_galaxy_population_priors.DataContainer.FileName = filename

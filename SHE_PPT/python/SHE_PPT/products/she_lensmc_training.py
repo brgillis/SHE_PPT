@@ -122,7 +122,7 @@ def create_she_lensmc_training(filename=None):
 
     she_lensmc_training = SheLensMcTraining()
 
-    she_lensmc_training.format = "UNDEFINED"
+    she_lensmc_training.format = "she.lensMcMeasurements"
     she_lensmc_training.version = "0.0"
 
     she_lensmc_training.DataContainer = DataContainer()

@@ -122,8 +122,8 @@ def create_she_lensmc_calibration(filename=None):
 
     she_lensmc_calibration = SheLensMcCalibration()
 
-    she_lensmc_calibration.format = "UNDEFINED"
-    she_lensmc_calibration.version = "0.0"
+    she_lensmc_calibration.format = "she.lensMcMeasurements"
+    she_lensmc_calibration.version = "8.0"
 
     she_lensmc_calibration.DataContainer = DataContainer()
     she_lensmc_calibration.DataContainer.FileName = filename
