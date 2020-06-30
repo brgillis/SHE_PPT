@@ -69,31 +69,6 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-class DpdSheAnalysisConfig:  # @FIXME
-
-    def __init__(self):
-        self.Header = None
-        self.Data = None
-
-    def validateBinding(self):
-        return False
-
-
-class SheAnalysisConfig:  # @FIXME
-
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-
-
-class DataContainer:  # @FIXME
-
-    def __init__(self):
-        self.FileName = None
-        self.filestatus = None
-
-
 def create_dpd_she_analysis_config(filename=None):
     """
         @TODO fill in docstring
@@ -103,9 +78,6 @@ def create_dpd_she_analysis_config(filename=None):
 
     dpd_she_analysis_config.Header = HeaderProvider.create_generic_header("SHE")
 
-    # dpd_she_analysis_config.Data = create_she_analysis_config(
-    #    filename)
-
     if filename:
         __set_filename(dpd_she_analysis_config, filename)
     return dpd_she_analysis_config
@@ -113,20 +85,3 @@ def create_dpd_she_analysis_config(filename=None):
 
 # Add a useful alias
 create_analysis_config_data_product = create_dpd_she_analysis_config
-
-
-def create_she_analysis_config(filename=None):
-    """
-        @TODO fill in docstring
-    """
-
-    she_analysis_config = SheAnalysisConfig()
-
-    she_analysis_config.format = "UNDEFINED"
-    she_analysis_config.version = "0.0"
-
-    she_analysis_config.DataContainer = DataContainer()
-    she_analysis_config.DataContainer.FileName = filename
-    she_analysis_config.DataContainer.filestatus = "PROPOSED"
-
-    return she_analysis_config
