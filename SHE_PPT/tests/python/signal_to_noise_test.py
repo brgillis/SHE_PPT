@@ -59,7 +59,7 @@ class TestCase:
 
         self.sync_mdb = DataSync("testdata/sync.conf", "testdata/test_mdb.txt")
         self.sync_mdb.download()
-        self.mdb_filename = self.sync_mdb.absolutePath("SHE_PPT_8_0/sample_mdb.xml")
+        self.mdb_filename = self.sync_mdb.absolutePath("SHE_CTE_8_1/sample_mdb.xml")
 
         assert os.path.isfile(self.mdb_filename), f"Cannot find file: SHE_PPT/sample_mdb.xml"
 

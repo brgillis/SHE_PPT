@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-06-30"
 
 from SHE_PPT.file_io import find_file
 from SHE_PPT.logging import getLogger
@@ -30,7 +30,7 @@ _not_inited_exception = RuntimeError(
 
 full_mdb = {}
 
-default_mdb_file = "WEB/SHE_PPT_8_0/sample_mdb.xml"
+default_mdb_file = "WEB/SHE_CTE_8_1/sample_mdb.xml"
 
 
 def init(mdb_files=None, path=None):
