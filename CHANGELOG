@@ -20,6 +20,7 @@ Bug Fixes
 New Features
 ------------
 - Added data product definitions for: she_analysis_config
+- The following data product definitions now properly use XML bindings: she_common_calibration
 
 New config features
 -------------------
