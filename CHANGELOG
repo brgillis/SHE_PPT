@@ -5,7 +5,7 @@ Changes from v8.0 to v8.1
 
 API Changes
 -----------
-- LensMC table format changed to match format for prior shear_estimates table format
+- LensMC and PSF model images table formats changed to match format for prior shear_estimates table format
 - Inadvertent API change of SHEFrameStack.detections_catalogue -> SHEFrameStack.mer_final_catalog_catalogue reverted
 
 Dependency Changes
