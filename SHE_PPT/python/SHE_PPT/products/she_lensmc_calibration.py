@@ -1,8 +1,8 @@
-""" @file she_lensmc_training.py
+""" @file she_lensmc_calibration.py
 
     Created 24 Nov 2017
 
-    Functions to create and output a lensmc_training_data data product.
+    Functions to create and output a lensmc_calibration_data data product.
 
     Origin: OU-SHE - Needs to be implemented in data model. Output from Calibration pipeline
     and input to Analysis pipeline; must be persistent in archive.
@@ -28,17 +28,17 @@ import pickle
 
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
-from ST_DataModelBindings.dpd.she.lensmctraining_stub import dpdSheLensMcTraining
+from ST_DataModelBindings.dpd.she.lensmccalibration_stub import dpdSheLensMcCalibration
 
-sample_file_name = "SHE_PPT/sample_lensmc_training.xml"
+sample_file_name = "SHE_PPT/sample_lensmc_calibration.xml"
 
 
 def init():
     """
-        Initialisers for LensMC training
+        Initialisers for LensMC calibration
     """
 
-    binding_class = dpdSheLensMcTraining
+    binding_class = dpdSheLensMcCalibration
 
     # Add the data file name methods
 
@@ -69,7 +69,7 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-class DpdSheLensMcTraining:  # @FIXME
+class DpdSheLensMcCalibration:  # @FIXME
 
     def __init__(self):
         self.Header = None
@@ -79,7 +79,7 @@ class DpdSheLensMcTraining:  # @FIXME
         return False
 
 
-class SheLensMcTraining:  # @FIXME
+class SheLensMcCalibration:  # @FIXME
 
     def __init__(self):
         self.format = None
@@ -94,39 +94,39 @@ class DataContainer:  # @FIXME
         self.filestatus = None
 
 
-def create_dpd_she_lensmc_training(filename=None):
+def create_dpd_she_lensmc_calibration(filename=None):
     """
         @TODO fill in docstring
     """
 
-    dpd_she_lensmc_training = read_xml_product(find_aux_file(sample_file_name))
+    dpd_she_lensmc_calibration = read_xml_product(find_aux_file(sample_file_name))
 
-    dpd_she_lensmc_training.Header = HeaderProvider.create_generic_header("SHE")
+    dpd_she_lensmc_calibration.Header = HeaderProvider.create_generic_header("SHE")
 
-    # dpd_she_lensmc_training.Data = create_she_lensmc_training(
+    # dpd_she_lensmc_calibration.Data = create_she_lensmc_calibration(
     #    filename)
 
     if filename:
-        __set_filename(dpd_she_lensmc_training, filename)
-    return dpd_she_lensmc_training
+        __set_filename(dpd_she_lensmc_calibration, filename)
+    return dpd_she_lensmc_calibration
 
 
 # Add a useful alias
-create_lensmc_training_data_product = create_dpd_she_lensmc_training
+create_lensmc_calibration_data_product = create_dpd_she_lensmc_calibration
 
 
-def create_she_lensmc_training(filename=None):
+def create_she_lensmc_calibration(filename=None):
     """
         @TODO fill in docstring
     """
 
-    she_lensmc_training = SheLensMcTraining()
+    she_lensmc_calibration = SheLensMcCalibration()
 
-    she_lensmc_training.format = "she.lensMcMeasurements"
-    she_lensmc_training.version = "0.0"
+    she_lensmc_calibration.format = "she.lensMcMeasurements"
+    she_lensmc_calibration.version = "8.0"
 
-    she_lensmc_training.DataContainer = DataContainer()
-    she_lensmc_training.DataContainer.FileName = filename
-    she_lensmc_training.DataContainer.filestatus = "PROPOSED"
+    she_lensmc_calibration.DataContainer = DataContainer()
+    she_lensmc_calibration.DataContainer.FileName = filename
+    she_lensmc_calibration.DataContainer.filestatus = "PROPOSED"
 
-    return she_lensmc_training
+    return she_lensmc_calibration

@@ -1,11 +1,11 @@
-""" @file she_lensmc_training.py
+""" @file she_analysis_config.py
 
     Created 24 Nov 2017
 
-    Functions to create and output a lensmc_training_data data product.
+    Functions to create and output a analysis_config data product.
 
-    Origin: OU-SHE - Needs to be implemented in data model. Output from Calibration pipeline
-    and input to Analysis pipeline; must be persistent in archive.
+    Origin: OU-SHE - Needs to be implemented in data model. Input to Analysis pipeline;
+    must be persistent in archive.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -28,9 +28,9 @@ import pickle
 
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
-from ST_DataModelBindings.dpd.she.lensmctraining_stub import dpdSheLensMcTraining
+from ST_DataModelBindings.dpd.she.analysisconfig_stub import dpdSheAnalysisConfig
 
-sample_file_name = "SHE_PPT/sample_lensmc_training.xml"
+sample_file_name = "SHE_PPT/sample_analysis_config.xml"
 
 
 def init():
@@ -38,7 +38,7 @@ def init():
         Initialisers for LensMC training
     """
 
-    binding_class = dpdSheLensMcTraining
+    binding_class = dpdSheAnalysisConfig
 
     # Add the data file name methods
 
@@ -69,64 +69,19 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-class DpdSheLensMcTraining:  # @FIXME
-
-    def __init__(self):
-        self.Header = None
-        self.Data = None
-
-    def validateBinding(self):
-        return False
-
-
-class SheLensMcTraining:  # @FIXME
-
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-
-
-class DataContainer:  # @FIXME
-
-    def __init__(self):
-        self.FileName = None
-        self.filestatus = None
-
-
-def create_dpd_she_lensmc_training(filename=None):
+def create_dpd_she_analysis_config(filename=None):
     """
         @TODO fill in docstring
     """
 
-    dpd_she_lensmc_training = read_xml_product(find_aux_file(sample_file_name))
+    dpd_she_analysis_config = read_xml_product(find_aux_file(sample_file_name))
 
-    dpd_she_lensmc_training.Header = HeaderProvider.create_generic_header("SHE")
-
-    # dpd_she_lensmc_training.Data = create_she_lensmc_training(
-    #    filename)
+    dpd_she_analysis_config.Header = HeaderProvider.create_generic_header("SHE")
 
     if filename:
-        __set_filename(dpd_she_lensmc_training, filename)
-    return dpd_she_lensmc_training
+        __set_filename(dpd_she_analysis_config, filename)
+    return dpd_she_analysis_config
 
 
 # Add a useful alias
-create_lensmc_training_data_product = create_dpd_she_lensmc_training
-
-
-def create_she_lensmc_training(filename=None):
-    """
-        @TODO fill in docstring
-    """
-
-    she_lensmc_training = SheLensMcTraining()
-
-    she_lensmc_training.format = "she.lensMcMeasurements"
-    she_lensmc_training.version = "0.0"
-
-    she_lensmc_training.DataContainer = DataContainer()
-    she_lensmc_training.DataContainer.FileName = filename
-    she_lensmc_training.DataContainer.filestatus = "PROPOSED"
-
-    return she_lensmc_training
+create_analysis_config_data_product = create_dpd_she_analysis_config

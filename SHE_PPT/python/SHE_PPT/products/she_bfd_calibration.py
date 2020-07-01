@@ -1,8 +1,8 @@
-""" @file she_lensmc_training.py
+""" @file she_bfd_calibration.py
 
     Created 24 Nov 2017
 
-    Functions to create and output a lensmc_training_data data product.
+    Functions to create and output a bfd_calibration data product.
 
     Origin: OU-SHE - Needs to be implemented in data model. Output from Calibration pipeline
     and input to Analysis pipeline; must be persistent in archive.
@@ -28,28 +28,29 @@ import pickle
 
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
-from ST_DataModelBindings.dpd.she.lensmctraining_stub import dpdSheLensMcTraining
+from ST_DataModelBindings.dpd.she.bfdcalibration_stub import dpdSheBfdCalibration
 
-sample_file_name = "SHE_PPT/sample_lensmc_training.xml"
+sample_file_name = "SHE_PPT/sample_bfd_calibration.xml"
 
 
 def init():
     """
-        Initialisers for LensMC training
+        Adds some extra functionality to the dpdSheBfdCalibration product
     """
 
-    binding_class = dpdSheLensMcTraining
+    binding_class = dpdSheBfdCalibration
 
     # Add the data file name methods
 
     binding_class.set_filename = __set_filename
     binding_class.get_filename = __get_filename
+
     binding_class.set_data_filename = __set_filename
     binding_class.get_data_filename = __get_filename
 
     binding_class.get_all_filenames = __get_all_filenames
 
-    binding_class.has_files = False
+    binding_class.has_files = True
 
     return
 
@@ -64,69 +65,28 @@ def __get_filename(self):
 
 def __get_all_filenames(self):
 
-    all_filenames = [self.get_filename()]
+    all_filenames = [__get_filename(self)]
 
     return all_filenames
 
 
-class DpdSheLensMcTraining:  # @FIXME
-
-    def __init__(self):
-        self.Header = None
-        self.Data = None
-
-    def validateBinding(self):
-        return False
-
-
-class SheLensMcTraining:  # @FIXME
-
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-
-
-class DataContainer:  # @FIXME
-
-    def __init__(self):
-        self.FileName = None
-        self.filestatus = None
-
-
-def create_dpd_she_lensmc_training(filename=None):
+def create_dpd_she_bfd_calibration(filename=None):
     """
         @TODO fill in docstring
     """
 
-    dpd_she_lensmc_training = read_xml_product(find_aux_file(sample_file_name))
+    dpd_she_bfd_calibration = read_xml_product(
+        find_aux_file(sample_file_name), allow_pickled=False)
 
-    dpd_she_lensmc_training.Header = HeaderProvider.create_generic_header("SHE")
-
-    # dpd_she_lensmc_training.Data = create_she_lensmc_training(
-    #    filename)
+    # Overwrite the header with a new one to update the creation date (among
+    # other things)
+    dpd_she_bfd_calibration.Header = HeaderProvider.create_generic_header("SHE")
 
     if filename:
-        __set_filename(dpd_she_lensmc_training, filename)
-    return dpd_she_lensmc_training
+        __set_filename(dpd_she_bfd_calibration, filename)
+
+    return dpd_she_bfd_calibration
 
 
 # Add a useful alias
-create_lensmc_training_data_product = create_dpd_she_lensmc_training
-
-
-def create_she_lensmc_training(filename=None):
-    """
-        @TODO fill in docstring
-    """
-
-    she_lensmc_training = SheLensMcTraining()
-
-    she_lensmc_training.format = "she.lensMcMeasurements"
-    she_lensmc_training.version = "0.0"
-
-    she_lensmc_training.DataContainer = DataContainer()
-    she_lensmc_training.DataContainer.FileName = filename
-    she_lensmc_training.DataContainer.filestatus = "PROPOSED"
-
-    return she_lensmc_training
+create_bfd_calibration_product = create_dpd_she_bfd_calibration

@@ -40,11 +40,11 @@ class TestUtility:
 
     @classmethod
     def setup_class(cls):
-        pass
+        return
 
     @classmethod
     def teardown_class(cls):
-        pass
+        return
 
     def test_get_set_nested_attr(self):
 

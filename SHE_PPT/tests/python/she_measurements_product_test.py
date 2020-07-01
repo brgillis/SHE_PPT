@@ -55,7 +55,7 @@ class TestShearEstimatesProduct(object):
         assert product.get_MomentsML_filename() == "data/" + m_filename
         assert product.get_REGAUSS_filename() == "data/" + r_filename
 
-        pass
+        return
 
     def test_default_filenames(self):
         """Test that all filenames in a default product are empty.
@@ -100,4 +100,4 @@ class TestShearEstimatesProduct(object):
         assert loaded_product.get_MomentsML_filename() == "data/" + m_filename
         assert loaded_product.get_REGAUSS_filename() == "data/" + r_filename
 
-        pass
+        return

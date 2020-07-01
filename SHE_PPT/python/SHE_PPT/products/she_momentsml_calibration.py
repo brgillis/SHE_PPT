@@ -1,8 +1,8 @@
-""" @file she_momentsml_training.py
+""" @file she_momentsml_calibration.py
 
     Created 24 Nov 2017
 
-    Functions to create and output a momentsml_training_data data product.
+    Functions to create and output a momentsml_calibration_data data product.
 
     Origin: OU-SHE - Needs to be implemented in data model. Output from Calibration pipeline
     and input to Analysis pipeline; must be persistent in archive.
@@ -31,17 +31,17 @@ import pickle
 
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
-from ST_DataModelBindings.dpd.she.momentsmltraining_stub import dpdSheMomentsMlTraining
+from ST_DataModelBindings.dpd.she.momentsmlcalibration_stub import dpdSheMomentsMlCalibration
 
-sample_file_name = "SHE_PPT/sample_momentsml_training.xml"
+sample_file_name = "SHE_PPT/sample_momentsml_calibration.xml"
 
 
 def init():
     """
-        Initialisers for MomentsML training set.
+        Initialisers for MomentsML calibration set.
     """
 
-    binding_class = dpdSheMomentsMlTraining
+    binding_class = dpdSheMomentsMlCalibration
 
     # Add the data file name methods
 
@@ -72,20 +72,20 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-def create_dpd_she_momentsml_training(filename=None):
+def create_dpd_she_momentsml_calibration(filename=None):
     """
         @TODO fill in docstring
     """
 
-    dpd_she_momentsml_training = read_xml_product(
+    dpd_she_momentsml_calibration = read_xml_product(
         find_aux_file(sample_file_name), allow_pickled=False)
 
-    dpd_she_momentsml_training.Header = HeaderProvider.create_generic_header("SHE")  # FIXME
+    dpd_she_momentsml_calibration.Header = HeaderProvider.create_generic_header("SHE")  # FIXME
 
     if filename:
-        __set_data_filename(dpd_she_momentsml_training, filename)
-    return dpd_she_momentsml_training
+        __set_data_filename(dpd_she_momentsml_calibration, filename)
+    return dpd_she_momentsml_calibration
 
 
 # Add a useful alias
-create_momentsml_training_data_product = create_dpd_she_momentsml_training
+create_momentsml_calibration_data_product = create_dpd_she_momentsml_calibration

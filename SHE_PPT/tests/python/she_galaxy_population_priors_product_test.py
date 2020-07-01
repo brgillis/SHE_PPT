@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-22"
+__updated__ = "2020-06-30"
 
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
@@ -38,7 +38,7 @@ class TestGalaxyPopulationProduct(object):
         # Check that it validates the schema
         product.validateBinding()
 
-        pass
+        return
 
     def test_xml_writing_and_reading(self, tmpdir):
 
@@ -59,25 +59,4 @@ class TestGalaxyPopulationProduct(object):
         # Check that the filenames match
         assert loaded_product.get_filename() == "data/" + subfilename
 
-        pass
-
-    def test_pickle_writing_and_reading(self, tmpdir):
-
-        # Create the product
-        product = prod.create_dpd_she_galaxy_population_priors()
-
-        # Change the fits filenames
-        subfilename = "test_file.fits"
-        product.set_filename(subfilename)
-
-        # Save the product in an XML file
-        filename = "she_galaxy_population_priors.xml"
-        write_pickled_product(product, filename, workdir=str(tmpdir))
-
-        # Read back the XML file
-        loaded_product = read_pickled_product(filename, workdir=str(tmpdir))
-
-        # Check that the filenames match
-        assert loaded_product.get_filename() == "data/" + subfilename
-
-        pass
+        return

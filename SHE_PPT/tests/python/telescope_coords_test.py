@@ -18,17 +18,17 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-01-20"
+__updated__ = "2020-06-30"
 
-import os
 from   operator  import itemgetter
+import os
 
 import pytest
 
 from ElementsServices.DataSync import DataSync
 from SHE_PPT import telescope_coords
-import numpy as np
 from SHE_PPT.file_io import find_aux_file
+import numpy as np
 
 
 class TestTelescopeCoords:
@@ -117,7 +117,6 @@ class TestTelescopeCoords:
 
         return
 
-    # @pytest.mark.skip(reason="Turn off until understand coord transforms")
     def test_vis_coords(self):
 
         # Load values from the MDB first
@@ -214,23 +213,22 @@ class TestTelescopeCoords:
         telescope_coords.load_vis_detector_specs(mdb_files=self.mdb_filename)
 
         # Read in coords from file
-        elvis_sim_fov_fpa_filename=find_aux_file('SHE_PPT/testFovToFPA_noOffset.dat')
+        elvis_sim_fov_fpa_filename = find_aux_file('SHE_PPT/testFovToFPA_noOffset.dat')
         # fov_x,fov_y,fpa_x,fpa_y
-        lines=open(elvis_sim_fov_fpa_filename).readlines()
-        fov_to_fpa_data =np.array([[float(pt) 
-            for pt in line.strip().split(',')] 
+        lines = open(elvis_sim_fov_fpa_filename).readlines()
+        fov_to_fpa_data = np.array([[float(pt)
+            for pt in line.strip().split(',')]
             for line in lines if not line.startswith('#')])
-        full_data=[]
-        for fov_elv_x,fov_elv_y,fpa_elv_x,fpa_elv_y in fov_to_fpa_data:
-            # Go from fpa_x,fpa_y --> fov2_x,fov2_y 
-            if fpa_elv_x>-10000000. and fpa_elv_y>-10000000.:
-                # Convert to mm? 
-                fov2_x,fov2_y=telescope_coords.get_fov_coords_from_focal_plane(
-                    fpa_elv_x,fpa_elv_y,'VIS')
-                full_data.append((fov_elv_x,fov_elv_y,fpa_elv_x,fpa_elv_y,
-                    fov2_x,fov2_y,(fov2_x-fov_elv_x),(fov2_y-fov_elv_y)))
-        
-        assert np.mean([dt[6] for dt in full_data])<0.001
-        assert (np.mean([dt[7] for dt in full_data])-0.822)<0.001
-        
-        
+        full_data = []
+        for fov_elv_x, fov_elv_y, fpa_elv_x, fpa_elv_y in fov_to_fpa_data:
+            # Go from fpa_x,fpa_y --> fov2_x,fov2_y
+            if fpa_elv_x > -10000000. and fpa_elv_y > -10000000.:
+                # Convert to mm?
+                fov2_x, fov2_y = telescope_coords.get_fov_coords_from_focal_plane(
+                    fpa_elv_x, fpa_elv_y, 'VIS')
+                full_data.append((fov_elv_x, fov_elv_y, fpa_elv_x, fpa_elv_y,
+                    fov2_x, fov2_y, (fov2_x - fov_elv_x), (fov2_y - fov_elv_y)))
+
+        assert np.mean([dt[6] for dt in full_data]) < 0.001
+        assert (np.mean([dt[7] for dt in full_data]) - 0.822) < 0.001
+

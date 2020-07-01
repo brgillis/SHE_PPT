@@ -21,13 +21,15 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
-
-# import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
+__updated__ = "2020-06-30"
 
 import pickle
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
+
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
+from ST_DataModelBindings.dpd.she.galaxypopulationpriors_stub import dpdSheGalaxyPopulationPriors
+
+sample_file_name = "SHE_PPT/sample_galaxy_population_priors.xml"
 
 
 def init():
@@ -35,8 +37,7 @@ def init():
         ?????
     """
 
-    # binding_class = she_dpd.DpdSheGalaxyPopulationPriors # @FIXME
-    binding_class = DpdSheGalaxyPopulationPriors
+    binding_class = dpdSheGalaxyPopulationPriors
 
     # Add the data file name methods
 
@@ -47,17 +48,17 @@ def init():
 
     binding_class.get_all_filenames = __get_all_filenames
 
-    binding_class.has_files = False
+    binding_class.has_files = True
 
     return
 
 
 def __set_data_filename(self, filename):
-    set_data_filename_of_product(self, filename)
+    set_data_filename_of_product(self, filename, "DataStorageList[0]")
 
 
 def __get_data_filename(self):
-    return get_data_filename_from_product(self)
+    return get_data_filename_from_product(self, "DataStorageList[0]")
 
 
 def __get_all_filenames(self):
@@ -67,45 +68,17 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-class DpdSheGalaxyPopulationPriors:  # @FIXME
-
-    def __init__(self):
-        self.Header = None
-        self.Data = None
-
-    def validateBinding(self):
-        return False
-
-
-class SheGalaxyPopulationPriors:  # @FIXME
-
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-
-
-class DataContainer:  # @FIXME
-
-    def __init__(self):
-        self.FileName = None
-        self.filestatus = None
-
-
 def create_dpd_she_galaxy_population_priors(filename=None):
     """
         @TODO fill in docstring
     """
 
-    # dpd_she_galaxy_population_priors = she_dpd.DpdSheGalaxyPopulationPriors() #
-    # FIXME
-    dpd_she_galaxy_population_priors = DpdSheGalaxyPopulationPriors()
+    dpd_she_galaxy_population_priors = read_xml_product(find_aux_file(sample_file_name))
 
-    # dpd_she_galaxy_population_priors.Header =
-    # HeaderProvider.create_generic_header("SHE") # FIXME
-    dpd_she_galaxy_population_priors.Header = "SHE"
+    dpd_she_galaxy_population_priors.Header = HeaderProvider.create_generic_header("SHE")
 
-    dpd_she_galaxy_population_priors.Data = create_she_galaxy_population_priors(filename)
+    if filename:
+        __set_filename(dpd_galaxy_population_priors, filename)
 
     return dpd_she_galaxy_population_priors
 
@@ -119,11 +92,10 @@ def create_she_galaxy_population_priors(filename=None):
         @TODO fill in docstring
     """
 
-    # she_galaxy_population_priors = she_dpd.SheGalaxyPopulationPriors() # @FIXME
     she_galaxy_population_priors = SheGalaxyPopulationPriors()
 
-    she_galaxy_population_priors.format = "UNDEFINED"
-    she_galaxy_population_priors.version = "0.0"
+    she_galaxy_population_priors.format = "she.galaxyPopulationPriors"
+    she_galaxy_population_priors.version = "8.0"
 
     she_galaxy_population_priors.DataContainer = DataContainer()
     she_galaxy_population_priors.DataContainer.FileName = filename

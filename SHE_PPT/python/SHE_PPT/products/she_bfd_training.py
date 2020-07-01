@@ -22,7 +22,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-06-30"
 
 import pickle
 
@@ -35,7 +35,7 @@ sample_file_name = "SHE_PPT/sample_bfd_training.xml"
 
 def init():
     """
-        Adds some extra functionality to the DpdSheAstrometry product
+        Adds some extra functionality to the dpdSheBfdTraining product
     """
 
     binding_class = dpdSheBfdTraining

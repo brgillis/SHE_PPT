@@ -1,13 +1,11 @@
-""" @file she_psf_calibration_parameters_product.py
+""" @file she_psf_calibration_parameters.py
 
-    Created 10 Oct 2017
+    Created 24 Nov 2017
 
-    Functions to create and output an she_psf_calibration_parameters data product.
+    Functions to create and output a psf_calibration_parameters data product.
 
-    Origin: OU-SHE - Output from Calibration pipeline and input to Analysis pipeline;
+    Origin: OU-SHE - Needs to be implemented in data model. Input to Analysis pipeline;
     must be persistent in archive.
-
-    The format here isn't finalised yet, but hopefully the needed information can all be stored in the FITS files.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -24,67 +22,51 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
-
-# import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
+__updated__ = "2020-06-30"
 
 import pickle
+
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
+from ST_DataModelBindings.dpd.she.psfcalibrationparameters_stub import dpdShePsfCalibrationParameters
+
+sample_file_name = "SHE_PPT/sample_psf_calibration_parameters.xml"
 
 
 def init():
     """
-        Adds some extra functionality to the DpdShePSFCalibrationParams product
+        Initialisers for LensMC training
     """
 
-    # binding_class = she_dpd.DpdShePsfCalibrationParameters # @FIXME
-    binding_class = DpdShePsfCalibrationParameters
+    binding_class = dpdShePsfCalibrationParameters
 
     # Add the data file name methods
 
-    binding_class.set_zernike_mode_filename = __set_zernike_mode_filename
-    binding_class.get_zernike_mode_filename = __get_zernike_mode_filename
-
-    binding_class.set_surface_error_filename = __set_surface_error_filename
-    binding_class.get_surface_error_filename = __get_surface_error_filename
+    binding_class.set_filename = __set_filename
+    binding_class.get_filename = __get_filename
+    binding_class.set_data_filename = __set_filename
+    binding_class.get_data_filename = __get_filename
 
     binding_class.get_all_filenames = __get_all_filenames
 
-    binding_class.has_files = True
+    binding_class.has_files = False
 
     return
 
 
-def __set_zernike_mode_filename(self, filename):
-    set_data_filename_of_product(self, filename, "ZernikeMode")
+def __set_filename(self, filename):
+    set_data_filename_of_product(self, filename, "DataStorage")
 
 
-def __get_zernike_mode_filename(self):
-    return get_data_filename_from_product(self, "ZernikeMode")
-
-
-def __set_surface_error_filename(self, filename):
-    set_data_filename_of_product(self, filename, "SurfaceError")
-
-
-def __get_surface_error_filename(self):
-    return get_data_filename_from_product(self, "SurfaceError")
+def __get_filename(self):
+    return get_data_filename_from_product(self, "DataStorage")
 
 
 def __get_all_filenames(self):
 
-    all_filenames = [self.get_zernike_mode_filename(),
-                     self.get_surface_error_filename(), ]
+    all_filenames = [self.get_filename()]
 
     return all_filenames
-
-
-class DataContainer:  # @FIXME
-
-    def __init__(self):
-        self.FileName = None
-        self.filestatus = None
 
 
 class DpdShePsfCalibrationParameters:  # @FIXME
@@ -100,161 +82,48 @@ class DpdShePsfCalibrationParameters:  # @FIXME
 class ShePsfCalibrationParameters:  # @FIXME
 
     def __init__(self):
-        self.TimeStamp = None
-        self.TelescopeModel = None
-        self.ZernikeMode = None
-        self.SurfaceError = None
-        self.DetectorModel = None
-        self.Diagnostics = None
-
-
-class SheTelescopeModel:  # @FIXME
-
-    def __init__(self):
-        pass  # @TODO - Fill in format
-
-
-class SheZernikeMode:  # @FIXME
-
-    def __init__(self):
         self.format = None
         self.version = None
         self.DataContainer = None
 
 
-class SheSurfaceError:
+class DataContainer:  # @FIXME
 
     def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
+        self.FileName = None
+        self.filestatus = None
 
 
-class SheDetectorModel:
-
-    def __init__(self):
-        pass  # @TODO - Fill in format
-
-
-class SheDiagnostics:
-
-    def __init__(self):
-        pass  # @TODO - Fill in format
-
-
-def create_dpd_she_psf_calibration_parameters(timestamp=None,
-                                          zernike_mode_filename=None,
-                                          surface_error_filename=None):
+def create_dpd_she_psf_calibration_parameters(filename=None):
     """
         @TODO fill in docstring
     """
 
-    # dpd_she_psf_calibration_parameters =
-    # she_dpd.DpdShePsfCalibrationParameters() # @FIXME
-    dpd_she_psf_calibration_parameters = DpdShePsfCalibrationParameters()
+    dpd_she_psf_calibration_parameters = read_xml_product(find_aux_file(sample_file_name))
 
-    # dpd_she_psf_calibration_parameters.Header =
-    # HeaderProvider.create_generic_header("SHE") # FIXME
-    dpd_she_psf_calibration_parameters.Header = "SHE"
+    dpd_she_psf_calibration_parameters.Header = HeaderProvider.create_generic_header("SHE")
 
-    dpd_she_psf_calibration_parameters.Data = create_she_psf_calibration_parameters(timestamp,
-                                                                            zernike_mode_filename,
-                                                                            surface_error_filename)
-
+    if filename:
+        __set_filename(dpd_she_psf_calibration_parameters, filename)
     return dpd_she_psf_calibration_parameters
 
 
 # Add a useful alias
-create_psf_calibration_parameters_product = create_dpd_she_psf_calibration_parameters
+create_psf_calibration_parameters_data_product = create_dpd_she_psf_calibration_parameters
 
 
-def create_she_psf_calibration_parameters(timestamp=None,
-                                      zernike_mode_filename=None,
-                                      surface_error_filename=None):
+def create_she_psf_calibration_parameters(filename=None):
     """
         @TODO fill in docstring
     """
 
-    # she_psf_calibration_parameters = she_dpd.ShePsfCalibrationParameters() #
-    # @FIXME
     she_psf_calibration_parameters = ShePsfCalibrationParameters()
 
-    she_psf_calibration_parameters.TimeStamp = timestamp
-    she_psf_calibration_parameters.TelescopeModel = create_she_telescope_model()
-    she_psf_calibration_parameters.ZernikeMode = create_she_zernike_mode(
-        zernike_mode_filename)
-    she_psf_calibration_parameters.SurfaceError = create_she_surface_error(
-        surface_error_filename)
-    she_psf_calibration_parameters.DetectorModel = create_she_detector_model()
-    she_psf_calibration_parameters.Diagnostics = create_she_diagnostics()
+    she_psf_calibration_parameters.format = "she.psfCalibrationParameters"
+    she_psf_calibration_parameters.version = "8.0"
+
+    she_psf_calibration_parameters.DataContainer = DataContainer()
+    she_psf_calibration_parameters.DataContainer.FileName = filename
+    she_psf_calibration_parameters.DataContainer.filestatus = "PROPOSED"
 
     return she_psf_calibration_parameters
-
-
-def create_she_telescope_model():
-    """
-        @TODO fill in docstring
-    """
-
-    # she_telescope_model = she_dpd.SheTelescopeModel() # @FIXME
-    she_telescope_model = SheTelescopeModel()
-
-    return she_telescope_model
-
-
-def create_she_zernike_mode(filename):
-    """
-        @TODO fill in docstring
-    """
-
-    # she_zernike_mode = she_dpd.SheZernikeMode() # @FIXME
-    she_zernike_mode = SheZernikeMode()
-
-    she_zernike_mode.format = "Undefined"  # @FIXME
-    she_zernike_mode.version = "0.0"  # @FIXME
-
-    she_zernike_mode.DataContainer = DataContainer()
-    she_zernike_mode.DataContainer.FileName = filename
-    she_zernike_mode.DataContainer.filestatus = "PROPOSED"
-
-    return she_zernike_mode
-
-
-def create_she_surface_error(filename):
-    """
-        @TODO fill in docstring
-    """
-
-    # she_surface_error = she_dpd.SheSurfaceError() # @FIXME
-    she_surface_error = SheSurfaceError()
-
-    she_surface_error.format = "Undefined"  # @FIXME
-    she_surface_error.version = "0.0"  # @FIXME
-
-    she_surface_error.DataContainer = DataContainer()
-    she_surface_error.DataContainer.FileName = filename
-    she_surface_error.DataContainer.filestatus = "PROPOSED"
-
-    return she_surface_error
-
-
-def create_she_detector_model():
-    """
-        @TODO fill in docstring
-    """
-
-    # she_detector_model = she_dpd.SheDetectorModel() # @FIXME
-    she_detector_model = SheDetectorModel()
-
-    return she_detector_model
-
-
-def create_she_diagnostics():
-    """
-        @TODO fill in docstring
-    """
-
-    # she_diagnostics = she_dpd.SheDiagnostics() # @FIXME
-    she_diagnostics = SheDiagnostics()
-
-    return she_diagnostics

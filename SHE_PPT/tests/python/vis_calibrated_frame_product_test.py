@@ -42,7 +42,7 @@ class TestCalibratedFrameProduct(object):
         # Check that it was inited with the proper filename
         assert product.get_data_filename() == "data/" + subfilename
 
-        pass
+        return
 
     def test_default_filenames(self):
         """Test that all filenames in a default product are empty.
@@ -84,4 +84,4 @@ class TestCalibratedFrameProduct(object):
         assert loaded_product.get_wgt_filename() == "data/" + sub_wgt_filename
         assert loaded_product.get_bkg_filename() == "data/" + sub_bkg_filename
 
-        pass
+        return

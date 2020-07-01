@@ -22,13 +22,19 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-06-30"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
 import pickle
 
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
+from ST_DataModelBindings.dpd.she.commoncalibration_stub import dpdSheCommonCalibration
+from ST_DataModelBindings.pro import she_stub as she_pro
+from ST_DataModelBindings.sys.dss_stub import dataContainer
+
+sample_file_name = "SHE_PPT/sample_common_calibration.xml"
 
 
 def init():
@@ -37,7 +43,7 @@ def init():
     """
 
     # binding_class = she_dpd.DpdSheCommonCalibration # @FIXME
-    binding_class = DpdSheCommonCalibration
+    binding_class = dpdSheCommonCalibration
 
     # Add the data file name methods
 
@@ -64,43 +70,93 @@ def init():
 
 
 def __set_BFD_filename(self, filename):
-    set_data_filename_of_product(self, filename, "BFDCalibrationParameters")
+    if filename is None:
+        if hasattr(self.Data, "BfdCalibrationStorage"):
+            self.Data.BfdCalibrationStorage = None
+    else:
+        if not hasattr(self.Data, "BfdCalibrationStorage") or self.Data.BfdCalibrationStorage is None:
+            self.Data.BfdCalibrationStorage = create_storage(filename)
+        set_data_filename_of_product(self, filename, "BfdCalibrationStorage")
+    return
 
 
 def __get_BFD_filename(self):
-    return get_data_filename_from_product(self, "BFDCalibrationParameters")
+    if not hasattr(self.Data, "BfdCalibrationStorage") or self.Data.BfdCalibrationStorage is None:
+        return None
+    else:
+        return get_data_filename_from_product(self, "BfdCalibrationStorage")
 
 
 def __set_KSB_filename(self, filename):
-    set_data_filename_of_product(self, filename, "KSBCalibrationParameters")
+    if filename is None:
+        if hasattr(self.Data, "KsbCalibrationStorage"):
+            self.Data.KsbCalibrationStorage = None
+    else:
+        if not hasattr(self.Data, "KsbCalibrationStorage") or self.Data.KsbCalibrationStorage is None:
+            self.Data.KsbCalibrationStorage = create_storage(filename)
+        set_data_filename_of_product(self, filename, "KsbCalibrationStorage")
+    return
 
 
 def __get_KSB_filename(self):
-    return get_data_filename_from_product(self, "KSBCalibrationParameters")
+    if not hasattr(self.Data, "KsbCalibrationStorage") or self.Data.KsbCalibrationStorage is None:
+        return None
+    else:
+        return get_data_filename_from_product(self, "KsbCalibrationStorage")
 
 
 def __set_LensMC_filename(self, filename):
-    set_data_filename_of_product(self, filename, "LensMCCalibrationParameters")
+    if filename is None:
+        if hasattr(self.Data, "LensMcCalibrationStorage"):
+            self.Data.LensMcCalibrationStorage = None
+    else:
+        if not hasattr(self.Data, "LensMcCalibrationStorage") or self.Data.LensMcCalibrationStorage is None:
+            self.Data.LensMcCalibrationStorage = create_storage(filename)
+        set_data_filename_of_product(self, filename, "LensMcCalibrationStorage")
+    return
 
 
 def __get_LensMC_filename(self):
-    return get_data_filename_from_product(self, "LensMCCalibrationParameters")
+    if not hasattr(self.Data, "LensMcCalibrationStorage") or self.Data.LensMcCalibrationStorage is None:
+        return None
+    else:
+        return get_data_filename_from_product(self, "LensMcCalibrationStorage")
 
 
 def __set_MomentsML_filename(self, filename):
-    set_data_filename_of_product(self, filename, "MomentsMLCalibrationParameters")
+    if filename is None:
+        if hasattr(self.Data, "MomentsMlCalibrationStorage"):
+            self.Data.MomentsMlCalibrationStorage = None
+    else:
+        if not hasattr(self.Data, "MomentsMlCalibrationStorage") or self.Data.MomentsMlCalibrationStorage is None:
+            self.Data.MomentsMlCalibrationStorage = create_storage(filename)
+        set_data_filename_of_product(self, filename, "MomentsMlCalibrationStorage")
+    return
 
 
 def __get_MomentsML_filename(self):
-    return get_data_filename_from_product(self, "MomentsMLCalibrationParameters")
+    if not hasattr(self.Data, "MomentsMlCalibrationStorage") or self.Data.MomentsMlCalibrationStorage is None:
+        return None
+    else:
+        return get_data_filename_from_product(self, "MomentsMlCalibrationStorage")
 
 
 def __set_REGAUSS_filename(self, filename):
-    set_data_filename_of_product(self, filename, "REGAUSSCalibrationParameters")
+    if filename is None:
+        if hasattr(self.Data, "RegaussCalibrationStorage"):
+            self.Data.RegaussCalibrationStorage = None
+    else:
+        if not hasattr(self.Data, "RegaussCalibrationStorage") or self.Data.RegaussCalibrationStorage is None:
+            self.Data.RegaussCalibrationStorage = create_storage(filename)
+        set_data_filename_of_product(self, filename, "RegaussCalibrationStorage")
+    return
 
 
 def __get_REGAUSS_filename(self):
-    return get_data_filename_from_product(self, "REGAUSSCalibrationParameters")
+    if not hasattr(self.Data, "RegaussCalibrationStorage") or self.Data.RegaussCalibrationStorage is None:
+        return None
+    else:
+        return get_data_filename_from_product(self, "RegaussCalibrationStorage")
 
 
 def __get_all_filenames(self):
@@ -116,9 +172,7 @@ def __get_all_filenames(self):
 
 def __get_method_filename(self, method):
 
-    if method == "BFD":
-        return self.get_BFD_filename()
-    elif method == "KSB":
+    if method == "KSB":
         return self.get_KSB_filename()
     elif method == "LensMC":
         return self.get_LensMC_filename()
@@ -126,108 +180,29 @@ def __get_method_filename(self, method):
         return self.get_MomentsML_filename()
     elif method == "REGAUSS":
         return self.get_REGAUSS_filename()
+    elif method == "BFD":
+        return self.get_BFD_filename()
     else:
         raise ValueError("Invalid method " + str(method) + ".")
 
 
-class DpdSheCommonCalibration:  # @FIXME
+def __set_method_filename(self, method, filename):
 
-    def __init__(self):
-        self.Header = None
-        self.Data = None
-
-    def validateBinding(self):
-        return False
-
-
-class SheCommonCalibration:  # @FIXME
-
-    def __init__(self):
-        self.BFDCalibrationParameters = None
-        self.KSBCalibrationParameters = None
-        self.LensMCCalibrationParameters = None
-        self.MomentsMLCalibrationParameters = None
-        self.REGAUSSCalibrationParameters = None
-
-
-class DataContainer:  # @FIXME
-
-    def __init__(self):
-        self.FileName = None
-        self.filestatus = None
-
-
-class SheBfdCalibrationParameters:  # @FIXME
-
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-
-
-class SheKsbCalibrationParameters:  # @FIXME
-
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-
-
-class SheLensMcCalibrationParameters:  # @FIXME
-
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-
-
-class SheMomentsMlCalibrationParameters:  # @FIXME
-
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-
-
-class SheRegaussCalibrationParameters:  # @FIXME
-
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
+    if method == "KSB":
+        return self.set_KSB_filename(filename)
+    elif method == "LensMC":
+        return self.set_LensMC_filename(filename)
+    elif method == "MomentsML":
+        return self.set_MomentsML_filename(filename)
+    elif method == "REGAUSS":
+        return self.set_REGAUSS_filename(filename)
+    elif method == "BFD":
+        return self.set_BFD_filename(filename)
+    else:
+        raise ValueError("Invalid method " + str(method) + ".")
 
 
 def create_dpd_she_common_calibration(BFD_filename=None,
-                                          KSB_filename=None,
-                                          LensMC_filename=None,
-                                          MomentsML_filename=None,
-                                          REGAUSS_filename=None):
-    """
-        @TODO fill in docstring
-    """
-
-    # dpd_calibration_parameters = she_dpd.DpdSheCommonCalibration() #
-    # @FIXME
-    dpd_calibration_parameters = DpdSheCommonCalibration()
-
-    # dpd_calibration_parameters.Header =
-    # HeaderProvider.create_generic_header("SHE") # FIXME
-    dpd_calibration_parameters.Header = "SHE"
-
-    dpd_calibration_parameters.Data = create_she_common_calibration(BFD_filename,
-                                                                        KSB_filename,
-                                                                        LensMC_filename,
-                                                                        MomentsML_filename,
-                                                                        REGAUSS_filename)
-
-    return dpd_calibration_parameters
-
-
-# Add a useful alias
-create_calibration_parameters_product = create_dpd_she_common_calibration
-
-
-def create_she_common_calibration(BFD_filename=None,
                                       KSB_filename=None,
                                       LensMC_filename=None,
                                       MomentsML_filename=None,
@@ -236,118 +211,40 @@ def create_she_common_calibration(BFD_filename=None,
         @TODO fill in docstring
     """
 
-    # calibration_parameters = she_dpd.SheCommonCalibration() # @FIXME
-    calibration_parameters = SheCommonCalibration()
+    dpd_she_common_calibration = read_xml_product(
+            find_aux_file(sample_file_name), allow_pickled=False)
 
-    # Read these in from
-    calibration_parameters.BFDCalibrationParameters = create_she_bfd_calibration_parameters(
-        BFD_filename)
+    dpd_she_common_calibration.Header = "SHE"
 
-    calibration_parameters.KSBCalibrationParameters = create_she_KSB_calibration_parameters(
-        KSB_filename)
+    # Overwrite the header with a new one to update the creation date (among
+    # other things)
+    dpd_she_common_calibration.Header = HeaderProvider.create_generic_header("SHE")
 
-    calibration_parameters.LensMCCalibrationParameters = create_she_LensMC_calibration_parameters(
-        LensMC_filename)
+    __set_BFD_filename(dpd_she_common_calibration, BFD_filename)
+    __set_KSB_filename(dpd_she_common_calibration, KSB_filename)
+    __set_LensMC_filename(dpd_she_common_calibration, LensMC_filename)
+    __set_MomentsML_filename(dpd_she_common_calibration, MomentsML_filename)
+    __set_REGAUSS_filename(dpd_she_common_calibration, REGAUSS_filename)
 
-    calibration_parameters.MomentsMLCalibrationParameters = create_she_MomentsML_calibration_parameters(
-        MomentsML_filename)
-
-    calibration_parameters.REGAUSSCalibrationParameters = create_she_REGAUSS_calibration_parameters(
-        REGAUSS_filename)
-
-    return calibration_parameters
+    return dpd_she_common_calibration
 
 
-def create_she_bfd_calibration_parameters(filename):
+# Add a useful alias
+create_common_calibration_product = create_dpd_she_common_calibration
+
+
+def create_storage(filename):
     """
         @TODO fill in docstring
     """
 
-    # bfd_calibration_parameters = she_dpd.SheBfdCalibrationParameters() #
-    # @FIXME
-    bfd_calibration_parameters = SheBfdCalibrationParameters()
+    storage = she_pro.sheCommonCalibrationFile()
 
-    bfd_calibration_parameters.format = "UNDEFINED"
-    bfd_calibration_parameters.version = "0.0"
+    storage.format = "she.commonCalibration"
+    storage.version = "8.0"
 
-    bfd_calibration_parameters.DataContainer = DataContainer()
-    bfd_calibration_parameters.DataContainer.FileName = filename
-    bfd_calibration_parameters.DataContainer.filestatus = "PROPOSED"
+    storage.DataContainer = dataContainer()
+    storage.DataContainer.FileName = filename
+    storage.DataContainer.filestatus = "PROPOSED"
 
-    return bfd_calibration_parameters
-
-
-def create_she_KSB_calibration_parameters(filename):
-    """
-        @TODO fill in docstring
-    """
-
-    # KSB_calibration_parameters = she_dpd.SheKsbCalibrationParameters() #
-    # @FIXME
-    KSB_calibration_parameters = SheKsbCalibrationParameters()
-
-    KSB_calibration_parameters.format = "UNDEFINED"
-    KSB_calibration_parameters.version = "0.0"
-
-    KSB_calibration_parameters.DataContainer = DataContainer()
-    KSB_calibration_parameters.DataContainer.FileName = filename
-    KSB_calibration_parameters.DataContainer.filestatus = "PROPOSED"
-
-    return KSB_calibration_parameters
-
-
-def create_she_LensMC_calibration_parameters(filename):
-    """
-        @TODO fill in docstring
-    """
-
-    # LensMC_calibration_parameters = she_dpd.SheLensMcCalibrationParameters()
-    # # @FIXME
-    LensMC_calibration_parameters = SheLensMcCalibrationParameters()
-
-    LensMC_calibration_parameters.format = "UNDEFINED"
-    LensMC_calibration_parameters.version = "0.0"
-
-    LensMC_calibration_parameters.DataContainer = DataContainer()
-    LensMC_calibration_parameters.DataContainer.FileName = filename
-    LensMC_calibration_parameters.DataContainer.filestatus = "PROPOSED"
-
-    return LensMC_calibration_parameters
-
-
-def create_she_MomentsML_calibration_parameters(filename):
-    """
-        @TODO fill in docstring
-    """
-
-    # MomentsML_calibration_parameters =
-    # she_dpd.SheMomentsMlCalibrationParameters() # @FIXME
-    MomentsML_calibration_parameters = SheMomentsMlCalibrationParameters()
-
-    MomentsML_calibration_parameters.format = "UNDEFINED"
-    MomentsML_calibration_parameters.version = "0.0"
-
-    MomentsML_calibration_parameters.DataContainer = DataContainer()
-    MomentsML_calibration_parameters.DataContainer.FileName = filename
-    MomentsML_calibration_parameters.DataContainer.filestatus = "PROPOSED"
-
-    return MomentsML_calibration_parameters
-
-
-def create_she_REGAUSS_calibration_parameters(filename):
-    """
-        @TODO fill in docstring
-    """
-
-    # REGAUSS_calibration_parameters =
-    # she_dpd.SheRegaussCalibrationParameters() # @FIXME
-    REGAUSS_calibration_parameters = SheRegaussCalibrationParameters()
-
-    REGAUSS_calibration_parameters.format = "UNDEFINED"
-    REGAUSS_calibration_parameters.version = "0.0"
-
-    REGAUSS_calibration_parameters.DataContainer = DataContainer()
-    REGAUSS_calibration_parameters.DataContainer.FileName = filename
-    REGAUSS_calibration_parameters.DataContainer.filestatus = "PROPOSED"
-
-    return REGAUSS_calibration_parameters
+    return storage

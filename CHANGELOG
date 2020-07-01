@@ -1,5 +1,39 @@
 Changelog for SHE_PPT
 
+Changes from v8.0 to v8.1
+=========================
+
+API Changes
+-----------
+- LensMC table format changed to match format for prior shear_estimates table format
+
+Dependency Changes
+------------------
+
+Deprecated Features
+-------------------
+
+Bug Fixes
+---------
+- Filename initialiser for MomentsML Training now works
+- Various fits file formats in data models fixed
+
+New Features
+------------
+- Added data product definitions for: she_analysis_config, she_bfd_calibration, she_ksb_calibration, 
+  she_lensmc_calibration, she_momentsml_calibration, she_regauss_calibration
+- The following data product definitions now properly use XML bindings: she_common_calibration,
+  she_galaxy_population_priors, she_psf_calibration_parameters, she_psf_field_parameters
+
+New config features
+-------------------
+
+Miscellaneous
+-------------
+- Location of MDB file on WebDAV moved to SHE_CTE directory
+- Cleaned up locations of test files on WebDAV to match standard locations
+- Cleaned up test modules
+
 Changes from v1.4 to v8.0
 =========================
 

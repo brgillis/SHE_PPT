@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-06-30"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
@@ -120,8 +120,8 @@ def create_she_psf_model_image(filename=None):
     # she_psf_model_image = she_dpd.ShePsfModelImage() # @FIXME
     she_psf_model_image = ShePsfModelImage()
 
-    she_psf_model_image.format = "UNDEFINED"
-    she_psf_model_image.version = "0.0"
+    she_psf_model_image.format = "she.psfModelImage"
+    she_psf_model_image.version = "8.0"
 
     she_psf_model_image.DataContainer = DataContainer()
     she_psf_model_image.DataContainer.FileName = filename

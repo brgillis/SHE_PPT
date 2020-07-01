@@ -1,4 +1,4 @@
-""" @file she_lensmc_training_product_test.py
+""" @file she_analysis_config_product_test.py
 
     Created 24 Nov 2017
 
@@ -24,7 +24,7 @@ import pytest
 
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
-from SHE_PPT.products import she_lensmc_training as prod
+from SHE_PPT.products import she_analysis_config as prod
 
 
 class TestLensMCTrainingDataProduct(object):
@@ -35,7 +35,7 @@ class TestLensMCTrainingDataProduct(object):
     def test_validation(self):
 
         # Create the product
-        product = prod.create_dpd_she_lensmc_training()
+        product = prod.create_dpd_she_analysis_config()
 
         # Check that it validates the schema
         product.validateBinding()
@@ -45,17 +45,17 @@ class TestLensMCTrainingDataProduct(object):
     def test_xml_writing_and_reading(self, tmpdir):
 
         # Create the product
-        product = prod.create_dpd_she_lensmc_training()
+        product = prod.create_dpd_she_analysis_config()
 
         # Change the fits filenames
         subfilename = "test_file.fits"
         product.set_filename(subfilename)
 
         # Save the product in an XML file
-        write_xml_product(product, "she_lensmc_training.xml", workdir=str(tmpdir), allow_pickled=False)
+        write_xml_product(product, "she_analysis_config.xml", workdir=str(tmpdir), allow_pickled=False)
 
         # Read back the XML file
-        loaded_product = read_xml_product("she_lensmc_training.xml", workdir=str(tmpdir), allow_pickled=False)
+        loaded_product = read_xml_product("she_analysis_config.xml", workdir=str(tmpdir), allow_pickled=False)
 
         # Check that the filenames match
         assert loaded_product.get_filename() == "data/" + subfilename

@@ -36,11 +36,11 @@ class TestUtility:
 
     @classmethod
     def setup_class(cls):
-        pass
+        return
 
     @classmethod
     def teardown_class(cls):
-        pass
+        return
 
     @pytest.fixture(autouse=True)
     def setup(self, tmpdir):

@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-22"
+__updated__ = "2020-06-30"
 
 import os
 import pytest
@@ -57,7 +57,7 @@ class TestObjectIdList(object):
         # Check that it validates the schema
         product.validateBinding()
 
-        pass
+        return
 
     @pytest.mark.skip(reason="XML definition not yet available")
     def test_xml_writing_and_reading(self):

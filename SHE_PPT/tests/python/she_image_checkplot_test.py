@@ -55,7 +55,7 @@ class Testshe_image_checkplot(object):
 
     @classmethod
     def teardown_class(cls):
-        pass
+        return
         if os.path.exists(cls.testfilepath):
             os.remove(cls.testfilepath)
 

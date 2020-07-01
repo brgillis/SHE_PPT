@@ -1,8 +1,8 @@
-""" @file she_momentsml_training.py
+""" @file she_ksb_calibration.py
 
     Created 24 Nov 2017
 
-    Functions to create and output a momentsml_training_data data product.
+    Functions to create and output a ksb_calibration_data data product.
 
     Origin: OU-SHE - Needs to be implemented in data model. Output from Calibration pipeline
     and input to Analysis pipeline; must be persistent in archive.
@@ -24,31 +24,28 @@
 
 __updated__ = "2020-06-30"
 
-# import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
-
 import pickle
 
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
-from ST_DataModelBindings.dpd.she.momentsmltraining_stub import dpdSheMomentsMlTraining
+from ST_DataModelBindings.dpd.she.ksbcalibration_stub  import dpdSheKsbCalibration
 
-sample_file_name = "SHE_PPT/sample_momentsml_training.xml"
+sample_file_name = "SHE_PPT/sample_ksb_calibration.xml"
 
 
 def init():
     """
-        Initialisers for MomentsML training set.
+        Adds some extra functionality to the DpdSheAstrometry product
     """
 
-    binding_class = dpdSheMomentsMlTraining
+    binding_class = dpdSheKsbCalibration
 
     # Add the data file name methods
 
-    binding_class.set_filename = __set_data_filename
-    binding_class.get_filename = __get_data_filename
-    binding_class.set_data_filename = __set_data_filename
-    binding_class.get_data_filename = __get_data_filename
+    binding_class.set_filename = __set_filename
+    binding_class.get_filename = __get_filename
+    binding_class.set_data_filename = __set_filename
+    binding_class.get_data_filename = __get_filename
 
     binding_class.get_all_filenames = __get_all_filenames
 
@@ -57,12 +54,12 @@ def init():
     return
 
 
-def __set_data_filename(self, filename):
-    set_data_filename_of_product(self, filename, "DataStorage")
+def __set_filename(self, filename):
+    set_data_filename_of_product(self, filename, "KsbCalibrationFileList[0].DataStorage")
 
 
-def __get_data_filename(self):
-    return get_data_filename_from_product(self, "DataStorage")
+def __get_filename(self):
+    return get_data_filename_from_product(self, "KsbCalibrationFileList[0].DataStorage")
 
 
 def __get_all_filenames(self):
@@ -72,20 +69,23 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-def create_dpd_she_momentsml_training(filename=None):
+def create_dpd_she_ksb_calibration(filename=None):
     """
         @TODO fill in docstring
     """
 
-    dpd_she_momentsml_training = read_xml_product(
+    dpd_she_ksb_calibration = read_xml_product(
         find_aux_file(sample_file_name), allow_pickled=False)
 
-    dpd_she_momentsml_training.Header = HeaderProvider.create_generic_header("SHE")  # FIXME
+    # Overwrite the header with a new one to update the creation date (among
+    # other things)
+    dpd_she_ksb_calibration.Header = HeaderProvider.create_generic_header("SHE")
 
     if filename:
-        __set_data_filename(dpd_she_momentsml_training, filename)
-    return dpd_she_momentsml_training
+        __set_filename(dpd_she_ksb_calibration, filename)
+
+    return dpd_she_ksb_calibration
 
 
 # Add a useful alias
-create_momentsml_training_data_product = create_dpd_she_momentsml_training
+create_ksb_calibration_data_product = create_dpd_she_ksb_calibration
