@@ -23,7 +23,7 @@ __updated__ = "2019-06-25"
 import pytest
 
 from SHE_PPT import detector as dtc
-from SHE_PPT.file_io import (read_xml_product, write_xml_product)
+from SHE_PPT.file_io import (read_xml_product, write_xml_product, find_file)
 import SHE_PPT.magic_values as mv
 from SHE_PPT.products import segmentation_maps as prod
 from astropy.io import fits
@@ -38,7 +38,7 @@ class TestStackSegmentationProduct(object):
     def test_validation(self):
 
         # Create the product
-        product = prod.create_stack_reprojected_segmentation_map(data_filename="junk",filter_names=[])
+        product = prod.create_dpd_she_stack_reproj_seg_map_data(filename="junk",)
 
         # Check that it validates the schema
         product.validateBinding()
@@ -48,11 +48,10 @@ class TestStackSegmentationProduct(object):
     def test_xml_writing_and_reading(self, tmpdir):
 
         # Create the product
-        product = prod.create_stack_reprojected_segmentation_map(data_filename="junk",)
-        print("DF: ",product.Data,product.Data.DataStorage.DataContainer.FileName)
+        product = prod.create_dpd_she_stack_reproj_seg_map_data(filename="junk",)
         # Change the fits file names
         data_filename = "test_file_data.fits"
-        product.set_data_filename(data_filename)
+        product.set_filename(data_filename)
 
         # Save the product in an xml file
         write_xml_product(product, "stack_segmentation.xml", workdir=str(tmpdir), allow_pickled=False)
@@ -61,83 +60,7 @@ class TestStackSegmentationProduct(object):
         loaded_product = read_xml_product("stack_segmentation.xml", workdir=str(tmpdir), allow_pickled=False)
 
         # Check that it's the same
-        assert loaded_product.get_data_filename() == "data/"+data_filename
+        assert loaded_product.get_filename() == "data/"+data_filename
 
         pass
 
-    @pytest.mark.skip(reason="Temporarily turnoff")
-    def test_load_stack_segmentation_hdu(self, tmpdir):
-
-        # Create and save the product with a junk filename first
-        product = prod.create_dpd_stack_segmentation(data_filename="junk",)
-
-        filename = str(tmpdir.join("stack_segmentation.bin"))
-        write_xml_product(product, filename, allow_pickled=False)
-
-        # Check that it raises exceptions when expected
-
-        with pytest.raises(RuntimeError):
-            stack_segmentation_hdu = prod.load_stack_segmentation_hdu(filename="bad_filename.junk")
-        with pytest.raises(IOError):
-            stack_segmentation_hdu = prod.load_stack_segmentation_hdu(filename=filename)
-
-        # Now save it pointing to an existing fits file and check that it works
-
-        test_array = np.zeros((10, 20))
-        test_array[0, 0] = 1
-        detector_x = 2
-        detector_y = 3
-
-        phdu = fits.PrimaryHDU(data=test_array,
-                               header=fits.header.Header((("EXTNAME", dtc.get_id_string(detector_x, detector_y)
-                                                           + "." + mv.segmentation_tag),)))
-
-        data_filename = str(tmpdir.join("stack_segmentation_data.fits"))
-        phdu.writeto(data_filename, overwrite=True)
-
-        product.set_data_filename(data_filename)
-        write_xml_product(product, filename, allow_pickled=False)
-
-        loaded_hdu = prod.load_stack_segmentation_hdu(filename=filename,
-                                          detector_x=detector_x,
-                                          detector_y=detector_y)
-
-        assert (loaded_hdu.data == test_array).all()
-
-        # Now test with a multi-HDU data image
-
-        test_array2 = np.zeros((20, 40))
-        test_array2[0, 0] = 2
-        detector_x2 = 4
-        detector_y2 = 5
-
-        hdu2 = fits.ImageHDU(data=test_array2,
-                             header=fits.header.Header((("EXTNAME", dtc.get_id_string(detector_x2, detector_y2)
-                                                         + "." + mv.segmentation_tag),)))
-
-        hdulist = fits.HDUList([phdu, hdu2])
-        hdulist.writeto(data_filename, overwrite=True)
-
-        loaded_hdu1 = prod.load_stack_segmentation_hdu(filename=filename,
-                                           hdu=0)
-
-        assert (loaded_hdu1.data == test_array).all()
-
-        loaded_hdu2 = prod.load_stack_segmentation_hdu(filename=filename,
-                                           hdu=1)
-
-        assert (loaded_hdu2.data == test_array2).all()
-
-        loaded_hdu1 = prod.load_stack_segmentation_hdu(filename=filename,
-                                           detector_x=detector_x,
-                                           detector_y=detector_y)
-
-        assert (loaded_hdu1.data == test_array).all()
-
-        loaded_hdu2 = prod.load_stack_segmentation_hdu(filename=filename,
-                                           detector_x=detector_x2,
-                                           detector_y=detector_y2)
-
-        assert (loaded_hdu2.data == test_array2).all()
-
-        pass
