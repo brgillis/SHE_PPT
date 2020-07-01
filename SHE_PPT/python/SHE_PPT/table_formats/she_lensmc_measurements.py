@@ -156,7 +156,7 @@ class SheLensMcMeasurementsFormat(object):
             "SHE_LENSMC_G2_UNCAL", dtype=">f4", fits_dtype="E")
         self.g2_uncal_err = set_column_properties(
             "SHE_LENSMC_G2_UNCAL_ERR", dtype=">f4", fits_dtype="E")
-        self.g1g2_uncal_cov = set_column_properties(
+        self.g1g2_uncal_covar = set_column_properties(
             "SHE_LENSMC_G1G2_UNCAL_COVAR", dtype=">f4", fits_dtype="E")
         self.weight_uncal = set_column_properties(
             "SHE_LENSMC_WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
