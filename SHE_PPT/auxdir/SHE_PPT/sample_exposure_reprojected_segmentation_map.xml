@@ -1,163 +1,99 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <ns1:DpdSheExposureReprojectedSegmentationMap xmlns:ns1="http://euclid.esa.org/schema/dpd/she/exposurereprojectedsegmentationmap">
 	<Header>
-		<ProductId>07f56abc-1307-4270-b3ff-56c94c1a2288</ProductId>
-		<ProductType>EEV8G</ProductType>
-		<SoftwareName>w82b7</SoftwareName>
-		<SoftwareRelease>gV0</SoftwareRelease>
-		<EuclidPipelineSoftwareRelease>0tRPT</EuclidPipelineSoftwareRelease>
-		<ProdSDC>E2dJpyxAKD0NvQ40jLj3IiaUIqZ7tHVbWiLLk4LJJQfVr6Xn8PP0Nwwjm5ThkeSEwCnG3FYbPDV3pHmPpUWyKS3GcBdtHETlpLV0b7TrEIPveU</ProdSDC>
-		<DataSetRelease>EEtlj</DataSetRelease>
-		<Purpose>VALIDATION</Purpose>
-		<PlanId>GgkPH</PlanId>
-		<PPOId>bXFz1</PPOId>
-		<PipelineDefinitionId>4b9mQ</PipelineDefinitionId>
-		<PipelineRun>qUsro</PipelineRun>
-		<ExitStatusCode>AnCPe</ExitStatusCode>
+		<ProductId>449fa8cd-753f-4d9e-99b9-e15ab9938a95</ProductId>
+		<ProductType>dpdSheExposureReprojectedSegmentationMap</ProductType>
+		<SoftwareName>NA</SoftwareName>
+		<SoftwareRelease>0.0</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>0.0</EuclidPipelineSoftwareRelease>
+		<ProdSDC>SDC-IT</ProdSDC>
+		<DataSetRelease>NA</DataSetRelease>
+		<Purpose>UNKNOWN</Purpose>
+		<PlanId>21561be2-bd41-4c63-8b1e-6b8bf5ef9313</PlanId>
+		<PPOId>690ee9c4-4ec5-4fcb-97d7-f391b281d2a5</PPOId>
+		<PipelineDefinitionId>PipelineDefinitionId</PipelineDefinitionId>
+		<PipelineRun>NA</PipelineRun>
+		<ExitStatusCode>NA</ExitStatusCode>
 		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
-		<ExpirationDate>2020-06-01T14:56:14.883Z</ExpirationDate>
+		<ExpirationDate>2020-07-01T22:37:08.816Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>
-		<Published>true</Published>
-		<Curator>SHE</Curator>
-		<CreationDate>2020-06-01T14:56:14.884Z</CreationDate>
+		<Published>false</Published>
+		<Curator>Curator0</Curator>
+		<CreationDate>2020-07-01T22:37:08.816Z</CreationDate>
 	</Header>
 	<Data>
-		<ExposureTime>
-			<Value>-5.0</Value>
-			<Unit>a</Unit>
-		</ExposureTime>
 		<ImgType>
-			<Category>TEST</Category>
-			<FirstType>BIAS</FirstType>
-			<SecondType>SCREEN</SecondType>
-			<ThirdType>CALIBRATION</ThirdType>
+			<Category>SCIENCE</Category>
+			<FirstType>STD</FirstType>
+			<SecondType>SKY</SecondType>
+			<ThirdType>WIDE</ThirdType>
 			<Technique>IMAGE</Technique>
 		</ImgType>
-		<ImgArea>
-			<Name>GEgpaPTWm2Fn0yiTTGNvMGn0B22uAuCofCpe</Name>
-		</ImgArea>
-		<ImgNumber>-344645588</ImgNumber>
-		<AxisNumber>-1203126754</AxisNumber>
-		<AxisLengths>0</AxisLengths>
+		<ImgNumber>1</ImgNumber>
+		<AxisNumber>2</AxisNumber>
+		<AxisLengths>0 0</AxisLengths>
 		<DataSize>-32</DataSize>
-		<DataLength>-1139532604</DataLength>
-		<ImgStatistics>
-			<Min>-5.0</Min>
-			<Max>1.0</Max>
-			<Mean>-10.0</Mean>
-			<Stdev>0.0</Stdev>
-			<Median>-8.0</Median>
-			<MinX>280273090</MinX>
-			<MinY>1326683521</MinY>
-			<MaxX>1287984058</MaxX>
-			<MaxY>1878695745</MaxY>
-			<NPix>-5740794818387704220</NPix>
-			<XLower>1410268923</XLower>
-			<YLower>-131707051</YLower>
-			<XUpper>-1681981007</XUpper>
-			<YUpper>-2023635602</YUpper>
-		</ImgStatistics>
+		<DataLength>0</DataLength>
 		<TileList>
-			<TileIndex>-3435513723794139901</TileIndex>
-			<TileProductId>GAmEE</TileProductId>
+			<TileIndex>101</TileIndex>
+			<TileProductId>101</TileProductId>
 		</TileList>
-		<ExposureProductId>xJCsd</ExposureProductId>
-		<ObservationId>1790824336771875423</ObservationId>
+		<ObservationId>101</ObservationId>
 		<ImgSpatialFootprint>
 			<Polygon>
 				<Vertex>
-					<Position coordUnit="Ohm">
-						<C1 unit="rad/day">1.0</C1>
-						<C2 unit="m/s">0.0</C2>
+					<Position coordUnit="deg">
+						<C1>0.0</C1>
+						<C2>0.0</C2>
 					</Position>
-					<SmallCircle>
-						<Pole coordUnit="W">
-							<C1 unit="lm">1.0</C1>
-							<C2 unit="Mstars/deg2">1.0</C2>
-						</Pole>
-					</SmallCircle>
+				</Vertex>
+				<Vertex>
+					<Position coordUnit="deg">
+						<C1>0.0</C1>
+						<C2>0.0</C2>
+					</Position>
+				</Vertex>
+				<Vertex>
+					<Position coordUnit="deg">
+						<C1>0.0</C1>
+						<C2>0.0</C2>
+					</Position>
+				</Vertex>
+				<Vertex>
+					<Position coordUnit="deg">
+						<C1>0.0</C1>
+						<C2>0.0</C2>
+					</Position>
 				</Vertex>
 			</Polygon>
-			<Circle>
-				<Center coordUnit="min">
-					<C1 unit="um2">1.0</C1>
-					<C2 unit="s/mas/km/yr">0.0</C2>
-				</Center>
-				<Radius unit="rad/day">0.0</Radius>
-			</Circle>
-			<BBox>
-				<RaCenter unit="stars/deg2">1.0</RaCenter>
-				<DecCenter unit="N">0.0</DecCenter>
-				<RaHalfWidth unit="ppm/K">0.0</RaHalfWidth>
-				<DecHalfWidth unit="erg">0.0</DecHalfWidth>
-			</BBox>
 		</ImgSpatialFootprint>
 		<DetectorList>
-			<DetectorID>v66B1</DetectorID>
+			<DetectorID>CCDID range(1, 37)</DetectorID>
 			<WCS>
 				<CTYPE1>
-					<CoordinateType>DEC</CoordinateType>
-					<ProjectionType>STG</ProjectionType>
+					<CoordinateType>RA</CoordinateType>
+					<ProjectionType>TAN</ProjectionType>
 				</CTYPE1>
 				<CTYPE2>
 					<CoordinateType>DEC</CoordinateType>
-					<ProjectionType>CAR</ProjectionType>
+					<ProjectionType>TAN</ProjectionType>
 				</CTYPE2>
-				<CRVAL1>-9.0</CRVAL1>
-				<CRVAL2>-1.0</CRVAL2>
-				<CRPIX1>1.0</CRPIX1>
-				<CRPIX2>1.0</CRPIX2>
-				<CD1_1>4.0</CD1_1>
-				<CD1_2>-9.0</CD1_2>
-				<CD2_1>-4.0</CD2_1>
-				<CD2_2>9.0</CD2_2>
-				<NonLinearCoeffs>
-					<NonLinearTPVAstromCoeffs>
-						<PV1_0>-10.0</PV1_0>
-						<PV1_1>-4.0</PV1_1>
-						<PV1_2>5.0</PV1_2>
-						<PV1_3>8.0</PV1_3>
-						<PV1_4>-7.0</PV1_4>
-						<PV1_5>6.0</PV1_5>
-						<PV1_6>-1.0</PV1_6>
-						<PV1_7>0.0</PV1_7>
-						<PV1_8>8.0</PV1_8>
-						<PV1_9>-6.0</PV1_9>
-						<PV1_10>-7.0</PV1_10>
-						<PV2_0>9.0</PV2_0>
-						<PV2_1>-2.0</PV2_1>
-						<PV2_2>5.0</PV2_2>
-						<PV2_3>-4.0</PV2_3>
-						<PV2_4>8.0</PV2_4>
-						<PV2_5>7.0</PV2_5>
-						<PV2_6>7.0</PV2_6>
-						<PV2_7>-10.0</PV2_7>
-						<PV2_8>6.0</PV2_8>
-						<PV2_9>-8.0</PV2_9>
-						<PV2_10>-5.0</PV2_10>
-					</NonLinearTPVAstromCoeffs>
-				</NonLinearCoeffs>
-				<DetectorId>mv0VzJl9e7L4h1DqP3xuMzectqJuVWTfPGzFlGLnJev8cnhoQCah5Kbffba8Ct4</DetectorId>
+				<CRVAL1>0.0</CRVAL1>
+				<CRVAL2>0.0</CRVAL2>
+				<CRPIX1>0.0</CRPIX1>
+				<CRPIX2>0.0</CRPIX2>
+				<CD1_1>1.0</CD1_1>
+				<CD1_2>0.0</CD1_2>
+				<CD2_1>0.0</CD2_1>
+				<CD2_2>1.0</CD2_2>
 			</WCS>
-			<Zeropoint>-9.0</Zeropoint>
-			<Saturation>0.0</Saturation>
+			<Zeropoint>25.0</Zeropoint>
+			<Saturation>10000.0</Saturation>
 		</DetectorList>
-		<DataStorage format="sim.catalog" version="8.0">
-			<DataContainer filestatus="ARCHIVED_OFFLINE">
-				<FileName>None</FileName>
+		<DataStorage format="she.exposureReprojectedSegmentationMap" version="8.0">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>test.fits</FileName>
 			</DataContainer>
 		</DataStorage>
 	</Data>
-	<QualityFlags>
-		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
-		<AuxiliaryFlags flagName="8otty" flagged="true" maxLimit="8.0" minLimit="-5.0" xpath="jTkAt">false</AuxiliaryFlags>
-	</QualityFlags>
-	<Parameters>
-		<Parameter>
-			<Key>iSlvp</Key>
-			<Description>vnK3F</Description>
-			<StringValue>ZXySK</StringValue>
-			<Unit>V5G7D</Unit>
-		</Parameter>
-	</Parameters>
 </ns1:DpdSheExposureReprojectedSegmentationMap>

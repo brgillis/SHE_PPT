@@ -25,20 +25,20 @@ import pytest
 from SHE_PPT import detector as dtc
 from SHE_PPT.file_io import (read_xml_product, write_xml_product, find_file)
 import SHE_PPT.magic_values as mv
-from SHE_PPT.products import stack_segmentation_map as prod
+from SHE_PPT.products import exposure_segmentation_map as prod
 from astropy.io import fits
 import numpy as np
 
 
-class TestStackSegmentationProduct(object):
-    """A collection of tests for the stack segmentation data product.
+class TestExposureSegmentationProduct(object):
+    """A collection of tests for the exposure segmentation data product.
 
     """
 
     def test_validation(self):
 
         # Create the product
-        product = prod.create_dpd_she_stack_reproj_seg_map_data(filename="junk",)
+        product = prod.create_dpd_she_exposure_reproj_seg_map_data(filename="junk",)
 
         # Check that it validates the schema
         product.validateBinding()
@@ -48,16 +48,16 @@ class TestStackSegmentationProduct(object):
     def test_xml_writing_and_reading(self, tmpdir):
 
         # Create the product
-        product = prod.create_dpd_she_stack_reproj_seg_map_data(filename="junk",)
+        product = prod.create_dpd_she_exposure_reproj_seg_map_data(filename="junk",)
         # Change the fits file names
         data_filename = "test_file_data.fits"
         product.set_filename(data_filename)
 
         # Save the product in an xml file
-        write_xml_product(product, "stack_segmentation.xml", workdir=str(tmpdir), allow_pickled=False)
+        write_xml_product(product, "exposure_segmentation.xml", workdir=str(tmpdir), allow_pickled=False)
 
         # Read back the xml file
-        loaded_product = read_xml_product("stack_segmentation.xml", workdir=str(tmpdir), allow_pickled=False)
+        loaded_product = read_xml_product("exposure_segmentation.xml", workdir=str(tmpdir), allow_pickled=False)
 
         # Check that it's the same
         assert loaded_product.get_filename() == "data/"+data_filename

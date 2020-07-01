@@ -7,6 +7,7 @@
     E-Run SHE_PPT 0.9 python3 /home/brg/Work/Projects/SHE_PPT/SHE_PPT/scripts/convert_sim_catalog.py EUC_SIM_TUGALCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --star_cat EUC_SIM_TUSTARCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --source_dir /mnt/cephfs/share/SC456/SIM-VIS/vis_science_T2/intermediate/TU/data --max_mag_vis 25.5 --obj_cat obj_cat.xml --dest_dir .
 
 """
+from astropy._erfa.core import zp
 
 __updated__ = "2019-06-24"
 
@@ -27,6 +28,8 @@ __updated__ = "2019-06-24"
 import argparse
 import os
 import ST_DataModelBindings.dpd.she.stackreprojectedsegmentationmap_stub as stacksegm_stub
+import ST_DataModelBindings.dpd.she.exposurereprojectedsegmentationmap_stub as expsegm_stub
+
 import ST_DataModelBindings.pro.she_stub as she_dict
 import ST_DM_DmUtils.DmUtils as dm_utils
 import ST_DM_DmUtils.DqcDmUtils as dqc_utils
@@ -77,7 +80,7 @@ def main():
     if is_stack:
         dp = stacksegm_stub.DpdSheStackReprojectedSegmentationMap()
     else:
-        pass
+        dp = expsegm_stub.DpdSheExposureReprojectedSegmentationMap()
     
     filter_names = args.filter_names.split(',')
     
@@ -85,24 +88,33 @@ def main():
         dp.__class__.__name__)
 
     # Add the data element to the data product
-    dp.Data = dm_utils.create_image(she_dict.sheStackReprojectedSegmentationMap)
+    data_prod = (she_dict.sheStackReprojectedSegmentationMap if is_stack else
+                 she_dict.sheExposureReprojectedSegmentationMap)
+    dp.Data = dm_utils.create_image(data_prod)
 
     # Add the general MER metadata
     __add_general_segm_metadata(dp.Data)
 
+    if not is_stack:
+        detector_id_list=[range(1,37)]
+        dp.Data.DetectorList = __create_detector_list(detector_id_list)
+
     # Add the filter list
-    dp.Data.FilterList = dm_utils.create_filter_list(filter_names)
+    # dp.Data.FilterList = dm_utils.create_filter_list(filter_names)
 
     # Add the WCS
-    dp.Data.WCS = dm_utils.create_wcs(False)
+    if is_stack:
+        dp.Data.WCS = dm_utils.create_wcs(False)
 
     # Add the Image spatial footprint
     dp.Data.ImgSpatialFootprint = dm_utils.create_spatial_footprint()
 
     # Add the DataStorage
+    data_prod=(she_dict.sheStackReprojectedSegmentationMapFile if is_stack 
+               else she_dict.sheExposureReprojectedSegmentationMapFile)
     dp.Data.DataStorage = dm_utils.create_fits_storage(
-        she_dict.sheStackReprojectedSegmentationMapFile, args.data_filename,
-        "she.stackReprojectedSegmentationMap", "8.0")
+        data_prod, args.data_filename,
+        "she.%sReprojectedSegmentationMap" % (args.segm_type), "8.0")
 
     # Add the quality parameters
     #dp.Data.QualityParams = dqc_utils.create_quality_parameters(
@@ -178,24 +190,18 @@ def __create_detector_list(detector_id_list):
     Returns
     -------
     object
-        The SHE list of detector ids binding.
+        The SHE list of detectors binding.
 
     """
-    # Remove duplications and None values
-    if detector_id_list is None:
-        clean_detector_id_list = []
-    else:
-        clean_detector_id_list = set(detector_id_list)
-        clean_detector_id_list.discard(None)
-        clean_detector_id_list = list(clean_detector_id_list)
-        clean_detector_id_list.sort()
-
-    # Create the list of detector ids binding
-    she_list_of_detectors = she_dict.sheListOfDetectors()
-
-    # Add the detector ids
-    for detector_id in clean_detector_id_list:
-        she_list_of_detectors.append(detector_id)
+    she_list_of_detectors=[]
+    for det_id in detector_id_list:
+        det_prod=she_dict.sheListOfDetectors()
+        det_prod.DetectorID='CCDID %s' % det_id
+        det_prod.WCS = dm_utils.create_wcs(False)  
+        det_prod.Zeropoint = 25.
+        det_prod.Saturation = 10000.
+    
+        she_list_of_detectors.append(det_prod)
 
     return she_list_of_detectors
     
