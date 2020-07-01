@@ -22,7 +22,7 @@ Created on: 05/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-07-01"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
@@ -83,14 +83,14 @@ class SHEFrameStack(object):
         self.exposures = exposures
         # if stacked_image:
         self.stacked_image = stacked_image
-        self.mer_final_catalog_catalogue = detections_catalogue
+        self.detections_catalogue = detections_catalogue
 
         # Might have to manually calculate this later
         self.stack_pixel_size_ratio = 1
 
         # Set the detections catalogue to index by ID
-        if self.mer_final_catalog_catalogue is not None:
-            self.mer_final_catalog_catalogue.add_index(mfc_tf.ID)
+        if self.detections_catalogue is not None:
+            self.detections_catalogue.add_index(mfc_tf.ID)
 
         return
 
@@ -158,7 +158,7 @@ class SHEFrameStack(object):
             return False
         if neq(self.stacked_image, rhs.stacked_image):
             return False
-        if neq(self.mer_final_catalog_catalogue, rhs.mer_final_catalog_catalogue):
+        if neq(self.detections_catalogue, rhs.detections_catalogue):
             return False
         if neq(self.stack_pixel_size_ratio, rhs.stack_pixel_size_ratio):
             return False
@@ -184,12 +184,12 @@ class SHEFrameStack(object):
 
         # Need to put this in a try block in case the index wasn't properly set
         try:
-            row = self.mer_final_catalog_catalogue.loc[gal_id]
+            row = self.detections_catalogue.loc[gal_id]
         except ValueError as e:
             if not "Cannot create TableLoc object with no indices" in str(e):
                 raise
-            self.mer_final_catalog_catalogue.add_index(mfc_tf.ID)
-            row = self.mer_final_catalog_catalogue.loc[gal_id]
+            self.detections_catalogue.add_index(mfc_tf.ID)
+            row = self.detections_catalogue.loc[gal_id]
 
         x_world = row[mfc_tf.gal_x_world]
         y_world = row[mfc_tf.gal_y_world]

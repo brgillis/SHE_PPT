@@ -96,7 +96,7 @@ class TestCase:
         gain = self.data_stack.exposures[0].detectors[1, 1].header[mv.gain_label]
 
         # Get the S/N for each galaxy
-        for i, row in enumerate(self.data_stack.mer_final_catalog_catalogue):
+        for i, row in enumerate(self.data_stack.detections_catalogue):
             gal_stack = self.data_stack.extract_galaxy_stack(row[mfc_tf.ID], width=128)
 
             signal_to_noise_estimates = []

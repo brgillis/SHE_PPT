@@ -45,7 +45,7 @@ print("Time elapsed for reading: " + str((stop - start)))
 
 exit()
 
-cat = frame_stack.mer_final_catalog_catalogue
+cat = frame_stack.detections_catalogue
 
 num_output = 0
 i = 0
