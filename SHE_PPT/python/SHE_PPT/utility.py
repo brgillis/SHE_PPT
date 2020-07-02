@@ -19,31 +19,55 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-04-22"
+__updated__ = "2020-06-30"
 
 import codecs
 import hashlib
+import os
+
+from astropy.wcs import WCS
 
 from SHE_PPT import detector as dtc
 from SHE_PPT.logging import getLogger
-from astropy.wcs import WCS
-
 
 logger = getLogger(__name__)
 
+
+def get_index_zero_attr(obj, attr):
+    if not "[0]" in attr:
+        return getattr(obj, attr)
+    elif attr[-3:] == "[0]":
+        return getattr(obj, attr[:-3])[0]
+    else:
+        raise ValueError("Invalid format of attribute passed to get_index_zero_attr: " + str(attr))
+
+
 def get_nested_attr(obj, attr):
     if not "." in attr:
-        return getattr(obj, attr)
+        return get_index_zero_attr(obj, attr)
     else:
         head, tail = attr.split('.', 1)
-        return get_nested_attr(getattr(obj,head), tail)
+        return get_nested_attr(get_index_zero_attr(obj, head), tail)
+
+
+def set_index_zero_attr(obj, attr, val):
+    if not "[0]" in attr:
+        setattr(obj, attr, val)
+    elif attr[-3:] == "[0]":
+        getattr(obj, attr[:-3])[0] = val
+    else:
+        raise ValueError("Invalid format of attribute passed to get_index_zero_attr: " + str(attr))
+    return
+
 
 def set_nested_attr(obj, attr, val):
     if not "." in attr:
-        return setattr(obj, attr, val)
+        set_index_zero_attr(obj, attr, val)
     else:
         head, tail = attr.split('.', 1)
-        return set_nested_attr(getattr(obj,head), tail, val)
+        set_nested_attr(get_index_zero_attr(obj, head), tail, val)
+    return
+
 
 def hash_any(obj, format='hex', max_length=None):
     """Hashes any immutable object into a hex string of a given length. Unlike hash(), will be consistent in Python
@@ -92,7 +116,7 @@ def hash_any(obj, format='hex', max_length=None):
 
             # Get the power from the portion after the 'int' part
             power = int(format[start:])
-            mod = 2**power
+            mod = 2 ** power
             full_hash = int_hash % mod
 
             # If signed, subtract half the modulus
@@ -317,3 +341,39 @@ def run_only_once(function):
     wrapper.already_run = False
 
     return wrapper
+
+
+def get_all_files(directory_name):
+    """
+    """
+    full_file_list = []
+    dir_list = [directory_name]
+    is_complete = False
+    while not is_complete:
+        new_dir_list = []
+        for dir_name in dir_list:
+            file_list, sb_dir_list = process_directory(
+                dir_name)
+            full_file_list += [os.path.join(dir_name, fname)
+                             for fname in file_list]
+            if sb_dir_list:
+                new_dir_list += [os.path.join(dir_name, sb_dir)
+                    for sb_dir in sb_dir_list]
+        dir_list = new_dir_list
+        is_complete = len(dir_list) == 0
+
+    return full_file_list
+
+
+def process_directory(directory_name):
+    """ Check for files, subdirectories
+    
+    """
+    file_list = []
+    subdir_list = []
+    for file_name in os.listdir(directory_name):
+        if os.path.isdir(os.path.join(directory_name, file_name)):
+            subdir_list.append(file_name)
+        elif not file_name.startswith('.'):
+            file_list.append(file_name)
+    return file_list, subdir_list

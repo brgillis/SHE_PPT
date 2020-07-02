@@ -25,7 +25,7 @@ workdir = "/home/brg/Data/sc3-workdir"
 exposure_listfile_name = "CalibratedFrames.json"
 stacked_frame_filename = "DpdVisStackedFrame.xml"
 
-exposure_mosaics_listfile_name = "MosaicFrames.json"
+exposure_segmentation_maps_listfile_name = "MosaicFrames.json"
 stacked_frame_mosaic_filename = "EUC_SHE_SHE_Mosaic_Stack_2018315T15328.0Z_00.00.fits"
 
 detections_listfile_name = "DetectionsCatalogs.json"
@@ -33,7 +33,7 @@ detections_listfile_name = "DetectionsCatalogs.json"
 start = timer()
 
 frame_stack = SHEFrameStack.read(exposure_listfile_filename=exposure_listfile_name,
-                                 seg_listfile_filename=exposure_mosaics_listfile_name,
+                                 seg_listfile_filename=exposure_segmentation_maps_listfile_name,
                                  stacked_image_product_filename=stacked_frame_filename,
                                  stacked_seg_filename=stacked_frame_mosaic_filename,
                                  detections_listfile_filename=detections_listfile_name,

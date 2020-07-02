@@ -22,11 +22,17 @@ Created on: 02/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2019-05-27"
+__updated__ = "2020-06-25"
 
+from collections import namedtuple
 from copy import deepcopy
 import os.path
 import weakref
+
+from astropy.io import fits
+from astropy.io.fits import HDUList, BinTableHDU, ImageHDU, PrimaryHDU
+from astropy.table import Table
+from astropy.wcs import WCS
 
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
@@ -34,16 +40,12 @@ from SHE_PPT import products
 import SHE_PPT.detector
 from SHE_PPT.file_io import read_xml_product
 from SHE_PPT.she_image import SHEImage
-from SHE_PPT.table_formats.detections import tf as detf
-from SHE_PPT.table_formats.psf import tf as pstf
+from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
+from SHE_PPT.table_formats.she_psf_model_image import tf as pstf
 from SHE_PPT.table_utility import is_in_format
+import SHE_PPT.telescope_coords as tc
 from SHE_PPT.utility import find_extension, load_wcs, run_only_once
-from astropy.io import fits
-from astropy.io.fits import HDUList, BinTableHDU, ImageHDU, PrimaryHDU
-from astropy.table import Table
-from astropy.wcs import WCS
 import numpy as np
-
 
 logger = logging.getLogger(__name__)
 
@@ -297,7 +299,8 @@ class SHEFrame(object):
 
         return bulge_psf_stamp, disk_psf_stamp
 
-    def get_fov_coords(self, x_world, y_world, x_buffer=0, y_buffer=0):
+    def get_fov_coords(self, x_world, y_world, x_buffer=0, y_buffer=0,
+        return_det_coords_too=False):
         """ Calculates the Field-of-View (FOV) co-ordinates of a given sky position, and returns a (fov_x, fov_y)
             tuple. If the position isn't present in the exposure, None will be returned instead.
 
@@ -311,6 +314,8 @@ class SHEFrame(object):
                 The size of the buffer region in pixels around a detector to get the co-ordinate from, x-dimension
             y_buffer : int
                 The size of the buffer region in pixels around a detector to get the co-ordinate from, y-dimension
+            return_det_coords_too : bool
+                If true return namedtuple of x_fov, y_fov, detno_x, detno_y, x_det, y_det   
 
             Return
             ------
@@ -347,8 +352,21 @@ class SHEFrame(object):
             return None
 
         # Get the co-ordinates from the detector's method
-        fov_coords = detector.get_fov_coords(x=x, y=y,)
-        return fov_coords
+        # @FIXME: no SHEImage.get_fov_coords() method...
+        # fov_coords = detector.get_fov_coords(x=x, y=y,)
+        # return fov_coords
+        # @TODO: Return detector and x,y in namedtuple
+        # return x,y
+        # @TODO: orientation
+        x_fov, y_fov = tc.get_fov_coords_from_detector(
+            x, y, x_i, y_i, 'VIS')
+        if return_det_coords_too:
+            # Do as astropy Table
+            CoordTuple = namedtuple("CoordTuple",
+                "x_fov y_fov detno_x detno_y x_det y_det")
+            return CoordTuple(*[x_fov, y_fov, x_i, y_i, x, y])
+        else:
+            return (x_fov, y_fov)
 
     @classmethod
     def read(cls,
@@ -392,8 +410,8 @@ class SHEFrame(object):
         if prune_images:
             if detections_catalogue is None:
                 raise TypeError("If prune_images==True, detections_catalogue must be supplied.")
-            ra_list = detections_catalogue[detf.gal_x_world].data
-            dec_list = detections_catalogue[detf.gal_y_world].data
+            ra_list = detections_catalogue[mfc_tf.gal_x_world].data
+            dec_list = detections_catalogue[mfc_tf.gal_y_world].data
 
             def check_for_objects(header, buffer=4):
 
@@ -410,7 +428,9 @@ class SHEFrame(object):
                 good_objs = np.logical_and(good_x, good_y)
 
                 return good_objs.any()
+
         else:
+
             def check_for_objects(*_args, **_kwargs):
                 return True
 
@@ -442,7 +462,7 @@ class SHEFrame(object):
         if frame_product_filename is not None:
             frame_prod = read_xml_product(
                 os.path.join(workdir, frame_product_filename))
-            if not isinstance(frame_prod, products.calibrated_frame.dpdVisCalibratedFrame):
+            if not isinstance(frame_prod, products.vis_calibrated_frame.dpdVisCalibratedFrame):
                 raise ValueError("Data image product from " +
                                  frame_product_filename + " is invalid type.")
 
@@ -460,7 +480,7 @@ class SHEFrame(object):
 
             seg_prod = read_xml_product(
                 os.path.join(workdir, seg_product_filename))
-            if not isinstance(seg_prod, products.exposure_mosaic.DpdSheExposureMosaicProduct):
+            if not isinstance(seg_prod, products.she_exposure_segmentation_map.DpdSheExposureSegmentationMap):
                 raise ValueError("Segmentation map product from " +
                                  seg_product_filename + " is invalid type.")
 
@@ -564,13 +584,13 @@ class SHEFrame(object):
 
             psf_prod = read_xml_product(
                 os.path.join(workdir, psf_product_filename))
-            if not isinstance(psf_prod, products.psf_image.DpdShePSFImageProduct):
+            if not isinstance(psf_prod, products.she_psf_model_image.DpdShePsfModelImage):
                 raise ValueError("Data image product from " +
                                  psf_product_filename + " is invalid type.")
 
             psf_data_filename = os.path.join(
                 workdir, psf_prod.get_data_filename())
-            
+
             qualified_psf_filename = os.path.join(workdir, psf_data_filename)
 
             input_psf_data_hdulist = fits.open(qualified_psf_filename, **kwargs)

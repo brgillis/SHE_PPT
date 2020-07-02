@@ -54,7 +54,7 @@ class Test_mask():
         with pytest.raises(ValueError):
             get_id_string(1, 7)
 
-        pass
+        return
 
     def test_get_detector_xy(self):
 
@@ -68,7 +68,7 @@ class Test_mask():
         with pytest.raises(ValueError):
             get_detector_xy("foo")
 
-        pass
+        return
 
     def test_detector_int_to_xy(self):
 
@@ -83,7 +83,7 @@ class Test_mask():
         with pytest.raises(ValueError):
             detector_int_to_xy(36)
 
-        pass
+        return
 
     def test_detector_xy_to_int(self):
 
@@ -101,7 +101,7 @@ class Test_mask():
         with pytest.raises(ValueError):
             detector_xy_to_int(1, 7)
 
-        pass
+        return
 
     def test_resolve_detector_xy(self):
 
@@ -115,4 +115,4 @@ class Test_mask():
         with pytest.raises(TypeError):
             resolve_detector_xy((1, 2, 3))
 
-        pass
+        return

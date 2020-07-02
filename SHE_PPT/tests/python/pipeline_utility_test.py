@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-04-19"
+__updated__ = "2020-06-22"
 
 import os
 import pytest
@@ -36,11 +36,11 @@ class TestUtility:
 
     @classmethod
     def setup_class(cls):
-        pass
+        return
 
     @classmethod
     def teardown_class(cls):
-        pass
+        return
 
     @pytest.fixture(autouse=True)
     def setup(self, tmpdir):
@@ -114,7 +114,7 @@ class TestUtility:
 
         object_ids = [1, 2]
 
-        product = products.object_id_list.create_object_id_list_product(object_ids)
+        product = products.she_object_id_list.create_object_id_list_product(object_ids)
         write_xml_product(product, product_filename, workdir=self.workdir)
 
         write_listfile(os.path.join(self.workdir, lf0_filename), [])

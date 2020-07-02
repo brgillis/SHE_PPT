@@ -92,7 +92,7 @@ def main():
     # Create a data product for the output
     psf_image_output_filename = os.path.join(args.dest_dir, os.path.basename(psf_image_filename))
     
-    obj_cat_prod = products.psf_image.create_psf_image_product(os.path.join('data',os.path.basename(psf_image_output_filename)))
+    obj_cat_prod = products.she_psf_model_image.create_psf_image_product(os.path.join('data',os.path.basename(psf_image_output_filename)))
 
     out_psf_image= psf_image_output_filename.replace('PSF','P-PSF').replace('.fits','.xml')
     write_xml_product(obj_cat_prod, out_psf_image, workdir=args.dest_dir)

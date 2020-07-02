@@ -22,11 +22,14 @@ Created on: 05/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2019-05-27"
+__updated__ = "2020-07-01"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
 import os.path
+
+from astropy import table
+from astropy.io import fits
 
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
@@ -35,12 +38,9 @@ from SHE_PPT.file_io import read_listfile, read_xml_product, find_file
 from SHE_PPT.she_frame import SHEFrame
 from SHE_PPT.she_image import SHEImage
 from SHE_PPT.she_image_stack import SHEImageStack
-from SHE_PPT.table_formats.detections import tf as detf
+from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
 from SHE_PPT.utility import find_extension, load_wcs
-from astropy import table
-from astropy.io import fits
 import numpy as np
-
 
 logger = logging.getLogger(__name__)
 
@@ -81,6 +81,7 @@ class SHEFrameStack(object):
         """
 
         self.exposures = exposures
+        # if stacked_image:
         self.stacked_image = stacked_image
         self.detections_catalogue = detections_catalogue
 
@@ -89,7 +90,7 @@ class SHEFrameStack(object):
 
         # Set the detections catalogue to index by ID
         if self.detections_catalogue is not None:
-            self.detections_catalogue.add_index(detf.ID)
+            self.detections_catalogue.add_index(mfc_tf.ID)
 
         return
 
@@ -187,11 +188,11 @@ class SHEFrameStack(object):
         except ValueError as e:
             if not "Cannot create TableLoc object with no indices" in str(e):
                 raise
-            self.detections_catalogue.add_index(detf.ID)
+            self.detections_catalogue.add_index(mfc_tf.ID)
             row = self.detections_catalogue.loc[gal_id]
 
-        x_world = row[detf.gal_x_world]
-        y_world = row[detf.gal_y_world]
+        x_world = row[mfc_tf.gal_x_world]
+        y_world = row[mfc_tf.gal_y_world]
 
         return self.extract_stamp_stack(x_world, y_world, width, *args, **kwargs)
 
@@ -342,7 +343,8 @@ class SHEFrameStack(object):
 
         return stamp_stack
 
-    def get_fov_coords(self, x_world, y_world, x_buffer=0, y_buffer=0, none_if_out_of_bounds=False):
+    def get_fov_coords(self, x_world, y_world, x_buffer=0, y_buffer=0, none_if_out_of_bounds=False,
+                       return_det_coords_too=False):
         """ Calculates the Field-of-View (FOV) co-ordinates of a given sky position for each exposure, and
             returns a list of (fov_x, fov_y) tuples. If the position isn't present in a given exposure, None will be
             returned in that list index.
@@ -361,6 +363,9 @@ class SHEFrameStack(object):
                 Set this to True if you want this method to return None if the position is entirely out of bounds of
                 the image. By default, this is set to False, which means it will instead return a list of Nones in
                 that case instead.
+            return_det_coords_too : bool
+                If true return namedtuple of x_fov, y_fov, detno_x, detno_y, x_det, y_det   
+
 
             Return
             ------
@@ -372,10 +377,14 @@ class SHEFrameStack(object):
         found = False
         fov_coords_list = []
         for exposure in self.exposures:
+            # print("EXP DET: ",np.shape(exposure.detectors),return_det_coords_too)
+            # print("XW: ",x_world, y_world)
             fov_coords = exposure.get_fov_coords(x_world=x_world,
                                                  y_world=y_world,
                                                  x_buffer=x_buffer,
-                                                 y_buffer=y_buffer)
+                                                 y_buffer=y_buffer,
+                                                 return_det_coords_too=return_det_coords_too)
+            # print("FVC: ",fov_coords)
             if fov_coords is not None:
                 found = True
             fov_coords_list.append(fov_coords)
@@ -505,7 +514,9 @@ class SHEFrameStack(object):
                 for detections_product_filename in detections_filenames:
 
                     detections_product = read_xml_product(os.path.join(workdir, detections_product_filename))
-
+                    logger.info("DP: %s, %s, %s" % (workdir,
+                        detections_product_filename,
+                        detections_product.get_data_filename()))
                     detections_catalogue = table.Table.read(
                         os.path.join(workdir, detections_product.get_data_filename()))
 
@@ -523,7 +534,7 @@ class SHEFrameStack(object):
                     # loop over detections_catalog and make list of indices not in our object_id list
                     for cat in detections_catalogues:
                         for row in cat:
-                            if row[detf.ID] in object_id_list:
+                            if row[mfc_tf.ID] in object_id_list:
                                 rows_to_use.append(row)
 
                     detections_catalogue = table.Table(names=detections_catalogues[0].colnames,
@@ -549,7 +560,7 @@ class SHEFrameStack(object):
         # after MER resolves this issue?
         if detections_catalogue is not None:
             pruned_detections_catalogue = table.unique(
-                detections_catalogue, keys=detf.ID)
+                detections_catalogue, keys=mfc_tf.ID)
         else:
             pruned_detections_catalogue = None
 
@@ -587,7 +598,6 @@ class SHEFrameStack(object):
                                      **kwargs)
 
             exposures.append(exposure)
-
         # Load in the stacked products now
 
         # Get the stacked image and background image
@@ -603,7 +613,7 @@ class SHEFrameStack(object):
                                                          tags=(
                                                              mv.sci_tag, mv.noisemap_tag, mv.mask_tag),
                                                          workdir=workdir,
-                                                         dtype=products.stacked_frame.dpdVisStackedFrame,
+                                                         dtype=products.vis_stacked_frame.dpdVisStackedFrame,
                                                          **kwargs)
 
             stacked_image_data = stacked_data[0]
@@ -612,7 +622,7 @@ class SHEFrameStack(object):
 
             _, stacked_bkg_data = cls._read_product_extension(stacked_image_product_filename,
                                                               workdir=workdir,
-                                                              dtype=products.stacked_frame.dpdVisStackedFrame,
+                                                              dtype=products.vis_stacked_frame.dpdVisStackedFrame,
                                                               filetype="background",
                                                               **kwargs)
 
@@ -623,7 +633,7 @@ class SHEFrameStack(object):
             try:
                 _, stacked_seg_data = cls._read_product_extension(stacked_seg_product_filename,
                                                                   workdir=workdir,
-                                                                  dtype=products.stack_mosaic.DpdSheStackMosaicProduct,
+                                                                  dtype=products.she_stack_segmentation_map.DpdSheStackSegmentationMap,
                                                                   **kwargs)
             except FileNotFoundError as e:
                 logger.warning(str(e))
