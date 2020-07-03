@@ -28,7 +28,7 @@ from astropy.table import Table
 from SHE_PPT import magic_values as mv
 from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
-from SHE_PPT.table_utility import is_in_format
+from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties
 from SHE_PPT.utility import hash_any
 import numpy as np
 
@@ -84,58 +84,31 @@ class ShePsfModelImageFormat(object):
         # Get the metadata (contained within its own class)
         self.meta = ShePsfModelImageMeta()
 
-        # And a quick alias for it
-        self.m = self.meta
-
-        # Get the version from the meta class
-        self.__version__ = self.m.__version__
-
-        # Direct alias for a tuple of all metadata
-        self.meta_data = self.m.all
-
-        # Dicts for less-used properties
-        self.is_optional = OrderedDict()
-        self.comments = OrderedDict()
-        self.dtypes = OrderedDict()
-        self.fits_dtypes = OrderedDict()
-        self.lengths = OrderedDict()
-
-        def set_column_properties(name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
-                                  length=1):
-
-            assert name not in self.is_optional
-
-            self.is_optional[name] = is_optional
-            self.comments[name] = comment
-            self.dtypes[name] = dtype
-            self.fits_dtypes[name] = fits_dtype
-            self.lengths[name] = length
-
-            return name
+        setup_table_format(self)
 
         # Column names and info
 
-        self.ID = set_column_properties(
+        self.ID = set_column_properties(self, 
             "OBJECT_ID", dtype=">i8", fits_dtype="K")
 
-        self.template = set_column_properties(
+        self.template = set_column_properties(self, 
             "SHE_PSF_SED_TEMPLATE", dtype=">i8", fits_dtype="K")
-        self.bulge_index = set_column_properties(
+        self.bulge_index = set_column_properties(self, 
             "SHE_PSF_BULGE_IDX", dtype=">i4", fits_dtype="J")
-        self.disk_index = set_column_properties(
+        self.disk_index = set_column_properties(self, 
             "SHE_PSF_DISK_IDX", dtype=">i4", fits_dtype="J")
-        self.image_x = set_column_properties(
+        self.image_x = set_column_properties(self, 
             "SHE_PSF_IMAGE_X", dtype=">i2", fits_dtype="I")
-        self.image_y = set_column_properties(
+        self.image_y = set_column_properties(self, 
             "SHE_PSF_IMAGE_Y", dtype=">i2", fits_dtype="I")
-        self.x = set_column_properties(
+        self.x = set_column_properties(self, 
             "SHE_PSF_X", dtype=">f4", fits_dtype="E")
-        self.y = set_column_properties(
+        self.y = set_column_properties(self, 
             "SHE_PSF_Y", dtype=">f4", fits_dtype="E")
 
-        self.calibration_time = set_column_properties(
+        self.calibration_time = set_column_properties(self, 
             "SHE_PSF_CALIB_TIME", dtype="str", fits_dtype="A", length=20)
-        self.field_time = set_column_properties(
+        self.field_time = set_column_properties(self, 
             "SHE_PSF_FIELD_TIME", dtype="str", fits_dtype="A", length=20)
 
         # A list of columns in the desired order

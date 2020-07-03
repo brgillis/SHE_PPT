@@ -28,7 +28,7 @@ from astropy.table import Table
 from SHE_PPT import magic_values as mv
 from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
-from SHE_PPT.table_utility import is_in_format
+from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties
 
 fits_version = "8.0"
 fits_def = "she.galaxyPopulationPriors"
@@ -81,143 +81,116 @@ class SheGalaxyPopulationPriorsFormat(object):
         # Get the metadata (contained within its own class)
         self.meta = SheGalaxyPopulationPriorsMeta()
 
-        # And a quick alias for it
-        self.m = self.meta
-
-        # Get the version from the meta class
-        self.__version__ = self.m.__version__
-
-        # Direct alias for a tuple of all metadata
-        self.meta_data = self.m.all
-
-        # Dicts for less-used properties
-        self.is_optional = OrderedDict()
-        self.comments = OrderedDict()
-        self.dtypes = OrderedDict()
-        self.fits_dtypes = OrderedDict()
-        self.lengths = OrderedDict()
-
-        def set_column_properties(name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
-                                  length=1):
-
-            assert name not in self.is_optional
-
-            self.is_optional[name] = is_optional
-            self.comments[name] = comment
-            self.dtypes[name] = dtype
-            self.fits_dtypes[name] = fits_dtype
-            self.lengths[name] = length
-
-            return name
+        setup_table_format(self)
 
         # Column names and info
 
-        self.ID = set_column_properties(
+        self.ID = set_column_properties(self, 
             "SHE_GALPOP_OBJECT_ID", dtype=">a20", fits_dtype="PA(20)")
 
-        self.ra = set_column_properties(
+        self.ra = set_column_properties(self, 
             "SHE_GALPOP_RA", comment="deg", dtype=">f8", fits_dtype="D")
-        self.dec = set_column_properties(
+        self.dec = set_column_properties(self, 
             "SHE_GALPOP_DEC", comment="deg", dtype=">f8", fits_dtype="D")
 
-        self.zp = set_column_properties(
+        self.zp = set_column_properties(self, 
             "SHE_GALPOP_Z_PHOT")
-        self.zs = set_column_properties(
+        self.zs = set_column_properties(self, 
             "SHE_GALPOP_Z_SPEC")
 
-        self.iab = set_column_properties(
+        self.iab = set_column_properties(self, 
             "SHE_GALPOP_I_AB", comment="mag", dtype=">f4", fits_dtype="E")
 
-        self.vab = set_column_properties(
+        self.vab = set_column_properties(self, 
             "SHE_GALPOP_V_AB", comment="mag", dtype=">f4", fits_dtype="E")
 
-        self.sers_sing_fit = set_column_properties(
+        self.sers_sing_fit = set_column_properties(self, 
             "SHE_GALPOP_N_SERSIC_SINGLE_FIT", dtype=">f4", fits_dtype="E")
-        self.sers_two_fit = set_column_properties(
+        self.sers_two_fit = set_column_properties(self, 
             "SHE_GALPOP_N_SERSIC_BULGE_TWO_COMP_FIT", dtype=">f4", fits_dtype="E")
-        self.disk_length = set_column_properties(
+        self.disk_length = set_column_properties(self, 
             "SHE_GALPOP_H_DISK_ARCSEC", comment="arcsec", dtype=">f4", fits_dtype="E")
-        self.bulge_hlr = set_column_properties(
+        self.bulge_hlr = set_column_properties(self, 
             "SHE_GALPOP_REFF_BULGE", dtype=">f4", fits_dtype="E")
-        self.tau_b_rst = set_column_properties(
+        self.tau_b_rst = set_column_properties(self, 
             "SHE_GALPOP_TAU_B_REST", dtype=">f4", fits_dtype="E")
-        self.x = set_column_properties(
+        self.x = set_column_properties(self, 
             "SHE_GALPOP_X_CENTRE_PIXEL", dtype=">f4", fits_dtype="E")
-        self.y = set_column_properties(
+        self.y = set_column_properties(self, 
             "SHE_GALPOP_Y_CENTRE_PIXEL", dtype=">f4", fits_dtype="E")
-        self.tilt = set_column_properties(
+        self.tilt = set_column_properties(self, 
             "SHE_GALPOP_THETA_DEG", comment="deg", dtype=">f4", fits_dtype="E")
-        self.rotation = set_column_properties(
+        self.rotation = set_column_properties(self, 
             "SHE_GALPOP_POS_ANGLE_DEG", comment="deg", dtype=">f4", fits_dtype="E")
-        self.one_component_chi2 = set_column_properties(
+        self.one_component_chi2 = set_column_properties(self, 
             "SHE_GALPOP_CHI2_SINGE_FIT", dtype=">f4", fits_dtype="E")
-        self.two_component_chi2 = set_column_properties(
+        self.two_component_chi2 = set_column_properties(self, 
             "SHE_GALPOP_CHI2_TWO_COMP_FIT", dtype=">f4", fits_dtype="E")
-        self.two_component_dof = set_column_properties(
+        self.two_component_dof = set_column_properties(self, 
             "SHE_GALPOP_NDEG_TWO_COMP_FIT", dtype=">i8", fits_dtype="K")
-        self.bulge_fd_f435w = set_column_properties(
+        self.bulge_fd_f435w = set_column_properties(self, 
             "SHE_GALPOP_FLUX_BULGE_NJY_F435W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.bulge_fd_f435w_err = set_column_properties(
+        self.bulge_fd_f435w_err = set_column_properties(self, 
             "SHE_GALPOP_FLUX_ERR_BULGE_NJY_F435W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.bulge_fd_f606w = set_column_properties(
+        self.bulge_fd_f606w = set_column_properties(self, 
             "SHE_GALPOP_FLUX_BULGE_NJY_F606W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.bulge_fd_f606w_err = set_column_properties(
+        self.bulge_fd_f606w_err = set_column_properties(self, 
             "SHE_GALPOP_FLUX_ERR_BULGE_NJY_F606W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.bulge_fd_f775w = set_column_properties(
+        self.bulge_fd_f775w = set_column_properties(self, 
             "SHE_GALPOP_FLUX_BULGE_NJY_F775W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.bulge_fd_f775w_err = set_column_properties(
+        self.bulge_fd_f775w_err = set_column_properties(self, 
             "SHE_GALPOP_FLUX_ERR_BULGE_NJY_F775W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.bulge_fd_f814w = set_column_properties(
+        self.bulge_fd_f814w = set_column_properties(self, 
             "SHE_GALPOP_FLUX_BULGE_NJY_F814W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.bulge_fd_f814w_err = set_column_properties(
+        self.bulge_fd_f814w_err = set_column_properties(self, 
             "SHE_GALPOP_FLUX_ERR_BULGE_NJY_F814W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.bulge_fd_f850lp = set_column_properties(
+        self.bulge_fd_f850lp = set_column_properties(self, 
             "SHE_GALPOP_FLUX_BULGE_NJY_F850LP", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.bulge_fd_f850lp_err = set_column_properties(
+        self.bulge_fd_f850lp_err = set_column_properties(self, 
             "SHE_GALPOP_FLUX_ERR_BULGE_NJY_F850LP", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.bulge_fd_f105w = set_column_properties(
+        self.bulge_fd_f105w = set_column_properties(self, 
             "SHE_GALPOP_FLUX_BULGE_NJY_F105W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.bulge_fd_f105w_err = set_column_properties(
+        self.bulge_fd_f105w_err = set_column_properties(self, 
             "SHE_GALPOP_FLUX_ERR_BULGE_NJY_F105W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.bulge_fd_f125w = set_column_properties(
+        self.bulge_fd_f125w = set_column_properties(self, 
             "SHE_GALPOP_FLUX_BULGE_NJY_F125W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.bulge_fd_f125w_err = set_column_properties(
+        self.bulge_fd_f125w_err = set_column_properties(self, 
             "SHE_GALPOP_FLUX_ERR_BULGE_NJY_F125W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.bulge_fd_f160w = set_column_properties(
+        self.bulge_fd_f160w = set_column_properties(self, 
             "SHE_GALPOP_FLUX_BULGE_NJY_F160W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.bulge_fd_f160w_err = set_column_properties(
+        self.bulge_fd_f160w_err = set_column_properties(self, 
             "SHE_GALPOP_FLUX_ERR_BULGE_NJY_F160W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.disk_fd_f435w = set_column_properties(
+        self.disk_fd_f435w = set_column_properties(self, 
             "SHE_GALPOP_FLUX_DISK_NJY_F435W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.disk_fd_f435w_err = set_column_properties(
+        self.disk_fd_f435w_err = set_column_properties(self, 
             "SHE_GALPOP_FLUX_ERR_DISK_NJY_F435W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.disk_fd_f606w = set_column_properties(
+        self.disk_fd_f606w = set_column_properties(self, 
             "SHE_GALPOP_FLUX_DISK_NJY_F606W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.disk_fd_f606w_err = set_column_properties(
+        self.disk_fd_f606w_err = set_column_properties(self, 
             "SHE_GALPOP_FLUX_ERR_DISK_NJY_F606W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.disk_fd_f775w = set_column_properties(
+        self.disk_fd_f775w = set_column_properties(self, 
             "SHE_GALPOP_FLUX_DISK_NJY_F775W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.disk_fd_f775w_err = set_column_properties(
+        self.disk_fd_f775w_err = set_column_properties(self, 
             "SHE_GALPOP_FLUX_ERR_DISK_NJY_F775W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.disk_fd_f814w = set_column_properties(
+        self.disk_fd_f814w = set_column_properties(self, 
             "SHE_GALPOP_FLUX_DISK_NJY_F814W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.disk_fd_f814w_err = set_column_properties(
+        self.disk_fd_f814w_err = set_column_properties(self, 
             "SHE_GALPOP_FLUX_ERR_DISK_NJY_F814W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.disk_fd_f850lp = set_column_properties(
+        self.disk_fd_f850lp = set_column_properties(self, 
             "SHE_GALPOP_FLUX_DISK_NJY_F850LP", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.disk_fd_f850lp_err = set_column_properties(
+        self.disk_fd_f850lp_err = set_column_properties(self, 
             "SHE_GALPOP_FLUX_ERR_DISK_NJY_F850LP", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.disk_fd_f105w = set_column_properties(
+        self.disk_fd_f105w = set_column_properties(self, 
             "SHE_GALPOP_FLUX_DISK_NJY_F105W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.disk_fd_f105w_err = set_column_properties(
+        self.disk_fd_f105w_err = set_column_properties(self, 
             "SHE_GALPOP_FLUX_ERR_DISK_NJY_F105W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.disk_fd_f125w = set_column_properties(
+        self.disk_fd_f125w = set_column_properties(self, 
             "SHE_GALPOP_FLUX_DISK_NJY_F125W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.disk_fd_f125w_err = set_column_properties(
+        self.disk_fd_f125w_err = set_column_properties(self, 
             "SHE_GALPOP_FLUX_ERR_DISK_NJY_F125W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.disk_fd_f160w = set_column_properties(
+        self.disk_fd_f160w = set_column_properties(self, 
             "SHE_GALPOP_FLUX_DISK_NJY_F160W", comment="nJy", dtype=">f4", fits_dtype="E")
-        self.disk_fd_f160w_err = set_column_properties(
+        self.disk_fd_f160w_err = set_column_properties(self, 
             "SHE_GALPOP_FLUX_ERR_DISK_NJY_F160W", comment="nJy", dtype=">f4", fits_dtype="E")
 
         # A list of columns in the desired order

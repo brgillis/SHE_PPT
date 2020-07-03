@@ -19,7 +19,9 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-23"
+__updated__ = "2020-07-03"
+
+from collections import OrderedDict
 
 from astropy.io.fits import table_to_hdu as astropy_table_to_hdu
 from astropy.table import Column
@@ -53,29 +55,67 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
         @return <bool>
 
     """
+
+    # If the table format is a base class, ensure that strict=False
+    if table_format.is_base and strict:
+        logger.warn("Table format " + table_format.m.table_format + " is a base format. Enforcing strict=False.")
+        strict = False
+
     # Check that all required column names are present
-    for colname in table_format.all_required:
-        if colname not in table.colnames:
-            if verbose:
-                logger.info(
-                    "Table not in correct format due to absence of required column: " + colname)
-            return False
+    if not table_format.is_base:
+        # Simple check if not comparing to a base class
+        for colname in table_format.all_required:
+            if colname not in table.colnames:
+                if verbose:
+                    logger.info("Table not in correct format due to absence of required column: " + colname)
+                return False
+    else:
+        # More careful check if comparing to a base class
+        child_label = None
+        for parent_colname in table_format.all_required:
+            if child_label is None:
+                found = False
+                for child_colname in table.colnames:
+                    if parent_colname == child_colname:
+                        found = True
+                        break
+                    elif len(parent_colname) < len(child_colname) and child_colname[-len(parent_colname):] == parent_colname:
+                        child_label = child_colname[0:-len(parent_colname)]
+                        found = True
+                        break
+                if not found:
+                    if verbose:
+                        logger.info("Table not in correct format due to absence of required column: " + parent_colname)
+                    return False
+            else:
+                # Once we've figured out what the child_label is, we can be a bit more efficient
+                if parent_colname not in table.colnames and child_label + parent_colname not in table.columns:
+                    if verbose:
+                        logger.info("Table not in correct format due to absence of required column: " + colname)
+                    return False
 
     # Check that no extra column names are present if strict==True, and each
     # present column is of the right dtype
     for colname in table.colnames:
 
-        col_dtype = table.dtype[colname].newbyteorder('>')
-        try:
-            length = table_format.lengths[colname]
-            if length == 1:
-                ex_dtype = np.dtype((table_format.dtypes[colname])).newbyteorder('>')
-            else:
-                ex_dtype = np.dtype((table_format.dtypes[colname], length)).newbyteorder('>')
-        except Exception:
-            pass
+        if table_format.is_base and child_label is not None and colname[:len(child_label)] == child_label:
+            child_colname = colname
+            parent_colname = colname[len(child_label):]
+        else:
+            child_colname = colname
+            parent_colname = colname
 
-        if colname not in table_format.all:
+        col_dtype = table.dtype[child_colname].newbyteorder('>')
+        try:
+            length = table_format.lengths[parent_colname]
+            if length == 1:
+                ex_dtype = np.dtype((table_format.dtypes[parent_colname])).newbyteorder('>')
+            else:
+                ex_dtype = np.dtype((table_format.dtypes[parent_colname], length)).newbyteorder('>')
+        except Exception:
+            ex_dtype = None
+
+        if parent_colname not in table_format.all:
             if strict:
                 logger.info(
                     "Table not in correct format due to presence of extra column: " + colname)
@@ -90,13 +130,13 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
             # Check if this is just an issue with lengths
             if col_dtype.str[1] == 'U' and ex_dtype.str[1] == 'U':
                 col_len = int(col_dtype.str[2:])
-                if col_len < table_format.lengths[colname]:
+                if col_len < table_format.lengths[parent_colname]:
                     # Length is shorter, likely due to saving as ascii. Allow it
                     pass
-                elif col_len > table_format.lengths[colname]:
+                elif col_len > table_format.lengths[parent_colname]:
                     if verbose:
-                        logger.info("Table not in correct format due to wrong length for column '" + colname + "'\n" +
-                                    "Expected: " + str(table_format.lengths[colname]) + "\n" +
+                        logger.info("Table not in correct format due to wrong length for column '" + parent_colname + "'\n" +
+                                    "Expected: " + str(table_format.lengths[parent_colname]) + "\n" +
                                     "Got: " + str(col_len))
                     if strict:
                         return False
@@ -105,25 +145,22 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
             # Is it an issue with a bool column being read as a string?
             elif col_dtype.str[1] == 'U' and ex_dtype.str == '|b1':
                 if fix_bool:
-                    col = Column(data=np.empty_like(table[colname].data, dtype=bool))
+                    col = Column(data=np.empty_like(table[child_colname].data, dtype=bool))
                     for i in range(len(col)):
-                        col[i] = (table[colname] == "True" or table[colname] == "true" or table[colname] == "1")
+                        col[i] = (table[child_colname] == "True" or table[child_colname] == "true" or table[child_colname] == "1")
                     table.replace_column(colname, col)
                 else:
                     if verbose:
-                        logger.info("Table not in correct format due to wrong type for column '" + colname + "'\n" +
+                        logger.info("Table not in correct format due to wrong type for column '" + parent_colname + "'\n" +
                                     "Expected: " + ex_dtype + "\n" +
-                                    "Got: " + str(table.dtype[colname].newbyteorder('>')))
+                                    "Got: " + str(table.dtype[child_colname].newbyteorder('>')))
                     return False
             # Is it an issue with int or float size?
-            elif strict == False:
-                if col_dtype.str[1] == ex_dtype.str[1] and (col_dtype.str[1] == 'i' or col_dtype.str[1] == 'f'):
-                    pass
-            else:
+            elif strict == True:
                 if verbose:
-                    logger.info("Table not in correct format due to wrong type for column '" + colname + "'\n" +
+                    logger.info("Table not in correct format due to wrong type for column '" + child_colname + "'\n" +
                                 "Expected: " + ex_dtype + "\n" +
-                                "Got: " + str(table.dtype[colname].newbyteorder('>')))
+                                "Got: " + str(table.dtype[child_colname].newbyteorder('>')))
                 return False
 
     if not ignore_metadata:
@@ -136,7 +173,7 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
             return False
 
         # Check the format label is correct
-        if table.meta[table_format.m.fits_def] != table_format.m.table_format:
+        if not table_format.is_base and table.meta[table_format.m.fits_def] != table_format.m.table_format:
             if verbose:
                 logger.info("Table not in correct format due to wrong table format label.\n" +
                             "Expected: " + str(table_format.m.table_format) + "\n" +
@@ -144,7 +181,7 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
             return False
 
         # Check the version is correct
-        if table.meta[table_format.m.fits_version] != table_format.__version__:
+        if not table_format.is_base and  table.meta[table_format.m.fits_version] != table_format.__version__:
             if verbose:
                 logger.info("Table not in correct format due to wrong table format label.\n" +
                             "Expected: " + str(table_format.__version__) + "\n" +
@@ -210,3 +247,98 @@ def table_to_hdu(table):
     """
     warn_deprecated_table_to_hdu()
     return astropy_table_to_hdu(table)
+
+
+def set_column_properties(self, name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
+                          length=1):
+
+    assert name not in self.is_optional
+
+    self.is_optional[name] = is_optional
+    self.comments[name] = comment
+    self.dtypes[name] = dtype
+    self.fits_dtypes[name] = fits_dtype
+    self.lengths[name] = length
+
+    return name
+
+
+def setup_table_format(self):
+
+    # And a quick alias for it
+    self.m = self.meta
+
+    # Get the version from the meta class
+    self.__version__ = self.m.__version__
+
+    # Direct alias for a tuple of all metadata
+    self.meta_data = self.m.all
+
+    self.is_base = False
+
+    self.is_optional = OrderedDict()
+    self.comments = OrderedDict()
+    self.dtypes = OrderedDict()
+    self.fits_dtypes = OrderedDict()
+    self.lengths = OrderedDict()
+
+    self.set_column_properties = set_column_properties
+
+    return
+
+
+def setup_child_table_format(self, child_label, unlabelled_columns=None):
+
+    if unlabelled_columns is None:
+        unlabelled_columns = []
+
+    # And a quick alias for it
+    self.m = self.meta
+
+    # Get the version from the meta class
+    self.__version__ = self.m.__version__
+    self.child_label = child_label
+
+    # Direct alias for a tuple of all metadata
+    self.meta_data = self.m.all
+
+    self.is_base = False
+
+    self.parent_is_optional = self.is_optional
+    self.parent_comments = self.comments
+    self.parent_dtypes = self.dtypes
+    self.parent_fits_dtypes = self.fits_dtypes
+    self.parent_lengths = self.lengths
+    self.parent_all = self.all
+    self.parent_all_required = self.all_required
+
+    self.is_optional = OrderedDict()
+    self.comments = OrderedDict()
+    self.dtypes = OrderedDict()
+    self.fits_dtypes = OrderedDict()
+    self.lengths = OrderedDict()
+
+    changed_column_names = {}
+
+    for parent_name in self.parent_all:
+        if parent_name in unlabelled_columns:
+            name = parent_name
+        else:
+            name = child_label + parent_name
+            changed_column_names[parent_name] = name
+
+        self.is_optional[name] = self.parent_is_optional[parent_name]
+        self.comments[name] = self.parent_comments[parent_name]
+        self.dtypes[name] = self.parent_dtypes[parent_name]
+        self.fits_dtypes[name] = self.parent_fits_dtypes[parent_name]
+        self.lengths[name] = self.parent_lengths[parent_name]
+
+    # Update existing column names inherited from parent
+    for key, val in tuple(zip(self.__dict__.items()))[0]:
+        print(str(val))
+        if val in changed_column_names:
+            setattr(self, key, changed_column_names[val])
+
+    self.set_column_properties = set_column_properties
+
+    return
