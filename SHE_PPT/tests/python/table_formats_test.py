@@ -114,7 +114,11 @@ class TestTableFormats:
         cls.formats, cls.initializers = zip(*cls.formats_and_initializers)
 
         cls.parent_format = sm_tf
-        cls.child_initializers = [initialise_ksb_measurements_table]
+        cls.child_initializers = [initialise_ksb_measurements_table,
+                                  initialise_lensmc_measurements_table,
+                                  initialise_momentsml_measurements_table,
+                                  initialise_regauss_measurements_table,
+                                  ]
 
         cls.filename_base = "test_table"
 

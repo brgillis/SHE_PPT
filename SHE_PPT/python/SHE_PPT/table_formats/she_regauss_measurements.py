@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-07-03"
 
 from collections import OrderedDict
 
@@ -30,62 +30,43 @@ from SHE_PPT import magic_values as mv
 from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
+from SHE_PPT.table_formats.she_measurements import SheMeasurementsMeta, SheMeasurementsFormat
 from SHE_PPT.table_utility import is_in_format
 
 fits_version = "8.0"
 fits_def = "she.regaussMeasurements"
 
+child_label = "SHE_REGAUSS_"
+
 logger = getLogger(mv.logger_name)
 
 
-class SheRegaussMeasurementsMeta(object):
+class SheRegaussMeasurementsMeta(SheMeasurementsMeta):
     """
         @brief A class defining the metadata for shear estimates tables.
     """
 
     def __init__(self):
 
+        # Inherit meta format from parent class
+        super().__init__()
+
         self.__version__ = fits_version
         self.table_format = fits_def
 
-        # Table metadata labels
-        self.fits_version = mv.fits_version_label
-        self.fits_def = mv.fits_def_label
-        self.she_flag_version = mv.she_flag_version_label
-        self.model_hash = mv.model_hash_label
-        self.model_seed = mv.model_seed_label
-        self.noise_seed = mv.noise_seed_label
-        self.observation_id = mv.obs_id_label
-        self.observation_time = mv.obs_time_label
-        self.tile_id = mv.tile_id_label
-
-        self.valid = mv.valid_label
-
-        # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_version, None),
-                                     (self.fits_def, None),
-                                     (self.she_flag_version, None),
-                                     (self.model_hash, None),
-                                     (self.model_seed, None),
-                                     (self.noise_seed, None),
-                                     (self.observation_id, None),
-                                     (self.observation_time, None),
-                                     (self.tile_id, None),
-                                     (self.valid,
-                                      "0: Not tested; 1: Pass; -1: Fail")
-                                     ))
-
-        # A list of columns in the desired order
-        self.all = list(self.comments.keys())
+        return
 
 
-class SheRegaussMeasurementsFormat(object):
+class SheRegaussMeasurementsFormat(SheMeasurementsFormat):
     """
         @brief A class defining the format for shear estimates tables. Only the regauss_measurements_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
     def __init__(self):
+
+        # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
+        super().__init__()
 
         # Get the metadata (contained within its own class)
         self.meta = SheRegaussMeasurementsMeta()
@@ -95,17 +76,47 @@ class SheRegaussMeasurementsFormat(object):
 
         # Get the version from the meta class
         self.__version__ = self.m.__version__
+        self.child_label = child_label
 
         # Direct alias for a tuple of all metadata
         self.meta_data = self.m.all
+
         self.is_base = False
 
-        # Dicts for less-used properties
+        self.parent_is_optional = self.is_optional
+        self.parent_comments = self.comments
+        self.parent_dtypes = self.dtypes
+        self.parent_fits_dtypes = self.fits_dtypes
+        self.parent_lengths = self.lengths
+        self.parent_all = self.all
+        self.parent_all_required = self.all_required
+
         self.is_optional = OrderedDict()
         self.comments = OrderedDict()
         self.dtypes = OrderedDict()
         self.fits_dtypes = OrderedDict()
         self.lengths = OrderedDict()
+
+        changed_column_names = {}
+
+        for parent_name in self.parent_all:
+            if parent_name == "OBJECT_ID":
+                name = parent_name
+            else:
+                name = child_label + parent_name
+                changed_column_names[parent_name] = name
+
+            self.is_optional[name] = self.parent_is_optional[parent_name]
+            self.comments[name] = self.parent_comments[parent_name]
+            self.dtypes[name] = self.parent_dtypes[parent_name]
+            self.fits_dtypes[name] = self.parent_fits_dtypes[parent_name]
+            self.lengths[name] = self.parent_lengths[parent_name]
+
+        # Update existing column names inherited from parent
+        for key, val in tuple(zip(self.__dict__.items()))[0]:
+            print(str(val))
+            if val in changed_column_names:
+                setattr(self, key, changed_column_names[val])
 
         def set_column_properties(name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
                                   length=1):
@@ -119,52 +130,6 @@ class SheRegaussMeasurementsFormat(object):
             self.lengths[name] = length
 
             return name
-
-        # Table column labels and properties
-
-        self.ID = set_column_properties(
-            "OBJECT_ID", dtype=">i8", fits_dtype="K")
-
-        self.fit_flags = set_column_properties(
-            "SHE_REGAUSS_FIT_FLAGS", dtype=">i8", fits_dtype="K")
-        self.val_flags = set_column_properties(
-            "SHE_REGAUSS_VAL_FLAGS", dtype=">i8", fits_dtype="K")
-        self.fit_class = set_column_properties(
-            "SHE_REGAUSS_FIT_CLASS", dtype=">i2", fits_dtype="I")
-
-        self.regauss_g1 = set_column_properties(
-            "SHE_REGAUSS_G1", dtype=">f4", fits_dtype="E")
-        self.regauss_g1_err = set_column_properties(
-            "SHE_REGAUSS_G1_ERR", dtype=">f4", fits_dtype="E")
-        self.regauss_g2 = set_column_properties(
-            "SHE_REGAUSS_G2", dtype=">f4", fits_dtype="E")
-        self.regauss_g2_err = set_column_properties(
-            "SHE_REGAUSS_G2_ERR", dtype=">f4", fits_dtype="E")
-        self.regauss_g1g2_cov = set_column_properties(
-            "SHE_REGAUSS_G1G2_COVAR", dtype=">f4", fits_dtype="E")
-        self.regauss_wgt = set_column_properties(
-            "SHE_REGAUSS_WEIGHT", dtype=">f4", fits_dtype="E")
-        self.regauss_g1_unc = set_column_properties(
-            "SHE_REGAUSS_G1_UNCAL", dtype=">f4", fits_dtype="E")
-        self.regauss_g1_unc_err = set_column_properties(
-            "SHE_REGAUSS_G1_UNCAL_ERR", dtype=">f4", fits_dtype="E")
-        self.regauss_g2_unc = set_column_properties(
-            "SHE_REGAUSS_G2_UNCAL", dtype=">f4", fits_dtype="E")
-        self.regauss_g2_unc_err = set_column_properties(
-            "SHE_REGAUSS_G2_UNCAL_ERR", dtype=">f4", fits_dtype="E")
-        self.regauss_g1g2_unc_cov = set_column_properties(
-            "SHE_REGAUSS_G1G2_UNCALCOVAR", dtype=">f4", fits_dtype="E")
-        self.regauss_wgt_unc = set_column_properties(
-            "SHE_REGAUSS_WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
-
-        self.updated_ra = set_column_properties(
-            "SHE_REGAUSS_UPDATED_RA", is_optional=False, comment="deg")
-        self.updated_ra_err = set_column_properties(
-            "SHE_REGAUSS_UPDATED_RA_ERR", is_optional=False, comment="deg")
-        self.updated_dec = set_column_properties(
-            "SHE_REGAUSS_UPDATED_DEC", is_optional=True, comment="deg")
-        self.updated_dec_err = set_column_properties(
-            "SHE_REGAUSS_UPDATED_DEC_ERR", is_optional=True, comment="deg")
 
         # regauss specific columns
         self.regauss_re = set_column_properties(
