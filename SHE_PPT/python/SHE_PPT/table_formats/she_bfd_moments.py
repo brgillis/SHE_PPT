@@ -30,7 +30,7 @@ from SHE_PPT import magic_values as mv
 from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
-from SHE_PPT.table_utility import is_in_format
+from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties
 
 fits_version = "8.0"
 fits_def = "she.bfdMoments"
@@ -97,63 +97,36 @@ class BfdMomentsFormat(object):
         # Get the metadata (contained within its own class)
         self.meta = BfdMomentsMeta()
 
-        # And a quick alias for it
-        self.m = self.meta
-
-        # Get the version from the meta class
-        self.__version__ = self.m.__version__
-
-        # Direct alias for a tuple of all metadata
-        self.meta_data = self.m.all
-
-        # Dicts for less-used properties
-        self.is_optional = OrderedDict()
-        self.comments = OrderedDict()
-        self.dtypes = OrderedDict()
-        self.fits_dtypes = OrderedDict()
-        self.lengths = OrderedDict()
-
-        def set_column_properties(name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
-                                  length=1):
-
-            assert name not in self.is_optional
-
-            self.is_optional[name] = is_optional
-            self.comments[name] = comment
-            self.dtypes[name] = dtype
-            self.fits_dtypes[name] = fits_dtype
-            self.lengths[name] = length
-
-            return name
+        setup_table_format(self)
 
         # Table column labels and properties
 
-        self.ID = set_column_properties(
+        self.ID = set_column_properties(self, 
             "OBJECT_ID", dtype=">i8", fits_dtype="K")
 
-        self.fit_flags = set_column_properties(
+        self.fit_flags = set_column_properties(self, 
             "SHE_BFD_FIT_FLAGS", dtype=">i8", fits_dtype="K")
-        self.val_flags = set_column_properties(
+        self.val_flags = set_column_properties(self, 
             "SHE_BFD_VAL_FLAGS", dtype=">i8", fits_dtype="K")
-        self.fit_class = set_column_properties(
+        self.fit_class = set_column_properties(self, 
             "SHE_BFD_FIT_CLASS", dtype=">i2", fits_dtype="I")
-        self.updated_ra = set_column_properties(
+        self.updated_ra = set_column_properties(self, 
             "SHE_BFD_UPDATED_RA", is_optional=False, comment="deg")
-        self.updated_ra_err = set_column_properties(
+        self.updated_ra_err = set_column_properties(self, 
             "SHE_BFD_UPDATED_RA_ERR", is_optional=False, comment="deg")
-        self.updated_dec = set_column_properties(
+        self.updated_dec = set_column_properties(self, 
             "SHE_BFD_UPDATED_DEC", is_optional=True, comment="deg")
-        self.updated_dec_err = set_column_properties(
+        self.updated_dec_err = set_column_properties(self, 
             "SHE_BFD_UPDATED_DEC_ERR", is_optional=True, comment="deg")
 
         # BFD specific columns
-        self.bfd_moments = set_column_properties(
+        self.bfd_moments = set_column_properties(self, 
             "SHE_BFD_MOMENTS", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
-        self.bfd_pqr = set_column_properties(
+        self.bfd_pqr = set_column_properties(self, 
             "SHE_BFD_PQR", is_optional=True, dtype=">f4", fits_dtype="E", length=6)
-        self.bfd_cov_even = set_column_properties(
+        self.bfd_cov_even = set_column_properties(self, 
             "SHE_BFD_COV_EVEN", is_optional=True, dtype=">f4", fits_dtype="E", length=15)
-        self.bfd_cov_odd = set_column_properties(
+        self.bfd_cov_odd = set_column_properties(self, 
             "SHE_BFD_COV_ODD", is_optional=True, dtype=">f4", fits_dtype="E", length=3)
 
         # A list of columns in the desired order

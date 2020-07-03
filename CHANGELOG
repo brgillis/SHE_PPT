@@ -7,6 +7,8 @@ API Changes
 -----------
 - LensMC and PSF model images table formats changed to match format for prior shear_estimates table format
 - Inadvertent API change of SHEFrameStack.detections_catalogue -> SHEFrameStack.mer_final_catalog_catalogue reverted
+- Base table format functionality (for is_in_format checks) added to measurements and training tables, with new parent
+  table formats she_measurements and she_training
 
 Dependency Changes
 ------------------
@@ -34,6 +36,7 @@ Miscellaneous
 - Location of MDB file on WebDAV moved to SHE_CTE directory
 - Cleaned up locations of test files on WebDAV to match standard locations
 - Cleaned up test modules
+- Cleaned up table format code to allow base format functionality and to sort duplicated code into common functions
 
 Changes from v1.4 to v8.0
 =========================

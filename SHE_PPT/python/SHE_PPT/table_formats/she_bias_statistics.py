@@ -30,7 +30,7 @@ from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
 from SHE_PPT.math import LinregressStatistics, LinregressResults, BiasMeasurements
 from SHE_PPT.table_formats.she_bfd_bias_statistics import tf as bfdtf
-from SHE_PPT.table_utility import is_in_format
+from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties
 import numpy as np
 
 fits_version = "8.0"
@@ -102,50 +102,23 @@ class SheBiasStatisticsFormat(object):
         # Get the metadata (contained within its own class)
         self.meta = SheBiasStatisticsMeta()
 
-        # And a quick alias for it
-        self.m = self.meta
-
-        # Get the version from the meta class
-        self.__version__ = self.m.__version__
-
-        # Direct alias for a tuple of all metadata
-        self.meta_data = self.m.all
-
-        # Dicts for less-used properties
-        self.is_optional = OrderedDict()
-        self.comments = OrderedDict()
-        self.dtypes = OrderedDict()
-        self.fits_dtypes = OrderedDict()
-        self.lengths = OrderedDict()
-
-        def set_column_properties(name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
-                                  length=1):
-
-            assert name not in self.is_optional
-
-            self.is_optional[name] = is_optional
-            self.comments[name] = comment
-            self.dtypes[name] = dtype
-            self.fits_dtypes[name] = fits_dtype
-            self.lengths[name] = length
-
-            return name
+        setup_table_format(self)
 
         # Table column labels and properties
 
-        self.ID = set_column_properties("RUN_ID", dtype="str", fits_dtype="A", length=20, is_optional=True)
+        self.ID = set_column_properties(self, "RUN_ID", dtype="str", fits_dtype="A", length=20, is_optional=True)
 
-        self.w1 = set_column_properties("W1", dtype=">f4", fits_dtype="E")
-        self.xm1 = set_column_properties("XM1", dtype=">f4", fits_dtype="E")
-        self.x2m1 = set_column_properties("X2M1", dtype=">f4", fits_dtype="E")
-        self.ym1 = set_column_properties("YM1", dtype=">f4", fits_dtype="E")
-        self.xym1 = set_column_properties("XY1", dtype=">f4", fits_dtype="E")
+        self.w1 = set_column_properties(self, "W1", dtype=">f4", fits_dtype="E")
+        self.xm1 = set_column_properties(self, "XM1", dtype=">f4", fits_dtype="E")
+        self.x2m1 = set_column_properties(self, "X2M1", dtype=">f4", fits_dtype="E")
+        self.ym1 = set_column_properties(self, "YM1", dtype=">f4", fits_dtype="E")
+        self.xym1 = set_column_properties(self, "XY1", dtype=">f4", fits_dtype="E")
 
-        self.w2 = set_column_properties("W2", dtype=">f4", fits_dtype="E")
-        self.xm2 = set_column_properties("XM2", dtype=">f4", fits_dtype="E")
-        self.x2m2 = set_column_properties("X2M2", dtype=">f4", fits_dtype="E")
-        self.ym2 = set_column_properties("YM2", dtype=">f4", fits_dtype="E")
-        self.xym2 = set_column_properties("XY2", dtype=">f4", fits_dtype="E")
+        self.w2 = set_column_properties(self, "W2", dtype=">f4", fits_dtype="E")
+        self.xm2 = set_column_properties(self, "XM2", dtype=">f4", fits_dtype="E")
+        self.x2m2 = set_column_properties(self, "X2M2", dtype=">f4", fits_dtype="E")
+        self.ym2 = set_column_properties(self, "YM2", dtype=">f4", fits_dtype="E")
+        self.xym2 = set_column_properties(self, "XY2", dtype=">f4", fits_dtype="E")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())

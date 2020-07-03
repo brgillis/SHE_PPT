@@ -1,4 +1,4 @@
-""" @file ksb_training.py
+""" @file she_ksb_training.py
 
     Created 23 July 2018
 
@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-07-03"
 
 from collections import OrderedDict
 
@@ -27,36 +27,32 @@ from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.flags import she_flag_version
-from SHE_PPT.table_utility import is_in_format
+from SHE_PPT.table_formats.she_training import SheTrainingMeta, SheTrainingFormat
+from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties, setup_child_table_format, set_column_properties
 
 fits_version = "8.0"
-fits_def = "she.ksbMeasurements"
+fits_def = "she.ksbTraining"
+
+child_label = "SHE_KSB_TRAINING_"
 
 
-class SheKsbTrainingMeta(object):
+class SheKsbTrainingMeta(SheTrainingMeta):
     """
         @brief A class defining the metadata for simulation plan tables.
     """
 
     def __init__(self):
 
+        # Inherit meta format from parent class
+        super().__init__()
+
         self.__version__ = fits_version
         self.table_format = fits_def
 
-        # Table metadata labels
-        self.fits_version = mv.fits_version_label
-        self.fits_def = mv.fits_def_label
-
-        # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_version, None),
-                                     (self.fits_def, None),
-                                     ))
-
-        # A list of columns in the desired order
-        self.all = list(self.comments.keys())
+        return
 
 
-class SheKsbTrainingFormat(object):
+class SheKsbTrainingFormat(SheTrainingFormat):
     """
         @brief A class defining the format for galaxy population priors tables. Only the ksb_training_table_format
                instance of this should generally be accessed, and it should not be changed.
@@ -64,50 +60,13 @@ class SheKsbTrainingFormat(object):
 
     def __init__(self):
 
+        # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
+        super().__init__()
+
         # Get the metadata (contained within its own class)
         self.meta = SheKsbTrainingMeta()
 
-        # And a quick alias for it
-        self.m = self.meta
-
-        # Get the version from the meta class
-        self.__version__ = self.m.__version__
-
-        # Direct alias for a tuple of all metadata
-        self.meta_data = self.m.all
-
-        # Dicts for less-used properties
-        self.is_optional = OrderedDict()
-        self.comments = OrderedDict()
-        self.dtypes = OrderedDict()
-        self.fits_dtypes = OrderedDict()
-        self.lengths = OrderedDict()
-
-        def set_column_properties(name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
-                                  length=1):
-
-            assert name not in self.is_optional
-
-            self.is_optional[name] = is_optional
-            self.comments[name] = comment
-            self.dtypes[name] = dtype
-            self.fits_dtypes[name] = fits_dtype
-            self.lengths[name] = length
-
-            return name
-
-        # Column names and info
-
-        self.id = set_column_properties("OBJECT_ID", dtype=">i8", fits_dtype="K",
-                                        comment="ID of this object in the galaxy population priors table.")
-        self.e1 = set_column_properties("SHE_KSB_TRAINING_E1", dtype=">f4", fits_dtype="E",
-                                        comment="Mean ellipticity measurement of this object, component 1")
-        self.e2 = set_column_properties("SHE_KSB_TRAINING_E2", dtype=">f4", fits_dtype="E",
-                                        comment="Mean ellipticity measurement of this object, component 2")
-        self.e1_err = set_column_properties("SHE_KSB_TRAINING_E1_ERR", dtype=">f4", fits_dtype="E",
-                                        comment="Error on mean ellipticity measurement of this object, component 1")
-        self.e2_err = set_column_properties("SHE_KSB_TRAINING_E2_ERR", dtype=">f4", fits_dtype="E",
-                                        comment="Error on mean ellipticity measurement of this object, component 2")
+        setup_child_table_format(self, child_label, unlabelled_columns=["OBJECT_ID"])
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())

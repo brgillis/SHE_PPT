@@ -30,7 +30,7 @@ from SHE_PPT import magic_values as mv
 from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
-from SHE_PPT.table_utility import is_in_format
+from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties
 
 fits_version = "8.0"
 fits_def = "she.lensmcChains"
@@ -99,73 +99,46 @@ class SheLensMcChainsFormat(object):
         # Get the metadata (contained within its own class)
         self.meta = SheLensMcChainsMeta()
 
-        # And a quick alias for it
-        self.m = self.meta
-
-        # Get the version from the meta class
-        self.__version__ = self.m.__version__
-
-        # Direct alias for a tuple of all metadata
-        self.meta_data = self.m.all
-
-        # Dicts for less-used properties
-        self.is_optional = OrderedDict()
-        self.comments = OrderedDict()
-        self.dtypes = OrderedDict()
-        self.fits_dtypes = OrderedDict()
-        self.lengths = OrderedDict()
-
-        def set_column_properties(name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
-                                  length=1):
-
-            assert name not in self.is_optional
-
-            self.is_optional[name] = is_optional
-            self.comments[name] = comment
-            self.dtypes[name] = dtype
-            self.fits_dtypes[name] = fits_dtype
-            self.lengths[name] = length
-
-            return name
+        setup_table_format(self)
 
         # Table column labels and properties
 
-        self.ID = set_column_properties(
+        self.ID = set_column_properties(self, 
             "OBJECT_ID", dtype=">i8", fits_dtype="K")
 
-        self.fit_flags = set_column_properties(
+        self.fit_flags = set_column_properties(self, 
             "SHE_LENSMC_FIT_FLAGS", dtype=">i8", fits_dtype="K")
-        self.val_flags = set_column_properties(
+        self.val_flags = set_column_properties(self, 
             "SHE_LENSMC_VAL_FLAGS", dtype=">i8", fits_dtype="K")
-        self.fit_class = set_column_properties(
+        self.fit_class = set_column_properties(self, 
             "SHE_LENSMC_FIT_CLASS", dtype=">i2", fits_dtype="I")
 
-        self.g1 = set_column_properties(
+        self.g1 = set_column_properties(self, 
             "SHE_LENSMC_G1_CHAIN", dtype=">f4", fits_dtype="E", length=total_chain_length)
-        self.g2 = set_column_properties(
+        self.g2 = set_column_properties(self, 
             "SHE_LENSMC_G2_CHAIN", dtype=">f4", fits_dtype="E", length=total_chain_length)
 
-        self.ra = set_column_properties(
+        self.ra = set_column_properties(self, 
             "SHE_LENSMC_UPDATED_RA_CHAIN", is_optional=False, comment="deg", fits_dtype="D", length=total_chain_length)
-        self.dec = set_column_properties(
+        self.dec = set_column_properties(self, 
             "SHE_LENSMC_UPDATED_DEC_CHAIN", is_optional=True, comment="deg", fits_dtype="D", length=total_chain_length)
 
         # lensmc specific columns
-        self.re = set_column_properties(
+        self.re = set_column_properties(self, 
             "SHE_LENSMC_RE_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=total_chain_length)
-        self.flux = set_column_properties(
+        self.flux = set_column_properties(self, 
             "SHE_LENSMC_FLUX_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=total_chain_length)
-        self.bulge_frac = set_column_properties(
+        self.bulge_frac = set_column_properties(self, 
             "SHE_LENSMC_BULGE_FRAC_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=total_chain_length)
-        self.snr = set_column_properties(
+        self.snr = set_column_properties(self, 
             "SHE_LENSMC_SNR_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=total_chain_length)
-        self.lr = set_column_properties(
+        self.lr = set_column_properties(self, 
             "SHE_LENSMC_LR_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=total_chain_length)
-        self.chi2 = set_column_properties(
+        self.chi2 = set_column_properties(self, 
             "SHE_LENSMC_CHI2", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.dof = set_column_properties(
+        self.dof = set_column_properties(self, 
             "SHE_LENSMC_DOF", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.acc = set_column_properties(
+        self.acc = set_column_properties(self, 
             "SHE_LENSMC_ACCEPTANCE", is_optional=True, dtype=">f4", fits_dtype="E")
 
         # A list of columns in the desired order
