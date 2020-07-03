@@ -110,6 +110,7 @@ class SheBiasStatisticsFormat(object):
 
         # Direct alias for a tuple of all metadata
         self.meta_data = self.m.all
+        self.is_base = False
 
         # Dicts for less-used properties
         self.is_optional = OrderedDict()

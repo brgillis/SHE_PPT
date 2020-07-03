@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-07-03"
 
 from collections import OrderedDict
 
@@ -75,6 +75,7 @@ class SheKsbTrainingFormat(object):
 
         # Direct alias for a tuple of all metadata
         self.meta_data = self.m.all
+        self.is_base = False
 
         # Dicts for less-used properties
         self.is_optional = OrderedDict()
