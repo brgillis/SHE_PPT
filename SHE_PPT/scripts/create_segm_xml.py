@@ -40,11 +40,6 @@ import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 
 from SHE_PPT import products
 from SHE_PPT.file_io import find_file, get_allowed_filename, write_xml_product
-from SHE_PPT.table_formats.psf import initialise_psf_table
-from SHE_PPT.table_formats.psf import tf as pstf
-from astropy.table import Table
-from astropy.io import fits
-import numpy as np
 
 
 def main():
@@ -58,10 +53,6 @@ def main():
     # Input arguments
     parser.add_argument('--segm_type', default=None, type=str,
                         help="Type exposure/stack")
-    parser.add_argument('--filter_names', default=None, type=str,
-                        help="Filter names")
-    parser.add_argument('--data_filename', default=None, type=str,
-                        help="FITS image name")
     # Output arguments
     parser.add_argument('--dest_dir', default='.', type=str,
                         help="Directory in which output xml files are contained (default '.').")
@@ -82,10 +73,10 @@ def main():
     else:
         dp = expsegm_stub.DpdSheExposureReprojectedSegmentationMap()
     
-    filter_names = args.filter_names.split(',')
     
     dp.Header = HeaderProvider.create_generic_header(
         dp.__class__.__name__)
+    dp.Header.Curator = 'SHE'
 
     # Add the data element to the data product
     data_prod = (she_dict.sheStackReprojectedSegmentationMap if is_stack else
@@ -113,7 +104,7 @@ def main():
     data_prod=(she_dict.sheStackReprojectedSegmentationMapFile if is_stack 
                else she_dict.sheExposureReprojectedSegmentationMapFile)
     dp.Data.DataStorage = dm_utils.create_fits_storage(
-        data_prod, args.data_filename,
+        data_prod, 'None',
         "she.%sReprojectedSegmentationMap" % (args.segm_type), "8.0")
 
     # Add the quality parameters

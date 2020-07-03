@@ -480,7 +480,7 @@ class SHEFrame(object):
 
             seg_prod = read_xml_product(
                 os.path.join(workdir, seg_product_filename))
-            if not isinstance(seg_prod, products.she_exposure_segmentation_map.DpdSheExposureSegmentationMap):
+            if not isinstance(seg_prod, products.she_exposure_segmentation_map.dpdSheExposureReprojectedSegmentationMap):
                 raise ValueError("Segmentation map product from " +
                                  seg_product_filename + " is invalid type.")
 

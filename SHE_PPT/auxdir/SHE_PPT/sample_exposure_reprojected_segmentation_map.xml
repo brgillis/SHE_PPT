@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ns1:DpdSheExposureReprojectedSegmentationMap xmlns:ns1="http://euclid.esa.org/schema/dpd/she/exposurereprojectedsegmentationmap">
 	<Header>
-		<ProductId>449fa8cd-753f-4d9e-99b9-e15ab9938a95</ProductId>
+		<ProductId>39dfaae8-df18-4c37-8d7f-69e43fdda1b9</ProductId>
 		<ProductType>dpdSheExposureReprojectedSegmentationMap</ProductType>
 		<SoftwareName>NA</SoftwareName>
 		<SoftwareRelease>0.0</SoftwareRelease>
@@ -9,17 +9,17 @@
 		<ProdSDC>SDC-IT</ProdSDC>
 		<DataSetRelease>NA</DataSetRelease>
 		<Purpose>UNKNOWN</Purpose>
-		<PlanId>21561be2-bd41-4c63-8b1e-6b8bf5ef9313</PlanId>
-		<PPOId>690ee9c4-4ec5-4fcb-97d7-f391b281d2a5</PPOId>
+		<PlanId>bc9b6903-6d0b-4378-af2b-2e06eb046ebb</PlanId>
+		<PPOId>250aff87-d312-4499-9753-0d3b3e69fd5f</PPOId>
 		<PipelineDefinitionId>PipelineDefinitionId</PipelineDefinitionId>
 		<PipelineRun>NA</PipelineRun>
 		<ExitStatusCode>NA</ExitStatusCode>
 		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
-		<ExpirationDate>2020-07-01T22:37:08.816Z</ExpirationDate>
+		<ExpirationDate>2020-07-02T12:45:33.76Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>
 		<Published>false</Published>
-		<Curator>Curator0</Curator>
-		<CreationDate>2020-07-01T22:37:08.816Z</CreationDate>
+		<Curator>SHE</Curator>
+		<CreationDate>2020-07-02T12:45:33.76Z</CreationDate>
 	</Header>
 	<Data>
 		<ImgType>
@@ -92,7 +92,7 @@
 		</DetectorList>
 		<DataStorage format="she.exposureReprojectedSegmentationMap" version="8.0">
 			<DataContainer filestatus="PROPOSED">
-				<FileName>test.fits</FileName>
+				<FileName>None</FileName>
 			</DataContainer>
 		</DataStorage>
 	</Data>

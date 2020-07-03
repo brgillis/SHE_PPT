@@ -1,14 +1,13 @@
-""" @file she_exposure_segmentation_map_product.py
+""" @file exposure_segmentation_product.py
 
     Created 26 Oct 2017
 
-    Functions to create and output a she_exposure_segmentation_map data product, per details at
-    http://euclid.esac.esa.int/dm/dpdd/latest/merdpd/dpcards/she_exposure_segmentation_map.html
+    Functions to create and output a exposure_segmentation data product, per details at
+    http://euclid.esac.esa.int/dm/dpdd/latest/merdpd/dpcards/she_exposure_segmentation.html
 
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines. This version is
     converted from MER's version, so we need a separate product for it.
 """
-
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -23,35 +22,36 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2019-08-15"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
 
 import os
-import pickle
-
 from astropy.io import fits
 
+from ST_DataModelBindings.dpd.she.exposurereprojectedsegmentationmap_stub import dpdSheExposureReprojectedSegmentationMap
+
+
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT import detector as dtc
-from SHE_PPT.file_io import read_xml_product
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 import SHE_PPT.magic_values as mv
 from SHE_PPT.utility import find_extension
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 
+sample_file_name = "SHE_PPT/sample_exposure_reprojected_segmentation_map.xml"
 
 # Convenience function to easily load the actual map
-def load_she_exposure_segmentation_map(filename, dir=None, **kwargs):
+def load_she_exposure_segmentation_map(filename, directory=None, **kwargs):
     """Directly loads the she_exposure_segmentation_map image from the filename of the data product.
 
     Parameters
     ----------
     filename : str
-        Filename of the she_exposure_segmentation_map data product. If `dir` is None, `filename `must
-        be either fully-qualified or relative to the workspace. If `dir` is
+        Filename of the she_exposure_segmentation_map data product. If `directory` is None, `filename `must
+        be either fully-qualified or relative to the workspace. If `directory` is
         supplied, `filename` should be only the local name of the file.
-    dir : str
+    directory : str
         Directory in which `filename` is contained. If not supplied, `filename`
         and `listfile_filename` (if supplied) will be assumed to be either
         fully-qualified or relative to the workspace.
@@ -73,11 +73,11 @@ def load_she_exposure_segmentation_map(filename, dir=None, **kwargs):
 
     init()
 
-    if dir is None:
-        dir = ""
+    if directory is None:
+        directory = ""
 
     she_exposure_segmentation_map_product = read_xml_product(
-        xml_filename=os.path.join(dir, filename), allow_pickled=False)
+        xml_filename=os.path.join(directory, filename), allow_pickled=False)
 
     data_filename = she_exposure_segmentation_map_product.get_data_filename()
 
@@ -90,26 +90,23 @@ def load_she_exposure_segmentation_map(filename, dir=None, **kwargs):
 
 def init():
     """
-        Adds some extra functionality to the DpdSheExposureSegmentationMap product
+        Adds some extra functionality to the DpdSheAstrometry product
     """
 
-    # binding_class = she_dpd.DpdSheExposureSegmentationMap # @FIXME
-    binding_class = DpdSheExposureSegmentationMap
-
-    if not hasattr(binding_class, "initialised"):
-        binding_class.initialised = True
-    else:
-        return
+    # binding_class = she_dpd.DpdSheShearValidationStatsProduct # @FIXME
+    binding_class = dpdSheExposureReprojectedSegmentationMap
 
     # Add the data file name methods
-
-    binding_class.set_data_filename = __set_data_filename
-    binding_class.get_data_filename = __get_data_filename
 
     binding_class.set_filename = __set_data_filename
     binding_class.get_filename = __get_data_filename
 
+    binding_class.set_data_filename = __set_data_filename
+    binding_class.get_data_filename = __get_data_filename
+
     binding_class.get_all_filenames = __get_all_filenames
+
+    binding_class.has_files = False
 
     return
 
@@ -124,84 +121,50 @@ def __get_data_filename(self):
 
 def __get_all_filenames(self):
 
-    all_filenames = [self.get_data_filename(), ]
+    all_filenames = [self.get_data_filename()]
 
     return all_filenames
 
 
-class DataContainer:
-
-    def __init__(self):
-        self.FileName = None
-        self.filestatus = None
 
 
-class DpdSheExposureSegmentationMap:
-
-    def __init__(self):
-        self.Header = None
-        self.Data = None
-
-    def validateBinding(self):
-        return True
-
-
-class SheExposureSegmentationMap:
-
-    def __init__(self):
-        self.DataStorage = None
-
-
-class SheDataStorage:
-
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-
-
+ 
+        
 def create_dpd_she_exposure_segmentation_map(data_filename="None"):
+    """Creates a SHE_MER exposure reprojected segmentation map binding.
+
+    Parameters
+    ----------
+    file_name: str
+        Name of the fits image file containing the segmentation map
+
+    Returns
+    -------
+    object
+        The SHE_MER exposure segmentation map binding.
+
     """
-        @TODO fill in docstring
-    """
+    dpd_she_exposure_reproj_seg_map_data = read_xml_product(
+        find_aux_file(sample_file_name), allow_pickled=False)
 
-    dpd_she_exposure_segmentation_map = DpdSheExposureSegmentationMap()
+    # Overwrite the header with a new one to update the creation date (among
+    # other things)
+    dpd_she_exposure_reproj_seg_map_data.Header = HeaderProvider.create_generic_header("SHE")
 
-    # dpd_she_exposure_segmentation_map.Header = HeaderProvider.create_generic_header("SHE")
-    dpd_she_exposure_segmentation_map.Header = None
+    __set_data_filename(dpd_she_exposure_reproj_seg_map_data, data_filename)
 
-    dpd_she_exposure_segmentation_map.Data = create_she_exposure_segmentation_map(
-        data_filename=data_filename)
+    # dpd_she_exposure_reproj_seg_map_data.Header =
+    # HeaderProvider.create_generic_header("SHE") # FIXME
+    # dpd_she_exposure_reproj_seg_map_data.Header = "SHE"
 
-    return dpd_she_exposure_segmentation_map
+    # dpd_she_exposure_reproj_seg_map_data.Data = create_she_exposure_reproj_seg_map_data(filename)
+
+    return dpd_she_exposure_reproj_seg_map_data
 
 
 # Add a useful alias
+
+
 create_she_exposure_segmentation_map_product = create_dpd_she_exposure_segmentation_map
 
 
-def create_she_exposure_segmentation_map(data_filename="None"):
-    """
-        @TODO fill in docstring
-    """
-
-    she_exposure_segmentation_map = SheExposureSegmentationMap()
-
-    she_exposure_segmentation_map.DataStorage = create_she_data_storage(data_filename)
-
-    return she_exposure_segmentation_map
-
-
-def create_she_data_storage(filename):
-
-    # she_data_storage = she_dpd.SheDataStorage() # @FIXME
-    she_data_storage = SheDataStorage()
-
-    she_data_storage.format = "Undefined"  # @FIXME
-    she_data_storage.version = "0.0"  # @FIXME
-
-    she_data_storage.DataContainer = DataContainer()
-    she_data_storage.DataContainer.FileName = filename
-    she_data_storage.DataContainer.filestatus = "PROPOSED"
-
-    return she_data_storage

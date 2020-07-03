@@ -633,7 +633,7 @@ class SHEFrameStack(object):
             try:
                 _, stacked_seg_data = cls._read_product_extension(stacked_seg_product_filename,
                                                                   workdir=workdir,
-                                                                  dtype=products.she_stack_segmentation_map.DpdSheStackSegmentationMap,
+                                                                  dtype=products.she_stack_segmentation_map.dpdSheStackReprojectedSegmentationMap,
                                                                   **kwargs)
             except FileNotFoundError as e:
                 logger.warning(str(e))
