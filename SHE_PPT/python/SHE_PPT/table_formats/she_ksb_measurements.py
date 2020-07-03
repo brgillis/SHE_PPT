@@ -36,7 +36,7 @@ from SHE_PPT.table_utility import is_in_format
 fits_version = "8.0"
 fits_def = "she.ksbMeasurements"
 
-column_label = "SHE_KSB_"
+child_label = "SHE_KSB_"
 
 logger = getLogger(mv.logger_name)
 
@@ -48,11 +48,11 @@ class SheKsbMeasurementsMeta(SheMeasurementsMeta):
 
     def __init__(self):
 
-        self.__version__ = fits_version
-        self.table_format = fits_def
-
         # Inherit meta format from parent class
         super().__init__()
+
+        self.__version__ = fits_version
+        self.table_format = fits_def
 
         return
 
@@ -65,6 +65,9 @@ class SheKsbMeasurementsFormat(SheMeasurementsFormat):
 
     def __init__(self):
 
+        # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
+        super().__init__()
+
         # Get the metadata (contained within its own class)
         self.meta = SheKsbMeasurementsMeta()
 
@@ -73,14 +76,12 @@ class SheKsbMeasurementsFormat(SheMeasurementsFormat):
 
         # Get the version from the meta class
         self.__version__ = self.m.__version__
+        self.child_label = child_label
 
         # Direct alias for a tuple of all metadata
         self.meta_data = self.m.all
 
         self.is_base = False
-
-        # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
-        super().__init__()
 
         self.parent_is_optional = self.is_optional
         self.parent_comments = self.comments
@@ -102,14 +103,14 @@ class SheKsbMeasurementsFormat(SheMeasurementsFormat):
             if parent_name == "OBJECT_ID":
                 name = parent_name
             else:
-                name = column_label + parent_name
+                name = child_label + parent_name
                 changed_column_names[parent_name] = name
 
-            self.is_optional[name] = self.parent_is_optional
-            self.comments[name] = self.parent_comments
-            self.dtypes[name] = self.parent_dtypes
-            self.fits_dtypes[name] = self.parent_fits_dtypes
-            self.lengths[name] = self.parent_lengths
+            self.is_optional[name] = self.parent_is_optional[parent_name]
+            self.comments[name] = self.parent_comments[parent_name]
+            self.dtypes[name] = self.parent_dtypes[parent_name]
+            self.fits_dtypes[name] = self.parent_fits_dtypes[parent_name]
+            self.lengths[name] = self.parent_lengths[parent_name]
 
         # Update existing column names inherited from parent
         for key, val in tuple(zip(self.__dict__.items()))[0]:
@@ -266,6 +267,6 @@ def initialise_ksb_measurements_table(mer_final_catalog=None,
                                                            observation_time=observation_time,
                                                            tile_id=tile_id)
 
-    assert(is_in_format(ksb_measurements_table, tf))
+    assert(is_in_format(ksb_measurements_table, tf, verbose=True))
 
     return ksb_measurements_table

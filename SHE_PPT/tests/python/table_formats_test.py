@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-07-03"
 
 import os
 
@@ -37,6 +37,7 @@ from SHE_PPT.table_formats.she_ksb_measurements import tf as ksbm_tf, initialise
 from SHE_PPT.table_formats.she_ksb_training import tf as ksbt_tf, initialise_ksb_training_table
 from SHE_PPT.table_formats.she_lensmc_chains import tf as lmcc_tf, initialise_lensmc_chains_table, len_chain
 from SHE_PPT.table_formats.she_lensmc_measurements import tf as lmcm_tf, initialise_lensmc_measurements_table
+from SHE_PPT.table_formats.she_measurements import tf as sm_tf
 from SHE_PPT.table_formats.she_momentsml_measurements import tf as mmlm_tf, initialise_momentsml_measurements_table
 from SHE_PPT.table_formats.she_p_of_e import tf as poe_tf, initialise_p_of_e_table
 from SHE_PPT.table_formats.she_psf_dm_state import (tff as psfdmf_tf, tfc as psfdmc_tf,
@@ -112,6 +113,9 @@ class TestTableFormats:
 
         cls.formats, cls.initializers = zip(*cls.formats_and_initializers)
 
+        cls.parent_format = sm_tf
+        cls.child_initializers = [initialise_ksb_measurements_table]
+
         cls.filename_base = "test_table"
 
         cls.filenames = [cls.filename_base + ".ecsv", cls.filename_base + ".fits"]
@@ -185,6 +189,24 @@ class TestTableFormats:
                     raise Exception("Table format " + self.formats[j].m.table_format +
                                     " resolves true for tables of format " + self.formats[i].m.table_format +
                                     " in non-strict test.")
+
+        return
+
+    def test_base_is_in_format(self):
+
+        # is_in_format behaves as expected when testing with a base format
+
+        empty_tables = []
+
+        for init in self.child_initializers:
+            empty_tables.append(init())
+
+        for i in range(len(self.child_initializers)):
+
+            # Try non-strict test
+            if not is_in_format(empty_tables[i], self.parent_format, strict=False, verbose=True):
+                raise Exception("Table format " + self.parent_format.m.table_format +
+                                " doesn't match initialized child table " + str(i) + ".")
 
         return
 

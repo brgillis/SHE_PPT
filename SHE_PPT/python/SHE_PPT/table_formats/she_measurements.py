@@ -28,6 +28,9 @@ from astropy.table import Table
 from SHE_PPT import magic_values as mv
 from SHE_PPT.flags import she_flag_version
 
+fits_version = "8.0"
+fits_def = "she.measurements"
+
 
 class SheMeasurementsMeta(object):
     """
@@ -35,6 +38,9 @@ class SheMeasurementsMeta(object):
     """
 
     def __init__(self):
+
+        self.table_format = fits_def
+        self.__version__ = fits_version
 
         # Table metadata labels
         self.fits_version = mv.fits_version_label
@@ -74,6 +80,14 @@ class SheMeasurementsFormat(object):
     """
 
     def __init__(self):
+
+        # Get the metadata (contained within its own class)
+        self.meta = SheMeasurementsMeta()
+
+        # And a quick alias for it
+        self.m = self.meta
+
+        self.__version__ = fits_version
 
         self.is_base = True
 
