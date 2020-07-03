@@ -29,7 +29,7 @@ from SHE_PPT import magic_values as mv
 from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
 from SHE_PPT.math import LinregressStatistics, BiasMeasurements, BFDSumResults
-from SHE_PPT.table_utility import is_in_format
+from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties
 import numpy as np
 
 fits_version = "8.0"
@@ -101,55 +101,27 @@ class SheBfdBiasStatisticsFormat(object):
         # Get the metadata (contained within its own class)
         self.meta = SheBfdBiasStatisticsMeta()
 
-        # And a quick alias for it
-        self.m = self.meta
-
-        # Get the version from the meta class
-        self.__version__ = self.m.__version__
-
-        # Direct alias for a tuple of all metadata
-        self.meta_data = self.m.all
-        self.is_base = False
-
-        # Dicts for less-used properties
-        self.is_optional = OrderedDict()
-        self.comments = OrderedDict()
-        self.dtypes = OrderedDict()
-        self.fits_dtypes = OrderedDict()
-        self.lengths = OrderedDict()
-
-        def set_column_properties(name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
-                                  length=1):
-
-            assert name not in self.is_optional
-
-            self.is_optional[name] = is_optional
-            self.comments[name] = comment
-            self.dtypes[name] = dtype
-            self.fits_dtypes[name] = fits_dtype
-            self.lengths[name] = length
-
-            return name
+        setup_table_format(self)
 
         # Table column labels and properties
 
-        self.ID = set_column_properties("RUN_ID", dtype="str", fits_dtype="A", length=20, is_optional=True)
+        self.ID = set_column_properties(self, "RUN_ID", dtype="str", fits_dtype="A", length=20, is_optional=True)
 
-        self.b1 = set_column_properties("B1", dtype=">f4", fits_dtype="E")
-        self.b2 = set_column_properties("B2", dtype=">f4", fits_dtype="E")
-        self.b3 = set_column_properties("B3", dtype=">f4", fits_dtype="E")
-        self.b4 = set_column_properties("B4", dtype=">f4", fits_dtype="E")
+        self.b1 = set_column_properties(self, "B1", dtype=">f4", fits_dtype="E")
+        self.b2 = set_column_properties(self, "B2", dtype=">f4", fits_dtype="E")
+        self.b3 = set_column_properties(self, "B3", dtype=">f4", fits_dtype="E")
+        self.b4 = set_column_properties(self, "B4", dtype=">f4", fits_dtype="E")
 
-        self.A11 = set_column_properties("A11", dtype=">f4", fits_dtype="E")
-        self.A12 = set_column_properties("A12", dtype=">f4", fits_dtype="E")
-        self.A13 = set_column_properties("A13", dtype=">f4", fits_dtype="E")
-        self.A14 = set_column_properties("A14", dtype=">f4", fits_dtype="E")
-        self.A22 = set_column_properties("A22", dtype=">f4", fits_dtype="E")
-        self.A23 = set_column_properties("A23", dtype=">f4", fits_dtype="E")
-        self.A24 = set_column_properties("A24", dtype=">f4", fits_dtype="E")
-        self.A33 = set_column_properties("A33", dtype=">f4", fits_dtype="E")
-        self.A34 = set_column_properties("A34", dtype=">f4", fits_dtype="E")
-        self.A44 = set_column_properties("A44", dtype=">f4", fits_dtype="E")
+        self.A11 = set_column_properties(self, "A11", dtype=">f4", fits_dtype="E")
+        self.A12 = set_column_properties(self, "A12", dtype=">f4", fits_dtype="E")
+        self.A13 = set_column_properties(self, "A13", dtype=">f4", fits_dtype="E")
+        self.A14 = set_column_properties(self, "A14", dtype=">f4", fits_dtype="E")
+        self.A22 = set_column_properties(self, "A22", dtype=">f4", fits_dtype="E")
+        self.A23 = set_column_properties(self, "A23", dtype=">f4", fits_dtype="E")
+        self.A24 = set_column_properties(self, "A24", dtype=">f4", fits_dtype="E")
+        self.A33 = set_column_properties(self, "A33", dtype=">f4", fits_dtype="E")
+        self.A34 = set_column_properties(self, "A34", dtype=">f4", fits_dtype="E")
+        self.A44 = set_column_properties(self, "A44", dtype=">f4", fits_dtype="E")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())

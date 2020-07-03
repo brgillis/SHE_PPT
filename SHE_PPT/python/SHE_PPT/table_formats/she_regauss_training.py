@@ -28,7 +28,7 @@ from astropy.table import Table
 from SHE_PPT import magic_values as mv
 from SHE_PPT.flags import she_flag_version
 from SHE_PPT.table_formats.she_training import SheTrainingMeta, SheTrainingFormat
-from SHE_PPT.table_utility import is_in_format
+from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties, setup_child_table_format, set_column_properties
 
 fits_version = "8.0"
 fits_def = "she.regaussTraining"
@@ -66,65 +66,7 @@ class SheRegaussTrainingFormat(SheTrainingFormat):
         # Get the metadata (contained within its own class)
         self.meta = SheRegaussTrainingMeta()
 
-        # And a quick alias for it
-        self.m = self.meta
-
-        # Get the version from the meta class
-        self.__version__ = self.m.__version__
-        self.child_label = child_label
-
-        # Direct alias for a tuple of all metadata
-        self.meta_data = self.m.all
-
-        self.is_base = False
-
-        self.parent_is_optional = self.is_optional
-        self.parent_comments = self.comments
-        self.parent_dtypes = self.dtypes
-        self.parent_fits_dtypes = self.fits_dtypes
-        self.parent_lengths = self.lengths
-        self.parent_all = self.all
-        self.parent_all_required = self.all_required
-
-        self.is_optional = OrderedDict()
-        self.comments = OrderedDict()
-        self.dtypes = OrderedDict()
-        self.fits_dtypes = OrderedDict()
-        self.lengths = OrderedDict()
-
-        changed_column_names = {}
-
-        for parent_name in self.parent_all:
-            if parent_name == "OBJECT_ID":
-                name = parent_name
-            else:
-                name = child_label + parent_name
-                changed_column_names[parent_name] = name
-
-            self.is_optional[name] = self.parent_is_optional[parent_name]
-            self.comments[name] = self.parent_comments[parent_name]
-            self.dtypes[name] = self.parent_dtypes[parent_name]
-            self.fits_dtypes[name] = self.parent_fits_dtypes[parent_name]
-            self.lengths[name] = self.parent_lengths[parent_name]
-
-        # Update existing column names inherited from parent
-        for key, val in tuple(zip(self.__dict__.items()))[0]:
-            print(str(val))
-            if val in changed_column_names:
-                setattr(self, key, changed_column_names[val])
-
-        def set_column_properties(name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
-                                  length=1):
-
-            assert name not in self.is_optional
-
-            self.is_optional[name] = is_optional
-            self.comments[name] = comment
-            self.dtypes[name] = dtype
-            self.fits_dtypes[name] = fits_dtype
-            self.lengths[name] = length
-
-            return name
+        setup_child_table_format(self, child_label, unlabelled_columns=["OBJECT_ID"])
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())

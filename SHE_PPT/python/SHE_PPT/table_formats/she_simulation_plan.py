@@ -27,7 +27,7 @@ from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.flags import she_flag_version
-from SHE_PPT.table_utility import is_in_format
+from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties
 
 fits_version = "8.0"
 fits_def = "she.simulationPlan"
@@ -67,62 +67,34 @@ class SheSimulationPlanFormat(object):
         # Get the metadata (contained within its own class)
         self.meta = SheSimulationPlanMeta()
 
-        # And a quick alias for it
-        self.m = self.meta
-
-        # Get the version from the meta class
-        self.__version__ = self.m.__version__
-
-        # Direct alias for a tuple of all metadata
-        self.meta_data = self.m.all
-        self.is_base = False
-
-        # Dicts for less-used properties
-        self.is_optional = OrderedDict()
-        self.comments = OrderedDict()
-        self.dtypes = OrderedDict()
-        self.fits_dtypes = OrderedDict()
-        self.lengths = OrderedDict()
-
-        def set_column_properties(name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
-                                  length=1):
-
-            assert name not in self.is_optional
-
-            self.is_optional[name] = is_optional
-            self.comments[name] = comment
-            self.dtypes[name] = dtype
-            self.fits_dtypes[name] = fits_dtype
-            self.lengths[name] = length
-
-            return name
+        setup_table_format(self)
 
         # Column names and info
 
-        self.tag = set_column_properties("TAG", dtype="str", fits_dtype="10A", length=10,
+        self.tag = set_column_properties(self, "TAG", dtype="str", fits_dtype="10A", length=10,
                                          comment="Tag to be added to file names for this batch, max length 10.")
 
-        self.model_seed_min = set_column_properties("MSEED_MIN", dtype=">i8", fits_dtype="K",
+        self.model_seed_min = set_column_properties(self, "MSEED_MIN", dtype=">i8", fits_dtype="K",
                                                     comment="Minimum model seed value for this batch.")
-        self.model_seed_max = set_column_properties("MSEED_MAX", dtype=">i8", fits_dtype="K",
+        self.model_seed_max = set_column_properties(self, "MSEED_MAX", dtype=">i8", fits_dtype="K",
                                                     comment="Maximum model seed value for this batch.")
-        self.model_seed_step = set_column_properties("MSEED_STEP", dtype=">i8", fits_dtype="K",
+        self.model_seed_step = set_column_properties(self, "MSEED_STEP", dtype=">i8", fits_dtype="K",
                                                      comment="Model seed step for this batch.")
 
-        self.noise_seed_min = set_column_properties("NSEED_MIN", dtype=">i8", fits_dtype="K",
+        self.noise_seed_min = set_column_properties(self, "NSEED_MIN", dtype=">i8", fits_dtype="K",
                                                     comment="Minimum model seed value for this batch.")
-        self.noise_seed_max = set_column_properties("NSEED_MAX", dtype=">i8", fits_dtype="K",
+        self.noise_seed_max = set_column_properties(self, "NSEED_MAX", dtype=">i8", fits_dtype="K",
                                                     comment="Maximum model seed value for this batch.")
-        self.noise_seed_step = set_column_properties("NSEED_STEP", dtype=">i8", fits_dtype="K",
+        self.noise_seed_step = set_column_properties(self, "NSEED_STEP", dtype=">i8", fits_dtype="K",
                                                      comment="Model seed step for this batch.")
 
-        self.suppress_noise = set_column_properties(
+        self.suppress_noise = set_column_properties(self, 
             "SUP_NOISE", dtype="bool", fits_dtype="L")
-        self.num_detectors = set_column_properties(
+        self.num_detectors = set_column_properties(self, 
             "NUM_DETECTORS", dtype=">i2", fits_dtype="I")
-        self.num_galaxies = set_column_properties(
+        self.num_galaxies = set_column_properties(self, 
             "NUM_GALAXIES", dtype=">i2", fits_dtype="I")
-        self.render_background = set_column_properties(
+        self.render_background = set_column_properties(self, 
             "RENDER_BKG", dtype="bool", fits_dtype="L")
 
         # A list of columns in the desired order

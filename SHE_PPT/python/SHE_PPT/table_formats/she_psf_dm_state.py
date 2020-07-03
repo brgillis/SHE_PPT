@@ -29,7 +29,7 @@ from astropy.table import Table
 from SHE_PPT import magic_values as mv
 from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
-from SHE_PPT.table_utility import is_in_format
+from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties
 import numpy as np
 
 fits_version = "8.0"
@@ -86,42 +86,14 @@ class ShePsfDmStateFormat(object):
 
         self.meta = ShePsfDmStateMeta(self.data_type)
 
-        # And a quick alias for it
-        self.m = self.meta
-
-        # Get the version from the meta class
-        self.__version__ = self.m.__version__
-
-        # Direct alias for a tuple of all metadata
-        self.meta_data = self.m.all
-        self.is_base = False
-
-        # Dicts for less-used properties
-        self.is_optional = OrderedDict()
-        self.comments = OrderedDict()
-        self.dtypes = OrderedDict()
-        self.fits_dtypes = OrderedDict()
-        self.lengths = OrderedDict()
-
-        def set_column_properties(name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
-                                  length=1):
-
-            assert name not in self.is_optional
-
-            self.is_optional[name] = is_optional
-            self.comments[name] = comment
-            self.dtypes[name] = dtype
-            self.fits_dtypes[name] = fits_dtype
-            self.lengths[name] = length
-
-            return name
+        setup_table_format(self)
 
         # Column names and info
         # @TODO: option for FIELD/CALIB - use self.data_type
 
         for colname in []:
             setattr(self, colname.lower(),
-                    set_column_properties(name=self.get_colname(colname),
+                    set_column_properties(self, name=self.get_colname(colname),
                         dtype=">f4", fits_dtype="E"))
 
         # A list of columns in the desired order

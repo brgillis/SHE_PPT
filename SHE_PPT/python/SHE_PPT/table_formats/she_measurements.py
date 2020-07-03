@@ -27,6 +27,7 @@ from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.flags import she_flag_version
+from SHE_PPT.table_utility import setup_table_format, set_column_properties
 
 fits_version = "8.0"
 fits_def = "she.measurements"
@@ -84,77 +85,54 @@ class SheMeasurementsFormat(object):
         # Get the metadata (contained within its own class)
         self.meta = SheMeasurementsMeta()
 
-        # And a quick alias for it
-        self.m = self.meta
-
-        self.__version__ = fits_version
+        setup_table_format(self)
 
         self.is_base = True
 
-        # Dicts for less-used properties
-        self.is_optional = OrderedDict()
-        self.comments = OrderedDict()
-        self.dtypes = OrderedDict()
-        self.fits_dtypes = OrderedDict()
-        self.lengths = OrderedDict()
-
-        def set_column_properties(name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
-                                  length=1):
-
-            assert name not in self.is_optional
-
-            self.is_optional[name] = is_optional
-            self.comments[name] = comment
-            self.dtypes[name] = dtype
-            self.fits_dtypes[name] = fits_dtype
-            self.lengths[name] = length
-
-            return name
-
         # Table column labels and properties
 
-        self.ID = set_column_properties(
+        self.ID = set_column_properties(self,
             "OBJECT_ID", dtype=">i8", fits_dtype="K")
 
-        self.fit_flags = set_column_properties(
+        self.fit_flags = set_column_properties(self,
             "FIT_FLAGS", dtype=">i8", fits_dtype="K")
-        self.val_flags = set_column_properties(
+        self.val_flags = set_column_properties(self,
             "VAL_FLAGS", dtype=">i8", fits_dtype="K")
-        self.fit_class = set_column_properties(
+        self.fit_class = set_column_properties(self,
             "FIT_CLASS", dtype=">i2", fits_dtype="I")
 
-        self.g1 = set_column_properties(
+        self.g1 = set_column_properties(self,
             "G1", dtype=">f4", fits_dtype="E")
-        self.g1_err = set_column_properties(
+        self.g1_err = set_column_properties(self,
             "G1_ERR", dtype=">f4", fits_dtype="E")
-        self.g2 = set_column_properties(
+        self.g2 = set_column_properties(self,
             "G2", dtype=">f4", fits_dtype="E")
-        self.g2_err = set_column_properties(
+        self.g2_err = set_column_properties(self,
             "G2_ERR", dtype=">f4", fits_dtype="E")
-        self.g1g2_cov = set_column_properties(
+        self.g1g2_cov = set_column_properties(self,
             "G1G2_COVAR", dtype=">f4", fits_dtype="E")
-        self.weight = set_column_properties(
+        self.weight = set_column_properties(self,
             "WEIGHT", dtype=">f4", fits_dtype="E")
-        self.g1_uncal = set_column_properties(
+        self.g1_uncal = set_column_properties(self,
             "G1_UNCAL", dtype=">f4", fits_dtype="E")
-        self.g1_uncal_err = set_column_properties(
+        self.g1_uncal_err = set_column_properties(self,
             "G1_UNCAL_ERR", dtype=">f4", fits_dtype="E")
-        self.g2_uncal = set_column_properties(
+        self.g2_uncal = set_column_properties(self,
             "G2_UNCAL", dtype=">f4", fits_dtype="E")
-        self.g2_uncal_err = set_column_properties(
+        self.g2_uncal_err = set_column_properties(self,
             "G2_UNCAL_ERR", dtype=">f4", fits_dtype="E")
-        self.g1g2_uncal_covar = set_column_properties(
+        self.g1g2_uncal_covar = set_column_properties(self,
             "G1G2_UNCAL_COVAR", dtype=">f4", fits_dtype="E")
-        self.weight_uncal = set_column_properties(
+        self.weight_uncal = set_column_properties(self,
             "WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
 
-        self.ra = set_column_properties(
+        self.ra = set_column_properties(self,
             "UPDATED_RA", is_optional=False, comment="deg")
-        self.ra_err = set_column_properties(
+        self.ra_err = set_column_properties(self,
             "UPDATED_RA_ERR", is_optional=False, comment="deg")
-        self.dec = set_column_properties(
+        self.dec = set_column_properties(self,
             "UPDATED_DEC", is_optional=True, comment="deg")
-        self.dec_err = set_column_properties(
+        self.dec_err = set_column_properties(self,
             "UPDATED_DEC_ERR", is_optional=True, comment="deg")
 
         # A list of columns in the desired order
