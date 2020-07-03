@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-23"
+__updated__ = "2020-07-03"
 
 from astropy.io.fits import table_to_hdu as astropy_table_to_hdu
 from astropy.table import Column
@@ -73,7 +73,7 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
             else:
                 ex_dtype = np.dtype((table_format.dtypes[colname], length)).newbyteorder('>')
         except Exception:
-            pass
+            ex_dtype = None
 
         if colname not in table_format.all:
             if strict:
@@ -116,10 +116,7 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
                                     "Got: " + str(table.dtype[colname].newbyteorder('>')))
                     return False
             # Is it an issue with int or float size?
-            elif strict == False:
-                if col_dtype.str[1] == ex_dtype.str[1] and (col_dtype.str[1] == 'i' or col_dtype.str[1] == 'f'):
-                    pass
-            else:
+            elif strict == True:
                 if verbose:
                     logger.info("Table not in correct format due to wrong type for column '" + colname + "'\n" +
                                 "Expected: " + ex_dtype + "\n" +
