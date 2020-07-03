@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-07-03"
 
 from collections import OrderedDict
 
@@ -27,36 +27,32 @@ from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.flags import she_flag_version
+from SHE_PPT.table_formats.she_training import SheTrainingMeta, SheTrainingFormat
 from SHE_PPT.table_utility import is_in_format
 
 fits_version = "8.0"
 fits_def = "she.regaussTraining"
 
+child_label = "SHE_REGAUSS_TRAINING_"
 
-class SheKsbTrainingMeta(object):
+
+class SheRegaussTrainingMeta(SheTrainingMeta):
     """
         @brief A class defining the metadata for simulation plan tables.
     """
 
     def __init__(self):
 
+        # Inherit meta format from parent class
+        super().__init__()
+
         self.__version__ = fits_version
         self.table_format = fits_def
 
-        # Table metadata labels
-        self.fits_version = mv.fits_version_label
-        self.fits_def = mv.fits_def_label
-
-        # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_version, None),
-                                     (self.fits_def, None),
-                                     ))
-
-        # A list of columns in the desired order
-        self.all = list(self.comments.keys())
+        return
 
 
-class SheKsbTrainingFormat(object):
+class SheRegaussTrainingFormat(SheTrainingFormat):
     """
         @brief A class defining the format for galaxy population priors tables. Only the regauss_training_table_format
                instance of this should generally be accessed, and it should not be changed.
@@ -64,25 +60,58 @@ class SheKsbTrainingFormat(object):
 
     def __init__(self):
 
+        # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
+        super().__init__()
+
         # Get the metadata (contained within its own class)
-        self.meta = SheKsbTrainingMeta()
+        self.meta = SheRegaussTrainingMeta()
 
         # And a quick alias for it
         self.m = self.meta
 
         # Get the version from the meta class
         self.__version__ = self.m.__version__
+        self.child_label = child_label
 
         # Direct alias for a tuple of all metadata
         self.meta_data = self.m.all
+
         self.is_base = False
 
-        # Dicts for less-used properties
+        self.parent_is_optional = self.is_optional
+        self.parent_comments = self.comments
+        self.parent_dtypes = self.dtypes
+        self.parent_fits_dtypes = self.fits_dtypes
+        self.parent_lengths = self.lengths
+        self.parent_all = self.all
+        self.parent_all_required = self.all_required
+
         self.is_optional = OrderedDict()
         self.comments = OrderedDict()
         self.dtypes = OrderedDict()
         self.fits_dtypes = OrderedDict()
         self.lengths = OrderedDict()
+
+        changed_column_names = {}
+
+        for parent_name in self.parent_all:
+            if parent_name == "OBJECT_ID":
+                name = parent_name
+            else:
+                name = child_label + parent_name
+                changed_column_names[parent_name] = name
+
+            self.is_optional[name] = self.parent_is_optional[parent_name]
+            self.comments[name] = self.parent_comments[parent_name]
+            self.dtypes[name] = self.parent_dtypes[parent_name]
+            self.fits_dtypes[name] = self.parent_fits_dtypes[parent_name]
+            self.lengths[name] = self.parent_lengths[parent_name]
+
+        # Update existing column names inherited from parent
+        for key, val in tuple(zip(self.__dict__.items()))[0]:
+            print(str(val))
+            if val in changed_column_names:
+                setattr(self, key, changed_column_names[val])
 
         def set_column_properties(name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
                                   length=1):
@@ -97,19 +126,6 @@ class SheKsbTrainingFormat(object):
 
             return name
 
-        # Column names and info
-
-        self.id = set_column_properties("OBJECT_ID", dtype=">i8", fits_dtype="K",
-                                        comment="ID of this object in the galaxy population priors table.")
-        self.e1 = set_column_properties("SHE_REGAUSS_E1", dtype=">f4", fits_dtype="E",
-                                        comment="Mean ellipticity measurement of this object, component 1")
-        self.e2 = set_column_properties("SHE_REGAUSS_E2", dtype=">f4", fits_dtype="E",
-                                        comment="Mean ellipticity measurement of this object, component 2")
-        self.e1_err = set_column_properties("SHE_REGAUSS_E1_ERR", dtype=">f4", fits_dtype="E",
-                                        comment="Error on mean ellipticity measurement of this object, component 1")
-        self.e2_err = set_column_properties("SHE_REGAUSS_E2_ERR", dtype=">f4", fits_dtype="E",
-                                        comment="Error on mean ellipticity measurement of this object, component 2")
-
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
 
@@ -121,7 +137,7 @@ class SheKsbTrainingFormat(object):
 
 
 # Define an instance of this object that can be imported
-regauss_training_table_format = SheKsbTrainingFormat()
+regauss_training_table_format = SheRegaussTrainingFormat()
 
 # And a convient alias for it
 tf = regauss_training_table_format
