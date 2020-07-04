@@ -52,7 +52,8 @@ def main():
                         help="segmentation type: stack, exposure, mer")
     parser.add_argument('--source_dir', default='.', type=str,
                         help="Directory in which segm-images are contained (default '.').")
-    
+    parser.add_argument('--datadir', default='data', type=str,
+                        help='subdir containing fits image')
     # Output arguments
     parser.add_argument('--dest_dir', default='.', type=str,
                         help="Directory in which output segm-images are contained (default '.').")
@@ -69,14 +70,14 @@ def main():
     
     # Find old FITS file 
     
-    
-    fits_file_name=find_fits_file(old_xml_file)
+    datadir = args.datadir
+    fits_file_name=find_fits_file(old_xml_file,datadir)
     if args.segm_type=='exposure':
         prod=products.she_exposure_segmentation_map.create_dpd_she_exposure_segmentation_map(fits_file_name)
     elif args.segm_type=='stack':
         prod=products.she_stack_segmentation_map.create_dpd_she_stack_segmentation_map(fits_file_name)
     elif args.segm_type=='mer':
-        prod=products.mer_segmentation_map.create_dpd_she_segmentation_map(fits_file_name)
+        prod=products.mer_segmentation_map.create_dpd_mer_mosaic(fits_file_name)
     else:
         raise Exception("%s is not a valid segm_type, it should be exposure,stack or mer" % args.segm_type)
   
@@ -88,7 +89,7 @@ def main():
     
     return
 
-def find_fits_file(xml_file_name):
+def find_fits_file(xml_file_name,datadir):
     """
     """
     fits_file=None
@@ -99,7 +100,8 @@ def find_fits_file(xml_file_name):
         except:
             fits_file=get_data_filename_from_product(prod, "DataStorage")
     except:
-        file_list=os.listdir(os.path.join(os.path.dirname(xml_file_name),'data'))
+        
+        file_list=os.listdir(os.path.join(os.path.dirname(xml_file_name),datadir))
         
         metric_list=[]
         for file_name in file_list:
