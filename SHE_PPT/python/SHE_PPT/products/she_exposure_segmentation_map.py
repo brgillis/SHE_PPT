@@ -1,4 +1,4 @@
-""" @file exposure_segmentation_product.py
+""" @file she_exposure_segmentation_product.py
 
     Created 26 Oct 2017
 
@@ -90,7 +90,7 @@ def load_she_exposure_segmentation_map(filename, directory=None, **kwargs):
 
 def init():
     """
-        Adds some extra functionality to the DpdSheAstrometry product
+        Adds some extra functionality to the DpdSheExposureReprojectedSegmentationMap product
     """
 
     # binding_class = she_dpd.DpdSheShearValidationStatsProduct # @FIXME
@@ -106,7 +106,7 @@ def init():
 
     binding_class.get_all_filenames = __get_all_filenames
 
-    binding_class.has_files = False
+    binding_class.has_files = True
 
     return
 

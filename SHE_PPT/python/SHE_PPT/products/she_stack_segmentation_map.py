@@ -1,4 +1,4 @@
-""" @file stack_segmentation_product.py
+""" @file she_stack_segmentation_product.py
 
     Created 26 Oct 2017
 
@@ -24,8 +24,8 @@
 
 __updated__ = "2019-08-15"
 
-# import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
+import os
+from astropy.io import fits
 
 
 from ST_DataModelBindings.dpd.she.stackreprojectedsegmentationmap_stub import dpdSheStackReprojectedSegmentationMap
@@ -42,10 +42,55 @@ from SHE_PPT.utility import find_extension
 
 sample_file_name = "SHE_PPT/sample_stack_reprojected_segmentation_map.xml"
 
+# Convenience function to easily load the actual map
+def load_stack_segmentation_map(filename, dir=None, **kwargs):
+    """Directly loads the stack_segmentation_map image from the filename of the data product.
+
+    Parameters
+    ----------
+    filename : str
+        Filename of the stack_segmentation_map data product. If `dir` is None, `filename `must
+        be either fully-qualified or relative to the workspace. If `dir` is
+        supplied, `filename` should be only the local name of the file.
+    dir : str
+        Directory in which `filename` is contained. If not supplied, `filename`
+        and `listfile_filename` (if supplied) will be assumed to be either
+        fully-qualified or relative to the workspace.
+    **kwargs
+        Keyword arguments to pass to fits.open.
+
+    Returns
+    -------
+    stack_segmentation_map_hdu : astropy.fits.PrimaryHDU
+        fits HDU containing the stack_segmentation_map image and its header.
+
+    Raises
+    ------
+    IOError
+        Will raise an IOError if either no such file as `filename` exists or
+        if the filename of the stack_segmentation_map data contained within the product does
+        not exist.
+    """
+
+    init()
+
+    if dir is None:
+        dir = ""
+
+    stack_segmentation_map_product = read_xml_product(
+        xml_filename=os.path.join(dir, filename), allow_pickled=False)
+
+    data_filename = stack_segmentation_map_product.get_data_filename()
+
+    stack_segmentation_map_hdulist = fits.open(data_filename, **kwargs)
+
+    return stack_segmentation_map_hdulist[0]
+
+# Initialisation function, to add methods to an imported XML class
 
 def init():
     """
-        Adds some extra functionality to the DpdSheAstrometry product
+        Adds some extra functionality to the DpdSheStackReqprojectedSegmentationMap product
     """
 
     # binding_class = she_dpd.DpdSheShearValidationStatsProduct # @FIXME
@@ -61,7 +106,7 @@ def init():
 
     binding_class.get_all_filenames = __get_all_filenames
 
-    binding_class.has_files = False
+    binding_class.has_files = True
 
     return
 
