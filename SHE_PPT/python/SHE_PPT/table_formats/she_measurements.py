@@ -109,7 +109,7 @@ class SheMeasurementsFormat(object):
             "G2", dtype=">f4", fits_dtype="E")
         self.g2_err = set_column_properties(self,
             "G2_ERR", dtype=">f4", fits_dtype="E")
-        self.g1g2_cov = set_column_properties(self,
+        self.g1g2_covar = set_column_properties(self,
             "G1G2_COVAR", dtype=">f4", fits_dtype="E")
         self.weight = set_column_properties(self,
             "WEIGHT", dtype=">f4", fits_dtype="E")
