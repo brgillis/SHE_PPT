@@ -1,158 +1,95 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <ns1:DpdSheStackReprojectedSegmentationMap xmlns:ns1="http://euclid.esa.org/schema/dpd/she/stackreprojectedsegmentationmap">
 	<Header>
-		<ProductId>4f346816-0fe7-4cdf-a9fb-0f1359f24700</ProductId>
-		<ProductType>0ZWci</ProductType>
-		<SoftwareName>UFg4g</SoftwareName>
-		<SoftwareRelease>tw7U</SoftwareRelease>
-		<EuclidPipelineSoftwareRelease>XJL</EuclidPipelineSoftwareRelease>
-		<ProdSDC>jcqamznfXHYAHfVan0Q9rwG1reQcAbrGvWvD8MX03DSoQx388KbifVNKz2roNjUA4zgXIOnb6oNbJlhjy206YWZ7VvnuNhxhwQMwsIdBjF2en7IEyxtZSaXTNU</ProdSDC>
-		<DataSetRelease>3R5Hd</DataSetRelease>
-		<Purpose>REPROCESSING</Purpose>
-		<PlanId>EOjvb</PlanId>
-		<PPOId>WfOC9</PPOId>
-		<PipelineDefinitionId>97hoB</PipelineDefinitionId>
-		<PipelineRun>TVFX6</PipelineRun>
-		<ExitStatusCode>xzyeY</ExitStatusCode>
-		<ManualValidationStatus>VALID</ManualValidationStatus>
-		<ExpirationDate>2020-06-04T14:41:46.189Z</ExpirationDate>
+		<ProductId>42d244d2-a174-4247-880f-76b295d02aac</ProductId>
+		<ProductType>dpdSheStackReprojectedSegmentationMap</ProductType>
+		<SoftwareName>NA</SoftwareName>
+		<SoftwareRelease>0.0</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>0.0</EuclidPipelineSoftwareRelease>
+		<ProdSDC>SDC-IT</ProdSDC>
+		<DataSetRelease>NA</DataSetRelease>
+		<Purpose>UNKNOWN</Purpose>
+		<PlanId>b99f04c6-ff23-41d9-8e12-cc5ae124d38b</PlanId>
+		<PPOId>c43f61a1-3e8f-491d-a9cb-d5dcc162265c</PPOId>
+		<PipelineDefinitionId>PipelineDefinitionId</PipelineDefinitionId>
+		<PipelineRun>NA</PipelineRun>
+		<ExitStatusCode>NA</ExitStatusCode>
+		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
+		<ExpirationDate>2020-07-02T12:46:25.795Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>
 		<Published>false</Published>
 		<Curator>SHE</Curator>
-		<CreationDate>2020-06-04T14:41:46.191Z</CreationDate>
+		<CreationDate>2020-07-02T12:46:25.795Z</CreationDate>
 	</Header>
 	<Data>
-		<ExposureTime>
-			<Value>4.0</Value>
-			<Unit>Ohm</Unit>
-		</ExposureTime>
 		<ImgType>
-			<Category>SIMULATION</Category>
-			<FirstType>OTHER</FirstType>
-			<SecondType>OTHER</SecondType>
+			<Category>SCIENCE</Category>
+			<FirstType>STD</FirstType>
+			<SecondType>SKY</SecondType>
 			<ThirdType>WIDE</ThirdType>
-			<Technique>OTHER</Technique>
+			<Technique>IMAGE</Technique>
 		</ImgType>
-		<ImgArea>
-			<Name>9kg1hUU2ipx27yJas0CLOmX7ntbUFmBE99VG88LlIfn9YtRjTGWvWKb85HYryAM81WHWkL4AYZErYNbMYqcYvaj0yATLULP03Vh</Name>
-		</ImgArea>
-		<ImgNumber>-1305098577</ImgNumber>
+		<ImgNumber>1</ImgNumber>
 		<AxisNumber>2</AxisNumber>
-		<AxisLengths>-1 -1</AxisLengths>
-		<DataSize>64</DataSize>
-		<DataLength>-1</DataLength>
-		<ImgStatistics>
-			<Min>-1.0</Min>
-			<Max>-1.0</Max>
-			<Mean>-1.0</Mean>
-			<Stdev>-1.0</Stdev>
-			<Median>-1.0</Median>
-			<MinX>-1</MinX>
-			<MinY>-1</MinY>
-			<MaxX>-1</MaxX>
-			<MaxY>-1</MaxY>
-			<NPix>-1</NPix>
-			<XLower>-1</XLower>
-			<YLower>-1</YLower>
-			<XUpper>-1</XUpper>
-			<YUpper>-1</YUpper>
-		</ImgStatistics>
+		<AxisLengths>0 0</AxisLengths>
+		<DataSize>-32</DataSize>
+		<DataLength>0</DataLength>
 		<WCS>
 			<CTYPE1>
-				<CoordinateType>DEC</CoordinateType>
-				<ProjectionType>ARC</ProjectionType>
+				<CoordinateType>RA</CoordinateType>
+				<ProjectionType>TAN</ProjectionType>
 			</CTYPE1>
 			<CTYPE2>
 				<CoordinateType>DEC</CoordinateType>
-				<ProjectionType>ARC</ProjectionType>
+				<ProjectionType>TAN</ProjectionType>
 			</CTYPE2>
-			<CRVAL1>2.0</CRVAL1>
-			<CRVAL2>9.0</CRVAL2>
-			<CRPIX1>-10.0</CRPIX1>
-			<CRPIX2>9.0</CRPIX2>
-			<CD1_1>-9.0</CD1_1>
-			<CD1_2>8.0</CD1_2>
-			<CD2_1>-3.0</CD2_1>
-			<CD2_2>4.0</CD2_2>
-			<NonLinearCoeffs>
-				<NonLinearTPVAstromCoeffs>
-					<PV1_0>5.0</PV1_0>
-					<PV1_1>-3.0</PV1_1>
-					<PV1_2>3.0</PV1_2>
-					<PV1_3>5.0</PV1_3>
-					<PV1_4>1.0</PV1_4>
-					<PV1_5>-2.0</PV1_5>
-					<PV1_6>-10.0</PV1_6>
-					<PV1_7>7.0</PV1_7>
-					<PV1_8>1.0</PV1_8>
-					<PV1_9>3.0</PV1_9>
-					<PV1_10>-2.0</PV1_10>
-					<PV2_0>4.0</PV2_0>
-					<PV2_1>9.0</PV2_1>
-					<PV2_2>-5.0</PV2_2>
-					<PV2_3>-1.0</PV2_3>
-					<PV2_4>-10.0</PV2_4>
-					<PV2_5>-3.0</PV2_5>
-					<PV2_6>-7.0</PV2_6>
-					<PV2_7>-8.0</PV2_7>
-					<PV2_8>9.0</PV2_8>
-					<PV2_9>2.0</PV2_9>
-					<PV2_10>4.0</PV2_10>
-				</NonLinearTPVAstromCoeffs>
-			</NonLinearCoeffs>
-			<DetectorId>-1</DetectorId>
+			<CRVAL1>0.0</CRVAL1>
+			<CRVAL2>0.0</CRVAL2>
+			<CRPIX1>0.0</CRPIX1>
+			<CRPIX2>0.0</CRPIX2>
+			<CD1_1>1.0</CD1_1>
+			<CD1_2>0.0</CD1_2>
+			<CD2_1>0.0</CD2_1>
+			<CD2_2>1.0</CD2_2>
 		</WCS>
 		<TileList>
-			<TileIndex>-1</TileIndex>
-			<TileProductId>-1</TileProductId>
+			<TileIndex>101</TileIndex>
+			<TileProductId>101</TileProductId>
 		</TileList>
-		<StackProductId>-1</StackProductId>
-		<ObservationId>-1</ObservationId>
+		<StackProductId>101</StackProductId>
+		<ObservationId>101</ObservationId>
 		<ImgSpatialFootprint>
 			<Polygon>
 				<Vertex>
-					<Position coordUnit="arcmin">
-						<C1 unit="um/um">1.0</C1>
-						<C2 unit="MeV">0.0</C2>
+					<Position coordUnit="deg">
+						<C1>0.0</C1>
+						<C2>0.0</C2>
 					</Position>
-					<SmallCircle>
-						<Pole coordUnit="TeV">
-							<C1 unit="count">0.0</C1>
-							<C2 unit="uJy">1.0</C2>
-						</Pole>
-					</SmallCircle>
+				</Vertex>
+				<Vertex>
+					<Position coordUnit="deg">
+						<C1>0.0</C1>
+						<C2>0.0</C2>
+					</Position>
+				</Vertex>
+				<Vertex>
+					<Position coordUnit="deg">
+						<C1>0.0</C1>
+						<C2>0.0</C2>
+					</Position>
+				</Vertex>
+				<Vertex>
+					<Position coordUnit="deg">
+						<C1>0.0</C1>
+						<C2>0.0</C2>
+					</Position>
 				</Vertex>
 			</Polygon>
-			<Circle>
-				<Center coordUnit="Wb">
-					<C1 unit="arcsec">1.0</C1>
-					<C2 unit="km/s/Mpc">1.0</C2>
-				</Center>
-				<Radius unit="JD">1.0</Radius>
-			</Circle>
-			<BBox>
-				<RaCenter unit="cd">0.0</RaCenter>
-				<DecCenter unit="arcmin">1.0</DecCenter>
-				<RaHalfWidth unit="um2">0.0</RaHalfWidth>
-				<DecHalfWidth unit="uarcsec/yr">1.0</DecHalfWidth>
-			</BBox>
 		</ImgSpatialFootprint>
-		<DataStorage format="sim.catalog" version="8.0">
-			<DataContainer filestatus="ARCHIVED_OFFLINE">
+		<DataStorage format="she.stackReprojectedSegmentationMap" version="8.0">
+			<DataContainer filestatus="PROPOSED">
 				<FileName>None</FileName>
 			</DataContainer>
 		</DataStorage>
 	</Data>
-	<QualityFlags>
-		<DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true</DummyFlag>
-		<AuxiliaryFlags flagName="FB08O" flagged="false" maxLimit="-4.0" minLimit="4.0" xpath="wTuso">true</AuxiliaryFlags>
-	</QualityFlags>
-	<Parameters>
-		<Parameter>
-			<Key>4X7hJ</Key>
-			<Description>8OD29</Description>
-			<StringValue>ZflRX</StringValue>
-			<Unit>w5EQ0</Unit>
-		</Parameter>
-	</Parameters>
 </ns1:DpdSheStackReprojectedSegmentationMap>

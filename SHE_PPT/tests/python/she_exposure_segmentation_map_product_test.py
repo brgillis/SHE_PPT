@@ -51,7 +51,7 @@ class TestExposureSegmentationMapProduct(object):
 
         # Save the product in an XML file
         filename = "she_exposure_segmentation_map.xml"
-        write_xml_product(product, filename, workdir=str(tmpdir))
+        write_xml_product(product, filename, workdir=str(tmpdir), allow_pickled=False)
 
         # Read back the XML file
         loaded_product = read_xml_product(filename, workdir=str(tmpdir))
