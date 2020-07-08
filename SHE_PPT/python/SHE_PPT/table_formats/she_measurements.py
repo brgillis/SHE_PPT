@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-03"
+__updated__ = "2020-07-08"
 
 from collections import OrderedDict
 
@@ -127,13 +127,13 @@ class SheMeasurementsFormat(object):
             "WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
 
         self.ra = set_column_properties(self,
-            "UPDATED_RA", is_optional=False, comment="deg")
+            "UPDATED_RA", comment="deg")
         self.ra_err = set_column_properties(self,
-            "UPDATED_RA_ERR", is_optional=False, comment="deg")
+            "UPDATED_RA_ERR", comment="deg")
         self.dec = set_column_properties(self,
-            "UPDATED_DEC", is_optional=True, comment="deg")
+            "UPDATED_DEC", comment="deg")
         self.dec_err = set_column_properties(self,
-            "UPDATED_DEC_ERR", is_optional=True, comment="deg")
+            "UPDATED_DEC_ERR", comment="deg")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())

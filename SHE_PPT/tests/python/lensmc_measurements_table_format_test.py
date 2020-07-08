@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-07"
+__updated__ = "2020-07-08"
 
 import pytest
 
@@ -32,7 +32,7 @@ class TestLensMcMeasurementsTableFormat:
     @classmethod
     def setup_class(cls):
         # Define a list of the table formats we'll be testing
-        cls.table = initialise_lensmc_measurements_table()
+        cls.table = initialise_lensmc_measurements_table(optional_columns=[tf.m1_ical, tf.m2_ical])
 
         return
 
