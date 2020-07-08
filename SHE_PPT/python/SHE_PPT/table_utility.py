@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-03"
+__updated__ = "2020-07-08"
 
 from collections import OrderedDict
 
@@ -334,9 +334,8 @@ def setup_child_table_format(self, child_label, unlabelled_columns=None):
         self.lengths[name] = self.parent_lengths[parent_name]
 
     # Update existing column names inherited from parent
-    for key, val in tuple(zip(self.__dict__.items()))[0]:
-        print(str(val))
-        if val in changed_column_names:
+    for key, val in self.__dict__.items():
+        if isinstance(val, str) and val in changed_column_names:
             setattr(self, key, changed_column_names[val])
 
     self.set_column_properties = set_column_properties
