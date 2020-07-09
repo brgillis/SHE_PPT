@@ -37,6 +37,7 @@ Miscellaneous
 - Cleaned up locations of test files on WebDAV to match standard locations
 - Cleaned up test modules
 - Cleaned up table format code to allow base format functionality and to sort duplicated code into common functions
+- Added test of LensMC measurements table format, to check for any changes to it
 
 Changes from v1.4 to v8.0
 =========================
