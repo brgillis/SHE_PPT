@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-03"
+__updated__ = "2020-07-10"
 
 from collections import OrderedDict
 
@@ -74,17 +74,17 @@ class SheMomentsMlMeasurementsFormat(SheMeasurementsFormat):
         setup_child_table_format(self, child_label, unlabelled_columns=["OBJECT_ID"])
 
         # momentsml specific columns
-        self.momentsml_re = set_column_properties(self, 
+        self.re = set_column_properties(self,
             "SHE_MOMENTSML_RE", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.momentsml_re_err = set_column_properties(self, 
+        self.re_err = set_column_properties(self,
             "SHE_MOMENTSML_RE_ERR", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.momentsml_flux = set_column_properties(self, 
+        self.flux = set_column_properties(self,
             "SHE_MOMENTSML_FLUX", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.momentsml_snr = set_column_properties(self, 
+        self.snr = set_column_properties(self,
             "SHE_MOMENTSML_SNR", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.momentsml_sersic = set_column_properties(self, 
+        self.sersic = set_column_properties(self,
             "SHE_MOMENTSML_SERSIC_INDEX", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.momentsml_nexp = set_column_properties(self, 
+        self.nexp = set_column_properties(self,
             "SHE_MOMENTSML_NEXP", is_optional=True, dtype=">f4", fits_dtype="E")
 
         # A list of columns in the desired order

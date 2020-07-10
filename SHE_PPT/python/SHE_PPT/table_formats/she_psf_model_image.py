@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-01"
+__updated__ = "2020-07-10"
 
 from collections import OrderedDict
 
@@ -57,7 +57,7 @@ class ShePsfModelImageMeta(object):
         self.calibration_product = "CAL_PROD"
         self.calibration_time = "CAL_TIME"
         self.field_product = "FLD_PROD"
-        self.fld_time = "FLD_TIME"
+        self.field_time = "FLD_TIME"
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_version, None),
@@ -88,27 +88,27 @@ class ShePsfModelImageFormat(object):
 
         # Column names and info
 
-        self.ID = set_column_properties(self, 
+        self.ID = set_column_properties(self,
             "OBJECT_ID", dtype=">i8", fits_dtype="K")
 
-        self.template = set_column_properties(self, 
+        self.template = set_column_properties(self,
             "SHE_PSF_SED_TEMPLATE", dtype=">i8", fits_dtype="K")
-        self.bulge_index = set_column_properties(self, 
+        self.bulge_index = set_column_properties(self,
             "SHE_PSF_BULGE_IDX", dtype=">i4", fits_dtype="J")
-        self.disk_index = set_column_properties(self, 
+        self.disk_index = set_column_properties(self,
             "SHE_PSF_DISK_IDX", dtype=">i4", fits_dtype="J")
-        self.image_x = set_column_properties(self, 
+        self.image_x = set_column_properties(self,
             "SHE_PSF_IMAGE_X", dtype=">i2", fits_dtype="I")
-        self.image_y = set_column_properties(self, 
+        self.image_y = set_column_properties(self,
             "SHE_PSF_IMAGE_Y", dtype=">i2", fits_dtype="I")
-        self.x = set_column_properties(self, 
+        self.x = set_column_properties(self,
             "SHE_PSF_X", dtype=">f4", fits_dtype="E")
-        self.y = set_column_properties(self, 
+        self.y = set_column_properties(self,
             "SHE_PSF_Y", dtype=">f4", fits_dtype="E")
 
-        self.calibration_time = set_column_properties(self, 
+        self.calibration_time = set_column_properties(self,
             "SHE_PSF_CALIB_TIME", dtype="str", fits_dtype="A", length=20)
-        self.field_time = set_column_properties(self, 
+        self.field_time = set_column_properties(self,
             "SHE_PSF_FIELD_TIME", dtype="str", fits_dtype="A", length=20)
 
         # A list of columns in the desired order

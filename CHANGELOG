@@ -5,6 +5,8 @@ Changes from v8.1 to v8.2
 
 API Changes
 -----------
+- Fixed table format column variables for KSB, MomentsML, and REGAUSS measurements
+- Fixed field time table format meta variable for PSF_ModelImage table format
 
 Dependency Changes
 ------------------
@@ -14,6 +16,7 @@ Deprecated Features
 
 Bug Fixes
 ---------
+- Fixed column names for ksb/regauss training data
 
 New Features
 ------------
