@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-03"
+__updated__ = "2020-07-10"
 
 from collections import OrderedDict
 
@@ -30,7 +30,7 @@ from SHE_PPT.flags import she_flag_version
 from SHE_PPT.table_utility import setup_table_format, set_column_properties
 
 fits_version = "8.0"
-fits_def = "she.ksbMeasurements"
+fits_def = "she.training"
 
 
 class SheTrainingMeta(object):
@@ -73,13 +73,13 @@ class SheTrainingFormat(object):
 
         self.id = set_column_properties(self, "OBJECT_ID", dtype=">i8", fits_dtype="K",
                                         comment="ID of this object in the galaxy population priors table.")
-        self.e1 = set_column_properties(self, "TRAINING_E1", dtype=">f4", fits_dtype="E",
+        self.e1 = set_column_properties(self, "E1", dtype=">f4", fits_dtype="E",
                                         comment="Mean ellipticity measurement of this object, component 1")
-        self.e2 = set_column_properties(self, "TRAINING_E2", dtype=">f4", fits_dtype="E",
+        self.e2 = set_column_properties(self, "E2", dtype=">f4", fits_dtype="E",
                                         comment="Mean ellipticity measurement of this object, component 2")
-        self.e1_err = set_column_properties(self, "TRAINING_E1_ERR", dtype=">f4", fits_dtype="E",
+        self.e1_err = set_column_properties(self, "E1_ERR", dtype=">f4", fits_dtype="E",
                                         comment="Error on mean ellipticity measurement of this object, component 1")
-        self.e2_err = set_column_properties(self, "TRAINING_E2_ERR", dtype=">f4", fits_dtype="E",
+        self.e2_err = set_column_properties(self, "E2_ERR", dtype=">f4", fits_dtype="E",
                                         comment="Error on mean ellipticity measurement of this object, component 2")
 
         # A list of columns in the desired order
