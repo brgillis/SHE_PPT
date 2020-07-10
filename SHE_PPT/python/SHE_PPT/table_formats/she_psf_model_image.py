@@ -66,7 +66,7 @@ class ShePsfModelImageMeta(object):
                                      (self.calibration_product, None),
                                      (self.calibration_time, None),
                                      (self.field_product, None),
-                                     (self.fld_time, None)
+                                     (self.field_time, None)
                                      ))
 
         # A list of columns in the desired order
@@ -128,7 +128,7 @@ psf_table_format = ShePsfModelImageFormat()
 tf = psf_table_format
 
 
-def make_psf_table_header(calibration_product, calibration_time, field_product, fld_time):
+def make_psf_table_header(calibration_product, calibration_time, field_product, field_time):
     """
         @brief Generate a header for a PSF table.
 
@@ -147,7 +147,7 @@ def make_psf_table_header(calibration_product, calibration_time, field_product, 
     header[tf.m.calibration_product] = calibration_product
     header[tf.m.calibration_time] = calibration_time
     header[tf.m.field_product] = field_product
-    header[tf.m.fld_time] = fld_time
+    header[tf.m.field_time] = field_time
 
     return header
 
@@ -158,7 +158,7 @@ def initialise_psf_table(image=None,
                          calibration_product=None,
                          calibration_time=None,
                          field_product=None,
-                         fld_time=None,
+                         field_time=None,
                          init_columns={}):
     """
         @brief Initialise a PSF table.
@@ -205,7 +205,7 @@ def initialise_psf_table(image=None,
     psf_table.meta = make_psf_table_header(calibration_product=calibration_product,
                                            calibration_time=calibration_time,
                                            field_product=field_product,
-                                           fld_time=fld_time)
+                                           field_time=field_time)
 
     assert(is_in_format(psf_table, tf))
 
