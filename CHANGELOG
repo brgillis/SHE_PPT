@@ -26,6 +26,7 @@ New config features
 
 Miscellaneous
 -------------
+- Fixed optionality of columns for measurements tables
 
 Changes from v8.0 to v8.1
 =========================

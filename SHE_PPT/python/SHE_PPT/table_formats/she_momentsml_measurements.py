@@ -75,17 +75,17 @@ class SheMomentsMlMeasurementsFormat(SheMeasurementsFormat):
 
         # momentsml specific columns
         self.re = set_column_properties(self,
-            "SHE_MOMENTSML_RE", is_optional=True, dtype=">f4", fits_dtype="E")
+            "SHE_MOMENTSML_RE", is_optional=False, dtype=">f4", fits_dtype="E")
         self.re_err = set_column_properties(self,
-            "SHE_MOMENTSML_RE_ERR", is_optional=True, dtype=">f4", fits_dtype="E")
+            "SHE_MOMENTSML_RE_ERR", is_optional=False, dtype=">f4", fits_dtype="E")
         self.flux = set_column_properties(self,
-            "SHE_MOMENTSML_FLUX", is_optional=True, dtype=">f4", fits_dtype="E")
+            "SHE_MOMENTSML_FLUX", is_optional=False, dtype=">f4", fits_dtype="E")
         self.snr = set_column_properties(self,
-            "SHE_MOMENTSML_SNR", is_optional=True, dtype=">f4", fits_dtype="E")
+            "SHE_MOMENTSML_SNR", is_optional=False, dtype=">f4", fits_dtype="E")
         self.sersic = set_column_properties(self,
-            "SHE_MOMENTSML_SERSIC_INDEX", is_optional=True, dtype=">f4", fits_dtype="E")
+            "SHE_MOMENTSML_SERSIC_INDEX", is_optional=False, dtype=">f4", fits_dtype="E")
         self.nexp = set_column_properties(self,
-            "SHE_MOMENTSML_NEXP", is_optional=True, dtype=">f4", fits_dtype="E")
+            "SHE_MOMENTSML_NEXP", is_optional=False, dtype=">f4", fits_dtype="E")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
