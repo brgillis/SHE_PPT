@@ -4,6 +4,15 @@
 
     Functions to get needed information from the MDB.
 """
+import os
+
+from astropy.io import fits
+from scipy.integrate.quadpack import quad
+
+from SHE_PPT.file_io import find_file
+from SHE_PPT.logging import getLogger
+import SHE_PPT.magic_values as mv
+from ST_DM_MDBTools.Mdb import Mdb
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -18,17 +27,14 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
-
 __updated__ = "2020-07-13"
 
-from SHE_PPT.file_io import find_file
-from SHE_PPT.logging import getLogger
-from ST_DM_MDBTools.Mdb import Mdb
-
-_not_inited_exception = RuntimeError(
+_mdb_not_inited_exception = RuntimeError(
     "mdb module must be initialised with MDB xml object before use.")
 
 full_mdb = {}
+gain_dict = {}
+read_noise_dict = {}
 
 default_mdb_file = "WEB/SHE_PPT_8_2/sample_mdb-SC8.xml"
 
@@ -68,7 +74,66 @@ def init(mdb_files=None, path=None):
     full_mdb.clear()
     full_mdb.update(full_dict)
 
+    # Load the gain table
+    gain_filename = get_mdb_value(mdb_keys.vis_gain_coeffs)
+    qualified_gain_filename = find_mdb_data_file(gain_filename, qualified_mdb_files)
+    gain_dict.clear()
+    gain_dict.update(load_quadrant_table(qualified_gain_filename, 'GAIN'))
+
+    # Load the read_noise table
+    read_noise_filename = get_mdb_value(mdb_keys.vis_gain_coeffs)
+    qualified_read_noise_filename = find_mdb_data_file(read_noise_filename, qualified_mdb_files)
+    read_noise_dict.clear()
+    read_noise_dict.update(load_quadrant_table(qualified_read_noise_filename, 'RON_ELE'))
+
     return
+
+
+def find_mdb_data_file(data_filename, qualified_mdb_files):
+
+    if isinstance(qualified_mdb_files, str):
+        qualified_mdb_files = [qualified_mdb_files]
+
+    qualified_data_filename = None
+
+    # Look relative to each MDB file
+    for qualified_mdb_filename in qualified_mdb_files:
+
+        mdb_path = os.path.split(qualified_mdb_filename)[0]
+
+        # Try in the same directory as the MDB file
+        test_qualified_data_filename = os.path.join(mdb_path, data_filename)
+        if os.path.isfile(test_qualified_data_filename):
+            qualified_data_filename = test_qualified_data_filename
+            break
+
+        # Try in the data subdirectory of where the MDB file is
+        test_qualified_data_filename = os.path.join(mdb_path, "data", data_filename)
+        if os.path.isfile(test_qualified_data_filename):
+            qualified_data_filename = test_qualified_data_filename
+            break
+
+    if qualified_data_filename is None:
+        raise RuntimeError("MDB data file " + data_filename + " cannot be found. " +
+                           "Make sure it's in the data subdirectory of where the MDB file is.")
+
+    return qualified_data_filename
+
+
+def load_quadrant_table(qualified_data_filename, colname):
+
+    f = fits.open(qualified_data_filename, mode='readonly')
+
+    quadrant_dict = {}
+
+    for hdu in f:
+        # Check if this is the zeroeth hdu, which doesn't have a table in it
+        if not mv.extname_label in hdu.header:
+            continue
+
+        quadrant_dict[hdu.header[mv.extname_label]] = hdu.data[colname][0]
+
+    return quadrant_dict
 
 
 def reset():
@@ -101,7 +166,7 @@ def get_mdb_value(key):
     """
 
     if len(full_mdb) == 0:
-        raise _not_inited_exception
+        raise _mdb_not_inited_exception
 
     return full_mdb[key]['Value']
 
@@ -121,7 +186,7 @@ def get_mdb_description(key):
     """
 
     if len(full_mdb) == 0:
-        raise _not_inited_exception
+        raise _mdb_not_inited_exception
 
     return full_mdb[key]['Description']
 
@@ -141,7 +206,7 @@ def get_mdb_source(key):
     """
 
     if len(full_mdb) == 0:
-        raise _not_inited_exception
+        raise _mdb_not_inited_exception
 
     return full_mdb[key]['Source']
 
@@ -161,7 +226,7 @@ def get_mdb_release(key):
     """
 
     if len(full_mdb) == 0:
-        raise _not_inited_exception
+        raise _mdb_not_inited_exception
 
     return full_mdb[key]['Release']
 
@@ -181,7 +246,7 @@ def get_mdb_expression(key):
     """
 
     if len(full_mdb) == 0:
-        raise _not_inited_exception
+        raise _mdb_not_inited_exception
 
     return full_mdb[key]['Expression']
 
@@ -201,7 +266,7 @@ def get_mdb_unit(key):
     """
 
     if len(full_mdb) == 0:
-        raise _not_inited_exception
+        raise _mdb_not_inited_exception
 
     return full_mdb[key]['unit']
 
