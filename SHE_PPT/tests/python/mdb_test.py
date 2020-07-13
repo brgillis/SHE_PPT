@@ -45,6 +45,11 @@ class TestMDB:
         cls.filename = cls.sync.absolutePath("SHE_PPT_8_2/sample_mdb-SC8.xml")
 
         cls.test_key = "SpaceSegment.Instrument.VIS.VISDetectorPixelLongDimensionFormat"
+        cls.test_detector = "1-2"
+        cls.test_quadrant = "E"
+
+        cls.ex_gain = 3.1
+        cls.ex_read_noise = 3.1307833277073978
 
         return
 
@@ -112,3 +117,19 @@ class TestMDB:
                                "MDB dictionary. Check that it and the MDB are up-to-date.")
 
         return
+
+    def test_get_gain(self):
+
+        mdb.init(self.filename)
+
+        gain = mdb.get_gain(detector=self.test_detector, quadrant=self.test_quadrant)
+
+        assert np.isclose(gain, self.ex_gain)
+
+    def test_get_read_noise(self):
+
+        mdb.init(self.filename)
+
+        read_noise = mdb.get_read_noise(detector=self.test_detector, quadrant=self.test_quadrant)
+
+        assert np.isclose(read_noise, self.ex_read_noise)

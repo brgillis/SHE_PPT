@@ -5,6 +5,7 @@
     Functions to get needed information from the MDB.
 """
 import os
+import re
 
 from astropy.io import fits
 from scipy.integrate.quadpack import quad
@@ -12,6 +13,7 @@ from scipy.integrate.quadpack import quad
 from SHE_PPT.file_io import find_file
 from SHE_PPT.logging import getLogger
 import SHE_PPT.magic_values as mv
+from SHE_PPT.utility import run_only_once
 from ST_DM_MDBTools.Mdb import Mdb
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -38,6 +40,8 @@ read_noise_dict = {}
 
 default_mdb_file = "WEB/SHE_PPT_8_2/sample_mdb-SC8.xml"
 
+logger = getLogger(__name__)
+
 
 def init(mdb_files=None, path=None):
     """Initialises module by loading MDB data from file(s).
@@ -52,8 +56,6 @@ def init(mdb_files=None, path=None):
     None
 
     """
-
-    logger = getLogger(__name__)
 
     # Resolve the filename (or list of files) to find their qualified paths
     if isinstance(mdb_files, str):
@@ -76,22 +78,22 @@ def init(mdb_files=None, path=None):
 
     # Load the gain table
     gain_filenames = get_mdb_value(mdb_keys.vis_gain_coeffs)
-    qualified_gain_filenames = find_mdb_data_file(gain_filenames, qualified_mdb_files)
+    qualified_gain_filenames = _find_mdb_data_file(gain_filenames, qualified_mdb_files)
     gain_dict.clear()
     for qualified_gain_filename in qualified_gain_filenames:
-        gain_dict.update(load_quadrant_table(qualified_gain_filename, 'GAIN'))
+        gain_dict.update(_load_quadrant_table(qualified_gain_filename, 'GAIN'))
 
     # Load the read_noise table
     read_noise_filenames = get_mdb_value(mdb_keys.vis_readout_noise_table)
-    qualified_read_noise_filenames = find_mdb_data_file(read_noise_filenames, qualified_mdb_files)
+    qualified_read_noise_filenames = _find_mdb_data_file(read_noise_filenames, qualified_mdb_files)
     read_noise_dict.clear()
     for qualified_read_noise_filename in qualified_read_noise_filenames:
-        read_noise_dict.update(load_quadrant_table(qualified_read_noise_filename, 'RON_ELE'))
+        read_noise_dict.update(_load_quadrant_table(qualified_read_noise_filename, 'RON_ELE'))
 
     return
 
 
-def find_mdb_data_file(data_filenames, qualified_mdb_files):
+def _find_mdb_data_file(data_filenames, qualified_mdb_files):
 
     if isinstance(qualified_mdb_files, str):
         qualified_mdb_files = [qualified_mdb_files]
@@ -128,7 +130,7 @@ def find_mdb_data_file(data_filenames, qualified_mdb_files):
     return qualified_data_filenames
 
 
-def load_quadrant_table(qualified_data_filename, colname):
+def _load_quadrant_table(qualified_data_filename, colname):
 
     f = fits.open(qualified_data_filename, mode='readonly')
 
@@ -142,6 +144,62 @@ def load_quadrant_table(qualified_data_filename, colname):
         quadrant_dict[hdu.header[mv.extname_label]] = hdu.data[colname][0]
 
     return quadrant_dict
+
+
+def get_gain(detector=None, quadrant=None):
+    return _get_quadrant_data(gain_dict, detector, quadrant)
+
+
+def get_read_noise(detector=None, quadrant=None):
+    return _get_quadrant_data(read_noise_dict, detector, quadrant)
+
+
+@run_only_once
+def warn_missing_detector():
+    logger.warning("No detector value supplied to get_gain or get_read_noise - average value will be used instead.")
+
+
+@run_only_once
+def warn_missing_quadrant():
+    logger.warning("No quadrant value supplied to get_gain or get_read_noise - average value will be used instead.")
+
+
+def _get_quadrant_data(dict, detector=None, quadrant=None):
+
+    # If we have both the detector and quadrant, get the value for that quadrant
+    if detector is not None and quadrant is not None:
+        return dict[detector + "." + quadrant]
+
+    # We're missing some info, so warn and average the possibly-matching data
+    if detector is None:
+        warn_missing_detector()
+        det_regex = r"[1-6]\-[1-6]"
+    else:
+        det_regex = detector.replace("-", r"\-")
+
+    if quadrant is None:
+        warn_missing_quadrant()
+        quad_regex = "[E-H]"
+    else:
+        quad_regex = quadrant
+
+    regex = det_regex + "." + quad_regex
+
+    sum = 0
+    count = 0
+
+    for key in dict.keys():
+        if re.match(regex, key) is None:
+            continue
+        sum += dict[key]
+        count += 1
+
+    if count == 0:
+        raise RuntimeError("No matching detectors and/or quadrants found for input: detector = " + str(detector) +
+                           ", quadrant = " + str(quadrant) + ".")
+
+    # Return the average
+    return sum / count
 
 
 def reset():
