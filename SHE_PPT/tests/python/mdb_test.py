@@ -42,7 +42,7 @@ class TestMDB:
 
         cls.sync = DataSync("testdata/sync.conf", "testdata/test_mdb.txt")
         cls.sync.download()
-        cls.filename = cls.sync.absolutePath("SHE_PPT_8_2/sample_mdb-SC7.xml")
+        cls.filename = cls.sync.absolutePath("SHE_PPT_8_2/sample_mdb-SC8.xml")
 
         cls.test_key = "SpaceSegment.Instrument.VIS.VISDetectorPixelLongDimensionFormat"
 
@@ -68,7 +68,6 @@ class TestMDB:
 
         mdb.init(self.filename)
         assert mdb.get_mdb_value(self.test_key) == ex_value
-        import pdb; pdb.set_trace()
         assert mdb.get_mdb_description(self.test_key) == ex_description
         assert mdb.get_mdb_source(self.test_key) == ex_source
         assert mdb.get_mdb_release(self.test_key) == ex_release

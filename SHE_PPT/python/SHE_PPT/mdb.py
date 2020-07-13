@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-30"
+__updated__ = "2020-07-13"
 
 from SHE_PPT.file_io import find_file
 from SHE_PPT.logging import getLogger
@@ -30,7 +30,7 @@ _not_inited_exception = RuntimeError(
 
 full_mdb = {}
 
-default_mdb_file = "WEB/SHE_PPT_8_2/sample_mdb-SC7.xml"
+default_mdb_file = "WEB/SHE_PPT_8_2/sample_mdb-SC8.xml"
 
 
 def init(mdb_files=None, path=None):
@@ -273,8 +273,8 @@ class MDBKeys(object):
         self.vis_exposure_time_knowledge_error = "SpaceSegment.Instrument.VIS.VISExposureTimeKnowledgeError"
         self.vis_focal_plane_assembly_long_dimension_max_image = "SpaceSegment.Instrument.VIS.VISFocalPlaneAssemblyLongDimensionMaxImage"
         self.vis_focal_plane_assembly_short_dimension_max_image = "SpaceSegment.Instrument.VIS.VISFocalPlaneAssemblyShortDimensionMaxImage"
-        self.vis_gain = "SpaceSegment.Instrument.VIS.VISGain"
-        self.vis_readout_noise = "SpaceSegment.Instrument.VIS.VISReadoutNoise"
+        self.vis_gain_coeffs = "SpaceSegment.Instrument.VIS.GainCoeffs"
+        self.vis_readout_noise_table = "SpaceSegment.Instrument.VIS.ReadoutNoiseTable"
         self.vis_distortion_maps = "SpaceSegment.Instrument.VIS.VISDistortionMaps"
         self.cti_parallel_acs_mode = "SpaceSegment.Instrument.VIS.CTIParallelAcsMode"
         self.cti_parallel_clocking_mode = "SpaceSegment.Instrument.VIS.CTIParallelClockingMode"
@@ -315,11 +315,8 @@ class MDBKeys(object):
         self.ghost_model_shift_x = "SpaceSegment.Instrument.VIS.GhostModelShiftX"
         self.ghost_model_shift_y = "SpaceSegment.Instrument.VIS.GhostModelShiftY"
         self.ghost_model_star_brightness = "SpaceSegment.Instrument.VIS.GhostModelStarBrightness"
-        self.mean_detector_quantum_efficiency_cbenominal_eol = "SpaceSegment.Instrument.VIS.MeanDetectorQuantumEfficiencyCBENominalEOL"
-        self.nl_p1 = "SpaceSegment.Instrument.VIS.NL_P1"
-        self.nl_p2 = "SpaceSegment.Instrument.VIS.NL_P2"
-        self.nl_p3 = "SpaceSegment.Instrument.VIS.NL_P3"
-        self.nlfwc = "SpaceSegment.Instrument.VIS.NLFWC"
+        self.mean_detector_quantum_efficiency_cbenominal_bol = "SpaceSegment.Instrument.VIS.MeanDetectorQuantumEfficiencyNominalBOL"
+        self.mean_detector_quantum_efficiency_cbenominal_eol = "SpaceSegment.Instrument.VIS.MeanDetectorQuantumEfficiencyNominalEOL"
         self.ccd_full_well_capacity_eol = "SpaceSegment.Instrument.VIS.CCDFullWellCapacityEOL"
         self.distortion_model = "SpaceSegment.Instrument.VIS.DistortionModel"
         self.vis_optics_aocspixel_detector_psf = "SpaceSegment.Instrument.VIS.VISOpticsAOCSPixelDetectorPSF"
