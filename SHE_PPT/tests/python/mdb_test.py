@@ -20,6 +20,7 @@
 
 __updated__ = "2020-07-13"
 
+import logging
 import os
 
 from astropy.table import Table
@@ -50,6 +51,9 @@ class TestMDB:
 
         cls.ex_gain = 3.1
         cls.ex_read_noise = 3.1307833277073978
+        cls.ex_read_noise_no_det = 3.3223757053329757
+        cls.ex_read_noise_no_quad = 3.1288953698554054
+        cls.ex_read_noise_no_det_no_quad = 3.3209775151504393
 
         return
 
@@ -122,14 +126,47 @@ class TestMDB:
 
         mdb.init(self.filename)
 
-        gain = mdb.get_gain(detector=self.test_detector, quadrant=self.test_quadrant)
+        # Check we can get a single gain successfully
 
+        gain = mdb.get_gain(detector=self.test_detector, quadrant=self.test_quadrant)
         assert np.isclose(gain, self.ex_gain)
+
+        # Check that averaging works successfully
+
+        # Disable warnings, since they're expected here
+        logging.disable(logging.WARNING)
+
+        gain = mdb.get_gain(quadrant=self.test_quadrant)
+        assert np.isclose(gain, self.ex_gain)
+
+        gain = mdb.get_gain(detector=self.test_detector)
+        assert np.isclose(gain, self.ex_gain)
+
+        # And a repeated issue shouldn't warn
+        gain = mdb.get_gain()
+        assert np.isclose(gain, self.ex_gain)
+
+        logging.disable(logging.NOTSET)
 
     def test_get_read_noise(self):
 
         mdb.init(self.filename)
 
         read_noise = mdb.get_read_noise(detector=self.test_detector, quadrant=self.test_quadrant)
-
         assert np.isclose(read_noise, self.ex_read_noise)
+
+        # Check that averaging works successfully
+
+        # Disable warnings, since they're expected here
+        logging.disable(logging.WARNING)
+
+        read_noise = mdb.get_read_noise(quadrant=self.test_quadrant)
+        assert np.isclose(read_noise, self.ex_read_noise_no_det)
+
+        read_noise = mdb.get_read_noise(detector=self.test_detector)
+        assert np.isclose(read_noise, self.ex_read_noise_no_quad)
+
+        read_noise = mdb.get_read_noise()
+        assert np.isclose(read_noise, self.ex_read_noise_no_det_no_quad)
+
+        logging.disable(logging.NOTSET)
