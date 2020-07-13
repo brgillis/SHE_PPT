@@ -7,6 +7,7 @@ API Changes
 -----------
 - Fixed table format column variables for KSB, MomentsML, and REGAUSS measurements
 - Fixed field time table format meta variable for PSF_ModelImage table format
+- Added interface to SHE_PPT.mdb to get gain and read noise values for a given quadrant of an exposure
 
 Dependency Changes
 ------------------
@@ -27,6 +28,7 @@ New config features
 Miscellaneous
 -------------
 - Fixed optionality of columns for measurements tables
+- Moved test data to PF-SHE/SHE_PPT_8_2 on WebDAV
 
 Changes from v8.0 to v8.1
 =========================
