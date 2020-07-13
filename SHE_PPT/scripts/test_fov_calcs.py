@@ -18,7 +18,7 @@ from SHE_PPT import telescope_coords as tc
 from SHE_PPT.file_io import find_file
 import numpy as np
 
-mdb_filename = "WEB/SHE_CTE_8_1/sample_mdb.xml"
+mdb_filename = "WEB/SHE_PPT_8_2/sample_mdb-SC7.xml"
 qualified_mdb_filename = find_file(mdb_filename)
 
 for (det_specs, instrument) in ((tc.vis_det_specs, "VIS"), (tc.nisp_det_specs, "NISP")):
