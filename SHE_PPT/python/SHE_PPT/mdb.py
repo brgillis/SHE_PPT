@@ -75,49 +75,57 @@ def init(mdb_files=None, path=None):
     full_mdb.update(full_dict)
 
     # Load the gain table
-    gain_filename = get_mdb_value(mdb_keys.vis_gain_coeffs)
-    qualified_gain_filename = find_mdb_data_file(gain_filename, qualified_mdb_files)
+    gain_filenames = get_mdb_value(mdb_keys.vis_gain_coeffs)
+    qualified_gain_filenames = find_mdb_data_file(gain_filenames, qualified_mdb_files)
     gain_dict.clear()
-    gain_dict.update(load_quadrant_table(qualified_gain_filename, 'GAIN'))
+    for qualified_gain_filename in qualified_gain_filenames:
+        gain_dict.update(load_quadrant_table(qualified_gain_filename, 'GAIN'))
 
     # Load the read_noise table
-    read_noise_filename = get_mdb_value(mdb_keys.vis_gain_coeffs)
-    qualified_read_noise_filename = find_mdb_data_file(read_noise_filename, qualified_mdb_files)
+    read_noise_filenames = get_mdb_value(mdb_keys.vis_readout_noise_table)
+    qualified_read_noise_filenames = find_mdb_data_file(read_noise_filenames, qualified_mdb_files)
     read_noise_dict.clear()
-    read_noise_dict.update(load_quadrant_table(qualified_read_noise_filename, 'RON_ELE'))
+    for qualified_read_noise_filename in qualified_read_noise_filenames:
+        read_noise_dict.update(load_quadrant_table(qualified_read_noise_filename, 'RON_ELE'))
 
     return
 
 
-def find_mdb_data_file(data_filename, qualified_mdb_files):
+def find_mdb_data_file(data_filenames, qualified_mdb_files):
 
     if isinstance(qualified_mdb_files, str):
         qualified_mdb_files = [qualified_mdb_files]
 
-    qualified_data_filename = None
+    qualified_data_filenames = []
 
-    # Look relative to each MDB file
-    for qualified_mdb_filename in qualified_mdb_files:
+    for data_filename in data_filenames:
 
-        mdb_path = os.path.split(qualified_mdb_filename)[0]
+        qualified_data_filename = None
 
-        # Try in the same directory as the MDB file
-        test_qualified_data_filename = os.path.join(mdb_path, data_filename)
-        if os.path.isfile(test_qualified_data_filename):
-            qualified_data_filename = test_qualified_data_filename
-            break
+        # Look relative to each MDB file
+        for qualified_mdb_filename in qualified_mdb_files:
 
-        # Try in the data subdirectory of where the MDB file is
-        test_qualified_data_filename = os.path.join(mdb_path, "data", data_filename)
-        if os.path.isfile(test_qualified_data_filename):
-            qualified_data_filename = test_qualified_data_filename
-            break
+            mdb_path = os.path.split(qualified_mdb_filename)[0]
 
-    if qualified_data_filename is None:
-        raise RuntimeError("MDB data file " + data_filename + " cannot be found. " +
-                           "Make sure it's in the data subdirectory of where the MDB file is.")
+            # Try in the same directory as the MDB file
+            test_qualified_data_filename = os.path.join(mdb_path, data_filename)
+            if os.path.isfile(test_qualified_data_filename):
+                qualified_data_filename = test_qualified_data_filename
+                break
 
-    return qualified_data_filename
+            # Try in the data subdirectory of where the MDB file is
+            test_qualified_data_filename = os.path.join(mdb_path, "data", data_filename)
+            if os.path.isfile(test_qualified_data_filename):
+                qualified_data_filename = test_qualified_data_filename
+                break
+
+        if qualified_data_filename is None:
+            raise RuntimeError("MDB data file " + data_filename + " cannot be found. " +
+                               "Make sure it's in the data subdirectory of where the MDB file is.")
+
+        qualified_data_filenames.append(qualified_data_filename)
+
+    return qualified_data_filenames
 
 
 def load_quadrant_table(qualified_data_filename, colname):
