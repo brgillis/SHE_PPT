@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-10"
+__updated__ = "2020-07-13"
 
 import os
 
@@ -60,7 +60,7 @@ class TestMDB:
         """
 
         ex_value = 4136
-        ex_description = 'This is the minimum number of pixels in the longest dimension of the VIS focal plane. Due to the injection line inserted in the long \n                direction of the CCD format, the active array is split in 2 equal active arrays, with 4 inactive pixels in the middle for injection line.'
+        ex_description = 'This is the minimum number of pixels in the longest dimension of the VIS focal plane. Due to the injection line inserted in the long\n                direction of the CCD format, the active array is split in 2 equal active arrays, with 4 inactive pixels in the middle for injection line.'
         ex_source = 'Input by J.A. As required. Not validated, for test in the MDB. EUCL-EST-PS-7-001.'
         ex_release = '0.2'
         ex_expression = None
@@ -68,6 +68,7 @@ class TestMDB:
 
         mdb.init(self.filename)
         assert mdb.get_mdb_value(self.test_key) == ex_value
+        import pdb; pdb.set_trace()
         assert mdb.get_mdb_description(self.test_key) == ex_description
         assert mdb.get_mdb_source(self.test_key) == ex_source
         assert mdb.get_mdb_release(self.test_key) == ex_release
