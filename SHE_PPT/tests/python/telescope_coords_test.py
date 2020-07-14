@@ -27,7 +27,6 @@ import pytest
 
 from ElementsServices.DataSync import DataSync
 from SHE_PPT import telescope_coords
-from SHE_PPT.file_io import find_aux_file
 import numpy as np
 
 
@@ -38,9 +37,10 @@ class TestTelescopeCoords:
     @classmethod
     def setup_class(cls):
 
-        cls.sync = DataSync("testdata/sync.conf", "testdata/test_mdb.txt")
-        cls.sync.download()
-        cls.mdb_filename = cls.sync.absolutePath("SHE_PPT_8_2/sample_mdb-SC8.xml")
+        sync = DataSync("testdata/sync.conf", "testdata/test_telescope_coords.txt")
+        sync.download()
+        cls.mdb_filename = sync.absolutePath("SHE_PPT_8_2/sample_mdb-SC8.xml")
+        cls.test_data_filename = sync.absolutePath("SHE_PPT_8_2/testFovToFPA_noOffset.dat")
 
         return
 
@@ -213,9 +213,8 @@ class TestTelescopeCoords:
         telescope_coords.load_vis_detector_specs(mdb_files=self.mdb_filename)
 
         # Read in coords from file
-        elvis_sim_fov_fpa_filename = find_aux_file('SHE_PPT/testFovToFPA_noOffset.dat')
         # fov_x,fov_y,fpa_x,fpa_y
-        lines = open(elvis_sim_fov_fpa_filename).readlines()
+        lines = open(self.test_data_filename).readlines()
         fov_to_fpa_data = np.array([[float(pt)
             for pt in line.strip().split(',')]
             for line in lines if not line.startswith('#')])
