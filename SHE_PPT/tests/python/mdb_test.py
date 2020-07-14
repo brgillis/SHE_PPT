@@ -18,8 +18,9 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-13"
+__updated__ = "2020-07-14"
 
+import logging
 import os
 
 from astropy.table import Table
@@ -45,11 +46,21 @@ class TestMDB:
         cls.filename = cls.sync.absolutePath("SHE_PPT_8_2/sample_mdb-SC8.xml")
 
         cls.test_key = "SpaceSegment.Instrument.VIS.VISDetectorPixelLongDimensionFormat"
+        cls.test_detector = "1-2"
+        cls.test_quadrant = "E"
+
+        cls.ex_gain = 3.1
+        cls.ex_read_noise = 3.1307833277073978
+        cls.ex_read_noise_no_det = 3.3223757053329757
+        cls.ex_read_noise_no_quad = 3.1288953698554054
+        cls.ex_read_noise_no_det_no_quad = 3.3209775151504393
 
         return
 
     @classmethod
     def teardown_class(cls):
+
+        logging.disable(logging.NOTSET)
 
         mdb.reset()
 
@@ -110,5 +121,74 @@ class TestMDB:
             except KeyError as e:
                 raise KeyError("Key \"" + key + "\" from mdb_keys attribute \"" + key_name + "\" not found in " +
                                "MDB dictionary. Check that it and the MDB are up-to-date.")
+
+        return
+
+    def test_get_gain(self):
+
+        mdb.init(self.filename)
+
+        # Check we can get a single gain successfully
+
+        gain = mdb.get_gain(detector=self.test_detector, quadrant=self.test_quadrant)
+        assert np.isclose(gain, self.ex_gain)
+
+        # Check that averaging works successfully
+
+        # Disable warnings, since they're expected here
+        logging.disable(logging.WARNING)
+
+        gain = mdb.get_gain(quadrant=self.test_quadrant)
+        assert np.isclose(gain, self.ex_gain)
+
+        gain = mdb.get_gain(detector=self.test_detector)
+        assert np.isclose(gain, self.ex_gain)
+
+        gain = mdb.get_gain()
+        assert np.isclose(gain, self.ex_gain)
+
+        # Repeat the average tests to make sure they work with cached results
+
+        gain = mdb.get_gain(quadrant=self.test_quadrant)
+        assert np.isclose(gain, self.ex_gain)
+
+        gain = mdb.get_gain(detector=self.test_detector)
+        assert np.isclose(gain, self.ex_gain)
+
+        gain = mdb.get_gain()
+        assert np.isclose(gain, self.ex_gain)
+
+        return
+
+    def test_get_read_noise(self):
+
+        mdb.init(self.filename)
+
+        read_noise = mdb.get_read_noise(detector=self.test_detector, quadrant=self.test_quadrant)
+        assert np.isclose(read_noise, self.ex_read_noise)
+
+        # Check that averaging works successfully
+
+        # Disable warnings, since they're expected here
+        logging.disable(logging.WARNING)
+
+        read_noise = mdb.get_read_noise(quadrant=self.test_quadrant)
+        assert np.isclose(read_noise, self.ex_read_noise_no_det)
+
+        read_noise = mdb.get_read_noise(detector=self.test_detector)
+        assert np.isclose(read_noise, self.ex_read_noise_no_quad)
+
+        read_noise = mdb.get_read_noise()
+        assert np.isclose(read_noise, self.ex_read_noise_no_det_no_quad)
+
+        # Repeat the average tests to make sure they work with cached results
+        read_noise = mdb.get_read_noise(quadrant=self.test_quadrant)
+        assert np.isclose(read_noise, self.ex_read_noise_no_det)
+
+        read_noise = mdb.get_read_noise(detector=self.test_detector)
+        assert np.isclose(read_noise, self.ex_read_noise_no_quad)
+
+        read_noise = mdb.get_read_noise()
+        assert np.isclose(read_noise, self.ex_read_noise_no_det_no_quad)
 
         return

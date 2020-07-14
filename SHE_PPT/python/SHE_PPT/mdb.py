@@ -4,6 +4,17 @@
 
     Functions to get needed information from the MDB.
 """
+import os
+import re
+
+from astropy.io import fits
+from scipy.integrate.quadpack import quad
+
+from SHE_PPT.file_io import find_file
+from SHE_PPT.logging import getLogger
+import SHE_PPT.magic_values as mv
+from SHE_PPT.utility import run_only_once
+from ST_DM_MDBTools.Mdb import Mdb
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -18,19 +29,21 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
+__updated__ = "2020-07-14"
 
-__updated__ = "2020-07-13"
-
-from SHE_PPT.file_io import find_file
-from SHE_PPT.logging import getLogger
-from ST_DM_MDBTools.Mdb import Mdb
-
-_not_inited_exception = RuntimeError(
+_mdb_not_inited_exception = RuntimeError(
     "mdb module must be initialised with MDB xml object before use.")
 
 full_mdb = {}
 
+_gain_dict = {}
+_gain_ave_dict = {}
+_read_noise_dict = {}
+_read_noise_ave_dict = {}
+
 default_mdb_file = "WEB/SHE_PPT_8_2/sample_mdb-SC8.xml"
+
+logger = getLogger(__name__)
 
 
 def init(mdb_files=None, path=None):
@@ -46,8 +59,6 @@ def init(mdb_files=None, path=None):
     None
 
     """
-
-    logger = getLogger(__name__)
 
     # Resolve the filename (or list of files) to find their qualified paths
     if isinstance(mdb_files, str):
@@ -68,7 +79,137 @@ def init(mdb_files=None, path=None):
     full_mdb.clear()
     full_mdb.update(full_dict)
 
+    # Load the gain table
+    gain_filenames = get_mdb_value(mdb_keys.vis_gain_coeffs)
+    qualified_gain_filenames = _find_mdb_data_file(gain_filenames, qualified_mdb_files)
+    _gain_dict.clear()
+    for qualified_gain_filename in qualified_gain_filenames:
+        _gain_dict.update(_load_quadrant_table(qualified_gain_filename, 'GAIN'))
+
+    # Load the read_noise table
+    read_noise_filenames = get_mdb_value(mdb_keys.vis_readout_noise_table)
+    qualified_read_noise_filenames = _find_mdb_data_file(read_noise_filenames, qualified_mdb_files)
+    _read_noise_dict.clear()
+    for qualified_read_noise_filename in qualified_read_noise_filenames:
+        _read_noise_dict.update(_load_quadrant_table(qualified_read_noise_filename, 'RON_ELE'))
+
     return
+
+
+def _find_mdb_data_file(data_filenames, qualified_mdb_files):
+
+    if isinstance(qualified_mdb_files, str):
+        qualified_mdb_files = [qualified_mdb_files]
+
+    qualified_data_filenames = []
+
+    for data_filename in data_filenames:
+
+        qualified_data_filename = None
+
+        # Look relative to each MDB file
+        for qualified_mdb_filename in qualified_mdb_files:
+
+            mdb_path = os.path.split(qualified_mdb_filename)[0]
+
+            # Try in the same directory as the MDB file
+            test_qualified_data_filename = os.path.join(mdb_path, data_filename)
+            if os.path.isfile(test_qualified_data_filename):
+                qualified_data_filename = test_qualified_data_filename
+                break
+
+            # Try in the data subdirectory of where the MDB file is
+            test_qualified_data_filename = os.path.join(mdb_path, "data", data_filename)
+            if os.path.isfile(test_qualified_data_filename):
+                qualified_data_filename = test_qualified_data_filename
+                break
+
+        if qualified_data_filename is None:
+            raise RuntimeError("MDB data file " + data_filename + " cannot be found. " +
+                               "Make sure it's in the data subdirectory of where the MDB file is.")
+
+        qualified_data_filenames.append(qualified_data_filename)
+
+    return qualified_data_filenames
+
+
+def _load_quadrant_table(qualified_data_filename, colname):
+
+    f = fits.open(qualified_data_filename, mode='readonly')
+
+    quadrant_dict = {}
+
+    for hdu in f:
+        # Check if this is the zeroeth hdu, which doesn't have a table in it
+        if not mv.extname_label in hdu.header:
+            continue
+
+        quadrant_dict[hdu.header[mv.extname_label]] = hdu.data[colname][0]
+
+    f.close()
+
+    return quadrant_dict
+
+
+def get_gain(detector=None, quadrant=None):
+    return _get_quadrant_data(_gain_dict, _gain_ave_dict, detector, quadrant)
+
+
+def get_read_noise(detector=None, quadrant=None):
+    return _get_quadrant_data(_read_noise_dict, _read_noise_ave_dict, detector, quadrant)
+
+
+@run_only_once
+def warn_missing_detector():
+    logger.warning("No detector value supplied to get_gain or get_read_noise - average value will be used instead.")
+
+
+@run_only_once
+def warn_missing_quadrant():
+    logger.warning("No quadrant value supplied to get_gain or get_read_noise - average value will be used instead.")
+
+
+def _get_quadrant_data(dict, ave_dict, detector=None, quadrant=None):
+
+    # If we have both the detector and quadrant, get the value for that quadrant
+    if detector is not None and quadrant is not None:
+        return dict[detector + "." + quadrant]
+
+    # We're missing some info, so warn and average the possibly-matching data
+    if detector is None:
+        warn_missing_detector()
+        det_regex = r"[1-6]\-[1-6]"
+    else:
+        det_regex = detector.replace("-", r"\-")
+
+    if quadrant is None:
+        warn_missing_quadrant()
+        quad_regex = "[E-H]"
+    else:
+        quad_regex = quadrant
+
+    regex = det_regex + "." + quad_regex
+
+    if regex in ave_dict:
+        return ave_dict[regex]
+
+    sum = 0
+    count = 0
+
+    for key in dict.keys():
+        if re.match(regex, key) is None:
+            continue
+        sum += dict[key]
+        count += 1
+
+    if count == 0:
+        raise RuntimeError("No matching detectors and/or quadrants found for input: detector = " + str(detector) +
+                           ", quadrant = " + str(quadrant) + ".")
+
+    # Save and return the average
+    average = sum / count
+    ave_dict[regex] = average
+    return average
 
 
 def reset():
@@ -101,7 +242,7 @@ def get_mdb_value(key):
     """
 
     if len(full_mdb) == 0:
-        raise _not_inited_exception
+        raise _mdb_not_inited_exception
 
     return full_mdb[key]['Value']
 
@@ -121,7 +262,7 @@ def get_mdb_description(key):
     """
 
     if len(full_mdb) == 0:
-        raise _not_inited_exception
+        raise _mdb_not_inited_exception
 
     return full_mdb[key]['Description']
 
@@ -141,7 +282,7 @@ def get_mdb_source(key):
     """
 
     if len(full_mdb) == 0:
-        raise _not_inited_exception
+        raise _mdb_not_inited_exception
 
     return full_mdb[key]['Source']
 
@@ -161,7 +302,7 @@ def get_mdb_release(key):
     """
 
     if len(full_mdb) == 0:
-        raise _not_inited_exception
+        raise _mdb_not_inited_exception
 
     return full_mdb[key]['Release']
 
@@ -181,7 +322,7 @@ def get_mdb_expression(key):
     """
 
     if len(full_mdb) == 0:
-        raise _not_inited_exception
+        raise _mdb_not_inited_exception
 
     return full_mdb[key]['Expression']
 
@@ -201,7 +342,7 @@ def get_mdb_unit(key):
     """
 
     if len(full_mdb) == 0:
-        raise _not_inited_exception
+        raise _mdb_not_inited_exception
 
     return full_mdb[key]['unit']
 

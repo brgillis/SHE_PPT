@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-30"
+__updated__ = "2020-07-14"
 
 from   operator  import itemgetter
 import os
@@ -40,7 +40,7 @@ class TestTelescopeCoords:
 
         cls.sync = DataSync("testdata/sync.conf", "testdata/test_mdb.txt")
         cls.sync.download()
-        cls.mdb_filename = cls.sync.absolutePath("SHE_PPT/sample_mdb.xml")
+        cls.mdb_filename = cls.sync.absolutePath("SHE_PPT_8_2/sample_mdb-SC8.xml")
 
         return
 
