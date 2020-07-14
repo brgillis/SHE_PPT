@@ -36,7 +36,7 @@ _mdb_not_inited_exception = RuntimeError(
 
 full_mdb = {}
 
-__gain_dict = {}
+_gain_dict = {}
 _gain_ave_dict = {}
 _read_noise_dict = {}
 _read_noise_ave_dict = {}
@@ -145,6 +145,8 @@ def _load_quadrant_table(qualified_data_filename, colname):
             continue
 
         quadrant_dict[hdu.header[mv.extname_label]] = hdu.data[colname][0]
+
+    f.close()
 
     return quadrant_dict
 

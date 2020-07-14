@@ -158,6 +158,8 @@ class TestMDB:
         gain = mdb.get_gain()
         assert np.isclose(gain, self.ex_gain)
 
+        return
+
     def test_get_read_noise(self):
 
         mdb.init(self.filename)
@@ -188,3 +190,5 @@ class TestMDB:
 
         read_noise = mdb.get_read_noise()
         assert np.isclose(read_noise, self.ex_read_noise_no_det_no_quad)
+
+        return

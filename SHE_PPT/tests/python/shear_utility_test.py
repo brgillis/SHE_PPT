@@ -18,12 +18,13 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-09"
+__updated__ = "2020-07-14"
 
 from astropy.io import fits
 import galsim
 import pytest
 
+from ElementsServices.DataSync import DataSync
 from SHE_PPT import flags
 from SHE_PPT import mdb
 from SHE_PPT.file_io import find_file
@@ -42,7 +43,11 @@ class TestCase:
         """ Set up a default galaxy stamp and PSF stamp for testing.
         """
 
-        mdb.init(mdb_files=find_file("WEB/SHE_PPT/sample_mdb.xml"))
+        sync = DataSync("testdata/sync.conf", "testdata/test_mdb.txt")
+        sync.download()
+        mdb_filename = sync.absolutePath("SHE_PPT_8_2/sample_mdb-SC8.xml")
+
+        mdb.init(mdb_files=mdb_filename)
 
         self.sky_var = 0
         self.bkg_level = 1000
