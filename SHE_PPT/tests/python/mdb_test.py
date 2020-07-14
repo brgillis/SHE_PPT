@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-13"
+__updated__ = "2020-07-14"
 
 import logging
 import os
@@ -59,6 +59,8 @@ class TestMDB:
 
     @classmethod
     def teardown_class(cls):
+
+        logging.disable(logging.NOTSET)
 
         mdb.reset()
 
@@ -142,11 +144,19 @@ class TestMDB:
         gain = mdb.get_gain(detector=self.test_detector)
         assert np.isclose(gain, self.ex_gain)
 
-        # And a repeated issue shouldn't warn
         gain = mdb.get_gain()
         assert np.isclose(gain, self.ex_gain)
 
-        logging.disable(logging.NOTSET)
+        # Repeat the average tests to make sure they work with cached results
+
+        gain = mdb.get_gain(quadrant=self.test_quadrant)
+        assert np.isclose(gain, self.ex_gain)
+
+        gain = mdb.get_gain(detector=self.test_detector)
+        assert np.isclose(gain, self.ex_gain)
+
+        gain = mdb.get_gain()
+        assert np.isclose(gain, self.ex_gain)
 
     def test_get_read_noise(self):
 
@@ -169,4 +179,12 @@ class TestMDB:
         read_noise = mdb.get_read_noise()
         assert np.isclose(read_noise, self.ex_read_noise_no_det_no_quad)
 
-        logging.disable(logging.NOTSET)
+        # Repeat the average tests to make sure they work with cached results
+        read_noise = mdb.get_read_noise(quadrant=self.test_quadrant)
+        assert np.isclose(read_noise, self.ex_read_noise_no_det)
+
+        read_noise = mdb.get_read_noise(detector=self.test_detector)
+        assert np.isclose(read_noise, self.ex_read_noise_no_quad)
+
+        read_noise = mdb.get_read_noise()
+        assert np.isclose(read_noise, self.ex_read_noise_no_det_no_quad)

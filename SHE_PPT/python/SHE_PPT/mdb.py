@@ -29,14 +29,17 @@ from ST_DM_MDBTools.Mdb import Mdb
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
-__updated__ = "2020-07-13"
+__updated__ = "2020-07-14"
 
 _mdb_not_inited_exception = RuntimeError(
     "mdb module must be initialised with MDB xml object before use.")
 
 full_mdb = {}
-gain_dict = {}
-read_noise_dict = {}
+
+__gain_dict = {}
+_gain_ave_dict = {}
+_read_noise_dict = {}
+_read_noise_ave_dict = {}
 
 default_mdb_file = "WEB/SHE_PPT_8_2/sample_mdb-SC8.xml"
 
@@ -79,16 +82,16 @@ def init(mdb_files=None, path=None):
     # Load the gain table
     gain_filenames = get_mdb_value(mdb_keys.vis_gain_coeffs)
     qualified_gain_filenames = _find_mdb_data_file(gain_filenames, qualified_mdb_files)
-    gain_dict.clear()
+    _gain_dict.clear()
     for qualified_gain_filename in qualified_gain_filenames:
-        gain_dict.update(_load_quadrant_table(qualified_gain_filename, 'GAIN'))
+        _gain_dict.update(_load_quadrant_table(qualified_gain_filename, 'GAIN'))
 
     # Load the read_noise table
     read_noise_filenames = get_mdb_value(mdb_keys.vis_readout_noise_table)
     qualified_read_noise_filenames = _find_mdb_data_file(read_noise_filenames, qualified_mdb_files)
-    read_noise_dict.clear()
+    _read_noise_dict.clear()
     for qualified_read_noise_filename in qualified_read_noise_filenames:
-        read_noise_dict.update(_load_quadrant_table(qualified_read_noise_filename, 'RON_ELE'))
+        _read_noise_dict.update(_load_quadrant_table(qualified_read_noise_filename, 'RON_ELE'))
 
     return
 
@@ -147,11 +150,11 @@ def _load_quadrant_table(qualified_data_filename, colname):
 
 
 def get_gain(detector=None, quadrant=None):
-    return _get_quadrant_data(gain_dict, detector, quadrant)
+    return _get_quadrant_data(_gain_dict, _gain_ave_dict, detector, quadrant)
 
 
 def get_read_noise(detector=None, quadrant=None):
-    return _get_quadrant_data(read_noise_dict, detector, quadrant)
+    return _get_quadrant_data(_read_noise_dict, _read_noise_ave_dict, detector, quadrant)
 
 
 @run_only_once
@@ -164,7 +167,7 @@ def warn_missing_quadrant():
     logger.warning("No quadrant value supplied to get_gain or get_read_noise - average value will be used instead.")
 
 
-def _get_quadrant_data(dict, detector=None, quadrant=None):
+def _get_quadrant_data(dict, ave_dict, detector=None, quadrant=None):
 
     # If we have both the detector and quadrant, get the value for that quadrant
     if detector is not None and quadrant is not None:
@@ -185,6 +188,9 @@ def _get_quadrant_data(dict, detector=None, quadrant=None):
 
     regex = det_regex + "." + quad_regex
 
+    if regex in ave_dict:
+        return ave_dict[regex]
+
     sum = 0
     count = 0
 
@@ -198,8 +204,10 @@ def _get_quadrant_data(dict, detector=None, quadrant=None):
         raise RuntimeError("No matching detectors and/or quadrants found for input: detector = " + str(detector) +
                            ", quadrant = " + str(quadrant) + ".")
 
-    # Return the average
-    return sum / count
+    # Save and return the average
+    average = sum / count
+    ave_dict[regex] = average
+    return average
 
 
 def reset():
