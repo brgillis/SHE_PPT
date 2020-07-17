@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-26"
+__updated__ = "2020-07-17"
 
 from enum import Enum
 import json.decoder
@@ -38,6 +38,7 @@ class ConfigKeys(Enum):
     """
 
     ES_METHODS = "SHE_CTE_EstimateShear_methods"
+    ES_CHAINS_METHOD = "SHE_CTE_EstimateShear_chains_method"
 
     OID_BATCH_SIZE = "SHE_CTE_ObjectIdSplit_batch_size"
     OID_MAX_BATCHES = "SHE_CTE_ObjectIdSplit_max_batches"
@@ -119,7 +120,7 @@ def archive_product(product_filename, archive_dir, workdir):
                     full_archive_data_subpath = os.path.split(qualified_archive_data_filename)[0]
                     if not os.path.exists(full_archive_data_subpath):
                         os.makedirs(full_archive_data_subpath)
-                        
+
                     copyfile(qualified_data_filename, qualified_archive_data_filename)
 
         else:
@@ -168,21 +169,22 @@ def read_config(config_filename, workdir="."):
         # This isn't a listfile, so try to open and return it
         return _read_config_product(config_filename, workdir)
 
+
 def _read_config_product(config_filename, workdir):
-    
+
     # Try to read in as a data product
     try:
         p = read_xml_product(config_filename, workdir)
-        
+
         config_data_filename = p.get_data_filename()
-        
-        return _read_config_file(find_file(config_data_filename,workdir))
-        
+
+        return _read_config_file(find_file(config_data_filename, workdir))
+
     except (UnicodeDecodeError, SAXParseException, UnpicklingError) as _e:
-        
+
         # Try to read it as a plain text file
-        return _read_config_file(find_file(config_filename,workdir))
-        
+        return _read_config_file(find_file(config_filename, workdir))
+
 
 def _read_config_file(qualified_config_filename):
 

@@ -8,6 +8,7 @@ API Changes
 - Fixed table format column variables for KSB, MomentsML, and REGAUSS measurements
 - Fixed field time table format meta variable for PSF_ModelImage table format
 - Added interface to SHE_PPT.mdb to get gain and read noise values for a given quadrant of an exposure
+- Added config key for chains method ("SHE_CTE_EstimateShear_chains_method")
 
 Dependency Changes
 ------------------
