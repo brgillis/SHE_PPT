@@ -127,13 +127,13 @@ class SheMeasurementsFormat(object):
             "WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
 
         self.ra = set_column_properties(self,
-            "UPDATED_RA", comment="deg")
+            "UPDATED_RA", dtype=">f4", fits_dtype="E", comment="deg")
         self.ra_err = set_column_properties(self,
-            "UPDATED_RA_ERR", comment="deg")
+            "UPDATED_RA_ERR", dtype=">f4", fits_dtype="E", comment="deg")
         self.dec = set_column_properties(self,
-            "UPDATED_DEC", comment="deg")
+            "UPDATED_DEC", dtype=">f4", fits_dtype="E", comment="deg")
         self.dec_err = set_column_properties(self,
-            "UPDATED_DEC_ERR", comment="deg")
+            "UPDATED_DEC_ERR", dtype=">f4", fits_dtype="E", comment="deg")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
