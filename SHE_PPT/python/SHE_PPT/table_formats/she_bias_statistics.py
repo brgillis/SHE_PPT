@@ -304,7 +304,7 @@ def initialise_bias_statistics_table(size=None,
         num_rows = len_g1_bias_statistics
 
     if num_rows > 0:
-        if tf.ID in names:
+        if tf.ID in optional_columns:
             if len_run_IDs == 1:
                 run_IDs *= num_rows
             elif not len_run_IDs == num_rows:

@@ -220,8 +220,8 @@ def make_bfd_bias_statistics_table_header(ID=None,
 
 
 def initialise_bfd_bias_statistics_table(size=None,
-                                 optional_columns=None,
-                                 init_cols=None,
+                                         optional_columns=None,
+                                         init_cols=None,
                                          ID=None,
                                          method='BFD',
                                          g1_bias_measurements=None,
@@ -291,7 +291,7 @@ def initialise_bfd_bias_statistics_table(size=None,
             len_bfd_bias_statistics = 1
 
     if len_bfd_bias_statistics > 0:
-        if tf.ID in names:
+        if tf.ID in optional_columns:
             if len_run_IDs == 1:
                 run_IDs *= len_bfd_bias_statistics
             elif not len_run_IDs == len_bfd_bias_statistics:
