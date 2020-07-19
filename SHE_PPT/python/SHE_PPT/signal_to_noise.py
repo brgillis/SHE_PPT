@@ -27,7 +27,6 @@ import galsim
 from SHE_PPT.logging import getLogger
 import numpy as np
 
-
 logger = getLogger(__name__)
 
 
@@ -74,7 +73,7 @@ def get_SN_of_image(galaxy_image,
 
     a_eff = np.pi * (3 * moments.moments_sigma * np.sqrt(2 * np.log(2)))
 
-    signal_to_noise = gain * moments.moments_amp / np.sqrt(gain * moments.moments_amp + a_eff * (gain * sigma_sky)**2)
+    signal_to_noise = gain * moments.moments_amp / np.sqrt(gain * moments.moments_amp + a_eff * (gain * sigma_sky) ** 2)
 
     return signal_to_noise
 

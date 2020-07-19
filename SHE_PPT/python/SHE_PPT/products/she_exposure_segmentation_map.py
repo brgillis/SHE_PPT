@@ -32,7 +32,6 @@ from astropy.io import fits
 
 from ST_DataModelBindings.dpd.she.exposurereprojectedsegmentationmap_stub import dpdSheExposureReprojectedSegmentationMap
 
-
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT import detector as dtc
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
@@ -40,6 +39,7 @@ import SHE_PPT.magic_values as mv
 from SHE_PPT.utility import find_extension
 
 sample_file_name = "SHE_PPT/sample_exposure_reprojected_segmentation_map.xml"
+
 
 # Convenience function to easily load the actual map
 def load_she_exposure_segmentation_map(filename, directory=None, **kwargs):
@@ -126,10 +126,6 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-
-
- 
-        
 def create_dpd_she_exposure_segmentation_map(data_filename="None"):
     """Creates a SHE_MER exposure reprojected segmentation map binding.
 
@@ -161,10 +157,8 @@ def create_dpd_she_exposure_segmentation_map(data_filename="None"):
 
     return dpd_she_exposure_reproj_seg_map_data
 
-
 # Add a useful alias
 
 
 create_she_exposure_segmentation_map_product = create_dpd_she_exposure_segmentation_map
-
 

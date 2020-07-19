@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-03"
+__updated__ = "2020-07-19"
 
 from collections import OrderedDict
 
@@ -28,7 +28,7 @@ from astropy.table import Table
 from SHE_PPT import magic_values as mv
 from SHE_PPT.flags import she_flag_version
 from SHE_PPT.table_formats.she_training import SheTrainingMeta, SheTrainingFormat
-from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties, setup_child_table_format, set_column_properties
+from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties, init_table, setup_child_table_format, set_column_properties, init_table
 
 fits_version = "8.0"
 fits_def = "she.regaussTraining"
@@ -100,7 +100,9 @@ def make_regauss_training_table_header():
     return header
 
 
-def initialise_regauss_training_table(optional_columns=None):
+def initialise_regauss_training_table(size=None,
+                                 optional_columns=None,
+                                 init_cols=None,):
     """
         @brief Initialise a galaxy population table.
 
@@ -115,16 +117,7 @@ def initialise_regauss_training_table(optional_columns=None):
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    names = []
-    init_cols = []
-    dtypes = []
-    for colname in tf.all:
-        if (colname in tf.all_required) or (colname in optional_columns):
-            names.append(colname)
-            init_cols.append([])
-            dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
-
-    regauss_training_table = Table(init_cols, names=names, dtype=dtypes)
+    regauss_training_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
 
     regauss_training_table.meta = make_regauss_training_table_header()
 

@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-30"
+__updated__ = "2020-07-19"
 
 import os
 from os.path import join
@@ -61,7 +61,7 @@ class TestCase:
         self.sync_mdb.download()
         self.mdb_filename = self.sync_mdb.absolutePath("SHE_PPT_8_2/sample_mdb-SC8.xml")
 
-        assert os.path.isfile(self.mdb_filename), f"Cannot find file: SHE_PPT/sample_mdb.xml"
+        assert os.path.isfile(self.mdb_filename), f"Cannot find file: SHE_PPT_8_2/sample_mdb-SC8.xml"
 
         mdb.init(self.mdb_filename)
 

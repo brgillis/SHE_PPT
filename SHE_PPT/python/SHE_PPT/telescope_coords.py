@@ -347,7 +347,7 @@ def get_focal_plane_coords_from_detector(det_xp,
     # Get positions on the focal plane
     # @TODO: IF VIS revert, x,y? and careful about sign.
     # How do we test this?????
-    # Are there some numbers??? 
+    # Are there some numbers???
     foc_x = offset_x + det_specs.pixelsize_um * (det_specs.detector_pixels_x / 2 + cos_o * xpc - sin_o * ypc)
     foc_y = offset_y + det_specs.pixelsize_um * (det_specs.detector_pixels_y / 2 + sin_o * xpc + cos_o * ypc)
 
@@ -392,24 +392,23 @@ in your "get_fov_coords_from_focal_plane()" function.
     """
 
     # Convert from position on the focal plane to the field-of-view
-    
+
     if instrument == "VIS":
         det_specs = vis_det_specs
-        
+
         # ? rotate before or after offset..
-        # Try rotate before, i.e. 
-    
+        # Try rotate before, i.e.
+
         # @NOTE: MDB has fov_x and fov_y the incorrect way around.
         fov_y = det_specs.fov_x_offset_deg + det_specs.fov_scale_deg_per_um * foc_y
         fov_x = det_specs.fov_y_offset_deg - det_specs.fov_scale_deg_per_um * foc_x
 
     elif instrument == "NISP":
         det_specs = nisp_det_specs
-        
+
         fov_x = det_specs.fov_x_offset_deg + det_specs.fov_scale_deg_per_um * foc_x
         fov_y = det_specs.fov_y_offset_deg + det_specs.fov_scale_deg_per_um * foc_y
 
-        
     else:
         raise ValueError("Invalid instrument value: " + str(instrument) + ". Allowed values are \"VIS\" and \"NISP\"")
 
