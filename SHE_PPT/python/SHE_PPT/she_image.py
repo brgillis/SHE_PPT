@@ -1136,7 +1136,7 @@ class SHEImage(object):
 
         return
 
-    def add_default_noisemap(self, force=False):
+    def add_default_noisemap(self, force=False, suppress_warnings=False):
         """Adds a default noisemap to this object (all 0.). If force=True, will overwrite an existing noisemap. 
         """
 
@@ -1151,8 +1151,8 @@ class SHEImage(object):
 
         # Get the gain and read_noise from the MDB if possible
         try:
-            gain = mdb.get_gain()
-            read_noise = mdb.get_read_noise()
+            gain = mdb.get_gain(suppress_warnings=suppress_warnings)
+            read_noise = mdb.get_read_noise(suppress_warnings=suppress_warnings)
         except RuntimeError as e:
             if not "mdb module must be initialised with MDB xml object before use." in str(e):
                 raise

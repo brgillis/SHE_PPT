@@ -29,7 +29,7 @@ from ST_DM_MDBTools.Mdb import Mdb
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
-__updated__ = "2020-07-14"
+__updated__ = "2020-07-19"
 
 _mdb_not_inited_exception = RuntimeError(
     "mdb module must be initialised with MDB xml object before use.")
@@ -151,12 +151,20 @@ def _load_quadrant_table(qualified_data_filename, colname):
     return quadrant_dict
 
 
-def get_gain(detector=None, quadrant=None):
-    return _get_quadrant_data(_gain_dict, _gain_ave_dict, detector, quadrant)
+def get_gain(detector=None, quadrant=None, suppress_warnings=False):
+    return _get_quadrant_data(dict=_gain_dict,
+                              ave_dict=_gain_ave_dict,
+                              detector=detector,
+                              quadrant=quadrant,
+                              suppress_warnings=suppress_warnings)
 
 
-def get_read_noise(detector=None, quadrant=None):
-    return _get_quadrant_data(_read_noise_dict, _read_noise_ave_dict, detector, quadrant)
+def get_read_noise(detector=None, quadrant=None, suppress_warnings=False):
+    return _get_quadrant_data(dict=_read_noise_dict,
+                              ave_dict=_read_noise_ave_dict,
+                              detector=detector,
+                              quadrant=quadrant,
+                              suppress_warnings=suppress_warnings)
 
 
 @run_only_once
@@ -169,7 +177,7 @@ def warn_missing_quadrant():
     logger.warning("No quadrant value supplied to get_gain or get_read_noise - average value will be used instead.")
 
 
-def _get_quadrant_data(dict, ave_dict, detector=None, quadrant=None):
+def _get_quadrant_data(dict, ave_dict, detector=None, quadrant=None, suppress_warnings=False):
 
     # If we have both the detector and quadrant, get the value for that quadrant
     if detector is not None and quadrant is not None:
@@ -177,13 +185,15 @@ def _get_quadrant_data(dict, ave_dict, detector=None, quadrant=None):
 
     # We're missing some info, so warn and average the possibly-matching data
     if detector is None:
-        warn_missing_detector()
+        if not suppress_warnings:
+            warn_missing_detector()
         det_regex = r"[1-6]\-[1-6]"
     else:
         det_regex = detector.replace("-", r"\-")
 
     if quadrant is None:
-        warn_missing_quadrant()
+        if not suppress_warnings:
+            warn_missing_quadrant()
         quad_regex = "[E-H]"
     else:
         quad_regex = quadrant
