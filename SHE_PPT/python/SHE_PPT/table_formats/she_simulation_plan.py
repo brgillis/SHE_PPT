@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-07-19"
 
 from collections import OrderedDict
 
@@ -27,7 +27,7 @@ from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.flags import she_flag_version
-from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties
+from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties, init_table
 
 fits_version = "8.0"
 fits_def = "she.simulationPlan"
@@ -88,13 +88,13 @@ class SheSimulationPlanFormat(object):
         self.noise_seed_step = set_column_properties(self, "NSEED_STEP", dtype=">i8", fits_dtype="K",
                                                      comment="Model seed step for this batch.")
 
-        self.suppress_noise = set_column_properties(self, 
+        self.suppress_noise = set_column_properties(self,
             "SUP_NOISE", dtype="bool", fits_dtype="L")
-        self.num_detectors = set_column_properties(self, 
+        self.num_detectors = set_column_properties(self,
             "NUM_DETECTORS", dtype=">i2", fits_dtype="I")
-        self.num_galaxies = set_column_properties(self, 
+        self.num_galaxies = set_column_properties(self,
             "NUM_GALAXIES", dtype=">i2", fits_dtype="I")
-        self.render_background = set_column_properties(self, 
+        self.render_background = set_column_properties(self,
             "RENDER_BKG", dtype="bool", fits_dtype="L")
 
         # A list of columns in the desired order
@@ -144,16 +144,7 @@ def initialise_simulation_plan_table(optional_columns=None):
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    names = []
-    init_cols = []
-    dtypes = []
-    for colname in tf.all:
-        if (colname in tf.all_required) or (colname in optional_columns):
-            names.append(colname)
-            init_cols.append([])
-            dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
-
-    simulation_plan_table = Table(init_cols, names=names, dtype=dtypes)
+    simulation_plan_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
 
     simulation_plan_table.meta = make_simulation_plan_table_header()
 

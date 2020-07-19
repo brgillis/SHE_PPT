@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-08"
+__updated__ = "2020-07-19"
 
 from collections import OrderedDict
 
@@ -31,7 +31,7 @@ from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
 from SHE_PPT.table_formats.she_measurements import SheMeasurementsMeta, SheMeasurementsFormat
-from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties, setup_child_table_format, set_column_properties
+from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties, init_table, setup_child_table_format, set_column_properties, init_table
 
 fits_version = "8.0"
 fits_def = "she.lensmcMeasurements"
@@ -160,7 +160,9 @@ def make_lensmc_measurements_table_header(
 
 
 def initialise_lensmc_measurements_table(mer_final_catalog=None,
+                                 size=None,
                                  optional_columns=None,
+                                 init_cols=None,
                                  model_hash=None,
                                  model_seed=None,
                                  noise_seed=None,
@@ -193,16 +195,7 @@ def initialise_lensmc_measurements_table(mer_final_catalog=None,
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    names = []
-    init_cols = []
-    dtypes = []
-    for colname in tf.all:
-        if (colname in tf.all_required) or (colname in optional_columns):
-            names.append(colname)
-            init_cols.append([])
-            dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
-
-    lensmc_measurements_table = Table(init_cols, names=names, dtype=dtypes)
+    lensmc_measurements_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
 
     if mer_final_catalog is not None:
         if model_hash is None:
@@ -220,6 +213,6 @@ def initialise_lensmc_measurements_table(mer_final_catalog=None,
                                                            observation_time=observation_time,
                                                            tile_id=tile_id)
 
-    assert(is_in_format(lensmc_measurements_table, tf))
+    # assert(is_in_format(lensmc_measurements_table, tf))
 
     return lensmc_measurements_table

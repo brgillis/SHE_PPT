@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-07-19"
 
 from collections import OrderedDict
 
@@ -27,7 +27,7 @@ from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.flags import she_flag_version
-from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties
+from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties, init_table
 
 fits_version = "8.0"
 fits_def = "she.pOfE"
@@ -71,12 +71,12 @@ class ShePOfEFormat(object):
 
         # Column names and info
 
-        self.ID = set_column_properties(self, 
+        self.ID = set_column_properties(self,
             "ID", dtype=">i8", fits_dtype="K", comment="Link to galaxy population table.")
 
-        self.e1 = set_column_properties(self, 
+        self.e1 = set_column_properties(self,
             "E1", comment="Using flat weight function.")
-        self.e2 = set_column_properties(self, 
+        self.e2 = set_column_properties(self,
             "E2", comment="Using flat weight function.")
 
         self.bulge_e1 = set_column_properties(self, "BULGE_E1", is_optional=True)
@@ -132,16 +132,7 @@ def initialise_p_of_e_table(optional_columns=None):
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    names = []
-    init_cols = []
-    dtypes = []
-    for colname in tf.all:
-        if (colname in tf.all_required) or (colname in optional_columns):
-            names.append(colname)
-            init_cols.append([])
-            dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
-
-    p_of_e_table = Table(init_cols, names=names, dtype=dtypes)
+    p_of_e_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
 
     p_of_e_table.meta = make_p_of_e_table_header()
 

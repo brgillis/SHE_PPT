@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-03"
+__updated__ = "2020-07-19"
 
 from collections import OrderedDict
 
@@ -28,7 +28,7 @@ from astropy.table import Table
 from SHE_PPT import magic_values as mv
 from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
-from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties
+from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties, init_table
 from SHE_PPT.utility import hash_any
 
 fits_version = "0.3"
@@ -289,7 +289,9 @@ def make_mer_final_catalog_header(model_hash=None,
 
 def initialise_mer_final_catalog(image_group_phl=None,
                                 options=None,
-                                optional_columns=None,
+                                size=None,
+                                 optional_columns=None,
+                                 init_cols=None,
                                 model_hash=None,
                                 model_seed=None,
                                 noise_seed=None,
@@ -315,19 +317,7 @@ def initialise_mer_final_catalog(image_group_phl=None,
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    names = []
-    if init_cols is None:
-        init_cols = {}
-    dtypes = []
-    for colname in tf.all:
-        if (colname in tf.all_required) or (colname in optional_columns):
-            names.append(colname)
-            if colname not in init_cols:
-                init_cols[colname] = []
-            dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
-
-    mer_final_catalog = Table(init_cols, names=names,
-                             dtype=dtypes)
+    mer_final_catalog = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
 
     if image_group_phl is not None:
 

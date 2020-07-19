@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-07-19"
 
 from collections import OrderedDict
 
@@ -27,7 +27,7 @@ from astropy.table import Table
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.flags import she_flag_version
-from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties
+from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties, init_table
 
 fits_version = "8.0"
 fits_def = "she.starCatalog"
@@ -80,33 +80,33 @@ class SheStarCatalogFormat(object):
 
         # Column names and info
 
-        self.id = set_column_properties(self, 
+        self.id = set_column_properties(self,
             "OBJECT_ID", dtype=">i8", fits_dtype="K",
             comment="ID of this object in the galaxy population priors table.")
 
-        self.det_x = set_column_properties(self, 
+        self.det_x = set_column_properties(self,
             "SHE_STARCAT_DET_X", dtype=">i4", fits_dtype="I")
-        self.det_y = set_column_properties(self, 
+        self.det_y = set_column_properties(self,
             "SHE_STARCAT_DET_Y", dtype=">i4", fits_dtype="I")
-        self.x = set_column_properties(self, 
+        self.x = set_column_properties(self,
             "SHE_STARCAT_X", dtype=">f4", fits_dtype="E")
-        self.x_err = set_column_properties(self, 
+        self.x_err = set_column_properties(self,
             "SHE_STARCAT_X_ERR", dtype=">f4", fits_dtype="E")
-        self.y = set_column_properties(self, 
+        self.y = set_column_properties(self,
             "SHE_STARCAT_Y", dtype=">f4", fits_dtype="E")
-        self.y_err = set_column_properties(self, 
+        self.y_err = set_column_properties(self,
             "SHE_STARCAT_Y_ERR", dtype=">f4", fits_dtype="E")
-        self.ra = set_column_properties(self, 
+        self.ra = set_column_properties(self,
             "SHE_STARCAT_UPDATED_RA", comment="deg", dtype=">f8", fits_dtype="D")
-        self.ra_err = set_column_properties(self, 
+        self.ra_err = set_column_properties(self,
             "SHE_STARCAT_UPDATED_RA_ERR", comment="deg", dtype=">f8", fits_dtype="E")
-        self.dec = set_column_properties(self, 
+        self.dec = set_column_properties(self,
             "SHE_STARCAT_UPDATED_DEC", comment="deg", dtype=">f8", fits_dtype="D")
-        self.dec_err = set_column_properties(self, 
+        self.dec_err = set_column_properties(self,
             "SHE_STARCAT_UPDATED_DEC_ERR", comment="deg", dtype=">f8", fits_dtype="E")
-        self.flux = set_column_properties(self, 
+        self.flux = set_column_properties(self,
             "SHE_STARCAT_FLUX", dtype=">f4", fits_dtype="E")
-        self.flux_err = set_column_properties(self, 
+        self.flux_err = set_column_properties(self,
             "SHE_STARCAT_FLUX_ERR", dtype=">f4", fits_dtype="E")
 
         self.e1 = set_column_properties(self, "SHE_STARCAT_E1", dtype=">f4", fits_dtype="E",
@@ -172,16 +172,7 @@ def initialise_star_catalog(roll_ang=None,
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    names = []
-    init_cols = []
-    dtypes = []
-    for colname in tf.all:
-        if (colname in tf.all_required) or (colname in optional_columns):
-            names.append(colname)
-            init_cols.append([])
-            dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
-
-    star_catalog = Table(init_cols, names=names, dtype=dtypes)
+    star_catalog = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
 
     star_catalog.meta = make_star_catalog_header(
         roll_ang, exposure_product_id, observation_id, observation_time)

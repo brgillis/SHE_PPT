@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-10"
+__updated__ = "2020-07-19"
 
 from collections import OrderedDict
 
@@ -28,7 +28,7 @@ from astropy.table import Table
 from SHE_PPT import magic_values as mv
 from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
-from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties
+from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties, init_table
 from SHE_PPT.utility import hash_any
 import numpy as np
 
@@ -154,7 +154,9 @@ def make_psf_table_header(calibration_product, calibration_time, field_product, 
 
 def initialise_psf_table(image=None,
                          options=None,
-                         optional_columns=None,
+                         size=None,
+                                 optional_columns=None,
+                                 init_cols=None,
                          calibration_product=None,
                          calibration_time=None,
                          field_product=None,
@@ -181,26 +183,7 @@ def initialise_psf_table(image=None,
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    names = []
-    init_cols = []
-    dtypes = []
-    for colname in tf.all:
-        if (colname in tf.all_required) or (colname in optional_columns):
-            names.append(colname)
-
-            dtype = (tf.dtypes[colname], tf.lengths[colname])
-
-            if colname in init_columns:
-                init_cols.append(init_columns[colname])
-            elif len(init_columns) > 0:
-                init_cols.append(
-                    np.zeros(len(init_columns.values[0]), dtype=dtype))
-            else:
-                init_cols.append([])
-
-            dtypes.append(dtype)
-
-    psf_table = Table(init_cols, names=names, dtype=dtypes)
+    psf_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
 
     psf_table.meta = make_psf_table_header(calibration_product=calibration_product,
                                            calibration_time=calibration_time,

@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-08"
+__updated__ = "2020-07-19"
 
 from collections import OrderedDict
 
@@ -341,3 +341,47 @@ def setup_child_table_format(self, child_label, unlabelled_columns=None):
     self.set_column_properties = set_column_properties
 
     return
+
+
+def init_table(tf, size=None,
+                                 optional_columns=None,
+                                 init_cols=None, init_cols=None, size=None):
+
+    if optional_columns is None:
+        optional_columns = []
+
+    if init_columns is None:
+        init_columns = {}
+    else:
+        for a in init_columns.values():
+            if size is None:
+                size = len(a)
+            elif size != len(a):
+                raise ValueError("Inconsistent size of input columns for initialising table.")
+
+    if size is None:
+        size = 0
+
+    names = []
+    full_init_cols = []
+    dtypes = []
+    for colname in tf.all:
+        if (colname in tf.all_required) or (colname in optional_columns):
+            names.append(colname)
+
+            col_dtype = tf.dtypes[colname]
+            col_length = tf.lengths[colname]
+
+            if col_length == 1:
+                dtype = col_dtype
+            else:
+                dtype = (col_dtype, col_length)
+
+            dtypes.append(dtype)
+
+            if colname in init_cols.keys():
+                full_init_cols.append(init_cols[colname])
+            else:
+                full_init_cols.append(np.zeros(size, dtype))
+
+    return Table(full_init_cols, names=names, dtype=dtypes)
