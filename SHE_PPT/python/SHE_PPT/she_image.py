@@ -1151,7 +1151,7 @@ class SHEImage(object):
 
         # Get the gain and read_noise from the MDB if possible
         try:
-            gain = mdb.get_mdb_value(mdb.mdb_keys.vis_gain_coeffs)
+            gain = mdb.get_gain()
             read_noise = mdb.get_read_noise()
         except RuntimeError as e:
             if not "mdb module must be initialised with MDB xml object before use." in str(e):
