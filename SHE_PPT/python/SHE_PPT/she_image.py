@@ -19,7 +19,7 @@ Created on: Aug 17, 2017
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2020-07-13"
+__updated__ = "2020-07-19"
 
 # Avoid non-trivial "from" imports (as explicit is better than implicit)
 
@@ -1152,7 +1152,7 @@ class SHEImage(object):
         # Get the gain and read_noise from the MDB if possible
         try:
             gain = mdb.get_mdb_value(mdb.mdb_keys.vis_gain_coeffs)
-            read_noise = mdb.get_mdb_value(mdb.mdb_keys.vis_readout_noise)
+            read_noise = mdb.get_read_noise()
         except RuntimeError as e:
             if not "mdb module must be initialised with MDB xml object before use." in str(e):
                 raise
