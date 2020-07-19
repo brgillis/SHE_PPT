@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-09"
+__updated__ = "2020-07-19"
 
 import math
 
@@ -315,11 +315,8 @@ def check_data_quality(gal_stamp, psf_stamp, stacked=False):
             min_value = 0
 
         good_data = a.ravel()[ravelled_antimask]
-        if ((good_data.sum() == 0) or (good_data < min_value).any()):
-            flag |= corrupt_flag
-            continue
-
-        if np.isnan(good_data).any() or np.isinf(good_data).any():
+        if (np.isnan(good_data).any() or np.isinf(good_data).any() or
+                ((good_data.sum() == 0) or (good_data < min_value).any())):
             flag |= corrupt_flag
             continue
 
