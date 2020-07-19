@@ -213,6 +213,6 @@ def initialise_lensmc_measurements_table(mer_final_catalog=None,
                                                            observation_time=observation_time,
                                                            tile_id=tile_id)
 
-    # assert(is_in_format(lensmc_measurements_table, tf))
+    assert(is_in_format(lensmc_measurements_table, tf))
 
     return lensmc_measurements_table

@@ -24,7 +24,7 @@ __updated__ = "2020-07-19"
 from collections import OrderedDict
 
 from astropy.io.fits import table_to_hdu as astropy_table_to_hdu
-from astropy.table import Column
+from astropy.table import Column, Table
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
@@ -343,15 +343,13 @@ def setup_child_table_format(self, child_label, unlabelled_columns=None):
     return
 
 
-def init_table(tf, size=None,
-                                 optional_columns=None,
-                                 init_cols=None, init_cols=None, size=None):
+def init_table(tf, size=None, optional_columns=None, init_cols=None,):
 
     if optional_columns is None:
         optional_columns = []
 
-    if init_columns is None:
-        init_columns = {}
+    if init_cols is None:
+        init_cols = {}
     else:
         for a in init_columns.values():
             if size is None:
@@ -365,6 +363,18 @@ def init_table(tf, size=None,
     names = []
     full_init_cols = []
     dtypes = []
+
+    # Check for any array columns, which prevent all but empty initialisation
+    must_init_empty = False
+
+    for colname in tf.all:
+        if tf.lengths[colname] > 0 and tf.dtypes[colname] != str:
+            must_init_empty = True
+
+    if must_init_empty and len(init_cols) > 0 or size > 0:
+        raise ValueError("Due to a bug in astropy, tables with any array columns can only be initialised empty. " +
+                          "(size=0 and no init_cols).")
+
     for colname in tf.all:
         if (colname in tf.all_required) or (colname in optional_columns):
             names.append(colname)
@@ -382,6 +392,14 @@ def init_table(tf, size=None,
             if colname in init_cols.keys():
                 full_init_cols.append(init_cols[colname])
             else:
-                full_init_cols.append(np.zeros(size, dtype))
+                if col_length == 1:
+                    col = Column(name=colname, dtype=dtype, length=size)
 
-    return Table(full_init_cols, names=names, dtype=dtypes)
+                    full_init_cols.append(col)
+
+    if must_init_empty:
+        t = Table(names=names, dtype=dtypes)
+    else:
+        t = Table(full_init_cols, names=names, dtype=dtypes)
+
+    return t

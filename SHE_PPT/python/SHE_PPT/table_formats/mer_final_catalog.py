@@ -290,12 +290,11 @@ def make_mer_final_catalog_header(model_hash=None,
 def initialise_mer_final_catalog(image_group_phl=None,
                                 options=None,
                                 size=None,
-                                 optional_columns=None,
-                                 init_cols=None,
+                                optional_columns=None,
+                                init_cols=None,
                                 model_hash=None,
                                 model_seed=None,
-                                noise_seed=None,
-                                init_cols=None):
+                                noise_seed=None):
     """
         @brief Initialise a detections table.
 
