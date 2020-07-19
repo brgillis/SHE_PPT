@@ -119,7 +119,7 @@ class SheLensMcChainsFormat(object):
             "SHE_LENSMC_G2_CHAIN", dtype=">f4", fits_dtype="E", length=total_chain_length)
 
         self.ra = set_column_properties(self, 
-            "SHE_LENSMC_UPDATED_RA_CHAIN", is_optional=False, comment="deg", fits_dtype="D", length=total_chain_length)
+            "SHE_LENSMC_UPDATED_RA_CHAIN", is_optional=True, comment="deg", fits_dtype="D", length=total_chain_length)
         self.dec = set_column_properties(self, 
             "SHE_LENSMC_UPDATED_DEC_CHAIN", is_optional=True, comment="deg", fits_dtype="D", length=total_chain_length)
 

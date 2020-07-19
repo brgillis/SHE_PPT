@@ -152,14 +152,14 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
                 else:
                     if verbose:
                         logger.info("Table not in correct format due to wrong type for column '" + parent_colname + "'\n" +
-                                    "Expected: " + ex_dtype + "\n" +
+                                    "Expected: " + str(ex_dtype) + "\n" +
                                     "Got: " + str(table.dtype[child_colname].newbyteorder('>')))
                     return False
             # Is it an issue with int or float size?
             elif strict == True:
                 if verbose:
                     logger.info("Table not in correct format due to wrong type for column '" + child_colname + "'\n" +
-                                "Expected: " + ex_dtype + "\n" +
+                                "Expected: " + str(ex_dtype) + "\n" +
                                 "Got: " + str(table.dtype[child_colname].newbyteorder('>')))
                 return False
 
