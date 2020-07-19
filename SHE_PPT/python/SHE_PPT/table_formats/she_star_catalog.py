@@ -157,7 +157,9 @@ def initialise_star_catalog(roll_ang=None,
                             exposure_product_id=None,
                             observation_id=None,
                             observation_time=None,
-                            optional_columns=None):
+                            size=None,
+                                 optional_columns=None,
+                                 init_cols=None,):
     """
         @brief Initialise a galaxy population table.
 

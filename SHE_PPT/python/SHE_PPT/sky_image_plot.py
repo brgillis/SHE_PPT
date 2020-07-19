@@ -32,7 +32,6 @@ import numpy as np
 
 from . import logging
 
-
 logger = logging.getLogger(__name__)
 
 try:
@@ -315,8 +314,8 @@ class SimpleFigure(object):
         logger.info("Saving {} to '{}'...".format(str(self), filepath))
         self.fig.savefig(filepath, bbox_inches='tight')
 
-
 # Some utility functions
+
 
 def get_extent(a):
     """Defines the extent with which to plot an array a (we use the numpy convention)

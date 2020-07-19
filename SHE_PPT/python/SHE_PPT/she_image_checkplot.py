@@ -25,12 +25,10 @@ Author: Malte Tewes
 
 __updated__ = "2019-02-27"
 
-
 import os
 
 from . import logging
 from . import sky_image_plot as sip
-
 
 logger = logging.getLogger(__name__)
 

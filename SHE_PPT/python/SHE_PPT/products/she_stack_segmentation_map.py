@@ -27,12 +27,10 @@ __updated__ = "2019-08-15"
 import os
 from astropy.io import fits
 
-
 from ST_DataModelBindings.dpd.she.stackreprojectedsegmentationmap_stub import dpdSheStackReprojectedSegmentationMap
 import ST_DataModelBindings.pro.she_stub as she_dict
 import ST_DM_DmUtils.DmUtils as dm_utils
 import ST_DM_DmUtils.DqcDmUtils as dqc_utils
-
 
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT import detector as dtc
@@ -41,6 +39,7 @@ import SHE_PPT.magic_values as mv
 from SHE_PPT.utility import find_extension
 
 sample_file_name = "SHE_PPT/sample_stack_reprojected_segmentation_map.xml"
+
 
 # Convenience function to easily load the actual map
 def load_stack_segmentation_map(filename, dir=None, **kwargs):
@@ -88,6 +87,7 @@ def load_stack_segmentation_map(filename, dir=None, **kwargs):
 
 # Initialisation function, to add methods to an imported XML class
 
+
 def init():
     """
         Adds some extra functionality to the DpdSheStackReqprojectedSegmentationMap product
@@ -126,7 +126,6 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-        
 def create_dpd_she_stack_segmentation_map(filename=None):
     """Creates a SHE_MER stack reprojected segmentation map binding.
 

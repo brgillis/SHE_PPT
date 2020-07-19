@@ -117,7 +117,9 @@ def make_p_of_e_table_header():
     return header
 
 
-def initialise_p_of_e_table(optional_columns=None):
+def initialise_p_of_e_table(size=None,
+                                 optional_columns=None,
+                                 init_cols=None,):
     """
         @brief Initialise a galaxy population table.
 

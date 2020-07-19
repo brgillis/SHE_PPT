@@ -27,7 +27,6 @@ function can be used to obtain this.
 
 __updated__ = "2019-02-27"
 
-
 import os
 import numpy as np
 
@@ -36,7 +35,6 @@ import numpy as np
 
 mask_fmt_label = "MSK_FMT_V"
 mask_fmt_version = "0.2"
-
 
 # Mask values - taken from definition at
 # https://euclid.roe.ac.uk/projects/eucrma/wiki/ImageBitMasks?parent=20120410UserStories

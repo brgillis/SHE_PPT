@@ -129,7 +129,9 @@ def make_simulation_plan_table_header():
     return header
 
 
-def initialise_simulation_plan_table(optional_columns=None):
+def initialise_simulation_plan_table(size=None,
+                                 optional_columns=None,
+                                 init_cols=None,):
     """
         @brief Initialise a galaxy population table.
 

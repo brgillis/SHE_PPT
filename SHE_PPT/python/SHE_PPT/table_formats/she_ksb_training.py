@@ -100,7 +100,9 @@ def make_ksb_training_table_header():
     return header
 
 
-def initialise_ksb_training_table(optional_columns=None):
+def initialise_ksb_training_table(size=None,
+                                 optional_columns=None,
+                                 init_cols=None,):
     """
         @brief Initialise a galaxy population table.
 

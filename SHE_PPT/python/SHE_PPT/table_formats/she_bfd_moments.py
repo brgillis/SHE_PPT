@@ -237,7 +237,7 @@ def initialise_bfd_moments_table(mer_final_catalog=None,
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    table = bfd_moments_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
+    bfd_moments_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
 
     if mer_final_catalog is not None:
         if model_hash is None:
