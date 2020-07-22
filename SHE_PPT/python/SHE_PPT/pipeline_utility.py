@@ -72,6 +72,21 @@ class AnalysisConfigKeys(Enum):
         return value in [item.value for item in cls]
 
 
+class ReconciliationConfigKeys(Enum):
+    """ An Enum of all allowed keys for the SHE calibration pipelines.
+    """
+
+    # Options for SHE_CTE_CleanupBiasMeasurement
+
+    rec_head = "SHE_CTE_ReconcileMeasurements_"
+
+    REC_METHOD = rec_head + "method"
+
+    @classmethod
+    def is_allowed_value(cls, value):
+        return value in [item.value for item in cls]
+
+
 class CalibrationConfigKeys(Enum):
     """ An Enum of all allowed keys for the SHE calibration pipelines.
     """
@@ -82,10 +97,10 @@ class CalibrationConfigKeys(Enum):
 
     CBM_CLEANUP = cbm_head + "cleanup"
 
-    # Options for SHE_CTE_EstimateShear
+    # Options for SHE_CTE_EstimateShear - copy these from the other enum
 
-    ES_METHODS = AnalysisConfigKeys.ES_METHODS
-    ES_CHAINS_METHOD = AnalysisConfigKeys.ES_CHAINS_METHOD
+    ES_METHODS = AnalysisConfigKeys.ES_METHODS.value
+    ES_CHAINS_METHOD = AnalysisConfigKeys.ES_CHAINS_METHOD.value
 
     # Options for SHE_CTE_MeasureBias
 
