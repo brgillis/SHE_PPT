@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-17"
+__updated__ = "2020-07-22"
 
 from enum import Enum
 import json.decoder
@@ -33,34 +33,76 @@ from SHE_PPT.file_io import read_xml_product, read_listfile, find_file
 from SHE_PPT.logging import getLogger
 
 
-class ConfigKeys(Enum):
-    """ An Enum of all allowed keys for pipeline_config files.
+class AnalysisConfigKeys(Enum):
+    """ An Enum of all allowed keys for the SHE analysis pipelines.
     """
 
-    ES_METHODS = "SHE_CTE_EstimateShear_methods"
-    ES_CHAINS_METHOD = "SHE_CTE_EstimateShear_chains_method"
+    # Options for SHE_MER_RemapMosaic
 
-    OID_BATCH_SIZE = "SHE_CTE_ObjectIdSplit_batch_size"
-    OID_MAX_BATCHES = "SHE_CTE_ObjectIdSplit_max_batches"
-    OID_IDS = "SHE_CTE_ObjectIdSplit_ids"
+    remap_head = "SHE_MER_RemapMosaic_"
 
-    REMAP_NUM_THREADS_EXP = "SHE_MER_RemapMosaic_num_threads_exposures"
-    REMAP_NUM_SWARP_THREADS_EXP = "SHE_MER_RemapMosaic_num_swarp_threads_exposures"
-    REMAP_NUM_THREADS_STACK = "SHE_MER_RemapMosaic_num_threads_stack"
-    REMAP_NUM_SWARP_THREADS_STACK = "SHE_MER_RemapMosaic_num_swarp_threads_stack"
+    REMAP_NUM_THREADS_EXP = remap_head + "num_threads_exposures"
+    REMAP_NUM_SWARP_THREADS_EXP = remap_head + "num_swarp_threads_exposures"
+    REMAP_NUM_THREADS_STACK = remap_head + "num_threads_stack"
+    REMAP_NUM_SWARP_THREADS_STACK = remap_head + "num_swarp_threads_stack"
 
-    SEM_NUM_THREADS = "SHE_CTE_ShearEstimatesMerge_number_threads"
+    # Options for SHE_CTE_ObjectIdSplit
 
-    CBM_CLEANUP = "SHE_CTE_CleanupBiasMeasurement_cleanup"
+    oid_head = "SHE_CTE_ObjectId_"
 
-    MB_ARCHIVE_DIR = "SHE_CTE_MeasureBias_archive_dir"
-    MB_NUM_THREADS = "SHE_CTE_MeasureBias_number_threads"
-    MB_WEBDAV_ARCHIVE = "SHE_CTE_MeasureBias_webdav_archive"
-    MB_WEBDAV_DIR = "SHE_CTE_MeasureBias_webdav_dir"
+    OID_BATCH_SIZE = oid_head + "batch_size"
+    OID_MAX_BATCHES = oid_head + "max_batches"
+    OID_IDS = oid_head + "ids"
 
-    MS_ARCHIVE_DIR = "SHE_CTE_MeasureStatistics_archive_dir"
-    MS_WEBDAV_ARCHIVE = "SHE_CTE_MeasureStatistics_webdav_archive"
-    MS_WEBDAV_DIR = "SHE_CTE_MeasureStatistics_webdav_dir"
+    # Options for SHE_CTE_EstimateShear
+
+    es_head = "SHE_CTE_EstimateShear_"
+
+    ES_METHODS = es_head + "methods"
+    ES_CHAINS_METHOD = es_head + "chains_method"
+
+    # Options for SHE_CTE_ShearEstimatesMerge
+
+    sem_head = "SHE_CTE_ShearEstimatesMerge_"
+
+    SEM_NUM_THREADS = sem_head + "number_threads"
+
+    @classmethod
+    def is_allowed_value(cls, value):
+        return value in [item.value for item in cls]
+
+
+class CalibrationConfigKeys(Enum):
+    """ An Enum of all allowed keys for the SHE calibration pipelines.
+    """
+
+    # Options for SHE_CTE_CleanupBiasMeasurement
+
+    cbm_head = "SHE_CTE_CleanupBiasMeasurement_"
+
+    CBM_CLEANUP = cbm_head + "cleanup"
+
+    # Options for SHE_CTE_EstimateShear
+
+    ES_METHODS = AnalysisConfigKeys.ES_METHODS
+    ES_CHAINS_METHOD = AnalysisConfigKeys.ES_CHAINS_METHOD
+
+    # Options for SHE_CTE_MeasureBias
+
+    mb_head = "SHE_CTE_MeasureBias_"
+
+    MB_ARCHIVE_DIR = mb_head + "archive_dir"
+    MB_NUM_THREADS = mb_head + "number_threads"
+    MB_WEBDAV_ARCHIVE = mb_head + "webdav_archive"
+    MB_WEBDAV_DIR = mb_head + "webdav_dir"
+
+    # Options for SHE_CTE_MeasureStatistics
+
+    ms_head = "SHE_CTE_MeasureStatistics_"
+
+    MS_ARCHIVE_DIR = ms_head + "archive_dir"
+    MS_WEBDAV_ARCHIVE = ms_head + "webdav_archive"
+    MS_WEBDAV_DIR = ms_head + "webdav_dir"
 
     @classmethod
     def is_allowed_value(cls, value):
