@@ -73,7 +73,7 @@ class AnalysisConfigKeys(Enum):
 
 
 class ReconciliationConfigKeys(Enum):
-    """ An Enum of all allowed keys for the SHE calibration pipelines.
+    """ An Enum of all allowed keys for the SHE reconciliation pipeline.
     """
 
     # Options for SHE_CTE_CleanupBiasMeasurement
