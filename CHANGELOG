@@ -9,6 +9,7 @@ API Changes
 - Fixed field time table format meta variable for PSF_ModelImage table format
 - Added interface to SHE_PPT.mdb to get gain and read noise values for a given quadrant of an exposure
 - Added config key for chains method ("SHE_CTE_EstimateShear_chains_method")
+- ConfigKeys now split based on pipelinem, into AnalysisConfigKeys, CalibrationConfigKeys, and ReconciliationConfigKeys
 
 Dependency Changes
 ------------------
@@ -22,6 +23,7 @@ Bug Fixes
 
 New Features
 ------------
+- Added data products and tests for she_reconciled_measurements and she_reconciliation_config
 
 New config features
 -------------------
