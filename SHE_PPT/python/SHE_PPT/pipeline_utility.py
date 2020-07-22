@@ -32,14 +32,18 @@ from SHE_PPT import products
 from SHE_PPT.file_io import read_xml_product, read_listfile, find_file
 from SHE_PPT.logging import getLogger
 
+# Task names for Analysis pipeline
+remap_head = "SHE_MER_RemapMosaic_"
+oid_head = "SHE_CTE_ObjectIdSplit_"
+es_head = "SHE_CTE_EstimateShear_"
+sem_head = "SHE_CTE_ShearEstimatesMerge_"
+
 
 class AnalysisConfigKeys(Enum):
     """ An Enum of all allowed keys for the SHE analysis pipelines.
     """
 
     # Options for SHE_MER_RemapMosaic
-
-    remap_head = "SHE_MER_RemapMosaic_"
 
     REMAP_NUM_THREADS_EXP = remap_head + "num_threads_exposures"
     REMAP_NUM_SWARP_THREADS_EXP = remap_head + "num_swarp_threads_exposures"
@@ -48,22 +52,16 @@ class AnalysisConfigKeys(Enum):
 
     # Options for SHE_CTE_ObjectIdSplit
 
-    oid_head = "SHE_CTE_ObjectId_"
-
     OID_BATCH_SIZE = oid_head + "batch_size"
     OID_MAX_BATCHES = oid_head + "max_batches"
     OID_IDS = oid_head + "ids"
 
     # Options for SHE_CTE_EstimateShear
 
-    es_head = "SHE_CTE_EstimateShear_"
-
     ES_METHODS = es_head + "methods"
     ES_CHAINS_METHOD = es_head + "chains_method"
 
     # Options for SHE_CTE_ShearEstimatesMerge
-
-    sem_head = "SHE_CTE_ShearEstimatesMerge_"
 
     SEM_NUM_THREADS = sem_head + "number_threads"
 
@@ -72,13 +70,15 @@ class AnalysisConfigKeys(Enum):
         return value in [item.value for item in cls]
 
 
+# Task names for Reconciliation pipeline
+rec_head = "SHE_CTE_ReconcileMeasurements_"
+
+
 class ReconciliationConfigKeys(Enum):
     """ An Enum of all allowed keys for the SHE reconciliation pipeline.
     """
 
     # Options for SHE_CTE_CleanupBiasMeasurement
-
-    rec_head = "SHE_CTE_ReconcileMeasurements_"
 
     REC_METHOD = rec_head + "method"
 
@@ -86,14 +86,19 @@ class ReconciliationConfigKeys(Enum):
     def is_allowed_value(cls, value):
         return value in [item.value for item in cls]
 
+# Task names for Calibration pipeline
+
+
+cbm_head = "SHE_CTE_CleanupBiasMeasurement_"
+mb_head = "SHE_CTE_MeasureBias_"
+ms_head = "SHE_CTE_MeasureStatistics_"
+
 
 class CalibrationConfigKeys(Enum):
     """ An Enum of all allowed keys for the SHE calibration pipelines.
     """
 
     # Options for SHE_CTE_CleanupBiasMeasurement
-
-    cbm_head = "SHE_CTE_CleanupBiasMeasurement_"
 
     CBM_CLEANUP = cbm_head + "cleanup"
 
@@ -104,16 +109,12 @@ class CalibrationConfigKeys(Enum):
 
     # Options for SHE_CTE_MeasureBias
 
-    mb_head = "SHE_CTE_MeasureBias_"
-
     MB_ARCHIVE_DIR = mb_head + "archive_dir"
     MB_NUM_THREADS = mb_head + "number_threads"
     MB_WEBDAV_ARCHIVE = mb_head + "webdav_archive"
     MB_WEBDAV_DIR = mb_head + "webdav_dir"
 
     # Options for SHE_CTE_MeasureStatistics
-
-    ms_head = "SHE_CTE_MeasureStatistics_"
 
     MS_ARCHIVE_DIR = ms_head + "archive_dir"
     MS_WEBDAV_ARCHIVE = ms_head + "webdav_archive"
@@ -190,7 +191,58 @@ def archive_product(product_filename, archive_dir, workdir):
     return
 
 
-def read_config(config_filename, workdir="."):
+def read_analysis_config(config_filename, workdir="."):
+    """ Reads in a configuration file for the SHE Analysis pipeline to a dictionary. Note that all arguments will
+        be read as strings.
+
+        Parameters
+        ----------
+        config_filename : string
+            The workspace-relative name of the config file.
+        workdir : string
+            The working directory.
+    """
+
+    return read_config(config_filename=config_filename,
+                       workdir=workdir,
+                       config_keys=AnalysisConfigKeys)
+
+
+def read_calibration_config(config_filename, workdir="."):
+    """ Reads in a configuration file for the SHE Calibration pipeline to a dictionary. Note that all arguments will
+        be read as strings.
+
+        Parameters
+        ----------
+        config_filename : string
+            The workspace-relative name of the config file.
+        workdir : string
+            The working directory.
+    """
+
+    return read_config(config_filename=config_filename,
+                       workdir=workdir,
+                       config_keys=CalibrationConfigKeys)
+
+
+def read_reconciliation_config(config_filename, workdir="."):
+    """ Reads in a configuration file for the SHE Reconciliation pipeline to a dictionary. Note that all arguments will
+        be read as strings.
+
+        Parameters
+        ----------
+        config_filename : string
+            The workspace-relative name of the config file.
+        workdir : string
+            The working directory.
+    """
+
+    return read_config(config_filename=config_filename,
+                       workdir=workdir,
+                       config_keys=ReconciliationConfigKeys)
+
+
+def read_config(config_filename, workdir=".", config_keys=AnalysisConfigKeys):
     """ Reads in a generic configuration file to a dictionary. Note that all arguments will be read as strings.
 
         Parameters
@@ -216,7 +268,9 @@ def read_config(config_filename, workdir="."):
         if len(filelist) == 0:
             return {}
         elif len(filelist) == 1:
-            return _read_config_product(filelist[0], workdir)
+            return _read_config_product(config_filename=filelist[0],
+                                        workdir=workdir,
+                                        config_keys=config_keys)
         else:
             raise ValueError("File " + qualified_config_filename + " is a listfile with more than one file listed, and " +
                              "is an invalid input to read_config.")
@@ -224,10 +278,12 @@ def read_config(config_filename, workdir="."):
     except (json.decoder.JSONDecodeError, UnicodeDecodeError):
 
         # This isn't a listfile, so try to open and return it
-        return _read_config_product(config_filename, workdir)
+        return _read_config_product(config_filename=config_filename,
+                                    workdir=workdir,
+                                    config_keys=config_keys)
 
 
-def _read_config_product(config_filename, workdir):
+def _read_config_product(config_filename, workdir, config_keys):
 
     # Try to read in as a data product
     try:
@@ -235,15 +291,17 @@ def _read_config_product(config_filename, workdir):
 
         config_data_filename = p.get_data_filename()
 
-        return _read_config_file(find_file(config_data_filename, workdir))
+        return _read_config_file(qualified_config_filename=find_file(config_data_filename, workdir),
+                                 config_keys=config_keys)
 
     except (UnicodeDecodeError, SAXParseException, UnpicklingError) as _e:
 
         # Try to read it as a plain text file
-        return _read_config_file(find_file(config_filename, workdir))
+        return _read_config_file(qualified_config_filename=find_file(config_filename, workdir),
+                                 config_keys=config_keys)
 
 
-def _read_config_file(qualified_config_filename):
+def _read_config_file(qualified_config_filename, config_keys):
 
     config_dict = {}
 
@@ -267,10 +325,10 @@ def _read_config_file(qualified_config_filename):
             key = equal_split_line[0].strip()
 
             # Check that the key is allowed
-            if not ConfigKeys.is_allowed_value(key):
+            if not config_keys.is_allowed_value(key):
                 err_string = ("Invalid key found in pipeline config file " + qualified_config_filename + ": " +
                               key + ". Allowed keys are: ")
-                for allowed_key in ConfigKeys:
+                for allowed_key in config_keys:
                     err_string += "\n  " + allowed_key.value
                 raise ValueError(err_string)
 
@@ -286,7 +344,64 @@ def _read_config_file(qualified_config_filename):
     return config_dict
 
 
-def write_config(config_dict, config_filename, workdir="."):
+def write_analysis_config(config_dict, config_filename, workdir="."):
+    """ Writes a dictionary to an Analysis configuration file.
+
+        Parameters
+        ----------
+        config_dict : string
+            The config dictionary to write out.
+        config_filename : string
+            The desired workspace-relative name of the config file.
+        workdir : string
+            The working directory.
+    """
+
+    return write_config(config_dict=config_dict,
+                        config_filename=config_filename,
+                        workdir=workdir,
+                        config_keys=AnalysisConfigKeys)
+
+
+def write_reconciliation_config(config_dict, config_filename, workdir="."):
+    """ Writes a dictionary to an Reconciliation configuration file.
+
+        Parameters
+        ----------
+        config_dict : string
+            The config dictionary to write out.
+        config_filename : string
+            The desired workspace-relative name of the config file.
+        workdir : string
+            The working directory.
+    """
+
+    return write_config(config_dict=config_dict,
+                        config_filename=config_filename,
+                        workdir=workdir,
+                        config_keys=ReconciliationConfigKeys)
+
+
+def write_calibration_config(config_dict, config_filename, workdir="."):
+    """ Writes a dictionary to an Calibration configuration file.
+
+        Parameters
+        ----------
+        config_dict : string
+            The config dictionary to write out.
+        config_filename : string
+            The desired workspace-relative name of the config file.
+        workdir : string
+            The working directory.
+    """
+
+    return write_config(config_dict=config_dict,
+                        config_filename=config_filename,
+                        workdir=workdir,
+                        config_keys=CalibrationConfigKeys)
+
+
+def write_config(config_dict, config_filename, workdir=".", config_keys=AnalysisConfigKeys):
     """ Writes a dictionary to a configuration file.
 
         Parameters
@@ -297,6 +412,8 @@ def write_config(config_dict, config_filename, workdir="."):
             The desired workspace-relative name of the config file.
         workdir : string
             The working directory.
+        config_keys : Enum
+            The Enum listing the allowed keys for the configuration file
     """
 
     # Silently return if dict and filename are None
@@ -314,10 +431,10 @@ def write_config(config_dict, config_filename, workdir="."):
         for key in config_dict:
 
             # Check that the key is allowed
-            if not ConfigKeys.is_allowed_value(key):
+            if not config_keys.is_allowed_value(key):
                 err_string = ("Invalid key found in pipeline config dict: " +
                               key + ". Allowed keys are: ")
-                for allowed_key in ConfigKeys:
+                for allowed_key in config_keys:
                     err_string += "\n--" + allowed_key.value
                 raise ValueError(err_string)
 
