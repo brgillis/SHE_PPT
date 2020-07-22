@@ -1,6 +1,6 @@
 """ @file she_reconciled_measurements.py
 
-    Created 22  July 2020
+    Created 22 July 2020
 
     Functions to create and output a shear estimates data product.
 

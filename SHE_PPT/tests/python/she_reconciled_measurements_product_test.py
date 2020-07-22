@@ -1,6 +1,6 @@
 """ @file she_reconciled_measurements_product_test.py
 
-    Created 17 Nov 2017
+    Created 22 July 2020
 
     Unit tests for the reconciled shear measurements data product.
 """
