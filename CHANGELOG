@@ -10,6 +10,7 @@ API Changes
 - Added interface to SHE_PPT.mdb to get gain and read noise values for a given quadrant of an exposure
 - Added config key for chains method ("SHE_CTE_EstimateShear_chains_method")
 - ConfigKeys now split based on pipelinem, into AnalysisConfigKeys, CalibrationConfigKeys, and ReconciliationConfigKeys
+- Added config key for which method to use for shear reconciliation ("SHE_CTE_ReconcileMeasurements_method")
 
 Dependency Changes
 ------------------
