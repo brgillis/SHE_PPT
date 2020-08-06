@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-23"
+__updated__ = "2020-08-06"
 
 from collections import OrderedDict
 
@@ -94,9 +94,9 @@ class ShePsfModelImageFormat(object):
         self.template = set_column_properties(self,
             "SHE_PSF_SED_TEMPLATE", dtype=">i8", fits_dtype="K")
         self.bulge_index = set_column_properties(self,
-            "SHE_PSF_BULGE_IDX", dtype=">i4", fits_dtype="J")
+            "SHE_PSF_BULGE_INDEX", dtype=">i4", fits_dtype="J")
         self.disk_index = set_column_properties(self,
-            "SHE_PSF_DISK_IDX", dtype=">i4", fits_dtype="J")
+            "SHE_PSF_DISK_INDEX", dtype=">i4", fits_dtype="J")
         self.image_x = set_column_properties(self,
             "SHE_PSF_IMAGE_X", dtype=">i2", fits_dtype="I")
         self.image_y = set_column_properties(self,

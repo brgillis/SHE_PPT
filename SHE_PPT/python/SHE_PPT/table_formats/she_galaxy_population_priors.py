@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-19"
+__updated__ = "2020-08-06"
 
 from collections import OrderedDict
 
@@ -54,6 +54,7 @@ class SheGalaxyPopulationPriorsMeta(object):
         self.date_hst = "DATE_HST"
         self.data_version = "DATA_VER"
         self.date_candels = "DATE_CND"
+        self.data_release = "DATA_REL"
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_version, None),
@@ -64,6 +65,7 @@ class SheGalaxyPopulationPriorsMeta(object):
                                      (self.date_hst, None),
                                      (self.data_version, None),
                                      (self.date_candels, None),
+                                     (self.data_release, None),
                                      ))
 
         # A list of columns in the desired order
@@ -103,6 +105,15 @@ class SheGalaxyPopulationPriorsFormat(object):
 
         self.vab = set_column_properties(self,
             "SHE_GALPOP_V_AB", comment="mag", dtype=">f4", fits_dtype="E")
+
+        self.beta_0 = set_column_properties(self,
+            "SHE_GALPOP_BETA_0", comment="mag", dtype=">f4", fits_dtype="E")
+        self.e_bulge = set_column_properties(self,
+            "SHE_GALPOP_E_BULGE", comment="mag", dtype=">f4", fits_dtype="E")
+        self.e_disk = set_column_properties(self,
+            "SHE_GALPOP_E_DISK", comment="mag", dtype=">f4", fits_dtype="E")
+        self.e_galaxy = set_column_properties(self,
+            "SHE_GALPOP_E_GALAXY", comment="mag", dtype=">f4", fits_dtype="E")
 
         self.sers_sing_fit = set_column_properties(self,
             "SHE_GALPOP_N_SERSIC_SINGLE_FIT", dtype=">f4", fits_dtype="E")
