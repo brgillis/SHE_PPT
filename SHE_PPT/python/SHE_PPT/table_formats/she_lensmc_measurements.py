@@ -83,7 +83,7 @@ class SheLensMcMeasurementsFormat(SheMeasurementsFormat):
         self.chi2 = set_column_properties(self,
             "SHE_LENSMC_CHI2", dtype=">f4", fits_dtype="E")
         self.dof = set_column_properties(self,
-            "SHE_LENSMC_DOF", dtype=">f4", fits_dtype="E")
+            "SHE_LENSMC_DOF", dtype=">f4", fits_dtype="J")
         self.acc = set_column_properties(self,
             "SHE_LENSMC_ACCEPTANCE", dtype=">f4", fits_dtype="E")
         self.m1_ical = set_column_properties(self,
