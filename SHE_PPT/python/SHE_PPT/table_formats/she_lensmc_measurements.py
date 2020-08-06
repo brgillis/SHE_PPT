@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-19"
+__updated__ = "2020-08-06"
 
 from collections import OrderedDict
 
@@ -74,20 +74,6 @@ class SheLensMcMeasurementsFormat(SheMeasurementsFormat):
         setup_child_table_format(self, child_label, unlabelled_columns=["OBJECT_ID"])
 
         # lensmc specific columns
-        self.re = set_column_properties(self,
-            "SHE_LENSMC_RE", dtype=">f4", fits_dtype="E")
-        self.re_err = set_column_properties(self,
-            "SHE_LENSMC_RE_ERR", dtype=">f4", fits_dtype="E")
-        self.flux = set_column_properties(self,
-            "SHE_LENSMC_FLUX", dtype=">f4", fits_dtype="E")
-        self.flux_err = set_column_properties(self,
-            "SHE_LENSMC_FLUX_ERR", dtype=">f4", fits_dtype="E")
-        self.bulge_frac = set_column_properties(self,
-            "SHE_LENSMC_BULGE_FRAC", dtype=">f4", fits_dtype="E")
-        self.bulge_frac_err = set_column_properties(self,
-            "SHE_LENSMC_BULGE_FRAC_ERR", dtype=">f4", fits_dtype="E")
-        self.snr = set_column_properties(self,
-            "SHE_LENSMC_SNR", dtype=">f4", fits_dtype="E")
         self.snr_err = set_column_properties(self,
             "SHE_LENSMC_SNR_ERR", dtype=">f4", fits_dtype="E")
         self.chi2 = set_column_properties(self,
@@ -96,8 +82,6 @@ class SheLensMcMeasurementsFormat(SheMeasurementsFormat):
             "SHE_LENSMC_DOF", dtype=">f4", fits_dtype="E")
         self.acc = set_column_properties(self,
             "SHE_LENSMC_ACCEPTANCE", dtype=">f4", fits_dtype="E")
-        self.nexp = set_column_properties(self,
-            "SHE_LENSMC_NEXP", dtype=">f4", fits_dtype="E")
         self.m1_ical = set_column_properties(self,
             "SHE_LENSMC_M1_ICAL", dtype=">f4", fits_dtype="E")
         self.m2_ical = set_column_properties(self,
