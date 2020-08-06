@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-19"
+__updated__ = "2020-08-06"
 
 from collections import OrderedDict
 
@@ -61,6 +61,7 @@ class SheLensMcChainsMeta(object):
         self.model_seed = mv.model_seed_label
         self.noise_seed = mv.noise_seed_label
         self.observation_id = mv.obs_id_label
+        self.pointing_id = mv.pnt_id_label
         self.observation_time = mv.obs_time_label
         self.tile_id = mv.tile_id_label
         self.len_chain = "LCHAIN"
@@ -76,9 +77,10 @@ class SheLensMcChainsMeta(object):
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
-                                     (self.observation_id, None),
-                                     (self.observation_time, None),
-                                     (self.tile_id, None),
+                                     (self.observation_id, "Individual ID or list of IDs"),
+                                     (self.pointing_id, "List of pointing IDs"),
+                                     (self.observation_time, "Individual time or list of times"),
+                                     (self.tile_id, "Individual ID or list of IDs"),
                                      (self.len_chain, None),
                                      (self.valid,
                                       "0: Not tested; 1: Pass; -1: Fail")
@@ -165,6 +167,7 @@ def make_lensmc_chains_table_header(
                                   model_seed=None,
                                   noise_seed=None,
                                   observation_id=None,
+                                  pointing_id=None,
                                   observation_time=None,
                                   tile_id=None):
     """
@@ -197,6 +200,7 @@ def make_lensmc_chains_table_header(
     header[tf.m.noise_seed] = noise_seed
 
     header[tf.m.observation_id] = observation_id
+    header[tf.m.pointing_id] = pointing_id
     header[tf.m.observation_time] = observation_time
     header[tf.m.tile_id] = tile_id
 
@@ -217,6 +221,7 @@ def initialise_lensmc_chains_table(mer_final_catalog=None,
                                  model_seed=None,
                                  noise_seed=None,
                                  observation_id=None,
+                                 pointing_id=None,
                                  observation_time=None,
                                  tile_id=None,
                                  ):
@@ -264,6 +269,7 @@ def initialise_lensmc_chains_table(mer_final_catalog=None,
                                                            model_seed=model_seed,
                                                            noise_seed=noise_seed,
                                                            observation_id=observation_id,
+                                                           pointing_id=pointing_id,
                                                            observation_time=observation_time,
                                                            tile_id=tile_id,)
 

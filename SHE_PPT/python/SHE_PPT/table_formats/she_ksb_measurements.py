@@ -96,6 +96,7 @@ def make_ksb_measurements_table_header(model_hash=None,
                                   model_seed=None,
                                   noise_seed=None,
                                   observation_id=None,
+                                  pointing_id=None,
                                   observation_time=None,
                                   tile_id=None,):
     """
@@ -125,6 +126,7 @@ def make_ksb_measurements_table_header(model_hash=None,
     header[tf.m.noise_seed] = noise_seed
 
     header[tf.m.observation_id] = observation_id
+    header[tf.m.pointing_id] = pointing_id
     header[tf.m.observation_time] = observation_time
     header[tf.m.tile_id] = tile_id
 
@@ -141,6 +143,7 @@ def initialise_ksb_measurements_table(mer_final_catalog=None,
                                  model_seed=None,
                                  noise_seed=None,
                                  observation_id=None,
+                                 pointing_id=None,
                                  observation_time=None,
                                  tile_id=None,
                                  ):
@@ -187,6 +190,7 @@ def initialise_ksb_measurements_table(mer_final_catalog=None,
                                                            model_seed=model_seed,
                                                            noise_seed=noise_seed,
                                                            observation_id=observation_id,
+                                                           pointing_id=pointing_id,
                                                            observation_time=observation_time,
                                                            tile_id=tile_id)
 

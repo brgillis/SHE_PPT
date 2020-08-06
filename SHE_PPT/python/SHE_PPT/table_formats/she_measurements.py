@@ -50,6 +50,7 @@ class SheMeasurementsMeta(object):
         self.model_seed = mv.model_seed_label
         self.noise_seed = mv.noise_seed_label
         self.observation_id = mv.obs_id_label
+        self.pointing_id = mv.pnt_id_label
         self.observation_time = mv.obs_time_label
         self.tile_id = mv.tile_id_label
 
@@ -62,9 +63,10 @@ class SheMeasurementsMeta(object):
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
-                                     (self.observation_id, None),
-                                     (self.observation_time, None),
-                                     (self.tile_id, None),
+                                     (self.observation_id, "Individual ID or list of IDs"),
+                                     (self.pointing_id, "List of pointing IDs"),
+                                     (self.observation_time, "Individual time or list of times"),
+                                     (self.tile_id, "Individual ID or list of IDs"),
                                      (self.valid,
                                       "0: Not tested; 1: Pass; -1: Fail")
                                      ))
@@ -125,8 +127,8 @@ class SheMeasurementsFormat(object):
             "E1E2_COVAR", dtype=">f4", fits_dtype="E")
         self.shape_err = set_column_properties(self,
             "SHAPE_ERR", dtype=">f4", fits_dtype="E")
-        self.weight = set_column_properties(self,
-            "WEIGHT", dtype=">f4", fits_dtype="E")
+        self.shear_weight = set_column_properties(self,
+            "SHEAR_WEIGHT", dtype=">f4", fits_dtype="E")
         self.shape_weight = set_column_properties(self,
             "SHAPE_WEIGHT", dtype=">f4", fits_dtype="E")
         self.g1_uncal = set_column_properties(self,
@@ -145,8 +147,8 @@ class SheMeasurementsFormat(object):
             "G1G2_UNCAL_COVAR", dtype=">f4", fits_dtype="E")
         self.e1e2_uncal_covar = set_column_properties(self,
             "E1E2_UNCAL_COVAR", dtype=">f4", fits_dtype="E")
-        self.weight_uncal = set_column_properties(self,
-            "WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
+        self.shear_weight_uncal = set_column_properties(self,
+            "SHEAR_WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
         self.shape_weight_uncal = set_column_properties(self,
             "SHAPE_WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
 

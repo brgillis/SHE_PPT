@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-24"
+__updated__ = "2020-08-06"
 
 logger_name = "SHE_PPT"
 
@@ -38,6 +38,7 @@ ccdid_label = "CCDID"
 dither_dx_label = "DITHERDX"
 dither_dy_label = "DITHERDY"
 obs_id_label = "OBS_ID"
+pnt_id_label = "PNT_ID"
 obs_time_label = "DATE_OBS"
 tile_id_label = "TILE_ID"
 valid_label = "VALID"
