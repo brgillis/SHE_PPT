@@ -122,7 +122,7 @@ class SheMeasurementsFormat(object):
         self.g1g2_covar = set_column_properties(self,
             "G1G2_COVAR", dtype=">f4", fits_dtype="E")
         self.e1e2_covar = set_column_properties(self,
-            "G1G2_COVAR", dtype=">f4", fits_dtype="E")
+            "E1E2_COVAR", dtype=">f4", fits_dtype="E")
         self.shape_err = set_column_properties(self,
             "SHAPE_ERR", dtype=">f4", fits_dtype="E")
         self.weight = set_column_properties(self,
@@ -144,7 +144,7 @@ class SheMeasurementsFormat(object):
         self.g1g2_uncal_covar = set_column_properties(self,
             "G1G2_UNCAL_COVAR", dtype=">f4", fits_dtype="E")
         self.e1e2_uncal_covar = set_column_properties(self,
-            "G1G2_UNCAL_COVAR", dtype=">f4", fits_dtype="E")
+            "E1E2_UNCAL_COVAR", dtype=">f4", fits_dtype="E")
         self.weight_uncal = set_column_properties(self,
             "WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
         self.shape_weight_uncal = set_column_properties(self,
