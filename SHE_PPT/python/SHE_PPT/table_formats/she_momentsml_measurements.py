@@ -74,6 +74,14 @@ class SheMomentsMlMeasurementsFormat(SheMeasurementsFormat):
         setup_child_table_format(self, child_label, unlabelled_columns=["OBJECT_ID"])
 
         # momentsml specific columns
+        self.g1_w = set_column_properties(self,
+            "SHE_MOMENTSML_G1_W", is_optional=False, dtype=">f4", fits_dtype="E")
+        self.g2_w = set_column_properties(self,
+            "SHE_MOMENTSML_G2_W", is_optional=False, dtype=">f4", fits_dtype="E")
+        self.g1_uncal_w = set_column_properties(self,
+            "SHE_MOMENTSML_G1_UNCAL_W", is_optional=False, dtype=">f4", fits_dtype="E")
+        self.g2_uncal_w = set_column_properties(self,
+            "SHE_MOMENTSML_G2_UNCAL_W", is_optional=False, dtype=">f4", fits_dtype="E")
         self.sersic = set_column_properties(self,
             "SHE_MOMENTSML_SERSIC_INDEX", is_optional=False, dtype=">f4", fits_dtype="E")
 

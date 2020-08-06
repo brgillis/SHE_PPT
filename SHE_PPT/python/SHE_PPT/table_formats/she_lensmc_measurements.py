@@ -80,6 +80,8 @@ class SheLensMcMeasurementsFormat(SheMeasurementsFormat):
             "SHE_LENSMC_BULGE_FRAC", dtype=">f4", fits_dtype="E")
         self.bulge_frac_err = set_column_properties(self,
             "SHE_LENSMC_BULGE_FRAC_ERR", dtype=">f4", fits_dtype="E")
+        self.gal_pvalue = set_column_properties(self,
+            "SHE_LENSMC_GAL_PVALUE", dtype=">f4", fits_dtype="E")
         self.chi2 = set_column_properties(self,
             "SHE_LENSMC_CHI2", dtype=">f4", fits_dtype="E")
         self.dof = set_column_properties(self,

@@ -101,6 +101,7 @@ class TestLensMcMeasurementsTableFormat:
         _ = self.table[tf.snr_err]
         _ = self.table[tf.bulge_frac]
         _ = self.table[tf.bulge_frac_err]
+        _ = self.table[tf.gal_pvalue]
         _ = self.table[tf.chi2]
         _ = self.table[tf.dof]
         _ = self.table[tf.acc]
