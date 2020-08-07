@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-08-06"
+__updated__ = "2020-08-07"
 
 from collections import OrderedDict
 
@@ -106,6 +106,8 @@ class SheMeasurementsFormat(object):
             "NEXP", dtype=">i2", fits_dtype="I")
         self.unmasked_fraction = set_column_properties(self,
             "UNMASKED_FRACTION", dtype=">f4", fits_dtype="E")
+        self.rec_flags = set_column_properties(self,
+            "REC_FLAGS", dtype=">i8", fits_dtype="K")
 
         # Shear/shape information
 
