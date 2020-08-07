@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-08-06"
+__updated__ = "2020-08-07"
 
 from collections import OrderedDict
 
@@ -226,7 +226,8 @@ def make_galaxy_population_table_header(cnd_field=None,
                                         detector=None,
                                         date_hst=None,
                                         data_version=None,
-                                        date_candels=None):
+                                        date_candels=None,
+                                        data_release=None):
     """
         @brief Generate a header for a galaxy population table.
 
@@ -243,18 +244,20 @@ def make_galaxy_population_table_header(cnd_field=None,
     header[tf.m.date_hst] = date_hst
     header[tf.m.data_version] = data_version
     header[tf.m.date_candels] = date_candels
+    header[tf.m.data_release] = data_release
     return header
 
 
 def initialise_galaxy_population_priors_table(size=None,
                                  optional_columns=None,
                                  init_cols=None,
-                                       cnd_field=None,
-                                       telescope=None,
-                                       detector=None,
-                                       date_hst=None,
-                                       data_version=None,
-                                       date_candels=None):
+                                 cnd_field=None,
+                                 telescope=None,
+                                 detector=None,
+                                 date_hst=None,
+                                 data_version=None,
+                                 date_candels=None,
+                                 data_release=None):
     """
         @brief Initialise a galaxy population table.
 
@@ -273,8 +276,9 @@ def initialise_galaxy_population_priors_table(size=None,
 
     galaxy_population_table.meta = make_galaxy_population_table_header(
         cnd_field=cnd_field, telescope=telescope, detector=detector,
-        date_hst=date_hst, data_version=data_version, date_candels=date_candels)
+        date_hst=date_hst, data_version=data_version, date_candels=date_candels,
+        data_release=data_release)
 
-    assert(is_in_format(galaxy_population_table, tf))
+    assert(is_in_format(galaxy_population_table, tf, verbose=True))
 
     return galaxy_population_table
