@@ -22,7 +22,7 @@ Created on: 05/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2020-07-01"
+__updated__ = "2020-08-10"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
@@ -500,6 +500,11 @@ class SHEFrameStack(object):
         else:
             object_id_list = None
 
+        if object_id_list is None:
+            prune_images = False
+        else:
+            prune_images = True
+
         # Load in the detections catalogues and combine them into a single catalogue
         if detections_listfile_filename is None:
             detections_catalogue = None
@@ -526,7 +531,6 @@ class SHEFrameStack(object):
                     # If we have no object id list, stack them all
                     detections_catalogue = table.vstack(detections_catalogues,
                                                         metadata_conflicts="silent")  # Conflicts are expected
-                    prune_images = False
                 else:
                     # If we do have an object id list, construct a new table with just the desired rows
                     rows_to_use = []
@@ -542,8 +546,6 @@ class SHEFrameStack(object):
 
                     for row in rows_to_use:
                         detections_catalogue.add_row(row)
-
-                    prune_images = True
 
                     logger.info("Finished pruning list of galaxy objects to loop over")
 
