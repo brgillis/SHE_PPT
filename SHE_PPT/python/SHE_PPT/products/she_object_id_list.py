@@ -75,9 +75,9 @@ def create_dpd_she_object_id_list(id_list=None):
     dpd_she_object_id_list.Header = HeaderProvider.create_generic_header("SHE") # FIXME
 
     if(id_list):
-        __set_id_list(self, id_list)
+        __set_id_list(dpd_she_object_id_list, id_list)
     else:
-        __set_id_list(self, [])
+        __set_id_list(dpd_she_object_id_list, [])
 
     return dpd_she_object_id_list
 
