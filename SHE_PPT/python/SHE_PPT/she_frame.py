@@ -22,7 +22,7 @@ Created on: 02/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2020-08-12"
+__updated__ = "2020-08-13"
 
 from collections import namedtuple
 from copy import deepcopy
@@ -556,11 +556,12 @@ class SHEFrame(object):
                     try:
                         wgt_i = find_extension(wgt_data_hdulist, wgt_extname)
                     except ValueError as e:
+                        logger.warn(str(e))
                         # Try to find by CCDID
                         wgt_i = find_extension(wgt_data_hdulist, ccdid=wgt_ccdid)
                     if wgt_i is None:
                         raise ValueError("No corresponding weight extension found in file " + frame_prod.get_wgt_filename() + "." +
-                                         "\nExpected extname: " + wgt_ccdid)
+                                         "\nExpected CCDID: " + wgt_ccdid)
                     detector_weight = wgt_data_hdulist[wgt_i].data.transpose()
                 else:
                     detector_weight = None
