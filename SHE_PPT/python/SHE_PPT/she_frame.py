@@ -553,15 +553,15 @@ class SHEFrame(object):
                 if wgt_data_hdulist is not None:
                     wgt_extname = id_string  # Background has no tag
                     wgt_ccdid = str(x_i) + str(y_i)
-                    try:
-                        wgt_i = find_extension(wgt_data_hdulist, wgt_extname)
-                    except ValueError as e:
-                        logger.warn(str(e))
+                    wgt_i = find_extension(wgt_data_hdulist, wgt_extname)
+                    if wgt_i is None:
+                        logger.warn("No corresponding weight extension found in file " + frame_prod.get_wgt_filename() + "." +
+                                    "\nExpected EXTNAME: " + wgt_extname)
                         # Try to find by CCDID
                         wgt_i = find_extension(wgt_data_hdulist, ccdid=wgt_ccdid)
-                    if wgt_i is None:
-                        raise ValueError("No corresponding weight extension found in file " + frame_prod.get_wgt_filename() + "." +
-                                         "\nExpected CCDID: " + wgt_ccdid)
+                        if wgt_i is None:
+                            raise ValueError("No corresponding weight extension found in file " + frame_prod.get_wgt_filename() + "." +
+                                             "\nExpected CCDID: " + wgt_ccdid)
                     detector_weight = wgt_data_hdulist[wgt_i].data.transpose()
                 else:
                     detector_weight = None
