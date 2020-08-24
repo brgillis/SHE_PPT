@@ -207,6 +207,27 @@ class TestTelescopeCoords:
 
         return
 
+    @pytest.mark.skip("Not a unit test just checking something")
+    def test_vis_coords_minmax(self):
+
+        # Load values from the MDB first
+        telescope_coords.load_vis_detector_specs(mdb_files=self.mdb_filename)
+
+        # Read in coords from file
+        # fov_x,fov_y,fpa_x,fpa_y
+        lines = open(self.test_data_filename).readlines()
+        fov_to_fpa_data = np.array([[float(pt)
+            for pt in line.strip().split(',')]
+            for line in lines if not line.startswith('#')])
+        full_data = []
+        fov_x_ord = sorted(fov_to_fpa_data, key=itemgetter(0))
+        fov_y_ord = sorted(fov_to_fpa_data, key=itemgetter(1))
+        print(fov_x_ord[0][0],fov_x_ord[-1][0],fov_y_ord[0][1],fov_y_ord[-1][1])
+        assert fov_x_ord[0][0]>=-0.3961
+        assert fov_x_ord[-1][0]<=0.393
+        assert (fov_y_ord[0][1]+0.822)>=0.4642
+        assert (fov_y_ord[-1][1]+0.822)<=1.1722
+        
     def test_vis_coords_range(self):
 
         # Load values from the MDB first
@@ -230,4 +251,3 @@ class TestTelescopeCoords:
 
         assert np.mean([dt[6] for dt in full_data]) < 0.001
         assert (np.mean([dt[7] for dt in full_data]) - 0.822) < 0.001
-

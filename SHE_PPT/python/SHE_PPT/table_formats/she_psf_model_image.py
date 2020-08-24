@@ -30,7 +30,6 @@ from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties, init_table
 from SHE_PPT.utility import hash_any
-import numpy as np
 
 fits_version = "8.0"
 fits_def = "she.psfModelImage.shePsfC"
@@ -152,16 +151,13 @@ def make_psf_table_header(calibration_product, calibration_time, field_product, 
     return header
 
 
-def initialise_psf_table(image=None,
-                         options=None,
-                         size=None,
-                                 optional_columns=None,
-                                 init_cols=None,
+def initialise_psf_table(size=None,
+                         optional_columns=None,
                          calibration_product=None,
                          calibration_time=None,
                          field_product=None,
                          field_time=None,
-                         init_columns={}):
+                         init_cols={}):
     """
         @brief Initialise a PSF table.
 
