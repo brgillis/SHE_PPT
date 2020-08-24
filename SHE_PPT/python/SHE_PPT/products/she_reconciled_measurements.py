@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-22"
+__updated__ = "2020-08-24"
 
 from SHE_PPT.file_io import (read_xml_product, find_aux_file, get_data_filename_from_product,
                              set_data_filename_of_product)
@@ -217,13 +217,13 @@ def __set_spatial_footprint(self, p):
         poly = p.Polygon
     elif hasattr(p, "Data") and hasattr(p.Data, "ImgSpatialFootprint"):
         poly = p.Data.ImgSpatialFootprint.Polygon
-    elif hasattr(p, "Data") and hasattr(p.Data, "CatalogCoverage"):
-        poly = p.Data.CatalogCoverage.SpatialCoverage.Polygon
+    elif hasattr(p, "Data") and hasattr(p.Data, "SpatialCoverage"):
+        poly = p.Data.SpatialCoverage.Polygon
     else:
         raise TypeError("For set_spatial_footprint, must be provided a spatial footprint, a product which has it, " +
                         "or the path to such a product. Received: " + str(type(p)))
 
-    self.Data.CatalogCoverage.SpatialCoverage.Polygon = poly
+    self.Data.SpatialCoverage.Polygon = poly
 
     return
 
@@ -232,7 +232,7 @@ def __get_spatial_footprint(self):
     """ Get the spatial footprint as a polygonType object.
     """
 
-    return self.Data.CatalogCoverage.SpatialCoverage.Polygon
+    return self.Data.SpatialCoverage.Polygon
 
 
 def create_dpd_she_reconciled_measurements(BFD_filename="",
