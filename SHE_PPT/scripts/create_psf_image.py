@@ -82,10 +82,8 @@ def main():
     for row in range(num_rows):
         psfc.add_row([catalogue.field('OBJECT_ID')[row],-1,-1,-1,-1,-1,-1.0,-1.0,'NONE','NONE'])
 
-    print("PSF TAB: ",psfc)
     # Add the table to the HDU list
     psfc_hdu = fits.table_to_hdu(psfc)
-    print("PSFC NR: ",psfc_hdu.data.size)
     hdulist.append(psfc_hdu)
 
     psf_tables.append(psfc)  # Keep a copy of the table

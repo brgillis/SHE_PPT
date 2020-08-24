@@ -30,7 +30,6 @@ from SHE_PPT.flags import she_flag_version
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties, init_table
 from SHE_PPT.utility import hash_any
-import numpy as np
 
 fits_version = "8.0"
 fits_def = "she.psfModelImage.shePsfC"
@@ -180,7 +179,6 @@ def initialise_psf_table(size=None,
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    print("SET: ",tf,init_cols )
     psf_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
 
     psf_table.meta = make_psf_table_header(calibration_product=calibration_product,
