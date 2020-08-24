@@ -351,7 +351,7 @@ def init_table(tf, size=None, optional_columns=None, init_cols=None,):
     if init_cols is None:
         init_cols = {}
     else:
-        for a in init_columns.values():
+        for a in init_cols.values():
             if size is None:
                 size = len(a)
             elif size != len(a):
