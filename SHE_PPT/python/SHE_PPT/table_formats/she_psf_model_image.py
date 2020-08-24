@@ -152,16 +152,13 @@ def make_psf_table_header(calibration_product, calibration_time, field_product, 
     return header
 
 
-def initialise_psf_table(image=None,
-                         options=None,
-                         size=None,
-                                 optional_columns=None,
-                                 init_cols=None,
+def initialise_psf_table(size=None,
+                         optional_columns=None,
                          calibration_product=None,
                          calibration_time=None,
                          field_product=None,
                          field_time=None,
-                         init_columns={}):
+                         init_cols={}):
     """
         @brief Initialise a PSF table.
 
@@ -183,6 +180,7 @@ def initialise_psf_table(image=None,
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
+    print("SET: ",tf,init_cols )
     psf_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
 
     psf_table.meta = make_psf_table_header(calibration_product=calibration_product,
