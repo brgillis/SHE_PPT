@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-12"
+__updated__ = "2020-08-24"
 
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
@@ -82,5 +82,7 @@ def create_dpd_she_detections(data_filename=None):
     return dpd_she_detections
 
 
-# Add a useful alias
+# Add useful aliases
 create_detections_product = create_dpd_she_detections
+create_dpd_mer_final_catalog = create_dpd_she_detections
+create_mer_final_catalog_product = create_dpd_she_detections
