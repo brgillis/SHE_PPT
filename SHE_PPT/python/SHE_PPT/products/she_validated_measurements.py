@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-08-24"
+__updated__ = "2020-08-25"
 
 from SHE_PPT.file_io import (read_xml_product, find_aux_file, get_data_filename_from_product,
                              set_data_filename_of_product)
@@ -224,7 +224,7 @@ def __set_spatial_footprint(self, p):
         raise TypeError("For set_spatial_footprint, must be provided a spatial footprint, a product which has it, " +
                         "or the path to such a product. Received: " + str(type(p)))
 
-    self.Data.CatalogCoverage.SpatialCoverage.Polygon = poly
+    self.Data.SpatialCoverage.Polygon = poly
 
     return
 
