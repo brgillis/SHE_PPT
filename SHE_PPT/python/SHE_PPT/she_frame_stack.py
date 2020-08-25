@@ -22,7 +22,7 @@ Created on: 05/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2020-08-10"
+__updated__ = "2020-08-25"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
@@ -543,6 +543,8 @@ class SHEFrameStack(object):
 
                     detections_catalogue = table.Table(names=detections_catalogues[0].colnames,
                                                        dtype=[detections_catalogues[0].dtype[n] for n in detections_catalogues[0].colnames])
+                    for key in detections_catalogues[0].meta:
+                        detections_catalogue.meta[key] = detections_catalogues[0].meta[key]
 
                     for row in rows_to_use:
                         detections_catalogue.add_row(row)
