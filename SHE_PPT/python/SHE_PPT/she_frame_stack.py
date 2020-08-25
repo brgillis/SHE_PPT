@@ -547,7 +547,10 @@ class SHEFrameStack(object):
                         detections_catalogue.meta[key] = detections_catalogues[0].meta[key]
 
                     for row in rows_to_use:
-                        detections_catalogue.add_row(row)
+                        detections_catalogue.add_row()
+                        new_row = detections_catalogue[-1]
+                        for key in row:
+                            new_row[key] = row[key]
 
                     logger.info("Finished pruning list of galaxy objects to loop over")
 
