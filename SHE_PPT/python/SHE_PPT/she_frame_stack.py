@@ -544,7 +544,8 @@ class SHEFrameStack(object):
                     detections_catalogue = initialise_mer_final_catalog()
 
                     for key in detections_catalogues[0].meta:
-                        detections_catalogue.meta[key] = detections_catalogues[0].meta[key]
+                        if key in detections_catalogue.meta:
+                            detections_catalogue.meta[key] = detections_catalogues[0].meta[key]
 
                     for row in rows_to_use:
                         detections_catalogue.add_row()
