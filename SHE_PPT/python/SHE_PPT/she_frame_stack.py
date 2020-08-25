@@ -38,7 +38,7 @@ from SHE_PPT.file_io import read_listfile, read_xml_product, find_file
 from SHE_PPT.she_frame import SHEFrame
 from SHE_PPT.she_image import SHEImage
 from SHE_PPT.she_image_stack import SHEImageStack
-from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
+from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf, initialise_mer_final_catalog
 from SHE_PPT.utility import find_extension, load_wcs
 import numpy as np
 
@@ -541,8 +541,8 @@ class SHEFrameStack(object):
                             if row[mfc_tf.ID] in object_id_list:
                                 rows_to_use.append(row)
 
-                    detections_catalogue = table.Table(names=detections_catalogues[0].colnames,
-                                                       dtype=[detections_catalogues[0].dtype[n] for n in detections_catalogues[0].colnames])
+                    detections_catalogue = initialise_mer_final_catalog()
+
                     for key in detections_catalogues[0].meta:
                         detections_catalogue.meta[key] = detections_catalogues[0].meta[key]
 
