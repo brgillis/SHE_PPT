@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-19"
+__updated__ = "2020-08-26"
 
 from collections import OrderedDict
 
@@ -140,7 +140,7 @@ class SheLensMcChainsFormat(object):
             "SHE_LENSMC_DOF", is_optional=True, dtype=">f4", fits_dtype="E")
         self.acc = set_column_properties(self,
             "SHE_LENSMC_ACCEPTANCE", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.no_exp = set_column_properties(self,
+        self.nexp = set_column_properties(self,
             "SHE_LENSMC_NEXP", is_optional=True, dtype=">f4", fits_dtype="E")
 
         # A list of columns in the desired order
