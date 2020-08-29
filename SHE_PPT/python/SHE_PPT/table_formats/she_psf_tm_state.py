@@ -92,9 +92,9 @@ class ShePsfTmStateFormat(object):
         # @TODO: option for FIELD/CALIB - use self.data_type
 
         for colname in ["M1TRAD", "M2TRAD", "FOM1TFRN", "FOM2TFRN",
-                        "M3TRAD", "DIC_TFRN", "M1TCON", "M2TZ",
-                        "M2TX", "M2TY", "M2RX", "M2RY", "M3TZ", "M3TX",
-                        "M3TY", "M3RX", "M3RY"]:
+                        "M3TRAD", "DIC_TFRN", "M1TCON", "M2TCON", 
+                        "M3TCON", "M2TZ", "M2TX", "M2TY", "M2RX", 
+                        "M2RY", "M3TZ", "M3TX", "M3TY", "M3RX", "M3RY"]:
             setattr(self, colname.lower(),
                     set_column_properties(self, name=self.get_colname(colname),
                         dtype=">f4", fits_dtype="E"))

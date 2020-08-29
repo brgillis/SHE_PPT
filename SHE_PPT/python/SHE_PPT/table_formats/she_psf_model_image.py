@@ -109,6 +109,8 @@ class ShePsfModelImageFormat(object):
             "SHE_PSF_CALIB_TIME", dtype="str", fits_dtype="A", length=20)
         self.field_time = set_column_properties(self,
             "SHE_PSF_FIELD_TIME", dtype="str", fits_dtype="A", length=20)
+        self.qual_flag = set_column_properties(self,
+            "SHE_PSF_QUAL_FLAG", dtype=">i4", fits_dtype="J")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
