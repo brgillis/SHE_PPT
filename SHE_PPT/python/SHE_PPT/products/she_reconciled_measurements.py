@@ -216,6 +216,8 @@ def __set_spatial_footprint(self, p):
         poly = p
     elif hasattr(p, "Polygon"):
         poly = p.Polygon
+    elif hasattr(p, "Data") and hasattr(p.Data, "ImgSpatialFootprint"):
+        poly = p.Data.ImgSpatialFootprint.Polygon
     elif hasattr(p, "Data") and hasattr(p.Data, "SpatialCoverage"):
         poly = p.Data.SpatialCoverage.Polygon
     elif hasattr(p, "Data") and hasattr(p.Data, "CatalogCoverage"):
