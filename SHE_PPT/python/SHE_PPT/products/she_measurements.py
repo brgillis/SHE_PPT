@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-08-25"
+__updated__ = "2020-09-01"
 
 from SHE_PPT.file_io import (read_xml_product, find_aux_file, get_data_filename_from_product,
                              set_data_filename_of_product)
@@ -216,8 +216,8 @@ def __set_spatial_footprint(self, p):
         poly = p
     elif hasattr(p, "Polygon"):
         poly = p.Polygon
-    elif hasattr(p, "Data") and hasattr(p.Data, "ImgSpatialFootprint"):
-        poly = p.Data.ImgSpatialFootprint.Polygon
+    elif hasattr(p, "Data") and hasattr(p.Data, "SpatialCoverage"):
+        poly = p.Data.SpatialCoverage.Polygon
     elif hasattr(p, "Data") and hasattr(p.Data, "CatalogCoverage"):
         poly = p.Data.CatalogCoverage.SpatialCoverage.Polygon
     else:
@@ -276,9 +276,9 @@ def create_bfd_moments(filename):
     BFD_shear_estimates = she_pro.sheBfdMoments()
 
     BFD_shear_estimates.DataStorage = dm_utils.create_fits_storage(she_pro.sheBfdMomentsFile,
-                                                                      filename,
-                                                                      "she.bfdMoments",
-                                                                      "8.0")
+                                                                   filename,
+                                                                   "she.bfdMoments",
+                                                                   "8.0")
     BFD_shear_estimates.Valid = "VALID"
 
     return BFD_shear_estimates
@@ -292,9 +292,9 @@ def create_ksb_estimates(filename):
     KSB_shear_estimates = she_pro.sheKsbMeasurements()
 
     KSB_shear_estimates.DataStorage = dm_utils.create_fits_storage(she_pro.sheKsbMeasurementsFile,
-                                                                      filename,
-                                                                      "she.ksbMeasurements",
-                                                                      "8.0")
+                                                                   filename,
+                                                                   "she.ksbMeasurements",
+                                                                   "8.0")
     KSB_shear_estimates.Valid = "VALID"
 
     return KSB_shear_estimates
@@ -324,9 +324,9 @@ def create_momentsml_estimates(filename):
     MomentsML_shear_estimates = she_pro.sheMomentsMlMeasurements()
 
     MomentsML_shear_estimates.DataStorage = dm_utils.create_fits_storage(she_pro.sheMomentsMlMeasurementsFile,
-                                                                      filename,
-                                                                      "she.momentsMlMeasurements",
-                                                                      "8.0")
+                                                                         filename,
+                                                                         "she.momentsMlMeasurements",
+                                                                         "8.0")
     MomentsML_shear_estimates.Valid = "VALID"
 
     return MomentsML_shear_estimates
@@ -340,9 +340,9 @@ def create_regauss_estimates(filename):
     REGAUSS_shear_estimates = she_pro.sheRegaussMeasurements()
 
     REGAUSS_shear_estimates.DataStorage = dm_utils.create_fits_storage(she_pro.sheRegaussMeasurementsFile,
-                                                                      filename,
-                                                                      "she.regaussMeasurements",
-                                                                      "8.0")
+                                                                       filename,
+                                                                       "she.regaussMeasurements",
+                                                                       "8.0")
     REGAUSS_shear_estimates.Valid = "VALID"
 
     return REGAUSS_shear_estimates
