@@ -84,7 +84,7 @@ def create_dpd_she_lensmc_chains(filename=None):
 
 
 # Add a useful alias
-create_lensmc_chains_data_product = create_dpd_she_lensmc_chains
+create_lensmc_chains_product = create_dpd_she_lensmc_chains
 
 
 def create_she_lensmc_chains(filename=None):
