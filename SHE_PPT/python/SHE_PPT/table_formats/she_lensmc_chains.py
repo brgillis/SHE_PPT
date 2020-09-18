@@ -115,10 +115,10 @@ class SheLensMcChainsFormat(object):
         self.fit_class = set_column_properties(self,
                                                "SHE_LENSMC_FIT_CLASS", dtype=">i2", fits_dtype="I")
         self.weight = set_column_properties(self,
-                                            "SHE_LENSMC_CHAINS_SHEAR_WEIGHT", dtype=">i2", fits_dtype="E",
+                                            "SHE_LENSMC_CHAINS_SHEAR_WEIGHT", dtype=">f4", fits_dtype="E",
                                             is_optional=True)
         self.shape_weight = set_column_properties(self,
-                                                  "SHE_LENSMC_CHAINS_SHAPE_WEIGHT", dtype=">i2", fits_dtype="E",
+                                                  "SHE_LENSMC_CHAINS_SHAPE_WEIGHT", dtype=">f4", fits_dtype="E",
                                                   is_optional=True)
 
         self.g1 = set_column_properties(self,
