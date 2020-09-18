@@ -66,9 +66,9 @@ class ShePsfZmStateMeta(object):
                                      (self.extname, None),
                                      ))
 
-        # A list of columns in the desired order
+        # A list of headers in the desired order
         self.all = list(self.comments.keys())
-
+        
 
 class ShePsfZmStateFormat(object):
     """
