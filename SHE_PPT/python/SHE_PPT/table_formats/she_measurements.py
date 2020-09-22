@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-08"
+__updated__ = "2020-09-22"
 
 from collections import OrderedDict
 
@@ -92,48 +92,54 @@ class SheMeasurementsFormat(object):
         # Table column labels and properties
 
         self.ID = set_column_properties(self,
-            "OBJECT_ID", dtype=">i8", fits_dtype="K")
+                                        "OBJECT_ID", dtype=">i8", fits_dtype="K")
 
         self.fit_flags = set_column_properties(self,
-            "FIT_FLAGS", dtype=">i8", fits_dtype="K")
+                                               "FIT_FLAGS", dtype=">i8", fits_dtype="K")
         self.val_flags = set_column_properties(self,
-            "VAL_FLAGS", dtype=">i8", fits_dtype="K")
+                                               "VAL_FLAGS", dtype=">i8", fits_dtype="K")
         self.fit_class = set_column_properties(self,
-            "FIT_CLASS", dtype=">i2", fits_dtype="I")
+                                               "FIT_CLASS", dtype=">i2", fits_dtype="I")
 
         self.g1 = set_column_properties(self,
-            "G1", dtype=">f4", fits_dtype="E")
+                                        "G1", dtype=">f4", fits_dtype="E")
         self.g1_err = set_column_properties(self,
-            "G1_ERR", dtype=">f4", fits_dtype="E")
+                                            "G1_ERR", dtype=">f4", fits_dtype="E")
         self.g2 = set_column_properties(self,
-            "G2", dtype=">f4", fits_dtype="E")
+                                        "G2", dtype=">f4", fits_dtype="E")
         self.g2_err = set_column_properties(self,
-            "G2_ERR", dtype=">f4", fits_dtype="E")
+                                            "G2_ERR", dtype=">f4", fits_dtype="E")
         self.g1g2_covar = set_column_properties(self,
-            "G1G2_COVAR", dtype=">f4", fits_dtype="E")
+                                                "G1G2_COVAR", dtype=">f4", fits_dtype="E")
+        self.e_var = set_column_properties(self,
+                                           "E_VAR", dtype=">f4", fits_dtype="E")
         self.weight = set_column_properties(self,
-            "WEIGHT", dtype=">f4", fits_dtype="E")
+                                            "WEIGHT", dtype=">f4", fits_dtype="E")
         self.g1_uncal = set_column_properties(self,
-            "G1_UNCAL", dtype=">f4", fits_dtype="E")
+                                              "G1_UNCAL", dtype=">f4", fits_dtype="E")
         self.g1_uncal_err = set_column_properties(self,
-            "G1_UNCAL_ERR", dtype=">f4", fits_dtype="E")
+                                                  "G1_UNCAL_ERR", dtype=">f4", fits_dtype="E")
         self.g2_uncal = set_column_properties(self,
-            "G2_UNCAL", dtype=">f4", fits_dtype="E")
+                                              "G2_UNCAL", dtype=">f4", fits_dtype="E")
         self.g2_uncal_err = set_column_properties(self,
-            "G2_UNCAL_ERR", dtype=">f4", fits_dtype="E")
+                                                  "G2_UNCAL_ERR", dtype=">f4", fits_dtype="E")
         self.g1g2_uncal_covar = set_column_properties(self,
-            "G1G2_UNCAL_COVAR", dtype=">f4", fits_dtype="E")
+                                                      "G1G2_UNCAL_COVAR", dtype=">f4", fits_dtype="E")
         self.weight_uncal = set_column_properties(self,
-            "WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
+                                                  "WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
+        self.e_uncal_var = set_column_properties(self,
+                                                 "E_UNCAL_VAR", dtype=">f4", fits_dtype="E")
+        self.shape_noise = set_column_properties(self,
+                                                 "ASSUMED_SHAPE_NOISE", dtype=">f4", fits_dtype="E")
 
         self.ra = set_column_properties(self,
-            "UPDATED_RA", comment="deg")
+                                        "UPDATED_RA", comment="deg")
         self.ra_err = set_column_properties(self,
-            "UPDATED_RA_ERR", comment="deg")
+                                            "UPDATED_RA_ERR", comment="deg")
         self.dec = set_column_properties(self,
-            "UPDATED_DEC", comment="deg")
+                                         "UPDATED_DEC", comment="deg")
         self.dec_err = set_column_properties(self,
-            "UPDATED_DEC_ERR", comment="deg")
+                                             "UPDATED_DEC_ERR", comment="deg")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -150,4 +156,3 @@ she_measurements_table_format = SheMeasurementsFormat()
 
 # And a convient alias for it
 tf = she_measurements_table_format
-
