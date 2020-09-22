@@ -114,7 +114,7 @@ class SheMeasurementsFormat(object):
         self.weight = set_column_properties(self,
                                             "WEIGHT", dtype=">f4", fits_dtype="E")
         self.e_var = set_column_properties(self,
-                                           "E_VAR", dtype=">f4", fits_dtype="E")
+                                           "E_VAR", dtype=">f4", fits_dtype="E", optional=True)
         self.g1_uncal = set_column_properties(self,
                                               "G1_UNCAL", dtype=">f4", fits_dtype="E")
         self.g1_uncal_err = set_column_properties(self,
@@ -128,9 +128,9 @@ class SheMeasurementsFormat(object):
         self.weight_uncal = set_column_properties(self,
                                                   "WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
         self.e_uncal_var = set_column_properties(self,
-                                                 "E_UNCAL_VAR", dtype=">f4", fits_dtype="E")
+                                                 "E_UNCAL_VAR", dtype=">f4", fits_dtype="E", optional=True)
         self.shape_noise = set_column_properties(self,
-                                                 "ASSUMED_SHAPE_NOISE", dtype=">f4", fits_dtype="E")
+                                                 "ASSUMED_SHAPE_NOISE", dtype=">f4", fits_dtype="E", optional=True)
 
         self.ra = set_column_properties(self,
                                         "UPDATED_RA", comment="deg")
