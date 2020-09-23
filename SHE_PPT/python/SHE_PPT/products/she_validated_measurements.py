@@ -21,10 +21,11 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-18"
+__updated__ = "2020-09-01"
 
 from SHE_PPT.file_io import (read_xml_product, find_aux_file, get_data_filename_from_product,
                              set_data_filename_of_product)
+import ST_DM_DmUtils.DmUtils as dm_utils
 from ST_DM_HeaderProvider import GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.bas.imp.raw.stc_stub import polygonType
 from ST_DataModelBindings.dpd.she.validatedmeasurements_stub import dpdSheValidatedMeasurements
@@ -217,13 +218,15 @@ def __set_spatial_footprint(self, p):
         poly = p.Polygon
     elif hasattr(p, "Data") and hasattr(p.Data, "ImgSpatialFootprint"):
         poly = p.Data.ImgSpatialFootprint.Polygon
+    elif hasattr(p, "Data") and hasattr(p.Data, "SpatialCoverage"):
+        poly = p.Data.SpatialCoverage.Polygon
     elif hasattr(p, "Data") and hasattr(p.Data, "CatalogCoverage"):
         poly = p.Data.CatalogCoverage.SpatialCoverage.Polygon
     else:
         raise TypeError("For set_spatial_footprint, must be provided a spatial footprint, a product which has it, " +
                         "or the path to such a product. Received: " + str(type(p)))
 
-    self.Data.CatalogCoverage.SpatialCoverage.Polygon = poly
+    self.Data.SpatialCoverage.Polygon = poly
 
     return
 
@@ -235,12 +238,12 @@ def __get_spatial_footprint(self):
     return self.Data.CatalogCoverage.SpatialCoverage.Polygon
 
 
-def create_dpd_she_validated_measurements(BFD_filename="",
-                                         KSB_filename="",
-                                         LensMC_filename="",
-                                         MomentsML_filename="",
-                                         REGAUSS_filename="",
-                                         spatial_footprint=None):
+def create_dpd_she_validated_measurements(BFD_filename=None,
+                                          KSB_filename=None,
+                                          LensMC_filename=None,
+                                          MomentsML_filename=None,
+                                          REGAUSS_filename=None,
+                                          spatial_footprint=None):
     """
         @TODO fill in docstring
     """
@@ -274,15 +277,11 @@ def create_bfd_moments(filename):
 
     BFD_shear_estimates = she_pro.sheBfdMoments()
 
-    BFD_shear_estimates.format = "she.bfdMoments"
-    BFD_shear_estimates.version = "0.1"
-
-    BFD_shear_estimates.DataStorage = she_pro.sheBfdMomentsFile()
-    BFD_shear_estimates.Valid = "UNKNOWN"
-
-    BFD_shear_estimates.DataStorage.DataContainer = dataContainer()
-    BFD_shear_estimates.DataStorage.DataContainer.FileName = filename
-    BFD_shear_estimates.DataStorage.DataContainer.filestatus = "PROPOSED"
+    BFD_shear_estimates.DataStorage = dm_utils.create_fits_storage(she_pro.sheBfdMomentsFile,
+                                                                   filename,
+                                                                   "she.bfdMoments",
+                                                                   "8.0")
+    BFD_shear_estimates.Valid = "VALID"
 
     return BFD_shear_estimates
 
@@ -292,14 +291,13 @@ def create_ksb_estimates(filename):
         @TODO fill in docstring
     """
 
-    KSB_shear_estimates = she_pro.sheKsbShearMeasurements()
+    KSB_shear_estimates = she_pro.sheKsbMeasurements()
 
-    KSB_shear_estimates.format = "she.ksbShearMeasurements"
-    KSB_shear_estimates.version = "0.1"
-
-    KSB_shear_estimates.DataContainer = dataContainer()
-    KSB_shear_estimates.DataContainer.FileName = filename
-    KSB_shear_estimates.DataContainer.filestatus = "PROPOSED"
+    KSB_shear_estimates.DataStorage = dm_utils.create_fits_storage(she_pro.sheKsbMeasurementsFile,
+                                                                   filename,
+                                                                   "she.ksbMeasurements",
+                                                                   "8.0")
+    KSB_shear_estimates.Valid = "VALID"
 
     return KSB_shear_estimates
 
@@ -309,14 +307,13 @@ def create_lensmc_estimates(filename):
         @TODO fill in docstring
     """
 
-    LensMC_shear_estimates = she_pro.sheLensMcShearMeasurements()
+    LensMC_shear_estimates = she_pro.sheLensMcMeasurements()
 
-    LensMC_shear_estimates.format = "she.lensMcShearMeasurements"
-    LensMC_shear_estimates.version = "0.1"
-
-    LensMC_shear_estimates.DataContainer = dataContainer()
-    LensMC_shear_estimates.DataContainer.FileName = filename
-    LensMC_shear_estimates.DataContainer.filestatus = "PROPOSED"
+    LensMC_shear_estimates.DataStorage = dm_utils.create_fits_storage(she_pro.sheLensMcMeasurementsFile,
+                                                                      filename,
+                                                                      "she.lensMcMeasurements",
+                                                                      "8.0")
+    LensMC_shear_estimates.Valid = "VALID"
 
     return LensMC_shear_estimates
 
@@ -326,14 +323,13 @@ def create_momentsml_estimates(filename):
         @TODO fill in docstring
     """
 
-    MomentsML_shear_estimates = she_pro.sheMomentsMlShearMeasurements()
+    MomentsML_shear_estimates = she_pro.sheMomentsMlMeasurements()
 
-    MomentsML_shear_estimates.format = "she.momentsMlShearMeasurements"
-    MomentsML_shear_estimates.version = "0.1"
-
-    MomentsML_shear_estimates.DataContainer = dataContainer()
-    MomentsML_shear_estimates.DataContainer.FileName = filename
-    MomentsML_shear_estimates.DataContainer.filestatus = "PROPOSED"
+    MomentsML_shear_estimates.DataStorage = dm_utils.create_fits_storage(she_pro.sheMomentsMlMeasurementsFile,
+                                                                         filename,
+                                                                         "she.momentsMlMeasurements",
+                                                                         "8.0")
+    MomentsML_shear_estimates.Valid = "VALID"
 
     return MomentsML_shear_estimates
 
@@ -343,13 +339,12 @@ def create_regauss_estimates(filename):
         @TODO fill in docstring
     """
 
-    REGAUSS_shear_estimates = she_pro.sheRegaussShearMeasurements()
+    REGAUSS_shear_estimates = she_pro.sheRegaussMeasurements()
 
-    REGAUSS_shear_estimates.format = "she.regaussShearMeasurements"
-    REGAUSS_shear_estimates.version = "0.1"
-
-    REGAUSS_shear_estimates.DataContainer = dataContainer()
-    REGAUSS_shear_estimates.DataContainer.FileName = filename
-    REGAUSS_shear_estimates.DataContainer.filestatus = "PROPOSED"
+    REGAUSS_shear_estimates.DataStorage = dm_utils.create_fits_storage(she_pro.sheRegaussMeasurementsFile,
+                                                                       filename,
+                                                                       "she.regaussMeasurements",
+                                                                       "8.0")
+    REGAUSS_shear_estimates.Valid = "VALID"
 
     return REGAUSS_shear_estimates

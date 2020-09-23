@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-30"
+__updated__ = "2020-08-10"
 
 import codecs
 import hashlib
@@ -155,15 +155,25 @@ def get_release_from_version(version):
     return major_version_string + "." + minor_version_string
 
 
-def find_extension(hdulist, extname):
-    """Find the index of the extension of a fits HDUList with the correct EXTNAME value.
+def find_extension(hdulist, extname=None, ccdid=None):
+    """Find the index of the extension of a fits HDUList with the correct EXTNAME or CCDID value.
     """
-    for i, hdu in enumerate(hdulist):
-        if not "EXTNAME" in hdu.header:
-            continue
-        if hdu.header["EXTNAME"] == extname:
-            return i
-    return None
+    if extname is not None:
+        for i, hdu in enumerate(hdulist):
+            if not "EXTNAME" in hdu.header:
+                continue
+            if hdu.header["EXTNAME"] == extname:
+                return i
+        return None
+    elif ccdid is not None:
+        for i, hdu in enumerate(hdulist):
+            if not "CCDID" in hdu.header:
+                continue
+            if hdu.header["CCDID"] == ccdid:
+                return i
+        return None
+    else:
+        raise ValueError("Either extname or ccdid must be supplied.")
 
 
 def get_detector(obj):

@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-22"
+__updated__ = "2020-09-08"
 
 from enum import Enum
 import json.decoder
@@ -81,6 +81,7 @@ class ReconciliationConfigKeys(Enum):
     # Options for SHE_CTE_CleanupBiasMeasurement
 
     REC_METHOD = rec_head + "method"
+    CHAINS_REC_METHOD = rec_head + "chains_method"
 
     @classmethod
     def is_allowed_value(cls, value):
@@ -186,7 +187,7 @@ def archive_product(product_filename, archive_dir, workdir):
 
     except Exception as e:
         logger.warning("Failsafe exception block triggered when trying to save statistics product in archive. " +
-                    "Exception was: " + str(e))
+                       "Exception was: " + str(e))
 
     return
 
