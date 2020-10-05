@@ -136,8 +136,6 @@ def create_she_reconciled_lensmc_chains(filename=None):
     she_reconciled_lensmc_chains.format = "she.lensMcChains"
     she_reconciled_lensmc_chains.version = "8.0"
 
-    she_reconciled_lensmc_chains.DataContainer = DataContainer()
-    she_reconciled_lensmc_chains.DataContainer.FileName = filename
-    she_reconciled_lensmc_chains.DataContainer.filestatus = "PROPOSED"
+    __set_filename(dpd_she_reconciled_lensmc_chains, filename)
 
     return she_reconciled_lensmc_chains
