@@ -105,7 +105,7 @@ def __get_spatial_footprint(self):
     return self.Data.CatalogCoverage.SpatialCoverage.Polygon
 
 
-def create_dpd_she_reconciled_lensmc_chains(filename=None,
+def create_dpd_she_reconciled_lensmc_chains(filename="None",
                                             spatial_footprint=None):
     """
         @TODO fill in docstring
@@ -126,7 +126,7 @@ def create_dpd_she_reconciled_lensmc_chains(filename=None,
 create_reconciled_lensmc_chains_product = create_dpd_she_reconciled_lensmc_chains
 
 
-def create_she_reconciled_lensmc_chains(filename=None):
+def create_she_reconciled_lensmc_chains(filename="None"):
     """
         @TODO fill in docstring
     """

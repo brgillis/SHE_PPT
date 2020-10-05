@@ -22,7 +22,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-09-01"
+__updated__ = "2020-10-05"
 
 import pickle
 
@@ -106,7 +106,7 @@ def __get_spatial_footprint(self):
     return self.Data.CatalogCoverage.SpatialCoverage.Polygon
 
 
-def create_dpd_she_lensmc_chains(filename=None,
+def create_dpd_she_lensmc_chains(filename="None",
                                  spatial_footprint=None):
     """
         @TODO fill in docstring
@@ -127,7 +127,7 @@ def create_dpd_she_lensmc_chains(filename=None,
 create_lensmc_chains_product = create_dpd_she_lensmc_chains
 
 
-def create_she_lensmc_chains(filename=None):
+def create_she_lensmc_chains(filename="None"):
     """
         @TODO fill in docstring
     """
@@ -137,8 +137,6 @@ def create_she_lensmc_chains(filename=None):
     she_lensmc_chains.format = "she.lensMcChains"
     she_lensmc_chains.version = "8.0"
 
-    she_lensmc_chains.DataContainer = DataContainer()
-    she_lensmc_chains.DataContainer.FileName = filename
-    she_lensmc_chains.DataContainer.filestatus = "PROPOSED"
+    __set_filename(dpd_she_lensmc_chains, filename)
 
     return she_lensmc_chains
