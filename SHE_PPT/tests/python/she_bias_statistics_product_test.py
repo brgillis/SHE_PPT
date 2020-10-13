@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-23"
+__updated__ = "2020-10-13"
 
 import os
 
@@ -82,11 +82,11 @@ class TestShearBiasStatsProduct(object):
 
         # Create the product
         product = prod.create_dpd_she_bias_statistics_from_stats(BFD_bias_statistics=stats["BFD"],
-                                                                   KSB_bias_statistics=stats["KSB"],
-                                                                   LensMC_bias_statistics=stats["LensMC"],
-                                                                   MomentsML_bias_statistics=stats["MomentsML"],
-                                                                   REGAUSS_bias_statistics=stats["REGAUSS"],
-                                                                   workdir=workdir)
+                                                                 KSB_bias_statistics=stats["KSB"],
+                                                                 LensMC_bias_statistics=stats["LensMC"],
+                                                                 MomentsML_bias_statistics=stats["MomentsML"],
+                                                                 REGAUSS_bias_statistics=stats["REGAUSS"],
+                                                                 workdir=workdir)
 
         # Check that it validates the schema
         product.validateBinding()
@@ -194,6 +194,7 @@ class TestShearBiasStatsProduct(object):
                 assert np.isclose(getattr(new_object[1], val), getattr(original_object[1], val),
                                   rtol=1e-4, atol=1e-5), "Method: " + method
 
+    @pytest.mark.skip("No XML implementation yet.")
     def test_xml_writing_and_reading(self, tmpdir):
 
         workdir = str(tmpdir)
@@ -230,11 +231,11 @@ class TestShearBiasStatsProduct(object):
                 stats[method] = BFDSumStatistics(sums_for_bfd)
         # Create the product
         product = prod.create_dpd_she_bias_statistics_from_stats(BFD_bias_statistics=stats["BFD"],
-                                                                   KSB_bias_statistics=stats["KSB"],
-                                                                   LensMC_bias_statistics=stats["LensMC"],
-                                                                   MomentsML_bias_statistics=stats["MomentsML"],
-                                                                   REGAUSS_bias_statistics=stats["REGAUSS"],
-                                                                   workdir=workdir)
+                                                                 KSB_bias_statistics=stats["KSB"],
+                                                                 LensMC_bias_statistics=stats["LensMC"],
+                                                                 MomentsML_bias_statistics=stats["MomentsML"],
+                                                                 REGAUSS_bias_statistics=stats["REGAUSS"],
+                                                                 workdir=workdir)
 
         # Save the product in an XML file
         filename = "she_shear_estimates.xml"
