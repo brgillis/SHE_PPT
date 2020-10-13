@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-09"
+__updated__ = "2020-10-13"
 
 from datetime import datetime
 import json
@@ -200,7 +200,7 @@ def replace_multiple_in_file(input_filename, output_filename, input_strings, out
                 fout.write(new_line)
 
 
-def write_xml_product(product, xml_filename, workdir=".", allow_pickled=True):
+def write_xml_product(product, xml_filename, workdir=".", allow_pickled=False):
 
     # Silently coerce input into a string
     xml_filename = str(xml_filename)
