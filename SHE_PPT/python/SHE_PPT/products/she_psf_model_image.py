@@ -27,6 +27,8 @@ from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_f
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.psfmodelimage_stub import dpdShePsfModelImage
 
+sample_file_name = "SHE_PPT/sample_psf_model_image.xml"
+
 
 def init():
     """
@@ -51,11 +53,11 @@ def init():
 
 
 def __set_data_filename(self, filename):
-    set_data_filename_of_product(self, filename)
+    set_data_filename_of_product(self, filename, "DataStorage")
 
 
 def __get_data_filename(self):
-    return get_data_filename_from_product(self)
+    return get_data_filename_from_product(self, "DataStorage")
 
 
 def __get_all_filenames(self):
@@ -75,7 +77,7 @@ def create_dpd_she_psf_model_image(filename="None"):
     dpd_she_psf_model_image.Header = HeaderProvider.create_generic_header("SHE")
 
     if filename:
-        __set_filename(dpd_she_psf_model_image, filename)
+        __set_data_filename(dpd_she_psf_model_image, filename)
 
     return dpd_she_psf_model_image
 
