@@ -24,6 +24,7 @@ __updated__ = "2020-10-13"
 import os
 
 from astropy.table import Table
+import pytest
 
 import SHE_PPT
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
@@ -32,6 +33,7 @@ from SHE_PPT.math import LinregressStatistics, BFDSumStatistics, BiasMeasurement
 from SHE_PPT.products import she_bias_statistics as prod
 from SHE_PPT.table_formats.she_bias_statistics import calculate_bias_measurements
 import numpy as np
+
 
 seed = 10245
 

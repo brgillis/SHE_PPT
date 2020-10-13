@@ -20,6 +20,8 @@
 
 __updated__ = "2020-10-13"
 
+import pytest
+
 from SHE_PPT.file_io import (read_xml_product, write_xml_product,
                              read_pickled_product, write_pickled_product)
 from SHE_PPT.products import she_simulated_catalog as prod
