@@ -21,20 +21,19 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-30"
+__updated__ = "2020-10-13"
 
-# import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
+from ST_DataModelBindings.dpd.she.psfmodelimage_stub import dpdShePsfModelImage
 
 
 def init():
     """
-        Adds some extra functionality to the DpdSheAstrometry product
+        Adds some extra functionality to the dpdShePsfModelImage product
     """
 
-    # binding_class = she_dpd.DpdShePsfModelImage # @FIXME
-    binding_class = DpdShePsfModelImage
+    binding_class = dpdShePsfModelImage
 
     # Add the data file name methods
 
@@ -66,65 +65,20 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-class DpdShePsfModelImage:  # @FIXME
-
-    def __init__(self):
-        self.Header = None
-        self.Data = None
-
-    def validateBinding(self):
-        return False
-
-
-class ShePsfModelImage:  # @FIXME
-
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-
-
-class DataContainer:  # @FIXME
-
-    def __init__(self):
-        self.FileName = None
-        self.filestatus = None
-
-
-def create_dpd_she_psf_model_image(filename=None):
+def create_dpd_she_psf_model_image(filename="None"):
     """
         @TODO fill in docstring
     """
 
-    # dpd_she_psf_model_image = she_dpd.DpdShePsfModelImage() # FIXME
-    dpd_she_psf_model_image = DpdShePsfModelImage()
+    dpd_she_psf_model_image = read_xml_product(find_aux_file(sample_file_name))
 
-    # dpd_she_psf_model_image.Header = HeaderProvider.create_generic_header("SHE") #
-    # FIXME
-    dpd_she_psf_model_image.Header = "SHE"
+    dpd_she_psf_model_image.Header = HeaderProvider.create_generic_header("SHE")
 
-    dpd_she_psf_model_image.Data = create_she_psf_model_image(filename)
+    if filename:
+        __set_filename(dpd_she_psf_model_image, filename)
 
     return dpd_she_psf_model_image
 
 
 # Add a useful alias
 create_psf_model_image_product = create_dpd_she_psf_model_image
-
-
-def create_she_psf_model_image(filename=None):
-    """
-        @TODO fill in docstring
-    """
-
-    # she_psf_model_image = she_dpd.ShePsfModelImage() # @FIXME
-    she_psf_model_image = ShePsfModelImage()
-
-    she_psf_model_image.format = "she.psfModelImage"
-    she_psf_model_image.version = "8.0"
-
-    she_psf_model_image.DataContainer = DataContainer()
-    she_psf_model_image.DataContainer.FileName = filename
-    she_psf_model_image.DataContainer.filestatus = "PROPOSED"
-
-    return she_psf_model_image
