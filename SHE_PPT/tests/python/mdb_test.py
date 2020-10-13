@@ -43,7 +43,7 @@ class TestMDB:
 
         cls.sync = DataSync("testdata/sync.conf", "testdata/test_mdb.txt")
         cls.sync.download()
-        cls.filename = cls.sync.absolutePath("SHE_PPT_8_2/sample_mdb-SC8.xml")
+        cls.filename = cls.sync.absolutePath("SHE_PPT_8_5/sample_mdb-SC8.xml")
 
         cls.test_key = "SpaceSegment.Instrument.VIS.VISDetectorPixelLongDimensionFormat"
         cls.test_detector = "1-2"

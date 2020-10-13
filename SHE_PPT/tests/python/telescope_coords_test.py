@@ -39,8 +39,8 @@ class TestTelescopeCoords:
 
         sync = DataSync("testdata/sync.conf", "testdata/test_telescope_coords.txt")
         sync.download()
-        cls.mdb_filename = sync.absolutePath("SHE_PPT_8_2/sample_mdb-SC8.xml")
-        cls.test_data_filename = sync.absolutePath("SHE_PPT_8_2/testFovToFPA_noOffset.dat")
+        cls.mdb_filename = sync.absolutePath("SHE_PPT_8_5/sample_mdb-SC8.xml")
+        cls.test_data_filename = sync.absolutePath("SHE_PPT_8_5/testFovToFPA_noOffset.dat")
 
         return
 
