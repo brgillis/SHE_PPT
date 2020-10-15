@@ -7,7 +7,7 @@
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines.
 """
 
-__updated__ = "2020-06-23"
+__updated__ = "2020-10-15"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -25,21 +25,20 @@ __updated__ = "2020-06-23"
 
 # from ST_DataModelBindings.dpd.she.raw.shearmeasurement_stub import dpdSheBiasStatistics
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
-# from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
-
-# Temporary class definitions
-
 import os
 
 from astropy.table import Table
 
 import SHE_PPT
-from SHE_PPT.file_io import get_allowed_filename, find_file, get_data_filename_from_product, set_data_filename_of_product
+from SHE_PPT.file_io import read_xml_product, find_aux_file, get_allowed_filename, find_file
 from SHE_PPT.logging import getLogger
+from SHE_PPT.product_utility import get_data_filename_from_product, set_data_filename_of_product
 from SHE_PPT.table_formats.she_bfd_bias_statistics import initialise_bfd_bias_statistics_table, get_bfd_bias_statistics
 from SHE_PPT.table_formats.she_bias_statistics import tf, initialise_bias_statistics_table, get_bias_statistics, get_bias_measurements
 from SHE_PPT.utility import hash_any
 
+
+# Temporary class definitions
 logger = getLogger(__name__)
 
 
@@ -470,10 +469,10 @@ def __get_all_filenames(self):
 
 
 def create_dpd_she_bias_statistics(BFD_bias_statistics_filename=None,
-                                     KSB_bias_statistics_filename=None,
-                                     LensMC_bias_statistics_filename=None,
-                                     MomentsML_bias_statistics_filename=None,
-                                     REGAUSS_bias_statistics_filename=None,):
+                                   KSB_bias_statistics_filename=None,
+                                   LensMC_bias_statistics_filename=None,
+                                   MomentsML_bias_statistics_filename=None,
+                                   REGAUSS_bias_statistics_filename=None,):
     """
         @TODO fill in docstring
     """
@@ -498,11 +497,11 @@ def create_dpd_she_bias_statistics(BFD_bias_statistics_filename=None,
 
 
 def create_dpd_she_bias_statistics_from_stats(BFD_bias_statistics=None,
-                                                KSB_bias_statistics=None,
-                                                LensMC_bias_statistics=None,
-                                                MomentsML_bias_statistics=None,
-                                                REGAUSS_bias_statistics=None,
-                                                workdir="."):
+                                              KSB_bias_statistics=None,
+                                              LensMC_bias_statistics=None,
+                                              MomentsML_bias_statistics=None,
+                                              REGAUSS_bias_statistics=None,
+                                              workdir="."):
     """
         @TODO fill in docstring
     """

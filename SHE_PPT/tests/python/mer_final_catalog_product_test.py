@@ -20,7 +20,7 @@
 
 __updated__ = "2020-10-15"
 
-from SHE_PPT.file_io import (ead_xml_product, write_xml_product)
+from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.products import mer_final_catalog as prod
 
 

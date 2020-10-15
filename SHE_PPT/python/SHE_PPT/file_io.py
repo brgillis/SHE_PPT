@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-10-13"
+__updated__ = "2020-10-15"
 
 from datetime import datetime
 import json
@@ -45,10 +45,6 @@ logger = getLogger(mv.logger_name)
 type_name_maxlen = 45
 instance_id_maxlen = 55
 processing_function_maxlen = 4
-
-filename_include_data_subdir = False
-data_subdir = "data/"
-len_data_subdir = len(data_subdir)
 
 
 @run_only_once
@@ -515,54 +511,3 @@ def update_xml_with_value(filename):
                   (len(bad_lines), filename, n_defaults))
     else:
         print('No updates required')
-
-
-def get_data_filename_from_product(p, attr_name=None):
-    """ Helper function to get a data filename from a product, adjusting for whether to include the data subdir as desired.
-    """
-
-    if attr_name is None or attr_name == 0:
-        data_filename = p.Data.DataContainer.FileName
-    elif attr_name == -1:
-        data_filename = p.Data.FileName
-    else:
-        data_filename = get_nested_attr(p.Data, attr_name).DataContainer.FileName
-
-    if data_filename is None:
-        return None
-
-    # Silently force the filename returned to start with "data/" regardless of
-    # whether the returned value does, unless it's absolute
-    if len(data_filename) > 0 and (data_filename[0:len_data_subdir] == data_subdir or data_filename[0] == "/"):
-        return data_filename
-    else:
-        return data_subdir + data_filename
-
-
-def set_data_filename_of_product(p, data_filename, attr_name=None):
-    """ Helper function to set a data filename of a product, adjusting for whether to include the data subdir as desired.
-    """
-
-    if data_filename is not None and len(data_filename) > 0 and data_filename[0] != "/":
-        if filename_include_data_subdir:
-
-            # Silently force the filename returned to start with "data/" regardless of
-            # whether the returned value does
-            if data_filename[0:len_data_subdir] != data_subdir:
-                data_filename = data_subdir + data_filename
-
-        else:
-
-            # Silently force the filename returned to NOT start with "data/"
-            # regardless of whether the returned value does
-            if data_filename[0:len_data_subdir] == data_subdir:
-                data_filename = data_filename.replace(data_subdir, "", 1)
-
-    if attr_name is None or attr_name == 0:
-        p.Data.DataContainer.FileName = data_filename
-    elif attr_name == -1:
-        p.Data.FileName = data_filename
-    else:
-        get_nested_attr(p.Data, attr_name).DataContainer.FileName = data_filename
-
-    return

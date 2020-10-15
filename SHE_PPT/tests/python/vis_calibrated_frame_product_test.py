@@ -20,7 +20,7 @@
 
 __updated__ = "2020-10-15"
 
-from SHE_PPT.file_io import read_xml_product, write_xml_produc
+from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.products import vis_calibrated_frame as prod
 
 

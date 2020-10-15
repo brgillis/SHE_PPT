@@ -22,7 +22,7 @@ __updated__ = "2020-10-15"
 
 import pytest
 
-from SHE_PPT.file_io import read_xml_product, write_x
+from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.products import she_regauss_calibration as prod
 
 
