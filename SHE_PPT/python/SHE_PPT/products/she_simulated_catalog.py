@@ -28,9 +28,8 @@ __updated__ = "2020-10-15"
 
 import pickle
 from SHE_PPT.file_io import read_xml_product, find_aux_file
-from SHE_PPT.product_utility import get_data_filename_from_product, set_data_filename_of_product
+from SHE_PPT.product_utility import get_data_filename_from_product, set_data_filename_of_product, init_intermediate_general
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
-from ST_DataModelBindings.dpd.she.intermediategeneral_stub import dpdSheIntermediateGeneral
 
 sample_file_name = 'SHE_PPT/sample_intermediate_general.xml'
 
@@ -41,36 +40,9 @@ def init():
 
     """
 
-    binding_class = dpdSheIntermediateGeneral
-
-    # Add the data file name methods
-
-    binding_class.set_filename = __set_data_filename
-    binding_class.get_filename = __get_data_filename
-
-    binding_class.set_data_filename = __set_data_filename
-    binding_class.get_data_filename = __get_data_filename
-
-    binding_class.get_all_filenames = __get_all_filenames
-
-    binding_class.has_files = False
+    init_intermediate_general()
 
     return
-
-
-def __set_data_filename(self, filename):
-    set_data_filename_of_product(self, filename, "DataStorage[0]")
-
-
-def __get_data_filename(self):
-    return get_data_filename_from_product(self, "DataStorage[0]")
-
-
-def __get_all_filenames(self):
-
-    all_filenames = [__get_data_filename(self)]
-
-    return all_filenames
 
 
 def create_dpd_she_simulated_catalog(filename="None"):
@@ -91,7 +63,7 @@ def create_dpd_she_simulated_catalog(filename="None"):
     dpd_she_simulated_catalog.Header = HeaderProvider.create_generic_header("SHE")
 
     if filename:
-        __set_data_filename(dpd_she_simulated_catalog, filename)
+        dpd_she_simulated_catalog.set_data_filename(filename)
 
     return dpd_she_simulated_catalog
 
