@@ -196,7 +196,7 @@ def replace_multiple_in_file(input_filename, output_filename, input_strings, out
                 fout.write(new_line)
 
 
-def write_xml_product(product, xml_filename, workdir="."):
+def write_xml_product(product, xml_filename, workdir=".", allow_pickled=False):
 
     # Silently coerce input into a string
     xml_filename = str(xml_filename)
@@ -250,7 +250,7 @@ def write_xml_product(product, xml_filename, workdir="."):
         write_pickled_product(product, qualified_xml_filename)
 
 
-def read_xml_product(xml_filename, workdir=".", allow_pickled=True):
+def read_xml_product(xml_filename, workdir=".", allow_pickled=False):
 
     # Silently coerce input into a string
     xml_filename = str(xml_filename)

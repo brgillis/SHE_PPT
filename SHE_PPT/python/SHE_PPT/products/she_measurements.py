@@ -30,7 +30,6 @@ from ST_DM_HeaderProvider import GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.bas.imp.raw.stc_stub import polygonType
 from ST_DataModelBindings.dpd.she.measurements_stub import dpdSheMeasurements
 from ST_DataModelBindings.pro import she_stub as she_pro
-from ST_DataModelBindings.sys.dss_stub import dataContainer
 
 sample_file_name = "SHE_PPT/sample_shear_measurements.xml"
 

@@ -195,7 +195,6 @@ class TestShearBiasStatsProduct(object):
                 assert np.isclose(getattr(new_object[1], val), getattr(original_object[1], val),
                                   rtol=1e-4, atol=1e-5), "Method: " + method
 
-    @pytest.mark.skip("No XML implementation yet.")
     def test_xml_writing_and_reading(self, tmpdir):
 
         workdir = str(tmpdir)
