@@ -212,7 +212,7 @@ def create_dpd_she_common_calibration(BFD_filename=None,
     """
 
     dpd_she_common_calibration = read_xml_product(
-            find_aux_file(sample_file_name), allow_pickled=False)
+            find_aux_file(sample_file_name))
 
     dpd_she_common_calibration.Header = "SHE"
 

@@ -479,7 +479,7 @@ def create_dpd_she_bias_statistics(BFD_bias_statistics_filename=None,
     """
 
     # dpd_shear_bias_stats = read_xml_product(
-    #     find_aux_file(sample_file_name), allow_pickled=False)
+    #     find_aux_file(sample_file_name))
     dpd_shear_bias_stats = dpdSheBiasStatistics()
 
     # Overwrite the header with a new one to update the creation date (among
@@ -507,7 +507,7 @@ def create_dpd_she_bias_statistics_from_stats(BFD_bias_statistics=None,
         @TODO fill in docstring
     """
 
-    # dpd_shear_bias_stats = read_xml_product(find_aux_file(sample_file_name), allow_pickled=False)
+    # dpd_shear_bias_stats = read_xml_product(find_aux_file(sample_file_name))
     dpd_shear_bias_stats = dpdSheBiasStatistics()
 
     # Overwrite the header with a new one to update the creation date (among other things)

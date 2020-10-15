@@ -77,7 +77,7 @@ def load_stack_segmentation_map(filename, dir=None, **kwargs):
         dir = ""
 
     stack_segmentation_map_product = read_xml_product(
-        xml_filename=os.path.join(dir, filename), allow_pickled=False)
+        xml_filename=os.path.join(dir, filename))
 
     data_filename = stack_segmentation_map_product.get_data_filename()
 
@@ -141,7 +141,7 @@ def create_dpd_she_stack_segmentation_map(filename=None):
 
     """
     dpd_she_stack_reproj_seg_map_data = read_xml_product(
-        find_aux_file(sample_file_name), allow_pickled=False)
+        find_aux_file(sample_file_name))
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)

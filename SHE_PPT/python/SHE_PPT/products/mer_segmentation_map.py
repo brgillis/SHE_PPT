@@ -79,7 +79,7 @@ def load_mosaic_hdu(filename, dir=None, hdu=0, detector_x=None, detector_y=None,
         dir = ""
 
     mosaic_product = read_xml_product(
-        xml_filename=os.path.join(dir, filename), allow_pickled=False)
+        xml_filename=os.path.join(dir, filename))
 
     data_filename = mosaic_product.get_data_filename()
 
@@ -145,7 +145,7 @@ def create_dpd_mer_mosaic(data_filename="",
     """
 
     dpd_mer_mosaic = read_xml_product(
-        find_aux_file(sample_file_name), allow_pickled=False)
+        find_aux_file(sample_file_name))
 
     dpd_mer_mosaic.Header = HeaderProvider.create_generic_header("SHE")
 

@@ -55,10 +55,10 @@ class TestMosaicProduct(object):
         product.set_data_filename(data_filename)
 
         # Save the product in an xml file
-        write_xml_product(product, "mer_mosaic.xml", workdir=str(tmpdir), allow_pickled=False)
+        write_xml_product(product, "mer_mosaic.xml", workdir=str(tmpdir))
 
         # Read back the xml file
-        loaded_product = read_xml_product("mer_mosaic.xml", workdir=str(tmpdir), allow_pickled=False)
+        loaded_product = read_xml_product("mer_mosaic.xml", workdir=str(tmpdir))
 
         # Check that it's the same
         assert loaded_product.get_data_filename() == "data/" + data_filename
@@ -71,7 +71,7 @@ class TestMosaicProduct(object):
         product = prod.create_dpd_mer_mosaic(data_filename="junk",)
 
         filename = str(tmpdir.join("mer_mosaic.bin"))
-        write_xml_product(product, filename, allow_pickled=False)
+        write_xml_product(product, filename)
 
         # Check that it raises exceptions when expected
 
@@ -95,7 +95,7 @@ class TestMosaicProduct(object):
         phdu.writeto(data_filename, overwrite=True)
 
         product.set_data_filename(data_filename)
-        write_xml_product(product, filename, allow_pickled=False)
+        write_xml_product(product, filename)
 
         loaded_hdu = prod.load_mosaic_hdu(filename=filename,
                                           detector_x=detector_x,

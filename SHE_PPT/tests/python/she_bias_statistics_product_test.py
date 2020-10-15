@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-10-13"
+__updated__ = "2020-10-15"
 
 import os
 
@@ -27,8 +27,7 @@ from astropy.table import Table
 import pytest
 
 import SHE_PPT
-from SHE_PPT.file_io import (read_xml_product, write_xml_product,
-                             read_pickled_product, write_pickled_product)
+from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.math import LinregressStatistics, BFDSumStatistics, BiasMeasurements, linregress_with_errors
 from SHE_PPT.products import she_bias_statistics as prod
 from SHE_PPT.table_formats.she_bias_statistics import calculate_bias_measurements

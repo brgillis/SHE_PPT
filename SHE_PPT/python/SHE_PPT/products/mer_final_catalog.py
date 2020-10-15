@@ -72,7 +72,7 @@ def create_dpd_she_detections(data_filename=None):
     """
 
     dpd_she_detections = read_xml_product(
-        find_aux_file(sample_file_name), allow_pickled=False)
+        find_aux_file(sample_file_name))
 
     dpd_she_detections.Header = HeaderProvider.create_generic_header("SHE")
 

@@ -77,7 +77,7 @@ def load_she_exposure_segmentation_map(filename, directory=None, **kwargs):
         directory = ""
 
     she_exposure_segmentation_map_product = read_xml_product(
-        xml_filename=os.path.join(directory, filename), allow_pickled=False)
+        xml_filename=os.path.join(directory, filename))
 
     data_filename = she_exposure_segmentation_map_product.get_data_filename()
 
@@ -141,7 +141,7 @@ def create_dpd_she_exposure_segmentation_map(data_filename="None"):
 
     """
     dpd_she_exposure_reproj_seg_map_data = read_xml_product(
-        find_aux_file(sample_file_name), allow_pickled=False)
+        find_aux_file(sample_file_name))
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)

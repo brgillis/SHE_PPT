@@ -76,7 +76,7 @@ def create_dpd_she_bfd_calibration(filename=None):
     """
 
     dpd_she_bfd_calibration = read_xml_product(
-        find_aux_file(sample_file_name), allow_pickled=False)
+        find_aux_file(sample_file_name))
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)

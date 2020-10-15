@@ -123,7 +123,7 @@ def create_dpd_vis_stacked_frame(data_filename="default_data_filename.fits",
     """
 
     dpd_vis_stacked_frame = read_xml_product(
-        find_aux_file(sample_file_name), allow_pickled=False)
+        find_aux_file(sample_file_name))
 
     dpd_vis_stacked_frame.Header = HeaderProvider.create_generic_header("VIS")
 
