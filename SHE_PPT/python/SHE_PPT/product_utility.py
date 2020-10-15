@@ -24,6 +24,7 @@ __updated__ = "2020-10-15"
 from SHE_PPT.logging import getLogger
 from SHE_PPT.utility import run_only_once, get_nested_attr
 from ST_DataModelBindings.dpd.she.intermediategeneral_stub import dpdSheIntermediateGeneral
+from ST_DataModelBindings.dpd.she.placeholdergeneral_stub import dpdShePlaceholderGeneral
 
 
 logger = getLogger(__name__)
