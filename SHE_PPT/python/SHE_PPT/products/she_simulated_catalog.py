@@ -65,4 +65,4 @@ def create_dpd_she_simulated_catalog(filename="None"):
 
 
 # Add a useful alias
-create_simulated_catalog_data_product = create_dpd_she_simulated_catalog
+create_simulated_catalog_product = create_dpd_she_simulated_catalog
