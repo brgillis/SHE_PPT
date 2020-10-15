@@ -42,7 +42,6 @@ class TestShearValidationStatsProduct(object):
 
         return
 
-    @pytest.mark.skip("No XML implementation yet.")
     def test_xml_writing_and_reading(self, tmpdir):
 
         # Create the product
