@@ -20,8 +20,7 @@
 
 __updated__ = "2020-10-15"
 
-from SHE_PPT.file_io import (read_xml_product, write_xml_product,
-                             read_pickled_product, write_pickled_product)
+from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.products import she_common_calibration as prod
 
 
