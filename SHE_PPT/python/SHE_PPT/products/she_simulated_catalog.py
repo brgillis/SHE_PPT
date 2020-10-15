@@ -21,23 +21,26 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-10-15"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
 
 import pickle
 from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
+from ST_DataModelBindings.dpd.she.intermediategeneral_stub import dpdSheIntermediateGeneral
+
+sample_file_name = 'SHE_PPT/sample_intermediate_general.xml'
 
 
 def init():
     """
-        ????
+        TODO: Fill in docstring
 
     """
 
-    # binding_class = she_dpd.DpdSheSimulatedCatalog # @FIXME
-    binding_class = DpdSheSimulatedCatalog
+    binding_class = dpdSheIntermediateGeneral
 
     # Add the data file name methods
 
@@ -55,11 +58,11 @@ def init():
 
 
 def __set_data_filename(self, filename):
-    set_data_filename_of_product(self, filename)
+    set_data_filename_of_product(self, filename, "DataStorage[0]")
 
 
 def __get_data_filename(self):
-    return get_data_filename_from_product(self)
+    return get_data_filename_from_product(self, "DataStorage[0]")
 
 
 def __get_all_filenames(self):
@@ -69,65 +72,28 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-class DpdSheSimulatedCatalog:  # @FIXME
-
-    def __init__(self):
-        self.Header = None
-        self.Data = None
-
-    def validateBinding(self):
-        return False
-
-
-class SheSimulatedCatalog:  # @FIXME
-
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-
-
-class DataContainer:  # @FIXME
-
-    def __init__(self):
-        self.FileName = None
-        self.filestatus = None
-
-
-def create_dpd_she_simulated_catalog(filename=None):
+def create_dpd_she_simulated_catalog(filename="None"):
     """
         @TODO fill in docstring
     """
 
-    # dpd_she_simulated_catalog = she_dpd.DpdSheSimulatedCatalog() # FIXME
-    dpd_she_simulated_catalog = DpdSheSimulatedCatalog()
+    dpd_she_simulated_catalog = read_xml_product(
+        find_aux_file(sample_file_name))
 
-    # dpd_she_simulated_catalog.Header = HeaderProvider.create_generic_header("SHE") #
-    # FIXME
-    dpd_she_simulated_catalog.Header = "SHE"
+    # Set the data we don't need to empty
+    dpd_she_simulated_catalog.Data.IntData = []
+    dpd_she_simulated_catalog.Data.FloatData = []
 
-    dpd_she_simulated_catalog.Data = create_she_simulated_catalog(filename)
+    # Label the type in the StringData
+    dpd_she_simulated_catalog.Data.StringData = ["TYPE:DpdSheSimulatedCatalog"]
+
+    dpd_she_simulated_catalog.Header = HeaderProvider.create_generic_header("SHE")
+
+    if filename:
+        __set_data_filename(dpd_she_simulated_catalog, filename)
 
     return dpd_she_simulated_catalog
 
 
 # Add a useful alias
-create_simulated_catalog_product = create_dpd_she_simulated_catalog
-
-
-def create_she_simulated_catalog(filename=None):
-    """
-        @TODO fill in docstring
-    """
-
-    # she_simulated_catalog = she_dpd.DpdSheSimulatedCatalog() # @FIXME
-    she_simulated_catalog = SheSimulatedCatalog()
-
-    she_simulated_catalog.format = "UNDEFINED"
-    she_simulated_catalog.version = "0.0"
-
-    she_simulated_catalog.DataContainer = DataContainer()
-    she_simulated_catalog.DataContainer.FileName = filename
-    she_simulated_catalog.DataContainer.filestatus = "PROPOSED"
-
-    return she_simulated_catalog
+create_simulated_catalog_data_product = create_dpd_she_simulated_catalog

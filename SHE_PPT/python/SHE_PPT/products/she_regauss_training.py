@@ -22,7 +22,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-10-15"
 
 import pickle
 
@@ -94,7 +94,7 @@ class DataContainer:  # @FIXME
         self.filestatus = None
 
 
-def create_dpd_she_regauss_training(filename=None):
+def create_dpd_she_regauss_training(filename="None"):
     """
         @TODO fill in docstring
     """
@@ -102,7 +102,7 @@ def create_dpd_she_regauss_training(filename=None):
     dpd_she_regauss_training = read_xml_product(
         find_aux_file(sample_file_name))
 
-    dpd_she_regauss_training.Header = HeaderProvider.create_generic_header("SHE")  # FIXME
+    dpd_she_regauss_training.Header = HeaderProvider.create_generic_header("SHE")
 
     if filename:
         __set_filename(dpd_she_regauss_training, filename)

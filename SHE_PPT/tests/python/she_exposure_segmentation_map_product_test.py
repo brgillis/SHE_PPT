@@ -18,10 +18,9 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-22"
+__updated__ = "2020-10-15"
 
-from SHE_PPT.file_io import (read_xml_product, write_xml_product,
-                             read_pickled_product, write_pickled_product)
+from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.products import she_exposure_segmentation_map as prod
 
 
@@ -55,31 +54,6 @@ class TestExposureSegmentationMapProduct(object):
 
         # Read back the XML file
         loaded_product = read_xml_product(filename, workdir=str(tmpdir))
-
-        # Check that the filenames match
-        assert loaded_product.get_filename() == "data/" + data_filename
-
-        return
-
-    def test_pickle_writing_and_reading(self, tmpdir):
-
-        # Create the product
-        product = prod.create_dpd_she_exposure_segmentation_map()
-
-        # Change the fits filenames
-        data_filename = "test_file.fits"
-        product.set_filename(data_filename)
-
-        # Save the product in an XML file
-        filename = "she_exposure_segmentation_map.xml"
-        write_xml_product(product, filename, workdir=str(tmpdir))
-
-        # Save the product in a pickled file
-        filename = "she_exposure_segmentation_map.bin"
-        write_pickled_product(product, filename, workdir=str(tmpdir))
-
-        # Read back the pickled file
-        loaded_product = read_pickled_product(filename, workdir=str(tmpdir))
 
         # Check that the filenames match
         assert loaded_product.get_filename() == "data/" + data_filename
