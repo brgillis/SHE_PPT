@@ -21,16 +21,15 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-09-01"
+__updated__ = "2020-10-15"
 
-from SHE_PPT.file_io import (read_xml_product, find_aux_file, get_data_filename_from_product,
-                             set_data_filename_of_product)
+from SHE_PPT.file_io import read_xml_product, find_aux_file
+from SHE_PPT.product_utility import get_data_filename_from_product, set_data_filename_of_product
 import ST_DM_DmUtils.DmUtils as dm_utils
 from ST_DM_HeaderProvider import GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.bas.imp.raw.stc_stub import polygonType
 from ST_DataModelBindings.dpd.she.measurements_stub import dpdSheMeasurements
 from ST_DataModelBindings.pro import she_stub as she_pro
-from ST_DataModelBindings.sys.dss_stub import dataContainer
 
 sample_file_name = "SHE_PPT/sample_shear_measurements.xml"
 
@@ -249,7 +248,7 @@ def create_dpd_she_measurements(BFD_filename=None,
     """
 
     dpd_she_measurements = read_xml_product(
-        find_aux_file(sample_file_name), allow_pickled=False)
+        find_aux_file(sample_file_name))
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)

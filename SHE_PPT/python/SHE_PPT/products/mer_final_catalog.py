@@ -23,7 +23,8 @@
 
 __updated__ = "2020-08-24"
 
-from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
+from SHE_PPT.file_io import read_xml_product, find_aux_file
+from SHE_PPT.product_utility import get_data_filename_from_product, set_data_filename_of_product
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.mer.raw.finalcatalog_stub import dpdMerFinalCatalog
 
@@ -72,7 +73,7 @@ def create_dpd_she_detections(data_filename=None):
     """
 
     dpd_she_detections = read_xml_product(
-        find_aux_file(sample_file_name), allow_pickled=False)
+        find_aux_file(sample_file_name))
 
     dpd_she_detections.Header = HeaderProvider.create_generic_header("SHE")
 

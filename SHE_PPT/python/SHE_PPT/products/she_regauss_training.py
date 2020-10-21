@@ -22,11 +22,11 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-10-15"
 
-import pickle
 
-from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
+from SHE_PPT.file_io import read_xml_product, find_aux_file
+from SHE_PPT.product_utility import get_data_filename_from_product, set_data_filename_of_product
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.regausstraining_stub import dpdSheRegaussTraining
 
@@ -94,15 +94,15 @@ class DataContainer:  # @FIXME
         self.filestatus = None
 
 
-def create_dpd_she_regauss_training(filename=None):
+def create_dpd_she_regauss_training(filename="None"):
     """
         @TODO fill in docstring
     """
 
     dpd_she_regauss_training = read_xml_product(
-        find_aux_file(sample_file_name), allow_pickled=False)
+        find_aux_file(sample_file_name))
 
-    dpd_she_regauss_training.Header = HeaderProvider.create_generic_header("SHE")  # FIXME
+    dpd_she_regauss_training.Header = HeaderProvider.create_generic_header("SHE")
 
     if filename:
         __set_filename(dpd_she_regauss_training, filename)

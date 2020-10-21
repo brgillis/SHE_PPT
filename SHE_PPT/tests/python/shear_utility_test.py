@@ -45,7 +45,7 @@ class TestCase:
 
         sync = DataSync("testdata/sync.conf", "testdata/test_mdb.txt")
         sync.download()
-        mdb_filename = sync.absolutePath("SHE_PPT_8_2/sample_mdb-SC8.xml")
+        mdb_filename = sync.absolutePath("SHE_PPT_8_5/sample_mdb-SC8.xml")
 
         mdb.init(mdb_files=mdb_filename)
 

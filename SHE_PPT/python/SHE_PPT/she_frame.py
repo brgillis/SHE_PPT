@@ -590,7 +590,7 @@ class SHEFrame(object):
 
             psf_prod = read_xml_product(
                 os.path.join(workdir, psf_product_filename))
-            if not isinstance(psf_prod, products.she_psf_model_image.DpdShePsfModelImage):
+            if not isinstance(psf_prod, products.she_psf_model_image.dpdShePsfModelImage):
                 raise ValueError("Data image product from " +
                                  psf_product_filename + " is invalid type.")
 

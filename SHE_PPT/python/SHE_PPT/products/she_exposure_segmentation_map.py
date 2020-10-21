@@ -34,7 +34,8 @@ from ST_DataModelBindings.dpd.she.exposurereprojectedsegmentationmap_stub import
 
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT import detector as dtc
-from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
+from SHE_PPT.file_io import read_xml_product, find_aux_file
+from SHE_PPT.product_utility import get_data_filename_from_product, set_data_filename_of_product
 import SHE_PPT.magic_values as mv
 from SHE_PPT.utility import find_extension
 
@@ -77,7 +78,7 @@ def load_she_exposure_segmentation_map(filename, directory=None, **kwargs):
         directory = ""
 
     she_exposure_segmentation_map_product = read_xml_product(
-        xml_filename=os.path.join(directory, filename), allow_pickled=False)
+        xml_filename=os.path.join(directory, filename))
 
     data_filename = she_exposure_segmentation_map_product.get_data_filename()
 
@@ -141,7 +142,7 @@ def create_dpd_she_exposure_segmentation_map(data_filename="None"):
 
     """
     dpd_she_exposure_reproj_seg_map_data = read_xml_product(
-        find_aux_file(sample_file_name), allow_pickled=False)
+        find_aux_file(sample_file_name))
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)

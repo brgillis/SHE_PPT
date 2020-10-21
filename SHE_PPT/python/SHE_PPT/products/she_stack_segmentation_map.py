@@ -34,7 +34,8 @@ import ST_DM_DmUtils.DqcDmUtils as dqc_utils
 
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from SHE_PPT import detector as dtc
-from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
+from SHE_PPT.file_io import read_xml_product, find_aux_file
+from SHE_PPT.product_utility import get_data_filename_from_product, set_data_filename_of_product
 import SHE_PPT.magic_values as mv
 from SHE_PPT.utility import find_extension
 
@@ -77,7 +78,7 @@ def load_stack_segmentation_map(filename, dir=None, **kwargs):
         dir = ""
 
     stack_segmentation_map_product = read_xml_product(
-        xml_filename=os.path.join(dir, filename), allow_pickled=False)
+        xml_filename=os.path.join(dir, filename))
 
     data_filename = stack_segmentation_map_product.get_data_filename()
 
@@ -141,7 +142,7 @@ def create_dpd_she_stack_segmentation_map(filename=None):
 
     """
     dpd_she_stack_reproj_seg_map_data = read_xml_product(
-        find_aux_file(sample_file_name), allow_pickled=False)
+        find_aux_file(sample_file_name))
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)

@@ -22,7 +22,7 @@ Created on: 08/18/17
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 # """This script gives a small demo of the image object.
 
-__updated__ = "2020-07-19"
+__updated__ = "2020-10-21"
 
 from copy import deepcopy
 import logging
@@ -49,7 +49,7 @@ class Test_she_image():
 
         sync = DataSync("testdata/sync.conf", "testdata/test_mdb.txt")
         sync.download()
-        mdb_filename = sync.absolutePath("SHE_PPT_8_2/sample_mdb-SC8.xml")
+        mdb_filename = sync.absolutePath("SHE_PPT_8_5/sample_mdb-SC8.xml")
 
         mdb.init(mdb_filename)
 

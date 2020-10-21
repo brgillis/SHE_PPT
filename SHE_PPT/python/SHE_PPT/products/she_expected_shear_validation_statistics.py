@@ -22,76 +22,23 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-10-15"
 
-# import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
+from SHE_PPT.file_io import read_xml_product, find_aux_file
+from SHE_PPT.product_utility import get_data_filename_from_product, set_data_filename_of_product, init_placeholder_general
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 
-import pickle
-from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
+sample_file_name = 'SHE_PPT/sample_placeholder_general.xml'
 
 
 def init():
     """
-        Adds some extra functionality to the DpdSheAstrometry product
+        Adds some extra functionality to the product
     """
 
-    # binding_class = she_dpd.DpdSheExpectedShearValidationStatistics # @FIXME
-    binding_class = DpdSheExpectedShearValidationStatistics
-
-    # Add the data file name methods
-
-    binding_class.set_filename = __set_data_filename
-    binding_class.get_filename = __get_data_filename
-
-    binding_class.set_data_filename = __set_data_filename
-    binding_class.get_data_filename = __get_data_filename
-
-    binding_class.get_all_filenames = __get_all_filenames
-
-    binding_class.has_files = False
+    init_placeholder_general()
 
     return
-
-
-def __set_data_filename(self, filename):
-    set_data_filename_of_product(self, filename)
-
-
-def __get_data_filename(self):
-    return get_data_filename_from_product(self)
-
-
-def __get_all_filenames(self):
-
-    all_filenames = []
-
-    return all_filenames
-
-
-class DpdSheExpectedShearValidationStatistics:  # @FIXME
-
-    def __init__(self):
-        self.Header = None
-        self.Data = None
-
-    def validateBinding(self):
-        return False
-
-
-class SheShearValidationStats:  # @FIXME
-
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-
-
-class DataContainer:  # @FIXME
-
-    def __init__(self):
-        self.FileName = None
-        self.filestatus = None
 
 
 def create_dpd_she_expected_shear_validation_statistics(filename=None):
@@ -99,38 +46,23 @@ def create_dpd_she_expected_shear_validation_statistics(filename=None):
         @TODO fill in docstring
     """
 
-    # dpd_she_expected_shear_validation_statistics =
-    # she_dpd.DpdSheExpectedShearValidationStatistics() # FIXME
-    dpd_she_expected_shear_validation_statistics = DpdSheExpectedShearValidationStatistics()
+    dpd_she_expected_shear_validation_statistics = read_xml_product(
+        find_aux_file(sample_file_name))
 
-    # dpd_she_expected_shear_validation_statistics.Header =
-    # HeaderProvider.create_generic_header("SHE") # FIXME
-    dpd_she_expected_shear_validation_statistics.Header = "SHE"
+    # Set the data we don't need to empty
+    dpd_she_expected_shear_validation_statistics.Data.IntData = []
+    dpd_she_expected_shear_validation_statistics.Data.FloatData = []
 
-    dpd_she_expected_shear_validation_statistics.Data = create_she_expected_shear_validation_statistics(
-        filename)
+    # Label the type in the StringData
+    dpd_she_expected_shear_validation_statistics.Data.StringData = ["TYPE:DpdSheExpectedValidationStatistics"]
+
+    dpd_she_expected_shear_validation_statistics.Header = HeaderProvider.create_generic_header("SHE")
+
+    if filename:
+        dpd_she_expected_shear_validation_statistics.set_data_filename(filename)
 
     return dpd_she_expected_shear_validation_statistics
 
 
 # Add a useful alias
 create_expected_shear_validation_statistics_product = create_dpd_she_expected_shear_validation_statistics
-
-
-def create_she_expected_shear_validation_statistics(filename=None):
-    """
-        @TODO fill in docstring
-    """
-
-    # she_expected_shear_validation_statistics = she_dpd.SheShearValidationStats() #
-    # @FIXME
-    she_expected_shear_validation_statistics = SheShearValidationStats()
-
-    she_expected_shear_validation_statistics.format = "UNDEFINED"
-    she_expected_shear_validation_statistics.version = "0.0"
-
-    she_expected_shear_validation_statistics.DataContainer = DataContainer()
-    she_expected_shear_validation_statistics.DataContainer.FileName = filename
-    she_expected_shear_validation_statistics.DataContainer.filestatus = "PROPOSED"
-
-    return she_expected_shear_validation_statistics

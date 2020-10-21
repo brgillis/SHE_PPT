@@ -18,10 +18,9 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-16"
+__updated__ = "2020-10-15"
 
-from SHE_PPT.file_io import (read_xml_product, write_xml_product,
-                             read_pickled_product, write_pickled_product)
+from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.products import le1_aocs_time_series as prod
 
 
@@ -49,29 +48,12 @@ class TestAocsTimeSeriesProduct(object):
 
         # Save the product in an xml file
         file_name = tmpdir.join("she_aocs_time_series.xml")
-        write_pickled_product(product, file_name)
+        write_xml_product(product, file_name)
 
         # Read back the xml file
-        loaded_product = read_pickled_product(file_name)
+        loaded_product = read_xml_product(file_name)
 
         # Check that it's the same
-
-        return
-
-    def test_pickle_writing_and_reading(self, tmpdir):
-
-        # Create the product
-        product = prod.create_dpd_le1_aocs_time_series()
-
-        # TODO Change something about it here when there's something to be changed
-
-        # Save the product in a pickled file
-        file_name = tmpdir.join("she_aocs_time_series.bin")
-        write_pickled_product(product, file_name)
-
-        # Read back the pickled file
-        loaded_product = read_pickled_product(file_name)
-
-        # Check that it's the same
+        assert(loaded_product.get_filename() == product.get_filename())
 
         return

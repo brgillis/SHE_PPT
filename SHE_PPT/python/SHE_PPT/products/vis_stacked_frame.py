@@ -23,7 +23,8 @@
 
 __updated__ = "2020-06-12"
 
-from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
+from SHE_PPT.file_io import read_xml_product, find_aux_file
+from SHE_PPT.product_utility import get_data_filename_from_product, set_data_filename_of_product
 from SHE_PPT.products.vis_calibrated_frame import (create_vis_psf_storage,
                                                create_vis_bkg_storage, create_vis_wgt_storage)
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
@@ -123,7 +124,7 @@ def create_dpd_vis_stacked_frame(data_filename="default_data_filename.fits",
     """
 
     dpd_vis_stacked_frame = read_xml_product(
-        find_aux_file(sample_file_name), allow_pickled=False)
+        find_aux_file(sample_file_name))
 
     dpd_vis_stacked_frame.Header = HeaderProvider.create_generic_header("VIS")
 

@@ -41,7 +41,7 @@ _gain_ave_dict = {}
 _read_noise_dict = {}
 _read_noise_ave_dict = {}
 
-default_mdb_file = "WEB/SHE_PPT_8_2/sample_mdb-SC8.xml"
+default_mdb_file = "WEB/SHE_PPT_8_5/sample_mdb-SC8.xml"
 
 logger = getLogger(__name__)
 

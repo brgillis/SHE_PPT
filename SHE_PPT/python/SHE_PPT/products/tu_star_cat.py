@@ -21,9 +21,9 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-10-06"
+__updated__ = "2020-10-15"
 
-from SHE_PPT.file_io import get_data_filename_from_product
+from SHE_PPT.product_utility import get_data_filename_from_product
 from ST_DataModelBindings.dpd.sim.raw.starscatalogproduct_stub import dpdStarsCatalogProduct
 
 

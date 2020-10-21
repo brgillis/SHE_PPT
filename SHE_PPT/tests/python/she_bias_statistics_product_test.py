@@ -19,19 +19,20 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-23"
+__updated__ = "2020-10-15"
 
 import os
 
 from astropy.table import Table
+import pytest
 
 import SHE_PPT
-from SHE_PPT.file_io import (read_xml_product, write_xml_product,
-                             read_pickled_product, write_pickled_product)
+from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.math import LinregressStatistics, BFDSumStatistics, BiasMeasurements, linregress_with_errors
 from SHE_PPT.products import she_bias_statistics as prod
 from SHE_PPT.table_formats.she_bias_statistics import calculate_bias_measurements
 import numpy as np
+
 
 seed = 10245
 
@@ -82,11 +83,11 @@ class TestShearBiasStatsProduct(object):
 
         # Create the product
         product = prod.create_dpd_she_bias_statistics_from_stats(BFD_bias_statistics=stats["BFD"],
-                                                                   KSB_bias_statistics=stats["KSB"],
-                                                                   LensMC_bias_statistics=stats["LensMC"],
-                                                                   MomentsML_bias_statistics=stats["MomentsML"],
-                                                                   REGAUSS_bias_statistics=stats["REGAUSS"],
-                                                                   workdir=workdir)
+                                                                 KSB_bias_statistics=stats["KSB"],
+                                                                 LensMC_bias_statistics=stats["LensMC"],
+                                                                 MomentsML_bias_statistics=stats["MomentsML"],
+                                                                 REGAUSS_bias_statistics=stats["REGAUSS"],
+                                                                 workdir=workdir)
 
         # Check that it validates the schema
         product.validateBinding()
@@ -230,11 +231,11 @@ class TestShearBiasStatsProduct(object):
                 stats[method] = BFDSumStatistics(sums_for_bfd)
         # Create the product
         product = prod.create_dpd_she_bias_statistics_from_stats(BFD_bias_statistics=stats["BFD"],
-                                                                   KSB_bias_statistics=stats["KSB"],
-                                                                   LensMC_bias_statistics=stats["LensMC"],
-                                                                   MomentsML_bias_statistics=stats["MomentsML"],
-                                                                   REGAUSS_bias_statistics=stats["REGAUSS"],
-                                                                   workdir=workdir)
+                                                                 KSB_bias_statistics=stats["KSB"],
+                                                                 LensMC_bias_statistics=stats["LensMC"],
+                                                                 MomentsML_bias_statistics=stats["MomentsML"],
+                                                                 REGAUSS_bias_statistics=stats["REGAUSS"],
+                                                                 workdir=workdir)
 
         # Save the product in an XML file
         filename = "she_shear_estimates.xml"

@@ -59,9 +59,9 @@ class TestCase:
 
         self.sync_mdb = DataSync("testdata/sync.conf", "testdata/test_mdb.txt")
         self.sync_mdb.download()
-        self.mdb_filename = self.sync_mdb.absolutePath("SHE_PPT_8_2/sample_mdb-SC8.xml")
+        self.mdb_filename = self.sync_mdb.absolutePath("SHE_PPT_8_5/sample_mdb-SC8.xml")
 
-        assert os.path.isfile(self.mdb_filename), f"Cannot find file: SHE_PPT_8_2/sample_mdb-SC8.xml"
+        assert os.path.isfile(self.mdb_filename), f"Cannot find file: SHE_PPT_8_5/sample_mdb-SC8.xml"
 
         mdb.init(self.mdb_filename)
 
@@ -69,7 +69,7 @@ class TestCase:
 
         self.sync_datastack = DataSync("testdata/sync.conf", "testdata/test_data_stack.txt")
         self.sync_datastack.download()
-        self.qualified_data_images_filename = self.sync_datastack.absolutePath("SHE_PPT_8_2/" + data_images_filename)
+        self.qualified_data_images_filename = self.sync_datastack.absolutePath("SHE_PPT_8_5/" + data_images_filename)
 
         assert os.path.isfile(self.qualified_data_images_filename), f"Cannot find file: {self.qualified_data_images_filename}"
 

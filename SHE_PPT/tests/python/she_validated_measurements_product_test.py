@@ -18,10 +18,9 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-18"
+__updated__ = "2020-10-15"
 
-from SHE_PPT.file_io import (read_xml_product, write_xml_product,
-                             read_pickled_product, write_pickled_product)
+from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.products import she_validated_measurements as prod
 
 
@@ -55,10 +54,10 @@ class TestValidatedShearEstimatesProduct(object):
 
         # Save the product in an XML file
         filename = "she_she_validated_measurements.xml"
-        write_xml_product(product, filename, workdir=str(tmpdir), allow_pickled=False)
+        write_xml_product(product, filename, workdir=str(tmpdir))
 
         # Read back the XML file
-        loaded_product = read_xml_product(filename, workdir=str(tmpdir), allow_pickled=False)
+        loaded_product = read_xml_product(filename, workdir=str(tmpdir))
 
         # Check that the filenames match
         assert loaded_product.get_LensMC_filename() == "data/" + subfilename
