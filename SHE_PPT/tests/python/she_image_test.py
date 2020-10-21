@@ -22,7 +22,7 @@ Created on: 08/18/17
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 # """This script gives a small demo of the image object.
 
-__updated__ = "2020-07-19"
+__updated__ = "2020-10-21"
 
 from copy import deepcopy
 import logging

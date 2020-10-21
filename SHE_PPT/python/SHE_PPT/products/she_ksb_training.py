@@ -24,7 +24,6 @@
 
 __updated__ = "2020-06-25"
 
-import pickle
 
 from SHE_PPT.file_io import read_xml_product, find_aux_file
 from SHE_PPT.product_utility import get_data_filename_from_product, set_data_filename_of_product
