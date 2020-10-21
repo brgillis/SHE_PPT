@@ -19,11 +19,12 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-10-15"
+__updated__ = "2020-10-21"
 
 from SHE_PPT.logging import getLogger
 from SHE_PPT.utility import run_only_once, get_nested_attr
 from ST_DataModelBindings.dpd.she.intermediategeneral_stub import dpdSheIntermediateGeneral
+from ST_DataModelBindings.dpd.she.intermediateobservationcatalog_stub import dpdSheIntermediateObservationCatalog
 from ST_DataModelBindings.dpd.she.placeholdergeneral_stub import dpdShePlaceholderGeneral
 
 
@@ -102,6 +103,7 @@ def __get_all_intermediate_general_filenames(self):
 
 @run_only_once
 def init_intermediate_general():
+
     binding_class = dpdSheIntermediateGeneral
 
     # Add the data file name methods
@@ -113,6 +115,41 @@ def init_intermediate_general():
     binding_class.get_data_filename = __get_intermediate_general_data_filename
 
     binding_class.get_all_filenames = __get_all_intermediate_general_filenames
+
+    binding_class.has_files = True
+
+    return
+
+
+def __set_intermediate_observation_catalog_data_filename(self, filename):
+    set_data_filename_of_product(self, filename, "DataStorage")
+
+
+def __get_intermediate_observation_catalog_data_filename(self):
+    return get_data_filename_from_product(self, "DataStorage")
+
+
+def __get_all_intermediate_observation_catalog_filenames(self):
+
+    all_filenames = [__get_data_filename(self)]
+
+    return all_filenames
+
+
+@run_only_once
+def init_intermediate_observation_catalog():
+
+    binding_class = dpdSheIntermediateObservationCatalog
+
+    # Add the data file name methods
+
+    binding_class.set_filename = __set_intermediate_observation_catalog_data_filename
+    binding_class.get_filename = __get_intermediate_observation_catalog_data_filename
+
+    binding_class.set_data_filename = __set_intermediate_observation_catalog_data_filename
+    binding_class.get_data_filename = __get_intermediate_observation_catalog_data_filename
+
+    binding_class.get_all_filenames = __get_all_intermediate_observation_catalog_filenames
 
     binding_class.has_files = True
 
@@ -136,6 +173,7 @@ def __get_all_placeholder_general_filenames(self):
 
 @run_only_once
 def init_placeholder_general():
+
     binding_class = dpdShePlaceholderGeneral
 
     # Add the data file name methods
