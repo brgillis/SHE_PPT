@@ -389,6 +389,18 @@ def find_web_file(filename):
         p = read_xml_product(qualified_filename, workdir="")
         for subfilename in p.get_all_filenames():
             find_web_file(os.path.join(webpath, subfilename))
+    # If it's json listfile, we'll also need to download all files it points to
+    elif filename[-5:] == ".json":
+
+        webpath = os.path.split(filename)[0]
+
+        l = read_listfile(qualified_filename)
+        for element in l:
+            if isinstance(element, str):
+                find_web_file(os.path.join(webpath, element))
+            else:
+                for subelement in element:
+                    find_web_file(os.path.join(webpath, subelement))
 
     return qualified_filename
 
