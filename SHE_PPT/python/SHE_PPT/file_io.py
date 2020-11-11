@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-10-15"
+__updated__ = "2020-11-11"
 
 from datetime import datetime
 import json
@@ -356,7 +356,9 @@ def find_conf_file(filename):
 
 def find_web_file(filename):
     """
-        Searches on WebDAV for a file. If found, downloads it and returns the qualified name of it.
+        Searches on WebDAV for a file. If found, downloads it and returns the qualified name of it. If
+        it's an xml data product, will also download all associated files.
+
         If it isn't found, returns None.
     """
 
@@ -378,6 +380,15 @@ def find_web_file(filename):
         if os.path.exists(filelist):
             logger.debug("Cleaning up " + filelist)
             os.remove(filelist)
+
+    # If it's an xml data product, we'll also need to download all files it points to
+    if filename[-4:] == ".xml":
+
+        webpath = os.path.split(filename)[0]
+
+        p = read_xml_product(qualified_filename, workdir="")
+        for subfilename in p.get_all_filenames():
+            find_web_file(os.path.join(webpath, subfilename))
 
     return qualified_filename
 
