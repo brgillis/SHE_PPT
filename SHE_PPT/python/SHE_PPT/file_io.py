@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-11-11"
+__updated__ = "2020-11-12"
 
 from datetime import datetime
 import json
@@ -30,6 +30,7 @@ import pickle
 from xml.sax._exceptions import SAXParseException
 
 from astropy.io import fits
+from pyxb.exceptions_ import NamespaceError
 
 from ElementsServices.DataSync import DataSync
 from SHE_PPT import magic_values as mv
@@ -384,11 +385,18 @@ def find_web_file(filename):
     # If it's an xml data product, we'll also need to download all files it points to
     if filename[-4:] == ".xml":
 
-        webpath = os.path.split(filename)[0]
+        try:
+            webpath = os.path.split(filename)[0]
 
-        p = read_xml_product(qualified_filename, workdir="")
-        for subfilename in p.get_all_filenames():
-            find_web_file(os.path.join(webpath, subfilename))
+            p = read_xml_product(qualified_filename, workdir="")
+            for subfilename in p.get_all_filenames():
+                find_web_file(os.path.join(webpath, subfilename))
+        except NamespaceError as e:
+            if not "elementBinding" in str(e):
+                raise
+            # MDB files end in XML but can't be read this way, and will raise this exception, so silently pass
+            pass
+
     # If it's json listfile, we'll also need to download all files it points to
     elif filename[-5:] == ".json":
 
