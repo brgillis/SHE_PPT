@@ -45,16 +45,6 @@ sample_file_name = 'SHE_PPT/sample_intermediate_general.xml'
 logger = getLogger(__name__)
 
 
-class SheBiasStatistics(object):  # @FIXME
-
-    def __init__(self):
-        self.BfdBiasStatistics = None
-        self.KsbBiasStatistics = None
-        self.LensMcBiasStatistics = None
-        self.MomentsMlBiasStatistics = None
-        self.RegaussBiasStatistics = None
-
-
 def init():
     """
         Adds some extra functionality to the dpdSheBiasStatistics product
@@ -125,8 +115,6 @@ def init():
 
     binding_class.set_REGAUSS_bias_measurements = __set_REGAUSS_bias_measurements
     binding_class.get_REGAUSS_bias_measurements = __get_REGAUSS_bias_measurements
-
-    binding_class.get_all_filenames = __get_all_filenames
 
 
 def __get_method_datastorage(self, method):
@@ -454,20 +442,6 @@ def __set_REGAUSS_bias_measurements(self, stats, workdir="."):
 
 def __get_REGAUSS_bias_measurements(self, workdir="."):
     return __get_method_bias_measurements(self, method="REGAUSS", workdir=workdir)
-
-
-def __get_all_filenames(self, workdir="."):
-    filename_list = []
-    for method in (__get_BFD_bias_statistics_filename,
-                   __get_KSB_bias_statistics_filename,
-                   __get_LensMC_bias_statistics_filename,
-                   __get_REGAUSS_bias_statistics_filename,
-                   __get_MomentsML_bias_statistics_filename,
-                   ):
-        filename = method(self, workdir)
-        if filename is not None:
-            filename_list.append(filename)
-    return filename_list
 
 
 def create_dpd_she_bias_statistics(BFD_bias_statistics_filename=None,

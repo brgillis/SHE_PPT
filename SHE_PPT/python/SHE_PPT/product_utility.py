@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-11-12"
+__updated__ = "2020-11-13"
 
 from SHE_PPT.logging import getLogger
 from SHE_PPT.utility import run_only_once, get_nested_attr
@@ -96,7 +96,12 @@ def __get_intermediate_general_data_filename(self, i=0):
 
 def __get_all_intermediate_general_filenames(self):
 
-    all_filenames = [__get_intermediate_general_data_filename(self)]
+    all_filenames = []
+
+    for i in range(len(p.Data.DataStorage)):
+        filename = __get_intermediate_general_data_filename(self, i)
+        if not (filename is None or filename == "None" or filename == "data/None" or filename == "" or filename == "data/"):
+            all_filenames.append(filename)
 
     return all_filenames
 
