@@ -458,11 +458,11 @@ def __get_REGAUSS_bias_measurements(self, workdir="."):
 
 def __get_all_filenames(self, workdir="."):
     filename_list = []
-    for method in (__get_BFD_bias_statistics,
-                   __get_KSB_bias_statistics,
-                   __get_LensMC_bias_statistics,
-                   __get_REGAUSS_bias_statistics,
-                   __get_MomentsML_bias_statistics,
+    for method in (__get_BFD_bias_statistics_filename,
+                   __get_KSB_bias_statistics_filename,
+                   __get_LensMC_bias_statistics_filename,
+                   __get_REGAUSS_bias_statistics_filename,
+                   __get_MomentsML_bias_statistics_filename,
                    ):
         filename = method(self, workdir)
         if filename is not None:
