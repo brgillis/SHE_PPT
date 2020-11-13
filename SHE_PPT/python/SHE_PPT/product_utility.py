@@ -98,7 +98,7 @@ def __get_all_intermediate_general_filenames(self):
 
     all_filenames = []
 
-    for i in range(len(p.Data.DataStorage)):
+    for i in range(len(self.Data.DataStorage)):
         filename = __get_intermediate_general_data_filename(self, i)
         if not (filename is None or filename == "None" or filename == "data/None" or filename == "" or filename == "data/"):
             all_filenames.append(filename)
@@ -136,7 +136,12 @@ def __get_intermediate_observation_catalog_data_filename(self):
 
 def __get_all_intermediate_observation_catalog_filenames(self):
 
-    all_filenames = [__get_intermediate_observation_catalog_data_filename(self)]
+    all_filenames = []
+
+    for i in range(len(self.Data.DataStorage)):
+        filename = __get_intermediate_observation_catalog_data_filename(self, i)
+        if not (filename is None or filename == "None" or filename == "data/None" or filename == "" or filename == "data/"):
+            all_filenames.append(filename)
 
     return all_filenames
 
@@ -171,7 +176,12 @@ def __get_placeholder_general_data_filename(self, i=0):
 
 def __get_all_placeholder_general_filenames(self):
 
-    all_filenames = [__get_placeholder_general_data_filename(self)]
+    all_filenames = []
+
+    for i in range(len(self.Data.DataStorage)):
+        filename = __get_placeholder_general_data_filename(self, i)
+        if not (filename is None or filename == "None" or filename == "data/None" or filename == "" or filename == "data/"):
+            all_filenames.append(filename)
 
     return all_filenames
 
