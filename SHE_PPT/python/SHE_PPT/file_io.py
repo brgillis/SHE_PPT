@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-11-12"
+__updated__ = "2020-11-13"
 
 from datetime import datetime
 import json
@@ -390,6 +390,10 @@ def find_web_file(filename):
 
             p = read_xml_product(qualified_filename, workdir="")
             for subfilename in p.get_all_filenames():
+                # Skip if there's no file to download
+                if (subfilename is None or subfilename == "None" or subfilename == "data/None" or
+                        subfilename == "" or subfilename == "data/"):
+                    continue
                 find_web_file(os.path.join(webpath, subfilename))
         except NamespaceError as e:
             if not "elementBinding" in str(e):
@@ -405,9 +409,17 @@ def find_web_file(filename):
         l = read_listfile(qualified_filename)
         for element in l:
             if isinstance(element, str):
+                # Skip if there's no file to download
+                if (element is None or element == "None" or element == "data/None" or
+                        element == "" or element == "data/"):
+                    continue
                 find_web_file(os.path.join(webpath, element))
             else:
                 for subelement in element:
+                    # Skip if there's no file to download
+                    if (subelement is None or subelement == "None" or subelement == "data/None" or
+                            subelement == "" or subelement == "data/"):
+                        continue
                     find_web_file(os.path.join(webpath, subelement))
 
     return qualified_filename
