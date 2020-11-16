@@ -19,11 +19,12 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-08-10"
+__updated__ = "2020-11-16"
 
 import codecs
 import hashlib
 import os
+import re
 
 from astropy.wcs import WCS
 
@@ -33,21 +34,24 @@ from SHE_PPT.logging import getLogger
 logger = getLogger(__name__)
 
 
-def get_index_zero_attr(obj, attr):
-    if not "[0]" in attr:
+def get_attr_with_index(obj, attr):
+    # Check for an index at the end of attr, using a regex which matches anything, followed by [, followed by a positive integer,
+    # followed by ], followed by the end of the string. Matching groups are 1. the attribute, and 2. the index
+    regex_match = re.match(r"(.*)\[([0-9]+)\]\Z", attr)
+
+    if not regex_match:
         return getattr(obj, attr)
-    elif attr[-3:] == "[0]":
-        return getattr(obj, attr[:-3])[0]
     else:
-        raise ValueError("Invalid format of attribute passed to get_index_zero_attr: " + str(attr))
+        # Get the attribute (matching group 1), indexed by the index (matching group 2)
+        return getattr(obj, regex_match.group(1))[int(regex_match.group(2))]
 
 
 def get_nested_attr(obj, attr):
     if not "." in attr:
-        return get_index_zero_attr(obj, attr)
+        return get_attr_with_index(obj, attr)
     else:
         head, tail = attr.split('.', 1)
-        return get_nested_attr(get_index_zero_attr(obj, head), tail)
+        return get_nested_attr(get_attr_with_index(obj, head), tail)
 
 
 def set_index_zero_attr(obj, attr, val):
@@ -56,7 +60,7 @@ def set_index_zero_attr(obj, attr, val):
     elif attr[-3:] == "[0]":
         getattr(obj, attr[:-3])[0] = val
     else:
-        raise ValueError("Invalid format of attribute passed to get_index_zero_attr: " + str(attr))
+        raise ValueError("Invalid format of attribute passed to get_attr_with_index: " + str(attr))
     return
 
 
@@ -65,7 +69,7 @@ def set_nested_attr(obj, attr, val):
         set_index_zero_attr(obj, attr, val)
     else:
         head, tail = attr.split('.', 1)
-        set_nested_attr(get_index_zero_attr(obj, head), tail, val)
+        set_nested_attr(get_attr_with_index(obj, head), tail, val)
     return
 
 
@@ -365,10 +369,10 @@ def get_all_files(directory_name):
             file_list, sb_dir_list = process_directory(
                 dir_name)
             full_file_list += [os.path.join(dir_name, fname)
-                             for fname in file_list]
+                               for fname in file_list]
             if sb_dir_list:
                 new_dir_list += [os.path.join(dir_name, sb_dir)
-                    for sb_dir in sb_dir_list]
+                                 for sb_dir in sb_dir_list]
         dir_list = new_dir_list
         is_complete = len(dir_list) == 0
 
@@ -377,7 +381,7 @@ def get_all_files(directory_name):
 
 def process_directory(directory_name):
     """ Check for files, subdirectories
-    
+
     """
     file_list = []
     subdir_list = []
