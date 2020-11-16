@@ -7,7 +7,7 @@
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines.
 """
 
-__updated__ = "2020-11-13"
+__updated__ = "2020-11-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -295,7 +295,7 @@ def __set_method_bias_measurements(self, method, measurements, workdir="."):
                 logger.warning("Deprecated file " + qualified_old_filename + " cannot be deleted.")
 
     # Set the filename for the object
-    self.set_method_bias_statistics_filename(filename)
+    self.set_method_bias_statistics_filename(method, filename)
 
     # Write the table
     bias_statistics_table.write(qualified_filename)
