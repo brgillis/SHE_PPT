@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-09-08"
+__updated__ = "2020-11-13"
 
 from enum import Enum
 import json.decoder
@@ -243,7 +243,9 @@ def read_reconciliation_config(config_filename, workdir="."):
                        config_keys=ReconciliationConfigKeys)
 
 
-def read_config(config_filename, workdir=".", config_keys=AnalysisConfigKeys):
+def read_config(config_filename, workdir=".", config_keys=(AnalysisConfigKeys,
+                                                           ReconciliationConfigKeys,
+                                                           CalibrationConfigKeys)):
     """ Reads in a generic configuration file to a dictionary. Note that all arguments will be read as strings.
 
         Parameters
@@ -252,11 +254,17 @@ def read_config(config_filename, workdir=".", config_keys=AnalysisConfigKeys):
             The workspace-relative name of the config file.
         workdir : string
             The working directory.
+        config_keys : enum or iterable of enums
+            ConfigKeys enum or iterable of enums listing allowed keys
     """
 
     # Return None if input filename is None
     if config_filename is None or config_filename is "None" or config_filename is "":
         return {}
+
+    # Silently coerce config_keys into iterable if just one enum is supplied
+    if isinstance(config_keys, Enum):
+        config_keys = (config_keys,)
 
     qualified_config_filename = os.path.join(workdir, config_filename)
 
@@ -326,11 +334,18 @@ def _read_config_file(qualified_config_filename, config_keys):
             key = equal_split_line[0].strip()
 
             # Check that the key is allowed
-            if not config_keys.is_allowed_value(key):
+            allowed = False
+            for config_key_enum in config_keys:
+                if config_key_enum.is_allowed_value(key):
+                    allowed = True
+                    break
+
+            if not allowed:
                 err_string = ("Invalid key found in pipeline config file " + qualified_config_filename + ": " +
                               key + ". Allowed keys are: ")
-                for allowed_key in config_keys:
-                    err_string += "\n  " + allowed_key.value
+                for config_key_enum in config_keys:
+                    for allowed_key in config_key_enum:
+                        err_string += "\n  " + allowed_key.value
                 raise ValueError(err_string)
 
             # In case the value contains an = char

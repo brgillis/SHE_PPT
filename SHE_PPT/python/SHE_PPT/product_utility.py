@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-11-12"
+__updated__ = "2020-11-16"
 
 from SHE_PPT.logging import getLogger
 from SHE_PPT.utility import run_only_once, get_nested_attr
@@ -94,11 +94,30 @@ def __get_intermediate_general_data_filename(self, i=0):
     return get_data_filename_from_product(self, f"DataStorage[{i}]")
 
 
-def __get_all_intermediate_general_filenames(self):
+def __get_all_generic_filenames(self, method):
 
-    all_filenames = [__get_intermediate_general_data_filename(self)]
+    all_filenames = []
+
+    try:
+        for i in range(len(self.Data.DataStorage)):
+            # Catch issues with the range not matching the actual elements in the list and warn if caught
+            filename = method(self, i)
+            if not (filename is None or filename == "None" or filename == "data/None" or filename == "" or filename == "data/"):
+                all_filenames.append(filename)
+
+        return all_filenames
+    except TypeError as e:
+        if not "has no len()" in str(e):
+            raise
+        # Only a single filename, so output that
+        all_filenames.append(method(self))
 
     return all_filenames
+
+
+def __get_all_intermediate_general_filenames(self):
+
+    return __get_all_generic_filenames(self, __get_intermediate_general_data_filename)
 
 
 @run_only_once
@@ -131,9 +150,7 @@ def __get_intermediate_observation_catalog_data_filename(self):
 
 def __get_all_intermediate_observation_catalog_filenames(self):
 
-    all_filenames = [__get_intermediate_observation_catalog_data_filename(self)]
-
-    return all_filenames
+    return __get_all_generic_filenames(self, __get_intermediate_observation_catalog_data_filename)
 
 
 @run_only_once
@@ -166,9 +183,7 @@ def __get_placeholder_general_data_filename(self, i=0):
 
 def __get_all_placeholder_general_filenames(self):
 
-    all_filenames = [__get_placeholder_general_data_filename(self)]
-
-    return all_filenames
+    return __get_all_generic_filenames(self, __get_placeholder_general_data_filename)
 
 
 @run_only_once

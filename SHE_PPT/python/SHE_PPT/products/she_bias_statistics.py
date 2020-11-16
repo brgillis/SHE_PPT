@@ -7,7 +7,7 @@
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines.
 """
 
-__updated__ = "2020-10-15"
+__updated__ = "2020-11-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -43,16 +43,6 @@ from ST_DataModelBindings.pro import she_stub as she_pro
 sample_file_name = 'SHE_PPT/sample_intermediate_general.xml'
 
 logger = getLogger(__name__)
-
-
-class SheBiasStatistics(object):  # @FIXME
-
-    def __init__(self):
-        self.BfdBiasStatistics = None
-        self.KsbBiasStatistics = None
-        self.LensMcBiasStatistics = None
-        self.MomentsMlBiasStatistics = None
-        self.RegaussBiasStatistics = None
 
 
 def init():
@@ -305,7 +295,7 @@ def __set_method_bias_measurements(self, method, measurements, workdir="."):
                 logger.warning("Deprecated file " + qualified_old_filename + " cannot be deleted.")
 
     # Set the filename for the object
-    self.set_method_bias_statistics_filename(filename)
+    self.set_method_bias_statistics_filename(method, filename)
 
     # Write the table
     bias_statistics_table.write(qualified_filename)
