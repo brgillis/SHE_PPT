@@ -39,12 +39,15 @@ class TestValidationTestResults(object):
 
     @classmethod
     def setup_class(cls):
+
         cls.filename = "she_validation_test_results.xml"
         cls.filename_zero = "she_validation_test_results_0.xml"
         cls.filename_three = "she_validation_test_results_3.xml"
+
         cls.source_pipeline = "sheReconciliation"
         cls.observation_mode = "ScienceDeep"
         cls.num_exposures = 3
+
         return
 
     @classmethod
