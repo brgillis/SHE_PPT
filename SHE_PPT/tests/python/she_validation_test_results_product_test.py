@@ -164,10 +164,6 @@ class TestValidationTestResults(object):
         assert loaded_product.Data.ExposureProductId == vis_calibrated_frame_product.Header.ProductId
         assert loaded_product.Data.ObservationId == vis_calibrated_frame_product.Data.ObservationSequence.ObservationId
 
-        # Check that the pointing Id exists before writing
-        assert product.Data.PointingId == vis_calibrated_frame_product.Data.ObservationSequence.PointingId
-        assert loaded_product.Data.PointingId == vis_calibrated_frame_product.Data.ObservationSequence.PointingId
-
         return
 
     def test_vis_stacked_frame_reference(self):
