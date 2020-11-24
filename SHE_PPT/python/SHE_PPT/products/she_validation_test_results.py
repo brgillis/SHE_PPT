@@ -79,10 +79,7 @@ def create_dpd_she_validation_test_results(reference_product=None,
 
     # Set up common SourcePipeline and ObservationMode attributes
     Data.SourcePipeline = source_pipeline
-    if observation_mode is None:
-        del Data.ObservationMode
-    else:
-        Data.ObservationMode = observation_mode
+    Data.ObservationMode = observation_mode
 
     # Set the desired number of tests
     if num_tests <= 0:
@@ -125,6 +122,13 @@ def create_dpd_she_validation_test_results(reference_product=None,
             # And set the values that do apply
             Data.ObservationId = reference_product.Data.ObservationId
             Data.NumberExposures = num_exposures
+
+        else:
+            raise TypeError("Unrecognized type of reference product: " + str(type(reference_product)))
+
+    else:
+        # Set up attributes we do know about
+        Data.NumberExposures = num_exposures
 
     return dpd_she_validation_test_results
 
