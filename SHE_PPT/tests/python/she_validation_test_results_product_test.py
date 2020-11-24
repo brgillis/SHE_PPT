@@ -39,6 +39,7 @@ class TestValidationTestResults(object):
 
     @classmethod
     def setup_class(cls):
+        cls.filename = "she_validation_test_results.xml"
         return
 
     @classmethod
