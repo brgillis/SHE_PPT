@@ -560,4 +560,4 @@ def update_xml_with_value(filename):
 def filename_exists(filename):
     """Quick function to check the filename isn't one of many strings indicating the file doesn't exist.
     """
-    return (filename is not None) and (filename not in "None", "data/None", "", "data/")
+    return filename not in (None, "None", "data/None", "", "data/")
