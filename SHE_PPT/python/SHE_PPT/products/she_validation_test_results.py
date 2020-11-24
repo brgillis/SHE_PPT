@@ -94,20 +94,20 @@ def create_dpd_she_validation_test_results(reference_product=None,
 
     if reference_product is not None:
         if isinstance(reference_product, dpdMerFinalCatalog):
-            # Using a tile as reference, so delete attributes that don't apply
-            del (Data.ExposureProductId,
-                 Data.ObservationId,
-                 Data.PointingId,
-                 Data.NumberExposures,
-                 )
+            # Using a tile as reference, so set attributes that don't apply to None
+            Data.ExposureProductId = None
+            Data.ObservationId = None
+            Data.PointingId = None
+            Data.NumberExposures = None
+
             # And set the Tile ID
             Data.TileId = reference_product.Data.TileIndex
 
         elif isinstance(reference_product, dpdVisCalibratedFrame):
             # Using an exposure as reference, so delete attributes that don't apply
-            del (Data.TileId,
-                 Data.NumberExposures,
-                 )
+            Data.TileId = None
+            Data.NumberExposures = None
+
             # And set the values that do apply
             Data.ExposureProductId = reference_product.Header.ProductId
             Data.ObservationId = reference_product.Data.ObservationSequence.ObservationId
@@ -115,10 +115,10 @@ def create_dpd_she_validation_test_results(reference_product=None,
 
         elif isinstance(reference_product, dpdVisStackedFrame):
             # Using an observation as reference, so delete attributes that don't apply
-            del (Data.TileId,
-                 Data.PointingId,
-                 Data.ExposureProductId,
-                 )
+            Data.TileId = None
+            Data.PointingId = None
+            Data.ExposureProductId = None
+
             # And set the values that do apply
             Data.ObservationId = reference_product.Data.ObservationId
             Data.NumberExposures = num_exposures

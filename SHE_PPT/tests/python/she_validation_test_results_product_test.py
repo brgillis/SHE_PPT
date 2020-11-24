@@ -28,8 +28,8 @@ from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.products import she_validation_test_results as prod
 
 mer_final_catalog_filename = "EUC_SHE_P-MER-FINAL-CAT_BUKRTILMXZI3ADHVZ_20200721T162818.092086Z_08.02.xml"
-vis_calibrated_image_filename = "EUC_SHE_GST-P-SCI-D1_BUKRTILMXZI3ADHVZ_20190429T165754.9Z_01.07.xml"
-vis_stacked_image_filename = "vis_stacked_image.xml"
+vis_calibrated_frame_filename = "EUC_SHE_GST-P-SCI-D1_BUKRTILMXZI3ADHVZ_20190429T165754.9Z_01.07.xml"
+vis_stacked_frame_filename = "vis_stacked_image.xml"
 
 
 class TestValidationTestResults(object):
@@ -147,8 +147,8 @@ class TestValidationTestResults(object):
         product = prod.create_dpd_she_validation_test_results(reference_product=vis_calibrated_frame_product)
 
         assert product.Data.ExposureProductId == vis_calibrated_frame_product.Header.ProductId
-        assert product.Data.ObservationId == vis_calibrated_frame_product.Data.ObservationId
-        assert product.Data.PointingId == vis_calibrated_frame_product.Data.PointingId
+        assert product.Data.ObservationId == vis_calibrated_frame_product.Data.ObservationSequence.ObservationId
+        assert product.Data.PointingId == vis_calibrated_frame_product.Data.ObservationSequence.PointingId
 
         return
 
