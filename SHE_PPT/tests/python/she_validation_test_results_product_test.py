@@ -40,6 +40,8 @@ class TestValidationTestResults(object):
     @classmethod
     def setup_class(cls):
         cls.filename = "she_validation_test_results.xml"
+        cls.filename_zero = "she_validation_test_results_0.xml"
+        cls.filename_three = "she_validation_test_results_3.xml"
         cls.source_pipeline = "sheReconciliation"
         cls.observation_mode = "ScienceDeep"
         cls.num_exposures = 3
@@ -76,5 +78,29 @@ class TestValidationTestResults(object):
         assert loaded_product.Data.SourcePipeline == self.source_pipeline
         assert loaded_product.Data.ObservationMode == self.observation_mode
         assert loaded_product.Data.NumberExposures == self.num_exposures
+
+        # Try with zero and multiple tests
+
+        # Create the product
+        product_zero = prod.create_dpd_she_validation_test_results(num_tests=0)
+
+        # Save the product in an xml file
+        write_xml_product(product_zero, self.filename_zero, workdir=self.workdir)
+
+        # Read back the xml file
+        loaded_product_zero = read_xml_product(self.filename_zero, workdir=self.workdir)
+
+        assert len(loaded_product_zero.Data.ValidationTestList) == 0
+
+        # Create the product
+        product_three = prod.create_dpd_she_validation_test_results(num_tests=3)
+
+        # Save the product in an xml file
+        write_xml_product(product_three, self.filename_zero, workdir=self.workdir)
+
+        # Read back the xml file
+        loaded_product_three = read_xml_product(self.filename_zero, workdir=self.workdir)
+
+        assert len(loaded_product_three.Data.ValidationTestList) == 3
 
         return
