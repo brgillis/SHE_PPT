@@ -61,6 +61,9 @@ class TestValidationTestResults(object):
         cls.filename = "she_validation_test_results.xml"
         cls.filename_zero = "she_validation_test_results_0.xml"
         cls.filename_three = "she_validation_test_results_3.xml"
+        cls.filename_tile = "she_validation_test_results_tile.xml"
+        cls.filename_exp = "she_validation_test_results_exp.xml"
+        cls.filename_obs = "she_validation_test_results_obs.xml"
 
         cls.source_pipeline = "sheReconciliation"
         cls.observation_mode = "ScienceDeep"
@@ -134,7 +137,13 @@ class TestValidationTestResults(object):
         # Create the product
         product = prod.create_dpd_she_validation_test_results(reference_product=mer_final_catalog_product)
 
-        assert product.Data.TileId == mer_final_catalog_product.Data.TileIndex
+        # Save the product in an xml file
+        write_xml_product(product, self.filename_tile, workdir=self.workdir)
+
+        # Read back the xml file
+        loaded_product = read_xml_product(self.filename_tile, workdir=self.workdir)
+
+        assert loaded_product.Data.TileId == mer_final_catalog_product.Data.TileIndex
 
         return
 
@@ -146,9 +155,18 @@ class TestValidationTestResults(object):
         # Create the product
         product = prod.create_dpd_she_validation_test_results(reference_product=vis_calibrated_frame_product)
 
-        assert product.Data.ExposureProductId == vis_calibrated_frame_product.Header.ProductId
-        assert product.Data.ObservationId == vis_calibrated_frame_product.Data.ObservationSequence.ObservationId
+        # Save the product in an xml file
+        write_xml_product(product, self.filename_exp, workdir=self.workdir)
+
+        # Read back the xml file
+        loaded_product = read_xml_product(self.filename_exp, workdir=self.workdir)
+
+        assert loaded_product.Data.ExposureProductId == vis_calibrated_frame_product.Header.ProductId
+        assert loaded_product.Data.ObservationId == vis_calibrated_frame_product.Data.ObservationSequence.ObservationId
+
+        # Check that the pointing Id exists before writing
         assert product.Data.PointingId == vis_calibrated_frame_product.Data.ObservationSequence.PointingId
+        assert loaded_product.Data.PointingId == vis_calibrated_frame_product.Data.ObservationSequence.PointingId
 
         return
 
@@ -161,7 +179,13 @@ class TestValidationTestResults(object):
         product = prod.create_dpd_she_validation_test_results(reference_product=vis_stacked_frame_product,
                                                               num_exposures=self.num_exposures)
 
-        assert product.Data.ObservationId == vis_stacked_frame_product.Data.ObservationId
-        assert product.Data.NumberExposures == self.num_exposures
+        # Save the product in an xml file
+        write_xml_product(product, self.filename_obs, workdir=self.workdir)
+
+        # Read back the xml file
+        loaded_product = read_xml_product(self.filename_obs, workdir=self.workdir)
+
+        assert loaded_product.Data.ObservationId == vis_stacked_frame_product.Data.ObservationId
+        assert loaded_product.Data.NumberExposures == self.num_exposures
 
         return
