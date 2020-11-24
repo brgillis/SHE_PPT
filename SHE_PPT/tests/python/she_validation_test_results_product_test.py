@@ -40,6 +40,9 @@ class TestValidationTestResults(object):
     @classmethod
     def setup_class(cls):
         cls.filename = "she_validation_test_results.xml"
+        cls.source_pipeline = "sheReconciliation"
+        cls.observation_mode = "ScienceDeep"
+        cls.num_exposures = 3
         return
 
     @classmethod
@@ -59,7 +62,9 @@ class TestValidationTestResults(object):
     def test_xml_writing_and_reading(self):
 
         # Create the product
-        product = prod.create_dpd_she_validation_test_results()
+        product = prod.create_dpd_she_validation_test_results(source_pipeline=self.source_pipeline,
+                                                              observation_mode=self.observation_mode,
+                                                              num_exposures=self.num_exposures)
 
         # Save the product in an xml file
         write_xml_product(product, self.filename, workdir=self.workdir)
@@ -68,6 +73,8 @@ class TestValidationTestResults(object):
         loaded_product = read_xml_product(self.filename, workdir=self.workdir)
 
         # Check that it's the same
-        # TODO: Add some test here
+        assert loaded_product.Data.SourcePipeline == self.source_pipeline
+        assert loaded_product.Data.ObservationMode == self.observation_mode
+        assert loaded_product.Data.NumberExposures == self.num_exposures
 
         return
