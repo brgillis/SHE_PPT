@@ -24,10 +24,16 @@
 __updated__ = "2020-11-24"
 
 
+from copy import deepcopy
+
 from SHE_PPT.file_io import read_xml_product, find_aux_file
 from SHE_PPT.product_utility import get_data_filename_from_product, set_data_filename_of_product
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
+from ST_DataModelBindings.dpd.mer.raw.finalcatalog_stub import dpdMerFinalCatalog
 from ST_DataModelBindings.dpd.she.validationtestresults_stub import dpdSheValidationTestResults
+from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
+from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
+
 
 sample_file_name = "SHE_PPT/sample_validation_test_results.xml"
 
@@ -55,7 +61,11 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-def create_dpd_she_validation_test_results():
+def create_dpd_she_validation_test_results(reference_product=None,
+                                           source_pipeline="sheAnalysis",
+                                           observation_mode=None,
+                                           num_tests=1,
+                                           num_exposures=-1,):
     """
         @TODO fill in docstring
     """
@@ -63,6 +73,58 @@ def create_dpd_she_validation_test_results():
     dpd_she_validation_test_results = read_xml_product(find_aux_file(sample_file_name))
 
     dpd_she_validation_test_results.Header = HeaderProvider.create_generic_header("SHE")
+
+    # Quick alias to Data to save text
+    Data = dpd_she_validation_test_results.Data
+
+    # Set up common SourcePipeline and ObservationMode attributes
+    Data.SourcePipeline = source_pipeline
+    if observation_mode is None:
+        del Data.ObservationMode
+    else:
+        Data.ObservationMode = observation_mode
+
+    # Set the desired number of tests
+    if num_tests <= 0:
+        del Data.ValidationTestList[0]
+    elif num_tests > 1:
+        # Make deep copies of the initial test to each entry in the list
+        test_zero = Data.ValidationTestList[0]
+        Data.ValidationTestList = [test_zero] * num_tests
+        for i in range(num_tests):
+            if i != 0:
+                Data.ValidationTestList[i] = deepcopy(test_zero)
+
+    if reference_product is not None:
+        if isinstance(reference_product, dpdMerFinalCatalog):
+            # Using a tile as reference, so delete attributes that don't apply
+            del (Data.ExposureProductId,
+                 Data.ObservationId,
+                 Data.PointingId,
+                 Data.NumberExposures,
+                 )
+            # And set the Tile ID
+            Data.TileId = reference_product.Data.TileIndex
+
+        elif isinstance(reference_product, dpdVisCalibratedFrame):
+            # Using an exposure as reference, so delete attributes that don't apply
+            del (Data.TileId,
+                 Data.NumberExposures,
+                 )
+            # And set the values that do apply
+            Data.ExposureProductId = reference_product.Header.ProductId
+            Data.ObservationId = reference_product.Data.ObservationSequence.ObservationId
+            Data.PointingId = reference_product.Data.ObservationSequence.PointingId
+
+        elif isinstance(reference_product, dpdVisStackedFrame):
+            # Using an observation as reference, so delete attributes that don't apply
+            del (Data.TileId,
+                 Data.PointingId,
+                 Data.ExposureProductId,
+                 )
+            # And set the values that do apply
+            Data.ObservationId = reference_product.Data.ObservationId
+            Data.NumberExposures = num_exposures
 
     return dpd_she_validation_test_results
 
