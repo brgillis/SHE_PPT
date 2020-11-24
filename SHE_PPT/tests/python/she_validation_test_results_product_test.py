@@ -23,8 +23,13 @@ __updated__ = "2020-11-24"
 import os
 import pytest
 
+from ElementsServices.DataSync import DataSync
 from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.products import she_validation_test_results as prod
+
+mer_final_catalog_filename = "EUC_SHE_P-MER-FINAL-CAT_BUKRTILMXZI3ADHVZ_20200721T162818.092086Z_08.02.xml"
+vis_calibrated_image_filename = "EUC_SHE_GST-P-SCI-D1_BUKRTILMXZI3ADHVZ_20190429T165754.9Z_01.07.xml"
+vis_stacked_image_filename = "vis_stacked_image.xml"
 
 
 class TestValidationTestResults(object):
@@ -34,7 +39,20 @@ class TestValidationTestResults(object):
 
     @pytest.fixture(autouse=True)
     def setup(self, tmpdir):
-        self.workdir = tmpdir.strpath
+
+        # Download the data stack files from WebDAV
+
+        self.sync_datastack = DataSync("testdata/sync.conf", "testdata/test_data_stack.txt")
+        self.sync_datastack.download()
+        self.qualified_mer_final_catalog_filename = self.sync_datastack.absolutePath(
+            "SHE_PPT_8_5/" + mer_final_catalog_filename)
+
+        assert os.path.isfile(
+            self.qualified_mer_final_catalog_filename), f"Cannot find file: {self.qualified_mer_final_catalog_filename}"
+
+        # Get the workdir based on where the final catalog listfile is
+        self.workdir = os.path.split(self.qualified_mer_final_catalog_filename)[0]
+
         return
 
     @classmethod
@@ -105,5 +123,45 @@ class TestValidationTestResults(object):
         loaded_product_three = read_xml_product(self.filename_zero, workdir=self.workdir)
 
         assert len(loaded_product_three.Data.ValidationTestList) == 3
+
+        return
+
+    def test_mer_final_catalog_reference(self):
+
+        # Read the MER Final Catalog product
+        mer_final_catalog_product = read_xml_product(mer_final_catalog_filename, workdir=self.workdir)
+
+        # Create the product
+        product = prod.create_dpd_she_validation_test_results(reference_product=mer_final_catalog_product)
+
+        assert product.Data.TileId == mer_final_catalog_product.Data.TileIndex
+
+        return
+
+    def test_vis_calibrated_frame_reference(self):
+
+        # Read the MER Final Catalog product
+        vis_calibrated_frame_product = read_xml_product(vis_calibrated_frame_filename, workdir=self.workdir)
+
+        # Create the product
+        product = prod.create_dpd_she_validation_test_results(reference_product=vis_calibrated_frame_product)
+
+        assert product.Data.ExposureProductId == vis_calibrated_frame_product.Header.ProductId
+        assert product.Data.ObservationId == vis_calibrated_frame_product.Data.ObservationId
+        assert product.Data.PointingId == vis_calibrated_frame_product.Data.PointingId
+
+        return
+
+    def test_vis_stacked_frame_reference(self):
+
+        # Read the MER Final Catalog product
+        vis_stacked_frame_product = read_xml_product(vis_stacked_frame_filename, workdir=self.workdir)
+
+        # Create the product
+        product = prod.create_dpd_she_validation_test_results(reference_product=vis_stacked_frame_product,
+                                                              num_exposures=self.num_exposures)
+
+        assert product.Data.ObservationId == vis_stacked_frame_product.Data.ObservationId
+        assert product.Data.NumberExposures == self.num_exposures
 
         return
