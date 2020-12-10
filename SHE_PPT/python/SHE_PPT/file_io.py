@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-11-13"
+__updated__ = "2020-11-24"
 
 from datetime import datetime
 import json
@@ -555,3 +555,9 @@ def update_xml_with_value(filename):
                   (len(bad_lines), filename, n_defaults))
     else:
         print('No updates required')
+
+
+def filename_exists(filename):
+    """Quick function to check the filename isn't one of many strings indicating the file doesn't exist.
+    """
+    return filename not in (None, "None", "data/None", "", "data/")
