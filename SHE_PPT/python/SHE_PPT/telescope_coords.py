@@ -473,15 +473,18 @@ quad_x_size = 2119
 quad_y_size = 2066
 
 
-def get_quadrant(x_pix: float,
-                 y_pix: float,
-                 det_iy: int):
-    """ Get the letter signifying the quadrant of a detector where a pixel coordinate is. Returns "X" if the position
+def get_vis_quadrant(x_pix: float,
+                     y_pix: float,
+                     det_iy: int):
+    """ Get the letter signifying the quadrant of a VIS detector where a pixel coordinate is. Returns "X" if the position
         is outside of the detector bounds.
 
         This uses the charts at http://euclid.esac.esa.int/dm/dpdd/latest/le1dpd/dpcards/le1_visrawframe.html for its
         logic.
     """
+
+    if x_pix <= -1 or y_pix <= -1:
+        return "X"
 
     if det_iy <= 3:
         quadrant_layout = quadrant_layout_123
@@ -492,7 +495,7 @@ def get_quadrant(x_pix: float,
     quad_iy = int(y_pix / quad_y_size)
 
     if quad_ix in (0, 1) and quad_iy in (0, 1):
-        quadrant = quadrant_layout[quad_ix, quad_iy]
+        quadrant = quadrant_layout[quad_ix][quad_iy]
     else:
         quadrant = "X"
 
