@@ -258,16 +258,16 @@ class TestTelescopeCoords:
         telescope_coords.load_vis_detector_specs(mdb_files=self.mdb_filename)
 
         # Test values on the detector, in the left half of detectors
-        assert telescope_coords.get_vis_quadrant(x_pix=2118, y_pix=2065, det_iy=1) == "E"
-        assert telescope_coords.get_vis_quadrant(x_pix=2119, y_pix=2065, det_iy=2) == "F"
-        assert telescope_coords.get_vis_quadrant(x_pix=2118, y_pix=2066, det_iy=3) == "H"
-        assert telescope_coords.get_vis_quadrant(x_pix=2119, y_pix=2066, det_iy=1) == "G"
+        assert telescope_coords.get_vis_quadrant(x_pix=2047, y_pix=2067, det_iy=1) == "E"
+        assert telescope_coords.get_vis_quadrant(x_pix=2048, y_pix=2067, det_iy=2) == "F"
+        assert telescope_coords.get_vis_quadrant(x_pix=2047, y_pix=2068, det_iy=3) == "H"
+        assert telescope_coords.get_vis_quadrant(x_pix=2048, y_pix=2068, det_iy=1) == "G"
 
         # Test values on the detector, in the right half of detectors
-        assert telescope_coords.get_vis_quadrant(x_pix=2118, y_pix=2065, det_iy=4) == "G"
-        assert telescope_coords.get_vis_quadrant(x_pix=2119, y_pix=2065, det_iy=5) == "H"
-        assert telescope_coords.get_vis_quadrant(x_pix=2118, y_pix=2066, det_iy=5) == "F"
-        assert telescope_coords.get_vis_quadrant(x_pix=2119, y_pix=2066, det_iy=6) == "E"
+        assert telescope_coords.get_vis_quadrant(x_pix=2047, y_pix=2067, det_iy=4) == "G"
+        assert telescope_coords.get_vis_quadrant(x_pix=2048, y_pix=2067, det_iy=5) == "H"
+        assert telescope_coords.get_vis_quadrant(x_pix=2047, y_pix=2068, det_iy=5) == "F"
+        assert telescope_coords.get_vis_quadrant(x_pix=2048, y_pix=2068, det_iy=6) == "E"
 
         # Test that outside values will report "X"
         assert telescope_coords.get_vis_quadrant(x_pix=-1, y_pix=-1, det_iy=1) == "X"
