@@ -17,7 +17,7 @@ Created on: 13 Feb, 2019
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-01-20"
+__updated__ = "2020-12-14"
 
 import math
 import os
@@ -315,9 +315,9 @@ def get_focal_plane_coords_from_detector(det_xp,
         ------
         foc_x, foc_y : float, float
             VIS focal plane co-ordinates in um
-            
-            
- 
+
+
+
     """
 
     if instrument == "VIS":
@@ -372,8 +372,8 @@ def get_fov_coords_from_focal_plane(foc_x,
         ------
         fov_x, fov_y : float, float
             Field-of-view co-ordinates in degrees
-            
-            
+
+
         @fixme:
         ISSUE 56: ??
         I've started reading it and it lacks a function, which would be called
@@ -383,11 +383,11 @@ you're using. There is the detector frame in pixels, the focal plane frame in
 micrometres (which I assume is centered on the center of the focal plane), and
 the field of view frame, in degrees, which origin is offset from the focal
 plane center by -0.822 degrees along the X axis.
-        
+
          My concern is that usually the VIS FOV frame has its Y axis along the X FPA
 axis, and the FOV X axis is along -Y FPA, and I don't see this transformation
 in your "get_fov_coords_from_focal_plane()" function.
-        
+
         I don't think that's correct, unfortunately. The rotation is between the focal plane and the FoV, while the orientation parameter rotates between the focal plane and the detectors. It might appear to solve our problem, but would get us into trouble later when the focal plane to FoV conversion is made more accurate
     """
 
@@ -438,7 +438,7 @@ def get_fov_coords_from_detector(det_xp,
         detector_orientation : float
             Orientation of the detector relative to the field-of-view in radians. Default=0
 
-            
+
 
         Return
         ------
@@ -458,3 +458,42 @@ def get_fov_coords_from_detector(det_xp,
                                                    instrument=instrument,)
 
     return fov_x, fov_y
+
+
+# Quadrant layout - note that due to column/row-major flip and the visual layout starting from bottom-left, this is transposed
+# and flipped vertically compared to how the layout actually looks
+
+
+quadrant_layout_123 = [["E", "H"],
+                       ["F", "G"]]
+quadrant_layout_456 = [["G", "F"],
+                       ["H", "E"]]
+
+quad_x_size = 2119
+quad_y_size = 2066
+
+
+def get_quadrant(x_pix: float,
+                 y_pix: float,
+                 det_iy: int):
+    """ Get the letter signifying the quadrant of a detector where a pixel coordinate is. Returns "X" if the position
+        is outside of the detector bounds.
+
+        This uses the charts at http://euclid.esac.esa.int/dm/dpdd/latest/le1dpd/dpcards/le1_visrawframe.html for its
+        logic.
+    """
+
+    if det_iy <= 3:
+        quadrant_layout = quadrant_layout_123
+    else:
+        quadrant_layout = quadrant_layout_456
+
+    quad_ix = int(x_pix / quad_x_size)
+    quad_iy = int(y_pix / quad_y_size)
+
+    if quad_ix in (0, 1) and quad_iy in (0, 1):
+        quadrant = quadrant_layout[quad_ix, quad_iy]
+    else:
+        quadrant = "X"
+
+    return quadrant
