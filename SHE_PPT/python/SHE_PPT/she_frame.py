@@ -22,7 +22,7 @@ Created on: 02/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2020-08-13"
+__updated__ = "2020-12-14"
 
 from collections import namedtuple
 from copy import deepcopy
@@ -118,7 +118,7 @@ class SHEFrame(object):
         self._detectors = detectors
 
         # Set this as the parent for all detectors
-        for detector in self._detectors.flatten():
+        for detector in self._detectors.ravel():
             if detector is not None:
                 detector.parent_frame = self
                 detector.parent_frame_stack = self.parent_frame_stack
@@ -127,7 +127,7 @@ class SHEFrame(object):
 
     @detectors.deleter
     def detectors(self):
-        for detector in self._detectors.flatten():
+        for detector in self._detectors.ravel():
             del detector
         self._detectors = None
 
@@ -300,7 +300,7 @@ class SHEFrame(object):
         return bulge_psf_stamp, disk_psf_stamp
 
     def get_fov_coords(self, x_world, y_world, x_buffer=0, y_buffer=0,
-        return_det_coords_too=False):
+                       return_det_coords_too=False):
         """ Calculates the Field-of-View (FOV) co-ordinates of a given sky position, and returns a (fov_x, fov_y)
             tuple. If the position isn't present in the exposure, None will be returned instead.
 
@@ -363,7 +363,7 @@ class SHEFrame(object):
         if return_det_coords_too:
             # Do as astropy Table
             CoordTuple = namedtuple("CoordTuple",
-                "x_fov y_fov detno_x detno_y x_det y_det")
+                                    "x_fov y_fov detno_x detno_y x_det y_det")
             return CoordTuple(*[x_fov, y_fov, x_i, y_i, x, y])
         else:
             return (x_fov, y_fov)

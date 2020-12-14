@@ -18,9 +18,9 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-14"
+__updated__ = "2020-12-14"
 
-from   operator  import itemgetter
+from operator import itemgetter
 import os
 
 import pytest
@@ -132,8 +132,8 @@ class TestTelescopeCoords:
 
         ex_foc_x = 17642.0
         ex_foc_y = -100008.0
-        ex_fov_x = -0.040837962 # Old: 1.0535
-        ex_fov_y = 0.5905 # Old: 0.040837962
+        ex_fov_x = -0.040837962  # Old: 1.0535
+        ex_fov_y = 0.5905  # Old: 0.040837962
 
         foc_x, foc_y = telescope_coords.get_focal_plane_coords_from_detector(det_xp=det_xp,
                                                                              det_yp=det_yp,
@@ -217,17 +217,17 @@ class TestTelescopeCoords:
         # fov_x,fov_y,fpa_x,fpa_y
         lines = open(self.test_data_filename).readlines()
         fov_to_fpa_data = np.array([[float(pt)
-            for pt in line.strip().split(',')]
-            for line in lines if not line.startswith('#')])
+                                     for pt in line.strip().split(',')]
+                                    for line in lines if not line.startswith('#')])
         full_data = []
         fov_x_ord = sorted(fov_to_fpa_data, key=itemgetter(0))
         fov_y_ord = sorted(fov_to_fpa_data, key=itemgetter(1))
-        print(fov_x_ord[0][0],fov_x_ord[-1][0],fov_y_ord[0][1],fov_y_ord[-1][1])
-        assert fov_x_ord[0][0]>=-0.3961
-        assert fov_x_ord[-1][0]<=0.393
-        assert (fov_y_ord[0][1]+0.822)>=0.4642
-        assert (fov_y_ord[-1][1]+0.822)<=1.1722
-        
+        print(fov_x_ord[0][0], fov_x_ord[-1][0], fov_y_ord[0][1], fov_y_ord[-1][1])
+        assert fov_x_ord[0][0] >= -0.3961
+        assert fov_x_ord[-1][0] <= 0.393
+        assert (fov_y_ord[0][1] + 0.822) >= 0.4642
+        assert (fov_y_ord[-1][1] + 0.822) <= 1.1722
+
     def test_vis_coords_range(self):
 
         # Load values from the MDB first
@@ -237,8 +237,8 @@ class TestTelescopeCoords:
         # fov_x,fov_y,fpa_x,fpa_y
         lines = open(self.test_data_filename).readlines()
         fov_to_fpa_data = np.array([[float(pt)
-            for pt in line.strip().split(',')]
-            for line in lines if not line.startswith('#')])
+                                     for pt in line.strip().split(',')]
+                                    for line in lines if not line.startswith('#')])
         full_data = []
         for fov_elv_x, fov_elv_y, fpa_elv_x, fpa_elv_y in fov_to_fpa_data:
             # Go from fpa_x,fpa_y --> fov2_x,fov2_y
@@ -247,7 +247,40 @@ class TestTelescopeCoords:
                 fov2_x, fov2_y = telescope_coords.get_fov_coords_from_focal_plane(
                     fpa_elv_x, fpa_elv_y, 'VIS')
                 full_data.append((fov_elv_x, fov_elv_y, fpa_elv_x, fpa_elv_y,
-                    fov2_x, fov2_y, (fov2_x - fov_elv_x), (fov2_y - fov_elv_y)))
+                                  fov2_x, fov2_y, (fov2_x - fov_elv_x), (fov2_y - fov_elv_y)))
 
         assert np.mean([dt[6] for dt in full_data]) < 0.001
         assert (np.mean([dt[7] for dt in full_data]) - 0.822) < 0.001
+
+    def test_get_vis_quadrant(self):
+
+        # Load values from the MDB
+        telescope_coords.load_vis_detector_specs(mdb_files=self.mdb_filename)
+
+        # Test values on the detector, in the left half of detectors
+        assert telescope_coords.get_vis_quadrant(x_pix=2118, y_pix=2065, det_iy=1) == "E"
+        assert telescope_coords.get_vis_quadrant(x_pix=2119, y_pix=2065, det_iy=2) == "F"
+        assert telescope_coords.get_vis_quadrant(x_pix=2118, y_pix=2066, det_iy=3) == "H"
+        assert telescope_coords.get_vis_quadrant(x_pix=2119, y_pix=2066, det_iy=1) == "G"
+
+        # Test values on the detector, in the right half of detectors
+        assert telescope_coords.get_vis_quadrant(x_pix=2118, y_pix=2065, det_iy=4) == "G"
+        assert telescope_coords.get_vis_quadrant(x_pix=2119, y_pix=2065, det_iy=5) == "H"
+        assert telescope_coords.get_vis_quadrant(x_pix=2118, y_pix=2066, det_iy=5) == "F"
+        assert telescope_coords.get_vis_quadrant(x_pix=2119, y_pix=2066, det_iy=6) == "E"
+
+        # Test that outside values will report "X"
+        assert telescope_coords.get_vis_quadrant(x_pix=-1, y_pix=-1, det_iy=1) == "X"
+        assert telescope_coords.get_vis_quadrant(x_pix=1000, y_pix=-1, det_iy=1) == "X"
+        assert telescope_coords.get_vis_quadrant(x_pix=3000, y_pix=-1, det_iy=1) == "X"
+        assert telescope_coords.get_vis_quadrant(x_pix=5000, y_pix=-1, det_iy=1) == "X"
+        assert telescope_coords.get_vis_quadrant(x_pix=5000, y_pix=1000, det_iy=1) == "X"
+        assert telescope_coords.get_vis_quadrant(x_pix=5000, y_pix=3000, det_iy=1) == "X"
+        assert telescope_coords.get_vis_quadrant(x_pix=5000, y_pix=5000, det_iy=1) == "X"
+        assert telescope_coords.get_vis_quadrant(x_pix=3000, y_pix=5000, det_iy=1) == "X"
+        assert telescope_coords.get_vis_quadrant(x_pix=1000, y_pix=5000, det_iy=1) == "X"
+        assert telescope_coords.get_vis_quadrant(x_pix=-1, y_pix=5000, det_iy=1) == "X"
+        assert telescope_coords.get_vis_quadrant(x_pix=-1, y_pix=3000, det_iy=1) == "X"
+        assert telescope_coords.get_vis_quadrant(x_pix=-1, y_pix=1000, det_iy=1) == "X"
+
+        return
