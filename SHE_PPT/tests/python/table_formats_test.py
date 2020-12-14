@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-03"
+__updated__ = "2020-12-14"
 
 import os
 
@@ -54,8 +54,8 @@ from SHE_PPT.table_formats.she_psf_tm_state import (tff as psftmf_tf, tfc as psf
                                                     initialise_psf_field_tm_state_table,
                                                     initialise_psf_calibration_tm_state_table)
 from SHE_PPT.table_formats.she_psf_tml_state import (tff as psftmlf_tf, tfc as psftmlc_tf,
-                                                    initialise_psf_field_tml_state_table,
-                                                    initialise_psf_calibration_tml_state_table)
+                                                     initialise_psf_field_tml_state_table,
+                                                     initialise_psf_calibration_tml_state_table)
 from SHE_PPT.table_formats.she_psf_zm_state import (tff as psfzmf_tf, tfc as psfzmc_tf,
                                                     initialise_psf_field_zm_state_table,
                                                     initialise_psf_calibration_zm_state_table)
@@ -64,6 +64,7 @@ from SHE_PPT.table_formats.she_regauss_training import tf as regt_tf, initialise
 from SHE_PPT.table_formats.she_simulated_catalog import tf as simc_tf, initialise_simulated_catalog
 from SHE_PPT.table_formats.she_simulation_plan import tf as simp_tf, initialise_simulation_plan_table
 from SHE_PPT.table_formats.she_star_catalog import tf as sc_tf, initialise_star_catalog
+from SHE_PPT.table_testing import _test_is_in_format
 from SHE_PPT.table_utility import is_in_format, add_row
 import numpy as np
 
@@ -109,7 +110,7 @@ class TestTableFormats:
                                         (simp_tf, initialise_simulation_plan_table),
                                         (sc_tf, initialise_star_catalog),
                                         ]
-                                        # (, ),
+        # (, ),
 
         cls.formats, cls.initializers = zip(*cls.formats_and_initializers)
 
@@ -160,39 +161,9 @@ class TestTableFormats:
         return
 
     def test_is_in_format(self):
-        # Test each format is detected correctly
 
-        empty_tables = []
-
-        for init in self.initializers:
-            empty_tables.append(init())
-
-        assert len(self.initializers) == len(self.formats)
-
-        for i in range(len(self.initializers)):
-
-            # Try strict test
-            for j in range((len(self.formats))):
-                if i == j and not is_in_format(empty_tables[i], self.formats[j], strict=True):
-                    raise Exception("Table format " + self.formats[j].m.table_format +
-                                    " doesn't initialize a valid table" +
-                                    " in strict test.")
-                elif i != j and is_in_format(empty_tables[i], self.formats[j], strict=True):
-                    raise Exception("Table format " + self.formats[j].m.table_format +
-                                    " resolves true for tables of format " + self.formats[i].m.table_format +
-                                    " in strict test.")
-
-            # Try non-strict version now
-            empty_tables[i].add_column(Column(name='new_column', data=np.zeros((0,))))
-            for j in range((len(self.formats))):
-                if i == j and not is_in_format(empty_tables[i], self.formats[j], strict=False):
-                    raise Exception("Table format " + self.formats[j].m.table_format +
-                                    " doesn't initialize a valid table" +
-                                    " in non-strict test.")
-                elif i != j and is_in_format(empty_tables[i], self.formats[j], strict=False):
-                    raise Exception("Table format " + self.formats[j].m.table_format +
-                                    " resolves true for tables of format " + self.formats[i].m.table_format +
-                                    " in non-strict test.")
+        # Call the test stored in the table_testing module (to re-use code with other projects)
+        _test_is_in_format(self)
 
         return
 
@@ -236,16 +207,16 @@ class TestTableFormats:
         # Test initialization methods
 
         mer_final_catalog = initialise_mer_final_catalog(model_hash=model_hash,
-                                                       model_seed=model_seed,
-                                                       noise_seed=noise_seed)
+                                                         model_seed=model_seed,
+                                                         noise_seed=noise_seed)
 
         assert(mer_final_catalog.meta[mfc_tf.m.model_hash] == model_hash)
         assert(mer_final_catalog.meta[mfc_tf.m.model_seed] == model_seed)
         assert(mer_final_catalog.meta[mfc_tf.m.noise_seed] == noise_seed)
 
         _details_table = initialise_simulated_catalog(model_hash=model_hash,
-                                                  model_seed=model_seed,
-                                                  noise_seed=noise_seed)
+                                                      model_seed=model_seed,
+                                                      noise_seed=noise_seed)
 
         psf_table = initialise_psf_table()
 
