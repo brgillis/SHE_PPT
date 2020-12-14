@@ -469,9 +469,6 @@ quadrant_layout_123 = [["E", "H"],
 quadrant_layout_456 = [["G", "F"],
                        ["H", "E"]]
 
-quad_x_size = 2119
-quad_y_size = 2066
-
 
 def get_vis_quadrant(x_pix: float,
                      y_pix: float,
@@ -491,8 +488,8 @@ def get_vis_quadrant(x_pix: float,
     else:
         quadrant_layout = quadrant_layout_456
 
-    quad_ix = int(x_pix / quad_x_size)
-    quad_iy = int(y_pix / quad_y_size)
+    quad_ix = int(2 * x_pix / vis_det_specs.detector_pixels_x)
+    quad_iy = int(2 * y_pix / vis_det_specs.detector_pixels_y)
 
     if quad_ix in (0, 1) and quad_iy in (0, 1):
         quadrant = quadrant_layout[quad_ix][quad_iy]
