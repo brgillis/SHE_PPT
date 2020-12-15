@@ -310,9 +310,6 @@ def uncorrect_for_wcs_shear_and_rotation(shear_estimate,
     # Set up the shear as a matrix
     g_world_polar = np.array([[res_shear.g1], [res_shear.g2]])
 
-    shear_estimate.g1 = res_shear.g1
-    shear_estimate.g2 = res_shear.g2
-
     # We secondly rotate into the proper frame
     sintheta = w2p_theta.sin()
     costheta = w2p_theta.cos()
@@ -322,6 +319,9 @@ def uncorrect_for_wcs_shear_and_rotation(shear_estimate,
 
     double_w2p_rotation_matrix = w2p_rotation_matrix @ w2p_rotation_matrix  # 2x2 so it's commutative
     g_pix_polar = double_w2p_rotation_matrix @ g_world_polar
+
+    shear_estimate.g1 = g_pix_polar[0, 0]
+    shear_estimate.g2 = g_pix_polar[1, 0]
 
     # TODO: Update errors from the WCS shear
 

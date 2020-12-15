@@ -20,6 +20,8 @@
 
 __updated__ = "2020-12-15"
 
+from copy import deepcopy
+
 from astropy.io import fits
 import galsim
 import pytest
@@ -175,6 +177,8 @@ class TestCase:
                                            g1_err=gerr,
                                            g2_err=gerr,)
 
+            init_shear_estimate = deepcopy(shear_estimate)
+
             # Create a mock SHEImage stamp for testing
             gs_header = galsim.FitsHeader()
             wcs = galsim.AffineTransform(dudx=costheta, dudy=-sintheta,
@@ -194,6 +198,15 @@ class TestCase:
             assert np.isclose(shear_estimate.g1_err, ex_g1_err)
             assert np.isclose(shear_estimate.g2_err, ex_g2_err)
             assert np.isclose(shear_estimate.g1g2_covar, ex_g1g2covar)
+
+            # Now test that uncorrecting also works as expected
+            uncorrect_for_wcs_shear_and_rotation(shear_estimate, mock_stamp)
+
+            assert np.isclose(shear_estimate.g1, init_shear_estimate.g1)
+            assert np.isclose(shear_estimate.g2, init_shear_estimate.g2)
+            assert np.isclose(shear_estimate.g1_err, init_shear_estimate.g1_err)
+            assert np.isclose(shear_estimate.g2_err, init_shear_estimate.g1_err)
+            assert np.isclose(shear_estimate.g1g2_covar, init_shear_estimate.g1g2_covar)
 
         return
 
@@ -229,6 +242,8 @@ class TestCase:
                                        g1_err=gerr,
                                        g2_err=gerr,)
 
+        init_shear_estimate = deepcopy(shear_estimate)
+
         # Create a mock SHEImage stamp for testing
         gs_header = galsim.FitsHeader()
         wcs = galsim.AffineTransform(dudx=transform_matrix[0, 0], dudy=transform_matrix[0, 1],
@@ -248,5 +263,14 @@ class TestCase:
         assert np.isclose(shear_estimate.g1_err, gerr)
         assert np.isclose(shear_estimate.g2_err, gerr)
         assert np.isclose(shear_estimate.g1g2_covar, 0.)
+
+        # Now test that uncorrecting also works as expected
+        uncorrect_for_wcs_shear_and_rotation(shear_estimate, mock_stamp)
+
+        assert np.isclose(shear_estimate.g1, init_shear_estimate.g1)
+        assert np.isclose(shear_estimate.g2, init_shear_estimate.g2)
+        assert np.isclose(shear_estimate.g1_err, init_shear_estimate.g1_err)
+        assert np.isclose(shear_estimate.g2_err, init_shear_estimate.g1_err)
+        assert np.isclose(shear_estimate.g1g2_covar, init_shear_estimate.g1g2_covar)
 
         return
