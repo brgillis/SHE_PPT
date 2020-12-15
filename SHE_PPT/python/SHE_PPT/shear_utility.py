@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-19"
+__updated__ = "2020-12-15"
 
 import math
 
@@ -79,8 +79,7 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
                                        x=None,
                                        y=None,
                                        ra=None,
-                                       dec=None,
-                                       sim_sc4_fix=False):
+                                       dec=None):
     """Corrects (in-place) a shear_estimate object for the shear and rotation information contained within the
     provided WCS (or provided stamp's wcs). Note that this function ignores any flipping, so if e.g. transforming
     from image to sky coordinates, the resulting shear will be in the (-R.A.,Dec.) frame, not (R.A.,Dec.).
@@ -155,7 +154,7 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
 
     # Update errors from the WCS rotation
     covar_pix = np.array([[shear_estimate.g1_err ** 2, shear_estimate.g1g2_covar],
-                           [shear_estimate.g1g2_covar, shear_estimate.g2_err ** 2]])
+                          [shear_estimate.g1g2_covar, shear_estimate.g2_err ** 2]])
     covar_world = double_p2w_rotation_matrix @ covar_pix @ double_p2w_rotation_matrix.transpose()
 
     # Update error and covar values in the shear_estimate object
@@ -183,13 +182,6 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
         shear_estimate.g1g2_covar = np.inf
 
         shear_estimate.flags |= flags.flag_too_large_shear
-
-        return
-
-    if sim_sc4_fix:
-        # If applying the fix, return here
-        shear_estimate.g1 = rot_est_shear.g1
-        shear_estimate.g2 = rot_est_shear.g2
 
         return
 
@@ -223,6 +215,125 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
     else:
         shear_estimate.g1 = fitting_result.x[0]
         shear_estimate.g2 = fitting_result.x[1]
+
+    return
+
+
+def uncorrect_for_wcs_shear_and_rotation(shear_estimate,
+                                         stamp=None,
+                                         wcs=None,
+                                         x=None,
+                                         y=None,
+                                         ra=None,
+                                         dec=None):
+    """Uncorrects (in-place) a shear_estimate object for the shear and rotation information contained within the
+    provided WCS (or provided stamp's wcs). Note that this function ignores any flipping.
+
+    Parameters
+    ----------
+    shear_estimate : ShearEstimate
+        An object containing the shear estimate and errors. This can either be the ShearEstimate class defined in
+        this module, or another class that has the g1, g2, g1_err, g2_err, g1g2_covar, and flags members.
+    stamp : SHEImage
+        A SHEImage, at the center of which is the object in question. Either this or "wcs" must be supplied
+    wcs : an astropy or galsim WCS
+        Either this or "stamp" must be supplied
+    x, y : float
+        If wcs is supplied, the position of the object must be provided, either through x and y or ra and dec
+    ra, dec : float
+        If wcs is supplied, the position of the object must be provided, either through x and y or ra and dec
+
+    Returns
+    -------
+    None
+
+    Side-effects
+    ------------
+    shear_estimate is corrected to be in the image frame.
+
+    """
+
+    # Check for valid input
+    if (stamp is None) == (wcs is None):
+        raise ValueError("Exactly one of \"stamp\" and \"wcs\" must be supplied to " +
+                         "correct_for_wcs_shear_and_rotation.")
+
+    # If no stamp is supplied, create a ministamp to work with
+    if stamp is None:
+
+        stamp = SHEImage(data=np.zeros((1, 1)))
+
+        # Add the WCS to the stamp
+        if isinstance(wcs, AstropyWCS):
+            stamp.wcs = wcs
+        elif isinstance(wcs, GalsimWCS):
+            stamp.galsim_wcs = wcs
+        else:
+            raise TypeError("wcs is of invalid type: " + str(type(wcs)))
+
+        # Set the offset of the stamp from the provided position
+        if ra is not None and dec is not None:
+            x, y = stamp.world2pix(ra, dec)
+        if x is None or y is None:
+            raise ValueError("x and y or ra and dec must be supplied to correct_for_wcs_shear_and_rotation.")
+
+        stamp.offset = np.array((x, y))
+
+    # In this direction, we can straightforwardly apply the world2pix transformation
+    _scale, w2p_shear, w2p_theta, _w2p_flip = stamp.get_world2pix_decomposition()
+
+    # Apply the shear first
+
+    try:
+
+        world_shear = galsim.Shear(g1=shear_estimate.g1, g2=shear_estimate.g2)
+
+    except ValueError as e:
+
+        if not "Requested shear exceeds 1" in str(e):
+            raise
+
+        # Shear is greater than 1, so note this in the flags
+        shear_estimate.g1 = np.NaN
+        shear_estimate.g2 = np.NaN
+        shear_estimate.gerr = np.inf
+        shear_estimate.g1_err = np.inf
+        shear_estimate.g2_err = np.inf
+        shear_estimate.g1g2_covar = np.inf
+
+        shear_estimate.flags |= flags.flag_too_large_shear
+
+        return
+
+    res_shear = w2p_shear + world_shear
+
+    # Set up the shear as a matrix
+    g_world_polar = np.array([[res_shear.g1], [res_shear.g2]])
+
+    # We secondly rotate into the proper frame
+    sintheta = w2p_theta.sin()
+    costheta = w2p_theta.cos()
+
+    # Get the rotation matrix
+    w2p_rotation_matrix = np.array([[costheta, -sintheta], [sintheta, costheta]])
+
+    double_w2p_rotation_matrix = w2p_rotation_matrix @ w2p_rotation_matrix  # 2x2 so it's commutative
+    g_pix_polar = double_w2p_rotation_matrix @ g_world_polar
+
+    shear_estimate.g1 = g_pix_polar[0, 0]
+    shear_estimate.g2 = g_pix_polar[1, 0]
+
+    # TODO: Update errors from the WCS shear
+
+    # Update errors from the WCS rotation
+    covar_pix = np.array([[shear_estimate.g1_err ** 2, shear_estimate.g1g2_covar],
+                          [shear_estimate.g1g2_covar, shear_estimate.g2_err ** 2]])
+    covar_world = double_w2p_rotation_matrix @ covar_pix @ double_w2p_rotation_matrix.transpose()
+
+    # Update error and covar values in the shear_estimate object
+    shear_estimate.g1_err = np.sqrt(covar_world[0, 0])
+    shear_estimate.g2_err = np.sqrt(covar_world[1, 1])
+    shear_estimate.g1g2_covar = covar_world[0, 1]
 
     return
 
