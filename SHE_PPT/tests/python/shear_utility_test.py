@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-14"
+__updated__ = "2020-12-15"
 
 from astropy.io import fits
 import galsim
@@ -30,7 +30,7 @@ from SHE_PPT import mdb
 from SHE_PPT.file_io import find_file
 from SHE_PPT.magic_values import scale_label, gain_label
 from SHE_PPT.she_image import SHEImage
-from SHE_PPT.shear_utility import ShearEstimate, correct_for_wcs_shear_and_rotation
+from SHE_PPT.shear_utility import ShearEstimate, correct_for_wcs_shear_and_rotation, uncorrect_for_wcs_shear_and_rotation
 import numpy as np
 
 
@@ -119,6 +119,8 @@ class TestCase:
                                        g1_err=gerr,
                                        g2_err=gerr,)
 
+        init_shear_estimate = deepcopy(shear_estimate)
+
         # Create a mock SHEImage stamp for testing
         gs_header = galsim.FitsHeader()
         galsim_wcs = galsim.ShearWCS(shear=wcs_shear, scale=1.0)
@@ -138,6 +140,15 @@ class TestCase:
         assert np.isclose(shear_estimate.g1_err, gerr)
         assert np.isclose(shear_estimate.g2_err, gerr)
         assert np.isclose(shear_estimate.g1g2_covar, 0.)
+
+        # Now test that uncorrecting also works as expected
+        uncorrect_for_wcs_shear_and_rotation(shear_estimate, mock_stamp)
+
+        assert np.isclose(shear_estimate.g1, init_shear_estimate.g1)
+        assert np.isclose(shear_estimate.g2, init_shear_estimate.g2)
+        assert np.isclose(shear_estimate.g1_err, init_shear_estimate.g1_err)
+        assert np.isclose(shear_estimate.g2_err, init_shear_estimate.g1_err)
+        assert np.isclose(shear_estimate.g1g2_covar, init_shear_estimate.g1g2_covar)
 
         return
 
@@ -203,9 +214,9 @@ class TestCase:
         gal_shear_rotated = galsim.Shear(g1=0.3, g2=-0.5)
 
         shear_matrix = np.array([[1 + wcs_shear.g1, wcs_shear.g2],
-                                  [wcs_shear.g2, 1 - wcs_shear.g1]])
+                                 [wcs_shear.g2, 1 - wcs_shear.g1]])
         rotation_matrix = np.array([[costheta, -sintheta],
-                                     [sintheta, costheta]])
+                                    [sintheta, costheta]])
 
         transform_matrix = 1.0 / np.sqrt(1 - wcs_shear.g1 ** 2 - wcs_shear.g2 ** 2) * shear_matrix @ rotation_matrix
 
