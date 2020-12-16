@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-19"
+__updated__ = "2020-12-16"
 
 from collections import OrderedDict
 
@@ -147,7 +147,8 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
                 if fix_bool:
                     col = Column(data=np.empty_like(table[child_colname].data, dtype=bool))
                     for i in range(len(col)):
-                        col[i] = (table[child_colname] == "True" or table[child_colname] == "true" or table[child_colname] == "1")
+                        col[i] = (table[child_colname] == "True" or table[child_colname]
+                                  == "true" or table[child_colname] == "1")
                     table.replace_column(colname, col)
                 else:
                     if verbose:
@@ -181,7 +182,7 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
             return False
 
         # Check the version is correct
-        if not table_format.is_base and  table.meta[table_format.m.fits_version] != table_format.__version__:
+        if not table_format.is_base and table.meta[table_format.m.fits_version] != table_format.__version__:
             if verbose:
                 logger.info("Table not in correct format due to wrong table format label.\n" +
                             "Expected: " + str(table_format.__version__) + "\n" +
@@ -371,34 +372,46 @@ def init_table(tf, size=None, optional_columns=None, init_cols=None,):
         if tf.lengths[colname] > 0 and tf.dtypes[colname] != str:
             must_init_empty = True
 
-    if must_init_empty and len(init_cols) > 0 or size > 0:
-        raise ValueError("Due to a bug in astropy, tables with any array columns can only be initialised empty. " +
-                          "(size=0 and no init_cols).")
-
     for colname in tf.all:
-        if (colname in tf.all_required) or (colname in optional_columns):
-            names.append(colname)
+        if not ((colname in tf.all_required) or (colname in optional_columns)):
+            continue
+        names.append(colname)
 
-            col_dtype = tf.dtypes[colname]
-            col_length = tf.lengths[colname]
+        col_dtype = tf.dtypes[colname]
+        col_length = tf.lengths[colname]
 
+        if col_length == 1 and col_dtype != "str":
+            dtype = col_dtype
+        else:
+            dtype = (col_dtype, col_length)
+
+        dtypes.append(dtype)
+
+        if colname in init_cols.keys():
+            col = init_cols[colname]
+            full_init_cols.append(init_cols[colname])
+            if size == 0 and len(col) > 0:
+                size = len(col)
+        else:
             if col_length == 1:
-                dtype = col_dtype
-            else:
-                dtype = (col_dtype, col_length)
+                col = Column(name=colname, dtype=dtype, length=size)
 
-            dtypes.append(dtype)
-
-            if colname in init_cols.keys():
-                full_init_cols.append(init_cols[colname])
-            else:
-                if col_length == 1:
-                    col = Column(name=colname, dtype=dtype, length=size)
-
-                    full_init_cols.append(col)
+                full_init_cols.append(col)
 
     if must_init_empty:
-        t = Table(names=names, dtype=dtypes)
+
+        # We have to use a bit of a workaround if the table has any array columns, due to a bug in astropy
+
+        t_template = Table(names=names, dtype=dtypes)
+
+        t_data = np.empty((size,), dtype=t_template.dtype)
+
+        t = Table(t_data, meta=t_template.meta)
+
+        for colname in tf.all:
+            if colname in init_cols.keys():
+                t[colname] = init_cols[colname]
+
     else:
         t = Table(full_init_cols, names=names, dtype=dtypes)
 
