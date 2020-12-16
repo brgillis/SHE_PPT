@@ -393,10 +393,9 @@ def init_table(tf, size=None, optional_columns=None, init_cols=None,):
             if size == 0 and len(col) > 0:
                 size = len(col)
         else:
-            if col_length == 1:
-                col = Column(name=colname, dtype=dtype, length=size)
+            col = Column(name=colname, data=np.zeros(size, dtype=dtype))
 
-                full_init_cols.append(col)
+            full_init_cols.append(col)
 
     if must_init_empty:
 
@@ -404,7 +403,7 @@ def init_table(tf, size=None, optional_columns=None, init_cols=None,):
 
         t_template = Table(names=names, dtype=dtypes)
 
-        t_data = np.empty((size,), dtype=t_template.dtype)
+        t_data = np.zeros((size,), dtype=t_template.dtype)
 
         t = Table(t_data, meta=t_template.meta)
 
