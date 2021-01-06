@@ -28,7 +28,7 @@ import pytest
 from ElementsServices.DataSync import DataSync
 from SHE_PPT import telescope_coords
 from SHE_PPT.constants.test_data import (SYNC_CONF, TEST_FILES_TELESCOPE_COORDS, TEST_DATA_LOCATION,
-                                         MDB_PRODUCT, TEST_FOV_TO_FPA_NO_OFFSET_DATA)
+                                         MDB_PRODUCT_FILENAME, TEST_FOV_TO_FPA_NO_OFFSET_DATA)
 import numpy as np
 
 
@@ -41,7 +41,7 @@ class TestTelescopeCoords:
 
         sync = DataSync(SYNC_CONF, TEST_FILES_TELESCOPE_COORDS)
         sync.download()
-        cls.mdb_filename = sync.absolutePath(join(TEST_DATA_LOCATION, MDB_PRODUCT))
+        cls.mdb_filename = sync.absolutePath(join(TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME))
         cls.test_data_filename = sync.absolutePath(join(TEST_DATA_LOCATION, TEST_FOV_TO_FPA_NO_OFFSET_DATA))
 
         return
