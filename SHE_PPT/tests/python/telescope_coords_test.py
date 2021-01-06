@@ -41,8 +41,8 @@ class TestTelescopeCoords:
 
         sync = DataSync(SYNC_CONF, TEST_FILES_TELESCOPE_COORDS)
         sync.download()
-        cls.mdb_filename = sync.absolutePath(join(TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME))
-        cls.test_data_filename = sync.absolutePath(join(TEST_DATA_LOCATION, TEST_FOV_TO_FPA_NO_OFFSET_DATA))
+        cls.mdb_filename = sync.absolutePath(os.path.join(TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME))
+        cls.test_data_filename = sync.absolutePath(os.path.join(TEST_DATA_LOCATION, TEST_FOV_TO_FPA_NO_OFFSET_DATA))
 
         return
 
