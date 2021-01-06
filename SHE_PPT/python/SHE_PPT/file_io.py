@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-11-24"
+__updated__ = "2021-01-06"
 
 from datetime import datetime
 import json
@@ -40,6 +40,7 @@ from SHE_PPT.utility import run_only_once, get_release_from_version, time_to_tim
 from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider
 from ST_DataModelBindings.sys_stub import CreateFromDocument
 import numpy as np
+from .constants.test_data import SYNC_CONF
 
 
 logger = getLogger(mv.logger_name)
@@ -371,7 +372,7 @@ def find_web_file(filename):
         with open(filelist, 'w') as fo:
             fo.write(filename + "\n")
 
-        sync = DataSync("testdata/sync.conf", filelist)
+        sync = DataSync(SYNC_CONF, filelist)
         sync.download()
 
         qualified_filename = sync.absolutePath(filename)

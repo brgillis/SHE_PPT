@@ -1,6 +1,8 @@
-""" @file __init__.py
+""" @file shear_estimation_methods.py
 
-    Created 24 Nov 2017
+    Created 6 Jan 2021
+    
+    Constants relating to shear estimation methods
 """
 
 __updated__ = "2021-01-06"
@@ -19,15 +21,21 @@ __updated__ = "2021-01-06"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-import glob
-from os.path import dirname, basename, isfile
+from ..table_formats.she_ksb_measurements import tf as ksbm_tf
+from ..table_formats.she_lensmc_measurements import tf as lmcm_tf
+from ..table_formats.she_momentsml_measurements import tf as mmlm_tf
+from ..table_formats.she_regauss_measurements import tf as regm_tf
 
-from . import *
+KEY_KSB = "KSB"
+KEY_REGAUSS = "REGAUSS"
+KEY_MOMENTSML = "MomentsML"
+KEY_LENSMC = "LensMC"
 
-modules = glob.glob(dirname(__file__) + "/*.py")
-__all__ = [basename(f)[:-3]
-           for f in modules if isfile(f) and not f.endswith('__init__.py')]
+D_SHEAR_ESTIMATION_METHOD_TABLE_FORMATS = {KEY_KSB: ksbm_tf,
+                                           KEY_REGAUSS: regm_tf,
+                                           KEY_MOMENTSML: mmlm_tf,
+                                           KEY_LENSMC: lmcm_tf}
 
-del modules, dirname, basename, isfile, glob
+METHODS = D_SHEAR_ESTIMATION_METHOD_TABLE_FORMATS.keys()
 
-__version__ = "8.6"
+NUM_METHODS = len(METHODS)

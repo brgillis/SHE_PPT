@@ -1,9 +1,9 @@
-""" @file __init__.py
+""" @file shear_estimation_methods.py
 
-    Created 24 Nov 2017
+    Created 6 Jan 2021
+    
+    Module to contain constant values relating to the shear estimation methods
 """
-
-__updated__ = "2021-01-06"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -18,16 +18,3 @@ __updated__ = "2021-01-06"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
-
-import glob
-from os.path import dirname, basename, isfile
-
-from . import *
-
-modules = glob.glob(dirname(__file__) + "/*.py")
-__all__ = [basename(f)[:-3]
-           for f in modules if isfile(f) and not f.endswith('__init__.py')]
-
-del modules, dirname, basename, isfile, glob
-
-__version__ = "8.6"
