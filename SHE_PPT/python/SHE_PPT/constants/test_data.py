@@ -33,12 +33,13 @@ TEST_FILES_TELESCOPE_COORDS = join(SYNC_LOCATION, "test_telescope_coords.txt")
 TEST_DATA_LOCATION = "SHE_PPT_8_5"
 
 # Files from the MDB list
-MDB_PRODUCT = "sample_mdb-SC8.xml"
+MDB_PRODUCT_FILENAME = "sample_mdb-SC8.xml"
 
-# Files from the data_stack list
+# Files from the data_stack list. TODO - fill out and use all
 VIS_CALIBRATED_FRAME_LISTFILE_FILENAME = "vis_calibrated_frames.json"
 MER_FINAL_CATALOG_LISTFILE_FILENAME = "mer_final_catalogs.json"
 LENSMC_MEASUREMENTS_TABLE_FILENAME = "mock_lensmc_measurements.fits"
+SHE_VALIDATED_MEASUREMENTS_PRODUCT_FILENAME = "she_validated_measurements.xml"
 
 # Files from the telescope_coords list
 TEST_FOV_TO_FPA_NO_OFFSET_DATA = "testFovToFPA_noOffset.dat"
