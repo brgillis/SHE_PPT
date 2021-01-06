@@ -1,8 +1,8 @@
-""" @file shear_estimation_methods.py
+""" @file test_data.py
 
     Created 6 Jan 2021
     
-    Constants relating to shear estimation methods
+    Constants related to test data
 """
 
 __updated__ = "2021-01-06"
@@ -21,21 +21,24 @@ __updated__ = "2021-01-06"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-from ..table_formats.she_ksb_measurements import tf as ksbm_tf
-from ..table_formats.she_lensmc_measurements import tf as lmcm_tf
-from ..table_formats.she_momentsml_measurements import tf as mmlm_tf
-from ..table_formats.she_regauss_measurements import tf as regm_tf
+from os.path import join
 
-KEY_KSB = "KSB"
-KEY_REGAUSS = "REGAUSS"
-KEY_MOMENTSML = "MomentsML"
-KEY_LENSMC = "LensMC"
+SYNC_LOCATION = "testdata"
+SYNC_CONF = join(SYNC_LOCATION, "sync.conf")
 
-D_SHEAR_ESTIMATION_METHOD_TABLE_FORMATS = {KEY_KSB: ksbm_tf,
-                                           KEY_REGAUSS: regm_tf,
-                                           KEY_MOMENTSML: mmlm_tf,
-                                           KEY_LENSMC: lmcm_tf}
+TEST_FILES_MDB = join(SYNC_LOCATION, "test_mdb.txt")
+TEST_FILES_DATA_STACK = join(SYNC_LOCATION, "test_data_stack.txt")
+TEST_FILES_TELESCOPE_COORDS = join(SYNC_LOCATION, "test_telescope_coords.txt")
 
-METHODS = D_SHEAR_ESTIMATION_METHOD_TABLE_FORMATS.keys()
+TEST_DATA_LOCATION = "SHE_PPT_8_5"
 
-NUM_METHODS = len(METHODS)
+# Files from the MDB list
+MDB_PRODUCT = "sample_mdb-SC8.xml"
+
+# Files from the data_stack list
+VIS_CALIBRATED_FRAME_LISTFILE_FILENAME = "vis_calibrated_frames.json"
+MER_FINAL_CATALOG_LISTFILE_FILENAME = "mer_final_catalogs.json"
+LENSMC_MEASUREMENTS_TABLE_FILENAME = "mock_lensmc_measurements.fits"
+
+# Files from the telescope_coords list
+TEST_FOV_TO_FPA_NO_OFFSET_DATA = "testFovToFPA_noOffset.dat"

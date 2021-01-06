@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-12-14"
+__updated__ = "2021-01-06"
 
 from operator import itemgetter
 import os
@@ -27,6 +27,8 @@ import pytest
 
 from ElementsServices.DataSync import DataSync
 from SHE_PPT import telescope_coords
+from SHE_PPT.constants.test_data import (SYNC_CONF, TEST_FILES_TELESCOPE_COORDS, TEST_DATA_LOCATION,
+                                         MDB_PRODUCT, TEST_FOV_TO_FPA_NO_OFFSET_DATA)
 import numpy as np
 
 
@@ -37,10 +39,10 @@ class TestTelescopeCoords:
     @classmethod
     def setup_class(cls):
 
-        sync = DataSync("testdata/sync.conf", "testdata/test_telescope_coords.txt")
+        sync = DataSync(SYNC_CONF, TEST_FILES_TELESCOPE_COORDS)
         sync.download()
-        cls.mdb_filename = sync.absolutePath("SHE_PPT_8_5/sample_mdb-SC8.xml")
-        cls.test_data_filename = sync.absolutePath("SHE_PPT_8_5/testFovToFPA_noOffset.dat")
+        cls.mdb_filename = sync.absolutePath(join(TEST_DATA_LOCATION, MDB_PRODUCT))
+        cls.test_data_filename = sync.absolutePath(join(TEST_DATA_LOCATION, TEST_FOV_TO_FPA_NO_OFFSET_DATA))
 
         return
 
