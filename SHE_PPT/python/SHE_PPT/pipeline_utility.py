@@ -25,7 +25,7 @@ import json.decoder
 import os
 from pickle import UnpicklingError
 from shutil import copyfile
-from typing import Dict, Any
+from typing import Any, Dict, Tuple, Union
 from xml.sax._exceptions import SAXParseException
 
 from . import magic_values as mv
@@ -287,9 +287,9 @@ def read_reconciliation_config(config_filename: str,
 
 def read_config(config_filename: str,
                 workdir: str = ".",
-                config_keys: Enum = (AnalysisConfigKeys,
-                                     ReconciliationConfigKeys,
-                                     CalibrationConfigKeys),
+                config_keys: Union[Enum, Tuple[Enum, ...]] = (AnalysisConfigKeys,
+                                                              ReconciliationConfigKeys,
+                                                              CalibrationConfigKeys),
                 cline_args: Dict[str, Any] = None,
                 defaults: Dict[str, Any] = None) -> Dict[str, Any]:
     """ Reads in a generic configuration file to a dictionary. Note that all arguments will be read as strings unless
@@ -319,7 +319,9 @@ def read_config(config_filename: str,
 
     # Return None if input filename is None
     if is_any_type_of_none(config_filename):
-        return {}
+        return _make_config_from_cline_args_and_defaults(config_keys=config_keys,
+                                                         cline_args=cline_args,
+                                                         defaults=defaults,)
 
     # Silently coerce config_keys into iterable if just one enum is supplied
     if isinstance(config_keys, Enum):
@@ -336,7 +338,9 @@ def read_config(config_filename: str,
         # If we get here, it is a listfile. If no files in it, return an empty dict. If one, return that. If more than one,
         # raise an exception
         if len(filelist) == 0:
-            return {}
+            return _make_config_from_cline_args_and_defaults(config_keys=config_keys,
+                                                             cline_args=cline_args,
+                                                             defaults=defaults,)
         elif len(filelist) == 1:
             return _read_config_product(config_filename=filelist[0],
                                         workdir=workdir,
@@ -359,7 +363,7 @@ def read_config(config_filename: str,
 
 def _read_config_product(config_filename: str,
                          workdir: str,
-                         config_keys: Enum,
+                         config_keys: Tuple[Enum, ...],
                          cline_args: Dict[str, Any],
                          defaults: Dict[str, Any]) -> Dict[str, Any]:
 
@@ -384,11 +388,12 @@ def _read_config_product(config_filename: str,
 
 
 def _read_config_file(qualified_config_filename: str,
-                      config_keys: Enum,
+                      config_keys: Tuple[Enum, ...],
                       cline_args: Dict[str, Any],
                       defaults: Dict[str, Any]) -> Dict[str, Any]:
 
-    config_dict = {}
+    config_dict = _make_config_from_defaults(config_keys=config_keys,
+                                             defaults=defaults)
 
     with open(qualified_config_filename, 'r') as config_file:
 
@@ -408,30 +413,14 @@ def _read_config_file(qualified_config_filename: str,
             equal_split_line = noncomment_line.split('=')
 
             key = equal_split_line[0].strip()
-
-            # Check that the key is allowed
-            allowed = False
-            for config_key_enum in config_keys:
-                if config_key_enum.is_allowed_value(key):
-                    allowed = True
-                    break
-
-            if not allowed:
-                err_string = ("Invalid key found in pipeline config file " + qualified_config_filename + ": " +
-                              key + ". Allowed keys are: ")
-                for config_key_enum in config_keys:
-                    for allowed_key in config_key_enum:
-                        err_string += "\n  " + allowed_key.value
-                raise ValueError(err_string)
+            _check_key_is_valid(key, config_keys)
 
             # In case the value contains an = char
             value = noncomment_line.replace(equal_split_line[0] + '=', '').strip()
 
-            # If the value is None or equivalent, use the default if provided
-            if is_any_type_of_none(value) and key in defaults:
-                value = defaults[key]
-
-            config_dict[key] = value
+            # If the value is None or equivalent, don't set it (use the default)
+            if not (is_any_type_of_none(value) and key in defaults):
+                config_dict[key] = value
 
         # End for config_line in config_file:
 
@@ -439,22 +428,7 @@ def _read_config_file(qualified_config_filename: str,
 
     # If we're provided with any cline-args, override values from the config with them
     for key in cline_args:
-
-        # Check that the key is allowed
-        allowed = False
-        for config_key_enum in config_keys:
-            if config_key_enum.is_allowed_value(key):
-                allowed = True
-                break
-
-        if not allowed:
-            err_string = ("Invalid key found in cline_args dict: " +
-                          key + ". Allowed keys are: ")
-            for config_key_enum in config_keys:
-                for allowed_key in config_key_enum:
-                    err_string += "\n  " + allowed_key.value
-            raise ValueError(err_string)
-
+        _check_key_is_valid(key, config_keys)
         value = cline_args[key]
 
         # Don't overwrite if we're given None
@@ -464,6 +438,59 @@ def _read_config_file(qualified_config_filename: str,
         config_dict[key] = cline_args[key]
 
     return config_dict
+
+
+def _make_config_from_defaults(config_keys: Tuple[Enum, ...],
+                               defaults: Dict[str, Any]) -> Dict[str, Any]:
+    """ Make a pipeline config dict from just the defaults.
+    """
+
+    config_dict = {}
+
+    for key in defaults:
+        _check_key_is_valid(key, config_keys)
+        config_dict[key] = defaults[key]
+
+    return config_dict
+
+
+def _make_config_from_cline_args_and_defaults(config_keys: Tuple[Enum, ...],
+                                              cline_args: Dict[str, Any],
+                                              defaults: Dict[str, Any]) -> Dict[str, Any]:
+    """ Make a pipeline config dict from the cline-args and defaults, preferring
+        the cline-args if they're available.
+    """
+
+    config_dict = _make_config_from_defaults(config_keys=config_keys,
+                                             defaults=defaults)
+
+    for key in cline_args:
+        _check_key_is_valid(key, config_keys)
+        config_dict[key] = cline_args[key]
+
+    return config_dict
+
+
+def _check_key_is_valid(key: str,
+                        config_keys: Tuple[Enum, ...]):
+    """Checks if a pipeline config key is valid by searching for it in the provided config keys Enums.
+    """
+
+    allowed = False
+    for config_key_enum in config_keys:
+        if config_key_enum.is_allowed_value(key):
+            allowed = True
+            break
+
+    if not allowed:
+        err_string = ("Invalid pipeline config key found: " +
+                      key + ". Allowed keys are: ")
+        for config_key_enum in config_keys:
+            for allowed_key in config_key_enum:
+                err_string += "\n  " + allowed_key.value
+        raise ValueError(err_string)
+
+    return True
 
 
 def write_analysis_config(config_dict, config_filename, workdir="."):
