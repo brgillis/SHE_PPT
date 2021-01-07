@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-11-13"
+__updated__ = "2021-01-07"
 
 from enum import Enum
 import json.decoder
@@ -33,10 +33,11 @@ from SHE_PPT.file_io import read_xml_product, read_listfile, find_file
 from SHE_PPT.logging import getLogger
 
 # Task names for Analysis pipeline
-remap_head = "SHE_MER_RemapMosaic_"
-oid_head = "SHE_CTE_ObjectIdSplit_"
-es_head = "SHE_CTE_EstimateShear_"
-sem_head = "SHE_CTE_ShearEstimatesMerge_"
+REMAP_HEAD = "SHE_MER_RemapMosaic_"
+OBJECT_ID_SPLIT_HEAD = "SHE_CTE_ObjectIdSplit_"
+ESTIMATE_SHEAR_HEAD = "SHE_CTE_EstimateShear_"
+SHEAR_ESTIMATES_MERGE_HEAD = "SHE_CTE_ShearEstimatesMerge_"
+CTI_GAL_VALIDATION_HEAD = "SHE_Validation_ValidateCTIGal_"
 
 
 class AnalysisConfigKeys(Enum):
@@ -45,25 +46,30 @@ class AnalysisConfigKeys(Enum):
 
     # Options for SHE_MER_RemapMosaic
 
-    REMAP_NUM_THREADS_EXP = remap_head + "num_threads_exposures"
-    REMAP_NUM_SWARP_THREADS_EXP = remap_head + "num_swarp_threads_exposures"
-    REMAP_NUM_THREADS_STACK = remap_head + "num_threads_stack"
-    REMAP_NUM_SWARP_THREADS_STACK = remap_head + "num_swarp_threads_stack"
+    REMAP_NUM_THREADS_EXP = REMAP_HEAD + "num_threads_exposures"
+    REMAP_NUM_SWARP_THREADS_EXP = REMAP_HEAD + "num_swarp_threads_exposures"
+    REMAP_NUM_THREADS_STACK = REMAP_HEAD + "num_threads_stack"
+    REMAP_NUM_SWARP_THREADS_STACK = REMAP_HEAD + "num_swarp_threads_stack"
 
     # Options for SHE_CTE_ObjectIdSplit
 
-    OID_BATCH_SIZE = oid_head + "batch_size"
-    OID_MAX_BATCHES = oid_head + "max_batches"
-    OID_IDS = oid_head + "ids"
+    OID_BATCH_SIZE = OBJECT_ID_SPLIT_HEAD + "batch_size"
+    OID_MAX_BATCHES = OBJECT_ID_SPLIT_HEAD + "max_batches"
+    OID_IDS = OBJECT_ID_SPLIT_HEAD + "ids"
 
     # Options for SHE_CTE_EstimateShear
 
-    ES_METHODS = es_head + "methods"
-    ES_CHAINS_METHOD = es_head + "chains_method"
+    ES_METHODS = ESTIMATE_SHEAR_HEAD + "methods"
+    ES_CHAINS_METHOD = ESTIMATE_SHEAR_HEAD + "chains_method"
 
     # Options for SHE_CTE_ShearEstimatesMerge
 
-    SEM_NUM_THREADS = sem_head + "number_threads"
+    SEM_NUM_THREADS = SHEAR_ESTIMATES_MERGE_HEAD + "number_threads"
+
+    # Options for SHE_Validation_ValidateCTIGal
+
+    CGV_SLOPE_FAIL_SIGMA = CTI_GAL_VALIDATION_HEAD + "slope_fail_sigma"
+    CGV_INTERCEPT_FAIL_SIGMA = CTI_GAL_VALIDATION_HEAD + "intercept_fail_sigma"
 
     @classmethod
     def is_allowed_value(cls, value):
@@ -71,7 +77,7 @@ class AnalysisConfigKeys(Enum):
 
 
 # Task names for Reconciliation pipeline
-rec_head = "SHE_CTE_ReconcileMeasurements_"
+RECONCILE_MEASUREMENTS_HEAD = "SHE_CTE_ReconcileMeasurements_"
 
 
 class ReconciliationConfigKeys(Enum):
@@ -80,19 +86,19 @@ class ReconciliationConfigKeys(Enum):
 
     # Options for SHE_CTE_CleanupBiasMeasurement
 
-    REC_METHOD = rec_head + "method"
-    CHAINS_REC_METHOD = rec_head + "chains_method"
+    REC_METHOD = RECONCILE_MEASUREMENTS_HEAD + "method"
+    CHAINS_REC_METHOD = RECONCILE_MEASUREMENTS_HEAD + "chains_method"
 
     @classmethod
     def is_allowed_value(cls, value):
         return value in [item.value for item in cls]
 
+
 # Task names for Calibration pipeline
 
-
-cbm_head = "SHE_CTE_CleanupBiasMeasurement_"
-mb_head = "SHE_CTE_MeasureBias_"
-ms_head = "SHE_CTE_MeasureStatistics_"
+CLEANUP_BIAS_MEASUREMENTS_HEAD = "SHE_CTE_CleanupBiasMeasurement_"
+MEASURE_BIAS_HEAD = "SHE_CTE_MeasureBias_"
+MEASURE_STATISTICS_HEAD = "SHE_CTE_MeasureStatistics_"
 
 
 class CalibrationConfigKeys(Enum):
@@ -101,7 +107,7 @@ class CalibrationConfigKeys(Enum):
 
     # Options for SHE_CTE_CleanupBiasMeasurement
 
-    CBM_CLEANUP = cbm_head + "cleanup"
+    CBM_CLEANUP = CLEANUP_BIAS_MEASUREMENTS_HEAD + "cleanup"
 
     # Options for SHE_CTE_EstimateShear - copy these from the other enum
 
@@ -110,16 +116,16 @@ class CalibrationConfigKeys(Enum):
 
     # Options for SHE_CTE_MeasureBias
 
-    MB_ARCHIVE_DIR = mb_head + "archive_dir"
-    MB_NUM_THREADS = mb_head + "number_threads"
-    MB_WEBDAV_ARCHIVE = mb_head + "webdav_archive"
-    MB_WEBDAV_DIR = mb_head + "webdav_dir"
+    MB_ARCHIVE_DIR = MEASURE_BIAS_HEAD + "archive_dir"
+    MB_NUM_THREADS = MEASURE_BIAS_HEAD + "number_threads"
+    MB_WEBDAV_ARCHIVE = MEASURE_BIAS_HEAD + "webdav_archive"
+    MB_WEBDAV_DIR = MEASURE_BIAS_HEAD + "webdav_dir"
 
     # Options for SHE_CTE_MeasureStatistics
 
-    MS_ARCHIVE_DIR = ms_head + "archive_dir"
-    MS_WEBDAV_ARCHIVE = ms_head + "webdav_archive"
-    MS_WEBDAV_DIR = ms_head + "webdav_dir"
+    MS_ARCHIVE_DIR = MEASURE_STATISTICS_HEAD + "archive_dir"
+    MS_WEBDAV_ARCHIVE = MEASURE_STATISTICS_HEAD + "webdav_archive"
+    MS_WEBDAV_DIR = MEASURE_STATISTICS_HEAD + "webdav_dir"
 
     @classmethod
     def is_allowed_value(cls, value):
