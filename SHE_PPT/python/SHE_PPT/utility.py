@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-11-16"
+__updated__ = "2021-01-07"
 
 import codecs
 import hashlib
@@ -391,3 +391,9 @@ def process_directory(directory_name):
         elif not file_name.startswith('.'):
             file_list.append(file_name)
     return file_list, subdir_list
+
+
+def is_any_type_of_none(value):
+    """Quick function to check if a value (which might be a string) is None or empty
+    """
+    return value in (None, "None", "")
