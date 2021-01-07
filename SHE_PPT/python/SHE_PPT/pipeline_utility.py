@@ -371,16 +371,16 @@ def _read_config_product(config_filename: str,
 
         return _read_config_file(qualified_config_filename=find_file(config_data_filename, workdir),
                                  config_keys=config_keys,
-                                 cline_args,
-                                 defaults)
+                                 cline_args=cline_args,
+                                 defaults=defaults)
 
     except (UnicodeDecodeError, SAXParseException, UnpicklingError) as _e:
 
         # Try to read it as a plain text file
         return _read_config_file(qualified_config_filename=find_file(config_filename, workdir),
                                  config_keys=config_keys,
-                                 cline_args,
-                                 defaults)
+                                 cline_args=cline_args,
+                                 defaults=defaults)
 
 
 def _read_config_file(qualified_config_filename: str,
@@ -428,7 +428,7 @@ def _read_config_file(qualified_config_filename: str,
             value = noncomment_line.replace(equal_split_line[0] + '=', '').strip()
 
             # If the value is None or equivalent, use the default if provided
-            if is_any_kind_of_none(value) and key in defaults:
+            if is_any_type_of_none(value) and key in defaults:
                 value = defaults[key]
 
             config_dict[key] = value
@@ -458,7 +458,7 @@ def _read_config_file(qualified_config_filename: str,
         value = cline_args[key]
 
         # Don't overwrite if we're given None
-        if is_any_kind_of_none(value):
+        if is_any_type_of_none(value):
             continue
 
         config_dict[key] = cline_args[key]
