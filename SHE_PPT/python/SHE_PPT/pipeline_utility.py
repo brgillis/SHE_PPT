@@ -25,12 +25,15 @@ import json.decoder
 import os
 from pickle import UnpicklingError
 from shutil import copyfile
+from typing import Dict, Any
 from xml.sax._exceptions import SAXParseException
 
-from SHE_PPT import magic_values as mv
-from SHE_PPT import products
-from SHE_PPT.file_io import read_xml_product, read_listfile, find_file
-from SHE_PPT.logging import getLogger
+from . import magic_values as mv
+from . import products
+from .file_io import read_xml_product, read_listfile, find_file
+from .logging import getLogger
+from .utility import is_any_type_of_none
+
 
 # Task names for Analysis pipeline
 REMAP_HEAD = "SHE_MER_RemapMosaic_"
@@ -198,7 +201,10 @@ def archive_product(product_filename, archive_dir, workdir):
     return
 
 
-def read_analysis_config(config_filename, workdir="."):
+def read_analysis_config(config_filename: str,
+                         workdir: str = ".",
+                         cline_args: Dict[str, Any] = None,
+                         defaults: Dict[str, Any] = None) -> Dict[str, Any]:
     """ Reads in a configuration file for the SHE Analysis pipeline to a dictionary. Note that all arguments will
         be read as strings.
 
@@ -208,14 +214,25 @@ def read_analysis_config(config_filename, workdir="."):
             The workspace-relative name of the config file.
         workdir : string
             The working directory.
+        cline_args : Dict[str, Any]
+            Dict of config keys giving values passed at the command line. If these aren't None, they will override
+            values in the config file
+        defaults : Dict[str, Any]
+            Dict of default values to use if no value (or None) is supplied in the config and no value (or None) is
+            supplied in the cline_args.
     """
 
     return read_config(config_filename=config_filename,
                        workdir=workdir,
-                       config_keys=AnalysisConfigKeys)
+                       config_keys=AnalysisConfigKeys,
+                       cline_args=cline_args,
+                       defaults=defaults)
 
 
-def read_calibration_config(config_filename, workdir="."):
+def read_calibration_config(config_filename: str,
+                            workdir: str = ".",
+                            cline_args: Dict[str, Any] = None,
+                            defaults: Dict[str, Any] = None) -> Dict[str, Any]:
     """ Reads in a configuration file for the SHE Calibration pipeline to a dictionary. Note that all arguments will
         be read as strings.
 
@@ -225,14 +242,25 @@ def read_calibration_config(config_filename, workdir="."):
             The workspace-relative name of the config file.
         workdir : string
             The working directory.
+        cline_args : Dict[str, Any]
+            Dict of config keys giving values passed at the command line. If these aren't None, they will override
+            values in the config file
+        defaults : Dict[str, Any]
+            Dict of default values to use if no value (or None) is supplied in the config and no value (or None) is
+            supplied in the cline_args.
     """
 
     return read_config(config_filename=config_filename,
                        workdir=workdir,
-                       config_keys=CalibrationConfigKeys)
+                       config_keys=CalibrationConfigKeys,
+                       cline_args=cline_args,
+                       defaults=defaults)
 
 
-def read_reconciliation_config(config_filename, workdir="."):
+def read_reconciliation_config(config_filename: str,
+                               workdir: str = ".",
+                               cline_args: Dict[str, Any] = None,
+                               defaults: Dict[str, Any] = None) -> Dict[str, Any]:
     """ Reads in a configuration file for the SHE Reconciliation pipeline to a dictionary. Note that all arguments will
         be read as strings.
 
@@ -242,17 +270,30 @@ def read_reconciliation_config(config_filename, workdir="."):
             The workspace-relative name of the config file.
         workdir : string
             The working directory.
+        cline_args : Dict[str, Any]
+            Dict of config keys giving values passed at the command line. If these aren't None, they will override
+            values in the config file
+        defaults : Dict[str, Any]
+            Dict of default values to use if no value (or None) is supplied in the config and no value (or None) is
+            supplied in the cline_args.
     """
 
     return read_config(config_filename=config_filename,
                        workdir=workdir,
-                       config_keys=ReconciliationConfigKeys)
+                       config_keys=ReconciliationConfigKeys,
+                       cline_args=cline_args,
+                       defaults=defaults)
 
 
-def read_config(config_filename, workdir=".", config_keys=(AnalysisConfigKeys,
-                                                           ReconciliationConfigKeys,
-                                                           CalibrationConfigKeys)):
-    """ Reads in a generic configuration file to a dictionary. Note that all arguments will be read as strings.
+def read_config(config_filename: str,
+                workdir: str = ".",
+                config_keys: Enum = (AnalysisConfigKeys,
+                                     ReconciliationConfigKeys,
+                                     CalibrationConfigKeys),
+                cline_args: Dict[str, Any] = None,
+                defaults: Dict[str, Any] = None) -> Dict[str, Any]:
+    """ Reads in a generic configuration file to a dictionary. Note that all arguments will be read as strings unless
+        a cline_arg value is used.
 
         Parameters
         ----------
@@ -262,30 +303,46 @@ def read_config(config_filename, workdir=".", config_keys=(AnalysisConfigKeys,
             The working directory.
         config_keys : enum or iterable of enums
             ConfigKeys enum or iterable of enums listing allowed keys
+        cline_args : Dict[str, Any]
+            Dict of config keys giving values passed at the command line. If these aren't None, they will override
+            values in the config file
+        defaults : Dict[str, Any]
+            Dict of default values to use if no value (or None) is supplied in the config and no value (or None) is
+            supplied in the cline_args.
     """
 
+    # Use empty dicts for cline_args and defaults if None provided
+    if cline_args is None:
+        cline_args = {}
+    if defaults is None:
+        defaults = {}
+
     # Return None if input filename is None
-    if config_filename is None or config_filename is "None" or config_filename is "":
+    if is_any_type_of_none(config_filename):
         return {}
 
     # Silently coerce config_keys into iterable if just one enum is supplied
     if isinstance(config_keys, Enum):
         config_keys = (config_keys,)
 
-    qualified_config_filename = os.path.join(workdir, config_filename)
+    # Look in the workdir for the config filename if it isn't fully-qualified
+    if not config_filename[0] == "/":
+        qualified_config_filename = os.path.join(workdir, config_filename)
 
     try:
 
         filelist = read_listfile(qualified_config_filename)
 
-        # If we get here, it is a listfile. If no files in it, return None. If one, return that. If more than one,
+        # If we get here, it is a listfile. If no files in it, return an empty dict. If one, return that. If more than one,
         # raise an exception
         if len(filelist) == 0:
             return {}
         elif len(filelist) == 1:
             return _read_config_product(config_filename=filelist[0],
                                         workdir=workdir,
-                                        config_keys=config_keys)
+                                        config_keys=config_keys,
+                                        cline_args=cline_args,
+                                        defaults=defaults)
         else:
             raise ValueError("File " + qualified_config_filename + " is a listfile with more than one file listed, and " +
                              "is an invalid input to read_config.")
@@ -295,10 +352,16 @@ def read_config(config_filename, workdir=".", config_keys=(AnalysisConfigKeys,
         # This isn't a listfile, so try to open and return it
         return _read_config_product(config_filename=config_filename,
                                     workdir=workdir,
-                                    config_keys=config_keys)
+                                    config_keys=config_keys,
+                                    cline_args=cline_args,
+                                    defaults=defaults)
 
 
-def _read_config_product(config_filename, workdir, config_keys):
+def _read_config_product(config_filename: str,
+                         workdir: str,
+                         config_keys: Enum,
+                         cline_args: Dict[str, Any],
+                         defaults: Dict[str, Any]) -> Dict[str, Any]:
 
     # Try to read in as a data product
     try:
@@ -307,16 +370,23 @@ def _read_config_product(config_filename, workdir, config_keys):
         config_data_filename = p.get_data_filename()
 
         return _read_config_file(qualified_config_filename=find_file(config_data_filename, workdir),
-                                 config_keys=config_keys)
+                                 config_keys=config_keys,
+                                 cline_args,
+                                 defaults)
 
     except (UnicodeDecodeError, SAXParseException, UnpicklingError) as _e:
 
         # Try to read it as a plain text file
         return _read_config_file(qualified_config_filename=find_file(config_filename, workdir),
-                                 config_keys=config_keys)
+                                 config_keys=config_keys,
+                                 cline_args,
+                                 defaults)
 
 
-def _read_config_file(qualified_config_filename, config_keys):
+def _read_config_file(qualified_config_filename: str,
+                      config_keys: Enum,
+                      cline_args: Dict[str, Any],
+                      defaults: Dict[str, Any]) -> Dict[str, Any]:
 
     config_dict = {}
 
@@ -357,11 +427,41 @@ def _read_config_file(qualified_config_filename, config_keys):
             # In case the value contains an = char
             value = noncomment_line.replace(equal_split_line[0] + '=', '').strip()
 
+            # If the value is None or equivalent, use the default if provided
+            if is_any_kind_of_none(value) and key in defaults:
+                value = defaults[key]
+
             config_dict[key] = value
 
         # End for config_line in config_file:
 
     # End with open(qualified_config_filename, 'r') as config_file:
+
+    # If we're provided with any cline-args, override values from the config with them
+    for key in cline_args:
+
+        # Check that the key is allowed
+        allowed = False
+        for config_key_enum in config_keys:
+            if config_key_enum.is_allowed_value(key):
+                allowed = True
+                break
+
+        if not allowed:
+            err_string = ("Invalid key found in cline_args dict: " +
+                          key + ". Allowed keys are: ")
+            for config_key_enum in config_keys:
+                for allowed_key in config_key_enum:
+                    err_string += "\n  " + allowed_key.value
+            raise ValueError(err_string)
+
+        value = cline_args[key]
+
+        # Don't overwrite if we're given None
+        if is_any_kind_of_none(value):
+            continue
+
+        config_dict[key] = cline_args[key]
 
     return config_dict
 
