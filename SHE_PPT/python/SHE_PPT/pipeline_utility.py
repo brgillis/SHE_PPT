@@ -550,33 +550,27 @@ def write_calibration_config(config_dict, config_filename, workdir="."):
                         config_keys=CalibrationConfigKeys)
 
 
-def write_config(config_dict,
-                 config_filename,
-                 workdir=".",
-                 config_keys: Union[Enum, Tuple[Enum, ...]] = (AnalysisConfigKeys,
-                                                               ReconciliationConfigKeys,
-                                                               CalibrationConfigKeys),):
+def write_config(config_dict=Dict[str, Any],
+                 config_filename: str,
+                 workdir: str = ".",
+                 config_keys: Enum = AnalysisConfigKeys,):
     """ Writes a dictionary to a configuration file.
 
         Parameters
         ----------
-        config_dict : string
+        config_dict : Dict[str, Any]
             The config dictionary to write out.
-        config_filename : string
+        config_filename : str
             The desired workspace-relative name of the config file.
-        workdir : string
+        workdir : str
             The working directory.
-        config_keys : enum or iterable of enums
-            ConfigKeys enum or iterable of enums listing allowed keys
+        config_keys : Enum
+            ConfigKeys Enum listing allowed keys
     """
 
     # Silently return if dict and filename are None
     if config_dict is None and config_filename is None:
         return
-
-    # Silently coerce config_keys into iterable if just one enum is supplied
-    if isinstance(config_keys, Enum):
-        config_keys = (config_keys,)
 
     qualified_config_filename = os.path.join(workdir, config_filename)
 
@@ -587,7 +581,7 @@ def write_config(config_dict,
 
         # Write out each entry in a line
         for key in config_dict:
-            _check_key_is_valid(key, config_keys)
+            _check_key_is_valid(key, (config_keys,))
             config_file.write(str(key) + " = " + str(config_dict[key]) + "\n")
 
     return
