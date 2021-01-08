@@ -35,6 +35,13 @@ from .logging import getLogger
 from .utility import is_any_type_of_none
 
 
+class ConfigKeys(Enum):
+
+    @classmethod
+    def is_allowed_value(cls, value):
+        return value in [item.value for item in cls]
+
+
 # Task names for Analysis pipeline
 REMAP_HEAD = "SHE_MER_RemapMosaic_"
 OBJECT_ID_SPLIT_HEAD = "SHE_CTE_ObjectIdSplit_"
@@ -43,7 +50,7 @@ SHEAR_ESTIMATES_MERGE_HEAD = "SHE_CTE_ShearEstimatesMerge_"
 CTI_GAL_VALIDATION_HEAD = "SHE_Validation_ValidateCTIGal_"
 
 
-class AnalysisConfigKeys(Enum):
+class AnalysisConfigKeys(ConfigKeys):
     """ An Enum of all allowed keys for the SHE analysis pipelines.
     """
 
@@ -74,16 +81,12 @@ class AnalysisConfigKeys(Enum):
     CGV_SLOPE_FAIL_SIGMA = CTI_GAL_VALIDATION_HEAD + "slope_fail_sigma"
     CGV_INTERCEPT_FAIL_SIGMA = CTI_GAL_VALIDATION_HEAD + "intercept_fail_sigma"
 
-    @classmethod
-    def is_allowed_value(cls, value):
-        return value in [item.value for item in cls]
-
 
 # Task names for Reconciliation pipeline
 RECONCILE_MEASUREMENTS_HEAD = "SHE_CTE_ReconcileMeasurements_"
 
 
-class ReconciliationConfigKeys(Enum):
+class ReconciliationConfigKeys(ConfigKeys):
     """ An Enum of all allowed keys for the SHE reconciliation pipeline.
     """
 
@@ -91,10 +94,6 @@ class ReconciliationConfigKeys(Enum):
 
     REC_METHOD = RECONCILE_MEASUREMENTS_HEAD + "method"
     CHAINS_REC_METHOD = RECONCILE_MEASUREMENTS_HEAD + "chains_method"
-
-    @classmethod
-    def is_allowed_value(cls, value):
-        return value in [item.value for item in cls]
 
 
 # Task names for Calibration pipeline
@@ -104,7 +103,7 @@ MEASURE_BIAS_HEAD = "SHE_CTE_MeasureBias_"
 MEASURE_STATISTICS_HEAD = "SHE_CTE_MeasureStatistics_"
 
 
-class CalibrationConfigKeys(Enum):
+class CalibrationConfigKeys(ConfigKeys):
     """ An Enum of all allowed keys for the SHE calibration pipelines.
     """
 
@@ -129,10 +128,6 @@ class CalibrationConfigKeys(Enum):
     MS_ARCHIVE_DIR = MEASURE_STATISTICS_HEAD + "archive_dir"
     MS_WEBDAV_ARCHIVE = MEASURE_STATISTICS_HEAD + "webdav_archive"
     MS_WEBDAV_DIR = MEASURE_STATISTICS_HEAD + "webdav_dir"
-
-    @classmethod
-    def is_allowed_value(cls, value):
-        return value in [item.value for item in cls]
 
 
 def archive_product(product_filename, archive_dir, workdir):
@@ -287,9 +282,9 @@ def read_reconciliation_config(config_filename: str,
 
 def read_config(config_filename: str,
                 workdir: str = ".",
-                config_keys: Union[Enum, Tuple[Enum, ...]] = (AnalysisConfigKeys,
-                                                              ReconciliationConfigKeys,
-                                                              CalibrationConfigKeys),
+                config_keys: Union[ConfigKeys, Tuple[ConfigKeys, ...]] = (AnalysisConfigKeys,
+                                                                          ReconciliationConfigKeys,
+                                                                          CalibrationConfigKeys),
                 cline_args: Dict[str, Any] = None,
                 defaults: Dict[str, Any] = None) -> Dict[str, Any]:
     """ Reads in a generic configuration file to a dictionary. Note that all arguments will be read as strings unless
@@ -324,7 +319,7 @@ def read_config(config_filename: str,
                                                          defaults=defaults,)
 
     # Silently coerce config_keys into iterable if just one enum is supplied
-    if isinstance(config_keys, Enum):
+    if isinstance(config_keys, ConfigKeys):
         config_keys = (config_keys,)
 
     # Look in the workdir for the config filename if it isn't fully-qualified
@@ -363,9 +358,11 @@ def read_config(config_filename: str,
 
 def _read_config_product(config_filename: str,
                          workdir: str,
-                         config_keys: Tuple[Enum, ...],
+                         config_keys: Tuple[ConfigKeys, ...],
                          cline_args: Dict[str, Any],
                          defaults: Dict[str, Any]) -> Dict[str, Any]:
+    """Reads in a configuration data product.
+    """
 
     # Try to read in as a data product
     try:
@@ -388,9 +385,11 @@ def _read_config_product(config_filename: str,
 
 
 def _read_config_file(qualified_config_filename: str,
-                      config_keys: Tuple[Enum, ...],
+                      config_keys: Tuple[ConfigKeys, ...],
                       cline_args: Dict[str, Any],
                       defaults: Dict[str, Any]) -> Dict[str, Any]:
+    """Reads in a configuration text file.
+    """
 
     config_dict = _make_config_from_defaults(config_keys=config_keys,
                                              defaults=defaults)
@@ -440,7 +439,7 @@ def _read_config_file(qualified_config_filename: str,
     return config_dict
 
 
-def _make_config_from_defaults(config_keys: Tuple[Enum, ...],
+def _make_config_from_defaults(config_keys: Tuple[ConfigKeys, ...],
                                defaults: Dict[str, Any]) -> Dict[str, Any]:
     """ Make a pipeline config dict from just the defaults.
     """
@@ -454,7 +453,7 @@ def _make_config_from_defaults(config_keys: Tuple[Enum, ...],
     return config_dict
 
 
-def _make_config_from_cline_args_and_defaults(config_keys: Tuple[Enum, ...],
+def _make_config_from_cline_args_and_defaults(config_keys: Tuple[ConfigKeys, ...],
                                               cline_args: Dict[str, Any],
                                               defaults: Dict[str, Any]) -> Dict[str, Any]:
     """ Make a pipeline config dict from the cline-args and defaults, preferring
@@ -472,7 +471,7 @@ def _make_config_from_cline_args_and_defaults(config_keys: Tuple[Enum, ...],
 
 
 def _check_key_is_valid(key: str,
-                        config_keys: Tuple[Enum, ...]):
+                        config_keys: Tuple[ConfigKeys, ...]):
     """Checks if a pipeline config key is valid by searching for it in the provided config keys Enums.
     """
 
@@ -493,16 +492,18 @@ def _check_key_is_valid(key: str,
     return True
 
 
-def write_analysis_config(config_dict, config_filename, workdir="."):
+def write_analysis_config(config_dict: Dict[str, Any],
+                          config_filename: str,
+                          workdir: str = ".",):
     """ Writes a dictionary to an Analysis configuration file.
 
         Parameters
         ----------
-        config_dict : string
+        config_dict : Dict[str, Any]
             The config dictionary to write out.
-        config_filename : string
+        config_filename : str
             The desired workspace-relative name of the config file.
-        workdir : string
+        workdir : str
             The working directory.
     """
 
@@ -512,16 +513,18 @@ def write_analysis_config(config_dict, config_filename, workdir="."):
                         config_keys=AnalysisConfigKeys)
 
 
-def write_reconciliation_config(config_dict, config_filename, workdir="."):
+def write_reconciliation_config(config_dict: Dict[str, Any],
+                                config_filename: str,
+                                workdir: str = ".",):
     """ Writes a dictionary to an Reconciliation configuration file.
 
         Parameters
         ----------
-        config_dict : string
+        config_dict : Dict[str, Any]
             The config dictionary to write out.
-        config_filename : string
+        config_filename : str
             The desired workspace-relative name of the config file.
-        workdir : string
+        workdir : str
             The working directory.
     """
 
@@ -531,16 +534,18 @@ def write_reconciliation_config(config_dict, config_filename, workdir="."):
                         config_keys=ReconciliationConfigKeys)
 
 
-def write_calibration_config(config_dict, config_filename, workdir="."):
+def write_calibration_config(config_dict: Dict[str, Any],
+                             config_filename: str,
+                             workdir: str = ".",):
     """ Writes a dictionary to an Calibration configuration file.
 
         Parameters
         ----------
-        config_dict : string
+        config_dict : Dict[str, Any]
             The config dictionary to write out.
-        config_filename : string
+        config_filename : str
             The desired workspace-relative name of the config file.
-        workdir : string
+        workdir : str
             The working directory.
     """
 
@@ -550,10 +555,10 @@ def write_calibration_config(config_dict, config_filename, workdir="."):
                         config_keys=CalibrationConfigKeys)
 
 
-def write_config(config_dict=Dict[str, Any],
+def write_config(config_dict: Dict[str, Any],
                  config_filename: str,
                  workdir: str = ".",
-                 config_keys: Enum = AnalysisConfigKeys,):
+                 config_keys: ConfigKeys = AnalysisConfigKeys,):
     """ Writes a dictionary to a configuration file.
 
         Parameters
@@ -564,7 +569,7 @@ def write_config(config_dict=Dict[str, Any],
             The desired workspace-relative name of the config file.
         workdir : str
             The working directory.
-        config_keys : Enum
+        config_keys : ConfigKeys
             ConfigKeys Enum listing allowed keys
     """
 
@@ -587,7 +592,8 @@ def write_config(config_dict=Dict[str, Any],
     return
 
 
-def get_conditional_product(filename, workdir="."):
+def get_conditional_product(filename: str,
+                            workdir: str = "."):
     """ Returns None in all cases where a data product isn't provided, otherwise read and return the data
         product.
     """
