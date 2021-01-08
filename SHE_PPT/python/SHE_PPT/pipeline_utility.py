@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2021-01-07"
+__updated__ = "2021-01-08"
 
 from enum import Enum
 import json.decoder
@@ -550,7 +550,12 @@ def write_calibration_config(config_dict, config_filename, workdir="."):
                         config_keys=CalibrationConfigKeys)
 
 
-def write_config(config_dict, config_filename, workdir=".", config_keys=AnalysisConfigKeys):
+def write_config(config_dict,
+                 config_filename,
+                 workdir=".",
+                 config_keys: Union[Enum, Tuple[Enum, ...]] = (AnalysisConfigKeys,
+                                                               ReconciliationConfigKeys,
+                                                               CalibrationConfigKeys),):
     """ Writes a dictionary to a configuration file.
 
         Parameters
@@ -561,13 +566,17 @@ def write_config(config_dict, config_filename, workdir=".", config_keys=Analysis
             The desired workspace-relative name of the config file.
         workdir : string
             The working directory.
-        config_keys : Enum
-            The Enum listing the allowed keys for the configuration file
+        config_keys : enum or iterable of enums
+            ConfigKeys enum or iterable of enums listing allowed keys
     """
 
     # Silently return if dict and filename are None
     if config_dict is None and config_filename is None:
         return
+
+    # Silently coerce config_keys into iterable if just one enum is supplied
+    if isinstance(config_keys, Enum):
+        config_keys = (config_keys,)
 
     qualified_config_filename = os.path.join(workdir, config_filename)
 
@@ -578,15 +587,7 @@ def write_config(config_dict, config_filename, workdir=".", config_keys=Analysis
 
         # Write out each entry in a line
         for key in config_dict:
-
-            # Check that the key is allowed
-            if not config_keys.is_allowed_value(key):
-                err_string = ("Invalid key found in pipeline config dict: " +
-                              key + ". Allowed keys are: ")
-                for allowed_key in config_keys:
-                    err_string += "\n--" + allowed_key.value
-                raise ValueError(err_string)
-
+            _check_key_is_valid(key, config_keys)
             config_file.write(str(key) + " = " + str(config_dict[key]) + "\n")
 
     return
