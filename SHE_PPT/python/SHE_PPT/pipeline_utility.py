@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2021-01-07"
+__updated__ = "2021-01-11"
 
 from enum import Enum
 import json.decoder
@@ -330,6 +330,8 @@ def read_config(config_filename: str,
     # Look in the workdir for the config filename if it isn't fully-qualified
     if not config_filename[0] == "/":
         qualified_config_filename = os.path.join(workdir, config_filename)
+    else:
+        qualified_config_filename = config_filename
 
     try:
 
