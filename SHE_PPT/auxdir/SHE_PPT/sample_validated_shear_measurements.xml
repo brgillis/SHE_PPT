@@ -138,6 +138,11 @@
 			</DataStorage>
 			<Valid>UNKNOWN</Valid>
 		</RegaussShearMeasurements>
+		<PointingIdList>-1</PointingIdList>
+		<TileList>
+			<TileIndex>-1</TileIndex>
+			<TileProductId>N/A</TileProductId>
+		</TileList>
 		<ObservationDateTime>
 			<OBT>2020-06-04T14:59:07.779Z</OBT>
 			<UTC>2020-06-04T14:59:07.779Z</UTC>
