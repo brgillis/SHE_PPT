@@ -80,7 +80,13 @@
 			<UTC>2020-06-03T15:11:05.4Z</UTC>
 			<MJD>3.0</MJD>
 		</ObservationDateTime>
+		<PointingIdList>0 1 2 3</PointingIdList>
+		<TileList>
+			<TileIndex>-1</TileIndex>
+			<TileProductId>N/A</TileProductId>
+		</TileList>
 		<Valid>VALID</Valid>
+		<ShearEstimationMethod>LensMC</ShearEstimationMethod>
 	</Data>
 	<QualityFlags>
 		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
