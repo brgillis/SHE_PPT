@@ -38,7 +38,9 @@
 			<TileIndex>101</TileIndex>
 			<TileProductId>101</TileProductId>
 		</TileList>
+		<ExposureProductId>N/A</ExposureProductId>
 		<ObservationId>101</ObservationId>
+		<PointingId>-1</PointingId>
 		<ImgSpatialFootprint>
 			<Polygon>
 				<Vertex>
