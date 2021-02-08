@@ -12,7 +12,8 @@ Dependency Changes
 Deprecated Features
 -------------------
 
-Now depends on ST_DataModel 8.0.5
+- Now depends on ST_DataModel 8.0.5 and ST_DataModelTools 8.0.5
+- Now (implicitly) depends on Elements 
 
 Bug Fixes
 ---------
