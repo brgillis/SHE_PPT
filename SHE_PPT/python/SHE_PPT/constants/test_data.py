@@ -5,7 +5,7 @@
     Constants related to test data
 """
 
-__updated__ = "2021-01-06"
+__updated__ = "2021-02-08"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -30,13 +30,14 @@ TEST_FILES_MDB = join(SYNC_LOCATION, "test_mdb.txt")
 TEST_FILES_DATA_STACK = join(SYNC_LOCATION, "test_data_stack.txt")
 TEST_FILES_TELESCOPE_COORDS = join(SYNC_LOCATION, "test_telescope_coords.txt")
 
-TEST_DATA_LOCATION = "SHE_PPT_8_5"
+TEST_DATA_LOCATION = "SHE_PPT_8_6"
 
 # Files from the MDB list
 MDB_PRODUCT_FILENAME = "sample_mdb-SC8.xml"
 
 # Files from the data_stack list. TODO - fill out and use all
 VIS_CALIBRATED_FRAME_LISTFILE_FILENAME = "vis_calibrated_frames.json"
+VIS_STACKED_FRAME_PRODUCT_FILENAME = "vis_stacked_image.xml"
 MER_FINAL_CATALOG_LISTFILE_FILENAME = "mer_final_catalogs.json"
 LENSMC_MEASUREMENTS_TABLE_FILENAME = "mock_lensmc_measurements.fits"
 SHE_VALIDATED_MEASUREMENTS_PRODUCT_FILENAME = "she_validated_measurements.xml"
