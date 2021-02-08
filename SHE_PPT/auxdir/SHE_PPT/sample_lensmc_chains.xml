@@ -80,7 +80,7 @@
 			<UTC>2020-06-03T15:11:05.4Z</UTC>
 			<MJD>3.0</MJD>
 		</ObservationDateTime>
-		<PointingIdList>0 1 2 3</PointingIdList>
+		<PointingIdList>-1</PointingIdList>
 		<TileList>
 			<TileIndex>-1</TileIndex>
 			<TileProductId>N/A</TileProductId>

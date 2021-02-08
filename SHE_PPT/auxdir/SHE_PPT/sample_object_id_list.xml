@@ -24,7 +24,7 @@
 	<Data>
 		<ObjectIdList>-1</ObjectIdList>
 		<ObservationId>-1</ObservationId>
-		<PointingIdList>0 1 2 3</PointingIdList>
+		<PointingIdList>-1</PointingIdList>
 		<TileList>
 			<TileIndex>-1</TileIndex>
 			<TileProductId>N/A</TileProductId>

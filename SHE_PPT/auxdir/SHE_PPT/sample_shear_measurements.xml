@@ -138,7 +138,7 @@
 			</DataStorage>
 			<Valid>UNKNOWN</Valid>
 		</RegaussShearMeasurements>
-		<PointingIdList>0 1 2 3</PointingIdList>
+		<PointingIdList>-1</PointingIdList>
 		<TileList>
 			<TileIndex>-1</TileIndex>
 			<TileProductId>N/A</TileProductId>
