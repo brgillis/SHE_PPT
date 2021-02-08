@@ -100,7 +100,7 @@
 		<ObservationId>-8564841751236564584</ObservationId>
 		<BfdMoments>
 			<DataStorage format="she.bfdMoments" version="8.0">
-				<DataContainer filestatus="">
+				<DataContainer filestatus="PROPOSED">
 					<FileName>None</FileName>
 				</DataContainer>
 			</DataStorage>

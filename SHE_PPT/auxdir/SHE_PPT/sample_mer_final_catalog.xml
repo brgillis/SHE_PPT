@@ -87,7 +87,7 @@
 				</ParametersList>
 				<ProcessExecuted>false</ProcessExecuted>
 				<ExitCode>xAF54</ExitCode>
-				<LogFile filestatus="">
+				<LogFile filestatus="PROPOSED">
 					<FileName>SHA7PrS86fCzjWPvYnDoLwkWVInT6</FileName>
 				</LogFile>
 				<OutputDataFileList>SF</OutputDataFileList>

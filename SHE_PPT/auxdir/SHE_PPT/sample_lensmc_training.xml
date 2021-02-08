@@ -76,7 +76,7 @@
 			<TimestampEnd>9999-06-03T15:13:25.799Z</TimestampEnd>
 		</ValidityRange>
 		<DataStorage format="she.lensMcMeasurements" version="8.0">
-			<DataContainer filestatus="">
+			<DataContainer filestatus="PROPOSED">
 				<FileName>None</FileName>
 			</DataContainer>
 		</DataStorage>

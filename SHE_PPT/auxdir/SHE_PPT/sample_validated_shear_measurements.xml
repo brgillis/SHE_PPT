@@ -116,7 +116,7 @@
 		</KsbShearMeasurements>
 		<LensMcShearMeasurements>
 			<DataStorage format="she.lensMcMeasurements" version="8.0">
-				<DataContainer filestatus="">
+				<DataContainer filestatus="PROPOSED">
 					<FileName>Rm3Of6f5ByXdyRD85ERaCcyK0QadjpNdm7iRWYMLElk0KSY3frIFYR0PJG5aroun1GI4qawHfa5j03xY1cauxxBPQQilQ</FileName>
 				</DataContainer>
 			</DataStorage>
