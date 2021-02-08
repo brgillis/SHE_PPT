@@ -129,7 +129,6 @@ class TestValidationTestResults(object):
 
         return
 
-    @pytest.mark.skip()
     def test_mer_final_catalog_reference(self):
 
         # Read the MER Final Catalog product
@@ -148,7 +147,6 @@ class TestValidationTestResults(object):
 
         return
 
-    @pytest.mark.skip()
     def test_vis_calibrated_frame_reference(self):
 
         # Read the MER Final Catalog product
@@ -168,7 +166,6 @@ class TestValidationTestResults(object):
 
         return
 
-    @pytest.mark.skip()
     def test_vis_stacked_frame_reference(self):
 
         # Read the MER Final Catalog product
