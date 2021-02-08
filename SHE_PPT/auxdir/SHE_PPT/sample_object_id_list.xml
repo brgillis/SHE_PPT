@@ -23,7 +23,12 @@
 	</Header>
 	<Data>
 		<ObjectIdList>-1</ObjectIdList>
-		<ObservationId>-483748837559191723</ObservationId>
+		<ObservationId>-1</ObservationId>
+		<PointingIdList>0 1 2 3</PointingIdList>
+		<TileList>
+			<TileIndex>-1</TileIndex>
+			<TileProductId>N/A</TileProductId>
+		</TileList>
 		<BatchIndex>-1</BatchIndex>
 	</Data>
 	<QualityFlags>
