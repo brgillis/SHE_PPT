@@ -119,7 +119,7 @@
 			<NearChargeInjectionPixelMask decBit="65536" hexBit="0x00010000"/>
 			<SaturatedXTalkGhostPixelMask decBit="131072" hexBit="0x00020000"/>
 			<StarSignalPixelMask decBit="262144" hexBit="0x00040000"/>
-			<UserDefinedPixelMask decBit="33554432" hexBit="0x10000000"/>
+			<UserDefinedPixelMask decBit="134217728" hexBit="0x10000000"/>
 		</Masks>
 		<DetectorList>
 			<Detector>

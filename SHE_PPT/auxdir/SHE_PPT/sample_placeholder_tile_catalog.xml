@@ -53,13 +53,13 @@
 		</SpatialCoverage>
 		<SpectralCoverage>
 			<Filter>
-				<Name>SUBARU_r</Name>
-				<MagId>UNKNOWN</MagId>
-				<CentralWavelength>5.0</CentralWavelength>
-				<MinWavelength>-4.0</MinWavelength>
-				<MaxWavelength>2.0</MaxWavelength>
-				<Reference>uGuDR</Reference>
-				<HasFringes>412807855</HasFringes>
+				<Name>DECAM_i</Name>
+				<MagId>Y</MagId>
+				<CentralWavelength>-10.0</CentralWavelength>
+				<MinWavelength>-6.0</MinWavelength>
+				<MaxWavelength>-3.0</MaxWavelength>
+				<Reference>P9FFE</Reference>
+				<HasFringes>85268162</HasFringes>
 			</Filter>
 		</SpectralCoverage>
 		<CatalogDescription>
