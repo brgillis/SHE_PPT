@@ -22,7 +22,7 @@ Created on: 02/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2020-12-14"
+__updated__ = "2021-02-09"
 
 from collections import namedtuple
 from copy import deepcopy
@@ -44,7 +44,7 @@ from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
 from SHE_PPT.table_formats.she_psf_model_image import tf as pstf
 from SHE_PPT.table_utility import is_in_format
 import SHE_PPT.telescope_coords as tc
-from SHE_PPT.utility import find_extension, load_wcs, run_only_once
+from SHE_PPT.utility import find_extension, run_only_once
 import numpy as np
 
 logger = logging.getLogger(__name__)
@@ -400,8 +400,6 @@ class SHEFrame(object):
             Maximum x-coordinate of detectors
         y_max : int
             Maximum y-coordinate of detectors
-        apply_sc3_fix : bool
-            Whether or not to apply fix for bad headers in SC3 VIS data
 
         Any kwargs are passed to the reading of the fits data
         """
@@ -508,7 +506,7 @@ class SHEFrame(object):
                         continue
 
                     detector_data = frame_data_hdulist[sci_i].data.transpose()
-                    detector_wcs = load_wcs(detector_header)
+                    detector_wcs = WCS(detector_header)
 
                     noisemap_extname = id_string + "." + mv.noisemap_tag
                     noisemap_i = find_extension(
