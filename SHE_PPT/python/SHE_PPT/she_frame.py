@@ -34,6 +34,7 @@ from astropy.io.fits import HDUList, BinTableHDU, ImageHDU, PrimaryHDU
 from astropy.table import Table
 from astropy.wcs import WCS
 
+import EL_CoordsUtils.telescope_coords as tc
 from SHE_PPT import logging
 from SHE_PPT import magic_values as mv
 from SHE_PPT import products
@@ -43,9 +44,9 @@ from SHE_PPT.she_image import SHEImage
 from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
 from SHE_PPT.table_formats.she_psf_model_image import tf as pstf
 from SHE_PPT.table_utility import is_in_format
-import SHE_PPT.telescope_coords as tc
 from SHE_PPT.utility import find_extension, run_only_once
 import numpy as np
+
 
 logger = logging.getLogger(__name__)
 
