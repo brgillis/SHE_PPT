@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-19"
+__updated__ = "2020-08-06"
 
 from collections import OrderedDict
 
@@ -74,18 +74,6 @@ class SheRegaussMeasurementsFormat(SheMeasurementsFormat):
         setup_child_table_format(self, child_label, unlabelled_columns=["OBJECT_ID"])
 
         # regauss specific columns
-        self.re = set_column_properties(self,
-            "SHE_REGAUSS_RE", is_optional=False, dtype=">f4", fits_dtype="E")
-        self.re_err = set_column_properties(self,
-            "SHE_REGAUSS_RE_ERR", is_optional=False, dtype=">f4", fits_dtype="E")
-        self.flux = set_column_properties(self,
-            "SHE_REGAUSS_FLUX", is_optional=False, dtype=">f4", fits_dtype="E")
-        self.flux_err = set_column_properties(self,
-            "SHE_REGAUSS_FLUX_ERR", is_optional=False, dtype=">f4", fits_dtype="E")
-        self.snr = set_column_properties(self,
-            "SHE_REGAUSS_SNR", is_optional=False, dtype=">f4", fits_dtype="E")
-        self.snr_err = set_column_properties(self,
-            "SHE_REGAUSS_SNR_ERR", is_optional=False, dtype=">f4", fits_dtype="E")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -109,6 +97,7 @@ def make_regauss_measurements_table_header(
                                   model_seed=None,
                                   noise_seed=None,
                                   observation_id=None,
+                                  pointing_id=None,
                                   observation_time=None,
                                   tile_id=None,):
     """
@@ -134,6 +123,7 @@ def make_regauss_measurements_table_header(
     header[tf.m.noise_seed] = noise_seed
 
     header[tf.m.observation_id] = observation_id
+    header[tf.m.pointing_id] = pointing_id
     header[tf.m.observation_time] = observation_time
     header[tf.m.tile_id] = tile_id
 
@@ -150,6 +140,7 @@ def initialise_regauss_measurements_table(mer_final_catalog=None,
                                  model_seed=None,
                                  noise_seed=None,
                                  observation_id=None,
+                                 pointing_id=None,
                                  observation_time=None,
                                  tile_id=None,
                                  ):
@@ -191,6 +182,7 @@ def initialise_regauss_measurements_table(mer_final_catalog=None,
                                                            model_seed=model_seed,
                                                            noise_seed=noise_seed,
                                                            observation_id=observation_id,
+                                                           pointing_id=pointing_id,
                                                            observation_time=observation_time,
                                                            tile_id=tile_id)
 

@@ -22,7 +22,7 @@ Created on: 05/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2020-08-25"
+__updated__ = "2020-09-23"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
@@ -520,8 +520,8 @@ class SHEFrameStack(object):
 
                     detections_product = read_xml_product(os.path.join(workdir, detections_product_filename))
                     logger.debug("DP: %s, %s, %s" % (workdir,
-                        detections_product_filename,
-                        detections_product.get_data_filename()))
+                                                     detections_product_filename,
+                                                     detections_product.get_data_filename()))
                     detections_catalogue = table.Table.read(
                         os.path.join(workdir, detections_product.get_data_filename()))
 
