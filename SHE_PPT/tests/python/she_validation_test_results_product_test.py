@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2021-02-08"
+__updated__ = "2021-02-09"
 
 import os
 
@@ -27,7 +27,7 @@ import pytest
 from ElementsServices.DataSync import DataSync
 from SHE_PPT.constants.test_data import (SYNC_CONF, TEST_FILES_DATA_STACK, TEST_DATA_LOCATION,
                                          VIS_CALIBRATED_FRAME_LISTFILE_FILENAME, MER_FINAL_CATALOG_LISTFILE_FILENAME,
-                                         VIS_STACKED_FRAME_PRODUCT_FILENAME)
+                                         VIS_STACKED_FRAME_PRODUCT_FILENAME,)
 from SHE_PPT.file_io import read_xml_product, write_xml_product, read_listfile
 from SHE_PPT.products import she_validation_test_results as prod
 
@@ -45,7 +45,7 @@ class TestValidationTestResults(object):
         self.sync_datastack = DataSync(SYNC_CONF, TEST_FILES_DATA_STACK)
         self.sync_datastack.download()
         self.qualified_mer_final_catalog_listfile_filename = self.sync_datastack.absolutePath(
-            os.path.join(TEST_DATA_LOCATION, + MER_FINAL_CATALOG_LISTFILE_FILENAME))
+            os.path.join(TEST_DATA_LOCATION, MER_FINAL_CATALOG_LISTFILE_FILENAME))
 
         assert os.path.isfile(
             self.qualified_mer_final_catalog_listfile_filename), \

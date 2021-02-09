@@ -18,15 +18,27 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-19"
+__updated__ = "2021-02-09"
 
 import os
 from os.path import join
+
 import pytest
 
 from ElementsServices.DataSync import DataSync
 from SHE_PPT import magic_values as mv
 from SHE_PPT import mdb
+from SHE_PPT.constants.test_data import (SYNC_CONF,
+                                         TEST_FILES_DATA_STACK,
+                                         TEST_FILES_MDB,
+                                         TEST_DATA_LOCATION,
+                                         MDB_PRODUCT_FILENAME,
+                                         VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
+                                         MER_FINAL_CATALOG_LISTFILE_FILENAME,
+                                         VIS_STACKED_FRAME_PRODUCT_FILENAME,
+                                         SHE_EXPOSURE_SEGMENTATION_MAPS_LISTFILE_FILENAME,
+                                         SHE_STACK_SEGMENTATION_MAP_FILENAME,
+                                         SHE_PSF_MODEL_IMAGES_LISTFILE_FILENAME)
 from SHE_PPT.file_io import read_pickled_product, find_file
 from SHE_PPT.logging import getLogger
 from SHE_PPT.she_frame_stack import SHEFrameStack
@@ -34,16 +46,8 @@ from SHE_PPT.signal_to_noise import get_SN_of_image
 from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
 import numpy as np
 
+
 ex_signal_to_noises = [59, 32]
-
-test_data_location = "/tmp"
-
-data_images_filename = "vis_calibrated_frames.json"
-segmentation_images_filename = "she_exposure_reprojected_segmentation_maps.json"
-stacked_image_filename = "vis_stacked_image.xml"
-stacked_segmentation_image_filename = "she_stack_reprojected_segmentation_map.xml"
-psf_images_and_tables_filename = "she_psf_model_images.json"
-mer_final_catalogs_filename = "mer_final_catalogs.json"
 
 
 class TestCase:
@@ -57,33 +61,36 @@ class TestCase:
 
         # Download the MDB from WebDAV
 
-        self.sync_mdb = DataSync("testdata/sync.conf", "testdata/test_mdb.txt")
+        self.sync_mdb = DataSync(SYNC_CONF, TEST_FILES_MDB)
         self.sync_mdb.download()
-        self.mdb_filename = self.sync_mdb.absolutePath("SHE_PPT_8_5/sample_mdb-SC8.xml")
+        self.mdb_filename = self.sync_mdb.absolutePath(
+            os.path.join(TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME))
 
-        assert os.path.isfile(self.mdb_filename), f"Cannot find file: SHE_PPT_8_5/sample_mdb-SC8.xml"
+        assert os.path.isfile(self.mdb_filename), f"Cannot find file: {self.mdb_filename}"
 
         mdb.init(self.mdb_filename)
 
         # Download the data stack files from WebDAV
 
-        self.sync_datastack = DataSync("testdata/sync.conf", "testdata/test_data_stack.txt")
+        self.sync_datastack = DataSync(SYNC_CONF, TEST_FILES_DATA_STACK)
         self.sync_datastack.download()
-        self.qualified_data_images_filename = self.sync_datastack.absolutePath("SHE_PPT_8_5/" + data_images_filename)
+        self.qualified_data_images_filename = self.sync_datastack.absolutePath(
+            os.path.join(TEST_DATA_LOCATION, MER_FINAL_CATALOG_LISTFILE_FILENAME))
 
-        assert os.path.isfile(self.qualified_data_images_filename), f"Cannot find file: {self.qualified_data_images_filename}"
+        assert os.path.isfile(
+            self.qualified_data_images_filename), f"Cannot find file: {self.qualified_data_images_filename}"
 
         # Get the workdir based on where the data images listfile is
         self.workdir = os.path.split(self.qualified_data_images_filename)[0]
         self.logdir = os.path.join(self.workdir, "logs")
 
         # Read in the test data
-        self.data_stack = SHEFrameStack.read(exposure_listfile_filename=data_images_filename,
-                                             seg_listfile_filename=segmentation_images_filename,
-                                             stacked_image_product_filename=stacked_image_filename,
-                                             stacked_seg_product_filename=stacked_segmentation_image_filename,
-                                             psf_listfile_filename=psf_images_and_tables_filename,
-                                             detections_listfile_filename=mer_final_catalogs_filename,
+        self.data_stack = SHEFrameStack.read(exposure_listfile_filename=VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
+                                             seg_listfile_filename=SHE_EXPOSURE_SEGMENTATION_MAPS_LISTFILE_FILENAME,
+                                             stacked_image_product_filename=VIS_STACKED_FRAME_PRODUCT_FILENAME,
+                                             stacked_seg_product_filename=SHE_STACK_SEGMENTATION_MAP_FILENAME,
+                                             psf_listfile_filename=SHE_PSF_MODEL_IMAGES_LISTFILE_FILENAME,
+                                             detections_listfile_filename=MER_FINAL_CATALOG_LISTFILE_FILENAME,
                                              workdir=self.workdir,
                                              clean_detections=True,
                                              memmap=True,

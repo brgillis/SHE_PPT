@@ -34,11 +34,14 @@ TEST_DATA_LOCATION = "SHE_PPT_8_7"
 # Files from the MDB list
 MDB_PRODUCT_FILENAME = "sample_mdb-SC8.xml"
 
-# Files from the data_stack list. TODO - fill out and use all
+# Files from the data_stack list
 VIS_CALIBRATED_FRAME_LISTFILE_FILENAME = "vis_calibrated_frames.json"
 VIS_STACKED_FRAME_PRODUCT_FILENAME = "vis_stacked_image.xml"
 MER_FINAL_CATALOG_LISTFILE_FILENAME = "mer_final_catalogs.json"
 LENSMC_MEASUREMENTS_TABLE_FILENAME = "mock_lensmc_measurements.fits"
+SHE_EXPOSURE_SEGMENTATION_MAPS_LISTFILE_FILENAME = "she_exposure_reprojected_segmentation_maps.json"
+SHE_STACK_SEGMENTATION_MAP_FILENAME = "she_stack_reprojected_segmentation_map.xml"
+SHE_PSF_MODEL_IMAGES_LISTFILE_FILENAME = "she_psf_model_images.json"
 SHE_VALIDATED_MEASUREMENTS_PRODUCT_FILENAME = "she_validated_measurements.xml"
 
 # Files from the telescope_coords list
