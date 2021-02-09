@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-08-07"
+__updated__ = "2021-02-09"
 
 import pytest
 
@@ -76,7 +76,7 @@ class TestLensMcMeasurementsTableFormat:
         _ = self.table[tf.e2_err]
         _ = self.table[tf.g1g2_covar]
         _ = self.table[tf.e1e2_covar]
-        _ = self.table[tf.shear_weight]
+        _ = self.table[tf.weight]
         _ = self.table[tf.shape_weight]
         _ = self.table[tf.g1_uncal]
         _ = self.table[tf.g1_uncal_err]
