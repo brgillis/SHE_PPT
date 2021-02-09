@@ -19,11 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-<<<<<<< HEAD
-__updated__ = "2020-09-23"
-=======
-__updated__ = "2020-09-23"
->>>>>>> refs/remotes/origin/brg--dm_updates2
+__updated__ = "2021-02-09"
 
 from collections import OrderedDict
 
@@ -82,17 +78,11 @@ class SheLensMcChainsMeta(object):
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
-<<<<<<< HEAD
-                                     (self.observation_id, "Individual ID or list of IDs"),
-                                     (self.pointing_id, "List of pointing IDs"),
-                                     (self.observation_time, "Individual time or list of times"),
-                                     (self.tile_id, "Individual ID or list of IDs"),
-=======
                                      (self.observation_id, None),
+                                     (self.pointing_id, "List of pointing IDs"),
                                      (self.observation_time, None),
                                      (self.tile_id, None),
                                      (self.method, "Shear estimation method used to generate these chains"),
->>>>>>> refs/remotes/origin/brg--dm_updates2
                                      (self.len_chain, None),
                                      (self.valid,
                                       "0: Not tested; 1: Pass; -1: Fail")
@@ -180,7 +170,6 @@ lensmc_chains_table_format = SheLensMcChainsFormat()
 
 # And a convient alias for it
 tf = lensmc_chains_table_format
-
 
 
 def make_lensmc_chains_table_header(model_hash=None,
