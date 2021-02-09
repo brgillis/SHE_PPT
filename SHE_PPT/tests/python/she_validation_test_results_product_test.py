@@ -176,7 +176,7 @@ class TestValidationTestResults(object):
     def test_vis_stacked_frame_reference(self):
 
         # Read the MER Final Catalog product
-        vis_stacked_frame_product = read_xml_product(vis_stacked_frame_filename, workdir=self.workdir)
+        vis_stacked_frame_product = read_xml_product(VIS_STACKED_FRAME_PRODUCT_FILENAME, workdir=self.workdir)
 
         # Create the product
         product = prod.create_dpd_she_validation_test_results(reference_product=vis_stacked_frame_product,
