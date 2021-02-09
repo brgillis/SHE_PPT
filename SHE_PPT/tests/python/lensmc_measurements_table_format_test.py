@@ -32,7 +32,10 @@ class TestLensMcMeasurementsTableFormat:
     @classmethod
     def setup_class(cls):
         # Define a list of the table formats we'll be testing
-        cls.table = initialise_lensmc_measurements_table(optional_columns=[tf.m1_ical, tf.m2_ical])
+        cls.table = initialise_lensmc_measurements_table(optional_columns=[tf.m1_ical,
+                                                                           tf.m2_ical,
+                                                                           tf.shape_weight,
+                                                                           tf.shape_weight_uncal])
 
         return
 
@@ -86,7 +89,7 @@ class TestLensMcMeasurementsTableFormat:
         _ = self.table[tf.e2_uncal_err]
         _ = self.table[tf.g1g2_uncal_covar]
         _ = self.table[tf.e1e2_uncal_covar]
-        _ = self.table[tf.shear_weight_uncal]
+        _ = self.table[tf.weight_uncal]
         _ = self.table[tf.shape_weight_uncal]
 
         _ = self.table[tf.ra]
