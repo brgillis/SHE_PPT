@@ -98,11 +98,6 @@
 				<FileName>None</FileName>
 			</DataContainer>
 		</DataStorage>
-		<CutoutsCatalogStorage format="mer.cutoutsCatalog" version="0.3">
-			<DataContainer filestatus="PROPOSED">
-				<FileName>QL5CvbMg3foEGormTobmldAs</FileName>
-			</DataContainer>
-		</CutoutsCatalogStorage>
 		<QualityParams>
 			<ObjectCount flagged="true">0</ObjectCount>
 			<ObjectDensity flagged="true">1.0</ObjectDensity>
