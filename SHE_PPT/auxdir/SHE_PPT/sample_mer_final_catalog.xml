@@ -88,13 +88,13 @@
 				<ProcessExecuted>false</ProcessExecuted>
 				<ExitCode>xAF54</ExitCode>
 				<LogFile filestatus="PROPOSED">
-					<FileName>SHA7PrS86fCzjWPvYnDoLwkWVInT6</FileName>
+					<FileName>None</FileName>
 				</LogFile>
 				<OutputDataFileList>SF</OutputDataFileList>
 			</ProcessingStep>
 		</ProcessingSteps>
 		<DataStorage format="mer.finalCatalog" version="0.3">
-			<DataContainer filestatus="ARCHIVED_OFFLINE">
+			<DataContainer filestatus="PROPOSED">
 				<FileName>None</FileName>
 			</DataContainer>
 		</DataStorage>
