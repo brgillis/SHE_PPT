@@ -5,7 +5,7 @@
     Constants related to test data
 """
 
-__updated__ = "2021-02-08"
+__updated__ = "2021-02-09"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -29,7 +29,7 @@ SYNC_CONF = join(SYNC_LOCATION, "sync.conf")
 TEST_FILES_MDB = join(SYNC_LOCATION, "test_mdb.txt")
 TEST_FILES_DATA_STACK = join(SYNC_LOCATION, "test_data_stack.txt")
 
-TEST_DATA_LOCATION = "SHE_PPT_8_6"
+TEST_DATA_LOCATION = "SHE_PPT_8_7"
 
 # Files from the MDB list
 MDB_PRODUCT_FILENAME = "sample_mdb-SC8.xml"
