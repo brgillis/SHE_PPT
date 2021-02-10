@@ -226,31 +226,6 @@ def output_tables(otable, file_name_base, output_format):
     return
 
 
-@run_only_once
-def warn_deprecated_table_to_hdu():
-    logger.warning("SHE_PPT.table_to_hdu is now deprecated. Please use astropy.io.fits.table_to_hdu instead")
-
-
-def table_to_hdu(table):
-    """
-    Convert an `~astropy.table.Table` object to a FITS
-    `~astropy.io.fits.BinTableHDU`. This is copied from the astropy source, since it
-    isn't available in earlier versions.
-
-    Parameters
-    ----------
-    table : astropy.table.Table
-        The table to convert.
-
-    Returns
-    -------
-    table_hdu : `~astropy.io.fits.BinTableHDU`
-        The FITS binary table HDU.
-    """
-    warn_deprecated_table_to_hdu()
-    return astropy_table_to_hdu(table)
-
-
 def set_column_properties(self, name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
                           length=1):
 

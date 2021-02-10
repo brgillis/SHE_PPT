@@ -52,12 +52,6 @@ instance_id_maxlen = 55
 processing_function_maxlen = 4
 
 
-@run_only_once
-def warn_deprecated_timestamp():
-    logger.warning(
-        "The use of the 'timestamp' kwarg in get_allowed_filename is deprecated and will be removed in a future version.")
-
-
 def get_allowed_filename(type_name, instance_id, extension=".fits", release=None, version=None, subdir="data",
                          processing_function="SHE", timestamp=True):
     """Gets a filename in the required Euclid format. Now mostly a pass-through to the official version, with
