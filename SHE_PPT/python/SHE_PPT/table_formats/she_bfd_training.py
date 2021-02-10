@@ -25,13 +25,15 @@ from collections import OrderedDict
 
 from astropy.table import Table
 
+import numpy as np
+
 from .. import detector as dtc
 from .. import magic_values as mv
 from ..flags import she_flag_version
 from ..logging import getLogger
 from ..table_formats.mer_final_catalog import tf as mfc_tf
 from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
-import numpy as np
+
 
 fits_version = "8.0"
 fits_def = "she.bfdTraining"
@@ -111,46 +113,46 @@ class BfdTrainingFormat(object):
         # Column names and info
 
         self.id = set_column_properties(self,
-            "OBJECT_ID", dtype=">i8", fits_dtype="K",
-            comment="ID of this object in the galaxy population priors table.")
+                                        "OBJECT_ID", dtype=">i8", fits_dtype="K",
+                                        comment="ID of this object in the galaxy population priors table.")
         self.fit_flags = set_column_properties(self,
-            "SHE_BFD_TRAINING_FIT_FLAGS", dtype=">i8", fits_dtype="K")
+                                               "SHE_BFD_TRAINING_FIT_FLAGS", dtype=">i8", fits_dtype="K")
         self.val_flags = set_column_properties(self,
-            "SHE_BFD_TRAINING_VAL_FLAGS", dtype=">i8", fits_dtype="K")
+                                               "SHE_BFD_TRAINING_VAL_FLAGS", dtype=">i8", fits_dtype="K")
         self.fit_class = set_column_properties(self,
-            "SHE_BFD_TRAINING_FIT_CLASS", dtype=">i4", fits_dtype="I")
+                                               "SHE_BFD_TRAINING_FIT_CLASS", dtype=">i4", fits_dtype="I")
         self.ra = set_column_properties(self,
-            "SHE_BFD_TRAINING_UPDATED_RA", comment="deg", dtype=">f8", fits_dtype="D")
+                                        "SHE_BFD_TRAINING_UPDATED_RA", comment="deg", dtype=">f8", fits_dtype="D")
         self.ra_err = set_column_properties(self,
-            "SHE_BFD_TRAINING_UPDATED_RA_ERR", comment="deg", dtype=">f8", fits_dtype="E")
+                                            "SHE_BFD_TRAINING_UPDATED_RA_ERR", comment="deg", dtype=">f8", fits_dtype="E")
         self.dec = set_column_properties(self,
-            "SHE_BFD_TRAINING_UPDATED_DEC", comment="deg", dtype=">f8", fits_dtype="D")
+                                         "SHE_BFD_TRAINING_UPDATED_DEC", comment="deg", dtype=">f8", fits_dtype="D")
         self.dec_err = set_column_properties(self,
-            "SHE_BFD_TRAINING_UPDATED_DEC_ERR", comment="deg" , dtype=">f8", fits_dtype="E")
+                                             "SHE_BFD_TRAINING_UPDATED_DEC_ERR", comment="deg", dtype=">f8", fits_dtype="E")
         self.moments = set_column_properties(self,
-            "SHE_BFD_TRAINING_MOMENTS" , dtype=">f4", fits_dtype="E", length=7)
+                                             "SHE_BFD_TRAINING_MOMENTS", dtype=">f4", fits_dtype="E", length=7)
         self.dm_dg1 = set_column_properties(self,
-            "SHE_BFD_TRAINING_DM_DG1" , dtype=">f4", fits_dtype="E", length=7)
+                                            "SHE_BFD_TRAINING_DM_DG1", dtype=">f4", fits_dtype="E", length=7)
         self.dm_dg2 = set_column_properties(self,
-            "SHE_BFD_TRAINING_DM_DG2" , dtype=">f4", fits_dtype="E", length=7)
+                                            "SHE_BFD_TRAINING_DM_DG2", dtype=">f4", fits_dtype="E", length=7)
         self.dm_dmu = set_column_properties(self,
-            "SHE_BFD_TRAINING_DM_DMU" , dtype=">f4", fits_dtype="E", length=7)
+                                            "SHE_BFD_TRAINING_DM_DMU", dtype=">f4", fits_dtype="E", length=7)
         self.d2m_dg1dg1 = set_column_properties(self,
-            "SHE_BFD_TRAINING_D2M_DG1DG1" , dtype=">f4", fits_dtype="E", length=7)
+                                                "SHE_BFD_TRAINING_D2M_DG1DG1", dtype=">f4", fits_dtype="E", length=7)
         self.d2m_dg1dg2 = set_column_properties(self,
-            "SHE_BFD_TRAINING_D2M_DG1DG2" , dtype=">f4", fits_dtype="E", length=7)
+                                                "SHE_BFD_TRAINING_D2M_DG1DG2", dtype=">f4", fits_dtype="E", length=7)
         self.d2m_dg2dg2 = set_column_properties(self,
-            "SHE_BFD_TRAINING_D2M_DG2DG2" , dtype=">f4", fits_dtype="E", length=7)
+                                                "SHE_BFD_TRAINING_D2M_DG2DG2", dtype=">f4", fits_dtype="E", length=7)
         self.d2m_dg1dmu = set_column_properties(self,
-            "SHE_BFD_TRAINING_D2M_DG1DMU" , dtype=">f4", fits_dtype="E", length=7)
+                                                "SHE_BFD_TRAINING_D2M_DG1DMU", dtype=">f4", fits_dtype="E", length=7)
         self.d2m_dg2dmu = set_column_properties(self,
-            "SHE_BFD_TRAINING_D2M_DG2DMU" , dtype=">f4", fits_dtype="E", length=7)
+                                                "SHE_BFD_TRAINING_D2M_DG2DMU", dtype=">f4", fits_dtype="E", length=7)
         self.d2m_dmudmu = set_column_properties(self,
-            "SHE_BFD_TRAINING_D2M_DMUDMU" , dtype=">f4", fits_dtype="E", length=7)
+                                                "SHE_BFD_TRAINING_D2M_DMUDMU", dtype=">f4", fits_dtype="E", length=7)
         self.tmp_wgt = set_column_properties(self,
-            "SHE_BFD_TRAINING_TMPL_WEIGHT" , dtype=">f4", fits_dtype="E")
+                                             "SHE_BFD_TRAINING_TMPL_WEIGHT", dtype=">f4", fits_dtype="E")
         self.jsupp = set_column_properties(self,
-            "SHE_BFD_TRAINING_JSUPPRESS" , dtype=">f4", fits_dtype="E")
+                                           "SHE_BFD_TRAINING_JSUPPRESS", dtype=">f4", fits_dtype="E")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -209,8 +211,8 @@ def make_bfd_training_table_header(model_hash=None,
 
 
 def initialise_bfd_training_table(size=None,
-                                 optional_columns=None,
-                                 init_cols=None,
+                                  optional_columns=None,
+                                  init_cols=None,
                                   model_hash=None,
                                   model_seed=None,
                                   noise_seed=None,

@@ -32,6 +32,7 @@ from ..logging import getLogger
 from ..table_formats.mer_final_catalog import tf as mfc_tf
 from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
 
+
 fits_version = "8.0"
 fits_def = "she.lensmcChains"
 

@@ -24,10 +24,12 @@
 
 __updated__ = "2020-08-12"
 
-from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.objectidlist_stub import dpdSheObjectIdList
+
+from ..file_io import read_xml_product, find_aux_file
+from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
+
 
 sample_file_name = "SHE_PPT/sample_object_id_list.xml"
 
@@ -73,7 +75,7 @@ def create_dpd_she_object_id_list(id_list=None):
 
     dpd_she_object_id_list = read_xml_product(find_aux_file(sample_file_name))
 
-    dpd_she_object_id_list.Header = HeaderProvider.create_generic_header("SHE") # FIXME
+    dpd_she_object_id_list.Header = HeaderProvider.create_generic_header("SHE")  # FIXME
 
     if(id_list):
         __set_id_list(dpd_she_object_id_list, id_list)

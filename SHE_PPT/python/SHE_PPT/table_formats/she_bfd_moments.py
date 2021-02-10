@@ -32,6 +32,7 @@ from ..logging import getLogger
 from ..table_formats.mer_final_catalog import tf as mfc_tf
 from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
 
+
 fits_version = "8.0"
 fits_def = "she.bfdMoments"
 
@@ -102,32 +103,32 @@ class BfdMomentsFormat(object):
         # Table column labels and properties
 
         self.ID = set_column_properties(self,
-            "OBJECT_ID", dtype=">i8", fits_dtype="K")
+                                        "OBJECT_ID", dtype=">i8", fits_dtype="K")
 
         self.fit_flags = set_column_properties(self,
-            "SHE_BFD_FIT_FLAGS", dtype=">i8", fits_dtype="K")
+                                               "SHE_BFD_FIT_FLAGS", dtype=">i8", fits_dtype="K")
         self.val_flags = set_column_properties(self,
-            "SHE_BFD_VAL_FLAGS", dtype=">i8", fits_dtype="K")
+                                               "SHE_BFD_VAL_FLAGS", dtype=">i8", fits_dtype="K")
         self.fit_class = set_column_properties(self,
-            "SHE_BFD_FIT_CLASS", dtype=">i2", fits_dtype="I")
+                                               "SHE_BFD_FIT_CLASS", dtype=">i2", fits_dtype="I")
         self.updated_ra = set_column_properties(self,
-            "SHE_BFD_UPDATED_RA", is_optional=False, comment="deg")
+                                                "SHE_BFD_UPDATED_RA", is_optional=False, comment="deg")
         self.updated_ra_err = set_column_properties(self,
-            "SHE_BFD_UPDATED_RA_ERR", is_optional=False, comment="deg")
+                                                    "SHE_BFD_UPDATED_RA_ERR", is_optional=False, comment="deg")
         self.updated_dec = set_column_properties(self,
-            "SHE_BFD_UPDATED_DEC", is_optional=True, comment="deg")
+                                                 "SHE_BFD_UPDATED_DEC", is_optional=True, comment="deg")
         self.updated_dec_err = set_column_properties(self,
-            "SHE_BFD_UPDATED_DEC_ERR", is_optional=True, comment="deg")
+                                                     "SHE_BFD_UPDATED_DEC_ERR", is_optional=True, comment="deg")
 
         # BFD specific columns
         self.bfd_moments = set_column_properties(self,
-            "SHE_BFD_MOMENTS", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
+                                                 "SHE_BFD_MOMENTS", is_optional=True, dtype=">f4", fits_dtype="E", length=7)
         self.bfd_pqr = set_column_properties(self,
-            "SHE_BFD_PQR", is_optional=True, dtype=">f4", fits_dtype="E", length=6)
+                                             "SHE_BFD_PQR", is_optional=True, dtype=">f4", fits_dtype="E", length=6)
         self.bfd_cov_even = set_column_properties(self,
-            "SHE_BFD_COV_EVEN", is_optional=True, dtype=">f4", fits_dtype="E", length=15)
+                                                  "SHE_BFD_COV_EVEN", is_optional=True, dtype=">f4", fits_dtype="E", length=15)
         self.bfd_cov_odd = set_column_properties(self,
-            "SHE_BFD_COV_ODD", is_optional=True, dtype=">f4", fits_dtype="E", length=3)
+                                                 "SHE_BFD_COV_ODD", is_optional=True, dtype=">f4", fits_dtype="E", length=3)
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())

@@ -21,9 +21,10 @@
 
 __updated__ = "2019-02-27"
 
-from .gain import get_ADU_from_count, get_count_from_ADU
 import magic_values as mv
 import numpy as np
+
+from .gain import get_ADU_from_count, get_count_from_ADU
 
 
 def get_count_from_mag_vis(m, exp_time):

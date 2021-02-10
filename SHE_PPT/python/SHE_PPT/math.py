@@ -205,9 +205,9 @@ class BFDSumResults(object):
             stats = self.combine_lstats(lstats)
 
         C = np.array([[stats.A11, stats.A12, stats.A13, stats.A14],
-                       [stats.A12, stats.A22, stats.A23, stats.A24],
-                       [stats.A13, stats.A23, stats.A33, stats.A34],
-                       [stats.A14, stats.A24, stats.A34, stats.A44]])
+                      [stats.A12, stats.A22, stats.A23, stats.A24],
+                      [stats.A13, stats.A23, stats.A33, stats.A34],
+                      [stats.A14, stats.A24, stats.A34, stats.A44]])
         Cinv = np.linalg.inv(C)
         Q_P = np.array([[stats.b1], [stats.b2], [stats.b3], [stats.b4]])
 

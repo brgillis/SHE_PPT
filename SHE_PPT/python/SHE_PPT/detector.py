@@ -23,6 +23,7 @@ __updated__ = "2019-02-27"
 
 import numpy as np
 
+
 id_template = "CCDID X-Y"
 
 # Indices of x and y detector id in the detector string

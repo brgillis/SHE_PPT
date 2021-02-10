@@ -23,12 +23,14 @@
 
 __updated__ = "2020-06-12"
 
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
+from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
+
 from ..file_io import read_xml_product, find_aux_file
 from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
 from ..products.vis_calibrated_frame import (create_vis_psf_storage,
-                                               create_vis_bkg_storage, create_vis_wgt_storage)
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
-from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
+                                             create_vis_bkg_storage, create_vis_wgt_storage)
+
 
 sample_file_name = "SHE_PPT/sample_vis_stacked_frame.xml"
 

@@ -25,12 +25,14 @@ from collections import OrderedDict
 
 from astropy.table import Table
 
+import numpy as np
+
 from .. import magic_values as mv
 from ..flags import she_flag_version
 from ..logging import getLogger
 from ..math import LinregressStatistics, BiasMeasurements, BFDSumResults
 from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
-import numpy as np
+
 
 fits_version = "8.0"
 fits_def = "bfdBiasStatistics"

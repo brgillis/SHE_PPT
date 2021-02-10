@@ -33,6 +33,7 @@ from ..table_formats.mer_final_catalog import tf as mfc_tf
 from ..table_formats.she_measurements import SheMeasurementsMeta, SheMeasurementsFormat
 from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table, setup_child_table_format, set_column_properties, init_table
 
+
 fits_version = "8.0"
 fits_def = "she.regaussMeasurements"
 
@@ -93,13 +94,13 @@ tf = regauss_measurements_table_format
 
 
 def make_regauss_measurements_table_header(
-                                  model_hash=None,
-                                  model_seed=None,
-                                  noise_seed=None,
-                                  observation_id=None,
-                                  pointing_id=None,
-                                  observation_time=None,
-                                  tile_id=None,):
+        model_hash=None,
+        model_seed=None,
+        noise_seed=None,
+        observation_id=None,
+        pointing_id=None,
+        observation_time=None,
+        tile_id=None,):
     """
         @brief Generate a header for a shear estimates table.
 
@@ -133,17 +134,17 @@ def make_regauss_measurements_table_header(
 
 
 def initialise_regauss_measurements_table(mer_final_catalog=None,
-                                 size=None,
-                                 optional_columns=None,
-                                 init_cols=None,
-                                 model_hash=None,
-                                 model_seed=None,
-                                 noise_seed=None,
-                                 observation_id=None,
-                                 pointing_id=None,
-                                 observation_time=None,
-                                 tile_id=None,
-                                 ):
+                                          size=None,
+                                          optional_columns=None,
+                                          init_cols=None,
+                                          model_hash=None,
+                                          model_seed=None,
+                                          noise_seed=None,
+                                          observation_id=None,
+                                          pointing_id=None,
+                                          observation_time=None,
+                                          tile_id=None,
+                                          ):
     """
         @brief Initialise a shear estimates table based on a detections table, with the
                desired set of optional columns
@@ -178,13 +179,13 @@ def initialise_regauss_measurements_table(mer_final_catalog=None,
             noise_seed = mer_final_catalog.meta[mfc_tf.m.noise_seed]
 
     regauss_measurements_table.meta = make_regauss_measurements_table_header(
-                                                           model_hash=model_hash,
-                                                           model_seed=model_seed,
-                                                           noise_seed=noise_seed,
-                                                           observation_id=observation_id,
-                                                           pointing_id=pointing_id,
-                                                           observation_time=observation_time,
-                                                           tile_id=tile_id)
+        model_hash=model_hash,
+        model_seed=model_seed,
+        noise_seed=noise_seed,
+        observation_id=observation_id,
+        pointing_id=pointing_id,
+        observation_time=observation_time,
+        tile_id=tile_id)
 
     assert(is_in_format(regauss_measurements_table, tf))
 

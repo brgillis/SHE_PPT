@@ -28,9 +28,11 @@ __updated__ = "2019-02-27"
 import os
 
 import astropy.io.fits
+
 import numpy as np
 
 from . import logging
+
 
 logger = logging.getLogger(__name__)
 

@@ -27,6 +27,7 @@ __updated__ = "2019-02-27"
 
 import logging
 import os
+
 import pytest
 
 from SHE_PPT.detector import *

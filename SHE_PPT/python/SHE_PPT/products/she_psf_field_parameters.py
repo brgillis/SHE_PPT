@@ -25,10 +25,12 @@
 __updated__ = "2020-06-30"
 
 
-from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.psffieldparameters_stub import dpdShePsfFieldParameters
+
+from ..file_io import read_xml_product, find_aux_file
+from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
+
 
 sample_file_name = "SHE_PPT/sample_psf_field_parameters.xml"
 
@@ -47,9 +49,8 @@ def init():
     binding_class.set_data_filename = __set_filename
     binding_class.get_data_filename = __get_filename
     # Add Zernike mode
-    
-    binding_class.get_all_filenames = __get_all_filenames
 
+    binding_class.get_all_filenames = __get_all_filenames
 
     binding_class.has_files = False
 

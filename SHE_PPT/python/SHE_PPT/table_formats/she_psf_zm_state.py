@@ -26,11 +26,13 @@ from collections import OrderedDict
 
 from astropy.table import Table
 
+import numpy as np
+
 from .. import magic_values as mv
 from ..flags import she_flag_version
 from ..logging import getLogger
 from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
-import numpy as np
+
 
 fits_version = "8.0"
 
@@ -68,7 +70,7 @@ class ShePsfZmStateMeta(object):
 
         # A list of headers in the desired order
         self.all = list(self.comments.keys())
-        
+
 
 class ShePsfZmStateFormat(object):
     """
@@ -89,12 +91,12 @@ class ShePsfZmStateFormat(object):
         # Column names and info
 
         self.fovrngx = set_column_properties(self,
-            "SHE_PSF_%s_FOVRNGX" % self.data_type, dtype=">f4", fits_dtype="E", length=2)
+                                             "SHE_PSF_%s_FOVRNGX" % self.data_type, dtype=">f4", fits_dtype="E", length=2)
         self.fovrngy = set_column_properties(self,
-            "SHE_PSF_%s_FOVRNGY" % self.data_type, dtype=">f4", fits_dtype="E", length=2)
+                                             "SHE_PSF_%s_FOVRNGY" % self.data_type, dtype=">f4", fits_dtype="E", length=2)
         self.zer_ply_amp = set_column_properties(self,
-            "SHE_PSF_%s_ZNKPLYAMP" % self.data_type, dtype=">f4",
-            fits_dtype="E", length=50)
+                                                 "SHE_PSF_%s_ZNKPLYAMP" % self.data_type, dtype=">f4",
+                                                 fits_dtype="E", length=50)
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -123,7 +125,7 @@ def make_psf_zm_state_table_header(data_type="FIELD"):
     Parameters
     ----------
     data_type : Is it field or calibration
-    
+
     Return
     ------
     header : OrderedDict
@@ -142,8 +144,8 @@ def make_psf_zm_state_table_header(data_type="FIELD"):
 
 def initialise_psf_zm_state_table(data_type="FIELD",
                                   size=None,
-                                 optional_columns=None,
-                                 init_cols=None,
+                                  optional_columns=None,
+                                  init_cols=None,
                                   init_columns={}):
     """Initialise a PSF ZM State table.
 
@@ -183,22 +185,22 @@ def initialise_psf_zm_state_table(data_type="FIELD",
 
 
 def initialise_psf_field_zm_state_table(size=None,
-                                 optional_columns=None,
-                                 init_cols=None,
+                                        optional_columns=None,
+                                        init_cols=None,
                                         init_columns=None):
 
     if init_columns is None:
         init_columns = {}
     return initialise_psf_zm_state_table(data_type="FIELD", optional_columns=optional_columns,
-                                  init_columns=init_columns)
+                                         init_columns=init_columns)
 
 
 def initialise_psf_calibration_zm_state_table(size=None,
-                                 optional_columns=None,
-                                 init_cols=None,
+                                              optional_columns=None,
+                                              init_cols=None,
                                               init_columns=None):
 
     if init_columns is None:
         init_columns = {}
     return initialise_psf_zm_state_table(data_type="CALIB", optional_columns=optional_columns,
-                                  init_columns=init_columns)
+                                         init_columns=init_columns)

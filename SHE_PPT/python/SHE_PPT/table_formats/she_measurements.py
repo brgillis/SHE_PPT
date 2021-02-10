@@ -29,6 +29,7 @@ from .. import magic_values as mv
 from ..flags import she_flag_version
 from ..table_utility import setup_table_format, set_column_properties
 
+
 fits_version = "8.0"
 fits_def = "she.measurements"
 

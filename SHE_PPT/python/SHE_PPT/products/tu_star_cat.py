@@ -23,8 +23,9 @@
 
 __updated__ = "2020-10-15"
 
-from ..product_utility import get_data_filename_from_product
 from ST_DataModelBindings.dpd.sim.raw.starscatalogproduct_stub import dpdStarsCatalogProduct
+
+from ..product_utility import get_data_filename_from_product
 
 
 def init():

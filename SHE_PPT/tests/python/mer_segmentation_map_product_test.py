@@ -89,7 +89,7 @@ class TestMosaicProduct(object):
 
         phdu = fits.PrimaryHDU(data=test_array,
                                header=fits.header.Header((("EXTNAME", dtc.get_id_string(detector_x, detector_y)
-                                                           +"." + mv.segmentation_tag),)))
+                                                           + "." + mv.segmentation_tag),)))
 
         data_filename = str(tmpdir.join("mosaic_data.fits"))
         phdu.writeto(data_filename, overwrite=True)
@@ -112,7 +112,7 @@ class TestMosaicProduct(object):
 
         hdu2 = fits.ImageHDU(data=test_array2,
                              header=fits.header.Header((("EXTNAME", dtc.get_id_string(detector_x2, detector_y2)
-                                                         +"." + mv.segmentation_tag),)))
+                                                         + "." + mv.segmentation_tag),)))
 
         hdulist = fits.HDUList([phdu, hdu2])
         hdulist.writeto(data_filename, overwrite=True)

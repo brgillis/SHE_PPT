@@ -23,8 +23,9 @@ __updated__ = "2020-12-14"
 
 from astropy.table import Column
 
-from .table_utility import is_in_format
 import numpy as np
+
+from .table_utility import is_in_format
 
 
 def _test_is_in_format(self):

@@ -28,9 +28,10 @@ import galsim
 from galsim.wcs import BaseWCS as GalsimWCS
 from scipy.optimize import minimize
 
+import numpy as np
+
 from . import flags
 from .she_image import SHEImage
-import numpy as np
 
 
 class ShearEstimate(object):

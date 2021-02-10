@@ -21,6 +21,7 @@
 __updated__ = "2020-10-15"
 
 import os
+
 import pytest
 
 from SHE_PPT.file_io import read_xml_product, write_xml_product

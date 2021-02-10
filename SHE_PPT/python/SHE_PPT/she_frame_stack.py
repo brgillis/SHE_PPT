@@ -32,6 +32,8 @@ from astropy import table
 from astropy.io import fits
 import astropy.wcs
 
+import numpy as np
+
 from . import logging
 from . import magic_values as mv
 from . import products
@@ -41,7 +43,7 @@ from .she_image import SHEImage
 from .she_image_stack import SHEImageStack
 from .table_formats.mer_final_catalog import tf as mfc_tf, initialise_mer_final_catalog
 from .utility import find_extension
-import numpy as np
+
 
 logger = logging.getLogger(__name__)
 

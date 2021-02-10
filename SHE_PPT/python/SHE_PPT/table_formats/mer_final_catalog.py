@@ -26,6 +26,7 @@ from collections import OrderedDict
 from astropy.table import Table
 
 from EL_PythonUtils.utilities import hash_any
+
 from .. import magic_values as mv
 from ..flags import she_flag_version
 from ..logging import getLogger

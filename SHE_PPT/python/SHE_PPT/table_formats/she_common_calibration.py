@@ -32,6 +32,7 @@ from ..logging import getLogger
 from ..table_formats.mer_final_catalog import tf as mfc_tf
 from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
 
+
 fits_version = "8.0"
 fits_def = "she.commonCalibration"
 
@@ -76,101 +77,101 @@ class SheCommonCalibrationFormat(object):
         # Table column labels and properties
 
         self.f0_min = set_column_properties(self,
-            "SHE_CC_F0_MIN", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_F0_MIN", dtype=">f4", fits_dtype="E")
         self.f0_max = set_column_properties(self,
-            "SHE_CC_F0_MAX", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_F0_MAX", dtype=">f4", fits_dtype="E")
         self.f1_min = set_column_properties(self,
-            "SHE_CC_F1_MIN", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_F1_MIN", dtype=">f4", fits_dtype="E")
         self.f1_max = set_column_properties(self,
-            "SHE_CC_F1_MAX", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_F1_MAX", dtype=">f4", fits_dtype="E")
         self.f2_min = set_column_properties(self,
-            "SHE_CC_F2_MIN", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_F2_MIN", dtype=">f4", fits_dtype="E")
         self.f2_max = set_column_properties(self,
-            "SHE_CC_F2_MAX", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_F2_MAX", dtype=">f4", fits_dtype="E")
         self.f3_min = set_column_properties(self,
-            "SHE_CC_F3_MIN", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_F3_MIN", dtype=">f4", fits_dtype="E")
         self.f3_max = set_column_properties(self,
-            "SHE_CC_F3_MAX", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_F3_MAX", dtype=">f4", fits_dtype="E")
         self.f4_min = set_column_properties(self,
-            "SHE_CC_F4_MIN", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_F4_MIN", dtype=">f4", fits_dtype="E")
         self.f4_max = set_column_properties(self,
-            "SHE_CC_F4_MAX", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_F4_MAX", dtype=">f4", fits_dtype="E")
         self.f5_min = set_column_properties(self,
-            "SHE_CC_F5_MIN", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_F5_MIN", dtype=">f4", fits_dtype="E")
         self.f5_max = set_column_properties(self,
-            "SHE_CC_F5_MAX", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_F5_MAX", dtype=">f4", fits_dtype="E")
         self.f6_min = set_column_properties(self,
-            "SHE_CC_F6_MIN", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_F6_MIN", dtype=">f4", fits_dtype="E")
         self.f6_max = set_column_properties(self,
-            "SHE_CC_F6_MAX", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_F6_MAX", dtype=">f4", fits_dtype="E")
         self.f7_min = set_column_properties(self,
-            "SHE_CC_F7_MIN", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_F7_MIN", dtype=">f4", fits_dtype="E")
         self.f7_max = set_column_properties(self,
-            "SHE_CC_F7_MAX", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_F7_MAX", dtype=">f4", fits_dtype="E")
         self.f8_min = set_column_properties(self,
-            "SHE_CC_F8_MIN", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_F8_MIN", dtype=">f4", fits_dtype="E")
         self.f8_max = set_column_properties(self,
-            "SHE_CC_F8_MAX", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_F8_MAX", dtype=">f4", fits_dtype="E")
         self.f9_min = set_column_properties(self,
-            "SHE_CC_F9_MIN", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_F9_MIN", dtype=">f4", fits_dtype="E")
         self.f9_max = set_column_properties(self,
-            "SHE_CC_F9_MAX", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_F9_MAX", dtype=">f4", fits_dtype="E")
         self.i0_min = set_column_properties(self,
-            "SHE_CC_I0_MIN", dtype=">i8", fits_dtype="K")
+                                            "SHE_CC_I0_MIN", dtype=">i8", fits_dtype="K")
         self.i0_max = set_column_properties(self,
-            "SHE_CC_I0_MAX", dtype=">i8", fits_dtype="K")
+                                            "SHE_CC_I0_MAX", dtype=">i8", fits_dtype="K")
         self.i1_min = set_column_properties(self,
-            "SHE_CC_I1_MIN", dtype=">i8", fits_dtype="K")
+                                            "SHE_CC_I1_MIN", dtype=">i8", fits_dtype="K")
         self.i1_max = set_column_properties(self,
-            "SHE_CC_I1_MAX", dtype=">i8", fits_dtype="K")
+                                            "SHE_CC_I1_MAX", dtype=">i8", fits_dtype="K")
         self.i2_min = set_column_properties(self,
-            "SHE_CC_I2_MIN", dtype=">i8", fits_dtype="K")
+                                            "SHE_CC_I2_MIN", dtype=">i8", fits_dtype="K")
         self.i2_max = set_column_properties(self,
-            "SHE_CC_I2_MAX", dtype=">i8", fits_dtype="K")
+                                            "SHE_CC_I2_MAX", dtype=">i8", fits_dtype="K")
         self.i3_min = set_column_properties(self,
-            "SHE_CC_I3_MIN", dtype=">i8", fits_dtype="K")
+                                            "SHE_CC_I3_MIN", dtype=">i8", fits_dtype="K")
         self.i3_max = set_column_properties(self,
-            "SHE_CC_I3_MAX", dtype=">i8", fits_dtype="K")
+                                            "SHE_CC_I3_MAX", dtype=">i8", fits_dtype="K")
         self.i4_min = set_column_properties(self,
-            "SHE_CC_I4_MIN", dtype=">i8", fits_dtype="K")
+                                            "SHE_CC_I4_MIN", dtype=">i8", fits_dtype="K")
         self.i4_max = set_column_properties(self,
-            "SHE_CC_I4_MAX", dtype=">i8", fits_dtype="K")
+                                            "SHE_CC_I4_MAX", dtype=">i8", fits_dtype="K")
         self.i5_min = set_column_properties(self,
-            "SHE_CC_I5_MIN", dtype=">i8", fits_dtype="K")
+                                            "SHE_CC_I5_MIN", dtype=">i8", fits_dtype="K")
         self.i5_max = set_column_properties(self,
-            "SHE_CC_I5_MAX", dtype=">i8", fits_dtype="K")
+                                            "SHE_CC_I5_MAX", dtype=">i8", fits_dtype="K")
         self.i6_min = set_column_properties(self,
-            "SHE_CC_I6_MIN", dtype=">i8", fits_dtype="K")
+                                            "SHE_CC_I6_MIN", dtype=">i8", fits_dtype="K")
         self.i6_max = set_column_properties(self,
-            "SHE_CC_I6_MAX", dtype=">i8", fits_dtype="K")
+                                            "SHE_CC_I6_MAX", dtype=">i8", fits_dtype="K")
         self.i7_min = set_column_properties(self,
-            "SHE_CC_I7_MIN", dtype=">i8", fits_dtype="K")
+                                            "SHE_CC_I7_MIN", dtype=">i8", fits_dtype="K")
         self.i7_max = set_column_properties(self,
-            "SHE_CC_I7_MAX", dtype=">i8", fits_dtype="K")
+                                            "SHE_CC_I7_MAX", dtype=">i8", fits_dtype="K")
         self.i8_min = set_column_properties(self,
-            "SHE_CC_I8_MIN", dtype=">i8", fits_dtype="K")
+                                            "SHE_CC_I8_MIN", dtype=">i8", fits_dtype="K")
         self.i8_max = set_column_properties(self,
-            "SHE_CC_I8_MAX", dtype=">i8", fits_dtype="K")
+                                            "SHE_CC_I8_MAX", dtype=">i8", fits_dtype="K")
         self.i9_min = set_column_properties(self,
-            "SHE_CC_I9_MIN", dtype=">i8", fits_dtype="K")
+                                            "SHE_CC_I9_MIN", dtype=">i8", fits_dtype="K")
         self.i9_max = set_column_properties(self,
-            "SHE_CC_I9_MAX", dtype=">i8", fits_dtype="K")
+                                            "SHE_CC_I9_MAX", dtype=">i8", fits_dtype="K")
         self.m1 = set_column_properties(self,
-            "SHE_CC_M1", dtype=">f4", fits_dtype="E")
+                                        "SHE_CC_M1", dtype=">f4", fits_dtype="E")
         self.m1_err = set_column_properties(self,
-            "SHE_CC_M1_ERR", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_M1_ERR", dtype=">f4", fits_dtype="E")
         self.m2 = set_column_properties(self,
-            "SHE_CC_M2", dtype=">f4", fits_dtype="E")
+                                        "SHE_CC_M2", dtype=">f4", fits_dtype="E")
         self.m2_err = set_column_properties(self,
-            "SHE_CC_M2_ERR", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_M2_ERR", dtype=">f4", fits_dtype="E")
         self.c1 = set_column_properties(self,
-            "SHE_CC_C1", dtype=">f4", fits_dtype="E")
+                                        "SHE_CC_C1", dtype=">f4", fits_dtype="E")
         self.c1_err = set_column_properties(self,
-            "SHE_CC_C1_ERR", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_C1_ERR", dtype=">f4", fits_dtype="E")
         self.c2 = set_column_properties(self,
-            "SHE_CC_C2", dtype=">f4", fits_dtype="E")
+                                        "SHE_CC_C2", dtype=">f4", fits_dtype="E")
         self.c2_err = set_column_properties(self,
-            "SHE_CC_C2_ERR", dtype=">f4", fits_dtype="E")
+                                            "SHE_CC_C2_ERR", dtype=">f4", fits_dtype="E")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -209,10 +210,10 @@ def make_common_calibration_table_header():
 
 
 def initialise_common_calibration_table(mer_final_catalog=None,
-                                 size=None,
-                                 optional_columns=None,
-                                 init_cols=None,
-                                 ):
+                                        size=None,
+                                        optional_columns=None,
+                                        init_cols=None,
+                                        ):
     """
         @brief Initialise a shear estimates table based on a detections table, with the
                desired set of optional columns

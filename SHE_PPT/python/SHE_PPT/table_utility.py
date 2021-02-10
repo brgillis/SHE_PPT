@@ -27,9 +27,10 @@ from astropy.io.fits import table_to_hdu as astropy_table_to_hdu
 from astropy.table import Column, Table
 
 from EL_PythonUtils.utilities import run_only_once
+import numpy as np
+
 from . import magic_values as mv
 from .logging import getLogger
-import numpy as np
 
 
 logger = getLogger(mv.logger_name)
