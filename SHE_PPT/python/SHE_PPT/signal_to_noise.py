@@ -24,7 +24,7 @@ __updated__ = "2019-02-27"
 
 import galsim
 
-from SHE_PPT.logging import getLogger
+from .logging import getLogger
 import numpy as np
 
 logger = getLogger(__name__)

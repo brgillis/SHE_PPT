@@ -34,15 +34,14 @@ from pyxb.exceptions_ import NamespaceError
 
 from EL_PythonUtils.utilities import run_only_once, time_to_timestamp
 from ElementsServices.DataSync import DataSync
-from SHE_PPT import magic_values as mv
-import SHE_PPT
-from SHE_PPT.logging import getLogger
-from SHE_PPT.utility import get_release_from_version, get_nested_attr
 from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider
 from ST_DataModelBindings.sys_stub import CreateFromDocument
 import numpy as np
 
+from . import magic_values as mv
 from .constants.test_data import SYNC_CONF
+from .logging import getLogger
+from .utility import get_release_from_version, get_nested_attr
 
 
 logger = getLogger(mv.logger_name)

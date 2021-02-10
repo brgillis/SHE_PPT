@@ -11,10 +11,11 @@ from astropy.io import fits
 from scipy.integrate.quadpack import quad
 
 from EL_PythonUtils.utilities import run_only_once
-from SHE_PPT.file_io import find_file
-from SHE_PPT.logging import getLogger
-import SHE_PPT.magic_values as mv
 from ST_DM_MDBTools.Mdb import Mdb
+
+from . import magic_values as mv
+from .file_io import find_file
+from .logging import getLogger
 
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment

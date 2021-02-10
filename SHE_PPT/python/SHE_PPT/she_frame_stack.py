@@ -32,15 +32,15 @@ from astropy import table
 from astropy.io import fits
 import astropy.wcs
 
-from SHE_PPT import logging
-from SHE_PPT import magic_values as mv
-from SHE_PPT import products
-from SHE_PPT.file_io import read_listfile, read_xml_product, find_file
-from SHE_PPT.she_frame import SHEFrame
-from SHE_PPT.she_image import SHEImage
-from SHE_PPT.she_image_stack import SHEImageStack
-from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf, initialise_mer_final_catalog
-from SHE_PPT.utility import find_extension
+from . import logging
+from . import magic_values as mv
+from . import products
+from .file_io import read_listfile, read_xml_product, find_file
+from .she_frame import SHEFrame
+from .she_image import SHEImage
+from .she_image_stack import SHEImageStack
+from .table_formats.mer_final_catalog import tf as mfc_tf, initialise_mer_final_catalog
+from .utility import find_extension
 import numpy as np
 
 logger = logging.getLogger(__name__)

@@ -28,8 +28,8 @@ import galsim
 from galsim.wcs import BaseWCS as GalsimWCS
 from scipy.optimize import minimize
 
-from SHE_PPT import flags
-from SHE_PPT.she_image import SHEImage
+from . import flags
+from .she_image import SHEImage
 import numpy as np
 
 

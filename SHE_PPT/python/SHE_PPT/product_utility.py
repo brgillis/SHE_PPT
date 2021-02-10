@@ -22,8 +22,8 @@
 __updated__ = "2021-02-10"
 
 from EL_PythonUtils.utilities import run_only_once
-from SHE_PPT.logging import getLogger
-from SHE_PPT.utility import get_nested_attr
+from .logging import getLogger
+from .utility import get_nested_attr
 from ST_DataModelBindings.dpd.she.intermediategeneral_stub import dpdSheIntermediateGeneral
 from ST_DataModelBindings.dpd.she.intermediateobservationcatalog_stub import dpdSheIntermediateObservationCatalog
 from ST_DataModelBindings.dpd.she.placeholdergeneral_stub import dpdShePlaceholderGeneral

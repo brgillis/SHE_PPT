@@ -21,8 +21,8 @@
 
 __updated__ = "2019-02-27"
 
-from SHE_PPT.gain import get_ADU_from_count, get_count_from_ADU
-import SHE_PPT.magic_values as mv
+from .gain import get_ADU_from_count, get_count_from_ADU
+import magic_values as mv
 import numpy as np
 
 

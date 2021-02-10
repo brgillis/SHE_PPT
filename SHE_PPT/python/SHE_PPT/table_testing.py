@@ -23,7 +23,7 @@ __updated__ = "2020-12-14"
 
 from astropy.table import Column
 
-from SHE_PPT.table_utility import is_in_format
+from .table_utility import is_in_format
 import numpy as np
 
 

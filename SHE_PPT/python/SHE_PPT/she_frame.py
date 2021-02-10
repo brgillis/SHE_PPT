@@ -36,17 +36,18 @@ from astropy.wcs import WCS
 
 import EL_CoordsUtils.telescope_coords as tc
 from EL_PythonUtils.utilities import run_only_once
-from SHE_PPT import logging
-from SHE_PPT import magic_values as mv
-from SHE_PPT import products
-import SHE_PPT.detector
-from SHE_PPT.file_io import read_xml_product
-from SHE_PPT.she_image import SHEImage
-from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
-from SHE_PPT.table_formats.she_psf_model_image import tf as pstf
-from SHE_PPT.table_utility import is_in_format
-from SHE_PPT.utility import find_extension
 import numpy as np
+
+from . import detector
+from . import logging
+from . import magic_values as mv
+from . import products
+from .file_io import read_xml_product
+from .she_image import SHEImage
+from .table_formats.mer_final_catalog import tf as mfc_tf
+from .table_formats.she_psf_model_image import tf as pstf
+from .table_utility import is_in_format
+from .utility import find_extension
 
 
 logger = logging.getLogger(__name__)
@@ -491,7 +492,7 @@ class SHEFrame(object):
         for x_i in np.linspace(1, x_max, x_max, dtype=np.int8):
             for y_i in np.linspace(1, y_max, y_max, dtype=np.int8):
 
-                id_string = SHE_PPT.detector.get_id_string(x_i, y_i)
+                id_string = detector.get_id_string(x_i, y_i)
 
                 if frame_data_hdulist is not None:
 

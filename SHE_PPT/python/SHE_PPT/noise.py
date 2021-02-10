@@ -22,7 +22,7 @@
 
 __updated__ = "2019-02-27"
 
-from SHE_PPT.gain import get_ADU_from_count, get_count_from_ADU
+from .gain import get_ADU_from_count, get_count_from_ADU
 
 
 def get_sky_level_ADU_per_pixel(sky_level_ADU_per_sq_arcsec,

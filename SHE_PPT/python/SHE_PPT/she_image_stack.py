@@ -26,7 +26,7 @@ __updated__ = "2019-04-09"
 
 import weakref
 
-from SHE_PPT.she_image import SHEImage
+from .she_image import SHEImage
 
 from . import logging
 logger = logging.getLogger(__name__)

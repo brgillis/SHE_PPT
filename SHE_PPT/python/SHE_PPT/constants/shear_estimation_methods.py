@@ -21,10 +21,10 @@ __updated__ = "2021-01-06"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-from ..table_formats.she_ksb_measurements import tf as ksbm_tf
-from ..table_formats.she_lensmc_measurements import tf as lmcm_tf
-from ..table_formats.she_momentsml_measurements import tf as mmlm_tf
-from ..table_formats.she_regauss_measurements import tf as regm_tf
+from .table_formats.she_ksb_measurements import tf as ksbm_tf
+from .table_formats.she_lensmc_measurements import tf as lmcm_tf
+from .table_formats.she_momentsml_measurements import tf as mmlm_tf
+from .table_formats.she_regauss_measurements import tf as regm_tf
 
 KEY_KSB = "KSB"
 KEY_REGAUSS = "REGAUSS"

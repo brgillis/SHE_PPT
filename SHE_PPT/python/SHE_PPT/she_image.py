@@ -4,6 +4,8 @@ File: she_image.py
 Created on: Aug 17, 2017
 """
 
+__updated__ = "2021-02-10"
+
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -19,8 +21,6 @@ Created on: Aug 17, 2017
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2021-02-10"
-
 # Avoid non-trivial "from" imports (as explicit is better than implicit)
 
 from copy import deepcopy
@@ -32,13 +32,13 @@ import astropy.wcs
 import galsim
 
 from EL_PythonUtils.utilities import run_only_once
-from SHE_PPT import magic_values as mv
-from SHE_PPT import mdb
-from SHE_PPT.mask import (as_bool, is_masked_bad,
-                          is_masked_suspect_or_bad, masked_off_image)
 import numpy as np
 
 from . import logging
+from . import magic_values as mv
+from . import mdb
+from .mask import (as_bool, is_masked_bad,
+                   is_masked_suspect_or_bad, masked_off_image)
 
 
 allowed_int_dtypes = (
