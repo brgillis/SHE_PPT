@@ -55,10 +55,10 @@ class TestMosaicProduct(object):
         product.set_data_filename(data_filename)
 
         # Save the product in an xml file
-        write_xml_product(product, "mer_mosaic.xml", workdir=str(tmpdir), allow_pickled=False)
+        write_xml_product(product, "mer_mosaic.xml", workdir=str(tmpdir))
 
         # Read back the xml file
-        loaded_product = read_xml_product("mer_mosaic.xml", workdir=str(tmpdir), allow_pickled=False)
+        loaded_product = read_xml_product("mer_mosaic.xml", workdir=str(tmpdir))
 
         # Check that it's the same
         assert loaded_product.get_data_filename() == "data/" + data_filename
@@ -71,7 +71,7 @@ class TestMosaicProduct(object):
         product = prod.create_dpd_mer_mosaic(data_filename="junk",)
 
         filename = str(tmpdir.join("mer_mosaic.bin"))
-        write_xml_product(product, filename, allow_pickled=False)
+        write_xml_product(product, filename)
 
         # Check that it raises exceptions when expected
 
@@ -89,13 +89,13 @@ class TestMosaicProduct(object):
 
         phdu = fits.PrimaryHDU(data=test_array,
                                header=fits.header.Header((("EXTNAME", dtc.get_id_string(detector_x, detector_y)
-                                                           +"." + mv.segmentation_tag),)))
+                                                           + "." + mv.segmentation_tag),)))
 
         data_filename = str(tmpdir.join("mosaic_data.fits"))
         phdu.writeto(data_filename, overwrite=True)
 
         product.set_data_filename(data_filename)
-        write_xml_product(product, filename, allow_pickled=False)
+        write_xml_product(product, filename)
 
         loaded_hdu = prod.load_mosaic_hdu(filename=filename,
                                           detector_x=detector_x,
@@ -112,7 +112,7 @@ class TestMosaicProduct(object):
 
         hdu2 = fits.ImageHDU(data=test_array2,
                              header=fits.header.Header((("EXTNAME", dtc.get_id_string(detector_x2, detector_y2)
-                                                         +"." + mv.segmentation_tag),)))
+                                                         + "." + mv.segmentation_tag),)))
 
         hdulist = fits.HDUList([phdu, hdu2])
         hdulist.writeto(data_filename, overwrite=True)

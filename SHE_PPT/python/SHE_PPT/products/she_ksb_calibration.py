@@ -24,11 +24,13 @@
 
 __updated__ = "2020-06-30"
 
-import pickle
 
-from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
-from ST_DataModelBindings.dpd.she.ksbcalibration_stub  import dpdSheKsbCalibration
+from ST_DataModelBindings.dpd.she.ksbcalibration_stub import dpdSheKsbCalibration
+
+from ..file_io import read_xml_product, find_aux_file
+from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
+
 
 sample_file_name = "SHE_PPT/sample_ksb_calibration.xml"
 
@@ -75,7 +77,7 @@ def create_dpd_she_ksb_calibration(filename=None):
     """
 
     dpd_she_ksb_calibration = read_xml_product(
-        find_aux_file(sample_file_name), allow_pickled=False)
+        find_aux_file(sample_file_name))
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)

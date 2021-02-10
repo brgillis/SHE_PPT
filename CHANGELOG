@@ -1,5 +1,45 @@
 Changelog for SHE_PPT
 
+Changes from v8.2 to v8.7
+=========================
+
+API Changes
+-----------
+
+Dependency Changes
+------------------
+
+- Now depends on ST_DataModel 8.0.5 and ST_DataModelTools 8.0.5
+- Now (implicitly) depends on Elements 5.12.0
+
+Deprecated Features
+-------------------
+- The module telescope_coords.py has been moved to EL_CoordsUtils and will need to be imported from there
+- The functions hash_any, run_only_once, time_to_timestamp, and get_arguments_string from SHE_PPT.utility have been
+  moved to EL_PythonUtils.utilities. I left behind wrappers for these which warn of the move, so this won't break
+  things immediately
+- The function SHE_PPT.utility.load_wcs has been fully deprecated. astropy.wcs.WCS should be used instead.
+- The function SHE_PPT.table_utility.table_to_hdu has been fully deprecated. astropy.io.fits.table_to_hdu should be
+used instead
+
+Bug Fixes
+---------
+
+New Features
+------------
+
+- New columns added to table formats per changes to data model
+
+New config features
+-------------------
+
+Miscellaneous
+-------------
+
+- Test data has been updated to new data model. The updated test data is now found in SHE_PPT_8_7 within WebDAV
+- Now using constant strings for folders and files related to test data rather than hardcoded strings
+- Formatting and import sorting
+
 Changes from v8.1 to v8.2
 =========================
 
@@ -8,6 +48,9 @@ API Changes
 - Fixed table format column variables for KSB, MomentsML, and REGAUSS measurements
 - Fixed field time table format meta variable for PSF_ModelImage table format
 - Added interface to SHE_PPT.mdb to get gain and read noise values for a given quadrant of an exposure
+- Added config key for chains method ("SHE_CTE_EstimateShear_chains_method")
+- ConfigKeys now split based on pipelinem, into AnalysisConfigKeys, CalibrationConfigKeys, and ReconciliationConfigKeys
+- Added config key for which method to use for shear reconciliation ("SHE_CTE_ReconcileMeasurements_method")
 
 Dependency Changes
 ------------------
@@ -21,6 +64,7 @@ Bug Fixes
 
 New Features
 ------------
+- Added data products and tests for she_reconciled_measurements and she_reconciliation_config
 
 New config features
 -------------------

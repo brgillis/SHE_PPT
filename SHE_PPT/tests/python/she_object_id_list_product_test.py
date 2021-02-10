@@ -18,13 +18,13 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-30"
+__updated__ = "2020-10-15"
 
 import os
+
 import pytest
 
-from SHE_PPT.file_io import (read_xml_product, write_xml_product,
-                             read_pickled_product, write_pickled_product)
+from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.products import she_object_id_list as prod
 
 
@@ -59,33 +59,16 @@ class TestObjectIdList(object):
 
         return
 
-    @pytest.mark.skip(reason="XML definition not yet available")
     def test_xml_writing_and_reading(self):
 
         # Create the product
         product = prod.create_dpd_she_object_id_list(self.ex_ids)
 
         # Save the product in an xml file
-        write_xml_product(product, self.filename, workdir=self.workdir, allow_pickled=False)
+        write_xml_product(product, self.filename, workdir=self.workdir)
 
         # Read back the xml file
-        loaded_product = read_xml_product(self.filename, workdir=self.workdir, allow_pickled=False)
-
-        # Check that it's the same
-        assert loaded_product.get_id_list() == product.get_id_list()
-
-        return
-
-    def test_pickle_writing_and_reading(self, tmpdir):
-
-        # Create the product
-        product = prod.create_dpd_she_object_id_list(self.ex_ids)
-
-        # Save the product in an xml file
-        write_pickled_product(product, self.filename, workdir=self.workdir)
-
-        # Read back the pickled file
-        loaded_product = read_pickled_product(self.filename, workdir=self.workdir)
+        loaded_product = read_xml_product(self.filename, workdir=self.workdir)
 
         # Check that it's the same
         assert loaded_product.get_id_list() == product.get_id_list()

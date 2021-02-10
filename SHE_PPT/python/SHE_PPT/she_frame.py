@@ -22,7 +22,7 @@ Created on: 02/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2020-06-25"
+__updated__ = "2021-02-10"
 
 from collections import namedtuple
 from copy import deepcopy
@@ -34,18 +34,21 @@ from astropy.io.fits import HDUList, BinTableHDU, ImageHDU, PrimaryHDU
 from astropy.table import Table
 from astropy.wcs import WCS
 
-from SHE_PPT import logging
-from SHE_PPT import magic_values as mv
-from SHE_PPT import products
-import SHE_PPT.detector
-from SHE_PPT.file_io import read_xml_product
-from SHE_PPT.she_image import SHEImage
-from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
-from SHE_PPT.table_formats.she_psf_model_image import tf as pstf
-from SHE_PPT.table_utility import is_in_format
-import SHE_PPT.telescope_coords as tc
-from SHE_PPT.utility import find_extension, load_wcs, run_only_once
+import EL_CoordsUtils.telescope_coords as tc
+from EL_PythonUtils.utilities import run_only_once
 import numpy as np
+
+from . import detector
+from . import logging
+from . import magic_values as mv
+from . import products
+from .file_io import read_xml_product
+from .she_image import SHEImage
+from .table_formats.mer_final_catalog import tf as mfc_tf
+from .table_formats.she_psf_model_image import tf as pstf
+from .table_utility import is_in_format
+from .utility import find_extension
+
 
 logger = logging.getLogger(__name__)
 
@@ -118,7 +121,7 @@ class SHEFrame(object):
         self._detectors = detectors
 
         # Set this as the parent for all detectors
-        for detector in self._detectors.flatten():
+        for detector in self._detectors.ravel():
             if detector is not None:
                 detector.parent_frame = self
                 detector.parent_frame_stack = self.parent_frame_stack
@@ -127,7 +130,7 @@ class SHEFrame(object):
 
     @detectors.deleter
     def detectors(self):
-        for detector in self._detectors.flatten():
+        for detector in self._detectors.ravel():
             del detector
         self._detectors = None
 
@@ -300,7 +303,7 @@ class SHEFrame(object):
         return bulge_psf_stamp, disk_psf_stamp
 
     def get_fov_coords(self, x_world, y_world, x_buffer=0, y_buffer=0,
-        return_det_coords_too=False):
+                       return_det_coords_too=False):
         """ Calculates the Field-of-View (FOV) co-ordinates of a given sky position, and returns a (fov_x, fov_y)
             tuple. If the position isn't present in the exposure, None will be returned instead.
 
@@ -363,7 +366,7 @@ class SHEFrame(object):
         if return_det_coords_too:
             # Do as astropy Table
             CoordTuple = namedtuple("CoordTuple",
-                "x_fov y_fov detno_x detno_y x_det y_det")
+                                    "x_fov y_fov detno_x detno_y x_det y_det")
             return CoordTuple(*[x_fov, y_fov, x_i, y_i, x, y])
         else:
             return (x_fov, y_fov)
@@ -400,8 +403,6 @@ class SHEFrame(object):
             Maximum x-coordinate of detectors
         y_max : int
             Maximum y-coordinate of detectors
-        apply_sc3_fix : bool
-            Whether or not to apply fix for bad headers in SC3 VIS data
 
         Any kwargs are passed to the reading of the fits data
         """
@@ -491,7 +492,7 @@ class SHEFrame(object):
         for x_i in np.linspace(1, x_max, x_max, dtype=np.int8):
             for y_i in np.linspace(1, y_max, y_max, dtype=np.int8):
 
-                id_string = SHE_PPT.detector.get_id_string(x_i, y_i)
+                id_string = detector.get_id_string(x_i, y_i)
 
                 if frame_data_hdulist is not None:
 
@@ -508,7 +509,7 @@ class SHEFrame(object):
                         continue
 
                     detector_data = frame_data_hdulist[sci_i].data.transpose()
-                    detector_wcs = load_wcs(detector_header)
+                    detector_wcs = WCS(detector_header)
 
                     noisemap_extname = id_string + "." + mv.noisemap_tag
                     noisemap_i = find_extension(
@@ -544,7 +545,7 @@ class SHEFrame(object):
                     bkg_extname = id_string  # Background has no tag
                     bkg_i = find_extension(bkg_data_hdulist, bkg_extname)
                     if bkg_i is None:
-                        raise ValueError("No corresponding background extension found in file " + frame_prod.get_data_filename() + "." +
+                        raise ValueError("No corresponding background extension found in file " + frame_prod.get_bkg_filename() + "." +
                                          "Expected extname: " + bkg_extname)
                     detector_background = bkg_data_hdulist[bkg_i].data.transpose()
                 else:
@@ -552,10 +553,16 @@ class SHEFrame(object):
 
                 if wgt_data_hdulist is not None:
                     wgt_extname = id_string  # Background has no tag
+                    wgt_ccdid = str(x_i) + str(y_i)
                     wgt_i = find_extension(wgt_data_hdulist, wgt_extname)
                     if wgt_i is None:
-                        raise ValueError("No corresponding weight extension found in file " + frame_prod.get_data_filename() + "." +
-                                         "Expected extname: " + wgt_extname)
+                        logger.warn("No corresponding weight extension found in file " + frame_prod.get_wgt_filename() + "." +
+                                    "\nExpected EXTNAME: " + wgt_extname)
+                        # Try to find by CCDID
+                        wgt_i = find_extension(wgt_data_hdulist, ccdid=wgt_ccdid)
+                        if wgt_i is None:
+                            raise ValueError("No corresponding weight extension found in file " + frame_prod.get_wgt_filename() + "." +
+                                             "\nExpected CCDID: " + wgt_ccdid)
                     detector_weight = wgt_data_hdulist[wgt_i].data.transpose()
                 else:
                     detector_weight = None
@@ -584,7 +591,7 @@ class SHEFrame(object):
 
             psf_prod = read_xml_product(
                 os.path.join(workdir, psf_product_filename))
-            if not isinstance(psf_prod, products.she_psf_model_image.DpdShePsfModelImage):
+            if not isinstance(psf_prod, products.she_psf_model_image.dpdShePsfModelImage):
                 raise ValueError("Data image product from " +
                                  psf_product_filename + " is invalid type.")
 

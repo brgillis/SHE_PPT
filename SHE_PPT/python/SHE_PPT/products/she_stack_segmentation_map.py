@@ -8,6 +8,9 @@
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines. This version is
     converted from MER's version, so we need a separate product for it.
 """
+
+__updated__ = "2021-02-10"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -22,25 +25,25 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-15"
-
 import os
+
 from astropy.io import fits
 
-
-from ST_DataModelBindings.dpd.she.stackreprojectedsegmentationmap_stub import dpdSheStackReprojectedSegmentationMap
-import ST_DataModelBindings.pro.she_stub as she_dict
 import ST_DM_DmUtils.DmUtils as dm_utils
 import ST_DM_DmUtils.DqcDmUtils as dqc_utils
-
-
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
-from SHE_PPT import detector as dtc
-from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
-import SHE_PPT.magic_values as mv
-from SHE_PPT.utility import find_extension
+from ST_DataModelBindings.dpd.she.stackreprojectedsegmentationmap_stub import dpdSheStackReprojectedSegmentationMap
+import ST_DataModelBindings.pro.she_stub as she_dict
+
+from .. import detector as dtc
+from .. import magic_values as mv
+from ..file_io import read_xml_product, find_aux_file
+from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
+from ..utility import find_extension
+
 
 sample_file_name = "SHE_PPT/sample_stack_reprojected_segmentation_map.xml"
+
 
 # Convenience function to easily load the actual map
 def load_stack_segmentation_map(filename, dir=None, **kwargs):
@@ -78,7 +81,7 @@ def load_stack_segmentation_map(filename, dir=None, **kwargs):
         dir = ""
 
     stack_segmentation_map_product = read_xml_product(
-        xml_filename=os.path.join(dir, filename), allow_pickled=False)
+        xml_filename=os.path.join(dir, filename))
 
     data_filename = stack_segmentation_map_product.get_data_filename()
 
@@ -87,6 +90,7 @@ def load_stack_segmentation_map(filename, dir=None, **kwargs):
     return stack_segmentation_map_hdulist[0]
 
 # Initialisation function, to add methods to an imported XML class
+
 
 def init():
     """
@@ -126,7 +130,6 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-        
 def create_dpd_she_stack_segmentation_map(filename=None):
     """Creates a SHE_MER stack reprojected segmentation map binding.
 
@@ -142,7 +145,7 @@ def create_dpd_she_stack_segmentation_map(filename=None):
 
     """
     dpd_she_stack_reproj_seg_map_data = read_xml_product(
-        find_aux_file(sample_file_name), allow_pickled=False)
+        find_aux_file(sample_file_name))
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)
@@ -162,4 +165,3 @@ def create_dpd_she_stack_segmentation_map(filename=None):
 
 # Add a useful alias
 create_stack_segmentation_map_product = create_dpd_she_stack_segmentation_map
-

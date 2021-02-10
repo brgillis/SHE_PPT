@@ -2,7 +2,7 @@
 
     Created 13 Oct 2017
 
-    Functions to create and output a calibration parameters data product.
+    Functions to create and output a common calibration data product.
 
     Origin: OU-SHE - Output from Calibration pipeline and input to Analysis pipeline;
     must be persistent in archive.
@@ -22,27 +22,27 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-30"
+__updated__ = "2020-10-15"
 
-# import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
-import pickle
-
-from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
+import ST_DM_DmUtils.DmUtils as dm_utils
+from ST_DM_HeaderProvider import GenericHeaderProvider as HeaderProvider
+from ST_DataModelBindings.bas.imp.raw.stc_stub import polygonType
 from ST_DataModelBindings.dpd.she.commoncalibration_stub import dpdSheCommonCalibration
 from ST_DataModelBindings.pro import she_stub as she_pro
 from ST_DataModelBindings.sys.dss_stub import dataContainer
+
+from ..file_io import read_xml_product, find_aux_file
+from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
+
 
 sample_file_name = "SHE_PPT/sample_common_calibration.xml"
 
 
 def init():
     """
-        Adds some extra functionality to the DpdSheCommonCalibration product
+        Adds some extra functionality to the dpdSheMeasurements product
     """
 
-    # binding_class = she_dpd.DpdSheCommonCalibration # @FIXME
     binding_class = dpdSheCommonCalibration
 
     # Add the data file name methods
@@ -65,6 +65,7 @@ def init():
     binding_class.get_all_filenames = __get_all_filenames
 
     binding_class.get_method_filename = __get_method_filename
+    binding_class.set_method_filename = __set_method_filename
 
     binding_class.has_files = True
 
@@ -75,7 +76,7 @@ def __set_BFD_filename(self, filename):
             self.Data.BfdCalibrationStorage = None
     else:
         if not hasattr(self.Data, "BfdCalibrationStorage") or self.Data.BfdCalibrationStorage is None:
-            self.Data.BfdCalibrationStorage = create_storage(filename)
+            self.Data.BfdCalibrationStorage = create_calibration_storage(filename)
         set_data_filename_of_product(self, filename, "BfdCalibrationStorage")
     return
 
@@ -93,7 +94,7 @@ def __set_KSB_filename(self, filename):
             self.Data.KsbCalibrationStorage = None
     else:
         if not hasattr(self.Data, "KsbCalibrationStorage") or self.Data.KsbCalibrationStorage is None:
-            self.Data.KsbCalibrationStorage = create_storage(filename)
+            self.Data.KsbCalibrationStorage = create_calibration_storage(filename)
         set_data_filename_of_product(self, filename, "KsbCalibrationStorage")
     return
 
@@ -111,7 +112,7 @@ def __set_LensMC_filename(self, filename):
             self.Data.LensMcCalibrationStorage = None
     else:
         if not hasattr(self.Data, "LensMcCalibrationStorage") or self.Data.LensMcCalibrationStorage is None:
-            self.Data.LensMcCalibrationStorage = create_storage(filename)
+            self.Data.LensMcCalibrationStorage = create_calibration_storage(filename)
         set_data_filename_of_product(self, filename, "LensMcCalibrationStorage")
     return
 
@@ -129,7 +130,7 @@ def __set_MomentsML_filename(self, filename):
             self.Data.MomentsMlCalibrationStorage = None
     else:
         if not hasattr(self.Data, "MomentsMlCalibrationStorage") or self.Data.MomentsMlCalibrationStorage is None:
-            self.Data.MomentsMlCalibrationStorage = create_storage(filename)
+            self.Data.MomentsMlCalibrationStorage = create_calibration_storage(filename)
         set_data_filename_of_product(self, filename, "MomentsMlCalibrationStorage")
     return
 
@@ -147,7 +148,7 @@ def __set_REGAUSS_filename(self, filename):
             self.Data.RegaussCalibrationStorage = None
     else:
         if not hasattr(self.Data, "RegaussCalibrationStorage") or self.Data.RegaussCalibrationStorage is None:
-            self.Data.RegaussCalibrationStorage = create_storage(filename)
+            self.Data.RegaussCalibrationStorage = create_calibration_storage(filename)
         set_data_filename_of_product(self, filename, "RegaussCalibrationStorage")
     return
 
@@ -212,9 +213,7 @@ def create_dpd_she_common_calibration(BFD_filename=None,
     """
 
     dpd_she_common_calibration = read_xml_product(
-            find_aux_file(sample_file_name), allow_pickled=False)
-
-    dpd_she_common_calibration.Header = "SHE"
+        find_aux_file(sample_file_name))
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)
@@ -233,18 +232,14 @@ def create_dpd_she_common_calibration(BFD_filename=None,
 create_common_calibration_product = create_dpd_she_common_calibration
 
 
-def create_storage(filename):
+def create_calibration_storage(filename):
     """
         @TODO fill in docstring
     """
 
-    storage = she_pro.sheCommonCalibrationFile()
+    calibration_storage = dm_utils.create_fits_storage(she_pro.sheCommonCalibrationFile,
+                                                       filename,
+                                                       "she.commonCalibration",
+                                                       "8.0")
 
-    storage.format = "she.commonCalibration"
-    storage.version = "8.0"
-
-    storage.DataContainer = dataContainer()
-    storage.DataContainer.FileName = filename
-    storage.DataContainer.filestatus = "PROPOSED"
-
-    return storage
+    return calibration_storage

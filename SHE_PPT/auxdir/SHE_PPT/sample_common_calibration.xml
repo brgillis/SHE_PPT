@@ -33,7 +33,7 @@
 			</DataContainer>
 		</BfdCalibrationStorage>
 		<KsbCalibrationStorage format="she.commonCalibration" version="8.0">
-			<DataContainer filestatus="">
+			<DataContainer filestatus="PROPOSED">
 				<FileName>None</FileName>
 			</DataContainer>
 		</KsbCalibrationStorage>

@@ -19,17 +19,19 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-08"
+__updated__ = "2021-02-10"
 
 from collections import OrderedDict
 
 from astropy.io.fits import table_to_hdu as astropy_table_to_hdu
-from astropy.table import Column
+from astropy.table import Column, Table
 
-from SHE_PPT import magic_values as mv
-from SHE_PPT.logging import getLogger
-from SHE_PPT.utility import run_only_once
+from EL_PythonUtils.utilities import run_only_once
 import numpy as np
+
+from . import magic_values as mv
+from .logging import getLogger
+
 
 logger = getLogger(mv.logger_name)
 
@@ -147,7 +149,8 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
                 if fix_bool:
                     col = Column(data=np.empty_like(table[child_colname].data, dtype=bool))
                     for i in range(len(col)):
-                        col[i] = (table[child_colname] == "True" or table[child_colname] == "true" or table[child_colname] == "1")
+                        col[i] = (table[child_colname] == "True" or table[child_colname]
+                                  == "true" or table[child_colname] == "1")
                     table.replace_column(colname, col)
                 else:
                     if verbose:
@@ -181,7 +184,7 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
             return False
 
         # Check the version is correct
-        if not table_format.is_base and  table.meta[table_format.m.fits_version] != table_format.__version__:
+        if not table_format.is_base and table.meta[table_format.m.fits_version] != table_format.__version__:
             if verbose:
                 logger.info("Table not in correct format due to wrong table format label.\n" +
                             "Expected: " + str(table_format.__version__) + "\n" +
@@ -222,31 +225,6 @@ def output_tables(otable, file_name_base, output_format):
         otable.write(fits_file_name, format='fits', overwrite=True)
 
     return
-
-
-@run_only_once
-def warn_deprecated_table_to_hdu():
-    logger.warning("SHE_PPT.table_to_hdu is now deprecated. Please use astropy.io.fits.table_to_hdu instead")
-
-
-def table_to_hdu(table):
-    """
-    Convert an `~astropy.table.Table` object to a FITS
-    `~astropy.io.fits.BinTableHDU`. This is copied from the astropy source, since it
-    isn't available in earlier versions.
-
-    Parameters
-    ----------
-    table : astropy.table.Table
-        The table to convert.
-
-    Returns
-    -------
-    table_hdu : `~astropy.io.fits.BinTableHDU`
-        The FITS binary table HDU.
-    """
-    warn_deprecated_table_to_hdu()
-    return astropy_table_to_hdu(table)
 
 
 def set_column_properties(self, name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
@@ -341,3 +319,76 @@ def setup_child_table_format(self, child_label, unlabelled_columns=None):
     self.set_column_properties = set_column_properties
 
     return
+
+
+def init_table(tf, size=None, optional_columns=None, init_cols=None,):
+
+    if optional_columns is None:
+        optional_columns = []
+
+    if init_cols is None:
+        init_cols = {}
+    else:
+        for a in init_cols.values():
+            if size is None:
+                size = len(a)
+            elif size != len(a):
+                raise ValueError("Inconsistent size of input columns for initialising table.")
+
+    if size is None:
+        size = 0
+
+    names = []
+    full_init_cols = []
+    dtypes = []
+
+    # Check for any array columns, which prevent all but empty initialisation
+    must_init_empty = False
+
+    for colname in tf.all:
+        if tf.lengths[colname] > 0 and tf.dtypes[colname] != str:
+            must_init_empty = True
+
+    for colname in tf.all:
+        if not ((colname in tf.all_required) or (colname in optional_columns)):
+            continue
+        names.append(colname)
+
+        col_dtype = tf.dtypes[colname]
+        col_length = tf.lengths[colname]
+
+        if col_length == 1 and col_dtype != "str":
+            dtype = col_dtype
+        else:
+            dtype = (col_dtype, col_length)
+
+        dtypes.append(dtype)
+
+        if colname in init_cols.keys():
+            col = init_cols[colname]
+            full_init_cols.append(init_cols[colname])
+            if size == 0 and len(col) > 0:
+                size = len(col)
+        else:
+            col = Column(name=colname, data=np.zeros(size, dtype=dtype))
+
+            full_init_cols.append(col)
+
+    if must_init_empty:
+
+        # We have to use a bit of a workaround if the table has any array columns, due to a bug in astropy
+
+        t_template = Table(names=names, dtype=dtypes)
+
+        t_data = np.zeros((size,), dtype=t_template.dtype)
+
+        t = Table(t_data, meta=t_template.meta)
+
+        for colname in tf.all:
+            if colname in init_cols.keys():
+                t[colname] = init_cols[colname]
+
+    else:
+        t = Table(full_init_cols, names=names, dtype=dtypes)
+
+    return t

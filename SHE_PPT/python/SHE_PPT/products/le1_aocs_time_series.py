@@ -23,79 +23,50 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-10-15"
 
-# import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 
-import pickle
+from ..file_io import read_xml_product, find_aux_file
+from ..product_utility import get_data_filename_from_product, set_data_filename_of_product, init_placeholder_general
+
+
+sample_file_name = 'SHE_PPT/sample_placeholder_general.xml'
 
 
 def init():
     """
-        Adds some extra functionality to the DpdLe1AocsTimeSeries product
+        TODO: Fill in docstring
+
     """
 
-    # binding_class = she_dpd.DpdLe1AocsTimeSeries # @FIXME
-    binding_class = DpdLe1AocsTimeSeries
-
-    binding_class.get_all_filenames = __get_all_filenames
-
-    binding_class.has_files = False
+    init_placeholder_general()
 
     return
 
 
-def __get_all_filenames(self):
-
-    all_filenames = []
-
-    return all_filenames
-
-
-class DpdLe1AocsTimeSeries:  # @FIXME
-
-    def __init__(self):
-        self.Header = None
-        self.Data = None
-
-    def validateBinding(self):
-        return False
-
-
-class Le1AocsTimeSeries:  # @FIXME
-
-    def __init__(self):
-        pass
-
-
-def create_dpd_le1_aocs_time_series():
+def create_dpd_le1_aocs_time_series(filename="None"):
     """
         @TODO fill in docstring
     """
 
-    # dpd_le1_aocs_time_series = she_dpd.DpdLe1AocsTimeSeries() # @FIXME
-    dpd_le1_aocs_time_series = DpdLe1AocsTimeSeries()
+    dpd_le1_aocs_time_series = read_xml_product(
+        find_aux_file(sample_file_name))
 
-    # dpd_le1_aocs_time_series.Header =
-    # HeaderProvider.create_generic_header("SHE") # FIXME
-    dpd_le1_aocs_time_series.Header = "SHE"
+    # Set the data we don't need to empty
+    dpd_le1_aocs_time_series.Data.IntData = []
+    dpd_le1_aocs_time_series.Data.FloatData = []
 
-    dpd_le1_aocs_time_series.Data = create_le1_aocs_time_series()
+    # Label the type in the StringData
+    dpd_le1_aocs_time_series.Data.StringData = ["TYPE:DpdLe1AocsTimeSeries"]
+
+    dpd_le1_aocs_time_series.Header = HeaderProvider.create_generic_header("SHE")
+
+    if filename:
+        dpd_le1_aocs_time_series.set_data_filename(filename)
 
     return dpd_le1_aocs_time_series
 
 
 # Add a useful alias
-create_aocs_time_series_product = create_dpd_le1_aocs_time_series
-
-
-def create_le1_aocs_time_series():
-    """
-        @TODO fill in docstring
-    """
-
-    # le1_aocs_time_series = she_dpd.Le1AocsTimeSeries() # @FIXME
-    le1_aocs_time_series = Le1AocsTimeSeries()
-
-    return le1_aocs_time_series
+create_aocs_time_series_data_product = create_dpd_le1_aocs_time_series

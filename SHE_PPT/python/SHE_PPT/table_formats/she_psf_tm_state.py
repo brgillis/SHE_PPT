@@ -20,17 +20,19 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-07-19"
 
 from collections import OrderedDict
 
 from astropy.table import Table
 
-from SHE_PPT import magic_values as mv
-from SHE_PPT.flags import she_flag_version
-from SHE_PPT.logging import getLogger
-from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties
 import numpy as np
+
+from .. import magic_values as mv
+from ..flags import she_flag_version
+from ..logging import getLogger
+from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+
 
 fits_version = "8.0"
 
@@ -92,12 +94,12 @@ class ShePsfTmStateFormat(object):
         # @TODO: option for FIELD/CALIB - use self.data_type
 
         for colname in ["M1TRAD", "M2TRAD", "FOM1TFRN", "FOM2TFRN",
-                        "M3TRAD", "DIC_TFRN", "M1TCON", "M2TZ",
-                        "M2TX", "M2TY", "M2RX", "M2RY", "M3TZ", "M3TX",
-                        "M3TY", "M3RX", "M3RY"]:
+                        "M3TRAD", "DIC_TFRN", "M1TCON", "M2TCON",
+                        "M3TCON", "M2TZ", "M2TX", "M2TY", "M2RX",
+                        "M2RY", "M3TZ", "M3TX", "M3TY", "M3RX", "M3RY"]:
             setattr(self, colname.lower(),
                     set_column_properties(self, name=self.get_colname(colname),
-                        dtype=">f4", fits_dtype="E"))
+                                          dtype=">f4", fits_dtype="E"))
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -131,8 +133,8 @@ def make_psf_tm_state_table_header(data_type="FIELD"):
     Parameters
     ----------
     data_type : Is it field or calibration
-    
-    
+
+
     Return
     ------
     header : OrderedDict
@@ -149,7 +151,9 @@ def make_psf_tm_state_table_header(data_type="FIELD"):
     return header
 
 
-def initialise_psf_tm_state_table(data_type="FIELD", optional_columns=None,
+def initialise_psf_tm_state_table(data_type="FIELD", size=None,
+                                  optional_columns=None,
+                                  init_cols=None,
                                   init_columns={}):
     """Initialise a PSF TM State table.
 
@@ -177,26 +181,7 @@ def initialise_psf_tm_state_table(data_type="FIELD", optional_columns=None,
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    names = []
-    init_cols = []
-    dtypes = []
-    for colname in tf.all:
-        if (colname in tf.all_required) or (colname in optional_columns):
-            names.append(colname)
-
-            dtype = (tf.dtypes[colname], tf.lengths[colname])
-
-            if colname in init_columns:
-                init_cols.append(init_columns[colname])
-            elif len(init_columns) > 0:
-                init_cols.append(
-                    np.zeros(len(init_columns.values[0]), dtype=dtype))
-            else:
-                init_cols.append([])
-
-            dtypes.append(dtype)
-
-    psf_tm_state_table = Table(init_cols, names=names, dtype=dtypes)
+    psf_tm_state_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
 
     psf_tm_state_table.meta = make_psf_tm_state_table_header(data_type)
 
@@ -207,19 +192,23 @@ def initialise_psf_tm_state_table(data_type="FIELD", optional_columns=None,
 # Initialisers for field/calibration variants
 
 
-def initialise_psf_field_tm_state_table(optional_columns=None,
+def initialise_psf_field_tm_state_table(size=None,
+                                        optional_columns=None,
+                                        init_cols=None,
                                         init_columns=None):
 
     if init_columns is None:
         init_columns = {}
     return initialise_psf_tm_state_table(data_type="FIELD", optional_columns=optional_columns,
-                                  init_columns=init_columns)
+                                         init_columns=init_columns)
 
 
-def initialise_psf_calibration_tm_state_table(optional_columns=None,
+def initialise_psf_calibration_tm_state_table(size=None,
+                                              optional_columns=None,
+                                              init_cols=None,
                                               init_columns=None):
 
     if init_columns is None:
         init_columns = {}
     return initialise_psf_tm_state_table(data_type="CALIB", optional_columns=optional_columns,
-                                  init_columns=init_columns)
+                                         init_columns=init_columns)

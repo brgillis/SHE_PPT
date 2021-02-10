@@ -18,10 +18,9 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-30"
+__updated__ = "2020-10-15"
 
-from SHE_PPT.file_io import (read_xml_product, write_xml_product,
-                             read_pickled_product, write_pickled_product)
+from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.products import she_psf_field_parameters as prod
 
 

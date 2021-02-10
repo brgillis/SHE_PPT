@@ -19,9 +19,10 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2021-02-10"
 
 import numpy as np
+
 
 id_template = "CCDID X-Y"
 
@@ -142,3 +143,44 @@ def resolve_detector_xy(v):
         return v
     else:
         raise TypeError("v must be int, string, or tuple[2] type.")
+
+# Quadrant layout - note that due to column/row-major flip and the visual layout starting from bottom-left, this is transposed
+# and flipped vertically compared to how the layout actually looks
+
+
+QUADRANT_LAYOUT_123 = [["E", "H"],
+                       ["F", "G"]]
+QUADRANT_LAYOUT_456 = [["G", "F"],
+                       ["H", "E"]]
+
+VIS_DETECTOR_PIXELS_X = 4096
+VIS_DETECTOR_PIXELS_Y = 4136
+
+
+def get_vis_quadrant(x_pix: float,
+                     y_pix: float,
+                     det_iy: int):
+    """ Get the letter signifying the quadrant of a VIS detector where a pixel coordinate is. Returns "X" if the position
+        is outside of the detector bounds.
+
+        This uses the charts at http://euclid.esac.esa.int/dm/dpdd/latest/le1dpd/dpcards/le1_visrawframe.html for its
+        logic.
+    """
+
+    if x_pix <= -1 or y_pix <= -1:
+        return "X"
+
+    if det_iy <= 3:
+        quadrant_layout = QUADRANT_LAYOUT_123
+    else:
+        quadrant_layout = QUADRANT_LAYOUT_456
+
+    quad_ix = int(2 * x_pix / VIS_DETECTOR_PIXELS_X)
+    quad_iy = int(2 * y_pix / VIS_DETECTOR_PIXELS_Y)
+
+    if quad_ix in (0, 1) and quad_iy in (0, 1):
+        quadrant = quadrant_layout[quad_ix][quad_iy]
+    else:
+        quadrant = "X"
+
+    return quadrant

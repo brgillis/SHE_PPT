@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-09"
+__updated__ = "2021-02-10"
 
 from datetime import datetime
 import json
@@ -30,31 +30,25 @@ import pickle
 from xml.sax._exceptions import SAXParseException
 
 from astropy.io import fits
+from pyxb.exceptions_ import NamespaceError
 
+from EL_PythonUtils.utilities import run_only_once, time_to_timestamp
 from ElementsServices.DataSync import DataSync
-from SHE_PPT import magic_values as mv
-import SHE_PPT
-from SHE_PPT.logging import getLogger
-from SHE_PPT.utility import run_only_once, get_release_from_version, time_to_timestamp, get_nested_attr
 from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider
 from ST_DataModelBindings.sys_stub import CreateFromDocument
 import numpy as np
+
+from . import magic_values as mv
+from .constants.test_data import SYNC_CONF
+from .logging import getLogger
+from .utility import get_release_from_version, get_nested_attr
+
 
 logger = getLogger(mv.logger_name)
 
 type_name_maxlen = 45
 instance_id_maxlen = 55
 processing_function_maxlen = 4
-
-filename_include_data_subdir = False
-data_subdir = "data/"
-len_data_subdir = len(data_subdir)
-
-
-@run_only_once
-def warn_deprecated_timestamp():
-    logger.warning(
-        "The use of the 'timestamp' kwarg in get_allowed_filename is deprecated and will be removed in a future version.")
 
 
 def get_allowed_filename(type_name, instance_id, extension=".fits", release=None, version=None, subdir="data",
@@ -200,7 +194,7 @@ def replace_multiple_in_file(input_filename, output_filename, input_strings, out
                 fout.write(new_line)
 
 
-def write_xml_product(product, xml_filename, workdir=".", allow_pickled=True):
+def write_xml_product(product, xml_filename, workdir=".", allow_pickled=False):
 
     # Silently coerce input into a string
     xml_filename = str(xml_filename)
@@ -254,7 +248,7 @@ def write_xml_product(product, xml_filename, workdir=".", allow_pickled=True):
         write_pickled_product(product, qualified_xml_filename)
 
 
-def read_xml_product(xml_filename, workdir=".", allow_pickled=True):
+def read_xml_product(xml_filename, workdir=".", allow_pickled=False):
 
     # Silently coerce input into a string
     xml_filename = str(xml_filename)
@@ -359,7 +353,9 @@ def find_conf_file(filename):
 
 def find_web_file(filename):
     """
-        Searches on WebDAV for a file. If found, downloads it and returns the qualified name of it.
+        Searches on WebDAV for a file. If found, downloads it and returns the qualified name of it. If
+        it's an xml data product, will also download all associated files.
+
         If it isn't found, returns None.
     """
 
@@ -371,7 +367,7 @@ def find_web_file(filename):
         with open(filelist, 'w') as fo:
             fo.write(filename + "\n")
 
-        sync = DataSync("testdata/sync.conf", filelist)
+        sync = DataSync(SYNC_CONF, filelist)
         sync.download()
 
         qualified_filename = sync.absolutePath(filename)
@@ -381,6 +377,46 @@ def find_web_file(filename):
         if os.path.exists(filelist):
             logger.debug("Cleaning up " + filelist)
             os.remove(filelist)
+
+    # If it's an xml data product, we'll also need to download all files it points to
+    if filename[-4:] == ".xml":
+
+        try:
+            webpath = os.path.split(filename)[0]
+
+            p = read_xml_product(qualified_filename, workdir="")
+            for subfilename in p.get_all_filenames():
+                # Skip if there's no file to download
+                if (subfilename is None or subfilename == "None" or subfilename == "data/None" or
+                        subfilename == "" or subfilename == "data/"):
+                    continue
+                find_web_file(os.path.join(webpath, subfilename))
+        except NamespaceError as e:
+            if not "elementBinding" in str(e):
+                raise
+            # MDB files end in XML but can't be read this way, and will raise this exception, so silently pass
+            pass
+
+    # If it's json listfile, we'll also need to download all files it points to
+    elif filename[-5:] == ".json":
+
+        webpath = os.path.split(filename)[0]
+
+        l = read_listfile(qualified_filename)
+        for element in l:
+            if isinstance(element, str):
+                # Skip if there's no file to download
+                if (element is None or element == "None" or element == "data/None" or
+                        element == "" or element == "data/"):
+                    continue
+                find_web_file(os.path.join(webpath, element))
+            else:
+                for subelement in element:
+                    # Skip if there's no file to download
+                    if (subelement is None or subelement == "None" or subelement == "data/None" or
+                            subelement == "" or subelement == "data/"):
+                        continue
+                    find_web_file(os.path.join(webpath, subelement))
 
     return qualified_filename
 
@@ -401,7 +437,7 @@ def find_file(filename, path=None):
     elif filename[0:5] == "CONF/":
         return find_conf_file(filename[5:])
     elif filename[0:5] == "HOME/":
-        path = os.path.join(os.getenv('HOME'),os.path.dirname(filename[5:]))
+        path = os.path.join(os.getenv('HOME'), os.path.dirname(filename[5:]))
         return find_file_in_path(os.path.basename(filename), path)
     elif filename[0] == "/":
         if not os.path.exists(filename):
@@ -517,52 +553,7 @@ def update_xml_with_value(filename):
         print('No updates required')
 
 
-def get_data_filename_from_product(p, attr_name=None):
-    """ Helper function to get a data filename from a product, adjusting for whether to include the data subdir as desired.
+def filename_exists(filename):
+    """Quick function to check the filename isn't one of many strings indicating the file doesn't exist.
     """
-
-    if attr_name is None or attr_name == 0:
-        data_filename = p.Data.DataContainer.FileName
-    elif attr_name == -1:
-        data_filename = p.Data.FileName
-    else:
-        data_filename = get_nested_attr(p.Data, attr_name).DataContainer.FileName
-
-    if data_filename is None:
-        return None
-
-    # Silently force the filename returned to start with "data/" regardless of
-    # whether the returned value does, unless it's absolute
-    if len(data_filename) > 0 and (data_filename[0:len_data_subdir] == data_subdir or data_filename[0] == "/"):
-        return data_filename
-    else:
-        return data_subdir + data_filename
-
-
-def set_data_filename_of_product(p, data_filename, attr_name=None):
-    """ Helper function to set a data filename of a product, adjusting for whether to include the data subdir as desired.
-    """
-
-    if data_filename is not None and len(data_filename) > 0 and data_filename[0] != "/":
-        if filename_include_data_subdir:
-
-            # Silently force the filename returned to start with "data/" regardless of
-            # whether the returned value does
-            if data_filename[0:len_data_subdir] != data_subdir:
-                data_filename = data_subdir + data_filename
-
-        else:
-
-            # Silently force the filename returned to NOT start with "data/"
-            # regardless of whether the returned value does
-            if data_filename[0:len_data_subdir] == data_subdir:
-                data_filename = data_filename.replace(data_subdir, "", 1)
-
-    if attr_name is None or attr_name == 0:
-        p.Data.DataContainer.FileName = data_filename
-    elif attr_name == -1:
-        p.Data.FileName = data_filename
-    else:
-        get_nested_attr(p.Data, attr_name).DataContainer.FileName = data_filename
-
-    return
+    return filename not in (None, "None", "data/None", "", "data/")

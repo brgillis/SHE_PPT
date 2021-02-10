@@ -62,13 +62,13 @@
 			<TelescopeName>Euclid</TelescopeName>
 		</Instrument>
 		<Filter>
-			<Name>SUBARU_r</Name>
-			<MagId>R+I+Z</MagId>
-			<CentralWavelength>0.0</CentralWavelength>
-			<MinWavelength>8.0</MinWavelength>
-			<MaxWavelength>5.0</MaxWavelength>
-			<Reference>kthqu</Reference>
-			<HasFringes>1375177872</HasFringes>
+			<Name>DECAM_i</Name>
+			<MagId>Y</MagId>
+			<CentralWavelength>-10.0</CentralWavelength>
+			<MinWavelength>-6.0</MinWavelength>
+			<MaxWavelength>-3.0</MaxWavelength>
+			<Reference>P9FFE</Reference>
+			<HasFringes>85268162</HasFringes>
 		</Filter>
 		<WCS>
 			<CTYPE1>
@@ -177,7 +177,7 @@
 			<NearChargeInjectionPixelMask decBit="65536" hexBit="0x00010000"/>
 			<SaturatedXTalkGhostPixelMask decBit="131072" hexBit="0x00020000"/>
 			<StarSignalPixelMask decBit="262144" hexBit="0x00040000"/>
-			<UserDefinedPixelMask decBit="1073741824" hexBit="0x04000000"/>
+			<UserDefinedPixelMask decBit="134217728" hexBit="0x08000000"/>
 		</Masks>
 		<ObservationId>-1</ObservationId>
 		<DateRange>

@@ -22,7 +22,7 @@ Created on: 08/18/17
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 # """This script gives a small demo of the image object.
 
-__updated__ = "2020-06-09"
+__updated__ = "2021-02-10"
 
 from copy import deepcopy
 import logging
@@ -32,10 +32,14 @@ from astropy.wcs import WCS
 import galsim
 import pytest
 
+from ElementsServices.DataSync import DataSync
 from SHE_PPT import file_io
+from SHE_PPT import mdb
+from SHE_PPT.constants.test_data import (SYNC_CONF, TEST_FILES_MDB, TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME)
 from SHE_PPT.magic_values import segmap_unassigned_value
 import SHE_PPT.she_image
 import numpy as np
+
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -44,6 +48,15 @@ class Test_she_image():
 
     @classmethod
     def setup_class(cls):
+
+        sync = DataSync(SYNC_CONF, TEST_FILES_MDB)
+        sync.download()
+        mdb_filename = sync.absolutePath(os.path.join(TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME))
+
+        mdb.init(mdb_filename)
+
+        cls.gain = mdb.get_gain(suppress_warnings=True)
+        cls.read_noise = mdb.get_read_noise(suppress_warnings=True)
 
         # A filename for testing the file-saving:
         cls.testfilepath = "test_SHEImage.fits"  # Will be deleted by teardown_class()
@@ -116,7 +129,7 @@ class Test_she_image():
         # Add a default noisemap and check its data type and values
         img.add_default_noisemap(force=True)
         assert img.noisemap.dtype == float
-        assert np.allclose(img.noisemap, 4.5 / 3.1 * np.ones_like(img.data, dtype=img.noisemap.dtype))
+        assert np.allclose(img.noisemap, self.read_noise / self.gain * np.ones_like(img.data, dtype=img.noisemap.dtype))
         assert img.noisemap.shape == (self.w, self.h)
 
         # Check that non-forcibly adding a default noisemap doesn't affect the existing noisemap
@@ -126,12 +139,12 @@ class Test_she_image():
 
         # Check that forcibly adding a default noisemap does affect the existing noisemap
         img.add_default_noisemap(force=True)
-        assert np.isclose(img.noisemap[5, 5], 4.5 / 3.1)
+        assert np.isclose(img.noisemap[5, 5], self.read_noise / self.gain)
 
         # Check that the noisemap is calculated correctly when a background map is present
         img.background_map = 1000 * np.ones_like(img.data, dtype=float)
         img.add_default_noisemap(force=True)
-        assert np.allclose(img.noisemap, (4.5 / 3.1) + np.sqrt(1000 / 3.1) *
+        assert np.allclose(img.noisemap, (self.read_noise / self.gain) + np.sqrt(1000 / self.gain) *
                            np.ones_like(img.data, dtype=img.noisemap.dtype))
 
         return

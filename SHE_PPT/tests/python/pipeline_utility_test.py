@@ -18,14 +18,18 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-22"
+__updated__ = "2020-07-22"
 
 import os
+
 import pytest
 
 from SHE_PPT import products
 from SHE_PPT.file_io import write_xml_product, read_xml_product, write_listfile
-from SHE_PPT.pipeline_utility import read_config, write_config, get_conditional_product
+from SHE_PPT.pipeline_utility import (read_analysis_config, write_analysis_config,
+                                      read_reconciliation_config, write_reconciliation_config,
+                                      read_calibration_config, write_calibration_config,
+                                      get_conditional_product)
 
 
 class TestUtility:
@@ -48,23 +52,23 @@ class TestUtility:
 
     def test_rw_config(self):
 
-        # Test we get out of the file what we put in
-
-        test_dict = {"SHE_CTE_EstimateShear_methods": "KSB", "SHE_CTE_ObjectIdSplit_batch_size": "26"}
-
         test1_filename = "test1.txt"
 
         lf0_filename = "empty_listfile.json"
         lf1_filename = "one_listfile.json"
         lf2_filename = "two_listfile.json"
 
-        write_config(test_dict, test1_filename, workdir=self.workdir)
+        # Test we get out of the file what we put in, for each type of configuration file
+
+        test_analysis_dict = {"SHE_CTE_EstimateShear_methods": "KSB", "SHE_CTE_ObjectIdSplit_batch_size": "26"}
+
+        write_analysis_config(test_analysis_dict, test1_filename, workdir=self.workdir)
 
         write_listfile(os.path.join(self.workdir, lf0_filename), [])
         write_listfile(os.path.join(self.workdir, lf1_filename), [test1_filename])
         write_listfile(os.path.join(self.workdir, lf2_filename), [test1_filename, test1_filename])
 
-        read_dict1 = read_config(test1_filename, workdir=self.workdir)
+        read_dict1 = read_analysis_config(test1_filename, workdir=self.workdir)
 
         # Check it's been read in correctly
         assert read_dict1["SHE_CTE_EstimateShear_methods"] == "KSB"
@@ -72,14 +76,68 @@ class TestUtility:
 
         # Check we get expected results from trying to read in other variants
 
-        assert read_config(None, workdir=self.workdir) == {}
-        assert read_config("", workdir=self.workdir) == {}
-        assert read_config("None", workdir=self.workdir) == {}
+        assert read_analysis_config(None, workdir=self.workdir) == {}
+        assert read_analysis_config("", workdir=self.workdir) == {}
+        assert read_analysis_config("None", workdir=self.workdir) == {}
 
-        assert read_config(lf0_filename, workdir=self.workdir) == {}
-        assert read_config(lf1_filename, workdir=self.workdir) == read_dict1
+        assert read_analysis_config(lf0_filename, workdir=self.workdir) == {}
+        assert read_analysis_config(lf1_filename, workdir=self.workdir) == read_dict1
         with pytest.raises(ValueError):
-            read_config(lf2_filename, workdir=self.workdir)
+            read_analysis_config(lf2_filename, workdir=self.workdir)
+
+        # Test we get out of the file what we put in, for each type of configuration file
+
+        test_reconciliation_dict = {"SHE_CTE_ReconcileMeasurements_method": "Best"}
+
+        write_reconciliation_config(test_reconciliation_dict, test1_filename, workdir=self.workdir)
+
+        write_listfile(os.path.join(self.workdir, lf0_filename), [])
+        write_listfile(os.path.join(self.workdir, lf1_filename), [test1_filename])
+        write_listfile(os.path.join(self.workdir, lf2_filename), [test1_filename, test1_filename])
+
+        read_dict1 = read_reconciliation_config(test1_filename, workdir=self.workdir)
+
+        # Check it's been read in correctly
+        assert read_dict1["SHE_CTE_ReconcileMeasurements_method"] == "Best"
+
+        # Check we get expected results from trying to read in other variants
+
+        assert read_reconciliation_config(None, workdir=self.workdir) == {}
+        assert read_reconciliation_config("", workdir=self.workdir) == {}
+        assert read_reconciliation_config("None", workdir=self.workdir) == {}
+
+        assert read_reconciliation_config(lf0_filename, workdir=self.workdir) == {}
+        assert read_reconciliation_config(lf1_filename, workdir=self.workdir) == read_dict1
+        with pytest.raises(ValueError):
+            read_reconciliation_config(lf2_filename, workdir=self.workdir)
+
+        # Test we get out of the file what we put in, for each type of configuration file
+
+        test_calibration_dict = {"SHE_CTE_EstimateShear_methods": "KSB",
+                                 "SHE_CTE_CleanupBiasMeasurement_cleanup": "False"}
+
+        write_calibration_config(test_calibration_dict, test1_filename, workdir=self.workdir)
+
+        write_listfile(os.path.join(self.workdir, lf0_filename), [])
+        write_listfile(os.path.join(self.workdir, lf1_filename), [test1_filename])
+        write_listfile(os.path.join(self.workdir, lf2_filename), [test1_filename, test1_filename])
+
+        read_dict1 = read_calibration_config(test1_filename, workdir=self.workdir)
+
+        # Check it's been read in correctly
+        assert read_dict1["SHE_CTE_EstimateShear_methods"] == "KSB"
+        assert read_dict1["SHE_CTE_CleanupBiasMeasurement_cleanup"] == "False"
+
+        # Check we get expected results from trying to read in other variants
+
+        assert read_calibration_config(None, workdir=self.workdir) == {}
+        assert read_calibration_config("", workdir=self.workdir) == {}
+        assert read_calibration_config("None", workdir=self.workdir) == {}
+
+        assert read_calibration_config(lf0_filename, workdir=self.workdir) == {}
+        assert read_calibration_config(lf1_filename, workdir=self.workdir) == read_dict1
+        with pytest.raises(ValueError):
+            read_calibration_config(lf2_filename, workdir=self.workdir)
 
         # Test that we can parse a more complicated file
         test2_filename = "test2.txt"
@@ -89,16 +147,14 @@ class TestUtility:
                      "SHE_MER_RemapMosaic_num_threads_exposures = 8 # nope\n" +
                      "# ignore this = ignore\n" +
                      "\n" +
-                     "SHE_CTE_CleanupBiasMeasurement_cleanup=True\n" +
-                     "SHE_CTE_MeasureBias_archive_dir=/my/dir/ #==2\n")
+                     "SHE_MER_RemapMosaic_num_swarp_threads_exposures=4 #==2\n")
 
-        read_dict2 = read_config(test2_filename, workdir=self.workdir)
+        read_dict2 = read_analysis_config(test2_filename, workdir=self.workdir)
 
         assert read_dict2["SHE_CTE_EstimateShear_methods"] == "KSB"
         assert read_dict2["SHE_CTE_ObjectIdSplit_batch_size"] == "26"
         assert read_dict2["SHE_MER_RemapMosaic_num_threads_exposures"] == "8"
-        assert read_dict2["SHE_CTE_CleanupBiasMeasurement_cleanup"] == "True"
-        assert read_dict2["SHE_CTE_MeasureBias_archive_dir"] == "/my/dir/"
+        assert read_dict2["SHE_MER_RemapMosaic_num_swarp_threads_exposures"] == "4"
         assert "ignore this" not in read_dict2
 
         return

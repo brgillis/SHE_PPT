@@ -22,10 +22,16 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-22"
+__updated__ = "2020-08-12"
 
-# import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
+from ST_DataModelBindings.dpd.she.objectidlist_stub import dpdSheObjectIdList
+
+from ..file_io import read_xml_product, find_aux_file
+from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
+
+
+sample_file_name = "SHE_PPT/sample_object_id_list.xml"
 
 
 def init():
@@ -33,11 +39,11 @@ def init():
         Adds some extra functionality to the DpdSheObjectIdList product
     """
 
-    # binding_class = she_dpd.DpdSheObjectIdList # @FIXME
-    binding_class = DpdSheObjectIdList
+    binding_class = dpdSheObjectIdList
 
     binding_class.get_all_filenames = __get_all_filenames
     binding_class.get_id_list = __get_id_list
+    binding_class.set_id_list = __set_id_list
 
     binding_class.has_files = False
 
@@ -53,26 +59,13 @@ def __get_all_filenames(self):
 
 def __get_id_list(self):
 
-    return self.Data.id_list
+    return self.Data.ObjectIdList
 
 
-class DpdSheObjectIdList:  # @FIXME
+def __set_id_list(self, l):
 
-    def __init__(self):
-        self.Header = None
-        self.Data = None
-
-    def validateBinding(self):
-        return False
-
-
-class SheObjectIdList:  # @FIXME
-
-    def __init__(self):
-
-        self.id_list = None
-
-        pass
+    self.Data.ObjectIdList = l
+    return
 
 
 def create_dpd_she_object_id_list(id_list=None):
@@ -80,32 +73,17 @@ def create_dpd_she_object_id_list(id_list=None):
         @TODO fill in docstring
     """
 
-    # dpd_she_object_id_list = she_dpd.DpdSheObjectIdList() # @FIXME
-    dpd_she_object_id_list = DpdSheObjectIdList()
+    dpd_she_object_id_list = read_xml_product(find_aux_file(sample_file_name))
 
-    # dpd_she_object_id_list.Header = HeaderProvider.create_generic_header("SHE") # FIXME
-    dpd_she_object_id_list.Header = "SHE"
+    dpd_she_object_id_list.Header = HeaderProvider.create_generic_header("SHE")  # FIXME
 
-    dpd_she_object_id_list.Data = create_she_object_id_list(id_list)
+    if(id_list):
+        __set_id_list(dpd_she_object_id_list, id_list)
+    else:
+        __set_id_list(dpd_she_object_id_list, [])
 
     return dpd_she_object_id_list
 
 
 # Add a useful alias
 create_object_id_list_product = create_dpd_she_object_id_list
-
-
-def create_she_object_id_list(id_list=None):
-    """
-        @TODO fill in docstring
-    """
-
-    # she_object_id_list = she_dpd.SheObjectIdList() # @FIXME
-    she_object_id_list = SheObjectIdList()
-
-    if id_list is None:
-        she_object_id_list.id_list = []
-    else:
-        she_object_id_list.id_list = id_list
-
-    return she_object_id_list

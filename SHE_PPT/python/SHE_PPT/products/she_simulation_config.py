@@ -21,73 +21,25 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-10-15"
 
-# import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
-from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
+
+from ..file_io import read_xml_product, find_aux_file
+from ..product_utility import get_data_filename_from_product, set_data_filename_of_product, init_intermediate_general
+
+
+sample_file_name = 'SHE_PPT/sample_intermediate_general.xml'
 
 
 def init():
     """
-        Adds some extra functionality to the DpdSheAstrometry product
+        Adds some extra functionality to the product
     """
 
-    # binding_class = she_dpd.DpdSheSimulationConfigProduct # @FIXME
-    binding_class = DpdSheSimulationConfigProduct
-
-    # Add the data file name methods
-
-    binding_class.set_filename = __set_data_filename
-    binding_class.get_filename = __get_data_filename
-    binding_class.set_data_filename = __set_data_filename
-    binding_class.get_data_filename = __get_data_filename
-
-    binding_class.get_all_filenames = __get_all_filenames
-
-    binding_class.has_files = False
+    init_intermediate_general()
 
     return
-
-
-def __set_data_filename(self, filename):
-    set_data_filename_of_product(self, filename)
-
-
-def __get_data_filename(self):
-    return get_data_filename_from_product(self)
-
-
-def __get_all_filenames(self):
-
-    all_filenames = [self.get_data_filename(), ]
-
-    return all_filenames
-
-
-class DpdSheSimulationConfigProduct:  # @FIXME
-
-    def __init__(self):
-        self.Header = None
-        self.Data = None
-
-    def validateBinding(self):
-        return False
-
-
-class SheSimulationConfigProduct:  # @FIXME
-
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-
-
-class DataContainer:  # @FIXME
-
-    def __init__(self):
-        self.FileName = None
-        self.filestatus = None
 
 
 def create_dpd_she_simulation_config(filename=None):
@@ -95,36 +47,23 @@ def create_dpd_she_simulation_config(filename=None):
         @TODO fill in docstring
     """
 
-    # dpd_she_simulation_config = she_dpd.DpdSheSimulationConfigProduct() #
-    # FIXME
-    dpd_she_simulation_config = DpdSheSimulationConfigProduct()
+    dpd_she_simulation_config = read_xml_product(
+        find_aux_file(sample_file_name))
 
-    # dpd_she_simulation_config.Header =
-    # HeaderProvider.create_generic_header("SHE") # FIXME
-    dpd_she_simulation_config.Header = "SHE"
+    # Set the data we don't need to empty
+    dpd_she_simulation_config.Data.IntData = []
+    dpd_she_simulation_config.Data.FloatData = []
 
-    dpd_she_simulation_config.Data = create_she_simulation_config(filename)
+    # Label the type in the StringData
+    dpd_she_simulation_config.Data.StringData = ["TYPE:DpdSheSimulationConfig"]
+
+    dpd_she_simulation_config.Header = HeaderProvider.create_generic_header("SHE")
+
+    if filename:
+        dpd_she_simulation_config.set_data_filename(filename)
 
     return dpd_she_simulation_config
 
 
 # Add a useful alias
 create_simulation_config_product = create_dpd_she_simulation_config
-
-
-def create_she_simulation_config(filename=None):
-    """
-        @TODO fill in docstring
-    """
-
-    # she_simulation_config = she_dpd.SheSimulationConfigProduct() # @FIXME
-    she_simulation_config = SheSimulationConfigProduct()
-
-    she_simulation_config.format = "UNDEFINED"
-    she_simulation_config.version = "0.0"
-
-    she_simulation_config.DataContainer = DataContainer()
-    she_simulation_config.DataContainer.FileName = filename
-    she_simulation_config.DataContainer.filestatus = "PROPOSED"
-
-    return she_simulation_config

@@ -24,23 +24,23 @@
 	<Data>
 		<ExposureProductId>-1</ExposureProductId>
 		<ObservationId>-1</ObservationId>
-		<ObservationMode>Calibration</ObservationMode>
+		<ObservationMode>ScienceWide</ObservationMode>
 		<NumberExposures>4</NumberExposures>
 		<TileId>-1</TileId>
 		<SourcePipeline>sheAnalysis</SourcePipeline>
 		<ValidationTestList>
-			<GlobalResult>FAILED</GlobalResult>
+			<GlobalResult>PASSED</GlobalResult>
 			<ValidatedRequirements>
 				<Requirement>
 					<Id>-1</Id>
 					<MeasuredValue>
-						<Parameter>zfMWh</Parameter>
-						<DataType>byte</DataType>
+						<Parameter>Undefined</Parameter>
+						<DataType>float</DataType>
 						<Value>
-							<ByteValue>1</ByteValue>
+							<FloatValue>-1</FloatValue>
 						</Value>
 					</MeasuredValue>
-					<ValidationResult>FAILED</ValidationResult>
+					<ValidationResult>PASSED</ValidationResult>
 					<Comment></Comment>
 					<SupplementaryInformation>
 						<Parameter>
@@ -54,6 +54,10 @@
 			</ValidatedRequirements>
 			<TestId>-1</TestId>
 			<TestDescription></TestDescription>
+			<AnalysisResult>
+				<Result>PASSED</Result>
+				<AnalysisFiles></AnalysisFiles>
+			</AnalysisResult>
 		</ValidationTestList>
 	</Data>
 	<QualityFlags>

@@ -19,18 +19,20 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2020-07-19"
 
 from collections import OrderedDict
 
 from astropy.table import Table
 
-from SHE_PPT import magic_values as mv
-from SHE_PPT.flags import she_flag_version
-from SHE_PPT.logging import getLogger
-from SHE_PPT.math import LinregressStatistics, BiasMeasurements, BFDSumResults
-from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties
 import numpy as np
+
+from .. import magic_values as mv
+from ..flags import she_flag_version
+from ..logging import getLogger
+from ..math import LinregressStatistics, BiasMeasurements, BFDSumResults
+from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+
 
 fits_version = "8.0"
 fits_def = "bfdBiasStatistics"
@@ -219,7 +221,9 @@ def make_bfd_bias_statistics_table_header(ID=None,
     return header
 
 
-def initialise_bfd_bias_statistics_table(optional_columns=None,
+def initialise_bfd_bias_statistics_table(size=None,
+                                         optional_columns=None,
+                                         init_cols=None,
                                          ID=None,
                                          method='BFD',
                                          g1_bias_measurements=None,
@@ -262,17 +266,7 @@ def initialise_bfd_bias_statistics_table(optional_columns=None,
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    names = []
-    init_cols = []
-    dtypes = []
-    for colname in tf.all:
-        if (colname in tf.all_required) or (colname in optional_columns):
-            names.append(colname)
-            init_cols.append([])
-            dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
-
-    # Create the table
-    bfd_bias_statistics_table = Table(init_cols, names=names, dtype=dtypes)
+    bfd_bias_statistics_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
 
     # Check validity of initial values
 
@@ -299,7 +293,7 @@ def initialise_bfd_bias_statistics_table(optional_columns=None,
             len_bfd_bias_statistics = 1
 
     if len_bfd_bias_statistics > 0:
-        if tf.ID in names:
+        if tf.ID in optional_columns:
             if len_run_IDs == 1:
                 run_IDs *= len_bfd_bias_statistics
             elif not len_run_IDs == len_bfd_bias_statistics:

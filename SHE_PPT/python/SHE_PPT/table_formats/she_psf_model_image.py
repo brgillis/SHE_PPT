@@ -19,18 +19,19 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-10"
+__updated__ = "2021-02-10"
 
 from collections import OrderedDict
 
 from astropy.table import Table
 
-from SHE_PPT import magic_values as mv
-from SHE_PPT.flags import she_flag_version
-from SHE_PPT.logging import getLogger
-from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties
-from SHE_PPT.utility import hash_any
-import numpy as np
+from EL_PythonUtils.utilities import hash_any
+
+from .. import magic_values as mv
+from ..flags import she_flag_version
+from ..logging import getLogger
+from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+
 
 fits_version = "8.0"
 fits_def = "she.psfModelImage.shePsfC"
@@ -89,27 +90,29 @@ class ShePsfModelImageFormat(object):
         # Column names and info
 
         self.ID = set_column_properties(self,
-            "OBJECT_ID", dtype=">i8", fits_dtype="K")
+                                        "OBJECT_ID", dtype=">i8", fits_dtype="K")
 
         self.template = set_column_properties(self,
-            "SHE_PSF_SED_TEMPLATE", dtype=">i8", fits_dtype="K")
+                                              "SHE_PSF_SED_TEMPLATE", dtype=">i8", fits_dtype="K")
         self.bulge_index = set_column_properties(self,
-            "SHE_PSF_BULGE_IDX", dtype=">i4", fits_dtype="J")
+                                                 "SHE_PSF_BULGE_INDEX", dtype=">i4", fits_dtype="J")
         self.disk_index = set_column_properties(self,
-            "SHE_PSF_DISK_IDX", dtype=">i4", fits_dtype="J")
+                                                "SHE_PSF_DISK_INDEX", dtype=">i4", fits_dtype="J")
         self.image_x = set_column_properties(self,
-            "SHE_PSF_IMAGE_X", dtype=">i2", fits_dtype="I")
+                                             "SHE_PSF_IMAGE_X", dtype=">i2", fits_dtype="I")
         self.image_y = set_column_properties(self,
-            "SHE_PSF_IMAGE_Y", dtype=">i2", fits_dtype="I")
+                                             "SHE_PSF_IMAGE_Y", dtype=">i2", fits_dtype="I")
         self.x = set_column_properties(self,
-            "SHE_PSF_X", dtype=">f4", fits_dtype="E")
+                                       "SHE_PSF_X", dtype=">f4", fits_dtype="E")
         self.y = set_column_properties(self,
-            "SHE_PSF_Y", dtype=">f4", fits_dtype="E")
+                                       "SHE_PSF_Y", dtype=">f4", fits_dtype="E")
 
         self.calibration_time = set_column_properties(self,
-            "SHE_PSF_CALIB_TIME", dtype="str", fits_dtype="A", length=20)
+                                                      "SHE_PSF_CALIB_TIME", dtype="str", fits_dtype="A", length=20)
         self.field_time = set_column_properties(self,
-            "SHE_PSF_FIELD_TIME", dtype="str", fits_dtype="A", length=20)
+                                                "SHE_PSF_FIELD_TIME", dtype="str", fits_dtype="A", length=20)
+        self.qual_flag = set_column_properties(self,
+                                               "SHE_PSF_QUAL_FLAG", dtype=">i4", fits_dtype="J")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -152,14 +155,13 @@ def make_psf_table_header(calibration_product, calibration_time, field_product, 
     return header
 
 
-def initialise_psf_table(image=None,
-                         options=None,
+def initialise_psf_table(size=None,
                          optional_columns=None,
                          calibration_product=None,
                          calibration_time=None,
                          field_product=None,
                          field_time=None,
-                         init_columns={}):
+                         init_cols={}):
     """
         @brief Initialise a PSF table.
 
@@ -181,26 +183,7 @@ def initialise_psf_table(image=None,
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    names = []
-    init_cols = []
-    dtypes = []
-    for colname in tf.all:
-        if (colname in tf.all_required) or (colname in optional_columns):
-            names.append(colname)
-
-            dtype = (tf.dtypes[colname], tf.lengths[colname])
-
-            if colname in init_columns:
-                init_cols.append(init_columns[colname])
-            elif len(init_columns) > 0:
-                init_cols.append(
-                    np.zeros(len(init_columns.values[0]), dtype=dtype))
-            else:
-                init_cols.append([])
-
-            dtypes.append(dtype)
-
-    psf_table = Table(init_cols, names=names, dtype=dtypes)
+    psf_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
 
     psf_table.meta = make_psf_table_header(calibration_product=calibration_product,
                                            calibration_time=calibration_time,

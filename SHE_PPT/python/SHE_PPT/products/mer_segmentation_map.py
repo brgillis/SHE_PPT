@@ -28,12 +28,15 @@ import os
 
 from astropy.io import fits
 
-from SHE_PPT import detector as dtc
-from SHE_PPT import magic_values as mv
-from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
-from SHE_PPT.utility import find_extension
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.mer.raw.segmentationmap_stub import dpdMerSegmentationMap
+
+from .. import detector as dtc
+from .. import magic_values as mv
+from ..file_io import read_xml_product, find_aux_file
+from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
+from ..utility import find_extension
+
 
 sample_file_name = "SHE_PPT/sample_mer_segmentation_map.xml"
 
@@ -79,7 +82,7 @@ def load_mosaic_hdu(filename, dir=None, hdu=0, detector_x=None, detector_y=None,
         dir = ""
 
     mosaic_product = read_xml_product(
-        xml_filename=os.path.join(dir, filename), allow_pickled=False)
+        xml_filename=os.path.join(dir, filename))
 
     data_filename = mosaic_product.get_data_filename()
 
@@ -145,7 +148,7 @@ def create_dpd_mer_mosaic(data_filename="",
     """
 
     dpd_mer_mosaic = read_xml_product(
-        find_aux_file(sample_file_name), allow_pickled=False)
+        find_aux_file(sample_file_name))
 
     dpd_mer_mosaic.Header = HeaderProvider.create_generic_header("SHE")
 

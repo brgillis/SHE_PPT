@@ -8,6 +8,9 @@
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines. This version is
     converted from MER's version, so we need a separate product for it.
 """
+
+__updated__ = "2021-02-10"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -22,24 +25,22 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-15"
-
-# import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
-
 import os
+
 from astropy.io import fits
 
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.exposurereprojectedsegmentationmap_stub import dpdSheExposureReprojectedSegmentationMap
 
+from .. import detector as dtc
+from .. import magic_values as mv
+from ..file_io import read_xml_product, find_aux_file
+from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
+from ..utility import find_extension
 
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
-from SHE_PPT import detector as dtc
-from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
-import SHE_PPT.magic_values as mv
-from SHE_PPT.utility import find_extension
 
 sample_file_name = "SHE_PPT/sample_exposure_reprojected_segmentation_map.xml"
+
 
 # Convenience function to easily load the actual map
 def load_she_exposure_segmentation_map(filename, directory=None, **kwargs):
@@ -77,7 +78,7 @@ def load_she_exposure_segmentation_map(filename, directory=None, **kwargs):
         directory = ""
 
     she_exposure_segmentation_map_product = read_xml_product(
-        xml_filename=os.path.join(directory, filename), allow_pickled=False)
+        xml_filename=os.path.join(directory, filename))
 
     data_filename = she_exposure_segmentation_map_product.get_data_filename()
 
@@ -126,10 +127,6 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-
-
- 
-        
 def create_dpd_she_exposure_segmentation_map(data_filename="None"):
     """Creates a SHE_MER exposure reprojected segmentation map binding.
 
@@ -145,7 +142,7 @@ def create_dpd_she_exposure_segmentation_map(data_filename="None"):
 
     """
     dpd_she_exposure_reproj_seg_map_data = read_xml_product(
-        find_aux_file(sample_file_name), allow_pickled=False)
+        find_aux_file(sample_file_name))
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)
@@ -161,10 +158,7 @@ def create_dpd_she_exposure_segmentation_map(data_filename="None"):
 
     return dpd_she_exposure_reproj_seg_map_data
 
-
 # Add a useful alias
 
 
 create_she_exposure_segmentation_map_product = create_dpd_she_exposure_segmentation_map
-
-

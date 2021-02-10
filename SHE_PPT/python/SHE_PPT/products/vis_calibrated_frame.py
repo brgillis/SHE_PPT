@@ -23,11 +23,14 @@
 
 __updated__ = "2020-06-12"
 
-from SHE_PPT.file_io import read_xml_product, find_aux_file, get_data_filename_from_product, set_data_filename_of_product
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
 import ST_DataModelBindings.pro.vis_stub as vis_pro
 from ST_DataModelBindings.sys.dss_stub import dataContainer
+
+from ..file_io import read_xml_product, find_aux_file
+from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
+
 
 sample_file_name = "SHE_PPT/sample_vis_calibrated_frame.xml"
 
@@ -130,7 +133,7 @@ def create_dpd_vis_calibrated_frame(data_filename='',
     """
 
     dpd_vis_calibrated_frame = read_xml_product(
-        find_aux_file(sample_file_name), allow_pickled=False)
+        find_aux_file(sample_file_name))
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)

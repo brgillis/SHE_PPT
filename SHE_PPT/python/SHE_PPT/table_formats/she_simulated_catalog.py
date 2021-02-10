@@ -19,17 +19,19 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2021-02-10"
 
 from collections import OrderedDict
 
 from astropy.table import Table
 
-from SHE_PPT import magic_values as mv
-from SHE_PPT.flags import she_flag_version
-from SHE_PPT.logging import getLogger
-from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties
-from SHE_PPT.utility import hash_any
+from EL_PythonUtils.utilities import hash_any
+
+from .. import magic_values as mv
+from ..flags import she_flag_version
+from ..logging import getLogger
+from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+
 
 fits_version = "8.0"
 fits_def = "she.simulatedCatalog"
@@ -99,10 +101,10 @@ class SheSimulatedCatalogFormat(object):
         self.ra = set_column_properties(self, "RIGHT_ASCENSION", comment="ra (deg)")
         self.dec = set_column_properties(self, "DECLINATION", comment="dec (deg)")
 
-        self.hlr_bulge = set_column_properties(self, 
-            "HLR_BULGE", comment="arcsec")
-        self.hlr_disk = set_column_properties(self, 
-            "HLR_DISK", comment="arcsec")
+        self.hlr_bulge = set_column_properties(self,
+                                               "HLR_BULGE", comment="arcsec")
+        self.hlr_disk = set_column_properties(self,
+                                              "HLR_DISK", comment="arcsec")
 
         self.bulge_ellipticity = set_column_properties(self, "BULGE_ELLIPTICITY")
         self.bulge_axis_ratio = set_column_properties(self, "BULGE_AXIS_RATIO")
@@ -188,15 +190,17 @@ def make_details_table_header(subtracted_sky_level=None,
 
 
 def initialise_simulated_catalog(image_group_phl=None,
-                             options=None,
-                             optional_columns=None,
-                             subtracted_sky_level=None,
-                             unsubtracted_sky_level=None,
-                             read_noise=None,
-                             gain=None,
-                             model_hash=None,
-                             model_seed=None,
-                             noise_seed=None,):
+                                 options=None,
+                                 size=None,
+                                 optional_columns=None,
+                                 init_cols=None,
+                                 subtracted_sky_level=None,
+                                 unsubtracted_sky_level=None,
+                                 read_noise=None,
+                                 gain=None,
+                                 model_hash=None,
+                                 model_seed=None,
+                                 noise_seed=None,):
     """
         @brief Initialise a detections table.
 
@@ -220,17 +224,7 @@ def initialise_simulated_catalog(image_group_phl=None,
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    names = []
-    init_cols = []
-    dtypes = []
-    for colname in tf.all:
-        if (colname in tf.all_required) or (colname in optional_columns):
-            names.append(colname)
-            init_cols.append([])
-            dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
-
-    details_table = Table(init_cols, names=names,
-                          dtype=dtypes)
+    details_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
 
     if image_group_phl is not None:
 

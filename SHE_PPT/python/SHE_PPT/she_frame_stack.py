@@ -22,7 +22,7 @@ Created on: 05/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2020-07-01"
+__updated__ = "2021-02-09"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
@@ -30,17 +30,20 @@ import os.path
 
 from astropy import table
 from astropy.io import fits
+import astropy.wcs
 
-from SHE_PPT import logging
-from SHE_PPT import magic_values as mv
-from SHE_PPT import products
-from SHE_PPT.file_io import read_listfile, read_xml_product, find_file
-from SHE_PPT.she_frame import SHEFrame
-from SHE_PPT.she_image import SHEImage
-from SHE_PPT.she_image_stack import SHEImageStack
-from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
-from SHE_PPT.utility import find_extension, load_wcs
 import numpy as np
+
+from . import logging
+from . import magic_values as mv
+from . import products
+from .file_io import read_listfile, read_xml_product, find_file
+from .she_frame import SHEFrame
+from .she_image import SHEImage
+from .she_image_stack import SHEImageStack
+from .table_formats.mer_final_catalog import tf as mfc_tf, initialise_mer_final_catalog
+from .utility import find_extension
+
 
 logger = logging.getLogger(__name__)
 
@@ -500,6 +503,11 @@ class SHEFrameStack(object):
         else:
             object_id_list = None
 
+        if object_id_list is None:
+            prune_images = False
+        else:
+            prune_images = True
+
         # Load in the detections catalogues and combine them into a single catalogue
         if detections_listfile_filename is None:
             detections_catalogue = None
@@ -514,9 +522,9 @@ class SHEFrameStack(object):
                 for detections_product_filename in detections_filenames:
 
                     detections_product = read_xml_product(os.path.join(workdir, detections_product_filename))
-                    logger.info("DP: %s, %s, %s" % (workdir,
-                        detections_product_filename,
-                        detections_product.get_data_filename()))
+                    logger.debug("DP: %s, %s, %s" % (workdir,
+                                                     detections_product_filename,
+                                                     detections_product.get_data_filename()))
                     detections_catalogue = table.Table.read(
                         os.path.join(workdir, detections_product.get_data_filename()))
 
@@ -526,7 +534,6 @@ class SHEFrameStack(object):
                     # If we have no object id list, stack them all
                     detections_catalogue = table.vstack(detections_catalogues,
                                                         metadata_conflicts="silent")  # Conflicts are expected
-                    prune_images = False
                 else:
                     # If we do have an object id list, construct a new table with just the desired rows
                     rows_to_use = []
@@ -537,13 +544,18 @@ class SHEFrameStack(object):
                             if row[mfc_tf.ID] in object_id_list:
                                 rows_to_use.append(row)
 
-                    detections_catalogue = table.Table(names=detections_catalogues[0].colnames,
-                                                       dtype=[detections_catalogues[0].dtype[n] for n in detections_catalogues[0].colnames])
+                    detections_catalogue = initialise_mer_final_catalog()
+
+                    for key in detections_catalogues[0].meta:
+                        if key in detections_catalogue.meta:
+                            detections_catalogue.meta[key] = detections_catalogues[0].meta[key]
 
                     for row in rows_to_use:
-                        detections_catalogue.add_row(row)
-
-                    prune_images = True
+                        detections_catalogue.add_row()
+                        new_row = detections_catalogue[-1]
+                        for key in row.colnames:
+                            if key in new_row.colnames:
+                                new_row[key] = row[key]
 
                     logger.info("Finished pruning list of galaxy objects to loop over")
 
@@ -649,7 +661,7 @@ class SHEFrameStack(object):
                                      background_map=stacked_bkg_data,
                                      segmentation_map=stacked_seg_data,
                                      header=stacked_image_header,
-                                     wcs=load_wcs(stacked_image_header))
+                                     wcs=astropy.wcs.WCS(stacked_image_header))
 
         # Construct and return a SHEFrameStack object
         return SHEFrameStack(exposures=exposures,

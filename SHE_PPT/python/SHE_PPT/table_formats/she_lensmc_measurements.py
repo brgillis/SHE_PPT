@@ -19,19 +19,20 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-08"
+__updated__ = "2021-02-10"
 
 from collections import OrderedDict
 
 from astropy.table import Table
 
-from SHE_PPT import detector as dtc
-from SHE_PPT import magic_values as mv
-from SHE_PPT.flags import she_flag_version
-from SHE_PPT.logging import getLogger
-from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
-from SHE_PPT.table_formats.she_measurements import SheMeasurementsMeta, SheMeasurementsFormat
-from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties, setup_child_table_format, set_column_properties
+from .. import detector as dtc
+from .. import magic_values as mv
+from ..flags import she_flag_version
+from ..logging import getLogger
+from ..table_formats.mer_final_catalog import tf as mfc_tf
+from ..table_formats.she_measurements import SheMeasurementsMeta, SheMeasurementsFormat
+from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table, setup_child_table_format, set_column_properties, init_table
+
 
 fits_version = "8.0"
 fits_def = "she.lensmcMeasurements"
@@ -74,34 +75,26 @@ class SheLensMcMeasurementsFormat(SheMeasurementsFormat):
         setup_child_table_format(self, child_label, unlabelled_columns=["OBJECT_ID"])
 
         # lensmc specific columns
-        self.re = set_column_properties(self,
-            "SHE_LENSMC_RE", dtype=">f4", fits_dtype="E")
-        self.re_err = set_column_properties(self,
-            "SHE_LENSMC_RE_ERR", dtype=">f4", fits_dtype="E")
-        self.flux = set_column_properties(self,
-            "SHE_LENSMC_FLUX", dtype=">f4", fits_dtype="E")
-        self.flux_err = set_column_properties(self,
-            "SHE_LENSMC_FLUX_ERR", dtype=">f4", fits_dtype="E")
-        self.bulge_frac = set_column_properties(self,
-            "SHE_LENSMC_BULGE_FRAC", dtype=">f4", fits_dtype="E")
-        self.bulge_frac_err = set_column_properties(self,
-            "SHE_LENSMC_BULGE_FRAC_ERR", dtype=">f4", fits_dtype="E")
-        self.snr = set_column_properties(self,
-            "SHE_LENSMC_SNR", dtype=">f4", fits_dtype="E")
         self.snr_err = set_column_properties(self,
-            "SHE_LENSMC_SNR_ERR", dtype=">f4", fits_dtype="E")
+                                             "SHE_LENSMC_SNR_ERR", dtype=">f4", fits_dtype="E")
+        self.bulge_frac = set_column_properties(self,
+                                                "SHE_LENSMC_BULGE_FRAC", dtype=">f4", fits_dtype="E")
+        self.bulge_frac_err = set_column_properties(self,
+                                                    "SHE_LENSMC_BULGE_FRAC_ERR", dtype=">f4", fits_dtype="E")
+        self.gal_pvalue = set_column_properties(self,
+                                                "SHE_LENSMC_GAL_PVALUE", dtype=">f4", fits_dtype="E")
         self.chi2 = set_column_properties(self,
-            "SHE_LENSMC_CHI2", dtype=">f4", fits_dtype="E")
+                                          "SHE_LENSMC_CHI2", dtype=">f4", fits_dtype="E")
         self.dof = set_column_properties(self,
-            "SHE_LENSMC_DOF", dtype=">i4", fits_dtype="K")
+                                         "SHE_LENSMC_DOF", dtype=">i4", fits_dtype="K")
         self.acc = set_column_properties(self,
-            "SHE_LENSMC_ACCEPTANCE", dtype=">f4", fits_dtype="E")
+                                         "SHE_LENSMC_ACCEPTANCE", dtype=">f4", fits_dtype="E")
         self.nexp = set_column_properties(self,
-            "SHE_LENSMC_NEXP", dtype=">i2", fits_dtype="I")
+                                          "SHE_LENSMC_NEXP", dtype=">i2", fits_dtype="I")
         self.m1_ical = set_column_properties(self,
-            "SHE_LENSMC_M1_ICAL", dtype=">f4", fits_dtype="E")
+                                             "SHE_LENSMC_M1_ICAL", dtype=">f4", fits_dtype="E")
         self.m2_ical = set_column_properties(self,
-            "SHE_LENSMC_M2_ICAL", dtype=">f4", fits_dtype="E")
+                                             "SHE_LENSMC_M2_ICAL", dtype=">f4", fits_dtype="E")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -121,12 +114,13 @@ tf = lensmc_measurements_table_format
 
 
 def make_lensmc_measurements_table_header(
-                                  model_hash=None,
-                                  model_seed=None,
-                                  noise_seed=None,
-                                  observation_id=None,
-                                  observation_time=None,
-                                  tile_id=None,):
+        model_hash=None,
+        model_seed=None,
+        noise_seed=None,
+        observation_id=None,
+        pointing_id=None,
+        observation_time=None,
+        tile_id=None,):
     """
         @brief Generate a header for a shear estimates table.
 
@@ -151,6 +145,7 @@ def make_lensmc_measurements_table_header(
     header[tf.m.noise_seed] = noise_seed
 
     header[tf.m.observation_id] = observation_id
+    header[tf.m.pointing_id] = pointing_id
     header[tf.m.observation_time] = observation_time
     header[tf.m.tile_id] = tile_id
 
@@ -160,14 +155,17 @@ def make_lensmc_measurements_table_header(
 
 
 def initialise_lensmc_measurements_table(mer_final_catalog=None,
-                                 optional_columns=None,
-                                 model_hash=None,
-                                 model_seed=None,
-                                 noise_seed=None,
-                                 observation_id=None,
-                                 observation_time=None,
-                                 tile_id=None,
-                                 ):
+                                         size=None,
+                                         optional_columns=None,
+                                         init_cols=None,
+                                         model_hash=None,
+                                         model_seed=None,
+                                         noise_seed=None,
+                                         observation_id=None,
+                                         pointing_id=None,
+                                         observation_time=None,
+                                         tile_id=None,
+                                         ):
     """
         @brief Initialise a shear estimates table based on a detections table, with the
                desired set of optional columns
@@ -193,16 +191,7 @@ def initialise_lensmc_measurements_table(mer_final_catalog=None,
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    names = []
-    init_cols = []
-    dtypes = []
-    for colname in tf.all:
-        if (colname in tf.all_required) or (colname in optional_columns):
-            names.append(colname)
-            init_cols.append([])
-            dtypes.append((tf.dtypes[colname], tf.lengths[colname]))
-
-    lensmc_measurements_table = Table(init_cols, names=names, dtype=dtypes)
+    lensmc_measurements_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
 
     if mer_final_catalog is not None:
         if model_hash is None:
@@ -213,12 +202,13 @@ def initialise_lensmc_measurements_table(mer_final_catalog=None,
             noise_seed = mer_final_catalog.meta[mfc_tf.m.noise_seed]
 
     lensmc_measurements_table.meta = make_lensmc_measurements_table_header(
-                                                           model_hash=model_hash,
-                                                           model_seed=model_seed,
-                                                           noise_seed=noise_seed,
-                                                           observation_id=observation_id,
-                                                           observation_time=observation_time,
-                                                           tile_id=tile_id)
+        model_hash=model_hash,
+        model_seed=model_seed,
+        noise_seed=noise_seed,
+        observation_id=observation_id,
+        pointing_id=pointing_id,
+        observation_time=observation_time,
+        tile_id=tile_id)
 
     assert(is_in_format(lensmc_measurements_table, tf))
 

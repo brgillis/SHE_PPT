@@ -4,6 +4,8 @@ File: she_image.py
 Created on: Aug 17, 2017
 """
 
+__updated__ = "2021-02-10"
+
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -19,8 +21,6 @@ Created on: Aug 17, 2017
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2020-07-13"
-
 # Avoid non-trivial "from" imports (as explicit is better than implicit)
 
 from copy import deepcopy
@@ -31,14 +31,15 @@ import astropy.io.fits
 import astropy.wcs
 import galsim
 
-from SHE_PPT import magic_values as mv
-from SHE_PPT import mdb
-from SHE_PPT.mask import (as_bool, is_masked_bad,
-                          is_masked_suspect_or_bad, masked_off_image)
-from SHE_PPT.utility import load_wcs, run_only_once
+from EL_PythonUtils.utilities import run_only_once
 import numpy as np
 
 from . import logging
+from . import magic_values as mv
+from . import mdb
+from .mask import (as_bool, is_masked_bad,
+                   is_masked_suspect_or_bad, masked_off_image)
+
 
 allowed_int_dtypes = (
     np.int8, np.int16, np.int32, np.uint8, np.uint16, np.uint32)
@@ -692,8 +693,7 @@ class SHEImage(object):
                        segmentation_map_filepath=None,
                        background_map_filepath=None,
                        weight_map_filepath=None,
-                       workdir=".",
-                       apply_sc3_fix=False):
+                       workdir=".",):
         """Reads an image from a FITS file, such as written by write_to_fits(), and returns it as a SHEImage object.
 
         This function can be used to read previously saved SHEImage objects (in this case, just give the filepath),
@@ -737,8 +737,6 @@ class SHEImage(object):
             idem, for the weight_map
         workdir: str
             The working directory, where files can be found
-        apply_sc3_fix: bool
-            Whether or not to apply fix for bad headers used in SC3 data
 
         """
 
@@ -749,7 +747,7 @@ class SHEImage(object):
 
         # Set up the WCS before we clean the header
         try:
-            wcs = load_wcs(header, apply_sc3_fix=apply_sc3_fix)
+            wcs = astropy.wcs.WCS(header)
         except KeyError:
             # No WCS information
             wcs = None
@@ -1136,7 +1134,7 @@ class SHEImage(object):
 
         return
 
-    def add_default_noisemap(self, force=False):
+    def add_default_noisemap(self, force=False, suppress_warnings=False):
         """Adds a default noisemap to this object (all 0.). If force=True, will overwrite an existing noisemap. 
         """
 
@@ -1151,8 +1149,8 @@ class SHEImage(object):
 
         # Get the gain and read_noise from the MDB if possible
         try:
-            gain = mdb.get_mdb_value(mdb.mdb_keys.vis_gain_coeffs)
-            read_noise = mdb.get_mdb_value(mdb.mdb_keys.vis_readout_noise)
+            gain = mdb.get_gain(suppress_warnings=suppress_warnings)
+            read_noise = mdb.get_read_noise(suppress_warnings=suppress_warnings)
         except RuntimeError as e:
             if not "mdb module must be initialised with MDB xml object before use." in str(e):
                 raise

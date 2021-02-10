@@ -22,13 +22,14 @@ Created on: 09/01/17
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2019-04-09"
+__updated__ = "2021-02-10"
 
 import weakref
 
-from SHE_PPT.she_image import SHEImage
-
 from . import logging
+from .she_image import SHEImage
+
+
 logger = logging.getLogger(__name__)
 
 

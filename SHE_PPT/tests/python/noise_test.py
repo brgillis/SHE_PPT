@@ -20,8 +20,9 @@
 
 __updated__ = "2019-02-27"
 
-from numpy.testing import assert_almost_equal
 import unittest
+
+from numpy.testing import assert_almost_equal
 
 from SHE_PPT.noise import (get_sky_level_ADU_per_pixel, get_sky_level_count_per_pixel,
                            get_count_lambda_per_pixel, get_read_noise_ADU_per_pixel,

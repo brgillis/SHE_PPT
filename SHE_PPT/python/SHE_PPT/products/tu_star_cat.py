@@ -21,11 +21,11 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-08-15"
+__updated__ = "2020-10-15"
 
 from ST_DataModelBindings.dpd.sim.raw.starscatalogproduct_stub import dpdStarsCatalogProduct
 
-from SHE_PPT.file_io import filename_include_data_subdir, data_subdir, len_data_subdir
+from ..product_utility import get_data_filename_from_product
 
 
 def init():
@@ -36,35 +36,21 @@ def init():
 
     # Add the data file name methods
 
-    binding_class.get_data_filenames = __get_data_filenames
-    binding_class.get_filenames = __get_data_filenames
-    binding_class.get_all_filenames = __get_data_filenames
+    binding_class.get_data_filename = __get_data_filename
+    binding_class.get_filename = __get_data_filename
+    binding_class.get_all_filenames = __get_all_filenames
 
     binding_class.has_files = True
 
     return
 
 
-def __get_data_filenames(self):
+def __get_data_filename(self):
+    return get_data_filename_from_product(self, "StarCatalog.DataStorage")
 
-    data_filenames = []
 
-    for star_catalog in self.Data.SetOfStarCatalogs:
+def __get_all_filenames(self):
 
-        data_filename = star_catalog.StarCatalogFitsFile.DataContainer.FileName
+    all_filenames = [self.get_data_filename(), ]
 
-        if filename_include_data_subdir:
-
-            # Silently force the filename returned to start with "data/" regardless of whether the returned value does
-            if data_filename[0:len_data_subdir] != data_subdir:
-                data_filename = data_subdir + data_filename
-
-        else:
-
-            # Silently force the filename returned to NOT start with "data/" regardless of whether the returned value does
-            if data_filename[0:len_data_subdir] == data_subdir:
-                data_filename = data_filename.replace(data_subdir, "", 1)
-
-        data_filenames.append(data_filename)
-
-    return data_filenames
+    return all_filenames

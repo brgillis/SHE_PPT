@@ -87,22 +87,17 @@
 				</ParametersList>
 				<ProcessExecuted>false</ProcessExecuted>
 				<ExitCode>xAF54</ExitCode>
-				<LogFile filestatus="">
-					<FileName>SHA7PrS86fCzjWPvYnDoLwkWVInT6</FileName>
+				<LogFile filestatus="PROPOSED">
+					<FileName>None</FileName>
 				</LogFile>
 				<OutputDataFileList>SF</OutputDataFileList>
 			</ProcessingStep>
 		</ProcessingSteps>
 		<DataStorage format="mer.finalCatalog" version="0.3">
-			<DataContainer filestatus="ARCHIVED_OFFLINE">
+			<DataContainer filestatus="PROPOSED">
 				<FileName>None</FileName>
 			</DataContainer>
 		</DataStorage>
-		<CutoutsCatalogStorage format="mer.cutoutsCatalog" version="0.3">
-			<DataContainer filestatus="PROPOSED">
-				<FileName>QL5CvbMg3foEGormTobmldAs</FileName>
-			</DataContainer>
-		</CutoutsCatalogStorage>
 		<QualityParams>
 			<ObjectCount flagged="true">0</ObjectCount>
 			<ObjectDensity flagged="true">1.0</ObjectDensity>
