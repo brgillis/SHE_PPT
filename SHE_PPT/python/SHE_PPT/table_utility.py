@@ -19,17 +19,18 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-12-16"
+__updated__ = "2021-02-10"
 
 from collections import OrderedDict
 
 from astropy.io.fits import table_to_hdu as astropy_table_to_hdu
 from astropy.table import Column, Table
 
+from EL_PythonUtils.utilities import run_only_once
 from SHE_PPT import magic_values as mv
 from SHE_PPT.logging import getLogger
-from SHE_PPT.utility import run_only_once
 import numpy as np
+
 
 logger = getLogger(mv.logger_name)
 

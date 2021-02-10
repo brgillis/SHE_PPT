@@ -19,7 +19,7 @@ Created on: Aug 17, 2017
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2021-02-09"
+__updated__ = "2021-02-10"
 
 # Avoid non-trivial "from" imports (as explicit is better than implicit)
 
@@ -31,14 +31,15 @@ import astropy.io.fits
 import astropy.wcs
 import galsim
 
+from EL_PythonUtils.utilities import run_only_once
 from SHE_PPT import magic_values as mv
 from SHE_PPT import mdb
 from SHE_PPT.mask import (as_bool, is_masked_bad,
                           is_masked_suspect_or_bad, masked_off_image)
-from SHE_PPT.utility import run_only_once
 import numpy as np
 
 from . import logging
+
 
 allowed_int_dtypes = (
     np.int8, np.int16, np.int32, np.uint8, np.uint16, np.uint32)

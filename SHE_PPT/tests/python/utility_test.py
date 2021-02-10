@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-22"
+__updated__ = "2021-02-10"
 
 import os
 import shutil
@@ -26,8 +26,8 @@ import shutil
 from astropy.table import Table
 import pytest
 
+from EL_PythonUtils.utilities import hash_any, get_arguments_string
 from SHE_PPT.utility import (get_nested_attr, set_nested_attr,
-                             hash_any, get_arguments_string,
                              process_directory, get_all_files)
 import numpy as np
 

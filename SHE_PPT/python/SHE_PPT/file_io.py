@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-01-06"
+__updated__ = "2021-02-10"
 
 from datetime import datetime
 import json
@@ -32,14 +32,16 @@ from xml.sax._exceptions import SAXParseException
 from astropy.io import fits
 from pyxb.exceptions_ import NamespaceError
 
+from EL_PythonUtils.utilities import run_only_once, time_to_timestamp
 from ElementsServices.DataSync import DataSync
 from SHE_PPT import magic_values as mv
 import SHE_PPT
 from SHE_PPT.logging import getLogger
-from SHE_PPT.utility import run_only_once, get_release_from_version, time_to_timestamp, get_nested_attr
+from SHE_PPT.utility import get_release_from_version, get_nested_attr
 from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider
 from ST_DataModelBindings.sys_stub import CreateFromDocument
 import numpy as np
+
 from .constants.test_data import SYNC_CONF
 
 
