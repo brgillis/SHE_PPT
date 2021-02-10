@@ -4,6 +4,8 @@ File: tests/python/detector_test.py
 Created on: 8 Nov, 2017
 """
 
+__updated__ = "2021-02-10"
+
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -22,22 +24,40 @@ Created on: 8 Nov, 2017
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 # """This script gives a small demo of the image object.
 
-__updated__ = "2019-02-27"
-
 
 import logging
 import os
 
 import pytest
 
-from SHE_PPT.detector import *
+from ElementsServices.DataSync import DataSync
+from SHE_PPT import mdb
+from SHE_PPT.constants.test_data import (SYNC_CONF, TEST_FILES_MDB, TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME)
+from SHE_PPT.detector import (get_id_string, get_detector_xy, detector_int_to_xy, detector_xy_to_int,
+                              resolve_detector_xy, get_vis_quadrant, VIS_DETECTOR_PIXELS_X, VIS_DETECTOR_PIXELS_Y)
 import numpy as np
 
 
 logging.basicConfig(level=logging.DEBUG)
 
 
-class Test_mask():
+class TestDetector():
+
+    @classmethod
+    def setup_class(cls):
+
+        cls.sync = DataSync(SYNC_CONF, TEST_FILES_MDB)
+        cls.sync.download()
+        cls.mdb_filename = cls.sync.absolutePath(os.path.join(TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME))
+
+        mdb.init(mdb_files=cls.mdb_filename)
+
+    @classmethod
+    def teardown_class(cls):
+
+        mdb.reset()
+
+        return
 
     def test_get_id_string(self):
 
@@ -115,5 +135,39 @@ class Test_mask():
 
         with pytest.raises(TypeError):
             resolve_detector_xy((1, 2, 3))
+
+        return
+
+    def test_get_vis_quadrant(self):
+
+        # Load values from the MDB
+        assert VIS_DETECTOR_PIXELS_X == mdb.get_mdb_value(mdb.mdb_keys.vis_detector_active_pixel_short_dimension_format)
+        assert VIS_DETECTOR_PIXELS_Y == mdb.get_mdb_value(mdb.mdb_keys.vis_detector_pixel_long_dimension_format)
+
+        # Test values on the detector, in the left half of detectors
+        assert get_vis_quadrant(x_pix=2047, y_pix=2067, det_iy=1) == "E"
+        assert get_vis_quadrant(x_pix=2048, y_pix=2067, det_iy=2) == "F"
+        assert get_vis_quadrant(x_pix=2047, y_pix=2068, det_iy=3) == "H"
+        assert get_vis_quadrant(x_pix=2048, y_pix=2068, det_iy=1) == "G"
+
+        # Test values on the detector, in the right half of detectors
+        assert get_vis_quadrant(x_pix=2047, y_pix=2067, det_iy=4) == "G"
+        assert get_vis_quadrant(x_pix=2048, y_pix=2067, det_iy=5) == "H"
+        assert get_vis_quadrant(x_pix=2047, y_pix=2068, det_iy=5) == "F"
+        assert get_vis_quadrant(x_pix=2048, y_pix=2068, det_iy=6) == "E"
+
+        # Test that outside values will report "X"
+        assert get_vis_quadrant(x_pix=-1, y_pix=-1, det_iy=1) == "X"
+        assert get_vis_quadrant(x_pix=1000, y_pix=-1, det_iy=1) == "X"
+        assert get_vis_quadrant(x_pix=3000, y_pix=-1, det_iy=1) == "X"
+        assert get_vis_quadrant(x_pix=5000, y_pix=-1, det_iy=1) == "X"
+        assert get_vis_quadrant(x_pix=5000, y_pix=1000, det_iy=1) == "X"
+        assert get_vis_quadrant(x_pix=5000, y_pix=3000, det_iy=1) == "X"
+        assert get_vis_quadrant(x_pix=5000, y_pix=5000, det_iy=1) == "X"
+        assert get_vis_quadrant(x_pix=3000, y_pix=5000, det_iy=1) == "X"
+        assert get_vis_quadrant(x_pix=1000, y_pix=5000, det_iy=1) == "X"
+        assert get_vis_quadrant(x_pix=-1, y_pix=5000, det_iy=1) == "X"
+        assert get_vis_quadrant(x_pix=-1, y_pix=3000, det_iy=1) == "X"
+        assert get_vis_quadrant(x_pix=-1, y_pix=1000, det_iy=1) == "X"
 
         return

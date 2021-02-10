@@ -148,10 +148,13 @@ def resolve_detector_xy(v):
 # and flipped vertically compared to how the layout actually looks
 
 
-quadrant_layout_123 = [["E", "H"],
+QUADRANT_LAYOUT_123 = [["E", "H"],
                        ["F", "G"]]
-quadrant_layout_456 = [["G", "F"],
+QUADRANT_LAYOUT_456 = [["G", "F"],
                        ["H", "E"]]
+
+VIS_DETECTOR_PIXELS_X = 4096
+VIS_DETECTOR_PIXELS_Y = 4136
 
 
 def get_vis_quadrant(x_pix: float,
@@ -168,12 +171,12 @@ def get_vis_quadrant(x_pix: float,
         return "X"
 
     if det_iy <= 3:
-        quadrant_layout = quadrant_layout_123
+        quadrant_layout = QUADRANT_LAYOUT_123
     else:
-        quadrant_layout = quadrant_layout_456
+        quadrant_layout = QUADRANT_LAYOUT_456
 
-    quad_ix = int(2 * x_pix / vis_det_specs.detector_pixels_x)
-    quad_iy = int(2 * y_pix / vis_det_specs.detector_pixels_y)
+    quad_ix = int(2 * x_pix / VIS_DETECTOR_PIXELS_X)
+    quad_iy = int(2 * y_pix / VIS_DETECTOR_PIXELS_Y)
 
     if quad_ix in (0, 1) and quad_iy in (0, 1):
         quadrant = quadrant_layout[quad_ix][quad_iy]
