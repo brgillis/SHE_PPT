@@ -19,19 +19,20 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-19"
+__updated__ = "2020-08-06"
 
 from collections import OrderedDict
 
 from astropy.table import Table
 
-from SHE_PPT import detector as dtc
-from SHE_PPT import magic_values as mv
-from SHE_PPT.flags import she_flag_version
-from SHE_PPT.logging import getLogger
-from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
-from SHE_PPT.table_formats.she_measurements import SheMeasurementsMeta, SheMeasurementsFormat
-from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties, init_table, setup_child_table_format, set_column_properties, init_table
+from .. import detector as dtc
+from .. import magic_values as mv
+from ..flags import she_flag_version
+from ..logging import getLogger
+from ..table_formats.mer_final_catalog import tf as mfc_tf
+from ..table_formats.she_measurements import SheMeasurementsMeta, SheMeasurementsFormat
+from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table, setup_child_table_format, set_column_properties, init_table
+
 
 fits_version = "8.0"
 fits_def = "she.momentsmlMeasurements"
@@ -74,18 +75,16 @@ class SheMomentsMlMeasurementsFormat(SheMeasurementsFormat):
         setup_child_table_format(self, child_label, unlabelled_columns=["OBJECT_ID"])
 
         # momentsml specific columns
-        self.re = set_column_properties(self,
-            "SHE_MOMENTSML_RE", is_optional=False, dtype=">f4", fits_dtype="E")
-        self.re_err = set_column_properties(self,
-            "SHE_MOMENTSML_RE_ERR", is_optional=False, dtype=">f4", fits_dtype="E")
-        self.flux = set_column_properties(self,
-            "SHE_MOMENTSML_FLUX", is_optional=False, dtype=">f4", fits_dtype="E")
-        self.snr = set_column_properties(self,
-            "SHE_MOMENTSML_SNR", is_optional=False, dtype=">f4", fits_dtype="E")
+        self.g1_w = set_column_properties(self,
+                                          "SHE_MOMENTSML_G1_W", is_optional=False, dtype=">f4", fits_dtype="E")
+        self.g2_w = set_column_properties(self,
+                                          "SHE_MOMENTSML_G2_W", is_optional=False, dtype=">f4", fits_dtype="E")
+        self.g1_uncal_w = set_column_properties(self,
+                                                "SHE_MOMENTSML_G1_UNCAL_W", is_optional=False, dtype=">f4", fits_dtype="E")
+        self.g2_uncal_w = set_column_properties(self,
+                                                "SHE_MOMENTSML_G2_UNCAL_W", is_optional=False, dtype=">f4", fits_dtype="E")
         self.sersic = set_column_properties(self,
-            "SHE_MOMENTSML_SERSIC_INDEX", is_optional=False, dtype=">f4", fits_dtype="E")
-        self.nexp = set_column_properties(self,
-            "SHE_MOMENTSML_NEXP", is_optional=False, dtype=">f4", fits_dtype="E")
+                                            "SHE_MOMENTSML_SERSIC_INDEX", is_optional=False, dtype=">f4", fits_dtype="E")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -105,11 +104,12 @@ tf = momentsml_measurements_table_format
 
 
 def make_momentsml_measurements_table_header(model_hash=None,
-                                  model_seed=None,
-                                  noise_seed=None,
-                                  observation_id=None,
-                                  observation_time=None,
-                                  tile_id=None,):
+                                             model_seed=None,
+                                             noise_seed=None,
+                                             observation_id=None,
+                                             pointing_id=None,
+                                             observation_time=None,
+                                             tile_id=None,):
     """
         @brief Generate a header for a shear estimates table.
 
@@ -137,6 +137,7 @@ def make_momentsml_measurements_table_header(model_hash=None,
     header[tf.m.noise_seed] = noise_seed
 
     header[tf.m.observation_id] = observation_id
+    header[tf.m.pointing_id] = pointing_id
     header[tf.m.observation_time] = observation_time
     header[tf.m.tile_id] = tile_id
 
@@ -146,16 +147,17 @@ def make_momentsml_measurements_table_header(model_hash=None,
 
 
 def initialise_momentsml_measurements_table(mer_final_catalog=None,
-                                 size=None,
-                                 optional_columns=None,
-                                 init_cols=None,
-                                 model_hash=None,
-                                 model_seed=None,
-                                 noise_seed=None,
-                                 observation_id=None,
-                                 observation_time=None,
-                                 tile_id=None,
-                                 ):
+                                            size=None,
+                                            optional_columns=None,
+                                            init_cols=None,
+                                            model_hash=None,
+                                            model_seed=None,
+                                            noise_seed=None,
+                                            observation_id=None,
+                                            pointing_id=None,
+                                            observation_time=None,
+                                            tile_id=None,
+                                            ):
     """
         @brief Initialise a shear estimates table based on a detections table, with the
                desired set of optional columns
@@ -196,11 +198,12 @@ def initialise_momentsml_measurements_table(mer_final_catalog=None,
             noise_seed = mer_final_catalog.meta[mfc_tf.m.noise_seed]
 
     momentsml_measurements_table.meta = make_momentsml_measurements_table_header(model_hash=model_hash,
-                                                           model_seed=model_seed,
-                                                           noise_seed=noise_seed,
-                                                           observation_id=observation_id,
-                                                           observation_time=observation_time,
-                                                           tile_id=tile_id)
+                                                                                 model_seed=model_seed,
+                                                                                 noise_seed=noise_seed,
+                                                                                 observation_id=observation_id,
+                                                                                 pointing_id=pointing_id,
+                                                                                 observation_time=observation_time,
+                                                                                 tile_id=tile_id)
 
     assert(is_in_format(momentsml_measurements_table, tf))
 

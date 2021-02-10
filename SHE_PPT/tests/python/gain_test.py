@@ -20,8 +20,9 @@
 
 __updated__ = "2019-02-27"
 
-from numpy.testing import assert_almost_equal
 import unittest
+
+from numpy.testing import assert_almost_equal
 
 from SHE_PPT.gain import get_ADU_from_count, get_count_from_ADU
 

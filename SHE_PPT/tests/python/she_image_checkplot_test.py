@@ -28,11 +28,13 @@ __updated__ = "2019-02-27"
 
 import logging
 import os
+
 import pytest
 
 import SHE_PPT.she_image
 import SHE_PPT.she_image_checkplot
 import numpy as np
+
 
 # Disable tests if we don't have a display
 if 'DISPLAY' in os.environ:

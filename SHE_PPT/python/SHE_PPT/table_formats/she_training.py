@@ -25,9 +25,10 @@ from collections import OrderedDict
 
 from astropy.table import Table
 
-from SHE_PPT import magic_values as mv
-from SHE_PPT.flags import she_flag_version
-from SHE_PPT.table_utility import setup_table_format, set_column_properties
+from .. import magic_values as mv
+from ..flags import she_flag_version
+from ..table_utility import setup_table_format, set_column_properties
+
 
 fits_version = "8.0"
 fits_def = "she.training"
@@ -78,9 +79,9 @@ class SheTrainingFormat(object):
         self.e2 = set_column_properties(self, "E2", dtype=">f4", fits_dtype="E",
                                         comment="Mean ellipticity measurement of this object, component 2")
         self.e1_err = set_column_properties(self, "E1_ERR", dtype=">f4", fits_dtype="E",
-                                        comment="Error on mean ellipticity measurement of this object, component 1")
+                                            comment="Error on mean ellipticity measurement of this object, component 1")
         self.e2_err = set_column_properties(self, "E2_ERR", dtype=">f4", fits_dtype="E",
-                                        comment="Error on mean ellipticity measurement of this object, component 2")
+                                            comment="Error on mean ellipticity measurement of this object, component 2")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())

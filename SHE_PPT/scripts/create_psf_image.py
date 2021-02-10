@@ -27,12 +27,13 @@ __updated__ = "2019-06-24"
 import argparse
 import os
 
+from astropy.io import fits
+from astropy.table import Table
+
 from SHE_PPT import products
-from SHE_PPT.file_io import find_file, get_allowed_filename, read_xml_product,write_xml_product
+from SHE_PPT.file_io import find_file, get_allowed_filename, read_xml_product, write_xml_product
 from SHE_PPT.table_formats.she_psf_model_image import initialise_psf_table
 from SHE_PPT.table_formats.she_psf_model_image import tf as pstf
-from astropy.table import Table
-from astropy.io import fits
 import numpy as np
 
 
@@ -47,40 +48,39 @@ def main():
     # Input arguments
     parser.add_argument('--source_dir', default='.', type=str,
                         help="Directory in which psf-images are contained (default '.').")
-    parser.add_argument('--mer_catalogue',type=str,
+    parser.add_argument('--mer_catalogue', type=str,
                         help="Mer catalogue")
-    
+
     # Output arguments
     parser.add_argument('--dest_dir', default='.', type=str,
                         help="Directory in which output psf-images are contained (default '.').")
     parser.add_argument('--out_psf_image', default="obj_cat.xml", type=str,
                         help="Target Final PSF image product to be created (default psf_model_image.xml)")
-    
+
     args = parser.parse_args()
 
     # Read in the galaxy (and optionally star) catalogues
     psf_tables = []
-    
-    
+
     # Read in mer final catalogue
-    mer_cat_prod=read_xml_product(os.path.join(args.source_dir,args.mer_catalogue))
-        
+    mer_cat_prod = read_xml_product(os.path.join(args.source_dir, args.mer_catalogue))
+
     mer_cat_fitsfile = mer_cat_prod.Data.DataStorage.DataContainer.FileName
-    
-    catalogue = Table.read(os.path.join(args.source_dir,'data',mer_cat_fitsfile))
-   
+
+    catalogue = Table.read(os.path.join(args.source_dir, 'data', mer_cat_fitsfile))
+
     filename = 'TEST_PSF.fits'
 
     hdulist = fits.HDUList([fits.PrimaryHDU()])  # Start with an empty primary HDU
 
     # Initialize table with null values
     num_rows = 2
-    
+
     # Initialise without any columns
     psfc = initialise_psf_table()
-    # Add rows separately 
+    # Add rows separately
     for row in range(num_rows):
-        psfc.add_row([catalogue.field('OBJECT_ID')[row],-1,-1,-1,-1,-1,-1.0,-1.0,'NONE','NONE'])
+        psfc.add_row([catalogue.field('OBJECT_ID')[row], -1, -1, -1, -1, -1, -1.0, -1.0, 'NONE', 'NONE'])
 
     # Add the table to the HDU list
     psfc_hdu = fits.table_to_hdu(psfc)
@@ -90,9 +90,9 @@ def main():
     psf_tables[0].remove_indices(pstf.ID)  # Necessary for bug workaround in astropy
     psf_tables[0].add_index(pstf.ID)  # Allow it to be indexed by galaxy ID
 
-        # Write out the table
-    hdulist.writeto(os.path.join(args.source_dir,'data',filename), overwrite=True)
-    
+    # Write out the table
+    hdulist.writeto(os.path.join(args.source_dir, 'data', filename), overwrite=True)
+
     return
 
 

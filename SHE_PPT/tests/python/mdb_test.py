@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-14"
+__updated__ = "2021-02-10"
 
 import logging
 import os
@@ -29,6 +29,7 @@ import pytest
 from ElementsServices.DataSync import DataSync
 from SHE_PPT import magic_values as mv
 from SHE_PPT import mdb
+from SHE_PPT.constants.test_data import (SYNC_CONF, TEST_FILES_MDB, TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME)
 import numpy as np
 
 
@@ -41,9 +42,9 @@ class TestMDB:
     @classmethod
     def setup_class(cls):
 
-        cls.sync = DataSync("testdata/sync.conf", "testdata/test_mdb.txt")
+        cls.sync = DataSync(SYNC_CONF, TEST_FILES_MDB)
         cls.sync.download()
-        cls.filename = cls.sync.absolutePath("SHE_PPT_8_5/sample_mdb-SC8.xml")
+        cls.filename = cls.sync.absolutePath(os.path.join(TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME))
 
         cls.test_key = "SpaceSegment.Instrument.VIS.VISDetectorPixelLongDimensionFormat"
         cls.test_detector = "1-2"

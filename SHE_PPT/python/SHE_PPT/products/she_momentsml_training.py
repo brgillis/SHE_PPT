@@ -28,10 +28,12 @@ __updated__ = "2020-06-30"
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
 
 
-from SHE_PPT.file_io import read_xml_product, find_aux_file
-from SHE_PPT.product_utility import get_data_filename_from_product, set_data_filename_of_product
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.momentsmltraining_stub import dpdSheMomentsMlTraining
+
+from ..file_io import read_xml_product, find_aux_file
+from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
+
 
 sample_file_name = "SHE_PPT/sample_momentsml_training.xml"
 

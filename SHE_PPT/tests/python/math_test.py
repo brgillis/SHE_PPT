@@ -22,14 +22,15 @@
 __updated__ = "2019-02-27"
 
 import logging
-from numpy.testing import assert_almost_equal
 import os
+
+from numpy.testing import assert_almost_equal
 import pytest
+from scipy.stats import linregress
 
 from SHE_PPT.math import (linregress_with_errors,
                           get_linregress_statistics, combine_linregress_statistics,)
 import numpy as np
-from scipy.stats import linregress
 
 
 class Test_math():

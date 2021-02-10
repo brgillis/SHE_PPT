@@ -27,6 +27,7 @@ __updated__ = "2019-02-27"
 
 import logging
 import os
+
 import pytest
 
 import SHE_PPT.mask as m

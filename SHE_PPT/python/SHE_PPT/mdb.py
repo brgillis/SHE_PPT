@@ -10,11 +10,13 @@ import re
 from astropy.io import fits
 from scipy.integrate.quadpack import quad
 
-from SHE_PPT.file_io import find_file
-from SHE_PPT.logging import getLogger
-import SHE_PPT.magic_values as mv
-from SHE_PPT.utility import run_only_once
+from EL_PythonUtils.utilities import run_only_once
 from ST_DM_MDBTools.Mdb import Mdb
+
+from . import magic_values as mv
+from .file_io import find_file
+from .logging import getLogger
+
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -29,7 +31,7 @@ from ST_DM_MDBTools.Mdb import Mdb
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
-__updated__ = "2020-07-19"
+__updated__ = "2021-02-10"
 
 _mdb_not_inited_exception = RuntimeError(
     "mdb module must be initialised with MDB xml object before use.")

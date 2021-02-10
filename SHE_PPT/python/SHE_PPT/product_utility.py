@@ -19,13 +19,15 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-11-16"
+__updated__ = "2021-02-10"
 
-from SHE_PPT.logging import getLogger
-from SHE_PPT.utility import run_only_once, get_nested_attr
+from EL_PythonUtils.utilities import run_only_once
 from ST_DataModelBindings.dpd.she.intermediategeneral_stub import dpdSheIntermediateGeneral
 from ST_DataModelBindings.dpd.she.intermediateobservationcatalog_stub import dpdSheIntermediateObservationCatalog
 from ST_DataModelBindings.dpd.she.placeholdergeneral_stub import dpdShePlaceholderGeneral
+
+from .logging import getLogger
+from .utility import get_nested_attr
 
 
 logger = getLogger(__name__)

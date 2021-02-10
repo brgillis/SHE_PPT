@@ -25,10 +25,11 @@ from collections import OrderedDict
 
 from astropy.table import Table
 
-from SHE_PPT import magic_values as mv
-from SHE_PPT.flags import she_flag_version
-from SHE_PPT.table_formats.she_training import SheTrainingMeta, SheTrainingFormat
-from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties, init_table, setup_child_table_format, set_column_properties, init_table
+from .. import magic_values as mv
+from ..flags import she_flag_version
+from ..table_formats.she_training import SheTrainingMeta, SheTrainingFormat
+from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table, setup_child_table_format, set_column_properties, init_table
+
 
 fits_version = "8.0"
 fits_def = "she.regaussTraining"
@@ -101,8 +102,8 @@ def make_regauss_training_table_header():
 
 
 def initialise_regauss_training_table(size=None,
-                                 optional_columns=None,
-                                 init_cols=None,):
+                                      optional_columns=None,
+                                      init_cols=None,):
     """
         @brief Initialise a galaxy population table.
 

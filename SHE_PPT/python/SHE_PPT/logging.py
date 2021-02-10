@@ -25,6 +25,7 @@ __updated__ = "2019-02-27"
 
 import os
 
+
 try:
     import ElementsKernel.Logging as log
 except ImportError as _e:

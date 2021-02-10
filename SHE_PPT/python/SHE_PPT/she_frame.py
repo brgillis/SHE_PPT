@@ -22,7 +22,7 @@ Created on: 02/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2020-12-14"
+__updated__ = "2021-02-10"
 
 from collections import namedtuple
 from copy import deepcopy
@@ -34,18 +34,21 @@ from astropy.io.fits import HDUList, BinTableHDU, ImageHDU, PrimaryHDU
 from astropy.table import Table
 from astropy.wcs import WCS
 
-from SHE_PPT import logging
-from SHE_PPT import magic_values as mv
-from SHE_PPT import products
-import SHE_PPT.detector
-from SHE_PPT.file_io import read_xml_product
-from SHE_PPT.she_image import SHEImage
-from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
-from SHE_PPT.table_formats.she_psf_model_image import tf as pstf
-from SHE_PPT.table_utility import is_in_format
-import SHE_PPT.telescope_coords as tc
-from SHE_PPT.utility import find_extension, load_wcs, run_only_once
+import EL_CoordsUtils.telescope_coords as tc
+from EL_PythonUtils.utilities import run_only_once
 import numpy as np
+
+from . import detector
+from . import logging
+from . import magic_values as mv
+from . import products
+from .file_io import read_xml_product
+from .she_image import SHEImage
+from .table_formats.mer_final_catalog import tf as mfc_tf
+from .table_formats.she_psf_model_image import tf as pstf
+from .table_utility import is_in_format
+from .utility import find_extension
+
 
 logger = logging.getLogger(__name__)
 
@@ -400,8 +403,6 @@ class SHEFrame(object):
             Maximum x-coordinate of detectors
         y_max : int
             Maximum y-coordinate of detectors
-        apply_sc3_fix : bool
-            Whether or not to apply fix for bad headers in SC3 VIS data
 
         Any kwargs are passed to the reading of the fits data
         """
@@ -491,7 +492,7 @@ class SHEFrame(object):
         for x_i in np.linspace(1, x_max, x_max, dtype=np.int8):
             for y_i in np.linspace(1, y_max, y_max, dtype=np.int8):
 
-                id_string = SHE_PPT.detector.get_id_string(x_i, y_i)
+                id_string = detector.get_id_string(x_i, y_i)
 
                 if frame_data_hdulist is not None:
 
@@ -508,7 +509,7 @@ class SHEFrame(object):
                         continue
 
                     detector_data = frame_data_hdulist[sci_i].data.transpose()
-                    detector_wcs = load_wcs(detector_header)
+                    detector_wcs = WCS(detector_header)
 
                     noisemap_extname = id_string + "." + mv.noisemap_tag
                     noisemap_i = find_extension(

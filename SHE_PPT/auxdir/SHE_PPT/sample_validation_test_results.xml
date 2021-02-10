@@ -54,6 +54,10 @@
 			</ValidatedRequirements>
 			<TestId>-1</TestId>
 			<TestDescription></TestDescription>
+			<AnalysisResult>
+				<Result>PASSED</Result>
+				<AnalysisFiles></AnalysisFiles>
+			</AnalysisResult>
 		</ValidationTestList>
 	</Data>
 	<QualityFlags>

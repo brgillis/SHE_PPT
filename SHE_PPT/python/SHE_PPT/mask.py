@@ -28,11 +28,12 @@ function can be used to obtain this.
 __updated__ = "2019-02-27"
 
 import os
+
 import numpy as np
+
 
 # Mask format - increment version whenever there are non-trivial changes
 # to this file
-
 mask_fmt_label = "MSK_FMT_V"
 mask_fmt_version = "0.2"
 

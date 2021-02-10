@@ -23,7 +23,7 @@
 	</Header>
 	<Data>
 		<DataStorage>
-			<DataContainer filestatus="">
+			<DataContainer filestatus="PROPOSED">
 				<FileName>None</FileName>
 			</DataContainer>
 		</DataStorage>

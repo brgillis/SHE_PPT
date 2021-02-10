@@ -25,12 +25,14 @@ from collections import OrderedDict
 
 from astropy.table import Table
 
-from SHE_PPT import magic_values as mv
-from SHE_PPT.flags import she_flag_version
-from SHE_PPT.logging import getLogger
-from SHE_PPT.math import LinregressStatistics, BiasMeasurements, BFDSumResults
-from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties, init_table
 import numpy as np
+
+from .. import magic_values as mv
+from ..flags import she_flag_version
+from ..logging import getLogger
+from ..math import LinregressStatistics, BiasMeasurements, BFDSumResults
+from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+
 
 fits_version = "8.0"
 fits_def = "bfdBiasStatistics"

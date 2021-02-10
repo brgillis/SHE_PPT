@@ -108,7 +108,7 @@
 		</BfdMoments>
 		<KsbShearMeasurements>
 			<DataStorage format="she.ksbMeasurements" version="8.0">
-				<DataContainer filestatus="">
+				<DataContainer filestatus="PROPOSED">
 					<FileName>None</FileName>
 				</DataContainer>
 			</DataStorage>
@@ -139,6 +139,7 @@
 			<Valid>VALID</Valid>
 		</RegaussShearMeasurements>
 		<ObservationIdList>-1</ObservationIdList>
+		<PointingIdList>-1</PointingIdList>
 	</Data>
 	<QualityFlags>
 		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true</DummyFlag>

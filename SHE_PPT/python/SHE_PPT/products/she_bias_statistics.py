@@ -7,7 +7,7 @@
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines.
 """
 
-__updated__ = "2020-11-16"
+__updated__ = "2021-02-10"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -27,17 +27,18 @@ import os
 
 from astropy.table import Table
 
+from EL_PythonUtils.utilities import hash_any
 import SHE_PPT
-from SHE_PPT.file_io import read_xml_product, find_aux_file, get_allowed_filename, find_file
-from SHE_PPT.logging import getLogger
-from SHE_PPT.product_utility import get_data_filename_from_product, set_data_filename_of_product, init_intermediate_general
-from SHE_PPT.table_formats.she_bfd_bias_statistics import initialise_bfd_bias_statistics_table, get_bfd_bias_statistics
-from SHE_PPT.table_formats.she_bias_statistics import tf, initialise_bias_statistics_table, get_bias_statistics, get_bias_measurements
-from SHE_PPT.utility import hash_any
 import ST_DM_DmUtils.DmUtils as dm_utils
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.intermediategeneral_stub import dpdSheIntermediateGeneral
 from ST_DataModelBindings.pro import she_stub as she_pro
+
+from ..file_io import read_xml_product, find_aux_file, get_allowed_filename, find_file
+from ..logging import getLogger
+from ..product_utility import get_data_filename_from_product, set_data_filename_of_product, init_intermediate_general
+from ..table_formats.she_bfd_bias_statistics import initialise_bfd_bias_statistics_table, get_bfd_bias_statistics
+from ..table_formats.she_bias_statistics import tf, initialise_bias_statistics_table, get_bias_statistics, get_bias_measurements
 
 
 sample_file_name = 'SHE_PPT/sample_intermediate_general.xml'

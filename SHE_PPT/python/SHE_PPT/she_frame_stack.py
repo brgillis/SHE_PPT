@@ -22,7 +22,7 @@ Created on: 05/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2020-08-25"
+__updated__ = "2021-02-09"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
@@ -30,17 +30,20 @@ import os.path
 
 from astropy import table
 from astropy.io import fits
+import astropy.wcs
 
-from SHE_PPT import logging
-from SHE_PPT import magic_values as mv
-from SHE_PPT import products
-from SHE_PPT.file_io import read_listfile, read_xml_product, find_file
-from SHE_PPT.she_frame import SHEFrame
-from SHE_PPT.she_image import SHEImage
-from SHE_PPT.she_image_stack import SHEImageStack
-from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf, initialise_mer_final_catalog
-from SHE_PPT.utility import find_extension, load_wcs
 import numpy as np
+
+from . import logging
+from . import magic_values as mv
+from . import products
+from .file_io import read_listfile, read_xml_product, find_file
+from .she_frame import SHEFrame
+from .she_image import SHEImage
+from .she_image_stack import SHEImageStack
+from .table_formats.mer_final_catalog import tf as mfc_tf, initialise_mer_final_catalog
+from .utility import find_extension
+
 
 logger = logging.getLogger(__name__)
 
@@ -520,8 +523,8 @@ class SHEFrameStack(object):
 
                     detections_product = read_xml_product(os.path.join(workdir, detections_product_filename))
                     logger.debug("DP: %s, %s, %s" % (workdir,
-                        detections_product_filename,
-                        detections_product.get_data_filename()))
+                                                     detections_product_filename,
+                                                     detections_product.get_data_filename()))
                     detections_catalogue = table.Table.read(
                         os.path.join(workdir, detections_product.get_data_filename()))
 
@@ -658,7 +661,7 @@ class SHEFrameStack(object):
                                      background_map=stacked_bkg_data,
                                      segmentation_map=stacked_seg_data,
                                      header=stacked_image_header,
-                                     wcs=load_wcs(stacked_image_header))
+                                     wcs=astropy.wcs.WCS(stacked_image_header))
 
         # Construct and return a SHEFrameStack object
         return SHEFrameStack(exposures=exposures,

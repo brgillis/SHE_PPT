@@ -18,9 +18,10 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-12-15"
+__updated__ = "2021-02-10"
 
 from copy import deepcopy
+import os
 
 from astropy.io import fits
 import galsim
@@ -29,6 +30,7 @@ import pytest
 from ElementsServices.DataSync import DataSync
 from SHE_PPT import flags
 from SHE_PPT import mdb
+from SHE_PPT.constants.test_data import (SYNC_CONF, TEST_FILES_MDB, TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME)
 from SHE_PPT.file_io import find_file
 from SHE_PPT.magic_values import scale_label, gain_label
 from SHE_PPT.she_image import SHEImage
@@ -45,9 +47,9 @@ class TestCase:
         """ Set up a default galaxy stamp and PSF stamp for testing.
         """
 
-        sync = DataSync("testdata/sync.conf", "testdata/test_mdb.txt")
+        sync = DataSync(SYNC_CONF, TEST_FILES_MDB)
         sync.download()
-        mdb_filename = sync.absolutePath("SHE_PPT_8_5/sample_mdb-SC8.xml")
+        mdb_filename = sync.absolutePath(os.path.join(TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME))
 
         mdb.init(mdb_files=mdb_filename)
 

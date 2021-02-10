@@ -25,9 +25,10 @@ from collections import OrderedDict
 
 from astropy.table import Table
 
-from SHE_PPT import magic_values as mv
-from SHE_PPT.flags import she_flag_version
-from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+from .. import magic_values as mv
+from ..flags import she_flag_version
+from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+
 
 fits_version = "8.0"
 fits_def = "she.simulationPlan"
@@ -89,13 +90,13 @@ class SheSimulationPlanFormat(object):
                                                      comment="Model seed step for this batch.")
 
         self.suppress_noise = set_column_properties(self,
-            "SUP_NOISE", dtype="bool", fits_dtype="L")
+                                                    "SUP_NOISE", dtype="bool", fits_dtype="L")
         self.num_detectors = set_column_properties(self,
-            "NUM_DETECTORS", dtype=">i2", fits_dtype="I")
+                                                   "NUM_DETECTORS", dtype=">i2", fits_dtype="I")
         self.num_galaxies = set_column_properties(self,
-            "NUM_GALAXIES", dtype=">i2", fits_dtype="I")
+                                                  "NUM_GALAXIES", dtype=">i2", fits_dtype="I")
         self.render_background = set_column_properties(self,
-            "RENDER_BKG", dtype="bool", fits_dtype="L")
+                                                       "RENDER_BKG", dtype="bool", fits_dtype="L")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -130,8 +131,8 @@ def make_simulation_plan_table_header():
 
 
 def initialise_simulation_plan_table(size=None,
-                                 optional_columns=None,
-                                 init_cols=None,):
+                                     optional_columns=None,
+                                     init_cols=None,):
     """
         @brief Initialise a galaxy population table.
 

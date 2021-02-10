@@ -14,9 +14,10 @@
 
 from astropy.table import Table
 
-from SHE_PPT import telescope_coords as tc
+from EL_CoordsUtils import telescope_coords as tc
 from SHE_PPT.file_io import find_file
 import numpy as np
+
 
 mdb_filename = "WEB/SHE_PPT_8_5/sample_mdb-SC8.xml"
 qualified_mdb_filename = find_file(mdb_filename)

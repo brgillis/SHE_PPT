@@ -19,18 +19,19 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-09-22"
+__updated__ = "2021-02-09"
 
 from collections import OrderedDict
 
 from astropy.table import Table
 
-from SHE_PPT import detector as dtc
-from SHE_PPT import magic_values as mv
-from SHE_PPT.flags import she_flag_version
-from SHE_PPT.logging import getLogger
-from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
-from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+from .. import detector as dtc
+from .. import magic_values as mv
+from ..flags import she_flag_version
+from ..logging import getLogger
+from ..table_formats.mer_final_catalog import tf as mfc_tf
+from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+
 
 fits_version = "8.0"
 fits_def = "she.lensmcChains"
@@ -61,6 +62,7 @@ class SheLensMcChainsMeta(object):
         self.model_seed = mv.model_seed_label
         self.noise_seed = mv.noise_seed_label
         self.observation_id = mv.obs_id_label
+        self.pointing_id = mv.pnt_id_label
         self.observation_time = mv.obs_time_label
         self.tile_id = mv.tile_id_label
         self.method = "SEMETHOD"
@@ -78,6 +80,7 @@ class SheLensMcChainsMeta(object):
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
                                      (self.observation_id, None),
+                                     (self.pointing_id, "List of pointing IDs"),
                                      (self.observation_time, None),
                                      (self.tile_id, None),
                                      (self.method, "Shear estimation method used to generate these chains"),
@@ -115,7 +118,9 @@ class SheLensMcChainsFormat(object):
         self.fit_class = set_column_properties(self,
                                                "SHE_LENSMC_FIT_CLASS", dtype=">i2", fits_dtype="I")
         self.weight = set_column_properties(self,
-                                            "SHE_LENSMC_CHAINS_WEIGHT", dtype=">f4", fits_dtype="E")
+                                            "SHE_LENSMC_CHAINS_SHEAR_WEIGHT", dtype=">f4", fits_dtype="E")
+        self.shape_weight = set_column_properties(self,
+                                                  "SHE_LENSMC_CHAINS_SHAPE_WEIGHT", dtype=">f4", fits_dtype="E", is_optional=True)
         self.e_var = set_column_properties(self,
                                            "SHE_LENSMC_E_VAR", dtype=">f4", fits_dtype="E", is_optional=True)
         self.shape_noise = set_column_properties(self,
@@ -172,6 +177,7 @@ def make_lensmc_chains_table_header(model_hash=None,
                                     model_seed=None,
                                     noise_seed=None,
                                     observation_id=None,
+                                    pointing_id=None,
                                     observation_time=None,
                                     method="LensMC",
                                     tile_id=None):
@@ -205,6 +211,7 @@ def make_lensmc_chains_table_header(model_hash=None,
     header[tf.m.noise_seed] = noise_seed
 
     header[tf.m.observation_id] = observation_id
+    header[tf.m.pointing_id] = pointing_id
     header[tf.m.observation_time] = observation_time
     header[tf.m.tile_id] = tile_id
 
@@ -226,6 +233,7 @@ def initialise_lensmc_chains_table(mer_final_catalog=None,
                                    model_seed=None,
                                    noise_seed=None,
                                    observation_id=None,
+                                   pointing_id=None,
                                    observation_time=None,
                                    method="LensMC",
                                    tile_id=None,
@@ -269,14 +277,14 @@ def initialise_lensmc_chains_table(mer_final_catalog=None,
         if noise_seed is None:
             noise_seed = mer_final_catalog.meta[mfc_tf.m.noise_seed]
 
-    lensmc_chains_table.meta = make_lensmc_chains_table_header(
-        model_hash=model_hash,
-        model_seed=model_seed,
-        noise_seed=noise_seed,
-        observation_id=observation_id,
-        observation_time=observation_time,
-        method=method,
-        tile_id=tile_id,)
+    lensmc_chains_table.meta = make_lensmc_chains_table_header(model_hash=model_hash,
+                                                               model_seed=model_seed,
+                                                               noise_seed=noise_seed,
+                                                               observation_id=observation_id,
+                                                               pointing_id=pointing_id,
+                                                               observation_time=observation_time,
+                                                               method=method,
+                                                               tile_id=tile_id,)
 
     assert(is_in_format(lensmc_chains_table, tf))
 

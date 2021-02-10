@@ -19,19 +19,21 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-19"
+__updated__ = "2021-02-10"
 
 from collections import OrderedDict
 
 from astropy.table import Table
 
-from SHE_PPT import magic_values as mv
-from SHE_PPT.flags import she_flag_version
-from SHE_PPT.logging import getLogger
-from SHE_PPT.math import LinregressStatistics, LinregressResults, BiasMeasurements
-from SHE_PPT.table_formats.she_bfd_bias_statistics import tf as bfdtf
-from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties, init_table
 import numpy as np
+
+from .. import magic_values as mv
+from ..flags import she_flag_version
+from ..logging import getLogger
+from ..math import LinregressStatistics, LinregressResults, BiasMeasurements
+from ..table_formats.she_bfd_bias_statistics import tf as bfdtf
+from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+
 
 fits_version = "8.0"
 fits_def = "she.biasStatistics"
@@ -217,8 +219,8 @@ def make_bias_statistics_table_header(ID=None,
 
 
 def initialise_bias_statistics_table(size=None,
-                                 optional_columns=None,
-                                 init_cols=None,
+                                     optional_columns=None,
+                                     init_cols=None,
                                      ID=None,
                                      method='Unspecified',
                                      g1_bias_measurements=None,

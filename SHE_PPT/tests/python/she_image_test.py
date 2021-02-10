@@ -22,7 +22,7 @@ Created on: 08/18/17
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 # """This script gives a small demo of the image object.
 
-__updated__ = "2020-10-21"
+__updated__ = "2021-02-10"
 
 from copy import deepcopy
 import logging
@@ -35,9 +35,11 @@ import pytest
 from ElementsServices.DataSync import DataSync
 from SHE_PPT import file_io
 from SHE_PPT import mdb
+from SHE_PPT.constants.test_data import (SYNC_CONF, TEST_FILES_MDB, TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME)
 from SHE_PPT.magic_values import segmap_unassigned_value
 import SHE_PPT.she_image
 import numpy as np
+
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -47,9 +49,9 @@ class Test_she_image():
     @classmethod
     def setup_class(cls):
 
-        sync = DataSync("testdata/sync.conf", "testdata/test_mdb.txt")
+        sync = DataSync(SYNC_CONF, TEST_FILES_MDB)
         sync.download()
-        mdb_filename = sync.absolutePath("SHE_PPT_8_5/sample_mdb-SC8.xml")
+        mdb_filename = sync.absolutePath(os.path.join(TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME))
 
         mdb.init(mdb_filename)
 

@@ -23,10 +23,12 @@
 
 __updated__ = "2020-08-24"
 
-from SHE_PPT.file_io import read_xml_product, find_aux_file
-from SHE_PPT.product_utility import get_data_filename_from_product, set_data_filename_of_product
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.mer.raw.finalcatalog_stub import dpdMerFinalCatalog
+
+from ..file_io import read_xml_product, find_aux_file
+from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
+
 
 sample_file_name = "SHE_PPT/sample_mer_final_catalog.xml"
 

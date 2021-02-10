@@ -25,9 +25,10 @@ from collections import OrderedDict
 
 from astropy.table import Table
 
-from SHE_PPT import magic_values as mv
-from SHE_PPT.flags import she_flag_version
-from SHE_PPT.table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+from .. import magic_values as mv
+from ..flags import she_flag_version
+from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+
 
 fits_version = "8.0"
 fits_def = "she.starCatalog"
@@ -81,42 +82,42 @@ class SheStarCatalogFormat(object):
         # Column names and info
 
         self.id = set_column_properties(self,
-            "OBJECT_ID", dtype=">i8", fits_dtype="K",
-            comment="ID of this object in the galaxy population priors table.")
+                                        "OBJECT_ID", dtype=">i8", fits_dtype="K",
+                                        comment="ID of this object in the galaxy population priors table.")
 
         self.det_x = set_column_properties(self,
-            "SHE_STARCAT_DET_X", dtype=">i4", fits_dtype="I")
+                                           "SHE_STARCAT_DET_X", dtype=">i4", fits_dtype="I")
         self.det_y = set_column_properties(self,
-            "SHE_STARCAT_DET_Y", dtype=">i4", fits_dtype="I")
+                                           "SHE_STARCAT_DET_Y", dtype=">i4", fits_dtype="I")
         self.x = set_column_properties(self,
-            "SHE_STARCAT_X", dtype=">f4", fits_dtype="E")
+                                       "SHE_STARCAT_X", dtype=">f4", fits_dtype="E")
         self.x_err = set_column_properties(self,
-            "SHE_STARCAT_X_ERR", dtype=">f4", fits_dtype="E")
+                                           "SHE_STARCAT_X_ERR", dtype=">f4", fits_dtype="E")
         self.y = set_column_properties(self,
-            "SHE_STARCAT_Y", dtype=">f4", fits_dtype="E")
+                                       "SHE_STARCAT_Y", dtype=">f4", fits_dtype="E")
         self.y_err = set_column_properties(self,
-            "SHE_STARCAT_Y_ERR", dtype=">f4", fits_dtype="E")
+                                           "SHE_STARCAT_Y_ERR", dtype=">f4", fits_dtype="E")
         self.ra = set_column_properties(self,
-            "SHE_STARCAT_UPDATED_RA", comment="deg", dtype=">f8", fits_dtype="D")
+                                        "SHE_STARCAT_UPDATED_RA", comment="deg", dtype=">f8", fits_dtype="D")
         self.ra_err = set_column_properties(self,
-            "SHE_STARCAT_UPDATED_RA_ERR", comment="deg", dtype=">f8", fits_dtype="E")
+                                            "SHE_STARCAT_UPDATED_RA_ERR", comment="deg", dtype=">f8", fits_dtype="E")
         self.dec = set_column_properties(self,
-            "SHE_STARCAT_UPDATED_DEC", comment="deg", dtype=">f8", fits_dtype="D")
+                                         "SHE_STARCAT_UPDATED_DEC", comment="deg", dtype=">f8", fits_dtype="D")
         self.dec_err = set_column_properties(self,
-            "SHE_STARCAT_UPDATED_DEC_ERR", comment="deg", dtype=">f8", fits_dtype="E")
+                                             "SHE_STARCAT_UPDATED_DEC_ERR", comment="deg", dtype=">f8", fits_dtype="E")
         self.flux = set_column_properties(self,
-            "SHE_STARCAT_FLUX", dtype=">f4", fits_dtype="E")
+                                          "SHE_STARCAT_FLUX", dtype=">f4", fits_dtype="E")
         self.flux_err = set_column_properties(self,
-            "SHE_STARCAT_FLUX_ERR", dtype=">f4", fits_dtype="E")
+                                              "SHE_STARCAT_FLUX_ERR", dtype=">f4", fits_dtype="E")
 
         self.e1 = set_column_properties(self, "SHE_STARCAT_E1", dtype=">f4", fits_dtype="E",
                                         comment="Mean ellipticity measurement of this object, component 1")
         self.e2 = set_column_properties(self, "SHE_STARCAT_E2", dtype=">f4", fits_dtype="E",
                                         comment="Mean ellipticity measurement of this object, component 2")
         self.e1_err = set_column_properties(self, "SHE_STARCAT_E1_ERR", dtype=">f4", fits_dtype="E",
-                                        comment="Error on mean ellipticity measurement of this object, component 1")
+                                            comment="Error on mean ellipticity measurement of this object, component 1")
         self.e2_err = set_column_properties(self, "SHE_STARCAT_E2_ERR", dtype=">f4", fits_dtype="E",
-                                        comment="Error on mean ellipticity measurement of this object, component 2")
+                                            comment="Error on mean ellipticity measurement of this object, component 2")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -158,8 +159,8 @@ def initialise_star_catalog(roll_ang=None,
                             observation_id=None,
                             observation_time=None,
                             size=None,
-                                 optional_columns=None,
-                                 init_cols=None,):
+                            optional_columns=None,
+                            init_cols=None,):
     """
         @brief Initialise a galaxy population table.
 

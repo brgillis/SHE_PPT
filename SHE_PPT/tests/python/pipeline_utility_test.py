@@ -21,6 +21,7 @@
 __updated__ = "2020-07-22"
 
 import os
+
 import pytest
 
 from SHE_PPT import products
@@ -112,7 +113,8 @@ class TestUtility:
 
         # Test we get out of the file what we put in, for each type of configuration file
 
-        test_calibration_dict = {"SHE_CTE_EstimateShear_methods": "KSB", "SHE_CTE_CleanupBiasMeasurement_cleanup": "False"}
+        test_calibration_dict = {"SHE_CTE_EstimateShear_methods": "KSB",
+                                 "SHE_CTE_CleanupBiasMeasurement_cleanup": "False"}
 
         write_calibration_config(test_calibration_dict, test1_filename, workdir=self.workdir)
 
