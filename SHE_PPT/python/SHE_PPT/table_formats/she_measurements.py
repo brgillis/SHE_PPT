@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-09-23"
+__updated__ = "2021-02-10"
 
 from collections import OrderedDict
 
@@ -160,13 +160,13 @@ class SheMeasurementsFormat(object):
                                                  "ASSUMED_SHAPE_NOISE", dtype=">f4", fits_dtype="E", is_optional=True)
 
         self.ra = set_column_properties(self,
-                                        "UPDATED_RA", comment="deg")
+                                        "UPDATED_RA", dtype=">f4", fits_dtype="E", comment="deg")
         self.ra_err = set_column_properties(self,
-                                            "UPDATED_RA_ERR", comment="deg")
+                                            "UPDATED_RA_ERR", dtype=">f4", fits_dtype="E", comment="deg")
         self.dec = set_column_properties(self,
-                                         "UPDATED_DEC", comment="deg")
+                                         "UPDATED_DEC", dtype=">f4", fits_dtype="E", comment="deg")
         self.dec_err = set_column_properties(self,
-                                             "UPDATED_DEC_ERR", comment="deg")
+                                             "UPDATED_DEC_ERR", dtype=">f4", fits_dtype="E", comment="deg")
 
         # Information on other galaxy properties
 

@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-08-06"
+__updated__ = "2021-02-10"
 
 from collections import OrderedDict
 
@@ -86,9 +86,11 @@ class SheLensMcMeasurementsFormat(SheMeasurementsFormat):
         self.chi2 = set_column_properties(self,
                                           "SHE_LENSMC_CHI2", dtype=">f4", fits_dtype="E")
         self.dof = set_column_properties(self,
-                                         "SHE_LENSMC_DOF", dtype=">f4", fits_dtype="J")
+                                         "SHE_LENSMC_DOF", dtype=">i4", fits_dtype="K")
         self.acc = set_column_properties(self,
                                          "SHE_LENSMC_ACCEPTANCE", dtype=">f4", fits_dtype="E")
+        self.nexp = set_column_properties(self,
+                                          "SHE_LENSMC_NEXP", dtype=">i2", fits_dtype="I")
         self.m1_ical = set_column_properties(self,
                                              "SHE_LENSMC_M1_ICAL", dtype=">f4", fits_dtype="E")
         self.m2_ical = set_column_properties(self,
