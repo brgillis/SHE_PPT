@@ -4,19 +4,6 @@
 
     Functions to get needed information from the MDB.
 """
-import os
-import re
-
-from astropy.io import fits
-from scipy.integrate.quadpack import quad
-
-from EL_PythonUtils.utilities import run_only_once
-from ST_DM_MDBTools.Mdb import Mdb
-
-from . import magic_values as mv
-from .file_io import find_file
-from .logging import getLogger
-
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -31,7 +18,23 @@ from .logging import getLogger
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
-__updated__ = "2021-02-10"
+
+__updated__ = "2021-02-11"
+
+import os
+import re
+
+from astropy.io import fits
+from scipy.integrate.quadpack import quad
+
+from EL_PythonUtils.utilities import run_only_once
+from ST_DM_MDBTools.Mdb import Mdb
+
+from . import magic_values as mv
+from .constants.test_data import TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME
+from .file_io import find_file
+from .logging import getLogger
+
 
 _mdb_not_inited_exception = RuntimeError(
     "mdb module must be initialised with MDB xml object before use.")
@@ -43,7 +46,7 @@ _gain_ave_dict = {}
 _read_noise_dict = {}
 _read_noise_ave_dict = {}
 
-default_mdb_file = "WEB/SHE_PPT_8_5/sample_mdb-SC8.xml"
+DEFAULT_MDB_FILE = os.path.join("WEB", TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME)
 
 logger = getLogger(__name__)
 
@@ -71,7 +74,7 @@ def init(mdb_files=None, path=None):
             qualified_mdb_file = find_file(mdb_file, path)
             qualified_mdb_files.append(qualified_mdb_file)
     elif mdb_files is None:
-        qualified_mdb_files = find_file(default_mdb_file)
+        qualified_mdb_files = find_file(DEFAULT_MDB_FILE)
         logger.warning("No MDB file specified. Using default file at " + qualified_mdb_files)
     else:
         raise TypeError("Invalid type for mdb_files object passed to SHE_PPT.mdb.init(): " + str(mdb_files))
