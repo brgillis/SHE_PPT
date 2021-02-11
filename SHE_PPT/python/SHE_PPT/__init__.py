@@ -3,7 +3,7 @@
     Created 24 Nov 2017
 """
 
-__updated__ = "2021-02-08"
+__updated__ = "2021-02-11"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -32,4 +32,4 @@ __all__ = [basename(f)[:-3]
 del modules, dirname, basename, isfile, glob
 
 
-__version__ = "8.6"
+__version__ = "8.7"
