@@ -185,7 +185,8 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
             return False
 
         # Check the version is correct
-        if not table_format.is_base and table.meta[table_format.m.fits_version] != table_format.__version__:
+        if (table_format.m.fits_version in table.meta and not table_format.is_base and
+                table.meta[table_format.m.fits_version] != table_format.__version__):
             if verbose:
                 logger.info("Table not in correct format due to wrong table format label.\n" +
                             "Expected: " + str(table_format.__version__) + "\n" +
