@@ -210,10 +210,6 @@ class TestTableFormats:
                                                          model_seed=model_seed,
                                                          noise_seed=noise_seed)
 
-        assert(mer_final_catalog.meta[mfc_tf.m.model_hash] == model_hash)
-        assert(mer_final_catalog.meta[mfc_tf.m.model_seed] == model_seed)
-        assert(mer_final_catalog.meta[mfc_tf.m.noise_seed] == noise_seed)
-
         _details_table = initialise_simulated_catalog(model_hash=model_hash,
                                                       model_seed=model_seed,
                                                       noise_seed=noise_seed)
