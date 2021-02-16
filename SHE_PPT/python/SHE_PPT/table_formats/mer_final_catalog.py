@@ -58,12 +58,19 @@ class MerFinalCatalogMeta(object):
         self.model_seed = mv.model_seed_label
         self.noise_seed = mv.noise_seed_label
 
+        self.extname = "EXTNAME"
+        self.tileid = "TILEID"
+        self.objsel = "OBJSEL"
+
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_version, None),
                                      (self.fits_def, None),
                                      (self.model_hash, None),
                                      (self.model_seed, None),
                                      (self.noise_seed, None),
+                                     (self.extname, None),
+                                     (self.tileid, None),
+                                     (self.objsel, None),
                                      ))
 
         # A list of columns in the desired order
@@ -305,6 +312,10 @@ def make_mer_final_catalog_header(model_hash=None,
     header[tf.m.model_hash] = model_hash
     header[tf.m.model_seed] = model_seed
     header[tf.m.noise_seed] = noise_seed
+
+    header[tf.m.extname] = None
+    header[tf.m.tileid] = None
+    header[tf.m.objsel] = None
 
     return header
 
