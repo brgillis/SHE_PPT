@@ -165,7 +165,6 @@ class MerFinalCatalogFormat(object):
             self, "FLAG_NIR_STACK", dtype=">i4", fits_dtype="J", comment="", is_optional=False))
         # Average filter transmission curve wavelength of EXT+VIS+NIR bands
         for filt in filter_list_ext + filter_list:
-            values = np.ones(cat_len).astype(np.float32) * AVG_TRANS_WAVE[filt]
             setattr(self, "AVG_TRANS_WAVE_%s" % filt, set_column_properties(self, "AVG_TRANS_WAVE_%s" %
                                                                             filt, fits_dtype="E", comment="Angstrom", is_optional=False))
         # Deblending flag
