@@ -52,23 +52,13 @@ class MerFinalCatalogMeta(object):
         # Table metadata labels
         self.fits_version = mv.fits_version_label
         self.fits_def = mv.fits_def_label
+
         self.extname = mv.extname_label
-
-        self.model_hash = mv.model_hash_label
-        self.model_seed = mv.model_seed_label
-        self.noise_seed = mv.noise_seed_label
-
-        self.extname = "EXTNAME"
         self.tileid = "TILEID"
         self.objsel = "OBJSEL"
 
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_version, None),
-                                     (self.fits_def, None),
-                                     (self.model_hash, None),
-                                     (self.model_seed, None),
-                                     (self.noise_seed, None),
-                                     (self.extname, None),
+        self.comments = OrderedDict(((self.extname, None),
                                      (self.tileid, None),
                                      (self.objsel, None),
                                      ))
@@ -305,13 +295,6 @@ def make_mer_final_catalog_header(model_hash=None,
     """
 
     header = OrderedDict()
-
-    header[tf.m.fits_version] = tf.__version__
-    header[tf.m.fits_def] = fits_def
-
-    header[tf.m.model_hash] = model_hash
-    header[tf.m.model_seed] = model_seed
-    header[tf.m.noise_seed] = noise_seed
 
     header[tf.m.extname] = None
     header[tf.m.tileid] = None
