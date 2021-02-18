@@ -557,7 +557,7 @@ class SHEFrameStack(object):
                             if key in new_row.colnames:
                                 try:
                                     new_row[key] = row[key]
-                                except numpy.ma.core.MaskError as e:
+                                except np.ma.core.MaskError as e:
                                     logger.warning("Masked element for column " + str(key) +
                                                    " cannot be added to table; default value will be used.")
 
