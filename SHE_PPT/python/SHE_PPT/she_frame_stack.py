@@ -22,7 +22,7 @@ Created on: 05/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2021-02-09"
+__updated__ = "2021-02-18"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
@@ -555,7 +555,11 @@ class SHEFrameStack(object):
                         new_row = detections_catalogue[-1]
                         for key in row.colnames:
                             if key in new_row.colnames:
-                                new_row[key] = row[key]
+                                try:
+                                    new_row[key] = row[key]
+                                except numpy.ma.core.MaskError as e:
+                                    logger.warning("Masked element for column " + str(key) +
+                                                   " cannot be added to table; default value will be used.")
 
                     logger.info("Finished pruning list of galaxy objects to loop over")
 
