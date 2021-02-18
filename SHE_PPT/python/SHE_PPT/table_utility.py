@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-02-10"
+__updated__ = "2021-02-16"
 
 from collections import OrderedDict
 
@@ -176,7 +176,8 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
             return False
 
         # Check the format label is correct
-        if not table_format.is_base and table.meta[table_format.m.fits_def] != table_format.m.table_format:
+        if (table_format.m.fits_def in table.meta and not table_format.is_base
+                and table.meta[table_format.m.fits_def] != table_format.m.table_format):
             if verbose:
                 logger.info("Table not in correct format due to wrong table format label.\n" +
                             "Expected: " + str(table_format.m.table_format) + "\n" +
@@ -184,7 +185,8 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
             return False
 
         # Check the version is correct
-        if not table_format.is_base and table.meta[table_format.m.fits_version] != table_format.__version__:
+        if (table_format.m.fits_version in table.meta and not table_format.is_base and
+                table.meta[table_format.m.fits_version] != table_format.__version__):
             if verbose:
                 logger.info("Table not in correct format due to wrong table format label.\n" +
                             "Expected: " + str(table_format.__version__) + "\n" +

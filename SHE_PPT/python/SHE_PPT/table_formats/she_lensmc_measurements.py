@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-02-11"
+__updated__ = "2021-02-16"
 
 from collections import OrderedDict
 
@@ -190,14 +190,6 @@ def initialise_lensmc_measurements_table(mer_final_catalog=None,
                 raise ValueError("Invalid optional column name: " + colname)
 
     lensmc_measurements_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
-
-    if mer_final_catalog is not None:
-        if model_hash is None:
-            model_hash = mer_final_catalog.meta[mfc_tf.m.model_hash]
-        if model_seed is None:
-            model_seed = mer_final_catalog.meta[mfc_tf.m.model_seed]
-        if noise_seed is None:
-            noise_seed = mer_final_catalog.meta[mfc_tf.m.noise_seed]
 
     lensmc_measurements_table.meta = make_lensmc_measurements_table_header(
         model_hash=model_hash,

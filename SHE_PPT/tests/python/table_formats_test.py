@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-12-14"
+__updated__ = "2021-02-16"
 
 import os
 
@@ -210,10 +210,6 @@ class TestTableFormats:
                                                          model_seed=model_seed,
                                                          noise_seed=noise_seed)
 
-        assert(mer_final_catalog.meta[mfc_tf.m.model_hash] == model_hash)
-        assert(mer_final_catalog.meta[mfc_tf.m.model_seed] == model_seed)
-        assert(mer_final_catalog.meta[mfc_tf.m.noise_seed] == noise_seed)
-
         _details_table = initialise_simulated_catalog(model_hash=model_hash,
                                                       model_seed=model_seed,
                                                       noise_seed=noise_seed)
@@ -224,21 +220,9 @@ class TestTableFormats:
 
         # Try to initialize the shear estimates table based on the detections table
 
-        mer_final_catalog.meta[mfc_tf.m.model_hash] = model_hash
-        mer_final_catalog.meta[mfc_tf.m.model_seed] = model_seed
-        mer_final_catalog.meta[mfc_tf.m.noise_seed] = noise_seed
-
         shear_estimates_table = initialise_lensmc_measurements_table(mer_final_catalog)
 
-        assert(shear_estimates_table.meta[lmcm_tf.m.model_hash] == model_hash)
-        assert(shear_estimates_table.meta[lmcm_tf.m.model_seed] == model_seed)
-        assert(shear_estimates_table.meta[lmcm_tf.m.noise_seed] == noise_seed)
-
         shear_chains_table = initialise_lensmc_chains_table(mer_final_catalog)
-
-        assert(shear_chains_table.meta[lmcm_tf.m.model_hash] == model_hash)
-        assert(shear_chains_table.meta[lmcm_tf.m.model_seed] == model_seed)
-        assert(shear_chains_table.meta[lmcm_tf.m.noise_seed] == noise_seed)
 
         assert(shear_chains_table.meta[lmcc_tf.m.len_chain] == len_chain)
 
