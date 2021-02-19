@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-02-16"
+__updated__ = "2021-02-19"
 
 from collections import OrderedDict
 
@@ -296,7 +296,7 @@ def make_mer_final_catalog_header(model_hash=None,
 
     header = OrderedDict()
 
-    header[tf.m.extname] = None
+    header[tf.m.extname] = "N/A"
     header[tf.m.tileid] = None
     header[tf.m.objsel] = None
 
