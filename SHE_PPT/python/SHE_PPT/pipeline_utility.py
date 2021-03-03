@@ -5,7 +5,7 @@
     Misc. utility functions for the pipeline.
 """
 
-__updated__ = "2021-02-22"
+__updated__ = "2021-03-01"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -80,6 +80,7 @@ class AnalysisConfigKeys(ConfigKeys):
 
     CGV_SLOPE_FAIL_SIGMA = CTI_GAL_VALIDATION_HEAD + "slope_fail_sigma"
     CGV_INTERCEPT_FAIL_SIGMA = CTI_GAL_VALIDATION_HEAD + "intercept_fail_sigma"
+    CGV_FAIL_SIGMA_SCALING = CTI_GAL_VALIDATION_HEAD + "fail_sigma_scaling"
 
     CGV_SNR_BIN_LIMITS = CTI_GAL_VALIDATION_HEAD + "snr_bin_limits"
     CGV_BG_BIN_LIMITS = CTI_GAL_VALIDATION_HEAD + "bg_bin_limits"
