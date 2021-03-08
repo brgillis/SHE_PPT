@@ -93,6 +93,8 @@ class SHEFrameStack(object):
         self.detections_catalogue = detections_catalogue
         self.detections_catalogue_products = None
 
+        self.object_id_list_product = None
+
         # Might have to manually calculate this later
         self.stack_pixel_size_ratio = 1
 
@@ -229,6 +231,18 @@ class SHEFrameStack(object):
         for detections_catalogue_product in self._detections_catalogue_products:
             del detections_catalogue_product
         del self._detections_catalogue_products
+
+    @property
+    def object_id_list_product(self):
+        return self._object_id_list_product
+
+    @object_id_list_product.setter
+    def object_id_list_product(self, object_id_list_product):
+        self._object_id_list_product = object_id_list_product
+
+    @object_id_list_product.deleter
+    def object_id_list_product(self):
+        del self._object_id_list_product
 
     def __eq__(self, rhs):
         """Equality test for SHEFrame class.
@@ -597,6 +611,7 @@ class SHEFrameStack(object):
             object_id_list_product = read_xml_product(find_file(object_id_list_product_filename, path=workdir))
             object_id_list = object_id_list_product.get_id_list()
         else:
+            object_id_list_product = None
             object_id_list = None
 
         if object_id_list is None:
@@ -801,6 +816,8 @@ class SHEFrameStack(object):
             new_frame_stack.stacked_segmentation_product = stacked_segmentation_product
 
             new_frame_stack.detections_catalogue_products = detections_catalogue_products
+
+            new_frame_stack.object_id_list_product = object_id_list_product
 
         # Return the constructed product
         return new_frame_stack
