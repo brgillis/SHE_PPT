@@ -687,6 +687,7 @@ class SHEFrameStack(object):
         if save_products:
             exposure_products = []
             psf_products = []
+            exposure_segmentation_products = []
 
         def read_or_none(listfile_filename):
             if listfile_filename is None:
