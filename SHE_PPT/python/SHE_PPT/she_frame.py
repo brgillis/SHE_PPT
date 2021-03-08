@@ -161,7 +161,7 @@ class SHEFrame(object):
         return self._exposure_product
 
     @exposure_product.setter
-    def exposure_products(self, exposure_product):
+    def exposure_product(self, exposure_product):
         self._exposure_product = exposure_product
 
     @exposure_product.deleter
@@ -175,7 +175,7 @@ class SHEFrame(object):
         return self._psf_product
 
     @psf_product.setter
-    def psf_products(self, psf_product):
+    def psf_product(self, psf_product):
         self._psf_product = psf_product
 
     @psf_product.deleter
@@ -189,7 +189,7 @@ class SHEFrame(object):
         return self._segmentation_product
 
     @segmentation_product.setter
-    def segmentation_products(self, segmentation_product):
+    def segmentation_product(self, segmentation_product):
         self._segmentation_product = segmentation_product
 
     @segmentation_product.deleter
