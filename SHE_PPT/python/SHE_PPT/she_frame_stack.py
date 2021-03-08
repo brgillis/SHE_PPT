@@ -758,6 +758,7 @@ class SHEFrameStack(object):
 
         # Get the segmentation image
         if stacked_seg_product_filename is None:
+            stacked_segmentation_product = None
             stacked_seg_data = None
         else:
             try:
@@ -769,6 +770,7 @@ class SHEFrameStack(object):
                                                                  **kwargs)
             except FileNotFoundError as e:
                 logger.warning(str(e))
+                stacked_segmentation_product = None
                 stacked_seg_data = None
 
         # Construct a SHEImage object for the stacked image
