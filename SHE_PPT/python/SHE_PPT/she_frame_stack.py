@@ -22,7 +22,7 @@ Created on: 05/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2021-02-18"
+__updated__ = "2021-03-08"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
@@ -84,9 +84,14 @@ class SHEFrameStack(object):
         """
 
         self.exposures = exposures
-        # if stacked_image:
+        self.exposure_products = None
+        self.psf_products = None
+
         self.stacked_image = stacked_image
+        self.stacked_image_product = None
+
         self.detections_catalogue = detections_catalogue
+        self.detections_catalogue_products = None
 
         # Might have to manually calculate this later
         self.stack_pixel_size_ratio = 1
@@ -117,6 +122,48 @@ class SHEFrameStack(object):
         del self._exposures
 
     @property
+    def exposure_products(self):
+        return self._exposure_products
+
+    @exposure_products.setter
+    def exposure_products(self, exposure_products):
+        self._exposure_products = exposure_products
+
+    @exposure_products.deleter
+    def exposure_products(self):
+        for exposure in self._exposure_products:
+            del exposure
+        del self._exposure_products
+
+    @property
+    def psf_products(self):
+        return self._psf_products
+
+    @psf_products.setter
+    def psf_products(self, psf_products):
+        self._psf_products = psf_products
+
+    @psf_products.deleter
+    def psf_products(self):
+        for exposure in self._psf_products:
+            del exposure
+        del self._psf_products
+
+    @property
+    def exposure_segmentation_products(self):
+        return self._exposure_segmentation_products
+
+    @exposure_segmentation_products.setter
+    def exposure_segmentation_products(self, exposure_segmentation_products):
+        self._exposure_segmentation_products = exposure_segmentation_products
+
+    @exposure_segmentation_products.deleter
+    def exposure_segmentation_products(self):
+        for exposure in self._exposure_segmentation_products:
+            del exposure
+        del self._exposure_segmentation_products
+
+    @property
     def stacked_image(self):
         return self._stacked_image
 
@@ -132,6 +179,56 @@ class SHEFrameStack(object):
     @stacked_image.deleter
     def stacked_image(self):
         del self._stacked_image
+
+    @property
+    def stacked_image_product(self):
+        return self._stacked_image_product
+
+    @stacked_image_product.setter
+    def stacked_image_product(self, stacked_image_product):
+        self._stacked_image_product = stacked_image_product
+
+    @stacked_image_product.deleter
+    def stacked_image_product(self):
+        del self._stacked_image_product
+
+    @property
+    def stacked_segmentation_product(self):
+        return self._stacked_segmentation_product
+
+    @stacked_segmentation_product.setter
+    def stacked_segmentation_product(self, stacked_segmentation_product):
+        self._stacked_segmentation_product = stacked_segmentation_product
+
+    @stacked_segmentation_product.deleter
+    def stacked_segmentation_product(self):
+        del self._stacked_segmentation_product
+
+    @property
+    def detections_catalogue(self):
+        return self._detections_catalogue
+
+    @detections_catalogue.setter
+    def detections_catalogue(self, detections_catalogue):
+        self._detections_catalogue = detections_catalogue
+
+    @detections_catalogue.deleter
+    def detections_catalogue(self):
+        del self._detections_catalogue
+
+    @property
+    def detections_catalogue_products(self):
+        return self._detections_catalogue_products
+
+    @detections_catalogue_products.setter
+    def detections_catalogue_products(self, detections_catalogue_products):
+        self._detections_catalogue_products = detections_catalogue_products
+
+    @detections_catalogue_products.deleter
+    def detections_catalogue_products(self):
+        for detections_catalogue_product in self._detections_catalogue_products:
+            del detections_catalogue_product
+        del self._detections_catalogue_products
 
     def __eq__(self, rhs):
         """Equality test for SHEFrame class.
@@ -404,15 +501,11 @@ class SHEFrameStack(object):
         product = read_xml_product(os.path.join(workdir, product_filename))
 
         # Check it's the right type if necessary
-        if dtype is not None:
-            if not isinstance(product, dtype):
-                raise ValueError(
-                    "Data image product from " + product_filename + " is invalid type.")
+        if dtype is not None and not isinstance(product, dtype):
+            raise ValueError(
+                "Data image product from " + product_filename + " is invalid type.")
 
-        if filetype == "science":
-            qualified_filename = os.path.join(
-                workdir, product.get_data_filename())
-        elif filetype == "background":
+        if filetype == "background":
             qualified_filename = os.path.join(
                 workdir, product.get_bkg_filename())
         elif filetype == "weight":
@@ -434,7 +527,7 @@ class SHEFrameStack(object):
                 extension = find_extension(hdulist, tag)
                 data.append(hdulist[extension].data.transpose())
 
-        return header, data
+        return product, header, data
 
     @classmethod
     def _read_file_extension(cls, filename, tags=None, workdir=".", dtype=None, **kwargs):
@@ -464,6 +557,7 @@ class SHEFrameStack(object):
              detections_listfile_filename=None,
              object_id_list_product_filename=None,
              workdir=".",
+             save_products=False,
              **kwargs):
         """Reads a SHEFrameStack from relevant data products.
 
@@ -492,6 +586,8 @@ class SHEFrameStack(object):
             list in them will be loaded.
         workdir : str
             Work directory
+        save_products : bool
+            If set to True, will save references to data products. Otherwise these references will be None
 
         Any kwargs are passed to the reading of the fits objects
         """
@@ -511,6 +607,7 @@ class SHEFrameStack(object):
         # Load in the detections catalogues and combine them into a single catalogue
         if detections_listfile_filename is None:
             detections_catalogue = None
+            detections_catalogue_products = None
         else:
             try:
                 detections_filenames = read_listfile(find_file(detections_listfile_filename, path=workdir))
@@ -518,10 +615,15 @@ class SHEFrameStack(object):
                 # Load each table in turn and combine them
 
                 detections_catalogues = []
+                if save_products:
+                    detections_catalogue_products = []
 
                 for detections_product_filename in detections_filenames:
 
                     detections_product = read_xml_product(os.path.join(workdir, detections_product_filename))
+                    if save_products:
+                        detections_catalogue_products.append(detections_product)
+
                     logger.debug("DP: %s, %s, %s" % (workdir,
                                                      detections_product_filename,
                                                      detections_product.get_data_filename()))
@@ -582,6 +684,9 @@ class SHEFrameStack(object):
 
         # Load in the exposures as SHEFrames first
         exposures = []
+        if save_products:
+            exposure_products = []
+            psf_products = []
 
         def read_or_none(listfile_filename):
             if listfile_filename is None:
@@ -611,20 +716,28 @@ class SHEFrameStack(object):
                                      detections_catalogue=detections_catalogue,
                                      prune_images=prune_images,
                                      workdir=workdir,
+                                     save_products=save_products,
                                      **kwargs)
 
             exposures.append(exposure)
+            if save_products:
+                exposure_products.append(exposure.exposure_product)
+                psf_products.append(exposure.psf_product)
+                exposure_segmentation_products.append(exposure.segmentation_product)
+
         # Load in the stacked products now
 
         # Get the stacked image and background image
         if stacked_image_product_filename is None:
+            stacked_image_product = None
             stacked_image_header = None
             stacked_image_data = None
             stacked_rms_data = None
             stacked_mask_data = None
             stacked_bkg_data = None
         else:
-            (stacked_image_header,
+            (stacked_image_product,
+             stacked_image_header,
              stacked_data) = cls._read_product_extension(stacked_image_product_filename,
                                                          tags=(
                                                              mv.sci_tag, mv.noisemap_tag, mv.mask_tag),
@@ -636,21 +749,23 @@ class SHEFrameStack(object):
             stacked_rms_data = stacked_data[1]
             stacked_mask_data = stacked_data[2]
 
-            _, stacked_bkg_data = cls._read_product_extension(stacked_image_product_filename,
-                                                              workdir=workdir,
-                                                              dtype=products.vis_stacked_frame.dpdVisStackedFrame,
-                                                              filetype="background",
-                                                              **kwargs)
+            _, _, stacked_bkg_data = cls._read_product_extension(stacked_image_product_filename,
+                                                                 workdir=workdir,
+                                                                 dtype=products.vis_stacked_frame.dpdVisStackedFrame,
+                                                                 filetype="background",
+                                                                 **kwargs)
 
         # Get the segmentation image
         if stacked_seg_product_filename is None:
             stacked_seg_data = None
         else:
             try:
-                _, stacked_seg_data = cls._read_product_extension(stacked_seg_product_filename,
-                                                                  workdir=workdir,
-                                                                  dtype=products.she_stack_segmentation_map.dpdSheStackReprojectedSegmentationMap,
-                                                                  **kwargs)
+                (stacked_segmentation_product,
+                 _,
+                 stacked_seg_data) = cls._read_product_extension(stacked_seg_product_filename,
+                                                                 workdir=workdir,
+                                                                 dtype=products.she_stack_segmentation_map.dpdSheStackReprojectedSegmentationMap,
+                                                                 **kwargs)
             except FileNotFoundError as e:
                 logger.warning(str(e))
                 stacked_seg_data = None
@@ -667,7 +782,22 @@ class SHEFrameStack(object):
                                      header=stacked_image_header,
                                      wcs=astropy.wcs.WCS(stacked_image_header))
 
-        # Construct and return a SHEFrameStack object
-        return SHEFrameStack(exposures=exposures,
-                             stacked_image=stacked_image,
-                             detections_catalogue=pruned_detections_catalogue)
+        # Construct a SHEFrameStack object
+        new_frame_stack = SHEFrameStack(exposures=exposures,
+                                        stacked_image=stacked_image,
+                                        detections_catalogue=pruned_detections_catalogue)
+
+        # If we're saving products, add in those references
+        if save_products:
+
+            new_frame_stack.exposure_products = exposure_products
+            new_frame_stack.psf_products = psf_products
+            new_frame_stack.exposure_segmentation_products = exposure_segmentation_products
+
+            new_frame_stack.stacked_image_product = stacked_image_product
+            new_frame_stack.stacked_segmentation_product = stacked_segmentation_product
+
+            new_frame_stack.detections_catalogue_products = detections_catalogue_products
+
+        # Return the constructed product
+        return new_frame_stack
