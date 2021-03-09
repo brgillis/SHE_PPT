@@ -22,7 +22,7 @@ Created on: 02/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2021-02-10"
+__updated__ = "2021-03-08"
 
 from collections import namedtuple
 from copy import deepcopy
@@ -98,6 +98,11 @@ class SHEFrame(object):
         self.psf_data_hdulist = psf_data_hdulist
         self.psf_catalogue = psf_catalogue
 
+        # Initialise product references as None
+        self.exposure_product = None
+        self.psf_product = None
+        self.segmentation_product = None
+
         # Set the PSF catalogue to index by ID
         if self.psf_catalogue is not None:
             self.psf_catalogue.add_index(pstf.ID)
@@ -150,6 +155,48 @@ class SHEFrame(object):
     @parent_frame_stack.deleter
     def parent_frame_stack(self):
         self._parent_frame_stack = lambda: None
+
+    @property
+    def exposure_product(self):
+        return self._exposure_product
+
+    @exposure_product.setter
+    def exposure_product(self, exposure_product):
+        self._exposure_product = exposure_product
+
+    @exposure_product.deleter
+    def exposure_product(self):
+        for exposure_product in self._exposure_product:
+            del exposure_product
+        del self._exposure_product
+
+    @property
+    def psf_product(self):
+        return self._psf_product
+
+    @psf_product.setter
+    def psf_product(self, psf_product):
+        self._psf_product = psf_product
+
+    @psf_product.deleter
+    def psf_product(self):
+        for psf_product in self._psf_product:
+            del psf_product
+        del self._psf_product
+
+    @property
+    def segmentation_product(self):
+        return self._segmentation_product
+
+    @segmentation_product.setter
+    def segmentation_product(self, segmentation_product):
+        self._segmentation_product = segmentation_product
+
+    @segmentation_product.deleter
+    def segmentation_product(self):
+        for segmentation_product in self._segmentation_product:
+            del segmentation_product
+        del self._segmentation_product
 
     def __eq__(self, rhs):
         """Equality test for SHEFrame class.
@@ -381,9 +428,9 @@ class SHEFrame(object):
              workdir=".",
              x_max=6,
              y_max=6,
+             save_products=False,
              **kwargs):
         """Reads a SHEFrame from disk
-
 
         Parameters
         ----------
@@ -403,6 +450,8 @@ class SHEFrame(object):
             Maximum x-coordinate of detectors
         y_max : int
             Maximum y-coordinate of detectors
+        save_products : bool
+            If True, will save references to data products read in
 
         Any kwargs are passed to the reading of the fits data
         """
@@ -472,6 +521,7 @@ class SHEFrame(object):
             bkg_data_hdulist = open_or_none(frame_prod.get_bkg_filename())
             wgt_data_hdulist = open_or_none(frame_prod.get_wgt_filename())
         else:
+            frame_prod = None
             frame_data_hdulist = None
             bkg_data_hdulist = None
             wgt_data_hdulist = None
@@ -487,6 +537,7 @@ class SHEFrame(object):
 
             seg_data_hdulist = open_or_none(seg_prod.get_data_filename())
         else:
+            seg_prod = None
             seg_data_hdulist = None
 
         for x_i in np.linspace(1, x_max, x_max, dtype=np.int8):
@@ -619,13 +670,23 @@ class SHEFrame(object):
                 raise ValueError(
                     "PSF table from " + qualified_psf_filename + " is in invalid format.")
         else:
+            psf_prod = None
             psf_data_hdulist = None
             psf_cat = None
 
-        # Construct and return a SHEFrame object
-        return SHEFrame(detectors=detectors,
-                        psf_data_hdulist=psf_data_hdulist,
-                        psf_catalogue=psf_cat)
+        # Construc a SHEFrame object
+        new_frame = SHEFrame(detectors=detectors,
+                             psf_data_hdulist=psf_data_hdulist,
+                             psf_catalogue=psf_cat)
+
+        # Fill out the product references
+        if save_products:
+            new_frame.exposure_product = frame_prod
+            new_frame.psf_product = psf_prod
+            new_frame.segmentation_product = seg_prod
+
+        # Return the created product
+        return new_frame
 
 
 @run_only_once
