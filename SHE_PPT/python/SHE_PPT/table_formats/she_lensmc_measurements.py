@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-02-16"
+__updated__ = "2021-03-11"
 
 from collections import OrderedDict
 
@@ -34,7 +34,7 @@ from ..table_formats.she_measurements import SheMeasurementsMeta, SheMeasurement
 from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table, setup_child_table_format, set_column_properties, init_table
 
 
-fits_version = "8.0"
+fits_version = "8.0.1"
 fits_def = "she.lensmcMeasurements"
 
 child_label = "SHE_LENSMC_"
