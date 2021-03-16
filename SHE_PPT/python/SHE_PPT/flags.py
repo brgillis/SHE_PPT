@@ -73,7 +73,7 @@ flag_corrupt_calibration_data = 2 ** 31
 flag_bad_calibration = 2 ** 32
 
 non_failure_flags = (flag_no_noisemap | flag_corrupt_noisemap | flag_no_segmentation_map |
-                     flag_corrupt_segmentation_map | flag_not_centered)
+                     flag_corrupt_segmentation_map)
 failure_flags = (2 ** 33 - 1) ^ non_failure_flags
 
 # Utility functions
