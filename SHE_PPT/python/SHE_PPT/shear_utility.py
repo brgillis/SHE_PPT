@@ -42,13 +42,15 @@ class ShearEstimate(object):
                  g1_err=np.inf,
                  g2_err=np.inf,
                  g1g2_covar=0,
-                 flags=0):
+                 flags=0,
+                 weight=1):
         self.g1 = g1
         self.g2 = g2
         self.g1_err = g1_err
         self.g2_err = g2_err
         self.g1g2_covar = g1g2_covar
         self.flags = flags
+        self.weight = weight
 
 
 def get_g_from_e(e1, e2):

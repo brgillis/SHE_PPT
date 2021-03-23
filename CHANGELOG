@@ -5,7 +5,7 @@ Changes in v8.8
 
 API Changes
 -----------
-
+- Added weight attribute to ShearEstimate class, can be set in __init__
 
 Dependency Changes
 ------------------
