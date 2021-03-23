@@ -37,8 +37,8 @@ from .she_image import SHEImage
 class ShearEstimate(object):
 
     def __init__(self,
-                 g1=0.,
-                 g2=0.,
+                 g1=np.NaN,
+                 g2=np.NaN,
                  g1_err=np.inf,
                  g2_err=np.inf,
                  g1g2_covar=0,
