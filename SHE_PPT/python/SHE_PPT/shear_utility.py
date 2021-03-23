@@ -111,7 +111,7 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
 
     # Check for valid input
     if (stamp is None) == (wcs is None):
-        raise ValueError("Exactly one of \"stamp\" and \"wcs\" must be supplied to " +
+        raise ValueError("Exactly one of \"stamp\" and \"wcs\" must be supplied to " + 
                          "correct_for_wcs_shear_and_rotation.")
 
     # If no stamp is supplied, create a ministamp to work with
@@ -256,7 +256,7 @@ def uncorrect_for_wcs_shear_and_rotation(shear_estimate,
 
     # Check for valid input
     if (stamp is None) == (wcs is None):
-        raise ValueError("Exactly one of \"stamp\" and \"wcs\" must be supplied to " +
+        raise ValueError("Exactly one of \"stamp\" and \"wcs\" must be supplied to " + 
                          "correct_for_wcs_shear_and_rotation.")
 
     # If no stamp is supplied, create a ministamp to work with

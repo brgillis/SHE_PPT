@@ -21,12 +21,9 @@
 
 __updated__ = "2021-02-09"
 
-import codecs
-import hashlib
+from enum import Enum
 import os
 import re
-
-from astropy.wcs import WCS
 
 from EL_PythonUtils.utilities import (hash_any as EL_hash_any,
                                       run_only_once as EL_run_only_once,
@@ -36,7 +33,6 @@ from EL_PythonUtils.utilities import (hash_any as EL_hash_any,
 from . import detector as dtc
 from .logging import getLogger
 
-
 logger = getLogger(__name__)
 
 # Wrappers to warn functions which have moved to EL_PythonUtils
@@ -44,7 +40,7 @@ logger = getLogger(__name__)
 
 @EL_run_only_once
 def warn_hash_any_deprecated():
-    logger.warning("SHE_PPT.utility.hash_any has been moved to EL_PythonUtils.utilities.hash_any. " +
+    logger.warning("SHE_PPT.utility.hash_any has been moved to EL_PythonUtils.utilities.hash_any. " + 
                    "Please update to use that, as this wrapper will be deprecated in a future version.")
 
 
@@ -55,7 +51,7 @@ def hash_any(*args, **kwargs):
 
 @EL_run_only_once
 def warn_time_to_timestamp_deprecated():
-    logger.warning("SHE_PPT.utility.time_to_timestamp has been moved to EL_PythonUtils.utilities.time_to_timestamp. " +
+    logger.warning("SHE_PPT.utility.time_to_timestamp has been moved to EL_PythonUtils.utilities.time_to_timestamp. " + 
                    "Please update to use that, as this wrapper will be deprecated in a future version.")
 
 
@@ -66,7 +62,7 @@ def time_to_timestamp(*args, **kwargs):
 
 @EL_run_only_once
 def warn_get_arguments_string_deprecated():
-    logger.warning("SHE_PPT.utility.get_arguments_string has been moved to EL_PythonUtils.utilities.get_arguments_string. " +
+    logger.warning("SHE_PPT.utility.get_arguments_string has been moved to EL_PythonUtils.utilities.get_arguments_string. " + 
                    "Please update to use that, as this wrapper will be deprecated in a future version.")
 
 
@@ -77,7 +73,7 @@ def get_arguments_string(*args, **kwargs):
 
 @EL_run_only_once
 def warn_run_only_once_deprecated():
-    logger.warning("SHE_PPT.utility.run_only_once has been moved to EL_PythonUtils.utilities.run_only_once. " +
+    logger.warning("SHE_PPT.utility.run_only_once has been moved to EL_PythonUtils.utilities.run_only_once. " + 
                    "Please update to use that, as this wrapper will be deprecated in a future version.")
 
 
@@ -137,7 +133,7 @@ def get_release_from_version(version):
     minor_version = int(period_split_version[1])
 
     if major_version < 0 or major_version > 99 or minor_version < 0 or minor_version > 99:
-        raise ValueError("version (" + version + ") is in incorrect format. Format must be 'X.X.X', where each X is " +
+        raise ValueError("version (" + version + ") is in incorrect format. Format must be 'X.X.X', where each X is " + 
                          "0-99.")
 
     # Ensure the string is two characters long for both the major and minor version
@@ -228,3 +224,10 @@ def is_any_type_of_none(value):
     """Quick function to check if a value (which might be a string) is None or empty
     """
     return value in (None, "None", "")
+
+
+class AllowedEnum(Enum):
+
+    @classmethod
+    def is_allowed_value(cls, value):
+        return value in [item.value for item in cls]

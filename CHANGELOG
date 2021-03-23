@@ -20,7 +20,7 @@ Bug Fixes
 
 New Features
 ------------
-
+- Added base class AllowedEnum for an Enum with a method to perform an is_allowed_value check
 
 New config features
 -------------------

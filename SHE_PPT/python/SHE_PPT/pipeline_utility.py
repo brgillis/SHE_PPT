@@ -20,7 +20,6 @@ __updated__ = "2021-03-01"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from enum import Enum
 import json.decoder
 import os
 from pickle import UnpicklingError
@@ -32,14 +31,12 @@ from . import magic_values as mv
 from . import products
 from .file_io import read_xml_product, read_listfile, find_file
 from .logging import getLogger
-from .utility import is_any_type_of_none
+from .utility import AllowedEnum, is_any_type_of_none
 
 
-class ConfigKeys(Enum):
-
-    @classmethod
-    def is_allowed_value(cls, value):
-        return value in [item.value for item in cls]
+# Derived class for ConfigKeys, to allow more precise type-checking
+class ConfigKeys(AllowedEnum):
+    pass
 
 
 # Task names for Analysis pipeline
@@ -101,8 +98,8 @@ class ReconciliationConfigKeys(ConfigKeys):
     REC_METHOD = RECONCILE_MEASUREMENTS_HEAD + "method"
     CHAINS_REC_METHOD = RECONCILE_MEASUREMENTS_HEAD + "chains_method"
 
-
 # Task names for Calibration pipeline
+
 
 CLEANUP_BIAS_MEASUREMENTS_HEAD = "SHE_CTE_CleanupBiasMeasurement_"
 MEASURE_BIAS_HEAD = "SHE_CTE_MeasureBias_"
@@ -196,16 +193,16 @@ def archive_product(product_filename, archive_dir, workdir):
             logger.warning("Product " + qualified_filename + " has no 'get_all_filenames' method.")
 
     except Exception as e:
-        logger.warning("Failsafe exception block triggered when trying to save statistics product in archive. " +
+        logger.warning("Failsafe exception block triggered when trying to save statistics product in archive. " + 
                        "Exception was: " + str(e))
 
     return
 
 
 def read_analysis_config(config_filename: str,
-                         workdir: str = ".",
-                         cline_args: Dict[str, Any] = None,
-                         defaults: Dict[str, Any] = None) -> Dict[str, Any]:
+                         workdir: str=".",
+                         cline_args: Dict[str, Any]=None,
+                         defaults: Dict[str, Any]=None) -> Dict[str, Any]:
     """ Reads in a configuration file for the SHE Analysis pipeline to a dictionary. Note that all arguments will
         be read as strings.
 
@@ -231,9 +228,9 @@ def read_analysis_config(config_filename: str,
 
 
 def read_calibration_config(config_filename: str,
-                            workdir: str = ".",
-                            cline_args: Dict[str, Any] = None,
-                            defaults: Dict[str, Any] = None) -> Dict[str, Any]:
+                            workdir: str=".",
+                            cline_args: Dict[str, Any]=None,
+                            defaults: Dict[str, Any]=None) -> Dict[str, Any]:
     """ Reads in a configuration file for the SHE Calibration pipeline to a dictionary. Note that all arguments will
         be read as strings.
 
@@ -259,9 +256,9 @@ def read_calibration_config(config_filename: str,
 
 
 def read_reconciliation_config(config_filename: str,
-                               workdir: str = ".",
-                               cline_args: Dict[str, Any] = None,
-                               defaults: Dict[str, Any] = None) -> Dict[str, Any]:
+                               workdir: str=".",
+                               cline_args: Dict[str, Any]=None,
+                               defaults: Dict[str, Any]=None) -> Dict[str, Any]:
     """ Reads in a configuration file for the SHE Reconciliation pipeline to a dictionary. Note that all arguments will
         be read as strings.
 
@@ -287,12 +284,12 @@ def read_reconciliation_config(config_filename: str,
 
 
 def read_config(config_filename: str,
-                workdir: str = ".",
-                config_keys: Union[ConfigKeys, Tuple[ConfigKeys, ...]] = (AnalysisConfigKeys,
+                workdir: str=".",
+                config_keys: Union[ConfigKeys, Tuple[ConfigKeys, ...]]=(AnalysisConfigKeys,
                                                                           ReconciliationConfigKeys,
                                                                           CalibrationConfigKeys),
-                cline_args: Dict[str, Any] = None,
-                defaults: Dict[str, Any] = None) -> Dict[str, Any]:
+                cline_args: Dict[str, Any]=None,
+                defaults: Dict[str, Any]=None) -> Dict[str, Any]:
     """ Reads in a generic configuration file to a dictionary. Note that all arguments will be read as strings unless
         a cline_arg value is used.
 
@@ -351,7 +348,7 @@ def read_config(config_filename: str,
                                         cline_args=cline_args,
                                         defaults=defaults)
         else:
-            raise ValueError("File " + qualified_config_filename + " is a listfile with more than one file listed, and " +
+            raise ValueError("File " + qualified_config_filename + " is a listfile with more than one file listed, and " + 
                              "is an invalid input to read_config.")
 
     except (json.decoder.JSONDecodeError, UnicodeDecodeError):
@@ -490,7 +487,7 @@ def _check_key_is_valid(key: str,
             break
 
     if not allowed:
-        err_string = ("Invalid pipeline config key found: " +
+        err_string = ("Invalid pipeline config key found: " + 
                       key + ". Allowed keys are: ")
         for config_key_enum in config_keys:
             for allowed_key in config_key_enum:
@@ -502,7 +499,7 @@ def _check_key_is_valid(key: str,
 
 def write_analysis_config(config_dict: Dict[str, Any],
                           config_filename: str,
-                          workdir: str = ".",):
+                          workdir: str=".",):
     """ Writes a dictionary to an Analysis configuration file.
 
         Parameters
@@ -523,7 +520,7 @@ def write_analysis_config(config_dict: Dict[str, Any],
 
 def write_reconciliation_config(config_dict: Dict[str, Any],
                                 config_filename: str,
-                                workdir: str = ".",):
+                                workdir: str=".",):
     """ Writes a dictionary to an Reconciliation configuration file.
 
         Parameters
@@ -544,7 +541,7 @@ def write_reconciliation_config(config_dict: Dict[str, Any],
 
 def write_calibration_config(config_dict: Dict[str, Any],
                              config_filename: str,
-                             workdir: str = ".",):
+                             workdir: str=".",):
     """ Writes a dictionary to an Calibration configuration file.
 
         Parameters
@@ -565,8 +562,8 @@ def write_calibration_config(config_dict: Dict[str, Any],
 
 def write_config(config_dict: Dict[str, Any],
                  config_filename: str,
-                 workdir: str = ".",
-                 config_keys: ConfigKeys = AnalysisConfigKeys,):
+                 workdir: str=".",
+                 config_keys: ConfigKeys=AnalysisConfigKeys,):
     """ Writes a dictionary to a configuration file.
 
         Parameters
@@ -601,7 +598,7 @@ def write_config(config_dict: Dict[str, Any],
 
 
 def get_conditional_product(filename: str,
-                            workdir: str = "."):
+                            workdir: str="."):
     """ Returns None in all cases where a data product isn't provided, otherwise read and return the data
         product.
     """
@@ -624,7 +621,7 @@ def get_conditional_product(filename: str,
         elif len(filelist) == 1:
             return read_xml_product(filelist[0], workdir)
         else:
-            raise ValueError("File " + qualified_filename + " is a listfile with more than one file listed, and " +
+            raise ValueError("File " + qualified_filename + " is a listfile with more than one file listed, and " + 
                              "is an invalid input to get_conditional_product.")
 
     except (json.decoder.JSONDecodeError, UnicodeDecodeError):
