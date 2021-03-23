@@ -113,6 +113,7 @@ class TestCase:
         gal_shear = galsim.Shear(g1=0.5, g2=0.3)
 
         gerr = 0.3
+        weight = 1 / gerr ** 2
 
         # Ordering is important here. Galaxy shear is in reality applied first, so it's last in addition
         tot_shear = wcs_shear + gal_shear
@@ -121,7 +122,8 @@ class TestCase:
         shear_estimate = ShearEstimate(g1=tot_shear.g1,
                                        g2=tot_shear.g2,
                                        g1_err=gerr,
-                                       g2_err=gerr,)
+                                       g2_err=gerr,
+                                       weight=weight)
 
         init_shear_estimate = deepcopy(shear_estimate)
 
@@ -144,6 +146,7 @@ class TestCase:
         assert np.isclose(shear_estimate.g1_err, gerr)
         assert np.isclose(shear_estimate.g2_err, gerr)
         assert np.isclose(shear_estimate.g1g2_covar, 0.)
+        assert np.isclose(shear_estimate.weight, weight)
 
         # Now test that uncorrecting also works as expected
         uncorrect_for_wcs_shear_and_rotation(shear_estimate, mock_stamp)
@@ -153,6 +156,7 @@ class TestCase:
         assert np.isclose(shear_estimate.g1_err, init_shear_estimate.g1_err)
         assert np.isclose(shear_estimate.g2_err, init_shear_estimate.g1_err)
         assert np.isclose(shear_estimate.g1g2_covar, init_shear_estimate.g1g2_covar)
+        assert np.isclose(shear_estimate.weight, init_shear_estimate.weight)
 
         return
 
@@ -161,6 +165,7 @@ class TestCase:
         """
 
         gerr = 0.3
+        weight = 1 / gerr ** 2
 
         for (p2w_theta, tot_g1, tot_g2, ex_g1_err, ex_g2_err, ex_g1g2covar) in (
                 (45 * galsim.degrees, 0.3, -0.5, gerr, gerr, 0.),
@@ -177,7 +182,8 @@ class TestCase:
             shear_estimate = ShearEstimate(g1=tot_shear.g1,
                                            g2=tot_shear.g2,
                                            g1_err=gerr,
-                                           g2_err=gerr,)
+                                           g2_err=gerr,
+                                           weight=weight)
 
             init_shear_estimate = deepcopy(shear_estimate)
 
@@ -200,6 +206,7 @@ class TestCase:
             assert np.isclose(shear_estimate.g1_err, ex_g1_err)
             assert np.isclose(shear_estimate.g2_err, ex_g2_err)
             assert np.isclose(shear_estimate.g1g2_covar, ex_g1g2covar)
+            assert np.isclose(shear_estimate.weight, weight)
 
             # Now test that uncorrecting also works as expected
             uncorrect_for_wcs_shear_and_rotation(shear_estimate, mock_stamp)
@@ -209,6 +216,7 @@ class TestCase:
             assert np.isclose(shear_estimate.g1_err, init_shear_estimate.g1_err)
             assert np.isclose(shear_estimate.g2_err, init_shear_estimate.g1_err)
             assert np.isclose(shear_estimate.g1g2_covar, init_shear_estimate.g1g2_covar)
+            assert np.isclose(shear_estimate.weight, init_shear_estimate.weight)
 
         return
 
@@ -217,6 +225,7 @@ class TestCase:
         """
 
         gerr = 0.3
+        weight = 1 / gerr ** 2
 
         wcs_shear = galsim.Shear(g1=0.2, g2=0.)
         gal_shear = galsim.Shear(g1=0.5, g2=0.3)
@@ -242,7 +251,8 @@ class TestCase:
         shear_estimate = ShearEstimate(g1=tot_shear.g1,
                                        g2=tot_shear.g2,
                                        g1_err=gerr,
-                                       g2_err=gerr,)
+                                       g2_err=gerr,
+                                       weight=weight)
 
         init_shear_estimate = deepcopy(shear_estimate)
 
@@ -265,6 +275,7 @@ class TestCase:
         assert np.isclose(shear_estimate.g1_err, gerr)
         assert np.isclose(shear_estimate.g2_err, gerr)
         assert np.isclose(shear_estimate.g1g2_covar, 0.)
+        assert np.isclose(shear_estimate.weight, weight)
 
         # Now test that uncorrecting also works as expected
         uncorrect_for_wcs_shear_and_rotation(shear_estimate, mock_stamp)
@@ -274,5 +285,6 @@ class TestCase:
         assert np.isclose(shear_estimate.g1_err, init_shear_estimate.g1_err)
         assert np.isclose(shear_estimate.g2_err, init_shear_estimate.g1_err)
         assert np.isclose(shear_estimate.g1g2_covar, init_shear_estimate.g1g2_covar)
+        assert np.isclose(shear_estimate.weight, init_shear_estimate.weight)
 
         return
