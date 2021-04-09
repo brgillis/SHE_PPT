@@ -97,4 +97,3 @@ def get_I(I_parameter, parameter_type, gain, exp_time):
     else:
         raise Exception(
             "get_I can't handle parameter type '" + str(parameter_type) + "'")
-    return
