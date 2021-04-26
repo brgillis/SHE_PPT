@@ -123,7 +123,8 @@ def _find_mdb_data_file(data_filenames, qualified_mdb_files):
             found = False
 
             # Try in the same directory as the MDB file
-            for test_qualified_data_filename in test_mdb_file_paths:
+            for test_path in test_mdb_file_paths:
+                test_qualified_data_filename = os.path.join(test_path, data_filename)
                 if os.path.isfile(test_qualified_data_filename):
                     qualified_data_filename = test_qualified_data_filename
                     found = True
