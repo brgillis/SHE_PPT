@@ -359,7 +359,7 @@ def find_web_file(filename):
         If it isn't found, returns None.
     """
 
-    filelist = os.path.join(os.getcwd(), os.path.splitext(os.path.split(filename)[-1])[0] + f"{os.get_pid()}_list.txt")
+    filelist = os.path.join(os.getcwd(), os.path.splitext(os.path.split(filename)[-1])[0] + f"{os.getpid()}_list.txt")
 
     logger.debug("Writing filelist to " + filelist)
 
