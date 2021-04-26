@@ -19,15 +19,15 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-02-11"
+__updated__ = "2021-04-26"
 
 import os
 import re
 
+from EL_PythonUtils.utilities import run_only_once
 from astropy.io import fits
 from scipy.integrate.quadpack import quad
 
-from EL_PythonUtils.utilities import run_only_once
 from ST_DM_MDBTools.Mdb import Mdb
 
 from . import magic_values as mv
@@ -117,16 +117,20 @@ def _find_mdb_data_file(data_filenames, qualified_mdb_files):
 
             mdb_path = os.path.split(qualified_mdb_filename)[0]
 
-            # Try in the same directory as the MDB file
-            test_qualified_data_filename = os.path.join(mdb_path, data_filename)
-            if os.path.isfile(test_qualified_data_filename):
-                qualified_data_filename = test_qualified_data_filename
-                break
+            test_mdb_file_paths = [mdb_path, os.path.join(mdb_path, "data"),
+                                   os.path.join(mdb_path, ".."), os.path.join(mdb_path, "..", "data"), ]
 
-            # Try in the data subdirectory of where the MDB file is
-            test_qualified_data_filename = os.path.join(mdb_path, "data", data_filename)
-            if os.path.isfile(test_qualified_data_filename):
-                qualified_data_filename = test_qualified_data_filename
+            found = False
+
+            # Try in the same directory as the MDB file
+            for test_path in test_mdb_file_paths:
+                test_qualified_data_filename = os.path.join(test_path, data_filename)
+                if os.path.isfile(test_qualified_data_filename):
+                    qualified_data_filename = test_qualified_data_filename
+                    found = True
+                    break
+
+            if found:
                 break
 
         if qualified_data_filename is None:
