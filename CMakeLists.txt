@@ -7,4 +7,4 @@ find_package(ElementsProject)
 
 # Declare project name and version
 
-elements_project(SHE_PPT 8.7.0 USE ST_DataModelBindings 8.0.5 ST_DataModelTools 8.0.5 EL_Utils 1.1.0)
+elements_project(SHE_PPT 8.7.1 USE ST_DataModelBindings 8.0.5 ST_DataModelTools 8.0.5 EL_Utils 1.1.0)
