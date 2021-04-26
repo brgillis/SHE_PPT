@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-02-10"
+__updated__ = "2021-04-26"
 
 from datetime import datetime
 import json
@@ -29,10 +29,10 @@ from pickle import UnpicklingError
 import pickle
 from xml.sax._exceptions import SAXParseException
 
+from EL_PythonUtils.utilities import run_only_once, time_to_timestamp
 from astropy.io import fits
 from pyxb.exceptions_ import NamespaceError
 
-from EL_PythonUtils.utilities import run_only_once, time_to_timestamp
 from ElementsServices.DataSync import DataSync
 from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider
 from ST_DataModelBindings.sys_stub import CreateFromDocument
@@ -359,7 +359,7 @@ def find_web_file(filename):
         If it isn't found, returns None.
     """
 
-    filelist = os.path.join(os.getcwd(), os.path.splitext(os.path.split(filename)[-1])[0] + "_list.txt")
+    filelist = os.path.join(os.getcwd(), os.path.splitext(os.path.split(filename)[-1])[0] + f"{os.get_pid()}_list.txt")
 
     logger.debug("Writing filelist to " + filelist)
 
