@@ -5,7 +5,7 @@
     Misc. utility functions for the pipeline.
 """
 
-__updated__ = "2021-03-01"
+__updated__ = "2021-04-28"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -472,6 +472,8 @@ def _make_config_from_cline_args_and_defaults(config_keys: Tuple[ConfigKeys, ...
                                              defaults=defaults)
 
     for key in cline_args:
+        if cline_args[key] is not None:
+            continue
         _check_key_is_valid(key, config_keys)
         config_dict[key] = cline_args[key]
 
