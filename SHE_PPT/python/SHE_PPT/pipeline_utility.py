@@ -472,7 +472,7 @@ def _make_config_from_cline_args_and_defaults(config_keys: Tuple[ConfigKeys, ...
                                              defaults=defaults)
 
     for key in cline_args:
-        if cline_args[key] is not None:
+        if cline_args[key] is None:
             continue
         _check_key_is_valid(key, config_keys)
         config_dict[key] = cline_args[key]
