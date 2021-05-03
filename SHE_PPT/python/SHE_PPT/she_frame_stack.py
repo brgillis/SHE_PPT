@@ -48,7 +48,7 @@ from .utility import find_extension
 logger = logging.getLogger(__name__)
 
 
-class SHEFrameStack(object):
+class SHEFrameStack():
     """Structure containing all needed data shape measurement, represented as a list of SHEFrames for
     detector image data, a stacked image, a list of PSF images and catalogues, and a detections
     catalogue.
@@ -102,7 +102,6 @@ class SHEFrameStack(object):
         if self.detections_catalogue is not None:
             self.detections_catalogue.add_index(mfc_tf.ID)
 
-        return
 
     @property
     def exposures(self):
@@ -251,14 +250,14 @@ class SHEFrameStack(object):
         def neq(lhs, rhs):
             try:
                 return bool(lhs != rhs)
-            except ValueError as _e:
+            except ValueError:
                 return (lhs != rhs).any()
 
         def list_neq(lhs, rhs):
 
             if lhs is None and rhs is None:
                 return False
-            elif (lhs is None) != (rhs is None):
+            if (lhs is None) != (rhs is None):
                 return True
 
             if len(lhs) != len(rhs):
@@ -300,7 +299,7 @@ class SHEFrameStack(object):
         try:
             row = self.detections_catalogue.loc[gal_id]
         except ValueError as e:
-            if not "Cannot create TableLoc object with no indices" in str(e):
+            if "Cannot create TableLoc object with no indices" not in str(e):
                 raise
             self.detections_catalogue.add_index(mfc_tf.ID)
             row = self.detections_catalogue.loc[gal_id]
@@ -401,8 +400,9 @@ class SHEFrameStack(object):
            keep_header : bool
                If True, will copy the detector's header to each stamp's
            none_if_out_of_bounds : bool
-               Set this to True if you want this method to return None if the stamp is entirely out of bounds of the image.
-               By default, this is set to False, which means it will instead return an entirely masked stack in that case.
+               Set this to True if you want this method to return None if the stamp is entirely out of bounds
+               of the image. By default, this is set to False, which means it will instead return an entirely
+               masked stack in that case.
 
            Return
            ------
@@ -478,7 +478,7 @@ class SHEFrameStack(object):
                 the image. By default, this is set to False, which means it will instead return a list of Nones in
                 that case instead.
             return_det_coords_too : bool
-                If true return namedtuple of x_fov, y_fov, detno_x, detno_y, x_det, y_det   
+                If true return namedtuple of x_fov, y_fov, detno_x, detno_y, x_det, y_det
 
 
             Return
@@ -491,14 +491,11 @@ class SHEFrameStack(object):
         found = False
         fov_coords_list = []
         for exposure in self.exposures:
-            # print("EXP DET: ",np.shape(exposure.detectors),return_det_coords_too)
-            # print("XW: ",x_world, y_world)
             fov_coords = exposure.get_fov_coords(x_world=x_world,
                                                  y_world=y_world,
                                                  x_buffer=x_buffer,
                                                  y_buffer=y_buffer,
                                                  return_det_coords_too=return_det_coords_too)
-            # print("FVC: ",fov_coords)
             if fov_coords is not None:
                 found = True
             fov_coords_list.append(fov_coords)
@@ -560,6 +557,76 @@ class SHEFrameStack(object):
                 data.append(hdulist[extension].data.transpose())
 
         return header, data
+
+    @staticmethod
+    def __load_detections_catalogue(detections_listfile_filename, workdir, save_products, object_id_list):
+        try:
+            detections_catalogue_products=None
+            detections_filenames = read_listfile(find_file(detections_listfile_filename, path=workdir))
+            # Load each table in turn and combine them
+            detections_catalogues = []
+            if save_products:
+                detections_catalogue_products = []
+            for detections_product_filename in detections_filenames:
+                detections_product = read_xml_product(os.path.join(workdir, detections_product_filename))
+                if save_products:
+                    detections_catalogue_products.append(detections_product)
+                logger.debug("DP: %s, %s, %s",
+                             workdir,
+                             detections_product_filename,
+                             detections_product.get_data_filename())
+                detections_catalogue = table.Table.read(
+                    os.path.join(workdir, detections_product.get_data_filename()))
+                detections_catalogues.append(detections_catalogue)
+            if object_id_list is None:
+                # If we have no object id list, stack them all
+                # Conflicts are expected
+                detections_catalogue = table.vstack(detections_catalogues,
+                                                    metadata_conflicts="silent")
+            else:
+                rows_to_use = []
+                # loop over detections_catalog and make list of indices not in our object_id list
+                for cat in detections_catalogues:
+                    for row in cat:
+                        if row[mfc_tf.ID] in object_id_list:
+                            rows_to_use.append(row)
+
+                detections_catalogue = initialise_mer_final_catalog()
+                for key in detections_catalogues[0].meta:
+                    if key in detections_catalogue.meta:
+                        detections_catalogue.meta[key] = detections_catalogues[0].meta[key]
+
+                for row in rows_to_use:
+                    detections_catalogue.add_row()
+                    new_row = detections_catalogue[-1]
+                    for key in row.colnames:
+                        if key in new_row.colnames:
+                            try:
+                                new_row[key] = row[key]
+                            except np.ma.core.MaskError as e:
+                                logger.warning("Masked element for column %s cannot be added "
+                                               "to table; default value will be used.",str(key))
+                # If we do have an object id list, construct a new table with just the desired rows
+                logger.info("Finished pruning list of galaxy objects to loop over")
+        except JSONDecodeError as e:
+            logger.warning(str(e))
+            # See if it's just a single catalogue, which we can handle
+            detections_product = read_xml_product(os.path.join(workdir, detections_listfile_filename))
+            detections_catalogue = table.Table.read(
+                os.path.join(workdir, detections_product.Data.DataStorage.DataContainer.FileName))
+        return detections_catalogue, detections_catalogue_products
+
+    @staticmethod
+    def read_or_none(listfile_filename,workdir):
+        if listfile_filename is None:
+            return None
+        return read_listfile(os.path.join(workdir, listfile_filename))
+
+    @staticmethod
+    def index_or_none(filenames, index):
+        if filenames is None:
+            return None
+        return filenames[index]
 
     @classmethod
     def read(cls,
@@ -624,70 +691,11 @@ class SHEFrameStack(object):
             detections_catalogue = None
             detections_catalogue_products = None
         else:
-            try:
-                detections_filenames = read_listfile(find_file(detections_listfile_filename, path=workdir))
-
-                # Load each table in turn and combine them
-
-                detections_catalogues = []
-                if save_products:
-                    detections_catalogue_products = []
-
-                for detections_product_filename in detections_filenames:
-
-                    detections_product = read_xml_product(os.path.join(workdir, detections_product_filename))
-                    if save_products:
-                        detections_catalogue_products.append(detections_product)
-
-                    logger.debug("DP: %s, %s, %s" % (workdir,
-                                                     detections_product_filename,
-                                                     detections_product.get_data_filename()))
-                    detections_catalogue = table.Table.read(
-                        os.path.join(workdir, detections_product.get_data_filename()))
-
-                    detections_catalogues.append(detections_catalogue)
-
-                if object_id_list is None:
-                    # If we have no object id list, stack them all
-                    detections_catalogue = table.vstack(detections_catalogues,
-                                                        metadata_conflicts="silent")  # Conflicts are expected
-                else:
-                    # If we do have an object id list, construct a new table with just the desired rows
-                    rows_to_use = []
-
-                    # loop over detections_catalog and make list of indices not in our object_id list
-                    for cat in detections_catalogues:
-                        for row in cat:
-                            if row[mfc_tf.ID] in object_id_list:
-                                rows_to_use.append(row)
-
-                    detections_catalogue = initialise_mer_final_catalog()
-
-                    for key in detections_catalogues[0].meta:
-                        if key in detections_catalogue.meta:
-                            detections_catalogue.meta[key] = detections_catalogues[0].meta[key]
-
-                    for row in rows_to_use:
-                        detections_catalogue.add_row()
-                        new_row = detections_catalogue[-1]
-                        for key in row.colnames:
-                            if key in new_row.colnames:
-                                try:
-                                    new_row[key] = row[key]
-                                except np.ma.core.MaskError as e:
-                                    logger.warning("Masked element for column " + str(key) +
-                                                   " cannot be added to table; default value will be used.")
-
-                    logger.info("Finished pruning list of galaxy objects to loop over")
-
-            except JSONDecodeError as e:
-                logger.warning(str(e))
-
-                # See if it's just a single catalogue, which we can handle
-                detections_product = read_xml_product(
-                    os.path.join(workdir, detections_listfile_filename))
-                detections_catalogue = table.Table.read(
-                    os.path.join(workdir, detections_product.Data.DataStorage.DataContainer.FileName))
+            detections_catalogue, detections_catalogue_products = cls.__load_detections_catalogue(
+                detections_listfile_filename,
+                workdir,
+                save_products,
+                object_id_list)
 
         # Prune out duplicate object IDs from the detections table - FIXME?
         # after MER resolves this issue?
@@ -704,27 +712,16 @@ class SHEFrameStack(object):
             psf_products = []
             exposure_segmentation_products = []
 
-        def read_or_none(listfile_filename):
-            if listfile_filename is None:
-                return None
-            else:
-                return read_listfile(os.path.join(workdir, listfile_filename))
 
-        def index_or_none(filenames, index):
-            if filenames is None:
-                return None
-            else:
-                return filenames[index]
-
-        exposure_filenames = read_or_none(exposure_listfile_filename)
-        seg_filenames = read_or_none(seg_listfile_filename)
-        psf_filenames = read_or_none(psf_listfile_filename)
+        exposure_filenames = cls.read_or_none(exposure_listfile_filename,workdir)
+        seg_filenames = cls.read_or_none(seg_listfile_filename,workdir)
+        psf_filenames = cls.read_or_none(psf_listfile_filename,workdir)
 
         for exposure_i in range(len(exposure_filenames)):
 
-            exposure_filename = index_or_none(exposure_filenames, exposure_i)
-            seg_filename = index_or_none(seg_filenames, exposure_i)
-            psf_filename = index_or_none(psf_filenames, exposure_i)
+            exposure_filename = cls.index_or_none(exposure_filenames, exposure_i)
+            seg_filename = cls.index_or_none(seg_filenames, exposure_i)
+            psf_filename = cls.index_or_none(psf_filenames, exposure_i)
 
             exposure = SHEFrame.read(frame_product_filename=exposure_filename,
                                      seg_product_filename=seg_filename,

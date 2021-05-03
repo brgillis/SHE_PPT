@@ -24,14 +24,9 @@ __updated__ = "2020-07-19"
 
 from collections import OrderedDict
 
-from astropy.table import Table
-
-import numpy as np
-
 from .. import magic_values as mv
-from ..flags import she_flag_version
 from ..logging import getLogger
-from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+from ..table_utility import is_in_format, init_table,SheTableFormat
 
 
 fits_version = "8.0"
@@ -39,7 +34,7 @@ fits_version = "8.0"
 logger = getLogger(mv.logger_name)
 
 
-class ShePsfZmStateMeta(object):
+class ShePsfZmStateMeta():
     """ A class defining the metadata for PSF ZM state tables.
     """
 
@@ -72,7 +67,7 @@ class ShePsfZmStateMeta(object):
         self.all = list(self.comments.keys())
 
 
-class ShePsfZmStateFormat(object):
+class ShePsfZmStateFormat(SheTableFormat):
     """
         @brief A class defining the format for PSF ZM state tables. Only the psf_zm_state_table_format
                instance of this should generally be accessed, and it should not be changed.
@@ -81,20 +76,19 @@ class ShePsfZmStateFormat(object):
     data_type = "FIELD"
 
     def __init__(self, data_type="FIELD"):
+        super().__init__(ShePsfZmStateMeta(self.data_type))
 
         self.data_type = data_type
-        # Get the metadata (contained within its own class)
-        self.meta = ShePsfZmStateMeta(self.data_type)
-
-        setup_table_format(self)
 
         # Column names and info
 
-        self.fovrngx = set_column_properties(self,
-                                             "SHE_PSF_%s_FOVRNGX" % self.data_type, dtype=">f4", fits_dtype="E", length=2)
-        self.fovrngy = set_column_properties(self,
-                                             "SHE_PSF_%s_FOVRNGY" % self.data_type, dtype=">f4", fits_dtype="E", length=2)
-        self.zer_ply_amp = set_column_properties(self,
+        self.fovrngx = self.set_column_properties(
+                                             "SHE_PSF_%s_FOVRNGX" % self.data_type, dtype=">f4",
+                                             fits_dtype="E", length=2)
+        self.fovrngy = self.set_column_properties(
+                                             "SHE_PSF_%s_FOVRNGY" % self.data_type, dtype=">f4",
+                                             fits_dtype="E", length=2)
+        self.zer_ply_amp = self.set_column_properties(
                                                  "SHE_PSF_%s_ZNKPLYAMP" % self.data_type, dtype=">f4",
                                                  fits_dtype="E", length=50)
 
@@ -151,7 +145,7 @@ def initialise_psf_zm_state_table(data_type="FIELD",
 
     Parameters
     ----------
-    data_type : str 
+    data_type : str
         Is if FIELD or CALIB
     optional_columns : <list<str>>
         List of names for optional columns to include.
@@ -177,7 +171,7 @@ def initialise_psf_zm_state_table(data_type="FIELD",
 
     psf_zm_state_table.meta = make_psf_zm_state_table_header(data_type)
 
-    assert(is_in_format(psf_zm_state_table, tf))
+    assert is_in_format(psf_zm_state_table, tf)
 
     return psf_zm_state_table
 

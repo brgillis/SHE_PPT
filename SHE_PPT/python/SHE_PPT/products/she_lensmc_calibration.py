@@ -53,7 +53,6 @@ def init():
 
     binding_class.has_files = False
 
-    return
 
 
 def __set_filename(self, filename):
@@ -105,8 +104,6 @@ def create_dpd_she_lensmc_calibration(filename=None):
 
     dpd_she_lensmc_calibration.Header = HeaderProvider.create_generic_header("SHE")
 
-    # dpd_she_lensmc_calibration.Data = create_she_lensmc_calibration(
-    #    filename)
 
     if filename:
         __set_filename(dpd_she_lensmc_calibration, filename)

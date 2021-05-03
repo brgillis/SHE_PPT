@@ -42,7 +42,6 @@ def init():
 
     binding_class.has_files = True
 
-    return
 
 
 def __get_data_filename(self):

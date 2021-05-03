@@ -54,8 +54,6 @@ def init():
 
     binding_class.has_files = True
 
-    return
-
 
 def __set_filename(self, filename):
     set_data_filename_of_product(self, filename, "DataStorage")

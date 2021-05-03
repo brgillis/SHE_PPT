@@ -58,7 +58,6 @@ def init():
 
     binding_class.get_all_filenames = __get_all_filenames
 
-    return
 
 
 def __set_data_filename(self, filename):
@@ -71,11 +70,10 @@ def __get_data_filename(self):
 
 def __set_psf_filename(self, filename):
     if not hasattr(self.Data, "PsfModelStorage") or self.Data.PsfModelStorage is None:
-        self.Data.PsfModelStorage = create_vis_psf_storage()
+        self.Data.PsfModelStorage = create_vis_psf_storage(filename)
 
     set_data_filename_of_product(self, filename, "PsfModelStorage")
 
-    return
 
 
 def __get_psf_filename(self):
@@ -90,7 +88,6 @@ def __set_bkg_filename(self, filename):
 
     set_data_filename_of_product(self, filename, "BackgroundStorage")
 
-    return
 
 
 def __get_bkg_filename(self):
@@ -105,7 +102,6 @@ def __set_wgt_filename(self, filename):
 
     set_data_filename_of_product(self, filename, "WeightStorage")
 
-    return
 
 
 def __get_wgt_filename(self):

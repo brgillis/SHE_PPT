@@ -28,7 +28,6 @@ from ST_DM_HeaderProvider import GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.bas.imp.raw.stc_stub import polygonType
 from ST_DataModelBindings.dpd.she.validatedmeasurements_stub import dpdSheValidatedMeasurements
 from ST_DataModelBindings.pro import she_stub as she_pro
-from ST_DataModelBindings.sys.dss_stub import dataContainer
 
 from ..file_io import read_xml_product, find_aux_file
 from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
@@ -80,14 +79,12 @@ def __set_BFD_filename(self, filename):
         if not hasattr(self.Data, "BfdMoments") or self.Data.BfdMoments is None:
             self.Data.BfdMoments = create_bfd_moments(filename)
         set_data_filename_of_product(self, filename, "BfdMoments.DataStorage")
-    return
 
 
 def __get_BFD_filename(self):
     if not hasattr(self.Data, "BfdMoments") or self.Data.BfdMoments is None:
         return None
-    else:
-        return get_data_filename_from_product(self, "BfdMoments.DataStorage")
+    return get_data_filename_from_product(self, "BfdMoments.DataStorage")
 
 
 def __set_KSB_filename(self, filename):
@@ -98,14 +95,12 @@ def __set_KSB_filename(self, filename):
         if not hasattr(self.Data, "KsbShearMeasurements") or self.Data.KsbShearMeasurements is None:
             self.Data.KsbShearMeasurements = create_ksb_estimates(filename)
         set_data_filename_of_product(self, filename, "KsbShearMeasurements.DataStorage")
-    return
 
 
 def __get_KSB_filename(self):
     if not hasattr(self.Data, "KsbShearMeasurements") or self.Data.KsbShearMeasurements is None:
         return None
-    else:
-        return get_data_filename_from_product(self, "KsbShearMeasurements.DataStorage")
+    return get_data_filename_from_product(self, "KsbShearMeasurements.DataStorage")
 
 
 def __set_LensMC_filename(self, filename):
@@ -116,14 +111,12 @@ def __set_LensMC_filename(self, filename):
         if not hasattr(self.Data, "LensMcShearMeasurements") or self.Data.LensMcShearMeasurements is None:
             self.Data.LensMcShearMeasurements = create_lensmc_estimates(filename)
         set_data_filename_of_product(self, filename, "LensMcShearMeasurements.DataStorage")
-    return
 
 
 def __get_LensMC_filename(self):
     if not hasattr(self.Data, "LensMcShearMeasurements") or self.Data.LensMcShearMeasurements is None:
         return None
-    else:
-        return get_data_filename_from_product(self, "LensMcShearMeasurements.DataStorage")
+    return get_data_filename_from_product(self, "LensMcShearMeasurements.DataStorage")
 
 
 def __set_MomentsML_filename(self, filename):
@@ -134,14 +127,12 @@ def __set_MomentsML_filename(self, filename):
         if not hasattr(self.Data, "MomentsMlShearMeasurements") or self.Data.MomentsMlShearMeasurements is None:
             self.Data.MomentsMlShearMeasurements = create_momentsml_estimates(filename)
         set_data_filename_of_product(self, filename, "MomentsMlShearMeasurements.DataStorage")
-    return
 
 
 def __get_MomentsML_filename(self):
     if not hasattr(self.Data, "MomentsMlShearMeasurements") or self.Data.MomentsMlShearMeasurements is None:
         return None
-    else:
-        return get_data_filename_from_product(self, "MomentsMlShearMeasurements.DataStorage")
+    return get_data_filename_from_product(self, "MomentsMlShearMeasurements.DataStorage")
 
 
 def __set_REGAUSS_filename(self, filename):
@@ -152,14 +143,12 @@ def __set_REGAUSS_filename(self, filename):
         if not hasattr(self.Data, "RegaussShearMeasurements") or self.Data.RegaussShearMeasurements is None:
             self.Data.RegaussShearMeasurements = create_regauss_estimates(filename)
         set_data_filename_of_product(self, filename, "RegaussShearMeasurements.DataStorage")
-    return
 
 
 def __get_REGAUSS_filename(self):
     if not hasattr(self.Data, "RegaussShearMeasurements") or self.Data.RegaussShearMeasurements is None:
         return None
-    else:
-        return get_data_filename_from_product(self, "RegaussShearMeasurements.DataStorage")
+    return get_data_filename_from_product(self, "RegaussShearMeasurements.DataStorage")
 
 
 def __get_all_filenames(self):
@@ -176,33 +165,34 @@ def __get_all_filenames(self):
 def __get_method_filename(self, method):
 
     if method == "KSB":
-        return self.get_KSB_filename()
+        name = self.get_KSB_filename()
     elif method == "LensMC":
-        return self.get_LensMC_filename()
+        name = self.get_LensMC_filename()
     elif method == "MomentsML":
-        return self.get_MomentsML_filename()
+        name = self.get_MomentsML_filename()
     elif method == "REGAUSS":
-        return self.get_REGAUSS_filename()
+        name = self.get_REGAUSS_filename()
     elif method == "BFD":
-        return self.get_BFD_filename()
+        name = self.get_BFD_filename()
     else:
         raise ValueError("Invalid method " + str(method) + ".")
-
+    return name
 
 def __set_method_filename(self, method, filename):
 
     if method == "KSB":
-        return self.set_KSB_filename(filename)
+        name = self.set_KSB_filename(filename)
     elif method == "LensMC":
-        return self.set_LensMC_filename(filename)
+        name = self.set_LensMC_filename(filename)
     elif method == "MomentsML":
-        return self.set_MomentsML_filename(filename)
+        name = self.set_MomentsML_filename(filename)
     elif method == "REGAUSS":
-        return self.set_REGAUSS_filename(filename)
+        name = self.set_REGAUSS_filename(filename)
     elif method == "BFD":
-        return self.set_BFD_filename(filename)
+        name = self.set_BFD_filename(filename)
     else:
         raise ValueError("Invalid method " + str(method) + ".")
+    return name
 
 
 def __set_spatial_footprint(self, p):
@@ -213,8 +203,9 @@ def __set_spatial_footprint(self, p):
     # Figure out how the spatial footprint was passed to us
     if isinstance(p, str):
         # If we got a filepath, read it in and apply this function to the read-in product
-        return __set_spatial_footprint(self, read_xml_product(p))
-    elif isinstance(p, polygonType):
+        __set_spatial_footprint(self, read_xml_product(p))
+        return
+    if isinstance(p, polygonType):
         poly = p
     elif hasattr(p, "Polygon"):
         poly = p.Polygon

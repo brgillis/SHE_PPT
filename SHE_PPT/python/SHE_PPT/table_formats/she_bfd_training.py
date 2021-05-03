@@ -23,23 +23,18 @@ __updated__ = "2020-07-19"
 
 from collections import OrderedDict
 
-from astropy.table import Table
-
 import numpy as np
 
-from .. import detector as dtc
 from .. import magic_values as mv
 from ..flags import she_flag_version
-from ..logging import getLogger
-from ..table_formats.mer_final_catalog import tf as mfc_tf
-from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+from ..table_utility import is_in_format, init_table, SheTableFormat
 
 
 fits_version = "8.0"
 fits_def = "she.bfdTraining"
 
 
-class BfdTrainingMeta(object):
+class BfdTrainingMeta():
     """
         @brief A class defining the metadata for simulation plan tables.
     """
@@ -97,61 +92,59 @@ class BfdTrainingMeta(object):
         self.all = list(self.comments.keys())
 
 
-class BfdTrainingFormat(object):
+class BfdTrainingFormat(SheTableFormat):
     """
         @brief A class defining the format for galaxy population priors tables. Only the bfd_training_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
     def __init__(self):
-
-        # Get the metadata (contained within its own class)
-        self.meta = BfdTrainingMeta()
-
-        setup_table_format(self)
+        super().__init__(BfdTrainingMeta())
 
         # Column names and info
 
-        self.id = set_column_properties(self,
+        self.id = self.set_column_properties(
                                         "OBJECT_ID", dtype=">i8", fits_dtype="K",
                                         comment="ID of this object in the galaxy population priors table.")
-        self.fit_flags = set_column_properties(self,
+        self.fit_flags = self.set_column_properties(
                                                "SHE_BFD_TRAINING_FIT_FLAGS", dtype=">i8", fits_dtype="K")
-        self.val_flags = set_column_properties(self,
+        self.val_flags = self.set_column_properties(
                                                "SHE_BFD_TRAINING_VAL_FLAGS", dtype=">i8", fits_dtype="K")
-        self.fit_class = set_column_properties(self,
+        self.fit_class = self.set_column_properties(
                                                "SHE_BFD_TRAINING_FIT_CLASS", dtype=">i4", fits_dtype="I")
-        self.ra = set_column_properties(self,
+        self.ra = self.set_column_properties(
                                         "SHE_BFD_TRAINING_UPDATED_RA", comment="deg", dtype=">f8", fits_dtype="D")
-        self.ra_err = set_column_properties(self,
-                                            "SHE_BFD_TRAINING_UPDATED_RA_ERR", comment="deg", dtype=">f8", fits_dtype="E")
-        self.dec = set_column_properties(self,
+        self.ra_err = self.set_column_properties(
+                                            "SHE_BFD_TRAINING_UPDATED_RA_ERR", comment="deg", dtype=">f8",
+                                            fits_dtype="E")
+        self.dec = self.set_column_properties(
                                          "SHE_BFD_TRAINING_UPDATED_DEC", comment="deg", dtype=">f8", fits_dtype="D")
-        self.dec_err = set_column_properties(self,
-                                             "SHE_BFD_TRAINING_UPDATED_DEC_ERR", comment="deg", dtype=">f8", fits_dtype="E")
-        self.moments = set_column_properties(self,
+        self.dec_err = self.set_column_properties(
+                                             "SHE_BFD_TRAINING_UPDATED_DEC_ERR", comment="deg", dtype=">f8",
+                                             fits_dtype="E")
+        self.moments = self.set_column_properties(
                                              "SHE_BFD_TRAINING_MOMENTS", dtype=">f4", fits_dtype="E", length=7)
-        self.dm_dg1 = set_column_properties(self,
+        self.dm_dg1 = self.set_column_properties(
                                             "SHE_BFD_TRAINING_DM_DG1", dtype=">f4", fits_dtype="E", length=7)
-        self.dm_dg2 = set_column_properties(self,
+        self.dm_dg2 = self.set_column_properties(
                                             "SHE_BFD_TRAINING_DM_DG2", dtype=">f4", fits_dtype="E", length=7)
-        self.dm_dmu = set_column_properties(self,
+        self.dm_dmu = self.set_column_properties(
                                             "SHE_BFD_TRAINING_DM_DMU", dtype=">f4", fits_dtype="E", length=7)
-        self.d2m_dg1dg1 = set_column_properties(self,
+        self.d2m_dg1dg1 = self.set_column_properties(
                                                 "SHE_BFD_TRAINING_D2M_DG1DG1", dtype=">f4", fits_dtype="E", length=7)
-        self.d2m_dg1dg2 = set_column_properties(self,
+        self.d2m_dg1dg2 = self.set_column_properties(
                                                 "SHE_BFD_TRAINING_D2M_DG1DG2", dtype=">f4", fits_dtype="E", length=7)
-        self.d2m_dg2dg2 = set_column_properties(self,
+        self.d2m_dg2dg2 = self.set_column_properties(
                                                 "SHE_BFD_TRAINING_D2M_DG2DG2", dtype=">f4", fits_dtype="E", length=7)
-        self.d2m_dg1dmu = set_column_properties(self,
+        self.d2m_dg1dmu = self.set_column_properties(
                                                 "SHE_BFD_TRAINING_D2M_DG1DMU", dtype=">f4", fits_dtype="E", length=7)
-        self.d2m_dg2dmu = set_column_properties(self,
+        self.d2m_dg2dmu = self.set_column_properties(
                                                 "SHE_BFD_TRAINING_D2M_DG2DMU", dtype=">f4", fits_dtype="E", length=7)
-        self.d2m_dmudmu = set_column_properties(self,
+        self.d2m_dmudmu = self.set_column_properties(
                                                 "SHE_BFD_TRAINING_D2M_DMUDMU", dtype=">f4", fits_dtype="E", length=7)
-        self.tmp_wgt = set_column_properties(self,
+        self.tmp_wgt = self.set_column_properties(
                                              "SHE_BFD_TRAINING_TMPL_WEIGHT", dtype=">f4", fits_dtype="E")
-        self.jsupp = set_column_properties(self,
+        self.jsupp = self.set_column_properties(
                                            "SHE_BFD_TRAINING_JSUPPRESS", dtype=">f4", fits_dtype="E")
 
         # A list of columns in the desired order
@@ -242,6 +235,6 @@ def initialise_bfd_training_table(size=None,
                                                              observation_time=observation_time,
                                                              tile_id=tile_id)
 
-    assert(is_in_format(bfd_training_table, tf))
+    assert is_in_format(bfd_training_table, tf)
 
     return bfd_training_table

@@ -40,7 +40,7 @@ logger = getLogger(__name__)
 
 @EL_run_only_once
 def warn_hash_any_deprecated():
-    logger.warning("SHE_PPT.utility.hash_any has been moved to EL_PythonUtils.utilities.hash_any. " + 
+    logger.warning("SHE_PPT.utility.hash_any has been moved to EL_PythonUtils.utilities.hash_any. "
                    "Please update to use that, as this wrapper will be deprecated in a future version.")
 
 
@@ -51,7 +51,7 @@ def hash_any(*args, **kwargs):
 
 @EL_run_only_once
 def warn_time_to_timestamp_deprecated():
-    logger.warning("SHE_PPT.utility.time_to_timestamp has been moved to EL_PythonUtils.utilities.time_to_timestamp. " + 
+    logger.warning("SHE_PPT.utility.time_to_timestamp has been moved to EL_PythonUtils.utilities.time_to_timestamp. "
                    "Please update to use that, as this wrapper will be deprecated in a future version.")
 
 
@@ -62,7 +62,7 @@ def time_to_timestamp(*args, **kwargs):
 
 @EL_run_only_once
 def warn_get_arguments_string_deprecated():
-    logger.warning("SHE_PPT.utility.get_arguments_string has been moved to EL_PythonUtils.utilities.get_arguments_string. " + 
+    logger.warning("SHE_PPT.utility.get_arguments_string has been moved to EL_PythonUtils.utilities.get_arguments_string. "
                    "Please update to use that, as this wrapper will be deprecated in a future version.")
 
 
@@ -73,7 +73,7 @@ def get_arguments_string(*args, **kwargs):
 
 @EL_run_only_once
 def warn_run_only_once_deprecated():
-    logger.warning("SHE_PPT.utility.run_only_once has been moved to EL_PythonUtils.utilities.run_only_once. " + 
+    logger.warning("SHE_PPT.utility.run_only_once has been moved to EL_PythonUtils.utilities.run_only_once. "
                    "Please update to use that, as this wrapper will be deprecated in a future version.")
 
 
@@ -83,23 +83,22 @@ def run_only_once(*args, **kwargs):
 
 
 def get_attr_with_index(obj, attr):
-    # Check for an index at the end of attr, using a regex which matches anything, followed by [, followed by a positive integer,
-    # followed by ], followed by the end of the string. Matching groups are 1. the attribute, and 2. the index
+    # Check for an index at the end of attr, using a regex which matches anything, followed by [,
+    #followed by a positive integer, followed by ], followed by the end of the string.
+    #Matching groups are 1. the attribute, and 2. the index
     regex_match = re.match(r"(.*)\[([0-9]+)\]\Z", attr)
 
     if not regex_match:
         return getattr(obj, attr)
-    else:
-        # Get the attribute (matching group 1), indexed by the index (matching group 2)
-        return getattr(obj, regex_match.group(1))[int(regex_match.group(2))]
+    # Get the attribute (matching group 1), indexed by the index (matching group 2)
+    return getattr(obj, regex_match.group(1))[int(regex_match.group(2))]
 
 
 def get_nested_attr(obj, attr):
     if not "." in attr:
         return get_attr_with_index(obj, attr)
-    else:
-        head, tail = attr.split('.', 1)
-        return get_nested_attr(get_attr_with_index(obj, head), tail)
+    head, tail = attr.split('.', 1)
+    return get_nested_attr(get_attr_with_index(obj, head), tail)
 
 
 def set_index_zero_attr(obj, attr, val):
@@ -109,7 +108,6 @@ def set_index_zero_attr(obj, attr, val):
         getattr(obj, attr[:-3])[0] = val
     else:
         raise ValueError("Invalid format of attribute passed to get_attr_with_index: " + str(attr))
-    return
 
 
 def set_nested_attr(obj, attr, val):
@@ -118,12 +116,11 @@ def set_nested_attr(obj, attr, val):
     else:
         head, tail = attr.split('.', 1)
         set_nested_attr(get_attr_with_index(obj, head), tail, val)
-    return
 
 
 def get_release_from_version(version):
-    """Gets a 'release' format string ('XX.XX' where X is 0-9) from a 'version' format string ('X.X(.Y)', where each X is
-       0-99, and Y is any integer).
+    """Gets a 'release' format string ('XX.XX' where X is 0-9) from a 'version' format string ('X.X(.Y)',
+       where each X is 0-99, and Y is any integer).
     """
 
     period_split_version = version.split('.')
@@ -133,7 +130,7 @@ def get_release_from_version(version):
     minor_version = int(period_split_version[1])
 
     if major_version < 0 or major_version > 99 or minor_version < 0 or minor_version > 99:
-        raise ValueError("version (" + version + ") is in incorrect format. Format must be 'X.X.X', where each X is " + 
+        raise ValueError("version (" + version + ") is in incorrect format. Format must be 'X.X.X', where each X is "
                          "0-99.")
 
     # Ensure the string is two characters long for both the major and minor version
@@ -153,15 +150,14 @@ def find_extension(hdulist, extname=None, ccdid=None):
             if hdu.header["EXTNAME"] == extname:
                 return i
         return None
-    elif ccdid is not None:
+    if ccdid is not None:
         for i, hdu in enumerate(hdulist):
             if not "CCDID" in hdu.header:
                 continue
             if hdu.header["CCDID"] == ccdid:
                 return i
         return None
-    else:
-        raise ValueError("Either extname or ccdid must be supplied.")
+    raise ValueError("Either extname or ccdid must be supplied.")
 
 
 def get_detector(obj):

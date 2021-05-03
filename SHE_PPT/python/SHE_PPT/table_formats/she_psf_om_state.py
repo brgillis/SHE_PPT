@@ -24,14 +24,9 @@ __updated__ = "2020-07-19"
 
 from collections import OrderedDict
 
-from astropy.table import Table
-
-import numpy as np
-
 from .. import magic_values as mv
-from ..flags import she_flag_version
 from ..logging import getLogger
-from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+from ..table_utility import is_in_format, init_table,SheTableFormat
 
 
 fits_version = "8.0"
@@ -39,7 +34,7 @@ fits_version = "8.0"
 logger = getLogger(mv.logger_name)
 
 
-class ShePsfOmStateMeta(object):
+class ShePsfOmStateMeta():
     """ A class defining the metadata for PSF TM state tables.
     """
 
@@ -72,7 +67,7 @@ class ShePsfOmStateMeta(object):
         self.all = list(self.comments.keys())
 
 
-class ShePsfOmStateFormat(object):
+class ShePsfOmStateFormat(SheTableFormat):
     """
         @brief A class defining the format for PSF TM state tables. Only the psf_om_state_table_format
                instance of this should generally be accessed, and it should not be changed.
@@ -81,21 +76,18 @@ class ShePsfOmStateFormat(object):
     data_type = "CAL"
 
     def __init__(self, data_type="CAL"):
+        super().__init__(ShePsfOmStateMeta(data_type))
 
         # Get the metadata (contained within its own class)
 
         self.data_type = data_type
-
-        self.meta = ShePsfOmStateMeta(self.data_type)
-
-        setup_table_format(self)
 
         # Column names and info
         # @TODO: option for FIELD/CALIB - use self.data_type
 
         for colname in []:
             setattr(self, colname.lower(),
-                    set_column_properties(self, name=self.get_colname(colname),
+                    self.set_column_properties(name=self.get_colname(colname),
                                           dtype=">f4", fits_dtype="E"))
 
         # A list of columns in the desired order
@@ -182,7 +174,7 @@ def initialise_psf_om_state_table(data_type="FIELD", size=None,
 
     psf_om_state_table.meta = make_psf_om_state_table_header(data_type)
 
-    assert(is_in_format(psf_om_state_table, tf))
+    assert is_in_format(psf_om_state_table, tf)
 
     return psf_om_state_table
 

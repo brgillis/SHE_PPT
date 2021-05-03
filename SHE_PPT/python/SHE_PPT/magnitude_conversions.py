@@ -21,10 +21,12 @@
 
 __updated__ = "2019-02-27"
 
-import magic_values as mv
 import numpy as np
 
-from .gain import get_ADU_from_count, get_count_from_ADU
+import magic_values as mv
+
+
+from .gain import get_ADU_from_count
 
 
 def get_count_from_mag_vis(m, exp_time):
@@ -86,14 +88,14 @@ def get_I(I_parameter, parameter_type, gain, exp_time):
 
     if parameter_type == 'intensity':
         return I_parameter
-    elif parameter_type == 'count':
+    if parameter_type == 'count':
         return get_ADU_from_count(I_parameter, gain)
-    elif parameter_type == 'flux':
+    if parameter_type == 'flux':
         return get_ADU_from_count(I_parameter * exp_time, gain)
-    elif parameter_type == 'mag_vis':
+    if parameter_type == 'mag_vis':
         return get_ADU_from_count(get_count_from_mag_vis(I_parameter, exp_time=exp_time), gain)
-    elif parameter_type == 'mag_i':
+    if parameter_type == 'mag_i':
         return get_ADU_from_count(get_count_from_mag_i(I_parameter, exp_time=exp_time), gain)
-    else:
-        raise Exception(
-            "get_I can't handle parameter type '" + str(parameter_type) + "'")
+
+    raise Exception(
+        "get_I can't handle parameter type '" + str(parameter_type) + "'")

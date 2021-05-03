@@ -44,10 +44,10 @@ def get_id_string(x, y):
 
     # Check for valid values
     for v in x, y:
-        if not (isinstance(v, int) or isinstance(v, np.int8)):
+        if not isinstance(v, (int,np.int8)):
             raise TypeError(
                 "Values passed to get_id_string must be int type: " + str(v) + ", type: " + str(type(v)))
-        elif v < 1 or v > 6:
+        if v < 1 or v > 6:
             raise ValueError("Invalid value passed to get_id_string: " + str(v) + ", type: " + str(type(v)))
 
     return _get_id_string(x, y)
@@ -119,7 +119,7 @@ def detector_xy_to_int(x, y):
         if not isinstance(v, int):
             raise TypeError(
                 "Values passed to get_id_string must be int type: " + str(v))
-        elif v < 1 or v > 6:
+        if v < 1 or v > 6:
             raise ValueError(
                 "Invalid value passed to get_id_string: " + str(v))
 
@@ -137,15 +137,14 @@ def resolve_detector_xy(v):
 
     if isinstance(v, str):
         return get_detector_xy(v)
-    elif isinstance(v, int):
+    if isinstance(v, int):
         return detector_int_to_xy(v)
-    elif isinstance(v, tuple) and len(v) == 2:
+    if isinstance(v, tuple) and len(v) == 2:
         return v
-    else:
-        raise TypeError("v must be int, string, or tuple[2] type.")
+    raise TypeError("v must be int, string, or tuple[2] type.")
 
-# Quadrant layout - note that due to column/row-major flip and the visual layout starting from bottom-left, this is transposed
-# and flipped vertically compared to how the layout actually looks
+# Quadrant layout - note that due to column/row-major flip and the visual layout starting from bottom-left,
+# this is transposed and flipped vertically compared to how the layout actually looks
 
 
 QUADRANT_LAYOUT_123 = [["E", "H"],
@@ -160,11 +159,11 @@ VIS_DETECTOR_PIXELS_Y = 4136
 def get_vis_quadrant(x_pix: float,
                      y_pix: float,
                      det_iy: int):
-    """ Get the letter signifying the quadrant of a VIS detector where a pixel coordinate is. Returns "X" if the position
-        is outside of the detector bounds.
+    """ Get the letter signifying the quadrant of a VIS detector where a pixel coordinate is.
+        Returns "X" if the position is outside of the detector bounds.
 
-        This uses the charts at http://euclid.esac.esa.int/dm/dpdd/latest/le1dpd/dpcards/le1_visrawframe.html for its
-        logic.
+        This uses the charts at http://euclid.esac.esa.int/dm/dpdd/latest/le1dpd/dpcards/le1_visrawframe.html
+        for its logic.
     """
 
     if x_pix <= -1 or y_pix <= -1:

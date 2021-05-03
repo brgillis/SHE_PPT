@@ -23,15 +23,12 @@ __updated__ = "2021-03-12"
 
 from collections import OrderedDict
 
-from astropy.table import Table
-
-from .. import detector as dtc
 from .. import magic_values as mv
 from ..flags import she_flag_version
 from ..logging import getLogger
 from ..table_formats.mer_final_catalog import tf as mfc_tf
 from ..table_formats.she_measurements import SheMeasurementsMeta, SheMeasurementsFormat
-from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table, setup_child_table_format, set_column_properties, init_table
+from ..table_utility import is_in_format, init_table
 
 
 fits_version = "8.0"
@@ -55,8 +52,6 @@ class SheLensMcMeasurementsMeta(SheMeasurementsMeta):
         self.__version__ = fits_version
         self.table_format = fits_def
 
-        return
-
 
 class SheLensMcMeasurementsFormat(SheMeasurementsFormat):
     """
@@ -67,31 +62,31 @@ class SheLensMcMeasurementsFormat(SheMeasurementsFormat):
     def __init__(self):
 
         # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
-        super().__init__()
+        super().__init__(SheLensMcMeasurementsMeta())
 
-        # Get the metadata (contained within its own class)
-        self.meta = SheLensMcMeasurementsMeta()
+#         # Get the metadata (contained within its own class)
+#         self.meta = SheLensMcMeasurementsMeta()
 
-        setup_child_table_format(self, child_label, unlabelled_columns=["OBJECT_ID"])
+        self.setup_child_table_format(child_label, unlabelled_columns=["OBJECT_ID"])
 
         # lensmc specific columns
-        self.snr_err = set_column_properties(self,
+        self.snr_err = self.set_column_properties(
                                              "SHE_LENSMC_SNR_ERR", dtype=">f4", fits_dtype="E")
-        self.bulge_frac = set_column_properties(self,
+        self.bulge_frac = self.set_column_properties(
                                                 "SHE_LENSMC_BULGE_FRAC", dtype=">f4", fits_dtype="E")
-        self.bulge_frac_err = set_column_properties(self,
+        self.bulge_frac_err = self.set_column_properties(
                                                     "SHE_LENSMC_BULGE_FRAC_ERR", dtype=">f4", fits_dtype="E")
-        self.gal_pvalue = set_column_properties(self,
+        self.gal_pvalue = self.set_column_properties(
                                                 "SHE_LENSMC_GAL_PVALUE", dtype=">f4", fits_dtype="E")
-        self.chi2 = set_column_properties(self,
+        self.chi2 = self.set_column_properties(
                                           "SHE_LENSMC_CHI2", dtype=">f4", fits_dtype="E")
-        self.dof = set_column_properties(self,
+        self.dof = self.set_column_properties(
                                          "SHE_LENSMC_DOF", dtype=">i4", fits_dtype="K")
-        self.acc = set_column_properties(self,
+        self.acc = self.set_column_properties(
                                          "SHE_LENSMC_ACCEPTANCE", dtype=">f4", fits_dtype="E")
-        self.m1_ical = set_column_properties(self,
+        self.m1_ical = self.set_column_properties(
                                              "SHE_LENSMC_M1_ICAL", dtype=">f4", fits_dtype="E")
-        self.m2_ical = set_column_properties(self,
+        self.m2_ical = self.set_column_properties(
                                              "SHE_LENSMC_M2_ICAL", dtype=">f4", fits_dtype="E")
 
         # A list of columns in the desired order
@@ -200,6 +195,6 @@ def initialise_lensmc_measurements_table(mer_final_catalog=None,
         observation_time=observation_time,
         tile_id=tile_id)
 
-    assert(is_in_format(lensmc_measurements_table, tf))
+    assert is_in_format(lensmc_measurements_table, tf)
 
     return lensmc_measurements_table

@@ -24,9 +24,6 @@
 
 __updated__ = "2020-06-30"
 
-# import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
-
 
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.momentsmltraining_stub import dpdSheMomentsMlTraining
@@ -55,8 +52,6 @@ def init():
     binding_class.get_all_filenames = __get_all_filenames
 
     binding_class.has_files = False
-
-    return
 
 
 def __set_data_filename(self, filename):

@@ -49,7 +49,7 @@ except RuntimeError as e:
         raise
 
 
-class SkyImage(object):
+class SkyImage():
     """Holds a pixel array
 
     Todo : use properties for z1 z2 !
@@ -68,7 +68,7 @@ class SkyImage(object):
             "SkyImage initialization with z1={} and z2={}".format(z1, z2))
         self.set_z(z1, z2)
 
-        logger.info("Created {}".format(str(self)))
+        logger.info("Created %s",str(self))
 
     @property
     def shape(self):  # Just a shortcut
@@ -104,7 +104,6 @@ class SkyImage(object):
         # else :
 
         stata = self.data[:]
-        # stata.shape = (stata.size,) # Flattening the array
 
         std = stdmad(stata)
         med = np.median(stata)
@@ -117,9 +116,6 @@ class SkyImage(object):
             skylevel = med
 
         self.z1 = skylevel - nsig * std
-
-        # sortedstata = np.sort(stata)
-        # z2 = sortedstata[round(0.9995 * stata.size)]
 
         self.z2 = np.max(stata)
 
@@ -158,9 +154,11 @@ def draw_mask(ax, si, **kwargs):
     imshow_kwargs.update(kwargs)
 
     if isinstance(si, SkyImage):
-        return ax.imshow(si.data.tranpose(), vmin=0, vmax=1, extent=si.extent, cmap=mask_cmap, norm=mask_norm, **imshow_kwargs)
-    else:  # We can also work with simple numpy arrays
-        return ax.imshow(si.transpose(), vmin=0, vmax=1, extent=get_extent(si), cmap=mask_cmap, norm=mask_norm, **imshow_kwargs)
+        return ax.imshow(si.data.tranpose(), vmin=0, vmax=1, extent=si.extent,
+                         cmap=mask_cmap, norm=mask_norm, **imshow_kwargs)
+    # We can also work with simple numpy arrays
+    return ax.imshow(si.transpose(), vmin=0, vmax=1, extent=get_extent(si),
+                     cmap=mask_cmap, norm=mask_norm, **imshow_kwargs)
 
 
 def draw_ellipse(ax, x, y, a=5, b=None, angle=None, **kwargs):
@@ -248,7 +246,7 @@ def annotate(ax, cat, x="x", y="y", text="Hello", **kwargs):
                     )
 
 
-class SimpleFigure(object):
+class SimpleFigure():
     """A simple plot made from scratch. If you have only one image, and want one matplotlib figure, this should do it.
 
     """
@@ -295,7 +293,7 @@ class SimpleFigure(object):
     def check_drawn(self):
         if not self.has_been_drawn:
             self.draw()
-            # logger.warning("The SimpleFigure has not been drawn, you probably want to call draw() before showing or saving it!")
+
 
     def draw_g_ellipses(self, cat, **kwargs):
         draw_g_ellipses(self.ax, cat, **kwargs)
@@ -308,12 +306,12 @@ class SimpleFigure(object):
 
         """
         self.check_drawn()
-        logger.info("Showing {}...".format(str(self)))
+        logger.info("Showing %s...",str(self))
         plt.show()
 
     def save_to_file(self, filepath):
         self.check_drawn()
-        logger.info("Saving {} to '{}'...".format(str(self), filepath))
+        logger.info("Saving %s to '%s'...",str(self), filepath)
         self.fig.savefig(filepath, bbox_inches='tight')
 
 # Some utility functions
@@ -323,7 +321,7 @@ def get_extent(a):
     """Defines the extent with which to plot an array a (we use the numpy convention)
 
     """
-    return (0, a.shape[0], 0, a.shape[1])
+    return 0, a.shape[0], 0, a.shape[1]
 
 
 def stdmad(a):
@@ -345,7 +343,7 @@ def read_fits(filepath):
 
     """
     a = astropy.io.fits.getdata(filepath).transpose()
-    logger.info("Read FITS images %s from file %s" % (a.shape, filepath))
+    logger.info("Read FITS images %s from file %s",a.shape, filepath)
     return a
 
 
@@ -363,7 +361,7 @@ def write_fits(a, filepath, overwrite=True):
 
     """
     if os.path.exists(filepath) and overwrite:
-        logger.info("File %s exists, I will overwrite it!" % (filepath))
+        logger.info("File %s exists, I will overwrite it!",filepath)
 
     astropy.io.fits.writeto(filepath, a.transpose(), overwrite=overwrite)
-    logger.info("Wrote %s array into %s" % (a.shape, filepath))
+    logger.info("Wrote %s array into %s",a.shape, filepath)

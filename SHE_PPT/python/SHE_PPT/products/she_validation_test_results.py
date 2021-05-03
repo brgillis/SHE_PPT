@@ -33,7 +33,6 @@ from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibrat
 from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
 
 from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
 
 
 sample_file_name = "SHE_PPT/sample_validation_test_results.xml"
@@ -52,7 +51,6 @@ def init():
 
     binding_class.has_files = False
 
-    return
 
 
 def __get_all_filenames(self):

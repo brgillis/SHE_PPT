@@ -53,8 +53,39 @@ from .utility import find_extension
 logger = logging.getLogger(__name__)
 
 
-class SHEFrame(object):
-    """Structure containing an array of SHEImageData objects, representing either an individual exposure or the stacked frame
+def neq(lhs, rhs):
+    """Determines if two objects are not equal to each other
+    """
+    try:
+        return bool(lhs != rhs)
+    except ValueError:
+        return (lhs != rhs).any()
+
+def psf_hdulist_neq(lhs, rhs):
+
+    if lhs is None and rhs is None:
+        return False
+    if (lhs is None) != (rhs is None):
+        return True
+
+    if len(lhs) != len(rhs):
+        return True
+    try:
+        for i, val in enumerate(lhs):
+            if (lhs[i].data is None) != (rhs[i].data is None):
+                return True
+            if lhs[i].data is not None and (lhs[i].data != rhs[i].data).any():
+                return True
+            if lhs[i].header != rhs[i].header:
+                return True
+    except AttributeError:
+        # At least one isn't the right type
+        return True
+    return False
+
+class SHEFrame():
+    """Structure containing an array of SHEImageData objects, representing either an individual exposure
+     or the stacked frame
 
     Attributes
     ----------
@@ -115,7 +146,7 @@ class SHEFrame(object):
     def detectors(self, detectors):
 
         # We test the dimensionality
-        if detectors.ndim is not 2:
+        if detectors.ndim != 2:
             raise ValueError("Detectors array of a SHEFrame must have 2 dimensions")
 
         # Check that the size is as expected
@@ -126,17 +157,16 @@ class SHEFrame(object):
         self._detectors = detectors
 
         # Set this as the parent for all detectors
-        for detector in self._detectors.ravel():
-            if detector is not None:
-                detector.parent_frame = self
-                detector.parent_frame_stack = self.parent_frame_stack
+        for d in self._detectors.ravel():
+            if d is not None:
+                d.parent_frame = self
+                d.parent_frame_stack = self.parent_frame_stack
 
-        return
 
     @detectors.deleter
     def detectors(self):
-        for detector in self._detectors.ravel():
-            del detector
+        for d in self._detectors.ravel():
+            del d
         self._detectors = None
 
     @property
@@ -201,36 +231,6 @@ class SHEFrame(object):
     def __eq__(self, rhs):
         """Equality test for SHEFrame class.
         """
-
-        def neq(lhs, rhs):
-            try:
-                return bool(lhs != rhs)
-            except ValueError as _e:
-                return (lhs != rhs).any()
-
-        def psf_hdulist_neq(lhs, rhs):
-
-            if lhs is None and rhs is None:
-                return False
-            elif (lhs is None) != (rhs is None):
-                return True
-
-            if len(lhs) != len(rhs):
-                return True
-            try:
-                for i in range(len(lhs)):
-                    if (lhs[i].data is None) != (rhs[i].data is None):
-                        return True
-                    if not lhs[i].data is None:
-                        if (lhs[i].data != rhs[i].data).any():
-                            return True
-                    if lhs[i].header != rhs[i].header:
-                        return True
-            except AttributeError as _e2:
-                # At least one isn't the right type
-                return True
-            return False
-
         if neq(self.detectors, rhs.detectors):
             return False
         if neq(self.psf_catalogue, rhs.psf_catalogue):
@@ -277,14 +277,14 @@ class SHEFrame(object):
         for x_i in range(num_x):
             for y_i in range(num_y):
 
-                detector = self.detectors[x_i, y_i]
-                if detector is None:
+                d = self.detectors[x_i, y_i]
+                if d is None:
                     continue
 
-                x, y = detector.world2pix(x_world, y_world)
-                if (x < 1 - x_buffer) or (x > np.shape(detector.data)[0] + x_buffer):
+                x, y = d.world2pix(x_world, y_world)
+                if (x < 1 - x_buffer) or (x > np.shape(d.data)[0] + x_buffer):
                     continue
-                if (y < 1 - y_buffer) or (y > np.shape(detector.data)[1] + y_buffer):
+                if (y < 1 - y_buffer) or (y > np.shape(d.data)[1] + y_buffer):
                     continue
 
                 found = True
@@ -294,18 +294,18 @@ class SHEFrame(object):
             if found:
                 break
 
-        if (detector is None) or (not found):
+        if (d is None) or (not found):
             return None
 
-        stamp = detector.extract_stamp(
+        stamp = d.extract_stamp(
             x=x, y=y, width=width, height=height, keep_header=keep_header)
 
         # Keep the extname and CCDID even if not keeping the full header
         if stamp.header is None:
             stamp.add_default_header()
-        if detector.header is not None:
-            stamp.header[mv.extname_label] = detector.header[mv.extname_label]
-            stamp.header[mv.ccdid_label] = detector.header[mv.ccdid_label]
+        if d.header is not None:
+            stamp.header[mv.extname_label] = d.header[mv.extname_label]
+            stamp.header[mv.ccdid_label] = d.header[mv.ccdid_label]
 
         return stamp
 
@@ -325,12 +325,14 @@ class SHEFrame(object):
 
         disk_psf_stamp : SHEImage
 
+        @TODO implement the keep_header functionality
+
         """
 
         try:
             row = self.psf_catalogue.loc[gal_id]
         except ValueError as e:
-            if not str(e) == "Cannot create TableLoc object with no indices":
+            if str(e) != "Cannot create TableLoc object with no indices":
                 raise
             self.psf_catalogue.add_index(pstf.ID)
             row = self.psf_catalogue.loc[gal_id]
@@ -365,7 +367,7 @@ class SHEFrame(object):
             y_buffer : int
                 The size of the buffer region in pixels around a detector to get the co-ordinate from, y-dimension
             return_det_coords_too : bool
-                If true return namedtuple of x_fov, y_fov, detno_x, detno_y, x_det, y_det   
+                If true return namedtuple of x_fov, y_fov, detno_x, detno_y, x_det, y_det
 
             Return
             ------
@@ -381,14 +383,14 @@ class SHEFrame(object):
         for x_i in range(num_x):
             for y_i in range(num_y):
 
-                detector = self.detectors[x_i, y_i]
-                if detector is None:
+                d = self.detectors[x_i, y_i]
+                if d is None:
                     continue
 
-                x, y = detector.world2pix(x_world, y_world)
-                if (x < 1 - x_buffer) or (x > detector.shape[0] + x_buffer):
+                x, y = d.world2pix(x_world, y_world)
+                if (x < 1 - x_buffer) or (x > d.shape[0] + x_buffer):
                     continue
-                if (y < 1 - y_buffer) or (y > detector.shape[1] + y_buffer):
+                if (y < 1 - y_buffer) or (y > d.shape[1] + y_buffer):
                     continue
 
                 found = True
@@ -398,7 +400,7 @@ class SHEFrame(object):
             if found:
                 break
 
-        if (detector is None) or (not found):
+        if (d is None) or (not found):
             return None
 
         # Get the co-ordinates from the detector's method
@@ -412,11 +414,234 @@ class SHEFrame(object):
             x, y, x_i, y_i, 'VIS')
         if return_det_coords_too:
             # Do as astropy Table
-            CoordTuple = namedtuple("CoordTuple",
+            Coord_Tuple = namedtuple("CoordTuple",
                                     "x_fov y_fov detno_x detno_y x_det y_det")
-            return CoordTuple(*[x_fov, y_fov, x_i, y_i, x, y])
+            return Coord_Tuple(*[x_fov, y_fov, x_i, y_i, x, y])
+        return x_fov, y_fov
+
+    @staticmethod
+    def check_for_objects(header,detections_catalogue,prune_images,buffer=4):
+        if not prune_images:
+            return True
+
+        if detections_catalogue is None:
+            raise TypeError("If prune_images==True, detections_catalogue must be supplied.")
+
+        ra_list = detections_catalogue[mfc_tf.gal_x_world].data
+        dec_list = detections_catalogue[mfc_tf.gal_y_world].data
+
+        wcs = WCS(header)
+
+        xp_max = header['NAXIS1'] - 1
+        yp_max = header['NAXIS2'] - 1
+
+        x_list, y_list = wcs.all_world2pix(ra_list, dec_list, 0)
+
+        good_x = np.logical_and(x_list > -buffer, x_list < xp_max + buffer)
+        good_y = np.logical_and(y_list > -buffer, y_list < yp_max + buffer)
+
+        good_objs = np.logical_and(good_x, good_y)
+
+        return good_objs.any()
+
+    @staticmethod
+    def __join_or_none(a, b):
+        if a is None or b is None:
+            return None
+        return os.path.join(a, b)
+
+    @staticmethod
+    def __open_or_none(workdir,filename, memmap=None,**kwargs):
+        qualified_filename = SHEFrame.__join_or_none(workdir, filename)
+        if qualified_filename is None:
+            return None
+        try:
+            tmp_kwargs = deepcopy(kwargs)
+            if memmap is not None:
+                tmp_kwargs["memmap"] = memmap
+            return fits.open(qualified_filename, **tmp_kwargs)
+        except FileNotFoundError as e:
+            logger.warning(e)
+            return None
+
+    @staticmethod
+    def __read_frame_product(frame_product_filename, workdir,**kwargs):
+        if frame_product_filename is not None:
+            logger.debug("Reading frame product file '%s'",frame_product_filename)
+            frame_prod = read_xml_product(os.path.join(workdir, frame_product_filename))
+            if not isinstance(frame_prod, products.vis_calibrated_frame.dpdVisCalibratedFrame):
+                raise ValueError(
+                    "Data image product from " + frame_product_filename + " is invalid type.")
+            # Load in the data from the science, background, and weight frames
+            frame_data_hdulist = SHEFrame.__open_or_none(workdir,frame_prod.get_data_filename(),**kwargs)
+            bkg_data_hdulist = SHEFrame.__open_or_none(workdir,frame_prod.get_bkg_filename(),**kwargs)
+            wgt_data_hdulist = SHEFrame.__open_or_none(workdir,frame_prod.get_wgt_filename(),**kwargs)
         else:
-            return (x_fov, y_fov)
+            frame_prod = None
+            frame_data_hdulist = None
+            bkg_data_hdulist = None
+            wgt_data_hdulist = None
+        return frame_data_hdulist, frame_prod, bkg_data_hdulist, wgt_data_hdulist
+
+    @staticmethod
+    def __read_seg_product(seg_product_filename, workdir,**kwargs):
+        if seg_product_filename is not None:
+            logger.debug("Reading seg product file '%s'",seg_product_filename)
+            seg_prod = read_xml_product(
+                os.path.join(workdir, seg_product_filename))
+            if not isinstance(seg_prod,products.she_exposure_segmentation_map.dpdSheExposureReprojectedSegmentationMap):
+                raise ValueError(
+                    "Segmentation map product from " + seg_product_filename + " is invalid type.")
+            seg_data_hdulist = SHEFrame.__open_or_none(workdir,seg_prod.get_data_filename(),**kwargs)
+        else:
+            seg_prod = None
+            seg_data_hdulist = None
+        return seg_data_hdulist, seg_prod
+
+    @staticmethod
+    def __read_psf_product(psf_product_filename, workdir,**kwargs):
+        if psf_product_filename is not None:
+            logger.debug("Reading psf product file '%s'",psf_product_filename)
+            psf_prod = read_xml_product(
+                os.path.join(workdir, psf_product_filename))
+            if not isinstance(psf_prod, products.she_psf_model_image.dpdShePsfModelImage):
+                raise ValueError(
+                    "Data image product from " + psf_product_filename + " is invalid type.")
+            psf_data_filename = os.path.join(
+                workdir, psf_prod.get_data_filename())
+            qualified_psf_filename = os.path.join(workdir, psf_data_filename)
+            input_psf_data_hdulist = fits.open(qualified_psf_filename, **kwargs)
+            psf_data_hdulist = HDUList()
+            for i, psf_hdulist in enumerate(input_psf_data_hdulist):
+                if i == 0:
+                    psf_data_hdulist.append(PrimaryHDU())
+                elif i == 1:
+                    psf_data_hdulist.append(BinTableHDU(data=psf_hdulist.data, header=psf_hdulist.header))
+                else:
+                    psf_data_hdulist.append(ImageHDU(data=psf_hdulist.data, header=psf_hdulist.header))
+
+            psf_cat_i = find_extension(psf_data_hdulist, mv.psf_cat_tag)
+            psf_cat = Table.read(psf_data_hdulist[psf_cat_i])
+            if not is_in_format(psf_cat, pstf):
+                raise ValueError(
+                    "PSF table from " + qualified_psf_filename + " is in invalid format.")
+        else:
+            psf_prod = None
+            psf_data_hdulist = None
+            psf_cat = None
+        return psf_data_hdulist, psf_cat, psf_prod
+
+    @staticmethod
+    def __get_detectors(frame_data_hdulist,
+                      bkg_data_hdulist,
+                      wgt_data_hdulist,
+                      seg_data_hdulist,
+                      prune_images,
+                      detections_catalogue,
+                      x_max,
+                      y_max,
+                      frame_prod):
+
+        detectors = np.ndarray((x_max + 1, y_max + 1), dtype=SHEImage)
+
+        for x_i in np.linspace(1, x_max, x_max, dtype=np.int8):
+            for y_i in np.linspace(1, y_max, y_max, dtype=np.int8):
+
+                id_string = detector.get_id_string(x_i, y_i)
+
+                if frame_data_hdulist is not None:
+
+                    sci_extname = id_string + "." + mv.sci_tag
+                    sci_i = find_extension(frame_data_hdulist, sci_extname)
+                    if sci_i is None:
+                        # Don't raise here; might be just using limited number
+                        continue
+
+                    detector_header = frame_data_hdulist[sci_i].header
+
+                    # Check for objects, and skip if none are on this detector
+                    if not SHEFrame.check_for_objects(detector_header,detections_catalogue,prune_images):
+                        continue
+
+                    detector_data = frame_data_hdulist[sci_i].data.transpose()
+                    detector_wcs = WCS(detector_header)
+
+                    noisemap_extname = id_string + "." + mv.noisemap_tag
+                    noisemap_i = find_extension(
+                        frame_data_hdulist, noisemap_extname)
+                    if noisemap_i is None:
+                        raise ValueError("No corresponding noisemap extension found in file %s. Expected extname: %s"\
+                                         %(frame_prod.get_data_filename(),noisemap_extname))
+                    detector_noisemap = frame_data_hdulist[noisemap_i].data.transpose()
+                    mask_extname = id_string + "." + mv.mask_tag
+                    mask_i = find_extension(frame_data_hdulist, mask_extname)
+                    if mask_i is None:
+                        raise ValueError("No corresponding mask extension found in file %s. Expected extname: %s "\
+                                         %(frame_prod.get_data_filename(),mask_extname))
+                    try:
+                        detector_mask = frame_data_hdulist[mask_i].data.transpose()
+                    except ValueError as e:
+                        if "Cannot load a memory-mapped image" not in str(e):
+                            raise
+                        warn_cannot_memmap(e)
+
+                        detector_mask = None
+
+                else:
+                    detector_data = None
+                    detector_header = None
+                    detector_wcs = None
+                    detector_noisemap = None
+                    detector_mask = None
+
+                if bkg_data_hdulist is not None:
+                    bkg_extname = id_string  # Background has no tag
+                    bkg_i = find_extension(bkg_data_hdulist, bkg_extname)
+                    if bkg_i is None:
+                        raise ValueError("No corresponding background extension found in file %s. Expected extname: %s"\
+                            %(frame_prod.get_bkg_filename(),bkg_extname))
+                    detector_background = bkg_data_hdulist[bkg_i].data.transpose()
+                else:
+                    detector_background = None
+
+                if wgt_data_hdulist is not None:
+                    wgt_extname = id_string  # Background has no tag
+                    wgt_ccdid = str(x_i) + str(y_i)
+                    wgt_i = find_extension(wgt_data_hdulist, wgt_extname)
+                    if wgt_i is None:
+                        logger.warn(
+                            "No corresponding weight extension found in file %s. Expected extname: %s",
+                            frame_prod.get_wgt_filename(),
+                            wgt_extname)
+                        # Try to find by CCDID
+                        wgt_i = find_extension(wgt_data_hdulist, ccdid=wgt_ccdid)
+                        if wgt_i is None:
+                            raise ValueError("No corresponding weight extension found in file %s.\nExpected CCDID: %s"\
+                                %(frame_prod.get_wgt_filename(),wgt_ccdid))
+                    detector_weight = wgt_data_hdulist[wgt_i].data.transpose()
+                else:
+                    detector_weight = None
+
+                if seg_data_hdulist is not None:
+                    seg_extname = id_string + "." + mv.segmentation_tag
+                    seg_i = find_extension(seg_data_hdulist, seg_extname)
+                    if seg_i is None:
+                        raise ValueError("No corresponding segmentation extension found in file %s. Expected extname: %s"\
+                            %(frame_prod.get_data_filename(),seg_extname))
+                    detector_seg_data = seg_data_hdulist[seg_i].data.transpose()
+                else:
+                    detector_seg_data = None
+
+                detectors[x_i, y_i] = SHEImage(data=detector_data,
+                                               mask=detector_mask,
+                                               noisemap=detector_noisemap,
+                                               background_map=detector_background,
+                                               weight_map=detector_weight,
+                                               segmentation_map=detector_seg_data,
+                                               header=detector_header,
+                                               wcs=detector_wcs)
+        return detectors
+
 
     @classmethod
     def read(cls,
@@ -456,228 +681,42 @@ class SHEFrame(object):
         Any kwargs are passed to the reading of the fits data
         """
 
-        # Check if we're pruning images that we have a detections catalogue, and if so, load in positions
-        if prune_images:
-            if detections_catalogue is None:
-                raise TypeError("If prune_images==True, detections_catalogue must be supplied.")
-            ra_list = detections_catalogue[mfc_tf.gal_x_world].data
-            dec_list = detections_catalogue[mfc_tf.gal_y_world].data
 
-            def check_for_objects(header, buffer=4):
-
-                wcs = WCS(header)
-
-                xp_max = header['NAXIS1'] - 1
-                yp_max = header['NAXIS2'] - 1
-
-                x_list, y_list = wcs.all_world2pix(ra_list, dec_list, 0)
-
-                good_x = np.logical_and(x_list > -buffer, x_list < xp_max + buffer)
-                good_y = np.logical_and(y_list > -buffer, y_list < yp_max + buffer)
-
-                good_objs = np.logical_and(good_x, good_y)
-
-                return good_objs.any()
-
-        else:
-
-            def check_for_objects(*_args, **_kwargs):
-                return True
-
-        def join_or_none(a, b):
-            if a is None or b is None:
-                return None
-            else:
-                return os.path.join(a, b)
-
-        def open_or_none(filename, memmap=None):
-            qualified_filename = join_or_none(workdir, filename)
-            if qualified_filename is None:
-                return None
-            else:
-                try:
-                    tmp_kwargs = deepcopy(kwargs)
-                    if memmap is not None:
-                        tmp_kwargs["memmap"] = memmap
-                    return fits.open(qualified_filename, **tmp_kwargs)
-                except FileNotFoundError as e:
-                    logger.warning(e)
-                    return None
-
-        detectors = np.ndarray((x_max + 1, y_max + 1), dtype=SHEImage)
 
         # Load in the relevant fits files
 
         # Load in the data from the primary frame
-        if frame_product_filename is not None:
-            frame_prod = read_xml_product(
-                os.path.join(workdir, frame_product_filename))
-            if not isinstance(frame_prod, products.vis_calibrated_frame.dpdVisCalibratedFrame):
-                raise ValueError("Data image product from " +
-                                 frame_product_filename + " is invalid type.")
-
-            # Load in the data from the science, background, and weight frames
-            frame_data_hdulist = open_or_none(frame_prod.get_data_filename())
-            bkg_data_hdulist = open_or_none(frame_prod.get_bkg_filename())
-            wgt_data_hdulist = open_or_none(frame_prod.get_wgt_filename())
-        else:
-            frame_prod = None
-            frame_data_hdulist = None
-            bkg_data_hdulist = None
-            wgt_data_hdulist = None
+        frame_data_hdulist, frame_prod, bkg_data_hdulist, wgt_data_hdulist = cls.__read_frame_product(
+                                frame_product_filename,
+                                workdir,
+                                **kwargs)
 
         # Load in the data from the segmentation frame
-        if seg_product_filename is not None:
+        seg_data_hdulist, seg_prod = cls.__read_seg_product(
+                                seg_product_filename,
+                                workdir,
+                                **kwargs)
 
-            seg_prod = read_xml_product(
-                os.path.join(workdir, seg_product_filename))
-            if not isinstance(seg_prod, products.she_exposure_segmentation_map.dpdSheExposureReprojectedSegmentationMap):
-                raise ValueError("Segmentation map product from " +
-                                 seg_product_filename + " is invalid type.")
-
-            seg_data_hdulist = open_or_none(seg_prod.get_data_filename())
-        else:
-            seg_prod = None
-            seg_data_hdulist = None
-
-        for x_i in np.linspace(1, x_max, x_max, dtype=np.int8):
-            for y_i in np.linspace(1, y_max, y_max, dtype=np.int8):
-
-                id_string = detector.get_id_string(x_i, y_i)
-
-                if frame_data_hdulist is not None:
-
-                    sci_extname = id_string + "." + mv.sci_tag
-                    sci_i = find_extension(frame_data_hdulist, sci_extname)
-                    if sci_i is None:
-                        # Don't raise here; might be just using limited number
-                        continue
-
-                    detector_header = frame_data_hdulist[sci_i].header
-
-                    # Check for objects, and skip if none are on this detector
-                    if not check_for_objects(detector_header):
-                        continue
-
-                    detector_data = frame_data_hdulist[sci_i].data.transpose()
-                    detector_wcs = WCS(detector_header)
-
-                    noisemap_extname = id_string + "." + mv.noisemap_tag
-                    noisemap_i = find_extension(
-                        frame_data_hdulist, noisemap_extname)
-                    if noisemap_i is None:
-                        raise ValueError("No corresponding noisemap extension found in file " + frame_prod.get_data_filename() + "." +
-                                         "Expected extname: " + noisemap_extname)
-                    detector_noisemap = frame_data_hdulist[
-                        noisemap_i].data.transpose()
-
-                    mask_extname = id_string + "." + mv.mask_tag
-                    mask_i = find_extension(frame_data_hdulist, mask_extname)
-                    if mask_i is None:
-                        raise ValueError("No corresponding mask extension found in file " + frame_prod.get_data_filename() + "." +
-                                         "Expected extname: " + mask_extname)
-                    try:
-                        detector_mask = frame_data_hdulist[mask_i].data.transpose()
-                    except ValueError as e:
-                        if "Cannot load a memory-mapped image" not in str(e):
-                            raise
-                        warn_cannot_memmap(e)
-
-                        detector_mask = None
-
-                else:
-                    detector_data = None
-                    detector_header = None
-                    detector_wcs = None
-                    detector_noisemap = None
-                    detector_mask = None
-
-                if bkg_data_hdulist is not None:
-                    bkg_extname = id_string  # Background has no tag
-                    bkg_i = find_extension(bkg_data_hdulist, bkg_extname)
-                    if bkg_i is None:
-                        raise ValueError("No corresponding background extension found in file " + frame_prod.get_bkg_filename() + "." +
-                                         "Expected extname: " + bkg_extname)
-                    detector_background = bkg_data_hdulist[bkg_i].data.transpose()
-                else:
-                    detector_background = None
-
-                if wgt_data_hdulist is not None:
-                    wgt_extname = id_string  # Background has no tag
-                    wgt_ccdid = str(x_i) + str(y_i)
-                    wgt_i = find_extension(wgt_data_hdulist, wgt_extname)
-                    if wgt_i is None:
-                        logger.warn("No corresponding weight extension found in file " + frame_prod.get_wgt_filename() + "." +
-                                    "\nExpected EXTNAME: " + wgt_extname)
-                        # Try to find by CCDID
-                        wgt_i = find_extension(wgt_data_hdulist, ccdid=wgt_ccdid)
-                        if wgt_i is None:
-                            raise ValueError("No corresponding weight extension found in file " + frame_prod.get_wgt_filename() + "." +
-                                             "\nExpected CCDID: " + wgt_ccdid)
-                    detector_weight = wgt_data_hdulist[wgt_i].data.transpose()
-                else:
-                    detector_weight = None
-
-                if seg_data_hdulist is not None:
-                    seg_extname = id_string + "." + mv.segmentation_tag
-                    seg_i = find_extension(seg_data_hdulist, seg_extname)
-                    if seg_i is None:
-                        raise ValueError("No corresponding segmentation extension found in file " + frame_prod.get_data_filename() + "." +
-                                         "Expected extname: " + seg_extname)
-                    detector_seg_data = seg_data_hdulist[seg_i].data.transpose()
-                else:
-                    detector_seg_data = None
-
-                detectors[x_i, y_i] = SHEImage(data=detector_data,
-                                               mask=detector_mask,
-                                               noisemap=detector_noisemap,
-                                               background_map=detector_background,
-                                               weight_map=detector_weight,
-                                               segmentation_map=detector_seg_data,
-                                               header=detector_header,
-                                               wcs=detector_wcs)
+        detectors = cls.__get_detectors(frame_data_hdulist,
+                                bkg_data_hdulist,
+                                wgt_data_hdulist,
+                                seg_data_hdulist,
+                                prune_images,
+                                detections_catalogue,
+                                x_max,
+                                y_max,
+                                frame_prod)
 
         # Load in the PSF data
-        if psf_product_filename is not None:
+        psf_data_hdulist, psf_cat, psf_prod = cls.__read_psf_product(
+                                psf_product_filename,
+                                workdir,
+                                **kwargs)
 
-            psf_prod = read_xml_product(
-                os.path.join(workdir, psf_product_filename))
-            if not isinstance(psf_prod, products.she_psf_model_image.dpdShePsfModelImage):
-                raise ValueError("Data image product from " +
-                                 psf_product_filename + " is invalid type.")
-
-            psf_data_filename = os.path.join(
-                workdir, psf_prod.get_data_filename())
-
-            qualified_psf_filename = os.path.join(workdir, psf_data_filename)
-
-            input_psf_data_hdulist = fits.open(qualified_psf_filename, **kwargs)
-            psf_data_hdulist = HDUList()
-            for i in range(len(input_psf_data_hdulist)):
-                if i == 0:
-                    psf_data_hdulist.append(PrimaryHDU())
-                elif i == 1:
-                    psf_data_hdulist.append(BinTableHDU(data=input_psf_data_hdulist[i].data,
-                                                        header=input_psf_data_hdulist[i].header))
-                else:
-                    psf_data_hdulist.append(ImageHDU(data=input_psf_data_hdulist[i].data,
-                                                     header=input_psf_data_hdulist[i].header))
-
-            psf_cat_i = find_extension(psf_data_hdulist, mv.psf_cat_tag)
-            psf_cat = Table.read(psf_data_hdulist[psf_cat_i])
-
-            if not is_in_format(psf_cat, pstf):
-                raise ValueError(
-                    "PSF table from " + qualified_psf_filename + " is in invalid format.")
-        else:
-            psf_prod = None
-            psf_data_hdulist = None
-            psf_cat = None
-
-        # Construc a SHEFrame object
+        # Construct a SHEFrame object
         new_frame = SHEFrame(detectors=detectors,
-                             psf_data_hdulist=psf_data_hdulist,
-                             psf_catalogue=psf_cat)
+                                psf_data_hdulist=psf_data_hdulist,
+                                psf_catalogue=psf_cat)
 
         # Fill out the product references
         if save_products:
@@ -692,4 +731,3 @@ class SHEFrame(object):
 @run_only_once
 def warn_cannot_memmap(e):
     logger.warning(str(e))
-    return

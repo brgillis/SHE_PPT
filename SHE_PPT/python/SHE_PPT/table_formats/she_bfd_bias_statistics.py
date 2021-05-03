@@ -23,15 +23,12 @@ __updated__ = "2020-07-19"
 
 from collections import OrderedDict
 
-from astropy.table import Table
-
 import numpy as np
 
 from .. import magic_values as mv
-from ..flags import she_flag_version
 from ..logging import getLogger
 from ..math import LinregressStatistics, BiasMeasurements, BFDSumResults
-from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+from ..table_utility import is_in_format, init_table, SheTableFormat
 
 
 fits_version = "8.0"
@@ -40,7 +37,7 @@ fits_def = "bfdBiasStatistics"
 logger = getLogger(mv.logger_name)
 
 
-class SheBfdBiasStatisticsMeta(object):
+class SheBfdBiasStatisticsMeta():
     """
         @brief A class defining the metadata for BFD bias statistics tables.
     """
@@ -92,38 +89,34 @@ class SheBfdBiasStatisticsMeta(object):
         self.all = list(self.comments.keys())
 
 
-class SheBfdBiasStatisticsFormat(object):
+class SheBfdBiasStatisticsFormat(SheTableFormat):
     """
         @brief A class defining the format for bias statistics tables. Only the bfd_bias_statistics_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
     def __init__(self):
-
-        # Get the metadata (contained within its own class)
-        self.meta = SheBfdBiasStatisticsMeta()
-
-        setup_table_format(self)
+        super().__init__(SheBfdBiasStatisticsMeta())
 
         # Table column labels and properties
 
-        self.ID = set_column_properties(self, "RUN_ID", dtype="str", fits_dtype="A", length=20, is_optional=True)
+        self.ID = self.set_column_properties("RUN_ID", dtype="str", fits_dtype="A", length=20, is_optional=True)
 
-        self.b1 = set_column_properties(self, "B1", dtype=">f4", fits_dtype="E")
-        self.b2 = set_column_properties(self, "B2", dtype=">f4", fits_dtype="E")
-        self.b3 = set_column_properties(self, "B3", dtype=">f4", fits_dtype="E")
-        self.b4 = set_column_properties(self, "B4", dtype=">f4", fits_dtype="E")
+        self.b1 = self.set_column_properties("B1", dtype=">f4", fits_dtype="E")
+        self.b2 = self.set_column_properties("B2", dtype=">f4", fits_dtype="E")
+        self.b3 = self.set_column_properties("B3", dtype=">f4", fits_dtype="E")
+        self.b4 = self.set_column_properties("B4", dtype=">f4", fits_dtype="E")
 
-        self.A11 = set_column_properties(self, "A11", dtype=">f4", fits_dtype="E")
-        self.A12 = set_column_properties(self, "A12", dtype=">f4", fits_dtype="E")
-        self.A13 = set_column_properties(self, "A13", dtype=">f4", fits_dtype="E")
-        self.A14 = set_column_properties(self, "A14", dtype=">f4", fits_dtype="E")
-        self.A22 = set_column_properties(self, "A22", dtype=">f4", fits_dtype="E")
-        self.A23 = set_column_properties(self, "A23", dtype=">f4", fits_dtype="E")
-        self.A24 = set_column_properties(self, "A24", dtype=">f4", fits_dtype="E")
-        self.A33 = set_column_properties(self, "A33", dtype=">f4", fits_dtype="E")
-        self.A34 = set_column_properties(self, "A34", dtype=">f4", fits_dtype="E")
-        self.A44 = set_column_properties(self, "A44", dtype=">f4", fits_dtype="E")
+        self.A11 = self.set_column_properties("A11", dtype=">f4", fits_dtype="E")
+        self.A12 = self.set_column_properties("A12", dtype=">f4", fits_dtype="E")
+        self.A13 = self.set_column_properties("A13", dtype=">f4", fits_dtype="E")
+        self.A14 = self.set_column_properties("A14", dtype=">f4", fits_dtype="E")
+        self.A22 = self.set_column_properties("A22", dtype=">f4", fits_dtype="E")
+        self.A23 = self.set_column_properties("A23", dtype=">f4", fits_dtype="E")
+        self.A24 = self.set_column_properties("A24", dtype=">f4", fits_dtype="E")
+        self.A33 = self.set_column_properties("A33", dtype=">f4", fits_dtype="E")
+        self.A34 = self.set_column_properties("A34", dtype=">f4", fits_dtype="E")
+        self.A44 = self.set_column_properties("A44", dtype=">f4", fits_dtype="E")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -343,7 +336,7 @@ def initialise_bfd_bias_statistics_table(size=None,
                                                                            g2_bias_measurements=g2_bias_measurements,)
 
     # Check we meet the requirements of the table format
-    assert(is_in_format(bfd_bias_statistics_table, tf))
+    assert is_in_format(bfd_bias_statistics_table, tf)
 
     return bfd_bias_statistics_table
 

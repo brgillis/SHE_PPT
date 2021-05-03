@@ -23,18 +23,15 @@ __updated__ = "2021-02-10"
 
 from collections import OrderedDict
 
-from astropy.table import Table
-
 from .. import magic_values as mv
-from ..flags import she_flag_version
-from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+from ..table_utility import is_in_format, init_table, SheTableFormat
 
 
 fits_version = "8.0"
 fits_def = "she.pOfE"
 
 
-class ShePOfEMeta(object):
+class ShePOfEMeta():
     """
         @brief A class defining the metadata for PSF tables.
     """
@@ -57,34 +54,31 @@ class ShePOfEMeta(object):
         self.all = list(self.comments.keys())
 
 
-class ShePOfEFormat(object):
+class ShePOfEFormat(SheTableFormat):
     """
         @brief A class defining the format for galaxy population priors tables. Only the p_of_e_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
     def __init__(self):
-
-        # Get the metadata (contained within its own class)
-        self.meta = ShePOfEMeta()
-
-        setup_table_format(self)
+        super().__init__(ShePOfEMeta())
 
         # Column names and info
 
-        self.ID = set_column_properties(self,
-                                        "ID", dtype=">i8", fits_dtype="K", comment="Link to galaxy population table.")
+        self.ID = self.set_column_properties(
+                                        "ID", dtype=">i8", fits_dtype="K",
+                                        comment="Link to galaxy population table.")
 
-        self.e1 = set_column_properties(self,
+        self.e1 = self.set_column_properties(
                                         "E1", comment="Using flat weight function.")
-        self.e2 = set_column_properties(self,
+        self.e2 = self.set_column_properties(
                                         "E2", comment="Using flat weight function.")
 
-        self.bulge_e1 = set_column_properties(self, "BULGE_E1", is_optional=True)
-        self.bulge_e2 = set_column_properties(self, "BULGE_E2", is_optional=True)
+        self.bulge_e1 = self.set_column_properties("BULGE_E1", is_optional=True)
+        self.bulge_e2 = self.set_column_properties("BULGE_E2", is_optional=True)
 
-        self.disk_e1 = set_column_properties(self, "DISK_E1", is_optional=True)
-        self.disk_e2 = set_column_properties(self, "DISK_E2", is_optional=True)
+        self.disk_e1 = self.set_column_properties("DISK_E1", is_optional=True)
+        self.disk_e2 = self.set_column_properties("DISK_E2", is_optional=True)
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -139,6 +133,6 @@ def initialise_p_of_e_table(size=None,
 
     p_of_e_table.meta = make_p_of_e_table_header()
 
-    assert(is_in_format(p_of_e_table, tf))
+    assert is_in_format(p_of_e_table, tf)
 
     return p_of_e_table

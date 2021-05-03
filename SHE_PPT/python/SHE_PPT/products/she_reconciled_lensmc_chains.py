@@ -56,7 +56,6 @@ def init():
 
     binding_class.has_files = False
 
-    return
 
 
 def __set_filename(self, filename):
@@ -82,8 +81,9 @@ def __set_spatial_footprint(self, p):
     # Figure out how the spatial footprint was passed to us
     if isinstance(p, str):
         # If we got a filepath, read it in and apply this function to the read-in product
-        return __set_spatial_footprint(self, read_xml_product(p))
-    elif isinstance(p, polygonType):
+        __set_spatial_footprint(self, read_xml_product(p))
+        return
+    if isinstance(p, polygonType):
         poly = p
     elif hasattr(p, "Polygon"):
         poly = p.Polygon

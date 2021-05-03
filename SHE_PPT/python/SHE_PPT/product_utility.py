@@ -38,7 +38,8 @@ len_data_subdir = len(data_subdir)
 
 
 def get_data_filename_from_product(p, attr_name=None):
-    """ Helper function to get a data filename from a product, adjusting for whether to include the data subdir as desired.
+    """ Helper function to get a data filename from a product, adjusting for whether to include the data subdir
+        as desired.
     """
 
     if attr_name is None or attr_name == 0:
@@ -55,12 +56,13 @@ def get_data_filename_from_product(p, attr_name=None):
     # whether the returned value does, unless it's absolute
     if len(data_filename) > 0 and (data_filename[0:len_data_subdir] == data_subdir or data_filename[0] == "/"):
         return data_filename
-    else:
-        return data_subdir + data_filename
+
+    return data_subdir + data_filename
 
 
 def set_data_filename_of_product(p, data_filename, attr_name=None):
-    """ Helper function to set a data filename of a product, adjusting for whether to include the data subdir as desired.
+    """ Helper function to set a data filename of a product, adjusting for whether to include the
+        data subdir as desired.
     """
 
     if data_filename is not None and len(data_filename) > 0 and data_filename[0] != "/":
@@ -85,8 +87,6 @@ def set_data_filename_of_product(p, data_filename, attr_name=None):
     else:
         get_nested_attr(p.Data, attr_name).DataContainer.FileName = data_filename
 
-    return
-
 
 def __set_intermediate_general_data_filename(self, filename, i=0):
     set_data_filename_of_product(self, filename, f"DataStorage[{i}]")
@@ -104,12 +104,13 @@ def __get_all_generic_filenames(self, method):
         for i in range(len(self.Data.DataStorage)):
             # Catch issues with the range not matching the actual elements in the list and warn if caught
             filename = method(self, i)
-            if not (filename is None or filename == "None" or filename == "data/None" or filename == "" or filename == "data/"):
+            if not (filename is None or filename == "None" or filename == "data/None" or
+                    filename == "" or filename == "data/"):
                 all_filenames.append(filename)
 
         return all_filenames
     except TypeError as e:
-        if not "has no len()" in str(e):
+        if "has no len()" not in str(e):
             raise
         # Only a single filename, so output that
         all_filenames.append(method(self))
@@ -139,7 +140,6 @@ def init_intermediate_general():
 
     binding_class.has_files = True
 
-    return
 
 
 def __set_intermediate_observation_catalog_data_filename(self, filename):
@@ -172,8 +172,6 @@ def init_intermediate_observation_catalog():
 
     binding_class.has_files = True
 
-    return
-
 
 def __set_placeholder_general_data_filename(self, filename, i=0):
     set_data_filename_of_product(self, filename, f"DataStorage[{i}]")
@@ -204,5 +202,3 @@ def init_placeholder_general():
     binding_class.get_all_filenames = __get_all_placeholder_general_filenames
 
     binding_class.has_files = True
-
-    return

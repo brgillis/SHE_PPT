@@ -29,17 +29,11 @@ import os
 
 from astropy.io import fits
 
-import ST_DM_DmUtils.DmUtils as dm_utils
-import ST_DM_DmUtils.DqcDmUtils as dqc_utils
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.stackreprojectedsegmentationmap_stub import dpdSheStackReprojectedSegmentationMap
-import ST_DataModelBindings.pro.she_stub as she_dict
 
-from .. import detector as dtc
-from .. import magic_values as mv
 from ..file_io import read_xml_product, find_aux_file
 from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
-from ..utility import find_extension
 
 
 sample_file_name = "SHE_PPT/sample_stack_reprojected_segmentation_map.xml"
@@ -97,7 +91,6 @@ def init():
         Adds some extra functionality to the DpdSheStackReqprojectedSegmentationMap product
     """
 
-    # binding_class = she_dpd.DpdSheShearValidationStatsProduct # @FIXME
     binding_class = dpdSheStackReprojectedSegmentationMap
 
     # Add the data file name methods
@@ -112,7 +105,6 @@ def init():
 
     binding_class.has_files = True
 
-    return
 
 
 def __set_filename(self, filename):
@@ -154,11 +146,6 @@ def create_dpd_she_stack_segmentation_map(filename=None):
     if filename:
         __set_filename(dpd_she_stack_reproj_seg_map_data, filename)
 
-    # dpd_she_stack_reproj_seg_map_data.Header =
-    # HeaderProvider.create_generic_header("SHE") # FIXME
-    # dpd_she_stack_reproj_seg_map_data.Header = "SHE"
-
-    # dpd_she_stack_reproj_seg_map_data.Data = create_she_stack_reproj_seg_map_data(filename)
 
     return dpd_she_stack_reproj_seg_map_data
 

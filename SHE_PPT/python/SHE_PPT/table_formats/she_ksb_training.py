@@ -22,13 +22,8 @@
 __updated__ = "2020-07-19"
 
 from collections import OrderedDict
-
-from astropy.table import Table
-
-from .. import magic_values as mv
-from ..flags import she_flag_version
 from ..table_formats.she_training import SheTrainingMeta, SheTrainingFormat
-from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table, setup_child_table_format, set_column_properties, init_table
+from ..table_utility import is_in_format, init_table
 
 
 fits_version = "8.0"
@@ -50,8 +45,6 @@ class SheKsbTrainingMeta(SheTrainingMeta):
         self.__version__ = fits_version
         self.table_format = fits_def
 
-        return
-
 
 class SheKsbTrainingFormat(SheTrainingFormat):
     """
@@ -62,12 +55,12 @@ class SheKsbTrainingFormat(SheTrainingFormat):
     def __init__(self):
 
         # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
-        super().__init__()
+        super().__init__(meta=SheKsbTrainingMeta())
 
-        # Get the metadata (contained within its own class)
-        self.meta = SheKsbTrainingMeta()
+#         # Get the metadata (contained within its own class)
+#         self.meta = SheKsbTrainingMeta()
 
-        setup_child_table_format(self, child_label, unlabelled_columns=["OBJECT_ID"])
+        self.setup_child_table_format(child_label, unlabelled_columns=["OBJECT_ID"])
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -122,6 +115,6 @@ def initialise_ksb_training_table(size=None,
 
     ksb_training_table.meta = make_ksb_training_table_header()
 
-    assert(is_in_format(ksb_training_table, tf))
+    assert is_in_format(ksb_training_table, tf)
 
     return ksb_training_table

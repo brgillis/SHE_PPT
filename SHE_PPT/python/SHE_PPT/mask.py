@@ -27,7 +27,6 @@ function can be used to obtain this.
 
 __updated__ = "2019-02-27"
 
-import os
 
 import numpy as np
 
@@ -86,8 +85,7 @@ def as_bool(a):
 
     if np.isscalar(a):
         return bool(a)
-    else:
-        return a.astype(bool)
+    return a.astype(bool)
 
 # Various convenience functions to return bools (or arrays of bools) based
 # on a mask test
