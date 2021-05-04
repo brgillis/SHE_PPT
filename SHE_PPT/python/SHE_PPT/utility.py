@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-02-09"
+__updated__ = "2021-04-22"
 
 from enum import Enum
 import os
@@ -130,8 +130,8 @@ def get_release_from_version(version):
     minor_version = int(period_split_version[1])
 
     if major_version < 0 or major_version > 99 or minor_version < 0 or minor_version > 99:
-        raise ValueError("version (" + version + ") is in incorrect format. Format must be 'X.X.X', where each X is "
-                         "0-99.")
+        raise ValueError("version (%s) is in incorrect format. Format must be 'X.X.X', where each X is "
+                         "0-99."%version)
 
     # Ensure the string is two characters long for both the major and minor version
     major_version_string = str(major_version) if major_version > 9 else "0" + str(major_version)
@@ -219,7 +219,7 @@ def process_directory(directory_name):
 def is_any_type_of_none(value):
     """Quick function to check if a value (which might be a string) is None or empty
     """
-    return value in (None, "None", "")
+    return value in (None, "None", "", "data/None", "data/")
 
 
 class AllowedEnum(Enum):
