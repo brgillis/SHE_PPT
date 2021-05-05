@@ -5,7 +5,7 @@
     Misc. utility functions for the pipeline.
 """
 
-__updated__ = "2021-04-28"
+__updated__ = "2021-05-05"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -42,6 +42,7 @@ class ConfigKeys(AllowedEnum):
 # Task names for Analysis pipeline
 REMAP_HEAD = "SHE_MER_RemapMosaic_"
 OBJECT_ID_SPLIT_HEAD = "SHE_CTE_ObjectIdSplit_"
+MODEL_PSFS_HEAD = "SHE_PSFToolkit_ModelPSFs_"
 ESTIMATE_SHEAR_HEAD = "SHE_CTE_EstimateShear_"
 SHEAR_ESTIMATES_MERGE_HEAD = "SHE_CTE_ShearEstimatesMerge_"
 CTI_GAL_VALIDATION_HEAD = "SHE_Validation_ValidateCTIGal_"
@@ -57,6 +58,11 @@ class AnalysisConfigKeys(ConfigKeys):
     REMAP_NUM_SWARP_THREADS_EXP = REMAP_HEAD + "num_swarp_threads_exposures"
     REMAP_NUM_THREADS_STACK = REMAP_HEAD + "num_threads_stack"
     REMAP_NUM_SWARP_THREADS_STACK = REMAP_HEAD + "num_swarp_threads_stack"
+
+    # Options for SHE_PSFToolkit_ModelPSFs
+
+    PSM_WV_SAMPLES = MODEL_PSFS_HEAD + "wv_samples"
+    PSM_PSF_ROTATION = MODEL_PSFS_HEAD + "psf_rotation"
 
     # Options for SHE_CTE_ObjectIdSplit
 
@@ -193,7 +199,7 @@ def archive_product(product_filename, archive_dir, workdir):
             logger.warning("Product " + qualified_filename + " has no 'get_all_filenames' method.")
 
     except Exception as e:
-        logger.warning("Failsafe exception block triggered when trying to save statistics product in archive. " + 
+        logger.warning("Failsafe exception block triggered when trying to save statistics product in archive. " +
                        "Exception was: " + str(e))
 
     return
@@ -286,8 +292,8 @@ def read_reconciliation_config(config_filename: str,
 def read_config(config_filename: str,
                 workdir: str=".",
                 config_keys: Union[ConfigKeys, Tuple[ConfigKeys, ...]]=(AnalysisConfigKeys,
-                                                                          ReconciliationConfigKeys,
-                                                                          CalibrationConfigKeys),
+                                                                        ReconciliationConfigKeys,
+                                                                        CalibrationConfigKeys),
                 cline_args: Dict[str, Any]=None,
                 defaults: Dict[str, Any]=None) -> Dict[str, Any]:
     """ Reads in a generic configuration file to a dictionary. Note that all arguments will be read as strings unless
@@ -348,7 +354,7 @@ def read_config(config_filename: str,
                                         cline_args=cline_args,
                                         defaults=defaults)
         else:
-            raise ValueError("File " + qualified_config_filename + " is a listfile with more than one file listed, and " + 
+            raise ValueError("File " + qualified_config_filename + " is a listfile with more than one file listed, and " +
                              "is an invalid input to read_config.")
 
     except (json.decoder.JSONDecodeError, UnicodeDecodeError):
@@ -489,7 +495,7 @@ def _check_key_is_valid(key: str,
             break
 
     if not allowed:
-        err_string = ("Invalid pipeline config key found: " + 
+        err_string = ("Invalid pipeline config key found: " +
                       key + ". Allowed keys are: ")
         for config_key_enum in config_keys:
             for allowed_key in config_key_enum:
@@ -623,7 +629,7 @@ def get_conditional_product(filename: str,
         elif len(filelist) == 1:
             return read_xml_product(filelist[0], workdir)
         else:
-            raise ValueError("File " + qualified_filename + " is a listfile with more than one file listed, and " + 
+            raise ValueError("File " + qualified_filename + " is a listfile with more than one file listed, and " +
                              "is an invalid input to get_conditional_product.")
 
     except (json.decoder.JSONDecodeError, UnicodeDecodeError):
