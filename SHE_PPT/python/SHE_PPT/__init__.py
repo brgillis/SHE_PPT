@@ -3,7 +3,7 @@
     Created 24 Nov 2017
 """
 
-__updated__ = "2021-04-28"
+__updated__ = "2021-05-05"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -30,6 +30,5 @@ __all__ = [basename(f)[:-3]
            for f in modules if isfile(f) and not f.endswith('__init__.py')]
 
 del modules, dirname, basename, isfile, glob
-
 
 __version__ = "8.8"
