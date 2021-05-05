@@ -328,7 +328,7 @@ def read_config(config_filename: str,
                                                          defaults=defaults,)
 
     # Silently coerce config_keys into iterable if just one enum is supplied
-    if isinstance(config_keys, (ConfigKeys, AnalysisConfigKeys, CalibrationConfigKeys)):
+    if issubclass(config_keys, ConfigKeys):
         config_keys = (config_keys,)
 
     # Look in the workdir for the config filename if it isn't fully-qualified
