@@ -5,7 +5,7 @@
     Misc. utility functions for the pipeline.
 """
 
-__updated__ = "2021-05-05"
+__updated__ = "2021-05-06"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -328,8 +328,11 @@ def read_config(config_filename: str,
                                                          defaults=defaults,)
 
     # Silently coerce config_keys into iterable if just one enum is supplied
-    if issubclass(config_keys, ConfigKeys):
-        config_keys = (config_keys,)
+    try:
+        if issubclass(config_keys, ConfigKeys):
+            config_keys = (config_keys,)
+    except TypeError:
+        pass
 
     # Look in the workdir for the config filename if it isn't fully-qualified
     if not config_filename[0] == "/":
