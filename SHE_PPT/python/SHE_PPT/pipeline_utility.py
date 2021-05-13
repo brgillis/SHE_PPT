@@ -5,7 +5,7 @@
     Misc. utility functions for the pipeline.
 """
 
-__updated__ = "2021-05-06"
+__updated__ = "2021-05-13"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -42,7 +42,7 @@ class ConfigKeys(AllowedEnum):
 # Task names for Analysis pipeline
 REMAP_HEAD = "SHE_MER_RemapMosaic_"
 OBJECT_ID_SPLIT_HEAD = "SHE_CTE_ObjectIdSplit_"
-MODEL_PSFS_HEAD = "SHE_PSFToolkit_ModelPSFs_"
+PSF_HEAD = "SHE_PSFToolkit_"
 ESTIMATE_SHEAR_HEAD = "SHE_CTE_EstimateShear_"
 SHEAR_ESTIMATES_MERGE_HEAD = "SHE_CTE_ShearEstimatesMerge_"
 CTI_GAL_VALIDATION_HEAD = "SHE_Validation_ValidateCTIGal_"
@@ -61,8 +61,55 @@ class AnalysisConfigKeys(ConfigKeys):
 
     # Options for SHE_PSFToolkit_ModelPSFs
 
-    PSM_WV_SAMPLES = MODEL_PSFS_HEAD + "wv_samples"
-    PSM_PSF_ROTATION = MODEL_PSFS_HEAD + "psf_rotation"
+    PSF_WV_SAMPLES = PSF_HEAD + "wv_samples"
+    PSF_ROTATION = PSF_HEAD + "psf_rotation"
+    PSF_FITTING_MODE = PSF_HEAD + "fitting_mode"
+    PSF_WAVEFRONT_SIZE = PSF_HEAD + "wavefront_size"
+    PSF_OVERSAMPLING_FACTOR = PSF_HEAD + "oversampling_factor"
+    PSF_WAVEFRONT_SAMPLING_METHOD = PSF_HEAD + "wavefront_sampling_method"
+    PSF_FFT_ALGORITHM = PSF_HEAD + "fft_algorithm"
+    PSF_FFT_PROCESSES = PSF_HEAD + "fft_processes"
+    PSF_FFT_MEM_MANAGEMENT = PSF_HEAD + "fft_mem_management"
+    PSF_OUTPUT_PIXEL_SIZE = PSF_HEAD + "output_pixel_size"
+    PSF_OUTPUT_PSF_SIZE = PSF_HEAD + "output_psf_size"
+    PSF_DEFAULT_PSF_MODEL = PSF_HEAD + "default_psf_model"
+    PSF_PIXEL_SHIFT_X = PSF_HEAD + "pixel_shift_x"
+    PSF_PIXEL_SHIFT_Y = PSF_HEAD + "pixel_shift_y"
+    PSF_ZERNIKE_MODE_SKIP = PSF_HEAD + "zernike_mode_skip"
+    PSF_ZERNIKE_MODE_COUNT = PSF_HEAD + "zernike_mode_count"
+    PSF_INTERPOLATE_ZERNIKE = PSF_HEAD + "interpolate_zernike"
+    PSF_EXTRAPOLATE_DISTORTION_FOV = PSF_HEAD + "extrapolate_distortion_fov"
+    PSF_PUPIL_TELESCOPE_GEOMETRY = PSF_HEAD + "pupil_telescope_geometry"
+    PSF_PUPIL_AMPLITUDE_ANTIALIAS = PSF_HEAD + "pupil_amplitude_antialias"
+    PSF_PUPIL_AMPLITUDE_SHIFT = PSF_HEAD + "pupil_amplitude_shift"
+    PSF_NIEMI_EFFECT_SWITCH = PSF_HEAD + "niemi_effect_switch"
+    PSF_AOCS_EFFECT_SWITCH = PSF_HEAD + "aocs_effect_switch"
+    PSF_PIXELRESPONSE_EFFECT_SWITCH = PSF_HEAD + "pixelresponse_effect_switch"
+    PSF_AOCS_TIME_SERIES_FILE = PSF_HEAD + "aocs_time_series_file"
+    PSF_BANDPASS_START = PSF_HEAD + "bandpass_start"
+    PSF_BANDPASS_END = PSF_HEAD + "bandpass_end"
+    PSF_BANDPASS_FULL_STEP = PSF_HEAD + "bandpass_full_step"
+    PSF_RESAMPLING_RESPONSE_CONSERVE_FLUX = PSF_HEAD + "resampling_response_conserve_flux"
+    PSF_BINNED_RESPONSE_INTERPOLATION_METHOD = PSF_HEAD + "binned_response_interpolation_method"
+    PSF_WAVELENGTH_RANGE_START = PSF_HEAD + "wavelength_range_start"
+    PSF_WAVELENGTH_RANGE_END = PSF_HEAD + "wavelength_range_end"
+    PSF_CACHE_INTERPOLATED_PSF_CUBE = PSF_HEAD + "cache_interpolated_psf_cube"
+    PSF_EXPOSURE_TIME = PSF_HEAD + "exposure_time"
+    PSF_TELESCOPE_MODEL_PATH = PSF_HEAD + "telescope_model_path"
+    PSF_TELESCOPE_MODEL_NOMINAL_FILE = PSF_HEAD + "telescope_model_nominal_file"
+    PSF_PICKLES_DATA_PATH = PSF_HEAD + "pickles_data_path"
+    PSF_COUNTS_PATH = PSF_HEAD + "counts_path"
+    PSF_TELESCOPE_MODEL = PSF_HEAD + "telescope_model"
+    PSF_RAYFILE_PATH = PSF_HEAD + "rayfile_path"
+    PSF_VERBOSE = PSF_HEAD + "verbose"
+    PSF_USERWARNINGS = PSF_HEAD + "userWarnings"
+    PSF_TIME_MONO = PSF_HEAD + "time_mono"
+    PSF_TIME_EXPAND = PSF_HEAD + "time_expand"
+    PSF_WAVEFRONT_PAD_AMOUNT = PSF_HEAD + "wavefront_pad_amount"
+    PSF_WAVEFRONT_CORRECTION = PSF_HEAD + "wavefront_correction"
+    PSF_MIN_FLUX_VIS_APER = PSF_HEAD + "min_flux_vis_aper"
+    PSF_MAX_FLUX_VIS_APER = PSF_HEAD + "max_flux_vis_aper"
+    PSF_MIN_POINT_LIKE_PROB = PSF_HEAD + "min_point_like_prob"
 
     # Options for SHE_CTE_ObjectIdSplit
 
