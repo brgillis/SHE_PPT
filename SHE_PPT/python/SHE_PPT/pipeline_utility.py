@@ -107,6 +107,9 @@ class AnalysisConfigKeys(ConfigKeys):
     PSF_TIME_EXPAND = PSF_HEAD + "time_expand"
     PSF_WAVEFRONT_PAD_AMOUNT = PSF_HEAD + "wavefront_pad_amount"
     PSF_WAVEFRONT_CORRECTION = PSF_HEAD + "wavefront_correction"
+    PSF_MIN_FLUX_VIS_APER = PSF_HEAD + "min_flux_vis_aper"
+    PSF_MAX_FLUX_VIS_APER = PSF_HEAD + "max_flux_vis_aper"
+    PSF_MIN_POINT_LIKE_PROB = PSF_HEAD + "min_point_like_prob"
 
     # Options for SHE_CTE_ObjectIdSplit
 
