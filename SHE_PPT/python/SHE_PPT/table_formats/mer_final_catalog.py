@@ -19,13 +19,12 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-02-19"
+__updated__ = "2021-05-25"
 
 from collections import OrderedDict
 
-from astropy.table import Table
-
 from EL_PythonUtils.utilities import hash_any
+from astropy.table import Table
 
 from .. import magic_values as mv
 from ..flags import she_flag_version
@@ -87,7 +86,12 @@ class MerFinalCatalogFormat(object):
 
         filter_list_ext = ['G_EXT_DECAM', 'R_EXT_DECAM', 'I_EXT_DECAM', 'Z_EXT_DECAM',
                            'U_EXT_OMEGACAM', 'G_EXT_OMEGACAM', 'R_EXT_OMEGACAM', 'I_EXT_OMEGACAM',
-                           'U_EXT_LSST', 'G_EXT_LSST', 'R_EXT_LSST', 'I_EXT_LSST', 'Z_EXT_LSST']
+                           'U_EXT_LSST', 'G_EXT_LSST', 'R_EXT_LSST', 'I_EXT_LSST', 'Z_EXT_LSST',
+                           'U_EXT_MEGACAM', 'R_EXT_MEGACAM',
+                           'G_EXT_JPCAM',
+                           'I_EXT_PANSTARRS', 'Z_EXT_PANSTARRS',
+                           'Z_EXT_HSC']
+
         filter_list = ['VIS', 'Y', 'J', 'H']
 
         # Column names and info
