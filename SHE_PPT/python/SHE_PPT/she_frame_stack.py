@@ -22,7 +22,7 @@ Created on: 05/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2021-03-08"
+__updated__ = "2021-05-25"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
@@ -687,7 +687,7 @@ class SHEFrameStack(object):
                 detections_product = read_xml_product(
                     os.path.join(workdir, detections_listfile_filename))
                 detections_catalogue = table.Table.read(
-                    os.path.join(workdir, detections_product.Data.DataStorage.DataContainer.FileName))
+                    os.path.join(workdir, detections_product.get_data_filename()))
 
         # Prune out duplicate object IDs from the detections table - FIXME?
         # after MER resolves this issue?
