@@ -689,6 +689,8 @@ class SHEFrameStack(object):
                 detections_catalogue = table.Table.read(
                     os.path.join(workdir, detections_product.get_data_filename()))
 
+                detections_catalogue_products = [detections_product]
+
         # Prune out duplicate object IDs from the detections table - FIXME?
         # after MER resolves this issue?
         if detections_catalogue is not None:
