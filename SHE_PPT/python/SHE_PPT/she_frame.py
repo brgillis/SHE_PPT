@@ -595,10 +595,10 @@ class SHEFrame(object):
 
                             detector_mask = None
 
-                        else:
-                            detector_data = None
-                            detector_noisemap = None
-                            detector_mask = None
+                    else:
+                        detector_data = None
+                        detector_noisemap = None
+                        detector_mask = None
 
                 else:
                     detector_data = None
