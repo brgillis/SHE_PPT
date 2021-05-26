@@ -4,7 +4,7 @@ File: she_image.py
 Created on: Aug 17, 2017
 """
 
-__updated__ = "2021-02-10"
+__updated__ = "2021-05-26"
 
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -27,11 +27,11 @@ from copy import deepcopy
 import os
 import weakref
 
+from EL_PythonUtils.utilities import run_only_once
 import astropy.io.fits
 import astropy.wcs
 import galsim
 
-from EL_PythonUtils.utilities import run_only_once
 import numpy as np
 
 from . import logging
@@ -249,8 +249,13 @@ class SHEImage(object):
 
     @data.setter
     def data(self, data_array):
+
+        # If setting data as None, set as a dim-0 array for interface safety
+        if data_array is None:
+            data_array = np.ndarray((0, 0), dtype=float)
+
         # We test the dimensionality
-        if data_array.ndim is not 2:
+        if data_array.ndim != 2:
             raise ValueError("Data array of a SHEImage must have 2 dimensions")
         # We test that the shape is not modified by the setter, if a shape
         # already exists.
