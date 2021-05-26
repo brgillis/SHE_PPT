@@ -429,6 +429,7 @@ class SHEFrame(object):
              x_max=6,
              y_max=6,
              save_products=False,
+             load_images=True,
              **kwargs):
         """Reads a SHEFrame from disk
 
@@ -452,12 +453,20 @@ class SHEFrame(object):
             Maximum y-coordinate of detectors
         save_products : bool
             If True, will save references to data products read in
+        load_images : bool
+            If set to False, image data will not be loaded, and filehandles will be closed.
 
         Any kwargs are passed to the reading of the fits data
         """
 
         # Check if we're pruning images that we have a detections catalogue, and if so, load in positions
-        if prune_images:
+        if not load_images:
+
+            def check_for_objects(header, *_args, **_kwargs):
+                wcs = WCS(header)
+                return False, wcs
+
+        elif prune_images:
             if detections_catalogue is None:
                 raise TypeError("If prune_images==True, detections_catalogue must be supplied.")
             ra_list = detections_catalogue[mfc_tf.gal_x_world].data
@@ -477,12 +486,13 @@ class SHEFrame(object):
 
                 good_objs = np.logical_and(good_x, good_y)
 
-                return good_objs.any()
+                return good_objs.any(), wcs
 
         else:
 
-            def check_for_objects(*_args, **_kwargs):
-                return True
+            def check_for_objects(header, *_args, **_kwargs):
+                wcs = WCS(header)
+                return True, wcs
 
         def join_or_none(a, b):
             if a is None or b is None:
@@ -553,37 +563,42 @@ class SHEFrame(object):
                         # Don't raise here; might be just using limited number
                         continue
 
-                    detector_header = frame_data_hdulist[sci_i].header
+                    detector_header = deepcopy(frame_data_hdulist[sci_i].header)
 
                     # Check for objects, and skip if none are on this detector
-                    if not check_for_objects(detector_header):
-                        continue
+                    load_detector, detector_wcs = check_for_objects(detector_header)
 
-                    detector_data = frame_data_hdulist[sci_i].data.transpose()
-                    detector_wcs = WCS(detector_header)
+                    if load_detector:
 
-                    noisemap_extname = id_string + "." + mv.noisemap_tag
-                    noisemap_i = find_extension(
-                        frame_data_hdulist, noisemap_extname)
-                    if noisemap_i is None:
-                        raise ValueError("No corresponding noisemap extension found in file " + frame_prod.get_data_filename() + "." +
-                                         "Expected extname: " + noisemap_extname)
-                    detector_noisemap = frame_data_hdulist[
-                        noisemap_i].data.transpose()
+                        detector_data = frame_data_hdulist[sci_i].data.transpose()
 
-                    mask_extname = id_string + "." + mv.mask_tag
-                    mask_i = find_extension(frame_data_hdulist, mask_extname)
-                    if mask_i is None:
-                        raise ValueError("No corresponding mask extension found in file " + frame_prod.get_data_filename() + "." +
-                                         "Expected extname: " + mask_extname)
-                    try:
-                        detector_mask = frame_data_hdulist[mask_i].data.transpose()
-                    except ValueError as e:
-                        if "Cannot load a memory-mapped image" not in str(e):
-                            raise
-                        warn_cannot_memmap(e)
+                        noisemap_extname = id_string + "." + mv.noisemap_tag
+                        noisemap_i = find_extension(
+                            frame_data_hdulist, noisemap_extname)
+                        if noisemap_i is None:
+                            raise ValueError("No corresponding noisemap extension found in file " + frame_prod.get_data_filename() + "." +
+                                             "Expected extname: " + noisemap_extname)
+                        detector_noisemap = frame_data_hdulist[
+                            noisemap_i].data.transpose()
 
-                        detector_mask = None
+                        mask_extname = id_string + "." + mv.mask_tag
+                        mask_i = find_extension(frame_data_hdulist, mask_extname)
+                        if mask_i is None:
+                            raise ValueError("No corresponding mask extension found in file " + frame_prod.get_data_filename() + "." +
+                                             "Expected extname: " + mask_extname)
+                        try:
+                            detector_mask = frame_data_hdulist[mask_i].data.transpose()
+                        except ValueError as e:
+                            if "Cannot load a memory-mapped image" not in str(e):
+                                raise
+                            warn_cannot_memmap(e)
+
+                            detector_mask = None
+
+                        else:
+                            detector_data = None
+                            detector_noisemap = None
+                            detector_mask = None
 
                 else:
                     detector_data = None
@@ -592,7 +607,7 @@ class SHEFrame(object):
                     detector_noisemap = None
                     detector_mask = None
 
-                if bkg_data_hdulist is not None:
+                if load_detector and bkg_data_hdulist is not None:
                     bkg_extname = id_string  # Background has no tag
                     bkg_i = find_extension(bkg_data_hdulist, bkg_extname)
                     if bkg_i is None:
@@ -602,7 +617,7 @@ class SHEFrame(object):
                 else:
                     detector_background = None
 
-                if wgt_data_hdulist is not None:
+                if load_detector and wgt_data_hdulist is not None:
                     wgt_extname = id_string  # Background has no tag
                     wgt_ccdid = str(x_i) + str(y_i)
                     wgt_i = find_extension(wgt_data_hdulist, wgt_extname)
@@ -618,7 +633,7 @@ class SHEFrame(object):
                 else:
                     detector_weight = None
 
-                if seg_data_hdulist is not None:
+                if load_detector and seg_data_hdulist is not None:
                     seg_extname = id_string + "." + mv.segmentation_tag
                     seg_i = find_extension(seg_data_hdulist, seg_extname)
                     if seg_i is None:
@@ -636,6 +651,10 @@ class SHEFrame(object):
                                                segmentation_map=detector_seg_data,
                                                header=detector_header,
                                                wcs=detector_wcs)
+
+        # Close filehandles if we aren't loading images
+        if not load_images:
+            del frame_data_hdulist, bkg_data_hdulist, wgt_data_hdulist, seg_data_hdulist
 
         # Load in the PSF data
         if psf_product_filename is not None:
