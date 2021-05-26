@@ -22,20 +22,20 @@ Created on: 02/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2021-03-08"
+__updated__ = "2021-05-26"
 
 from collections import namedtuple
 from copy import deepcopy
 import os.path
 import weakref
 
+from EL_PythonUtils.utilities import run_only_once
 from astropy.io import fits
 from astropy.io.fits import HDUList, BinTableHDU, ImageHDU, PrimaryHDU
 from astropy.table import Table
 from astropy.wcs import WCS
 
 import EL_CoordsUtils.telescope_coords as tc
-from EL_PythonUtils.utilities import run_only_once
 import numpy as np
 
 from . import detector
@@ -653,15 +653,17 @@ class SHEFrame(object):
 
             input_psf_data_hdulist = fits.open(qualified_psf_filename, **kwargs)
             psf_data_hdulist = HDUList()
-            for i in range(len(input_psf_data_hdulist)):
+            for i, hdu in enumerate(input_psf_data_hdulist):
                 if i == 0:
                     psf_data_hdulist.append(PrimaryHDU())
                 elif i == 1:
-                    psf_data_hdulist.append(BinTableHDU(data=input_psf_data_hdulist[i].data,
-                                                        header=input_psf_data_hdulist[i].header))
+                    psf_data_hdulist.append(BinTableHDU(data=deepcopy(hdu.data),
+                                                        header=deepcopy(hdu.header)))
                 else:
-                    psf_data_hdulist.append(ImageHDU(data=input_psf_data_hdulist[i].data,
-                                                     header=input_psf_data_hdulist[i].header))
+                    psf_data_hdulist.append(ImageHDU(data=deepcopy(hdu.data),
+                                                     header=deepcopy(hdu.header)))
+
+            del input_psf_data_hdulist
 
             psf_cat_i = find_extension(psf_data_hdulist, mv.psf_cat_tag)
             psf_cat = Table.read(psf_data_hdulist[psf_cat_i])
@@ -674,7 +676,7 @@ class SHEFrame(object):
             psf_data_hdulist = None
             psf_cat = None
 
-        # Construc a SHEFrame object
+        # Construct a SHEFrame object
         new_frame = SHEFrame(detectors=detectors,
                              psf_data_hdulist=psf_data_hdulist,
                              psf_catalogue=psf_cat)
