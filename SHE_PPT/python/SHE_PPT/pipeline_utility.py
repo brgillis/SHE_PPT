@@ -5,7 +5,7 @@
     Misc. utility functions for the pipeline.
 """
 
-__updated__ = "2021-05-13"
+__updated__ = "2021-05-25"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -42,6 +42,7 @@ class ConfigKeys(AllowedEnum):
 # Task names for Analysis pipeline
 REMAP_HEAD = "SHE_MER_RemapMosaic_"
 OBJECT_ID_SPLIT_HEAD = "SHE_CTE_ObjectIdSplit_"
+SUBOBJECT_ID_SPLIT_HEAD = "SHE_CTE_SubObjectIdSplit_"
 PSF_HEAD = "SHE_PSFToolkit_"
 ESTIMATE_SHEAR_HEAD = "SHE_CTE_EstimateShear_"
 SHEAR_ESTIMATES_MERGE_HEAD = "SHE_CTE_ShearEstimatesMerge_"
@@ -110,6 +111,10 @@ class AnalysisConfigKeys(ConfigKeys):
     PSF_MIN_FLUX_VIS_APER = PSF_HEAD + "min_flux_vis_aper"
     PSF_MAX_FLUX_VIS_APER = PSF_HEAD + "max_flux_vis_aper"
     PSF_MIN_POINT_LIKE_PROB = PSF_HEAD + "min_point_like_prob"
+    PSF_OUTPUT_FIXED_PSF = PSF_HEAD + "output_fixed_psf"
+    PSF_FIT_THREADS = PSF_HEAD + "fit_threads"
+    PSF_MODEL_THREADS = PSF_HEAD + "model_threads"
+    PSF_PASS_IN_MEMORY = PSF_HEAD + "pass_in_memory"
 
     # Options for SHE_CTE_ObjectIdSplit
 
@@ -117,10 +122,17 @@ class AnalysisConfigKeys(ConfigKeys):
     OID_MAX_BATCHES = OBJECT_ID_SPLIT_HEAD + "max_batches"
     OID_IDS = OBJECT_ID_SPLIT_HEAD + "ids"
 
+    # Options for SHE_CTE_SubObjectIdSplit
+
+    SOID_BATCH_SIZE = SUBOBJECT_ID_SPLIT_HEAD + "batch_size"
+    SOID_MAX_BATCHES = SUBOBJECT_ID_SPLIT_HEAD + "max_batches"
+    sOID_IDS = SUBOBJECT_ID_SPLIT_HEAD + "ids"
+
     # Options for SHE_CTE_EstimateShear
 
     ES_METHODS = ESTIMATE_SHEAR_HEAD + "methods"
     ES_CHAINS_METHOD = ESTIMATE_SHEAR_HEAD + "chains_method"
+    ES_FAST_MODE = ESTIMATE_SHEAR_HEAD + "fast_mode"
 
     # Options for SHE_CTE_ShearEstimatesMerge
 

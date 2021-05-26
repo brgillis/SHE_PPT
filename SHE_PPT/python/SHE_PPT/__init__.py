@@ -3,7 +3,7 @@
     Created 24 Nov 2017
 """
 
-__updated__ = "2021-05-13"
+__updated__ = "2021-05-26"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #

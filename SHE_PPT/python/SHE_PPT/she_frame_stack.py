@@ -22,7 +22,7 @@ Created on: 05/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2021-03-08"
+__updated__ = "2021-05-26"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
@@ -572,6 +572,7 @@ class SHEFrameStack(object):
              object_id_list_product_filename=None,
              workdir=".",
              save_products=False,
+             load_images=True,
              **kwargs):
         """Reads a SHEFrameStack from relevant data products.
 
@@ -602,6 +603,8 @@ class SHEFrameStack(object):
             Work directory
         save_products : bool
             If set to True, will save references to data products. Otherwise these references will be None
+        load_images : bool
+            If set to False, image data will not be loaded, and filehandles will be closed.
 
         Any kwargs are passed to the reading of the fits objects
         """
@@ -687,7 +690,9 @@ class SHEFrameStack(object):
                 detections_product = read_xml_product(
                     os.path.join(workdir, detections_listfile_filename))
                 detections_catalogue = table.Table.read(
-                    os.path.join(workdir, detections_product.Data.DataStorage.DataContainer.FileName))
+                    os.path.join(workdir, detections_product.get_data_filename()))
+
+                detections_catalogue_products = [detections_product]
 
         # Prune out duplicate object IDs from the detections table - FIXME?
         # after MER resolves this issue?
@@ -733,6 +738,7 @@ class SHEFrameStack(object):
                                      prune_images=prune_images,
                                      workdir=workdir,
                                      save_products=save_products,
+                                     load_images=load_images,
                                      **kwargs)
 
             exposures.append(exposure)
