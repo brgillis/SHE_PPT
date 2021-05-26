@@ -388,9 +388,9 @@ class SHEFrame(object):
                     continue
 
                 x, y = detector.world2pix(x_world, y_world)
-                if (x < 1 - x_buffer) or (x > detector.shape[0] + x_buffer):
+                if (x < 1 - x_buffer) or (x > DETECTOR_SHAPE[0] + x_buffer):
                     continue
-                if (y < 1 - y_buffer) or (y > detector.shape[1] + y_buffer):
+                if (y < 1 - y_buffer) or (y > DETECTOR_SHAPE[1] + y_buffer):
                     continue
 
                 found = True
