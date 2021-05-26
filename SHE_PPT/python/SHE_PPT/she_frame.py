@@ -50,6 +50,8 @@ from .table_utility import is_in_format
 from .utility import find_extension
 
 
+DETECTOR_SHAPE = (4096, 4136)
+
 logger = logging.getLogger(__name__)
 
 
@@ -282,9 +284,9 @@ class SHEFrame(object):
                     continue
 
                 x, y = detector.world2pix(x_world, y_world)
-                if (x < 1 - x_buffer) or (x > np.shape(detector.data)[0] + x_buffer):
+                if (x < 1 - x_buffer) or (x > DETECTOR_SHAPE[0] + x_buffer):
                     continue
-                if (y < 1 - y_buffer) or (y > np.shape(detector.data)[1] + y_buffer):
+                if (y < 1 - y_buffer) or (y > DETECTOR_SHAPE[1] + y_buffer):
                     continue
 
                 found = True
