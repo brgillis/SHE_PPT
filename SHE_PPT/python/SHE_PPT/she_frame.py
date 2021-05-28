@@ -697,7 +697,7 @@ class SHEFrame(object):
             psf_cat = Table.read(input_psf_data_hdulist[psf_cat_i])
 
             # Add the object ID as an index to the PSF catalog
-            psf_cat.add_index[pstf.ID]
+            psf_cat.add_index(pstf.ID)
 
             psf_data_hdulist = HDUList()
             for i, hdu in enumerate(input_psf_data_hdulist):
