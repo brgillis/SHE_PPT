@@ -5,7 +5,7 @@
     Misc. utility functions for the pipeline.
 """
 
-__updated__ = "2021-05-25"
+__updated__ = "2021-05-28"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -59,6 +59,7 @@ class AnalysisConfigKeys(ConfigKeys):
     REMAP_NUM_SWARP_THREADS_EXP = REMAP_HEAD + "num_swarp_threads_exposures"
     REMAP_NUM_THREADS_STACK = REMAP_HEAD + "num_threads_stack"
     REMAP_NUM_SWARP_THREADS_STACK = REMAP_HEAD + "num_swarp_threads_stack"
+    REMAP_STAGGER = REMAP_HEAD + "stagger_per_thread"
 
     # Options for SHE_PSFToolkit_ModelPSFs
 
@@ -115,6 +116,10 @@ class AnalysisConfigKeys(ConfigKeys):
     PSF_FIT_THREADS = PSF_HEAD + "fit_threads"
     PSF_MODEL_THREADS = PSF_HEAD + "model_threads"
     PSF_PASS_IN_MEMORY = PSF_HEAD + "pass_in_memory"
+    PSF_DEFAULT_FIELD_PARAMS = PSF_HEAD + "use_default_field_params"
+    PSF_NUM_STARS = PSF_HEAD + "number_of_stars"
+    PSF_USE_EXPOSURES = PSF_HEAD + "use_exposures"
+    PSF_USE_DETECTORS = PSF_HEAD + "use_detectors"
 
     # Options for SHE_CTE_ObjectIdSplit
 
