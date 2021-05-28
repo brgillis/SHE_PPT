@@ -696,6 +696,9 @@ class SHEFrame(object):
             psf_cat_i = find_extension(input_psf_data_hdulist, mv.psf_cat_tag)
             psf_cat = Table.read(input_psf_data_hdulist[psf_cat_i])
 
+            # Add the object ID as an index to the PSF catalog
+            psf_cat.add_index[pstf.ID]
+
             psf_data_hdulist = HDUList()
             for i, hdu in enumerate(input_psf_data_hdulist):
                 if i == 0:
@@ -712,7 +715,9 @@ class SHEFrame(object):
                         # Otherwise add a dummy HDU (to preserve file structure)
                         psf_data_hdulist.append(ImageHDU())
 
+            # Clean up
             del input_psf_data_hdulist
+            psf_cat.remove_indices(pstf.ID)
 
             if not is_in_format(psf_cat, pstf):
                 raise ValueError(
