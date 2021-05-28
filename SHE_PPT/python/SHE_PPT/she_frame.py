@@ -22,7 +22,7 @@ Created on: 02/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2021-05-26"
+__updated__ = "2021-05-28"
 
 from collections import namedtuple
 from copy import deepcopy
@@ -468,6 +468,9 @@ class SHEFrame(object):
                 wcs = WCS(header)
                 return False, wcs
 
+            def check_if_psf_needed(*_args, **_kwargs):
+                return False
+
         elif prune_images:
             if detections_catalogue is None:
                 raise TypeError("If prune_images==True, detections_catalogue must be supplied.")
@@ -490,11 +493,27 @@ class SHEFrame(object):
 
                 return good_objs.any(), wcs
 
+            def check_if_psf_needed(psf_cat, hdu_index):
+
+                id_list = detections_catalogue[mfc_tf.ID].data
+
+                need_psf = False
+                for object_id in id_list:
+                    row = psf_cat.loc[object_id]
+                    if row[pstf.bulge_index] == hdu_index or row[pstf.disk_index] == hdu_index:
+                        need_psf = True
+                        break
+
+                return need_psf
+
         else:
 
             def check_for_objects(header, *_args, **_kwargs):
                 wcs = WCS(header)
                 return True, wcs
+
+            def check_if_psf_needed(*_args, **_kwargs):
+                return True
 
         def join_or_none(a, b):
             if a is None or b is None:
@@ -673,6 +692,13 @@ class SHEFrame(object):
             qualified_psf_filename = os.path.join(workdir, psf_data_filename)
 
             input_psf_data_hdulist = fits.open(qualified_psf_filename, **kwargs)
+
+            psf_cat_i = find_extension(input_psf_data_hdulist, mv.psf_cat_tag)
+            psf_cat = Table.read(input_psf_data_hdulist[psf_cat_i])
+
+            # Add the object ID as an index to the PSF catalog
+            psf_cat.add_index(pstf.ID)
+
             psf_data_hdulist = HDUList()
             for i, hdu in enumerate(input_psf_data_hdulist):
                 if i == 0:
@@ -681,13 +707,17 @@ class SHEFrame(object):
                     psf_data_hdulist.append(BinTableHDU(data=deepcopy(hdu.data),
                                                         header=deepcopy(hdu.header)))
                 else:
-                    psf_data_hdulist.append(ImageHDU(data=deepcopy(hdu.data),
-                                                     header=deepcopy(hdu.header)))
+                    if check_if_psf_needed(psf_cat, i):
+                        # Add the PSF image if needed
+                        psf_data_hdulist.append(ImageHDU(data=deepcopy(hdu.data),
+                                                         header=deepcopy(hdu.header)))
+                    else:
+                        # Otherwise add a dummy HDU (to preserve file structure)
+                        psf_data_hdulist.append(ImageHDU())
 
+            # Clean up
             del input_psf_data_hdulist
-
-            psf_cat_i = find_extension(psf_data_hdulist, mv.psf_cat_tag)
-            psf_cat = Table.read(psf_data_hdulist[psf_cat_i])
+            psf_cat.remove_indices(pstf.ID)
 
             if not is_in_format(psf_cat, pstf):
                 raise ValueError(
