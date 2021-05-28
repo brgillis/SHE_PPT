@@ -468,7 +468,7 @@ class SHEFrame(object):
                 wcs = WCS(header)
                 return False, wcs
 
-            def check_if_psf_needed(*_args, **_kwargs:
+            def check_if_psf_needed(*_args, **_kwargs):
                 return False
 
         elif prune_images:
@@ -494,16 +494,16 @@ class SHEFrame(object):
                 return good_objs.any(), wcs
 
             def check_if_psf_needed(psf_cat, hdu_index):
-                
+
                 id_list = detections_catalogue[mfc_tf.ID].data
-                
+
                 need_psf = False
                 for object_id in id_list:
                     row = psf_cat.loc[object_id]
                     if row[pstf.bulge_index] == hdu_index or row[pstf.disk_index] == hdu_index:
                         need_psf = True
                         break
-                    
+
                 return need_psf
 
         else:
@@ -695,7 +695,7 @@ class SHEFrame(object):
 
             psf_cat_i = find_extension(input_psf_data_hdulist, mv.psf_cat_tag)
             psf_cat = Table.read(input_psf_data_hdulist[psf_cat_i])
-            
+
             psf_data_hdulist = HDUList()
             for i, hdu in enumerate(input_psf_data_hdulist):
                 if i == 0:
