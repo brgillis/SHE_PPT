@@ -118,6 +118,8 @@ class AnalysisConfigKeys(ConfigKeys):
     PSF_PASS_IN_MEMORY = PSF_HEAD + "pass_in_memory"
     PSF_DEFAULT_FIELD_PARAMS = PSF_HEAD + "use_default_field_params"
     PSF_NUM_STARS = PSF_HEAD + "number_of_stars"
+    PSF_USE_EXPOSURES = PSF_HEAD + "use_exposures"
+    PSF_USE_DETECTORS = PSF_HEAD + "use_detectors"
 
     # Options for SHE_CTE_ObjectIdSplit
 
