@@ -5,7 +5,7 @@
     Misc. utility functions for the pipeline.
 """
 
-__updated__ = "2021-05-28"
+__updated__ = "2021-06-08"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -120,6 +120,7 @@ class AnalysisConfigKeys(ConfigKeys):
     PSF_NUM_STARS = PSF_HEAD + "number_of_stars"
     PSF_USE_EXPOSURES = PSF_HEAD + "use_exposures"
     PSF_USE_DETECTORS = PSF_HEAD + "use_detectors"
+    PSF_USE_DETECTORS = PSF_HEAD + "num_parameters_to_fit"
 
     # Options for SHE_CTE_ObjectIdSplit
 
