@@ -4,7 +4,7 @@ File: she_image.py
 Created on: Aug 17, 2017
 """
 
-__updated__ = "2021-05-26"
+__updated__ = "2021-06-08"
 
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -24,12 +24,14 @@ __updated__ = "2021-05-26"
 # Avoid non-trivial "from" imports (as explicit is better than implicit)
 
 from copy import deepcopy
+from functools import lru_cache
 import os
 import weakref
 
 from EL_PythonUtils.utilities import run_only_once
 import astropy.io.fits
 import astropy.wcs
+import fitsio
 import galsim
 
 import numpy as np
@@ -40,14 +42,30 @@ from . import mdb
 from .mask import (as_bool, is_masked_bad,
                    is_masked_suspect_or_bad, masked_off_image)
 
+DETECTOR_SHAPE = (4096, 4136)
+DEFAULT_STAMP_SIZE = 384
 
 allowed_int_dtypes = (
     np.int8, np.int16, np.int32, np.uint8, np.uint16, np.uint32)
 
 logger = logging.getLogger(__name__)
 
+ATTR_CONVERSIONS = {"data": "data",
+                    "noisemap": "noisemap",
+                    "mask": "mask",
+                    "bkg": "background_map",
+                    "wgt": "weight_map",
+                    "seg": "segmentation_map", }
+
+
+@lru_cache(maxsize=120)
+def _read_stamp(xmin, ymin, xmax, ymax, filename, hdu_i):
+    out = fitsio.FITS(filename)[hdu_i][ymin:ymax, xmin:xmax].transpose()
+    return out
 
 # We need new-style classes for properties, hence inherit from object
+
+
 class SHEImage(object):
     """ Structure to hold an image together with a mask, a noisemap, and a header (for metadata).
 
@@ -90,6 +108,29 @@ class SHEImage(object):
         parent_image_stack : SHE_PPT.parent_image_stack.SHEImageStack
             Reference to the parent SHEImageStack, if it exists; None otherwise
     """
+
+    # Parent references
+    _parent_frame_stack = None
+    _parent_frame = None
+    _parent_image_stack = None
+    _parent_image = None
+
+    # Images
+    _data = None
+    _mask = None
+    _noisemap = None
+    _segmentation_map = None
+    _background_map = None
+    _weight_map = None
+
+    # Other public values
+    _header = None
+    _offset = (0, 0)
+    _wcs = None
+    _shape = None
+
+    # Private values
+    _images_loaded = True
 
     def __init__(self,
                  data,
@@ -146,6 +187,10 @@ class SHEImage(object):
         # Public values
         self.data = data  # Note the tests done in the setter method
         self.mask = mask
+
+        if self.data is not None and self.mask is None:
+            self.add_default_mask()
+
         self.noisemap = noisemap
         self.segmentation_map = segmentation_map
         self.background_map = background_map
@@ -517,7 +562,13 @@ class SHEImage(object):
     # have the same shape.
     def shape(self):
         """The shape of the image, equivalent to self.data.shape"""
-        return self.data.shape
+        if self._images_loaded:
+            return self.data.shape
+        elif self._shape is not None:
+            return self._shape
+        else:
+            # Failsafe to hardcoded shape
+            return DETECTOR_SHAPE
 
     def __str__(self):
         """A short string with size information and the percentage of masked pixels"""
@@ -884,9 +935,33 @@ class SHEImage(object):
         else:
             return data
 
-    def extract_stamp(self, x, y, width, height=None, indexconv="numpy", keep_header=False,
-                      none_if_out_of_bounds=False, force_all_properties=False):
-        """Extracts a stamp and returns it as a new instance (using views of numpy arrays, i.e., without making a copy)
+    def _extract_attr_stamp(self, xmin, ymin, xmax, ymax, attr, filename, hdu_i):
+        if (xmax - xmin) <= 0 or (ymax - ymin) <= 0:
+            return None
+        a = getattr(self, ATTR_CONVERSIONS[attr])
+        if a is not None and a.shape[0] > 0 and a.shape[1] > 0:
+            out = a[xmin:xmax, ymin:ymax]
+        elif filename is not None and hdu_i is not None:
+            out = _read_stamp(xmin, ymin, xmax, ymax, filename, hdu_i)
+        else:
+            out = None
+        return out
+
+    def extract_stamp(self, x, y, width=DEFAULT_STAMP_SIZE, height=None, indexconv="numpy", keep_header=False,
+                      none_if_out_of_bounds=False, force_all_properties=False,
+                      data_filename=None,
+                      data_hdu=None,
+                      noisemap_filename=None,
+                      noisemap_hdu=None,
+                      mask_filename=None,
+                      mask_hdu=None,
+                      bkg_filename=None,
+                      bkg_hdu=None,
+                      wgt_filename=None,
+                      wgt_hdu=None,
+                      seg_filename=None,
+                      seg_hdu=None):
+        """Extracts a stamp and returns it as a new None (using views of numpy arrays, i.e., without making a copy)
 
         The extracted stamp is centered on the given (x,y) coordinates and has shape (width, height).
         To define this center, two alternative indexing-conventions are implemented, which differ by a small shift:
@@ -958,11 +1033,9 @@ class SHEImage(object):
 
         # If we're returning None if out of bounds, check now so we can exit
         # early
-        if none_if_out_of_bounds:
-            # Check if it's out of bounds
-            if ((xmax < 0) or (xmin >= self.shape[0]) or
-                    (ymax < 0) or (ymin >= self.shape[1])):
-                return None
+        if none_if_out_of_bounds and((xmax < 0) or (xmin >= self.shape[0]) or
+                                     (ymax < 0) or (ymin >= self.shape[1])):
+            return None
 
         # And the header:
         if keep_header:
@@ -981,38 +1054,23 @@ class SHEImage(object):
             logger.debug("Extracting stamp [{}:{},{}:{}] fully within image of shape {}".format(
                 xmin, xmax, ymin, ymax, self.shape))
 
-            if self.mask is None:
-                new_mask = None
-            else:
-                new_mask = self.mask[xmin:xmax, ymin:ymax]
+            attr_stamps = {}
+            for attr, filename, hdu_i in (("data", data_filename, data_hdu),
+                                          ("noisemap", noisemap_filename, noisemap_hdu),
+                                          ("mask", mask_filename, mask_hdu),
+                                          ("bkg", bkg_filename, bkg_hdu),
+                                          ("wgt", wgt_filename, wgt_hdu),
+                                          ("seg", seg_filename, seg_hdu),):
 
-            if self.noisemap is None:
-                new_noisemap = None
-            else:
-                new_noisemap = self.noisemap[xmin:xmax, ymin:ymax]
-
-            if self.segmentation_map is None:
-                new_segmentation_map = None
-            else:
-                new_segmentation_map = self.segmentation_map[xmin:xmax, ymin:ymax]
-
-            if self.background_map is None:
-                new_background_map = None
-            else:
-                new_background_map = self.background_map[xmin:xmax, ymin:ymax]
-
-            if self.weight_map is None:
-                new_weight_map = None
-            else:
-                new_weight_map = self.weight_map[xmin:xmax, ymin:ymax]
+                attr_stamps[attr] = self._extract_attr_stamp(xmin, ymin, xmax, ymax, attr, filename, hdu_i)
 
             newimg = SHEImage(
-                data=self.data[xmin:xmax, ymin:ymax],
-                mask=new_mask,
-                noisemap=new_noisemap,
-                segmentation_map=new_segmentation_map,
-                background_map=new_background_map,
-                weight_map=new_weight_map,
+                data=attr_stamps["data"],
+                mask=attr_stamps["mask"],
+                noisemap=attr_stamps["noisemap"],
+                segmentation_map=attr_stamps["seg"],
+                background_map=attr_stamps["bkg"],
+                weight_map=attr_stamps["wgt"],
                 header=new_header,
                 offset=new_offset,
                 wcs=self.wcs,
@@ -1050,48 +1108,69 @@ class SHEImage(object):
 
             # We first create new stamps, and we will later fill part of them
             # with slices of the original.
-            data_stamp = np.zeros((width, height), dtype=self.data.dtype)
+            if self.data is None and data_filename is None:
+                data_stamp = None
+            else:
+                data_stamp = np.zeros((width, height), dtype=self.data.dtype)
 
-            # Always create a mask stamp if partially off-image
-            mask_stamp = np.ones((width, height), dtype=np.int32) * masked_off_image
+            if self.mask is None and mask_filename is None:
+                mask_stamp = None
+            else:
+                mask_stamp = np.ones((width, height), dtype=np.int32) * masked_off_image
 
-            if self.noisemap is None:
+            if self.noisemap is None and noisemap_filename is None:
                 noisemap_stamp = None
             else:
-                noisemap_stamp = np.zeros((width, height), dtype=self.noisemap.dtype)
+                noisemap_stamp = np.zeros((width, height), dtype=np.float32)
 
-            if self.segmentation_map is None:
+            if self.segmentation_map is None and seg_filename is None:
                 segmentation_map_stamp = None
             else:
                 segmentation_map_stamp = np.ones(
-                    (width, height), dtype=self.segmentation_map.dtype) * mv.segmap_unassigned_value
+                    (width, height), dtype=np.int64) * mv.segmap_unassigned_value
 
-            if self.background_map is None:
+            if self.background_map is None and bkg_filename is None:
                 background_map_stamp = None
             else:
-                background_map_stamp = np.zeros((width, height), dtype=self.background_map.dtype)
+                background_map_stamp = np.zeros((width, height), dtype=np.float32)
 
-            if self.weight_map is None:
+            if self.weight_map is None and wgt_filename is None:
                 weight_map_stamp = None
             else:
-                weight_map_stamp = np.zeros((width, height), dtype=self.weight_map.dtype)
+                weight_map_stamp = np.zeros((width, height), dtype=np.float32)
+
+            # Read in the overlap data
+            attr_stamps = {}
+            for attr, filename, hdu_i in (("data", data_filename, data_hdu),
+                                          ("noisemap", noisemap_filename, noisemap_hdu),
+                                          ("mask", mask_filename, mask_hdu),
+                                          ("bkg", bkg_filename, bkg_hdu),
+                                          ("wgt", wgt_filename, wgt_hdu),
+                                          ("seg", seg_filename, seg_hdu),):
+
+                attr_stamps[attr] = self._extract_attr_stamp(overlap_xmin,
+                                                             overlap_ymin,
+                                                             overlap_xmax,
+                                                             overlap_ymax,
+                                                             attr,
+                                                             filename,
+                                                             hdu_i)
 
             # Fill the stamp arrays:
             # If there is any overlap
             if (overlap_width > 0) and (overlap_height > 0):
-                data_stamp[overlap_slice_stamp] = self.data[overlap_slice]
-                if self.mask is not None:
-                    mask_stamp[overlap_slice_stamp] = self.mask[overlap_slice]
-                else:
-                    mask_stamp[overlap_slice_stamp] = 0
-                if self.noisemap is not None:
-                    noisemap_stamp[overlap_slice_stamp] = self.noisemap[overlap_slice]
-                if self.segmentation_map is not None:
-                    segmentation_map_stamp[overlap_slice_stamp] = self.segmentation_map[overlap_slice]
-                if self.background_map is not None:
-                    background_map_stamp[overlap_slice_stamp] = self.background_map[overlap_slice]
-                if self.weight_map is not None:
-                    weight_map_stamp[overlap_slice_stamp] = self.weight_map[overlap_slice]
+                if attr_stamps["data"] is not None:
+                    data_stamp[overlap_slice_stamp] = attr_stamps["data"]
+                if attr_stamps["mask"] is not None:
+                    mask_stamp[overlap_slice_stamp] = attr_stamps["mask"]
+                if attr_stamps["noisemap"] is not None:
+                    noisemap_stamp[overlap_slice_stamp] = attr_stamps["noisemap"]
+                if attr_stamps["seg"] is not None:
+                    segmentation_map_stamp[overlap_slice_stamp] = attr_stamps["seg"]
+                if attr_stamps["bkg"] is not None:
+                    background_map_stamp[overlap_slice_stamp] = attr_stamps["bkg"]
+                if attr_stamps["wgt"] is not None:
+                    weight_map_stamp[overlap_slice_stamp] = attr_stamps["wgt"]
 
             # Create the new object
             newimg = SHEImage(
