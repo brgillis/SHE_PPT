@@ -140,6 +140,7 @@ class AnalysisConfigKeys(ConfigKeys):
     ES_METHODS = ESTIMATE_SHEAR_HEAD + "methods"
     ES_CHAINS_METHOD = ESTIMATE_SHEAR_HEAD + "chains_method"
     ES_FAST_MODE = ESTIMATE_SHEAR_HEAD + "fast_mode"
+    ES_MEMMAP_IMAGES = ESTIMATE_SHEAR_HEAD + "memmap_images"
 
     # Options for SHE_CTE_ShearEstimatesMerge
 

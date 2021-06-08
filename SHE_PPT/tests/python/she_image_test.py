@@ -22,7 +22,7 @@ Created on: 08/18/17
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 # """This script gives a small demo of the image object.
 
-__updated__ = "2021-02-10"
+__updated__ = "2021-06-07"
 
 from copy import deepcopy
 import logging
@@ -87,9 +87,9 @@ class Test_she_image():
         """Test that the object created by setup_class is as expected"""
 
         assert self.img.shape == (self.w, self.h)
-        assert self.img.data.shape == (self.w, self.h)
+        assert self.img.data.shape == self.img.shape
 
-        assert self.img.mask is None
+        assert self.img.mask.shape == self.img.shape
         assert self.img.noisemap is None
         assert self.img.segmentation_map is None
         assert self.img.background_map is None
@@ -395,7 +395,7 @@ class Test_she_image():
 
         simple_stamp = simple_img.extract_stamp(16.4, 15.6, 32)
 
-        assert simple_stamp.mask is None
+        assert simple_stamp.mask.shape == simple_stamp.shape
         assert simple_stamp.noisemap is None
         assert simple_stamp.segmentation_map is None
         assert simple_stamp.background_map is None
