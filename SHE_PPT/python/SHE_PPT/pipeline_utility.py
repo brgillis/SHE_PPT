@@ -120,7 +120,8 @@ class AnalysisConfigKeys(ConfigKeys):
     PSF_NUM_STARS = PSF_HEAD + "number_of_stars"
     PSF_USE_EXPOSURES = PSF_HEAD + "use_exposures"
     PSF_USE_DETECTORS = PSF_HEAD + "use_detectors"
-    PSF_USE_DETECTORS = PSF_HEAD + "num_parameters_to_fit"
+    PSF_NUM_PARAMETERS_TO_FIT = PSF_HEAD + "num_parameters_to_fit"
+    PSF_MAX_FIT_ITERATIONS = PSF_HEAD + "max_fit_iterations"
 
     # Options for SHE_CTE_ObjectIdSplit
 
