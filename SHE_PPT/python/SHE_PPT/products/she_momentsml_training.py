@@ -22,7 +22,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-30"
+__updated__ = "2021-06-10"
 
 # import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
 # import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
@@ -82,7 +82,7 @@ def create_dpd_she_momentsml_training(filename=None):
     dpd_she_momentsml_training = read_xml_product(
         find_aux_file(sample_file_name))
 
-    dpd_she_momentsml_training.Header = HeaderProvider.create_generic_header("SHE")  # FIXME
+    dpd_she_momentsml_training.Header = HeaderProvider.create_generic_header("DpdSheMomentsMlTraining")
 
     if filename:
         __set_data_filename(dpd_she_momentsml_training, filename)

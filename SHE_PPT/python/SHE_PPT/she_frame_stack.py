@@ -22,7 +22,7 @@ Created on: 05/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2021-06-08"
+__updated__ = "2021-06-10"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
@@ -642,6 +642,7 @@ class SHEFrameStack(object):
              workdir=".",
              save_products=False,
              load_images=True,
+             prune_images=None,
              **kwargs):
         """Reads a SHEFrameStack from relevant data products.
 
@@ -686,10 +687,12 @@ class SHEFrameStack(object):
             object_id_list_product = None
             object_id_list = None
 
-        if object_id_list is None:
-            prune_images = False
-        else:
-            prune_images = True
+        # Determine whether to prune based on presence/absence of object_id_list
+        if prune_images == None:
+            if object_id_list is None:
+                prune_images = False
+            else:
+                prune_images = True
 
         # Load in the detections catalogues and combine them into a single catalogue
         if detections_listfile_filename is None:

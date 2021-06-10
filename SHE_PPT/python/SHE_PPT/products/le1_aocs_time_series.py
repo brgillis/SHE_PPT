@@ -23,7 +23,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-10-15"
+__updated__ = "2021-06-09"
 
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 
@@ -60,7 +60,7 @@ def create_dpd_le1_aocs_time_series(filename="None"):
     # Label the type in the StringData
     dpd_le1_aocs_time_series.Data.StringData = ["TYPE:DpdLe1AocsTimeSeries"]
 
-    dpd_le1_aocs_time_series.Header = HeaderProvider.create_generic_header("SHE")
+    dpd_le1_aocs_time_series.Header = HeaderProvider.create_generic_header("DpdShePlaceholderGeneral")
 
     if filename:
         dpd_le1_aocs_time_series.set_data_filename(filename)

@@ -22,7 +22,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-25"
+__updated__ = "2021-06-09"
 
 
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
@@ -81,7 +81,7 @@ def create_dpd_she_ksb_training(filename=None):
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)
-    dpd_she_ksb_training.Header = HeaderProvider.create_generic_header("SHE")
+    dpd_she_ksb_training.Header = HeaderProvider.create_generic_header("DpdSheKsbTraining")
 
     if filename:
         __set_filename(dpd_she_ksb_training, filename)

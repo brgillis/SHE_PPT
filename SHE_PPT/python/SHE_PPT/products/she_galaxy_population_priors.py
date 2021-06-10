@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-30"
+__updated__ = "2021-06-09"
 
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.galaxypopulationpriors_stub import dpdSheGalaxyPopulationPriors
@@ -76,7 +76,7 @@ def create_dpd_she_galaxy_population_priors(filename=None):
 
     dpd_she_galaxy_population_priors = read_xml_product(find_aux_file(sample_file_name))
 
-    dpd_she_galaxy_population_priors.Header = HeaderProvider.create_generic_header("SHE")
+    dpd_she_galaxy_population_priors.Header = HeaderProvider.create_generic_header("DpdSheGalaxyPopulationPriors")
 
     if filename:
         __set_filename(dpd_galaxy_population_priors, filename)

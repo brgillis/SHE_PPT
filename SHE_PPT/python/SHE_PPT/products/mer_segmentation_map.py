@@ -22,7 +22,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-12"
+__updated__ = "2021-06-09"
 
 import os
 
@@ -150,7 +150,7 @@ def create_dpd_mer_mosaic(data_filename="",
     dpd_mer_mosaic = read_xml_product(
         find_aux_file(sample_file_name))
 
-    dpd_mer_mosaic.Header = HeaderProvider.create_generic_header("SHE")
+    dpd_mer_mosaic.Header = HeaderProvider.create_generic_header("DpdMerSegmentationMap")
 
     __set_data_filename(dpd_mer_mosaic, data_filename)
 

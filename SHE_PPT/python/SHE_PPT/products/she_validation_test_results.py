@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-11-24"
+__updated__ = "2021-06-10"
 
 
 from copy import deepcopy
@@ -73,7 +73,7 @@ def create_dpd_she_validation_test_results(reference_product=None,
 
     dpd_she_validation_test_results = read_xml_product(find_aux_file(sample_file_name))
 
-    dpd_she_validation_test_results.Header = HeaderProvider.create_generic_header("SHE")
+    dpd_she_validation_test_results.Header = HeaderProvider.create_generic_header("DpdSheValidationTestResults")
 
     # Quick alias to Data to save text
     Data = dpd_she_validation_test_results.Data

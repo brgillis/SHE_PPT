@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-12"
+__updated__ = "2021-06-10"
 
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
@@ -137,7 +137,7 @@ def create_dpd_vis_calibrated_frame(data_filename='',
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)
-    dpd_vis_calibrated_frame.Header = HeaderProvider.create_generic_header("SHE")
+    dpd_vis_calibrated_frame.Header = HeaderProvider.create_generic_header("DpdVisCalibratedFrame")
 
     __set_data_filename(dpd_vis_calibrated_frame, data_filename)
     __set_psf_filename(dpd_vis_calibrated_frame, psf_filename)

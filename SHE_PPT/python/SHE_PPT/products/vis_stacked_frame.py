@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-12"
+__updated__ = "2021-06-10"
 
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
@@ -128,7 +128,7 @@ def create_dpd_vis_stacked_frame(data_filename="default_data_filename.fits",
     dpd_vis_stacked_frame = read_xml_product(
         find_aux_file(sample_file_name))
 
-    dpd_vis_stacked_frame.Header = HeaderProvider.create_generic_header("VIS")
+    dpd_vis_stacked_frame.Header = HeaderProvider.create_generic_header("DpdVisStackedFrame")
 
     dpd_vis_stacked_frame.set_data_filename(data_filename)
     dpd_vis_stacked_frame.set_bkg_filename(bkg_filename)
