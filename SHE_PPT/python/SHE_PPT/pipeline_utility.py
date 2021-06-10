@@ -122,7 +122,7 @@ class AnalysisConfigKeys(ConfigKeys):
     PSF_USE_DETECTORS = PSF_HEAD + "use_detectors"
     PSF_NUM_PARAMETERS_TO_FIT = PSF_HEAD + "num_parameters_to_fit"
     PSF_MAX_FIT_ITERATIONS = PSF_HEAD + "max_fit_iterations"
-
+    PSF_DET_TO_FIT = PSF_HEAD + "det_to_fit"
     # Options for SHE_CTE_ObjectIdSplit
 
     OID_BATCH_SIZE = OBJECT_ID_SPLIT_HEAD + "batch_size"
