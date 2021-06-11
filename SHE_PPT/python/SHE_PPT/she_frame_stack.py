@@ -584,9 +584,10 @@ class SHEFrameStack(object):
         else:
             qualified_filename = os.path.join(
                 workdir, product.get_data_filename())
+        print("KWARGS: ", kwargs)
         hdulist = fits.open(
             qualified_filename, **kwargs)
-
+        
         if tags is None:
 
             header = hdulist[0].header
