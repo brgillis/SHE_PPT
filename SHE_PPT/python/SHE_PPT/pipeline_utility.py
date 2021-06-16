@@ -5,7 +5,7 @@
     Misc. utility functions for the pipeline.
 """
 
-__updated__ = "2021-06-08"
+__updated__ = "2021-06-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -40,6 +40,7 @@ class ConfigKeys(AllowedEnum):
 
 
 # Task names for Analysis pipeline
+PIPELINE_HEAD = "SHE_Pipeline_"
 REMAP_HEAD = "SHE_MER_RemapMosaic_"
 OBJECT_ID_SPLIT_HEAD = "SHE_CTE_ObjectIdSplit_"
 SUBOBJECT_ID_SPLIT_HEAD = "SHE_CTE_SubObjectIdSplit_"
@@ -52,6 +53,23 @@ CTI_GAL_VALIDATION_HEAD = "SHE_Validation_ValidateCTIGal_"
 class AnalysisConfigKeys(ConfigKeys):
     """ An Enum of all allowed keys for the SHE analysis pipelines.
     """
+
+    # Pipeline-wide options
+
+    PIP_PROFILE = PIPELINE_HEAD + "profile"
+
+    # Placeholder options
+
+    PIP_PLACEHOLDER_0 = PIPELINE_HEAD + "placeholder_0"
+    PIP_PLACEHOLDER_1 = PIPELINE_HEAD + "placeholder_1"
+    PIP_PLACEHOLDER_2 = PIPELINE_HEAD + "placeholder_2"
+    PIP_PLACEHOLDER_3 = PIPELINE_HEAD + "placeholder_3"
+    PIP_PLACEHOLDER_4 = PIPELINE_HEAD + "placeholder_4"
+    PIP_PLACEHOLDER_5 = PIPELINE_HEAD + "placeholder_5"
+    PIP_PLACEHOLDER_6 = PIPELINE_HEAD + "placeholder_6"
+    PIP_PLACEHOLDER_7 = PIPELINE_HEAD + "placeholder_7"
+    PIP_PLACEHOLDER_8 = PIPELINE_HEAD + "placeholder_8"
+    PIP_PLACEHOLDER_9 = PIPELINE_HEAD + "placeholder_9"
 
     # Options for SHE_MER_RemapMosaic
 
