@@ -22,7 +22,7 @@ Created on: 05/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2021-06-10"
+__updated__ = "2021-06-17"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
@@ -584,10 +584,9 @@ class SHEFrameStack(object):
         else:
             qualified_filename = os.path.join(
                 workdir, product.get_data_filename())
-        print("KWARGS: ", kwargs)
         hdulist = fits.open(
             qualified_filename, **kwargs)
-        
+
         if tags is None:
 
             header = hdulist[0].header
