@@ -22,7 +22,7 @@ Created on: 05/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2021-06-17"
+__updated__ = "2021-06-21"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
@@ -547,14 +547,11 @@ class SHEFrameStack(object):
         found = False
         fov_coords_list = []
         for exposure in self.exposures:
-            # print("EXP DET: ",np.shape(exposure.detectors),return_det_coords_too)
-            # print("XW: ",x_world, y_world)
             fov_coords = exposure.get_fov_coords(x_world=x_world,
                                                  y_world=y_world,
                                                  x_buffer=x_buffer,
                                                  y_buffer=y_buffer,
                                                  return_det_coords_too=return_det_coords_too)
-            # print("FVC: ",fov_coords)
             if fov_coords is not None:
                 found = True
             fov_coords_list.append(fov_coords)
