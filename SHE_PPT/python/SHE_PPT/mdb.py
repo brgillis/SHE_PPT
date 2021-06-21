@@ -19,14 +19,13 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-04-26"
+__updated__ = "2021-06-21"
 
 import os
 import re
 
 from EL_PythonUtils.utilities import run_only_once
 from astropy.io import fits
-from scipy.integrate.quadpack import quad
 
 from ST_DM_MDBTools.Mdb import Mdb
 
