@@ -4,7 +4,7 @@ File: she_image.py
 Created on: Aug 17, 2017
 """
 
-__updated__ = "2021-06-10"
+__updated__ = "2021-06-21"
 
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -58,19 +58,19 @@ ATTR_CONVERSIONS = {"data": "data",
                     "seg": "segmentation_map", }
 
 
-@lru_cache(maxsize=6)
+@lru_cache(maxsize=50)
 def _get_fits_handle(filename):
     f = fitsio.FITS(filename)
     return f
 
 
-@lru_cache(maxsize=12)
+@lru_cache(maxsize=50)
 def _get_hdu_handle(filename, hdu_i):
     h = _get_fits_handle(filename)[hdu_i]
     return h
 
 
-@lru_cache(maxsize=120)
+@lru_cache(maxsize=500)
 def _read_stamp(xmin, ymin, xmax, ymax, filename, hdu_i):
     out = _get_hdu_handle(filename, hdu_i)[ymin:ymax, xmin:xmax].transpose()
     return out
