@@ -4,7 +4,7 @@ File: she_image.py
 Created on: Aug 17, 2017
 """
 
-__updated__ = "2021-06-21"
+__updated__ = "2021-06-23"
 
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -70,7 +70,7 @@ def _get_hdu_handle(filename, hdu_i):
     return h
 
 
-@lru_cache(maxsize=500)
+@lru_cache(maxsize=2000)
 def _read_stamp(xmin, ymin, xmax, ymax, filename, hdu_i):
     out = _get_hdu_handle(filename, hdu_i)[ymin:ymax, xmin:xmax].transpose()
     return out

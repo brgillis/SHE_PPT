@@ -22,7 +22,7 @@ Created on: 05/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2021-06-21"
+__updated__ = "2021-06-23"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
@@ -415,7 +415,7 @@ class SHEFrameStack(object):
         return bulge_psf_stack, disk_psf_stack
 
     def extract_stamp_stack(self, x_world, y_world, width, height=None, x_buffer=0, y_buffer=0, keep_header=False,
-                            none_if_out_of_bounds=False):
+                            none_if_out_of_bounds=False, extract_stacked_stamp=True, extract_exposure_stamps=True):
         """Extracts a postage stamp centred on the provided sky co-ordinates, by using each detector's WCS
            to determine which (if any) it lies on. If x/y_buffer >0, it will also extract from a detector if
            the position is within this many pixels of the edge of it.
@@ -439,6 +439,10 @@ class SHEFrameStack(object):
            none_if_out_of_bounds : bool
                Set this to True if you want this method to return None if the stamp is entirely out of bounds of the image.
                By default, this is set to False, which means it will instead return an entirely masked stack in that case.
+           extract_stacked_stamp : bool
+               If set to False, the stamp from the stacked image won't be extracted (and will be set to None)
+           extract_exposure_stamps : bool
+               If set to False, the stamps from the exposure images won't be extracted (and will all be set to None)
 
            Return
            ------
@@ -447,7 +451,7 @@ class SHEFrameStack(object):
 
         # Extract from the stacked image first
 
-        if self.stacked_image is not None:
+        if extract_stacked_stamp and self.stacked_image is not None:
             stack_stamp_width = self.stack_pixel_size_ratio * width
             if height is None:
                 stack_stamp_height = None
@@ -495,13 +499,16 @@ class SHEFrameStack(object):
 
         exposure_stamps = []
         for exposure in self.exposures:
-            exposure_stamps.append(exposure.extract_stamp(x_world=x_world,
-                                                          y_world=y_world,
-                                                          width=width,
-                                                          height=height,
-                                                          x_buffer=x_buffer,
-                                                          y_buffer=y_buffer,
-                                                          keep_header=keep_header))
+            if extract_exposure_stamps and exposure is not None:
+                exposure_stamps.append(exposure.extract_stamp(x_world=x_world,
+                                                              y_world=y_world,
+                                                              width=width,
+                                                              height=height,
+                                                              x_buffer=x_buffer,
+                                                              y_buffer=y_buffer,
+                                                              keep_header=keep_header))
+            else:
+                exposure_stamps.append(None)
 
         # Create and return the stamp stack
 
