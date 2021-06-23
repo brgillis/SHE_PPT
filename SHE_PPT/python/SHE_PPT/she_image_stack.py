@@ -22,7 +22,7 @@ Created on: 09/01/17
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2021-02-10"
+__updated__ = "2021-06-23"
 
 import weakref
 
@@ -116,7 +116,10 @@ class SHEImageStack(object):
         return (not self.is_empty())
 
     def is_empty(self):
-        """ Checks if all exposures are None """
+        """ Checks if all exposures and the stacked iamge are None """
+
+        if self.stacked_image is not None:
+            return False
 
         empty = True
         for exposure in self.exposures:
