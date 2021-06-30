@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2021-02-09"
+__updated__ = "2021-06-07"
 
 import os
 from os.path import join
@@ -94,7 +94,8 @@ class TestCase:
                                              workdir=self.workdir,
                                              clean_detections=True,
                                              memmap=True,
-                                             mode='denywrite')
+                                             mode='denywrite',
+                                             load_images=False)
 
     def test_get_signal_to_noise(self):
         """Test that the interface for the KSB method works properly.

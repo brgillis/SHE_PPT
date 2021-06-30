@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-10-21"
+__updated__ = "2021-06-10"
 
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 
@@ -57,7 +57,7 @@ def create_dpd_she_simulated_catalog(filename="None"):
     # Label the type in the StringData
     dpd_she_simulated_catalog.Data.StringData = ["TYPE:DpdSheSimulatedCatalog"]
 
-    dpd_she_simulated_catalog.Header = HeaderProvider.create_generic_header("SHE")
+    dpd_she_simulated_catalog.Header = HeaderProvider.create_generic_header("DpdSheIntermediateObservationCatalog")
 
     if filename:
         dpd_she_simulated_catalog.set_data_filename(filename)

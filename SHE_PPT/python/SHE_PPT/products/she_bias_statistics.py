@@ -7,7 +7,7 @@
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines.
 """
 
-__updated__ = "2021-02-10"
+__updated__ = "2021-06-09"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -25,9 +25,9 @@ __updated__ = "2021-02-10"
 
 import os
 
+from EL_PythonUtils.utilities import hash_any
 from astropy.table import Table
 
-from EL_PythonUtils.utilities import hash_any
 import ST_DM_DmUtils.DmUtils as dm_utils
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.intermediategeneral_stub import dpdSheIntermediateGeneral
@@ -447,7 +447,7 @@ def create_dpd_she_bias_statistics(BFD_bias_statistics_filename=None,
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)
-    dpd_shear_bias_stats.Header = HeaderProvider.create_generic_header("SHE")
+    dpd_shear_bias_stats.Header = HeaderProvider.create_generic_header("DpdSheIntermediateGeneral")
 
     dpd_shear_bias_stats.set_BFD_bias_statistics_filename(BFD_bias_statistics_filename)
     dpd_shear_bias_stats.set_KSB_bias_statistics_filename(KSB_bias_statistics_filename)

@@ -22,7 +22,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-10-15"
+__updated__ = "2021-06-09"
 
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 
@@ -57,7 +57,8 @@ def create_dpd_she_expected_shear_validation_statistics(filename=None):
     # Label the type in the StringData
     dpd_she_expected_shear_validation_statistics.Data.StringData = ["TYPE:DpdSheExpectedValidationStatistics"]
 
-    dpd_she_expected_shear_validation_statistics.Header = HeaderProvider.create_generic_header("SHE")
+    dpd_she_expected_shear_validation_statistics.Header = HeaderProvider.create_generic_header(
+        "DpdShePlaceholderGeneral")
 
     if filename:
         dpd_she_expected_shear_validation_statistics.set_data_filename(filename)

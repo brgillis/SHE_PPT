@@ -9,7 +9,7 @@
     converted from MER's version, so we need a separate product for it.
 """
 
-__updated__ = "2021-02-10"
+__updated__ = "2021-06-09"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -143,7 +143,8 @@ def create_dpd_she_exposure_segmentation_map(data_filename="None"):
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)
-    dpd_she_exposure_reproj_seg_map_data.Header = HeaderProvider.create_generic_header("SHE")
+    dpd_she_exposure_reproj_seg_map_data.Header = HeaderProvider.create_generic_header(
+        "DpdSheExposureReprojectedSegmentationMap")
 
     __set_data_filename(dpd_she_exposure_reproj_seg_map_data, data_filename)
 

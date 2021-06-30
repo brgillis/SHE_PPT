@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-10-15"
+__updated__ = "2021-06-10"
 
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 
@@ -56,7 +56,7 @@ def create_dpd_she_simulation_config(filename=None):
     # Label the type in the StringData
     dpd_she_simulation_config.Data.StringData = ["TYPE:DpdSheSimulationConfig"]
 
-    dpd_she_simulation_config.Header = HeaderProvider.create_generic_header("SHE")
+    dpd_she_simulation_config.Header = HeaderProvider.create_generic_header("DpdSheIntermediateGeneral")
 
     if filename:
         dpd_she_simulation_config.set_data_filename(filename)

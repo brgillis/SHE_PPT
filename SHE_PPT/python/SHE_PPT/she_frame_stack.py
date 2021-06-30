@@ -22,7 +22,7 @@ Created on: 05/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2021-03-08"
+__updated__ = "2021-06-23"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
@@ -69,6 +69,42 @@ class SHEFrameStack():
         Detections catalogue, provided by MER
 
     """
+
+    exposures = None
+    exposure_products = None
+    psf_products = None
+
+    stacked_image = None
+    stacked_image_product = None
+
+    detections_catalogue = None
+    detections_catalogue_products = None
+
+    object_id_list_product = None
+
+    stack_pixel_size_ratio = 1
+
+    # File references and info
+    _stacked_data_filename = None
+    _stacked_data_hdu = None
+
+    _stacked_noisemap_filename = None
+    _stacked_noisemap_hdu = None
+
+    _stacked_mask_filename = None
+    _stacked_mask_hdu = None
+
+    _stacked_bkg_filename = None
+    _stacked_bkg_hdu = None
+
+    _stacked_wgt_filename = None
+    _stacked_wgt_hdu = None
+
+    _stacked_seg_filename = None
+    _stacked_seg_hdu = None
+
+    # Options
+    _images_loaded = False
 
     def __init__(self, exposures, stacked_image, detections_catalogue):
         """
@@ -378,7 +414,7 @@ class SHEFrameStack():
         return bulge_psf_stack, disk_psf_stack
 
     def extract_stamp_stack(self, x_world, y_world, width, height=None, x_buffer=0, y_buffer=0, keep_header=False,
-                            none_if_out_of_bounds=False):
+                            none_if_out_of_bounds=False, extract_stacked_stamp=True, extract_exposure_stamps=True):
         """Extracts a postage stamp centred on the provided sky co-ordinates, by using each detector's WCS
            to determine which (if any) it lies on. If x/y_buffer >0, it will also extract from a detector if
            the position is within this many pixels of the edge of it.
@@ -400,9 +436,12 @@ class SHEFrameStack():
            keep_header : bool
                If True, will copy the detector's header to each stamp's
            none_if_out_of_bounds : bool
-               Set this to True if you want this method to return None if the stamp is entirely out of bounds
-               of the image. By default, this is set to False, which means it will instead return an entirely
-               masked stack in that case.
+               Set this to True if you want this method to return None if the stamp is entirely out of bounds of the image.
+               By default, this is set to False, which means it will instead return an entirely masked stack in that case.
+           extract_stacked_stamp : bool
+               If set to False, the stamp from the stacked image won't be extracted (and will be set to None)
+           extract_exposure_stamps : bool
+               If set to False, the stamps from the exposure images won't be extracted (and will all be set to None)
 
            Return
            ------
@@ -411,7 +450,7 @@ class SHEFrameStack():
 
         # Extract from the stacked image first
 
-        if self.stacked_image is not None:
+        if extract_stacked_stamp and self.stacked_image is not None:
             stack_stamp_width = self.stack_pixel_size_ratio * width
             if height is None:
                 stack_stamp_height = None
@@ -421,12 +460,32 @@ class SHEFrameStack():
             stacked_image_x, stacked_image_y = self.stacked_image.world2pix(
                 x_world, y_world)
 
-            stacked_image_stamp = self.stacked_image.extract_stamp(x=stacked_image_x,
-                                                                   y=stacked_image_y,
-                                                                   width=stack_stamp_width,
-                                                                   height=stack_stamp_height,
-                                                                   keep_header=keep_header,
-                                                                   none_if_out_of_bounds=none_if_out_of_bounds)
+            if self._images_loaded:
+                stacked_image_stamp = self.stacked_image.extract_stamp(x=stacked_image_x,
+                                                                       y=stacked_image_y,
+                                                                       width=stack_stamp_width,
+                                                                       height=stack_stamp_height,
+                                                                       keep_header=keep_header,
+                                                                       none_if_out_of_bounds=none_if_out_of_bounds)
+            else:
+                stacked_image_stamp = self.stacked_image.extract_stamp(x=stacked_image_x,
+                                                                       y=stacked_image_y,
+                                                                       width=stack_stamp_width,
+                                                                       height=stack_stamp_height,
+                                                                       keep_header=keep_header,
+                                                                       none_if_out_of_bounds=none_if_out_of_bounds,
+                                                                       data_filename=self._stacked_data_filename,
+                                                                       data_hdu=self._stacked_data_hdu,
+                                                                       noisemap_filename=self._stacked_noisemap_filename,
+                                                                       noisemap_hdu=self._stacked_noisemap_hdu,
+                                                                       mask_filename=self._stacked_mask_filename,
+                                                                       mask_hdu=self._stacked_mask_hdu,
+                                                                       bkg_filename=self._stacked_bkg_filename,
+                                                                       bkg_hdu=self._stacked_bkg_hdu,
+                                                                       wgt_filename=self._stacked_wgt_filename,
+                                                                       wgt_hdu=self._stacked_wgt_hdu,
+                                                                       seg_filename=self._stacked_seg_filename,
+                                                                       seg_hdu=self._stacked_seg_hdu)
 
             # Return None if none_if_out_of_bounds and out of bounds of stacked
             # image
@@ -439,13 +498,16 @@ class SHEFrameStack():
 
         exposure_stamps = []
         for exposure in self.exposures:
-            exposure_stamps.append(exposure.extract_stamp(x_world=x_world,
-                                                          y_world=y_world,
-                                                          width=width,
-                                                          height=height,
-                                                          x_buffer=x_buffer,
-                                                          y_buffer=y_buffer,
-                                                          keep_header=keep_header))
+            if extract_exposure_stamps and exposure is not None:
+                exposure_stamps.append(exposure.extract_stamp(x_world=x_world,
+                                                              y_world=y_world,
+                                                              width=width,
+                                                              height=height,
+                                                              x_buffer=x_buffer,
+                                                              y_buffer=y_buffer,
+                                                              keep_header=keep_header))
+            else:
+                exposure_stamps.append(None)
 
         # Create and return the stamp stack
 
@@ -507,7 +569,7 @@ class SHEFrameStack():
 
     @classmethod
     def _read_product_extension(cls, product_filename, tags=None, workdir=".", dtype=None,
-                                filetype="science", **kwargs):
+                                filetype="science", load_images=True, **kwargs):
 
         product = read_xml_product(os.path.join(workdir, product_filename))
 
@@ -528,17 +590,30 @@ class SHEFrameStack():
         hdulist = fits.open(
             qualified_filename, **kwargs)
 
-        header = hdulist[0].header
-
         if tags is None:
-            data = hdulist[0].data.transpose()
+
+            header = hdulist[0].header
+
+            if load_images:
+                data = hdulist[0].data.transpose()
+            else:
+                data = None
+            hdu_indices = 0
         else:
-            data = []
+            if load_images:
+                data = []
+            else:
+                data = None
+            hdu_indices = []
             for tag in tags:
                 extension = find_extension(hdulist, tag)
-                data.append(hdulist[extension].data.transpose())
+                if load_images:
+                    data.append(hdulist[extension].data.transpose())
+                hdu_indices.append(extension)
+            # Return the header for the first HDU in the tags
+            header = hdulist[hdu_indices[0]].header
 
-        return product, header, data
+        return product, header, data, qualified_filename, hdu_indices
 
     @classmethod
     def _read_file_extension(cls, filename, tags=None, workdir=".", dtype=None, **kwargs):
@@ -639,6 +714,8 @@ class SHEFrameStack():
              object_id_list_product_filename=None,
              workdir=".",
              save_products=False,
+             load_images=True,
+             prune_images=None,
              **kwargs):
         """Reads a SHEFrameStack from relevant data products.
 
@@ -669,6 +746,8 @@ class SHEFrameStack():
             Work directory
         save_products : bool
             If set to True, will save references to data products. Otherwise these references will be None
+        load_images : bool
+            If set to False, image data will not be loaded, and filehandles will be closed.
 
         Any kwargs are passed to the reading of the fits objects
         """
@@ -681,21 +760,84 @@ class SHEFrameStack():
             object_id_list_product = None
             object_id_list = None
 
-        if object_id_list is None:
-            prune_images = False
-        else:
-            prune_images = True
+        # Determine whether to prune based on presence/absence of object_id_list
+        if prune_images == None:
+            if object_id_list is None:
+                prune_images = False
+            else:
+                prune_images = True
 
         # Load in the detections catalogues and combine them into a single catalogue
         if detections_listfile_filename is None:
             detections_catalogue = None
             detections_catalogue_products = None
         else:
-            detections_catalogue, detections_catalogue_products = cls.__load_detections_catalogue(
-                detections_listfile_filename,
-                workdir,
-                save_products,
-                object_id_list)
+            try:
+                detections_filenames = read_listfile(find_file(detections_listfile_filename, path=workdir))
+
+                # Load each table in turn and combine them
+
+                detections_catalogues = []
+                if save_products:
+                    detections_catalogue_products = []
+
+                for detections_product_filename in detections_filenames:
+
+                    detections_product = read_xml_product(os.path.join(workdir, detections_product_filename))
+                    if save_products:
+                        detections_catalogue_products.append(detections_product)
+
+                    logger.debug("DP: %s, %s, %s" % (workdir,
+                                                     detections_product_filename,
+                                                     detections_product.get_data_filename()))
+                    detections_catalogue = table.Table.read(
+                        os.path.join(workdir, detections_product.get_data_filename()))
+
+                    detections_catalogues.append(detections_catalogue)
+
+                if object_id_list is None:
+                    # If we have no object id list, stack them all
+                    detections_catalogue = table.vstack(detections_catalogues,
+                                                        metadata_conflicts="silent")  # Conflicts are expected
+                else:
+                    # If we do have an object id list, construct a new table with just the desired rows
+                    rows_to_use = []
+
+                    # loop over detections_catalog and make list of indices not in our object_id list
+                    for cat in detections_catalogues:
+                        for row in cat:
+                            if row[mfc_tf.ID] in object_id_list:
+                                rows_to_use.append(row)
+
+                    detections_catalogue = initialise_mer_final_catalog()
+
+                    for key in detections_catalogues[0].meta:
+                        if key in detections_catalogue.meta:
+                            detections_catalogue.meta[key] = detections_catalogues[0].meta[key]
+
+                    for row in rows_to_use:
+                        detections_catalogue.add_row()
+                        new_row = detections_catalogue[-1]
+                        for key in row.colnames:
+                            if key in new_row.colnames:
+                                try:
+                                    new_row[key] = row[key]
+                                except np.ma.core.MaskError as e:
+                                    logger.warning("Masked element for column " + str(key) +
+                                                   " cannot be added to table; default value will be used.")
+
+                    logger.info("Finished pruning list of galaxy objects to loop over")
+
+            except JSONDecodeError as e:
+                logger.warning(str(e))
+
+                # See if it's just a single catalogue, which we can handle
+                detections_product = read_xml_product(
+                    os.path.join(workdir, detections_listfile_filename))
+                detections_catalogue = table.Table.read(
+                    os.path.join(workdir, detections_product.get_data_filename()))
+
+                detections_catalogue_products = [detections_product]
 
         # Prune out duplicate object IDs from the detections table - FIXME?
         # after MER resolves this issue?
@@ -730,6 +872,7 @@ class SHEFrameStack():
                                      prune_images=prune_images,
                                      workdir=workdir,
                                      save_products=save_products,
+                                     load_images=load_images,
                                      **kwargs)
 
             exposures.append(exposure)
@@ -741,6 +884,18 @@ class SHEFrameStack():
         # Load in the stacked products now
 
         # Get the stacked image and background image
+
+        stacked_image_shape = None
+
+        qualified_data_filename = None
+        data_hdu_indices = (None, None, None)
+
+        qualified_bkg_filename = None
+        bkg_hdu_index = None
+
+        qualified_seg_filename = None
+        seg_hdu_index = None
+
         if stacked_image_product_filename is None:
             stacked_image_product = None
             stacked_image_header = None
@@ -751,22 +906,35 @@ class SHEFrameStack():
         else:
             (stacked_image_product,
              stacked_image_header,
-             stacked_data) = cls._read_product_extension(stacked_image_product_filename,
-                                                         tags=(
-                                                             mv.sci_tag, mv.noisemap_tag, mv.mask_tag),
-                                                         workdir=workdir,
-                                                         dtype=products.vis_stacked_frame.dpdVisStackedFrame,
-                                                         **kwargs)
+             stacked_data,
+             qualified_data_filename,
+             data_hdu_indices) = cls._read_product_extension(stacked_image_product_filename,
+                                                             tags=(
+                                                                 mv.sci_tag, mv.noisemap_tag, mv.mask_tag),
+                                                             workdir=workdir,
+                                                             dtype=products.vis_stacked_frame.dpdVisStackedFrame,
+                                                             load_images=load_images,
+                                                             **kwargs)
 
-            stacked_image_data = stacked_data[0]
-            stacked_rms_data = stacked_data[1]
-            stacked_mask_data = stacked_data[2]
+            if load_images:
+                stacked_image_data = stacked_data[0]
+                stacked_rms_data = stacked_data[1]
+                stacked_mask_data = stacked_data[2]
+            else:
+                stacked_image_data = None
+                stacked_rms_data = None
+                stacked_mask_data = None
+                if stacked_image_header is not None:
+                    stacked_image_shape = (stacked_image_header["NAXIS1"], stacked_image_header["NAXIS2"])
 
-            _, _, stacked_bkg_data = cls._read_product_extension(stacked_image_product_filename,
-                                                                 workdir=workdir,
-                                                                 dtype=products.vis_stacked_frame.dpdVisStackedFrame,
-                                                                 filetype="background",
-                                                                 **kwargs)
+            (_, _, stacked_bkg_data,
+             qualified_bkg_filename,
+             bkg_hdu_index) = cls._read_product_extension(stacked_image_product_filename,
+                                                          workdir=workdir,
+                                                          dtype=products.vis_stacked_frame.dpdVisStackedFrame,
+                                                          filetype="background",
+                                                          load_images=load_images,
+                                                          **kwargs)
 
         # Get the segmentation image
         if stacked_seg_product_filename is None:
@@ -776,17 +944,20 @@ class SHEFrameStack():
             try:
                 (stacked_segmentation_product,
                  _,
-                 stacked_seg_data) = cls._read_product_extension(stacked_seg_product_filename,
-                                                                 workdir=workdir,
-                                                                 dtype=products.she_stack_segmentation_map.dpdSheStackReprojectedSegmentationMap,
-                                                                 **kwargs)
+                 stacked_seg_data,
+                 qualified_seg_filename,
+                 seg_hdu_index) = cls._read_product_extension(stacked_seg_product_filename,
+                                                              workdir=workdir,
+                                                              dtype=products.she_stack_segmentation_map.dpdSheStackReprojectedSegmentationMap,
+                                                              load_images=load_images,
+                                                              **kwargs)
             except FileNotFoundError as e:
                 logger.warning(str(e))
                 stacked_segmentation_product = None
                 stacked_seg_data = None
 
         # Construct a SHEImage object for the stacked image
-        if stacked_image_data is None:
+        if stacked_image_product_filename is None:
             stacked_image = None
         else:
             stacked_image = SHEImage(data=stacked_image_data,
@@ -796,6 +967,9 @@ class SHEFrameStack():
                                      segmentation_map=stacked_seg_data,
                                      header=stacked_image_header,
                                      wcs=astropy.wcs.WCS(stacked_image_header))
+
+            stacked_image._images_loaded = load_images
+            stacked_image._shape = stacked_image_shape
 
         # Construct a SHEFrameStack object
         new_frame_stack = SHEFrameStack(exposures=exposures,
@@ -815,6 +989,25 @@ class SHEFrameStack():
             new_frame_stack.detections_catalogue_products = detections_catalogue_products
 
             new_frame_stack.object_id_list_product = object_id_list_product
+
+        new_frame_stack._images_loaded = load_images
+
+        if not load_images:
+
+            new_frame_stack._stacked_data_filename = qualified_data_filename
+            new_frame_stack._stacked_data_hdu = data_hdu_indices[0]
+
+            new_frame_stack._stacked_noisemap_filename = qualified_data_filename
+            new_frame_stack._stacked_noisemap_hdu = data_hdu_indices[1]
+
+            new_frame_stack._stacked_mask_filename = qualified_data_filename
+            new_frame_stack._stacked_mask_hdu = data_hdu_indices[2]
+
+            new_frame_stack._stacked_bkg_filename = qualified_bkg_filename
+            new_frame_stack._stacked_bkg_hdu = bkg_hdu_index
+
+            new_frame_stack._stacked_seg_filename = qualified_seg_filename
+            new_frame_stack._stacked_seg_hdu = seg_hdu_index
 
         # Return the constructed product
         return new_frame_stack

@@ -22,7 +22,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-08-12"
+__updated__ = "2021-06-09"
 
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.analysisconfig_stub import dpdSheAnalysisConfig
@@ -75,7 +75,7 @@ def create_dpd_she_analysis_config(filename=None):
 
     dpd_she_analysis_config = read_xml_product(find_aux_file(sample_file_name))
 
-    dpd_she_analysis_config.Header = HeaderProvider.create_generic_header("SHE")
+    dpd_she_analysis_config.Header = HeaderProvider.create_generic_header("DpdSheAnalysisConfig")
 
     if filename:
         __set_filename(dpd_she_analysis_config, filename)
