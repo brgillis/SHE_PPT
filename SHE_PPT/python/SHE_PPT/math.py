@@ -19,9 +19,12 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-09"
+__updated__ = "2021-07-05"
 
 import numpy as np
+
+DEFAULT_M_TARGET = 1e-4
+DEFAULT_C_TARGET = 5e-6
 
 
 class LinregressStatistics():
@@ -76,7 +79,7 @@ class LinregressResults():
 
             return
 
-        if isinstance(lstats, (list,np.ndarray)):
+        if isinstance(lstats, (list, np.ndarray)):
 
             # We have a list of stats, so combine them
             stats = self.combine_lstats(lstats)
@@ -268,15 +271,22 @@ class BiasMeasurements():
        except in terms of m and c.
     """
 
+    # Attrs set at init
+    _m = None
+    _m_err = None
+    _m_target = DEFAULT_M_TARGET
+    _c = None
+    _c_err = None
+    _c_target = DEFAULT_C_TARGET
+    _mc_covar = None
+
+    # Attrs calculated and cached on-demand
+    _m_sigma = None
+    _c_sigma = None
+
     def __init__(self, linregress_results=None):
 
-        if linregress_results is None:
-            self.m = None
-            self.m_err = None
-            self.c = None
-            self.c_err = None
-            self.mc_covar = None
-        else:
+        if linregress_results is not None:
             if linregress_results.slope is None:
                 self.m = None
             else:
@@ -285,6 +295,100 @@ class BiasMeasurements():
             self.c = linregress_results.intercept
             self.c_err = linregress_results.intercept_err
             self.mc_covar = linregress_results.slope_intercept_covar
+
+    # Getters and setters for attrs set at init
+
+    @property
+    def m(self):
+        return self._m
+
+    @m.setter
+    def m(self, m):
+        self._m = m
+        # Uncache m_sigma
+        self._m_sigma = None
+
+    @property
+    def m_err(self):
+        return self._m_err
+
+    @m_err.setter
+    def m_err(self, m_err):
+        self._m_err = m_err
+        # Uncache m_sigma
+        self._m_sigma = None
+
+    @property
+    def m_target(self):
+        return self._m_target
+
+    @m_target.setter
+    def m_target(self, m_target):
+        self._m_target = m_target
+        # Uncache m_sigma
+        self._m_sigma = None
+
+    @property
+    def c(self):
+        return self._c
+
+    @c.setter
+    def c(self, c):
+        self._c = c
+        # Uncache c_sigma
+        self._c_sigma = None
+
+    @property
+    def c_err(self):
+        return self._c_err
+
+    @c_err.setter
+    def c_err(self, c_err):
+        self._c_err = c_err
+        # Uncache c_sigma
+        self._c_sigma = None
+
+    @property
+    def c_target(self):
+        return self._c_target
+
+    @c_target.setter
+    def c_target(self, c_target):
+        self._c_target = c_target
+        # Uncache c_sigma
+        self._c_sigma = None
+
+    @property
+    def mc_covar(self):
+        return self._mc_covar
+
+    @mc_covar.setter
+    def mc_covar(self, mc_covar):
+        self._mc_covar = mc_covar
+
+    # Getters for attrs calculated and cached on-demand
+
+    @property
+    def m_sigma(self):
+
+        # Calculate _m_sigma if required
+        if ((self._m_sigma is None) and (self.m is not None) and
+                (self.m_err is not None) and (self.m_target is not None)):
+            m_diff = np.abs(self.m) - np.abs(self.m_target)
+            self._m_sigma = np.where(m_diff > 0, m_diff / self.m_err, 0.)
+
+        return self._m_sigma
+
+    @property
+    def c_sigma(self):
+
+        # Calculate _c_sigma if required
+        if ((self._c_sigma is None) and (self.c is not None) and
+                (self.c_err is not None) and (self.c_target is not None)):
+            c_diff = np.abs(self.c) - np.abs(self.c_target)
+            self._c_sigma = np.where(c_diff > 0, c_diff / self.c_err, 0.)
+
+        return self._c_sigma
 
 
 def get_linregress_statistics(lx, ly, ly_err=None):
