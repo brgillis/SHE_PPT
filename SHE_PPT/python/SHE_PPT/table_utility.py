@@ -156,8 +156,8 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
                                     "Expected: %s\n"
                                     "Got: %s",
                                     parent_colname,
-                                    str(ex_dtype),
-                                    str(table.dtype[child_colname].newbyteorder('>')))
+                                    ex_dtype,
+                                    table.dtype[child_colname].newbyteorder('>'))
                     return False
             # Is it an issue with int or float size?
             elif strict is True:
@@ -166,8 +166,8 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
                                 "Expected: %s\n"
                                 "Got: %s",
                                 child_colname,
-                                str(ex_dtype),
-                                str(table.dtype[child_colname].newbyteorder('>')))
+                                ex_dtype,
+                                table.dtype[child_colname].newbyteorder('>'))
                 return False
 
     if not ignore_metadata:
@@ -177,8 +177,8 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
                 logger.info("Table not in correct format due to wrong metadata keys.\n"
                             "Expected: %s\n"
                             "Got: %s",
-                            str(table_format.m.all),
-                            str(list(table.meta.keys())))
+                            table_format.m.all,
+                            list(table.meta.keys()))
             return False
 
         # Check the format label is correct
@@ -188,8 +188,8 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
                 logger.info("Table not in correct format due to wrong table format label.\n"
                             "Expected: %s\n"
                             "Got: %s",
-                            str(table_format.m.table_format),
-                            str(table.meta[table_format.m.fits_def]))
+                            table_format.m.table_format,
+                            table.meta[table_format.m.fits_def])
             return False
 
         # Check the version is correct
@@ -199,8 +199,8 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
                 logger.info("Table not in correct format due to wrong table format label.\n"
                             "Expected: %s\n"
                             "Got: %s",
-                            str(table_format.__version__),
-                            str(table.meta[table_format.m.fits_version]))
+                            table_format.__version__,
+                            table.meta[table_format.m.fits_version])
             return False
 
     return True

@@ -224,7 +224,6 @@ class SHEImage():
             self.det_iy = self.header[mv.ccdid_label][0]
             self.det_ix = self.header[mv.ccdid_label][2]
 
-        # logger.debug("Created {}".format(str(self)))
 
     # We define properties of the SHEImage object, following
     # https://euclid.roe.ac.uk/projects/codeen-users/wiki/User_Cod_Std-pythonstandard-v1-0#PNAMA-020-m-Developer-SHOULD-use-properties-to-protect-the-service-from-the-implementation
@@ -743,7 +742,7 @@ class SHEImage():
         # Note that overwrite is called overwrite in the latest astropy, but
         # backwards compatible.
 
-        logger.debug("Wrote %s to the FITS file %s",str(self), filepath)
+        logger.debug("Wrote %s to the FITS file %s",self, filepath)
 
     @classmethod
     def read_from_fits(cls,
@@ -910,7 +909,7 @@ class SHEImage():
         try:
             outarray = cls._get_specific_hdu_content_from_fits(filepath, ext=ext)
         except KeyError:
-            logger.debug("Extension %s not found in fits file %s",str(ext),filepath)
+            logger.debug("Extension %s not found in fits file %s",ext,filepath)
             return None
 
         return outarray
@@ -1012,7 +1011,7 @@ class SHEImage():
         overlap_height = overlap_ymax - overlap_ymin
         overlap_slice = (
             slice(overlap_xmin, overlap_xmax), slice(overlap_ymin, overlap_ymax))
-        logger.debug("overlap_slice: {}".format(overlap_slice))
+        logger.debug("overlap_slice: %s",overlap_slice)
 
         # Compute the bounds of this same overlapping part in the new stamp
         # The indexes of the stamp are simply shifted with respect to those
@@ -1204,8 +1203,8 @@ class SHEImage():
         # easy.
         if xmin >= 0 and xmax < self.shape[0] and ymin >= 0 and ymax < self.shape[1]:
             # We are fully within ghe image
-            logger.debug("Extracting stamp [{}:{},{}:{}] fully within image of shape {}".format(
-                xmin, xmax, ymin, ymax, self.shape))
+            logger.debug("Extracting stamp [%d:%d,%d:%d] fully within image of shape (%d,%d)",
+                xmin, xmax, ymin, ymax, self.shape)
 
             attr_stamps = {}
             for attr, filename, hdu_i in (("data", data_filename, data_hdu),
@@ -1231,8 +1230,8 @@ class SHEImage():
             )
 
         else:
-            logger.debug("Extracting stamp [{}:{},{}:{}] not entirely within image of shape {}".format(
-                xmin, xmax, ymin, ymax, self.shape))
+            logger.debug("Extracting stamp [%d:%d,%d:%d] not entirely within image of shape (%d,%d)",
+            xmin, xmax, ymin, ymax, self.shape)
 
             # One solution would be to pad the image and extract, but that would need a lot of memory.
             # So instead we go for the more explicit bound computations.
@@ -1247,7 +1246,7 @@ class SHEImage():
             overlap_height = overlap_ymax - overlap_ymin
             overlap_slice = (
                 slice(overlap_xmin, overlap_xmax), slice(overlap_ymin, overlap_ymax))
-            logger.debug("overlap_slice: {}".format(overlap_slice))
+            logger.debug("overlap_slice: %s",str(overlap_slice))
 
             # Compute the bounds of this same overlapping part in the new stamp
             # The indexes of the stamp are simply shifted with respect to those

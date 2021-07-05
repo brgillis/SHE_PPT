@@ -65,10 +65,10 @@ class SkyImage():
         self.z1 = z1
         self.z2 = z2
         logger.debug(
-            "SkyImage initialization with z1={} and z2={}".format(z1, z2))
+            "SkyImage initialization with z1=%s and z2=%s",z1, z2)
         self.set_z(z1, z2)
 
-        logger.info("Created %s",str(self))
+        logger.info("Created %s",self)
 
     @property
     def shape(self):  # Just a shortcut
@@ -82,12 +82,12 @@ class SkyImage():
 
         if z1 is None:
             self.z1 = np.min(self.data)
-            logger.info("Set z1 to minimum value: {}".format(self.z1))
+            logger.info("Set z1 to minimum value: %s",self.z1)
         else:
             self.z1 = z1
         if z2 is None:
             self.z2 = np.max(self.data)
-            logger.info("Set z2 to maximum value: {}".format(self.z2))
+            logger.info("Set z2 to maximum value: %s",self.z2)
         else:
             self.z2 = z2
 
@@ -120,7 +120,7 @@ class SkyImage():
         self.z2 = np.max(stata)
 
         logger.info(
-            "Set automatic zscale from {} to {}".format(self.z1, self.z2))
+            "Set automatic zscale from %s to %s",self.z1, self.z2)
 
 
 def draw_sky_image(ax, si, **kwargs):
@@ -306,12 +306,12 @@ class SimpleFigure():
 
         """
         self.check_drawn()
-        logger.info("Showing %s...",str(self))
+        logger.info("Showing %s...",self)
         plt.show()
 
     def save_to_file(self, filepath):
         self.check_drawn()
-        logger.info("Saving %s to '%s'...",str(self), filepath)
+        logger.info("Saving %s to '%s'...",self, filepath)
         self.fig.savefig(filepath, bbox_inches='tight')
 
 # Some utility functions

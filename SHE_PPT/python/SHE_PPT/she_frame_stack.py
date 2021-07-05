@@ -787,9 +787,10 @@ class SHEFrameStack():
                     if save_products:
                         detections_catalogue_products.append(detections_product)
 
-                    logger.debug("DP: %s, %s, %s" % (workdir,
+                    logger.debug("DP: %s, %s, %s", 
+                                                     workdir,
                                                      detections_product_filename,
-                                                     detections_product.get_data_filename()))
+                                                     detections_product.get_data_filename())
                     detections_catalogue = table.Table.read(
                         os.path.join(workdir, detections_product.get_data_filename()))
 
