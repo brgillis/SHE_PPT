@@ -23,14 +23,11 @@ __updated__ = "2021-02-16"
 
 from collections import OrderedDict
 
-from astropy.table import Table
-
-from .. import detector as dtc
 from .. import magic_values as mv
 from ..flags import she_flag_version
 from ..logging import getLogger
 from ..table_formats.mer_final_catalog import tf as mfc_tf
-from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+from ..table_utility import is_in_format, init_table,SheTableFormat
 
 
 fits_version = "8.0"
@@ -43,7 +40,7 @@ total_chain_length = num_chains * len_chain
 logger = getLogger(mv.logger_name)
 
 
-class SheLensMcChainsMeta(object):
+class SheLensMcChainsMeta():
     """
         @brief A class defining the metadata for shear estimates tables.
     """
@@ -93,67 +90,74 @@ class SheLensMcChainsMeta(object):
         self.all = list(self.comments.keys())
 
 
-class SheLensMcChainsFormat(object):
+class SheLensMcChainsFormat(SheTableFormat):
     """
         @brief A class defining the format for shear estimates tables. Only the lensmc_chains_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
     def __init__(self):
-
-        # Get the metadata (contained within its own class)
-        self.meta = SheLensMcChainsMeta()
-
-        setup_table_format(self)
+        super().__init__(SheLensMcChainsMeta())
 
         # Table column labels and properties
 
-        self.ID = set_column_properties(self,
+        self.ID = self.set_column_properties(
                                         "OBJECT_ID", dtype=">i8", fits_dtype="K")
 
-        self.fit_flags = set_column_properties(self,
+        self.fit_flags = self.set_column_properties(
                                                "SHE_LENSMC_FIT_FLAGS", dtype=">i8", fits_dtype="K")
-        self.val_flags = set_column_properties(self,
+        self.val_flags = self.set_column_properties(
                                                "SHE_LENSMC_VAL_FLAGS", dtype=">i8", fits_dtype="K")
-        self.fit_class = set_column_properties(self,
+        self.fit_class = self.set_column_properties(
                                                "SHE_LENSMC_FIT_CLASS", dtype=">i2", fits_dtype="I")
-        self.weight = set_column_properties(self,
+        self.weight = self.set_column_properties(
                                             "SHE_LENSMC_CHAINS_SHEAR_WEIGHT", dtype=">f4", fits_dtype="E")
-        self.shape_weight = set_column_properties(self,
-                                                  "SHE_LENSMC_CHAINS_SHAPE_WEIGHT", dtype=">f4", fits_dtype="E", is_optional=True)
-        self.e_var = set_column_properties(self,
+        self.shape_weight = self.set_column_properties(
+                                                  "SHE_LENSMC_CHAINS_SHAPE_WEIGHT", dtype=">f4",
+                                                  fits_dtype="E", is_optional=True)
+        self.e_var = self.set_column_properties(
                                            "SHE_LENSMC_E_VAR", dtype=">f4", fits_dtype="E", is_optional=True)
-        self.shape_noise = set_column_properties(self,
-                                                 "SHE_LENSMC_ASSUMED_SHAPE_NOISE", dtype=">f4", fits_dtype="E", is_optional=True)
+        self.shape_noise = self.set_column_properties(
+                                                 "SHE_LENSMC_ASSUMED_SHAPE_NOISE", dtype=">f4",
+                                                 fits_dtype="E", is_optional=True)
 
-        self.g1 = set_column_properties(self,
-                                        "SHE_LENSMC_G1_CHAIN", dtype=">f4", fits_dtype="E", length=total_chain_length)
-        self.g2 = set_column_properties(self,
-                                        "SHE_LENSMC_G2_CHAIN", dtype=">f4", fits_dtype="E", length=total_chain_length)
+        self.g1 = self.set_column_properties(
+                                        "SHE_LENSMC_G1_CHAIN", dtype=">f4", fits_dtype="E",
+                                        length=total_chain_length)
+        self.g2 = self.set_column_properties(
+                                        "SHE_LENSMC_G2_CHAIN", dtype=">f4", fits_dtype="E",
+                                        length=total_chain_length)
 
-        self.ra = set_column_properties(self,
-                                        "SHE_LENSMC_UPDATED_RA_CHAIN", is_optional=True, comment="deg", fits_dtype="D", length=total_chain_length)
-        self.dec = set_column_properties(self,
-                                         "SHE_LENSMC_UPDATED_DEC_CHAIN", is_optional=True, comment="deg", fits_dtype="D", length=total_chain_length)
+        self.ra = self.set_column_properties(
+                                        "SHE_LENSMC_UPDATED_RA_CHAIN", is_optional=True, comment="deg",
+                                        fits_dtype="D", length=total_chain_length)
+        self.dec = self.set_column_properties(
+                                         "SHE_LENSMC_UPDATED_DEC_CHAIN", is_optional=True, comment="deg",
+                                         fits_dtype="D", length=total_chain_length)
 
         # lensmc specific columns
-        self.re = set_column_properties(self,
-                                        "SHE_LENSMC_RE_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=total_chain_length)
-        self.flux = set_column_properties(self,
-                                          "SHE_LENSMC_FLUX_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=total_chain_length)
-        self.bulge_frac = set_column_properties(self,
-                                                "SHE_LENSMC_BULGE_FRAC_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=total_chain_length)
-        self.snr = set_column_properties(self,
-                                         "SHE_LENSMC_SNR_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=total_chain_length)
-        self.lr = set_column_properties(self,
-                                        "SHE_LENSMC_LR_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E", length=total_chain_length)
-        self.chi2 = set_column_properties(self,
+        self.re = self.set_column_properties(
+                                        "SHE_LENSMC_RE_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E",
+                                        length=total_chain_length)
+        self.flux = self.set_column_properties(
+                                          "SHE_LENSMC_FLUX_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E",
+                                          length=total_chain_length)
+        self.bulge_frac = self.set_column_properties(
+                                                "SHE_LENSMC_BULGE_FRAC_CHAIN", is_optional=True, dtype=">f4",
+                                                fits_dtype="E", length=total_chain_length)
+        self.snr = self.set_column_properties(
+                                         "SHE_LENSMC_SNR_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E",
+                                         length=total_chain_length)
+        self.lr = self.set_column_properties(
+                                        "SHE_LENSMC_LR_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E",
+                                        length=total_chain_length)
+        self.chi2 = self.set_column_properties(
                                           "SHE_LENSMC_CHI2", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.dof = set_column_properties(self,
+        self.dof = self.set_column_properties(
                                          "SHE_LENSMC_DOF", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.acc = set_column_properties(self,
+        self.acc = self.set_column_properties(
                                          "SHE_LENSMC_ACCEPTANCE", is_optional=True, dtype=">f4", fits_dtype="E")
-        self.nexp = set_column_properties(self,
+        self.nexp = self.set_column_properties(
                                           "SHE_LENSMC_NEXP", is_optional=True, dtype=">f4", fits_dtype="E")
 
         # A list of columns in the desired order
@@ -278,6 +282,6 @@ def initialise_lensmc_chains_table(mer_final_catalog=None,
                                                                method=method,
                                                                tile_id=tile_id,)
 
-    assert(is_in_format(lensmc_chains_table, tf))
+    assert is_in_format(lensmc_chains_table, tf)
 
     return lensmc_chains_table

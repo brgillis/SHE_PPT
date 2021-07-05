@@ -23,18 +23,15 @@ __updated__ = "2020-07-19"
 
 from collections import OrderedDict
 
-from astropy.table import Table
-
 from .. import magic_values as mv
-from ..flags import she_flag_version
-from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+from ..table_utility import is_in_format, init_table,SheTableFormat
 
 
 fits_version = "8.0"
 fits_def = "she.starCatalog"
 
 
-class SheStarCatalogMeta(object):
+class SheStarCatalogMeta():
     """
         @brief A class defining the metadata for simulation plan tables.
     """
@@ -66,58 +63,56 @@ class SheStarCatalogMeta(object):
         self.all = list(self.comments.keys())
 
 
-class SheStarCatalogFormat(object):
+class SheStarCatalogFormat(SheTableFormat):
     """
         @brief A class defining the format for galaxy population priors tables. Only the star_catalog_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
     def __init__(self):
-
-        # Get the metadata (contained within its own class)
-        self.meta = SheStarCatalogMeta()
-
-        setup_table_format(self)
+        super().__init__(SheStarCatalogMeta())
 
         # Column names and info
 
-        self.id = set_column_properties(self,
+        self.id = self.set_column_properties(
                                         "OBJECT_ID", dtype=">i8", fits_dtype="K",
                                         comment="ID of this object in the galaxy population priors table.")
 
-        self.det_x = set_column_properties(self,
+        self.det_x = self.set_column_properties(
                                            "SHE_STARCAT_DET_X", dtype=">i4", fits_dtype="I")
-        self.det_y = set_column_properties(self,
+        self.det_y = self.set_column_properties(
                                            "SHE_STARCAT_DET_Y", dtype=">i4", fits_dtype="I")
-        self.x = set_column_properties(self,
+        self.x = self.set_column_properties(
                                        "SHE_STARCAT_X", dtype=">f4", fits_dtype="E")
-        self.x_err = set_column_properties(self,
+        self.x_err = self.set_column_properties(
                                            "SHE_STARCAT_X_ERR", dtype=">f4", fits_dtype="E")
-        self.y = set_column_properties(self,
+        self.y = self.set_column_properties(
                                        "SHE_STARCAT_Y", dtype=">f4", fits_dtype="E")
-        self.y_err = set_column_properties(self,
+        self.y_err = self.set_column_properties(
                                            "SHE_STARCAT_Y_ERR", dtype=">f4", fits_dtype="E")
-        self.ra = set_column_properties(self,
+        self.ra = self.set_column_properties(
                                         "SHE_STARCAT_UPDATED_RA", comment="deg", dtype=">f8", fits_dtype="D")
-        self.ra_err = set_column_properties(self,
+        self.ra_err = self.set_column_properties(
                                             "SHE_STARCAT_UPDATED_RA_ERR", comment="deg", dtype=">f8", fits_dtype="E")
-        self.dec = set_column_properties(self,
+        self.dec = self.set_column_properties(
                                          "SHE_STARCAT_UPDATED_DEC", comment="deg", dtype=">f8", fits_dtype="D")
-        self.dec_err = set_column_properties(self,
+        self.dec_err = self.set_column_properties(
                                              "SHE_STARCAT_UPDATED_DEC_ERR", comment="deg", dtype=">f8", fits_dtype="E")
-        self.flux = set_column_properties(self,
+        self.flux = self.set_column_properties(
                                           "SHE_STARCAT_FLUX", dtype=">f4", fits_dtype="E")
-        self.flux_err = set_column_properties(self,
+        self.flux_err = self.set_column_properties(
                                               "SHE_STARCAT_FLUX_ERR", dtype=">f4", fits_dtype="E")
 
-        self.e1 = set_column_properties(self, "SHE_STARCAT_E1", dtype=">f4", fits_dtype="E",
+        self.e1 = self.set_column_properties("SHE_STARCAT_E1", dtype=">f4", fits_dtype="E",
                                         comment="Mean ellipticity measurement of this object, component 1")
-        self.e2 = set_column_properties(self, "SHE_STARCAT_E2", dtype=">f4", fits_dtype="E",
+        self.e2 = self.set_column_properties("SHE_STARCAT_E2", dtype=">f4", fits_dtype="E",
                                         comment="Mean ellipticity measurement of this object, component 2")
-        self.e1_err = set_column_properties(self, "SHE_STARCAT_E1_ERR", dtype=">f4", fits_dtype="E",
-                                            comment="Error on mean ellipticity measurement of this object, component 1")
-        self.e2_err = set_column_properties(self, "SHE_STARCAT_E2_ERR", dtype=">f4", fits_dtype="E",
-                                            comment="Error on mean ellipticity measurement of this object, component 2")
+        self.e1_err = self.set_column_properties("SHE_STARCAT_E1_ERR", dtype=">f4", fits_dtype="E",
+                                            comment="Error on mean ellipticity measurement of this object, "
+                                            "component 1")
+        self.e2_err = self.set_column_properties("SHE_STARCAT_E2_ERR", dtype=">f4", fits_dtype="E",
+                                            comment="Error on mean ellipticity measurement of this object, "
+                                            "component 2")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -180,6 +175,6 @@ def initialise_star_catalog(roll_ang=None,
     star_catalog.meta = make_star_catalog_header(
         roll_ang, exposure_product_id, observation_id, observation_time)
 
-    assert(is_in_format(star_catalog, tf))
+    assert is_in_format(star_catalog, tf)
 
     return star_catalog

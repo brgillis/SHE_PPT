@@ -23,8 +23,11 @@ __updated__ = "2021-07-05"
 
 import numpy as np
 
+DEFAULT_M_TARGET = 1e-4
+DEFAULT_C_TARGET = 5e-6
 
-class LinregressStatistics(object):
+
+class LinregressStatistics():
 
     def __init__(self, lx=None, ly=None, ly_err=None):
         """Initialises and calculates statistics as member variables.
@@ -60,10 +63,8 @@ class LinregressStatistics(object):
                 self.ym = np.nansum(ly * lw) / self.w
                 self.xym = np.nansum(lx * ly * lw) / self.w
 
-        return
 
-
-class LinregressResults(object):
+class LinregressResults():
 
     def __init__(self, lstats=None):
 
@@ -78,7 +79,7 @@ class LinregressResults(object):
 
             return
 
-        elif isinstance(lstats, list) or isinstance(lstats, np.ndarray):
+        if isinstance(lstats, (list, np.ndarray)):
 
             # We have a list of stats, so combine them
             stats = self.combine_lstats(lstats)
@@ -137,7 +138,7 @@ class LinregressResults(object):
         return stats
 
 
-class BFDSumStatistics(object):
+class BFDSumStatistics():
 
     def __init__(self, sums=None):
         """Initialises and calculates statistics as member variables.
@@ -176,10 +177,8 @@ class BFDSumStatistics(object):
             self.A34 = sums['A34']
             self.A44 = sums['A44']
 
-        return
 
-
-class BFDSumResults(object):
+class BFDSumResults():
 
     def __init__(self, lstats=None, do_g1=True):
 
@@ -194,7 +193,7 @@ class BFDSumResults(object):
 
             return
 
-        elif isinstance(lstats, BFDSumStatistics):
+        if isinstance(lstats, BFDSumStatistics):
 
             # Just calculate from this object
             stats = lstats
@@ -208,21 +207,21 @@ class BFDSumResults(object):
                       [stats.A12, stats.A22, stats.A23, stats.A24],
                       [stats.A13, stats.A23, stats.A33, stats.A34],
                       [stats.A14, stats.A24, stats.A34, stats.A44]])
-        Cinv = np.linalg.inv(C)
+        C_inv = np.linalg.inv(C)
         Q_P = np.array([[stats.b1], [stats.b2], [stats.b3], [stats.b4]])
 
-        if do_g1 == True:
-            self.slope = (Cinv * Q_P)[0, 0]
-            self.intercept = (Cinv * Q_P)[1, 0]
-            self.slope_err = (np.sqrt(Cinv[0, 0]))
-            self.intercept_err = np.sqrt(Cinv[1, 1])
-            self.slope_intercept_covar = Cinv[0, 1]
+        if do_g1 is True:
+            self.slope = (C_inv * Q_P)[0, 0]
+            self.intercept = (C_inv * Q_P)[1, 0]
+            self.slope_err = (np.sqrt(C_inv[0, 0]))
+            self.intercept_err = np.sqrt(C_inv[1, 1])
+            self.slope_intercept_covar = C_inv[0, 1]
         else:
-            self.slope = (Cinv * Q_P)[2, 0]
-            self.intercept = (Cinv * Q_P)[3, 0]
-            self.slope_err = (np.sqrt(Cinv[2, 2]))
-            self.intercept_err = np.sqrt(Cinv[3, 3])
-            self.slope_intercept_covar = Cinv[2, 3]
+            self.slope = (C_inv * Q_P)[2, 0]
+            self.intercept = (C_inv * Q_P)[3, 0]
+            self.slope_err = (np.sqrt(C_inv[2, 2]))
+            self.intercept_err = np.sqrt(C_inv[3, 3])
+            self.slope_intercept_covar = C_inv[2, 3]
 
     @classmethod
     def combine_lstats(cls, lstats):
@@ -267,11 +266,7 @@ class BFDSumResults(object):
         return stats
 
 
-DEFAULT_M_TARGET = 1e-4
-DEFAULT_C_TARGET = 5e-6
-
-
-class BiasMeasurements(object):
+class BiasMeasurements():
     """Class for expressing bias measurements. Similar to LinregressResults
        except in terms of m and c.
     """

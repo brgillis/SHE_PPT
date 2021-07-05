@@ -33,7 +33,7 @@ from .she_image import SHEImage
 logger = logging.getLogger(__name__)
 
 
-class SHEImageStack(object):
+class SHEImageStack():
     """Structure containing a list of SHEImage objects and optionally a stack of them
 
     Attributes
@@ -70,7 +70,6 @@ class SHEImageStack(object):
         self.x_world = x_world
         self.y_world = y_world
 
-        return
 
     @property
     def parent_frame_stack(self):
@@ -96,7 +95,7 @@ class SHEImageStack(object):
         def neq(lhs, rhs):
             try:
                 return bool(lhs != rhs)
-            except ValueError as _e:
+            except ValueError:
                 return (lhs != rhs).any()
 
         if neq(self.exposures, rhs.exposures):
@@ -113,7 +112,7 @@ class SHEImageStack(object):
     def is_not_empty(self):
         """ Checks if at least one exposure isn't None """
 
-        return (not self.is_empty())
+        return not self.is_empty()
 
     def is_empty(self):
         """ Checks if all exposures and the stacked iamge are None """

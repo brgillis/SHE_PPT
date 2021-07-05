@@ -34,7 +34,7 @@ from . import flags
 from .she_image import SHEImage
 
 
-class ShearEstimate(object):
+class ShearEstimate():
 
     def __init__(self,
                  g1=np.NaN,
@@ -113,7 +113,7 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
 
     # Check for valid input
     if (stamp is None) == (wcs is None):
-        raise ValueError("Exactly one of \"stamp\" and \"wcs\" must be supplied to " + 
+        raise ValueError("Exactly one of \"stamp\" and \"wcs\" must be supplied to " +
                          "correct_for_wcs_shear_and_rotation.")
 
     # If no stamp is supplied, create a ministamp to work with
@@ -173,7 +173,7 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
 
     except ValueError as e:
 
-        if not "Requested shear exceeds 1" in str(e):
+        if "Requested shear exceeds 1" not in str(e):
             raise
 
         # Shear is greater than 1, so note this in the flags
@@ -195,7 +195,7 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
             res_shear = w2p_shear + galsim.Shear(g1=g1, g2=g2)
             dist2 = (rot_est_shear.g1 - res_shear.g1) ** 2 + (rot_est_shear.g2 - res_shear.g2) ** 2
         except ValueError as e:
-            if not "Requested shear exceeds 1" in str(e):
+            if "Requested shear exceeds 1" not in str(e):
                 raise
             # Requested a too-high shear value, so return an appropriately high distance
             dist2 = (w2p_shear.g1 + g1 - rot_est_shear.g1) ** 2 + (w2p_shear.g2 + g2 - rot_est_shear.g2) ** 2
@@ -215,9 +215,9 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
         shear_estimate.flags |= flags.flag_cannot_correct_distortion
 
         return
-    else:
-        shear_estimate.g1 = fitting_result.x[0]
-        shear_estimate.g2 = fitting_result.x[1]
+
+    shear_estimate.g1 = fitting_result.x[0]
+    shear_estimate.g2 = fitting_result.x[1]
 
     return
 
@@ -258,7 +258,7 @@ def uncorrect_for_wcs_shear_and_rotation(shear_estimate,
 
     # Check for valid input
     if (stamp is None) == (wcs is None):
-        raise ValueError("Exactly one of \"stamp\" and \"wcs\" must be supplied to " + 
+        raise ValueError("Exactly one of \"stamp\" and \"wcs\" must be supplied to " +
                          "correct_for_wcs_shear_and_rotation.")
 
     # If no stamp is supplied, create a ministamp to work with
@@ -293,7 +293,7 @@ def uncorrect_for_wcs_shear_and_rotation(shear_estimate,
 
     except ValueError as e:
 
-        if not "Requested shear exceeds 1" in str(e):
+        if "Requested shear exceeds 1" not in str(e):
             raise
 
         # Shear is greater than 1, so note this in the flags
@@ -367,7 +367,7 @@ def check_data_quality(gal_stamp, psf_stamp, stacked=False):
         # Check if we have at least some other data; in which case make mask shaped like it
         have_some_data = False
 
-        for (a, missing_flag) in ((gal_stamp.data, flags.flag_no_science_image),
+        for a, missing_flag in ((gal_stamp.data, flags.flag_no_science_image),
                                   (gal_stamp.background_map, flags.flag_no_background_map),
                                   (gal_stamp.noisemap, flags.flag_no_noisemap),
                                   (gal_stamp.segmentation_map, flags.flag_no_segmentation_map),):
@@ -407,7 +407,7 @@ def check_data_quality(gal_stamp, psf_stamp, stacked=False):
     else:
         data = gal_stamp.data
 
-    for (a, missing_flag, corrupt_flag) in ((data, flags.flag_no_science_image,
+    for a, missing_flag, corrupt_flag in ((data, flags.flag_no_science_image,
                                              flags.flag_corrupt_science_image),
                                             (gal_stamp.background_map, flags.flag_no_background_map,
                                              flags.flag_corrupt_background_map),

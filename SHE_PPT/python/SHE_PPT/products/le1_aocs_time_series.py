@@ -28,7 +28,7 @@ __updated__ = "2021-06-09"
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 
 from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import get_data_filename_from_product, set_data_filename_of_product, init_placeholder_general
+from ..product_utility import init_placeholder_general
 
 
 sample_file_name = 'SHE_PPT/sample_placeholder_general.xml'
@@ -42,7 +42,6 @@ def init():
 
     init_placeholder_general()
 
-    return
 
 
 def create_dpd_le1_aocs_time_series(filename="None"):

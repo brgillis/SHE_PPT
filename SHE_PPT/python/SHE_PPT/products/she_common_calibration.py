@@ -26,10 +26,8 @@ __updated__ = "2021-06-09"
 
 import ST_DM_DmUtils.DmUtils as dm_utils
 from ST_DM_HeaderProvider import GenericHeaderProvider as HeaderProvider
-from ST_DataModelBindings.bas.imp.raw.stc_stub import polygonType
 from ST_DataModelBindings.dpd.she.commoncalibration_stub import dpdSheCommonCalibration
 from ST_DataModelBindings.pro import she_stub as she_pro
-from ST_DataModelBindings.sys.dss_stub import dataContainer
 
 from ..file_io import read_xml_product, find_aux_file
 from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
@@ -78,14 +76,12 @@ def __set_BFD_filename(self, filename):
         if not hasattr(self.Data, "BfdCalibrationStorage") or self.Data.BfdCalibrationStorage is None:
             self.Data.BfdCalibrationStorage = create_calibration_storage(filename)
         set_data_filename_of_product(self, filename, "BfdCalibrationStorage")
-    return
 
 
 def __get_BFD_filename(self):
     if not hasattr(self.Data, "BfdCalibrationStorage") or self.Data.BfdCalibrationStorage is None:
         return None
-    else:
-        return get_data_filename_from_product(self, "BfdCalibrationStorage")
+    return get_data_filename_from_product(self, "BfdCalibrationStorage")
 
 
 def __set_KSB_filename(self, filename):
@@ -96,14 +92,12 @@ def __set_KSB_filename(self, filename):
         if not hasattr(self.Data, "KsbCalibrationStorage") or self.Data.KsbCalibrationStorage is None:
             self.Data.KsbCalibrationStorage = create_calibration_storage(filename)
         set_data_filename_of_product(self, filename, "KsbCalibrationStorage")
-    return
 
 
 def __get_KSB_filename(self):
     if not hasattr(self.Data, "KsbCalibrationStorage") or self.Data.KsbCalibrationStorage is None:
         return None
-    else:
-        return get_data_filename_from_product(self, "KsbCalibrationStorage")
+    return get_data_filename_from_product(self, "KsbCalibrationStorage")
 
 
 def __set_LensMC_filename(self, filename):
@@ -114,14 +108,12 @@ def __set_LensMC_filename(self, filename):
         if not hasattr(self.Data, "LensMcCalibrationStorage") or self.Data.LensMcCalibrationStorage is None:
             self.Data.LensMcCalibrationStorage = create_calibration_storage(filename)
         set_data_filename_of_product(self, filename, "LensMcCalibrationStorage")
-    return
 
 
 def __get_LensMC_filename(self):
     if not hasattr(self.Data, "LensMcCalibrationStorage") or self.Data.LensMcCalibrationStorage is None:
         return None
-    else:
-        return get_data_filename_from_product(self, "LensMcCalibrationStorage")
+    return get_data_filename_from_product(self, "LensMcCalibrationStorage")
 
 
 def __set_MomentsML_filename(self, filename):
@@ -132,14 +124,12 @@ def __set_MomentsML_filename(self, filename):
         if not hasattr(self.Data, "MomentsMlCalibrationStorage") or self.Data.MomentsMlCalibrationStorage is None:
             self.Data.MomentsMlCalibrationStorage = create_calibration_storage(filename)
         set_data_filename_of_product(self, filename, "MomentsMlCalibrationStorage")
-    return
 
 
 def __get_MomentsML_filename(self):
     if not hasattr(self.Data, "MomentsMlCalibrationStorage") or self.Data.MomentsMlCalibrationStorage is None:
         return None
-    else:
-        return get_data_filename_from_product(self, "MomentsMlCalibrationStorage")
+    return get_data_filename_from_product(self, "MomentsMlCalibrationStorage")
 
 
 def __set_REGAUSS_filename(self, filename):
@@ -150,14 +140,13 @@ def __set_REGAUSS_filename(self, filename):
         if not hasattr(self.Data, "RegaussCalibrationStorage") or self.Data.RegaussCalibrationStorage is None:
             self.Data.RegaussCalibrationStorage = create_calibration_storage(filename)
         set_data_filename_of_product(self, filename, "RegaussCalibrationStorage")
-    return
+
 
 
 def __get_REGAUSS_filename(self):
     if not hasattr(self.Data, "RegaussCalibrationStorage") or self.Data.RegaussCalibrationStorage is None:
         return None
-    else:
-        return get_data_filename_from_product(self, "RegaussCalibrationStorage")
+    return get_data_filename_from_product(self, "RegaussCalibrationStorage")
 
 
 def __get_all_filenames(self):
@@ -174,34 +163,35 @@ def __get_all_filenames(self):
 def __get_method_filename(self, method):
 
     if method == "KSB":
-        return self.get_KSB_filename()
+        name= self.get_KSB_filename()
     elif method == "LensMC":
-        return self.get_LensMC_filename()
+        name= self.get_LensMC_filename()
     elif method == "MomentsML":
-        return self.get_MomentsML_filename()
+        name= self.get_MomentsML_filename()
     elif method == "REGAUSS":
-        return self.get_REGAUSS_filename()
+        name= self.get_REGAUSS_filename()
     elif method == "BFD":
-        return self.get_BFD_filename()
+        name= self.get_BFD_filename()
     else:
         raise ValueError("Invalid method " + str(method) + ".")
+    return name
 
 
 def __set_method_filename(self, method, filename):
 
     if method == "KSB":
-        return self.set_KSB_filename(filename)
+        name= self.set_KSB_filename(filename)
     elif method == "LensMC":
-        return self.set_LensMC_filename(filename)
+        name= self.set_LensMC_filename(filename)
     elif method == "MomentsML":
-        return self.set_MomentsML_filename(filename)
+        name= self.set_MomentsML_filename(filename)
     elif method == "REGAUSS":
-        return self.set_REGAUSS_filename(filename)
+        name= self.set_REGAUSS_filename(filename)
     elif method == "BFD":
-        return self.set_BFD_filename(filename)
+        name = self.set_BFD_filename(filename)
     else:
         raise ValueError("Invalid method " + str(method) + ".")
-
+    return name
 
 def create_dpd_she_common_calibration(BFD_filename=None,
                                       KSB_filename=None,

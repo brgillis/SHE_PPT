@@ -23,14 +23,9 @@ __updated__ = "2021-02-10"
 
 from collections import OrderedDict
 
-from astropy.table import Table
-
-from EL_PythonUtils.utilities import hash_any
-
 from .. import magic_values as mv
-from ..flags import she_flag_version
 from ..logging import getLogger
-from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+from ..table_utility import is_in_format, init_table,SheTableFormat
 
 
 fits_version = "8.0"
@@ -39,7 +34,7 @@ fits_def = "she.psfModelImage.shePsfC"
 logger = getLogger(mv.logger_name)
 
 
-class ShePsfModelImageMeta(object):
+class ShePsfModelImageMeta():
     """
         @brief A class defining the metadata for PSF tables.
     """
@@ -74,44 +69,40 @@ class ShePsfModelImageMeta(object):
         self.all = list(self.comments.keys())
 
 
-class ShePsfModelImageFormat(object):
+class ShePsfModelImageFormat(SheTableFormat):
     """
         @brief A class defining the format for detections tables. Only the psf_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
     def __init__(self):
-
-        # Get the metadata (contained within its own class)
-        self.meta = ShePsfModelImageMeta()
-
-        setup_table_format(self)
+        super().__init__(ShePsfModelImageMeta())
 
         # Column names and info
 
-        self.ID = set_column_properties(self,
+        self.ID = self.set_column_properties(
                                         "OBJECT_ID", dtype=">i8", fits_dtype="K")
 
-        self.template = set_column_properties(self,
+        self.template = self.set_column_properties(
                                               "SHE_PSF_SED_TEMPLATE", dtype=">i8", fits_dtype="K")
-        self.bulge_index = set_column_properties(self,
+        self.bulge_index = self.set_column_properties(
                                                  "SHE_PSF_BULGE_INDEX", dtype=">i4", fits_dtype="J")
-        self.disk_index = set_column_properties(self,
+        self.disk_index = self.set_column_properties(
                                                 "SHE_PSF_DISK_INDEX", dtype=">i4", fits_dtype="J")
-        self.image_x = set_column_properties(self,
+        self.image_x = self.set_column_properties(
                                              "SHE_PSF_IMAGE_X", dtype=">i2", fits_dtype="I")
-        self.image_y = set_column_properties(self,
+        self.image_y = self.set_column_properties(
                                              "SHE_PSF_IMAGE_Y", dtype=">i2", fits_dtype="I")
-        self.x = set_column_properties(self,
+        self.x = self.set_column_properties(
                                        "SHE_PSF_X", dtype=">f4", fits_dtype="E")
-        self.y = set_column_properties(self,
+        self.y = self.set_column_properties(
                                        "SHE_PSF_Y", dtype=">f4", fits_dtype="E")
 
-        self.calibration_time = set_column_properties(self,
+        self.calibration_time = self.set_column_properties(
                                                       "SHE_PSF_CALIB_TIME", dtype="str", fits_dtype="A", length=20)
-        self.field_time = set_column_properties(self,
+        self.field_time = self.set_column_properties(
                                                 "SHE_PSF_FIELD_TIME", dtype="str", fits_dtype="A", length=20)
-        self.qual_flag = set_column_properties(self,
+        self.qual_flag = self.set_column_properties(
                                                "SHE_PSF_QUAL_FLAG", dtype=">i4", fits_dtype="J")
 
         # A list of columns in the desired order
@@ -190,6 +181,6 @@ def initialise_psf_table(size=None,
                                            field_product=field_product,
                                            field_time=field_time)
 
-    assert(is_in_format(psf_table, tf))
+    assert is_in_format(psf_table, tf)
 
     return psf_table

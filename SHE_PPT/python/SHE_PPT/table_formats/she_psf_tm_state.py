@@ -24,14 +24,9 @@ __updated__ = "2020-07-19"
 
 from collections import OrderedDict
 
-from astropy.table import Table
-
-import numpy as np
-
 from .. import magic_values as mv
-from ..flags import she_flag_version
 from ..logging import getLogger
-from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+from ..table_utility import is_in_format, init_table, SheTableFormat
 
 
 fits_version = "8.0"
@@ -39,7 +34,7 @@ fits_version = "8.0"
 logger = getLogger(mv.logger_name)
 
 
-class ShePsfTmStateMeta(object):
+class ShePsfTmStateMeta():
     """ A class defining the metadata for PSF TM state tables.
     """
 
@@ -72,7 +67,7 @@ class ShePsfTmStateMeta(object):
         self.all = list(self.comments.keys())
 
 
-class ShePsfTmStateFormat(object):
+class ShePsfTmStateFormat(SheTableFormat):
     """
         @brief A class defining the format for PSF TM state tables. Only the psf_tm_state_table_format
                instance of this should generally be accessed, and it should not be changed.
@@ -81,14 +76,11 @@ class ShePsfTmStateFormat(object):
     data_type = "FIELD"
 
     def __init__(self, data_type="FIELD"):
+        super().__init__(ShePsfTmStateMeta(data_type))
 
         # Get the metadata (contained within its own class)
 
         self.data_type = data_type
-
-        self.meta = ShePsfTmStateMeta(self.data_type)
-
-        setup_table_format(self)
 
         # Column names and info
         # @TODO: option for FIELD/CALIB - use self.data_type
@@ -98,7 +90,7 @@ class ShePsfTmStateFormat(object):
                         "M3TCON", "M2TZ", "M2TX", "M2TY", "M2RX",
                         "M2RY", "M3TZ", "M3TX", "M3TY", "M3RX", "M3RY"]:
             setattr(self, colname.lower(),
-                    set_column_properties(self, name=self.get_colname(colname),
+                    self.set_column_properties(name=self.get_colname(colname),
                                           dtype=">f4", fits_dtype="E"))
 
         # A list of columns in the desired order
@@ -185,7 +177,7 @@ def initialise_psf_tm_state_table(data_type="FIELD", size=None,
 
     psf_tm_state_table.meta = make_psf_tm_state_table_header(data_type)
 
-    assert(is_in_format(psf_tm_state_table, tf))
+    assert is_in_format(psf_tm_state_table, tf)
 
     return psf_tm_state_table
 

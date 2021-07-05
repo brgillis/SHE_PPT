@@ -27,9 +27,8 @@ from EL_PythonUtils.utilities import hash_any
 from astropy.table import Table
 
 from .. import magic_values as mv
-from ..flags import she_flag_version
 from ..logging import getLogger
-from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+from ..table_utility import is_in_format, init_table, SheTableFormat
 
 
 fits_version = "0.3"
@@ -38,7 +37,7 @@ fits_def = "mer.finalCatalog"
 logger = getLogger(mv.logger_name)
 
 
-class MerFinalCatalogMeta(object):
+class MerFinalCatalogMeta():
     """
         @brief A class defining the metadata for detections tables.
     """
@@ -66,18 +65,14 @@ class MerFinalCatalogMeta(object):
         self.all = list(self.comments.keys())
 
 
-class MerFinalCatalogFormat(object):
+class MerFinalCatalogFormat(SheTableFormat):
     """
         @brief A class defining the format for detections tables. Only the mer_final_catalog_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
     def __init__(self):
-
-        # Get the metadata (contained within its own class)
-        self.meta = MerFinalCatalogMeta()
-
-        setup_table_format(self)
+        super().__init__(MerFinalCatalogMeta())
 
         # To keep this up to date, copy from https://gitlab.euclid-sgs.uk/PF-MER/MER_CatalogAssembly/blob/develop/MER_CatalogAssembly/python/MER_CatalogAssembly/dm_template.py,
         # then replace the regex columns\.append\(fits\.Column\(name='([%0-9A-Za-z_]+)'(%filt)?, format='([0-9A-Z]+)'(?:, unit='([A-Za-z/0-9]+)')?.*\)
@@ -97,174 +92,185 @@ class MerFinalCatalogFormat(object):
         # Column names and info
 
         # Euclid unique source identifier
-        setattr(self, "ID", set_column_properties(self, "OBJECT_ID", fits_dtype="K", dtype=">i8", comment="",
+        setattr(self, "ID", self.set_column_properties("OBJECT_ID", fits_dtype="K", dtype=">i8", comment="",
                                                   is_optional=False))
         # Source barycenter RA coordinate
-        setattr(self, "gal_x_world", set_column_properties(self,
-                                                           "RIGHT_ASCENSION", dtype=">f8", fits_dtype="D", comment="deg", is_optional=False))
+        setattr(self, "gal_x_world", self.set_column_properties(
+                                                           "RIGHT_ASCENSION", dtype=">f8",
+                                                           fits_dtype="D", comment="deg", is_optional=False))
         # Source barycenter DEC coordinate
-        setattr(self, "gal_y_world", set_column_properties(self, "DECLINATION",
+        setattr(self, "gal_y_world", self.set_column_properties("DECLINATION",
                                                            dtype=">f8", fits_dtype="D", comment="deg",
                                                            is_optional=False))
         # Source ID in the associated segmentation map
-        setattr(self, "seg_ID", set_column_properties(self, "SEGMENTATION_MAP_ID",
+        setattr(self, "seg_ID", self.set_column_properties("SEGMENTATION_MAP_ID",
                                                       dtype=">i8", fits_dtype="K", comment="", is_optional=False))
         # Flag to indicate if the source is detected in the VIS mosaic (1) or is only detected in the NIR mosaic (0)
-        setattr(self, "vis_det", set_column_properties(self,
-                                                       "VIS_DET", dtype=">i2", fits_dtype="I", comment="", is_optional=False))
+        setattr(self, "vis_det", self.set_column_properties(
+                                                       "VIS_DET", dtype=">i2", fits_dtype="I",
+                                                       comment="", is_optional=False))
 
         # Aperture fotometry on EXT+VIS+NIR bands
         for filt in filter_list_ext + filter_list:
-            setattr(self, "FLUX_%s_APER" % filt, set_column_properties(self, "FLUX_%s_APER" %
-                                                                       filt, fits_dtype="E", comment="uJy", is_optional=False))
+            setattr(self, "FLUX_%s_APER" % filt, self.set_column_properties("FLUX_%s_APER" %
+                                                                       filt, fits_dtype="E", comment="uJy",
+                                                                       is_optional=False))
         # Aperture photometry error on EXT+VIS+NIR bands
         for filt in filter_list_ext + filter_list:
-            setattr(self, "FLUXERR_%s_APER" % filt, set_column_properties(self, "FLUXERR_%s_APER" %
-                                                                          filt, fits_dtype="E", comment="uJy", is_optional=False))
+            setattr(self, "FLUXERR_%s_APER" % filt, self.set_column_properties( "FLUXERR_%s_APER" %
+                                                                          filt, fits_dtype="E", comment="uJy",
+                                                                          is_optional=False))
         # Aperture photometry on NIR stack
-        setattr(self, "FLUX_NIR_STACK_APER", set_column_properties(
-            self, "FLUX_NIR_STACK_APER", fits_dtype="E", comment="uJy", is_optional=False))
+        setattr(self, "FLUX_NIR_STACK_APER", self.set_column_properties(
+            "FLUX_NIR_STACK_APER", fits_dtype="E", comment="uJy", is_optional=False))
         # Aperture photometry error on NIR stack
-        setattr(self, "FLUXERR_NIR_STACK_APER", set_column_properties(
-            self, "FLUXERR_NIR_STACK_APER", fits_dtype="E", comment="uJy", is_optional=False))
+        setattr(self, "FLUXERR_NIR_STACK_APER", self.set_column_properties(
+            "FLUXERR_NIR_STACK_APER", fits_dtype="E", comment="uJy", is_optional=False))
         # Fitting photometry (TPHOT) on EXT+VIS+NIR bands
         for filt in filter_list_ext + [f for f in filter_list if f != 'VIS']:
-            setattr(self, "FLUX_%s_TOTAL" % filt, set_column_properties(self, "FLUX_%s_TOTAL" %
-                                                                        filt, fits_dtype="E", comment="uJy", is_optional=False))
+            setattr(self, "FLUX_%s_TOTAL" % filt, self.set_column_properties("FLUX_%s_TOTAL" %
+                                                                        filt, fits_dtype="E", comment="uJy",
+                                                                        is_optional=False))
         # Fitting photometry error (TPHOT) on EXTEXT+VIS+NIR bands
         for filt in filter_list_ext + [f for f in filter_list if f != 'VIS']:
-            setattr(self, "FLUXERR_%s_TOTAL" % filt, set_column_properties(
-                self, "FLUXERR_%s_TOTAL" % filt, fits_dtype="E", comment="uJy", is_optional=False))
+            setattr(self, "FLUXERR_%s_TOTAL" % filt, self.set_column_properties(
+                "FLUXERR_%s_TOTAL" % filt, fits_dtype="E", comment="uJy", is_optional=False))
         # psf fitting photometry on VIS
-        setattr(self, "FLUX_VIS_PSF", set_column_properties(
-            self, "FLUX_VIS_PSF", fits_dtype="E", comment="uJy", is_optional=False))
+        setattr(self, "FLUX_VIS_PSF", self.set_column_properties(
+            "FLUX_VIS_PSF", fits_dtype="E", comment="uJy", is_optional=False))
         # psf fitting photometry on VIS
-        setattr(self, "FLUXERR_VIS_PSF", set_column_properties(
-            self, "FLUXERR_VIS_PSF", fits_dtype="E", comment="uJy", is_optional=False))
+        setattr(self, "FLUXERR_VIS_PSF", self.set_column_properties(
+             "FLUXERR_VIS_PSF", fits_dtype="E", comment="uJy", is_optional=False))
         # ISOAREA flux
-        setattr(self, "FLUX_SEGMENTATION", set_column_properties(
-            self, "FLUX_SEGMENTATION", fits_dtype="E", comment="uJy", is_optional=False))
+        setattr(self, "FLUX_SEGMENTATION", self.set_column_properties(
+            "FLUX_SEGMENTATION", fits_dtype="E", comment="uJy", is_optional=False))
         # ISOAREA fluxerr
-        setattr(self, "FLUXERR_SEGMENTATION", set_column_properties(
-            self, "FLUXERR_SEGMENTATION", fits_dtype="E", comment="uJy", is_optional=False))
+        setattr(self, "FLUXERR_SEGMENTATION", self.set_column_properties(
+            "FLUXERR_SEGMENTATION", fits_dtype="E", comment="uJy", is_optional=False))
         # det fitting photometry on VIS
-        setattr(self, "FLUX_DETECTION_TOTAL", set_column_properties(
-            self, "FLUX_DETECTION_TOTAL", fits_dtype="E", comment="uJy", is_optional=False))
+        setattr(self, "FLUX_DETECTION_TOTAL", self.set_column_properties(
+            "FLUX_DETECTION_TOTAL", fits_dtype="E", comment="uJy", is_optional=False))
         # det fitting photometry on VIS
-        setattr(self, "FLUXERR_DETECTION_TOTAL", set_column_properties(
-            self, "FLUXERR_DETECTION_TOTAL", fits_dtype="E", comment="uJy", is_optional=False))
+        setattr(self, "FLUXERR_DETECTION_TOTAL", self.set_column_properties(
+            "FLUXERR_DETECTION_TOTAL", fits_dtype="E", comment="uJy", is_optional=False))
         # Object flag for EXT+VIS+NIR bands
         for filt in filter_list_ext + filter_list:
-            setattr(self, "FLAG_%s" % filt, set_column_properties(self, "FLAG_%s" %
-                                                                  filt, dtype=">i4", fits_dtype="J", comment="", is_optional=False))
+            setattr(self, "FLAG_%s" % filt, self.set_column_properties("FLAG_%s" %
+                                                                  filt, dtype=">i4", fits_dtype="J",
+                                                                  comment="", is_optional=False))
         # Object flag for NIR stack
-        setattr(self, "FLAG_NIR_STACK", set_column_properties(
-            self, "FLAG_NIR_STACK", dtype=">i4", fits_dtype="J", comment="", is_optional=False))
+        setattr(self, "FLAG_NIR_STACK", self.set_column_properties(
+            "FLAG_NIR_STACK", dtype=">i4", fits_dtype="J", comment="", is_optional=False))
         # Average filter transmission curve wavelength of EXT+VIS+NIR bands
         for filt in filter_list_ext + filter_list:
-            setattr(self, "AVG_TRANS_WAVE_%s" % filt, set_column_properties(self, "AVG_TRANS_WAVE_%s" %
-                                                                            filt, fits_dtype="E", comment="Angstrom", is_optional=False))
+            setattr(self, "AVG_TRANS_WAVE_%s" % filt, self.set_column_properties("AVG_TRANS_WAVE_%s" %
+                                                                            filt, fits_dtype="E",
+                                                                            comment="Angstrom",
+                                                                            is_optional=False))
         # Deblending flag
-        setattr(self, "DEBLENDED_FLAG", set_column_properties(
-            self, "DEBLENDED_FLAG", dtype=">i2", fits_dtype="I", comment="", is_optional=False))
+        setattr(self, "DEBLENDED_FLAG", self.set_column_properties(
+           "DEBLENDED_FLAG", dtype=">i2", fits_dtype="I", comment="", is_optional=False))
         # Blended associations
-        setattr(self, "DEBLENDED_COMPANIONS", set_column_properties(
-            self, "DEBLENDED_COMPANIONS", dtype=">i8", length=5, fits_dtype="5K", comment="", is_optional=False))
+        setattr(self, "DEBLENDED_COMPANIONS", self.set_column_properties(
+            "DEBLENDED_COMPANIONS", dtype=">i8", length=5, fits_dtype="5K", comment="", is_optional=False))
         # Blending probability
-        setattr(self, "BLENDED_PROB", set_column_properties(
-            self, "BLENDED_PROB", fits_dtype="E", comment="", is_optional=False))
+        setattr(self, "BLENDED_PROB", self.set_column_properties(
+            "BLENDED_PROB", fits_dtype="E", comment="", is_optional=False))
         # Flag for objects SHE wants to remove
-        setattr(self, "SHE_FLAG", set_column_properties(self, "SHE_FLAG",
+        setattr(self, "SHE_FLAG", self.set_column_properties("SHE_FLAG",
                                                         dtype=">i2", fits_dtype="I", comment="", is_optional=False))
         # Variability flag
-        setattr(self, "VARIABLE_FLAG", set_column_properties(
-            self, "VARIABLE_FLAG", dtype=">i2", fits_dtype="I", comment="", is_optional=False))
+        setattr(self, "VARIABLE_FLAG", self.set_column_properties(
+            "VARIABLE_FLAG", dtype=">i2", fits_dtype="I", comment="", is_optional=False))
         # Binary star flag
-        setattr(self, "BINARY_FLAG", set_column_properties(
-            self, "BINARY_FLAG", dtype=">i2", fits_dtype="I", comment="", is_optional=False))
+        setattr(self, "BINARY_FLAG", self.set_column_properties(
+            "BINARY_FLAG", dtype=">i2", fits_dtype="I", comment="", is_optional=False))
         # Point-like flag
-        setattr(self, "POINT_LIKE_FLAG", set_column_properties(
-            self, "POINT_LIKE_FLAG", dtype=">i2", fits_dtype="I", comment="", is_optional=False))
+        setattr(self, "POINT_LIKE_FLAG", self.set_column_properties(
+            "POINT_LIKE_FLAG", dtype=">i2", fits_dtype="I", comment="", is_optional=False))
         # Point-like probability
-        setattr(self, "POINT_LIKE_PROB", set_column_properties(
-            self, "POINT_LIKE_PROB", fits_dtype="E", comment="", is_optional=False))
+        setattr(self, "POINT_LIKE_PROB", self.set_column_properties(
+            "POINT_LIKE_PROB", fits_dtype="E", comment="", is_optional=False))
         # Extended flag
-        setattr(self, "EXTENDED_FLAG", set_column_properties(
-            self, "EXTENDED_FLAG", dtype=">i2", fits_dtype="I", comment="", is_optional=False))
+        setattr(self, "EXTENDED_FLAG", self.set_column_properties(
+            "EXTENDED_FLAG", dtype=">i2", fits_dtype="I", comment="", is_optional=False))
         # Extended prob
-        setattr(self, "EXTENDED_PROB", set_column_properties(
-            self, "EXTENDED_PROB", fits_dtype="E", comment="", is_optional=False))
+        setattr(self, "EXTENDED_PROB", self.set_column_properties(
+            "EXTENDED_PROB", fits_dtype="E", comment="", is_optional=False))
         # Spurious flag
-        setattr(self, "SPURIOUS_FLAG", set_column_properties(
-            self, "SPURIOUS_FLAG", dtype=">i2", fits_dtype="I", comment="", is_optional=False))
+        setattr(self, "SPURIOUS_FLAG", self.set_column_properties(
+            "SPURIOUS_FLAG", dtype=">i2", fits_dtype="I", comment="", is_optional=False))
         # Spurious prob
-        setattr(self, "SPURIOUS_PROB", set_column_properties(
-            self, "SPURIOUS_PROB", fits_dtype="E", comment="", is_optional=False))
+        setattr(self, "SPURIOUS_PROB", self.set_column_properties(
+            "SPURIOUS_PROB", fits_dtype="E", comment="", is_optional=False))
         # Magnitude used to compute the star probability (old MAG_AUTO)
-        setattr(self, "MAG_STARGAL_SEP", set_column_properties(
-            self, "MAG_STARGAL_SEP", fits_dtype="E", comment="mag", is_optional=False))
+        setattr(self, "MAG_STARGAL_SEP", self.set_column_properties(
+            "MAG_STARGAL_SEP", fits_dtype="E", comment="mag", is_optional=False))
         # Possible corruption of MAG_STARGAL_SEP flags
-        setattr(self, "DET_QUALITY_FLAG", set_column_properties(
-            self, "DET_QUALITY_FLAG", dtype=">i2", fits_dtype="I", comment="", is_optional=False))
+        setattr(self, "DET_QUALITY_FLAG", self.set_column_properties(
+            "DET_QUALITY_FLAG", dtype=">i2", fits_dtype="I", comment="", is_optional=False))
         # MU_MAX values
-        setattr(self, "MU_MAX", set_column_properties(self, "MU_MAX",
+        setattr(self, "MU_MAX", self.set_column_properties("MU_MAX",
                                                       fits_dtype="E", comment="mag/arcsec2", is_optional=False))
         # MU_MAX - MAG values
-        setattr(self, "MUMAX_MINUS_MAG", set_column_properties(
-            self, "MUMAX_MINUS_MAG", fits_dtype="E", comment="mag/arcsec2", is_optional=False))
+        setattr(self, "MUMAX_MINUS_MAG", self.set_column_properties(
+            "MUMAX_MINUS_MAG", fits_dtype="E", comment="mag/arcsec2", is_optional=False))
         # Isophotal area
-        setattr(self, "SEGMENTATION_AREA", set_column_properties(
-            self, "SEGMENTATION_AREA", dtype=">i4", fits_dtype="J", comment="pix", is_optional=False))
+        setattr(self, "SEGMENTATION_AREA", self.set_column_properties(
+            "SEGMENTATION_AREA", dtype=">i4", fits_dtype="J", comment="pix", is_optional=False))
         # Semimajor axis
-        setattr(self, "A_IMAGE", set_column_properties(self, "A_IMAGE", fits_dtype="E", comment="pix", is_optional=False))
+        setattr(self, "A_IMAGE", self.set_column_properties("A_IMAGE", fits_dtype="E", comment="pix",
+                                                       is_optional=False))
         # Position angle
-        setattr(self, "POSITION_ANGLE", set_column_properties(
-            self, "POSITION_ANGLE", fits_dtype="E", comment="deg", is_optional=False))
+        setattr(self, "POSITION_ANGLE", self.set_column_properties(
+            "POSITION_ANGLE", fits_dtype="E", comment="deg", is_optional=False))
         # Ellipticity
-        setattr(self, "ELLIPTICITY", set_column_properties(
-            self, "ELLIPTICITY", fits_dtype="E", comment="", is_optional=False))
+        setattr(self, "ELLIPTICITY", self.set_column_properties(
+            "ELLIPTICITY", fits_dtype="E", comment="", is_optional=False))
         # Concentration
-        setattr(self, "CONCENTRATION", set_column_properties(
-            self, "CONCENTRATION", fits_dtype="E", comment="", is_optional=False))
+        setattr(self, "CONCENTRATION", self.set_column_properties(
+            "CONCENTRATION", fits_dtype="E", comment="", is_optional=False))
         # Asymmetry
-        setattr(self, "ASYMMETRY", set_column_properties(
-            self, "ASYMMETRY", fits_dtype="E", comment="", is_optional=False))
+        setattr(self, "ASYMMETRY", self.set_column_properties(
+            "ASYMMETRY", fits_dtype="E", comment="", is_optional=False))
         # Smoothness
-        setattr(self, "SMOOTHNESS", set_column_properties(
-            self, "SMOOTHNESS", fits_dtype="E", comment="", is_optional=False))
+        setattr(self, "SMOOTHNESS", self.set_column_properties(
+            "SMOOTHNESS", fits_dtype="E", comment="", is_optional=False))
         # Gini
-        setattr(self, "GINI", set_column_properties(self, "GINI", fits_dtype="E", comment="", is_optional=False))
+        setattr(self, "GINI", self.set_column_properties("GINI", fits_dtype="E", comment="", is_optional=False))
         # Moment_20
-        setattr(self, "MOMENT_20", set_column_properties(
-            self, "MOMENT_20", fits_dtype="E", comment="", is_optional=False))
+        setattr(self, "MOMENT_20", self.set_column_properties(
+            "MOMENT_20", fits_dtype="E", comment="", is_optional=False))
         # Isoarea error
-        setattr(self, "A_IMAGE_ERR", set_column_properties(
-            self, "A_IMAGE_ERR", fits_dtype="E", comment="", is_optional=False))
+        setattr(self, "A_IMAGE_ERR", self.set_column_properties(
+            "A_IMAGE_ERR", fits_dtype="E", comment="", is_optional=False))
         # Position angle error
-        setattr(self, "POSITION_ANGLE_ERR", set_column_properties(
-            self, "POSITION_ANGLE_ERR", fits_dtype="E", comment="", is_optional=False))
+        setattr(self, "POSITION_ANGLE_ERR", self.set_column_properties(
+            "POSITION_ANGLE_ERR", fits_dtype="E", comment="", is_optional=False))
         # Ellipticity error
-        setattr(self, "ELLIPTICITY_ERR", set_column_properties(
-            self, "ELLIPTICITY_ERR", fits_dtype="E", comment="", is_optional=False))
+        setattr(self, "ELLIPTICITY_ERR", self.set_column_properties(
+            "ELLIPTICITY_ERR", fits_dtype="E", comment="", is_optional=False))
         # Concentration error
-        setattr(self, "CONCENTRATION_ERR", set_column_properties(
-            self, "CONCENTRATION_ERR", fits_dtype="E", comment="", is_optional=False))
+        setattr(self, "CONCENTRATION_ERR", self.set_column_properties(
+            "CONCENTRATION_ERR", fits_dtype="E", comment="", is_optional=False))
         # Asymmetry error
-        setattr(self, "ASYMMETRY_ERR", set_column_properties(
-            self, "ASYMMETRY_ERR", fits_dtype="E", comment="", is_optional=False))
+        setattr(self, "ASYMMETRY_ERR", self.set_column_properties(
+            "ASYMMETRY_ERR", fits_dtype="E", comment="", is_optional=False))
         # Smoothness error
-        setattr(self, "SMOOTHNESS_ERR", set_column_properties(
-            self, "SMOOTHNESS_ERR", fits_dtype="E", comment="", is_optional=False))
+        setattr(self, "SMOOTHNESS_ERR", self.set_column_properties(
+            "SMOOTHNESS_ERR", fits_dtype="E", comment="", is_optional=False))
         # Gini error
-        setattr(self, "GINI_ERR", set_column_properties(self, "GINI_ERR", fits_dtype="E", comment="", is_optional=False))
+        setattr(self, "GINI_ERR", self.set_column_properties("GINI_ERR", fits_dtype="E", comment="",
+                                                        is_optional=False))
         # Moment_20 error
-        setattr(self, "MOMENT_20_ERR", set_column_properties(
-            self, "MOMENT_20_ERR", fits_dtype="E", comment="", is_optional=False))
+        setattr(self, "MOMENT_20_ERR", self.set_column_properties(
+            "MOMENT_20_ERR", fits_dtype="E", comment="", is_optional=False))
         # Galactic E(V-B)
-        setattr(self, "GAL_EBV", set_column_properties(self, "GAL_EBV", fits_dtype="E", comment="mag", is_optional=False))
+        setattr(self, "GAL_EBV", self.set_column_properties("GAL_EBV", fits_dtype="E", comment="mag",
+                                                       is_optional=False))
         # Galactic E(V-B) error
-        setattr(self, "GAL_EBV_ERR", set_column_properties(
-            self, "GAL_EBV_ERR", fits_dtype="E", comment="mag", is_optional=False))
+        setattr(self, "GAL_EBV_ERR", self.set_column_properties(
+            "GAL_EBV_ERR", fits_dtype="E", comment="mag", is_optional=False))
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -358,6 +364,6 @@ def initialise_mer_final_catalog(image_group_phl=None,
                                                            model_seed=model_seed,
                                                            noise_seed=noise_seed)
 
-    assert(is_in_format(mer_final_catalog, tf))
+    assert is_in_format(mer_final_catalog, tf)
 
     return mer_final_catalog

@@ -23,18 +23,15 @@ __updated__ = "2020-07-10"
 
 from collections import OrderedDict
 
-from astropy.table import Table
-
 from .. import magic_values as mv
-from ..flags import she_flag_version
-from ..table_utility import setup_table_format, set_column_properties
+from ..table_utility import SheTableFormat
 
 
 fits_version = "8.0"
 fits_def = "she.training"
 
 
-class SheTrainingMeta(object):
+class SheTrainingMeta():
     """
         @brief A class defining the metadata for simulation plan tables.
     """
@@ -57,30 +54,28 @@ class SheTrainingMeta(object):
         self.all = list(self.comments.keys())
 
 
-class SheTrainingFormat(object):
+class SheTrainingFormat(SheTableFormat):
     """
         @brief A class defining the format for galaxy population priors tables. Only the training_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
-    def __init__(self):
-
-        # Get the metadata (contained within its own class)
-        self.meta = SheTrainingMeta()
-
-        setup_table_format(self)
+    def __init__(self,meta=None):
+        if meta is None:
+            meta=SheTrainingMeta()
+        super().__init__(meta)
 
         # Column names and info
 
-        self.id = set_column_properties(self, "OBJECT_ID", dtype=">i8", fits_dtype="K",
+        self.id = self.set_column_properties("OBJECT_ID", dtype=">i8", fits_dtype="K",
                                         comment="ID of this object in the galaxy population priors table.")
-        self.e1 = set_column_properties(self, "E1", dtype=">f4", fits_dtype="E",
+        self.e1 = self.set_column_properties("E1", dtype=">f4", fits_dtype="E",
                                         comment="Mean ellipticity measurement of this object, component 1")
-        self.e2 = set_column_properties(self, "E2", dtype=">f4", fits_dtype="E",
+        self.e2 = self.set_column_properties("E2", dtype=">f4", fits_dtype="E",
                                         comment="Mean ellipticity measurement of this object, component 2")
-        self.e1_err = set_column_properties(self, "E1_ERR", dtype=">f4", fits_dtype="E",
+        self.e1_err = self.set_column_properties("E1_ERR", dtype=">f4", fits_dtype="E",
                                             comment="Error on mean ellipticity measurement of this object, component 1")
-        self.e2_err = set_column_properties(self, "E2_ERR", dtype=">f4", fits_dtype="E",
+        self.e2_err = self.set_column_properties("E2_ERR", dtype=">f4", fits_dtype="E",
                                             comment="Error on mean ellipticity measurement of this object, component 2")
 
         # A list of columns in the desired order

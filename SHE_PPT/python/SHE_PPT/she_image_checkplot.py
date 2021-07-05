@@ -25,7 +25,6 @@ Author: Malte Tewes
 
 __updated__ = "2019-02-27"
 
-import os
 
 from . import logging
 from . import sky_image_plot as sip
@@ -74,6 +73,6 @@ class Checkplot(sip.SimpleFigure):
 
     def draw(self, **kwargs):
         """
-
+        draws the image
         """
         draw_to_axes(self.sheimage, self.ax, self.z1, self.z2, **kwargs)

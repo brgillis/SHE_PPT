@@ -61,7 +61,6 @@ def init():
 
     binding_class.get_all_filenames = __get_all_filenames
 
-    return
 
 
 def __set_data_filename(self, filename):

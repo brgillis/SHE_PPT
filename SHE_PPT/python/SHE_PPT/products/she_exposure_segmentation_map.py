@@ -30,13 +30,12 @@ import os
 from astropy.io import fits
 
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
-from ST_DataModelBindings.dpd.she.exposurereprojectedsegmentationmap_stub import dpdSheExposureReprojectedSegmentationMap
+from ST_DataModelBindings.dpd.she.exposurereprojectedsegmentationmap_stub \
+    import dpdSheExposureReprojectedSegmentationMap
 
-from .. import detector as dtc
-from .. import magic_values as mv
 from ..file_io import read_xml_product, find_aux_file
 from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
-from ..utility import find_extension
+
 
 
 sample_file_name = "SHE_PPT/sample_exposure_reprojected_segmentation_map.xml"
@@ -94,7 +93,6 @@ def init():
         Adds some extra functionality to the DpdSheExposureReprojectedSegmentationMap product
     """
 
-    # binding_class = she_dpd.DpdSheShearValidationStatsProduct # @FIXME
     binding_class = dpdSheExposureReprojectedSegmentationMap
 
     # Add the data file name methods
@@ -109,7 +107,6 @@ def init():
 
     binding_class.has_files = True
 
-    return
 
 
 def __set_data_filename(self, filename):
@@ -150,12 +147,6 @@ def create_dpd_she_exposure_segmentation_map(data_filename="None"):
         "DpdSheExposureReprojectedSegmentationMap")
 
     __set_data_filename(dpd_she_exposure_reproj_seg_map_data, data_filename)
-
-    # dpd_she_exposure_reproj_seg_map_data.Header =
-    # HeaderProvider.create_generic_header("SHE") # FIXME
-    # dpd_she_exposure_reproj_seg_map_data.Header = "SHE"
-
-    # dpd_she_exposure_reproj_seg_map_data.Data = create_she_exposure_reproj_seg_map_data(filename)
 
     return dpd_she_exposure_reproj_seg_map_data
 

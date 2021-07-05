@@ -24,9 +24,6 @@
 
 __updated__ = "2021-06-10"
 
-# import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider # FIXME
-# import ST_DataModelBindings.she.she_stub as she_dpd # FIXME
-
 
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.momentsmlcalibration_stub import dpdSheMomentsMlCalibration
@@ -56,7 +53,6 @@ def init():
 
     binding_class.has_files = False
 
-    return
 
 
 def __set_data_filename(self, filename):
