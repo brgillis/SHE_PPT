@@ -19,12 +19,11 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-05-25"
+__updated__ = "2021-07-05"
 
 from collections import OrderedDict
 
 from EL_PythonUtils.utilities import hash_any
-from astropy.table import Table
 
 from .. import magic_values as mv
 from ..logging import getLogger
@@ -93,33 +92,33 @@ class MerFinalCatalogFormat(SheTableFormat):
 
         # Euclid unique source identifier
         setattr(self, "ID", self.set_column_properties("OBJECT_ID", fits_dtype="K", dtype=">i8", comment="",
-                                                  is_optional=False))
+                                                       is_optional=False))
         # Source barycenter RA coordinate
         setattr(self, "gal_x_world", self.set_column_properties(
-                                                           "RIGHT_ASCENSION", dtype=">f8",
-                                                           fits_dtype="D", comment="deg", is_optional=False))
+            "RIGHT_ASCENSION", dtype=">f8",
+            fits_dtype="D", comment="deg", is_optional=False))
         # Source barycenter DEC coordinate
         setattr(self, "gal_y_world", self.set_column_properties("DECLINATION",
-                                                           dtype=">f8", fits_dtype="D", comment="deg",
-                                                           is_optional=False))
+                                                                dtype=">f8", fits_dtype="D", comment="deg",
+                                                                is_optional=False))
         # Source ID in the associated segmentation map
         setattr(self, "seg_ID", self.set_column_properties("SEGMENTATION_MAP_ID",
-                                                      dtype=">i8", fits_dtype="K", comment="", is_optional=False))
+                                                           dtype=">i8", fits_dtype="K", comment="", is_optional=False))
         # Flag to indicate if the source is detected in the VIS mosaic (1) or is only detected in the NIR mosaic (0)
         setattr(self, "vis_det", self.set_column_properties(
-                                                       "VIS_DET", dtype=">i2", fits_dtype="I",
-                                                       comment="", is_optional=False))
+            "VIS_DET", dtype=">i2", fits_dtype="I",
+            comment="", is_optional=False))
 
         # Aperture fotometry on EXT+VIS+NIR bands
         for filt in filter_list_ext + filter_list:
             setattr(self, "FLUX_%s_APER" % filt, self.set_column_properties("FLUX_%s_APER" %
-                                                                       filt, fits_dtype="E", comment="uJy",
-                                                                       is_optional=False))
+                                                                            filt, fits_dtype="E", comment="uJy",
+                                                                            is_optional=False))
         # Aperture photometry error on EXT+VIS+NIR bands
         for filt in filter_list_ext + filter_list:
-            setattr(self, "FLUXERR_%s_APER" % filt, self.set_column_properties( "FLUXERR_%s_APER" %
-                                                                          filt, fits_dtype="E", comment="uJy",
-                                                                          is_optional=False))
+            setattr(self, "FLUXERR_%s_APER" % filt, self.set_column_properties("FLUXERR_%s_APER" %
+                                                                               filt, fits_dtype="E", comment="uJy",
+                                                                               is_optional=False))
         # Aperture photometry on NIR stack
         setattr(self, "FLUX_NIR_STACK_APER", self.set_column_properties(
             "FLUX_NIR_STACK_APER", fits_dtype="E", comment="uJy", is_optional=False))
@@ -129,8 +128,8 @@ class MerFinalCatalogFormat(SheTableFormat):
         # Fitting photometry (TPHOT) on EXT+VIS+NIR bands
         for filt in filter_list_ext + [f for f in filter_list if f != 'VIS']:
             setattr(self, "FLUX_%s_TOTAL" % filt, self.set_column_properties("FLUX_%s_TOTAL" %
-                                                                        filt, fits_dtype="E", comment="uJy",
-                                                                        is_optional=False))
+                                                                             filt, fits_dtype="E", comment="uJy",
+                                                                             is_optional=False))
         # Fitting photometry error (TPHOT) on EXTEXT+VIS+NIR bands
         for filt in filter_list_ext + [f for f in filter_list if f != 'VIS']:
             setattr(self, "FLUXERR_%s_TOTAL" % filt, self.set_column_properties(
@@ -140,7 +139,7 @@ class MerFinalCatalogFormat(SheTableFormat):
             "FLUX_VIS_PSF", fits_dtype="E", comment="uJy", is_optional=False))
         # psf fitting photometry on VIS
         setattr(self, "FLUXERR_VIS_PSF", self.set_column_properties(
-             "FLUXERR_VIS_PSF", fits_dtype="E", comment="uJy", is_optional=False))
+            "FLUXERR_VIS_PSF", fits_dtype="E", comment="uJy", is_optional=False))
         # ISOAREA flux
         setattr(self, "FLUX_SEGMENTATION", self.set_column_properties(
             "FLUX_SEGMENTATION", fits_dtype="E", comment="uJy", is_optional=False))
@@ -156,20 +155,20 @@ class MerFinalCatalogFormat(SheTableFormat):
         # Object flag for EXT+VIS+NIR bands
         for filt in filter_list_ext + filter_list:
             setattr(self, "FLAG_%s" % filt, self.set_column_properties("FLAG_%s" %
-                                                                  filt, dtype=">i4", fits_dtype="J",
-                                                                  comment="", is_optional=False))
+                                                                       filt, dtype=">i4", fits_dtype="J",
+                                                                       comment="", is_optional=False))
         # Object flag for NIR stack
         setattr(self, "FLAG_NIR_STACK", self.set_column_properties(
             "FLAG_NIR_STACK", dtype=">i4", fits_dtype="J", comment="", is_optional=False))
         # Average filter transmission curve wavelength of EXT+VIS+NIR bands
         for filt in filter_list_ext + filter_list:
             setattr(self, "AVG_TRANS_WAVE_%s" % filt, self.set_column_properties("AVG_TRANS_WAVE_%s" %
-                                                                            filt, fits_dtype="E",
-                                                                            comment="Angstrom",
-                                                                            is_optional=False))
+                                                                                 filt, fits_dtype="E",
+                                                                                 comment="Angstrom",
+                                                                                 is_optional=False))
         # Deblending flag
         setattr(self, "DEBLENDED_FLAG", self.set_column_properties(
-           "DEBLENDED_FLAG", dtype=">i2", fits_dtype="I", comment="", is_optional=False))
+            "DEBLENDED_FLAG", dtype=">i2", fits_dtype="I", comment="", is_optional=False))
         # Blended associations
         setattr(self, "DEBLENDED_COMPANIONS", self.set_column_properties(
             "DEBLENDED_COMPANIONS", dtype=">i8", length=5, fits_dtype="5K", comment="", is_optional=False))
@@ -178,7 +177,7 @@ class MerFinalCatalogFormat(SheTableFormat):
             "BLENDED_PROB", fits_dtype="E", comment="", is_optional=False))
         # Flag for objects SHE wants to remove
         setattr(self, "SHE_FLAG", self.set_column_properties("SHE_FLAG",
-                                                        dtype=">i2", fits_dtype="I", comment="", is_optional=False))
+                                                             dtype=">i2", fits_dtype="I", comment="", is_optional=False))
         # Variability flag
         setattr(self, "VARIABLE_FLAG", self.set_column_properties(
             "VARIABLE_FLAG", dtype=">i2", fits_dtype="I", comment="", is_optional=False))
@@ -211,7 +210,7 @@ class MerFinalCatalogFormat(SheTableFormat):
             "DET_QUALITY_FLAG", dtype=">i2", fits_dtype="I", comment="", is_optional=False))
         # MU_MAX values
         setattr(self, "MU_MAX", self.set_column_properties("MU_MAX",
-                                                      fits_dtype="E", comment="mag/arcsec2", is_optional=False))
+                                                           fits_dtype="E", comment="mag/arcsec2", is_optional=False))
         # MU_MAX - MAG values
         setattr(self, "MUMAX_MINUS_MAG", self.set_column_properties(
             "MUMAX_MINUS_MAG", fits_dtype="E", comment="mag/arcsec2", is_optional=False))
@@ -220,7 +219,7 @@ class MerFinalCatalogFormat(SheTableFormat):
             "SEGMENTATION_AREA", dtype=">i4", fits_dtype="J", comment="pix", is_optional=False))
         # Semimajor axis
         setattr(self, "A_IMAGE", self.set_column_properties("A_IMAGE", fits_dtype="E", comment="pix",
-                                                       is_optional=False))
+                                                            is_optional=False))
         # Position angle
         setattr(self, "POSITION_ANGLE", self.set_column_properties(
             "POSITION_ANGLE", fits_dtype="E", comment="deg", is_optional=False))
@@ -261,13 +260,13 @@ class MerFinalCatalogFormat(SheTableFormat):
             "SMOOTHNESS_ERR", fits_dtype="E", comment="", is_optional=False))
         # Gini error
         setattr(self, "GINI_ERR", self.set_column_properties("GINI_ERR", fits_dtype="E", comment="",
-                                                        is_optional=False))
+                                                             is_optional=False))
         # Moment_20 error
         setattr(self, "MOMENT_20_ERR", self.set_column_properties(
             "MOMENT_20_ERR", fits_dtype="E", comment="", is_optional=False))
         # Galactic E(V-B)
         setattr(self, "GAL_EBV", self.set_column_properties("GAL_EBV", fits_dtype="E", comment="mag",
-                                                       is_optional=False))
+                                                            is_optional=False))
         # Galactic E(V-B) error
         setattr(self, "GAL_EBV_ERR", self.set_column_properties(
             "GAL_EBV_ERR", fits_dtype="E", comment="mag", is_optional=False))
