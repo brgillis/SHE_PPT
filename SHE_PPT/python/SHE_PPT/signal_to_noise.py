@@ -28,7 +28,6 @@ import numpy as np
 
 from .logging import getLogger
 
-
 logger = getLogger(__name__)
 
 
@@ -49,7 +48,7 @@ def get_SN_of_image(galaxy_image,
         The gain of the image in e-/ADU
     sigma_sky : float
         Noise of the sky background. If not provided, will be estimated from pixels along the edge of the image.
-    *args, **kwargs 
+    *args, **kwargs
         Arguments to be passed to galsim.hsm.FindAdaptiveMoments
 
     Return

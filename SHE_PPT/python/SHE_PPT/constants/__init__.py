@@ -1,7 +1,7 @@
 """ @file shear_estimation_methods.py
 
     Created 6 Jan 2021
-    
+
     Module to contain constant values relating to the shear estimation methods
 """
 

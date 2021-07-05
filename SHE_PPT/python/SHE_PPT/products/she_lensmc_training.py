@@ -53,7 +53,6 @@ def init():
 
     binding_class.has_files = False
 
-    return
 
 
 def __set_filename(self, filename):
@@ -104,9 +103,6 @@ def create_dpd_she_lensmc_training(filename=None):
     dpd_she_lensmc_training = read_xml_product(find_aux_file(sample_file_name))
 
     dpd_she_lensmc_training.Header = HeaderProvider.create_generic_header("DpdSheLensMcTraining")
-
-    # dpd_she_lensmc_training.Data = create_she_lensmc_training(
-    #    filename)
 
     if filename:
         __set_filename(dpd_she_lensmc_training, filename)

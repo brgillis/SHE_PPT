@@ -51,7 +51,6 @@ def init():
 
     binding_class.has_files = True
 
-    return
 
 
 def __set_data_filename(self, filename):

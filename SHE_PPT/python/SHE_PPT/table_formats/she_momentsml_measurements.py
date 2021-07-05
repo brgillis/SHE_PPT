@@ -23,15 +23,12 @@ __updated__ = "2021-02-16"
 
 from collections import OrderedDict
 
-from astropy.table import Table
-
-from .. import detector as dtc
 from .. import magic_values as mv
 from ..flags import she_flag_version
 from ..logging import getLogger
 from ..table_formats.mer_final_catalog import tf as mfc_tf
 from ..table_formats.she_measurements import SheMeasurementsMeta, SheMeasurementsFormat
-from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table, setup_child_table_format, set_column_properties, init_table
+from ..table_utility import is_in_format, init_table
 
 
 fits_version = "8.0"
@@ -55,8 +52,6 @@ class SheMomentsMlMeasurementsMeta(SheMeasurementsMeta):
         self.__version__ = fits_version
         self.table_format = fits_def
 
-        return
-
 
 class SheMomentsMlMeasurementsFormat(SheMeasurementsFormat):
     """
@@ -67,24 +62,25 @@ class SheMomentsMlMeasurementsFormat(SheMeasurementsFormat):
     def __init__(self):
 
         # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
-        super().__init__()
+        super().__init__(SheMomentsMlMeasurementsMeta())
 
-        # Get the metadata (contained within its own class)
-        self.meta = SheMomentsMlMeasurementsMeta()
 
-        setup_child_table_format(self, child_label, unlabelled_columns=["OBJECT_ID"])
+        self.setup_child_table_format(child_label, unlabelled_columns=["OBJECT_ID"])
 
         # momentsml specific columns
-        self.g1_w = set_column_properties(self,
+        self.g1_w = self.set_column_properties(
                                           "SHE_MOMENTSML_G1_W", is_optional=False, dtype=">f4", fits_dtype="E")
-        self.g2_w = set_column_properties(self,
+        self.g2_w = self.set_column_properties(
                                           "SHE_MOMENTSML_G2_W", is_optional=False, dtype=">f4", fits_dtype="E")
-        self.g1_uncal_w = set_column_properties(self,
-                                                "SHE_MOMENTSML_G1_UNCAL_W", is_optional=False, dtype=">f4", fits_dtype="E")
-        self.g2_uncal_w = set_column_properties(self,
-                                                "SHE_MOMENTSML_G2_UNCAL_W", is_optional=False, dtype=">f4", fits_dtype="E")
-        self.sersic = set_column_properties(self,
-                                            "SHE_MOMENTSML_SERSIC_INDEX", is_optional=False, dtype=">f4", fits_dtype="E")
+        self.g1_uncal_w = self.set_column_properties(
+                                                "SHE_MOMENTSML_G1_UNCAL_W", is_optional=False, dtype=">f4",
+                                                fits_dtype="E")
+        self.g2_uncal_w = self.set_column_properties(
+                                                "SHE_MOMENTSML_G2_UNCAL_W", is_optional=False, dtype=">f4",
+                                                fits_dtype="E")
+        self.sersic = self.set_column_properties(
+                                            "SHE_MOMENTSML_SERSIC_INDEX", is_optional=False, dtype=">f4",
+                                            fits_dtype="E")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -197,6 +193,6 @@ def initialise_momentsml_measurements_table(mer_final_catalog=None,
                                                                                  observation_time=observation_time,
                                                                                  tile_id=tile_id)
 
-    assert(is_in_format(momentsml_measurements_table, tf))
+    assert is_in_format(momentsml_measurements_table, tf)
 
     return momentsml_measurements_table

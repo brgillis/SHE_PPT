@@ -29,7 +29,7 @@ from pickle import UnpicklingError
 import pickle
 from xml.sax._exceptions import SAXParseException
 
-from EL_PythonUtils.utilities import run_only_once, time_to_timestamp
+from EL_PythonUtils.utilities import time_to_timestamp
 from astropy.io import fits
 from pyxb.exceptions_ import NamespaceError
 
@@ -41,8 +41,9 @@ import numpy as np
 from . import magic_values as mv
 from .constants.test_data import SYNC_CONF
 from .logging import getLogger
-from .utility import get_release_from_version, get_nested_attr
+from .utility import get_release_from_version
 
+from . import __version__ as SHE_PPT_version
 
 logger = getLogger(mv.logger_name)
 
@@ -123,8 +124,6 @@ def write_listfile(listfile_name, filenames):
         paths_json = json.dumps(filenames)
         listfile.write(paths_json)
 
-    return
-
 
 def read_listfile(listfile_name):
     """
@@ -144,11 +143,9 @@ def read_listfile(listfile_name):
         if isinstance(listobject[0], list):
             tupled_list = [tuple(el) for el in listobject]
             if np.all([len(t) == 1 for t in tupled_list]):
-                return [t[0] for t in tupled_list]
-            else:
-                return tupled_list
-        else:
-            return listobject
+                tupled_list = [t[0] for t in tupled_list]
+            return tupled_list
+        return listobject
 
 
 def replace_in_file(input_filename, output_filename, input_string, output_string):
@@ -214,7 +211,7 @@ def write_xml_product(product, xml_filename, workdir=".", allow_pickled=False):
         if cat_filename == "None":
             # Create a name for the catalog file
             cat_filename = get_allowed_filename(type_name="CAT", instance_id="0", extension=".csv",
-                                                version=SHE_PPT.__version__, subdir=None)
+                                                version=SHE_PPT_version, subdir=None)
             product.Data.CatalogStorage.CatalogFileStorage.StorageSpace[0].DataContainer.FileName = cat_filename
 
         # Check if the catalogue exists, and create it if necessary
@@ -241,7 +238,7 @@ def write_xml_product(product, xml_filename, workdir=".", allow_pickled=False):
     except AttributeError as e:
         if not allow_pickled:
             raise
-        if not "object has no attribute 'toDOM'" in str(e):
+        if "object has no attribute 'toDOM'" not in str(e):
             raise
         logger.warning(
             "XML writing is not available; falling back to pickled writing instead.")
@@ -261,13 +258,12 @@ def read_xml_product(xml_filename, workdir=".", allow_pickled=False):
 
         # Create a new product instance using the proper data product dictionary
         product = CreateFromDocument(xml_string)
-    except (UnicodeDecodeError, SAXParseException) as _e:
+    except (UnicodeDecodeError, SAXParseException):
         # Not actually saved as xml
         if allow_pickled:
             # Revert to pickled product
             return read_pickled_product(qualified_xml_filename)
-        else:
-            raise
+        raise
 
     return product
 
@@ -351,6 +347,41 @@ def find_conf_file(filename):
     return find_file_in_path(filename, os.environ['ELEMENTS_CONF_PATH'])
 
 
+def _is_no_file(name):
+    return name is None or name == "None" or name == "data/None" or name == "" or name == "data/"
+
+def _find_web_file_xml(filename, qualified_filename):
+    try:
+        webpath = os.path.split(filename)[0]
+        p = read_xml_product(qualified_filename, workdir="")
+        for subfilename in p.get_all_filenames():
+            # Skip if there's no file to download
+            if _is_no_file(subfilename) :
+                continue
+            find_web_file(os.path.join(webpath, subfilename))
+    except NamespaceError as e:
+        if "elementBinding" not in str(e):
+            raise
+        # MDB files end in XML but can't be read this way, and will raise this exception, so silently pass
+    return webpath
+
+
+def _find_web_file_json(filename, qualified_filename, webpath):
+    webpath = os.path.split(filename)[0]
+    l = read_listfile(qualified_filename)
+    for element in l:
+        if isinstance(element, str):
+            # Skip if there's no file to download
+            if _is_no_file(element):
+                continue
+            find_web_file(os.path.join(webpath, element))
+        else:
+            for subelement in element:
+                # Skip if there's no file to download
+                if _is_no_file(subelement):
+                    continue
+                find_web_file(os.path.join(webpath, subelement))
+
 def find_web_file(filename):
     """
         Searches on WebDAV for a file. If found, downloads it and returns the qualified name of it. If
@@ -361,7 +392,7 @@ def find_web_file(filename):
 
     filelist = os.path.join(os.getcwd(), os.path.splitext(os.path.split(filename)[-1])[0] + f"{os.getpid()}_list.txt")
 
-    logger.debug("Writing filelist to " + filelist)
+    logger.debug("Writing filelist to %s", filelist)
 
     try:
         with open(filelist, 'w') as fo:
@@ -371,52 +402,20 @@ def find_web_file(filename):
         sync.download()
 
         qualified_filename = sync.absolutePath(filename)
-    except:
-        raise
     finally:
         if os.path.exists(filelist):
-            logger.debug("Cleaning up " + filelist)
+            logger.debug("Cleaning up %s", filelist)
             os.remove(filelist)
 
     # If it's an xml data product, we'll also need to download all files it points to
     if filename[-4:] == ".xml":
 
-        try:
-            webpath = os.path.split(filename)[0]
-
-            p = read_xml_product(qualified_filename, workdir="")
-            for subfilename in p.get_all_filenames():
-                # Skip if there's no file to download
-                if (subfilename is None or subfilename == "None" or subfilename == "data/None" or
-                        subfilename == "" or subfilename == "data/"):
-                    continue
-                find_web_file(os.path.join(webpath, subfilename))
-        except NamespaceError as e:
-            if not "elementBinding" in str(e):
-                raise
-            # MDB files end in XML but can't be read this way, and will raise this exception, so silently pass
-            pass
+        webpath = _find_web_file_xml(filename, qualified_filename)
 
     # If it's json listfile, we'll also need to download all files it points to
     elif filename[-5:] == ".json":
 
-        webpath = os.path.split(filename)[0]
-
-        l = read_listfile(qualified_filename)
-        for element in l:
-            if isinstance(element, str):
-                # Skip if there's no file to download
-                if (element is None or element == "None" or element == "data/None" or
-                        element == "" or element == "data/"):
-                    continue
-                find_web_file(os.path.join(webpath, element))
-            else:
-                for subelement in element:
-                    # Skip if there's no file to download
-                    if (subelement is None or subelement == "None" or subelement == "data/None" or
-                            subelement == "" or subelement == "data/"):
-                        continue
-                    find_web_file(os.path.join(webpath, subelement))
+        _find_web_file_json(filename, qualified_filename, webpath)
 
     return qualified_filename
 
@@ -432,23 +431,20 @@ def find_file(filename, path=None):
 
     if filename[0:4] == "WEB/":
         return find_web_file(filename[4:])
-    elif filename[0:4] == "AUX/":
+    if filename[0:4] == "AUX/":
         return find_aux_file(filename[4:])
-    elif filename[0:5] == "CONF/":
+    if filename[0:5] == "CONF/":
         return find_conf_file(filename[5:])
-    elif filename[0:5] == "HOME/":
+    if filename[0:5] == "HOME/":
         path = os.path.join(os.getenv('HOME'), os.path.dirname(filename[5:]))
         return find_file_in_path(os.path.basename(filename), path)
-    elif filename[0] == "/":
+    if filename[0] == "/":
         if not os.path.exists(filename):
             raise RuntimeError("File " + filename + " cannot be found.")
-        else:
-            return filename
-    elif path is not None:
+        return filename
+    if path is not None:
         return find_file_in_path(filename, path)
-    else:
-        raise ValueError(
-            "path must be supplied if filename doesn't start with AUX/ or CONF/")
+    raise ValueError("path must be supplied if filename doesn't start with AUX/ or CONF/")
 
 
 def first_in_path(path):
@@ -498,20 +494,20 @@ def get_data_filename(filename, workdir="."):
         if hasattr(prod, "get_filename"):
             return prod.get_filename()
         # or a get_data_filename method?
-        elif hasattr(prod, "get_data_filename"):
+        if hasattr(prod, "get_data_filename"):
             return prod.get_data_filename()
 
         # Check if the filename exists in the default location
         try:
             return prod.Data.DataStorage.DataContainer.FileName
-        except AttributeError as _e:
+        except AttributeError:
             raise AttributeError("Data product does not have filename stored in the expected " +
                                  "location (self.Data.DataStorage.DataContainer.FileName. " +
                                  "In order to use get_data_filename with this product, the " +
                                  "product's class must be monkey-patched to have a get_filename " +
                                  "or get_data_filename method.")
 
-    except (UnicodeDecodeError, SAXParseException, UnpicklingError) as _e:
+    except (UnicodeDecodeError, SAXParseException, UnpicklingError):
         # Not an XML file - so presumably it's a raw data file; return the
         # input filename
         return filename
@@ -527,8 +523,9 @@ def update_xml_with_value(filename):
     key_lines = [ii for ii, line in enumerate(lines) if '<Key>' in line]
     bad_lines = [idx for idx in key_lines if '<Value>' not in lines[idx + 1]]
     if bad_lines:
-        logger.warning("%s has incorrect parameter settings, missing <Value> in lines: %s"
-                       % (filename, ','.join(map(str, bad_lines))))
+        logger.warning("%s has incorrect parameter settings, missing <Value> in lines: %s",
+                       filename,
+                       ','.join(map(str, bad_lines)))
         # Do update
         for ii, idx in enumerate(bad_lines):
             # Check next 3 lines for String/Int etc Value
@@ -547,8 +544,10 @@ def update_xml_with_value(filename):
                 n_defaults += 1
             lines = lines[:idx + ii + 1] + [new_line] + lines[idx + ii + 1:]
             open(filename, 'w').writelines(lines)
-            logger.info('Updated %s lines in %s: n_defaults=%s' %
-                        (len(bad_lines), filename, n_defaults))
+            logger.info('Updated %s lines in %s: n_defaults=%s',
+                        len(bad_lines),
+                        filename,
+                        n_defaults)
     else:
         logger.debug('No updates required')
 

@@ -23,16 +23,13 @@ __updated__ = "2021-02-10"
 
 from collections import OrderedDict
 
-from astropy.table import Table
-
 import numpy as np
 
 from .. import magic_values as mv
-from ..flags import she_flag_version
 from ..logging import getLogger
 from ..math import LinregressStatistics, LinregressResults, BiasMeasurements
 from ..table_formats.she_bfd_bias_statistics import tf as bfdtf
-from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+from ..table_utility import is_in_format, init_table, SheTableFormat
 
 
 fits_version = "8.0"
@@ -41,7 +38,7 @@ fits_def = "she.biasStatistics"
 logger = getLogger(mv.logger_name)
 
 
-class SheBiasStatisticsMeta(object):
+class SheBiasStatisticsMeta():
     """
         @brief A class defining the metadata for bias statistics tables.
     """
@@ -93,34 +90,30 @@ class SheBiasStatisticsMeta(object):
         self.all = list(self.comments.keys())
 
 
-class SheBiasStatisticsFormat(object):
+class SheBiasStatisticsFormat(SheTableFormat):
     """
         @brief A class defining the format for bias statistics tables. Only the bias_statistics_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
     def __init__(self):
-
-        # Get the metadata (contained within its own class)
-        self.meta = SheBiasStatisticsMeta()
-
-        setup_table_format(self)
+        super().__init__(SheBiasStatisticsMeta())
 
         # Table column labels and properties
 
-        self.ID = set_column_properties(self, "RUN_ID", dtype="str", fits_dtype="A", length=20, is_optional=True)
+        self.ID = self.set_column_properties("RUN_ID", dtype="str", fits_dtype="A", length=20, is_optional=True)
 
-        self.w1 = set_column_properties(self, "W1", dtype=">f4", fits_dtype="E")
-        self.xm1 = set_column_properties(self, "XM1", dtype=">f4", fits_dtype="E")
-        self.x2m1 = set_column_properties(self, "X2M1", dtype=">f4", fits_dtype="E")
-        self.ym1 = set_column_properties(self, "YM1", dtype=">f4", fits_dtype="E")
-        self.xym1 = set_column_properties(self, "XY1", dtype=">f4", fits_dtype="E")
+        self.w1 = self.set_column_properties("W1", dtype=">f4", fits_dtype="E")
+        self.xm1 = self.set_column_properties("XM1", dtype=">f4", fits_dtype="E")
+        self.x2m1 = self.set_column_properties("X2M1", dtype=">f4", fits_dtype="E")
+        self.ym1 = self.set_column_properties("YM1", dtype=">f4", fits_dtype="E")
+        self.xym1 = self.set_column_properties("XY1", dtype=">f4", fits_dtype="E")
 
-        self.w2 = set_column_properties(self, "W2", dtype=">f4", fits_dtype="E")
-        self.xm2 = set_column_properties(self, "XM2", dtype=">f4", fits_dtype="E")
-        self.x2m2 = set_column_properties(self, "X2M2", dtype=">f4", fits_dtype="E")
-        self.ym2 = set_column_properties(self, "YM2", dtype=">f4", fits_dtype="E")
-        self.xym2 = set_column_properties(self, "XY2", dtype=">f4", fits_dtype="E")
+        self.w2 = self.set_column_properties("W2", dtype=">f4", fits_dtype="E")
+        self.xm2 = self.set_column_properties("XM2", dtype=">f4", fits_dtype="E")
+        self.x2m2 = self.set_column_properties("X2M2", dtype=">f4", fits_dtype="E")
+        self.ym2 = self.set_column_properties("YM2", dtype=">f4", fits_dtype="E")
+        self.xym2 = self.set_column_properties("XY2", dtype=">f4", fits_dtype="E")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -302,8 +295,8 @@ def initialise_bias_statistics_table(size=None,
     # Check lengths are sensible
     if not len_g1_bias_statistics == len_g2_bias_statistics:
         raise ValueError("g1_bias_statistics and g2_bias_statistics must have the same length")
-    else:
-        num_rows = len_g1_bias_statistics
+
+    num_rows = len_g1_bias_statistics
 
     if num_rows > 0:
         if tf.ID in optional_columns:
@@ -348,7 +341,7 @@ def initialise_bias_statistics_table(size=None,
         bias_statistics_table.add_row(vals=new_row)
 
     # Check we meet the requirements of the table format
-    assert(is_in_format(bias_statistics_table, tf))
+    assert is_in_format(bias_statistics_table, tf)
 
     return bias_statistics_table
 
@@ -467,7 +460,8 @@ def get_bias_measurements(table):
 
     if not (is_in_format(table, tf, ignore_metadata=True, strict=False) or
             is_in_format(table, bfdtf, ignore_metadata=True, strict=False)):
-        raise ValueError("table must be in bias_statistics or bfd_bias_statistics format for get_bias_measurements method")
+        raise ValueError(
+            "table must be in bias_statistics or bfd_bias_statistics format for get_bias_measurements method")
 
     # Get g1 bias measurements
 

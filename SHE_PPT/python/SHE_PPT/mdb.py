@@ -74,7 +74,7 @@ def init(mdb_files=None, path=None):
             qualified_mdb_files.append(qualified_mdb_file)
     elif mdb_files is None:
         qualified_mdb_files = find_file(DEFAULT_MDB_FILE)
-        logger.warning("No MDB file specified. Using default file at " + qualified_mdb_files)
+        logger.warning("No MDB file specified. Using default file at %s",qualified_mdb_files)
     else:
         raise TypeError("Invalid type for mdb_files object passed to SHE_PPT.mdb.init(): " + str(mdb_files))
 
@@ -97,7 +97,6 @@ def init(mdb_files=None, path=None):
     for qualified_read_noise_filename in qualified_read_noise_filenames:
         _read_noise_dict.update(_load_quadrant_table(qualified_read_noise_filename, 'RON_ELE'))
 
-    return
 
 
 def _find_mdb_data_file(data_filenames, qualified_mdb_files):
@@ -160,7 +159,7 @@ def _load_quadrant_table(qualified_data_filename, colname):
 
 
 def get_gain(detector=None, quadrant=None, suppress_warnings=False):
-    return _get_quadrant_data(dict=_gain_dict,
+    return _get_quadrant_data(dictionary=_gain_dict,
                               ave_dict=_gain_ave_dict,
                               detector=detector,
                               quadrant=quadrant,
@@ -168,7 +167,7 @@ def get_gain(detector=None, quadrant=None, suppress_warnings=False):
 
 
 def get_read_noise(detector=None, quadrant=None, suppress_warnings=False):
-    return _get_quadrant_data(dict=_read_noise_dict,
+    return _get_quadrant_data(dictionary=_read_noise_dict,
                               ave_dict=_read_noise_ave_dict,
                               detector=detector,
                               quadrant=quadrant,
@@ -185,11 +184,11 @@ def warn_missing_quadrant():
     logger.warning("No quadrant value supplied to get_gain or get_read_noise - average value will be used instead.")
 
 
-def _get_quadrant_data(dict, ave_dict, detector=None, quadrant=None, suppress_warnings=False):
+def _get_quadrant_data(dictionary, ave_dict, detector=None, quadrant=None, suppress_warnings=False):
 
     # If we have both the detector and quadrant, get the value for that quadrant
     if detector is not None and quadrant is not None:
-        return dict[detector + "." + quadrant]
+        return dictionary[detector + "." + quadrant]
 
     # We're missing some info, so warn and average the possibly-matching data
     if detector is None:
@@ -211,13 +210,13 @@ def _get_quadrant_data(dict, ave_dict, detector=None, quadrant=None, suppress_wa
     if regex in ave_dict:
         return ave_dict[regex]
 
-    sum = 0
+    summation = 0
     count = 0
 
-    for key in dict.keys():
+    for key in dictionary.keys():
         if re.match(regex, key) is None:
             continue
-        sum += dict[key]
+        summation += dictionary[key]
         count += 1
 
     if count == 0:
@@ -225,7 +224,7 @@ def _get_quadrant_data(dict, ave_dict, detector=None, quadrant=None, suppress_wa
                            ", quadrant = " + str(quadrant) + ".")
 
     # Save and return the average
-    average = sum / count
+    average = summation / count
     ave_dict[regex] = average
     return average
 
@@ -367,7 +366,7 @@ def get_mdb_unit(key):
 # MDB keys stored as attributes of the mdb_keys object
 
 
-class MDBKeys(object):
+class MDBKeys():
 
     def __init__(self):
 
@@ -417,21 +416,27 @@ class MDBKeys(object):
         self.vis_ccd_defects_white_spots_bol = "SpaceSegment.Instrument.VIS.VISCCDDefectsWhiteSpotsBOL"
         self.vis_ccd_defects_white_spots_eol = "SpaceSegment.Instrument.VIS.VISCCDDefectsWhiteSpotsEOL"
         self.vis_ccd_gap_long_dimension_nominal_image = "SpaceSegment.Instrument.VIS.VISCCDGapLongDimensionNominalImage"
-        self.vis_ccd_gap_short_dimension_nominal_image = "SpaceSegment.Instrument.VIS.VISCCDGapShortDimensionNominalImage"
+        self.vis_ccd_gap_short_dimension_nominal_image =\
+            "SpaceSegment.Instrument.VIS.VISCCDGapShortDimensionNominalImage"
         self.vis_ccd_number = "SpaceSegment.Instrument.VIS.VISCCDNumber"
         self.vis_ccd_quadrant_list = "SpaceSegment.Instrument.VIS.VISCCDQuadrantList"
         self.vis_ccd_row = "SpaceSegment.Instrument.VIS.VISCCDRow"
         self.vis_dark_current = "SpaceSegment.Instrument.VIS.VISDarkCurrent"
         self.vis_data_compression = "SpaceSegment.Instrument.VIS.VISDataCompression"
-        self.vis_detector_active_pixel_long_dimension_format = "SpaceSegment.Instrument.VIS.VISDetectorActivePixelLongDimensionFormat"
-        self.vis_detector_active_pixel_short_dimension_format = "SpaceSegment.Instrument.VIS.VISDetectorActivePixelShortDimensionFormat"
+        self.vis_detector_active_pixel_long_dimension_format = \
+            "SpaceSegment.Instrument.VIS.VISDetectorActivePixelLongDimensionFormat"
+        self.vis_detector_active_pixel_short_dimension_format = \
+            "SpaceSegment.Instrument.VIS.VISDetectorActivePixelShortDimensionFormat"
         self.vis_detector_overscanx = "SpaceSegment.Instrument.VIS.VISDetectorOverscanx"
-        self.vis_detector_pixel_long_dimension_format = "SpaceSegment.Instrument.VIS.VISDetectorPixelLongDimensionFormat"
+        self.vis_detector_pixel_long_dimension_format = \
+            "SpaceSegment.Instrument.VIS.VISDetectorPixelLongDimensionFormat"
         self.vis_detector_prescanx = "SpaceSegment.Instrument.VIS.VISDetectorPrescanx"
         self.vis_exposure_time = "SpaceSegment.Instrument.VIS.VISExposureTime"
         self.vis_exposure_time_knowledge_error = "SpaceSegment.Instrument.VIS.VISExposureTimeKnowledgeError"
-        self.vis_focal_plane_assembly_long_dimension_max_image = "SpaceSegment.Instrument.VIS.VISFocalPlaneAssemblyLongDimensionMaxImage"
-        self.vis_focal_plane_assembly_short_dimension_max_image = "SpaceSegment.Instrument.VIS.VISFocalPlaneAssemblyShortDimensionMaxImage"
+        self.vis_focal_plane_assembly_long_dimension_max_image = \
+            "SpaceSegment.Instrument.VIS.VISFocalPlaneAssemblyLongDimensionMaxImage"
+        self.vis_focal_plane_assembly_short_dimension_max_image = \
+            "SpaceSegment.Instrument.VIS.VISFocalPlaneAssemblyShortDimensionMaxImage"
         self.vis_gain_coeffs = "SpaceSegment.Instrument.VIS.GainCoeffs"
         self.vis_readout_noise_table = "SpaceSegment.Instrument.VIS.ReadoutNoiseTable"
         self.vis_distortion_maps = "SpaceSegment.Instrument.VIS.VISDistortionMaps"
@@ -474,8 +479,10 @@ class MDBKeys(object):
         self.ghost_model_shift_x = "SpaceSegment.Instrument.VIS.GhostModelShiftX"
         self.ghost_model_shift_y = "SpaceSegment.Instrument.VIS.GhostModelShiftY"
         self.ghost_model_star_brightness = "SpaceSegment.Instrument.VIS.GhostModelStarBrightness"
-        self.mean_detector_quantum_efficiency_cbenominal_bol = "SpaceSegment.Instrument.VIS.MeanDetectorQuantumEfficiencyNominalBOL"
-        self.mean_detector_quantum_efficiency_cbenominal_eol = "SpaceSegment.Instrument.VIS.MeanDetectorQuantumEfficiencyNominalEOL"
+        self.mean_detector_quantum_efficiency_cbenominal_bol = \
+            "SpaceSegment.Instrument.VIS.MeanDetectorQuantumEfficiencyNominalBOL"
+        self.mean_detector_quantum_efficiency_cbenominal_eol = \
+            "SpaceSegment.Instrument.VIS.MeanDetectorQuantumEfficiencyNominalEOL"
         self.ccd_full_well_capacity_eol = "SpaceSegment.Instrument.VIS.CCDFullWellCapacityEOL"
         self.distortion_model = "SpaceSegment.Instrument.VIS.DistortionModel"
         self.vis_optics_aocspixel_detector_psf = "SpaceSegment.Instrument.VIS.VISOpticsAOCSPixelDetectorPSF"

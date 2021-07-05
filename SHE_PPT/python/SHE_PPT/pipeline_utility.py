@@ -28,7 +28,6 @@ from typing import Any, Dict, Tuple, Union
 from xml.sax._exceptions import SAXParseException
 
 from . import magic_values as mv
-from . import products
 from .file_io import read_xml_product, read_listfile, find_file
 from .logging import getLogger
 from .utility import AllowedEnum, is_any_type_of_none
@@ -281,13 +280,14 @@ def archive_product(product_filename, archive_dir, workdir):
                     copyfile(qualified_data_filename, qualified_archive_data_filename)
 
         else:
-            logger.warning("Product " + qualified_filename + " has no 'get_all_filenames' method.")
+            logger.warning("Product %s has no 'get_all_filenames' method.",qualified_filename)
 
     except Exception as e:
-        logger.warning("Failsafe exception block triggered when trying to save statistics product in archive. " +
-                       "Exception was: " + str(e))
+        logger.warning(("Failsafe exception block triggered when trying to save statistics product "
+                        "in archive. "
+                        "Exception was: %s"),
+                        str(e))
 
-    return
 
 
 def read_analysis_config(config_filename: str,
@@ -429,20 +429,20 @@ def read_config(config_filename: str,
 
         filelist = read_listfile(qualified_config_filename)
 
-        # If we get here, it is a listfile. If no files in it, return an empty dict. If one, return that. If more than one,
-        # raise an exception
+        # If we get here, it is a listfile. If no files in it, return an empty dict. If one, return that.
+        # If more than one,raise an exception
         if len(filelist) == 0:
             return _make_config_from_cline_args_and_defaults(config_keys=config_keys,
                                                              cline_args=cline_args,
                                                              defaults=defaults,)
-        elif len(filelist) == 1:
+        if len(filelist) == 1:
             return _read_config_product(config_filename=filelist[0],
                                         workdir=workdir,
                                         config_keys=config_keys,
                                         cline_args=cline_args,
                                         defaults=defaults)
-        else:
-            raise ValueError("File " + qualified_config_filename + " is a listfile with more than one file listed, and " +
+
+        raise ValueError("File " + qualified_config_filename + " is a listfile with more than one file listed, and " +
                              "is an invalid input to read_config.")
 
     except (json.decoder.JSONDecodeError, UnicodeDecodeError):
@@ -474,7 +474,7 @@ def _read_config_product(config_filename: str,
                                  cline_args=cline_args,
                                  defaults=defaults)
 
-    except (UnicodeDecodeError, SAXParseException, UnpicklingError) as _e:
+    except (UnicodeDecodeError, SAXParseException, UnpicklingError):
 
         # Try to read it as a plain text file
         return _read_config_file(qualified_config_filename=find_file(config_filename, workdir),
@@ -700,7 +700,7 @@ def get_conditional_product(filename: str,
     """
 
     # First check for None
-    if filename is None or filename is "None" or filename is "":
+    if filename is None or filename == "None" or filename == "":
         return None
 
     # Find the file, and check if it's a listfile
@@ -714,10 +714,10 @@ def get_conditional_product(filename: str,
         # raise an exception
         if len(filelist) == 0:
             return None
-        elif len(filelist) == 1:
+        if len(filelist) == 1:
             return read_xml_product(filelist[0], workdir)
-        else:
-            raise ValueError("File " + qualified_filename + " is a listfile with more than one file listed, and " +
+
+        raise ValueError("File " + qualified_filename + " is a listfile with more than one file listed, and " +
                              "is an invalid input to get_conditional_product.")
 
     except (json.decoder.JSONDecodeError, UnicodeDecodeError):

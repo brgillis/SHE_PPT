@@ -28,17 +28,19 @@ import os
 from EL_PythonUtils.utilities import hash_any
 from astropy.table import Table
 
-import SHE_PPT
 import ST_DM_DmUtils.DmUtils as dm_utils
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.intermediategeneral_stub import dpdSheIntermediateGeneral
 from ST_DataModelBindings.pro import she_stub as she_pro
+import SHE_PPT
+
 
 from ..file_io import read_xml_product, find_aux_file, get_allowed_filename, find_file
 from ..logging import getLogger
-from ..product_utility import get_data_filename_from_product, set_data_filename_of_product, init_intermediate_general
+from ..product_utility import init_intermediate_general
 from ..table_formats.she_bfd_bias_statistics import initialise_bfd_bias_statistics_table, get_bfd_bias_statistics
-from ..table_formats.she_bias_statistics import tf, initialise_bias_statistics_table, get_bias_statistics, get_bias_measurements
+from ..table_formats.she_bias_statistics import initialise_bias_statistics_table, get_bias_statistics,\
+                                                get_bias_measurements
 
 
 sample_file_name = 'SHE_PPT/sample_intermediate_general.xml'
@@ -127,8 +129,7 @@ def __get_method_datastorage(self, method):
             break
     if i is None:
         return None
-    else:
-        return self.Data.DataStorage[i]
+    return self.Data.DataStorage[i]
 
 
 def __set_method_bias_statistics_filename(self, method, filename):
@@ -139,14 +140,12 @@ def __set_method_bias_statistics_filename(self, method, filename):
         len_datastorage = len(self.Data.DataStorage)
         self.Data.StringData.append(method + ":" + str(len_datastorage))
         self.Data.DataStorage.append(create_method_she_bias_statistics(filename))
-        return
-    elif filename is not None:
+    elif bias_statistics is not None and filename is not None:
         bias_statistics.DataContainer.FileName = filename
-        return
-    elif bias_statistics is None:
+    elif bias_statistics is None and filename is None:
         # Already set to None, so nothing to do
-        return
-    else:
+        pass
+    elif bias_statistics is not None and filename is None:
         # Delete the string value and data storage
         for i_s, s in enumerate(self.Data.StringData):
             if method + ":" in s:
@@ -154,7 +153,6 @@ def __set_method_bias_statistics_filename(self, method, filename):
                 break
         del self.Data.StringData[i_s]
         del self.Data.DataStorage[i]
-        return
 
 
 def __get_method_bias_statistics_filename(self, method):
@@ -166,10 +164,10 @@ def __get_method_bias_statistics_filename(self, method):
 
     filename = bias_statistics.DataContainer.FileName
 
-    if filename == "None" or filename == "data/None":
+    if filename in ("None","data/None"):
         return None
-    else:
-        return filename
+
+    return filename
 
 
 def __set_method_bias_statistics(self, method, stats, workdir="."):
@@ -182,7 +180,7 @@ def __set_method_bias_statistics(self, method, stats, workdir="."):
             try:
                 os.remove(qualified_old_filename)
             except Exception:
-                logger.warning("Deprecated file " + qualified_old_filename + " cannot be deleted.")
+                logger.warning("Deprecated file %s cannot be deleted", qualified_old_filename)
 
     # Handle if the new statistics object is None
     if stats is None:
@@ -220,7 +218,6 @@ def __set_method_bias_statistics(self, method, stats, workdir="."):
     # Set the filename for the object
     self.set_method_bias_statistics_filename(method, new_filename)
 
-    return
 
 
 def __get_method_bias_statistics(self, method, workdir="."):
@@ -230,8 +227,7 @@ def __get_method_bias_statistics(self, method, workdir="."):
     if filename is None:
         if method == "BFD":
             return None
-        else:
-            return None, None
+        return None, None
 
     qualified_filename = find_file(filename, path=workdir)
 
@@ -293,15 +289,13 @@ def __set_method_bias_measurements(self, method, measurements, workdir="."):
             try:
                 os.remove(qualified_old_filename)
             except Exception:
-                logger.warning("Deprecated file " + qualified_old_filename + " cannot be deleted.")
+                logger.warning("Deprecated file %s cannot be deleted", qualified_old_filename)
 
     # Set the filename for the object
     self.set_method_bias_statistics_filename(method, filename)
 
     # Write the table
     bias_statistics_table.write(qualified_filename)
-
-    return
 
 
 def __get_method_bias_measurements(self, method, workdir="."):
@@ -322,7 +316,6 @@ def __get_method_bias_measurements(self, method, workdir="."):
 
 def __set_BFD_bias_statistics_filename(self, filename):
     __set_method_bias_statistics_filename(self, method="BFD", filename=filename)
-    return
 
 
 def __get_BFD_bias_statistics_filename(self):
@@ -337,8 +330,8 @@ def __get_BFD_bias_statistics(self, workdir="."):
     return __get_method_bias_statistics(self, method="BFD", workdir=workdir)
 
 
-def __set_BFD_bias_measurements(self, stats, workdir="."):
-    return __set_method_bias_measurements(self, method="BFD", stats=stats, workdir=workdir)
+def __set_BFD_bias_measurements(self, measurements, workdir="."):
+    return __set_method_bias_measurements(self, method="BFD", measurements=measurements, workdir=workdir)
 
 
 def __get_BFD_bias_measurements(self, workdir="."):
@@ -347,7 +340,6 @@ def __get_BFD_bias_measurements(self, workdir="."):
 
 def __set_KSB_bias_statistics_filename(self, filename):
     __set_method_bias_statistics_filename(self, method="KSB", filename=filename)
-    return
 
 
 def __get_KSB_bias_statistics_filename(self):
@@ -362,8 +354,8 @@ def __get_KSB_bias_statistics(self, workdir="."):
     return __get_method_bias_statistics(self, method="KSB", workdir=workdir)
 
 
-def __set_KSB_bias_measurements(self, stats, workdir="."):
-    return __set_method_bias_measurements(self, method="KSB", stats=stats, workdir=workdir)
+def __set_KSB_bias_measurements(self, measurements, workdir="."):
+    return __set_method_bias_measurements(self, method="KSB", measurements=measurements, workdir=workdir)
 
 
 def __get_KSB_bias_measurements(self, workdir="."):
@@ -372,7 +364,6 @@ def __get_KSB_bias_measurements(self, workdir="."):
 
 def __set_LensMC_bias_statistics_filename(self, filename):
     __set_method_bias_statistics_filename(self, method="LensMC", filename=filename)
-    return
 
 
 def __get_LensMC_bias_statistics_filename(self):
@@ -387,8 +378,8 @@ def __get_LensMC_bias_statistics(self, workdir="."):
     return __get_method_bias_statistics(self, method="LensMC", workdir=workdir)
 
 
-def __set_LensMC_bias_measurements(self, stats, workdir="."):
-    return __set_method_bias_measurements(self, method="LensMC", stats=stats, workdir=workdir)
+def __set_LensMC_bias_measurements(self, measurements, workdir="."):
+    return __set_method_bias_measurements(self, method="LensMC", measurements=measurements, workdir=workdir)
 
 
 def __get_LensMC_bias_measurements(self, workdir="."):
@@ -397,7 +388,6 @@ def __get_LensMC_bias_measurements(self, workdir="."):
 
 def __set_MomentsML_bias_statistics_filename(self, filename):
     __set_method_bias_statistics_filename(self, method="MomentsML", filename=filename)
-    return
 
 
 def __get_MomentsML_bias_statistics_filename(self):
@@ -412,8 +402,8 @@ def __get_MomentsML_bias_statistics(self, workdir="."):
     return __get_method_bias_statistics(self, method="MomentsML", workdir=workdir)
 
 
-def __set_MomentsML_bias_measurements(self, stats, workdir="."):
-    return __set_method_bias_measurements(self, method="MomentsML", stats=stats, workdir=workdir)
+def __set_MomentsML_bias_measurements(self, measurements, workdir="."):
+    return __set_method_bias_measurements(self, method="MomentsML", measurements=measurements, workdir=workdir)
 
 
 def __get_MomentsML_bias_measurements(self, workdir="."):
@@ -422,7 +412,6 @@ def __get_MomentsML_bias_measurements(self, workdir="."):
 
 def __set_REGAUSS_bias_statistics_filename(self, filename):
     __set_method_bias_statistics_filename(self, method="REGAUSS", filename=filename)
-    return
 
 
 def __get_REGAUSS_bias_statistics_filename(self):
@@ -437,8 +426,8 @@ def __get_REGAUSS_bias_statistics(self, workdir="."):
     return __get_method_bias_statistics(self, method="REGAUSS", workdir=workdir)
 
 
-def __set_REGAUSS_bias_measurements(self, stats, workdir="."):
-    return __set_method_bias_measurements(self, method="REGAUSS", stats=stats, workdir=workdir)
+def __set_REGAUSS_bias_measurements(self, measurements, workdir="."):
+    return __set_method_bias_measurements(self, method="REGAUSS", measurements=measurements, workdir=workdir)
 
 
 def __get_REGAUSS_bias_measurements(self, workdir="."):

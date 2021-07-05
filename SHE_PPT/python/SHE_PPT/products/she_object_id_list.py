@@ -28,7 +28,6 @@ import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.objectidlist_stub import dpdSheObjectIdList
 
 from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
 
 
 sample_file_name = "SHE_PPT/sample_object_id_list.xml"
@@ -47,7 +46,6 @@ def init():
 
     binding_class.has_files = False
 
-    return
 
 
 def __get_all_filenames(self):
@@ -65,7 +63,6 @@ def __get_id_list(self):
 def __set_id_list(self, l):
 
     self.Data.ObjectIdList = l
-    return
 
 
 def create_dpd_she_object_id_list(id_list=None):
@@ -77,7 +74,7 @@ def create_dpd_she_object_id_list(id_list=None):
 
     dpd_she_object_id_list.Header = HeaderProvider.create_generic_header("DpdSheObjectIdList")  # FIXME
 
-    if(id_list):
+    if id_list:
         __set_id_list(dpd_she_object_id_list, id_list)
     else:
         __set_id_list(dpd_she_object_id_list, [])

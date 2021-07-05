@@ -51,7 +51,6 @@ def init():
 
     binding_class.has_files = True
 
-    return
 
 
 def __set_data_filename(self, filename):
@@ -101,5 +100,6 @@ def create_she_galaxy_population_priors(filename=None):
     she_galaxy_population_priors.DataContainer = DataContainer()
     she_galaxy_population_priors.DataContainer.FileName = filename
     she_galaxy_population_priors.DataContainer.filestatus = "PROPOSED"
+
 
     return she_galaxy_population_priors

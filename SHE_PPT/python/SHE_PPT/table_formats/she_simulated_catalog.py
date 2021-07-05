@@ -23,14 +23,11 @@ __updated__ = "2021-02-10"
 
 from collections import OrderedDict
 
-from astropy.table import Table
-
 from EL_PythonUtils.utilities import hash_any
 
 from .. import magic_values as mv
-from ..flags import she_flag_version
 from ..logging import getLogger
-from ..table_utility import is_in_format, setup_table_format, set_column_properties, init_table
+from ..table_utility import is_in_format, init_table,SheTableFormat
 
 
 fits_version = "8.0"
@@ -39,7 +36,7 @@ fits_def = "she.simulatedCatalog"
 logger = getLogger(mv.logger_name)
 
 
-class SheSimulatedCatalogMeta(object):
+class SheSimulatedCatalogMeta():
     """
         @brief A class defining the metadata for details tables.
     """
@@ -80,53 +77,49 @@ class SheSimulatedCatalogMeta(object):
         self.all = list(self.comments.keys())
 
 
-class SheSimulatedCatalogFormat(object):
+class SheSimulatedCatalogFormat(SheTableFormat):
     """
         @brief A class defining the format for galaxy details tables. Only the details_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
     def __init__(self):
-
-        # Get the metadata (contained within its own class)
-        self.meta = SheSimulatedCatalogMeta()
-
-        setup_table_format(self)
+        super().__init__(SheSimulatedCatalogMeta())
 
         # Table column labels
-        self.ID = set_column_properties(self, "OBJECT_ID", dtype=">i8", fits_dtype="K")
+        self.ID = self.set_column_properties( "OBJECT_ID", dtype=">i8", fits_dtype="K")
 
-        self.group_ID = set_column_properties(self, "GROUP_ID", dtype=">i8", fits_dtype="K")
+        self.group_ID = self.set_column_properties("GROUP_ID", dtype=">i8", fits_dtype="K")
 
-        self.ra = set_column_properties(self, "RIGHT_ASCENSION", comment="ra (deg)")
-        self.dec = set_column_properties(self, "DECLINATION", comment="dec (deg)")
+        self.ra = self.set_column_properties("RIGHT_ASCENSION", comment="ra (deg)")
+        self.dec = self.set_column_properties("DECLINATION", comment="dec (deg)")
 
-        self.hlr_bulge = set_column_properties(self,
+        self.hlr_bulge = self.set_column_properties(
                                                "HLR_BULGE", comment="arcsec")
-        self.hlr_disk = set_column_properties(self,
+        self.hlr_disk = self.set_column_properties(
                                               "HLR_DISK", comment="arcsec")
 
-        self.bulge_ellipticity = set_column_properties(self, "BULGE_ELLIPTICITY")
-        self.bulge_axis_ratio = set_column_properties(self, "BULGE_AXIS_RATIO")
-        self.bulge_fraction = set_column_properties(self, "BULGE_FRACTION")
-        self.disk_height_ratio = set_column_properties(self, "DISK_HEIGHT_RATIO")
+        self.bulge_ellipticity = self.set_column_properties("BULGE_ELLIPTICITY")
+        self.bulge_axis_ratio = self.set_column_properties("BULGE_AXIS_RATIO")
+        self.bulge_fraction = self.set_column_properties("BULGE_FRACTION")
+        self.disk_height_ratio = self.set_column_properties("DISK_HEIGHT_RATIO")
 
-        self.z = set_column_properties(self, "REDSHIFT")
+        self.z = self.set_column_properties("REDSHIFT")
 
-        self.magnitude = set_column_properties(self, "MAGNITUDE", comment="VIS filter")
+        self.magnitude = self.set_column_properties("MAGNITUDE", comment="VIS filter")
 
-        self.snr = set_column_properties(self, "SNR", comment="Sum in quadrature over detections")
+        self.snr = self.set_column_properties("SNR", comment="Sum in quadrature over detections")
 
-        self.sersic_index = set_column_properties(self, "SERSIC_INDEX")
+        self.sersic_index = self.set_column_properties("SERSIC_INDEX")
 
-        self.rotation = set_column_properties(self, "ROTATION", comment="[deg]")
-        self.spin = set_column_properties(self, "SPIN", comment="[deg]")
-        self.tilt = set_column_properties(self, "TILT", comment="[deg]")
+        self.rotation = self.set_column_properties("ROTATION", comment="[deg]")
+        self.spin = self.set_column_properties("SPIN", comment="[deg]")
+        self.tilt = self.set_column_properties("TILT", comment="[deg]")
 
-        self.g1 = set_column_properties(self, "G1_WORLD")
-        self.g2 = set_column_properties(self, "G2_WORLD")
+        self.g1 = self.set_column_properties("G1_WORLD")
+        self.g2 = self.set_column_properties("G2_WORLD")
 
-        self.target_galaxy = set_column_properties(self, "is_target_galaxy", dtype="bool", fits_dtype="L")
+        self.target_galaxy = self.set_column_properties("is_target_galaxy", dtype="bool", fits_dtype="L")
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
@@ -263,6 +256,6 @@ def initialise_simulated_catalog(image_group_phl=None,
                                                    model_seed=model_seed,
                                                    noise_seed=noise_seed,)
 
-    assert(is_in_format(details_table, tf))
+    assert is_in_format(details_table, tf)
 
     return details_table
