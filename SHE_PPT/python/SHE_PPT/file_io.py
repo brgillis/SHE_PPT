@@ -523,8 +523,9 @@ def update_xml_with_value(filename):
     key_lines = [ii for ii, line in enumerate(lines) if '<Key>' in line]
     bad_lines = [idx for idx in key_lines if '<Value>' not in lines[idx + 1]]
     if bad_lines:
-        logger.warning("%s has incorrect parameter settings, missing <Value> in lines: %s"
-                       % (filename, ','.join(map(str, bad_lines))))
+        logger.warning("%s has incorrect parameter settings, missing <Value> in lines: %s",
+                       filename,
+                       ','.join(map(str, bad_lines)))
         # Do update
         for ii, idx in enumerate(bad_lines):
             # Check next 3 lines for String/Int etc Value
@@ -543,8 +544,10 @@ def update_xml_with_value(filename):
                 n_defaults += 1
             lines = lines[:idx + ii + 1] + [new_line] + lines[idx + ii + 1:]
             open(filename, 'w').writelines(lines)
-            logger.info('Updated %s lines in %s: n_defaults=%s' %
-                        (len(bad_lines), filename, n_defaults))
+            logger.info('Updated %s lines in %s: n_defaults=%s',
+                        len(bad_lines),
+                        filename,
+                        n_defaults)
     else:
         logger.debug('No updates required')
 

@@ -824,8 +824,8 @@ class SHEFrameStack():
                                 try:
                                     new_row[key] = row[key]
                                 except np.ma.core.MaskError as e:
-                                    logger.warning("Masked element for column " + str(key) +
-                                                   " cannot be added to table; default value will be used.")
+                                    logger.warning(("Masked element for column %s"
+                                                   " cannot be added to table; default value will be used."),key)
 
                     logger.info("Finished pruning list of galaxy objects to loop over")
 

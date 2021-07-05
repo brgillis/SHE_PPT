@@ -58,7 +58,7 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
 
     # If the table format is a base class, ensure that strict=False
     if table_format.is_base and strict:
-        logger.warn("Table format " + table_format.m.table_format + " is a base format. Enforcing strict=False.")
+        logger.warn("Table format %s is a base format. Enforcing strict=False.",table_format.m.table_format)
         strict = False
 
     # Check that all required column names are present
@@ -120,7 +120,7 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
         if parent_colname not in table_format.all:
             if strict:
                 logger.info(
-                    "Table not in correct format due to presence of extra column: " + colname)
+                    "Table not in correct format due to presence of extra column: %s",colname)
                 return False
             if verbose:
                 logger.info("Table not in correct format due to presence of extra column: %s, but not failing "
