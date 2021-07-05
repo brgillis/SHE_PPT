@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
+__updated__ = "2021-07-05"
 
 import logging
 import os
@@ -29,7 +29,10 @@ import pytest
 from scipy.stats import linregress
 
 from SHE_PPT.math import (linregress_with_errors,
-                          get_linregress_statistics, combine_linregress_statistics,)
+                          get_linregress_statistics,
+                          combine_linregress_statistics,
+                          LinregressResults,
+                          BiasMeasurements)
 import numpy as np
 
 
@@ -132,3 +135,32 @@ class Test_math():
             combined_results.intercept_err, np.mean(intercept_errs) / np.sqrt(n_test), decimal=2)
         assert_almost_equal(
             combined_results.slope_intercept_covar, np.mean(slope_intercept_covars), decimal=2)
+
+    def test_bias_measurement(self):
+
+        # Set up the input for the test
+        input_linregress_results = LinregressResults()
+
+        input_linregress_results.slope = 1.5
+        input_linregress_results.slope_err = 0.1
+        input_linregress_results.intercept = -0.3
+        input_linregress_results.intercept_err = 0.01
+        input_linregress_results.slope_intercept_covar = 0.03
+
+        bias_measurements = BiasMeasurements(input_linregress_results)
+
+        # Test everything is initialized properly
+        assert np.isclose(bias_measurements.m, input_linregress_results.slope - 1)
+        assert np.isclose(bias_measurements.m_err, input_linregress_results.slope_err)
+        assert np.isclose(bias_measurements.c, input_linregress_results.intercept)
+        assert np.isclose(bias_measurements.c_err, input_linregress_results.intercept_err)
+        assert np.isclose(bias_measurements.mc_covar, input_linregress_results.slope_intercept_covar)
+
+        # Test sigma calculations
+        bias_measurements.m_target = 0.1
+        bias_measurements.c_target = 0.01
+
+        assert np.isclose(bias_measurements.m_sigma, (bias_measurements.m -
+                                                      bias_measurements.m_target) / bias_measurements.m_err)
+        assert np.isclose(bias_measurements.c_sigma, -(bias_measurements.c -
+                                                       -bias_measurements.c_target) / bias_measurements.c_err)
