@@ -373,6 +373,7 @@ class BiasMeasurements(object):
 
     # Getters for attrs calculated and cached on-demand
 
+    @property
     def m_sigma(self):
 
         # Calculate _m_sigma if required
@@ -383,6 +384,7 @@ class BiasMeasurements(object):
 
         return self._m_sigma
 
+    @property
     def c_sigma(self):
 
         # Calculate _c_sigma if required
