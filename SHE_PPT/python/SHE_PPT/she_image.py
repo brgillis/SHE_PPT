@@ -4,7 +4,7 @@ File: she_image.py
 Created on: Aug 17, 2017
 """
 
-__updated__ = "2021-06-23"
+__updated__ = "2021-07-06"
 
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -76,6 +76,8 @@ def _read_stamp(xmin, ymin, xmax, ymax, filename, hdu_i):
     return out
 
 # We need new-style classes for properties, hence inherit from object
+
+
 class SHEImage():
     """ Structure to hold an image together with a mask, a noisemap, and a header (for metadata).
 
@@ -224,7 +226,6 @@ class SHEImage():
             self.det_iy = self.header[mv.ccdid_label][0]
             self.det_ix = self.header[mv.ccdid_label][2]
 
-
     # We define properties of the SHEImage object, following
     # https://euclid.roe.ac.uk/projects/codeen-users/wiki/User_Cod_Std-pythonstandard-v1-0#PNAMA-020-m-Developer-SHOULD-use-properties-to-protect-the-service-from-the-implementation
 
@@ -317,11 +318,10 @@ class SHEImage():
             existing_shape = self.shape
         except AttributeError:
             existing_shape = None
-        if existing_shape:
-            if data_array.shape != existing_shape:
-                raise ValueError("Shape of a SHEImage can not be modified. Current is {}, new data is {}.".format(
-                    existing_shape, data_array.shape
-                ))
+        if existing_shape and data_array.shape != existing_shape:
+            raise ValueError("Shape of a SHEImage can not be modified. Current is {}, new data is {}.".format(
+                existing_shape, data_array.shape
+            ))
         # And perform the attribution
         self._data = data_array
 
@@ -347,10 +347,10 @@ class SHEImage():
             # Quietly ignore if byte order is the only difference
             if not mask_array.dtype.newbyteorder('<') in allowed_int_dtypes:
                 logger.warning(
-                    "Received mask array of type '%s'. Attempting safe casting to np.int32.",mask_array.dtype)
+                    "Received mask array of type '%s'. Attempting safe casting to np.int32.", mask_array.dtype)
                 try:
                     mask_array = mask_array.astype(np.int32, casting='safe')
-                except:
+                except Exception:
                     raise ValueError(
                         "The mask array must be of integer type (it is {})".format(mask_array.dtype))
             self._mask = mask_array
@@ -403,18 +403,6 @@ class SHEImage():
             if segmentation_map_array.shape != self._data.shape:
                 raise ValueError(
                     "The segmentation map array must have the same size as the data {}".format(self._data.shape))
-            if False:  # FIXME
-                # Quietly ignore if byte order is the only difference
-                if not segmentation_map_array.dtype.newbyteorder('<') in allowed_int_dtypes:
-                    logger.warning("Received segmentation map array of type %s. "
-                                   "Attempting safe casting to seg_dtype.",
-                                   segmentation_map_array.dtype)
-                    try:
-                        segmentation_map_array = segmentation_map_array.astype(
-                            np.int32, casting='safe')
-                    except:
-                        raise ValueError("The segmentation array must be of np.int32 type (it is {})".format(
-                            segmentation_map_array.dtype))
             self._segmentation_map = segmentation_map_array
 
     @segmentation_map.deleter
@@ -485,7 +473,6 @@ class SHEImage():
                 self._header = header_object
             else:
                 raise ValueError("The header must be an astropy.io.fits.Header instance")
-
 
     @header.deleter
     def header(self):
@@ -742,7 +729,7 @@ class SHEImage():
         # Note that overwrite is called overwrite in the latest astropy, but
         # backwards compatible.
 
-        logger.debug("Wrote %s to the FITS file %s",self, filepath)
+        logger.debug("Wrote %s to the FITS file %s", self, filepath)
 
     @classmethod
     def read_from_fits(cls,
@@ -821,7 +808,7 @@ class SHEImage():
 
         # Removing the mandatory cards (that were automatically added to the
         # header if write_to_fits was used)
-        logger.debug("The raw primary header has %d keys",len(list(header.keys())))
+        logger.debug("The raw primary header has %d keys", len(list(header.keys())))
         for keyword in ["SIMPLE", "BITPIX", "NAXIS", "NAXIS1", "NAXIS2", "EXTEND"]:
             if keyword in header:
                 header.remove(keyword)
@@ -830,7 +817,7 @@ class SHEImage():
                 if keyword in header:
                     header.remove(keyword)
 
-        logger.debug("The cleaned header has %d keys",len(list(header.keys())))
+        logger.debug("The cleaned header has %d keys", len(list(header.keys())))
 
         # Reading the mask
         if mask_filepath is not None:
@@ -888,7 +875,7 @@ class SHEImage():
                           background_map=background_map, weight_map=weight_map,
                           header=header, offset=offset, wcs=wcs)
 
-        logger.info("Read %s from the file '%s'",str(newimg), filepath)
+        logger.info("Read %s from the file '%s'", str(newimg), filepath)
         return newimg
 
     @classmethod
@@ -909,7 +896,7 @@ class SHEImage():
         try:
             outarray = cls._get_specific_hdu_content_from_fits(filepath, ext=ext)
         except KeyError:
-            logger.debug("Extension %s not found in fits file %s",ext,filepath)
+            logger.debug("Extension %s not found in fits file %s", ext, filepath)
             return None
 
         return outarray
@@ -922,7 +909,7 @@ class SHEImage():
         Note that this function also takes care of transposing the data.
         """
 
-        logger.debug("Reading from file '%s'...",filepath)
+        logger.debug("Reading from file '%s'...", filepath)
 
         hdulist = astropy.io.fits.open(filepath)
         nhdu = len(hdulist)
@@ -935,7 +922,7 @@ class SHEImage():
                     filepath)
             ext = "PRIMARY"
 
-        logger.debug("Accessing extension '%s' out of %d available HDUs...",ext, nhdu)
+        logger.debug("Accessing extension '%s' out of %d available HDUs...", ext, nhdu)
         data = hdulist[ext].data.transpose()
         if not data.ndim == 2:
             raise ValueError("Primary HDU must contain a 2D image")
@@ -946,146 +933,6 @@ class SHEImage():
         if return_header:
             return data, header
         return data
-
-    def __easy_image_extraction(self,xmin,xmax,ymin,ymax,new_header,new_offset):
-        # We are fully within the image
-        #Note for debug string formatting: self.shape is a tuple so needs two %d's
-        logger.debug("Extracting stamp [%d:%d,%d:%d] within image of shape (%d,%d)",
-                xmin, xmax, ymin, ymax, self.shape)
-
-        if self.mask is None:
-            new_mask = None
-        else:
-            new_mask = self.mask[xmin:xmax, ymin:ymax]
-
-        if self.noisemap is None:
-            new_noisemap = None
-        else:
-            new_noisemap = self.noisemap[xmin:xmax, ymin:ymax]
-
-        if self.segmentation_map is None:
-            new_segmentation_map = None
-        else:
-            new_segmentation_map = self.segmentation_map[xmin:xmax, ymin:ymax]
-
-        if self.background_map is None:
-            new_background_map = None
-        else:
-            new_background_map = self.background_map[xmin:xmax, ymin:ymax]
-
-        if self.weight_map is None:
-            new_weight_map = None
-        else:
-            new_weight_map = self.weight_map[xmin:xmax, ymin:ymax]
-
-        newimg = SHEImage(
-            data=self.data[xmin:xmax, ymin:ymax],
-            mask=new_mask,
-            noisemap=new_noisemap,
-            segmentation_map=new_segmentation_map,
-            background_map=new_background_map,
-            weight_map=new_weight_map,
-            header=new_header,
-            offset=new_offset,
-            wcs=self.wcs,
-            parent_image=self,
-        )
-
-        return newimg
-
-    def __difficult_image_extraction(self,xmin,xmax,ymin,ymax,new_header,new_offset,width,height):
-        #Note for debug string formatting: self.shape is a tuple so needs two %d's
-        logger.debug("Extracting stamp [%d:%d,%d:%d] not entirely within image of shape (%d,%d)",
-                xmin, xmax, ymin, ymax, self.shape)
-
-        # One solution would be to pad the image and extract, but that would need a lot of memory.
-        # So instead we go for the more explicit bound computations.
-
-        # Compute the bounds of the overlapping part of the stamp in the
-        # original image
-        overlap_xmin = max(xmin, 0)
-        overlap_ymin = max(ymin, 0)
-        overlap_xmax = min(xmax, self.shape[0])
-        overlap_ymax = min(ymax, self.shape[1])
-        overlap_width = overlap_xmax - overlap_xmin
-        overlap_height = overlap_ymax - overlap_ymin
-        overlap_slice = (
-            slice(overlap_xmin, overlap_xmax), slice(overlap_ymin, overlap_ymax))
-        logger.debug("overlap_slice: %s",overlap_slice)
-
-        # Compute the bounds of this same overlapping part in the new stamp
-        # The indexes of the stamp are simply shifted with respect to those
-        # of the original image by (xmin, ymin)
-        overlap_xmin_stamp = overlap_xmin - xmin
-        overlap_xmax_stamp = overlap_xmax - xmin
-        overlap_ymin_stamp = overlap_ymin - ymin
-        overlap_ymax_stamp = overlap_ymax - ymin
-        overlap_slice_stamp = (slice(overlap_xmin_stamp, overlap_xmax_stamp), slice(
-            overlap_ymin_stamp, overlap_ymax_stamp))
-
-        # We first create new stamps, and we will later fill part of them
-        # with slices of the original.
-        data_stamp = np.zeros((width, height), dtype=self.data.dtype)
-
-        # Always create a mask stamp if partially off-image
-        mask_stamp = np.ones((width, height), dtype=np.int32) * masked_off_image
-
-        if self.noisemap is None:
-            noisemap_stamp = None
-        else:
-            noisemap_stamp = np.zeros((width, height), dtype=self.noisemap.dtype)
-
-        if self.segmentation_map is None:
-            segmentation_map_stamp = None
-        else:
-            segmentation_map_stamp = np.ones(
-                (width, height), dtype=self.segmentation_map.dtype) * mv.segmap_unassigned_value
-
-        if self.background_map is None:
-            background_map_stamp = None
-        else:
-            background_map_stamp = np.zeros((width, height), dtype=self.background_map.dtype)
-
-        if self.weight_map is None:
-            weight_map_stamp = None
-        else:
-            weight_map_stamp = np.zeros((width, height), dtype=self.weight_map.dtype)
-
-        # Fill the stamp arrays:
-        # If there is any overlap
-        if (overlap_width > 0) and (overlap_height > 0):
-            data_stamp[overlap_slice_stamp] = self.data[overlap_slice]
-            if self.mask is not None:
-                mask_stamp[overlap_slice_stamp] = self.mask[overlap_slice]
-            else:
-                mask_stamp[overlap_slice_stamp] = 0
-            if self.noisemap is not None:
-                noisemap_stamp[overlap_slice_stamp] = self.noisemap[overlap_slice]
-            if self.segmentation_map is not None:
-                segmentation_map_stamp[overlap_slice_stamp] = self.segmentation_map[overlap_slice]
-            if self.background_map is not None:
-                background_map_stamp[overlap_slice_stamp] = self.background_map[overlap_slice]
-            if self.weight_map is not None:
-                weight_map_stamp[overlap_slice_stamp] = self.weight_map[overlap_slice]
-
-        # Create the new object
-        newimg = SHEImage(
-            data=data_stamp,
-            mask=mask_stamp,
-            noisemap=noisemap_stamp,
-            segmentation_map=segmentation_map_stamp,
-            background_map=background_map_stamp,
-            weight_map=weight_map_stamp,
-            header=new_header,
-            offset=new_offset,
-            wcs=self.wcs,
-            parent_image=self,
-        )
-
-        if overlap_width == 0 and overlap_height == 0:
-            logger.warning("The extracted stamp is entirely outside of the image bounds!")
-
-        return newimg
 
     def _extract_attr_stamp(self, xmin, ymin, xmax, ymax, attr, filename, hdu_i):
         if (xmax - xmin) <= 0 or (ymax - ymin) <= 0:
@@ -1098,6 +945,34 @@ class SHEImage():
         else:
             out = None
         return out
+
+    def extract_wcs_stamp(self, x, y, none_if_out_of_bounds=False):
+        """ Extracts an "empty" stamp, which contains only information needed for WCS operations, having the
+            interface of a standard SHEImage.
+        """
+
+        # If we're returning None if out of bounds, check now so we can exit
+        # early
+        if none_if_out_of_bounds and((x < 0) or (x >= self.shape[0]) or
+                                     (x < 0) or (x >= self.shape[1])):
+            return None
+
+        new_offset = self.offset + np.array([x, y])
+
+        newimg = SHEImage(
+            data=np.ndarray(shape=(0, 0), dtype=float),
+            mask=None,
+            noisemap=None,
+            segmentation_map=None,
+            background_map=None,
+            weight_map=None,
+            header=self.header,
+            offset=new_offset,
+            wcs=self.wcs,
+            parent_image=self,
+        )
+
+        return newimg
 
     def extract_stamp(self, x, y, width=DEFAULT_STAMP_SIZE, height=None, indexconv="numpy", keep_header=False,
                       none_if_out_of_bounds=False, force_all_properties=False,
@@ -1204,7 +1079,7 @@ class SHEImage():
         if xmin >= 0 and xmax < self.shape[0] and ymin >= 0 and ymax < self.shape[1]:
             # We are fully within ghe image
             logger.debug("Extracting stamp [%d:%d,%d:%d] fully within image of shape (%d,%d)",
-                xmin, xmax, ymin, ymax, self.shape)
+                         xmin, xmax, ymin, ymax, self.shape)
 
             attr_stamps = {}
             for attr, filename, hdu_i in (("data", data_filename, data_hdu),
@@ -1231,7 +1106,7 @@ class SHEImage():
 
         else:
             logger.debug("Extracting stamp [%d:%d,%d:%d] not entirely within image of shape (%d,%d)",
-            xmin, xmax, ymin, ymax, self.shape)
+                         xmin, xmax, ymin, ymax, self.shape)
 
             # One solution would be to pad the image and extract, but that would need a lot of memory.
             # So instead we go for the more explicit bound computations.
@@ -1246,7 +1121,7 @@ class SHEImage():
             overlap_height = overlap_ymax - overlap_ymin
             overlap_slice = (
                 slice(overlap_xmin, overlap_xmax), slice(overlap_ymin, overlap_ymax))
-            logger.debug("overlap_slice: %s",str(overlap_slice))
+            logger.debug("overlap_slice: %s", str(overlap_slice))
 
             # Compute the bounds of this same overlapping part in the new stamp
             # The indexes of the stamp are simply shifted with respect to those
@@ -1368,8 +1243,6 @@ class SHEImage():
 
         self.mask = np.zeros_like(self.data, dtype=np.int32)
 
-        return
-
     def add_default_noisemap(self, force=False, suppress_warnings=False):
         """Adds a default noisemap to this object (all 0.). If force=True, will overwrite an existing noisemap.
         """
@@ -1402,8 +1275,6 @@ class SHEImage():
         if self.background_map is not None:
             self.noisemap += np.sqrt(self.background_map / gain)
 
-        return
-
     def add_default_segmentation_map(self, force=False):
         """Adds a default segmentation_map to this object (all unassigned). If force=True, will overwrite an existing
         segmentation_map.
@@ -1417,8 +1288,6 @@ class SHEImage():
                 return
 
         self.segmentation_map = mv.segmap_unassigned_value * np.ones_like(self.data, dtype=np.int32)
-
-        return
 
     def add_default_background_map(self, force=False):
         """Adds a default background_map to this object (all 0.). If force=True, will overwrite an existing
@@ -1434,8 +1303,6 @@ class SHEImage():
 
         self.background_map = np.zeros_like(self.data, dtype=float)
 
-        return
-
     def add_default_weight_map(self, force=False):
         """Adds a default weight_map to this object (all 0.). If force=True, will overwrite an existing
         weight_map.
@@ -1449,8 +1316,6 @@ class SHEImage():
                 return
 
         self.weight_map = np.ones_like(self.data, dtype=float)
-
-        return
 
     def add_default_header(self, force=False):
         """Adds a default header to this object (only required values). If force=True, will overwrite an existing
@@ -1466,8 +1331,6 @@ class SHEImage():
 
         self.header = astropy.io.fits.Header()
 
-        return
-
     def add_default_wcs(self, force=False):
         """Adds a default wcs to this object (pixel scale 1.0). If force=True, will overwrite an existing wcs.
         """
@@ -1480,8 +1343,6 @@ class SHEImage():
                 return
 
         self.wcs = astropy.wcs.WCS(astropy.io.fits.Header())
-
-        return
 
     def pix2world(self, x, y, origin=0):
         """Converts x and y pixel coordinates to ra and dec world coordinates.

@@ -22,7 +22,7 @@ Created on: 05/03/18
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 
-__updated__ = "2021-06-23"
+__updated__ = "2021-07-06"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
@@ -137,7 +137,6 @@ class SHEFrameStack():
         # Set the detections catalogue to index by ID
         if self.detections_catalogue is not None:
             self.detections_catalogue.add_index(mfc_tf.ID)
-
 
     @property
     def exposures(self):
@@ -314,6 +313,35 @@ class SHEFrameStack():
 
         return True
 
+    def extract_galaxy_wcs_stack(self, gal_id, *args, **kwargs):
+        """Extracts a WCS-only postage stamp centred on a given galaxy in the detections tables, indexed by its ID.
+
+           Parameters
+           ----------
+           gal_id : int
+               The galaxy's unique ID
+           *args, **kwargs
+               Other arguments and keyword arguments are forwarded to extract_stamp_stack()
+
+            Return
+           ------
+           stamp_stack : SHEImageStack
+        """
+
+        # Need to put this in a try block in case the index wasn't properly set
+        try:
+            row = self.detections_catalogue.loc[gal_id]
+        except ValueError as e:
+            if "Cannot create TableLoc object with no indices" not in str(e):
+                raise
+            self.detections_catalogue.add_index(mfc_tf.ID)
+            row = self.detections_catalogue.loc[gal_id]
+
+        x_world = row[mfc_tf.gal_x_world]
+        y_world = row[mfc_tf.gal_y_world]
+
+        return self.extract_wcs_stamp_stack(x_world, y_world, *args, **kwargs)
+
     def extract_galaxy_stack(self, gal_id, width, *args, **kwargs):
         """Extracts a postage stamp centred on a given galaxy in the detections tables, indexed by its ID.
 
@@ -412,6 +440,69 @@ class SHEFrameStack():
                                        parent_frame_stack=self)
 
         return bulge_psf_stack, disk_psf_stack
+
+    def extract_wcs_stamp_stack(self, x_world, y_world, none_if_out_of_bounds=False, extract_stacked_stamp=True,
+                                extract_exposure_stamps=True):
+        """Extracts an "empty" postage stamp centred on the provided sky co-ordinates, which only contains WCS
+           information but otherwise has the same interface as a SHEImage, for each exposure and the stacked
+           image.
+
+           Parameters
+           ----------
+           x_world : float
+               The x sky co-ordinate (R.A.)
+           y_world : float
+               The y sky co-ordinate (Dec.)
+           none_if_out_of_bounds : bool
+               Set this to True if you want this method to return None if the stamp is entirely out of bounds of the image.
+               By default, this is set to False, which means it will instead return an entirely masked stack in that case.
+           extract_stacked_stamp : bool
+               If set to False, the stamp from the stacked image won't be extracted (and will be set to None)
+           extract_exposure_stamps : bool
+               If set to False, the stamps from the exposure images won't be extracted (and will all be set to None)
+
+           Return
+           ------
+           stamp_stack : SHEImageStack
+        """
+
+        # Extract from the stacked image first
+
+        if extract_stacked_stamp and self.stacked_image is not None:
+
+            stacked_image_x, stacked_image_y = self.stacked_image.world2pix(
+                x_world, y_world)
+
+            stacked_image_wcs_stamp = self.stacked_image.extract_wcs_stamp(x=stacked_image_x,
+                                                                           y=stacked_image_y,
+                                                                           none_if_out_of_bounds=none_if_out_of_bounds)
+
+            # Return None if none_if_out_of_bounds and out of bounds of stacked
+            # image
+            if none_if_out_of_bounds and stacked_image_wcs_stamp is None:
+                return None
+        else:
+            stacked_image_wcs_stamp = None
+
+        # Get the stamps for each exposure
+
+        exposure_wcs_stamps = []
+        for exposure in self.exposures:
+            if extract_exposure_stamps and exposure is not None:
+                exposure_wcs_stamps.append(exposure.extract_wcs_stamp(x_world=x_world,
+                                                                      y_world=y_world,))
+            else:
+                exposure_wcs_stamps.append(None)
+
+        # Create and return the stamp stack
+
+        stamp_stack = SHEImageStack(stacked_image=stacked_image_wcs_stamp,
+                                    exposures=exposure_wcs_stamps,
+                                    x_world=x_world,
+                                    y_world=y_world,
+                                    parent_frame_stack=self)
+
+        return stamp_stack
 
     def extract_stamp_stack(self, x_world, y_world, width, height=None, x_buffer=0, y_buffer=0, keep_header=False,
                             none_if_out_of_bounds=False, extract_stacked_stamp=True, extract_exposure_stamps=True):
@@ -636,7 +727,7 @@ class SHEFrameStack():
     @staticmethod
     def __load_detections_catalogue(detections_listfile_filename, workdir, save_products, object_id_list):
         try:
-            detections_catalogue_products=None
+            detections_catalogue_products = None
             detections_filenames = read_listfile(find_file(detections_listfile_filename, path=workdir))
             # Load each table in turn and combine them
             detections_catalogues = []
@@ -680,7 +771,7 @@ class SHEFrameStack():
                                 new_row[key] = row[key]
                             except np.ma.core.MaskError as e:
                                 logger.warning("Masked element for column %s cannot be added "
-                                               "to table; default value will be used.",str(key))
+                                               "to table; default value will be used.", str(key))
                 # If we do have an object id list, construct a new table with just the desired rows
                 logger.info("Finished pruning list of galaxy objects to loop over")
         except JSONDecodeError as e:
@@ -692,7 +783,7 @@ class SHEFrameStack():
         return detections_catalogue, detections_catalogue_products
 
     @staticmethod
-    def read_or_none(listfile_filename,workdir):
+    def read_or_none(listfile_filename, workdir):
         if listfile_filename is None:
             return None
         return read_listfile(os.path.join(workdir, listfile_filename))
@@ -787,10 +878,10 @@ class SHEFrameStack():
                     if save_products:
                         detections_catalogue_products.append(detections_product)
 
-                    logger.debug("DP: %s, %s, %s", 
-                                                     workdir,
-                                                     detections_product_filename,
-                                                     detections_product.get_data_filename())
+                    logger.debug("DP: %s, %s, %s",
+                                 workdir,
+                                 detections_product_filename,
+                                 detections_product.get_data_filename())
                     detections_catalogue = table.Table.read(
                         os.path.join(workdir, detections_product.get_data_filename()))
 
@@ -825,7 +916,7 @@ class SHEFrameStack():
                                     new_row[key] = row[key]
                                 except np.ma.core.MaskError as e:
                                     logger.warning(("Masked element for column %s"
-                                                   " cannot be added to table; default value will be used."),key)
+                                                    " cannot be added to table; default value will be used."), key)
 
                     logger.info("Finished pruning list of galaxy objects to loop over")
 
@@ -855,10 +946,9 @@ class SHEFrameStack():
             psf_products = []
             exposure_segmentation_products = []
 
-
-        exposure_filenames = cls.read_or_none(exposure_listfile_filename,workdir)
-        seg_filenames = cls.read_or_none(seg_listfile_filename,workdir)
-        psf_filenames = cls.read_or_none(psf_listfile_filename,workdir)
+        exposure_filenames = cls.read_or_none(exposure_listfile_filename, workdir)
+        seg_filenames = cls.read_or_none(seg_listfile_filename, workdir)
+        psf_filenames = cls.read_or_none(psf_listfile_filename, workdir)
 
         for exposure_i in range(len(exposure_filenames)):
 
