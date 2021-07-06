@@ -22,7 +22,7 @@ Created on: 02/03/18
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
-__updated__ = "2021-06-08"
+__updated__ = "2021-07-06"
 
 
 from collections import namedtuple
@@ -315,6 +315,12 @@ class SHEFrame(object):
                     continue
 
                 x, y = detector.world2pix(x_world, y_world)
+
+                # Check for bad values
+                if np.isnan((x, y)).any() or np.isinf((x, y)).any():
+                    continue
+
+                # Check if it's in range
                 if (x < 1 - x_buffer) or (x > detector.shape[0] + x_buffer):
                     continue
                 if (y < 1 - y_buffer) or (y > detector.shape[1] + y_buffer):
