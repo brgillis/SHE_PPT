@@ -273,6 +273,64 @@ class SHEFrame(object):
 
         return True
 
+    def _find_position(self, x_world, y_world, x_buffer=0, y_buffer=0):
+        """ Finds the detector where a given position in world coordinates is.
+        """
+
+        # Loop over the detectors, and use the WCS of each to determine if it's
+        # on it or not
+        found = False
+
+        num_x, num_y = np.shape(self.detectors)
+
+        for x_i in range(num_x):
+            for y_i in range(num_y):
+
+                detector = self.detectors[x_i, y_i]
+                if detector is None:
+                    continue
+
+                x, y = detector.world2pix(x_world, y_world)
+                if ((x < 1 - x_buffer) or (x > detector.shape[0] + x_buffer) or
+                        (y < 1 - y_buffer) or (y > detector.shape[1] + y_buffer)):
+                    continue
+
+                found = True
+
+                break
+
+            if found:
+                break
+
+        if not found:
+            detector = None
+
+        return detector, x, y, x_i, y_i
+
+    def extract_wcs_stamp(self, x_world, y_world):
+        """ Extracts an "empty" stamp, which contains only information needed for WCS operations, having the
+            interface of a standard SHEImage.
+
+           Parameters
+           ----------
+           x_world : float
+               The x sky co-ordinate (R.A.)
+           y_world : float
+               The y sky co-ordinate (Dec.)
+
+           Return
+           ------
+           stamp : SHEImage or None
+               The extracted stamp, or None if it was not found on any detector
+        """
+
+        detector, x, y, _, _ = self._find_position(x_world, y_world)
+
+        wcs_stamp = detector.extract_wcs_stamp(x=x,
+                                               y=y,)
+
+        return wcs_stamp
+
     def extract_stamp(self, x_world, y_world, width, height=None, x_buffer=0, y_buffer=0, keep_header=False):
         """Extracts a postage stamp centred on the provided sky co-ordinates, by using each detector's WCS
            to determine which (if any) it lies on. If x/y_buffer > 0, it will also extract from a detector if
@@ -301,39 +359,13 @@ class SHEFrame(object):
                The extracted stamp, or None if it was not found on any detector
         """
 
-        # Loop over the detectors, and use the WCS of each to determine if it's
-        # on it or not
-        found = False
+        detector, x, y, x_i, y_i = self._find_position(x_world=x_world,
+                                                       y_world=y_world,
+                                                       x_buffer=x_buffer,
+                                                       y_buffer=y_buffer)
 
-        num_x, num_y = np.shape(self.detectors)
-
-        for x_i in range(num_x):
-            for y_i in range(num_y):
-
-                detector = self.detectors[x_i, y_i]
-                if detector is None:
-                    continue
-
-                x, y = detector.world2pix(x_world, y_world)
-
-                # Check for bad values
-                if np.isnan((x, y)).any() or np.isinf((x, y)).any():
-                    continue
-
-                # Check if it's in range
-                if (x < 1 - x_buffer) or (x > detector.shape[0] + x_buffer):
-                    continue
-                if (y < 1 - y_buffer) or (y > detector.shape[1] + y_buffer):
-                    continue
-
-                found = True
-
-                break
-
-            if found:
-                break
-
-        if (detector is None) or (not found):
+        # If not found on any detector, "detector" will be None, so return None for the stamp
+        if detector is None:
             return None
 
         if self._images_loaded:
