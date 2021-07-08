@@ -4,7 +4,7 @@ File: she_image.py
 Created on: Aug 17, 2017
 """
 
-__updated__ = "2021-07-06"
+__updated__ = "2021-07-08"
 
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -223,8 +223,8 @@ class SHEImage():
             self.det_ix = 1
             self.det_iy = 1
         else:
-            self.det_iy = self.header[mv.ccdid_label][0]
-            self.det_ix = self.header[mv.ccdid_label][2]
+            self.det_iy = int(self.header[mv.ccdid_label][0])
+            self.det_ix = int(self.header[mv.ccdid_label][2])
 
     # We define properties of the SHEImage object, following
     # https://euclid.roe.ac.uk/projects/codeen-users/wiki/User_Cod_Std-pythonstandard-v1-0#PNAMA-020-m-Developer-SHOULD-use-properties-to-protect-the-service-from-the-implementation
