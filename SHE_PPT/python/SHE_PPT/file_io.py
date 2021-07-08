@@ -366,7 +366,7 @@ def _find_web_file_xml(filename, qualified_filename):
     return webpath
 
 
-def _find_web_file_json(filename, qualified_filename, webpath):
+def _find_web_file_json(filename, qualified_filename):
     webpath = os.path.split(filename)[0]
     l = read_listfile(qualified_filename)
     for element in l:
@@ -410,12 +410,12 @@ def find_web_file(filename):
     # If it's an xml data product, we'll also need to download all files it points to
     if filename[-4:] == ".xml":
 
-        webpath = _find_web_file_xml(filename, qualified_filename)
+        _webpath = _find_web_file_xml(filename, qualified_filename)
 
     # If it's json listfile, we'll also need to download all files it points to
     elif filename[-5:] == ".json":
 
-        _find_web_file_json(filename, qualified_filename, webpath)
+        _find_web_file_json(filename, qualified_filename)
 
     return qualified_filename
 
