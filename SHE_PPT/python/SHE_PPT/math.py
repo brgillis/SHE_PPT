@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-07-05"
+__updated__ = "2021-07-12"
 
 import numpy as np
 
@@ -65,6 +65,89 @@ class LinregressStatistics():
 
 
 class LinregressResults():
+
+    # Attrs set at init
+    _slope = None
+    _slope_err = None
+    _intercept = None
+    _intercept_err = None
+    _slope_intercept_covar = None
+
+    # Attrs calculated and cached on-demand
+    _slope_sigma = None
+    _intercept_sigma = None
+
+    @property
+    def slope(self):
+        return self._slope
+
+    @slope.setter
+    def slope(self, slope):
+        self._slope = slope
+        # Uncache slope_sigma
+        self._slope_sigma = None
+
+    @property
+    def slope_err(self):
+        return self._slope_err
+
+    @slope_err.setter
+    def slope_err(self, slope_err):
+        self._slope_err = slope_err
+        # Uncache slope_sigma
+        self._slope_sigma = None
+
+    @property
+    def intercept(self):
+        return self._intercept
+
+    @intercept.setter
+    def intercept(self, intercept):
+        self._intercept = intercept
+        # Uncache intercept_sigma
+        self._intercept_sigma = None
+
+    @property
+    def intercept_err(self):
+        return self._intercept_err
+
+    @intercept_err.setter
+    def intercept_err(self, intercept_err):
+        self._intercept_err = intercept_err
+        # Uncache intercept_sigma
+        self._intercept_sigma = None
+
+    @property
+    def slope_intercept_covar(self):
+        return self._slope_intercept_covar
+
+    @slope_intercept_covar.setter
+    def slope_intercept_covar(self, slope_intercept_covar):
+        self._slope_intercept_covar = slope_intercept_covar
+
+    # Getters for attrs calculated and cached on-demand
+
+    @property
+    def slope_sigma(self):
+
+        # Calculate _slope_sigma if required
+        if ((self._slope_sigma is None) and (self.slope is not None) and
+                (self.slope_err is not None)):
+            slope_diff = np.abs(self.slope)
+            self._slope_sigma = slope_diff / self.slope_err
+
+        return self._slope_sigma
+
+    @property
+    def intercept_sigma(self):
+
+        # Calculate _intercept_sigma if required
+        if ((self._intercept_sigma is None) and (self.intercept is not None) and
+                (self.intercept_err is not None)):
+            intercept_diff = np.abs(self.intercept)
+            self._intercept_sigma = intercept_diff / self.intercept_err
+
+        return self._intercept_sigma
 
     def __init__(self, lstats=None):
 
