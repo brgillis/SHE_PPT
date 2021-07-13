@@ -573,14 +573,16 @@ def remove_files(l_qualified_filenames):
             logger.warning(f"Cannot delete file: {qualified_filename}")
 
 
-def tar_files(qualified_tarball_filename, l_qualified_filenames, delete_files=False):
+def tar_files(tarball_filename, l_filenames, workdir=".", delete_files=False):
 
-    qualified_filename_string = " ".join(l_qualified_filenames)
+    qualified_tarball_filename = os.path.join(workdir, tarball_filename)
+
+    filename_string = " ".join(l_filenames)
 
     # Tar the files and fully log the process
     logger.info(f"Creating tarball {qualified_tarball_filename}.")
 
-    tar_cmd = f"tar -cf {qualified_tarball_filename} {qualified_filename_string}"
+    tar_cmd = f"cd {workdir} && tar -cf {qualified_tarball_filename} {filename_string}"
     tar_results = subprocess.run(tar_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     logger.info(f"tar stdout: {tar_results.stdout}")
@@ -596,4 +598,10 @@ def tar_files(qualified_tarball_filename, l_qualified_filenames, delete_files=Fa
 
     # Delete the files if desired
     if delete_files:
-        remove_files(l_qualified_filenames)
+        for filename in l_filenames:
+            qualified_filename = os.path.join(workdir, filename)
+            try:
+                os.remove(qualified_filename)
+            except Exception:
+                # Don't need to fail the whole process, but log the issue
+                logger.warning(f"Cannot delete file: {qualified_filename}")
