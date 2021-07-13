@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-06-21"
+__updated__ = "2021-07-13"
 
 from datetime import datetime
 import json
@@ -27,6 +27,7 @@ import os
 from os.path import join, exists
 from pickle import UnpicklingError
 import pickle
+import subprocess
 from xml.sax._exceptions import SAXParseException
 
 from EL_PythonUtils.utilities import time_to_timestamp
@@ -38,12 +39,12 @@ from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider
 from ST_DataModelBindings.sys_stub import CreateFromDocument
 import numpy as np
 
+from . import __version__ as SHE_PPT_version
 from . import magic_values as mv
 from .constants.test_data import SYNC_CONF
 from .logging import getLogger
 from .utility import get_release_from_version
 
-from . import __version__ as SHE_PPT_version
 
 logger = getLogger(mv.logger_name)
 
@@ -350,13 +351,14 @@ def find_conf_file(filename):
 def _is_no_file(name):
     return name is None or name == "None" or name == "data/None" or name == "" or name == "data/"
 
+
 def _find_web_file_xml(filename, qualified_filename):
     try:
         webpath = os.path.split(filename)[0]
         p = read_xml_product(qualified_filename, workdir="")
         for subfilename in p.get_all_filenames():
             # Skip if there's no file to download
-            if _is_no_file(subfilename) :
+            if _is_no_file(subfilename):
                 continue
             find_web_file(os.path.join(webpath, subfilename))
     except NamespaceError as e:
@@ -381,6 +383,7 @@ def _find_web_file_json(filename, qualified_filename):
                 if _is_no_file(subelement):
                     continue
                 find_web_file(os.path.join(webpath, subelement))
+
 
 def find_web_file(filename):
     """
@@ -556,3 +559,49 @@ def filename_exists(filename):
     """Quick function to check the filename isn't one of many strings indicating the file doesn't exist.
     """
     return filename not in (None, "None", "data/None", "", "data/")
+
+
+def remove_files(l_qualified_filenames):
+    """ Loop through and try to remove all files in a list. No exception is raised if the files can't be removed,
+        but a warning is logged.
+    """
+    for qualified_filename in l_qualified_filenames:
+        try:
+            os.remove(qualified_filename)
+        except Exception:
+            # Don't need to fail the whole process, but log the issue
+            logger.warning(f"Cannot delete file: {qualified_filename}")
+
+
+def tar_files(tarball_filename, l_filenames, workdir=".", delete_files=False):
+
+    qualified_tarball_filename = os.path.join(workdir, tarball_filename)
+
+    filename_string = " ".join(l_filenames)
+
+    # Tar the files and fully log the process
+    logger.info(f"Creating tarball {qualified_tarball_filename}.")
+
+    tar_cmd = f"cd {workdir} && tar -cf {qualified_tarball_filename} {filename_string}"
+    tar_results = subprocess.run(tar_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    logger.info(f"tar stdout: {tar_results.stdout}")
+    logger.debug("tar stderr: %s", tar_results.stderr)
+
+    # Check that the tar process succeeded
+    if not os.path.isfile(qualified_tarball_filename):
+        raise FileNotFoundError(f"{qualified_tarball_filename} not found. stderr from tar process was: \n"
+                                f"{tar_results.stderr}")
+    if tar_results.returncode:
+        raise ValueError(f"Tarring of {qualified_tarball_filename} failed. stderr from tar process was: \n"
+                         f"{tar_results.stderr}")
+
+    # Delete the files if desired
+    if delete_files:
+        for filename in l_filenames:
+            qualified_filename = os.path.join(workdir, filename)
+            try:
+                os.remove(qualified_filename)
+            except Exception:
+                # Don't need to fail the whole process, but log the issue
+                logger.warning(f"Cannot delete file: {qualified_filename}")

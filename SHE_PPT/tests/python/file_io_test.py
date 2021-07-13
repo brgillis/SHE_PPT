@@ -4,23 +4,8 @@
 
     Unit tests relating to I/O functions.
 """
-
-# Copyright (C) 2012-2020 Euclid Science Ground Segment
-#
-# This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
-# Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
-# any later version.
-#
-# This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
-# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-# details.
-#
-# You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
-# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-
-__updated__ = "2020-06-10"
-
 import os
+import subprocess
 from time import sleep
 
 from astropy.table import Table
@@ -36,8 +21,24 @@ from SHE_PPT.file_io import (get_allowed_filename,
                              processing_function_maxlen,
                              find_aux_file,
                              update_xml_with_value,
-                             read_xml_product)
+                             read_xml_product,
+                             tar_files)
 import numpy as np
+
+
+# Copyright (C) 2012-2020 Euclid Science Ground Segment
+#
+# This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+# Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+# any later version.
+#
+# This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+# the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+__updated__ = "2021-07-13"
 
 
 class TestIO:
@@ -61,6 +62,11 @@ class TestIO:
             os.remove(cls.tuple_listfile_name)
 
         del cls.listfile_name, cls.tuple_listfile_name
+
+    @pytest.fixture(autouse=True)
+    def setup(self, tmpdir):
+
+        self.workdir = tmpdir.strpath
 
     def test_get_allowed_filename(self):
 
@@ -143,3 +149,43 @@ class TestIO:
             update_xml_with_value(temp_test_filename)
             product = read_xml_product(temp_test_filename)
         product.validateBinding()
+
+    def test_tar_files(self):
+        """ Runs test of tarring files.
+        """
+
+        # Set up the files
+
+        filenames = ["a.txt", "b.txt"]
+        texts = ["foo/n", "bar/n"]
+
+        for filename, text in zip(filenames, texts):
+            with open(os.path.join(self.workdir, filename), "w") as fo:
+                fo.write(text)
+
+        tarball_filename = "tarball.tar"
+
+        # Check everything is set up as expected
+        assert os.path.isfile(os.path.join(self.workdir, filenames[0]))
+        assert os.path.isfile(os.path.join(self.workdir, filenames[1]))
+
+        tar_files(tarball_filename=tarball_filename,
+                  l_filenames=filenames,
+                  workdir=self.workdir,
+                  delete_files=True)
+
+        # Check things have been tarred up
+        assert not os.path.isfile(os.path.join(self.workdir, filenames[0]))
+        assert not os.path.isfile(os.path.join(self.workdir, filenames[1]))
+        assert os.path.isfile(os.path.join(self.workdir, tarball_filename))
+
+        # Check that we can untar and retrieve the data
+        subprocess.call(f"cd {self.workdir} && tar xf {tarball_filename}", shell=True)
+
+        assert os.path.isfile(os.path.join(self.workdir, filenames[0]))
+        assert os.path.isfile(os.path.join(self.workdir, filenames[1]))
+
+        for filename, text in zip(filenames, texts):
+            with open(os.path.join(self.workdir, filename), "r") as fi:
+                read_text = fi.read()
+                assert read_text == text
