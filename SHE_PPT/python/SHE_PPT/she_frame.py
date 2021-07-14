@@ -22,7 +22,7 @@ Created on: 02/03/18
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
-__updated__ = "2021-07-06"
+__updated__ = "2021-07-14"
 
 
 from collections import namedtuple
@@ -325,6 +325,10 @@ class SHEFrame(object):
         """
 
         detector, x, y, _, _ = self._find_position(x_world, y_world)
+
+        # Return None if not found
+        if detector is None:
+            return None
 
         wcs_stamp = detector.extract_wcs_stamp(x=x,
                                                y=y,)
