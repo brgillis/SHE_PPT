@@ -46,8 +46,6 @@ SUBOBJECT_ID_SPLIT_HEAD = "SHE_CTE_SubObjectIdSplit_"
 PSF_HEAD = "SHE_PSFToolkit_"
 ESTIMATE_SHEAR_HEAD = "SHE_CTE_EstimateShear_"
 SHEAR_ESTIMATES_MERGE_HEAD = "SHE_CTE_ShearEstimatesMerge_"
-CTI_GAL_VALIDATION_HEAD = "SHE_Validation_ValidateCTIGal_"
-SHEAR_BIAS_VALIDATION_HEAD = "SHE_Validation_ValidateShearBias_"
 
 
 class AnalysisConfigKeys(ConfigKeys):
@@ -163,6 +161,33 @@ class AnalysisConfigKeys(ConfigKeys):
     # Options for SHE_CTE_ShearEstimatesMerge
 
     SEM_NUM_THREADS = SHEAR_ESTIMATES_MERGE_HEAD + "number_threads"
+
+
+# Task names for the Analysis Validation pipeline
+CTI_GAL_VALIDATION_HEAD = "SHE_Validation_ValidateCTIGal_"
+SHEAR_BIAS_VALIDATION_HEAD = "SHE_Validation_ValidateShearBias_"
+
+
+class AnalysisValidationConfigKeys(ConfigKeys):
+    """ An Enum of all allowed keys for the SHE analysis validation pipeline.
+    """
+
+    # Pipeline-wide options
+
+    PIP_PROFILE = PIPELINE_HEAD + "profile"
+
+    # Placeholder options
+
+    PIP_PLACEHOLDER_0 = PIPELINE_HEAD + "placeholder_0"
+    PIP_PLACEHOLDER_1 = PIPELINE_HEAD + "placeholder_1"
+    PIP_PLACEHOLDER_2 = PIPELINE_HEAD + "placeholder_2"
+    PIP_PLACEHOLDER_3 = PIPELINE_HEAD + "placeholder_3"
+    PIP_PLACEHOLDER_4 = PIPELINE_HEAD + "placeholder_4"
+    PIP_PLACEHOLDER_5 = PIPELINE_HEAD + "placeholder_5"
+    PIP_PLACEHOLDER_6 = PIPELINE_HEAD + "placeholder_6"
+    PIP_PLACEHOLDER_7 = PIPELINE_HEAD + "placeholder_7"
+    PIP_PLACEHOLDER_8 = PIPELINE_HEAD + "placeholder_8"
+    PIP_PLACEHOLDER_9 = PIPELINE_HEAD + "placeholder_9"
 
     # Options for SHE_Validation_ValidateCTIGal
 
