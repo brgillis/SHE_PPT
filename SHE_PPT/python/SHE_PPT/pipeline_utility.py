@@ -5,7 +5,7 @@
     Misc. utility functions for the pipeline.
 """
 
-__updated__ = "2021-06-16"
+__updated__ = "2021-07-15"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -47,6 +47,7 @@ PSF_HEAD = "SHE_PSFToolkit_"
 ESTIMATE_SHEAR_HEAD = "SHE_CTE_EstimateShear_"
 SHEAR_ESTIMATES_MERGE_HEAD = "SHE_CTE_ShearEstimatesMerge_"
 CTI_GAL_VALIDATION_HEAD = "SHE_Validation_ValidateCTIGal_"
+SHEAR_BIAS_VALIDATION_HEAD = "SHE_Validation_ValidateShearBias_"
 
 
 class AnalysisConfigKeys(ConfigKeys):
@@ -150,7 +151,7 @@ class AnalysisConfigKeys(ConfigKeys):
 
     SOID_BATCH_SIZE = SUBOBJECT_ID_SPLIT_HEAD + "batch_size"
     SOID_MAX_BATCHES = SUBOBJECT_ID_SPLIT_HEAD + "max_batches"
-    sOID_IDS = SUBOBJECT_ID_SPLIT_HEAD + "ids"
+    SOID_IDS = SUBOBJECT_ID_SPLIT_HEAD + "ids"
 
     # Options for SHE_CTE_EstimateShear
 
@@ -173,6 +174,12 @@ class AnalysisConfigKeys(ConfigKeys):
     CGV_BG_BIN_LIMITS = CTI_GAL_VALIDATION_HEAD + "bg_bin_limits"
     CGV_COLOUR_BIN_LIMITS = CTI_GAL_VALIDATION_HEAD + "colour_bin_limits"
     CGV_SIZE_BIN_LIMITS = CTI_GAL_VALIDATION_HEAD + "size_bin_limits"
+
+    # Options for SHE_Validation_ValidateShearBias
+
+    SBV_SLOPE_FAIL_SIGMA = SHEAR_BIAS_VALIDATION_HEAD + "slope_fail_sigma"
+    SBV_INTERCEPT_FAIL_SIGMA = SHEAR_BIAS_VALIDATION_HEAD + "intercept_fail_sigma"
+    SBV_FAIL_SIGMA_SCALING = SHEAR_BIAS_VALIDATION_HEAD + "fail_sigma_scaling"
 
 
 # Task names for Reconciliation pipeline
@@ -280,14 +287,13 @@ def archive_product(product_filename, archive_dir, workdir):
                     copyfile(qualified_data_filename, qualified_archive_data_filename)
 
         else:
-            logger.warning("Product %s has no 'get_all_filenames' method.",qualified_filename)
+            logger.warning("Product %s has no 'get_all_filenames' method.", qualified_filename)
 
     except Exception as e:
         logger.warning(("Failsafe exception block triggered when trying to save statistics product "
                         "in archive. "
                         "Exception was: %s"),
-                        str(e))
-
+                       str(e))
 
 
 def read_analysis_config(config_filename: str,
@@ -443,7 +449,7 @@ def read_config(config_filename: str,
                                         defaults=defaults)
 
         raise ValueError("File " + qualified_config_filename + " is a listfile with more than one file listed, and " +
-                             "is an invalid input to read_config.")
+                         "is an invalid input to read_config.")
 
     except (json.decoder.JSONDecodeError, UnicodeDecodeError):
 
@@ -718,7 +724,7 @@ def get_conditional_product(filename: str,
             return read_xml_product(filelist[0], workdir)
 
         raise ValueError("File " + qualified_filename + " is a listfile with more than one file listed, and " +
-                             "is an invalid input to get_conditional_product.")
+                         "is an invalid input to get_conditional_product.")
 
     except (json.decoder.JSONDecodeError, UnicodeDecodeError):
 
