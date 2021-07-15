@@ -202,8 +202,8 @@ class AnalysisValidationConfigKeys(ConfigKeys):
 
     # Options for SHE_Validation_ValidateShearBias
 
-    SBV_SLOPE_FAIL_SIGMA = SHEAR_BIAS_VALIDATION_HEAD + "slope_fail_sigma"
-    SBV_INTERCEPT_FAIL_SIGMA = SHEAR_BIAS_VALIDATION_HEAD + "intercept_fail_sigma"
+    SBV_M_FAIL_SIGMA = SHEAR_BIAS_VALIDATION_HEAD + "m_fail_sigma"
+    SBV_C_FAIL_SIGMA = SHEAR_BIAS_VALIDATION_HEAD + "c_fail_sigma"
     SBV_FAIL_SIGMA_SCALING = SHEAR_BIAS_VALIDATION_HEAD + "fail_sigma_scaling"
 
 
