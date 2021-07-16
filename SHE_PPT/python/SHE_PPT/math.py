@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-07-16"
+__updated__ = "2021-07-12"
 
 import numpy as np
 
@@ -364,9 +364,7 @@ class BiasMeasurements():
     _mc_covar = None
 
     # Attrs calculated and cached on-demand
-    _m_z = None
     _m_sigma = None
-    _c_z = None
     _c_sigma = None
 
     def __init__(self, linregress_results=None):
@@ -454,42 +452,24 @@ class BiasMeasurements():
     # Getters for attrs calculated and cached on-demand
 
     @property
-    def m_z(self):
-
-        # Calculate _m_z if required
-        if ((self._m_z is None) and (self.m is not None) and
-                (self.m_target is not None)):
-            self._m_z = np.abs(self.m) - np.abs(self.m_target)
-
-        return self._m_z
-
-    @property
     def m_sigma(self):
 
         # Calculate _m_sigma if required
-        if ((self._m_sigma is None) and (self.m_z is not None) and
-                (self.m_err is not None)):
-            self._m_sigma = np.where(self.m_z > 0, self.m_z / self.m_err, 0.)
+        if ((self._m_sigma is None) and (self.m is not None) and
+                (self.m_err is not None) and (self.m_target is not None)):
+            m_diff = np.abs(self.m) - np.abs(self.m_target)
+            self._m_sigma = np.where(m_diff > 0, m_diff / self.m_err, 0.)
 
         return self._m_sigma
-
-    @property
-    def c_z(self):
-
-        # Calculate _c_z if required
-        if ((self._c_z is None) and (self.c is not None) and
-                (self.c_target is not None)):
-            self._c_z = np.abs(self.c) - np.abs(self.c_target)
-
-        return self._c_z
 
     @property
     def c_sigma(self):
 
         # Calculate _c_sigma if required
-        if ((self._c_sigma is None) and (self.c_z is not None) and
-                (self.c_err is not None)):
-            self._c_sigma = np.where(self.c_z > 0, self.c_z / self.c_err, 0.)
+        if ((self._c_sigma is None) and (self.c is not None) and
+                (self.c_err is not None) and (self.c_target is not None)):
+            c_diff = np.abs(self.c) - np.abs(self.c_target)
+            self._c_sigma = np.where(c_diff > 0, c_diff / self.c_err, 0.)
 
         return self._c_sigma
 
