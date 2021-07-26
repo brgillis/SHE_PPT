@@ -43,7 +43,7 @@ class ConfigKeys(AllowedEnum):
     pass
 
 
-class GlobalConfigKeys(AllowedEnum):
+class GlobalConfigKeys(ConfigKeys):
     """ Derived class for ConfigKeys, which contains common keys for all pipelines
     """
 
