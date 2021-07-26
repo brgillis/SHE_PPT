@@ -5,7 +5,8 @@
     Misc. utility functions for the pipeline.
 """
 
-__updated__ = "2021-07-15"
+
+__updated__ = "2021-07-26"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -20,6 +21,7 @@ __updated__ = "2021-07-15"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+from functools import lru_cache
 import json.decoder
 import os
 from pickle import UnpicklingError
@@ -32,24 +34,12 @@ from .file_io import read_xml_product, read_listfile, find_file
 from .logging import getLogger
 from .utility import AllowedEnum, is_any_type_of_none
 
-
-# Derived class for ConfigKeys, to allow more precise type-checking
-class ConfigKeys(AllowedEnum):
-    pass
-
-
-# Task names for Analysis pipeline
+# Task name for generic config keys
 PIPELINE_HEAD = "SHE_Pipeline_"
-REMAP_HEAD = "SHE_MER_RemapMosaic_"
-OBJECT_ID_SPLIT_HEAD = "SHE_CTE_ObjectIdSplit_"
-SUBOBJECT_ID_SPLIT_HEAD = "SHE_CTE_SubObjectIdSplit_"
-PSF_HEAD = "SHE_PSFToolkit_"
-ESTIMATE_SHEAR_HEAD = "SHE_CTE_EstimateShear_"
-SHEAR_ESTIMATES_MERGE_HEAD = "SHE_CTE_ShearEstimatesMerge_"
 
 
-class AnalysisConfigKeys(ConfigKeys):
-    """ An Enum of all allowed keys for the SHE analysis pipelines.
+class ConfigKeys(AllowedEnum):
+    """ Derived class for ConfigKeys, which contains common keys for all pipelines
     """
 
     # Pipeline-wide options
@@ -68,6 +58,20 @@ class AnalysisConfigKeys(ConfigKeys):
     PIP_PLACEHOLDER_7 = PIPELINE_HEAD + "placeholder_7"
     PIP_PLACEHOLDER_8 = PIPELINE_HEAD + "placeholder_8"
     PIP_PLACEHOLDER_9 = PIPELINE_HEAD + "placeholder_9"
+
+
+# Task names for Analysis pipeline
+REMAP_HEAD = "SHE_MER_RemapMosaic_"
+OBJECT_ID_SPLIT_HEAD = "SHE_CTE_ObjectIdSplit_"
+SUBOBJECT_ID_SPLIT_HEAD = "SHE_CTE_SubObjectIdSplit_"
+PSF_HEAD = "SHE_PSFToolkit_"
+ESTIMATE_SHEAR_HEAD = "SHE_CTE_EstimateShear_"
+SHEAR_ESTIMATES_MERGE_HEAD = "SHE_CTE_ShearEstimatesMerge_"
+
+
+class AnalysisConfigKeys(ConfigKeys):
+    """ An Enum of all allowed keys for the SHE analysis pipelines.
+    """
 
     # Options for SHE_MER_RemapMosaic
 
@@ -163,48 +167,73 @@ class AnalysisConfigKeys(ConfigKeys):
     SEM_NUM_THREADS = SHEAR_ESTIMATES_MERGE_HEAD + "number_threads"
 
 
-# Task names for the Analysis Validation pipeline
-CTI_GAL_VALIDATION_HEAD = "SHE_Validation_ValidateCTIGal_"
-SHEAR_BIAS_VALIDATION_HEAD = "SHE_Validation_ValidateShearBias_"
+# Task names for the Validation pipeline
+VALIDATION_HEAD = "SHE_Validation_"
+CTI_GAL_VALIDATION_HEAD = f"{VALIDATION_HEAD}ValidateCTIGal_"
+SHEAR_BIAS_VALIDATION_HEAD = f"{VALIDATION_HEAD}ValidateShearBias_"
 
 
-class AnalysisValidationConfigKeys(ConfigKeys):
+class ValidationConfigKeys(ConfigKeys):
     """ An Enum of all allowed keys for the SHE analysis validation pipeline.
     """
 
-    # Pipeline-wide options
+    # Options for multiple tasks - these global values will be overridden by values specific to a task if those are set
+    VAL_LOCAL_FAIL_SIGMA = f"{VALIDATION_HEAD}local_fail_sigma"
+    VAL_GLOBAL_FAIL_SIGMA = f"{VALIDATION_HEAD}global_fail_sigma"
+    VAL_FAIL_SIGMA_SCALING = f"{VALIDATION_HEAD}fail_sigma_scaling"
 
-    PIP_PROFILE = PIPELINE_HEAD + "profile"
-
-    # Placeholder options
-
-    PIP_PLACEHOLDER_0 = PIPELINE_HEAD + "placeholder_0"
-    PIP_PLACEHOLDER_1 = PIPELINE_HEAD + "placeholder_1"
-    PIP_PLACEHOLDER_2 = PIPELINE_HEAD + "placeholder_2"
-    PIP_PLACEHOLDER_3 = PIPELINE_HEAD + "placeholder_3"
-    PIP_PLACEHOLDER_4 = PIPELINE_HEAD + "placeholder_4"
-    PIP_PLACEHOLDER_5 = PIPELINE_HEAD + "placeholder_5"
-    PIP_PLACEHOLDER_6 = PIPELINE_HEAD + "placeholder_6"
-    PIP_PLACEHOLDER_7 = PIPELINE_HEAD + "placeholder_7"
-    PIP_PLACEHOLDER_8 = PIPELINE_HEAD + "placeholder_8"
-    PIP_PLACEHOLDER_9 = PIPELINE_HEAD + "placeholder_9"
-
-    # Options for SHE_Validation_ValidateCTIGal
-
-    CGV_SLOPE_FAIL_SIGMA = CTI_GAL_VALIDATION_HEAD + "slope_fail_sigma"
-    CGV_INTERCEPT_FAIL_SIGMA = CTI_GAL_VALIDATION_HEAD + "intercept_fail_sigma"
-    CGV_FAIL_SIGMA_SCALING = CTI_GAL_VALIDATION_HEAD + "fail_sigma_scaling"
-
-    CGV_SNR_BIN_LIMITS = CTI_GAL_VALIDATION_HEAD + "snr_bin_limits"
-    CGV_BG_BIN_LIMITS = CTI_GAL_VALIDATION_HEAD + "bg_bin_limits"
-    CGV_COLOUR_BIN_LIMITS = CTI_GAL_VALIDATION_HEAD + "colour_bin_limits"
-    CGV_SIZE_BIN_LIMITS = CTI_GAL_VALIDATION_HEAD + "size_bin_limits"
+    VAL_SNR_BIN_LIMITS = CTI_GAL_VALIDATION_HEAD + "snr_bin_limits"
+    VAL_BG_BIN_LIMITS = CTI_GAL_VALIDATION_HEAD + "bg_bin_limits"
+    VAL_COLOUR_BIN_LIMITS = CTI_GAL_VALIDATION_HEAD + "colour_bin_limits"
+    VAL_SIZE_BIN_LIMITS = CTI_GAL_VALIDATION_HEAD + "size_bin_limits"
 
     # Options for SHE_Validation_ValidateShearBias
 
-    SBV_M_FAIL_SIGMA = SHEAR_BIAS_VALIDATION_HEAD + "m_fail_sigma"
-    SBV_C_FAIL_SIGMA = SHEAR_BIAS_VALIDATION_HEAD + "c_fail_sigma"
-    SBV_FAIL_SIGMA_SCALING = SHEAR_BIAS_VALIDATION_HEAD + "fail_sigma_scaling"
+    SBV_MAX_G_IN = f"{SHEAR_BIAS_VALIDATION_HEAD}max_g_in"
+    SBV_MAX_G_IN = f"{SHEAR_BIAS_VALIDATION_HEAD}max_g_in"
+
+
+@lru_cache(maxsize=None)
+def task_value(global_enum, task_head):
+    """ Given one of the global enums for config options, return the name for the task-specific option.
+    """
+    if isinstance(global_enum, str):
+        value = global_enum
+    else:
+        value = global_enum.value
+    return value.replace(VALIDATION_HEAD, task_head)
+
+
+def cti_gal_value(global_enum):
+    """ Given one of the global enums for config options, return the name for the CTI-Gal task-specific option.
+    """
+    return task_value(global_enum, SHEAR_BIAS_VALIDATION_HEAD)
+
+
+def shear_bias_value(global_enum):
+    """ Given one of the global enums for config options, return the name for the CTI-Gal task-specific option.
+    """
+    return task_value(global_enum, CTI_GAL_VALIDATION_HEAD)
+
+
+@lru_cache(maxsize=None)
+def global_value(task_value, task_head):
+    """ Reverse of task_value, returning the value - gives the value for the global option given the task option.
+    """
+    return task_value.replace(task_head, VALIDATION_HEAD)
+
+
+@lru_cache(maxsize=None)
+def global_enum(task_value, task_head):
+    """ Reverse of task_value, returning the enum - gives the enum for the global option given the task option.
+    """
+    return ValidationConfigKeys(global_value(task_value, task_head))
+
+
+class AnalysisValidationConfigKeys(AnalysisConfigKeys, ValidationConfigKeys):
+    """ Class which combines config keys from analysis and validation pipeliens, for if they're run combined.
+    """
+    pass
 
 
 # Task names for Reconciliation pipeline
@@ -220,9 +249,8 @@ class ReconciliationConfigKeys(ConfigKeys):
     REC_METHOD = RECONCILE_MEASUREMENTS_HEAD + "method"
     CHAINS_REC_METHOD = RECONCILE_MEASUREMENTS_HEAD + "chains_method"
 
+
 # Task names for Calibration pipeline
-
-
 CLEANUP_BIAS_MEASUREMENTS_HEAD = "SHE_CTE_CleanupBiasMeasurement_"
 MEASURE_BIAS_HEAD = "SHE_CTE_MeasureBias_"
 MEASURE_STATISTICS_HEAD = "SHE_CTE_MeasureStatistics_"
@@ -406,12 +434,14 @@ def read_reconciliation_config(config_filename: str,
 
 
 def read_config(config_filename: str,
-                workdir: str=".",
-                config_keys: Union[ConfigKeys, Tuple[ConfigKeys, ...]]=(AnalysisConfigKeys,
-                                                                        ReconciliationConfigKeys,
-                                                                        CalibrationConfigKeys),
-                cline_args: Dict[str, Any]=None,
-                defaults: Dict[str, Any]=None) -> Dict[str, Any]:
+                workdir: str = ".",
+                config_keys: Union[ConfigKeys, Tuple[ConfigKeys, ...]] = (AnalysisConfigKeys,
+                                                                          ValidationConfigKeys,
+                                                                          ReconciliationConfigKeys,
+                                                                          CalibrationConfigKeys),
+                cline_args: Dict[str, Any] = None,
+                defaults: Dict[str, Any] = None,
+                task_head: str = None) -> Dict[str, Any]:
     """ Reads in a generic configuration file to a dictionary. Note that all arguments will be read as strings unless
         a cline_arg value is used.
 
@@ -429,6 +459,10 @@ def read_config(config_filename: str,
         defaults : Dict[str, Any]
             Dict of default values to use if no value (or None) is supplied in the config and no value (or None) is
             supplied in the cline_args.
+        task_head: string
+            Should only be set if reading configs for a Validation task. In this case, this refers to the "head" of
+            the task-specific configuration keys. These task-specific arguments will be used to override the
+            global arguments if set to anything other than None.
     """
 
     # Use empty dicts for cline_args and defaults if None provided
@@ -436,6 +470,11 @@ def read_config(config_filename: str,
         cline_args = {}
     if defaults is None:
         defaults = {}
+
+    # Check for validity of use of task_head
+    if task_head is not None and not issubclass(config_keys, ValidationConfigKeys):
+        raise ValueError("task_head should only be set for read_config if config_keys is ValidationConfigKeys "
+                         "or a subclass of it (and not a list of ConfigKeys).")
 
     # Return None if input filename is None
     if is_any_type_of_none(config_filename):
@@ -471,7 +510,8 @@ def read_config(config_filename: str,
                                         workdir=workdir,
                                         config_keys=config_keys,
                                         cline_args=cline_args,
-                                        defaults=defaults)
+                                        defaults=defaults,
+                                        task_head=task_head)
 
         raise ValueError("File " + qualified_config_filename + " is a listfile with more than one file listed, and " +
                          "is an invalid input to read_config.")
@@ -483,14 +523,13 @@ def read_config(config_filename: str,
                                     workdir=workdir,
                                     config_keys=config_keys,
                                     cline_args=cline_args,
-                                    defaults=defaults)
+                                    defaults=defaults,
+                                    task_head=task_head)
 
 
 def _read_config_product(config_filename: str,
                          workdir: str,
-                         config_keys: Tuple[ConfigKeys, ...],
-                         cline_args: Dict[str, Any],
-                         defaults: Dict[str, Any]) -> Dict[str, Any]:
+                         *args, **kwargs) -> Dict[str, Any]:
     """Reads in a configuration data product.
     """
 
@@ -501,23 +540,20 @@ def _read_config_product(config_filename: str,
         config_data_filename = p.get_data_filename()
 
         return _read_config_file(qualified_config_filename=find_file(config_data_filename, workdir),
-                                 config_keys=config_keys,
-                                 cline_args=cline_args,
-                                 defaults=defaults)
+                                 *args, **kwargs)
 
     except (UnicodeDecodeError, SAXParseException, UnpicklingError):
 
         # Try to read it as a plain text file
         return _read_config_file(qualified_config_filename=find_file(config_filename, workdir),
-                                 config_keys=config_keys,
-                                 cline_args=cline_args,
-                                 defaults=defaults)
+                                 *args, **kwargs)
 
 
 def _read_config_file(qualified_config_filename: str,
                       config_keys: Tuple[ConfigKeys, ...],
                       cline_args: Dict[str, Any],
-                      defaults: Dict[str, Any]) -> Dict[str, Any]:
+                      defaults: Dict[str, Any],
+                      task_head: str = None) -> Dict[str, Any]:
     """Reads in a configuration text file.
     """
 
@@ -525,6 +561,9 @@ def _read_config_file(qualified_config_filename: str,
                                              defaults=defaults)
 
     with open(qualified_config_filename, 'r') as config_file:
+
+        # Keep a set of any keys we want to block from being able to overwrite
+        blocked_keys = set()
 
         # Read in the file, except for comment lines
         for config_line in config_file:
@@ -542,7 +581,31 @@ def _read_config_file(qualified_config_filename: str,
             equal_split_line = noncomment_line.split('=')
 
             key = equal_split_line[0].strip()
-            _check_key_is_valid(key, config_keys)
+            if key in blocked_keys:
+                continue
+            try:
+                _check_key_is_valid(key, config_keys)
+            except ValueError as e:
+
+                # If we're allowing task-specific keys, check if that's the case
+                if task_head is None:
+                    raise
+
+                # Check if this is a valid task-specific key
+                global_key = global_value(key, task_head)
+                try:
+                    _check_key_is_valid(global_key, config_keys)
+                except Exception:
+                    # The global key isn't valid, so raise the original exception
+                    raise e
+
+                # If we get here, this is a valid task-specific key, so set it to the dict in
+                # place of the global key
+                key = global_key
+
+                # Add it to the blocked_keys set, so if we encounter the global key later, we
+                # won't override this for this task
+                blocked_keys.append(key)
 
             # In case the value contains an = char
             value = noncomment_line.replace(equal_split_line[0] + '=', '').strip()
@@ -690,7 +753,7 @@ def write_calibration_config(config_dict: Dict[str, Any],
 def write_config(config_dict: Dict[str, Any],
                  config_filename: str,
                  workdir: str=".",
-                 config_keys: ConfigKeys=AnalysisConfigKeys,):
+                 config_keys: ConfigKeys=ConfigKeys,):
     """ Writes a dictionary to a configuration file.
 
         Parameters
@@ -720,8 +783,6 @@ def write_config(config_dict: Dict[str, Any],
         for key in config_dict:
             _check_key_is_valid(key, (config_keys,))
             config_file.write(str(key) + " = " + str(config_dict[key]) + "\n")
-
-    return
 
 
 def get_conditional_product(filename: str,
