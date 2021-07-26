@@ -39,6 +39,12 @@ PIPELINE_HEAD = "SHE_Pipeline_"
 
 
 class ConfigKeys(AllowedEnum):
+    """ Derived class for ConfigKeys, for type-checking purposes.
+    """
+    pass
+
+
+class GlobalConfigKeys(AllowedEnum):
     """ Derived class for ConfigKeys, which contains common keys for all pipelines
     """
 
@@ -190,7 +196,7 @@ class ValidationConfigKeys(ConfigKeys):
     # Options for SHE_Validation_ValidateShearBias
 
     SBV_MAX_G_IN = f"{SHEAR_BIAS_VALIDATION_HEAD}max_g_in"
-    SBV_MAX_G_IN = f"{SHEAR_BIAS_VALIDATION_HEAD}max_g_in"
+    SBV_BOOTSTRAP_ERRORS = f"{SHEAR_BIAS_VALIDATION_HEAD}bootstrap_errors"
 
 
 @lru_cache(maxsize=None)
@@ -228,12 +234,6 @@ def global_enum(task_value, task_head):
     """ Reverse of task_value, returning the enum - gives the enum for the global option given the task option.
     """
     return ValidationConfigKeys(global_value(task_value, task_head))
-
-
-class AnalysisValidationConfigKeys(AnalysisConfigKeys, ValidationConfigKeys):
-    """ Class which combines config keys from analysis and validation pipeliens, for if they're run combined.
-    """
-    pass
 
 
 # Task names for Reconciliation pipeline
@@ -482,12 +482,13 @@ def read_config(config_filename: str,
                                                          cline_args=cline_args,
                                                          defaults=defaults,)
 
-    # Silently coerce config_keys into iterable if just one enum is supplied
+    # Silently coerce config_keys into iterable if just one enum is supplied, and also include GlobalConfigKeys
+    # in the list
     try:
         if issubclass(config_keys, ConfigKeys):
-            config_keys = (config_keys,)
+            config_keys = (config_keys, GlobalConfigKeys)
     except TypeError:
-        pass
+        config_keys = (*config_keys, GlobalConfigKeys)
 
     # Look in the workdir for the config filename if it isn't fully-qualified
     if not config_filename[0] == "/":
