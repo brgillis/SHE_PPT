@@ -5,7 +5,6 @@
     Misc. utility functions for the pipeline.
 """
 
-
 __updated__ = "2021-07-26"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -753,8 +752,8 @@ def write_calibration_config(config_dict: Dict[str, Any],
 
 def write_config(config_dict: Dict[str, Any],
                  config_filename: str,
-                 workdir: str=".",
-                 config_keys: ConfigKeys=ConfigKeys,):
+                 workdir: str = ".",
+                 config_keys: ConfigKeys = ConfigKeys,):
     """ Writes a dictionary to a configuration file.
 
         Parameters
@@ -769,6 +768,14 @@ def write_config(config_dict: Dict[str, Any],
             ConfigKeys Enum listing allowed keys
     """
 
+    # Silently coerce config_keys into iterable if just one enum is supplied, and also include GlobalConfigKeys
+    # in the list
+    try:
+        if issubclass(config_keys, ConfigKeys):
+            config_keys = (config_keys, GlobalConfigKeys)
+    except TypeError:
+        config_keys = (*config_keys, GlobalConfigKeys)
+
     # Silently return if dict and filename are None
     if config_dict is None and config_filename is None:
         return
@@ -782,7 +789,7 @@ def write_config(config_dict: Dict[str, Any],
 
         # Write out each entry in a line
         for key in config_dict:
-            _check_key_is_valid(key, (config_keys,))
+            _check_key_is_valid(key, config_keys)
             config_file.write(str(key) + " = " + str(config_dict[key]) + "\n")
 
 
