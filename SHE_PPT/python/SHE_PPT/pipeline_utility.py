@@ -475,12 +475,6 @@ def read_config(config_filename: str,
         raise ValueError("task_head should only be set for read_config if config_keys is ValidationConfigKeys "
                          "or a subclass of it (and not a list of ConfigKeys).")
 
-    # Return None if input filename is None
-    if is_any_type_of_none(config_filename):
-        return _make_config_from_cline_args_and_defaults(config_keys=config_keys,
-                                                         cline_args=cline_args,
-                                                         defaults=defaults,)
-
     # Silently coerce config_keys into iterable if just one enum is supplied, and also include GlobalConfigKeys
     # in the list
     try:
@@ -488,6 +482,12 @@ def read_config(config_filename: str,
             config_keys = (config_keys, GlobalConfigKeys)
     except TypeError:
         config_keys = (*config_keys, GlobalConfigKeys)
+
+    # Return None if input filename is None
+    if is_any_type_of_none(config_filename):
+        return _make_config_from_cline_args_and_defaults(config_keys=config_keys,
+                                                         cline_args=cline_args,
+                                                         defaults=defaults,)
 
     # Look in the workdir for the config filename if it isn't fully-qualified
     if not config_filename[0] == "/":
