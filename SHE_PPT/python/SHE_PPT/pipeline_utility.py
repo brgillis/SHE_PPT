@@ -5,7 +5,7 @@
     Misc. utility functions for the pipeline.
 """
 
-__updated__ = "2021-07-26"
+__updated__ = "2021-07-28"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -148,6 +148,7 @@ class AnalysisConfigKeys(ConfigKeys):
     PSF_NUM_PARAMETERS_TO_FIT = PSF_HEAD + "num_parameters_to_fit"
     PSF_MAX_FIT_ITERATIONS = PSF_HEAD + "max_fit_iterations"
     PSF_DET_TO_FIT = PSF_HEAD + "det_to_fit"
+
     # Options for SHE_CTE_ObjectIdSplit
 
     OID_BATCH_SIZE = OBJECT_ID_SPLIT_HEAD + "batch_size"
@@ -183,6 +184,7 @@ class ValidationConfigKeys(ConfigKeys):
     """
 
     # Options for multiple tasks - these global values will be overridden by values specific to a task if those are set
+
     VAL_LOCAL_FAIL_SIGMA = f"{VALIDATION_HEAD}local_fail_sigma"
     VAL_GLOBAL_FAIL_SIGMA = f"{VALIDATION_HEAD}global_fail_sigma"
     VAL_FAIL_SIGMA_SCALING = f"{VALIDATION_HEAD}fail_sigma_scaling"
@@ -196,6 +198,7 @@ class ValidationConfigKeys(ConfigKeys):
 
     SBV_MAX_G_IN = f"{SHEAR_BIAS_VALIDATION_HEAD}max_g_in"
     SBV_BOOTSTRAP_ERRORS = f"{SHEAR_BIAS_VALIDATION_HEAD}bootstrap_errors"
+    SBV_REQUIRE_FITCLASS_ZERO = f"{SHEAR_BIAS_VALIDATION_HEAD}require_fitclass_zero"
 
 
 @lru_cache(maxsize=None)
