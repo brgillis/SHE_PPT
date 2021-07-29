@@ -5,7 +5,7 @@
     Misc. utility functions for the pipeline.
 """
 
-__updated__ = "2021-07-28"
+__updated__ = "2021-07-29"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -20,18 +20,22 @@ __updated__ = "2021-07-28"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+from copy import deepcopy
 from functools import lru_cache
 import json.decoder
 import os
 from pickle import UnpicklingError
 from shutil import copyfile
-from typing import Any, Dict, Tuple, Union
+from typing import Any, Dict, Tuple, Union, Type
 from xml.sax._exceptions import SAXParseException
+
+import numpy as np
 
 from . import magic_values as mv
 from .file_io import read_xml_product, read_listfile, find_file
 from .logging import getLogger
 from .utility import AllowedEnum, is_any_type_of_none
+
 
 # Task name for generic config keys
 PIPELINE_HEAD = "SHE_Pipeline_"
@@ -794,6 +798,79 @@ def write_config(config_dict: Dict[str, Any],
         for key in config_dict:
             _check_key_is_valid(key, config_keys)
             config_file.write(str(key) + " = " + str(config_dict[key]) + "\n")
+
+
+def _check_enum(pipeline_config: Dict[str, Any],
+                key: str,
+                enum_type: AllowedEnum):
+    """ Checks that the value in the pipeline_config is properly a value of the given enum_type.
+    """
+
+    # Skip if not present in the config
+    if not key in pipeline_config:
+        return
+
+    # Check that the fail sigma scaling is in the enum (silently convert to lower case)
+    value_lower = pipeline_config[key].lower()
+    if not enum_type.is_allowed_value(value_lower):
+        err_string = f"Config option {pipeline_config[key]} for key {key} is not recognized. Allowed options are:"
+        for allowed_option in enum_type:
+            err_string += "\n  " + allowed_option.value
+
+        raise ValueError(err_string)
+
+    # Set the lower-case value in the pipeline_config
+    pipeline_config[key] = value_lower
+
+
+def _convert_type(pipeline_config: Dict[str, Any],
+                  key: str,
+                  desired_type: Type):
+    """ Checks if a key is in the pipeline_config. If so, converts the value to the desired type.
+    """
+
+    if not key in pipeline_config:
+        return
+
+    # Special handling for certain types
+
+    if desired_type is bool:
+        # Booleans will always convert a string to True unless it's empty, so we check the value of the string here
+        pipeline_config[key] = pipeline_config[key].lower() in ['true', 't']
+
+    elif desired_type is np.ndarray:
+        # Convert space-separated lists into arrays of floats
+        values_list = list(map(float, pipeline_config[key].strip().split()))
+        pipeline_config[key] = np.array(values_list, dtype=float)
+
+    else:
+        pipeline_config[key] = desired_type(pipeline_config[key])
+
+
+def convert_config_types(pipeline_config: Dict[str, str],
+                         d_types: Dict[str, Type] = None,
+                         d_enum_types: Dict[str, AllowedEnum] = None) -> Dict[str, Any]:
+    """ Converts values in the pipeline config to the proper types.
+    """
+
+    # If dicts are None, init as empty dicts
+    if d_types is None:
+        d_types = {}
+    if d_enum_types is None:
+        d_enum_types = {}
+
+    # Make a copy of the pipeline_config which we'll modify
+    pipeline_config = deepcopy(pipeline_config)
+
+    # Check that enums are valid
+    for key, enum_type in d_enum_types.items():
+        _check_enum(pipeline_config, key, enum_type)
+
+    # Convert values
+    for key, desired_type in d_types.items():
+        _convert_type(pipeline_config, key, desired_type)
+
+    return pipeline_config
 
 
 def get_conditional_product(filename: str,
