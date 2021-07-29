@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-22"
+__updated__ = "2021-07-29"
 
 import os
 
@@ -29,7 +29,8 @@ from SHE_PPT.file_io import write_xml_product, read_xml_product, write_listfile
 from SHE_PPT.pipeline_utility import (read_analysis_config, write_analysis_config,
                                       read_reconciliation_config, write_reconciliation_config,
                                       read_calibration_config, write_calibration_config,
-                                      get_conditional_product)
+                                      get_conditional_product, GlobalConfigKeys,
+                                      convert_config_types)
 
 
 class TestUtility:
@@ -191,3 +192,31 @@ class TestUtility:
             get_conditional_product(lf2_filename, workdir=self.workdir)
 
         return
+
+    def test_convert_config_types(self):
+        """ Runs tests of the convert_config_types function.
+        """
+
+        # Make mock input data
+        config = {"want_float": "0.",
+                  "want_array": "0. 1",
+                  "want_true": "True",
+                  "want_false": "False",
+                  "want_enum": GlobalConfigKeys.PIP_PROFILE.value.upper()}
+        d_types = {"want_float": float,
+                   "want_array": np.ndarray,
+                   "want_true": bool,
+                   "want_false": bool}
+        d_enum_types = {"want_enum": GlobalConfigKeys}
+
+        # Run the function
+        new_config = convert_config_types(pipeline_config=config,
+                                          d_types=d_types,
+                                          d_enum_types=d_enum_types)
+
+        # Check the results
+        assert np.isclose(config["want_float"], 0.)
+        assert np.allclose(config["want_array"], np.array([0., 1.]))
+        assert config["want_true"] == True
+        assert config["want_false"] == False
+        assert config["want_enum"] == GlobalConfigKeys.PIP_PROFILE.value
