@@ -31,6 +31,7 @@ from SHE_PPT.pipeline_utility import (read_analysis_config, write_analysis_confi
                                       read_calibration_config, write_calibration_config,
                                       get_conditional_product, GlobalConfigKeys,
                                       convert_config_types)
+import numpy as np
 
 
 class TestUtility:
@@ -215,8 +216,8 @@ class TestUtility:
                                           d_enum_types=d_enum_types)
 
         # Check the results
-        assert np.isclose(config["want_float"], 0.)
-        assert np.allclose(config["want_array"], np.array([0., 1.]))
-        assert config["want_true"] == True
-        assert config["want_false"] == False
-        assert config["want_enum"] == GlobalConfigKeys.PIP_PROFILE.value
+        assert np.isclose(new_config["want_float"], 0.)
+        assert np.allclose(new_config["want_array"], np.array([0., 1.]))
+        assert new_config["want_true"] == True
+        assert new_config["want_false"] == False
+        assert new_config["want_enum"] == GlobalConfigKeys.PIP_PROFILE.value

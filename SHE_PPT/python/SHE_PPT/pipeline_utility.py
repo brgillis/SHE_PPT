@@ -812,7 +812,7 @@ def _check_enum(pipeline_config: Dict[str, Any],
 
     # Check that the fail sigma scaling is in the enum (silently convert to lower case)
     value_lower = pipeline_config[key].lower()
-    value = enum_type.is_allowed_value(value_lower)
+    value = enum_type.find_lower_value(value_lower)
     if not value:
         err_string = f"Config option {pipeline_config[key]} for key {key} is not recognized. Allowed options are:"
         for allowed_option in enum_type:
