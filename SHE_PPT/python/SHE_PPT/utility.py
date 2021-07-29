@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-04-22"
+__updated__ = "2021-07-29"
 
 from enum import Enum
 import os
@@ -84,8 +84,8 @@ def run_only_once(*args, **kwargs):
 
 def get_attr_with_index(obj, attr):
     # Check for an index at the end of attr, using a regex which matches anything, followed by [,
-    #followed by a positive integer, followed by ], followed by the end of the string.
-    #Matching groups are 1. the attribute, and 2. the index
+    # followed by a positive integer, followed by ], followed by the end of the string.
+    # Matching groups are 1. the attribute, and 2. the index
     regex_match = re.match(r"(.*)\[([0-9]+)\]\Z", attr)
 
     if not regex_match:
@@ -131,7 +131,7 @@ def get_release_from_version(version):
 
     if major_version < 0 or major_version > 99 or minor_version < 0 or minor_version > 99:
         raise ValueError("version (%s) is in incorrect format. Format must be 'X.X.X', where each X is "
-                         "0-99."%version)
+                         "0-99." % version)
 
     # Ensure the string is two characters long for both the major and minor version
     major_version_string = str(major_version) if major_version > 9 else "0" + str(major_version)
@@ -227,3 +227,10 @@ class AllowedEnum(Enum):
     @classmethod
     def is_allowed_value(cls, value):
         return value in [item.value for item in cls]
+
+    @classmethod
+    def find_lower_value(cls, lower_value):
+        for item in cls:
+            if item.value.lower() == lower_value:
+                return item.value
+        return None

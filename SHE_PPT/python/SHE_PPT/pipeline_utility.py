@@ -812,15 +812,16 @@ def _check_enum(pipeline_config: Dict[str, Any],
 
     # Check that the fail sigma scaling is in the enum (silently convert to lower case)
     value_lower = pipeline_config[key].lower()
-    if not enum_type.is_allowed_value(value_lower):
+    value = enum_type.is_allowed_value(value_lower)
+    if not value:
         err_string = f"Config option {pipeline_config[key]} for key {key} is not recognized. Allowed options are:"
         for allowed_option in enum_type:
             err_string += "\n  " + allowed_option.value
 
         raise ValueError(err_string)
 
-    # Set the lower-case value in the pipeline_config
-    pipeline_config[key] = value_lower
+    # Set the properly-capitalized value in the pipeline_config
+    pipeline_config[key] = value
 
 
 def _convert_type(pipeline_config: Dict[str, Any],
