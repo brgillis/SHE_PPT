@@ -5,7 +5,7 @@
     Misc. utility functions for the pipeline.
 """
 
-__updated__ = "2021-07-29"
+__updated__ = "2021-08-03"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -21,12 +21,13 @@ __updated__ = "2021-07-29"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 from copy import deepcopy
+from enum import EnumMeta
 from functools import lru_cache
 import json.decoder
 import os
 from pickle import UnpicklingError
 from shutil import copyfile
-from typing import Any, Dict, Tuple, Union, Type
+from typing import Any, Dict, Tuple, Union, Type, Optional
 from xml.sax._exceptions import SAXParseException
 
 import numpy as np
@@ -289,7 +290,9 @@ class CalibrationConfigKeys(ConfigKeys):
     MS_WEBDAV_DIR = MEASURE_STATISTICS_HEAD + "webdav_dir"
 
 
-def archive_product(product_filename, archive_dir, workdir):
+def archive_product(product_filename: str,
+                    archive_dir: str,
+                    workdir: str) -> None:
     """ Copies an already-written data product to an archive directory.
 
         Parameters
@@ -350,15 +353,14 @@ def archive_product(product_filename, archive_dir, workdir):
 
     except Exception as e:
         logger.warning(("Failsafe exception block triggered when trying to save statistics product "
-                        "in archive. "
-                        "Exception was: %s"),
+                        "in archive. Exception was: %s"),
                        str(e))
 
 
 def read_analysis_config(config_filename: str,
-                         workdir: str=".",
-                         cline_args: Dict[str, Any]=None,
-                         defaults: Dict[str, Any]=None) -> Dict[str, Any]:
+                         workdir: str = ".",
+                         cline_args: Optional[Dict[str, Any]] = None,
+                         defaults: Optional[Dict[str, Any]] = None) -> Dict[ConfigKeys, Any]:
     """ Reads in a configuration file for the SHE Analysis pipeline to a dictionary. Note that all arguments will
         be read as strings.
 
@@ -384,9 +386,9 @@ def read_analysis_config(config_filename: str,
 
 
 def read_calibration_config(config_filename: str,
-                            workdir: str=".",
-                            cline_args: Dict[str, Any]=None,
-                            defaults: Dict[str, Any]=None) -> Dict[str, Any]:
+                            workdir: str = ".",
+                            cline_args: Optional[Dict[str, Any]] = None,
+                            defaults: Optional[Dict[str, Any]] = None) -> Dict[ConfigKeys, Any]:
     """ Reads in a configuration file for the SHE Calibration pipeline to a dictionary. Note that all arguments will
         be read as strings.
 
@@ -412,9 +414,9 @@ def read_calibration_config(config_filename: str,
 
 
 def read_reconciliation_config(config_filename: str,
-                               workdir: str=".",
-                               cline_args: Dict[str, Any]=None,
-                               defaults: Dict[str, Any]=None) -> Dict[str, Any]:
+                               workdir: str = ".",
+                               cline_args: Optional[Dict[str, Any]] = None,
+                               defaults: Optional[Dict[str, Any]] = None) -> Dict[ConfigKeys, Any]:
     """ Reads in a configuration file for the SHE Reconciliation pipeline to a dictionary. Note that all arguments will
         be read as strings.
 
@@ -445,9 +447,9 @@ def read_config(config_filename: str,
                                                                           ValidationConfigKeys,
                                                                           ReconciliationConfigKeys,
                                                                           CalibrationConfigKeys),
-                cline_args: Dict[str, Any] = None,
-                defaults: Dict[str, Any] = None,
-                task_head: str = None) -> Dict[str, Any]:
+                cline_args: Optional[Dict[str, Any]] = None,
+                defaults: Optional[Dict[str, Any]] = None,
+                task_head: Optional[str] = None) -> Dict[ConfigKeys, Any]:
     """ Reads in a generic configuration file to a dictionary. Note that all arguments will be read as strings unless
         a cline_arg value is used.
 
@@ -536,7 +538,7 @@ def read_config(config_filename: str,
 
 def _read_config_product(config_filename: str,
                          workdir: str,
-                         *args, **kwargs) -> Dict[str, Any]:
+                         *args, **kwargs) -> Dict[ConfigKeys, Any]:
     """Reads in a configuration data product.
     """
 
@@ -557,10 +559,10 @@ def _read_config_product(config_filename: str,
 
 
 def _read_config_file(qualified_config_filename: str,
-                      config_keys: Tuple[ConfigKeys, ...],
-                      cline_args: Dict[str, Any],
-                      defaults: Dict[str, Any],
-                      task_head: str = None) -> Dict[str, Any]:
+                      config_keys: Tuple[EnumMeta, ...],
+                      cline_args: Dict[ConfigKeys, Any],
+                      defaults: Dict[ConfigKeys, Any],
+                      task_head: Optional[str] = None) -> Dict[ConfigKeys, Any]:
     """Reads in a configuration text file.
     """
 
@@ -587,11 +589,11 @@ def _read_config_file(qualified_config_filename: str,
             # Get the key and value from the line
             equal_split_line = noncomment_line.split('=')
 
-            key = equal_split_line[0].strip()
-            if key in blocked_keys:
+            key_string = equal_split_line[0].strip()
+            if key_string in blocked_keys:
                 continue
             try:
-                _check_key_is_valid(key, config_keys)
+                enum_key = _check_key_is_valid(key_string, config_keys)
             except ValueError as e:
 
                 # If we're allowing task-specific keys, check if that's the case
@@ -599,27 +601,27 @@ def _read_config_file(qualified_config_filename: str,
                     raise
 
                 # Check if this is a valid task-specific key
-                global_key = global_value(key, task_head)
+                global_key_string = global_value(key_string, task_head)
                 try:
-                    _check_key_is_valid(global_key, config_keys)
+                    enum_key = _check_key_is_valid(global_key_string, config_keys)
                 except Exception:
                     # The global key isn't valid, so raise the original exception
                     raise e
 
                 # If we get here, this is a valid task-specific key, so set it to the dict in
                 # place of the global key
-                key = global_key
+                key_string = global_key_string
 
                 # Add it to the blocked_keys set, so if we encounter the global key later, we
                 # won't override this for this task
-                blocked_keys.append(key)
+                blocked_keys.append(key_string)
 
             # In case the value contains an = char
             value = noncomment_line.replace(equal_split_line[0] + '=', '').strip()
 
             # If the value is None or equivalent, don't set it (use the default)
-            if not (is_any_type_of_none(value) and key in defaults):
-                config_dict[key] = value
+            if not (is_any_type_of_none(value) and enum_key in defaults):
+                config_dict[enum_key] = value
 
         # End for config_line in config_file:
 
@@ -627,35 +629,35 @@ def _read_config_file(qualified_config_filename: str,
 
     # If we're provided with any cline-args, override values from the config with them
     for key in cline_args:
-        _check_key_is_valid(key, config_keys)
-        value = cline_args[key]
+        enum_key = _check_key_is_valid(key, config_keys)
+        value = cline_args[enum_key]
 
         # Don't overwrite if we're given None
         if is_any_type_of_none(value):
             continue
 
-        config_dict[key] = cline_args[key]
+        config_dict[key] = cline_args[enum_key]
 
     return config_dict
 
 
-def _make_config_from_defaults(config_keys: Tuple[ConfigKeys, ...],
-                               defaults: Dict[str, Any]) -> Dict[str, Any]:
+def _make_config_from_defaults(config_keys: Tuple[EnumMeta, ...],
+                               defaults: Dict[ConfigKeys, Any]) -> Dict[ConfigKeys, Any]:
     """ Make a pipeline config dict from just the defaults.
     """
 
     config_dict = {}
 
     for key in defaults:
-        _check_key_is_valid(key, config_keys)
-        config_dict[key] = defaults[key]
+        enum_key = _check_key_is_valid(key, config_keys)
+        config_dict[enum_key] = defaults[enum_key]
 
     return config_dict
 
 
-def _make_config_from_cline_args_and_defaults(config_keys: Tuple[ConfigKeys, ...],
-                                              cline_args: Dict[str, Any],
-                                              defaults: Dict[str, Any]) -> Dict[str, Any]:
+def _make_config_from_cline_args_and_defaults(config_keys: Tuple[EnumMeta, ...],
+                                              cline_args: Dict[ConfigKeys, Any],
+                                              defaults: Dict[ConfigKeys, Any]) -> Dict[ConfigKeys, Any]:
     """ Make a pipeline config dict from the cline-args and defaults, preferring
         the cline-args if they're available.
     """
@@ -663,27 +665,45 @@ def _make_config_from_cline_args_and_defaults(config_keys: Tuple[ConfigKeys, ...
     config_dict = _make_config_from_defaults(config_keys=config_keys,
                                              defaults=defaults)
 
-    for key in cline_args:
-        if cline_args[key] is None:
+    for enum_key in cline_args:
+        if cline_args[enum_key] is None:
             continue
-        _check_key_is_valid(key, config_keys)
-        config_dict[key] = cline_args[key]
+        _check_enum_key_is_valid(enum_key, config_keys)
+        config_dict[enum_key] = cline_args[enum_key]
 
     return config_dict
 
 
-def _check_key_is_valid(key: str,
-                        config_keys: Tuple[ConfigKeys, ...]):
-    """Checks if a pipeline config key is valid by searching for it in the provided config keys Enums.
+def _check_enum_key_is_valid(enum_key: ConfigKeys,
+                             config_keys: Tuple[EnumMeta, ...]) -> EnumMeta:
+    """Checks if a enum key a valid member of one of the config_keys Enums. If so, returns the EnumMeta it's found in.
     """
 
-    allowed = False
-    for config_key_enum in config_keys:
-        if config_key_enum.is_allowed_value(key):
-            allowed = True
+    found = False
+    for config_key_enum_meta in config_keys:
+        if enum_key in config_key_enum_meta:
+            found = True
             break
 
-    if not allowed:
+    if not found:
+        raise ValueError(f"{enum_key} is not a valid member of any of the EnumMetas: {config_keys}.")
+
+    return config_key_enum_meta
+
+
+def _check_key_is_valid(key: str,
+                        config_keys: Tuple[EnumMeta, ...]) -> ConfigKeys:
+    """ Checks if a pipeline config key is valid by searching for it in the provided config keys Enums. If found,
+        returns the Enum for it.
+    """
+
+    enum = None
+    for config_key_enum in config_keys:
+        if config_key_enum.is_allowed_value(key):
+            enum = config_key_enum(key)
+            break
+
+    if not enum:
         err_string = ("Invalid pipeline config key found: " +
                       key + ". Allowed keys are: ")
         for config_key_enum in config_keys:
@@ -691,12 +711,12 @@ def _check_key_is_valid(key: str,
                 err_string += "\n  " + allowed_key.value
         raise ValueError(err_string)
 
-    return True
+    return enum
 
 
 def write_analysis_config(config_dict: Dict[str, Any],
                           config_filename: str,
-                          workdir: str=".",):
+                          workdir: str=".",) -> None:
     """ Writes a dictionary to an Analysis configuration file.
 
         Parameters
@@ -715,14 +735,14 @@ def write_analysis_config(config_dict: Dict[str, Any],
                         config_keys=AnalysisConfigKeys)
 
 
-def write_reconciliation_config(config_dict: Dict[str, Any],
+def write_reconciliation_config(config_dict: Dict[ConfigKeys, Any],
                                 config_filename: str,
-                                workdir: str=".",):
+                                workdir: str=".",) -> None:
     """ Writes a dictionary to an Reconciliation configuration file.
 
         Parameters
         ----------
-        config_dict : Dict[str, Any]
+        config_dict : Dict[ConfigKeys, Any]
             The config dictionary to write out.
         config_filename : str
             The desired workspace-relative name of the config file.
@@ -736,14 +756,14 @@ def write_reconciliation_config(config_dict: Dict[str, Any],
                         config_keys=ReconciliationConfigKeys)
 
 
-def write_calibration_config(config_dict: Dict[str, Any],
+def write_calibration_config(config_dict: Dict[ConfigKeys, Any],
                              config_filename: str,
-                             workdir: str=".",):
+                             workdir: str=".",) -> None:
     """ Writes a dictionary to an Calibration configuration file.
 
         Parameters
         ----------
-        config_dict : Dict[str, Any]
+        config_dict : Dict[ConfigKeys, Any]
             The config dictionary to write out.
         config_filename : str
             The desired workspace-relative name of the config file.
@@ -757,30 +777,29 @@ def write_calibration_config(config_dict: Dict[str, Any],
                         config_keys=CalibrationConfigKeys)
 
 
-def write_config(config_dict: Dict[str, Any],
+def write_config(config_dict: Dict[ConfigKeys, Any],
                  config_filename: str,
                  workdir: str = ".",
-                 config_keys: ConfigKeys = ConfigKeys,):
+                 config_keys: EnumMeta = ConfigKeys,) -> None:
     """ Writes a dictionary to a configuration file.
 
         Parameters
         ----------
-        config_dict : Dict[str, Any]
+        config_dict : Dict[ConfigKeys, Any]
             The config dictionary to write out.
         config_filename : str
             The desired workspace-relative name of the config file.
         workdir : str
             The working directory.
-        config_keys : ConfigKeys
-            ConfigKeys Enum listing allowed keys
+        config_keys : EnumMeta
+            ConfigKeys EnumMeta listing allowed keys
     """
 
     # Silently coerce config_keys into iterable if just one enum is supplied, and also include GlobalConfigKeys
     # in the list
-    try:
-        if issubclass(config_keys, ConfigKeys):
-            config_keys = (config_keys, GlobalConfigKeys)
-    except TypeError:
+    if issubclass(config_keys, ConfigKeys):
+        config_keys = (config_keys, GlobalConfigKeys)
+    elif GlobalConfigKeys not in config_keys:
         config_keys = (*config_keys, GlobalConfigKeys)
 
     # Silently return if dict and filename are None
@@ -795,62 +814,65 @@ def write_config(config_dict: Dict[str, Any],
     with open(qualified_config_filename, 'w') as config_file:
 
         # Write out each entry in a line
-        for key in config_dict:
-            _check_key_is_valid(key, config_keys)
-            config_file.write(str(key) + " = " + str(config_dict[key]) + "\n")
+        for enum_key in config_dict:
+            _check_enum_key_is_valid(enum_key, config_keys)
+            config_file.write(f"{enum_key.value} = {config_dict[enum_key]}\n")
 
 
-def _check_enum(pipeline_config: Dict[str, Any],
-                key: str,
-                enum_type: AllowedEnum):
-    """ Checks that the value in the pipeline_config is properly a value of the given enum_type.
+def _convert_enum(pipeline_config: Dict[ConfigKeys, Any],
+                  enum_key: ConfigKeys,
+                  enum_type: AllowedEnum) -> None:
+    """ Checks that the value in the pipeline_config is properly a value of the given enum_type,
+        and sets the entry in the pipeline_config to the proper enum.
     """
 
     # Skip if not present in the config
-    if not key in pipeline_config:
+    if not enum_key in pipeline_config:
         return
 
     # Check that the fail sigma scaling is in the enum (silently convert to lower case)
-    value_lower = pipeline_config[key].lower()
-    value = enum_type.find_lower_value(value_lower)
-    if not value:
-        err_string = f"Config option {pipeline_config[key]} for key {key} is not recognized. Allowed options are:"
+    value_lower = pipeline_config[enum_key].lower()
+    enum_value = enum_type.find_lower_value(value_lower)
+    if enum_value:
+        err_string = f"Config option {pipeline_config[enum_key]} for key {enum_key} is not recognized. Allowed options are:"
         for allowed_option in enum_type:
             err_string += "\n  " + allowed_option.value
 
         raise ValueError(err_string)
 
-    # Set the properly-capitalized value in the pipeline_config
-    pipeline_config[key] = value
+    # Set enum_value
+    pipeline_config[enum_key] = enum_value
 
 
-def _convert_type(pipeline_config: Dict[str, Any],
-                  key: str,
-                  desired_type: Type):
+def _convert_type(pipeline_config: Dict[ConfigKeys, Any],
+                  enum_key: ConfigKeys,
+                  desired_type: Type) -> None:
     """ Checks if a key is in the pipeline_config. If so, converts the value to the desired type.
     """
 
-    if not key in pipeline_config:
+    if not enum_key in pipeline_config:
         return
+
+    string_value = pipeline_config[enum_key]
 
     # Special handling for certain types
 
     if desired_type is bool:
         # Booleans will always convert a string to True unless it's empty, so we check the value of the string here
-        pipeline_config[key] = pipeline_config[key].lower() in ['true', 't']
+        pipeline_config[enum_key] = string_value.lower() in ['true', 't']
 
     elif desired_type is np.ndarray:
         # Convert space-separated lists into arrays of floats
-        values_list = list(map(float, pipeline_config[key].strip().split()))
-        pipeline_config[key] = np.array(values_list, dtype=float)
+        values_list = list(map(float, string_value.strip().split()))
+        pipeline_config[enum_key] = np.array(values_list, dtype=float)
 
     else:
-        pipeline_config[key] = desired_type(pipeline_config[key])
+        pipeline_config[enum_key] = desired_type(string_value)
 
 
-def convert_config_types(pipeline_config: Dict[str, str],
+def convert_config_types(pipeline_config: Dict[ConfigKeys, str],
                          d_types: Dict[str, Type] = None,
-                         d_enum_types: Dict[str, AllowedEnum] = None) -> Dict[str, Any]:
+                         d_enum_types: Dict[str, EnumMeta] = None) -> Dict[ConfigKeys, Any]:
     """ Converts values in the pipeline config to the proper types.
     """
 
@@ -863,9 +885,9 @@ def convert_config_types(pipeline_config: Dict[str, str],
     # Make a copy of the pipeline_config which we'll modify
     pipeline_config = deepcopy(pipeline_config)
 
-    # Check that enums are valid
+    # Check that enums are valid and convert them to the proper Enum type
     for key, enum_type in d_enum_types.items():
-        _check_enum(pipeline_config, key, enum_type)
+        _convert_enum(pipeline_config, key, enum_type)
 
     # Convert values
     for key, desired_type in d_types.items():
@@ -875,7 +897,7 @@ def convert_config_types(pipeline_config: Dict[str, str],
 
 
 def get_conditional_product(filename: str,
-                            workdir: str="."):
+                            workdir: str=".") -> Optional[Any]:
     """ Returns None in all cases where a data product isn't provided, otherwise read and return the data
         product.
     """
