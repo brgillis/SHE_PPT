@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2021-07-29"
+__updated__ = "2021-08-03"
 
 import os
 
@@ -29,8 +29,8 @@ from SHE_PPT.file_io import write_xml_product, read_xml_product, write_listfile
 from SHE_PPT.pipeline_utility import (read_analysis_config, write_analysis_config,
                                       read_reconciliation_config, write_reconciliation_config,
                                       read_calibration_config, write_calibration_config,
-                                      get_conditional_product, GlobalConfigKeys,
-                                      convert_config_types)
+                                      get_conditional_product, AnalysisConfigKeys, CalibrationConfigKeys,
+                                      GlobalConfigKeys, ReconciliationConfigKeys, convert_config_types)
 import numpy as np
 
 
@@ -62,7 +62,7 @@ class TestUtility:
 
         # Test we get out of the file what we put in, for each type of configuration file
 
-        test_analysis_dict = {"SHE_CTE_EstimateShear_methods": "KSB", "SHE_CTE_ObjectIdSplit_batch_size": "26"}
+        test_analysis_dict = {AnalysisConfigKeys.ES_METHODS: "KSB", AnalysisConfigKeys.OID_BATCH_SIZE: "26"}
 
         write_analysis_config(test_analysis_dict, test1_filename, workdir=self.workdir)
 
@@ -73,8 +73,8 @@ class TestUtility:
         read_dict1 = read_analysis_config(test1_filename, workdir=self.workdir)
 
         # Check it's been read in correctly
-        assert read_dict1["SHE_CTE_EstimateShear_methods"] == "KSB"
-        assert read_dict1["SHE_CTE_ObjectIdSplit_batch_size"] == "26"
+        assert read_dict1[AnalysisConfigKeys.ES_METHODS] == "KSB"
+        assert read_dict1[AnalysisConfigKeys.OID_BATCH_SIZE] == "26"
 
         # Check we get expected results from trying to read in other variants
 
@@ -89,7 +89,7 @@ class TestUtility:
 
         # Test we get out of the file what we put in, for each type of configuration file
 
-        test_reconciliation_dict = {"SHE_CTE_ReconcileMeasurements_method": "Best"}
+        test_reconciliation_dict = {ReconciliationConfigKeys.REC_METHOD: "Best"}
 
         write_reconciliation_config(test_reconciliation_dict, test1_filename, workdir=self.workdir)
 
@@ -100,7 +100,7 @@ class TestUtility:
         read_dict1 = read_reconciliation_config(test1_filename, workdir=self.workdir)
 
         # Check it's been read in correctly
-        assert read_dict1["SHE_CTE_ReconcileMeasurements_method"] == "Best"
+        assert read_dict1[ReconciliationConfigKeys.REC_METHOD] == "Best"
 
         # Check we get expected results from trying to read in other variants
 
@@ -115,8 +115,8 @@ class TestUtility:
 
         # Test we get out of the file what we put in, for each type of configuration file
 
-        test_calibration_dict = {"SHE_CTE_EstimateShear_methods": "KSB",
-                                 "SHE_CTE_CleanupBiasMeasurement_cleanup": "False"}
+        test_calibration_dict = {CalibrationConfigKeys.ES_METHODS: "KSB",
+                                 CalibrationConfigKeys.CBM_CLEANUP: "False"}
 
         write_calibration_config(test_calibration_dict, test1_filename, workdir=self.workdir)
 
@@ -127,8 +127,8 @@ class TestUtility:
         read_dict1 = read_calibration_config(test1_filename, workdir=self.workdir)
 
         # Check it's been read in correctly
-        assert read_dict1["SHE_CTE_EstimateShear_methods"] == "KSB"
-        assert read_dict1["SHE_CTE_CleanupBiasMeasurement_cleanup"] == "False"
+        assert read_dict1[CalibrationConfigKeys.ES_METHODS] == "KSB"
+        assert read_dict1[CalibrationConfigKeys.CBM_CLEANUP] == "False"
 
         # Check we get expected results from trying to read in other variants
 
@@ -144,22 +144,20 @@ class TestUtility:
         # Test that we can parse a more complicated file
         test2_filename = "test2.txt"
         with open(os.path.join(self.workdir, test2_filename), "w") as fo:
-            fo.write("SHE_CTE_EstimateShear_methods = KSB\n" +
-                     "SHE_CTE_ObjectIdSplit_batch_size = 26\n" +
-                     "SHE_MER_RemapMosaic_num_threads_exposures = 8 # nope\n" +
-                     "# ignore this = ignore\n" +
-                     "\n" +
-                     "SHE_MER_RemapMosaic_num_swarp_threads_exposures=4 #==2\n")
+            fo.write(f"{AnalysisConfigKeys.ES_METHODS.value} = KSB\n"
+                     f"{AnalysisConfigKeys.OID_BATCH_SIZE.value} = 26\n"
+                     f"{AnalysisConfigKeys.REMAP_NUM_THREADS_EXP.value} = 8 # nope\n"
+                     f"# ignore this = ignore\n"
+                     f"\n"
+                     f"{AnalysisConfigKeys.REMAP_NUM_SWARP_THREADS_EXP.value}=4 #==2\n")
 
         read_dict2 = read_analysis_config(test2_filename, workdir=self.workdir)
 
-        assert read_dict2["SHE_CTE_EstimateShear_methods"] == "KSB"
-        assert read_dict2["SHE_CTE_ObjectIdSplit_batch_size"] == "26"
-        assert read_dict2["SHE_MER_RemapMosaic_num_threads_exposures"] == "8"
-        assert read_dict2["SHE_MER_RemapMosaic_num_swarp_threads_exposures"] == "4"
+        assert read_dict2[AnalysisConfigKeys.ES_METHODS] == "KSB"
+        assert read_dict2[AnalysisConfigKeys.OID_BATCH_SIZE] == "26"
+        assert read_dict2[AnalysisConfigKeys.REMAP_NUM_THREADS_EXP] == "8"
+        assert read_dict2[AnalysisConfigKeys.REMAP_NUM_SWARP_THREADS_EXP] == "4"
         assert "ignore this" not in read_dict2
-
-        return
 
     def test_get_conditional_product(self):
 
@@ -192,8 +190,6 @@ class TestUtility:
         with pytest.raises(ValueError):
             get_conditional_product(lf2_filename, workdir=self.workdir)
 
-        return
-
     def test_convert_config_types(self):
         """ Runs tests of the convert_config_types function.
         """
@@ -220,4 +216,4 @@ class TestUtility:
         assert np.allclose(new_config["want_array"], np.array([0., 1.]))
         assert new_config["want_true"] == True
         assert new_config["want_false"] == False
-        assert new_config["want_enum"] == GlobalConfigKeys.PIP_PROFILE.value
+        assert new_config["want_enum"] == GlobalConfigKeys.PIP_PROFILE
