@@ -203,13 +203,12 @@ class TestUtility:
         d_types = {"want_float": float,
                    "want_array": np.ndarray,
                    "want_true": bool,
-                   "want_false": bool}
-        d_enum_types = {"want_enum": GlobalConfigKeys}
+                   "want_false": bool,
+                   "want_enum": GlobalConfigKeys}
 
         # Run the function
         new_config = convert_config_types(pipeline_config=config,
-                                          d_types=d_types,
-                                          d_enum_types=d_enum_types)
+                                          d_types=d_types)
 
         # Check the results
         assert np.isclose(new_config["want_float"], 0.)

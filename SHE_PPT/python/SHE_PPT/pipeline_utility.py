@@ -20,7 +20,6 @@ __updated__ = "2021-08-03"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from copy import deepcopy
 from enum import EnumMeta
 from functools import lru_cache
 import json.decoder
@@ -449,7 +448,8 @@ def read_config(config_filename: str,
                                                                           CalibrationConfigKeys),
                 cline_args: Optional[Dict[str, Any]] = None,
                 defaults: Optional[Dict[str, Any]] = None,
-                task_head: Optional[str] = None) -> Dict[ConfigKeys, Any]:
+                task_head: Optional[str] = None,
+                d_types: Optional[Dict[str, Type]] = None,) -> Dict[ConfigKeys, Any]:
     """ Reads in a generic configuration file to a dictionary. Note that all arguments will be read as strings unless
         a cline_arg value is used.
 
@@ -471,6 +471,9 @@ def read_config(config_filename: str,
             Should only be set if reading configs for a Validation task. In this case, this refers to the "head" of
             the task-specific configuration keys. These task-specific arguments will be used to override the
             global arguments if set to anything other than None.
+        d_types: Dict[str, Type]
+            Dict of desired types to convert values in the config to. If not provided, all values will be left
+            as strings.
     """
 
     # Use empty dicts for cline_args and defaults if None provided
@@ -496,7 +499,8 @@ def read_config(config_filename: str,
     if is_any_type_of_none(config_filename):
         return _make_config_from_cline_args_and_defaults(config_keys=config_keys,
                                                          cline_args=cline_args,
-                                                         defaults=defaults,)
+                                                         defaults=defaults,
+                                                         d_types=d_types)
 
     # Look in the workdir for the config filename if it isn't fully-qualified
     if not config_filename[0] == "/":
@@ -513,14 +517,16 @@ def read_config(config_filename: str,
         if len(filelist) == 0:
             return _make_config_from_cline_args_and_defaults(config_keys=config_keys,
                                                              cline_args=cline_args,
-                                                             defaults=defaults,)
+                                                             defaults=defaults,
+                                                             d_types=d_types,)
         if len(filelist) == 1:
             return _read_config_product(config_filename=filelist[0],
                                         workdir=workdir,
                                         config_keys=config_keys,
                                         cline_args=cline_args,
                                         defaults=defaults,
-                                        task_head=task_head)
+                                        task_head=task_head,
+                                        d_types=d_types,)
 
         raise ValueError("File " + qualified_config_filename + " is a listfile with more than one file listed, and " +
                          "is an invalid input to read_config.")
@@ -533,7 +539,8 @@ def read_config(config_filename: str,
                                     config_keys=config_keys,
                                     cline_args=cline_args,
                                     defaults=defaults,
-                                    task_head=task_head)
+                                    task_head=task_head,
+                                    d_types=d_types)
 
 
 def _read_config_product(config_filename: str,
@@ -562,10 +569,12 @@ def _read_config_file(qualified_config_filename: str,
                       config_keys: Tuple[EnumMeta, ...],
                       cline_args: Dict[ConfigKeys, Any],
                       defaults: Dict[ConfigKeys, Any],
-                      task_head: Optional[str] = None) -> Dict[ConfigKeys, Any]:
-    """Reads in a configuration text file.
+                      task_head: Optional[str] = None,
+                      d_types: Optional[Dict[str, Type]] = None,) -> Dict[ConfigKeys, Any]:
+    """ Reads in a configuration text file.
     """
 
+    # Start with a config generated from defaults
     config_dict = _make_config_from_defaults(config_keys=config_keys,
                                              defaults=defaults)
 
@@ -638,30 +647,39 @@ def _read_config_file(qualified_config_filename: str,
 
         config_dict[key] = cline_args[enum_key]
 
+    # Convert the types in the config as desired
+    config_dict = convert_config_types(config_dict, d_types)
+
     return config_dict
 
 
 def _make_config_from_defaults(config_keys: Tuple[EnumMeta, ...],
-                               defaults: Dict[ConfigKeys, Any]) -> Dict[ConfigKeys, Any]:
+                               defaults: Dict[ConfigKeys, Any],
+                               d_types: Optional[Dict[ConfigKeys, Type]] = None) -> Dict[ConfigKeys, Any]:
     """ Make a pipeline config dict from just the defaults.
     """
 
     config_dict = {}
 
-    for key in defaults:
-        enum_key = _check_key_is_valid(key, config_keys)
+    for enum_key in defaults:
+        enum_key = _check_enum_key_is_valid(enum_key, config_keys)
         config_dict[enum_key] = defaults[enum_key]
+
+    # Convert the types in the config as desired
+    config_dict = convert_config_types(config_dict, d_types)
 
     return config_dict
 
 
 def _make_config_from_cline_args_and_defaults(config_keys: Tuple[EnumMeta, ...],
                                               cline_args: Dict[ConfigKeys, Any],
-                                              defaults: Dict[ConfigKeys, Any]) -> Dict[ConfigKeys, Any]:
+                                              defaults: Dict[ConfigKeys, Any],
+                                              d_types: Optional[Dict[ConfigKeys, Type]] = None) -> Dict[ConfigKeys, Any]:
     """ Make a pipeline config dict from the cline-args and defaults, preferring
         the cline-args if they're available.
     """
 
+    # Start with a config generated from defaults
     config_dict = _make_config_from_defaults(config_keys=config_keys,
                                              defaults=defaults)
 
@@ -670,6 +688,9 @@ def _make_config_from_cline_args_and_defaults(config_keys: Tuple[EnumMeta, ...],
             continue
         _check_enum_key_is_valid(enum_key, config_keys)
         config_dict[enum_key] = cline_args[enum_key]
+
+    # Convert the types in the config as desired
+    config_dict = convert_config_types(config_dict, d_types)
 
     return config_dict
 
@@ -854,45 +875,49 @@ def _convert_type(pipeline_config: Dict[ConfigKeys, Any],
     if not enum_key in pipeline_config:
         return
 
-    string_value = pipeline_config[enum_key]
+    value = pipeline_config[enum_key]
+
+    # Check if it's already been converted
+    if not isinstance(value, str):
+        if isinstance(value, desired_type):
+            return
+        try:
+            # It's not a string or the desired type, but see if we can coerce it
+            pipeline_config[enum_key] = desired_type(value)
+            return
+        except TypeError:
+            raise TypeError(f"Value {value} of type {type(value)} cannot be converted to type {desired_type}.")
 
     # Special handling for certain types
-
     if desired_type is bool:
         # Booleans will always convert a string to True unless it's empty, so we check the value of the string here
-        pipeline_config[enum_key] = string_value.lower() in ['true', 't']
+        pipeline_config[enum_key] = value.lower() in ['true', 't']
 
     elif desired_type is np.ndarray:
         # Convert space-separated lists into arrays of floats
-        values_list = list(map(float, string_value.strip().split()))
+        values_list = list(map(float, value.strip().split()))
         pipeline_config[enum_key] = np.array(values_list, dtype=float)
 
     else:
-        pipeline_config[enum_key] = desired_type(string_value)
+        pipeline_config[enum_key] = desired_type(value)
 
 
 def convert_config_types(pipeline_config: Dict[ConfigKeys, str],
-                         d_types: Dict[str, Type] = None,
-                         d_enum_types: Dict[str, EnumMeta] = None) -> Dict[ConfigKeys, Any]:
+                         d_types: Dict[str, Type] = None) -> Dict[ConfigKeys, Any]:
     """ Converts values in the pipeline config to the proper types.
     """
 
-    # If dicts are None, init as empty dicts
+    # If d_types is None, return without making any changes
     if d_types is None:
-        d_types = {}
-    if d_enum_types is None:
-        d_enum_types = {}
-
-    # Make a copy of the pipeline_config which we'll modify
-    pipeline_config = deepcopy(pipeline_config)
-
-    # Check that enums are valid and convert them to the proper Enum type
-    for key, enum_type in d_enum_types.items():
-        _convert_enum(pipeline_config, key, enum_type)
+        return pipeline_config
 
     # Convert values
     for key, desired_type in d_types.items():
-        _convert_type(pipeline_config, key, desired_type)
+        # Use special handling for enum types
+        if issubclass(desired_type, AllowedEnum):
+            _convert_enum(pipeline_config, key, desired_type)
+        else:
+            _convert_type(pipeline_config, key, desired_type)
 
     return pipeline_config
 
