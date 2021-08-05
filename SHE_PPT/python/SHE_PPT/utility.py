@@ -19,12 +19,12 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-08-03"
+__updated__ = "2021-08-04"
 
 from enum import Enum
 import os
 import re
-from typing import Any, List, Optional, Tuple, Union
+from typing import Any, List, Optional, Tuple, TypeVar, Union
 
 from EL_PythonUtils.utilities import (hash_any as EL_hash_any,
                                       run_only_once as EL_run_only_once,
@@ -240,3 +240,27 @@ class AllowedEnum(Enum):
             if item.value.lower() == lower_value:
                 return item
         return None
+
+
+T = TypeVar('T')
+
+
+def coerce_to_list(a: Union[None, T, List[T]],
+                   keep_none: bool = False) -> Union[List[T], None]:
+    """ Coerces either None, a single item, or a list to a list of items.
+
+        If keep_none is False, will convert None to an empty list.
+        If keep_none is True, will return None if None is input.
+    """
+    if a is None:
+        if keep_none:
+            return None
+        else:
+            return []
+    else:
+        # Check if it's iterable, and convert to list if so
+        try:
+            return list(a)
+        except TypeError:
+            # Not iterable, so return as an element of a list
+            return [a]
