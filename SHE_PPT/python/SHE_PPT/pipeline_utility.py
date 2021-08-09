@@ -5,7 +5,7 @@
     Misc. utility functions for the pipeline.
 """
 
-__updated__ = "2021-08-03"
+__updated__ = "2021-08-09"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -662,7 +662,7 @@ def _make_config_from_defaults(config_keys: Tuple[EnumMeta, ...],
     config_dict = {}
 
     for enum_key in defaults:
-        enum_key = _check_enum_key_is_valid(enum_key, config_keys)
+        _check_enum_key_is_valid(enum_key, config_keys)
         config_dict[enum_key] = defaults[enum_key]
 
     # Convert the types in the config as desired
@@ -851,8 +851,13 @@ def _convert_enum(pipeline_config: Dict[ConfigKeys, Any],
     if not enum_key in pipeline_config:
         return
 
-    # Check that the fail sigma scaling is in the enum (silently convert to lower case)
+    # Check that the value is in the enum (silently convert to lower case)
     value = pipeline_config[enum_key]
+
+    # Check if it's already been converted to the proper type
+    if isinstance(value, enum_type):
+        return
+
     value_lower = value.lower()
     enum_value = enum_type.find_lower_value(value_lower)
     if not enum_value:
