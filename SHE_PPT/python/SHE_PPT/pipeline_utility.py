@@ -644,14 +644,12 @@ def _read_config_file(qualified_config_filename: str,
 
     # If we're provided with any cline-args, override values from the config with them
     for enum_key in d_cline_args:
-        _check_enum_key_is_valid(enum_key, config_keys)
-        value = d_cline_args[enum_key]
-
-        # Don't overwrite if we're given None
-        if is_any_type_of_none(value):
+        if d_cline_args[enum_key] is None:
             continue
-
-        config_dict[enum_key] = getattr(parsed_args, d_cline_args[enum_key])
+        _check_enum_key_is_valid(enum_key, config_keys)
+        val_from_cline_args = getattr(parsed_args, d_cline_args[enum_key])
+        if not is_any_type_of_none(val_from_cline_args):
+            config_dict[enum_key] = getattr(parsed_args, d_cline_args[enum_key])
 
     # Convert the types in the config as desired
     config_dict = convert_config_types(config_dict, d_types)
@@ -685,7 +683,6 @@ def _make_config_from_cline_args_and_defaults(config_keys: Tuple[EnumMeta, ...],
     """ Make a pipeline config dict from the cline-args and defaults, preferring
         the cline-args if they're available.
     """
-
     # Start with a config generated from defaults
     config_dict = _make_config_from_defaults(config_keys=config_keys,
                                              defaults=defaults)
@@ -698,7 +695,9 @@ def _make_config_from_cline_args_and_defaults(config_keys: Tuple[EnumMeta, ...],
         if d_cline_args[enum_key] is None:
             continue
         _check_enum_key_is_valid(enum_key, config_keys)
-        config_dict[enum_key] = getattr(parsed_args, d_cline_args[enum_key])
+        val_from_cline_args = getattr(parsed_args, d_cline_args[enum_key])
+        if not is_any_type_of_none(val_from_cline_args):
+            config_dict[enum_key] = getattr(parsed_args, d_cline_args[enum_key])
 
     # Convert the types in the config as desired
     config_dict = convert_config_types(config_dict, d_types)
