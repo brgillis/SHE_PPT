@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-03-12"
+__updated__ = "2021-08-10"
 
 from collections import OrderedDict
 
@@ -53,6 +53,30 @@ class SheLensMcMeasurementsMeta(SheMeasurementsMeta):
         self.table_format = fits_def
 
 
+def set_lensmc_column_properties(tf):
+    """ Common function for setting column properties for columns unique to LensMC, to allow
+        reuse with the she_lensmc_tu_matched table.
+    """
+    tf.snr_err = tf.set_column_properties(
+        "SHE_LENSMC_SNR_ERR", dtype=">f4", fits_dtype="E")
+    tf.bulge_frac = tf.set_column_properties(
+        "SHE_LENSMC_BULGE_FRAC", dtype=">f4", fits_dtype="E")
+    tf.bulge_frac_err = tf.set_column_properties(
+        "SHE_LENSMC_BULGE_FRAC_ERR", dtype=">f4", fits_dtype="E")
+    tf.gal_pvalue = tf.set_column_properties(
+        "SHE_LENSMC_GAL_PVALUE", dtype=">f4", fits_dtype="E")
+    tf.chi2 = tf.set_column_properties(
+        "SHE_LENSMC_CHI2", dtype=">f4", fits_dtype="E")
+    tf.dof = tf.set_column_properties(
+        "SHE_LENSMC_DOF", dtype=">i4", fits_dtype="K")
+    tf.acc = tf.set_column_properties(
+        "SHE_LENSMC_ACCEPTANCE", dtype=">f4", fits_dtype="E")
+    tf.m1_ical = tf.set_column_properties(
+        "SHE_LENSMC_M1_ICAL", dtype=">f4", fits_dtype="E")
+    tf.m2_ical = tf.set_column_properties(
+        "SHE_LENSMC_M2_ICAL", dtype=">f4", fits_dtype="E")
+
+
 class SheLensMcMeasurementsFormat(SheMeasurementsFormat):
     """
         @brief A class defining the format for shear estimates tables. Only the lensmc_measurements_table_format
@@ -64,37 +88,12 @@ class SheLensMcMeasurementsFormat(SheMeasurementsFormat):
         # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
         super().__init__(SheLensMcMeasurementsMeta())
 
+        self.setup_child_table_format(child_label)
 
-        self.setup_child_table_format(child_label, unlabelled_columns=["OBJECT_ID"])
+        # LensMC specific columns
+        set_lensmc_column_properties(self)
 
-        # lensmc specific columns
-        self.snr_err = self.set_column_properties(
-                                             "SHE_LENSMC_SNR_ERR", dtype=">f4", fits_dtype="E")
-        self.bulge_frac = self.set_column_properties(
-                                                "SHE_LENSMC_BULGE_FRAC", dtype=">f4", fits_dtype="E")
-        self.bulge_frac_err = self.set_column_properties(
-                                                    "SHE_LENSMC_BULGE_FRAC_ERR", dtype=">f4", fits_dtype="E")
-        self.gal_pvalue = self.set_column_properties(
-                                                "SHE_LENSMC_GAL_PVALUE", dtype=">f4", fits_dtype="E")
-        self.chi2 = self.set_column_properties(
-                                          "SHE_LENSMC_CHI2", dtype=">f4", fits_dtype="E")
-        self.dof = self.set_column_properties(
-                                         "SHE_LENSMC_DOF", dtype=">i4", fits_dtype="K")
-        self.acc = self.set_column_properties(
-                                         "SHE_LENSMC_ACCEPTANCE", dtype=">f4", fits_dtype="E")
-        self.m1_ical = self.set_column_properties(
-                                             "SHE_LENSMC_M1_ICAL", dtype=">f4", fits_dtype="E")
-        self.m2_ical = self.set_column_properties(
-                                             "SHE_LENSMC_M2_ICAL", dtype=">f4", fits_dtype="E")
-
-        # A list of columns in the desired order
-        self.all = list(self.is_optional.keys())
-
-        # A list of required columns in the desired order
-        self.all_required = []
-        for label in self.all:
-            if not self.is_optional[label]:
-                self.all_required.append(label)
+        self._finalize_init()
 
 
 # Define an instance of this object that can be imported

@@ -65,7 +65,7 @@ class SheKsbMeasurementsFormat(SheMeasurementsFormat):
         # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
         super().__init__(SheKsbMeasurementsMeta())
 
-        self.setup_child_table_format(child_label, unlabelled_columns=["OBJECT_ID"])
+        self.setup_child_table_format(child_label)
 
         # ksb specific columns
 

@@ -5,6 +5,8 @@
     Format definition for lensmc tu_matched tables.
 """
 
+__updated__ = "2021-08-10"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -19,9 +21,9 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-08-10"
-
 from collections import OrderedDict
+
+from SHE_PPT.table_formats.she_lensmc_measurements import set_lensmc_column_properties
 
 from .. import magic_values as mv
 from ..flags import she_flag_version
@@ -62,26 +64,8 @@ class SheLensMcTUMatchedFormat(SheTUMatchedFormat):
 
         self.setup_child_table_format(child_label)
 
-        # lensmc specific columns
-        # TODO: Make this common code with she_lensmc_measurements
-        self.snr_err = self.set_column_properties(
-            "SHE_LENSMC_SNR_ERR", dtype=">f4", fits_dtype="E")
-        self.bulge_frac = self.set_column_properties(
-            "SHE_LENSMC_BULGE_FRAC", dtype=">f4", fits_dtype="E")
-        self.bulge_frac_err = self.set_column_properties(
-            "SHE_LENSMC_BULGE_FRAC_ERR", dtype=">f4", fits_dtype="E")
-        self.gal_pvalue = self.set_column_properties(
-            "SHE_LENSMC_GAL_PVALUE", dtype=">f4", fits_dtype="E")
-        self.chi2 = self.set_column_properties(
-            "SHE_LENSMC_CHI2", dtype=">f4", fits_dtype="E")
-        self.dof = self.set_column_properties(
-            "SHE_LENSMC_DOF", dtype=">i4", fits_dtype="K")
-        self.acc = self.set_column_properties(
-            "SHE_LENSMC_ACCEPTANCE", dtype=">f4", fits_dtype="E")
-        self.m1_ical = self.set_column_properties(
-            "SHE_LENSMC_M1_ICAL", dtype=">f4", fits_dtype="E")
-        self.m2_ical = self.set_column_properties(
-            "SHE_LENSMC_M2_ICAL", dtype=">f4", fits_dtype="E")
+        # LensMC specific columns
+        set_lensmc_column_properties(self)
 
         self._finalize_init()
 

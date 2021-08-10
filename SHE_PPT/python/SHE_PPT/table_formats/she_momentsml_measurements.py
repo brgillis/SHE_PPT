@@ -65,7 +65,7 @@ class SheMomentsMlMeasurementsFormat(SheMeasurementsFormat):
         super().__init__(SheMomentsMlMeasurementsMeta())
 
 
-        self.setup_child_table_format(child_label, unlabelled_columns=["OBJECT_ID"])
+        self.setup_child_table_format(child_label)
 
         # momentsml specific columns
         self.g1_w = self.set_column_properties(

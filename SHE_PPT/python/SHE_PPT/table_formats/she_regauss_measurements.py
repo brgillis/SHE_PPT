@@ -65,7 +65,7 @@ class SheRegaussMeasurementsFormat(SheMeasurementsFormat):
         super().__init__(SheRegaussMeasurementsMeta())
 
 
-        self.setup_child_table_format(child_label, unlabelled_columns=["OBJECT_ID"])
+        self.setup_child_table_format(child_label)
 
         # regauss specific columns
 

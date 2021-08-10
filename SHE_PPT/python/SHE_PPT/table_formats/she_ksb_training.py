@@ -58,7 +58,7 @@ class SheKsbTrainingFormat(SheTrainingFormat):
         super().__init__(meta=SheKsbTrainingMeta())
 
 
-        self.setup_child_table_format(child_label, unlabelled_columns=["OBJECT_ID"])
+        self.setup_child_table_format(child_label)
 
         # A list of columns in the desired order
         self.all = list(self.is_optional.keys())
