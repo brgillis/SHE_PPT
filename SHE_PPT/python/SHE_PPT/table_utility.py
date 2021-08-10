@@ -317,7 +317,7 @@ class SheTableMeta():
     # Required attributes which aren't stored in the FITS header
     table_format: str
     __version__: str
-    comments: OrderedDict[str, Optional[str]]
+    comments: Dict[str, Optional[str]]
     all: List[str]
 
     # Required attributes which correspond to keys in the FITS header
@@ -339,7 +339,7 @@ class SheTableMeta():
                 self.comments[key] = comments[key]
 
         # Check that there's an entry for all attrs in comments, and add an empty comment if not
-        for attr in self:
+        for attr in dir(self):
             # Skip private attributes, and those we explicitly don't want listed
             if attr in ["table_format", "comments", "all"] or attr[1] == "_":
                 continue
@@ -359,11 +359,11 @@ class SheTableFormat():
     __version__: str
 
     # Attributes initialised empty at init
-    is_optional: OrderedDict[str, bool]
-    comments: OrderedDict[str, str]
-    dtypes: OrderedDict[str, str]
-    fits_dtypes: OrderedDict[str, bool]
-    lengths: OrderedDict[str, int]
+    is_optional: Dict[str, bool]
+    comments: Dict[str, str]
+    dtypes: Dict[str, str]
+    fits_dtypes: Dict[str, bool]
+    lengths: Dict[str, int]
 
     # Fixed attributes (can be changed in derived classes)
     is_base: bool = False
@@ -442,8 +442,7 @@ class SheTableFormat():
         self.parent_dtypes = self.dtypes
         self.parent_fits_dtypes = self.fits_dtypes
         self.parent_lengths = self.lengths
-        self.parent_all = self.all
-        self.parent_all_required = self.all_required
+        self.parent_all = list(self.is_optional.keys())
 
         self.is_optional = OrderedDict()
         self.comments = OrderedDict()

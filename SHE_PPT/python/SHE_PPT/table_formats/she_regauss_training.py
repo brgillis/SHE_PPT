@@ -19,12 +19,12 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-19"
+__updated__ = "2021-08-10"
 
 from collections import OrderedDict
 
 from ..table_formats.she_training import SheTrainingMeta, SheTrainingFormat
-from ..table_utility import is_in_format,init_table
+from ..table_utility import is_in_format, init_table
 
 
 fits_version = "8.0"
@@ -56,19 +56,11 @@ class SheRegaussTrainingFormat(SheTrainingFormat):
     def __init__(self):
 
         # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
-        super().__init__(SheRegaussTrainingMeta())
-
+        super().__init__(SheRegaussTrainingMeta(), finalize=False)
 
         self.setup_child_table_format(child_label)
 
-        # A list of columns in the desired order
-        self.all = list(self.is_optional.keys())
-
-        # A list of required columns in the desired order
-        self.all_required = []
-        for label in self.all:
-            if not self.is_optional[label]:
-                self.all_required.append(label)
+        self._finalize_init()
 
 
 # Define an instance of this object that can be imported

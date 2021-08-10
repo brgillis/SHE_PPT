@@ -247,14 +247,7 @@ class SheGalaxyPopulationPriorsFormat(SheTableFormat):
                                                        "SHE_GALPOP_FLUX_ERR_DISK_NJY_F160W", comment="nJy",
                                                        dtype=">f4", fits_dtype="E")
 
-        # A list of columns in the desired order
-        self.all = list(self.is_optional.keys())
-
-        # A list of required columns in the desired order
-        self.all_required = []
-        for label in self.all:
-            if not self.is_optional[label]:
-                self.all_required.append(label)
+        self._finalize_init()
 
 
 # Define an instance of this object that can be imported

@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-10"
+__updated__ = "2021-08-10"
 
 from collections import OrderedDict
 
@@ -60,32 +60,26 @@ class SheTrainingFormat(SheTableFormat):
                instance of this should generally be accessed, and it should not be changed.
     """
 
-    def __init__(self,meta=None):
+    def __init__(self, meta=None, finalize: bool = True):
         if meta is None:
-            meta=SheTrainingMeta()
+            meta = SheTrainingMeta()
         super().__init__(meta)
 
         # Column names and info
 
         self.id = self.set_column_properties("OBJECT_ID", dtype=">i8", fits_dtype="K",
-                                        comment="ID of this object in the galaxy population priors table.")
+                                             comment="ID of this object in the galaxy population priors table.")
         self.e1 = self.set_column_properties("E1", dtype=">f4", fits_dtype="E",
-                                        comment="Mean ellipticity measurement of this object, component 1")
+                                             comment="Mean ellipticity measurement of this object, component 1")
         self.e2 = self.set_column_properties("E2", dtype=">f4", fits_dtype="E",
-                                        comment="Mean ellipticity measurement of this object, component 2")
+                                             comment="Mean ellipticity measurement of this object, component 2")
         self.e1_err = self.set_column_properties("E1_ERR", dtype=">f4", fits_dtype="E",
-                                            comment="Error on mean ellipticity measurement of this object, component 1")
+                                                 comment="Error on mean ellipticity measurement of this object, component 1")
         self.e2_err = self.set_column_properties("E2_ERR", dtype=">f4", fits_dtype="E",
-                                            comment="Error on mean ellipticity measurement of this object, component 2")
+                                                 comment="Error on mean ellipticity measurement of this object, component 2")
 
-        # A list of columns in the desired order
-        self.all = list(self.is_optional.keys())
-
-        # A list of required columns in the desired order
-        self.all_required = []
-        for label in self.all:
-            if not self.is_optional[label]:
-                self.all_required.append(label)
+        if finalize:
+            self._finalize_init()
 
 
 # Define an instance of this object that can be imported

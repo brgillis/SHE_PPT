@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2021-02-16"
+__updated__ = "2021-08-10"
 
 import os
 
@@ -37,6 +37,7 @@ from SHE_PPT.table_formats.she_ksb_measurements import tf as ksbm_tf, initialise
 from SHE_PPT.table_formats.she_ksb_training import tf as ksbt_tf, initialise_ksb_training_table
 from SHE_PPT.table_formats.she_lensmc_chains import tf as lmcc_tf, initialise_lensmc_chains_table, len_chain
 from SHE_PPT.table_formats.she_lensmc_measurements import tf as lmcm_tf, initialise_lensmc_measurements_table
+from SHE_PPT.table_formats.she_lensmc_tu_matched import tf as lmct_tf, initialise_lensmc_tu_matched_table
 from SHE_PPT.table_formats.she_measurements import tf as sm_tf
 from SHE_PPT.table_formats.she_momentsml_measurements import tf as mmlm_tf, initialise_momentsml_measurements_table
 from SHE_PPT.table_formats.she_p_of_e import tf as poe_tf, initialise_p_of_e_table
@@ -64,6 +65,7 @@ from SHE_PPT.table_formats.she_regauss_training import tf as regt_tf, initialise
 from SHE_PPT.table_formats.she_simulated_catalog import tf as simc_tf, initialise_simulated_catalog
 from SHE_PPT.table_formats.she_simulation_plan import tf as simp_tf, initialise_simulation_plan_table
 from SHE_PPT.table_formats.she_star_catalog import tf as sc_tf, initialise_star_catalog
+from SHE_PPT.table_formats.she_tu_matched import tf as tum_tf
 from SHE_PPT.table_testing import _test_is_in_format
 from SHE_PPT.table_utility import is_in_format, add_row
 import numpy as np
@@ -88,6 +90,7 @@ class TestTableFormats:
                                         (ksbt_tf, initialise_ksb_training_table),
                                         (lmcc_tf, initialise_lensmc_chains_table),
                                         (lmcm_tf, initialise_lensmc_measurements_table),
+                                        (lmct_tf, initialise_lensmc_tu_matched_table),
                                         (mfc_tf, initialise_mer_final_catalog),
                                         (mmlm_tf, initialise_momentsml_measurements_table),
                                         (poe_tf, initialise_p_of_e_table),

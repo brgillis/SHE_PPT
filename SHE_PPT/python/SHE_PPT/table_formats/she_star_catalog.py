@@ -114,14 +114,7 @@ class SheStarCatalogFormat(SheTableFormat):
                                             comment="Error on mean ellipticity measurement of this object, "
                                             "component 2")
 
-        # A list of columns in the desired order
-        self.all = list(self.is_optional.keys())
-
-        # A list of required columns in the desired order
-        self.all_required = []
-        for label in self.all:
-            if not self.is_optional[label]:
-                self.all_required.append(label)
+        self._finalize_init()
 
 
 # Define an instance of this object that can be imported

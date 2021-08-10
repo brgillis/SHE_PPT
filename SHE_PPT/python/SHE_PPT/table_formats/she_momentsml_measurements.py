@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-02-16"
+__updated__ = "2021-08-10"
 
 from collections import OrderedDict
 
@@ -62,34 +62,26 @@ class SheMomentsMlMeasurementsFormat(SheMeasurementsFormat):
     def __init__(self):
 
         # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
-        super().__init__(SheMomentsMlMeasurementsMeta())
-
+        super().__init__(SheMomentsMlMeasurementsMeta(), finalize=False)
 
         self.setup_child_table_format(child_label)
 
         # momentsml specific columns
         self.g1_w = self.set_column_properties(
-                                          "SHE_MOMENTSML_G1_W", is_optional=False, dtype=">f4", fits_dtype="E")
+            "SHE_MOMENTSML_G1_W", is_optional=False, dtype=">f4", fits_dtype="E")
         self.g2_w = self.set_column_properties(
-                                          "SHE_MOMENTSML_G2_W", is_optional=False, dtype=">f4", fits_dtype="E")
+            "SHE_MOMENTSML_G2_W", is_optional=False, dtype=">f4", fits_dtype="E")
         self.g1_uncal_w = self.set_column_properties(
-                                                "SHE_MOMENTSML_G1_UNCAL_W", is_optional=False, dtype=">f4",
-                                                fits_dtype="E")
+            "SHE_MOMENTSML_G1_UNCAL_W", is_optional=False, dtype=">f4",
+            fits_dtype="E")
         self.g2_uncal_w = self.set_column_properties(
-                                                "SHE_MOMENTSML_G2_UNCAL_W", is_optional=False, dtype=">f4",
-                                                fits_dtype="E")
+            "SHE_MOMENTSML_G2_UNCAL_W", is_optional=False, dtype=">f4",
+            fits_dtype="E")
         self.sersic = self.set_column_properties(
-                                            "SHE_MOMENTSML_SERSIC_INDEX", is_optional=False, dtype=">f4",
-                                            fits_dtype="E")
+            "SHE_MOMENTSML_SERSIC_INDEX", is_optional=False, dtype=">f4",
+            fits_dtype="E")
 
-        # A list of columns in the desired order
-        self.all = list(self.is_optional.keys())
-
-        # A list of required columns in the desired order
-        self.all_required = []
-        for label in self.all:
-            if not self.is_optional[label]:
-                self.all_required.append(label)
+        self._finalize_init()
 
 
 # Define an instance of this object that can be imported

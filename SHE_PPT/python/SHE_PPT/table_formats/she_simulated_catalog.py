@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-02-10"
+__updated__ = "2021-08-10"
 
 from collections import OrderedDict
 
@@ -27,7 +27,7 @@ from EL_PythonUtils.utilities import hash_any
 
 from .. import magic_values as mv
 from ..logging import getLogger
-from ..table_utility import is_in_format, init_table,SheTableFormat
+from ..table_utility import is_in_format, init_table, SheTableFormat
 
 
 fits_version = "8.0"
@@ -87,7 +87,7 @@ class SheSimulatedCatalogFormat(SheTableFormat):
         super().__init__(SheSimulatedCatalogMeta())
 
         # Table column labels
-        self.ID = self.set_column_properties( "OBJECT_ID", dtype=">i8", fits_dtype="K")
+        self.ID = self.set_column_properties("OBJECT_ID", dtype=">i8", fits_dtype="K")
 
         self.group_ID = self.set_column_properties("GROUP_ID", dtype=">i8", fits_dtype="K")
 
@@ -95,9 +95,9 @@ class SheSimulatedCatalogFormat(SheTableFormat):
         self.dec = self.set_column_properties("DECLINATION", comment="dec (deg)")
 
         self.hlr_bulge = self.set_column_properties(
-                                               "HLR_BULGE", comment="arcsec")
+            "HLR_BULGE", comment="arcsec")
         self.hlr_disk = self.set_column_properties(
-                                              "HLR_DISK", comment="arcsec")
+            "HLR_DISK", comment="arcsec")
 
         self.bulge_ellipticity = self.set_column_properties("BULGE_ELLIPTICITY")
         self.bulge_axis_ratio = self.set_column_properties("BULGE_AXIS_RATIO")
@@ -121,14 +121,7 @@ class SheSimulatedCatalogFormat(SheTableFormat):
 
         self.target_galaxy = self.set_column_properties("is_target_galaxy", dtype="bool", fits_dtype="L")
 
-        # A list of columns in the desired order
-        self.all = list(self.is_optional.keys())
-
-        # A list of required columns in the desired order
-        self.all_required = []
-        for label in self.all:
-            if not self.is_optional[label]:
-                self.all_required.append(label)
+        self._finalize_init()
 
 
 # Define an instance of this object that can be imported

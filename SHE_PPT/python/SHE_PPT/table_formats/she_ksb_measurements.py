@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-02-16"
+__updated__ = "2021-08-10"
 
 from collections import OrderedDict
 
@@ -53,7 +53,6 @@ class SheKsbMeasurementsMeta(SheMeasurementsMeta):
         self.table_format = fits_def
 
 
-
 class SheKsbMeasurementsFormat(SheMeasurementsFormat):
     """
         @brief A class defining the format for shear estimates tables. Only the ksb_measurements_table_format
@@ -63,20 +62,13 @@ class SheKsbMeasurementsFormat(SheMeasurementsFormat):
     def __init__(self):
 
         # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
-        super().__init__(SheKsbMeasurementsMeta())
+        super().__init__(SheKsbMeasurementsMeta(), finalize=False)
 
         self.setup_child_table_format(child_label)
 
         # ksb specific columns
 
-        # A list of columns in the desired order
-        self.all = list(self.is_optional.keys())
-
-        # A list of required columns in the desired order
-        self.all_required = []
-        for label in self.all:
-            if not self.is_optional[label]:
-                self.all_required.append(label)
+        self._finalize_init()
 
 
 # Define an instance of this object that can be imported

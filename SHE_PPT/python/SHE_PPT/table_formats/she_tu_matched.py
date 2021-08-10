@@ -104,19 +104,19 @@ class SheTUMatchedFormat(SheMeasurementsFormat):
 
         # Column labels for summary galaxy properties calculated from the TU Galaxy table
         self.tu_g_beta = self.set_column_properties("Beta_Input_Shear", fits_dtype="E", dtype=">f4",
-                                                    comment="", unlabelled=True, optional=True)
+                                                    comment="", unlabelled=True, is_optional=True)
         self.tu_g_mag = self.set_column_properties("Mag_Input_Shear", fits_dtype="E", dtype=">f4",
-                                                   comment="", unlabelled=True, optional=True)
+                                                   comment="", unlabelled=True, is_optional=True)
         self.tu_disk_beta = self.set_column_properties("Beta_Input_Bulge_Unsheared_Shape", fits_dtype="E",
-                                                       dtype=">f4", comment="", unlabelled=True, optional=True)
+                                                       dtype=">f4", comment="", unlabelled=True, is_optional=True)
         self.tu_disk_beta = self.set_column_properties("Beta_Input_Disk_Unsheared_Shape", fits_dtype="E",
-                                                       dtype=">f4", comment="", unlabelled=True, optional=True)
+                                                       dtype=">f4", comment="", unlabelled=True, is_optional=True)
 
         # Column labels for summary galaxy properties calculated from measurements tables
         self.g_beta = self.set_column_properties("Beta_Est_Shear", fits_dtype="E", dtype=">f4",
-                                                 comment="", unlabelled=False, optional=True)
+                                                 comment="", unlabelled=False, is_optional=True)
         self.g_mag = self.set_column_properties("Mag_Est_Shear", fits_dtype="E",
-                                                dtype=">f4", comment="", unlabelled=False, optional=True)
+                                                dtype=">f4", comment="", unlabelled=False, is_optional=True)
 
         if finalize:
             self._finalize_init()

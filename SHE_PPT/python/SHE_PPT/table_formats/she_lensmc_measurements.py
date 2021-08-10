@@ -86,7 +86,7 @@ class SheLensMcMeasurementsFormat(SheMeasurementsFormat):
     def __init__(self):
 
         # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
-        super().__init__(SheLensMcMeasurementsMeta())
+        super().__init__(SheLensMcMeasurementsMeta(), finalize=False)
 
         self.setup_child_table_format(child_label)
 
