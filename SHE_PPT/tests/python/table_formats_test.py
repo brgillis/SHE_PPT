@@ -35,11 +35,13 @@ from SHE_PPT.table_formats.she_common_calibration import tf as cc_tf, initialise
 from SHE_PPT.table_formats.she_galaxy_population_priors import tf as gpp_tf, initialise_galaxy_population_priors_table
 from SHE_PPT.table_formats.she_ksb_measurements import tf as ksbm_tf, initialise_ksb_measurements_table
 from SHE_PPT.table_formats.she_ksb_training import tf as ksbt_tf, initialise_ksb_training_table
+from SHE_PPT.table_formats.she_ksb_tu_matched import tf as ksbtm_tf, initialise_ksb_tu_matched_table
 from SHE_PPT.table_formats.she_lensmc_chains import tf as lmcc_tf, initialise_lensmc_chains_table, len_chain
 from SHE_PPT.table_formats.she_lensmc_measurements import tf as lmcm_tf, initialise_lensmc_measurements_table
-from SHE_PPT.table_formats.she_lensmc_tu_matched import tf as lmct_tf, initialise_lensmc_tu_matched_table
+from SHE_PPT.table_formats.she_lensmc_tu_matched import tf as lmctm_tf, initialise_lensmc_tu_matched_table
 from SHE_PPT.table_formats.she_measurements import tf as sm_tf
 from SHE_PPT.table_formats.she_momentsml_measurements import tf as mmlm_tf, initialise_momentsml_measurements_table
+from SHE_PPT.table_formats.she_momentsml_tu_matched import tf as mmltm_tf, initialise_momentsml_tu_matched_table
 from SHE_PPT.table_formats.she_p_of_e import tf as poe_tf, initialise_p_of_e_table
 from SHE_PPT.table_formats.she_psf_dm_state import (tff as psfdmf_tf, tfc as psfdmc_tf,
                                                     initialise_psf_field_dm_state_table,
@@ -62,6 +64,7 @@ from SHE_PPT.table_formats.she_psf_zm_state import (tff as psfzmf_tf, tfc as psf
                                                     initialise_psf_calibration_zm_state_table)
 from SHE_PPT.table_formats.she_regauss_measurements import tf as regm_tf, initialise_regauss_measurements_table
 from SHE_PPT.table_formats.she_regauss_training import tf as regt_tf, initialise_regauss_training_table
+from SHE_PPT.table_formats.she_regauss_tu_matched import tf as regtm_tf, initialise_regauss_tu_matched_table
 from SHE_PPT.table_formats.she_simulated_catalog import tf as simc_tf, initialise_simulated_catalog
 from SHE_PPT.table_formats.she_simulation_plan import tf as simp_tf, initialise_simulation_plan_table
 from SHE_PPT.table_formats.she_star_catalog import tf as sc_tf, initialise_star_catalog
@@ -87,12 +90,14 @@ class TestTableFormats:
                                         (cc_tf, initialise_common_calibration_table),
                                         (gpp_tf, initialise_galaxy_population_priors_table),
                                         (ksbm_tf, initialise_ksb_measurements_table),
+                                        (ksbtm_tf, initialise_ksb_tu_matched_table),
                                         (ksbt_tf, initialise_ksb_training_table),
                                         (lmcc_tf, initialise_lensmc_chains_table),
                                         (lmcm_tf, initialise_lensmc_measurements_table),
-                                        (lmct_tf, initialise_lensmc_tu_matched_table),
+                                        (lmctm_tf, initialise_lensmc_tu_matched_table),
                                         (mfc_tf, initialise_mer_final_catalog),
                                         (mmlm_tf, initialise_momentsml_measurements_table),
+                                        (mmltm_tf, initialise_momentsml_tu_matched_table),
                                         (poe_tf, initialise_p_of_e_table),
                                         (psfdmf_tf, initialise_psf_field_dm_state_table),
                                         (psfdmc_tf, initialise_psf_calibration_dm_state_table),
@@ -108,6 +113,7 @@ class TestTableFormats:
                                         (psfzmf_tf, initialise_psf_field_zm_state_table),
                                         (psfzmc_tf, initialise_psf_calibration_zm_state_table),
                                         (regm_tf, initialise_regauss_measurements_table),
+                                        (regtm_tf, initialise_regauss_tu_matched_table),
                                         (regt_tf, initialise_regauss_training_table),
                                         (simc_tf, initialise_simulated_catalog),
                                         (simp_tf, initialise_simulation_plan_table),
