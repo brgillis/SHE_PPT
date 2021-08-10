@@ -19,9 +19,10 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-02-16"
+__updated__ = "2021-08-10"
 
 from collections import OrderedDict
+from typing import Optional, Sequence
 
 from astropy.table import Column, Table
 
@@ -58,7 +59,7 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
 
     # If the table format is a base class, ensure that strict=False
     if table_format.is_base and strict:
-        logger.warn("Table format %s is a base format. Enforcing strict=False.",table_format.m.table_format)
+        logger.warn("Table format %s is a base format. Enforcing strict=False.", table_format.m.table_format)
         strict = False
 
     # Check that all required column names are present
@@ -67,7 +68,7 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
         for colname in table_format.all_required:
             if colname not in table.colnames:
                 if verbose:
-                    logger.info("Table not in correct format due to absence of required column: %s" ,colname)
+                    logger.info("Table not in correct format due to absence of required column: %s", colname)
                 return False
     else:
         # More careful check if comparing to a base class
@@ -80,7 +81,7 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
                         found = True
                         break
                     elif len(parent_colname) < len(child_colname) \
-                        and child_colname[-len(parent_colname):] == parent_colname:
+                            and child_colname[-len(parent_colname):] == parent_colname:
                         child_label = child_colname[0:-len(parent_colname)]
                         found = True
                         break
@@ -93,7 +94,7 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
                 # Once we've figured out what the child_label is, we can be a bit more efficient
                 if parent_colname not in table.colnames and child_label + parent_colname not in table.columns:
                     if verbose:
-                        logger.info("Table not in correct format due to absence of required column: %s",colname)
+                        logger.info("Table not in correct format due to absence of required column: %s", colname)
                     return False
 
     # Check that no extra column names are present if strict==True, and each
@@ -120,11 +121,11 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
         if parent_colname not in table_format.all:
             if strict:
                 logger.info(
-                    "Table not in correct format due to presence of extra column: %s",colname)
+                    "Table not in correct format due to presence of extra column: %s", colname)
                 return False
             if verbose:
                 logger.info("Table not in correct format due to presence of extra column: %s, but not failing "
-                            "check due to strict==False.",colname)
+                            "check due to strict==False.", colname)
 
         elif col_dtype != ex_dtype:
 
@@ -138,7 +139,7 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
                     if verbose:
                         logger.info("Table not in correct format due to wrong length for column '%s'\n"
                                     "Expected: %d\nGot: %d",
-                                     parent_colname, table_format.lengths[parent_colname], col_len)
+                                    parent_colname, table_format.lengths[parent_colname], col_len)
                     if strict:
                         return False
                     logger.info("Not failing check due to strict==False.")
@@ -227,11 +228,11 @@ def output_tables(otable, file_name_base, output_format):
     if output_format not in ('ascii', 'fits', 'both'):
         raise ValueError("Invalid output format: " + str(output_format))
 
-    if output_format in ('ascii',"both"):
+    if output_format in ('ascii', "both"):
         text_file_name = file_name_base + ".ecsv"
         otable.write(text_file_name, format='ascii.ecsv')
 
-    if output_format in ('fits','both'):
+    if output_format in ('fits', 'both'):
         fits_file_name = file_name_base + ".fits"
         otable.write(fits_file_name, format='fits', overwrite=True)
 
@@ -310,8 +311,8 @@ def init_table(tf, size=None, optional_columns=None, init_cols=None,):
 
 
 class SheTableFormat():
-    def __init__(self,meta):
-        self.meta=meta
+    def __init__(self, meta):
+        self.meta = meta
         self.m = self.meta
 
         # Get the version from the meta class
@@ -328,8 +329,6 @@ class SheTableFormat():
         self.fits_dtypes = OrderedDict()
         self.lengths = OrderedDict()
 
-
-
     def set_column_properties(self, name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
                               length=1):
 
@@ -342,7 +341,6 @@ class SheTableFormat():
         self.lengths[name] = length
 
         return name
-
 
     def setup_child_table_format(self, child_label, unlabelled_columns=None):
 
@@ -394,3 +392,9 @@ class SheTableFormat():
         for key, val in self.__dict__.items():
             if isinstance(val, str) and val in changed_column_names:
                 setattr(self, key, changed_column_names[val])
+
+    def init_table(self, *args, **kwargs):
+        """ Bound alias to the free init_table function, using this table format.
+        """
+
+        return init_table(tf=self, *args, **kwargs)
