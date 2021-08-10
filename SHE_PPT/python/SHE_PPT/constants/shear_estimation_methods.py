@@ -5,7 +5,7 @@
     Constants relating to shear estimation methods
 """
 
-__updated__ = "2021-08-05"
+__updated__ = "2021-08-10"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -28,9 +28,13 @@ from astropy.table import Table
 from SHE_PPT.utility import AllowedEnum
 
 from ..table_formats.she_ksb_measurements import tf as ksbm_tf
+from ..table_formats.she_ksb_tu_matched import tf as ksbtm_tf
 from ..table_formats.she_lensmc_measurements import tf as lmcm_tf
+from ..table_formats.she_lensmc_tu_matched import tf as lmctm_tf
 from ..table_formats.she_momentsml_measurements import tf as mmlm_tf
+from ..table_formats.she_momentsml_tu_matched import tf as mmltm_tf
 from ..table_formats.she_regauss_measurements import tf as regm_tf
+from ..table_formats.she_regauss_tu_matched import tf as regtm_tf
 
 
 class ShearEstimationMethods(AllowedEnum):
@@ -45,6 +49,13 @@ D_SHEAR_ESTIMATION_METHOD_TABLE_FORMATS: Dict[ShearEstimationMethods, Table] = {
     ShearEstimationMethods.REGAUSS: regm_tf,
     ShearEstimationMethods.MOMENTSML: mmlm_tf,
     ShearEstimationMethods.LENSMC: lmcm_tf}
+
+
+D_SHEAR_ESTIMATION_METHOD_TUM_TABLE_FORMATS: Dict[ShearEstimationMethods, Table] = {
+    ShearEstimationMethods.KSB: ksbtm_tf,
+    ShearEstimationMethods.REGAUSS: regtm_tf,
+    ShearEstimationMethods.MOMENTSML: mmltm_tf,
+    ShearEstimationMethods.LENSMC: lmctm_tf}
 
 NUM_METHODS: int = len(ShearEstimationMethods)
 METHOD_NAMES: List[str] = [method_enum.value for method_enum in ShearEstimationMethods]

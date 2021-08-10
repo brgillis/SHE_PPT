@@ -90,8 +90,6 @@ class SheTUMatchedFormat(SheMeasurementsFormat):
         super().__init__(meta, finalize=False)
 
         # Table column labels and properties unique to this table, from the TU Galaxy table
-        self.tu_index = self.set_column_properties(
-            "GAL_INDEX", fits_dtype="E", dtype=">f4", comment="", unlabelled=True)
         self.tu_ra = self.set_column_properties("RA_MAG", fits_dtype="E", dtype=">f4", comment="", unlabelled=True)
         self.tu_dec = self.set_column_properties("DEC_MAG", fits_dtype="E", dtype=">f4", comment="", unlabelled=True)
         self.tu_gamma1 = self.set_column_properties("GAMMA1", fits_dtype="E", dtype=">f4", comment="", unlabelled=True)
@@ -103,12 +101,16 @@ class SheTUMatchedFormat(SheMeasurementsFormat):
                                                              dtype=">f4", comment="", unlabelled=True)
 
         # Column labels for summary galaxy properties calculated from the TU Galaxy table
+        self.tu_gal_index = self.set_column_properties("GAL_INDEX", fits_dtype="E", dtype=">f4",
+                                                       comment="", unlabelled=True, is_optional=True)
+        self.tu_star_index = self.set_column_properties("STAR_INDEX", fits_dtype="E", dtype=">f4",
+                                                        comment="", unlabelled=True, is_optional=True)
         self.tu_g_beta = self.set_column_properties("Beta_Input_Shear", fits_dtype="E", dtype=">f4",
                                                     comment="", unlabelled=True, is_optional=True)
         self.tu_g_mag = self.set_column_properties("Mag_Input_Shear", fits_dtype="E", dtype=">f4",
                                                    comment="", unlabelled=True, is_optional=True)
-        self.tu_disk_beta = self.set_column_properties("Beta_Input_Bulge_Unsheared_Shape", fits_dtype="E",
-                                                       dtype=">f4", comment="", unlabelled=True, is_optional=True)
+        self.tu_bulge_beta = self.set_column_properties("Beta_Input_Bulge_Unsheared_Shape", fits_dtype="E",
+                                                        dtype=">f4", comment="", unlabelled=True, is_optional=True)
         self.tu_disk_beta = self.set_column_properties("Beta_Input_Disk_Unsheared_Shape", fits_dtype="E",
                                                        dtype=">f4", comment="", unlabelled=True, is_optional=True)
 
