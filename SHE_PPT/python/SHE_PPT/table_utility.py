@@ -22,7 +22,7 @@
 __updated__ = "2021-08-10"
 
 from collections import OrderedDict
-from typing import Optional, Sequence
+from typing import Dict, List, Optional
 
 from astropy.table import Column, Table
 
@@ -310,8 +310,68 @@ def init_table(tf, size=None, optional_columns=None, init_cols=None,):
     return t
 
 
+class SheTableMeta():
+    """ Base class for table format metadata.
+    """
+
+    # Required attributes which aren't stored in the FITS header
+    table_format: str
+    __version__: str
+    comments: OrderedDict[str, Optional[str]]
+    all: List[str]
+
+    # Required attributes which correspond to keys in the FITS header
+    fits_version: str = mv.fits_version_label
+    fits_def: str = mv.fits_def_label
+
+    def __init__(self,
+                 table_format: str,
+                 version: str,
+                 comments: Optional[Dict[str, Optional[str]]] = None):
+
+        self.table_format = table_format
+        self.__version__ = version
+
+        self.comments = OrderedDict(((self.fits_version, None),
+                                     (self.fits_def, None)))
+        if comments:
+            for key in comments:
+                self.comments[key] = comments[key]
+
+        # Check that there's an entry for all attrs in comments, and add an empty comment if not
+        for attr in self:
+            # Skip private attributes, and those we explicitly don't want listed
+            if attr in ["table_format", "comments", "all"] or attr[1] == "_":
+                continue
+            self.comments[getattr(self, attr)] = None
+
+        # Set self.all as a list of columns in the desired order
+        self.all = list(self.comments.keys())
+
+
 class SheTableFormat():
-    def __init__(self, meta):
+
+    # Attributes set directly at init
+    meta: SheTableMeta
+
+    # Attributes determined at init
+    m: SheTableMeta
+    __version__: str
+
+    # Attributes initialised empty at init
+    is_optional: OrderedDict[str, bool]
+    comments: OrderedDict[str, str]
+    dtypes: OrderedDict[str, str]
+    fits_dtypes: OrderedDict[str, bool]
+    lengths: OrderedDict[str, int]
+
+    # Fixed attributes (can be changed in derived classes)
+    is_base: bool = False
+    unlabelled_columns: Optional[List[str]] = None
+
+    def __init__(self,
+                 meta: SheTableMeta):
+
         self.meta = meta
         self.m = self.meta
 
@@ -321,16 +381,17 @@ class SheTableFormat():
         # Direct alias for a tuple of all metadata
         self.meta_data = self.m.all
 
-        self.is_base = False
-
         self.is_optional = OrderedDict()
         self.comments = OrderedDict()
         self.dtypes = OrderedDict()
         self.fits_dtypes = OrderedDict()
         self.lengths = OrderedDict()
 
+        if self.unlabelled_columns is None:
+            self.unlabelled_columns = []
+
     def set_column_properties(self, name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
-                              length=1):
+                              length=1, unlabelled=False):
 
         assert name not in self.is_optional
 
@@ -340,12 +401,12 @@ class SheTableFormat():
         self.fits_dtypes[name] = fits_dtype
         self.lengths[name] = length
 
+        if unlabelled:
+            self.unlabelled_columns.append(name)
+
         return name
 
-    def setup_child_table_format(self, child_label, unlabelled_columns=None):
-
-        if unlabelled_columns is None:
-            unlabelled_columns = []
+    def setup_child_table_format(self, child_label):
 
         # And a quick alias for it
         self.m = self.meta
@@ -376,7 +437,7 @@ class SheTableFormat():
         changed_column_names = {}
 
         for parent_name in self.parent_all:
-            if parent_name in unlabelled_columns:
+            if parent_name in self.unlabelled_columns:
                 name = parent_name
             else:
                 name = child_label + parent_name
