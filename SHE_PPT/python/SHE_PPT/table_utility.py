@@ -370,7 +370,8 @@ class SheTableFormat():
     unlabelled_columns: Optional[List[str]] = None
 
     def __init__(self,
-                 meta: SheTableMeta):
+                 meta: SheTableMeta,
+                 finalize: bool = False):
 
         self.meta = meta
         self.m = self.meta
@@ -389,6 +390,22 @@ class SheTableFormat():
 
         if self.unlabelled_columns is None:
             self.unlabelled_columns = []
+
+        if finalize:
+            self._finalize_init()
+
+    def _finalize_init(self):
+        """ A method to call at the end of any derived init, once all columns have been set up.
+        """
+
+        # A list of columns in the desired order
+        self.all = list(self.is_optional.keys())
+
+        # A list of required columns in the desired order
+        self.all_required = []
+        for label in self.all:
+            if not self.is_optional[label]:
+                self.all_required.append(label)
 
     def set_column_properties(self, name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
                               length=1, unlabelled=False):

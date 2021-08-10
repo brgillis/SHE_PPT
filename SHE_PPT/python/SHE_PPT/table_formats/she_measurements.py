@@ -82,7 +82,9 @@ class SheMeasurementsFormat(SheTableFormat):
     is_base = True
     unlabelled_columns: List[str]
 
-    def __init__(self, meta=None):
+    def __init__(self,
+                 meta=None,
+                 finalize=True):
         if meta is None:
             meta = SheMeasurementsMeta()
         super().__init__(meta)
@@ -177,14 +179,8 @@ class SheMeasurementsFormat(SheTableFormat):
         self.snr = self.set_column_properties(
             "SNR", dtype=">f4", fits_dtype="E")
 
-        # A list of columns in the desired order
-        self.all = list(self.is_optional.keys())
-
-        # A list of required columns in the desired order
-        self.all_required = []
-        for label in self.all:
-            if not self.is_optional[label]:
-                self.all_required.append(label)
+        if finalize:
+            self._finalize_init()
 
 
 # Define an instance of this object that can be imported
