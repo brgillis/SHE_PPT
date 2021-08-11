@@ -5,7 +5,7 @@
     Format definition for lensmc tu_matched tables.
 """
 
-__updated__ = "2021-08-10"
+__updated__ = "2021-08-11"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -68,6 +68,13 @@ class SheLensMcTUMatchedFormat(SheTUMatchedFormat):
         set_lensmc_column_properties(self)
 
         self._finalize_init()
+
+    @staticmethod
+    def init_table(*args, **kwargs):
+        """ Bound alias to the free table initialisation function, using this table format.
+        """
+
+        return initialise_lensmc_tu_matched_table(*args, **kwargs)
 
 
 # Define an instance of this object that can be imported

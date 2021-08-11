@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-08-10"
+__updated__ = "2021-08-11"
 
 from collections import OrderedDict
 
@@ -82,6 +82,13 @@ class SheMomentsMlMeasurementsFormat(SheMeasurementsFormat):
             fits_dtype="E")
 
         self._finalize_init()
+
+    @staticmethod
+    def init_table(*args, **kwargs):
+        """ Bound alias to the free table initialisation function, using this table format.
+        """
+
+        return initialise_momentsml_measurements_table(*args, **kwargs)
 
 
 # Define an instance of this object that can be imported

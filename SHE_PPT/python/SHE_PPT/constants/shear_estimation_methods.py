@@ -5,7 +5,7 @@
     Constants relating to shear estimation methods
 """
 
-__updated__ = "2021-08-10"
+__updated__ = "2021-08-11"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
