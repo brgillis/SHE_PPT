@@ -24,11 +24,6 @@ __updated__ = "2021-08-12"
 import os
 import re
 from typing import Any, List, Optional, Tuple, TypeVar, Union
-
-from EL_PythonUtils.utilities import (hash_any as EL_hash_any,
-                                      run_only_once as EL_run_only_once,
-                                      time_to_timestamp as EL_time_to_timestamp,
-                                      get_arguments_string as EL_get_arguments_string)
 from astropy.io.fits import TableHDU, HDUList
 from astropy.table import Table
 
@@ -38,52 +33,6 @@ from .logging import getLogger
 
 
 logger = getLogger(__name__)
-
-# Wrappers to warn functions which have moved to EL_PythonUtils
-
-
-@EL_run_only_once
-def warn_hash_any_deprecated() -> None:
-    logger.warning("SHE_PPT.utility.hash_any has been moved to EL_PythonUtils.utilities.hash_any. "
-                   "Please update to use that, as this wrapper will be deprecated in a future version.")
-
-
-def hash_any(*args, **kwargs) -> str:
-    warn_hash_any_deprecated()
-    return EL_hash_any(*args, **kwargs)
-
-
-@EL_run_only_once
-def warn_time_to_timestamp_deprecated() -> None:
-    logger.warning("SHE_PPT.utility.time_to_timestamp has been moved to EL_PythonUtils.utilities.time_to_timestamp. "
-                   "Please update to use that, as this wrapper will be deprecated in a future version.")
-
-
-def time_to_timestamp(*args, **kwargs) -> str:
-    warn_time_to_timestamp_deprecated()
-    return EL_time_to_timestamp(*args, **kwargs)
-
-
-@EL_run_only_once
-def warn_get_arguments_string_deprecated() -> None:
-    logger.warning("SHE_PPT.utility.get_arguments_string has been moved to EL_PythonUtils.utilities.get_arguments_string. "
-                   "Please update to use that, as this wrapper will be deprecated in a future version.")
-
-
-def get_arguments_string(*args, **kwargs) -> str:
-    warn_get_arguments_string_deprecated()
-    return EL_get_arguments_string(*args, **kwargs)
-
-
-@EL_run_only_once
-def warn_run_only_once_deprecated() -> None:
-    logger.warning("SHE_PPT.utility.run_only_once has been moved to EL_PythonUtils.utilities.run_only_once. "
-                   "Please update to use that, as this wrapper will be deprecated in a future version.")
-
-
-def run_only_once(*args, **kwargs) -> Any:
-    warn_run_only_once_deprecated()
-    return EL_run_only_once(*args, **kwargs)
 
 
 def get_attr_with_index(obj: Any, attr: Any) -> Any:
