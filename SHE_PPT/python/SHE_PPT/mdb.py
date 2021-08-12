@@ -10,7 +10,7 @@ import re
 from EL_PythonUtils.utilities import run_only_once
 from astropy.io import fits
 
-from SHE_PPT.constants.fits import extname_label
+from SHE_PPT.constants.fits import EXTNAME_LABEL
 from ST_DM_MDBTools.Mdb import Mdb
 
 from .constants.test_data import TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME
@@ -146,10 +146,10 @@ def _load_quadrant_table(qualified_data_filename, colname):
 
     for hdu in f:
         # Check if this is the zeroeth hdu, which doesn't have a table in it
-        if not extname_label in hdu.header:
+        if not EXTNAME_LABEL in hdu.header:
             continue
 
-        quadrant_dict[hdu.header[extname_label]] = hdu.data[colname][0]
+        quadrant_dict[hdu.header[EXTNAME_LABEL]] = hdu.data[colname][0]
 
     f.close()
 

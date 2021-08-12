@@ -30,7 +30,7 @@ import pytest
 from ElementsServices.DataSync import DataSync
 from SHE_PPT import flags
 from SHE_PPT import mdb
-from SHE_PPT.constants.fits import scale_label, gain_label
+from SHE_PPT.constants.fits import SCALE_LABEL, GAIN_LABEL
 from SHE_PPT.constants.test_data import (SYNC_CONF, TEST_FILES_MDB, TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME)
 from SHE_PPT.file_io import find_file
 from SHE_PPT.she_image import SHEImage
@@ -82,7 +82,7 @@ class TestCase:
 
         self.psf_stamp = SHEImage(self.ss_psf_image.array.transpose())
         self.psf_stamp.add_default_header()
-        self.psf_stamp.header[scale_label] = self.ss_psf_image.scale
+        self.psf_stamp.header[SCALE_LABEL] = self.ss_psf_image.scale
 
         # Draw the default galaxy
         self.observed_gal = galsim.Convolve([self.base_gal.shear(g1=self.g1, g2=self.g2), self.psf])
@@ -100,8 +100,8 @@ class TestCase:
                                       self.observed_gal_image.array.transpose(), dtype=float),
                                   header=fits.Header())
         self.gal_stamp.add_default_header()
-        self.gal_stamp.header[scale_label] = self.observed_gal_image.scale
-        self.gal_stamp.header[gain_label] = 1.0
+        self.gal_stamp.header[SCALE_LABEL] = self.observed_gal_image.scale
+        self.gal_stamp.header[GAIN_LABEL] = 1.0
 
         return
 

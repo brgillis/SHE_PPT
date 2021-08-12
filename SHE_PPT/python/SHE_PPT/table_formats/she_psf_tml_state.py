@@ -24,10 +24,10 @@ __updated__ = "2021-08-12"
 
 from collections import OrderedDict
 
-from ..constants.fits import fits_version_label, fits_def_label, extname_label
-from ..constants.fits import psf_field_param_def, psf_calib_param_def
-from ..constants.fits import psf_tml_state_tag
-from ..constants.tables import psf_tml_identity
+from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL, EXTNAME_LABEL
+from ..constants.fits import PSF_FIELD_PARAM_DEF, PSF_CALIB_PARAM_DEF
+from ..constants.fits import PSF_TML_STATE_TAG
+from ..constants.tables import PSF_TML_IDENTITY
 from ..logging import getLogger
 from ..table_utility import is_in_format, init_table, SheTableFormat
 
@@ -48,17 +48,17 @@ class ShePsfTmlStateMeta():
         self.data_type = data_type
         self.__version__ = fits_version
 
-        self.main_data_type = (psf_field_param_def
+        self.main_data_type = (PSF_FIELD_PARAM_DEF
                                if self.data_type == "FIELD" else
-                               psf_calib_param_def)
+                               PSF_CALIB_PARAM_DEF)
         self.table_format = "%s.SheTelescopeModelParams" % self.main_data_type
-        self.identity = psf_tml_identity
+        self.identity = PSF_TML_IDENTITY
 
         # Table metadata labels
-        self.fits_version = fits_version_label
-        self.fits_def = fits_def_label
+        self.fits_version = FITS_VERSION_LABEL
+        self.fits_def = FITS_DEF_LABEL
 
-        self.extname = extname_label
+        self.extname = EXTNAME_LABEL
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_version, None),
@@ -121,7 +121,7 @@ def make_psf_tml_state_table_header(data_type="FIELD"):
 
     header[tf.m.fits_version] = tf.__version__
     header[tf.m.fits_def] = tf.m.table_format
-    header[tf.m.extname] = psf_tml_state_tag
+    header[tf.m.extname] = PSF_TML_STATE_TAG
 
     return header
 

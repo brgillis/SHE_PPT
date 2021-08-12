@@ -24,9 +24,9 @@ __updated__ = "2021-08-12"
 
 from collections import OrderedDict
 
-from SHE_PPT.constants.fits import obs_id_label, obs_time_label
+from SHE_PPT.constants.fits import OBS_ID_LABEL, OBS_TIME_LABEL
 
-from ..constants.fits import fits_version_label, fits_def_label
+from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL
 from ..table_utility import is_in_format, init_table, SheTableFormat
 fits_version = "8.0"
 fits_def = "she.starCatalog"
@@ -43,13 +43,13 @@ class SheStarCatalogMeta():
         self.table_format = fits_def
 
         # Table metadata labels
-        self.fits_version = fits_version_label
-        self.fits_def = fits_def_label
+        self.fits_version = FITS_VERSION_LABEL
+        self.fits_def = FITS_DEF_LABEL
 
         self.roll_ang = "ROLLANGL"
         self.exposure_product_id = "EXP_PID"
-        self.observation_id = obs_id_label
-        self.observation_time = obs_time_label
+        self.observation_id = OBS_ID_LABEL
+        self.observation_time = OBS_TIME_LABEL
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_version, None),

@@ -27,7 +27,7 @@ import pytest
 
 from ElementsServices.DataSync import DataSync
 from SHE_PPT import mdb
-from SHE_PPT.constants.fits import gain_label
+from SHE_PPT.constants.fits import GAIN_LABEL
 from SHE_PPT.constants.test_data import (SYNC_CONF,
                                          TEST_FILES_DATA_STACK,
                                          TEST_FILES_MDB,
@@ -100,7 +100,7 @@ class TestCase:
         """Test that the interface for the KSB method works properly.
         """
 
-        gain = self.data_stack.exposures[0].detectors[1, 1].header[gain_label]
+        gain = self.data_stack.exposures[0].detectors[1, 1].header[GAIN_LABEL]
 
         # Get the S/N for each galaxy
         for i, row in enumerate(self.data_stack.detections_catalogue):

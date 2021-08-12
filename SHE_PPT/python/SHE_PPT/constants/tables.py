@@ -22,9 +22,9 @@ __updated__ = "2021-08-12"
 # Boston, MA 02110-1301 USA
 
 # Special values for tables
-psf_dm_identity = "dmfit"
-psf_om_identity = "omfit"
-psf_pd_identity = "pdfit"
-psf_tm_identity = "tmfit"
-psf_tml_identity = "tmlfit"
-psf_zm_identity = "zfit"
+PSF_DM_IDENTITY = "dmfit"
+PSF_OM_IDENTITY = "omfit"
+PSF_PD_IDENTITY = "pdfit"
+PSF_TM_IDENTITY = "tmfit"
+PSF_TML_IDENTITY = "tmlfit"
+PSF_ZM_IDENTITY = "zfit"

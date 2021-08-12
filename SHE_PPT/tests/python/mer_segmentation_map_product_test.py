@@ -24,7 +24,7 @@ from astropy.io import fits
 import pytest
 
 from SHE_PPT import detector as dtc
-from SHE_PPT.constants.fits import segmentation_tag
+from SHE_PPT.constants.fits import SEGMENTATION_TAG
 from SHE_PPT.file_io import (read_xml_product, write_xml_product)
 from SHE_PPT.products import mer_segmentation_map as prod
 import numpy as np
@@ -89,7 +89,7 @@ class TestMosaicProduct(object):
 
         phdu = fits.PrimaryHDU(data=test_array,
                                header=fits.header.Header((("EXTNAME", dtc.get_id_string(detector_x, detector_y)
-                                                           + "." + segmentation_tag),)))
+                                                           + "." + SEGMENTATION_TAG),)))
 
         data_filename = str(tmpdir.join("mosaic_data.fits"))
         phdu.writeto(data_filename, overwrite=True)
@@ -112,7 +112,7 @@ class TestMosaicProduct(object):
 
         hdu2 = fits.ImageHDU(data=test_array2,
                              header=fits.header.Header((("EXTNAME", dtc.get_id_string(detector_x2, detector_y2)
-                                                         + "." + segmentation_tag),)))
+                                                         + "." + SEGMENTATION_TAG),)))
 
         hdulist = fits.HDUList([phdu, hdu2])
         hdulist.writeto(data_filename, overwrite=True)

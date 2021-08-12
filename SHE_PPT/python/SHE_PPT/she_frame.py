@@ -34,8 +34,8 @@ from astropy.table import Table
 from astropy.wcs import WCS
 
 import EL_CoordsUtils.telescope_coords as tc
-from SHE_PPT.constants.fits import (extname_label, ccdid_label, noisemap_tag,
-                                    sci_tag, mask_tag, segmentation_tag, psf_cat_tag)
+from SHE_PPT.constants.fits import (EXTNAME_LABEL, CCDID_LABEL, NOISEMAP_TAG,
+                                    SCI_TAG, MASK_TAG, SEGMENTATION_TAG, PSF_CAT_TAG)
 import numpy as np
 
 from . import logging
@@ -427,8 +427,8 @@ class SHEFrame(object):
         if stamp.header is None:
             stamp.add_default_header()
         if detector.header is not None:
-            stamp.header[extname_label] = detector.header[extname_label]
-            stamp.header[ccdid_label] = detector.header[ccdid_label]
+            stamp.header[EXTNAME_LABEL] = detector.header[EXTNAME_LABEL]
+            stamp.header[CCDID_LABEL] = detector.header[CCDID_LABEL]
 
         return stamp
 
@@ -714,7 +714,7 @@ class SHEFrame(object):
                 if frame_data_hdulist is not None:
 
                     # Find the data HDU
-                    sci_extname = id_string + "." + sci_tag
+                    sci_extname = id_string + "." + SCI_TAG
                     sci_i = find_extension(frame_data_hdulist, sci_extname)
                     if sci_i is None:
                         # Don't raise here; might be just using limited number
@@ -725,7 +725,7 @@ class SHEFrame(object):
                     detector_header = deepcopy(frame_data_hdulist[sci_i].header)
 
                     # Find the noisemap HDU
-                    noisemap_extname = id_string + "." + noisemap_tag
+                    noisemap_extname = id_string + "." + NOISEMAP_TAG
                     noisemap_i = find_extension(
                         frame_data_hdulist, noisemap_extname)
                     if noisemap_i is None:
@@ -735,7 +735,7 @@ class SHEFrame(object):
                     d_noisemap_hdus[(x_i, y_i)] = noisemap_i
 
                     # Find the mask HDU
-                    mask_extname = id_string + "." + mask_tag
+                    mask_extname = id_string + "." + MASK_TAG
                     mask_i = find_extension(frame_data_hdulist, mask_extname)
                     if mask_i is None:
                         raise ValueError("No corresponding mask extension found in file " + frame_prod.get_data_filename() + "." +
@@ -810,7 +810,7 @@ class SHEFrame(object):
                     detector_weight = None
 
                 if seg_data_hdulist is not None:
-                    seg_extname = id_string + "." + segmentation_tag
+                    seg_extname = id_string + "." + SEGMENTATION_TAG
                     seg_i = find_extension(seg_data_hdulist, seg_extname)
                     if seg_i is None:
                         raise ValueError("No corresponding segmentation extension found in file " + frame_prod.get_data_filename() + "." +
@@ -858,7 +858,7 @@ class SHEFrame(object):
 
             input_psf_data_hdulist = fits.open(qualified_psf_filename, **kwargs)
 
-            psf_cat_i = find_extension(input_psf_data_hdulist, psf_cat_tag)
+            psf_cat_i = find_extension(input_psf_data_hdulist, PSF_CAT_TAG)
             psf_cat = Table.read(input_psf_data_hdulist[psf_cat_i])
 
             # Add the object ID as an index to the PSF catalog

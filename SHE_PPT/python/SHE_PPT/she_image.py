@@ -30,8 +30,8 @@ import astropy.wcs
 import fitsio
 import galsim
 
-from SHE_PPT.constants.fits import ccdid_label
-from SHE_PPT.constants.misc import segmap_unassigned_value
+from SHE_PPT.constants.fits import CCDID_LABEL
+from SHE_PPT.constants.misc import SEGMAP_UNASSIGNED_VALUE
 import numpy as np
 
 from . import logging
@@ -216,18 +216,18 @@ class SHEImage():
         # Cached values
         self.galsim_wcs = None
 
-        if self.header is None or ccdid_label not in self.header:
+        if self.header is None or CCDID_LABEL not in self.header:
             # If no header, assume we're using detector 1-1
             self.det_ix = 1
             self.det_iy = 1
         else:
             try:
-                self.det_iy = int(self.header[ccdid_label][0])
-                self.det_ix = int(self.header[ccdid_label][2])
+                self.det_iy = int(self.header[CCDID_LABEL][0])
+                self.det_ix = int(self.header[CCDID_LABEL][2])
             except ValueError:
                 # Check after "CCDID "
-                self.det_iy = int(self.header[ccdid_label][6])
-                self.det_ix = int(self.header[ccdid_label][8])
+                self.det_iy = int(self.header[CCDID_LABEL][6])
+                self.det_ix = int(self.header[CCDID_LABEL][8])
 
     # We define properties of the SHEImage object, following
     # https://euclid.roe.ac.uk/projects/codeen-users/wiki/User_Cod_Std-pythonstandard-v1-0#PNAMA-020-m-Developer-SHOULD-use-properties-to-protect-the-service-from-the-implementation
@@ -655,7 +655,7 @@ class SHEImage():
         other_mask = (self.segmentation_map != seg_id)
         if not mask_unassigned:
             other_mask = np.logical_and(
-                other_mask, (self.segmentation_map != segmap_unassigned_value))
+                other_mask, (self.segmentation_map != SEGMAP_UNASSIGNED_VALUE))
 
         # Combine and return the masks
         object_mask = np.logical_or(pixel_mask, other_mask)
@@ -1157,7 +1157,7 @@ class SHEImage():
                 segmentation_map_stamp = None
             else:
                 segmentation_map_stamp = np.ones(
-                    (width, height), dtype=np.int64) * segmap_unassigned_value
+                    (width, height), dtype=np.int64) * SEGMAP_UNASSIGNED_VALUE
 
             if self.background_map is None and bkg_filename is None:
                 background_map_stamp = None
@@ -1290,7 +1290,7 @@ class SHEImage():
                 logger.debug("Not overwriting existing segmentation_map with default.")
                 return
 
-        self.segmentation_map = segmap_unassigned_value * np.ones_like(self.data, dtype=np.int32)
+        self.segmentation_map = SEGMAP_UNASSIGNED_VALUE * np.ones_like(self.data, dtype=np.int32)
 
     def add_default_background_map(self, force=False):
         """Adds a default background_map to this object (all 0.). If force=True, will overwrite an existing

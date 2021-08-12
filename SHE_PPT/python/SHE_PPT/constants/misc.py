@@ -21,15 +21,15 @@ __updated__ = "2021-08-12"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-short_instance_id_maxlen = 17
+SHORT_INSTANCE_ID_MAXLEN = 17
 
 # Segmentation map
-segmap_unassigned_value = 0
-segmap_other_value = -1
+SEGMAP_UNASSIGNED_VALUE = 0
+SEGMAP_OTHER_VALUE = -1
 
 # Instrument zeropoints
 
-# mag_vis_zeropoint = 25.50087633632 # From ETC
-# mag_vis_zeropoint = 25.4534 # From Sami's sims' config file
-mag_vis_zeropoint = 25.6527  # From Lance's code
-mag_i_zeropoint = 25.3884  # From Lance's code
+# MAG_VIS_ZEROPOINT = 25.50087633632 # From ETC
+# MAG_VIS_ZEROPOINT = 25.4534 # From Sami's sims' config file
+MAG_VIS_ZEROPOINT = 25.6527  # From Lance's code
+MAG_I_ZEROPOINT = 25.3884  # From Lance's code

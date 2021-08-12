@@ -31,7 +31,7 @@ from astropy import table
 from astropy.io import fits
 import astropy.wcs
 
-from SHE_PPT.constants.fits import mask_tag, sci_tag, noisemap_tag
+from SHE_PPT.constants.fits import MASK_TAG, SCI_TAG, NOISEMAP_TAG
 import numpy as np
 
 from . import logging
@@ -999,9 +999,9 @@ class SHEFrameStack():
              stacked_data,
              qualified_data_filename,
              data_hdu_indices) = cls._read_product_extension(stacked_image_product_filename,
-                                                             tags=(sci_tag,
-                                                                   noisemap_tag,
-                                                                   mask_tag),
+                                                             tags=(SCI_TAG,
+                                                                   NOISEMAP_TAG,
+                                                                   MASK_TAG),
                                                              workdir=workdir,
                                                              dtype=products.vis_stacked_frame.dpdVisStackedFrame,
                                                              load_images=load_images,

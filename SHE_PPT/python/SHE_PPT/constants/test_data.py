@@ -23,7 +23,6 @@ __updated__ = "2021-08-12"
 
 from os.path import join
 
-
 SYNC_LOCATION = "testdata"
 SYNC_CONF = join(SYNC_LOCATION, "sync.conf")
 

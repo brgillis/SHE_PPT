@@ -24,10 +24,10 @@ __updated__ = "2021-08-12"
 from collections import OrderedDict
 from typing import List
 
-from SHE_PPT.constants.fits import (she_flag_version_label, model_hash_label,
-                                    model_seed_label, noise_seed_label, obs_id_label, pnt_id_label,
-                                    obs_time_label, tile_id_label, valid_label)
-from ..constants.fits import fits_version_label, fits_def_label
+from SHE_PPT.constants.fits import (SHE_FLAG_VERSION_LABEL, MODEL_HASH_LABEL,
+                                    MODEL_SEED_LABEL, NOISE_SEED_LABEL, OBS_ID_LABEL, PNT_ID_LABEL,
+                                    OBS_TIME_LABEL, TILE_ID_LABEL, VALID_LABEL)
+from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL
 from ..table_utility import SheTableFormat
 
 
@@ -45,18 +45,18 @@ class SheMeasurementsMeta():
         self.__version__ = fits_version
 
         # Table metadata labels
-        self.fits_version = fits_version_label
-        self.fits_def = fits_def_label
-        self.she_flag_version = she_flag_version_label
-        self.model_hash = model_hash_label
-        self.model_seed = model_seed_label
-        self.noise_seed = noise_seed_label
-        self.observation_id = obs_id_label
-        self.pointing_id = pnt_id_label
-        self.observation_time = obs_time_label
-        self.tile_id = tile_id_label
+        self.fits_version = FITS_VERSION_LABEL
+        self.fits_def = FITS_DEF_LABEL
+        self.she_flag_version = SHE_FLAG_VERSION_LABEL
+        self.model_hash = MODEL_HASH_LABEL
+        self.model_seed = MODEL_SEED_LABEL
+        self.noise_seed = NOISE_SEED_LABEL
+        self.observation_id = OBS_ID_LABEL
+        self.pointing_id = PNT_ID_LABEL
+        self.observation_time = OBS_TIME_LABEL
+        self.tile_id = TILE_ID_LABEL
 
-        self.valid = valid_label
+        self.valid = VALID_LABEL
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_version, None),

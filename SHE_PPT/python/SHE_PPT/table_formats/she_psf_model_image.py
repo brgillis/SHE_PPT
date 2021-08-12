@@ -23,8 +23,8 @@ __updated__ = "2021-08-12"
 
 from collections import OrderedDict
 
-from SHE_PPT.constants.fits import psf_cat_tag
-from ..constants.fits import fits_version_label, fits_def_label, extname_label
+from SHE_PPT.constants.fits import PSF_CAT_TAG
+from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL, EXTNAME_LABEL
 from ..logging import getLogger
 from ..table_utility import is_in_format, init_table, SheTableFormat
 
@@ -46,10 +46,10 @@ class ShePsfModelImageMeta():
         self.table_format = fits_def
 
         # Table metadata labels
-        self.fits_version = fits_version_label
-        self.fits_def = fits_def_label
+        self.fits_version = FITS_VERSION_LABEL
+        self.fits_def = FITS_DEF_LABEL
 
-        self.extname = extname_label
+        self.extname = EXTNAME_LABEL
 
         self.calibration_product = "CAL_PROD"
         self.calibration_time = "CAL_TIME"
@@ -59,7 +59,7 @@ class ShePsfModelImageMeta():
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_version, None),
                                      (self.fits_def, None),
-                                     (self.extname, psf_cat_tag),
+                                     (self.extname, PSF_CAT_TAG),
                                      (self.calibration_product, None),
                                      (self.calibration_time, None),
                                      (self.field_product, None),
@@ -130,7 +130,7 @@ def make_psf_table_header(calibration_product, calibration_time, field_product, 
     header[tf.m.fits_version] = tf.__version__
     header[tf.m.fits_def] = fits_def
 
-    header[tf.m.extname] = psf_cat_tag
+    header[tf.m.extname] = PSF_CAT_TAG
 
     header[tf.m.calibration_product] = calibration_product
     header[tf.m.calibration_time] = calibration_time

@@ -25,8 +25,8 @@ from collections import OrderedDict
 
 from EL_PythonUtils.utilities import hash_any
 
-from ..constants.fits import (fits_version_label, fits_def_label, gain_label, model_hash_label,
-                              model_seed_label, noise_seed_label)
+from ..constants.fits import (FITS_VERSION_LABEL, FITS_DEF_LABEL, GAIN_LABEL, MODEL_HASH_LABEL,
+                              MODEL_SEED_LABEL, NOISE_SEED_LABEL)
 from ..logging import getLogger
 from ..table_utility import is_in_format, init_table, SheTableFormat
 
@@ -48,17 +48,17 @@ class SheSimulatedCatalogMeta():
         self.table_format = fits_def
 
         # Table metadata labels
-        self.fits_version = fits_version_label
-        self.fits_def = fits_def_label
+        self.fits_version = FITS_VERSION_LABEL
+        self.fits_def = FITS_DEF_LABEL
 
         self.subtracted_sky_level = "S_SKYLV"
         self.unsubtracted_sky_level = "US_SKYLV"
         self.read_noise = "RD_NOISE"
-        self.gain = gain_label
+        self.gain = GAIN_LABEL
 
-        self.model_hash = model_hash_label
-        self.model_seed = model_seed_label
-        self.noise_seed = noise_seed_label
+        self.model_hash = MODEL_HASH_LABEL
+        self.model_seed = MODEL_SEED_LABEL
+        self.noise_seed = NOISE_SEED_LABEL
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_version, None),

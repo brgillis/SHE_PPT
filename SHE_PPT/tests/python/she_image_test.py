@@ -35,7 +35,7 @@ import pytest
 from ElementsServices.DataSync import DataSync
 from SHE_PPT import file_io
 from SHE_PPT import mdb
-from SHE_PPT.constants.misc import segmap_unassigned_value
+from SHE_PPT.constants.misc import SEGMAP_UNASSIGNED_VALUE
 from SHE_PPT.constants.test_data import (SYNC_CONF, TEST_FILES_MDB, TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME)
 import SHE_PPT.she_image
 import numpy as np
@@ -158,7 +158,7 @@ class Test_she_image():
         img.add_default_segmentation_map(force=True)
         assert img.segmentation_map.dtype == np.int32
         assert np.allclose(img.segmentation_map,
-                           segmap_unassigned_value * np.ones_like(img.data, dtype=img.segmentation_map.dtype))
+                           SEGMAP_UNASSIGNED_VALUE * np.ones_like(img.data, dtype=img.segmentation_map.dtype))
         assert img.segmentation_map.shape == (self.w, self.h)
 
         # Check that non-forcibly adding a default segmentation_map doesn't affect the existing segmentation_map
@@ -445,7 +445,7 @@ class Test_she_image():
         # This one is completely out of bounds:
         assert np.alltrue(stamp.boolmask)
         assert np.allclose(stamp.noisemap, 0.0)
-        assert np.allclose(stamp.segmentation_map, segmap_unassigned_value)
+        assert np.allclose(stamp.segmentation_map, SEGMAP_UNASSIGNED_VALUE)
 
         stamp = img.extract_stamp(3.5, 1.5, 3, 1)
         # This is
@@ -484,7 +484,7 @@ class Test_she_image():
                         dtype=np.int32)
 
         segmap = np.array(((1, 1, 1),
-                           (segmap_unassigned_value, segmap_unassigned_value, segmap_unassigned_value),
+                           (SEGMAP_UNASSIGNED_VALUE, SEGMAP_UNASSIGNED_VALUE, SEGMAP_UNASSIGNED_VALUE),
                            (2, 2, 2)),
                           dtype=np.int32)
         img = SHE_PPT.she_image.SHEImage(data=np.zeros_like(mask),

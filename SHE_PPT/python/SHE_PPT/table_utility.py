@@ -26,7 +26,7 @@ from typing import Dict, List, Optional
 
 from astropy.table import Column, Table
 
-from SHE_PPT.constants.fits import fits_def_label, fits_version_label
+from SHE_PPT.constants.fits import FITS_DEF_LABEL, FITS_VERSION_LABEL
 import numpy as np
 
 from .logging import getLogger
@@ -321,8 +321,8 @@ class SheTableMeta():
     all: List[str]
 
     # Required attributes which correspond to keys in the FITS header
-    fits_version: str = fits_version_label
-    fits_def: str = fits_def_label
+    fits_version: str = FITS_VERSION_LABEL
+    fits_def: str = FITS_DEF_LABEL
 
     def __init__(self,
                  table_format: str,

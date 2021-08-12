@@ -25,7 +25,7 @@ import os
 from astropy.table import Column, Table
 import pytest
 
-from SHE_PPT.constants.fits import psf_cat_tag
+from SHE_PPT.constants.fits import PSF_CAT_TAG
 from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf, initialise_mer_final_catalog
 from SHE_PPT.table_formats.she_bias_statistics import tf as bs_tf, initialise_bias_statistics_table
 from SHE_PPT.table_formats.she_common_calibration import tf as cc_tf, initialise_common_calibration_table
@@ -219,7 +219,7 @@ class TestTableFormats:
 
         psf_table = initialise_psf_table()
 
-        assert(psf_table.meta[psfm_tf.m.extname] == psf_cat_tag)
+        assert(psf_table.meta[psfm_tf.m.extname] == PSF_CAT_TAG)
 
         # Try to initialize the shear estimates table based on the detections table
 

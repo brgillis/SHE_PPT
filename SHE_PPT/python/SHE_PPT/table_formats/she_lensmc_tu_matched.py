@@ -26,7 +26,7 @@ from collections import OrderedDict
 from SHE_PPT.table_formats.she_lensmc_measurements import set_lensmc_column_properties
 
 
-from ..constants.fits import fits_version_label, fits_def_label, extname_label
+from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL, EXTNAME_LABEL
 from ..flags import she_flag_version
 from ..logging import getLogger
 from ..table_formats.mer_final_catalog import tf as mfc_tf

@@ -25,9 +25,9 @@ __updated__ = "2021-08-12"
 from collections import OrderedDict
 from typing import Optional
 
-from ..constants.fits import (she_flag_version_label, model_hash_label,
-                              model_seed_label, noise_seed_label, obs_id_label, pnt_id_label,
-                              obs_time_label, tile_id_label, valid_label)
+from ..constants.fits import (SHE_FLAG_VERSION_LABEL, MODEL_HASH_LABEL,
+                              MODEL_SEED_LABEL, NOISE_SEED_LABEL, OBS_ID_LABEL, PNT_ID_LABEL,
+                              OBS_TIME_LABEL, TILE_ID_LABEL, VALID_LABEL)
 from ..table_utility import SheTableMeta
 from .she_measurements import SheMeasurementsFormat
 
@@ -45,16 +45,16 @@ class SheTUMatchedMeta(SheTableMeta):
                  version: Optional[str] = None):
 
         # Table metadata labels
-        self.she_flag_version = she_flag_version_label
-        self.model_hash = model_hash_label
-        self.model_seed = model_seed_label
-        self.noise_seed = noise_seed_label
-        self.observation_id = obs_id_label
-        self.pointing_id = pnt_id_label
-        self.observation_time = obs_time_label
-        self.tile_id = tile_id_label
+        self.she_flag_version = SHE_FLAG_VERSION_LABEL
+        self.model_hash = MODEL_HASH_LABEL
+        self.model_seed = MODEL_SEED_LABEL
+        self.noise_seed = NOISE_SEED_LABEL
+        self.observation_id = OBS_ID_LABEL
+        self.pointing_id = PNT_ID_LABEL
+        self.observation_time = OBS_TIME_LABEL
+        self.tile_id = TILE_ID_LABEL
 
-        self.valid = valid_label
+        self.valid = VALID_LABEL
 
         if not table_format:
             table_format = fits_def

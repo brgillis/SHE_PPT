@@ -32,7 +32,7 @@ import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.mer.raw.segmentationmap_stub import dpdMerSegmentationMap
 
 from .. import detector as dtc
-from ..constants.fits import segmentation_tag
+from ..constants.fits import SEGMENTATION_TAG
 from ..file_io import read_xml_product, find_aux_file
 from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
 from ..utility import find_extension
@@ -90,7 +90,7 @@ def load_mosaic_hdu(filename, dir=None, hdu=0, detector_x=None, detector_y=None,
 
     if detector_x is not None and detector_y is not None:
         hdu = find_extension(mosaic_hdulist, extname=dtc.get_id_string(
-            detector_x, detector_y) + "." + segmentation_tag)
+            detector_x, detector_y) + "." + SEGMENTATION_TAG)
 
     mosaic_hdu = mosaic_hdulist[hdu]
 
