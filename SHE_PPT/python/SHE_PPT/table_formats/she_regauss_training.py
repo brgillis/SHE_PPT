@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-08-10"
+__updated__ = "2021-08-12"
 
 from collections import OrderedDict
 
@@ -38,13 +38,8 @@ class SheRegaussTrainingMeta(SheTrainingMeta):
         @brief A class defining the metadata for simulation plan tables.
     """
 
-    def __init__(self):
-
-        # Inherit meta format from parent class
-        super().__init__()
-
-        self.__version__ = fits_version
-        self.table_format = fits_def
+    __version__: str = fits_version
+    table_format: str = fits_def
 
 
 class SheRegaussTrainingFormat(SheTrainingFormat):

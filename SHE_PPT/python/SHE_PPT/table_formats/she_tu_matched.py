@@ -40,28 +40,25 @@ class SheTUMatchedMeta(SheTableMeta):
     """ A class defining the metadata common to shear TU matched tables
     """
 
-    def __init__(self,
-                 table_format: Optional[str] = None,
-                 version: Optional[str] = None):
+    __version__: str = fits_version
+    table_format: str = fits_def
 
-        # Table metadata labels
-        self.she_flag_version = SHE_FLAG_VERSION_LABEL
-        self.model_hash = MODEL_HASH_LABEL
-        self.model_seed = MODEL_SEED_LABEL
-        self.noise_seed = NOISE_SEED_LABEL
-        self.observation_id = OBS_ID_LABEL
-        self.pointing_id = PNT_ID_LABEL
-        self.observation_time = OBS_TIME_LABEL
-        self.tile_id = TILE_ID_LABEL
+    # Table metadata labels
+    she_flag_version: str = SHE_FLAG_VERSION_LABEL
+    model_hash: str = MODEL_HASH_LABEL
+    model_seed: str = MODEL_SEED_LABEL
+    noise_seed: str = NOISE_SEED_LABEL
+    observation_id: str = OBS_ID_LABEL
+    pointing_id: str = PNT_ID_LABEL
+    observation_time: str = OBS_TIME_LABEL
+    tile_id: str = TILE_ID_LABEL
 
-        self.valid = VALID_LABEL
+    valid: str = VALID_LABEL
 
-        if not table_format:
-            table_format = fits_def
-        if not version:
-            version = fits_version
-        super().__init__(table_format=table_format,
-                         version=version,
+    def __init__(self):
+
+        super().__init__(table_format=self.table_format,
+                         version=self.__version__,
                          comments=OrderedDict(((self.fits_version, None),
                                                (self.fits_def, None),
                                                (self.she_flag_version, None),

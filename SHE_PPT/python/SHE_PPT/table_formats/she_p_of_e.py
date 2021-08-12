@@ -21,18 +21,16 @@
 
 __updated__ = "2021-08-12"
 
-from collections import OrderedDict
-
 
 from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL
-from ..table_utility import is_in_format, init_table, SheTableFormat
+from ..table_utility import SheTableFormat, SheTableMeta
 
 
 fits_version = "8.0"
 fits_def = "she.pOfE"
 
 
-class ShePOfEMeta():
+class ShePOfEMeta(SheTableMeta):
     """
         @brief A class defining the metadata for PSF tables.
     """
@@ -79,44 +77,3 @@ p_of_e_table_format = ShePOfEFormat()
 
 # And a convient alias for it
 tf = p_of_e_table_format
-
-
-def make_p_of_e_table_header():
-    """
-        @brief Generate a header for a galaxy population table.
-
-        @return header <OrderedDict>
-    """
-
-    header = OrderedDict()
-
-    header[tf.m.fits_version] = tf.__version__
-    header[tf.m.fits_def] = fits_def
-
-    return header
-
-
-def initialise_p_of_e_table(size=None,
-                            optional_columns=None,
-                            init_cols=None,):
-    """
-        @brief Initialise a galaxy population table.
-
-        @return p_of_e_table <astropy.Table>
-    """
-
-    if optional_columns is None:
-        optional_columns = []
-    else:
-        # Check all optional columns are valid
-        for colname in optional_columns:
-            if colname not in tf.all:
-                raise ValueError("Invalid optional column name: " + colname)
-
-    p_of_e_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
-
-    p_of_e_table.meta = make_p_of_e_table_header()
-
-    assert is_in_format(p_of_e_table, tf)
-
-    return p_of_e_table

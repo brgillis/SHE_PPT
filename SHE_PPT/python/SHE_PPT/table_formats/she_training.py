@@ -5,6 +5,8 @@
     Base format definition for a table containing generic training data.
 """
 
+__updated__ = "2021-08-12"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -19,40 +21,25 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-08-10"
-
-from collections import OrderedDict
-
-
-from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL, EXTNAME_LABEL
-from ..table_utility import SheTableFormat
+from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL
+from ..table_utility import SheTableFormat, SheTableMeta
 
 
 fits_version = "8.0"
 fits_def = "she.training"
 
 
-class SheTrainingMeta():
+class SheTrainingMeta(SheTableMeta):
     """
         @brief A class defining the metadata for simulation plan tables.
     """
 
-    def __init__(self):
+    __version__: str = fits_version
+    table_format: str = fits_def
 
-        self.__version__ = fits_version
-        self.table_format = fits_def
-
-        # Table metadata labels
-        self.fits_version = FITS_VERSION_LABEL
-        self.fits_def = FITS_DEF_LABEL
-
-        # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_version, None),
-                                     (self.fits_def, None),
-                                     ))
-
-        # A list of columns in the desired order
-        self.all = list(self.comments.keys())
+    # Table metadata labels
+    fits_version: str = FITS_VERSION_LABEL
+    fits_def: str = FITS_DEF_LABEL
 
 
 class SheTrainingFormat(SheTableFormat):

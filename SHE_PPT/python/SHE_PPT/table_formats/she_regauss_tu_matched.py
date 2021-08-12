@@ -5,7 +5,7 @@
     Format definition for regauss tu_matched tables.
 """
 
-__updated__ = "2021-08-11"
+__updated__ = "2021-08-12"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -45,11 +45,8 @@ class SheRegaussTUMatchedMeta(SheTUMatchedMeta):
         @brief A class defining the metadata for shear estimates tables.
     """
 
-    def __init__(self):
-
-        # Inherit meta format from parent class
-        super().__init__(table_format=fits_def,
-                         version=fits_version)
+    __version__: str = fits_version
+    table_format: str = fits_def
 
 
 class SheRegaussTUMatchedFormat(SheTUMatchedFormat):

@@ -27,41 +27,27 @@ from collections import OrderedDict
 from SHE_PPT.constants.fits import OBS_ID_LABEL, OBS_TIME_LABEL
 
 from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL
-from ..table_utility import is_in_format, init_table, SheTableFormat
+from ..table_utility import is_in_format, init_table, SheTableFormat, SheTableMeta
 fits_version = "8.0"
 fits_def = "she.starCatalog"
 
 
-class SheStarCatalogMeta():
+class SheStarCatalogMeta(SheTableMeta):
     """
         @brief A class defining the metadata for simulation plan tables.
     """
 
-    def __init__(self):
+    __version__: str = fits_version
+    table_format: str = fits_def
 
-        self.__version__ = fits_version
-        self.table_format = fits_def
+    # Table metadata labels
+    fits_version: str = FITS_VERSION_LABEL
+    fits_def: str = FITS_DEF_LABEL
 
-        # Table metadata labels
-        self.fits_version = FITS_VERSION_LABEL
-        self.fits_def = FITS_DEF_LABEL
-
-        self.roll_ang = "ROLLANGL"
-        self.exposure_product_id = "EXP_PID"
-        self.observation_id = OBS_ID_LABEL
-        self.observation_time = OBS_TIME_LABEL
-
-        # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_version, None),
-                                     (self.fits_def, None),
-                                     (self.roll_ang, None),
-                                     (self.exposure_product_id, None),
-                                     (self.observation_id, None),
-                                     (self.observation_time, None),
-                                     ))
-
-        # A list of columns in the desired order
-        self.all = list(self.comments.keys())
+    roll_ang: str = "ROLLANGL"
+    exposure_product_id: str = "EXP_PID"
+    observation_id: str = OBS_ID_LABEL
+    observation_time: str = OBS_TIME_LABEL
 
 
 class SheStarCatalogFormat(SheTableFormat):

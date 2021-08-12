@@ -42,40 +42,37 @@ class SheSimulatedCatalogMeta():
         @brief A class defining the metadata for details tables.
     """
 
+    __version__: str = fits_version
+    table_format: str = fits_def
+
+    # Table metadata labels
+    fits_version: str = FITS_VERSION_LABEL
+    fits_def: str = FITS_DEF_LABEL
+
+    subtracted_sky_level: str = "S_SKYLV"
+    unsubtracted_sky_level: str = "US_SKYLV"
+    read_noise: str = "RD_NOISE"
+    gain: str = GAIN_LABEL
+
+    model_hash: str = MODEL_HASH_LABEL
+    model_seed: str = MODEL_SEED_LABEL
+    noise_seed: str = NOISE_SEED_LABEL
+
     def __init__(self):
 
-        self.__version__ = fits_version
-        self.table_format = fits_def
-
-        # Table metadata labels
-        self.fits_version = FITS_VERSION_LABEL
-        self.fits_def = FITS_DEF_LABEL
-
-        self.subtracted_sky_level = "S_SKYLV"
-        self.unsubtracted_sky_level = "US_SKYLV"
-        self.read_noise = "RD_NOISE"
-        self.gain = GAIN_LABEL
-
-        self.model_hash = MODEL_HASH_LABEL
-        self.model_seed = MODEL_SEED_LABEL
-        self.noise_seed = NOISE_SEED_LABEL
-
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_version, None),
-                                     (self.fits_def, None),
-                                     (self.subtracted_sky_level,
-                                      "ADU/arcsec^2"),
-                                     (self.unsubtracted_sky_level,
-                                      "ADU/arcsec^2"),
-                                     (self.read_noise, "e-/pixel"),
-                                     (self.gain, "e-/ADU"),
-                                     (self.model_hash, None),
-                                     (self.model_seed, None),
-                                     (self.noise_seed, None),
-                                     ))
-
-        # A list of columns in the desired order
-        self.all = list(self.comments.keys())
+        super().__init__(comments=OrderedDict(((self.fits_version, None),
+                                               (self.fits_def, None),
+                                               (self.subtracted_sky_level,
+                                                "ADU/arcsec^2"),
+                                               (self.unsubtracted_sky_level,
+                                                "ADU/arcsec^2"),
+                                               (self.read_noise, "e-/pixel"),
+                                               (self.gain, "e-/ADU"),
+                                               (self.model_hash, None),
+                                               (self.model_seed, None),
+                                               (self.noise_seed, None),
+                                               )))
 
 
 class SheSimulatedCatalogFormat(SheTableFormat):
