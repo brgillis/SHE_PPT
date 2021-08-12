@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-07-13"
+__updated__ = "2021-08-12"
 
 from datetime import datetime
 import json
@@ -40,13 +40,12 @@ from ST_DataModelBindings.sys_stub import CreateFromDocument
 import numpy as np
 
 from . import __version__ as SHE_PPT_version
-from . import magic_values as mv
 from .constants.test_data import SYNC_CONF
 from .logging import getLogger
 from .utility import get_release_from_version
 
 
-logger = getLogger(mv.logger_name)
+logger = getLogger(__name__)
 
 type_name_maxlen = 45
 instance_id_maxlen = 55

@@ -32,7 +32,6 @@ from xml.sax._exceptions import SAXParseException
 
 import numpy as np
 
-from . import magic_values as mv
 from .file_io import read_xml_product, read_listfile, find_file
 from .logging import getLogger
 from .utility import AllowedEnum, is_any_type_of_none
@@ -307,7 +306,7 @@ def archive_product(product_filename: str,
 
     """
 
-    logger = getLogger(mv.logger_name)
+    logger = getLogger(__name__)
 
     # Start by figuring out the subdirectory to store it in, based off of the workdir we're using
     subdir = os.path.split(workdir)[1]

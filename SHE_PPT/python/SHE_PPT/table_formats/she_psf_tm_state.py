@@ -5,6 +5,16 @@
     Format definition for PSF Zernike Mode state table. This is based on Chris's description in the DPDD and
     implementation in his code.
 """
+from collections import OrderedDict
+
+from ..constants.fits import (fits_version_label, fits_def_label, extname_label,
+                              psf_tm_state_tag, psf_field_param_def, psf_calib_param_def)
+from ..constants.tables import psf_tm_identity
+from ..logging import getLogger
+from ..table_utility import is_in_format, init_table, SheTableFormat
+
+
+__updated__ = "2021-08-12"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -20,18 +30,10 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-19"
-
-from collections import OrderedDict
-
-from .. import magic_values as mv
-from ..logging import getLogger
-from ..table_utility import is_in_format, init_table, SheTableFormat
-
 
 fits_version = "8.0"
 
-logger = getLogger(mv.logger_name)
+logger = getLogger(__name__)
 
 
 class ShePsfTmStateMeta():
@@ -45,17 +47,17 @@ class ShePsfTmStateMeta():
         self.data_type = data_type
         self.__version__ = fits_version
 
-        self.main_data_type = (mv.psf_field_param_def
+        self.main_data_type = (psf_field_param_def
                                if self.data_type == "FIELD" else
-                               mv.psf_calib_param_def)
+                               psf_calib_param_def)
         self.table_format = "%s.SheTelescopeModeParams" % self.main_data_type
-        self.identity = mv.psf_tm_identity
+        self.identity = psf_tm_identity
 
         # Table metadata labels
-        self.fits_version = mv.fits_version_label
-        self.fits_def = mv.fits_def_label
+        self.fits_version = fits_version_label
+        self.fits_def = fits_def_label
 
-        self.extname = mv.extname_label
+        self.extname = extname_label
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_version, None),
@@ -91,7 +93,7 @@ class ShePsfTmStateFormat(SheTableFormat):
                         "M2RY", "M3TZ", "M3TX", "M3TY", "M3RX", "M3RY"]:
             setattr(self, colname.lower(),
                     self.set_column_properties(name=self.get_colname(colname),
-                                          dtype=">f4", fits_dtype="E"))
+                                               dtype=">f4", fits_dtype="E"))
 
         self._finalize_init()
 
@@ -131,7 +133,7 @@ def make_psf_tm_state_table_header(data_type="FIELD"):
 
     header[tf.m.fits_version] = tf.__version__
     header[tf.m.fits_def] = tf.m.table_format
-    header[tf.m.extname] = mv.psf_tm_state_tag
+    header[tf.m.extname] = psf_tm_state_tag
 
     return header
 

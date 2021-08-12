@@ -6,6 +6,8 @@
     implementation in his code.
 """
 
+__updated__ = "2021-08-12"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -20,18 +22,18 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-19"
-
 from collections import OrderedDict
 
-from .. import magic_values as mv
+from ..constants.fits import (fits_version_label, fits_def_label, extname_label,
+                              psf_field_param_def, psf_calib_param_def, psf_om_state_tag)
+from ..constants.tables import psf_om_identity
 from ..logging import getLogger
-from ..table_utility import is_in_format, init_table,SheTableFormat
+from ..table_utility import is_in_format, init_table, SheTableFormat
 
 
 fits_version = "8.0"
 
-logger = getLogger(mv.logger_name)
+logger = getLogger(__name__)
 
 
 class ShePsfOmStateMeta():
@@ -45,17 +47,17 @@ class ShePsfOmStateMeta():
         self.data_type = data_type
         self.__version__ = fits_version
 
-        self.main_data_type = (mv.psf_field_param_def
+        self.main_data_type = (psf_field_param_def
                                if self.data_type == "FIELD" else
-                               mv.psf_calib_param_def)
+                               psf_calib_param_def)
         self.table_format = "%s.SheOtherModelParams" % self.main_data_type
-        self.identity = mv.psf_om_identity
+        self.identity = psf_om_identity
 
         # Table metadata labels
-        self.fits_version = mv.fits_version_label
-        self.fits_def = mv.fits_def_label
+        self.fits_version = fits_version_label
+        self.fits_def = fits_def_label
 
-        self.extname = mv.extname_label
+        self.extname = extname_label
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_version, None),
@@ -88,7 +90,7 @@ class ShePsfOmStateFormat(SheTableFormat):
         for colname in []:
             setattr(self, colname.lower(),
                     self.set_column_properties(name=self.get_colname(colname),
-                                          dtype=">f4", fits_dtype="E"))
+                                               dtype=">f4", fits_dtype="E"))
 
         self._finalize_init()
 
@@ -128,7 +130,7 @@ def make_psf_om_state_table_header(data_type="FIELD"):
 
     header[tf.m.fits_version] = tf.__version__
     header[tf.m.fits_def] = tf.m.table_format
-    header[tf.m.extname] = mv.psf_om_state_tag
+    header[tf.m.extname] = psf_om_state_tag
 
     return header
 

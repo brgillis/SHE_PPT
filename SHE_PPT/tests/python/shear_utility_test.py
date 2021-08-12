@@ -5,6 +5,8 @@
     Unit tests relating to shear utility functions
 """
 
+__updated__ = "2021-08-12"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -18,8 +20,6 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2021-02-10"
-
 from copy import deepcopy
 import os
 
@@ -30,9 +30,9 @@ import pytest
 from ElementsServices.DataSync import DataSync
 from SHE_PPT import flags
 from SHE_PPT import mdb
+from SHE_PPT.constants.fits import scale_label, gain_label
 from SHE_PPT.constants.test_data import (SYNC_CONF, TEST_FILES_MDB, TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME)
 from SHE_PPT.file_io import find_file
-from SHE_PPT.magic_values import scale_label, gain_label
 from SHE_PPT.she_image import SHEImage
 from SHE_PPT.shear_utility import ShearEstimate, correct_for_wcs_shear_and_rotation, uncorrect_for_wcs_shear_and_rotation
 import numpy as np

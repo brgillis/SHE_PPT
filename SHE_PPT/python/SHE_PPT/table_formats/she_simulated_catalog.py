@@ -5,6 +5,8 @@
     Format definition for galaxy details tables.
 """
 
+__updated__ = "2021-08-12"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -19,13 +21,12 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-08-10"
-
 from collections import OrderedDict
 
 from EL_PythonUtils.utilities import hash_any
 
-from .. import magic_values as mv
+from ..constants.fits import (fits_version_label, fits_def_label, gain_label, model_hash_label,
+                              model_seed_label, noise_seed_label)
 from ..logging import getLogger
 from ..table_utility import is_in_format, init_table, SheTableFormat
 
@@ -33,7 +34,7 @@ from ..table_utility import is_in_format, init_table, SheTableFormat
 fits_version = "8.0"
 fits_def = "she.simulatedCatalog"
 
-logger = getLogger(mv.logger_name)
+logger = getLogger(__name__)
 
 
 class SheSimulatedCatalogMeta():
@@ -47,17 +48,17 @@ class SheSimulatedCatalogMeta():
         self.table_format = fits_def
 
         # Table metadata labels
-        self.fits_version = mv.fits_version_label
-        self.fits_def = mv.fits_def_label
+        self.fits_version = fits_version_label
+        self.fits_def = fits_def_label
 
         self.subtracted_sky_level = "S_SKYLV"
         self.unsubtracted_sky_level = "US_SKYLV"
         self.read_noise = "RD_NOISE"
-        self.gain = mv.gain_label
+        self.gain = gain_label
 
-        self.model_hash = mv.model_hash_label
-        self.model_seed = mv.model_seed_label
-        self.noise_seed = mv.noise_seed_label
+        self.model_hash = model_hash_label
+        self.model_seed = model_seed_label
+        self.noise_seed = noise_seed_label
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_version, None),

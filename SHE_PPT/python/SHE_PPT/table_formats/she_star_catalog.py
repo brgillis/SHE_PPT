@@ -5,6 +5,8 @@
     Format definition for a table containing Star Catalog data.
 """
 
+__updated__ = "2021-08-12"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -19,14 +21,13 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-19"
 
 from collections import OrderedDict
 
-from .. import magic_values as mv
-from ..table_utility import is_in_format, init_table,SheTableFormat
+from SHE_PPT.constants.fits import obs_id_label, obs_time_label
 
-
+from ..constants.fits import fits_version_label, fits_def_label
+from ..table_utility import is_in_format, init_table, SheTableFormat
 fits_version = "8.0"
 fits_def = "she.starCatalog"
 
@@ -42,13 +43,13 @@ class SheStarCatalogMeta():
         self.table_format = fits_def
 
         # Table metadata labels
-        self.fits_version = mv.fits_version_label
-        self.fits_def = mv.fits_def_label
+        self.fits_version = fits_version_label
+        self.fits_def = fits_def_label
 
         self.roll_ang = "ROLLANGL"
         self.exposure_product_id = "EXP_PID"
-        self.observation_id = mv.obs_id_label
-        self.observation_time = mv.obs_time_label
+        self.observation_id = obs_id_label
+        self.observation_time = obs_time_label
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_version, None),
@@ -75,44 +76,44 @@ class SheStarCatalogFormat(SheTableFormat):
         # Column names and info
 
         self.id = self.set_column_properties(
-                                        "OBJECT_ID", dtype=">i8", fits_dtype="K",
-                                        comment="ID of this object in the galaxy population priors table.")
+            "OBJECT_ID", dtype=">i8", fits_dtype="K",
+            comment="ID of this object in the galaxy population priors table.")
 
         self.det_x = self.set_column_properties(
-                                           "SHE_STARCAT_DET_X", dtype=">i4", fits_dtype="I")
+            "SHE_STARCAT_DET_X", dtype=">i4", fits_dtype="I")
         self.det_y = self.set_column_properties(
-                                           "SHE_STARCAT_DET_Y", dtype=">i4", fits_dtype="I")
+            "SHE_STARCAT_DET_Y", dtype=">i4", fits_dtype="I")
         self.x = self.set_column_properties(
-                                       "SHE_STARCAT_X", dtype=">f4", fits_dtype="E")
+            "SHE_STARCAT_X", dtype=">f4", fits_dtype="E")
         self.x_err = self.set_column_properties(
-                                           "SHE_STARCAT_X_ERR", dtype=">f4", fits_dtype="E")
+            "SHE_STARCAT_X_ERR", dtype=">f4", fits_dtype="E")
         self.y = self.set_column_properties(
-                                       "SHE_STARCAT_Y", dtype=">f4", fits_dtype="E")
+            "SHE_STARCAT_Y", dtype=">f4", fits_dtype="E")
         self.y_err = self.set_column_properties(
-                                           "SHE_STARCAT_Y_ERR", dtype=">f4", fits_dtype="E")
+            "SHE_STARCAT_Y_ERR", dtype=">f4", fits_dtype="E")
         self.ra = self.set_column_properties(
-                                        "SHE_STARCAT_UPDATED_RA", comment="deg", dtype=">f8", fits_dtype="D")
+            "SHE_STARCAT_UPDATED_RA", comment="deg", dtype=">f8", fits_dtype="D")
         self.ra_err = self.set_column_properties(
-                                            "SHE_STARCAT_UPDATED_RA_ERR", comment="deg", dtype=">f8", fits_dtype="E")
+            "SHE_STARCAT_UPDATED_RA_ERR", comment="deg", dtype=">f8", fits_dtype="E")
         self.dec = self.set_column_properties(
-                                         "SHE_STARCAT_UPDATED_DEC", comment="deg", dtype=">f8", fits_dtype="D")
+            "SHE_STARCAT_UPDATED_DEC", comment="deg", dtype=">f8", fits_dtype="D")
         self.dec_err = self.set_column_properties(
-                                             "SHE_STARCAT_UPDATED_DEC_ERR", comment="deg", dtype=">f8", fits_dtype="E")
+            "SHE_STARCAT_UPDATED_DEC_ERR", comment="deg", dtype=">f8", fits_dtype="E")
         self.flux = self.set_column_properties(
-                                          "SHE_STARCAT_FLUX", dtype=">f4", fits_dtype="E")
+            "SHE_STARCAT_FLUX", dtype=">f4", fits_dtype="E")
         self.flux_err = self.set_column_properties(
-                                              "SHE_STARCAT_FLUX_ERR", dtype=">f4", fits_dtype="E")
+            "SHE_STARCAT_FLUX_ERR", dtype=">f4", fits_dtype="E")
 
         self.e1 = self.set_column_properties("SHE_STARCAT_E1", dtype=">f4", fits_dtype="E",
-                                        comment="Mean ellipticity measurement of this object, component 1")
+                                             comment="Mean ellipticity measurement of this object, component 1")
         self.e2 = self.set_column_properties("SHE_STARCAT_E2", dtype=">f4", fits_dtype="E",
-                                        comment="Mean ellipticity measurement of this object, component 2")
+                                             comment="Mean ellipticity measurement of this object, component 2")
         self.e1_err = self.set_column_properties("SHE_STARCAT_E1_ERR", dtype=">f4", fits_dtype="E",
-                                            comment="Error on mean ellipticity measurement of this object, "
-                                            "component 1")
+                                                 comment="Error on mean ellipticity measurement of this object, "
+                                                 "component 1")
         self.e2_err = self.set_column_properties("SHE_STARCAT_E2_ERR", dtype=">f4", fits_dtype="E",
-                                            comment="Error on mean ellipticity measurement of this object, "
-                                            "component 2")
+                                                 comment="Error on mean ellipticity measurement of this object, "
+                                                 "component 2")
 
         self._finalize_init()
 

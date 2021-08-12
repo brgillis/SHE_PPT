@@ -5,6 +5,8 @@
     Base format definition for common properties of all shear measurements tables.
 """
 
+__updated__ = "2021-08-12"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -19,12 +21,13 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-08-10"
 
 from collections import OrderedDict
 from typing import Optional
 
-from .. import magic_values as mv
+from ..constants.fits import (she_flag_version_label, model_hash_label,
+                              model_seed_label, noise_seed_label, obs_id_label, pnt_id_label,
+                              obs_time_label, tile_id_label, valid_label)
 from ..table_utility import SheTableMeta
 from .she_measurements import SheMeasurementsFormat
 
@@ -42,16 +45,16 @@ class SheTUMatchedMeta(SheTableMeta):
                  version: Optional[str] = None):
 
         # Table metadata labels
-        self.she_flag_version = mv.she_flag_version_label
-        self.model_hash = mv.model_hash_label
-        self.model_seed = mv.model_seed_label
-        self.noise_seed = mv.noise_seed_label
-        self.observation_id = mv.obs_id_label
-        self.pointing_id = mv.pnt_id_label
-        self.observation_time = mv.obs_time_label
-        self.tile_id = mv.tile_id_label
+        self.she_flag_version = she_flag_version_label
+        self.model_hash = model_hash_label
+        self.model_seed = model_seed_label
+        self.noise_seed = noise_seed_label
+        self.observation_id = obs_id_label
+        self.pointing_id = pnt_id_label
+        self.observation_time = obs_time_label
+        self.tile_id = tile_id_label
 
-        self.valid = mv.valid_label
+        self.valid = valid_label
 
         if not table_format:
             table_format = fits_def

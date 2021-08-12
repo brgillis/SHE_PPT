@@ -23,7 +23,8 @@ __updated__ = "2020-08-07"
 
 from collections import OrderedDict
 
-from .. import magic_values as mv
+
+from ..constants.fits import fits_version_label, fits_def_label, extname_label
 from ..table_utility import is_in_format, init_table, SheTableFormat
 
 
@@ -42,8 +43,8 @@ class SheGalaxyPopulationPriorsMeta():
         self.table_format = fits_def
 
         # Table metadata labels
-        self.fits_version = mv.fits_version_label
-        self.fits_def = mv.fits_def_label
+        self.fits_version = fits_version_label
+        self.fits_def = fits_def_label
 
         self.cnd_field = "CNDFIELD"
         self.telescope = "TSCOPE"

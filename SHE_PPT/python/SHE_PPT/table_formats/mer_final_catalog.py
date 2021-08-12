@@ -19,13 +19,13 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-07-05"
+__updated__ = "2021-08-12"
 
 from collections import OrderedDict
 
 from EL_PythonUtils.utilities import hash_any
 
-from .. import magic_values as mv
+from ..constants.fits import fits_version_label, fits_def_label, extname_label
 from ..logging import getLogger
 from ..table_utility import is_in_format, init_table, SheTableFormat
 
@@ -33,7 +33,7 @@ from ..table_utility import is_in_format, init_table, SheTableFormat
 fits_version = "0.3"
 fits_def = "mer.finalCatalog"
 
-logger = getLogger(mv.logger_name)
+logger = getLogger(__name__)
 
 
 class MerFinalCatalogMeta():
@@ -47,10 +47,10 @@ class MerFinalCatalogMeta():
         self.table_format = fits_def
 
         # Table metadata labels
-        self.fits_version = mv.fits_version_label
-        self.fits_def = mv.fits_def_label
+        self.fits_version = fits_version_label
+        self.fits_def = fits_def_label
 
-        self.extname = mv.extname_label
+        self.extname = extname_label
         self.tileid = "TILEID"
         self.objsel = "OBJSEL"
 

@@ -4,16 +4,8 @@
 
     Format definition for tables containing shear bias statistics.
 """
-from collections import OrderedDict
 
-from SHE_PPT.constants.classes import ShearEstimationMethods
-import numpy as np
-
-from .. import magic_values as mv
-from ..logging import getLogger
-from ..math import LinregressStatistics, LinregressResults, BiasMeasurements
-from ..table_utility import is_in_format, init_table, SheTableFormat
-
+__updated__ = "2021-08-12"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -28,13 +20,22 @@ from ..table_utility import is_in_format, init_table, SheTableFormat
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
-__updated__ = "2021-08-12"
 
+from collections import OrderedDict
+
+from SHE_PPT.constants.classes import ShearEstimationMethods
+import numpy as np
+
+
+from ..constants.fits import fits_version_label, fits_def_label, extname_label
+from ..logging import getLogger
+from ..math import LinregressStatistics, LinregressResults, BiasMeasurements
+from ..table_utility import is_in_format, init_table, SheTableFormat
 
 fits_version = "8.0"
 fits_def = "she.biasStatistics"
 
-logger = getLogger(mv.logger_name)
+logger = getLogger(__name__)
 
 
 class SheBiasStatisticsMeta():
@@ -48,8 +49,8 @@ class SheBiasStatisticsMeta():
         self.table_format = fits_def
 
         # Table metadata labels
-        self.fits_version = mv.fits_version_label
-        self.fits_def = mv.fits_def_label
+        self.fits_version = fits_version_label
+        self.fits_def = fits_def_label
 
         # Metadata specific to this table format
 

@@ -4,6 +4,19 @@
 
     Functions to get needed information from the MDB.
 """
+import os
+import re
+
+from EL_PythonUtils.utilities import run_only_once
+from astropy.io import fits
+
+from SHE_PPT.constants.fits import extname_label
+from ST_DM_MDBTools.Mdb import Mdb
+
+from .constants.test_data import TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME
+from .file_io import find_file
+from .logging import getLogger
+
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -18,21 +31,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
-
-__updated__ = "2021-06-21"
-
-import os
-import re
-
-from EL_PythonUtils.utilities import run_only_once
-from astropy.io import fits
-
-from ST_DM_MDBTools.Mdb import Mdb
-
-from . import magic_values as mv
-from .constants.test_data import TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME
-from .file_io import find_file
-from .logging import getLogger
+__updated__ = "2021-08-12"
 
 
 _mdb_not_inited_exception = RuntimeError(
@@ -74,7 +73,7 @@ def init(mdb_files=None, path=None):
             qualified_mdb_files.append(qualified_mdb_file)
     elif mdb_files is None:
         qualified_mdb_files = find_file(DEFAULT_MDB_FILE)
-        logger.warning("No MDB file specified. Using default file at %s",qualified_mdb_files)
+        logger.warning("No MDB file specified. Using default file at %s", qualified_mdb_files)
     else:
         raise TypeError("Invalid type for mdb_files object passed to SHE_PPT.mdb.init(): " + str(mdb_files))
 
@@ -96,7 +95,6 @@ def init(mdb_files=None, path=None):
     _read_noise_dict.clear()
     for qualified_read_noise_filename in qualified_read_noise_filenames:
         _read_noise_dict.update(_load_quadrant_table(qualified_read_noise_filename, 'RON_ELE'))
-
 
 
 def _find_mdb_data_file(data_filenames, qualified_mdb_files):
@@ -148,10 +146,10 @@ def _load_quadrant_table(qualified_data_filename, colname):
 
     for hdu in f:
         # Check if this is the zeroeth hdu, which doesn't have a table in it
-        if not mv.extname_label in hdu.header:
+        if not extname_label in hdu.header:
             continue
 
-        quadrant_dict[hdu.header[mv.extname_label]] = hdu.data[colname][0]
+        quadrant_dict[hdu.header[extname_label]] = hdu.data[colname][0]
 
     f.close()
 

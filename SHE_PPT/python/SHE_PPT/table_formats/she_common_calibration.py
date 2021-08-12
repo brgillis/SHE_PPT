@@ -23,7 +23,8 @@ __updated__ = "2020-07-19"
 
 from collections import OrderedDict
 
-from .. import magic_values as mv
+
+from ..constants.fits import fits_version_label, fits_def_label, extname_label
 from ..logging import getLogger
 from ..table_formats.mer_final_catalog import tf as mfc_tf
 from ..table_utility import is_in_format, init_table, SheTableFormat
@@ -32,7 +33,7 @@ from ..table_utility import is_in_format, init_table, SheTableFormat
 fits_version = "8.0"
 fits_def = "she.commonCalibration"
 
-logger = getLogger(mv.logger_name)
+logger = getLogger(__name__)
 
 
 class SheCommonCalibrationMeta():
@@ -46,8 +47,8 @@ class SheCommonCalibrationMeta():
         self.table_format = fits_def
 
         # Table metadata labels
-        self.fits_version = mv.fits_version_label
-        self.fits_def = mv.fits_def_label
+        self.fits_version = fits_version_label
+        self.fits_def = fits_def_label
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_version, None),

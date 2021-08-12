@@ -5,6 +5,8 @@
     Functions related to output of details and detections tables.
 """
 
+__updated__ = "2021-08-12"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -19,20 +21,18 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-08-10"
-
 from collections import OrderedDict
 from typing import Dict, List, Optional
 
 from astropy.table import Column, Table
 
+from SHE_PPT.constants.fits import fits_def_label, fits_version_label
 import numpy as np
 
-from . import magic_values as mv
 from .logging import getLogger
 
 
-logger = getLogger(mv.logger_name)
+logger = getLogger(__name__)
 
 
 def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbose=False,
@@ -321,8 +321,8 @@ class SheTableMeta():
     all: List[str]
 
     # Required attributes which correspond to keys in the FITS header
-    fits_version: str = mv.fits_version_label
-    fits_def: str = mv.fits_def_label
+    fits_version: str = fits_version_label
+    fits_def: str = fits_def_label
 
     def __init__(self,
                  table_format: str,

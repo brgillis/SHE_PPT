@@ -22,7 +22,7 @@ Created on: 08/18/17
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 # """This script gives a small demo of the image object.
 
-__updated__ = "2021-06-07"
+__updated__ = "2021-08-12"
 
 from copy import deepcopy
 import logging
@@ -35,8 +35,8 @@ import pytest
 from ElementsServices.DataSync import DataSync
 from SHE_PPT import file_io
 from SHE_PPT import mdb
+from SHE_PPT.constants.misc import segmap_unassigned_value
 from SHE_PPT.constants.test_data import (SYNC_CONF, TEST_FILES_MDB, TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME)
-from SHE_PPT.magic_values import segmap_unassigned_value
 import SHE_PPT.she_image
 import numpy as np
 

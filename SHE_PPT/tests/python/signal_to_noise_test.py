@@ -5,6 +5,8 @@
     Unit tests for the control shear estimation methods.
 """
 
+__updated__ = "2021-08-12"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -18,16 +20,14 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2021-06-07"
-
 import os
 from os.path import join
 
 import pytest
 
 from ElementsServices.DataSync import DataSync
-from SHE_PPT import magic_values as mv
 from SHE_PPT import mdb
+from SHE_PPT.constants.fits import gain_label
 from SHE_PPT.constants.test_data import (SYNC_CONF,
                                          TEST_FILES_DATA_STACK,
                                          TEST_FILES_MDB,
@@ -45,7 +45,6 @@ from SHE_PPT.she_frame_stack import SHEFrameStack
 from SHE_PPT.signal_to_noise import get_SN_of_image
 from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
 import numpy as np
-
 
 ex_signal_to_noises = [59, 32]
 
@@ -101,7 +100,7 @@ class TestCase:
         """Test that the interface for the KSB method works properly.
         """
 
-        gain = self.data_stack.exposures[0].detectors[1, 1].header[mv.gain_label]
+        gain = self.data_stack.exposures[0].detectors[1, 1].header[gain_label]
 
         # Get the S/N for each galaxy
         for i, row in enumerate(self.data_stack.detections_catalogue):

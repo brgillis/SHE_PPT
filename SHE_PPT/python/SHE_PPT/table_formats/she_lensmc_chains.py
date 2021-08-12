@@ -5,6 +5,8 @@
     Format definition for lensmc chains tables.
 """
 
+__updated__ = "2021-08-12"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -19,11 +21,13 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-08-11"
-
 from collections import OrderedDict
 
-from .. import magic_values as mv
+from SHE_PPT.constants.fits import (she_flag_version_label, model_hash_label,
+                                    model_seed_label, noise_seed_label, obs_id_label, pnt_id_label,
+                                    obs_time_label, tile_id_label, valid_label)
+
+from ..constants.fits import fits_version_label, fits_def_label, extname_label
 from ..constants.shear_estimation_methods import ShearEstimationMethods
 from ..flags import she_flag_version
 from ..logging import getLogger
@@ -38,7 +42,7 @@ num_chains = 1
 len_chain = 200
 total_chain_length = num_chains * len_chain
 
-logger = getLogger(mv.logger_name)
+logger = getLogger(__name__)
 
 
 class SheLensMcChainsMeta():
@@ -52,21 +56,21 @@ class SheLensMcChainsMeta():
         self.table_format = fits_def
 
         # Table metadata labels
-        self.fits_version = mv.fits_version_label
-        self.fits_def = mv.fits_def_label
-        self.extname = mv.extname_label
-        self.she_flag_version = mv.she_flag_version_label
-        self.model_hash = mv.model_hash_label
-        self.model_seed = mv.model_seed_label
-        self.noise_seed = mv.noise_seed_label
-        self.observation_id = mv.obs_id_label
-        self.pointing_id = mv.pnt_id_label
-        self.observation_time = mv.obs_time_label
-        self.tile_id = mv.tile_id_label
+        self.fits_version = fits_version_label
+        self.fits_def = fits_def_label
+        self.extname = extname_label
+        self.she_flag_version = she_flag_version_label
+        self.model_hash = model_hash_label
+        self.model_seed = model_seed_label
+        self.noise_seed = noise_seed_label
+        self.observation_id = obs_id_label
+        self.pointing_id = pnt_id_label
+        self.observation_time = obs_time_label
+        self.tile_id = tile_id_label
         self.method = "SEMETHOD"
         self.len_chain = "LCHAIN"
 
-        self.valid = mv.valid_label
+        self.valid = valid_label
 
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_version, None),

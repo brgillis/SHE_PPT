@@ -19,19 +19,20 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-02-10"
+__updated__ = "2021-08-12"
 
 from collections import OrderedDict
 
-from .. import magic_values as mv
+from SHE_PPT.constants.fits import psf_cat_tag
+from ..constants.fits import fits_version_label, fits_def_label, extname_label
 from ..logging import getLogger
-from ..table_utility import is_in_format, init_table,SheTableFormat
+from ..table_utility import is_in_format, init_table, SheTableFormat
 
 
 fits_version = "8.0"
 fits_def = "she.psfModelImage.shePsfC"
 
-logger = getLogger(mv.logger_name)
+logger = getLogger(__name__)
 
 
 class ShePsfModelImageMeta():
@@ -45,10 +46,10 @@ class ShePsfModelImageMeta():
         self.table_format = fits_def
 
         # Table metadata labels
-        self.fits_version = mv.fits_version_label
-        self.fits_def = mv.fits_def_label
+        self.fits_version = fits_version_label
+        self.fits_def = fits_def_label
 
-        self.extname = mv.extname_label
+        self.extname = extname_label
 
         self.calibration_product = "CAL_PROD"
         self.calibration_time = "CAL_TIME"
@@ -58,7 +59,7 @@ class ShePsfModelImageMeta():
         # Store the less-used comments in a dict
         self.comments = OrderedDict(((self.fits_version, None),
                                      (self.fits_def, None),
-                                     (self.extname, mv.psf_cat_tag),
+                                     (self.extname, psf_cat_tag),
                                      (self.calibration_product, None),
                                      (self.calibration_time, None),
                                      (self.field_product, None),
@@ -81,29 +82,29 @@ class ShePsfModelImageFormat(SheTableFormat):
         # Column names and info
 
         self.ID = self.set_column_properties(
-                                        "OBJECT_ID", dtype=">i8", fits_dtype="K")
+            "OBJECT_ID", dtype=">i8", fits_dtype="K")
 
         self.template = self.set_column_properties(
-                                              "SHE_PSF_SED_TEMPLATE", dtype=">i8", fits_dtype="K")
+            "SHE_PSF_SED_TEMPLATE", dtype=">i8", fits_dtype="K")
         self.bulge_index = self.set_column_properties(
-                                                 "SHE_PSF_BULGE_INDEX", dtype=">i4", fits_dtype="J")
+            "SHE_PSF_BULGE_INDEX", dtype=">i4", fits_dtype="J")
         self.disk_index = self.set_column_properties(
-                                                "SHE_PSF_DISK_INDEX", dtype=">i4", fits_dtype="J")
+            "SHE_PSF_DISK_INDEX", dtype=">i4", fits_dtype="J")
         self.image_x = self.set_column_properties(
-                                             "SHE_PSF_IMAGE_X", dtype=">i2", fits_dtype="I")
+            "SHE_PSF_IMAGE_X", dtype=">i2", fits_dtype="I")
         self.image_y = self.set_column_properties(
-                                             "SHE_PSF_IMAGE_Y", dtype=">i2", fits_dtype="I")
+            "SHE_PSF_IMAGE_Y", dtype=">i2", fits_dtype="I")
         self.x = self.set_column_properties(
-                                       "SHE_PSF_X", dtype=">f4", fits_dtype="E")
+            "SHE_PSF_X", dtype=">f4", fits_dtype="E")
         self.y = self.set_column_properties(
-                                       "SHE_PSF_Y", dtype=">f4", fits_dtype="E")
+            "SHE_PSF_Y", dtype=">f4", fits_dtype="E")
 
         self.calibration_time = self.set_column_properties(
-                                                      "SHE_PSF_CALIB_TIME", dtype="str", fits_dtype="A", length=20)
+            "SHE_PSF_CALIB_TIME", dtype="str", fits_dtype="A", length=20)
         self.field_time = self.set_column_properties(
-                                                "SHE_PSF_FIELD_TIME", dtype="str", fits_dtype="A", length=20)
+            "SHE_PSF_FIELD_TIME", dtype="str", fits_dtype="A", length=20)
         self.qual_flag = self.set_column_properties(
-                                               "SHE_PSF_QUAL_FLAG", dtype=">i4", fits_dtype="J")
+            "SHE_PSF_QUAL_FLAG", dtype=">i4", fits_dtype="J")
 
         self._finalize_init()
 
@@ -129,7 +130,7 @@ def make_psf_table_header(calibration_product, calibration_time, field_product, 
     header[tf.m.fits_version] = tf.__version__
     header[tf.m.fits_def] = fits_def
 
-    header[tf.m.extname] = mv.psf_cat_tag
+    header[tf.m.extname] = psf_cat_tag
 
     header[tf.m.calibration_product] = calibration_product
     header[tf.m.calibration_time] = calibration_time

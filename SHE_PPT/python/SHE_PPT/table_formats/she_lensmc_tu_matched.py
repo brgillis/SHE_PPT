@@ -25,7 +25,8 @@ from collections import OrderedDict
 
 from SHE_PPT.table_formats.she_lensmc_measurements import set_lensmc_column_properties
 
-from .. import magic_values as mv
+
+from ..constants.fits import fits_version_label, fits_def_label, extname_label
 from ..flags import she_flag_version
 from ..logging import getLogger
 from ..table_formats.mer_final_catalog import tf as mfc_tf
@@ -38,7 +39,7 @@ fits_def = "she.lensmc_tu_matched"
 
 child_label = "SHE_LENSMC_"
 
-logger = getLogger(mv.logger_name)
+logger = getLogger(__name__)
 
 
 class SheLensMcTUMatchedMeta(SheTUMatchedMeta):

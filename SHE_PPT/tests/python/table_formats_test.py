@@ -5,6 +5,8 @@
     Unit tests relating to table formats.
 """
 
+__updated__ = "2021-08-12"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -18,14 +20,12 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2021-08-12"
-
 import os
 
 from astropy.table import Column, Table
 import pytest
 
-from SHE_PPT import magic_values as mv
+from SHE_PPT.constants.fits import psf_cat_tag
 from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf, initialise_mer_final_catalog
 from SHE_PPT.table_formats.she_bias_statistics import tf as bs_tf, initialise_bias_statistics_table
 from SHE_PPT.table_formats.she_common_calibration import tf as cc_tf, initialise_common_calibration_table
@@ -219,7 +219,7 @@ class TestTableFormats:
 
         psf_table = initialise_psf_table()
 
-        assert(psf_table.meta[psfm_tf.m.extname] == mv.psf_cat_tag)
+        assert(psf_table.meta[psfm_tf.m.extname] == psf_cat_tag)
 
         # Try to initialize the shear estimates table based on the detections table
 

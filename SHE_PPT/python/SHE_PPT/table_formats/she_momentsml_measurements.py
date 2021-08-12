@@ -23,7 +23,8 @@ __updated__ = "2021-08-11"
 
 from collections import OrderedDict
 
-from .. import magic_values as mv
+
+from ..constants.fits import fits_version_label, fits_def_label, extname_label
 from ..flags import she_flag_version
 from ..logging import getLogger
 from ..table_formats.mer_final_catalog import tf as mfc_tf
@@ -36,7 +37,7 @@ fits_def = "she.momentsmlMeasurements"
 
 child_label = "SHE_MOMENTSML_"
 
-logger = getLogger(mv.logger_name)
+logger = getLogger(__name__)
 
 
 class SheMomentsMlMeasurementsMeta(SheMeasurementsMeta):
