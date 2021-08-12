@@ -21,9 +21,6 @@
 
 __updated__ = "2021-08-12"
 
-from collections import OrderedDict
-
-
 from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL
 from ..table_utility import SheTableFormat, SheTableMeta
 

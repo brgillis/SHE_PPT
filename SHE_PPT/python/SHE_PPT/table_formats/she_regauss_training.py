@@ -21,10 +21,7 @@
 
 __updated__ = "2021-08-12"
 
-from collections import OrderedDict
-
 from ..table_formats.she_training import SheTrainingMeta, SheTrainingFormat
-from ..table_utility import is_in_format, init_table
 
 
 fits_version = "8.0"
@@ -63,44 +60,3 @@ regauss_training_table_format = SheRegaussTrainingFormat()
 
 # And a convient alias for it
 tf = regauss_training_table_format
-
-
-def make_regauss_training_table_header():
-    """
-        @brief Generate a header for a galaxy population table.
-
-        @return header <OrderedDict>
-    """
-
-    header = OrderedDict()
-
-    header[tf.m.fits_version] = tf.__version__
-    header[tf.m.fits_def] = fits_def
-
-    return header
-
-
-def initialise_regauss_training_table(size=None,
-                                      optional_columns=None,
-                                      init_cols=None,):
-    """
-        @brief Initialise a galaxy population table.
-
-        @return regauss_training_table <astropy.Table>
-    """
-
-    if optional_columns is None:
-        optional_columns = []
-    else:
-        # Check all optional columns are valid
-        for colname in optional_columns:
-            if colname not in tf.all:
-                raise ValueError("Invalid optional column name: " + colname)
-
-    regauss_training_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
-
-    regauss_training_table.meta = make_regauss_training_table_header()
-
-    assert is_in_format(regauss_training_table, tf)
-
-    return regauss_training_table
