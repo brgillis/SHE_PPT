@@ -1,9 +1,11 @@
-""" @file output_shear_estimates.py
+""" @file test_data.py
 
-    Created 1 Sep 2017
+    Created 12 Aug 2021
 
-    Various magic values used by the SHE PF.
+    Constants related to FITS files
 """
+
+__updated__ = "2021-08-12"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -18,10 +20,6 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
-
-__updated__ = "2020-08-06"
-
-logger_name = "SHE_PPT"
 
 # Header values for fits images
 fits_version_label = "FITS_VER"
@@ -48,14 +46,6 @@ psf_state_identity_label = "OPTID"
 psf_field_param_def = "she.psfFieldParameters"
 psf_calib_param_def = "she.psfCalibrationParameters"
 
-# Special values for tables
-psf_dm_identity = "dmfit"
-psf_om_identity = "omfit"
-psf_pd_identity = "pdfit"
-psf_tm_identity = "tmfit"
-psf_tml_identity = "tmlfit"
-psf_zm_identity = "zfit"
-
 # Tags for science image, noisemap, and mask
 sci_tag = "SCI"
 noisemap_tag = "RMS"
@@ -77,16 +67,3 @@ psf_pd_state_tag = "PSFPD"
 psf_tm_state_tag = "PSFTM"
 psf_tml_state_tag = "PSFTL"
 psf_zm_state_tag = "PSFZ"
-
-# Miscellaneous
-segmap_unassigned_value = 0
-segmap_other_value = -1
-short_instance_id_maxlen = 17
-
-# mag_vis_zeropoint = 25.50087633632 # From ETC
-# mag_vis_zeropoint = 25.4534 # From Sami's sims' config file
-mag_vis_zeropoint = 25.6527  # From Lance's code
-mag_i_zeropoint = 25.3884  # From Lance's code
-
-# Information about test data
-test_datadir = "/tmp"
