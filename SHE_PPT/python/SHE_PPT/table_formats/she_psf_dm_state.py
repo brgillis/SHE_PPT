@@ -23,6 +23,7 @@ __updated__ = "2021-08-12"
 # Boston, MA 02110-1301 USA
 
 from collections import OrderedDict
+from typing import Type
 
 from ..constants.fits import PSF_DM_STATE_TAG
 from ..constants.tables import PSF_DM_IDENTITY
@@ -56,7 +57,7 @@ class ShePsfDmStateFormat(ShePsfStateFormat):
     """
 
     _data_type: str = "CAL"
-    _meta_type: ShePsfDmStateMeta
+    _meta_type: Type = ShePsfDmStateMeta
 
 
 # Define an instance of this object that can be imported

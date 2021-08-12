@@ -23,7 +23,7 @@ __updated__ = "2021-08-12"
 # Boston, MA 02110-1301 USA
 
 from collections import OrderedDict
-from typing import Optional, List
+from typing import Optional, List, Type
 
 from ..constants.fits import PSF_TM_STATE_TAG
 from ..constants.tables import PSF_TM_IDENTITY
@@ -57,7 +57,7 @@ class ShePsfTmStateFormat(ShePsfStateFormat):
     """
 
     _data_type: str = "CAL"
-    _meta_type: ShePsfTmStateMeta
+    _meta_type: Type = ShePsfTmStateMeta
     _l_colnames: Optional[List[str]] = ["M1TRAD", "M2TRAD", "FOM1TFRN", "FOM2TFRN",
                                         "M3TRAD", "DIC_TFRN", "M1TCON", "M2TCON",
                                         "M3TCON", "M2TZ", "M2TX", "M2TY", "M2RX",

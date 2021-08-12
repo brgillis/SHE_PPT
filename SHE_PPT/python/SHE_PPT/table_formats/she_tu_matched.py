@@ -57,9 +57,7 @@ class SheTUMatchedMeta(SheTableMeta):
 
     def __init__(self):
 
-        super().__init__(table_format=self.table_format,
-                         version=self.__version__,
-                         comments=OrderedDict(((self.fits_version, None),
+        super().__init__(comments=OrderedDict(((self.fits_version, None),
                                                (self.fits_def, None),
                                                (self.she_flag_version, None),
                                                (self.model_hash, None),

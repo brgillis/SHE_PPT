@@ -23,6 +23,7 @@ __updated__ = "2021-08-12"
 # Boston, MA 02110-1301 USA
 
 from collections import OrderedDict
+from typing import Type
 
 from ..constants.fits import PSF_TML_STATE_TAG
 from ..constants.tables import PSF_TML_IDENTITY
@@ -56,7 +57,7 @@ class ShePsfTmlStateFormat(ShePsfStateFormat):
     """
 
     _data_type: str = "CAL"
-    _meta_type: ShePsfTmlStateMeta
+    _meta_type: Type = ShePsfTmlStateMeta
 
     def __init__(self, data_type="FIELD"):
 

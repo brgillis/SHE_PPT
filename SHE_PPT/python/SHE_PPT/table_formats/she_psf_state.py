@@ -26,15 +26,14 @@ from typing import Type, List, Optional
 from ..constants.fits import (FITS_VERSION_LABEL, FITS_DEF_LABEL, EXTNAME_LABEL,
                               PSF_FIELD_PARAM_DEF, PSF_CALIB_PARAM_DEF)
 from ..logging import getLogger
-from ..table_utility import SheTableFormat
-
+from ..table_utility import SheTableFormat, SheTableMeta
 
 fits_version = "8.0"
 
 logger = getLogger(__name__)
 
 
-class ShePsfStateMeta():
+class ShePsfStateMeta(SheTableMeta):
     """ A class defining the metadata for PSF TM state tables.
     """
 
@@ -52,16 +51,16 @@ class ShePsfStateMeta():
     _identity: str
     _format: str
 
-    def __init__(self, data_type="CAL"):
+    def __init__(self, data_type="CAL", **kwargs):
 
         self._data_type = data_type
 
         self._main_data_type = (PSF_FIELD_PARAM_DEF
                                 if self._data_type == "FIELD" else
                                 PSF_CALIB_PARAM_DEF)
-        self.table_format = f"{self._main_data_type}.{self.format}"
+        self.table_format = f"{self._main_data_type}.{self._format}"
 
-        super().__init__()
+        super().__init__(**kwargs)
 
 
 class ShePsfStateFormat(SheTableFormat):
