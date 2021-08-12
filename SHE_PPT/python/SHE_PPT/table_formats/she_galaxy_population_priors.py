@@ -40,34 +40,17 @@ class SheGalaxyPopulationPriorsMeta(SheTableMeta):
     __version__: str = fits_version
     table_format: str = fits_def
 
-    def __init__(self):
+    # Table metadata labels
+    fits_version: str = FITS_VERSION_LABEL
+    fits_def: str = FITS_DEF_LABEL
 
-        # Table metadata labels
-        self.fits_version = FITS_VERSION_LABEL
-        self.fits_def = FITS_DEF_LABEL
-
-        self.cnd_field = "CNDFIELD"
-        self.telescope = "TSCOPE"
-        self.detector = "DETECTOR"
-        self.date_hst = "DATE_HST"
-        self.data_version = "DATA_VER"
-        self.date_candels = "DATE_CND"
-        self.data_release = "DATA_REL"
-
-        # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_version, None),
-                                     (self.fits_def, None),
-                                     (self.cnd_field, None),
-                                     (self.telescope, None),
-                                     (self.detector, None),
-                                     (self.date_hst, None),
-                                     (self.data_version, None),
-                                     (self.date_candels, None),
-                                     (self.data_release, None),
-                                     ))
-
-        # A list of columns in the desired order
-        self.all = list(self.comments.keys())
+    cnd_field: str = "CNDFIELD"
+    telescope: str = "TSCOPE"
+    detector: str = "DETECTOR"
+    date_hst: str = "DATE_HST"
+    data_version: str = "DATA_VER"
+    date_candels: str = "DATE_CND"
+    data_release: str = "DATA_REL"
 
 
 class SheGalaxyPopulationPriorsFormat(SheTableFormat):

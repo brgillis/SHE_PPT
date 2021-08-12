@@ -19,12 +19,12 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-02-10"
+__updated__ = "2021-08-12"
 
 from collections import OrderedDict
 
 
-from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL, EXTNAME_LABEL
+from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL
 from ..table_utility import is_in_format, init_table, SheTableFormat
 
 
@@ -37,22 +37,12 @@ class ShePOfEMeta():
         @brief A class defining the metadata for PSF tables.
     """
 
-    def __init__(self):
+    __version__: str = fits_version
+    table_format: str = fits_def
 
-        self.__version__ = fits_version
-        self.table_format = fits_def
-
-        # Table metadata labels
-        self.fits_version = FITS_VERSION_LABEL
-        self.fits_def = FITS_DEF_LABEL
-
-        # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_version, None),
-                                     (self.fits_def, None),
-                                     ))
-
-        # A list of columns in the desired order
-        self.all = list(self.comments.keys())
+    # Table metadata labels
+    fits_version: str = FITS_VERSION_LABEL
+    fits_def: str = FITS_DEF_LABEL
 
 
 class ShePOfEFormat(SheTableFormat):
@@ -67,13 +57,13 @@ class ShePOfEFormat(SheTableFormat):
         # Column names and info
 
         self.ID = self.set_column_properties(
-                                        "ID", dtype=">i8", fits_dtype="K",
-                                        comment="Link to galaxy population table.")
+            "ID", dtype=">i8", fits_dtype="K",
+            comment="Link to galaxy population table.")
 
         self.e1 = self.set_column_properties(
-                                        "E1", comment="Using flat weight function.")
+            "E1", comment="Using flat weight function.")
         self.e2 = self.set_column_properties(
-                                        "E2", comment="Using flat weight function.")
+            "E2", comment="Using flat weight function.")
 
         self.bulge_e1 = self.set_column_properties("BULGE_E1", is_optional=True)
         self.bulge_e2 = self.set_column_properties("BULGE_E2", is_optional=True)

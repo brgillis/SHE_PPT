@@ -40,33 +40,29 @@ class ShePsfDmStateMeta():
     """ A class defining the metadata for PSF TM state tables.
     """
 
-    data_type = "CAL"
+    __version__: str = fits_version
 
-    def __init__(self, data_type):
+    # Table metadata labels
+    fits_version: str = FITS_VERSION_LABEL
+    fits_def: str = FITS_DEF_LABEL
 
-        self.data_type = data_type
-        self.__version__ = fits_version
+    extname: str = EXTNAME_LABEL
 
-        self.main_data_type = (PSF_FIELD_PARAM_DEF
-                               if self.data_type == "FIELD" else
-                               PSF_CALIB_PARAM_DEF)
-        self.table_format = "%s.SheDetectorModelParams" % self.main_data_type
-        self.identity = PSF_DM_IDENTITY
+    # Table info
+    _data_type: str = "CAL"
+    _main_data_type: str
+    _identity: str = PSF_DM_IDENTITY
 
-        # Table metadata labels
-        self.fits_version = FITS_VERSION_LABEL
-        self.fits_def = FITS_DEF_LABEL
+    def __init__(self, data_type="CAL"):
 
-        self.extname = EXTNAME_LABEL
+        self._data_type = data_type
 
-        # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_version, None),
-                                     (self.fits_def, None),
-                                     (self.extname, None),
-                                     ))
+        self._main_data_type = (PSF_FIELD_PARAM_DEF
+                                if self._data_type == "FIELD" else
+                                PSF_CALIB_PARAM_DEF)
+        self.table_format = "%s.SheDetectorModelParams" % self._main_data_type
 
-        # A list of columns in the desired order
-        self.all = list(self.comments.keys())
+        super().__init__()
 
 
 class ShePsfDmStateFormat(SheTableFormat):
@@ -82,10 +78,10 @@ class ShePsfDmStateFormat(SheTableFormat):
 
         # Get the metadata (contained within its own class)
 
-        self.data_type = data_type
+        self._data_type = data_type
 
         # Column names and info
-        # @TODO: option for FIELD/CALIB - use self.data_type
+        # @TODO: option for FIELD/CALIB - use self._data_type
 
         for colname in []:
             setattr(self, colname.lower(),
@@ -97,7 +93,7 @@ class ShePsfDmStateFormat(SheTableFormat):
     def get_colname(self, colname):
         """ Get full column name
         """
-        return "SHE_PSF_%s_%s" % (self.data_type, colname)
+        return "SHE_PSF_%s_%s" % (self._data_type, colname)
 
 
 # Define an instance of this object that can be imported

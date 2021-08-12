@@ -331,12 +331,7 @@ class SheTableMeta():
     fits_def: str = FITS_DEF_LABEL
 
     def __init__(self,
-                 table_format: str,
-                 version: str,
                  comments: Optional[Dict[str, Optional[str]]] = None):
-
-        self.table_format = table_format
-        self.__version__ = version
 
         self.comments = OrderedDict(((self.fits_version, None),
                                      (self.fits_def, None)))

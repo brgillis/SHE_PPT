@@ -43,51 +43,45 @@ class SheBiasStatisticsMeta():
         @brief A class defining the metadata for bias statistics tables.
     """
 
+    __version__: str = fits_version
+    table_format: str = fits_def
+
+    fits_version: str = FITS_VERSION_LABEL
+    fits_def: str = FITS_DEF_LABEL
+
+    ID: str = "ID"
+
+    method: str = "METHOD"
+
+    m1: str = "BM_M1"
+    m1_err: str = "BM_M1E"
+    c1: str = "BM_C1"
+    c1_err: str = "BM_C1E"
+    m1c1_covar: str = "BM_M1C1C"
+
+    m2: str = "BM_M2"
+    m2_err: str = "BM_M2E"
+    c2: str = "BM_C2"
+    c2_err: str = "BM_C2E"
+    m2c2_covar: str = "BM_M2C2C"
+
     def __init__(self):
 
-        self.__version__ = fits_version
-        self.table_format = fits_def
-
-        # Table metadata labels
-        self.fits_version = FITS_VERSION_LABEL
-        self.fits_def = FITS_DEF_LABEL
-
-        # Metadata specific to this table format
-
-        self.ID = "ID"
-
-        self.method = "METHOD"
-
-        self.m1 = "BM_M1"
-        self.m1_err = "BM_M1E"
-        self.c1 = "BM_C1"
-        self.c1_err = "BM_C1E"
-        self.m1c1_covar = "BM_M1C1C"
-
-        self.m2 = "BM_M2"
-        self.m2_err = "BM_M2E"
-        self.c2 = "BM_C2"
-        self.c2_err = "BM_C2E"
-        self.m2c2_covar = "BM_M2C2C"
-
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_version, None),
-                                     (self.fits_def, None),
-                                     (self.ID, None),
-                                     (self.method, "One of 'KSB', 'REGAUSS', 'MomentsML', or 'LensMC', or else 'Unspecified'."),
-                                     (self.m1, None),
-                                     (self.m1_err, None),
-                                     (self.c1, None),
-                                     (self.c1_err, None),
-                                     (self.m1c1_covar, None),
-                                     (self.m2, None),
-                                     (self.m2_err, None),
-                                     (self.c2, None),
-                                     (self.c2_err, None),
-                                     (self.m2c2_covar, None),))
-
-        # A list of columns in the desired order
-        self.all = list(self.comments.keys())
+        super().init(comments=OrderedDict(((self.fits_version, None),
+                                           (self.fits_def, None),
+                                           (self.ID, None),
+                                           (self.method, "One of 'KSB', 'REGAUSS', 'MomentsML', or 'LensMC', or else 'Unspecified'."),
+                                           (self.m1, None),
+                                           (self.m1_err, None),
+                                           (self.c1, None),
+                                           (self.c1_err, None),
+                                           (self.m1c1_covar, None),
+                                           (self.m2, None),
+                                           (self.m2_err, None),
+                                           (self.c2, None),
+                                           (self.c2_err, None),
+                                           (self.m2c2_covar, None),)))
 
 
 class SheBiasStatisticsFormat(SheTableFormat):

@@ -32,7 +32,7 @@ from ..constants.shear_estimation_methods import ShearEstimationMethods
 from ..flags import she_flag_version
 from ..logging import getLogger
 from ..table_formats.mer_final_catalog import tf as mfc_tf
-from ..table_utility import is_in_format, init_table, SheTableFormat
+from ..table_utility import is_in_format, init_table, SheTableFormat, SheTableMeta
 
 
 fits_version = "8.0"
@@ -45,54 +45,50 @@ total_chain_length = num_chains * len_chain
 logger = getLogger(__name__)
 
 
-class SheLensMcChainsMeta():
+class SheLensMcChainsMeta(SheTableMeta):
     """
         @brief A class defining the metadata for shear estimates tables.
     """
 
+    __version__: str = fits_version
+    table_format: str = fits_def
+
+    # Table metadata labels
+    fits_version: str = FITS_VERSION_LABEL
+    fits_def: str = FITS_DEF_LABEL
+    extname: str = EXTNAME_LABEL
+    she_flag_version: str = SHE_FLAG_VERSION_LABEL
+    model_hash: str = MODEL_HASH_LABEL
+    model_seed: str = MODEL_SEED_LABEL
+    noise_seed: str = NOISE_SEED_LABEL
+    observation_id: str = OBS_ID_LABEL
+    pointing_id: str = PNT_ID_LABEL
+    observation_time: str = OBS_TIME_LABEL
+    tile_id: str = TILE_ID_LABEL
+    method: str = "SEMETHOD"
+    len_chain: str = "LCHAIN"
+
+    self.valid = VALID_LABEL
+
     def __init__(self):
 
-        self.__version__ = fits_version
-        self.table_format = fits_def
-
-        # Table metadata labels
-        self.fits_version = FITS_VERSION_LABEL
-        self.fits_def = FITS_DEF_LABEL
-        self.extname = EXTNAME_LABEL
-        self.she_flag_version = SHE_FLAG_VERSION_LABEL
-        self.model_hash = MODEL_HASH_LABEL
-        self.model_seed = MODEL_SEED_LABEL
-        self.noise_seed = NOISE_SEED_LABEL
-        self.observation_id = OBS_ID_LABEL
-        self.pointing_id = PNT_ID_LABEL
-        self.observation_time = OBS_TIME_LABEL
-        self.tile_id = TILE_ID_LABEL
-        self.method = "SEMETHOD"
-        self.len_chain = "LCHAIN"
-
-        self.valid = VALID_LABEL
-
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_version, None),
-                                     (self.fits_def, None),
-                                     (self.fits_version, None),
-                                     (self.fits_def, None),
-                                     (self.she_flag_version, None),
-                                     (self.model_hash, None),
-                                     (self.model_seed, None),
-                                     (self.noise_seed, None),
-                                     (self.observation_id, None),
-                                     (self.pointing_id, "List of pointing IDs"),
-                                     (self.observation_time, None),
-                                     (self.tile_id, None),
-                                     (self.method, "Shear estimation method used to generate these chains"),
-                                     (self.len_chain, None),
-                                     (self.valid,
-                                      "0: Not tested; 1: Pass; -1: Fail")
-                                     ))
-
-        # A list of columns in the desired order
-        self.all = list(self.comments.keys())
+        super().init(comments=OrderedDict(((self.fits_version, None),
+                                           (self.fits_def, None),
+                                           (self.fits_version, None),
+                                           (self.fits_def, None),
+                                           (self.she_flag_version, None),
+                                           (self.model_hash, None),
+                                           (self.model_seed, None),
+                                           (self.noise_seed, None),
+                                           (self.observation_id, None),
+                                           (self.pointing_id, "List of pointing IDs"),
+                                           (self.observation_time, None),
+                                           (self.tile_id, None),
+                                           (self.method, "Shear estimation method used to generate these chains"),
+                                           (self.len_chain, None),
+                                           (self.valid, "0: Not tested; 1: Pass; -1: Fail")
+                                           )))
 
 
 class SheLensMcChainsFormat(SheTableFormat):

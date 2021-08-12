@@ -5,7 +5,7 @@
     Format definition for momentsml tu_matched tables.
 """
 
-__updated__ = "2021-08-11"
+__updated__ = "2021-08-12"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -23,8 +23,6 @@ __updated__ = "2021-08-11"
 
 from collections import OrderedDict
 
-
-from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL, EXTNAME_LABEL
 from ..flags import she_flag_version
 from ..logging import getLogger
 from ..table_formats.mer_final_catalog import tf as mfc_tf
@@ -45,11 +43,8 @@ class SheMomentsMlTUMatchedMeta(SheTUMatchedMeta):
         @brief A class defining the metadata for shear estimates tables.
     """
 
-    def __init__(self):
-
-        # Inherit meta format from parent class
-        super().__init__(table_format=fits_def,
-                         version=fits_version)
+    __version__: str = fits_version
+    table_format: str = fits_def
 
 
 class SheMomentsMlTUMatchedFormat(SheTUMatchedFormat):

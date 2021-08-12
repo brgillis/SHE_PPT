@@ -21,60 +21,39 @@ __updated__ = "2021-08-12"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-from collections import OrderedDict
 from typing import List
 
 from SHE_PPT.constants.fits import (SHE_FLAG_VERSION_LABEL, MODEL_HASH_LABEL,
                                     MODEL_SEED_LABEL, NOISE_SEED_LABEL, OBS_ID_LABEL, PNT_ID_LABEL,
                                     OBS_TIME_LABEL, TILE_ID_LABEL, VALID_LABEL)
 from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL
-from ..table_utility import SheTableFormat
+from ..table_utility import SheTableFormat, SheTableMeta
 
 
 fits_version = "8.0"
 fits_def = "she.measurements"
 
 
-class SheMeasurementsMeta():
+class SheMeasurementsMeta(SheTableMeta):
     """ A class defining the metadata common to shear measurements tables.
     """
 
-    def __init__(self):
+    __version__: str = fits_version
+    table_format: str = fits_def
 
-        self.table_format = fits_def
-        self.__version__ = fits_version
+    # Table metadata labels
+    fits_version: str = FITS_VERSION_LABEL
+    fits_def: str = FITS_DEF_LABEL
+    she_flag_version: str = SHE_FLAG_VERSION_LABEL
+    model_hash: str = MODEL_HASH_LABEL
+    model_seed: str = MODEL_SEED_LABEL
+    noise_seed: str = NOISE_SEED_LABEL
+    observation_id: str = OBS_ID_LABEL
+    pointing_id: str = PNT_ID_LABEL
+    observation_time: str = OBS_TIME_LABEL
+    tile_id: str = TILE_ID_LABEL
 
-        # Table metadata labels
-        self.fits_version = FITS_VERSION_LABEL
-        self.fits_def = FITS_DEF_LABEL
-        self.she_flag_version = SHE_FLAG_VERSION_LABEL
-        self.model_hash = MODEL_HASH_LABEL
-        self.model_seed = MODEL_SEED_LABEL
-        self.noise_seed = NOISE_SEED_LABEL
-        self.observation_id = OBS_ID_LABEL
-        self.pointing_id = PNT_ID_LABEL
-        self.observation_time = OBS_TIME_LABEL
-        self.tile_id = TILE_ID_LABEL
-
-        self.valid = VALID_LABEL
-
-        # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_version, None),
-                                     (self.fits_def, None),
-                                     (self.she_flag_version, None),
-                                     (self.model_hash, None),
-                                     (self.model_seed, None),
-                                     (self.noise_seed, None),
-                                     (self.observation_id, "Individual ID or list of IDs"),
-                                     (self.pointing_id, "List of pointing IDs"),
-                                     (self.observation_time, "Individual time or list of times"),
-                                     (self.tile_id, "Individual ID or list of IDs"),
-                                     (self.valid,
-                                      "0: Not tested; 1: Pass; -1: Fail")
-                                     ))
-
-        # A list of columns in the desired order
-        self.all = list(self.comments.keys())
+    valid: str = VALID_LABEL
 
 
 class SheMeasurementsFormat(SheTableFormat):
