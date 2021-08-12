@@ -27,7 +27,7 @@ from EL_PythonUtils.utilities import hash_any
 
 from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL, EXTNAME_LABEL
 from ..logging import getLogger
-from ..table_utility import is_in_format, init_table, SheTableFormat
+from ..table_utility import is_in_format, init_table, SheTableFormat, SheTableMeta
 
 
 fits_version = "0.3"
@@ -36,32 +36,25 @@ fits_def = "mer.finalCatalog"
 logger = getLogger(__name__)
 
 
-class MerFinalCatalogMeta():
+class MerFinalCatalogMeta(SheTableMeta):
     """
         @brief A class defining the metadata for detections tables.
     """
 
-    def __init__(self):
+    __version__: str = fits_version
+    table_format: str = fits_def
 
-        self.__version__ = fits_version
-        self.table_format = fits_def
+    # Table metadata labels
+    fits_version: str = FITS_VERSION_LABEL
+    fits_def: str = FITS_DEF_LABEL
 
-        # Table metadata labels
-        self.fits_version = FITS_VERSION_LABEL
-        self.fits_def = FITS_DEF_LABEL
+    extname: str = EXTNAME_LABEL
+    tileid: str = "TILEID"
+    objsel: str = "OBJSEL"
 
-        self.extname = EXTNAME_LABEL
-        self.tileid = "TILEID"
-        self.objsel = "OBJSEL"
-
-        # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.extname, None),
-                                     (self.tileid, None),
-                                     (self.objsel, None),
-                                     ))
-
-        # A list of columns in the desired order
-        self.all = list(self.comments.keys())
+    def init_meta(self, **kwargs: str):
+        return super().init_meta(extname="N/A",
+                                 **kwargs)
 
 
 class MerFinalCatalogFormat(SheTableFormat):
@@ -288,30 +281,6 @@ mer_final_catalog_format = MerFinalCatalogFormat()
 tf = mer_final_catalog_format
 
 
-def make_mer_final_catalog_header(model_hash=None,
-                                  model_seed=None,
-                                  noise_seed=None):
-    """
-        @brief Generate a header for a detections table.
-
-        @param model_hash <int> Hash of the physical model options dictionary
-
-        @param model_seed <int> Full seed used for the physical model for this image
-
-        @param noise_seed <int> Seed used for generating noise for this image
-
-        @return header <OrderedDict>
-    """
-
-    header = OrderedDict()
-
-    header[tf.m.extname] = "N/A"
-    header[tf.m.tileid] = None
-    header[tf.m.objsel] = None
-
-    return header
-
-
 def initialise_mer_final_catalog(image_group_phl=None,
                                  options=None,
                                  size=None,
@@ -359,9 +328,7 @@ def initialise_mer_final_catalog(image_group_phl=None,
         if noise_seed is None:
             noise_seed = options['noise_seed']
 
-    mer_final_catalog.meta = make_mer_final_catalog_header(model_hash=model_hash,
-                                                           model_seed=model_seed,
-                                                           noise_seed=noise_seed)
+    mer_final_catalog.meta = tf.m.init_meta()
 
     assert is_in_format(mer_final_catalog, tf)
 
