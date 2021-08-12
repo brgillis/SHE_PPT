@@ -507,6 +507,6 @@ class SheTableFormat():
 
         t.meta = self.m.init_meta(**kwargs)
 
-        is_in_format(t, self, verbose=True)
+        assert is_in_format(t, self, verbose=True)
 
         return t
