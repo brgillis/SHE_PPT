@@ -26,45 +26,33 @@ from astropy.table import Column, Table
 import pytest
 
 from SHE_PPT.constants.fits import PSF_CAT_TAG
-from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf, initialise_mer_final_catalog
-from SHE_PPT.table_formats.she_bias_statistics import tf as bs_tf, initialise_bias_statistics_table
-from SHE_PPT.table_formats.she_common_calibration import tf as cc_tf, initialise_common_calibration_table
-from SHE_PPT.table_formats.she_galaxy_population_priors import tf as gpp_tf, initialise_galaxy_population_priors_table
-from SHE_PPT.table_formats.she_ksb_measurements import tf as ksbm_tf, initialise_ksb_measurements_table
-from SHE_PPT.table_formats.she_ksb_training import tf as ksbt_tf, initialise_ksb_training_table
-from SHE_PPT.table_formats.she_ksb_tu_matched import tf as ksbtm_tf, initialise_ksb_tu_matched_table
-from SHE_PPT.table_formats.she_lensmc_chains import tf as lmcc_tf, initialise_lensmc_chains_table, len_chain
-from SHE_PPT.table_formats.she_lensmc_measurements import tf as lmcm_tf, initialise_lensmc_measurements_table
-from SHE_PPT.table_formats.she_lensmc_tu_matched import tf as lmctm_tf, initialise_lensmc_tu_matched_table
+from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
+from SHE_PPT.table_formats.she_bias_statistics import tf as bs_tf
+from SHE_PPT.table_formats.she_common_calibration import tf as cc_tf
+from SHE_PPT.table_formats.she_galaxy_population_priors import tf as gpp_tf
+from SHE_PPT.table_formats.she_ksb_measurements import tf as ksbm_tf
+from SHE_PPT.table_formats.she_ksb_training import tf as ksbt_tf
+from SHE_PPT.table_formats.she_ksb_tu_matched import tf as ksbtm_tf
+from SHE_PPT.table_formats.she_lensmc_chains import tf as lmcc_tf, len_chain
+from SHE_PPT.table_formats.she_lensmc_measurements import tf as lmcm_tf
+from SHE_PPT.table_formats.she_lensmc_tu_matched import tf as lmctm_tf
 from SHE_PPT.table_formats.she_measurements import tf as sm_tf
-from SHE_PPT.table_formats.she_momentsml_measurements import tf as mmlm_tf, initialise_momentsml_measurements_table
-from SHE_PPT.table_formats.she_momentsml_tu_matched import tf as mmltm_tf, initialise_momentsml_tu_matched_table
-from SHE_PPT.table_formats.she_p_of_e import tf as poe_tf, initialise_p_of_e_table
-from SHE_PPT.table_formats.she_psf_dm_state import (tff as psfdmf_tf, tfc as psfdmc_tf,
-                                                    initialise_psf_field_dm_state_table,
-                                                    initialise_psf_calibration_dm_state_table)
-from SHE_PPT.table_formats.she_psf_model_image import tf as psfm_tf, initialise_psf_table
-from SHE_PPT.table_formats.she_psf_om_state import (tff as psfomf_tf, tfc as psfomc_tf,
-                                                    initialise_psf_field_om_state_table,
-                                                    initialise_psf_calibration_om_state_table)
-from SHE_PPT.table_formats.she_psf_pd_state import (tff as psfpdf_tf, tfc as psfpdc_tf,
-                                                    initialise_psf_field_pd_state_table,
-                                                    initialise_psf_calibration_pd_state_table)
-from SHE_PPT.table_formats.she_psf_tm_state import (tff as psftmf_tf, tfc as psftmc_tf,
-                                                    initialise_psf_field_tm_state_table,
-                                                    initialise_psf_calibration_tm_state_table)
-from SHE_PPT.table_formats.she_psf_tml_state import (tff as psftmlf_tf, tfc as psftmlc_tf,
-                                                     initialise_psf_field_tml_state_table,
-                                                     initialise_psf_calibration_tml_state_table)
-from SHE_PPT.table_formats.she_psf_zm_state import (tff as psfzmf_tf, tfc as psfzmc_tf,
-                                                    initialise_psf_field_zm_state_table,
-                                                    initialise_psf_calibration_zm_state_table)
-from SHE_PPT.table_formats.she_regauss_measurements import tf as regm_tf, initialise_regauss_measurements_table
-from SHE_PPT.table_formats.she_regauss_training import tf as regt_tf, initialise_regauss_training_table
-from SHE_PPT.table_formats.she_regauss_tu_matched import tf as regtm_tf, initialise_regauss_tu_matched_table
-from SHE_PPT.table_formats.she_simulated_catalog import tf as simc_tf, initialise_simulated_catalog
-from SHE_PPT.table_formats.she_simulation_plan import tf as simp_tf, initialise_simulation_plan_table
-from SHE_PPT.table_formats.she_star_catalog import tf as sc_tf, initialise_star_catalog
+from SHE_PPT.table_formats.she_momentsml_measurements import tf as mmlm_tf
+from SHE_PPT.table_formats.she_momentsml_tu_matched import tf as mmltm_tf
+from SHE_PPT.table_formats.she_p_of_e import tf as poe_tf
+from SHE_PPT.table_formats.she_psf_dm_state import tff as psfdmf_tf, tfc as psfdmc_tf
+from SHE_PPT.table_formats.she_psf_model_image import tf as psfm_tf
+from SHE_PPT.table_formats.she_psf_om_state import tff as psfomf_tf, tfc as psfomc_tf
+from SHE_PPT.table_formats.she_psf_pd_state import tff as psfpdf_tf, tfc as psfpdc_tf
+from SHE_PPT.table_formats.she_psf_tm_state import tff as psftmf_tf, tfc as psftmc_tf
+from SHE_PPT.table_formats.she_psf_tml_state import tff as psftmlf_tf, tfc as psftmlc_tf
+from SHE_PPT.table_formats.she_psf_zm_state import tff as psfzmf_tf, tfc as psfzmc_tf
+from SHE_PPT.table_formats.she_regauss_measurements import tf as regm_tf
+from SHE_PPT.table_formats.she_regauss_training import tf as regt_tf
+from SHE_PPT.table_formats.she_regauss_tu_matched import tf as regtm_tf
+from SHE_PPT.table_formats.she_simulated_catalog import tf as simc_tf
+from SHE_PPT.table_formats.she_simulation_plan import tf as simp_tf
+from SHE_PPT.table_formats.she_star_catalog import tf as sc_tf
 from SHE_PPT.table_formats.she_tu_matched import tf as tum_tf
 from SHE_PPT.table_testing import _test_is_in_format
 from SHE_PPT.table_utility import is_in_format, add_row
@@ -80,65 +68,58 @@ class TestTableFormats:
     @classmethod
     def setup_class(cls):
         # Define a list of the table formats we'll be testing
-        cls.formats_and_initializers = [(bs_tf, initialise_bias_statistics_table),
-                                        (cc_tf, initialise_common_calibration_table),
-                                        (gpp_tf, initialise_galaxy_population_priors_table),
-                                        (ksbm_tf, initialise_ksb_measurements_table),
-                                        (ksbtm_tf, initialise_ksb_tu_matched_table),
-                                        (ksbt_tf, initialise_ksb_training_table),
-                                        (lmcc_tf, initialise_lensmc_chains_table),
-                                        (lmcm_tf, initialise_lensmc_measurements_table),
-                                        (lmctm_tf, initialise_lensmc_tu_matched_table),
-                                        (mfc_tf, initialise_mer_final_catalog),
-                                        (mmlm_tf, initialise_momentsml_measurements_table),
-                                        (mmltm_tf, initialise_momentsml_tu_matched_table),
-                                        (poe_tf, initialise_p_of_e_table),
-                                        (psfdmf_tf, initialise_psf_field_dm_state_table),
-                                        (psfdmc_tf, initialise_psf_calibration_dm_state_table),
-                                        (psfm_tf, initialise_psf_table),
-                                        (psfomf_tf, initialise_psf_field_om_state_table),
-                                        (psfomc_tf, initialise_psf_calibration_om_state_table),
-                                        (psfpdf_tf, initialise_psf_field_pd_state_table),
-                                        (psfpdc_tf, initialise_psf_calibration_pd_state_table),
-                                        (psftmf_tf, initialise_psf_field_tm_state_table),
-                                        (psftmc_tf, initialise_psf_calibration_tm_state_table),
-                                        (psftmlf_tf, initialise_psf_field_tml_state_table),
-                                        (psftmlc_tf, initialise_psf_calibration_tml_state_table),
-                                        (psfzmf_tf, initialise_psf_field_zm_state_table),
-                                        (psfzmc_tf, initialise_psf_calibration_zm_state_table),
-                                        (regm_tf, initialise_regauss_measurements_table),
-                                        (regtm_tf, initialise_regauss_tu_matched_table),
-                                        (regt_tf, initialise_regauss_training_table),
-                                        (simc_tf, initialise_simulated_catalog),
-                                        (simp_tf, initialise_simulation_plan_table),
-                                        (sc_tf, initialise_star_catalog),
-                                        ]
-        # (, ),
-
-        cls.formats, cls.initializers = zip(*cls.formats_and_initializers)
+        cls.formats = [bs_tf,
+                       cc_tf,
+                       gpp_tf,
+                       ksbm_tf,
+                       ksbtm_tf,
+                       ksbt_tf,
+                       lmcc_tf,
+                       lmcm_tf,
+                       lmctm_tf,
+                       mfc_tf,
+                       mmlm_tf,
+                       mmltm_tf,
+                       poe_tf,
+                       psfdmf_tf,
+                       psfdmc_tf,
+                       psfm_tf,
+                       psfomf_tf,
+                       psfomc_tf,
+                       psfpdf_tf,
+                       psfpdc_tf,
+                       psftmf_tf,
+                       psftmc_tf,
+                       psftmlf_tf,
+                       psftmlc_tf,
+                       psfzmf_tf,
+                       psfzmc_tf,
+                       regm_tf,
+                       regtm_tf,
+                       regt_tf,
+                       simc_tf,
+                       simp_tf,
+                       sc_tf,
+                       ]
 
         cls.parent_format = sm_tf
-        cls.child_initializers = [initialise_ksb_measurements_table,
-                                  initialise_lensmc_measurements_table,
-                                  initialise_momentsml_measurements_table,
-                                  initialise_regauss_measurements_table,
+        cls.child_initializers = [ksbm_tf.init_table,
+                                  lmcm_tf.init_table,
+                                  mmlm_tf.init_table,
+                                  regm_tf.init_table,
                                   ]
 
         cls.filename_base = "test_table"
 
         cls.filenames = [cls.filename_base + ".ecsv", cls.filename_base + ".fits"]
 
-        return
-
     @classmethod
     def teardown_class(cls):
-        del cls.formats, cls.initializers
+        del cls.formats
 
         for filename in cls.filenames:
             if os.path.exists(filename):
                 os.remove(filename)
-
-        return
 
     def test_extra_data(self):
         # Check that the keys are assigned correctly for all extra data (eg. comments)
@@ -161,14 +142,10 @@ class TestTableFormats:
             # Check column lengths
             assert list(tf.lengths.keys()) == tf.all
 
-        return
-
     def test_is_in_format(self):
 
         # Call the test stored in the table_testing module (to re-use code with other projects)
         _test_is_in_format(self)
-
-        return
 
     def test_base_is_in_format(self):
 
@@ -183,10 +160,8 @@ class TestTableFormats:
 
             # Try non-strict test
             if not is_in_format(empty_tables[i], self.parent_format, strict=False, verbose=True):
-                raise Exception("Table format " + self.parent_format.m.table_format +
-                                " doesn't match initialized child table " + str(i) + ".")
-
-        return
+                raise ValueError("Table format " + self.parent_format.m.table_format +
+                                 " doesn't match initialized child table " + str(i) + ".")
 
     def test_add_row(self):
         # Test that we can add a row through kwargs
@@ -199,8 +174,6 @@ class TestTableFormats:
         assert tab[mfc_tf.gal_x_world][0] == 0.
         assert tab[mfc_tf.gal_y_world][0] == 1.
 
-        return
-
     def test_init(self):
 
         model_hash = -1235
@@ -209,24 +182,22 @@ class TestTableFormats:
 
         # Test initialization methods
 
-        mer_final_catalog = initialise_mer_final_catalog(model_hash=model_hash,
-                                                         model_seed=model_seed,
-                                                         noise_seed=noise_seed)
+        mer_final_catalog = mfc_tf.init_table(model_hash=model_hash,
+                                              model_seed=model_seed,
+                                              noise_seed=noise_seed)
 
-        _details_table = initialise_simulated_catalog(model_hash=model_hash,
-                                                      model_seed=model_seed,
-                                                      noise_seed=noise_seed)
+        _ = simc_tf.init_table(model_hash=model_hash,
+                               model_seed=model_seed,
+                               noise_seed=noise_seed)
 
-        psf_table = initialise_psf_table()
+        psf_table = psfm_tf.init_table()
 
         assert(psf_table.meta[psfm_tf.m.extname] == PSF_CAT_TAG)
 
         # Try to initialize the shear estimates table based on the detections table
 
-        shear_estimates_table = initialise_lensmc_measurements_table(mer_final_catalog)
+        _ = lmcm_tf.init_table(mer_final_catalog)
 
-        shear_chains_table = initialise_lensmc_chains_table(mer_final_catalog)
+        shear_chains_table = lmcc_tf.init_table(mer_final_catalog)
 
         assert(shear_chains_table.meta[lmcc_tf.m.len_chain] == len_chain)
-
-        return

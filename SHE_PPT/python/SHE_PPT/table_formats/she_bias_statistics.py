@@ -337,7 +337,7 @@ def initialise_bias_statistics_table(size=None,
         bias_statistics_table.add_row(vals=new_row)
 
     # Check we meet the requirements of the table format
-    assert is_in_format(bias_statistics_table, tf)
+    assert is_in_format(bias_statistics_table, tf, verbose=True)
 
     return bias_statistics_table
 

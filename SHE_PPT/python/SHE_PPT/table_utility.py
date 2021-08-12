@@ -22,6 +22,7 @@ __updated__ = "2021-08-12"
 # Boston, MA 02110-1301 USA
 
 from collections import OrderedDict
+from copy import deepcopy
 from typing import Dict, List, Optional
 
 from astropy.table import Column, Table
@@ -173,7 +174,9 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
 
     if not ignore_metadata:
         # Check the metadata is correct
-        if list(table.meta.keys()) != table_format.m.all:
+        keys_in_table = deepcopy(list(table.meta.keys()))
+        keys_in_table_format = deepcopy(table_format.m.all)
+        if keys_in_table.sort() != keys_in_table_format.sort():
             if verbose:
                 logger.info("Table not in correct format due to wrong metadata keys.\n"
                             "Expected: %s\n"
@@ -316,6 +319,9 @@ def init_table(tf: "SheTableFormat",
     return t
 
 
+_NON_HEADER_ATTRS = ["table_format", "comments", "all", "init_meta"]
+
+
 class SheTableMeta():
     """ Base class for table format metadata.
     """
@@ -342,7 +348,7 @@ class SheTableMeta():
         # Check that there's an entry for all attrs in comments, and add an empty comment if not
         for attr in dir(self):
             # Skip private attributes, and those we explicitly don't want listed
-            if attr in ["table_format", "comments", "all"] or attr[1] == "_":
+            if attr in _NON_HEADER_ATTRS or attr[1] == "_":
                 continue
             self.comments[getattr(self, attr)] = None
 
@@ -357,9 +363,18 @@ class SheTableMeta():
 
         m = OrderedDict()
 
-        m[self.m.fits_version] = self.__version__
-        m[self.m.fits_def] = self.table_format
+        # First initialise all header values empty
+        for attr in dir(self):
+            # Skip private attributes, and those we explicitly don't want listed
+            if attr in _NON_HEADER_ATTRS or attr[1] == "_":
+                continue
+            m[getattr(self, attr)] = None
 
+        # Fill in fits version and def
+        m[self.fits_version] = self.__version__
+        m[self.fits_def] = self.table_format
+
+        # Fill in any values passed from arguments
         for attr in kwargs:
             try:
                 m[getattr(self, attr)] = kwargs[attr]

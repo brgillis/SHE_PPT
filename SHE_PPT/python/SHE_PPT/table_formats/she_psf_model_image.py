@@ -26,7 +26,7 @@ from collections import OrderedDict
 from SHE_PPT.constants.fits import PSF_CAT_TAG
 from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL, EXTNAME_LABEL
 from ..logging import getLogger
-from ..table_utility import is_in_format, init_table, SheTableFormat
+from ..table_utility import is_in_format, init_table, SheTableFormat, SheTableMeta
 
 
 fits_version = "8.0"
@@ -35,39 +35,39 @@ fits_def = "she.psfModelImage.shePsfC"
 logger = getLogger(__name__)
 
 
-class ShePsfModelImageMeta():
+class ShePsfModelImageMeta(SheTableMeta):
     """
         @brief A class defining the metadata for PSF tables.
     """
 
+    __version__: str = fits_version
+    table_format: str = fits_def
+
+    # Table metadata labels
+    fits_version: str = FITS_VERSION_LABEL
+    fits_def: str = FITS_DEF_LABEL
+
+    extname: str = EXTNAME_LABEL
+
+    calibration_product: str = "CAL_PROD"
+    calibration_time: str = "CAL_TIME"
+    field_product: str = "FLD_PROD"
+    field_time: str = "FLD_TIME"
+
     def __init__(self):
 
-        self.__version__ = fits_version
-        self.table_format = fits_def
+        super().__init__(comments=OrderedDict(((self.fits_version, None),
+                                               (self.fits_def, None),
+                                               (self.extname, PSF_CAT_TAG),
+                                               (self.calibration_product, None),
+                                               (self.calibration_time, None),
+                                               (self.field_product, None),
+                                               (self.field_time, None)
+                                               )))
 
-        # Table metadata labels
-        self.fits_version = FITS_VERSION_LABEL
-        self.fits_def = FITS_DEF_LABEL
-
-        self.extname = EXTNAME_LABEL
-
-        self.calibration_product = "CAL_PROD"
-        self.calibration_time = "CAL_TIME"
-        self.field_product = "FLD_PROD"
-        self.field_time = "FLD_TIME"
-
-        # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_version, None),
-                                     (self.fits_def, None),
-                                     (self.extname, PSF_CAT_TAG),
-                                     (self.calibration_product, None),
-                                     (self.calibration_time, None),
-                                     (self.field_product, None),
-                                     (self.field_time, None)
-                                     ))
-
-        # A list of columns in the desired order
-        self.all = list(self.comments.keys())
+    def init_meta(self, **kwargs: str):
+        return super().init_meta(extname=PSF_CAT_TAG,
+                                 **kwargs)
 
 
 class ShePsfModelImageFormat(SheTableFormat):
@@ -114,67 +114,3 @@ psf_table_format = ShePsfModelImageFormat()
 
 # And a convient alias for it
 tf = psf_table_format
-
-
-def make_psf_table_header(calibration_product, calibration_time, field_product, field_time):
-    """
-        @brief Generate a header for a PSF table.
-
-        @param detector <int?> Detector for this image, if applicable
-
-        @return header <OrderedDict>
-    """
-
-    header = OrderedDict()
-
-    header[tf.m.fits_version] = tf.__version__
-    header[tf.m.fits_def] = fits_def
-
-    header[tf.m.extname] = PSF_CAT_TAG
-
-    header[tf.m.calibration_product] = calibration_product
-    header[tf.m.calibration_time] = calibration_time
-    header[tf.m.field_product] = field_product
-    header[tf.m.field_time] = field_time
-
-    return header
-
-
-def initialise_psf_table(size=None,
-                         optional_columns=None,
-                         calibration_product=None,
-                         calibration_time=None,
-                         field_product=None,
-                         field_time=None,
-                         init_cols={}):
-    """
-        @brief Initialise a PSF table.
-
-        @param image <SHE_SIM.Image>
-
-        @param options <dict> Options dictionary
-
-        @param optional_columns <list<str>> List of names for optional columns to include.
-               Default is psf_x and psf_y
-
-        @return mer_final_catalog <astropy.Table>
-    """
-
-    if optional_columns is None:
-        optional_columns = []
-    else:
-        # Check all optional columns are valid
-        for colname in optional_columns:
-            if colname not in tf.all:
-                raise ValueError("Invalid optional column name: " + colname)
-
-    psf_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
-
-    psf_table.meta = make_psf_table_header(calibration_product=calibration_product,
-                                           calibration_time=calibration_time,
-                                           field_product=field_product,
-                                           field_time=field_time)
-
-    assert is_in_format(psf_table, tf)
-
-    return psf_table
