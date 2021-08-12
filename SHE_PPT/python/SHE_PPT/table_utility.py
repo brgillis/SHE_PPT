@@ -362,6 +362,9 @@ class SheTableMeta():
 
         m = OrderedDict()
 
+        m[self.m.fits_version] = self.__version__
+        m[self.m.fits_def] = self.table_format
+
         for attr in kwargs:
             try:
                 m[getattr(self, attr)] = kwargs[attr]
@@ -508,5 +511,7 @@ class SheTableFormat():
                        init_cols=init_cols)
 
         t.meta = self.m.init_meta(**kwargs)
+
+        is_in_format(t, self, verbose=True)
 
         return t

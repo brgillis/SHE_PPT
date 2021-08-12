@@ -273,6 +273,13 @@ class MerFinalCatalogFormat(SheTableFormat):
 
         self._finalize_init()
 
+    @staticmethod
+    def init_table(*args, **kwargs):
+        """ Bound alias to the free table initialisation function, using this table format.
+        """
+
+        return initialise_mer_final_catalog(*args, **kwargs)
+
 
 # Define an instance of this object that can be imported
 mer_final_catalog_format = MerFinalCatalogFormat()

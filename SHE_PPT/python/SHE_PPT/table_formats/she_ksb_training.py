@@ -19,11 +19,9 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-08-10"
+__updated__ = "2021-08-12"
 
-from collections import OrderedDict
 from ..table_formats.she_training import SheTrainingMeta, SheTrainingFormat
-from ..table_utility import is_in_format, init_table
 
 
 fits_version = "8.0"
@@ -37,13 +35,8 @@ class SheKsbTrainingMeta(SheTrainingMeta):
         @brief A class defining the metadata for simulation plan tables.
     """
 
-    def __init__(self):
-
-        # Inherit meta format from parent class
-        super().__init__()
-
-        self.__version__ = fits_version
-        self.table_format = fits_def
+    __version__: str = fits_version
+    table_format: str = fits_def
 
 
 class SheKsbTrainingFormat(SheTrainingFormat):
@@ -67,44 +60,3 @@ ksb_training_table_format = SheKsbTrainingFormat()
 
 # And a convient alias for it
 tf = ksb_training_table_format
-
-
-def make_ksb_training_table_header():
-    """
-        @brief Generate a header for a galaxy population table.
-
-        @return header <OrderedDict>
-    """
-
-    header = OrderedDict()
-
-    header[tf.m.fits_version] = tf.__version__
-    header[tf.m.fits_def] = fits_def
-
-    return header
-
-
-def initialise_ksb_training_table(size=None,
-                                  optional_columns=None,
-                                  init_cols=None,):
-    """
-        @brief Initialise a galaxy population table.
-
-        @return ksb_training_table <astropy.Table>
-    """
-
-    if optional_columns is None:
-        optional_columns = []
-    else:
-        # Check all optional columns are valid
-        for colname in optional_columns:
-            if colname not in tf.all:
-                raise ValueError("Invalid optional column name: " + colname)
-
-    ksb_training_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
-
-    ksb_training_table.meta = make_ksb_training_table_header()
-
-    assert is_in_format(ksb_training_table, tf)
-
-    return ksb_training_table

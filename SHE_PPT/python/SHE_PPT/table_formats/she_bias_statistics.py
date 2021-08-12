@@ -27,7 +27,7 @@ from SHE_PPT.constants.classes import ShearEstimationMethods
 import numpy as np
 
 
-from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL, EXTNAME_LABEL
+from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL
 from ..logging import getLogger
 from ..math import LinregressStatistics, LinregressResults, BiasMeasurements
 from ..table_utility import is_in_format, init_table, SheTableFormat
@@ -116,6 +116,13 @@ class SheBiasStatisticsFormat(SheTableFormat):
         self.xym2 = self.set_column_properties("XY2", dtype=">f4", fits_dtype="E")
 
         self._finalize_init()
+
+    @staticmethod
+    def init_table(*args, **kwargs):
+        """ Bound alias to the free table initialisation function, using this table format.
+        """
+
+        return initialise_bias_statistics_table(*args, **kwargs)
 
 
 # Define an instance of this object that can be imported
