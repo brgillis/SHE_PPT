@@ -237,7 +237,13 @@ def output_tables(otable, file_name_base, output_format):
         otable.write(fits_file_name, format='fits', overwrite=True)
 
 
-def init_table(tf, size=None, optional_columns=None, init_cols=None,):
+def init_table(tf: "SheTableFormat",
+               size: Optional[int] = None,
+               optional_columns: Optional[List[str]] = None,
+               init_cols: Optional[List[Column]] = None,
+               **kwargs: str):
+    """ Initializes a table with a given format, without any metadata.
+    """
 
     if optional_columns is None:
         optional_columns = []
@@ -347,6 +353,23 @@ class SheTableMeta():
 
         # Set self.all as a list of columns in the desired order
         self.all = list(self.comments.keys())
+
+    def init_meta(self,
+                  **kwargs: str):
+        """ Initializes a metadata object for a table as an OrderedDict, passing the kwargs to this function
+            to the header values corresponding to the attributes of this class.
+        """
+
+        m = OrderedDict()
+
+        for attr in kwargs:
+            try:
+                m[getattr(self, attr)] = kwargs[attr]
+            except AttributeError:
+                raise ValueError("kwargs passed to init_meta must be of the format {attr}={value}, where {attr} is "
+                                 "an attribute of the table format meta class.")
+
+        return m
 
 
 class SheTableFormat():
@@ -470,8 +493,20 @@ class SheTableFormat():
             if isinstance(val, str) and val in changed_column_names:
                 setattr(self, key, changed_column_names[val])
 
-    def init_table(self, *args, **kwargs):
-        """ Bound alias to the free init_table function, using this table format.
+    def init_table(self,
+                   size: Optional[int] = None,
+                   optional_columns: Optional[List[str]] = None,
+                   init_cols: Optional[List[Column]] = None,
+                   **kwargs):
+        """ Initializes a table with a given format. Any extra kwargs are assumed to refer to values to set in the header,
+            with the kwarg being the attribute of the table's meta class.
         """
 
-        return init_table(tf=self, *args, **kwargs)
+        t = init_table(tf=self,
+                       size=size,
+                       optional_columns=optional_columns,
+                       init_cols=init_cols)
+
+        t.meta = self.m.init_meta(**kwargs)
+
+        return t
