@@ -19,9 +19,8 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-08-04"
+__updated__ = "2021-08-12"
 
-from enum import Enum
 import os
 import re
 from typing import Any, List, Optional, Tuple, TypeVar, Union
@@ -34,6 +33,7 @@ from astropy.io.fits import TableHDU, HDUList
 from astropy.table import Table
 
 from . import detector as dtc
+from .constants.classes import AllowedEnum  # Imported here since this is where people will expect to find it
 from .logging import getLogger
 
 
@@ -226,20 +226,6 @@ def is_any_type_of_none(value: Any) -> bool:
     """Quick function to check if a value (which might be a string) is None or empty
     """
     return value in (None, "None", "", "data/None", "data/")
-
-
-class AllowedEnum(Enum):
-
-    @classmethod
-    def is_allowed_value(cls, value: str) -> bool:
-        return value in [item.value for item in cls]
-
-    @classmethod
-    def find_lower_value(cls, lower_value: str) -> "Optional[AllowedEnum]":
-        for item in cls:
-            if item.value.lower() == lower_value:
-                return item
-        return None
 
 
 T = TypeVar('T')

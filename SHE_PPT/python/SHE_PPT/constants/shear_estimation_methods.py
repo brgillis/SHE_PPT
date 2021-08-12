@@ -5,7 +5,7 @@
     Constants relating to shear estimation methods
 """
 
-__updated__ = "2021-08-11"
+__updated__ = "2021-08-12"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -25,7 +25,9 @@ from typing import List, Dict
 
 from astropy.table import Table
 
-from SHE_PPT.utility import AllowedEnum
+# Need to import ShearEstimationMethods first to avoid circular dependencies. We import explicitly to ensure it's
+# sorted to be imported first
+from SHE_PPT.constants.classes import ShearEstimationMethods
 
 from ..table_formats.she_ksb_measurements import tf as ksbm_tf
 from ..table_formats.she_ksb_tu_matched import tf as ksbtm_tf
@@ -35,13 +37,6 @@ from ..table_formats.she_momentsml_measurements import tf as mmlm_tf
 from ..table_formats.she_momentsml_tu_matched import tf as mmltm_tf
 from ..table_formats.she_regauss_measurements import tf as regm_tf
 from ..table_formats.she_regauss_tu_matched import tf as regtm_tf
-
-
-class ShearEstimationMethods(AllowedEnum):
-    KSB = "KSB"
-    REGAUSS = "REGAUSS"
-    MOMENTSML = "MomentsML"
-    LENSMC = "LensMC"
 
 
 D_SHEAR_ESTIMATION_METHOD_TABLE_FORMATS: Dict[ShearEstimationMethods, Table] = {

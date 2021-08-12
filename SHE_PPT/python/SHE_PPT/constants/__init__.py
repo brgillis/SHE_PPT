@@ -1,8 +1,8 @@
-""" @file shear_estimation_methods.py
+""" @file constants/__init__.py
 
     Created 6 Jan 2021
 
-    Module to contain constant values relating to the shear estimation methods
+    Module to contain constant values within SHE_PPT.
 """
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment

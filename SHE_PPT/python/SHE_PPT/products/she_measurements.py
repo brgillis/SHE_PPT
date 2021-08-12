@@ -21,7 +21,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-06-09"
+__updated__ = "2021-08-12"
 
 import ST_DM_DmUtils.DmUtils as dm_utils
 from ST_DM_HeaderProvider import GenericHeaderProvider as HeaderProvider
@@ -29,6 +29,7 @@ from ST_DataModelBindings.bas.imp.raw.stc_stub import polygonType
 from ST_DataModelBindings.dpd.she.measurements_stub import dpdSheMeasurements
 from ST_DataModelBindings.pro import she_stub as she_pro
 
+from ..constants.shear_estimation_methods import ShearEstimationMethods
 from ..file_io import read_xml_product, find_aux_file
 from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
 
@@ -44,9 +45,6 @@ def init():
     binding_class = dpdSheMeasurements
 
     # Add the data file name methods
-
-    binding_class.set_BFD_filename = __set_BFD_filename
-    binding_class.get_BFD_filename = __get_BFD_filename
 
     binding_class.set_KSB_filename = __set_KSB_filename
     binding_class.get_KSB_filename = __get_KSB_filename
@@ -71,23 +69,6 @@ def init():
     binding_class.has_files = True
 
 
-def __set_BFD_filename(self, filename):
-    if filename is None:
-        if hasattr(self.Data, "BfdMoments"):
-            self.Data.BfdMoments = None
-    else:
-        if not hasattr(self.Data, "BfdMoments") or self.Data.BfdMoments is None:
-            self.Data.BfdMoments = create_bfd_moments(filename)
-        set_data_filename_of_product(self, filename, "BfdMoments.DataStorage")
-
-
-
-def __get_BFD_filename(self):
-    if not hasattr(self.Data, "BfdMoments") or self.Data.BfdMoments is None:
-        return None
-    return get_data_filename_from_product(self, "BfdMoments.DataStorage")
-
-
 def __set_KSB_filename(self, filename):
     if filename is None:
         if hasattr(self.Data, "KsbShearMeasurements"):
@@ -96,7 +77,6 @@ def __set_KSB_filename(self, filename):
         if not hasattr(self.Data, "KsbShearMeasurements") or self.Data.KsbShearMeasurements is None:
             self.Data.KsbShearMeasurements = create_ksb_estimates(filename)
         set_data_filename_of_product(self, filename, "KsbShearMeasurements.DataStorage")
-
 
 
 def __get_KSB_filename(self):
@@ -113,7 +93,6 @@ def __set_LensMC_filename(self, filename):
         if not hasattr(self.Data, "LensMcShearMeasurements") or self.Data.LensMcShearMeasurements is None:
             self.Data.LensMcShearMeasurements = create_lensmc_estimates(filename)
         set_data_filename_of_product(self, filename, "LensMcShearMeasurements.DataStorage")
-
 
 
 def __get_LensMC_filename(self):
@@ -148,7 +127,6 @@ def __set_REGAUSS_filename(self, filename):
         set_data_filename_of_product(self, filename, "RegaussShearMeasurements.DataStorage")
 
 
-
 def __get_REGAUSS_filename(self):
     if not hasattr(self.Data, "RegaussShearMeasurements") or self.Data.RegaussShearMeasurements is None:
         return None
@@ -157,8 +135,7 @@ def __get_REGAUSS_filename(self):
 
 def __get_all_filenames(self):
 
-    all_filenames = [self.get_BFD_filename(),
-                     self.get_KSB_filename(),
+    all_filenames = [self.get_KSB_filename(),
                      self.get_LensMC_filename(),
                      self.get_MomentsML_filename(),
                      self.get_REGAUSS_filename(), ]
@@ -168,16 +145,14 @@ def __get_all_filenames(self):
 
 def __get_method_filename(self, method):
 
-    if method == "KSB":
+    if method == ShearEstimationMethods.KSB:
         name = self.get_KSB_filename()
-    elif method == "LensMC":
+    elif method == ShearEstimationMethods.LENSMC:
         name = self.get_LensMC_filename()
-    elif method == "MomentsML":
+    elif method == ShearEstimationMethods.MOMENTSML:
         name = self.get_MomentsML_filename()
-    elif method == "REGAUSS":
+    elif method == ShearEstimationMethods.REGAUSS:
         name = self.get_REGAUSS_filename()
-    elif method == "BFD":
-        name = self.get_BFD_filename()
     else:
         raise ValueError("Invalid method " + str(method) + ".")
     return name
@@ -185,16 +160,14 @@ def __get_method_filename(self, method):
 
 def __set_method_filename(self, method, filename):
 
-    if method == "KSB":
+    if method == ShearEstimationMethods.KSB:
         name = self.set_KSB_filename(filename)
-    elif method == "LensMC":
+    elif method == ShearEstimationMethods.LENSMC:
         name = self.set_LensMC_filename(filename)
-    elif method == "MomentsML":
+    elif method == ShearEstimationMethods.MOMENTSML:
         name = self.set_MomentsML_filename(filename)
-    elif method == "REGAUSS":
+    elif method == ShearEstimationMethods.REGAUSS:
         name = self.set_REGAUSS_filename(filename)
-    elif method == "BFD":
-        name = self.set_BFD_filename(filename)
     else:
         raise ValueError("Invalid method " + str(method) + ".")
     return name
@@ -227,7 +200,6 @@ def __set_spatial_footprint(self, p):
     self.Data.SpatialCoverage.Polygon = poly
 
 
-
 def __get_spatial_footprint(self):
     """ Get the spatial footprint as a polygonType object.
     """
@@ -235,8 +207,7 @@ def __get_spatial_footprint(self):
     return self.Data.CatalogCoverage.SpatialCoverage.Polygon
 
 
-def create_dpd_she_measurements(BFD_filename=None,
-                                KSB_filename=None,
+def create_dpd_she_measurements(KSB_filename=None,
                                 LensMC_filename=None,
                                 MomentsML_filename=None,
                                 REGAUSS_filename=None,
@@ -252,7 +223,6 @@ def create_dpd_she_measurements(BFD_filename=None,
     # other things)
     dpd_she_measurements.Header = HeaderProvider.create_generic_header("DpdSheMeasurements")
 
-    __set_BFD_filename(dpd_she_measurements, BFD_filename)
     __set_KSB_filename(dpd_she_measurements, KSB_filename)
     __set_LensMC_filename(dpd_she_measurements, LensMC_filename)
     __set_MomentsML_filename(dpd_she_measurements, MomentsML_filename)
@@ -265,22 +235,6 @@ def create_dpd_she_measurements(BFD_filename=None,
 
 # Add a useful alias
 create_she_measurements_product = create_dpd_she_measurements
-
-
-def create_bfd_moments(filename):
-    """
-        @TODO fill in docstring
-    """
-
-    BFD_shear_estimates = she_pro.sheBfdMoments()
-
-    BFD_shear_estimates.DataStorage = dm_utils.create_fits_storage(she_pro.sheBfdMomentsFile,
-                                                                   filename,
-                                                                   "she.bfdMoments",
-                                                                   "8.0")
-    BFD_shear_estimates.Valid = "VALID"
-
-    return BFD_shear_estimates
 
 
 def create_ksb_estimates(filename):

@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2021-08-10"
+__updated__ = "2021-08-12"
 
 import os
 
@@ -27,9 +27,6 @@ import pytest
 
 from SHE_PPT import magic_values as mv
 from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf, initialise_mer_final_catalog
-from SHE_PPT.table_formats.she_bfd_bias_statistics import tf as bfdb_tf, initialise_bfd_bias_statistics_table
-from SHE_PPT.table_formats.she_bfd_moments import tf as bfdm_tf, initialise_bfd_moments_table
-from SHE_PPT.table_formats.she_bfd_training import tf as bfdt_tf, initialise_bfd_training_table
 from SHE_PPT.table_formats.she_bias_statistics import tf as bs_tf, initialise_bias_statistics_table
 from SHE_PPT.table_formats.she_common_calibration import tf as cc_tf, initialise_common_calibration_table
 from SHE_PPT.table_formats.she_galaxy_population_priors import tf as gpp_tf, initialise_galaxy_population_priors_table
@@ -83,10 +80,7 @@ class TestTableFormats:
     @classmethod
     def setup_class(cls):
         # Define a list of the table formats we'll be testing
-        cls.formats_and_initializers = [(bfdb_tf, initialise_bfd_bias_statistics_table),
-                                        (bfdm_tf, initialise_bfd_moments_table),
-                                        (bfdt_tf, initialise_bfd_training_table),
-                                        (bs_tf, initialise_bias_statistics_table),
+        cls.formats_and_initializers = [(bs_tf, initialise_bias_statistics_table),
                                         (cc_tf, initialise_common_calibration_table),
                                         (gpp_tf, initialise_galaxy_population_priors_table),
                                         (ksbm_tf, initialise_ksb_measurements_table),

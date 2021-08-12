@@ -4,6 +4,16 @@
 
     Format definition for tables containing shear bias statistics.
 """
+from collections import OrderedDict
+
+from SHE_PPT.constants.classes import ShearEstimationMethods
+import numpy as np
+
+from .. import magic_values as mv
+from ..logging import getLogger
+from ..math import LinregressStatistics, LinregressResults, BiasMeasurements
+from ..table_utility import is_in_format, init_table, SheTableFormat
+
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -18,18 +28,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
-
-__updated__ = "2021-02-10"
-
-from collections import OrderedDict
-
-import numpy as np
-
-from .. import magic_values as mv
-from ..logging import getLogger
-from ..math import LinregressStatistics, LinregressResults, BiasMeasurements
-from ..table_formats.she_bfd_bias_statistics import tf as bfdtf
-from ..table_utility import is_in_format, init_table, SheTableFormat
+__updated__ = "2021-08-12"
 
 
 fits_version = "8.0"
@@ -154,10 +153,12 @@ def make_bias_statistics_table_header(ID=None,
     header[tf.m.fits_def] = fits_def
 
     header[tf.m.ID] = str(ID)
-    if method in ('KSB', 'REGAUSS', 'MomentsML', 'LensMC', 'Unspecified'):
+    if method in ShearEstimationMethods:
+        header[tf.m.method] = method.value
+    elif method == 'Unspecified':
         header[tf.m.method] = method
     else:
-        raise TypeError("method must be 'KSB', 'REGAUSS', 'MomentsML', or 'LensMC', or else 'Unspecified'")
+        raise TypeError("method must be in ShearEstimationMethods, or else 'Unspecified'")
 
     if g1_bias_measurements is None:
         header[tf.m.m1] = ""
@@ -443,7 +444,7 @@ def get_bias_measurements(table):
 
     Parameters
     ----------
-    table : astropy.table.Table (in bias_statistics or bfd_bias_statistics format)
+    table : astropy.table.Table (in bias_statistics format)
 
     Return
     ------
@@ -451,10 +452,9 @@ def get_bias_measurements(table):
 
     """
 
-    if not (is_in_format(table, tf, ignore_metadata=True, strict=False) or
-            is_in_format(table, bfdtf, ignore_metadata=True, strict=False)):
+    if not (is_in_format(table, tf, ignore_metadata=True, strict=False)):
         raise ValueError(
-            "table must be in bias_statistics or bfd_bias_statistics format for get_bias_measurements method")
+            "table must be in bias_statistics format for get_bias_measurements method")
 
     # Get g1 bias measurements
 

@@ -5,7 +5,7 @@
     Misc. utility functions for the pipeline.
 """
 
-__updated__ = "2021-08-09"
+__updated__ = "2021-08-12"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -27,7 +27,7 @@ import json.decoder
 import os
 from pickle import UnpicklingError
 from shutil import copyfile
-from typing import Any, Dict, Tuple, Union, Type, Optional
+from typing import Any, Dict, Tuple, Union, Type, Optional, List
 from xml.sax._exceptions import SAXParseException
 
 import numpy as np
@@ -357,66 +357,23 @@ def archive_product(product_filename: str,
                        str(e))
 
 
-def read_analysis_config(config_filename: str,
-                         workdir: str = ".",
-                         parsed_args: Optional[Dict[str, Any]] = None,
-                         defaults: Optional[Dict[str, Any]] = None) -> Dict[ConfigKeys, Any]:
-    """ Reads in a configuration file for the SHE Analysis pipeline to a dictionary. Note that all arguments will
-        be read as strings.
-
-        Parameters
-        ----------
-        config_filename : string
-            The workspace-relative name of the config file.
-        workdir : string
-            The working directory.
-        parsed_args : Dict[str, Any]
-            Dict of config keys giving values passed at the command line. If these aren't None, they will override
-            values in the config file
-        defaults : Dict[str, Any]
-            Dict of default values to use if no value (or None) is supplied in the config and no value (or None) is
-            supplied in the parsed_args.
+def read_analysis_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
+    """ Reads in a configuration file for the SHE Analysis pipeline to a dictionary.
     """
 
-    return read_config(config_filename=config_filename,
-                       workdir=workdir,
-                       config_keys=AnalysisConfigKeys,
-                       parsed_args=parsed_args,
-                       defaults=defaults)
+    return read_config(config_keys=AnalysisConfigKeys,
+                       *args, **kwargs)
 
 
-def read_calibration_config(config_filename: str,
-                            workdir: str = ".",
-                            parsed_args: Optional[Dict[str, Any]] = None,
-                            defaults: Optional[Dict[str, Any]] = None) -> Dict[ConfigKeys, Any]:
-    """ Reads in a configuration file for the SHE Calibration pipeline to a dictionary. Note that all arguments will
-        be read as strings.
-
-        Parameters
-        ----------
-        config_filename : string
-            The workspace-relative name of the config file.
-        workdir : string
-            The working directory.
-        parsed_args : Dict[str, Any]
-            Dict of config keys giving values passed at the command line. If these aren't None, they will override
-            values in the config file
-        defaults : Dict[str, Any]
-            Dict of default values to use if no value (or None) is supplied in the config and no value (or None) is
-            supplied in the parsed_args.
+def read_calibration_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
+    """ Reads in a configuration file for the SHE Calibration pipeline to a dictionary.
     """
 
-    return read_config(config_filename=config_filename,
-                       workdir=workdir,
-                       config_keys=CalibrationConfigKeys,
-                       parsed_args=parsed_args,
-                       defaults=defaults)
+    return read_config(config_keys=CalibrationConfigKeys,
+                       *args, **kwargs)
 
 
-def read_reconciliation_config(config_filename: str,
-                               workdir: str = ".",
-                               parsed_args: Optional[Dict[str, Any]] = None,
-                               defaults: Optional[Dict[str, Any]] = None) -> Dict[ConfigKeys, Any]:
+def read_reconciliation_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
     """ Reads in a configuration file for the SHE Reconciliation pipeline to a dictionary. Note that all arguments will
         be read as strings.
 
@@ -434,11 +391,8 @@ def read_reconciliation_config(config_filename: str,
             supplied in the parsed_args.
     """
 
-    return read_config(config_filename=config_filename,
-                       workdir=workdir,
-                       config_keys=ReconciliationConfigKeys,
-                       parsed_args=parsed_args,
-                       defaults=defaults)
+    return read_config(config_keys=ReconciliationConfigKeys,
+                       *args, **kwargs)
 
 
 def read_config(config_filename: str,
@@ -847,12 +801,102 @@ def write_config(config_dict: Dict[ConfigKeys, Any],
         # Write out each entry in a line
         for enum_key in config_dict:
             _check_enum_key_is_valid(enum_key, config_keys)
-            config_file.write(f"{enum_key.value} = {config_dict[enum_key]}\n")
+
+            # Get the value, and check if it's an enum. If so, print the value instead of the string repr
+            value = config_dict[enum_key]
+            try:
+                value = value.value
+            except AttributeError:
+                pass
+
+            config_file.write(f"{enum_key.value} = {value}\n")
 
 
-def _convert_enum(pipeline_config: Dict[ConfigKeys, Any],
-                  enum_key: ConfigKeys,
-                  enum_type: AllowedEnum) -> None:
+def _get_converted_enum_type(value: str, enum_type: EnumMeta):
+    """ Gets and retuns the value converted to a desired type of Enum, assuming it's originally the string value of
+        that Enum.
+    """
+
+    # Check if it's already been converted to the proper type
+    if isinstance(value, enum_type):
+        return value
+
+    value_lower = value.lower()
+    enum_value = enum_type.find_lower_value(value_lower)
+    if not enum_value:
+        err_string = f"Config option {value} for is not recognized as type {enum_type}. Allowed options are:"
+        for allowed_option in enum_type:
+            err_string += "\n  " + allowed_option.value
+
+        raise ValueError(err_string)
+    return enum_value
+
+
+def _get_converted_type(value: str, desired_type: Type):
+    """ Gets and retuns the value converted to a desired type.
+    """
+
+    # Check if it's already been converted
+    if not isinstance(value, str):
+        if isinstance(value, desired_type):
+            return value
+        try:
+            return desired_type(value)
+        except TypeError:
+            raise TypeError(f"Value {value} cannot be converted to type {desired_type}.")
+
+    # Special handling for certain types
+    if desired_type is bool:
+        # Booleans will always convert a string to True unless it's empty, so we check the value of the string here
+        converted_value = value.lower() in ['true', 't']
+
+    elif desired_type is np.ndarray:
+        # Convert space-separated lists into arrays of floats
+        values_list = list(map(float, value.strip().split()))
+        converted_value = np.array(values_list, dtype=float)
+
+    else:
+        converted_value = desired_type(value)
+
+    return converted_value
+
+
+def _convert_tuple_type(pipeline_config: Dict[ConfigKeys, Any],
+                        enum_key: ConfigKeys,
+                        tuple_type: Tuple[Type, Type]) -> None:
+    """ Converts a type expressed as a tuple. Currently the only format accepted is where index 0 is list
+        and index 1 is the type of the list elements.
+    """
+
+    # Skip if not present in the config
+    if not enum_key in pipeline_config:
+        return
+
+    if not tuple_type[0] == list:
+        raise ValueError("Type conversion only accepts list as the first argument to tuple types at present.")
+
+    # Get the type to convert to, and the function to handle conversion
+    desired_type: Type = tuple_type[1]
+    if issubclass(desired_type, AllowedEnum):
+        convert_func = _get_converted_enum_type
+    else:
+        convert_func = _get_converted_type
+
+    # Split the list by whitespace
+    l_str_values: List[str] = pipeline_config[enum_key].strip().split()
+
+    # Convert each item in the list in turn
+    l_values: Any = [None] * len(l_str_values)
+    for i in range(len(l_str_values)):
+        l_values[i] = convert_func(l_str_values[i], desired_type)
+
+    # Update the pipeline config
+    pipeline_config[enum_key] = l_values
+
+
+def _convert_enum_type(pipeline_config: Dict[ConfigKeys, Any],
+                       enum_key: ConfigKeys,
+                       enum_type: AllowedEnum) -> None:
     """ Checks that the value in the pipeline_config is properly a value of the given enum_type,
         and sets the entry in the pipeline_config to the proper enum.
     """
@@ -864,18 +908,7 @@ def _convert_enum(pipeline_config: Dict[ConfigKeys, Any],
     # Check that the value is in the enum (silently convert to lower case)
     value = pipeline_config[enum_key]
 
-    # Check if it's already been converted to the proper type
-    if isinstance(value, enum_type):
-        return
-
-    value_lower = value.lower()
-    enum_value = enum_type.find_lower_value(value_lower)
-    if not enum_value:
-        err_string = f"Config option {pipeline_config[enum_key]} for key {enum_key} is not recognized. Allowed options are:"
-        for allowed_option in enum_type:
-            err_string += "\n  " + allowed_option.value
-
-        raise ValueError(err_string)
+    enum_value = _get_converted_enum_type(value, enum_type)
 
     # Set enum_value
     pipeline_config[enum_key] = enum_value
@@ -892,29 +925,9 @@ def _convert_type(pipeline_config: Dict[ConfigKeys, Any],
 
     value = pipeline_config[enum_key]
 
-    # Check if it's already been converted
-    if not isinstance(value, str):
-        if isinstance(value, desired_type):
-            return
-        try:
-            # It's not a string or the desired type, but see if we can coerce it
-            pipeline_config[enum_key] = desired_type(value)
-            return
-        except TypeError:
-            raise TypeError(f"Value {value} of type {type(value)} cannot be converted to type {desired_type}.")
+    converted_value = _get_converted_type(value, desired_type)
 
-    # Special handling for certain types
-    if desired_type is bool:
-        # Booleans will always convert a string to True unless it's empty, so we check the value of the string here
-        pipeline_config[enum_key] = value.lower() in ['true', 't']
-
-    elif desired_type is np.ndarray:
-        # Convert space-separated lists into arrays of floats
-        values_list = list(map(float, value.strip().split()))
-        pipeline_config[enum_key] = np.array(values_list, dtype=float)
-
-    else:
-        pipeline_config[enum_key] = desired_type(value)
+    pipeline_config[enum_key] = converted_value
 
 
 def convert_config_types(pipeline_config: Dict[ConfigKeys, str],
@@ -928,9 +941,11 @@ def convert_config_types(pipeline_config: Dict[ConfigKeys, str],
 
     # Convert values
     for key, desired_type in d_types.items():
-        # Use special handling for enum types
-        if issubclass(desired_type, AllowedEnum):
-            _convert_enum(pipeline_config, key, desired_type)
+        # Use special handling for types expressed as tuples and enum types
+        if isinstance(desired_type, tuple):
+            _convert_tuple_type(pipeline_config, key, desired_type)
+        elif issubclass(desired_type, AllowedEnum):
+            _convert_enum_type(pipeline_config, key, desired_type)
         else:
             _convert_type(pipeline_config, key, desired_type)
 

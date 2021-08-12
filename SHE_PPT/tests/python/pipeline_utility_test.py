@@ -18,13 +18,14 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2021-08-03"
+__updated__ = "2021-08-12"
 
 import os
 
 import pytest
 
 from SHE_PPT import products
+from SHE_PPT.constants.shear_estimation_methods import ShearEstimationMethods
 from SHE_PPT.file_io import write_xml_product, read_xml_product, write_listfile
 from SHE_PPT.pipeline_utility import (read_analysis_config, write_analysis_config,
                                       read_reconciliation_config, write_reconciliation_config,
@@ -62,7 +63,11 @@ class TestUtility:
 
         # Test we get out of the file what we put in, for each type of configuration file
 
-        test_analysis_dict = {AnalysisConfigKeys.ES_METHODS: "KSB", AnalysisConfigKeys.OID_BATCH_SIZE: "26"}
+        test_analysis_dict = {AnalysisConfigKeys.ES_METHODS: ShearEstimationMethods.KSB,
+                              AnalysisConfigKeys.OID_BATCH_SIZE: "26"}
+
+        test_analysis_type_dict = {AnalysisConfigKeys.ES_METHODS: (list, ShearEstimationMethods),
+                                   AnalysisConfigKeys.OID_BATCH_SIZE: int}
 
         write_analysis_config(test_analysis_dict, test1_filename, workdir=self.workdir)
 
@@ -70,11 +75,13 @@ class TestUtility:
         write_listfile(os.path.join(self.workdir, lf1_filename), [test1_filename])
         write_listfile(os.path.join(self.workdir, lf2_filename), [test1_filename, test1_filename])
 
-        read_dict1 = read_analysis_config(test1_filename, workdir=self.workdir)
+        read_dict1 = read_analysis_config(test1_filename,
+                                          workdir=self.workdir,
+                                          d_types=test_analysis_type_dict)
 
         # Check it's been read in correctly
-        assert read_dict1[AnalysisConfigKeys.ES_METHODS] == "KSB"
-        assert read_dict1[AnalysisConfigKeys.OID_BATCH_SIZE] == "26"
+        assert read_dict1[AnalysisConfigKeys.ES_METHODS] == [ShearEstimationMethods.KSB]
+        assert read_dict1[AnalysisConfigKeys.OID_BATCH_SIZE] == 26
 
         # Check we get expected results from trying to read in other variants
 
@@ -83,7 +90,9 @@ class TestUtility:
         assert read_analysis_config("None", workdir=self.workdir) == {}
 
         assert read_analysis_config(lf0_filename, workdir=self.workdir) == {}
-        assert read_analysis_config(lf1_filename, workdir=self.workdir) == read_dict1
+        assert read_analysis_config(lf1_filename,
+                                    workdir=self.workdir,
+                                    d_types=test_analysis_type_dict) == read_dict1
         with pytest.raises(ValueError):
             read_analysis_config(lf2_filename, workdir=self.workdir)
 
@@ -115,8 +124,11 @@ class TestUtility:
 
         # Test we get out of the file what we put in, for each type of configuration file
 
-        test_calibration_dict = {CalibrationConfigKeys.ES_METHODS: "KSB",
-                                 CalibrationConfigKeys.CBM_CLEANUP: "False"}
+        test_calibration_dict = {CalibrationConfigKeys.ES_METHODS: ShearEstimationMethods.KSB,
+                                 CalibrationConfigKeys.CBM_CLEANUP: False}
+
+        test_calibration_type_dict = {CalibrationConfigKeys.ES_METHODS: (list, ShearEstimationMethods),
+                                      CalibrationConfigKeys.CBM_CLEANUP: bool}
 
         write_calibration_config(test_calibration_dict, test1_filename, workdir=self.workdir)
 
@@ -124,11 +136,13 @@ class TestUtility:
         write_listfile(os.path.join(self.workdir, lf1_filename), [test1_filename])
         write_listfile(os.path.join(self.workdir, lf2_filename), [test1_filename, test1_filename])
 
-        read_dict1 = read_calibration_config(test1_filename, workdir=self.workdir)
+        read_dict1 = read_calibration_config(test1_filename,
+                                             workdir=self.workdir,
+                                             d_types=test_calibration_type_dict)
 
         # Check it's been read in correctly
-        assert read_dict1[CalibrationConfigKeys.ES_METHODS] == "KSB"
-        assert read_dict1[CalibrationConfigKeys.CBM_CLEANUP] == "False"
+        assert read_dict1[CalibrationConfigKeys.ES_METHODS] == [ShearEstimationMethods.KSB]
+        assert read_dict1[CalibrationConfigKeys.CBM_CLEANUP] == False
 
         # Check we get expected results from trying to read in other variants
 
@@ -137,7 +151,9 @@ class TestUtility:
         assert read_calibration_config("None", workdir=self.workdir) == {}
 
         assert read_calibration_config(lf0_filename, workdir=self.workdir) == {}
-        assert read_calibration_config(lf1_filename, workdir=self.workdir) == read_dict1
+        assert read_calibration_config(lf1_filename,
+                                       workdir=self.workdir,
+                                       d_types=test_calibration_type_dict) == read_dict1
         with pytest.raises(ValueError):
             read_calibration_config(lf2_filename, workdir=self.workdir)
 
@@ -151,12 +167,16 @@ class TestUtility:
                      f"\n"
                      f"{AnalysisConfigKeys.REMAP_NUM_SWARP_THREADS_EXP.value}=4 #==2\n")
 
-        read_dict2 = read_analysis_config(test2_filename, workdir=self.workdir)
+        read_dict2 = read_analysis_config(test2_filename, workdir=self.workdir,
+                                          d_types={AnalysisConfigKeys.ES_METHODS: (list, ShearEstimationMethods),
+                                                   AnalysisConfigKeys.OID_BATCH_SIZE: int,
+                                                   AnalysisConfigKeys.REMAP_NUM_THREADS_EXP: int,
+                                                   AnalysisConfigKeys.REMAP_NUM_SWARP_THREADS_EXP: int, })
 
-        assert read_dict2[AnalysisConfigKeys.ES_METHODS] == "KSB"
-        assert read_dict2[AnalysisConfigKeys.OID_BATCH_SIZE] == "26"
-        assert read_dict2[AnalysisConfigKeys.REMAP_NUM_THREADS_EXP] == "8"
-        assert read_dict2[AnalysisConfigKeys.REMAP_NUM_SWARP_THREADS_EXP] == "4"
+        assert read_dict2[AnalysisConfigKeys.ES_METHODS] == [ShearEstimationMethods.KSB]
+        assert read_dict2[AnalysisConfigKeys.OID_BATCH_SIZE] == 26
+        assert read_dict2[AnalysisConfigKeys.REMAP_NUM_THREADS_EXP] == 8
+        assert read_dict2[AnalysisConfigKeys.REMAP_NUM_SWARP_THREADS_EXP] == 4
         assert "ignore this" not in read_dict2
 
     def test_get_conditional_product(self):
