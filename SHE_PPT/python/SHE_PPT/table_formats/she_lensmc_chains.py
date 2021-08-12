@@ -68,27 +68,27 @@ class SheLensMcChainsMeta(SheTableMeta):
     method: str = "SEMETHOD"
     len_chain: str = "LCHAIN"
 
-    self.valid = VALID_LABEL
+    valid = VALID_LABEL
 
     def __init__(self):
 
         # Store the less-used comments in a dict
-        super().init(comments=OrderedDict(((self.fits_version, None),
-                                           (self.fits_def, None),
-                                           (self.fits_version, None),
-                                           (self.fits_def, None),
-                                           (self.she_flag_version, None),
-                                           (self.model_hash, None),
-                                           (self.model_seed, None),
-                                           (self.noise_seed, None),
-                                           (self.observation_id, None),
-                                           (self.pointing_id, "List of pointing IDs"),
-                                           (self.observation_time, None),
-                                           (self.tile_id, None),
-                                           (self.method, "Shear estimation method used to generate these chains"),
-                                           (self.len_chain, None),
-                                           (self.valid, "0: Not tested; 1: Pass; -1: Fail")
-                                           )))
+        super().__init__(comments=OrderedDict(((self.fits_version, None),
+                                               (self.fits_def, None),
+                                               (self.fits_version, None),
+                                               (self.fits_def, None),
+                                               (self.she_flag_version, None),
+                                               (self.model_hash, None),
+                                               (self.model_seed, None),
+                                               (self.noise_seed, None),
+                                               (self.observation_id, None),
+                                               (self.pointing_id, "List of pointing IDs"),
+                                               (self.observation_time, None),
+                                               (self.tile_id, None),
+                                               (self.method, "Shear estimation method used to generate these chains"),
+                                               (self.len_chain, None),
+                                               (self.valid, "0: Not tested; 1: Pass; -1: Fail")
+                                               )))
 
 
 class SheLensMcChainsFormat(SheTableFormat):

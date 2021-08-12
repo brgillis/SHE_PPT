@@ -68,7 +68,7 @@ class ShePsfPdStateFormat(ShePsfStateFormat):
         self.id = self.set_column_properties(self,
                                              "OBJECT_ID", dtype=">i8", fits_dtype="K")
         self.chisq = self.set_column_properties(
-            f"SHE_PSF_{self.data_type}_CHISQ", dtype=">f4", fits_dtype="E")
+            f"SHE_PSF_{self._data_type}_CHISQ", dtype=">f4", fits_dtype="E")
 
         self._finalize_init()
 

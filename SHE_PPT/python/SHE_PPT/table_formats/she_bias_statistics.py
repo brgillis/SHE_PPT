@@ -30,7 +30,7 @@ import numpy as np
 from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL
 from ..logging import getLogger
 from ..math import LinregressStatistics, LinregressResults, BiasMeasurements
-from ..table_utility import is_in_format, init_table, SheTableFormat
+from ..table_utility import is_in_format, init_table, SheTableFormat, SheTableMeta
 
 fits_version = "8.0"
 fits_def = "she.biasStatistics"
@@ -38,7 +38,7 @@ fits_def = "she.biasStatistics"
 logger = getLogger(__name__)
 
 
-class SheBiasStatisticsMeta():
+class SheBiasStatisticsMeta(SheTableMeta):
     """
         @brief A class defining the metadata for bias statistics tables.
     """
@@ -68,20 +68,20 @@ class SheBiasStatisticsMeta():
     def __init__(self):
 
         # Store the less-used comments in a dict
-        super().init(comments=OrderedDict(((self.fits_version, None),
-                                           (self.fits_def, None),
-                                           (self.ID, None),
-                                           (self.method, "One of 'KSB', 'REGAUSS', 'MomentsML', or 'LensMC', or else 'Unspecified'."),
-                                           (self.m1, None),
-                                           (self.m1_err, None),
-                                           (self.c1, None),
-                                           (self.c1_err, None),
-                                           (self.m1c1_covar, None),
-                                           (self.m2, None),
-                                           (self.m2_err, None),
-                                           (self.c2, None),
-                                           (self.c2_err, None),
-                                           (self.m2c2_covar, None),)))
+        super().__init__(comments=OrderedDict(((self.fits_version, None),
+                                               (self.fits_def, None),
+                                               (self.ID, None),
+                                               (self.method, "One of 'KSB', 'REGAUSS', 'MomentsML', or 'LensMC', or else 'Unspecified'."),
+                                               (self.m1, None),
+                                               (self.m1_err, None),
+                                               (self.c1, None),
+                                               (self.c1_err, None),
+                                               (self.m1c1_covar, None),
+                                               (self.m2, None),
+                                               (self.m2_err, None),
+                                               (self.c2, None),
+                                               (self.c2_err, None),
+                                               (self.m2c2_covar, None),)))
 
 
 class SheBiasStatisticsFormat(SheTableFormat):

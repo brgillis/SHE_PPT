@@ -28,7 +28,7 @@ from EL_PythonUtils.utilities import hash_any
 from ..constants.fits import (FITS_VERSION_LABEL, FITS_DEF_LABEL, GAIN_LABEL, MODEL_HASH_LABEL,
                               MODEL_SEED_LABEL, NOISE_SEED_LABEL)
 from ..logging import getLogger
-from ..table_utility import is_in_format, init_table, SheTableFormat
+from ..table_utility import is_in_format, init_table, SheTableFormat, SheTableMeta
 
 
 fits_version = "8.0"
@@ -37,7 +37,7 @@ fits_def = "she.simulatedCatalog"
 logger = getLogger(__name__)
 
 
-class SheSimulatedCatalogMeta():
+class SheSimulatedCatalogMeta(SheTableMeta):
     """
         @brief A class defining the metadata for details tables.
     """

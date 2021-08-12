@@ -66,7 +66,7 @@ class ShePsfTmlStateFormat(ShePsfStateFormat):
         # Column names and info
 
         self.zer_ply_amp = self.set_column_properties(
-            "SHE_PSF_%s_ZNKPLYAMP" % self.data_type, dtype=">f4",
+            f"SHE_PSF_{self._data_type}_ZNKPLYAMP", dtype=">f4",
             fits_dtype="E", length=50)
 
         self._finalize_init()
