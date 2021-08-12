@@ -166,7 +166,7 @@ class TestTableFormats:
     def test_add_row(self):
         # Test that we can add a row through kwargs
 
-        tab = initialise_mer_final_catalog()
+        tab = mfc_tf.init_table()
 
         add_row(tab, **{mfc_tf.ID: 0, mfc_tf.gal_x_world: 0, mfc_tf.gal_y_world: 1})
 
@@ -196,8 +196,8 @@ class TestTableFormats:
 
         # Try to initialize the shear estimates table based on the detections table
 
-        _ = lmcm_tf.init_table(mer_final_catalog)
+        _ = lmcm_tf.init_table(mer_final_catalog=mer_final_catalog)
 
-        shear_chains_table = lmcc_tf.init_table(mer_final_catalog)
+        shear_chains_table = lmcc_tf.init_table(mer_final_catalog=mer_final_catalog)
 
         assert(shear_chains_table.meta[lmcc_tf.m.len_chain] == len_chain)

@@ -163,6 +163,13 @@ class SheLensMcChainsFormat(SheTableFormat):
 
         self._finalize_init()
 
+    @staticmethod
+    def init_table(*args, **kwargs):
+        """ Bound alias to the free table initialisation function, using this table format.
+        """
+
+        return initialise_lensmc_chains_table(*args, **kwargs)
+
 
 # Define an instance of this object that can be imported
 lensmc_chains_table_format = SheLensMcChainsFormat()

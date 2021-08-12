@@ -36,9 +36,7 @@ def _test_is_in_format(self):
     for tf in self.formats:
         empty_tables.append(tf.init_table())
 
-    assert len(self.initializers) == len(self.formats)
-
-    for i in range(len(self.initializers)):
+    for i in range(len(self.formats)):
 
         # Try strict test
         for j in range((len(self.formats))):
