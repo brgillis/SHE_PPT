@@ -24,13 +24,12 @@ __updated__ = "2021-08-13"
 # Boston, MA 02110-1301 USA
 
 import ST_DM_DmUtils.DmUtils as dm_utils
-from ST_DM_HeaderProvider import GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.reconciledmeasurements_stub import dpdSheReconciledMeasurements
 from ST_DataModelBindings.pro import she_stub as she_pro
 
 from ..constants.shear_estimation_methods import ShearEstimationMethods
-from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import init_binding_class, get_data_filename_from_product, set_data_filename_of_product
+from ..product_utility import (init_binding_class, get_data_filename_from_product, set_data_filename_of_product,
+                               create_measurements_product_from_template)
 
 
 sample_file_name = "SHE_PPT/sample_reconciled_shear_measurements.xml"
@@ -177,25 +176,16 @@ def create_dpd_she_reconciled_measurements(KSB_filename=None,
                                            MomentsML_filename=None,
                                            REGAUSS_filename=None,
                                            spatial_footprint=None):
+    """ Create a product of this type.
     """
-        @TODO fill in docstring
-    """
 
-    dpd_she_reconciled_measurements = read_xml_product(
-        find_aux_file(sample_file_name))
-
-    # Overwrite the header with a new one to update the creation date (among
-    # other things)
-    dpd_she_reconciled_measurements.Header = HeaderProvider.create_generic_header("DpdSheReconciledMeasurements")
-
-    _set_KSB_filename(dpd_she_reconciled_measurements, KSB_filename)
-    _set_LensMC_filename(dpd_she_reconciled_measurements, LensMC_filename)
-    _set_MomentsML_filename(dpd_she_reconciled_measurements, MomentsML_filename)
-    _set_REGAUSS_filename(dpd_she_reconciled_measurements, REGAUSS_filename)
-    if spatial_footprint is not None:
-        dpd_she_reconciled_measurements.set_spatial_footprint(spatial_footprint)
-
-    return dpd_she_reconciled_measurements
+    return create_measurements_product_from_template(template_filename=sample_file_name,
+                                                     product_name="DpdSheReconciledMeasurements",
+                                                     KSB_filename=KSB_filename,
+                                                     LensMC_filename=LensMC_filename,
+                                                     MomentsML_filename=MomentsML_filename,
+                                                     REGAUSS_filename=REGAUSS_filename,
+                                                     spatial_footprint=spatial_footprint)
 
 
 # Add a useful alias

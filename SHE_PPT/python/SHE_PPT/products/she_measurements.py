@@ -24,13 +24,12 @@ __updated__ = "2021-08-13"
 # Boston, MA 02110-1301 USA
 
 import ST_DM_DmUtils.DmUtils as dm_utils
-from ST_DM_HeaderProvider import GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.measurements_stub import dpdSheMeasurements
 from ST_DataModelBindings.pro import she_stub as she_pro
 
 from ..constants.shear_estimation_methods import ShearEstimationMethods
-from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import init_binding_class, get_data_filename_from_product, set_data_filename_of_product
+from ..product_utility import (init_binding_class, get_data_filename_from_product, set_data_filename_of_product,
+                               create_measurements_product_from_template)
 
 
 sample_file_name = "SHE_PPT/sample_shear_measurements.xml"
@@ -177,25 +176,16 @@ def create_dpd_she_measurements(KSB_filename=None,
                                 MomentsML_filename=None,
                                 REGAUSS_filename=None,
                                 spatial_footprint=None):
+    """ Create a product of this type.
     """
-        @TODO fill in docstring
-    """
 
-    dpd_she_measurements = read_xml_product(
-        find_aux_file(sample_file_name))
-
-    # Overwrite the header with a new one to update the creation date (among
-    # other things)
-    dpd_she_measurements.Header = HeaderProvider.create_generic_header("DpdSheMeasurements")
-
-    _set_KSB_filename(dpd_she_measurements, KSB_filename)
-    _set_LensMC_filename(dpd_she_measurements, LensMC_filename)
-    _set_MomentsML_filename(dpd_she_measurements, MomentsML_filename)
-    _set_REGAUSS_filename(dpd_she_measurements, REGAUSS_filename)
-    if spatial_footprint is not None:
-        dpd_she_measurements.set_spatial_footprint(spatial_footprint)
-
-    return dpd_she_measurements
+    return create_measurements_product_from_template(template_filename=sample_file_name,
+                                                     product_name="DpdSheMeasurements",
+                                                     KSB_filename=KSB_filename,
+                                                     LensMC_filename=LensMC_filename,
+                                                     MomentsML_filename=MomentsML_filename,
+                                                     REGAUSS_filename=REGAUSS_filename,
+                                                     spatial_footprint=spatial_footprint)
 
 
 # Add a useful alias
@@ -207,15 +197,15 @@ def create_ksb_estimates(filename):
         @TODO fill in docstring
     """
 
-    KSB_shear_estimates = she_pro.sheKsbMeasurements()
+    shear_estimates = she_pro.sheKsbMeasurements()
 
-    KSB_shear_estimates.DataStorage = dm_utils.create_fits_storage(she_pro.sheKsbMeasurementsFile,
-                                                                   filename,
-                                                                   "she.ksbMeasurements",
-                                                                   "8.0")
-    KSB_shear_estimates.Valid = "VALID"
+    shear_estimates.DataStorage = dm_utils.create_fits_storage(she_pro.sheKsbMeasurementsFile,
+                                                               filename,
+                                                               "she.ksbMeasurements",
+                                                               "8.0")
+    shear_estimates.Valid = "VALID"
 
-    return KSB_shear_estimates
+    return shear_estimates
 
 
 def create_lensmc_estimates(filename):
@@ -223,15 +213,15 @@ def create_lensmc_estimates(filename):
         @TODO fill in docstring
     """
 
-    LensMC_shear_estimates = she_pro.sheLensMcMeasurements()
+    shear_estimates = she_pro.sheLensMcMeasurements()
 
-    LensMC_shear_estimates.DataStorage = dm_utils.create_fits_storage(she_pro.sheLensMcMeasurementsFile,
-                                                                      filename,
-                                                                      "she.lensMcMeasurements",
-                                                                      "8.0")
-    LensMC_shear_estimates.Valid = "VALID"
+    shear_estimates.DataStorage = dm_utils.create_fits_storage(she_pro.sheLensMcMeasurementsFile,
+                                                               filename,
+                                                               "she.lensMcMeasurements",
+                                                               "8.0")
+    shear_estimates.Valid = "VALID"
 
-    return LensMC_shear_estimates
+    return shear_estimates
 
 
 def create_momentsml_estimates(filename):
@@ -239,15 +229,15 @@ def create_momentsml_estimates(filename):
         @TODO fill in docstring
     """
 
-    MomentsML_shear_estimates = she_pro.sheMomentsMlMeasurements()
+    shear_estimates = she_pro.sheMomentsMlMeasurements()
 
-    MomentsML_shear_estimates.DataStorage = dm_utils.create_fits_storage(she_pro.sheMomentsMlMeasurementsFile,
-                                                                         filename,
-                                                                         "she.momentsMlMeasurements",
-                                                                         "8.0")
-    MomentsML_shear_estimates.Valid = "VALID"
+    shear_estimates.DataStorage = dm_utils.create_fits_storage(she_pro.sheMomentsMlMeasurementsFile,
+                                                               filename,
+                                                               "she.momentsMlMeasurements",
+                                                               "8.0")
+    shear_estimates.Valid = "VALID"
 
-    return MomentsML_shear_estimates
+    return shear_estimates
 
 
 def create_regauss_estimates(filename):
@@ -255,12 +245,12 @@ def create_regauss_estimates(filename):
         @TODO fill in docstring
     """
 
-    REGAUSS_shear_estimates = she_pro.sheRegaussMeasurements()
+    shear_estimates = she_pro.sheRegaussMeasurements()
 
-    REGAUSS_shear_estimates.DataStorage = dm_utils.create_fits_storage(she_pro.sheRegaussMeasurementsFile,
-                                                                       filename,
-                                                                       "she.regaussMeasurements",
-                                                                       "8.0")
-    REGAUSS_shear_estimates.Valid = "VALID"
+    shear_estimates.DataStorage = dm_utils.create_fits_storage(she_pro.sheRegaussMeasurementsFile,
+                                                               filename,
+                                                               "she.regaussMeasurements",
+                                                               "8.0")
+    shear_estimates.Valid = "VALID"
 
-    return REGAUSS_shear_estimates
+    return shear_estimates

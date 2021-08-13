@@ -324,6 +324,8 @@ def create_product_from_template(template_filename,
                                  filename=None,
                                  data_filename=None,
                                  spatial_footprint=None):
+    """ Generic function to create a data product object, using a template file as a base.
+    """
 
     # Check input validity
     if filename and data_filename:
@@ -335,10 +337,33 @@ def create_product_from_template(template_filename,
     p = read_xml_product(find_aux_file(template_filename))
     p.Header = HeaderProvider.create_generic_header(product_name)
 
-    # Set the filename and spatial footprint
+    # Set the data_filename and spatial footprint
     if data_filename:
         p.set_data_filename(data_filename)
     if spatial_footprint:
         p.set_spatial_footprint(spatial_footprint)
+
+    return p
+
+
+def create_measurements_product_from_template(template_filename,
+                                              product_name,
+                                              KSB_filename=None,
+                                              LensMC_filename=None,
+                                              MomentsML_filename=None,
+                                              REGAUSS_filename=None,
+                                              spatial_footprint=None):
+    """ Function to create a data product object, using a template file as a base, specialized for shear measurements
+        products.
+    """
+
+    p = create_product_from_template(template_filename=template_filename,
+                                     product_name=product_name,
+                                     spatial_footprint=spatial_footprint)
+
+    p.set_KSB_filename(KSB_filename)
+    p.set_LensMC_filename(LensMC_filename)
+    p.set_MomentsML_filename(MomentsML_filename)
+    p.set_REGAUSS_filename(REGAUSS_filename)
 
     return p
