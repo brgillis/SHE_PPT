@@ -25,8 +25,7 @@ __updated__ = "2021-08-13"
 
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 
-from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import init_intermediate_general
+from ..product_utility import init_intermediate_general, create_general_product_from_template
 
 
 sample_file_name = 'SHE_PPT/sample_intermediate_general.xml'
@@ -41,26 +40,12 @@ def init():
 
 
 def create_dpd_she_simulation_config(filename=None):
+    """ Initialize a product of this type
     """
-        @TODO fill in docstring
-    """
 
-    dpd_she_simulation_config = read_xml_product(
-        find_aux_file(sample_file_name))
-
-    # Set the data we don't need to empty
-    dpd_she_simulation_config.Data.IntData = []
-    dpd_she_simulation_config.Data.FloatData = []
-
-    # Label the type in the StringData
-    dpd_she_simulation_config.Data.StringData = ["TYPE:DpdSheSimulationConfig"]
-
-    dpd_she_simulation_config.Header = HeaderProvider.create_generic_header("DpdSheIntermediateGeneral")
-
-    if filename:
-        dpd_she_simulation_config.set_data_filename(filename)
-
-    return dpd_she_simulation_config
+    return create_general_product_from_template(template_filename=sample_file_name,
+                                                product_name="DpdSheSimulationConfig",
+                                                filename=filename,)
 
 
 # Add a useful alias

@@ -383,6 +383,27 @@ def create_measurements_product_from_template(template_filename,
     return p
 
 
+def create_general_product_from_template(template_filename,
+                                         product_name,
+                                         filename=None,):
+    """ Function to create a data product object, using a template file as a base, specialized for shear measurements
+        products.
+    """
+
+    p = create_product_from_template(template_filename=template_filename,
+                                     product_name=product_name,
+                                     filename=filename)
+
+    # Set the data we don't need to empty
+    p.Data.IntData = []
+    p.Data.FloatData = []
+
+    # Label the type in the StringData
+    p.Data.StringData = [f"TYPE:{product_name}"]
+
+    return p
+
+
 def get_method_cc_name(method: ShearEstimationMethods):
     """ Get a Shear Estimation Method's name in both types of camel case.
     """

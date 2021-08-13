@@ -25,8 +25,7 @@ __updated__ = "2021-08-13"
 
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 
-from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import init_int_obs_cat
+from ..product_utility import init_int_obs_cat, create_general_product_from_template
 
 
 sample_file_name = 'SHE_PPT/sample_intermediate_observation_catalog.xml'
@@ -41,27 +40,13 @@ def init():
     init_int_obs_cat()
 
 
-def create_dpd_she_simulated_catalog(filename="None"):
+def create_dpd_she_simulated_catalog(filename=None):
+    """ Initialize a product of this type
     """
-        @TODO fill in docstring
-    """
 
-    dpd_she_simulated_catalog = read_xml_product(
-        find_aux_file(sample_file_name))
-
-    # Set the data we don't need to empty
-    dpd_she_simulated_catalog.Data.IntData = []
-    dpd_she_simulated_catalog.Data.FloatData = []
-
-    # Label the type in the StringData
-    dpd_she_simulated_catalog.Data.StringData = ["TYPE:DpdSheSimulatedCatalog"]
-
-    dpd_she_simulated_catalog.Header = HeaderProvider.create_generic_header("DpdSheIntermediateObservationCatalog")
-
-    if filename:
-        dpd_she_simulated_catalog.set_data_filename(filename)
-
-    return dpd_she_simulated_catalog
+    return create_general_product_from_template(template_filename=sample_file_name,
+                                                product_name="DpdSheIntermediateObservationCatalog",
+                                                filename=filename,)
 
 
 # Add a useful alias
