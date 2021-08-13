@@ -25,12 +25,10 @@ __updated__ = "2021-08-13"
 # Boston, MA 02110-1301 USA
 
 
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.ksbcalibration_stub import dpdSheKsbCalibration
 
-from ..file_io import read_xml_product, find_aux_file
 from ..product_utility import (get_all_filenames_just_data, set_data_filename_of_product,
-                               get_data_filename_from_product)
+                               get_data_filename_from_product, create_product_from_template)
 
 
 sample_file_name = "SHE_PPT/sample_ksb_calibration.xml"
@@ -63,22 +61,15 @@ def _get_filename(self):
     return get_data_filename_from_product(self, "KsbCalibrationFileList[0].DataStorage")
 
 
-def create_dpd_she_ksb_calibration(filename=None):
+def create_dpd_she_ksb_calibration(filename=None,
+                                   data_filename=None):
+    """ Creates a product of this type.
     """
-        @TODO fill in docstring
-    """
 
-    dpd_she_ksb_calibration = read_xml_product(
-        find_aux_file(sample_file_name))
-
-    # Overwrite the header with a new one to update the creation date (among
-    # other things)
-    dpd_she_ksb_calibration.Header = HeaderProvider.create_generic_header("DpdSheKsbCalibration")
-
-    if filename:
-        dpd_she_ksb_calibration.set_filename(filename)
-
-    return dpd_she_ksb_calibration
+    return create_product_from_template(template_filename=sample_file_name,
+                                        product_name="DpdSheKsbCalibration",
+                                        filename=filename,
+                                        data_filename=data_filename)
 
 
 # Add a useful alias

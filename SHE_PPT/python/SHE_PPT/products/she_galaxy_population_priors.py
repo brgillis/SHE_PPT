@@ -23,11 +23,10 @@ __updated__ = "2021-08-13"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.galaxypopulationpriors_stub import dpdSheGalaxyPopulationPriors
 
-from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import set_data_filename_of_product, get_data_filename_from_product
+from ..product_utility import (set_data_filename_of_product, get_data_filename_from_product,
+                               create_product_from_template)
 
 
 sample_file_name = "SHE_PPT/sample_galaxy_population_priors.xml"
@@ -72,19 +71,15 @@ def _get_all_filenames(self):
     return all_filenames
 
 
-def create_dpd_she_galaxy_population_priors(filename=None):
+def create_dpd_she_galaxy_population_priors(filename=None,
+                                            data_filename=None):
+    """ Creates a product of this type.
     """
-        @TODO fill in docstring
-    """
 
-    dpd_she_galaxy_population_priors = read_xml_product(find_aux_file(sample_file_name))
-
-    dpd_she_galaxy_population_priors.Header = HeaderProvider.create_generic_header("DpdSheGalaxyPopulationPriors")
-
-    if filename:
-        dpd_she_galaxy_population_priors.set_filename(filename)
-
-    return dpd_she_galaxy_population_priors
+    return create_product_from_template(template_filename=sample_file_name,
+                                        product_name="DpdSheGalaxyPopulationPriors",
+                                        filename=filename,
+                                        data_filename=data_filename)
 
 
 # Add a useful alias

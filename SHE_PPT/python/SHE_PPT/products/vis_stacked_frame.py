@@ -109,9 +109,9 @@ def _get_all_filenames(self):
     return all_filenames
 
 
-def create_dpd_vis_stacked_frame(data_filename="default_data_filename.fits",
-                                 bkg_filename="default_bkg_filename.fits",
-                                 wgt_filename="default_wgt_filename.fits"):
+def create_dpd_vis_stacked_frame(data_filename="None",
+                                 bkg_filename="None",
+                                 wgt_filename="None"):
     """
         @TODO fill in docstring
     """

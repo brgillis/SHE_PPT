@@ -23,11 +23,9 @@ __updated__ = "2021-08-13"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.psfmodelimage_stub import dpdShePsfModelImage
 
-from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import init_just_datastorage
+from ..product_utility import init_just_datastorage, create_product_from_template
 
 
 sample_file_name = "SHE_PPT/sample_psf_model_image.xml"
@@ -39,19 +37,15 @@ def init():
     init_just_datastorage(binding_class=dpdShePsfModelImage)
 
 
-def create_dpd_she_psf_model_image(filename="None"):
+def create_dpd_she_psf_model_image(filename=None,
+                                   data_filename=None):
+    """ Creates a product of this type.
     """
-        @TODO fill in docstring
-    """
 
-    dpd_she_psf_model_image = read_xml_product(find_aux_file(sample_file_name))
-
-    dpd_she_psf_model_image.Header = HeaderProvider.create_generic_header("DpdShePsfModelImage")
-
-    if filename:
-        dpd_she_psf_model_image.set_filename(filename)
-
-    return dpd_she_psf_model_image
+    return create_product_from_template(template_filename=sample_file_name,
+                                        product_name="DpdShePsfModelImage",
+                                        filename=filename,
+                                        data_filename=data_filename)
 
 
 # Add a useful alias

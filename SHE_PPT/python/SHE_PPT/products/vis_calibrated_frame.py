@@ -112,10 +112,10 @@ def _get_all_filenames(self):
     return all_filenames
 
 
-def create_dpd_vis_calibrated_frame(data_filename='',
-                                    psf_filename='',
-                                    bkg_filename='',
-                                    wgt_filename=''):
+def create_dpd_vis_calibrated_frame(data_filename="None",
+                                    psf_filename="None",
+                                    bkg_filename="None",
+                                    wgt_filename="None"):
     """
         @TODO fill in docstring
     """

@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2021-08-12"
+__updated__ = "2021-08-13"
 
 from astropy.io import fits
 import pytest
@@ -42,8 +42,6 @@ class TestMosaicProduct(object):
 
         # Check that it validates the schema
         product.validateBinding()
-
-        return
 
     def test_xml_writing_and_reading(self, tmpdir):
 
@@ -76,9 +74,9 @@ class TestMosaicProduct(object):
         # Check that it raises exceptions when expected
 
         with pytest.raises(RuntimeError):
-            mosaic_hdu = prod.load_mosaic_hdu(filename="bad_filename.junk")
+            _ = prod.load_mosaic_hdu(filename="bad_filename.junk")
         with pytest.raises(IOError):
-            mosaic_hdu = prod.load_mosaic_hdu(filename=filename)
+            _ = prod.load_mosaic_hdu(filename=filename)
 
         # Now save it pointing to an existing fits file and check that it works
 

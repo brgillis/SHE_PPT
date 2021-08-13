@@ -24,13 +24,16 @@ __updated__ = "2021-08-13"
 from EL_PythonUtils.utilities import run_only_once
 
 from SHE_PPT.file_io import read_xml_product
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.bas.imp.raw.stc_stub import polygonType
 from ST_DataModelBindings.dpd.she.intermediategeneral_stub import dpdSheIntermediateGeneral
 from ST_DataModelBindings.dpd.she.intermediateobservationcatalog_stub import dpdSheIntermediateObservationCatalog
 from ST_DataModelBindings.dpd.she.placeholdergeneral_stub import dpdShePlaceholderGeneral
 
+from .file_io import find_aux_file
 from .logging import getLogger
 from .utility import get_nested_attr
+
 
 logger = getLogger(__name__)
 
@@ -314,3 +317,28 @@ def init_placeholder_general():
     binding_class.get_all_filenames = _get_all_plc_gen_filenames
 
     binding_class.has_files = True
+
+
+def create_product_from_template(template_filename,
+                                 product_name,
+                                 filename=None,
+                                 data_filename=None,
+                                 spatial_footprint=None):
+
+    # Check input validity
+    if filename and data_filename:
+        raise ValueError("Only one of filename and data_filename should be provided to create_product_from_template.")
+    if filename:
+        data_filename = filename
+
+    # Create the product
+    p = read_xml_product(find_aux_file(template_filename))
+    p.Header = HeaderProvider.create_generic_header(product_name)
+
+    # Set the filename and spatial footprint
+    if data_filename:
+        p.set_data_filename(data_filename)
+    if spatial_footprint:
+        p.set_spatial_footprint(spatial_footprint)
+
+    return p

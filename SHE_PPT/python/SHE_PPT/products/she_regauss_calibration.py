@@ -28,9 +28,8 @@ __updated__ = "2021-08-13"
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.regausscalibration_stub import dpdSheRegaussCalibration
 
-from ..file_io import read_xml_product, find_aux_file
 from ..product_utility import (get_data_filename_from_product, set_data_filename_of_product,
-                               get_all_filenames_just_data)
+                               get_all_filenames_just_data, create_product_from_template)
 
 
 sample_file_name = 'SHE_PPT/sample_regauss_calibration.xml'
@@ -63,20 +62,15 @@ def _get_filename(self):
     return get_data_filename_from_product(self, "RegaussCalibrationFileList[0].DataStorage")
 
 
-def create_dpd_she_regauss_calibration(filename=None):
+def create_dpd_she_regauss_calibration(filename=None,
+                                       data_filename=None):
+    """ Creates a product of this type.
     """
-        @TODO fill in docstring
-    """
 
-    dpd_she_regauss_calibration = read_xml_product(
-        find_aux_file(sample_file_name))
-
-    dpd_she_regauss_calibration.Header = HeaderProvider.create_generic_header("DpdSheRegaussCalibration")
-
-    if filename:
-        dpd_she_regauss_calibration.set_filename(filename)
-
-    return dpd_she_regauss_calibration
+    return create_product_from_template(template_filename=sample_file_name,
+                                        product_name="DpdSheRegaussCalibration",
+                                        filename=filename,
+                                        data_filename=data_filename)
 
 
 # Add a useful alias

@@ -23,11 +23,9 @@ __updated__ = "2021-08-13"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.mer.raw.finalcatalog_stub import dpdMerFinalCatalog
 
-from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import init_just_datastorage
+from ..product_utility import init_just_datastorage, create_product_from_template
 
 
 sample_file_name = "SHE_PPT/sample_mer_final_catalog.xml"
@@ -39,20 +37,15 @@ def init():
     init_just_datastorage(binding_class=dpdMerFinalCatalog)
 
 
-def create_dpd_she_detections(data_filename=None):
+def create_dpd_she_detections(filename=None,
+                              data_filename=None):
+    """ Creates a product of this type.
     """
-        @TODO fill in docstring
-    """
 
-    dpd_she_detections = read_xml_product(
-        find_aux_file(sample_file_name))
-
-    dpd_she_detections.Header = HeaderProvider.create_generic_header("DpdMerFinalCatalog")
-
-    if data_filename is not None:
-        dpd_she_detections.set_data_filename(data_filename)
-
-    return dpd_she_detections
+    return create_product_from_template(template_filename=sample_file_name,
+                                        product_name="DpdMerFinalCatalog",
+                                        filename=filename,
+                                        data_filename=data_filename)
 
 
 # Add useful aliases

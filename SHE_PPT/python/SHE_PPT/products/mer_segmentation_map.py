@@ -28,13 +28,12 @@ import os
 
 from astropy.io import fits
 
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.mer.raw.segmentationmap_stub import dpdMerSegmentationMap
 
 from .. import detector as dtc
 from ..constants.fits import SEGMENTATION_TAG
-from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import init_just_datastorage
+from ..file_io import read_xml_product
+from ..product_utility import init_just_datastorage, create_product_from_template
 from ..utility import find_extension
 
 
@@ -105,20 +104,15 @@ def init():
     init_just_datastorage(binding_class=dpdMerSegmentationMap)
 
 
-def create_dpd_mer_mosaic(data_filename="",
-                          ):
+def create_dpd_mer_mosaic(filename=None,
+                          data_filename=None):
+    """ Creates a product of this type.
     """
-        @TODO fill in docstring
-    """
 
-    dpd_mer_mosaic = read_xml_product(
-        find_aux_file(sample_file_name))
-
-    dpd_mer_mosaic.Header = HeaderProvider.create_generic_header("DpdMerSegmentationMap")
-
-    dpd_mer_mosaic.set_data_filename(data_filename)
-
-    return dpd_mer_mosaic
+    return create_product_from_template(template_filename=sample_file_name,
+                                        product_name="DpdMerSegmentationMap",
+                                        filename=filename,
+                                        data_filename=data_filename)
 
 
 # Add a useful alias

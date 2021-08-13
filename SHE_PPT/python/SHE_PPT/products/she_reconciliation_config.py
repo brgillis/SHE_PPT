@@ -23,12 +23,9 @@ __updated__ = "2021-08-13"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.reconciliationconfig_stub import dpdSheReconciliationConfig
 
-from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import init_just_datastorage
+from ..product_utility import init_just_datastorage, create_product_from_template
 
 
 sample_file_name = "SHE_PPT/sample_reconciliation_config.xml"
@@ -40,18 +37,15 @@ def init():
     init_just_datastorage(binding_class=dpdSheReconciliationConfig)
 
 
-def create_dpd_she_reconciliation_config(filename=None):
+def create_dpd_she_reconciliation_config(filename=None,
+                                         data_filename=None):
+    """ Creates a product of this type.
     """
-        @TODO fill in docstring
-    """
 
-    dpd_she_reconciliation_config = read_xml_product(find_aux_file(sample_file_name))
-
-    dpd_she_reconciliation_config.Header = HeaderProvider.create_generic_header("DpdSheReconciliationConfig")
-
-    if filename:
-        dpd_she_reconciliation_config.set_filename(filename)
-    return dpd_she_reconciliation_config
+    return create_product_from_template(template_filename=sample_file_name,
+                                        product_name="DpdSheReconciliationConfig",
+                                        filename=filename,
+                                        data_filename=data_filename)
 
 
 # Add a useful alias

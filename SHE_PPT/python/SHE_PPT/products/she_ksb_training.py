@@ -25,11 +25,9 @@ __updated__ = "2021-08-13"
 # Boston, MA 02110-1301 USA
 
 
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.ksbtraining_stub import dpdSheKsbTraining
 
-from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import init_just_datastorage
+from ..product_utility import init_just_datastorage, create_product_from_template
 
 
 sample_file_name = "SHE_PPT/sample_ksb_training.xml"
@@ -41,22 +39,15 @@ def init():
     init_just_datastorage(binding_class=dpdSheKsbTraining)
 
 
-def create_dpd_she_ksb_training(filename=None):
+def create_dpd_she_ksb_training(filename=None,
+                                data_filename=None):
+    """ Creates a product of this type.
     """
-        @TODO fill in docstring
-    """
 
-    dpd_she_ksb_training = read_xml_product(
-        find_aux_file(sample_file_name))
-
-    # Overwrite the header with a new one to update the creation date (among
-    # other things)
-    dpd_she_ksb_training.Header = HeaderProvider.create_generic_header("DpdSheKsbTraining")
-
-    if filename:
-        dpd_she_ksb_training.set_filename(filename)
-
-    return dpd_she_ksb_training
+    return create_product_from_template(template_filename=sample_file_name,
+                                        product_name="DpdSheKsbTraining",
+                                        filename=filename,
+                                        data_filename=data_filename)
 
 
 # Add a useful alias

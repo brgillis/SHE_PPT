@@ -29,11 +29,10 @@ import os
 
 from astropy.io import fits
 
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.stackreprojectedsegmentationmap_stub import dpdSheStackReprojectedSegmentationMap
 
-from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import init_just_datastorage
+from ..file_io import read_xml_product
+from ..product_utility import init_just_datastorage, create_product_from_template
 
 
 sample_file_name = "SHE_PPT/sample_stack_reprojected_segmentation_map.xml"
@@ -92,32 +91,15 @@ def init():
     init_just_datastorage(binding_class=dpdSheStackReprojectedSegmentationMap)
 
 
-def create_dpd_she_stack_segmentation_map(filename=None):
-    """Creates a SHE_MER stack reprojected segmentation map binding.
-
-    Parameters
-    ----------
-    file_name: str
-        Name of the fits image file containing the segmentation map
-
-    Returns
-    -------
-    object
-        The SHE_MER stack segmentation map binding.
-
+def create_dpd_she_stack_segmentation_map(filename=None,
+                                          data_filename=None):
+    """ Creates a product of this type.
     """
-    dpd_she_stack_reproj_seg_map_data = read_xml_product(
-        find_aux_file(sample_file_name))
 
-    # Overwrite the header with a new one to update the creation date (among
-    # other things)
-    dpd_she_stack_reproj_seg_map_data.Header = HeaderProvider.create_generic_header(
-        "DpdSheStackReprojectedSegmentationMap")
-
-    if filename:
-        dpd_she_stack_reproj_seg_map_data.set_filename(filename)
-
-    return dpd_she_stack_reproj_seg_map_data
+    return create_product_from_template(template_filename=sample_file_name,
+                                        product_name="DpdSheStackReprojectedSegmentationMap",
+                                        filename=filename,
+                                        data_filename=data_filename)
 
 
 # Add a useful alias
