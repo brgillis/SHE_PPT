@@ -6,7 +6,7 @@
     implementation in his code.
 """
 
-__updated__ = "2021-08-12"
+__updated__ = "2021-08-13"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -25,8 +25,7 @@ __updated__ = "2021-08-12"
 from collections import OrderedDict
 from typing import Type
 
-from ..constants.fits import PSF_PD_STATE_TAG
-from ..constants.tables import PSF_PD_IDENTITY
+from ..constants.fits import PSF_PD_STATE_TAG, PSF_PD_IDENTITY
 from ..logging import getLogger
 from ..table_formats.she_psf_state import ShePsfStateFormat, ShePsfStateMeta
 

@@ -5,7 +5,7 @@
     Format definition for a table containing Star Catalog data.
 """
 
-__updated__ = "2021-08-12"
+__updated__ = "2021-08-13"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -21,9 +21,7 @@ __updated__ = "2021-08-12"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-from SHE_PPT.constants.fits import OBS_ID_LABEL, OBS_TIME_LABEL
-
-from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL
+from ..constants.fits import OBS_ID_LABEL, OBS_TIME_LABEL, FITS_VERSION_LABEL, FITS_DEF_LABEL
 from ..table_utility import SheTableFormat, SheTableMeta
 fits_version = "8.0"
 fits_def = "she.starCatalog"

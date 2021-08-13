@@ -4,7 +4,7 @@ File: she_image.py
 Created on: Aug 17, 2017
 """
 
-__updated__ = "2021-08-12"
+__updated__ = "2021-08-13"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -30,12 +30,12 @@ import astropy.wcs
 import fitsio
 import galsim
 
-from SHE_PPT.constants.fits import CCDID_LABEL
-from SHE_PPT.constants.misc import SEGMAP_UNASSIGNED_VALUE
 import numpy as np
 
 from . import logging
 from . import mdb
+from .constants.fits import CCDID_LABEL
+from .constants.misc import SEGMAP_UNASSIGNED_VALUE
 from .mask import (as_bool, is_masked_bad,
                    is_masked_suspect_or_bad, masked_off_image)
 

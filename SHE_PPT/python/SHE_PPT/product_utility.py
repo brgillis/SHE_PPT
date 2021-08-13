@@ -88,15 +88,15 @@ def set_data_filename_of_product(p, data_filename, attr_name=None):
         get_nested_attr(p.Data, attr_name).DataContainer.FileName = data_filename
 
 
-def __set_intermediate_general_data_filename(self, filename, i=0):
+def _set_intermediate_general_data_filename(self, filename, i=0):
     set_data_filename_of_product(self, filename, f"DataStorage[{i}]")
 
 
-def __get_intermediate_general_data_filename(self, i=0):
+def _get_intermediate_general_data_filename(self, i=0):
     return get_data_filename_from_product(self, f"DataStorage[{i}]")
 
 
-def __get_all_generic_filenames(self, method):
+def _get_all_generic_filenames(self, method):
 
     all_filenames = []
 
@@ -118,9 +118,9 @@ def __get_all_generic_filenames(self, method):
     return all_filenames
 
 
-def __get_all_intermediate_general_filenames(self):
+def _get_all_intermediate_general_filenames(self):
 
-    return __get_all_generic_filenames(self, __get_intermediate_general_data_filename)
+    return _get_all_generic_filenames(self, _get_intermediate_general_data_filename)
 
 
 @run_only_once
@@ -130,29 +130,29 @@ def init_intermediate_general():
 
     # Add the data file name methods
 
-    binding_class.set_filename = __set_intermediate_general_data_filename
-    binding_class.get_filename = __get_intermediate_general_data_filename
+    binding_class.set_filename = _set_intermediate_general_data_filename
+    binding_class.get_filename = _get_intermediate_general_data_filename
 
-    binding_class.set_data_filename = __set_intermediate_general_data_filename
-    binding_class.get_data_filename = __get_intermediate_general_data_filename
+    binding_class.set_data_filename = _set_intermediate_general_data_filename
+    binding_class.get_data_filename = _get_intermediate_general_data_filename
 
-    binding_class.get_all_filenames = __get_all_intermediate_general_filenames
+    binding_class.get_all_filenames = _get_all_intermediate_general_filenames
 
     binding_class.has_files = True
 
 
 
-def __set_intermediate_observation_catalog_data_filename(self, filename):
+def _set_intermediate_observation_catalog_data_filename(self, filename):
     set_data_filename_of_product(self, filename, "DataStorage")
 
 
-def __get_intermediate_observation_catalog_data_filename(self):
+def _get_intermediate_observation_catalog_data_filename(self):
     return get_data_filename_from_product(self, "DataStorage")
 
 
-def __get_all_intermediate_observation_catalog_filenames(self):
+def _get_all_intermediate_observation_catalog_filenames(self):
 
-    return __get_all_generic_filenames(self, __get_intermediate_observation_catalog_data_filename)
+    return _get_all_generic_filenames(self, _get_intermediate_observation_catalog_data_filename)
 
 
 @run_only_once
@@ -162,28 +162,28 @@ def init_intermediate_observation_catalog():
 
     # Add the data file name methods
 
-    binding_class.set_filename = __set_intermediate_observation_catalog_data_filename
-    binding_class.get_filename = __get_intermediate_observation_catalog_data_filename
+    binding_class.set_filename = _set_intermediate_observation_catalog_data_filename
+    binding_class.get_filename = _get_intermediate_observation_catalog_data_filename
 
-    binding_class.set_data_filename = __set_intermediate_observation_catalog_data_filename
-    binding_class.get_data_filename = __get_intermediate_observation_catalog_data_filename
+    binding_class.set_data_filename = _set_intermediate_observation_catalog_data_filename
+    binding_class.get_data_filename = _get_intermediate_observation_catalog_data_filename
 
-    binding_class.get_all_filenames = __get_all_intermediate_observation_catalog_filenames
+    binding_class.get_all_filenames = _get_all_intermediate_observation_catalog_filenames
 
     binding_class.has_files = True
 
 
-def __set_placeholder_general_data_filename(self, filename, i=0):
+def _set_placeholder_general_data_filename(self, filename, i=0):
     set_data_filename_of_product(self, filename, f"DataStorage[{i}]")
 
 
-def __get_placeholder_general_data_filename(self, i=0):
+def _get_placeholder_general_data_filename(self, i=0):
     return get_data_filename_from_product(self, f"DataStorage[{i}]")
 
 
-def __get_all_placeholder_general_filenames(self):
+def _get_all_placeholder_general_filenames(self):
 
-    return __get_all_generic_filenames(self, __get_placeholder_general_data_filename)
+    return _get_all_generic_filenames(self, _get_placeholder_general_data_filename)
 
 
 @run_only_once
@@ -193,12 +193,12 @@ def init_placeholder_general():
 
     # Add the data file name methods
 
-    binding_class.set_filename = __set_placeholder_general_data_filename
-    binding_class.get_filename = __get_placeholder_general_data_filename
+    binding_class.set_filename = _set_placeholder_general_data_filename
+    binding_class.get_filename = _get_placeholder_general_data_filename
 
-    binding_class.set_data_filename = __set_placeholder_general_data_filename
-    binding_class.get_data_filename = __get_placeholder_general_data_filename
+    binding_class.set_data_filename = _set_placeholder_general_data_filename
+    binding_class.get_data_filename = _get_placeholder_general_data_filename
 
-    binding_class.get_all_filenames = __get_all_placeholder_general_filenames
+    binding_class.get_all_filenames = _get_all_placeholder_general_filenames
 
     binding_class.has_files = True

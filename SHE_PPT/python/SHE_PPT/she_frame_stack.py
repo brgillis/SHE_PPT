@@ -4,7 +4,7 @@ File: python/SHE_PPT/she_frame_stack.py
 Created on: 05/03/18
 """
 
-__updated__ = "2021-08-12"
+__updated__ = "2021-08-13"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -31,11 +31,11 @@ from astropy import table
 from astropy.io import fits
 import astropy.wcs
 
-from SHE_PPT.constants.fits import MASK_TAG, SCI_TAG, NOISEMAP_TAG
 import numpy as np
 
 from . import logging
 from . import products
+from .constants.fits import MASK_TAG, SCI_TAG, NOISEMAP_TAG
 from .file_io import read_listfile, read_xml_product, find_file
 from .she_frame import SHEFrame
 from .she_image import SHEImage

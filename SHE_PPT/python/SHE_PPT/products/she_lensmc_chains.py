@@ -45,35 +45,35 @@ def init():
 
     # Add the data file name methods
 
-    binding_class.set_filename = __set_filename
-    binding_class.get_filename = __get_filename
-    binding_class.set_data_filename = __set_filename
-    binding_class.get_data_filename = __get_filename
+    binding_class.set_filename = _set_filename
+    binding_class.get_filename = _get_filename
+    binding_class.set_data_filename = _set_filename
+    binding_class.get_data_filename = _get_filename
 
-    binding_class.get_all_filenames = __get_all_filenames
+    binding_class.get_all_filenames = _get_all_filenames
 
-    binding_class.get_spatial_footprint = __get_spatial_footprint
-    binding_class.set_spatial_footprint = __set_spatial_footprint
+    binding_class.get_spatial_footprint = _get_spatial_footprint
+    binding_class.set_spatial_footprint = _set_spatial_footprint
 
     binding_class.has_files = False
 
 
-def __set_filename(self, filename):
+def _set_filename(self, filename):
     set_data_filename_of_product(self, filename, "DataStorage")
 
 
-def __get_filename(self):
+def _get_filename(self):
     return get_data_filename_from_product(self, "DataStorage")
 
 
-def __get_all_filenames(self):
+def _get_all_filenames(self):
 
     all_filenames = [self.get_filename()]
 
     return all_filenames
 
 
-def __set_spatial_footprint(self, p):
+def _set_spatial_footprint(self, p):
     """ Set the spatial footprint. p can be either the spatial footprint, or
         another product which has a spatial footprint defined.
     """
@@ -81,7 +81,7 @@ def __set_spatial_footprint(self, p):
     # Figure out how the spatial footprint was passed to us
     if isinstance(p, str):
         # If we got a filepath, read it in and apply this function to the read-in product
-        __set_spatial_footprint(self, read_xml_product(p))
+        _set_spatial_footprint(self, read_xml_product(p))
         return
     if isinstance(p, polygonType):
         poly = p
@@ -100,7 +100,7 @@ def __set_spatial_footprint(self, p):
     return
 
 
-def __get_spatial_footprint(self):
+def _get_spatial_footprint(self):
     """ Get the spatial footprint as a polygonType object.
     """
 
@@ -118,9 +118,9 @@ def create_dpd_she_lensmc_chains(filename="None",
     dpd_she_lensmc_chains.Header = HeaderProvider.create_generic_header("DpdSheLensMcChains")
 
     if filename:
-        __set_filename(dpd_she_lensmc_chains, filename)
+        _set_filename(dpd_she_lensmc_chains, filename)
     if spatial_footprint is not None:
-        __set_spatial_footprint(dpd_she_lensmc_chains, spatial_footprint)
+        _set_spatial_footprint(dpd_she_lensmc_chains, spatial_footprint)
     return dpd_she_lensmc_chains
 
 
@@ -138,6 +138,6 @@ def create_she_lensmc_chains(filename="None"):
     she_lensmc_chains.format = "she.lensMcChains"
     she_lensmc_chains.version = "8.0"
 
-    __set_filename(dpd_she_lensmc_chains, filename)
+    _set_filename(dpd_she_lensmc_chains, filename)
 
     return she_lensmc_chains

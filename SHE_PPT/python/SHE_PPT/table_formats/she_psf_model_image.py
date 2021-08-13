@@ -19,14 +19,13 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-08-12"
+__updated__ = "2021-08-13"
 
 from collections import OrderedDict
 
-from SHE_PPT.constants.fits import PSF_CAT_TAG
-from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL, EXTNAME_LABEL
+from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL, EXTNAME_LABEL, PSF_CAT_TAG
 from ..logging import getLogger
-from ..table_utility import is_in_format, init_table, SheTableFormat, SheTableMeta
+from ..table_utility import SheTableFormat, SheTableMeta
 
 
 fits_version = "8.0"

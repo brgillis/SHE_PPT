@@ -5,7 +5,7 @@
     Functions related to output of details and detections tables.
 """
 
-__updated__ = "2021-08-12"
+__updated__ = "2021-08-13"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -27,13 +27,15 @@ from typing import Dict, List, Optional
 
 from astropy.table import Column, Table
 
-from SHE_PPT.constants.fits import FITS_DEF_LABEL, FITS_VERSION_LABEL
 import numpy as np
 
+from .constants.fits import FITS_DEF_LABEL, FITS_VERSION_LABEL
 from .logging import getLogger
 
 
 logger = getLogger(__name__)
+
+MSG_ERR_COL_ABSENT = "Table not in correct format due to absence of required column: %s"
 
 
 def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbose=False,
@@ -69,7 +71,7 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
         for colname in table_format.all_required:
             if colname not in table.colnames:
                 if verbose:
-                    logger.info("Table not in correct format due to absence of required column: %s", colname)
+                    logger.info(MSG_ERR_COL_ABSENT, colname)
                 return False
     else:
         # More careful check if comparing to a base class
@@ -88,14 +90,13 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
                         break
                 if not found:
                     if verbose:
-                        logger.info("Table not in correct format due to absence of required column: %s",
-                                    parent_colname)
+                        logger.info(MSG_ERR_COL_ABSENT, parent_colname)
                     return False
             else:
                 # Once we've figured out what the child_label is, we can be a bit more efficient
                 if parent_colname not in table.colnames and child_label + parent_colname not in table.columns:
                     if verbose:
-                        logger.info("Table not in correct format due to absence of required column: %s", colname)
+                        logger.info(MSG_ERR_COL_ABSENT, colname)
                     return False
 
     # Check that no extra column names are present if strict==True, and each
@@ -243,8 +244,7 @@ def output_tables(otable, file_name_base, output_format):
 def init_table(tf: "SheTableFormat",
                size: Optional[int] = None,
                optional_columns: Optional[List[str]] = None,
-               init_cols: Optional[List[Column]] = None,
-               **kwargs: str):
+               init_cols: Optional[List[Column]] = None,):
     """ Initializes a table with a given format, without any metadata.
     """
 

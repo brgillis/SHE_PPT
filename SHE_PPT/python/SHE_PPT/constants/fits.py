@@ -5,7 +5,7 @@
     Constants related to FITS files
 """
 
-__updated__ = "2021-08-12"
+__updated__ = "2021-08-13"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -66,3 +66,11 @@ PSF_PD_STATE_TAG = "PSFPD"
 PSF_TM_STATE_TAG = "PSFTM"
 PSF_TML_STATE_TAG = "PSFTL"
 PSF_ZM_STATE_TAG = "PSFZ"
+
+# Special values for PSF tables
+PSF_DM_IDENTITY = "dmfit"
+PSF_OM_IDENTITY = "omfit"
+PSF_PD_IDENTITY = "pdfit"
+PSF_TM_IDENTITY = "tmfit"
+PSF_TML_IDENTITY = "tmlfit"
+PSF_ZM_IDENTITY = "zfit"

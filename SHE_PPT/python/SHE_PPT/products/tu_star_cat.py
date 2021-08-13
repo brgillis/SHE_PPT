@@ -36,19 +36,19 @@ def init():
 
     # Add the data file name methods
 
-    binding_class.get_data_filename = __get_data_filename
-    binding_class.get_filename = __get_data_filename
-    binding_class.get_all_filenames = __get_all_filenames
+    binding_class.get_data_filename = _get_data_filename
+    binding_class.get_filename = _get_data_filename
+    binding_class.get_all_filenames = _get_all_filenames
 
     binding_class.has_files = True
 
 
 
-def __get_data_filename(self):
+def _get_data_filename(self):
     return get_data_filename_from_product(self, "StarCatalog.DataStorage")
 
 
-def __get_all_filenames(self):
+def _get_all_filenames(self):
 
     all_filenames = [self.get_data_filename(), ]
 

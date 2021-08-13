@@ -47,13 +47,13 @@ def init():
 
     # Add the data file name methods
 
-    binding_class.get_all_filenames = __get_all_filenames
+    binding_class.get_all_filenames = _get_all_filenames
 
     binding_class.has_files = False
 
 
 
-def __get_all_filenames(self):
+def _get_all_filenames(self):
 
     all_filenames = []
 

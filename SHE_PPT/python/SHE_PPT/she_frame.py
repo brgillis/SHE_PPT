@@ -4,7 +4,7 @@ File: python/SHE_PPT/she_frame.py
 Created on: 02/03/18
 """
 
-__updated__ = "2021-08-12"
+__updated__ = "2021-08-13"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -34,12 +34,12 @@ from astropy.table import Table
 from astropy.wcs import WCS
 
 import EL_CoordsUtils.telescope_coords as tc
-from SHE_PPT.constants.fits import (EXTNAME_LABEL, CCDID_LABEL, NOISEMAP_TAG,
-                                    SCI_TAG, MASK_TAG, SEGMENTATION_TAG, PSF_CAT_TAG)
 import numpy as np
 
 from . import logging
 from . import products
+from .constants.fits import (EXTNAME_LABEL, CCDID_LABEL, NOISEMAP_TAG,
+                             SCI_TAG, MASK_TAG, SEGMENTATION_TAG, PSF_CAT_TAG)
 from .detector import get_id_string
 from .file_io import read_xml_product
 from .she_image import SHEImage
@@ -47,6 +47,7 @@ from .table_formats.mer_final_catalog import tf as mfc_tf
 from .table_formats.she_psf_model_image import tf as pstf
 from .table_utility import is_in_format
 from .utility import find_extension
+
 
 logger = logging.getLogger(__name__)
 

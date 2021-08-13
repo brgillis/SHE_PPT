@@ -40,27 +40,27 @@ def init():
 
     binding_class = dpdSheObjectIdList
 
-    binding_class.get_all_filenames = __get_all_filenames
-    binding_class.get_id_list = __get_id_list
-    binding_class.set_id_list = __set_id_list
+    binding_class.get_all_filenames = _get_all_filenames
+    binding_class.get_id_list = _get_id_list
+    binding_class.set_id_list = _set_id_list
 
     binding_class.has_files = False
 
 
 
-def __get_all_filenames(self):
+def _get_all_filenames(self):
 
     all_filenames = []
 
     return all_filenames
 
 
-def __get_id_list(self):
+def _get_id_list(self):
 
     return self.Data.ObjectIdList
 
 
-def __set_id_list(self, l):
+def _set_id_list(self, l):
 
     self.Data.ObjectIdList = l
 
@@ -75,9 +75,9 @@ def create_dpd_she_object_id_list(id_list=None):
     dpd_she_object_id_list.Header = HeaderProvider.create_generic_header("DpdSheObjectIdList")  # FIXME
 
     if id_list:
-        __set_id_list(dpd_she_object_id_list, id_list)
+        _set_id_list(dpd_she_object_id_list, id_list)
     else:
-        __set_id_list(dpd_she_object_id_list, [])
+        _set_id_list(dpd_she_object_id_list, [])
 
     return dpd_she_object_id_list
 

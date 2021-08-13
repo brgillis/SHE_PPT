@@ -95,27 +95,27 @@ def init():
 
     # Add the data file name methods
 
-    binding_class.set_filename = __set_filename
-    binding_class.get_filename = __get_filename
+    binding_class.set_filename = _set_filename
+    binding_class.get_filename = _get_filename
 
-    binding_class.set_data_filename = __set_filename
-    binding_class.get_data_filename = __get_filename
+    binding_class.set_data_filename = _set_filename
+    binding_class.get_data_filename = _get_filename
 
-    binding_class.get_all_filenames = __get_all_filenames
+    binding_class.get_all_filenames = _get_all_filenames
 
     binding_class.has_files = True
 
 
 
-def __set_filename(self, filename):
+def _set_filename(self, filename):
     set_data_filename_of_product(self, filename, "DataStorage")
 
 
-def __get_filename(self):
+def _get_filename(self):
     return get_data_filename_from_product(self, "DataStorage")
 
 
-def __get_all_filenames(self):
+def _get_all_filenames(self):
 
     all_filenames = [self.get_data_filename()]
 
@@ -145,7 +145,7 @@ def create_dpd_she_stack_segmentation_map(filename=None):
         "DpdSheStackReprojectedSegmentationMap")
 
     if filename:
-        __set_filename(dpd_she_stack_reproj_seg_map_data, filename)
+        _set_filename(dpd_she_stack_reproj_seg_map_data, filename)
 
 
     return dpd_she_stack_reproj_seg_map_data

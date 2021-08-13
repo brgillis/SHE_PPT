@@ -36,28 +36,28 @@ def init():
 
     # Add the data file name methods
 
-    binding_class.get_galaxy_filename = __get_galaxy_filename
-    binding_class.get_star_filename = __get_star_filename
-    binding_class.get_data_filename = __get_data_filename
-    binding_class.get_filename = __get_data_filename
-    binding_class.get_all_filenames = __get_all_filenames
+    binding_class.get_galaxy_filename = _get_galaxy_filename
+    binding_class.get_star_filename = _get_star_filename
+    binding_class.get_data_filename = _get_data_filename
+    binding_class.get_filename = _get_data_filename
+    binding_class.get_all_filenames = _get_all_filenames
 
     binding_class.has_files = True
 
 
-def __get_galaxy_filename(self):
+def _get_galaxy_filename(self):
     return get_data_filename_from_product(self, "GalaxyCatalogFitsFile")
 
 
-def __get_star_filename(self):
+def _get_star_filename(self):
     return get_data_filename_from_product(self, "StarCatalogFitsFile")
 
 
-def __get_data_filename(self):
-    return __get_galaxy_filename(self)
+def _get_data_filename(self):
+    return _get_galaxy_filename(self)
 
 
-def __get_all_filenames(self):
+def _get_all_filenames(self):
 
     all_filenames = [self.get_galaxy_filename(), self.get_star_filename()]
 

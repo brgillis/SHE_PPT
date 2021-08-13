@@ -4,9 +4,8 @@ File: tests/python/detector_test.py
 Created on: 8 Nov, 2017
 """
 
-__updated__ = "2021-02-10"
+__updated__ = "2021-08-13"
 
-#
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under
@@ -35,7 +34,6 @@ from SHE_PPT import mdb
 from SHE_PPT.constants.test_data import (SYNC_CONF, TEST_FILES_MDB, TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME)
 from SHE_PPT.detector import (get_id_string, get_detector_xy, detector_int_to_xy, detector_xy_to_int,
                               resolve_detector_xy, get_vis_quadrant, VIS_DETECTOR_PIXELS_X, VIS_DETECTOR_PIXELS_Y)
-import numpy as np
 
 
 logging.basicConfig(level=logging.DEBUG)
@@ -57,8 +55,6 @@ class TestDetector():
 
         mdb.reset()
 
-        return
-
     def test_get_id_string(self):
 
         assert get_id_string(3, 4) == "CCDID 3-4"
@@ -75,8 +71,6 @@ class TestDetector():
         with pytest.raises(ValueError):
             get_id_string(1, 7)
 
-        return
-
     def test_get_detector_xy(self):
 
         assert get_detector_xy("CCDID 3-4") == (3, 4)
@@ -88,8 +82,6 @@ class TestDetector():
 
         with pytest.raises(ValueError):
             get_detector_xy("foo")
-
-        return
 
     def test_detector_int_to_xy(self):
 
@@ -103,8 +95,6 @@ class TestDetector():
 
         with pytest.raises(ValueError):
             detector_int_to_xy(36)
-
-        return
 
     def test_detector_xy_to_int(self):
 
@@ -122,8 +112,6 @@ class TestDetector():
         with pytest.raises(ValueError):
             detector_xy_to_int(1, 7)
 
-        return
-
     def test_resolve_detector_xy(self):
 
         assert resolve_detector_xy("CCDID 5-3") == (5, 3)
@@ -135,8 +123,6 @@ class TestDetector():
 
         with pytest.raises(TypeError):
             resolve_detector_xy((1, 2, 3))
-
-        return
 
     def test_get_vis_quadrant(self):
 
@@ -169,5 +155,3 @@ class TestDetector():
         assert get_vis_quadrant(x_pix=-1, y_pix=5000, det_iy=1) == "X"
         assert get_vis_quadrant(x_pix=-1, y_pix=3000, det_iy=1) == "X"
         assert get_vis_quadrant(x_pix=-1, y_pix=1000, det_iy=1) == "X"
-
-        return

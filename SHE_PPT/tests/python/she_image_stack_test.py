@@ -4,7 +4,8 @@ File: tests/python/she_stack_test.py
 Created on: 09/01/17
 """
 
-#
+__updated__ = "2021-08-13"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under
@@ -20,9 +21,6 @@ Created on: 09/01/17
 # You should have received a copy of the GNU Lesser General Public License
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-#
-
-__updated__ = "2021-03-08"
 
 from copy import deepcopy
 import os
@@ -31,13 +29,11 @@ import py.test
 
 from SHE_PPT.she_image import SHEImage
 from SHE_PPT.she_image_stack import SHEImageStack
-from SHE_PPT.table_formats.mer_final_catalog import initialise_mer_final_catalog
-from SHE_PPT.table_formats.she_psf_model_image import initialise_psf_table
 import SHE_PPT.table_utility
 import numpy as np
 
 
-class Test_she_stack(object):
+class TestSheStack(object):
 
     @classmethod
     def setup_class(cls):
@@ -90,5 +86,3 @@ class Test_she_stack(object):
         # Test we get inequal when we change the copy
         stack_copy.stacked_image.data += 1
         assert stack != stack_copy
-
-        return

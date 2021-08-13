@@ -5,7 +5,7 @@
     Format definition for tables containing shear bias statistics.
 """
 
-__updated__ = "2021-08-12"
+__updated__ = "2021-08-13"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -23,14 +23,14 @@ __updated__ = "2021-08-12"
 
 from collections import OrderedDict
 
-from SHE_PPT.constants.classes import ShearEstimationMethods
 import numpy as np
 
-
+from ..constants.classes import ShearEstimationMethods
 from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL
 from ..logging import getLogger
 from ..math import LinregressStatistics, LinregressResults, BiasMeasurements
 from ..table_utility import is_in_format, init_table, SheTableFormat, SheTableMeta
+
 
 fits_version = "8.0"
 fits_def = "she.biasStatistics"

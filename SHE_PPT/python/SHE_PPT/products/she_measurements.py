@@ -46,30 +46,30 @@ def init():
 
     # Add the data file name methods
 
-    binding_class.set_KSB_filename = __set_KSB_filename
-    binding_class.get_KSB_filename = __get_KSB_filename
+    binding_class.set_KSB_filename = _set_KSB_filename
+    binding_class.get_KSB_filename = _get_KSB_filename
 
-    binding_class.set_LensMC_filename = __set_LensMC_filename
-    binding_class.get_LensMC_filename = __get_LensMC_filename
+    binding_class.set_LensMC_filename = _set_LensMC_filename
+    binding_class.get_LensMC_filename = _get_LensMC_filename
 
-    binding_class.set_MomentsML_filename = __set_MomentsML_filename
-    binding_class.get_MomentsML_filename = __get_MomentsML_filename
+    binding_class.set_MomentsML_filename = _set_MomentsML_filename
+    binding_class.get_MomentsML_filename = _get_MomentsML_filename
 
-    binding_class.set_REGAUSS_filename = __set_REGAUSS_filename
-    binding_class.get_REGAUSS_filename = __get_REGAUSS_filename
+    binding_class.set_REGAUSS_filename = _set_REGAUSS_filename
+    binding_class.get_REGAUSS_filename = _get_REGAUSS_filename
 
-    binding_class.get_all_filenames = __get_all_filenames
+    binding_class.get_all_filenames = _get_all_filenames
 
-    binding_class.get_method_filename = __get_method_filename
-    binding_class.set_method_filename = __set_method_filename
+    binding_class.get_method_filename = _get_method_filename
+    binding_class.set_method_filename = _set_method_filename
 
-    binding_class.get_spatial_footprint = __get_spatial_footprint
-    binding_class.set_spatial_footprint = __set_spatial_footprint
+    binding_class.get_spatial_footprint = _get_spatial_footprint
+    binding_class.set_spatial_footprint = _set_spatial_footprint
 
     binding_class.has_files = True
 
 
-def __set_KSB_filename(self, filename):
+def _set_KSB_filename(self, filename):
     if filename is None:
         if hasattr(self.Data, "KsbShearMeasurements"):
             self.Data.KsbShearMeasurements = None
@@ -79,13 +79,13 @@ def __set_KSB_filename(self, filename):
         set_data_filename_of_product(self, filename, "KsbShearMeasurements.DataStorage")
 
 
-def __get_KSB_filename(self):
+def _get_KSB_filename(self):
     if not hasattr(self.Data, "KsbShearMeasurements") or self.Data.KsbShearMeasurements is None:
         return None
     return get_data_filename_from_product(self, "KsbShearMeasurements.DataStorage")
 
 
-def __set_LensMC_filename(self, filename):
+def _set_LensMC_filename(self, filename):
     if filename is None:
         if hasattr(self.Data, "LensMcShearMeasurements"):
             self.Data.LensMcShearMeasurements = None
@@ -95,13 +95,13 @@ def __set_LensMC_filename(self, filename):
         set_data_filename_of_product(self, filename, "LensMcShearMeasurements.DataStorage")
 
 
-def __get_LensMC_filename(self):
+def _get_LensMC_filename(self):
     if not hasattr(self.Data, "LensMcShearMeasurements") or self.Data.LensMcShearMeasurements is None:
         return None
     return get_data_filename_from_product(self, "LensMcShearMeasurements.DataStorage")
 
 
-def __set_MomentsML_filename(self, filename):
+def _set_MomentsML_filename(self, filename):
     if filename is None:
         if hasattr(self.Data, "MomentsMlShearMeasurements"):
             self.Data.MomentsMlShearMeasurements = None
@@ -111,13 +111,13 @@ def __set_MomentsML_filename(self, filename):
         set_data_filename_of_product(self, filename, "MomentsMlShearMeasurements.DataStorage")
 
 
-def __get_MomentsML_filename(self):
+def _get_MomentsML_filename(self):
     if not hasattr(self.Data, "MomentsMlShearMeasurements") or self.Data.MomentsMlShearMeasurements is None:
         return None
     return get_data_filename_from_product(self, "MomentsMlShearMeasurements.DataStorage")
 
 
-def __set_REGAUSS_filename(self, filename):
+def _set_REGAUSS_filename(self, filename):
     if filename is None:
         if hasattr(self.Data, "RegaussShearMeasurements"):
             self.Data.RegaussShearMeasurements = None
@@ -127,13 +127,13 @@ def __set_REGAUSS_filename(self, filename):
         set_data_filename_of_product(self, filename, "RegaussShearMeasurements.DataStorage")
 
 
-def __get_REGAUSS_filename(self):
+def _get_REGAUSS_filename(self):
     if not hasattr(self.Data, "RegaussShearMeasurements") or self.Data.RegaussShearMeasurements is None:
         return None
     return get_data_filename_from_product(self, "RegaussShearMeasurements.DataStorage")
 
 
-def __get_all_filenames(self):
+def _get_all_filenames(self):
 
     all_filenames = [self.get_KSB_filename(),
                      self.get_LensMC_filename(),
@@ -143,7 +143,7 @@ def __get_all_filenames(self):
     return all_filenames
 
 
-def __get_method_filename(self, method):
+def _get_method_filename(self, method):
 
     if method == ShearEstimationMethods.KSB:
         name = self.get_KSB_filename()
@@ -158,7 +158,7 @@ def __get_method_filename(self, method):
     return name
 
 
-def __set_method_filename(self, method, filename):
+def _set_method_filename(self, method, filename):
 
     if method == ShearEstimationMethods.KSB:
         name = self.set_KSB_filename(filename)
@@ -173,7 +173,7 @@ def __set_method_filename(self, method, filename):
     return name
 
 
-def __set_spatial_footprint(self, p):
+def _set_spatial_footprint(self, p):
     """ Set the spatial footprint. p can be either the spatial footprint, or
         another product which has a spatial footprint defined.
     """
@@ -181,7 +181,7 @@ def __set_spatial_footprint(self, p):
     # Figure out how the spatial footprint was passed to us
     if isinstance(p, str):
         # If we got a filepath, read it in and apply this function to the read-in product
-        __set_spatial_footprint(self, read_xml_product(p))
+        _set_spatial_footprint(self, read_xml_product(p))
         return
     if isinstance(p, polygonType):
         poly = p
@@ -200,7 +200,7 @@ def __set_spatial_footprint(self, p):
     self.Data.SpatialCoverage.Polygon = poly
 
 
-def __get_spatial_footprint(self):
+def _get_spatial_footprint(self):
     """ Get the spatial footprint as a polygonType object.
     """
 
@@ -223,12 +223,12 @@ def create_dpd_she_measurements(KSB_filename=None,
     # other things)
     dpd_she_measurements.Header = HeaderProvider.create_generic_header("DpdSheMeasurements")
 
-    __set_KSB_filename(dpd_she_measurements, KSB_filename)
-    __set_LensMC_filename(dpd_she_measurements, LensMC_filename)
-    __set_MomentsML_filename(dpd_she_measurements, MomentsML_filename)
-    __set_REGAUSS_filename(dpd_she_measurements, REGAUSS_filename)
+    _set_KSB_filename(dpd_she_measurements, KSB_filename)
+    _set_LensMC_filename(dpd_she_measurements, LensMC_filename)
+    _set_MomentsML_filename(dpd_she_measurements, MomentsML_filename)
+    _set_REGAUSS_filename(dpd_she_measurements, REGAUSS_filename)
     if spatial_footprint is not None:
-        __set_spatial_footprint(dpd_she_measurements, spatial_footprint)
+        _set_spatial_footprint(dpd_she_measurements, spatial_footprint)
 
     return dpd_she_measurements
 

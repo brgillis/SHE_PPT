@@ -10,9 +10,9 @@ import re
 from EL_PythonUtils.utilities import run_only_once
 from astropy.io import fits
 
-from SHE_PPT.constants.fits import EXTNAME_LABEL
 from ST_DM_MDBTools.Mdb import Mdb
 
+from .constants.fits import EXTNAME_LABEL
 from .constants.test_data import TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME
 from .file_io import find_file
 from .logging import getLogger
@@ -31,7 +31,7 @@ from .logging import getLogger
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
-__updated__ = "2021-08-12"
+__updated__ = "2021-08-13"
 
 
 _mdb_not_inited_exception = RuntimeError(

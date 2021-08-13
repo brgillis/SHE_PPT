@@ -5,7 +5,7 @@
     Format definition for lensmc chains tables.
 """
 
-__updated__ = "2021-08-12"
+__updated__ = "2021-08-13"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -23,11 +23,10 @@ __updated__ = "2021-08-12"
 
 from collections import OrderedDict
 
-from SHE_PPT.constants.fits import (SHE_FLAG_VERSION_LABEL, MODEL_HASH_LABEL,
-                                    MODEL_SEED_LABEL, NOISE_SEED_LABEL, OBS_ID_LABEL, PNT_ID_LABEL,
-                                    OBS_TIME_LABEL, TILE_ID_LABEL, VALID_LABEL)
-
-from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL, EXTNAME_LABEL
+from ..constants.fits import (SHE_FLAG_VERSION_LABEL, MODEL_HASH_LABEL,
+                              MODEL_SEED_LABEL, NOISE_SEED_LABEL, OBS_ID_LABEL, PNT_ID_LABEL,
+                              OBS_TIME_LABEL, TILE_ID_LABEL, VALID_LABEL, FITS_VERSION_LABEL,
+                              FITS_DEF_LABEL, EXTNAME_LABEL)
 from ..constants.shear_estimation_methods import ShearEstimationMethods
 from ..flags import she_flag_version
 from ..logging import getLogger

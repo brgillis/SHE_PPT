@@ -44,70 +44,70 @@ def init():
 
     # Add the data file name methods
 
-    binding_class.set_filename = __set_data_filename
-    binding_class.get_filename = __get_data_filename
+    binding_class.set_filename = _set_data_filename
+    binding_class.get_filename = _get_data_filename
 
-    binding_class.set_data_filename = __set_data_filename
-    binding_class.get_data_filename = __get_data_filename
+    binding_class.set_data_filename = _set_data_filename
+    binding_class.get_data_filename = _get_data_filename
 
-    binding_class.set_psf_filename = __set_psf_filename
-    binding_class.get_psf_filename = __get_psf_filename
+    binding_class.set_psf_filename = _set_psf_filename
+    binding_class.get_psf_filename = _get_psf_filename
 
-    binding_class.set_bkg_filename = __set_bkg_filename
-    binding_class.get_bkg_filename = __get_bkg_filename
+    binding_class.set_bkg_filename = _set_bkg_filename
+    binding_class.get_bkg_filename = _get_bkg_filename
 
-    binding_class.set_wgt_filename = __set_wgt_filename
-    binding_class.get_wgt_filename = __get_wgt_filename
+    binding_class.set_wgt_filename = _set_wgt_filename
+    binding_class.get_wgt_filename = _get_wgt_filename
 
-    binding_class.get_all_filenames = __get_all_filenames
+    binding_class.get_all_filenames = _get_all_filenames
 
 
 
-def __set_data_filename(self, filename):
+def _set_data_filename(self, filename):
     set_data_filename_of_product(self, filename, "DataStorage")
 
 
-def __get_data_filename(self):
+def _get_data_filename(self):
     return get_data_filename_from_product(self, "DataStorage")
 
 
-def __set_psf_filename(self, filename):
+def _set_psf_filename(self, filename):
     if not hasattr(self.Data, "PsfModelStorage") or self.Data.PsfModelStorage is None:
         self.Data.PsfModelStorage = create_vis_psf_storage(filename)
     set_data_filename_of_product(self, filename, "PsfModelStorage")
 
 
-def __get_psf_filename(self):
+def _get_psf_filename(self):
     if hasattr(self.Data, "PsfModelStorage") and self.Data.PsfModelStorage is not None:
         return get_data_filename_from_product(self, "PsfModelStorage")
     return None
 
 
-def __set_bkg_filename(self, filename):
+def _set_bkg_filename(self, filename):
     if not hasattr(self.Data, "BackgroundStorage") or self.Data.BackgroundStorage is None:
         self.Data.BackgroundStorage = create_vis_bkg_storage(filename)
     set_data_filename_of_product(self, filename, "BackgroundStorage")
 
 
-def __get_bkg_filename(self):
+def _get_bkg_filename(self):
     if hasattr(self.Data, "BackgroundStorage") and self.Data.BackgroundStorage is not None:
         return get_data_filename_from_product(self, "BackgroundStorage")
     return None
 
 
-def __set_wgt_filename(self, filename):
+def _set_wgt_filename(self, filename):
     if not hasattr(self.Data, "WeightStorage") or self.Data.WeightStorage is None:
         self.Data.WeightStorage = create_vis_wgt_storage(filename)
     set_data_filename_of_product(self, filename, "WeightStorage")
 
 
-def __get_wgt_filename(self):
+def _get_wgt_filename(self):
     if hasattr(self.Data, "WeightStorage") and self.Data.WeightStorage is not None:
         return get_data_filename_from_product(self, "WeightStorage")
     return None
 
 
-def __get_all_filenames(self):
+def _get_all_filenames(self):
 
     all_filenames = [self.get_data_filename(),
                      self.get_psf_filename(),
