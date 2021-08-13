@@ -21,19 +21,23 @@ __updated__ = "2021-08-13"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+from typing import Optional
+
 from EL_PythonUtils.utilities import run_only_once
 
+from SHE_PPT.constants.classes import ShearEstimationMethods
 from SHE_PPT.file_io import read_xml_product
+import ST_DM_DmUtils.DmUtils as dm_utils
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.bas.imp.raw.stc_stub import polygonType
 from ST_DataModelBindings.dpd.she.intermediategeneral_stub import dpdSheIntermediateGeneral
 from ST_DataModelBindings.dpd.she.intermediateobservationcatalog_stub import dpdSheIntermediateObservationCatalog
 from ST_DataModelBindings.dpd.she.placeholdergeneral_stub import dpdShePlaceholderGeneral
+from ST_DataModelBindings.pro import she_stub as she_pro
 
 from .file_io import find_aux_file
 from .logging import getLogger
 from .utility import get_nested_attr
-
 
 logger = getLogger(__name__)
 
@@ -151,6 +155,16 @@ def get_all_filenames_none(self):
 
 def get_all_filenames_just_data(self):
     return [self.get_data_filename(), ]
+
+
+def get_all_filenames_methods(self):
+
+    all_filenames = [self.get_KSB_filename(),
+                     self.get_LensMC_filename(),
+                     self.get_MomentsML_filename(),
+                     self.get_REGAUSS_filename(), ]
+
+    return all_filenames
 
 
 def init_binding_class(binding_class):
@@ -367,3 +381,107 @@ def create_measurements_product_from_template(template_filename,
     p.set_REGAUSS_filename(REGAUSS_filename)
 
     return p
+
+
+def get_method_cc_name(method: ShearEstimationMethods):
+    """ Get a Shear Estimation Method's name in both types of camel case.
+    """
+
+    method_lower = method.value.lower()
+
+    # Get the camelCase version of the method name
+    if method == ShearEstimationMethods.LENSMC:
+        method_cc = "lensMc"
+        method_caps = "LensMc"
+    elif method == ShearEstimationMethods.MOMENTSML:
+        method_cc = "momentsMl"
+        method_caps = "MomentsMl"
+    else:
+        method_cc = method_lower
+        method_caps = method_lower.capitalize()
+
+    return method_cc, method_caps
+
+
+def create_method_filestorage(method: ShearEstimationMethods,
+                              filename: Optional[str] = None,
+                              version="8.0"):
+    """ Create a file storage object for a given shear estimates method.
+    """
+
+    method_cc, method_caps = get_method_cc_name(method)
+
+    # Initialize the object
+    shear_estimates = getattr(she_pro, f"she{method_caps}Measurements")()
+
+    shear_estimates.DataStorage = dm_utils.create_fits_storage(getattr(she_pro, f"she{method_caps}MeasurementsFile"),
+                                                               filename,
+                                                               f"she.{method_cc}Measurements",
+                                                               version)
+    shear_estimates.Valid = "VALID"
+
+    return shear_estimates
+
+
+# Functions to set or get filenames for specific shear estimation methods
+def set_method_filename(self,
+                        method: ShearEstimationMethods,
+                        filename: Optional[str] = None):
+
+    _, method_caps = get_method_cc_name(method)
+    method_attr = f"{method_caps}ShearMeasurements"
+
+    if filename is None:
+        if hasattr(self.Data, method_attr):
+            setattr(self.Data, method_attr, None)
+    else:
+        if not hasattr(self.Data, method_attr) or getattr(self.Data, method_attr) is None:
+            setattr(self.Data, method_attr, create_method_filestorage(method, filename))
+        set_data_filename_of_product(self, filename, f"{method_attr}.DataStorage")
+
+
+def get_method_filename(self,
+                        method: ShearEstimationMethods):
+
+    _, method_caps = get_method_cc_name(method)
+    method_attr = f"{method_caps}ShearMeasurements"
+
+    if not hasattr(self.Data, method_attr) or getattr(self.Data, method_attr) is None:
+        return None
+    return get_data_filename_from_product(self, f"{method_attr}.DataStorage")
+
+
+def set_KSB_filename(self,
+                     filename: Optional[str] = None):
+    return set_method_filename(self, ShearEstimationMethods.KSB, filename)
+
+
+def set_LensMC_filename(self,
+                        filename: Optional[str] = None):
+    return set_method_filename(self, ShearEstimationMethods.LENSMC, filename)
+
+
+def set_MomentsML_filename(self,
+                           filename: Optional[str] = None):
+    return set_method_filename(self, ShearEstimationMethods.MOMENTSML, filename)
+
+
+def set_REGAUSS_filename(self,
+                         filename: Optional[str] = None):
+    return set_method_filename(self, ShearEstimationMethods.REGAUSS, filename)
+
+
+def get_KSB_filename(self):
+    return get_method_filename(self, ShearEstimationMethods.KSB)
+
+
+def get_LensMC_filename(self):
+    return get_method_filename(self, ShearEstimationMethods.LENSMC)
+
+
+def get_MomentsML_filename(self):
+    return get_method_filename(self, ShearEstimationMethods.MOMENTSML)
+
+
+def get_REGAUSS_filename(self):
+    return get_method_filename(self, ShearEstimationMethods.REGAUSS)
