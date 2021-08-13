@@ -6,6 +6,8 @@
     Contains functions related to signal-to-noise (SN) calculations.
 """
 
+__updated__ = "2021-08-13"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -19,8 +21,6 @@
 # You shouldF have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
-
-__updated__ = "2019-02-27"
 
 import galsim
 

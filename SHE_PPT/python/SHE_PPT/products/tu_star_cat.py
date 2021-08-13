@@ -7,6 +7,8 @@
     Origin: OU-SIM - Star Catalog Product
 """
 
+__updated__ = "2021-08-13"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -20,8 +22,6 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
-
-__updated__ = "2020-10-15"
 
 from ST_DataModelBindings.dpd.sim.raw.starscatalogproduct_stub import dpdStarsCatalogProduct
 
@@ -41,7 +41,6 @@ def init():
     binding_class.get_all_filenames = _get_all_filenames
 
     binding_class.has_files = True
-
 
 
 def _get_data_filename(self):

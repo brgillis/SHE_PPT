@@ -7,6 +7,8 @@
     Origin: OU-MER - FinalCatalog (TODO: Confirm) in their data model
 """
 
+__updated__ = "2021-08-13"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -20,8 +22,6 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
-
-__updated__ = "2021-06-09"
 
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.mer.raw.finalcatalog_stub import dpdMerFinalCatalog
@@ -50,7 +50,6 @@ def init():
     binding_class.get_all_filenames = _get_all_filenames
 
     binding_class.has_files = True
-
 
 
 def _set_data_filename(self, filename):

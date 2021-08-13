@@ -5,6 +5,8 @@
     Magic values and functions related to detector IDs in FITS headers.
 """
 
+__updated__ = "2021-08-13"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -18,8 +20,6 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
-
-__updated__ = "2021-02-10"
 
 import numpy as np
 
@@ -44,7 +44,7 @@ def get_id_string(x, y):
 
     # Check for valid values
     for v in x, y:
-        if not isinstance(v, (int,np.int8)):
+        if not isinstance(v, (int, np.int8)):
             raise TypeError(
                 "Values passed to get_id_string must be int type: " + str(v) + ", type: " + str(type(v)))
         if v < 1 or v > 6:

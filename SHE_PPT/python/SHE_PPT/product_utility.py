@@ -5,6 +5,8 @@
     Utility functions related to data products
 """
 
+__updated__ = "2021-08-13"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -18,8 +20,6 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
-
-__updated__ = "2021-02-10"
 
 from EL_PythonUtils.utilities import run_only_once
 from ST_DataModelBindings.dpd.she.intermediategeneral_stub import dpdSheIntermediateGeneral
@@ -139,7 +139,6 @@ def init_intermediate_general():
     binding_class.get_all_filenames = _get_all_intermediate_general_filenames
 
     binding_class.has_files = True
-
 
 
 def _set_intermediate_observation_catalog_data_filename(self, filename):

@@ -8,7 +8,8 @@ To visualize Euclid objects, use the wrappers in she_image_checkplot.py
 
 """
 
-#
+__updated__ = "2021-08-13"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -21,9 +22,6 @@ To visualize Euclid objects, use the wrappers in she_image_checkplot.py
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-#
-
-__updated__ = "2019-02-27"
 
 import os
 
@@ -65,10 +63,10 @@ class SkyImage():
         self.z1 = z1
         self.z2 = z2
         logger.debug(
-            "SkyImage initialization with z1=%s and z2=%s",z1, z2)
+            "SkyImage initialization with z1=%s and z2=%s", z1, z2)
         self.set_z(z1, z2)
 
-        logger.info("Created %s",self)
+        logger.info("Created %s", self)
 
     @property
     def shape(self):  # Just a shortcut
@@ -82,12 +80,12 @@ class SkyImage():
 
         if z1 is None:
             self.z1 = np.min(self.data)
-            logger.info("Set z1 to minimum value: %s",self.z1)
+            logger.info("Set z1 to minimum value: %s", self.z1)
         else:
             self.z1 = z1
         if z2 is None:
             self.z2 = np.max(self.data)
-            logger.info("Set z2 to maximum value: %s",self.z2)
+            logger.info("Set z2 to maximum value: %s", self.z2)
         else:
             self.z2 = z2
 
@@ -120,7 +118,7 @@ class SkyImage():
         self.z2 = np.max(stata)
 
         logger.info(
-            "Set automatic zscale from %s to %s",self.z1, self.z2)
+            "Set automatic zscale from %s to %s", self.z1, self.z2)
 
 
 def draw_sky_image(ax, si, **kwargs):
@@ -294,7 +292,6 @@ class SimpleFigure():
         if not self.has_been_drawn:
             self.draw()
 
-
     def draw_g_ellipses(self, cat, **kwargs):
         draw_g_ellipses(self.ax, cat, **kwargs)
 
@@ -306,12 +303,12 @@ class SimpleFigure():
 
         """
         self.check_drawn()
-        logger.info("Showing %s...",self)
+        logger.info("Showing %s...", self)
         plt.show()
 
     def save_to_file(self, filepath):
         self.check_drawn()
-        logger.info("Saving %s to '%s'...",self, filepath)
+        logger.info("Saving %s to '%s'...", self, filepath)
         self.fig.savefig(filepath, bbox_inches='tight')
 
 # Some utility functions
@@ -343,7 +340,7 @@ def read_fits(filepath):
 
     """
     a = astropy.io.fits.getdata(filepath).transpose()
-    logger.info("Read FITS images %s from file %s",a.shape, filepath)
+    logger.info("Read FITS images %s from file %s", a.shape, filepath)
     return a
 
 
@@ -361,7 +358,7 @@ def write_fits(a, filepath, overwrite=True):
 
     """
     if os.path.exists(filepath) and overwrite:
-        logger.info("File %s exists, I will overwrite it!",filepath)
+        logger.info("File %s exists, I will overwrite it!", filepath)
 
     astropy.io.fits.writeto(filepath, a.transpose(), overwrite=overwrite)
-    logger.info("Wrote %s array into %s",a.shape, filepath)
+    logger.info("Wrote %s array into %s", a.shape, filepath)

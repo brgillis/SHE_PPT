@@ -7,6 +7,8 @@
     Origin: OU-VIS
 """
 
+__updated__ = "2021-08-13"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -20,8 +22,6 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
-
-__updated__ = "2021-06-10"
 
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
@@ -59,7 +59,6 @@ def init():
     binding_class.get_all_filenames = _get_all_filenames
 
 
-
 def _set_data_filename(self, filename):
     set_data_filename_of_product(self, filename, "DataStorage")
 
@@ -75,7 +74,6 @@ def _set_psf_filename(self, filename):
     set_data_filename_of_product(self, filename, "PsfModelStorage")
 
 
-
 def _get_psf_filename(self):
     if hasattr(self.Data, "PsfModelStorage") and self.Data.PsfModelStorage is not None:
         return get_data_filename_from_product(self, "PsfModelStorage")
@@ -89,7 +87,6 @@ def _set_bkg_filename(self, filename):
     set_data_filename_of_product(self, filename, "BackgroundStorage")
 
 
-
 def _get_bkg_filename(self):
     if hasattr(self.Data, "BackgroundStorage") and self.Data.BackgroundStorage is not None:
         return get_data_filename_from_product(self, "BackgroundStorage")
@@ -101,7 +98,6 @@ def _set_wgt_filename(self, filename):
         self.Data.WeightStorage = create_vis_wgt_storage(filename)
 
     set_data_filename_of_product(self, filename, "WeightStorage")
-
 
 
 def _get_wgt_filename(self):
