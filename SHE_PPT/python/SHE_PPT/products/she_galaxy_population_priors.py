@@ -82,27 +82,10 @@ def create_dpd_she_galaxy_population_priors(filename=None):
     dpd_she_galaxy_population_priors.Header = HeaderProvider.create_generic_header("DpdSheGalaxyPopulationPriors")
 
     if filename:
-        dpd_galaxy_population_priors.set_filename(filename)
+        dpd_she_galaxy_population_priors.set_filename(filename)
 
     return dpd_she_galaxy_population_priors
 
 
 # Add a useful alias
 create_galaxy_population_priors_product = create_dpd_she_galaxy_population_priors
-
-
-def create_she_galaxy_population_priors(filename=None):
-    """
-        @TODO fill in docstring
-    """
-
-    she_galaxy_population_priors = SheGalaxyPopulationPriors()
-
-    she_galaxy_population_priors.format = "she.galaxyPopulationPriors"
-    she_galaxy_population_priors.version = "8.0"
-
-    she_galaxy_population_priors.DataContainer = DataContainer()
-    she_galaxy_population_priors.DataContainer.FileName = filename
-    she_galaxy_population_priors.DataContainer.filestatus = "PROPOSED"
-
-    return she_galaxy_population_priors
