@@ -25,7 +25,7 @@ __updated__ = "2021-08-13"
 
 from ST_DataModelBindings.dpd.sim.raw.starscatalogproduct_stub import dpdStarsCatalogProduct
 
-from ..product_utility import get_data_filename_from_product
+from ..product_utility import get_data_filename_from_product, get_all_filenames_just_data
 
 
 def init():
@@ -38,17 +38,10 @@ def init():
 
     binding_class.get_data_filename = _get_data_filename
     binding_class.get_filename = _get_data_filename
-    binding_class.get_all_filenames = _get_all_filenames
+    binding_class.get_all_filenames = get_all_filenames_just_data
 
     binding_class.has_files = True
 
 
 def _get_data_filename(self):
     return get_data_filename_from_product(self, "StarCatalog.DataStorage")
-
-
-def _get_all_filenames(self):
-
-    all_filenames = [self.get_data_filename(), ]
-
-    return all_filenames

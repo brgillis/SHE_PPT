@@ -29,7 +29,8 @@ import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.regausscalibration_stub import dpdSheRegaussCalibration
 
 from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
+from ..product_utility import (get_data_filename_from_product, set_data_filename_of_product,
+                               get_all_filenames_just_data)
 
 
 sample_file_name = 'SHE_PPT/sample_regauss_calibration.xml'
@@ -49,7 +50,7 @@ def init():
     binding_class.set_data_filename = _set_filename
     binding_class.get_data_filename = _get_filename
 
-    binding_class.get_all_filenames = _get_all_filenames
+    binding_class.get_all_filenames = get_all_filenames_just_data
 
     binding_class.has_files = False
 
@@ -60,38 +61,6 @@ def _set_filename(self, filename):
 
 def _get_filename(self):
     return get_data_filename_from_product(self, "RegaussCalibrationFileList[0].DataStorage")
-
-
-def _get_all_filenames(self):
-
-    all_filenames = [self.get_data_filename()]
-
-    return all_filenames
-
-
-class DpdSheRegaussCalibration:  # @FIXME
-
-    def __init__(self):
-        self.Header = None
-        self.Data = None
-
-    def validateBinding(self):
-        return False
-
-
-class SheRegaussCalibration:  # @FIXME
-
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-
-
-class DataContainer:  # @FIXME
-
-    def __init__(self):
-        self.FileName = None
-        self.filestatus = None
 
 
 def create_dpd_she_regauss_calibration(filename=None):
@@ -105,7 +74,7 @@ def create_dpd_she_regauss_calibration(filename=None):
     dpd_she_regauss_calibration.Header = HeaderProvider.create_generic_header("DpdSheRegaussCalibration")
 
     if filename:
-        _set_filename(dpd_she_regauss_calibration, filename)
+        dpd_she_regauss_calibration.set_filename(filename)
 
     return dpd_she_regauss_calibration
 

@@ -33,30 +33,16 @@ from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibrat
 from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
 
 from ..file_io import read_xml_product, find_aux_file
+from ..product_utility import init_no_files
 
 
 sample_file_name = "SHE_PPT/sample_validation_test_results.xml"
 
 
 def init():
-    """
-        Initialisers for SHE Validation Test Results data product
-    """
+    """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    binding_class = dpdSheValidationTestResults
-
-    # Add the data file name methods
-
-    binding_class.get_all_filenames = _get_all_filenames
-
-    binding_class.has_files = False
-
-
-def _get_all_filenames(self):
-
-    all_filenames = []
-
-    return all_filenames
+    init_no_files(binding_class=dpdSheValidationTestResults)
 
 
 def create_dpd_she_validation_test_results(reference_product=None,

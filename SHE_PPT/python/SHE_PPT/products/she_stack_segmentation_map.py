@@ -9,7 +9,7 @@
     converted from MER's version, so we need a separate product for it.
 """
 
-__updated__ = "2021-06-10"
+__updated__ = "2021-08-13"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -33,7 +33,7 @@ import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.stackreprojectedsegmentationmap_stub import dpdSheStackReprojectedSegmentationMap
 
 from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
+from ..product_utility import init_just_datastorage
 
 
 sample_file_name = "SHE_PPT/sample_stack_reprojected_segmentation_map.xml"
@@ -87,39 +87,9 @@ def load_stack_segmentation_map(filename, dir=None, **kwargs):
 
 
 def init():
-    """
-        Adds some extra functionality to the DpdSheStackReqprojectedSegmentationMap product
-    """
+    """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    binding_class = dpdSheStackReprojectedSegmentationMap
-
-    # Add the data file name methods
-
-    binding_class.set_filename = _set_filename
-    binding_class.get_filename = _get_filename
-
-    binding_class.set_data_filename = _set_filename
-    binding_class.get_data_filename = _get_filename
-
-    binding_class.get_all_filenames = _get_all_filenames
-
-    binding_class.has_files = True
-
-
-
-def _set_filename(self, filename):
-    set_data_filename_of_product(self, filename, "DataStorage")
-
-
-def _get_filename(self):
-    return get_data_filename_from_product(self, "DataStorage")
-
-
-def _get_all_filenames(self):
-
-    all_filenames = [self.get_data_filename()]
-
-    return all_filenames
+    init_just_datastorage(binding_class=dpdSheStackReprojectedSegmentationMap)
 
 
 def create_dpd_she_stack_segmentation_map(filename=None):
@@ -145,8 +115,7 @@ def create_dpd_she_stack_segmentation_map(filename=None):
         "DpdSheStackReprojectedSegmentationMap")
 
     if filename:
-        _set_filename(dpd_she_stack_reproj_seg_map_data, filename)
-
+        dpd_she_stack_reproj_seg_map_data.set_filename(filename)
 
     return dpd_she_stack_reproj_seg_map_data
 

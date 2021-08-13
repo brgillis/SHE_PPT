@@ -26,7 +26,7 @@ __updated__ = "2021-08-13"
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 
 from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import init_intermediate_observation_catalog
+from ..product_utility import init_int_obs_cat
 
 
 sample_file_name = 'SHE_PPT/sample_intermediate_observation_catalog.xml'
@@ -38,7 +38,7 @@ def init():
 
     """
 
-    init_intermediate_observation_catalog()
+    init_int_obs_cat()
 
 
 def create_dpd_she_simulated_catalog(filename="None"):

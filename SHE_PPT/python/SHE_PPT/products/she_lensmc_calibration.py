@@ -29,69 +29,16 @@ import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.lensmccalibration_stub import dpdSheLensMcCalibration
 
 from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
+from ..product_utility import init_just_datastorage
 
 
 sample_file_name = "SHE_PPT/sample_lensmc_calibration.xml"
 
 
 def init():
-    """
-        Initialisers for LensMC calibration
-    """
+    """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    binding_class = dpdSheLensMcCalibration
-
-    # Add the data file name methods
-
-    binding_class.set_filename = _set_filename
-    binding_class.get_filename = _get_filename
-    binding_class.set_data_filename = _set_filename
-    binding_class.get_data_filename = _get_filename
-
-    binding_class.get_all_filenames = _get_all_filenames
-
-    binding_class.has_files = False
-
-
-def _set_filename(self, filename):
-    set_data_filename_of_product(self, filename, "DataStorage")
-
-
-def _get_filename(self):
-    return get_data_filename_from_product(self, "DataStorage")
-
-
-def _get_all_filenames(self):
-
-    all_filenames = [self.get_filename()]
-
-    return all_filenames
-
-
-class DpdSheLensMcCalibration:  # @FIXME
-
-    def __init__(self):
-        self.Header = None
-        self.Data = None
-
-    def validateBinding(self):
-        return False
-
-
-class SheLensMcCalibration:  # @FIXME
-
-    def __init__(self):
-        self.format = None
-        self.version = None
-        self.DataContainer = None
-
-
-class DataContainer:  # @FIXME
-
-    def __init__(self):
-        self.FileName = None
-        self.filestatus = None
+    init_just_datastorage(binding_class=dpdSheLensMcCalibration)
 
 
 def create_dpd_she_lensmc_calibration(filename=None):
@@ -104,26 +51,9 @@ def create_dpd_she_lensmc_calibration(filename=None):
     dpd_she_lensmc_calibration.Header = HeaderProvider.create_generic_header("DpdSheLensMcCalibration")
 
     if filename:
-        _set_filename(dpd_she_lensmc_calibration, filename)
+        dpd_she_lensmc_calibration.set_filename(filename)
     return dpd_she_lensmc_calibration
 
 
 # Add a useful alias
 create_lensmc_calibration_data_product = create_dpd_she_lensmc_calibration
-
-
-def create_she_lensmc_calibration(filename=None):
-    """
-        @TODO fill in docstring
-    """
-
-    she_lensmc_calibration = SheLensMcCalibration()
-
-    she_lensmc_calibration.format = "she.lensMcMeasurements"
-    she_lensmc_calibration.version = "8.0"
-
-    she_lensmc_calibration.DataContainer = DataContainer()
-    she_lensmc_calibration.DataContainer.FileName = filename
-    she_lensmc_calibration.DataContainer.filestatus = "PROPOSED"
-
-    return she_lensmc_calibration

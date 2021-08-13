@@ -27,18 +27,21 @@ import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.galaxypopulationpriors_stub import dpdSheGalaxyPopulationPriors
 
 from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
+from ..product_utility import set_data_filename_of_product, get_data_filename_from_product
 
 
 sample_file_name = "SHE_PPT/sample_galaxy_population_priors.xml"
 
 
 def init():
-    """
-        ?????
-    """
+    """ Adds some extra functionality to this product, with functions to get filenames. """
 
     binding_class = dpdSheGalaxyPopulationPriors
+
+    if not hasattr(binding_class, "initialised"):
+        binding_class.initialised = True
+    else:
+        return
 
     # Add the data file name methods
 
@@ -62,7 +65,9 @@ def _get_data_filename(self):
 
 def _get_all_filenames(self):
 
-    all_filenames = [self.get_data_filename(), ]
+    all_filenames = []
+    for data_storage in self.Data.DataStorageList:
+        all_filenames.append(data_storage.DataContainer.FileName)
 
     return all_filenames
 
@@ -77,7 +82,7 @@ def create_dpd_she_galaxy_population_priors(filename=None):
     dpd_she_galaxy_population_priors.Header = HeaderProvider.create_generic_header("DpdSheGalaxyPopulationPriors")
 
     if filename:
-        _set_filename(dpd_galaxy_population_priors, filename)
+        dpd_galaxy_population_priors.set_filename(filename)
 
     return dpd_she_galaxy_population_priors
 

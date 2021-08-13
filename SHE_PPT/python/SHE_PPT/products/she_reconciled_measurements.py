@@ -25,13 +25,12 @@ __updated__ = "2021-08-13"
 
 import ST_DM_DmUtils.DmUtils as dm_utils
 from ST_DM_HeaderProvider import GenericHeaderProvider as HeaderProvider
-from ST_DataModelBindings.bas.imp.raw.stc_stub import polygonType
 from ST_DataModelBindings.dpd.she.reconciledmeasurements_stub import dpdSheReconciledMeasurements
 from ST_DataModelBindings.pro import she_stub as she_pro
 
 from ..constants.shear_estimation_methods import ShearEstimationMethods
 from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
+from ..product_utility import init_binding_class, get_data_filename_from_product, set_data_filename_of_product
 
 
 sample_file_name = "SHE_PPT/sample_reconciled_shear_measurements.xml"
@@ -43,6 +42,9 @@ def init():
     """
 
     binding_class = dpdSheReconciledMeasurements
+
+    if not init_binding_class(binding_class):
+        return
 
     # Add the data file name methods
 
@@ -62,9 +64,6 @@ def init():
 
     binding_class.get_method_filename = _get_method_filename
     binding_class.set_method_filename = _set_method_filename
-
-    binding_class.get_spatial_footprint = _get_spatial_footprint
-    binding_class.set_spatial_footprint = _set_spatial_footprint
 
     binding_class.has_files = True
 
@@ -173,42 +172,6 @@ def _set_method_filename(self, method, filename):
     return name
 
 
-def _set_spatial_footprint(self, p):
-    """ Set the spatial footprint. p can be either the spatial footprint, or
-        another product which has a spatial footprint defined.
-    """
-
-    # Figure out how the spatial footprint was passed to us
-    if isinstance(p, str):
-        # If we got a filepath, read it in and apply this function to the read-in product
-        _set_spatial_footprint(self, read_xml_product(p))
-        return
-    if isinstance(p, polygonType):
-        poly = p
-    elif hasattr(p, "Polygon"):
-        poly = p.Polygon
-    elif hasattr(p, "Data") and hasattr(p.Data, "ImgSpatialFootprint"):
-        poly = p.Data.ImgSpatialFootprint.Polygon
-    elif hasattr(p, "Data") and hasattr(p.Data, "SpatialCoverage"):
-        poly = p.Data.SpatialCoverage.Polygon
-    elif hasattr(p, "Data") and hasattr(p.Data, "CatalogCoverage"):
-        poly = p.Data.CatalogCoverage.SpatialCoverage.Polygon
-    else:
-        raise TypeError("For set_spatial_footprint, must be provided a spatial footprint, a product which has it, " +
-                        "or the path to such a product. Received: " + str(type(p)))
-
-    self.Data.SpatialCoverage.Polygon = poly
-
-    return
-
-
-def _get_spatial_footprint(self):
-    """ Get the spatial footprint as a polygonType object.
-    """
-
-    return self.Data.SpatialCoverage.Polygon
-
-
 def create_dpd_she_reconciled_measurements(KSB_filename=None,
                                            LensMC_filename=None,
                                            MomentsML_filename=None,
@@ -230,7 +193,7 @@ def create_dpd_she_reconciled_measurements(KSB_filename=None,
     _set_MomentsML_filename(dpd_she_reconciled_measurements, MomentsML_filename)
     _set_REGAUSS_filename(dpd_she_reconciled_measurements, REGAUSS_filename)
     if spatial_footprint is not None:
-        _set_spatial_footprint(dpd_she_reconciled_measurements, spatial_footprint)
+        dpd_she_reconciled_measurements.set_spatial_footprint(spatial_footprint)
 
     return dpd_she_reconciled_measurements
 

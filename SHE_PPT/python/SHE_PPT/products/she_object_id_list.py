@@ -28,30 +28,26 @@ import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.objectidlist_stub import dpdSheObjectIdList
 
 from ..file_io import read_xml_product, find_aux_file
+from ..product_utility import init_binding_class, get_all_filenames_none
 
 
 sample_file_name = "SHE_PPT/sample_object_id_list.xml"
 
 
 def init():
-    """
-        Adds some extra functionality to the DpdSheObjectIdList product
+    """ Adds some extra functionality to the DpdSheObjectIdList product
     """
 
     binding_class = dpdSheObjectIdList
 
-    binding_class.get_all_filenames = _get_all_filenames
+    if not init_binding_class(binding_class):
+        return
+
+    binding_class.get_all_filenames = get_all_filenames_none
     binding_class.get_id_list = _get_id_list
     binding_class.set_id_list = _set_id_list
 
     binding_class.has_files = False
-
-
-def _get_all_filenames(self):
-
-    all_filenames = []
-
-    return all_filenames
 
 
 def _get_id_list(self):

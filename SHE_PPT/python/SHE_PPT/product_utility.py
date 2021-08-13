@@ -22,13 +22,15 @@ __updated__ = "2021-08-13"
 # Boston, MA 02110-1301 USA
 
 from EL_PythonUtils.utilities import run_only_once
+
+from SHE_PPT.file_io import read_xml_product
+from ST_DataModelBindings.bas.imp.raw.stc_stub import polygonType
 from ST_DataModelBindings.dpd.she.intermediategeneral_stub import dpdSheIntermediateGeneral
 from ST_DataModelBindings.dpd.she.intermediateobservationcatalog_stub import dpdSheIntermediateObservationCatalog
 from ST_DataModelBindings.dpd.she.placeholdergeneral_stub import dpdShePlaceholderGeneral
 
 from .logging import getLogger
 from .utility import get_nested_attr
-
 
 logger = getLogger(__name__)
 
@@ -87,12 +89,123 @@ def set_data_filename_of_product(p, data_filename, attr_name=None):
     else:
         get_nested_attr(p.Data, attr_name).DataContainer.FileName = data_filename
 
+# Special functions we want to add to multiple products
 
-def _set_intermediate_general_data_filename(self, filename, i=0):
+
+def _set_spatial_footprint(self, p):
+    """ Set the spatial footprint. p can be either the spatial footprint, or
+        another product which has a spatial footprint defined.
+    """
+
+    if not hasattr(self.Data, "CatalogCoverage"):
+        raise TypeError(f"Product {self} of type {type(self)} has CatalogCoverage attribute, and so has no "
+                        f"spatial footprint to be set with set_spatial_footprint.")
+
+    # Figure out how the spatial footprint was passed to us
+    if isinstance(p, str):
+        # If we got a filepath, read it in and apply this function to the read-in product
+        _set_spatial_footprint(self, read_xml_product(p))
+        return
+    if isinstance(p, polygonType):
+        poly = p
+    elif hasattr(p, "Polygon"):
+        poly = p.Polygon
+    elif hasattr(p, "Data") and hasattr(p.Data, "SpatialCoverage"):
+        poly = p.Data.SpatialCoverage.Polygon
+    elif hasattr(p, "Data") and hasattr(p.Data, "CatalogCoverage"):
+        poly = p.Data.CatalogCoverage.SpatialCoverage.Polygon
+    else:
+        raise TypeError("For set_spatial_footprint, must be provided a spatial footprint, a product which has it, " +
+                        "or the path to such a product. Received: " + str(type(p)))
+
+    self.Data.SpatialCoverage.Polygon = poly
+
+
+def _get_spatial_footprint(self):
+    """ Get the spatial footprint as a polygonType object.
+    """
+
+    if not hasattr(self.Data, "CatalogCoverage"):
+        raise TypeError(f"Product {self} of type {type(self)} has CatalogCoverage attribute, and so has no "
+                        f"spatial footprint to be retrieved with get_spatial_footprint.")
+
+    return self.Data.CatalogCoverage.SpatialCoverage.Polygon
+
+# Some of the most common versions of filename getters and setters for easy reuse
+
+
+def set_filename_datastorage(self, filename):
+    set_data_filename_of_product(self, filename, "DataStorage")
+
+
+def get_filename_datastorage(self):
+    return get_data_filename_from_product(self, "DataStorage")
+
+
+def get_all_filenames_none(self):
+    return []
+
+
+def get_all_filenames_just_data(self):
+    return [self.get_data_filename(), ]
+
+
+def init_binding_class(binding_class):
+    """ Boilerplate code for initing any class.
+    """
+
+    if not hasattr(binding_class, "initialised"):
+        binding_class.initialised = True
+    else:
+        return False
+
+    # Add special methods in case they're needed
+    binding_class.set_spatial_footprint = _set_spatial_footprint
+    binding_class.get_spatial_footprint = _get_spatial_footprint
+
+    return True
+
+
+def init_no_files(binding_class):
+    """ Adds some extra functionality to a product, assuming it doesn't point to any files.
+    """
+
+    if not init_binding_class(binding_class):
+        return
+
+    # Add the data file name methods
+
+    binding_class.get_all_filenames = get_all_filenames_none
+
+    binding_class.has_files = False
+
+
+def init_just_datastorage(binding_class):
+    """ Adds some extra functionality to a product, assuming it only only points to one file, in the data storage
+        attribute.
+    """
+
+    if not init_binding_class(binding_class):
+        return
+
+    # Add the data file name methods
+
+    binding_class.set_filename = set_filename_datastorage
+    binding_class.get_filename = get_filename_datastorage
+
+    binding_class.set_data_filename = set_filename_datastorage
+    binding_class.get_data_filename = get_filename_datastorage
+
+    binding_class.get_all_filenames = get_all_filenames_just_data
+
+    binding_class.has_files = True
+
+
+def _set_int_gen_data_filename(self, filename, i=0):
     set_data_filename_of_product(self, filename, f"DataStorage[{i}]")
 
 
-def _get_intermediate_general_data_filename(self, i=0):
+def _get_int_gen_data_filename(self, i=0):
     return get_data_filename_from_product(self, f"DataStorage[{i}]")
 
 
@@ -118,9 +231,9 @@ def _get_all_generic_filenames(self, method):
     return all_filenames
 
 
-def _get_all_intermediate_general_filenames(self):
+def _get_all_int_gen_filenames(self):
 
-    return _get_all_generic_filenames(self, _get_intermediate_general_data_filename)
+    return _get_all_generic_filenames(self, _get_int_gen_data_filename)
 
 
 @run_only_once
@@ -130,59 +243,59 @@ def init_intermediate_general():
 
     # Add the data file name methods
 
-    binding_class.set_filename = _set_intermediate_general_data_filename
-    binding_class.get_filename = _get_intermediate_general_data_filename
+    binding_class.set_filename = _set_int_gen_data_filename
+    binding_class.get_filename = _get_int_gen_data_filename
 
-    binding_class.set_data_filename = _set_intermediate_general_data_filename
-    binding_class.get_data_filename = _get_intermediate_general_data_filename
+    binding_class.set_data_filename = _set_int_gen_data_filename
+    binding_class.get_data_filename = _get_int_gen_data_filename
 
-    binding_class.get_all_filenames = _get_all_intermediate_general_filenames
+    binding_class.get_all_filenames = _get_all_int_gen_filenames
 
     binding_class.has_files = True
 
 
-def _set_intermediate_observation_catalog_data_filename(self, filename):
+def _set_int_obs_cat_data_filename(self, filename):
     set_data_filename_of_product(self, filename, "DataStorage")
 
 
-def _get_intermediate_observation_catalog_data_filename(self):
+def _get_int_obs_cat_data_filename(self):
     return get_data_filename_from_product(self, "DataStorage")
 
 
-def _get_all_intermediate_observation_catalog_filenames(self):
+def _get_all_int_obs_cat_filenames(self):
 
-    return _get_all_generic_filenames(self, _get_intermediate_observation_catalog_data_filename)
+    return _get_all_generic_filenames(self, _get_int_obs_cat_data_filename)
 
 
 @run_only_once
-def init_intermediate_observation_catalog():
+def init_int_obs_cat():
 
     binding_class = dpdSheIntermediateObservationCatalog
 
     # Add the data file name methods
 
-    binding_class.set_filename = _set_intermediate_observation_catalog_data_filename
-    binding_class.get_filename = _get_intermediate_observation_catalog_data_filename
+    binding_class.set_filename = _set_int_obs_cat_data_filename
+    binding_class.get_filename = _get_int_obs_cat_data_filename
 
-    binding_class.set_data_filename = _set_intermediate_observation_catalog_data_filename
-    binding_class.get_data_filename = _get_intermediate_observation_catalog_data_filename
+    binding_class.set_data_filename = _set_int_obs_cat_data_filename
+    binding_class.get_data_filename = _get_int_obs_cat_data_filename
 
-    binding_class.get_all_filenames = _get_all_intermediate_observation_catalog_filenames
+    binding_class.get_all_filenames = _get_all_int_obs_cat_filenames
 
     binding_class.has_files = True
 
 
-def _set_placeholder_general_data_filename(self, filename, i=0):
+def _set_plc_gen_data_filename(self, filename, i=0):
     set_data_filename_of_product(self, filename, f"DataStorage[{i}]")
 
 
-def _get_placeholder_general_data_filename(self, i=0):
+def _get_plc_gen_data_filename(self, i=0):
     return get_data_filename_from_product(self, f"DataStorage[{i}]")
 
 
-def _get_all_placeholder_general_filenames(self):
+def _get_all_plc_gen_filenames(self):
 
-    return _get_all_generic_filenames(self, _get_placeholder_general_data_filename)
+    return _get_all_generic_filenames(self, _get_plc_gen_data_filename)
 
 
 @run_only_once
@@ -192,12 +305,12 @@ def init_placeholder_general():
 
     # Add the data file name methods
 
-    binding_class.set_filename = _set_placeholder_general_data_filename
-    binding_class.get_filename = _get_placeholder_general_data_filename
+    binding_class.set_filename = _set_plc_gen_data_filename
+    binding_class.get_filename = _get_plc_gen_data_filename
 
-    binding_class.set_data_filename = _set_placeholder_general_data_filename
-    binding_class.get_data_filename = _get_placeholder_general_data_filename
+    binding_class.set_data_filename = _set_plc_gen_data_filename
+    binding_class.get_data_filename = _get_plc_gen_data_filename
 
-    binding_class.get_all_filenames = _get_all_placeholder_general_filenames
+    binding_class.get_all_filenames = _get_all_plc_gen_filenames
 
     binding_class.has_files = True

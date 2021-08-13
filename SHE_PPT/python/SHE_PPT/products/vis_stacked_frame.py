@@ -27,7 +27,8 @@ import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
 
 from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
+from ..product_utility import (get_data_filename_from_product, set_data_filename_of_product,
+                               set_filename_datastorage, get_filename_datastorage)
 from ..products.vis_calibrated_frame import (create_vis_psf_storage,
                                              create_vis_bkg_storage, create_vis_wgt_storage)
 
@@ -44,11 +45,11 @@ def init():
 
     # Add the data file name methods
 
-    binding_class.set_filename = _set_data_filename
-    binding_class.get_filename = _get_data_filename
+    binding_class.set_filename = set_filename_datastorage
+    binding_class.get_filename = get_filename_datastorage
 
-    binding_class.set_data_filename = _set_data_filename
-    binding_class.get_data_filename = _get_data_filename
+    binding_class.set_data_filename = set_filename_datastorage
+    binding_class.get_data_filename = get_filename_datastorage
 
     binding_class.set_psf_filename = _set_psf_filename
     binding_class.get_psf_filename = _get_psf_filename
@@ -60,14 +61,6 @@ def init():
     binding_class.get_wgt_filename = _get_wgt_filename
 
     binding_class.get_all_filenames = _get_all_filenames
-
-
-def _set_data_filename(self, filename):
-    set_data_filename_of_product(self, filename, "DataStorage")
-
-
-def _get_data_filename(self):
-    return get_data_filename_from_product(self, "DataStorage")
 
 
 def _set_psf_filename(self, filename):
