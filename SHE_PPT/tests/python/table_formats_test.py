@@ -54,7 +54,7 @@ from SHE_PPT.table_formats.she_simulated_catalog import tf as simc_tf
 from SHE_PPT.table_formats.she_simulation_plan import tf as simp_tf
 from SHE_PPT.table_formats.she_star_catalog import tf as sc_tf
 from SHE_PPT.table_formats.she_tu_matched import tf as tum_tf
-from SHE_PPT.table_testing import _test_is_in_format
+from SHE_PPT.testing.tables import test_is_in_format
 from SHE_PPT.table_utility import is_in_format, add_row
 import numpy as np
 
@@ -145,7 +145,7 @@ class TestTableFormats:
     def test_is_in_format(self):
 
         # Call the test stored in the table_testing module (to re-use code with other projects)
-        _test_is_in_format(self)
+        test_is_in_format(self)
 
     def test_base_is_in_format(self):
 
