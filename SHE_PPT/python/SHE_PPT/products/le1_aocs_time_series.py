@@ -40,10 +40,10 @@ def init():
     """
 
     init_placeholder_general(product_type_name=product_type_name,
-                             init_function=init_product)
+                             init_function=create_dpd_le1_aocs_time_series)
 
 
-def init_product(filename=None):
+def create_dpd_le1_aocs_time_series(filename=None):
     """ Initialize a product of this type
     """
 

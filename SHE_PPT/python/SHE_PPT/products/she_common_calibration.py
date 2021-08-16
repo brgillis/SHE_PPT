@@ -45,7 +45,7 @@ def init():
     binding_class = dpdSheCommonCalibration
 
     if not init_binding_class(binding_class,
-                              init_function=init_product):
+                              init_function=create_dpd_she_common_calibration):
         return
 
     # Add the data file name methods
@@ -174,10 +174,10 @@ def _set_method_filename(self, method, filename):
     return name
 
 
-def init_product(KSB_filename=None,
-                 LensMC_filename=None,
-                 MomentsML_filename=None,
-                 REGAUSS_filename=None):
+def create_dpd_she_common_calibration(KSB_filename=None,
+                                      LensMC_filename=None,
+                                      MomentsML_filename=None,
+                                      REGAUSS_filename=None):
     """
         @TODO fill in docstring
     """

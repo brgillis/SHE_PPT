@@ -65,8 +65,15 @@ def create_dpd_she_object_id_list(id_list=None):
         @TODO fill in docstring
     """
 
-    return create_product_from_template(template_filename=sample_file_name,
-                                        product_type_name=product_type_name,)
+    dpd_she_object_id_list = create_product_from_template(template_filename=sample_file_name,
+                                                          product_type_name=product_type_name,)
+
+    if id_list:
+        dpd_she_object_id_list.set_id_list(id_list)
+    else:
+        dpd_she_object_id_list.set_id_list([])
+
+    return dpd_she_object_id_list
 
 
 # Add a useful alias

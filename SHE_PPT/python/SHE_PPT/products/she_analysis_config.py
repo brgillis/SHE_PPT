@@ -37,11 +37,11 @@ def init():
     """ Adds some extra functionality to this product, with functions to get filenames. """
 
     init_just_datastorage(binding_class=dpdSheAnalysisConfig,
-                          init_function=init_product)
+                          init_function=create_dpd_she_analysis_config)
 
 
-def init_product(filename=None,
-                 data_filename=None):
+def create_dpd_she_analysis_config(filename=None,
+                                   data_filename=None):
     """ Creates a product of this type.
     """
 

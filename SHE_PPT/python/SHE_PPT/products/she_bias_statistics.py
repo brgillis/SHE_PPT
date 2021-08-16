@@ -435,7 +435,6 @@ def create_dpd_she_bias_statistics_from_stats(KSB_bias_statistics=None,
 # Add useful aliases
 create_she_bias_statistics_product = create_dpd_she_bias_statistics
 create_she_bias_statistics_product_from_stats = create_dpd_she_bias_statistics_from_stats
-init_product = create_dpd_she_bias_statistics
 
 # Creation functions
 
