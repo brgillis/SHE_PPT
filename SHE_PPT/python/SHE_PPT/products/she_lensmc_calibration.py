@@ -31,6 +31,7 @@ from ..product_utility import init_just_datastorage, create_product_from_templat
 
 
 sample_file_name = "SHE_PPT/sample_lensmc_calibration.xml"
+product_type_name = "DpdSheLensMcCalibration"
 
 
 def init():
@@ -46,7 +47,7 @@ def create_dpd_she_lensmc_calibration(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_type_name="DpdSheLensMcCalibration",
+                                        product_type_name=product_type_name,
                                         filename=filename,
                                         data_filename=data_filename)
 

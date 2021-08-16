@@ -29,6 +29,7 @@ from ..product_utility import init_just_datastorage, create_product_from_templat
 
 
 sample_file_name = "SHE_PPT/sample_mer_final_catalog.xml"
+product_type_name = "DpdMerFinalCatalog"
 
 
 def init():
@@ -44,7 +45,7 @@ def create_dpd_she_detections(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_type_name="DpdMerFinalCatalog",
+                                        product_type_name=product_type_name,
                                         filename=filename,
                                         data_filename=data_filename)
 

@@ -30,6 +30,7 @@ from ..product_utility import init_just_datastorage, create_product_from_templat
 
 
 sample_file_name = "SHE_PPT/sample_lensmc_chains.xml"
+product_type_name = "DpdSheLensMcChains"
 
 
 def init():
@@ -46,7 +47,7 @@ def create_dpd_she_lensmc_chains(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_type_name="DpdSheLensMcChains",
+                                        product_type_name=product_type_name,
                                         filename=filename,
                                         data_filename=data_filename,
                                         spatial_footprint=spatial_footprint)

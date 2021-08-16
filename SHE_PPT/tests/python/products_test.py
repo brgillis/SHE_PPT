@@ -31,6 +31,16 @@ class TestLe1AocsTimeSeries(SimpleDataProductTester):
     product_type_name = products.le1_aocs_time_series.product_type_name
 
 
+class TestMerFinalCatalog(SimpleDataProductTester):
+    product_class = products.mer_final_catalog.dpdMerFinalCatalog
+    product_type_name = products.mer_final_catalog.product_type_name
+
+
+class TestMerSegmentationMap(SimpleDataProductTester):
+    product_class = products.mer_segmentation_map.dpdMerSegmentationMap
+    product_type_name = products.mer_segmentation_map.product_type_name
+
+
 class TestSheAnalysisConfig(SimpleDataProductTester):
     product_class = products.she_analysis_config.dpdSheAnalysisConfig
     product_type_name = products.she_analysis_config.product_type_name
@@ -49,3 +59,23 @@ class TestSheCommonCalibration(MethodsProductTester):
 class TestSheExpectedShearValidationStatistics(SimpleDataProductTester):
     product_class = products.she_expected_shear_validation_statistics.dpdShePlaceholderGeneral
     product_type_name = products.she_expected_shear_validation_statistics.product_type_name
+
+
+class TestSheExposureSegmentationMap(SimpleDataProductTester):
+    product_class = products.she_exposure_segmentation_map.dpdSheExposureReprojectedSegmentationMap
+    product_type_name = products.she_exposure_segmentation_map.product_type_name
+
+
+class TestSheGalaxyPopulationPriors(SimpleDataProductTester):
+    product_class = products.she_galaxy_population_priors.dpdSheGalaxyPopulationPriors
+    product_type_name = products.she_galaxy_population_priors.product_type_name
+
+
+class TestSheKsbCalibration(SimpleDataProductTester):
+    product_class = products.she_ksb_calibration.dpdSheKsbCalibration
+    product_type_name = products.she_ksb_calibration.product_type_name
+
+
+class TestSheKsbTraining(SimpleDataProductTester):
+    product_class = products.she_ksb_training.dpdSheKsbTraining
+    product_type_name = products.she_ksb_training.product_type_name

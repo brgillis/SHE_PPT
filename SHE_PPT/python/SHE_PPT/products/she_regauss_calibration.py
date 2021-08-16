@@ -33,6 +33,7 @@ from ..product_utility import (get_data_filename_from_product, set_data_filename
 
 
 sample_file_name = 'SHE_PPT/sample_regauss_calibration.xml'
+product_type_name = "DpdSheRegaussCalibration"
 
 
 def init():
@@ -70,7 +71,7 @@ def create_dpd_she_regauss_calibration(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_type_name="DpdSheRegaussCalibration",
+                                        product_type_name=product_type_name,
                                         filename=filename,
                                         data_filename=data_filename)
 

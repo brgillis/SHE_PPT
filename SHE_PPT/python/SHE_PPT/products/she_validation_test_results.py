@@ -26,17 +26,16 @@ __updated__ = "2021-08-16"
 
 from copy import deepcopy
 
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.mer.raw.finalcatalog_stub import dpdMerFinalCatalog
 from ST_DataModelBindings.dpd.she.validationtestresults_stub import dpdSheValidationTestResults
 from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
 from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
 
-from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import init_no_files
+from ..product_utility import init_no_files, create_product_from_template
 
 
 sample_file_name = "SHE_PPT/sample_validation_test_results.xml"
+product_type_name = "DpdSheValidationTestResults"
 
 
 def init():
@@ -55,9 +54,8 @@ def create_dpd_she_validation_test_results(reference_product=None,
         @TODO fill in docstring
     """
 
-    dpd_she_validation_test_results = read_xml_product(find_aux_file(sample_file_name))
-
-    dpd_she_validation_test_results.Header = HeaderProvider.create_generic_header("DpdSheValidationTestResults")
+    dpd_she_validation_test_results = create_product_from_template(template_filename=sample_file_name,
+                                                                   product_type_name=product_type_name,)
 
     # Quick alias to Data to save text
     Data = dpd_she_validation_test_results.Data

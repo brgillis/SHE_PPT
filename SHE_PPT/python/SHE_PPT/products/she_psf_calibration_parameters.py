@@ -30,6 +30,7 @@ from ..product_utility import init_just_datastorage, create_product_from_templat
 
 
 sample_file_name = "SHE_PPT/sample_psf_calibration_parameters.xml"
+product_type_name = "DpdShePsfCalibrationParameters"
 
 
 def init():
@@ -45,7 +46,7 @@ def create_dpd_she_psf_calibration_parameters(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_type_name="DpdShePsfCalibrationParameters",
+                                        product_type_name=product_type_name,
                                         filename=filename,
                                         data_filename=data_filename)
 

@@ -29,6 +29,7 @@ from ..product_utility import init_intermediate_general, create_general_product_
 
 
 sample_file_name = 'SHE_PPT/sample_intermediate_general.xml'
+product_type_name = "DpdSheSimulationConfig"
 
 
 def init():
@@ -44,7 +45,7 @@ def create_dpd_she_simulation_config(filename=None):
     """
 
     return create_general_product_from_template(template_filename=sample_file_name,
-                                                product_type_name="DpdSheSimulationConfig",
+                                                product_type_name=product_type_name,
                                                 filename=filename,)
 
 

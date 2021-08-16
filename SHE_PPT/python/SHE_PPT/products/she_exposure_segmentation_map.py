@@ -37,6 +37,7 @@ from ..product_utility import init_just_datastorage, create_product_from_templat
 
 
 sample_file_name = "SHE_PPT/sample_exposure_reprojected_segmentation_map.xml"
+product_type_name = "DpdSheExposureReprojectedSegmentationMap"
 
 
 # Convenience function to easily load the actual map
@@ -99,7 +100,7 @@ def create_dpd_she_exposure_segmentation_map(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_type_name="DpdSheExposureReprojectedSegmentationMap",
+                                        product_type_name=product_type_name,
                                         filename=filename,
                                         data_filename=data_filename)
 

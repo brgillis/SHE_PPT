@@ -32,6 +32,7 @@ from ..product_utility import (get_all_filenames_just_data, set_data_filename_of
 
 
 sample_file_name = "SHE_PPT/sample_ksb_calibration.xml"
+product_type_name = "DpdSheKsbCalibration"
 
 
 def init():
@@ -70,7 +71,7 @@ def create_dpd_she_ksb_calibration(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_type_name="DpdSheKsbCalibration",
+                                        product_type_name=product_type_name,
                                         filename=filename,
                                         data_filename=data_filename)
 

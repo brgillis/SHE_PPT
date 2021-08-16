@@ -29,6 +29,7 @@ from ..product_utility import init_method_files, create_measurements_product_fro
 
 
 sample_file_name = "SHE_PPT/sample_validated_shear_measurements.xml"
+product_type_name = "DpdSheValidatedMeasurements"
 
 
 def init():
@@ -49,7 +50,7 @@ def create_dpd_she_validated_measurements(KSB_filename=None,
     """
 
     return create_measurements_product_from_template(template_filename=sample_file_name,
-                                                     product_type_name="DpdSheValidatedMeasurements",
+                                                     product_type_name=product_type_name,
                                                      KSB_filename=KSB_filename,
                                                      LensMC_filename=LensMC_filename,
                                                      MomentsML_filename=MomentsML_filename,

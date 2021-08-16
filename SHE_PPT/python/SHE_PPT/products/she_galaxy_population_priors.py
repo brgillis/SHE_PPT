@@ -30,6 +30,7 @@ from ..product_utility import (set_data_filename_of_product, get_data_filename_f
 
 
 sample_file_name = "SHE_PPT/sample_galaxy_population_priors.xml"
+product_type_name = "DpdSheGalaxyPopulationPriors"
 
 
 def init():
@@ -76,7 +77,7 @@ def create_dpd_she_galaxy_population_priors(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_type_name="DpdSheGalaxyPopulationPriors",
+                                        product_type_name=product_type_name,
                                         filename=filename,
                                         data_filename=data_filename)
 

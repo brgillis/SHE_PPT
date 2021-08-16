@@ -29,6 +29,7 @@ from ..product_utility import init_int_obs_cat, create_general_product_from_temp
 
 
 sample_file_name = 'SHE_PPT/sample_intermediate_observation_catalog.xml'
+product_type_name = "DpdSheSimulatedCatalog"
 
 
 def init():
@@ -45,7 +46,7 @@ def create_dpd_she_simulated_catalog(filename=None):
     """
 
     return create_general_product_from_template(template_filename=sample_file_name,
-                                                product_type_name="DpdSheIntermediateObservationCatalog",
+                                                product_type_name=product_type_name,
                                                 filename=filename,)
 
 

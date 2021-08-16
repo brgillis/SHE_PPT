@@ -38,6 +38,7 @@ from ..utility import find_extension
 
 
 sample_file_name = "SHE_PPT/sample_mer_segmentation_map.xml"
+product_type_name = "DpdMerSegmentationMap"
 
 
 # Convenience function to easily load the actual map

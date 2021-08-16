@@ -23,17 +23,17 @@ __updated__ = "2021-08-16"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
 import ST_DataModelBindings.pro.vis_stub as vis_pro
 from ST_DataModelBindings.sys.dss_stub import dataContainer
 
-from ..file_io import read_xml_product, find_aux_file
 from ..product_utility import (get_data_filename_from_product, set_data_filename_of_product,
-                               set_filename_datastorage, get_filename_datastorage)
+                               set_filename_datastorage, get_filename_datastorage,
+                               create_product_from_template)
 
 
 sample_file_name = "SHE_PPT/sample_vis_calibrated_frame.xml"
+product_type_name = "DpdVisCalibratedFrame"
 
 
 def init():
@@ -124,17 +124,12 @@ def create_dpd_vis_calibrated_frame(data_filename="None",
         @TODO fill in docstring
     """
 
-    dpd_vis_calibrated_frame = read_xml_product(
-        find_aux_file(sample_file_name))
-
-    # Overwrite the header with a new one to update the creation date (among
-    # other things)
-    dpd_vis_calibrated_frame.Header = HeaderProvider.create_generic_header("DpdVisCalibratedFrame")
-
-    dpd_vis_calibrated_frame.set_filename(data_filename)
-    _set_psf_filename(dpd_vis_calibrated_frame, psf_filename)
-    _set_bkg_filename(dpd_vis_calibrated_frame, bkg_filename)
-    _set_wgt_filename(dpd_vis_calibrated_frame, wgt_filename)
+    dpd_vis_calibrated_frame = create_product_from_template(template_filename=sample_file_name,
+                                                            product_type_name=product_type_name,
+                                                            data_filename=data_filename)
+    dpd_vis_calibrated_frame.set_psf_filename(psf_filename)
+    dpd_vis_calibrated_frame.set_bkg_filename(bkg_filename)
+    dpd_vis_calibrated_frame.set_wgt_filename(wgt_filename)
 
     return dpd_vis_calibrated_frame
 
