@@ -8,7 +8,7 @@
     Origin: OU-SHE
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -40,7 +40,8 @@ def init():
 
     binding_class = dpdSheObjectIdList
 
-    if not init_binding_class(binding_class):
+    if not init_binding_class(binding_class,
+                              init_function=create_dpd_she_object_id_list):
         return
 
     binding_class.get_all_filenames = get_all_filenames_none

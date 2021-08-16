@@ -5,7 +5,7 @@
     Functions to create and output a she_simulation_plan data product.
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -34,7 +34,7 @@ def init():
         Adds some extra functionality to the product
     """
 
-    init_intermediate_general()
+    init_intermediate_general(init_function=create_dpd_she_simulation_plan)
 
 
 def create_dpd_she_simulation_plan(filename=None):

@@ -9,7 +9,7 @@
     converted from MER's version, so we need a separate product for it.
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -89,7 +89,8 @@ def load_she_exposure_segmentation_map(filename, directory=None, **kwargs):
 def init():
     """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    init_just_datastorage(binding_class=dpdSheExposureReprojectedSegmentationMap)
+    init_just_datastorage(binding_class=dpdSheExposureReprojectedSegmentationMap,
+                          init_function=create_dpd_she_exposure_segmentation_map)
 
 
 def create_dpd_she_exposure_segmentation_map(filename=None,

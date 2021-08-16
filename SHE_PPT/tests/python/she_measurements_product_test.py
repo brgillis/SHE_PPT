@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2021-08-12"
+__updated__ = "2021-08-16"
 
 from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.products import she_measurements as prod
@@ -31,7 +31,6 @@ class TestShearEstimatesProduct(object):
 
     def test_validation(self):
 
-        b_filename = "test_file_b.fits"
         k_filename = "test_file_k.fits"
         l_filename = "test_file_l.fits"
         m_filename = "test_file_m.fits"
@@ -52,8 +51,6 @@ class TestShearEstimatesProduct(object):
         assert product.get_MomentsML_filename() == "data/" + m_filename
         assert product.get_REGAUSS_filename() == "data/" + r_filename
 
-        return
-
     def test_default_filenames(self):
         """Test that all filenames in a default product are empty.
         """
@@ -64,8 +61,6 @@ class TestShearEstimatesProduct(object):
 
         for filename in product.get_all_filenames():
             assert filename == "" or filename is None or filename == "data/" or filename == "data/None"
-
-        return
 
     def test_xml_writing_and_reading(self, tmpdir):
 
@@ -93,5 +88,3 @@ class TestShearEstimatesProduct(object):
         assert loaded_product.get_LensMC_filename() == "data/" + l_filename
         assert loaded_product.get_MomentsML_filename() == "data/" + m_filename
         assert loaded_product.get_REGAUSS_filename() == "data/" + r_filename
-
-        return

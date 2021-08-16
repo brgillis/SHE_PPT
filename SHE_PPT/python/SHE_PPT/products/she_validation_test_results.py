@@ -7,7 +7,7 @@
     Origin: OU-SHE - Output from various pipelines.
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -42,7 +42,8 @@ sample_file_name = "SHE_PPT/sample_validation_test_results.xml"
 def init():
     """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    init_no_files(binding_class=dpdSheValidationTestResults)
+    init_no_files(binding_class=dpdSheValidationTestResults,
+                  init_function=create_dpd_she_validation_test_results)
 
 
 def create_dpd_she_validation_test_results(reference_product=None,

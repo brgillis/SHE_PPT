@@ -8,7 +8,7 @@
     and input to Analysis pipeline; must be persistent in archive.
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -51,7 +51,9 @@ def init():
 
     binding_class.get_all_filenames = get_all_filenames_just_data
 
-    binding_class.has_files = False
+    binding_class.has_files = True
+
+    binding_class.init_function = create_dpd_she_regauss_calibration
 
 
 def _set_filename(self, filename):

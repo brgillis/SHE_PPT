@@ -8,7 +8,7 @@
     and input to Analysis pipeline; must be persistent in archive.
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -35,7 +35,8 @@ sample_file_name = "SHE_PPT/sample_momentsml_training.xml"
 def init():
     """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    init_just_datastorage(binding_class=dpdSheMomentsMlTraining)
+    init_just_datastorage(binding_class=dpdSheMomentsMlTraining,
+                          init_function=create_dpd_she_momentsml_training)
 
 
 def create_dpd_she_momentsml_training(filename=None,

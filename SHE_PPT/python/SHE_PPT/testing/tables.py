@@ -1,4 +1,4 @@
-""" @file table_testing.py
+""" @file testing/tables.py
 
     Created 14 December 2020
 
@@ -28,41 +28,41 @@ import numpy as np
 from ..table_utility import is_in_format
 
 
-def _test_format_strict(empty_tables, i, j):
-    if i == j and not is_in_format(empty_tables[i], self.formats[j], strict=True):
-        raise ValueError(f"Table format {self.formats[j].m.table_format} "
+def _test_format_strict(empty_tables, l_tf, i, j):
+    if i == j and not is_in_format(empty_tables[i], l_tf[j], strict=True):
+        raise ValueError(f"Table format {l_tf[j].m.table_format} "
                          f"doesn't initialize a valid table in strict test.")
-    if i != j and is_in_format(empty_tables[i], self.formats[j], strict=True):
-        raise ValueError(f"Table format {self.formats[j].m.table_format} "
-                         f"resolves true for tables of format {self.formats[i].m.table_format} "
+    if i != j and is_in_format(empty_tables[i], l_tf[j], strict=True):
+        raise ValueError(f"Table format {l_tf[j].m.table_format} "
+                         f"resolves true for tables of format {l_tf[i].m.table_format} "
                          f"in strict test.")
 
 
-def _test_format_nonstrict(empty_tables, i, j):
-    if i == j and not is_in_format(empty_tables[i], self.formats[j], strict=False):
-        raise ValueError(f"Table format {self.formats[j].m.table_format} "
+def _test_format_nonstrict(empty_tables, l_tf, i, j):
+    if i == j and not is_in_format(empty_tables[i], l_tf[j], strict=False):
+        raise ValueError(f"Table format {l_tf[j].m.table_format} "
                          f"doesn't initialize a valid table in non-strict test.")
-    if i != j and is_in_format(empty_tables[i], self.formats[j], strict=False):
-        raise ValueError(f"Table format {self.formats[j].m.table_format} "
-                         f"resolves true for tables of format {self.formats[i].m.table_format} "
+    if i != j and is_in_format(empty_tables[i], l_tf[j], strict=False):
+        raise ValueError(f"Table format {l_tf[j].m.table_format} "
+                         f"resolves true for tables of format {l_tf[i].m.table_format} "
                          f"in non-strict test.")
 
 
-def test_is_in_format(self):
+def _test_is_in_format(l_tf):
     # Test each format is detected correctly
 
     empty_tables = []
 
-    for tf in self.formats:
+    for tf in l_tf:
         empty_tables.append(tf.init_table())
 
-    for i in range(len(self.formats)):
+    for i in range(len(l_tf)):
 
         # Try strict test
-        for j in range((len(self.formats))):
-            _test_format_strict(empty_tables, i, j)
+        for j in range((len(l_tf))):
+            _test_format_strict(empty_tables, l_tf, i, j)
 
         # Try non-strict test now
         empty_tables[i].add_column(Column(name='new_column', data=np.zeros((0,))))
-        for j in range((len(self.formats))):
-            _test_format_nonstrict(empty_tables, i, j)
+        for j in range((len(l_tf))):
+            _test_format_nonstrict(empty_tables, l_tf, i, j)

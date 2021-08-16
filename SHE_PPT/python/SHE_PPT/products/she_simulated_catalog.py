@@ -7,7 +7,7 @@
     Origin: OU-SHE - Internal to calibration pipeline.
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -37,7 +37,7 @@ def init():
 
     """
 
-    init_int_obs_cat()
+    init_int_obs_cat(init_function=create_dpd_she_simulated_catalog)
 
 
 def create_dpd_she_simulated_catalog(filename=None):

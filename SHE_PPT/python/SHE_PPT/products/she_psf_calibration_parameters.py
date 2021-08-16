@@ -8,7 +8,7 @@
     must be persistent in archive.
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -35,7 +35,8 @@ sample_file_name = "SHE_PPT/sample_psf_calibration_parameters.xml"
 def init():
     """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    init_just_datastorage(binding_class=dpdShePsfCalibrationParameters)
+    init_just_datastorage(binding_class=dpdShePsfCalibrationParameters,
+                          init_function=create_dpd_she_psf_calibration_parameters)
 
 
 def create_dpd_she_psf_calibration_parameters(filename=None,

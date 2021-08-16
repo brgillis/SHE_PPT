@@ -7,7 +7,7 @@
     Origin: OU-VIS
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -61,6 +61,10 @@ def init():
     binding_class.get_wgt_filename = _get_wgt_filename
 
     binding_class.get_all_filenames = _get_all_filenames
+
+    binding_class.has_files = True
+
+    binding_class.init_function = create_dpd_vis_stacked_frame
 
 
 def _set_psf_filename(self, filename):

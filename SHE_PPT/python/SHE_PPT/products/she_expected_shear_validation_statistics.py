@@ -8,7 +8,7 @@
     must be persistent in archive.
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -24,8 +24,6 @@ __updated__ = "2021-08-13"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
-
 from ..product_utility import init_placeholder_general, create_general_product_from_template
 
 
@@ -37,7 +35,7 @@ def init():
         Adds some extra functionality to the product
     """
 
-    init_placeholder_general()
+    init_placeholder_general(init_function=create_dpd_she_expected_shear_validation_statistics)
 
 
 def create_dpd_she_expected_shear_validation_statistics(filename=None):

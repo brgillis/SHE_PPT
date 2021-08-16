@@ -8,7 +8,7 @@
     must be persistent in archive.
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -64,6 +64,9 @@ def init():
     binding_class.set_method_filename = _set_method_filename
 
     binding_class.has_files = True
+
+    # Use a lambda function to create a bound version of the init function
+    binding_class.init_product = lambda self, *args, **kwargs: create_dpd_she_common_calibration(*args, **kwargs)
 
 
 def _set_KSB_filename(self, filename):
