@@ -5,7 +5,7 @@
     Unit tests relating to table formats.
 """
 
-__updated__ = "2021-08-12"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -21,9 +21,6 @@ __updated__ = "2021-08-12"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 import os
-
-from astropy.table import Column, Table
-import pytest
 
 from SHE_PPT.constants.fits import PSF_CAT_TAG
 from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
@@ -53,10 +50,8 @@ from SHE_PPT.table_formats.she_regauss_tu_matched import tf as regtm_tf
 from SHE_PPT.table_formats.she_simulated_catalog import tf as simc_tf
 from SHE_PPT.table_formats.she_simulation_plan import tf as simp_tf
 from SHE_PPT.table_formats.she_star_catalog import tf as sc_tf
-from SHE_PPT.table_formats.she_tu_matched import tf as tum_tf
-from SHE_PPT.table_testing import _test_is_in_format
 from SHE_PPT.table_utility import is_in_format, add_row
-import numpy as np
+from SHE_PPT.testing.tables import _test_is_in_format
 
 
 class TestTableFormats:
@@ -145,7 +140,7 @@ class TestTableFormats:
     def test_is_in_format(self):
 
         # Call the test stored in the table_testing module (to re-use code with other projects)
-        _test_is_in_format(self)
+        _test_is_in_format(self.formats)
 
     def test_base_is_in_format(self):
 

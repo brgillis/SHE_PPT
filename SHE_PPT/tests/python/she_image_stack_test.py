@@ -1,10 +1,10 @@
 """
-File: tests/python/she_stack_test.py
+File: tests/python/she_image_stack_test.py
 
 Created on: 09/01/17
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #

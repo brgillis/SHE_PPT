@@ -8,7 +8,7 @@
     Origin: OU-SHE
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -24,14 +24,13 @@ __updated__ = "2021-08-13"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.objectidlist_stub import dpdSheObjectIdList
 
-from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import init_binding_class, get_all_filenames_none
+from ..product_utility import create_product_from_template, init_binding_class, get_all_filenames_none
 
 
 sample_file_name = "SHE_PPT/sample_object_id_list.xml"
+product_type_name = "DpdSheObjectIdList"
 
 
 def init():
@@ -40,7 +39,8 @@ def init():
 
     binding_class = dpdSheObjectIdList
 
-    if not init_binding_class(binding_class):
+    if not init_binding_class(binding_class,
+                              init_function=create_dpd_she_object_id_list):
         return
 
     binding_class.get_all_filenames = get_all_filenames_none
@@ -65,14 +65,13 @@ def create_dpd_she_object_id_list(id_list=None):
         @TODO fill in docstring
     """
 
-    dpd_she_object_id_list = read_xml_product(find_aux_file(sample_file_name))
-
-    dpd_she_object_id_list.Header = HeaderProvider.create_generic_header("DpdSheObjectIdList")  # FIXME
+    dpd_she_object_id_list = create_product_from_template(template_filename=sample_file_name,
+                                                          product_type_name=product_type_name,)
 
     if id_list:
-        _set_id_list(dpd_she_object_id_list, id_list)
+        dpd_she_object_id_list.set_id_list(id_list)
     else:
-        _set_id_list(dpd_she_object_id_list, [])
+        dpd_she_object_id_list.set_id_list([])
 
     return dpd_she_object_id_list
 

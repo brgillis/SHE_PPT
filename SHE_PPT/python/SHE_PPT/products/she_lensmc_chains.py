@@ -8,7 +8,7 @@
     and input to Analysis pipeline; must be persistent in archive.
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -30,12 +30,14 @@ from ..product_utility import init_just_datastorage, create_product_from_templat
 
 
 sample_file_name = "SHE_PPT/sample_lensmc_chains.xml"
+product_type_name = "DpdSheLensMcChains"
 
 
 def init():
     """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    init_just_datastorage(binding_class=dpdSheLensMcChains)
+    init_just_datastorage(binding_class=dpdSheLensMcChains,
+                          init_function=create_dpd_she_lensmc_chains)
 
 
 def create_dpd_she_lensmc_chains(filename=None,
@@ -45,7 +47,7 @@ def create_dpd_she_lensmc_chains(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_name="DpdSheLensMcChains",
+                                        product_type_name=product_type_name,
                                         filename=filename,
                                         data_filename=data_filename,
                                         spatial_footprint=spatial_footprint)

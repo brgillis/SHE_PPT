@@ -5,7 +5,7 @@
     Functions to create and output a she_simulation_plan data product.
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -23,10 +23,13 @@ __updated__ = "2021-08-13"
 
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 
-from ..product_utility import init_intermediate_general, create_general_product_from_template
+# Import dpdSheIntermediateGeneral since it will be expected here
+from ..product_utility import (dpdSheIntermediateGeneral, init_intermediate_general,
+                               create_general_product_from_template)
 
 
 sample_file_name = 'SHE_PPT/sample_intermediate_general.xml'
+product_type_name = "DpdSheSimulationPlan"
 
 
 def init():
@@ -34,7 +37,8 @@ def init():
         Adds some extra functionality to the product
     """
 
-    init_intermediate_general()
+    init_intermediate_general(product_type_name=product_type_name,
+                              init_function=create_dpd_she_simulation_plan)
 
 
 def create_dpd_she_simulation_plan(filename=None):
@@ -42,7 +46,7 @@ def create_dpd_she_simulation_plan(filename=None):
     """
 
     return create_general_product_from_template(template_filename=sample_file_name,
-                                                product_name="DpdSheIntermediateGeneral",
+                                                product_type_name=product_type_name,
                                                 filename=filename,)
 
 

@@ -18,9 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-10-15"
-
-import os
+__updated__ = "2021-08-16"
 
 import pytest
 
@@ -36,28 +34,15 @@ class TestObjectIdList(object):
     @pytest.fixture(autouse=True)
     def setup(self, tmpdir):
         self.workdir = tmpdir.strpath
-        return
 
     @classmethod
     def setup_class(cls):
         cls.ex_ids = [12, 14]
         cls.filename = "she_object_id_list.bin"
-        return
 
     @classmethod
     def teardown_class(cls):
         del cls.ex_ids
-        return
-
-    def test_validation(self):
-
-        # Create the product
-        product = prod.create_dpd_she_object_id_list()
-
-        # Check that it validates the schema
-        product.validateBinding()
-
-        return
 
     def test_xml_writing_and_reading(self):
 
@@ -72,5 +57,3 @@ class TestObjectIdList(object):
 
         # Check that it's the same
         assert loaded_product.get_id_list() == product.get_id_list()
-
-        return

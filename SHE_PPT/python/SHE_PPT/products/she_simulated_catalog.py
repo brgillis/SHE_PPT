@@ -7,7 +7,7 @@
     Origin: OU-SHE - Internal to calibration pipeline.
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -25,10 +25,13 @@ __updated__ = "2021-08-13"
 
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 
-from ..product_utility import init_int_obs_cat, create_general_product_from_template
+# Import dpdSheIntermediateObservationCatalog since it will be expected here
+from ..product_utility import (dpdSheIntermediateObservationCatalog, init_int_obs_cat,
+                               create_general_product_from_template)
 
 
 sample_file_name = 'SHE_PPT/sample_intermediate_observation_catalog.xml'
+product_type_name = "DpdSheSimulatedCatalog"
 
 
 def init():
@@ -37,7 +40,8 @@ def init():
 
     """
 
-    init_int_obs_cat()
+    init_int_obs_cat(product_type_name=product_type_name,
+                     init_function=create_dpd_she_simulated_catalog)
 
 
 def create_dpd_she_simulated_catalog(filename=None):
@@ -45,7 +49,7 @@ def create_dpd_she_simulated_catalog(filename=None):
     """
 
     return create_general_product_from_template(template_filename=sample_file_name,
-                                                product_name="DpdSheIntermediateObservationCatalog",
+                                                product_type_name=product_type_name,
                                                 filename=filename,)
 
 

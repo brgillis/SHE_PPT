@@ -7,7 +7,7 @@
     Origin: OU-SHE - Input to Calibration pipeline; needs to be implemented in data model.
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -26,10 +26,11 @@ __updated__ = "2021-08-13"
 from ST_DataModelBindings.dpd.she.galaxypopulationpriors_stub import dpdSheGalaxyPopulationPriors
 
 from ..product_utility import (set_data_filename_of_product, get_data_filename_from_product,
-                               create_product_from_template)
+                               create_product_from_template, init_binding_class)
 
 
 sample_file_name = "SHE_PPT/sample_galaxy_population_priors.xml"
+product_type_name = "DpdSheGalaxyPopulationPriors"
 
 
 def init():
@@ -37,9 +38,8 @@ def init():
 
     binding_class = dpdSheGalaxyPopulationPriors
 
-    if not hasattr(binding_class, "initialised"):
-        binding_class.initialised = True
-    else:
+    if not init_binding_class(binding_class=binding_class,
+                              init_function=create_dpd_she_galaxy_population_priors):
         return
 
     # Add the data file name methods
@@ -77,7 +77,7 @@ def create_dpd_she_galaxy_population_priors(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_name="DpdSheGalaxyPopulationPriors",
+                                        product_type_name=product_type_name,
                                         filename=filename,
                                         data_filename=data_filename)
 

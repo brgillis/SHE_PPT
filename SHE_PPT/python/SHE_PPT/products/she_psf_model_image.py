@@ -7,7 +7,7 @@
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -29,12 +29,14 @@ from ..product_utility import init_just_datastorage, create_product_from_templat
 
 
 sample_file_name = "SHE_PPT/sample_psf_model_image.xml"
+product_type_name = "DpdShePsfModelImage"
 
 
 def init():
     """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    init_just_datastorage(binding_class=dpdShePsfModelImage)
+    init_just_datastorage(binding_class=dpdShePsfModelImage,
+                          init_function=create_dpd_she_psf_model_image)
 
 
 def create_dpd_she_psf_model_image(filename=None,
@@ -43,7 +45,7 @@ def create_dpd_she_psf_model_image(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_name="DpdShePsfModelImage",
+                                        product_type_name=product_type_name,
                                         filename=filename,
                                         data_filename=data_filename)
 

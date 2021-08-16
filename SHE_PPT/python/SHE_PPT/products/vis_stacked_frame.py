@@ -7,7 +7,7 @@
     Origin: OU-VIS
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -23,17 +23,17 @@ __updated__ = "2021-08-13"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
 
-from ..file_io import read_xml_product, find_aux_file
 from ..product_utility import (get_data_filename_from_product, set_data_filename_of_product,
-                               set_filename_datastorage, get_filename_datastorage)
+                               set_filename_datastorage, get_filename_datastorage,
+                               create_product_from_template)
 from ..products.vis_calibrated_frame import (create_vis_psf_storage,
                                              create_vis_bkg_storage, create_vis_wgt_storage)
 
 
 sample_file_name = "SHE_PPT/sample_vis_stacked_frame.xml"
+product_type_name = "DpdVisStackedFrame"
 
 
 def init():
@@ -61,6 +61,10 @@ def init():
     binding_class.get_wgt_filename = _get_wgt_filename
 
     binding_class.get_all_filenames = _get_all_filenames
+
+    binding_class.has_files = True
+
+    binding_class.init_function = create_dpd_vis_stacked_frame
 
 
 def _set_psf_filename(self, filename):
@@ -116,10 +120,9 @@ def create_dpd_vis_stacked_frame(data_filename="None",
         @TODO fill in docstring
     """
 
-    dpd_vis_stacked_frame = read_xml_product(
-        find_aux_file(sample_file_name))
-
-    dpd_vis_stacked_frame.Header = HeaderProvider.create_generic_header("DpdVisStackedFrame")
+    dpd_vis_stacked_frame = create_product_from_template(template_filename=sample_file_name,
+                                                         product_type_name=product_type_name,
+                                                         data_filename=data_filename)
 
     dpd_vis_stacked_frame.set_data_filename(data_filename)
     dpd_vis_stacked_frame.set_bkg_filename(bkg_filename)

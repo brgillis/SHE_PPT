@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2021-02-09"
+__updated__ = "2021-08-16"
 
 import os
 
@@ -38,7 +38,7 @@ class TestValidationTestResults(object):
     """
 
     @pytest.fixture(autouse=True)
-    def setup(self, tmpdir):
+    def setup(self):
 
         # Download the data stack files from WebDAV
 
@@ -54,8 +54,6 @@ class TestValidationTestResults(object):
         # Get the workdir based on where the final catalog listfile is
         self.workdir = os.path.split(self.qualified_mer_final_catalog_listfile_filename)[0]
 
-        return
-
     @classmethod
     def setup_class(cls):
 
@@ -70,20 +68,8 @@ class TestValidationTestResults(object):
         cls.observation_mode = "ScienceDeep"
         cls.num_exposures = 3
 
-        return
-
     @classmethod
     def teardown_class(cls):
-        return
-
-    def test_validation(self):
-
-        # Create the product
-        product = prod.create_dpd_she_validation_test_results()
-
-        # Check that it validates the schema
-        product.validateBinding()
-
         return
 
     def test_xml_writing_and_reading(self):
@@ -128,8 +114,6 @@ class TestValidationTestResults(object):
 
         assert len(loaded_product_three.Data.ValidationTestList) == 3
 
-        return
-
     def test_mer_final_catalog_reference(self):
 
         # Read the MER catalogs listfile
@@ -148,8 +132,6 @@ class TestValidationTestResults(object):
         loaded_product = read_xml_product(self.filename_tile, workdir=self.workdir)
 
         assert loaded_product.Data.TileId == mer_final_catalog_product.Data.TileIndex
-
-        return
 
     def test_vis_calibrated_frame_reference(self):
 
@@ -171,8 +153,6 @@ class TestValidationTestResults(object):
         assert loaded_product.Data.ExposureProductId == vis_calibrated_frame_product.Header.ProductId
         assert loaded_product.Data.ObservationId == vis_calibrated_frame_product.Data.ObservationSequence.ObservationId
 
-        return
-
     def test_vis_stacked_frame_reference(self):
 
         # Read the MER Final Catalog product
@@ -190,5 +170,3 @@ class TestValidationTestResults(object):
 
         assert loaded_product.Data.ObservationId == vis_stacked_frame_product.Data.ObservationId
         assert loaded_product.Data.NumberExposures == self.num_exposures
-
-        return

@@ -7,7 +7,7 @@
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines.
 """
 
-__updated__ = "2021-08-12"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -43,6 +43,7 @@ from ..table_formats.she_bias_statistics import initialise_bias_statistics_table
 
 
 sample_file_name = 'SHE_PPT/sample_intermediate_general.xml'
+product_type_name = "DpdSheIntermediateGeneral"
 
 logger = getLogger(__name__)
 
@@ -52,7 +53,8 @@ def init():
         Adds some extra functionality to the dpdSheBiasStatistics product
     """
 
-    init_intermediate_general()
+    init_intermediate_general(product_type_name=product_type_name,
+                              init_function=create_dpd_she_bias_statistics)
 
     binding_class = dpdSheIntermediateGeneral
 

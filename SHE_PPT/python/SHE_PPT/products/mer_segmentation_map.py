@@ -8,7 +8,7 @@
     Origin: OU-MER - Input to Analysis pipeline
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -38,6 +38,7 @@ from ..utility import find_extension
 
 
 sample_file_name = "SHE_PPT/sample_mer_segmentation_map.xml"
+product_type_name = "DpdMerSegmentationMap"
 
 
 # Convenience function to easily load the actual map
@@ -101,7 +102,8 @@ def load_mosaic_hdu(filename, dir=None, hdu=0, detector_x=None, detector_y=None,
 def init():
     """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    init_just_datastorage(binding_class=dpdMerSegmentationMap)
+    init_just_datastorage(binding_class=dpdMerSegmentationMap,
+                          init_function=create_dpd_mer_mosaic)
 
 
 def create_dpd_mer_mosaic(filename=None,
@@ -110,7 +112,7 @@ def create_dpd_mer_mosaic(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_name="DpdMerSegmentationMap",
+                                        product_type_name="DpdMerSegmentationMap",
                                         filename=filename,
                                         data_filename=data_filename)
 

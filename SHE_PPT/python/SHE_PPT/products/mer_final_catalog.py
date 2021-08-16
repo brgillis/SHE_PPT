@@ -7,7 +7,7 @@
     Origin: OU-MER - FinalCatalog (TODO: Confirm) in their data model
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -29,12 +29,14 @@ from ..product_utility import init_just_datastorage, create_product_from_templat
 
 
 sample_file_name = "SHE_PPT/sample_mer_final_catalog.xml"
+product_type_name = "DpdMerFinalCatalog"
 
 
 def init():
     """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    init_just_datastorage(binding_class=dpdMerFinalCatalog)
+    init_just_datastorage(binding_class=dpdMerFinalCatalog,
+                          init_function=create_dpd_she_detections)
 
 
 def create_dpd_she_detections(filename=None,
@@ -43,7 +45,7 @@ def create_dpd_she_detections(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_name="DpdMerFinalCatalog",
+                                        product_type_name=product_type_name,
                                         filename=filename,
                                         data_filename=data_filename)
 

@@ -7,7 +7,7 @@
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines.
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -25,16 +25,11 @@ __updated__ = "2021-08-13"
 
 from ST_DataModelBindings.dpd.she.validatedmeasurements_stub import dpdSheValidatedMeasurements
 
-from ..product_utility import (init_binding_class, create_measurements_product_from_template,
-                               set_method_filename, get_method_filename,
-                               set_KSB_filename, get_KSB_filename,
-                               set_LensMC_filename, get_LensMC_filename,
-                               set_MomentsML_filename, get_MomentsML_filename,
-                               set_REGAUSS_filename, get_REGAUSS_filename,
-                               get_all_filenames_methods)
+from ..product_utility import init_method_files, create_measurements_product_from_template
 
 
 sample_file_name = "SHE_PPT/sample_validated_shear_measurements.xml"
+product_type_name = "DpdSheValidatedMeasurements"
 
 
 def init():
@@ -42,31 +37,8 @@ def init():
         Adds some extra functionality to the dpdSheValidatedMeasurements product
     """
 
-    binding_class = dpdSheValidatedMeasurements
-
-    if not init_binding_class(binding_class):
-        return
-
-    # Add the data file name methods
-
-    binding_class.set_KSB_filename = set_KSB_filename
-    binding_class.get_KSB_filename = get_KSB_filename
-
-    binding_class.set_LensMC_filename = set_LensMC_filename
-    binding_class.get_LensMC_filename = get_LensMC_filename
-
-    binding_class.set_MomentsML_filename = set_MomentsML_filename
-    binding_class.get_MomentsML_filename = get_MomentsML_filename
-
-    binding_class.set_REGAUSS_filename = set_REGAUSS_filename
-    binding_class.get_REGAUSS_filename = get_REGAUSS_filename
-
-    binding_class.get_all_filenames = get_all_filenames_methods
-
-    binding_class.set_method_filename = set_method_filename
-    binding_class.get_method_filename = get_method_filename
-
-    binding_class.has_files = True
+    init_method_files(binding_class=dpdSheValidatedMeasurements,
+                      init_function=create_dpd_she_validated_measurements)
 
 
 def create_dpd_she_validated_measurements(KSB_filename=None,
@@ -78,7 +50,7 @@ def create_dpd_she_validated_measurements(KSB_filename=None,
     """
 
     return create_measurements_product_from_template(template_filename=sample_file_name,
-                                                     product_name="DpdSheValidatedMeasurements",
+                                                     product_type_name=product_type_name,
                                                      KSB_filename=KSB_filename,
                                                      LensMC_filename=LensMC_filename,
                                                      MomentsML_filename=MomentsML_filename,

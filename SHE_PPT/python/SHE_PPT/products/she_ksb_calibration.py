@@ -8,7 +8,7 @@
     and input to Analysis pipeline; must be persistent in archive.
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -28,10 +28,12 @@ __updated__ = "2021-08-13"
 from ST_DataModelBindings.dpd.she.ksbcalibration_stub import dpdSheKsbCalibration
 
 from ..product_utility import (get_all_filenames_just_data, set_data_filename_of_product,
-                               get_data_filename_from_product, create_product_from_template)
+                               get_data_filename_from_product, create_product_from_template,
+                               init_binding_class)
 
 
 sample_file_name = "SHE_PPT/sample_ksb_calibration.xml"
+product_type_name = "DpdSheKsbCalibration"
 
 
 def init():
@@ -40,6 +42,10 @@ def init():
     """
 
     binding_class = dpdSheKsbCalibration
+
+    if not init_binding_class(binding_class,
+                              init_function=create_dpd_she_ksb_calibration):
+        return
 
     # Add the data file name methods
 
@@ -50,7 +56,7 @@ def init():
 
     binding_class.get_all_filenames = get_all_filenames_just_data
 
-    binding_class.has_files = False
+    binding_class.has_files = True
 
 
 def _set_filename(self, filename):
@@ -67,7 +73,7 @@ def create_dpd_she_ksb_calibration(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_name="DpdSheKsbCalibration",
+                                        product_type_name=product_type_name,
                                         filename=filename,
                                         data_filename=data_filename)
 

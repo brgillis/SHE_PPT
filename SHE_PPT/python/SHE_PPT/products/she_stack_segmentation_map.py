@@ -9,7 +9,7 @@
     converted from MER's version, so we need a separate product for it.
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -36,6 +36,7 @@ from ..product_utility import init_just_datastorage, create_product_from_templat
 
 
 sample_file_name = "SHE_PPT/sample_stack_reprojected_segmentation_map.xml"
+product_type_name = "DpdSheStackReprojectedSegmentationMap"
 
 
 # Convenience function to easily load the actual map
@@ -88,7 +89,8 @@ def load_stack_segmentation_map(filename, dir=None, **kwargs):
 def init():
     """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    init_just_datastorage(binding_class=dpdSheStackReprojectedSegmentationMap)
+    init_just_datastorage(binding_class=dpdSheStackReprojectedSegmentationMap,
+                          init_function=create_dpd_she_stack_segmentation_map)
 
 
 def create_dpd_she_stack_segmentation_map(filename=None,
@@ -97,7 +99,7 @@ def create_dpd_she_stack_segmentation_map(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_name="DpdSheStackReprojectedSegmentationMap",
+                                        product_type_name=product_type_name,
                                         filename=filename,
                                         data_filename=data_filename)
 

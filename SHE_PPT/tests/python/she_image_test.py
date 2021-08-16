@@ -4,7 +4,7 @@ File: tests/python/she_image_test.py
 Created on: 08/18/17
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment

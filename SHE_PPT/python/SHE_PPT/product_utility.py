@@ -5,7 +5,7 @@
     Utility functions related to data products
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -22,8 +22,6 @@ __updated__ = "2021-08-13"
 # Boston, MA 02110-1301 USA
 
 from typing import Optional
-
-from EL_PythonUtils.utilities import run_only_once
 
 from SHE_PPT.constants.classes import ShearEstimationMethods
 from SHE_PPT.file_io import read_xml_product
@@ -167,7 +165,8 @@ def get_all_filenames_methods(self):
     return all_filenames
 
 
-def init_binding_class(binding_class):
+def init_binding_class(binding_class,
+                       init_function=None,):
     """ Boilerplate code for initing any class.
     """
 
@@ -180,14 +179,18 @@ def init_binding_class(binding_class):
     binding_class.set_spatial_footprint = _set_spatial_footprint
     binding_class.get_spatial_footprint = _get_spatial_footprint
 
+    # Use a lambda function to create a bound version of the init function
+    binding_class.init_product = lambda self, *args, **kwargs: init_function(*args, **kwargs)
+
     return True
 
 
-def init_no_files(binding_class):
+def init_no_files(binding_class,
+                  init_function=None,):
     """ Adds some extra functionality to a product, assuming it doesn't point to any files.
     """
 
-    if not init_binding_class(binding_class):
+    if not init_binding_class(binding_class, init_function):
         return
 
     # Add the data file name methods
@@ -197,12 +200,13 @@ def init_no_files(binding_class):
     binding_class.has_files = False
 
 
-def init_just_datastorage(binding_class):
+def init_just_datastorage(binding_class,
+                          init_function=None,):
     """ Adds some extra functionality to a product, assuming it only only points to one file, in the data storage
         attribute.
     """
 
-    if not init_binding_class(binding_class):
+    if not init_binding_class(binding_class, init_function):
         return
 
     # Add the data file name methods
@@ -214,6 +218,37 @@ def init_just_datastorage(binding_class):
     binding_class.get_data_filename = get_filename_datastorage
 
     binding_class.get_all_filenames = get_all_filenames_just_data
+
+    binding_class.has_files = True
+
+
+def init_method_files(binding_class,
+                      init_function=None,):
+    """ Adds some extra functionality to a product, assuming it points to one file per shear estimation method
+        in standard locations.
+    """
+
+    if not init_binding_class(binding_class, init_function):
+        return
+
+    # Add the data file name methods
+
+    binding_class.set_KSB_filename = set_KSB_filename
+    binding_class.get_KSB_filename = get_KSB_filename
+
+    binding_class.set_LensMC_filename = set_LensMC_filename
+    binding_class.get_LensMC_filename = get_LensMC_filename
+
+    binding_class.set_MomentsML_filename = set_MomentsML_filename
+    binding_class.get_MomentsML_filename = get_MomentsML_filename
+
+    binding_class.set_REGAUSS_filename = set_REGAUSS_filename
+    binding_class.get_REGAUSS_filename = get_REGAUSS_filename
+
+    binding_class.get_all_filenames = get_all_filenames_methods
+
+    binding_class.set_method_filename = set_method_filename
+    binding_class.get_method_filename = get_method_filename
 
     binding_class.has_files = True
 
@@ -253,10 +288,31 @@ def _get_all_int_gen_filenames(self):
     return _get_all_generic_filenames(self, _get_int_gen_data_filename)
 
 
-@run_only_once
-def init_intermediate_general():
+def _init_general_binding_class(binding_class):
+    """Performs initialization for a general binding class, including setting up a dict of init functions.
+    """
+
+    if not hasattr(binding_class, "initialised"):
+        binding_class.d_init_functions = {}
+        binding_class.initialised = True
+        return True
+    else:
+        return False
+
+
+def init_intermediate_general(product_type_name=None,
+                              init_function=None,):
 
     binding_class = dpdSheIntermediateGeneral
+
+    first_init = _init_general_binding_class(binding_class=binding_class)
+
+    # Set the init_function in the dict even if already inited
+    if product_type_name:
+        binding_class.d_init_functions[product_type_name] = init_function
+
+    if not first_init:
+        return
 
     # Add the data file name methods
 
@@ -284,10 +340,19 @@ def _get_all_int_obs_cat_filenames(self):
     return _get_all_generic_filenames(self, _get_int_obs_cat_data_filename)
 
 
-@run_only_once
-def init_int_obs_cat():
+def init_int_obs_cat(product_type_name=None,
+                     init_function=None,):
 
     binding_class = dpdSheIntermediateObservationCatalog
+
+    first_init = _init_general_binding_class(binding_class=binding_class)
+
+    # Set the init_function in the dict even if already inited
+    if product_type_name:
+        binding_class.d_init_functions[product_type_name] = init_function
+
+    if not first_init:
+        return
 
     # Add the data file name methods
 
@@ -315,10 +380,19 @@ def _get_all_plc_gen_filenames(self):
     return _get_all_generic_filenames(self, _get_plc_gen_data_filename)
 
 
-@run_only_once
-def init_placeholder_general():
+def init_placeholder_general(product_type_name=None,
+                             init_function=None,):
 
     binding_class = dpdShePlaceholderGeneral
+
+    first_init = _init_general_binding_class(binding_class=binding_class)
+
+    # Set the init_function in the dict even if already inited
+    if product_type_name:
+        binding_class.d_init_functions[product_type_name] = init_function
+
+    if not first_init:
+        return
 
     # Add the data file name methods
 
@@ -334,7 +408,7 @@ def init_placeholder_general():
 
 
 def create_product_from_template(template_filename,
-                                 product_name,
+                                 product_type_name,
                                  filename=None,
                                  data_filename=None,
                                  spatial_footprint=None):
@@ -349,7 +423,7 @@ def create_product_from_template(template_filename,
 
     # Create the product
     p = read_xml_product(find_aux_file(template_filename))
-    p.Header = HeaderProvider.create_generic_header(product_name)
+    p.Header = HeaderProvider.create_generic_header(product_type_name)
 
     # Set the data_filename and spatial footprint
     if data_filename:
@@ -361,7 +435,7 @@ def create_product_from_template(template_filename,
 
 
 def create_measurements_product_from_template(template_filename,
-                                              product_name,
+                                              product_type_name,
                                               KSB_filename=None,
                                               LensMC_filename=None,
                                               MomentsML_filename=None,
@@ -372,7 +446,7 @@ def create_measurements_product_from_template(template_filename,
     """
 
     p = create_product_from_template(template_filename=template_filename,
-                                     product_name=product_name,
+                                     product_type_name=product_type_name,
                                      spatial_footprint=spatial_footprint)
 
     p.set_KSB_filename(KSB_filename)
@@ -384,14 +458,14 @@ def create_measurements_product_from_template(template_filename,
 
 
 def create_general_product_from_template(template_filename,
-                                         product_name,
+                                         product_type_name,
                                          filename=None,):
     """ Function to create a data product object, using a template file as a base, specialized for shear measurements
         products.
     """
 
     p = create_product_from_template(template_filename=template_filename,
-                                     product_name=product_name,
+                                     product_type_name=product_type_name,
                                      filename=filename)
 
     # Set the data we don't need to empty
@@ -399,7 +473,7 @@ def create_general_product_from_template(template_filename,
     p.Data.FloatData = []
 
     # Label the type in the StringData
-    p.Data.StringData = [f"TYPE:{product_name}"]
+    p.Data.StringData = [f"TYPE:{product_type_name}"]
 
     return p
 
