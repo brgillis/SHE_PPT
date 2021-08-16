@@ -79,3 +79,108 @@ class TestSheKsbCalibration(SimpleDataProductTester):
 class TestSheKsbTraining(SimpleDataProductTester):
     product_class = products.she_ksb_training.dpdSheKsbTraining
     product_type_name = products.she_ksb_training.product_type_name
+
+
+class TestSheLensMcCalibration(SimpleDataProductTester):
+    product_class = products.she_lensmc_calibration.dpdSheLensMcCalibration
+    product_type_name = products.she_lensmc_calibration.product_type_name
+
+
+class TestSheLensMcChains(SimpleDataProductTester):
+    product_class = products.she_lensmc_chains.dpdSheLensMcChains
+    product_type_name = products.she_lensmc_chains.product_type_name
+
+
+class TestSheLensMcTraining(SimpleDataProductTester):
+    product_class = products.she_lensmc_training.dpdSheLensMcTraining
+    product_type_name = products.she_lensmc_training.product_type_name
+
+
+class TestSheMeasurements(MethodsProductTester):
+    product_class = products.she_measurements.dpdSheMeasurements
+    product_type_name = products.she_measurements.product_type_name
+
+
+class TestSheMomentsMlCalibration(SimpleDataProductTester):
+    product_class = products.she_momentsml_calibration.dpdSheMomentsMlCalibration
+    product_type_name = products.she_momentsml_calibration.product_type_name
+
+
+class TestSheMomentsMlTraining(SimpleDataProductTester):
+    product_class = products.she_momentsml_training.dpdSheMomentsMlTraining
+    product_type_name = products.she_momentsml_training.product_type_name
+
+
+class TestSheObjectIdList(ProductTester):
+    product_class = products.she_object_id_list.dpdSheObjectIdList
+    product_type_name = products.she_object_id_list.product_type_name
+
+
+class TestShePsfCalibrationParameters(SimpleDataProductTester):
+    product_class = products.she_psf_calibration_parameters.dpdShePsfCalibrationParameters
+    product_type_name = products.she_psf_calibration_parameters.product_type_name
+
+
+class TestShePsfFieldParameters(SimpleDataProductTester):
+    product_class = products.she_psf_field_parameters.dpdShePsfFieldParameters
+    product_type_name = products.she_psf_field_parameters.product_type_name
+
+
+class TestShePsfModelImage(SimpleDataProductTester):
+    product_class = products.she_psf_model_image.dpdShePsfModelImage
+    product_type_name = products.she_psf_model_image.product_type_name
+
+
+class TestSheReconciledLensMcChains(SimpleDataProductTester):
+    product_class = products.she_reconciled_lensmc_chains.dpdSheReconciledLensMcChains
+    product_type_name = products.she_reconciled_lensmc_chains.product_type_name
+
+
+class TestSheReconciledMeasurements(MethodsProductTester):
+    product_class = products.she_reconciled_measurements.dpdSheReconciledMeasurements
+    product_type_name = products.she_reconciled_measurements.product_type_name
+
+
+class TestSheReconciliationConfig(SimpleDataProductTester):
+    product_class = products.she_reconciliation_config.dpdSheReconciliationConfig
+    product_type_name = products.she_reconciliation_config.product_type_name
+
+
+class TestSheRegaussCalibration(SimpleDataProductTester):
+    product_class = products.she_regauss_calibration.dpdSheRegaussCalibration
+    product_type_name = products.she_regauss_calibration.product_type_name
+
+
+class TestSheRegaussTraining(SimpleDataProductTester):
+    product_class = products.she_regauss_training.dpdSheRegaussTraining
+    product_type_name = products.she_regauss_training.product_type_name
+
+
+class TestSheSimulatedCatalog(SimpleDataProductTester):
+    product_class = products.she_simulated_catalog.dpdSheIntermediateObservationCatalog
+    product_type_name = products.she_simulated_catalog.product_type_name
+
+
+class TestSheSimulationConfig(SimpleDataProductTester):
+    product_class = products.she_simulation_config.dpdSheIntermediateGeneral
+    product_type_name = products.she_simulation_config.product_type_name
+
+
+class TestSheSimulationPlan(SimpleDataProductTester):
+    product_class = products.she_simulation_plan.dpdSheIntermediateGeneral
+    product_type_name = products.she_simulation_plan.product_type_name
+
+
+class TestSheStackSegmentationMap(SimpleDataProductTester):
+    product_class = products.she_stack_segmentation_map.dpdSheStackReprojectedSegmentationMap
+    product_type_name = products.she_stack_segmentation_map.product_type_name
+
+
+class TestSheValidatedMeasurements(MethodsProductTester):
+    product_class = products.she_validated_measurements.dpdSheValidatedMeasurements
+    product_type_name = products.she_validated_measurements.product_type_name
+
+
+class TestSheValidationTestResults(ProductTester):
+    product_class = products.she_validation_test_results.dpdSheValidationTestResults
+    product_type_name = products.she_validation_test_results.product_type_name

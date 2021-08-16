@@ -23,7 +23,9 @@ __updated__ = "2021-08-16"
 
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 
-from ..product_utility import init_intermediate_general, create_general_product_from_template
+# Import dpdSheIntermediateGeneral since it will be expected here
+from ..product_utility import (dpdSheIntermediateGeneral, init_intermediate_general,
+                               create_general_product_from_template)
 
 
 sample_file_name = 'SHE_PPT/sample_intermediate_general.xml'
@@ -35,7 +37,8 @@ def init():
         Adds some extra functionality to the product
     """
 
-    init_intermediate_general(init_function=create_dpd_she_simulation_plan)
+    init_intermediate_general(product_type_name=product_type_name,
+                              init_function=create_dpd_she_simulation_plan)
 
 
 def create_dpd_she_simulation_plan(filename=None):

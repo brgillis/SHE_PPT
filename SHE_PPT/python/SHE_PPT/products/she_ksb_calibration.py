@@ -28,7 +28,8 @@ __updated__ = "2021-08-16"
 from ST_DataModelBindings.dpd.she.ksbcalibration_stub import dpdSheKsbCalibration
 
 from ..product_utility import (get_all_filenames_just_data, set_data_filename_of_product,
-                               get_data_filename_from_product, create_product_from_template)
+                               get_data_filename_from_product, create_product_from_template,
+                               init_binding_class)
 
 
 sample_file_name = "SHE_PPT/sample_ksb_calibration.xml"
@@ -42,6 +43,10 @@ def init():
 
     binding_class = dpdSheKsbCalibration
 
+    if not init_binding_class(binding_class,
+                              init_function=create_dpd_she_ksb_calibration):
+        return
+
     # Add the data file name methods
 
     binding_class.set_filename = _set_filename
@@ -52,9 +57,6 @@ def init():
     binding_class.get_all_filenames = get_all_filenames_just_data
 
     binding_class.has_files = True
-
-    # Use a lambda function to create a bound version of the init function
-    binding_class.init_product = lambda self, *args, **kwargs: create_dpd_she_ksb_calibration(*args, **kwargs)
 
 
 def _set_filename(self, filename):
