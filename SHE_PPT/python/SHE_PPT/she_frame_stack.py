@@ -4,7 +4,8 @@ File: python/SHE_PPT/she_frame_stack.py
 Created on: 05/03/18
 """
 
-#
+__updated__ = "2021-08-13"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under
@@ -20,9 +21,7 @@ Created on: 05/03/18
 # You should have received a copy of the GNU Lesser General Public License
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-#
 
-__updated__ = "2021-07-06"
 
 from copy import deepcopy
 from json.decoder import JSONDecodeError
@@ -35,8 +34,8 @@ import astropy.wcs
 import numpy as np
 
 from . import logging
-from . import magic_values as mv
 from . import products
+from .constants.fits import MASK_TAG, SCI_TAG, NOISEMAP_TAG
 from .file_io import read_listfile, read_xml_product, find_file
 from .she_frame import SHEFrame
 from .she_image import SHEImage
@@ -1000,8 +999,9 @@ class SHEFrameStack():
              stacked_data,
              qualified_data_filename,
              data_hdu_indices) = cls._read_product_extension(stacked_image_product_filename,
-                                                             tags=(
-                                                                 mv.sci_tag, mv.noisemap_tag, mv.mask_tag),
+                                                             tags=(SCI_TAG,
+                                                                   NOISEMAP_TAG,
+                                                                   MASK_TAG),
                                                              workdir=workdir,
                                                              dtype=products.vis_stacked_frame.dpdVisStackedFrame,
                                                              load_images=load_images,

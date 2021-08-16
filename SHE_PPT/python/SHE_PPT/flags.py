@@ -7,7 +7,8 @@ This module contains definitions of flag bits and fitclass values, as defined by
 https://euclid.roe.ac.uk/projects/sgsshear/wiki/ShearMeasurementFlags
 """
 
-#
+__updated__ = "2021-08-13"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -20,9 +21,6 @@ https://euclid.roe.ac.uk/projects/sgsshear/wiki/ShearMeasurementFlags
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-#
-
-__updated__ = "2020-06-23"
 
 # Flag format - increment version whenever there are non-trivial changes
 # to this file

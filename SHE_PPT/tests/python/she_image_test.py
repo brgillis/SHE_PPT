@@ -4,6 +4,8 @@ File: tests/python/she_image_test.py
 Created on: 08/18/17
 """
 
+__updated__ = "2021-08-13"
+
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -22,8 +24,6 @@ Created on: 08/18/17
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 # """This script gives a small demo of the image object.
 
-__updated__ = "2021-06-07"
-
 from copy import deepcopy
 import logging
 import os
@@ -35,8 +35,8 @@ import pytest
 from ElementsServices.DataSync import DataSync
 from SHE_PPT import file_io
 from SHE_PPT import mdb
+from SHE_PPT.constants.misc import SEGMAP_UNASSIGNED_VALUE
 from SHE_PPT.constants.test_data import (SYNC_CONF, TEST_FILES_MDB, TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME)
-from SHE_PPT.magic_values import segmap_unassigned_value
 import SHE_PPT.she_image
 import numpy as np
 
@@ -44,7 +44,7 @@ import numpy as np
 logging.basicConfig(level=logging.DEBUG)
 
 
-class Test_she_image():
+class TestSheImage():
 
     @classmethod
     def setup_class(cls):
@@ -119,8 +119,6 @@ class Test_she_image():
         img.add_default_mask(force=True)
         assert img.boolmask[5, 5] == False
 
-        return
-
     def test_noisemap(self):
         """Test that the noisemap behaves appropriately."""
 
@@ -147,8 +145,6 @@ class Test_she_image():
         assert np.allclose(img.noisemap, (self.read_noise / self.gain) + np.sqrt(1000 / self.gain) *
                            np.ones_like(img.data, dtype=img.noisemap.dtype))
 
-        return
-
     def test_segmentation_map(self):
         """Test that the segmentation map behaves appropriately."""
 
@@ -158,7 +154,7 @@ class Test_she_image():
         img.add_default_segmentation_map(force=True)
         assert img.segmentation_map.dtype == np.int32
         assert np.allclose(img.segmentation_map,
-                           segmap_unassigned_value * np.ones_like(img.data, dtype=img.segmentation_map.dtype))
+                           SEGMAP_UNASSIGNED_VALUE * np.ones_like(img.data, dtype=img.segmentation_map.dtype))
         assert img.segmentation_map.shape == (self.w, self.h)
 
         # Check that non-forcibly adding a default segmentation_map doesn't affect the existing segmentation_map
@@ -169,8 +165,6 @@ class Test_she_image():
         # Check that forcibly adding a default segmentation_map does affect the existing segmentation_map
         img.add_default_segmentation_map(force=True)
         assert img.segmentation_map[5, 5] == 0
-
-        return
 
     def test_weight_map(self):
         """Test that the weight_map behaves appropriately."""
@@ -191,8 +185,6 @@ class Test_she_image():
         # Check that forcibly adding a default weight_map does affect the existing weight_map
         img.add_default_weight_map(force=True)
         assert np.isclose(img.weight_map[5, 5], 1.)
-
-        return
 
     def test_header(self):
         """Test the header behaves as expected."""
@@ -216,8 +208,6 @@ class Test_she_image():
         img.add_default_header(force=True)
         assert "INSTR" not in img.header
 
-        return
-
     def test_wcs_default(self):
         """Test the default wcs behaves as expected."""
 
@@ -236,8 +226,6 @@ class Test_she_image():
         # Check that forcibly adding a default wcs does affect the existing wcs
         img.add_default_wcs(force=True)
         assert np.isclose(img.wcs.wcs.cdelt[0], 1.)
-
-        return
 
     def test_fits_read_write(self):
         """We save the small SHEImage, read it again, and compare both versions"""
@@ -292,7 +280,7 @@ class Test_she_image():
         # assert len(list(rimg.header.keys())) == 3
         # assert str(repr(img.header)) == str(repr(rimg.header))
 
-    def test_read_from_separate_fits_files(self):
+    def test_read_from_fits_files(self):
         """At least a small test of reading from individual FITS files"""
 
         img = SHE_PPT.she_image.SHEImage(np.random.randn(100).reshape(10, 10) + 200.0)
@@ -320,11 +308,11 @@ class Test_she_image():
         assert rimg.segmentation_map[0, 0] == 4
 
         with pytest.raises(ValueError):  # As the primary HDU of mask_filepath is not a np.uint8, this will fail:
-            rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepaths[0],
-                                                             mask_filepath=self.testfilepaths[1],
-                                                             noisemap_filepath=self.testfilepaths[2],
-                                                             segmentation_map_filepath=self.testfilepaths[3],
-                                                             mask_ext=None)
+            _ = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepaths[0],
+                                                          mask_filepath=self.testfilepaths[1],
+                                                          noisemap_filepath=self.testfilepaths[2],
+                                                          segmentation_map_filepath=self.testfilepaths[3],
+                                                          mask_ext=None)
 
     def test_extracted_stamp_is_view(self):
         """Checks that the extracted stamp is a view, not a copy"""
@@ -413,9 +401,7 @@ class Test_she_image():
         assert default_stamp.header is not None
         assert default_stamp.wcs is not None
 
-        return
-
-    def test_extract_stamp_out_of_bounds(self):
+    def test_extract_stamp_oob(self):
         """We test that the stamp extraction works as desired for stamps not entirely within the image"""
 
         array = np.array([[0, 1, 2, 3, 4], [10, 11, 12, 13, 14], [20, 21, 22, 23, 24], [30, 31, 32, 33, 34]])
@@ -445,7 +431,7 @@ class Test_she_image():
         # This one is completely out of bounds:
         assert np.alltrue(stamp.boolmask)
         assert np.allclose(stamp.noisemap, 0.0)
-        assert np.allclose(stamp.segmentation_map, segmap_unassigned_value)
+        assert np.allclose(stamp.segmentation_map, SEGMAP_UNASSIGNED_VALUE)
 
         stamp = img.extract_stamp(3.5, 1.5, 3, 1)
         # This is
@@ -484,7 +470,7 @@ class Test_she_image():
                         dtype=np.int32)
 
         segmap = np.array(((1, 1, 1),
-                           (segmap_unassigned_value, segmap_unassigned_value, segmap_unassigned_value),
+                           (SEGMAP_UNASSIGNED_VALUE, SEGMAP_UNASSIGNED_VALUE, SEGMAP_UNASSIGNED_VALUE),
                            (2, 2, 2)),
                           dtype=np.int32)
         img = SHE_PPT.she_image.SHEImage(data=np.zeros_like(mask),
@@ -735,8 +721,6 @@ class Test_she_image():
         assert np.allclose((im_pos.x, im_pos.y), (test_im_pos.x, test_im_pos.y))
         assert np.allclose((world_pos.x, world_pos.y), (test_world_pos.x, test_world_pos.y))
 
-        return
-
     def test_decomposition(self):
         """Test that we can get the expected local decomposition of a WCS."""
 
@@ -778,8 +762,8 @@ class Test_she_image():
 
         img.galsim_wcs = galsim.wcs.ShearWCS(scale=p2w_scale, shear=w2p_shear)
 
-        test_w2p_scale, test_w2p_shear, test_w2p_theta, test_w2p_flip = img.get_world2pix_decomposition(0, 0)
-        test_p2w_scale, test_p2w_shear, test_p2w_theta, test_p2w_flip = img.get_pix2world_decomposition(0, 0)
+        test_w2p_scale, test_w2p_shear, _, _ = img.get_world2pix_decomposition(0, 0)
+        test_p2w_scale, test_p2w_shear, _, _ = img.get_pix2world_decomposition(0, 0)
 
         assert np.isclose(test_w2p_scale, 1. / p2w_scale)
         assert np.allclose((w2p_shear.g1, w2p_shear.g2), (test_w2p_shear.g1, test_w2p_shear.g2))
@@ -796,5 +780,3 @@ class Test_she_image():
         # Test we get inequal when we change the copy
         img_copy.data += 1
         assert self.img != img_copy
-
-        return

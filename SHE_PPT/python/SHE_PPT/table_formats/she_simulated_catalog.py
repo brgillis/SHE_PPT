@@ -5,6 +5,8 @@
     Format definition for galaxy details tables.
 """
 
+__updated__ = "2021-08-12"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -19,62 +21,58 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-02-10"
-
 from collections import OrderedDict
 
 from EL_PythonUtils.utilities import hash_any
 
-from .. import magic_values as mv
+from ..constants.fits import (FITS_VERSION_LABEL, FITS_DEF_LABEL, GAIN_LABEL, MODEL_HASH_LABEL,
+                              MODEL_SEED_LABEL, NOISE_SEED_LABEL)
 from ..logging import getLogger
-from ..table_utility import is_in_format, init_table,SheTableFormat
+from ..table_utility import is_in_format, init_table, SheTableFormat, SheTableMeta
 
 
 fits_version = "8.0"
 fits_def = "she.simulatedCatalog"
 
-logger = getLogger(mv.logger_name)
+logger = getLogger(__name__)
 
 
-class SheSimulatedCatalogMeta():
+class SheSimulatedCatalogMeta(SheTableMeta):
     """
         @brief A class defining the metadata for details tables.
     """
 
+    __version__: str = fits_version
+    table_format: str = fits_def
+
+    # Table metadata labels
+    fits_version: str = FITS_VERSION_LABEL
+    fits_def: str = FITS_DEF_LABEL
+
+    subtracted_sky_level: str = "S_SKYLV"
+    unsubtracted_sky_level: str = "US_SKYLV"
+    read_noise: str = "RD_NOISE"
+    gain: str = GAIN_LABEL
+
+    model_hash: str = MODEL_HASH_LABEL
+    model_seed: str = MODEL_SEED_LABEL
+    noise_seed: str = NOISE_SEED_LABEL
+
     def __init__(self):
 
-        self.__version__ = fits_version
-        self.table_format = fits_def
-
-        # Table metadata labels
-        self.fits_version = mv.fits_version_label
-        self.fits_def = mv.fits_def_label
-
-        self.subtracted_sky_level = "S_SKYLV"
-        self.unsubtracted_sky_level = "US_SKYLV"
-        self.read_noise = "RD_NOISE"
-        self.gain = mv.gain_label
-
-        self.model_hash = mv.model_hash_label
-        self.model_seed = mv.model_seed_label
-        self.noise_seed = mv.noise_seed_label
-
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_version, None),
-                                     (self.fits_def, None),
-                                     (self.subtracted_sky_level,
-                                      "ADU/arcsec^2"),
-                                     (self.unsubtracted_sky_level,
-                                      "ADU/arcsec^2"),
-                                     (self.read_noise, "e-/pixel"),
-                                     (self.gain, "e-/ADU"),
-                                     (self.model_hash, None),
-                                     (self.model_seed, None),
-                                     (self.noise_seed, None),
-                                     ))
-
-        # A list of columns in the desired order
-        self.all = list(self.comments.keys())
+        super().__init__(comments=OrderedDict(((self.fits_version, None),
+                                               (self.fits_def, None),
+                                               (self.subtracted_sky_level,
+                                                "ADU/arcsec^2"),
+                                               (self.unsubtracted_sky_level,
+                                                "ADU/arcsec^2"),
+                                               (self.read_noise, "e-/pixel"),
+                                               (self.gain, "e-/ADU"),
+                                               (self.model_hash, None),
+                                               (self.model_seed, None),
+                                               (self.noise_seed, None),
+                                               )))
 
 
 class SheSimulatedCatalogFormat(SheTableFormat):
@@ -87,7 +85,7 @@ class SheSimulatedCatalogFormat(SheTableFormat):
         super().__init__(SheSimulatedCatalogMeta())
 
         # Table column labels
-        self.ID = self.set_column_properties( "OBJECT_ID", dtype=">i8", fits_dtype="K")
+        self.ID = self.set_column_properties("OBJECT_ID", dtype=">i8", fits_dtype="K")
 
         self.group_ID = self.set_column_properties("GROUP_ID", dtype=">i8", fits_dtype="K")
 
@@ -95,9 +93,9 @@ class SheSimulatedCatalogFormat(SheTableFormat):
         self.dec = self.set_column_properties("DECLINATION", comment="dec (deg)")
 
         self.hlr_bulge = self.set_column_properties(
-                                               "HLR_BULGE", comment="arcsec")
+            "HLR_BULGE", comment="arcsec")
         self.hlr_disk = self.set_column_properties(
-                                              "HLR_DISK", comment="arcsec")
+            "HLR_DISK", comment="arcsec")
 
         self.bulge_ellipticity = self.set_column_properties("BULGE_ELLIPTICITY")
         self.bulge_axis_ratio = self.set_column_properties("BULGE_AXIS_RATIO")
@@ -121,14 +119,14 @@ class SheSimulatedCatalogFormat(SheTableFormat):
 
         self.target_galaxy = self.set_column_properties("is_target_galaxy", dtype="bool", fits_dtype="L")
 
-        # A list of columns in the desired order
-        self.all = list(self.is_optional.keys())
+        self._finalize_init()
 
-        # A list of required columns in the desired order
-        self.all_required = []
-        for label in self.all:
-            if not self.is_optional[label]:
-                self.all_required.append(label)
+    @staticmethod
+    def init_table(*args, **kwargs):
+        """ Bound alias to the free table initialisation function, using this table format.
+        """
+
+        return initialise_simulated_catalog(*args, **kwargs)
 
 
 # Define an instance of this object that can be imported

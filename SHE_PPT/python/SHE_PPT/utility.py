@@ -5,6 +5,8 @@
     Miscellaneous utility functions
 """
 
+__updated__ = "2021-08-13"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -19,73 +21,24 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-04-22"
-
-from enum import Enum
 import os
 import re
-
-from EL_PythonUtils.utilities import (hash_any as EL_hash_any,
-                                      run_only_once as EL_run_only_once,
-                                      time_to_timestamp as EL_time_to_timestamp,
-                                      get_arguments_string as EL_get_arguments_string)
+from typing import Any, List, Optional, Tuple, TypeVar, Union
+from astropy.io.fits import TableHDU, HDUList
+from astropy.table import Table
 
 from . import detector as dtc
+from .constants.classes import AllowedEnum  # Imported here since this is where people will expect to find it
 from .logging import getLogger
+
 
 logger = getLogger(__name__)
 
-# Wrappers to warn functions which have moved to EL_PythonUtils
 
-
-@EL_run_only_once
-def warn_hash_any_deprecated():
-    logger.warning("SHE_PPT.utility.hash_any has been moved to EL_PythonUtils.utilities.hash_any. "
-                   "Please update to use that, as this wrapper will be deprecated in a future version.")
-
-
-def hash_any(*args, **kwargs):
-    warn_hash_any_deprecated()
-    return EL_hash_any(*args, **kwargs)
-
-
-@EL_run_only_once
-def warn_time_to_timestamp_deprecated():
-    logger.warning("SHE_PPT.utility.time_to_timestamp has been moved to EL_PythonUtils.utilities.time_to_timestamp. "
-                   "Please update to use that, as this wrapper will be deprecated in a future version.")
-
-
-def time_to_timestamp(*args, **kwargs):
-    warn_time_to_timestamp_deprecated()
-    return EL_time_to_timestamp(*args, **kwargs)
-
-
-@EL_run_only_once
-def warn_get_arguments_string_deprecated():
-    logger.warning("SHE_PPT.utility.get_arguments_string has been moved to EL_PythonUtils.utilities.get_arguments_string. "
-                   "Please update to use that, as this wrapper will be deprecated in a future version.")
-
-
-def get_arguments_string(*args, **kwargs):
-    warn_get_arguments_string_deprecated()
-    return EL_get_arguments_string(*args, **kwargs)
-
-
-@EL_run_only_once
-def warn_run_only_once_deprecated():
-    logger.warning("SHE_PPT.utility.run_only_once has been moved to EL_PythonUtils.utilities.run_only_once. "
-                   "Please update to use that, as this wrapper will be deprecated in a future version.")
-
-
-def run_only_once(*args, **kwargs):
-    warn_run_only_once_deprecated()
-    return EL_run_only_once(*args, **kwargs)
-
-
-def get_attr_with_index(obj, attr):
+def get_attr_with_index(obj: Any, attr: Any) -> Any:
     # Check for an index at the end of attr, using a regex which matches anything, followed by [,
-    #followed by a positive integer, followed by ], followed by the end of the string.
-    #Matching groups are 1. the attribute, and 2. the index
+    # followed by a positive integer, followed by ], followed by the end of the string.
+    # Matching groups are 1. the attribute, and 2. the index
     regex_match = re.match(r"(.*)\[([0-9]+)\]\Z", attr)
 
     if not regex_match:
@@ -94,14 +47,14 @@ def get_attr_with_index(obj, attr):
     return getattr(obj, regex_match.group(1))[int(regex_match.group(2))]
 
 
-def get_nested_attr(obj, attr):
+def get_nested_attr(obj: Any, attr: Any) -> Any:
     if not "." in attr:
         return get_attr_with_index(obj, attr)
     head, tail = attr.split('.', 1)
     return get_nested_attr(get_attr_with_index(obj, head), tail)
 
 
-def set_index_zero_attr(obj, attr, val):
+def set_index_zero_attr(obj: Any, attr: Any, val: Any) -> None:
     if not "[0]" in attr:
         setattr(obj, attr, val)
     elif attr[-3:] == "[0]":
@@ -110,7 +63,7 @@ def set_index_zero_attr(obj, attr, val):
         raise ValueError("Invalid format of attribute passed to get_attr_with_index: " + str(attr))
 
 
-def set_nested_attr(obj, attr, val):
+def set_nested_attr(obj: Any, attr: Any, val: Any):
     if not "." in attr:
         set_index_zero_attr(obj, attr, val)
     else:
@@ -118,7 +71,7 @@ def set_nested_attr(obj, attr, val):
         set_nested_attr(get_attr_with_index(obj, head), tail, val)
 
 
-def get_release_from_version(version):
+def get_release_from_version(version: str) -> str:
     """Gets a 'release' format string ('XX.XX' where X is 0-9) from a 'version' format string ('X.X(.Y)',
        where each X is 0-99, and Y is any integer).
     """
@@ -131,7 +84,7 @@ def get_release_from_version(version):
 
     if major_version < 0 or major_version > 99 or minor_version < 0 or minor_version > 99:
         raise ValueError("version (%s) is in incorrect format. Format must be 'X.X.X', where each X is "
-                         "0-99."%version)
+                         "0-99." % version)
 
     # Ensure the string is two characters long for both the major and minor version
     major_version_string = str(major_version) if major_version > 9 else "0" + str(major_version)
@@ -140,7 +93,9 @@ def get_release_from_version(version):
     return major_version_string + "." + minor_version_string
 
 
-def find_extension(hdulist, extname=None, ccdid=None):
+def find_extension(hdulist: HDUList,
+                   extname: Optional[str] = None,
+                   ccdid: Optional[str] = None):
     """Find the index of the extension of a fits HDUList with the correct EXTNAME or CCDID value.
     """
     if extname is not None:
@@ -160,7 +115,7 @@ def find_extension(hdulist, extname=None, ccdid=None):
     raise ValueError("Either extname or ccdid must be supplied.")
 
 
-def get_detector(obj):
+def get_detector(obj: Union[TableHDU, Table]) -> Tuple[int, int]:
     """Find the detector indices for a fits hdu or table.
     """
 
@@ -180,7 +135,7 @@ def get_detector(obj):
     return detector_x, detector_y
 
 
-def get_all_files(directory_name):
+def get_all_files(directory_name: str) -> List[str]:
     """
     """
     full_file_list = []
@@ -202,7 +157,7 @@ def get_all_files(directory_name):
     return full_file_list
 
 
-def process_directory(directory_name):
+def process_directory(directory_name: str) -> Tuple[List[str], List[str]]:
     """ Check for files, subdirectories
 
     """
@@ -216,14 +171,31 @@ def process_directory(directory_name):
     return file_list, subdir_list
 
 
-def is_any_type_of_none(value):
+def is_any_type_of_none(value: Any) -> bool:
     """Quick function to check if a value (which might be a string) is None or empty
     """
     return value in (None, "None", "", "data/None", "data/")
 
 
-class AllowedEnum(Enum):
+T = TypeVar('T')
 
-    @classmethod
-    def is_allowed_value(cls, value):
-        return value in [item.value for item in cls]
+
+def coerce_to_list(a: Union[None, T, List[T]],
+                   keep_none: bool = False) -> Union[List[T], None]:
+    """ Coerces either None, a single item, or a list to a list of items.
+
+        If keep_none is False, will convert None to an empty list.
+        If keep_none is True, will return None if None is input.
+    """
+    if a is None:
+        if keep_none:
+            return None
+        else:
+            return []
+    else:
+        # Check if it's iterable, and convert to list if so
+        try:
+            return list(a)
+        except TypeError:
+            # Not iterable, so return as an element of a list
+            return [a]

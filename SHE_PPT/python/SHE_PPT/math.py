@@ -5,6 +5,8 @@
     Miscellaneous mathematical functions
 """
 
+__updated__ = "2021-08-13"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -18,8 +20,6 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
-
-__updated__ = "2021-07-12"
 
 import numpy as np
 
@@ -221,134 +221,6 @@ class LinregressResults():
         return stats
 
 
-class BFDSumStatistics():
-
-    def __init__(self, sums=None):
-        """Initialises and calculates statistics as member variables.
-        """
-
-        if sums is None:
-            # Initialise empty
-            self.b1 = None
-            self.b2 = None
-            self.b3 = None
-            self.b4 = None
-            self.A11 = None
-            self.A12 = None
-            self.A13 = None
-            self.A14 = None
-            self.A22 = None
-            self.A23 = None
-            self.A24 = None
-            self.A33 = None
-            self.A34 = None
-            self.A44 = None
-        else:
-            # Calculate statistics
-            self.b1 = sums['b1']
-            self.b2 = sums['b2']
-            self.b3 = sums['b3']
-            self.b4 = sums['b4']
-            self.A11 = sums['A11']
-            self.A12 = sums['A12']
-            self.A13 = sums['A13']
-            self.A14 = sums['A14']
-            self.A22 = sums['A22']
-            self.A23 = sums['A23']
-            self.A24 = sums['A24']
-            self.A33 = sums['A33']
-            self.A34 = sums['A34']
-            self.A44 = sums['A44']
-
-
-class BFDSumResults():
-
-    def __init__(self, lstats=None, do_g1=True):
-
-        if (lstats is None) or (len(lstats) == 0) or (lstats[0] is None):
-
-            # Initialise empty
-            self.slope = None
-            self.intercept = None
-            self.slope_err = None
-            self.intercept_err = None
-            self.slope_intercept_covar = None
-
-            return
-
-        if isinstance(lstats, BFDSumStatistics):
-
-            # Just calculate from this object
-            stats = lstats
-
-        else:
-
-            # We have a list of stats, so combine them
-            stats = self.combine_lstats(lstats)
-
-        C = np.array([[stats.A11, stats.A12, stats.A13, stats.A14],
-                      [stats.A12, stats.A22, stats.A23, stats.A24],
-                      [stats.A13, stats.A23, stats.A33, stats.A34],
-                      [stats.A14, stats.A24, stats.A34, stats.A44]])
-        C_inv = np.linalg.inv(C)
-        Q_P = np.array([[stats.b1], [stats.b2], [stats.b3], [stats.b4]])
-
-        if do_g1 is True:
-            self.slope = (C_inv * Q_P)[0, 0]
-            self.intercept = (C_inv * Q_P)[1, 0]
-            self.slope_err = (np.sqrt(C_inv[0, 0]))
-            self.intercept_err = np.sqrt(C_inv[1, 1])
-            self.slope_intercept_covar = C_inv[0, 1]
-        else:
-            self.slope = (C_inv * Q_P)[2, 0]
-            self.intercept = (C_inv * Q_P)[3, 0]
-            self.slope_err = (np.sqrt(C_inv[2, 2]))
-            self.intercept_err = np.sqrt(C_inv[3, 3])
-            self.slope_intercept_covar = C_inv[2, 3]
-
-    @classmethod
-    def combine_lstats(cls, lstats):
-
-        # Set up arrays for each value
-        n = len(lstats)
-
-        # Fill in an output object with weighted sums
-        stats = BFDSumStatistics()
-        stats.b1 = 0.
-        stats.b2 = 0.
-        stats.b3 = 0.
-        stats.b4 = 0.
-        stats.A11 = 0.
-        stats.A12 = 0.
-        stats.A13 = 0.
-        stats.A14 = 0.
-        stats.A22 = 0.
-        stats.A23 = 0.
-        stats.A24 = 0.
-        stats.A33 = 0.
-        stats.A34 = 0.
-        stats.A44 = 0.
-
-        # Fill in each array
-        for i in range(n):
-            stats.b1 += lstats[i].b1
-            stats.b2 += lstats[i].b2
-            stats.b3 += lstats[i].b3
-            stats.b4 += lstats[i].b4
-            stats.A11 += lstats[i].A11
-            stats.A12 += lstats[i].A12
-            stats.A13 += lstats[i].A13
-            stats.A14 += lstats[i].A14
-            stats.A22 += lstats[i].A22
-            stats.A23 += lstats[i].A23
-            stats.A24 += lstats[i].A24
-            stats.A33 += lstats[i].A33
-            stats.A34 += lstats[i].A34
-            stats.A44 += lstats[i].A44
-
-        return stats
-
-
 class BiasMeasurements():
     """Class for expressing bias measurements. Similar to LinregressResults
        except in terms of m and c.
@@ -481,27 +353,12 @@ def get_linregress_statistics(lx, ly, ly_err=None):
     return LinregressStatistics(lx=lx, ly=ly, ly_err=ly_err)
 
 
-def get_bfd_sum_statistics(sums):
-    """Functional interface to get a BFD Sum statistics object.
-    """
-
-    return BFDSumStatistics(sums=sums)
-
-
 def combine_linregress_statistics(lstats):
     """Functional interface to combine linear regression statistics objects
        into the result of a regression.
     """
 
     return LinregressResults(lstats=lstats)
-
-
-def combine_bfd_sum_statistics(lstats, do_g1=True):
-    """Functional interface to combine linear regression statistics objects
-       into the result of a regression.
-    """
-
-    return BFDSumResults(lstats=lstats, do_g1=do_g1)
 
 
 def linregress_with_errors(x, y, y_err=None):

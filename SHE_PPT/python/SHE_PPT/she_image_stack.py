@@ -4,7 +4,8 @@ File: python/SHE_PPT/she_image_stack.py
 Created on: 09/01/17
 """
 
-#
+__updated__ = "2021-08-13"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under
@@ -20,9 +21,6 @@ Created on: 09/01/17
 # You should have received a copy of the GNU Lesser General Public License
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-#
-
-__updated__ = "2021-06-23"
 
 import weakref
 
@@ -69,7 +67,6 @@ class SHEImageStack():
 
         self.x_world = x_world
         self.y_world = y_world
-
 
     @property
     def parent_frame_stack(self):

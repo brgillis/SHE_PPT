@@ -5,6 +5,8 @@
     Miscellaneous utility functions related to shear measurements
 """
 
+__updated__ = "2021-08-13"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -18,8 +20,6 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
-
-__updated__ = "2020-12-15"
 
 import math
 
@@ -368,9 +368,9 @@ def check_data_quality(gal_stamp, psf_stamp, stacked=False):
         have_some_data = False
 
         for a, missing_flag in ((gal_stamp.data, flags.flag_no_science_image),
-                                  (gal_stamp.background_map, flags.flag_no_background_map),
-                                  (gal_stamp.noisemap, flags.flag_no_noisemap),
-                                  (gal_stamp.segmentation_map, flags.flag_no_segmentation_map),):
+                                (gal_stamp.background_map, flags.flag_no_background_map),
+                                (gal_stamp.noisemap, flags.flag_no_noisemap),
+                                (gal_stamp.segmentation_map, flags.flag_no_segmentation_map),):
 
             if a is None:
                 flag |= missing_flag
@@ -408,13 +408,13 @@ def check_data_quality(gal_stamp, psf_stamp, stacked=False):
         data = gal_stamp.data
 
     for a, missing_flag, corrupt_flag in ((data, flags.flag_no_science_image,
-                                             flags.flag_corrupt_science_image),
-                                            (gal_stamp.background_map, flags.flag_no_background_map,
-                                             flags.flag_corrupt_background_map),
-                                            (gal_stamp.noisemap, flags.flag_no_noisemap,
-                                             flags.flag_corrupt_noisemap),
-                                            (gal_stamp.segmentation_map, flags.flag_no_segmentation_map,
-                                             flags.flag_corrupt_segmentation_map),):
+                                           flags.flag_corrupt_science_image),
+                                          (gal_stamp.background_map, flags.flag_no_background_map,
+                                           flags.flag_corrupt_background_map),
+                                          (gal_stamp.noisemap, flags.flag_no_noisemap,
+                                           flags.flag_corrupt_noisemap),
+                                          (gal_stamp.segmentation_map, flags.flag_no_segmentation_map,
+                                           flags.flag_corrupt_segmentation_map),):
 
         # Check for missing data
         if a is None:

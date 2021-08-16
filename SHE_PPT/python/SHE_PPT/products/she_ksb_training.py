@@ -8,6 +8,8 @@
     and input to Analysis pipeline; must be persistent in archive.
 """
 
+__updated__ = "2021-08-13"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -22,70 +24,30 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-06-09"
 
-
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.ksbtraining_stub import dpdSheKsbTraining
 
-from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
+from ..product_utility import init_just_datastorage, create_product_from_template
 
 
 sample_file_name = "SHE_PPT/sample_ksb_training.xml"
 
 
 def init():
-    """
-        Adds some extra functionality to the DpdSheAstrometry product
-    """
+    """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    binding_class = dpdSheKsbTraining
-
-    # Add the data file name methods
-
-    binding_class.set_filename = __set_filename
-    binding_class.get_filename = __get_filename
-    binding_class.set_data_filename = __set_filename
-    binding_class.get_data_filename = __get_filename
-
-    binding_class.get_all_filenames = __get_all_filenames
-
-    binding_class.has_files = False
+    init_just_datastorage(binding_class=dpdSheKsbTraining)
 
 
-
-def __set_filename(self, filename):
-    set_data_filename_of_product(self, filename, "DataStorage")
-
-
-def __get_filename(self):
-    return get_data_filename_from_product(self, "DataStorage")
-
-
-def __get_all_filenames(self):
-
-    all_filenames = [self.get_data_filename()]
-
-    return all_filenames
-
-
-def create_dpd_she_ksb_training(filename=None):
-    """
-        @TODO fill in docstring
+def create_dpd_she_ksb_training(filename=None,
+                                data_filename=None):
+    """ Creates a product of this type.
     """
 
-    dpd_she_ksb_training = read_xml_product(
-        find_aux_file(sample_file_name))
-
-    # Overwrite the header with a new one to update the creation date (among
-    # other things)
-    dpd_she_ksb_training.Header = HeaderProvider.create_generic_header("DpdSheKsbTraining")
-
-    if filename:
-        __set_filename(dpd_she_ksb_training, filename)
-
-    return dpd_she_ksb_training
+    return create_product_from_template(template_filename=sample_file_name,
+                                        product_name="DpdSheKsbTraining",
+                                        filename=filename,
+                                        data_filename=data_filename)
 
 
 # Add a useful alias

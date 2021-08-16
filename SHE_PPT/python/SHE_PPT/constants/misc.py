@@ -1,11 +1,11 @@
-""" @file constants/__init__.py
+""" @file test_data.py
 
-    Created 6 Jan 2021
+    Created 12 Aug 2021
 
-    Module to contain constant values within SHE_PPT.
+    Constants used for miscellaneous purposes
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-12"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -21,14 +21,15 @@ __updated__ = "2021-08-13"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-import glob
-from os.path import dirname, basename, isfile
+SHORT_INSTANCE_ID_MAXLEN = 17
 
-from . import *
+# Segmentation map
+SEGMAP_UNASSIGNED_VALUE = 0
+SEGMAP_OTHER_VALUE = -1
 
+# Instrument zeropoints
 
-modules = glob.glob(dirname(__file__) + "/*.py")
-__all__ = [basename(f)[:-3]
-           for f in modules if isfile(f) and not f.endswith('__init__.py')]
-
-del modules, dirname, basename, isfile, glob
+# MAG_VIS_ZEROPOINT = 25.50087633632 # From ETC
+# MAG_VIS_ZEROPOINT = 25.4534 # From Sami's sims' config file
+MAG_VIS_ZEROPOINT = 25.6527  # From Lance's code
+MAG_I_ZEROPOINT = 25.3884  # From Lance's code

@@ -5,7 +5,7 @@
     Functions related to the testing of tables and table formats
 """
 
-__updated__ = "2020-12-14"
+__updated__ = "2021-08-12"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -33,32 +33,30 @@ def _test_is_in_format(self):
 
     empty_tables = []
 
-    for init in self.initializers:
-        empty_tables.append(init())
+    for tf in self.formats:
+        empty_tables.append(tf.init_table())
 
-    assert len(self.initializers) == len(self.formats)
-
-    for i in range(len(self.initializers)):
+    for i in range(len(self.formats)):
 
         # Try strict test
         for j in range((len(self.formats))):
             if i == j and not is_in_format(empty_tables[i], self.formats[j], strict=True):
-                raise Exception("Table format " + self.formats[j].m.table_format +
-                                " doesn't initialize a valid table" +
-                                " in strict test.")
+                raise ValueError("Table format " + self.formats[j].m.table_format +
+                                 " doesn't initialize a valid table" +
+                                 " in strict test.")
             if i != j and is_in_format(empty_tables[i], self.formats[j], strict=True):
-                raise Exception("Table format " + self.formats[j].m.table_format +
-                                " resolves true for tables of format " + self.formats[i].m.table_format +
-                                " in strict test.")
+                raise ValueError("Table format " + self.formats[j].m.table_format +
+                                 " resolves true for tables of format " + self.formats[i].m.table_format +
+                                 " in strict test.")
 
         # Try non-strict version now
         empty_tables[i].add_column(Column(name='new_column', data=np.zeros((0,))))
         for j in range((len(self.formats))):
             if i == j and not is_in_format(empty_tables[i], self.formats[j], strict=False):
-                raise Exception("Table format " + self.formats[j].m.table_format +
-                                " doesn't initialize a valid table" +
-                                " in non-strict test.")
+                raise ValueError("Table format " + self.formats[j].m.table_format +
+                                 " doesn't initialize a valid table" +
+                                 " in non-strict test.")
             if i != j and is_in_format(empty_tables[i], self.formats[j], strict=False):
-                raise Exception("Table format " + self.formats[j].m.table_format +
-                                " resolves true for tables of format " + self.formats[i].m.table_format +
-                                " in non-strict test.")
+                raise ValueError("Table format " + self.formats[j].m.table_format +
+                                 " resolves true for tables of format " + self.formats[i].m.table_format +
+                                 " in non-strict test.")

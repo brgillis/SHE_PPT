@@ -5,6 +5,9 @@
     Functions to get needed information from the MDB.
 """
 
+__updated__ = "2021-08-13"
+
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -19,8 +22,6 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-06-21"
-
 import os
 import re
 
@@ -29,7 +30,7 @@ from astropy.io import fits
 
 from ST_DM_MDBTools.Mdb import Mdb
 
-from . import magic_values as mv
+from .constants.fits import EXTNAME_LABEL
 from .constants.test_data import TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME
 from .file_io import find_file
 from .logging import getLogger
@@ -74,7 +75,7 @@ def init(mdb_files=None, path=None):
             qualified_mdb_files.append(qualified_mdb_file)
     elif mdb_files is None:
         qualified_mdb_files = find_file(DEFAULT_MDB_FILE)
-        logger.warning("No MDB file specified. Using default file at %s",qualified_mdb_files)
+        logger.warning("No MDB file specified. Using default file at %s", qualified_mdb_files)
     else:
         raise TypeError("Invalid type for mdb_files object passed to SHE_PPT.mdb.init(): " + str(mdb_files))
 
@@ -96,7 +97,6 @@ def init(mdb_files=None, path=None):
     _read_noise_dict.clear()
     for qualified_read_noise_filename in qualified_read_noise_filenames:
         _read_noise_dict.update(_load_quadrant_table(qualified_read_noise_filename, 'RON_ELE'))
-
 
 
 def _find_mdb_data_file(data_filenames, qualified_mdb_files):
@@ -148,10 +148,10 @@ def _load_quadrant_table(qualified_data_filename, colname):
 
     for hdu in f:
         # Check if this is the zeroeth hdu, which doesn't have a table in it
-        if not mv.extname_label in hdu.header:
+        if not EXTNAME_LABEL in hdu.header:
             continue
 
-        quadrant_dict[hdu.header[mv.extname_label]] = hdu.data[colname][0]
+        quadrant_dict[hdu.header[EXTNAME_LABEL]] = hdu.data[colname][0]
 
     f.close()
 

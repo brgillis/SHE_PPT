@@ -27,11 +27,6 @@
 			<TimestampStart>2020-06-01T14:48:08.458Z</TimestampStart>
 			<TimestampEnd>9999-06-01T14:48:08.458Z</TimestampEnd>
 		</ValidityRange>
-		<BfdCalibrationStorage format="she.commonCalibration" version="8.0">
-			<DataContainer filestatus="ARCHIVED_OFFLINE">
-				<FileName>None</FileName>
-			</DataContainer>
-		</BfdCalibrationStorage>
 		<KsbCalibrationStorage format="she.commonCalibration" version="8.0">
 			<DataContainer filestatus="PROPOSED">
 				<FileName>None</FileName>

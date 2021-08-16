@@ -7,6 +7,8 @@
     Origin: OU-SHE - Input to Calibration pipeline; needs to be implemented in data model.
 """
 
+__updated__ = "2021-08-13"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -21,85 +23,64 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-06-09"
-
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.galaxypopulationpriors_stub import dpdSheGalaxyPopulationPriors
 
-from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
+from ..product_utility import (set_data_filename_of_product, get_data_filename_from_product,
+                               create_product_from_template)
 
 
 sample_file_name = "SHE_PPT/sample_galaxy_population_priors.xml"
 
 
 def init():
-    """
-        ?????
-    """
+    """ Adds some extra functionality to this product, with functions to get filenames. """
 
     binding_class = dpdSheGalaxyPopulationPriors
 
+    if not hasattr(binding_class, "initialised"):
+        binding_class.initialised = True
+    else:
+        return
+
     # Add the data file name methods
 
-    binding_class.set_filename = __set_data_filename
-    binding_class.get_filename = __get_data_filename
-    binding_class.set_data_filename = __set_data_filename
-    binding_class.get_data_filename = __get_data_filename
+    binding_class.set_filename = _set_data_filename
+    binding_class.get_filename = _get_data_filename
+    binding_class.set_data_filename = _set_data_filename
+    binding_class.get_data_filename = _get_data_filename
 
-    binding_class.get_all_filenames = __get_all_filenames
+    binding_class.get_all_filenames = _get_all_filenames
 
     binding_class.has_files = True
 
 
-
-def __set_data_filename(self, filename):
+def _set_data_filename(self, filename):
     set_data_filename_of_product(self, filename, "DataStorageList[0]")
 
 
-def __get_data_filename(self):
+def _get_data_filename(self):
     return get_data_filename_from_product(self, "DataStorageList[0]")
 
 
-def __get_all_filenames(self):
+def _get_all_filenames(self):
 
-    all_filenames = [self.get_data_filename(), ]
+    all_filenames = []
+    for data_storage in self.Data.DataStorageList:
+        all_filenames.append(data_storage.DataContainer.FileName)
 
     return all_filenames
 
 
-def create_dpd_she_galaxy_population_priors(filename=None):
+def create_dpd_she_galaxy_population_priors(filename=None,
+                                            data_filename=None):
+    """ Creates a product of this type.
     """
-        @TODO fill in docstring
-    """
 
-    dpd_she_galaxy_population_priors = read_xml_product(find_aux_file(sample_file_name))
-
-    dpd_she_galaxy_population_priors.Header = HeaderProvider.create_generic_header("DpdSheGalaxyPopulationPriors")
-
-    if filename:
-        __set_filename(dpd_galaxy_population_priors, filename)
-
-    return dpd_she_galaxy_population_priors
+    return create_product_from_template(template_filename=sample_file_name,
+                                        product_name="DpdSheGalaxyPopulationPriors",
+                                        filename=filename,
+                                        data_filename=data_filename)
 
 
 # Add a useful alias
 create_galaxy_population_priors_product = create_dpd_she_galaxy_population_priors
-
-
-def create_she_galaxy_population_priors(filename=None):
-    """
-        @TODO fill in docstring
-    """
-
-    she_galaxy_population_priors = SheGalaxyPopulationPriors()
-
-    she_galaxy_population_priors.format = "she.galaxyPopulationPriors"
-    she_galaxy_population_priors.version = "8.0"
-
-    she_galaxy_population_priors.DataContainer = DataContainer()
-    she_galaxy_population_priors.DataContainer.FileName = filename
-    she_galaxy_population_priors.DataContainer.filestatus = "PROPOSED"
-
-
-    return she_galaxy_population_priors

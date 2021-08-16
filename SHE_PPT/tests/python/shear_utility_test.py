@@ -5,6 +5,8 @@
     Unit tests relating to shear utility functions
 """
 
+__updated__ = "2021-08-12"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -18,8 +20,6 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2021-02-10"
-
 from copy import deepcopy
 import os
 
@@ -30,9 +30,9 @@ import pytest
 from ElementsServices.DataSync import DataSync
 from SHE_PPT import flags
 from SHE_PPT import mdb
+from SHE_PPT.constants.fits import SCALE_LABEL, GAIN_LABEL
 from SHE_PPT.constants.test_data import (SYNC_CONF, TEST_FILES_MDB, TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME)
 from SHE_PPT.file_io import find_file
-from SHE_PPT.magic_values import scale_label, gain_label
 from SHE_PPT.she_image import SHEImage
 from SHE_PPT.shear_utility import ShearEstimate, correct_for_wcs_shear_and_rotation, uncorrect_for_wcs_shear_and_rotation
 import numpy as np
@@ -82,7 +82,7 @@ class TestCase:
 
         self.psf_stamp = SHEImage(self.ss_psf_image.array.transpose())
         self.psf_stamp.add_default_header()
-        self.psf_stamp.header[scale_label] = self.ss_psf_image.scale
+        self.psf_stamp.header[SCALE_LABEL] = self.ss_psf_image.scale
 
         # Draw the default galaxy
         self.observed_gal = galsim.Convolve([self.base_gal.shear(g1=self.g1, g2=self.g2), self.psf])
@@ -100,8 +100,8 @@ class TestCase:
                                       self.observed_gal_image.array.transpose(), dtype=float),
                                   header=fits.Header())
         self.gal_stamp.add_default_header()
-        self.gal_stamp.header[scale_label] = self.observed_gal_image.scale
-        self.gal_stamp.header[gain_label] = 1.0
+        self.gal_stamp.header[SCALE_LABEL] = self.observed_gal_image.scale
+        self.gal_stamp.header[GAIN_LABEL] = 1.0
 
         return
 

@@ -1,9 +1,11 @@
-""" @file regauss_measurements.py
+""" @file she_lensmc_tu_matched.py
 
-    Created 6 Dec 2017
+    Created 2021/08/10
 
-    Format definition for regauss measurements tables.
+    Format definition for lensmc tu_matched tables.
 """
+
+__updated__ = "2021-08-12"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -19,49 +21,47 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-08-12"
-
 from collections import OrderedDict
 
+from SHE_PPT.table_formats.she_lensmc_measurements import set_lensmc_column_properties
 
 from ..flags import she_flag_version
 from ..logging import getLogger
 from ..table_formats.mer_final_catalog import tf as mfc_tf
-from ..table_formats.she_measurements import SheMeasurementsMeta, SheMeasurementsFormat
+from ..table_formats.she_tu_matched import SheTUMatchedMeta, SheTUMatchedFormat
 from ..table_utility import is_in_format, init_table
 
 
 fits_version = "8.0"
-fits_def = "she.regaussMeasurements"
+fits_def = "she.lensmc_tu_matched"
 
-child_label = "SHE_REGAUSS_"
+child_label = "SHE_LENSMC_"
 
 logger = getLogger(__name__)
 
 
-class SheRegaussMeasurementsMeta(SheMeasurementsMeta):
-    """
-        @brief A class defining the metadata for shear estimates tables.
+class SheLensMcTUMatchedMeta(SheTUMatchedMeta):
+    """ A class defining the metadata for LensMC TU Matched tables.
     """
 
     __version__: str = fits_version
     table_format: str = fits_def
 
 
-class SheRegaussMeasurementsFormat(SheMeasurementsFormat):
-    """
-        @brief A class defining the format for shear estimates tables. Only the regauss_measurements_table_format
-               instance of this should generally be accessed, and it should not be changed.
+class SheLensMcTUMatchedFormat(SheTUMatchedFormat):
+    """ A class defining the format for LensMC TU Matched tables. Only the lensmc_tu_matched_table_format
+        instance of this should generally be accessed, and it should not be changed.
     """
 
     def __init__(self):
 
         # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
-        super().__init__(SheRegaussMeasurementsMeta(), finalize=False)
+        super().__init__(SheLensMcTUMatchedMeta(), finalize=False)
 
         self.setup_child_table_format(child_label)
 
-        # regauss specific columns
+        # LensMC specific columns
+        set_lensmc_column_properties(self)
 
         self._finalize_init()
 
@@ -70,17 +70,17 @@ class SheRegaussMeasurementsFormat(SheMeasurementsFormat):
         """ Bound alias to the free table initialisation function, using this table format.
         """
 
-        return initialise_regauss_measurements_table(*args, **kwargs)
+        return initialise_lensmc_tu_matched_table(*args, **kwargs)
 
 
 # Define an instance of this object that can be imported
-regauss_measurements_table_format = SheRegaussMeasurementsFormat()
+lensmc_tu_matched_table_format = SheLensMcTUMatchedFormat()
 
 # And a convient alias for it
-tf = regauss_measurements_table_format
+tf = lensmc_tu_matched_table_format
 
 
-def make_regauss_measurements_table_header(
+def make_lensmc_tu_matched_table_header(
         model_hash=None,
         model_seed=None,
         noise_seed=None,
@@ -104,6 +104,7 @@ def make_regauss_measurements_table_header(
 
     header[tf.m.fits_version] = tf.__version__
     header[tf.m.fits_def] = fits_def
+
     header[tf.m.she_flag_version] = she_flag_version
 
     header[tf.m.model_hash] = model_hash
@@ -120,18 +121,18 @@ def make_regauss_measurements_table_header(
     return header
 
 
-def initialise_regauss_measurements_table(mer_final_catalog=None,
-                                          size=None,
-                                          optional_columns=None,
-                                          init_cols=None,
-                                          model_hash=None,
-                                          model_seed=None,
-                                          noise_seed=None,
-                                          observation_id=None,
-                                          pointing_id=None,
-                                          observation_time=None,
-                                          tile_id=None,
-                                          ):
+def initialise_lensmc_tu_matched_table(mer_final_catalog=None,
+                                       size=None,
+                                       optional_columns=None,
+                                       init_cols=None,
+                                       model_hash=None,
+                                       model_seed=None,
+                                       noise_seed=None,
+                                       observation_id=None,
+                                       pointing_id=None,
+                                       observation_time=None,
+                                       tile_id=None,
+                                       ):
     """
         @brief Initialise a shear estimates table based on a detections table, with the
                desired set of optional columns
@@ -141,7 +142,9 @@ def initialise_regauss_measurements_table(mer_final_catalog=None,
         @param optional_columns <list<str>> List of names for optional columns to include.
                Default is gal_e1_err and gal_e2_err
 
-        @return regauss_measurements_table <astropy.table.Table>
+        @param detector <int?> Detector this table corresponds to
+
+        @return lensmc_tu_matched_table <astropy.table.Table>
     """
 
     assert (mer_final_catalog is None) or (
@@ -155,9 +158,9 @@ def initialise_regauss_measurements_table(mer_final_catalog=None,
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    regauss_measurements_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
+    lensmc_tu_matched_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
 
-    regauss_measurements_table.meta = make_regauss_measurements_table_header(
+    lensmc_tu_matched_table.meta = make_lensmc_tu_matched_table_header(
         model_hash=model_hash,
         model_seed=model_seed,
         noise_seed=noise_seed,
@@ -166,6 +169,6 @@ def initialise_regauss_measurements_table(mer_final_catalog=None,
         observation_time=observation_time,
         tile_id=tile_id)
 
-    assert is_in_format(regauss_measurements_table, tf)
+    assert is_in_format(lensmc_tu_matched_table, tf)
 
-    return regauss_measurements_table
+    return lensmc_tu_matched_table

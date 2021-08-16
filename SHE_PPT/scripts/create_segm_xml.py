@@ -22,7 +22,7 @@ import ST_DataModelBindings.dpd.she.stackreprojectedsegmentationmap_stub as stac
 import ST_DataModelBindings.pro.she_stub as she_dict
 
 
-__updated__ = "2019-06-24"
+__updated__ = "2021-08-13"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -37,12 +37,6 @@ __updated__ = "2019-06-24"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
-
-
-
-
-
-
 
 
 def main():
@@ -86,11 +80,11 @@ def main():
     dp.Data = dm_utils.create_image(data_prod)
 
     # Add the general MER metadata
-    __add_general_segm_metadata(dp.Data)
+    _add_general_segm_metadata(dp.Data)
 
     if not is_stack:
         detector_id_list = [range(1, 37)]
-        dp.Data.DetectorList = __create_detector_list(detector_id_list)
+        dp.Data.DetectorList = _create_detector_list(detector_id_list)
 
     # Add the filter list
     # dp.Data.FilterList = dm_utils.create_filter_list(filter_names)
@@ -121,7 +115,7 @@ def main():
     write_xml_product(dp, output_filename, allow_pickled=False)
 
 
-def __add_general_segm_metadata(data_binding):
+def _add_general_segm_metadata(data_binding):
     """Adds the general metadata included in MER data products.
 
     Parameters
@@ -137,10 +131,10 @@ def __add_general_segm_metadata(data_binding):
     data_binding.StackProductId = "101"
 
     # Add the TileList
-    data_binding.TileList = __create_tile_list([(101, "101")])
+    data_binding.TileList = _create_tile_list([(101, "101")])
 
 
-def __create_tile_list(tile_list):
+def _create_tile_list(tile_list):
     """Creates a list of tile ids binding.
 
     Parameters
@@ -174,7 +168,7 @@ def __create_tile_list(tile_list):
     return she_list_of_tiles
 
 
-def __create_detector_list(detector_id_list):
+def _create_detector_list(detector_id_list):
     """Creates a list of detector ids binding.
 
     Parameters

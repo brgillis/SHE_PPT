@@ -5,6 +5,8 @@
     Functions to convert between Euclid magnitude and electron count
 """
 
+__updated__ = "2021-08-12"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -19,13 +21,9 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2019-02-27"
-
 import numpy as np
 
-import magic_values as mv
-
-
+from .constants.misc import MAG_VIS_ZEROPOINT, MAG_I_ZEROPOINT
 from .gain import get_ADU_from_count
 
 
@@ -38,7 +36,7 @@ def get_count_from_mag_vis(m, exp_time):
         @return The expected count
     """
 
-    return exp_time * 10.0 ** (0.4 * (mv.mag_vis_zeropoint - m))
+    return exp_time * 10.0 ** (0.4 * (MAG_VIS_ZEROPOINT - m))
 
 
 def get_mag_vis_from_count(c, exp_time):
@@ -50,7 +48,7 @@ def get_mag_vis_from_count(c, exp_time):
         @return The magnitude
     """
 
-    return mv.mag_vis_zeropoint - 2.5 * np.log10(c / exp_time)
+    return MAG_VIS_ZEROPOINT - 2.5 * np.log10(c / exp_time)
 
 
 def get_count_from_mag_i(m, exp_time):
@@ -62,7 +60,7 @@ def get_count_from_mag_i(m, exp_time):
         @return The expected count
     """
 
-    return exp_time * 10.0 ** (0.4 * (mv.mag_i_zeropoint - m))
+    return exp_time * 10.0 ** (0.4 * (MAG_I_ZEROPOINT - m))
 
 
 def get_mag_i_from_count(c, exp_time):
@@ -74,7 +72,7 @@ def get_mag_i_from_count(c, exp_time):
         @return The magnitude
     """
 
-    return mv.mag_i_zeropoint - 2.5 * np.log10(c / exp_time)
+    return MAG_I_ZEROPOINT - 2.5 * np.log10(c / exp_time)
 
 
 def get_I(I_parameter, parameter_type, gain, exp_time):

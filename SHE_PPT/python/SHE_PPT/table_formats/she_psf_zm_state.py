@@ -6,6 +6,8 @@
     implementation in his code.
 """
 
+__updated__ = "2021-08-13"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -20,86 +22,60 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2020-07-19"
-
 from collections import OrderedDict
+from typing import Optional, List, Type
 
-from .. import magic_values as mv
+from ..constants.fits import PSF_ZM_STATE_TAG, PSF_ZM_IDENTITY
 from ..logging import getLogger
-from ..table_utility import is_in_format, init_table,SheTableFormat
+from ..table_formats.she_psf_state import ShePsfStateFormat, ShePsfStateMeta
 
 
 fits_version = "8.0"
 
-logger = getLogger(mv.logger_name)
+logger = getLogger(__name__)
 
 
-class ShePsfZmStateMeta():
+class ShePsfZmStateMeta(ShePsfStateMeta):
     """ A class defining the metadata for PSF ZM state tables.
     """
 
-    data_type = "FIELD"
+    __version__: str = fits_version
+    _identity: str = PSF_ZM_IDENTITY
+    _format: str = "SheZernikeModeParams"
 
-    def __init__(self, data_type):
-
-        self.data_type = data_type
-        self.__version__ = fits_version
-
-        self.main_data_type = (mv.psf_field_param_def
-                               if self.data_type == "FIELD" else
-                               mv.psf_calib_param_def)
-        self.table_format = "%s.SheZernikeModeParams" % self.main_data_type
-        self.identity = mv.psf_zm_identity
-
-        # Table metadata labels
-        self.fits_version = mv.fits_version_label
-        self.fits_def = mv.fits_def_label
-
-        self.extname = mv.extname_label
-
-        # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_version, None),
-                                     (self.fits_def, None),
-                                     (self.extname, None),
-                                     ))
-
-        # A list of headers in the desired order
-        self.all = list(self.comments.keys())
+    def init_meta(self,
+                  **kwargs: str) -> OrderedDict:
+        return super().init_meta(extname=PSF_ZM_STATE_TAG,
+                                 **kwargs)
 
 
-class ShePsfZmStateFormat(SheTableFormat):
+class ShePsfZmStateFormat(ShePsfStateFormat):
     """
-        @brief A class defining the format for PSF ZM state tables. Only the psf_zm_state_table_format
+        @brief A class defining the format for PSF ZM state tables. Only the psf_tm_state_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
-    data_type = "FIELD"
+    _data_type: str = "CAL"
+    _meta_type: Type = ShePsfZmStateMeta
+    _l_colnames: Optional[List[str]] = None
 
     def __init__(self, data_type="FIELD"):
-        super().__init__(ShePsfZmStateMeta(self.data_type))
 
-        self.data_type = data_type
+        super().__init__(data_type)
 
         # Column names and info
 
         self.fovrngx = self.set_column_properties(
-                                             "SHE_PSF_%s_FOVRNGX" % self.data_type, dtype=">f4",
-                                             fits_dtype="E", length=2)
+            "SHE_PSF_%s_FOVRNGX" % data_type, dtype=">f4",
+            fits_dtype="E", length=2)
         self.fovrngy = self.set_column_properties(
-                                             "SHE_PSF_%s_FOVRNGY" % self.data_type, dtype=">f4",
-                                             fits_dtype="E", length=2)
+            "SHE_PSF_%s_FOVRNGY" % data_type, dtype=">f4",
+            fits_dtype="E", length=2)
         self.zer_ply_amp = self.set_column_properties(
-                                                 "SHE_PSF_%s_ZNKPLYAMP" % self.data_type, dtype=">f4",
-                                                 fits_dtype="E", length=50)
+            "SHE_PSF_%s_ZNKPLYAMP" % data_type, dtype=">f4",
+            fits_dtype="E", length=50)
 
-        # A list of columns in the desired order
-        self.all = list(self.is_optional.keys())
-
-        # A list of required columns in the desired order
-        self.all_required = []
-        for label in self.all:
-            if not self.is_optional[label]:
-                self.all_required.append(label)
+        self._finalize_init()
 
 
 # Define an instance of this object that can be imported
@@ -111,90 +87,3 @@ psf_table_format_calib = ShePsfZmStateFormat("CAL")
 
 tff = psf_table_format_field
 tfc = psf_table_format_calib
-
-
-def make_psf_zm_state_table_header(data_type="FIELD"):
-    """Generate a header for a PSF ZM State table.
-
-    Parameters
-    ----------
-    data_type : Is it field or calibration
-
-    Return
-    ------
-    header : OrderedDict
-    """
-
-    tf = tff if data_type == "FIELD" else tfc
-
-    header = OrderedDict()
-
-    header[tf.m.fits_version] = tf.__version__
-    header[tf.m.fits_def] = tf.m.table_format
-    header[tf.m.extname] = mv.psf_zm_state_tag
-
-    return header
-
-
-def initialise_psf_zm_state_table(data_type="FIELD",
-                                  size=None,
-                                  optional_columns=None,
-                                  init_cols=None,
-                                  init_columns={}):
-    """Initialise a PSF ZM State table.
-
-    Parameters
-    ----------
-    data_type : str
-        Is if FIELD or CALIB
-    optional_columns : <list<str>>
-        List of names for optional columns to include.
-    init_columns : dict<str:array>
-        Dictionary of columns to initialise the table with
-
-    Return
-    ------
-    psf_zm_state_table : astropy.Table
-    """
-
-    tf = tff if data_type == "FIELD" else tfc
-
-    if optional_columns is None:
-        optional_columns = []
-    else:
-        # Check all optional columns are valid
-        for colname in optional_columns:
-            if colname not in tf.all:
-                raise ValueError("Invalid optional column name: " + colname)
-
-    psf_zm_state_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
-
-    psf_zm_state_table.meta = make_psf_zm_state_table_header(data_type)
-
-    assert is_in_format(psf_zm_state_table, tf)
-
-    return psf_zm_state_table
-
-# Initialisers for field/calibration variants
-
-
-def initialise_psf_field_zm_state_table(size=None,
-                                        optional_columns=None,
-                                        init_cols=None,
-                                        init_columns=None):
-
-    if init_columns is None:
-        init_columns = {}
-    return initialise_psf_zm_state_table(data_type="FIELD", optional_columns=optional_columns,
-                                         init_columns=init_columns)
-
-
-def initialise_psf_calibration_zm_state_table(size=None,
-                                              optional_columns=None,
-                                              init_cols=None,
-                                              init_columns=None):
-
-    if init_columns is None:
-        init_columns = {}
-    return initialise_psf_zm_state_table(data_type="CALIB", optional_columns=optional_columns,
-                                         init_columns=init_columns)

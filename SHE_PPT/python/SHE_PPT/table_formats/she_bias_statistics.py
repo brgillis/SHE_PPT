@@ -5,6 +5,8 @@
     Format definition for tables containing shear bias statistics.
 """
 
+__updated__ = "2021-08-13"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -19,75 +21,67 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-02-10"
-
 from collections import OrderedDict
 
 import numpy as np
 
-from .. import magic_values as mv
+from ..constants.classes import ShearEstimationMethods
+from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL
 from ..logging import getLogger
 from ..math import LinregressStatistics, LinregressResults, BiasMeasurements
-from ..table_formats.she_bfd_bias_statistics import tf as bfdtf
-from ..table_utility import is_in_format, init_table, SheTableFormat
+from ..table_utility import is_in_format, init_table, SheTableFormat, SheTableMeta
 
 
 fits_version = "8.0"
 fits_def = "she.biasStatistics"
 
-logger = getLogger(mv.logger_name)
+logger = getLogger(__name__)
 
 
-class SheBiasStatisticsMeta():
+class SheBiasStatisticsMeta(SheTableMeta):
     """
         @brief A class defining the metadata for bias statistics tables.
     """
 
+    __version__: str = fits_version
+    table_format: str = fits_def
+
+    fits_version: str = FITS_VERSION_LABEL
+    fits_def: str = FITS_DEF_LABEL
+
+    ID: str = "ID"
+
+    method: str = "METHOD"
+
+    m1: str = "BM_M1"
+    m1_err: str = "BM_M1E"
+    c1: str = "BM_C1"
+    c1_err: str = "BM_C1E"
+    m1c1_covar: str = "BM_M1C1C"
+
+    m2: str = "BM_M2"
+    m2_err: str = "BM_M2E"
+    c2: str = "BM_C2"
+    c2_err: str = "BM_C2E"
+    m2c2_covar: str = "BM_M2C2C"
+
     def __init__(self):
 
-        self.__version__ = fits_version
-        self.table_format = fits_def
-
-        # Table metadata labels
-        self.fits_version = mv.fits_version_label
-        self.fits_def = mv.fits_def_label
-
-        # Metadata specific to this table format
-
-        self.ID = "ID"
-
-        self.method = "METHOD"
-
-        self.m1 = "BM_M1"
-        self.m1_err = "BM_M1E"
-        self.c1 = "BM_C1"
-        self.c1_err = "BM_C1E"
-        self.m1c1_covar = "BM_M1C1C"
-
-        self.m2 = "BM_M2"
-        self.m2_err = "BM_M2E"
-        self.c2 = "BM_C2"
-        self.c2_err = "BM_C2E"
-        self.m2c2_covar = "BM_M2C2C"
-
         # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_version, None),
-                                     (self.fits_def, None),
-                                     (self.ID, None),
-                                     (self.method, "One of 'KSB', 'REGAUSS', 'MomentsML', or 'LensMC', or else 'Unspecified'."),
-                                     (self.m1, None),
-                                     (self.m1_err, None),
-                                     (self.c1, None),
-                                     (self.c1_err, None),
-                                     (self.m1c1_covar, None),
-                                     (self.m2, None),
-                                     (self.m2_err, None),
-                                     (self.c2, None),
-                                     (self.c2_err, None),
-                                     (self.m2c2_covar, None),))
-
-        # A list of columns in the desired order
-        self.all = list(self.comments.keys())
+        super().__init__(comments=OrderedDict(((self.fits_version, None),
+                                               (self.fits_def, None),
+                                               (self.ID, None),
+                                               (self.method, "One of 'KSB', 'REGAUSS', 'MomentsML', or 'LensMC', or else 'Unspecified'."),
+                                               (self.m1, None),
+                                               (self.m1_err, None),
+                                               (self.c1, None),
+                                               (self.c1_err, None),
+                                               (self.m1c1_covar, None),
+                                               (self.m2, None),
+                                               (self.m2_err, None),
+                                               (self.c2, None),
+                                               (self.c2_err, None),
+                                               (self.m2c2_covar, None),)))
 
 
 class SheBiasStatisticsFormat(SheTableFormat):
@@ -115,14 +109,14 @@ class SheBiasStatisticsFormat(SheTableFormat):
         self.ym2 = self.set_column_properties("YM2", dtype=">f4", fits_dtype="E")
         self.xym2 = self.set_column_properties("XY2", dtype=">f4", fits_dtype="E")
 
-        # A list of columns in the desired order
-        self.all = list(self.is_optional.keys())
+        self._finalize_init()
 
-        # A list of required columns in the desired order
-        self.all_required = []
-        for label in self.all:
-            if not self.is_optional[label]:
-                self.all_required.append(label)
+    @staticmethod
+    def init_table(*args, **kwargs):
+        """ Bound alias to the free table initialisation function, using this table format.
+        """
+
+        return initialise_bias_statistics_table(*args, **kwargs)
 
 
 # Define an instance of this object that can be imported
@@ -161,10 +155,12 @@ def make_bias_statistics_table_header(ID=None,
     header[tf.m.fits_def] = fits_def
 
     header[tf.m.ID] = str(ID)
-    if method in ('KSB', 'REGAUSS', 'MomentsML', 'LensMC', 'Unspecified'):
+    if method in ShearEstimationMethods:
+        header[tf.m.method] = method.value
+    elif method == 'Unspecified':
         header[tf.m.method] = method
     else:
-        raise TypeError("method must be 'KSB', 'REGAUSS', 'MomentsML', or 'LensMC', or else 'Unspecified'")
+        raise TypeError("method must be in ShearEstimationMethods, or else 'Unspecified'")
 
     if g1_bias_measurements is None:
         header[tf.m.m1] = ""
@@ -341,7 +337,7 @@ def initialise_bias_statistics_table(size=None,
         bias_statistics_table.add_row(vals=new_row)
 
     # Check we meet the requirements of the table format
-    assert is_in_format(bias_statistics_table, tf)
+    assert is_in_format(bias_statistics_table, tf, verbose=True)
 
     return bias_statistics_table
 
@@ -450,7 +446,7 @@ def get_bias_measurements(table):
 
     Parameters
     ----------
-    table : astropy.table.Table (in bias_statistics or bfd_bias_statistics format)
+    table : astropy.table.Table (in bias_statistics format)
 
     Return
     ------
@@ -458,10 +454,9 @@ def get_bias_measurements(table):
 
     """
 
-    if not (is_in_format(table, tf, ignore_metadata=True, strict=False) or
-            is_in_format(table, bfdtf, ignore_metadata=True, strict=False)):
+    if not (is_in_format(table, tf, ignore_metadata=True, strict=False)):
         raise ValueError(
-            "table must be in bias_statistics or bfd_bias_statistics format for get_bias_measurements method")
+            "table must be in bias_statistics format for get_bias_measurements method")
 
     # Get g1 bias measurements
 

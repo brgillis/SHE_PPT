@@ -1,9 +1,11 @@
-""" @file regauss_measurements.py
+""" @file momentsml_tu_matched.py
 
     Created 6 Dec 2017
 
-    Format definition for regauss measurements tables.
+    Format definition for momentsml tu_matched tables.
 """
+
+__updated__ = "2021-08-12"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -19,27 +21,24 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-08-12"
-
 from collections import OrderedDict
-
 
 from ..flags import she_flag_version
 from ..logging import getLogger
 from ..table_formats.mer_final_catalog import tf as mfc_tf
-from ..table_formats.she_measurements import SheMeasurementsMeta, SheMeasurementsFormat
+from ..table_formats.she_tu_matched import SheTUMatchedMeta, SheTUMatchedFormat
 from ..table_utility import is_in_format, init_table
 
 
 fits_version = "8.0"
-fits_def = "she.regaussMeasurements"
+fits_def = "she.momentsmlTUMatched"
 
-child_label = "SHE_REGAUSS_"
+child_label = "SHE_MOMENTSML_"
 
 logger = getLogger(__name__)
 
 
-class SheRegaussMeasurementsMeta(SheMeasurementsMeta):
+class SheMomentsMlTUMatchedMeta(SheTUMatchedMeta):
     """
         @brief A class defining the metadata for shear estimates tables.
     """
@@ -48,20 +47,33 @@ class SheRegaussMeasurementsMeta(SheMeasurementsMeta):
     table_format: str = fits_def
 
 
-class SheRegaussMeasurementsFormat(SheMeasurementsFormat):
+class SheMomentsMlTUMatchedFormat(SheTUMatchedFormat):
     """
-        @brief A class defining the format for shear estimates tables. Only the regauss_measurements_table_format
+        @brief A class defining the format for shear estimates tables. Only the momentsml_tu_matched_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
     def __init__(self):
 
         # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
-        super().__init__(SheRegaussMeasurementsMeta(), finalize=False)
+        super().__init__(SheMomentsMlTUMatchedMeta(), finalize=False)
 
         self.setup_child_table_format(child_label)
 
-        # regauss specific columns
+        # momentsml specific columns
+        self.g1_w = self.set_column_properties(
+            "SHE_MOMENTSML_G1_W", is_optional=False, dtype=">f4", fits_dtype="E")
+        self.g2_w = self.set_column_properties(
+            "SHE_MOMENTSML_G2_W", is_optional=False, dtype=">f4", fits_dtype="E")
+        self.g1_uncal_w = self.set_column_properties(
+            "SHE_MOMENTSML_G1_UNCAL_W", is_optional=False, dtype=">f4",
+            fits_dtype="E")
+        self.g2_uncal_w = self.set_column_properties(
+            "SHE_MOMENTSML_G2_UNCAL_W", is_optional=False, dtype=">f4",
+            fits_dtype="E")
+        self.sersic = self.set_column_properties(
+            "SHE_MOMENTSML_SERSIC_INDEX", is_optional=False, dtype=">f4",
+            fits_dtype="E")
 
         self._finalize_init()
 
@@ -70,26 +82,29 @@ class SheRegaussMeasurementsFormat(SheMeasurementsFormat):
         """ Bound alias to the free table initialisation function, using this table format.
         """
 
-        return initialise_regauss_measurements_table(*args, **kwargs)
+        return initialise_momentsml_tu_matched_table(*args, **kwargs)
 
 
 # Define an instance of this object that can be imported
-regauss_measurements_table_format = SheRegaussMeasurementsFormat()
+momentsml_tu_matched_table_format = SheMomentsMlTUMatchedFormat()
 
 # And a convient alias for it
-tf = regauss_measurements_table_format
+tf = momentsml_tu_matched_table_format
 
 
-def make_regauss_measurements_table_header(
-        model_hash=None,
-        model_seed=None,
-        noise_seed=None,
-        observation_id=None,
-        pointing_id=None,
-        observation_time=None,
-        tile_id=None,):
+def make_momentsml_tu_matched_table_header(model_hash=None,
+                                           model_seed=None,
+                                           noise_seed=None,
+                                           observation_id=None,
+                                           pointing_id=None,
+                                           observation_time=None,
+                                           tile_id=None,):
     """
         @brief Generate a header for a shear estimates table.
+
+        @param detector_x <int> x-index (1-6) for detector this image was taken with
+
+        @param detector_y <int> y-index (1-6) for detector this image was taken with
 
         @param model_hash <int> Hash of the physical model options dictionary
 
@@ -120,7 +135,7 @@ def make_regauss_measurements_table_header(
     return header
 
 
-def initialise_regauss_measurements_table(mer_final_catalog=None,
+def initialise_momentsml_tu_matched_table(mer_final_catalog=None,
                                           size=None,
                                           optional_columns=None,
                                           init_cols=None,
@@ -141,7 +156,13 @@ def initialise_regauss_measurements_table(mer_final_catalog=None,
         @param optional_columns <list<str>> List of names for optional columns to include.
                Default is gal_e1_err and gal_e2_err
 
-        @return regauss_measurements_table <astropy.table.Table>
+        @param detector_x <int> x-index (1-6) for detector this image was taken with
+
+        @param detector_y <int> y-index (1-6) for detector this image was taken with
+
+        @param detector <int?> Detector this table corresponds to
+
+        @return momentsml_tu_matched_table <astropy.table.Table>
     """
 
     assert (mer_final_catalog is None) or (
@@ -155,17 +176,16 @@ def initialise_regauss_measurements_table(mer_final_catalog=None,
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    regauss_measurements_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
+    momentsml_tu_matched_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
 
-    regauss_measurements_table.meta = make_regauss_measurements_table_header(
-        model_hash=model_hash,
-        model_seed=model_seed,
-        noise_seed=noise_seed,
-        observation_id=observation_id,
-        pointing_id=pointing_id,
-        observation_time=observation_time,
-        tile_id=tile_id)
+    momentsml_tu_matched_table.meta = make_momentsml_tu_matched_table_header(model_hash=model_hash,
+                                                                             model_seed=model_seed,
+                                                                             noise_seed=noise_seed,
+                                                                             observation_id=observation_id,
+                                                                             pointing_id=pointing_id,
+                                                                             observation_time=observation_time,
+                                                                             tile_id=tile_id)
 
-    assert is_in_format(regauss_measurements_table, tf)
+    assert is_in_format(momentsml_tu_matched_table, tf)
 
-    return regauss_measurements_table
+    return momentsml_tu_matched_table

@@ -8,6 +8,8 @@
     and input to Analysis pipeline; must be persistent in archive.
 """
 
+__updated__ = "2021-08-13"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -22,14 +24,11 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-06-09"
 
-
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.ksbcalibration_stub import dpdSheKsbCalibration
 
-from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
+from ..product_utility import (get_all_filenames_just_data, set_data_filename_of_product,
+                               get_data_filename_from_product, create_product_from_template)
 
 
 sample_file_name = "SHE_PPT/sample_ksb_calibration.xml"
@@ -44,48 +43,33 @@ def init():
 
     # Add the data file name methods
 
-    binding_class.set_filename = __set_filename
-    binding_class.get_filename = __get_filename
-    binding_class.set_data_filename = __set_filename
-    binding_class.get_data_filename = __get_filename
+    binding_class.set_filename = _set_filename
+    binding_class.get_filename = _get_filename
+    binding_class.set_data_filename = _set_filename
+    binding_class.get_data_filename = _get_filename
 
-    binding_class.get_all_filenames = __get_all_filenames
+    binding_class.get_all_filenames = get_all_filenames_just_data
 
     binding_class.has_files = False
 
 
-
-def __set_filename(self, filename):
+def _set_filename(self, filename):
     set_data_filename_of_product(self, filename, "KsbCalibrationFileList[0].DataStorage")
 
 
-def __get_filename(self):
+def _get_filename(self):
     return get_data_filename_from_product(self, "KsbCalibrationFileList[0].DataStorage")
 
 
-def __get_all_filenames(self):
-
-    all_filenames = [self.get_data_filename()]
-
-    return all_filenames
-
-
-def create_dpd_she_ksb_calibration(filename=None):
-    """
-        @TODO fill in docstring
+def create_dpd_she_ksb_calibration(filename=None,
+                                   data_filename=None):
+    """ Creates a product of this type.
     """
 
-    dpd_she_ksb_calibration = read_xml_product(
-        find_aux_file(sample_file_name))
-
-    # Overwrite the header with a new one to update the creation date (among
-    # other things)
-    dpd_she_ksb_calibration.Header = HeaderProvider.create_generic_header("DpdSheKsbCalibration")
-
-    if filename:
-        __set_filename(dpd_she_ksb_calibration, filename)
-
-    return dpd_she_ksb_calibration
+    return create_product_from_template(template_filename=sample_file_name,
+                                        product_name="DpdSheKsbCalibration",
+                                        filename=filename,
+                                        data_filename=data_filename)
 
 
 # Add a useful alias

@@ -4,9 +4,8 @@ File: she_image.py
 Created on: Aug 17, 2017
 """
 
-__updated__ = "2021-07-12"
+__updated__ = "2021-08-13"
 
-#
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -19,9 +18,6 @@ __updated__ = "2021-07-12"
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-#
-
-# Avoid non-trivial "from" imports (as explicit is better than implicit)
 
 from copy import deepcopy
 from functools import lru_cache
@@ -37,10 +33,12 @@ import galsim
 import numpy as np
 
 from . import logging
-from . import magic_values as mv
 from . import mdb
+from .constants.fits import CCDID_LABEL
+from .constants.misc import SEGMAP_UNASSIGNED_VALUE
 from .mask import (as_bool, is_masked_bad,
                    is_masked_suspect_or_bad, masked_off_image)
+
 
 DETECTOR_SHAPE = (4096, 4136)
 DEFAULT_STAMP_SIZE = 384
@@ -218,18 +216,18 @@ class SHEImage():
         # Cached values
         self.galsim_wcs = None
 
-        if self.header is None or mv.ccdid_label not in self.header:
+        if self.header is None or CCDID_LABEL not in self.header:
             # If no header, assume we're using detector 1-1
             self.det_ix = 1
             self.det_iy = 1
         else:
             try:
-                self.det_iy = int(self.header[mv.ccdid_label][0])
-                self.det_ix = int(self.header[mv.ccdid_label][2])
+                self.det_iy = int(self.header[CCDID_LABEL][0])
+                self.det_ix = int(self.header[CCDID_LABEL][2])
             except ValueError:
                 # Check after "CCDID "
-                self.det_iy = int(self.header[mv.ccdid_label][6])
-                self.det_ix = int(self.header[mv.ccdid_label][8])
+                self.det_iy = int(self.header[CCDID_LABEL][6])
+                self.det_ix = int(self.header[CCDID_LABEL][8])
 
     # We define properties of the SHEImage object, following
     # https://euclid.roe.ac.uk/projects/codeen-users/wiki/User_Cod_Std-pythonstandard-v1-0#PNAMA-020-m-Developer-SHOULD-use-properties-to-protect-the-service-from-the-implementation
@@ -657,7 +655,7 @@ class SHEImage():
         other_mask = (self.segmentation_map != seg_id)
         if not mask_unassigned:
             other_mask = np.logical_and(
-                other_mask, (self.segmentation_map != mv.segmap_unassigned_value))
+                other_mask, (self.segmentation_map != SEGMAP_UNASSIGNED_VALUE))
 
         # Combine and return the masks
         object_mask = np.logical_or(pixel_mask, other_mask)
@@ -1159,7 +1157,7 @@ class SHEImage():
                 segmentation_map_stamp = None
             else:
                 segmentation_map_stamp = np.ones(
-                    (width, height), dtype=np.int64) * mv.segmap_unassigned_value
+                    (width, height), dtype=np.int64) * SEGMAP_UNASSIGNED_VALUE
 
             if self.background_map is None and bkg_filename is None:
                 background_map_stamp = None
@@ -1292,7 +1290,7 @@ class SHEImage():
                 logger.debug("Not overwriting existing segmentation_map with default.")
                 return
 
-        self.segmentation_map = mv.segmap_unassigned_value * np.ones_like(self.data, dtype=np.int32)
+        self.segmentation_map = SEGMAP_UNASSIGNED_VALUE * np.ones_like(self.data, dtype=np.int32)
 
     def add_default_background_map(self, force=False):
         """Adds a default background_map to this object (all 0.). If force=True, will overwrite an existing

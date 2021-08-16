@@ -18,14 +18,14 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2020-06-12"
+__updated__ = "2021-08-13"
 
 from astropy.io import fits
 import pytest
 
 from SHE_PPT import detector as dtc
+from SHE_PPT.constants.fits import SEGMENTATION_TAG
 from SHE_PPT.file_io import (read_xml_product, write_xml_product)
-import SHE_PPT.magic_values as mv
 from SHE_PPT.products import mer_segmentation_map as prod
 import numpy as np
 
@@ -42,8 +42,6 @@ class TestMosaicProduct(object):
 
         # Check that it validates the schema
         product.validateBinding()
-
-        return
 
     def test_xml_writing_and_reading(self, tmpdir):
 
@@ -76,9 +74,9 @@ class TestMosaicProduct(object):
         # Check that it raises exceptions when expected
 
         with pytest.raises(RuntimeError):
-            mosaic_hdu = prod.load_mosaic_hdu(filename="bad_filename.junk")
+            _ = prod.load_mosaic_hdu(filename="bad_filename.junk")
         with pytest.raises(IOError):
-            mosaic_hdu = prod.load_mosaic_hdu(filename=filename)
+            _ = prod.load_mosaic_hdu(filename=filename)
 
         # Now save it pointing to an existing fits file and check that it works
 
@@ -89,7 +87,7 @@ class TestMosaicProduct(object):
 
         phdu = fits.PrimaryHDU(data=test_array,
                                header=fits.header.Header((("EXTNAME", dtc.get_id_string(detector_x, detector_y)
-                                                           + "." + mv.segmentation_tag),)))
+                                                           + "." + SEGMENTATION_TAG),)))
 
         data_filename = str(tmpdir.join("mosaic_data.fits"))
         phdu.writeto(data_filename, overwrite=True)
@@ -112,7 +110,7 @@ class TestMosaicProduct(object):
 
         hdu2 = fits.ImageHDU(data=test_array2,
                              header=fits.header.Header((("EXTNAME", dtc.get_id_string(detector_x2, detector_y2)
-                                                         + "." + mv.segmentation_tag),)))
+                                                         + "." + SEGMENTATION_TAG),)))
 
         hdulist = fits.HDUList([phdu, hdu2])
         hdulist.writeto(data_filename, overwrite=True)

@@ -7,6 +7,8 @@
     Origin: OU-SHE - Output from various pipelines.
 """
 
+__updated__ = "2021-08-13"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -21,8 +23,6 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-06-10"
-
 
 from copy import deepcopy
 
@@ -33,31 +33,16 @@ from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibrat
 from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
 
 from ..file_io import read_xml_product, find_aux_file
+from ..product_utility import init_no_files
 
 
 sample_file_name = "SHE_PPT/sample_validation_test_results.xml"
 
 
 def init():
-    """
-        Initialisers for SHE Validation Test Results data product
-    """
+    """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    binding_class = dpdSheValidationTestResults
-
-    # Add the data file name methods
-
-    binding_class.get_all_filenames = __get_all_filenames
-
-    binding_class.has_files = False
-
-
-
-def __get_all_filenames(self):
-
-    all_filenames = []
-
-    return all_filenames
+    init_no_files(binding_class=dpdSheValidationTestResults)
 
 
 def create_dpd_she_validation_test_results(reference_product=None,

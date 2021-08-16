@@ -5,6 +5,8 @@
     Base format definition for common properties of all shear measurements tables.
 """
 
+__updated__ = "2021-08-13"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -19,58 +21,38 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-03-04"
+from typing import List
 
-from collections import OrderedDict
-
-from .. import magic_values as mv
-from ..table_utility import SheTableFormat
+from ..constants.fits import (SHE_FLAG_VERSION_LABEL, MODEL_HASH_LABEL, MODEL_SEED_LABEL, NOISE_SEED_LABEL,
+                              OBS_ID_LABEL, PNT_ID_LABEL, OBS_TIME_LABEL, TILE_ID_LABEL, VALID_LABEL,
+                              FITS_VERSION_LABEL, FITS_DEF_LABEL)
+from ..table_utility import SheTableFormat, SheTableMeta
 
 
 fits_version = "8.0"
 fits_def = "she.measurements"
 
 
-class SheMeasurementsMeta():
+class SheMeasurementsMeta(SheTableMeta):
     """ A class defining the metadata common to shear measurements tables.
     """
 
-    def __init__(self):
+    __version__: str = fits_version
+    table_format: str = fits_def
 
-        self.table_format = fits_def
-        self.__version__ = fits_version
+    # Table metadata labels
+    fits_version: str = FITS_VERSION_LABEL
+    fits_def: str = FITS_DEF_LABEL
+    she_flag_version: str = SHE_FLAG_VERSION_LABEL
+    model_hash: str = MODEL_HASH_LABEL
+    model_seed: str = MODEL_SEED_LABEL
+    noise_seed: str = NOISE_SEED_LABEL
+    observation_id: str = OBS_ID_LABEL
+    pointing_id: str = PNT_ID_LABEL
+    observation_time: str = OBS_TIME_LABEL
+    tile_id: str = TILE_ID_LABEL
 
-        # Table metadata labels
-        self.fits_version = mv.fits_version_label
-        self.fits_def = mv.fits_def_label
-        self.she_flag_version = mv.she_flag_version_label
-        self.model_hash = mv.model_hash_label
-        self.model_seed = mv.model_seed_label
-        self.noise_seed = mv.noise_seed_label
-        self.observation_id = mv.obs_id_label
-        self.pointing_id = mv.pnt_id_label
-        self.observation_time = mv.obs_time_label
-        self.tile_id = mv.tile_id_label
-
-        self.valid = mv.valid_label
-
-        # Store the less-used comments in a dict
-        self.comments = OrderedDict(((self.fits_version, None),
-                                     (self.fits_def, None),
-                                     (self.she_flag_version, None),
-                                     (self.model_hash, None),
-                                     (self.model_seed, None),
-                                     (self.noise_seed, None),
-                                     (self.observation_id, "Individual ID or list of IDs"),
-                                     (self.pointing_id, "List of pointing IDs"),
-                                     (self.observation_time, "Individual time or list of times"),
-                                     (self.tile_id, "Individual ID or list of IDs"),
-                                     (self.valid,
-                                      "0: Not tested; 1: Pass; -1: Fail")
-                                     ))
-
-        # A list of columns in the desired order
-        self.all = list(self.comments.keys())
+    valid: str = VALID_LABEL
 
 
 class SheMeasurementsFormat(SheTableFormat):
@@ -78,112 +60,108 @@ class SheMeasurementsFormat(SheTableFormat):
          instance of this should generally be accessed, and it should not be changed.
     """
 
-    def __init__(self,meta=None):
-        if meta is None:
-            meta=SheMeasurementsMeta()
-        super().__init__(meta)
+    is_base = True
+    unlabelled_columns: List[str]
 
-        self.is_base = True
+    def __init__(self,
+                 meta=None,
+                 finalize=True):
+        if meta is None:
+            meta = SheMeasurementsMeta()
+        super().__init__(meta)
 
         # Table column labels and properties
 
-        self.ID = self.set_column_properties(
-                                        "OBJECT_ID", dtype=">i8", fits_dtype="K")
+        self.ID = self.set_column_properties("OBJECT_ID", dtype=">i8", fits_dtype="K", unlabelled=True)
 
         # Fit information
 
         self.fit_flags = self.set_column_properties(
-                                               "FIT_FLAGS", dtype=">i8", fits_dtype="K")
+            "FIT_FLAGS", dtype=">i8", fits_dtype="K")
         self.val_flags = self.set_column_properties(
-                                               "VAL_FLAGS", dtype=">i8", fits_dtype="K")
+            "VAL_FLAGS", dtype=">i8", fits_dtype="K")
         self.fit_class = self.set_column_properties(
-                                               "FIT_CLASS", dtype=">i2", fits_dtype="I")
+            "FIT_CLASS", dtype=">i2", fits_dtype="I")
         self.nexp = self.set_column_properties(
-                                          "NEXP", dtype=">i2", fits_dtype="I")
+            "NEXP", dtype=">i2", fits_dtype="I")
         self.unmasked_fraction = self.set_column_properties(
-                                                       "UNMASKED_FRACTION", dtype=">f4", fits_dtype="E")
+            "UNMASKED_FRACTION", dtype=">f4", fits_dtype="E")
         self.rec_flags = self.set_column_properties(
-                                               "REC_FLAGS", dtype=">i8", fits_dtype="K")
+            "REC_FLAGS", dtype=">i8", fits_dtype="K")
 
         # Shear/shape information
 
         self.g1 = self.set_column_properties(
-                                        "G1", dtype=">f4", fits_dtype="E")
+            "G1", dtype=">f4", fits_dtype="E")
         self.g1_err = self.set_column_properties(
-                                            "G1_ERR", dtype=">f4", fits_dtype="E")
+            "G1_ERR", dtype=">f4", fits_dtype="E")
         self.e1_err = self.set_column_properties(
-                                            "E1_ERR", dtype=">f4", fits_dtype="E")
+            "E1_ERR", dtype=">f4", fits_dtype="E")
         self.g2 = self.set_column_properties(
-                                        "G2", dtype=">f4", fits_dtype="E")
+            "G2", dtype=">f4", fits_dtype="E")
         self.g2_err = self.set_column_properties(
-                                            "G2_ERR", dtype=">f4", fits_dtype="E")
+            "G2_ERR", dtype=">f4", fits_dtype="E")
         self.e2_err = self.set_column_properties(
-                                            "E2_ERR", dtype=">f4", fits_dtype="E")
+            "E2_ERR", dtype=">f4", fits_dtype="E")
         self.e_var = self.set_column_properties(
-                                           "E_VAR", dtype=">f4", fits_dtype="E", is_optional=True)
+            "E_VAR", dtype=">f4", fits_dtype="E", is_optional=True)
         self.g1g2_covar = self.set_column_properties(
-                                                "G1G2_COVAR", dtype=">f4", fits_dtype="E")
+            "G1G2_COVAR", dtype=">f4", fits_dtype="E")
         self.e1e2_covar = self.set_column_properties(
-                                                "E1E2_COVAR", dtype=">f4", fits_dtype="E")
+            "E1E2_COVAR", dtype=">f4", fits_dtype="E")
         self.weight = self.set_column_properties(
-                                            "SHEAR_WEIGHT", dtype=">f4", fits_dtype="E")
+            "SHEAR_WEIGHT", dtype=">f4", fits_dtype="E")
         self.shape_weight = self.set_column_properties(
-                                                  "SHAPE_WEIGHT", dtype=">f4", fits_dtype="E", is_optional=True)
+            "SHAPE_WEIGHT", dtype=">f4", fits_dtype="E", is_optional=True)
         self.g1_uncal = self.set_column_properties(
-                                              "G1_UNCAL", dtype=">f4", fits_dtype="E")
+            "G1_UNCAL", dtype=">f4", fits_dtype="E")
         self.g1_uncal_err = self.set_column_properties(
-                                                  "G1_UNCAL_ERR", dtype=">f4", fits_dtype="E")
+            "G1_UNCAL_ERR", dtype=">f4", fits_dtype="E")
         self.e1_uncal_err = self.set_column_properties(
-                                                  "E1_UNCAL_ERR", dtype=">f4", fits_dtype="E")
+            "E1_UNCAL_ERR", dtype=">f4", fits_dtype="E")
         self.g2_uncal = self.set_column_properties(
-                                              "G2_UNCAL", dtype=">f4", fits_dtype="E")
+            "G2_UNCAL", dtype=">f4", fits_dtype="E")
         self.g2_uncal_err = self.set_column_properties(
-                                                  "G2_UNCAL_ERR", dtype=">f4", fits_dtype="E")
+            "G2_UNCAL_ERR", dtype=">f4", fits_dtype="E")
         self.e2_uncal_err = self.set_column_properties(
-                                                  "E2_UNCAL_ERR", dtype=">f4", fits_dtype="E")
+            "E2_UNCAL_ERR", dtype=">f4", fits_dtype="E")
         self.e_uncal_var = self.set_column_properties(
-                                                 "E_UNCAL_VAR", dtype=">f4", fits_dtype="E", is_optional=True)
+            "E_UNCAL_VAR", dtype=">f4", fits_dtype="E", is_optional=True)
         self.g1g2_uncal_covar = self.set_column_properties(
-                                                      "G1G2_UNCAL_COVAR", dtype=">f4", fits_dtype="E")
+            "G1G2_UNCAL_COVAR", dtype=">f4", fits_dtype="E")
         self.e1e2_uncal_covar = self.set_column_properties(
-                                                      "E1E2_UNCAL_COVAR", dtype=">f4", fits_dtype="E")
+            "E1E2_UNCAL_COVAR", dtype=">f4", fits_dtype="E")
         self.weight_uncal = self.set_column_properties(
-                                                  "SHEAR_WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
+            "SHEAR_WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
         self.shape_weight_uncal = self.set_column_properties(
-                                                        "SHAPE_WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
+            "SHAPE_WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
         self.shape_noise = self.set_column_properties(
-                                                 "ASSUMED_SHAPE_NOISE", dtype=">f4", fits_dtype="E", is_optional=True)
+            "ASSUMED_SHAPE_NOISE", dtype=">f4", fits_dtype="E", is_optional=True)
 
         self.ra = self.set_column_properties(
-                                        "UPDATED_RA", dtype=">f8", fits_dtype="D", comment="deg")
+            "UPDATED_RA", dtype=">f8", fits_dtype="D", comment="deg")
         self.ra_err = self.set_column_properties(
-                                            "UPDATED_RA_ERR", dtype=">f4", fits_dtype="E", comment="deg")
+            "UPDATED_RA_ERR", dtype=">f4", fits_dtype="E", comment="deg")
         self.dec = self.set_column_properties(
-                                         "UPDATED_DEC", dtype=">f8", fits_dtype="D", comment="deg")
+            "UPDATED_DEC", dtype=">f8", fits_dtype="D", comment="deg")
         self.dec_err = self.set_column_properties(
-                                             "UPDATED_DEC_ERR", dtype=">f4", fits_dtype="E", comment="deg")
+            "UPDATED_DEC_ERR", dtype=">f4", fits_dtype="E", comment="deg")
 
         # Information on other galaxy properties
 
         self.re = self.set_column_properties(
-                                        "RE", dtype=">f4", fits_dtype="E")
+            "RE", dtype=">f4", fits_dtype="E")
         self.re_err = self.set_column_properties(
-                                            "RE_ERR", dtype=">f4", fits_dtype="E")
+            "RE_ERR", dtype=">f4", fits_dtype="E")
         self.flux = self.set_column_properties(
-                                          "FLUX", dtype=">f4", fits_dtype="E")
+            "FLUX", dtype=">f4", fits_dtype="E")
         self.flux_err = self.set_column_properties(
-                                              "FLUX_ERR", dtype=">f4", fits_dtype="E")
+            "FLUX_ERR", dtype=">f4", fits_dtype="E")
         self.snr = self.set_column_properties(
-                                         "SNR", dtype=">f4", fits_dtype="E")
+            "SNR", dtype=">f4", fits_dtype="E")
 
-        # A list of columns in the desired order
-        self.all = list(self.is_optional.keys())
-
-        # A list of required columns in the desired order
-        self.all_required = []
-        for label in self.all:
-            if not self.is_optional[label]:
-                self.all_required.append(label)
+        if finalize:
+            self._finalize_init()
 
 
 # Define an instance of this object that can be imported

@@ -65,13 +65,6 @@
 		<CatalogDescription>
 			<CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
 			<CatalogType>PROXY</CatalogType>
-			<PathToCatalogFile>Data.DataStorage.BfdMoments.FileName</PathToCatalogFile>
-			<CatalogName>She-Val-Bfd-Moments</CatalogName>
-			<CatalogFormatHDU>1</CatalogFormatHDU>
-		</CatalogDescription>
-		<CatalogDescription>
-			<CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
-			<CatalogType>PROXY</CatalogType>
 			<PathToCatalogFile>Data.DataStorage.KsbShear.FileName</PathToCatalogFile>
 			<CatalogName>She-Val-Ksb-Shear</CatalogName>
 			<CatalogFormatHDU>1</CatalogFormatHDU>
@@ -98,14 +91,6 @@
 			<CatalogFormatHDU>1</CatalogFormatHDU>
 		</CatalogDescription>
 		<ObservationId>1</ObservationId>
-		<BfdMoments>
-			<DataStorage format="she.bfdMoments" version="8.0">
-				<DataContainer filestatus="ARCHIVED_CERNVMFS">
-					<FileName>HIPlxBU9TWwU4yBErq8GhyIAEFQ</FileName>
-				</DataContainer>
-			</DataStorage>
-			<Valid>VALID</Valid>
-		</BfdMoments>
 		<KsbShearMeasurements>
 			<DataStorage format="she.ksbMeasurements" version="8.0">
 				<DataContainer filestatus="ARCHIVED_OFFLINE">

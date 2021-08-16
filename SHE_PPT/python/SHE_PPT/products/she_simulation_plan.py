@@ -5,6 +5,8 @@
     Functions to create and output a she_simulation_plan data product.
 """
 
+__updated__ = "2021-08-13"
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -19,12 +21,9 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-06-10"
-
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 
-from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import init_intermediate_general
+from ..product_utility import init_intermediate_general, create_general_product_from_template
 
 
 sample_file_name = 'SHE_PPT/sample_intermediate_general.xml'
@@ -38,28 +37,13 @@ def init():
     init_intermediate_general()
 
 
-
 def create_dpd_she_simulation_plan(filename=None):
+    """ Initialize a product of this type
     """
-        @TODO fill in docstring
-    """
 
-    dpd_she_simulation_plan = read_xml_product(
-        find_aux_file(sample_file_name))
-
-    # Set the data we don't need to empty
-    dpd_she_simulation_plan.Data.IntData = []
-    dpd_she_simulation_plan.Data.FloatData = []
-
-    # Label the type in the StringData
-    dpd_she_simulation_plan.Data.StringData = ["TYPE:DpdSheSimulationPlan"]
-
-    dpd_she_simulation_plan.Header = HeaderProvider.create_generic_header("DpdSheIntermediateGeneral")
-
-    if filename:
-        dpd_she_simulation_plan.set_data_filename(filename)
-
-    return dpd_she_simulation_plan
+    return create_general_product_from_template(template_filename=sample_file_name,
+                                                product_name="DpdSheIntermediateGeneral",
+                                                filename=filename,)
 
 
 # Add a useful alias
