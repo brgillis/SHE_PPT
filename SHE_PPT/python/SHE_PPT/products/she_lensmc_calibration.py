@@ -46,7 +46,7 @@ def create_dpd_she_lensmc_calibration(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_name="DpdSheLensMcCalibration",
+                                        product_type_name="DpdSheLensMcCalibration",
                                         filename=filename,
                                         data_filename=data_filename)
 

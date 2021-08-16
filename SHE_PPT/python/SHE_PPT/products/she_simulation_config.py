@@ -44,7 +44,7 @@ def create_dpd_she_simulation_config(filename=None):
     """
 
     return create_general_product_from_template(template_filename=sample_file_name,
-                                                product_name="DpdSheSimulationConfig",
+                                                product_type_name="DpdSheSimulationConfig",
                                                 filename=filename,)
 
 

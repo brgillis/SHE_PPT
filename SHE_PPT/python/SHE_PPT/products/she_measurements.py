@@ -49,7 +49,7 @@ def create_dpd_she_measurements(KSB_filename=None,
     """
 
     return create_measurements_product_from_template(template_filename=sample_file_name,
-                                                     product_name="DpdSheMeasurements",
+                                                     product_type_name="DpdSheMeasurements",
                                                      KSB_filename=KSB_filename,
                                                      LensMC_filename=LensMC_filename,
                                                      MomentsML_filename=MomentsML_filename,

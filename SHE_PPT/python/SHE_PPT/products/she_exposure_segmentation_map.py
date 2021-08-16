@@ -99,7 +99,7 @@ def create_dpd_she_exposure_segmentation_map(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_name="DpdSheExposureReprojectedSegmentationMap",
+                                        product_type_name="DpdSheExposureReprojectedSegmentationMap",
                                         filename=filename,
                                         data_filename=data_filename)
 

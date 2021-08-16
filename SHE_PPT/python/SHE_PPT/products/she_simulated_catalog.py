@@ -45,7 +45,7 @@ def create_dpd_she_simulated_catalog(filename=None):
     """
 
     return create_general_product_from_template(template_filename=sample_file_name,
-                                                product_name="DpdSheIntermediateObservationCatalog",
+                                                product_type_name="DpdSheIntermediateObservationCatalog",
                                                 filename=filename,)
 
 

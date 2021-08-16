@@ -49,7 +49,7 @@ def create_dpd_she_reconciled_measurements(KSB_filename=None,
     """
 
     return create_measurements_product_from_template(template_filename=sample_file_name,
-                                                     product_name="DpdSheReconciledMeasurements",
+                                                     product_type_name="DpdSheReconciledMeasurements",
                                                      KSB_filename=KSB_filename,
                                                      LensMC_filename=LensMC_filename,
                                                      MomentsML_filename=MomentsML_filename,

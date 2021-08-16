@@ -42,7 +42,7 @@ def create_dpd_she_simulation_plan(filename=None):
     """
 
     return create_general_product_from_template(template_filename=sample_file_name,
-                                                product_name="DpdSheIntermediateGeneral",
+                                                product_type_name="DpdSheIntermediateGeneral",
                                                 filename=filename,)
 
 

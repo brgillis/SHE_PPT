@@ -1,4 +1,4 @@
-""" @file she_analysis_config_product_test.py
+""" @file products_test.py
 
     Created 22 July 2020
 

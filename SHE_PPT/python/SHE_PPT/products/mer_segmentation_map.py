@@ -111,7 +111,7 @@ def create_dpd_mer_mosaic(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_name="DpdMerSegmentationMap",
+                                        product_type_name="DpdMerSegmentationMap",
                                         filename=filename,
                                         data_filename=data_filename)
 

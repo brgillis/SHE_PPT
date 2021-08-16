@@ -25,10 +25,12 @@ __updated__ = "2021-08-16"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-from ..product_utility import init_placeholder_general, create_general_product_from_template
+# Import dpdShePlaceHolderGeneral here since it's expected to be here
+from ..product_utility import dpdShePlaceholderGeneral, init_placeholder_general, create_general_product_from_template
 
 
 sample_file_name = 'SHE_PPT/sample_placeholder_general.xml'
+product_type_name = "DpdLe1AocsTimeSeries"
 
 
 def init():
@@ -37,18 +39,14 @@ def init():
 
     """
 
-    init_placeholder_general(init_function=create_dpd_le1_aocs_time_series)
+    init_placeholder_general(product_type_name=product_type_name,
+                             init_function=init_product)
 
 
-def create_dpd_le1_aocs_time_series(filename="None"):
-    """
-        @TODO fill in docstring
+def init_product(filename=None):
+    """ Initialize a product of this type
     """
 
     return create_general_product_from_template(template_filename=sample_file_name,
-                                                product_name="DpdLe1AocsTimeSeries",
+                                                product_type_name=product_type_name,
                                                 filename=filename,)
-
-
-# Add a useful alias
-create_aocs_time_series_data_product = create_dpd_le1_aocs_time_series

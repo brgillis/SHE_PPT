@@ -31,10 +31,10 @@ from ST_DataModelBindings.pro import she_stub as she_pro
 
 from ..constants.shear_estimation_methods import ShearEstimationMethods
 from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import get_data_filename_from_product, set_data_filename_of_product
-
+from ..product_utility import init_binding_class, get_data_filename_from_product, set_data_filename_of_product
 
 sample_file_name = "SHE_PPT/sample_common_calibration.xml"
+product_type_name = "DpdSheCommonCalibration"
 
 
 def init():
@@ -43,6 +43,10 @@ def init():
     """
 
     binding_class = dpdSheCommonCalibration
+
+    if not init_binding_class(binding_class,
+                              init_function=init_product):
+        return
 
     # Add the data file name methods
 
@@ -64,9 +68,6 @@ def init():
     binding_class.set_method_filename = _set_method_filename
 
     binding_class.has_files = True
-
-    # Use a lambda function to create a bound version of the init function
-    binding_class.init_product = lambda self, *args, **kwargs: create_dpd_she_common_calibration(*args, **kwargs)
 
 
 def _set_KSB_filename(self, filename):
@@ -173,10 +174,10 @@ def _set_method_filename(self, method, filename):
     return name
 
 
-def create_dpd_she_common_calibration(KSB_filename=None,
-                                      LensMC_filename=None,
-                                      MomentsML_filename=None,
-                                      REGAUSS_filename=None):
+def init_product(KSB_filename=None,
+                 LensMC_filename=None,
+                 MomentsML_filename=None,
+                 REGAUSS_filename=None):
     """
         @TODO fill in docstring
     """
@@ -186,7 +187,7 @@ def create_dpd_she_common_calibration(KSB_filename=None,
 
     # Overwrite the header with a new one to update the creation date (among
     # other things)
-    dpd_she_common_calibration.Header = HeaderProvider.create_generic_header("DpdSheCommonCalibration")
+    dpd_she_common_calibration.Header = HeaderProvider.create_generic_header(product_type_name)
 
     _set_KSB_filename(dpd_she_common_calibration, KSB_filename)
     _set_LensMC_filename(dpd_she_common_calibration, LensMC_filename)
@@ -194,10 +195,6 @@ def create_dpd_she_common_calibration(KSB_filename=None,
     _set_REGAUSS_filename(dpd_she_common_calibration, REGAUSS_filename)
 
     return dpd_she_common_calibration
-
-
-# Add a useful alias
-create_common_calibration_product = create_dpd_she_common_calibration
 
 
 def create_calibration_storage(filename):

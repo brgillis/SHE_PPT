@@ -35,24 +35,23 @@ class ProductTester(abc.ABC):
 
     product_class: Any
     product_type_name: Optional[Any] = None
-    _init_product: Optional[Any] = None
+    _empty_product: Optional[Any] = None
 
     @property
-    def init_product(self):
+    def empty_product(self):
+        if self._empty_product is None:
+            self._empty_product = self.product_class()
+        return self._empty_product
 
-        if self._init_product is None:
+    def init_product(self, *args, **kwargs):
 
-            _p = self.product_class()
-
-            if hasattr(_p, "init_product"):
-                self._init_product = _p.init_product
-            elif hasattr(_p, "d_init_functions") and self.product_type_name:
-                self._init_product = _p.d_init_functions[self.product_type_name]
-            else:
-                raise ValueError(f"Product class {self.product_class} of type {self.product_type_name} has no "
-                                 f"recognized function to initialize a product.")
-
-        return self._init_product
+        if hasattr(self.empty_product, "init_product"):
+            return self.empty_product.init_product(*args, **kwargs)
+        elif hasattr(self.empty_product, "d_init_functions") and self.product_type_name:
+            return self.empty_product.d_init_functions[self.product_type_name](*args, **kwargs)
+        else:
+            raise ValueError(f"Product class {self.product_class} of type {self.product_type_name} has no "
+                             f"recognized function to initialize a product.")
 
     def test_validation(self):
 

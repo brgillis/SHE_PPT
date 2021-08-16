@@ -44,7 +44,7 @@ def create_dpd_she_detections(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_name="DpdMerFinalCatalog",
+                                        product_type_name="DpdMerFinalCatalog",
                                         filename=filename,
                                         data_filename=data_filename)
 

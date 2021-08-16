@@ -45,7 +45,7 @@ def create_dpd_she_reconciled_lensmc_chains(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_name="DpdSheReconciledLensMcChains",
+                                        product_type_name="DpdSheReconciledLensMcChains",
                                         filename=filename,
                                         data_filename=data_filename,
                                         spatial_footprint=spatial_footprint)

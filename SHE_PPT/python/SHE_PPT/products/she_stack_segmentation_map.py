@@ -98,7 +98,7 @@ def create_dpd_she_stack_segmentation_map(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_name="DpdSheStackReprojectedSegmentationMap",
+                                        product_type_name="DpdSheStackReprojectedSegmentationMap",
                                         filename=filename,
                                         data_filename=data_filename)
 

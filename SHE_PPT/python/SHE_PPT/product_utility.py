@@ -23,8 +23,6 @@ __updated__ = "2021-08-16"
 
 from typing import Optional
 
-from EL_PythonUtils.utilities import run_only_once
-
 from SHE_PPT.constants.classes import ShearEstimationMethods
 from SHE_PPT.file_io import read_xml_product
 import ST_DM_DmUtils.DmUtils as dm_utils
@@ -302,7 +300,7 @@ def _init_general_binding_class(binding_class):
         return False
 
 
-def init_intermediate_general(product_type=None,
+def init_intermediate_general(product_type_name=None,
                               init_function=None,):
 
     binding_class = dpdSheIntermediateGeneral
@@ -310,8 +308,8 @@ def init_intermediate_general(product_type=None,
     first_init = _init_general_binding_class(binding_class=binding_class)
 
     # Set the init_function in the dict even if already inited
-    if product_type:
-        binding_class.d_init_methods[product_type] = init_function
+    if product_type_name:
+        binding_class.d_init_functions[product_type_name] = init_function
 
     if not first_init:
         return
@@ -342,8 +340,7 @@ def _get_all_int_obs_cat_filenames(self):
     return _get_all_generic_filenames(self, _get_int_obs_cat_data_filename)
 
 
-@run_only_once
-def init_int_obs_cat(product_type=None,
+def init_int_obs_cat(product_type_name=None,
                      init_function=None,):
 
     binding_class = dpdSheIntermediateObservationCatalog
@@ -351,8 +348,8 @@ def init_int_obs_cat(product_type=None,
     first_init = _init_general_binding_class(binding_class=binding_class)
 
     # Set the init_function in the dict even if already inited
-    if product_type:
-        binding_class.d_init_methods[product_type] = init_function
+    if product_type_name:
+        binding_class.d_init_functions[product_type_name] = init_function
 
     if not first_init:
         return
@@ -383,8 +380,7 @@ def _get_all_plc_gen_filenames(self):
     return _get_all_generic_filenames(self, _get_plc_gen_data_filename)
 
 
-@run_only_once
-def init_placeholder_general(product_type=None,
+def init_placeholder_general(product_type_name=None,
                              init_function=None,):
 
     binding_class = dpdShePlaceholderGeneral
@@ -392,8 +388,8 @@ def init_placeholder_general(product_type=None,
     first_init = _init_general_binding_class(binding_class=binding_class)
 
     # Set the init_function in the dict even if already inited
-    if product_type:
-        binding_class.d_init_methods[product_type] = init_function
+    if product_type_name:
+        binding_class.d_init_functions[product_type_name] = init_function
 
     if not first_init:
         return
@@ -412,7 +408,7 @@ def init_placeholder_general(product_type=None,
 
 
 def create_product_from_template(template_filename,
-                                 product_name,
+                                 product_type_name,
                                  filename=None,
                                  data_filename=None,
                                  spatial_footprint=None):
@@ -427,7 +423,7 @@ def create_product_from_template(template_filename,
 
     # Create the product
     p = read_xml_product(find_aux_file(template_filename))
-    p.Header = HeaderProvider.create_generic_header(product_name)
+    p.Header = HeaderProvider.create_generic_header(product_type_name)
 
     # Set the data_filename and spatial footprint
     if data_filename:
@@ -439,7 +435,7 @@ def create_product_from_template(template_filename,
 
 
 def create_measurements_product_from_template(template_filename,
-                                              product_name,
+                                              product_type_name,
                                               KSB_filename=None,
                                               LensMC_filename=None,
                                               MomentsML_filename=None,
@@ -450,7 +446,7 @@ def create_measurements_product_from_template(template_filename,
     """
 
     p = create_product_from_template(template_filename=template_filename,
-                                     product_name=product_name,
+                                     product_type_name=product_type_name,
                                      spatial_footprint=spatial_footprint)
 
     p.set_KSB_filename(KSB_filename)
@@ -462,14 +458,14 @@ def create_measurements_product_from_template(template_filename,
 
 
 def create_general_product_from_template(template_filename,
-                                         product_name,
+                                         product_type_name,
                                          filename=None,):
     """ Function to create a data product object, using a template file as a base, specialized for shear measurements
         products.
     """
 
     p = create_product_from_template(template_filename=template_filename,
-                                     product_name=product_name,
+                                     product_type_name=product_type_name,
                                      filename=filename)
 
     # Set the data we don't need to empty
@@ -477,7 +473,7 @@ def create_general_product_from_template(template_filename,
     p.Data.FloatData = []
 
     # Label the type in the StringData
-    p.Data.StringData = [f"TYPE:{product_name}"]
+    p.Data.StringData = [f"TYPE:{product_type_name}"]
 
     return p
 

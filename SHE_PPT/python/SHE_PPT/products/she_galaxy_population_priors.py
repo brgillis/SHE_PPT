@@ -76,7 +76,7 @@ def create_dpd_she_galaxy_population_priors(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_name="DpdSheGalaxyPopulationPriors",
+                                        product_type_name="DpdSheGalaxyPopulationPriors",
                                         filename=filename,
                                         data_filename=data_filename)
 

@@ -45,7 +45,7 @@ def create_dpd_she_psf_calibration_parameters(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_name="DpdShePsfCalibrationParameters",
+                                        product_type_name="DpdShePsfCalibrationParameters",
                                         filename=filename,
                                         data_filename=data_filename)
 

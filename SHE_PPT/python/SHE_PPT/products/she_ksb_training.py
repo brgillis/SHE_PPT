@@ -46,7 +46,7 @@ def create_dpd_she_ksb_training(filename=None,
     """
 
     return create_product_from_template(template_filename=sample_file_name,
-                                        product_name="DpdSheKsbTraining",
+                                        product_type_name="DpdSheKsbTraining",
                                         filename=filename,
                                         data_filename=data_filename)
 

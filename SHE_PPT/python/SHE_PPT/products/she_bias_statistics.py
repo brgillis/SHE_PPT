@@ -43,6 +43,7 @@ from ..table_formats.she_bias_statistics import initialise_bias_statistics_table
 
 
 sample_file_name = 'SHE_PPT/sample_intermediate_general.xml'
+product_type_name = "DpdSheIntermediateGeneral"
 
 logger = getLogger(__name__)
 
@@ -52,7 +53,8 @@ def init():
         Adds some extra functionality to the dpdSheBiasStatistics product
     """
 
-    init_intermediate_general(init_function=create_dpd_she_bias_statistics)
+    init_intermediate_general(product_type_name=product_type_name,
+                              init_function=create_dpd_she_bias_statistics)
 
     binding_class = dpdSheIntermediateGeneral
 
@@ -433,6 +435,7 @@ def create_dpd_she_bias_statistics_from_stats(KSB_bias_statistics=None,
 # Add useful aliases
 create_she_bias_statistics_product = create_dpd_she_bias_statistics
 create_she_bias_statistics_product_from_stats = create_dpd_she_bias_statistics_from_stats
+init_product = create_dpd_she_bias_statistics
 
 # Creation functions
 
