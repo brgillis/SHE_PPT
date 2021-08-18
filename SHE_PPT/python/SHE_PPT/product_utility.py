@@ -5,7 +5,7 @@
     Utility functions related to data products
 """
 
-__updated__ = "2021-08-16"
+__updated__ = "2021-08-18"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -102,9 +102,16 @@ def _set_spatial_footprint(self, p):
         another product which has a spatial footprint defined.
     """
 
-    if not hasattr(self.Data, "CatalogCoverage"):
-        raise TypeError(f"Product {self} of type {type(self)} has CatalogCoverage attribute, and so has no "
-                        f"spatial footprint to be set with set_spatial_footprint.")
+    # Figure out where the spatial footprint is stored for this object
+    target_attr = None
+    if hasattr(self.Data, "SpatialCoverage"):
+        target_attr = self.Data.SpatialCoverage
+    elif hasattr(self.Data, "CatalogCoverage"):
+        target_attr = self.Data.CatalogCoverage.SpatialCoverage
+
+    if not target_attr:
+        raise TypeError(f"Product {self} of type {type(self)} has no SpatialCoverage or CatalogCoverage attribute, "
+                        f"and so has no spatial footprint to be set with set_spatial_footprint.")
 
     # Figure out how the spatial footprint was passed to us
     if isinstance(p, str):
@@ -123,7 +130,7 @@ def _set_spatial_footprint(self, p):
         raise TypeError("For set_spatial_footprint, must be provided a spatial footprint, a product which has it, " +
                         "or the path to such a product. Received: " + str(type(p)))
 
-    self.Data.SpatialCoverage.Polygon = poly
+    target_attr.Polygon = poly
 
 
 def _get_spatial_footprint(self):
