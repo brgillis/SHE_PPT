@@ -7,7 +7,7 @@
     Origin: OU-SHE - Internal to Analysis and Calibration pipelines.
 """
 
-__updated__ = "2021-08-16"
+__updated__ = "2021-08-18"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -191,7 +191,7 @@ def _set_method_bias_statistics(self, method, stats, workdir="."):
 
     instance_id = hash_any(stats, format='base64')
     instance_id_fn = instance_id[0:17].replace('.', '-').replace('+', '-')
-    new_filename = get_allowed_filename(type_name=method.value.upper() + "", instance_id=instance_id_fn,
+    new_filename = get_allowed_filename(type_name=method.name + "", instance_id=instance_id_fn,
                                         extension=".fits", version=SHE_PPT.__version__, subdir=subfolder_name)
 
     # Create the file using the statistics
@@ -239,7 +239,7 @@ def _set_method_bias_measurements(self, method, measurements, workdir="."):
 
     instance_id = hash_any(measurements, format='base64')
     instance_id_fn = instance_id[0:17].replace('.', '-').replace('+', '-')
-    filename = get_allowed_filename(type_name=method.value.upper() + "", instance_id=instance_id_fn,
+    filename = get_allowed_filename(type_name=method.name + "", instance_id=instance_id_fn,
                                     extension=".fits", version=SHE_PPT.__version__, subdir=subfolder_name)
     qualified_filename = os.path.join(workdir, filename)
 
