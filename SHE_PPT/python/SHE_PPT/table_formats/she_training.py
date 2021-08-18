@@ -5,7 +5,7 @@
     Base format definition for a table containing generic training data.
 """
 
-__updated__ = "2021-08-12"
+__updated__ = "2021-08-18"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -55,7 +55,7 @@ class SheTrainingFormat(SheTableFormat):
 
         # Column names and info
 
-        self.id = self.set_column_properties("OBJECT_ID", dtype=">i8", fits_dtype="K",
+        self.id = self.set_column_properties("OBJECT_ID", dtype=">i8", fits_dtype="K", unlabelled=True,
                                              comment="ID of this object in the galaxy population priors table.")
         self.e1 = self.set_column_properties("E1", dtype=">f4", fits_dtype="E",
                                              comment="Mean ellipticity measurement of this object, component 1")
