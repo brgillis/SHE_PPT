@@ -5,7 +5,7 @@
     Misc. utility functions for the pipeline.
 """
 
-__updated__ = "2021-08-12"
+__updated__ = "2021-08-19"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -671,7 +671,11 @@ def _check_enum_key_is_valid(enum_key: ConfigKeys,
             break
 
     if not found:
-        raise ValueError(f"{enum_key} is not a valid member of any of the EnumMetas: {config_keys}.")
+        err_string = f"{enum_key} is not a valid member of any of the EnumMetas: {config_keys}. Allowed keys are:\n"
+        for config_key_enum_meta in config_keys:
+            for enum_key in config_key_enum_meta:
+                err_string += f"{enum_key}"
+        raise ValueError(err_string)
 
     return config_key_enum_meta
 
