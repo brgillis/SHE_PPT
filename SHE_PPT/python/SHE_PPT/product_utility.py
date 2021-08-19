@@ -5,7 +5,7 @@
     Utility functions related to data products
 """
 
-__updated__ = "2021-08-18"
+__updated__ = "2021-08-19"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -124,6 +124,8 @@ def _set_spatial_footprint(self, p):
         poly = p.Polygon
     elif hasattr(p, "Data") and hasattr(p.Data, "SpatialCoverage"):
         poly = p.Data.SpatialCoverage.Polygon
+    elif hasattr(p, "Data") and hasattr(p.Data, "ImgSpatialFootprint"):
+        poly = p.Data.ImgSpatialFootprint.Polygon
     elif hasattr(p, "Data") and hasattr(p.Data, "CatalogCoverage"):
         poly = p.Data.CatalogCoverage.SpatialCoverage.Polygon
     else:
