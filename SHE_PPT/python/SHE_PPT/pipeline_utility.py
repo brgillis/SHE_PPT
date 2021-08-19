@@ -688,8 +688,8 @@ def _check_key_is_valid(key: str,
 
     enum = None
     for config_key_enum in config_keys:
-        if config_key_enum.is_allowed_value(key):
-            enum = config_key_enum(key)
+        enum = config_key_enum.find_value(key)
+        if enum:
             break
 
     if not enum:
