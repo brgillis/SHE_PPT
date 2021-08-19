@@ -872,7 +872,7 @@ def _convert_tuple_type(pipeline_config: Dict[ConfigKeys, Any],
     """
 
     # Skip if not present in the config
-    if not enum_key in pipeline_config:
+    if not enum_key in pipeline_config or pipeline_config[enum_key] is None:
         return
 
     if not tuple_type[0] == list:
