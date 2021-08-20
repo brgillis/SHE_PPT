@@ -4,27 +4,8 @@
 
     Unit tests relating to I/O functions.
 """
-import os
-import subprocess
-from time import sleep
 
-from astropy.table import Table
-import pytest
-
-from SHE_PPT.file_io import (get_allowed_filename,
-                             write_listfile,
-                             read_listfile,
-                             replace_in_file,
-                             replace_multiple_in_file,
-                             type_name_maxlen,
-                             instance_id_maxlen,
-                             processing_function_maxlen,
-                             find_aux_file,
-                             update_xml_with_value,
-                             read_xml_product,
-                             tar_files)
-import numpy as np
-
+__updated__ = "2021-08-20"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -38,7 +19,23 @@ import numpy as np
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-__updated__ = "2021-07-13"
+
+import os
+import subprocess
+from time import sleep
+
+import pytest
+
+from SHE_PPT.file_io import (get_allowed_filename,
+                             write_listfile,
+                             read_listfile,
+                             type_name_maxlen,
+                             instance_id_maxlen,
+                             processing_function_maxlen,
+                             find_aux_file,
+                             update_xml_with_value,
+                             read_xml_product,
+                             tar_files)
 
 
 class TestIO:
