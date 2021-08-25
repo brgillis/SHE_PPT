@@ -28,7 +28,7 @@ from SHE_PPT.table_formats import *
 from SHE_PPT.testing import *
 
 
-class ImportTester():
+class TestImports():
 
     def test_import(self):
         """ Dummy test - the actual testing is done in the wildcard imports above, which can only be done at the
