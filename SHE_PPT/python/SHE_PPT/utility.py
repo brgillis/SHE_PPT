@@ -228,12 +228,12 @@ def any_is_inf_or_nan(l_x: Sequence[Union[float, Sequence[float]]]) -> Union[flo
     return np.logical_or.reduce(is_inf_or_nan(l_x))
 
 
-def join_without_none(l_s: List[Optional[str]], joiner: str = "-", default: str = ""):
+def join_without_none(l_s: List[Optional[Any]], joiner: str = "-", default: str = ""):
     """ Join a list of values into a single string, excepting any Nones.
     """
 
     # Get a list to join without any Nones
-    l_s_no_none: List[str] = [s for s in l_s if s is not None]
+    l_s_no_none: List[str] = [str(s) for s in l_s if s is not None]
 
     # Return the default if the list is empty
     if len(l_s_no_none) == 0:
