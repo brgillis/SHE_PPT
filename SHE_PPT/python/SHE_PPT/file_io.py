@@ -145,7 +145,7 @@ class SheFileNamer(FileNameProvider):
     @type_name_head.setter
     def type_name_head(self, type_name_head: Optional[str]) -> None:
         self._type_name_head = type_name_head
-        self._filename = None
+        self.type_name = None
 
     @property
     def type_name_body(self) -> str:
@@ -156,7 +156,7 @@ class SheFileNamer(FileNameProvider):
     @type_name_body.setter
     def type_name_body(self, type_name_body: Optional[str]) -> None:
         self._type_name_body = type_name_body
-        self._filename = None
+        self.type_name = None
 
     @property
     def type_name_tail(self) -> str:
@@ -165,7 +165,7 @@ class SheFileNamer(FileNameProvider):
     @type_name_tail.setter
     def type_name_tail(self, type_name_tail: Optional[str]) -> None:
         self._type_name_tail = type_name_tail
-        self._filename = None
+        self.type_name = None
 
     @property
     def instance_id_head(self) -> str:
@@ -174,7 +174,7 @@ class SheFileNamer(FileNameProvider):
     @instance_id_head.setter
     def instance_id_head(self, instance_id_head: Optional[str]) -> None:
         self._instance_id_head = instance_id_head
-        self._filename = None
+        self.instance_id = None
 
     @property
     def instance_id_body(self) -> str:
@@ -185,7 +185,7 @@ class SheFileNamer(FileNameProvider):
     @instance_id_body.setter
     def instance_id_body(self, instance_id_body: Optional[str]) -> None:
         self._instance_id_body = instance_id_body
-        self._filename = None
+        self.instance_id = None
 
     @property
     def instance_id_tail(self) -> str:
@@ -194,7 +194,7 @@ class SheFileNamer(FileNameProvider):
     @instance_id_tail.setter
     def instance_id_tail(self, instance_id_tail: Optional[str]) -> None:
         self._instance_id_tail = instance_id_tail
-        self._filename = None
+        self.instance_id = None
 
     @property
     def extension(self) -> str:
@@ -203,7 +203,7 @@ class SheFileNamer(FileNameProvider):
     @extension.setter
     def extension(self, extension: Optional[str]) -> None:
         self._extension = extension
-        self._filename = None
+        self.filename = None
 
     @property
     def release(self) -> str:
@@ -212,7 +212,7 @@ class SheFileNamer(FileNameProvider):
     @release.setter
     def release(self, release: Optional[str]) -> None:
         self._release = release
-        self._filename = None
+        self.filename = None
 
     @property
     def version(self) -> str:
@@ -221,7 +221,7 @@ class SheFileNamer(FileNameProvider):
     @version.setter
     def version(self, version: Optional[str]) -> None:
         self._version = version
-        self._filename = None
+        self.filename = None
 
     @property
     def subdir(self) -> str:
@@ -230,7 +230,7 @@ class SheFileNamer(FileNameProvider):
     @subdir.setter
     def subdir(self, subdir: Optional[str]) -> None:
         self._subdir = subdir
-        self._filename = None
+        self.filename = None
 
     @property
     def processing_function(self) -> str:
@@ -239,7 +239,7 @@ class SheFileNamer(FileNameProvider):
     @processing_function.setter
     def processing_function(self, processing_function: Optional[str]) -> None:
         self._processing_function = processing_function
-        self._filename = None
+        self.filename = None
 
     @property
     def timestamp(self) -> str:
@@ -248,7 +248,7 @@ class SheFileNamer(FileNameProvider):
     @timestamp.setter
     def timestamp(self, timestamp: Optional[str]) -> None:
         self._timestamp = timestamp
-        self._filename = None
+        self.filename = None
 
     @property
     def workdir(self) -> str:
@@ -257,7 +257,7 @@ class SheFileNamer(FileNameProvider):
     @workdir.setter
     def workdir(self, workdir: Optional[str]) -> None:
         self._workdir = workdir
-        self._qualified_filename = None
+        self.qualified_filename = None
 
     @property
     def type_name(self) -> str:
@@ -265,11 +265,21 @@ class SheFileNamer(FileNameProvider):
             self.__determine_type_name()
         return self._type_name
 
+    @type_name.setter
+    def type_name(self, type_name: Optional[str]) -> None:
+        self._type_name = type_name
+        self.filename = None
+
     @property
     def instance_id(self) -> str:
         if self._instance_id is None:
             self.__determine_instance_id()
         return self._instance_id
+
+    @instance_id.setter
+    def instance_id(self, instance_id: Optional[str]) -> None:
+        self._instance_id = instance_id
+        self.filename = None
 
     @property
     def filename(self) -> str:
@@ -278,15 +288,19 @@ class SheFileNamer(FileNameProvider):
         return self._filename
 
     @filename.setter
-    def filename(self, filename) -> None:
+    def filename(self, filename: Optional[str]) -> None:
         self._filename = filename
-        self._qualified_filename = None
+        self.qualified_filename = None
 
     @property
     def qualified_filename(self) -> str:
         if self._qualified_filename is None:
             self._qualified_filename = os.path.join(self.workdir, self.filename)
         return self._qualified_filename
+
+    @qualified_filename.setter
+    def qualified_filename(self, qualified_filename: Optional[str]) -> None:
+        self._qualified_filename = qualified_filename
 
     # Private methods
 
