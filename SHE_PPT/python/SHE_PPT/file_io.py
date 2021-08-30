@@ -55,93 +55,40 @@ instance_id_maxlen = 55
 processing_function_maxlen = 4
 
 
-def get_allowed_filename(type_name, instance_id, extension=".fits", release=None, version=None, subdir="data",
-                         processing_function="SHE", timestamp=True):
-    """Gets a filename in the required Euclid format. Now mostly a pass-through to the official version, with
-    tweaks to silently shift arguments to upper-case.
-
-    Parameters
-    ----------
-    type_name : str
-        Label for what type of object this is. Maximum 45 characters.
-    instance_id : str
-        Label for the instance of this object. Maximum 37 characters if timestamp==True, 55 if False
-    extension : str
-        File extension (eg. ".fits").
-    release : str
-        Software/data release version, in format "XX.XX" where each X is a digit 0-9. Either this or version must be
-        supplied.
-    version : str
-        Software/data release version, in format "X.X(.Y)" where each X is an integer 0-99. Either this or release must
-        be supplied.
-    subdir : str
-        Subdirectory of work directory in which this file will be (default "data")
-    processing_function : str
-        Label for the processing function which created this file.
-    timestamp : bool
-        If True, will append a timestamp to the instance_id
-    """
-
-    # Check we have just one of release and version
-    if (release is None) == (version is None):
-        raise ValueError("Exactly one of release or version must be supplied to get_allowed_filename.")
-
-    # If given version, convert it to release format
-    if version is not None:
-        release = get_release_from_version(version)
-
-    # Silently shift instance_id to upper-case
-    instance_id = instance_id.upper()
-
-    # Check the extension doesn't start with "." and silently fix if it does
-    if extension[0] == ".":
-        extension = extension[1:]
-
-    filename = FileNameProvider().get_allowed_filename(processing_function=processing_function,
-                                                       type_name=type_name.upper(),
-                                                       instance_id=instance_id,
-                                                       extension=extension,
-                                                       release=release,
-                                                       timestamp=timestamp)
-
-    if subdir is not None:
-        qualified_filename = join(subdir, filename)
-    else:
-        qualified_filename = filename
-
-    return qualified_filename
-
-
-class FileNamer():
+class SheFileNamer(FileNameProvider):
     """ Class to handle generating Euclid-compliant filenames piecewise from components.
     """
 
     # Attributes used to generate the filename - can be set at init or otherwise before calling get()
 
-    # For type ID
+    # For type name
     _type_name_head: Optional[str] = None
     _type_name_body: Optional[str] = None
     _type_name_tail: Optional[str] = None
 
-    _default_type_name: str = "SHE_VALIDATION_PLOT"
+    _type_name: Optional[str] = None
+
+    default_type_name: str = "SHE_VALIDATION_PLOT"
 
     # For instance ID
     _instance_id_head: Optional[str] = None
     _instance_id_body: Optional[str] = None
     _instance_id_tail: Optional[str] = None
 
-    _default_instance_id: str = "0"
+    _instance_id: Optional[str] = None
+
+    default_instance_id: str = "0"
 
     # Options for getting the filename
-    extension: str = ".fits"
-    release: Optional[str] = None
-    version: Optional[str] = None
-    subdir: Optional[str] = "data"
-    processing_function: str = "SHE"
-    timestamp: bool = True
+    _extension: str = ".fits"
+    _release: Optional[str] = None
+    _version: Optional[str] = None
+    _subdir: Optional[str] = "data"
+    _processing_function: str = "SHE"
+    _timestamp: bool = True
 
     # Other options
-    workdir: Optional[str] = None
+    _workdir: Optional[str] = None
 
     # Output values
     _filename: Optional[str] = None
@@ -156,6 +103,8 @@ class FileNamer():
                  subdir: Optional[str] = None,
                  processing_function: Optional[str] = None,
                  timestamp: Optional[bool] = None):
+
+        super().__init__()
 
         # Override defaults with any options provided at init
 
@@ -349,7 +298,7 @@ class FileNamer():
         self._instance_id = join_without_none(l_s=[self.instance_id_head,
                                                    self._instance_id_body,
                                                    self.instance_id_tail],
-                                              default=self._default_instance_id)
+                                              default=self.default_instance_id)
 
     # Protected methods
 
@@ -364,14 +313,74 @@ class FileNamer():
     # Public methods
 
     def get(self):
-        return get_allowed_filename(type_name=self.type_name,
-                                    instance_id=self.instance_id,
-                                    extension=self.extension,
-                                    release=self.release,
-                                    version=self.version,
-                                    subdir=self.subdir,
-                                    processing_function=self.processing_function,
-                                    timestamp=self.timestamp)
+        """ Get a filename based on internal attributes.
+        """
+        # Check we have just one of release and version
+        if (self.release is None) == (self.version is None):
+            raise ValueError("Exactly one of release or version must be supplied to get_allowed_filename.")
+
+        # If given version, convert it to release format
+        if self.version is not None:
+            release = get_release_from_version(self.version)
+        else:
+            release = self.release
+
+        # Check the extension doesn't start with "." and silently fix if it does
+        if self.extension[0] == ".":
+            extension = self.extension[1:]
+        else:
+            extension = self.extension
+
+        filename = self.get_allowed_filename(processing_function=self.processing_function,
+                                             type_name=self.type_name.upper(),
+                                             instance_id=self.instance_id.upper(),
+                                             extension=extension,
+                                             release=release,
+                                             timestamp=self.timestamp)
+
+        if self.subdir is not None:
+            qualified_filename = join(self.subdir, filename)
+        else:
+            qualified_filename = filename
+
+        return qualified_filename
+
+
+def get_allowed_filename(type_name, instance_id, extension=".fits", release=None, version=None, subdir="data",
+                         processing_function="SHE", timestamp=True):
+    """Gets a filename in the required Euclid format. Now mostly a pass-through to the official version, with
+    tweaks to silently shift arguments to upper-case.
+
+    Parameters
+    ----------
+    type_name : str
+        Label for what type of object this is. Maximum 45 characters.
+    instance_id : str
+        Label for the instance of this object. Maximum 37 characters if timestamp==True, 55 if False
+    extension : str
+        File extension (eg. ".fits").
+    release : str
+        Software/data release version, in format "XX.XX" where each X is a digit 0-9. Either this or version must be
+        supplied.
+    version : str
+        Software/data release version, in format "X.X(.Y)" where each X is an integer 0-99. Either this or release must
+        be supplied.
+    subdir : str
+        Subdirectory of work directory in which this file will be (default "data")
+    processing_function : str
+        Label for the processing function which created this file.
+    timestamp : bool
+        If True, will append a timestamp to the instance_id
+    """
+
+    return SheFileNamer(type_name=type_name,
+                        instance_id=instance_id,
+                        extension=extension,
+                        release=release,
+                        version=version,
+                        subdir=subdir,
+                        processing_function=processing_function,
+                        timestamp=timestamp).get()
 
 
 def write_listfile(listfile_name, filenames):
