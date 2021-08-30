@@ -102,7 +102,8 @@ class SheFileNamer(FileNameProvider):
                  version: Optional[str] = None,
                  subdir: Optional[str] = None,
                  processing_function: Optional[str] = None,
-                 timestamp: Optional[bool] = None):
+                 timestamp: Optional[bool] = None,
+                 workdir: Optional[str] = None):
 
         super().__init__()
 
@@ -131,6 +132,9 @@ class SheFileNamer(FileNameProvider):
 
         if timestamp is not None:
             self._timestamp = timestamp
+
+        if workdir is not None:
+            self._workdir = workdir
 
     # Attribute accessors and setters
 
