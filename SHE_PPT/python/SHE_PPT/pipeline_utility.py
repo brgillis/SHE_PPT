@@ -986,3 +986,17 @@ def get_conditional_product(filename: str,
 
         # This isn't a listfile, so try to open and return it
         return read_xml_product(qualified_filename, workdir)
+
+
+
+
+class ScalingExperimentsConfigKeys(ConfigKeys):
+    HDF5 = "HDF5"
+    CHUNKED = "chunked"
+    MAXBATCHES= "maxbatches"
+    BATCHSIZE = "batchsize"
+    MEMMAP = "memmap"
+    SPATIAL_BATCHING = "spatial_batching"
+    DRY_RUN = "dry_run"
+    MEAN_COMPUTE_TIME = "mean_compute_time"
+    COMPRESSION = "compression"
