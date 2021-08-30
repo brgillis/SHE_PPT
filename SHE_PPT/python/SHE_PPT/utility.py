@@ -5,7 +5,7 @@
     Miscellaneous utility functions
 """
 
-__updated__ = "2021-08-27"
+__updated__ = "2021-08-30"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -226,3 +226,18 @@ def any_is_inf_or_nan(l_x: Sequence[Union[float, Sequence[float]]]) -> Union[flo
     """ Checks if any value in a sequence of values is inf or nan.
     """
     return np.logical_or.reduce(is_inf_or_nan(l_x))
+
+
+def join_without_none(l_s: List[Optional[str]], joiner: str = "-", default: str = ""):
+    """ Join a list of values into a single string, excepting any Nones.
+    """
+
+    # Get a list to join without any Nones
+    l_s_no_none: List[str] = [s for s in l_s if s is not None]
+
+    # Return the default if the list is empty
+    if len(l_s_no_none) == 0:
+        return default
+
+    # Otherwise, join the pieces
+    return joiner.join(l_s_no_none)
