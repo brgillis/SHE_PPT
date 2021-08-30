@@ -296,7 +296,7 @@ class SheFileNamer(FileNameProvider):
     def __determine_instance_id(self):
         # Piece together the instance ID from the components, leaving out Nones
         self._instance_id = join_without_none(l_s=[self.instance_id_head,
-                                                   self._instance_id_body,
+                                                   self.instance_id_body,
                                                    self.instance_id_tail],
                                               default=self.default_instance_id)
 
