@@ -5,7 +5,7 @@
     Various functions for input/output
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-27"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -21,6 +21,7 @@ __updated__ = "2021-08-13"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+import abc
 from datetime import datetime
 import json
 import os
@@ -28,10 +29,12 @@ from os.path import join, exists
 from pickle import UnpicklingError
 import pickle
 import subprocess
+from typing import Generic, List, Optional, Sequence, TypeVar, Type
 from xml.sax._exceptions import SAXParseException
 
 from EL_PythonUtils.utilities import time_to_timestamp
 from astropy.io import fits
+from astropy.table import Table
 from pyxb.exceptions_ import NamespaceError
 
 from ElementsServices.DataSync import DataSync
@@ -604,3 +607,177 @@ def tar_files(tarball_filename, l_filenames, workdir=".", delete_files=False):
             except Exception:
                 # Don't need to fail the whole process, but log the issue
                 logger.warning(f"Cannot delete file: {qualified_filename}")
+
+
+T = TypeVar('T')
+
+
+class FileLoader(abc.ABC, Generic[T]):
+    """ Abstract base class for loading in a data from the work directory.
+    """
+
+    # Attributes set at init
+    _filename: str
+    _workdir: str
+
+    # Attributes set on-demand
+    _qualified_filename: Optional[str] = None
+
+    # Attributes set when loaded
+    _obj: Optional[T] = None
+
+    def __init__(self,
+                 filename: str,
+                 workdir: str):
+
+        self.filename = filename
+        self.workdir = workdir
+
+    @property
+    def filename(self) -> str:
+        return self._filename
+
+    @filename.setter
+    def filename(self, filename: str):
+        self._qualified_filename = None
+        self._filename = filename
+
+    @property
+    def workdir(self) -> str:
+        return self._workdir
+
+    @workdir.setter
+    def workdir(self, workdir: str):
+        self._qualified_filename = None
+        self._workdir = workdir
+
+    @property
+    def qualified_filename(self) -> str:
+        if not self._qualified_filename:
+            self._qualified_filename = os.path.join(self.workdir, self.filename)
+        return self._qualified_filename
+
+    @property
+    def object(self) -> Optional[T]:
+        return self._obj
+
+    def load(self, *args, **kwargs) -> None:
+        """ Method to load in the object.
+        """
+        self._obj = self.get(*args, **kwargs)
+
+    def open(self, *args, **kwargs) -> None:
+        """ Alias to self.load.
+        """
+        self.load(*args, **kwargs)
+
+    def close(self) -> None:
+        """ Deletes the object to allow memory to be freed.
+        """
+        self._obj = None
+
+    @abc.abstractmethod
+    def get(self, *args, **kwargs) -> T:
+        """ Method to get the object.  Should take a format such as:
+
+            return load_object(filename=self.filename, workdir=self.workdir, *args, **kwargs)
+        """
+
+        pass
+
+
+class ProductLoader(FileLoader):
+    """ FileLoader specialized to load in .xml data products.
+    """
+
+    def get(self, *args, **kwargs) -> None:
+        return read_xml_product(xml_filename=self.filename, workdir=self.workdir, *args, **kwargs)
+
+
+class TableLoader(FileLoader[Table]):
+    """ FileLoader specialized to load in astropy data tables.
+    """
+
+    def get(self, *args, **kwargs) -> None:
+        return Table.read(self.qualified_filename, *args, **kwargs)
+
+
+class FitsLoader(FileLoader[Table]):
+    """ FileLoader specialized to load in astropy data tables.
+    """
+
+    def get(self, *args, **kwargs) -> None:
+        return fits.open(self.qualified_filename, *args, **kwargs)
+
+
+class MultiFileLoader(Generic[T]):
+    """ A class to handle loading in multiple files of the same type.
+    """
+
+    # Attributes set at init
+    workdir: str
+    l_filenames: Sequence[str]
+    l_file_loaders: Sequence[FileLoader[T]]
+    file_loader_type: Optional[Type[T]] = None
+
+    def __init__(self,
+                 workdir: str,
+                 l_file_loaders: Optional[Sequence[FileLoader[T]]] = None,
+                 l_filenames: Optional[Sequence[str]] = None,
+                 file_loader_type: Optional[Type] = None) -> None:
+
+        self.workdir = workdir
+
+        if file_loader_type:
+            self.file_loader_type = file_loader_type
+
+        if l_file_loaders:
+            if l_filenames:
+                raise ValueError("MultiFileLoader can be inited with only one of l_file_loaders and l_filenames.")
+            self.l_file_loaders = l_file_loaders
+            self.l_filenames = [file_loader.filename for file_loader in self.l_file_loaders]
+
+        elif l_filenames:
+            self.l_filenames = l_filenames
+            self.l_file_loaders = [self.file_loader_type(filename=filename, workdir=self.workdir) for
+                                   filename in self.l_filenames]
+
+        else:
+            self.l_file_loaders = []
+            self.l_filenames = []
+
+    def load_all(self, *args, **kwargs):
+        """ Load all files.
+        """
+        for file_loader in self.l_file_loaders:
+            file_loader.load(*args, **kwargs)
+
+    def open_all(self, *args, **kwargs):
+        """ Alias to load_all.
+        """
+        self.load_all(*args, **kwargs)
+
+    def close_all(self):
+        """ Close all files.
+        """
+        for file_loader in self.l_file_loaders:
+            file_loader.close()
+
+    def get_all(self, *args, **kwargs) -> List[T]:
+        """ Get a list of all files (load and return, but don't keep a reference).
+        """
+        return [file_loader.get(*args, **kwargs) for file_loader in self.l_file_loaders]
+
+
+class MultiProductLoader(MultiFileLoader):
+    """ A class to handle loading in multiple xml data products.
+    """
+
+    file_loader_type: Type = ProductLoader
+
+
+class MultiTableLoader(MultiFileLoader):
+    """ A class to handle loading in multiple xml data products.
+    """
+
+    file_loader_type: Type = TableLoader
