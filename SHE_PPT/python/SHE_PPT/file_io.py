@@ -5,7 +5,7 @@
     Various functions for input/output
 """
 
-__updated__ = "2021-08-27"
+__updated__ = "2021-08-30"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -45,7 +45,7 @@ import numpy as np
 from . import __version__ as SHE_PPT_version
 from .constants.test_data import SYNC_CONF
 from .logging import getLogger
-from .utility import get_release_from_version
+from .utility import get_release_from_version, join_without_none
 
 
 logger = getLogger(__name__)
@@ -110,6 +110,268 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
         qualified_filename = filename
 
     return qualified_filename
+
+
+class FileNamer():
+    """ Class to handle generating Euclid-compliant filenames piecewise from components.
+    """
+
+    # Attributes used to generate the filename - can be set at init or otherwise before calling get()
+
+    # For type ID
+    _type_name_head: Optional[str] = None
+    _type_name_body: Optional[str] = None
+    _type_name_tail: Optional[str] = None
+
+    _default_type_name: str = "SHE_VALIDATION_PLOT"
+
+    # For instance ID
+    _instance_id_head: Optional[str] = None
+    _instance_id_body: Optional[str] = None
+    _instance_id_tail: Optional[str] = None
+
+    _default_instance_id: str = "0"
+
+    # Options for getting the filename
+    extension: str = ".fits"
+    release: Optional[str] = None
+    version: Optional[str] = None
+    subdir: Optional[str] = "data"
+    processing_function: str = "SHE"
+    timestamp: bool = True
+
+    # Other options
+    workdir: Optional[str] = None
+
+    # Output values
+    _filename: Optional[str] = None
+    _qualified_filename: Optional[str] = None
+
+    def __init__(self,
+                 type_name: Optional[str] = None,
+                 instance_id: Optional[str] = None,
+                 extension: Optional[str] = None,
+                 release: Optional[str] = None,
+                 version: Optional[str] = None,
+                 subdir: Optional[str] = None,
+                 processing_function: Optional[str] = None,
+                 timestamp: Optional[bool] = None):
+
+        # Override defaults with any options provided at init
+
+        if type_name is not None:
+            self._type_name_body = type_name
+
+        if instance_id is not None:
+            self._instance_id_body = instance_id
+
+        if extension is not None:
+            self._extension = extension
+
+        if release is not None:
+            self._release = release
+
+        if version is not None:
+            self._version = version
+
+        if subdir is not None:
+            self._subdir = subdir
+
+        if processing_function is not None:
+            self._processing_function = processing_function
+
+        if timestamp is not None:
+            self._timestamp = timestamp
+
+    # Attribute accessors and setters
+
+    @property
+    def type_name_head(self) -> str:
+        return self._type_name_head
+
+    @type_name_head.setter
+    def type_name_head(self, type_name_head: Optional[str]) -> None:
+        self._type_name_head = type_name_head
+        self._filename = None
+
+    @property
+    def type_name_body(self) -> str:
+        if self._type_name_body is None:
+            self._determine_type_name_body()
+        return self._type_name_body
+
+    @type_name_body.setter
+    def type_name_body(self, type_name_body: Optional[str]) -> None:
+        self._type_name_body = type_name_body
+        self._filename = None
+
+    @property
+    def type_name_tail(self) -> str:
+        return self._type_name_tail
+
+    @type_name_tail.setter
+    def type_name_tail(self, type_name_tail: Optional[str]) -> None:
+        self._type_name_tail = type_name_tail
+        self._filename = None
+
+    @property
+    def instance_id_head(self) -> str:
+        return self._instance_id_head
+
+    @instance_id_head.setter
+    def instance_id_head(self, instance_id_head: Optional[str]) -> None:
+        self._instance_id_head = instance_id_head
+        self._filename = None
+
+    @property
+    def instance_id_body(self) -> str:
+        if self._instance_id_body is None:
+            self._determine_instance_id_body()
+        return self._instance_id_body
+
+    @instance_id_body.setter
+    def instance_id_body(self, instance_id_body: Optional[str]) -> None:
+        self._instance_id_body = instance_id_body
+        self._filename = None
+
+    @property
+    def instance_id_tail(self) -> str:
+        return self._instance_id_tail
+
+    @instance_id_tail.setter
+    def instance_id_tail(self, instance_id_tail: Optional[str]) -> None:
+        self._instance_id_tail = instance_id_tail
+        self._filename = None
+
+    @property
+    def extension(self) -> str:
+        return self._extension
+
+    @extension.setter
+    def extension(self, extension: Optional[str]) -> None:
+        self._extension = extension
+        self._filename = None
+
+    @property
+    def release(self) -> str:
+        return self._release
+
+    @release.setter
+    def release(self, release: Optional[str]) -> None:
+        self._release = release
+        self._filename = None
+
+    @property
+    def version(self) -> str:
+        return self._version
+
+    @version.setter
+    def version(self, version: Optional[str]) -> None:
+        self._version = version
+        self._filename = None
+
+    @property
+    def subdir(self) -> str:
+        return self._subdir
+
+    @subdir.setter
+    def subdir(self, subdir: Optional[str]) -> None:
+        self._subdir = subdir
+        self._filename = None
+
+    @property
+    def processing_function(self) -> str:
+        return self._processing_function
+
+    @processing_function.setter
+    def processing_function(self, processing_function: Optional[str]) -> None:
+        self._processing_function = processing_function
+        self._filename = None
+
+    @property
+    def timestamp(self) -> str:
+        return self._timestamp
+
+    @timestamp.setter
+    def timestamp(self, timestamp: Optional[str]) -> None:
+        self._timestamp = timestamp
+        self._filename = None
+
+    @property
+    def workdir(self) -> str:
+        return self._workdir
+
+    @workdir.setter
+    def workdir(self, workdir: Optional[str]) -> None:
+        self._workdir = workdir
+        self._qualified_filename = None
+
+    @property
+    def type_name(self) -> str:
+        if self._type_name is None:
+            self.__determine_type_name()
+        return self._type_name
+
+    @property
+    def instance_id(self) -> str:
+        if self._instance_id is None:
+            self.__determine_instance_id()
+        return self._instance_id
+
+    @property
+    def filename(self) -> str:
+        if self._filename is None:
+            self._filename = self.get()
+        return self._filename
+
+    @filename.setter
+    def filename(self, filename) -> None:
+        self._filename = filename
+        self._qualified_filename = None
+
+    @property
+    def qualified_filename(self) -> str:
+        if self._qualified_filename is None:
+            self._qualified_filename = os.path.join(self.workdir, self.filename)
+        return self._qualified_filename
+
+    # Private methods
+
+    def __determine_type_name(self):
+        # Piece together the type ID from the components, leaving out Nones
+        self._type_name = join_without_none(l_s=[self.type_name_head,
+                                                 self.type_name_body,
+                                                 self.type_name_tail],
+                                            default=self.default_type_name)
+
+    def __determine_instance_id(self):
+        # Piece together the instance ID from the components, leaving out Nones
+        self._instance_id = join_without_none(l_s=[self.instance_id_head,
+                                                   self._instance_id_body,
+                                                   self.instance_id_tail],
+                                              default=self._default_instance_id)
+
+    # Protected methods
+
+    def _determine_type_name_body(self):
+        raise TypeError("_determine_type_name_body must be overriden if type_name "
+                        "is not passed to init of FileNamer.")
+
+    def _determine_instance_id_body(self):
+        raise TypeError("_determine_instance_id_body must be overriden if instance_id "
+                        "is not passed to init of FileNamer.")
+
+    # Public methods
+
+    def get(self):
+        return get_allowed_filename(type_name=self.type_name,
+                                    instance_id=self.instance_id,
+                                    extension=self.extension,
+                                    release=self.release,
+                                    version=self.version,
+                                    subdir=self.subdir,
+                                    processing_function=self.processing_function,
+                                    timestamp=self.timestamp)
 
 
 def write_listfile(listfile_name, filenames):
