@@ -50,9 +50,15 @@ from .utility import get_release_from_version, join_without_none
 
 logger = getLogger(__name__)
 
-type_name_maxlen = 45
-instance_id_maxlen = 55
-processing_function_maxlen = 4
+# Get some constant values from the FileNameProvider
+
+filename_provider = FileNameProvider()
+
+type_name_maxlen = filename_provider.type_name_maxlen
+max_timestamp_release_len = 30
+instance_id_maxlen = filename_provider.instance_id_maxlen - max_timestamp_release_len
+processing_function_maxlen = filename_provider.processing_function_maxlen
+filename_forbidden_chars = filename_provider.filename_forbidden_chars
 
 
 class SheFileNamer(FileNameProvider):
