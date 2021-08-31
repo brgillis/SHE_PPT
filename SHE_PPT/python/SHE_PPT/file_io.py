@@ -74,7 +74,7 @@ class SheFileNamer(FileNameProvider):
 
     _type_name: Optional[str] = None
 
-    default_type_name: str = "SHE_VALIDATION_PLOT"
+    default_type_name: str = "FILE"
 
     # For instance ID
     _instance_id_head: Optional[str] = None
