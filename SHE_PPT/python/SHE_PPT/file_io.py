@@ -328,11 +328,11 @@ class SheFileNamer(FileNameProvider):
 
     def _determine_type_name_body(self):
         raise TypeError("_determine_type_name_body must be overriden if type_name "
-                        "is not passed to init of FileNamer.")
+                        "is not passed to init of SheFileNamer.")
 
     def _determine_instance_id_body(self):
         raise TypeError("_determine_instance_id_body must be overriden if instance_id "
-                        "is not passed to init of FileNamer.")
+                        "is not passed to init of SheFileNamer.")
 
     # Public methods
 
