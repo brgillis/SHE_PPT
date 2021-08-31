@@ -5,7 +5,7 @@
     Various functions for input/output
 """
 
-__updated__ = "2021-08-30"
+__updated__ = "2021-08-31"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -948,6 +948,10 @@ class FileLoader(abc.ABC, Generic[T]):
 
     @property
     def object(self) -> Optional[T]:
+        return self._obj
+
+    @property
+    def obj(self) -> Optional[T]:
         return self._obj
 
     def load(self, *args, **kwargs) -> None:
