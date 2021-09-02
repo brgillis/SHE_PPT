@@ -5,7 +5,7 @@
     Constants related to test data
 """
 
-__updated__ = "2021-08-12"
+__updated__ = "2021-08-25"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -38,6 +38,8 @@ MDB_PRODUCT_FILENAME = "sample_mdb-SC8.xml"
 # Files from the data_stack list
 VIS_CALIBRATED_FRAME_LISTFILE_FILENAME = "vis_calibrated_frames.json"
 VIS_STACKED_FRAME_PRODUCT_FILENAME = "vis_stacked_image.xml"
+MER_FINAL_CATALOG_PRODUCT_FILENAME = "EUC_SHE_P-MER-FINAL-CAT_BUKRTILMXZI3ADHVZ_20200721T162818.092086Z_08.02.xml"
+MER_FINAL_CATALOG_TABLE_FILENAME = "EUC_SHE_MER-FINAL-CAT_BUKRTILMXZI3ADHVZ_20200721T162818.092086Z_08.02.fits"
 MER_FINAL_CATALOG_LISTFILE_FILENAME = "mer_final_catalogs.json"
 LENSMC_MEASUREMENTS_TABLE_FILENAME = "mock_lensmc_measurements.fits"
 SHE_EXPOSURE_SEGMENTATION_MAPS_LISTFILE_FILENAME = "she_exposure_reprojected_segmentation_maps.json"

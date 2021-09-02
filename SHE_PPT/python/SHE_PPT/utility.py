@@ -5,7 +5,7 @@
     Miscellaneous utility functions
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-30"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -23,9 +23,12 @@ __updated__ = "2021-08-13"
 
 import os
 import re
-from typing import Any, List, Optional, Tuple, TypeVar, Union
+from typing import Any, List, Optional, Tuple, TypeVar, Union, Sequence
+
 from astropy.io.fits import TableHDU, HDUList
 from astropy.table import Table
+
+import numpy as np
 
 from . import detector as dtc
 from .constants.classes import AllowedEnum  # Imported here since this is where people will expect to find it
@@ -199,3 +202,42 @@ def coerce_to_list(a: Union[None, T, List[T]],
         except TypeError:
             # Not iterable, so return as an element of a list
             return [a]
+
+
+def any_is_inf(l_x: Sequence[Union[float, Sequence[float]]]) -> Union[float, Sequence[bool]]:
+    """ Checks if any value in a sequence of values is inf.
+    """
+    return np.logical_or.reduce(np.isinf(l_x))
+
+
+def any_is_nan(l_x: Sequence[Union[float, Sequence[float]]]) -> Union[float, Sequence[bool]]:
+    """ Checks if any value in a sequence of values is NaN.
+    """
+    return np.logical_or.reduce(np.isnan(l_x))
+
+
+def is_inf_or_nan(x: Union[float, Sequence[float]]) -> Union[float, Sequence[bool]]:
+    """ Checks if a value is inf or NaN.
+    """
+    return np.logical_or(np.isinf(x), np.isnan(x))
+
+
+def any_is_inf_or_nan(l_x: Sequence[Union[float, Sequence[float]]]) -> Union[float, Sequence[bool]]:
+    """ Checks if any value in a sequence of values is inf or nan.
+    """
+    return np.logical_or.reduce(is_inf_or_nan(l_x))
+
+
+def join_without_none(l_s: List[Optional[Any]], joiner: str = "-", default: str = ""):
+    """ Join a list of values into a single string, excepting any Nones.
+    """
+
+    # Get a list to join without any Nones
+    l_s_no_none: List[str] = [str(s) for s in l_s if s is not None]
+
+    # Return the default if the list is empty
+    if len(l_s_no_none) == 0:
+        return default
+
+    # Otherwise, join the pieces
+    return joiner.join(l_s_no_none)

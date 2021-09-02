@@ -5,7 +5,7 @@
     Various functions for input/output
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2021-08-31"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -21,6 +21,7 @@ __updated__ = "2021-08-13"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+import abc
 from datetime import datetime
 import json
 import os
@@ -28,10 +29,12 @@ from os.path import join, exists
 from pickle import UnpicklingError
 import pickle
 import subprocess
+from typing import Generic, List, Optional, Sequence, TypeVar, Type
 from xml.sax._exceptions import SAXParseException
 
 from EL_PythonUtils.utilities import time_to_timestamp
 from astropy.io import fits
+from astropy.table import Table
 from pyxb.exceptions_ import NamespaceError
 
 from ElementsServices.DataSync import DataSync
@@ -42,14 +45,329 @@ import numpy as np
 from . import __version__ as SHE_PPT_version
 from .constants.test_data import SYNC_CONF
 from .logging import getLogger
-from .utility import get_release_from_version
+from .utility import get_release_from_version, join_without_none
 
 
 logger = getLogger(__name__)
 
-type_name_maxlen = 45
-instance_id_maxlen = 55
-processing_function_maxlen = 4
+# Get some constant values from the FileNameProvider
+
+filename_provider = FileNameProvider()
+
+type_name_maxlen = filename_provider.type_name_maxlen
+max_timestamp_release_len = 30
+instance_id_maxlen = filename_provider.instance_id_maxlen - max_timestamp_release_len
+processing_function_maxlen = filename_provider.processing_function_maxlen
+filename_forbidden_chars = filename_provider.filename_forbidden_chars
+
+
+class SheFileNamer(FileNameProvider):
+    """ Class to handle generating Euclid-compliant filenames piecewise from components.
+    """
+
+    # Attributes used to generate the filename - can be set at init or otherwise before calling get()
+
+    # For type name
+    _type_name_head: Optional[str] = None
+    _type_name_body: Optional[str] = None
+    _type_name_tail: Optional[str] = None
+
+    _type_name: Optional[str] = None
+
+    default_type_name: str = "FILE"
+
+    # For instance ID
+    _instance_id_head: Optional[str] = None
+    _instance_id_body: Optional[str] = None
+    _instance_id_tail: Optional[str] = None
+
+    _instance_id: Optional[str] = None
+
+    default_instance_id: str = "0"
+
+    # Options for getting the filename
+    _extension: str = ".fits"
+    _release: Optional[str] = None
+    _version: Optional[str] = None
+    _subdir: Optional[str] = "data"
+    _processing_function: str = "SHE"
+    _timestamp: bool = True
+
+    # Other options
+    _workdir: Optional[str] = None
+
+    # Output values
+    _filename: Optional[str] = None
+    _qualified_filename: Optional[str] = None
+
+    def __init__(self,
+                 type_name: Optional[str] = None,
+                 instance_id: Optional[str] = None,
+                 extension: Optional[str] = None,
+                 release: Optional[str] = None,
+                 version: Optional[str] = None,
+                 subdir: Optional[str] = None,
+                 processing_function: Optional[str] = None,
+                 timestamp: Optional[bool] = None,
+                 workdir: Optional[str] = None):
+
+        super().__init__()
+
+        # Override defaults with any options provided at init
+
+        if type_name is not None:
+            self._type_name_body = type_name
+
+        if instance_id is not None:
+            self._instance_id_body = instance_id
+
+        if extension is not None:
+            self._extension = extension
+
+        if release is not None:
+            self._release = release
+
+        if version is not None:
+            self._version = version
+
+        if subdir is not None:
+            self._subdir = subdir
+
+        if processing_function is not None:
+            self._processing_function = processing_function
+
+        if timestamp is not None:
+            self._timestamp = timestamp
+
+        if workdir is not None:
+            self._workdir = workdir
+
+    # Attribute accessors and setters
+
+    @property
+    def type_name_head(self) -> str:
+        return self._type_name_head
+
+    @type_name_head.setter
+    def type_name_head(self, type_name_head: Optional[str]) -> None:
+        self._type_name_head = type_name_head
+        self.type_name = None
+
+    @property
+    def type_name_body(self) -> str:
+        if self._type_name_body is None:
+            self._determine_type_name_body()
+        return self._type_name_body
+
+    @type_name_body.setter
+    def type_name_body(self, type_name_body: Optional[str]) -> None:
+        self._type_name_body = type_name_body
+        self.type_name = None
+
+    @property
+    def type_name_tail(self) -> str:
+        return self._type_name_tail
+
+    @type_name_tail.setter
+    def type_name_tail(self, type_name_tail: Optional[str]) -> None:
+        self._type_name_tail = type_name_tail
+        self.type_name = None
+
+    @property
+    def instance_id_head(self) -> str:
+        return self._instance_id_head
+
+    @instance_id_head.setter
+    def instance_id_head(self, instance_id_head: Optional[str]) -> None:
+        self._instance_id_head = instance_id_head
+        self.instance_id = None
+
+    @property
+    def instance_id_body(self) -> str:
+        if self._instance_id_body is None:
+            self._determine_instance_id_body()
+        return self._instance_id_body
+
+    @instance_id_body.setter
+    def instance_id_body(self, instance_id_body: Optional[str]) -> None:
+        self._instance_id_body = instance_id_body
+        self.instance_id = None
+
+    @property
+    def instance_id_tail(self) -> str:
+        return self._instance_id_tail
+
+    @instance_id_tail.setter
+    def instance_id_tail(self, instance_id_tail: Optional[str]) -> None:
+        self._instance_id_tail = instance_id_tail
+        self.instance_id = None
+
+    @property
+    def extension(self) -> str:
+        return self._extension
+
+    @extension.setter
+    def extension(self, extension: Optional[str]) -> None:
+        self._extension = extension
+        self.filename = None
+
+    @property
+    def release(self) -> str:
+        return self._release
+
+    @release.setter
+    def release(self, release: Optional[str]) -> None:
+        self._release = release
+        self.filename = None
+
+    @property
+    def version(self) -> str:
+        return self._version
+
+    @version.setter
+    def version(self, version: Optional[str]) -> None:
+        self._version = version
+        self.filename = None
+
+    @property
+    def subdir(self) -> str:
+        return self._subdir
+
+    @subdir.setter
+    def subdir(self, subdir: Optional[str]) -> None:
+        self._subdir = subdir
+        self.filename = None
+
+    @property
+    def processing_function(self) -> str:
+        return self._processing_function
+
+    @processing_function.setter
+    def processing_function(self, processing_function: Optional[str]) -> None:
+        self._processing_function = processing_function
+        self.filename = None
+
+    @property
+    def timestamp(self) -> str:
+        return self._timestamp
+
+    @timestamp.setter
+    def timestamp(self, timestamp: Optional[str]) -> None:
+        self._timestamp = timestamp
+        self.filename = None
+
+    @property
+    def workdir(self) -> str:
+        return self._workdir
+
+    @workdir.setter
+    def workdir(self, workdir: Optional[str]) -> None:
+        self._workdir = workdir
+        self.qualified_filename = None
+
+    @property
+    def type_name(self) -> str:
+        if self._type_name is None:
+            self.__determine_type_name()
+        return self._type_name
+
+    @type_name.setter
+    def type_name(self, type_name: Optional[str]) -> None:
+        self._type_name = type_name
+        self.filename = None
+
+    @property
+    def instance_id(self) -> str:
+        if self._instance_id is None:
+            self.__determine_instance_id()
+        return self._instance_id
+
+    @instance_id.setter
+    def instance_id(self, instance_id: Optional[str]) -> None:
+        self._instance_id = instance_id
+        self.filename = None
+
+    @property
+    def filename(self) -> str:
+        if self._filename is None:
+            self._filename = self.get()
+        return self._filename
+
+    @filename.setter
+    def filename(self, filename: Optional[str]) -> None:
+        self._filename = filename
+        self.qualified_filename = None
+
+    @property
+    def qualified_filename(self) -> str:
+        if self._qualified_filename is None:
+            self._qualified_filename = os.path.join(self.workdir, self.filename)
+        return self._qualified_filename
+
+    @qualified_filename.setter
+    def qualified_filename(self, qualified_filename: Optional[str]) -> None:
+        self._qualified_filename = qualified_filename
+
+    # Private methods
+
+    def __determine_type_name(self):
+        # Piece together the type ID from the components, leaving out Nones
+        self._type_name = join_without_none(l_s=[self.type_name_head,
+                                                 self.type_name_body,
+                                                 self.type_name_tail],
+                                            default=self.default_type_name)
+
+    def __determine_instance_id(self):
+        # Piece together the instance ID from the components, leaving out Nones
+        self._instance_id = join_without_none(l_s=[self.instance_id_head,
+                                                   self.instance_id_body,
+                                                   self.instance_id_tail],
+                                              default=self.default_instance_id)
+
+    # Protected methods
+
+    def _determine_type_name_body(self):
+        raise TypeError("_determine_type_name_body must be overriden if type_name "
+                        "is not passed to init of SheFileNamer.")
+
+    def _determine_instance_id_body(self):
+        raise TypeError("_determine_instance_id_body must be overriden if instance_id "
+                        "is not passed to init of SheFileNamer.")
+
+    # Public methods
+
+    def get(self):
+        """ Get a filename based on internal attributes.
+        """
+        # Check we have just one of release and version
+        if (self.release is None) == (self.version is None):
+            raise ValueError("Exactly one of release or version must be supplied to get_allowed_filename.")
+
+        # If given version, convert it to release format
+        if self.version is not None:
+            release = get_release_from_version(self.version)
+        else:
+            release = self.release
+
+        # Check the extension doesn't start with "." and silently fix if it does
+        if self.extension[0] == ".":
+            extension = self.extension[1:]
+        else:
+            extension = self.extension
+
+        filename = self.get_allowed_filename(processing_function=self.processing_function,
+                                             type_name=self.type_name.upper(),
+                                             instance_id=self.instance_id.upper(),
+                                             extension=extension,
+                                             release=release,
+                                             timestamp=self.timestamp)
+
+        if self.subdir is not None:
+            qualified_filename = join(self.subdir, filename)
+        else:
+            qualified_filename = filename
+
+        return qualified_filename
 
 
 def get_allowed_filename(type_name, instance_id, extension=".fits", release=None, version=None, subdir="data",
@@ -79,34 +397,14 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
         If True, will append a timestamp to the instance_id
     """
 
-    # Check we have just one of release and version
-    if (release is None) == (version is None):
-        raise ValueError("Exactly one of release or version must be supplied to get_allowed_filename.")
-
-    # If given version, convert it to release format
-    if version is not None:
-        release = get_release_from_version(version)
-
-    # Silently shift instance_id to upper-case
-    instance_id = instance_id.upper()
-
-    # Check the extension doesn't start with "." and silently fix if it does
-    if extension[0] == ".":
-        extension = extension[1:]
-
-    filename = FileNameProvider().get_allowed_filename(processing_function=processing_function,
-                                                       type_name=type_name.upper(),
-                                                       instance_id=instance_id,
-                                                       extension=extension,
-                                                       release=release,
-                                                       timestamp=timestamp)
-
-    if subdir is not None:
-        qualified_filename = join(subdir, filename)
-    else:
-        qualified_filename = filename
-
-    return qualified_filename
+    return SheFileNamer(type_name=type_name,
+                        instance_id=instance_id,
+                        extension=extension,
+                        release=release,
+                        version=version,
+                        subdir=subdir,
+                        processing_function=processing_function,
+                        timestamp=timestamp).get()
 
 
 def write_listfile(listfile_name, filenames):
@@ -604,3 +902,181 @@ def tar_files(tarball_filename, l_filenames, workdir=".", delete_files=False):
             except Exception:
                 # Don't need to fail the whole process, but log the issue
                 logger.warning(f"Cannot delete file: {qualified_filename}")
+
+
+T = TypeVar('T')
+
+
+class FileLoader(abc.ABC, Generic[T]):
+    """ Abstract base class for loading in a data from the work directory.
+    """
+
+    # Attributes set at init
+    _filename: str
+    _workdir: str
+
+    # Attributes set on-demand
+    _qualified_filename: Optional[str] = None
+
+    # Attributes set when loaded
+    _obj: Optional[T] = None
+
+    def __init__(self,
+                 filename: str,
+                 workdir: str):
+
+        self.filename = filename
+        self.workdir = workdir
+
+    @property
+    def filename(self) -> str:
+        return self._filename
+
+    @filename.setter
+    def filename(self, filename: str):
+        self._qualified_filename = None
+        self._filename = filename
+
+    @property
+    def workdir(self) -> str:
+        return self._workdir
+
+    @workdir.setter
+    def workdir(self, workdir: str):
+        self._qualified_filename = None
+        self._workdir = workdir
+
+    @property
+    def qualified_filename(self) -> str:
+        if not self._qualified_filename:
+            self._qualified_filename = os.path.join(self.workdir, self.filename)
+        return self._qualified_filename
+
+    @property
+    def object(self) -> Optional[T]:
+        return self._obj
+
+    @property
+    def obj(self) -> Optional[T]:
+        return self._obj
+
+    def load(self, *args, **kwargs) -> None:
+        """ Method to load in the object.
+        """
+        self._obj = self.get(*args, **kwargs)
+
+    def open(self, *args, **kwargs) -> None:
+        """ Alias to self.load.
+        """
+        self.load(*args, **kwargs)
+
+    def close(self) -> None:
+        """ Deletes the object to allow memory to be freed.
+        """
+        self._obj = None
+
+    @abc.abstractmethod
+    def get(self, *args, **kwargs) -> T:
+        """ Method to get the object.  Should take a format such as:
+
+            return load_object(filename=self.filename, workdir=self.workdir, *args, **kwargs)
+        """
+
+        pass
+
+
+class ProductLoader(FileLoader):
+    """ FileLoader specialized to load in .xml data products.
+    """
+
+    def get(self, *args, **kwargs) -> None:
+        return read_xml_product(xml_filename=self.filename, workdir=self.workdir, *args, **kwargs)
+
+
+class TableLoader(FileLoader[Table]):
+    """ FileLoader specialized to load in astropy data tables.
+    """
+
+    def get(self, *args, **kwargs) -> None:
+        return Table.read(self.qualified_filename, *args, **kwargs)
+
+
+class FitsLoader(FileLoader[Table]):
+    """ FileLoader specialized to load in astropy data tables.
+    """
+
+    def get(self, *args, **kwargs) -> None:
+        return fits.open(self.qualified_filename, *args, **kwargs)
+
+
+class MultiFileLoader(Generic[T]):
+    """ A class to handle loading in multiple files of the same type.
+    """
+
+    # Attributes set at init
+    workdir: str
+    l_filenames: Sequence[str]
+    l_file_loaders: Sequence[FileLoader[T]]
+    file_loader_type: Optional[Type[T]] = None
+
+    def __init__(self,
+                 workdir: str,
+                 l_file_loaders: Optional[Sequence[FileLoader[T]]] = None,
+                 l_filenames: Optional[Sequence[str]] = None,
+                 file_loader_type: Optional[Type] = None) -> None:
+
+        self.workdir = workdir
+
+        if file_loader_type:
+            self.file_loader_type = file_loader_type
+
+        if l_file_loaders:
+            if l_filenames:
+                raise ValueError("MultiFileLoader can be inited with only one of l_file_loaders and l_filenames.")
+            self.l_file_loaders = l_file_loaders
+            self.l_filenames = [file_loader.filename for file_loader in self.l_file_loaders]
+
+        elif l_filenames:
+            self.l_filenames = l_filenames
+            self.l_file_loaders = [self.file_loader_type(filename=filename, workdir=self.workdir) for
+                                   filename in self.l_filenames]
+
+        else:
+            self.l_file_loaders = []
+            self.l_filenames = []
+
+    def load_all(self, *args, **kwargs):
+        """ Load all files.
+        """
+        for file_loader in self.l_file_loaders:
+            file_loader.load(*args, **kwargs)
+
+    def open_all(self, *args, **kwargs):
+        """ Alias to load_all.
+        """
+        self.load_all(*args, **kwargs)
+
+    def close_all(self):
+        """ Close all files.
+        """
+        for file_loader in self.l_file_loaders:
+            file_loader.close()
+
+    def get_all(self, *args, **kwargs) -> List[T]:
+        """ Get a list of all files (load and return, but don't keep a reference).
+        """
+        return [file_loader.get(*args, **kwargs) for file_loader in self.l_file_loaders]
+
+
+class MultiProductLoader(MultiFileLoader):
+    """ A class to handle loading in multiple xml data products.
+    """
+
+    file_loader_type: Type = ProductLoader
+
+
+class MultiTableLoader(MultiFileLoader):
+    """ A class to handle loading in multiple xml data products.
+    """
+
+    file_loader_type: Type = TableLoader

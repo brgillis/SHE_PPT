@@ -19,7 +19,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-__updated__ = "2021-08-12"
+__updated__ = "2021-08-26"
 
 from collections import OrderedDict
 
@@ -62,6 +62,18 @@ class MerFinalCatalogFormat(SheTableFormat):
         @brief A class defining the format for detections tables. Only the mer_final_catalog_format
                instance of this should generally be accessed, and it should not be changed.
     """
+
+    # Explicitly specify some of the columns we use from this table to suppress spurious IDE errors
+    ID: str
+    gal_x_world: str
+    gal_y_world: str
+    seg_ID: str
+    vis_det: str
+    FLUX_VIS_APER: str
+    FLUXERR_VIS_APER: str
+    FLUX_NISP_APER: str
+    SHE_FLAG: str
+    SEGMENTATION_AREA: str
 
     def __init__(self):
         super().__init__(MerFinalCatalogMeta())
