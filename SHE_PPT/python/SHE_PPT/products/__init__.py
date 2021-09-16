@@ -24,10 +24,10 @@ from os.path import basename, dirname, isfile
 modules = glob.glob(dirname(__file__) + "/*.py")
 __all__ = [basename(f)[:-3] for f in modules if isfile(f) and not f.endswith('__init__.py')]
 
+from . import *
+
 for f in modules:
     if isfile(f) and not f.endswith('__init__.py'):
         globals()[basename(f)[:-3]].init()
 
 del modules, dirname, basename, isfile, glob
-
-from . import *
