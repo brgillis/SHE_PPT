@@ -20,192 +20,28 @@ __updated__ = "2021-08-19"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+import json.decoder
+import os
 from argparse import ArgumentParser
 from enum import EnumMeta
 from functools import lru_cache
-import json.decoder
-import os
 from pickle import UnpicklingError
 from shutil import copyfile
-from typing import Any, Dict, Tuple, Union, Type, Optional, List
-from xml.sax._exceptions import SAXParseException
+from typing import Any, Dict, List, Optional, Tuple, Type, Union
+from xml.sax import SAXParseException
 
 import numpy as np
 
-from .file_io import read_xml_product, read_listfile, find_file
+from .constants.config import (AnalysisConfigKeys, CTI_GAL_VALIDATION_HEAD, CalibrationConfigKeys, ConfigKeys,
+                               GlobalConfigKeys, ReconciliationConfigKeys, SHEAR_BIAS_VALIDATION_HEAD,
+                               ScalingExperimentsConfigKeys, VALIDATION_HEAD,
+                               ValidationConfigKeys, )
+from .file_io import find_file, read_listfile, read_xml_product
 from .logging import getLogger
 from .utility import AllowedEnum, is_any_type_of_none
 
 
-# Task name for generic config keys
-PIPELINE_HEAD = "SHE_Pipeline_"
-
-
-class ConfigKeys(AllowedEnum):
-    """ Derived class for ConfigKeys, for type-checking purposes.
-    """
-    pass
-
-
-class GlobalConfigKeys(ConfigKeys):
-    """ Derived class for ConfigKeys, which contains common keys for all pipelines
-    """
-
-    # Pipeline-wide options
-
-    PIP_PROFILE = PIPELINE_HEAD + "profile"
-
-    # Placeholder options
-
-    PIP_PLACEHOLDER_0 = PIPELINE_HEAD + "placeholder_0"
-    PIP_PLACEHOLDER_1 = PIPELINE_HEAD + "placeholder_1"
-    PIP_PLACEHOLDER_2 = PIPELINE_HEAD + "placeholder_2"
-    PIP_PLACEHOLDER_3 = PIPELINE_HEAD + "placeholder_3"
-    PIP_PLACEHOLDER_4 = PIPELINE_HEAD + "placeholder_4"
-    PIP_PLACEHOLDER_5 = PIPELINE_HEAD + "placeholder_5"
-    PIP_PLACEHOLDER_6 = PIPELINE_HEAD + "placeholder_6"
-    PIP_PLACEHOLDER_7 = PIPELINE_HEAD + "placeholder_7"
-    PIP_PLACEHOLDER_8 = PIPELINE_HEAD + "placeholder_8"
-    PIP_PLACEHOLDER_9 = PIPELINE_HEAD + "placeholder_9"
-
-
-# Task names for Analysis pipeline
-REMAP_HEAD = "SHE_MER_RemapMosaic_"
-OBJECT_ID_SPLIT_HEAD = "SHE_CTE_ObjectIdSplit_"
-SUBOBJECT_ID_SPLIT_HEAD = "SHE_CTE_SubObjectIdSplit_"
-PSF_HEAD = "SHE_PSFToolkit_"
-ESTIMATE_SHEAR_HEAD = "SHE_CTE_EstimateShear_"
-SHEAR_ESTIMATES_MERGE_HEAD = "SHE_CTE_ShearEstimatesMerge_"
-
-
-class AnalysisConfigKeys(ConfigKeys):
-    """ An Enum of all allowed keys for the SHE analysis pipelines.
-    """
-
-    # Options for SHE_MER_RemapMosaic
-
-    REMAP_NUM_THREADS_EXP = REMAP_HEAD + "num_threads_exposures"
-    REMAP_NUM_SWARP_THREADS_EXP = REMAP_HEAD + "num_swarp_threads_exposures"
-    REMAP_NUM_THREADS_STACK = REMAP_HEAD + "num_threads_stack"
-    REMAP_NUM_SWARP_THREADS_STACK = REMAP_HEAD + "num_swarp_threads_stack"
-    REMAP_STAGGER = REMAP_HEAD + "stagger_per_thread"
-
-    # Options for SHE_PSFToolkit_ModelPSFs
-
-    PSF_WV_SAMPLES = PSF_HEAD + "wv_samples"
-    PSF_ROTATION = PSF_HEAD + "psf_rotation"
-    PSF_FITTING_MODE = PSF_HEAD + "fitting_mode"
-    PSF_WAVEFRONT_SIZE = PSF_HEAD + "wavefront_size"
-    PSF_OVERSAMPLING_FACTOR = PSF_HEAD + "oversampling_factor"
-    PSF_WAVEFRONT_SAMPLING_METHOD = PSF_HEAD + "wavefront_sampling_method"
-    PSF_FFT_ALGORITHM = PSF_HEAD + "fft_algorithm"
-    PSF_FFT_PROCESSES = PSF_HEAD + "fft_processes"
-    PSF_FFT_MEM_MANAGEMENT = PSF_HEAD + "fft_mem_management"
-    PSF_OUTPUT_PIXEL_SIZE = PSF_HEAD + "output_pixel_size"
-    PSF_OUTPUT_PSF_SIZE = PSF_HEAD + "output_psf_size"
-    PSF_DEFAULT_PSF_MODEL = PSF_HEAD + "default_psf_model"
-    PSF_PIXEL_SHIFT_X = PSF_HEAD + "pixel_shift_x"
-    PSF_PIXEL_SHIFT_Y = PSF_HEAD + "pixel_shift_y"
-    PSF_ZERNIKE_MODE_SKIP = PSF_HEAD + "zernike_mode_skip"
-    PSF_ZERNIKE_MODE_COUNT = PSF_HEAD + "zernike_mode_count"
-    PSF_INTERPOLATE_ZERNIKE = PSF_HEAD + "interpolate_zernike"
-    PSF_EXTRAPOLATE_DISTORTION_FOV = PSF_HEAD + "extrapolate_distortion_fov"
-    PSF_PUPIL_TELESCOPE_GEOMETRY = PSF_HEAD + "pupil_telescope_geometry"
-    PSF_PUPIL_AMPLITUDE_ANTIALIAS = PSF_HEAD + "pupil_amplitude_antialias"
-    PSF_PUPIL_AMPLITUDE_SHIFT = PSF_HEAD + "pupil_amplitude_shift"
-    PSF_NIEMI_EFFECT_SWITCH = PSF_HEAD + "niemi_effect_switch"
-    PSF_AOCS_EFFECT_SWITCH = PSF_HEAD + "aocs_effect_switch"
-    PSF_PIXELRESPONSE_EFFECT_SWITCH = PSF_HEAD + "pixelresponse_effect_switch"
-    PSF_AOCS_TIME_SERIES_FILE = PSF_HEAD + "aocs_time_series_file"
-    PSF_BANDPASS_START = PSF_HEAD + "bandpass_start"
-    PSF_BANDPASS_END = PSF_HEAD + "bandpass_end"
-    PSF_BANDPASS_FULL_STEP = PSF_HEAD + "bandpass_full_step"
-    PSF_RESAMPLING_RESPONSE_CONSERVE_FLUX = PSF_HEAD + "resampling_response_conserve_flux"
-    PSF_BINNED_RESPONSE_INTERPOLATION_METHOD = PSF_HEAD + "binned_response_interpolation_method"
-    PSF_WAVELENGTH_RANGE_START = PSF_HEAD + "wavelength_range_start"
-    PSF_WAVELENGTH_RANGE_END = PSF_HEAD + "wavelength_range_end"
-    PSF_CACHE_INTERPOLATED_PSF_CUBE = PSF_HEAD + "cache_interpolated_psf_cube"
-    PSF_EXPOSURE_TIME = PSF_HEAD + "exposure_time"
-    PSF_TELESCOPE_MODEL_PATH = PSF_HEAD + "telescope_model_path"
-    PSF_TELESCOPE_MODEL_NOMINAL_FILE = PSF_HEAD + "telescope_model_nominal_file"
-    PSF_PICKLES_DATA_PATH = PSF_HEAD + "pickles_data_path"
-    PSF_COUNTS_PATH = PSF_HEAD + "counts_path"
-    PSF_TELESCOPE_MODEL = PSF_HEAD + "telescope_model"
-    PSF_RAYFILE_PATH = PSF_HEAD + "rayfile_path"
-    PSF_VERBOSE = PSF_HEAD + "verbose"
-    PSF_USERWARNINGS = PSF_HEAD + "userWarnings"
-    PSF_TIME_MONO = PSF_HEAD + "time_mono"
-    PSF_TIME_EXPAND = PSF_HEAD + "time_expand"
-    PSF_WAVEFRONT_PAD_AMOUNT = PSF_HEAD + "wavefront_pad_amount"
-    PSF_WAVEFRONT_CORRECTION = PSF_HEAD + "wavefront_correction"
-    PSF_MIN_FLUX_VIS_APER = PSF_HEAD + "min_flux_vis_aper"
-    PSF_MAX_FLUX_VIS_APER = PSF_HEAD + "max_flux_vis_aper"
-    PSF_MIN_POINT_LIKE_PROB = PSF_HEAD + "min_point_like_prob"
-    PSF_OUTPUT_FIXED_PSF = PSF_HEAD + "output_fixed_psf"
-    PSF_FIT_THREADS = PSF_HEAD + "fit_threads"
-    PSF_MODEL_THREADS = PSF_HEAD + "model_threads"
-    PSF_PASS_IN_MEMORY = PSF_HEAD + "pass_in_memory"
-    PSF_DEFAULT_FIELD_PARAMS = PSF_HEAD + "use_default_field_params"
-    PSF_NUM_STARS = PSF_HEAD + "number_of_stars"
-    PSF_USE_EXPOSURES = PSF_HEAD + "use_exposures"
-    PSF_USE_DETECTORS = PSF_HEAD + "use_detectors"
-    PSF_NUM_PARAMETERS_TO_FIT = PSF_HEAD + "num_parameters_to_fit"
-    PSF_MAX_FIT_ITERATIONS = PSF_HEAD + "max_fit_iterations"
-    PSF_DET_TO_FIT = PSF_HEAD + "det_to_fit"
-
-    # Options for SHE_CTE_ObjectIdSplit
-
-    OID_BATCH_SIZE = OBJECT_ID_SPLIT_HEAD + "batch_size"
-    OID_MAX_BATCHES = OBJECT_ID_SPLIT_HEAD + "max_batches"
-    OID_IDS = OBJECT_ID_SPLIT_HEAD + "ids"
-
-    # Options for SHE_CTE_SubObjectIdSplit
-
-    SOID_BATCH_SIZE = SUBOBJECT_ID_SPLIT_HEAD + "batch_size"
-    SOID_MAX_BATCHES = SUBOBJECT_ID_SPLIT_HEAD + "max_batches"
-    SOID_IDS = SUBOBJECT_ID_SPLIT_HEAD + "ids"
-
-    # Options for SHE_CTE_EstimateShear
-
-    ES_METHODS = ESTIMATE_SHEAR_HEAD + "methods"
-    ES_CHAINS_METHOD = ESTIMATE_SHEAR_HEAD + "chains_method"
-    ES_FAST_MODE = ESTIMATE_SHEAR_HEAD + "fast_mode"
-    ES_MEMMAP_IMAGES = ESTIMATE_SHEAR_HEAD + "memmap_images"
-
-    # Options for SHE_CTE_ShearEstimatesMerge
-
-    SEM_NUM_THREADS = SHEAR_ESTIMATES_MERGE_HEAD + "number_threads"
-
-
-# Task names for the Validation pipeline
-VALIDATION_HEAD = "SHE_Validation_"
-CTI_GAL_VALIDATION_HEAD = f"{VALIDATION_HEAD}ValidateCTIGal_"
-SHEAR_BIAS_VALIDATION_HEAD = f"{VALIDATION_HEAD}ValidateShearBias_"
-
-
-class ValidationConfigKeys(ConfigKeys):
-    """ An Enum of all allowed keys for the SHE analysis validation pipeline.
-    """
-
-    # Options for multiple tasks - these global values will be overridden by values specific to a task if those are set
-
-    VAL_LOCAL_FAIL_SIGMA = f"{VALIDATION_HEAD}local_fail_sigma"
-    VAL_GLOBAL_FAIL_SIGMA = f"{VALIDATION_HEAD}global_fail_sigma"
-    VAL_FAIL_SIGMA_SCALING = f"{VALIDATION_HEAD}fail_sigma_scaling"
-
-    VAL_SNR_BIN_LIMITS = CTI_GAL_VALIDATION_HEAD + "snr_bin_limits"
-    VAL_BG_BIN_LIMITS = CTI_GAL_VALIDATION_HEAD + "bg_bin_limits"
-    VAL_COLOUR_BIN_LIMITS = CTI_GAL_VALIDATION_HEAD + "colour_bin_limits"
-    VAL_SIZE_BIN_LIMITS = CTI_GAL_VALIDATION_HEAD + "size_bin_limits"
-
-    # Options for SHE_Validation_ValidateShearBias
-
-    SBV_MAX_G_IN = f"{SHEAR_BIAS_VALIDATION_HEAD}max_g_in"
-    SBV_BOOTSTRAP_ERRORS = f"{SHEAR_BIAS_VALIDATION_HEAD}bootstrap_errors"
-    SBV_REQUIRE_FITCLASS_ZERO = f"{SHEAR_BIAS_VALIDATION_HEAD}require_fitclass_zero"
-
-
-@lru_cache(maxsize=None)
+@lru_cache(maxsize = None)
 def task_value(global_enum, task_head):
     """ Given one of the global enums for config options, return the name for the task-specific option.
     """
@@ -228,65 +64,18 @@ def shear_bias_value(global_enum):
     return task_value(global_enum, CTI_GAL_VALIDATION_HEAD)
 
 
-@lru_cache(maxsize=None)
+@lru_cache(maxsize = None)
 def global_value(task_value, task_head):
     """ Reverse of task_value, returning the value - gives the value for the global option given the task option.
     """
     return task_value.replace(task_head, VALIDATION_HEAD)
 
 
-@lru_cache(maxsize=None)
+@lru_cache(maxsize = None)
 def global_enum(task_value, task_head):
     """ Reverse of task_value, returning the enum - gives the enum for the global option given the task option.
     """
     return ValidationConfigKeys(global_value(task_value, task_head))
-
-
-# Task names for Reconciliation pipeline
-RECONCILE_MEASUREMENTS_HEAD = "SHE_CTE_ReconcileMeasurements_"
-
-
-class ReconciliationConfigKeys(ConfigKeys):
-    """ An Enum of all allowed keys for the SHE reconciliation pipeline.
-    """
-
-    # Options for SHE_CTE_CleanupBiasMeasurement
-
-    REC_METHOD = RECONCILE_MEASUREMENTS_HEAD + "method"
-    CHAINS_REC_METHOD = RECONCILE_MEASUREMENTS_HEAD + "chains_method"
-
-
-# Task names for Calibration pipeline
-CLEANUP_BIAS_MEASUREMENTS_HEAD = "SHE_CTE_CleanupBiasMeasurement_"
-MEASURE_BIAS_HEAD = "SHE_CTE_MeasureBias_"
-MEASURE_STATISTICS_HEAD = "SHE_CTE_MeasureStatistics_"
-
-
-class CalibrationConfigKeys(ConfigKeys):
-    """ An Enum of all allowed keys for the SHE calibration pipelines.
-    """
-
-    # Options for SHE_CTE_CleanupBiasMeasurement
-
-    CBM_CLEANUP = CLEANUP_BIAS_MEASUREMENTS_HEAD + "cleanup"
-
-    # Options for SHE_CTE_EstimateShear - copy these from the other enum
-
-    ES_METHODS = AnalysisConfigKeys.ES_METHODS.value
-    ES_CHAINS_METHOD = AnalysisConfigKeys.ES_CHAINS_METHOD.value
-
-    # Options for SHE_CTE_MeasureBias
-
-    MB_ARCHIVE_DIR = MEASURE_BIAS_HEAD + "archive_dir"
-    MB_NUM_THREADS = MEASURE_BIAS_HEAD + "number_threads"
-    MB_WEBDAV_ARCHIVE = MEASURE_BIAS_HEAD + "webdav_archive"
-    MB_WEBDAV_DIR = MEASURE_BIAS_HEAD + "webdav_dir"
-
-    # Options for SHE_CTE_MeasureStatistics
-
-    MS_ARCHIVE_DIR = MEASURE_STATISTICS_HEAD + "archive_dir"
-    MS_WEBDAV_ARCHIVE = MEASURE_STATISTICS_HEAD + "webdav_archive"
-    MS_WEBDAV_DIR = MEASURE_STATISTICS_HEAD + "webdav_dir"
 
 
 def archive_product(product_filename: str,
@@ -360,7 +149,7 @@ def read_analysis_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
     """ Reads in a configuration file for the SHE Analysis pipeline to a dictionary.
     """
 
-    return read_config(config_keys=AnalysisConfigKeys,
+    return read_config(config_keys = AnalysisConfigKeys,
                        *args, **kwargs)
 
 
@@ -368,7 +157,7 @@ def read_calibration_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
     """ Reads in a configuration file for the SHE Calibration pipeline to a dictionary.
     """
 
-    return read_config(config_keys=CalibrationConfigKeys,
+    return read_config(config_keys = CalibrationConfigKeys,
                        *args, **kwargs)
 
 
@@ -390,21 +179,28 @@ def read_reconciliation_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
             supplied in the parsed_args.
     """
 
-    return read_config(config_keys=ReconciliationConfigKeys,
+    return read_config(config_keys = ReconciliationConfigKeys,
                        *args, **kwargs)
+
+
+def read_scaling_config(*args, **kwargs):
+    """ Reads in a configuration file for the SHE Scaling pipeline to a dictionary.
+    """
+
+    return read_config(config_keys = ScalingExperimentsConfigKeys, *args, **kwargs)
 
 
 def read_config(config_filename: str,
                 workdir: str = ".",
-                config_keys: Union[ConfigKeys, Tuple[ConfigKeys, ...]] = (AnalysisConfigKeys,
-                                                                          ValidationConfigKeys,
-                                                                          ReconciliationConfigKeys,
-                                                                          CalibrationConfigKeys),
+                config_keys: Union[EnumMeta, Tuple[EnumMeta, ...]] = (AnalysisConfigKeys,
+                                                                      ValidationConfigKeys,
+                                                                      ReconciliationConfigKeys,
+                                                                      CalibrationConfigKeys),
                 d_cline_args: Optional[Dict[ConfigKeys, str]] = None,
                 parsed_args: Optional[ArgumentParser] = None,
                 defaults: Optional[Dict[str, Any]] = None,
                 task_head: Optional[str] = None,
-                d_types: Optional[Dict[str, Type]] = None,) -> Dict[ConfigKeys, Any]:
+                d_types: Optional[Dict[str, Type]] = None, ) -> Dict[ConfigKeys, Any]:
     """ Reads in a generic configuration file to a dictionary. Note that all arguments will be read as strings unless
         a cline_arg value is used.
 
@@ -452,11 +248,11 @@ def read_config(config_filename: str,
 
     # Return None if input filename is None
     if is_any_type_of_none(config_filename):
-        return _make_config_from_cline_args_and_defaults(config_keys=config_keys,
-                                                         d_cline_args=d_cline_args,
-                                                         parsed_args=parsed_args,
-                                                         defaults=defaults,
-                                                         d_types=d_types)
+        return _make_config_from_cline_args_and_defaults(config_keys = config_keys,
+                                                         d_cline_args = d_cline_args,
+                                                         parsed_args = parsed_args,
+                                                         defaults = defaults,
+                                                         d_types = d_types)
 
     # Look in the workdir for the config filename if it isn't fully-qualified
     if not config_filename[0] == "/":
@@ -471,20 +267,20 @@ def read_config(config_filename: str,
         # If we get here, it is a listfile. If no files in it, return an empty dict. If one, return that.
         # If more than one,raise an exception
         if len(filelist) == 0:
-            return _make_config_from_cline_args_and_defaults(config_keys=config_keys,
-                                                             d_cline_args=d_cline_args,
-                                                             parsed_args=parsed_args,
-                                                             defaults=defaults,
-                                                             d_types=d_types,)
+            return _make_config_from_cline_args_and_defaults(config_keys = config_keys,
+                                                             d_cline_args = d_cline_args,
+                                                             parsed_args = parsed_args,
+                                                             defaults = defaults,
+                                                             d_types = d_types, )
         if len(filelist) == 1:
-            return _read_config_product(config_filename=filelist[0],
-                                        workdir=workdir,
-                                        config_keys=config_keys,
-                                        d_cline_args=d_cline_args,
-                                        parsed_args=parsed_args,
-                                        defaults=defaults,
-                                        task_head=task_head,
-                                        d_types=d_types,)
+            return _read_config_product(config_filename = filelist[0],
+                                        workdir = workdir,
+                                        config_keys = config_keys,
+                                        d_cline_args = d_cline_args,
+                                        parsed_args = parsed_args,
+                                        defaults = defaults,
+                                        task_head = task_head,
+                                        d_types = d_types, )
 
         raise ValueError("File " + qualified_config_filename + " is a listfile with more than one file listed, and " +
                          "is an invalid input to read_config.")
@@ -492,14 +288,14 @@ def read_config(config_filename: str,
     except (json.decoder.JSONDecodeError, UnicodeDecodeError):
 
         # This isn't a listfile, so try to open and return it
-        return _read_config_product(config_filename=config_filename,
-                                    workdir=workdir,
-                                    config_keys=config_keys,
-                                    d_cline_args=d_cline_args,
-                                    parsed_args=parsed_args,
-                                    defaults=defaults,
-                                    task_head=task_head,
-                                    d_types=d_types)
+        return _read_config_product(config_filename = config_filename,
+                                    workdir = workdir,
+                                    config_keys = config_keys,
+                                    d_cline_args = d_cline_args,
+                                    parsed_args = parsed_args,
+                                    defaults = defaults,
+                                    task_head = task_head,
+                                    d_types = d_types)
 
 
 def _read_config_product(config_filename: str,
@@ -514,13 +310,13 @@ def _read_config_product(config_filename: str,
 
         config_data_filename = p.get_data_filename()
 
-        return _read_config_file(qualified_config_filename=find_file(config_data_filename, workdir),
+        return _read_config_file(qualified_config_filename = find_file(config_data_filename, workdir),
                                  *args, **kwargs)
 
     except (UnicodeDecodeError, SAXParseException, UnpicklingError):
 
         # Try to read it as a plain text file
-        return _read_config_file(qualified_config_filename=find_file(config_filename, workdir),
+        return _read_config_file(qualified_config_filename = find_file(config_filename, workdir),
                                  *args, **kwargs)
 
 
@@ -530,13 +326,13 @@ def _read_config_file(qualified_config_filename: str,
                       parsed_args: Optional[ArgumentParser],
                       defaults: Dict[ConfigKeys, Any],
                       task_head: Optional[str] = None,
-                      d_types: Optional[Dict[str, Type]] = None,) -> Dict[ConfigKeys, Any]:
+                      d_types: Optional[Dict[str, Type]] = None, ) -> Dict[ConfigKeys, Any]:
     """ Reads in a configuration text file.
     """
 
     # Start with a config generated from defaults
-    config_dict = _make_config_from_defaults(config_keys=config_keys,
-                                             defaults=defaults)
+    config_dict = _make_config_from_defaults(config_keys = config_keys,
+                                             defaults = defaults)
 
     with open(qualified_config_filename, 'r') as config_file:
 
@@ -583,7 +379,7 @@ def _read_config_file(qualified_config_filename: str,
 
                 # Add it to the blocked_keys set, so if we encounter the global key later, we
                 # won't override this for this task
-                blocked_keys.append(key_string)
+                blocked_keys.update(key_string)
 
             # In case the value contains an = char
             value = noncomment_line.replace(equal_split_line[0] + '=', '').strip()
@@ -633,13 +429,14 @@ def _make_config_from_cline_args_and_defaults(config_keys: Tuple[EnumMeta, ...],
                                               d_cline_args: Dict[ConfigKeys, str],
                                               parsed_args: ArgumentParser,
                                               defaults: Dict[ConfigKeys, Any],
-                                              d_types: Optional[Dict[ConfigKeys, Type]] = None) -> Dict[ConfigKeys, Any]:
+                                              d_types: Optional[Dict[ConfigKeys, Type]] = None) -> Dict[
+    ConfigKeys, Any]:
     """ Make a pipeline config dict from the cline-args and defaults, preferring
         the cline-args if they're available.
     """
     # Start with a config generated from defaults
-    config_dict = _make_config_from_defaults(config_keys=config_keys,
-                                             defaults=defaults)
+    config_dict = _make_config_from_defaults(config_keys = config_keys,
+                                             defaults = defaults)
 
     # Return if we don't have any parsed_args to deal with
     if not (d_cline_args or parsed_args):
@@ -702,14 +499,14 @@ def _check_key_is_valid(key: str,
     return enum
 
 
-def write_analysis_config(config_dict: Dict[str, Any],
+def write_analysis_config(config_dict: Dict[ConfigKeys, Any],
                           config_filename: str,
-                          workdir: str=".",) -> None:
+                          workdir: str = ".", ) -> None:
     """ Writes a dictionary to an Analysis configuration file.
 
         Parameters
         ----------
-        config_dict : Dict[str, Any]
+        config_dict : Dict[ConfigKeys, Any]
             The config dictionary to write out.
         config_filename : str
             The desired workspace-relative name of the config file.
@@ -717,15 +514,15 @@ def write_analysis_config(config_dict: Dict[str, Any],
             The working directory.
     """
 
-    return write_config(config_dict=config_dict,
-                        config_filename=config_filename,
-                        workdir=workdir,
-                        config_keys=AnalysisConfigKeys)
+    return write_config(config_dict = config_dict,
+                        config_filename = config_filename,
+                        workdir = workdir,
+                        config_keys = AnalysisConfigKeys)
 
 
 def write_reconciliation_config(config_dict: Dict[ConfigKeys, Any],
                                 config_filename: str,
-                                workdir: str=".",) -> None:
+                                workdir: str = ".", ) -> None:
     """ Writes a dictionary to an Reconciliation configuration file.
 
         Parameters
@@ -738,15 +535,15 @@ def write_reconciliation_config(config_dict: Dict[ConfigKeys, Any],
             The working directory.
     """
 
-    return write_config(config_dict=config_dict,
-                        config_filename=config_filename,
-                        workdir=workdir,
-                        config_keys=ReconciliationConfigKeys)
+    return write_config(config_dict = config_dict,
+                        config_filename = config_filename,
+                        workdir = workdir,
+                        config_keys = ReconciliationConfigKeys)
 
 
 def write_calibration_config(config_dict: Dict[ConfigKeys, Any],
                              config_filename: str,
-                             workdir: str=".",) -> None:
+                             workdir: str = ".", ) -> None:
     """ Writes a dictionary to an Calibration configuration file.
 
         Parameters
@@ -759,16 +556,37 @@ def write_calibration_config(config_dict: Dict[ConfigKeys, Any],
             The working directory.
     """
 
-    return write_config(config_dict=config_dict,
-                        config_filename=config_filename,
-                        workdir=workdir,
-                        config_keys=CalibrationConfigKeys)
+    return write_config(config_dict = config_dict,
+                        config_filename = config_filename,
+                        workdir = workdir,
+                        config_keys = CalibrationConfigKeys)
+
+
+def write_scaling_config(config_dict: Dict[ConfigKeys, Any],
+                         config_filename: str,
+                         workdir: str = ".", ) -> None:
+    """ Writes a dictionary to an ScalingExperiments configuration file.
+
+        Parameters
+        ----------
+        config_dict : Dict[ConfigKeys, Any]
+            The config dictionary to write out.
+        config_filename : str
+            The desired workspace-relative name of the config file.
+        workdir : str
+            The working directory.
+    """
+
+    return write_config(config_dict = config_dict,
+                        config_filename = config_filename,
+                        workdir = workdir,
+                        config_keys = ScalingExperimentsConfigKeys)
 
 
 def write_config(config_dict: Dict[ConfigKeys, Any],
                  config_filename: str,
                  workdir: str = ".",
-                 config_keys: EnumMeta = ConfigKeys,) -> None:
+                 config_keys: EnumMeta = ConfigKeys, ) -> None:
     """ Writes a dictionary to a configuration file.
 
         Parameters
@@ -856,7 +674,7 @@ def _get_converted_type(value: str, desired_type: Type):
     elif desired_type is np.ndarray:
         # Convert space-separated lists into arrays of floats
         values_list = list(map(float, value.strip().split()))
-        converted_value = np.array(values_list, dtype=float)
+        converted_value = np.array(values_list, dtype = float)
 
     else:
         converted_value = desired_type(value)
@@ -899,13 +717,13 @@ def _convert_tuple_type(pipeline_config: Dict[ConfigKeys, Any],
 
 def _convert_enum_type(pipeline_config: Dict[ConfigKeys, Any],
                        enum_key: ConfigKeys,
-                       enum_type: AllowedEnum) -> None:
+                       enum_type: EnumMeta) -> None:
     """ Checks that the value in the pipeline_config is properly a value of the given enum_type,
         and sets the entry in the pipeline_config to the proper enum.
     """
 
     # Skip if not present in the config
-    if not enum_key in pipeline_config:
+    if enum_key not in pipeline_config:
         return
 
     # Check that the value is in the enum (silently convert to lower case)
@@ -934,7 +752,7 @@ def _convert_type(pipeline_config: Dict[ConfigKeys, Any],
 
 
 def convert_config_types(pipeline_config: Dict[ConfigKeys, str],
-                         d_types: Dict[str, Type] = None) -> Dict[ConfigKeys, Any]:
+                         d_types: Dict[ConfigKeys, Type] = None) -> Dict[ConfigKeys, Any]:
     """ Converts values in the pipeline config to the proper types.
     """
 
@@ -956,7 +774,7 @@ def convert_config_types(pipeline_config: Dict[ConfigKeys, str],
 
 
 def get_conditional_product(filename: str,
-                            workdir: str=".") -> Optional[Any]:
+                            workdir: str = ".") -> Optional[Any]:
     """ Returns None in all cases where a data product isn't provided, otherwise read and return the data
         product.
     """
@@ -986,17 +804,3 @@ def get_conditional_product(filename: str,
 
         # This isn't a listfile, so try to open and return it
         return read_xml_product(qualified_filename, workdir)
-
-
-
-
-class ScalingExperimentsConfigKeys(ConfigKeys):
-    HDF5 = "HDF5"
-    CHUNKED = "chunked"
-    MAXBATCHES= "maxbatches"
-    BATCHSIZE = "batchsize"
-    MEMMAP = "memmap"
-    SPATIAL_BATCHING = "spatial_batching"
-    DRY_RUN = "dry_run"
-    MEAN_COMPUTE_TIME = "mean_compute_time"
-    COMPRESSION = "compression"
