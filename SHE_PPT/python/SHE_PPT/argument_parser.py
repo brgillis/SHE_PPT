@@ -32,7 +32,7 @@ class SheArgumentParser(ArgumentParser):
 
         # Input filenames
         self.add_argument('--pipeline_config', type = str, default = None,
-                          help = 'Pipeline configuration file (.xml data product or .json listfile of 0-1 such '
+                          help = 'INPUT: Pipeline configuration file (.xml data product or .json listfile of 0-1 such '
                                  'data products.')
 
         # Arguments needed by the pipeline runner
@@ -41,6 +41,6 @@ class SheArgumentParser(ArgumentParser):
 
         # Optional arguments (can't be used with pipeline runner)
         self.add_argument('--profile', action = 'store_true',
-                          help = 'Store profiling data for execution.')
+                          help = 'OPTION: Store profiling data for execution.')
         self.add_argument('--dry_run', action = 'store_true',
-                          help = 'Skip processing and just output dummy data.')
+                          help = 'OPTION: Skip processing and just output dummy data.')
