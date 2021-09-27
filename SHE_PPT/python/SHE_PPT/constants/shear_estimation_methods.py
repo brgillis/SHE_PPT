@@ -21,14 +21,11 @@ __updated__ = "2021-08-13"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-from typing import List, Dict
-
-from astropy.table import Table
+from typing import Dict, List
 
 # Need to import ShearEstimationMethods first to avoid circular dependencies. We import explicitly to ensure it's
 # sorted to be imported first
 from SHE_PPT.constants.classes import ShearEstimationMethods
-
 from ..table_formats.she_ksb_measurements import tf as ksbm_tf
 from ..table_formats.she_ksb_tu_matched import tf as ksbtm_tf
 from ..table_formats.she_lensmc_measurements import tf as lmcm_tf
@@ -37,20 +34,20 @@ from ..table_formats.she_momentsml_measurements import tf as mmlm_tf
 from ..table_formats.she_momentsml_tu_matched import tf as mmltm_tf
 from ..table_formats.she_regauss_measurements import tf as regm_tf
 from ..table_formats.she_regauss_tu_matched import tf as regtm_tf
+from ..table_formats.she_tu_matched import SheTUMatchedFormat
+from ..table_utility import SheTableFormat
 
-
-D_SHEAR_ESTIMATION_METHOD_TABLE_FORMATS: Dict[ShearEstimationMethods, Table] = {
-    ShearEstimationMethods.KSB: ksbm_tf,
-    ShearEstimationMethods.REGAUSS: regm_tf,
+D_SHEAR_ESTIMATION_METHOD_TABLE_FORMATS: Dict[ShearEstimationMethods, SheTableFormat] = {
+    ShearEstimationMethods.KSB      : ksbm_tf,
+    ShearEstimationMethods.REGAUSS  : regm_tf,
     ShearEstimationMethods.MOMENTSML: mmlm_tf,
-    ShearEstimationMethods.LENSMC: lmcm_tf}
+    ShearEstimationMethods.LENSMC   : lmcm_tf}
 
-
-D_SHEAR_ESTIMATION_METHOD_TUM_TABLE_FORMATS: Dict[ShearEstimationMethods, Table] = {
-    ShearEstimationMethods.KSB: ksbtm_tf,
-    ShearEstimationMethods.REGAUSS: regtm_tf,
+D_SHEAR_ESTIMATION_METHOD_TUM_TABLE_FORMATS: Dict[ShearEstimationMethods, SheTUMatchedFormat] = {
+    ShearEstimationMethods.KSB      : ksbtm_tf,
+    ShearEstimationMethods.REGAUSS  : regtm_tf,
     ShearEstimationMethods.MOMENTSML: mmltm_tf,
-    ShearEstimationMethods.LENSMC: lmctm_tf}
+    ShearEstimationMethods.LENSMC   : lmctm_tf}
 
 NUM_METHODS: int = len(ShearEstimationMethods)
 METHOD_NAMES: List[str] = [method_enum.value for method_enum in ShearEstimationMethods]

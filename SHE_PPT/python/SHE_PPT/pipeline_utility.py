@@ -190,7 +190,7 @@ def read_scaling_config(*args, **kwargs):
     return read_config(config_keys = ScalingExperimentsConfigKeys, *args, **kwargs)
 
 
-def read_config(config_filename: str,
+def read_config(config_filename: Optional[str],
                 workdir: str = ".",
                 config_keys: Union[EnumMeta, Tuple[EnumMeta, ...]] = (AnalysisConfigKeys,
                                                                       ValidationConfigKeys,
@@ -206,7 +206,7 @@ def read_config(config_filename: str,
 
         Parameters
         ----------
-        config_filename : string
+        config_filename : Optional[str]
             The workspace-relative name of the config file.
         workdir : string
             The working directory.
