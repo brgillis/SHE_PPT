@@ -22,31 +22,30 @@ __updated__ = "2021-08-31"
 # Boston, MA 02110-1301 USA
 
 import abc
-from datetime import datetime
 import json
 import os
-from os.path import join, exists
-from pickle import UnpicklingError
 import pickle
 import subprocess
-from typing import Generic, List, Optional, Sequence, TypeVar, Type
+from datetime import datetime
+from os.path import exists, join
+from pickle import UnpicklingError
+from typing import Any, Generic, List, Optional, Sequence, Type, TypeVar
+
+import numpy as np
+from astropy.io import fits
+from astropy.io.fits import HDUList
+from astropy.table import Table
+from pyxb.exceptions_ import NamespaceError
 from xml.sax._exceptions import SAXParseException
 
 from EL_PythonUtils.utilities import time_to_timestamp
-from astropy.io import fits
-from astropy.table import Table
-from pyxb.exceptions_ import NamespaceError
-
 from ElementsServices.DataSync import DataSync
 from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider
 from ST_DataModelBindings.sys_stub import CreateFromDocument
-import numpy as np
-
 from . import __version__ as SHE_PPT_version
 from .constants.test_data import SYNC_CONF
 from .logging import getLogger
 from .utility import get_release_from_version, join_without_none
-
 
 logger = getLogger(__name__)
 
@@ -312,17 +311,17 @@ class SheFileNamer(FileNameProvider):
 
     def __determine_type_name(self):
         # Piece together the type ID from the components, leaving out Nones
-        self._type_name = join_without_none(l_s=[self.type_name_head,
-                                                 self.type_name_body,
-                                                 self.type_name_tail],
-                                            default=self.default_type_name)
+        self._type_name = join_without_none(l_s = [self.type_name_head,
+                                                   self.type_name_body,
+                                                   self.type_name_tail],
+                                            default = self.default_type_name)
 
     def __determine_instance_id(self):
         # Piece together the instance ID from the components, leaving out Nones
-        self._instance_id = join_without_none(l_s=[self.instance_id_head,
-                                                   self.instance_id_body,
-                                                   self.instance_id_tail],
-                                              default=self.default_instance_id)
+        self._instance_id = join_without_none(l_s = [self.instance_id_head,
+                                                     self.instance_id_body,
+                                                     self.instance_id_tail],
+                                              default = self.default_instance_id)
 
     # Protected methods
 
@@ -355,12 +354,12 @@ class SheFileNamer(FileNameProvider):
         else:
             extension = self.extension
 
-        filename = self.get_allowed_filename(processing_function=self.processing_function,
-                                             type_name=self.type_name.upper(),
-                                             instance_id=self.instance_id.upper(),
-                                             extension=extension,
-                                             release=release,
-                                             timestamp=self.timestamp)
+        filename = self.get_allowed_filename(processing_function = self.processing_function,
+                                             type_name = self.type_name.upper(),
+                                             instance_id = self.instance_id.upper(),
+                                             extension = extension,
+                                             release = release,
+                                             timestamp = self.timestamp)
 
         if self.subdir is not None:
             qualified_filename = join(self.subdir, filename)
@@ -370,8 +369,8 @@ class SheFileNamer(FileNameProvider):
         return qualified_filename
 
 
-def get_allowed_filename(type_name, instance_id, extension=".fits", release=None, version=None, subdir="data",
-                         processing_function="SHE", timestamp=True):
+def get_allowed_filename(type_name, instance_id, extension = ".fits", release = None, version = None, subdir = "data",
+                         processing_function = "SHE", timestamp = True):
     """Gets a filename in the required Euclid format. Now mostly a pass-through to the official version, with
     tweaks to silently shift arguments to upper-case.
 
@@ -397,14 +396,14 @@ def get_allowed_filename(type_name, instance_id, extension=".fits", release=None
         If True, will append a timestamp to the instance_id
     """
 
-    return SheFileNamer(type_name=type_name,
-                        instance_id=instance_id,
-                        extension=extension,
-                        release=release,
-                        version=version,
-                        subdir=subdir,
-                        processing_function=processing_function,
-                        timestamp=timestamp).get()
+    return SheFileNamer(type_name = type_name,
+                        instance_id = instance_id,
+                        extension = extension,
+                        release = release,
+                        version = version,
+                        subdir = subdir,
+                        processing_function = processing_function,
+                        timestamp = timestamp).get()
 
 
 def write_listfile(listfile_name, filenames):
@@ -489,8 +488,7 @@ def replace_multiple_in_file(input_filename, output_filename, input_strings, out
                 fout.write(new_line)
 
 
-def write_xml_product(product, xml_filename, workdir=".", allow_pickled=False):
-
+def write_xml_product(product, xml_filename, workdir = ".", allow_pickled = False):
     # Silently coerce input into a string
     xml_filename = str(xml_filename)
 
@@ -508,8 +506,8 @@ def write_xml_product(product, xml_filename, workdir=".", allow_pickled=False):
         cat_filename = product.Data.CatalogStorage.CatalogFileStorage.StorageSpace[0].DataContainer.FileName
         if cat_filename == "None":
             # Create a name for the catalog file
-            cat_filename = get_allowed_filename(type_name="CAT", instance_id="0", extension=".csv",
-                                                version=SHE_PPT_version, subdir=None)
+            cat_filename = get_allowed_filename(type_name = "CAT", instance_id = "0", extension = ".csv",
+                                                version = SHE_PPT_version, subdir = None)
             product.Data.CatalogStorage.CatalogFileStorage.StorageSpace[0].DataContainer.FileName = cat_filename
 
         # Check if the catalogue exists, and create it if necessary
@@ -532,7 +530,7 @@ def write_xml_product(product, xml_filename, workdir=".", allow_pickled=False):
 
     try:
         with open(str(qualified_xml_filename), "w") as f:
-            f.write(product.toDOM().toprettyxml(encoding="utf-8").decode("utf-8"))
+            f.write(product.toDOM().toprettyxml(encoding = "utf-8").decode("utf-8"))
     except AttributeError as e:
         if not allow_pickled:
             raise
@@ -543,8 +541,7 @@ def write_xml_product(product, xml_filename, workdir=".", allow_pickled=False):
         write_pickled_product(product, qualified_xml_filename)
 
 
-def read_xml_product(xml_filename, workdir=".", allow_pickled=False):
-
+def read_xml_product(xml_filename, workdir = ".", allow_pickled = False):
     # Silently coerce input into a string
     xml_filename = str(xml_filename)
 
@@ -566,8 +563,7 @@ def read_xml_product(xml_filename, workdir=".", allow_pickled=False):
     return product
 
 
-def write_pickled_product(product, pickled_filename, workdir="."):
-
+def write_pickled_product(product, pickled_filename, workdir = "."):
     # Silently coerce input into a string
     pickled_filename = str(pickled_filename)
 
@@ -580,8 +576,7 @@ def write_pickled_product(product, pickled_filename, workdir="."):
         pickle.dump(product, f)
 
 
-def read_pickled_product(pickled_filename, workdir="."):
-
+def read_pickled_product(pickled_filename, workdir = "."):
     # Silently coerce input into a string
     pickled_filename = str(pickled_filename)
 
@@ -594,8 +589,7 @@ def read_pickled_product(pickled_filename, workdir="."):
 
 
 def append_hdu(filename, hdu):
-
-    f = fits.open(filename, mode='append')
+    f = fits.open(filename, mode = 'append')
     try:
         f.append(hdu)
     finally:
@@ -652,7 +646,7 @@ def _is_no_file(name):
 def _find_web_file_xml(filename, qualified_filename):
     try:
         webpath = os.path.split(filename)[0]
-        p = read_xml_product(qualified_filename, workdir="")
+        p = read_xml_product(qualified_filename, workdir = "")
         for subfilename in p.get_all_filenames():
             # Skip if there's no file to download
             if _is_no_file(subfilename):
@@ -720,7 +714,7 @@ def find_web_file(filename):
     return qualified_filename
 
 
-def find_file(filename, path=None):
+def find_file(filename, path = None):
     """
         Locates a file based on the presence/absence of an AUX/ or CONF/ prefix, searching in the aux or conf
         directories respectively for it, or else the work directory if supplied.
@@ -773,7 +767,7 @@ def first_writable_in_path(path):
     return first_writable_dir
 
 
-def get_data_filename(filename, workdir="."):
+def get_data_filename(filename, workdir = "."):
     """ Given the unqualified name of a file and the work directory, determine if it's an XML data
         product or not, and get the filename of its DataContainer if so; otherwise, just return
         the input filename. In either case, the unqualified filename is returned.
@@ -786,7 +780,7 @@ def get_data_filename(filename, workdir="."):
     try:
         qualified_filename = find_file(filename, workdir)
 
-        prod = read_xml_product(qualified_filename, allow_pickled=True)
+        prod = read_xml_product(qualified_filename, allow_pickled = True)
 
         # If we get here, it is indeed an XML data product. Has it been monkey-patched
         # to have a get_filename method?
@@ -870,8 +864,7 @@ def remove_files(l_qualified_filenames):
             logger.warning(f"Cannot delete file: {qualified_filename}")
 
 
-def tar_files(tarball_filename, l_filenames, workdir=".", delete_files=False):
-
+def tar_files(tarball_filename, l_filenames, workdir = ".", delete_files = False):
     qualified_tarball_filename = os.path.join(workdir, tarball_filename)
 
     filename_string = " ".join(l_filenames)
@@ -880,7 +873,7 @@ def tar_files(tarball_filename, l_filenames, workdir=".", delete_files=False):
     logger.info(f"Creating tarball {qualified_tarball_filename}.")
 
     tar_cmd = f"cd {workdir} && tar -cf {qualified_tarball_filename} {filename_string}"
-    tar_results = subprocess.run(tar_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    tar_results = subprocess.run(tar_cmd, shell = True, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
     logger.info(f"tar stdout: {tar_results.stdout}")
     logger.debug("tar stderr: %s", tar_results.stderr)
@@ -989,15 +982,15 @@ class ProductLoader(FileLoader):
     """ FileLoader specialized to load in .xml data products.
     """
 
-    def get(self, *args, **kwargs) -> None:
-        return read_xml_product(xml_filename=self.filename, workdir=self.workdir, *args, **kwargs)
+    def get(self, *args, **kwargs) -> Any:
+        return read_xml_product(xml_filename = self.filename, workdir = self.workdir, *args, **kwargs)
 
 
 class TableLoader(FileLoader[Table]):
     """ FileLoader specialized to load in astropy data tables.
     """
 
-    def get(self, *args, **kwargs) -> None:
+    def get(self, *args, **kwargs) -> Table:
         return Table.read(self.qualified_filename, *args, **kwargs)
 
 
@@ -1005,7 +998,7 @@ class FitsLoader(FileLoader[Table]):
     """ FileLoader specialized to load in astropy data tables.
     """
 
-    def get(self, *args, **kwargs) -> None:
+    def get(self, *args, **kwargs) -> HDUList:
         return fits.open(self.qualified_filename, *args, **kwargs)
 
 
@@ -1038,7 +1031,7 @@ class MultiFileLoader(Generic[T]):
 
         elif l_filenames:
             self.l_filenames = l_filenames
-            self.l_file_loaders = [self.file_loader_type(filename=filename, workdir=self.workdir) for
+            self.l_file_loaders = [self.file_loader_type(filename = filename, workdir = self.workdir) for
                                    filename in self.l_filenames]
 
         else:
