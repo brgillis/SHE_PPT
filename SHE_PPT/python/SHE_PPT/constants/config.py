@@ -134,13 +134,13 @@ class AnalysisConfigKeys(ConfigKeys):
     PSF_MODEL_THREADS = PSF_HEAD + "model_threads"
     PSF_PASS_IN_MEMORY = PSF_HEAD + "pass_in_memory"
     PSF_DEFAULT_FIELD_PARAMS = PSF_HEAD + "use_default_field_params"
-    PSF_NUM_STARS = PSF_HEAD + "number_of_stars"
+    PSF_NUM_STARS = PSF_HEAD + "no_stars_to_fit"
     PSF_USE_EXPOSURES = PSF_HEAD + "use_exposures"
     PSF_USE_DETECTORS = PSF_HEAD + "use_detectors"
     PSF_NUM_PARAMETERS_TO_FIT = PSF_HEAD + "num_parameters_to_fit"
     PSF_MAX_FIT_ITERATIONS = PSF_HEAD + "max_fit_iterations"
     PSF_DET_TO_FIT = PSF_HEAD + "det_to_fit"
-
+    PSF_FIT_CHECKPOINT_ITER = PSF_HEAD+"checkpoint_iter"
     # Options for SHE_CTE_ObjectIdSplit
 
     OID_BATCH_SIZE = OBJECT_ID_SPLIT_HEAD + "batch_size"
