@@ -23,17 +23,14 @@ __updated__ = "2021-08-30"
 
 import os
 import re
-from typing import Any, List, Optional, Tuple, TypeVar, Union, Sequence
-
-from astropy.io.fits import TableHDU, HDUList
-from astropy.table import Table
+from typing import Any, List, Optional, Sequence, Tuple, TypeVar, Union
 
 import numpy as np
+from astropy.io.fits import HDUList, TableHDU
+from astropy.table import Table
 
 from . import detector as dtc
-from .constants.classes import AllowedEnum  # Imported here since this is where people will expect to find it
 from .logging import getLogger
-
 
 logger = getLogger(__name__)
 
@@ -174,11 +171,47 @@ def process_directory(directory_name: str) -> Tuple[List[str], List[str]]:
     return file_list, subdir_list
 
 
+# Value testing functions
+
+
 def is_any_type_of_none(value: Any) -> bool:
     """Quick function to check if a value (which might be a string) is None or empty
     """
     return value in (None, "None", "", "data/None", "data/")
 
+
+def any_is_inf(l_x: Sequence[Union[float, Sequence[float]]]) -> bool:
+    """ Checks if any value in a sequence of values is inf.
+    """
+    return np.logical_or.reduce(np.isinf(l_x))
+
+
+def any_is_nan(l_x: Sequence[Union[float, Sequence[float]]]) -> bool:
+    """ Checks if any value in a sequence of values is NaN.
+    """
+    return np.logical_or.reduce(np.isnan(l_x))
+
+
+def is_inf_or_nan(x: Union[float, Sequence[float]]) -> bool:
+    """ Checks if a value is inf or NaN.
+    """
+    return np.logical_or(np.isinf(x), np.isnan(x))
+
+
+def any_is_inf_or_nan(l_x: Sequence[Union[float, Sequence[float]]]) -> bool:
+    """ Checks if any value in a sequence of values is inf or nan.
+    """
+    return np.logical_or.reduce(is_inf_or_nan(l_x))
+
+
+Number = TypeVar('Number', float, int)
+
+
+def is_zero(x: Number):
+    return x == 0
+
+
+# List/join functions
 
 T = TypeVar('T')
 
@@ -202,30 +235,6 @@ def coerce_to_list(a: Union[None, T, List[T]],
         except TypeError:
             # Not iterable, so return as an element of a list
             return [a]
-
-
-def any_is_inf(l_x: Sequence[Union[float, Sequence[float]]]) -> Union[float, Sequence[bool]]:
-    """ Checks if any value in a sequence of values is inf.
-    """
-    return np.logical_or.reduce(np.isinf(l_x))
-
-
-def any_is_nan(l_x: Sequence[Union[float, Sequence[float]]]) -> Union[float, Sequence[bool]]:
-    """ Checks if any value in a sequence of values is NaN.
-    """
-    return np.logical_or.reduce(np.isnan(l_x))
-
-
-def is_inf_or_nan(x: Union[float, Sequence[float]]) -> Union[float, Sequence[bool]]:
-    """ Checks if a value is inf or NaN.
-    """
-    return np.logical_or(np.isinf(x), np.isnan(x))
-
-
-def any_is_inf_or_nan(l_x: Sequence[Union[float, Sequence[float]]]) -> Union[float, Sequence[bool]]:
-    """ Checks if any value in a sequence of values is inf or nan.
-    """
-    return np.logical_or.reduce(is_inf_or_nan(l_x))
 
 
 def join_without_none(l_s: List[Optional[Any]], joiner: str = "-", default: str = ""):
