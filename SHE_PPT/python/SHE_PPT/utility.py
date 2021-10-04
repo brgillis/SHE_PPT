@@ -208,7 +208,21 @@ Number = TypeVar('Number', float, int)
 
 
 def is_zero(x: Number):
+    """ Checks if a value is zero - needed if a callable function is required to perform this test.
+    """
     return x == 0
+
+
+def any_is_zero(l_x: Sequence[Number]) -> bool:
+    """ Checks if any value in a sequence of numbers is zero.
+    """
+    return (np.asarray(l_x) == 0).any()
+
+
+def all_are_zero(l_x: Sequence[Number]) -> bool:
+    """ Checks if all values in a sequence of numbers are zero.
+    """
+    return (np.asarray(l_x) == 0).all()
 
 
 # List/join functions
