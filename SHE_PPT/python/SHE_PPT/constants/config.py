@@ -23,9 +23,9 @@ __updated__ = "2021-08-18"
 
 from typing import Any, Dict, Tuple, Type, Union
 
-from ..utility import AllowedEnum
-
 # Task name for generic config keys
+from .classes import AllowedEnum
+
 PIPELINE_HEAD = "SHE_Pipeline_"
 
 
@@ -140,7 +140,7 @@ class AnalysisConfigKeys(ConfigKeys):
     PSF_NUM_PARAMETERS_TO_FIT = PSF_HEAD + "num_parameters_to_fit"
     PSF_MAX_FIT_ITERATIONS = PSF_HEAD + "max_fit_iterations"
     PSF_DET_TO_FIT = PSF_HEAD + "det_to_fit"
-    PSF_FIT_CHECKPOINT_ITER = PSF_HEAD+"checkpoint_iter"
+    PSF_FIT_CHECKPOINT_ITER = PSF_HEAD + "checkpoint_iter"
     # Options for SHE_CTE_ObjectIdSplit
 
     OID_BATCH_SIZE = OBJECT_ID_SPLIT_HEAD + "batch_size"
