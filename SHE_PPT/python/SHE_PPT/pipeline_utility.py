@@ -32,13 +32,14 @@ from xml.sax import SAXParseException
 
 import numpy as np
 
+from .constants.classes import AllowedEnum
 from .constants.config import (AnalysisConfigKeys, CTI_GAL_VALIDATION_HEAD, CalibrationConfigKeys, ConfigKeys,
                                GlobalConfigKeys, ReconciliationConfigKeys, SHEAR_BIAS_VALIDATION_HEAD,
                                ScalingExperimentsConfigKeys, VALIDATION_HEAD,
                                ValidationConfigKeys, )
 from .file_io import find_file, read_listfile, read_xml_product
 from .logging import getLogger
-from .utility import AllowedEnum, is_any_type_of_none
+from .utility import is_any_type_of_none
 
 
 @lru_cache(maxsize = None)
