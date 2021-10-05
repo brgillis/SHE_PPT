@@ -30,14 +30,14 @@ from ..table_formats.she_ksb_measurements import tf as ksbm_tf
 from ..table_formats.she_ksb_tu_matched import tf as ksbtm_tf
 from ..table_formats.she_lensmc_measurements import tf as lmcm_tf
 from ..table_formats.she_lensmc_tu_matched import tf as lmctm_tf
+from ..table_formats.she_measurements import SheMeasurementsFormat
 from ..table_formats.she_momentsml_measurements import tf as mmlm_tf
 from ..table_formats.she_momentsml_tu_matched import tf as mmltm_tf
 from ..table_formats.she_regauss_measurements import tf as regm_tf
 from ..table_formats.she_regauss_tu_matched import tf as regtm_tf
 from ..table_formats.she_tu_matched import SheTUMatchedFormat
-from ..table_utility import SheTableFormat
 
-D_SHEAR_ESTIMATION_METHOD_TABLE_FORMATS: Dict[ShearEstimationMethods, SheTableFormat] = {
+D_SHEAR_ESTIMATION_METHOD_TABLE_FORMATS: Dict[ShearEstimationMethods, SheMeasurementsFormat] = {
     ShearEstimationMethods.KSB      : ksbm_tf,
     ShearEstimationMethods.REGAUSS  : regm_tf,
     ShearEstimationMethods.MOMENTSML: mmlm_tf,

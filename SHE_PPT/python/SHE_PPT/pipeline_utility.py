@@ -22,7 +22,7 @@ __updated__ = "2021-08-19"
 
 import json.decoder
 import os
-from argparse import ArgumentParser
+from argparse import ArgumentParser, Namespace
 from enum import EnumMeta
 from functools import lru_cache
 from pickle import UnpicklingError
@@ -198,7 +198,7 @@ def read_config(config_filename: Optional[str],
                                                                       ReconciliationConfigKeys,
                                                                       CalibrationConfigKeys),
                 d_cline_args: Optional[Dict[ConfigKeys, str]] = None,
-                parsed_args: Optional[ArgumentParser] = None,
+                parsed_args: Optional[Namespace] = None,
                 defaults: Optional[Dict[str, Any]] = None,
                 task_head: Optional[str] = None,
                 d_types: Optional[Dict[str, Type]] = None, ) -> Dict[ConfigKeys, Any]:
@@ -324,7 +324,7 @@ def _read_config_product(config_filename: str,
 def _read_config_file(qualified_config_filename: str,
                       config_keys: Tuple[EnumMeta, ...],
                       d_cline_args: Optional[Dict[ConfigKeys, str]],
-                      parsed_args: Optional[ArgumentParser],
+                      parsed_args: Optional[Namespace],
                       defaults: Dict[ConfigKeys, Any],
                       task_head: Optional[str] = None,
                       d_types: Optional[Dict[str, Type]] = None, ) -> Dict[ConfigKeys, Any]:
