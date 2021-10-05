@@ -631,6 +631,13 @@ def write_config(config_dict: Dict[ConfigKeys, Any],
             except AttributeError:
                 pass
 
+            # Now check if it's a list
+            try:
+                if not isinstance(value, str):
+                    value = " ".join(map(str, value))
+            except TypeError:
+                pass
+
             config_file.write(f"{enum_key.value} = {value}\n")
 
 
