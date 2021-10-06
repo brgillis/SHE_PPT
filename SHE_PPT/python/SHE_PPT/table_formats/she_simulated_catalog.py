@@ -26,10 +26,9 @@ from collections import OrderedDict
 from EL_PythonUtils.utilities import hash_any
 
 from ..constants.fits import (FITS_VERSION_LABEL, FITS_DEF_LABEL, GAIN_LABEL, MODEL_HASH_LABEL,
-                              MODEL_SEED_LABEL, NOISE_SEED_LABEL)
+                              MODEL_SEED_LABEL, NOISE_SEED_LABEL, )
 from ..logging import getLogger
 from ..table_utility import is_in_format, init_table, SheTableFormat, SheTableMeta
-
 
 fits_version = "8.0"
 fits_def = "she.simulatedCatalog"
@@ -59,20 +58,19 @@ class SheSimulatedCatalogMeta(SheTableMeta):
     noise_seed: str = NOISE_SEED_LABEL
 
     def __init__(self):
-
         # Store the less-used comments in a dict
-        super().__init__(comments=OrderedDict(((self.fits_version, None),
-                                               (self.fits_def, None),
-                                               (self.subtracted_sky_level,
-                                                "ADU/arcsec^2"),
-                                               (self.unsubtracted_sky_level,
-                                                "ADU/arcsec^2"),
-                                               (self.read_noise, "e-/pixel"),
-                                               (self.gain, "e-/ADU"),
-                                               (self.model_hash, None),
-                                               (self.model_seed, None),
-                                               (self.noise_seed, None),
-                                               )))
+        super().__init__(comments = OrderedDict(((self.fits_version, None),
+                                                 (self.fits_def, None),
+                                                 (self.subtracted_sky_level,
+                                                  "ADU/arcsec^2"),
+                                                 (self.unsubtracted_sky_level,
+                                                  "ADU/arcsec^2"),
+                                                 (self.read_noise, "e-/pixel"),
+                                                 (self.gain, "e-/ADU"),
+                                                 (self.model_hash, None),
+                                                 (self.model_seed, None),
+                                                 (self.noise_seed, None),
+                                                 )))
 
 
 class SheSimulatedCatalogFormat(SheTableFormat):
@@ -85,17 +83,17 @@ class SheSimulatedCatalogFormat(SheTableFormat):
         super().__init__(SheSimulatedCatalogMeta())
 
         # Table column labels
-        self.ID = self.set_column_properties("OBJECT_ID", dtype=">i8", fits_dtype="K")
+        self.ID = self.set_column_properties("OBJECT_ID", dtype = ">i8", fits_dtype = "K")
 
-        self.group_ID = self.set_column_properties("GROUP_ID", dtype=">i8", fits_dtype="K")
+        self.group_ID = self.set_column_properties("GROUP_ID", dtype = ">i8", fits_dtype = "K")
 
-        self.ra = self.set_column_properties("RIGHT_ASCENSION", comment="ra (deg)")
-        self.dec = self.set_column_properties("DECLINATION", comment="dec (deg)")
+        self.ra = self.set_column_properties("RIGHT_ASCENSION", comment = "ra (deg)")
+        self.dec = self.set_column_properties("DECLINATION", comment = "dec (deg)")
 
         self.hlr_bulge = self.set_column_properties(
-            "HLR_BULGE", comment="arcsec")
+            "HLR_BULGE", comment = "arcsec")
         self.hlr_disk = self.set_column_properties(
-            "HLR_DISK", comment="arcsec")
+            "HLR_DISK", comment = "arcsec")
 
         self.bulge_ellipticity = self.set_column_properties("BULGE_ELLIPTICITY")
         self.bulge_axis_ratio = self.set_column_properties("BULGE_AXIS_RATIO")
@@ -104,20 +102,20 @@ class SheSimulatedCatalogFormat(SheTableFormat):
 
         self.z = self.set_column_properties("REDSHIFT")
 
-        self.magnitude = self.set_column_properties("MAGNITUDE", comment="VIS filter")
+        self.magnitude = self.set_column_properties("MAGNITUDE", comment = "VIS filter")
 
-        self.snr = self.set_column_properties("SNR", comment="Sum in quadrature over detections")
+        self.snr = self.set_column_properties("SNR", comment = "Sum in quadrature over detections")
 
         self.sersic_index = self.set_column_properties("SERSIC_INDEX")
 
-        self.rotation = self.set_column_properties("ROTATION", comment="[deg]")
-        self.spin = self.set_column_properties("SPIN", comment="[deg]")
-        self.tilt = self.set_column_properties("TILT", comment="[deg]")
+        self.rotation = self.set_column_properties("ROTATION", comment = "[deg]")
+        self.spin = self.set_column_properties("SPIN", comment = "[deg]")
+        self.tilt = self.set_column_properties("TILT", comment = "[deg]")
 
         self.g1 = self.set_column_properties("G1_WORLD")
         self.g2 = self.set_column_properties("G2_WORLD")
 
-        self.target_galaxy = self.set_column_properties("is_target_galaxy", dtype="bool", fits_dtype="L")
+        self.target_galaxy = self.set_column_properties("is_target_galaxy", dtype = "bool", fits_dtype = "L")
 
         self._finalize_init()
 
@@ -132,17 +130,17 @@ class SheSimulatedCatalogFormat(SheTableFormat):
 # Define an instance of this object that can be imported
 details_table_format = SheSimulatedCatalogFormat()
 
-# And a convient alias for it
+# And a convenient alias for it
 tf = details_table_format
 
 
-def make_details_table_header(subtracted_sky_level=None,
-                              unsubtracted_sky_level=None,
-                              read_noise=None,
-                              gain=None,
-                              model_hash=None,
-                              model_seed=None,
-                              noise_seed=None):
+def make_details_table_header(subtracted_sky_level = None,
+                              unsubtracted_sky_level = None,
+                              read_noise = None,
+                              gain = None,
+                              model_hash = None,
+                              model_seed = None,
+                              noise_seed = None):
     """
         @brief Generate a header for a galaxy details table.
 
@@ -180,18 +178,18 @@ def make_details_table_header(subtracted_sky_level=None,
     return header
 
 
-def initialise_simulated_catalog(image_group_phl=None,
-                                 options=None,
-                                 size=None,
-                                 optional_columns=None,
-                                 init_cols=None,
-                                 subtracted_sky_level=None,
-                                 unsubtracted_sky_level=None,
-                                 read_noise=None,
-                                 gain=None,
-                                 model_hash=None,
-                                 model_seed=None,
-                                 noise_seed=None,):
+def initialise_simulated_catalog(image_group_phl = None,
+                                 options = None,
+                                 size = None,
+                                 optional_columns = None,
+                                 init_cols = None,
+                                 subtracted_sky_level = None,
+                                 unsubtracted_sky_level = None,
+                                 read_noise = None,
+                                 gain = None,
+                                 model_hash = None,
+                                 model_seed = None,
+                                 noise_seed = None, ):
     """
         @brief Initialise a detections table.
 
@@ -215,7 +213,7 @@ def initialise_simulated_catalog(image_group_phl=None,
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    details_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
+    details_table = init_table(tf, optional_columns = optional_columns, init_cols = init_cols, size = size)
 
     if image_group_phl is not None:
 
@@ -242,17 +240,17 @@ def initialise_simulated_catalog(image_group_phl=None,
         if gain is None:
             gain = options['gain']
         if model_hash is None:
-            model_hash = hash_any(options.items(), format="base64")
+            model_hash = hash_any(options.items(), format = "base64")
         if noise_seed is None:
             noise_seed = options['noise_seed']
 
-    details_table.meta = make_details_table_header(subtracted_sky_level=subtracted_sky_level,
-                                                   unsubtracted_sky_level=unsubtracted_sky_level,
-                                                   read_noise=read_noise,
-                                                   gain=gain,
-                                                   model_hash=model_hash,
-                                                   model_seed=model_seed,
-                                                   noise_seed=noise_seed,)
+    details_table.meta = make_details_table_header(subtracted_sky_level = subtracted_sky_level,
+                                                   unsubtracted_sky_level = unsubtracted_sky_level,
+                                                   read_noise = read_noise,
+                                                   gain = gain,
+                                                   model_hash = model_hash,
+                                                   model_seed = model_seed,
+                                                   noise_seed = noise_seed, )
 
     assert is_in_format(details_table, tf)
 

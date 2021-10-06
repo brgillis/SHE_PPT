@@ -29,7 +29,6 @@ from ..table_formats.mer_final_catalog import tf as mfc_tf
 from ..table_formats.she_tu_matched import SheTUMatchedMeta, SheTUMatchedFormat
 from ..table_utility import is_in_format, init_table
 
-
 fits_version = "8.0"
 fits_def = "she.momentsmlTUMatched"
 
@@ -54,26 +53,25 @@ class SheMomentsMlTUMatchedFormat(SheTUMatchedFormat):
     """
 
     def __init__(self):
-
         # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
-        super().__init__(SheMomentsMlTUMatchedMeta(), finalize=False)
+        super().__init__(SheMomentsMlTUMatchedMeta(), finalize = False)
 
         self.setup_child_table_format(child_label)
 
         # momentsml specific columns
         self.g1_w = self.set_column_properties(
-            "SHE_MOMENTSML_G1_W", is_optional=False, dtype=">f4", fits_dtype="E")
+            "SHE_MOMENTSML_G1_W", is_optional = False, dtype = ">f4", fits_dtype = "E")
         self.g2_w = self.set_column_properties(
-            "SHE_MOMENTSML_G2_W", is_optional=False, dtype=">f4", fits_dtype="E")
+            "SHE_MOMENTSML_G2_W", is_optional = False, dtype = ">f4", fits_dtype = "E")
         self.g1_uncal_w = self.set_column_properties(
-            "SHE_MOMENTSML_G1_UNCAL_W", is_optional=False, dtype=">f4",
-            fits_dtype="E")
+            "SHE_MOMENTSML_G1_UNCAL_W", is_optional = False, dtype = ">f4",
+            fits_dtype = "E")
         self.g2_uncal_w = self.set_column_properties(
-            "SHE_MOMENTSML_G2_UNCAL_W", is_optional=False, dtype=">f4",
-            fits_dtype="E")
+            "SHE_MOMENTSML_G2_UNCAL_W", is_optional = False, dtype = ">f4",
+            fits_dtype = "E")
         self.sersic = self.set_column_properties(
-            "SHE_MOMENTSML_SERSIC_INDEX", is_optional=False, dtype=">f4",
-            fits_dtype="E")
+            "SHE_MOMENTSML_SERSIC_INDEX", is_optional = False, dtype = ">f4",
+            fits_dtype = "E")
 
         self._finalize_init()
 
@@ -88,17 +86,17 @@ class SheMomentsMlTUMatchedFormat(SheTUMatchedFormat):
 # Define an instance of this object that can be imported
 momentsml_tu_matched_table_format = SheMomentsMlTUMatchedFormat()
 
-# And a convient alias for it
+# And a convenient alias for it
 tf = momentsml_tu_matched_table_format
 
 
-def make_momentsml_tu_matched_table_header(model_hash=None,
-                                           model_seed=None,
-                                           noise_seed=None,
-                                           observation_id=None,
-                                           pointing_id=None,
-                                           observation_time=None,
-                                           tile_id=None,):
+def make_momentsml_tu_matched_table_header(model_hash = None,
+                                           model_seed = None,
+                                           noise_seed = None,
+                                           observation_id = None,
+                                           pointing_id = None,
+                                           observation_time = None,
+                                           tile_id = None, ):
     """
         @brief Generate a header for a shear estimates table.
 
@@ -135,17 +133,17 @@ def make_momentsml_tu_matched_table_header(model_hash=None,
     return header
 
 
-def initialise_momentsml_tu_matched_table(mer_final_catalog=None,
-                                          size=None,
-                                          optional_columns=None,
-                                          init_cols=None,
-                                          model_hash=None,
-                                          model_seed=None,
-                                          noise_seed=None,
-                                          observation_id=None,
-                                          pointing_id=None,
-                                          observation_time=None,
-                                          tile_id=None,
+def initialise_momentsml_tu_matched_table(mer_final_catalog = None,
+                                          size = None,
+                                          optional_columns = None,
+                                          init_cols = None,
+                                          model_hash = None,
+                                          model_seed = None,
+                                          noise_seed = None,
+                                          observation_id = None,
+                                          pointing_id = None,
+                                          observation_time = None,
+                                          tile_id = None,
                                           ):
     """
         @brief Initialise a shear estimates table based on a detections table, with the
@@ -166,7 +164,7 @@ def initialise_momentsml_tu_matched_table(mer_final_catalog=None,
     """
 
     assert (mer_final_catalog is None) or (
-        is_in_format(mer_final_catalog, mfc_tf, strict=False))
+        is_in_format(mer_final_catalog, mfc_tf, strict = False))
 
     if optional_columns is None:
         optional_columns = []
@@ -176,15 +174,15 @@ def initialise_momentsml_tu_matched_table(mer_final_catalog=None,
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    momentsml_tu_matched_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
+    momentsml_tu_matched_table = init_table(tf, optional_columns = optional_columns, init_cols = init_cols, size = size)
 
-    momentsml_tu_matched_table.meta = make_momentsml_tu_matched_table_header(model_hash=model_hash,
-                                                                             model_seed=model_seed,
-                                                                             noise_seed=noise_seed,
-                                                                             observation_id=observation_id,
-                                                                             pointing_id=pointing_id,
-                                                                             observation_time=observation_time,
-                                                                             tile_id=tile_id)
+    momentsml_tu_matched_table.meta = make_momentsml_tu_matched_table_header(model_hash = model_hash,
+                                                                             model_seed = model_seed,
+                                                                             noise_seed = noise_seed,
+                                                                             observation_id = observation_id,
+                                                                             pointing_id = pointing_id,
+                                                                             observation_time = observation_time,
+                                                                             tile_id = tile_id)
 
     assert is_in_format(momentsml_tu_matched_table, tf)
 

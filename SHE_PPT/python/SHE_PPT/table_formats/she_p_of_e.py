@@ -21,10 +21,8 @@
 
 __updated__ = "2021-08-12"
 
-
 from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL
 from ..table_utility import SheTableFormat, SheTableMeta
-
 
 fits_version = "8.0"
 fits_def = "she.pOfE"
@@ -55,19 +53,19 @@ class ShePOfEFormat(SheTableFormat):
         # Column names and info
 
         self.ID = self.set_column_properties(
-            "ID", dtype=">i8", fits_dtype="K",
-            comment="Link to galaxy population table.")
+            "ID", dtype = ">i8", fits_dtype = "K",
+            comment = "Link to galaxy population table.")
 
         self.e1 = self.set_column_properties(
-            "E1", comment="Using flat weight function.")
+            "E1", comment = "Using flat weight function.")
         self.e2 = self.set_column_properties(
-            "E2", comment="Using flat weight function.")
+            "E2", comment = "Using flat weight function.")
 
-        self.bulge_e1 = self.set_column_properties("BULGE_E1", is_optional=True)
-        self.bulge_e2 = self.set_column_properties("BULGE_E2", is_optional=True)
+        self.bulge_e1 = self.set_column_properties("BULGE_E1", is_optional = True)
+        self.bulge_e2 = self.set_column_properties("BULGE_E2", is_optional = True)
 
-        self.disk_e1 = self.set_column_properties("DISK_E1", is_optional=True)
-        self.disk_e2 = self.set_column_properties("DISK_E2", is_optional=True)
+        self.disk_e1 = self.set_column_properties("DISK_E1", is_optional = True)
+        self.disk_e2 = self.set_column_properties("DISK_E2", is_optional = True)
 
         self._finalize_init()
 
@@ -75,5 +73,5 @@ class ShePOfEFormat(SheTableFormat):
 # Define an instance of this object that can be imported
 p_of_e_table_format = ShePOfEFormat()
 
-# And a convient alias for it
+# And a convenient alias for it
 tf = p_of_e_table_format

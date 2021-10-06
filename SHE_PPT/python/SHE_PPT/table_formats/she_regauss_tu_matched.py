@@ -76,7 +76,7 @@ class SheRegaussTUMatchedFormat(SheTUMatchedFormat):
 # Define an instance of this object that can be imported
 regauss_tu_matched_table_format = SheRegaussTUMatchedFormat()
 
-# And a convient alias for it
+# And a convenient alias for it
 tf = regauss_tu_matched_table_format
 
 

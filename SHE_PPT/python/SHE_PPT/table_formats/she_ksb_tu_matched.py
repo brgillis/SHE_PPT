@@ -24,7 +24,6 @@ __updated__ = "2021-08-12"
 from ..logging import getLogger
 from ..table_formats.she_tu_matched import SheTUMatchedMeta, SheTUMatchedFormat
 
-
 fits_version = "8.0"
 fits_def = "she.ksbTUMatched"
 
@@ -49,9 +48,8 @@ class SheKsbTUMatchedFormat(SheTUMatchedFormat):
     """
 
     def __init__(self):
-
         # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
-        super().__init__(SheKsbTUMatchedMeta(), finalize=False)
+        super().__init__(SheKsbTUMatchedMeta(), finalize = False)
 
         self.setup_child_table_format(child_label)
 
@@ -63,5 +61,5 @@ class SheKsbTUMatchedFormat(SheTUMatchedFormat):
 # Define an instance of this object that can be imported
 ksb_tu_matched_table_format = SheKsbTUMatchedFormat()
 
-# And a convient alias for it
+# And a convenient alias for it
 tf = ksb_tu_matched_table_format

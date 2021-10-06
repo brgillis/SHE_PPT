@@ -23,10 +23,8 @@ __updated__ = "2021-08-12"
 
 from collections import OrderedDict
 
-
 from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL
 from ..table_utility import is_in_format, init_table, SheTableFormat, SheTableMeta
-
 
 fits_version = "8.0"
 fits_def = "she.simulationPlan"
@@ -56,31 +54,31 @@ class SheSimulationPlanFormat(SheTableFormat):
 
         # Column names and info
 
-        self.tag = self.set_column_properties("TAG", dtype="str", fits_dtype="10A", length=10,
-                                              comment="Tag to be added to file names for this batch, max length 10.")
+        self.tag = self.set_column_properties("TAG", dtype = "str", fits_dtype = "10A", length = 10,
+                                              comment = "Tag to be added to file names for this batch, max length 10.")
 
-        self.model_seed_min = self.set_column_properties("MSEED_MIN", dtype=">i8", fits_dtype="K",
-                                                         comment="Minimum model seed value for this batch.")
-        self.model_seed_max = self.set_column_properties("MSEED_MAX", dtype=">i8", fits_dtype="K",
-                                                         comment="Maximum model seed value for this batch.")
-        self.model_seed_step = self.set_column_properties("MSEED_STEP", dtype=">i8", fits_dtype="K",
-                                                          comment="Model seed step for this batch.")
+        self.model_seed_min = self.set_column_properties("MSEED_MIN", dtype = ">i8", fits_dtype = "K",
+                                                         comment = "Minimum model seed value for this batch.")
+        self.model_seed_max = self.set_column_properties("MSEED_MAX", dtype = ">i8", fits_dtype = "K",
+                                                         comment = "Maximum model seed value for this batch.")
+        self.model_seed_step = self.set_column_properties("MSEED_STEP", dtype = ">i8", fits_dtype = "K",
+                                                          comment = "Model seed step for this batch.")
 
-        self.noise_seed_min = self.set_column_properties("NSEED_MIN", dtype=">i8", fits_dtype="K",
-                                                         comment="Minimum model seed value for this batch.")
-        self.noise_seed_max = self.set_column_properties("NSEED_MAX", dtype=">i8", fits_dtype="K",
-                                                         comment="Maximum model seed value for this batch.")
-        self.noise_seed_step = self.set_column_properties("NSEED_STEP", dtype=">i8", fits_dtype="K",
-                                                          comment="Model seed step for this batch.")
+        self.noise_seed_min = self.set_column_properties("NSEED_MIN", dtype = ">i8", fits_dtype = "K",
+                                                         comment = "Minimum model seed value for this batch.")
+        self.noise_seed_max = self.set_column_properties("NSEED_MAX", dtype = ">i8", fits_dtype = "K",
+                                                         comment = "Maximum model seed value for this batch.")
+        self.noise_seed_step = self.set_column_properties("NSEED_STEP", dtype = ">i8", fits_dtype = "K",
+                                                          comment = "Model seed step for this batch.")
 
         self.suppress_noise = self.set_column_properties(
-            "SUP_NOISE", dtype="bool", fits_dtype="L")
+            "SUP_NOISE", dtype = "bool", fits_dtype = "L")
         self.num_detectors = self.set_column_properties(
-            "NUM_DETECTORS", dtype=">i2", fits_dtype="I")
+            "NUM_DETECTORS", dtype = ">i2", fits_dtype = "I")
         self.num_galaxies = self.set_column_properties(
-            "NUM_GALAXIES", dtype=">i2", fits_dtype="I")
+            "NUM_GALAXIES", dtype = ">i2", fits_dtype = "I")
         self.render_background = self.set_column_properties(
-            "RENDER_BKG", dtype="bool", fits_dtype="L")
+            "RENDER_BKG", dtype = "bool", fits_dtype = "L")
 
         self._finalize_init()
 
@@ -88,5 +86,5 @@ class SheSimulationPlanFormat(SheTableFormat):
 # Define an instance of this object that can be imported
 simulation_plan_table_format = SheSimulationPlanFormat()
 
-# And a convient alias for it
+# And a convenient alias for it
 tf = simulation_plan_table_format

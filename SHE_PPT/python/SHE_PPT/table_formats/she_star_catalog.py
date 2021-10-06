@@ -23,6 +23,7 @@ __updated__ = "2021-08-13"
 
 from ..constants.fits import OBS_ID_LABEL, OBS_TIME_LABEL, FITS_VERSION_LABEL, FITS_DEF_LABEL
 from ..table_utility import SheTableFormat, SheTableMeta
+
 fits_version = "8.0"
 fits_def = "she.starCatalog"
 
@@ -57,44 +58,44 @@ class SheStarCatalogFormat(SheTableFormat):
         # Column names and info
 
         self.id = self.set_column_properties(
-            "OBJECT_ID", dtype=">i8", fits_dtype="K",
-            comment="ID of this object in the galaxy population priors table.")
+            "OBJECT_ID", dtype = ">i8", fits_dtype = "K",
+            comment = "ID of this object in the galaxy population priors table.")
 
         self.det_x = self.set_column_properties(
-            "SHE_STARCAT_DET_X", dtype=">i4", fits_dtype="I")
+            "SHE_STARCAT_DET_X", dtype = ">i4", fits_dtype = "I")
         self.det_y = self.set_column_properties(
-            "SHE_STARCAT_DET_Y", dtype=">i4", fits_dtype="I")
+            "SHE_STARCAT_DET_Y", dtype = ">i4", fits_dtype = "I")
         self.x = self.set_column_properties(
-            "SHE_STARCAT_X", dtype=">f4", fits_dtype="E")
+            "SHE_STARCAT_X", dtype = ">f4", fits_dtype = "E")
         self.x_err = self.set_column_properties(
-            "SHE_STARCAT_X_ERR", dtype=">f4", fits_dtype="E")
+            "SHE_STARCAT_X_ERR", dtype = ">f4", fits_dtype = "E")
         self.y = self.set_column_properties(
-            "SHE_STARCAT_Y", dtype=">f4", fits_dtype="E")
+            "SHE_STARCAT_Y", dtype = ">f4", fits_dtype = "E")
         self.y_err = self.set_column_properties(
-            "SHE_STARCAT_Y_ERR", dtype=">f4", fits_dtype="E")
+            "SHE_STARCAT_Y_ERR", dtype = ">f4", fits_dtype = "E")
         self.ra = self.set_column_properties(
-            "SHE_STARCAT_UPDATED_RA", comment="deg", dtype=">f8", fits_dtype="D")
+            "SHE_STARCAT_UPDATED_RA", comment = "deg", dtype = ">f8", fits_dtype = "D")
         self.ra_err = self.set_column_properties(
-            "SHE_STARCAT_UPDATED_RA_ERR", comment="deg", dtype=">f8", fits_dtype="E")
+            "SHE_STARCAT_UPDATED_RA_ERR", comment = "deg", dtype = ">f8", fits_dtype = "E")
         self.dec = self.set_column_properties(
-            "SHE_STARCAT_UPDATED_DEC", comment="deg", dtype=">f8", fits_dtype="D")
+            "SHE_STARCAT_UPDATED_DEC", comment = "deg", dtype = ">f8", fits_dtype = "D")
         self.dec_err = self.set_column_properties(
-            "SHE_STARCAT_UPDATED_DEC_ERR", comment="deg", dtype=">f8", fits_dtype="E")
+            "SHE_STARCAT_UPDATED_DEC_ERR", comment = "deg", dtype = ">f8", fits_dtype = "E")
         self.flux = self.set_column_properties(
-            "SHE_STARCAT_FLUX", dtype=">f4", fits_dtype="E")
+            "SHE_STARCAT_FLUX", dtype = ">f4", fits_dtype = "E")
         self.flux_err = self.set_column_properties(
-            "SHE_STARCAT_FLUX_ERR", dtype=">f4", fits_dtype="E")
+            "SHE_STARCAT_FLUX_ERR", dtype = ">f4", fits_dtype = "E")
 
-        self.e1 = self.set_column_properties("SHE_STARCAT_E1", dtype=">f4", fits_dtype="E",
-                                             comment="Mean ellipticity measurement of this object, component 1")
-        self.e2 = self.set_column_properties("SHE_STARCAT_E2", dtype=">f4", fits_dtype="E",
-                                             comment="Mean ellipticity measurement of this object, component 2")
-        self.e1_err = self.set_column_properties("SHE_STARCAT_E1_ERR", dtype=">f4", fits_dtype="E",
-                                                 comment="Error on mean ellipticity measurement of this object, "
-                                                 "component 1")
-        self.e2_err = self.set_column_properties("SHE_STARCAT_E2_ERR", dtype=">f4", fits_dtype="E",
-                                                 comment="Error on mean ellipticity measurement of this object, "
-                                                 "component 2")
+        self.e1 = self.set_column_properties("SHE_STARCAT_E1", dtype = ">f4", fits_dtype = "E",
+                                             comment = "Mean ellipticity measurement of this object, component 1")
+        self.e2 = self.set_column_properties("SHE_STARCAT_E2", dtype = ">f4", fits_dtype = "E",
+                                             comment = "Mean ellipticity measurement of this object, component 2")
+        self.e1_err = self.set_column_properties("SHE_STARCAT_E1_ERR", dtype = ">f4", fits_dtype = "E",
+                                                 comment = "Error on mean ellipticity measurement of this object, "
+                                                           "component 1")
+        self.e2_err = self.set_column_properties("SHE_STARCAT_E2_ERR", dtype = ">f4", fits_dtype = "E",
+                                                 comment = "Error on mean ellipticity measurement of this object, "
+                                                           "component 2")
 
         self._finalize_init()
 
@@ -102,5 +103,5 @@ class SheStarCatalogFormat(SheTableFormat):
 # Define an instance of this object that can be imported
 star_catalog_format = SheStarCatalogFormat()
 
-# And a convient alias for it
+# And a convenient alias for it
 tf = star_catalog_format

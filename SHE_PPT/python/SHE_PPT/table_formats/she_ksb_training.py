@@ -23,7 +23,6 @@ __updated__ = "2021-08-12"
 
 from ..table_formats.she_training import SheTrainingMeta, SheTrainingFormat
 
-
 fits_version = "8.0"
 fits_def = "she.ksbTraining"
 
@@ -46,9 +45,8 @@ class SheKsbTrainingFormat(SheTrainingFormat):
     """
 
     def __init__(self):
-
         # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
-        super().__init__(meta=SheKsbTrainingMeta(), finalize=False)
+        super().__init__(meta = SheKsbTrainingMeta(), finalize = False)
 
         self.setup_child_table_format(child_label)
 
@@ -58,5 +56,5 @@ class SheKsbTrainingFormat(SheTrainingFormat):
 # Define an instance of this object that can be imported
 ksb_training_table_format = SheKsbTrainingFormat()
 
-# And a convient alias for it
+# And a convenient alias for it
 tf = ksb_training_table_format
