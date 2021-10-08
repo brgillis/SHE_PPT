@@ -199,9 +199,9 @@ def read_config(config_filename: Optional[str],
                                                                       CalibrationConfigKeys),
                 d_cline_args: Optional[Dict[ConfigKeys, str]] = None,
                 parsed_args: Optional[Namespace] = None,
-                defaults: Optional[Dict[str, Any]] = None,
+                defaults: Optional[Dict[ConfigKeys, Any]] = None,
                 task_head: Optional[str] = None,
-                d_types: Optional[Dict[str, Type]] = None, ) -> Dict[ConfigKeys, Any]:
+                d_types: Optional[Dict[ConfigKeys, Type]] = None, ) -> Dict[ConfigKeys, Any]:
     """ Reads in a generic configuration file to a dictionary. Note that all arguments will be read as strings unless
         a cline_arg value is used.
 
