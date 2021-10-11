@@ -119,7 +119,7 @@ class MockPipelineConfigFactory:
         write_config(config_dict = self.pipeline_config,
                      config_filename = self.file_namer.filename,
                      workdir = self.file_namer.workdir,
-                     config_keys = GlobalConfigKeys)
+                     config_keys = self.config_keys)
 
     def cleanup(self):
         os.remove(os.path.join(self.file_namer.qualified_filename))
