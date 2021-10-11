@@ -29,11 +29,12 @@ import subprocess
 from datetime import datetime
 from os.path import exists, join
 from pickle import UnpicklingError
-from typing import Any, Generic, List, Optional, Sequence, Type, TypeVar
+from typing import Any, Generic, List, Optional, Sequence, Tuple, Type, TypeVar, Union
 
 import numpy as np
 from astropy.io import fits
 from astropy.io.fits import HDUList
+from astropy.io.fits.hdu.base import ExtensionHDU
 from astropy.table import Table
 from pyxb.exceptions_ import NamespaceError
 from xml.sax._exceptions import SAXParseException
@@ -58,6 +59,48 @@ max_timestamp_release_len = 30
 instance_id_maxlen = filename_provider.instance_id_maxlen - max_timestamp_release_len
 processing_function_maxlen = filename_provider.processing_function_maxlen
 filename_forbidden_chars = filename_provider.filename_forbidden_chars
+
+
+# Classes for custom exceptions
+
+
+class SheFileAccessError(IOError):
+    filename: Optional[str] = None
+    qualified_filename: str
+    workdir: Optional[str] = None
+    operation: str = "accessing"
+
+    def __init__(self,
+                 qualified_filename: Optional[str] = None,
+                 filename: Optional[str] = None,
+                 workdir: Optional[str] = None,
+                 ):
+
+        if qualified_filename is not None:
+            self.qualified_filename = qualified_filename
+        elif (filename is not None) and (workdir is not None):
+            self.qualified_filename = os.path.join(workdir, filename)
+            self.filename = filename
+            self.workdir = workdir
+        else:
+            ValueError("Cannot construct SheFileAccessError without either qualified_filename argument or both " +
+                       "filename and workdir arguments. Arguments were: "
+                       f"qualified_filename = {qualified_filename}, "
+                       f"filename = {filename}, "
+                       f"workdir = {workdir}, ")
+
+        super().__init__(self.get_message())
+
+    def get_message(self):
+        return f"Error {self.operation} file {self.qualified_filename}."
+
+
+class SheFileReadError(SheFileAccessError):
+    operation: str = "reading from"
+
+
+class SheFileWriteError(SheFileAccessError):
+    operation: str = "writing to"
 
 
 class SheFileNamer(FileNameProvider):
@@ -247,11 +290,11 @@ class SheFileNamer(FileNameProvider):
         self.filename = None
 
     @property
-    def timestamp(self) -> str:
+    def timestamp(self) -> bool:
         return self._timestamp
 
     @timestamp.setter
-    def timestamp(self, timestamp: Optional[str]) -> None:
+    def timestamp(self, timestamp: bool) -> None:
         self._timestamp = timestamp
         self.filename = None
 
@@ -369,8 +412,14 @@ class SheFileNamer(FileNameProvider):
         return qualified_filename
 
 
-def get_allowed_filename(type_name, instance_id, extension = ".fits", release = None, version = None, subdir = "data",
-                         processing_function = "SHE", timestamp = True):
+def get_allowed_filename(type_name: str,
+                         instance_id: str,
+                         extension: str = ".fits",
+                         release: Optional[str] = None,
+                         version: Optional[str] = None,
+                         subdir: str = "data",
+                         processing_function: str = "SHE",
+                         timestamp: bool = True) -> str:
     """Gets a filename in the required Euclid format. Now mostly a pass-through to the official version, with
     tweaks to silently shift arguments to upper-case.
 
@@ -406,7 +455,7 @@ def get_allowed_filename(type_name, instance_id, extension = ".fits", release = 
                         timestamp = timestamp).get()
 
 
-def write_listfile(listfile_name, filenames):
+def write_listfile(listfile_name: str, filenames: Sequence[str]) -> Any:
     """
         @brief Writes a listfile in json format.
 
@@ -417,12 +466,19 @@ def write_listfile(listfile_name, filenames):
         @param filenames <list<str>> List of filenames (or tuples of filenames) to be put in the listfile.
     """
 
-    with open(listfile_name, 'w') as listfile:
-        paths_json = json.dumps(filenames)
-        listfile.write(paths_json)
+    logger.debug("Writing listfile to %s", listfile_name)
+
+    try:
+        with open(listfile_name, 'w') as listfile:
+            paths_json = json.dumps(filenames)
+            listfile.write(paths_json)
+    except Exception as e:
+        raise SheFileWriteError(listfile_name) from e
+
+    logger.debug("Finished writing listfile to %s", listfile_name)
 
 
-def read_listfile(listfile_name):
+def read_listfile(listfile_name: str) -> List[Union[str, Tuple[str]]]:
     """
         @brief Reads a json listfile and returns a list of filenames.
 
@@ -433,19 +489,27 @@ def read_listfile(listfile_name):
         @return filenames <list<str>> List of filenames (or tuples of filenames) read in.
     """
 
-    with open(listfile_name, 'r') as f:
-        listobject = json.load(f)
-        if len(listobject) == 0:
-            return listobject
-        if isinstance(listobject[0], list):
-            tupled_list = [tuple(el) for el in listobject]
-            if np.all([len(t) == 1 for t in tupled_list]):
-                tupled_list = [t[0] for t in tupled_list]
-            return tupled_list
-        return listobject
+    logger.debug("Reading listfile from %s", listfile_name)
+
+    try:
+        with open(listfile_name, 'r') as f:
+            list_object = json.load(f)
+            if len(list_object) == 0:
+                return list_object
+            if isinstance(list_object[0], list):
+                tupled_list = [tuple(el) for el in list_object]
+                if np.all([len(t) == 1 for t in tupled_list]):
+                    tupled_list = [t[0] for t in tupled_list]
+                return tupled_list
+    except Exception as e:
+        raise SheFileReadError(listfile_name) from e
+
+    logger.debug("Reading writing listfile from %s", listfile_name)
+
+    return list_object
 
 
-def replace_in_file(input_filename, output_filename, input_string, output_string):
+def replace_in_file(input_filename: str, output_filename: str, input_string: str, output_string: str) -> None:
     """
         @brief Replaces every occurence of $input_string in $input_filename with $output_string
                and prints the results to $output_filename.
@@ -459,13 +523,16 @@ def replace_in_file(input_filename, output_filename, input_string, output_string
         @param output_string <string>
     """
 
-    with open(output_filename, "w") as fout:
-        with open(input_filename, "r") as fin:
-            for line in fin:
-                fout.write(line.replace(input_string, output_string))
+    with open(output_filename, "w") as f_out:
+        with open(input_filename, "r") as f_in:
+            for line in f_in:
+                f_out.write(line.replace(input_string, output_string))
 
 
-def replace_multiple_in_file(input_filename, output_filename, input_strings, output_strings):
+def replace_multiple_in_file(input_filename: str,
+                             output_filename: str,
+                             input_strings: Sequence[str],
+                             output_strings: Sequence[str]) -> None:
     """she_dpd
         @brief Replaces every occurence of an input_string in input_filename with the corresponding
                output string and prints the results to $output_filename.
@@ -479,19 +546,33 @@ def replace_multiple_in_file(input_filename, output_filename, input_strings, out
         @param output_strings <iterable of string>
     """
 
-    with open(output_filename, "w") as fout:
-        with open(input_filename, "r") as fin:
-            for line in fin:
+    with open(output_filename, "w") as f_out:
+        with open(input_filename, "r") as f_in:
+            for line in f_in:
                 new_line = line
                 for input_string, output_string in zip(input_strings, output_strings):
                     new_line = new_line.replace(input_string, output_string)
-                fout.write(new_line)
+                f_out.write(new_line)
 
 
-def write_xml_product(product, xml_filename, workdir = ".", allow_pickled = False):
+def write_xml_product(product: Any,
+                      xml_filename: str,
+                      workdir: str = ".",
+                      allow_pickled: bool = False) -> None:
+    logger.debug("Writing data product to %s in workdir %s", xml_filename, workdir)
+
     # Silently coerce input into a string
     xml_filename = str(xml_filename)
 
+    try:
+        _write_xml_product(product, xml_filename, workdir, allow_pickled)
+    except Exception as e:
+        raise SheFileWriteError(filename = xml_filename, workdir = workdir) from e
+
+    logger.debug("Finished writing data product to %s in workdir %s", xml_filename, workdir)
+
+
+def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pickled: bool) -> None:
     # Check if the product has a ProductId, and set it if necessary
     try:
         if product.Header.ProductId == "None":
@@ -522,12 +603,10 @@ def write_xml_product(product, xml_filename, workdir = ".", allow_pickled = Fals
 
     except AttributeError as e:
         pass
-
     if xml_filename[0] == "/":
         qualified_xml_filename = xml_filename
     else:
         qualified_xml_filename = os.path.join(workdir, xml_filename)
-
     try:
         with open(str(qualified_xml_filename), "w") as f:
             f.write(product.toDOM().toprettyxml(encoding = "utf-8").decode("utf-8"))
@@ -541,10 +620,25 @@ def write_xml_product(product, xml_filename, workdir = ".", allow_pickled = Fals
         write_pickled_product(product, qualified_xml_filename)
 
 
-def read_xml_product(xml_filename, workdir = ".", allow_pickled = False):
+def read_xml_product(xml_filename: str, workdir: str = ".", allow_pickled: bool = False) -> Any:
+    logger.debug("Writing data product to %s in workdir %s", xml_filename, workdir)
+
     # Silently coerce input into a string
     xml_filename = str(xml_filename)
 
+    try:
+
+        product = _read_xml_product(xml_filename, workdir, allow_pickled)
+
+    except Exception as e:
+        raise SheFileWriteError(filename = xml_filename, workdir = workdir) from e
+
+    logger.debug("Finished writing data product to %s in workdir %s", xml_filename, workdir)
+
+    return product
+
+
+def _read_xml_product(xml_filename: str, workdir: str, allow_pickled: bool) -> Any:
     qualified_xml_filename = find_file(xml_filename, workdir)
 
     try:
@@ -553,17 +647,20 @@ def read_xml_product(xml_filename, workdir = ".", allow_pickled = False):
 
         # Create a new product instance using the proper data product dictionary
         product = CreateFromDocument(xml_string)
+
     except (UnicodeDecodeError, SAXParseException):
         # Not actually saved as xml
         if allow_pickled:
             # Revert to pickled product
-            return read_pickled_product(qualified_xml_filename)
+            product = read_pickled_product(qualified_xml_filename)
         raise
 
     return product
 
 
-def write_pickled_product(product, pickled_filename, workdir = "."):
+def write_pickled_product(product, pickled_filename: str, workdir: str = ".") -> None:
+    logger.debug("Writing data product to %s in workdir %s", pickled_filename, workdir)
+
     # Silently coerce input into a string
     pickled_filename = str(pickled_filename)
 
@@ -572,35 +669,59 @@ def write_pickled_product(product, pickled_filename, workdir = "."):
     else:
         qualified_pickled_filename = os.path.join(workdir, pickled_filename)
 
-    with open(str(qualified_pickled_filename), "wb") as f:
-        pickle.dump(product, f)
+    try:
+        with open(str(qualified_pickled_filename), "wb") as f:
+            pickle.dump(product, f)
+    except Exception as e:
+        raise SheFileWriteError(filename = pickled_filename, workdir = workdir) from e
+
+    logger.debug("Finished writing data product to %s in workdir %s", pickled_filename, workdir)
 
 
-def read_pickled_product(pickled_filename, workdir = "."):
+def read_pickled_product(pickled_filename, workdir = ".") -> None:
+    logger.debug("Reading data product from %s in workdir %s", pickled_filename, workdir)
+
     # Silently coerce input into a string
     pickled_filename = str(pickled_filename)
 
     qualified_pickled_filename = find_file(pickled_filename, workdir)
 
-    with open(str(qualified_pickled_filename), "rb") as f:
-        product = pickle.load(f)
+    try:
+        with open(str(qualified_pickled_filename), "rb") as f:
+            product = pickle.load(f)
+    except Exception as e:
+        raise SheFileReadError(filename = pickled_filename, workdir = workdir) from e
+
+    logger.debug("Reading writing data product from %s in workdir %s", pickled_filename, workdir)
 
     return product
 
 
-def append_hdu(filename, hdu):
-    f = fits.open(filename, mode = 'append')
+def append_hdu(filename: str, hdu: ExtensionHDU) -> None:
+    logger.debug("Appending HDU to file %s", filename)
+
+    try:
+        f = fits.open(filename, mode = 'append')
+    except Exception as e:
+        raise SheFileReadError(filename) from e
+
     try:
         f.append(hdu)
+    except Exception as e:
+        raise SheFileWriteError(filename) from e
     finally:
         f.close()
 
+    logger.debug("Finished appending HDU to file %s", filename)
 
-def find_file_in_path(filename, path):
+
+def find_file_in_path(filename: str, path: str) -> str:
     """
         Searches through a colon-separated path for a file and returns the qualified name of it if found,
         None otherwise.
     """
+
+    logger.debug("Searching for file %s in path %s", filename, path)
 
     colon_separated_path = path.split(":")
 
@@ -618,10 +739,12 @@ def find_file_in_path(filename, path):
         raise RuntimeError(
             "File " + str(filename) + " could not be found in path " + str(path) + ".")
 
+    logger.debug("Found file %s at %s", filename, qualified_filename)
+
     return qualified_filename
 
 
-def find_aux_file(filename):
+def find_aux_file(filename) -> str:
     """
         Searches the auxiliary directory path for a file and returns a qualified name of it if found,
         None otherwise.
@@ -630,7 +753,7 @@ def find_aux_file(filename):
     return find_file_in_path(filename, os.environ['ELEMENTS_AUX_PATH'])
 
 
-def find_conf_file(filename):
+def find_conf_file(filename) -> str:
     """
         Searches the conf directory path for a file and returns a qualified name of it if found,
         None otherwise.
@@ -639,13 +762,14 @@ def find_conf_file(filename):
     return find_file_in_path(filename, os.environ['ELEMENTS_CONF_PATH'])
 
 
-def _is_no_file(name):
+def _is_no_file(name: Optional[str]):
     return name is None or name == "None" or name == "data/None" or name == "" or name == "data/"
 
 
-def _find_web_file_xml(filename, qualified_filename):
+def _find_web_file_xml(filename: str, qualified_filename: str) -> str:
+    webpath: str = os.path.split(filename)[0]
+
     try:
-        webpath = os.path.split(filename)[0]
         p = read_xml_product(qualified_filename, workdir = "")
         for subfilename in p.get_all_filenames():
             # Skip if there's no file to download
@@ -656,11 +780,13 @@ def _find_web_file_xml(filename, qualified_filename):
         if "elementBinding" not in str(e):
             raise
         # MDB files end in XML but can't be read this way, and will raise this exception, so silently pass
+
     return webpath
 
 
-def _find_web_file_json(filename, qualified_filename):
-    webpath = os.path.split(filename)[0]
+def _find_web_file_json(filename: str, qualified_filename: str) -> None:
+    webpath: str = os.path.split(filename)[0]
+
     l = read_listfile(qualified_filename)
     for element in l:
         if isinstance(element, str):
@@ -676,7 +802,7 @@ def _find_web_file_json(filename, qualified_filename):
                 find_web_file(os.path.join(webpath, subelement))
 
 
-def find_web_file(filename):
+def find_web_file(filename: str) -> str:
     """
         Searches on WebDAV for a file. If found, downloads it and returns the qualified name of it. If
         it's an xml data product, will also download all associated files.
@@ -684,18 +810,22 @@ def find_web_file(filename):
         If it isn't found, returns None.
     """
 
-    filelist = os.path.join(os.getcwd(), os.path.splitext(os.path.split(filename)[-1])[0] + f"{os.getpid()}_list.txt")
+    filelist: str = os.path.join(os.getcwd(),
+                                 os.path.splitext(os.path.split(filename)[-1])[0] + f"{os.getpid()}_list.txt")
 
     logger.debug("Writing filelist to %s", filelist)
 
     try:
-        with open(filelist, 'w') as fo:
-            fo.write(filename + "\n")
+        try:
+            with open(filelist, 'w') as fo:
+                fo.write(filename + "\n")
+        except Exception as e:
+            raise SheFileWriteError(filelist) from e
 
         sync = DataSync(SYNC_CONF, filelist)
         sync.download()
 
-        qualified_filename = sync.absolutePath(filename)
+        qualified_filename: str = sync.absolutePath(filename)
     finally:
         if os.path.exists(filelist):
             logger.debug("Cleaning up %s", filelist)
@@ -714,11 +844,13 @@ def find_web_file(filename):
     return qualified_filename
 
 
-def find_file(filename, path = None):
+def find_file(filename: str, path: Optional[str] = None) -> str:
     """
         Locates a file based on the presence/absence of an AUX/ or CONF/ prefix, searching in the aux or conf
         directories respectively for it, or else the work directory if supplied.
     """
+
+    logger.debug("Finding file %s, with path %s", filename, path)
 
     # Silently coerce input into a string
     filename = str(filename)
@@ -741,17 +873,15 @@ def find_file(filename, path = None):
     raise ValueError("path must be supplied if filename doesn't start with AUX/ or CONF/")
 
 
-def first_in_path(path):
-    """
-        Gets the first directory listed in the path.
+def first_in_path(path: str) -> str:
+    """ Gets the first directory listed in the path.
     """
 
     return path.split(":")[0]
 
 
-def first_writable_in_path(path):
-    """
-        Gets the first directory listed in the path which we have write access for.
+def first_writable_in_path(path: str) -> Optional[str]:
+    """ Gets the first directory listed in the path which we have write access for.
     """
 
     colon_separated_path = path.split(":")
@@ -767,7 +897,7 @@ def first_writable_in_path(path):
     return first_writable_dir
 
 
-def get_data_filename(filename, workdir = "."):
+def get_data_filename(filename: str, workdir: str = ".") -> Optional[str]:
     """ Given the unqualified name of a file and the work directory, determine if it's an XML data
         product or not, and get the filename of its DataContainer if so; otherwise, just return
         the input filename. In either case, the unqualified filename is returned.
@@ -807,13 +937,17 @@ def get_data_filename(filename, workdir = "."):
         return filename
 
 
-def update_xml_with_value(filename):
+def update_xml_with_value(filename: str) -> None:
     r""" Updates xml files with value
 
     Checks for <Key><\Key> not followed by <Value><\Value>
     r"""
 
-    lines = open(filename).readlines()
+    try:
+        lines = open(filename).readlines()
+    except Exception as e:
+        raise SheFileReadError(filename) from e
+
     key_lines = [ii for ii, line in enumerate(lines) if '<Key>' in line]
     bad_lines = [idx for idx in key_lines if '<Value>' not in lines[idx + 1]]
     if bad_lines:
@@ -837,7 +971,12 @@ def update_xml_with_value(filename):
                 new_line = lines[idx + ii].split('<Key>')[0] + '<Value>dkhf</Value>\n'
                 n_defaults += 1
             lines = lines[:idx + ii + 1] + [new_line] + lines[idx + ii + 1:]
-            open(filename, 'w').writelines(lines)
+
+            try:
+                open(filename, 'w').writelines(lines)
+            except Exception as e:
+                raise SheFileWriteError(filename) from e
+
             logger.info('Updated %s lines in %s: n_defaults=%s',
                         len(bad_lines),
                         filename,
@@ -846,13 +985,13 @@ def update_xml_with_value(filename):
         logger.debug('No updates required')
 
 
-def filename_exists(filename):
+def filename_exists(filename: Optional[str]) -> bool:
     """Quick function to check the filename isn't one of many strings indicating the file doesn't exist.
     """
     return filename not in (None, "None", "data/None", "", "data/")
 
 
-def remove_files(l_qualified_filenames):
+def remove_files(l_qualified_filenames: Sequence[str]) -> None:
     """ Loop through and try to remove all files in a list. No exception is raised if the files can't be removed,
         but a warning is logged.
     """
@@ -864,8 +1003,11 @@ def remove_files(l_qualified_filenames):
             logger.warning(f"Cannot delete file: {qualified_filename}")
 
 
-def tar_files(tarball_filename, l_filenames, workdir = ".", delete_files = False):
-    qualified_tarball_filename = os.path.join(workdir, tarball_filename)
+def tar_files(tarball_filename: str,
+              l_filenames: Sequence[str],
+              workdir: str = ".",
+              delete_files: bool = False):
+    qualified_tarball_filename: str = os.path.join(workdir, tarball_filename)
 
     filename_string = " ".join(l_filenames)
 
@@ -880,11 +1022,15 @@ def tar_files(tarball_filename, l_filenames, workdir = ".", delete_files = False
 
     # Check that the tar process succeeded
     if not os.path.isfile(qualified_tarball_filename):
-        raise FileNotFoundError(f"{qualified_tarball_filename} not found. stderr from tar process was: \n"
-                                f"{tar_results.stderr}")
+        base_error = FileNotFoundError(f"{qualified_tarball_filename} not found. "
+                                       f"stderr from tar process "
+                                       f"was: \n"
+                                       f"{tar_results.stderr}")
+        raise SheFileWriteError(filename = tarball_filename, workdir = workdir) from base_error
     if tar_results.returncode:
-        raise ValueError(f"Tarring of {qualified_tarball_filename} failed. stderr from tar process was: \n"
-                         f"{tar_results.stderr}")
+        base_error = ValueError(f"Tarring of {qualified_tarball_filename} failed. stderr from tar process was: \n"
+                                f"{tar_results.stderr}")
+        raise SheFileWriteError(filename = tarball_filename, workdir = workdir) from base_error
 
     # Delete the files if desired
     if delete_files:
@@ -975,8 +1121,6 @@ class FileLoader(abc.ABC, Generic[T]):
             return load_object(filename=self.filename, workdir=self.workdir, *args, **kwargs)
         """
 
-        pass
-
 
 class ProductLoader(FileLoader):
     """ FileLoader specialized to load in .xml data products.
@@ -991,7 +1135,10 @@ class TableLoader(FileLoader[Table]):
     """
 
     def get(self, *args, **kwargs) -> Table:
-        return Table.read(self.qualified_filename, *args, **kwargs)
+        try:
+            return Table.read(self.qualified_filename, *args, **kwargs)
+        except Exception as e:
+            raise SheFileReadError(filename = self.filename, workdir = self.workdir) from e
 
 
 class FitsLoader(FileLoader[Table]):
@@ -999,7 +1146,10 @@ class FitsLoader(FileLoader[Table]):
     """
 
     def get(self, *args, **kwargs) -> HDUList:
-        return fits.open(self.qualified_filename, *args, **kwargs)
+        try:
+            return fits.open(self.qualified_filename, *args, **kwargs)
+        except Exception as e:
+            raise SheFileReadError(filename = self.filename, workdir = self.workdir) from e
 
 
 class MultiFileLoader(Generic[T]):
@@ -1016,7 +1166,7 @@ class MultiFileLoader(Generic[T]):
                  workdir: str,
                  l_file_loaders: Optional[Sequence[FileLoader[T]]] = None,
                  l_filenames: Optional[Sequence[str]] = None,
-                 file_loader_type: Optional[Type] = None) -> None:
+                 file_loader_type: Optional[Type[T]] = None) -> None:
 
         self.workdir = workdir
 
