@@ -621,7 +621,7 @@ def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pick
 
 
 def read_xml_product(xml_filename: str, workdir: str = ".", allow_pickled: bool = False) -> Any:
-    logger.debug("Writing data product to %s in workdir %s", xml_filename, workdir)
+    logger.debug("Reading data product from %s in workdir %s", xml_filename, workdir)
 
     # Silently coerce input into a string
     xml_filename = str(xml_filename)
@@ -631,9 +631,9 @@ def read_xml_product(xml_filename: str, workdir: str = ".", allow_pickled: bool 
         product = _read_xml_product(xml_filename, workdir, allow_pickled)
 
     except Exception as e:
-        raise SheFileWriteError(filename = xml_filename, workdir = workdir) from e
+        raise SheFileReadError(filename = xml_filename, workdir = workdir) from e
 
-    logger.debug("Finished writing data product to %s in workdir %s", xml_filename, workdir)
+    logger.debug("Reading writing data product from %s in workdir %s", xml_filename, workdir)
 
     return product
 
