@@ -20,15 +20,12 @@ __updated__ = "2021-08-19"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-import json.decoder
 import os
 from argparse import ArgumentParser, Namespace
 from enum import EnumMeta
 from functools import lru_cache
-from pickle import UnpicklingError
 from shutil import copyfile
 from typing import Any, Dict, List, Optional, Tuple, Type, Union
-from xml.sax import SAXParseException
 
 import numpy as np
 
@@ -37,7 +34,7 @@ from .constants.config import (AnalysisConfigKeys, CTI_GAL_VALIDATION_HEAD, Cali
                                GlobalConfigKeys, ReconciliationConfigKeys, SHEAR_BIAS_VALIDATION_HEAD,
                                ScalingExperimentsConfigKeys, VALIDATION_HEAD,
                                ValidationConfigKeys, )
-from .file_io import find_file, read_listfile, read_xml_product
+from .file_io import SheFileReadError, find_file, read_listfile, read_xml_product
 from .logging import getLogger
 from .utility import is_any_type_of_none
 
@@ -286,7 +283,7 @@ def read_config(config_filename: Optional[str],
         raise ValueError("File " + qualified_config_filename + " is a listfile with more than one file listed, and " +
                          "is an invalid input to read_config.")
 
-    except (json.decoder.JSONDecodeError, UnicodeDecodeError):
+    except SheFileReadError:
 
         # This isn't a listfile, so try to open and return it
         return _read_config_product(config_filename = config_filename,
@@ -314,7 +311,7 @@ def _read_config_product(config_filename: str,
         return _read_config_file(qualified_config_filename = find_file(config_data_filename, workdir),
                                  *args, **kwargs)
 
-    except (UnicodeDecodeError, SAXParseException, UnpicklingError):
+    except SheFileReadError:
 
         # Try to read it as a plain text file
         return _read_config_file(qualified_config_filename = find_file(config_filename, workdir),
@@ -781,7 +778,7 @@ def convert_config_types(pipeline_config: Dict[ConfigKeys, str],
     return pipeline_config
 
 
-def get_conditional_product(filename: str,
+def get_conditional_product(filename: Optional[str],
                             workdir: str = ".") -> Optional[Any]:
     """ Returns None in all cases where a data product isn't provided, otherwise read and return the data
         product.
@@ -808,7 +805,7 @@ def get_conditional_product(filename: str,
         raise ValueError("File " + qualified_filename + " is a listfile with more than one file listed, and " +
                          "is an invalid input to get_conditional_product.")
 
-    except (json.decoder.JSONDecodeError, UnicodeDecodeError):
+    except SheFileReadError:
 
         # This isn't a listfile, so try to open and return it
         return read_xml_product(qualified_filename, workdir)
