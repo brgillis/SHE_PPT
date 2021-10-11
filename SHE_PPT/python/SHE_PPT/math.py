@@ -29,7 +29,7 @@ DEFAULT_C_TARGET = 5e-6
 
 class LinregressStatistics():
 
-    def __init__(self, lx=None, ly=None, ly_err=None):
+    def __init__(self, lx = None, ly = None, ly_err = None):
         """Initialises and calculates statistics as member variables.
         """
 
@@ -44,7 +44,7 @@ class LinregressStatistics():
             # Calculate statistics
 
             if ly_err is None:
-                ly_err = np.ones_like(lx, dtype=float)
+                ly_err = np.ones_like(lx, dtype = float)
 
             lw = ly_err ** -2
 
@@ -65,7 +65,6 @@ class LinregressStatistics():
 
 
 class LinregressResults():
-
     # Attrs set at init
     _slope = None
     _slope_err = None
@@ -149,7 +148,7 @@ class LinregressResults():
 
         return self._intercept_sigma
 
-    def __init__(self, lstats=None):
+    def __init__(self, lstats = None):
 
         if lstats is None:
 
@@ -196,11 +195,11 @@ class LinregressResults():
 
         # Set up arrays for each value
         n = len(lstats)
-        lw = np.zeros(n, dtype=float)
-        lxm = np.zeros(n, dtype=float)
-        lx2m = np.zeros(n, dtype=float)
-        lym = np.zeros(n, dtype=float)
-        lxym = np.zeros(n, dtype=float)
+        lw = np.zeros(n, dtype = float)
+        lxm = np.zeros(n, dtype = float)
+        lx2m = np.zeros(n, dtype = float)
+        lym = np.zeros(n, dtype = float)
+        lxym = np.zeros(n, dtype = float)
 
         # Fill in each array
         for i in range(n):
@@ -239,9 +238,10 @@ class BiasMeasurements():
     _m_sigma = None
     _c_sigma = None
 
-    def __init__(self, linregress_results=None):
+    def __init__(self, linregress_results = None, m = 0., m_err = 0., c = 0., c_err = 0., mc_covar = 0.):
 
         if linregress_results is not None:
+            # Init from linregress results
             if linregress_results.slope is None:
                 self.m = None
             else:
@@ -250,6 +250,13 @@ class BiasMeasurements():
             self.c = linregress_results.intercept
             self.c_err = linregress_results.intercept_err
             self.mc_covar = linregress_results.slope_intercept_covar
+        else:
+            # Init from values
+            self.m = m
+            self.m_err = m_err
+            self.c = c
+            self.c_err = c_err
+            self.mc_covar = mc_covar
 
     # Getters and setters for attrs set at init
 
@@ -346,11 +353,11 @@ class BiasMeasurements():
         return self._c_sigma
 
 
-def get_linregress_statistics(lx, ly, ly_err=None):
+def get_linregress_statistics(lx, ly, ly_err = None):
     """Functional interface to get a linear regression statistics object.
     """
 
-    return LinregressStatistics(lx=lx, ly=ly, ly_err=ly_err)
+    return LinregressStatistics(lx = lx, ly = ly, ly_err = ly_err)
 
 
 def combine_linregress_statistics(lstats):
@@ -358,10 +365,10 @@ def combine_linregress_statistics(lstats):
        into the result of a regression.
     """
 
-    return LinregressResults(lstats=lstats)
+    return LinregressResults(lstats = lstats)
 
 
-def linregress_with_errors(x, y, y_err=None):
+def linregress_with_errors(x, y, y_err = None):
     """
     @brief
         Perform a linear regression with errors on the y values
