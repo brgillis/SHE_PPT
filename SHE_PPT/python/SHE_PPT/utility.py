@@ -251,7 +251,7 @@ def coerce_to_list(a: Union[None, T, List[T]],
             return [a]
 
 
-def join_without_none(l_s: List[Optional[Any]], joiner: str = "-", default: str = ""):
+def join_without_none(l_s: List[Optional[Any]], joiner: str = "-", default: Optional[str] = "") -> Optional[str]:
     """ Join a list of values into a single string, excepting any Nones.
     """
 
