@@ -740,7 +740,7 @@ def read_pickled_product(pickled_filename,
 
 def write_table(t: Table,
                 filename: str,
-                workdir: str,
+                workdir: str = ".",
                 log_info: bool = False,
                 *args, **kwargs) -> None:
     log_method = _get_optional_log_method(log_info)
@@ -758,7 +758,7 @@ def write_table(t: Table,
 
 
 def read_table(filename: str,
-               workdir: str,
+               workdir: str = ".",
                log_info: bool = False,
                *args, **kwargs) -> Table:
     log_method = _get_optional_log_method(log_info)
