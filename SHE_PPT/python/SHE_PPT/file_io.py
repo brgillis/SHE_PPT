@@ -356,7 +356,7 @@ class SheFileNamer(FileNameProvider):
     @property
     def qualified_filename(self) -> str:
         if self._qualified_filename is None:
-            self._qualified_filename = os.path.join(self.workdir, self.filename)
+            self._qualified_filename = get_qualified_filename(self.filename, self.workdir)
         return self._qualified_filename
 
     @qualified_filename.setter
@@ -423,6 +423,16 @@ class SheFileNamer(FileNameProvider):
             qualified_filename = filename
 
         return qualified_filename
+
+
+def get_qualified_filename(filename: str, workdir: str = ".") -> str:
+    """ Gets a fully-qualified filename, checking if the first argument is already fully-qualified first.
+    """
+    if filename[0] == "/":
+        qualified_xml_filename = filename
+    else:
+        qualified_xml_filename = os.path.join(workdir, filename)
+    return qualified_xml_filename
 
 
 def get_allowed_filename(type_name: str,
@@ -627,10 +637,9 @@ def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pick
 
     except AttributeError as e:
         pass
-    if xml_filename[0] == "/":
-        qualified_xml_filename = xml_filename
-    else:
-        qualified_xml_filename = os.path.join(workdir, xml_filename)
+
+    qualified_xml_filename = get_qualified_filename(xml_filename, workdir)
+
     try:
         with open(str(qualified_xml_filename), "w") as f:
             f.write(product.toDOM().toprettyxml(encoding = "utf-8").decode("utf-8"))
@@ -696,10 +705,7 @@ def write_pickled_product(product,
     # Silently coerce input into a string
     pickled_filename = str(pickled_filename)
 
-    if pickled_filename[0] == "/":
-        qualified_pickled_filename = pickled_filename
-    else:
-        qualified_pickled_filename = os.path.join(workdir, pickled_filename)
+    qualified_pickled_filename = get_qualified_filename(pickled_filename, workdir)
 
     try:
         with open(str(qualified_pickled_filename), "wb") as f:
@@ -730,6 +736,78 @@ def read_pickled_product(pickled_filename,
     log_method("Reading writing data product from %s in workdir %s", pickled_filename, workdir)
 
     return product
+
+
+def write_table(t: Table,
+                filename: str,
+                workdir: str,
+                log_info: bool = False,
+                *args, **kwargs) -> None:
+    log_method = _get_optional_log_method(log_info)
+    log_method("Writing table to %s in workdir %s", filename, workdir)
+
+    qualified_filename = get_qualified_filename(filename, workdir)
+
+    try:
+        t.write(qualified_filename, *args, **kwargs)
+    except Exception as e:
+        raise SheFileWriteError(filename = filename, workdir = workdir) from e
+
+    log_method("Finished writing table to %s in workdir %s", filename, workdir)
+    return t
+
+
+def read_table(filename: str,
+               workdir: str,
+               log_info: bool = False,
+               *args, **kwargs) -> Table:
+    log_method = _get_optional_log_method(log_info)
+    log_method("Reading table from %s in workdir %s", filename, workdir)
+
+    qualified_filename = get_qualified_filename(filename, workdir)
+
+    try:
+        t: Table = Table.read(qualified_filename, format = "fits", *args, **kwargs)
+    except Exception as e:
+        raise SheFileReadError(filename = filename, workdir = workdir) from e
+
+    log_method("Finished reading table from %s in workdir %s", filename, workdir)
+    return t
+
+
+def write_fits(hdu_list: HDUList,
+               filename: str,
+               workdir: str = ".",
+               log_info: bool = False,
+               *args, **kwargs) -> None:
+    log_method = _get_optional_log_method(log_info)
+    log_method("Writing FITS file %s in workdir %s", filename, workdir)
+
+    qualified_filename = get_qualified_filename(filename, workdir)
+
+    try:
+        hdu_list.writeto(qualified_filename, *args, **kwargs)
+    except Exception as e:
+        raise SheFileWriteError(filename = filename, workdir = workdir) from e
+    log_method("Finished writing FITS file %s in workdir %s", filename, workdir)
+
+
+def read_fits(filename: str,
+              workdir: str = ".",
+              log_info: bool = False,
+              *args, **kwargs) -> HDUList:
+    log_method = _get_optional_log_method(log_info)
+    log_method("Opening FITS file %s in workdir %s", filename, workdir)
+
+    qualified_filename = get_qualified_filename(filename, workdir)
+
+    try:
+        f: HDUList = fits.open(qualified_filename, *args, **kwargs)
+    except Exception as e:
+        raise SheFileReadError(filename = filename, workdir = workdir) from e
+    log_method("Finished opening FITS file %s in workdir %s", filename, workdir)
+
+    return f
 
 
 def append_hdu(filename: str,
@@ -1045,7 +1123,7 @@ def tar_files(tarball_filename: str,
               l_filenames: Sequence[str],
               workdir: str = ".",
               delete_files: bool = False):
-    qualified_tarball_filename: str = os.path.join(workdir, tarball_filename)
+    qualified_tarball_filename: str = get_qualified_filename(tarball_filename, workdir)
 
     filename_string = " ".join(l_filenames)
 
@@ -1073,7 +1151,7 @@ def tar_files(tarball_filename: str,
     # Delete the files if desired
     if delete_files:
         for filename in l_filenames:
-            qualified_filename = os.path.join(workdir, filename)
+            qualified_filename = get_qualified_filename(filename, workdir)
             try:
                 os.remove(qualified_filename)
             except Exception:
@@ -1126,7 +1204,7 @@ class FileLoader(abc.ABC, Generic[T]):
     @property
     def qualified_filename(self) -> str:
         if not self._qualified_filename:
-            self._qualified_filename = os.path.join(self.workdir, self.filename)
+            self._qualified_filename = get_qualified_filename(self.filename, self.workdir)
         return self._qualified_filename
 
     @property
@@ -1172,32 +1250,16 @@ class TableLoader(FileLoader[Table]):
     """ FileLoader specialized to load in astropy data tables.
     """
 
-    def get(self, log_info: bool = False, *args, **kwargs) -> Table:
-
-        log_method = _get_optional_log_method(log_info)
-        log_method("Reading table from %s", self.qualified_filename)
-        try:
-            t: Table = Table.read(self.qualified_filename, *args, **kwargs)
-        except Exception as e:
-            raise SheFileReadError(filename = self.filename, workdir = self.workdir) from e
-        log_method("Finished reading table from %s", self.qualified_filename)
-        return t
+    def get(self, *args, **kwargs) -> Table:
+        return read_table(filename = self.filename, workdir = self.workdir, *args, **kwargs)
 
 
 class FitsLoader(FileLoader[Table]):
     """ FileLoader specialized to load in astropy data tables.
     """
 
-    def get(self, log_info: bool = False, *args, **kwargs) -> HDUList:
-
-        log_method = _get_optional_log_method(log_info)
-        log_method("Opening FITS file %s", self.qualified_filename)
-        try:
-            f: HDUList = fits.open(self.qualified_filename, *args, **kwargs)
-        except Exception as e:
-            raise SheFileReadError(filename = self.filename, workdir = self.workdir) from e
-        log_method("Finished  opening FITS file %s", self.qualified_filename)
-        return f
+    def get(self, *args, **kwargs) -> HDUList:
+        return read_fits(self.filename, self.workdir, *args, **kwargs)
 
 
 class MultiFileLoader(Generic[T]):
