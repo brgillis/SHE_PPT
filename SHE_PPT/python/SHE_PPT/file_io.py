@@ -504,7 +504,7 @@ def write_listfile(listfile_name: str,
     except Exception as e:
         raise SheFileWriteError(listfile_name) from e
 
-    log_method("Finished writing listfile to %s", listfile_name)
+    logger.debug("Finished writing listfile to %s", listfile_name)
 
 
 def read_listfile(listfile_name: str,
@@ -604,7 +604,7 @@ def write_xml_product(product: Any,
     except Exception as e:
         raise SheFileWriteError(filename = xml_filename, workdir = workdir) from e
 
-    log_method("Finished writing data product to %s in workdir %s", xml_filename, workdir)
+    logger.debug("Finished writing data product to %s in workdir %s", xml_filename, workdir)
 
 
 def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pickled: bool) -> None:
@@ -714,7 +714,7 @@ def write_pickled_product(product,
     except Exception as e:
         raise SheFileWriteError(filename = pickled_filename, workdir = workdir) from e
 
-    log_method("Finished writing data product to %s in workdir %s", pickled_filename, workdir)
+    logger.debug("Finished writing data product to %s in workdir %s", pickled_filename, workdir)
 
 
 def read_pickled_product(pickled_filename,
@@ -754,7 +754,7 @@ def write_table(t: Table,
     except Exception as e:
         raise SheFileWriteError(filename = filename, workdir = workdir) from e
 
-    log_method("Finished writing table to %s in workdir %s", filename, workdir)
+    logger.debug("Finished writing table to %s in workdir %s", filename, workdir)
     return t
 
 
@@ -772,7 +772,7 @@ def read_table(filename: str,
     except Exception as e:
         raise SheFileReadError(filename = filename, workdir = workdir) from e
 
-    log_method("Finished reading table from %s in workdir %s", filename, workdir)
+    logger.debug("Finished reading table from %s in workdir %s", filename, workdir)
     return t
 
 
@@ -790,7 +790,7 @@ def write_fits(hdu_list: HDUList,
         hdu_list.writeto(qualified_filename, *args, **kwargs)
     except Exception as e:
         raise SheFileWriteError(filename = filename, workdir = workdir) from e
-    log_method("Finished writing FITS file %s in workdir %s", filename, workdir)
+    logger.debug("Finished writing FITS file %s in workdir %s", filename, workdir)
 
 
 def read_fits(filename: str,
@@ -806,7 +806,7 @@ def read_fits(filename: str,
         f: HDUList = fits.open(qualified_filename, *args, **kwargs)
     except Exception as e:
         raise SheFileReadError(filename = filename, workdir = workdir) from e
-    log_method("Finished opening FITS file %s in workdir %s", filename, workdir)
+    logger.debug("Finished opening FITS file %s in workdir %s", filename, workdir)
 
     return f
 
@@ -940,7 +940,7 @@ def append_hdu(filename: str,
     finally:
         f.close()
 
-    log_method("Finished appending HDU to file %s", filename)
+    logger.debug("Finished appending HDU to file %s", filename)
 
 
 def find_file_in_path(filename: str, path: str) -> str:
