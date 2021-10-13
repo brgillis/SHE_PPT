@@ -29,7 +29,7 @@ import subprocess
 from datetime import datetime
 from os.path import exists, join
 from pickle import UnpicklingError
-from typing import Any, Generic, List, Optional, Sequence, Tuple, Type, TypeVar, Union
+from typing import Any, Callable, Generic, List, Optional, Sequence, Tuple, Type, TypeVar, Union
 
 import numpy as np
 from astropy.io import fits
@@ -48,7 +48,7 @@ from .constants.test_data import SYNC_CONF
 from .logging import getLogger
 from .utility import get_release_from_version, join_without_none
 
-logger = getLogger(__name__)
+DATA_SUBDIR = "data/"
 
 # Get some constant values from the FileNameProvider
 
@@ -59,6 +59,19 @@ max_timestamp_release_len = 30
 instance_id_maxlen = filename_provider.instance_id_maxlen - max_timestamp_release_len
 processing_function_maxlen = filename_provider.processing_function_maxlen
 filename_forbidden_chars = filename_provider.filename_forbidden_chars
+
+logger = getLogger(__name__)
+
+
+def _get_optional_log_method(log_info: bool) -> Callable[..., None]:
+    """ Get the desired logging method. If log_info==True, will log at info level, otherwise at debug level.
+    """
+    if log_info:
+        log_method = logger.info
+    else:
+        log_method = logger.debug
+
+    return log_method
 
 
 # Classes for custom exceptions
@@ -83,11 +96,11 @@ class SheFileAccessError(IOError):
             self.filename = filename
             self.workdir = workdir
         else:
-            ValueError("Cannot construct SheFileAccessError without either qualified_filename argument or both " +
-                       "filename and workdir arguments. Arguments were: "
-                       f"qualified_filename = {qualified_filename}, "
-                       f"filename = {filename}, "
-                       f"workdir = {workdir}, ")
+            raise ValueError("Cannot construct SheFileAccessError without either qualified_filename argument or both " +
+                             "filename and workdir arguments. Arguments were: "
+                             f"qualified_filename = {qualified_filename}, "
+                             f"filename = {filename}, "
+                             f"workdir = {workdir}, ")
 
         super().__init__(self.get_message())
 
@@ -455,7 +468,9 @@ def get_allowed_filename(type_name: str,
                         timestamp = timestamp).get()
 
 
-def write_listfile(listfile_name: str, filenames: Sequence[str]) -> Any:
+def write_listfile(listfile_name: str,
+                   filenames: Sequence[str],
+                   log_info: bool = False) -> None:
     """
         @brief Writes a listfile in json format.
 
@@ -464,9 +479,12 @@ def write_listfile(listfile_name: str, filenames: Sequence[str]) -> Any:
         @param listfile_name <str> Name of the listfile to be output.
 
         @param filenames <list<str>> List of filenames (or tuples of filenames) to be put in the listfile.
+
+        @param log_info <bool> If True, will log at info level, otherwise will log at debug level.
     """
 
-    logger.debug("Writing listfile to %s", listfile_name)
+    log_method = _get_optional_log_method(log_info)
+    log_method("Writing listfile to %s", listfile_name)
 
     try:
         with open(listfile_name, 'w') as listfile:
@@ -475,10 +493,11 @@ def write_listfile(listfile_name: str, filenames: Sequence[str]) -> Any:
     except Exception as e:
         raise SheFileWriteError(listfile_name) from e
 
-    logger.debug("Finished writing listfile to %s", listfile_name)
+    log_method("Finished writing listfile to %s", listfile_name)
 
 
-def read_listfile(listfile_name: str) -> List[Union[str, Tuple[str]]]:
+def read_listfile(listfile_name: str,
+                  log_info: bool = False) -> List[Union[str, Tuple[str]]]:
     """
         @brief Reads a json listfile and returns a list of filenames.
 
@@ -486,10 +505,13 @@ def read_listfile(listfile_name: str) -> List[Union[str, Tuple[str]]]:
 
         @param listfile_name <str> Name of the listfile to be read.
 
+        @param log_info <bool> If True, will log at info level, otherwise will log at debug level.
+
         @return filenames <list<str>> List of filenames (or tuples of filenames) read in.
     """
 
-    logger.debug("Reading listfile from %s", listfile_name)
+    log_method = _get_optional_log_method(log_info)
+    log_method("Reading listfile from %s", listfile_name)
 
     try:
         with open(listfile_name, 'r') as f:
@@ -504,7 +526,7 @@ def read_listfile(listfile_name: str) -> List[Union[str, Tuple[str]]]:
     except Exception as e:
         raise SheFileReadError(listfile_name) from e
 
-    logger.debug("Reading writing listfile from %s", listfile_name)
+    log_method("Reading writing listfile from %s", listfile_name)
 
     return list_object
 
@@ -558,8 +580,10 @@ def replace_multiple_in_file(input_filename: str,
 def write_xml_product(product: Any,
                       xml_filename: str,
                       workdir: str = ".",
+                      log_info: bool = False,
                       allow_pickled: bool = False) -> None:
-    logger.debug("Writing data product to %s in workdir %s", xml_filename, workdir)
+    log_method = _get_optional_log_method(log_info)
+    log_method("Writing data product to %s in workdir %s", xml_filename, workdir)
 
     # Silently coerce input into a string
     xml_filename = str(xml_filename)
@@ -569,7 +593,7 @@ def write_xml_product(product: Any,
     except Exception as e:
         raise SheFileWriteError(filename = xml_filename, workdir = workdir) from e
 
-    logger.debug("Finished writing data product to %s in workdir %s", xml_filename, workdir)
+    log_method("Finished writing data product to %s in workdir %s", xml_filename, workdir)
 
 
 def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pickled: bool) -> None:
@@ -593,11 +617,11 @@ def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pick
 
         # Check if the catalogue exists, and create it if necessary
 
-        datadir = os.path.join(workdir, "data/")
+        datadir = os.path.join(workdir, DATA_SUBDIR)
         if not os.path.isdir(datadir):
             os.makedirs(datadir)
 
-        qualified_cat_filename = os.path.join(workdir, "data/" + cat_filename)
+        qualified_cat_filename = os.path.join(workdir, DATA_SUBDIR + cat_filename)
         if not os.path.isfile(qualified_cat_filename):
             open(qualified_cat_filename, 'a').close()
 
@@ -620,8 +644,12 @@ def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pick
         write_pickled_product(product, qualified_xml_filename)
 
 
-def read_xml_product(xml_filename: str, workdir: str = ".", allow_pickled: bool = False) -> Any:
-    logger.debug("Reading data product from %s in workdir %s", xml_filename, workdir)
+def read_xml_product(xml_filename: str,
+                     workdir: str = ".",
+                     log_info: bool = False,
+                     allow_pickled: bool = False) -> Any:
+    log_method = _get_optional_log_method(log_info)
+    log_method("Reading data product from %s in workdir %s", xml_filename, workdir)
 
     # Silently coerce input into a string
     xml_filename = str(xml_filename)
@@ -633,7 +661,7 @@ def read_xml_product(xml_filename: str, workdir: str = ".", allow_pickled: bool 
     except Exception as e:
         raise SheFileReadError(filename = xml_filename, workdir = workdir) from e
 
-    logger.debug("Reading writing data product from %s in workdir %s", xml_filename, workdir)
+    log_method("Reading writing data product from %s in workdir %s", xml_filename, workdir)
 
     return product
 
@@ -658,8 +686,12 @@ def _read_xml_product(xml_filename: str, workdir: str, allow_pickled: bool) -> A
     return product
 
 
-def write_pickled_product(product, pickled_filename: str, workdir: str = ".") -> None:
-    logger.debug("Writing data product to %s in workdir %s", pickled_filename, workdir)
+def write_pickled_product(product,
+                          pickled_filename: str,
+                          workdir: str = ".",
+                          log_info: bool = False) -> None:
+    log_method = _get_optional_log_method(log_info)
+    log_method("Writing data product to %s in workdir %s", pickled_filename, workdir)
 
     # Silently coerce input into a string
     pickled_filename = str(pickled_filename)
@@ -675,11 +707,14 @@ def write_pickled_product(product, pickled_filename: str, workdir: str = ".") ->
     except Exception as e:
         raise SheFileWriteError(filename = pickled_filename, workdir = workdir) from e
 
-    logger.debug("Finished writing data product to %s in workdir %s", pickled_filename, workdir)
+    log_method("Finished writing data product to %s in workdir %s", pickled_filename, workdir)
 
 
-def read_pickled_product(pickled_filename, workdir = ".") -> None:
-    logger.debug("Reading data product from %s in workdir %s", pickled_filename, workdir)
+def read_pickled_product(pickled_filename,
+                         workdir = ".",
+                         log_info: bool = False) -> None:
+    log_method = _get_optional_log_method(log_info)
+    log_method("Reading data product from %s in workdir %s", pickled_filename, workdir)
 
     # Silently coerce input into a string
     pickled_filename = str(pickled_filename)
@@ -692,13 +727,16 @@ def read_pickled_product(pickled_filename, workdir = ".") -> None:
     except Exception as e:
         raise SheFileReadError(filename = pickled_filename, workdir = workdir) from e
 
-    logger.debug("Reading writing data product from %s in workdir %s", pickled_filename, workdir)
+    log_method("Reading writing data product from %s in workdir %s", pickled_filename, workdir)
 
     return product
 
 
-def append_hdu(filename: str, hdu: ExtensionHDU) -> None:
-    logger.debug("Appending HDU to file %s", filename)
+def append_hdu(filename: str,
+               hdu: ExtensionHDU,
+               log_info: bool = False) -> None:
+    log_method = _get_optional_log_method(log_info)
+    log_method("Appending HDU to file %s", filename)
 
     try:
         f = fits.open(filename, mode = 'append')
@@ -712,7 +750,7 @@ def append_hdu(filename: str, hdu: ExtensionHDU) -> None:
     finally:
         f.close()
 
-    logger.debug("Finished appending HDU to file %s", filename)
+    log_method("Finished appending HDU to file %s", filename)
 
 
 def find_file_in_path(filename: str, path: str) -> str:
@@ -763,7 +801,7 @@ def find_conf_file(filename) -> str:
 
 
 def _is_no_file(name: Optional[str]):
-    return name is None or name == "None" or name == "data/None" or name == "" or name == "data/"
+    return name is None or name == "None" or name == f"{DATA_SUBDIR}None" or name == "" or name == DATA_SUBDIR
 
 
 def _find_web_file_xml(filename: str, qualified_filename: str) -> str:
@@ -834,7 +872,7 @@ def find_web_file(filename: str) -> str:
     # If it's an xml data product, we'll also need to download all files it points to
     if filename[-4:] == ".xml":
 
-        _webpath = _find_web_file_xml(filename, qualified_filename)
+        _find_web_file_xml(filename, qualified_filename)
 
     # If it's json listfile, we'll also need to download all files it points to
     elif filename[-5:] == ".json":
@@ -988,7 +1026,7 @@ def update_xml_with_value(filename: str) -> None:
 def filename_exists(filename: Optional[str]) -> bool:
     """Quick function to check the filename isn't one of many strings indicating the file doesn't exist.
     """
-    return filename not in (None, "None", "data/None", "", "data/")
+    return filename not in (None, "None", f"{DATA_SUBDIR}None", "", DATA_SUBDIR)
 
 
 def remove_files(l_qualified_filenames: Sequence[str]) -> None:
@@ -1134,22 +1172,32 @@ class TableLoader(FileLoader[Table]):
     """ FileLoader specialized to load in astropy data tables.
     """
 
-    def get(self, *args, **kwargs) -> Table:
+    def get(self, log_info: bool = False, *args, **kwargs) -> Table:
+
+        log_method = _get_optional_log_method(log_info)
+        log_method("Reading table from %s", self.qualified_filename)
         try:
-            return Table.read(self.qualified_filename, *args, **kwargs)
+            t: Table = Table.read(self.qualified_filename, *args, **kwargs)
         except Exception as e:
             raise SheFileReadError(filename = self.filename, workdir = self.workdir) from e
+        log_method("Finished reading table from %s", self.qualified_filename)
+        return t
 
 
 class FitsLoader(FileLoader[Table]):
     """ FileLoader specialized to load in astropy data tables.
     """
 
-    def get(self, *args, **kwargs) -> HDUList:
+    def get(self, log_info: bool = False, *args, **kwargs) -> HDUList:
+
+        log_method = _get_optional_log_method(log_info)
+        log_method("Opening FITS file %s", self.qualified_filename)
         try:
-            return fits.open(self.qualified_filename, *args, **kwargs)
+            f: HDUList = fits.open(self.qualified_filename, *args, **kwargs)
         except Exception as e:
             raise SheFileReadError(filename = self.filename, workdir = self.workdir) from e
+        log_method("Finished  opening FITS file %s", self.qualified_filename)
+        return f
 
 
 class MultiFileLoader(Generic[T]):
