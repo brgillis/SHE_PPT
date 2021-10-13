@@ -29,7 +29,7 @@ import subprocess
 from datetime import datetime
 from os.path import exists, join
 from pickle import UnpicklingError
-from typing import Any, Callable, Generic, List, Optional, Sequence, Tuple, Type, TypeVar, Union
+from typing import Any, Callable, Dict, Generic, List, Optional, Sequence, Tuple, Type, TypeVar, Union
 
 import numpy as np
 from astropy.io import fits
@@ -44,9 +44,10 @@ from ElementsServices.DataSync import DataSync
 from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider
 from ST_DataModelBindings.sys_stub import CreateFromDocument
 from . import __version__ as SHE_PPT_version
+from .constants.classes import ShearEstimationMethods
 from .constants.test_data import SYNC_CONF
 from .logging import getLogger
-from .utility import get_release_from_version, join_without_none
+from .utility import get_release_from_version, is_any_type_of_none, join_without_none
 
 DATA_SUBDIR = "data/"
 
@@ -808,6 +809,117 @@ def read_fits(filename: str,
     log_method("Finished opening FITS file %s in workdir %s", filename, workdir)
 
     return f
+
+
+def read_d_l_method_table_filenames(l_product_filenames: List[str],
+                                    workdir: str,
+                                    log_info: bool = False) -> Tuple[Dict[ShearEstimationMethods, List[str]],
+                                                                     List[Any]]:
+    """ Read in a dict of lists of table filenames for each shear estimation method from a list of measurements product
+        filenames.
+    """
+
+    # Init lists of filenames for each method
+    d_method_l_table_filenames: Dict[ShearEstimationMethods, List[str]] = {}
+    for method in ShearEstimationMethods:
+        d_method_l_table_filenames[method] = []
+
+    # Read in the table filenames from each product, for each method
+    product: Any = None
+    l_products: List[Any] = []
+    for product_filename in l_product_filenames:
+
+        qualified_product_filename: str = get_qualified_filename(product_filename,
+                                                                 workdir = workdir)
+
+        product = read_xml_product(qualified_product_filename,
+                                   log_info = log_info)
+        l_products.append(product)
+
+        # Get the list of table filenames for each method and store it if it exists
+        for method in ShearEstimationMethods:
+            method_matched_catalog_filename = product.get_method_filename(method)
+            if not is_any_type_of_none(method_matched_catalog_filename):
+                d_method_l_table_filenames[method].append(method_matched_catalog_filename)
+
+    return d_method_l_table_filenames, l_products
+
+
+def read_d_l_method_tables(l_product_filenames: List[str],
+                           workdir: str,
+                           log_info: bool = False) -> Tuple[Dict[ShearEstimationMethods, List[Table]],
+                                                            List[Any]]:
+    """ Read in a dict of lists of tables for each shear estimation method from a list of measurements product
+        filenames.
+    """
+
+    # Use the read_d_l_method_table_filenames function for reading, to share common code
+    (d_l_method_table_filenames,
+     l_products) = read_d_l_method_table_filenames(l_product_filenames = l_product_filenames,
+                                                   workdir = workdir,
+                                                   log_info = log_info)
+
+    # Load each table into a new dict
+    d_l_method_tables: Dict[ShearEstimationMethods, List[Table]] = {}
+
+    for method in ShearEstimationMethods:
+        d_l_method_tables[method] = []
+        for filename in d_l_method_table_filenames[method]:
+            d_l_method_tables[method].append(read_table(filename = filename,
+                                                        workdir = workdir,
+                                                        log_info = log_info))
+
+    return d_l_method_tables, l_products
+
+
+def read_d_method_table_filenames(product_filename: str,
+                                  workdir: str,
+                                  log_info: bool = False) -> Tuple[Dict[ShearEstimationMethods, str],
+                                                                   Any]:
+    """ Read in a dict of table filenames for each shear estimation method from a measurements product
+        filename.
+    """
+
+    # Use the read_d_l_method_table_filenames function for reading, to share common code
+    (d_l_method_table_filenames,
+     l_products) = read_d_l_method_table_filenames(l_product_filenames = [product_filename],
+                                                   workdir = workdir,
+                                                   log_info = log_info)
+
+    # Turn each list into a scalar, in a new dict
+    d_method_table_filenames: Dict[ShearEstimationMethods, str] = {}
+
+    for method in ShearEstimationMethods:
+        d_method_table_filenames[method] = d_l_method_table_filenames[method][0]
+
+    product = l_products[0]
+
+    return d_method_table_filenames, product
+
+
+def read_d_method_tables(product_filename: str,
+                         workdir: str,
+                         log_info: bool = False) -> Tuple[Dict[ShearEstimationMethods, Table],
+                                                          Any]:
+    """ Read in a dict of tables for each shear estimation method from a measurements product
+        filename.
+    """
+
+    # Use the read_d_l_method_table_filenames function for reading, to share common code
+    (d_l_method_table_filenames,
+     l_products) = read_d_l_method_table_filenames(l_product_filenames = [product_filename],
+                                                   workdir = workdir,
+                                                   log_info = log_info)
+
+    # Turn each list into a scalar, in a new dict
+    d_method_tables: Dict[ShearEstimationMethods, Table] = {}
+
+    for method in ShearEstimationMethods:
+        d_method_tables[method] = read_table(d_l_method_table_filenames[method][0], workdir)
+
+    product = l_products[0]
+
+    return d_method_tables, product
 
 
 def append_hdu(filename: str,
