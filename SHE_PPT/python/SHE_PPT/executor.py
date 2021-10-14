@@ -47,8 +47,9 @@ class LogOptions:
     s_store_true: Optional[Set[str]] = None
     s_store_false: Optional[Set[str]] = None
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __post_init__(self):
+        """ Ensures defaults aren't left as None
+        """
 
         # Init empty sets if None was provided
         self.s_store_true = empty_set_if_none(self.s_store_true, coerce = True)
@@ -68,10 +69,10 @@ class ReadConfigArgs:
     d_config_cline_args: Optional[Dict[ConfigKeys, str]] = None
     s_config_keys_types: Optional[Set[Type]] = None
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __post_init__(self):
+        """ Ensures defaults aren't left as None
+        """
 
-        # Init empty dicts if None was provided
         self.d_config_defaults = empty_dict_if_none(self.d_config_defaults)
         self.d_config_types = empty_dict_if_none(self.d_config_types)
         self.d_config_cline_args = empty_dict_if_none(self.d_config_cline_args)
@@ -85,8 +86,9 @@ class RunArgs:
     l_run_args: Optional[Sequence[Any]] = None
     d_run_kwargs: Optional[Dict[str, Any]] = None
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __post_init__(self):
+        """ Ensures defaults aren't left as None
+        """
 
         # Init empty dicts if None was provided
         self.l_run_args = empty_list_if_none(self.l_run_args)
@@ -112,6 +114,10 @@ class SheExecutor:
     config_args: ReadConfigArgs
     run_args: RunArgs
 
+    # Protected attributes representing types of arguments, which can be overridden by subclasses
+    config_args_type: Type[ReadConfigArgs]
+    run_args_type: Type[RunArgs] = RunArgs
+
     # Attributes used during the run command
     _logger: Logger
 
@@ -128,8 +134,8 @@ class SheExecutor:
         self.log_options = log_options
 
         # Call private initialization functions for different types of attributes
-        self.config_args = default_init_if_none(config_args, ReadConfigArgs)
-        self.run_args = default_init_if_none(run_args, RunArgs)
+        self.config_args = default_init_if_none(config_args, self.config_args_type)
+        self.run_args = default_init_if_none(run_args, self.run_args_type)
 
     def run(self,
             args: Namespace,

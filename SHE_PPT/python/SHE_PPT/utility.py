@@ -232,6 +232,16 @@ TK = TypeVar('TK')
 TV = TypeVar('TV')
 
 
+def default_value_if_none(x: Optional[T],
+                          default_x: T) -> T:
+    """ If input value is None, returns a provided default value, otherwise returns the input
+        value.
+    """
+    if x is None:
+        return default_x
+    return x
+
+
 def default_init_if_none(x: Optional[Any],
                          type: Type[T],
                          coerce: bool = False) -> T:
