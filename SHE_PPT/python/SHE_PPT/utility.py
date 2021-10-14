@@ -23,7 +23,7 @@ __updated__ = "2021-08-30"
 
 import os
 import re
-from typing import Any, List, Optional, Sequence, Tuple, TypeVar, Union
+from typing import Any, Dict, List, Optional, Sequence, Set, Tuple, Type, TypeVar, Union
 
 import numpy as np
 from astropy.io.fits import HDUList, TableHDU
@@ -225,9 +225,45 @@ def all_are_zero(l_x: Sequence[Number]) -> bool:
     return (np.asarray(l_x) == 0).all()
 
 
-# List/join functions
+# List/join and other collection functions
 
 T = TypeVar('T')
+TK = TypeVar('TK')
+TV = TypeVar('TV')
+
+
+def default_init_if_none(x: Optional[Any],
+                         type: Type[T],
+                         coerce: bool = False) -> T:
+    """ If input value is None, returns a default initialization of the provided type, otherwise returns the input
+        value. Optionally tries to coerce to desired type.
+    """
+    if x is None:
+        return type()
+    if coerce:
+        return type(x)
+    return x
+
+
+def empty_list_if_none(l_x: Optional[Sequence[T]],
+                       coerce: bool = False) -> List[T]:
+    """ If input value is None, returns an empty list, otherwise returns the input value.
+    """
+    return default_init_if_none(l_x, list, coerce = coerce)
+
+
+def empty_set_if_none(s_x: Optional[Union[Sequence[T], Set[T]]],
+                      coerce: bool = False) -> Set[T]:
+    """ If input value is None, returns an empty set, otherwise returns the input value.
+    """
+    return default_init_if_none(s_x, type = set, coerce = coerce)
+
+
+def empty_dict_if_none(d_x: Optional[Dict[TK, TV]],
+                       coerce: bool = False) -> Dict[TK, TV]:
+    """ If input value is None, returns an empty dict, otherwise returns the input value.
+    """
+    return default_init_if_none(d_x, type = dict, coerce = coerce)
 
 
 def coerce_to_list(a: Union[None, T, List[T]],
@@ -238,17 +274,16 @@ def coerce_to_list(a: Union[None, T, List[T]],
         If keep_none is True, will return None if None is input.
     """
     if a is None:
-        if keep_none:
-            return None
-        else:
-            return []
+        l_a = None if keep_none else []
     else:
         # Check if it's iterable, and convert to list if so
         try:
-            return list(a)
+            l_a = list(a)
         except TypeError:
             # Not iterable, so return as an element of a list
-            return [a]
+            l_a = [a]
+
+    return l_a
 
 
 def join_without_none(l_s: List[Optional[Any]], joiner: str = "-", default: Optional[str] = "") -> Optional[str]:
