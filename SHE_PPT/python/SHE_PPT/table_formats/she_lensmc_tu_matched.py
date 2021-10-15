@@ -24,12 +24,11 @@ __updated__ = "2021-08-12"
 from collections import OrderedDict
 
 from SHE_PPT.table_formats.she_lensmc_measurements import set_lensmc_column_properties
-
 from ..flags import she_flag_version
 from ..logging import getLogger
 from ..table_formats.mer_final_catalog import tf as mfc_tf
-from ..table_formats.she_tu_matched import SheTUMatchedMeta, SheTUMatchedFormat
-from ..table_utility import is_in_format, init_table
+from ..table_formats.she_tu_matched import SheTUMatchedFormat, SheTUMatchedMeta
+from ..table_utility import init_table, is_in_format
 
 fits_version = "8.0"
 fits_def = "she.lensmc_tu_matched"
@@ -167,6 +166,6 @@ def initialise_lensmc_tu_matched_table(mer_final_catalog = None,
         observation_time = observation_time,
         tile_id = tile_id)
 
-    assert is_in_format(lensmc_tu_matched_table, tf)
+    assert is_in_format(lensmc_tu_matched_table, tf, verbose = True)
 
     return lensmc_tu_matched_table
