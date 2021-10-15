@@ -943,6 +943,20 @@ def append_hdu(filename: str,
     logger.debug("Finished appending HDU to file %s", filename)
 
 
+def try_remove_file(filename: str,
+                    workdir: str = ".",
+                    warn: bool = False):
+    """ Attempts to remove a file, but passes if any exception is raised (optionally raising a warning).
+    """
+    try:
+        qualified_filename = get_qualified_filename(filename, workdir = workdir)
+        os.remove(os.path.join(qualified_filename)
+    except IOError:
+        if warn:
+            logger.warning("Unable to delete file %s in workdir %s", filename, workdir)
+        pass
+
+
 def find_file_in_path(filename: str, path: str) -> str:
     """
         Searches through a colon-separated path for a file and returns the qualified name of it if found,
