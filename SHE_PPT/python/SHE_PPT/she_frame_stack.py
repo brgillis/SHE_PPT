@@ -24,7 +24,6 @@ __updated__ = "2021-08-13"
 
 
 from copy import deepcopy
-from json.decoder import JSONDecodeError
 import os.path
 
 from astropy import table
@@ -36,7 +35,7 @@ import numpy as np
 from . import logging
 from . import products
 from .constants.fits import MASK_TAG, SCI_TAG, NOISEMAP_TAG
-from .file_io import read_listfile, read_xml_product, find_file
+from .file_io import read_listfile, read_xml_product, find_file, SheFileReadError
 from .she_frame import SHEFrame
 from .she_image import SHEImage
 from .she_image_stack import SHEImageStack
@@ -773,7 +772,7 @@ class SHEFrameStack():
                                                "to table; default value will be used.", str(key))
                 # If we do have an object id list, construct a new table with just the desired rows
                 logger.info("Finished pruning list of galaxy objects to loop over")
-        except JSONDecodeError as e:
+        except SheFileReadError as e:
             logger.warning(str(e))
             # See if it's just a single catalogue, which we can handle
             detections_product = read_xml_product(os.path.join(workdir, detections_listfile_filename))
@@ -919,7 +918,7 @@ class SHEFrameStack():
 
                     logger.info("Finished pruning list of galaxy objects to loop over")
 
-            except JSONDecodeError as e:
+            except SheFileReadError as e:
                 logger.warning(str(e))
 
                 # See if it's just a single catalogue, which we can handle
