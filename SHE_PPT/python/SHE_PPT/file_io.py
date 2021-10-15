@@ -950,7 +950,7 @@ def try_remove_file(filename: str,
     """
     try:
         qualified_filename = get_qualified_filename(filename, workdir = workdir)
-        os.remove(os.path.join(qualified_filename)
+        os.remove(os.path.join(qualified_filename))
     except IOError:
         if warn:
             logger.warning("Unable to delete file %s in workdir %s", filename, workdir)
