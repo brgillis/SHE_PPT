@@ -64,7 +64,7 @@ SUBOBJECT_ID_SPLIT_HEAD = "SHE_CTE_SubObjectIdSplit_"
 PSF_HEAD = "SHE_PSFToolkit_"
 ESTIMATE_SHEAR_HEAD = "SHE_CTE_EstimateShear_"
 SHEAR_ESTIMATES_MERGE_HEAD = "SHE_CTE_ShearEstimatesMerge_"
-TU_MATCH_HEAD = "SHE_Validation_MatchToTU"
+TU_MATCH_HEAD = "SHE_Validation_MatchToTU_"
 
 
 class AnalysisConfigKeys(ConfigKeys):
