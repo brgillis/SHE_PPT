@@ -64,6 +64,7 @@ SUBOBJECT_ID_SPLIT_HEAD = "SHE_CTE_SubObjectIdSplit_"
 PSF_HEAD = "SHE_PSFToolkit_"
 ESTIMATE_SHEAR_HEAD = "SHE_CTE_EstimateShear_"
 SHEAR_ESTIMATES_MERGE_HEAD = "SHE_CTE_ShearEstimatesMerge_"
+TU_MATCH_HEAD = "SHE_Validation_MatchToTU"
 
 
 class AnalysisConfigKeys(ConfigKeys):
@@ -164,6 +165,10 @@ class AnalysisConfigKeys(ConfigKeys):
 
     SEM_NUM_THREADS = SHEAR_ESTIMATES_MERGE_HEAD + "number_threads"
 
+    # Options for SHE_Validation_MatchToTU
+
+    TUM_ADD_BIN_COLUMNS = TU_MATCH_HEAD + "add_bin_columns"
+
 
 # Task names for the Validation pipeline
 VALIDATION_HEAD = "SHE_Validation_"
@@ -191,6 +196,10 @@ class ValidationConfigKeys(ConfigKeys):
     SBV_MAX_G_IN = f"{SHEAR_BIAS_VALIDATION_HEAD}max_g_in"
     SBV_BOOTSTRAP_ERRORS = f"{SHEAR_BIAS_VALIDATION_HEAD}bootstrap_errors"
     SBV_REQUIRE_FITCLASS_ZERO = f"{SHEAR_BIAS_VALIDATION_HEAD}require_fitclass_zero"
+
+    # Options for SHE_Validation_MatchToTU
+
+    TUM_ADD_BIN_COLUMNS = TU_MATCH_HEAD + "add_bin_columns"
 
 
 # Task names for Reconciliation pipeline
