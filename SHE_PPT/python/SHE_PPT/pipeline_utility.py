@@ -395,7 +395,11 @@ def _read_config_file(qualified_config_filename: str,
         if d_cline_args[enum_key] is None:
             continue
         _check_enum_key_is_valid(enum_key, config_keys)
-        val_from_cline_args = getattr(parsed_args, d_cline_args[enum_key])
+        try:
+            val_from_cline_args = getattr(parsed_args, d_cline_args[enum_key])
+        except AttributeError:
+            # If its not present, treat as None and skip
+            continue
         if not is_any_type_of_none(val_from_cline_args):
             config_dict[enum_key] = getattr(parsed_args, d_cline_args[enum_key])
 
