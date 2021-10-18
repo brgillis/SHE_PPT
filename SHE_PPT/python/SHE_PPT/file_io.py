@@ -537,7 +537,7 @@ def read_listfile(listfile_name: str,
     except Exception as e:
         raise SheFileReadError(listfile_name) from e
 
-    log_method("Reading writing listfile from %s", listfile_name)
+    log_method("Reading listfile from %s", listfile_name)
 
     return list_object
 
@@ -671,7 +671,7 @@ def read_xml_product(xml_filename: str,
     except Exception as e:
         raise SheFileReadError(filename = xml_filename, workdir = workdir) from e
 
-    log_method("Reading writing data product from %s in workdir %s", xml_filename, workdir)
+    log_method("Reading data product from %s in workdir %s", xml_filename, workdir)
 
     return product
 
@@ -734,7 +734,7 @@ def read_pickled_product(pickled_filename,
     except Exception as e:
         raise SheFileReadError(filename = pickled_filename, workdir = workdir) from e
 
-    log_method("Reading writing data product from %s in workdir %s", pickled_filename, workdir)
+    log_method("Reading data product from %s in workdir %s", pickled_filename, workdir)
 
     return product
 
