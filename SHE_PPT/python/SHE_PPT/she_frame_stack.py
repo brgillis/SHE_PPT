@@ -23,8 +23,8 @@ __updated__ = "2021-08-13"
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 import os.path
+import os.path
 from copy import deepcopy
-from json.decoder import JSONDecodeError
 from typing import Iterable, Optional
 
 import astropy.wcs
@@ -34,7 +34,7 @@ from astropy.io import fits
 
 from . import logging, products
 from .constants.fits import MASK_TAG, NOISEMAP_TAG, SCI_TAG
-from .file_io import find_file, read_listfile, read_xml_product
+from .file_io import SheFileReadError, find_file, read_listfile, read_xml_product
 from .she_frame import SHEFrame
 from .she_image import SHEImage
 from .she_image_stack import SHEImageStack
@@ -778,7 +778,7 @@ class SHEFrameStack():
                                                "to table; default value will be used.", str(key))
                 # If we do have an object id list, construct a new table with just the desired rows
                 logger.info("Finished pruning list of galaxy objects to loop over")
-        except JSONDecodeError as e:
+        except SheFileReadError as e:
             logger.warning(str(e))
             # See if it's just a single catalogue, which we can handle
             detections_product = read_xml_product(os.path.join(workdir, detections_listfile_filename))
@@ -924,7 +924,7 @@ class SHEFrameStack():
 
                     logger.info("Finished pruning list of galaxy objects to loop over")
 
-            except JSONDecodeError as e:
+            except SheFileReadError as e:
                 logger.warning(str(e))
 
                 # See if it's just a single catalogue, which we can handle
