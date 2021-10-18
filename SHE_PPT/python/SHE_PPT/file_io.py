@@ -912,10 +912,14 @@ def read_d_method_tables(product_filename: str,
                                                    log_info = log_info)
 
     # Turn each list into a scalar, in a new dict
-    d_method_tables: Dict[ShearEstimationMethods, Table] = {}
+    d_method_tables: Dict[ShearEstimationMethods, Optional[Table]] = {}
 
     for method in ShearEstimationMethods:
-        d_method_tables[method] = read_table(d_l_method_table_filenames[method][0], workdir)
+        l_method_table_filenames: Sequence[str] = d_l_method_table_filenames[method]
+        if len(l_method_table_filenames) == 0:
+            d_method_tables[method] = None
+        else:
+            d_method_tables[method] = read_table(d_l_method_table_filenames[method][0], workdir)
 
     product = l_products[0]
 
