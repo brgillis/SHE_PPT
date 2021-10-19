@@ -856,8 +856,13 @@ class SHEFrameStack():
         else:
             object_id_list_product = None
 
+        if object_id_list is not None:
+            np_oid_list: Optional[np.ndarray] = np.fromiter(object_id_list, dtype = int)
+        else:
+            np_oid_list: Optional[np.ndarray] = None
+
         # Determine whether to prune based on presence/absence of object_id_list
-        if prune_images == None:
+        if prune_images is None:
             if object_id_list is None:
                 prune_images = False
             else:
@@ -902,7 +907,8 @@ class SHEFrameStack():
 
                     # loop over detections_catalog and make list of indices not in our object_id list
                     for cat in detections_catalogues:
-                        l_id_is_in_list: np.ndarray = np.isin(cat[mfc_tf.ID], object_id_list,
+                        # We need to convert the set to a numpy array so it can be interpreted here
+                        l_id_is_in_list: np.ndarray = np.isin(cat[mfc_tf.ID], np_oid_list,
                                                               assume_unique = True)
                         cats_to_use.append(cat[l_id_is_in_list])
 
