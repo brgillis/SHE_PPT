@@ -25,12 +25,13 @@ __updated__ = "2021-08-13"
 import os.path
 import os.path
 from copy import deepcopy
-from typing import Iterable, Optional
+from typing import Iterable, List, Optional
 
 import astropy.wcs
 import numpy as np
 from astropy import table
 from astropy.io import fits
+from astropy.table import Table
 
 from . import logging, products
 from .constants.fits import MASK_TAG, NOISEMAP_TAG, SCI_TAG
@@ -897,30 +898,16 @@ class SHEFrameStack():
                                                         metadata_conflicts = "silent")  # Conflicts are expected
                 else:
                     # If we do have an object id list, construct a new table with just the desired rows
-                    rows_to_use = []
+                    cats_to_use: List[Table] = []
 
                     # loop over detections_catalog and make list of indices not in our object_id list
                     for cat in detections_catalogues:
-                        for row in cat:
-                            if row[mfc_tf.ID] in object_id_list:
-                                rows_to_use.append(row)
+                        l_id_is_in_list: np.ndarray = np.isin(cat[mfc_tf.ID], object_id_list,
+                                                              assume_unique = True)
+                        cats_to_use.append(cat[l_id_is_in_list])
 
-                    detections_catalogue = initialise_mer_final_catalog()
-
-                    for key in detections_catalogues[0].meta:
-                        if key in detections_catalogue.meta:
-                            detections_catalogue.meta[key] = detections_catalogues[0].meta[key]
-
-                    for row in rows_to_use:
-                        detections_catalogue.add_row()
-                        new_row = detections_catalogue[-1]
-                        for key in row.colnames:
-                            if key in new_row.colnames:
-                                try:
-                                    new_row[key] = row[key]
-                                except np.ma.core.MaskError as e:
-                                    logger.debug(("Masked element for column %s"
-                                                  " cannot be added to table; default value will be used."), key)
+                    detections_catalogue = table.vstack(cats_to_use,
+                                                        metadata_conflicts = "silent")  # Conflicts are expected
 
                     logger.info("Finished pruning list of galaxy objects to loop over")
 
