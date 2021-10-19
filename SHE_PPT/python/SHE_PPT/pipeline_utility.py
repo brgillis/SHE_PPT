@@ -25,7 +25,7 @@ from argparse import ArgumentParser, Namespace
 from enum import EnumMeta
 from functools import lru_cache
 from shutil import copyfile
-from typing import Any, Dict, List, Optional, Tuple, Type, Union
+from typing import Any, Dict, Iterable, List, Optional, Tuple, Type, Union
 
 import numpy as np
 
@@ -448,7 +448,13 @@ def _make_config_from_cline_args_and_defaults(config_keys: Tuple[EnumMeta, ...],
         if d_cline_args[enum_key] is None:
             continue
         _check_enum_key_is_valid(enum_key, config_keys)
-        val_from_cline_args = getattr(parsed_args, d_cline_args[enum_key])
+
+        # If attribute isn't present, treat as None
+        try:
+            val_from_cline_args = getattr(parsed_args, d_cline_args[enum_key])
+        except AttributeError:
+            val_from_cline_args = None
+
         if not is_any_type_of_none(val_from_cline_args):
             config_dict[enum_key] = getattr(parsed_args, d_cline_args[enum_key])
 
@@ -459,11 +465,12 @@ def _make_config_from_cline_args_and_defaults(config_keys: Tuple[EnumMeta, ...],
 
 
 def _check_enum_key_is_valid(enum_key: ConfigKeys,
-                             config_keys: Tuple[EnumMeta, ...]) -> EnumMeta:
+                             config_keys: Iterable[EnumMeta]) -> EnumMeta:
     """Checks if a enum key a valid member of one of the config_keys Enums. If so, returns the EnumMeta it's found in.
     """
 
     found = False
+    config_key_enum_meta: Optional[EnumMeta] = None
     for config_key_enum_meta in config_keys:
         if enum_key in config_key_enum_meta:
             found = True
