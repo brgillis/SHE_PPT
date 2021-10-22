@@ -30,6 +30,7 @@ from datetime import datetime
 from os.path import exists, join
 from pickle import UnpicklingError
 from typing import Any, Callable, Dict, Generic, List, Optional, Sequence, Tuple, Type, TypeVar, Union
+from xml.sax import SAXParseException
 
 import numpy as np
 from astropy.io import fits
@@ -37,7 +38,6 @@ from astropy.io.fits import HDUList
 from astropy.io.fits.hdu.base import ExtensionHDU
 from astropy.table import Table
 from pyxb.exceptions_ import NamespaceError
-from xml.sax._exceptions import SAXParseException
 
 from EL_PythonUtils.utilities import time_to_timestamp
 from ElementsServices.DataSync import DataSync
@@ -667,6 +667,16 @@ def read_xml_product(xml_filename: str,
     try:
 
         product = _read_xml_product(xml_filename, workdir, allow_pickled)
+
+    except NamespaceError:
+        # If we hit a namespace error, it likely means the SHE_PPT.products module hasn't been imported.
+        # Try importing it and reading again
+        from . import products
+
+        try:
+            product = _read_xml_product(xml_filename, workdir, allow_pickled)
+        except Exception as e:
+            raise SheFileReadError(filename = xml_filename, workdir = workdir) from e
 
     except Exception as e:
         raise SheFileReadError(filename = xml_filename, workdir = workdir) from e
