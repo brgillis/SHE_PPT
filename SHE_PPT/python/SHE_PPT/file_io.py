@@ -43,11 +43,13 @@ from EL_PythonUtils.utilities import time_to_timestamp
 from ElementsServices.DataSync import DataSync
 from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider
 from ST_DataModelBindings.sys_stub import CreateFromDocument
-from . import __version__ as SHE_PPT_version
+from . import __version__
 from .constants.classes import ShearEstimationMethods
 from .constants.test_data import SYNC_CONF
 from .logging import getLogger
 from .utility import get_release_from_version, is_any_type_of_none, join_without_none
+
+MSG_READING_DATA_PRODUCT = "Reading data product from %s in workdir %s"
 
 DATA_SUBDIR = "data/"
 
@@ -441,7 +443,7 @@ def get_allowed_filename(type_name: str,
                          extension: str = ".fits",
                          release: Optional[str] = None,
                          version: Optional[str] = None,
-                         subdir: str = "data",
+                         subdir: Optional[str] = "data",
                          processing_function: str = "SHE",
                          timestamp: bool = True) -> str:
     """Gets a filename in the required Euclid format. Now mostly a pass-through to the official version, with
@@ -614,7 +616,7 @@ def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pick
             # Set the product ID to a timestamp
             t = datetime.now()
             product.Header.ProductId = time_to_timestamp(t)
-    except AttributeError as e:
+    except AttributeError:
         pass
 
     # Check if the product has a catalog file object, and set the name and write a dummy one if necessary
@@ -623,7 +625,7 @@ def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pick
         if cat_filename == "None":
             # Create a name for the catalog file
             cat_filename = get_allowed_filename(type_name = "CAT", instance_id = "0", extension = ".csv",
-                                                version = SHE_PPT_version, subdir = None)
+                                                version = __version__, subdir = None)
             product.Data.CatalogStorage.CatalogFileStorage.StorageSpace[0].DataContainer.FileName = cat_filename
 
         # Check if the catalogue exists, and create it if necessary
@@ -636,7 +638,7 @@ def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pick
         if not os.path.isfile(qualified_cat_filename):
             open(qualified_cat_filename, 'a').close()
 
-    except AttributeError as e:
+    except AttributeError:
         pass
 
     qualified_xml_filename = get_qualified_filename(xml_filename, workdir)
@@ -659,7 +661,7 @@ def read_xml_product(xml_filename: str,
                      log_info: bool = False,
                      allow_pickled: bool = False) -> Any:
     log_method = _get_optional_log_method(log_info)
-    log_method("Reading data product from %s in workdir %s", xml_filename, workdir)
+    log_method(MSG_READING_DATA_PRODUCT, xml_filename, workdir)
 
     # Silently coerce input into a string
     xml_filename = str(xml_filename)
@@ -681,7 +683,7 @@ def read_xml_product(xml_filename: str,
     except Exception as e:
         raise SheFileReadError(filename = xml_filename, workdir = workdir) from e
 
-    log_method("Reading data product from %s in workdir %s", xml_filename, workdir)
+    log_method(MSG_READING_DATA_PRODUCT, xml_filename, workdir)
 
     return product
 
@@ -701,7 +703,8 @@ def _read_xml_product(xml_filename: str, workdir: str, allow_pickled: bool) -> A
         if allow_pickled:
             # Revert to pickled product
             product = read_pickled_product(qualified_xml_filename)
-        raise
+        else:
+            raise
 
     return product
 
@@ -729,9 +732,9 @@ def write_pickled_product(product,
 
 def read_pickled_product(pickled_filename,
                          workdir = ".",
-                         log_info: bool = False) -> None:
+                         log_info: bool = False) -> Any:
     log_method = _get_optional_log_method(log_info)
-    log_method("Reading data product from %s in workdir %s", pickled_filename, workdir)
+    log_method(MSG_READING_DATA_PRODUCT, pickled_filename, workdir)
 
     # Silently coerce input into a string
     pickled_filename = str(pickled_filename)
@@ -744,7 +747,7 @@ def read_pickled_product(pickled_filename,
     except Exception as e:
         raise SheFileReadError(filename = pickled_filename, workdir = workdir) from e
 
-    log_method("Reading data product from %s in workdir %s", pickled_filename, workdir)
+    log_method(MSG_READING_DATA_PRODUCT, pickled_filename, workdir)
 
     return product
 
@@ -765,7 +768,6 @@ def write_table(t: Table,
         raise SheFileWriteError(filename = filename, workdir = workdir) from e
 
     logger.debug("Finished writing table to %s in workdir %s", filename, workdir)
-    return t
 
 
 def read_table(filename: str,
@@ -835,7 +837,6 @@ def read_d_l_method_table_filenames(l_product_filenames: List[str],
         d_method_l_table_filenames[method] = []
 
     # Read in the table filenames from each product, for each method
-    product: Any = None
     l_products: List[Any] = []
     for product_filename in l_product_filenames:
 
@@ -968,7 +969,6 @@ def try_remove_file(filename: str,
     except IOError:
         if warn:
             logger.warning("Unable to delete file %s in workdir %s", filename, workdir)
-        pass
 
 
 def find_file_in_path(filename: str, path: str) -> str:
@@ -1032,8 +1032,8 @@ def _find_web_file_xml(filename: str, qualified_filename: str) -> str:
             if _is_no_file(subfilename):
                 continue
             find_web_file(os.path.join(webpath, subfilename))
-    except NamespaceError as e:
-        if "elementBinding" not in str(e):
+    except SheFileReadError as e:
+        if "elementBinding" not in str(e.__cause__):
             raise
         # MDB files end in XML but can't be read this way, and will raise this exception, so silently pass
 
@@ -1043,19 +1043,19 @@ def _find_web_file_xml(filename: str, qualified_filename: str) -> str:
 def _find_web_file_json(filename: str, qualified_filename: str) -> None:
     webpath: str = os.path.split(filename)[0]
 
-    l = read_listfile(qualified_filename)
-    for element in l:
+    l_filenames = read_listfile(qualified_filename)
+    for element in l_filenames:
         if isinstance(element, str):
             # Skip if there's no file to download
             if _is_no_file(element):
                 continue
             find_web_file(os.path.join(webpath, element))
         else:
-            for subelement in element:
+            for sub_element in element:
                 # Skip if there's no file to download
-                if _is_no_file(subelement):
+                if _is_no_file(sub_element):
                     continue
-                find_web_file(os.path.join(webpath, subelement))
+                find_web_file(os.path.join(webpath, sub_element))
 
 
 def find_web_file(filename: str) -> str:
@@ -1066,26 +1066,26 @@ def find_web_file(filename: str) -> str:
         If it isn't found, returns None.
     """
 
-    filelist: str = os.path.join(os.getcwd(),
-                                 os.path.splitext(os.path.split(filename)[-1])[0] + f"{os.getpid()}_list.txt")
+    listfile_name: str = os.path.join(os.getcwd(),
+                                      os.path.splitext(os.path.split(filename)[-1])[0] + f"{os.getpid()}_list.txt")
 
-    logger.debug("Writing filelist to %s", filelist)
+    logger.debug("Writing filelist to %s", listfile_name)
 
     try:
         try:
-            with open(filelist, 'w') as fo:
+            with open(listfile_name, 'w') as fo:
                 fo.write(filename + "\n")
         except Exception as e:
-            raise SheFileWriteError(filelist) from e
+            raise SheFileWriteError(listfile_name) from e
 
-        sync = DataSync(SYNC_CONF, filelist)
+        sync = DataSync(SYNC_CONF, listfile_name)
         sync.download()
 
         qualified_filename: str = sync.absolutePath(filename)
     finally:
-        if os.path.exists(filelist):
-            logger.debug("Cleaning up %s", filelist)
-            os.remove(filelist)
+        if os.path.exists(listfile_name):
+            logger.debug("Cleaning up %s", listfile_name)
+            os.remove(listfile_name)
 
     # If it's an xml data product, we'll also need to download all files it points to
     if filename[-4:] == ".xml":
@@ -1110,23 +1110,26 @@ def find_file(filename: str, path: Optional[str] = None) -> str:
 
     # Silently coerce input into a string
     filename = str(filename)
+    qualified_filename: Optional[str]
 
     if filename[0:4] == "WEB/":
-        return find_web_file(filename[4:])
-    if filename[0:4] == "AUX/":
-        return find_aux_file(filename[4:])
-    if filename[0:5] == "CONF/":
-        return find_conf_file(filename[5:])
-    if filename[0:5] == "HOME/":
+        qualified_filename = find_web_file(filename[4:])
+    elif filename[0:4] == "AUX/":
+        qualified_filename = find_aux_file(filename[4:])
+    elif filename[0:5] == "CONF/":
+        qualified_filename = find_conf_file(filename[5:])
+    elif filename[0:5] == "HOME/":
         path = os.path.join(os.getenv('HOME'), os.path.dirname(filename[5:]))
-        return find_file_in_path(os.path.basename(filename), path)
-    if filename[0] == "/":
+        qualified_filename = find_file_in_path(os.path.basename(filename), path)
+    elif filename[0] == "/":
         if not os.path.exists(filename):
             raise RuntimeError("File " + filename + " cannot be found.")
-        return filename
-    if path is not None:
-        return find_file_in_path(filename, path)
-    raise ValueError("path must be supplied if filename doesn't start with AUX/ or CONF/")
+        qualified_filename = filename
+    elif path is not None:
+        qualified_filename = find_file_in_path(filename, path)
+    else:
+        raise ValueError("path must be supplied if filename doesn't start with AUX/ or CONF/")
+    return qualified_filename
 
 
 def first_in_path(path: str) -> str:
@@ -1172,14 +1175,14 @@ def get_data_filename(filename: str, workdir: str = ".") -> Optional[str]:
         # to have a get_filename method?
 
         if hasattr(prod, "get_filename"):
-            return prod.get_filename()
+            data_filename = prod.get_filename()
         # or a get_data_filename method?
         if hasattr(prod, "get_data_filename"):
-            return prod.get_data_filename()
+            data_filename = prod.get_data_filename()
 
         # Check if the filename exists in the default location
         try:
-            return prod.Data.DataStorage.DataContainer.FileName
+            data_filename = prod.Data.DataStorage.DataContainer.FileName
         except AttributeError:
             raise AttributeError("Data product does not have filename stored in the expected " +
                                  "location (self.Data.DataStorage.DataContainer.FileName. " +
@@ -1190,7 +1193,9 @@ def get_data_filename(filename: str, workdir: str = ".") -> Optional[str]:
     except (UnicodeDecodeError, SAXParseException, UnpicklingError):
         # Not an XML file - so presumably it's a raw data file; return the
         # input filename
-        return filename
+        data_filename = filename
+
+    return data_filename
 
 
 def update_xml_with_value(filename: str) -> None:
@@ -1204,41 +1209,44 @@ def update_xml_with_value(filename: str) -> None:
     except Exception as e:
         raise SheFileReadError(filename) from e
 
-    key_lines = [ii for ii, line in enumerate(lines) if '<Key>' in line]
-    bad_lines = [idx for idx in key_lines if '<Value>' not in lines[idx + 1]]
-    if bad_lines:
-        logger.warning("%s has incorrect parameter settings, missing <Value> in lines: %s",
-                       filename,
-                       ','.join(map(str, bad_lines)))
-        # Do update
-        for ii, idx in enumerate(bad_lines):
-            # Check next 3 lines for String/Int etc Value
+    STR_KEY = '<Key>'
+    STR_VALUE = '<Value>'
 
-            info = [line for line in lines[idx + 1 + ii:min(idx + 4 + ii, len(lines) - 1)] if 'Value>' in line]
-            new_line = None
-            n_defaults = 0
-            if info:
-                data_value = info[0].split('Value>')[1].split('<')[0]
-                if len(data_value) > 0:
-                    new_line = lines[idx + ii].split('<Key>')[0] + '<Value>%s</Value>\n' % data_value
-
-            if not new_line:
-                # Add random string...
-                new_line = lines[idx + ii].split('<Key>')[0] + '<Value>dkhf</Value>\n'
-                n_defaults += 1
-            lines = lines[:idx + ii + 1] + [new_line] + lines[idx + ii + 1:]
-
-            try:
-                open(filename, 'w').writelines(lines)
-            except Exception as e:
-                raise SheFileWriteError(filename) from e
-
-            logger.info('Updated %s lines in %s: n_defaults=%s',
-                        len(bad_lines),
-                        filename,
-                        n_defaults)
-    else:
+    key_lines = [ii for ii, line in enumerate(lines) if STR_KEY in line]
+    bad_lines = [idx for idx in key_lines if STR_VALUE not in lines[idx + 1]]
+    if not bad_lines:
         logger.debug('No updates required')
+        return
+    logger.warning("%s has incorrect parameter settings, missing <Value> in lines: %s",
+                   filename,
+                   ','.join(map(str, bad_lines)))
+    # Do update
+    n_defaults = 0
+    for ii, idx in enumerate(bad_lines):
+        # Check next 3 lines for String/Int etc Value
+
+        info = [line for line in lines[idx + 1 + ii:min(idx + 4 + ii, len(lines) - 1)] if 'Value>' in line]
+        new_line = None
+        if info:
+            data_value = info[0].split('Value>')[1].split('<')[0]
+            if len(data_value) > 0:
+                new_line = lines[idx + ii].split(STR_KEY)[0] + '<Value>%s</Value>\n' % data_value
+
+        if not new_line:
+            # Add random string...
+            new_line = lines[idx + ii].split(STR_KEY)[0] + '<Value>dkhf</Value>\n'
+            n_defaults += 1
+        lines = lines[:idx + ii + 1] + [new_line] + lines[idx + ii + 1:]
+
+        try:
+            open(filename, 'w').writelines(lines)
+        except Exception as e:
+            raise SheFileWriteError(filename) from e
+
+    logger.info('Updated %s lines in %s: n_defaults=%s',
+                len(bad_lines),
+                filename,
+                n_defaults)
 
 
 def filename_exists(filename: Optional[str]) -> bool:
