@@ -21,13 +21,9 @@
 
 __updated__ = "2021-08-26"
 
-from collections import OrderedDict
-
-from EL_PythonUtils.utilities import hash_any
-
-from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL, EXTNAME_LABEL
+from ..constants.fits import EXTNAME_LABEL, FITS_DEF_LABEL, FITS_VERSION_LABEL
 from ..logging import getLogger
-from ..table_utility import is_in_format, init_table, SheTableFormat, SheTableMeta
+from ..table_utility import SheTableFormat, SheTableMeta, init_table, is_in_format
 
 fits_version = "0.3"
 fits_def = "mer.finalCatalog"
@@ -328,22 +324,6 @@ def initialise_mer_final_catalog(image_group_phl = None,
                 raise ValueError("Invalid optional column name: " + colname)
 
     mer_final_catalog = init_table(tf, optional_columns = optional_columns, init_cols = init_cols, size = size)
-
-    if image_group_phl is not None:
-
-        # Get values from the image object, unless they were passed explicitly
-
-        if model_seed is None:
-            model_seed = image_group_phl.get_seed()
-
-    if options is not None:
-
-        # Get values from the options dict, unless they were passed explicitly
-
-        if model_hash is None:
-            model_hash = hash_any(options.items(), format = "base64")
-        if noise_seed is None:
-            noise_seed = options['noise_seed']
 
     mer_final_catalog.meta = tf.m.init_meta()
 

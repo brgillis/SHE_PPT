@@ -1177,18 +1177,18 @@ def get_data_filename(filename: str, workdir: str = ".") -> Optional[str]:
         if hasattr(prod, "get_filename"):
             data_filename = prod.get_filename()
         # or a get_data_filename method?
-        if hasattr(prod, "get_data_filename"):
+        elif hasattr(prod, "get_data_filename"):
             data_filename = prod.get_data_filename()
-
-        # Check if the filename exists in the default location
-        try:
-            data_filename = prod.Data.DataStorage.DataContainer.FileName
-        except AttributeError:
-            raise AttributeError("Data product does not have filename stored in the expected " +
-                                 "location (self.Data.DataStorage.DataContainer.FileName. " +
-                                 "In order to use get_data_filename with this product, the " +
-                                 "product's class must be monkey-patched to have a get_filename " +
-                                 "or get_data_filename method.")
+        else:
+            # Check if the filename exists in the default location
+            try:
+                data_filename = "data/" + prod.Data.DataStorage.DataContainer.FileName
+            except AttributeError:
+                raise AttributeError("Data product does not have filename stored in the expected " +
+                                     "location (self.Data.DataStorage.DataContainer.FileName. " +
+                                     "In order to use get_data_filename with this product, the " +
+                                     "product's class must be monkey-patched to have a get_filename " +
+                                     "or get_data_filename method.")
 
     except (UnicodeDecodeError, SAXParseException, UnpicklingError):
         # Not an XML file - so presumably it's a raw data file; return the

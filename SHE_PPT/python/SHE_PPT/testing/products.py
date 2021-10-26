@@ -25,7 +25,7 @@ import abc
 import os
 from typing import Any, Optional
 
-from SHE_PPT.file_io import read_xml_product, write_xml_product
+from SHE_PPT.file_io import DATA_SUBDIR, read_xml_product, write_xml_product
 from SHE_PPT.utility import is_any_type_of_none
 
 
@@ -91,13 +91,13 @@ class SimpleDataProductTester(ProductTester, abc.ABC):
             os.remove(qualified_filename)
 
         # Save the product in an XML file
-        write_xml_product(p, filename, workdir=str(tmpdir))
+        write_xml_product(p, filename, workdir = str(tmpdir))
 
         # Check that the file exists
         assert os.path.exists(qualified_filename)
 
         # Read back the XML file
-        loaded_p = read_xml_product(filename, workdir=str(tmpdir))
+        loaded_p = read_xml_product(filename, workdir = str(tmpdir))
 
         # Check that the filenames match
         assert loaded_p.get_data_filename() == f"data/{subfilename}"
@@ -109,7 +109,6 @@ class SimpleDataProductTester(ProductTester, abc.ABC):
 class MethodsProductTester(ProductTester, abc.ABC):
 
     def test_xml_writing_and_reading(self, tmpdir):
-
         # Create the product
         p = self.init_product()
 
@@ -124,13 +123,13 @@ class MethodsProductTester(ProductTester, abc.ABC):
         p.set_REGAUSS_filename(r_filename)
 
         # Save the product in an XML file
-        write_xml_product(p, "she_she_measurements.xml", workdir=str(tmpdir))
+        write_xml_product(p, "she_she_measurements.xml", workdir = str(tmpdir))
 
         # Read back the XML file
-        loaded_p = read_xml_product("she_she_measurements.xml", workdir=str(tmpdir))
+        loaded_p = read_xml_product("she_she_measurements.xml", workdir = str(tmpdir))
 
         # Check that the filenames coincide
-        assert loaded_p.get_KSB_filename() == "data/" + k_filename
-        assert loaded_p.get_LensMC_filename() == "data/" + l_filename
-        assert loaded_p.get_MomentsML_filename() == "data/" + m_filename
-        assert loaded_p.get_REGAUSS_filename() == "data/" + r_filename
+        assert loaded_p.get_KSB_filename() == DATA_SUBDIR + k_filename
+        assert loaded_p.get_LensMC_filename() == DATA_SUBDIR + l_filename
+        assert loaded_p.get_MomentsML_filename() == DATA_SUBDIR + m_filename
+        assert loaded_p.get_REGAUSS_filename() == DATA_SUBDIR + r_filename

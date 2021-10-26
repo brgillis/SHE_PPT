@@ -23,7 +23,7 @@ __updated__ = "2021-08-12"
 
 import numpy as np
 
-from .constants.misc import MAG_VIS_ZEROPOINT, MAG_I_ZEROPOINT
+from .constants.misc import MAG_I_ZEROPOINT, MAG_VIS_ZEROPOINT
 from .gain import get_ADU_from_count
 
 
@@ -75,7 +75,7 @@ def get_mag_i_from_count(c, exp_time):
     return MAG_I_ZEROPOINT - 2.5 * np.log10(c / exp_time)
 
 
-def get_I(I_parameter, parameter_type, gain, exp_time):
+def get_intensity(intensity_parameter, parameter_type, gain, exp_time):
     """ Gets the measured intensity from the provided parameters
 
         @param c The input expected count
@@ -84,16 +84,19 @@ def get_I(I_parameter, parameter_type, gain, exp_time):
         @return The measured intensity
     """
 
-    if parameter_type == 'intensity':
-        return I_parameter
-    if parameter_type == 'count':
-        return get_ADU_from_count(I_parameter, gain)
-    if parameter_type == 'flux':
-        return get_ADU_from_count(I_parameter * exp_time, gain)
-    if parameter_type == 'mag_vis':
-        return get_ADU_from_count(get_count_from_mag_vis(I_parameter, exp_time=exp_time), gain)
-    if parameter_type == 'mag_i':
-        return get_ADU_from_count(get_count_from_mag_i(I_parameter, exp_time=exp_time), gain)
+    intensity: float
 
-    raise Exception(
-        "get_I can't handle parameter type '" + str(parameter_type) + "'")
+    if parameter_type == 'intensity':
+        intensity = intensity_parameter
+    elif parameter_type == 'count':
+        intensity = get_ADU_from_count(intensity_parameter, gain)
+    elif parameter_type == 'flux':
+        intensity = get_ADU_from_count(intensity_parameter * exp_time, gain)
+    elif parameter_type == 'mag_vis':
+        intensity = get_ADU_from_count(get_count_from_mag_vis(intensity_parameter, exp_time = exp_time), gain)
+    elif parameter_type == 'mag_i':
+        intensity = get_ADU_from_count(get_count_from_mag_i(intensity_parameter, exp_time = exp_time), gain)
+    else:
+        raise ValueError("get_I can't handle parameter type '" + str(parameter_type) + "'")
+
+    return intensity

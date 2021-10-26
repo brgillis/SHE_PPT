@@ -156,13 +156,12 @@ class SheExecutor:
 
         # load the pipeline config in
         # noinspection PyTypeChecker
-        pipeline_config: Dict[ConfigKeys, Any] = read_config(args.pipeline_config,
-                                                             workdir = args.workdir,
-                                                             defaults = self.config_args.d_config_defaults,
-                                                             d_cline_args = self.config_args.d_config_cline_args,
-                                                             parsed_args = args,
+        pipeline_config: Dict[ConfigKeys, Any] = read_config(args.pipeline_config, workdir = args.workdir,
                                                              config_keys = self.config_args.s_config_keys_types,
-                                                             d_types = self.config_args.d_config_types)
+                                                             d_cline_args = self.config_args.d_config_cline_args,
+                                                             d_defaults = self.config_args.d_config_defaults,
+                                                             d_types = self.config_args.d_config_types,
+                                                             parsed_args = args)
 
         # set args.pipeline_config to the read-in pipeline_config
         args.pipeline_config = pipeline_config

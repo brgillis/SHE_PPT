@@ -24,15 +24,13 @@ import unittest
 
 from numpy.testing import assert_almost_equal
 
-from SHE_PPT.noise import (get_sky_level_ADU_per_pixel, get_sky_level_count_per_pixel,
-                           get_count_lambda_per_pixel, get_read_noise_ADU_per_pixel,
-                           get_var_ADU_per_pixel)
+from SHE_PPT.noise import (get_count_lambda_per_pixel, get_sky_level_adu_per_pixel, get_sky_level_count_per_pixel,
+                           get_var_ADU_per_pixel, )
 
 
 class NoiseTestCase(unittest.TestCase):
 
     def setUp(self):
-
         self.pixel_scale = 0.1
         self.gain = 2.5
         self.pixel_value_ADU = 500
@@ -48,14 +46,12 @@ class NoiseTestCase(unittest.TestCase):
         self.var_ADU_per_pixel = 616
 
     def test_get_sky_level_ADU_per_pixel(self):
-
-        sky_level_ADU_per_pixel = get_sky_level_ADU_per_pixel(self.sky_level_ADU_per_sq_arcsec,
+        sky_level_ADU_per_pixel = get_sky_level_adu_per_pixel(self.sky_level_ADU_per_sq_arcsec,
                                                               self.pixel_scale)
 
         assert_almost_equal(sky_level_ADU_per_pixel, self.sky_level_ADU_per_pixel)
 
     def test_get_sky_level_count_per_pixel(self):
-
         sky_level_count_per_pixel = get_sky_level_count_per_pixel(self.sky_level_ADU_per_sq_arcsec,
                                                                   self.pixel_scale,
                                                                   self.gain)
@@ -63,7 +59,6 @@ class NoiseTestCase(unittest.TestCase):
         assert_almost_equal(sky_level_count_per_pixel, self.sky_level_count_per_pixel)
 
     def test_get_count_lambda_per_pixel(self):
-
         count_lambda_per_pixel = get_count_lambda_per_pixel(self.pixel_value_ADU,
                                                             self.sky_level_ADU_per_sq_arcsec,
                                                             self.pixel_scale,
@@ -72,14 +67,12 @@ class NoiseTestCase(unittest.TestCase):
         assert_almost_equal(count_lambda_per_pixel, self.count_lambda_per_pixel)
 
     def get_read_noise_ADU_per_pixel(self):
-
         read_noise_ADU_per_pixel = get_count_lambda_per_pixel(self.read_noise_count_per_pixel,
                                                               self.gain)
 
         assert_almost_equal(read_noise_ADU_per_pixel, self.read_noise_ADU_per_pixel)
 
     def test_get_var_ADU_per_pixel(self):
-
         var_ADU_per_pixel = get_var_ADU_per_pixel(self.pixel_value_ADU,
                                                   self.sky_level_ADU_per_sq_arcsec,
                                                   self.read_noise_count_per_pixel,

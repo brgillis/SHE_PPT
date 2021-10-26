@@ -36,6 +36,7 @@ from astropy.table import Table
 from . import logging, products
 from .constants.fits import MASK_TAG, NOISEMAP_TAG, SCI_TAG
 from .file_io import SheFileReadError, find_file, read_listfile, read_xml_product
+from .products.she_stack_segmentation_map import dpdSheStackReprojectedSegmentationMap
 from .she_frame import SHEFrame
 from .she_image import SHEImage
 from .she_image_stack import SHEImageStack
@@ -1037,7 +1038,7 @@ class SHEFrameStack():
                  qualified_seg_filename,
                  seg_hdu_index) = cls._read_product_extension(stacked_seg_product_filename,
                                                               workdir = workdir,
-                                                              dtype = products.she_stack_segmentation_map.dpdSheStackReprojectedSegmentationMap,
+                                                              dtype = dpdSheStackReprojectedSegmentationMap,
                                                               load_images = load_images,
                                                               **kwargs)
             except FileNotFoundError as e:

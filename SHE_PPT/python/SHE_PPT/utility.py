@@ -285,6 +285,9 @@ def coerce_to_list(a: Union[None, T, List[T]],
     """
     if a is None:
         l_a = None if keep_none else []
+    elif isinstance(a, str):
+        # Special handling for strings, which are interable, but we don't want lists of their characters
+        l_a = [a]
     else:
         # Check if it's iterable, and convert to list if so
         try:

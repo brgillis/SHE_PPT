@@ -25,22 +25,20 @@ __updated__ = "2021-08-18"
 
 import os
 
-from EL_PythonUtils.utilities import hash_any
 from astropy.table import Table
 
 import SHE_PPT
 import ST_DM_DmUtils.DmUtils as dm_utils
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
+from EL_PythonUtils.utilities import hash_any
 from ST_DataModelBindings.dpd.she.intermediategeneral_stub import dpdSheIntermediateGeneral
 from ST_DataModelBindings.pro import she_stub as she_pro
-
 from ..constants.shear_estimation_methods import ShearEstimationMethods
-from ..file_io import read_xml_product, find_aux_file, get_allowed_filename, find_file
+from ..file_io import find_aux_file, find_file, get_allowed_filename, read_xml_product
 from ..logging import getLogger
 from ..product_utility import init_intermediate_general
-from ..table_formats.she_bias_statistics import initialise_bias_statistics_table, get_bias_statistics,\
-    get_bias_measurements
-
+from ..table_formats.she_bias_statistics import (get_bias_measurements, get_bias_statistics,
+                                                 initialise_bias_statistics_table, )
 
 sample_file_name = 'SHE_PPT/sample_intermediate_general.xml'
 product_type_name = "DpdSheIntermediateGeneral"
@@ -53,8 +51,8 @@ def init():
         Adds some extra functionality to the dpdSheBiasStatistics product
     """
 
-    init_intermediate_general(product_type_name=product_type_name,
-                              init_function=create_dpd_she_bias_statistics)
+    init_intermediate_general(product_type_name = product_type_name,
+                              init_function = create_dpd_she_bias_statistics)
 
     binding_class = dpdSheIntermediateGeneral
 
@@ -125,7 +123,6 @@ def _get_method_datastorage(self, method):
 
 
 def _set_method_bias_statistics_filename(self, method, filename):
-
     bias_statistics = self.get_method_datastorage(method)
 
     if bias_statistics is None and filename is not None:
@@ -148,7 +145,6 @@ def _set_method_bias_statistics_filename(self, method, filename):
 
 
 def _get_method_bias_statistics_filename(self, method):
-
     bias_statistics = self.get_method_datastorage(method)
 
     if bias_statistics is None:
@@ -162,8 +158,7 @@ def _get_method_bias_statistics_filename(self, method):
     return filename
 
 
-def _set_method_bias_statistics(self, method, stats, workdir="."):
-
+def _set_method_bias_statistics(self, method, stats, workdir = "."):
     # If a previous file exists, delete it
     old_filename = _get_method_bias_statistics_filename(self, method)
     if old_filename is not None:
@@ -189,15 +184,15 @@ def _set_method_bias_statistics(self, method, stats, workdir="."):
     if not os.path.exists(qualified_subfolder_name):
         os.makedirs(qualified_subfolder_name)
 
-    instance_id = hash_any(stats, format='base64')
+    instance_id = hash_any(stats, format = 'base64')
     instance_id_fn = instance_id[0:17].replace('.', '-').replace('+', '-')
-    new_filename = get_allowed_filename(type_name=method.name + "", instance_id=instance_id_fn,
-                                        extension=".fits", version=SHE_PPT.__version__, subdir=subfolder_name)
+    new_filename = get_allowed_filename(type_name = method.name + "", instance_id = instance_id_fn,
+                                        extension = ".fits", version = SHE_PPT.__version__, subdir = subfolder_name)
 
     # Create the file using the statistics
-    bias_statistics_table = initialise_bias_statistics_table(method=method,
-                                                             g1_bias_statistics=stats[0],
-                                                             g2_bias_statistics=stats[1])
+    bias_statistics_table = initialise_bias_statistics_table(method = method,
+                                                             g1_bias_statistics = stats[0],
+                                                             g2_bias_statistics = stats[1])
 
     qualified_new_filename = os.path.join(workdir, new_filename)
 
@@ -207,24 +202,22 @@ def _set_method_bias_statistics(self, method, stats, workdir="."):
     self.set_method_bias_statistics_filename(method, new_filename)
 
 
-def _get_method_bias_statistics(self, method, workdir="."):
-
+def _get_method_bias_statistics(self, method, workdir = "."):
     filename = self.get_method_bias_statistics_filename(method)
 
     if filename is None:
         return None, None
 
-    qualified_filename = find_file(filename, path=workdir)
+    qualified_filename = find_file(filename, path = workdir)
 
     bias_statistics_table = Table.read(qualified_filename)
 
-    bias_statistics = get_bias_statistics(bias_statistics_table, compress=True)
+    bias_statistics = get_bias_statistics(bias_statistics_table, compress = True)
 
     return bias_statistics
 
 
-def _set_method_bias_measurements(self, method, measurements, workdir="."):
-
+def _set_method_bias_measurements(self, method, measurements, workdir = "."):
     filename = None
     qualified_filename = None
 
@@ -237,16 +230,16 @@ def _set_method_bias_measurements(self, method, measurements, workdir="."):
     if not os.path.exists(qualified_subfolder_name):
         os.makedirs(qualified_subfolder_name)
 
-    instance_id = hash_any(measurements, format='base64')
+    instance_id = hash_any(measurements, format = 'base64')
     instance_id_fn = instance_id[0:17].replace('.', '-').replace('+', '-')
-    filename = get_allowed_filename(type_name=method.name + "", instance_id=instance_id_fn,
-                                    extension=".fits", version=SHE_PPT.__version__, subdir=subfolder_name)
+    filename = get_allowed_filename(type_name = method.name + "", instance_id = instance_id_fn,
+                                    extension = ".fits", version = SHE_PPT.__version__, subdir = subfolder_name)
     qualified_filename = os.path.join(workdir, filename)
 
     # Create the file using the measurements
-    bias_statistics_table = initialise_bias_statistics_table(method=method,
-                                                             g1_bias_measurements=measurements[0],
-                                                             g2_bias_measurements=measurements[1])
+    bias_statistics_table = initialise_bias_statistics_table(method = method,
+                                                             g1_bias_measurements = measurements[0],
+                                                             g2_bias_measurements = measurements[1])
 
     # If a previous file exists, we'll use it
 
@@ -275,14 +268,13 @@ def _set_method_bias_measurements(self, method, measurements, workdir="."):
     bias_statistics_table.write(qualified_filename)
 
 
-def _get_method_bias_measurements(self, method, workdir="."):
-
+def _get_method_bias_measurements(self, method, workdir = "."):
     filename = _get_method_bias_statistics_filename(self, method)
 
     if filename is None:
         return None
 
-    qualified_filename = find_file(filename, path=workdir)
+    qualified_filename = find_file(filename, path = workdir)
 
     bias_statistics_table = Table.read(qualified_filename)
 
@@ -292,105 +284,110 @@ def _get_method_bias_measurements(self, method, workdir="."):
 
 
 def _set_KSB_bias_statistics_filename(self, filename):
-    _set_method_bias_statistics_filename(self, method=ShearEstimationMethods.KSB, filename=filename)
+    _set_method_bias_statistics_filename(self, method = ShearEstimationMethods.KSB, filename = filename)
 
 
 def _get_KSB_bias_statistics_filename(self):
-    return _get_method_bias_statistics_filename(self, method=ShearEstimationMethods.KSB)
+    return _get_method_bias_statistics_filename(self, method = ShearEstimationMethods.KSB)
 
 
-def _set_KSB_bias_statistics(self, stats, workdir="."):
-    return _set_method_bias_statistics(self, method=ShearEstimationMethods.KSB, stats=stats, workdir=workdir)
+def _set_KSB_bias_statistics(self, stats, workdir = "."):
+    return _set_method_bias_statistics(self, method = ShearEstimationMethods.KSB, stats = stats, workdir = workdir)
 
 
-def _get_KSB_bias_statistics(self, workdir="."):
-    return _get_method_bias_statistics(self, method=ShearEstimationMethods.KSB, workdir=workdir)
+def _get_KSB_bias_statistics(self, workdir = "."):
+    return _get_method_bias_statistics(self, method = ShearEstimationMethods.KSB, workdir = workdir)
 
 
-def _set_KSB_bias_measurements(self, measurements, workdir="."):
-    return _set_method_bias_measurements(self, method=ShearEstimationMethods.KSB, measurements=measurements, workdir=workdir)
+def _set_KSB_bias_measurements(self, measurements, workdir = "."):
+    return _set_method_bias_measurements(self, method = ShearEstimationMethods.KSB, measurements = measurements,
+                                         workdir = workdir)
 
 
-def _get_KSB_bias_measurements(self, workdir="."):
-    return _get_method_bias_measurements(self, method=ShearEstimationMethods.KSB, workdir=workdir)
+def _get_KSB_bias_measurements(self, workdir = "."):
+    return _get_method_bias_measurements(self, method = ShearEstimationMethods.KSB, workdir = workdir)
 
 
 def _set_LensMC_bias_statistics_filename(self, filename):
-    _set_method_bias_statistics_filename(self, method=ShearEstimationMethods.LENSMC, filename=filename)
+    _set_method_bias_statistics_filename(self, method = ShearEstimationMethods.LENSMC, filename = filename)
 
 
 def _get_LensMC_bias_statistics_filename(self):
-    return _get_method_bias_statistics_filename(self, method=ShearEstimationMethods.LENSMC)
+    return _get_method_bias_statistics_filename(self, method = ShearEstimationMethods.LENSMC)
 
 
-def _set_LensMC_bias_statistics(self, stats, workdir="."):
-    return _set_method_bias_statistics(self, method=ShearEstimationMethods.LENSMC, stats=stats, workdir=workdir)
+def _set_LensMC_bias_statistics(self, stats, workdir = "."):
+    return _set_method_bias_statistics(self, method = ShearEstimationMethods.LENSMC, stats = stats, workdir = workdir)
 
 
-def _get_LensMC_bias_statistics(self, workdir="."):
-    return _get_method_bias_statistics(self, method=ShearEstimationMethods.LENSMC, workdir=workdir)
+def _get_LensMC_bias_statistics(self, workdir = "."):
+    return _get_method_bias_statistics(self, method = ShearEstimationMethods.LENSMC, workdir = workdir)
 
 
-def _set_LensMC_bias_measurements(self, measurements, workdir="."):
-    return _set_method_bias_measurements(self, method=ShearEstimationMethods.LENSMC, measurements=measurements, workdir=workdir)
+def _set_LensMC_bias_measurements(self, measurements, workdir = "."):
+    return _set_method_bias_measurements(self, method = ShearEstimationMethods.LENSMC, measurements = measurements,
+                                         workdir = workdir)
 
 
-def _get_LensMC_bias_measurements(self, workdir="."):
-    return _get_method_bias_measurements(self, method=ShearEstimationMethods.LENSMC, workdir=workdir)
+def _get_LensMC_bias_measurements(self, workdir = "."):
+    return _get_method_bias_measurements(self, method = ShearEstimationMethods.LENSMC, workdir = workdir)
 
 
 def _set_MomentsML_bias_statistics_filename(self, filename):
-    _set_method_bias_statistics_filename(self, method=ShearEstimationMethods.MOMENTSML, filename=filename)
+    _set_method_bias_statistics_filename(self, method = ShearEstimationMethods.MOMENTSML, filename = filename)
 
 
 def _get_MomentsML_bias_statistics_filename(self):
-    return _get_method_bias_statistics_filename(self, method=ShearEstimationMethods.MOMENTSML)
+    return _get_method_bias_statistics_filename(self, method = ShearEstimationMethods.MOMENTSML)
 
 
-def _set_MomentsML_bias_statistics(self, stats, workdir="."):
-    return _set_method_bias_statistics(self, method=ShearEstimationMethods.MOMENTSML, stats=stats, workdir=workdir)
+def _set_MomentsML_bias_statistics(self, stats, workdir = "."):
+    return _set_method_bias_statistics(self, method = ShearEstimationMethods.MOMENTSML, stats = stats,
+                                       workdir = workdir)
 
 
-def _get_MomentsML_bias_statistics(self, workdir="."):
-    return _get_method_bias_statistics(self, method=ShearEstimationMethods.MOMENTSML, workdir=workdir)
+def _get_MomentsML_bias_statistics(self, workdir = "."):
+    return _get_method_bias_statistics(self, method = ShearEstimationMethods.MOMENTSML, workdir = workdir)
 
 
-def _set_MomentsML_bias_measurements(self, measurements, workdir="."):
-    return _set_method_bias_measurements(self, method=ShearEstimationMethods.MOMENTSML, measurements=measurements, workdir=workdir)
+def _set_MomentsML_bias_measurements(self, measurements, workdir = "."):
+    return _set_method_bias_measurements(self, method = ShearEstimationMethods.MOMENTSML, measurements = measurements,
+                                         workdir = workdir)
 
 
-def _get_MomentsML_bias_measurements(self, workdir="."):
-    return _get_method_bias_measurements(self, method=ShearEstimationMethods.MOMENTSML, workdir=workdir)
+def _get_MomentsML_bias_measurements(self, workdir = "."):
+    return _get_method_bias_measurements(self, method = ShearEstimationMethods.MOMENTSML, workdir = workdir)
 
 
 def _set_REGAUSS_bias_statistics_filename(self, filename):
-    _set_method_bias_statistics_filename(self, method=ShearEstimationMethods.REGAUSS, filename=filename)
+    _set_method_bias_statistics_filename(self, method = ShearEstimationMethods.REGAUSS, filename = filename)
 
 
 def _get_REGAUSS_bias_statistics_filename(self):
-    return _get_method_bias_statistics_filename(self, method=ShearEstimationMethods.REGAUSS)
+    return _get_method_bias_statistics_filename(self, method = ShearEstimationMethods.REGAUSS)
 
 
-def _set_REGAUSS_bias_statistics(self, stats, workdir="."):
-    return _set_method_bias_statistics(self, method=ShearEstimationMethods.REGAUSS, stats=stats, workdir=workdir)
+def _set_REGAUSS_bias_statistics(self, stats, workdir = "."):
+    return _set_method_bias_statistics(self, method = ShearEstimationMethods.REGAUSS, stats = stats, workdir = workdir)
 
 
-def _get_REGAUSS_bias_statistics(self, workdir="."):
-    return _get_method_bias_statistics(self, method=ShearEstimationMethods.REGAUSS, workdir=workdir)
+def _get_REGAUSS_bias_statistics(self, workdir = "."):
+    return _get_method_bias_statistics(self, method = ShearEstimationMethods.REGAUSS, workdir = workdir)
 
 
-def _set_REGAUSS_bias_measurements(self, measurements, workdir="."):
-    return _set_method_bias_measurements(self, method=ShearEstimationMethods.REGAUSS, measurements=measurements, workdir=workdir)
+def _set_REGAUSS_bias_measurements(self, measurements, workdir = "."):
+    return _set_method_bias_measurements(self, method = ShearEstimationMethods.REGAUSS, measurements = measurements,
+                                         workdir = workdir)
 
 
-def _get_REGAUSS_bias_measurements(self, workdir="."):
-    return _get_method_bias_measurements(self, method=ShearEstimationMethods.REGAUSS, workdir=workdir)
+def _get_REGAUSS_bias_measurements(self, workdir = "."):
+    return _get_method_bias_measurements(self, method = ShearEstimationMethods.REGAUSS, workdir = workdir)
 
 
-def create_dpd_she_bias_statistics(KSB_bias_statistics_filename=None,
-                                   LensMC_bias_statistics_filename=None,
-                                   MomentsML_bias_statistics_filename=None,
-                                   REGAUSS_bias_statistics_filename=None,):
+def create_dpd_she_bias_statistics(KSB_bias_statistics_filename = None,
+                                   LensMC_bias_statistics_filename = None,
+                                   MomentsML_bias_statistics_filename = None,
+                                   REGAUSS_bias_statistics_filename = None, ):
     """
         @TODO fill in docstring
     """
@@ -409,11 +406,11 @@ def create_dpd_she_bias_statistics(KSB_bias_statistics_filename=None,
     return dpd_shear_bias_stats
 
 
-def create_dpd_she_bias_statistics_from_stats(KSB_bias_statistics=None,
-                                              LensMC_bias_statistics=None,
-                                              MomentsML_bias_statistics=None,
-                                              REGAUSS_bias_statistics=None,
-                                              workdir="."):
+def create_dpd_she_bias_statistics_from_stats(KSB_bias_statistics = None,
+                                              LensMC_bias_statistics = None,
+                                              MomentsML_bias_statistics = None,
+                                              REGAUSS_bias_statistics = None,
+                                              workdir = "."):
     """
         @TODO fill in docstring
     """
@@ -424,10 +421,10 @@ def create_dpd_she_bias_statistics_from_stats(KSB_bias_statistics=None,
     dpd_shear_bias_stats.Header = HeaderProvider.create_generic_header("SHE")
 
     # Set the statistics for each method
-    dpd_shear_bias_stats.set_KSB_bias_statistics(KSB_bias_statistics, workdir=workdir)
-    dpd_shear_bias_stats.set_LensMC_bias_statistics(LensMC_bias_statistics, workdir=workdir)
-    dpd_shear_bias_stats.set_MomentsML_bias_statistics(MomentsML_bias_statistics, workdir=workdir)
-    dpd_shear_bias_stats.set_REGAUSS_bias_statistics(REGAUSS_bias_statistics, workdir=workdir)
+    dpd_shear_bias_stats.set_KSB_bias_statistics(KSB_bias_statistics, workdir = workdir)
+    dpd_shear_bias_stats.set_LensMC_bias_statistics(LensMC_bias_statistics, workdir = workdir)
+    dpd_shear_bias_stats.set_MomentsML_bias_statistics(MomentsML_bias_statistics, workdir = workdir)
+    dpd_shear_bias_stats.set_REGAUSS_bias_statistics(REGAUSS_bias_statistics, workdir = workdir)
 
     return dpd_shear_bias_stats
 
@@ -436,11 +433,11 @@ def create_dpd_she_bias_statistics_from_stats(KSB_bias_statistics=None,
 create_she_bias_statistics_product = create_dpd_she_bias_statistics
 create_she_bias_statistics_product_from_stats = create_dpd_she_bias_statistics_from_stats
 
+
 # Creation functions
 
 
 def create_method_she_bias_statistics(filename):
-
     method_she_bias_statistics = dm_utils.create_fits_storage(she_pro.sheGenericFile,
                                                               filename,
                                                               "she.biasStatistics",

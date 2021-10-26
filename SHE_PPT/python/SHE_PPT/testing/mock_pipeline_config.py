@@ -106,9 +106,7 @@ class MockPipelineConfigFactory:
         """ Create and return a mock pipeline config dict.
         """
 
-        return read_config(config_filename = None,
-                           config_keys = self.config_keys,
-                           defaults = self.config_defaults)
+        return read_config(config_filename = None, config_keys = self.config_keys, d_defaults = self.config_defaults)
 
     # Public methods
 

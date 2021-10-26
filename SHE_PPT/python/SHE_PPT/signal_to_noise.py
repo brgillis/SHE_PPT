@@ -23,7 +23,6 @@ __updated__ = "2021-08-13"
 # Boston, MA 02110-1301 USA
 
 import galsim
-
 import numpy as np
 
 from .logging import getLogger
@@ -33,7 +32,7 @@ logger = getLogger(__name__)
 
 def get_SN_of_image(galaxy_image,
                     gain,
-                    sigma_sky=None,
+                    sigma_sky = None,
                     *args,
                     **kwargs):
     """Calculates the S/N of a galaxy, when give a galsim image or numpy array as input.
@@ -79,14 +78,14 @@ def get_SN_of_image(galaxy_image,
     return signal_to_noise
 
 
-def get_I_from_SN(galaxy_SN,
-                  galaxy_stddev_arcsec,
-                  psf_stddev_arcsec,
-                  sky_level_subtracted,
-                  sky_level_unsubtracted,
-                  read_noise,
-                  pixel_scale,
-                  gain):
+def get_intensity_from_snr(galaxy_snr,
+                           galaxy_stddev_arcsec,
+                           psf_stddev_arcsec,
+                           sky_level_subtracted,
+                           sky_level_unsubtracted,
+                           read_noise,
+                           pixel_scale,
+                           gain):
     """
         @brief
             Estimates galaxy intensity (in ADU) from signal-to-noise ratio.
@@ -96,7 +95,7 @@ def get_I_from_SN(galaxy_SN,
            ~50% of the light for a circular galaxy and PSF. This definition is used simply
            because it's easy to analytically invert.
 
-        @param galaxy_SN
+        @param galaxy_snr
             The signal-to-noise ratio of the galaxy.
         @param galaxy_stddev_arcsec
             The standard deviation of the (Gaussian) galaxy in units of arcsec.
@@ -123,7 +122,7 @@ def get_I_from_SN(galaxy_SN,
     # sigma for a Gaussian which contains half the distribution), and use it to calculate the area within
     # the half-light aperture in arcsec
     size_of_gal = np.pi * 0.674490 * \
-        ((galaxy_stddev_arcsec) ** 2 + (psf_stddev_arcsec) ** 2)
+                  ((galaxy_stddev_arcsec) ** 2 + (psf_stddev_arcsec) ** 2)
 
     # Calculate the sky noise and read noise in the half-light aperture, remembering that noise scales with
     # the sqrt of area.
@@ -146,7 +145,7 @@ def get_I_from_SN(galaxy_SN,
     # The galaxy's S/N is calculated from both its own Poisson noise and the background noise within its
     # half-light aperture. This can be analytically inverted to give the
     # expression below.
-    I = galaxy_SN * \
-        (galaxy_SN + np.sqrt(4 * background_noise ** 2 + galaxy_SN ** 2))
+    I = galaxy_snr * \
+        (galaxy_snr + np.sqrt(4 * background_noise ** 2 + galaxy_snr ** 2))
 
     return I

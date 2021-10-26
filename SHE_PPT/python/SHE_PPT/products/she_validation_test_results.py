@@ -30,9 +30,7 @@ from ST_DataModelBindings.dpd.mer.raw.finalcatalog_stub import dpdMerFinalCatalo
 from ST_DataModelBindings.dpd.she.validationtestresults_stub import dpdSheValidationTestResults
 from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
 from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
-
-from ..product_utility import init_no_files, create_product_from_template
-
+from ..product_utility import create_product_from_template, init_no_files
 
 sample_file_name = "SHE_PPT/sample_validation_test_results.xml"
 product_type_name = "DpdSheValidationTestResults"
@@ -41,77 +39,77 @@ product_type_name = "DpdSheValidationTestResults"
 def init():
     """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    init_no_files(binding_class=dpdSheValidationTestResults,
-                  init_function=create_dpd_she_validation_test_results)
+    init_no_files(binding_class = dpdSheValidationTestResults,
+                  init_function = create_dpd_she_validation_test_results)
 
 
-def create_dpd_she_validation_test_results(reference_product=None,
-                                           source_pipeline="sheAnalysis",
-                                           observation_mode=None,
-                                           num_tests=1,
-                                           num_exposures=-1,):
+def create_dpd_she_validation_test_results(reference_product = None,
+                                           source_pipeline = "sheAnalysis",
+                                           observation_mode = None,
+                                           num_tests = 1,
+                                           num_exposures = -1, ):
     """
         @TODO fill in docstring
     """
 
-    dpd_she_validation_test_results = create_product_from_template(template_filename=sample_file_name,
-                                                                   product_type_name=product_type_name,)
+    dpd_she_validation_test_results = create_product_from_template(template_filename = sample_file_name,
+                                                                   product_type_name = product_type_name, )
 
-    # Quick alias to Data to save text
-    Data = dpd_she_validation_test_results.Data
+    # Quick alias to data_attr to save text
+    data_attr = dpd_she_validation_test_results.Data
 
     # Set up common SourcePipeline and ObservationMode attributes
-    Data.SourcePipeline = source_pipeline
-    Data.ObservationMode = observation_mode
+    data_attr.SourcePipeline = source_pipeline
+    data_attr.ObservationMode = observation_mode
 
     # Set the desired number of tests
     if num_tests <= 0:
-        del Data.ValidationTestList[0]
+        del data_attr.ValidationTestList[0]
     elif num_tests > 1:
         # Make deep copies of the initial test to each entry in the list
-        test_zero = Data.ValidationTestList[0]
-        Data.ValidationTestList = [test_zero] * num_tests
+        test_zero = data_attr.ValidationTestList[0]
+        data_attr.ValidationTestList = [test_zero] * num_tests
         for i in range(num_tests):
             if i != 0:
-                Data.ValidationTestList[i] = deepcopy(test_zero)
+                data_attr.ValidationTestList[i] = deepcopy(test_zero)
 
     if reference_product is not None:
         if isinstance(reference_product, dpdMerFinalCatalog):
             # Using a tile as reference, so set attributes that don't apply to None
-            Data.ExposureProductId = None
-            Data.ObservationId = None
-            Data.PointingId = None
-            Data.NumberExposures = None
+            data_attr.ExposureProductId = None
+            data_attr.ObservationId = None
+            data_attr.PointingId = None
+            data_attr.NumberExposures = None
 
             # And set the Tile ID
-            Data.TileId = reference_product.Data.TileIndex
+            data_attr.TileId = reference_product.Data.TileIndex
 
         elif isinstance(reference_product, dpdVisCalibratedFrame):
             # Using an exposure as reference, so delete attributes that don't apply
-            Data.TileId = None
-            Data.NumberExposures = None
+            data_attr.TileId = None
+            data_attr.NumberExposures = None
 
             # And set the values that do apply
-            Data.ExposureProductId = reference_product.Header.ProductId
-            Data.ObservationId = reference_product.Data.ObservationSequence.ObservationId
-            Data.PointingId = reference_product.Data.ObservationSequence.PointingId
+            data_attr.ExposureProductId = reference_product.Header.ProductId
+            data_attr.ObservationId = reference_product.Data.ObservationSequence.ObservationId
+            data_attr.PointingId = reference_product.Data.ObservationSequence.PointingId
 
         elif isinstance(reference_product, dpdVisStackedFrame):
             # Using an observation as reference, so delete attributes that don't apply
-            Data.TileId = None
-            Data.PointingId = None
-            Data.ExposureProductId = None
+            data_attr.TileId = None
+            data_attr.PointingId = None
+            data_attr.ExposureProductId = None
 
             # And set the values that do apply
-            Data.ObservationId = reference_product.Data.ObservationId
-            Data.NumberExposures = num_exposures
+            data_attr.ObservationId = reference_product.Data.ObservationId
+            data_attr.NumberExposures = num_exposures
 
         else:
             raise TypeError("Unrecognized type of reference product: " + str(type(reference_product)))
 
     else:
         # Set up attributes we do know about
-        Data.NumberExposures = num_exposures
+        data_attr.NumberExposures = num_exposures
 
     return dpd_she_validation_test_results
 

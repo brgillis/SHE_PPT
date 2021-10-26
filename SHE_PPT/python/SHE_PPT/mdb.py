@@ -7,7 +7,6 @@
 
 __updated__ = "2021-08-13"
 
-
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -25,16 +24,15 @@ __updated__ = "2021-08-13"
 import os
 import re
 
-from EL_PythonUtils.utilities import run_only_once
 from astropy.io import fits
 
+from EL_PythonUtils.utilities import run_only_once
 from ST_DM_MDBTools.Mdb import Mdb
-
 from .constants.fits import EXTNAME_LABEL
-from .constants.test_data import TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME
+from .constants.test_data import MDB_PRODUCT_FILENAME, TEST_DATA_LOCATION
 from .file_io import find_file
 from .logging import getLogger
-
+from .utility import coerce_to_list
 
 _mdb_not_inited_exception = RuntimeError(
     "mdb module must be initialised with MDB xml object before use.")
@@ -51,7 +49,7 @@ DEFAULT_MDB_FILE = os.path.join("WEB", TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME)
 logger = getLogger(__name__)
 
 
-def init(mdb_files=None, path=None):
+def init(mdb_files = None, path = None):
     """Initialises module by loading MDB data from file(s).
 
     Arguments
@@ -100,9 +98,7 @@ def init(mdb_files=None, path=None):
 
 
 def _find_mdb_data_file(data_filenames, qualified_mdb_files):
-
-    if isinstance(qualified_mdb_files, str):
-        qualified_mdb_files = [qualified_mdb_files]
+    qualified_mdb_files = coerce_to_list(qualified_mdb_files)
 
     qualified_data_filenames = []
 
@@ -141,8 +137,7 @@ def _find_mdb_data_file(data_filenames, qualified_mdb_files):
 
 
 def _load_quadrant_table(qualified_data_filename, colname):
-
-    f = fits.open(qualified_data_filename, mode='readonly')
+    f = fits.open(qualified_data_filename, mode = 'readonly')
 
     quadrant_dict = {}
 
@@ -158,20 +153,20 @@ def _load_quadrant_table(qualified_data_filename, colname):
     return quadrant_dict
 
 
-def get_gain(detector=None, quadrant=None, suppress_warnings=False):
-    return _get_quadrant_data(dictionary=_gain_dict,
-                              ave_dict=_gain_ave_dict,
-                              detector=detector,
-                              quadrant=quadrant,
-                              suppress_warnings=suppress_warnings)
+def get_gain(detector = None, quadrant = None, suppress_warnings = False):
+    return _get_quadrant_data(dictionary = _gain_dict,
+                              ave_dict = _gain_ave_dict,
+                              detector = detector,
+                              quadrant = quadrant,
+                              suppress_warnings = suppress_warnings)
 
 
-def get_read_noise(detector=None, quadrant=None, suppress_warnings=False):
-    return _get_quadrant_data(dictionary=_read_noise_dict,
-                              ave_dict=_read_noise_ave_dict,
-                              detector=detector,
-                              quadrant=quadrant,
-                              suppress_warnings=suppress_warnings)
+def get_read_noise(detector = None, quadrant = None, suppress_warnings = False):
+    return _get_quadrant_data(dictionary = _read_noise_dict,
+                              ave_dict = _read_noise_ave_dict,
+                              detector = detector,
+                              quadrant = quadrant,
+                              suppress_warnings = suppress_warnings)
 
 
 @run_only_once
@@ -184,8 +179,7 @@ def warn_missing_quadrant():
     logger.warning("No quadrant value supplied to get_gain or get_read_noise - average value will be used instead.")
 
 
-def _get_quadrant_data(dictionary, ave_dict, detector=None, quadrant=None, suppress_warnings=False):
-
+def _get_quadrant_data(dictionary, ave_dict, detector = None, quadrant = None, suppress_warnings = False):
     # If we have both the detector and quadrant, get the value for that quadrant
     if detector is not None and quadrant is not None:
         return dictionary[detector + "." + quadrant]
@@ -363,13 +357,13 @@ def get_mdb_unit(key):
 
     return full_mdb[key]['unit']
 
+
 # MDB keys stored as attributes of the mdb_keys object
 
 
 class MDBKeys():
 
     def __init__(self):
-
         # Environmental constants
 
         self.velocity_of_light_constant_vacuum = "Environment.Constant.VelocityOfLightConstantVacuum"
@@ -416,7 +410,7 @@ class MDBKeys():
         self.vis_ccd_defects_white_spots_bol = "SpaceSegment.Instrument.VIS.VISCCDDefectsWhiteSpotsBOL"
         self.vis_ccd_defects_white_spots_eol = "SpaceSegment.Instrument.VIS.VISCCDDefectsWhiteSpotsEOL"
         self.vis_ccd_gap_long_dimension_nominal_image = "SpaceSegment.Instrument.VIS.VISCCDGapLongDimensionNominalImage"
-        self.vis_ccd_gap_short_dimension_nominal_image =\
+        self.vis_ccd_gap_short_dimension_nominal_image = \
             "SpaceSegment.Instrument.VIS.VISCCDGapShortDimensionNominalImage"
         self.vis_ccd_number = "SpaceSegment.Instrument.VIS.VISCCDNumber"
         self.vis_ccd_quadrant_list = "SpaceSegment.Instrument.VIS.VISCCDQuadrantList"

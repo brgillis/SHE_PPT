@@ -24,11 +24,12 @@ __updated__ = "2021-08-12"
 from collections import OrderedDict
 
 from EL_PythonUtils.utilities import hash_any
-
-from ..constants.fits import (FITS_VERSION_LABEL, FITS_DEF_LABEL, GAIN_LABEL, MODEL_HASH_LABEL,
-                              MODEL_SEED_LABEL, NOISE_SEED_LABEL, )
+from ..constants.fits import (FITS_DEF_LABEL, FITS_VERSION_LABEL, GAIN_LABEL, MODEL_HASH_LABEL, MODEL_SEED_LABEL,
+                              NOISE_SEED_LABEL, )
 from ..logging import getLogger
-from ..table_utility import is_in_format, init_table, SheTableFormat, SheTableMeta
+from ..table_utility import SheTableFormat, SheTableMeta, init_table, is_in_format
+
+UNIT_DEG = "[deg]"
 
 fits_version = "8.0"
 fits_def = "she.simulatedCatalog"
@@ -108,9 +109,9 @@ class SheSimulatedCatalogFormat(SheTableFormat):
 
         self.sersic_index = self.set_column_properties("SERSIC_INDEX")
 
-        self.rotation = self.set_column_properties("ROTATION", comment = "[deg]")
-        self.spin = self.set_column_properties("SPIN", comment = "[deg]")
-        self.tilt = self.set_column_properties("TILT", comment = "[deg]")
+        self.rotation = self.set_column_properties("ROTATION", comment = UNIT_DEG)
+        self.spin = self.set_column_properties("SPIN", comment = UNIT_DEG)
+        self.tilt = self.set_column_properties("TILT", comment = UNIT_DEG)
 
         self.g1 = self.set_column_properties("G1_WORLD")
         self.g2 = self.set_column_properties("G2_WORLD")

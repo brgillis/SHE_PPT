@@ -23,27 +23,28 @@ __updated__ = "2021-08-13"
 
 import math
 
-from astropy.wcs import WCS as AstropyWCS
 import galsim
+import numpy as np
+from astropy.wcs import WCS as AstropyWCS
 from galsim.wcs import BaseWCS as GalsimWCS
 from scipy.optimize import minimize
 
-import numpy as np
-
 from . import flags
 from .she_image import SHEImage
+
+MSG_TOO_BIG_SHEAR = "Requested shear exceeds 1"
 
 
 class ShearEstimate():
 
     def __init__(self,
-                 g1=np.NaN,
-                 g2=np.NaN,
-                 g1_err=np.inf,
-                 g2_err=np.inf,
-                 g1g2_covar=0,
-                 flags=0,
-                 weight=1):
+                 g1 = np.NaN,
+                 g2 = np.NaN,
+                 g1_err = np.inf,
+                 g2_err = np.inf,
+                 g1g2_covar = 0,
+                 flags = 0,
+                 weight = 1):
         self.g1 = g1
         self.g2 = g2
         self.g1_err = g1_err
@@ -77,12 +78,12 @@ def get_g_from_e(e1, e2):
 
 
 def correct_for_wcs_shear_and_rotation(shear_estimate,
-                                       stamp=None,
-                                       wcs=None,
-                                       x=None,
-                                       y=None,
-                                       ra=None,
-                                       dec=None):
+                                       stamp = None,
+                                       wcs = None,
+                                       x = None,
+                                       y = None,
+                                       ra = None,
+                                       dec = None):
     """Corrects (in-place) a shear_estimate object for the shear and rotation information contained within the
     provided WCS (or provided stamp's wcs). Note that this function ignores any flipping, so if e.g. transforming
     from image to sky coordinates, the resulting shear will be in the (-R.A.,Dec.) frame, not (R.A.,Dec.).
@@ -119,7 +120,7 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
     # If no stamp is supplied, create a ministamp to work with
     if stamp is None:
 
-        stamp = SHEImage(data=np.zeros((1, 1)))
+        stamp = SHEImage(data = np.zeros((1, 1)))
 
         # Add the WCS to the stamp
         if isinstance(wcs, AstropyWCS):
@@ -169,11 +170,11 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
 
     try:
 
-        rot_est_shear = galsim.Shear(g1=g_world_polar[0, 0], g2=g_world_polar[1, 0])
+        rot_est_shear = galsim.Shear(g1 = g_world_polar[0, 0], g2 = g_world_polar[1, 0])
 
     except ValueError as e:
 
-        if "Requested shear exceeds 1" not in str(e):
+        if MSG_TOO_BIG_SHEAR not in str(e):
             raise
 
         # Shear is greater than 1, so note this in the flags
@@ -192,10 +193,10 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
         g1 = g[0]
         g2 = g[1]
         try:
-            res_shear = w2p_shear + galsim.Shear(g1=g1, g2=g2)
+            res_shear = w2p_shear + galsim.Shear(g1 = g1, g2 = g2)
             dist2 = (rot_est_shear.g1 - res_shear.g1) ** 2 + (rot_est_shear.g2 - res_shear.g2) ** 2
         except ValueError as e:
-            if "Requested shear exceeds 1" not in str(e):
+            if MSG_TOO_BIG_SHEAR not in str(e):
                 raise
             # Requested a too-high shear value, so return an appropriately high distance
             dist2 = (w2p_shear.g1 + g1 - rot_est_shear.g1) ** 2 + (w2p_shear.g2 + g2 - rot_est_shear.g2) ** 2
@@ -219,16 +220,14 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
     shear_estimate.g1 = fitting_result.x[0]
     shear_estimate.g2 = fitting_result.x[1]
 
-    return
-
 
 def uncorrect_for_wcs_shear_and_rotation(shear_estimate,
-                                         stamp=None,
-                                         wcs=None,
-                                         x=None,
-                                         y=None,
-                                         ra=None,
-                                         dec=None):
+                                         stamp = None,
+                                         wcs = None,
+                                         x = None,
+                                         y = None,
+                                         ra = None,
+                                         dec = None):
     """Uncorrects (in-place) a shear_estimate object for the shear and rotation information contained within the
     provided WCS (or provided stamp's wcs). Note that this function ignores any flipping.
 
@@ -264,7 +263,7 @@ def uncorrect_for_wcs_shear_and_rotation(shear_estimate,
     # If no stamp is supplied, create a ministamp to work with
     if stamp is None:
 
-        stamp = SHEImage(data=np.zeros((1, 1)))
+        stamp = SHEImage(data = np.zeros((1, 1)))
 
         # Add the WCS to the stamp
         if isinstance(wcs, AstropyWCS):
@@ -289,11 +288,11 @@ def uncorrect_for_wcs_shear_and_rotation(shear_estimate,
 
     try:
 
-        world_shear = galsim.Shear(g1=shear_estimate.g1, g2=shear_estimate.g2)
+        world_shear = galsim.Shear(g1 = shear_estimate.g1, g2 = shear_estimate.g2)
 
     except ValueError as e:
 
-        if "Requested shear exceeds 1" not in str(e):
+        if MSG_TOO_BIG_SHEAR not in str(e):
             raise
 
         # Shear is greater than 1, so note this in the flags
@@ -338,10 +337,8 @@ def uncorrect_for_wcs_shear_and_rotation(shear_estimate,
     shear_estimate.g2_err = np.sqrt(covar_world[1, 1])
     shear_estimate.g1g2_covar = covar_world[0, 1]
 
-    return
 
-
-def check_data_quality(gal_stamp, psf_stamp, stacked=False):
+def check_data_quality(gal_stamp, psf_stamp, stacked = False):
     """ Checks the galaxy and PSF stamps for any data quality issues, and returns an
         appropriate set of flags.
     """
@@ -375,7 +372,7 @@ def check_data_quality(gal_stamp, psf_stamp, stacked=False):
             if a is None:
                 flag |= missing_flag
             else:
-                ravelled_mask = np.zeros_like(a.ravel(), dtype=bool)
+                ravelled_mask = np.zeros_like(a.ravel(), dtype = bool)
                 ravelled_antimask = ~ravelled_mask
                 have_some_data = True
 
@@ -432,6 +429,5 @@ def check_data_quality(gal_stamp, psf_stamp, stacked=False):
         if (np.isnan(good_data).any() or np.isinf(good_data).any() or
                 ((good_data.sum() == 0) or (good_data < min_value).any())):
             flag |= corrupt_flag
-            continue
 
     return flag

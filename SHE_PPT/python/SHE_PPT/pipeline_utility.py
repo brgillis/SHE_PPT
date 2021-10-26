@@ -21,7 +21,7 @@ __updated__ = "2021-08-19"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 import os
-from argparse import ArgumentParser, Namespace
+from argparse import Namespace
 from enum import EnumMeta
 from functools import lru_cache
 from shutil import copyfile
@@ -147,16 +147,14 @@ def read_analysis_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
     """ Reads in a configuration file for the SHE Analysis pipeline to a dictionary.
     """
 
-    return read_config(config_keys = AnalysisConfigKeys,
-                       *args, **kwargs)
+    return read_config(*args, config_keys = AnalysisConfigKeys, **kwargs)
 
 
 def read_calibration_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
     """ Reads in a configuration file for the SHE Calibration pipeline to a dictionary.
     """
 
-    return read_config(config_keys = CalibrationConfigKeys,
-                       *args, **kwargs)
+    return read_config(*args, config_keys = CalibrationConfigKeys, **kwargs)
 
 
 def read_reconciliation_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
@@ -177,28 +175,27 @@ def read_reconciliation_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
             supplied in the parsed_args.
     """
 
-    return read_config(config_keys = ReconciliationConfigKeys,
-                       *args, **kwargs)
+    return read_config(*args, config_keys = ReconciliationConfigKeys, **kwargs)
 
 
 def read_scaling_config(*args, **kwargs):
     """ Reads in a configuration file for the SHE Scaling pipeline to a dictionary.
     """
 
-    return read_config(config_keys = ScalingExperimentsConfigKeys, *args, **kwargs)
+    return read_config(*args, config_keys = ScalingExperimentsConfigKeys, **kwargs)
 
 
-def read_config(config_filename: Optional[str],
+def read_config(config_filename: Optional[str] = None,
                 workdir: str = ".",
                 config_keys: Union[EnumMeta, Tuple[EnumMeta, ...]] = (AnalysisConfigKeys,
                                                                       ValidationConfigKeys,
                                                                       ReconciliationConfigKeys,
                                                                       CalibrationConfigKeys),
                 d_cline_args: Optional[Dict[ConfigKeys, str]] = None,
+                d_defaults: Optional[Dict[ConfigKeys, Any]] = None,
+                d_types: Optional[Dict[ConfigKeys, Type]] = None,
                 parsed_args: Optional[Namespace] = None,
-                defaults: Optional[Dict[ConfigKeys, Any]] = None,
-                task_head: Optional[str] = None,
-                d_types: Optional[Dict[ConfigKeys, Type]] = None, ) -> Dict[ConfigKeys, Any]:
+                task_head: Optional[str] = None) -> Dict[ConfigKeys, Any]:
     """ Reads in a generic configuration file to a dictionary. Note that all arguments will be read as strings unless
         a cline_arg value is used.
 
@@ -206,30 +203,32 @@ def read_config(config_filename: Optional[str],
         ----------
         config_filename : Optional[str]
             The workspace-relative name of the config file.
-        workdir : string
-            The working directory.
         config_keys : enum or iterable of enums
             ConfigKeys enum or iterable of enums listing allowed keys
-        parsed_args : Dict[str, Any]
-            Dict of config keys giving values passed at the command line. If these aren't None, they will override
-            values in the config file
-        defaults : Dict[str, Any]
+        workdir : string
+            The working directory.
+        d_cline_args: Dict[ConfigKeys, Optional[str]]
+            Dict listing cline-args which can override each config value in the config file.
+        d_defaults : Dict[ConfigKeys, Any]
             Dict of default values to use if no value (or None) is supplied in the config and no value (or None) is
             supplied in the parsed_args.
+        d_types: Dict[ConfigKeys, Type]
+            Dict of desired types to convert values in the config to. If not provided, all values will be left
+            as strings.
+        parsed_args : Namespace
+            Namespace giving values passed at the command line. If these aren't None, they will override
+            values in the config file
         task_head: string
             Should only be set if reading configs for a Validation task. In this case, this refers to the "head" of
             the task-specific configuration keys. These task-specific arguments will be used to override the
             global arguments if set to anything other than None.
-        d_types: Dict[str, Type]
-            Dict of desired types to convert values in the config to. If not provided, all values will be left
-            as strings.
     """
 
     # Use empty dicts for d_cline_args and defaults if None provided
     if d_cline_args is None:
         d_cline_args = {}
-    if defaults is None:
-        defaults = {}
+    if d_defaults is None:
+        d_defaults = {}
 
     # Check for validity of use of task_head
     if task_head is not None and not issubclass(config_keys, ValidationConfigKeys):
@@ -249,7 +248,7 @@ def read_config(config_filename: Optional[str],
         return _make_config_from_cline_args_and_defaults(config_keys = config_keys,
                                                          d_cline_args = d_cline_args,
                                                          parsed_args = parsed_args,
-                                                         defaults = defaults,
+                                                         d_defaults = d_defaults,
                                                          d_types = d_types)
 
     # Look in the workdir for the config filename if it isn't fully-qualified
@@ -260,40 +259,43 @@ def read_config(config_filename: Optional[str],
 
     try:
 
-        filelist = read_listfile(qualified_config_filename)
+        l_filenames = read_listfile(qualified_config_filename)
 
         # If we get here, it is a listfile. If no files in it, return an empty dict. If one, return that.
         # If more than one,raise an exception
-        if len(filelist) == 0:
-            return _make_config_from_cline_args_and_defaults(config_keys = config_keys,
-                                                             d_cline_args = d_cline_args,
-                                                             parsed_args = parsed_args,
-                                                             defaults = defaults,
-                                                             d_types = d_types, )
-        if len(filelist) == 1:
-            return _read_config_product(config_filename = filelist[0],
-                                        workdir = workdir,
-                                        config_keys = config_keys,
-                                        d_cline_args = d_cline_args,
-                                        parsed_args = parsed_args,
-                                        defaults = defaults,
-                                        task_head = task_head,
-                                        d_types = d_types, )
-
-        raise ValueError("File " + qualified_config_filename + " is a listfile with more than one file listed, and " +
-                         "is an invalid input to read_config.")
+        if len(l_filenames) == 0:
+            d_config = _make_config_from_cline_args_and_defaults(config_keys = config_keys,
+                                                                 d_cline_args = d_cline_args,
+                                                                 parsed_args = parsed_args,
+                                                                 d_defaults = d_defaults,
+                                                                 d_types = d_types, )
+        elif len(l_filenames) == 1:
+            d_config = _read_config_product(config_filename = l_filenames[0],
+                                            workdir = workdir,
+                                            config_keys = config_keys,
+                                            d_cline_args = d_cline_args,
+                                            parsed_args = parsed_args,
+                                            d_defaults = d_defaults,
+                                            task_head = task_head,
+                                            d_types = d_types, )
+        else:
+            raise ValueError(
+                "File " + qualified_config_filename + " is a listfile with more than one file listed, and " +
+                "is an invalid input to read_config.")
 
     except SheFileReadError:
 
         # This isn't a listfile, so try to open and return it
-        return _read_config_product(config_filename = config_filename,
-                                    workdir = workdir,
-                                    config_keys = config_keys,
-                                    d_cline_args = d_cline_args,
-                                    parsed_args = parsed_args,
-                                    defaults = defaults,
-                                    task_head = task_head,
-                                    d_types = d_types)
+        d_config = _read_config_product(config_filename = config_filename,
+                                        workdir = workdir,
+                                        config_keys = config_keys,
+                                        d_cline_args = d_cline_args,
+                                        parsed_args = parsed_args,
+                                        d_defaults = d_defaults,
+                                        task_head = task_head,
+                                        d_types = d_types)
+
+    return d_config
 
 
 def _read_config_product(config_filename: str,
@@ -322,7 +324,7 @@ def _read_config_file(qualified_config_filename: str,
                       config_keys: Tuple[EnumMeta, ...],
                       d_cline_args: Optional[Dict[ConfigKeys, str]],
                       parsed_args: Optional[Namespace],
-                      defaults: Dict[ConfigKeys, Any],
+                      d_defaults: Dict[ConfigKeys, Any],
                       task_head: Optional[str] = None,
                       d_types: Optional[Dict[str, Type]] = None, ) -> Dict[ConfigKeys, Any]:
     """ Reads in a configuration text file.
@@ -330,7 +332,7 @@ def _read_config_file(qualified_config_filename: str,
 
     # Start with a config generated from defaults
     config_dict = _make_config_from_defaults(config_keys = config_keys,
-                                             defaults = defaults)
+                                             d_defaults = d_defaults)
 
     with open(qualified_config_filename, 'r') as config_file:
 
@@ -383,7 +385,7 @@ def _read_config_file(qualified_config_filename: str,
             value = noncomment_line.replace(equal_split_line[0] + '=', '').strip()
 
             # If the value is None or equivalent, don't set it (use the default)
-            if not (is_any_type_of_none(value) and enum_key in defaults):
+            if not (is_any_type_of_none(value) and enum_key in d_defaults):
                 config_dict[enum_key] = value
 
         # End for config_line in config_file:
@@ -410,16 +412,16 @@ def _read_config_file(qualified_config_filename: str,
 
 
 def _make_config_from_defaults(config_keys: Tuple[EnumMeta, ...],
-                               defaults: Dict[ConfigKeys, Any],
+                               d_defaults: Dict[ConfigKeys, Any],
                                d_types: Optional[Dict[ConfigKeys, Type]] = None) -> Dict[ConfigKeys, Any]:
     """ Make a pipeline config dict from just the defaults.
     """
 
     config_dict = {}
 
-    for enum_key in defaults:
+    for enum_key in d_defaults:
         _check_enum_key_is_valid(enum_key, config_keys)
-        config_dict[enum_key] = defaults[enum_key]
+        config_dict[enum_key] = d_defaults[enum_key]
 
     # Convert the types in the config as desired
     config_dict = convert_config_types(config_dict, d_types)
@@ -429,8 +431,8 @@ def _make_config_from_defaults(config_keys: Tuple[EnumMeta, ...],
 
 def _make_config_from_cline_args_and_defaults(config_keys: Tuple[EnumMeta, ...],
                                               d_cline_args: Dict[ConfigKeys, str],
-                                              parsed_args: ArgumentParser,
-                                              defaults: Dict[ConfigKeys, Any],
+                                              parsed_args: Namespace,
+                                              d_defaults: Dict[ConfigKeys, Any],
                                               d_types: Optional[Dict[ConfigKeys, Type]] = None) -> Dict[
     ConfigKeys, Any]:
     """ Make a pipeline config dict from the cline-args and defaults, preferring
@@ -438,7 +440,7 @@ def _make_config_from_cline_args_and_defaults(config_keys: Tuple[EnumMeta, ...],
     """
     # Start with a config generated from defaults
     config_dict = _make_config_from_defaults(config_keys = config_keys,
-                                             defaults = defaults)
+                                             d_defaults = d_defaults)
 
     # Return if we don't have any parsed_args to deal with
     if not (d_cline_args or parsed_args):
@@ -796,27 +798,31 @@ def get_conditional_product(filename: Optional[str],
     """
 
     # First check for None
-    if filename is None or filename == "None" or filename == "":
+    if is_any_type_of_none(filename):
         return None
 
     # Find the file, and check if it's a listfile
     qualified_filename = find_file(filename, workdir)
 
+    p: Any
+
     try:
 
-        filelist = read_listfile(qualified_filename)
+        l_filenames = read_listfile(qualified_filename)
 
         # If we get here, it is a listfile. If no files in it, return None. If one, return that. If more than one,
         # raise an exception
-        if len(filelist) == 0:
-            return None
-        if len(filelist) == 1:
-            return read_xml_product(filelist[0], workdir)
-
-        raise ValueError("File " + qualified_filename + " is a listfile with more than one file listed, and " +
-                         "is an invalid input to get_conditional_product.")
+        if len(l_filenames) == 0:
+            p = None
+        elif len(l_filenames) == 1:
+            p = read_xml_product(l_filenames[0], workdir)
+        else:
+            raise ValueError("File " + qualified_filename + " is a listfile with more than one file listed, and " +
+                             "is an invalid input to get_conditional_product.")
 
     except SheFileReadError:
 
         # This isn't a listfile, so try to open and return it
-        return read_xml_product(qualified_filename, workdir)
+        p = read_xml_product(qualified_filename, workdir)
+
+    return p

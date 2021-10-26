@@ -8,6 +8,7 @@
 
 __updated__ = "2021-08-13"
 
+
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
 # This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
@@ -23,25 +24,25 @@ __updated__ = "2021-08-13"
 # Boston, MA 02110-1301 USA
 
 
-def get_ADU_from_count(c, gain):
+def get_ADU_from_count(count, gain):
     """ Calculate the intensity in ADU from count with the given gain.
 
-        @param c The electron count
+        @param count The electron count
         @param gain The gain in units of e-/ADU
 
         @return The intensity in units of ADU
     """
 
-    return c / gain
+    return count / gain
 
 
-def get_count_from_ADU(I, gain):
+def get_count_from_ADU(intensity_adu, gain):
     """ Calculate the electron count from intensity in units of ADU with the given gain.
 
-        @param I The intensity in units of ADU
+        @param intensity_adu The intensity in units of ADU
         @param gain The gain in units of e-/ADU
 
         @return The count in units of e-
     """
 
-    return I * gain
+    return intensity_adu * gain
