@@ -25,21 +25,19 @@ from collections import OrderedDict
 from copy import deepcopy
 from typing import Dict, List, Optional
 
-from astropy.table import Column, Table
-
 import numpy as np
+from astropy.table import Column, Table
 
 from .constants.fits import FITS_DEF_LABEL, FITS_VERSION_LABEL
 from .logging import getLogger
-
 
 logger = getLogger(__name__)
 
 MSG_ERR_COL_ABSENT = "Table not in correct format due to absence of required column: %s"
 
 
-def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbose=False,
-                 fix_bool=True):
+def is_in_format(table, table_format, ignore_metadata = False, strict = True, verbose = False,
+                 fix_bool = True):
     """
         @brief Checks if a table is in the given format
 
@@ -66,6 +64,7 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
         strict = False
 
     # Check that all required column names are present
+    child_label: Optional[str] = None
     if not table_format.is_base:
         # Simple check if not comparing to a base class
         for colname in table_format.all_required:
@@ -75,7 +74,6 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
                 return False
     else:
         # More careful check if comparing to a base class
-        child_label = None
         for parent_colname in table_format.all_required:
             if child_label is None:
                 found = False
@@ -96,7 +94,7 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
                 # Once we've figured out what the child_label is, we can be a bit more efficient
                 if parent_colname not in table.colnames and child_label + parent_colname not in table.columns:
                     if verbose:
-                        logger.info(MSG_ERR_COL_ABSENT, colname)
+                        logger.info(MSG_ERR_COL_ABSENT, parent_colname)
                     return False
 
     # Check that no extra column names are present if strict==True, and each
@@ -148,7 +146,7 @@ def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbos
             # Is it an issue with a bool column being read as a string?
             elif col_dtype.str[1] == 'U' and ex_dtype.str == '|b1':
                 if fix_bool:
-                    col = Column(data=np.empty_like(table[child_colname].data, dtype=bool))
+                    col = Column(data = np.empty_like(table[child_colname].data, dtype = bool))
                     for i in range(len(col)):
                         col[i] = (table[child_colname] == "True" or table[child_colname]
                                   == "true" or table[child_colname] == "1")
@@ -224,27 +222,26 @@ def add_row(table, **kwargs):
         Side-effects: Row is appended to end of table.
     """
 
-    table.add_row(vals=kwargs)
+    table.add_row(vals = kwargs)
 
 
 def output_tables(otable, file_name_base, output_format):
-
     if output_format not in ('ascii', 'fits', 'both'):
         raise ValueError("Invalid output format: " + str(output_format))
 
     if output_format in ('ascii', "both"):
         text_file_name = file_name_base + ".ecsv"
-        otable.write(text_file_name, format='ascii.ecsv')
+        otable.write(text_file_name, format = 'ascii.ecsv')
 
     if output_format in ('fits', 'both'):
         fits_file_name = file_name_base + ".fits"
-        otable.write(fits_file_name, format='fits', overwrite=True)
+        otable.write(fits_file_name, format = 'fits', overwrite = True)
 
 
 def init_table(tf: "SheTableFormat",
                size: Optional[int] = None,
                optional_columns: Optional[List[str]] = None,
-               init_cols: Optional[List[Column]] = None,):
+               init_cols: Optional[Dict[str, Column]] = None, ):
     """ Initializes a table with a given format, without any metadata.
     """
 
@@ -295,7 +292,7 @@ def init_table(tf: "SheTableFormat",
             if size == 0 and len(col) > 0:
                 size = len(col)
         else:
-            col = Column(name=colname, data=np.zeros(size, dtype=dtype))
+            col = Column(name = colname, data = np.zeros(size, dtype = dtype))
 
             full_init_cols.append(col)
 
@@ -303,18 +300,18 @@ def init_table(tf: "SheTableFormat",
 
         # We have to use a bit of a workaround if the table has any array columns, due to a bug in astropy
 
-        t_template = Table(names=names, dtype=dtypes)
+        t_template = Table(names = names, dtype = dtypes)
 
-        t_data = np.zeros((size,), dtype=t_template.dtype)
+        t_data = np.zeros((size,), dtype = t_template.dtype)
 
-        t = Table(t_data, meta=t_template.meta)
+        t = Table(t_data, meta = t_template.meta)
 
         for colname in tf.all:
             if colname in init_cols.keys():
                 t[colname] = init_cols[colname]
 
     else:
-        t = Table(full_init_cols, names=names, dtype=dtypes)
+        t = Table(full_init_cols, names = names, dtype = dtypes)
 
     return t
 
@@ -322,7 +319,7 @@ def init_table(tf: "SheTableFormat",
 _NON_HEADER_ATTRS = ["table_format", "comments", "all", "init_meta"]
 
 
-class SheTableMeta():
+class SheTableMeta:
     """ Base class for table format metadata.
     """
 
@@ -385,8 +382,7 @@ class SheTableMeta():
         return m
 
 
-class SheTableFormat():
-
+class SheTableFormat:
     # Attributes set directly at init
     meta: SheTableMeta
 
@@ -394,12 +390,22 @@ class SheTableFormat():
     m: SheTableMeta
     __version__: str
 
-    # Attributes initialised empty at init
+    # Attributes initialised at init
     is_optional: Dict[str, bool]
     comments: Dict[str, str]
     dtypes: Dict[str, str]
-    fits_dtypes: Dict[str, bool]
+    fits_dtypes: Dict[str, str]
     lengths: Dict[str, int]
+    all: List[str]
+
+    # Attributes set up at init of child formats
+    child_label: Optional[str] = None
+    parent_is_optional: Optional[Dict[str, bool]] = None
+    parent_comments: Optional[Dict[str, str]] = None
+    parent_dtypes: Optional[Dict[str, str]] = None
+    parent_fits_dtypes: Optional[Dict[str, str]] = None
+    parent_lengths: Optional[Dict[str, int]] = None
+    parent_all: Optional[List[str]] = None
 
     # Fixed attributes (can be changed in derived classes)
     is_base: bool = False
@@ -407,7 +413,7 @@ class SheTableFormat():
 
     def __init__(self,
                  meta: SheTableMeta,
-                 finalize: bool = False):
+                 finalize: bool = False) -> None:
 
         self.meta = meta
         self.m = self.meta
@@ -430,7 +436,7 @@ class SheTableFormat():
         if finalize:
             self._finalize_init()
 
-    def _finalize_init(self):
+    def _finalize_init(self) -> None:
         """ A method to call at the end of any derived init, once all columns have been set up.
         """
 
@@ -443,10 +449,17 @@ class SheTableFormat():
             if not self.is_optional[label]:
                 self.all_required.append(label)
 
-    def set_column_properties(self, name, is_optional=False, comment=None, dtype=">f4", fits_dtype="E",
-                              length=1, unlabelled=False):
+    def set_column_properties(self,
+                              name: str,
+                              is_optional: bool = False,
+                              comment: Optional[str] = None,
+                              dtype: str = ">f4",
+                              fits_dtype: str = "E",
+                              length: int = 1,
+                              unlabelled: bool = False) -> str:
 
-        assert name not in self.is_optional
+        if name in self.is_optional:
+            raise ValueError(f"Column with name {name} initialized more than once.")
 
         self.is_optional[name] = is_optional
         self.comments[name] = comment
@@ -459,7 +472,7 @@ class SheTableFormat():
 
         return name
 
-    def setup_child_table_format(self, child_label):
+    def setup_child_table_format(self, child_label: str) -> None:
 
         # And a quick alias for it
         self.m = self.meta
@@ -510,18 +523,19 @@ class SheTableFormat():
                    size: Optional[int] = None,
                    optional_columns: Optional[List[str]] = None,
                    init_cols: Optional[List[Column]] = None,
-                   **kwargs):
-        """ Initializes a table with a given format. Any extra kwargs are assumed to refer to values to set in the header,
+                   **kwargs) -> Table:
+        """ Initializes a table with a given format. Any extra kwargs are assumed to refer to values to set in the
+        header,
             with the kwarg being the attribute of the table's meta class.
         """
 
-        t = init_table(tf=self,
-                       size=size,
-                       optional_columns=optional_columns,
-                       init_cols=init_cols)
+        t = init_table(tf = self,
+                       size = size,
+                       optional_columns = optional_columns,
+                       init_cols = init_cols)
 
         t.meta = self.m.init_meta(**kwargs)
 
-        assert is_in_format(t, self, verbose=True)
+        assert is_in_format(t, self, verbose = True)
 
         return t
