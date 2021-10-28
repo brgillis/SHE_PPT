@@ -30,6 +30,16 @@ fits_def = "mer.finalCatalog"
 
 logger = getLogger(__name__)
 
+filter_list_ext = ['G_EXT_DECAM', 'R_EXT_DECAM', 'I_EXT_DECAM', 'Z_EXT_DECAM',
+                   'U_EXT_OMEGACAM', 'G_EXT_OMEGACAM', 'R_EXT_OMEGACAM', 'I_EXT_OMEGACAM',
+                   'U_EXT_LSST', 'G_EXT_LSST', 'R_EXT_LSST', 'I_EXT_LSST', 'Z_EXT_LSST',
+                   'U_EXT_MEGACAM', 'R_EXT_MEGACAM',
+                   'G_EXT_JPCAM',
+                   'I_EXT_PANSTARRS', 'Z_EXT_PANSTARRS',
+                   'Z_EXT_HSC']
+
+filter_list = ['VIS', 'Y', 'J', 'H']
+
 
 class MerFinalCatalogMeta(SheTableMeta):
     """
@@ -69,6 +79,11 @@ class MerFinalCatalogFormat(SheTableFormat):
     FLUX_NISP_APER: str
     SHE_FLAG: str
     SEGMENTATION_AREA: str
+    snr: str
+    bg: str
+    colour: str
+    size: str
+    epoch: str
 
     def __init__(self):
         super().__init__(MerFinalCatalogMeta())
@@ -80,16 +95,6 @@ class MerFinalCatalogFormat(SheTableFormat):
         # with setattr(self, "$1"$2, set_column_properties(self, "$1"$2, fits_dtype="$3", comment="$4",
         # is_optional=False))
         # Then finally go in and fix length for arrays, special names we want to keep, and datatypes that aren't 'E'
-
-        filter_list_ext = ['G_EXT_DECAM', 'R_EXT_DECAM', 'I_EXT_DECAM', 'Z_EXT_DECAM',
-                           'U_EXT_OMEGACAM', 'G_EXT_OMEGACAM', 'R_EXT_OMEGACAM', 'I_EXT_OMEGACAM',
-                           'U_EXT_LSST', 'G_EXT_LSST', 'R_EXT_LSST', 'I_EXT_LSST', 'Z_EXT_LSST',
-                           'U_EXT_MEGACAM', 'R_EXT_MEGACAM',
-                           'G_EXT_JPCAM',
-                           'I_EXT_PANSTARRS', 'Z_EXT_PANSTARRS',
-                           'Z_EXT_HSC']
-
-        filter_list = ['VIS', 'Y', 'J', 'H']
 
         # Column names and info
 
@@ -276,6 +281,10 @@ class MerFinalCatalogFormat(SheTableFormat):
         # Galactic E(V-B) error
         setattr(self, "GAL_EBV_ERR", self.set_column_properties(
             "GAL_EBV_ERR", fits_dtype = "E", comment = "mag", is_optional = False))
+
+        for bin_parameter in ("snr", "bg", "colour", "size", "epoch",):
+            setattr(self, bin_parameter, self.set_column_properties(
+                bin_parameter.upper(), is_optional = True, ))
 
         self._finalize_init()
 
