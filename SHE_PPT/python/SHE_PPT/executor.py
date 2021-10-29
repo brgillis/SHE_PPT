@@ -143,13 +143,13 @@ class SheExecutor:
             args: Namespace,
             logger: Optional[Logger] = None,
             profile: Optional[bool] = None,
-            pass_args_dict: bool = False):
+            pass_args_as_dict: bool = False):
 
         # Get a dictionary of the arguments, and determine which type to pass
         d_args: Dict[str, Any] = vars(args)
 
         args_to_pass: Union[Namespace, Dict[str, Any]]
-        if pass_args_dict:
+        if pass_args_as_dict:
             args_to_pass = d_args
         else:
             args_to_pass = args
