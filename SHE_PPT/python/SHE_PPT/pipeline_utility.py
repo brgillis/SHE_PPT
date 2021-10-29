@@ -40,7 +40,7 @@ from .utility import is_any_type_of_none
 
 
 @lru_cache(maxsize = None)
-def task_value(global_enum, task_head):
+def get_task_value(global_enum, task_head):
     """ Given one of the global enums for config options, return the name for the task-specific option.
     """
     if isinstance(global_enum, str):
@@ -50,30 +50,30 @@ def task_value(global_enum, task_head):
     return value.replace(VALIDATION_HEAD, task_head)
 
 
-def cti_gal_value(global_enum):
+def get_cti_gal_value(global_enum):
     """ Given one of the global enums for config options, return the name for the CTI-Gal task-specific option.
     """
-    return task_value(global_enum, SHEAR_BIAS_VALIDATION_HEAD)
+    return get_task_value(global_enum, SHEAR_BIAS_VALIDATION_HEAD)
 
 
-def shear_bias_value(global_enum):
+def get_shear_bias_value(global_enum):
     """ Given one of the global enums for config options, return the name for the CTI-Gal task-specific option.
     """
-    return task_value(global_enum, CTI_GAL_VALIDATION_HEAD)
+    return get_task_value(global_enum, CTI_GAL_VALIDATION_HEAD)
 
 
 @lru_cache(maxsize = None)
-def global_value(task_value, task_head):
+def get_global_value(task_value, task_head):
     """ Reverse of task_value, returning the value - gives the value for the global option given the task option.
     """
     return task_value.replace(task_head, VALIDATION_HEAD)
 
 
 @lru_cache(maxsize = None)
-def global_enum(task_value, task_head):
+def get_global_enum(task_value, task_head):
     """ Reverse of task_value, returning the enum - gives the enum for the global option given the task option.
     """
-    return ValidationConfigKeys(global_value(task_value, task_head))
+    return ValidationConfigKeys(get_global_value(task_value, task_head))
 
 
 def archive_product(product_filename: str,
@@ -167,10 +167,10 @@ def read_reconciliation_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
             The workspace-relative name of the config file.
         workdir : string
             The working directory.
-        parsed_args : Dict[str, Any]
+        d_args : Dict[str, Any]
             Dict of config keys giving values passed at the command line. If these aren't None, they will override
             values in the config file
-        defaults : Dict[str, Any]
+        d_defaults : Dict[str, Any]
             Dict of default values to use if no value (or None) is supplied in the config and no value (or None) is
             supplied in the parsed_args.
     """
@@ -194,7 +194,7 @@ def read_config(config_filename: Optional[str] = None,
                 d_cline_args: Optional[Dict[ConfigKeys, str]] = None,
                 d_defaults: Optional[Dict[ConfigKeys, Any]] = None,
                 d_types: Optional[Dict[ConfigKeys, Type]] = None,
-                parsed_args: Optional[Namespace] = None,
+                parsed_args: Optional[Union[Namespace, Dict[str, Any]]] = None,
                 task_head: Optional[str] = None) -> Dict[ConfigKeys, Any]:
     """ Reads in a generic configuration file to a dictionary. Note that all arguments will be read as strings unless
         a cline_arg value is used.
@@ -215,14 +215,24 @@ def read_config(config_filename: Optional[str] = None,
         d_types: Dict[ConfigKeys, Type]
             Dict of desired types to convert values in the config to. If not provided, all values will be left
             as strings.
-        parsed_args : Namespace
-            Namespace giving values passed at the command line. If these aren't None, they will override
+        parsed_args : Union[Namespace, Dict[str, Any]]
+            Namespace or dict giving values passed at the command line. If these aren't None, they will override
             values in the config file
         task_head: string
             Should only be set if reading configs for a Validation task. In this case, this refers to the "head" of
             the task-specific configuration keys. These task-specific arguments will be used to override the
             global arguments if set to anything other than None.
     """
+
+    # Make sure we have a dictionary of parsed arguments
+    d_args: Dict[str, Any]
+    if parsed_args is None:
+        d_args = {}
+    elif isinstance(parsed_args, dict):
+        d_args = parsed_args
+    else:
+        # Assume parsed_args is a Namespace or similar
+        d_args = vars(parsed_args)
 
     # Use empty dicts for d_cline_args and defaults if None provided
     if d_cline_args is None:
@@ -246,8 +256,8 @@ def read_config(config_filename: Optional[str] = None,
     # Return None if input filename is None
     if is_any_type_of_none(config_filename):
         return _make_config_from_cline_args_and_defaults(config_keys = config_keys,
+                                                         d_args = d_args,
                                                          d_cline_args = d_cline_args,
-                                                         parsed_args = parsed_args,
                                                          d_defaults = d_defaults,
                                                          d_types = d_types)
 
@@ -265,19 +275,19 @@ def read_config(config_filename: Optional[str] = None,
         # If more than one,raise an exception
         if len(l_filenames) == 0:
             d_config = _make_config_from_cline_args_and_defaults(config_keys = config_keys,
+                                                                 d_args = d_args,
                                                                  d_cline_args = d_cline_args,
-                                                                 parsed_args = parsed_args,
                                                                  d_defaults = d_defaults,
                                                                  d_types = d_types, )
         elif len(l_filenames) == 1:
             d_config = _read_config_product(config_filename = l_filenames[0],
                                             workdir = workdir,
                                             config_keys = config_keys,
+                                            d_args = d_args,
                                             d_cline_args = d_cline_args,
-                                            parsed_args = parsed_args,
                                             d_defaults = d_defaults,
-                                            task_head = task_head,
-                                            d_types = d_types, )
+                                            d_types = d_types,
+                                            task_head = task_head, )
         else:
             raise ValueError(
                 "File " + qualified_config_filename + " is a listfile with more than one file listed, and " +
@@ -289,11 +299,11 @@ def read_config(config_filename: Optional[str] = None,
         d_config = _read_config_product(config_filename = config_filename,
                                         workdir = workdir,
                                         config_keys = config_keys,
+                                        d_args = d_args,
                                         d_cline_args = d_cline_args,
-                                        parsed_args = parsed_args,
                                         d_defaults = d_defaults,
-                                        task_head = task_head,
-                                        d_types = d_types)
+                                        d_types = d_types,
+                                        task_head = task_head)
 
     return d_config
 
@@ -322,11 +332,11 @@ def _read_config_product(config_filename: str,
 
 def _read_config_file(qualified_config_filename: str,
                       config_keys: Tuple[EnumMeta, ...],
+                      d_args: Dict[str, Any],
                       d_cline_args: Optional[Dict[ConfigKeys, str]],
-                      parsed_args: Optional[Namespace],
                       d_defaults: Dict[ConfigKeys, Any],
-                      task_head: Optional[str] = None,
-                      d_types: Optional[Dict[str, Type]] = None, ) -> Dict[ConfigKeys, Any]:
+                      d_types: Optional[Dict[str, Type]] = None,
+                      task_head: Optional[str] = None, ) -> Dict[ConfigKeys, Any]:
     """ Reads in a configuration text file.
     """
 
@@ -366,7 +376,7 @@ def _read_config_file(qualified_config_filename: str,
                     raise
 
                 # Check if this is a valid task-specific key
-                global_key_string = global_value(key_string, task_head)
+                global_key_string = get_global_value(key_string, task_head)
                 try:
                     enum_key = _check_key_is_valid(global_key_string, config_keys)
                 except Exception:
@@ -398,12 +408,12 @@ def _read_config_file(qualified_config_filename: str,
             continue
         _check_enum_key_is_valid(enum_key, config_keys)
         try:
-            val_from_cline_args = getattr(parsed_args, d_cline_args[enum_key])
-        except AttributeError:
+            val_from_cline_args = d_args[d_cline_args[enum_key]]
+        except KeyError:
             # If its not present, treat as None and skip
             continue
         if not is_any_type_of_none(val_from_cline_args):
-            config_dict[enum_key] = getattr(parsed_args, d_cline_args[enum_key])
+            config_dict[enum_key] = val_from_cline_args
 
     # Convert the types in the config as desired
     config_dict = convert_config_types(config_dict, d_types)
@@ -430,11 +440,11 @@ def _make_config_from_defaults(config_keys: Tuple[EnumMeta, ...],
 
 
 def _make_config_from_cline_args_and_defaults(config_keys: Tuple[EnumMeta, ...],
+                                              d_args: Dict[str, Any],
                                               d_cline_args: Dict[ConfigKeys, str],
-                                              parsed_args: Namespace,
                                               d_defaults: Dict[ConfigKeys, Any],
-                                              d_types: Optional[Dict[ConfigKeys, Type]] = None) -> Dict[
-    ConfigKeys, Any]:
+                                              d_types: Optional[Dict[ConfigKeys, Type]] = None) -> \
+        Dict[ConfigKeys, Any]:
     """ Make a pipeline config dict from the cline-args and defaults, preferring
         the cline-args if they're available.
     """
@@ -443,7 +453,7 @@ def _make_config_from_cline_args_and_defaults(config_keys: Tuple[EnumMeta, ...],
                                              d_defaults = d_defaults)
 
     # Return if we don't have any parsed_args to deal with
-    if not (d_cline_args or parsed_args):
+    if not (d_cline_args or d_args):
         return config_dict
 
     for enum_key in d_cline_args:
@@ -453,12 +463,12 @@ def _make_config_from_cline_args_and_defaults(config_keys: Tuple[EnumMeta, ...],
 
         # If attribute isn't present, treat as None
         try:
-            val_from_cline_args = getattr(parsed_args, d_cline_args[enum_key])
-        except AttributeError:
+            val_from_cline_args = d_args[d_cline_args[enum_key]]
+        except KeyError:
             val_from_cline_args = None
 
         if not is_any_type_of_none(val_from_cline_args):
-            config_dict[enum_key] = getattr(parsed_args, d_cline_args[enum_key])
+            config_dict[enum_key] = val_from_cline_args
 
     # Convert the types in the config as desired
     config_dict = convert_config_types(config_dict, d_types)
@@ -501,7 +511,7 @@ def _check_key_is_valid(key: str,
             break
 
     if not enum:
-        err_string = (f"Invalid pipeline config key found: {key}. Allowed keys are: ")
+        err_string = f"Invalid pipeline config key found: {key}. Allowed keys are: "
         for config_key_enum in config_keys:
             for allowed_key in config_key_enum:
                 err_string += "\n  " + allowed_key.value
@@ -708,7 +718,7 @@ def _convert_tuple_type(pipeline_config: Dict[ConfigKeys, Any],
     """
 
     # Skip if not present in the config
-    if not enum_key in pipeline_config or pipeline_config[enum_key] is None:
+    if enum_key not in pipeline_config or pipeline_config[enum_key] is None:
         return
 
     if not tuple_type[0] == list:
@@ -759,7 +769,7 @@ def _convert_type(pipeline_config: Dict[ConfigKeys, Any],
     """ Checks if a key is in the pipeline_config. If so, converts the value to the desired type.
     """
 
-    if not enum_key in pipeline_config:
+    if enum_key not in pipeline_config:
         return
 
     value = pipeline_config[enum_key]
