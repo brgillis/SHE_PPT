@@ -788,6 +788,19 @@ def read_table(filename: str,
     return t
 
 
+def read_table_from_product(product_filename: str,
+                            workdir: str = ".",
+                            log_info: bool = False,
+                            *args, **kwargs) -> Table:
+    """ Convenience function to read a data table given the filename of the xml data product which points to it.
+    """
+
+    p = read_xml_product(product_filename, workdir = workdir, log_info = log_info)
+    table_filename: str = p.get_data_filename()
+
+    return read_table(table_filename, workdir = workdir, log_info = log_info, *args, **kwargs)
+
+
 def write_fits(hdu_list: HDUList,
                filename: str,
                workdir: str = ".",
