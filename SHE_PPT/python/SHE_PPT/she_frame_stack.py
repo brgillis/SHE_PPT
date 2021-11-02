@@ -918,12 +918,17 @@ class SHEFrameStack():
 
                     logger.info("Finished pruning list of galaxy objects to loop over")
 
-            except SheFileReadError as e:
-                logger.warning(str(e))
+            except SheFileReadError as e1:
 
-                # See if it's just a single catalogue, which we can handle
-                detections_product = read_xml_product(
-                    os.path.join(workdir, detections_listfile_filename))
+                logger.debug("Trying to read detections as single product instead of listfile.")
+                try:
+                    # See if it's just a single catalogue, which we can handle
+                    detections_product = read_xml_product(
+                        os.path.join(workdir, detections_listfile_filename))
+                except SheFileReadError as e2:
+                    raise e2 from e1
+
+                logger.debug("Successfully read detections as single product instead of listfile.")
                 detections_catalogue = table.Table.read(
                     os.path.join(workdir, detections_product.get_data_filename()))
 
