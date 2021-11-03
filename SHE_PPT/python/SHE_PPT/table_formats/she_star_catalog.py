@@ -106,7 +106,7 @@ class SheStarCatalogFormat(SheTableFormat):
 
 
 # Define an instance of this object that can be imported
-star_catalog_format = SheStarCatalogFormat()
+SHE_STAR_CAT_TF = SheStarCatalogFormat()
 
 # And a convenient alias for it
-tf = star_catalog_format
+TF = SHE_STAR_CAT_TF
