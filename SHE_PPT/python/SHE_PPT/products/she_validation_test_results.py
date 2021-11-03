@@ -27,6 +27,7 @@ __updated__ = "2021-08-16"
 from copy import deepcopy
 
 from ST_DataModelBindings.dpd.mer.raw.finalcatalog_stub import dpdMerFinalCatalog
+from ST_DataModelBindings.dpd.she.raw.starcatalog_stub import dpdSheStarCatalog
 from ST_DataModelBindings.dpd.she.validationtestresults_stub import dpdSheValidationTestResults
 from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
 from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
@@ -75,34 +76,30 @@ def create_dpd_she_validation_test_results(reference_product = None,
 
     if reference_product is not None:
         if isinstance(reference_product, dpdMerFinalCatalog):
-            # Using a tile as reference, so set attributes that don't apply to None
-            data_attr.ExposureProductId = None
-            data_attr.ObservationId = None
-            data_attr.PointingId = None
-            data_attr.NumberExposures = None
 
-            # And set the Tile ID
-            data_attr.TileId = reference_product.Data.TileIndex
+            _init_for_tile(data_attr, tile_id = reference_product.Data.TileIndex)
 
         elif isinstance(reference_product, dpdVisCalibratedFrame):
-            # Using an exposure as reference, so delete attributes that don't apply
-            data_attr.TileId = None
-            data_attr.NumberExposures = None
 
-            # And set the values that do apply
-            data_attr.ExposureProductId = reference_product.Header.ProductId
-            data_attr.ObservationId = reference_product.Data.ObservationSequence.ObservationId
-            data_attr.PointingId = reference_product.Data.ObservationSequence.PointingId
+            _init_for_exposure(data_attr,
+                               exp_product_id = reference_product.Header.ProductId,
+                               obs_id = reference_product.Data.ObservationSequence.ObservationId,
+                               pointing_id = reference_product.Data.ObservationSequence.PointingId)
+
+        elif isinstance(reference_product, dpdSheStarCatalog):
+
+            _init_for_exposure(data_attr,
+                               exp_product_id = reference_product.Data.ExposureProductIdList[0],
+                               obs_id = reference_product.Data.ObservationId,
+                               pointing_id = reference_product.Data.PointingIdList[0])
 
         elif isinstance(reference_product, dpdVisStackedFrame):
-            # Using an observation as reference, so delete attributes that don't apply
-            data_attr.TileId = None
-            data_attr.PointingId = None
-            data_attr.ExposureProductId = None
 
-            # And set the values that do apply
-            data_attr.ObservationId = reference_product.Data.ObservationId
-            data_attr.NumberExposures = num_exposures
+            obs_id = reference_product.Data.ObservationId
+
+            _init_for_observation(data_attr,
+                                  obs_id = reference_product.Data.ObservationId,
+                                  num_exposures = num_exposures)
 
         else:
             raise TypeError("Unrecognized type of reference product: " + str(type(reference_product)))
@@ -112,6 +109,48 @@ def create_dpd_she_validation_test_results(reference_product = None,
         data_attr.NumberExposures = num_exposures
 
     return dpd_she_validation_test_results
+
+
+def _init_for_observation(data_attr, obs_id, num_exposures):
+    """Init the Data attr using an observation product as reference.
+    """
+
+    # Using an observation as reference, so delete attributes that don't apply
+    data_attr.TileId = None
+    data_attr.PointingId = None
+    data_attr.ExposureProductId = None
+
+    # And set the values that do apply
+    data_attr.ObservationId = obs_id
+    data_attr.NumberExposures = num_exposures
+
+
+def _init_for_exposure(data_attr, exp_product_id, obs_id, pointing_id):
+    """Init the Data attr using an exposure product as reference.
+    """
+
+    # Using an exposure as reference, so delete attributes that don't apply
+    data_attr.TileId = None
+    data_attr.NumberExposures = None
+
+    # And set the values that do apply
+    data_attr.ExposureProductId = exp_product_id
+    data_attr.ObservationId = obs_id
+    data_attr.PointingId = pointing_id
+
+
+def _init_for_tile(data_attr, tile_id):
+    """Init the Data attr using a tile product as reference.
+    """
+
+    # Using a tile as reference, so set attributes that don't apply to None
+    data_attr.ExposureProductId = None
+    data_attr.ObservationId = None
+    data_attr.PointingId = None
+    data_attr.NumberExposures = None
+
+    # And set the Tile ID
+    data_attr.TileId = tile_id
 
 
 # Add a useful alias
