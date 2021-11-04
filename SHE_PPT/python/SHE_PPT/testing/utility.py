@@ -30,7 +30,9 @@ from py._path.local import LocalPath
 from ElementsServices.DataSync import DataSync
 from SHE_PPT import mdb
 from SHE_PPT.argument_parser import CA_LOGDIR, CA_PIPELINE_CONFIG, CA_WORKDIR
-from SHE_PPT.constants.test_data import MDB_PRODUCT_FILENAME, TEST_DATA_LOCATION, VIS_CALIBRATED_FRAME_LISTFILE_FILENAME
+from SHE_PPT.constants.test_data import (MDB_PRODUCT_FILENAME, MER_FINAL_CATALOG_LISTFILE_FILENAME, TEST_DATA_LOCATION,
+                                         VIS_CALIBRATED_FRAME_LISTFILE_FILENAME, )
+from SHE_PPT.she_frame_stack import SHEFrameStack
 from SHE_PPT.testing.mock_pipeline_config import MockPipelineConfigFactory
 
 MSG_CANT_FIND_FILE = "Cannot find file: %s"
@@ -41,9 +43,14 @@ class SheTestCase:
     """
 
     args: Namespace
+
     workdir: Optional[str] = None
     logdir: Optional[str] = None
+    
     mdb_filename: Optional[str] = None
+
+    data_stack: Optional[SHEFrameStack] = None
+
     pipeline_config_factory_type = MockPipelineConfigFactory
     mock_pipeline_config_factory: Optional[MockPipelineConfigFactory] = None
 
@@ -76,6 +83,14 @@ class SheTestCase:
         sync.download()
 
         cls._finalize_download(VIS_CALIBRATED_FRAME_LISTFILE_FILENAME, sync)
+
+        # Read in the test data
+        cls.data_stack = SHEFrameStack.read(exposure_listfile_filename = VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
+                                            detections_listfile_filename = MER_FINAL_CATALOG_LISTFILE_FILENAME,
+                                            workdir = cls.workdir,
+                                            clean_detections = False,
+                                            memmap = True,
+                                            mode = 'denywrite')
 
     @classmethod
     def _finalize_download(cls,
