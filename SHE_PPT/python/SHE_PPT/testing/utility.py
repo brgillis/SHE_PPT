@@ -28,6 +28,7 @@ import pytest
 from py._path.local import LocalPath
 
 from ElementsServices.DataSync import DataSync
+from SHE_PPT import mdb
 from SHE_PPT.argument_parser import CA_LOGDIR, CA_PIPELINE_CONFIG, CA_WORKDIR
 from SHE_PPT.constants.test_data import MDB_PRODUCT_FILENAME, TEST_DATA_LOCATION, VIS_CALIBRATED_FRAME_LISTFILE_FILENAME
 from SHE_PPT.testing.mock_pipeline_config import MockPipelineConfigFactory
@@ -36,7 +37,7 @@ MSG_CANT_FIND_FILE = "Cannot find file: %s"
 
 
 class SheTestCase:
-    """ Base class for test cases, which provides various utility method.
+    """ Base class for test cases, which provides various utility methods.
     """
 
     args: Namespace
@@ -64,6 +65,8 @@ class SheTestCase:
         cls.mdb_filename = MDB_PRODUCT_FILENAME
 
         cls._finalize_download(cls.mdb_filename, sync)
+
+        mdb.init(os.path.join(cls.workdir, cls.mdb_filename))
 
     @classmethod
     def _download_datastack(cls):
