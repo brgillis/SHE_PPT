@@ -22,7 +22,7 @@ __updated__ = "2021-08-16"
 # Boston, MA 02110-1301 USA
 import os
 from argparse import Namespace
-from typing import Optional
+from typing import Any, Dict, Optional
 
 import pytest
 from py._path.local import LocalPath
@@ -30,6 +30,7 @@ from py._path.local import LocalPath
 from ElementsServices.DataSync import DataSync
 from SHE_PPT import mdb
 from SHE_PPT.argument_parser import CA_LOGDIR, CA_PIPELINE_CONFIG, CA_WORKDIR
+from SHE_PPT.constants.config import ConfigKeys
 from SHE_PPT.constants.test_data import (MDB_PRODUCT_FILENAME, MER_FINAL_CATALOG_LISTFILE_FILENAME, TEST_DATA_LOCATION,
                                          VIS_CALIBRATED_FRAME_LISTFILE_FILENAME, )
 from SHE_PPT.she_frame_stack import SHEFrameStack
@@ -42,17 +43,27 @@ class SheTestCase:
     """ Base class for test cases, which provides various utility methods.
     """
 
-    args: Namespace
+    _args: Optional[Namespace] = None
 
     workdir: Optional[str] = None
     logdir: Optional[str] = None
-    
+
     mdb_filename: Optional[str] = None
 
     data_stack: Optional[SHEFrameStack] = None
 
+    pipeline_config: Optional[Dict[ConfigKeys, Any]] = None
+
     pipeline_config_factory_type = MockPipelineConfigFactory
     mock_pipeline_config_factory: Optional[MockPipelineConfigFactory] = None
+
+    # Properties
+
+    @property
+    def args(self) -> Namespace:
+        if self._args is None:
+            self._args = self._make_mock_args()
+        return self._args
 
     # Class methods, for when setup/teardown_class can be used
 
@@ -76,7 +87,8 @@ class SheTestCase:
         mdb.init(os.path.join(cls.workdir, cls.mdb_filename))
 
     @classmethod
-    def _download_datastack(cls):
+    def _download_datastack(cls,
+                            read_in: bool = True, ):
         """ Download the test data stack from WebDAV.
         """
         sync = DataSync("testdata/sync.conf", "testdata/test_data_stack.txt")
@@ -84,13 +96,14 @@ class SheTestCase:
 
         cls._finalize_download(VIS_CALIBRATED_FRAME_LISTFILE_FILENAME, sync)
 
-        # Read in the test data
-        cls.data_stack = SHEFrameStack.read(exposure_listfile_filename = VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
-                                            detections_listfile_filename = MER_FINAL_CATALOG_LISTFILE_FILENAME,
-                                            workdir = cls.workdir,
-                                            clean_detections = False,
-                                            memmap = True,
-                                            mode = 'denywrite')
+        # Read in the test data if desired
+        if read_in:
+            cls.data_stack = SHEFrameStack.read(exposure_listfile_filename = VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
+                                                detections_listfile_filename = MER_FINAL_CATALOG_LISTFILE_FILENAME,
+                                                workdir = cls.workdir,
+                                                clean_detections = False,
+                                                memmap = True,
+                                                mode = 'denywrite')
 
     @classmethod
     def _finalize_download(cls,
@@ -115,10 +128,10 @@ class SheTestCase:
 
     # Convenience methods for when setting up with autouse = True
 
-    def _make_mock_args(self):
+    def _make_mock_args(self) -> Namespace:
         """Overridable method to create a mock self.args Namespace. Not necessary to implement if no args are used.
         """
-        self.args = Namespace()
+        return Namespace()
 
     def _setup_workdir_from_tmpdir(self, tmpdir: LocalPath):
         """ Sets up workdir and logdir based on a tmpdir fixture.
@@ -141,17 +154,18 @@ class SheTestCase:
         setattr(self.args, CA_WORKDIR, self.workdir)
         setattr(self.args, CA_LOGDIR, self.logdir)
 
-    def _make_pipeline_config(self):
+    def _write_mock_pipeline_config(self):
         """ Write the pipeline config we'll be using and note its filename.
         """
         self.mock_pipeline_config_factory = self.pipeline_config_factory_type(workdir = self.workdir)
         self.mock_pipeline_config_factory.write(self.workdir)
+        self.pipeline_config = self.mock_pipeline_config_factory.pipeline_config
+
         setattr(self.args, CA_PIPELINE_CONFIG, self.mock_pipeline_config_factory.file_namer.filename)
 
     def _setup(self, tmpdir: Optional[LocalPath] = None):
         """ Implements common setup when using a tmpdir.
         """
         self._setup_workdir_from_tmpdir(tmpdir)
-        self._make_mock_args()
         self._set_workdir_args()
-        self._make_pipeline_config()
+        self._write_mock_pipeline_config()
