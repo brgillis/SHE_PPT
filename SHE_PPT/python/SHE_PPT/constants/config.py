@@ -142,6 +142,7 @@ class AnalysisConfigKeys(ConfigKeys):
     PSF_MAX_FIT_ITERATIONS = PSF_HEAD + "max_fit_iterations"
     PSF_DET_TO_FIT = PSF_HEAD + "det_to_fit"
     PSF_FIT_CHECKPOINT_ITER = PSF_HEAD + "checkpoint_iter"
+    PSF_MODEL_MASK_SIZE = PSF_HEAD + "model_mask_size"
     # Options for SHE_CTE_ObjectIdSplit
 
     OID_BATCH_SIZE = OBJECT_ID_SPLIT_HEAD + "batch_size"
