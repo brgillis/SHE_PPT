@@ -63,6 +63,7 @@ OBJECT_ID_SPLIT_HEAD = "SHE_CTE_ObjectIdSplit_"
 SUBOBJECT_ID_SPLIT_HEAD = "SHE_CTE_SubObjectIdSplit_"
 PSF_HEAD = "SHE_PSFToolkit_"
 ESTIMATE_SHEAR_HEAD = "SHE_CTE_EstimateShear_"
+LENSMC_HEAD = "SHE_LensMC_"
 SHEAR_ESTIMATES_MERGE_HEAD = "SHE_CTE_ShearEstimatesMerge_"
 TU_MATCH_HEAD = "SHE_Validation_MatchToTU_"
 
@@ -143,6 +144,7 @@ class AnalysisConfigKeys(ConfigKeys):
     PSF_DET_TO_FIT = PSF_HEAD + "det_to_fit"
     PSF_FIT_CHECKPOINT_ITER = PSF_HEAD + "checkpoint_iter"
     PSF_MODEL_MASK_SIZE = PSF_HEAD + "model_mask_size"
+
     # Options for SHE_CTE_ObjectIdSplit
 
     OID_BATCH_SIZE = OBJECT_ID_SPLIT_HEAD + "batch_size"
@@ -159,8 +161,30 @@ class AnalysisConfigKeys(ConfigKeys):
 
     ES_METHODS = ESTIMATE_SHEAR_HEAD + "methods"
     ES_CHAINS_METHOD = ESTIMATE_SHEAR_HEAD + "chains_method"
-    ES_FAST_MODE = ESTIMATE_SHEAR_HEAD + "fast_mode"
     ES_MEMMAP_IMAGES = ESTIMATE_SHEAR_HEAD + "memmap_images"
+
+    # Options for SHE_LensMC
+
+    LENSMC_STAMP_SIZE = LENSMC_HEAD + "stamp_size"
+    LENSMC_X_BUFFER = LENSMC_HEAD + "x_buffer"
+    LENSMC_Y_BUFFER = LENSMC_HEAD + "y_buffer"
+    LENSMC_DILATE_MASK = LENSMC_HEAD + "dilate_mask"
+    LENSMC_HL_TO_EXP = LENSMC_HEAD + "hl_to_exp"
+    LENSMC_N_BULGE = LENSMC_HEAD + "n_bulge"
+    LENSMC_N_DISC = LENSMC_HEAD + "n_disc"
+    LENSMC_E_MAX = LENSMC_HEAD + "e_max"
+    LENSMC_RE_MAX = LENSMC_HEAD + "re_max"
+    LENSMC_DELTA_MAX = LENSMC_HEAD + "delta_max"
+    LENSMC_E_FLAG = LENSMC_HEAD + "e_flag"
+    LENSMC_RE_FLAG = LENSMC_HEAD + "re_flag"
+    LENSMC_DELTA_FLAG = LENSMC_HEAD + "delta_flag"
+    LENSMC_DISC_ONLY = LENSMC_HEAD + "disc_only"
+    LENSMC_PSF_OVERSAMPLING = LENSMC_HEAD + "psf_oversampling"
+    LENSMC_SEED = LENSMC_HEAD + "seed"
+    LENSMC_SHAPE_NOISE = LENSMC_HEAD + "shape_noise"
+    LENSMC_FAST_MODE = LENSMC_HEAD + "fast_mode"
+    LENSMC_ONLY_VIS_DETECTED = LENSMC_HEAD + "only_vis_detected"
+    LENSMC_MONITOR = LENSMC_HEAD + "monitor"
 
     # Options for SHE_CTE_ShearEstimatesMerge
 
