@@ -85,8 +85,8 @@ N/A
 * [SHE_MomentsML](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_MomentsML)
 * [SHE_CTE](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_CTE)
 * [SHE_IAL_Pipelines](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_IAL_Pipelines)
-* [SHE_MER]
-* [SHE_PSFToolkit]
+* [SHE_MER](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_MER)
+* [SHE_PSFToolkit]()
 * etc
 
 ### Dependant Pipelines
