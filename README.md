@@ -9,40 +9,44 @@ This very simple repository aims to create a template for documentation (README 
 > `Software profile should be one of "develop", "release-candidate", "release"`
 
 * Processing Element Name: PF-SHE
-* Project Name: SHE_MyProject
+* Project Name: SHE_PPT
 * Profile: develop
-* Version: 0.5 (08/11/2021)
+* Version: 8.11 (08/11/2021)
 
 ## Contributors
 ### Active Contributors
 > `Here we add names of developers who need to be informed once a merge request (MR) or pull request (PR) is made`
 
-* Arthur Loureiro (arthur.loureiro@ucl.ac.uk)
 * Bryan Gillis (b.gillis@roe.ac.uk)
-* Keith Noddle (keith.noddle@ed.ac.uk)
+* Malte Tewes (mtewes@astro.uni-bonn.de)
+* Nicholas Cross (njc@roe.ac.uk)
+* Giuseppe Condego (giuseppe.congedo@ed.ac.uk)
+* Gordon Gibb (gordon.gibb@ed.ac.uk)
 
 ### Other Contributors
 > `Add names of past or inactive contributors that do not need to be informed of MR or PR`
 
-* Left Forindustry (email@email.com)
-* Ina Happierplace (ina.h@gmail.com)
+* Katie Eckhard ()
 
 ## Purpose
 > `Describe here in more detail what are the goals of this repository as well as the expected outputs`
 
-This repository contains a template documentation, produces no outputs but the following items are here as an example:
-1. An `.xml` file which contains bias measurements
-2. Several `.fits` files with image simulations used to estimate biases
-3. A picture of a cat for internet memes
+This repository contains general SHE functions, classes and product definitions. Some important examples are:
+
+1. `SHE_frame_stack`,  a class that produces an instance of the image data, the background, flag, weight, and segmentation images and tools to extract postage stamps for object lists.  
+2. the `.xml` product definition and `.fits` table definition code for all SHE data products and VIS, MER and other input data products.
+3. Pipeline configuration code. 
 
 ## Relevant Documents
 > `Boilerplate section which links any Euclid related documents that are relevant for the project`
 
-* [RSD](link here)
-* [SDD]()
-* [VP/STS]()
-* [STP/STR]()
-* Any other relevant documents
+* [RSD](https://euclid.roe.ac.uk/attachments/download/54815)
+* [SDD](https://euclid.roe.ac.uk/attachments/download/54782/EUCL-IFA-DDD-8-002.p
+df)
+* [VP/STS](https://euclid.roe.ac.uk/attachments/download/54785/EUCL-CEA-PL-8-001
+_v1.44-Euclid-SGS-SHE-Validation_Plan_STS.pdf)
+* [STP/STR](https://euclid.roe.ac.uk/attachments/download/54784/EUCL-IFA-TP-8-00
+2_v1-0-0.pdf)
 
 ## Dependencies
 
@@ -50,11 +54,7 @@ This repository contains a template documentation, produces no outputs but the f
 > `Describe here any dependencies on Euclid projects managed by PF-SHE. Most direct dependencies should be at the top, with progressively more indirect dependencies toward the bottom, or alphabetically when otherwise equal.`
 > ` Where possible, please add links to repositories or relevant gitlab codes`
 
-* [SHE_CTE 8.3](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_CTE)
-* [SHE_LensMC 3.3](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_LensMC)
-* [SHE_MomentsML 8.2](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_MomentsML)
-* [SHE_PPT 8.11](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT)
-* etc
+N/A
 
 ### External Euclid Dependencies
 > `Describe here any dependencies on Euclid projects managed outside PF-SHE. Most direct dependencies should be at the top, with progressively more indirect dependencies toward the bottom, or alphabetically when otherwise equal.`
@@ -75,7 +75,6 @@ This repository contains a template documentation, produces no outputs but the f
 ```
 - astropy 3.2.1
 - numpy 1.17.2
-- etc
 ```
 
 ### Dependant Projects
@@ -86,6 +85,8 @@ This repository contains a template documentation, produces no outputs but the f
 * [SHE_MomentsML](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_MomentsML)
 * [SHE_CTE](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_CTE)
 * [SHE_IAL_Pipelines](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_IAL_Pipelines)
+* [SHE_MER]
+* [SHE_PSFToolkit]
 * etc
 
 ### Dependant Pipelines
