@@ -1,4 +1,4 @@
-# SGS Documentation Template
+# SGS SHE_PPT Documentation
 > `This, is an example of a header README.md, the aim is to briefly describe with a few sentences what the repository does.`
 > `This is heavily based on what Lee did for PK-WL before he left and it was very efficient for other devs to pick up from where he left`
 > `This is an easy-to-implement Markdown version of documentation. This repo also demonstrates how to make documentation which can be compiled by using 'make doc' with the Elements builder. See the files in the 'doc' folder of this project for how to set up this documentation (using the same content, but in .rst format instead of .md). You can see how that looks by cloning this project within a LODEEN environment and running 'make doc' in the root folder. This will compile the files in the 'doc' folder into .html files in the build.../doc/sphinx folder. Open 'index.html' there with your browser of choice.`
@@ -41,12 +41,9 @@ This repository contains general SHE functions, classes and product definitions.
 > `Boilerplate section which links any Euclid related documents that are relevant for the project`
 
 * [RSD](https://euclid.roe.ac.uk/attachments/download/54815)
-* [SDD](https://euclid.roe.ac.uk/attachments/download/54782/EUCL-IFA-DDD-8-002.p
-df)
-* [VP/STS](https://euclid.roe.ac.uk/attachments/download/54785/EUCL-CEA-PL-8-001
-_v1.44-Euclid-SGS-SHE-Validation_Plan_STS.pdf)
-* [STP/STR](https://euclid.roe.ac.uk/attachments/download/54784/EUCL-IFA-TP-8-00
-2_v1-0-0.pdf)
+* [SDD](https://euclid.roe.ac.uk/attachments/download/54782/EUCL-IFA-DDD-8-002.pdf)
+* [VP/STS](https://euclid.roe.ac.uk/attachments/download/54785/EUCL-CEA-PL-8-001_v1.44-Euclid-SGS-SHE-Validation_Plan_STS.pdf)
+* [STP/STR](https://euclid.roe.ac.uk/attachments/download/54784/EUCL-IFA-TP-8-002_v1-0-0.pdf)
 
 ## Dependencies
 
@@ -81,13 +78,15 @@ N/A
 > `Add here a list of all projects which depend on this project either directly or indirectly. These are the projects which will be at-risk of disruption due to changes in this project. Most direct dependants should be listed first (e.g. they call a function provided by this project), followed by more indirect dependants (e.g. they call a function provided by project B, which calls a function provided by this project), with dependants listed alphabetically when otherwise equal.`
 > ` Where possible, please add links to repositories or relevant gitlab codes`
 
+* [SHE_MER](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_MER)
+* [SHE_PSFToolkit](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PSFToolkit)
 * [SHE_LensMC](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_LensMC)
 * [SHE_MomentsML](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_MomentsML)
+* [SHE_GST](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_GST)
+* [SHE_Validation](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_Validation)
 * [SHE_CTE](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_CTE)
 * [SHE_IAL_Pipelines](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_IAL_Pipelines)
-* [SHE_MER](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_MER)
-* [SHE_PSFToolkit]()
-* etc
+
 
 ### Dependant Pipelines
 > `Add here a list of all pipelines which use code from this project either directly or indirectly. These are the pipelines which will be at-risk of disruption due to changes in this project. Pipelines should be listed alphabetically.`
@@ -95,8 +94,9 @@ N/A
 
 * [SHE Analysis](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_IAL_Pipelines/-/blob/develop/SHE_Pipeline/auxdir/SHE_Shear_Analysis/PipScript_SHE_Shear_Analysis.py) 
 * [Shear Calibration](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_IAL_Pipelines/-/blob/develop/SHE_Pipeline/auxdir/SHE_Shear_Calibration/PipScript_SHE_Shear_Calibration.py)
-* [SHE Global Validation](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_IAL_Pipelines/-/blob/develop/SHE_Pipeline/auxdir/SHE_Global_Validation/PipDef_SHE_Global_Validation.xml)
-* etc.
+* [SHE Global Validation](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_IAL_Pipelines/-/blob/develop/SHE_Pipeline/auxdir/SHE_Global_Validation/PipScript_SHE_Global_Validation.py)
+* [SHE_Scaling_Experiments](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_IAL_Pipelines/-/blob/develop/SHE_Pipeline/auxdir/SHE_Scaling_Experiments/PipScript_SHE_Scaling_Experiments.py)
+* [SHE_Shear_Reconcilation](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_IAL_Pipelines/-/blob/develop/SHE_Pipeline/auxdir/SHE_Shear_Reconciliation/PipScript_SHE_Shear_Reconciliation.py)
 
 ## Installation
 > `Boilerplate section which explains how to install any Elements program. Only the repository location should be changed here for each project.`
@@ -105,8 +105,8 @@ All Euclid projects will be deployed via cvmfs. If this is installed and set up,
 
 ```bash
 cd ${HOME}/Work/Projects
-git clone https://gitlab.euclid-sgs.uk/pf-she/she_myproject.git
-cd she_myproject
+git clone git@gitlab.euclid-sgs.uk:PF-SHE/SHE_PPT.git
+cd SHE_PPT
 git checkout <desired branch or tag>
 make
 make test
@@ -116,11 +116,12 @@ make install
 ## Main Programs Available
 > `Describe here each executable Elements program provided by this project.`
 
-* [`SHE_MyProject_GenCatPic`](#she_myproject_gencatpic): downloads the picture of a cat
-* [`SHE_MyProject_ShowCatPic`](#she_myproject_showcatpic): shows the user the picture of a cat
+N/A
 
 ## Running the software
 > `for each of the codes described previously, the aim here is to describe each option, input, and output of the program as well as how to run it using Elements.`
+
+N/A
 
 ### `SHE_MyProject_GenCatPic`
 >`(Optional) a more careful description of what the program does`
