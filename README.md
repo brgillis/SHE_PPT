@@ -135,18 +135,50 @@ These tools are used throughout the SHE project, and are necessary for use with 
 
 ### Details of `table_formats`
 
-`table_formats` is a directory containing a set of files, e.g. `she_psf_model_image.py` (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/table_formats/she_psf_model_image.py), that generates a correct FITS table with the necessary header keys. Most of the common parts of these files are contained in the table_utility.py module (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/table_utility.py).
-
-a binding to the data model with additional functionality, such as `create_dpd_she_psf_model_image` which will generate a new data product for the PSF model. These tools are used throughout the SHE project. `products` contains files for all data products used in SHE, including relevant VIS, MER and other data products. 
-
-
-
-
+`table_formats` is a directory containing a set of files, e.g. `she_psf_model_image.py` (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/table_formats/she_psf_model_image.py), that generates a correct FITS table with the necessary header keys. Most of the common parts of these files are contained in the table_utility.py module (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/table_utility.py). The functions allow the user to check if the table is in the correct format, create an initial table, add rows. These modules are used throughout SHE whenever new data tables are created.
 
 ## Running the software
 > `for each of the codes described previously, the aim here is to describe each option, input, and output of the program as well as how to run it using Elements.`
 
-### SHEFrameStack
+### `SHEFrameStack`
+
+This does not have a main executable, but this class structure is set up using the `.read()` function, which has the following inputs.  
+
+**Inputs**
+
+|  **Argument** |**Description** | **Required** | **Default** |
+| :----------------   | :--------------- | :----------: | :----------:|
+| `--mer_tile_listfile` `<filename>`     | `.json` listfile (Cardinality 1-8) list of MER tile segmentation images `.xml` files. | yes    | N/A         |
+| `--vis_prod_filename` `<filename>`     | `.xml` file Container for VIS image file. | yes    | N/A         |
+
+| `exposure_listfile_filename` `filename` | `.json` Filename of the listfile pointing to the exposure image data products. | yes? | N/A |
+        
+
+bkg_listfile_filename : str
+            Filename of the listfile pointing to the exposure background data products
+        seg_listfile_filename : str
+            Filename of the listfile pointing to the exposure segmentation map files
+        stacked_image_product_filename :frame_prod str
+            Filename of the stacked image data product
+        stacked_bkg_product_filename : str
+            Filename of the stacked background data product
+        stacked_seg_filename : str
+            Filename of the stacked segmentation map file
+        psf_listfile_filename : str
+            Filename of the listfile pointing to the psf data products
+        detections_listfile_filename : str
+            Filename of the listfile pointing to the detections catalog data products
+        object_id_list_product_filename : str
+            Filename of the product containing the object IDs we want to process. If provided, the detections table
+            will be pruned to only contain these objects, and only detectors with at least one object in from the
+            list in them will be loaded.
+        workdir : str
+            Work directory
+        save_products : bool
+            If set to True, will save references to data products. Otherwise these references will be None
+        load_images : bool
+            If set to False, image data will not be loaded, and filehandles will be closed.
+
 
     Attributes
     ----------
