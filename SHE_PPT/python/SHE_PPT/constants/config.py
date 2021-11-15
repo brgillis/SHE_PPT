@@ -168,7 +168,7 @@ class AnalysisConfigKeys(ConfigKeys):
     LENSMC_STAMP_SIZE = LENSMC_HEAD + "stamp_size"
     LENSMC_X_BUFFER = LENSMC_HEAD + "x_buffer"
     LENSMC_Y_BUFFER = LENSMC_HEAD + "y_buffer"
-    LENSMC_DILATE_MASK = LENSMC_HEAD + "dilate_mask"
+    LENSMC_DILATE_MASK = LENSMC_HEAD + "no_mask_dilation"
     LENSMC_HL_TO_EXP = LENSMC_HEAD + "hl_to_exp"
     LENSMC_N_BULGE = LENSMC_HEAD + "n_bulge"
     LENSMC_N_DISC = LENSMC_HEAD + "n_disc"
@@ -183,7 +183,7 @@ class AnalysisConfigKeys(ConfigKeys):
     LENSMC_SEED = LENSMC_HEAD + "seed"
     LENSMC_SHAPE_NOISE = LENSMC_HEAD + "shape_noise"
     LENSMC_FAST_MODE = LENSMC_HEAD + "fast_mode"
-    LENSMC_ONLY_VIS_DETECTED = LENSMC_HEAD + "only_vis_detected"
+    LENSMC_ONLY_VIS_DETECTED = LENSMC_HEAD + "include_vis_undetected"
     LENSMC_MONITOR = LENSMC_HEAD + "monitor"
 
     # Options for SHE_CTE_ShearEstimatesMerge
