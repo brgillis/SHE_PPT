@@ -116,12 +116,49 @@ make install
 ## Main Programs Available
 > `Describe here each executable Elements program provided by this project.`
 
-N/A
+SHE_PPT is not a standard package with executables that are run in the SHE pipeline, but instead a package with a lot of the important infrastructure used by all of the other packages. These include:
+
+* `SHEFrameStack`,
+* product definitions for use with `.xml` files described in the datamodel,
+* table format files for creating FITS catalog tables,
+* general utility functions useful to all SHE projects
+
+### Details of `SHEFrameStack`
+
+`SHEFrameStack` is a structure containing all needed data for shape measurement, represented as a list of SHEFrames for detector image data, a stacked image, a list of PSF images and catalogues, and a detections
+catalogue. These are generated from reading in the required set of VIS frames, MER final catalogue, reprojected segmentation images andlist of object ids. Not all of these inputs are necessary to generate a SHEFrameStack and other options relate to how the structure is stored in memory, which can affect performance later on.
+
+### Details of `products`
+
+`products` is a directory containing a set of files, e.g. `she_psf_model_image.py` (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/products/she_psf_model_image.py), that generates a binding to the data model with additional functionality, such as `create_dpd_she_psf_model_image` which will generate a new data product for the PSF model. These tools are used throughout the SHE project. `products` contains files for all data products used in SHE, including relevant VIS, MER and PHZ data products. 
+
+### Details of `table_formats`
+
+
+
+
+
 
 ## Running the software
 > `for each of the codes described previously, the aim here is to describe each option, input, and output of the program as well as how to run it using Elements.`
 
-N/A
+### SHEFrameStack
+
+    Attributes
+    ----------
+    exposures : list<SHEImage>
+        List of SHEImage objects representing the different exposures
+    stacked_image : SHEImage
+        The stacked image
+    bulge_psf_images : list<SHEImage>
+        List of bulge PSF images
+    disk_psf_images : list<SHEImage>
+        List of disk PSF images
+    psf_catalogues : list<astropy.table.Table>
+        List of PSF catalogues
+    detections_catalogues : astropy.table.Table
+        Detections catalogue, provided by MER
+
 
 ## Troubleshooting
 > `If any problems are anticipated, add a section here for them to help users resolve them on their own before they need to appeal to a developer for help.`
