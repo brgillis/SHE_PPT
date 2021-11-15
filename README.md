@@ -130,10 +130,14 @@ catalogue. These are generated from reading in the required set of VIS frames, M
 
 ### Details of `products`
 
-`products` is a directory containing a set of files, e.g. `she_psf_model_image.py` (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/products/she_psf_model_image.py), that generates a binding to the data model with additional functionality, such as `create_dpd_she_psf_model_image` which will generate a new data product for the PSF model. These tools are used throughout the SHE project. `products` contains files for all data products used in SHE, including relevant VIS, MER and PHZ data products. 
+`products` is a directory containing a set of files, e.g. `she_psf_model_image.py` (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/products/she_psf_model_image.py), that generates a binding to the data model with additional functionality, such as `create_dpd_she_psf_model_image` which will generate a new data product for the PSF model. Most of the common parts of these files are contained in the product_utility.py module (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/product_utility.py).
+These tools are used throughout the SHE project, and are necessary for use with the `read_xml_product` and `write_xml_product` functions in file_io (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/file_io.py). `products` contains files for all data products used in SHE, including relevant VIS, MER and other data products. 
 
 ### Details of `table_formats`
 
+`table_formats` is a directory containing a set of files, e.g. `she_psf_model_image.py` (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/table_formats/she_psf_model_image.py), that generates a correct FITS table with the necessary header keys. Most of the common parts of these files are contained in the table_utility.py module (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/table_utility.py).
+
+a binding to the data model with additional functionality, such as `create_dpd_she_psf_model_image` which will generate a new data product for the PSF model. These tools are used throughout the SHE project. `products` contains files for all data products used in SHE, including relevant VIS, MER and other data products. 
 
 
 
