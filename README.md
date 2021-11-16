@@ -1,12 +1,8 @@
 # SGS SHE_PPT Documentation
-> `This, is an example of a header README.md, the aim is to briefly describe with a few sentences what the repository does.`
-> `This is heavily based on what Lee did for PK-WL before he left and it was very efficient for other devs to pick up from where he left`
-> `This is an easy-to-implement Markdown version of documentation. This repo also demonstrates how to make documentation which can be compiled by using 'make doc' with the Elements builder. See the files in the 'doc' folder of this project for how to set up this documentation (using the same content, but in .rst format instead of .md). You can see how that looks by cloning this project within a LODEEN environment and running 'make doc' in the root folder. This will compile the files in the 'doc' folder into .html files in the build.../doc/sphinx folder. Open 'index.html' there with your browser of choice.`
 
 This very simple repository aims to create a template for documentation (README & DocStrings) for Euclid-SGS Projects.
 
 ## Software identification
-> `Software profile should be one of "develop", "release-candidate", "release"`
 
 * Processing Element Name: PF-SHE
 * Project Name: SHE_PPT
@@ -14,8 +10,8 @@ This very simple repository aims to create a template for documentation (README 
 * Version: 8.11 (08/11/2021)
 
 ## Contributors
+
 ### Active Contributors
-> `Here we add names of developers who need to be informed once a merge request (MR) or pull request (PR) is made`
 
 * Bryan Gillis (b.gillis@roe.ac.uk)
 * Malte Tewes (mtewes@astro.uni-bonn.de)
@@ -24,12 +20,10 @@ This very simple repository aims to create a template for documentation (README 
 * Gordon Gibb (gordon.gibb@ed.ac.uk)
 
 ### Other Contributors
-> `Add names of past or inactive contributors that do not need to be informed of MR or PR`
 
 * Katie Eckhard ()
 
 ## Purpose
-> `Describe here in more detail what are the goals of this repository as well as the expected outputs`
 
 This repository contains general SHE functions, classes and product definitions. Some important examples are:
 
@@ -38,7 +32,6 @@ This repository contains general SHE functions, classes and product definitions.
 3. Pipeline configuration code. 
 
 ## Relevant Documents
-> `Boilerplate section which links any Euclid related documents that are relevant for the project`
 
 * [RSD](https://euclid.roe.ac.uk/attachments/download/54815)
 * [SDD](https://euclid.roe.ac.uk/attachments/download/54782/EUCL-IFA-DDD-8-002.pdf)
@@ -54,8 +47,6 @@ This repository contains general SHE functions, classes and product definitions.
 N/A
 
 ### External Euclid Dependencies
-> `Describe here any dependencies on Euclid projects managed outside PF-SHE. Most direct dependencies should be at the top, with progressively more indirect dependencies toward the bottom, or alphabetically when otherwise equal.`
-> ` Where possible, please add links to repositories or relevant gitlab codes`
 
 * [EL_Utils 1.1.0](https://gitlab.euclid-sgs.uk/EuclidLibs/EL_Utils)
 * [ST_DataModelTools 8.0.5](https://gitlab.euclid-sgs.uk/ST-DM/ST_DataModelTools)
@@ -65,8 +56,6 @@ N/A
 * etc
 
 ### Configuration
-> `Describes the version of EDEN which this code runs on, and lists the versions of relevant packages in EDEN which are used by this project. In the case where one package depends on another (e.g. astropy depends on numpy), the dependant package should be listed first (astropy before numpy), or alphabetically when otherwise equal.`
-
 
 **EDEN 2.1**
 ```
@@ -75,8 +64,6 @@ N/A
 ```
 
 ### Dependant Projects
-> `Add here a list of all projects which depend on this project either directly or indirectly. These are the projects which will be at-risk of disruption due to changes in this project. Most direct dependants should be listed first (e.g. they call a function provided by this project), followed by more indirect dependants (e.g. they call a function provided by project B, which calls a function provided by this project), with dependants listed alphabetically when otherwise equal.`
-> ` Where possible, please add links to repositories or relevant gitlab codes`
 
 * [SHE_MER](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_MER)
 * [SHE_PSFToolkit](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PSFToolkit)
@@ -89,8 +76,6 @@ N/A
 
 
 ### Dependant Pipelines
-> `Add here a list of all pipelines which use code from this project either directly or indirectly. These are the pipelines which will be at-risk of disruption due to changes in this project. Pipelines should be listed alphabetically.`
-> ` Where possible, please add links to repositories or relevant gitlab codes`
 
 * [SHE Analysis](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_IAL_Pipelines/-/blob/develop/SHE_Pipeline/auxdir/SHE_Shear_Analysis/PipScript_SHE_Shear_Analysis.py) 
 * [Shear Calibration](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_IAL_Pipelines/-/blob/develop/SHE_Pipeline/auxdir/SHE_Shear_Calibration/PipScript_SHE_Shear_Calibration.py)
@@ -99,7 +84,6 @@ N/A
 * [SHE_Shear_Reconcilation](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_IAL_Pipelines/-/blob/develop/SHE_Pipeline/auxdir/SHE_Shear_Reconciliation/PipScript_SHE_Shear_Reconciliation.py)
 
 ## Installation
-> `Boilerplate section which explains how to install any Elements program. Only the repository location should be changed here for each project.`
 
 All Euclid projects will be deployed via cvmfs. If this is installed and set up, this project will be pre-installed and no further work will be necessary. In case cvmfs isn't installed, or you wish to install an unreleased build or older build, you can do so through the following process:
 
@@ -114,7 +98,6 @@ make install
 ```
 
 ## Main Programs Available
-> `Describe here each executable Elements program provided by this project.`
 
 SHE_PPT is not a standard package with executables that are run in the SHE pipeline, but instead a package with a lot of the important infrastructure used by all of the other packages. These include:
 
@@ -138,7 +121,6 @@ These tools are used throughout the SHE project, and are necessary for use with 
 `table_formats` is a directory containing a set of files, e.g. `she_psf_model_image.py` (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/table_formats/she_psf_model_image.py), that generates a correct FITS table with the necessary header keys. Most of the common parts of these files are contained in the table_utility.py module (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/table_utility.py). The functions allow the user to check if the table is in the correct format, create an initial table, add rows. These modules are used throughout SHE whenever new data tables are created.
 
 ## Running the software
-> `for each of the codes described previously, the aim here is to describe each option, input, and output of the program as well as how to run it using Elements.`
 
 ### `SHEFrameStack`
 
@@ -182,7 +164,6 @@ The `SHEFrameStack` structure has the following attributes.
 There are various useful functions in `SHEFrameStack`, or subclasses `SHEFrame` or `SHEImage` such as postage stamp extraction functions (e.g. `extract_galaxy_stack`, `extract_psf_stack`, `extract_stamp_stack`, `extract_stamp`) and coordinate system transforms (e.g. `get_world2pix_transformation`, `get_fov_coords`).
 
 ## Troubleshooting
-> `If any problems are anticipated, add a section here for them to help users resolve them on their own before they need to appeal to a developer for help.`
 
 
 ### A test failed when I ran "make test"
