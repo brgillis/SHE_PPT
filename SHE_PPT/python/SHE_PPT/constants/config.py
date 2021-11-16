@@ -182,6 +182,7 @@ class AnalysisConfigKeys(ConfigKeys):
     LENSMC_PSF_OVERSAMPLING = LENSMC_HEAD + "psf_oversampling"
     LENSMC_SEED = LENSMC_HEAD + "seed"
     LENSMC_SHAPE_NOISE = LENSMC_HEAD + "shape_noise"
+    LENSMC_RETURN_CHAINS = LENSMC_HEAD + "return_chains"
     LENSMC_FAST_MODE = LENSMC_HEAD + "fast_mode"
     LENSMC_INCLUDE_VIS_UNDETECTED = LENSMC_HEAD + "include_vis_undetected"
     LENSMC_MONITOR = LENSMC_HEAD + "monitor"
