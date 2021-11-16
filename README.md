@@ -148,38 +148,21 @@ This does not have a main executable, but this class structure is set up using t
 
 |  **Argument** |**Description** | **Required** | **Default** |
 | :----------------   | :--------------- | :----------: | :----------:|
-| `--mer_tile_listfile` `<filename>`     | `.json` listfile (Cardinality 1-8) list of MER tile segmentation images `.xml` files. | yes    | N/A         |
-| `--vis_prod_filename` `<filename>`     | `.xml` file Container for VIS image file. | yes    | N/A         |
-
-| `exposure_listfile_filename` `filename` | `.json` Filename of the listfile pointing to the exposure image data products. | yes? | N/A |
-        
-
-bkg_listfile_filename : str
-            Filename of the listfile pointing to the exposure background data products
-        seg_listfile_filename : str
-            Filename of the listfile pointing to the exposure segmentation map files
-        stacked_image_product_filename :frame_prod str
-            Filename of the stacked image data product
-        stacked_bkg_product_filename : str
-            Filename of the stacked background data product
-        stacked_seg_filename : str
-            Filename of the stacked segmentation map file
-        psf_listfile_filename : str
-            Filename of the listfile pointing to the psf data products
-        detections_listfile_filename : str
-            Filename of the listfile pointing to the detections catalog data products
-        object_id_list_product_filename : str
-            Filename of the product containing the object IDs we want to process. If provided, the detections table
-            will be pruned to only contain these objects, and only detectors with at least one object in from the
-            list in them will be loaded.
-        workdir : str
-            Work directory
-        save_products : bool
-            If set to True, will save references to data products. Otherwise these references will be None
-        load_images : bool
-            If set to False, image data will not be loaded, and filehandles will be closed.
+| `exposure_listfile_filename` `filename` | `.json` Filename of the listfile pointing to the exposure image data products. These products are VIS calibrated frames DpdVisCalibratedFrame | no | None |
+| `bkg_listfile_filename` `filename` | `.json` Filename of the listfile pointing to the exposure background data products | no | None |
+| `seg_listfile_filename` `filename` | `.json` Filename of the listfile pointing to the exposure segmentation map files | no | None |
+| `stacked_image_product_filename` `filename` | `.xml` Filename of the stacked image data product | no | None |
+| `stacked_bkg_product_filename` `filename` | `.xml` Filename of the stacked background data product | no | None |
+| `stacked_seg_filename` `filename` | `.xml` Filename of the stacked segmentation map file | no | None |
+| `psf_listfile_filename` `filename` | `.json` Filename of the listfile pointing to the psf data products | no | None |
+| `detections_listfile_filename` `filename` | `.json` Filename of the listfile pointing to the detections catalog data products | no | None |
+| `object_id_list_product_filename` `filename` | `.json` Filename of the product containing the object IDs we want to process. If provided, the detections table will be pruned to only contain these objects, and only detectors with at least one object in from the list in them will be loaded. | no | None |
+| `workdir` `str` | Work directory |  no | '.' |
+| `save_products` <True/False> | If set to True, will save references to data products. Otherwise these references will be None | no | False | 
+| `load_images` <True/False> | If set to False, image data will not be loaded, and filehandles will be closed. | no | True |
 
 
+The `SHEFrameStack` structure has the following attributes.
     Attributes
     ----------
     exposures : list<SHEImage>
