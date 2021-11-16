@@ -171,29 +171,19 @@ The structure of `SHEFrameStack` is described in the following UML diagram:
 
 
 The `SHEFrameStack` structure has the following attributes.
-    Attributes
-    ----------
-    exposures : list<SHEImage>
-        List of SHEImage objects representing the different exposures
-    stacked_image : SHEImage
-        The stacked image
-    bulge_psf_images : list<SHEImage>
-        List of bulge PSF images
-    disk_psf_images : list<SHEImage>
-        List of disk PSF images
-    psf_catalogues : list<astropy.table.Table>
-        List of PSF catalogues
-    detections_catalogues : astropy.table.Table
-        Detections catalogue, provided by MER
+    
+* exposures : list<SHEImage> List of SHEImage objects representing the different exposures
+* stacked_image : SHEImage The stacked image
+* bulge_psf_images : list<SHEImage> List of bulge PSF images
+* disk_psf_images : list<SHEImage> List of disk PSF images
+* psf_catalogues : list<astropy.table.Table> List of PSF catalogues
+* detections_catalogues : astropy.table.Table Detections catalogue, provided by MER
 
+There are various useful functions in `SHEFrameStack`, or subclasses `SHEFrame` or `SHEImage` such as postage stamp extraction functions (e.g. `extract_galaxy_stack`, `extract_psf_stack`, `extract_stamp_stack`, `extract_stamp`) and coordinate system transforms (e.g. `get_world2pix_transformation`, `get_fov_coords`).
 
 ## Troubleshooting
 > `If any problems are anticipated, add a section here for them to help users resolve them on their own before they need to appeal to a developer for help.`
 
-### The cat in the generated picture appears to be wearing both a standard tie and a bowtie
-> `For known problems which can occur if the user makes a common error, explain how it can be resolved.`
-
-This is a known bug which occurs if the user requests `--use_tie=bowtie`. The correct argument is `--use_tie=bow`.
 
 ### A test failed when I ran "make test"
 
