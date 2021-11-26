@@ -277,6 +277,13 @@ class MerFinalCatalogFormat(SheTableFormat):
         setattr(self, "GAL_EBV_ERR", self.set_column_properties(
             "GAL_EBV_ERR", fits_dtype = "E", comment = "mag", is_optional = False))
 
+
+        #Optional columns
+
+        # Group ID (for potential blends)
+        setattr(self, "GROUP_ID", self.set_column_properties(
+            "GROUP_ID", fits_dtype = "K", dtype = ">i8", comment = "", is_optional = True))
+
         self._finalize_init()
 
     @staticmethod

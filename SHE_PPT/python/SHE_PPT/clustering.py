@@ -163,7 +163,7 @@ def identify_all_blends(x,y, sep=10, metric = euclidean_metric, batchsize = 2000
     # does mean occasionally identifying the same blends twice... however the function update_blended deals with this
     
     #calculate the number of batches in each direction
-    nbatches = int(np.sqrt(len(x)/batchsize))
+    nbatches = int(np.ceil(np.sqrt(len(x)/batchsize)))
     
     #width of each batch (without padding)
     wx = (xmax_global-xmin_global)/nbatches
