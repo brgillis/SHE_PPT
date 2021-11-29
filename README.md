@@ -148,7 +148,7 @@ The structure of `SHEFrameStack` is described in the following UML diagram:
 
 
 
-The `SHEFrameStack` structure has the following attributes.
+The `SHEFrameStack` structure has the following attributes:
 
 * exposures : list<SHEImage> List of SHEImage objects representing the different exposures
 * stacked_image : SHEImage The stacked image
