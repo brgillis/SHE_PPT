@@ -179,7 +179,6 @@ _**Try running the desired code**_
 Tests can fail for many reasons, and a common reason is that the code is updated but not the test. This could lead to the test failing even if the code works properly. After you've reported the issue, you can try to run the desired code before the issue with the failing test has been fixed. There's a decent chance that the bug might only be in the test code, and the executable code will still function.
 
 ### An exception was raised, what do I do?
-> `General instructions for how to figure out what to do when an exception is raised, which can be copied for all projects.`
 
 _**Check for an issue with the input**_
 
