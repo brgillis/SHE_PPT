@@ -51,7 +51,6 @@ N/A
 * [ST_DataModelBindings 8.0.5](https://gitlab.euclid-sgs.uk/ST-DM/ST_DataModelBindings)
 * [ST_DataModel 8.0.5](https://gitlab.euclid-sgs.uk/ST-DM/ST_DataModel)
 * [Elements 5.15](https://gitlab.euclid-sgs.uk/ST-TOOLS/Elements)
-* etc
 
 ### Configuration
 
