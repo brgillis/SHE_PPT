@@ -27,7 +27,7 @@ SHE_PPT is a module with many common tools used throughout the SHE pipeline.
 
 This repository contains general SHE functions, classes and product definitions. Some important examples are:
 
-1. `SHE_frame_stack`,  a class that produces an instance of the image data, the background, flag, weight, and segmentation images and tools to extract postage stamps for object lists.  
+1. `SHEFrameStack`,  a class that produces an instance of the image data, the background, flag, weight, and segmentation images and tools to extract postage stamps for object lists.  
 2. the `.xml` product definition and `.fits` table definition code for all SHE data products and VIS, MER and other input data products.
 3. Pipeline configuration code.
 
