@@ -21,7 +21,7 @@ SHE_PPT is a module with many common tools used throughout the SHE pipeline.
 
 ### Other Contributors
 
-* Katie Eckhard ()
+* Katie Eckhard (kathleen.eckert@gmail.com)
 
 ## Purpose
 
