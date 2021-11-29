@@ -98,9 +98,9 @@ make install
 SHE_PPT is not a standard package with executables that are run in the SHE pipeline, but instead a package with a lot of the important infrastructure used by all of the other packages. These include:
 
 * `SHEFrameStack`,
-* product definitions for use with `.xml` files described in the datamodel,
-* table format files for creating FITS catalog tables,
-* general utility functions useful to all SHE projects
+* Product definitions for use with `.xml` files described in the Data Model
+* Table format files for creating FITS catalog tables
+* General utility functions useful to all SHE projects
 
 ### Details of `SHEFrameStack`
 
