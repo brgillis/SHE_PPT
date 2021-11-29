@@ -50,7 +50,7 @@ def find_blends(xs,ys, sep=10, metric=euclidean_metric):
     #construct hierarchical linkage for all the objects
     linkage = H.linkage(dist)
 
-    #now cluster those closer than sep, returning a list of cluster labels
+    #now cluster those closer than sep, returning a list of cluster labels (this ranges from 1:n_clusters)
     labels = H.fcluster(linkage,t=sep,criterion="distance")
     
     #count how many objects are in each cluster
@@ -58,9 +58,10 @@ def find_blends(xs,ys, sep=10, metric=euclidean_metric):
     counts = np.bincount(labels)
     
     blends=[]
-    #loop over all the clusters, and for ones with more than one object (e.g. blends), get the list of their indices
+    #loop over all the clusters, and for ones with more than one object in them (e.g. blends), get the list of their indices
     for label, count in enumerate(counts):
         if count > 1:
+            #gets the list of indices where labels==label
             blend = np.where(labels == label)[0]
             blends.append(blend)
     
@@ -82,7 +83,7 @@ def update_blended(local_blends, global_blend_ids, local_indices, xs, ys, blend_
         new = []
         existing = []
         for ind in global_indices:
-            if global_blend_ids[ind] == 0:
+            if global_blend_ids[ind] == -1:
                 new.append(ind)
             else:
                 existing.append(ind)
@@ -91,8 +92,8 @@ def update_blended(local_blends, global_blend_ids, local_indices, xs, ys, blend_
             #This is a completely new batch of objects
             
             #increment the blend id by 1 and assign this id to these objects - we have a new blend!
-            blend_id +=1
             global_blend_ids[global_indices] = blend_id
+            blend_id +=1
 
         else:
             #at least some of these objects belong to an existing blend
@@ -120,7 +121,7 @@ def merge_blended(xs, ys, global_blends):
     n_blends = np.max(global_blends)
     
     #for each blend...
-    for b in range(1,n_blends):
+    for b in range(0,n_blends+1):
         #get the indices of the objects
         inds = np.where(global_blends == b)
         
@@ -148,7 +149,7 @@ def identify_all_blends(x,y, sep=10, metric = euclidean_metric, batchsize = 2000
        have been changed to the centre of mass of the blend, along with an array that 
        identifies the blended objects and the blend they belong to"""
 
-    blend_ids = np.zeros(len(x),np.int64)
+    blend_ids = np.zeros(len(x),np.int64)-1
     xs = np.copy(x)
     ys = np.copy(y)
 
@@ -210,7 +211,7 @@ def identify_all_blends(x,y, sep=10, metric = euclidean_metric, batchsize = 2000
     xs, ys = merge_blended(xs, ys, blend_ids)
 
     t1 = time.time()
-    n_blended = len(np.where(blend_ids > 0)[0])
+    n_blended = len(np.where(blend_ids >= 0)[0])
     n_objs = len(xs)
     logger.info("Time taken to identify blends = %fs",t1-t0)
     logger.info("Total number of blended objects = %d",n_blended)
