@@ -1,6 +1,6 @@
 # SGS SHE_PPT Documentation
 
-This very simple repository aims to create a template for documentation (README & DocStrings) for Euclid-SGS Projects.
+SHE_PPT is a module with many common tools used throughout the SHE pipeline. 
 
 ## Software identification
 
@@ -41,8 +41,6 @@ This repository contains general SHE functions, classes and product definitions.
 ## Dependencies
 
 ### Internal Euclid Dependencies
-> `Describe here any dependencies on Euclid projects managed by PF-SHE. Most direct dependencies should be at the top, with progressively more indirect dependencies toward the bottom, or alphabetically when otherwise equal.`
-> ` Where possible, please add links to repositories or relevant gitlab codes`
 
 N/A
 
@@ -113,12 +111,12 @@ catalogue. These are generated from reading in the required set of VIS frames, M
 
 ### Details of `products`
 
-`products` is a directory containing a set of files, e.g. `she_psf_model_image.py` (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/products/she_psf_model_image.py), that generates a binding to the data model with additional functionality, such as `create_dpd_she_psf_model_image` which will generate a new data product for the PSF model. Most of the common parts of these files are contained in the product_utility.py module (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/product_utility.py).
-These tools are used throughout the SHE project, and are necessary for use with the `read_xml_product` and `write_xml_product` functions in file_io (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/file_io.py). `products` contains files for all data products used in SHE, including relevant VIS, MER and other data products. 
+`products` is a directory containing a set of files, e.g. [`she_psf_model_image.py`] (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/products/she_psf_model_image.py), that generates a binding to the data model with additional functionality, such as `create_dpd_she_psf_model_image` which will generate a new data product for the PSF model. Most of the common parts of these files are contained in the [`product_utility.py`] (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/product_utility.py) file.
+These tools are used throughout the SHE project, and are necessary for use with the `read_xml_product` and `write_xml_product` functions in [`file_io.py`] (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/file_io.py). `products` contains files for all data products used in SHE, including relevant VIS, MER and other data products. 
 
 ### Details of `table_formats`
 
-`table_formats` is a directory containing a set of files, e.g. `she_psf_model_image.py` (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/table_formats/she_psf_model_image.py), that generates a correct FITS table with the necessary header keys. Most of the common parts of these files are contained in the table_utility.py module (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/table_utility.py). The functions allow the user to check if the table is in the correct format, create an initial table, add rows. These modules are used throughout SHE whenever new data tables are created.
+`table_formats` is a directory containing a set of files, e.g. [`she_psf_model_image.py`] (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/table_formats/she_psf_model_image.py), that generates a correct FITS table with the necessary header keys. Most of the common parts of these files are contained in the [`table_utility.py`] (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/table_utility.py) file. The functions allow the user to check if the table is in the correct format, create an initial table, add rows. These modules are used throughout SHE whenever new data tables are created.
 
 ## Running the software
 
