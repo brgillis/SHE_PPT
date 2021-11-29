@@ -1,6 +1,6 @@
 # SGS SHE_PPT Documentation
 
-SHE_PPT is a module with many common tools used throughout the SHE pipeline. 
+SHE_PPT is a module with many common tools used throughout the SHE pipeline.
 
 ## Software identification
 
@@ -29,7 +29,7 @@ This repository contains general SHE functions, classes and product definitions.
 
 1. `SHE_frame_stack`,  a class that produces an instance of the image data, the background, flag, weight, and segmentation images and tools to extract postage stamps for object lists.  
 2. the `.xml` product definition and `.fits` table definition code for all SHE data products and VIS, MER and other input data products.
-3. Pipeline configuration code. 
+3. Pipeline configuration code.
 
 ## Relevant Documents
 
@@ -75,7 +75,7 @@ N/A
 
 ### Dependant Pipelines
 
-* [SHE Analysis](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_IAL_Pipelines/-/blob/develop/SHE_Pipeline/auxdir/SHE_Shear_Analysis/PipScript_SHE_Shear_Analysis.py) 
+* [SHE Analysis](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_IAL_Pipelines/-/blob/develop/SHE_Pipeline/auxdir/SHE_Shear_Analysis/PipScript_SHE_Shear_Analysis.py)
 * [Shear Calibration](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_IAL_Pipelines/-/blob/develop/SHE_Pipeline/auxdir/SHE_Shear_Calibration/PipScript_SHE_Shear_Calibration.py)
 * [SHE Global Validation](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_IAL_Pipelines/-/blob/develop/SHE_Pipeline/auxdir/SHE_Global_Validation/PipScript_SHE_Global_Validation.py)
 * [SHE_Scaling_Experiments](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_IAL_Pipelines/-/blob/develop/SHE_Pipeline/auxdir/SHE_Scaling_Experiments/PipScript_SHE_Scaling_Experiments.py)
@@ -111,12 +111,12 @@ catalogue. These are generated from reading in the required set of VIS frames, M
 
 ### Details of `products`
 
-`products` is a directory containing a set of files, e.g. [`she_psf_model_image.py`] (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/products/she_psf_model_image.py), that generates a binding to the data model with additional functionality, such as `create_dpd_she_psf_model_image` which will generate a new data product for the PSF model. Most of the common parts of these files are contained in the [`product_utility.py`] (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/product_utility.py) file.
-These tools are used throughout the SHE project, and are necessary for use with the `read_xml_product` and `write_xml_product` functions in [`file_io.py`] (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/file_io.py). `products` contains files for all data products used in SHE, including relevant VIS, MER and other data products. 
+`products` is a directory containing a set of files, e.g. [`she_psf_model_image.py`](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/products/she_psf_model_image.py), that generates a binding to the data model with additional functionality, such as `create_dpd_she_psf_model_image` which will generate a new data product for the PSF model. Most of the common parts of these files are contained in the [`product_utility.py`](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/product_utility.py) file.
+These tools are used throughout the SHE project, and are necessary for use with the `read_xml_product` and `write_xml_product` functions in [`file_io.py`](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/file_io.py). `products` contains files for all data products used in SHE, including relevant VIS, MER and other data products.
 
 ### Details of `table_formats`
 
-`table_formats` is a directory containing a set of files, e.g. [`she_psf_model_image.py`] (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/table_formats/she_psf_model_image.py), that generates a correct FITS table with the necessary header keys. Most of the common parts of these files are contained in the [`table_utility.py`] (https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/table_utility.py) file. The functions allow the user to check if the table is in the correct format, create an initial table, add rows. These modules are used throughout SHE whenever new data tables are created.
+`table_formats` is a directory containing a set of files, e.g. [`she_psf_model_image.py`](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/table_formats/she_psf_model_image.py), that generates a correct FITS table with the necessary header keys. Most of the common parts of these files are contained in the [`table_utility.py`](https://gitlab.euclid-sgs.uk/PF-SHE/SHE_PPT/-/blob/develop/SHE_PPT/python/SHE_PPT/table_utility.py) file. The functions allow the user to check if the table is in the correct format, create an initial table, add rows. These modules are used throughout SHE whenever new data tables are created.
 
 ## Running the software
 
@@ -137,13 +137,13 @@ This does not have a main executable, but this class structure is set up using t
 | `object_id_list` <1,2,3,4...> | Iterable list of integer object ids  | no | None |
 | `object_id_list_product_filename` `filename` | `.json` Filename of the product containing the object IDs we want to process. If provided, the detections table will be pruned to only contain these objects, and only detectors with at least one object in from the list in them will be loaded. (DpdSheObjectIdList) | no | None |
 | `workdir` `str` | Work directory |  no | '.' |
-| `save_products` <True/False> | If set to True, will save references to data products. Otherwise these references will be None | no | False | 
+| `save_products` <True/False> | If set to True, will save references to data products. Otherwise these references will be None | no | False |
 | `load_images` <True/False> | If set to False, image data will not be loaded, and filehandles will be closed. | no | True |
 | `prune_images` <True/False> | If True, will only load images where at least one object from the detections catalogue is present | no | None |
 
 The structure of `SHEFrameStack` is described in the following UML diagram:
 
-<img src="SHEFrameStackDiagram.png" 
+<img src="SHEFrameStackDiagram.png"
      alt="SHEFrameStack UML diagram"
      width="650"
    style="float: left; margin-right: 10px;" />
@@ -151,7 +151,7 @@ The structure of `SHEFrameStack` is described in the following UML diagram:
 
 
 The `SHEFrameStack` structure has the following attributes.
-    
+
 * exposures : list<SHEImage> List of SHEImage objects representing the different exposures
 * stacked_image : SHEImage The stacked image
 * bulge_psf_images : list<SHEImage> List of bulge PSF images
