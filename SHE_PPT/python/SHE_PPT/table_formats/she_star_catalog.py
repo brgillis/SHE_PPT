@@ -21,11 +21,11 @@ __updated__ = "2021-08-13"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-from ..constants.fits import OBS_ID_LABEL, OBS_TIME_LABEL, FITS_VERSION_LABEL, FITS_DEF_LABEL
+from ..constants.fits import FITS_DEF_LABEL, FITS_VERSION_LABEL, OBS_ID_LABEL, OBS_TIME_LABEL
 from ..table_utility import SheTableFormat, SheTableMeta
 
-fits_version = "8.0"
-fits_def = "she.starCatalog"
+fits_version: str = "8.0"
+fits_def: str = "she.starCatalog"
 
 
 class SheStarCatalogMeta(SheTableMeta):
@@ -48,7 +48,7 @@ class SheStarCatalogMeta(SheTableMeta):
 
 class SheStarCatalogFormat(SheTableFormat):
     """
-        @brief A class defining the format for galaxy population priors tables. Only the star_catalog_format
+        @brief A class defining the format for SHE star catalog tables. Only the star_catalog_format
                instance of this should generally be accessed, and it should not be changed.
     """
 
@@ -97,11 +97,16 @@ class SheStarCatalogFormat(SheTableFormat):
                                                  comment = "Error on mean ellipticity measurement of this object, "
                                                            "component 2")
 
+        self.rr_dist = self.set_column_properties("SHE_STARCAT_RR_DIST", dtype = ">f4", fits_dtype = "E",
+                                                  is_optional = True, comment = "Distance from readout register - "
+                                                                                "only used internally within CTI-PSF "
+                                                                                "Validation test.")
+
         self._finalize_init()
 
 
 # Define an instance of this object that can be imported
-star_catalog_format = SheStarCatalogFormat()
+SHE_STAR_CAT_TF = SheStarCatalogFormat()
 
 # And a convenient alias for it
-tf = star_catalog_format
+TF = SHE_STAR_CAT_TF

@@ -30,27 +30,27 @@ from SHE_PPT.table_formats.she_galaxy_population_priors import tf as gpp_tf
 from SHE_PPT.table_formats.she_ksb_measurements import tf as ksbm_tf
 from SHE_PPT.table_formats.she_ksb_training import tf as ksbt_tf
 from SHE_PPT.table_formats.she_ksb_tu_matched import tf as ksbtm_tf
-from SHE_PPT.table_formats.she_lensmc_chains import tf as lmcc_tf, len_chain
+from SHE_PPT.table_formats.she_lensmc_chains import len_chain, tf as lmcc_tf
 from SHE_PPT.table_formats.she_lensmc_measurements import tf as lmcm_tf
 from SHE_PPT.table_formats.she_lensmc_tu_matched import tf as lmctm_tf
 from SHE_PPT.table_formats.she_measurements import tf as sm_tf
 from SHE_PPT.table_formats.she_momentsml_measurements import tf as mmlm_tf
 from SHE_PPT.table_formats.she_momentsml_tu_matched import tf as mmltm_tf
 from SHE_PPT.table_formats.she_p_of_e import tf as poe_tf
-from SHE_PPT.table_formats.she_psf_dm_state import tff as psfdmf_tf, tfc as psfdmc_tf
+from SHE_PPT.table_formats.she_psf_dm_state import tfc as psfdmc_tf, tff as psfdmf_tf
 from SHE_PPT.table_formats.she_psf_model_image import tf as psfm_tf
-from SHE_PPT.table_formats.she_psf_om_state import tff as psfomf_tf, tfc as psfomc_tf
-from SHE_PPT.table_formats.she_psf_pd_state import tff as psfpdf_tf, tfc as psfpdc_tf
-from SHE_PPT.table_formats.she_psf_tm_state import tff as psftmf_tf, tfc as psftmc_tf
-from SHE_PPT.table_formats.she_psf_tml_state import tff as psftmlf_tf, tfc as psftmlc_tf
-from SHE_PPT.table_formats.she_psf_zm_state import tff as psfzmf_tf, tfc as psfzmc_tf
+from SHE_PPT.table_formats.she_psf_om_state import tfc as psfomc_tf, tff as psfomf_tf
+from SHE_PPT.table_formats.she_psf_pd_state import tfc as psfpdc_tf, tff as psfpdf_tf
+from SHE_PPT.table_formats.she_psf_tm_state import tfc as psftmc_tf, tff as psftmf_tf
+from SHE_PPT.table_formats.she_psf_tml_state import tfc as psftmlc_tf, tff as psftmlf_tf
+from SHE_PPT.table_formats.she_psf_zm_state import tfc as psfzmc_tf, tff as psfzmf_tf
 from SHE_PPT.table_formats.she_regauss_measurements import tf as regm_tf
 from SHE_PPT.table_formats.she_regauss_training import tf as regt_tf
 from SHE_PPT.table_formats.she_regauss_tu_matched import tf as regtm_tf
 from SHE_PPT.table_formats.she_simulated_catalog import tf as simc_tf
 from SHE_PPT.table_formats.she_simulation_plan import tf as simp_tf
-from SHE_PPT.table_formats.she_star_catalog import tf as sc_tf
-from SHE_PPT.table_utility import is_in_format, add_row
+from SHE_PPT.table_formats.she_star_catalog import TF as sc_tf
+from SHE_PPT.table_utility import add_row, is_in_format
 from SHE_PPT.testing.tables import _test_is_in_format
 
 
@@ -154,7 +154,7 @@ class TestTableFormats:
         for i in range(len(self.child_initializers)):
 
             # Try non-strict test
-            if not is_in_format(empty_tables[i], self.parent_format, strict=False, verbose=True):
+            if not is_in_format(empty_tables[i], self.parent_format, strict = False, verbose = True):
                 raise ValueError("Table format " + self.parent_format.m.table_format +
                                  " doesn't match initialized child table " + str(i) + ".")
 
@@ -177,22 +177,22 @@ class TestTableFormats:
 
         # Test initialization methods
 
-        mer_final_catalog = mfc_tf.init_table(model_hash=model_hash,
-                                              model_seed=model_seed,
-                                              noise_seed=noise_seed)
+        mer_final_catalog = mfc_tf.init_table(model_hash = model_hash,
+                                              model_seed = model_seed,
+                                              noise_seed = noise_seed)
 
-        _ = simc_tf.init_table(model_hash=model_hash,
-                               model_seed=model_seed,
-                               noise_seed=noise_seed)
+        _ = simc_tf.init_table(model_hash = model_hash,
+                               model_seed = model_seed,
+                               noise_seed = noise_seed)
 
         psf_table = psfm_tf.init_table()
 
-        assert(psf_table.meta[psfm_tf.m.extname] == PSF_CAT_TAG)
+        assert (psf_table.meta[psfm_tf.m.extname] == PSF_CAT_TAG)
 
         # Try to initialize the shear estimates table based on the detections table
 
-        _ = lmcm_tf.init_table(mer_final_catalog=mer_final_catalog)
+        _ = lmcm_tf.init_table(mer_final_catalog = mer_final_catalog)
 
-        shear_chains_table = lmcc_tf.init_table(mer_final_catalog=mer_final_catalog)
+        shear_chains_table = lmcc_tf.init_table(mer_final_catalog = mer_final_catalog)
 
-        assert(shear_chains_table.meta[lmcc_tf.m.len_chain] == len_chain)
+        assert (shear_chains_table.meta[lmcc_tf.m.len_chain] == len_chain)

@@ -46,6 +46,8 @@ SHE_EXPOSURE_SEGMENTATION_MAPS_LISTFILE_FILENAME = "she_exposure_reprojected_seg
 SHE_STACK_SEGMENTATION_MAP_FILENAME = "she_stack_reprojected_segmentation_map.xml"
 SHE_PSF_MODEL_IMAGES_LISTFILE_FILENAME = "she_psf_model_images.json"
 SHE_VALIDATED_MEASUREMENTS_PRODUCT_FILENAME = "she_validated_measurements.xml"
+SHE_EXTENDED_CATALOG_PRODUCT_FILENAME = "she_ext_cat.xml"
+SHE_EXTENDED_CATALOG_TABLE_FILENAME = "she_ext_cat.fits"
 
 # Files from the telescope_coords list
 TEST_FOV_TO_FPA_NO_OFFSET_DATA = "testFovToFPA_noOffset.dat"

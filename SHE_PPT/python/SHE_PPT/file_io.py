@@ -788,6 +788,35 @@ def read_table(filename: str,
     return t
 
 
+def read_product_and_table(product_filename: str,
+                           workdir: str = ".",
+                           log_info: bool = False,
+                           *args, **kwargs) -> Tuple[Any, Table]:
+    """ Convience function to read in a data product and the data table it points to, and return both as a tuple.
+    """
+
+    p = read_xml_product(product_filename, workdir = workdir, log_info = log_info)
+    table_filename: str = p.get_data_filename()
+
+    t = read_table(table_filename, workdir = workdir, log_info = log_info, *args, **kwargs)
+
+    return p, t
+
+
+def read_table_from_product(product_filename: str,
+                            workdir: str = ".",
+                            log_info: bool = False,
+                            *args, **kwargs) -> Table:
+    """ Convenience function to read a data table given the filename of the xml data product which points to it.
+    """
+
+    _, t = read_product_and_table(product_filename = product_filename,
+                                  workdir = workdir,
+                                  log_info = log_info, *args, *kwargs)
+
+    return t
+
+
 def write_fits(hdu_list: HDUList,
                filename: str,
                workdir: str = ".",

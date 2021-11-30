@@ -19,15 +19,17 @@ __updated__ = "2021-10-14"
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+
 import os
 from argparse import Namespace
 from logging import Logger
-from typing import Any, Callable, Dict, Optional, Sequence, Set, Type
+from typing import Any, Callable, Dict, Optional, Sequence, Set, Type, Union
 
 from dataclasses import dataclass
 
 from EL_PythonUtils.utilities import get_arguments_string
 from . import __version__
+from .argument_parser import CA_PIPELINE_CONFIG, CA_WORKDIR
 from .constants.config import ConfigKeys, GlobalConfigKeys
 from .logging import getLogger
 from .pipeline_utility import read_config
@@ -140,7 +142,17 @@ class SheExecutor:
     def run(self,
             args: Namespace,
             logger: Optional[Logger] = None,
-            profile: Optional[bool] = None):
+            profile: Optional[bool] = None,
+            pass_args_as_dict: bool = False):
+
+        # Get a dictionary of the arguments, and determine which type to pass
+        d_args: Dict[str, Any] = vars(args)
+
+        args_to_pass: Union[Namespace, Dict[str, Any]]
+        if pass_args_as_dict:
+            args_to_pass = d_args
+        else:
+            args_to_pass = args
 
         # If a logger is provided, use that, otherwise construct one
         if logger is not None:
@@ -156,12 +168,13 @@ class SheExecutor:
 
         # load the pipeline config in
         # noinspection PyTypeChecker
-        pipeline_config: Dict[ConfigKeys, Any] = read_config(args.pipeline_config, workdir = args.workdir,
+        pipeline_config: Dict[ConfigKeys, Any] = read_config(d_args[CA_PIPELINE_CONFIG],
+                                                             workdir = d_args[CA_WORKDIR],
                                                              config_keys = self.config_args.s_config_keys_types,
                                                              d_cline_args = self.config_args.d_config_cline_args,
                                                              d_defaults = self.config_args.d_config_defaults,
                                                              d_types = self.config_args.d_config_types,
-                                                             parsed_args = args)
+                                                             parsed_args = args_to_pass)
 
         # set args.pipeline_config to the read-in pipeline_config
         args.pipeline_config = pipeline_config
@@ -174,16 +187,16 @@ class SheExecutor:
 
         if _profile:
             self._logger.info("Profiling enabled")
-            self.__run_with_profiling(args)
+            self.__run_with_profiling(args_to_pass)
         else:
             self._logger.debug("Profiling disabled")
-            self.run_from_args_function(args, *self.run_args.l_run_args, **self.run_args.d_run_kwargs)
+            self.run_from_args_function(args_to_pass, *self.run_args.l_run_args, **self.run_args.d_run_kwargs)
 
         self._logger.info('#')
         self._logger.debug('Exiting SHE_Validation_ValidateShearBias mainMethod()')
         self._logger.info('#')
 
-    def __run_with_profiling(self, args):
+    def __run_with_profiling(self, args: Union[Namespace, Dict[str, Any]]) -> None:
         """ Calls the run function with profiling enabled.
         """
         import cProfile
