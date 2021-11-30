@@ -41,8 +41,19 @@ logger = getLogger(__name__)
 RANDOM_SEED=1
 
 
-def find_blends(xs,ys, sep=10, metric=euclidean_metric):
-    """returns a list of groups of blends. Each group is a list of the array indices of the blended objects"""
+def find_groups(xs,ys, sep=1., metric=euclidean_metric):
+    """returns a list of groups of potential blends. Each group is a list of the array indices of the identified objects
+    
+    Parameters:
+        xs (np.ndarray)  : The x coordinates of the objects
+        ys (np.ndarray)  : The y coordinates of the objects
+        sep (float)      : The maximum separation between objects to count them as belonging to the same group
+        metric(function) : The distance metric to use d=f(x1,y1,x2,y2) 
+    
+    Returns:
+        groups (list)    : a list of the identified groups. Each group is a list (np.ndarray) of the array indices 
+                           of the objects belonging to that group)
+    """
     
     #get distance matrix for all points to all other points
     dist = get_distance_matrix(xs, ys, metric=metric)
@@ -57,73 +68,95 @@ def find_blends(xs,ys, sep=10, metric=euclidean_metric):
     # (returns an int array of length of the number of clusters)
     counts = np.bincount(labels)
     
-    blends=[]
-    #loop over all the clusters, and for ones with more than one object in them (e.g. blends), get the list of their indices
+    groups=[]
+    #loop over all the clusters, and for ones with more than one object in them (e.g. groups), get the list of their indices
     for label, count in enumerate(counts):
         if count > 1:
             #gets the list of indices where labels==label
-            blend = np.where(labels == label)[0]
-            blends.append(blend)
+            group = np.where(labels == label)[0]
+            groups.append(group)
     
-    return blends
+    return groups
 
 
 def all_same(items):
+    """Returns True if all the items in the list are identical, False otherwise"""
     return all(x == items[0] for x in items)
 
-def update_blended(local_blends, global_blend_ids, local_indices, xs, ys, blend_id):
-    """ Records the newly blended objects (local_blends) in the global blended list, and 
-        updates the blended objects' positions to the centre of mass of the blend""" 
+def update_grouped(local_groups, global_group_ids, local_indices, xs, ys, group_id):
+    """ Records the newly grouped objects (local_groups) in the global grouped list
     
-    for local_blend in local_blends:
-        global_indices = local_indices[local_blend]
+    
+        Parameters:
+            local_groups (list) : The list of the newly identified groups (np.ndarray of the array indices of the objects in the group)
+            global_group_ids (np.ndarray) : An int array containing the group_id of each object (-1 means ungrouped)
+            local_indices (np.ndarray): An int array of the indices from the original object list for this local list of objects
+            xs (np.ndarray): x coordinates of the objects
+            ys (np.ndarray): y coordinates of the objects
+            group_id (int) : The current maximum id of any group in the global group list (e.g. a counter of how many distinct groups we have)
+            
+        Returns:
+            group_id (int) : Same as group_id above, just incremented by however many new groups were detected  """ 
+    
+    for local_group in local_groups:
+        global_indices = local_indices[local_group]
 
-        #see if these objects are already identified as being blended.
-        num_in_blend = len(local_blend)
+        #see if these objects are already identified as being grouped.
+        num_in_group = len(local_group)
         new = []
         existing = []
         for ind in global_indices:
-            if global_blend_ids[ind] == -1:
+            if global_group_ids[ind] == -1:
                 new.append(ind)
             else:
                 existing.append(ind)
         
-        if len(new) == num_in_blend:
+        if len(new) == num_in_group:
             #This is a completely new batch of objects
             
-            #increment the blend id by 1 and assign this id to these objects - we have a new blend!
-            global_blend_ids[global_indices] = blend_id
-            blend_id +=1
+            #increment the group id by 1 and assign this id to these objects - we have a new group!
+            global_group_ids[global_indices] = group_id
+            group_id +=1
 
         else:
-            #at least some of these objects belong to an existing blend
+            #at least some of these objects belong to an existing group
 
-            #check all the identified objects belong to the same blend
-            if not all_same(global_blend_ids[existing]):
+            #check all the identified objects belong to the same group
+            if not all_same(global_group_ids[existing]):
                 #TODO we need to work out how to handle this, beyond just printing a warning... 
                 # although if this block of code gets executed something is horribly wrong anyway
-                logger.warn("WARNING blended objects seem to belong to different blends... possibly everything is blended together (sep parameter too big?)")
+                logger.warn("WARNING grouped objects seem to belong to different groups... possibly everything is grouped together (sep parameter too big?)")
                 
 
-            if len(existing) == num_in_blend:
+            if len(existing) == num_in_group:
                 #we know about all of these objects - nothing more to do
                 continue
             else:
-                #some of these objects are new... add them to their existing neighbours' blend
-                existing_id = global_blend_ids[existing[0]]
-                global_blend_ids[new] = existing_id
+                #some of these objects are new... add them to their existing neighbours' group
+                existing_id = global_group_ids[existing[0]]
+                global_group_ids[new] = existing_id
 
-    return blend_id
+    return group_id
 
 
-def merge_blended(xs, ys, global_blends):
-    """For each blend, adjust the positions of the objects so they're all at the centre of mass of the blend"""
-    n_blends = np.max(global_blends)
+def merge_grouped(xs, ys, global_groups):
+    """For each group, adjust the positions of the objects so they're all at the centre of mass of the group
     
-    #for each blend...
-    for b in range(0,n_blends+1):
+        Parameters:
+            xs (np.ndarray) : list of the x coordinates of the objects
+            ys (np.ndarray) : list of the y coordinates of the objects
+            global_groups (np.ndarray) : int array with the group_id for each object
+
+        Returns:
+            xs (np.ndarray): The x coordinates of the objects (updated to the COM of the group)
+            ys (np.ndarray): The x coordinates of the objects (updated to the COM of the group)
+        """
+    n_groups = np.max(global_groups)
+    
+    #for each group...
+    for b in range(0,n_groups+1):
         #get the indices of the objects
-        inds = np.where(global_blends == b)
+        inds = np.where(global_groups == b)
         
         #get their x and y coordinates
         x_coords = xs[inds]
@@ -143,13 +176,25 @@ def merge_blended(xs, ys, global_blends):
 
 
 
-def identify_all_blends(x,y, sep=10, metric = euclidean_metric, batchsize = 2000):
-    """Finds all the blended objects in the input list of x and y coordinates of objects.
-       returns updated x and y coordinate lists where all the blended objects' coordinates
-       have been changed to the centre of mass of the blend, along with an array that 
-       identifies the blended objects and the blend they belong to"""
+def identify_all_groups(x,y, sep=1., metric = euclidean_metric, batchsize = 2000):
+    """Finds all the grouped objects in the input list of x and y coordinates of objects.
+       returns updated x and y coordinate lists where all the grouped objects' coordinates
+       have been changed to the centre of mass of the group, along with an array that 
+       identifies the grouped objects and the group they belong to
+       
+        Parameters:
+            x (np.ndarray) : The list of x coordinates of the objects
+            y (np.ndarray) : The list of y coordinates of the objects
+            sep (float) : The maximum separation between any two objects to group them together
+            metric (function) : The distance metric to use d = f(x1,x2,y1,y2)
+            batchsize (int) : The number of objects to process at once when determining groups
 
-    blend_ids = np.zeros(len(x),np.int64)-1
+        Returns: 
+            xs (np.ndarray) : updated x coordinates of the objects
+            ys (np.ndarray) : updated y coordinates of the objects
+            group_ids (np.ndarray) : int array of the group_id for each object """
+
+    group_ids = np.zeros(len(x),np.int64)-1
     xs = np.copy(x)
     ys = np.copy(y)
 
@@ -159,9 +204,9 @@ def identify_all_blends(x,y, sep=10, metric = euclidean_metric, batchsize = 2000
     ymin_global = ys.min()
     ymax_global = ys.max()
 
-    # Unfortunately due to memory and compute constrtaints we must identify the blends in batches
+    # Unfortunately due to memory and compute constrtaints we must identify the groups in batches
     # Each batch slightly overlaps its adjacent batches so that no objects are missed, although this
-    # does mean occasionally identifying the same blends twice... however the function update_blended deals with this
+    # does mean occasionally identifying the same groups twice... however the function update_grouped deals with this
     
     #calculate the number of batches in each direction
     nbatches = int(np.ceil(np.sqrt(len(x)/batchsize)))
@@ -170,9 +215,9 @@ def identify_all_blends(x,y, sep=10, metric = euclidean_metric, batchsize = 2000
     wx = (xmax_global-xmin_global)/nbatches
     wy = (ymax_global-ymin_global)/nbatches
 
-    blend_count = 0
+    group_count = 0
 
-    logger.info("Identifying blends in %d x %d batches",nbatches,nbatches)
+    logger.info("Identifying groups in %d x %d batches",nbatches,nbatches)
 
     #loop over all the batches
     t0 = time.time()
@@ -196,36 +241,49 @@ def identify_all_blends(x,y, sep=10, metric = euclidean_metric, batchsize = 2000
                 logger.debug("Batch(%d,%d): Skipping as no objects in batch",(i,j))
                 continue
             
-            #get the list of blends. Each blend is a list of indices of the objects in that blend
-            local_blends = find_blends(xp, yp, sep,metric=metric)
+            #get the list of groups. Each group is a list of indices of the objects in that group
+            local_groups = find_groups(xp, yp, sep,metric=metric)
             
-            #store the blends in the global array, update their positions to the centre of mass of the blend
-            new_blend_count = update_blended(local_blends, blend_ids, indices, xs, ys, blend_count)
+            #store the groups in the global array, update their positions to the centre of mass of the group
+            new_group_count = update_grouped(local_groups, group_ids, indices, xs, ys, group_count)
 
-            new_blends = new_blend_count-blend_count
-            blend_count = new_blend_count
+            new_groups = new_group_count-group_count
+            group_count = new_group_count
 
-            logger.debug("Batch(%d,%d): Number of objects = %d, Number of new blends = %d",i,j,len(xp),new_blends)
+            logger.debug("Batch(%d,%d): Number of objects = %d, Number of new groups = %d",i,j,len(xp),new_groups)
     
-    #Now adjust the positions of all blended objects so they are the centre of mass of ther blends
-    xs, ys = merge_blended(xs, ys, blend_ids)
+    #Now adjust the positions of all grouped objects so they are the centre of mass of ther groups
+    xs, ys = merge_grouped(xs, ys, group_ids)
 
     t1 = time.time()
-    n_blended = len(np.where(blend_ids >= 0)[0])
+    n_grouped = len(np.where(group_ids >= 0)[0])
     n_objs = len(xs)
-    logger.info("Time taken to identify blends = %fs",t1-t0)
-    logger.info("Total number of blended objects = %d",n_blended)
-    logger.info("Total number of blends = %d",blend_count)
-    logger.info("Fraction of objects that are blended = %f",(n_blended/n_objs))
-    logger.info("Mean number of objects per blend = %f",(n_blended/blend_count))
+    logger.info("Time taken to identify groups = %fs",t1-t0)
+    logger.info("Total number of grouped objects = %d",n_grouped)
+    logger.info("Total number of groups = %d",group_count)
+    logger.info("Fraction of objects that are grouped = %f",(n_grouped/n_objs))
+    logger.info("Mean number of objects per group = %f",(n_grouped/group_count))
 
-    return xs, ys, blend_ids
+    return xs, ys, group_ids
 
 
 
 def partition_into_batches(xs, ys, batchsize=20, nbatches = None, seed=RANDOM_SEED):
     """Given arrays of the objects' x and y coordinates, partition them into many batches approximately
-       of size batchsize, or if nbatches != None, partition them into nbatches batches"""
+       of size batchsize, or if nbatches != None, partition them into nbatches batches
+       
+        Parameters:
+            xs (np.ndarray) : x coordinates of the objects
+            ys (np.ndarray) : y coordinates of the objects
+            batchsize (int) : The mean number of objects in each batch
+            nbatches (int) : The number of batches to produce (if this is set, overrides batchsize)
+            seed (int) : The seed for the random number generator used in the batching
+           
+        Returns:
+            clusters (np.ndarray) : nbatches by n objects array of the centres of each cluster
+            labels (np.ndarray)  : an int array of the batch number each object belongs to
+            ns (np.ndarray) : the number of objects in each batch
+           """
     
     if nbatches is not None:
         k = nbatches
