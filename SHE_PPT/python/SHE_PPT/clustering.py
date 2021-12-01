@@ -217,6 +217,8 @@ def identify_all_groups(x,y, sep=1., metric = euclidean_metric, batchsize = 2000
 
     group_count = 0
 
+    logger.info("Grouping objects who have a separation of less than %f"%sep)
+
     logger.info("Identifying groups in %d x %d batches",nbatches,nbatches)
 
     #loop over all the batches

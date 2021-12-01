@@ -150,6 +150,7 @@ class AnalysisConfigKeys(ConfigKeys):
     OID_BATCH_SIZE = OBJECT_ID_SPLIT_HEAD + "batch_size"
     OID_MAX_BATCHES = OBJECT_ID_SPLIT_HEAD + "max_batches"
     OID_IDS = OBJECT_ID_SPLIT_HEAD + "ids"
+    OID_BLEND_RADIUS = OBJECT_ID_SPLIT_HEAD + "blend_radius"
 
     # Options for SHE_CTE_SubObjectIdSplit
 
