@@ -213,19 +213,8 @@ class SHEImage():
 
         # Cached values
         self.galsim_wcs = None
-
-        if self.header is None or CCDID_LABEL not in self.header:
-            # If no header, assume we're using detector 1-1
-            self.det_ix = 1
-            self.det_iy = 1
-        else:
-            try:
-                self.det_iy = int(self.header[CCDID_LABEL][0])
-                self.det_ix = int(self.header[CCDID_LABEL][2])
-            except ValueError:
-                # Check after "CCDID "
-                self.det_iy = int(self.header[CCDID_LABEL][6])
-                self.det_ix = int(self.header[CCDID_LABEL][8])
+        self._det_ix = None
+        self._det_iy = None
 
     # We define properties of the SHEImage object, following
     # https://euclid.roe.ac.uk/projects/codeen-users/wiki/User_Cod_Std-pythonstandard-v1-0#PNAMA-020-m-Developer
@@ -565,6 +554,36 @@ class SHEImage():
         else:
             # Failsafe to hardcoded shape
             return DETECTOR_SHAPE
+
+    def _determine_det_ixy(self):
+        """Determine detector x and y position from header."""
+
+        if self.header is None or CCDID_LABEL not in self.header:
+            # If no header, assume we're using detector 1-1
+            self._det_ix = 1
+            self._det_iy = 1
+        else:
+            try:
+                self._det_iy = int(self.header[CCDID_LABEL][0])
+                self._det_ix = int(self.header[CCDID_LABEL][2])
+            except ValueError:
+                # Check after "CCDID "
+                self._det_iy = int(self.header[CCDID_LABEL][6])
+                self._det_ix = int(self.header[CCDID_LABEL][8])
+
+    @property
+    def det_ix(self):
+        """The x-position of the detector for this image."""
+        if self._det_ix is None:
+            self._determine_det_ixy()
+        return self._det_ix
+
+    @property
+    def det_iy(self):
+        """The y-position of the detector for this image."""
+        if self._det_iy is None:
+            self._determine_det_ixy()
+        return self._det_iy
 
     def __str__(self):
         """A short string with size information and the percentage of masked pixels"""
