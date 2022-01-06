@@ -1081,7 +1081,7 @@ class SHEImage():
         if xmin >= 0 and xmax < self.shape[0] and ymin >= 0 and ymax < self.shape[1]:
             # We are fully within ghe image
             logger.debug("Extracting stamp [%d:%d,%d:%d] fully within image of shape (%d,%d)",
-                         xmin, xmax, ymin, ymax, self.shape)
+                         xmin, xmax, ymin, ymax, self.shape[0], self.shape[1])
 
             attr_stamps = {}
             for attr, filename, hdu_i in (("data", data_filename, data_hdu),
@@ -1108,7 +1108,7 @@ class SHEImage():
 
         else:
             logger.debug("Extracting stamp [%d:%d,%d:%d] not entirely within image of shape (%d,%d)",
-                         xmin, xmax, ymin, ymax, self.shape)
+                         xmin, xmax, ymin, ymax, self.shape[0], self.shape[1])
 
             # One solution would be to pad the image and extract, but that would need a lot of memory.
             # So instead we go for the more explicit bound computations.
