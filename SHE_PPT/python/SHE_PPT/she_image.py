@@ -1123,6 +1123,8 @@ class SHEImage():
                 offset = new_offset,
                 wcs = self.wcs,
                 parent_image = self,
+                parent_frame = self.parent_frame,
+                parent_frame_stack = self.parent_frame_stack,
                 )
 
         else:
