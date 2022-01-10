@@ -1123,6 +1123,8 @@ class SHEImage():
                 offset = new_offset,
                 wcs = self.wcs,
                 parent_image = self,
+                parent_frame = self.parent_frame,
+                parent_frame_stack = self.parent_frame_stack,
                 )
 
         else:
@@ -1232,6 +1234,8 @@ class SHEImage():
                 offset = new_offset,
                 wcs = self.wcs,
                 parent_image = self,
+                parent_frame = self.parent_frame,
+                parent_frame_stack = self.parent_frame_stack,
                 )
 
             if overlap_width == 0 and overlap_height == 0:
