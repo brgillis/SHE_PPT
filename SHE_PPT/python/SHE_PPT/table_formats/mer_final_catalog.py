@@ -286,6 +286,10 @@ class MerFinalCatalogFormat(SheTableFormat):
             setattr(self, bin_parameter, self.set_column_properties(
                 bin_parameter.upper(), is_optional = True, ))
 
+        # Tile ID
+        setattr(self, "TILE_ID", self.set_column_properties("TILE_ID", dtype= ">i8", fits_dtype = "K",
+                                                            comment = "", is_optional = True))
+
         self._finalize_init()
 
     @staticmethod

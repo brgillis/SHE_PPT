@@ -31,7 +31,7 @@ import astropy.wcs
 import numpy as np
 from astropy import table
 from astropy.io import fits
-from astropy.table import Table
+from astropy.table import Column, Table
 
 from . import logging, products
 from .constants.fits import MASK_TAG, NOISEMAP_TAG, SCI_TAG
@@ -895,6 +895,10 @@ class SHEFrameStack():
                                  detections_product.get_data_filename())
                     detections_catalogue = table.Table.read(
                         os.path.join(workdir, detections_product.get_data_filename()))
+
+                    # add tile ID column
+                    col = Column(name=mfc_tf.TILE_ID, data=[detections_product.Data.TileIndex] * len(detections_catalogue))
+                    detections_catalogue.add_column(col)
 
                     detections_catalogues.append(detections_catalogue)
 
