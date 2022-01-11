@@ -897,7 +897,7 @@ class SHEFrameStack():
                         os.path.join(workdir, detections_product.get_data_filename()))
 
                     # add tile ID column
-                    col = Column(name=mfc_tf.TILE_ID, data=[detections_product.Data.TileIndex] * len(detections_catalogue))
+                    col = Column(name=mfc_tf.tile_ID, data=[detections_product.Data.TileIndex] * len(detections_catalogue))
                     detections_catalogue.add_column(col)
 
                     detections_catalogues.append(detections_catalogue)
