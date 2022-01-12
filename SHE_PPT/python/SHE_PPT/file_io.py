@@ -28,7 +28,6 @@ import pickle
 import subprocess
 from datetime import datetime
 from os.path import exists, join
-from pickle import UnpicklingError
 from typing import Any, Callable, Dict, Generic, List, Optional, Sequence, Tuple, Type, TypeVar, Union
 from xml.sax import SAXParseException
 
@@ -1219,7 +1218,7 @@ def get_data_filename(filename: str, workdir: str = ".") -> Optional[str]:
                                      "product's class must be monkey-patched to have a get_filename " +
                                      "or get_data_filename method.")
 
-    except (UnicodeDecodeError, SAXParseException, UnpicklingError):
+    except SheFileReadError:
         # Not an XML file - so presumably it's a raw data file; return the
         # input filename
         data_filename = filename
