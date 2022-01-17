@@ -2,7 +2,7 @@
 <ns1:DpdSheStarCatalog xmlns:ns1="http://euclid.esa.org/schema/dpd/she/starcatalog">
 	<Header>
 		<ProductId>8c990381-66fe-4000-956d-1e8089aebe11</ProductId>
-		<ProductType>uOgTi</ProductType>
+        <ProductType>DpdSheStarCatalog</ProductType>
 		<SoftwareName>nqFgJ</SoftwareName>
 		<SoftwareRelease>Q76</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>l2mD</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>YPrVr</PlanId>
 		<PPOId>bF5pA</PPOId>
 		<PipelineDefinitionId>1tGoK</PipelineDefinitionId>
-		<PipelineRun>iE9oZ</PipelineRun>
-		<ExitStatusCode>RPPli</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>VALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-04T14:55:48.831Z</ExpirationDate>
 		<ToBePublished>true</ToBePublished>

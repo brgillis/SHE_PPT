@@ -2,7 +2,7 @@
 <ns1:DpdShePlaceholderGeneral xmlns:ns1="http://euclid.esa.org/schema/dpd/she/placeholdergeneral">
 	<Header>
 		<ProductId>c602a311-a77b-4b81-a9b7-cc7d3be9a156</ProductId>
-		<ProductType>txQqw</ProductType>
+        <ProductType>DpdShePlaceholderGeneral</ProductType>
 		<SoftwareName>Q04Oh</SoftwareName>
 		<SoftwareRelease>msoT</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>vyZJ</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>xQhvE</PlanId>
 		<PPOId>IkqFM</PPOId>
 		<PipelineDefinitionId>93Twc</PipelineDefinitionId>
-		<PipelineRun>I1dSN</PipelineRun>
-		<ExitStatusCode>eU3EZ</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>INVALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-03T15:47:21.202Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>

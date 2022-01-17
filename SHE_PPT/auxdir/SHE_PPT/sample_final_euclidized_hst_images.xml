@@ -2,7 +2,7 @@
 <ns1:DpdSheFinalEuclidizedHstImages xmlns:ns1="http://euclid.esa.org/schema/dpd/she/finaleuclidizedhstimages">
 	<Header>
 		<ProductId>2102d769-30da-46b5-87b2-ab9e01727d31</ProductId>
-		<ProductType>WgPBo</ProductType>
+        <ProductType>DpdSheFinalEuclidizedHstImages</ProductType>
 		<SoftwareName>262jw</SoftwareName>
 		<SoftwareRelease>yEIB</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>yylb</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>68Xo4</PlanId>
 		<PPOId>78OZM</PPOId>
 		<PipelineDefinitionId>bjwVU</PipelineDefinitionId>
-		<PipelineRun>BzG32</PipelineRun>
-		<ExitStatusCode>oIKuj</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
 		<ExpirationDate>2020-06-01T15:19:56.072Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>

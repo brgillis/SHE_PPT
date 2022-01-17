@@ -2,7 +2,7 @@
 <ns1:DpdSheReconciledLensMcChains xmlns:ns1="http://euclid.esa.org/schema/dpd/she/reconciledlensmcchains">
 	<Header>
 		<ProductId>9ec0a392-0c1d-4d89-a410-bd970cf4b5cc</ProductId>
-		<ProductType>QRaxm</ProductType>
+        <ProductType>DpdSheReconciledLensMcChains</ProductType>
 		<SoftwareName>76YbF</SoftwareName>
 		<SoftwareRelease>Dy70P</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>MGbb</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>RfuQX</PlanId>
 		<PPOId>uO2OU</PPOId>
 		<PipelineDefinitionId>mCiUk</PipelineDefinitionId>
-		<PipelineRun>JVxlV</PipelineRun>
-		<ExitStatusCode>YnCxa</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>VALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-03T15:56:34.316Z</ExpirationDate>
 		<ToBePublished>true</ToBePublished>

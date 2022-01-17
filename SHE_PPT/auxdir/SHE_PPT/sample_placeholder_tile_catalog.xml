@@ -2,7 +2,7 @@
 <ns1:DpdShePlaceholderTileCatalog xmlns:ns1="http://euclid.esa.org/schema/dpd/she/placeholdertilecatalog">
 	<Header>
 		<ProductId>b58bfda7-cc44-411d-9133-7ef601cbe065</ProductId>
-		<ProductType>au2rE</ProductType>
+        <ProductType>DpdShePlaceholderTileCatalog</ProductType>
 		<SoftwareName>N3vCm</SoftwareName>
 		<SoftwareRelease>C9BX</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>cqaP1</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>dCxhC</PlanId>
 		<PPOId>zZFIZ</PPOId>
 		<PipelineDefinitionId>ebPl5</PipelineDefinitionId>
-		<PipelineRun>LAuuv</PipelineRun>
-		<ExitStatusCode>t0h7C</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
 		<ExpirationDate>2020-06-03T15:49:56.353Z</ExpirationDate>
 		<ToBePublished>true</ToBePublished>

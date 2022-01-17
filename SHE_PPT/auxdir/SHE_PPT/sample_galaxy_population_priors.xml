@@ -2,7 +2,7 @@
 <ns1:DpdSheGalaxyPopulationPriors xmlns:ns1="http://euclid.esa.org/schema/dpd/she/galaxypopulationpriors">
 	<Header>
 		<ProductId>dc901f4d-5786-4738-add7-c1305052d644</ProductId>
-		<ProductType>uKCQb</ProductType>
+        <ProductType>DpdSheGalaxyPopulationPriors</ProductType>
 		<SoftwareName>IVhr9</SoftwareName>
 		<SoftwareRelease>zu6uo</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>x1I</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>UugQ8</PlanId>
 		<PPOId>tvlve</PPOId>
 		<PipelineDefinitionId>5GJAt</PipelineDefinitionId>
-		<PipelineRun>UKeBx</PipelineRun>
-		<ExitStatusCode>lHCgl</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>VALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-01T15:26:19.667Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>

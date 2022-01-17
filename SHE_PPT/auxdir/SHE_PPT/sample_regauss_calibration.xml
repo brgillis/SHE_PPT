@@ -2,7 +2,7 @@
 <ns1:DpdSheRegaussCalibration xmlns:ns1="http://euclid.esa.org/schema/dpd/she/regausscalibration">
 	<Header>
 		<ProductId>5a657102-fbb4-4d32-b279-f59f92732730</ProductId>
-		<ProductType>vnadU</ProductType>
+        <ProductType>DpdSheRegaussCalibration</ProductType>
 		<SoftwareName>eeSke</SoftwareName>
 		<SoftwareRelease>SoyVT</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>oo2m</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>FkR3c</PlanId>
 		<PPOId>QBgtT</PPOId>
 		<PipelineDefinitionId>vlivA</PipelineDefinitionId>
-		<PipelineRun>B5A6N</PipelineRun>
-		<ExitStatusCode>2To09</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
 		<ExpirationDate>2020-06-04T14:39:11.413Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>

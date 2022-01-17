@@ -2,7 +2,7 @@
 <ns1:DpdSheValidatedMeasurements xmlns:ns1="http://euclid.esa.org/schema/dpd/she/validatedmeasurements">
 	<Header>
 		<ProductId>7dc9538f-276f-4555-8a9d-9f0ae6ca086a</ProductId>
-		<ProductType>4P49l</ProductType>
+        <ProductType>DpdSheValidatedMeasurements</ProductType>
 		<SoftwareName>yMSx7</SoftwareName>
 		<SoftwareRelease>9jZZ6</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>RwgNx</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>24B0U</PlanId>
 		<PPOId>BpcgN</PPOId>
 		<PipelineDefinitionId>YSigC</PipelineDefinitionId>
-		<PipelineRun>TECEU</PipelineRun>
-		<ExitStatusCode>ek1kH</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>VALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-04T14:59:07.764Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>

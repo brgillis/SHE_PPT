@@ -2,7 +2,7 @@
 <ns1:DpdSheMomentsMlTrainingConfig xmlns:ns1="http://euclid.esa.org/schema/dpd/she/momentsmltrainingconfig">
 	<Header>
 		<ProductId>53345772-5518-4ba0-9b86-e1cec7c38387</ProductId>
-		<ProductType>sCx1E</ProductType>
+        <ProductType>DpdSheMomentsMlTrainingConfig</ProductType>
 		<SoftwareName>wxHV9</SoftwareName>
 		<SoftwareRelease>gtSa7</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>fKvK</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>W7Rc6</PlanId>
 		<PPOId>nEZnT</PPOId>
 		<PipelineDefinitionId>Ilu54</PipelineDefinitionId>
-		<PipelineRun>eHEBl</PipelineRun>
-		<ExitStatusCode>ojRyi</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
 		<ExpirationDate>2020-06-03T15:44:13.489Z</ExpirationDate>
 		<ToBePublished>true</ToBePublished>

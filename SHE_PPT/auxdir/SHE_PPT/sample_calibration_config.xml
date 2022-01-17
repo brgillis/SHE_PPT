@@ -2,7 +2,7 @@
 <ns1:DpdSheCalibrationConfig xmlns:ns1="http://euclid.esa.org/schema/dpd/she/calibrationconfig">
 	<Header>
 		<ProductId>e7b078bc-a24d-4798-9802-e92a4a46ccab</ProductId>
-		<ProductType>5cCRI</ProductType>
+        <ProductType>DpdSheCalibrationConfig</ProductType>
 		<SoftwareName>Eq8gJ</SoftwareName>
 		<SoftwareRelease>1Rxs8</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>28YJ5</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>h85Ej</PlanId>
 		<PPOId>0WzXQ</PPOId>
 		<PipelineDefinitionId>ncalA</PipelineDefinitionId>
-		<PipelineRun>fwgi7</PipelineRun>
-		<ExitStatusCode>o8wWp</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>VALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-01T14:47:38.674Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>

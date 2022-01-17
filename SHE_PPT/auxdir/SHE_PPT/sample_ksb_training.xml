@@ -2,7 +2,7 @@
 <ns1:DpdSheKsbTraining xmlns:ns1="http://euclid.esa.org/schema/dpd/she/ksbtraining">
 	<Header>
 		<ProductId>d8faa723-4739-4d21-a948-b3b8f5fc7772</ProductId>
-		<ProductType>0QTdq</ProductType>
+        <ProductType>DpdSheKsbTraining</ProductType>
 		<SoftwareName>z8FUw</SoftwareName>
 		<SoftwareRelease>RbR</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>HvMI</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>o8dyT</PlanId>
 		<PPOId>rK20s</PPOId>
 		<PipelineDefinitionId>BF0kX</PipelineDefinitionId>
-		<PipelineRun>vz3Io</PipelineRun>
-		<ExitStatusCode>6QAou</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
 		<ExpirationDate>2020-06-03T15:06:27.402Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>

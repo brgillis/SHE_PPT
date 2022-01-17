@@ -2,7 +2,7 @@
 <ns1:DpdShePsfCalibrationConfig xmlns:ns1="http://euclid.esa.org/schema/dpd/she/psfcalibrationconfig">
 	<Header>
 		<ProductId>cf1e9e56-d782-4824-9545-8445ff1efad5</ProductId>
-		<ProductType>0O4Hk</ProductType>
+        <ProductType>DpdShePsfCalibrationConfig</ProductType>
 		<SoftwareName>PHAVE</SoftwareName>
 		<SoftwareRelease>x9d</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>BC2WL</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>PrvmB</PlanId>
 		<PPOId>KjkSR</PPOId>
 		<PipelineDefinitionId>2JRbf</PipelineDefinitionId>
-		<PipelineRun>WoCB9</PipelineRun>
-		<ExitStatusCode>XlBiw</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>INVALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-03T15:53:13.372Z</ExpirationDate>
 		<ToBePublished>true</ToBePublished>

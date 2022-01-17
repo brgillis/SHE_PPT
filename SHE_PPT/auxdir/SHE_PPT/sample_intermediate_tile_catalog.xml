@@ -2,7 +2,7 @@
 <ns1:DpdSheIntermediateTileCatalog xmlns:ns1="http://euclid.esa.org/schema/dpd/she/intermediatetilecatalog">
 	<Header>
 		<ProductId>fd8336b1-9313-424c-831d-e308518ab57b</ProductId>
-		<ProductType>2yuVy</ProductType>
+        <ProductType>DpdSheIntermediateTileCatalog</ProductType>
 		<SoftwareName>rbt58</SoftwareName>
 		<SoftwareRelease>diAH</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>xYu</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>szBX4</PlanId>
 		<PPOId>hlPE3</PPOId>
 		<PipelineDefinitionId>YieAl</PipelineDefinitionId>
-		<PipelineRun>VSMwE</PipelineRun>
-		<ExitStatusCode>bXosa</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
 		<ExpirationDate>2020-06-01T15:33:58.29Z</ExpirationDate>
 		<ToBePublished>true</ToBePublished>

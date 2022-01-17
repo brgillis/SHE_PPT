@@ -2,7 +2,7 @@
 <ns1:DpdSheCommonCalibration xmlns:ns1="http://euclid.esa.org/schema/dpd/she/commoncalibration">
 	<Header>
 		<ProductId>c6e75e8d-3b8c-4e73-8257-e3f99da58fd7</ProductId>
-		<ProductType>3e5Bd</ProductType>
+        <ProductType>DpdSheCommonCalibration</ProductType>
 		<SoftwareName>nSut2</SoftwareName>
 		<SoftwareRelease>wZ7</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>tqL</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>SdJya</PlanId>
 		<PPOId>OSkg1</PPOId>
 		<PipelineDefinitionId>uZrWK</PipelineDefinitionId>
-		<PipelineRun>bcaOT</PipelineRun>
-		<ExitStatusCode>fLymW</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>VALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-01T14:48:08.455Z</ExpirationDate>
 		<Published>false</Published>

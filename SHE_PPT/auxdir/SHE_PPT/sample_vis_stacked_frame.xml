@@ -2,7 +2,7 @@
 <ns1:DpdVisStackedFrame xmlns:ns1="http://euclid.esa.org/schema/dpd/vis/visstackedframe">
 	<Header>
 		<ProductId>91602aa0-434c-42d3-a40d-ea13e421cbba</ProductId>
-		<ProductType>fTL4t</ProductType>
+        <ProductType>DpdVisStackedFrame</ProductType>
 		<SoftwareName>yRYuI</SoftwareName>
 		<SoftwareRelease>cxfG</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>CFDE</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>TNvlb</PlanId>
 		<PPOId>AqSwf</PPOId>
 		<PipelineDefinitionId>Hqm88</PipelineDefinitionId>
-		<PipelineRun>XOP1f</PipelineRun>
-		<ExitStatusCode>uhcBP</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>INVALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-10T15:11:48.922Z</ExpirationDate>
 		<ToBePublished>true</ToBePublished>

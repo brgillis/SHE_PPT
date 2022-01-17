@@ -2,7 +2,7 @@
 <ns1:DpdSheAnalysisConfig xmlns:ns1="http://euclid.esa.org/schema/dpd/she/analysisconfig">
 	<Header>
 		<ProductId>e9f0eedb-7b71-462b-8f10-eea0041797f5</ProductId>
-		<ProductType>UsTK8</ProductType>
+        <ProductType>DpdSheAnalysisConfig</ProductType>
 		<SoftwareName>X61yz</SoftwareName>
 		<SoftwareRelease>NS4O</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>nGs</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>T5Pm0</PlanId>
 		<PPOId>ClYf8</PPOId>
 		<PipelineDefinitionId>RduUP</PipelineDefinitionId>
-		<PipelineRun>f3Ya1</PipelineRun>
-		<ExitStatusCode>m16Xn</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>VALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-01T14:31:06.936Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>

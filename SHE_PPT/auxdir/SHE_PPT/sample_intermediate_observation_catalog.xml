@@ -2,7 +2,7 @@
 <ns1:DpdSheIntermediateObservationCatalog xmlns:ns1="http://euclid.esa.org/schema/dpd/she/intermediateobservationcatalog">
 	<Header>
 		<ProductId>3a29af4d-094d-4d76-96fd-657e5a3d6be8</ProductId>
-		<ProductType>7z4pz</ProductType>
+        <ProductType>DpdSheIntermediateObservationCatalog</ProductType>
 		<SoftwareName>srzTN</SoftwareName>
 		<SoftwareRelease>qGIO</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>vYZ4</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>wMqgl</PlanId>
 		<PPOId>2iEHv</PPOId>
 		<PipelineDefinitionId>de7Br</PipelineDefinitionId>
-		<PipelineRun>H6uMv</PipelineRun>
-		<ExitStatusCode>qPWXs</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>VALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-01T15:32:48.995Z</ExpirationDate>
 		<ToBePublished>true</ToBePublished>

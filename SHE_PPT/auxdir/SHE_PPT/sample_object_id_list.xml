@@ -2,7 +2,7 @@
 <ns1:DpdSheObjectIdList xmlns:ns1="http://euclid.esa.org/schema/dpd/she/objectidlist">
 	<Header>
 		<ProductId>d45376cc-307d-41d3-bfeb-31a39ec1e3cf</ProductId>
-		<ProductType>apz85</ProductType>
+        <ProductType>DpdSheObjectIdList</ProductType>
 		<SoftwareName>K6y6H</SoftwareName>
 		<SoftwareRelease>ZK7</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>PTA</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>MlZFp</PlanId>
 		<PPOId>jv1LP</PPOId>
 		<PipelineDefinitionId>i3mc2</PipelineDefinitionId>
-		<PipelineRun>zThwc</PipelineRun>
-		<ExitStatusCode>cnlCK</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>INVALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-03T15:44:43.089Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>

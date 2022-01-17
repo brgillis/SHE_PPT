@@ -2,7 +2,7 @@
 <ns1:DpdSheIntermediateEuclidizedHstImages xmlns:ns1="http://euclid.esa.org/schema/dpd/she/intermediateeuclidizedhstimages">
 	<Header>
 		<ProductId>6d7f3775-c6e4-4691-9df0-3b7f37985390</ProductId>
-		<ProductType>2C68s</ProductType>
+        <ProductType>DpdSheIntermediateEuclidizedHstImages</ProductType>
 		<SoftwareName>8uaIQ</SoftwareName>
 		<SoftwareRelease>gprnq</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>whh</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>d7L0o</PlanId>
 		<PPOId>ioYWQ</PPOId>
 		<PipelineDefinitionId>HGsZC</PipelineDefinitionId>
-		<PipelineRun>LNVv1</PipelineRun>
-		<ExitStatusCode>UYosO</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
 		<ExpirationDate>2020-06-01T15:31:13.132Z</ExpirationDate>
 		<ToBePublished>true</ToBePublished>

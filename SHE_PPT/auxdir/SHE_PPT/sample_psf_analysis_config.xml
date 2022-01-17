@@ -2,7 +2,7 @@
 <ns1:DpdShePsfAnalysisConfig xmlns:ns1="http://euclid.esa.org/schema/dpd/she/psfanalysisconfig">
 	<Header>
 		<ProductId>8c2bca1a-13f4-41e5-87fd-9b7e73ec83b2</ProductId>
-		<ProductType>8NdJi</ProductType>
+        <ProductType>DpdShePsfAnalysisConfig</ProductType>
 		<SoftwareName>ZEO0C</SoftwareName>
 		<SoftwareRelease>KwW</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>uGHc</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>cB9Hj</PlanId>
 		<PPOId>tQn3h</PPOId>
 		<PipelineDefinitionId>17aCa</PipelineDefinitionId>
-		<PipelineRun>vvVIg</PipelineRun>
-		<ExitStatusCode>OGclv</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>VALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-03T15:52:45.306Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>

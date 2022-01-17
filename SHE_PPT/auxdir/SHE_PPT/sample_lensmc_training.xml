@@ -2,7 +2,7 @@
 <ns1:DpdSheLensMcTraining xmlns:ns1="http://euclid.esa.org/schema/dpd/she/lensmctraining">
 	<Header>
 		<ProductId>03a1dc83-3605-4496-9562-7331e9b18316</ProductId>
-		<ProductType>ZnLjz</ProductType>
+        <ProductType>DpdSheLensMcTraining</ProductType>
 		<SoftwareName>9dn5P</SoftwareName>
 		<SoftwareRelease>xpWR</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>16rd</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>Fd2e3</PlanId>
 		<PPOId>dTVl0</PPOId>
 		<PipelineDefinitionId>cJrLZ</PipelineDefinitionId>
-		<PipelineRun>YROYP</PipelineRun>
-		<ExitStatusCode>DTTif</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>VALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-03T15:13:25.786Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>

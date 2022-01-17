@@ -2,7 +2,7 @@
 <ns1:DpdSheValidationTestResults xmlns:ns1="http://euclid.esa.org/schema/dpd/she/validationtestresults">
 	<Header>
 		<ProductId>5b6da45b-6155-427c-b09d-36b5a715e185</ProductId>
-		<ProductType>2wxCI</ProductType>
+        <ProductType>DpdSheValidationTestResults</ProductType>
 		<SoftwareName>Szaz4</SoftwareName>
 		<SoftwareRelease>oFRDA</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>JvqY</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>sqwMo</PlanId>
 		<PPOId>dlCjo</PPOId>
 		<PipelineDefinitionId>YVSV5</PipelineDefinitionId>
-		<PipelineRun>EqULG</PipelineRun>
-		<ExitStatusCode>BohFN</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
 		<ExpirationDate>2020-06-04T15:04:28.745Z</ExpirationDate>
 		<ToBePublished>true</ToBePublished>

@@ -2,7 +2,7 @@
 <ns1:DpdMerFinalCatalog xmlns:ns1="http://euclid.esa.org/schema/dpd/mer/finalcatalog">
 	<Header>
 		<ProductId>9eec604b-d38c-4c50-983d-a0ddc519e782</ProductId>
-		<ProductType>zivF5</ProductType>
+        <ProductType>DpdMerFinalCatalog</ProductType>
 		<SoftwareName>HOEog</SoftwareName>
 		<SoftwareRelease>ntYX5</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>rgKP</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>SzQpZ</PlanId>
 		<PPOId>7oBHx</PPOId>
 		<PipelineDefinitionId>KCbIi</PipelineDefinitionId>
-		<PipelineRun>rEHob</PipelineRun>
-		<ExitStatusCode>kYl99</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>VALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-10T14:46:36.719Z</ExpirationDate>
 		<ToBePublished>true</ToBePublished>

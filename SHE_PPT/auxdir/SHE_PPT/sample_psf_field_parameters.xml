@@ -2,7 +2,7 @@
 <ns1:DpdShePsfFieldParameters xmlns:ns1="http://euclid.esa.org/schema/dpd/she/psffieldparameters">
 	<Header>
 		<ProductId>984ef6ab-e881-462a-b4e7-33bebd424d17</ProductId>
-		<ProductType>GIo4L</ProductType>
+        <ProductType>DpdShePsfFieldParameters</ProductType>
 		<SoftwareName>Z0oue</SoftwareName>
 		<SoftwareRelease>aptFM</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>8xham</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>76WSB</PlanId>
 		<PPOId>j3sbF</PPOId>
 		<PipelineDefinitionId>5jsSe</PipelineDefinitionId>
-		<PipelineRun>7MOkJ</PipelineRun>
-		<ExitStatusCode>oqwB1</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
 		<ExpirationDate>2020-06-03T15:54:55.317Z</ExpirationDate>
 		<ToBePublished>true</ToBePublished>
