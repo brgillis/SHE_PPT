@@ -2,7 +2,7 @@
 <ns1:DpdSheRegaussTraining xmlns:ns1="http://euclid.esa.org/schema/dpd/she/regausstraining">
 	<Header>
 		<ProductId>ba3d20bf-bf26-4056-ac9d-a2ac90bff04a</ProductId>
-		<ProductType>UXRS1</ProductType>
+        <ProductType>DpdSheRegaussTraining</ProductType>
 		<SoftwareName>JxzKT</SoftwareName>
 		<SoftwareRelease>DEhqA</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>w4gt</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>pKLoP</PlanId>
 		<PPOId>ZLc8S</PPOId>
 		<PipelineDefinitionId>R71Pt</PipelineDefinitionId>
-		<PipelineRun>16nA1</PipelineRun>
-		<ExitStatusCode>2V4o4</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>VALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-04T14:40:08.182Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>

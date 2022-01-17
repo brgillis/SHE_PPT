@@ -2,7 +2,7 @@
 <ns1:DpdSheExpectedShearValidationStatistics xmlns:ns1="http://euclid.esa.org/schema/dpd/she/expectedshearvalidationstatistics">
 	<Header>
 		<ProductId>e5288559-b96e-46b3-bf76-add55091b9fd</ProductId>
-		<ProductType>8Poeg</ProductType>
+        <ProductType>DpdSheExpectedShearValidationStatistics</ProductType>
 		<SoftwareName>EFjTh</SoftwareName>
 		<SoftwareRelease>yEODz</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>98ked</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>dXwy7</PlanId>
 		<PPOId>9QLgK</PPOId>
 		<PipelineDefinitionId>Viu2k</PipelineDefinitionId>
-		<PipelineRun>lJQUq</PipelineRun>
-		<ExitStatusCode>WxLvS</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>INVALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-01T14:51:57.903Z</ExpirationDate>
 		<ToBePublished>true</ToBePublished>

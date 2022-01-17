@@ -2,7 +2,7 @@
 <ns1:DpdSheLensMcCalibration xmlns:ns1="http://euclid.esa.org/schema/dpd/she/lensmccalibration">
 	<Header>
 		<ProductId>39bf18ac-8fba-43b0-9109-79d6a030cd38</ProductId>
-		<ProductType>SZh9z</ProductType>
+        <ProductType>DpdSheLensMcCalibration</ProductType>
 		<SoftwareName>DZ8Ox</SoftwareName>
 		<SoftwareRelease>DCqO</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>DdNHX</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>DyMMZ</PlanId>
 		<PPOId>ybhoH</PPOId>
 		<PipelineDefinitionId>wM2sy</PipelineDefinitionId>
-		<PipelineRun>vVjJk</PipelineRun>
-		<ExitStatusCode>jn2DQ</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>INVALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-03T15:12:18.409Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>

@@ -2,7 +2,7 @@
 <ns1:DpdSheExposureReprojectedSegmentationMap xmlns:ns1="http://euclid.esa.org/schema/dpd/she/exposurereprojectedsegmentationmap">
 	<Header>
 		<ProductId>39dfaae8-df18-4c37-8d7f-69e43fdda1b9</ProductId>
-		<ProductType>dpdSheExposureReprojectedSegmentationMap</ProductType>
+        <ProductType>DpdSheExposureReprojectedSegmentationMap</ProductType>
 		<SoftwareName>NA</SoftwareName>
 		<SoftwareRelease>0.0</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>0.0</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>bc9b6903-6d0b-4378-af2b-2e06eb046ebb</PlanId>
 		<PPOId>250aff87-d312-4499-9753-0d3b3e69fd5f</PPOId>
 		<PipelineDefinitionId>PipelineDefinitionId</PipelineDefinitionId>
-		<PipelineRun>NA</PipelineRun>
-		<ExitStatusCode>NA</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
 		<ExpirationDate>2020-07-02T12:45:33.76Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>

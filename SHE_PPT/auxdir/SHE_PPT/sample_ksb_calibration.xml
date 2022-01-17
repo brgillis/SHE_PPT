@@ -2,7 +2,7 @@
 <ns1:DpdSheKsbCalibration xmlns:ns1="http://euclid.esa.org/schema/dpd/she/ksbcalibration">
 	<Header>
 		<ProductId>eb0d4c3a-dd29-4b68-87fe-ded67257272a</ProductId>
-		<ProductType>0lYil</ProductType>
+        <ProductType>DpdSheKsbCalibration</ProductType>
 		<SoftwareName>fUVMy</SoftwareName>
 		<SoftwareRelease>RR7</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>AFZAs</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>M60a9</PlanId>
 		<PPOId>KzJso</PPOId>
 		<PipelineDefinitionId>h3o17</PipelineDefinitionId>
-		<PipelineRun>D5h6V</PipelineRun>
-		<ExitStatusCode>eSzqg</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
 		<ExpirationDate>2020-06-04T15:36:52.007Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>

@@ -2,7 +2,7 @@
 <ns1:DpdSheMomentsMlCalibration xmlns:ns1="http://euclid.esa.org/schema/dpd/she/momentsmlcalibration">
 	<Header>
 		<ProductId>eab0797e-4c93-47dd-87dd-94ff669438c0</ProductId>
-		<ProductType>E9yTS</ProductType>
+        <ProductType>DpdSheMomentsMlCalibration</ProductType>
 		<SoftwareName>1I9k3</SoftwareName>
 		<SoftwareRelease>U7t</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>GF6</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>Ca0M5</PlanId>
 		<PPOId>RdOMd</PPOId>
 		<PipelineDefinitionId>H3ZJ4</PipelineDefinitionId>
-		<PipelineRun>BQOGF</PipelineRun>
-		<ExitStatusCode>f4qo9</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>VALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-03T15:40:36.996Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>

@@ -2,7 +2,7 @@
 <ns1:DpdSheIntermediateGeneral xmlns:ns1="http://euclid.esa.org/schema/dpd/she/intermediategeneral">
 	<Header>
 		<ProductId>c01df353-b1bf-4121-b973-67b01df9f77d</ProductId>
-		<ProductType>lh6F3</ProductType>
+        <ProductType>DpdSheIntermediateGeneral</ProductType>
 		<SoftwareName>Pgc0w</SoftwareName>
 		<SoftwareRelease>6Wn3K</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>m9mc0</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>c6m4g</PlanId>
 		<PPOId>U7xQd</PPOId>
 		<PipelineDefinitionId>KwC44</PipelineDefinitionId>
-		<PipelineRun>K9qU1</PipelineRun>
-		<ExitStatusCode>95cvQ</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
 		<ExpirationDate>2020-06-01T15:32:07.947Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>

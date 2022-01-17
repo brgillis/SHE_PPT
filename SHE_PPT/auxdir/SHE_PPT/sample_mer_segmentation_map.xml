@@ -2,7 +2,7 @@
 <ns1:DpdMerSegmentationMap xmlns:ns1="http://euclid.esa.org/schema/dpd/mer/segmentationmap">
 	<Header>
 		<ProductId>c016854c-ede6-4bd1-9e25-17a169dc58b8</ProductId>
-		<ProductType>UrSeU</ProductType>
+        <ProductType>DpdMerSegmentationMap</ProductType>
 		<SoftwareName>gEGN2</SoftwareName>
 		<SoftwareRelease>vZJ</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>hkcO</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>3Qwmk</PlanId>
 		<PPOId>HIAH4</PPOId>
 		<PipelineDefinitionId>Cug5B</PipelineDefinitionId>
-		<PipelineRun>UjiLS</PipelineRun>
-		<ExitStatusCode>varvd</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>VALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-10T14:53:11.483Z</ExpirationDate>
 		<ToBePublished>true</ToBePublished>

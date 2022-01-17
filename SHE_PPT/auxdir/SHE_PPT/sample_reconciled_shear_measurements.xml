@@ -2,7 +2,7 @@
 <ns1:DpdSheReconciledMeasurements xmlns:ns1="http://euclid.esa.org/schema/dpd/she/reconciledmeasurements">
 	<Header>
 		<ProductId>dde3408f-b314-4a88-92cb-bced935b097e</ProductId>
-		<ProductType>tIwCk</ProductType>
+        <ProductType>DpdSheReconciledMeasurements</ProductType>
 		<SoftwareName>24cZP</SoftwareName>
 		<SoftwareRelease>KIe</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>7XB</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>gQ13H</PlanId>
 		<PPOId>OFiCc</PPOId>
 		<PipelineDefinitionId>FFwB6</PipelineDefinitionId>
-		<PipelineRun>tM3mo</PipelineRun>
-		<ExitStatusCode>OzZqC</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
 		<ExpirationDate>2020-06-03T15:58:01.941Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>

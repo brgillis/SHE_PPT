@@ -2,7 +2,7 @@
 <ns1:DpdSheIntermediateCatalog xmlns:ns1="http://euclid.esa.org/schema/dpd/she/intermediatecatalog">
 	<Header>
 		<ProductId>60652fb4-5437-4cc1-b323-f82321d2e6ad</ProductId>
-		<ProductType>BvCBG</ProductType>
+        <ProductType>DpdSheIntermediateCatalog</ProductType>
 		<SoftwareName>d0Lku</SoftwareName>
 		<SoftwareRelease>I4ov</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>5X8</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>IrrtI</PlanId>
 		<PPOId>Jd3RQ</PPOId>
 		<PipelineDefinitionId>2l8bO</PipelineDefinitionId>
-		<PipelineRun>cbEIn</PipelineRun>
-		<ExitStatusCode>hkg7E</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>VALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-01T15:29:01.938Z</ExpirationDate>
 		<ToBePublished>true</ToBePublished>

@@ -2,7 +2,7 @@
 <ns1:DpdSheLensMcChains xmlns:ns1="http://euclid.esa.org/schema/dpd/she/lensmcchains">
 	<Header>
 		<ProductId>1ac650fb-03b6-4806-8770-f7fe6c5b95b7</ProductId>
-		<ProductType>mVzLB</ProductType>
+        <ProductType>DpdSheLensMcChains</ProductType>
 		<SoftwareName>FISfE</SoftwareName>
 		<SoftwareRelease>uym</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>mw0</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>dQvox</PlanId>
 		<PPOId>QVVzc</PPOId>
 		<PipelineDefinitionId>Fw9eB</PipelineDefinitionId>
-		<PipelineRun>793VI</PipelineRun>
-		<ExitStatusCode>hNut5</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>INVALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-03T15:11:05.387Z</ExpirationDate>
 		<ToBePublished>true</ToBePublished>

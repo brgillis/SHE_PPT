@@ -2,7 +2,7 @@
 <ns1:DpdVisCalibratedFrame xmlns:ns1="http://euclid.esa.org/schema/dpd/vis/calibratedframe">
 	<Header>
 		<ProductId>7118e865-14db-43c7-ad3b-dfa6647078ce</ProductId>
-		<ProductType>X9r8B</ProductType>
+        <ProductType>DpdVisCalibratedFrame</ProductType>
 		<SoftwareName>SPRB4</SoftwareName>
 		<SoftwareRelease>chg</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>E4P</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>JdUDI</PlanId>
 		<PPOId>MAOav</PPOId>
 		<PipelineDefinitionId>TJm6a</PipelineDefinitionId>
-		<PipelineRun>AaqCD</PipelineRun>
-		<ExitStatusCode>I1bJ8</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>VALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-10T15:00:36.656Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>

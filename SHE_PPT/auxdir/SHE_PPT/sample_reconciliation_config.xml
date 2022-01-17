@@ -2,7 +2,7 @@
 <ns1:DpdSheReconciliationConfig xmlns:ns1="http://euclid.esa.org/schema/dpd/she/reconciliationconfig">
 	<Header>
 		<ProductId>b7a993de-a939-4278-a966-45ab4cd1a1a1</ProductId>
-		<ProductType>sI8XN</ProductType>
+        <ProductType>DpdSheReconciliationConfig</ProductType>
 		<SoftwareName>ERjSg</SoftwareName>
 		<SoftwareRelease>hNK8A</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>672</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>nHcaj</PlanId>
 		<PPOId>QtPT9</PPOId>
 		<PipelineDefinitionId>sLhxP</PipelineDefinitionId>
-		<PipelineRun>E8WLB</PipelineRun>
-		<ExitStatusCode>mii9H</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>INVALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-04T14:38:37.559Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>

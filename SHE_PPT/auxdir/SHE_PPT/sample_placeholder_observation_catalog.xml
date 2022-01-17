@@ -2,7 +2,7 @@
 <ns1:DpdShePlaceholderObservationCatalog xmlns:ns1="http://euclid.esa.org/schema/dpd/she/placeholderobservationcatalog">
 	<Header>
 		<ProductId>765ebcec-f8f4-439d-9d5d-9db615861a44</ProductId>
-		<ProductType>2wScB</ProductType>
+        <ProductType>DpdShePlaceholderObservationCatalog</ProductType>
 		<SoftwareName>TgrWl</SoftwareName>
 		<SoftwareRelease>mjDw</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>uh53A</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>XMufs</PlanId>
 		<PPOId>nd2b9</PPOId>
 		<PipelineDefinitionId>apzbY</PipelineDefinitionId>
-		<PipelineRun>IDuoD</PipelineRun>
-		<ExitStatusCode>W3bcE</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>INVALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-03T15:48:52.746Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>

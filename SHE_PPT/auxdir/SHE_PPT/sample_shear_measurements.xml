@@ -2,7 +2,7 @@
 <ns1:DpdSheMeasurements xmlns:ns1="http://euclid.esa.org/schema/dpd/she/measurements">
 	<Header>
 		<ProductId>2c9bfb29-e29d-405c-a8d0-dba560e87d4a</ProductId>
-		<ProductType>iPL7W</ProductType>
+        <ProductType>DpdSheMeasurements</ProductType>
 		<SoftwareName>3mATX</SoftwareName>
 		<SoftwareRelease>yReQ</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>KsrT</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>0Po2g</PlanId>
 		<PPOId>lxuXM</PPOId>
 		<PipelineDefinitionId>HEcZl</PipelineDefinitionId>
-		<PipelineRun>Xv5Hw</PipelineRun>
-		<ExitStatusCode>VrT1h</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>VALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-03T15:14:50.137Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>

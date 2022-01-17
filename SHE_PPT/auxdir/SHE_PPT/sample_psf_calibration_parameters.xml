@@ -2,7 +2,7 @@
 <ns1:DpdShePsfCalibrationParameters xmlns:ns1="http://euclid.esa.org/schema/dpd/she/psfcalibrationparameters">
 	<Header>
 		<ProductId>bd528e00-afa1-4ec6-a617-9dedade754b4</ProductId>
-		<ProductType>GfdPj</ProductType>
+        <ProductType>DpdShePsfCalibrationParameters</ProductType>
 		<SoftwareName>Uilwe</SoftwareName>
 		<SoftwareRelease>7JB1</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>X8U3</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>svZ2v</PlanId>
 		<PPOId>gkXyh</PPOId>
 		<PipelineDefinitionId>IkHA0</PipelineDefinitionId>
-		<PipelineRun>SOSo9</PipelineRun>
-		<ExitStatusCode>rp4qq</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>INVALID</ManualValidationStatus>
 		<ExpirationDate>2020-06-03T15:54:16.811Z</ExpirationDate>
 		<ToBePublished>true</ToBePublished>

@@ -2,7 +2,7 @@
 <ns1:DpdSheStackReprojectedSegmentationMap xmlns:ns1="http://euclid.esa.org/schema/dpd/she/stackreprojectedsegmentationmap">
 	<Header>
 		<ProductId>42d244d2-a174-4247-880f-76b295d02aac</ProductId>
-		<ProductType>dpdSheStackReprojectedSegmentationMap</ProductType>
+        <ProductType>DpdSheStackReprojectedSegmentationMap</ProductType>
 		<SoftwareName>NA</SoftwareName>
 		<SoftwareRelease>0.0</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>0.0</EuclidPipelineSoftwareRelease>
@@ -12,8 +12,7 @@
 		<PlanId>b99f04c6-ff23-41d9-8e12-cc5ae124d38b</PlanId>
 		<PPOId>c43f61a1-3e8f-491d-a9cb-d5dcc162265c</PPOId>
 		<PipelineDefinitionId>PipelineDefinitionId</PipelineDefinitionId>
-		<PipelineRun>NA</PipelineRun>
-		<ExitStatusCode>NA</ExitStatusCode>
+        <PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
 		<ExpirationDate>2020-07-02T12:46:25.795Z</ExpirationDate>
 		<ToBePublished>false</ToBePublished>
