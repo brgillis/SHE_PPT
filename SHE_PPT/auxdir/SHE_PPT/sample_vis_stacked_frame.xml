@@ -29,7 +29,6 @@
 			<Category>SCIENCE</Category>
 			<FirstType>STD</FirstType>
 			<SecondType>SKY</SecondType>
-			<ThirdType>WIDE</ThirdType>
 			<Technique>IMAGE</Technique>
 		</ImgType>
 		<ImgArea>
@@ -156,28 +155,7 @@
 				<DecHalfWidth unit="N">1.0</DecHalfWidth>
 			</BBox>
 		</ImgSpatialFootprint>
-		<Masks>
-			<HotPixelMask decBit="1" hexBit="0x00000001"/>
-			<ColdPixelMask decBit="2" hexBit="0x00000002"/>
-			<SaturatedPixelMask decBit="4" hexBit="0x00000004"/>
-			<CosmicRayPixelMask decBit="8" hexBit="0x00000008"/>
-			<SatelliteTrailPixelMask decBit="16" hexBit="0x00000010"/>
-			<InterpolatedPixelMask decBit="32" hexBit="0x00000020"/>
-			<BleedingPixelMask decBit="64" hexBit="0x00000040"/>
-			<OnBoardPixelMask decBit="128" hexBit="0x00000080"/>
-			<BadPixelMask decBit="256" hexBit="0x00000100"/>
-			<NonLinearPixelMask decBit="512" hexBit="0x00000200"/>
-			<PersistentChargePixelMask decBit="1024" hexBit="0x00000400"/>
-			<GhostPixelMask decBit="2048" hexBit="0x00000800"/>
-			<TransientObjectPixelMask decBit="4096" hexBit="0x00001000"/>
-			<ExtendedObjectPixelMask decBit="8192" hexBit="0x00002000"/>
-			<ScatteredLightPixelMask decBit="16384" hexBit="0x00004000"/>
-			<ChargeInjectionPixelMask decBit="32768" hexBit="0x00008000"/>
-			<NearChargeInjectionPixelMask decBit="65536" hexBit="0x00010000"/>
-			<SaturatedXTalkGhostPixelMask decBit="131072" hexBit="0x00020000"/>
-			<StarSignalPixelMask decBit="262144" hexBit="0x00040000"/>
-			<UserDefinedPixelMask decBit="134217728" hexBit="0x08000000"/>
-		</Masks>
+        <Masks> 53ZR1 </Masks>
 		<ObservationId>-1</ObservationId>
 		<DateRange>
 			<Name>PS5EH</Name>

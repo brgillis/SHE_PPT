@@ -92,7 +92,7 @@
 				<OutputDataFileList>SF</OutputDataFileList>
 			</ProcessingStep>
 		</ProcessingSteps>
-		<DataStorage format="mer.finalCatalog" version="0.3">
+		<DataStorage format="mer.finalCatalog" version="0.4">
 			<DataContainer filestatus="PROPOSED">
 				<FileName>None</FileName>
 			</DataContainer>

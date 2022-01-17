@@ -29,7 +29,6 @@
 			<Category>SCIENCE</Category>
 			<FirstType>OTHER</FirstType>
 			<SecondType>SKY</SecondType>
-			<ThirdType>WIDE</ThirdType>
 			<Technique>IMAGE</Technique>
 		</ImgType>
 		<ImgArea>
@@ -144,7 +143,7 @@
 				<DecHalfWidth unit="erg">0.0</DecHalfWidth>
 			</BBox>
 		</ImgSpatialFootprint>
-		<DataStorage format="mer.segmentationMap" version="0.3">
+		<DataStorage format="mer.segmentationMap" version="0.4">
 			<DataContainer filestatus="ARCHIVED_ONLINE">
 				<FileName>None</FileName>
 			</DataContainer>
