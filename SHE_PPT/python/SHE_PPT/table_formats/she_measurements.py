@@ -157,9 +157,9 @@ class SheMeasurementsFormat(SheTableFormat):
             "FLUX", dtype=">f4", fits_dtype="E")
         self.flux_err = self.set_column_properties(
             "FLUX_ERR", dtype=">f4", fits_dtype="E")
-        self.magnitude = tf.set_column_properties(
+        self.magnitude = self.set_column_properties(
             "MAGNITUDE", dtype = ">f4", fits_dtype = "E")
-        self.magnitude_err = tf.set_column_properties(
+        self.magnitude_err = self.set_column_properties(
             "MAGNITUDE_ERR", dtype = ">f4", fits_dtype = "E")
 
         self.snr = self.set_column_properties(
