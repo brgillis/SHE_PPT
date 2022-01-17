@@ -29,7 +29,6 @@
 			<Category>SCIENCE</Category>
 			<FirstType>STD</FirstType>
 			<SecondType>SKY</SecondType>
-			<ThirdType>WIDE</ThirdType>
 			<Technique>IMAGE</Technique>
 		</ImgType>
 		<ImgArea>
@@ -98,28 +97,7 @@
 				<DecHalfWidth unit="T">0.0</DecHalfWidth>
 			</BBox>
 		</ImgSpatialFootprint>
-		<Masks>
-			<HotPixelMask decBit="1" hexBit="0x00000001"/>
-			<ColdPixelMask decBit="2" hexBit="0x00000002"/>
-			<SaturatedPixelMask decBit="4" hexBit="0x00000004"/>
-			<CosmicRayPixelMask decBit="8" hexBit="0x00000008"/>
-			<SatelliteTrailPixelMask decBit="16" hexBit="0x00000010"/>
-			<InterpolatedPixelMask decBit="32" hexBit="0x00000020"/>
-			<BleedingPixelMask decBit="64" hexBit="0x00000040"/>
-			<OnBoardPixelMask decBit="128" hexBit="0x00000080"/>
-			<BadPixelMask decBit="256" hexBit="0x00000100"/>
-			<NonLinearPixelMask decBit="512" hexBit="0x00000200"/>
-			<PersistentChargePixelMask decBit="1024" hexBit="0x00000400"/>
-			<GhostPixelMask decBit="2048" hexBit="0x00000800"/>
-			<TransientObjectPixelMask decBit="4096" hexBit="0x00001000"/>
-			<ExtendedObjectPixelMask decBit="8192" hexBit="0x00002000"/>
-			<ScatteredLightPixelMask decBit="16384" hexBit="0x00004000"/>
-			<ChargeInjectionPixelMask decBit="32768" hexBit="0x00008000"/>
-			<NearChargeInjectionPixelMask decBit="65536" hexBit="0x00010000"/>
-			<SaturatedXTalkGhostPixelMask decBit="131072" hexBit="0x00020000"/>
-			<StarSignalPixelMask decBit="262144" hexBit="0x00040000"/>
-			<UserDefinedPixelMask decBit="134217728" hexBit="0x10000000"/>
-		</Masks>
+        <Masks> 53ZR1 </Masks> 
 		<DetectorList>
 			<Detector>
 				<DetectorId>jzodbWoCejy20N0bZLMfOGo3lunR</DetectorId>
@@ -253,12 +231,10 @@
 		<PredictedOrbit>
 			<Position>3.0 4.0 5.0</Position>
 			<Velocity>3.0 4.0 5.0</Velocity>
-			<SolarAspectAngle>2.0</SolarAspectAngle>
 		</PredictedOrbit>
 		<ReconsOrbit>
 			<Position>3.0 4.0 5.0</Position>
 			<Velocity>3.0 4.0 5.0</Velocity>
-			<SolarAspectAngle>3.0</SolarAspectAngle>
 		</ReconsOrbit>
 		<Readout>
 			<VerticalStart>-1</VerticalStart>
@@ -339,34 +315,32 @@
 				<FileName>None</FileName>
 			</DataContainer>
 		</DataStorage>
-		<QualityParams>
-			<Mean flagged="true">1.0</Mean>
-			<Median flagged="false">1.0</Median>
-			<Mode flagged="true">0.0</Mode>
-			<StDev flagged="false">0.0</StDev>
-			<Min flagged="true">1.0</Min>
-			<Max flagged="true">1.0</Max>
-			<PixelCount flagged="false">1</PixelCount>
-			<Level flagged="false">1.0</Level>
-			<MaskedPixelFraction flagged="false">0.0</MaskedPixelFraction>
-			<HotPixelCount flagged="false">0</HotPixelCount>
-			<DeadPixelCount flagged="false">0</DeadPixelCount>
-			<GhostPixelCount flagged="false">1</GhostPixelCount>
-			<CosmicRayPixelCount flagged="true">1</CosmicRayPixelCount>
-			<StDevDiff flagged="true">1.0</StDevDiff>
-			<SubWinFlatness flagged="true">0.0</SubWinFlatness>
-			<FourierFreq flagged="true">1.0</FourierFreq>
-			<FourierFreqPower flagged="true">0.0</FourierFreqPower>
-			<SigmaClipMode flagged="false">1</SigmaClipMode>
-			<PercentileLevel flagged="false">1.0</PercentileLevel>
-			<ChiFit flagged="true">1.0</ChiFit>
-			<Temperature flagged="true">0.0</Temperature>
-			<SignalToNoiseRatio flagged="false">1.0</SignalToNoiseRatio>
+        <QualityParams>
+			<OBS_astro_internal_error_rms flagged="false">0.0</OBS_astro_internal_error_rms>
+			<OBS_astro_internal_error_mean flagged="true">1.0</OBS_astro_internal_error_mean>
+			<OBS_astro_internal_error_stdev flagged="true">0.0</OBS_astro_internal_error_stdev>
+			<OBS_astro_internal_error_count flagged="false">0</OBS_astro_internal_error_count>
+			<FPA_expcat_to_extcat_exterr_mean_residual flagged="false">1.0</FPA_expcat_to_extcat_exterr_mean_residual>
+			<FPA_expcat_to_extcat_exterr_stdev flagged="false">1.0</FPA_expcat_to_extcat_exterr_stdev>
+			<FPA_expcat_to_stackcat_interr_rms flagged="true">1.0</FPA_expcat_to_stackcat_interr_rms>
+			<FPA_pointing_jitter flagged="false">0.0</FPA_pointing_jitter>
+			<FPA_cr_pixel_count flagged="false">0</FPA_cr_pixel_count>
+			<FPA_cr_pixel_ratio flagged="true">1.0</FPA_cr_pixel_ratio>
+			<FPA_cr_pixel_density flagged="true">0.0</FPA_cr_pixel_density>
+			<FPA_avg_bkg flagged="true">1.0</FPA_avg_bkg>
+			<FPA_flagged_ghosts flagged="true">0</FPA_flagged_ghosts>
+			<FPA_flagged_stars flagged="false">0</FPA_flagged_stars>
+			<FPA_ghost_flag_quality flagged="false">0.0</FPA_ghost_flag_quality>
+			<FPA_zero_point flagged="false">0.0</FPA_zero_point>
+			<FPA_zero_point_rms flagged="true">0.0</FPA_zero_point_rms>
 		</QualityParams>
 	</Data>
-	<QualityFlags>
-		<DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
-		<AuxiliaryFlags flagName="GaEKU" flagged="false" maxLimit="-7.0" minLimit="-3.0" xpath="KyerY">false</AuxiliaryFlags>
+    <QualityFlags>
+		<CRPixelRatioMaxExceeded flagged="false" maxLimit="-4.0" xpath="/*/Data/QualityParams/FPA_cr_pixel_ratio">false</CRPixelRatioMaxExceeded>
+		<GhostFlagQualityRangeExceeded flagged="true" maxLimit="-6.0" minLimit="-10.0" xpath="/*/Data/QualityParams/FPA_ghost_flag_quality">false</GhostFlagQualityRangeExceeded>
+		<AstroInternalErrorRangeExceeded flagged="false" maxLimit="9.0" minLimit="5.0" xpath="/*/Data/QualityParams/OBS_astro_internal_error_rms">true</AstroInternalErrorRangeExceeded>
+		<ExtErrMeanResidualRangeExceeded flagged="false" maxLimit="9.0" minLimit="-6.0" xpath="/*/Data/QualityParams/FPA_expcat_to_extcat_exterr_mean_residual">false</ExtErrMeanResidualRangeExceeded>
+		<AuxiliaryFlags flagName="BWQfT" flagged="false" maxLimit="-3.0" minLimit="-5.0" xpath="mzmH0">false</AuxiliaryFlags>
 	</QualityFlags>
 	<Parameters>
 		<Parameter>
