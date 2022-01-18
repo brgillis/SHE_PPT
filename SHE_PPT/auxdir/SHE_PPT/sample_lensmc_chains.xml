@@ -80,10 +80,7 @@
 			<MJD>3.0</MJD>
 		</ObservationDateTime>
 		<PointingIdList>-1</PointingIdList>
-		<TileList>
-			<TileIndex>-1</TileIndex>
-			<TileProductId>N/A</TileProductId>
-		</TileList>
+		<TileList>-1</TileList>
 		<Valid>VALID</Valid>
 		<ShearEstimationMethod>LensMC</ShearEstimationMethod>
 	</Data>

@@ -99,7 +99,7 @@
 			<Valid>INVALID</Valid>
 		</KsbShearMeasurements>
 		<LensMcShearMeasurements>
-			<DataStorage format="she.lensMcMeasurements" version="8.0">
+			<DataStorage format="she.lensMcMeasurements" version="8.0.1">
 				<DataContainer filestatus="ARCHIVED_ONLINE">
 					<FileName>None</FileName>
 				</DataContainer>
@@ -123,16 +123,13 @@
 			<Valid>UNKNOWN</Valid>
 		</RegaussShearMeasurements>
 		<PointingIdList>-1</PointingIdList>
-		<TileList>
-			<TileIndex>-1</TileIndex>
-			<TileProductId>N/A</TileProductId>
-		</TileList>
+		<TileList>-1</TileList>
 		<ObservationDateTime>
 			<OBT>2020-06-03T15:14:50.152Z</OBT>
 			<UTC>2020-06-03T15:14:50.153Z</UTC>
 			<MJD>0.0</MJD>
 		</ObservationDateTime>
-		<ObservationMode>ScienceDeep</ObservationMode>
+		<ObservationMode>DEEP</ObservationMode>
 		<NumberExposures>4</NumberExposures>
 	</Data>
 	<QualityFlags>

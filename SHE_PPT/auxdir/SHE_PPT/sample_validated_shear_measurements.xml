@@ -99,7 +99,7 @@
 			<Valid>VALID</Valid>
 		</KsbShearMeasurements>
 		<LensMcShearMeasurements>
-			<DataStorage format="she.lensMcMeasurements" version="8.0">
+			<DataStorage format="she.lensMcMeasurements" version="8.0.1">
 				<DataContainer filestatus="PROPOSED">
 					<FileName>Rm3Of6f5ByXdyRD85ERaCcyK0QadjpNdm7iRWYMLElk0KSY3frIFYR0PJG5aroun1GI4qawHfa5j03xY1cauxxBPQQilQ</FileName>
 				</DataContainer>
@@ -123,16 +123,13 @@
 			<Valid>UNKNOWN</Valid>
 		</RegaussShearMeasurements>
 		<PointingIdList>-1</PointingIdList>
-		<TileList>
-			<TileIndex>-1</TileIndex>
-			<TileProductId>N/A</TileProductId>
-		</TileList>
+		<TileList>-1</TileList>
 		<ObservationDateTime>
 			<OBT>2020-06-04T14:59:07.779Z</OBT>
 			<UTC>2020-06-04T14:59:07.779Z</UTC>
 			<MJD>-3.0</MJD>
 		</ObservationDateTime>
-		<ObservationMode>ScienceWide</ObservationMode>
+		<ObservationMode>WIDE</ObservationMode>
 		<NumberExposures>4</NumberExposures>
 	</Data>
 	<QualityFlags>

@@ -23,7 +23,8 @@
 	<Data>
 		<ExposureProductId>-1</ExposureProductId>
 		<ObservationId>-1</ObservationId>
-		<ObservationMode>ScienceWide</ObservationMode>
+		<PointingId>-1</PointingId>
+		<ObservationMode>WIDE</ObservationMode>
 		<NumberExposures>4</NumberExposures>
 		<TileId>-1</TileId>
 		<SourcePipeline>sheAnalysis</SourcePipeline>
