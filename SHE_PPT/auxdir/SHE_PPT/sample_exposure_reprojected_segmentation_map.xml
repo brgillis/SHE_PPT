@@ -25,7 +25,6 @@
 			<Category>SCIENCE</Category>
 			<FirstType>STD</FirstType>
 			<SecondType>SKY</SecondType>
-			<ThirdType>WIDE</ThirdType>
 			<Technique>IMAGE</Technique>
 		</ImgType>
 		<ImgNumber>1</ImgNumber>
@@ -33,10 +32,7 @@
 		<AxisLengths>0 0</AxisLengths>
 		<DataSize>-32</DataSize>
 		<DataLength>0</DataLength>
-		<TileList>
-			<TileIndex>101</TileIndex>
-			<TileProductId>101</TileProductId>
-		</TileList>
+		<TileList>-1</TileList>
 		<ExposureProductId>N/A</ExposureProductId>
 		<ObservationId>101</ObservationId>
 		<PointingId>-1</PointingId>

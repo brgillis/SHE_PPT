@@ -99,7 +99,7 @@
 			<Valid>INVALID</Valid>
 		</KsbShearMeasurements>
 		<LensMcShearMeasurements>
-			<DataStorage format="she.lensMcMeasurements" version="8.0">
+			<DataStorage format="she.lensMcMeasurements" version="8.0.1">
 				<DataContainer filestatus="PROPOSED">
 					<FileName>None</FileName>
 				</DataContainer>
@@ -122,7 +122,6 @@
 			</DataStorage>
 			<Valid>VALID</Valid>
 		</RegaussShearMeasurements>
-		<ObservationIdList>-1</ObservationIdList>
 		<PointingIdList>-1</PointingIdList>
 	</Data>
 	<QualityFlags>

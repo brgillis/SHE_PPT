@@ -24,10 +24,7 @@
 		<ObjectIdList>-1</ObjectIdList>
 		<ObservationId>-1</ObservationId>
 		<PointingIdList>-1</PointingIdList>
-		<TileList>
-			<TileIndex>-1</TileIndex>
-			<TileProductId>N/A</TileProductId>
-		</TileList>
+		<TileList>-1</TileList>
 		<BatchIndex>-1</BatchIndex>
 	</Data>
 	<QualityFlags>

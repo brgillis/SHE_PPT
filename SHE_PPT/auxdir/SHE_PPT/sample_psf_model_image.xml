@@ -29,10 +29,7 @@
 		<ExposureProductId>wKl6V</ExposureProductId>
 		<ObservationId>5978780960610042093</ObservationId>
 		<PointingId>-1</PointingId>
-		<TileList>
-			<TileIndex>-1</TileIndex>
-			<TileProductId>N/A</TileProductId>
-		</TileList>
+		<TileList>-1</TileList>
 		<ObservationDateTime>
 			<OBT>2020-06-03T15:55:29.166Z</OBT>
 			<UTC>2020-06-03T15:55:29.166Z</UTC>

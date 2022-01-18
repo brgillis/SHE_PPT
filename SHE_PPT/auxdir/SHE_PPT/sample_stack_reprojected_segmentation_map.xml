@@ -25,7 +25,6 @@
 			<Category>SCIENCE</Category>
 			<FirstType>STD</FirstType>
 			<SecondType>SKY</SecondType>
-			<ThirdType>WIDE</ThirdType>
 			<Technique>IMAGE</Technique>
 		</ImgType>
 		<ImgNumber>1</ImgNumber>
@@ -51,10 +50,7 @@
 			<CD2_1>0.0</CD2_1>
 			<CD2_2>1.0</CD2_2>
 		</WCS>
-		<TileList>
-			<TileIndex>101</TileIndex>
-			<TileProductId>101</TileProductId>
-		</TileList>
+		<TileList>-1</TileList>
 		<StackProductId>101</StackProductId>
 		<ObservationId>101</ObservationId>
 		<ImgSpatialFootprint>

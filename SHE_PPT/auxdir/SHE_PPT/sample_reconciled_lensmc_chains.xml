@@ -75,7 +75,6 @@
 			</DataContainer>
 		</DataStorage>
 		<Valid>VALID</Valid>
-		<ObservationIdList>-1</ObservationIdList>
 		<PointingIdList>-1</PointingIdList>
 	</Data>
 	<QualityFlags>
