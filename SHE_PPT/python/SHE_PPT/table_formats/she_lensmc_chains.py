@@ -5,7 +5,7 @@
     Format definition for lensmc chains tables.
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2022-01-18"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
