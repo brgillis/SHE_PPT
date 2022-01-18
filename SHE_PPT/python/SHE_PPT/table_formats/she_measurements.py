@@ -158,9 +158,9 @@ class SheMeasurementsFormat(SheTableFormat):
         self.flux_err = self.set_column_properties(
             "FLUX_ERR", dtype=">f4", fits_dtype="E")
         self.magnitude = self.set_column_properties(
-            "MAGNITUDE", dtype = ">f4", fits_dtype = "E")
+            "MAGNITUDE", dtype = ">f4", fits_dtype = "E", is_optional=True)
         self.magnitude_err = self.set_column_properties(
-            "MAGNITUDE_ERR", dtype = ">f4", fits_dtype = "E")
+            "MAGNITUDE_ERR", dtype = ">f4", fits_dtype = "E", is_optional=True)
 
         self.snr = self.set_column_properties(
             "SNR", dtype=">f4", fits_dtype="E")
