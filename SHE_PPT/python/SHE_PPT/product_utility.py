@@ -20,7 +20,7 @@ __updated__ = "2021-08-19"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
-
+from enum import Enum
 from typing import Optional
 
 import ST_DM_DmUtils.DmUtils as dm_utils
@@ -71,6 +71,18 @@ def coerce_no_include_data_subdir(filename: Optional[str]) -> Optional[str]:
     if len(filename) > len(DATA_SUBDIR) and filename[:LEN_DATA_SUBDIR] == DATA_SUBDIR:
         return filename[LEN_DATA_SUBDIR:]
     return filename
+
+
+# Enum for names of placeholder and intermediate products
+class ProductName(Enum):
+    PLC_GENERAL = "DpdShePlaceholderGeneral"
+    PLC_CAT = "DpdShePlaceholderCatalog"
+    PLC_OBS_CAT = "DpdShePlaceholderObservationCatalog"
+    PLC_TILE_CAT = "DpdShePlaceholderTileCatalog"
+    INT_GENERAL = "DpdSheIntermediateGeneral"
+    INT_CAT = "DpdSheIntermediateCatalog"
+    INT_OBS_CAT = "DpdSheIntermediateObservationCatalog"
+    INT_TILE_CAT = "DpdSheIntermediateTileCatalog"
 
 
 def get_data_filename_from_product(p, attr_name = None):
@@ -476,15 +488,16 @@ def create_measurements_product_from_template(template_filename,
     return p
 
 
-def create_general_product_from_template(template_filename,
-                                         product_type_name,
-                                         filename = None, ):
+def create_general_product_from_template(template_filename: str,
+                                         product_type_name: str,
+                                         general_product_type_name: str,
+                                         filename: str = None, ):
     """ Function to create a data product object, using a template file as a base, specialized for shear measurements
         products.
     """
 
     p = create_product_from_template(template_filename = template_filename,
-                                     product_type_name = product_type_name,
+                                     product_type_name = general_product_type_name,
                                      filename = filename)
 
     # Set the data we don't need to empty

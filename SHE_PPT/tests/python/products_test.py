@@ -20,14 +20,15 @@ __updated__ = "2021-08-16"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from SHE_PPT import products
-from SHE_PPT.testing.products import ProductTester, SimpleDataProductTester, MethodsProductTester
+from SHE_PPT import product_utility, products
+from SHE_PPT.testing.products import MethodsProductTester, ProductTester, SimpleDataProductTester
+
 
 # We use the common product tester classes to reuse testing code across product types
 
 
 class TestLe1AocsTimeSeries(SimpleDataProductTester):
-    product_class = products.le1_aocs_time_series.dpdShePlaceholderGeneral
+    product_class = product_utility.dpdShePlaceholderGeneral
     product_type_name = products.le1_aocs_time_series.product_type_name
 
 
@@ -57,7 +58,7 @@ class TestSheCommonCalibration(MethodsProductTester):
 
 
 class TestSheExpectedShearValidationStatistics(SimpleDataProductTester):
-    product_class = products.she_expected_shear_validation_statistics.dpdShePlaceholderGeneral
+    product_class = product_utility.dpdShePlaceholderGeneral
     product_type_name = products.she_expected_shear_validation_statistics.product_type_name
 
 
@@ -157,17 +158,17 @@ class TestSheRegaussTraining(SimpleDataProductTester):
 
 
 class TestSheSimulatedCatalog(SimpleDataProductTester):
-    product_class = products.she_simulated_catalog.dpdSheIntermediateObservationCatalog
+    product_class = product_utility.dpdSheIntermediateObservationCatalog
     product_type_name = products.she_simulated_catalog.product_type_name
 
 
 class TestSheSimulationConfig(SimpleDataProductTester):
-    product_class = products.she_simulation_config.dpdSheIntermediateGeneral
+    product_class = product_utility.dpdSheIntermediateGeneral
     product_type_name = products.she_simulation_config.product_type_name
 
 
 class TestSheSimulationPlan(SimpleDataProductTester):
-    product_class = products.she_simulation_plan.dpdSheIntermediateGeneral
+    product_class = product_utility.dpdSheIntermediateGeneral
     product_type_name = products.she_simulation_plan.product_type_name
 
 
