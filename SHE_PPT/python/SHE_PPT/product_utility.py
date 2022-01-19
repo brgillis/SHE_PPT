@@ -85,6 +85,13 @@ class ProductName(Enum):
     INT_TILE_CAT = "DpdSheIntermediateTileCatalog"
 
 
+# Dict to store the fits table versions for each shear estimation method
+D_METHOD_FITS_VERSIONS = {ShearEstimationMethods.KSB      : "8.0",
+                          ShearEstimationMethods.LENSMC   : "8.0.1",
+                          ShearEstimationMethods.MOMENTSML: "8.0",
+                          ShearEstimationMethods.REGAUSS  : "8.0"}
+
+
 def get_data_filename_from_product(p, attr_name = None):
     """ Helper function to get a data filename from a product, adjusting for whether to include the data subdir
         as desired.
@@ -531,8 +538,7 @@ def get_method_cc_name(method: ShearEstimationMethods):
 
 
 def create_method_filestorage(method: ShearEstimationMethods,
-                              filename: Optional[str] = None,
-                              version = "8.0"):
+                              filename: Optional[str] = None, ):
     """ Create a file storage object for a given shear estimates method.
     """
 
@@ -544,7 +550,7 @@ def create_method_filestorage(method: ShearEstimationMethods,
     shear_estimates.DataStorage = dm_utils.create_fits_storage(getattr(she_pro, f"she{method_caps}MeasurementsFile"),
                                                                filename,
                                                                f"she.{method_cc}Measurements",
-                                                               version)
+                                                               version = D_METHOD_FITS_VERSIONS[method])
     shear_estimates.Valid = "VALID"
 
     return shear_estimates
