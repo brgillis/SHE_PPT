@@ -69,6 +69,7 @@
             <CatalogFormatHDU>1</CatalogFormatHDU>
         </CatalogDescription>
         <ObservationId>-1</ObservationId>
+        <IslandLabel>aXINP</IslandLabel>
         <IntData>0</IntData>
         <FloatData>0.0</FloatData>
         <StringData></StringData>

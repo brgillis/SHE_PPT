@@ -6,9 +6,7 @@
         <SoftwareName>PHAVE</SoftwareName>
         <SoftwareRelease>x9d</SoftwareRelease>
         <EuclidPipelineSoftwareRelease>BC2WL</EuclidPipelineSoftwareRelease>
-        <ProdSDC>
-            ZEhYA9mFgVZSXURn4jkWeDvLGAR6ET5TPBIvIgJXyOsnWRPuQsQwJq8EV6zcH3vZgw4T5tgzuCrlV8pZSzcfqlp9sSaEPFwGmJsMLDWfNHjSYw
-        </ProdSDC>
+        <ProdSDC>SDC-UK</ProdSDC>
         <DataSetRelease>LWV7R</DataSetRelease>
         <Purpose>DATA_RELEASE</Purpose>
         <PlanId>PrvmB</PlanId>

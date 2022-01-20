@@ -69,6 +69,7 @@
             <CatalogFormatHDU>1</CatalogFormatHDU>
         </CatalogDescription>
         <ObservationId>-1</ObservationId>
+        <IslandLabel>aXINP</IslandLabel>
         <DataStorage format="she.lensMcChains" version="8.0">
             <DataContainer filestatus="DELETED">
                 <FileName>None</FileName>

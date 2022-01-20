@@ -90,6 +90,7 @@
             <CatalogFormatHDU>1</CatalogFormatHDU>
         </CatalogDescription>
         <ObservationId>-8564841751236564584</ObservationId>
+        <IslandLabel>aXINP</IslandLabel>
         <KsbShearMeasurements>
             <DataStorage format="she.ksbMeasurements" version="8.0">
                 <DataContainer filestatus="ARCHIVED_OFFLINE">
