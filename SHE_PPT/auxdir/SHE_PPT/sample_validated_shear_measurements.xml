@@ -90,12 +90,11 @@
             <CatalogFormatHDU>1</CatalogFormatHDU>
         </CatalogDescription>
         <ObservationId>1</ObservationId>
+        <IslandLabel>aXINP</IslandLabel>
         <KsbShearMeasurements>
             <DataStorage format="she.ksbMeasurements" version="8.0">
                 <DataContainer filestatus="ARCHIVED_OFFLINE">
-                    <FileName>
-                        etMz8QwYPukquGYhRLz6avqM8DnDGcoRtz7xLnf8tZBTn2H0NhuB7ixH2ED2QTCaWMi7d84XJ9morI943jdW2eiPh
-                    </FileName>
+                    <FileName>None</FileName>
                 </DataContainer>
             </DataStorage>
             <Valid>VALID</Valid>
@@ -103,9 +102,7 @@
         <LensMcShearMeasurements>
             <DataStorage format="she.lensMcMeasurements" version="8.0.1">
                 <DataContainer filestatus="PROPOSED">
-                    <FileName>
-                        Rm3Of6f5ByXdyRD85ERaCcyK0QadjpNdm7iRWYMLElk0KSY3frIFYR0PJG5aroun1GI4qawHfa5j03xY1cauxxBPQQilQ
-                    </FileName>
+                    <FileName>None</FileName>
                 </DataContainer>
             </DataStorage>
             <Valid>VALID</Valid>
@@ -113,7 +110,7 @@
         <MomentsMlShearMeasurements>
             <DataStorage format="she.momentsMlMeasurements" version="8.0">
                 <DataContainer filestatus="DELETED">
-                    <FileName>kkbQ8ByqZW4AfrMV4eylsCjT5DEUigywlv2cUsoWzzDMVE8xVkMPYF1n2coGLjYIk</FileName>
+                    <FileName>None</FileName>
                 </DataContainer>
             </DataStorage>
             <Valid>UNKNOWN</Valid>
@@ -121,7 +118,7 @@
         <RegaussShearMeasurements>
             <DataStorage format="she.regaussMeasurements" version="8.0">
                 <DataContainer filestatus="DELETED">
-                    <FileName>icJbm2hLYrZ3YafJWNPqj5CtRCOFuoJNdTb4yf4fklkdeBwvPVhMjEewfFT5wKUO4h3KcqfST4PYAzI</FileName>
+                    <FileName>None</FileName>
                 </DataContainer>
             </DataStorage>
             <Valid>UNKNOWN</Valid>

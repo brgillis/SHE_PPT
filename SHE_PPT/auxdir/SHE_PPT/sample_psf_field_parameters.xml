@@ -6,9 +6,7 @@
         <SoftwareName>Z0oue</SoftwareName>
         <SoftwareRelease>aptFM</SoftwareRelease>
         <EuclidPipelineSoftwareRelease>8xham</EuclidPipelineSoftwareRelease>
-        <ProdSDC>
-            RxgpIEc7KbKTwgG3mvTiM1e5SQvkI6gZ4R26ELn7FN3nZk1M1cYxZ8HaTGNZnQGNM9t8bbHvW3w5eNIOpCJrgf1IEVYx2VefHcoRfjzmgxLs0II
-        </ProdSDC>
+        <ProdSDC>SDC-UK</ProdSDC>
         <DataSetRelease>3pqAF</DataSetRelease>
         <Purpose>TEST</Purpose>
         <PlanId>76WSB</PlanId>

@@ -69,6 +69,7 @@
             <CatalogFormatHDU>1</CatalogFormatHDU>
         </CatalogDescription>
         <ObservationId>-1</ObservationId>
+        <IslandLabel>aXINP</IslandLabel>
         <DataStorage format="she.starCatalog" version="8.0">
             <DataContainer filestatus="PROPOSED">
                 <FileName>None</FileName>
