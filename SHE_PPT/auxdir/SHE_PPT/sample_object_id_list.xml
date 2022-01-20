@@ -1,42 +1,44 @@
 <?xml version="1.0" ?>
 <ns1:DpdSheObjectIdList xmlns:ns1="http://euclid.esa.org/schema/dpd/she/objectidlist">
-	<Header>
-		<ProductId>d45376cc-307d-41d3-bfeb-31a39ec1e3cf</ProductId>
+    <Header>
+        <ProductId>d45376cc-307d-41d3-bfeb-31a39ec1e3cf</ProductId>
         <ProductType>DpdSheObjectIdList</ProductType>
-		<SoftwareName>K6y6H</SoftwareName>
-		<SoftwareRelease>ZK7</SoftwareRelease>
-		<EuclidPipelineSoftwareRelease>PTA</EuclidPipelineSoftwareRelease>
-		<ProdSDC>Wjao9wEnYQad1zTjiWvYo3PtZFzP32fDrQNBnxod27slUh</ProdSDC>
-		<DataSetRelease>fR48a</DataSetRelease>
-		<Purpose>PRODUCTION</Purpose>
-		<PlanId>MlZFp</PlanId>
-		<PPOId>jv1LP</PPOId>
-		<PipelineDefinitionId>i3mc2</PipelineDefinitionId>
+        <SoftwareName>K6y6H</SoftwareName>
+        <SoftwareRelease>ZK7</SoftwareRelease>
+        <EuclidPipelineSoftwareRelease>PTA</EuclidPipelineSoftwareRelease>
+        <ProdSDC>Wjao9wEnYQad1zTjiWvYo3PtZFzP32fDrQNBnxod27slUh</ProdSDC>
+        <DataSetRelease>fR48a</DataSetRelease>
+        <Purpose>PRODUCTION</Purpose>
+        <PlanId>MlZFp</PlanId>
+        <PPOId>jv1LP</PPOId>
+        <PipelineDefinitionId>i3mc2</PipelineDefinitionId>
         <PpoStatus>NA</PpoStatus>
-		<ManualValidationStatus>INVALID</ManualValidationStatus>
-		<ExpirationDate>2020-06-03T15:44:43.089Z</ExpirationDate>
-		<ToBePublished>false</ToBePublished>
-		<Published>true</Published>
-		<Curator>SHE</Curator>
-		<CreationDate>2020-06-03T15:44:43.091Z</CreationDate>
-	</Header>
-	<Data>
-		<ObjectIdList>-1</ObjectIdList>
-		<ObservationId>-1</ObservationId>
-		<PointingIdList>-1</PointingIdList>
-		<TileList>-1</TileList>
-		<BatchIndex>-1</BatchIndex>
-	</Data>
-	<QualityFlags>
-		<DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true</DummyFlag>
-		<AuxiliaryFlags flagName="xBU6Z" flagged="true" maxLimit="-7.0" minLimit="-2.0" xpath="6fitv">true</AuxiliaryFlags>
-	</QualityFlags>
-	<Parameters>
-		<Parameter>
-			<Key>37meV</Key>
-			<Description>HisST</Description>
-			<StringValue>oqhoo</StringValue>
-			<Unit>Tw20e</Unit>
-		</Parameter>
-	</Parameters>
+        <ManualValidationStatus>INVALID</ManualValidationStatus>
+        <ExpirationDate>2020-06-03T15:44:43.089Z</ExpirationDate>
+        <ToBePublished>0</ToBePublished>
+        <Published>0</Published>
+        <Curator>SHE</Curator>
+        <CreationDate>2020-06-03T15:44:43.091Z</CreationDate>
+    </Header>
+    <Data>
+        <ObjectIdList>-1</ObjectIdList>
+        <ObservationId>-1</ObservationId>
+        <PointingIdList>-1</PointingIdList>
+        <TileList>-1</TileList>
+        <BatchIndex>-1</BatchIndex>
+    </Data>
+    <QualityFlags>
+        <DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true
+        </DummyFlag>
+        <AuxiliaryFlags flagName="xBU6Z" flagged="true" maxLimit="-7.0" minLimit="-2.0" xpath="6fitv">true
+        </AuxiliaryFlags>
+    </QualityFlags>
+    <Parameters>
+        <Parameter>
+            <Key>37meV</Key>
+            <Description>HisST</Description>
+            <StringValue>oqhoo</StringValue>
+            <Unit>Tw20e</Unit>
+        </Parameter>
+    </Parameters>
 </ns1:DpdSheObjectIdList>

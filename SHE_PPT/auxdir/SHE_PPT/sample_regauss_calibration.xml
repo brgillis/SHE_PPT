@@ -1,50 +1,52 @@
 <?xml version="1.0" ?>
 <ns1:DpdSheRegaussCalibration xmlns:ns1="http://euclid.esa.org/schema/dpd/she/regausscalibration">
-	<Header>
-		<ProductId>5a657102-fbb4-4d32-b279-f59f92732730</ProductId>
+    <Header>
+        <ProductId>5a657102-fbb4-4d32-b279-f59f92732730</ProductId>
         <ProductType>DpdSheRegaussCalibration</ProductType>
-		<SoftwareName>eeSke</SoftwareName>
-		<SoftwareRelease>SoyVT</SoftwareRelease>
-		<EuclidPipelineSoftwareRelease>oo2m</EuclidPipelineSoftwareRelease>
-		<ProdSDC>OBqzz6KlE1PjQJvbbpZF</ProdSDC>
-		<DataSetRelease>VYknJ</DataSetRelease>
-		<Purpose>INTERMEDIATE_DATA_RELEASE</Purpose>
-		<PlanId>FkR3c</PlanId>
-		<PPOId>QBgtT</PPOId>
-		<PipelineDefinitionId>vlivA</PipelineDefinitionId>
+        <SoftwareName>eeSke</SoftwareName>
+        <SoftwareRelease>SoyVT</SoftwareRelease>
+        <EuclidPipelineSoftwareRelease>oo2m</EuclidPipelineSoftwareRelease>
+        <ProdSDC>OBqzz6KlE1PjQJvbbpZF</ProdSDC>
+        <DataSetRelease>VYknJ</DataSetRelease>
+        <Purpose>INTERMEDIATE_DATA_RELEASE</Purpose>
+        <PlanId>FkR3c</PlanId>
+        <PPOId>QBgtT</PPOId>
+        <PipelineDefinitionId>vlivA</PipelineDefinitionId>
         <PpoStatus>NA</PpoStatus>
-		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
-		<ExpirationDate>2020-06-04T14:39:11.413Z</ExpirationDate>
-		<ToBePublished>false</ToBePublished>
-		<Published>false</Published>
-		<Curator>SHE</Curator>
-		<CreationDate>2020-06-04T14:39:11.415Z</CreationDate>
-	</Header>
-	<Data>
-		<ValidityRange>
-			<Name>Dummy</Name>
-			<Type>sheRegaussCalibration</Type>
-			<TimestampStart>2020-06-04T14:39:11.416Z</TimestampStart>
-			<TimestampEnd>9999-06-04T14:39:11.416Z</TimestampEnd>
-		</ValidityRange>
-		<RegaussCalibrationFileList>
-			<DataStorage format="she.regaussTraining" version="8.0">
-				<DataContainer filestatus="DELETED">
-					<FileName>None</FileName>
-				</DataContainer>
-			</DataStorage>
-		</RegaussCalibrationFileList>
-	</Data>
-	<QualityFlags>
-		<DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
-		<AuxiliaryFlags flagName="sQE83" flagged="true" maxLimit="-8.0" minLimit="1.0" xpath="mAkVG">true</AuxiliaryFlags>
-	</QualityFlags>
-	<Parameters>
-		<Parameter>
-			<Key>W1DSq</Key>
-			<Description>iL1K9</Description>
-			<StringValue>TqUEt</StringValue>
-			<Unit>O4u1m</Unit>
-		</Parameter>
-	</Parameters>
+        <ManualValidationStatus>UNKNOWN</ManualValidationStatus>
+        <ExpirationDate>2020-06-04T14:39:11.413Z</ExpirationDate>
+        <ToBePublished>0</ToBePublished>
+        <Published>0</Published>
+        <Curator>SHE</Curator>
+        <CreationDate>2020-06-04T14:39:11.415Z</CreationDate>
+    </Header>
+    <Data>
+        <ValidityRange>
+            <Name>Dummy</Name>
+            <Type>sheRegaussCalibration</Type>
+            <TimestampStart>2020-06-04T14:39:11.416Z</TimestampStart>
+            <TimestampEnd>9999-06-04T14:39:11.416Z</TimestampEnd>
+        </ValidityRange>
+        <RegaussCalibrationFileList>
+            <DataStorage format="she.regaussTraining" version="8.0">
+                <DataContainer filestatus="DELETED">
+                    <FileName>None</FileName>
+                </DataContainer>
+            </DataStorage>
+        </RegaussCalibrationFileList>
+    </Data>
+    <QualityFlags>
+        <DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false
+        </DummyFlag>
+        <AuxiliaryFlags flagName="sQE83" flagged="true" maxLimit="-8.0" minLimit="1.0" xpath="mAkVG">true
+        </AuxiliaryFlags>
+    </QualityFlags>
+    <Parameters>
+        <Parameter>
+            <Key>W1DSq</Key>
+            <Description>iL1K9</Description>
+            <StringValue>TqUEt</StringValue>
+            <Unit>O4u1m</Unit>
+        </Parameter>
+    </Parameters>
 </ns1:DpdSheRegaussCalibration>

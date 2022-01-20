@@ -16,8 +16,8 @@
         <PpoStatus>NA</PpoStatus>
         <ManualValidationStatus>UNKNOWN</ManualValidationStatus>
         <ExpirationDate>2020-06-04T16:41:16.818Z</ExpirationDate>
-        <ToBePublished>false</ToBePublished>
-        <Published>true</Published>
+        <ToBePublished>0</ToBePublished>
+        <Published>0</Published>
         <Curator>SHE</Curator>
         <CreationDate>2020-06-04T16:41:16.822Z</CreationDate>
     </Header>

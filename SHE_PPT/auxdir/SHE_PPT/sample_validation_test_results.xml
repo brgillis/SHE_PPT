@@ -2,7 +2,7 @@
 <ns1:DpdSheValidationTestResults xmlns:ns1="http://euclid.esa.org/schema/dpd/she/validationtestresults">
 	<Header>
 		<ProductId>5b6da45b-6155-427c-b09d-36b5a715e185</ProductId>
-        <ProductType>DpdSheValidationTestResults</ProductType>
+		<ProductType>DpdSheValidationTestResults</ProductType>
 		<SoftwareName>Szaz4</SoftwareName>
 		<SoftwareRelease>oFRDA</SoftwareRelease>
 		<EuclidPipelineSoftwareRelease>JvqY</EuclidPipelineSoftwareRelease>
@@ -12,11 +12,11 @@
 		<PlanId>sqwMo</PlanId>
 		<PPOId>dlCjo</PPOId>
 		<PipelineDefinitionId>YVSV5</PipelineDefinitionId>
-        <PpoStatus>NA</PpoStatus>
+		<PpoStatus>NA</PpoStatus>
 		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
 		<ExpirationDate>2020-06-04T15:04:28.745Z</ExpirationDate>
-		<ToBePublished>true</ToBePublished>
-		<Published>true</Published>
+		<ToBePublished>0</ToBePublished>
+		<Published>0</Published>
 		<Curator>SHE</Curator>
 		<CreationDate>2020-06-04T15:04:28.748Z</CreationDate>
 	</Header>
@@ -61,8 +61,10 @@
 		</ValidationTestList>
 	</Data>
 	<QualityFlags>
-		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true</DummyFlag>
-		<AuxiliaryFlags flagName="RSG1j" flagged="false" maxLimit="5.0" minLimit="-7.0" xpath="p8hra">false</AuxiliaryFlags>
+		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true
+		</DummyFlag>
+		<AuxiliaryFlags flagName="RSG1j" flagged="false" maxLimit="5.0" minLimit="-7.0" xpath="p8hra">false
+		</AuxiliaryFlags>
 	</QualityFlags>
 	<Parameters>
 		<Parameter>
