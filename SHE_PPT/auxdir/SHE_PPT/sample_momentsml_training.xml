@@ -2,7 +2,7 @@
 <ns1:DpdSheMomentsMlTraining xmlns:ns1="http://euclid.esa.org/schema/dpd/she/momentsmltraining">
     <Header>
         <ProductId>c5bb700d-58e3-494e-b343-b3614037dae8</ProductId>
-        <ProductType>dSheMomentsMlTraining</ProductType>
+        <ProductType>DpdSheMomentsMlTraining</ProductType>
         <SoftwareName>bfzh5</SoftwareName>
         <SoftwareRelease>YG0X</SoftwareRelease>
         <EuclidPipelineSoftwareRelease>qFbIm</EuclidPipelineSoftwareRelease>

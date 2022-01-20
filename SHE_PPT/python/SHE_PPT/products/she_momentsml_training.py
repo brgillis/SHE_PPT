@@ -28,7 +28,7 @@ from ST_DataModelBindings.dpd.she.momentsmltraining_stub import dpdSheMomentsMlT
 from ..product_utility import create_product_from_template, init_just_datastorage
 
 sample_file_name = "SHE_PPT/sample_momentsml_training.xml"
-product_type_name = "dSheMomentsMlTraining"
+product_type_name = "DpdSheMomentsMlTraining"
 
 
 def init():
