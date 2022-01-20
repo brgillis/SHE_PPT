@@ -1,90 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ns1:DpdSheStackReprojectedSegmentationMap xmlns:ns1="http://euclid.esa.org/schema/dpd/she/stackreprojectedsegmentationmap">
-	<Header>
-		<ProductId>42d244d2-a174-4247-880f-76b295d02aac</ProductId>
+<ns1:DpdSheStackReprojectedSegmentationMap
+        xmlns:ns1="http://euclid.esa.org/schema/dpd/she/stackreprojectedsegmentationmap">
+    <Header>
+        <ProductId>42d244d2-a174-4247-880f-76b295d02aac</ProductId>
         <ProductType>DpdSheStackReprojectedSegmentationMap</ProductType>
-		<SoftwareName>NA</SoftwareName>
-		<SoftwareRelease>0.0</SoftwareRelease>
-		<EuclidPipelineSoftwareRelease>0.0</EuclidPipelineSoftwareRelease>
-		<ProdSDC>SDC-IT</ProdSDC>
-		<DataSetRelease>NA</DataSetRelease>
-		<Purpose>UNKNOWN</Purpose>
-		<PlanId>b99f04c6-ff23-41d9-8e12-cc5ae124d38b</PlanId>
-		<PPOId>c43f61a1-3e8f-491d-a9cb-d5dcc162265c</PPOId>
-		<PipelineDefinitionId>PipelineDefinitionId</PipelineDefinitionId>
+        <SoftwareName>NA</SoftwareName>
+        <SoftwareRelease>0.0</SoftwareRelease>
+        <EuclidPipelineSoftwareRelease>0.0</EuclidPipelineSoftwareRelease>
+        <ProdSDC>SDC-IT</ProdSDC>
+        <DataSetRelease>NA</DataSetRelease>
+        <Purpose>UNKNOWN</Purpose>
+        <PlanId>b99f04c6-ff23-41d9-8e12-cc5ae124d38b</PlanId>
+        <PPOId>c43f61a1-3e8f-491d-a9cb-d5dcc162265c</PPOId>
+        <PipelineDefinitionId>PipelineDefinitionId</PipelineDefinitionId>
         <PpoStatus>NA</PpoStatus>
-		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
-		<ExpirationDate>2020-07-02T12:46:25.795Z</ExpirationDate>
-		<ToBePublished>false</ToBePublished>
-		<Published>false</Published>
-		<Curator>SHE</Curator>
-		<CreationDate>2020-07-02T12:46:25.795Z</CreationDate>
-	</Header>
-	<Data>
-		<ImgType>
-			<Category>SCIENCE</Category>
-			<FirstType>STD</FirstType>
-			<SecondType>SKY</SecondType>
-			<Technique>IMAGE</Technique>
-		</ImgType>
-		<ImgNumber>1</ImgNumber>
-		<AxisNumber>2</AxisNumber>
-		<AxisLengths>0 0</AxisLengths>
-		<DataSize>-32</DataSize>
-		<DataLength>0</DataLength>
-		<WCS>
-			<CTYPE1>
-				<CoordinateType>RA</CoordinateType>
-				<ProjectionType>TAN</ProjectionType>
-			</CTYPE1>
-			<CTYPE2>
-				<CoordinateType>DEC</CoordinateType>
-				<ProjectionType>TAN</ProjectionType>
-			</CTYPE2>
-			<CRVAL1>0.0</CRVAL1>
-			<CRVAL2>0.0</CRVAL2>
-			<CRPIX1>0.0</CRPIX1>
-			<CRPIX2>0.0</CRPIX2>
-			<CD1_1>1.0</CD1_1>
-			<CD1_2>0.0</CD1_2>
-			<CD2_1>0.0</CD2_1>
-			<CD2_2>1.0</CD2_2>
-		</WCS>
-		<TileList>-1</TileList>
-		<StackProductId>101</StackProductId>
-		<ObservationId>101</ObservationId>
-		<ImgSpatialFootprint>
-			<Polygon>
-				<Vertex>
-					<Position coordUnit="deg">
-						<C1>0.0</C1>
-						<C2>0.0</C2>
-					</Position>
-				</Vertex>
-				<Vertex>
-					<Position coordUnit="deg">
-						<C1>0.0</C1>
-						<C2>0.0</C2>
-					</Position>
-				</Vertex>
-				<Vertex>
-					<Position coordUnit="deg">
-						<C1>0.0</C1>
-						<C2>0.0</C2>
-					</Position>
-				</Vertex>
-				<Vertex>
-					<Position coordUnit="deg">
-						<C1>0.0</C1>
-						<C2>0.0</C2>
-					</Position>
-				</Vertex>
-			</Polygon>
-		</ImgSpatialFootprint>
-		<DataStorage format="she.stackReprojectedSegmentationMap" version="8.0">
-			<DataContainer filestatus="PROPOSED">
-				<FileName>None</FileName>
-			</DataContainer>
-		</DataStorage>
-	</Data>
+        <ManualValidationStatus>UNKNOWN</ManualValidationStatus>
+        <ExpirationDate>2020-07-02T12:46:25.795Z</ExpirationDate>
+        <ToBePublished>0</ToBePublished>
+        <Published>0</Published>
+        <Curator>SHE</Curator>
+        <CreationDate>2020-07-02T12:46:25.795Z</CreationDate>
+    </Header>
+    <Data>
+        <ImgType>
+            <Category>SCIENCE</Category>
+            <FirstType>STD</FirstType>
+            <SecondType>SKY</SecondType>
+            <Technique>IMAGE</Technique>
+        </ImgType>
+        <ImgNumber>1</ImgNumber>
+        <AxisNumber>2</AxisNumber>
+        <AxisLengths>0 0</AxisLengths>
+        <DataSize>-32</DataSize>
+        <DataLength>0</DataLength>
+        <WCS>
+            <CTYPE1>
+                <CoordinateType>RA</CoordinateType>
+                <ProjectionType>TAN</ProjectionType>
+            </CTYPE1>
+            <CTYPE2>
+                <CoordinateType>DEC</CoordinateType>
+                <ProjectionType>TAN</ProjectionType>
+            </CTYPE2>
+            <CRVAL1>0.0</CRVAL1>
+            <CRVAL2>0.0</CRVAL2>
+            <CRPIX1>0.0</CRPIX1>
+            <CRPIX2>0.0</CRPIX2>
+            <CD1_1>1.0</CD1_1>
+            <CD1_2>0.0</CD1_2>
+            <CD2_1>0.0</CD2_1>
+            <CD2_2>1.0</CD2_2>
+        </WCS>
+        <TileList>-1</TileList>
+        <StackProductId>101</StackProductId>
+        <ObservationId>101</ObservationId>
+        <ImgSpatialFootprint>
+            <Polygon>
+                <Vertex>
+                    <Position coordUnit="deg">
+                        <C1>0.0</C1>
+                        <C2>0.0</C2>
+                    </Position>
+                </Vertex>
+                <Vertex>
+                    <Position coordUnit="deg">
+                        <C1>0.0</C1>
+                        <C2>0.0</C2>
+                    </Position>
+                </Vertex>
+                <Vertex>
+                    <Position coordUnit="deg">
+                        <C1>0.0</C1>
+                        <C2>0.0</C2>
+                    </Position>
+                </Vertex>
+                <Vertex>
+                    <Position coordUnit="deg">
+                        <C1>0.0</C1>
+                        <C2>0.0</C2>
+                    </Position>
+                </Vertex>
+            </Polygon>
+        </ImgSpatialFootprint>
+        <DataStorage format="she.stackReprojectedSegmentationMap" version="8.0">
+            <DataContainer filestatus="PROPOSED">
+                <FileName>None</FileName>
+            </DataContainer>
+        </DataStorage>
+    </Data>
 </ns1:DpdSheStackReprojectedSegmentationMap>

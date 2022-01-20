@@ -1,45 +1,47 @@
 <?xml version="1.0" ?>
 <ns1:DpdSheIntermediateGeneral xmlns:ns1="http://euclid.esa.org/schema/dpd/she/intermediategeneral">
-	<Header>
-		<ProductId>c01df353-b1bf-4121-b973-67b01df9f77d</ProductId>
+    <Header>
+        <ProductId>c01df353-b1bf-4121-b973-67b01df9f77d</ProductId>
         <ProductType>DpdSheIntermediateGeneral</ProductType>
-		<SoftwareName>Pgc0w</SoftwareName>
-		<SoftwareRelease>6Wn3K</SoftwareRelease>
-		<EuclidPipelineSoftwareRelease>m9mc0</EuclidPipelineSoftwareRelease>
-		<ProdSDC>Blf8E8frc3oJwMvCaZGCVDCgTAGnUrCjPEVBUbOjaL8BVc4oZHjCn00nPRGTPgPx2</ProdSDC>
-		<DataSetRelease>Hwki8</DataSetRelease>
-		<Purpose>UNKNOWN</Purpose>
-		<PlanId>c6m4g</PlanId>
-		<PPOId>U7xQd</PPOId>
-		<PipelineDefinitionId>KwC44</PipelineDefinitionId>
+        <SoftwareName>Pgc0w</SoftwareName>
+        <SoftwareRelease>6Wn3K</SoftwareRelease>
+        <EuclidPipelineSoftwareRelease>m9mc0</EuclidPipelineSoftwareRelease>
+        <ProdSDC>Blf8E8frc3oJwMvCaZGCVDCgTAGnUrCjPEVBUbOjaL8BVc4oZHjCn00nPRGTPgPx2</ProdSDC>
+        <DataSetRelease>Hwki8</DataSetRelease>
+        <Purpose>UNKNOWN</Purpose>
+        <PlanId>c6m4g</PlanId>
+        <PPOId>U7xQd</PPOId>
+        <PipelineDefinitionId>KwC44</PipelineDefinitionId>
         <PpoStatus>NA</PpoStatus>
-		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
-		<ExpirationDate>2020-06-01T15:32:07.947Z</ExpirationDate>
-		<ToBePublished>false</ToBePublished>
-		<Published>false</Published>
-		<Curator>SHE</Curator>
-		<CreationDate>2020-06-01T15:32:07.948Z</CreationDate>
-	</Header>
-	<Data>
-		<IntData>0</IntData>
-		<FloatData>0.0</FloatData>
-		<StringData>M3MAB</StringData>
-		<DataStorage>
-			<DataContainer filestatus="ARCHIVED_CERNVMFS">
-				<FileName>None</FileName>
-			</DataContainer>
-		</DataStorage>
-	</Data>
-	<QualityFlags>
-		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
-		<AuxiliaryFlags flagName="UdYsR" flagged="false" maxLimit="-7.0" minLimit="8.0" xpath="IJsFG">false</AuxiliaryFlags>
-	</QualityFlags>
-	<Parameters>
-		<Parameter>
-			<Key>WpnEA</Key>
-			<Description>rQuky</Description>
-			<StringValue>93w8x</StringValue>
-			<Unit>FoAnW</Unit>
-		</Parameter>
-	</Parameters>
+        <ManualValidationStatus>UNKNOWN</ManualValidationStatus>
+        <ExpirationDate>2020-06-01T15:32:07.947Z</ExpirationDate>
+        <ToBePublished>0</ToBePublished>
+        <Published>0</Published>
+        <Curator>SHE</Curator>
+        <CreationDate>2020-06-01T15:32:07.948Z</CreationDate>
+    </Header>
+    <Data>
+        <IntData>0</IntData>
+        <FloatData>0.0</FloatData>
+        <StringData>M3MAB</StringData>
+        <DataStorage>
+            <DataContainer filestatus="ARCHIVED_CERNVMFS">
+                <FileName>None</FileName>
+            </DataContainer>
+        </DataStorage>
+    </Data>
+    <QualityFlags>
+        <DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false
+        </DummyFlag>
+        <AuxiliaryFlags flagName="UdYsR" flagged="false" maxLimit="-7.0" minLimit="8.0" xpath="IJsFG">false
+        </AuxiliaryFlags>
+    </QualityFlags>
+    <Parameters>
+        <Parameter>
+            <Key>WpnEA</Key>
+            <Description>rQuky</Description>
+            <StringValue>93w8x</StringValue>
+            <Unit>FoAnW</Unit>
+        </Parameter>
+    </Parameters>
 </ns1:DpdSheIntermediateGeneral>

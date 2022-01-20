@@ -1,42 +1,46 @@
 <?xml version="1.0" ?>
 <ns1:DpdSheReconciliationConfig xmlns:ns1="http://euclid.esa.org/schema/dpd/she/reconciliationconfig">
-	<Header>
-		<ProductId>b7a993de-a939-4278-a966-45ab4cd1a1a1</ProductId>
+    <Header>
+        <ProductId>b7a993de-a939-4278-a966-45ab4cd1a1a1</ProductId>
         <ProductType>DpdSheReconciliationConfig</ProductType>
-		<SoftwareName>ERjSg</SoftwareName>
-		<SoftwareRelease>hNK8A</SoftwareRelease>
-		<EuclidPipelineSoftwareRelease>672</EuclidPipelineSoftwareRelease>
-		<ProdSDC>vVf02J6TjbXQW3OAbxSTSW61dTD2yqlftJvbKE7iol6Irz8hrjrxQgxm8r1T7XRYuzC5duq9o4N5kL66fNP5xoreqfIuIzEA40JJ9OQSSTMsGznhNz</ProdSDC>
-		<DataSetRelease>FHkWT</DataSetRelease>
-		<Purpose>TEST</Purpose>
-		<PlanId>nHcaj</PlanId>
-		<PPOId>QtPT9</PPOId>
-		<PipelineDefinitionId>sLhxP</PipelineDefinitionId>
+        <SoftwareName>ERjSg</SoftwareName>
+        <SoftwareRelease>hNK8A</SoftwareRelease>
+        <EuclidPipelineSoftwareRelease>672</EuclidPipelineSoftwareRelease>
+        <ProdSDC>
+            vVf02J6TjbXQW3OAbxSTSW61dTD2yqlftJvbKE7iol6Irz8hrjrxQgxm8r1T7XRYuzC5duq9o4N5kL66fNP5xoreqfIuIzEA40JJ9OQSSTMsGznhNz
+        </ProdSDC>
+        <DataSetRelease>FHkWT</DataSetRelease>
+        <Purpose>TEST</Purpose>
+        <PlanId>nHcaj</PlanId>
+        <PPOId>QtPT9</PPOId>
+        <PipelineDefinitionId>sLhxP</PipelineDefinitionId>
         <PpoStatus>NA</PpoStatus>
-		<ManualValidationStatus>INVALID</ManualValidationStatus>
-		<ExpirationDate>2020-06-04T14:38:37.559Z</ExpirationDate>
-		<ToBePublished>false</ToBePublished>
-		<Published>false</Published>
-		<Curator>SHE</Curator>
-		<CreationDate>2020-06-04T14:38:37.56Z</CreationDate>
-	</Header>
-	<Data>
-		<DataStorage>
-			<DataContainer filestatus="ARCHIVED_ONLINE">
-				<FileName>None</FileName>
-			</DataContainer>
-		</DataStorage>
-	</Data>
-	<QualityFlags>
-		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true</DummyFlag>
-		<AuxiliaryFlags flagName="cKzEI" flagged="false" maxLimit="9.0" minLimit="-9.0" xpath="MgDn7">false</AuxiliaryFlags>
-	</QualityFlags>
-	<Parameters>
-		<Parameter>
-			<Key>Z9eNp</Key>
-			<Description>GnI6D</Description>
-			<StringValue>jzfwy</StringValue>
-			<Unit>RDtH0</Unit>
-		</Parameter>
-	</Parameters>
+        <ManualValidationStatus>INVALID</ManualValidationStatus>
+        <ExpirationDate>2020-06-04T14:38:37.559Z</ExpirationDate>
+        <ToBePublished>0</ToBePublished>
+        <Published>0</Published>
+        <Curator>SHE</Curator>
+        <CreationDate>2020-06-04T14:38:37.56Z</CreationDate>
+    </Header>
+    <Data>
+        <DataStorage>
+            <DataContainer filestatus="ARCHIVED_ONLINE">
+                <FileName>None</FileName>
+            </DataContainer>
+        </DataStorage>
+    </Data>
+    <QualityFlags>
+        <DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true
+        </DummyFlag>
+        <AuxiliaryFlags flagName="cKzEI" flagged="false" maxLimit="9.0" minLimit="-9.0" xpath="MgDn7">false
+        </AuxiliaryFlags>
+    </QualityFlags>
+    <Parameters>
+        <Parameter>
+            <Key>Z9eNp</Key>
+            <Description>GnI6D</Description>
+            <StringValue>jzfwy</StringValue>
+            <Unit>RDtH0</Unit>
+        </Parameter>
+    </Parameters>
 </ns1:DpdSheReconciliationConfig>

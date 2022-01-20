@@ -1,147 +1,149 @@
 <?xml version="1.0" ?>
 <ns1:DpdSheMeasurements xmlns:ns1="http://euclid.esa.org/schema/dpd/she/measurements">
-	<Header>
-		<ProductId>2c9bfb29-e29d-405c-a8d0-dba560e87d4a</ProductId>
+    <Header>
+        <ProductId>2c9bfb29-e29d-405c-a8d0-dba560e87d4a</ProductId>
         <ProductType>DpdSheMeasurements</ProductType>
-		<SoftwareName>3mATX</SoftwareName>
-		<SoftwareRelease>yReQ</SoftwareRelease>
-		<EuclidPipelineSoftwareRelease>KsrT</EuclidPipelineSoftwareRelease>
-		<ProdSDC>g02ObuDGE</ProdSDC>
-		<DataSetRelease>KAn8P</DataSetRelease>
-		<Purpose>QUICK_RELEASE</Purpose>
-		<PlanId>0Po2g</PlanId>
-		<PPOId>lxuXM</PPOId>
-		<PipelineDefinitionId>HEcZl</PipelineDefinitionId>
+        <SoftwareName>3mATX</SoftwareName>
+        <SoftwareRelease>yReQ</SoftwareRelease>
+        <EuclidPipelineSoftwareRelease>KsrT</EuclidPipelineSoftwareRelease>
+        <ProdSDC>g02ObuDGE</ProdSDC>
+        <DataSetRelease>KAn8P</DataSetRelease>
+        <Purpose>QUICK_RELEASE</Purpose>
+        <PlanId>0Po2g</PlanId>
+        <PPOId>lxuXM</PPOId>
+        <PipelineDefinitionId>HEcZl</PipelineDefinitionId>
         <PpoStatus>NA</PpoStatus>
-		<ManualValidationStatus>VALID</ManualValidationStatus>
-		<ExpirationDate>2020-06-03T15:14:50.137Z</ExpirationDate>
-		<ToBePublished>false</ToBePublished>
-		<Published>true</Published>
-		<Curator>SHE</Curator>
-		<CreationDate>2020-06-03T15:14:50.139Z</CreationDate>
-	</Header>
-	<Data>
-		<SpatialCoverage>
-			<Polygon>
-				<Vertex>
-					<Position coordUnit="Jy">
-						<C1 unit="J/mol/K">0.0</C1>
-						<C2 unit="T">1.0</C2>
-					</Position>
-					<SmallCircle>
-						<Pole coordUnit="uPa">
-							<C1 unit="Ohm">0.0</C1>
-							<C2 unit="mag/arcsec2">1.0</C2>
-						</Pole>
-					</SmallCircle>
-				</Vertex>
-			</Polygon>
-			<Circle>
-				<Center coordUnit="J/K">
-					<C1 unit="Myr">1.0</C1>
-					<C2 unit="s">1.0</C2>
-				</Center>
-				<Radius unit="a">1.0</Radius>
-			</Circle>
-			<BBox>
-				<RaCenter unit="Angstrom">1.0</RaCenter>
-				<DecCenter unit="arcsec">1.0</DecCenter>
-				<RaHalfWidth unit="mol">1.0</RaHalfWidth>
-				<DecHalfWidth unit="uPa">0.0</DecHalfWidth>
-			</BBox>
-		</SpatialCoverage>
-		<SpectralCoverage>
-			<Filter>
-				<Name>Undefined</Name>
-				<MagId>N</MagId>
-				<CentralWavelength>-3.0</CentralWavelength>
-				<MinWavelength>-10.0</MinWavelength>
-				<MaxWavelength>8.0</MaxWavelength>
-				<Reference>hh1Di</Reference>
-				<HasFringes>728861504</HasFringes>
-			</Filter>
-		</SpectralCoverage>
-		<CatalogDescription>
-			<CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
-			<CatalogType>PROXY</CatalogType>
-			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-			<CatalogName>She-Ksb-Shear</CatalogName>
-			<CatalogFormatHDU>1</CatalogFormatHDU>
-		</CatalogDescription>
-		<CatalogDescription>
-			<CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
-			<CatalogType>PROXY</CatalogType>
-			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-			<CatalogName>She-Lensmc-Shear</CatalogName>
-			<CatalogFormatHDU>1</CatalogFormatHDU>
-		</CatalogDescription>
-		<CatalogDescription>
-			<CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
-			<CatalogType>PROXY</CatalogType>
-			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-			<CatalogName>She-Momentsml-Shear</CatalogName>
-			<CatalogFormatHDU>1</CatalogFormatHDU>
-		</CatalogDescription>
-		<CatalogDescription>
-			<CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
-			<CatalogType>PROXY</CatalogType>
-			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-			<CatalogName>She-Regauss-Shear</CatalogName>
-			<CatalogFormatHDU>1</CatalogFormatHDU>
-		</CatalogDescription>
-		<ObservationId>-8564841751236564584</ObservationId>
-		<KsbShearMeasurements>
-			<DataStorage format="she.ksbMeasurements" version="8.0">
-				<DataContainer filestatus="ARCHIVED_OFFLINE">
-					<FileName>None</FileName>
-				</DataContainer>
-			</DataStorage>
-			<Valid>INVALID</Valid>
-		</KsbShearMeasurements>
-		<LensMcShearMeasurements>
-			<DataStorage format="she.lensMcMeasurements" version="8.0.1">
-				<DataContainer filestatus="ARCHIVED_ONLINE">
-					<FileName>None</FileName>
-				</DataContainer>
-			</DataStorage>
-			<Valid>INVALID</Valid>
-		</LensMcShearMeasurements>
-		<MomentsMlShearMeasurements>
-			<DataStorage format="she.momentsMlMeasurements" version="8.0">
-				<DataContainer filestatus="PROPOSED">
-					<FileName>None</FileName>
-				</DataContainer>
-			</DataStorage>
-			<Valid>INVALID</Valid>
-		</MomentsMlShearMeasurements>
-		<RegaussShearMeasurements>
-			<DataStorage format="she.regaussMeasurements" version="8.0">
-				<DataContainer filestatus="ARCHIVED_ONLINE">
-					<FileName>None</FileName>
-				</DataContainer>
-			</DataStorage>
-			<Valid>UNKNOWN</Valid>
-		</RegaussShearMeasurements>
-		<PointingIdList>-1</PointingIdList>
-		<TileList>-1</TileList>
-		<ObservationDateTime>
-			<OBT>2020-06-03T15:14:50.152Z</OBT>
-			<UTC>2020-06-03T15:14:50.153Z</UTC>
-			<MJD>0.0</MJD>
-		</ObservationDateTime>
-		<ObservationMode>DEEP</ObservationMode>
-		<NumberExposures>4</NumberExposures>
-	</Data>
-	<QualityFlags>
-		<DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
-		<AuxiliaryFlags flagName="ZyN02" flagged="false" maxLimit="9.0" minLimit="1.0" xpath="NeqL3">false</AuxiliaryFlags>
-	</QualityFlags>
-	<Parameters>
-		<Parameter>
-			<Key>cwhl8</Key>
-			<Description>xouhR</Description>
-			<StringValue>xgIDz</StringValue>
-			<Unit>JO63h</Unit>
-		</Parameter>
-	</Parameters>
+        <ManualValidationStatus>VALID</ManualValidationStatus>
+        <ExpirationDate>2020-06-03T15:14:50.137Z</ExpirationDate>
+        <ToBePublished>0</ToBePublished>
+        <Published>0</Published>
+        <Curator>SHE</Curator>
+        <CreationDate>2020-06-03T15:14:50.139Z</CreationDate>
+    </Header>
+    <Data>
+        <SpatialCoverage>
+            <Polygon>
+                <Vertex>
+                    <Position coordUnit="Jy">
+                        <C1 unit="J/mol/K">0.0</C1>
+                        <C2 unit="T">1.0</C2>
+                    </Position>
+                    <SmallCircle>
+                        <Pole coordUnit="uPa">
+                            <C1 unit="Ohm">0.0</C1>
+                            <C2 unit="mag/arcsec2">1.0</C2>
+                        </Pole>
+                    </SmallCircle>
+                </Vertex>
+            </Polygon>
+            <Circle>
+                <Center coordUnit="J/K">
+                    <C1 unit="Myr">1.0</C1>
+                    <C2 unit="s">1.0</C2>
+                </Center>
+                <Radius unit="a">1.0</Radius>
+            </Circle>
+            <BBox>
+                <RaCenter unit="Angstrom">1.0</RaCenter>
+                <DecCenter unit="arcsec">1.0</DecCenter>
+                <RaHalfWidth unit="mol">1.0</RaHalfWidth>
+                <DecHalfWidth unit="uPa">0.0</DecHalfWidth>
+            </BBox>
+        </SpatialCoverage>
+        <SpectralCoverage>
+            <Filter>
+                <Name>Undefined</Name>
+                <MagId>N</MagId>
+                <CentralWavelength>-3.0</CentralWavelength>
+                <MinWavelength>-10.0</MinWavelength>
+                <MaxWavelength>8.0</MaxWavelength>
+                <Reference>hh1Di</Reference>
+                <HasFringes>728861504</HasFringes>
+            </Filter>
+        </SpectralCoverage>
+        <CatalogDescription>
+            <CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
+            <CatalogType>PROXY</CatalogType>
+            <PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
+            <CatalogName>She-Ksb-Shear</CatalogName>
+            <CatalogFormatHDU>1</CatalogFormatHDU>
+        </CatalogDescription>
+        <CatalogDescription>
+            <CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
+            <CatalogType>PROXY</CatalogType>
+            <PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
+            <CatalogName>She-Lensmc-Shear</CatalogName>
+            <CatalogFormatHDU>1</CatalogFormatHDU>
+        </CatalogDescription>
+        <CatalogDescription>
+            <CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
+            <CatalogType>PROXY</CatalogType>
+            <PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
+            <CatalogName>She-Momentsml-Shear</CatalogName>
+            <CatalogFormatHDU>1</CatalogFormatHDU>
+        </CatalogDescription>
+        <CatalogDescription>
+            <CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
+            <CatalogType>PROXY</CatalogType>
+            <PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
+            <CatalogName>She-Regauss-Shear</CatalogName>
+            <CatalogFormatHDU>1</CatalogFormatHDU>
+        </CatalogDescription>
+        <ObservationId>-8564841751236564584</ObservationId>
+        <KsbShearMeasurements>
+            <DataStorage format="she.ksbMeasurements" version="8.0">
+                <DataContainer filestatus="ARCHIVED_OFFLINE">
+                    <FileName>None</FileName>
+                </DataContainer>
+            </DataStorage>
+            <Valid>INVALID</Valid>
+        </KsbShearMeasurements>
+        <LensMcShearMeasurements>
+            <DataStorage format="she.lensMcMeasurements" version="8.0.1">
+                <DataContainer filestatus="ARCHIVED_ONLINE">
+                    <FileName>None</FileName>
+                </DataContainer>
+            </DataStorage>
+            <Valid>INVALID</Valid>
+        </LensMcShearMeasurements>
+        <MomentsMlShearMeasurements>
+            <DataStorage format="she.momentsMlMeasurements" version="8.0">
+                <DataContainer filestatus="PROPOSED">
+                    <FileName>None</FileName>
+                </DataContainer>
+            </DataStorage>
+            <Valid>INVALID</Valid>
+        </MomentsMlShearMeasurements>
+        <RegaussShearMeasurements>
+            <DataStorage format="she.regaussMeasurements" version="8.0">
+                <DataContainer filestatus="ARCHIVED_ONLINE">
+                    <FileName>None</FileName>
+                </DataContainer>
+            </DataStorage>
+            <Valid>UNKNOWN</Valid>
+        </RegaussShearMeasurements>
+        <PointingIdList>-1</PointingIdList>
+        <TileList>-1</TileList>
+        <ObservationDateTime>
+            <OBT>2020-06-03T15:14:50.152Z</OBT>
+            <UTC>2020-06-03T15:14:50.153Z</UTC>
+            <MJD>0.0</MJD>
+        </ObservationDateTime>
+        <ObservationMode>DEEP</ObservationMode>
+        <NumberExposures>4</NumberExposures>
+    </Data>
+    <QualityFlags>
+        <DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false
+        </DummyFlag>
+        <AuxiliaryFlags flagName="ZyN02" flagged="false" maxLimit="9.0" minLimit="1.0" xpath="NeqL3">false
+        </AuxiliaryFlags>
+    </QualityFlags>
+    <Parameters>
+        <Parameter>
+            <Key>cwhl8</Key>
+            <Description>xouhR</Description>
+            <StringValue>xgIDz</StringValue>
+            <Unit>JO63h</Unit>
+        </Parameter>
+    </Parameters>
 </ns1:DpdSheMeasurements>

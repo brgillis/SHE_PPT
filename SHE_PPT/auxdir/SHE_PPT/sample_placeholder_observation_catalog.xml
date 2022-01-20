@@ -1,98 +1,100 @@
 <?xml version="1.0" ?>
 <ns1:DpdShePlaceholderObservationCatalog xmlns:ns1="http://euclid.esa.org/schema/dpd/she/placeholderobservationcatalog">
-	<Header>
-		<ProductId>765ebcec-f8f4-439d-9d5d-9db615861a44</ProductId>
+    <Header>
+        <ProductId>765ebcec-f8f4-439d-9d5d-9db615861a44</ProductId>
         <ProductType>DpdShePlaceholderObservationCatalog</ProductType>
-		<SoftwareName>TgrWl</SoftwareName>
-		<SoftwareRelease>mjDw</SoftwareRelease>
-		<EuclidPipelineSoftwareRelease>uh53A</EuclidPipelineSoftwareRelease>
-		<ProdSDC>GHNSkRdlAoCVIxcGAp1x8QJVqD8F</ProdSDC>
-		<DataSetRelease>BHHTj</DataSetRelease>
-		<Purpose>VALIDATION</Purpose>
-		<PlanId>XMufs</PlanId>
-		<PPOId>nd2b9</PPOId>
-		<PipelineDefinitionId>apzbY</PipelineDefinitionId>
+        <SoftwareName>TgrWl</SoftwareName>
+        <SoftwareRelease>mjDw</SoftwareRelease>
+        <EuclidPipelineSoftwareRelease>uh53A</EuclidPipelineSoftwareRelease>
+        <ProdSDC>GHNSkRdlAoCVIxcGAp1x8QJVqD8F</ProdSDC>
+        <DataSetRelease>BHHTj</DataSetRelease>
+        <Purpose>VALIDATION</Purpose>
+        <PlanId>XMufs</PlanId>
+        <PPOId>nd2b9</PPOId>
+        <PipelineDefinitionId>apzbY</PipelineDefinitionId>
         <PpoStatus>NA</PpoStatus>
-		<ManualValidationStatus>INVALID</ManualValidationStatus>
-		<ExpirationDate>2020-06-03T15:48:52.746Z</ExpirationDate>
-		<ToBePublished>false</ToBePublished>
-		<Published>false</Published>
-		<Curator>SHE</Curator>
-		<CreationDate>2020-06-03T15:48:52.748Z</CreationDate>
-	</Header>
-	<Data>
-		<SpatialCoverage>
-			<Polygon>
-				<Vertex>
-					<Position coordUnit="kpc">
-						<C1 unit="Angstrom/pixel">0.0</C1>
-						<C2 unit="d">0.0</C2>
-					</Position>
-					<SmallCircle>
-						<Pole coordUnit="m/s2">
-							<C1 unit="1/mol">0.0</C1>
-							<C2 unit="m2/s2">0.0</C2>
-						</Pole>
-					</SmallCircle>
-				</Vertex>
-			</Polygon>
-			<Circle>
-				<Center coordUnit="um2">
-					<C1 unit="lyr">0.0</C1>
-					<C2 unit="1/m">0.0</C2>
-				</Center>
-				<Radius unit="S">0.0</Radius>
-			</Circle>
-			<BBox>
-				<RaCenter unit="um">0.0</RaCenter>
-				<DecCenter unit="K">0.0</DecCenter>
-				<RaHalfWidth unit="ph">0.0</RaHalfWidth>
-				<DecHalfWidth unit="km">1.0</DecHalfWidth>
-			</BBox>
-		</SpatialCoverage>
-		<SpectralCoverage>
-			<Filter>
-				<Name>DECAM_Y</Name>
-				<MagId>U</MagId>
-				<CentralWavelength>4.0</CentralWavelength>
-				<MinWavelength>-6.0</MinWavelength>
-				<MaxWavelength>-10.0</MaxWavelength>
-				<Reference>OhoAF</Reference>
-				<HasFringes>-151844752</HasFringes>
-			</Filter>
-		</SpectralCoverage>
-		<CatalogDescription>
-			<CatalogOrigin>RANDOM_WIDE</CatalogOrigin>
-			<CatalogType>NOT_PROXY</CatalogType>
-			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-			<CatalogName>She-Placeholder</CatalogName>
-			<CatalogFormatHDU>1</CatalogFormatHDU>
-		</CatalogDescription>
-		<ObservationId>-1</ObservationId>
-		<IntData>0</IntData>
-		<FloatData>0.0</FloatData>
-		<StringData></StringData>
-		<DataStorage>
-			<DataContainer filestatus="PROPOSED">
-				<FileName>None</FileName>
-			</DataContainer>
-		</DataStorage>
-		<ExtraDataStorage>
-			<DataContainer filestatus="ARCHIVED_CERNVMFS">
-				<FileName>None</FileName>
-			</DataContainer>
-		</ExtraDataStorage>
-	</Data>
-	<QualityFlags>
-		<DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true</DummyFlag>
-		<AuxiliaryFlags flagName="gCYZI" flagged="false" maxLimit="-7.0" minLimit="8.0" xpath="nKTLt">false</AuxiliaryFlags>
-	</QualityFlags>
-	<Parameters>
-		<Parameter>
-			<Key>qyEhV</Key>
-			<Description>4x8Gg</Description>
-			<StringValue>cfm8g</StringValue>
-			<Unit>gE1Fu</Unit>
-		</Parameter>
-	</Parameters>
+        <ManualValidationStatus>INVALID</ManualValidationStatus>
+        <ExpirationDate>2020-06-03T15:48:52.746Z</ExpirationDate>
+        <ToBePublished>0</ToBePublished>
+        <Published>0</Published>
+        <Curator>SHE</Curator>
+        <CreationDate>2020-06-03T15:48:52.748Z</CreationDate>
+    </Header>
+    <Data>
+        <SpatialCoverage>
+            <Polygon>
+                <Vertex>
+                    <Position coordUnit="kpc">
+                        <C1 unit="Angstrom/pixel">0.0</C1>
+                        <C2 unit="d">0.0</C2>
+                    </Position>
+                    <SmallCircle>
+                        <Pole coordUnit="m/s2">
+                            <C1 unit="1/mol">0.0</C1>
+                            <C2 unit="m2/s2">0.0</C2>
+                        </Pole>
+                    </SmallCircle>
+                </Vertex>
+            </Polygon>
+            <Circle>
+                <Center coordUnit="um2">
+                    <C1 unit="lyr">0.0</C1>
+                    <C2 unit="1/m">0.0</C2>
+                </Center>
+                <Radius unit="S">0.0</Radius>
+            </Circle>
+            <BBox>
+                <RaCenter unit="um">0.0</RaCenter>
+                <DecCenter unit="K">0.0</DecCenter>
+                <RaHalfWidth unit="ph">0.0</RaHalfWidth>
+                <DecHalfWidth unit="km">1.0</DecHalfWidth>
+            </BBox>
+        </SpatialCoverage>
+        <SpectralCoverage>
+            <Filter>
+                <Name>DECAM_Y</Name>
+                <MagId>U</MagId>
+                <CentralWavelength>4.0</CentralWavelength>
+                <MinWavelength>-6.0</MinWavelength>
+                <MaxWavelength>-10.0</MaxWavelength>
+                <Reference>OhoAF</Reference>
+                <HasFringes>-151844752</HasFringes>
+            </Filter>
+        </SpectralCoverage>
+        <CatalogDescription>
+            <CatalogOrigin>RANDOM_WIDE</CatalogOrigin>
+            <CatalogType>NOT_PROXY</CatalogType>
+            <PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
+            <CatalogName>She-Placeholder</CatalogName>
+            <CatalogFormatHDU>1</CatalogFormatHDU>
+        </CatalogDescription>
+        <ObservationId>-1</ObservationId>
+        <IntData>0</IntData>
+        <FloatData>0.0</FloatData>
+        <StringData></StringData>
+        <DataStorage>
+            <DataContainer filestatus="PROPOSED">
+                <FileName>None</FileName>
+            </DataContainer>
+        </DataStorage>
+        <ExtraDataStorage>
+            <DataContainer filestatus="ARCHIVED_CERNVMFS">
+                <FileName>None</FileName>
+            </DataContainer>
+        </ExtraDataStorage>
+    </Data>
+    <QualityFlags>
+        <DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true
+        </DummyFlag>
+        <AuxiliaryFlags flagName="gCYZI" flagged="false" maxLimit="-7.0" minLimit="8.0" xpath="nKTLt">false
+        </AuxiliaryFlags>
+    </QualityFlags>
+    <Parameters>
+        <Parameter>
+            <Key>qyEhV</Key>
+            <Description>4x8Gg</Description>
+            <StringValue>cfm8g</StringValue>
+            <Unit>gE1Fu</Unit>
+        </Parameter>
+    </Parameters>
 </ns1:DpdShePlaceholderObservationCatalog>

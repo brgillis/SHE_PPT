@@ -1,49 +1,53 @@
 <?xml version="1.0" ?>
 <ns1:DpdShePsfFieldParameters xmlns:ns1="http://euclid.esa.org/schema/dpd/she/psffieldparameters">
-	<Header>
-		<ProductId>984ef6ab-e881-462a-b4e7-33bebd424d17</ProductId>
+    <Header>
+        <ProductId>984ef6ab-e881-462a-b4e7-33bebd424d17</ProductId>
         <ProductType>DpdShePsfFieldParameters</ProductType>
-		<SoftwareName>Z0oue</SoftwareName>
-		<SoftwareRelease>aptFM</SoftwareRelease>
-		<EuclidPipelineSoftwareRelease>8xham</EuclidPipelineSoftwareRelease>
-		<ProdSDC>RxgpIEc7KbKTwgG3mvTiM1e5SQvkI6gZ4R26ELn7FN3nZk1M1cYxZ8HaTGNZnQGNM9t8bbHvW3w5eNIOpCJrgf1IEVYx2VefHcoRfjzmgxLs0II</ProdSDC>
-		<DataSetRelease>3pqAF</DataSetRelease>
-		<Purpose>TEST</Purpose>
-		<PlanId>76WSB</PlanId>
-		<PPOId>j3sbF</PPOId>
-		<PipelineDefinitionId>5jsSe</PipelineDefinitionId>
+        <SoftwareName>Z0oue</SoftwareName>
+        <SoftwareRelease>aptFM</SoftwareRelease>
+        <EuclidPipelineSoftwareRelease>8xham</EuclidPipelineSoftwareRelease>
+        <ProdSDC>
+            RxgpIEc7KbKTwgG3mvTiM1e5SQvkI6gZ4R26ELn7FN3nZk1M1cYxZ8HaTGNZnQGNM9t8bbHvW3w5eNIOpCJrgf1IEVYx2VefHcoRfjzmgxLs0II
+        </ProdSDC>
+        <DataSetRelease>3pqAF</DataSetRelease>
+        <Purpose>TEST</Purpose>
+        <PlanId>76WSB</PlanId>
+        <PPOId>j3sbF</PPOId>
+        <PipelineDefinitionId>5jsSe</PipelineDefinitionId>
         <PpoStatus>NA</PpoStatus>
-		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
-		<ExpirationDate>2020-06-03T15:54:55.317Z</ExpirationDate>
-		<ToBePublished>true</ToBePublished>
-		<Published>false</Published>
-		<Curator>SHE</Curator>
-		<CreationDate>2020-06-03T15:54:55.319Z</CreationDate>
-	</Header>
-	<Data>
-		<ExposureProductId>7v2IZ</ExposureProductId>
-		<ObservationId>3855916959153192483</ObservationId>
-		<ObservationDateTime>
-			<OBT>2020-06-03T15:54:55.321Z</OBT>
-			<UTC>2020-06-03T15:54:55.321Z</UTC>
-			<MJD>9.0</MJD>
-		</ObservationDateTime>
-		<DataStorage format="she.psfFieldParameters" version="8.0">
-			<DataContainer filestatus="PROPOSED">
-				<FileName>None</FileName>
-			</DataContainer>
-		</DataStorage>
-	</Data>
-	<QualityFlags>
-		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true</DummyFlag>
-		<AuxiliaryFlags flagName="i7UKS" flagged="true" maxLimit="-9.0" minLimit="-2.0" xpath="SfL5c">true</AuxiliaryFlags>
-	</QualityFlags>
-	<Parameters>
-		<Parameter>
-			<Key>IOY7b</Key>
-			<Description>oFJe3</Description>
-			<StringValue>dYwsq</StringValue>
-			<Unit>3281w</Unit>
-		</Parameter>
-	</Parameters>
+        <ManualValidationStatus>UNKNOWN</ManualValidationStatus>
+        <ExpirationDate>2020-06-03T15:54:55.317Z</ExpirationDate>
+        <ToBePublished>0</ToBePublished>
+        <Published>0</Published>
+        <Curator>SHE</Curator>
+        <CreationDate>2020-06-03T15:54:55.319Z</CreationDate>
+    </Header>
+    <Data>
+        <ExposureProductId>7v2IZ</ExposureProductId>
+        <ObservationId>3855916959153192483</ObservationId>
+        <ObservationDateTime>
+            <OBT>2020-06-03T15:54:55.321Z</OBT>
+            <UTC>2020-06-03T15:54:55.321Z</UTC>
+            <MJD>9.0</MJD>
+        </ObservationDateTime>
+        <DataStorage format="she.psfFieldParameters" version="8.0">
+            <DataContainer filestatus="PROPOSED">
+                <FileName>None</FileName>
+            </DataContainer>
+        </DataStorage>
+    </Data>
+    <QualityFlags>
+        <DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true
+        </DummyFlag>
+        <AuxiliaryFlags flagName="i7UKS" flagged="true" maxLimit="-9.0" minLimit="-2.0" xpath="SfL5c">true
+        </AuxiliaryFlags>
+    </QualityFlags>
+    <Parameters>
+        <Parameter>
+            <Key>IOY7b</Key>
+            <Description>oFJe3</Description>
+            <StringValue>dYwsq</StringValue>
+            <Unit>3281w</Unit>
+        </Parameter>
+    </Parameters>
 </ns1:DpdShePsfFieldParameters>
