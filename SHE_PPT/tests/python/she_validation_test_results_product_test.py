@@ -145,7 +145,7 @@ class TestValidationTestResults(object):
         # Read back the xml file
         loaded_product = read_xml_product(self.filename_exp, workdir = self.workdir)
 
-        assert loaded_product.Data.ExposureProductId == vis_calibrated_frame_product.Header.ProductId
+        assert loaded_product.Data.ExposureProductId == vis_calibrated_frame_product.Header.ProductId.value()
         assert loaded_product.Data.ObservationId == vis_calibrated_frame_product.Data.ObservationSequence.ObservationId
 
     def test_vis_stacked_frame_reference(self):
