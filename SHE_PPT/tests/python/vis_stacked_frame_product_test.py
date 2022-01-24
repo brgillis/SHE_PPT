@@ -30,7 +30,6 @@ class TestStackedFrameProduct(object):
     """
 
     def test_validation(self):
-
         # Create the product
         product = prod.create_dpd_vis_stacked_frame()
 
@@ -40,7 +39,6 @@ class TestStackedFrameProduct(object):
         return
 
     def test_xml_writing_and_reading(self, tmpdir):
-
         # Create the product
         product = prod.create_dpd_vis_stacked_frame()
 
@@ -49,10 +47,10 @@ class TestStackedFrameProduct(object):
         product.set_data_filename(subfilename)
 
         # Save the product in an XML file
-        write_xml_product(product, "she_stacked_frame.xml", workdir=str(tmpdir))
+        write_xml_product(product, "she_stacked_frame.xml", workdir = str(tmpdir))
 
         # Read back the XML file
-        loaded_product = read_xml_product("she_stacked_frame.xml", workdir=str(tmpdir))
+        loaded_product = read_xml_product("she_stacked_frame.xml", workdir = str(tmpdir))
 
         # Check that the filenames match
         assert loaded_product.get_data_filename() == "data/" + subfilename
