@@ -3,10 +3,11 @@
     Created 20 August 2021
 
     This module tests importing all modules in each package, to make sure nothing obvious goes wrong, even if the code
-    is otherwise untested. 
+    is otherwise untested.
 """
 
 __updated__ = "2021-08-20"
+
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -20,12 +21,6 @@ __updated__ = "2021-08-20"
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-
-from SHE_PPT import *
-from SHE_PPT.constants import *
-from SHE_PPT.products import *
-from SHE_PPT.table_formats import *
-from SHE_PPT.testing import *
 
 
 class TestImports():

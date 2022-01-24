@@ -26,16 +26,9 @@ from time import sleep
 
 import pytest
 
-from SHE_PPT.file_io import (get_allowed_filename,
-                             write_listfile,
-                             read_listfile,
-                             type_name_maxlen,
-                             instance_id_maxlen,
-                             processing_function_maxlen,
-                             find_aux_file,
-                             update_xml_with_value,
-                             read_xml_product,
-                             tar_files)
+from SHE_PPT.file_io import (find_aux_file, get_allowed_filename, instance_id_maxlen, processing_function_maxlen,
+                             read_listfile, read_xml_product, tar_files, type_name_maxlen, update_xml_with_value,
+                             write_listfile, )
 
 
 class TestIO:
@@ -60,7 +53,7 @@ class TestIO:
 
         del cls.listfile_name, cls.tuple_listfile_name
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture(autouse = True)
     def setup(self, tmpdir):
 
         self.workdir = tmpdir.strpath
@@ -69,7 +62,7 @@ class TestIO:
 
         instance_id = "instance"
 
-        filename = get_allowed_filename("test", instance_id, extension=".junk", release="06.66", subdir="subdir")
+        filename = get_allowed_filename("test", instance_id, extension = ".junk", release = "06.66", subdir = "subdir")
 
         expect_filename_head = "subdir/EUC_SHE_TEST_INSTANCE_"
         expect_filename_tail = "Z_06.66.junk"
@@ -80,35 +73,36 @@ class TestIO:
 
         # Check that if we wait a tenth of a second, it will change
         sleep(0.1)
-        new_filename = get_allowed_filename("test", instance_id, extension=".junk", release="06.66", subdir="subdir")
+        new_filename = get_allowed_filename("test", instance_id, extension = ".junk", release = "06.66",
+                                            subdir = "subdir")
         assert new_filename != filename
 
         # Test that it raises when we expect it to
 
         # Test for forbidden character
         with pytest.raises(ValueError):
-            get_allowed_filename("test*", instance_id, extension=".junk", release="06.66", subdir="subdir")
+            get_allowed_filename("test*", instance_id, extension = ".junk", release = "06.66", subdir = "subdir")
         with pytest.raises(ValueError):
-            get_allowed_filename("test", instance_id + "/", extension=".junk", release="06.66", subdir="subdir")
+            get_allowed_filename("test", instance_id + "/", extension = ".junk", release = "06.66", subdir = "subdir")
 
         # Test for bad release
         with pytest.raises(ValueError):
-            get_allowed_filename("test", instance_id, extension=".junk", release="06.666", subdir="subdir")
+            get_allowed_filename("test", instance_id, extension = ".junk", release = "06.666", subdir = "subdir")
         with pytest.raises(ValueError):
-            get_allowed_filename("test", instance_id, extension=".junk", release="06.6a", subdir="subdir")
+            get_allowed_filename("test", instance_id, extension = ".junk", release = "06.6a", subdir = "subdir")
         with pytest.raises(ValueError):
-            get_allowed_filename("test", instance_id, extension=".junk", release="06.", subdir="subdir")
+            get_allowed_filename("test", instance_id, extension = ".junk", release = "06.", subdir = "subdir")
 
         # Test for too long
         with pytest.raises(ValueError):
             get_allowed_filename("t" * (type_name_maxlen + 1), instance_id,
-                                 extension=".junk", release="06.66", subdir="subdir")
+                                 extension = ".junk", release = "06.66", subdir = "subdir")
         with pytest.raises(ValueError):
             get_allowed_filename("test", "i" * (instance_id_maxlen + 3),
-                                 extension=".junk", release="06.66", subdir="subdir", timestamp=True)
+                                 extension = ".junk", release = "06.66", subdir = "subdir", timestamp = True)
         with pytest.raises(ValueError):
-            get_allowed_filename("test", instance_id, extension=".junk", release="06.66", subdir="subdir",
-                                 processing_function="p" * (processing_function_maxlen + 1))
+            get_allowed_filename("test", instance_id, extension = ".junk", release = "06.66", subdir = "subdir",
+                                 processing_function = "p" * (processing_function_maxlen + 1))
 
     def test_rw_listfile(self):
 
@@ -127,10 +121,9 @@ class TestIO:
 
     def test_update_xml_with_value(self):
         """ Creates simple xml file
-        Updates with <Value> 
+        Updates with <Value>
 
         """
-        from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
 
         test_filename = find_aux_file('SHE_PPT/sample_vis_stacked_frame.xml')
 
@@ -166,10 +159,10 @@ class TestIO:
         assert os.path.isfile(os.path.join(self.workdir, filenames[0]))
         assert os.path.isfile(os.path.join(self.workdir, filenames[1]))
 
-        tar_files(tarball_filename=tarball_filename,
-                  l_filenames=filenames,
-                  workdir=self.workdir,
-                  delete_files=True)
+        tar_files(tarball_filename = tarball_filename,
+                  l_filenames = filenames,
+                  workdir = self.workdir,
+                  delete_files = True)
 
         # Check things have been tarred up
         assert not os.path.isfile(os.path.join(self.workdir, filenames[0]))
@@ -177,7 +170,7 @@ class TestIO:
         assert os.path.isfile(os.path.join(self.workdir, tarball_filename))
 
         # Check that we can untar and retrieve the data
-        subprocess.call(f"cd {self.workdir} && tar xf {tarball_filename}", shell=True)
+        subprocess.call(f"cd {self.workdir} && tar xf {tarball_filename}", shell = True)
 
         assert os.path.isfile(os.path.join(self.workdir, filenames[0]))
         assert os.path.isfile(os.path.join(self.workdir, filenames[1]))
