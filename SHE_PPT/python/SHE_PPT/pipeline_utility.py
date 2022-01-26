@@ -717,8 +717,11 @@ def _convert_tuple_type(pipeline_config: Dict[ConfigKeys, Any],
         and index 1 is the type of the list elements.
     """
 
-    # Skip if not present in the config
-    if enum_key not in pipeline_config or pipeline_config[enum_key] is None:
+    # Skip if not present in the config or already converted
+    # noinspection PyTypeHints
+    if ((enum_key not in pipeline_config or pipeline_config[enum_key] is None) or
+            (isinstance(pipeline_config[enum_key], tuple_type[0]) and isinstance(pipeline_config[enum_key][0],
+                                                                                 tuple_type[1]))):
         return
 
     if not tuple_type[0] == list:
