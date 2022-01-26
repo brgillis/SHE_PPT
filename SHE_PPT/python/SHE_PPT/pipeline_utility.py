@@ -662,7 +662,7 @@ def write_config(config_dict: Dict[ConfigKeys, Any],
 
 
 def _get_converted_enum_type(value: str, enum_type: EnumMeta):
-    """ Gets and retuns the value converted to a desired type of Enum, assuming it's originally the string value of
+    """ Gets and returns the value converted to a desired type of Enum, assuming it's originally the string value of
         that Enum.
     """
 
@@ -682,7 +682,7 @@ def _get_converted_enum_type(value: str, enum_type: EnumMeta):
 
 
 def _get_converted_type(value: str, desired_type: Type):
-    """ Gets and retuns the value converted to a desired type.
+    """ Gets and returns the value converted to a desired type.
     """
 
     # Check if it's already been converted
