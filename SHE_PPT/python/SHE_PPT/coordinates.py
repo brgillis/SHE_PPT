@@ -147,18 +147,39 @@ def reproject_to_equator(ras, decs):
             decs (np.ndarray) : array of the declinations of the objects
             
         Returns:
-            ras (np.ndarray) : array of the transformed right ascensions of the objects
+            ras (np.ndarray) : array of the transformed right ascensions of the objects (range (-180:180])
             decs (np.ndarray) : array of the transformed declinations of the objects
     """
     
-    #first determine the centre of mass in ra and dec:
-    ra_c = np.mean(ras)
-    dec_c = np.mean(decs)
+    #Estimate the centre of mass in ra and dec (ra_c, dec_c)
 
-    #rotate in ra so that the mean of the points is at 0 degrees
+    #First, transform to looking top-down on the celestial sphere, in a 2D Cartesian coordinate system
+
+    x = np.cos(decs*DTOR)*np.cos(ras*DTOR)
+    y = np.cos(decs*DTOR)*np.sin(ras*DTOR)
+
+    xc = x.mean()
+    yc = y.mean()
+    
+    #centre ra is the angle the centre of mass of the objects makes with the x-axis
+    ra_c = np.arctan2(yc,xc)*RTOD
+    
+    #calculate centre dec depends on the location of the objects
+    if abs(decs.mean()) < 45:
+        #objects are nearer the equator, just use mean dec
+        dec_c = decs.mean()
+    else:
+        #objects are nearer the pole, use the centre of mass in the cartesian coords
+        dec_c = np.arccos(np.sqrt(xc**2 + yc**2))*RTOD
+        #If in the southern hemisphere, make sure dec_c is negative
+        if decs.mean() < 0:
+            dec_c *= -1
+
+    
+    #rotate all points in ra so that the centre of the points is now at 0 degrees
     ras = ras - ra_c
 
-    #Now ensure these are in the range (-180,180]
+    #Now ensure the ras are in the range (-180,180]
     ras = (ras + 180)%360 -180
 
     #Now we want to rotate in declination so that the points are at the equator... e.g. by dec_c degrees.
