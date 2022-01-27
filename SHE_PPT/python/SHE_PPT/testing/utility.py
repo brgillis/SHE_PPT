@@ -57,6 +57,8 @@ class SheTestCase:
     pipeline_config_factory_type = MockPipelineConfigFactory
     mock_pipeline_config_factory: Optional[MockPipelineConfigFactory] = None
 
+    tmpdir_factory = None
+
     # Properties
 
     @property
@@ -120,7 +122,16 @@ class SheTestCase:
         if cls.workdir is None:
             cls.workdir = os.path.split(qualified_filename)[0]
 
+    @pytest.fixture(scope = 'class')
+    def class_setup(self, tmpdir_factory):
+        self.tmpdir_factory = tmpdir_factory
+        self.setup()
+
     @pytest.fixture(autouse = True)
+    def local_setup(self, tmpdir_factory):
+        self.tmpdir_factory = tmpdir_factory
+        self.setup()
+
     def setup(self):
         """ Default implementation of setup method. Can be overridden or inherited to change funcitonality.
         """
@@ -163,9 +174,9 @@ class SheTestCase:
 
         setattr(self.args, CA_PIPELINE_CONFIG, self.mock_pipeline_config_factory.file_namer.filename)
 
-    def _setup(self, tmpdir: Optional[LocalPath] = None):
+    def _setup(self):
         """ Implements common setup when using a tmpdir.
         """
-        self._setup_workdir_from_tmpdir(tmpdir)
+        self._setup_workdir_from_tmpdir(self.tmpdir_factory.mktemp("test"))
         self._set_workdir_args()
         self._write_mock_pipeline_config()
