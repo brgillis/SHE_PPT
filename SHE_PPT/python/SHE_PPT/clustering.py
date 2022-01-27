@@ -41,7 +41,7 @@ logger = getLogger(__name__)
 RANDOM_SEED=1
 
 
-def find_groups(xs,ys, sep=1., metric=euclidean_metric):
+def _find_groups(xs,ys, sep=1., metric=euclidean_metric):
     """returns a list of groups of potential blends. Each group is a list of the array indices of the identified objects
     
     Parameters:
@@ -79,11 +79,11 @@ def find_groups(xs,ys, sep=1., metric=euclidean_metric):
     return groups
 
 
-def all_same(items):
+def _all_same(items):
     """Returns True if all the items in the list are identical, False otherwise"""
     return all(x == items[0] for x in items)
 
-def update_grouped(local_groups, global_group_ids, local_indices, xs, ys, group_id):
+def _update_grouped(local_groups, global_group_ids, local_indices, xs, ys, group_id):
     """ Records the newly grouped objects (local_groups) in the global grouped list
     
     
@@ -122,7 +122,7 @@ def update_grouped(local_groups, global_group_ids, local_indices, xs, ys, group_
             #at least some of these objects belong to an existing group
 
             #check all the identified objects belong to the same group
-            if not all_same(global_group_ids[existing]):
+            if not _all_same(global_group_ids[existing]):
                 #TODO we need to work out how to handle this, beyond just printing a warning... 
                 # although if this block of code gets executed something is horribly wrong anyway
                 logger.warn("WARNING grouped objects seem to belong to different groups... possibly everything is grouped together (sep parameter too big?)")
@@ -139,7 +139,7 @@ def update_grouped(local_groups, global_group_ids, local_indices, xs, ys, group_
     return group_id
 
 
-def merge_grouped(xs, ys, global_groups):
+def _merge_grouped(xs, ys, global_groups):
     """For each group, adjust the positions of the objects so they're all at the centre of mass of the group
     
         Parameters:
@@ -180,7 +180,10 @@ def identify_all_groups(x,y, sep=1., metric = euclidean_metric, batchsize = 2000
     """Finds all the grouped objects in the input list of x and y coordinates of objects.
        returns updated x and y coordinate lists where all the grouped objects' coordinates
        have been changed to the centre of mass of the group, along with an array that 
-       identifies the grouped objects and the group they belong to
+       identifies the grouped objects and the group they belong to.
+
+       A group is defined of a set of >1 objects. Ungroupped objects have a group_id of -1,
+       whilst the indices for groups begins at 0
        
         Parameters:
             x (np.ndarray) : The list of x coordinates of the objects
@@ -244,10 +247,10 @@ def identify_all_groups(x,y, sep=1., metric = euclidean_metric, batchsize = 2000
                 continue
             
             #get the list of groups. Each group is a list of indices of the objects in that group
-            local_groups = find_groups(xp, yp, sep,metric=metric)
+            local_groups = _find_groups(xp, yp, sep,metric=metric)
             
             #store the groups in the global array, update their positions to the centre of mass of the group
-            new_group_count = update_grouped(local_groups, group_ids, indices, xs, ys, group_count)
+            new_group_count = _update_grouped(local_groups, group_ids, indices, xs, ys, group_count)
 
             new_groups = new_group_count-group_count
             group_count = new_group_count
@@ -255,7 +258,7 @@ def identify_all_groups(x,y, sep=1., metric = euclidean_metric, batchsize = 2000
             logger.debug("Batch(%d,%d): Number of objects = %d, Number of new groups = %d",i,j,len(xp),new_groups)
     
     #Now adjust the positions of all grouped objects so they are the centre of mass of ther groups
-    xs, ys = merge_grouped(xs, ys, group_ids)
+    xs, ys = _merge_grouped(xs, ys, group_ids)
 
     t1 = time.time()
     n_grouped = len(np.where(group_ids >= 0)[0])
@@ -264,15 +267,16 @@ def identify_all_groups(x,y, sep=1., metric = euclidean_metric, batchsize = 2000
     logger.info("Total number of grouped objects = %d",n_grouped)
     logger.info("Total number of groups = %d",group_count)
     logger.info("Fraction of objects that are grouped = %f",(n_grouped/n_objs))
-    logger.info("Mean number of objects per group = %f",(n_grouped/group_count))
+    if group_count > 0:
+        logger.info("Mean number of objects per group = %f",(n_grouped/group_count))
 
     return xs, ys, group_ids
 
 
 
 def partition_into_batches(xs, ys, batchsize=20, nbatches = None, seed=RANDOM_SEED):
-    """Given arrays of the objects' x and y coordinates, partition them into many batches approximately
-       of size batchsize, or if nbatches != None, partition them into nbatches batches
+    """Given arrays of the objects' x and y coordinates, spatially partition them into many batches 
+       approximately of size batchsize, or if nbatches != None, partition them into nbatches batches
        
         Parameters:
             xs (np.ndarray) : x coordinates of the objects
@@ -282,7 +286,7 @@ def partition_into_batches(xs, ys, batchsize=20, nbatches = None, seed=RANDOM_SE
             seed (int) : The seed for the random number generator used in the batching
            
         Returns:
-            clusters (np.ndarray) : nbatches by n objects array of the centres of each cluster
+            clusters (np.ndarray) : (nbatches,2) array of the centres of each cluster
             labels (np.ndarray)  : an int array of the batch number each object belongs to
             ns (np.ndarray) : the number of objects in each batch
            """
