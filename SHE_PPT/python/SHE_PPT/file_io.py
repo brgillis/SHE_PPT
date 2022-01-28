@@ -1210,7 +1210,7 @@ def get_data_filename(filename: str, workdir: str = ".") -> Optional[str]:
         else:
             # Check if the filename exists in the default location
             try:
-                data_filename = "data/" + prod.Data.DataStorage.DataContainer.FileName
+                data_filename = DATA_SUBDIR + prod.Data.DataStorage.DataContainer.FileName
             except AttributeError:
                 raise AttributeError("Data product does not have filename stored in the expected " +
                                      "location (self.Data.DataStorage.DataContainer.FileName. " +
