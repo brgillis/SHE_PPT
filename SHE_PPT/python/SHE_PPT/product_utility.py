@@ -44,18 +44,24 @@ from .file_io import DATA_SUBDIR
 LEN_DATA_SUBDIR = len(DATA_SUBDIR)
 
 
-def coerce_include_data_subdir(filename: str):
+def coerce_include_data_subdir(filename: Optional[str]) -> Optional[str]:
     """ Coerces a filename to always start with the data subdir.
     """
+
+    if filename is None:
+        return None
 
     if (len(filename) < len(DATA_SUBDIR) or filename[:LEN_DATA_SUBDIR] != DATA_SUBDIR) and filename[0] != "/":
         return DATA_SUBDIR + filename
     return filename
 
 
-def coerce_no_include_data_subdir(filename: str):
+def coerce_no_include_data_subdir(filename: Optional[str]) -> Optional[str]:
     """ Coerces a filename to not start with the data subdir.
     """
+
+    if filename is None:
+        return None
 
     if len(filename) > len(DATA_SUBDIR) and filename[:LEN_DATA_SUBDIR] == DATA_SUBDIR:
         return filename[LEN_DATA_SUBDIR:]
