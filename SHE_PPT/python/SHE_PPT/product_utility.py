@@ -48,7 +48,7 @@ def coerce_include_data_subdir(filename: str):
     """ Coerces a filename to always start with the data subdir.
     """
 
-    if (len(filename) < len(DATA_SUBDIR) or filename[LEN_DATA_SUBDIR] != DATA_SUBDIR) and filename[0] != "/":
+    if (len(filename) < len(DATA_SUBDIR) or filename[:LEN_DATA_SUBDIR] != DATA_SUBDIR) and filename[0] != "/":
         return DATA_SUBDIR + filename
     return filename
 
@@ -57,7 +57,7 @@ def coerce_no_include_data_subdir(filename: str):
     """ Coerces a filename to not start with the data subdir.
     """
 
-    if len(filename) > len(DATA_SUBDIR) and filename[LEN_DATA_SUBDIR] == DATA_SUBDIR:
+    if len(filename) > len(DATA_SUBDIR) and filename[:LEN_DATA_SUBDIR] == DATA_SUBDIR:
         return filename[LEN_DATA_SUBDIR:]
     return filename
 
