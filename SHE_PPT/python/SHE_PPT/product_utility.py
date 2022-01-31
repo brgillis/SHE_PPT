@@ -50,8 +50,11 @@ def coerce_include_data_subdir(filename: Optional[str]) -> Optional[str]:
 
     if filename is None:
         return None
+    if filename == "":
+        return ""
 
-    if (len(filename) < len(DATA_SUBDIR) or filename[:LEN_DATA_SUBDIR] != DATA_SUBDIR) and filename[0] != "/":
+    if ((len(filename) < len(DATA_SUBDIR) or filename[:LEN_DATA_SUBDIR] != DATA_SUBDIR) and
+            (len(filename) == 0 or filename[0] != "/")):
         return DATA_SUBDIR + filename
     return filename
 
@@ -62,6 +65,8 @@ def coerce_no_include_data_subdir(filename: Optional[str]) -> Optional[str]:
 
     if filename is None:
         return None
+    if filename == "" or filename == "data/":
+        return ""
 
     if len(filename) > len(DATA_SUBDIR) and filename[:LEN_DATA_SUBDIR] == DATA_SUBDIR:
         return filename[LEN_DATA_SUBDIR:]
