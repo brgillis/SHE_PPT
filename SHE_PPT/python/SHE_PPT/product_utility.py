@@ -92,6 +92,25 @@ D_METHOD_FITS_VERSIONS = {ShearEstimationMethods.KSB      : "8.0",
                           ShearEstimationMethods.REGAUSS  : "8.0"}
 
 
+# Enum for names of placeholder and intermediate products
+class ProductName(Enum):
+    PLC_GENERAL = "DpdShePlaceholderGeneral"
+    PLC_CAT = "DpdShePlaceholderCatalog"
+    PLC_OBS_CAT = "DpdShePlaceholderObservationCatalog"
+    PLC_TILE_CAT = "DpdShePlaceholderTileCatalog"
+    INT_GENERAL = "DpdSheIntermediateGeneral"
+    INT_CAT = "DpdSheIntermediateCatalog"
+    INT_OBS_CAT = "DpdSheIntermediateObservationCatalog"
+    INT_TILE_CAT = "DpdSheIntermediateTileCatalog"
+
+
+# Dict to store the fits table versions for each shear estimation method
+D_METHOD_FITS_VERSIONS = {ShearEstimationMethods.KSB      : "8.0",
+                          ShearEstimationMethods.LENSMC   : "8.0.1",
+                          ShearEstimationMethods.MOMENTSML: "8.0",
+                          ShearEstimationMethods.REGAUSS  : "8.0"}
+
+
 def get_data_filename_from_product(p, attr_name = None):
     """ Helper function to get a data filename from a product, adjusting for whether to include the data subdir
         as desired.
