@@ -19,11 +19,13 @@ __updated__ = "2021-08-13"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+
+# noinspection PyUnresolvedReferences
 import glob
-from os.path import dirname, basename, isfile
+# noinspection PyUnresolvedReferences
+from os.path import basename, dirname, isfile
 
 from . import *
-
 
 modules = glob.glob(dirname(__file__) + "/*.py")
 __all__ = [basename(f)[:-3]
@@ -31,4 +33,4 @@ __all__ = [basename(f)[:-3]
 
 del modules, dirname, basename, isfile, glob
 
-__version__ = "8.11"
+__version__ = "9.0"
