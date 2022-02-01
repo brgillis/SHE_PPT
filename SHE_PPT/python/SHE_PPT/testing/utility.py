@@ -125,10 +125,12 @@ class SheTestCase:
     @pytest.fixture(scope = 'class')
     def class_setup(self, tmpdir_factory):
         self._finalize_class_setup(tmpdir_factory)
+        
+        return self
 
     def _finalize_class_setup(self, tmpdir_factory):
         self.tmpdir_factory = tmpdir_factory
-        self.setup()
+        self._setup()
 
     @pytest.fixture(autouse = True)
     def local_setup(self, class_setup):
@@ -148,11 +150,6 @@ class SheTestCase:
                 except AttributeError:
                     pass
 
-    def setup(self):
-        """ Default implementation of setup method. Can be overridden or inherited to change funcitonality.
-        """
-        self._setup()
-
     # Convenience methods for when setting up with autouse = True
 
     def _make_mock_args(self) -> Namespace:
@@ -163,7 +160,7 @@ class SheTestCase:
     def _setup_workdir_from_tmpdir(self, tmpdir: LocalPath):
         """ Sets up workdir and logdir based on a tmpdir fixture.
         """
-        if tmpdir is not None and self.workdir:
+        if tmpdir is not None and self.workdir is None:
             self.workdir = tmpdir.strpath
         elif not hasattr(self, "workdir"):
             raise ValueError("self.workdir must be set if tmpdir is not provided to _setup_workdir_from_tmpdir.")
