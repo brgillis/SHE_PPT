@@ -124,13 +124,29 @@ class SheTestCase:
 
     @pytest.fixture(scope = 'class')
     def class_setup(self, tmpdir_factory):
+        self._finalize_class_setup(tmpdir_factory)
+
+    def _finalize_class_setup(self, tmpdir_factory):
         self.tmpdir_factory = tmpdir_factory
         self.setup()
 
     @pytest.fixture(autouse = True)
-    def local_setup(self, tmpdir_factory):
-        self.tmpdir_factory = tmpdir_factory
-        self.setup()
+    def local_setup(self, class_setup):
+        """ Import all changes made to this class in the class_setup locally.
+        """
+        self._import_setup(class_setup)
+
+        return self
+
+    def _import_setup(self, setup):
+        """ Copies all changes to a pickled fixture of this test case into this instnace.
+        """
+        for x in dir(setup):
+            if len(x) < 2 or x[0:2] != "__":
+                try:
+                    setattr(self, x, getattr(setup, x))
+                except AttributeError:
+                    pass
 
     def setup(self):
         """ Default implementation of setup method. Can be overridden or inherited to change funcitonality.
@@ -147,7 +163,7 @@ class SheTestCase:
     def _setup_workdir_from_tmpdir(self, tmpdir: LocalPath):
         """ Sets up workdir and logdir based on a tmpdir fixture.
         """
-        if tmpdir is not None:
+        if tmpdir is not None and self.workdir:
             self.workdir = tmpdir.strpath
         elif not hasattr(self, "workdir"):
             raise ValueError("self.workdir must be set if tmpdir is not provided to _setup_workdir_from_tmpdir.")
@@ -177,6 +193,7 @@ class SheTestCase:
     def _setup(self):
         """ Implements common setup when using a tmpdir.
         """
-        self._setup_workdir_from_tmpdir(self.tmpdir_factory.mktemp("test"))
+        if self.workdir is None:
+            self._setup_workdir_from_tmpdir(self.tmpdir_factory.mktemp("test"))
         self._set_workdir_args()
         self._write_mock_pipeline_config()
