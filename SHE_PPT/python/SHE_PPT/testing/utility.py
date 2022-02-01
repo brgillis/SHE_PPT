@@ -20,6 +20,7 @@ __updated__ = "2021-08-16"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
+
 import os
 from argparse import Namespace
 from typing import Any, Dict, Optional
@@ -125,7 +126,6 @@ class SheTestCase:
     @pytest.fixture(scope = 'class')
     def class_setup(self, tmpdir_factory):
         self._finalize_class_setup(tmpdir_factory)
-        
         return self
 
     def _finalize_class_setup(self, tmpdir_factory):
