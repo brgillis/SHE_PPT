@@ -181,6 +181,11 @@ class SheTestCase:
     def _write_mock_pipeline_config(self):
         """ Write the pipeline config we'll be using and note its filename.
         """
+
+        # Don't overwrite if a config is already set up to use
+        if self.pipeline_config is not None:
+            return
+
         self.mock_pipeline_config_factory = self.pipeline_config_factory_type(workdir = self.workdir)
         self.mock_pipeline_config_factory.write(self.workdir)
         self.pipeline_config = self.mock_pipeline_config_factory.pipeline_config
