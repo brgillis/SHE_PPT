@@ -48,9 +48,36 @@ from .constants.test_data import SYNC_CONF
 from .logging import getLogger
 from .utility import get_release_from_version, is_any_type_of_none, join_without_none
 
-MSG_READING_DATA_PRODUCT = "Reading data product from %s in workdir %s"
+# Constant strings for descriptions of file types
+STR_DATA_PRODUCT = "data product"
+STR_TABLE = "table"
+STR_FITS_FILE = "FITS file"
+
+# Constant strings for access operations
+STR_READING = "reading"
+STR_WRITING = "writing"
+STR_OPENING = "opening"
+
+# Constant strings for messages
+BASE_MESSAGE_ACCESSING = "%s %s from %s in workdir %s"
+BASE_MESSAGE_FINISHED_ACCESSING = f"Finished {BASE_MESSAGE_ACCESSING} successfully"
+
+BASE_MESSAGE_READING = BASE_MESSAGE_ACCESSING % STR_READING
+BASE_MESSAGE_FINISHED_READING = BASE_MESSAGE_FINISHED_ACCESSING % STR_READING
+BASE_MESSAGE_WRITING = BASE_MESSAGE_ACCESSING % STR_WRITING
+BASE_MESSAGE_FINISHED_WRITING = BASE_MESSAGE_FINISHED_ACCESSING % STR_WRITING
+BASE_MESSAGE_OPENING = BASE_MESSAGE_ACCESSING % STR_OPENING
+BASE_MESSAGE_FINISHED_OPENING = BASE_MESSAGE_FINISHED_ACCESSING % STR_OPENING
+
+MSG_READING_DATA_PRODUCT = (BASE_MESSAGE_READING % STR_DATA_PRODUCT).capitalize()
+MSG_FINISHED_READING_DATA_PRODUCT = (BASE_MESSAGE_READING % STR_DATA_PRODUCT).capitalize()
 
 DATA_SUBDIR = "data/"
+
+# Constants for strings in xml files
+
+STR_KEY = '<Key>'
+STR_VALUE = '<Value>'
 
 # Get some constant values from the FileNameProvider
 
@@ -111,11 +138,11 @@ class SheFileAccessError(IOError):
 
 
 class SheFileReadError(SheFileAccessError):
-    operation: str = "reading from"
+    operation: str = STR_READING
 
 
 class SheFileWriteError(SheFileAccessError):
-    operation: str = "writing to"
+    operation: str = STR_WRITING
 
 
 class SheFileNamer(FileNameProvider):
@@ -595,7 +622,7 @@ def write_xml_product(product: Any,
                       log_info: bool = False,
                       allow_pickled: bool = False) -> None:
     log_method = _get_optional_log_method(log_info)
-    log_method("Writing data product to %s in workdir %s", xml_filename, workdir)
+    log_method(BASE_MESSAGE_WRITING, STR_DATA_PRODUCT, xml_filename, workdir)
 
     # Silently coerce input into a string
     xml_filename = str(xml_filename)
@@ -605,7 +632,7 @@ def write_xml_product(product: Any,
     except Exception as e:
         raise SheFileWriteError(filename = xml_filename, workdir = workdir) from e
 
-    logger.debug("Finished writing data product to %s in workdir %s", xml_filename, workdir)
+    logger.debug(BASE_MESSAGE_FINISHED_WRITING, STR_DATA_PRODUCT, xml_filename, workdir)
 
 
 def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pickled: bool) -> None:
@@ -682,7 +709,7 @@ def read_xml_product(xml_filename: str,
     except Exception as e:
         raise SheFileReadError(filename = xml_filename, workdir = workdir) from e
 
-    log_method(MSG_READING_DATA_PRODUCT, xml_filename, workdir)
+    logger.debug(MSG_FINISHED_READING_DATA_PRODUCT, xml_filename, workdir)
 
     return product
 
@@ -713,7 +740,7 @@ def write_pickled_product(product,
                           workdir: str = ".",
                           log_info: bool = False) -> None:
     log_method = _get_optional_log_method(log_info)
-    log_method("Writing data product to %s in workdir %s", pickled_filename, workdir)
+    log_method(BASE_MESSAGE_WRITING, STR_DATA_PRODUCT, pickled_filename, workdir)
 
     # Silently coerce input into a string
     pickled_filename = str(pickled_filename)
@@ -726,7 +753,7 @@ def write_pickled_product(product,
     except Exception as e:
         raise SheFileWriteError(filename = pickled_filename, workdir = workdir) from e
 
-    logger.debug("Finished writing data product to %s in workdir %s", pickled_filename, workdir)
+    logger.debug(BASE_MESSAGE_FINISHED_WRITING, STR_DATA_PRODUCT, pickled_filename, workdir)
 
 
 def read_pickled_product(pickled_filename,
@@ -746,7 +773,7 @@ def read_pickled_product(pickled_filename,
     except Exception as e:
         raise SheFileReadError(filename = pickled_filename, workdir = workdir) from e
 
-    log_method(MSG_READING_DATA_PRODUCT, pickled_filename, workdir)
+    logger.debug(MSG_FINISHED_READING_DATA_PRODUCT, pickled_filename, workdir)
 
     return product
 
@@ -757,7 +784,7 @@ def write_table(t: Table,
                 log_info: bool = False,
                 *args, **kwargs) -> None:
     log_method = _get_optional_log_method(log_info)
-    log_method("Writing table to %s in workdir %s", filename, workdir)
+    log_method(BASE_MESSAGE_WRITING, STR_TABLE, filename, workdir)
 
     qualified_filename = get_qualified_filename(filename, workdir)
 
@@ -766,7 +793,7 @@ def write_table(t: Table,
     except Exception as e:
         raise SheFileWriteError(filename = filename, workdir = workdir) from e
 
-    logger.debug("Finished writing table to %s in workdir %s", filename, workdir)
+    logger.debug(BASE_MESSAGE_FINISHED_WRITING, STR_TABLE, filename, workdir)
 
 
 def read_table(filename: str,
@@ -774,7 +801,7 @@ def read_table(filename: str,
                log_info: bool = False,
                *args, **kwargs) -> Table:
     log_method = _get_optional_log_method(log_info)
-    log_method("Reading table from %s in workdir %s", filename, workdir)
+    log_method(BASE_MESSAGE_READING, STR_TABLE, filename, workdir)
 
     qualified_filename = get_qualified_filename(filename, workdir)
 
@@ -783,7 +810,7 @@ def read_table(filename: str,
     except Exception as e:
         raise SheFileReadError(filename = filename, workdir = workdir) from e
 
-    logger.debug("Finished reading table from %s in workdir %s", filename, workdir)
+    logger.debug(BASE_MESSAGE_FINISHED_READING, STR_TABLE, filename, workdir)
     return t
 
 
@@ -822,7 +849,7 @@ def write_fits(hdu_list: HDUList,
                log_info: bool = False,
                *args, **kwargs) -> None:
     log_method = _get_optional_log_method(log_info)
-    log_method("Writing FITS file %s in workdir %s", filename, workdir)
+    log_method(BASE_MESSAGE_WRITING, STR_FITS_FILE, filename, workdir)
 
     qualified_filename = get_qualified_filename(filename, workdir)
 
@@ -830,7 +857,7 @@ def write_fits(hdu_list: HDUList,
         hdu_list.writeto(qualified_filename, *args, **kwargs)
     except Exception as e:
         raise SheFileWriteError(filename = filename, workdir = workdir) from e
-    logger.debug("Finished writing FITS file %s in workdir %s", filename, workdir)
+    logger.debug(BASE_MESSAGE_FINISHED_WRITING, STR_FITS_FILE, filename, workdir)
 
 
 def read_fits(filename: str,
@@ -838,7 +865,7 @@ def read_fits(filename: str,
               log_info: bool = False,
               *args, **kwargs) -> HDUList:
     log_method = _get_optional_log_method(log_info)
-    log_method("Opening FITS file %s in workdir %s", filename, workdir)
+    log_method(BASE_MESSAGE_OPENING, STR_FITS_FILE, filename, workdir)
 
     qualified_filename = get_qualified_filename(filename, workdir)
 
@@ -846,7 +873,7 @@ def read_fits(filename: str,
         f: HDUList = fits.open(qualified_filename, *args, **kwargs)
     except Exception as e:
         raise SheFileReadError(filename = filename, workdir = workdir) from e
-    logger.debug("Finished opening FITS file %s in workdir %s", filename, workdir)
+    logger.debug(BASE_MESSAGE_FINISHED_OPENING, STR_FITS_FILE, filename, workdir)
 
     return f
 
@@ -1236,9 +1263,6 @@ def update_xml_with_value(filename: str) -> None:
         lines = open(filename).readlines()
     except Exception as e:
         raise SheFileReadError(filename) from e
-
-    STR_KEY = '<Key>'
-    STR_VALUE = '<Value>'
 
     key_lines = [ii for ii, line in enumerate(lines) if STR_KEY in line]
     bad_lines = [idx for idx in key_lines if STR_VALUE not in lines[idx + 1]]
