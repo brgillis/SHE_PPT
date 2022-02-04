@@ -735,7 +735,12 @@ def _convert_tuple_type(pipeline_config: Dict[ConfigKeys, Any],
         convert_func = _get_converted_type
 
     # Split the list by whitespace
-    l_str_values: List[str] = pipeline_config[enum_key].strip().split()
+    if isinstance(pipeline_config[enum_key], list) and isinstance(pipeline_config[enum_key][0], str):
+        l_str_values: List[str] = pipeline_config[enum_key]
+    elif isinstance(pipeline_config[enum_key], str):
+        l_str_values: List[str] = pipeline_config[enum_key].strip().split()
+    else:
+        raise TypeError(f"Unrecognized type for pipeline_config[enum_key]: {type(pipeline_config[enum_key])}")
 
     # Convert each item in the list in turn
     l_values: Any = [None] * len(l_str_values)
