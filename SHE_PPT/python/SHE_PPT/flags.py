@@ -69,6 +69,7 @@ flag_corrupt_training_data = 2 ** 29
 flag_no_calibration_data = 2 ** 30
 flag_corrupt_calibration_data = 2 ** 31
 flag_bad_calibration = 2 ** 32
+flag_too_low_shape_error = 2 ** 33
 
 non_failure_flags = (flag_no_noisemap | flag_corrupt_noisemap | flag_no_segmentation_map |
                      flag_corrupt_segmentation_map)
