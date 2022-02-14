@@ -70,13 +70,14 @@ flag_no_calibration_data = 2 ** 30
 flag_corrupt_calibration_data = 2 ** 31
 flag_bad_calibration = 2 ** 32
 flag_too_low_shape_error = 2 ** 33
+flag_exposures_dropped = 2 ** 34
 
 non_failure_flags = (flag_no_noisemap | flag_corrupt_noisemap | flag_no_segmentation_map |
-                     flag_corrupt_segmentation_map)
+                     flag_corrupt_segmentation_map | flag_exposures_dropped)
 failure_flags = (2 ** 33 - 1) ^ non_failure_flags
 
-# Utility functions
 
+# Utility functions
 
 def combine_flags(*flags):
     """ Returns an integer with the bit flags combined into one value.
