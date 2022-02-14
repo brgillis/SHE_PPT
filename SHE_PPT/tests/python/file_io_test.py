@@ -29,8 +29,8 @@ import pytest
 from SHE_PPT.file_io import (find_aux_file, get_allowed_filename, instance_id_maxlen, processing_function_maxlen,
                              read_listfile, read_xml_product, tar_files, type_name_maxlen, update_xml_with_value,
                              write_listfile, )
-from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import DpdVisCalibratedFrame
-from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import DpdVisStackedFrame
+from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
+from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
 
 
 class TestIO:
@@ -110,8 +110,8 @@ class TestIO:
         """ Tests of the read_xml_product function."""
 
         test_filename = find_aux_file('SHE_PPT/sample_vis_stacked_frame.xml')
-        ex_type = DpdVisStackedFrame
-        non_ex_type = DpdVisCalibratedFrame
+        ex_type = dpdVisStackedFrame
+        non_ex_type = dpdVisCalibratedFrame
 
         # Test that we can read it successfully, both type checking and not
         p1 = read_xml_product(test_filename)
