@@ -692,7 +692,12 @@ def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pick
 def read_xml_product(xml_filename: str,
                      workdir: str = ".",
                      log_info: bool = False,
-                     allow_pickled: bool = False) -> Any:
+                     allow_pickled: bool = False,
+                     product_type: Optional[Type] = None) -> Any:
+    """ Reads in an XML data product. If product_type is set to a type of a data product, will check that the product
+        read in is of that type.
+    """
+
     log_method = _get_optional_log_method(log_info)
     log_method(MSG_READING_DATA_PRODUCT, xml_filename, workdir)
 
@@ -715,6 +720,11 @@ def read_xml_product(xml_filename: str,
 
     except Exception as e:
         raise SheFileReadError(filename = xml_filename, workdir = workdir) from e
+
+    # Check the type of the read-in product if product_type is not None
+    if (product_type is not None) and not isinstance(product, product_type):
+        raise TypeError(f"Product read in from file {xml_filename} in directory {workdir} is of type "
+                        f"{type(product)}, but type {product_type} was expected.")
 
     logger.debug(MSG_FINISHED_READING_DATA_PRODUCT, xml_filename, workdir)
 
