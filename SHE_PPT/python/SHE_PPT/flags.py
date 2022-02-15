@@ -73,7 +73,7 @@ flag_too_low_shape_error = 2 ** 33
 flag_exposures_dropped = 2 ** 34
 
 non_failure_flags = (flag_no_noisemap | flag_corrupt_noisemap | flag_no_segmentation_map |
-                     flag_corrupt_segmentation_map | flag_exposures_dropped)
+                     flag_corrupt_segmentation_map | flag_too_low_shape_error | flag_exposures_dropped)
 failure_flags = (2 ** 33 - 1) ^ non_failure_flags
 
 
