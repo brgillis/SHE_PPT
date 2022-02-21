@@ -122,6 +122,8 @@ class SheArgumentParser(ArgumentParser):
 
         # Check for store_true and store_false actions, and set default to None if found
         if "action" in kwargs and (kwargs["action"] == "store_true" or kwargs["action"] == "store_false"):
+            logger.debug(f"Overriding default to be None for cline-arg {args[0]}, since it's set as store_true or "
+                         "store_false")
             kwargs["default"] = None
 
         # Warn if the default is set to anything other than None
@@ -131,6 +133,8 @@ class SheArgumentParser(ArgumentParser):
                            "None, as it will normally be overridden by the defaults provided to the read_config "
                            "function. If this is an exceptional case and you wish to suppress this warning, set "
                            "suppress_warnings=True in the call to add_*_arg or add_arg_with_type.")
+
+        logger.debug(f"Adding cline-arg {args[0]} to SheArgumentParser.")
 
         return self.add_argument(*args, **kwargs, help = formatted_help)
 
