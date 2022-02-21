@@ -21,9 +21,10 @@ __updated__ = "2021-08-27"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 from argparse import Action, ArgumentParser
-
 from enum import Enum
 from typing import Optional
+
+from SHE_PPT.logging import getLogger
 
 ACT_STORE_TRUE = 'store_true'
 ACT_STORE_FALSE = 'store_true'
@@ -45,6 +46,8 @@ CA_WORKDIR = "workdir"
 CA_LOGDIR = "logdir"
 CA_PROFILE = "profile"
 CA_DRY_RUN = "dry_run"
+
+logger = getLogger(__name__)
 
 
 # Enum for specifying how the cline-arg is used
@@ -108,6 +111,7 @@ class SheArgumentParser(ArgumentParser):
                           *args,
                           arg_type: ClineArgType = ClineArgType.INPUT,
                           help: Optional[str] = None,
+                          suppress_warnings: bool = False,
                           **kwargs) -> Action:
         """ Function to add an argument with help formatted depending on the argument type.
         """
@@ -119,6 +123,14 @@ class SheArgumentParser(ArgumentParser):
         # Check for store_true and store_false actions, and set default to None if found
         if "action" in kwargs and (kwargs["action"] == "store_true" or kwargs["action"] == "store_false"):
             kwargs["default"] = None
+
+        # Warn if the default is set to anything other than None
+        if "default" in kwargs and kwargs["default"] is not None and not suppress_warnings:
+            logger.warning(f"Default for cline-arg {args[0]} attempted to be set to {kwargs['default']}."
+                           "When setting a cline-arg for a SheArgumentParser, the default should usually be set to "
+                           "None, as it will normally be overridden by the defaults provided to the read_config "
+                           "function. If this is an exceptional case and you wish to suppress this warning, set "
+                           "suppress_warnings=True in the call to add_*_arg or add_arg_with_type.")
 
         return self.add_argument(*args, **kwargs, help = formatted_help)
 
