@@ -67,25 +67,43 @@ class SheArgumentParser(ArgumentParser):
         super().__init__()
 
         # Input filenames
-        self.add_arg_with_type(f'--{CA_PIPELINE_CONFIG}', type = str, default = None,
-                               arg_type = ClineArgType.INPUT,
-                               help = 'Pipeline configuration file (.xml data product or .json listfile of 0-1 '
-                                      'such data products.')
+        self.add_input_arg(f'--{CA_PIPELINE_CONFIG}', type = str, default = None,
+                           help = 'Pipeline configuration file (.xml data product or .json listfile of 0-1 '
+                                  'such data products.')
 
         # Arguments needed by the pipeline runner
-        self.add_arg_with_type(f'--{CA_WORKDIR}', type = str, default = ".", arg_type = ClineArgType.OPTION,
-                               help = f'Work directory, where input data is stored and output data will be created. '
-                                      f'Should be fully-qualified.')
-        self.add_arg_with_type(f'--{CA_LOGDIR}', type = str, default = ".", arg_type = ClineArgType.OPTION,
-                               help = f"Logging directory (relative to work directory.")
+        self.add_option_arg(f'--{CA_WORKDIR}', type = str, default = ".",
+                            help = f'Work directory, where input data is stored and output data will be created. '
+                                   f'Should be fully-qualified.')
+        self.add_option_arg(f'--{CA_LOGDIR}', type = str, default = ".",
+                            help = f"Logging directory (relative to work directory.")
 
         # Optional arguments (can't be used with pipeline runner)
-        self.add_arg_with_type(f'--{CA_PROFILE}', action = ACT_STORE_TRUE, arg_type = ClineArgType.OPTION,
-                               help = f'Store profiling data for execution.')
-        self.add_arg_with_type(f'--{CA_DRY_RUN}', action = ACT_STORE_TRUE, arg_type = ClineArgType.OPTION,
-                               help = f'Skip processing and just output dummy data.')
+        self.add_option_arg(f'--{CA_PROFILE}', action = ACT_STORE_TRUE,
+                            help = f'Store profiling data for execution.')
+        self.add_option_arg(f'--{CA_DRY_RUN}', action = ACT_STORE_TRUE,
+                            help = f'Skip processing and just output dummy data.')
 
     # Public functions
+
+    def add_input_arg(self,
+                      *args,
+                      help: Optional[str] = None,
+                      **kwargs) -> Action:
+        return self.add_arg_with_type(*args, arg_type = ClineArgType.INPUT, help = help, **kwargs)
+
+    def add_output_arg(self,
+                       *args,
+                       help: Optional[str] = None,
+                       **kwargs) -> Action:
+        return self.add_arg_with_type(*args, arg_type = ClineArgType.OUTPUT, help = help, **kwargs)
+
+    def add_option_arg(self,
+                       *args,
+                       help: Optional[str] = None,
+                       **kwargs) -> Action:
+        return self.add_arg_with_type(*args, arg_type = ClineArgType.OPTION, help = help, **kwargs)
+
     def add_arg_with_type(self,
                           *args,
                           arg_type: ClineArgType = ClineArgType.INPUT,
