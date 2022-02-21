@@ -98,6 +98,10 @@ class SheArgumentParser(ArgumentParser):
         if help is not None:
             formatted_help = f"{arg_type.value}: {help}"
 
+        # Check for store_true and store_false actions, and set default to None if found
+        if "action" in kwargs and (kwargs["action"] == "store_true" or kwargs["action"] == "store_false"):
+            kwargs["default"] = None
+
         return self.add_argument(*args, **kwargs, help = formatted_help)
 
     # Convenience functions to add input filename cline-args
