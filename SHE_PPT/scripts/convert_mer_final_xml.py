@@ -58,7 +58,7 @@ def main():
         print("XML: ",xml_file,xml_info,mer_cat_fitsfile)
         mer_final_prod = mpd.create_dpd_she_detections(mer_cat_fitsfile)
         #mer_final_prod.Data.CutoutsCatalogStorage.DataContainer.Filename=cutouts_fitsfile
-        #mer_final_prod.Data.TileIndex=int(xml_info.TileIndex)
+        mer_final_prod.Data.TileIndex=int(xml_info.TileIndex)
         mer_final_prod.Data.ObservationIdList=xml_info.ObservationIdList
         mer_final_prod.Header.SoftwareName='MER_IAL_Pipeline'
         mer_final_prod.Header.SoftwareRelease='9.0.0'
