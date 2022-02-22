@@ -70,7 +70,7 @@ def get_xml_info(filename):
     """
     """
     lines = open(filename).readlines()
-    mer_upd_tup = namedtuple('MER UPD','mer_cat_fits cutout_fits TileIndex ObservationIdList '
+    mer_upd_tup = namedtuple('MerUpdate','mer_cat_fits cutout_fits TileIndex ObservationIdList '
                              'ProductId')
     key_list= ['DataStorage.DataContainer.FileName','CutoutsCatalogStorage.DataContainer.FileName',
                  'TileIndex','ObservationIdList','ProductId']
