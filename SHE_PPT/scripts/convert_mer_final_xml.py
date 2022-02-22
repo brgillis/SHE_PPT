@@ -106,7 +106,8 @@ def find_value(key,lines):
                 if '<'+prt in line:
                     line_no=ii
         print("PT2: ",line_no)
-    return line.split('>')[1].split('<')[0]
+    print("LN: ",lines[line_no])
+    return lines[line_no].split('>')[1].split('<')[0]
     
 if __name__ == "__main__":
     main()
