@@ -88,10 +88,12 @@ def find_value(key,lines):
         parts = key.split('.')
     else:
         parts=[key]
-    
+
+    print("KY: ",key, parts)    
     line_no = None
     exist_line_no = None
     for jj,prt in enumerate(parts):
+        print("PT: ",jj,prt,exist_line_no,line_no)
         if line_no:
             exist_line_no = line_no
             match = False
@@ -103,7 +105,7 @@ def find_value(key,lines):
             for ii,line in enumerate(lines):
                 if '<'+prt in line:
                     line_no=ii
-    
+        print("PT2: ",line_no)
     return line.split('>')[1].split('<')[0]
     
 if __name__ == "__main__":
