@@ -55,6 +55,7 @@ def main():
         xml_info = get_xml_info(os.path.join(args.input_dir,xml_file))
         mer_cat_fitsfile = xml_info.mer_cat_fits
         cutouts_fitsfile = xml_info.cutout_fits
+        print("XML: ",xml_file,xml_info,mer_cat_fitsfile)
         mer_final_prod = mpd.create_dpd_she_detections(mer_cat_fitsfile)
         #mer_final_prod.Data.CutoutsCatalogStorage.DataContainer.Filename=cutouts_fitsfile
         #mer_final_prod.Data.TileIndex=int(xml_info.TileIndex)
