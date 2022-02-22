@@ -55,9 +55,8 @@ def main():
         xml_info = get_xml_info(os.path.join(args.input_dir,xml_file))
         mer_cat_fitsfile = xml_info.mer_cat_fits
         cutouts_fitsfile = xml_info.cutout_fits
-        print("XML: ",xml_file,xml_info,mer_cat_fitsfile)
         mer_final_prod = mpd.create_dpd_she_detections(mer_cat_fitsfile)
-        mer_final_prod.Data.CutoutsCatalogStorage.DataContainer.Filename=cutouts_fitsfile
+        #mer_final_prod.Data.CutoutsCatalogStorage.DataContainer.Filename=cutouts_fitsfile
         mer_final_prod.Data.TileIndex=int(xml_info.TileIndex)
         mer_final_prod.Data.ObservationIdList=xml_info.ObservationIdList
         mer_final_prod.Header.SoftwareName='MER_IAL_Pipeline'
@@ -89,11 +88,9 @@ def find_value(key,lines):
     else:
         parts=[key]
 
-    print("KY: ",key, parts)    
     line_no = None
     exist_line_no = None
     for jj,prt in enumerate(parts):
-        print("PT: ",jj,prt,exist_line_no,line_no)
         if line_no:
             exist_line_no = line_no
             match = False
@@ -105,8 +102,6 @@ def find_value(key,lines):
             for ii,line in enumerate(lines):
                 if '<'+prt in line:
                     line_no=ii
-        print("PT2: ",line_no)
-    print("LN: ",lines[line_no])
     return lines[line_no].split('>')[1].split('<')[0]
     
 if __name__ == "__main__":
