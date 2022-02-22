@@ -62,7 +62,7 @@ def main():
         mer_final_prod.Data.ObservationIdList=xml_info.ObservationIdList
         mer_final_prod.Header.SoftwareName='MER_IAL_Pipeline'
         mer_final_prod.Header.SoftwareRelease='9.0.0'
-        mer_final_prod.Header.ProductId=xml_file.ProductId
+        mer_final_prod.Header.ProductId=xml_info.ProductId
         output_xml_file = os.path.join(args.dest_dir,xml_file)
         write_xml_product(mer_final_prod,output_xml_file)
         
