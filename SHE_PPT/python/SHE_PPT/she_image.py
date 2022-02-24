@@ -494,31 +494,33 @@ class SHEImage():
     def exposure_time(self):
         """Exposure time in sec
         """
-        if hasattr(self._header, 'EXPTIME'):
-            return self._header['EXPTIME']
-        else:
-            return None
+        if self.header is not None and 'EXPTIME' in self.header:
+            return self.header['EXPTIME']
+        return None
 
     @property
     def gain(self):
         """Gain in ADU/e TODO: check units
         """
-        if hasattr(self._header, 'GAIN'):
-            return float(self._header['GAIN'])
+        if self.header is not None and 'GAIN' in self.header:
+            return float(self.header['GAIN'])
+        return None
 
     @property
     def read_noise(self):
         """Read noise
         """
-        if hasattr(self._header, 'RDNOISE'):
-            return float(self._header['RDNOISE'])
+        if self.header is not None and 'RDNOISE' in self.header:
+            return float(self.header['RDNOISE'])
+        return None
 
     @property
     def zero_point(self):
         """Magnitude zero-point
         """
-        if hasattr(self._header, 'MAGZEROP'):
-            return float(self._header['MAGZEROP'])
+        if self.header is not None and 'MAGZEROP' in self.header:
+            return float(self.header['MAGZEROP'])
+        return None
 
     @property
     # Just a shortcut, defined as a property in case we need to change
