@@ -23,6 +23,7 @@ import os
 import weakref
 from copy import deepcopy
 from functools import lru_cache
+from typing import Optional
 
 import astropy.io.fits
 import astropy.wcs
@@ -491,7 +492,7 @@ class SHEImage():
             self._offset = np.array(offset_tuple, dtype = float)
 
     @property
-    def exposure_time(self):
+    def exposure_time(self) -> Optional[str]:
         """Exposure time in sec
         """
         if self.header is not None and 'EXPTIME' in self.header:
@@ -499,7 +500,7 @@ class SHEImage():
         return None
 
     @property
-    def gain(self):
+    def gain(self) -> Optional[float]:
         """Gain in ADU/e TODO: check units
         """
         if self.header is not None and 'GAIN' in self.header:
@@ -507,7 +508,7 @@ class SHEImage():
         return None
 
     @property
-    def read_noise(self):
+    def read_noise(self) -> Optional[float]:
         """Read noise
         """
         if self.header is not None and 'RDNOISE' in self.header:
@@ -515,7 +516,7 @@ class SHEImage():
         return None
 
     @property
-    def zero_point(self):
+    def zero_point(self) -> Optional[float]:
         """Magnitude zero-point
         """
         if self.header is not None and 'MAGZEROP' in self.header:
