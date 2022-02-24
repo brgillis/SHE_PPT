@@ -492,16 +492,16 @@ class SHEImage():
             self._offset = np.array(offset_tuple, dtype = float)
 
     @property
-    def exposure_time(self) -> Optional[str]:
+    def exposure_time(self) -> Optional[float]:
         """Exposure time in sec
         """
         if self.header is not None and 'EXPTIME' in self.header:
-            return self.header['EXPTIME']
+            return float(self.header['EXPTIME'])
         return None
 
     @property
     def gain(self) -> Optional[float]:
-        """Gain in ADU/e TODO: check units
+        """Gain in e-/ADU
         """
         if self.header is not None and 'GAIN' in self.header:
             return float(self.header['GAIN'])
@@ -509,7 +509,7 @@ class SHEImage():
 
     @property
     def read_noise(self) -> Optional[float]:
-        """Read noise
+        """Read noise in units of ADU/pixel
         """
         if self.header is not None and 'RDNOISE' in self.header:
             return float(self.header['RDNOISE'])
