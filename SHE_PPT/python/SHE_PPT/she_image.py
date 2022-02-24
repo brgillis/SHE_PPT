@@ -31,7 +31,7 @@ import galsim
 import numpy as np
 
 from EL_PythonUtils.utilities import run_only_once
-from . import logging, mdb
+from . import logging
 from .constants.fits import CCDID_LABEL
 from .constants.misc import SEGMAP_UNASSIGNED_VALUE
 from .mask import (as_bool, is_masked_bad,
@@ -489,6 +489,36 @@ class SHEImage():
             if len(offset_tuple) != 2:
                 raise ValueError("A SHEImage.offset must have 2 items")
             self._offset = np.array(offset_tuple, dtype = float)
+
+    @property
+    def exposure_time(self):
+        """Exposure time in sec
+        """
+        if hasattr(self._header, 'EXPTIME'):
+            return self._header['EXPTIME']
+        else:
+            return None
+
+    @property
+    def gain(self):
+        """Gain in ADU/e TODO: check units
+        """
+        if hasattr(self._header, 'GAIN'):
+            return float(self._header['GAIN'])
+
+    @property
+    def read_noise(self):
+        """Read noise
+        """
+        if hasattr(self._header, 'RDNOISE'):
+            return float(self._header['RDNOISE'])
+
+    @property
+    def zero_point(self):
+        """Magnitude zero-point
+        """
+        if hasattr(self._header, 'MAGZEROP'):
+            return float(self._header['MAGZEROP'])
 
     @property
     # Just a shortcut, defined as a property in case we need to change
@@ -1281,17 +1311,13 @@ class SHEImage():
 
         # Try to calculate the noisemap
 
-        # Get the gain and read_noise from the MDB if possible
-        try:
-            gain = mdb.get_gain(suppress_warnings = suppress_warnings)
-            read_noise = mdb.get_read_noise(suppress_warnings = suppress_warnings)
-        except RuntimeError as e:
-            if "mdb module must be initialised with MDB xml object before use." not in str(e):
-                raise
-            warn_mdb_not_loaded()
-            # Use default values for gain and read_noise
-            gain = 3.1
-            read_noise = 4.5
+        # get the gain and read_noise properties
+        gain = self.gain
+        if gain is None:
+            raise RuntimeError('Gain property not read in from header.')
+        read_noise = self.read_noise
+        if read_noise is None:
+            raise RuntimeError('Read noise property not read in from header.')
 
         # Start by setting to the read noise level
         self.noisemap = read_noise / gain * np.ones_like(self.data, dtype = float)
@@ -1961,11 +1987,6 @@ class SHEImage():
         rotation_angle = xy_angle - radec_angle
 
         return rotation_angle
-
-
-@run_only_once
-def warn_mdb_not_loaded():
-    logger.warning("MDB is not loaded, so default values will be assumed in calculating a noisemap.")
 
 
 @run_only_once
