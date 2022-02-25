@@ -4,7 +4,7 @@ File: she_image.py
 Created on: Aug 17, 2017
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2022-02-25"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -216,6 +216,9 @@ class SHEImage():
         self.galsim_wcs = None
         self._det_ix = None
         self._det_iy = None
+
+        # science data filename
+        self._science_data_filename = None
 
     # We define properties of the SHEImage object, following
     # https://euclid.roe.ac.uk/projects/codeen-users/wiki/User_Cod_Std-pythonstandard-v1-0#PNAMA-020-m-Developer
@@ -490,6 +493,18 @@ class SHEImage():
             if len(offset_tuple) != 2:
                 raise ValueError("A SHEImage.offset must have 2 items")
             self._offset = np.array(offset_tuple, dtype = float)
+
+    @property
+    def science_data_filename(self) -> Optional[str]:
+        """Science data filename of the loaded FITS file
+        """
+        return self._science_data_filename
+
+    @science_data_filename.setter
+    def science_data_filename(self, filename):
+        """Set the science data filename property
+        """
+        self._science_data_filename = filename
 
     @property
     def observation_id(self) -> Optional[int]:
@@ -938,6 +953,7 @@ class SHEImage():
         newimg = SHEImage(data = data, mask = mask, noisemap = noisemap, segmentation_map = segmentation_map,
                           background_map = background_map, weight_map = weight_map,
                           header = header, offset = offset, wcs = wcs)
+        newimg.science_data_filename = qualified_filepath
 
         logger.info("Read %s from the file '%s'", str(newimg), filepath)
         return newimg
