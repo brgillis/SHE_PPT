@@ -492,6 +492,20 @@ class SHEImage():
             self._offset = np.array(offset_tuple, dtype = float)
 
     @property
+    def observation_id(self) -> Optional[int]:
+        """Observation ID. Returns None if header or keyword not present.
+        """
+        if self.header is not None and 'OBSID' in self.header:
+            return int(self.header['OBSID'])
+
+    @property
+    def pointing_id(self) -> Optional[int]:
+        """Pointing ID. Returns None if header or keyword not present.
+        """
+        if self.header is not None and 'PTGID' in self.header:
+            return int(self.header['PTGID'])
+
+    @property
     def exposure_time(self) -> Optional[float]:
         """Exposure time in sec. Returns None if header or keyword not present.
         """
