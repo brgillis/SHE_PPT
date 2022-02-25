@@ -493,35 +493,31 @@ class SHEImage():
 
     @property
     def exposure_time(self) -> Optional[float]:
-        """Exposure time in sec
+        """Exposure time in sec. Returns None if header or keyword not present.
         """
         if self.header is not None and 'EXPTIME' in self.header:
             return float(self.header['EXPTIME'])
-        return None
 
     @property
     def gain(self) -> Optional[float]:
-        """Gain in e-/ADU
+        """Gain in e-/ADU. Returns None if header or keyword not present.
         """
         if self.header is not None and 'GAIN' in self.header:
             return float(self.header['GAIN'])
-        return None
 
     @property
     def read_noise(self) -> Optional[float]:
-        """Read noise in units of ADU/pixel
+        """Read noise in units of ADU/pixel. Returns None if header or keyword not present.
         """
         if self.header is not None and 'RDNOISE' in self.header:
             return float(self.header['RDNOISE'])
-        return None
 
     @property
     def zero_point(self) -> Optional[float]:
-        """Magnitude zero-point
+        """Magnitude zero-point. Returns None if header or keyword not present.
         """
         if self.header is not None and 'MAGZEROP' in self.header:
             return float(self.header['MAGZEROP'])
-        return None
 
     @property
     # Just a shortcut, defined as a property in case we need to change
