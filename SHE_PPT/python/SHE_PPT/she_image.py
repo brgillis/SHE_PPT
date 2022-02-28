@@ -217,8 +217,8 @@ class SHEImage():
         self._det_ix = None
         self._det_iy = None
 
-        # science data filename
-        self._science_data_filename = None
+        # qualified science data filename
+        self._qualified_science_data_filename = None
 
     # We define properties of the SHEImage object, following
     # https://euclid.roe.ac.uk/projects/codeen-users/wiki/User_Cod_Std-pythonstandard-v1-0#PNAMA-020-m-Developer
@@ -495,16 +495,16 @@ class SHEImage():
             self._offset = np.array(offset_tuple, dtype = float)
 
     @property
-    def science_data_filename(self) -> Optional[str]:
-        """Science data filename of the loaded FITS file
+    def qualified_science_data_filename(self) -> Optional[str]:
+        """Qualified science data filename of the loaded FITS file
         """
-        return self._science_data_filename
+        return self._qualified_science_data_filename
 
-    @science_data_filename.setter
-    def science_data_filename(self, filename):
-        """Set the science data filename property
+    @qualified_science_data_filename.setter
+    def qualified_science_data_filename(self, filename):
+        """Set the qualified science data filename property
         """
-        self._science_data_filename = filename
+        self._qualified_science_data_filename = filename
 
     @property
     def observation_id(self) -> Optional[int]:
