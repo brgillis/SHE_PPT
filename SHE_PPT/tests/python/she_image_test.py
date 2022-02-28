@@ -4,7 +4,7 @@ File: tests/python/she_image_test.py
 Created on: 08/18/17
 """
 
-__updated__ = "2021-08-16"
+__updated__ = "2022-02-25"
 
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -457,6 +457,59 @@ class TestSheImage():
         rstamp = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepath)
         assert rstamp.offset[0] == 2
         assert rstamp.offset[1] == 3
+
+    def test_qualified_science_data_filename(self):
+        """Testing the qualified science data filename property"""
+
+        # test non-existence of property
+        fname = self.qualified_science_data_filename
+        if fname is None:
+            pass
+        assert isinstance(fname, str)
+
+        # set property and get it
+        self.qualified_science_data_filename = '/mock_dir/mock_file.fits'
+        fname = self.qualified_science_data_filename
+        assert isinstance(fname, str)
+        if isinstance(fname, str):
+            assert os.path.isabs(fname)
+            assert os.path.splitext(fname)[1] == 'fits'
+
+    def test_observation_id(self):
+        """Testing the observation ID property"""
+        obs_id = self.observation_id
+        if obs_id is not None:
+            assert isinstance(obs_id, int)
+
+    def test_pointing_id(self):
+        """Testing the pointing ID property"""
+        id = self.pointing_id
+        if id is not None:
+            assert isinstance(id, int)
+
+    def test_exposure_time(self):
+        """Testing the exposure time property"""
+        t = self.exposure_time
+        if t is not None:
+            assert isinstance(t, float)
+
+    def test_gain(self):
+        """Testing the gain property"""
+        g = self.gain
+        if g is not None:
+            assert isinstance(g, float)
+
+    def test_read_noise(self):
+        """Testing the read noise property"""
+        r = self.read_noise
+        if r is not None:
+            assert isinstance(r, float)
+
+    def test_zero_point(self):
+        """Testing the zero point property"""
+        z = self.zero_point
+        if z is not None:
+            assert isinstance(z, float)
 
     def test_get_object_mask(self):
         """Test that the get_object_mask function behaves as expected."""
