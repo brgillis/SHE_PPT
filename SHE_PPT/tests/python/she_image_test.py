@@ -462,14 +462,14 @@ class TestSheImage():
         """Testing the qualified science data filename property"""
 
         # test non-existence of property
-        fname = self.qualified_science_data_filename
+        fname = self.img.qualified_science_data_filename
         if fname is None:
             pass
         assert isinstance(fname, str)
 
         # set property and get it
-        self.qualified_science_data_filename = '/mock_dir/mock_file.fits'
-        fname = self.qualified_science_data_filename
+        self.img.qualified_science_data_filename = '/mock_dir/mock_file.fits'
+        fname = self.img.qualified_science_data_filename
         assert isinstance(fname, str)
         if isinstance(fname, str):
             assert os.path.isabs(fname)
@@ -477,37 +477,37 @@ class TestSheImage():
 
     def test_observation_id(self):
         """Testing the observation ID property"""
-        obs_id = self.observation_id
+        obs_id = self.img.observation_id
         if obs_id is not None:
             assert isinstance(obs_id, int)
 
     def test_pointing_id(self):
         """Testing the pointing ID property"""
-        id = self.pointing_id
+        id = self.img.pointing_id
         if id is not None:
             assert isinstance(id, int)
 
     def test_exposure_time(self):
         """Testing the exposure time property"""
-        t = self.exposure_time
+        t = self.img.exposure_time
         if t is not None:
             assert isinstance(t, float)
 
     def test_gain(self):
         """Testing the gain property"""
-        g = self.gain
+        g = self.img.gain
         if g is not None:
             assert isinstance(g, float)
 
     def test_read_noise(self):
         """Testing the read noise property"""
-        r = self.read_noise
+        r = self.img.read_noise
         if r is not None:
             assert isinstance(r, float)
 
     def test_zero_point(self):
         """Testing the zero point property"""
-        z = self.zero_point
+        z = self.img.zero_point
         if z is not None:
             assert isinstance(z, float)
 
