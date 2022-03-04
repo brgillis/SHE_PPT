@@ -97,11 +97,6 @@ class SheStarCatalogFormat(SheTableFormat):
                                                  comment = "Error on mean ellipticity measurement of this object, "
                                                            "component 2")
 
-        self.rr_dist = self.set_column_properties("SHE_STARCAT_RR_DIST", dtype = ">f4", fits_dtype = "E",
-                                                  is_optional = True, comment = "Distance from readout register - "
-                                                                                "only used internally within CTI-PSF "
-                                                                                "Validation test.")
-
         self.used_for_fit = self.set_column_properties("SHE_STARCAT_USED_FOR_FIT", dtype = "bool", fits_dtype = "L",
                                                        comment = "Whether or not this star was used for fitting "
                                                                  "the PSF model.")
@@ -111,6 +106,11 @@ class SheStarCatalogFormat(SheTableFormat):
         self.used_for_fit = self.set_column_properties("SHE_STARCAT_RES_DOF", dtype = ">i4", fits_dtype = "J",
                                                        comment = "Degrees of freedom for the Chi-squared "
                                                                  "statistic of the residual")
+
+        self.rr_dist = self.set_column_properties("SHE_STARCAT_RR_DIST", dtype = ">f4", fits_dtype = "E",
+                                                  is_optional = True, comment = "Distance from readout register - "
+                                                                                "only used internally within CTI-PSF "
+                                                                                "Validation test.")
 
         self._finalize_init()
 
