@@ -103,9 +103,9 @@ class SheStarCatalogFormat(SheTableFormat):
         self.res_chisq = self.set_column_properties("SHE_STARCAT_RES_CHISQ", dtype = ">f4", fits_dtype = "E",
                                                     comment = "Chi-squared statistic for the residual of the "
                                                               "fitted or modeled PSF compared to the star")
-        self.used_for_fit = self.set_column_properties("SHE_STARCAT_RES_DOF", dtype = ">i4", fits_dtype = "J",
-                                                       comment = "Degrees of freedom for the Chi-squared "
-                                                                 "statistic of the residual")
+        self.res_dof = self.set_column_properties("SHE_STARCAT_RES_DOF", dtype = ">i4", fits_dtype = "J",
+                                                  comment = "Degrees of freedom for the Chi-squared "
+                                                            "statistic of the residual")
 
         self.rr_dist = self.set_column_properties("SHE_STARCAT_RR_DIST", dtype = ">f4", fits_dtype = "E",
                                                   is_optional = True, comment = "Distance from readout register - "
