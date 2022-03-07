@@ -20,6 +20,7 @@ __updated__ = "2021-08-16"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
+
 import os
 from argparse import Namespace
 from typing import Any, Dict, Optional
@@ -56,6 +57,8 @@ class SheTestCase:
 
     pipeline_config_factory_type = MockPipelineConfigFactory
     mock_pipeline_config_factory: Optional[MockPipelineConfigFactory] = None
+
+    tmpdir_factory = None
 
     # Properties
 
@@ -120,11 +123,37 @@ class SheTestCase:
         if cls.workdir is None:
             cls.workdir = os.path.split(qualified_filename)[0]
 
-    @pytest.fixture(autouse = True)
-    def setup(self):
-        """ Default implementation of setup method. Can be overridden or inherited to change funcitonality.
-        """
+    def setup(self) -> None:
+        """Ocerridable method, where the user can specify any unique setup for a given testing class."""
+        return None
+
+    @pytest.fixture(scope = 'class')
+    def class_setup(self, tmpdir_factory):
+        self.setup()
+        self._finalize_class_setup(tmpdir_factory)
+        return self
+
+    def _finalize_class_setup(self, tmpdir_factory):
+        self.tmpdir_factory = tmpdir_factory
         self._setup()
+
+    @pytest.fixture(autouse = True)
+    def local_setup(self, class_setup):
+        """ Import all changes made to this class in the class_setup locally.
+        """
+        self._import_setup(class_setup)
+
+        return self
+
+    def _import_setup(self, setup):
+        """ Copies all changes to a pickled fixture of this test case into this instnace.
+        """
+        for x in dir(setup):
+            if len(x) < 2 or x[0:2] != "__":
+                try:
+                    setattr(self, x, getattr(setup, x))
+                except AttributeError:
+                    pass
 
     # Convenience methods for when setting up with autouse = True
 
@@ -136,7 +165,7 @@ class SheTestCase:
     def _setup_workdir_from_tmpdir(self, tmpdir: LocalPath):
         """ Sets up workdir and logdir based on a tmpdir fixture.
         """
-        if tmpdir is not None:
+        if tmpdir is not None and self.workdir is None:
             self.workdir = tmpdir.strpath
         elif not hasattr(self, "workdir"):
             raise ValueError("self.workdir must be set if tmpdir is not provided to _setup_workdir_from_tmpdir.")
@@ -157,15 +186,21 @@ class SheTestCase:
     def _write_mock_pipeline_config(self):
         """ Write the pipeline config we'll be using and note its filename.
         """
+
+        # Don't overwrite if a config is already set up to use
+        if self.pipeline_config is not None:
+            return
+
         self.mock_pipeline_config_factory = self.pipeline_config_factory_type(workdir = self.workdir)
         self.mock_pipeline_config_factory.write(self.workdir)
         self.pipeline_config = self.mock_pipeline_config_factory.pipeline_config
 
         setattr(self.args, CA_PIPELINE_CONFIG, self.mock_pipeline_config_factory.file_namer.filename)
 
-    def _setup(self, tmpdir: Optional[LocalPath] = None):
+    def _setup(self):
         """ Implements common setup when using a tmpdir.
         """
-        self._setup_workdir_from_tmpdir(tmpdir)
+        if self.workdir is None:
+            self._setup_workdir_from_tmpdir(self.tmpdir_factory.mktemp("test"))
         self._set_workdir_args()
         self._write_mock_pipeline_config()

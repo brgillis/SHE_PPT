@@ -117,7 +117,7 @@ class SheExecutor:
     run_args: RunArgs
 
     # Protected attributes representing types of arguments, which can be overridden by subclasses
-    config_args_type: Type[ReadConfigArgs]
+    config_args_type: Type[ReadConfigArgs] = ReadConfigArgs
     run_args_type: Type[RunArgs] = RunArgs
 
     # Attributes used during the run command
