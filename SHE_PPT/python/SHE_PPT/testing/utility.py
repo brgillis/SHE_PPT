@@ -123,8 +123,12 @@ class SheTestCase:
         if cls.workdir is None:
             cls.workdir = os.path.split(qualified_filename)[0]
 
+    def setup(self) -> None:
+        return None
+
     @pytest.fixture(scope = 'class')
     def class_setup(self, tmpdir_factory):
+        self.setup()
         self._finalize_class_setup(tmpdir_factory)
         return self
 
