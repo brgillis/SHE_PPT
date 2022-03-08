@@ -834,11 +834,12 @@ def read_table(filename: str,
 def read_product_and_table(product_filename: str,
                            workdir: str = ".",
                            log_info: bool = False,
+                           product_type: Optional[Type] = None,
                            *args, **kwargs) -> Tuple[Any, Table]:
-    """ Convience function to read in a data product and the data table it points to, and return both as a tuple.
+    """ Convenience function to read in a data product and the data table it points to, and return both as a tuple.
     """
 
-    p = read_xml_product(product_filename, workdir = workdir, log_info = log_info)
+    p = read_xml_product(product_filename, workdir = workdir, log_info = log_info, product_type = product_type)
     table_filename: str = p.get_data_filename()
 
     t = read_table(table_filename, workdir = workdir, log_info = log_info, *args, **kwargs)
@@ -849,13 +850,16 @@ def read_product_and_table(product_filename: str,
 def read_table_from_product(product_filename: str,
                             workdir: str = ".",
                             log_info: bool = False,
+                            product_type: Optional[Type] = None,
                             *args, **kwargs) -> Table:
     """ Convenience function to read a data table given the filename of the xml data product which points to it.
     """
 
     _, t = read_product_and_table(product_filename = product_filename,
                                   workdir = workdir,
-                                  log_info = log_info, *args, *kwargs)
+                                  log_info = log_info,
+                                  product_type = product_type,
+                                  *args, *kwargs)
 
     return t
 
