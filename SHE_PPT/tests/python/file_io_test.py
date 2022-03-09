@@ -26,7 +26,7 @@ from time import sleep
 
 import pytest
 
-from SHE_PPT.file_io import (SheFileNamer, find_aux_file, get_allowed_filename, instance_id_maxlen,
+from SHE_PPT.file_io import (DATA_SUBDIR, SheFileNamer, find_aux_file, get_allowed_filename, instance_id_maxlen,
                              processing_function_maxlen,
                              read_listfile, read_product_and_table, read_xml_product, tar_files, type_name_maxlen,
                              update_xml_with_value,
@@ -63,6 +63,7 @@ class TestIO:
     def setup(self, tmpdir):
 
         self.workdir = tmpdir.strpath
+        os.makedirs(os.path.join(self.workdir, DATA_SUBDIR))
 
     def test_get_allowed_filename(self):
 
@@ -215,11 +216,15 @@ class TestIO:
 
         # Write them out together
 
-        product_filename = SheFileNamer(type_name = "TESTPROD", workdir = self.workdir, subdir = "").filename
+        product_filename = SheFileNamer(type_name = "TESTPROD",
+                                        instance_id = "0",
+                                        workdir = self.workdir,
+                                        subdir = "").filename
 
         write_product_and_table(product = p,
                                 product_filename = product_filename,
-                                table = t)
+                                table = t,
+                                workdir = self.workdir)
 
         # Check that the files have been written out
         table_filename = p.get_data_filename()

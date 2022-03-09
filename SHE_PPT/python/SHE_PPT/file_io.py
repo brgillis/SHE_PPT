@@ -847,7 +847,9 @@ def write_product_and_table(product: Any,
 
     # Generate a filename for the table if one hasn't been provided
     if table_filename is None:
-        table_file_namer = SheFileNamer(workdir = workdir)
+        table_file_namer = SheFileNamer(type_name = "UNKNOWN",
+                                        instance_id = "0",
+                                        workdir = workdir)
         table_filename = table_file_namer.filename
 
     # Write the table
