@@ -26,6 +26,7 @@ from time import sleep
 
 import pytest
 
+import SHE_PPT
 from SHE_PPT.file_io import (DATA_SUBDIR, SheFileNamer, find_aux_file, get_allowed_filename, instance_id_maxlen,
                              processing_function_maxlen,
                              read_listfile, read_product_and_table, read_xml_product, tar_files, type_name_maxlen,
@@ -219,7 +220,8 @@ class TestIO:
         product_filename = SheFileNamer(type_name = "TESTPROD",
                                         instance_id = "0",
                                         workdir = self.workdir,
-                                        subdir = "").filename
+                                        subdir = "",
+                                        version = SHE_PPT.__version__).filename
 
         write_product_and_table(product = p,
                                 product_filename = product_filename,
@@ -235,5 +237,6 @@ class TestIO:
         p2, t2 = read_product_and_table(product_filename, workdir = self.workdir)
 
         # Check that they're the same as was written out
-        assert p2 == p
-        assert t2 == t
+        assert p.Header.ProductId == p2.Header.ProductId
+        assert p.get_data_filename() == p2.get_data_filename()
+        assert (t2 == t).all()

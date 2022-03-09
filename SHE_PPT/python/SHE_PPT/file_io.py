@@ -180,7 +180,7 @@ class SheFileNamer(FileNameProvider):
     # Options for getting the filename
     _extension: str = ".fits"
     _release: Optional[str] = None
-    _version: Optional[str] = SHE_PPT.__version__
+    _version: Optional[str] = None
     _subdir: Optional[str] = "data"
     _processing_function: str = "SHE"
     _timestamp: bool = True
@@ -849,7 +849,8 @@ def write_product_and_table(product: Any,
     if table_filename is None:
         table_file_namer = SheFileNamer(type_name = "UNKNOWN",
                                         instance_id = "0",
-                                        workdir = workdir)
+                                        workdir = workdir,
+                                        version = SHE_PPT.__version__)
         table_filename = table_file_namer.filename
 
     # Write the table
