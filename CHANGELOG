@@ -23,6 +23,7 @@ New Features
 ------------
 - Added functions read_product_and_table and write_product_and_table for convenient reading/writing of a table and a
   data product which points to it
+- Added product definition and initializer for DpdSheStarCatalog
 
 New config features
 -------------------
