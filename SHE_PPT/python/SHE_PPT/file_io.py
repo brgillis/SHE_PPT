@@ -38,6 +38,7 @@ from astropy.io.fits.hdu.base import ExtensionHDU
 from astropy.table import Table
 from pyxb.exceptions_ import NamespaceError
 
+import SHE_PPT
 from EL_PythonUtils.utilities import time_to_timestamp
 from ElementsServices.DataSync import DataSync
 from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider
@@ -179,7 +180,7 @@ class SheFileNamer(FileNameProvider):
     # Options for getting the filename
     _extension: str = ".fits"
     _release: Optional[str] = None
-    _version: Optional[str] = None
+    _version: Optional[str] = SHE_PPT.__version__
     _subdir: Optional[str] = "data"
     _processing_function: str = "SHE"
     _timestamp: bool = True
@@ -829,6 +830,34 @@ def read_table(filename: str,
 
     logger.debug(BASE_MESSAGE_FINISHED_READING, STR_TABLE, filename, workdir)
     return t
+
+
+def write_product_and_table(product: Any,
+                            product_filename: str,
+                            table: Table,
+                            *args: Any,
+                            table_filename: Optional[str] = None,
+                            workdir: str = ".",
+                            log_info: bool = False,
+                            **kwargs: Any):
+    """ Convenience function to write a product and table at the same time, setting up a filename for the table if
+        one is not provided, and setting the product to point to the table's filename with its set_data_filename
+        method.
+    """
+
+    # Generate a filename for the table if one hasn't been provided
+    if table_filename is None:
+        table_file_namer = SheFileNamer(workdir = workdir)
+        table_filename = table_file_namer.filename
+
+    # Write the table
+    write_table(table, *args, filename = table_filename, workdir = workdir, log_info = log_info, **kwargs)
+
+    # Set the table filename within the product
+    product.set_data_filename(table_filename)
+
+    # Write the product
+    write_xml_product(product, xml_filename = product_filename, workdir = workdir, log_info = log_info)
 
 
 def read_product_and_table(product_filename: str,
