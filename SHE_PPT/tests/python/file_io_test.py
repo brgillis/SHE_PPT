@@ -26,9 +26,13 @@ from time import sleep
 
 import pytest
 
-from SHE_PPT.file_io import (find_aux_file, get_allowed_filename, instance_id_maxlen, processing_function_maxlen,
-                             read_listfile, read_xml_product, tar_files, type_name_maxlen, update_xml_with_value,
-                             write_listfile, )
+from SHE_PPT.file_io import (SheFileNamer, find_aux_file, get_allowed_filename, instance_id_maxlen,
+                             processing_function_maxlen,
+                             read_listfile, read_product_and_table, read_xml_product, tar_files, type_name_maxlen,
+                             update_xml_with_value,
+                             write_listfile, write_product_and_table, )
+from SHE_PPT.products.mer_final_catalog import create_dpd_mer_final_catalog
+from SHE_PPT.table_formats.mer_final_catalog import MerFinalCatalogFormat
 from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
 from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
 
@@ -200,3 +204,31 @@ class TestIO:
             with open(os.path.join(self.workdir, filename), "r") as fi:
                 read_text = fi.read()
                 assert read_text == text
+
+    def test_rw_product_and_table(self):
+        """ Test reading and writing a product and table together with utility functions.
+        """
+
+        # Create sample product and table
+        p = create_dpd_mer_final_catalog()
+        t = MerFinalCatalogFormat.init_table(size = 2)
+
+        # Write them out together
+
+        product_filename = SheFileNamer(type_name = "TESTPROD", workdir = self.workdir, subdir = "").filename
+
+        write_product_and_table(product = p,
+                                product_filename = product_filename,
+                                table = t)
+
+        # Check that the files have been written out
+        table_filename = p.get_data_filename()
+        assert os.path.exists(os.path.join(self.workdir, product_filename))
+        assert os.path.exists(os.path.join(self.workdir, table_filename))
+
+        # Read the product and table back in
+        p2, t2 = read_product_and_table(product_filename, workdir = self.workdir)
+
+        # Check that they're the same as was written out
+        assert p2 == p
+        assert t2 == t
