@@ -45,6 +45,7 @@ class SheTestCase:
     """
 
     _args: Optional[Namespace] = None
+    _d_args: Optional[Dict[str, Any]] = None
 
     workdir: Optional[str] = None
     logdir: Optional[str] = None
@@ -67,6 +68,12 @@ class SheTestCase:
         if self._args is None:
             self._args = self._make_mock_args()
         return self._args
+
+    @property
+    def d_args(self) -> Dict[str, Any]:
+        if self._d_args is None:
+            self._d_args = vars(self.args)
+        return self._d_args
 
     # Class methods, for when setup/teardown_class can be used
 
