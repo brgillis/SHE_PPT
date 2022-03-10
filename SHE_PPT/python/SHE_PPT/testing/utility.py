@@ -123,14 +123,24 @@ class SheTestCase:
         if cls.workdir is None:
             cls.workdir = os.path.split(qualified_filename)[0]
 
-    def setup(self) -> None:
-        """Overridable method, where the user can specify any unique setup for a given testing class."""
+    def setup_workdir(self) -> None:
+        """Overridable method, where the user can specify any unique setup for a given testing class, to be performed
+           before the workdir is setup. This is normally used when it's needed to download test data, which will set
+           the self.workdir member to the location of the workdir.
+        """
+        return None
+
+    def post_setup(self) -> None:
+        """Overridable method, where the user can specify any unique setup for a given testing class, to be performed
+           after the workdir is setup.
+        """
         return None
 
     @pytest.fixture(scope = 'class')
     def class_setup(self, tmpdir_factory):
         self.setup()
         self._finalize_class_setup(tmpdir_factory)
+        self.post_setup()
         return self
 
     def _finalize_class_setup(self, tmpdir_factory):
@@ -175,6 +185,7 @@ class SheTestCase:
         """ Sets up self.logdir and otherwise prepares the workdir.
         """
         self.logdir = os.path.join(self.workdir, "logs")
+        os.makedirs(os.path.join(self.workdir, "logs"), exist_ok = True)
         os.makedirs(os.path.join(self.workdir, "data"), exist_ok = True)
 
     def _set_workdir_args(self) -> None:
@@ -202,5 +213,7 @@ class SheTestCase:
         """
         if self.workdir is None:
             self._setup_workdir_from_tmpdir(self.tmpdir_factory.mktemp("test"))
+        else:
+            self._setup_workdir()
         self._set_workdir_args()
         self._write_mock_pipeline_config()
