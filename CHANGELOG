@@ -22,6 +22,7 @@ Bug Fixes
 New Features
 ------------
 - Changed setup for SheTestCase to be split between setup_workdir and post_setup, for before and after workdir is set up
+- Added d_args attribute to SheTestCase, which provides a dict version of its args attribute
 
 New config features
 -------------------
