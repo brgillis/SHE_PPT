@@ -30,4 +30,8 @@ __all__ = [basename(f)[:-3]
 
 del modules, dirname, basename, isfile, glob
 
-from . import *
+# Try to import all modules in this package for convenience. Due to some dependencies, this isn't always possible
+try:
+    from . import *
+except ImportError:
+    pass
