@@ -2,10 +2,10 @@
 
     Created 14 Mar 2022.
 
-    Utilities to generate mock data for validation tests.
+    Utilities to generate mock vis calibrated frames for smoke tests.
 """
 
-__updated__ = "2022-03-16"
+__updated__ = "2022-03-17"
 
 # Copyright (C) 2012-2022 Euclid Science Ground Segment
 #
@@ -29,13 +29,19 @@ from astropy.wcs import WCS
 from SHE_PPT.products import vis_calibrated_frame
 from SHE_PPT.file_io import write_xml_product, get_allowed_filename
 from SHE_PPT import __version__ as ppt_version
+from SHE_PPT.logging import getLogger
+
+logger = getLogger(__name__)
 
 
 def __generate_gausian_blob(objsize=10):
     """generates a (objsize*5 x objsize*5) pixel image of a gaussian blob with width of objsize"""
-    #size of the 
+    
+    #size of the stamp
     size = objsize*5
+    
     blob = np.zeros((size,size))
+    
     x = np.arange(size)-size/2.
     for j in range(size):
         y=x[j]
@@ -43,7 +49,7 @@ def __generate_gausian_blob(objsize=10):
     
     return blob
 
-def __generate_detector_images(detector_shape=(4096,4136), nobjs=10, background=10., snr = 10, objsize=10, rng=None):
+def __generate_detector_images(detector_shape=(4136,4096), nobjs=10, background=10., snr = 10, objsize=10, rng=None):
     """Generates the SCI, RMG, FLG, WGT and BKG pixel maps for a detector
        
        Arguments:
@@ -61,7 +67,6 @@ def __generate_detector_images(detector_shape=(4096,4136), nobjs=10, background=
          - wgt: wgt image
          - bkg: bkg image
          - pixel_coords: list of pixel coordinates of the nobjs objects
-    
     
     """
 
@@ -139,7 +144,7 @@ def create_exposure(n_detectors=1, detector_shape=(100,100), workdir=".", seed =
 
         Returns:
            - prod_filename (The name of the created data product)
-           - object_positions (a list of world coodinates for the objects in the image - to be used when creating
+           - object_coords (a list of world coodinates for the objects in the image - to be used when creating
              mock mer catalogues for this exposure)
     """
     #pixelsize = 0.1"
@@ -160,7 +165,7 @@ def create_exposure(n_detectors=1, detector_shape=(100,100), workdir=".", seed =
     bkg_primary = fits.PrimaryHDU(bkg_hdr)
     bkg_hdul = fits.HDUList([bkg_primary])
 
-    object_positions = []
+    object_coords = []
 
 
     #loop over all detectors in the exposure
@@ -170,7 +175,7 @@ def create_exposure(n_detectors=1, detector_shape=(100,100), workdir=".", seed =
         det_i = det//6 +1
         det_j = det%6 + 1
         det_id = "%s-%s"%(str(det_i),str(det_j))
-        print("Detector id =",det_id)
+        logger.info("Creating detector %s"%det_id)
 
         #create image data
         sci, rms, flg, wgt, bkg, pixel_coords = __generate_detector_images(detector_shape=detector_shape,
@@ -189,7 +194,7 @@ def create_exposure(n_detectors=1, detector_shape=(100,100), workdir=".", seed =
         #obtain the world coordinates of the objects in the image, and append them to the object_positions list
         world_coords = wcs.wcs_pix2world(pixel_coords,0)
         for coord in world_coords:
-            object_positions.append(coord)
+            object_coords.append(coord)
 
         #now make the hdus for these images
         
@@ -214,10 +219,12 @@ def create_exposure(n_detectors=1, detector_shape=(100,100), workdir=".", seed =
         wgt_hdu = fits.ImageHDU(data=wgt, header=wgt_hdr, name="CCDID %s"%det_id)
         wgt_hdul.append(wgt_hdu)
 
-    
+    logger.info("Created %d detector(s) with a total of %d object(s)"%(n_detectors, len(object_coords)))
+
     #determine the data directory, creating it if it doesn't already exist
     datadir = os.path.join(workdir,"data")
     if not os.path.exists(datadir):
+        logger.info("Creating non-existing data directory %s"%datadir)
         os.mkdir(datadir)
     
     #get qualified filename for the fits files
@@ -226,8 +233,11 @@ def create_exposure(n_detectors=1, detector_shape=(100,100), workdir=".", seed =
     bkg_fname = get_allowed_filename("VIS-BKG", "00", release=ppt_version, extension=".fits")
 
     #write the fits files
+    logger.info("Writing DET file to %s"%det_fname)
     det_hdul.writeto(os.path.join(workdir,det_fname), overwrite=True)
+    logger.info("Writing WGT file to %s"%wgt_fname)
     wgt_hdul.writeto(os.path.join(workdir,wgt_fname), overwrite=True)
+    logger.info("Writing BKG file to %s"%bkg_fname)
     bkg_hdul.writeto(os.path.join(workdir,bkg_fname), overwrite=True)
     
     #create the data product
@@ -238,9 +248,10 @@ def create_exposure(n_detectors=1, detector_shape=(100,100), workdir=".", seed =
     #Write it to file
     prod_filename = get_allowed_filename("VIS-CAL-FRAME", "00", release=ppt_version, extension=".xml",subdir="")
     qualified_prod_filename = os.path.join(workdir, prod_filename)
+    logger.info("Writing dpdVisCalibratedFrame product to %s"%prod_filename)
     write_xml_product(exposure_prod, qualified_prod_filename)
 
-    return prod_filename, object_positions
+    return prod_filename, object_coords
 
         
 
