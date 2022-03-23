@@ -27,7 +27,11 @@ from time import sleep
 import pytest
 
 import SHE_PPT
-from SHE_PPT.file_io import (DATA_SUBDIR, SheFileNamer, find_aux_file, get_allowed_filename, instance_id_maxlen,
+from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_SUBDIR, DEFAULT_INSTANCE_ID,
+                             DEFAULT_TYPE_NAME, SheFileNamer,
+                             find_aux_file,
+                             get_allowed_filename,
+                             instance_id_maxlen,
                              processing_function_maxlen,
                              read_listfile, read_product_and_table, read_xml_product, tar_files, type_name_maxlen,
                              update_xml_with_value,
@@ -229,8 +233,15 @@ class TestIO:
                                 table = t,
                                 workdir = self.workdir)
 
-        # Check that the files have been written out
         table_filename = p.get_data_filename()
+
+        # Check that the default filename generated is as expected
+        assert DEFAULT_TYPE_NAME in table_filename
+        assert DEFAULT_INSTANCE_ID in table_filename
+        assert DEFAULT_FILE_SUBDIR in table_filename
+        assert DEFAULT_FILE_EXTENSION in table_filename
+
+        # Check that the files have been written out
         assert os.path.exists(os.path.join(self.workdir, product_filename))
         assert os.path.exists(os.path.join(self.workdir, table_filename))
 
