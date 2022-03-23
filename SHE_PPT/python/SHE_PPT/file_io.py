@@ -450,7 +450,7 @@ class SheFileNamer(FileNameProvider):
             release = self.release
 
         # Check the extension doesn't start with "." and silently fix if it does
-        if self.extension[0] == S:
+        if self.extension[0] == ".":
             extension = self.extension[1:]
         else:
             extension = self.extension
