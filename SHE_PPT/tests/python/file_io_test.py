@@ -223,6 +223,7 @@ class TestIO:
                                         subdir = "",
                                         version = SHE_PPT.__version__).filename
 
+        # Try first without specifying a table filename
         write_product_and_table(product = p,
                                 product_filename = product_filename,
                                 table = t,
@@ -237,6 +238,27 @@ class TestIO:
         p2, t2 = read_product_and_table(product_filename, workdir = self.workdir)
 
         # Check that they're the same as was written out
-        assert p.Header.ProductId == p2.Header.ProductId
-        assert p.get_data_filename() == p2.get_data_filename()
+        assert p2.Header.ProductId == p.Header.ProductId
+        assert p2.get_data_filename() == p.get_data_filename()
         assert (t2 == t).all()
+
+        # Now try while specifying the table filename
+        input_table_filename = get_allowed_filename(type_name = "TABLE", instance_id = "1")
+        write_product_and_table(product = p,
+                                product_filename = product_filename,
+                                table = t,
+                                table_filename = table_filename,
+                                workdir = self.workdir)
+
+        # Check that the files have been written out
+        output_table_filename = p.get_data_filename()
+        assert output_table_filename == input_table_filename
+        assert os.path.exists(os.path.join(self.workdir, output_table_filename))
+
+        # Read the product and table back in
+        p3, t3 = read_product_and_table(product_filename, workdir = self.workdir)
+
+        # Check that they're the same as was written out
+        assert p3.Header.ProductId == p.Header.ProductId
+        assert p3.get_data_filename() == p.get_data_filename()
+        assert (t3 == t).all()
