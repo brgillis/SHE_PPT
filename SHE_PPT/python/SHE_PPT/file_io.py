@@ -50,6 +50,7 @@ from .logging import getLogger
 from .utility import get_release_from_version, is_any_type_of_none, join_without_none
 
 # CONSTANT strings for default values in filenames
+DEFAULT_WORKDIR = "."
 DEFAULT_TYPE_NAME = "UNKNOWN-FILE-TYPE"
 DEFAULT_INSTANCE_ID = "0"
 DEFAULT_FILE_EXTENSION = ".fits"
@@ -449,7 +450,7 @@ class SheFileNamer(FileNameProvider):
             release = self.release
 
         # Check the extension doesn't start with "." and silently fix if it does
-        if self.extension[0] == ".":
+        if self.extension[0] == S:
             extension = self.extension[1:]
         else:
             extension = self.extension
@@ -783,7 +784,7 @@ def write_pickled_product(product,
 
 
 def read_pickled_product(pickled_filename,
-                         workdir = ".",
+                         workdir = DEFAULT_WORKDIR,
                          log_info: bool = False) -> Any:
     log_method = _get_optional_log_method(log_info)
     log_method(MSG_READING_DATA_PRODUCT, pickled_filename, workdir)
@@ -806,7 +807,7 @@ def read_pickled_product(pickled_filename,
 
 def write_table(t: Table,
                 filename: str,
-                workdir: str = ".",
+                workdir: str = DEFAULT_WORKDIR,
                 log_info: bool = False,
                 *args, **kwargs) -> None:
     log_method = _get_optional_log_method(log_info)
@@ -823,7 +824,7 @@ def write_table(t: Table,
 
 
 def read_table(filename: str,
-               workdir: str = ".",
+               workdir: str = DEFAULT_WORKDIR,
                log_info: bool = False,
                *args, **kwargs) -> Table:
     log_method = _get_optional_log_method(log_info)
@@ -845,7 +846,7 @@ def write_product_and_table(product: Any,
                             table: Table,
                             *args: Any,
                             table_filename: Optional[str] = None,
-                            workdir: str = ".",
+                            workdir: str = DEFAULT_WORKDIR,
                             log_info: bool = False,
                             **kwargs: Any):
     """ Convenience function to write a product and table at the same time, setting up a filename for the table if
@@ -868,7 +869,7 @@ def write_product_and_table(product: Any,
 
 
 def read_product_and_table(product_filename: str,
-                           workdir: str = ".",
+                           workdir: str = DEFAULT_WORKDIR,
                            log_info: bool = False,
                            product_type: Optional[Type] = None,
                            *args, **kwargs) -> Tuple[Any, Table]:
@@ -884,7 +885,7 @@ def read_product_and_table(product_filename: str,
 
 
 def read_table_from_product(product_filename: str,
-                            workdir: str = ".",
+                            workdir: str = DEFAULT_WORKDIR,
                             log_info: bool = False,
                             product_type: Optional[Type] = None,
                             *args, **kwargs) -> Table:
@@ -902,7 +903,7 @@ def read_table_from_product(product_filename: str,
 
 def write_fits(hdu_list: HDUList,
                filename: str,
-               workdir: str = ".",
+               workdir: str = DEFAULT_WORKDIR,
                log_info: bool = False,
                *args, **kwargs) -> None:
     log_method = _get_optional_log_method(log_info)
@@ -918,7 +919,7 @@ def write_fits(hdu_list: HDUList,
 
 
 def read_fits(filename: str,
-              workdir: str = ".",
+              workdir: str = DEFAULT_WORKDIR,
               log_info: bool = False,
               *args, **kwargs) -> HDUList:
     log_method = _get_optional_log_method(log_info)
@@ -1071,7 +1072,7 @@ def append_hdu(filename: str,
 
 
 def try_remove_file(filename: str,
-                    workdir: str = ".",
+                    workdir: str = DEFAULT_WORKDIR,
                     warn: bool = False):
     """ Attempts to remove a file, but passes if any exception is raised (optionally raising a warning).
     """
@@ -1105,7 +1106,7 @@ def find_file_in_path(filename: str, path: str) -> str:
 
     if qualified_filename is None:
         raise RuntimeError(
-            "File " + str(filename) + " could not be found in path " + str(path) + ".")
+            "File " + str(filename) + " could not be found in path " + str(path) + S)
 
     logger.debug("Found file %s at %s", filename, qualified_filename)
 
@@ -1268,7 +1269,7 @@ def first_writable_in_path(path: str) -> Optional[str]:
     return first_writable_dir
 
 
-def get_data_filename(filename: str, workdir: str = ".") -> Optional[str]:
+def get_data_filename(filename: str, workdir: str = DEFAULT_WORKDIR) -> Optional[str]:
     """ Given the unqualified name of a file and the work directory, determine if it's an XML data
         product or not, and get the filename of its DataContainer if so; otherwise, just return
         the input filename. In either case, the unqualified filename is returned.
@@ -1378,7 +1379,7 @@ def remove_files(l_qualified_filenames: Sequence[str]) -> None:
 
 def tar_files(tarball_filename: str,
               l_filenames: Sequence[str],
-              workdir: str = ".",
+              workdir: str = DEFAULT_WORKDIR,
               delete_files: bool = False):
     qualified_tarball_filename: str = get_qualified_filename(tarball_filename, workdir)
 
