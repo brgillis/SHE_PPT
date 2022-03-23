@@ -855,11 +855,7 @@ def write_product_and_table(product: Any,
 
     # Generate a filename for the table if one hasn't been provided
     if table_filename is None:
-        table_file_namer = SheFileNamer(type_name = DEFAULT_TYPE_NAME,
-                                        instance_id = DEFAULT_INSTANCE_ID,
-                                        workdir = workdir,
-                                        version = SHE_PPT.__version__)
-        table_filename = table_file_namer.filename
+        table_filename = get_allowed_filename(version = SHE_PPT.__version__)
 
     # Write the table
     write_table(table, *args, filename = table_filename, workdir = workdir, log_info = log_info, **kwargs)
