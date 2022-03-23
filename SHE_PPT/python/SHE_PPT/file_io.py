@@ -49,6 +49,13 @@ from .constants.test_data import SYNC_CONF
 from .logging import getLogger
 from .utility import get_release_from_version, is_any_type_of_none, join_without_none
 
+# CONSTANT strings for default values in filenames
+DEFAULT_TYPE_NAME = "UNKNOWN-FILE-TYPE"
+DEFAULT_INSTANCE_ID = "0"
+DEFAULT_FILE_EXTENSION = ".fits"
+DEFAULT_FILE_SUBDIR = "data"
+DEFAULT_FILE_PF = "SHE"
+
 # Constant strings for replacement tags
 STR_R_FILETYPE = "$FILETYPE"
 STR_R_OPERATION = "$OPERATION"
@@ -178,11 +185,11 @@ class SheFileNamer(FileNameProvider):
     default_instance_id: str = "0"
 
     # Options for getting the filename
-    _extension: str = ".fits"
+    _extension: str = DEFAULT_FILE_EXTENSION
     _release: Optional[str] = None
     _version: Optional[str] = None
-    _subdir: Optional[str] = "data"
-    _processing_function: str = "SHE"
+    _subdir: Optional[str] = DEFAULT_FILE_SUBDIR
+    _processing_function: str = DEFAULT_FILE_PF
     _timestamp: bool = True
 
     # Other options
@@ -472,8 +479,8 @@ def get_qualified_filename(filename: str, workdir: str = ".") -> str:
     return qualified_xml_filename
 
 
-def get_allowed_filename(type_name: str,
-                         instance_id: str,
+def get_allowed_filename(type_name: str = DEFAULT_TYPE_NAME,
+                         instance_id: str = DEFAULT_INSTANCE_ID,
                          extension: str = ".fits",
                          release: Optional[str] = None,
                          version: Optional[str] = None,
@@ -847,8 +854,8 @@ def write_product_and_table(product: Any,
 
     # Generate a filename for the table if one hasn't been provided
     if table_filename is None:
-        table_file_namer = SheFileNamer(type_name = "UNKNOWN",
-                                        instance_id = "0",
+        table_file_namer = SheFileNamer(type_name = DEFAULT_TYPE_NAME,
+                                        instance_id = DEFAULT_INSTANCE_ID,
                                         workdir = workdir,
                                         version = SHE_PPT.__version__)
         table_filename = table_file_namer.filename
