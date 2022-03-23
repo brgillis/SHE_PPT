@@ -173,7 +173,7 @@ class SheFileNamer(FileNameProvider):
 
     _type_name: Optional[str] = None
 
-    default_type_name: str = "FILE"
+    default_type_name: str = DEFAULT_TYPE_NAME
 
     # For instance ID
     _instance_id_head: Optional[str] = None
@@ -182,7 +182,7 @@ class SheFileNamer(FileNameProvider):
 
     _instance_id: Optional[str] = None
 
-    default_instance_id: str = "0"
+    default_instance_id: str = DEFAULT_INSTANCE_ID
 
     # Options for getting the filename
     _extension: str = DEFAULT_FILE_EXTENSION
@@ -665,7 +665,8 @@ def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pick
         cat_filename = product.Data.CatalogStorage.CatalogFileStorage.StorageSpace[0].DataContainer.FileName
         if cat_filename == "None":
             # Create a name for the catalog file
-            cat_filename = get_allowed_filename(type_name = "CAT", instance_id = "0", extension = ".csv",
+            cat_filename = get_allowed_filename(type_name = "CAT", instance_id = DEFAULT_INSTANCE_ID,
+                                                extension = ".csv",
                                                 version = __version__, subdir = None)
             product.Data.CatalogStorage.CatalogFileStorage.StorageSpace[0].DataContainer.FileName = cat_filename
 
