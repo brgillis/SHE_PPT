@@ -5,7 +5,7 @@
     Base format definition for common properties of all shear measurements tables.
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2022-01-18"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -157,8 +157,21 @@ class SheMeasurementsFormat(SheTableFormat):
             "FLUX", dtype=">f4", fits_dtype="E")
         self.flux_err = self.set_column_properties(
             "FLUX_ERR", dtype=">f4", fits_dtype="E")
+        self.magnitude = self.set_column_properties(
+            "MAGNITUDE", dtype = ">f4", fits_dtype = "E", is_optional=True)
+        self.magnitude_err = self.set_column_properties(
+            "MAGNITUDE_ERR", dtype = ">f4", fits_dtype = "E", is_optional=True)
+
         self.snr = self.set_column_properties(
             "SNR", dtype=">f4", fits_dtype="E")
+
+        # Other information about observation and tile ID
+        # stored on a per object basis as opposed to having it in meta data
+        # note on observation id: this is potentially a long string with the list of IDs
+        self.tile_ID = self.set_column_properties(
+            "TILE_ID", dtype=">i8", fits_dtype="K", is_optional=True)
+        self.obs_ID = self.set_column_properties(
+            "OBSERVATION_ID", dtype=">i4", fits_dtype="J", is_optional=True, length=4)
 
         if finalize:
             self._finalize_init()

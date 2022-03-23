@@ -28,7 +28,6 @@ import pickle
 import subprocess
 from datetime import datetime
 from os.path import exists, join
-from pickle import UnpicklingError
 from typing import Any, Callable, Dict, Generic, List, Optional, Sequence, Tuple, Type, TypeVar, Union
 from xml.sax import SAXParseException
 
@@ -49,9 +48,43 @@ from .constants.test_data import SYNC_CONF
 from .logging import getLogger
 from .utility import get_release_from_version, is_any_type_of_none, join_without_none
 
-MSG_READING_DATA_PRODUCT = "Reading data product from %s in workdir %s"
+# Constant strings for replacement tags
+STR_R_FILETYPE = "$FILETYPE"
+STR_R_OPERATION = "$OPERATION"
+
+# Constant strings for descriptions of file types
+STR_DATA_PRODUCT = "data product"
+STR_TABLE = "table"
+STR_FITS_FILE = "FITS file"
+
+# Constant strings for access operations
+STR_READING = "reading"
+STR_WRITING = "writing"
+STR_OPENING = "opening"
+
+# Constant strings for messages
+BASE_MESSAGE_ACCESSING = f"{STR_R_OPERATION} {STR_R_FILETYPE} from %s in workdir %s"
+BASE_MESSAGE_FINISHED_ACCESSING = f"Finished {BASE_MESSAGE_ACCESSING} successfully"
+
+BASE_MESSAGE_READING = BASE_MESSAGE_ACCESSING.replace(STR_R_OPERATION, STR_READING)
+BASE_MESSAGE_FINISHED_READING = BASE_MESSAGE_FINISHED_ACCESSING.replace(STR_R_OPERATION, STR_READING)
+
+BASE_MESSAGE_WRITING = BASE_MESSAGE_ACCESSING.replace(STR_R_OPERATION, STR_WRITING)
+BASE_MESSAGE_FINISHED_WRITING = BASE_MESSAGE_FINISHED_ACCESSING.replace(STR_R_OPERATION, STR_WRITING)
+
+BASE_MESSAGE_OPENING = BASE_MESSAGE_ACCESSING.replace(STR_R_OPERATION, STR_OPENING)
+BASE_MESSAGE_FINISHED_OPENING = BASE_MESSAGE_FINISHED_ACCESSING.replace(STR_R_OPERATION, STR_OPENING)
+
+MSG_READING_DATA_PRODUCT = (BASE_MESSAGE_READING.replace(STR_R_FILETYPE, STR_DATA_PRODUCT)).capitalize()
+MSG_FINISHED_READING_DATA_PRODUCT = (BASE_MESSAGE_FINISHED_READING.replace(STR_R_FILETYPE,
+                                                                           STR_DATA_PRODUCT)).capitalize()
 
 DATA_SUBDIR = "data/"
+
+# Constants for strings in xml files
+
+STR_KEY = '<Key>'
+STR_VALUE = '<Value>'
 
 # Get some constant values from the FileNameProvider
 
@@ -112,11 +145,11 @@ class SheFileAccessError(IOError):
 
 
 class SheFileReadError(SheFileAccessError):
-    operation: str = "reading from"
+    operation: str = STR_READING
 
 
 class SheFileWriteError(SheFileAccessError):
-    operation: str = "writing to"
+    operation: str = STR_WRITING
 
 
 class SheFileNamer(FileNameProvider):
@@ -596,7 +629,7 @@ def write_xml_product(product: Any,
                       log_info: bool = False,
                       allow_pickled: bool = False) -> None:
     log_method = _get_optional_log_method(log_info)
-    log_method("Writing data product to %s in workdir %s", xml_filename, workdir)
+    log_method(BASE_MESSAGE_WRITING, STR_DATA_PRODUCT, xml_filename, workdir)
 
     # Silently coerce input into a string
     xml_filename = str(xml_filename)
@@ -606,7 +639,7 @@ def write_xml_product(product: Any,
     except Exception as e:
         raise SheFileWriteError(filename = xml_filename, workdir = workdir) from e
 
-    logger.debug("Finished writing data product to %s in workdir %s", xml_filename, workdir)
+    logger.debug(BASE_MESSAGE_FINISHED_WRITING, STR_DATA_PRODUCT, xml_filename, workdir)
 
 
 def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pickled: bool) -> None:
@@ -659,7 +692,12 @@ def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pick
 def read_xml_product(xml_filename: str,
                      workdir: str = ".",
                      log_info: bool = False,
-                     allow_pickled: bool = False) -> Any:
+                     allow_pickled: bool = False,
+                     product_type: Optional[Type] = None) -> Any:
+    """ Reads in an XML data product. If product_type is set to a type of a data product, will check that the product
+        read in is of that type.
+    """
+
     log_method = _get_optional_log_method(log_info)
     log_method(MSG_READING_DATA_PRODUCT, xml_filename, workdir)
 
@@ -683,7 +721,12 @@ def read_xml_product(xml_filename: str,
     except Exception as e:
         raise SheFileReadError(filename = xml_filename, workdir = workdir) from e
 
-    log_method(MSG_READING_DATA_PRODUCT, xml_filename, workdir)
+    # Check the type of the read-in product if product_type is not None
+    if (product_type is not None) and not isinstance(product, product_type):
+        raise TypeError(f"Product read in from file {xml_filename} in directory {workdir} is of type "
+                        f"{type(product)}, but type {product_type} was expected.")
+
+    logger.debug(MSG_FINISHED_READING_DATA_PRODUCT, xml_filename, workdir)
 
     return product
 
@@ -714,7 +757,7 @@ def write_pickled_product(product,
                           workdir: str = ".",
                           log_info: bool = False) -> None:
     log_method = _get_optional_log_method(log_info)
-    log_method("Writing data product to %s in workdir %s", pickled_filename, workdir)
+    log_method(BASE_MESSAGE_WRITING, STR_DATA_PRODUCT, pickled_filename, workdir)
 
     # Silently coerce input into a string
     pickled_filename = str(pickled_filename)
@@ -727,7 +770,7 @@ def write_pickled_product(product,
     except Exception as e:
         raise SheFileWriteError(filename = pickled_filename, workdir = workdir) from e
 
-    logger.debug("Finished writing data product to %s in workdir %s", pickled_filename, workdir)
+    logger.debug(BASE_MESSAGE_FINISHED_WRITING, STR_DATA_PRODUCT, pickled_filename, workdir)
 
 
 def read_pickled_product(pickled_filename,
@@ -747,7 +790,7 @@ def read_pickled_product(pickled_filename,
     except Exception as e:
         raise SheFileReadError(filename = pickled_filename, workdir = workdir) from e
 
-    log_method(MSG_READING_DATA_PRODUCT, pickled_filename, workdir)
+    logger.debug(MSG_FINISHED_READING_DATA_PRODUCT, pickled_filename, workdir)
 
     return product
 
@@ -758,7 +801,7 @@ def write_table(t: Table,
                 log_info: bool = False,
                 *args, **kwargs) -> None:
     log_method = _get_optional_log_method(log_info)
-    log_method("Writing table to %s in workdir %s", filename, workdir)
+    log_method(BASE_MESSAGE_WRITING, STR_TABLE, filename, workdir)
 
     qualified_filename = get_qualified_filename(filename, workdir)
 
@@ -767,7 +810,7 @@ def write_table(t: Table,
     except Exception as e:
         raise SheFileWriteError(filename = filename, workdir = workdir) from e
 
-    logger.debug("Finished writing table to %s in workdir %s", filename, workdir)
+    logger.debug(BASE_MESSAGE_FINISHED_WRITING, STR_TABLE, filename, workdir)
 
 
 def read_table(filename: str,
@@ -775,7 +818,7 @@ def read_table(filename: str,
                log_info: bool = False,
                *args, **kwargs) -> Table:
     log_method = _get_optional_log_method(log_info)
-    log_method("Reading table from %s in workdir %s", filename, workdir)
+    log_method(BASE_MESSAGE_READING, STR_TABLE, filename, workdir)
 
     qualified_filename = get_qualified_filename(filename, workdir)
 
@@ -784,18 +827,19 @@ def read_table(filename: str,
     except Exception as e:
         raise SheFileReadError(filename = filename, workdir = workdir) from e
 
-    logger.debug("Finished reading table from %s in workdir %s", filename, workdir)
+    logger.debug(BASE_MESSAGE_FINISHED_READING, STR_TABLE, filename, workdir)
     return t
 
 
 def read_product_and_table(product_filename: str,
                            workdir: str = ".",
                            log_info: bool = False,
+                           product_type: Optional[Type] = None,
                            *args, **kwargs) -> Tuple[Any, Table]:
-    """ Convience function to read in a data product and the data table it points to, and return both as a tuple.
+    """ Convenience function to read in a data product and the data table it points to, and return both as a tuple.
     """
 
-    p = read_xml_product(product_filename, workdir = workdir, log_info = log_info)
+    p = read_xml_product(product_filename, workdir = workdir, log_info = log_info, product_type = product_type)
     table_filename: str = p.get_data_filename()
 
     t = read_table(table_filename, workdir = workdir, log_info = log_info, *args, **kwargs)
@@ -806,13 +850,16 @@ def read_product_and_table(product_filename: str,
 def read_table_from_product(product_filename: str,
                             workdir: str = ".",
                             log_info: bool = False,
+                            product_type: Optional[Type] = None,
                             *args, **kwargs) -> Table:
     """ Convenience function to read a data table given the filename of the xml data product which points to it.
     """
 
     _, t = read_product_and_table(product_filename = product_filename,
                                   workdir = workdir,
-                                  log_info = log_info, *args, *kwargs)
+                                  log_info = log_info,
+                                  product_type = product_type,
+                                  *args, *kwargs)
 
     return t
 
@@ -823,7 +870,7 @@ def write_fits(hdu_list: HDUList,
                log_info: bool = False,
                *args, **kwargs) -> None:
     log_method = _get_optional_log_method(log_info)
-    log_method("Writing FITS file %s in workdir %s", filename, workdir)
+    log_method(BASE_MESSAGE_WRITING, STR_FITS_FILE, filename, workdir)
 
     qualified_filename = get_qualified_filename(filename, workdir)
 
@@ -831,7 +878,7 @@ def write_fits(hdu_list: HDUList,
         hdu_list.writeto(qualified_filename, *args, **kwargs)
     except Exception as e:
         raise SheFileWriteError(filename = filename, workdir = workdir) from e
-    logger.debug("Finished writing FITS file %s in workdir %s", filename, workdir)
+    logger.debug(BASE_MESSAGE_FINISHED_WRITING, STR_FITS_FILE, filename, workdir)
 
 
 def read_fits(filename: str,
@@ -839,7 +886,7 @@ def read_fits(filename: str,
               log_info: bool = False,
               *args, **kwargs) -> HDUList:
     log_method = _get_optional_log_method(log_info)
-    log_method("Opening FITS file %s in workdir %s", filename, workdir)
+    log_method(BASE_MESSAGE_OPENING, STR_FITS_FILE, filename, workdir)
 
     qualified_filename = get_qualified_filename(filename, workdir)
 
@@ -847,7 +894,7 @@ def read_fits(filename: str,
         f: HDUList = fits.open(qualified_filename, *args, **kwargs)
     except Exception as e:
         raise SheFileReadError(filename = filename, workdir = workdir) from e
-    logger.debug("Finished opening FITS file %s in workdir %s", filename, workdir)
+    logger.debug(BASE_MESSAGE_FINISHED_OPENING, STR_FITS_FILE, filename, workdir)
 
     return f
 
@@ -1211,7 +1258,7 @@ def get_data_filename(filename: str, workdir: str = ".") -> Optional[str]:
         else:
             # Check if the filename exists in the default location
             try:
-                data_filename = "data/" + prod.Data.DataStorage.DataContainer.FileName
+                data_filename = DATA_SUBDIR + prod.Data.DataStorage.DataContainer.FileName
             except AttributeError:
                 raise AttributeError("Data product does not have filename stored in the expected " +
                                      "location (self.Data.DataStorage.DataContainer.FileName. " +
@@ -1219,7 +1266,7 @@ def get_data_filename(filename: str, workdir: str = ".") -> Optional[str]:
                                      "product's class must be monkey-patched to have a get_filename " +
                                      "or get_data_filename method.")
 
-    except (UnicodeDecodeError, SAXParseException, UnpicklingError):
+    except SheFileReadError:
         # Not an XML file - so presumably it's a raw data file; return the
         # input filename
         data_filename = filename
@@ -1237,9 +1284,6 @@ def update_xml_with_value(filename: str) -> None:
         lines = open(filename).readlines()
     except Exception as e:
         raise SheFileReadError(filename) from e
-
-    STR_KEY = '<Key>'
-    STR_VALUE = '<Value>'
 
     key_lines = [ii for ii, line in enumerate(lines) if STR_KEY in line]
     bad_lines = [idx for idx in key_lines if STR_VALUE not in lines[idx + 1]]

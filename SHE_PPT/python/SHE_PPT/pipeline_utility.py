@@ -662,7 +662,7 @@ def write_config(config_dict: Dict[ConfigKeys, Any],
 
 
 def _get_converted_enum_type(value: str, enum_type: EnumMeta):
-    """ Gets and retuns the value converted to a desired type of Enum, assuming it's originally the string value of
+    """ Gets and returns the value converted to a desired type of Enum, assuming it's originally the string value of
         that Enum.
     """
 
@@ -682,7 +682,7 @@ def _get_converted_enum_type(value: str, enum_type: EnumMeta):
 
 
 def _get_converted_type(value: str, desired_type: Type):
-    """ Gets and retuns the value converted to a desired type.
+    """ Gets and returns the value converted to a desired type.
     """
 
     # Check if it's already been converted
@@ -697,7 +697,7 @@ def _get_converted_type(value: str, desired_type: Type):
     # Special handling for certain types
     if desired_type is bool:
         # Booleans will always convert a string to True unless it's empty, so we check the value of the string here
-        converted_value = value.lower() in ['true', 't']
+        converted_value = value.lower() in ['true', 't', '1', 1]
 
     elif desired_type is np.ndarray:
         # Convert space-separated lists into arrays of floats
@@ -717,8 +717,11 @@ def _convert_tuple_type(pipeline_config: Dict[ConfigKeys, Any],
         and index 1 is the type of the list elements.
     """
 
-    # Skip if not present in the config
-    if enum_key not in pipeline_config or pipeline_config[enum_key] is None:
+    # Skip if not present in the config or already converted
+    # noinspection PyTypeHints
+    if ((enum_key not in pipeline_config or pipeline_config[enum_key] is None) or
+            (isinstance(pipeline_config[enum_key], tuple_type[0]) and isinstance(pipeline_config[enum_key][0],
+                                                                                 tuple_type[1]))):
         return
 
     if not tuple_type[0] == list:
@@ -732,7 +735,12 @@ def _convert_tuple_type(pipeline_config: Dict[ConfigKeys, Any],
         convert_func = _get_converted_type
 
     # Split the list by whitespace
-    l_str_values: List[str] = pipeline_config[enum_key].strip().split()
+    if isinstance(pipeline_config[enum_key], list) and isinstance(pipeline_config[enum_key][0], str):
+        l_str_values: List[str] = pipeline_config[enum_key]
+    elif isinstance(pipeline_config[enum_key], str):
+        l_str_values: List[str] = pipeline_config[enum_key].strip().split()
+    else:
+        raise TypeError(f"Unrecognized type for pipeline_config[enum_key]: {type(pipeline_config[enum_key])}")
 
     # Convert each item in the list in turn
     l_values: Any = [None] * len(l_str_values)

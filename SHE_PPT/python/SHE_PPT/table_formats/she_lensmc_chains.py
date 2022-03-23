@@ -5,7 +5,7 @@
     Format definition for lensmc chains tables.
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2022-01-18"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -139,6 +139,9 @@ class SheLensMcChainsFormat(SheTableFormat):
             length = total_chain_length)
         self.flux = self.set_column_properties(
             "SHE_LENSMC_FLUX_CHAIN", is_optional = True, dtype = ">f4", fits_dtype = "E",
+            length = total_chain_length)
+        self.magnitude = self.set_column_properties(
+            "SHE_LENSMC_MAGNITUDE_CHAIN", is_optional = True, dtype = ">f4", fits_dtype = "E",
             length = total_chain_length)
         self.bulge_frac = self.set_column_properties(
             "SHE_LENSMC_BULGE_FRAC_CHAIN", is_optional = True, dtype = ">f4",

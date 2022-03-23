@@ -214,19 +214,8 @@ class SHEImage():
 
         # Cached values
         self.galsim_wcs = None
-
-        if self.header is None or CCDID_LABEL not in self.header:
-            # If no header, assume we're using detector 1-1
-            self.det_ix = 1
-            self.det_iy = 1
-        else:
-            try:
-                self.det_iy = int(self.header[CCDID_LABEL][0])
-                self.det_ix = int(self.header[CCDID_LABEL][2])
-            except ValueError:
-                # Check after "CCDID "
-                self.det_iy = int(self.header[CCDID_LABEL][6])
-                self.det_ix = int(self.header[CCDID_LABEL][8])
+        self._det_ix = None
+        self._det_iy = None
 
     # We define properties of the SHEImage object, following
     # https://euclid.roe.ac.uk/projects/codeen-users/wiki/User_Cod_Std-pythonstandard-v1-0#PNAMA-020-m-Developer
@@ -566,6 +555,36 @@ class SHEImage():
         else:
             # Failsafe to hardcoded shape
             return DETECTOR_SHAPE
+
+    def _determine_det_ixy(self):
+        """Determine detector x and y position from header."""
+
+        if self.header is None or CCDID_LABEL not in self.header:
+            # If no header, assume we're using detector 1-1
+            self._det_ix = 1
+            self._det_iy = 1
+        else:
+            try:
+                self._det_iy = int(self.header[CCDID_LABEL][0])
+                self._det_ix = int(self.header[CCDID_LABEL][2])
+            except ValueError:
+                # Check after "CCDID "
+                self._det_iy = int(self.header[CCDID_LABEL][6])
+                self._det_ix = int(self.header[CCDID_LABEL][8])
+
+    @property
+    def det_ix(self):
+        """The x-position of the detector for this image."""
+        if self._det_ix is None:
+            self._determine_det_ixy()
+        return self._det_ix
+
+    @property
+    def det_iy(self):
+        """The y-position of the detector for this image."""
+        if self._det_iy is None:
+            self._determine_det_ixy()
+        return self._det_iy
 
     def __str__(self):
         """A short string with size information and the percentage of masked pixels"""
@@ -1082,7 +1101,7 @@ class SHEImage():
         if xmin >= 0 and xmax < self.shape[0] and ymin >= 0 and ymax < self.shape[1]:
             # We are fully within ghe image
             logger.debug("Extracting stamp [%d:%d,%d:%d] fully within image of shape (%d,%d)",
-                         xmin, xmax, ymin, ymax, self.shape)
+                         xmin, xmax, ymin, ymax, self.shape[0], self.shape[1])
 
             attr_stamps = {}
             for attr, filename, hdu_i in (("data", data_filename, data_hdu),
@@ -1105,11 +1124,13 @@ class SHEImage():
                 offset = new_offset,
                 wcs = self.wcs,
                 parent_image = self,
+                parent_frame = self.parent_frame,
+                parent_frame_stack = self.parent_frame_stack,
                 )
 
         else:
             logger.debug("Extracting stamp [%d:%d,%d:%d] not entirely within image of shape (%d,%d)",
-                         xmin, xmax, ymin, ymax, self.shape)
+                         xmin, xmax, ymin, ymax, self.shape[0], self.shape[1])
 
             # One solution would be to pad the image and extract, but that would need a lot of memory.
             # So instead we go for the more explicit bound computations.
@@ -1214,6 +1235,8 @@ class SHEImage():
                 offset = new_offset,
                 wcs = self.wcs,
                 parent_image = self,
+                parent_frame = self.parent_frame,
+                parent_frame_stack = self.parent_frame_stack,
                 )
 
             if overlap_width == 0 and overlap_height == 0:
