@@ -243,11 +243,12 @@ class TestIO:
         assert (t2 == t).all()
 
         # Now try while specifying the table filename
-        input_table_filename = get_allowed_filename(type_name = "TABLE", instance_id = "1")
+        input_table_filename = get_allowed_filename(type_name = "TABLE", instance_id = "1",
+                                                    version = SHE_PPT.__version__)
         write_product_and_table(product = p,
                                 product_filename = product_filename,
                                 table = t,
-                                table_filename = table_filename,
+                                table_filename = input_table_filename,
                                 workdir = self.workdir)
 
         # Check that the files have been written out
