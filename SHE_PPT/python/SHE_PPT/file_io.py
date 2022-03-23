@@ -516,7 +516,8 @@ def get_allowed_filename(type_name: str,
 
 def write_listfile(listfile_name: str,
                    filenames: Sequence[str],
-                   log_info: bool = False) -> None:
+                   log_info: bool = False,
+                   workdir: str = "") -> None:
     """
         @brief Writes a listfile in json format.
 
@@ -527,23 +528,29 @@ def write_listfile(listfile_name: str,
         @param filenames <list<str>> List of filenames (or tuples of filenames) to be put in the listfile.
 
         @param log_info <bool> If True, will log at info level, otherwise will log at debug level.
+
+        @param workdir <str> The work directory to place the file into.
+
     """
+    
+    qualified_listfile_name = os.path.join(workdir,listfile_name)
 
     log_method = _get_optional_log_method(log_info)
     log_method("Writing listfile to %s", listfile_name)
 
     try:
-        with open(listfile_name, 'w') as listfile:
+        with open(qualified_listfile_name, 'w') as listfile:
             paths_json = json.dumps(filenames)
             listfile.write(paths_json)
     except Exception as e:
-        raise SheFileWriteError(listfile_name) from e
+        raise SheFileWriteError(qualified_listfile_name) from e
 
-    logger.debug("Finished writing listfile to %s", listfile_name)
+    logger.debug("Finished writing listfile to %s", qualified_listfile_name)
 
 
 def read_listfile(listfile_name: str,
-                  log_info: bool = False) -> List[Union[str, Tuple[str]]]:
+                  log_info: bool = False,
+                  workdir: str = "") -> List[Union[str, Tuple[str]]]:
     """
         @brief Reads a json listfile and returns a list of filenames.
 
@@ -553,14 +560,18 @@ def read_listfile(listfile_name: str,
 
         @param log_info <bool> If True, will log at info level, otherwise will log at debug level.
 
+        @param workdir <str> The work directory the file is in.
+
         @return filenames <list<str>> List of filenames (or tuples of filenames) read in.
     """
 
+    qualified_listfile_name = os.path.join(workdir,listfile_name)
+
     log_method = _get_optional_log_method(log_info)
-    log_method("Reading listfile from %s", listfile_name)
+    log_method("Reading listfile from %s", qualified_listfile_name)
 
     try:
-        with open(listfile_name, 'r') as f:
+        with open(qualified_listfile_name, 'r') as f:
             list_object = json.load(f)
             if len(list_object) == 0:
                 return list_object
@@ -570,9 +581,9 @@ def read_listfile(listfile_name: str,
                     tupled_list = [t[0] for t in tupled_list]
                 return tupled_list
     except Exception as e:
-        raise SheFileReadError(listfile_name) from e
+        raise SheFileReadError(qualified_listfile_name) from e
 
-    log_method("Reading listfile from %s", listfile_name)
+    log_method("Reading listfile from %s", qualified_listfile_name)
 
     return list_object
 
