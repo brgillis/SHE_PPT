@@ -5,7 +5,7 @@ Changes in v8.12
 
 API Changes
 -----------
-
+- Added columns to she_star_catalog table format to provide necessary info for residual test
 
 Dependency Changes
 ------------------
@@ -30,6 +30,8 @@ New config features
 
 Miscellaneous
 -------------
+
+
 
 Changes in v8.8
 =========================
