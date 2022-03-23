@@ -29,6 +29,8 @@ New config features
 
 Miscellaneous
 -------------
+- Changed how SheTableFormat meta is initialized to be more inheritable - now set meta_type class variable with desired
+  type of meta
 
 
 
