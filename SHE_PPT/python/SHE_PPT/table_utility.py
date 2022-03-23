@@ -23,7 +23,7 @@ __updated__ = "2021-08-13"
 
 from collections import OrderedDict
 from copy import deepcopy
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Type, TypeVar
 
 import numpy as np
 from astropy.table import Column, Table
@@ -382,12 +382,18 @@ class SheTableMeta:
         return m
 
 
+SheTableMetaType = TypeVar("SheTableMetaType", bound = SheTableMeta)
+
+
 class SheTableFormat:
+    # Attributes overridable by child classes
+    meta_type: Type[SheTableMetaType] = SheTableMeta
+
     # Attributes set directly at init
-    meta: SheTableMeta
+    meta: SheTableMetaType
 
     # Attributes determined at init
-    m: SheTableMeta
+    m: SheTableMetaType
     __version__: str
 
     # Attributes initialised at init
@@ -412,8 +418,11 @@ class SheTableFormat:
     unlabelled_columns: Optional[List[str]] = None
 
     def __init__(self,
-                 meta: SheTableMeta,
+                 meta: Optional[SheTableMeta] = None,
                  finalize: bool = False) -> None:
+
+        if meta is None:
+            meta = self.meta_type()
 
         self.meta = meta
         self.m = self.meta

@@ -21,10 +21,8 @@
 
 __updated__ = "2021-08-12"
 
-from collections import OrderedDict
-
-from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL
-from ..table_utility import is_in_format, init_table, SheTableFormat, SheTableMeta
+from ..constants.fits import FITS_DEF_LABEL, FITS_VERSION_LABEL
+from ..table_utility import SheTableFormat, SheTableMeta
 
 fits_version = "8.0"
 fits_def = "she.simulationPlan"
@@ -48,9 +46,10 @@ class SheSimulationPlanFormat(SheTableFormat):
         @brief A class defining the format for galaxy population priors tables. Only the simulation_plan_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
+    meta_type = SheSimulationPlanMeta
 
     def __init__(self):
-        super().__init__(SheSimulationPlanMeta())
+        super().__init__()
 
         # Column names and info
 

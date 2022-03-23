@@ -26,8 +26,8 @@ from collections import OrderedDict
 from ..flags import she_flag_version
 from ..logging import getLogger
 from ..table_formats.mer_final_catalog import tf as mfc_tf
-from ..table_formats.she_measurements import SheMeasurementsMeta, SheMeasurementsFormat
-from ..table_utility import is_in_format, init_table
+from ..table_formats.she_measurements import SheMeasurementsFormat, SheMeasurementsMeta
+from ..table_utility import init_table, is_in_format
 
 fits_version = "8.0"
 fits_def = "she.regaussMeasurements"
@@ -51,10 +51,10 @@ class SheRegaussMeasurementsFormat(SheMeasurementsFormat):
         @brief A class defining the format for shear estimates tables. Only the regauss_measurements_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
+    meta_type = SheRegaussMeasurementsMeta
 
     def __init__(self):
-        # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
-        super().__init__(SheRegaussMeasurementsMeta(), finalize = False)
+        super().__init__(finalize = False)
 
         self.setup_child_table_format(child_label)
 

@@ -26,10 +26,10 @@ from collections import OrderedDict
 import numpy as np
 
 from ..constants.classes import ShearEstimationMethods
-from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL
+from ..constants.fits import FITS_DEF_LABEL, FITS_VERSION_LABEL
 from ..logging import getLogger
-from ..math import LinregressStatistics, LinregressResults, BiasMeasurements
-from ..table_utility import is_in_format, init_table, SheTableFormat, SheTableMeta
+from ..math import BiasMeasurements, LinregressResults, LinregressStatistics
+from ..table_utility import SheTableFormat, SheTableMeta, init_table, is_in_format
 
 fits_version = "8.0"
 fits_def = "she.biasStatistics"
@@ -89,9 +89,10 @@ class SheBiasStatisticsFormat(SheTableFormat):
         @brief A class defining the format for bias statistics tables. Only the bias_statistics_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
+    meta_type = SheBiasStatisticsMeta
 
     def __init__(self):
-        super().__init__(SheBiasStatisticsMeta())
+        super().__init__()
 
         # Table column labels and properties
 
