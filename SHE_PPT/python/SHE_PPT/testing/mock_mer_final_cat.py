@@ -86,7 +86,7 @@ class MockMFCDataGenerator(MockDataGenerator):
 
 
 class MockMFCGalaxyTableGenerator(MockTableGenerator):
-    """ A class to handle the generation of mock galaxy tables.
+    """ A class to handle the generation of mock mer final catalog tables.
     """
 
     mock_data_generator_type: Type[MockDataGeneratorType] = MockMFCDataGenerator
