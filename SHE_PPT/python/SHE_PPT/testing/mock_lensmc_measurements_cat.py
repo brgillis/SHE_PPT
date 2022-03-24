@@ -27,7 +27,9 @@ import numpy as np
 from SHE_PPT.constants.classes import BinParameters
 from SHE_PPT.constants.shear_estimation_methods import (D_SHEAR_ESTIMATION_METHOD_TABLE_FORMATS,
                                                         ShearEstimationMethods, )
+from SHE_PPT.file_io import write_xml_product
 from SHE_PPT.logging import getLogger
+from SHE_PPT.products.she_validated_measurements import create_dpd_she_validated_measurements
 from SHE_PPT.table_formats.she_lensmc_measurements import lensmc_measurements_table_format
 from SHE_PPT.table_formats.she_measurements import SheMeasurementsFormat
 from SHE_PPT.table_formats.she_tu_matched import SheTUMatchedFormat
@@ -46,9 +48,11 @@ INPUT_G_MAX = 0.7
 
 # Estimated shear info
 EST_SEED = 57632
-EST_TABLE_LISTFILE_FILENAME = "mock_mer_final_catalog_listfile.json"
-EST_TABLE_PRODUCT_FILENAME = "mock_mer_final_catalog_product.xml"
-EST_TABLE_FILENAME = "data/mock_mer_final_catalog.fits"
+EST_TABLE_LISTFILE_FILENAME = "mock_shear_estimates_listfile.json"
+EST_TABLE_PRODUCT_FILENAME = "mock_shear_estimates_product.xml"
+EST_TABLE_FILENAME = "data/mock_shear_estimates.fits"
+EST_LENSMC_TABLE_FILENAME = "data/mock_lensmc_shear_estimates.fits"
+EST_KSB_TABLE_FILENAME = "data/mock_ksb_shear_estimates.fits"
 EST_G_ERR = 0.025
 EXTRA_EST_G_ERR = 0.005
 EXTRA_EST_G_ERR_ERR = 0.005
@@ -202,3 +206,56 @@ class MockShearEstimateTableGenerator(MockTableGenerator):
     table_filename: str = EST_TABLE_FILENAME
     product_filename: str = EST_TABLE_PRODUCT_FILENAME
     listfile_filename: str = EST_TABLE_LISTFILE_FILENAME
+
+    # New attributes
+    method: ShearEstimationMethods = ShearEstimationMethods.LENSMC
+
+    def __init__(self,
+                 *args,
+                 method: Optional[ShearEstimationMethods] = None,
+                 **kwargs, ):
+        super().__init__(*args, **kwargs)
+
+        # Initialize new attributes for this subtype
+        self.method = default_value_if_none(x = method, default_x = self.method)
+
+    def write_mock_product(self) -> str:
+        """ Override write_mock_product here, since we need to use the proper method to set the filename
+        """
+
+        if self.product_type is None:
+            raise TypeError("write_mock_product can only be called if self.product_type is set to the desired type of "
+                            "product to be written")
+
+        self.write_mock_table()
+
+        # Set up and write the data product
+        measurements_table_product = self.product_type()
+        measurements_table_product.set_method_filename(self.method, self.table_filename)
+
+        write_xml_product(measurements_table_product, self.product_filename, workdir = self.workdir)
+
+        return self.product_filename
+
+
+def write_mock_measurements_tables(workdir: str) -> str:
+    """ Convenience function to write tables for both LensMC and KSB in one product
+    """
+
+    lensmc_table_generator = MockShearEstimateTableGenerator(method = ShearEstimationMethods.LENSMC,
+                                                             seed = EST_SEED,
+                                                             table_filename = EST_LENSMC_TABLE_FILENAME)
+    lensmc_table_generator.write_mock_table()
+    ksb_table_generator = MockShearEstimateTableGenerator(method = ShearEstimationMethods.KSB,
+                                                          seed = EST_SEED + 1,
+                                                          table_filename = EST_KSB_TABLE_FILENAME)
+    ksb_table_generator.write_mock_table()
+
+    # Set up and write the data product
+    measurements_table_product = create_dpd_she_validated_measurements()
+    measurements_table_product.set_LensMC_filename(EST_LENSMC_TABLE_FILENAME)
+    measurements_table_product.set_KSB_filename(EST_KSB_TABLE_FILENAME)
+
+    write_xml_product(measurements_table_product, EST_TABLE_PRODUCT_FILENAME, workdir = workdir)
+
+    return EST_TABLE_PRODUCT_FILENAME
