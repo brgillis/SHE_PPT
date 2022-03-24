@@ -37,10 +37,6 @@ MATCHED_TABLE_PRODUCT_FILENAME = "shear_bias_matched_table.xml"
 LENSMC_MATCHED_TABLE_FILENAME = "data/lensmc_shear_bias_matched_table.fits"
 KSB_MATCHED_TABLE_FILENAME = "data/ksb_bias_matched_table.fits"
 
-MFC_TABLE_LISTFILE_FILENAME = "mock_mer_final_catalog_listfile.json"
-MFC_TABLE_PRODUCT_FILENAME = "mock_mer_final_catalog_product.xml"
-MFC_TABLE_FILENAME = "data/mock_mer_final_catalog.fits"
-
 STAR_CAT_PRODUCT_FILENAME = "mock_she_star_catalog_product.xml"
 STAR_CAT_TABLE_FILENAME = "data/mock_she_star_catalog.fits"
 

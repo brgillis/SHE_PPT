@@ -1,8 +1,8 @@
-""" @file mock_data.py
+""" @file mock_mer_final_cat.py
 
-    Created 15 October 2021.
+    Created 24 March 2022
 
-    Utilities to generate mock data for validation tests.
+    Utilities to generate mock MER Final Catalogs for unit tests.
 """
 
 __updated__ = "2021-10-05"
@@ -19,25 +19,25 @@ __updated__ = "2021-10-05"
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-import os
-from typing import Optional
+
+from typing import Optional, Type
 
 import numpy as np
-from astropy.table import Table
 
-from SHE_PPT.file_io import try_remove_file, write_listfile
 from SHE_PPT.logging import getLogger
-from SHE_PPT.products.mer_final_catalog import create_dpd_mer_final_catalog
 from SHE_PPT.table_formats.mer_final_catalog import (MerFinalCatalogFormat, filter_list, filter_list_ext,
                                                      mer_final_catalog_format, )
-from SHE_PPT.testing.constants import MFC_TABLE_FILENAME, MFC_TABLE_LISTFILE_FILENAME, MFC_TABLE_PRODUCT_FILENAME
 from SHE_PPT.testing.mock_data import MockDataGenerator, NUM_TEST_POINTS
-from SHE_PPT.testing.mock_tables import MockTableGenerator
+from SHE_PPT.testing.mock_tables import MockDataGeneratorType, MockTableGenerator
+from ST_DataModelBindings.dpd.mer.raw.finalcatalog_stub import dpdMerFinalCatalog
 
 logger = getLogger(__name__)
 
 # MFC info
 MFC_SEED = 57632
+MFC_TABLE_LISTFILE_FILENAME = "mock_mer_final_catalog_listfile.json"
+MFC_TABLE_PRODUCT_FILENAME = "mock_mer_final_catalog_product.xml"
+MFC_TABLE_FILENAME = "data/mock_mer_final_catalog.fits"
 
 
 class MockMFCDataGenerator(MockDataGenerator):
@@ -89,42 +89,13 @@ class MockMFCGalaxyTableGenerator(MockTableGenerator):
     """ A class to handle the generation of mock galaxy tables.
     """
 
+    mock_data_generator_type: Type[MockDataGeneratorType] = MockMFCDataGenerator
+    product_type: Optional[Type] = dpdMerFinalCatalog
+
     # Attributes with overriding types
-    mock_data_generator: MockMFCDataGenerator
     tf: Optional[MerFinalCatalogFormat] = mer_final_catalog_format
-
-
-def make_mock_mfc_table(seed: int = MFC_SEED, ) -> Table:
-    """ Function to generate a mock matched table table.
-    """
-
-    mock_data_generator = MockMFCDataGenerator(num_test_points = NUM_TEST_POINTS,
-                                               seed = seed)
-
-    mock_table_generator = MockMFCGalaxyTableGenerator(mock_data_generator =
-                                                       mock_data_generator)
-
-    return mock_table_generator.get_mock_table()
-
-
-def write_mock_mfc_table(workdir: str) -> str:
-    """ Returns filename of the matched table product.
-    """
-
-    write_product_and_table(product = create_dpd_mer_final_catalog(),
-                            product_filename = MFC_TABLE_PRODUCT_FILENAME,
-                            table = make_mock_mfc_table(seed = MFC_SEED),
-                            table_filename = MFC_TABLE_FILENAME)
-
-    # Write the listfile
-    write_listfile(os.path.join(workdir, MFC_TABLE_LISTFILE_FILENAME), [MFC_TABLE_PRODUCT_FILENAME])
-
-    return MFC_TABLE_LISTFILE_FILENAME
-
-
-def cleanup_mock_mfc_table(workdir: str):
-    """ To be called in cleanup, deletes matched tables which have been written out.
-    """
-
-    try_remove_file(MFC_TABLE_FILENAME, workdir = workdir)
-    try_remove_file(MFC_TABLE_PRODUCT_FILENAME, workdir = workdir)
+    seed: int = MFC_SEED
+    num_test_points: int = NUM_TEST_POINTS
+    table_filename: str = MFC_TABLE_FILENAME
+    product_filename: str = MFC_TABLE_PRODUCT_FILENAME
+    listfile_filename: str = MFC_TABLE_LISTFILE_FILENAME
