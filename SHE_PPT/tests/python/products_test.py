@@ -21,7 +21,8 @@ __updated__ = "2021-08-16"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 from SHE_PPT import products
-from SHE_PPT.testing.products import ProductTester, SimpleDataProductTester, MethodsProductTester
+from SHE_PPT.testing.products import MethodsProductTester, ProductTester, SimpleDataProductTester
+
 
 # We use the common product tester classes to reuse testing code across product types
 
@@ -174,6 +175,11 @@ class TestSheSimulationPlan(SimpleDataProductTester):
 class TestSheStackSegmentationMap(SimpleDataProductTester):
     product_class = products.she_stack_segmentation_map.dpdSheStackReprojectedSegmentationMap
     product_type_name = products.she_stack_segmentation_map.product_type_name
+
+
+class TestSheStarCatalog(SimpleDataProductTester):
+    product_class = products.she_star_catalog.dpdSheStarCatalog
+    product_type_name = products.she_star_catalog.product_type_name
 
 
 class TestSheValidatedMeasurements(MethodsProductTester):
