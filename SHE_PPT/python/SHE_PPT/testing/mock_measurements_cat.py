@@ -1,4 +1,4 @@
-""" @file mock_lensmc_measurements_cat.py
+""" @file mock_measurements_cat.py
 
     Created 24 March 2022
 
@@ -20,7 +20,7 @@ __updated__ = "2022-03-24"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from typing import Callable, Dict, List, Optional, Type
+from typing import Any, Dict, List, Optional, Type
 
 import numpy as np
 
@@ -196,7 +196,10 @@ class MockShearEstimateTableGenerator(MockTableGenerator):
     """
 
     mock_data_generator_type: Type[MockDataGeneratorType] = MockShearEstimateDataGenerator
-    product_creator: Optional[Callable] = create_dpd_she_measurements
+
+    @staticmethod
+    def create_product() -> Any:
+        return create_dpd_she_measurements()
 
     # Attributes with overriding types
     tf: Optional[SheMeasurementsFormat] = lensmc_measurements_table_format
@@ -217,7 +220,6 @@ class MockShearEstimateTableGenerator(MockTableGenerator):
                  num_test_points: Optional[int] = None,
                  method: Optional[ShearEstimationMethods] = None,
                  **kwargs, ):
-
         # Initialize new attributes for this subtype
         self.method = default_value_if_none(x = method, default_x = self.method)
 
@@ -245,14 +247,10 @@ class MockShearEstimateTableGenerator(MockTableGenerator):
         """ Override write_mock_product here, since we need to use the proper method to set the filename
         """
 
-        if self.product_creator is None:
-            raise TypeError("write_mock_product can only be called if self.product_creator is set to a creation"
-                            "function for the desired type of product to be written")
-
         self.write_mock_table()
 
         # Set up and write the data product
-        measurements_table_product = self.product_creator()
+        measurements_table_product = self.create_product()
         measurements_table_product.set_method_filename(self.method, self.table_filename)
 
         write_xml_product(measurements_table_product, self.product_filename, workdir = self.workdir)
@@ -266,11 +264,13 @@ def write_mock_measurements_tables(workdir: str) -> str:
 
     lensmc_table_generator = MockShearEstimateTableGenerator(method = ShearEstimationMethods.LENSMC,
                                                              seed = EST_SEED,
-                                                             table_filename = EST_LENSMC_TABLE_FILENAME)
+                                                             table_filename = EST_LENSMC_TABLE_FILENAME,
+                                                             workdir = workdir)
     lensmc_table_generator.write_mock_table()
     ksb_table_generator = MockShearEstimateTableGenerator(method = ShearEstimationMethods.KSB,
                                                           seed = EST_SEED + 1,
-                                                          table_filename = EST_KSB_TABLE_FILENAME)
+                                                          table_filename = EST_KSB_TABLE_FILENAME,
+                                                          workdir = workdir)
     ksb_table_generator.write_mock_table()
 
     # Set up and write the data product

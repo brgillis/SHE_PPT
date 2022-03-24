@@ -21,8 +21,17 @@ __updated__ = "2021-08-16"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 import os
 
+from SHE_PPT.constants.classes import ShearEstimationMethods
 from SHE_PPT.file_io import read_listfile, read_xml_product
+from SHE_PPT.testing.mock_measurements_cat import (EST_KSB_TABLE_FILENAME, EST_LENSMC_TABLE_FILENAME,
+                                                   MockShearEstimateTableGenerator,
+                                                   write_mock_measurements_tables, )
 from SHE_PPT.testing.mock_mer_final_cat import MockMFCGalaxyTableGenerator
+from SHE_PPT.testing.mock_she_star_cat import MockSheStarCatTableGenerator
+from SHE_PPT.testing.mock_tu_galaxy_cat import MockTUGalaxyTableGenerator
+from SHE_PPT.testing.mock_tum_cat import (MockTUMatchedTableGenerator, TUM_KSB_TABLE_FILENAME,
+                                          TUM_LENSMC_TABLE_FILENAME,
+                                          write_mock_tum_tables, )
 from SHE_PPT.testing.utility import SheTestCase
 
 
@@ -103,3 +112,74 @@ class TestPsfResReadInput(SheTestCase):
         assert p.get_data_filename() == table_generator.table_filename
 
         table_generator.cleanup()
+
+    def test_mock_star_cat(self):
+        """ Test creating a mock star catalog.
+        """
+
+        # Create a table generator to test
+        table_generator = MockSheStarCatTableGenerator(workdir = self.workdir)
+
+        table_generator.write_mock_listfile()
+        assert os.path.exists(os.path.join(self.workdir, table_generator.table_filename))
+        assert os.path.exists(os.path.join(self.workdir, table_generator.product_filename))
+        assert os.path.exists(os.path.join(self.workdir, table_generator.listfile_filename))
+        table_generator.cleanup()
+
+    def test_mock_tu_gal_cat(self):
+        """ Test creating a mock TU galaxy catalog.
+        """
+
+        # Create a table generator to test
+        table_generator = MockTUGalaxyTableGenerator(workdir = self.workdir)
+
+        # We don't have a product creator for this set up, so just test writing the table
+        table_generator.write_mock_table()
+        assert os.path.exists(os.path.join(self.workdir, table_generator.table_filename))
+        table_generator.cleanup()
+
+    def test_mock_measurements_cat(self):
+        """ Test creating a mock shear estimates catalog.
+        """
+
+        # Create a table generator to test
+        table_generator = MockShearEstimateTableGenerator(workdir = self.workdir,
+                                                          method = ShearEstimationMethods.LENSMC)
+
+        table_generator.write_mock_listfile()
+        assert os.path.exists(os.path.join(self.workdir, table_generator.table_filename))
+        assert os.path.exists(os.path.join(self.workdir, table_generator.product_filename))
+        assert os.path.exists(os.path.join(self.workdir, table_generator.listfile_filename))
+        table_generator.cleanup()
+
+        # Test the convenience method to create both LensMC and KSB tables
+        p_filename = write_mock_measurements_tables(workdir = self.workdir)
+        assert os.path.exists(os.path.join(self.workdir, EST_LENSMC_TABLE_FILENAME))
+        assert os.path.exists(os.path.join(self.workdir, EST_KSB_TABLE_FILENAME))
+
+        p = read_xml_product(p_filename, workdir = self.workdir)
+        assert p.get_LensMC_filename() == EST_LENSMC_TABLE_FILENAME
+        assert p.get_KSB_filename() == EST_KSB_TABLE_FILENAME
+
+    def test_mock_tum_cat(self):
+        """ Test creating a mock star catalog.
+        """
+
+        # Create a table generator to test
+        table_generator = MockTUMatchedTableGenerator(workdir = self.workdir,
+                                                      method = ShearEstimationMethods.LENSMC)
+
+        table_generator.write_mock_listfile()
+        assert os.path.exists(os.path.join(self.workdir, table_generator.table_filename))
+        assert os.path.exists(os.path.join(self.workdir, table_generator.product_filename))
+        assert os.path.exists(os.path.join(self.workdir, table_generator.listfile_filename))
+        table_generator.cleanup()
+
+        # Test the convenience method to create both LensMC and KSB tables
+        p_filename = write_mock_tum_tables(workdir = self.workdir)
+        assert os.path.exists(os.path.join(self.workdir, TUM_LENSMC_TABLE_FILENAME))
+        assert os.path.exists(os.path.join(self.workdir, TUM_KSB_TABLE_FILENAME))
+
+        p = read_xml_product(p_filename, workdir = self.workdir)
+        assert p.get_LensMC_filename() == TUM_LENSMC_TABLE_FILENAME
+        assert p.get_KSB_filename() == TUM_KSB_TABLE_FILENAME

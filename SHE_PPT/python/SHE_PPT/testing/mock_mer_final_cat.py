@@ -20,7 +20,7 @@ __updated__ = "2022-03-24"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from typing import Callable, Optional, Type
+from typing import Optional, Type
 
 import numpy as np
 
@@ -90,7 +90,10 @@ class MockMFCGalaxyTableGenerator(MockTableGenerator):
     """
 
     mock_data_generator_type: Type[MockDataGeneratorType] = MockMFCDataGenerator
-    product_creator: Optional[Callable] = create_dpd_mer_final_catalog
+
+    @staticmethod
+    def create_product():
+        return create_dpd_mer_final_catalog()
 
     # Attributes with overriding types
     tf: Optional[MerFinalCatalogFormat] = mer_final_catalog_format

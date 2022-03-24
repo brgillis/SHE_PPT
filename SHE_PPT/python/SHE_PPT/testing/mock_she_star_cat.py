@@ -19,7 +19,7 @@ __updated__ = "2021-10-05"
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-from typing import Callable, Optional, Type
+from typing import Any, Optional, Type
 
 import numpy as np
 
@@ -133,7 +133,10 @@ class MockSheStarCatTableGenerator(MockTableGenerator):
     """
 
     mock_data_generator_type: Type[MockDataGeneratorType] = MockStarCatDataGenerator
-    product_creator: Optional[Callable] = create_dpd_she_star_catalog
+
+    @staticmethod
+    def create_product() -> Any:
+        return create_dpd_she_star_catalog()
 
     # Attributes with overriding types
     tf: Optional[SheStarCatalogFormat] = SHE_STAR_CAT_TF

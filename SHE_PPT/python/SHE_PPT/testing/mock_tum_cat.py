@@ -20,7 +20,7 @@ __updated__ = "2022-03-24"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from typing import Callable, Dict, Optional, Type
+from typing import Any, Dict, Optional, Type
 
 import numpy as np
 
@@ -33,7 +33,7 @@ from SHE_PPT.table_formats.she_lensmc_tu_matched import lensmc_tu_matched_table_
 from SHE_PPT.table_formats.she_tu_matched import SheTUMatchedFormat
 from SHE_PPT.testing.mock_data import (MockDataGenerator, NUM_NAN_TEST_POINTS, NUM_TEST_POINTS,
                                        NUM_ZERO_WEIGHT_TEST_POINTS, )
-from SHE_PPT.testing.mock_lensmc_measurements_cat import MockShearEstimateDataGenerator
+from SHE_PPT.testing.mock_measurements_cat import MockShearEstimateDataGenerator
 from SHE_PPT.testing.mock_tables import MockDataGeneratorType, MockTableGenerator
 from SHE_PPT.testing.mock_tu_galaxy_cat import MockTUGalaxyDataGenerator
 from SHE_PPT.utility import default_init_if_none, default_value_if_none
@@ -104,7 +104,10 @@ class MockTUMatchedTableGenerator(MockTableGenerator):
     """
 
     mock_data_generator_type: Type[MockDataGeneratorType] = MockTUMatchedDataGenerator
-    product_creator: Optional[Callable] = create_dpd_she_measurements
+
+    @staticmethod
+    def create_product() -> Any:
+        return create_dpd_she_measurements()
 
     # Attributes with overriding types
     tf: Optional[SheTUMatchedFormat] = lensmc_tu_matched_table_format
@@ -155,14 +158,10 @@ class MockTUMatchedTableGenerator(MockTableGenerator):
         """ Override write_mock_product here, since we need to use the proper method to set the filename
         """
 
-        if self.product_creator is None:
-            raise TypeError("write_mock_product can only be called if self.product_creator is set to a creation"
-                            "function for the desired type of product to be written")
-
         self.write_mock_table()
 
         # Set up and write the data product
-        measurements_table_product = self.product_creator()
+        measurements_table_product = self.create_product()
         measurements_table_product.set_method_filename(self.method, self.table_filename)
 
         write_xml_product(measurements_table_product, self.product_filename, workdir = self.workdir)
@@ -176,11 +175,13 @@ def write_mock_tum_tables(workdir: str) -> str:
 
     lensmc_table_generator = MockTUMatchedTableGenerator(method = ShearEstimationMethods.LENSMC,
                                                          seed = TUM_SEED,
-                                                         table_filename = TUM_LENSMC_TABLE_FILENAME)
+                                                         table_filename = TUM_LENSMC_TABLE_FILENAME,
+                                                         workdir = workdir)
     lensmc_table_generator.write_mock_table()
     ksb_table_generator = MockTUMatchedTableGenerator(method = ShearEstimationMethods.KSB,
                                                       seed = TUM_SEED + 1,
-                                                      table_filename = TUM_KSB_TABLE_FILENAME)
+                                                      table_filename = TUM_KSB_TABLE_FILENAME,
+                                                      workdir = workdir)
     ksb_table_generator.write_mock_table()
 
     # Set up and write the data product

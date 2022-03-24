@@ -20,7 +20,7 @@ __updated__ = "2022-03-24"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 import os
-from typing import Callable, Dict, Optional, Sequence, Type, TypeVar
+from typing import Any, Dict, Optional, Sequence, Type, TypeVar
 
 import numpy as np
 from astropy.table import Table
@@ -46,7 +46,10 @@ class MockTableGenerator:
 
     # Class-level attributes
     mock_data_generator_type: Type[MockDataGeneratorType] = MockDataGenerator
-    product_creator: Optional[Callable] = None
+
+    @staticmethod
+    def create_product() -> Any:
+        return None
 
     # Attributes optionally set at init or with defaults
     mock_data_generator: Optional[MockDataGeneratorType] = None
@@ -134,6 +137,11 @@ class MockTableGenerator:
                     filename = self.table_filename,
                     workdir = self.workdir)
 
+        # Uncache the mock table - workaround for a bug in astropy where tables that have been written out can
+        # behave oddly
+        del self._mock_table
+        self._mock_table = None
+
         return self.table_filename
 
     def write_mock_product(self) -> str:
@@ -142,20 +150,22 @@ class MockTableGenerator:
             Returns workdir-relative filename of the written-out data product.
         """
 
-        if self.product_creator is None:
-            raise TypeError("write_mock_product can only be called if self.product_creator is set to a creation"
-                            "function for the desired type of product to be written")
-
-        write_product_and_table(product = self.product_creator(),
+        write_product_and_table(product = self.create_product(),
                                 product_filename = self.product_filename,
                                 table = self.mock_table,
-                                table_filename = self.table_filename)
+                                table_filename = self.table_filename,
+                                workdir = self.workdir)
+
+        # Uncache the mock table - workaround for a bug in astropy where tables that have been written out can
+        # behave oddly
+        del self._mock_table
+        self._mock_table = None
 
         return self.product_filename
 
     def write_mock_listfile(self) -> str:
 
-        if self.product_creator is None:
+        if self.create_product is None:
             raise TypeError("write_mock_listfile can only be called if self.product_type is set to the desired type of "
                             "product to be written")
 
