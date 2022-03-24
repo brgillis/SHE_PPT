@@ -132,7 +132,7 @@ def __create_header(wcs=None, **kwargs):
     
 
 
-def create_exposure(n_detectors=1, detector_shape=(100,100), workdir=".", seed = 1, n_objs_per_det = 10):
+def create_exposure(n_detectors=1, detector_shape=(500,500), workdir=".", seed = 1, n_objs_per_det = 10):
     """
         Creates a mock dpdVisCalibratedFrame data product for use in smoke tests
         
