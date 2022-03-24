@@ -5,7 +5,7 @@
     Utilities to generate mock MER Final Catalogs for unit tests.
 """
 
-__updated__ = "2021-10-05"
+__updated__ = "2022-03-24"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #

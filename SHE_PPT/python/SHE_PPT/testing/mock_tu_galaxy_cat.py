@@ -1,11 +1,11 @@
 """ @file mock_data.py
 
-    Created 15 October 2021.
+    Created 24 March 2022
 
-    Utilities to generate mock data for validation tests.
+    Utilities to generate mock TU Galaxy tables for unit tests.
 """
 
-__updated__ = "2021-10-05"
+__updated__ = "2022-03-24"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
