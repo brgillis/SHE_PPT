@@ -5,7 +5,7 @@
     Utilities to generate mock mer final catalogues for smoke tests.
 """
 
-__updated__ = "2022-03-17"
+__updated__ = "2022-03-24"
 
 # Copyright (C) 2012-2022 Euclid Science Ground Segment
 #
@@ -38,7 +38,7 @@ def create_catalogue(obj_coords=[], workdir="."):
        Creates a mock dpdMerFinalCatalog for a list of object coordinates
 
        Arguments:
-         - obj_coords: a list of world coordinate pairs of the form (dec, ra)
+         - obj_coords: a list of world coordinates (astropy.coordinates.SkyCoord)
          - workdir: the workdir to write the files to
 
        Outputs:
@@ -58,8 +58,8 @@ def create_catalogue(obj_coords=[], workdir="."):
         # maybe initialise the table with these columns instead?
         table.add_row(vals={
                             tf.ID: obj_id,
-                            tf.gal_x_world: coords[1],
-                            tf.gal_y_world: coords[0],
+                            tf.gal_x_world: coords.ra.deg,
+                            tf.gal_y_world: coords.dec.deg,
                             tf.seg_ID: obj_id,
                             tf.vis_det: 1,
                             tf.FLUX_VIS_APER: 1E-10, #WHERE DOES THIS COME FROM?

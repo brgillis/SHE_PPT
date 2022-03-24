@@ -5,7 +5,7 @@
     Utilities to generate mock vis calibrated frames for smoke tests.
 """
 
-__updated__ = "2022-03-17"
+__updated__ = "2022-03-24"
 
 # Copyright (C) 2012-2022 Euclid Science Ground Segment
 #
@@ -66,8 +66,8 @@ def __generate_detector_images(detector_shape=(4136,4096), nobjs=10, background=
          - flg: flg image
          - wgt: wgt image
          - bkg: bkg image
-         - pixel_coords: list of pixel coordinates of the nobjs objects
-    
+         - x_px: list of x pixel coordinates of the nobjs objects
+         - y_px: list of y pixel coordinates of the nobjs objects
     """
 
     if rng is None:
@@ -77,7 +77,8 @@ def __generate_detector_images(detector_shape=(4136,4096), nobjs=10, background=
     sci = rng.poisson(background,detector_shape).astype(np.float32)
 
     #populate it with nobjs "galaxies"
-    pixel_coords = []
+    x_px = []
+    y_px = []
     for i in range(nobjs):
         blob = __generate_gausian_blob(objsize)
         stampsize=objsize*5
@@ -87,7 +88,8 @@ def __generate_detector_images(detector_shape=(4136,4096), nobjs=10, background=
         y = rng.randint(0, detector_shape[0]-stampsize)
 
         #store the blob's centre coordinates
-        pixel_coords.append((y+stampsize/2,x+stampsize/2))
+        x_px.append(x+stampsize/2)
+        y_px.append(y+stampsize/2)
         
         #add the blob to the image
         sci[y:y+stampsize,x:x+stampsize] += snr*np.sqrt(background)*blob
@@ -106,7 +108,7 @@ def __generate_detector_images(detector_shape=(4136,4096), nobjs=10, background=
     #generate bkg image (bkg = noise)
     bkg = np.ones(detector_shape,dtype=np.float32) * np.sqrt(background)
 
-    return sci, rms, flg, wgt, bkg, pixel_coords
+    return sci, rms, flg, wgt, bkg, x_px, y_px
 
 
 def __create_header(wcs=None, **kwargs):
@@ -145,7 +147,7 @@ def create_exposure(n_detectors=1, detector_shape=(100,100), workdir=".", seed =
         Returns:
            - prod_filename (The name of the created data product)
            - object_coords (a list of world coodinates for the objects in the image - to be used when creating
-             mock mer catalogues for this exposure)
+             mock mer catalogues for this exposure (astropy.coordinates.SkyCoord))
     """
     #pixelsize = 0.1"
     PIXELSIZE = 1./3600/10.
@@ -167,7 +169,6 @@ def create_exposure(n_detectors=1, detector_shape=(100,100), workdir=".", seed =
 
     object_coords = []
 
-
     #loop over all detectors in the exposure
     for det in range(n_detectors):
 
@@ -178,21 +179,21 @@ def create_exposure(n_detectors=1, detector_shape=(100,100), workdir=".", seed =
         logger.info("Creating detector %s"%det_id)
 
         #create image data
-        sci, rms, flg, wgt, bkg, pixel_coords = __generate_detector_images(detector_shape=detector_shape,
+        sci, rms, flg, wgt, bkg, x_px, y_px = __generate_detector_images(detector_shape=detector_shape,
                                                                            rng=rng,
                                                                            nobjs= n_objs_per_det)
 
-        #create WCS (linear in x and y - as basic as possible)
+        #create WCS (Use Airy projection - arbitrary decision, we just want something in valid sky coordinates!)
         wcs = WCS(naxis=2)
-        x_c = (1.1*detector_shape[0])*(det_i-1)*PIXELSIZE
-        y_c = (1.1*detector_shape[1])*(det_j-1)*PIXELSIZE
+        x_c = (1.1*detector_shape[1])*(det_i-1)*PIXELSIZE
+        y_c = (1.1*detector_shape[0])*(det_j-1)*PIXELSIZE
         wcs.wcs.crpix=[0.,0.]
-        wcs.wcs.crval=[y_c, x_c]
+        wcs.wcs.crval=[x_c, y_c]
         wcs.wcs.cdelt=[PIXELSIZE,PIXELSIZE]
-        wcs.wcs.ctype=["LINEAR", "LINEAR"]
+        wcs.wcs.ctype=["RA---AIR", "DEC--AIR"]
         
         #obtain the world coordinates of the objects in the image, and append them to the object_positions list
-        world_coords = wcs.wcs_pix2world(pixel_coords,0)
+        world_coords = wcs.pixel_to_world(x_px, y_px)
         for coord in world_coords:
             object_coords.append(coord)
 
