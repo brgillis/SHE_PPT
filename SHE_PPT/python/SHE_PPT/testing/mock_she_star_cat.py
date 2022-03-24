@@ -22,14 +22,14 @@ __updated__ = "2021-10-05"
 from typing import Callable, Optional, Type
 
 import numpy as np
-from
 
 from SHE_PPT.detector import VIS_DETECTOR_PIXELS_X, VIS_DETECTOR_PIXELS_Y
+from SHE_PPT.products.she_star_catalog import create_dpd_she_star_catalog
 from SHE_PPT.table_formats.she_star_catalog import SHE_STAR_CAT_TF, SheStarCatalogFormat
 from SHE_PPT.testing.mock_data import MockDataGenerator, NUM_TEST_POINTS
-# Constants describing how to generate mock star data
 from SHE_PPT.testing.mock_tables import MockDataGeneratorType, MockTableGenerator
 
+# Constants describing how to generate mock star data
 STAR_CAT_SEED = 152314
 STAR_CAT_TABLE_LISTFILE_FILENAME = "mock_she_star_catalog_listfile.json"
 STAR_CAT_TABLE_PRODUCT_FILENAME = "mock_she_star_catalog_product.xml"
