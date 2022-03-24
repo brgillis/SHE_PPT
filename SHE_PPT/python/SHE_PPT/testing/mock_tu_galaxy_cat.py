@@ -19,7 +19,7 @@ __updated__ = "2022-03-24"
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-from typing import Optional, Type
+from typing import Callable, Optional, Type
 
 import numpy as np
 
@@ -69,7 +69,7 @@ class MockTUGalaxyTableGenerator(MockTableGenerator):
     """
 
     mock_data_generator_type: Type[MockDataGeneratorType] = MockTUGalaxyDataGenerator
-    product_type: Optional[Type] = dpdGalaxyCatalogProduct
+    product_creator: Optional[Callable] = dpdGalaxyCatalogProduct
 
     # Attributes with overriding types
     tf: Optional[SheLensMcTUMatchedFormat] = lensmc_tu_matched_table_format

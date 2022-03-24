@@ -20,7 +20,7 @@ __updated__ = "2022-03-24"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from typing import Dict, List, Optional, Type
+from typing import Callable, Dict, List, Optional, Type
 
 import numpy as np
 
@@ -29,6 +29,7 @@ from SHE_PPT.constants.shear_estimation_methods import (D_SHEAR_ESTIMATION_METHO
                                                         ShearEstimationMethods, )
 from SHE_PPT.file_io import write_xml_product
 from SHE_PPT.logging import getLogger
+from SHE_PPT.products.she_measurements import create_dpd_she_measurements
 from SHE_PPT.products.she_validated_measurements import create_dpd_she_validated_measurements
 from SHE_PPT.table_formats.she_lensmc_measurements import lensmc_measurements_table_format
 from SHE_PPT.table_formats.she_measurements import SheMeasurementsFormat
@@ -38,7 +39,6 @@ from SHE_PPT.testing.mock_data import (MockDataGenerator, NUM_NAN_TEST_POINTS, N
 from SHE_PPT.testing.mock_tables import MockDataGeneratorType, MockTableGenerator
 from SHE_PPT.testing.mock_tu_galaxy_cat import MockTUGalaxyDataGenerator
 from SHE_PPT.utility import default_init_if_none, default_value_if_none
-from ST_DataModelBindings.dpd.she.raw.measurements_stub import dpdSheMeasurements
 
 logger = getLogger(__name__)
 
@@ -197,7 +197,7 @@ class MockShearEstimateTableGenerator(MockTableGenerator):
     """
 
     mock_data_generator_type: Type[MockDataGeneratorType] = MockShearEstimateDataGenerator
-    product_type: Optional[Type] = dpdSheMeasurements
+    product_creator: Optional[Callable] = create_dpd_she_measurements
 
     # Attributes with overriding types
     tf: Optional[SheMeasurementsFormat] = lensmc_measurements_table_format
@@ -223,14 +223,14 @@ class MockShearEstimateTableGenerator(MockTableGenerator):
         """ Override write_mock_product here, since we need to use the proper method to set the filename
         """
 
-        if self.product_type is None:
-            raise TypeError("write_mock_product can only be called if self.product_type is set to the desired type of "
-                            "product to be written")
+        if self.product_creator is None:
+            raise TypeError("write_mock_product can only be called if self.product_creator is set to a creation"
+                            "function for the desired type of product to be written")
 
         self.write_mock_table()
 
         # Set up and write the data product
-        measurements_table_product = self.product_type()
+        measurements_table_product = self.product_creator()
         measurements_table_product.set_method_filename(self.method, self.table_filename)
 
         write_xml_product(measurements_table_product, self.product_filename, workdir = self.workdir)

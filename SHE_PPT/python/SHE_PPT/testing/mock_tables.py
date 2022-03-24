@@ -20,7 +20,7 @@ __updated__ = "2021-10-05"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 import os
-from typing import Dict, Optional, Sequence, Type, TypeVar
+from typing import Callable, Dict, Optional, Sequence, Type, TypeVar
 
 import numpy as np
 from astropy.table import Table
@@ -46,7 +46,7 @@ class MockTableGenerator:
 
     # Class-level attributes
     mock_data_generator_type: Type[MockDataGeneratorType] = MockDataGenerator
-    product_type: Optional[Type] = None
+    product_creator: Optional[Callable] = None
 
     # Attributes optionally set at init or with defaults
     mock_data_generator: Optional[MockDataGeneratorType] = None
@@ -144,11 +144,11 @@ class MockTableGenerator:
             Returns workdir-relative filename of the written-out data product.
         """
 
-        if self.product_type is None:
-            raise TypeError("write_mock_product can only be called if self.product_type is set to the desired type of "
-                            "product to be written")
+        if self.product_creator is None:
+            raise TypeError("write_mock_product can only be called if self.product_creator is set to a creation"
+                            "function for the desired type of product to be written")
 
-        write_product_and_table(product = self.product_type(),
+        write_product_and_table(product = self.product_creator(),
                                 product_filename = self.product_filename,
                                 table = self.mock_table,
                                 table_filename = self.table_filename)
@@ -157,7 +157,7 @@ class MockTableGenerator:
 
     def write_mock_listfile(self) -> str:
 
-        if self.product_type is None:
+        if self.product_creator is None:
             raise TypeError("write_mock_listfile can only be called if self.product_type is set to the desired type of "
                             "product to be written")
 
