@@ -116,6 +116,13 @@ class SheStarCatalogFormat(SheTableFormat):
                                                                   comment = "Number of fitted parameters of the PSF "
                                                                             "model "
                                                                             "for this group of stars")
+        self.star_chisq = self.set_column_properties("SHE_STARCAT_STAR_CHISQ", dtype = ">f4", fits_dtype = "E",
+                                                     comment = "Chi-squared statistic for the residual of the "
+                                                               "fitted or modeled PSF compared to this star.")
+        self.star_unmasked_pix = self.set_column_properties("SHE_STARCAT_STAR_UNMASKED_PIX", dtype = ">i4",
+                                                            fits_dtype = "J",
+                                                            comment = "Total number of unmasked pixels covered by "
+                                                                      "this star.")
 
         self.rr_dist = self.set_column_properties("SHE_STARCAT_RR_DIST", dtype = ">f4", fits_dtype = "E",
                                                   is_optional = True, comment = "Distance from readout register - "
