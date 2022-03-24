@@ -30,7 +30,6 @@ from SHE_PPT.constants.shear_estimation_methods import (D_SHEAR_ESTIMATION_METHO
 from SHE_PPT.file_io import write_xml_product
 from SHE_PPT.logging import getLogger
 from SHE_PPT.products.she_measurements import create_dpd_she_measurements
-from SHE_PPT.products.she_validated_measurements import create_dpd_she_validated_measurements
 from SHE_PPT.table_formats.she_lensmc_measurements import lensmc_measurements_table_format
 from SHE_PPT.table_formats.she_measurements import SheMeasurementsFormat
 from SHE_PPT.table_formats.she_tu_matched import SheTUMatchedFormat
@@ -212,12 +211,35 @@ class MockShearEstimateTableGenerator(MockTableGenerator):
 
     def __init__(self,
                  *args,
+                 mock_data_generator: Optional[MockDataGeneratorType] = None,
+                 tf: Optional[SheMeasurementsFormat] = None,
+                 seed: Optional[int] = None,
+                 num_test_points: Optional[int] = None,
                  method: Optional[ShearEstimationMethods] = None,
                  **kwargs, ):
-        super().__init__(*args, **kwargs)
 
         # Initialize new attributes for this subtype
         self.method = default_value_if_none(x = method, default_x = self.method)
+
+        # Set up the mock data generator with the proper type
+        tf = default_value_if_none(x = tf, default_x = D_SHEAR_ESTIMATION_METHOD_TABLE_FORMATS[self.method])
+
+        seed = default_value_if_none(x = seed, default_x = self.seed)
+        num_test_points = default_value_if_none(x = num_test_points, default_x = self.num_test_points)
+
+        mock_data_generator = default_init_if_none(mock_data_generator,
+                                                   type = self.mock_data_generator_type,
+                                                   tf = tf,
+                                                   num_test_points = num_test_points,
+                                                   seed = seed,
+                                                   method = self.method)
+
+        super().__init__(*args,
+                         mock_data_generator = mock_data_generator,
+                         tf = tf,
+                         seed = seed,
+                         num_test_points = num_test_points,
+                         **kwargs)
 
     def write_mock_product(self) -> str:
         """ Override write_mock_product here, since we need to use the proper method to set the filename
@@ -252,7 +274,7 @@ def write_mock_measurements_tables(workdir: str) -> str:
     ksb_table_generator.write_mock_table()
 
     # Set up and write the data product
-    measurements_table_product = create_dpd_she_validated_measurements()
+    measurements_table_product = create_dpd_she_measurements()
     measurements_table_product.set_LensMC_filename(EST_LENSMC_TABLE_FILENAME)
     measurements_table_product.set_KSB_filename(EST_KSB_TABLE_FILENAME)
 

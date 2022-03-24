@@ -29,7 +29,7 @@ from SHE_PPT.file_io import DEFAULT_WORKDIR, try_remove_file, write_listfile, wr
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import SheTableFormat
 from SHE_PPT.testing.mock_data import MockDataGenerator, NUM_TEST_POINTS
-from SHE_PPT.utility import default_value_if_none, empty_list_if_none
+from SHE_PPT.utility import default_init_if_none, default_value_if_none, empty_list_if_none
 
 logger = getLogger(__name__)
 
@@ -96,13 +96,11 @@ class MockTableGenerator:
 
         self.workdir = default_value_if_none(x = workdir, default_x = self.workdir)
 
-        # We don't use default_value_if_none here to avoid unnecessarily generating the data
-        if mock_data_generator is None:
-            self.mock_data_generator = self.mock_data_generator_type(tf = self.tf,
-                                                                     num_test_points = num_test_points,
-                                                                     seed = self.seed)
-        else:
-            self.mock_data_generator = mock_data_generator
+        self.mock_data_generator = default_init_if_none(mock_data_generator,
+                                                        type = self.mock_data_generator_type,
+                                                        tf = self.tf,
+                                                        num_test_points = self.num_test_points,
+                                                        seed = self.seed)
 
     def _make_mock_table(self) -> None:
         """ Method to generate the mock table, filling in self._mock_table with a Table of the desired format. Can
