@@ -6,6 +6,7 @@ Changes in v8.12
 API Changes
 -----------
 - Added columns to she_star_catalog table format to provide necessary info for residual test
+- Adding utilities for generating mock data and tables, imported from SHE_Validation project
 
 Dependency Changes
 ------------------
