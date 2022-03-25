@@ -134,8 +134,7 @@ class MockSheStarCatTableGenerator(MockTableGenerator):
 
     mock_data_generator_type: Type[MockDataGeneratorType] = MockStarCatDataGenerator
 
-    @staticmethod
-    def create_product() -> Any:
+    def create_product(self) -> Any:
         return create_dpd_she_star_catalog()
 
     # Attributes with overriding types

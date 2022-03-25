@@ -91,8 +91,7 @@ class MockMFCGalaxyTableGenerator(MockTableGenerator):
 
     mock_data_generator_type: Type[MockDataGeneratorType] = MockMFCDataGenerator
 
-    @staticmethod
-    def create_product():
+    def create_product(self):
         return create_dpd_mer_final_catalog()
 
     # Attributes with overriding types

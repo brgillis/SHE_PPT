@@ -19,6 +19,7 @@ __updated__ = "2022-03-24"
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+import abc
 import os
 from typing import Any, Dict, Optional, Sequence, Type, TypeVar
 
@@ -40,16 +41,12 @@ DEFAULT_PRODUCT_FILENAME = "product.xml"
 DEFAULT_LISTFILE_FILENAME = "listfile.json"
 
 
-class MockTableGenerator:
+class MockTableGenerator(abc.ABC):
     """ A class to handle the generation of a mock table from mock data.
     """
 
     # Class-level attributes
     mock_data_generator_type: Type[MockDataGeneratorType] = MockDataGenerator
-
-    @staticmethod
-    def create_product() -> Any:
-        return None
 
     # Attributes optionally set at init or with defaults
     mock_data_generator: Optional[MockDataGeneratorType] = None
@@ -64,6 +61,12 @@ class MockTableGenerator:
 
     # Attributes set when table is generated.
     _mock_table: Optional[Table] = None
+
+    @abc.abstractmethod
+    def create_product(self) -> Any:
+        """ Abstract method for creating a data product of the corresponding type for this table.
+        """
+        return None
 
     @property
     def mock_table(self):

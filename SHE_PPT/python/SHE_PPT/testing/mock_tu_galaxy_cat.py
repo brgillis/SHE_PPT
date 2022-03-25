@@ -70,8 +70,7 @@ class MockTUGalaxyTableGenerator(MockTableGenerator):
 
     mock_data_generator_type: Type[MockDataGeneratorType] = MockTUGalaxyDataGenerator
 
-    @staticmethod
-    def create_product() -> Any:
+    def create_product(self) -> Any:
         return dpdGalaxyCatalogProduct()
 
     # Attributes with overriding types

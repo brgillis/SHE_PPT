@@ -105,8 +105,7 @@ class MockTUMatchedTableGenerator(MockTableGenerator):
 
     mock_data_generator_type: Type[MockDataGeneratorType] = MockTUMatchedDataGenerator
 
-    @staticmethod
-    def create_product() -> Any:
+    def create_product(self) -> Any:
         return create_dpd_she_measurements()
 
     # Attributes with overriding types
