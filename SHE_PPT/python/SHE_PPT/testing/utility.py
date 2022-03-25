@@ -68,6 +68,10 @@ class SheTestCase:
             self._args = self._make_mock_args()
         return self._args
 
+    @args.setter
+    def args(self, args: Namespace) -> None:
+        self._args = args
+
     # Class methods, for when setup/teardown_class can be used
 
     @classmethod
