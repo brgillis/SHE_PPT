@@ -128,7 +128,7 @@ class SheTestCase:
             cls.workdir = os.path.split(qualified_filename)[0]
 
     def setup(self) -> None:
-        """Ocerridable method, where the user can specify any unique setup for a given testing class."""
+        """Overridable method, where the user can specify any unique setup for a given testing class."""
         return None
 
     @pytest.fixture(scope = 'class')
