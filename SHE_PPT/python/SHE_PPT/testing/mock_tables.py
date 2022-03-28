@@ -123,7 +123,7 @@ class MockTableGenerator(abc.ABC):
         # Fill in the data
         data: Dict[str, np.ndarray] = self.mock_data_generator.data
         for colname in data:
-            self._mock_table[colname] = data[colname]
+            self._mock_table[colname] = data[colname].astype(self.tf.dtypes[colname])
 
     def get_mock_table(self) -> Table:
         """ Gets the generated mock table.
