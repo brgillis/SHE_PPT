@@ -169,21 +169,19 @@ class SheTestCase:
 
     @pytest.fixture(autouse = True)
     def local_setup(self, class_setup):
-        """ Import all changes made to this class in the class_setup locally.
+        """ Import all changes made to this class in the class_setup locally. This gets around the fact that normally,
+            after executing class-level fixtures, PyTest resets the state of the class. So if we want to retain changes
+            made in our class-level setup, we have to return the results of them as a fixture, then copy over the
+            modifications.
         """
-        self._import_setup(class_setup)
-
-        return self
-
-    def _import_setup(self, setup):
-        """ Copies all changes to a pickled fixture of this test case into this instnace.
-        """
-        for x in dir(setup):
+        for x in dir(class_setup):
             if len(x) < 2 or x[0:2] != "__":
                 try:
-                    setattr(self, x, getattr(setup, x))
+                    setattr(self, x, getattr(class_setup, x))
                 except AttributeError:
                     pass
+
+        return self
 
     # Convenience methods for when setting up with autouse = True
 
