@@ -119,14 +119,18 @@ class MockShearEstimateDataGenerator(MockDataGenerator):
 
         # Init the data generator
         self.mock_tu_galaxy_data_generator = default_init_if_none(mock_tu_galaxy_data_generator,
-                                                                  type = MockTUGalaxyDataGenerator)
+                                                                  type = MockTUGalaxyDataGenerator,
+                                                                  num_test_points = self.num_test_points,
+                                                                  seed = self.seed)
 
         # Init and check the numbers of test points
         self.num_test_points = self.mock_tu_galaxy_data_generator.num_test_points
         self.num_nan_test_points = default_value_if_none(num_nan_test_points, self.num_nan_test_points)
         self.num_zero_weight_test_points = default_value_if_none(num_zero_weight_test_points, self.num_nan_test_points)
         self.num_good_test_points = self.num_test_points - self.num_nan_test_points - self.num_zero_weight_test_points
-        assert self.num_test_points >= self.num_good_test_points > 0
+        if not self.num_test_points >= self.num_good_test_points > 0:
+            raise ValueError(f"MockShearEstimateDataGenerator initialized with too few test points. Minimum required "
+                             f"is {self.num_nan_test_points + self.num_zero_weight_test_points + 1}.")
 
     # Implement abstract methods
     def _generate_unique_data(self):
@@ -224,23 +228,20 @@ class MockShearEstimateTableGenerator(MockTableGenerator):
         self.method = default_value_if_none(x = method, default_x = self.method)
 
         # Set up the mock data generator with the proper type
-        tf = default_value_if_none(x = tf, default_x = D_SHEAR_ESTIMATION_METHOD_TABLE_FORMATS[self.method])
+        self.tf = default_value_if_none(x = tf, default_x = D_SHEAR_ESTIMATION_METHOD_TABLE_FORMATS[self.method])
 
-        seed = default_value_if_none(x = seed, default_x = self.seed)
-        num_test_points = default_value_if_none(x = num_test_points, default_x = self.num_test_points)
+        self.seed = default_value_if_none(x = seed, default_x = self.seed)
+        self.num_test_points = default_value_if_none(x = num_test_points, default_x = self.num_test_points)
 
         mock_data_generator = default_init_if_none(mock_data_generator,
                                                    type = self.mock_data_generator_type,
-                                                   tf = tf,
-                                                   num_test_points = num_test_points,
-                                                   seed = seed,
+                                                   tf = self.tf,
+                                                   num_test_points = self.num_test_points,
+                                                   seed = self.seed,
                                                    method = self.method)
 
         super().__init__(*args,
                          mock_data_generator = mock_data_generator,
-                         tf = tf,
-                         seed = seed,
-                         num_test_points = num_test_points,
                          **kwargs)
 
     def write_mock_product(self) -> str:
