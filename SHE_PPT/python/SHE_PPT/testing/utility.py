@@ -159,13 +159,13 @@ class SheTestCase:
             post_setup methods.
         """
         self.setup_workdir()
-        self._finalize_class_setup(tmpdir_factory)
-        self.post_setup()
-        return self
 
-    def _finalize_class_setup(self, tmpdir_factory):
         self.tmpdir_factory = tmpdir_factory
         self._setup()
+
+        self.post_setup()
+
+        return self
 
     @pytest.fixture(autouse = True)
     def local_setup(self, class_setup):
