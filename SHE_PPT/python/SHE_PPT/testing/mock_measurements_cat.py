@@ -201,7 +201,6 @@ class MockShearEstimateTableGenerator(MockTableGenerator):
 
     mock_data_generator_type: Type[MockDataGeneratorType] = MockShearEstimateDataGenerator
 
-    @staticmethod
     def create_product(self) -> Any:
         return create_dpd_she_measurements()
 
