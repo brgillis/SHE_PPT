@@ -155,10 +155,10 @@ class SheTestCase:
 
     @pytest.fixture(scope = 'class')
     def class_setup(self, tmpdir_factory):
-        """ This performs setup once per initialization of the test class, calling the overridable setup and
+        """ This performs setup once per initialization of the test class, calling the overridable setup_workdir and
             post_setup methods.
         """
-        self.setup()
+        self.setup_workdir()
         self._finalize_class_setup(tmpdir_factory)
         self.post_setup()
         return self
