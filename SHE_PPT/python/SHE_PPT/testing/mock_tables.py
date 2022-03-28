@@ -168,10 +168,6 @@ class MockTableGenerator(abc.ABC):
 
     def write_mock_listfile(self) -> str:
 
-        if self.create_product is None:
-            raise TypeError("write_mock_listfile can only be called if self.product_type is set to the desired type of "
-                            "product to be written")
-
         # Write the product first, then write it in a listfile
         self.write_mock_product()
         write_listfile(os.path.join(self.workdir, self.listfile_filename), [self.product_filename])
