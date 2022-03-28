@@ -197,6 +197,9 @@ class SheTestCase:
     def _setup_workdir_from_tmpdir(self, tmpdir: LocalPath):
         """ Sets up workdir and logdir based on a tmpdir fixture.
         """
+
+        # If workdir is already set (which will happen if any method to download data is called), leave it. Otherwise,
+        # set it from the tmpdir passed to this function.
         if tmpdir is not None and self.workdir is None:
             self.workdir = tmpdir.strpath
         elif not hasattr(self, "workdir"):
@@ -204,20 +207,23 @@ class SheTestCase:
         self._setup_workdir()
 
     def _setup_workdir(self):
-        """ Sets up self.logdir and otherwise prepares the workdir.
+        """ Sets up self.logdir and the expected subdirs of the workdir.
         """
         self.logdir = os.path.join(self.workdir, "logs")
         os.makedirs(os.path.join(self.workdir, "logs"), exist_ok = True)
         os.makedirs(os.path.join(self.workdir, "data"), exist_ok = True)
 
     def _set_workdir_args(self) -> None:
-        """ Set the workdir and logdir in the self.args attribute. Both must already be set for this object.
+        """ Set the workdir and logdir in the self.args attribute. Both must already be set for this object when this
+            method is called.
         """
         setattr(self.args, CA_WORKDIR, self.workdir)
         setattr(self.args, CA_LOGDIR, self.logdir)
 
     def _write_mock_pipeline_config(self):
-        """ Write the pipeline config we'll be using and note its filename.
+        """ Write the pipeline config we'll be using and note its filename. This uses the class member
+            pipeline_config_factory_type to construct the pipeline_config if it doesn't already exist, and thus
+            modifying that variable in subclasses will modify the pipeline_config created here.
         """
 
         # Don't overwrite if a config is already set up to use
@@ -231,7 +237,8 @@ class SheTestCase:
         setattr(self.args, CA_PIPELINE_CONFIG, self.mock_pipeline_config_factory.file_namer.filename)
 
     def _setup(self):
-        """ Implements common setup when using a tmpdir.
+        """ Implements common setup tasks. These include ensuring the workdir is set up, setting the workdir-related
+            arguments to self.args, and creating a mock pipeline_config.
         """
         if self.workdir is None:
             self._setup_workdir_from_tmpdir(self.tmpdir_factory.mktemp("test"))
