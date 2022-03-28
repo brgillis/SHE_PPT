@@ -175,10 +175,14 @@ class SheTestCase:
             modifications.
         """
         for x in dir(class_setup):
+            # Skip any private attributes, which always start with "__"
             if len(x) < 2 or x[0:2] != "__":
                 try:
                     setattr(self, x, getattr(class_setup, x))
                 except AttributeError:
+                    # Silently pass for any attributes we can't set, which can happen if properties are defined without
+                    # a setter, for instance. In those cases, the protected attributes storing data will be copied
+                    # instead.
                     pass
 
         return self
