@@ -65,12 +65,22 @@ class SheTestCase:
 
     @property
     def args(self) -> Namespace:
+        """ A Namespace object which can be passed to tested functions which normally used the args Namespace
+            returned from parse_args(). For subclasses, this should be set up by overriding the _make_mock_args
+            method to generate a Namespace object with the expected attributes for the executable in which the
+            function is run.
+        """
         if self._args is None:
             self._args = self._make_mock_args()
         return self._args
 
     @property
     def d_args(self) -> Dict[str, Any]:
+        """ Similar to the args attribute, except converted to a Dict. This is used for any functions which
+            normally take such an object. The Dict form is preferred when command-line arguments are set using
+            constant variables, as it provides a cleaner interface to access these them, using d_args[key] instead of
+            getattr(args, key).
+        """
         if self._d_args is None:
             self._d_args = vars(self.args)
         return self._d_args
@@ -145,6 +155,9 @@ class SheTestCase:
 
     @pytest.fixture(scope = 'class')
     def class_setup(self, tmpdir_factory):
+        """ This performs setup once per initialization of the test class, calling the overridable setup and
+            post_setup methods.
+        """
         self.setup()
         self._finalize_class_setup(tmpdir_factory)
         self.post_setup()
