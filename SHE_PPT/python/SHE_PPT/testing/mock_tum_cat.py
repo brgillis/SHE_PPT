@@ -80,14 +80,18 @@ class MockTUMatchedDataGenerator(MockDataGenerator):
 
         # Init the data generators
         self.mock_tu_galaxy_data_generator = default_init_if_none(mock_tu_galaxy_data_generator,
-                                                                  type = MockTUGalaxyDataGenerator)
+                                                                  type = MockTUGalaxyDataGenerator,
+                                                                  num_test_points = self.num_test_points,
+                                                                  seed = self.seed)
         self.mock_shear_estimate_data_generator = MockShearEstimateDataGenerator(method = method,
                                                                                  mock_tu_galaxy_data_generator =
                                                                                  self.mock_tu_galaxy_data_generator,
                                                                                  num_nan_test_points =
                                                                                  num_nan_test_points,
                                                                                  num_zero_weight_test_points =
-                                                                                 num_zero_weight_test_points)
+                                                                                 num_zero_weight_test_points,
+                                                                                 num_test_points = self.num_test_points,
+                                                                                 seed = self.seed)
 
     # Implement abstract methods
     def _generate_unique_data(self):
@@ -134,23 +138,20 @@ class MockTUMatchedTableGenerator(MockTableGenerator):
         self.method = default_value_if_none(x = method, default_x = self.method)
 
         # Set up the mock data generator with the proper type
-        tf = default_value_if_none(x = tf, default_x = D_SHEAR_ESTIMATION_METHOD_TUM_TABLE_FORMATS[self.method])
+        self.tf = default_value_if_none(x = tf, default_x = D_SHEAR_ESTIMATION_METHOD_TUM_TABLE_FORMATS[self.method])
 
-        seed = default_value_if_none(x = seed, default_x = self.seed)
-        num_test_points = default_value_if_none(x = num_test_points, default_x = self.num_test_points)
+        self.seed = default_value_if_none(x = seed, default_x = self.seed)
+        self.num_test_points = default_value_if_none(x = num_test_points, default_x = self.num_test_points)
 
         mock_data_generator = default_init_if_none(mock_data_generator,
                                                    type = self.mock_data_generator_type,
-                                                   tf = tf,
-                                                   num_test_points = num_test_points,
-                                                   seed = seed,
+                                                   tf = self.tf,
+                                                   num_test_points = self.num_test_points,
+                                                   seed = self.seed,
                                                    method = self.method)
 
         super().__init__(*args,
                          mock_data_generator = mock_data_generator,
-                         tf = tf,
-                         seed = seed,
-                         num_test_points = num_test_points,
                          **kwargs)
 
     def write_mock_product(self) -> str:
