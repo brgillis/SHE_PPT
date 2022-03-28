@@ -38,7 +38,7 @@ from SHE_PPT.testing.utility import SheTestCase
 TEST_LEN = 102
 
 
-class TestPsfResReadInput(SheTestCase):
+class TestMockTables(SheTestCase):
     """ Test case for PSF-Res validation test code.
     """
 
