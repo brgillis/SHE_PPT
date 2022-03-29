@@ -30,7 +30,7 @@ from astropy.table import Column, Table
 
 from .constants.fits import FITS_DEF_LABEL, FITS_VERSION_LABEL
 from .logging import getLogger
-from .utility import default_value_if_none, empty_list_if_none
+from .utility import default_init_if_none, empty_list_if_none
 
 logger = getLogger(__name__)
 
@@ -422,7 +422,7 @@ class SheTableFormat:
                  meta: Optional[SheTableMeta] = None,
                  finalize: bool = False) -> None:
 
-        self.meta = default_value_if_none(x = meta, default_x = self.meta)
+        self.meta = default_init_if_none(meta, self.meta_type)
         self.m = self.meta
 
         # Get the version from the meta class
