@@ -125,7 +125,8 @@ class MockStarCatDataGenerator(MockDataGenerator):
         # Assign per-star data
         self.data[self.tf.star_unmasked_pix] = STAR_CAT_NUM_UNMASKED_PER_STAR * self._ones
         self.data[self.tf.star_chisq] = self._rng.normal(loc = STAR_CAT_NUM_UNMASKED_PER_STAR,
-                                                         scale = np.sqrt(STAR_CAT_NUM_UNMASKED_PER_STAR))
+                                                         scale = np.sqrt(STAR_CAT_NUM_UNMASKED_PER_STAR),
+                                                         size = self.num_test_points)
 
 
 class MockSheStarCatTableGenerator(MockTableGenerator):
