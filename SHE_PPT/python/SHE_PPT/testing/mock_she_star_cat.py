@@ -22,6 +22,7 @@ __updated__ = "2021-10-05"
 from typing import Any, Optional, Type
 
 import numpy as np
+from scipy.stats import chi2
 
 from SHE_PPT.detector import VIS_DETECTOR_PIXELS_X, VIS_DETECTOR_PIXELS_Y
 from SHE_PPT.products.she_star_catalog import create_dpd_she_star_catalog
@@ -112,7 +113,8 @@ class MockStarCatDataGenerator(MockDataGenerator):
 
             dofs = d_group_num_unmasked_pix[group_id] - d_group_num_fitted_params[group_id]
 
-            d_group_chisqs[group_id] = self._rng.normal(loc = dofs, scale = np.sqrt(dofs))
+            p = self._rng.uniform()
+            d_group_chisqs[group_id] = chi2.ppf(p, df = dofs)
 
         # And assign this data to arrays for the table, applying the dicts to each element of the arrays
         self.data[self.tf.group_unmasked_pix] = np.array([d_group_num_unmasked_pix[self.data[self.tf.group_id][i]]
@@ -124,9 +126,9 @@ class MockStarCatDataGenerator(MockDataGenerator):
 
         # Assign per-star data
         self.data[self.tf.star_unmasked_pix] = STAR_CAT_NUM_UNMASKED_PER_STAR * self._ones
-        self.data[self.tf.star_chisq] = self._rng.normal(loc = STAR_CAT_NUM_UNMASKED_PER_STAR,
-                                                         scale = np.sqrt(STAR_CAT_NUM_UNMASKED_PER_STAR),
-                                                         size = self.num_test_points)
+
+        l_p = self._rng.uniform(size = self.num_test_points)
+        self.data[self.tf.star_chisq] = chi2.ppf(l_p, df = STAR_CAT_NUM_UNMASKED_PER_STAR)
 
 
 class MockSheStarCatTableGenerator(MockTableGenerator):
