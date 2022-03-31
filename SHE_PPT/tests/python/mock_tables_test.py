@@ -28,7 +28,7 @@ from SHE_PPT.testing.mock_measurements_cat import (EST_KSB_TABLE_FILENAME, EST_L
                                                    MockShearEstimateTableGenerator,
                                                    write_mock_measurements_tables, )
 from SHE_PPT.testing.mock_mer_final_cat import MockMFCGalaxyTableGenerator
-from SHE_PPT.testing.mock_she_star_cat import MockSheStarCatTableGenerator
+from SHE_PPT.testing.mock_she_star_cat import MockStarCatTableGenerator
 from SHE_PPT.testing.mock_tu_galaxy_cat import MockTUGalaxyTableGenerator
 from SHE_PPT.testing.mock_tum_cat import (MockTUMatchedTableGenerator, TUM_KSB_TABLE_FILENAME,
                                           TUM_LENSMC_TABLE_FILENAME,
@@ -128,8 +128,8 @@ class TestMockTables(SheTestCase):
         """
 
         # Create a table generator to test
-        table_generator = MockSheStarCatTableGenerator(num_test_points = TEST_LEN,
-                                                       workdir = self.workdir)
+        table_generator = MockStarCatTableGenerator(num_test_points = TEST_LEN,
+                                                    workdir = self.workdir)
 
         table_generator.write_mock_listfile()
         assert os.path.exists(os.path.join(self.workdir, table_generator.table_filename))

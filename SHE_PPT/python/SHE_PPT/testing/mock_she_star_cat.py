@@ -131,7 +131,7 @@ class MockStarCatDataGenerator(MockDataGenerator):
         self.data[self.tf.star_chisq] = chi2.ppf(l_p, df = STAR_CAT_NUM_UNMASKED_PER_STAR)
 
 
-class MockSheStarCatTableGenerator(MockTableGenerator):
+class MockStarCatTableGenerator(MockTableGenerator):
     """ A class to handle the generation of mock mer final catalog tables.
     """
 
