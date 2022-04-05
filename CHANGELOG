@@ -17,7 +17,7 @@ Deprecated Features
 
 Bug Fixes
 ---------
-
+- Fixed a possible circular import situation from occurring
 
 New Features
 ------------
