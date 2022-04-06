@@ -87,6 +87,7 @@ class Test_math():
         n = 10
         n_test = 1000
         rtol = 0.1
+        atol = 0.001
 
         # Set up some things differently depending on whether we're bootstrapping or not
         if not bootstrap:
@@ -104,7 +105,7 @@ class Test_math():
 
         rng = np.random.default_rng(1234)
 
-        y_err = y_err_mag * rng.normal(size = n)
+        y_err = y_err_mag * (0.5 + rng.uniform(size = n))
 
         # Run a set of tests
         slopes = np.zeros(n_test)
@@ -143,24 +144,24 @@ class Test_math():
 
         # Check the results are reasonable
 
-        assert np.isclose(slope_mean, ex_slope, rtol = rtol)
-        assert np.isclose(intercept_mean, ex_intercept, rtol = rtol)
-        assert np.isclose(slope_std, np.mean(slope_errs), rtol = rtol)
-        assert np.isclose(intercept_std, np.mean(intercept_errs), rtol = rtol)
+        assert np.isclose(slope_mean, ex_slope, rtol = rtol, atol = atol)
+        assert np.isclose(intercept_mean, ex_intercept, rtol = rtol, atol = atol)
+        assert np.isclose(slope_std, np.mean(slope_errs), rtol = rtol, atol = atol)
+        assert np.isclose(intercept_std, np.mean(intercept_errs), rtol = rtol, atol = atol)
         assert np.isclose(
-            slope_intercept_cov, np.mean(slope_intercept_covars), rtol = rtol)
+            slope_intercept_cov, np.mean(slope_intercept_covars), rtol = rtol, atol = atol)
 
         # Now check if it works the same by compiling statistics
         combined_results = combine_linregress_statistics(lstats)
-        assert np.isclose(combined_results.slope, ex_slope, rtol = rtol)
+        assert np.isclose(combined_results.slope, ex_slope, rtol = rtol, atol = atol)
         assert np.isclose(
-            combined_results.intercept, ex_intercept, rtol = rtol)
+            combined_results.intercept, ex_intercept, rtol = rtol, atol = atol)
         assert np.isclose(
-            combined_results.slope_err, np.mean(slope_errs) / np.sqrt(n_test), rtol = rtol)
+            combined_results.slope_err, np.mean(slope_errs) / np.sqrt(n_test), rtol = rtol, atol = atol)
         assert np.isclose(
-            combined_results.intercept_err, np.mean(intercept_errs) / np.sqrt(n_test), rtol = rtol)
+            combined_results.intercept_err, np.mean(intercept_errs) / np.sqrt(n_test), rtol = rtol, atol = atol)
         assert np.isclose(
-            combined_results.slope_intercept_covar, np.mean(slope_intercept_covars), rtol = rtol)
+            combined_results.slope_intercept_covar, np.mean(slope_intercept_covars), rtol = rtol, atol = atol)
 
     def test_bias_measurement(self):
 
