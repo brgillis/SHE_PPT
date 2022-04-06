@@ -90,7 +90,7 @@ class Test_math():
         ex_slope = 0.3
         ex_intercept = 10.2
         n = 10
-        n_test = 20
+        n_test = 1000
         if bootstrap:
             n_test = n_test // DEFAULT_N_BOOTSTRAP_SAMPLES
 
