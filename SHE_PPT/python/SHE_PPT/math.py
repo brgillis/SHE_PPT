@@ -467,7 +467,8 @@ def linregress_with_errors_bootstrap(x: np.ndarray,
         id_in_table: np.ndarray = np.arange(len(y))
     else:
         id_in_table = id
-    xy_table = Table([id_in_table, x, y, y_err_in_table], names = ("id", "x", "y", "y_err"))
+    xy_table = Table([np.asarray(id_in_table), np.asarray(x), np.asarray(y), np.asarray(y_err_in_table)],
+                     names = ("id", "x", "y", "y_err"))
     xy_table.add_index("id")
 
     # Seed the random number generator
