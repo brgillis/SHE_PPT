@@ -382,9 +382,11 @@ def linregress_with_errors(x: np.ndarray,
                            bootstrap_seed: int = DEFAULT_BOOTSTRAP_SEED) -> LinregressResults:
     """ Perform a linear regression with errors on the y values. This forwards to the appropriate function depending on
         whether or not bootstrap error calculation is requested - either linregress_with_errors_no_bootstrap if
-        bootstrap==False or else linregress_with_errors_bootstrap if bootstrap==True. If y_err is provided and
-        bootstrap==False, all errors should be correct and independent, or else the resulting slope and intercept
-        errors will be incorrect.
+        bootstrap==False or else linregress_with_errors_bootstrap if bootstrap==True.
+
+        Both the bootstrap and non-bootstrap implementations assume observations are independent in their
+        error calculation. The bootstrap implementation is more resilient to incorrect errors, and should be used if
+        the errors aren't known but are expected to differ between observations.
 
         Parameters
         ----------
@@ -425,7 +427,10 @@ def linregress_with_errors_bootstrap(x: np.ndarray,
                                      n_bootstrap_samples: int = DEFAULT_N_BOOTSTRAP_SAMPLES,
                                      bootstrap_seed: int = DEFAULT_BOOTSTRAP_SEED) -> LinregressResults:
     """ Perform a linear regression with errors on the y values, using a bootstrap approach to calculate the errors
-        on the resulting slope and intercept.
+        on the resulting slope and intercept. In order for the resulting slope and intercept errors
+        to be correct, this implementation requires that, if y_err is provided, all errors are independent.
+        Inaccurate errors have less of an impact on this implementation compared to the non-bootstrap implementation.
+        If the errors are suspected to be greatly inaccurate, it's recommended to run this with y_err = None.
 
         Parameters
         ----------
