@@ -23,6 +23,7 @@ __updated__ = "2021-08-13"
 from typing import Optional
 
 import numpy as np
+from astropy.table import Table
 
 DEFAULT_M_TARGET = 1e-4
 DEFAULT_C_TARGET = 5e-6
@@ -416,6 +417,71 @@ def linregress_with_errors(x: np.ndarray,
         return linregress_with_errors_no_bootstrap(x = x,
                                                    y = y,
                                                    y_err = y_err)
+
+
+def linregress_with_errors_bootstrap(x: np.ndarray,
+                                     y: np.ndarray,
+                                     y_err: Optional[np.ndarray] = None,
+                                     n_bootstrap_samples: int = DEFAULT_N_BOOTSTRAP_SAMPLES,
+                                     bootstrap_seed: int = DEFAULT_BOOTSTRAP_SEED) -> LinregressResults:
+    """ Perform a linear regression with errors on the y values, using a bootstrap approach to calculate the errors
+        on the resulting slope and intercept.
+
+        Parameters
+        ----------
+        x : np.ndarray
+        y : np.ndarray
+        y_err : Optional[np.ndarray], default None
+        n_bootstrap_samples: int, default DEFAULT_N_BOOTSTRAP_SAMPLES
+            The number of bootstrap samples used to calculate slope and intercept
+            errors. Execution time will scale as n_bootstrap_samples, and precision as 1/sqrt(n_bootstrap_samples)
+        bootstrap_seed: int, default DEFAULT_BOOTSTRAP_SEED
+            The RNG seed used for the generation of bootstrap samples.
+
+        Returns
+        -------
+        results : LinregressResults
+    """
+
+    # Put the provided data into a table to allow easy slicing
+    # If y_err is None here, we put an array of ones in the table (assuming equal weight for everything)
+    if y_err is None:
+        y_err_in_table: np.ndarray = np.ones_like(y)
+    else:
+        y_err_in_table: np.ndarray = y_err
+    xy_table = Table([x, y, y_err_in_table], names = ("x", "y", "y_err"))
+
+    # Seed the random number generator
+    rng = np.random.default_rng(bootstrap_seed)
+
+    # Get a base object for the slope and intercept calculations
+    results = linregress_with_errors_no_bootstrap(x = xy_table["x"],
+                                                  y = xy_table["y"],
+                                                  y_err = xy_table["y_err"])
+
+    # Bootstrap to get errors on slope and intercept
+    n_values = len(xy_table)
+
+    slope_bs = np.empty(n_bootstrap_samples)
+    intercept_bs = np.empty(n_bootstrap_samples)
+    for b_i in range(n_bootstrap_samples):
+        # For each bootstrap sample, select a set of random rows, allowing duplication
+        u = rng.integers(0, n_values, n_values)
+
+        # Calculate a linear regression without bootstrapping on this sample of values
+        results_bs = linregress_with_errors_no_bootstrap(x = xy_table[u]["x"],
+                                                         y = xy_table[u]["y"],
+                                                         y_err = xy_table[u]["y_err"])
+
+        # Store the slope and intercept from this calculation
+        slope_bs[b_i] = results_bs.slope
+        intercept_bs[b_i] = results_bs.intercept
+
+    # Update the error measurements in the output object, using the standard deviation of the bootstrap results
+    results.slope_err = np.std(slope_bs)
+    results.intercept_err = np.std(intercept_bs)
+
+    return results
 
 
 def linregress_with_errors_no_bootstrap(x: np.ndarray,
