@@ -22,7 +22,6 @@
 __updated__ = "2021-07-05"
 
 import numpy as np
-from numpy.testing import assert_almost_equal
 from scipy.stats import linregress
 
 from SHE_PPT.math import (BiasMeasurements, DEFAULT_BOOTSTRAP_SEED, LinregressResults,
@@ -46,11 +45,11 @@ class Test_math():
         weighted_results = linregress_with_errors_no_bootstrap(x, y, y_err)
 
         # Test they match expectations
-        assert_almost_equal(weighted_results.slope, -0.34995112414467133)
-        assert_almost_equal(weighted_results.intercept, 10.54740957966764)
-        assert_almost_equal(weighted_results.slope_err, 0.028311906106274067)
-        assert_almost_equal(weighted_results.intercept_err, 0.1076724332578932)
-        assert_almost_equal(
+        assert np.isclose(weighted_results.slope, -0.34995112414467133)
+        assert np.isclose(weighted_results.intercept, 10.54740957966764)
+        assert np.isclose(weighted_results.slope_err, 0.028311906106274067)
+        assert np.isclose(weighted_results.intercept_err, 0.1076724332578932)
+        assert np.isclose(
             weighted_results.slope_intercept_covar, -0.0024828934506353857)
 
         # Test it matches results for regular regression if we don't use
@@ -58,8 +57,8 @@ class Test_math():
         unweighted_results = linregress_with_errors_no_bootstrap(x, y)
         slope, intercept, _, _, _ = linregress(x, y)
 
-        assert_almost_equal(unweighted_results.slope, slope)
-        assert_almost_equal(unweighted_results.intercept, intercept)
+        assert np.isclose(unweighted_results.slope, slope)
+        assert np.isclose(unweighted_results.intercept, intercept)
 
     def test_linregress_with_errors_full_no_bootstrap(self):
         """Unit test of linregress_with_errors that does a full simulation
@@ -87,19 +86,18 @@ class Test_math():
         y_err_mag = 0.1
         n = 10
         n_test = 1000
+        rtol = 0.1
 
         # Set up some things differently depending on whether we're bootstrapping or not
         if not bootstrap:
             linregress_function = linregress_with_errors_no_bootstrap
             kwargs = {}
-            decimal = 2
         else:
             linregress_function = linregress_with_errors_bootstrap
             n_bootstrap_samples = 100
             n_test = n_test // 10
             kwargs = {"bootstrap_seed"     : DEFAULT_BOOTSTRAP_SEED,
                       "n_bootstrap_samples": n_bootstrap_samples}
-            decimal = 2
 
         x = np.linspace(0, 100, num = n, endpoint = True, dtype = float)
         base_y = ex_intercept + ex_slope * x
@@ -145,24 +143,24 @@ class Test_math():
 
         # Check the results are reasonable
 
-        assert_almost_equal(slope_mean, ex_slope, decimal = decimal)
-        assert_almost_equal(intercept_mean, ex_intercept, decimal = decimal)
-        assert_almost_equal(slope_std, np.mean(slope_errs), decimal = decimal)
-        assert_almost_equal(intercept_std, np.mean(intercept_errs), decimal = decimal)
-        assert_almost_equal(
-            slope_intercept_cov, np.mean(slope_intercept_covars), decimal = decimal)
+        assert np.isclose(slope_mean, ex_slope, rtol = rtol)
+        assert np.isclose(intercept_mean, ex_intercept, rtol = rtol)
+        assert np.isclose(slope_std, np.mean(slope_errs), rtol = rtol)
+        assert np.isclose(intercept_std, np.mean(intercept_errs), rtol = rtol)
+        assert np.isclose(
+            slope_intercept_cov, np.mean(slope_intercept_covars), rtol = rtol)
 
         # Now check if it works the same by compiling statistics
         combined_results = combine_linregress_statistics(lstats)
-        assert_almost_equal(combined_results.slope, ex_slope, decimal = decimal)
-        assert_almost_equal(
-            combined_results.intercept, ex_intercept, decimal = decimal)
-        assert_almost_equal(
-            combined_results.slope_err, np.mean(slope_errs) / np.sqrt(n_test), decimal = decimal)
-        assert_almost_equal(
-            combined_results.intercept_err, np.mean(intercept_errs) / np.sqrt(n_test), decimal = decimal)
-        assert_almost_equal(
-            combined_results.slope_intercept_covar, np.mean(slope_intercept_covars), decimal = decimal)
+        assert np.isclose(combined_results.slope, ex_slope, rtol = rtol)
+        assert np.isclose(
+            combined_results.intercept, ex_intercept, rtol = rtol)
+        assert np.isclose(
+            combined_results.slope_err, np.mean(slope_errs) / np.sqrt(n_test), rtol = rtol)
+        assert np.isclose(
+            combined_results.intercept_err, np.mean(intercept_errs) / np.sqrt(n_test), rtol = rtol)
+        assert np.isclose(
+            combined_results.slope_intercept_covar, np.mean(slope_intercept_covars), rtol = rtol)
 
     def test_bias_measurement(self):
 
