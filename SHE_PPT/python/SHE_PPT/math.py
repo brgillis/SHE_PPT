@@ -377,6 +377,7 @@ DEFAULT_BOOTSTRAP_SEED = 4612412
 def linregress_with_errors(x: np.ndarray,
                            y: np.ndarray,
                            y_err: Optional[np.ndarray] = None,
+                           id: Optional[np.ndarray] = None,
                            bootstrap: bool = False,
                            n_bootstrap_samples: int = DEFAULT_N_BOOTSTRAP_SAMPLES,
                            bootstrap_seed: int = DEFAULT_BOOTSTRAP_SEED) -> LinregressResults:
@@ -393,6 +394,9 @@ def linregress_with_errors(x: np.ndarray,
         x : np.ndarray
         y : np.ndarray
         y_err : Optional[np.ndarray], default None
+        id : Optional[np.ndarray], default None
+            If bootstrap==True, ID - observations with the same ID will be included/excluded from the bootstrap samples
+            together
         bootstrap: bool, default False
             Whether or not slope and intercept errors should be calculated with a bootstrap approach. If all errors
             provided to y_err are trusted to be correct and independent, then this should be left as False for faster
@@ -413,6 +417,7 @@ def linregress_with_errors(x: np.ndarray,
         return linregress_with_errors_bootstrap(x = x,
                                                 y = y,
                                                 y_err = y_err,
+                                                id = id,
                                                 n_bootstrap_samples = n_bootstrap_samples,
                                                 bootstrap_seed = bootstrap_seed)
     else:
