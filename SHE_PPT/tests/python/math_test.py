@@ -74,7 +74,8 @@ class Test_math():
 
         self._test_linregress_with_errors_full(bootstrap = True)
 
-    def _test_linregress_with_errors_full(self, bootstrap: bool):
+    @staticmethod
+    def _test_linregress_with_errors_full(bootstrap: bool):
         """Unit test of linregress_with_errors that does a full simulation
            to test results - for either bootstrap or non-bootstrap approach.
         """
