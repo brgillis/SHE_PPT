@@ -424,6 +424,7 @@ def linregress_with_errors(x: np.ndarray,
 def linregress_with_errors_bootstrap(x: np.ndarray,
                                      y: np.ndarray,
                                      y_err: Optional[np.ndarray] = None,
+                                     id: Optional[np.ndarray] = None,
                                      n_bootstrap_samples: int = DEFAULT_N_BOOTSTRAP_SAMPLES,
                                      bootstrap_seed: int = DEFAULT_BOOTSTRAP_SEED) -> LinregressResults:
     """ Perform a linear regression with errors on the y values, using a bootstrap approach to calculate the errors
@@ -437,6 +438,8 @@ def linregress_with_errors_bootstrap(x: np.ndarray,
         x : np.ndarray
         y : np.ndarray
         y_err : Optional[np.ndarray], default None
+        id : Optional[np.ndarray], default None
+            ID - observations with the same ID will be included/excluded from the bootstrap samples together
         n_bootstrap_samples: int, default DEFAULT_N_BOOTSTRAP_SAMPLES
             The number of bootstrap samples used to calculate slope and intercept
             errors. Execution time will scale as n_bootstrap_samples, and precision as 1/sqrt(n_bootstrap_samples)
@@ -454,7 +457,13 @@ def linregress_with_errors_bootstrap(x: np.ndarray,
         y_err_in_table: np.ndarray = np.ones_like(y)
     else:
         y_err_in_table: np.ndarray = y_err
-    xy_table = Table([x, y, y_err_in_table], names = ("x", "y", "y_err"))
+    # For ID, if it's none, make a list of indices
+    if id is None:
+        id_in_table: np.ndarray = np.arange(len(y))
+    else:
+        id_in_table = id
+    xy_table = Table([id_in_table, x, y, y_err_in_table], names = ("id", "x", "y", "y_err"))
+    xy_table.add_index("id")
 
     # Seed the random number generator
     rng = np.random.default_rng(bootstrap_seed)
@@ -465,18 +474,23 @@ def linregress_with_errors_bootstrap(x: np.ndarray,
                                                   y_err = xy_table["y_err"])
 
     # Bootstrap to get errors on slope and intercept
-    n_values = len(xy_table)
+
+    s_oid = np.unique(id_in_table)
+    n_ids = len(s_oid)
 
     slope_bs = np.empty(n_bootstrap_samples)
     intercept_bs = np.empty(n_bootstrap_samples)
     for b_i in range(n_bootstrap_samples):
         # For each bootstrap sample, select a set of random rows, allowing duplication
-        u = rng.integers(0, n_values, n_values)
+        u = rng.integers(0, n_ids, n_ids)
+
+        l_ids = s_oid[u]
+        sample_table = xy_table.loc[l_ids]
 
         # Calculate a linear regression without bootstrapping on this sample of values
-        results_bs = linregress_with_errors_no_bootstrap(x = xy_table[u]["x"],
-                                                         y = xy_table[u]["y"],
-                                                         y_err = xy_table[u]["y_err"])
+        results_bs = linregress_with_errors_no_bootstrap(x = sample_table["x"],
+                                                         y = sample_table["y"],
+                                                         y_err = sample_table["y_err"])
 
         # Store the slope and intercept from this calculation
         slope_bs[b_i] = results_bs.slope
