@@ -97,6 +97,33 @@ class SheStarCatalogFormat(SheTableFormat):
                                                  comment = "Error on mean ellipticity measurement of this object, "
                                                            "component 2")
 
+        self.used_for_fit = self.set_column_properties("SHE_STARCAT_USED_FOR_FIT", dtype = "bool", fits_dtype = "L",
+                                                       comment = "Whether or not this star was used for fitting "
+                                                                 "the PSF model.")
+        self.group_id = self.set_column_properties("SHE_STARCAT_GROUP_ID", dtype = ">i8", fits_dtype = "K",
+                                                   comment = "A unique ID for the group of stars fitted "
+                                                             "simultaneously, generally the ID of one of the stars "
+                                                             "in the group to avoid duplication.")
+        self.group_chisq = self.set_column_properties("SHE_STARCAT_GROUP_CHISQ", dtype = ">f4", fits_dtype = "E",
+                                                      comment = "Chi-squared statistic for the residual of the "
+                                                                "fitted or modeled group of PSFs compared to the stars")
+        self.group_unmasked_pix = self.set_column_properties("SHE_STARCAT_GROUP_UNMASKED_PIX", dtype = ">i4",
+                                                             fits_dtype = "J",
+                                                             comment = "Total number of unmasked pixels covered by "
+                                                                       "stars in this group.")
+        self.group_num_fitted_params = self.set_column_properties("SHE_STARCAT_GROUP_N_FITTED_PARAMS", dtype = ">i4",
+                                                                  fits_dtype = "J",
+                                                                  comment = "Number of fitted parameters of the PSF "
+                                                                            "model "
+                                                                            "for this group of stars")
+        self.star_chisq = self.set_column_properties("SHE_STARCAT_STAR_CHISQ", dtype = ">f4", fits_dtype = "E",
+                                                     comment = "Chi-squared statistic for the residual of the "
+                                                               "fitted or modeled PSF compared to this star.")
+        self.star_unmasked_pix = self.set_column_properties("SHE_STARCAT_STAR_UNMASKED_PIX", dtype = ">i4",
+                                                            fits_dtype = "J",
+                                                            comment = "Total number of unmasked pixels covered by "
+                                                                      "this star.")
+
         self.rr_dist = self.set_column_properties("SHE_STARCAT_RR_DIST", dtype = ">f4", fits_dtype = "E",
                                                   is_optional = True, comment = "Distance from readout register - "
                                                                                 "only used internally within CTI-PSF "
