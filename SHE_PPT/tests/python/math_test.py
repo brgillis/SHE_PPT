@@ -25,7 +25,7 @@ import numpy as np
 from numpy.testing import assert_almost_equal
 from scipy.stats import linregress
 
-from SHE_PPT.math import (BiasMeasurements, DEFAULT_BOOTSTRAP_SEED, DEFAULT_N_BOOTSTRAP_SAMPLES, LinregressResults,
+from SHE_PPT.math import (BiasMeasurements, DEFAULT_BOOTSTRAP_SEED, LinregressResults,
                           combine_linregress_statistics, get_linregress_statistics,
                           linregress_with_errors_bootstrap,
                           linregress_with_errors_no_bootstrap, )
@@ -80,26 +80,33 @@ class Test_math():
            to test results - for either bootstrap or non-bootstrap approach.
         """
 
-        if not bootstrap:
-            linregress_function = linregress_with_errors_no_bootstrap
-        else:
-            linregress_function = linregress_with_errors_bootstrap
-
         # Set up test input
 
         ex_slope = 0.3
-        ex_intercept = 10.2
+        ex_intercept = 4.7
+        y_err_mag = 0.1
         n = 10
         n_test = 1000
-        if bootstrap:
-            n_test = n_test // DEFAULT_N_BOOTSTRAP_SAMPLES
 
-        x = np.linspace(0, n - 1, num = n, endpoint = True, dtype = float)
+        # Set up some things differently depending on whether we're bootstrapping or not
+        if not bootstrap:
+            linregress_function = linregress_with_errors_no_bootstrap
+            kwargs = {}
+            decimal = 2
+        else:
+            linregress_function = linregress_with_errors_bootstrap
+            n_bootstrap_samples = 100
+            n_test = n_test // 10
+            kwargs = {"bootstrap_seed"     : DEFAULT_BOOTSTRAP_SEED,
+                      "n_bootstrap_samples": n_bootstrap_samples}
+            decimal = 2
+
+        x = np.linspace(0, 100, num = n, endpoint = True, dtype = float)
         base_y = ex_intercept + ex_slope * x
 
-        np.random.seed(1234)
+        rng = np.random.default_rng(1234)
 
-        y_err = np.random.random(n)
+        y_err = y_err_mag * rng.normal(size = n)
 
         # Run a set of tests
         slopes = np.zeros(n_test)
@@ -110,13 +117,12 @@ class Test_math():
         lstats = []
 
         for i in range(n_test):
-            yz = np.random.randn(n)
+            yz = rng.normal(size = n)
             y = base_y + y_err * yz
 
             if bootstrap:
-                kwargs = {"bootstrap_seed": DEFAULT_BOOTSTRAP_SEED + i}
-            else:
-                kwargs = {}
+                # Use a different bootstrap seed each time
+                kwargs["bootstrap_seed"] += 1
 
             # Get and save the regression results for this run
             regress_results = linregress_function(x, y, y_err, **kwargs)
@@ -138,12 +144,6 @@ class Test_math():
         slope_intercept_cov = np.cov(slopes, intercepts)[0, 1]
 
         # Check the results are reasonable
-
-        if bootstrap:
-            # Use more relaxed checking in the bootstrap case due to the smaller number of samples
-            decimal = 1
-        else:
-            decimal = 2
 
         assert_almost_equal(slope_mean, ex_slope, decimal = decimal)
         assert_almost_equal(intercept_mean, ex_intercept, decimal = decimal)
