@@ -28,9 +28,20 @@ from SHE_PPT.math import (BiasMeasurements, DEFAULT_BOOTSTRAP_SEED, LinregressRe
                           combine_linregress_statistics, get_linregress_statistics,
                           linregress_with_errors_bootstrap,
                           linregress_with_errors_no_bootstrap, )
+from SHE_PPT.testing.utility import SheTestCase
 
 
-class Test_math():
+class Test_math(SheTestCase):
+
+    def post_setup(self):
+
+        # Set up test input
+
+        self.ex_slope = 0.3
+        self.ex_intercept = 4.7
+        self.y_err_mag = 0.1
+        self.n_test_points = 10
+        self.n_tests = 1000
 
     def test_linregress_with_errors_simple(self):
         """Unit test of linregress_with_errors.
@@ -74,19 +85,16 @@ class Test_math():
 
         self._test_linregress_with_errors_full(bootstrap = True)
 
-    @staticmethod
-    def _test_linregress_with_errors_full(bootstrap: bool):
+    def test_linregress_with_errors_bootstrap_corr_errors(self):
+        """ Tests bootstrap error calculation in the case of correlated errors.
+        """
+        pass
+
+    def _test_linregress_with_errors_full(self, bootstrap: bool):
         """Unit test of linregress_with_errors that does a full simulation
            to test results - for either bootstrap or non-bootstrap approach.
         """
 
-        # Set up test input
-
-        ex_slope = 0.3
-        ex_intercept = 4.7
-        y_err_mag = 0.1
-        n = 10
-        n_test = 1000
         rtol = 0.1
         atol = 0.001
 
@@ -102,27 +110,27 @@ class Test_math():
         else:
             linregress_function = linregress_with_errors_bootstrap
             n_bootstrap_samples = 100
-            n_test = n_test // 10
+            self.n_tests = self.n_tests // 10
             kwargs = {"bootstrap_seed"     : DEFAULT_BOOTSTRAP_SEED,
                       "n_bootstrap_samples": n_bootstrap_samples}
 
-        x = np.linspace(0, 100, num = n, endpoint = True, dtype = float)
-        base_y = ex_intercept + ex_slope * x
+        x = np.linspace(0, 100, num = self.n_test_points, endpoint = True, dtype = float)
+        base_y = self.ex_intercept + self.ex_slope * x
 
         rng = np.random.default_rng(1234)
 
-        y_err = y_err_mag * (0.5 + rng.uniform(size = n))
+        y_err = self.y_err_mag * (0.5 + rng.uniform(size = self.n_test_points))
 
         # Run a set of tests
-        slopes = np.zeros(n_test)
-        intercepts = np.zeros(n_test)
-        slope_errs = np.zeros(n_test)
-        intercept_errs = np.zeros(n_test)
-        slope_intercept_covars = np.zeros(n_test)
+        slopes = np.zeros(self.n_tests)
+        intercepts = np.zeros(self.n_tests)
+        slope_errs = np.zeros(self.n_tests)
+        intercept_errs = np.zeros(self.n_tests)
+        slope_intercept_covars = np.zeros(self.n_tests)
         lstats = []
 
-        for i in range(n_test):
-            yz = rng.normal(size = n)
+        for i in range(self.n_tests):
+            yz = rng.normal(size = self.n_test_points)
             y = base_y + y_err * yz
 
             if bootstrap:
@@ -150,18 +158,18 @@ class Test_math():
 
         # Check the results are reasonable
 
-        assert_close(slope_mean, ex_slope)
-        assert_close(intercept_mean, ex_intercept)
+        assert_close(slope_mean, self.ex_slope)
+        assert_close(intercept_mean, self.ex_intercept)
         assert_close(slope_std, np.mean(slope_errs))
         assert_close(intercept_std, np.mean(intercept_errs))
         assert_close(slope_intercept_cov, np.mean(slope_intercept_covars))
 
         # Now check if it works the same by compiling statistics
         combined_results = combine_linregress_statistics(lstats)
-        assert_close(combined_results.slope, ex_slope)
-        assert_close(combined_results.intercept, ex_intercept)
-        assert_close(combined_results.slope_err, np.mean(slope_errs) / np.sqrt(n_test))
-        assert_close(combined_results.intercept_err, np.mean(intercept_errs) / np.sqrt(n_test))
+        assert_close(combined_results.slope, self.ex_slope)
+        assert_close(combined_results.intercept, self.ex_intercept)
+        assert_close(combined_results.slope_err, np.mean(slope_errs) / np.sqrt(self.n_tests))
+        assert_close(combined_results.intercept_err, np.mean(intercept_errs) / np.sqrt(self.n_tests))
         assert_close(combined_results.slope_intercept_covar, np.mean(slope_intercept_covars))
 
     def test_bias_measurement(self):
