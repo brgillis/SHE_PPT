@@ -681,6 +681,31 @@ def _get_converted_enum_type(value: str, enum_type: EnumMeta):
     return enum_value
 
 
+def _get_converted_list_type(value: str,
+                             list_type: Tuple[Type[list], Type]):
+    """ Gets and returns the value converted to a list of the desired type.
+    """
+    item_type = list_type[1]
+
+    # Get the function to handle conversion
+    convert_func = get_convert_func(item_type)
+
+    # Split the list by whitespace
+    if isinstance(value, list) and isinstance(value[0], str):
+        l_str_values: List[str] = value
+    elif isinstance(value, str):
+        l_str_values: List[str] = value.strip().split()
+    else:
+        raise TypeError(f"Unrecognized type for pipeline_config[enum_key]: {type(value)}")
+
+    # Convert each item in the list in turn
+    l_values: Any = [None] * len(l_str_values)
+    for i in range(len(l_str_values)):
+        l_values[i] = convert_func(l_str_values[i], item_type)
+
+    return l_values
+
+
 def _get_converted_type(value: str, desired_type: Type):
     """ Gets and returns the value converted to a desired type.
     """
@@ -749,24 +774,8 @@ def _convert_list_type(pipeline_config: Dict[ConfigKeys, Any],
     """ Converts a config item into a list of the desired type.
     """
 
-    # Get the function to handle conversion
-    convert_func = get_convert_func(item_type)
-
-    # Split the list by whitespace
-    if isinstance(pipeline_config[enum_key], list) and isinstance(pipeline_config[enum_key][0], str):
-        l_str_values: List[str] = pipeline_config[enum_key]
-    elif isinstance(pipeline_config[enum_key], str):
-        l_str_values: List[str] = pipeline_config[enum_key].strip().split()
-    else:
-        raise TypeError(f"Unrecognized type for pipeline_config[enum_key]: {type(pipeline_config[enum_key])}")
-
-    # Convert each item in the list in turn
-    l_values: Any = [None] * len(l_str_values)
-    for i in range(len(l_str_values)):
-        l_values[i] = convert_func(l_str_values[i], item_type)
-
-    # Update the pipeline config
-    pipeline_config[enum_key] = l_values
+    pipeline_config[enum_key] = _get_converted_list_type(pipeline_config[enum_key],
+                                                         (list, item_type))
 
 
 def _convert_with_backup_type(pipeline_config: Dict[ConfigKeys, Any],
@@ -796,10 +805,12 @@ def _convert_with_backup_type(pipeline_config: Dict[ConfigKeys, Any],
     pipeline_config[enum_key] = converted_value
 
 
-def get_convert_func(item_type: Type) -> Callable:
+def get_convert_func(item_type: Union[Type, Tuple[Type[list], Type]]) -> Callable:
     """ Return the proper function to handle conversion to the desired type.
     """
-    if issubclass(item_type, AllowedEnum):
+    if isinstance(item_type, tuple) and item_type[0] == list:
+        return _get_converted_list_type
+    elif issubclass(item_type, AllowedEnum):
         return _get_converted_enum_type
     else:
         return _get_converted_type
