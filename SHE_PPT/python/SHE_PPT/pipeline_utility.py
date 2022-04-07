@@ -713,8 +713,11 @@ def _get_converted_type(value: str, desired_type: Type):
 def _convert_tuple_type(pipeline_config: Dict[ConfigKeys, Any],
                         enum_key: ConfigKeys,
                         tuple_type: Tuple[Type, Type]) -> None:
-    """ Converts a type expressed as a tuple. Currently the only format accepted is where index 0 is list
-        and index 1 is the type of the list elements.
+    """ Converts a type expressed as a tuple. The formats currently accepted are:
+            * Element 0 is "list" and Element 1 is the type of item in the list
+            * Element 0 is the primary desired type, and Element 1 is the backup desired type, if it cannot be
+              converted to the primary desired type. In this case, Element 0 cannot simply be "list" - if a list is
+              desired, Element 0 should instead be a tuple of "list" and the desired item type.
     """
 
     # Skip if not present in the config or already converted
@@ -724,12 +727,26 @@ def _convert_tuple_type(pipeline_config: Dict[ConfigKeys, Any],
                                                                                  tuple_type[1]))):
         return
 
-    if not tuple_type[0] == list:
-        raise ValueError("Type conversion only accepts list as the first argument to tuple types at present.")
+    # Forward to appropriate method for the type of conversion appropriate for the tuple type provided
+    if tuple_type[0] == list:
+        return _convert_list_type(pipeline_config = pipeline_config,
+                                  enum_key = enum_key,
+                                  item_type = tuple_type[1])
+    else:
+        return _convert_with_backup_type(pipeline_config = pipeline_config,
+                                         enum_key = enum_key,
+                                         primary_type = tuple_type[0],
+                                         backup_type = tuple_type[1])
 
-    # Get the type to convert to, and the function to handle conversion
-    desired_type: Type = tuple_type[1]
-    if issubclass(desired_type, AllowedEnum):
+
+def _convert_list_type(pipeline_config: Dict[ConfigKeys, Any],
+                       enum_key: ConfigKeys,
+                       item_type: Type) -> None:
+    """ Converts a config item into a list of the desired type.
+    """
+
+    # Get the function to handle conversion
+    if issubclass(item_type, AllowedEnum):
         convert_func = _get_converted_enum_type
     else:
         convert_func = _get_converted_type
@@ -745,7 +762,7 @@ def _convert_tuple_type(pipeline_config: Dict[ConfigKeys, Any],
     # Convert each item in the list in turn
     l_values: Any = [None] * len(l_str_values)
     for i in range(len(l_str_values)):
-        l_values[i] = convert_func(l_str_values[i], desired_type)
+        l_values[i] = convert_func(l_str_values[i], item_type)
 
     # Update the pipeline config
     pipeline_config[enum_key] = l_values
