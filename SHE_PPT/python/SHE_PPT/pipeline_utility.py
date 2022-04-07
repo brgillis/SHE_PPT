@@ -785,11 +785,11 @@ def _convert_with_backup_type(pipeline_config: Dict[ConfigKeys, Any],
     primary_convert_func = get_convert_func(primary_type)
     try:
         converted_value = primary_convert_func(value, primary_type)
-    except TypeError:
+    except (TypeError, ValueError):
         try:
             backup_convert_func = get_convert_func(backup_type)
             converted_value = backup_convert_func(value, backup_type)
-        except TypeError:
+        except (TypeError, ValueError):
             raise TypeError(f"Value {value} provided with key {enum_key} in the pipeline config cannot be converted "
                             f"to either type {primary_type} or {backup_type}.")
 
