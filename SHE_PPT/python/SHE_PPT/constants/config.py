@@ -281,7 +281,7 @@ class ValidationConfigKeys(ConfigKeys):
 
     # Options for SHE_Validation_MatchToTU
 
-    TUM_ADD_BIN_COLUMNS = TU_MATCH_HEAD + "add_bin_columns"
+    TUM_ADD_BIN_COLUMNS = AnalysisConfigKeys.TUM_ADD_BIN_COLUMNS.value
 
     # Options for SHE_Validation_ValidateCTIGal
 
