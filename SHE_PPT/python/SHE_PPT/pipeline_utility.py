@@ -25,7 +25,7 @@ from argparse import Namespace
 from enum import EnumMeta
 from functools import lru_cache
 from shutil import copyfile
-from typing import Any, Dict, Iterable, List, Optional, Tuple, Type, Union
+from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple, Type, TypeVar, Union
 
 import numpy as np
 
@@ -710,9 +710,13 @@ def _get_converted_type(value: str, desired_type: Type):
     return converted_value
 
 
+PrimaryType = TypeVar("PrimaryType")
+BackupType = TypeVar("BackupType")
+
+
 def _convert_tuple_type(pipeline_config: Dict[ConfigKeys, Any],
                         enum_key: ConfigKeys,
-                        tuple_type: Tuple[Type, Type]) -> None:
+                        tuple_type: Tuple[Union[Type[List], PrimaryType, Union[Type, BackupType]]]) -> None:
     """ Converts a type expressed as a tuple. The formats currently accepted are:
             * Element 0 is "list" and Element 1 is the type of item in the list
             * Element 0 is the primary desired type, and Element 1 is the backup desired type, if it cannot be
@@ -746,10 +750,7 @@ def _convert_list_type(pipeline_config: Dict[ConfigKeys, Any],
     """
 
     # Get the function to handle conversion
-    if issubclass(item_type, AllowedEnum):
-        convert_func = _get_converted_enum_type
-    else:
-        convert_func = _get_converted_type
+    convert_func = get_convert_func(item_type)
 
     # Split the list by whitespace
     if isinstance(pipeline_config[enum_key], list) and isinstance(pipeline_config[enum_key][0], str):
@@ -766,6 +767,42 @@ def _convert_list_type(pipeline_config: Dict[ConfigKeys, Any],
 
     # Update the pipeline config
     pipeline_config[enum_key] = l_values
+
+
+def _convert_with_backup_type(pipeline_config: Dict[ConfigKeys, Any],
+                              enum_key: ConfigKeys,
+                              primary_type: Type[PrimaryType],
+                              backup_type: Type[BackupType]) -> None:
+    """ Converts a config item into the primary type if possible, or the backup type if not.
+    """
+
+    value = pipeline_config[enum_key]
+    converted_value: Union[PrimaryType, BackupType]
+    # Return if the value is already in one of the desired types
+    if isinstance(value, primary_type) or isinstance(value, backup_type):
+        return
+
+    primary_convert_func = get_convert_func(primary_type)
+    try:
+        converted_value = primary_convert_func(value, primary_type)
+    except TypeError:
+        try:
+            backup_convert_func = get_convert_func(backup_type)
+            converted_value = backup_convert_func(value, backup_type)
+        except TypeError:
+            raise TypeError(f"Value {value} provided with key {enum_key} in the pipeline config cannot be converted "
+                            f"to either type {primary_type} or {backup_type}.")
+
+    pipeline_config[enum_key] = converted_value
+
+
+def get_convert_func(item_type: Type) -> Callable:
+    """ Return the proper function to handle conversion to the desired type.
+    """
+    if issubclass(item_type, AllowedEnum):
+        return _get_converted_enum_type
+    else:
+        return _get_converted_type
 
 
 def _convert_enum_type(pipeline_config: Dict[ConfigKeys, Any],
