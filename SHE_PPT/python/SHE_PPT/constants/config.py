@@ -263,26 +263,75 @@ class ValidationConfigKeys(ConfigKeys):
     """ An Enum of all allowed keys for the SHE Validation pipeline.
     """
 
-    # Options for multiple tasks - these global values will be overridden by values specific to a task if those are set
+    # The first set of values here are shared with the Analysis pipeline, so we take the value directly from that
+    # pipeline's ConfigKeys to reduce code duplication
 
-    VAL_LOCAL_FAIL_SIGMA = f"{VALIDATION_HEAD}local_fail_sigma"
-    VAL_GLOBAL_FAIL_SIGMA = f"{VALIDATION_HEAD}global_fail_sigma"
-    VAL_FAIL_SIGMA_SCALING = f"{VALIDATION_HEAD}fail_sigma_scaling"
+    # Options for multiple validation tasks - these global values will be overridden by values specific to a task if
+    # those are set
 
-    VAL_SNR_BIN_LIMITS = CTI_GAL_VALIDATION_HEAD + "snr_bin_limits"
-    VAL_BG_BIN_LIMITS = CTI_GAL_VALIDATION_HEAD + "bg_bin_limits"
-    VAL_COLOUR_BIN_LIMITS = CTI_GAL_VALIDATION_HEAD + "colour_bin_limits"
-    VAL_SIZE_BIN_LIMITS = CTI_GAL_VALIDATION_HEAD + "size_bin_limits"
+    VAL_LOCAL_FAIL_SIGMA = AnalysisConfigKeys.VAL_LOCAL_FAIL_SIGMA.value
+    VAL_GLOBAL_FAIL_SIGMA = AnalysisConfigKeys.VAL_GLOBAL_FAIL_SIGMA.value
+    VAL_FAIL_SIGMA_SCALING = AnalysisConfigKeys.VAL_FAIL_SIGMA_SCALING.value
+
+    VAL_SNR_BIN_LIMITS = AnalysisConfigKeys.VAL_SNR_BIN_LIMITS.value
+    VAL_BG_BIN_LIMITS = AnalysisConfigKeys.VAL_BG_BIN_LIMITS.value
+    VAL_COLOUR_BIN_LIMITS = AnalysisConfigKeys.VAL_COLOUR_BIN_LIMITS.value
+    VAL_SIZE_BIN_LIMITS = AnalysisConfigKeys.VAL_SIZE_BIN_LIMITS.value
+    VAL_EPOCH_BIN_LIMITS = AnalysisConfigKeys.VAL_EPOCH_BIN_LIMITS.value
+
+    # Options for SHE_Validation_MatchToTU
+
+    TUM_ADD_BIN_COLUMNS = TU_MATCH_HEAD + "add_bin_columns"
+
+    # Options for SHE_Validation_ValidateCTIGal
+
+    CG_LOCAL_FAIL_SIGMA = AnalysisConfigKeys.CG_LOCAL_FAIL_SIGMA.value
+    CG_GLOBAL_FAIL_SIGMA = AnalysisConfigKeys.CG_GLOBAL_FAIL_SIGMA.value
+    CG_FAIL_SIGMA_SCALING = AnalysisConfigKeys.CG_FAIL_SIGMA_SCALING.value
+
+    CG_SNR_BIN_LIMITS = AnalysisConfigKeys.CG_SNR_BIN_LIMITS.value
+    CG_BG_BIN_LIMITS = AnalysisConfigKeys.CG_BG_BIN_LIMITS.value
+    CG_COLOUR_BIN_LIMITS = AnalysisConfigKeys.CG_COLOUR_BIN_LIMITS.value
+    CG_SIZE_BIN_LIMITS = AnalysisConfigKeys.CG_SIZE_BIN_LIMITS.value
+    CG_EPOCH_BIN_LIMITS = AnalysisConfigKeys.CG_EPOCH_BIN_LIMITS.value
+
+    # Options for SHE_Validation_ValidateCTIPSF
+
+    CP_LOCAL_FAIL_SIGMA = AnalysisConfigKeys.CP_LOCAL_FAIL_SIGMA.value
+    CP_GLOBAL_FAIL_SIGMA = AnalysisConfigKeys.CP_GLOBAL_FAIL_SIGMA.value
+    CP_FAIL_SIGMA_SCALING = AnalysisConfigKeys.CP_FAIL_SIGMA_SCALING.value
+
+    CP_SNR_BIN_LIMITS = AnalysisConfigKeys.CP_SNR_BIN_LIMITS.value
+    CP_BG_BIN_LIMITS = AnalysisConfigKeys.CP_BG_BIN_LIMITS.value
+    CP_COLOUR_BIN_LIMITS = AnalysisConfigKeys.CP_COLOUR_BIN_LIMITS.value
+    CP_SIZE_BIN_LIMITS = AnalysisConfigKeys.CP_SIZE_BIN_LIMITS.value
+    CP_EPOCH_BIN_LIMITS = AnalysisConfigKeys.CP_EPOCH_BIN_LIMITS.value
+
+    # Options for SHE_Validation_ValidatePSFResStarPos
+
+    PRSP_P_FAIL = AnalysisConfigKeys.PRSP_P_FAIL.value
+
+    PRSP_SNR_BIN_LIMITS = AnalysisConfigKeys.PRSP_SNR_BIN_LIMITS.value
+
+    # Options for SHE_Validation_ValidatePSFResInterp
+
+    PRINT_LOCAL_FAIL_SIGMA = AnalysisConfigKeys.PRINT_LOCAL_FAIL_SIGMA.value
+    PRINT_GLOBAL_FAIL_SIGMA = AnalysisConfigKeys.PRINT_GLOBAL_FAIL_SIGMA.value
+    PRINT_FAIL_SIGMA_SCALING = AnalysisConfigKeys.PRINT_FAIL_SIGMA_SCALING.value
+
+    PRINT_SNR_BIN_LIMITS = AnalysisConfigKeys.PRINT_SNR_BIN_LIMITS.value
+    PRINT_SED_BIN_LIMITS = AnalysisConfigKeys.PRINT_SED_BIN_LIMITS.value
+    PRINT_COORD_BIN_LIMITS = AnalysisConfigKeys.PRINT_COORD_BIN_LIMITS.value
+    PRINT_EPOCH_BIN_LIMITS = AnalysisConfigKeys.PRINT_EPOCH_BIN_LIMITS.value
+    PRINT_ASPECT_BIN_LIMITS = AnalysisConfigKeys.PRINT_ASPECT_BIN_LIMITS.value
+
+    # And below here are options that are only used in the validation pipeline
 
     # Options for SHE_Validation_ValidateShearBias
 
     SBV_MAX_G_IN = f"{SHEAR_BIAS_VALIDATION_HEAD}max_g_in"
     SBV_BOOTSTRAP_ERRORS = f"{SHEAR_BIAS_VALIDATION_HEAD}bootstrap_errors"
     SBV_REQUIRE_FITCLASS_ZERO = f"{SHEAR_BIAS_VALIDATION_HEAD}require_fitclass_zero"
-
-    # Options for SHE_Validation_MatchToTU
-
-    TUM_ADD_BIN_COLUMNS = TU_MATCH_HEAD + "add_bin_columns"
 
 
 # Task names for Reconciliation pipeline
