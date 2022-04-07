@@ -21,18 +21,18 @@
 __updated__ = "2021-08-12"
 
 import os
+from typing import Any, Dict
 
+import numpy as np
 import pytest
 
 from SHE_PPT import products
 from SHE_PPT.constants.shear_estimation_methods import ShearEstimationMethods
-from SHE_PPT.file_io import write_xml_product, read_xml_product, write_listfile
-from SHE_PPT.pipeline_utility import (read_analysis_config, write_analysis_config,
-                                      read_reconciliation_config, write_reconciliation_config,
-                                      read_calibration_config, write_calibration_config,
-                                      get_conditional_product, AnalysisConfigKeys, CalibrationConfigKeys,
-                                      GlobalConfigKeys, ReconciliationConfigKeys, convert_config_types)
-import numpy as np
+from SHE_PPT.file_io import write_listfile, write_xml_product
+from SHE_PPT.pipeline_utility import (AnalysisConfigKeys, CalibrationConfigKeys, GlobalConfigKeys,
+                                      ReconciliationConfigKeys, convert_config_types, get_conditional_product,
+                                      read_analysis_config, read_calibration_config, read_reconciliation_config,
+                                      write_analysis_config, write_calibration_config, write_reconciliation_config, )
 
 
 class TestUtility:
@@ -49,12 +49,11 @@ class TestUtility:
     def teardown_class(cls):
         return
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture(autouse = True)
     def setup(self, tmpdir):
         self.workdir = tmpdir.strpath
 
     def test_rw_config(self):
-
         test1_filename = "test1.txt"
 
         lf0_filename = "empty_listfile.json"
@@ -63,21 +62,21 @@ class TestUtility:
 
         # Test we get out of the file what we put in, for each type of configuration file
 
-        test_analysis_dict = {AnalysisConfigKeys.ES_METHODS: ShearEstimationMethods.KSB,
+        test_analysis_dict = {AnalysisConfigKeys.ES_METHODS    : ShearEstimationMethods.KSB,
                               AnalysisConfigKeys.OID_BATCH_SIZE: "26"}
 
-        test_analysis_type_dict = {AnalysisConfigKeys.ES_METHODS: (list, ShearEstimationMethods),
+        test_analysis_type_dict = {AnalysisConfigKeys.ES_METHODS    : (list, ShearEstimationMethods),
                                    AnalysisConfigKeys.OID_BATCH_SIZE: int}
 
-        write_analysis_config(test_analysis_dict, test1_filename, workdir=self.workdir)
+        write_analysis_config(test_analysis_dict, test1_filename, workdir = self.workdir)
 
         write_listfile(os.path.join(self.workdir, lf0_filename), [])
         write_listfile(os.path.join(self.workdir, lf1_filename), [test1_filename])
         write_listfile(os.path.join(self.workdir, lf2_filename), [test1_filename, test1_filename])
 
         read_dict1 = read_analysis_config(test1_filename,
-                                          workdir=self.workdir,
-                                          d_types=test_analysis_type_dict)
+                                          workdir = self.workdir,
+                                          d_types = test_analysis_type_dict)
 
         # Check it's been read in correctly
         assert read_dict1[AnalysisConfigKeys.ES_METHODS] == [ShearEstimationMethods.KSB]
@@ -85,60 +84,60 @@ class TestUtility:
 
         # Check we get expected results from trying to read in other variants
 
-        assert read_analysis_config(None, workdir=self.workdir) == {}
-        assert read_analysis_config("", workdir=self.workdir) == {}
-        assert read_analysis_config("None", workdir=self.workdir) == {}
+        assert read_analysis_config(None, workdir = self.workdir) == {}
+        assert read_analysis_config("", workdir = self.workdir) == {}
+        assert read_analysis_config("None", workdir = self.workdir) == {}
 
-        assert read_analysis_config(lf0_filename, workdir=self.workdir) == {}
+        assert read_analysis_config(lf0_filename, workdir = self.workdir) == {}
         assert read_analysis_config(lf1_filename,
-                                    workdir=self.workdir,
-                                    d_types=test_analysis_type_dict) == read_dict1
+                                    workdir = self.workdir,
+                                    d_types = test_analysis_type_dict) == read_dict1
         with pytest.raises(ValueError):
-            read_analysis_config(lf2_filename, workdir=self.workdir)
+            read_analysis_config(lf2_filename, workdir = self.workdir)
 
         # Test we get out of the file what we put in, for each type of configuration file
 
         test_reconciliation_dict = {ReconciliationConfigKeys.REC_METHOD: "Best"}
 
-        write_reconciliation_config(test_reconciliation_dict, test1_filename, workdir=self.workdir)
+        write_reconciliation_config(test_reconciliation_dict, test1_filename, workdir = self.workdir)
 
         write_listfile(os.path.join(self.workdir, lf0_filename), [])
         write_listfile(os.path.join(self.workdir, lf1_filename), [test1_filename])
         write_listfile(os.path.join(self.workdir, lf2_filename), [test1_filename, test1_filename])
 
-        read_dict1 = read_reconciliation_config(test1_filename, workdir=self.workdir)
+        read_dict1 = read_reconciliation_config(test1_filename, workdir = self.workdir)
 
         # Check it's been read in correctly
         assert read_dict1[ReconciliationConfigKeys.REC_METHOD] == "Best"
 
         # Check we get expected results from trying to read in other variants
 
-        assert read_reconciliation_config(None, workdir=self.workdir) == {}
-        assert read_reconciliation_config("", workdir=self.workdir) == {}
-        assert read_reconciliation_config("None", workdir=self.workdir) == {}
+        assert read_reconciliation_config(None, workdir = self.workdir) == {}
+        assert read_reconciliation_config("", workdir = self.workdir) == {}
+        assert read_reconciliation_config("None", workdir = self.workdir) == {}
 
-        assert read_reconciliation_config(lf0_filename, workdir=self.workdir) == {}
-        assert read_reconciliation_config(lf1_filename, workdir=self.workdir) == read_dict1
+        assert read_reconciliation_config(lf0_filename, workdir = self.workdir) == {}
+        assert read_reconciliation_config(lf1_filename, workdir = self.workdir) == read_dict1
         with pytest.raises(ValueError):
-            read_reconciliation_config(lf2_filename, workdir=self.workdir)
+            read_reconciliation_config(lf2_filename, workdir = self.workdir)
 
         # Test we get out of the file what we put in, for each type of configuration file
 
-        test_calibration_dict = {CalibrationConfigKeys.ES_METHODS: ShearEstimationMethods.KSB,
+        test_calibration_dict = {CalibrationConfigKeys.ES_METHODS : ShearEstimationMethods.KSB,
                                  CalibrationConfigKeys.CBM_CLEANUP: False}
 
-        test_calibration_type_dict = {CalibrationConfigKeys.ES_METHODS: (list, ShearEstimationMethods),
+        test_calibration_type_dict = {CalibrationConfigKeys.ES_METHODS : (list, ShearEstimationMethods),
                                       CalibrationConfigKeys.CBM_CLEANUP: bool}
 
-        write_calibration_config(test_calibration_dict, test1_filename, workdir=self.workdir)
+        write_calibration_config(test_calibration_dict, test1_filename, workdir = self.workdir)
 
         write_listfile(os.path.join(self.workdir, lf0_filename), [])
         write_listfile(os.path.join(self.workdir, lf1_filename), [test1_filename])
         write_listfile(os.path.join(self.workdir, lf2_filename), [test1_filename, test1_filename])
 
         read_dict1 = read_calibration_config(test1_filename,
-                                             workdir=self.workdir,
-                                             d_types=test_calibration_type_dict)
+                                             workdir = self.workdir,
+                                             d_types = test_calibration_type_dict)
 
         # Check it's been read in correctly
         assert read_dict1[CalibrationConfigKeys.ES_METHODS] == [ShearEstimationMethods.KSB]
@@ -146,16 +145,16 @@ class TestUtility:
 
         # Check we get expected results from trying to read in other variants
 
-        assert read_calibration_config(None, workdir=self.workdir) == {}
-        assert read_calibration_config("", workdir=self.workdir) == {}
-        assert read_calibration_config("None", workdir=self.workdir) == {}
+        assert read_calibration_config(None, workdir = self.workdir) == {}
+        assert read_calibration_config("", workdir = self.workdir) == {}
+        assert read_calibration_config("None", workdir = self.workdir) == {}
 
-        assert read_calibration_config(lf0_filename, workdir=self.workdir) == {}
+        assert read_calibration_config(lf0_filename, workdir = self.workdir) == {}
         assert read_calibration_config(lf1_filename,
-                                       workdir=self.workdir,
-                                       d_types=test_calibration_type_dict) == read_dict1
+                                       workdir = self.workdir,
+                                       d_types = test_calibration_type_dict) == read_dict1
         with pytest.raises(ValueError):
-            read_calibration_config(lf2_filename, workdir=self.workdir)
+            read_calibration_config(lf2_filename, workdir = self.workdir)
 
         # Test that we can parse a more complicated file
         test2_filename = "test2.txt"
@@ -167,11 +166,12 @@ class TestUtility:
                      f"\n"
                      f"{AnalysisConfigKeys.REMAP_NUM_SWARP_THREADS_EXP.value}=4 #==2\n")
 
-        read_dict2 = read_analysis_config(test2_filename, workdir=self.workdir,
-                                          d_types={AnalysisConfigKeys.ES_METHODS: (list, ShearEstimationMethods),
-                                                   AnalysisConfigKeys.OID_BATCH_SIZE: int,
-                                                   AnalysisConfigKeys.REMAP_NUM_THREADS_EXP: int,
-                                                   AnalysisConfigKeys.REMAP_NUM_SWARP_THREADS_EXP: int, })
+        read_dict2 = read_analysis_config(test2_filename, workdir = self.workdir,
+                                          d_types = {AnalysisConfigKeys.ES_METHODS          : (
+                                              list, ShearEstimationMethods),
+                                              AnalysisConfigKeys.OID_BATCH_SIZE             : int,
+                                              AnalysisConfigKeys.REMAP_NUM_THREADS_EXP      : int,
+                                              AnalysisConfigKeys.REMAP_NUM_SWARP_THREADS_EXP: int, })
 
         assert read_dict2[AnalysisConfigKeys.ES_METHODS] == [ShearEstimationMethods.KSB]
         assert read_dict2[AnalysisConfigKeys.OID_BATCH_SIZE] == 26
@@ -180,7 +180,6 @@ class TestUtility:
         assert "ignore this" not in read_dict2
 
     def test_get_conditional_product(self):
-
         # We'll set up some test files to work with, using the object_id_list product
 
         product_filename = "object_id_list.xml"
@@ -191,7 +190,7 @@ class TestUtility:
         object_ids = [1, 2]
 
         product = products.she_object_id_list.create_object_id_list_product(object_ids)
-        write_xml_product(product, product_filename, workdir=self.workdir)
+        write_xml_product(product, product_filename, workdir = self.workdir)
 
         write_listfile(os.path.join(self.workdir, lf0_filename), [])
         write_listfile(os.path.join(self.workdir, lf1_filename), [product_filename])
@@ -199,36 +198,44 @@ class TestUtility:
 
         # Test that we get the expected result in each case
 
-        assert get_conditional_product(None, workdir=self.workdir) is None
-        assert get_conditional_product("", workdir=self.workdir) is None
-        assert get_conditional_product("None", workdir=self.workdir) is None
+        assert get_conditional_product(None, workdir = self.workdir) is None
+        assert get_conditional_product("", workdir = self.workdir) is None
+        assert get_conditional_product("None", workdir = self.workdir) is None
 
-        assert get_conditional_product(product_filename, workdir=self.workdir).get_id_list() == object_ids
+        assert get_conditional_product(product_filename, workdir = self.workdir).get_id_list() == object_ids
 
-        assert get_conditional_product(lf0_filename, workdir=self.workdir) is None
-        assert get_conditional_product(lf1_filename, workdir=self.workdir).get_id_list() == object_ids
+        assert get_conditional_product(lf0_filename, workdir = self.workdir) is None
+        assert get_conditional_product(lf1_filename, workdir = self.workdir).get_id_list() == object_ids
         with pytest.raises(ValueError):
-            get_conditional_product(lf2_filename, workdir=self.workdir)
+            get_conditional_product(lf2_filename, workdir = self.workdir)
 
     def test_convert_config_types(self):
         """ Runs tests of the convert_config_types function.
         """
 
         # Make mock input data
-        config = {"want_float": "0.",
-                  "want_array": "0. 1",
-                  "want_true": "True",
-                  "want_false": "False",
-                  "want_enum": GlobalConfigKeys.PIP_PROFILE.value.upper()}
-        d_types = {"want_float": float,
-                   "want_array": np.ndarray,
-                   "want_true": bool,
-                   "want_false": bool,
-                   "want_enum": GlobalConfigKeys}
+        config = {"want_float"                        : "0.",
+                  "want_array"                        : "0. 1",
+                  "want_true"                         : "True",
+                  "want_false"                        : "False",
+                  "want_enum"                         : GlobalConfigKeys.PIP_PROFILE.value.upper(),
+                  "want_int_list"                     : "0 1 7",
+                  "want_float_list"                   : "0 10 4.5",
+                  "want_int_from_int_or_int_list"     : "17",
+                  "want_int_list_from_int_or_int_list": "4 1"}
+        d_types = {"want_float"                        : float,
+                   "want_array"                        : np.ndarray,
+                   "want_true"                         : bool,
+                   "want_false"                        : bool,
+                   "want_enum"                         : GlobalConfigKeys,
+                   "want_int_list"                     : (list, int),
+                   "want_float_list"                   : (list, float),
+                   "want_int_from_int_or_int_list"     : (int, (list, int)),
+                   "want_int_list_from_int_or_int_list": (int, (list, int))}
 
         # Run the function
-        new_config = convert_config_types(pipeline_config=config,
-                                          d_types=d_types)
+        new_config: Dict[str, Any] = convert_config_types(pipeline_config = config,
+                                                          d_types = d_types)
 
         # Check the results
         assert np.isclose(new_config["want_float"], 0.)
@@ -236,3 +243,8 @@ class TestUtility:
         assert new_config["want_true"] == True
         assert new_config["want_false"] == False
         assert new_config["want_enum"] == GlobalConfigKeys.PIP_PROFILE
+
+        assert new_config["want_int_list"] == [0, 1, 7]
+        assert np.allclose(new_config["want_float_list"], [0., 10., 4.5])
+        assert new_config["want_int_from_int_or_int_list"] == 17
+        assert new_config["want_int_list_from_int_or_int_list"] == [4, 1]
