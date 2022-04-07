@@ -67,6 +67,14 @@ LENSMC_HEAD = "SHE_LensMC_"
 SHEAR_ESTIMATES_MERGE_HEAD = "SHE_CTE_ShearEstimatesMerge_"
 TU_MATCH_HEAD = "SHE_Validation_MatchToTU_"
 
+# Task names for the Validation and Analysis pipelines
+VALIDATION_HEAD = "SHE_Validation_"
+CTI_GAL_VALIDATION_HEAD = f"{VALIDATION_HEAD}ValidateCTIGal_"
+CTI_PSF_VALIDATION_HEAD = f"{VALIDATION_HEAD}ValidateCTIPSF_"
+SHEAR_BIAS_VALIDATION_HEAD = f"{VALIDATION_HEAD}ValidateShearBias_"
+PSF_RES_SP_VALIDATION_HEAD = f"{VALIDATION_HEAD}ValidatePSFResStarPos_"
+PSF_RES_INT_VALIDATION_HEAD = f"{VALIDATION_HEAD}ValidatePSFResInt_"
+
 
 class AnalysisConfigKeys(ConfigKeys):
     """ An Enum of all allowed keys for the SHE analysis pipelines.
@@ -191,19 +199,68 @@ class AnalysisConfigKeys(ConfigKeys):
 
     SEM_NUM_THREADS = SHEAR_ESTIMATES_MERGE_HEAD + "number_threads"
 
+    # Options for multiple validation tasks - these global values will be overridden by values specific to a task if
+    # those are set
+
+    VAL_LOCAL_FAIL_SIGMA = f"{VALIDATION_HEAD}local_fail_sigma"
+    VAL_GLOBAL_FAIL_SIGMA = f"{VALIDATION_HEAD}global_fail_sigma"
+    VAL_FAIL_SIGMA_SCALING = f"{VALIDATION_HEAD}fail_sigma_scaling"
+
+    VAL_SNR_BIN_LIMITS = f"{VALIDATION_HEAD}snr_bin_limits"
+    VAL_BG_BIN_LIMITS = f"{VALIDATION_HEAD}bg_bin_limits"
+    VAL_COLOUR_BIN_LIMITS = f"{VALIDATION_HEAD}colour_bin_limits"
+    VAL_SIZE_BIN_LIMITS = f"{VALIDATION_HEAD}size_bin_limits"
+    VAL_EPOCH_BIN_LIMITS = f"{VALIDATION_HEAD}epoch_bin_limits"
+
     # Options for SHE_Validation_MatchToTU
 
     TUM_ADD_BIN_COLUMNS = TU_MATCH_HEAD + "add_bin_columns"
 
+    # Options for SHE_Validation_ValidateCTIGal
 
-# Task names for the Validation pipeline
-VALIDATION_HEAD = "SHE_Validation_"
-CTI_GAL_VALIDATION_HEAD = f"{VALIDATION_HEAD}ValidateCTIGal_"
-SHEAR_BIAS_VALIDATION_HEAD = f"{VALIDATION_HEAD}ValidateShearBias_"
+    CG_LOCAL_FAIL_SIGMA = f"{CTI_GAL_VALIDATION_HEAD}local_fail_sigma"
+    CG_GLOBAL_FAIL_SIGMA = f"{CTI_GAL_VALIDATION_HEAD}global_fail_sigma"
+    CG_FAIL_SIGMA_SCALING = f"{CTI_GAL_VALIDATION_HEAD}fail_sigma_scaling"
+
+    CG_SNR_BIN_LIMITS = f"{CTI_GAL_VALIDATION_HEAD}snr_bin_limits"
+    CG_BG_BIN_LIMITS = f"{CTI_GAL_VALIDATION_HEAD}bg_bin_limits"
+    CG_COLOUR_BIN_LIMITS = f"{CTI_GAL_VALIDATION_HEAD}colour_bin_limits"
+    CG_SIZE_BIN_LIMITS = f"{CTI_GAL_VALIDATION_HEAD}size_bin_limits"
+    CG_EPOCH_BIN_LIMITS = f"{CTI_GAL_VALIDATION_HEAD}epoch_bin_limits"
+
+    # Options for SHE_Validation_ValidateCTIPSF
+
+    CP_LOCAL_FAIL_SIGMA = f"{CTI_PSF_VALIDATION_HEAD}local_fail_sigma"
+    CP_GLOBAL_FAIL_SIGMA = f"{CTI_PSF_VALIDATION_HEAD}global_fail_sigma"
+    CP_FAIL_SIGMA_SCALING = f"{CTI_PSF_VALIDATION_HEAD}fail_sigma_scaling"
+
+    CP_SNR_BIN_LIMITS = f"{CTI_PSF_VALIDATION_HEAD}snr_bin_limits"
+    CP_BG_BIN_LIMITS = f"{CTI_PSF_VALIDATION_HEAD}bg_bin_limits"
+    CP_COLOUR_BIN_LIMITS = f"{CTI_PSF_VALIDATION_HEAD}colour_bin_limits"
+    CP_SIZE_BIN_LIMITS = f"{CTI_PSF_VALIDATION_HEAD}size_bin_limits"
+    CP_EPOCH_BIN_LIMITS = f"{CTI_PSF_VALIDATION_HEAD}epoch_bin_limits"
+
+    # Options for SHE_Validation_ValidatePSFResStarPos
+
+    PRSP_P_FAIL = f"{PSF_RES_SP_VALIDATION_HEAD}p_fail"
+
+    PRSP_SNR_BIN_LIMITS = f"{PSF_RES_SP_VALIDATION_HEAD}snr_bin_limits"
+
+    # Options for SHE_Validation_ValidatePSFResInterp
+
+    PRINT_LOCAL_FAIL_SIGMA = f"{PSF_RES_INT_VALIDATION_HEAD}local_fail_sigma"
+    PRINT_GLOBAL_FAIL_SIGMA = f"{PSF_RES_INT_VALIDATION_HEAD}global_fail_sigma"
+    PRINT_FAIL_SIGMA_SCALING = f"{PSF_RES_INT_VALIDATION_HEAD}fail_sigma_scaling"
+
+    PRINT_SNR_BIN_LIMITS = f"{CTI_PSF_VALIDATION_HEAD}snr_bin_limits"
+    PRINT_SED_BIN_LIMITS = f"{CTI_PSF_VALIDATION_HEAD}sed_bin_limits"
+    PRINT_COORD_BIN_LIMITS = f"{CTI_PSF_VALIDATION_HEAD}coord_bin_limits"
+    PRINT_EPOCH_BIN_LIMITS = f"{CTI_PSF_VALIDATION_HEAD}epoch_bin_limits"
+    PRINT_ASPECT_BIN_LIMITS = f"{CTI_PSF_VALIDATION_HEAD}aspect_bin_limits"
 
 
 class ValidationConfigKeys(ConfigKeys):
-    """ An Enum of all allowed keys for the SHE analysis validation pipeline.
+    """ An Enum of all allowed keys for the SHE Validation pipeline.
     """
 
     # Options for multiple tasks - these global values will be overridden by values specific to a task if those are set
