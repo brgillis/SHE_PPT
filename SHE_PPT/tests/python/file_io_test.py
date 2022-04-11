@@ -44,10 +44,12 @@ class TestIO:
 
     """
 
+    listfile_name: str = "test_listfile.junk"
+    tuple_listfile_name: str = "test_listfile.junk"
+
     @classmethod
     def setup_class(cls):
-        cls.listfile_name = "test_listfile.junk"
-        cls.tuple_listfile_name = "test_listfile.junk"
+        pass
 
     @classmethod
     def teardown_class(cls):
@@ -57,8 +59,6 @@ class TestIO:
 
         if os.path.exists(cls.tuple_listfile_name):
             os.remove(cls.tuple_listfile_name)
-
-        del cls.listfile_name, cls.tuple_listfile_name
 
     @pytest.fixture(autouse = True)
     def setup(self, tmpdir):
@@ -130,7 +130,7 @@ class TestIO:
 
         # Test that if we specify the wrong type, a TypeError is raised
         with pytest.raises(TypeError):
-            p3 = read_xml_product(test_filename, product_type = non_ex_type)
+            _ = read_xml_product(test_filename, product_type = non_ex_type)
 
     def test_rw_listfile(self):
 
@@ -157,9 +157,9 @@ class TestIO:
 
         product = read_xml_product(test_filename)
         lines = open(test_filename).readlines()
-        nLines = len(lines)
+        num_lines = len(lines)
         lines = [line for ii, line in enumerate(lines) if not ('<Value>' in line and '<Key>' in lines[ii - 1])]
-        if len(lines) < nLines:
+        if len(lines) < num_lines:
             temp_test_filename = 'temp_test.xml'
             open(temp_test_filename, 'w').writelines(lines)
 

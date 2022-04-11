@@ -524,7 +524,7 @@ def get_allowed_filename(type_name: str = DEFAULT_TYPE_NAME,
 
 
 def write_listfile(listfile_name: str,
-                   filenames: Sequence[str],
+                   filenames: Sequence[Union[str, Tuple[str, ...]]],
                    log_info: bool = False,
                    workdir: str = "") -> None:
     """
@@ -541,8 +541,8 @@ def write_listfile(listfile_name: str,
         @param workdir <str> The work directory to place the file into.
 
     """
-    
-    qualified_listfile_name = os.path.join(workdir,listfile_name)
+
+    qualified_listfile_name = os.path.join(workdir, listfile_name)
 
     log_method = _get_optional_log_method(log_info)
     log_method("Writing listfile to %s", listfile_name)
@@ -574,7 +574,7 @@ def read_listfile(listfile_name: str,
         @return filenames <list<str>> List of filenames (or tuples of filenames) read in.
     """
 
-    qualified_listfile_name = os.path.join(workdir,listfile_name)
+    qualified_listfile_name = os.path.join(workdir, listfile_name)
 
     log_method = _get_optional_log_method(log_info)
     log_method("Reading listfile from %s", qualified_listfile_name)
