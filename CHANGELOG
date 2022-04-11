@@ -1,5 +1,41 @@
 Changelog for SHE_PPT
 
+Changes in v8.12
+=========================
+
+API Changes
+-----------
+- Added columns to she_star_catalog table format to provide necessary info for residual test
+
+Dependency Changes
+------------------
+
+
+Deprecated Features
+-------------------
+
+
+Bug Fixes
+---------
+- Fixed a possible circular import situation from occurring
+
+New Features
+------------
+- Added functions read_product_and_table and write_product_and_table for convenient reading/writing of a table and a
+  data product which points to it
+- Changed setup for SheTestCase to be split between setup_workdir and post_setup, for before and after workdir is set up
+- Added d_args attribute to SheTestCase, which provides a dict version of its args attribute
+- Added product definition and initializer for DpdSheStarCatalog
+
+New config features
+-------------------
+
+
+Miscellaneous
+-------------
+
+
+
 Changes in v8.8
 =========================
 
@@ -138,7 +174,7 @@ Bug Fixes
 
 New Features
 ------------
-- Added data product definitions for: she_analysis_config, she_bfd_calibration, she_ksb_calibration, 
+- Added data product definitions for: she_analysis_config, she_bfd_calibration, she_ksb_calibration,
   she_lensmc_calibration, she_momentsml_calibration, she_regauss_calibration
 - The following data product definitions now properly use XML bindings: she_common_calibration,
   she_galaxy_population_priors, she_psf_calibration_parameters, she_psf_field_parameters
@@ -363,7 +399,7 @@ New Features
 - Added SHEImage methods to read and write from fits
 - Added SHEImage method to extract stamps
 - Added SHEImageData and SHEStack classes to hold images and detection tables of multiple exposures
-- Added vis_helper module to read VIS-like data from SHE_GST (and potentially SC3) into SHEImage and SHEStack objects 
+- Added vis_helper module to read VIS-like data from SHE_GST (and potentially SC3) into SHEImage and SHEStack objects
 - Added format definitions for details, detections, galaxy_population, P(e), PSF, shear_estimates tables, and
   simulation_plan tables
 - Added various table utility features

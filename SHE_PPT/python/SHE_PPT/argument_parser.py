@@ -21,9 +21,10 @@ __updated__ = "2021-08-27"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 from argparse import Action, ArgumentParser
-
 from enum import Enum
 from typing import Optional
+
+from SHE_PPT.logging import getLogger
 
 ACT_STORE_TRUE = 'store_true'
 ACT_STORE_FALSE = 'store_true'
@@ -37,7 +38,7 @@ CA_DATA_IMAGES = "data_images"
 CA_VIS_CAL_FRAME = "vis_calibrated_frame_listfile"  # TODO: Fix duplication here
 CA_SHE_MEAS = "she_validated_measurements_product"
 CA_MER_CAT = "mer_final_catalog_listfile"
-CA_SHE_STAR_CAT = "star_catalog_listfile"
+CA_SHE_STAR_CAT = "star_catalog_product"
 
 # Options cline-args
 CA_PIPELINE_CONFIG = "pipeline_config"
@@ -45,6 +46,8 @@ CA_WORKDIR = "workdir"
 CA_LOGDIR = "logdir"
 CA_PROFILE = "profile"
 CA_DRY_RUN = "dry_run"
+
+logger = getLogger(__name__)
 
 
 # Enum for specifying how the cline-arg is used
@@ -67,29 +70,48 @@ class SheArgumentParser(ArgumentParser):
         super().__init__()
 
         # Input filenames
-        self.add_arg_with_type(f'--{CA_PIPELINE_CONFIG}', type = str, default = None,
-                               arg_type = ClineArgType.INPUT,
-                               help = 'Pipeline configuration file (.xml data product or .json listfile of 0-1 '
-                                      'such data products.')
+        self.add_input_arg(f'--{CA_PIPELINE_CONFIG}', type = str, default = None,
+                           help = 'Pipeline configuration file (.xml data product or .json listfile of 0-1 '
+                                  'such data products.')
 
         # Arguments needed by the pipeline runner
-        self.add_arg_with_type(f'--{CA_WORKDIR}', type = str, default = ".", arg_type = ClineArgType.OPTION,
-                               help = f'Work directory, where input data is stored and output data will be created. '
-                                      f'Should be fully-qualified.')
-        self.add_arg_with_type(f'--{CA_LOGDIR}', type = str, default = ".", arg_type = ClineArgType.OPTION,
-                               help = f"Logging directory (relative to work directory.")
+        self.add_option_arg(f'--{CA_WORKDIR}', type = str, default = ".",
+                            help = f'Work directory, where input data is stored and output data will be created. '
+                                   f'Should be fully-qualified.')
+        self.add_option_arg(f'--{CA_LOGDIR}', type = str, default = ".",
+                            help = f"Logging directory (relative to work directory.")
 
         # Optional arguments (can't be used with pipeline runner)
-        self.add_arg_with_type(f'--{CA_PROFILE}', action = ACT_STORE_TRUE, arg_type = ClineArgType.OPTION,
-                               help = f'Store profiling data for execution.')
-        self.add_arg_with_type(f'--{CA_DRY_RUN}', action = ACT_STORE_TRUE, arg_type = ClineArgType.OPTION,
-                               help = f'Skip processing and just output dummy data.')
+        self.add_option_arg(f'--{CA_PROFILE}', action = ACT_STORE_TRUE,
+                            help = f'Store profiling data for execution.')
+        self.add_option_arg(f'--{CA_DRY_RUN}', action = ACT_STORE_TRUE,
+                            help = f'Skip processing and just output dummy data.')
 
     # Public functions
+
+    def add_input_arg(self,
+                      *args,
+                      help: Optional[str] = None,
+                      **kwargs) -> Action:
+        return self.add_arg_with_type(*args, arg_type = ClineArgType.INPUT, help = help, **kwargs)
+
+    def add_output_arg(self,
+                       *args,
+                       help: Optional[str] = None,
+                       **kwargs) -> Action:
+        return self.add_arg_with_type(*args, arg_type = ClineArgType.OUTPUT, help = help, **kwargs)
+
+    def add_option_arg(self,
+                       *args,
+                       help: Optional[str] = None,
+                       **kwargs) -> Action:
+        return self.add_arg_with_type(*args, arg_type = ClineArgType.OPTION, help = help, **kwargs)
+
     def add_arg_with_type(self,
                           *args,
                           arg_type: ClineArgType = ClineArgType.INPUT,
                           help: Optional[str] = None,
+                          suppress_warnings: bool = False,
                           **kwargs) -> Action:
         """ Function to add an argument with help formatted depending on the argument type.
         """
@@ -97,6 +119,22 @@ class SheArgumentParser(ArgumentParser):
         formatted_help: Optional[str] = None
         if help is not None:
             formatted_help = f"{arg_type.value}: {help}"
+
+        # Check for store_true and store_false actions, and set default to None if found
+        if "action" in kwargs and (kwargs["action"] == "store_true" or kwargs["action"] == "store_false"):
+            logger.debug(f"Overriding default to be None for cline-arg {args[0]}, since it's set as store_true or "
+                         "store_false")
+            kwargs["default"] = None
+
+        # Warn if the default is set to anything other than None
+        if "default" in kwargs and kwargs["default"] is not None and not suppress_warnings:
+            logger.warning(f"Default for cline-arg {args[0]} attempted to be set to {kwargs['default']}."
+                           "When setting a cline-arg for a SheArgumentParser, the default should usually be set to "
+                           "None, as it will normally be overridden by the defaults provided to the read_config "
+                           "function. If this is an exceptional case and you wish to suppress this warning, set "
+                           "suppress_warnings=True in the call to add_*_arg or add_arg_with_type.")
+
+        logger.debug(f"Adding cline-arg {args[0]} to SheArgumentParser.")
 
         return self.add_argument(*args, **kwargs, help = formatted_help)
 

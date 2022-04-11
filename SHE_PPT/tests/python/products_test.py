@@ -177,6 +177,11 @@ class TestSheStackSegmentationMap(SimpleDataProductTester):
     product_type_name = products.she_stack_segmentation_map.product_type_name
 
 
+class TestSheStarCatalog(SimpleDataProductTester):
+    product_class = products.she_star_catalog.dpdSheStarCatalog
+    product_type_name = products.she_star_catalog.product_type_name
+
+
 class TestSheValidatedMeasurements(MethodsProductTester):
     product_class = products.she_validated_measurements.dpdSheValidatedMeasurements
     product_type_name = products.she_validated_measurements.product_type_name

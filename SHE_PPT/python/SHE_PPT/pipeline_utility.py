@@ -697,7 +697,7 @@ def _get_converted_type(value: str, desired_type: Type):
     # Special handling for certain types
     if desired_type is bool:
         # Booleans will always convert a string to True unless it's empty, so we check the value of the string here
-        converted_value = value.lower() in ['true', 't']
+        converted_value = value.lower() in ['true', 't', '1', 1]
 
     elif desired_type is np.ndarray:
         # Convert space-separated lists into arrays of floats
