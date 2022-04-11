@@ -665,7 +665,7 @@ def write_xml_product(product: Any,
 def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pickled: bool) -> None:
     # Check if the product has a ProductId, and set it if necessary
     try:
-        if product.Header.ProductId == "None":
+        if product.Header.ProductId.value() == "None":
             # Set the product ID to a timestamp
             t = datetime.now()
             product.Header.ProductId = time_to_timestamp(t)

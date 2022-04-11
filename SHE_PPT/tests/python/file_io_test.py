@@ -245,7 +245,7 @@ class TestIO:
         p2, t2 = read_product_and_table(product_filename, workdir = self.workdir)
 
         # Check that they're the same as was written out
-        assert p2.Header.ProductId == p.Header.ProductId
+        assert p2.Header.ProductId.value() == p.Header.ProductId.value()
         assert p2.get_data_filename() == p.get_data_filename()
         assert (t2 == t).all()
 
