@@ -33,4 +33,4 @@ __all__ = [basename(f)[:-3]
 
 del modules, dirname, basename, isfile, glob
 
-__version__ = "9.0"
+__version__ = "9.1"
