@@ -75,12 +75,14 @@
                 <FileName>None</FileName>
             </DataContainer>
         </DataStorage>
-        <ExposureProductId>-1</ExposureProductId>
+        <ExposureProductIdList>-1</ExposureProductIdList>
         <ObservationDateTime>
             <OBT>2020-06-04T14:55:48.858Z</OBT>
             <UTC>2020-06-04T14:55:48.858Z</UTC>
             <MJD>-1.0</MJD>
         </ObservationDateTime>
+		<PointingIdList>-1</PointingIdList>
+		<TileList>-1</TileList>
     </Data>
     <QualityFlags>
         <DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true
