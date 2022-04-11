@@ -28,14 +28,10 @@ import pytest
 
 import SHE_PPT
 from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_SUBDIR, DEFAULT_INSTANCE_ID,
-                             DEFAULT_TYPE_NAME, SheFileNamer,
-                             find_aux_file,
-                             get_allowed_filename,
-                             instance_id_maxlen,
-                             processing_function_maxlen,
-                             read_listfile, read_product_and_table, read_xml_product, tar_files, type_name_maxlen,
-                             update_xml_with_value,
-                             write_listfile, write_product_and_table, )
+                             DEFAULT_TYPE_NAME, SheFileNamer, find_aux_file, get_allowed_filename, instance_id_maxlen,
+                             processing_function_maxlen, read_listfile, read_product_and_table, read_xml_product,
+                             tar_files, type_name_maxlen, update_xml_with_value, write_listfile,
+                             write_product_and_table, )
 from SHE_PPT.products.mer_final_catalog import create_dpd_mer_final_catalog
 from SHE_PPT.table_formats.mer_final_catalog import MerFinalCatalogFormat
 from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
