@@ -1,43 +1,44 @@
 <?xml version="1.0" ?>
 <ns1:DpdSheAnalysisConfig xmlns:ns1="http://euclid.esa.org/schema/dpd/she/analysisconfig">
-	<Header>
-		<ProductId>e9f0eedb-7b71-462b-8f10-eea0041797f5</ProductId>
-		<ProductType>UsTK8</ProductType>
-		<SoftwareName>X61yz</SoftwareName>
-		<SoftwareRelease>NS4O</SoftwareRelease>
-		<EuclidPipelineSoftwareRelease>nGs</EuclidPipelineSoftwareRelease>
-		<ProdSDC>iFMBQxE0IhSifQb2JEyupWE6E1vG</ProdSDC>
-		<DataSetRelease>M8yUR</DataSetRelease>
-		<Purpose>DATA_RELEASE</Purpose>
-		<PlanId>T5Pm0</PlanId>
-		<PPOId>ClYf8</PPOId>
-		<PipelineDefinitionId>RduUP</PipelineDefinitionId>
-		<PipelineRun>f3Ya1</PipelineRun>
-		<ExitStatusCode>m16Xn</ExitStatusCode>
-		<ManualValidationStatus>VALID</ManualValidationStatus>
-		<ExpirationDate>2020-06-01T14:31:06.936Z</ExpirationDate>
-		<ToBePublished>false</ToBePublished>
-		<Published>false</Published>
-		<Curator>SHE</Curator>
-		<CreationDate>2020-06-01T14:31:06.937Z</CreationDate>
-	</Header>
-	<Data>
-		<DataStorage>
-			<DataContainer filestatus="PROPOSED">
-				<FileName>None</FileName>
-			</DataContainer>
-		</DataStorage>
-	</Data>
-	<QualityFlags>
-		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
-		<AuxiliaryFlags flagName="Gxg4D" flagged="false" maxLimit="4.0" minLimit="8.0" xpath="do4z4">false</AuxiliaryFlags>
-	</QualityFlags>
-	<Parameters>
-		<Parameter>
-			<Key>FOpJ7</Key>
-			<Description>VbJoa</Description>
-			<StringValue>pHiTV</StringValue>
-			<Unit>hQWen</Unit>
-		</Parameter>
-	</Parameters>
+    <Header>
+        <ProductId>e9f0eedb-7b71-462b-8f10-eea0041797f5</ProductId>
+        <ProductType>DpdSheAnalysisConfig</ProductType>
+        <SoftwareName>X61yz</SoftwareName>
+        <SoftwareRelease>NS4O</SoftwareRelease>
+        <EuclidPipelineSoftwareRelease>nGs</EuclidPipelineSoftwareRelease>
+        <ProdSDC>iFMBQxE0IhSifQb2JEyupWE6E1vG</ProdSDC>
+        <DataSetRelease>M8yUR</DataSetRelease>
+        <Purpose>DATA_RELEASE</Purpose>
+        <PlanId>T5Pm0</PlanId>
+        <PPOId>ClYf8</PPOId>
+        <PipelineDefinitionId>RduUP</PipelineDefinitionId>
+        <PpoStatus>NA</PpoStatus>
+        <ManualValidationStatus>VALID</ManualValidationStatus>
+        <ExpirationDate>2020-06-01T14:31:06.936Z</ExpirationDate>
+        <ToBePublished>0</ToBePublished>
+        <Published>0</Published>
+        <Curator>SHE</Curator>
+        <CreationDate>2020-06-01T14:31:06.937Z</CreationDate>
+    </Header>
+    <Data>
+        <DataStorage>
+            <DataContainer filestatus="PROPOSED">
+                <FileName>None</FileName>
+            </DataContainer>
+        </DataStorage>
+    </Data>
+    <QualityFlags>
+        <DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false
+        </DummyFlag>
+        <AuxiliaryFlags flagName="Gxg4D" flagged="false" maxLimit="4.0" minLimit="8.0" xpath="do4z4">false
+        </AuxiliaryFlags>
+    </QualityFlags>
+    <Parameters>
+        <Parameter>
+            <Key>FOpJ7</Key>
+            <Description>VbJoa</Description>
+            <StringValue>pHiTV</StringValue>
+            <Unit>hQWen</Unit>
+        </Parameter>
+    </Parameters>
 </ns1:DpdSheAnalysisConfig>

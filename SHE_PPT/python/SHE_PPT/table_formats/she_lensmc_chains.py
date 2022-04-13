@@ -184,7 +184,7 @@ def make_lensmc_chains_table_header(model_hash = None,
                                     observation_id = None,
                                     pointing_id = None,
                                     observation_time = None,
-                                    method = ShearEstimationMethods.LENSMC,
+                                    method = ShearEstimationMethods.LENSMC.value,
                                     tile_id = None):
     """
         @brief Generate a header for a shear estimates table.
@@ -240,7 +240,7 @@ def initialise_lensmc_chains_table(mer_final_catalog = None,
                                    observation_id = None,
                                    pointing_id = None,
                                    observation_time = None,
-                                   method = ShearEstimationMethods.LENSMC,
+                                   method = ShearEstimationMethods.LENSMC.value,
                                    tile_id = None,
                                    ):
     """

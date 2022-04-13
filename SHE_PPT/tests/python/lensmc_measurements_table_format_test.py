@@ -20,9 +20,7 @@
 
 __updated__ = "2021-02-09"
 
-import pytest
-
-from SHE_PPT.table_formats.she_lensmc_measurements import tf as tf, initialise_lensmc_measurements_table
+from SHE_PPT.table_formats.she_lensmc_measurements import initialise_lensmc_measurements_table, tf as tf
 
 
 class TestLensMcMeasurementsTableFormat:
@@ -32,10 +30,10 @@ class TestLensMcMeasurementsTableFormat:
     @classmethod
     def setup_class(cls):
         # Define a list of the table formats we'll be testing
-        cls.table = initialise_lensmc_measurements_table(optional_columns=[tf.m1_ical,
-                                                                           tf.m2_ical,
-                                                                           tf.shape_weight,
-                                                                           tf.shape_weight_uncal])
+        cls.table = initialise_lensmc_measurements_table(optional_columns = [tf.m1_ical,
+                                                                             tf.m2_ical,
+                                                                             tf.shape_weight,
+                                                                             tf.shape_weight_uncal])
 
         return
 

@@ -70,8 +70,7 @@ class SheBiasStatisticsMeta(SheTableMeta):
                                                  (self.fits_def, None),
                                                  (self.ID, None),
                                                  (self.method,
-                                                  "One of 'KSB', 'REGAUSS', 'MomentsML', or 'LensMC', "
-                                                  "or else 'Unspecified'."),
+                                                  "One of 'KSB', 'REGAUSS', 'MomentsML', or 'LensMC', "),
                                                  (self.m1, None),
                                                  (self.m1_err, None),
                                                  (self.c1, None),
@@ -128,7 +127,7 @@ tf = bias_statistics_table_format
 
 
 def make_bias_statistics_table_header(ID = None,
-                                      method = 'Unspecified',
+                                      method: ShearEstimationMethods = ShearEstimationMethods.LENSMC,
                                       g1_bias_measurements = None,
                                       g2_bias_measurements = None):
     """
@@ -138,7 +137,7 @@ def make_bias_statistics_table_header(ID = None,
     ----------
     ID : str (max 20 characters)
         ID for this run
-    method : str ('KSB', 'REGAUSS', 'MomentsML', or 'LensMC', or else 'Unspecified')
+    method : ShearEstimationMethods
         The shear estimation method this table is for
     g1_bias_measurements : SHE_PPT.math.BiasMeasurements
         Bias measurements object for g1 component of shear
@@ -161,7 +160,7 @@ def make_bias_statistics_table_header(ID = None,
     elif method == 'Unspecified':
         header[tf.m.method] = method
     else:
-        raise TypeError("method must be in ShearEstimationMethods, or else 'Unspecified'")
+        raise TypeError("method must be in ShearEstimationMethods")
 
     if g1_bias_measurements is None:
         header[tf.m.m1] = ""
@@ -212,7 +211,7 @@ def initialise_bias_statistics_table(size = None,
                                      optional_columns = None,
                                      init_cols = None,
                                      ID = None,
-                                     method = 'Unspecified',
+                                     method: ShearEstimationMethods = ShearEstimationMethods.LENSMC,
                                      g1_bias_measurements = None,
                                      g2_bias_measurements = None,
                                      run_IDs = None,
@@ -226,7 +225,7 @@ def initialise_bias_statistics_table(size = None,
     ----------
     ID : str (max 20 characters)
         ID for this run
-    method : str ('KSB', 'REGAUSS', 'MomentsML', or 'LensMC', or else 'Unspecified')
+    method : ShearEstimationMethods
         The shear estimation method this table is for
     g1_bias_measurements : SHE_PPT.math.BiasMeasurements
         Bias measurements object for g1 component of shear

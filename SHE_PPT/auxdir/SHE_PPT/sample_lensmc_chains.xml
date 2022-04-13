@@ -1,103 +1,102 @@
 <?xml version="1.0" ?>
 <ns1:DpdSheLensMcChains xmlns:ns1="http://euclid.esa.org/schema/dpd/she/lensmcchains">
-	<Header>
-		<ProductId>1ac650fb-03b6-4806-8770-f7fe6c5b95b7</ProductId>
-		<ProductType>mVzLB</ProductType>
-		<SoftwareName>FISfE</SoftwareName>
-		<SoftwareRelease>uym</SoftwareRelease>
-		<EuclidPipelineSoftwareRelease>mw0</EuclidPipelineSoftwareRelease>
-		<ProdSDC>paxOxsSAwle46MrlEPa68U2KeoAGZ990U23QNWVVYb1ClBWz6lIjFpCbm7Ac</ProdSDC>
-		<DataSetRelease>fFwaY</DataSetRelease>
-		<Purpose>PRODUCTION</Purpose>
-		<PlanId>dQvox</PlanId>
-		<PPOId>QVVzc</PPOId>
-		<PipelineDefinitionId>Fw9eB</PipelineDefinitionId>
-		<PipelineRun>793VI</PipelineRun>
-		<ExitStatusCode>hNut5</ExitStatusCode>
-		<ManualValidationStatus>INVALID</ManualValidationStatus>
-		<ExpirationDate>2020-06-03T15:11:05.387Z</ExpirationDate>
-		<ToBePublished>true</ToBePublished>
-		<Published>false</Published>
-		<Curator>SHE</Curator>
-		<CreationDate>2020-06-03T15:11:05.388Z</CreationDate>
-	</Header>
-	<Data>
-		<SpatialCoverage>
-			<Polygon>
-				<Vertex>
-					<Position coordUnit="min">
-						<C1 unit="deg">0.0</C1>
-						<C2 unit="deg2">0.0</C2>
-					</Position>
-					<SmallCircle>
-						<Pole coordUnit="J">
-							<C1 unit="Jy">0.0</C1>
-							<C2 unit="mK">0.0</C2>
-						</Pole>
-					</SmallCircle>
-				</Vertex>
-			</Polygon>
-			<Circle>
-				<Center coordUnit="m">
-					<C1 unit="s">1.0</C1>
-					<C2 unit="1/mol">0.0</C2>
-				</Center>
-				<Radius unit="cy">0.0</Radius>
-			</Circle>
-			<BBox>
-				<RaCenter unit="m2/s">1.0</RaCenter>
-				<DecCenter unit="MHz">1.0</DecCenter>
-				<RaHalfWidth unit="m2">0.0</RaHalfWidth>
-				<DecHalfWidth unit="kHz">1.0</DecHalfWidth>
-			</BBox>
-		</SpatialCoverage>
-		<SpectralCoverage>
-			<Filter>
-				<Name>DECAM_i</Name>
-				<MagId>Z</MagId>
-				<CentralWavelength>7.0</CentralWavelength>
-				<MinWavelength>3.0</MinWavelength>
-				<MaxWavelength>-8.0</MaxWavelength>
-				<Reference>EuL4B</Reference>
-				<HasFringes>-299501832</HasFringes>
-			</Filter>
-		</SpectralCoverage>
-		<CatalogDescription>
-			<CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
-			<CatalogType>NOT_PROXY</CatalogType>
-			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-			<CatalogName>She-Lensmc-Chains</CatalogName>
-			<CatalogFormatHDU>1</CatalogFormatHDU>
-		</CatalogDescription>
-		<ObservationId>-1</ObservationId>
-		<DataStorage format="she.lensMcChains" version="8.0">
-			<DataContainer filestatus="DELETED">
-				<FileName>None</FileName>
-			</DataContainer>
-		</DataStorage>
-		<ObservationDateTime>
-			<OBT>2020-06-03T15:11:05.399Z</OBT>
-			<UTC>2020-06-03T15:11:05.4Z</UTC>
-			<MJD>3.0</MJD>
-		</ObservationDateTime>
-		<PointingIdList>-1</PointingIdList>
-		<TileList>
-			<TileIndex>-1</TileIndex>
-			<TileProductId>N/A</TileProductId>
-		</TileList>
-		<Valid>VALID</Valid>
-		<ShearEstimationMethod>LensMC</ShearEstimationMethod>
-	</Data>
-	<QualityFlags>
-		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
-		<AuxiliaryFlags flagName="ciDvn" flagged="false" maxLimit="-8.0" minLimit="-8.0" xpath="LPgYO">true</AuxiliaryFlags>
-	</QualityFlags>
-	<Parameters>
-		<Parameter>
-			<Key>80eq1</Key>
-			<Description>n89oN</Description>
-			<StringValue>p65uq</StringValue>
-			<Unit>whoUH</Unit>
-		</Parameter>
-	</Parameters>
+    <Header>
+        <ProductId>1ac650fb-03b6-4806-8770-f7fe6c5b95b7</ProductId>
+        <ProductType>DpdSheLensMcChains</ProductType>
+        <SoftwareName>FISfE</SoftwareName>
+        <SoftwareRelease>uym</SoftwareRelease>
+        <EuclidPipelineSoftwareRelease>mw0</EuclidPipelineSoftwareRelease>
+        <ProdSDC>paxOxsSAwle46MrlEPa68U2KeoAGZ990U23QNWVVYb1ClBWz6lIjFpCbm7Ac</ProdSDC>
+        <DataSetRelease>fFwaY</DataSetRelease>
+        <Purpose>PRODUCTION</Purpose>
+        <PlanId>dQvox</PlanId>
+        <PPOId>QVVzc</PPOId>
+        <PipelineDefinitionId>Fw9eB</PipelineDefinitionId>
+        <PpoStatus>NA</PpoStatus>
+        <ManualValidationStatus>INVALID</ManualValidationStatus>
+        <ExpirationDate>2020-06-03T15:11:05.387Z</ExpirationDate>
+        <ToBePublished>0</ToBePublished>
+        <Published>0</Published>
+        <Curator>SHE</Curator>
+        <CreationDate>2020-06-03T15:11:05.388Z</CreationDate>
+    </Header>
+    <Data>
+        <SpatialCoverage>
+            <Polygon>
+                <Vertex>
+                    <Position coordUnit="min">
+                        <C1 unit="deg">0.0</C1>
+                        <C2 unit="deg2">0.0</C2>
+                    </Position>
+                    <SmallCircle>
+                        <Pole coordUnit="J">
+                            <C1 unit="Jy">0.0</C1>
+                            <C2 unit="mK">0.0</C2>
+                        </Pole>
+                    </SmallCircle>
+                </Vertex>
+            </Polygon>
+            <Circle>
+                <Center coordUnit="m">
+                    <C1 unit="s">1.0</C1>
+                    <C2 unit="1/mol">0.0</C2>
+                </Center>
+                <Radius unit="cy">0.0</Radius>
+            </Circle>
+            <BBox>
+                <RaCenter unit="m2/s">1.0</RaCenter>
+                <DecCenter unit="MHz">1.0</DecCenter>
+                <RaHalfWidth unit="m2">0.0</RaHalfWidth>
+                <DecHalfWidth unit="kHz">1.0</DecHalfWidth>
+            </BBox>
+        </SpatialCoverage>
+        <SpectralCoverage>
+            <Filter>
+                <Name>DECAM_i</Name>
+                <MagId>Z</MagId>
+                <CentralWavelength>7.0</CentralWavelength>
+                <MinWavelength>3.0</MinWavelength>
+                <MaxWavelength>-8.0</MaxWavelength>
+                <Reference>EuL4B</Reference>
+                <HasFringes>-299501832</HasFringes>
+            </Filter>
+        </SpectralCoverage>
+        <CatalogDescription>
+            <CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
+            <CatalogType>NOT_PROXY</CatalogType>
+            <PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
+            <CatalogName>She-Lensmc-Chains</CatalogName>
+            <CatalogFormatHDU>1</CatalogFormatHDU>
+        </CatalogDescription>
+        <ObservationId>-1</ObservationId>
+        <IslandLabel>aXINP</IslandLabel>
+        <DataStorage format="she.lensMcChains" version="8.0">
+            <DataContainer filestatus="DELETED">
+                <FileName>None</FileName>
+            </DataContainer>
+        </DataStorage>
+        <ObservationDateTime>
+            <OBT>2020-06-03T15:11:05.399Z</OBT>
+            <UTC>2020-06-03T15:11:05.4Z</UTC>
+            <MJD>3.0</MJD>
+        </ObservationDateTime>
+        <PointingIdList>-1</PointingIdList>
+        <TileList>-1</TileList>
+        <Valid>VALID</Valid>
+        <ShearEstimationMethod>LensMC</ShearEstimationMethod>
+    </Data>
+    <QualityFlags>
+        <DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false
+        </DummyFlag>
+        <AuxiliaryFlags flagName="ciDvn" flagged="false" maxLimit="-8.0" minLimit="-8.0" xpath="LPgYO">true
+        </AuxiliaryFlags>
+    </QualityFlags>
+    <Parameters>
+        <Parameter>
+            <Key>80eq1</Key>
+            <Description>n89oN</Description>
+            <StringValue>p65uq</StringValue>
+            <Unit>whoUH</Unit>
+        </Parameter>
+    </Parameters>
 </ns1:DpdSheLensMcChains>

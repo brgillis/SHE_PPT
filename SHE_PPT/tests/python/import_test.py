@@ -3,7 +3,7 @@
     Created 20 August 2021
 
     This module tests importing all modules in each package, to make sure nothing obvious goes wrong, even if the code
-    is otherwise untested. 
+    is otherwise untested.
 """
 
 __updated__ = "2021-08-20"
@@ -21,10 +21,19 @@ __updated__ = "2021-08-20"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+# Test importing first some modules which have had trouble with circular dependencies in the past
+# noinspection PyUnresolvedReferences
+from SHE_PPT.table_utility import SheTableFormat
+
+# noinspection PyUnresolvedReferences
 from SHE_PPT import *
+# noinspection PyUnresolvedReferences
 from SHE_PPT.constants import *
+# noinspection PyUnresolvedReferences
 from SHE_PPT.products import *
+# noinspection PyUnresolvedReferences
 from SHE_PPT.table_formats import *
+# noinspection PyUnresolvedReferences
 from SHE_PPT.testing import *
 
 

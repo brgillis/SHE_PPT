@@ -38,6 +38,7 @@ from astropy.io.fits.hdu.base import ExtensionHDU
 from astropy.table import Table
 from pyxb.exceptions_ import NamespaceError
 
+import SHE_PPT
 from EL_PythonUtils.utilities import time_to_timestamp
 from ElementsServices.DataSync import DataSync
 from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider
@@ -47,6 +48,14 @@ from .constants.classes import ShearEstimationMethods
 from .constants.test_data import SYNC_CONF
 from .logging import getLogger
 from .utility import get_release_from_version, is_any_type_of_none, join_without_none
+
+# CONSTANT strings for default values in filenames
+DEFAULT_WORKDIR = "."
+DEFAULT_TYPE_NAME = "UNKNOWN-FILE-TYPE"
+DEFAULT_INSTANCE_ID = "0"
+DEFAULT_FILE_EXTENSION = ".fits"
+DEFAULT_FILE_SUBDIR = "data"
+DEFAULT_FILE_PF = "SHE"
 
 # Constant strings for replacement tags
 STR_R_FILETYPE = "$FILETYPE"
@@ -165,7 +174,7 @@ class SheFileNamer(FileNameProvider):
 
     _type_name: Optional[str] = None
 
-    default_type_name: str = "FILE"
+    default_type_name: str = DEFAULT_TYPE_NAME
 
     # For instance ID
     _instance_id_head: Optional[str] = None
@@ -174,14 +183,14 @@ class SheFileNamer(FileNameProvider):
 
     _instance_id: Optional[str] = None
 
-    default_instance_id: str = "0"
+    default_instance_id: str = DEFAULT_INSTANCE_ID
 
     # Options for getting the filename
-    _extension: str = ".fits"
+    _extension: str = DEFAULT_FILE_EXTENSION
     _release: Optional[str] = None
     _version: Optional[str] = None
-    _subdir: Optional[str] = "data"
-    _processing_function: str = "SHE"
+    _subdir: Optional[str] = DEFAULT_FILE_SUBDIR
+    _processing_function: str = DEFAULT_FILE_PF
     _timestamp: bool = True
 
     # Other options
@@ -471,8 +480,8 @@ def get_qualified_filename(filename: str, workdir: str = ".") -> str:
     return qualified_xml_filename
 
 
-def get_allowed_filename(type_name: str,
-                         instance_id: str,
+def get_allowed_filename(type_name: str = DEFAULT_TYPE_NAME,
+                         instance_id: str = DEFAULT_INSTANCE_ID,
                          extension: str = ".fits",
                          release: Optional[str] = None,
                          version: Optional[str] = None,
@@ -515,8 +524,9 @@ def get_allowed_filename(type_name: str,
 
 
 def write_listfile(listfile_name: str,
-                   filenames: Sequence[str],
-                   log_info: bool = False) -> None:
+                   filenames: Sequence[Union[str, Tuple[str, ...]]],
+                   log_info: bool = False,
+                   workdir: str = "") -> None:
     """
         @brief Writes a listfile in json format.
 
@@ -527,23 +537,29 @@ def write_listfile(listfile_name: str,
         @param filenames <list<str>> List of filenames (or tuples of filenames) to be put in the listfile.
 
         @param log_info <bool> If True, will log at info level, otherwise will log at debug level.
+
+        @param workdir <str> The work directory to place the file into.
+
     """
+
+    qualified_listfile_name = os.path.join(workdir, listfile_name)
 
     log_method = _get_optional_log_method(log_info)
     log_method("Writing listfile to %s", listfile_name)
 
     try:
-        with open(listfile_name, 'w') as listfile:
+        with open(qualified_listfile_name, 'w') as listfile:
             paths_json = json.dumps(filenames)
             listfile.write(paths_json)
     except Exception as e:
-        raise SheFileWriteError(listfile_name) from e
+        raise SheFileWriteError(qualified_listfile_name) from e
 
-    logger.debug("Finished writing listfile to %s", listfile_name)
+    logger.debug("Finished writing listfile to %s", qualified_listfile_name)
 
 
 def read_listfile(listfile_name: str,
-                  log_info: bool = False) -> List[Union[str, Tuple[str]]]:
+                  log_info: bool = False,
+                  workdir: str = "") -> List[Union[str, Tuple[str]]]:
     """
         @brief Reads a json listfile and returns a list of filenames.
 
@@ -553,14 +569,18 @@ def read_listfile(listfile_name: str,
 
         @param log_info <bool> If True, will log at info level, otherwise will log at debug level.
 
+        @param workdir <str> The work directory the file is in.
+
         @return filenames <list<str>> List of filenames (or tuples of filenames) read in.
     """
 
+    qualified_listfile_name = os.path.join(workdir, listfile_name)
+
     log_method = _get_optional_log_method(log_info)
-    log_method("Reading listfile from %s", listfile_name)
+    log_method("Reading listfile from %s", qualified_listfile_name)
 
     try:
-        with open(listfile_name, 'r') as f:
+        with open(qualified_listfile_name, 'r') as f:
             list_object = json.load(f)
             if len(list_object) == 0:
                 return list_object
@@ -570,9 +590,9 @@ def read_listfile(listfile_name: str,
                     tupled_list = [t[0] for t in tupled_list]
                 return tupled_list
     except Exception as e:
-        raise SheFileReadError(listfile_name) from e
+        raise SheFileReadError(qualified_listfile_name) from e
 
-    log_method("Reading listfile from %s", listfile_name)
+    log_method("Reading listfile from %s", qualified_listfile_name)
 
     return list_object
 
@@ -645,7 +665,7 @@ def write_xml_product(product: Any,
 def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pickled: bool) -> None:
     # Check if the product has a ProductId, and set it if necessary
     try:
-        if product.Header.ProductId == "None":
+        if product.Header.ProductId.value() == "None":
             # Set the product ID to a timestamp
             t = datetime.now()
             product.Header.ProductId = time_to_timestamp(t)
@@ -657,7 +677,8 @@ def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pick
         cat_filename = product.Data.CatalogStorage.CatalogFileStorage.StorageSpace[0].DataContainer.FileName
         if cat_filename == "None":
             # Create a name for the catalog file
-            cat_filename = get_allowed_filename(type_name = "CAT", instance_id = "0", extension = ".csv",
+            cat_filename = get_allowed_filename(type_name = "CAT", instance_id = DEFAULT_INSTANCE_ID,
+                                                extension = ".csv",
                                                 version = __version__, subdir = None)
             product.Data.CatalogStorage.CatalogFileStorage.StorageSpace[0].DataContainer.FileName = cat_filename
 
@@ -774,7 +795,7 @@ def write_pickled_product(product,
 
 
 def read_pickled_product(pickled_filename,
-                         workdir = ".",
+                         workdir = DEFAULT_WORKDIR,
                          log_info: bool = False) -> Any:
     log_method = _get_optional_log_method(log_info)
     log_method(MSG_READING_DATA_PRODUCT, pickled_filename, workdir)
@@ -797,7 +818,7 @@ def read_pickled_product(pickled_filename,
 
 def write_table(t: Table,
                 filename: str,
-                workdir: str = ".",
+                workdir: str = DEFAULT_WORKDIR,
                 log_info: bool = False,
                 *args, **kwargs) -> None:
     log_method = _get_optional_log_method(log_info)
@@ -814,7 +835,7 @@ def write_table(t: Table,
 
 
 def read_table(filename: str,
-               workdir: str = ".",
+               workdir: str = DEFAULT_WORKDIR,
                log_info: bool = False,
                *args, **kwargs) -> Table:
     log_method = _get_optional_log_method(log_info)
@@ -831,8 +852,35 @@ def read_table(filename: str,
     return t
 
 
+def write_product_and_table(product: Any,
+                            product_filename: str,
+                            table: Table,
+                            *args: Any,
+                            table_filename: Optional[str] = None,
+                            workdir: str = DEFAULT_WORKDIR,
+                            log_info: bool = False,
+                            **kwargs: Any):
+    """ Convenience function to write a product and table at the same time, setting up a filename for the table if
+        one is not provided, and setting the product to point to the table's filename with its set_data_filename
+        method.
+    """
+
+    # Generate a filename for the table if one hasn't been provided
+    if table_filename is None:
+        table_filename = get_allowed_filename(version = SHE_PPT.__version__)
+
+    # Write the table
+    write_table(table, *args, filename = table_filename, workdir = workdir, log_info = log_info, **kwargs)
+
+    # Set the table filename within the product
+    product.set_data_filename(table_filename)
+
+    # Write the product
+    write_xml_product(product, xml_filename = product_filename, workdir = workdir, log_info = log_info)
+
+
 def read_product_and_table(product_filename: str,
-                           workdir: str = ".",
+                           workdir: str = DEFAULT_WORKDIR,
                            log_info: bool = False,
                            product_type: Optional[Type] = None,
                            *args, **kwargs) -> Tuple[Any, Table]:
@@ -848,7 +896,7 @@ def read_product_and_table(product_filename: str,
 
 
 def read_table_from_product(product_filename: str,
-                            workdir: str = ".",
+                            workdir: str = DEFAULT_WORKDIR,
                             log_info: bool = False,
                             product_type: Optional[Type] = None,
                             *args, **kwargs) -> Table:
@@ -866,7 +914,7 @@ def read_table_from_product(product_filename: str,
 
 def write_fits(hdu_list: HDUList,
                filename: str,
-               workdir: str = ".",
+               workdir: str = DEFAULT_WORKDIR,
                log_info: bool = False,
                *args, **kwargs) -> None:
     log_method = _get_optional_log_method(log_info)
@@ -882,7 +930,7 @@ def write_fits(hdu_list: HDUList,
 
 
 def read_fits(filename: str,
-              workdir: str = ".",
+              workdir: str = DEFAULT_WORKDIR,
               log_info: bool = False,
               *args, **kwargs) -> HDUList:
     log_method = _get_optional_log_method(log_info)
@@ -1035,7 +1083,7 @@ def append_hdu(filename: str,
 
 
 def try_remove_file(filename: str,
-                    workdir: str = ".",
+                    workdir: str = DEFAULT_WORKDIR,
                     warn: bool = False):
     """ Attempts to remove a file, but passes if any exception is raised (optionally raising a warning).
     """
@@ -1069,7 +1117,7 @@ def find_file_in_path(filename: str, path: str) -> str:
 
     if qualified_filename is None:
         raise RuntimeError(
-            "File " + str(filename) + " could not be found in path " + str(path) + ".")
+            "File " + str(filename) + " could not be found in path " + str(path) + S)
 
     logger.debug("Found file %s at %s", filename, qualified_filename)
 
@@ -1232,7 +1280,7 @@ def first_writable_in_path(path: str) -> Optional[str]:
     return first_writable_dir
 
 
-def get_data_filename(filename: str, workdir: str = ".") -> Optional[str]:
+def get_data_filename(filename: str, workdir: str = DEFAULT_WORKDIR) -> Optional[str]:
     """ Given the unqualified name of a file and the work directory, determine if it's an XML data
         product or not, and get the filename of its DataContainer if so; otherwise, just return
         the input filename. In either case, the unqualified filename is returned.
@@ -1342,7 +1390,7 @@ def remove_files(l_qualified_filenames: Sequence[str]) -> None:
 
 def tar_files(tarball_filename: str,
               l_filenames: Sequence[str],
-              workdir: str = ".",
+              workdir: str = DEFAULT_WORKDIR,
               delete_files: bool = False):
     qualified_tarball_filename: str = get_qualified_filename(tarball_filename, workdir)
 

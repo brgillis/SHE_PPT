@@ -1,96 +1,97 @@
 <?xml version="1.0" ?>
 <ns1:DpdSheLensMcTraining xmlns:ns1="http://euclid.esa.org/schema/dpd/she/lensmctraining">
-	<Header>
-		<ProductId>03a1dc83-3605-4496-9562-7331e9b18316</ProductId>
-		<ProductType>ZnLjz</ProductType>
-		<SoftwareName>9dn5P</SoftwareName>
-		<SoftwareRelease>xpWR</SoftwareRelease>
-		<EuclidPipelineSoftwareRelease>16rd</EuclidPipelineSoftwareRelease>
-		<ProdSDC>MS1XE2wP02</ProdSDC>
-		<DataSetRelease>nEGEH</DataSetRelease>
-		<Purpose>TEST</Purpose>
-		<PlanId>Fd2e3</PlanId>
-		<PPOId>dTVl0</PPOId>
-		<PipelineDefinitionId>cJrLZ</PipelineDefinitionId>
-		<PipelineRun>YROYP</PipelineRun>
-		<ExitStatusCode>DTTif</ExitStatusCode>
-		<ManualValidationStatus>VALID</ManualValidationStatus>
-		<ExpirationDate>2020-06-03T15:13:25.786Z</ExpirationDate>
-		<ToBePublished>false</ToBePublished>
-		<Published>false</Published>
-		<Curator>SHE</Curator>
-		<CreationDate>2020-06-03T15:13:25.788Z</CreationDate>
-	</Header>
-	<Data>
-		<SpatialCoverage>
-			<Polygon>
-				<Vertex>
-					<Position coordUnit="Mstars/deg2">
-						<C1 unit="kpc">1.0</C1>
-						<C2 unit="J/m2">1.0</C2>
-					</Position>
-					<SmallCircle>
-						<Pole coordUnit="uNewton/kg">
-							<C1 unit="arcsec/um">0.0</C1>
-							<C2 unit="d">0.0</C2>
-						</Pole>
-					</SmallCircle>
-				</Vertex>
-			</Polygon>
-			<Circle>
-				<Center coordUnit="m2/s2">
-					<C1 unit="u">1.0</C1>
-					<C2 unit="1/m">0.0</C2>
-				</Center>
-				<Radius unit="arcsec/um">1.0</Radius>
-			</Circle>
-			<BBox>
-				<RaCenter unit="J/m3/K4">1.0</RaCenter>
-				<DecCenter unit="c/y">1.0</DecCenter>
-				<RaHalfWidth unit="deg/day">0.0</RaHalfWidth>
-				<DecHalfWidth unit="solRad">0.0</DecHalfWidth>
-			</BBox>
-		</SpatialCoverage>
-		<SpectralCoverage>
-			<Filter>
-				<Name>VIS</Name>
-				<MagId>K</MagId>
-				<CentralWavelength>2.0</CentralWavelength>
-				<MinWavelength>1.0</MinWavelength>
-				<MaxWavelength>3.0</MaxWavelength>
-				<Reference>ZeUFg</Reference>
-				<HasFringes>1560078002</HasFringes>
-			</Filter>
-		</SpectralCoverage>
-		<CatalogDescription>
-			<CatalogOrigin>MEASURED_DEEP</CatalogOrigin>
-			<CatalogType>PROXY</CatalogType>
-			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-			<CatalogName>She-Lensmc-Training</CatalogName>
-			<CatalogFormatHDU>1</CatalogFormatHDU>
-		</CatalogDescription>
-		<ValidityRange>
-			<Name>Dummy</Name>
-			<Type>sheLensMcTraining</Type>
-			<TimestampStart>2020-06-03T15:13:25.799Z</TimestampStart>
-			<TimestampEnd>9999-06-03T15:13:25.799Z</TimestampEnd>
-		</ValidityRange>
-		<DataStorage format="she.lensMcMeasurements" version="8.0">
-			<DataContainer filestatus="PROPOSED">
-				<FileName>None</FileName>
-			</DataContainer>
-		</DataStorage>
-	</Data>
-	<QualityFlags>
-		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
-		<AuxiliaryFlags flagName="WaIaX" flagged="false" maxLimit="-8.0" minLimit="1.0" xpath="j2zvs">false</AuxiliaryFlags>
-	</QualityFlags>
-	<Parameters>
-		<Parameter>
-			<Key>lSTtZ</Key>
-			<Description>dmPmu</Description>
-			<StringValue>dfYEY</StringValue>
-			<Unit>uuxWT</Unit>
-		</Parameter>
-	</Parameters>
+    <Header>
+        <ProductId>03a1dc83-3605-4496-9562-7331e9b18316</ProductId>
+        <ProductType>DpdSheLensMcTraining</ProductType>
+        <SoftwareName>9dn5P</SoftwareName>
+        <SoftwareRelease>xpWR</SoftwareRelease>
+        <EuclidPipelineSoftwareRelease>16rd</EuclidPipelineSoftwareRelease>
+        <ProdSDC>MS1XE2wP02</ProdSDC>
+        <DataSetRelease>nEGEH</DataSetRelease>
+        <Purpose>TEST</Purpose>
+        <PlanId>Fd2e3</PlanId>
+        <PPOId>dTVl0</PPOId>
+        <PipelineDefinitionId>cJrLZ</PipelineDefinitionId>
+        <PpoStatus>NA</PpoStatus>
+        <ManualValidationStatus>VALID</ManualValidationStatus>
+        <ExpirationDate>2020-06-03T15:13:25.786Z</ExpirationDate>
+        <ToBePublished>0</ToBePublished>
+        <Published>0</Published>
+        <Curator>SHE</Curator>
+        <CreationDate>2020-06-03T15:13:25.788Z</CreationDate>
+    </Header>
+    <Data>
+        <SpatialCoverage>
+            <Polygon>
+                <Vertex>
+                    <Position coordUnit="Mstars/deg2">
+                        <C1 unit="kpc">1.0</C1>
+                        <C2 unit="J/m2">1.0</C2>
+                    </Position>
+                    <SmallCircle>
+                        <Pole coordUnit="uNewton/kg">
+                            <C1 unit="arcsec/um">0.0</C1>
+                            <C2 unit="d">0.0</C2>
+                        </Pole>
+                    </SmallCircle>
+                </Vertex>
+            </Polygon>
+            <Circle>
+                <Center coordUnit="m2/s2">
+                    <C1 unit="u">1.0</C1>
+                    <C2 unit="1/m">0.0</C2>
+                </Center>
+                <Radius unit="arcsec/um">1.0</Radius>
+            </Circle>
+            <BBox>
+                <RaCenter unit="J/m3/K4">1.0</RaCenter>
+                <DecCenter unit="c/y">1.0</DecCenter>
+                <RaHalfWidth unit="deg/day">0.0</RaHalfWidth>
+                <DecHalfWidth unit="solRad">0.0</DecHalfWidth>
+            </BBox>
+        </SpatialCoverage>
+        <SpectralCoverage>
+            <Filter>
+                <Name>VIS</Name>
+                <MagId>K</MagId>
+                <CentralWavelength>2.0</CentralWavelength>
+                <MinWavelength>1.0</MinWavelength>
+                <MaxWavelength>3.0</MaxWavelength>
+                <Reference>ZeUFg</Reference>
+                <HasFringes>1560078002</HasFringes>
+            </Filter>
+        </SpectralCoverage>
+        <CatalogDescription>
+            <CatalogOrigin>MEASURED_DEEP</CatalogOrigin>
+            <CatalogType>PROXY</CatalogType>
+            <PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
+            <CatalogName>She-Lensmc-Training</CatalogName>
+            <CatalogFormatHDU>1</CatalogFormatHDU>
+        </CatalogDescription>
+        <ValidityRange>
+            <Name>Dummy</Name>
+            <Type>sheLensMcTraining</Type>
+            <TimestampStart>2020-06-03T15:13:25.799Z</TimestampStart>
+            <TimestampEnd>9999-06-03T15:13:25.799Z</TimestampEnd>
+        </ValidityRange>
+        <DataStorage format="she.lensMcMeasurements" version="8.0">
+            <DataContainer filestatus="PROPOSED">
+                <FileName>None</FileName>
+            </DataContainer>
+        </DataStorage>
+    </Data>
+    <QualityFlags>
+        <DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false
+        </DummyFlag>
+        <AuxiliaryFlags flagName="WaIaX" flagged="false" maxLimit="-8.0" minLimit="1.0" xpath="j2zvs">false
+        </AuxiliaryFlags>
+    </QualityFlags>
+    <Parameters>
+        <Parameter>
+            <Key>lSTtZ</Key>
+            <Description>dmPmu</Description>
+            <StringValue>dfYEY</StringValue>
+            <Unit>uuxWT</Unit>
+        </Parameter>
+    </Parameters>
 </ns1:DpdSheLensMcTraining>
