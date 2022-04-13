@@ -23,7 +23,7 @@ __updated__ = "2021-08-13"
 
 from collections import OrderedDict
 from copy import deepcopy
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Type, Union
 
 import numpy as np
 from astropy.table import Column, Table
@@ -453,7 +453,7 @@ class SheTableFormat:
                               name: str,
                               is_optional: bool = False,
                               comment: Optional[str] = None,
-                              dtype: str = ">f4",
+                              dtype: Union[str, Type] = ">f4",
                               fits_dtype: str = "E",
                               length: int = 1,
                               unlabelled: bool = False) -> str:

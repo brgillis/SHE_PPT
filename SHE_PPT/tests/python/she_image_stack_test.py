@@ -22,15 +22,13 @@ __updated__ = "2021-08-16"
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from copy import deepcopy
 import os
+from copy import deepcopy
 
-import py.test
+import numpy as np
 
 from SHE_PPT.she_image import SHEImage
 from SHE_PPT.she_image_stack import SHEImageStack
-import SHE_PPT.table_utility
-import numpy as np
 
 
 class TestSheStack(object):
@@ -66,9 +64,9 @@ class TestSheStack(object):
         filepaths_list = [
             [self.sci_filepath_1],
             [self.sci_filepath_2]
-        ]
+            ]
 
-        mystack = SHEImageStack.read(filepaths_list, mask_ext='MASK')  # Testing kwargs as well
+        mystack = SHEImageStack.read(filepaths_list, mask_ext = 'MASK')  # Testing kwargs as well
         print(mystack.exposures[0])
 
     def test_equality(self):
@@ -78,7 +76,7 @@ class TestSheStack(object):
         sci_image_2 = SHEImage(np.random.randn(100).reshape(10, 10))
         sci_image_s = SHEImage(np.random.randn(100).reshape(10, 10))
 
-        stack = SHEImageStack(stacked_image=sci_image_s, exposures=[sci_image_1, sci_image_2])
+        stack = SHEImageStack(stacked_image = sci_image_s, exposures = [sci_image_1, sci_image_2])
 
         stack_copy = deepcopy(stack)
         assert stack == stack_copy

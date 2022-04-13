@@ -418,7 +418,7 @@ def create_dpd_she_bias_statistics_from_stats(KSB_bias_statistics = None,
     dpd_shear_bias_stats = read_xml_product(find_aux_file(sample_file_name))
 
     # Overwrite the header with a new one to update the creation date (among other things)
-    dpd_shear_bias_stats.Header = HeaderProvider.create_generic_header("SHE")
+    dpd_shear_bias_stats.Header = HeaderProvider.create_generic_header("DpdSheIntermediateGeneral")
 
     # Set the statistics for each method
     dpd_shear_bias_stats.set_KSB_bias_statistics(KSB_bias_statistics, workdir = workdir)

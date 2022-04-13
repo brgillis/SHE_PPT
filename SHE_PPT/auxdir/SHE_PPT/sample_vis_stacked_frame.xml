@@ -1,246 +1,225 @@
 <?xml version="1.0" ?>
 <ns1:DpdVisStackedFrame xmlns:ns1="http://euclid.esa.org/schema/dpd/vis/visstackedframe">
-	<Header>
-		<ProductId>91602aa0-434c-42d3-a40d-ea13e421cbba</ProductId>
-		<ProductType>fTL4t</ProductType>
-		<SoftwareName>yRYuI</SoftwareName>
-		<SoftwareRelease>cxfG</SoftwareRelease>
-		<EuclidPipelineSoftwareRelease>CFDE</EuclidPipelineSoftwareRelease>
-		<ProdSDC>nSPWiMSwdh6Sl9W2mN1Ca4C2vUVJTehKKM08IcwoKlHyoCk6Norztmh4fnUEHAqgJwR2JK</ProdSDC>
-		<DataSetRelease>5OKHz</DataSetRelease>
-		<Purpose>VALIDATION</Purpose>
-		<PlanId>TNvlb</PlanId>
-		<PPOId>AqSwf</PPOId>
-		<PipelineDefinitionId>Hqm88</PipelineDefinitionId>
-		<PipelineRun>XOP1f</PipelineRun>
-		<ExitStatusCode>uhcBP</ExitStatusCode>
-		<ManualValidationStatus>INVALID</ManualValidationStatus>
-		<ExpirationDate>2020-06-10T15:11:48.922Z</ExpirationDate>
-		<ToBePublished>true</ToBePublished>
-		<Published>true</Published>
-		<Curator>SHE</Curator>
-		<CreationDate>2020-06-10T15:11:48.923Z</CreationDate>
-	</Header>
-	<Data>
-		<ExposureTime>
-			<Value>-1.0</Value>
-			<Unit>m3/kh/s2</Unit>
-		</ExposureTime>
-		<ImgType>
-			<Category>SCIENCE</Category>
-			<FirstType>STD</FirstType>
-			<SecondType>SKY</SecondType>
-			<ThirdType>WIDE</ThirdType>
-			<Technique>IMAGE</Technique>
-		</ImgType>
-		<ImgArea>
-			<Name>N/A</Name>
-		</ImgArea>
-		<ImgNumber>1</ImgNumber>
-		<AxisNumber>2</AxisNumber>
-		<AxisLengths>-1 -1</AxisLengths>
-		<DataSize>32</DataSize>
-		<DataLength>-1</DataLength>
-		<ImgStatistics>
-			<Min>1.0</Min>
-			<Max>5.0</Max>
-			<Mean>-3.0</Mean>
-			<Stdev>-1.0</Stdev>
-			<Median>9.0</Median>
-			<MinX>-1299559762</MinX>
-			<MinY>-294330979</MinY>
-			<MaxX>1710282288</MaxX>
-			<MaxY>471980935</MaxY>
-			<NPix>5717691811516999946</NPix>
-			<XLower>-946378502</XLower>
-			<YLower>234951358</YLower>
-			<XUpper>-1338696959</XUpper>
-			<YUpper>627632536</YUpper>
-		</ImgStatistics>
-		<Instrument>
-			<InstrumentName>VIS</InstrumentName>
-			<TelescopeName>Euclid</TelescopeName>
-		</Instrument>
-		<Filter>
-			<Name>DECAM_i</Name>
-			<MagId>Y</MagId>
-			<CentralWavelength>-10.0</CentralWavelength>
-			<MinWavelength>-6.0</MinWavelength>
-			<MaxWavelength>-3.0</MaxWavelength>
-			<Reference>P9FFE</Reference>
-			<HasFringes>85268162</HasFringes>
-		</Filter>
-		<WCS>
-			<CTYPE1>
-				<CoordinateType>DEC</CoordinateType>
-				<ProjectionType>PAR</ProjectionType>
-			</CTYPE1>
-			<CTYPE2>
-				<CoordinateType>RA</CoordinateType>
-				<ProjectionType>QSC</ProjectionType>
-			</CTYPE2>
-			<CRVAL1>-4.0</CRVAL1>
-			<CRVAL2>5.0</CRVAL2>
-			<CRPIX1>5.0</CRPIX1>
-			<CRPIX2>-2.0</CRPIX2>
-			<CD1_1>-7.0</CD1_1>
-			<CD1_2>-1.0</CD1_2>
-			<CD2_1>-9.0</CD2_1>
-			<CD2_2>-1.0</CD2_2>
-			<NonLinearCoeffs>
-				<NonLinearTPVAstromCoeffs>
-					<PV1_0>-2.0</PV1_0>
-					<PV1_1>9.0</PV1_1>
-					<PV1_2>4.0</PV1_2>
-					<PV1_3>5.0</PV1_3>
-					<PV1_4>5.0</PV1_4>
-					<PV1_5>-3.0</PV1_5>
-					<PV1_6>7.0</PV1_6>
-					<PV1_7>6.0</PV1_7>
-					<PV1_8>0.0</PV1_8>
-					<PV1_9>-2.0</PV1_9>
-					<PV1_10>-9.0</PV1_10>
-					<PV2_0>-9.0</PV2_0>
-					<PV2_1>-7.0</PV2_1>
-					<PV2_2>2.0</PV2_2>
-					<PV2_3>9.0</PV2_3>
-					<PV2_4>1.0</PV2_4>
-					<PV2_5>5.0</PV2_5>
-					<PV2_6>-2.0</PV2_6>
-					<PV2_7>2.0</PV2_7>
-					<PV2_8>5.0</PV2_8>
-					<PV2_9>-5.0</PV2_9>
-					<PV2_10>4.0</PV2_10>
-				</NonLinearTPVAstromCoeffs>
-			</NonLinearCoeffs>
-			<DetectorId>ItGkyV6ykXQEiF9bGycVrVbGeqHVISHNjDX38oG4LmoLS8</DetectorId>
-		</WCS>
-		<ZeroPoint unit="mag">
-			<ZeroPointType>absolute</ZeroPointType>
-			<Value>-7.0</Value>
-			<Error>-2.0</Error>
-			<Comment>cZYga</Comment>
-			<ValidityRange>
-				<Name>p8B3C</Name>
-				<Type>r5x6u</Type>
-				<TimestampStart>2020-06-10T15:11:48.941Z</TimestampStart>
-				<TimestampEnd>2020-06-10T15:11:48.941Z</TimestampEnd>
-			</ValidityRange>
-			<DetectorId>09k8AD6tPuy0eicwH9cTFaEh8PfJqK0PbVtd3BJd3gIpseevdxzVVXDUgKiBujKgIoUU3avnYe4wPddj</DetectorId>
-		</ZeroPoint>
-		<ImgSpatialFootprint>
-			<Polygon>
-				<Vertex>
-					<Position coordUnit="uarcsec">
-						<C1 unit="Wb">0.0</C1>
-						<C2 unit="arcsec">0.0</C2>
-					</Position>
-					<SmallCircle>
-						<Pole coordUnit="arcmin">
-							<C1 unit="km/s/kpc">1.0</C1>
-							<C2 unit="d">1.0</C2>
-						</Pole>
-					</SmallCircle>
-				</Vertex>
-			</Polygon>
-			<Circle>
-				<Center coordUnit="solLum">
-					<C1 unit="sr">1.0</C1>
-					<C2 unit="Wb">0.0</C2>
-				</Center>
-				<Radius unit="cy">1.0</Radius>
-			</Circle>
-			<BBox>
-				<RaCenter unit="J/K">0.0</RaCenter>
-				<DecCenter unit="Pa">1.0</DecCenter>
-				<RaHalfWidth unit="ppm/K">0.0</RaHalfWidth>
-				<DecHalfWidth unit="N">1.0</DecHalfWidth>
-			</BBox>
-		</ImgSpatialFootprint>
-		<Masks>
-			<HotPixelMask decBit="1" hexBit="0x00000001"/>
-			<ColdPixelMask decBit="2" hexBit="0x00000002"/>
-			<SaturatedPixelMask decBit="4" hexBit="0x00000004"/>
-			<CosmicRayPixelMask decBit="8" hexBit="0x00000008"/>
-			<SatelliteTrailPixelMask decBit="16" hexBit="0x00000010"/>
-			<InterpolatedPixelMask decBit="32" hexBit="0x00000020"/>
-			<BleedingPixelMask decBit="64" hexBit="0x00000040"/>
-			<OnBoardPixelMask decBit="128" hexBit="0x00000080"/>
-			<BadPixelMask decBit="256" hexBit="0x00000100"/>
-			<NonLinearPixelMask decBit="512" hexBit="0x00000200"/>
-			<PersistentChargePixelMask decBit="1024" hexBit="0x00000400"/>
-			<GhostPixelMask decBit="2048" hexBit="0x00000800"/>
-			<TransientObjectPixelMask decBit="4096" hexBit="0x00001000"/>
-			<ExtendedObjectPixelMask decBit="8192" hexBit="0x00002000"/>
-			<ScatteredLightPixelMask decBit="16384" hexBit="0x00004000"/>
-			<ChargeInjectionPixelMask decBit="32768" hexBit="0x00008000"/>
-			<NearChargeInjectionPixelMask decBit="65536" hexBit="0x00010000"/>
-			<SaturatedXTalkGhostPixelMask decBit="131072" hexBit="0x00020000"/>
-			<StarSignalPixelMask decBit="262144" hexBit="0x00040000"/>
-			<UserDefinedPixelMask decBit="134217728" hexBit="0x08000000"/>
-		</Masks>
-		<ObservationId>-1</ObservationId>
-		<DateRange>
-			<Name>PS5EH</Name>
-			<Type>FUzzt</Type>
-			<TimestampStart>2020-06-10T15:11:48.959Z</TimestampStart>
-			<TimestampEnd>2020-06-10T15:11:48.96Z</TimestampEnd>
-		</DateRange>
-		<DataStorage format="vis.stackedImage" version="0.1">
-			<DataContainer filestatus="ARCHIVED_CERNVMFS">
-				<FileName>None</FileName>
-			</DataContainer>
-		</DataStorage>
-		<PsfModelStorage format="vis.psfModel" version="0.1">
-			<DataContainer filestatus="DELETED">
-				<FileName>None</FileName>
-			</DataContainer>
-		</PsfModelStorage>
-		<BackgroundStorage format="vis.backgroundMap" version="0.1">
-			<DataContainer filestatus="PROPOSED">
-				<FileName>None</FileName>
-			</DataContainer>
-		</BackgroundStorage>
-		<WeightStorage format="vis.weightMap" version="0.1">
-			<DataContainer filestatus="ARCHIVED_CERNVMFS">
-				<FileName>None</FileName>
-			</DataContainer>
-		</WeightStorage>
-		<QualityParams>
-			<Mean flagged="false">1.0</Mean>
-			<Median flagged="true">1.0</Median>
-			<Mode flagged="false">0.0</Mode>
-			<StDev flagged="false">0.0</StDev>
-			<Min flagged="true">1.0</Min>
-			<Max flagged="true">1.0</Max>
-			<PixelCount flagged="true">0</PixelCount>
-			<Level flagged="false">0.0</Level>
-			<MaskedPixelFraction flagged="false">0.0</MaskedPixelFraction>
-			<HotPixelCount flagged="true">1</HotPixelCount>
-			<DeadPixelCount flagged="false">1</DeadPixelCount>
-			<GhostPixelCount flagged="false">0</GhostPixelCount>
-			<CosmicRayPixelCount flagged="false">0</CosmicRayPixelCount>
-			<StDevDiff flagged="true">1.0</StDevDiff>
-			<SubWinFlatness flagged="false">1.0</SubWinFlatness>
-			<FourierFreq flagged="false">1.0</FourierFreq>
-			<FourierFreqPower flagged="true">0.0</FourierFreqPower>
-			<SigmaClipMode flagged="true">1</SigmaClipMode>
-			<PercentileLevel flagged="false">0.0</PercentileLevel>
-			<ChiFit flagged="true">0.0</ChiFit>
-			<Temperature flagged="true">0.0</Temperature>
-			<SignalToNoiseRatio flagged="false">1.0</SignalToNoiseRatio>
-		</QualityParams>
-	</Data>
-	<QualityFlags>
-		<DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
-		<AuxiliaryFlags flagName="fRX0F" flagged="true" maxLimit="-9.0" minLimit="-2.0" xpath="4gWKM">false</AuxiliaryFlags>
-	</QualityFlags>
-	<Parameters>
-		<Parameter>
-			<Key>uTTzM</Key>
-			<Description>YKyn7</Description>
-			<StringValue>VQnIO</StringValue>
-			<Unit>HLvFE</Unit>
-		</Parameter>
-	</Parameters>
+    <Header>
+        <ProductId>91602aa0-434c-42d3-a40d-ea13e421cbba</ProductId>
+        <ProductType>DpdVisStackedFrame</ProductType>
+        <SoftwareName>yRYuI</SoftwareName>
+        <SoftwareRelease>cxfG</SoftwareRelease>
+        <EuclidPipelineSoftwareRelease>CFDE</EuclidPipelineSoftwareRelease>
+        <ProdSDC>nSPWiMSwdh6Sl9W2mN1Ca4C2vUVJTehKKM08IcwoKlHyoCk6Norztmh4fnUEHAqgJwR2JK</ProdSDC>
+        <DataSetRelease>5OKHz</DataSetRelease>
+        <Purpose>VALIDATION</Purpose>
+        <PlanId>TNvlb</PlanId>
+        <PPOId>AqSwf</PPOId>
+        <PipelineDefinitionId>Hqm88</PipelineDefinitionId>
+        <PpoStatus>NA</PpoStatus>
+        <ManualValidationStatus>INVALID</ManualValidationStatus>
+        <ExpirationDate>2020-06-10T15:11:48.922Z</ExpirationDate>
+        <ToBePublished>0</ToBePublished>
+        <Published>0</Published>
+        <Curator>SHE</Curator>
+        <CreationDate>2020-06-10T15:11:48.923Z</CreationDate>
+    </Header>
+    <Data>
+        <ExposureTime>
+            <Value>-1.0</Value>
+            <Unit>m3/kh/s2</Unit>
+        </ExposureTime>
+        <ImgType>
+            <Category>SCIENCE</Category>
+            <FirstType>STD</FirstType>
+            <SecondType>SKY</SecondType>
+            <Technique>IMAGE</Technique>
+        </ImgType>
+        <ImgArea>
+            <Name>N/A</Name>
+        </ImgArea>
+        <ImgNumber>1</ImgNumber>
+        <AxisNumber>2</AxisNumber>
+        <AxisLengths>-1 -1</AxisLengths>
+        <DataSize>32</DataSize>
+        <DataLength>-1</DataLength>
+        <ImgStatistics>
+            <Min>1.0</Min>
+            <Max>5.0</Max>
+            <Mean>-3.0</Mean>
+            <Stdev>-1.0</Stdev>
+            <Median>9.0</Median>
+            <MinX>-1299559762</MinX>
+            <MinY>-294330979</MinY>
+            <MaxX>1710282288</MaxX>
+            <MaxY>471980935</MaxY>
+            <NPix>5717691811516999946</NPix>
+            <XLower>-946378502</XLower>
+            <YLower>234951358</YLower>
+            <XUpper>-1338696959</XUpper>
+            <YUpper>627632536</YUpper>
+        </ImgStatistics>
+        <Instrument>
+            <InstrumentName>VIS</InstrumentName>
+            <TelescopeName>Euclid</TelescopeName>
+        </Instrument>
+        <Filter>
+            <Name>DECAM_i</Name>
+            <MagId>Y</MagId>
+            <CentralWavelength>-10.0</CentralWavelength>
+            <MinWavelength>-6.0</MinWavelength>
+            <MaxWavelength>-3.0</MaxWavelength>
+            <Reference>P9FFE</Reference>
+            <HasFringes>85268162</HasFringes>
+        </Filter>
+        <WCS>
+            <CTYPE1>
+                <CoordinateType>DEC</CoordinateType>
+                <ProjectionType>PAR</ProjectionType>
+            </CTYPE1>
+            <CTYPE2>
+                <CoordinateType>RA</CoordinateType>
+                <ProjectionType>QSC</ProjectionType>
+            </CTYPE2>
+            <CRVAL1>-4.0</CRVAL1>
+            <CRVAL2>5.0</CRVAL2>
+            <CRPIX1>5.0</CRPIX1>
+            <CRPIX2>-2.0</CRPIX2>
+            <CD1_1>-7.0</CD1_1>
+            <CD1_2>-1.0</CD1_2>
+            <CD2_1>-9.0</CD2_1>
+            <CD2_2>-1.0</CD2_2>
+            <NonLinearCoeffs>
+                <NonLinearTPVAstromCoeffs>
+                    <PV1_0>-2.0</PV1_0>
+                    <PV1_1>9.0</PV1_1>
+                    <PV1_2>4.0</PV1_2>
+                    <PV1_3>5.0</PV1_3>
+                    <PV1_4>5.0</PV1_4>
+                    <PV1_5>-3.0</PV1_5>
+                    <PV1_6>7.0</PV1_6>
+                    <PV1_7>6.0</PV1_7>
+                    <PV1_8>0.0</PV1_8>
+                    <PV1_9>-2.0</PV1_9>
+                    <PV1_10>-9.0</PV1_10>
+                    <PV2_0>-9.0</PV2_0>
+                    <PV2_1>-7.0</PV2_1>
+                    <PV2_2>2.0</PV2_2>
+                    <PV2_3>9.0</PV2_3>
+                    <PV2_4>1.0</PV2_4>
+                    <PV2_5>5.0</PV2_5>
+                    <PV2_6>-2.0</PV2_6>
+                    <PV2_7>2.0</PV2_7>
+                    <PV2_8>5.0</PV2_8>
+                    <PV2_9>-5.0</PV2_9>
+                    <PV2_10>4.0</PV2_10>
+                </NonLinearTPVAstromCoeffs>
+            </NonLinearCoeffs>
+            <DetectorId>ItGkyV6ykXQEiF9bGycVrVbGeqHVISHNjDX38oG4LmoLS8</DetectorId>
+        </WCS>
+        <ZeroPoint unit="mag">
+            <ZeroPointType>absolute</ZeroPointType>
+            <Value>-7.0</Value>
+            <Error>-2.0</Error>
+            <Comment>cZYga</Comment>
+            <ValidityRange>
+                <Name>p8B3C</Name>
+                <Type>r5x6u</Type>
+                <TimestampStart>2020-06-10T15:11:48.941Z</TimestampStart>
+                <TimestampEnd>2020-06-10T15:11:48.941Z</TimestampEnd>
+            </ValidityRange>
+            <DetectorId>09k8AD6tPuy0eicwH9cTFaEh8PfJqK0PbVtd3BJd3gIpseevdxzVVXDUgKiBujKgIoUU3avnYe4wPddj</DetectorId>
+        </ZeroPoint>
+        <ImgSpatialFootprint>
+            <Polygon>
+                <Vertex>
+                    <Position coordUnit="uarcsec">
+                        <C1 unit="Wb">0.0</C1>
+                        <C2 unit="arcsec">0.0</C2>
+                    </Position>
+                    <SmallCircle>
+                        <Pole coordUnit="arcmin">
+                            <C1 unit="km/s/kpc">1.0</C1>
+                            <C2 unit="d">1.0</C2>
+                        </Pole>
+                    </SmallCircle>
+                </Vertex>
+            </Polygon>
+            <Circle>
+                <Center coordUnit="solLum">
+                    <C1 unit="sr">1.0</C1>
+                    <C2 unit="Wb">0.0</C2>
+                </Center>
+                <Radius unit="cy">1.0</Radius>
+            </Circle>
+            <BBox>
+                <RaCenter unit="J/K">0.0</RaCenter>
+                <DecCenter unit="Pa">1.0</DecCenter>
+                <RaHalfWidth unit="ppm/K">0.0</RaHalfWidth>
+                <DecHalfWidth unit="N">1.0</DecHalfWidth>
+            </BBox>
+        </ImgSpatialFootprint>
+        <Masks>53ZR1</Masks>
+        <ObservationId>-1</ObservationId>
+        <DateRange>
+            <Name>PS5EH</Name>
+            <Type>FUzzt</Type>
+            <TimestampStart>2020-06-10T15:11:48.959Z</TimestampStart>
+            <TimestampEnd>2020-06-10T15:11:48.96Z</TimestampEnd>
+        </DateRange>
+        <DataStorage format="vis.stackedImage" version="0.1">
+            <DataContainer filestatus="ARCHIVED_CERNVMFS">
+                <FileName>None</FileName>
+            </DataContainer>
+        </DataStorage>
+        <PsfModelStorage format="vis.psfModel" version="0.1">
+            <DataContainer filestatus="DELETED">
+                <FileName>None</FileName>
+            </DataContainer>
+        </PsfModelStorage>
+        <BackgroundStorage format="vis.backgroundMap" version="0.1">
+            <DataContainer filestatus="PROPOSED">
+                <FileName>None</FileName>
+            </DataContainer>
+        </BackgroundStorage>
+        <WeightStorage format="vis.weightMap" version="0.1">
+            <DataContainer filestatus="ARCHIVED_CERNVMFS">
+                <FileName>None</FileName>
+            </DataContainer>
+        </WeightStorage>
+        <QualityParams>
+            <Mean flagged="false">1.0</Mean>
+            <Median flagged="true">1.0</Median>
+            <Mode flagged="false">0.0</Mode>
+            <StDev flagged="false">0.0</StDev>
+            <Min flagged="true">1.0</Min>
+            <Max flagged="true">1.0</Max>
+            <PixelCount flagged="true">0</PixelCount>
+            <Level flagged="false">0.0</Level>
+            <MaskedPixelFraction flagged="false">0.0</MaskedPixelFraction>
+            <HotPixelCount flagged="true">1</HotPixelCount>
+            <DeadPixelCount flagged="false">1</DeadPixelCount>
+            <GhostPixelCount flagged="false">0</GhostPixelCount>
+            <CosmicRayPixelCount flagged="false">0</CosmicRayPixelCount>
+            <StDevDiff flagged="true">1.0</StDevDiff>
+            <SubWinFlatness flagged="false">1.0</SubWinFlatness>
+            <FourierFreq flagged="false">1.0</FourierFreq>
+            <FourierFreqPower flagged="true">0.0</FourierFreqPower>
+            <SigmaClipMode flagged="true">1</SigmaClipMode>
+            <PercentileLevel flagged="false">0.0</PercentileLevel>
+            <ChiFit flagged="true">0.0</ChiFit>
+            <Temperature flagged="true">0.0</Temperature>
+            <SignalToNoiseRatio flagged="false">1.0</SignalToNoiseRatio>
+        </QualityParams>
+    </Data>
+    <QualityFlags>
+        <DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false
+        </DummyFlag>
+        <AuxiliaryFlags flagName="fRX0F" flagged="true" maxLimit="-9.0" minLimit="-2.0" xpath="4gWKM">false
+        </AuxiliaryFlags>
+    </QualityFlags>
+    <Parameters>
+        <Parameter>
+            <Key>uTTzM</Key>
+            <Description>YKyn7</Description>
+            <StringValue>VQnIO</StringValue>
+            <Unit>HLvFE</Unit>
+        </Parameter>
+    </Parameters>
 </ns1:DpdVisStackedFrame>

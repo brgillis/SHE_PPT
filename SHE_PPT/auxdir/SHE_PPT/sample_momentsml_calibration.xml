@@ -1,96 +1,97 @@
 <?xml version="1.0" ?>
 <ns1:DpdSheMomentsMlCalibration xmlns:ns1="http://euclid.esa.org/schema/dpd/she/momentsmlcalibration">
-	<Header>
-		<ProductId>eab0797e-4c93-47dd-87dd-94ff669438c0</ProductId>
-		<ProductType>E9yTS</ProductType>
-		<SoftwareName>1I9k3</SoftwareName>
-		<SoftwareRelease>U7t</SoftwareRelease>
-		<EuclidPipelineSoftwareRelease>GF6</EuclidPipelineSoftwareRelease>
-		<ProdSDC>8t4PoBIAqo2tOxPpbxdDMzzMjI7nVqcjVJ9YyBOkx8LpYTy0cLjXU</ProdSDC>
-		<DataSetRelease>Q3OR4</DataSetRelease>
-		<Purpose>PRODUCTION</Purpose>
-		<PlanId>Ca0M5</PlanId>
-		<PPOId>RdOMd</PPOId>
-		<PipelineDefinitionId>H3ZJ4</PipelineDefinitionId>
-		<PipelineRun>BQOGF</PipelineRun>
-		<ExitStatusCode>f4qo9</ExitStatusCode>
-		<ManualValidationStatus>VALID</ManualValidationStatus>
-		<ExpirationDate>2020-06-03T15:40:36.996Z</ExpirationDate>
-		<ToBePublished>false</ToBePublished>
-		<Published>true</Published>
-		<Curator>SHE</Curator>
-		<CreationDate>2020-06-03T15:40:36.997Z</CreationDate>
-	</Header>
-	<Data>
-		<SpatialCoverage>
-			<Polygon>
-				<Vertex>
-					<Position coordUnit="m2/kg">
-						<C1 unit="cd">1.0</C1>
-						<C2 unit="T">0.0</C2>
-					</Position>
-					<SmallCircle>
-						<Pole coordUnit="TeV">
-							<C1 unit="arcsec/um">1.0</C1>
-							<C2 unit="F">1.0</C2>
-						</Pole>
-					</SmallCircle>
-				</Vertex>
-			</Polygon>
-			<Circle>
-				<Center coordUnit="s/mas/km/yr">
-					<C1 unit="GeV">0.0</C1>
-					<C2 unit="mas-2">1.0</C2>
-				</Center>
-				<Radius unit="arcsec">0.0</Radius>
-			</Circle>
-			<BBox>
-				<RaCenter unit="m2/kg">1.0</RaCenter>
-				<DecCenter unit="MHz">1.0</DecCenter>
-				<RaHalfWidth unit="cd">0.0</RaHalfWidth>
-				<DecHalfWidth unit="km/s">1.0</DecHalfWidth>
-			</BBox>
-		</SpatialCoverage>
-		<SpectralCoverage>
-			<Filter>
-				<Name>NIR_J</Name>
-				<MagId>H</MagId>
-				<CentralWavelength>1.0</CentralWavelength>
-				<MinWavelength>9.0</MinWavelength>
-				<MaxWavelength>6.0</MaxWavelength>
-				<Reference>Yi8VB</Reference>
-				<HasFringes>48885168</HasFringes>
-			</Filter>
-		</SpectralCoverage>
-		<CatalogDescription>
-			<CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
-			<CatalogType>PROXY</CatalogType>
-			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-			<CatalogName>She-Placeholder</CatalogName>
-			<CatalogFormatHDU>1</CatalogFormatHDU>
-		</CatalogDescription>
-		<ValidityRange>
-			<Name>Dummy</Name>
-			<Type>sheMomentsMlCalibration</Type>
-			<TimestampStart>2020-06-03T15:40:37.008Z</TimestampStart>
-			<TimestampEnd>9999-06-03T15:40:37.008Z</TimestampEnd>
-		</ValidityRange>
-		<DataStorage>
-			<DataContainer filestatus="DELETED">
-				<FileName>None</FileName>
-			</DataContainer>
-		</DataStorage>
-	</Data>
-	<QualityFlags>
-		<DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true</DummyFlag>
-		<AuxiliaryFlags flagName="YF0Bi" flagged="false" maxLimit="4.0" minLimit="-5.0" xpath="q6DTa">false</AuxiliaryFlags>
-	</QualityFlags>
-	<Parameters>
-		<Parameter>
-			<Key>t5koS</Key>
-			<Description>Jxc8M</Description>
-			<StringValue>DAquj</StringValue>
-			<Unit>xl61H</Unit>
-		</Parameter>
-	</Parameters>
+    <Header>
+        <ProductId>eab0797e-4c93-47dd-87dd-94ff669438c0</ProductId>
+        <ProductType>DpdSheMomentsMlCalibration</ProductType>
+        <SoftwareName>1I9k3</SoftwareName>
+        <SoftwareRelease>U7t</SoftwareRelease>
+        <EuclidPipelineSoftwareRelease>GF6</EuclidPipelineSoftwareRelease>
+        <ProdSDC>8t4PoBIAqo2tOxPpbxdDMzzMjI7nVqcjVJ9YyBOkx8LpYTy0cLjXU</ProdSDC>
+        <DataSetRelease>Q3OR4</DataSetRelease>
+        <Purpose>PRODUCTION</Purpose>
+        <PlanId>Ca0M5</PlanId>
+        <PPOId>RdOMd</PPOId>
+        <PipelineDefinitionId>H3ZJ4</PipelineDefinitionId>
+        <PpoStatus>NA</PpoStatus>
+        <ManualValidationStatus>VALID</ManualValidationStatus>
+        <ExpirationDate>2020-06-03T15:40:36.996Z</ExpirationDate>
+        <ToBePublished>0</ToBePublished>
+        <Published>0</Published>
+        <Curator>SHE</Curator>
+        <CreationDate>2020-06-03T15:40:36.997Z</CreationDate>
+    </Header>
+    <Data>
+        <SpatialCoverage>
+            <Polygon>
+                <Vertex>
+                    <Position coordUnit="m2/kg">
+                        <C1 unit="cd">1.0</C1>
+                        <C2 unit="T">0.0</C2>
+                    </Position>
+                    <SmallCircle>
+                        <Pole coordUnit="TeV">
+                            <C1 unit="arcsec/um">1.0</C1>
+                            <C2 unit="F">1.0</C2>
+                        </Pole>
+                    </SmallCircle>
+                </Vertex>
+            </Polygon>
+            <Circle>
+                <Center coordUnit="s/mas/km/yr">
+                    <C1 unit="GeV">0.0</C1>
+                    <C2 unit="mas-2">1.0</C2>
+                </Center>
+                <Radius unit="arcsec">0.0</Radius>
+            </Circle>
+            <BBox>
+                <RaCenter unit="m2/kg">1.0</RaCenter>
+                <DecCenter unit="MHz">1.0</DecCenter>
+                <RaHalfWidth unit="cd">0.0</RaHalfWidth>
+                <DecHalfWidth unit="km/s">1.0</DecHalfWidth>
+            </BBox>
+        </SpatialCoverage>
+        <SpectralCoverage>
+            <Filter>
+                <Name>NIR_J</Name>
+                <MagId>H</MagId>
+                <CentralWavelength>1.0</CentralWavelength>
+                <MinWavelength>9.0</MinWavelength>
+                <MaxWavelength>6.0</MaxWavelength>
+                <Reference>Yi8VB</Reference>
+                <HasFringes>48885168</HasFringes>
+            </Filter>
+        </SpectralCoverage>
+        <CatalogDescription>
+            <CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
+            <CatalogType>PROXY</CatalogType>
+            <PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
+            <CatalogName>She-Placeholder</CatalogName>
+            <CatalogFormatHDU>1</CatalogFormatHDU>
+        </CatalogDescription>
+        <ValidityRange>
+            <Name>Dummy</Name>
+            <Type>sheMomentsMlCalibration</Type>
+            <TimestampStart>2020-06-03T15:40:37.008Z</TimestampStart>
+            <TimestampEnd>9999-06-03T15:40:37.008Z</TimestampEnd>
+        </ValidityRange>
+        <DataStorage>
+            <DataContainer filestatus="DELETED">
+                <FileName>None</FileName>
+            </DataContainer>
+        </DataStorage>
+    </Data>
+    <QualityFlags>
+        <DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true
+        </DummyFlag>
+        <AuxiliaryFlags flagName="YF0Bi" flagged="false" maxLimit="4.0" minLimit="-5.0" xpath="q6DTa">false
+        </AuxiliaryFlags>
+    </QualityFlags>
+    <Parameters>
+        <Parameter>
+            <Key>t5koS</Key>
+            <Description>Jxc8M</Description>
+            <StringValue>DAquj</StringValue>
+            <Unit>xl61H</Unit>
+        </Parameter>
+    </Parameters>
 </ns1:DpdSheMomentsMlCalibration>

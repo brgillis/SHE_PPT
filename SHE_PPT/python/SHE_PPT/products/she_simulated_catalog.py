@@ -23,12 +23,8 @@ __updated__ = "2021-08-16"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
-
 # Import dpdSheIntermediateObservationCatalog since it will be expected here
-from ..product_utility import (dpdSheIntermediateObservationCatalog, init_int_obs_cat,
-                               create_general_product_from_template)
-
+from ..product_utility import (ProductName, create_general_product_from_template, init_int_obs_cat)
 
 sample_file_name = 'SHE_PPT/sample_intermediate_observation_catalog.xml'
 product_type_name = "DpdSheSimulatedCatalog"
@@ -40,17 +36,18 @@ def init():
 
     """
 
-    init_int_obs_cat(product_type_name=product_type_name,
-                     init_function=create_dpd_she_simulated_catalog)
+    init_int_obs_cat(product_type_name = product_type_name,
+                     init_function = create_dpd_she_simulated_catalog)
 
 
-def create_dpd_she_simulated_catalog(filename=None):
+def create_dpd_she_simulated_catalog(filename = None):
     """ Initialize a product of this type
     """
 
-    return create_general_product_from_template(template_filename=sample_file_name,
-                                                product_type_name=product_type_name,
-                                                filename=filename,)
+    return create_general_product_from_template(template_filename = sample_file_name,
+                                                product_type_name = product_type_name,
+                                                general_product_type_name = ProductName.INT_OBS_CAT.value,
+                                                filename = filename, )
 
 
 # Add a useful alias

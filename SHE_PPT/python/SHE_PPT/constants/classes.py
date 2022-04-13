@@ -53,3 +53,14 @@ class ShearEstimationMethods(AllowedEnum):
     REGAUSS = "REGAUSS"
     MOMENTSML = "MomentsML"
     LENSMC = "LensMC"
+
+
+class BinParameters(AllowedEnum):
+    """ Enum of possible binning parameters for test cases.
+    """
+    TOT = "tot"
+    SNR = "snr"
+    BG = "bg"
+    COLOUR = "colour"
+    SIZE = "size"
+    EPOCH = "epoch"

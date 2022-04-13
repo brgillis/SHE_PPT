@@ -20,7 +20,7 @@ __updated__ = "2021-08-19"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
-
+from enum import Enum
 from typing import Optional
 
 import ST_DM_DmUtils.DmUtils as dm_utils
@@ -73,6 +73,26 @@ def coerce_no_include_data_subdir(filename: Optional[str]) -> Optional[str]:
     return filename
 
 
+# Enum for names of placeholder and intermediate products
+class ProductName(Enum):
+    PLC_GENERAL = "DpdShePlaceholderGeneral"
+    PLC_CAT = "DpdShePlaceholderCatalog"
+    PLC_OBS_CAT = "DpdShePlaceholderObservationCatalog"
+    PLC_TILE_CAT = "DpdShePlaceholderTileCatalog"
+    INT_GENERAL = "DpdSheIntermediateGeneral"
+    INT_CAT = "DpdSheIntermediateCatalog"
+    INT_OBS_CAT = "DpdSheIntermediateObservationCatalog"
+    INT_TILE_CAT = "DpdSheIntermediateTileCatalog"
+
+
+# Dict to store the fits table versions for each shear estimation method
+D_METHOD_FITS_VERSIONS = {ShearEstimationMethods.KSB      : "8.0",
+                          ShearEstimationMethods.LENSMC   : "8.0.1",
+                          ShearEstimationMethods.MOMENTSML: "8.0",
+                          ShearEstimationMethods.REGAUSS  : "8.0"}
+
+
+# Enum for names of placeholder and intermediate products
 def get_data_filename_from_product(p, attr_name = None):
     """ Helper function to get a data filename from a product, adjusting for whether to include the data subdir
         as desired.
@@ -476,15 +496,16 @@ def create_measurements_product_from_template(template_filename,
     return p
 
 
-def create_general_product_from_template(template_filename,
-                                         product_type_name,
-                                         filename = None, ):
+def create_general_product_from_template(template_filename: str,
+                                         product_type_name: str,
+                                         general_product_type_name: str,
+                                         filename: str = None, ):
     """ Function to create a data product object, using a template file as a base, specialized for shear measurements
         products.
     """
 
     p = create_product_from_template(template_filename = template_filename,
-                                     product_type_name = product_type_name,
+                                     product_type_name = general_product_type_name,
                                      filename = filename)
 
     # Set the data we don't need to empty
@@ -518,8 +539,7 @@ def get_method_cc_name(method: ShearEstimationMethods):
 
 
 def create_method_filestorage(method: ShearEstimationMethods,
-                              filename: Optional[str] = None,
-                              version = "8.0"):
+                              filename: Optional[str] = None, ):
     """ Create a file storage object for a given shear estimates method.
     """
 
@@ -531,7 +551,7 @@ def create_method_filestorage(method: ShearEstimationMethods,
     shear_estimates.DataStorage = dm_utils.create_fits_storage(getattr(she_pro, f"she{method_caps}MeasurementsFile"),
                                                                filename,
                                                                f"she.{method_cc}Measurements",
-                                                               version)
+                                                               version = D_METHOD_FITS_VERSIONS[method])
     shear_estimates.Valid = "VALID"
 
     return shear_estimates
