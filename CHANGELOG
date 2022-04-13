@@ -32,6 +32,7 @@ New Features
 
 New config features
 -------------------
+- Added new allowed configuration options for executables in SHE_Validation
 
 
 Miscellaneous
