@@ -244,12 +244,14 @@ def default_value_if_none(x: Optional[T],
 
 def default_init_if_none(x: Optional[Any],
                          type: Type[T],
-                         coerce: bool = False) -> T:
+                         *args,
+                         coerce: bool = False,
+                         **kwargs) -> T:
     """ If input value is None, returns a default initialization of the provided type, otherwise returns the input
         value. Optionally tries to coerce to desired type.
     """
     if x is None:
-        return type()
+        return type(*args, **kwargs)
     if coerce:
         return type(x)
     return x

@@ -74,6 +74,10 @@ class SheTestCase:
             self._args = self._make_mock_args()
         return self._args
 
+    @args.setter
+    def args(self, args: Namespace) -> None:
+        self._args = args
+
     @property
     def d_args(self) -> Dict[str, Any]:
         """ Similar to the args attribute, except converted to a Dict. This is used for any functions which
