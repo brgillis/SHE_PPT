@@ -21,12 +21,8 @@ __updated__ = "2021-08-16"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
-
 # Import dpdSheIntermediateGeneral since it will be expected here
-from ..product_utility import (dpdSheIntermediateGeneral, init_intermediate_general,
-                               create_general_product_from_template)
-
+from ..product_utility import (ProductName, create_general_product_from_template, init_intermediate_general)
 
 sample_file_name = 'SHE_PPT/sample_intermediate_general.xml'
 product_type_name = "DpdSheSimulationPlan"
@@ -37,17 +33,18 @@ def init():
         Adds some extra functionality to the product
     """
 
-    init_intermediate_general(product_type_name=product_type_name,
-                              init_function=create_dpd_she_simulation_plan)
+    init_intermediate_general(product_type_name = product_type_name,
+                              init_function = create_dpd_she_simulation_plan)
 
 
-def create_dpd_she_simulation_plan(filename=None):
+def create_dpd_she_simulation_plan(filename = None):
     """ Initialize a product of this type
     """
 
-    return create_general_product_from_template(template_filename=sample_file_name,
-                                                product_type_name=product_type_name,
-                                                filename=filename,)
+    return create_general_product_from_template(template_filename = sample_file_name,
+                                                product_type_name = product_type_name,
+                                                general_product_type_name = ProductName.INT_GENERAL.value,
+                                                filename = filename, )
 
 
 # Add a useful alias

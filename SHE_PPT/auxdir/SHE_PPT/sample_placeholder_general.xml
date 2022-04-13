@@ -1,46 +1,47 @@
 <?xml version="1.0" ?>
 <ns1:DpdShePlaceholderGeneral xmlns:ns1="http://euclid.esa.org/schema/dpd/she/placeholdergeneral">
-	<Header>
-		<ProductId>c602a311-a77b-4b81-a9b7-cc7d3be9a156</ProductId>
-		<ProductType>txQqw</ProductType>
-		<SoftwareName>Q04Oh</SoftwareName>
-		<SoftwareRelease>msoT</SoftwareRelease>
-		<EuclidPipelineSoftwareRelease>vyZJ</EuclidPipelineSoftwareRelease>
-		<ProdSDC>tkfiTP</ProdSDC>
-		<DataSetRelease>DDzzM</DataSetRelease>
-		<Purpose>UNKNOWN</Purpose>
-		<PlanId>xQhvE</PlanId>
-		<PPOId>IkqFM</PPOId>
-		<PipelineDefinitionId>93Twc</PipelineDefinitionId>
-		<PipelineRun>I1dSN</PipelineRun>
-		<ExitStatusCode>eU3EZ</ExitStatusCode>
-		<ManualValidationStatus>INVALID</ManualValidationStatus>
-		<ExpirationDate>2020-06-03T15:47:21.202Z</ExpirationDate>
-		<ToBePublished>false</ToBePublished>
-		<Published>false</Published>
-		<Curator>SHE</Curator>
-		<CreationDate>2020-06-03T15:47:21.204Z</CreationDate>
-	</Header>
-	<Data>
-		<IntData>0</IntData>
-		<FloatData>0.0</FloatData>
-		<StringData>WWStN</StringData>
-		<DataStorage>
-			<DataContainer filestatus="DELETED">
-				<FileName>None</FileName>
-			</DataContainer>
-		</DataStorage>
-	</Data>
-	<QualityFlags>
-		<DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
-		<AuxiliaryFlags flagName="qoeoZ" flagged="false" maxLimit="9.0" minLimit="6.0" xpath="Lwl7y">false</AuxiliaryFlags>
-	</QualityFlags>
-	<Parameters>
-		<Parameter>
-			<Key>xD9lJ</Key>
-			<Description>MFGY3</Description>
-			<StringValue>1sYZy</StringValue>
-			<Unit>Ff0Uk</Unit>
-		</Parameter>
-	</Parameters>
+    <Header>
+        <ProductId>c602a311-a77b-4b81-a9b7-cc7d3be9a156</ProductId>
+        <ProductType>DpdShePlaceholderGeneral</ProductType>
+        <SoftwareName>Q04Oh</SoftwareName>
+        <SoftwareRelease>msoT</SoftwareRelease>
+        <EuclidPipelineSoftwareRelease>vyZJ</EuclidPipelineSoftwareRelease>
+        <ProdSDC>tkfiTP</ProdSDC>
+        <DataSetRelease>DDzzM</DataSetRelease>
+        <Purpose>UNKNOWN</Purpose>
+        <PlanId>xQhvE</PlanId>
+        <PPOId>IkqFM</PPOId>
+        <PipelineDefinitionId>93Twc</PipelineDefinitionId>
+        <PpoStatus>NA</PpoStatus>
+        <ManualValidationStatus>INVALID</ManualValidationStatus>
+        <ExpirationDate>2020-06-03T15:47:21.202Z</ExpirationDate>
+        <ToBePublished>0</ToBePublished>
+        <Published>0</Published>
+        <Curator>SHE</Curator>
+        <CreationDate>2020-06-03T15:47:21.204Z</CreationDate>
+    </Header>
+    <Data>
+        <IntData>0</IntData>
+        <FloatData>0.0</FloatData>
+        <StringData>WWStN</StringData>
+        <DataStorage>
+            <DataContainer filestatus="DELETED">
+                <FileName>None</FileName>
+            </DataContainer>
+        </DataStorage>
+    </Data>
+    <QualityFlags>
+        <DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false
+        </DummyFlag>
+        <AuxiliaryFlags flagName="qoeoZ" flagged="false" maxLimit="9.0" minLimit="6.0" xpath="Lwl7y">false
+        </AuxiliaryFlags>
+    </QualityFlags>
+    <Parameters>
+        <Parameter>
+            <Key>xD9lJ</Key>
+            <Description>MFGY3</Description>
+            <StringValue>1sYZy</StringValue>
+            <Unit>Ff0Uk</Unit>
+        </Parameter>
+    </Parameters>
 </ns1:DpdShePlaceholderGeneral>

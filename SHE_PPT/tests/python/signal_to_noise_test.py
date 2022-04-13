@@ -21,30 +21,21 @@ __updated__ = "2021-08-12"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 import os
-from os.path import join
 
+import numpy as np
 import pytest
 
 from ElementsServices.DataSync import DataSync
 from SHE_PPT import mdb
 from SHE_PPT.constants.fits import GAIN_LABEL
-from SHE_PPT.constants.test_data import (SYNC_CONF,
-                                         TEST_FILES_DATA_STACK,
-                                         TEST_FILES_MDB,
-                                         TEST_DATA_LOCATION,
-                                         MDB_PRODUCT_FILENAME,
-                                         VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
-                                         MER_FINAL_CATALOG_LISTFILE_FILENAME,
-                                         VIS_STACKED_FRAME_PRODUCT_FILENAME,
+from SHE_PPT.constants.test_data import (MDB_PRODUCT_FILENAME, MER_FINAL_CATALOG_LISTFILE_FILENAME,
                                          SHE_EXPOSURE_SEGMENTATION_MAPS_LISTFILE_FILENAME,
-                                         SHE_STACK_SEGMENTATION_MAP_FILENAME,
-                                         SHE_PSF_MODEL_IMAGES_LISTFILE_FILENAME)
-from SHE_PPT.file_io import read_pickled_product, find_file
-from SHE_PPT.logging import getLogger
+                                         SHE_PSF_MODEL_IMAGES_LISTFILE_FILENAME, SHE_STACK_SEGMENTATION_MAP_FILENAME,
+                                         SYNC_CONF, TEST_DATA_LOCATION, TEST_FILES_DATA_STACK, TEST_FILES_MDB,
+                                         VIS_CALIBRATED_FRAME_LISTFILE_FILENAME, VIS_STACKED_FRAME_PRODUCT_FILENAME, )
 from SHE_PPT.she_frame_stack import SHEFrameStack
 from SHE_PPT.signal_to_noise import get_SN_of_image
 from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
-import numpy as np
 
 ex_signal_to_noises = [59, 32]
 
@@ -55,7 +46,7 @@ class TestCase:
 
     """
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture(autouse = True)
     def setup(self, tmpdir):
 
         # Download the MDB from WebDAV
@@ -84,17 +75,17 @@ class TestCase:
         self.logdir = os.path.join(self.workdir, "logs")
 
         # Read in the test data
-        self.data_stack = SHEFrameStack.read(exposure_listfile_filename=VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
-                                             seg_listfile_filename=SHE_EXPOSURE_SEGMENTATION_MAPS_LISTFILE_FILENAME,
-                                             stacked_image_product_filename=VIS_STACKED_FRAME_PRODUCT_FILENAME,
-                                             stacked_seg_product_filename=SHE_STACK_SEGMENTATION_MAP_FILENAME,
-                                             psf_listfile_filename=SHE_PSF_MODEL_IMAGES_LISTFILE_FILENAME,
-                                             detections_listfile_filename=MER_FINAL_CATALOG_LISTFILE_FILENAME,
-                                             workdir=self.workdir,
-                                             clean_detections=True,
-                                             memmap=True,
-                                             mode='denywrite',
-                                             load_images=False)
+        self.data_stack = SHEFrameStack.read(exposure_listfile_filename = VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
+                                             seg_listfile_filename = SHE_EXPOSURE_SEGMENTATION_MAPS_LISTFILE_FILENAME,
+                                             stacked_image_product_filename = VIS_STACKED_FRAME_PRODUCT_FILENAME,
+                                             stacked_seg_product_filename = SHE_STACK_SEGMENTATION_MAP_FILENAME,
+                                             psf_listfile_filename = SHE_PSF_MODEL_IMAGES_LISTFILE_FILENAME,
+                                             detections_listfile_filename = MER_FINAL_CATALOG_LISTFILE_FILENAME,
+                                             workdir = self.workdir,
+                                             clean_detections = True,
+                                             memmap = True,
+                                             mode = 'denywrite',
+                                             load_images = False)
 
     def test_get_signal_to_noise(self):
         """Test that the interface for the KSB method works properly.
@@ -104,13 +95,13 @@ class TestCase:
 
         # Get the S/N for each galaxy
         for i, row in enumerate(self.data_stack.detections_catalogue):
-            gal_stack = self.data_stack.extract_galaxy_stack(row[mfc_tf.ID], width=128)
+            gal_stack = self.data_stack.extract_galaxy_stack(row[mfc_tf.ID], width = 128)
 
             signal_to_noise_estimates = []
             for exposure in gal_stack.exposures:
                 signal_to_noise_estimates.append(get_SN_of_image(exposure.data - exposure.background_map,
-                                                                 gain=gain))
+                                                                 gain = gain))
 
-            assert np.allclose(signal_to_noise_estimates, ex_signal_to_noises[i], rtol=0.1)
+            assert np.allclose(signal_to_noise_estimates, ex_signal_to_noises[i], rtol = 0.1)
 
         return

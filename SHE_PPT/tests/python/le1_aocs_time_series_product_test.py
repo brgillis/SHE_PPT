@@ -30,7 +30,6 @@ class TestAocsTimeSeriesProduct(object):
     """
 
     def test_validation(self):
-
         # Create the product
         product = prod.create_dpd_le1_aocs_time_series()
 
@@ -40,7 +39,6 @@ class TestAocsTimeSeriesProduct(object):
         return
 
     def test_xml_writing_and_reading(self, tmpdir):
-
         # Create the product
         product = prod.create_dpd_le1_aocs_time_series()
 
@@ -54,6 +52,6 @@ class TestAocsTimeSeriesProduct(object):
         loaded_product = read_xml_product(file_name)
 
         # Check that it's the same
-        assert(loaded_product.get_filename() == product.get_filename())
+        assert (loaded_product.get_filename() == product.get_filename())
 
         return

@@ -1,52 +1,54 @@
 <?xml version="1.0" ?>
-<ns1:DpdSheIntermediateEuclidizedHstImages xmlns:ns1="http://euclid.esa.org/schema/dpd/she/intermediateeuclidizedhstimages">
-	<Header>
-		<ProductId>6d7f3775-c6e4-4691-9df0-3b7f37985390</ProductId>
-		<ProductType>2C68s</ProductType>
-		<SoftwareName>8uaIQ</SoftwareName>
-		<SoftwareRelease>gprnq</SoftwareRelease>
-		<EuclidPipelineSoftwareRelease>whh</EuclidPipelineSoftwareRelease>
-		<ProdSDC>vAFsglfvSGJnbLZNYJDef2rEWSxRBBzTpquraRKg67c5IgrhBWieK70udHJe9en681lzmSoCF0SNDit6r5aJ8nsgfYp0FHze0QhVmUDpOX5ZmTlCUXB7fWN</ProdSDC>
-		<DataSetRelease>BlOIN</DataSetRelease>
-		<Purpose>TEST</Purpose>
-		<PlanId>d7L0o</PlanId>
-		<PPOId>ioYWQ</PPOId>
-		<PipelineDefinitionId>HGsZC</PipelineDefinitionId>
-		<PipelineRun>LNVv1</PipelineRun>
-		<ExitStatusCode>UYosO</ExitStatusCode>
-		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
-		<ExpirationDate>2020-06-01T15:31:13.132Z</ExpirationDate>
-		<ToBePublished>true</ToBePublished>
-		<Published>false</Published>
-		<Curator>SHE</Curator>
-		<CreationDate>2020-06-01T15:31:13.133Z</CreationDate>
-	</Header>
-	<Data>
-		<ValidityRange>
-			<Name>Dummy</Name>
-			<Type>SheIntermediateEuclidizedHstImages</Type>
-			<TimestampStart>2020-06-01T15:31:13.134Z</TimestampStart>
-			<TimestampEnd>9999-06-01T15:31:13.136Z</TimestampEnd>
-		</ValidityRange>
-		<EuclidizedHSTObjectList>
-			<DataStorage filestatus="ARCHIVED_ONLINE">
-				<FileName>None</FileName>
-			</DataStorage>
-			<PsfStorage filestatus="ARCHIVED_OFFLINE">
-				<FileName>None</FileName>
-			</PsfStorage>
-		</EuclidizedHSTObjectList>
-	</Data>
-	<QualityFlags>
-		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true</DummyFlag>
-		<AuxiliaryFlags flagName="rLAWo" flagged="false" maxLimit="-4.0" minLimit="-1.0" xpath="6jeww">false</AuxiliaryFlags>
-	</QualityFlags>
-	<Parameters>
-		<Parameter>
-			<Key>MSaF5</Key>
-			<Description>z80Ac</Description>
-			<StringValue>8gLny</StringValue>
-			<Unit>T5pa3</Unit>
-		</Parameter>
-	</Parameters>
+<ns1:DpdSheIntermediateEuclidizedHstImages
+        xmlns:ns1="http://euclid.esa.org/schema/dpd/she/intermediateeuclidizedhstimages">
+    <Header>
+        <ProductId>6d7f3775-c6e4-4691-9df0-3b7f37985390</ProductId>
+        <ProductType>DpdSheIntermediateEuclidizedHstImages</ProductType>
+        <SoftwareName>8uaIQ</SoftwareName>
+        <SoftwareRelease>gprnq</SoftwareRelease>
+        <EuclidPipelineSoftwareRelease>whh</EuclidPipelineSoftwareRelease>
+        <ProdSDC>SDC-UK</ProdSDC>
+        <DataSetRelease>BlOIN</DataSetRelease>
+        <Purpose>TEST</Purpose>
+        <PlanId>d7L0o</PlanId>
+        <PPOId>ioYWQ</PPOId>
+        <PipelineDefinitionId>HGsZC</PipelineDefinitionId>
+        <PpoStatus>NA</PpoStatus>
+        <ManualValidationStatus>UNKNOWN</ManualValidationStatus>
+        <ExpirationDate>2020-06-01T15:31:13.132Z</ExpirationDate>
+        <ToBePublished>0</ToBePublished>
+        <Published>0</Published>
+        <Curator>SHE</Curator>
+        <CreationDate>2020-06-01T15:31:13.133Z</CreationDate>
+    </Header>
+    <Data>
+        <ValidityRange>
+            <Name>Dummy</Name>
+            <Type>SheIntermediateEuclidizedHstImages</Type>
+            <TimestampStart>2020-06-01T15:31:13.134Z</TimestampStart>
+            <TimestampEnd>9999-06-01T15:31:13.136Z</TimestampEnd>
+        </ValidityRange>
+        <EuclidizedHSTObjectList>
+            <DataStorage filestatus="ARCHIVED_ONLINE">
+                <FileName>None</FileName>
+            </DataStorage>
+            <PsfStorage filestatus="ARCHIVED_OFFLINE">
+                <FileName>None</FileName>
+            </PsfStorage>
+        </EuclidizedHSTObjectList>
+    </Data>
+    <QualityFlags>
+        <DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true
+        </DummyFlag>
+        <AuxiliaryFlags flagName="rLAWo" flagged="false" maxLimit="-4.0" minLimit="-1.0" xpath="6jeww">false
+        </AuxiliaryFlags>
+    </QualityFlags>
+    <Parameters>
+        <Parameter>
+            <Key>MSaF5</Key>
+            <Description>z80Ac</Description>
+            <StringValue>8gLny</StringValue>
+            <Unit>T5pa3</Unit>
+        </Parameter>
+    </Parameters>
 </ns1:DpdSheIntermediateEuclidizedHstImages>
