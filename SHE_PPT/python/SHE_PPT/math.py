@@ -20,8 +20,10 @@ __updated__ = "2021-08-13"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
+from typing import Optional
 
 import numpy as np
+from astropy.table import Table
 
 DEFAULT_M_TARGET = 1e-4
 DEFAULT_C_TARGET = 5e-6
@@ -368,19 +370,160 @@ def combine_linregress_statistics(lstats):
     return LinregressResults(lstats = lstats)
 
 
-def linregress_with_errors(x, y, y_err = None):
+DEFAULT_N_BOOTSTRAP_SAMPLES = 50
+DEFAULT_BOOTSTRAP_SEED = 4612412
+
+
+def linregress_with_errors(x: np.ndarray,
+                           y: np.ndarray,
+                           y_err: Optional[np.ndarray] = None,
+                           id: Optional[np.ndarray] = None,
+                           bootstrap: bool = False,
+                           n_bootstrap_samples: int = DEFAULT_N_BOOTSTRAP_SAMPLES,
+                           bootstrap_seed: int = DEFAULT_BOOTSTRAP_SEED) -> LinregressResults:
+    """ Perform a linear regression with errors on the y values. This forwards to the appropriate function depending on
+        whether or not bootstrap error calculation is requested - either linregress_with_errors_no_bootstrap if
+        bootstrap==False or else linregress_with_errors_bootstrap if bootstrap==True.
+
+        Both the bootstrap and non-bootstrap implementations assume observations are independent in their
+        error calculation. The bootstrap implementation is more resilient to incorrect errors, and should be used if
+        the errors aren't known but are expected to differ between observations.
+
+        Parameters
+        ----------
+        x : np.ndarray
+        y : np.ndarray
+        y_err : Optional[np.ndarray], default None
+        id : Optional[np.ndarray], default None
+            If bootstrap==True, ID - observations with the same ID will be included/excluded from the bootstrap samples
+            together
+        bootstrap: bool, default False
+            Whether or not slope and intercept errors should be calculated with a bootstrap approach. If all errors
+            provided to y_err are trusted to be correct and independent, then this should be left as False for faster
+            and more accurate error calculation. If this is not the case and accurate slope and intercept errors are
+            desired, this should be set to true, with n_bootstrap_samples set to balance time and accuracy requirements.
+        n_bootstrap_samples: int, default DEFAULT_N_BOOTSTRAP_SAMPLES
+            If bootstrap==True, this will be the number of bootstrap samples used to calculate slope and intercept
+            errors. Execution time will scale as n_bootstrap_samples, and precision as 1/sqrt(n_bootstrap_samples)
+        bootstrap_seed: int, default DEFAULT_BOOTSTRAP_SEED
+            If bootstrap==True, this will be the RNG seed used for the generation of bootstrap samples.
+
+        Returns
+        -------
+        results : LinregressResults
     """
-    @brief
-        Perform a linear regression with errors on the y values
-    @details
-        This uses a direct translation of GSL's gsl_fit_wlinear function, using
-        inverse-variance weighting
 
-    @param x <np.ndarray>
-    @param y <np.ndarray>
-    @param y_err <np.ndarray>
+    if bootstrap:
+        return linregress_with_errors_bootstrap(x = x,
+                                                y = y,
+                                                y_err = y_err,
+                                                id = id,
+                                                n_bootstrap_samples = n_bootstrap_samples,
+                                                bootstrap_seed = bootstrap_seed)
+    else:
+        return linregress_with_errors_no_bootstrap(x = x,
+                                                   y = y,
+                                                   y_err = y_err)
 
-    @return results <LinregressResults>
+
+def linregress_with_errors_bootstrap(x: np.ndarray,
+                                     y: np.ndarray,
+                                     y_err: Optional[np.ndarray] = None,
+                                     id: Optional[np.ndarray] = None,
+                                     n_bootstrap_samples: int = DEFAULT_N_BOOTSTRAP_SAMPLES,
+                                     bootstrap_seed: int = DEFAULT_BOOTSTRAP_SEED) -> LinregressResults:
+    """ Perform a linear regression with errors on the y values, using a bootstrap approach to calculate the errors
+        on the resulting slope and intercept. In order for the resulting slope and intercept errors
+        to be correct, this implementation requires that, if y_err is provided, all errors are independent.
+        Inaccurate errors have less of an impact on this implementation compared to the non-bootstrap implementation.
+        If the errors are suspected to be greatly inaccurate, it's recommended to run this with y_err = None.
+
+        Parameters
+        ----------
+        x : np.ndarray
+        y : np.ndarray
+        y_err : Optional[np.ndarray], default None
+        id : Optional[np.ndarray], default None
+            ID - observations with the same ID will be included/excluded from the bootstrap samples together
+        n_bootstrap_samples: int, default DEFAULT_N_BOOTSTRAP_SAMPLES
+            The number of bootstrap samples used to calculate slope and intercept
+            errors. Execution time will scale as n_bootstrap_samples, and precision as 1/sqrt(n_bootstrap_samples)
+        bootstrap_seed: int, default DEFAULT_BOOTSTRAP_SEED
+            The RNG seed used for the generation of bootstrap samples.
+
+        Returns
+        -------
+        results : LinregressResults
+    """
+
+    # Put the provided data into a table to allow easy slicing
+    # If y_err is None here, we put an array of ones in the table (assuming equal weight for everything)
+    if y_err is None:
+        y_err_in_table: np.ndarray = np.ones_like(y)
+    else:
+        y_err_in_table: np.ndarray = y_err
+    # For ID, if it's none, make a list of indices
+    if id is None:
+        id_in_table: np.ndarray = np.arange(len(y))
+    else:
+        id_in_table = id
+    xy_table = Table([np.asarray(id_in_table), np.asarray(x), np.asarray(y), np.asarray(y_err_in_table)],
+                     names = ("id", "x", "y", "y_err"))
+    xy_table.add_index("id")
+
+    # Seed the random number generator
+    rng = np.random.default_rng(bootstrap_seed)
+
+    # Get a base object for the slope and intercept calculations
+    results = linregress_with_errors_no_bootstrap(x = xy_table["x"],
+                                                  y = xy_table["y"],
+                                                  y_err = xy_table["y_err"])
+
+    # Bootstrap to get errors on slope and intercept
+
+    s_oid = np.unique(id_in_table)
+    n_ids = len(s_oid)
+
+    slope_bs = np.empty(n_bootstrap_samples)
+    intercept_bs = np.empty(n_bootstrap_samples)
+    for b_i in range(n_bootstrap_samples):
+        # For each bootstrap sample, select a set of random rows, allowing duplication
+        u = rng.integers(0, n_ids, n_ids)
+
+        l_ids = s_oid[u]
+        sample_table = xy_table.loc[l_ids]
+
+        # Calculate a linear regression without bootstrapping on this sample of values
+        results_bs = linregress_with_errors_no_bootstrap(x = sample_table["x"],
+                                                         y = sample_table["y"],
+                                                         y_err = sample_table["y_err"])
+
+        # Store the slope and intercept from this calculation
+        slope_bs[b_i] = results_bs.slope
+        intercept_bs[b_i] = results_bs.intercept
+
+    # Update the error measurements in the output object, using the standard deviation of the bootstrap results
+    results.slope_err = np.std(slope_bs)
+    results.intercept_err = np.std(intercept_bs)
+
+    return results
+
+
+def linregress_with_errors_no_bootstrap(x: np.ndarray,
+                                        y: np.ndarray,
+                                        y_err: Optional[np.ndarray] = None) -> LinregressResults:
+    """ Perform a linear regression with errors on the y values. In order for the resulting slope and intercept errors
+        to be correct, this implementation requires that, if y_err is provided, all errors are accurate and independent.
+
+        Parameters
+        ----------
+        x : np.ndarray
+        y : np.ndarray
+        y_err : Optional[np.ndarray], default None
+
+        Returns
+        -------
+        results : LinregressResults
     """
 
     stats = LinregressStatistics(x, y, y_err)

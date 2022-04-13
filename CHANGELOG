@@ -29,6 +29,7 @@ New Features
 - Added product definition and initializer for DpdSheStarCatalog
 - Added functions read_product_and_table and write_product_and_table for convenient reading/writing of a table and a
   data product which points to it
+- Added function to perform linear regression with bootstrap error estimation
 
 New config features
 -------------------
