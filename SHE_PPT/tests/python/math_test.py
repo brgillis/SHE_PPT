@@ -21,19 +21,12 @@
 
 __updated__ = "2021-07-05"
 
-import logging
-import os
-
+import numpy as np
 from numpy.testing import assert_almost_equal
-import pytest
 from scipy.stats import linregress
 
-from SHE_PPT.math import (linregress_with_errors,
-                          get_linregress_statistics,
-                          combine_linregress_statistics,
-                          LinregressResults,
-                          BiasMeasurements)
-import numpy as np
+from SHE_PPT.math import (BiasMeasurements, LinregressResults, combine_linregress_statistics, get_linregress_statistics,
+                          linregress_with_errors, )
 
 
 class Test_math():
@@ -44,7 +37,7 @@ class Test_math():
 
         # Some test input
         x = np.array([1, 2, 4, 8, 7])
-        y = np.array([10, 11,  9,  7, 12])
+        y = np.array([10, 11, 9, 7, 12])
         y_err = np.array([0.1, 0.2, 0.1, 0.2, 0.4])
 
         # Calculate the regression
@@ -78,7 +71,7 @@ class Test_math():
         n = 10
         n_test = 1000
 
-        x = np.linspace(0, n - 1, num=n, endpoint=True, dtype=float)
+        x = np.linspace(0, n - 1, num = n, endpoint = True, dtype = float)
         base_y = ex_intercept + ex_slope * x
 
         np.random.seed(1234)
@@ -117,24 +110,24 @@ class Test_math():
         slope_intercept_cov = np.cov(slopes, intercepts)[0, 1]
 
         # Check the results are reasonable
-        assert_almost_equal(slope_mean, ex_slope, decimal=2)
-        assert_almost_equal(intercept_mean, ex_intercept, decimal=2)
-        assert_almost_equal(slope_std, np.mean(slope_errs), decimal=2)
-        assert_almost_equal(intercept_std, np.mean(intercept_errs), decimal=2)
+        assert_almost_equal(slope_mean, ex_slope, decimal = 2)
+        assert_almost_equal(intercept_mean, ex_intercept, decimal = 2)
+        assert_almost_equal(slope_std, np.mean(slope_errs), decimal = 2)
+        assert_almost_equal(intercept_std, np.mean(intercept_errs), decimal = 2)
         assert_almost_equal(
-            slope_intercept_cov, np.mean(slope_intercept_covars), decimal=2)
+            slope_intercept_cov, np.mean(slope_intercept_covars), decimal = 2)
 
         # Now check if it works the same by compiling statistics
         combined_results = combine_linregress_statistics(lstats)
-        assert_almost_equal(combined_results.slope, ex_slope, decimal=2)
+        assert_almost_equal(combined_results.slope, ex_slope, decimal = 2)
         assert_almost_equal(
-            combined_results.intercept, ex_intercept, decimal=2)
+            combined_results.intercept, ex_intercept, decimal = 2)
         assert_almost_equal(
-            combined_results.slope_err, np.mean(slope_errs) / np.sqrt(n_test), decimal=2)
+            combined_results.slope_err, np.mean(slope_errs) / np.sqrt(n_test), decimal = 2)
         assert_almost_equal(
-            combined_results.intercept_err, np.mean(intercept_errs) / np.sqrt(n_test), decimal=2)
+            combined_results.intercept_err, np.mean(intercept_errs) / np.sqrt(n_test), decimal = 2)
         assert_almost_equal(
-            combined_results.slope_intercept_covar, np.mean(slope_intercept_covars), decimal=2)
+            combined_results.slope_intercept_covar, np.mean(slope_intercept_covars), decimal = 2)
 
     def test_bias_measurement(self):
 

@@ -82,7 +82,7 @@ def create_dpd_she_validation_test_results(reference_product = None,
         elif isinstance(reference_product, dpdVisCalibratedFrame):
 
             _init_for_exposure(data_attr,
-                               exp_product_id = reference_product.Header.ProductId,
+                               exp_product_id = reference_product.Header.ProductId.value(),
                                obs_id = reference_product.Data.ObservationSequence.ObservationId,
                                pointing_id = reference_product.Data.ObservationSequence.PointingId)
 
