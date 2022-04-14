@@ -99,11 +99,8 @@ MSG_FINISHED_WRITING_TABLE = (BASE_MESSAGE_FINISHED_WRITING.replace(STR_R_FILETY
                                                                     STR_TABLE)).capitalize()
 
 MSG_READING_FITS_FILE = (BASE_MESSAGE_READING.replace(STR_R_FILETYPE, STR_FITS_FILE)).capitalize()
-MSG_OPENING_FITS_FILE = (BASE_MESSAGE_OPENING.replace(STR_R_FILETYPE, STR_FITS_FILE)).capitalize()
 MSG_WRITING_FITS_FILE = (BASE_MESSAGE_WRITING.replace(STR_R_FILETYPE, STR_FITS_FILE)).capitalize()
 MSG_FINISHED_READING_FITS_FILE = (BASE_MESSAGE_FINISHED_READING.replace(STR_R_FILETYPE,
-                                                                        STR_FITS_FILE)).capitalize()
-MSG_FINISHED_OPENING_FITS_FILE = (BASE_MESSAGE_FINISHED_OPENING.replace(STR_R_FILETYPE,
                                                                         STR_FITS_FILE)).capitalize()
 MSG_FINISHED_WRITING_FITS_FILE = (BASE_MESSAGE_FINISHED_WRITING.replace(STR_R_FILETYPE,
                                                                         STR_FITS_FILE)).capitalize()
@@ -1137,7 +1134,7 @@ def find_file_in_path(filename: str, path: str) -> str:
 
     if qualified_filename is None:
         raise RuntimeError(
-            "File " + str(filename) + " could not be found in path " + str(path) + S)
+            "File " + str(filename) + " could not be found in path " + str(path) + ".")
 
     logger.debug("Found file %s at %s", filename, qualified_filename)
 
