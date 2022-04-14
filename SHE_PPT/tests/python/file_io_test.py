@@ -19,7 +19,7 @@ __updated__ = "2021-08-20"
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-
+import logging
 import os
 import subprocess
 from time import sleep
@@ -65,6 +65,9 @@ class TestIO:
 
         self.workdir = tmpdir.strpath
         os.makedirs(os.path.join(self.workdir, DATA_SUBDIR))
+
+        # Set log level to debug to make sure there aren't any issues with logging strings
+        logging.basicConfig(level = logging.DEBUG)
 
     def test_get_allowed_filename(self):
 
