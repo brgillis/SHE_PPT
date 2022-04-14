@@ -20,7 +20,6 @@ __updated__ = "2021-08-16"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
-import logging
 import os
 from argparse import Namespace
 from typing import Any, Dict, Optional
@@ -250,7 +249,3 @@ class SheTestCase:
             self._setup_workdir()
         self._set_workdir_args()
         self._write_mock_pipeline_config()
-
-        # Set log level to debug to make sure there aren't any issues with logging strings
-        logging.basicConfig()
-        logging.getLogger().setLevel(logging.DEBUG)

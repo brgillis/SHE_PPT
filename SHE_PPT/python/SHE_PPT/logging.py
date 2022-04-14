@@ -23,13 +23,13 @@ __updated__ = "2021-08-13"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
+import logging
 import os
-
 
 try:
     import ElementsKernel.Logging as log
 except ImportError as _e:
-    from . import logging as log
+    import logging as log
 
 
 def getLogger(name):
@@ -43,3 +43,10 @@ def getLogger(name):
             The logger
     """
     return log.getLogger(str(name) + "[" + str(os.getpid()) + "]")
+
+
+def set_log_level_debug():
+    """ Convenience method to set log level to debug to make sure there aren't any issues with logging strings
+    """
+    logging.basicConfig()
+    logging.getLogger().setLevel(logging.DEBUG)
