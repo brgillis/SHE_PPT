@@ -67,7 +67,8 @@ class TestIO:
         os.makedirs(os.path.join(self.workdir, DATA_SUBDIR))
 
         # Set log level to debug to make sure there aren't any issues with logging strings
-        logging.basicConfig(level = logging.DEBUG)
+        logging.basicConfig()
+        logging.getLogger().setLevel(logging.DEBUG)
 
     def test_get_allowed_filename(self):
 
