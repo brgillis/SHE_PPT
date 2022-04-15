@@ -192,6 +192,14 @@ def any_is_nan(l_x: Sequence[Union[float, Sequence[float]]]) -> bool:
     return np.logical_or.reduce(np.isnan(l_x))
 
 
+def any_is_masked(l_x: Sequence[Union[float, Sequence[float]]]) -> bool:
+    """ Checks if any value in a sequence of values is masked. This can actually be done by a single function call with
+        numpy, but this wrapper is presented here for consistency with Inf and NaN checks, so a user searching for a
+        function to do this isn't left confused by its absence.
+    """
+    return np.ma.is_masked(l_x)
+
+
 def is_inf_or_nan(x: Union[float, Sequence[float]]) -> bool:
     """ Checks if a value is inf or NaN.
     """
@@ -202,6 +210,30 @@ def any_is_inf_or_nan(l_x: Sequence[Union[float, Sequence[float]]]) -> bool:
     """ Checks if any value in a sequence of values is inf or nan.
     """
     return np.logical_or.reduce(is_inf_or_nan(l_x))
+
+
+def is_nan_or_masked(x: Union[float, Sequence[float]]) -> bool:
+    """ Checks if a value is NaN or masked.
+    """
+    return np.logical_or(np.isnan(x), np.ma.is_masked(x))
+
+
+def any_is_nan_or_masked(l_x: Sequence[Union[float, Sequence[float]]]) -> bool:
+    """ Checks if any value in a sequence of values is NaN or masked.
+    """
+    return np.logical_or.reduce(is_nan_or_masked(l_x))
+
+
+def is_inf_nan_or_masked(x: Union[float, Sequence[float]]) -> bool:
+    """ Checks if a value is Inf, NaN, or masked.
+    """
+    return np.logical_or(np.isinf(x), is_nan_or_masked(x))
+
+
+def any_is_inf_nan_or_masked(l_x: Sequence[Union[float, Sequence[float]]]) -> bool:
+    """ Checks if any value in a sequence of values is Inf, NaN or masked.
+    """
+    return np.logical_or.reduce(is_inf_nan_or_masked(l_x))
 
 
 Number = TypeVar('Number', float, int)
