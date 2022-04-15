@@ -181,25 +181,32 @@ def is_any_type_of_none(value: Any) -> bool:
 
 
 def is_inf(x: Union[float, Sequence[float]]) -> bool:
-    """ Custom implementation if np.is_inf check, which doesn't get messed up by masked values.
+    """ Custom implementation if np.isinf check, which returns False for any masked values, unlike np.isinf, which
+        returns masked for any masked values.
     """
-    # Return False if masked. Without this, we'll get "masked" as the return value, which we don't want
-    if np.ma.is_masked(x):
-        return False
-    return np.isinf(x)
+    # If no values are masked, we can simply forward to numpy
+    if not np.ma.is_masked(x):
+        return np.isinf(x)
+
+    # For any masked values, return False. Otherwise we can use the result of np.isinf
+    return np.where(is_masked(x), False, np.isinf(x))
 
 
 def is_nan(x: Union[float, Sequence[float]]) -> bool:
-    """ Custom implementation if np.is_nan check, which doesn't get messed up by masked values.
+    """ Custom implementation if np.isnan check, which returns False for any masked values, unlike np.isinf, which
+        returns masked for any masked values.
     """
-    # Return False if masked. Without this, we'll get "masked" as the return value, which we don't want
-    if np.ma.is_masked(x):
-        return False
-    return np.isnan(x)
+    # If no values are masked, we can simply forward to numpy
+    if not np.ma.is_masked(x):
+        return np.isnan(x)
+
+    # For any masked values, return False. Otherwise we can use the result of np.isnan
+    return np.where(is_masked(x), False, np.isnan(x))
 
 
 def is_masked(x: Union[float, Sequence[float]]) -> bool:
-    """ Element-wise implementation of checking if an array is masked
+    """ Element-wise implementation of checking if an array is masked. np.ma.is_masked doesn't do this, as it always
+        returns a summary bool of if any values are masked.
     """
     # Test if the object is iterable, and if so, give element-wise results
     try:
