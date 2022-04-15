@@ -222,7 +222,7 @@ class TestUtility:
         for x in l_x:
 
             # Check with combo methods
-            assert is_inf_or_nan(x) == (np.isinf(x) or np.isnan(x))
+            assert is_inf_or_nan(x) == (np.isinf(x) or np.isnan(x) and not np.ma.is_masked(x))
             assert is_nan_or_masked(x) == (np.isnan(x) or np.ma.is_masked(x))
             assert is_inf_nan_or_masked(x) == (np.isinf(x) or np.isnan(x) or np.ma.is_masked(x))
 
