@@ -23,8 +23,15 @@ __updated__ = "2021-02-10"
 import os
 import shutil
 
+import numpy as np
+
 from EL_PythonUtils.utilities import get_arguments_string, hash_any
-from SHE_PPT.utility import (get_all_files, get_nested_attr, process_directory, set_nested_attr)
+from SHE_PPT.utility import (any_is_inf_nan_or_masked, any_is_inf_or_nan, any_is_nan_or_masked, get_all_files,
+                             get_nested_attr,
+                             is_inf_nan_or_masked, is_inf_or_nan,
+                             is_nan_or_masked,
+                             process_directory,
+                             set_nested_attr, )
 
 
 class TestUtility:
@@ -203,3 +210,29 @@ class TestUtility:
         for ii, fName in enumerate(sorted(file_list)):
             assert os.path.basename(fName) == 'file%s.txt' % (ii + 1)
         shutil.rmtree(test_dir)
+
+    def test_bad_value_checks(self):
+        """ Test the various "bad value" checks for Inf, NaN, and masked values.
+        """
+
+        # Create a test array
+        l_x = np.ma.masked_array([0, np.Inf, np.NaN, 0], [False, False, False, True])
+
+        # Test each value with each method
+        for x in l_x:
+
+            # Check with combo methods
+            assert is_inf_or_nan(x) == (np.isinf(x) or np.isnan(x))
+            assert is_nan_or_masked(x) == (np.isnan(x) or np.ma.is_masked(x))
+            assert is_inf_nan_or_masked(x) == (np.isinf(x) or np.isnan(x) or np.ma.is_masked(x))
+
+            # Check with `any` methods on this individual value
+            assert any_is_inf_or_nan(x) == (np.isinf(x) or np.isnan(x))
+            assert any_is_nan_or_masked(x) == (np.isnan(x) or np.ma.is_masked(x))
+            assert any_is_inf_nan_or_masked(x) == (np.isinf(x) or np.isnan(x) or np.ma.is_masked(x))
+
+        # Test the 'any' methods on full arrays
+
+        assert any_is_inf_or_nan(l_x) == True
+        assert any_is_nan_or_masked(l_x) == True
+        assert any_is_inf_nan_or_masked(l_x) == True
