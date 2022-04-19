@@ -469,7 +469,8 @@ class TestSheImage():
         fname = self.img.qualified_science_data_filename
         if fname is None:
             pass
-        assert isinstance(fname, str)
+        else:
+            assert isinstance(fname, str)
 
         # set property and get it
         self.img.qualified_science_data_filename = '/mock_dir/mock_file.fits'
@@ -477,7 +478,7 @@ class TestSheImage():
         assert isinstance(fname, str)
         if isinstance(fname, str):
             assert os.path.isabs(fname)
-            assert os.path.splitext(fname)[1] == 'fits'
+            assert os.path.splitext(fname)[1] == '.fits'
 
     def test_observation_id(self):
         """Testing the observation ID property"""
