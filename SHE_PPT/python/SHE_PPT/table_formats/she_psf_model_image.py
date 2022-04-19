@@ -23,7 +23,7 @@ __updated__ = "2021-08-13"
 
 from collections import OrderedDict
 
-from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL, EXTNAME_LABEL, PSF_CAT_TAG
+from ..constants.fits import EXTNAME_LABEL, FITS_DEF_LABEL, FITS_VERSION_LABEL, PSF_CAT_TAG
 from ..logging import getLogger
 from ..table_utility import SheTableFormat, SheTableMeta
 
@@ -72,9 +72,10 @@ class ShePsfModelImageFormat(SheTableFormat):
         @brief A class defining the format for detections tables. Only the psf_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
+    meta_type = ShePsfModelImageMeta
 
     def __init__(self):
-        super().__init__(ShePsfModelImageMeta())
+        super().__init__()
 
         # Column names and info
 

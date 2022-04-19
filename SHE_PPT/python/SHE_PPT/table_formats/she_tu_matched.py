@@ -23,7 +23,6 @@ __updated__ = "2021-08-12"
 
 
 from collections import OrderedDict
-from typing import Optional
 
 from .she_measurements import SheMeasurementsFormat
 from ..constants.fits import (MODEL_HASH_LABEL, MODEL_SEED_LABEL, NOISE_SEED_LABEL, OBS_ID_LABEL, OBS_TIME_LABEL,
@@ -76,13 +75,12 @@ class SheTUMatchedFormat(SheMeasurementsFormat):
     # Define this as a base class
     is_base: bool = True
 
+    meta_type = SheTUMatchedMeta
+
     def __init__(self,
-                 meta: Optional[SheTableMeta] = None,
                  finalize: bool = True):
 
-        if meta is None:
-            meta = SheTUMatchedMeta()
-        super().__init__(meta, finalize = False)
+        super().__init__(finalize = False)
 
         # Table column labels and properties unique to this table, from the TU Galaxy table
         self.tu_ra = self.set_column_properties("RA_MAG", fits_dtype = "E", dtype = ">f4", comment = "",

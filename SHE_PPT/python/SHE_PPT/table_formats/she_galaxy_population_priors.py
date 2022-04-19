@@ -21,7 +21,7 @@
 
 __updated__ = "2021-08-12"
 
-from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL
+from ..constants.fits import FITS_DEF_LABEL, FITS_VERSION_LABEL
 from ..table_utility import SheTableFormat, SheTableMeta
 
 fits_version = "8.0"
@@ -55,8 +55,10 @@ class SheGalaxyPopulationPriorsFormat(SheTableFormat):
                instance of this should generally be accessed, and it should not be changed.
     """
 
+    meta_type = SheGalaxyPopulationPriorsMeta
+
     def __init__(self):
-        super().__init__(SheGalaxyPopulationPriorsMeta())
+        super().__init__()
 
         # Column names and info
 
