@@ -32,11 +32,8 @@ from astropy.wcs import WCS
 import galsim
 import pytest
 
-from ElementsServices.DataSync import DataSync
 from SHE_PPT import file_io
-from SHE_PPT import mdb
 from SHE_PPT.constants.misc import SEGMAP_UNASSIGNED_VALUE
-from SHE_PPT.constants.test_data import (SYNC_CONF, TEST_FILES_MDB, TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME)
 import SHE_PPT.she_image
 import numpy as np
 
@@ -48,15 +45,6 @@ class TestSheImage():
 
     @classmethod
     def setup_class(cls):
-
-        sync = DataSync(SYNC_CONF, TEST_FILES_MDB)
-        sync.download()
-        mdb_filename = sync.absolutePath(os.path.join(TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME))
-
-        mdb.init(mdb_filename)
-
-        cls.gain = mdb.get_gain(suppress_warnings=True)
-        cls.read_noise = mdb.get_read_noise(suppress_warnings=True)
 
         # A filename for testing the file-saving:
         cls.testfilepath = "test_SHEImage.fits"  # Will be deleted by teardown_class()
