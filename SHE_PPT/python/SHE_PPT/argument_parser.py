@@ -163,5 +163,4 @@ class SheArgumentParser(ArgumentParser):
 
     def add_star_catalog_arg(self, arg_type: ClineArgType = ClineArgType.INPUT):
         self.add_arg_with_type(f"--{CA_SHE_STAR_CAT}", type = str, arg_type = arg_type,
-                               help = ".json listfile containing filenames of .xml data products for SHE star "
-                                      "catalogs for each exposure.")
+                               help = ".xml data product for SHE star catalog for an observation.")

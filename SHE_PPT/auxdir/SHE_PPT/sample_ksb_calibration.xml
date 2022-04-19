@@ -1,51 +1,52 @@
 <?xml version="1.0" ?>
 <ns1:DpdSheKsbCalibration xmlns:ns1="http://euclid.esa.org/schema/dpd/she/ksbcalibration">
-	<Header>
-		<ProductId>eb0d4c3a-dd29-4b68-87fe-ded67257272a</ProductId>
-		<ProductType>0lYil</ProductType>
-		<SoftwareName>fUVMy</SoftwareName>
-		<SoftwareRelease>RR7</SoftwareRelease>
-		<EuclidPipelineSoftwareRelease>AFZAs</EuclidPipelineSoftwareRelease>
-		<ProdSDC>HNX6OGt6</ProdSDC>
-		<DataSetRelease>ltWio</DataSetRelease>
-		<Purpose>VALIDATION</Purpose>
-		<PlanId>M60a9</PlanId>
-		<PPOId>KzJso</PPOId>
-		<PipelineDefinitionId>h3o17</PipelineDefinitionId>
-		<PipelineRun>D5h6V</PipelineRun>
-		<ExitStatusCode>eSzqg</ExitStatusCode>
-		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
-		<ExpirationDate>2020-06-04T15:36:52.007Z</ExpirationDate>
-		<ToBePublished>false</ToBePublished>
-		<Published>true</Published>
-		<Curator>SHE</Curator>
-		<CreationDate>2020-06-04T15:36:52.01Z</CreationDate>
-	</Header>
-	<Data>
-		<ValidityRange>
-			<Name>Dummy</Name>
-			<Type>sheKsbCalibration</Type>
-			<TimestampStart>2020-06-04T15:36:52.011Z</TimestampStart>
-			<TimestampEnd>9999-06-04T15:36:52.011Z</TimestampEnd>
-		</ValidityRange>
-		<KsbCalibrationFileList>
-			<DataStorage format="she.ksbTraining" version="8.0">
-				<DataContainer filestatus="PROPOSED">
-					<FileName>None</FileName>
-				</DataContainer>
-			</DataStorage>
-		</KsbCalibrationFileList>
-	</Data>
-	<QualityFlags>
-		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
-		<AuxiliaryFlags flagName="pXiBI" flagged="true" maxLimit="3.0" minLimit="-6.0" xpath="oRm4C">true</AuxiliaryFlags>
-	</QualityFlags>
-	<Parameters>
-		<Parameter>
-			<Key>tYoHG</Key>
-			<Description>i1zTi</Description>
-			<StringValue>QsBdO</StringValue>
-			<Unit>XEFuc</Unit>
-		</Parameter>
-	</Parameters>
+    <Header>
+        <ProductId>eb0d4c3a-dd29-4b68-87fe-ded67257272a</ProductId>
+        <ProductType>DpdSheKsbCalibration</ProductType>
+        <SoftwareName>fUVMy</SoftwareName>
+        <SoftwareRelease>RR7</SoftwareRelease>
+        <EuclidPipelineSoftwareRelease>AFZAs</EuclidPipelineSoftwareRelease>
+        <ProdSDC>HNX6OGt6</ProdSDC>
+        <DataSetRelease>ltWio</DataSetRelease>
+        <Purpose>VALIDATION</Purpose>
+        <PlanId>M60a9</PlanId>
+        <PPOId>KzJso</PPOId>
+        <PipelineDefinitionId>h3o17</PipelineDefinitionId>
+        <PpoStatus>NA</PpoStatus>
+        <ManualValidationStatus>UNKNOWN</ManualValidationStatus>
+        <ExpirationDate>2020-06-04T15:36:52.007Z</ExpirationDate>
+        <ToBePublished>0</ToBePublished>
+        <Published>0</Published>
+        <Curator>SHE</Curator>
+        <CreationDate>2020-06-04T15:36:52.01Z</CreationDate>
+    </Header>
+    <Data>
+        <ValidityRange>
+            <Name>Dummy</Name>
+            <Type>sheKsbCalibration</Type>
+            <TimestampStart>2020-06-04T15:36:52.011Z</TimestampStart>
+            <TimestampEnd>9999-06-04T15:36:52.011Z</TimestampEnd>
+        </ValidityRange>
+        <KsbCalibrationFileList>
+            <DataStorage format="she.ksbTraining" version="8.0">
+                <DataContainer filestatus="PROPOSED">
+                    <FileName>None</FileName>
+                </DataContainer>
+            </DataStorage>
+        </KsbCalibrationFileList>
+    </Data>
+    <QualityFlags>
+        <DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false
+        </DummyFlag>
+        <AuxiliaryFlags flagName="pXiBI" flagged="true" maxLimit="3.0" minLimit="-6.0" xpath="oRm4C">true
+        </AuxiliaryFlags>
+    </QualityFlags>
+    <Parameters>
+        <Parameter>
+            <Key>tYoHG</Key>
+            <Description>i1zTi</Description>
+            <StringValue>QsBdO</StringValue>
+            <Unit>XEFuc</Unit>
+        </Parameter>
+    </Parameters>
 </ns1:DpdSheKsbCalibration>

@@ -28,14 +28,10 @@ import pytest
 
 import SHE_PPT
 from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_SUBDIR, DEFAULT_INSTANCE_ID,
-                             DEFAULT_TYPE_NAME, SheFileNamer,
-                             find_aux_file,
-                             get_allowed_filename,
-                             instance_id_maxlen,
-                             processing_function_maxlen,
-                             read_listfile, read_product_and_table, read_xml_product, tar_files, type_name_maxlen,
-                             update_xml_with_value,
-                             write_listfile, write_product_and_table, )
+                             DEFAULT_TYPE_NAME, SheFileNamer, find_aux_file, get_allowed_filename, instance_id_maxlen,
+                             processing_function_maxlen, read_listfile, read_product_and_table, read_xml_product,
+                             tar_files, type_name_maxlen, update_xml_with_value, write_listfile,
+                             write_product_and_table, )
 from SHE_PPT.products.mer_final_catalog import create_dpd_mer_final_catalog
 from SHE_PPT.table_formats.mer_final_catalog import MerFinalCatalogFormat
 from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
@@ -48,10 +44,12 @@ class TestIO:
 
     """
 
+    listfile_name: str = "test_listfile.junk"
+    tuple_listfile_name: str = "test_listfile.junk"
+
     @classmethod
     def setup_class(cls):
-        cls.listfile_name = "test_listfile.junk"
-        cls.tuple_listfile_name = "test_listfile.junk"
+        pass
 
     @classmethod
     def teardown_class(cls):
@@ -61,8 +59,6 @@ class TestIO:
 
         if os.path.exists(cls.tuple_listfile_name):
             os.remove(cls.tuple_listfile_name)
-
-        del cls.listfile_name, cls.tuple_listfile_name
 
     @pytest.fixture(autouse = True)
     def setup(self, tmpdir):
@@ -134,7 +130,7 @@ class TestIO:
 
         # Test that if we specify the wrong type, a TypeError is raised
         with pytest.raises(TypeError):
-            p3 = read_xml_product(test_filename, product_type = non_ex_type)
+            _ = read_xml_product(test_filename, product_type = non_ex_type)
 
     def test_rw_listfile(self):
 
@@ -161,9 +157,9 @@ class TestIO:
 
         product = read_xml_product(test_filename)
         lines = open(test_filename).readlines()
-        nLines = len(lines)
+        num_lines = len(lines)
         lines = [line for ii, line in enumerate(lines) if not ('<Value>' in line and '<Key>' in lines[ii - 1])]
-        if len(lines) < nLines:
+        if len(lines) < num_lines:
             temp_test_filename = 'temp_test.xml'
             open(temp_test_filename, 'w').writelines(lines)
 
@@ -249,7 +245,7 @@ class TestIO:
         p2, t2 = read_product_and_table(product_filename, workdir = self.workdir)
 
         # Check that they're the same as was written out
-        assert p2.Header.ProductId == p.Header.ProductId
+        assert p2.Header.ProductId.value() == p.Header.ProductId.value()
         assert p2.get_data_filename() == p.get_data_filename()
         assert (t2 == t).all()
 
@@ -271,6 +267,6 @@ class TestIO:
         p3, t3 = read_product_and_table(product_filename, workdir = self.workdir)
 
         # Check that they're the same as was written out
-        assert p3.Header.ProductId == p.Header.ProductId
+        assert p3.Header.ProductId.value() == p.Header.ProductId.value()
         assert p3.get_data_filename() == p.get_data_filename()
         assert (t3 == t).all()

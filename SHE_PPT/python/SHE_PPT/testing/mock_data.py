@@ -66,9 +66,9 @@ class MockDataGenerator(ABC):
     def _generate_base_data(self):
         """ Set up base data which is commonly used.
         """
-        self._indices = np.indices((NUM_TEST_POINTS,), dtype = int, )[0]
-        self._zeros = np.zeros(NUM_TEST_POINTS, dtype = '>f4')
-        self._ones = np.ones(NUM_TEST_POINTS, dtype = '>f4')
+        self._indices = np.indices((self.num_test_points,), dtype = int, )[0]
+        self._zeros = np.zeros(self.num_test_points, dtype = '>f4')
+        self._ones = np.ones(self.num_test_points, dtype = '>f4')
 
         self.data = {}
 
