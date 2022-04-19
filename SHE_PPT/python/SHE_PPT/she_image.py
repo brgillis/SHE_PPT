@@ -1148,7 +1148,12 @@ class SHEImage():
         if keep_header:
             new_header = self.header
         else:
-            new_header = None
+            # Create a default header with minimally-necessary values
+            new_header = astropy.io.fits.Header()
+            if self.gain is not None:
+                new_header['GAIN'] = self.gain
+            if self.read_noise is not None:
+                new_header['RDNOISE'] = self.read_noise
 
         # And defining the offset property of the stamp, taking into account
         # any current offset.

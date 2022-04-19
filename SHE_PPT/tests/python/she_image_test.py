@@ -353,6 +353,8 @@ class TestSheImage():
 
         img.add_default_header()
         img.header["foo"] = "bar"
+        img.header['GAIN'] = 3.3
+        img.header['RDNOISE'] = 3.1
 
         # Testing extracted shape and extracted mask
         eimg = img.extract_stamp(16.4, 15.6, 32)
@@ -370,9 +372,9 @@ class TestSheImage():
 
         # And the header:
         eimg = img.extract_stamp(5, 5, 5)
-        assert eimg.header is None
+        assert "foo" not in eimg.header
         eimg = img.extract_stamp(5, 5, 5, keep_header = True)
-        assert len(list(eimg.header.keys())) == 1  # The "foo"
+        assert len(list(eimg.header.keys())) == 3  # The "foo", gain, and read noise
 
         # Test setting or not setting default properties for an extracted stamp
         simple_img = SHE_PPT.she_image.SHEImage(array)
@@ -384,8 +386,10 @@ class TestSheImage():
         assert simple_stamp.segmentation_map is None
         assert simple_stamp.background_map is None
         assert simple_stamp.weight_map is None
-        assert simple_stamp.header is None
-        assert simple_stamp.wcs is None
+
+        simple_img.add_default_header()
+        simple_img.header['GAIN'] = 3.3
+        simple_img.header['RDNOISE'] = 3.1
 
         default_stamp = simple_img.extract_stamp(16.4, 15.6, 32, force_all_properties = True)
 
@@ -419,6 +423,10 @@ class TestSheImage():
         assert stamp.data[0, 0] == 0
         assert stamp.boolmask[1, 1] == False
         assert stamp.boolmask[0, 0] == True
+
+        img.add_default_header()
+        img.header['GAIN'] = 3.3
+        img.header['RDNOISE'] = 3.1
 
         img.add_default_mask()
         img.add_default_noisemap()
