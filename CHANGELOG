@@ -9,6 +9,8 @@ API Changes
 
 Dependency Changes
 ------------------
+- Now depends on EDEN 3.0 environment
+- Now depends on EL_Utils 1.2.0, ST_DataModelTools 9.0.0, ST_DataModel 9.0.0, and Elements 6.0.1
 
 
 Deprecated Features
@@ -18,6 +20,7 @@ Deprecated Features
 Bug Fixes
 ---------
 - Fixed bug in logging at debug level when using read/write functions
+
 
 New Features
 ------------
@@ -29,6 +32,7 @@ New config features
 
 Miscellaneous
 -------------
+
 
 Changes in v8.12
 =========================
