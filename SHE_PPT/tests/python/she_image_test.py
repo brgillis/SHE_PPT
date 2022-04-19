@@ -53,9 +53,6 @@ class TestSheImage():
 
         mdb.init(mdb_filename)
 
-        cls.gain = mdb.get_gain(suppress_warnings = True)
-        cls.read_noise = mdb.get_read_noise(suppress_warnings = True)
-
         # A filename for testing the file-saving:
         cls.testfilepath = "test_SHEImage.fits"  # Will be deleted by teardown_class()
         # For some tests we need several files:
@@ -126,7 +123,7 @@ class TestSheImage():
         img.add_default_noisemap(force = True)
         assert img.noisemap.dtype == float
         assert np.allclose(img.noisemap,
-                           self.read_noise / self.gain * np.ones_like(img.data, dtype = img.noisemap.dtype))
+                           img.read_noise / img.gain * np.ones_like(img.data, dtype = img.noisemap.dtype))
         assert img.noisemap.shape == (self.w, self.h)
 
         # Check that non-forcibly adding a default noisemap doesn't affect the existing noisemap
@@ -136,12 +133,12 @@ class TestSheImage():
 
         # Check that forcibly adding a default noisemap does affect the existing noisemap
         img.add_default_noisemap(force = True)
-        assert np.isclose(img.noisemap[5, 5], self.read_noise / self.gain)
+        assert np.isclose(img.noisemap[5, 5], img.read_noise / img.gain)
 
         # Check that the noisemap is calculated correctly when a background map is present
         img.background_map = 1000 * np.ones_like(img.data, dtype = float)
         img.add_default_noisemap(force = True)
-        assert np.allclose(img.noisemap, (self.read_noise / self.gain) + np.sqrt(1000 / self.gain) *
+        assert np.allclose(img.noisemap, (img.read_noise / img.gain) + np.sqrt(1000 / img.gain) *
                            np.ones_like(img.data, dtype = img.noisemap.dtype))
 
     def test_segmentation_map(self):
