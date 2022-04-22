@@ -44,9 +44,10 @@ class SheCommonCalibrationFormat(SheTableFormat):
         @brief A class defining the format for shear estimates tables. Only the common_calibration_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
+    meta_type = SheCommonCalibrationMeta
 
     def __init__(self):
-        super().__init__(SheCommonCalibrationMeta())
+        super().__init__()
 
         # Table column labels and properties
 

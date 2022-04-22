@@ -21,7 +21,7 @@ __updated__ = "2021-08-18"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-from ..constants.fits import FITS_VERSION_LABEL, FITS_DEF_LABEL
+from ..constants.fits import FITS_DEF_LABEL, FITS_VERSION_LABEL
 from ..table_utility import SheTableFormat, SheTableMeta
 
 fits_version = "8.0"
@@ -47,10 +47,11 @@ class SheTrainingFormat(SheTableFormat):
                instance of this should generally be accessed, and it should not be changed.
     """
 
-    def __init__(self, meta = None, finalize: bool = True):
-        if meta is None:
-            meta = SheTrainingMeta()
-        super().__init__(meta)
+    meta_type = SheTrainingMeta
+
+    def __init__(self, finalize: bool = True):
+
+        super().__init__(finalize = False)
 
         # Column names and info
 

@@ -88,9 +88,10 @@ class SheBiasStatisticsFormat(SheTableFormat):
         @brief A class defining the format for bias statistics tables. Only the bias_statistics_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
+    meta_type = SheBiasStatisticsMeta
 
     def __init__(self):
-        super().__init__(SheBiasStatisticsMeta())
+        super().__init__()
 
         # Table column labels and properties
 
