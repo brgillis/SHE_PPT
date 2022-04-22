@@ -46,9 +46,9 @@ N/A
 
 ### External Euclid Dependencies
 
-* [EL_Utils 1.2.0](https://gitlab.euclid-sgs.uk/EuclidLibs/EL_Utils)
-* [ST_DataModelTools 9.0.0](https://gitlab.euclid-sgs.uk/ST-DM/ST_DataModelTools)
-* [ST_DataModel 9.0.0](https://gitlab.euclid-sgs.uk/ST-DM/ST_DataModel)
+* [EL_Utils 1.2.2](https://gitlab.euclid-sgs.uk/EuclidLibs/EL_Utils)
+* [ST_DataModelTools 9.0.2](https://gitlab.euclid-sgs.uk/ST-DM/ST_DataModelTools)
+* [ST_DataModel 9.0.2](https://gitlab.euclid-sgs.uk/ST-DM/ST_DataModel)
 * [Elements 6.0.1](https://gitlab.euclid-sgs.uk/ST-TOOLS/Elements)
 
 ### Configuration
