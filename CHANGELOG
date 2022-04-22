@@ -19,10 +19,12 @@ Deprecated Features
 
 Bug Fixes
 ---------
+- Fixed is_nan and is_inf checks to properly handle masked values
 
 
 New Features
 ------------
+- Added new functions to test if a value is either NaN or masked, or NaN, Inf, or masked
 
 
 New config features
