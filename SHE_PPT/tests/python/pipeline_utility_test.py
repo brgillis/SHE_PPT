@@ -222,7 +222,9 @@ class TestUtility:
                   "want_int_list"                     : "0 1 7",
                   "want_float_list"                   : "0 10 4.5",
                   "want_int_from_int_or_int_list"     : "17",
-                  "want_int_list_from_int_or_int_list": "4 1"}
+                  "want_int_list_from_int_or_int_list": "4 1",
+                  "want_ndarray_from_ndarray_or_str"  : "1 2 3",
+                  "want_str_from_ndarray_or_str"      : "auto"}
         d_types = {"want_float"                        : float,
                    "want_array"                        : np.ndarray,
                    "want_true"                         : bool,
@@ -231,7 +233,9 @@ class TestUtility:
                    "want_int_list"                     : (list, int),
                    "want_float_list"                   : (list, float),
                    "want_int_from_int_or_int_list"     : (int, (list, int)),
-                   "want_int_list_from_int_or_int_list": (int, (list, int))}
+                   "want_int_list_from_int_or_int_list": (int, (list, int)),
+                   "want_ndarray_from_ndarray_or_str"  : (np.ndarray, str),
+                   "want_str_from_ndarray_or_str"      : (np.ndarray, str)}
 
         # Run the function
         new_config: Dict[str, Any] = convert_config_types(pipeline_config = config,
@@ -246,5 +250,8 @@ class TestUtility:
 
         assert new_config["want_int_list"] == [0, 1, 7]
         assert np.allclose(new_config["want_float_list"], [0., 10., 4.5])
+
         assert new_config["want_int_from_int_or_int_list"] == 17
         assert new_config["want_int_list_from_int_or_int_list"] == [4, 1]
+        assert np.all(new_config["want_ndarray_from_ndarray_or_str"] == np.array([1, 2, 3]))
+        assert new_config["want_str_from_ndarray_or_str"] == "auto"
