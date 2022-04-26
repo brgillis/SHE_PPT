@@ -79,9 +79,10 @@ class SheSimulatedCatalogFormat(SheTableFormat):
         @brief A class defining the format for galaxy details tables. Only the details_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
+    meta_type = SheSimulatedCatalogMeta
 
     def __init__(self):
-        super().__init__(SheSimulatedCatalogMeta())
+        super().__init__()
 
         # Table column labels
         self.ID = self.set_column_properties("OBJECT_ID", dtype = ">i8", fits_dtype = "K")

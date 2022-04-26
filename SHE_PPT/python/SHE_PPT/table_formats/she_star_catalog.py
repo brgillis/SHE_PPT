@@ -51,9 +51,10 @@ class SheStarCatalogFormat(SheTableFormat):
         @brief A class defining the format for SHE star catalog tables. Only the star_catalog_format
                instance of this should generally be accessed, and it should not be changed.
     """
+    meta_type = SheStarCatalogMeta
 
     def __init__(self):
-        super().__init__(SheStarCatalogMeta())
+        super().__init__()
 
         # Column names and info
 

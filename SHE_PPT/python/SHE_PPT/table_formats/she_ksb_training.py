@@ -21,7 +21,7 @@
 
 __updated__ = "2021-08-12"
 
-from ..table_formats.she_training import SheTrainingMeta, SheTrainingFormat
+from ..table_formats.she_training import SheTrainingFormat, SheTrainingMeta
 
 fits_version = "8.0"
 fits_def = "she.ksbTraining"
@@ -43,10 +43,10 @@ class SheKsbTrainingFormat(SheTrainingFormat):
         @brief A class defining the format for galaxy population priors tables. Only the ksb_training_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
+    meta_type = meta = SheKsbTrainingMeta
 
     def __init__(self):
-        # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
-        super().__init__(meta = SheKsbTrainingMeta(), finalize = False)
+        super().__init__(finalize = False)
 
         self.setup_child_table_format(child_label)
 

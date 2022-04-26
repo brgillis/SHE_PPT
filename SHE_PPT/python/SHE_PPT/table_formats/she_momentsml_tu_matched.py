@@ -26,8 +26,8 @@ from collections import OrderedDict
 from ..flags import she_flag_version
 from ..logging import getLogger
 from ..table_formats.mer_final_catalog import tf as mfc_tf
-from ..table_formats.she_tu_matched import SheTUMatchedMeta, SheTUMatchedFormat
-from ..table_utility import is_in_format, init_table
+from ..table_formats.she_tu_matched import SheTUMatchedFormat, SheTUMatchedMeta
+from ..table_utility import init_table, is_in_format
 
 fits_version = "8.0"
 fits_def = "she.momentsmlTUMatched"
@@ -51,10 +51,10 @@ class SheMomentsMlTUMatchedFormat(SheTUMatchedFormat):
         @brief A class defining the format for shear estimates tables. Only the momentsml_tu_matched_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
+    meta_type = SheMomentsMlTUMatchedMeta
 
     def __init__(self):
-        # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
-        super().__init__(SheMomentsMlTUMatchedMeta(), finalize = False)
+        super().__init__(finalize = False)
 
         self.setup_child_table_format(child_label)
 

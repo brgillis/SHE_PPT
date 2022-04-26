@@ -1,5 +1,40 @@
 Changelog for SHE_PPT
 
+Changes in v9.1
+=========================
+
+API Changes
+-----------
+
+
+Dependency Changes
+------------------
+- Now depends on EDEN 3.0 environment
+- Now depends on EL_Utils 1.2.2, ST_DataModelTools 9.0.2, ST_DataModel 9.0.2, and Elements 6.0.1
+
+
+Deprecated Features
+-------------------
+
+
+Bug Fixes
+---------
+- Fixed is_nan and is_inf checks to properly handle masked values
+
+
+New Features
+------------
+- Added new functions to test if a value is either NaN or masked, or NaN, Inf, or masked
+
+
+New config features
+-------------------
+
+
+Miscellaneous
+-------------
+
+
 Changes in v8.12
 =========================
 
@@ -40,6 +75,8 @@ New config features
 
 Miscellaneous
 -------------
+- Changed how SheTableFormat meta is initialized to be more inheritable - now set meta_type class variable with desired
+  type of meta
 
 
 
