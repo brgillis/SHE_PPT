@@ -741,7 +741,7 @@ BackupType = TypeVar("BackupType")
 
 def _convert_tuple_type(pipeline_config: Dict[ConfigKeys, Any],
                         enum_key: ConfigKeys,
-                        tuple_type: Tuple[Union[Type[List], PrimaryType, Union[Type, BackupType]]]) -> None:
+                        tuple_type: Tuple[Union[Type[List], PrimaryType], Union[Type, BackupType]]) -> None:
     """ Converts a type expressed as a tuple. The formats currently accepted are:
             * Element 0 is "list" and Element 1 is the type of item in the list
             * Element 0 is the primary desired type, and Element 1 is the backup desired type, if it cannot be
