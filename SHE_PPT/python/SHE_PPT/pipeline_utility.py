@@ -788,7 +788,7 @@ def _convert_with_backup_type(pipeline_config: Dict[ConfigKeys, Any],
     value = pipeline_config[enum_key]
     converted_value: Union[PrimaryType, BackupType]
     # Return if the value is already in one of the desired types
-    if isinstance(value, primary_type) or isinstance(value, backup_type):
+    if isinstance(value, primary_type) or (backup_type != str and isinstance(value, backup_type)):
         return
 
     primary_convert_func = get_convert_func(primary_type)
