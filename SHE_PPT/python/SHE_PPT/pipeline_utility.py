@@ -774,8 +774,13 @@ def _convert_list_type(pipeline_config: Dict[ConfigKeys, Any],
     """ Converts a config item into a list of the desired type.
     """
 
-    pipeline_config[enum_key] = _get_converted_list_type(pipeline_config[enum_key],
-                                                         (list, item_type))
+    value = pipeline_config[enum_key]
+
+    try:
+        pipeline_config[enum_key] = _get_converted_list_type(value, (list, item_type))
+    except TypeError as e:
+        raise TypeError(f"Value {value} provided with key {enum_key} in the pipeline config cannot be converted "
+                        f"to a list of type {item_type}.") from e
 
 
 def _convert_with_backup_type(pipeline_config: Dict[ConfigKeys, Any],
