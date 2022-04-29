@@ -85,8 +85,25 @@ BASE_MESSAGE_OPENING = BASE_MESSAGE_ACCESSING.replace(STR_R_OPERATION, STR_OPENI
 BASE_MESSAGE_FINISHED_OPENING = BASE_MESSAGE_FINISHED_ACCESSING.replace(STR_R_OPERATION, STR_OPENING)
 
 MSG_READING_DATA_PRODUCT = (BASE_MESSAGE_READING.replace(STR_R_FILETYPE, STR_DATA_PRODUCT)).capitalize()
+MSG_WRITING_DATA_PRODUCT = (BASE_MESSAGE_WRITING.replace(STR_R_FILETYPE, STR_DATA_PRODUCT)).capitalize()
 MSG_FINISHED_READING_DATA_PRODUCT = (BASE_MESSAGE_FINISHED_READING.replace(STR_R_FILETYPE,
                                                                            STR_DATA_PRODUCT)).capitalize()
+MSG_FINISHED_WRITING_DATA_PRODUCT = (BASE_MESSAGE_FINISHED_WRITING.replace(STR_R_FILETYPE,
+                                                                           STR_DATA_PRODUCT)).capitalize()
+
+MSG_READING_TABLE = (BASE_MESSAGE_READING.replace(STR_R_FILETYPE, STR_TABLE)).capitalize()
+MSG_WRITING_TABLE = (BASE_MESSAGE_WRITING.replace(STR_R_FILETYPE, STR_TABLE)).capitalize()
+MSG_FINISHED_READING_TABLE = (BASE_MESSAGE_FINISHED_READING.replace(STR_R_FILETYPE,
+                                                                    STR_TABLE)).capitalize()
+MSG_FINISHED_WRITING_TABLE = (BASE_MESSAGE_FINISHED_WRITING.replace(STR_R_FILETYPE,
+                                                                    STR_TABLE)).capitalize()
+
+MSG_READING_FITS_FILE = (BASE_MESSAGE_READING.replace(STR_R_FILETYPE, STR_FITS_FILE)).capitalize()
+MSG_WRITING_FITS_FILE = (BASE_MESSAGE_WRITING.replace(STR_R_FILETYPE, STR_FITS_FILE)).capitalize()
+MSG_FINISHED_READING_FITS_FILE = (BASE_MESSAGE_FINISHED_READING.replace(STR_R_FILETYPE,
+                                                                        STR_FITS_FILE)).capitalize()
+MSG_FINISHED_WRITING_FITS_FILE = (BASE_MESSAGE_FINISHED_WRITING.replace(STR_R_FILETYPE,
+                                                                        STR_FITS_FILE)).capitalize()
 
 DATA_SUBDIR = "data/"
 
@@ -649,7 +666,7 @@ def write_xml_product(product: Any,
                       log_info: bool = False,
                       allow_pickled: bool = False) -> None:
     log_method = _get_optional_log_method(log_info)
-    log_method(BASE_MESSAGE_WRITING, STR_DATA_PRODUCT, xml_filename, workdir)
+    log_method(MSG_WRITING_DATA_PRODUCT, xml_filename, workdir)
 
     # Silently coerce input into a string
     xml_filename = str(xml_filename)
@@ -659,7 +676,7 @@ def write_xml_product(product: Any,
     except Exception as e:
         raise SheFileWriteError(filename = xml_filename, workdir = workdir) from e
 
-    logger.debug(BASE_MESSAGE_FINISHED_WRITING, STR_DATA_PRODUCT, xml_filename, workdir)
+    logger.debug(MSG_FINISHED_WRITING_DATA_PRODUCT, xml_filename, workdir)
 
 
 def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pickled: bool) -> None:
@@ -778,7 +795,7 @@ def write_pickled_product(product,
                           workdir: str = ".",
                           log_info: bool = False) -> None:
     log_method = _get_optional_log_method(log_info)
-    log_method(BASE_MESSAGE_WRITING, STR_DATA_PRODUCT, pickled_filename, workdir)
+    log_method(MSG_WRITING_DATA_PRODUCT, pickled_filename, workdir)
 
     # Silently coerce input into a string
     pickled_filename = str(pickled_filename)
@@ -791,7 +808,7 @@ def write_pickled_product(product,
     except Exception as e:
         raise SheFileWriteError(filename = pickled_filename, workdir = workdir) from e
 
-    logger.debug(BASE_MESSAGE_FINISHED_WRITING, STR_DATA_PRODUCT, pickled_filename, workdir)
+    logger.debug(MSG_FINISHED_WRITING_DATA_PRODUCT, pickled_filename, workdir)
 
 
 def read_pickled_product(pickled_filename,
@@ -822,7 +839,7 @@ def write_table(t: Table,
                 log_info: bool = False,
                 *args, **kwargs) -> None:
     log_method = _get_optional_log_method(log_info)
-    log_method(BASE_MESSAGE_WRITING, STR_TABLE, filename, workdir)
+    log_method(MSG_WRITING_TABLE, filename, workdir)
 
     qualified_filename = get_qualified_filename(filename, workdir)
 
@@ -831,7 +848,7 @@ def write_table(t: Table,
     except Exception as e:
         raise SheFileWriteError(filename = filename, workdir = workdir) from e
 
-    logger.debug(BASE_MESSAGE_FINISHED_WRITING, STR_TABLE, filename, workdir)
+    logger.debug(MSG_FINISHED_WRITING_TABLE, filename, workdir)
 
 
 def read_table(filename: str,
@@ -839,7 +856,7 @@ def read_table(filename: str,
                log_info: bool = False,
                *args, **kwargs) -> Table:
     log_method = _get_optional_log_method(log_info)
-    log_method(BASE_MESSAGE_READING, STR_TABLE, filename, workdir)
+    log_method(MSG_READING_TABLE, filename, workdir)
 
     qualified_filename = get_qualified_filename(filename, workdir)
 
@@ -848,7 +865,7 @@ def read_table(filename: str,
     except Exception as e:
         raise SheFileReadError(filename = filename, workdir = workdir) from e
 
-    logger.debug(BASE_MESSAGE_FINISHED_READING, STR_TABLE, filename, workdir)
+    logger.debug(MSG_FINISHED_READING_TABLE, filename, workdir)
     return t
 
 
@@ -918,7 +935,7 @@ def write_fits(hdu_list: HDUList,
                log_info: bool = False,
                *args, **kwargs) -> None:
     log_method = _get_optional_log_method(log_info)
-    log_method(BASE_MESSAGE_WRITING, STR_FITS_FILE, filename, workdir)
+    log_method(MSG_WRITING_FITS_FILE, filename, workdir)
 
     qualified_filename = get_qualified_filename(filename, workdir)
 
@@ -926,7 +943,7 @@ def write_fits(hdu_list: HDUList,
         hdu_list.writeto(qualified_filename, *args, **kwargs)
     except Exception as e:
         raise SheFileWriteError(filename = filename, workdir = workdir) from e
-    logger.debug(BASE_MESSAGE_FINISHED_WRITING, STR_FITS_FILE, filename, workdir)
+    logger.debug(MSG_FINISHED_WRITING_FITS_FILE, filename, workdir)
 
 
 def read_fits(filename: str,
@@ -934,7 +951,7 @@ def read_fits(filename: str,
               log_info: bool = False,
               *args, **kwargs) -> HDUList:
     log_method = _get_optional_log_method(log_info)
-    log_method(BASE_MESSAGE_OPENING, STR_FITS_FILE, filename, workdir)
+    log_method(MSG_READING_FITS_FILE, filename, workdir)
 
     qualified_filename = get_qualified_filename(filename, workdir)
 
@@ -942,7 +959,7 @@ def read_fits(filename: str,
         f: HDUList = fits.open(qualified_filename, *args, **kwargs)
     except Exception as e:
         raise SheFileReadError(filename = filename, workdir = workdir) from e
-    logger.debug(BASE_MESSAGE_FINISHED_OPENING, STR_FITS_FILE, filename, workdir)
+    logger.debug(MSG_FINISHED_READING_FITS_FILE, filename, workdir)
 
     return f
 
@@ -1117,7 +1134,7 @@ def find_file_in_path(filename: str, path: str) -> str:
 
     if qualified_filename is None:
         raise RuntimeError(
-            "File " + str(filename) + " could not be found in path " + str(path) + S)
+            "File " + str(filename) + " could not be found in path " + str(path) + ".")
 
     logger.debug("Found file %s at %s", filename, qualified_filename)
 
