@@ -252,11 +252,11 @@ class AnalysisConfigKeys(ConfigKeys):
     PRINT_GLOBAL_FAIL_SIGMA = f"{PSF_RES_INT_VALIDATION_HEAD}global_fail_sigma"
     PRINT_FAIL_SIGMA_SCALING = f"{PSF_RES_INT_VALIDATION_HEAD}fail_sigma_scaling"
 
-    PRINT_SNR_BIN_LIMITS = f"{CTI_PSF_VALIDATION_HEAD}snr_bin_limits"
-    PRINT_SED_BIN_LIMITS = f"{CTI_PSF_VALIDATION_HEAD}sed_bin_limits"
-    PRINT_COORD_BIN_LIMITS = f"{CTI_PSF_VALIDATION_HEAD}coord_bin_limits"
-    PRINT_EPOCH_BIN_LIMITS = f"{CTI_PSF_VALIDATION_HEAD}epoch_bin_limits"
-    PRINT_ASPECT_BIN_LIMITS = f"{CTI_PSF_VALIDATION_HEAD}aspect_bin_limits"
+    PRINT_SNR_BIN_LIMITS = f"{PSF_RES_INT_VALIDATION_HEAD}snr_bin_limits"
+    PRINT_SED_BIN_LIMITS = f"{PSF_RES_INT_VALIDATION_HEAD}sed_bin_limits"
+    PRINT_COORD_BIN_LIMITS = f"{PSF_RES_INT_VALIDATION_HEAD}coord_bin_limits"
+    PRINT_EPOCH_BIN_LIMITS = f"{PSF_RES_INT_VALIDATION_HEAD}epoch_bin_limits"
+    PRINT_ASPECT_BIN_LIMITS = f"{PSF_RES_INT_VALIDATION_HEAD}aspect_bin_limits"
 
 
 class ValidationConfigKeys(ConfigKeys):
