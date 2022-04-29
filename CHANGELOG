@@ -20,6 +20,7 @@ Deprecated Features
 Bug Fixes
 ---------
 - Fixed is_nan and is_inf checks to properly handle masked values
+- Fixed bug in logging at debug level when using read/write functions
 
 
 New Features
