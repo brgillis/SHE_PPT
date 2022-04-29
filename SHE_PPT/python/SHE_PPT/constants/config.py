@@ -333,6 +333,12 @@ class ValidationConfigKeys(ConfigKeys):
     SBV_BOOTSTRAP_ERRORS = f"{SHEAR_BIAS_VALIDATION_HEAD}bootstrap_errors"
     SBV_REQUIRE_FITCLASS_ZERO = f"{SHEAR_BIAS_VALIDATION_HEAD}require_fitclass_zero"
 
+    SBV_SNR_BIN_LIMITS = f"{SHEAR_BIAS_VALIDATION_HEAD}snr_bin_limits"
+    SBV_BG_BIN_LIMITS = f"{SHEAR_BIAS_VALIDATION_HEAD}bg_bin_limits"
+    SBV_COLOUR_BIN_LIMITS = f"{SHEAR_BIAS_VALIDATION_HEAD}colour_bin_limits"
+    SBV_SIZE_BIN_LIMITS = f"{SHEAR_BIAS_VALIDATION_HEAD}size_bin_limits"
+    SBV_EPOCH_BIN_LIMITS = f"{SHEAR_BIAS_VALIDATION_HEAD}epoch_bin_limits"
+
 
 # Task names for Reconciliation pipeline
 RECONCILE_MEASUREMENTS_HEAD = "SHE_CTE_ReconcileMeasurements_"
