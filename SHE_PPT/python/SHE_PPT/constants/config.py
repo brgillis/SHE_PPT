@@ -252,11 +252,11 @@ class AnalysisConfigKeys(ConfigKeys):
     PRINT_GLOBAL_FAIL_SIGMA = f"{PSF_RES_INT_VALIDATION_HEAD}global_fail_sigma"
     PRINT_FAIL_SIGMA_SCALING = f"{PSF_RES_INT_VALIDATION_HEAD}fail_sigma_scaling"
 
-    PRINT_SNR_BIN_LIMITS = f"{CTI_PSF_VALIDATION_HEAD}snr_bin_limits"
-    PRINT_SED_BIN_LIMITS = f"{CTI_PSF_VALIDATION_HEAD}sed_bin_limits"
-    PRINT_COORD_BIN_LIMITS = f"{CTI_PSF_VALIDATION_HEAD}coord_bin_limits"
-    PRINT_EPOCH_BIN_LIMITS = f"{CTI_PSF_VALIDATION_HEAD}epoch_bin_limits"
-    PRINT_ASPECT_BIN_LIMITS = f"{CTI_PSF_VALIDATION_HEAD}aspect_bin_limits"
+    PRINT_SNR_BIN_LIMITS = f"{PSF_RES_INT_VALIDATION_HEAD}snr_bin_limits"
+    PRINT_SED_BIN_LIMITS = f"{PSF_RES_INT_VALIDATION_HEAD}sed_bin_limits"
+    PRINT_COORD_BIN_LIMITS = f"{PSF_RES_INT_VALIDATION_HEAD}coord_bin_limits"
+    PRINT_EPOCH_BIN_LIMITS = f"{PSF_RES_INT_VALIDATION_HEAD}epoch_bin_limits"
+    PRINT_ASPECT_BIN_LIMITS = f"{PSF_RES_INT_VALIDATION_HEAD}aspect_bin_limits"
 
 
 class ValidationConfigKeys(ConfigKeys):
@@ -332,6 +332,12 @@ class ValidationConfigKeys(ConfigKeys):
     SBV_MAX_G_IN = f"{SHEAR_BIAS_VALIDATION_HEAD}max_g_in"
     SBV_BOOTSTRAP_ERRORS = f"{SHEAR_BIAS_VALIDATION_HEAD}bootstrap_errors"
     SBV_REQUIRE_FITCLASS_ZERO = f"{SHEAR_BIAS_VALIDATION_HEAD}require_fitclass_zero"
+
+    SBV_SNR_BIN_LIMITS = f"{SHEAR_BIAS_VALIDATION_HEAD}snr_bin_limits"
+    SBV_BG_BIN_LIMITS = f"{SHEAR_BIAS_VALIDATION_HEAD}bg_bin_limits"
+    SBV_COLOUR_BIN_LIMITS = f"{SHEAR_BIAS_VALIDATION_HEAD}colour_bin_limits"
+    SBV_SIZE_BIN_LIMITS = f"{SHEAR_BIAS_VALIDATION_HEAD}size_bin_limits"
+    SBV_EPOCH_BIN_LIMITS = f"{SHEAR_BIAS_VALIDATION_HEAD}epoch_bin_limits"
 
 
 # Task names for Reconciliation pipeline

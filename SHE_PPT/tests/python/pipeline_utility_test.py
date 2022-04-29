@@ -21,6 +21,7 @@
 __updated__ = "2021-08-12"
 
 import os
+from typing import Any, Dict
 
 import numpy as np
 import pytest
@@ -213,20 +214,37 @@ class TestUtility:
         """
 
         # Make mock input data
-        config = {"want_float": "0.",
-                  "want_array": "0. 1",
-                  "want_true" : "True",
-                  "want_false": "False",
-                  "want_enum" : GlobalConfigKeys.PIP_PROFILE.value.upper()}
-        d_types = {"want_float": float,
-                   "want_array": np.ndarray,
-                   "want_true" : bool,
-                   "want_false": bool,
-                   "want_enum" : GlobalConfigKeys}
+        config = {"want_float"                          : "0.",
+                  "want_array"                          : "0. 1",
+                  "want_true"                           : "True",
+                  "want_false"                          : "False",
+                  "want_enum"                           : GlobalConfigKeys.PIP_PROFILE.value.upper(),
+                  "want_int_list"                       : "0 1 7",
+                  "want_float_list"                     : "0 10 4.5",
+                  "want_int_from_int_or_int_list"       : "17",
+                  "want_int_list_from_int_or_int_list"  : "4 1",
+                  "want_ndarray_from_ndarray_or_str"    : "1 2 3",
+                  "want_str_from_ndarray_or_str"        : "auto",
+                  "want_enum_list_from_enum_list_or_str": (f"{GlobalConfigKeys.PIP_PLACEHOLDER_0.value.upper()} "
+                                                           f"{GlobalConfigKeys.PIP_PLACEHOLDER_1.value.upper()}"),
+                  "want_str_from_enum_list_or_str"      : "N/A"}
+        d_types = {"want_float"                          : float,
+                   "want_array"                          : np.ndarray,
+                   "want_true"                           : bool,
+                   "want_false"                          : bool,
+                   "want_enum"                           : GlobalConfigKeys,
+                   "want_int_list"                       : (list, int),
+                   "want_float_list"                     : (list, float),
+                   "want_int_from_int_or_int_list"       : (int, (list, int)),
+                   "want_int_list_from_int_or_int_list"  : (int, (list, int)),
+                   "want_ndarray_from_ndarray_or_str"    : (np.ndarray, str),
+                   "want_str_from_ndarray_or_str"        : (np.ndarray, str),
+                   "want_enum_list_from_enum_list_or_str": ((list, GlobalConfigKeys), str),
+                   "want_str_from_enum_list_or_str"      : ((list, GlobalConfigKeys), str)}
 
         # Run the function
-        new_config = convert_config_types(pipeline_config = config,
-                                          d_types = d_types)
+        new_config: Dict[str, Any] = convert_config_types(pipeline_config = config,
+                                                          d_types = d_types)
 
         # Check the results
         assert np.isclose(new_config["want_float"], 0.)
@@ -234,3 +252,16 @@ class TestUtility:
         assert new_config["want_true"] == True
         assert new_config["want_false"] == False
         assert new_config["want_enum"] == GlobalConfigKeys.PIP_PROFILE
+
+        assert new_config["want_int_list"] == [0, 1, 7]
+        assert np.allclose(new_config["want_float_list"], [0., 10., 4.5])
+
+        assert new_config["want_int_from_int_or_int_list"] == 17
+        assert new_config["want_int_list_from_int_or_int_list"] == [4, 1]
+
+        assert np.all(new_config["want_ndarray_from_ndarray_or_str"] == np.array([1, 2, 3]))
+        assert new_config["want_str_from_ndarray_or_str"] == "auto"
+
+        assert new_config["want_enum_list_from_enum_list_or_str"] == [GlobalConfigKeys.PIP_PLACEHOLDER_0,
+                                                                      GlobalConfigKeys.PIP_PLACEHOLDER_1]
+        assert new_config["want_str_from_enum_list_or_str"] == "N/A"
