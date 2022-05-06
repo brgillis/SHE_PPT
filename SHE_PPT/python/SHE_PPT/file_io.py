@@ -57,53 +57,26 @@ DEFAULT_FILE_EXTENSION = ".fits"
 DEFAULT_FILE_SUBDIR = "data"
 DEFAULT_FILE_PF = "SHE"
 
-# Constant strings for replacement tags
-STR_R_FILETYPE = "$FILETYPE"
-STR_R_OPERATION = "$OPERATION"
-
-# Constant strings for descriptions of file types
-STR_DATA_PRODUCT = "data product"
-STR_TABLE = "table"
-STR_FITS_FILE = "FITS file"
-
-# Constant strings for access operations
+# Constant strings operations
 STR_READING = "reading"
 STR_WRITING = "writing"
-STR_OPENING = "opening"
 
 # Constant strings for messages
-BASE_MESSAGE_ACCESSING = f"{STR_R_OPERATION} {STR_R_FILETYPE} from %s in workdir %s"
-BASE_MESSAGE_FINISHED_ACCESSING = f"Finished {BASE_MESSAGE_ACCESSING} successfully"
 
-BASE_MESSAGE_READING = BASE_MESSAGE_ACCESSING.replace(STR_R_OPERATION, STR_READING)
-BASE_MESSAGE_FINISHED_READING = BASE_MESSAGE_FINISHED_ACCESSING.replace(STR_R_OPERATION, STR_READING)
+MSG_READING_DATA_PRODUCT = f"Reading data product from %s in workdir %s"
+MSG_WRITING_DATA_PRODUCT = f"Writing data product to %s in workdir %s"
+MSG_FINISHED_READING_DATA_PRODUCT = f"Finished reading data product from %s in workdir %s successfully"
+MSG_FINISHED_WRITING_DATA_PRODUCT = f"Finished writing data product to %s in workdir %s successfully"
 
-BASE_MESSAGE_WRITING = BASE_MESSAGE_ACCESSING.replace(STR_R_OPERATION, STR_WRITING)
-BASE_MESSAGE_FINISHED_WRITING = BASE_MESSAGE_FINISHED_ACCESSING.replace(STR_R_OPERATION, STR_WRITING)
+MSG_READING_TABLE = f"Reading table from %s in workdir %s"
+MSG_WRITING_TABLE = f"Writing table to %s in workdir %s"
+MSG_FINISHED_READING_TABLE = f"Finished reading table from %s in workdir %s successfully"
+MSG_FINISHED_WRITING_TABLE = f"Finished writing table to %s in workdir %s successfully"
 
-BASE_MESSAGE_OPENING = BASE_MESSAGE_ACCESSING.replace(STR_R_OPERATION, STR_OPENING)
-BASE_MESSAGE_FINISHED_OPENING = BASE_MESSAGE_FINISHED_ACCESSING.replace(STR_R_OPERATION, STR_OPENING)
-
-MSG_READING_DATA_PRODUCT = (BASE_MESSAGE_READING.replace(STR_R_FILETYPE, STR_DATA_PRODUCT)).capitalize()
-MSG_WRITING_DATA_PRODUCT = (BASE_MESSAGE_WRITING.replace(STR_R_FILETYPE, STR_DATA_PRODUCT)).capitalize()
-MSG_FINISHED_READING_DATA_PRODUCT = (BASE_MESSAGE_FINISHED_READING.replace(STR_R_FILETYPE,
-                                                                           STR_DATA_PRODUCT)).capitalize()
-MSG_FINISHED_WRITING_DATA_PRODUCT = (BASE_MESSAGE_FINISHED_WRITING.replace(STR_R_FILETYPE,
-                                                                           STR_DATA_PRODUCT)).capitalize()
-
-MSG_READING_TABLE = (BASE_MESSAGE_READING.replace(STR_R_FILETYPE, STR_TABLE)).capitalize()
-MSG_WRITING_TABLE = (BASE_MESSAGE_WRITING.replace(STR_R_FILETYPE, STR_TABLE)).capitalize()
-MSG_FINISHED_READING_TABLE = (BASE_MESSAGE_FINISHED_READING.replace(STR_R_FILETYPE,
-                                                                    STR_TABLE)).capitalize()
-MSG_FINISHED_WRITING_TABLE = (BASE_MESSAGE_FINISHED_WRITING.replace(STR_R_FILETYPE,
-                                                                    STR_TABLE)).capitalize()
-
-MSG_READING_FITS_FILE = (BASE_MESSAGE_READING.replace(STR_R_FILETYPE, STR_FITS_FILE)).capitalize()
-MSG_WRITING_FITS_FILE = (BASE_MESSAGE_WRITING.replace(STR_R_FILETYPE, STR_FITS_FILE)).capitalize()
-MSG_FINISHED_READING_FITS_FILE = (BASE_MESSAGE_FINISHED_READING.replace(STR_R_FILETYPE,
-                                                                        STR_FITS_FILE)).capitalize()
-MSG_FINISHED_WRITING_FITS_FILE = (BASE_MESSAGE_FINISHED_WRITING.replace(STR_R_FILETYPE,
-                                                                        STR_FITS_FILE)).capitalize()
+MSG_READING_FITS_FILE = f"Reading FITS file from %s in workdir %s"
+MSG_WRITING_FITS_FILE = f"Writing FITS file to %s in workdir %s"
+MSG_FINISHED_READING_FITS_FILE = f"Finished reading FITS file from %s in workdir %s successfully"
+MSG_FINISHED_WRITING_FITS_FILE = f"Finished writing FITS file to %s in workdir %s successfully"
 
 DATA_SUBDIR = "data/"
 
