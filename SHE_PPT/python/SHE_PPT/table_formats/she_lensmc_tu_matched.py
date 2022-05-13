@@ -50,10 +50,10 @@ class SheLensMcTUMatchedFormat(SheTUMatchedFormat):
     """ A class defining the format for LensMC TU Matched tables. Only the lensmc_tu_matched_table_format
         instance of this should generally be accessed, and it should not be changed.
     """
+    meta_type = SheLensMcTUMatchedMeta
 
     def __init__(self):
-        # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
-        super().__init__(SheLensMcTUMatchedMeta(), finalize = False)
+        super().__init__(finalize = False)
 
         self.setup_child_table_format(child_label)
 

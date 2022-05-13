@@ -1,96 +1,97 @@
 <?xml version="1.0" ?>
 <ns1:DpdSheGalaxyPopulationPriors xmlns:ns1="http://euclid.esa.org/schema/dpd/she/galaxypopulationpriors">
-	<Header>
-		<ProductId>dc901f4d-5786-4738-add7-c1305052d644</ProductId>
-		<ProductType>uKCQb</ProductType>
-		<SoftwareName>IVhr9</SoftwareName>
-		<SoftwareRelease>zu6uo</SoftwareRelease>
-		<EuclidPipelineSoftwareRelease>x1I</EuclidPipelineSoftwareRelease>
-		<ProdSDC>BPDHvKJVhosqVyxBo8rutU4mJsBTFwNkn72YYHAyfKH8VED1x3yWEsbYj0AhfSaGLzb7GfBa0vpPrzFkL8AMIFPQs4gP6KTFBQxxfhf3fAcMxo9hvmg2VBTmm8euS</ProdSDC>
-		<DataSetRelease>GjiYn</DataSetRelease>
-		<Purpose>UNKNOWN</Purpose>
-		<PlanId>UugQ8</PlanId>
-		<PPOId>tvlve</PPOId>
-		<PipelineDefinitionId>5GJAt</PipelineDefinitionId>
-		<PipelineRun>UKeBx</PipelineRun>
-		<ExitStatusCode>lHCgl</ExitStatusCode>
-		<ManualValidationStatus>VALID</ManualValidationStatus>
-		<ExpirationDate>2020-06-01T15:26:19.667Z</ExpirationDate>
-		<ToBePublished>false</ToBePublished>
-		<Published>true</Published>
-		<Curator>SHE</Curator>
-		<CreationDate>2020-06-01T15:26:19.668Z</CreationDate>
-	</Header>
-	<Data>
-		<SpatialCoverage>
-			<Polygon>
-				<Vertex>
-					<Position coordUnit="kg">
-						<C1 unit="S">1.0</C1>
-						<C2 unit="cd">0.0</C2>
-					</Position>
-					<SmallCircle>
-						<Pole coordUnit="stars">
-							<C1 unit="eV">0.0</C1>
-							<C2 unit="a">0.0</C2>
-						</Pole>
-					</SmallCircle>
-				</Vertex>
-			</Polygon>
-			<Circle>
-				<Center coordUnit="cd">
-					<C1 unit="u">1.0</C1>
-					<C2 unit="mas">0.0</C2>
-				</Center>
-				<Radius unit="km/s/Mpc">0.0</Radius>
-			</Circle>
-			<BBox>
-				<RaCenter unit="eV/K">1.0</RaCenter>
-				<DecCenter unit="F">1.0</DecCenter>
-				<RaHalfWidth unit="stars/deg2">1.0</RaHalfWidth>
-				<DecHalfWidth unit="arcsec">0.0</DecHalfWidth>
-			</BBox>
-		</SpatialCoverage>
-		<SpectralCoverage>
-			<Filter>
-				<Name>DECAM_i</Name>
-				<MagId>J</MagId>
-				<CentralWavelength>-6.0</CentralWavelength>
-				<MinWavelength>-6.0</MinWavelength>
-				<MaxWavelength>-9.0</MaxWavelength>
-				<Reference>HOwcR</Reference>
-				<HasFringes>1634465309</HasFringes>
-			</Filter>
-		</SpectralCoverage>
-		<CatalogDescription>
-			<CatalogOrigin>OTHERS</CatalogOrigin>
-			<CatalogType>PROXY</CatalogType>
-			<PathToCatalogFile>Data.DataStorageList[0].DataContainer.FileName</PathToCatalogFile>
-			<CatalogName>She-Galaxy-Population</CatalogName>
-			<CatalogFormatHDU>1</CatalogFormatHDU>
-		</CatalogDescription>
-		<ValidityRange>
-			<Name>Dummy</Name>
-			<Type>SheGalaxyPopulationPriors</Type>
-			<TimestampStart>2020-06-01T15:26:19.681Z</TimestampStart>
-			<TimestampEnd>9999-06-01T15:26:19.681Z</TimestampEnd>
-		</ValidityRange>
-		<DataStorageList format="she.galaxyPopulationPriors" version="8.0">
-			<DataContainer filestatus="ARCHIVED_ONLINE">
-				<FileName>None</FileName>
-			</DataContainer>
-		</DataStorageList>
-	</Data>
-	<QualityFlags>
-		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
-		<AuxiliaryFlags flagName="yxYpt" flagged="true" maxLimit="-8.0" minLimit="-9.0" xpath="C6Bb8">true</AuxiliaryFlags>
-	</QualityFlags>
-	<Parameters>
-		<Parameter>
-			<Key>Ma7vx</Key>
-			<Description>91Dpg</Description>
-			<StringValue>PznIu</StringValue>
-			<Unit>EB88Q</Unit>
-		</Parameter>
-	</Parameters>
+    <Header>
+        <ProductId>dc901f4d-5786-4738-add7-c1305052d644</ProductId>
+        <ProductType>DpdSheGalaxyPopulationPriors</ProductType>
+        <SoftwareName>IVhr9</SoftwareName>
+        <SoftwareRelease>zu6uo</SoftwareRelease>
+        <EuclidPipelineSoftwareRelease>x1I</EuclidPipelineSoftwareRelease>
+        <ProdSDC>SDC-UK</ProdSDC>
+        <DataSetRelease>GjiYn</DataSetRelease>
+        <Purpose>UNKNOWN</Purpose>
+        <PlanId>UugQ8</PlanId>
+        <PPOId>tvlve</PPOId>
+        <PipelineDefinitionId>5GJAt</PipelineDefinitionId>
+        <PpoStatus>NA</PpoStatus>
+        <ManualValidationStatus>VALID</ManualValidationStatus>
+        <ExpirationDate>2020-06-01T15:26:19.667Z</ExpirationDate>
+        <ToBePublished>0</ToBePublished>
+        <Published>0</Published>
+        <Curator>SHE</Curator>
+        <CreationDate>2020-06-01T15:26:19.668Z</CreationDate>
+    </Header>
+    <Data>
+        <SpatialCoverage>
+            <Polygon>
+                <Vertex>
+                    <Position coordUnit="kg">
+                        <C1 unit="S">1.0</C1>
+                        <C2 unit="cd">0.0</C2>
+                    </Position>
+                    <SmallCircle>
+                        <Pole coordUnit="stars">
+                            <C1 unit="eV">0.0</C1>
+                            <C2 unit="a">0.0</C2>
+                        </Pole>
+                    </SmallCircle>
+                </Vertex>
+            </Polygon>
+            <Circle>
+                <Center coordUnit="cd">
+                    <C1 unit="u">1.0</C1>
+                    <C2 unit="mas">0.0</C2>
+                </Center>
+                <Radius unit="km/s/Mpc">0.0</Radius>
+            </Circle>
+            <BBox>
+                <RaCenter unit="eV/K">1.0</RaCenter>
+                <DecCenter unit="F">1.0</DecCenter>
+                <RaHalfWidth unit="stars/deg2">1.0</RaHalfWidth>
+                <DecHalfWidth unit="arcsec">0.0</DecHalfWidth>
+            </BBox>
+        </SpatialCoverage>
+        <SpectralCoverage>
+            <Filter>
+                <Name>DECAM_i</Name>
+                <MagId>J</MagId>
+                <CentralWavelength>-6.0</CentralWavelength>
+                <MinWavelength>-6.0</MinWavelength>
+                <MaxWavelength>-9.0</MaxWavelength>
+                <Reference>HOwcR</Reference>
+                <HasFringes>1634465309</HasFringes>
+            </Filter>
+        </SpectralCoverage>
+        <CatalogDescription>
+            <CatalogOrigin>OTHERS</CatalogOrigin>
+            <CatalogType>PROXY</CatalogType>
+            <PathToCatalogFile>Data.DataStorageList[0].DataContainer.FileName</PathToCatalogFile>
+            <CatalogName>She-Galaxy-Population</CatalogName>
+            <CatalogFormatHDU>1</CatalogFormatHDU>
+        </CatalogDescription>
+        <ValidityRange>
+            <Name>Dummy</Name>
+            <Type>SheGalaxyPopulationPriors</Type>
+            <TimestampStart>2020-06-01T15:26:19.681Z</TimestampStart>
+            <TimestampEnd>9999-06-01T15:26:19.681Z</TimestampEnd>
+        </ValidityRange>
+        <DataStorageList format="she.galaxyPopulationPriors" version="8.0">
+            <DataContainer filestatus="ARCHIVED_ONLINE">
+                <FileName>None</FileName>
+            </DataContainer>
+        </DataStorageList>
+    </Data>
+    <QualityFlags>
+        <DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false
+        </DummyFlag>
+        <AuxiliaryFlags flagName="yxYpt" flagged="true" maxLimit="-8.0" minLimit="-9.0" xpath="C6Bb8">true
+        </AuxiliaryFlags>
+    </QualityFlags>
+    <Parameters>
+        <Parameter>
+            <Key>Ma7vx</Key>
+            <Description>91Dpg</Description>
+            <StringValue>PznIu</StringValue>
+            <Unit>EB88Q</Unit>
+        </Parameter>
+    </Parameters>
 </ns1:DpdSheGalaxyPopulationPriors>

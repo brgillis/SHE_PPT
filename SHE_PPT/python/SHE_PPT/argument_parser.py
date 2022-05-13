@@ -38,7 +38,7 @@ CA_DATA_IMAGES = "data_images"
 CA_VIS_CAL_FRAME = "vis_calibrated_frame_listfile"  # TODO: Fix duplication here
 CA_SHE_MEAS = "she_validated_measurements_product"
 CA_MER_CAT = "mer_final_catalog_listfile"
-CA_SHE_STAR_CAT = "star_catalog_listfile"
+CA_SHE_STAR_CAT = "star_catalog_product"
 
 # Options cline-args
 CA_PIPELINE_CONFIG = "pipeline_config"
@@ -163,5 +163,4 @@ class SheArgumentParser(ArgumentParser):
 
     def add_star_catalog_arg(self, arg_type: ClineArgType = ClineArgType.INPUT):
         self.add_arg_with_type(f"--{CA_SHE_STAR_CAT}", type = str, arg_type = arg_type,
-                               help = ".json listfile containing filenames of .xml data products for SHE star "
-                                      "catalogs for each exposure.")
+                               help = ".xml data product for SHE star catalog for an observation.")

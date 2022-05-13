@@ -84,9 +84,10 @@ class MerFinalCatalogFormat(SheTableFormat):
     colour: str
     size: str
     epoch: str
+    meta_type = MerFinalCatalogMeta
 
     def __init__(self):
-        super().__init__(MerFinalCatalogMeta())
+        super().__init__()
 
         # To keep this up to date, copy from https://gitlab.euclid-sgs.uk/PF-MER/MER_CatalogAssembly/blob/develop
         # /MER_CatalogAssembly/python/MER_CatalogAssembly/dm_template.py,
@@ -294,7 +295,7 @@ class MerFinalCatalogFormat(SheTableFormat):
                 bin_parameter.upper(), is_optional = True, ))
 
         # Tile ID
-        setattr(self, "tile_ID", self.set_column_properties("TILE_ID", dtype= ">i8", fits_dtype = "K",
+        setattr(self, "tile_ID", self.set_column_properties("TILE_ID", dtype = ">i8", fits_dtype = "K",
                                                             comment = "", is_optional = True))
 
         self._finalize_init()

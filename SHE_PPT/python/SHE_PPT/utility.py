@@ -180,28 +180,96 @@ def is_any_type_of_none(value: Any) -> bool:
     return value in (None, "None", "", "data/None", "data/")
 
 
+def is_inf(x: Union[float, Sequence[float]]) -> bool:
+    """ Custom implementation if np.isinf check, which returns False for any masked values, unlike np.isinf, which
+        returns masked for any masked values.
+    """
+    # If no values are masked, we can simply forward to numpy
+    if not np.ma.is_masked(x):
+        return np.isinf(x)
+
+    # For any masked values, return False. Otherwise we can use the result of np.isinf
+    return np.where(is_masked(x), False, np.isinf(x))
+
+
+def is_nan(x: Union[float, Sequence[float]]) -> bool:
+    """ Custom implementation if np.isnan check, which returns False for any masked values, unlike np.isinf, which
+        returns masked for any masked values.
+    """
+    # If no values are masked, we can simply forward to numpy
+    if not np.ma.is_masked(x):
+        return np.isnan(x)
+
+    # For any masked values, return False. Otherwise we can use the result of np.isnan
+    return np.where(is_masked(x), False, np.isnan(x))
+
+
+def is_masked(x: Union[float, Sequence[float]]) -> bool:
+    """ Element-wise implementation of checking if an array is masked. np.ma.is_masked doesn't do this, as it always
+        returns a summary bool of if any values are masked.
+    """
+    # Test if the object is iterable, and if so, give element-wise results
+    try:
+        return np.array([np.ma.is_masked(item) for item in x])
+    except TypeError:
+        # It's not iterable, so test if the individual value is masked
+        return np.ma.is_masked(x)
+
+
 def any_is_inf(l_x: Sequence[Union[float, Sequence[float]]]) -> bool:
     """ Checks if any value in a sequence of values is inf.
     """
-    return np.logical_or.reduce(np.isinf(l_x))
+    return np.logical_or.reduce(is_inf(l_x))
 
 
 def any_is_nan(l_x: Sequence[Union[float, Sequence[float]]]) -> bool:
     """ Checks if any value in a sequence of values is NaN.
     """
-    return np.logical_or.reduce(np.isnan(l_x))
+    return np.logical_or.reduce(is_nan(l_x))
+
+
+def any_is_masked(l_x: Sequence[Union[float, Sequence[float]]]) -> bool:
+    """ Checks if any value in a sequence of values is masked. This can actually be done by a single function call with
+        numpy, but this wrapper is presented here for consistency with Inf and NaN checks, so a user searching for a
+        function to do this isn't left confused by its absence.
+    """
+    return np.ma.is_masked(l_x)
 
 
 def is_inf_or_nan(x: Union[float, Sequence[float]]) -> bool:
     """ Checks if a value is inf or NaN.
     """
-    return np.logical_or(np.isinf(x), np.isnan(x))
+    return np.logical_or(is_inf(x), is_nan(x))
 
 
 def any_is_inf_or_nan(l_x: Sequence[Union[float, Sequence[float]]]) -> bool:
     """ Checks if any value in a sequence of values is inf or nan.
     """
     return np.logical_or.reduce(is_inf_or_nan(l_x))
+
+
+def is_nan_or_masked(x: Union[float, Sequence[float]]) -> bool:
+    """ Checks if a value is NaN or masked.
+    """
+    return np.logical_or(is_nan(x), is_masked(x))
+
+
+def any_is_nan_or_masked(l_x: Sequence[Union[float, Sequence[float]]]) -> bool:
+    """ Checks if any value in a sequence of values is NaN or masked.
+    """
+    return np.logical_or.reduce(is_nan_or_masked(l_x))
+
+
+def is_inf_nan_or_masked(x: Union[float, Sequence[float]]) -> bool:
+    """ Checks if a value is Inf, NaN, or masked.
+    """
+    return np.logical_or(is_inf(x), is_nan_or_masked(x))
+
+
+def any_is_inf_nan_or_masked(l_x: Sequence[Union[float, Sequence[float]]]) -> bool:
+    """ Checks if any value in a sequence of values is Inf, NaN or masked.
+    """
+    return np.logical_or.reduce(is_inf_nan_or_masked(l_x))
 
 
 Number = TypeVar('Number', float, int)
@@ -244,12 +312,14 @@ def default_value_if_none(x: Optional[T],
 
 def default_init_if_none(x: Optional[Any],
                          type: Type[T],
-                         coerce: bool = False) -> T:
+                         *args,
+                         coerce: bool = False,
+                         **kwargs) -> T:
     """ If input value is None, returns a default initialization of the provided type, otherwise returns the input
         value. Optionally tries to coerce to desired type.
     """
     if x is None:
-        return type()
+        return type(*args, **kwargs)
     if coerce:
         return type(x)
     return x

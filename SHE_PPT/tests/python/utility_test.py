@@ -23,13 +23,15 @@ __updated__ = "2021-02-10"
 import os
 import shutil
 
-from astropy.table import Table
-import pytest
-
-from EL_PythonUtils.utilities import hash_any, get_arguments_string
-from SHE_PPT.utility import (get_nested_attr, set_nested_attr,
-                             process_directory, get_all_files)
 import numpy as np
+
+from EL_PythonUtils.utilities import get_arguments_string, hash_any
+from SHE_PPT.utility import (any_is_inf_nan_or_masked, any_is_inf_or_nan, any_is_nan_or_masked, get_all_files,
+                             get_nested_attr,
+                             is_inf, is_inf_nan_or_masked, is_inf_or_nan,
+                             is_masked, is_nan, is_nan_or_masked,
+                             process_directory,
+                             set_nested_attr, )
 
 
 class TestUtility:
@@ -90,21 +92,21 @@ class TestUtility:
 
         # Check that maximum length is enforced properly
         max_length = 16
-        assert len(hash_any(test_str, max_length=max_length)) == max_length
-        assert len(hash_any(test_obj, max_length=max_length)) == max_length
-        assert len(hash_any(test_obj, format="base64", max_length=max_length)) == max_length
+        assert len(hash_any(test_str, max_length = max_length)) == max_length
+        assert len(hash_any(test_obj, max_length = max_length)) == max_length
+        assert len(hash_any(test_obj, format = "base64", max_length = max_length)) == max_length
 
         smaller_max_length = 8
-        assert hash_any(test_str, max_length=max_length)[
-            :max_length - smaller_max_length] == hash_any(test_str, max_length=smaller_max_length)
-        assert hash_any(test_obj, max_length=max_length)[
-            :max_length - smaller_max_length] == hash_any(test_obj, max_length=smaller_max_length)
-        assert (hash_any(test_obj, max_length=max_length, format="base64")[:max_length - smaller_max_length] ==
-                hash_any(test_obj, max_length=smaller_max_length, format="base64"))
+        assert hash_any(test_str, max_length = max_length)[
+               :max_length - smaller_max_length] == hash_any(test_str, max_length = smaller_max_length)
+        assert hash_any(test_obj, max_length = max_length)[
+               :max_length - smaller_max_length] == hash_any(test_obj, max_length = smaller_max_length)
+        assert (hash_any(test_obj, max_length = max_length, format = "base64")[:max_length - smaller_max_length] ==
+                hash_any(test_obj, max_length = smaller_max_length, format = "base64"))
 
         # Check that base64 encoding is working as expected - should be shorter than hex encoding
-        assert len(hash_any(test_str, format="hex")) > len(hash_any(test_str, format="base64"))
-        assert len(hash_any(test_obj, format="hex")) > len(hash_any(test_obj, format="base64"))
+        assert len(hash_any(test_str, format = "hex")) > len(hash_any(test_str, format = "base64"))
+        assert len(hash_any(test_obj, format = "hex")) > len(hash_any(test_obj, format = "base64"))
 
     def test_get_arguments_string(self):
 
@@ -126,12 +128,12 @@ class TestUtility:
                 (arg_string == "--foobar bar foo --foo bar"))
 
         # Test with a command string
-        cmd_string = get_arguments_string(test_args, cmd="run")
+        cmd_string = get_arguments_string(test_args, cmd = "run")
         assert ((cmd_string == "run --foo bar --foobar bar foo") or
                 (cmd_string == "run --foobar bar foo --foo bar"))
 
         # Test it strips the command string properly
-        cmd_string2 = get_arguments_string(test_args, cmd="run ")
+        cmd_string2 = get_arguments_string(test_args, cmd = "run ")
         assert ((cmd_string2 == "run --foo bar --foobar bar foo") or
                 (cmd_string2 == "run --foobar bar foo --foo bar"))
 
@@ -146,7 +148,8 @@ class TestUtility:
                 return
 
         test_bool_args = TestBoolArgs()
-        bool_arg_string = get_arguments_string(test_bool_args, store_true=["stt", "stf"], store_false=["sff", "sft"])
+        bool_arg_string = get_arguments_string(test_bool_args, store_true = ["stt", "stf"],
+                                               store_false = ["sff", "sft"])
         assert ((bool_arg_string == "--stt --sff") or
                 (bool_arg_string == "--sff --stt"))
 
@@ -207,3 +210,34 @@ class TestUtility:
         for ii, fName in enumerate(sorted(file_list)):
             assert os.path.basename(fName) == 'file%s.txt' % (ii + 1)
         shutil.rmtree(test_dir)
+
+    def test_bad_value_checks(self):
+        """ Test the various "bad value" checks for Inf, NaN, and masked values.
+        """
+
+        # Create a test array
+        l_x = np.ma.masked_array([0, np.Inf, np.NaN, 0], [False, False, False, True])
+
+        # Test each value with each method
+        for i, x in enumerate(l_x):
+
+            # Check with individual methods
+            assert is_inf(x) == (i == 1)
+            assert is_nan(x) == (i == 2)
+            assert is_masked(x) == (i == 3)
+
+            # Check with combo methods
+            assert is_inf_or_nan(x) == (is_inf(x) or is_nan(x) and not is_masked(x))
+            assert is_nan_or_masked(x) == (is_nan(x) or is_masked(x))
+            assert is_inf_nan_or_masked(x) == (is_inf(x) or is_nan(x) or is_masked(x))
+
+            # Check with `any` methods on this individual value
+            assert any_is_inf_or_nan(x) == (is_inf(x) or is_nan(x) and not is_masked(x))
+            assert any_is_nan_or_masked(x) == (is_nan(x) or is_masked(x))
+            assert any_is_inf_nan_or_masked(x) == (is_inf(x) or is_nan(x) or is_masked(x))
+
+        # Test the 'any' methods on full arrays
+
+        assert any_is_inf_or_nan(l_x) == True
+        assert any_is_nan_or_masked(l_x) == True
+        assert any_is_inf_nan_or_masked(l_x) == True

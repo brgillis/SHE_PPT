@@ -1,49 +1,51 @@
 <?xml version="1.0" ?>
 <ns1:DpdShePsfCalibrationParameters xmlns:ns1="http://euclid.esa.org/schema/dpd/she/psfcalibrationparameters">
-	<Header>
-		<ProductId>bd528e00-afa1-4ec6-a617-9dedade754b4</ProductId>
-		<ProductType>GfdPj</ProductType>
-		<SoftwareName>Uilwe</SoftwareName>
-		<SoftwareRelease>7JB1</SoftwareRelease>
-		<EuclidPipelineSoftwareRelease>X8U3</EuclidPipelineSoftwareRelease>
-		<ProdSDC>nIQsgsmU6wT2v4n5Xi35ceW4ffFlDF5JjBYr0FwhpiRL1jd1x2Hvyr8FH1yIzPJeGkpZIGpV5zQN1LfUkWP3nBC02HlsT9C</ProdSDC>
-		<DataSetRelease>X9yue</DataSetRelease>
-		<Purpose>INTERMEDIATE_DATA_RELEASE</Purpose>
-		<PlanId>svZ2v</PlanId>
-		<PPOId>gkXyh</PPOId>
-		<PipelineDefinitionId>IkHA0</PipelineDefinitionId>
-		<PipelineRun>SOSo9</PipelineRun>
-		<ExitStatusCode>rp4qq</ExitStatusCode>
-		<ManualValidationStatus>INVALID</ManualValidationStatus>
-		<ExpirationDate>2020-06-03T15:54:16.811Z</ExpirationDate>
-		<ToBePublished>true</ToBePublished>
-		<Published>true</Published>
-		<Curator>SHE</Curator>
-		<CreationDate>2020-06-03T15:54:16.813Z</CreationDate>
-	</Header>
-	<Data>
-		<ValidityRange>
-			<Name>Dummy</Name>
-			<Type>shePsfCalibrationParameters</Type>
-			<TimestampStart>2020-06-03T15:54:16.814Z</TimestampStart>
-			<TimestampEnd>9999-06-03T15:54:16.814Z</TimestampEnd>
-		</ValidityRange>
-		<DataStorage format="she.psfCalibrationParameters" version="8.0">
-			<DataContainer filestatus="ARCHIVED_OFFLINE">
-				<FileName>None</FileName>
-			</DataContainer>
-		</DataStorage>
-	</Data>
-	<QualityFlags>
-		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
-		<AuxiliaryFlags flagName="JHKkl" flagged="true" maxLimit="-5.0" minLimit="9.0" xpath="wYsep">true</AuxiliaryFlags>
-	</QualityFlags>
-	<Parameters>
-		<Parameter>
-			<Key>bn6Y6</Key>
-			<Description>nGtrH</Description>
-			<StringValue>Zfin5</StringValue>
-			<Unit>2mRkB</Unit>
-		</Parameter>
-	</Parameters>
+    <Header>
+        <ProductId>bd528e00-afa1-4ec6-a617-9dedade754b4</ProductId>
+        <ProductType>DpdShePsfCalibrationParameters</ProductType>
+        <SoftwareName>Uilwe</SoftwareName>
+        <SoftwareRelease>7JB1</SoftwareRelease>
+        <EuclidPipelineSoftwareRelease>X8U3</EuclidPipelineSoftwareRelease>
+        <ProdSDC>nIQsgsmU6wT2v4n5Xi35ceW4ffFlDF5JjBYr0FwhpiRL1jd1x2Hvyr8FH1yIzPJeGkpZIGpV5zQN1LfUkWP3nBC02HlsT9C
+        </ProdSDC>
+        <DataSetRelease>X9yue</DataSetRelease>
+        <Purpose>INTERMEDIATE_DATA_RELEASE</Purpose>
+        <PlanId>svZ2v</PlanId>
+        <PPOId>gkXyh</PPOId>
+        <PipelineDefinitionId>IkHA0</PipelineDefinitionId>
+        <PpoStatus>NA</PpoStatus>
+        <ManualValidationStatus>INVALID</ManualValidationStatus>
+        <ExpirationDate>2020-06-03T15:54:16.811Z</ExpirationDate>
+        <ToBePublished>0</ToBePublished>
+        <Published>0</Published>
+        <Curator>SHE</Curator>
+        <CreationDate>2020-06-03T15:54:16.813Z</CreationDate>
+    </Header>
+    <Data>
+        <ValidityRange>
+            <Name>Dummy</Name>
+            <Type>shePsfCalibrationParameters</Type>
+            <TimestampStart>2020-06-03T15:54:16.814Z</TimestampStart>
+            <TimestampEnd>9999-06-03T15:54:16.814Z</TimestampEnd>
+        </ValidityRange>
+        <DataStorage format="she.psfCalibrationParameters" version="8.0">
+            <DataContainer filestatus="ARCHIVED_OFFLINE">
+                <FileName>None</FileName>
+            </DataContainer>
+        </DataStorage>
+    </Data>
+    <QualityFlags>
+        <DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false
+        </DummyFlag>
+        <AuxiliaryFlags flagName="JHKkl" flagged="true" maxLimit="-5.0" minLimit="9.0" xpath="wYsep">true
+        </AuxiliaryFlags>
+    </QualityFlags>
+    <Parameters>
+        <Parameter>
+            <Key>bn6Y6</Key>
+            <Description>nGtrH</Description>
+            <StringValue>Zfin5</StringValue>
+            <Unit>2mRkB</Unit>
+        </Parameter>
+    </Parameters>
 </ns1:DpdShePsfCalibrationParameters>

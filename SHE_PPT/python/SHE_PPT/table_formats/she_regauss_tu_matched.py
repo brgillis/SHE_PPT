@@ -54,10 +54,10 @@ class SheRegaussTUMatchedFormat(SheTUMatchedFormat):
 
     meta: SheRegaussTUMatchedMeta
     m: SheRegaussTUMatchedMeta
+    meta_type = SheRegaussTUMatchedMeta
 
     def __init__(self):
-        # Inherit format from parent class, and save it in separate dicts so we can properly adjust column names
-        super().__init__(SheRegaussTUMatchedMeta(), finalize = False)
+        super().__init__(finalize = False)
 
         self.setup_child_table_format(child_label)
 

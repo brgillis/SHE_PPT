@@ -1,96 +1,98 @@
 <?xml version="1.0" ?>
 <ns1:DpdSheMomentsMlTraining xmlns:ns1="http://euclid.esa.org/schema/dpd/she/momentsmltraining">
-	<Header>
-		<ProductId>c5bb700d-58e3-494e-b343-b3614037dae8</ProductId>
-		<ProductType>asot5</ProductType>
-		<SoftwareName>bfzh5</SoftwareName>
-		<SoftwareRelease>YG0X</SoftwareRelease>
-		<EuclidPipelineSoftwareRelease>qFbIm</EuclidPipelineSoftwareRelease>
-		<ProdSDC>eU8pbcggPYOP2DFXytvyLZVApuzDk4dwrGfAjoo886JuTvjZGcEXxyaIgTzFbLkFePey8mSBbwIqK9jRsZImxoQNmFU9ypVvIg4eu</ProdSDC>
-		<DataSetRelease>NJqXg</DataSetRelease>
-		<Purpose>DATA_RELEASE</Purpose>
-		<PlanId>96jLk</PlanId>
-		<PPOId>pprou</PPOId>
-		<PipelineDefinitionId>mD9Ft</PipelineDefinitionId>
-		<PipelineRun>QIFbD</PipelineRun>
-		<ExitStatusCode>vNogo</ExitStatusCode>
-		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
-		<ExpirationDate>2020-06-04T16:41:16.818Z</ExpirationDate>
-		<ToBePublished>false</ToBePublished>
-		<Published>true</Published>
-		<Curator>SHE</Curator>
-		<CreationDate>2020-06-04T16:41:16.822Z</CreationDate>
-	</Header>
-	<Data>
-		<SpatialCoverage>
-			<Polygon>
-				<Vertex>
-					<Position coordUnit="keV">
-						<C1 unit="mV">0.0</C1>
-						<C2 unit="TeV">0.0</C2>
-					</Position>
-					<SmallCircle>
-						<Pole coordUnit="H">
-							<C1 unit="rad/day">0.0</C1>
-							<C2 unit="T">0.0</C2>
-						</Pole>
-					</SmallCircle>
-				</Vertex>
-			</Polygon>
-			<Circle>
-				<Center coordUnit="m3/kh/s2">
-					<C1 unit="m">1.0</C1>
-					<C2 unit="h">0.0</C2>
-				</Center>
-				<Radius unit="ADU">1.0</Radius>
-			</Circle>
-			<BBox>
-				<RaCenter unit="arcsec/yr">0.0</RaCenter>
-				<DecCenter unit="S">0.0</DecCenter>
-				<RaHalfWidth unit="rad/s">1.0</RaHalfWidth>
-				<DecHalfWidth unit="eV">1.0</DecHalfWidth>
-			</BBox>
-		</SpatialCoverage>
-		<SpectralCoverage>
-			<Filter>
-				<Name>VIS</Name>
-				<MagId>K</MagId>
-				<CentralWavelength>9.0</CentralWavelength>
-				<MinWavelength>-8.0</MinWavelength>
-				<MaxWavelength>-2.0</MaxWavelength>
-				<Reference>GtTrw</Reference>
-				<HasFringes>-128828438</HasFringes>
-			</Filter>
-		</SpectralCoverage>
-		<CatalogDescription>
-			<CatalogOrigin>MASTER_DEEP</CatalogOrigin>
-			<CatalogType>NOT_PROXY</CatalogType>
-			<PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-			<CatalogName>She-Placeholder</CatalogName>
-			<CatalogFormatHDU>1</CatalogFormatHDU>
-		</CatalogDescription>
-		<ValidityRange>
-			<Name>Dummy</Name>
-			<Type>sheMomentsMlTraining</Type>
-			<TimestampStart>2020-06-04T16:41:16.834Z</TimestampStart>
-			<TimestampEnd>9999-06-04T16:41:16.834Z</TimestampEnd>
-		</ValidityRange>
-		<DataStorage>
-			<DataContainer filestatus="DELETED">
-				<FileName>None</FileName>
-			</DataContainer>
-		</DataStorage>
-	</Data>
-	<QualityFlags>
-		<DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false</DummyFlag>
-		<AuxiliaryFlags flagName="S6Ge5" flagged="false" maxLimit="-7.0" minLimit="-4.0" xpath="DlE4i">false</AuxiliaryFlags>
-	</QualityFlags>
-	<Parameters>
-		<Parameter>
-			<Key>6x60N</Key>
-			<Description>vpZvR</Description>
-			<StringValue>bEEYx</StringValue>
-			<Unit>cAwKS</Unit>
-		</Parameter>
-	</Parameters>
+    <Header>
+        <ProductId>c5bb700d-58e3-494e-b343-b3614037dae8</ProductId>
+        <ProductType>DpdSheMomentsMlTraining</ProductType>
+        <SoftwareName>bfzh5</SoftwareName>
+        <SoftwareRelease>YG0X</SoftwareRelease>
+        <EuclidPipelineSoftwareRelease>qFbIm</EuclidPipelineSoftwareRelease>
+        <ProdSDC>eU8pbcggPYOP2DFXytvyLZVApuzDk4dwrGfAjoo886JuTvjZGcEXxyaIgTzFbLkFePey8mSBbwIqK9jRsZImxoQNmFU9ypVvIg4eu
+        </ProdSDC>
+        <DataSetRelease>NJqXg</DataSetRelease>
+        <Purpose>DATA_RELEASE</Purpose>
+        <PlanId>96jLk</PlanId>
+        <PPOId>pprou</PPOId>
+        <PipelineDefinitionId>mD9Ft</PipelineDefinitionId>
+        <PpoStatus>NA</PpoStatus>
+        <ManualValidationStatus>UNKNOWN</ManualValidationStatus>
+        <ExpirationDate>2020-06-04T16:41:16.818Z</ExpirationDate>
+        <ToBePublished>0</ToBePublished>
+        <Published>0</Published>
+        <Curator>SHE</Curator>
+        <CreationDate>2020-06-04T16:41:16.822Z</CreationDate>
+    </Header>
+    <Data>
+        <SpatialCoverage>
+            <Polygon>
+                <Vertex>
+                    <Position coordUnit="keV">
+                        <C1 unit="mV">0.0</C1>
+                        <C2 unit="TeV">0.0</C2>
+                    </Position>
+                    <SmallCircle>
+                        <Pole coordUnit="H">
+                            <C1 unit="rad/day">0.0</C1>
+                            <C2 unit="T">0.0</C2>
+                        </Pole>
+                    </SmallCircle>
+                </Vertex>
+            </Polygon>
+            <Circle>
+                <Center coordUnit="m3/kh/s2">
+                    <C1 unit="m">1.0</C1>
+                    <C2 unit="h">0.0</C2>
+                </Center>
+                <Radius unit="ADU">1.0</Radius>
+            </Circle>
+            <BBox>
+                <RaCenter unit="arcsec/yr">0.0</RaCenter>
+                <DecCenter unit="S">0.0</DecCenter>
+                <RaHalfWidth unit="rad/s">1.0</RaHalfWidth>
+                <DecHalfWidth unit="eV">1.0</DecHalfWidth>
+            </BBox>
+        </SpatialCoverage>
+        <SpectralCoverage>
+            <Filter>
+                <Name>VIS</Name>
+                <MagId>K</MagId>
+                <CentralWavelength>9.0</CentralWavelength>
+                <MinWavelength>-8.0</MinWavelength>
+                <MaxWavelength>-2.0</MaxWavelength>
+                <Reference>GtTrw</Reference>
+                <HasFringes>-128828438</HasFringes>
+            </Filter>
+        </SpectralCoverage>
+        <CatalogDescription>
+            <CatalogOrigin>MASTER_DEEP</CatalogOrigin>
+            <CatalogType>NOT_PROXY</CatalogType>
+            <PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
+            <CatalogName>She-Placeholder</CatalogName>
+            <CatalogFormatHDU>1</CatalogFormatHDU>
+        </CatalogDescription>
+        <ValidityRange>
+            <Name>Dummy</Name>
+            <Type>sheMomentsMlTraining</Type>
+            <TimestampStart>2020-06-04T16:41:16.834Z</TimestampStart>
+            <TimestampEnd>9999-06-04T16:41:16.834Z</TimestampEnd>
+        </ValidityRange>
+        <DataStorage>
+            <DataContainer filestatus="DELETED">
+                <FileName>None</FileName>
+            </DataContainer>
+        </DataStorage>
+    </Data>
+    <QualityFlags>
+        <DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false
+        </DummyFlag>
+        <AuxiliaryFlags flagName="S6Ge5" flagged="false" maxLimit="-7.0" minLimit="-4.0" xpath="DlE4i">false
+        </AuxiliaryFlags>
+    </QualityFlags>
+    <Parameters>
+        <Parameter>
+            <Key>6x60N</Key>
+            <Description>vpZvR</Description>
+            <StringValue>bEEYx</StringValue>
+            <Unit>cAwKS</Unit>
+        </Parameter>
+    </Parameters>
 </ns1:DpdSheMomentsMlTraining>

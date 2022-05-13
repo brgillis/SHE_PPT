@@ -23,15 +23,14 @@ __updated__ = "2022-01-18"
 
 from collections import OrderedDict
 
-from ..constants.fits import (SHE_FLAG_VERSION_LABEL, MODEL_HASH_LABEL,
-                              MODEL_SEED_LABEL, NOISE_SEED_LABEL, OBS_ID_LABEL, PNT_ID_LABEL,
-                              OBS_TIME_LABEL, TILE_ID_LABEL, VALID_LABEL, FITS_VERSION_LABEL,
-                              FITS_DEF_LABEL, EXTNAME_LABEL, )
+from ..constants.fits import (EXTNAME_LABEL, FITS_DEF_LABEL, FITS_VERSION_LABEL, MODEL_HASH_LABEL, MODEL_SEED_LABEL,
+                              NOISE_SEED_LABEL, OBS_ID_LABEL, OBS_TIME_LABEL, PNT_ID_LABEL, SHE_FLAG_VERSION_LABEL,
+                              TILE_ID_LABEL, VALID_LABEL, )
 from ..constants.shear_estimation_methods import ShearEstimationMethods
 from ..flags import she_flag_version
 from ..logging import getLogger
 from ..table_formats.mer_final_catalog import tf as mfc_tf
-from ..table_utility import is_in_format, init_table, SheTableFormat, SheTableMeta
+from ..table_utility import SheTableFormat, SheTableMeta, init_table, is_in_format
 
 fits_version = "8.0"
 fits_def = "she.lensmcChains"
@@ -93,9 +92,10 @@ class SheLensMcChainsFormat(SheTableFormat):
         @brief A class defining the format for shear estimates tables. Only the lensmc_chains_table_format
                instance of this should generally be accessed, and it should not be changed.
     """
+    meta_type = SheLensMcChainsMeta
 
     def __init__(self):
-        super().__init__(SheLensMcChainsMeta())
+        super().__init__()
 
         # Table column labels and properties
 
@@ -184,7 +184,7 @@ def make_lensmc_chains_table_header(model_hash = None,
                                     observation_id = None,
                                     pointing_id = None,
                                     observation_time = None,
-                                    method = ShearEstimationMethods.LENSMC,
+                                    method = ShearEstimationMethods.LENSMC.value,
                                     tile_id = None):
     """
         @brief Generate a header for a shear estimates table.
@@ -240,7 +240,7 @@ def initialise_lensmc_chains_table(mer_final_catalog = None,
                                    observation_id = None,
                                    pointing_id = None,
                                    observation_time = None,
-                                   method = ShearEstimationMethods.LENSMC,
+                                   method = ShearEstimationMethods.LENSMC.value,
                                    tile_id = None,
                                    ):
     """

@@ -57,36 +57,26 @@ DEFAULT_FILE_EXTENSION = ".fits"
 DEFAULT_FILE_SUBDIR = "data"
 DEFAULT_FILE_PF = "SHE"
 
-# Constant strings for replacement tags
-STR_R_FILETYPE = "$FILETYPE"
-STR_R_OPERATION = "$OPERATION"
-
-# Constant strings for descriptions of file types
-STR_DATA_PRODUCT = "data product"
-STR_TABLE = "table"
-STR_FITS_FILE = "FITS file"
-
-# Constant strings for access operations
+# Constant strings operations
 STR_READING = "reading"
 STR_WRITING = "writing"
-STR_OPENING = "opening"
 
 # Constant strings for messages
-BASE_MESSAGE_ACCESSING = f"{STR_R_OPERATION} {STR_R_FILETYPE} from %s in workdir %s"
-BASE_MESSAGE_FINISHED_ACCESSING = f"Finished {BASE_MESSAGE_ACCESSING} successfully"
 
-BASE_MESSAGE_READING = BASE_MESSAGE_ACCESSING.replace(STR_R_OPERATION, STR_READING)
-BASE_MESSAGE_FINISHED_READING = BASE_MESSAGE_FINISHED_ACCESSING.replace(STR_R_OPERATION, STR_READING)
+MSG_READING_DATA_PRODUCT = f"Reading data product from %s in workdir %s"
+MSG_WRITING_DATA_PRODUCT = f"Writing data product to %s in workdir %s"
+MSG_FINISHED_READING_DATA_PRODUCT = f"Finished reading data product from %s in workdir %s successfully"
+MSG_FINISHED_WRITING_DATA_PRODUCT = f"Finished writing data product to %s in workdir %s successfully"
 
-BASE_MESSAGE_WRITING = BASE_MESSAGE_ACCESSING.replace(STR_R_OPERATION, STR_WRITING)
-BASE_MESSAGE_FINISHED_WRITING = BASE_MESSAGE_FINISHED_ACCESSING.replace(STR_R_OPERATION, STR_WRITING)
+MSG_READING_TABLE = f"Reading table from %s in workdir %s"
+MSG_WRITING_TABLE = f"Writing table to %s in workdir %s"
+MSG_FINISHED_READING_TABLE = f"Finished reading table from %s in workdir %s successfully"
+MSG_FINISHED_WRITING_TABLE = f"Finished writing table to %s in workdir %s successfully"
 
-BASE_MESSAGE_OPENING = BASE_MESSAGE_ACCESSING.replace(STR_R_OPERATION, STR_OPENING)
-BASE_MESSAGE_FINISHED_OPENING = BASE_MESSAGE_FINISHED_ACCESSING.replace(STR_R_OPERATION, STR_OPENING)
-
-MSG_READING_DATA_PRODUCT = (BASE_MESSAGE_READING.replace(STR_R_FILETYPE, STR_DATA_PRODUCT)).capitalize()
-MSG_FINISHED_READING_DATA_PRODUCT = (BASE_MESSAGE_FINISHED_READING.replace(STR_R_FILETYPE,
-                                                                           STR_DATA_PRODUCT)).capitalize()
+MSG_READING_FITS_FILE = f"Reading FITS file from %s in workdir %s"
+MSG_WRITING_FITS_FILE = f"Writing FITS file to %s in workdir %s"
+MSG_FINISHED_READING_FITS_FILE = f"Finished reading FITS file from %s in workdir %s successfully"
+MSG_FINISHED_WRITING_FITS_FILE = f"Finished writing FITS file to %s in workdir %s successfully"
 
 DATA_SUBDIR = "data/"
 
@@ -524,8 +514,9 @@ def get_allowed_filename(type_name: str = DEFAULT_TYPE_NAME,
 
 
 def write_listfile(listfile_name: str,
-                   filenames: Sequence[str],
-                   log_info: bool = False) -> None:
+                   filenames: Sequence[Union[str, Tuple[str, ...]]],
+                   log_info: bool = False,
+                   workdir: str = "") -> None:
     """
         @brief Writes a listfile in json format.
 
@@ -536,23 +527,29 @@ def write_listfile(listfile_name: str,
         @param filenames <list<str>> List of filenames (or tuples of filenames) to be put in the listfile.
 
         @param log_info <bool> If True, will log at info level, otherwise will log at debug level.
+
+        @param workdir <str> The work directory to place the file into.
+
     """
+
+    qualified_listfile_name = os.path.join(workdir, listfile_name)
 
     log_method = _get_optional_log_method(log_info)
     log_method("Writing listfile to %s", listfile_name)
 
     try:
-        with open(listfile_name, 'w') as listfile:
+        with open(qualified_listfile_name, 'w') as listfile:
             paths_json = json.dumps(filenames)
             listfile.write(paths_json)
     except Exception as e:
-        raise SheFileWriteError(listfile_name) from e
+        raise SheFileWriteError(qualified_listfile_name) from e
 
-    logger.debug("Finished writing listfile to %s", listfile_name)
+    logger.debug("Finished writing listfile to %s", qualified_listfile_name)
 
 
 def read_listfile(listfile_name: str,
-                  log_info: bool = False) -> List[Union[str, Tuple[str]]]:
+                  log_info: bool = False,
+                  workdir: str = "") -> List[Union[str, Tuple[str]]]:
     """
         @brief Reads a json listfile and returns a list of filenames.
 
@@ -562,14 +559,18 @@ def read_listfile(listfile_name: str,
 
         @param log_info <bool> If True, will log at info level, otherwise will log at debug level.
 
+        @param workdir <str> The work directory the file is in.
+
         @return filenames <list<str>> List of filenames (or tuples of filenames) read in.
     """
 
+    qualified_listfile_name = os.path.join(workdir, listfile_name)
+
     log_method = _get_optional_log_method(log_info)
-    log_method("Reading listfile from %s", listfile_name)
+    log_method("Reading listfile from %s", qualified_listfile_name)
 
     try:
-        with open(listfile_name, 'r') as f:
+        with open(qualified_listfile_name, 'r') as f:
             list_object = json.load(f)
             if len(list_object) == 0:
                 return list_object
@@ -579,9 +580,9 @@ def read_listfile(listfile_name: str,
                     tupled_list = [t[0] for t in tupled_list]
                 return tupled_list
     except Exception as e:
-        raise SheFileReadError(listfile_name) from e
+        raise SheFileReadError(qualified_listfile_name) from e
 
-    log_method("Reading listfile from %s", listfile_name)
+    log_method("Reading listfile from %s", qualified_listfile_name)
 
     return list_object
 
@@ -638,7 +639,7 @@ def write_xml_product(product: Any,
                       log_info: bool = False,
                       allow_pickled: bool = False) -> None:
     log_method = _get_optional_log_method(log_info)
-    log_method(BASE_MESSAGE_WRITING, STR_DATA_PRODUCT, xml_filename, workdir)
+    log_method(MSG_WRITING_DATA_PRODUCT, xml_filename, workdir)
 
     # Silently coerce input into a string
     xml_filename = str(xml_filename)
@@ -648,13 +649,13 @@ def write_xml_product(product: Any,
     except Exception as e:
         raise SheFileWriteError(filename = xml_filename, workdir = workdir) from e
 
-    logger.debug(BASE_MESSAGE_FINISHED_WRITING, STR_DATA_PRODUCT, xml_filename, workdir)
+    logger.debug(MSG_FINISHED_WRITING_DATA_PRODUCT, xml_filename, workdir)
 
 
 def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pickled: bool) -> None:
     # Check if the product has a ProductId, and set it if necessary
     try:
-        if product.Header.ProductId == "None":
+        if product.Header.ProductId.value() == "None":
             # Set the product ID to a timestamp
             t = datetime.now()
             product.Header.ProductId = time_to_timestamp(t)
@@ -767,7 +768,7 @@ def write_pickled_product(product,
                           workdir: str = ".",
                           log_info: bool = False) -> None:
     log_method = _get_optional_log_method(log_info)
-    log_method(BASE_MESSAGE_WRITING, STR_DATA_PRODUCT, pickled_filename, workdir)
+    log_method(MSG_WRITING_DATA_PRODUCT, pickled_filename, workdir)
 
     # Silently coerce input into a string
     pickled_filename = str(pickled_filename)
@@ -780,7 +781,7 @@ def write_pickled_product(product,
     except Exception as e:
         raise SheFileWriteError(filename = pickled_filename, workdir = workdir) from e
 
-    logger.debug(BASE_MESSAGE_FINISHED_WRITING, STR_DATA_PRODUCT, pickled_filename, workdir)
+    logger.debug(MSG_FINISHED_WRITING_DATA_PRODUCT, pickled_filename, workdir)
 
 
 def read_pickled_product(pickled_filename,
@@ -811,7 +812,7 @@ def write_table(t: Table,
                 log_info: bool = False,
                 *args, **kwargs) -> None:
     log_method = _get_optional_log_method(log_info)
-    log_method(BASE_MESSAGE_WRITING, STR_TABLE, filename, workdir)
+    log_method(MSG_WRITING_TABLE, filename, workdir)
 
     qualified_filename = get_qualified_filename(filename, workdir)
 
@@ -820,7 +821,7 @@ def write_table(t: Table,
     except Exception as e:
         raise SheFileWriteError(filename = filename, workdir = workdir) from e
 
-    logger.debug(BASE_MESSAGE_FINISHED_WRITING, STR_TABLE, filename, workdir)
+    logger.debug(MSG_FINISHED_WRITING_TABLE, filename, workdir)
 
 
 def read_table(filename: str,
@@ -828,7 +829,7 @@ def read_table(filename: str,
                log_info: bool = False,
                *args, **kwargs) -> Table:
     log_method = _get_optional_log_method(log_info)
-    log_method(BASE_MESSAGE_READING, STR_TABLE, filename, workdir)
+    log_method(MSG_READING_TABLE, filename, workdir)
 
     qualified_filename = get_qualified_filename(filename, workdir)
 
@@ -837,7 +838,7 @@ def read_table(filename: str,
     except Exception as e:
         raise SheFileReadError(filename = filename, workdir = workdir) from e
 
-    logger.debug(BASE_MESSAGE_FINISHED_READING, STR_TABLE, filename, workdir)
+    logger.debug(MSG_FINISHED_READING_TABLE, filename, workdir)
     return t
 
 
@@ -907,7 +908,7 @@ def write_fits(hdu_list: HDUList,
                log_info: bool = False,
                *args, **kwargs) -> None:
     log_method = _get_optional_log_method(log_info)
-    log_method(BASE_MESSAGE_WRITING, STR_FITS_FILE, filename, workdir)
+    log_method(MSG_WRITING_FITS_FILE, filename, workdir)
 
     qualified_filename = get_qualified_filename(filename, workdir)
 
@@ -915,7 +916,7 @@ def write_fits(hdu_list: HDUList,
         hdu_list.writeto(qualified_filename, *args, **kwargs)
     except Exception as e:
         raise SheFileWriteError(filename = filename, workdir = workdir) from e
-    logger.debug(BASE_MESSAGE_FINISHED_WRITING, STR_FITS_FILE, filename, workdir)
+    logger.debug(MSG_FINISHED_WRITING_FITS_FILE, filename, workdir)
 
 
 def read_fits(filename: str,
@@ -923,7 +924,7 @@ def read_fits(filename: str,
               log_info: bool = False,
               *args, **kwargs) -> HDUList:
     log_method = _get_optional_log_method(log_info)
-    log_method(BASE_MESSAGE_OPENING, STR_FITS_FILE, filename, workdir)
+    log_method(MSG_READING_FITS_FILE, filename, workdir)
 
     qualified_filename = get_qualified_filename(filename, workdir)
 
@@ -931,7 +932,7 @@ def read_fits(filename: str,
         f: HDUList = fits.open(qualified_filename, *args, **kwargs)
     except Exception as e:
         raise SheFileReadError(filename = filename, workdir = workdir) from e
-    logger.debug(BASE_MESSAGE_FINISHED_OPENING, STR_FITS_FILE, filename, workdir)
+    logger.debug(MSG_FINISHED_READING_FITS_FILE, filename, workdir)
 
     return f
 
@@ -1106,7 +1107,7 @@ def find_file_in_path(filename: str, path: str) -> str:
 
     if qualified_filename is None:
         raise RuntimeError(
-            "File " + str(filename) + " could not be found in path " + str(path) + S)
+            "File " + str(filename) + " could not be found in path " + str(path) + ".")
 
     logger.debug("Found file %s at %s", filename, qualified_filename)
 

@@ -23,13 +23,14 @@ __updated__ = "2021-08-13"
 
 from collections import OrderedDict
 from copy import deepcopy
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Type, TypeVar, Union
 
 import numpy as np
 from astropy.table import Column, Table
 
 from .constants.fits import FITS_DEF_LABEL, FITS_VERSION_LABEL
 from .logging import getLogger
+from .utility import default_init_if_none, empty_list_if_none
 
 logger = getLogger(__name__)
 
@@ -382,12 +383,18 @@ class SheTableMeta:
         return m
 
 
+SheTableMetaType = TypeVar("SheTableMetaType", bound = SheTableMeta)
+
+
 class SheTableFormat:
+    # Attributes overridable by child classes
+    meta_type: Type[SheTableMetaType] = SheTableMeta
+
     # Attributes set directly at init
-    meta: SheTableMeta
+    meta: SheTableMetaType
 
     # Attributes determined at init
-    m: SheTableMeta
+    m: SheTableMetaType
     __version__: str
 
     # Attributes initialised at init
@@ -412,10 +419,10 @@ class SheTableFormat:
     unlabelled_columns: Optional[List[str]] = None
 
     def __init__(self,
-                 meta: SheTableMeta,
+                 meta: Optional[SheTableMeta] = None,
                  finalize: bool = False) -> None:
 
-        self.meta = meta
+        self.meta = default_init_if_none(meta, self.meta_type)
         self.m = self.meta
 
         # Get the version from the meta class
@@ -430,8 +437,7 @@ class SheTableFormat:
         self.fits_dtypes = OrderedDict()
         self.lengths = OrderedDict()
 
-        if self.unlabelled_columns is None:
-            self.unlabelled_columns = []
+        self.unlabelled_columns = empty_list_if_none(self.unlabelled_columns)
 
         if finalize:
             self._finalize_init()
@@ -453,7 +459,7 @@ class SheTableFormat:
                               name: str,
                               is_optional: bool = False,
                               comment: Optional[str] = None,
-                              dtype: str = ">f4",
+                              dtype: Union[str, Type] = ">f4",
                               fits_dtype: str = "E",
                               length: int = 1,
                               unlabelled: bool = False) -> str:

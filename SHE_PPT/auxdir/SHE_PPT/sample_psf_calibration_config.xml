@@ -1,43 +1,44 @@
 <?xml version="1.0" ?>
 <ns1:DpdShePsfCalibrationConfig xmlns:ns1="http://euclid.esa.org/schema/dpd/she/psfcalibrationconfig">
-	<Header>
-		<ProductId>cf1e9e56-d782-4824-9545-8445ff1efad5</ProductId>
-		<ProductType>0O4Hk</ProductType>
-		<SoftwareName>PHAVE</SoftwareName>
-		<SoftwareRelease>x9d</SoftwareRelease>
-		<EuclidPipelineSoftwareRelease>BC2WL</EuclidPipelineSoftwareRelease>
-		<ProdSDC>ZEhYA9mFgVZSXURn4jkWeDvLGAR6ET5TPBIvIgJXyOsnWRPuQsQwJq8EV6zcH3vZgw4T5tgzuCrlV8pZSzcfqlp9sSaEPFwGmJsMLDWfNHjSYw</ProdSDC>
-		<DataSetRelease>LWV7R</DataSetRelease>
-		<Purpose>DATA_RELEASE</Purpose>
-		<PlanId>PrvmB</PlanId>
-		<PPOId>KjkSR</PPOId>
-		<PipelineDefinitionId>2JRbf</PipelineDefinitionId>
-		<PipelineRun>WoCB9</PipelineRun>
-		<ExitStatusCode>XlBiw</ExitStatusCode>
-		<ManualValidationStatus>INVALID</ManualValidationStatus>
-		<ExpirationDate>2020-06-03T15:53:13.372Z</ExpirationDate>
-		<ToBePublished>true</ToBePublished>
-		<Published>true</Published>
-		<Curator>SHE</Curator>
-		<CreationDate>2020-06-03T15:53:13.373Z</CreationDate>
-	</Header>
-	<Data>
-		<DataStorage>
-			<DataContainer filestatus="PROPOSED">
-				<FileName>None</FileName>
-			</DataContainer>
-		</DataStorage>
-	</Data>
-	<QualityFlags>
-		<DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true</DummyFlag>
-		<AuxiliaryFlags flagName="5tq8p" flagged="false" maxLimit="4.0" minLimit="-5.0" xpath="akRKL">true</AuxiliaryFlags>
-	</QualityFlags>
-	<Parameters>
-		<Parameter>
-			<Key>d1vG5</Key>
-			<Description>xn5Rm</Description>
-			<StringValue>poHFH</StringValue>
-			<Unit>PBnpR</Unit>
-		</Parameter>
-	</Parameters>
+    <Header>
+        <ProductId>cf1e9e56-d782-4824-9545-8445ff1efad5</ProductId>
+        <ProductType>DpdShePsfCalibrationConfig</ProductType>
+        <SoftwareName>PHAVE</SoftwareName>
+        <SoftwareRelease>x9d</SoftwareRelease>
+        <EuclidPipelineSoftwareRelease>BC2WL</EuclidPipelineSoftwareRelease>
+        <ProdSDC>SDC-UK</ProdSDC>
+        <DataSetRelease>LWV7R</DataSetRelease>
+        <Purpose>DATA_RELEASE</Purpose>
+        <PlanId>PrvmB</PlanId>
+        <PPOId>KjkSR</PPOId>
+        <PipelineDefinitionId>2JRbf</PipelineDefinitionId>
+        <PpoStatus>NA</PpoStatus>
+        <ManualValidationStatus>INVALID</ManualValidationStatus>
+        <ExpirationDate>2020-06-03T15:53:13.372Z</ExpirationDate>
+        <ToBePublished>0</ToBePublished>
+        <Published>0</Published>
+        <Curator>SHE</Curator>
+        <CreationDate>2020-06-03T15:53:13.373Z</CreationDate>
+    </Header>
+    <Data>
+        <DataStorage>
+            <DataContainer filestatus="PROPOSED">
+                <FileName>None</FileName>
+            </DataContainer>
+        </DataStorage>
+    </Data>
+    <QualityFlags>
+        <DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true
+        </DummyFlag>
+        <AuxiliaryFlags flagName="5tq8p" flagged="false" maxLimit="4.0" minLimit="-5.0" xpath="akRKL">true
+        </AuxiliaryFlags>
+    </QualityFlags>
+    <Parameters>
+        <Parameter>
+            <Key>d1vG5</Key>
+            <Description>xn5Rm</Description>
+            <StringValue>poHFH</StringValue>
+            <Unit>PBnpR</Unit>
+        </Parameter>
+    </Parameters>
 </ns1:DpdShePsfCalibrationConfig>
