@@ -310,21 +310,11 @@ def partition_into_batches(xs, ys, batchsize=20, nbatches = None, seed=RANDOM_SE
     obs[:,0] = xs/stdxs
     obs[:,1] = ys/stdys
 
-    #annoyingly the version of scipy Euclid has (1.3.2 as of Nov 2021) uses numpy's internal random state,
-    #so to ensure consistent results (whilst not messing with numpy's existing random state) we take a 
-    #copy of its state and create a new one according to our seed, then once we're done, put the original
-    #state back
-    random_state = np.random.get_state()
-    np.random.seed(seed)
-
     #cluster the objects
     t0=time.time()
-    clusters, labels = K.kmeans2(obs,k,iter=20,minit="points",check_finite=False)
+    clusters, labels = K.kmeans2(obs,k,iter=20,minit="points",check_finite=False, seed=seed)
     t1 = time.time()
     logger.info("Batching took %f s",(t1-t0))
-
-    #put numpy's random state back
-    np.random.set_state(random_state)
     
     #Get an array containing the number of objects in each batch
     ns = np.bincount(labels)
