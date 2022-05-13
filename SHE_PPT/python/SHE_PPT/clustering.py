@@ -81,7 +81,7 @@ def _find_groups(xs,ys, sep=1., metric=euclidean_metric):
 
 def _all_same(items):
     """Returns True if all the items in the list are identical, False otherwise"""
-    return all(x == items[0] for x in items)
+    return len(set(items)) == 1
 
 def _update_grouped(local_groups, global_group_ids, local_indices, xs, ys, group_id):
     """ Records the newly grouped objects (local_groups) in the global grouped list
