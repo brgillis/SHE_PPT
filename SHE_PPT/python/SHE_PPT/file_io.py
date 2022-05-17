@@ -51,7 +51,6 @@ from .logging import getLogger
 from .utility import get_release_from_version, is_any_type_of_none, join_without_none
 
 # CONSTANT strings for default values in filenames
-MSG_SRC_NOT_EXIST = "In safe_copy, source file %s does not exist"
 DEFAULT_WORKDIR = "."
 DEFAULT_TYPE_NAME = "UNKNOWN-FILE-TYPE"
 DEFAULT_INSTANCE_ID = "0"
@@ -79,6 +78,9 @@ MSG_READING_FITS_FILE = f"Reading FITS file from %s in workdir %s"
 MSG_WRITING_FITS_FILE = f"Writing FITS file to %s in workdir %s"
 MSG_FINISHED_READING_FITS_FILE = f"Finished reading FITS file from %s in workdir %s successfully"
 MSG_FINISHED_WRITING_FITS_FILE = f"Finished writing FITS file to %s in workdir %s successfully"
+
+MSG_SRC_NOT_EXIST = "In safe_copy, source file %s does not exist"
+MSG_DEST_EXIST = "In safe_copy, destination file %s already exists"
 
 DATA_SUBDIR = "data/"
 
@@ -1089,7 +1091,8 @@ def try_remove_file(filename: str,
 
 def safe_copy(qualified_src_filename: str,
               qualified_dest_filename: str,
-              require_src_exist: bool = False) -> None:
+              require_src_exist: bool = False,
+              require_dest_free: bool = False) -> None:
     """ Copy a file, without raising an exception if the source doesn't exist or destination does,
         and making necessary directories.
 
@@ -1101,6 +1104,8 @@ def safe_copy(qualified_src_filename: str,
             The fully-qualified path of where the file at qualified_src_filename should be copied to
         require_src_exist : bool, default=False
             If True, will raise an exception if the source file does not exist
+        require_dest_free : bool, default=False
+            If True, will raise an exception if the destination file already exists
 
         Returns
         -------
@@ -1109,10 +1114,19 @@ def safe_copy(qualified_src_filename: str,
 
     # Check if the file already exists, and skip if it does
     if os.path.exists(qualified_dest_filename):
+
+        # Raise an exception if we require that the destination is free
+        if require_dest_free:
+            raise FileExistsError(MSG_DEST_EXIST, qualified_dest_filename)
+
+        # We don't require that it's free, so just note in debug log and return
+        logger.debug(MSG_DEST_EXIST, qualified_dest_filename)
+
         return
 
     # Check if the source file exists, and skip if it doesn't
     if not os.path.exists(qualified_src_filename):
+
         # Raise an exception if we require that the file exists
         if require_src_exist:
             raise FileNotFoundError(MSG_SRC_NOT_EXIST % qualified_src_filename)
