@@ -30,7 +30,9 @@ import pytest
 
 import SHE_PPT
 from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_SUBDIR, DEFAULT_INSTANCE_ID,
-                             DEFAULT_TYPE_NAME, SheFileNamer, copy_listfile_between_dirs, copy_product_between_dirs,
+                             DEFAULT_TYPE_NAME, SheFileNamer, SheFileReadError, SheFileWriteError,
+                             copy_listfile_between_dirs,
+                             copy_product_between_dirs,
                              find_aux_file,
                              get_allowed_filename, instance_id_maxlen,
                              processing_function_maxlen, read_listfile, read_product_and_table, read_table,
@@ -306,7 +308,7 @@ class TestIO(SheTestCase):
         # destination is free
         safe_copy(qualified_src_filename, qualified_dest_filename,
                   require_dest_free = False)
-        with pytest.raises(FileExistsError):
+        with pytest.raises(SheFileWriteError):
             safe_copy(qualified_src_filename, qualified_dest_filename,
                       require_dest_free = True)
 
@@ -318,7 +320,7 @@ class TestIO(SheTestCase):
 
         safe_copy(qualified_nonexistent_src_filename, qualified_dest_filename,
                   require_src_exist = False)
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(SheFileReadError):
             safe_copy(qualified_nonexistent_src_filename, qualified_dest_filename,
                       require_src_exist = True)
 

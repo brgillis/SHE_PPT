@@ -121,11 +121,13 @@ class SheFileAccessError(IOError):
     qualified_filename: str
     workdir: Optional[str] = None
     operation: str = "accessing"
+    _message: Optional[str] = None
 
     def __init__(self,
                  qualified_filename: Optional[str] = None,
                  filename: Optional[str] = None,
                  workdir: Optional[str] = None,
+                 message: Optional[str] = None
                  ):
 
         if qualified_filename is not None:
@@ -141,10 +143,17 @@ class SheFileAccessError(IOError):
                              f"filename = {filename}, "
                              f"workdir = {workdir}, ")
 
-        super().__init__(self.get_message())
+        # Set the message if explicitly provided; otherwise it will be default generated
+        if message is not None:
+            self._message = message
 
-    def get_message(self):
-        return f"Error {self.operation} file {self.qualified_filename}."
+        super().__init__(self.message)
+
+    @property
+    def message(self):
+        if self._message is None:
+            self._message = f"Error {self.operation} file {self.qualified_filename}."
+        return self._message
 
 
 class SheFileReadError(SheFileAccessError):
@@ -1112,24 +1121,26 @@ def safe_copy(qualified_src_filename: str,
         None
     """
 
-    # Check if the file already exists, and skip if it does
+    # Check if the file already exists, and optionally skip if it does
     if os.path.exists(qualified_dest_filename):
 
         # Raise an exception if we require that the destination is free
         if require_dest_free:
-            raise FileExistsError(MSG_DEST_EXIST, qualified_dest_filename)
+            raise SheFileWriteError(qualified_filename = qualified_dest_filename,
+                                    message = MSG_DEST_EXIST % qualified_dest_filename)
 
         # We don't require that it's free, so just note in debug log and return
         logger.debug(MSG_DEST_EXIST, qualified_dest_filename)
 
         return
 
-    # Check if the source file exists, and skip if it doesn't
+    # Check if the source file exists, and optionally skip if it doesn't
     if not os.path.exists(qualified_src_filename):
 
         # Raise an exception if we require that the file exists
         if require_src_exist:
-            raise FileNotFoundError(MSG_SRC_NOT_EXIST % qualified_src_filename)
+            raise SheFileReadError(qualified_filename = qualified_src_filename,
+                                   message = MSG_SRC_NOT_EXIST % qualified_src_filename)
 
         # We don't require that it exists, so just note in debug log and return
         logger.debug(MSG_SRC_NOT_EXIST, qualified_src_filename)
@@ -1219,7 +1230,8 @@ def copy_listfile_between_dirs(listfile_filename: str,
         dest_dir : str
             The path to the target directory, where the listfile should be copied to
         require_all_datafiles_exist : bool, default=False
-            If True, will raise an exception if any datafile pointed to by any product in the listfile does not exist
+            If True, will raise an exception if any datafile pointed to by any product in the listfile does not
+            exist
         require_all_dest_datafiles_free : bool, default=False
             If True, will raise an exception if any datafile pointed to by the product already exists in the target
             location
