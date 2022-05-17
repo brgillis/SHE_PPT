@@ -1149,7 +1149,7 @@ def copy_product_between_dirs(product_filename: str,
         Returns
         -------
         qualified_copied_product_filename : str
-            The fully-qualified path of the new location of the file that was copied
+            The fully-qualified path of the new location of the product that was copied
     """
 
     # Ensure a data subdirectory exists in the tmpdir
@@ -1184,16 +1184,32 @@ def copy_product_between_dirs(product_filename: str,
 
 
 def copy_listfile_between_dirs(listfile_filename: str,
-                               workdir: str,
-                               tmpdir: str,
+                               src_dir: str,
+                               dest_dir: str,
                                require_all_datafiles_exist: bool = False) -> str:
-    """ Copies the contents of a listfile to tmp, and writes a new listfile pointing to the copies.
+    """ Copies a listfile, all products it points to, and all datafiles those products point to, from one directory
+        to another.
+
+        Parameters
+        ----------
+        listfile_filename : str
+            The fully-qualified path of the listfile to be copied
+        src_dir : str
+            The path to the source directory, where the listfile already resides
+        dest_dir : str
+            The path to the target directory, where the listfile should be copied to
+        require_all_datafiles_exist : bool, default=False
+            If True, will raise an exception if any datafile pointed to by any product in the listfile does not exist
+
+        Returns
+        -------
+        qualified_copied_listfile_filename : str
+            The fully-qualified path of the new location of the listfile that was copied
     """
 
-    qualified_listfile_filename = os.path.join(workdir, listfile_filename)
-
     # Copy the listfile itself
-    qualified_copied_listfile_filename = os.path.join(tmpdir, listfile_filename)
+    qualified_listfile_filename = os.path.join(src_dir, listfile_filename)
+    qualified_copied_listfile_filename = os.path.join(dest_dir, listfile_filename)
 
     safe_copy(qualified_src_filename = qualified_listfile_filename,
               qualified_dest_filename = qualified_copied_listfile_filename,
@@ -1203,7 +1219,9 @@ def copy_listfile_between_dirs(listfile_filename: str,
     l_product_filenames = read_listfile(qualified_listfile_filename)
 
     for product_filename in l_product_filenames:
-        copy_product_between_dirs(product_filename = product_filename, src_dir = workdir, dest_dir = tmpdir,
+        copy_product_between_dirs(product_filename = product_filename,
+                                  src_dir = src_dir,
+                                  dest_dir = dest_dir,
                                   require_all_datafiles_exist = require_all_datafiles_exist)
 
     return qualified_copied_listfile_filename
