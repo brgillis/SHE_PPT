@@ -30,7 +30,8 @@ import pytest
 
 import SHE_PPT
 from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_SUBDIR, DEFAULT_INSTANCE_ID,
-                             DEFAULT_TYPE_NAME, SheFileNamer, copy_product_between_dirs, find_aux_file,
+                             DEFAULT_TYPE_NAME, SheFileNamer, copy_listfile_between_dirs, copy_product_between_dirs,
+                             find_aux_file,
                              get_allowed_filename, instance_id_maxlen,
                              processing_function_maxlen, read_listfile, read_product_and_table, read_table,
                              read_xml_product,
@@ -355,5 +356,40 @@ class TestIO(SheTestCase):
                                   dest_dir = self.dest_dir)
 
         # Cleanup the created files
+        os.remove(qualified_dest_product_filename)
+        os.remove(qualified_dest_table_filename)
+
+    def test_copy_listfile(self):
+        """ Unit test for SHE_PPT.file_io.copy_listfile_between_dirs
+        """
+
+        qualified_src_listfile_filename = os.path.join(self.src_dir, self.listfile_filename)
+        qualified_dest_listfile_filename = os.path.join(self.dest_dir, self.listfile_filename)
+        qualified_dest_product_filename = os.path.join(self.dest_dir, self.product_filename)
+        qualified_dest_table_filename = os.path.join(self.dest_dir, self.table_filename)
+
+        # Try running the function and make sure it succeeds
+        copy_listfile_between_dirs(listfile_filename = self.listfile_filename,
+                                   src_dir = self.src_dir,
+                                   dest_dir = self.dest_dir)
+
+        # Check that expected files exist and match input
+        assert os.path.exists(qualified_dest_listfile_filename)
+        assert os.path.exists(qualified_dest_product_filename)
+        assert os.path.exists(qualified_dest_table_filename)
+
+        # Check that the copied listfile matches the source product
+        l_src_products = read_listfile(qualified_src_listfile_filename)
+        l_dest_products = read_listfile(qualified_dest_listfile_filename)
+
+        assert l_src_products == l_dest_products
+
+        # Test that the function doesn't raise any error if the destination file already exists, as it now does
+        copy_listfile_between_dirs(listfile_filename = self.listfile_filename,
+                                   src_dir = self.src_dir,
+                                   dest_dir = self.dest_dir)
+
+        # Cleanup the created files
+        os.remove(qualified_dest_listfile_filename)
         os.remove(qualified_dest_product_filename)
         os.remove(qualified_dest_table_filename)
