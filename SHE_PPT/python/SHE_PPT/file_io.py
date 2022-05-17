@@ -1085,6 +1085,81 @@ def try_remove_file(filename: str,
             logger.warning("Unable to delete file %s in workdir %s", filename, workdir)
 
 
+def safe_copy(qualified_filename: str, qualified_copied_filename: str) -> None:
+    """ Copy a file, without raising an exception if the source doesn't exist or destination does,
+        and making necessary directories.
+    """
+
+    # Check if the file already exists, and skip if it does
+    if os.path.exists(qualified_copied_filename):
+        return
+
+    # Check if the source file exists, and skip if it doesn't
+    if not os.path.exists(qualified_filename):
+        return
+
+    # Make the containing directory for the file
+    os.makedirs(os.path.split(qualified_copied_filename)[0], exist_ok = True)
+
+    # Now that we know it's safe, copy the file
+    shutil.copy(qualified_filename, qualified_copied_filename)
+
+
+def copy_product_to_tmp(product_filename: str,
+                        workdir: str,
+                        tmpdir: str) -> str:
+    """ Copies a data product and all files it points to to tmp, and returns the new qualified filename.
+    """
+
+    # Ensure a data subdirectory exists in the tmpdir
+    os.makedirs(os.path.join(tmpdir, "data"), exist_ok = True)
+
+    # Read in the product and get all filenames
+    p = read_xml_product(product_filename, workdir = workdir)
+    l_filenames = p.get_all_filenames()
+
+    for filename in l_filenames:
+
+        if is_any_type_of_none(filename):
+            continue
+
+        # Copy each file pointed to by this product
+        qualified_filename = os.path.join(workdir, filename)
+        qualified_copied_filename = os.path.join(tmpdir, filename)
+
+        safe_copy(qualified_filename, qualified_copied_filename)
+
+    qualified_product_filename = os.path.join(workdir, product_filename)
+    qualified_copied_product_filename = os.path.join(tmpdir, product_filename)
+
+    safe_copy(qualified_product_filename, qualified_copied_product_filename)
+
+    return qualified_copied_product_filename
+
+
+def copy_listfile_to_tmp(listfile_filename: str,
+                         workdir: str,
+                         tmpdir: str) -> str:
+    """ Copies the contents of a listfile to tmp, and writes a new listfile pointing to the copies.
+    """
+
+    # Read in the list of products
+    qualified_listfile_filename = os.path.join(workdir, listfile_filename)
+    l_product_filenames = read_listfile(qualified_listfile_filename)
+
+    for i, product_filename in enumerate(l_product_filenames):
+        copy_product_to_tmp(product_filename = product_filename,
+                            workdir = workdir,
+                            tmpdir = tmpdir)
+
+    # Copy the listfile itself
+    qualified_copied_listfile_filename = os.path.join(tmpdir, listfile_filename)
+
+    safe_copy(qualified_listfile_filename, qualified_copied_listfile_filename)
+
+    return qualified_copied_listfile_filename
+
+
 def find_file_in_path(filename: str, path: str) -> str:
     """
         Searches through a colon-separated path for a file and returns the qualified name of it if found,
