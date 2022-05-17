@@ -33,6 +33,7 @@ from SHE_PPT.argument_parser import CA_LOGDIR, CA_PIPELINE_CONFIG, CA_WORKDIR
 from SHE_PPT.constants.config import ConfigKeys
 from SHE_PPT.constants.test_data import (MDB_PRODUCT_FILENAME, MER_FINAL_CATALOG_LISTFILE_FILENAME, TEST_DATA_LOCATION,
                                          VIS_CALIBRATED_FRAME_LISTFILE_FILENAME, )
+from SHE_PPT.logging import set_log_level_debug
 from SHE_PPT.she_frame_stack import SHEFrameStack
 from SHE_PPT.testing.mock_pipeline_config import MockPipelineConfigFactory
 
@@ -249,3 +250,6 @@ class SheTestCase:
             self._setup_workdir()
         self._set_workdir_args()
         self._write_mock_pipeline_config()
+
+        # Set log level to debug to make sure there aren't any issues with logging strings
+        set_log_level_debug()

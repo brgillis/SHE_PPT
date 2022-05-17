@@ -31,7 +31,6 @@ from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_S
                              processing_function_maxlen, read_listfile, read_product_and_table, read_xml_product,
                              tar_files, type_name_maxlen, update_xml_with_value, write_listfile,
                              write_product_and_table, )
-from SHE_PPT.logging import set_log_level_debug
 from SHE_PPT.products.mer_final_catalog import create_dpd_mer_final_catalog
 from SHE_PPT.table_formats.mer_final_catalog import MerFinalCatalogFormat
 from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
@@ -65,9 +64,6 @@ class TestIO:
 
         self.workdir = tmpdir.strpath
         os.makedirs(os.path.join(self.workdir, DATA_SUBDIR))
-
-        # Set log level to debug to make sure there aren't any issues with logging strings
-        set_log_level_debug()
 
     def test_get_allowed_filename(self):
 
