@@ -1092,6 +1092,19 @@ def safe_copy(qualified_src_filename: str,
               require_src_exist: bool = False) -> None:
     """ Copy a file, without raising an exception if the source doesn't exist or destination does,
         and making necessary directories.
+
+        Parameters
+        ----------
+        qualified_src_filename : str
+            The fully-qualified path of the file to be copied
+        qualified_dest_filename : str
+            The fully-qualified path of where the file at qualified_src_filename should be copied to
+        require_src_exist : bool, default=False
+            If True, will raise an exception if the source file does not exist
+
+        Returns
+        -------
+        None
     """
 
     # Check if the file already exists, and skip if it does
