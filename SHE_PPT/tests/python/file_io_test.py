@@ -19,6 +19,7 @@ __updated__ = "2021-08-20"
 #
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+
 import os
 import subprocess
 from time import sleep
@@ -34,37 +35,27 @@ from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_S
 from SHE_PPT.logging import set_log_level_debug
 from SHE_PPT.products.mer_final_catalog import create_dpd_mer_final_catalog
 from SHE_PPT.table_formats.mer_final_catalog import MerFinalCatalogFormat
+from SHE_PPT.testing.utility import SheTestCase
 from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
 from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
 
 
-class TestIO:
-    """
-
-
+class TestIO(SheTestCase):
+    """ A class to handle tests of functions in the SHE_PPT/file_io.py module.
     """
 
     listfile_name: str = "test_listfile.junk"
     tuple_listfile_name: str = "test_listfile.junk"
-
-    @classmethod
-    def setup_class(cls):
-        pass
-
-    @classmethod
-    def teardown_class(cls):
-
-        if os.path.exists(cls.listfile_name):
-            os.remove(cls.listfile_name)
-
-        if os.path.exists(cls.tuple_listfile_name):
-            os.remove(cls.tuple_listfile_name)
 
     @pytest.fixture(autouse = True)
     def setup(self, tmpdir):
 
         self.workdir = tmpdir.strpath
         os.makedirs(os.path.join(self.workdir, DATA_SUBDIR))
+
+    def post_setup(self):
+        """ Perform some setup tasks for functions tested here.
+        """
 
         # Set log level to debug to make sure there aren't any issues with logging strings
         set_log_level_debug()
