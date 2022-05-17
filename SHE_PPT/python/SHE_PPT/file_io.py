@@ -1146,7 +1146,8 @@ def safe_copy(qualified_src_filename: str,
 def copy_product_between_dirs(product_filename: str,
                               src_dir: str,
                               dest_dir: str,
-                              require_all_datafiles_exist: bool = False) -> str:
+                              require_all_src_datafiles_exist: bool = False,
+                              require_all_dest_datafiles_free: bool = False) -> str:
     """ Copies a data product and all files it points to from one directory to another
 
         Parameters
@@ -1157,8 +1158,11 @@ def copy_product_between_dirs(product_filename: str,
             The path to the source directory, where the product already resides
         dest_dir : str
             The path to the target directory, where the product should be copied to
-        require_all_datafiles_exist : bool, default=False
+        require_all_src_datafiles_exist : bool, default=False
             If True, will raise an exception if any datafile pointed to by the product does not exist
+        require_all_dest_datafiles_free : bool, default=False
+            If True, will raise an exception if any datafile pointed to by the product already exists in the target
+            location
 
         Returns
         -------
@@ -1192,7 +1196,8 @@ def copy_product_between_dirs(product_filename: str,
 
         safe_copy(qualified_src_filename = qualified_filename,
                   qualified_dest_filename = qualified_copied_filename,
-                  require_src_exist = require_all_datafiles_exist)
+                  require_src_exist = require_all_src_datafiles_exist,
+                  require_dest_free = require_all_dest_datafiles_free)
 
     return qualified_copied_product_filename
 
@@ -1200,7 +1205,8 @@ def copy_product_between_dirs(product_filename: str,
 def copy_listfile_between_dirs(listfile_filename: str,
                                src_dir: str,
                                dest_dir: str,
-                               require_all_datafiles_exist: bool = False) -> str:
+                               require_all_datafiles_exist: bool = False,
+                               require_all_dest_datafiles_free: bool = False) -> str:
     """ Copies a listfile, all products it points to, and all datafiles those products point to, from one directory
         to another.
 
@@ -1214,6 +1220,9 @@ def copy_listfile_between_dirs(listfile_filename: str,
             The path to the target directory, where the listfile should be copied to
         require_all_datafiles_exist : bool, default=False
             If True, will raise an exception if any datafile pointed to by any product in the listfile does not exist
+        require_all_dest_datafiles_free : bool, default=False
+            If True, will raise an exception if any datafile pointed to by the product already exists in the target
+            location
 
         Returns
         -------
@@ -1236,7 +1245,8 @@ def copy_listfile_between_dirs(listfile_filename: str,
         copy_product_between_dirs(product_filename = product_filename,
                                   src_dir = src_dir,
                                   dest_dir = dest_dir,
-                                  require_all_datafiles_exist = require_all_datafiles_exist)
+                                  require_all_src_datafiles_exist = require_all_datafiles_exist,
+                                  require_all_dest_datafiles_free = require_all_dest_datafiles_free)
 
     return qualified_copied_listfile_filename
 
