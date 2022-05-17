@@ -21,6 +21,7 @@ __updated__ = "2021-08-20"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 import os
+import shutil
 import subprocess
 from time import sleep
 
@@ -29,7 +30,8 @@ import pytest
 
 import SHE_PPT
 from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_SUBDIR, DEFAULT_INSTANCE_ID,
-                             DEFAULT_TYPE_NAME, SheFileNamer, find_aux_file, get_allowed_filename, instance_id_maxlen,
+                             DEFAULT_TYPE_NAME, SheFileNamer, copy_product_between_dirs, find_aux_file,
+                             get_allowed_filename, instance_id_maxlen,
                              processing_function_maxlen, read_listfile, read_product_and_table, read_table,
                              read_xml_product,
                              safe_copy, tar_files, type_name_maxlen, update_xml_with_value, write_listfile,
@@ -302,6 +304,7 @@ class TestIO(SheTestCase):
         # Check that it succeeds without issue if the destination file exists, as it now does
         safe_copy(qualified_src_filename, qualified_dest_filename)
 
+        # Cleanup the created file for future checks
         os.remove(qualified_dest_filename)
 
         # Check that if the source file doesn't exist, it only raises an exception if we require that it does
@@ -318,3 +321,39 @@ class TestIO(SheTestCase):
         qualified_dest_subdir_filename = os.path.join(dest_subdir, self.table_filename)
 
         safe_copy(qualified_src_filename, qualified_dest_subdir_filename)
+
+        # Cleanup created data
+        shutil.rmtree(dest_subdir)
+
+    def test_copy_product(self):
+        """ Unit test for SHE_PPT.file_io.copy_product_between_dirs
+        """
+
+        qualified_src_product_filename = os.path.join(self.src_dir, self.product_filename)
+        qualified_dest_product_filename = os.path.join(self.dest_dir, self.product_filename)
+        qualified_dest_table_filename = os.path.join(self.dest_dir, self.table_filename)
+
+        # Try running the function and make sure it succeeds
+        copy_product_between_dirs(product_filename = self.product_filename,
+                                  src_dir = self.src_dir,
+                                  dest_dir = self.dest_dir)
+
+        # Check that expected files exist and match input
+        assert os.path.exists(qualified_dest_product_filename)
+        assert os.path.exists(qualified_dest_table_filename)
+
+        # Check that the copied product matches the source product
+        src_product = read_xml_product(qualified_src_product_filename)
+        dest_product = read_xml_product(qualified_dest_product_filename)
+
+        assert src_product.Header.ProductId.value() == dest_product.Header.ProductId.value()
+        assert src_product.get_all_filenames() == dest_product.get_all_filenames()
+
+        # Test that the function doesn't raise any error if the destination file already exists, as it now does
+        copy_product_between_dirs(product_filename = self.product_filename,
+                                  src_dir = self.src_dir,
+                                  dest_dir = self.dest_dir)
+
+        # Cleanup the created files
+        os.remove(qualified_dest_product_filename)
+        os.remove(qualified_dest_table_filename)
