@@ -1153,7 +1153,7 @@ def copy_product_between_dirs(product_filename: str,
     """
 
     # Ensure a data subdirectory exists in the tmpdir
-    os.makedirs(os.path.join(dest_dir, "data"), exist_ok = True)
+    os.makedirs(os.path.join(dest_dir, DATA_SUBDIR), exist_ok = True)
 
     # Read in the product and get all filenames
     p = read_xml_product(product_filename, workdir = src_dir)
