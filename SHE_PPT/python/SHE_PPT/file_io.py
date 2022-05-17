@@ -1155,6 +1155,14 @@ def copy_product_between_dirs(product_filename: str,
     # Ensure a data subdirectory exists in the tmpdir
     os.makedirs(os.path.join(dest_dir, DATA_SUBDIR), exist_ok = True)
 
+    # Copy the product itself
+    qualified_product_filename = os.path.join(src_dir, product_filename)
+    qualified_copied_product_filename = os.path.join(dest_dir, product_filename)
+
+    safe_copy(qualified_src_filename = qualified_product_filename,
+              qualified_dest_filename = qualified_copied_product_filename,
+              require_src_exist = True)
+
     # Read in the product and get all filenames
     p = read_xml_product(product_filename, workdir = src_dir)
     l_filenames = p.get_all_filenames()
@@ -1171,11 +1179,6 @@ def copy_product_between_dirs(product_filename: str,
         safe_copy(qualified_src_filename = qualified_filename,
                   qualified_dest_filename = qualified_copied_filename,
                   require_src_exist = require_all_datafiles_exist)
-
-    qualified_product_filename = os.path.join(src_dir, product_filename)
-    qualified_copied_product_filename = os.path.join(dest_dir, product_filename)
-
-    safe_copy(qualified_product_filename, qualified_copied_product_filename)
 
     return qualified_copied_product_filename
 
