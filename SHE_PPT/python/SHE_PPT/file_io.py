@@ -25,6 +25,7 @@ import abc
 import json
 import os
 import pickle
+import shutil
 import subprocess
 from datetime import datetime
 from os.path import exists, join
