@@ -302,8 +302,13 @@ class TestIO(SheTestCase):
 
         assert np.all(src_table == dest_table)
 
-        # Check that it succeeds without issue if the destination file exists, as it now does
-        safe_copy(qualified_src_filename, qualified_dest_filename)
+        # Check that it succeeds without issue if the destination file exists, as it now does, unless we require the
+        # destination is free
+        safe_copy(qualified_src_filename, qualified_dest_filename,
+                  require_dest_free = False)
+        with pytest.raises(FileExistsError):
+            safe_copy(qualified_src_filename, qualified_dest_filename,
+                      require_dest_free = True)
 
         # Cleanup the created file for future checks
         os.remove(qualified_dest_filename)
