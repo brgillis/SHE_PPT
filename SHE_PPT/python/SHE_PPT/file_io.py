@@ -1131,7 +1131,8 @@ def safe_copy(qualified_src_filename: str,
 
 def copy_product_to_tmp(product_filename: str,
                         workdir: str,
-                        tmpdir: str) -> str:
+                        tmpdir: str,
+                        require_all_datafiles_exist: bool = False) -> str:
     """ Copies a data product and all files it points to to tmp, and returns the new qualified filename.
     """
 
@@ -1151,7 +1152,9 @@ def copy_product_to_tmp(product_filename: str,
         qualified_filename = os.path.join(workdir, filename)
         qualified_copied_filename = os.path.join(tmpdir, filename)
 
-        safe_copy(qualified_filename, qualified_copied_filename)
+        safe_copy(qualified_src_filename = qualified_filename,
+                  qualified_dest_filename = qualified_copied_filename,
+                  require_src_exist = require_all_datafiles_exist)
 
     qualified_product_filename = os.path.join(workdir, product_filename)
     qualified_copied_product_filename = os.path.join(tmpdir, product_filename)
@@ -1163,23 +1166,28 @@ def copy_product_to_tmp(product_filename: str,
 
 def copy_listfile_to_tmp(listfile_filename: str,
                          workdir: str,
-                         tmpdir: str) -> str:
+                         tmpdir: str,
+                         require_all_datafiles_exist: bool = False) -> str:
     """ Copies the contents of a listfile to tmp, and writes a new listfile pointing to the copies.
     """
 
-    # Read in the list of products
     qualified_listfile_filename = os.path.join(workdir, listfile_filename)
-    l_product_filenames = read_listfile(qualified_listfile_filename)
-
-    for i, product_filename in enumerate(l_product_filenames):
-        copy_product_to_tmp(product_filename = product_filename,
-                            workdir = workdir,
-                            tmpdir = tmpdir)
 
     # Copy the listfile itself
     qualified_copied_listfile_filename = os.path.join(tmpdir, listfile_filename)
 
-    safe_copy(qualified_listfile_filename, qualified_copied_listfile_filename)
+    safe_copy(qualified_src_filename = qualified_listfile_filename,
+              qualified_dest_filename = qualified_copied_listfile_filename,
+              require_src_exist = True)
+
+    # Read in the list of products
+    l_product_filenames = read_listfile(qualified_listfile_filename)
+
+    for product_filename in l_product_filenames:
+        copy_product_to_tmp(product_filename = product_filename,
+                            workdir = workdir,
+                            tmpdir = tmpdir,
+                            require_all_datafiles_exist = require_all_datafiles_exist)
 
     return qualified_copied_listfile_filename
 
