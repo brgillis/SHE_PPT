@@ -1129,18 +1129,34 @@ def safe_copy(qualified_src_filename: str,
     shutil.copy(qualified_src_filename, qualified_dest_filename)
 
 
-def copy_product_to_tmp(product_filename: str,
-                        workdir: str,
-                        tmpdir: str,
-                        require_all_datafiles_exist: bool = False) -> str:
-    """ Copies a data product and all files it points to to tmp, and returns the new qualified filename.
+def copy_product_between_dirs(product_filename: str,
+                              src_dir: str,
+                              dest_dir: str,
+                              require_all_datafiles_exist: bool = False) -> str:
+    """ Copies a data product and all files it points to from one directory to another
+
+        Parameters
+        ----------
+        product_filename : str
+            The fully-qualified path of the file to be copied
+        src_dir : str
+            The path to the source directory, where the product already resides
+        dest_dir : str
+            The path to the target directory, where the product should be copied to
+        require_all_datafiles_exist : bool, default=False
+            If True, will raise an exception if any datafile pointed to by the product does not exist
+
+        Returns
+        -------
+        qualified_copied_product_filename : str
+            The fully-qualified path of the new location of the file that was copied
     """
 
     # Ensure a data subdirectory exists in the tmpdir
-    os.makedirs(os.path.join(tmpdir, "data"), exist_ok = True)
+    os.makedirs(os.path.join(dest_dir, "data"), exist_ok = True)
 
     # Read in the product and get all filenames
-    p = read_xml_product(product_filename, workdir = workdir)
+    p = read_xml_product(product_filename, workdir = src_dir)
     l_filenames = p.get_all_filenames()
 
     for filename in l_filenames:
@@ -1149,25 +1165,25 @@ def copy_product_to_tmp(product_filename: str,
             continue
 
         # Copy each file pointed to by this product
-        qualified_filename = os.path.join(workdir, filename)
-        qualified_copied_filename = os.path.join(tmpdir, filename)
+        qualified_filename = os.path.join(src_dir, filename)
+        qualified_copied_filename = os.path.join(dest_dir, filename)
 
         safe_copy(qualified_src_filename = qualified_filename,
                   qualified_dest_filename = qualified_copied_filename,
                   require_src_exist = require_all_datafiles_exist)
 
-    qualified_product_filename = os.path.join(workdir, product_filename)
-    qualified_copied_product_filename = os.path.join(tmpdir, product_filename)
+    qualified_product_filename = os.path.join(src_dir, product_filename)
+    qualified_copied_product_filename = os.path.join(dest_dir, product_filename)
 
     safe_copy(qualified_product_filename, qualified_copied_product_filename)
 
     return qualified_copied_product_filename
 
 
-def copy_listfile_to_tmp(listfile_filename: str,
-                         workdir: str,
-                         tmpdir: str,
-                         require_all_datafiles_exist: bool = False) -> str:
+def copy_listfile_between_dirs(listfile_filename: str,
+                               workdir: str,
+                               tmpdir: str,
+                               require_all_datafiles_exist: bool = False) -> str:
     """ Copies the contents of a listfile to tmp, and writes a new listfile pointing to the copies.
     """
 
@@ -1184,10 +1200,8 @@ def copy_listfile_to_tmp(listfile_filename: str,
     l_product_filenames = read_listfile(qualified_listfile_filename)
 
     for product_filename in l_product_filenames:
-        copy_product_to_tmp(product_filename = product_filename,
-                            workdir = workdir,
-                            tmpdir = tmpdir,
-                            require_all_datafiles_exist = require_all_datafiles_exist)
+        copy_product_between_dirs(product_filename = product_filename, src_dir = workdir, dest_dir = tmpdir,
+                                  require_all_datafiles_exist = require_all_datafiles_exist)
 
     return qualified_copied_listfile_filename
 
