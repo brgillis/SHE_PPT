@@ -33,4 +33,7 @@ __all__ = [basename(f)[:-3]
 
 del modules, dirname, basename, isfile, glob
 
-__version__ = "9.1"
+# Get the version from the compiled file created by Elements
+from SHE_PPT_VERSION import SHE_PPT_VERSION_STRING
+
+__version__ = SHE_PPT_VERSION_STRING
