@@ -25,6 +25,7 @@ import abc
 import json
 import os
 import pickle
+import shutil
 import subprocess
 from datetime import datetime
 from os.path import exists, join
@@ -78,6 +79,9 @@ MSG_WRITING_FITS_FILE = f"Writing FITS file to %s in workdir %s"
 MSG_FINISHED_READING_FITS_FILE = f"Finished reading FITS file from %s in workdir %s successfully"
 MSG_FINISHED_WRITING_FITS_FILE = f"Finished writing FITS file to %s in workdir %s successfully"
 
+MSG_SRC_NOT_EXIST = "In safe_copy, source file %s does not exist"
+MSG_DEST_EXIST = "In safe_copy, destination file %s already exists"
+
 DATA_SUBDIR = "data/"
 
 # Constants for strings in xml files
@@ -117,11 +121,13 @@ class SheFileAccessError(IOError):
     qualified_filename: str
     workdir: Optional[str] = None
     operation: str = "accessing"
+    _message: Optional[str] = None
 
     def __init__(self,
                  qualified_filename: Optional[str] = None,
                  filename: Optional[str] = None,
                  workdir: Optional[str] = None,
+                 message: Optional[str] = None
                  ):
 
         if qualified_filename is not None:
@@ -137,10 +143,17 @@ class SheFileAccessError(IOError):
                              f"filename = {filename}, "
                              f"workdir = {workdir}, ")
 
-        super().__init__(self.get_message())
+        # Set the message if explicitly provided; otherwise it will be default generated
+        if message is not None:
+            self._message = message
 
-    def get_message(self):
-        return f"Error {self.operation} file {self.qualified_filename}."
+        super().__init__(self.message)
+
+    @property
+    def message(self):
+        if self._message is None:
+            self._message = f"Error {self.operation} file {self.qualified_filename}."
+        return self._message
 
 
 class SheFileReadError(SheFileAccessError):
@@ -1083,6 +1096,171 @@ def try_remove_file(filename: str,
     except IOError:
         if warn:
             logger.warning("Unable to delete file %s in workdir %s", filename, workdir)
+
+
+def safe_copy(qualified_src_filename: str,
+              qualified_dest_filename: str,
+              require_src_exist: bool = False,
+              require_dest_free: bool = False) -> None:
+    """ Copy a file, without raising an exception if the source doesn't exist or destination does,
+        and making necessary directories.
+
+        Parameters
+        ----------
+        qualified_src_filename : str
+            The fully-qualified path of the file to be copied
+        qualified_dest_filename : str
+            The fully-qualified path of where the file at qualified_src_filename should be copied to
+        require_src_exist : bool, default=False
+            If True, will raise an exception if the source file does not exist
+        require_dest_free : bool, default=False
+            If True, will raise an exception if the destination file already exists
+
+        Returns
+        -------
+        None
+    """
+
+    # Check if the file already exists, and optionally skip if it does
+    if os.path.exists(qualified_dest_filename):
+
+        # Raise an exception if we require that the destination is free
+        if require_dest_free:
+            raise SheFileWriteError(qualified_filename = qualified_dest_filename,
+                                    message = MSG_DEST_EXIST % qualified_dest_filename)
+
+        # We don't require that it's free, so just note in debug log and return
+        logger.debug(MSG_DEST_EXIST, qualified_dest_filename)
+
+        return
+
+    # Check if the source file exists, and optionally skip if it doesn't
+    if not os.path.exists(qualified_src_filename):
+
+        # Raise an exception if we require that the file exists
+        if require_src_exist:
+            raise SheFileReadError(qualified_filename = qualified_src_filename,
+                                   message = MSG_SRC_NOT_EXIST % qualified_src_filename)
+
+        # We don't require that it exists, so just note in debug log and return
+        logger.debug(MSG_SRC_NOT_EXIST, qualified_src_filename)
+
+        return
+
+    # Make the containing directory for the file
+    os.makedirs(os.path.split(qualified_dest_filename)[0], exist_ok = True)
+
+    # Now that we know it's safe, copy the file
+    shutil.copy(qualified_src_filename, qualified_dest_filename)
+
+
+def copy_product_between_dirs(product_filename: str,
+                              src_dir: str,
+                              dest_dir: str,
+                              require_all_src_datafiles_exist: bool = False,
+                              require_all_dest_datafiles_free: bool = False) -> str:
+    """ Copies a data product and all files it points to from one directory to another
+
+        Parameters
+        ----------
+        product_filename : str
+            The fully-qualified path of the file to be copied
+        src_dir : str
+            The path to the source directory, where the product already resides
+        dest_dir : str
+            The path to the target directory, where the product should be copied to
+        require_all_src_datafiles_exist : bool, default=False
+            If True, will raise an exception if any datafile pointed to by the product does not exist
+        require_all_dest_datafiles_free : bool, default=False
+            If True, will raise an exception if any datafile pointed to by the product already exists in the target
+            location
+
+        Returns
+        -------
+        qualified_copied_product_filename : str
+            The fully-qualified path of the new location of the product that was copied
+    """
+
+    # Ensure a data subdirectory exists in the tmpdir
+    os.makedirs(os.path.join(dest_dir, DATA_SUBDIR), exist_ok = True)
+
+    # Copy the product itself
+    qualified_product_filename = os.path.join(src_dir, product_filename)
+    qualified_copied_product_filename = os.path.join(dest_dir, product_filename)
+
+    safe_copy(qualified_src_filename = qualified_product_filename,
+              qualified_dest_filename = qualified_copied_product_filename,
+              require_src_exist = True)
+
+    # Read in the product and get all filenames
+    p = read_xml_product(product_filename, workdir = src_dir)
+    l_filenames = p.get_all_filenames()
+
+    for filename in l_filenames:
+
+        if is_any_type_of_none(filename):
+            continue
+
+        # Copy each file pointed to by this product
+        qualified_filename = os.path.join(src_dir, filename)
+        qualified_copied_filename = os.path.join(dest_dir, filename)
+
+        safe_copy(qualified_src_filename = qualified_filename,
+                  qualified_dest_filename = qualified_copied_filename,
+                  require_src_exist = require_all_src_datafiles_exist,
+                  require_dest_free = require_all_dest_datafiles_free)
+
+    return qualified_copied_product_filename
+
+
+def copy_listfile_between_dirs(listfile_filename: str,
+                               src_dir: str,
+                               dest_dir: str,
+                               require_all_datafiles_exist: bool = False,
+                               require_all_dest_datafiles_free: bool = False) -> str:
+    """ Copies a listfile, all products it points to, and all datafiles those products point to, from one directory
+        to another.
+
+        Parameters
+        ----------
+        listfile_filename : str
+            The fully-qualified path of the listfile to be copied
+        src_dir : str
+            The path to the source directory, where the listfile already resides
+        dest_dir : str
+            The path to the target directory, where the listfile should be copied to
+        require_all_datafiles_exist : bool, default=False
+            If True, will raise an exception if any datafile pointed to by any product in the listfile does not
+            exist
+        require_all_dest_datafiles_free : bool, default=False
+            If True, will raise an exception if any datafile pointed to by the product already exists in the target
+            location
+
+        Returns
+        -------
+        qualified_copied_listfile_filename : str
+            The fully-qualified path of the new location of the listfile that was copied
+    """
+
+    # Copy the listfile itself
+    qualified_listfile_filename = os.path.join(src_dir, listfile_filename)
+    qualified_copied_listfile_filename = os.path.join(dest_dir, listfile_filename)
+
+    safe_copy(qualified_src_filename = qualified_listfile_filename,
+              qualified_dest_filename = qualified_copied_listfile_filename,
+              require_src_exist = True)
+
+    # Read in the list of products
+    l_product_filenames = read_listfile(qualified_listfile_filename)
+
+    for product_filename in l_product_filenames:
+        copy_product_between_dirs(product_filename = product_filename,
+                                  src_dir = src_dir,
+                                  dest_dir = dest_dir,
+                                  require_all_src_datafiles_exist = require_all_datafiles_exist,
+                                  require_all_dest_datafiles_free = require_all_dest_datafiles_free)
+
+    return qualified_copied_listfile_filename
 
 
 def find_file_in_path(filename: str, path: str) -> str:
