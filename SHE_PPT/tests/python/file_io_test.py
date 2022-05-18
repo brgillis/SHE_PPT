@@ -39,7 +39,6 @@ from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_S
                              read_xml_product,
                              safe_copy, tar_files, type_name_maxlen, update_xml_with_value, write_listfile,
                              write_product_and_table, )
-from SHE_PPT.logging import set_log_level_debug
 from SHE_PPT.products.mer_final_catalog import create_dpd_mer_final_catalog
 from SHE_PPT.table_formats.mer_final_catalog import MerFinalCatalogFormat
 from SHE_PPT.testing.mock_mer_final_cat import MockMFCGalaxyTableGenerator
@@ -60,9 +59,6 @@ class TestIO(SheTestCase):
     def post_setup(self):
         """ Perform some setup tasks for functions tested here.
         """
-
-        # Set log level to debug to make sure there aren't any issues with logging strings
-        set_log_level_debug()
 
         # Create source and destination subdirs of the workdir to test copying functions
         self.src_dir = os.path.join(self.workdir, self.src_subdir)
