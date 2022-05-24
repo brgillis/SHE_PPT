@@ -154,7 +154,7 @@ class SheFileAccessError(IOError):
                  qualified_filename: Optional[str] = None,
                  filename: Optional[str] = None,
                  workdir: Optional[str] = None,
-                 message: Optional[str] = None
+                 message: Optional[str] = None,
                  ):
         """Initialise an instance of a SheFileAccessError object.
 
@@ -511,11 +511,11 @@ class SheFileNamer(FileNameProvider):
     # Protected methods
 
     def _determine_type_name_body(self):
-        raise TypeError("_determine_type_name_body must be overriden if type_name "
+        raise TypeError("_determine_type_name_body must be overridden if type_name "
                         "is not passed to init of SheFileNamer.")
 
     def _determine_instance_id_body(self):
-        raise TypeError("_determine_instance_id_body must be overriden if instance_id "
+        raise TypeError("_determine_instance_id_body must be overridden if instance_id "
                         "is not passed to init of SheFileNamer.")
 
     # Public methods
@@ -683,7 +683,7 @@ def read_listfile(listfile_name: str,
 
 def replace_in_file(input_filename: str, output_filename: str, input_string: str, output_string: str) -> None:
     """
-        @brief Replaces every occurence of $input_string in $input_filename with $output_string
+        @brief Replaces every occurrence of $input_string in $input_filename with $output_string
                and prints the results to $output_filename.
 
         @param input_filename <string>
@@ -706,7 +706,7 @@ def replace_multiple_in_file(input_filename: str,
                              input_strings: Sequence[str],
                              output_strings: Sequence[str]) -> None:
     """she_dpd
-        @brief Replaces every occurence of an input_string in input_filename with the corresponding
+        @brief Replaces every occurrence of an input_string in input_filename with the corresponding
                output string and prints the results to $output_filename.
 
         @param input_filename <string>
@@ -1442,7 +1442,7 @@ def find_web_file(filename: str) -> str:
     listfile_name: str = os.path.join(os.getcwd(),
                                       os.path.splitext(os.path.split(filename)[-1])[0] + f"{os.getpid()}_list.txt")
 
-    logger.debug("Writing filelist to %s", listfile_name)
+    logger.debug("Writing listfile to %s", listfile_name)
 
     try:
         try:
