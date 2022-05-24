@@ -774,15 +774,17 @@ class SheFileNamer(FileNameProvider):
 
     # Private methods
 
-    def __determine_type_name(self):
-        # Piece together the type ID from the components, leaving out Nones
+    def __determine_type_name(self) -> None:
+        """Piece together the type name from the components, leaving out any which are `None`.
+        """
         self._type_name = join_without_none(l_s = [self.type_name_head,
                                                    self.type_name_body,
                                                    self.type_name_tail],
                                             default = self.default_type_name)
 
-    def __determine_instance_id(self):
-        # Piece together the instance ID from the components, leaving out Nones
+    def __determine_instance_id(self) -> None:
+        """Piece together the instance ID from the components, leaving out any which are `None`.
+        """
         self._instance_id = join_without_none(l_s = [self.instance_id_head,
                                                      self.instance_id_body,
                                                      self.instance_id_tail],
@@ -790,18 +792,49 @@ class SheFileNamer(FileNameProvider):
 
     # Protected methods
 
-    def _determine_type_name_body(self):
-        raise TypeError("_determine_type_name_body must be overridden if type_name "
-                        "is not passed to init of SheFileNamer.")
+    def _determine_type_name_body(self) -> None:
+        """A child class of this may override this method with an implementation which sets the `self._type_name_body`
+        attribute, and this will be called if `self._type_name_body` is found to be `None` when `self.type_name_body` is
+        accessed to generate it.
 
-    def _determine_instance_id_body(self):
-        raise TypeError("_determine_instance_id_body must be overridden if instance_id "
-                        "is not passed to init of SheFileNamer.")
+        It is not necessary that this be implemented by child classes. They may instead either directly set
+        `self._type_name_body` as a class attribute, or else any initialization must specify the `type_name` kwarg.
+
+        Example implementation:
+        ```
+        self._type_name_body = "TYPE_NAME"
+        ```
+        """
+        raise TypeError("`_determine_type_name_body` must be overridden if `type_name` is not passed to `__init__` of "
+                        "`SheFileNamer` and `_type_name_body` is not directly set as a class attribute.")
+
+    def _determine_instance_id_body(self) -> None:
+        """A child class of this may override this method with an implementation which sets the `self._instance_id_body`
+        attribute, and this will be called if `self._instance_id_body` is found to be `None` when
+        `self.instance_id_body` is accessed to generate it.
+
+        It is not necessary that this be implemented by child classes. They may instead either directly set
+        `self._instance_id_body` as a class attribute, or else any initialization must specify the `instance_id` kwarg.
+
+        Example implementation:
+        ```
+        self._instance_id_body = "INSTANCE_ID"
+        ```
+        """
+        raise TypeError("`_determine_instance_id_body` must be overridden if `instance_id` is not passed to `__init__` "
+                        "of `SheFileNamer` and `_instance_id_body` is not directly set as a class attribute.")
 
     # Public methods
 
     def get(self):
-        """ Get a filename based on internal attributes.
+        """Generate a filename based on this object's attributes. This method re-generates a filename each time it is
+        called, which differs from the `filename` property, which generates a filename once and caches it. If
+        `timestamp==True`, this will result in this usually returning different filenames each time it is called,
+        even if none of this object's attributes are changed, due simply to the timestamp changing.
+
+        Returns
+        -------
+        filename : str
         """
         # Check we have just one of release and version
         if (self.release is None) == (self.version is None):
@@ -819,19 +852,19 @@ class SheFileNamer(FileNameProvider):
         else:
             extension = self.extension
 
-        filename = self.get_allowed_filename(processing_function = self.processing_function,
-                                             type_name = self.type_name.upper(),
-                                             instance_id = self.instance_id.upper(),
-                                             extension = extension,
-                                             release = release,
-                                             timestamp = self.timestamp)
+        local_filename: str = self.get_allowed_filename(processing_function = self.processing_function,
+                                                        type_name = self.type_name.upper(),
+                                                        instance_id = self.instance_id.upper(),
+                                                        extension = extension,
+                                                        release = release,
+                                                        timestamp = self.timestamp)
 
         if self.subdir is not None:
-            qualified_filename = join(self.subdir, filename)
+            filename = join(self.subdir, local_filename)
         else:
-            qualified_filename = filename
+            filename = local_filename
 
-        return qualified_filename
+        return filename
 
 
 def get_qualified_filename(filename: str, workdir: str = ".") -> str:
