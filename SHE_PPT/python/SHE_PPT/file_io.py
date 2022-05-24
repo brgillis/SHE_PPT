@@ -58,7 +58,7 @@ DEFAULT_FILE_EXTENSION = ".fits"
 DEFAULT_FILE_SUBDIR = "data"
 DEFAULT_FILE_PF = "SHE"
 
-# Constant strings operations
+# Constant strings for operations
 STR_READING = "reading"
 STR_WRITING = "writing"
 
@@ -82,10 +82,10 @@ MSG_FINISHED_WRITING_FITS_FILE = f"Finished writing FITS file to %s in workdir %
 MSG_SRC_NOT_EXIST = "In safe_copy, source file %s does not exist"
 MSG_DEST_EXIST = "In safe_copy, destination file %s already exists"
 
+# Constant string for the data subdirectory, where datafiles are expected to be stored during pipeline execution
 DATA_SUBDIR = "data/"
 
 # Constants for strings in xml files
-
 STR_KEY = '<Key>'
 STR_VALUE = '<Value>'
 
@@ -102,15 +102,25 @@ filename_forbidden_chars = filename_provider.filename_forbidden_chars
 logger = getLogger(__name__)
 
 
+# Private functions for this module
+
 def _get_optional_log_method(log_info: bool) -> Callable[..., None]:
-    """ Get the desired logging method. If log_info==True, will log at info level, otherwise at debug level.
+    """Get the desired logging method. If log_info==True, will log at info level, otherwise at debug level. Returns a
+    method of the SHE_PPT.file_io logger.
+
+    Parameters
+    ----------
+    log_info : bool
+        Whether logging should be at info level (True), or else debug level (False).
+
+    Returns
+    -------
+    log_method : Callable
+        The appropriate method of the SHE_PPT.file_io logger, either logger.info or logger.debug.
     """
     if log_info:
-        log_method = logger.info
-    else:
-        log_method = logger.debug
-
-    return log_method
+        return logger.info
+    return logger.debug
 
 
 # Classes for custom exceptions
