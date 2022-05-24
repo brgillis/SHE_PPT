@@ -26,6 +26,8 @@ Bug Fixes
 New Features
 ------------
 - Added new functions to test if a value is either NaN or masked, or NaN, Inf, or masked
+- Added support for pipeline config option "SHE_Pipeline_disable_failsafe", which can be used by other projects to
+  disably any failsafe blocks they've implemented
 
 
 New config features
