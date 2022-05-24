@@ -64,6 +64,11 @@ STR_WRITING = "writing"
 
 # Constant strings for messages
 
+MSG_FINISHED_READING_LISTFILE = "Finished reading listfile from %s"
+MSG_READING_LISTFILE = "Reading listfile from %s"
+MSG_FINISHED_WRITING_LISTFILE = "Finished writing listfile to %s"
+MSG_WRITING_LISTFILE = "Writing listfile to %s"
+
 MSG_READING_DATA_PRODUCT = f"Reading data product from %s in workdir %s"
 MSG_WRITING_DATA_PRODUCT = f"Writing data product to %s in workdir %s"
 MSG_FINISHED_READING_DATA_PRODUCT = f"Finished reading data product from %s in workdir %s successfully"
@@ -192,7 +197,7 @@ class SheFileAccessError(IOError):
             self.workdir = workdir
 
             # Check that the provided value for qualified_filename doesn't conflict with what we construct here
-            constructed_qualified_filename = os.path.join(workdir, filename)
+            constructed_qualified_filename = get_qualified_filename(filename = filename, workdir = workdir)
             if self.qualified_filename is not None and self.qualified_filename != constructed_qualified_filename:
                 if self.qualified_filename != constructed_qualified_filename:
                     raise ValueError("In construction of `SheFileAccessError`, `qualified_filename`, `filename`, "
@@ -200,7 +205,7 @@ class SheFileAccessError(IOError):
                                      f"`qualified_filename` = '{qualified_filename}', "
                                      f"`filename` = '{filename}', "
                                      f"`workdir` = '{workdir}', "
-                                     f"`os.path.join(workdir,filename)` = '{constructed_qualified_filename}'")
+                                     f"`constructed_qualified_filename` = '{constructed_qualified_filename}'")
 
             self.qualified_filename = constructed_qualified_filename
         else:
@@ -929,75 +934,82 @@ def get_allowed_filename(type_name: str = DEFAULT_TYPE_NAME,
 def write_listfile(listfile_name: str,
                    filenames: Sequence[Union[str, Tuple[str, ...]]],
                    log_info: bool = False,
-                   workdir: str = "") -> None:
+                   workdir: str = DEFAULT_WORKDIR) -> None:
+    """Writes a listfile in json format. The implementation here is copied from
+    https://euclid.roe.ac.uk/projects/codeen-users/wiki/Pipeline_Interfaces#List-Files with some modification.
+
+    Parameters
+    ----------
+    listfile_name : str
+        The fully-qualified or workdir-relative name of the listfile to which the list of filenames should be written.
+    filenames : List[str]
+        List of workdir-relative filenames to be output
+    log_info : bool, default=False
+        If True, all logging will be at the INFO level, otherwise some will be at the DEBUG level.
+    workdir : str
+        The workdir in which the file should be created. If `listfile_name` is provided fully-qualified,
+        it is not necessary for this to be provided (and it will be ignored if it is).
     """
-        @brief Writes a listfile in json format.
 
-        @details This is copied from https://euclid.roe.ac.uk/projects/codeen-users/wiki/Pipeline_Interfaces#List-Files
-
-        @param listfile_name <str> Name of the listfile to be output.
-
-        @param filenames <list<str>> List of filenames (or tuples of filenames) to be put in the listfile.
-
-        @param log_info <bool> If True, will log at info level, otherwise will log at debug level.
-
-        @param workdir <str> The work directory to place the file into.
-
-    """
-
-    qualified_listfile_name = os.path.join(workdir, listfile_name)
+    qualified_listfile_name = get_qualified_filename(filename = listfile_name, workdir = workdir)
 
     log_method = _get_optional_log_method(log_info)
-    log_method("Writing listfile to %s", listfile_name)
+    log_method(MSG_WRITING_LISTFILE, listfile_name)
 
     try:
         with open(qualified_listfile_name, 'w') as listfile:
             paths_json = json.dumps(filenames)
             listfile.write(paths_json)
     except Exception as e:
-        raise SheFileWriteError(qualified_listfile_name) from e
+        raise SheFileWriteError(filename = listfile_name, workdir = workdir) from e
 
-    logger.debug("Finished writing listfile to %s", qualified_listfile_name)
+    logger.debug(MSG_FINISHED_WRITING_LISTFILE, qualified_listfile_name)
 
 
 def read_listfile(listfile_name: str,
                   log_info: bool = False,
                   workdir: str = "") -> List[Union[str, Tuple[str]]]:
+    """Reads a json listfile and returns a list of filenames. The implementation here is copied from
+    https://euclid.roe.ac.uk/projects/codeen-users/wiki/Pipeline_Interfaces#List-Files with some modification.
+
+    Parameters
+    ----------
+    listfile_name: str
+        The fully-qualified or workdir-relative name of the listfile from which the list of filenames should be read.
+    log_info: bool
+        If True, all logging will be at the INFO level, otherwise some will be at the DEBUG level.
+    workdir: str
+        The workdir in which the file exists. If `listfile_name` is provided fully-qualified, it is not necessary for
+        this to be provided (and it will be ignored if it is).
+
+    Returns
+    -------
+    l_filenames : Union[List[str], List[Tuple[str, ...]]]
+        A list of workdir-relative filenames, or a list of tuples of filenames, depending on how the listfile which
+        is read in is formatted.
     """
-        @brief Reads a json listfile and returns a list of filenames.
 
-        @details This is copied from https://euclid.roe.ac.uk/projects/codeen-users/wiki/Pipeline_Interfaces#List-Files
-
-        @param listfile_name <str> Name of the listfile to be read.
-
-        @param log_info <bool> If True, will log at info level, otherwise will log at debug level.
-
-        @param workdir <str> The work directory the file is in.
-
-        @return filenames <list<str>> List of filenames (or tuples of filenames) read in.
-    """
-
-    qualified_listfile_name = os.path.join(workdir, listfile_name)
+    qualified_listfile_name = get_qualified_filename(filename = listfile_name, workdir = workdir)
 
     log_method = _get_optional_log_method(log_info)
-    log_method("Reading listfile from %s", qualified_listfile_name)
+    log_method(MSG_READING_LISTFILE, qualified_listfile_name)
 
     try:
         with open(qualified_listfile_name, 'r') as f:
-            list_object = json.load(f)
-            if len(list_object) == 0:
-                return list_object
-            if isinstance(list_object[0], list):
-                tupled_list = [tuple(el) for el in list_object]
+            l_filenames = json.load(f)
+            if len(l_filenames) == 0:
+                return l_filenames
+            if isinstance(l_filenames[0], list):
+                tupled_list = [tuple(el) for el in l_filenames]
                 if np.all([len(t) == 1 for t in tupled_list]):
                     tupled_list = [t[0] for t in tupled_list]
                 return tupled_list
     except Exception as e:
-        raise SheFileReadError(qualified_listfile_name) from e
+        raise SheFileReadError(filename = listfile_name, workdir = workdir) from e
 
-    log_method("Reading listfile from %s", qualified_listfile_name)
+    log_method(MSG_FINISHED_READING_LISTFILE, qualified_listfile_name)
 
-    return list_object
+    return l_filenames
 
 
 def replace_in_file(input_filename: str, output_filename: str, input_string: str, output_string: str) -> None:
