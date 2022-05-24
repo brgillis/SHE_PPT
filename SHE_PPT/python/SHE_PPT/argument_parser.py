@@ -45,6 +45,7 @@ CA_PIPELINE_CONFIG = "pipeline_config"
 CA_WORKDIR = "workdir"
 CA_LOGDIR = "logdir"
 CA_PROFILE = "profile"
+CA_DISABLE_FAILSAFE = "disable_failsafe"
 CA_DRY_RUN = "dry_run"
 
 logger = getLogger(__name__)
@@ -137,6 +138,13 @@ class SheArgumentParser(ArgumentParser):
         logger.debug(f"Adding cline-arg {args[0]} to SheArgumentParser.")
 
         return self.add_argument(*args, **kwargs, help = formatted_help)
+
+    # Convenience methods to add option args
+
+    def add_disable_failsafe_arg(self):
+        self.add_option_arg(f'--{CA_DISABLE_FAILSAFE}', action = ACT_STORE_TRUE,
+                            help = f'Disable any failsafe blocks in the code. If this is set and such a block is hit, '
+                                   f'any exception will be re-raised.')
 
     # Convenience functions to add input filename cline-args
 
