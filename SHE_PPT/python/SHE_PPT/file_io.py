@@ -317,14 +317,36 @@ class SheFileNamer(FileNameProvider):
         Parameters
         ----------
         type_name : Optional[str], default=None
+            The desired type name for the generated filename. If not provided, will be determined from the
+            `_type_name_head`, `_type_name_body`, and `_type_name_tail` class attributes, unless all of these are
+            `None`, in which case a ValueError will be raised.
         instance_id : Optional[str], default=None
+            The desired instance ID for the generated filename. If not provided, will be determined from the
+            `_instance_id_head`, `_instance_id_body`, and `_instance_id_tail` class attributes, unless all of these are
+            `None`, in which case a ValueError will be raised.
         extension : Optional[str], default=None
+            The desired extension of the generated filename (e.g. '.fits'). If not provided, will be determined from the
+            `_extension` class attribute.
         release : Optional[str], default=None
+            The code release that this file corresponds to, in the format 'XX.YY' where XX and YY are integers
+            between 00 and 99, inclusive (e.g. '01.00'). Either this or `version` must be provided.
         version : Optional[str], default=None
+            The code version that this file corresponds to, in the format 'X.Y' or `X.Y.Z`, where X, Y, and Z are
+            non-negative integers (e.g. `1.0` or '1.0.0'). Either this or `release` must be provided.
         subdir : Optional[str], default=None
+            The desired subdirectory for the generated filename (e.g. "data/"). If not provided, will be determined
+            from the `_subdir` class attribute. If it is desired that the file not be in a subdirectory, this must be
+            set to an empty string (''), and NOT `None` - the latter will result in it being determined from the
+            `_subdir` class attribute, as if the kwarg were not supplied.
         processing_function : Optional[str], default=None
+            The name of the processing function in which this file was created (e.g. 'SHE'). If not provided,
+            will be determined from the `_processing_function` class attribute.
         timestamp : Optional[bool], default=None
+            Whether or not to include a timestamp as part of the filename's instance ID. If not provided,
+            will be determined from the `_timestamp` class attribute.
         workdir : Optional[str], default=None
+            The workdir in which this file will reside. This is used to generate the `qualified_filename` attribute
+            if provided.
         """
 
         super().__init__()
