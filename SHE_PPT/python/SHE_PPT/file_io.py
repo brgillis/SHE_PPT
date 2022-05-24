@@ -838,7 +838,8 @@ class SheFileNamer(FileNameProvider):
         """
         # Check we have just one of release and version
         if (self.release is None) == (self.version is None):
-            raise ValueError("Exactly one of release or version must be supplied to get_allowed_filename.")
+            raise ValueError("Exactly one of the `release` and `version` attributes of a `SheFileNamer` object must "
+                             "be non-`None`.")
 
         # If given version, convert it to release format
         if self.version is not None:
@@ -852,6 +853,7 @@ class SheFileNamer(FileNameProvider):
         else:
             extension = self.extension
 
+        # Call the parent class's method to get an allowed filename, relative to the sub-directory
         local_filename: str = self.get_allowed_filename(processing_function = self.processing_function,
                                                         type_name = self.type_name.upper(),
                                                         instance_id = self.instance_id.upper(),
@@ -859,6 +861,8 @@ class SheFileNamer(FileNameProvider):
                                                         release = release,
                                                         timestamp = self.timestamp)
 
+        # Add the sub-directory to get the full filename - check if it's None, just in case a child class overrides
+        # the class attribute to be None
         if self.subdir is not None:
             filename = join(self.subdir, local_filename)
         else:
