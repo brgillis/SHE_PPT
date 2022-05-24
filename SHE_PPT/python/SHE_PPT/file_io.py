@@ -123,10 +123,27 @@ def _get_optional_log_method(log_info: bool) -> Callable[..., None]:
     return logger.debug
 
 
-# Classes for custom exceptions
-
+# Classes for custom exceptions raised by functions in this module
 
 class SheFileAccessError(IOError):
+    """A custom exception type for exceptions raised by functions in the SHE_PPT.file io module related to accessing
+    a file - either reading from it or writing to it.
+
+    Attributes
+    ----------
+    filename : Optional[str]
+        The workdir-relative filename of the file for which the exception was raised. In some cases, this might not
+        be available, in which case this attribute will be `None`. This occurs if the exception was constructed
+        with only `qualified_filename` provided.
+    qualified_filename : str
+        The fully-qualified filename of the file for which the exception was raised.
+    workdir : Optional[str]
+        The workdir in which resides the file for which the exception was raised. As with `filename`, this will be
+        set to `None` if this exception is constructed with only `qualified_filename` provided.
+    operation : {"accessing", "reading", "writing"}
+        The type of operation being performed when the exception occurred.
+    message
+    """
     filename: Optional[str] = None
     qualified_filename: str
     workdir: Optional[str] = None
@@ -139,19 +156,59 @@ class SheFileAccessError(IOError):
                  workdir: Optional[str] = None,
                  message: Optional[str] = None
                  ):
+        """Initialise an instance of a SheFileAccessError object.
+
+        This must be initialised with either:
+        1. (Preferably) both the `filename` and `workdir` kwargs specified.
+        OR
+        2. (If necessary) the `qualified_filename` kwarg specified.
+        If the `filename` and `workdir` kwargs are provided, these will be used to determine the `qualified_filename`
+        attribute. If the `qualified_filename` kwarg was also provided and it conflicts with this, an exception will
+        be raised.
+
+        Parameters
+        ----------
+        qualified_filename : Optional[str], default=None
+            The fully-qualified filename of the file for which this exception occurred.
+        filename : Optional[str], default=None
+            The workdir-relative filename of the file for which this exception occurred.
+        workdir : Optional[str], default=None
+            The workdir containing the file for which this exception occurred.
+        message : Optional[str], default=None
+            If desired, a detailed description of the exception which occurred. If not provided, this exception's
+            message will take a default format, noting simply that there was an issue accessing the given file.
+        """
+
+        # Set the filename, workdir, and qualified_filename attributes, checking that enough information is provided
+        # and it doesn't conflict
 
         if qualified_filename is not None:
+
             self.qualified_filename = qualified_filename
+
         elif (filename is not None) and (workdir is not None):
-            self.qualified_filename = os.path.join(workdir, filename)
+
             self.filename = filename
             self.workdir = workdir
+
+            # Check that the provided value for qualified_filename doesn't conflict with what we construct here
+            constructed_qualified_filename = os.path.join(workdir, filename)
+            if self.qualified_filename is not None and self.qualified_filename != constructed_qualified_filename:
+                if self.qualified_filename != constructed_qualified_filename:
+                    raise ValueError("In construction of `SheFileAccessError`, `qualified_filename`, `filename`, "
+                                     "and `workdir` were all supplied, and give conflicting qualified filenames: "
+                                     f"`qualified_filename` = '{qualified_filename}', "
+                                     f"`filename` = '{filename}', "
+                                     f"`workdir` = '{workdir}', "
+                                     f"`os.path.join(workdir,filename)` = '{constructed_qualified_filename}'")
+
+            self.qualified_filename = constructed_qualified_filename
         else:
-            raise ValueError("Cannot construct SheFileAccessError without either qualified_filename argument or both " +
-                             "filename and workdir arguments. Arguments were: "
-                             f"qualified_filename = {qualified_filename}, "
-                             f"filename = {filename}, "
-                             f"workdir = {workdir}, ")
+            raise ValueError("Cannot construct `SheFileAccessError` without either `qualified_filename` argument or "
+                             "both `filename` and `workdir` arguments. Arguments were: "
+                             f"`qualified_filename` = '{qualified_filename}', "
+                             f"`filename` = '{filename}', "
+                             f"`workdir` = '{workdir}'")
 
         # Set the message if explicitly provided; otherwise it will be default generated
         if message is not None:
@@ -160,7 +217,15 @@ class SheFileAccessError(IOError):
         super().__init__(self.message)
 
     @property
-    def message(self):
+    def message(self) -> str:
+        """A message detailing the nature of the exception. This may be provided at class initialisation,
+        or else generated automatically with a default format.
+
+        Returns
+        -------
+        self._message : str
+            The message detailing the nature of the exception
+        """
         if self._message is None:
             self._message = f"Error {self.operation} file {self.qualified_filename}."
         return self._message
