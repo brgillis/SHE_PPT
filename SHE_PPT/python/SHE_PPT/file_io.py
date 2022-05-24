@@ -312,7 +312,7 @@ class SheFileNamer(FileNameProvider):
                  processing_function: Optional[str] = None,
                  timestamp: Optional[bool] = None,
                  workdir: Optional[str] = None):
-        """ Initializes an instance of a SheFileNamer object.
+        """Initializes an instance of a SheFileNamer object.
 
         Parameters
         ----------
@@ -384,166 +384,392 @@ class SheFileNamer(FileNameProvider):
 
     @property
     def type_name_head(self) -> str:
+        """The first string to be combined to form the type name in the generated filename.
+
+        Returns
+        -------
+        self._type_name_head : str
+        """
         return self._type_name_head
 
     @type_name_head.setter
     def type_name_head(self, type_name_head: Optional[str]) -> None:
+        """Setter for `type_name_head`. When called, de-caches the value of `self.type_name`, so that the next time
+        that is accessed, it's properly updated.
+
+        Parameters
+        ----------
+        type_name_head : Optional[str]
+        """
         self._type_name_head = type_name_head
         self.type_name = None
 
     @property
     def type_name_body(self) -> str:
+        """The middle string to be combined to form the type name in the generated filename.
+
+        Returns
+        -------
+        self._type_name_body : str
+        """
         if self._type_name_body is None:
             self._determine_type_name_body()
         return self._type_name_body
 
     @type_name_body.setter
     def type_name_body(self, type_name_body: Optional[str]) -> None:
+        """Setter for `type_name_body`. When called, de-caches the value of `self.type_name`, so that the next time
+        that is accessed, it's properly updated.
+
+        Parameters
+        ----------
+        type_name_body : Optional[str]
+        """
         self._type_name_body = type_name_body
         self.type_name = None
 
     @property
     def type_name_tail(self) -> str:
+        """The final string to be combined to form the type name in the generated filename.
+
+        Returns
+        -------
+        self._type_name_tail : str
+        """
         return self._type_name_tail
 
     @type_name_tail.setter
     def type_name_tail(self, type_name_tail: Optional[str]) -> None:
+        """Setter for `type_name_tail`. When called, de-caches the value of `self.type_name`, so that the next time
+        that is accessed, it's properly updated.
+
+        Parameters
+        ----------
+        type_name_tail : Optional[str]
+        """
         self._type_name_tail = type_name_tail
         self.type_name = None
 
     @property
     def instance_id_head(self) -> str:
+        """The first string to be combined to form the instance ID in the generated filename.
+
+        Returns
+        -------
+        self._instance_id_head : str
+        """
         return self._instance_id_head
 
     @instance_id_head.setter
     def instance_id_head(self, instance_id_head: Optional[str]) -> None:
+        """Setter for `instance_id_head`. When called, de-caches the value of `self.instance_id`, so that the next time
+        that is accessed, it's properly updated.
+
+        Parameters
+        ----------
+        instance_id_head : Optional[str]
+        """
         self._instance_id_head = instance_id_head
         self.instance_id = None
 
     @property
     def instance_id_body(self) -> str:
+        """The middle string to be combined to form the instance ID in the generated filename.
+
+        Returns
+        -------
+        self._instance_id_body : str
+        """
         if self._instance_id_body is None:
             self._determine_instance_id_body()
         return self._instance_id_body
 
     @instance_id_body.setter
     def instance_id_body(self, instance_id_body: Optional[str]) -> None:
+        """Setter for `instance_id_body`. When called, de-caches the value of `self.instance_id`, so that the next time
+        that is accessed, it's properly updated.
+
+        Parameters
+        ----------
+        instance_id_body : Optional[str]
+        """
         self._instance_id_body = instance_id_body
         self.instance_id = None
 
     @property
     def instance_id_tail(self) -> str:
+        """The final string to be combined to form the instance ID in the generated filename.
+
+        Returns
+        -------
+        self._instance_id_tail : str
+        """
         return self._instance_id_tail
 
     @instance_id_tail.setter
     def instance_id_tail(self, instance_id_tail: Optional[str]) -> None:
+        """Setter for `instance_id_tail`. When called, de-caches the value of `self.instance_id`, so that the next time
+        that is accessed, it's properly updated.
+
+        Parameters
+        ----------
+        instance_id_tail : Optional[str]
+        """
         self._instance_id_tail = instance_id_tail
         self.instance_id = None
 
     @property
     def extension(self) -> str:
+        """The desired extension of the filename to be generated (e.g. '.fits').
+
+        Returns
+        -------
+        self._extension : str
+        """
         return self._extension
 
     @extension.setter
     def extension(self, extension: Optional[str]) -> None:
+        """Setter for `extension`. When called, de-caches the value of `self.filename`, so that the next time
+        that is accessed, it's properly updated.
+
+        Parameters
+        ----------
+        extension : Optional[str]
+        """
         self._extension = extension
         self.filename = None
 
     @property
     def release(self) -> str:
+        """The code release that this file corresponds to, in the format 'XX.YY' where XX and YY are integers
+        between 00 and 99, inclusive (e.g. '01.00'). Either this or `version` must be non-`None` for a filename to be
+        generated.
+
+        Returns
+        -------
+        self._release : str
+        """
         return self._release
 
     @release.setter
     def release(self, release: Optional[str]) -> None:
+        """Setter for `release`. When called, de-caches the value of `self.filename`, so that the next time
+        that is accessed, it's properly updated.
+
+        Parameters
+        ----------
+        release : Optional[str]
+        """
         self._release = release
         self.filename = None
 
     @property
     def version(self) -> str:
+        """The code version that this file corresponds to, in the format 'X.Y' or `X.Y.Z`, where X, Y,
+        and Z are non-negative integers (e.g. `1.0` or '1.0.0'). Either this or `release` must be non-`None` for a
+        filename to be generated.
+
+        Returns
+        -------
+        self._version : str
+        """
         return self._version
 
     @version.setter
     def version(self, version: Optional[str]) -> None:
+        """Setter for `version`. When called, de-caches the value of `self.filename`, so that the next time
+        that is accessed, it's properly updated.
+
+        Parameters
+        ----------
+        version : Optional[str]
+        """
         self._version = version
         self.filename = None
 
     @property
     def subdir(self) -> str:
+        """The desired subdirectory for the generated filename (e.g. "data/"). If it is desired that the file not be
+        in a subdirectory, this must be set to an empty string (''), and NOT `None`.
+
+        Returns
+        -------
+        self._subdir : str
+        """
         return self._subdir
 
     @subdir.setter
     def subdir(self, subdir: Optional[str]) -> None:
+        """Setter for `subdir`. When called, de-caches the value of `self.filename`, so that the next time
+        that is accessed, it's properly updated.
+
+        Parameters
+        ----------
+        subdir : Optional[str]
+        """
         self._subdir = subdir
         self.filename = None
 
     @property
     def processing_function(self) -> str:
+        """The name of the processing function in which this file was created (e.g. 'SHE').
+
+        Returns
+        -------
+        self._processing_function : str
+        """
         return self._processing_function
 
     @processing_function.setter
     def processing_function(self, processing_function: Optional[str]) -> None:
+        """Setter for `processing_function`. When called, de-caches the value of `self.filename`, so that the next time
+        that is accessed, it's properly updated.
+
+        Parameters
+        ----------
+        processing_function : Optional[str]
+        """
         self._processing_function = processing_function
         self.filename = None
 
     @property
     def timestamp(self) -> bool:
+        """Whether or not to include a timestamp as part of the filename's instance ID.
+
+        Returns
+        -------
+        self._timestamp : bool
+        """
         return self._timestamp
 
     @timestamp.setter
     def timestamp(self, timestamp: bool) -> None:
+        """Setter for `timestamp`. When called, de-caches the value of `self.filename`, so that the next time
+        that is accessed, it's properly updated.
+
+        Parameters
+        ----------
+        timestamp : Optional[str]
+        """
         self._timestamp = timestamp
         self.filename = None
 
     @property
-    def workdir(self) -> str:
+    def workdir(self) -> Optional[str]:
+        """The workdir in which this file will reside. This is used to generate the `qualified_filename` attribute if
+        provided. If this is `None` and the `qualified_filename` attribute is accessed, an exception will be raised.
+
+        Returns
+        -------
+        self._workdir : Optional[str]
+        """
         return self._workdir
 
     @workdir.setter
     def workdir(self, workdir: Optional[str]) -> None:
+        """Setter for `workdir`. When called, de-caches the value of `self.qualified_filename`, so that the next time
+        that is accessed, it's properly updated.
+
+        Parameters
+        ----------
+        workdir : Optional[str]
+        """
         self._workdir = workdir
         self.qualified_filename = None
 
     @property
     def type_name(self) -> str:
+        """The desired type name for the generated filename.
+
+        Returns
+        -------
+        self._type_name : str
+        """
         if self._type_name is None:
             self.__determine_type_name()
         return self._type_name
 
     @type_name.setter
     def type_name(self, type_name: Optional[str]) -> None:
+        """Setter for `type_name`. When called, de-caches the value of `self.filename`, so that the next time
+        that is accessed, it's properly updated.
+
+        Parameters
+        ----------
+        type_name : Optional[str]
+        """
         self._type_name = type_name
         self.filename = None
 
     @property
     def instance_id(self) -> str:
+        """The desired instance ID for the generated filename.
+
+        Returns
+        -------
+        self._instance_id : str
+        """
         if self._instance_id is None:
             self.__determine_instance_id()
         return self._instance_id
 
     @instance_id.setter
     def instance_id(self, instance_id: Optional[str]) -> None:
+        """Setter for `instance_id`. When called, de-caches the value of `self.filename`, so that the next time
+        that is accessed, it's properly updated.
+
+        Parameters
+        ----------
+        instance_id : Optional[str]
+        """
         self._instance_id = instance_id
         self.filename = None
 
     @property
     def filename(self) -> str:
+        """The generated workdir-relative filename.
+
+        Returns
+        -------
+        self._filename : str
+        """
         if self._filename is None:
             self._filename = self.get()
         return self._filename
 
     @filename.setter
     def filename(self, filename: Optional[str]) -> None:
+        """Setter for `filename`. When called, de-caches the value of `self.qualified_filename`, so that the next time
+        that is accessed, it's properly updated.
+
+        Parameters
+        ----------
+        filename : Optional[str]
+        """
         self._filename = filename
         self.qualified_filename = None
 
     @property
     def qualified_filename(self) -> str:
+        """The fully-qualified generated filename.
+
+        Returns
+        -------
+        self._qualified_filename : str
+        """
         if self._qualified_filename is None:
             self._qualified_filename = get_qualified_filename(self.filename, self.workdir)
         return self._qualified_filename
 
     @qualified_filename.setter
     def qualified_filename(self, qualified_filename: Optional[str]) -> None:
+        """Setter for `qualified_filename`.
+
+        Parameters
+        ----------
+        qualified_filename : Optional[str]
+        """
         self._qualified_filename = qualified_filename
 
     # Private methods
