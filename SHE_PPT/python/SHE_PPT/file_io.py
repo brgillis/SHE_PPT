@@ -871,14 +871,30 @@ class SheFileNamer(FileNameProvider):
         return filename
 
 
-def get_qualified_filename(filename: str, workdir: str = ".") -> str:
-    """ Gets a fully-qualified filename, checking if the first argument is already fully-qualified first.
+def get_qualified_filename(filename: str, workdir: str = DEFAULT_WORKDIR) -> str:
+    """Gets a fully-qualified filename, checking if the first argument is already fully-qualified first. If it is,
+    it's return directly. Otherwise the workdir is joined to it.
+
+    Parameters
+    ----------
+    filename : str
+    workdir : str
+
+    Returns
+    -------
+    qualified_filename : str
     """
+
+    # Check if filename is an empty string, and raise an exception if so - this indicates something must be going wrong
+    if filename == "":
+        raise ValueError("Filename provided to `get_qualified_filename` cannot be an empty string.")
+
+    # Check if the filename is fully-qualified already by checking if it starts with a "/"
     if filename[0] == "/":
-        qualified_xml_filename = filename
+        qualified_filename = filename
     else:
-        qualified_xml_filename = os.path.join(workdir, filename)
-    return qualified_xml_filename
+        qualified_filename = os.path.join(workdir, filename)
+    return qualified_filename
 
 
 def get_allowed_filename(type_name: str = DEFAULT_TYPE_NAME,
