@@ -891,10 +891,9 @@ def get_qualified_filename(filename: str, workdir: str = DEFAULT_WORKDIR) -> str
 
     # Check if the filename is fully-qualified already by checking if it starts with a "/"
     if filename[0] == "/":
-        qualified_filename = filename
-    else:
-        qualified_filename = os.path.join(workdir, filename)
-    return qualified_filename
+        return filename
+
+    return os.path.join(workdir, filename)
 
 
 def get_allowed_filename(type_name: str = DEFAULT_TYPE_NAME,
