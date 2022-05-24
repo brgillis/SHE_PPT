@@ -42,6 +42,7 @@ class GlobalConfigKeys(ConfigKeys):
     # Pipeline-wide options
 
     PIP_PROFILE = PIPELINE_HEAD + "profile"
+    PIP_DISABLE_FAILSAFE = PIPELINE_HEAD + "disable_failsafe"
 
     # Placeholder options
 
