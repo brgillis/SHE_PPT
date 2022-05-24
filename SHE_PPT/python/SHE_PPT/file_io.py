@@ -904,29 +904,16 @@ def get_allowed_filename(type_name: str = DEFAULT_TYPE_NAME,
                          subdir: Optional[str] = "data",
                          processing_function: str = "SHE",
                          timestamp: bool = True) -> str:
-    """Gets a filename in the required Euclid format. Now mostly a pass-through to the official version, with
-    tweaks to silently shift arguments to upper-case.
+    """Gets a filename in the required Euclid format. This function is provided for backwards-compatibility; for any new
+    use it is recommend to use the `SheFileNamer` class directly, with syntax as shown here.
 
-    Parameters
-    ----------
-    type_name : str
-        Label for what type of object this is. Maximum 45 characters.
-    instance_id : str
-        Label for the instance of this object. Maximum 37 characters if timestamp==True, 55 if False
-    extension : str
-        File extension (eg. ".fits").
-    release : str
-        Software/data release version, in format "XX.XX" where each X is a digit 0-9. Either this or version must be
-        supplied.
-    version : str
-        Software/data release version, in format "X.X(.Y)" where each X is an integer 0-99. Either this or release must
-        be supplied.
-    subdir : str
-        Subdirectory of work directory in which this file will be (default "data")
-    processing_function : str
-        Label for the processing function which created this file.
-    timestamp : bool
-        If True, will append a timestamp to the instance_id
+    See the documentation of the `SheFileNamer` class's `__init__` method for documentation of this function's
+    parameters.
+
+    Returns
+    -------
+    filename : str
+        The generated workdir-relative filename.
     """
 
     return SheFileNamer(type_name = type_name,
