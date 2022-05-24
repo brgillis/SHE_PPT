@@ -247,9 +247,27 @@ class SheFileWriteError(SheFileAccessError):
 
 class SheFileNamer(FileNameProvider):
     """ Class to handle generating Euclid-compliant filenames piecewise from components.
+
+    Attributes
+    ----------
+    type_name
+    default_type_name : str
+        The default value to be used for the `type_name` attribute if no other information is supplied
+    instance_id
+    default_instance_id : str
+        The default value to be used for the `instance_id` attribute if no other information is supplied
+    extension
+    release
+    version
+    subdir
+    processing_function
+    timestamp
+    workdir
+    filename
+    qualified_filename
     """
 
-    # Attributes used to generate the filename - can be set at init or otherwise before calling get()
+    # Attributes used to generate the filename - can be set (at init or otherwise) before calling get()
 
     # For type name
     _type_name_head: Optional[str] = None
@@ -294,6 +312,20 @@ class SheFileNamer(FileNameProvider):
                  processing_function: Optional[str] = None,
                  timestamp: Optional[bool] = None,
                  workdir: Optional[str] = None):
+        """ Initializes an instance of a SheFileNamer object.
+
+        Parameters
+        ----------
+        type_name : Optional[str], default=None
+        instance_id : Optional[str], default=None
+        extension : Optional[str], default=None
+        release : Optional[str], default=None
+        version : Optional[str], default=None
+        subdir : Optional[str], default=None
+        processing_function : Optional[str], default=None
+        timestamp : Optional[bool], default=None
+        workdir : Optional[str], default=None
+        """
 
         super().__init__()
 
