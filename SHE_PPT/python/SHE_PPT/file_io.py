@@ -232,10 +232,16 @@ class SheFileAccessError(IOError):
 
 
 class SheFileReadError(SheFileAccessError):
+    """A specialisation of the SheFileAccessError class, specifically for exceptions which arise from attempting to
+    read a file.
+    """
     operation: str = STR_READING
 
 
 class SheFileWriteError(SheFileAccessError):
+    """A specialisation of the SheFileAccessError class, specifically for exceptions which arise from attempting to
+    write a file.
+    """
     operation: str = STR_WRITING
 
 
