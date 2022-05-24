@@ -968,7 +968,7 @@ def write_listfile(listfile_name: str,
 
 def read_listfile(listfile_name: str,
                   log_info: bool = False,
-                  workdir: str = "") -> List[Union[str, Tuple[str]]]:
+                  workdir: str = "") -> List[Union[str, Tuple[str, ...]]]:
     """Reads a json listfile and returns a list of filenames. The implementation here is copied from
     https://euclid.roe.ac.uk/projects/codeen-users/wiki/Pipeline_Interfaces#List-Files with some modification.
 
@@ -984,7 +984,7 @@ def read_listfile(listfile_name: str,
 
     Returns
     -------
-    l_filenames : Union[List[str], List[Tuple[str, ...]]]
+    l_filenames : List[Union[str, Tuple[str, ...]]]
         A list of workdir-relative filenames, or a list of tuples of filenames, depending on how the listfile which
         is read in is formatted.
     """
