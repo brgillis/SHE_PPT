@@ -947,7 +947,7 @@ def write_listfile(listfile_name: str,
         List of workdir-relative filenames to be output
     log_info : bool, default=False
         If True, all logging will be at the INFO level, otherwise some will be at the DEBUG level.
-    workdir : str
+    workdir : str, default="."
         The workdir in which the file should be created. If `listfile_name` is provided fully-qualified,
         it is not necessary for this to be provided (and it will be ignored if it is).
     """
@@ -1089,9 +1089,27 @@ def replace_multiple_in_file(input_filename: str,
 
 def write_xml_product(product: Any,
                       xml_filename: str,
-                      workdir: str = ".",
+                      workdir: str = DEFAULT_WORKDIR,
                       log_info: bool = False,
                       allow_pickled: bool = False) -> None:
+    """Outputs an instance of a Data Model product to a .xml file on disk. The implementation of this is copied from
+    https://euclid.roe.ac.uk/projects/codeen-users/wiki/DataModelTutorial2017 with some modification.
+
+    Parameters
+    ----------
+    product : Any type of Euclid data product defined in the Data Model bindings
+        The data product to be output.
+    xml_filename : str
+        The desired fully-qualified or workdir-relative filename of the output file.
+    workdir : str, default="."
+        The workdir in which the file should be created. If `xml_filename` is provided fully-qualified,
+        it is not necessary for this to be provided (and it will be ignored if it is).
+    log_info : bool, default=False
+        If True, all logging will be at the INFO level, otherwise some will be at the DEBUG level.
+    allow_pickled : bool, default=False
+        (Deprecated and to be removed soon; do not use)
+
+    """
     log_method = _get_optional_log_method(log_info)
     log_method(MSG_WRITING_DATA_PRODUCT, xml_filename, workdir)
 
@@ -1107,7 +1125,11 @@ def write_xml_product(product: Any,
 
 
 def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pickled: bool) -> None:
-    # Check if the product has a ProductId, and set it if necessary
+    """Private implementation of the core operations of `write_xml_product`; see that function's documentation for
+    information on functionality and parameters.
+    """
+
+    # Make sure the product's header has a likely-unique value, and not the default value of "None"
     try:
         if product.Header.ProductId.value() == "None":
             # Set the product ID to a timestamp
