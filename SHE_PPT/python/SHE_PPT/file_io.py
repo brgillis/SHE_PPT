@@ -876,7 +876,8 @@ class SheFileNamer(FileNameProvider):
         return filename
 
 
-def get_qualified_filename(filename: str, workdir: str = DEFAULT_WORKDIR) -> str:
+def get_qualified_filename(filename: str,
+                           workdir: str = DEFAULT_WORKDIR) -> str:
     """Gets a fully-qualified filename, checking if the first argument is already fully-qualified first. If it is,
     it's return directly. Otherwise the workdir is joined to it.
 
@@ -903,11 +904,11 @@ def get_qualified_filename(filename: str, workdir: str = DEFAULT_WORKDIR) -> str
 
 def get_allowed_filename(type_name: str = DEFAULT_TYPE_NAME,
                          instance_id: str = DEFAULT_INSTANCE_ID,
-                         extension: str = ".fits",
+                         extension: str = DEFAULT_FILE_EXTENSION,
                          release: Optional[str] = None,
                          version: Optional[str] = None,
-                         subdir: Optional[str] = "data",
-                         processing_function: str = "SHE",
+                         subdir: Optional[str] = DEFAULT_FILE_SUBDIR,
+                         processing_function: str = DEFAULT_FILE_PF,
                          timestamp: bool = True) -> str:
     """Gets a filename in the required Euclid format. This function is provided for backwards-compatibility; for any new
     use it is recommend to use the `SheFileNamer` class directly, with syntax as shown here.
@@ -942,7 +943,7 @@ def write_listfile(listfile_name: str,
     ----------
     listfile_name : str
         The fully-qualified or workdir-relative name of the listfile to which the list of filenames should be written.
-    filenames : List[str]
+    filenames : Sequence[Union[str, Tuple[str, ...]]]
         List of workdir-relative filenames to be output
     log_info : bool, default=False
         If True, all logging will be at the INFO level, otherwise some will be at the DEBUG level.
