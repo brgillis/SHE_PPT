@@ -2025,26 +2025,35 @@ def copy_listfile_between_dirs(listfile_filename: str,
 
 
 def find_file_in_path(filename: str, path: str) -> str:
-    """
-        Searches through a colon-separated path for a file and returns the qualified name of it if found,
-        None otherwise.
+    """Searches through a colon-separated path for a file and returns the qualified name of it if found,
+    or raises a RuntimeError otherwise. The first instance of the file in the provided path is always returned in
+    case of multiple instances.
+
+    Parameters
+    ----------
+    filename : str
+        The path-relative filename to be searched for.
+    path : str
+        A colon-separated list of directories to search for the file in.
+
+    Returns
+    -------
+    qualified_filename : str
+        The fully-qualified location of the filename which has been found.
     """
 
     logger.debug("Searching for file %s in path %s", filename, path)
 
     colon_separated_path = path.split(":")
 
-    qualified_filename = None
-
     for test_path in colon_separated_path:
 
-        test_filename = join(test_path, filename)
+        qualified_filename = join(test_path, filename)
 
-        if exists(test_filename):
-            qualified_filename = test_filename
+        if exists(qualified_filename):
             break
 
-    if qualified_filename is None:
+    else:
         raise RuntimeError(
             "File " + str(filename) + " could not be found in path " + str(path) + ".")
 
