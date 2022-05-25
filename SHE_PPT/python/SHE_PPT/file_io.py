@@ -1202,6 +1202,11 @@ def read_xml_product(xml_filename: str,
     product_type : Optional[Type], default=None
         If not None, this function will check that the product which has been read in is of this type, and raise a
         `TypeError` if not.
+
+    Returns
+    -------
+    product : product_type, or else Any if product_type is None
+        An instance of the data product which was stored on disk.
     """
 
     log_method = _get_optional_log_method(log_info)
@@ -1266,6 +1271,9 @@ def write_pickled_product(product,
                           pickled_filename: str,
                           workdir: str = ".",
                           log_info: bool = False) -> None:
+    """This function is now deprecated and should not generally be used.
+    """
+
     log_method = _get_optional_log_method(log_info)
     log_method(MSG_WRITING_DATA_PRODUCT, pickled_filename, workdir)
 
@@ -1286,6 +1294,9 @@ def write_pickled_product(product,
 def read_pickled_product(pickled_filename,
                          workdir = DEFAULT_WORKDIR,
                          log_info: bool = False) -> Any:
+    """This function is now deprecated and should not generally be used.
+    """
+
     log_method = _get_optional_log_method(log_info)
     log_method(MSG_READING_DATA_PRODUCT, pickled_filename, workdir)
 
@@ -1307,9 +1318,30 @@ def read_pickled_product(pickled_filename,
 
 def write_table(t: Table,
                 filename: str,
+                *args,
                 workdir: str = DEFAULT_WORKDIR,
                 log_info: bool = False,
-                *args, **kwargs) -> None:
+                **kwargs) -> None:
+    """Outputs an astropy table to a file on disk. In addition to the standard functionality provided by the table
+    object's `write` method, this function handles logging, determination of qualified filename, and raising an
+    exception of the common SheFileWriteError type on error.
+
+    Parameters
+    ----------
+    t : astropy.table.Table
+        The table to be output.
+    filename : str
+        The desired fully-qualified or workdir-relative filename of the output file.
+    workdir : str, default="."
+        The workdir in which the file should be created. If `filename` is provided fully-qualified,
+        it is not necessary for this to be provided (and it will be ignored if it is).
+    log_info : bool, default=False
+        If True, all logging will be at the INFO level, otherwise some will be at the DEBUG level.
+    *args, **kwargs : Any
+        Any additional args and kwargs will be forwarded to the call of the table's `write` method. See that method's
+        documentation for details on allowed arguments.
+    """
+
     log_method = _get_optional_log_method(log_info)
     log_method(MSG_WRITING_TABLE, filename, workdir)
 
@@ -1327,17 +1359,39 @@ def read_table(filename: str,
                workdir: str = DEFAULT_WORKDIR,
                log_info: bool = False,
                *args, **kwargs) -> Table:
+    """Reads in an astropy Table stored on disk.
+
+    Parameters
+    ----------
+    filename : str
+        The fully-qualified or workdir-relative filename of the input file.
+    workdir : str, default="."
+        The workdir in which the file exists. If `filename` is provided fully-qualified,
+        it is not necessary for this to be provided (and it will be ignored if it is).
+    log_info : bool, default=False
+        If True, all logging will be at the INFO level, otherwise some will be at the DEBUG level.
+    *args, **kwargs : Any
+        Any additional args and kwargs will be forwarded to the call to the `astropy.table.Table.read` method. See
+        that method's documentation for details on allowed arguments.
+
+    Returns
+    -------
+    t : Table
+        An instance of the table which was stored on disk.
+    """
+
     log_method = _get_optional_log_method(log_info)
     log_method(MSG_READING_TABLE, filename, workdir)
 
     qualified_filename = get_qualified_filename(filename, workdir)
 
     try:
-        t: Table = Table.read(qualified_filename, format = "fits", *args, **kwargs)
+        t: Table = Table.read(qualified_filename, *args, **kwargs)
     except Exception as e:
         raise SheFileReadError(filename = filename, workdir = workdir) from e
 
     logger.debug(MSG_FINISHED_READING_TABLE, filename, workdir)
+
     return t
 
 
@@ -1349,9 +1403,30 @@ def write_product_and_table(product: Any,
                             workdir: str = DEFAULT_WORKDIR,
                             log_info: bool = False,
                             **kwargs: Any):
-    """ Convenience function to write a product and table at the same time, setting up a filename for the table if
-        one is not provided, and setting the product to point to the table's filename with its set_data_filename
-        method.
+    """Convenience function to write a product and table at the same time, setting up a filename for the table if
+    one is not provided, and setting the product to point to the table's filename with its `set_data_filename`
+    method. Note that this function is not compatible with all types of data products; it requires that the product's
+    binding class is set up with a `set_data_filename` which sets the workdir-relative filename of the  desired data
+    table.
+
+    Parameters
+    ----------
+    product : Any type of Euclid data product defined in the Data Model bindings
+        The data product to be output.
+    product_filename : str
+        The desired fully-qualified or workdir-relative filename of the output file for the data product.
+    table : astropy.table.Table
+        The table to be output.
+    table_filename : str
+        The desired fully-qualified or workdir-relative filename of the output file for the table.
+    workdir : str, default="."
+        The workdir in which the files should be created. If both `product_filename` and `table_filename` are provided
+        fully-qualified, it is not necessary for this to be provided (and it will be ignored if it is).
+    log_info : bool, default=False
+        If True, all logging will be at the INFO level, otherwise some will be at the DEBUG level.
+    *args, **kwargs : Any
+        Any additional args and kwargs will be forwarded to the call of the table's `write` method. See that method's
+        documentation for details on allowed arguments.
     """
 
     # Generate a filename for the table if one hasn't been provided
@@ -1374,6 +1449,31 @@ def read_product_and_table(product_filename: str,
                            product_type: Optional[Type] = None,
                            *args, **kwargs) -> Tuple[Any, Table]:
     """ Convenience function to read in a data product and the data table it points to, and return both as a tuple.
+    Note that this function is not compatible with all types of data products; it requires that the product's binding
+    class is set up with a `get_data_filename` which provides the workdir-relative filename of the desired data table.
+
+    Parameters
+    ----------
+    product_filename : str
+        The fully-qualified or workdir-relative filename of the input file for the data product.
+    workdir : str, default="."
+        The workdir in which the file exists. If `xml_filename` is provided fully-qualified,
+        it is not necessary for this to be provided (and it will be ignored if it is).
+    log_info : bool, default=False
+        If True, all logging will be at the INFO level, otherwise some will be at the DEBUG level.
+    product_type : Optional[Type], default=None
+        If not None, this function will check that the product which has been read in is of this type, and raise a
+        `TypeError` if not.
+    *args, **kwargs : Any
+        Any additional args and kwargs will be forwarded to the call to the `astropy.table.Table.read` method. See
+        that method's documentation for details on allowed arguments.
+
+    Returns
+    -------
+    p : product_type, or else Any if product_type is None
+        An instance of the data product which was stored on disk.
+    t : Table
+        An instance of the table which was stored on disk and pointed to by the data product.
     """
 
     p = read_xml_product(product_filename, workdir = workdir, log_info = log_info, product_type = product_type)
@@ -1389,7 +1489,30 @@ def read_table_from_product(product_filename: str,
                             log_info: bool = False,
                             product_type: Optional[Type] = None,
                             *args, **kwargs) -> Table:
-    """ Convenience function to read a data table given the filename of the xml data product which points to it.
+    """Convenience function to read in a data table given the filename of the xml data product which points to it.
+    Note that this function is not compatible with all types of data products; it requires that the product's binding
+    class is set up with a `get_data_filename` which provides the workdir-relative filename of the desired data table.
+
+    Parameters
+    ----------
+    product_filename : str
+        The fully-qualified or workdir-relative filename of the input file for the data product.
+    workdir : str, default="."
+        The workdir in which the file exists. If `xml_filename` is provided fully-qualified,
+        it is not necessary for this to be provided (and it will be ignored if it is).
+    log_info : bool, default=False
+        If True, all logging will be at the INFO level, otherwise some will be at the DEBUG level.
+    product_type : Optional[Type], default=None
+        If not None, this function will check that the product which has been read in is of this type, and raise a
+        `TypeError` if not.
+    *args, **kwargs : Any
+        Any additional args and kwargs will be forwarded to the call to the `astropy.table.Table.read` method. See
+        that method's documentation for details on allowed arguments.
+
+    Returns
+    -------
+    t : Table
+        An instance of the table which was stored on disk and pointed to by the data product.
     """
 
     _, t = read_product_and_table(product_filename = product_filename,
