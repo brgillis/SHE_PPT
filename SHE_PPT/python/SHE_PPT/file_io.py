@@ -1108,8 +1108,8 @@ def write_xml_product(product: Any,
         If True, all logging will be at the INFO level, otherwise some will be at the DEBUG level.
     allow_pickled : bool, default=False
         (Deprecated and to be removed soon; do not use)
-
     """
+
     log_method = _get_optional_log_method(log_info)
     log_method(MSG_WRITING_DATA_PRODUCT, xml_filename, workdir)
 
@@ -1181,8 +1181,27 @@ def read_xml_product(xml_filename: str,
                      log_info: bool = False,
                      allow_pickled: bool = False,
                      product_type: Optional[Type] = None) -> Any:
-    """ Reads in an XML data product. If product_type is set to a type of a data product, will check that the product
-        read in is of that type.
+    """Reads in an XML data product defined in the Euclid Data Model Bindings. Before calling this, it is necessary
+    that the Data Model Binding class for the expected type of product be imported. It is recommended that this class
+    is passed to the kwarg `product_type`, which will check that the product read-in is of this type.
+
+    The implementation of this is copied from
+    https://euclid.roe.ac.uk/projects/codeen-users/wiki/DataModelTutorial2017 with some modification.
+
+    Parameters
+    ----------
+    xml_filename : str
+        The fully-qualified or workdir-relative filename of the input file.
+    workdir : str, default="."
+        The workdir in which the file exists. If `xml_filename` is provided fully-qualified,
+        it is not necessary for this to be provided (and it will be ignored if it is).
+    log_info : bool, default=False
+        If True, all logging will be at the INFO level, otherwise some will be at the DEBUG level.
+    allow_pickled : bool, default=False
+        (Deprecated and to be removed soon; do not use)
+    product_type : Optional[Type], default=None
+        If not None, this function will check that the product which has been read in is of this type, and raise a
+        `TypeError` if not.
     """
 
     log_method = _get_optional_log_method(log_info)
@@ -1208,7 +1227,7 @@ def read_xml_product(xml_filename: str,
     except Exception as e:
         raise SheFileReadError(filename = xml_filename, workdir = workdir) from e
 
-    # Check the type of the read-in product if product_type is not None
+    # Check the type of the read-in product if `product_type` is not None
     if (product_type is not None) and not isinstance(product, product_type):
         raise TypeError(f"Product read in from file {xml_filename} in directory {workdir} is of type "
                         f"{type(product)}, but type {product_type} was expected.")
@@ -1219,6 +1238,10 @@ def read_xml_product(xml_filename: str,
 
 
 def _read_xml_product(xml_filename: str, workdir: str, allow_pickled: bool) -> Any:
+    """Private implementation of the core functionality of `read_xml_product`. See that function's documentation for
+    details on functionality and parameters.
+    """
+
     qualified_xml_filename = find_file(xml_filename, workdir)
 
     try:
