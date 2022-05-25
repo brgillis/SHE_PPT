@@ -1012,19 +1012,29 @@ def read_listfile(listfile_name: str,
     return l_filenames
 
 
-def replace_in_file(input_filename: str, output_filename: str, input_string: str, output_string: str) -> None:
+def replace_in_file(input_filename: str,
+                    output_filename: str,
+                    input_string: str,
+                    output_string: str) -> None:
+    """Creates a copy of the file at `input_filename` in which all occurrences of `input_string` are replaced with
+    `output_string`, and saves it to `output_filename`.
+
+    Parameters
+    ----------
+    input_filename : str
+        The fully-qualified path to the input file.
+    output_filename : str
+        The fully-qualified path to the desired location of the output file to be created. This must differ from
+        `input_filename`.
+    input_string : str
+        The string for which all occurrences in the input file should be replaced with `output_string`.
+    output_string : str
+        The string to replace all occurrences of `input_string` in the input file with.
     """
-        @brief Replaces every occurrence of $input_string in $input_filename with $output_string
-               and prints the results to $output_filename.
 
-        @param input_filename <string>
-
-        @param output_filename <string>
-
-        @param input_string <string>
-
-        @param output_string <string>
-    """
+    if input_filename == output_filename:
+        raise ValueError("In `replace_in_file`, `input_filename` and `output_filename` must differ. Input arguments "
+                         f"were: {input_filename=}, {output_filename=}, {input_string=}, {output_string=}.)")
 
     with open(output_filename, "w") as f_out:
         with open(input_filename, "r") as f_in:
@@ -1036,18 +1046,36 @@ def replace_multiple_in_file(input_filename: str,
                              output_filename: str,
                              input_strings: Sequence[str],
                              output_strings: Sequence[str]) -> None:
-    """she_dpd
-        @brief Replaces every occurrence of an input_string in input_filename with the corresponding
-               output string and prints the results to $output_filename.
+    """Creates a copy of the file at `input_filename` in which all occurrences of each string in the sequence
+    `input_strings` are replaced with the corresponding string in the sequence `output_strings`, and saves it to
+    `output_filename`.
 
-        @param input_filename <string>
+    For example, if `input_strings=["one", "two"]` and `output_strings=["1", "2"]`, all occurrences of "one" will
+    be replaced with "1", and all occurrences of "two" will be replaced with "2".
 
-        @param output_filename <string>
-
-        @param input_strings <iterable of string>
-
-        @param output_strings <iterable of string>
+    Parameters
+    ----------
+    input_filename : str
+        The fully-qualified path to the input file.
+    output_filename : str
+        The fully-qualified path to the desired location of the output file to be created. This must differ from
+        `input_filename`.
+    input_strings : Sequence[str]
+        The string for which all occurrences in the input file should be replaced with `output_string`.
+    output_strings : Sequence[str]
+        The string to replace all occurrences of `input_string` in the input file with.
     """
+
+    if input_filename == output_filename:
+        raise ValueError(
+            "In `replace_multiple_in_file`, `input_filename` and `output_filename` must differ. Input arguments "
+            f"were: {input_filename=}, {output_filename=}, {input_strings=}, {output_strings=}.)")
+
+    if len(input_strings) != len(output_strings):
+        raise ValueError(
+            "In `replace_multiple_in_file`, `input_strings` and `output_strings` were provided with different "
+            f"lengths. Input arguments were: {input_filename=}, {output_filename=}, {input_strings=}, "
+            f"{output_strings=}.)")
 
     with open(output_filename, "w") as f_out:
         with open(input_filename, "r") as f_in:
