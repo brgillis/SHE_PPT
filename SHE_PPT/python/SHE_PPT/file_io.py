@@ -1799,7 +1799,7 @@ def append_hdu(filename: str,
                workdir: str = DEFAULT_WORKDIR,
                log_info: bool = False,
                **kwargs) -> None:
-    """ Appends an HDU to a FITS file on disk. In addition to the standard functionality provided by the HDUList
+    """Appends an HDU to a FITS file on disk. In addition to the standard functionality provided by the HDUList
     object's `append` method, this function handles logging, determination of qualified filename, and raising an
     exception of the common SheFileWriteError type on error.
 
@@ -1820,27 +1820,36 @@ def append_hdu(filename: str,
     """
 
     log_method = _get_optional_log_method(log_info)
-    log_method("Appending HDU to file %s", filename)
+    log_method("Appending HDU to file %s in workdir %s", filename, workdir)
+
+    qualified_filename = get_qualified_filename(filename = filename,
+                                                workdir = workdir)
 
     try:
-        f = fits.open(filename, 'append', *args, **kwargs)
+        f = fits.open(qualified_filename, 'append', *args, **kwargs)
     except Exception as e:
-        raise SheFileReadError(filename) from e
+        raise SheFileReadError(filename = filename, workdir = workdir) from e
 
     try:
         f.append(hdu)
     except Exception as e:
-        raise SheFileWriteError(filename) from e
+        raise SheFileWriteError(filename = filename, workdir = workdir) from e
     finally:
         f.close()
 
-    logger.debug("Finished appending HDU to file %s", filename)
+    logger.debug("Finished appending HDU to file %s in workdir %s", filename, workdir)
 
 
 def try_remove_file(filename: str,
                     workdir: str = DEFAULT_WORKDIR,
                     warn: bool = False):
     """ Attempts to remove a file, but passes if any exception is raised (optionally raising a warning).
+
+    Parameters
+    ----------
+    filename
+    workdir
+    warn
     """
     try:
         qualified_filename = get_qualified_filename(filename, workdir = workdir)
