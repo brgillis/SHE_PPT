@@ -1795,12 +1795,35 @@ def read_d_method_tables(product_filename: str,
 
 def append_hdu(filename: str,
                hdu: ExtensionHDU,
-               log_info: bool = False) -> None:
+               *args,
+               workdir: str = DEFAULT_WORKDIR,
+               log_info: bool = False,
+               **kwargs) -> None:
+    """ Appends an HDU to a FITS file on disk. In addition to the standard functionality provided by the HDUList
+    object's `append` method, this function handles logging, determination of qualified filename, and raising an
+    exception of the common SheFileWriteError type on error.
+
+    Parameters
+    ----------
+    filename : str
+        The fully-qualified or workdir-relative filename of the '.fits' file to append the HDU to.
+    hdu : astropy.io.fits.hdu.base.ExtensionHDU
+        The HDU to be appended to the '.fits' file.
+    workdir : str, default="."
+        The workdir in which the file should be created. If `filename` is provided fully-qualified,
+        it is not necessary for this to be provided (and it will be ignored if it is).
+    log_info : bool, default=False
+        If True, all logging will be at the INFO level, otherwise some will be at the DEBUG level.
+    *args, **kwargs : Any
+        Any additional args and kwargs will be forwarded to the call of the `fits.open` method. See that
+        method's documentation for details on allowed arguments.
+    """
+
     log_method = _get_optional_log_method(log_info)
     log_method("Appending HDU to file %s", filename)
 
     try:
-        f = fits.open(filename, mode = 'append')
+        f = fits.open(filename, 'append', *args, **kwargs)
     except Exception as e:
         raise SheFileReadError(filename) from e
 
