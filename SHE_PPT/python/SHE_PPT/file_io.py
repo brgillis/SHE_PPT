@@ -1359,7 +1359,9 @@ def read_table(filename: str,
                workdir: str = DEFAULT_WORKDIR,
                log_info: bool = False,
                *args, **kwargs) -> Table:
-    """Reads in an astropy Table stored on disk.
+    """Reads in an astropy Table stored on disk. Reads in an astropy Table file on disk. In addition to the standard
+    functionality provided by the `Table.read` method, this function handles logging, determination of qualified
+    filename, and raising an exception of the common SheFileReadError type on error.
 
     Parameters
     ----------
@@ -1526,9 +1528,30 @@ def read_table_from_product(product_filename: str,
 
 def write_fits(hdu_list: HDUList,
                filename: str,
+               *args,
                workdir: str = DEFAULT_WORKDIR,
                log_info: bool = False,
-               *args, **kwargs) -> None:
+               **kwargs) -> None:
+    """Outputs a FITS HDUList to a file on disk. In addition to the standard functionality provided by the table
+    object's `writeto` method, this function handles logging, determination of qualified filename, and raising an
+    exception of the common SheFileWriteError type on error.
+
+    Parameters
+    ----------
+    hdu_list : astropy.io.fits.hdu.hdulist.HDUList
+        The FITS HDUList to be output
+    filename : str
+        The desired fully-qualified or workdir-relative filename of the output file.
+    workdir : str, default="."
+        The workdir in which the file should be created. If `filename` is provided fully-qualified,
+        it is not necessary for this to be provided (and it will be ignored if it is).
+    log_info : bool, default=False
+        If True, all logging will be at the INFO level, otherwise some will be at the DEBUG level.
+    *args, **kwargs : Any
+        Any additional args and kwargs will be forwarded to the call of the HDUList's `writeto` method. See that
+        method's documentation for details on allowed arguments.
+    """
+
     log_method = _get_optional_log_method(log_info)
     log_method(MSG_WRITING_FITS_FILE, filename, workdir)
 
@@ -1545,6 +1568,29 @@ def read_fits(filename: str,
               workdir: str = DEFAULT_WORKDIR,
               log_info: bool = False,
               *args, **kwargs) -> HDUList:
+    """Reads in a FITS file on disk. In addition to the standard functionality provided by the `fits.open` method,
+    this function handles logging, determination of qualified filename, and raising an
+    exception of the common SheFileReadError type on error.
+
+    Parameters
+    ----------
+    filename : str
+        The fully-qualified or workdir-relative filename of the input file.
+    workdir : str, default="."
+        The workdir in which the file exists. If `filename` is provided fully-qualified,
+        it is not necessary for this to be provided (and it will be ignored if it is).
+    log_info : bool, default=False
+        If True, all logging will be at the INFO level, otherwise some will be at the DEBUG level.
+    *args, **kwargs : Any
+        Any additional args and kwargs will be forwarded to the call to the `astropy.io.fits.open` method. See
+        that method's documentation for details on allowed arguments.
+
+    Returns
+    -------
+    f : HDUList
+        An open handle to the FITS file which is stored on disk.
+    """
+
     log_method = _get_optional_log_method(log_info)
     log_method(MSG_READING_FITS_FILE, filename, workdir)
 
