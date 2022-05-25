@@ -2063,18 +2063,38 @@ def find_file_in_path(filename: str, path: str) -> str:
 
 
 def find_aux_file(filename) -> str:
-    """
-        Searches the auxiliary directory path for a file and returns a qualified name of it if found,
-        None otherwise.
+    """Searches the auxiliary directory path for a file and returns a qualified name of it if found,
+    or raises a RuntimeError otherwise. The first instance of the file in the provided path is always returned in
+    case of multiple instances.
+
+    Parameters
+    ----------
+    filename : str
+        The path-relative filename to be searched for.
+
+    Returns
+    -------
+    qualified_filename : str
+        The fully-qualified location of the filename which has been found.
     """
 
     return find_file_in_path(filename, os.environ['ELEMENTS_AUX_PATH'])
 
 
 def find_conf_file(filename) -> str:
-    """
-        Searches the conf directory path for a file and returns a qualified name of it if found,
-        None otherwise.
+    """Searches the conf directory path for a file and returns a qualified name of it if found,
+    or raises a RuntimeError otherwise. The first instance of the file in the provided path is always returned in
+    case of multiple instances.
+
+    Parameters
+    ----------
+    filename : str
+        The path-relative filename to be searched for.
+
+    Returns
+    -------
+    qualified_filename : str
+        The fully-qualified location of the filename which has been found.
     """
 
     return find_file_in_path(filename, os.environ['ELEMENTS_CONF_PATH'])
