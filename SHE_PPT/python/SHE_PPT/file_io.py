@@ -1605,18 +1605,37 @@ def read_fits(filename: str,
     return f
 
 
-def read_d_l_method_table_filenames(l_product_filenames: List[str],
+def read_d_l_method_table_filenames(l_product_filenames: Sequence[str],
                                     workdir: str,
                                     log_info: bool = False) -> Tuple[Dict[ShearEstimationMethods, List[str]],
                                                                      List[Any]]:
-    """ Read in a dict of lists of table filenames for each shear estimation method from a list of measurements product
-        filenames.
+    """Read in a dict of lists of table filenames for each shear estimation method from a list of measurements product
+    filenames. This function is intended for use with lists of data products which each (optionally) contain a
+    data table for each shear estimation method.
+
+    Parameters
+    ----------
+    l_product_filenames : Sequence[str]:
+        A sequence of workdir-relative filenames, each corresponding to the location on disk of a '.xml' data product
+        which contains shear estimation data.
+    workdir: str
+        The workdir in which the data exists.
+    log_info : bool, default=False
+        If True, all logging will be at the INFO level, otherwise some will be at the DEBUG level.
+
+    Returns
+    -------
+    d_l_method_table_filenames : Dict[ShearEstimationMethods, List[str]]
+        A dictionary indexed by shear estimation method to lists of workdir-relative filenames of the data tables for
+        each method.
+    l_products: List[Any]
+        A list of the data products which have been read in.
     """
 
     # Init lists of filenames for each method
-    d_method_l_table_filenames: Dict[ShearEstimationMethods, List[str]] = {}
+    d_l_method_table_filenames: Dict[ShearEstimationMethods, List[str]] = {}
     for method in ShearEstimationMethods:
-        d_method_l_table_filenames[method] = []
+        d_l_method_table_filenames[method] = []
 
     # Read in the table filenames from each product, for each method
     l_products: List[Any] = []
@@ -1633,17 +1652,35 @@ def read_d_l_method_table_filenames(l_product_filenames: List[str],
         for method in ShearEstimationMethods:
             method_matched_catalog_filename = product.get_method_filename(method)
             if not is_any_type_of_none(method_matched_catalog_filename):
-                d_method_l_table_filenames[method].append(method_matched_catalog_filename)
+                d_l_method_table_filenames[method].append(method_matched_catalog_filename)
 
-    return d_method_l_table_filenames, l_products
+    return d_l_method_table_filenames, l_products
 
 
-def read_d_l_method_tables(l_product_filenames: List[str],
+def read_d_l_method_tables(l_product_filenames: Sequence[str],
                            workdir: str,
                            log_info: bool = False) -> Tuple[Dict[ShearEstimationMethods, List[Table]],
                                                             List[Any]]:
-    """ Read in a dict of lists of tables for each shear estimation method from a list of measurements product
-        filenames.
+    """Read in a dict of lists of tables for each shear estimation method from a list of measurements product
+    filenames. This function is intended for use with lists of data products which each (optionally) contain a
+    data table for each shear estimation method.
+
+    Parameters
+    ----------
+    l_product_filenames : Sequence[str]:
+        A sequence of workdir-relative filenames, each corresponding to the location on disk of a '.xml' data product
+        which contains shear estimation data.
+    workdir: str
+        The workdir in which the data exists.
+    log_info : bool, default=False
+        If True, all logging will be at the INFO level, otherwise some will be at the DEBUG level.
+
+    Returns
+    -------
+    d_l_method_tables : Dict[ShearEstimationMethods, List[Table]]
+        A dictionary indexed by shear estimation method to lists of data tables for each method.
+    l_products: List[Any]
+        A list of the data products which have been read in.
     """
 
     # Use the read_d_l_method_table_filenames function for reading, to share common code
@@ -1669,8 +1706,26 @@ def read_d_method_table_filenames(product_filename: str,
                                   workdir: str,
                                   log_info: bool = False) -> Tuple[Dict[ShearEstimationMethods, str],
                                                                    Any]:
-    """ Read in a dict of table filenames for each shear estimation method from a measurements product
-        filename.
+    """Read in a dict of table filenames for each shear estimation method from a measurements product filename. This
+    function is intended for use with lists of data products which each (optionally) contain a data table for each
+    shear estimation method.
+
+    Parameters
+    ----------
+    product_filename : str:
+        Workdir-relative filename corresponding to the location on disk of a '.xml' data product which contains shear
+        estimation data.
+    workdir: str
+        The workdir in which the data exists.
+    log_info : bool, default=False
+        If True, all logging will be at the INFO level, otherwise some will be at the DEBUG level.
+
+    Returns
+    -------
+    d_method_table_filenames : Dict[ShearEstimationMethods, str]
+        A dictionary indexed by shear estimation method to filenames of data tables for each method.
+    product: Any
+        The data product which has been read in.
     """
 
     # Use the read_d_l_method_table_filenames function for reading, to share common code
@@ -1692,10 +1747,29 @@ def read_d_method_table_filenames(product_filename: str,
 
 def read_d_method_tables(product_filename: str,
                          workdir: str,
-                         log_info: bool = False) -> Tuple[Dict[ShearEstimationMethods, Table],
+                         log_info: bool = False) -> Tuple[Dict[ShearEstimationMethods, Optional[Table]],
                                                           Any]:
-    """ Read in a dict of tables for each shear estimation method from a measurements product
-        filename.
+    """Read in a dict of tables for each shear estimation method from a measurements product filename. This
+    function is intended for use with lists of data products which each (optionally) contain a data table for each
+    shear estimation method.
+
+    Parameters
+    ----------
+    product_filename : str:
+        Workdir-relative filename corresponding to the location on disk of a '.xml' data product which contains shear
+        estimation data.
+    workdir: str
+        The workdir in which the data exists.
+    log_info : bool, default=False
+        If True, all logging will be at the INFO level, otherwise some will be at the DEBUG level.
+
+    Returns
+    -------
+    d_method_tables : Dict[ShearEstimationMethods, Optional[Table]]
+        A dictionary indexed by shear estimation method to a data table for each method. Will be indexed to `None` if no
+        table is present in the data table for a given method
+    product: Any
+        The data product which has been read in.
     """
 
     # Use the read_d_l_method_table_filenames function for reading, to share common code
