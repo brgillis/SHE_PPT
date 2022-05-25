@@ -1847,9 +1847,13 @@ def try_remove_file(filename: str,
 
     Parameters
     ----------
-    filename
-    workdir
-    warn
+    filename : str
+        The fully-qualified or workdir-relative filename of the file to be removed.
+    workdir : str, default="."
+        The workdir in which the file exists. If `filename` is provided fully-qualified,
+        it is not necessary for this to be provided (and it will be ignored if it is).
+    warn : bool
+        If True, will log a warning if anything goes wrong while trying to remove the file.
     """
     try:
         qualified_filename = get_qualified_filename(filename, workdir = workdir)
