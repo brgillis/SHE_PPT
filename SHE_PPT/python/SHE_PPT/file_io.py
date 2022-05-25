@@ -1843,7 +1843,7 @@ def append_hdu(filename: str,
 def try_remove_file(filename: str,
                     workdir: str = DEFAULT_WORKDIR,
                     warn: bool = False):
-    """ Attempts to remove a file, but passes if any exception is raised (optionally raising a warning).
+    """Attempts to remove a file, but passes if any exception is raised (optionally raising a warning).
 
     Parameters
     ----------
@@ -1867,23 +1867,19 @@ def safe_copy(qualified_src_filename: str,
               qualified_dest_filename: str,
               require_src_exist: bool = False,
               require_dest_free: bool = False) -> None:
-    """ Copy a file, without raising an exception if the source doesn't exist or destination does,
-        and making necessary directories.
+    """Copy a file, without raising an exception if the source doesn't exist or destination does,
+    and making necessary directories.
 
-        Parameters
-        ----------
-        qualified_src_filename : str
-            The fully-qualified path of the file to be copied
-        qualified_dest_filename : str
-            The fully-qualified path of where the file at qualified_src_filename should be copied to
-        require_src_exist : bool, default=False
-            If True, will raise an exception if the source file does not exist
-        require_dest_free : bool, default=False
-            If True, will raise an exception if the destination file already exists
-
-        Returns
-        -------
-        None
+    Parameters
+    ----------
+    qualified_src_filename : str
+        The fully-qualified path of the file to be copied.
+    qualified_dest_filename : str
+        The fully-qualified path of where the file at qualified_src_filename should be copied to.
+    require_src_exist : bool, default=False
+        If True, will raise an exception if the source file does not exist.
+    require_dest_free : bool, default=False
+        If True, will raise an exception if the destination file already exists.
     """
 
     # Check if the file already exists, and optionally skip if it does
@@ -1924,26 +1920,26 @@ def copy_product_between_dirs(product_filename: str,
                               dest_dir: str,
                               require_all_src_datafiles_exist: bool = False,
                               require_all_dest_datafiles_free: bool = False) -> str:
-    """ Copies a data product and all files it points to from one directory to another
+    """Copies a data product and all files it points to from one directory to another
 
-        Parameters
-        ----------
-        product_filename : str
-            The fully-qualified path of the file to be copied
-        src_dir : str
-            The path to the source directory, where the product already resides
-        dest_dir : str
-            The path to the target directory, where the product should be copied to
-        require_all_src_datafiles_exist : bool, default=False
-            If True, will raise an exception if any datafile pointed to by the product does not exist
-        require_all_dest_datafiles_free : bool, default=False
-            If True, will raise an exception if any datafile pointed to by the product already exists in the target
-            location
+    Parameters
+    ----------
+    product_filename : str
+        The fully-qualified path of the file to be copied.
+    src_dir : str
+        The path to the source directory, where the product already resides.
+    dest_dir : str
+        The path to the target directory, where the product should be copied to.
+    require_all_src_datafiles_exist : bool, default=False
+        If True, will raise an exception if any datafile pointed to by the product does not exist.
+    require_all_dest_datafiles_free : bool, default=False
+        If True, will raise an exception if any datafile pointed to by the product already exists in the target
+        location.
 
-        Returns
-        -------
-        qualified_copied_product_filename : str
-            The fully-qualified path of the new location of the product that was copied
+    Returns
+    -------
+    qualified_copied_product_filename : str
+        The fully-qualified path of the new location of the product that was copied.
     """
 
     # Ensure a data subdirectory exists in the tmpdir
@@ -1983,28 +1979,28 @@ def copy_listfile_between_dirs(listfile_filename: str,
                                dest_dir: str,
                                require_all_datafiles_exist: bool = False,
                                require_all_dest_datafiles_free: bool = False) -> str:
-    """ Copies a listfile, all products it points to, and all datafiles those products point to, from one directory
-        to another.
+    """Copies a listfile, all products it points to, and all datafiles those products point to, from one directory
+    to another.
 
-        Parameters
-        ----------
-        listfile_filename : str
-            The fully-qualified path of the listfile to be copied
-        src_dir : str
-            The path to the source directory, where the listfile already resides
-        dest_dir : str
-            The path to the target directory, where the listfile should be copied to
-        require_all_datafiles_exist : bool, default=False
-            If True, will raise an exception if any datafile pointed to by any product in the listfile does not
-            exist
-        require_all_dest_datafiles_free : bool, default=False
-            If True, will raise an exception if any datafile pointed to by the product already exists in the target
-            location
+    Parameters
+    ----------
+    listfile_filename : str
+        The fully-qualified path of the listfile to be copied.
+    src_dir : str
+        The path to the source directory, where the listfile already resides.
+    dest_dir : str
+        The path to the target directory, where the listfile should be copied to.
+    require_all_datafiles_exist : bool, default=False
+        If True, will raise an exception if any datafile pointed to by any product in the listfile does not
+        exist.
+    require_all_dest_datafiles_free : bool, default=False
+        If True, will raise an exception if any datafile pointed to by the product already exists in the target
+        location.
 
-        Returns
-        -------
-        qualified_copied_listfile_filename : str
-            The fully-qualified path of the new location of the listfile that was copied
+    Returns
+    -------
+    qualified_copied_listfile_filename : str
+        The fully-qualified path of the new location of the listfile that was copied.
     """
 
     # Copy the listfile itself
