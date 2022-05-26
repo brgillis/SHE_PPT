@@ -2276,36 +2276,73 @@ def find_file(filename: str, path: Optional[str] = None) -> str:
 
 
 def first_in_path(path: str) -> str:
-    """ Gets the first directory listed in the path.
+    """ Gets the first directory listed in the provided path string.
+
+    Parameters
+    ----------
+    path : str
+        Colon-separated list of directories.
+
+    Returns
+    -------
+    str
+        The first directory in the provided path.
     """
 
     return path.split(":")[0]
 
 
-def first_writable_in_path(path: str) -> Optional[str]:
-    """ Gets the first directory listed in the path which we have write access for.
+def first_writable_in_path(path: str) -> str:
+    """ Gets the first directory listed in the provided path string which we have write access for. Raises an
+    IOError if no directory in the path is writable
+
+    Parameters
+    ----------
+    path : str
+        Colon-separated list of directories.
+
+    Returns
+    -------
+    str
+        The first directory in the provided path which we have write access for.
     """
 
     colon_separated_path = path.split(":")
-
-    first_writable_dir = None
 
     for test_path in colon_separated_path:
 
         if os.access(test_path, os.W_OK):
             first_writable_dir = test_path
             break
+    else:
+        raise IOError(f"In call to `first_writable_in_path`, no directory in path {path} is writable.")
 
     return first_writable_dir
 
 
 def get_data_filename(filename: str, workdir: str = DEFAULT_WORKDIR) -> Optional[str]:
-    """ Given the unqualified name of a file and the work directory, determine if it's an XML data
-        product or not, and get the filename of its DataContainer if so; otherwise, just return
-        the input filename. In either case, the unqualified filename is returned.
+    """Given the unqualified name of a file and the work directory, determine if it's an XML data
+    product or not, and get the filename of its DataContainer if so; otherwise, just return
+    the input filename. In either case, the unqualified filename is returned.
 
-        This script is intended to help smooth the transition from using raw data files as
-        input/output to data products.
+    This script is intended to help smooth the transition from using raw data files as
+    input/output to data products.
+
+    Parameters
+    ----------
+    filename : str
+        The fully-qualified or workdir-relative filename of the file to get the data filename for.
+    workdir : str, default="."
+        The workdir in which the file exists. If `filename` is provided fully-qualified, or if it starts with a
+        prefix indicating it should be found in the auxdir or elsewhere, it is not necessary for this to be provided
+        (and it will be ignored if it is).
+
+    Returns
+    -------
+    data_filename : Optional[str]
+        The workdir-relative name of the data file. Note that this may be one of several values which indicates that
+        no such file exists, such as the string "None". This can be checked for through use of the
+        `filename_not_exists` function.
     """
 
     # First, see if we can open this as an XML data product
@@ -2328,10 +2365,10 @@ def get_data_filename(filename: str, workdir: str = DEFAULT_WORKDIR) -> Optional
                 data_filename = DATA_SUBDIR + prod.Data.DataStorage.DataContainer.FileName
             except AttributeError:
                 raise AttributeError("Data product does not have filename stored in the expected " +
-                                     "location (self.Data.DataStorage.DataContainer.FileName. " +
-                                     "In order to use get_data_filename with this product, the " +
-                                     "product's class must be monkey-patched to have a get_filename " +
-                                     "or get_data_filename method.")
+                                     "location (`self.Data.DataStorage.DataContainer.FileName`. " +
+                                     "In order to use `get_data_filename` with this product, the " +
+                                     "product's class must be monkey-patched to have a `get_filename` " +
+                                     "or `get_data_filename` method.")
 
     except SheFileReadError:
         # Not an XML file - so presumably it's a raw data file; return the
