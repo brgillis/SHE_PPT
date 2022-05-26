@@ -2100,8 +2100,39 @@ def find_conf_file(filename) -> str:
     return find_file_in_path(filename, os.environ['ELEMENTS_CONF_PATH'])
 
 
-def _is_no_file(name: Optional[str]):
-    return name is None or name == "None" or name == f"{DATA_SUBDIR}None" or name == "" or name == DATA_SUBDIR
+s_non_filenames = {None, "None", f"{DATA_SUBDIR}None", "", DATA_SUBDIR}
+
+
+def filename_not_exists(filename: Optional[str]):
+    """Check if a filename is one of several possible values indicating that no such file exists.
+
+    Parameters
+    ----------
+    filename : Optional[str]
+        The filename to check
+
+    Returns
+    -------
+    bool
+        True if the filename is a value indicating the file does not exist; False otherwise
+    """
+    return filename not in s_non_filenames
+
+
+def filename_exists(filename: Optional[str]) -> bool:
+    """Check if a filename is not one of several possible values indicating that no such file exists.
+
+    Parameters
+    ----------
+    filename : Optional[str]
+        The filename to check
+
+    Returns
+    -------
+    bool
+        False if the filename is a value indicating the file does not exist; True otherwise
+    """
+    return not filename_not_exists(filename)
 
 
 def _find_web_file_xml(filename: str, qualified_filename: str) -> str:
@@ -2111,7 +2142,7 @@ def _find_web_file_xml(filename: str, qualified_filename: str) -> str:
         p = read_xml_product(qualified_filename, workdir = "")
         for subfilename in p.get_all_filenames():
             # Skip if there's no file to download
-            if _is_no_file(subfilename):
+            if not filename_exists(subfilename):
                 continue
             find_web_file(os.path.join(webpath, subfilename))
     except SheFileReadError as e:
@@ -2129,13 +2160,13 @@ def _find_web_file_json(filename: str, qualified_filename: str) -> None:
     for element in l_filenames:
         if isinstance(element, str):
             # Skip if there's no file to download
-            if _is_no_file(element):
+            if not filename_exists(element):
                 continue
             find_web_file(os.path.join(webpath, element))
         else:
             for sub_element in element:
                 # Skip if there's no file to download
-                if _is_no_file(sub_element):
+                if not filename_exists(sub_element):
                     continue
                 find_web_file(os.path.join(webpath, sub_element))
 
@@ -2145,7 +2176,7 @@ def find_web_file(filename: str) -> str:
         Searches on WebDAV for a file. If found, downloads it and returns the qualified name of it. If
         it's an xml data product, will also download all associated files.
 
-        If it isn't found, returns None.
+        If it isn't found, raises an exception.
     """
 
     listfile_name: str = os.path.join(os.getcwd(),
@@ -2326,12 +2357,6 @@ def update_xml_with_value(filename: str) -> None:
                 len(bad_lines),
                 filename,
                 n_defaults)
-
-
-def filename_exists(filename: Optional[str]) -> bool:
-    """Quick function to check the filename isn't one of many strings indicating the file doesn't exist.
-    """
-    return filename not in (None, "None", f"{DATA_SUBDIR}None", "", DATA_SUBDIR)
 
 
 def remove_files(l_qualified_filenames: Sequence[str]) -> None:
