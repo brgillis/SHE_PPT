@@ -2100,7 +2100,7 @@ def find_conf_file(filename) -> str:
     return find_file_in_path(filename, os.environ['ELEMENTS_CONF_PATH'])
 
 
-s_non_filenames = {None, "None", f"{DATA_SUBDIR}None", "", DATA_SUBDIR}
+S_NON_FILENAMES = {None, "None", f"{DATA_SUBDIR}None", "", DATA_SUBDIR}
 
 
 def filename_not_exists(filename: Optional[str]):
@@ -2116,7 +2116,7 @@ def filename_not_exists(filename: Optional[str]):
     bool
         True if the filename is a value indicating the file does not exist; False otherwise
     """
-    return filename not in s_non_filenames
+    return filename not in S_NON_FILENAMES
 
 
 def filename_exists(filename: Optional[str]) -> bool:
