@@ -2474,7 +2474,7 @@ def tar_files(tarball_filename: str,
     tar_cmd = f"cd {workdir} && tar -cf {qualified_tarball_filename} {filename_string}"
     tar_results = subprocess.run(tar_cmd, shell = True, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
-    logger.info(f"tar stdout: {tar_results.stdout}")
+    logger.info("tar stdout: %s", tar_results.stdout)
     logger.debug("tar stderr: %s", tar_results.stderr)
 
     # Check that the tar process succeeded
@@ -2498,7 +2498,20 @@ T = TypeVar('T')
 
 
 class FileLoader(abc.ABC, Generic[T]):
-    """ Abstract base class for loading in a data from the work directory.
+    """ Abstract base class for loading in a data from the work directory. Instances of this class serve as a "hook"
+    to allow data to be loaded on-demand at some point in the future, using a consistent interface which doesn't
+    depend on the file type.
+
+    Attributes
+    ----------
+    filename : str
+        The workdir-relative filename of the file from which data is to be loaded.
+    qualified_filename : str
+        The fully-qualified filename of the file from which data is to be loaded.
+    workdir : str
+        The workdir in which resides the file from which data is to be loaded.
+    object, obj : Optional[T]
+        If loaded, the data which has been loaded in; otherwise `None`.
     """
 
     # Attributes set at init
@@ -2514,12 +2527,23 @@ class FileLoader(abc.ABC, Generic[T]):
     def __init__(self,
                  filename: str,
                  workdir: str):
+        """Initializes an instance of a `FileLoader` object.
+
+        Parameters
+        ----------
+        filename : str
+            The workdir-relative filename of the file from which data is to be loaded.
+        workdir : str
+            The workdir in which resides the file from which data is to be loaded.
+        """
 
         self.filename = filename
         self.workdir = workdir
 
     @property
     def filename(self) -> str:
+        """The workdir-relative filename of the file from which data is to be loaded.
+        """
         return self._filename
 
     @filename.setter
@@ -2529,6 +2553,8 @@ class FileLoader(abc.ABC, Generic[T]):
 
     @property
     def workdir(self) -> str:
+        """The workdir in which resides the file from which data is to be loaded.
+        """
         return self._workdir
 
     @workdir.setter
@@ -2538,80 +2564,175 @@ class FileLoader(abc.ABC, Generic[T]):
 
     @property
     def qualified_filename(self) -> str:
+        """The fully-qualified filename of the file from which data is to be loaded.
+        """
         if not self._qualified_filename:
             self._qualified_filename = get_qualified_filename(self.filename, self.workdir)
         return self._qualified_filename
 
     @property
     def object(self) -> Optional[T]:
+        """If loaded, the data which has been loaded in; otherwise `None`.
+        """
         return self._obj
 
     @property
     def obj(self) -> Optional[T]:
+        """Alias to `object`
+        """
         return self._obj
 
     def load(self, *args, **kwargs) -> None:
-        """ Method to load in the object.
+        """Load in the object, making it accessible via the `object` property.
+
+        Parameters
+        ----------
+        *args, **kwargs : Any
+            Any arguments passed to this will be forwarded to the appropriate method to load in the object.
         """
         self._obj = self.get(*args, **kwargs)
 
     def open(self, *args, **kwargs) -> None:
-        """ Alias to self.load.
+        """ Alias to `load`.
         """
         self.load(*args, **kwargs)
 
     def close(self) -> None:
-        """ Deletes the object to allow memory to be freed.
+        """ Deletes the reference to the object to allow memory to be freed. Can be overridden/inherit to explicitly
+        close file handles for certain file types.
         """
         self._obj = None
 
     @abc.abstractmethod
     def get(self, *args, **kwargs) -> T:
-        """ Method to get the object.  Should take a format such as:
+        """Abstract method to get and return the object.  Should take a format such as:
+        ```
+        return load_object(filename=self.filename, workdir=self.workdir, *args, **kwargs)
+        ```
 
-            return load_object(filename=self.filename, workdir=self.workdir, *args, **kwargs)
+        Parameters
+        ----------
+        *args, **kwargs : Any
+            Any arguments passed to this will be forwarded to the appropriate method to load in the object.
+
+        Returns
+        -------
+        T
+            The loaded-in object.
         """
 
 
 class ProductLoader(FileLoader):
-    """ FileLoader specialized to load in .xml data products.
+    """`FileLoader` specialized to load in `.xml` data products.
     """
 
     def get(self, *args, **kwargs) -> Any:
+        """Method to get and return the data product.
+
+        Parameters
+        ----------
+        *args, **kwargs : Any
+            Any arguments passed to this will be forwarded to the method to load in the data product.
+
+        Returns
+        -------
+        Any
+            The loaded-in data product.
+        """
         return read_xml_product(xml_filename = self.filename, workdir = self.workdir, *args, **kwargs)
 
 
 class TableLoader(FileLoader[Table]):
-    """ FileLoader specialized to load in astropy data tables.
+    """`FileLoader` specialized to load in `astropy` data tables.
     """
 
     def get(self, *args, **kwargs) -> Table:
+        """Method to get and return the table.
+
+        Parameters
+        ----------
+        *args, **kwargs : Any
+            Any arguments passed to this will be forwarded to the method to load in the table.
+
+        Returns
+        -------
+        Table
+            The loaded-in table.
+        """
         return read_table(filename = self.filename, workdir = self.workdir, *args, **kwargs)
 
 
-class FitsLoader(FileLoader[Table]):
-    """ FileLoader specialized to load in astropy data tables.
+class FitsLoader(FileLoader[HDUList]):
+    """`FileLoader` specialized to load in `FITS` files via `astropy`.
     """
 
     def get(self, *args, **kwargs) -> HDUList:
+        """Method to open and return the `FITS` file's `HDUList`.
+
+        Parameters
+        ----------
+        *args, **kwargs : Any
+            Any arguments passed to this will be forwarded to the method to open the `FITS` file.
+
+        Returns
+        -------
+        HDUList
+            The HDUList for the opened `FITS` file.
+        """
         return read_fits(self.filename, self.workdir, *args, **kwargs)
+
+    def close(self):
+        """Inherit parent `close` method to also close the file handle.
+        """
+
+        if self.object:
+            self.object.flush()
+            self.object.close()
+        super().close()
 
 
 class MultiFileLoader(Generic[T]):
-    """ A class to handle loading in multiple files of the same type.
+    """A class to handle loading in multiple files - similar to `FileLoader` (and in fact wrapping
+    it), but for lists of files rather than single files.
+
+    Attributes
+    ----------
+    workdir : str
+        The workdir in which resides the files from which data is to be loaded.
+    l_filenames : str
+        The workdir-relative filenames of the files from which data is to be loaded.
+    l_file_loaders : Sequence[FileLoader[T]]
+        The `FileLoader` objects used to load in the data from each file.
+    file_loader_type : Optional[Type[FileLoader[T]]]
+        The type of `FileLoader` used to load all files if specified or determined at init, or else `None`
     """
 
     # Attributes set at init
     workdir: str
     l_filenames: Sequence[str]
     l_file_loaders: Sequence[FileLoader[T]]
-    file_loader_type: Optional[Type[T]] = None
+    file_loader_type: Optional[Type[FileLoader[T]]] = None
 
     def __init__(self,
                  workdir: str,
                  l_file_loaders: Optional[Sequence[FileLoader[T]]] = None,
                  l_filenames: Optional[Sequence[str]] = None,
-                 file_loader_type: Optional[Type[T]] = None) -> None:
+                 file_loader_type: Optional[Type[FileLoader[T]]] = None) -> None:
+        """Initializes an instance of a `MultiFileLoader` object.
+
+        Parameters
+        ----------
+        workdir : str
+            The workdir in which resides the file from which data is to be loaded.
+        l_file_loaders : Optional[Sequence[FileLoader[T]]], default=None
+            A sequence of `FileLoader` objects to be used for loading data when requested. Cannot be provided
+            alongside `l_filenames`.
+        l_filenames : Optional[Sequence[str]], default=None
+            A sequence of filenames for which `FileLoader` objects should be created. Cannot be provided alongside
+            `l_file_loaders`, and must have `file_loader_type` provided if used.
+        file_loader_type : Optional[Type[FileLoader[T]]], default=None
+            The type of `FileLoader` to be used. Must be provided if `l_filenames` is provided.
+        """
 
         self.workdir = workdir
 
@@ -2619,12 +2740,22 @@ class MultiFileLoader(Generic[T]):
             self.file_loader_type = file_loader_type
 
         if l_file_loaders:
+
             if l_filenames:
-                raise ValueError("MultiFileLoader can be inited with only one of l_file_loaders and l_filenames.")
+                raise ValueError("MultiFileLoader can be inited with only one of `l_file_loaders` and `l_filenames`.")
             self.l_file_loaders = l_file_loaders
             self.l_filenames = [file_loader.filename for file_loader in self.l_file_loaders]
 
+            file_loader_type_in_list = type(self.l_file_loaders[0])
+            if file_loader_type and file_loader_type != file_loader_type_in_list:
+                raise TypeError(f"Type of `FileLoader` in `l_file_loaders` does not match `file_loader_type`: "
+                                f"{file_loader_type=}, {file_loader_type_in_list=}")
+            self.file_loader_type = file_loader_type_in_list
+
         elif l_filenames:
+            if not file_loader_type:
+                raise ValueError("`file_loader_type` must be specified when initializing a `MultiFileLoader` object "
+                                 f"with a list of filenames: {l_filenames=}, {file_loader_type=}")
             self.l_filenames = l_filenames
             self.l_file_loaders = [self.file_loader_type(filename = filename, workdir = self.workdir) for
                                    filename in self.l_filenames]
@@ -2634,37 +2765,54 @@ class MultiFileLoader(Generic[T]):
             self.l_filenames = []
 
     def load_all(self, *args, **kwargs):
-        """ Load all files.
+        """Load all files.
+
+        Parameters
+        ----------
+        *args, **kwargs : Any
+            Any arguments passed to this will be forwarded to the appropriate method to load in the objects.
         """
         for file_loader in self.l_file_loaders:
             file_loader.load(*args, **kwargs)
 
     def open_all(self, *args, **kwargs):
-        """ Alias to load_all.
+        """Alias to load_all.
         """
         self.load_all(*args, **kwargs)
 
     def close_all(self):
-        """ Close all files.
+        """Deletes the references to the objects to allow memory to be freed and file handles to be closed.
         """
         for file_loader in self.l_file_loaders:
             file_loader.close()
 
     def get_all(self, *args, **kwargs) -> List[T]:
-        """ Get a list of all files (load and return, but don't keep a reference).
+        """Get a list of all files (load and return, but don't keep a reference within this object).
+
+        Returns
+        -------
+        List[T]
+            A list of loaded-in objects.
         """
         return [file_loader.get(*args, **kwargs) for file_loader in self.l_file_loaders]
 
 
 class MultiProductLoader(MultiFileLoader):
-    """ A class to handle loading in multiple xml data products.
+    """A class to handle loading in multiple xml data products.
     """
 
-    file_loader_type: Type = ProductLoader
+    file_loader_type: Type[FileLoader] = ProductLoader
 
 
 class MultiTableLoader(MultiFileLoader):
-    """ A class to handle loading in multiple xml data products.
+    """A class to handle loading in multiple xml data products.
     """
 
-    file_loader_type: Type = TableLoader
+    file_loader_type: Type[FileLoader] = TableLoader
+
+
+class MultiFitsLoader(MultiFileLoader):
+    """A class to handle loading in multiple `FITS` files.
+    """
+
+    file_loader_type: Type[FileLoader] = FitsLoader
