@@ -2379,9 +2379,10 @@ def get_data_filename(filename: str, workdir: str = DEFAULT_WORKDIR) -> Optional
 
 
 def update_xml_with_value(filename: str) -> None:
-    r""" Updates xml files with value
+    r"""Updates xml files with value. Checks for <Key><\Key> not followed by <Value><\Value>.
 
-    Checks for <Key><\Key> not followed by <Value><\Value>
+    This function is provided for manual use in fixing .xml files, and should not
+    be used in production code.
     r"""
 
     try:
@@ -2411,7 +2412,7 @@ def update_xml_with_value(filename: str) -> None:
 
         if not new_line:
             # Add random string...
-            new_line = lines[idx + ii].split(STR_KEY)[0] + '<Value>dkhf</Value>\n'
+            new_line = lines[idx + ii].split(STR_KEY)[0] + '<Value>NULL</Value>\n'
             n_defaults += 1
         lines = lines[:idx + ii + 1] + [new_line] + lines[idx + ii + 1:]
 
