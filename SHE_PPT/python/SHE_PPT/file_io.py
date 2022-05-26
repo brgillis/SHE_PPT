@@ -2428,9 +2428,15 @@ def update_xml_with_value(filename: str) -> None:
 
 
 def remove_files(l_qualified_filenames: Sequence[str]) -> None:
-    """ Loop through and try to remove all files in a list. No exception is raised if the files can't be removed,
-        but a warning is logged.
+    """Loop through and try to remove all files in a list. No exception is raised if the files can't be removed,
+    but a warning is logged.
+
+    Parameters
+    ----------
+    l_qualified_filenames : Sequence[str]
+        A sequence of fully-qualified filenames of files to be removed.
     """
+
     for qualified_filename in l_qualified_filenames:
         try:
             os.remove(qualified_filename)
@@ -2443,6 +2449,21 @@ def tar_files(tarball_filename: str,
               l_filenames: Sequence[str],
               workdir: str = DEFAULT_WORKDIR,
               delete_files: bool = False):
+    """Create a tarball containing all files in the provided list of filenames.
+
+    Parameters
+    ----------
+    tarball_filename : str
+        The desired fully-qualified or workdir-relative filename of the tarball to be created.
+    l_filenames : Sequence[str]
+        A sequence of workdir-relative filenames to be put into the tarball.
+    workdir : str, default="."
+        The workdir in which the file exists. If `filename` is provided fully-qualified,
+        it is not necessary for this to be provided (and it will be ignored if it is).
+    delete_files : bool, default=False
+        If True, all files in `l_filenames` will be deleted after being put into the tarball
+    """
+
     qualified_tarball_filename: str = get_qualified_filename(tarball_filename, workdir)
 
     filename_string = " ".join(l_filenames)
@@ -2459,8 +2480,7 @@ def tar_files(tarball_filename: str,
     # Check that the tar process succeeded
     if not os.path.isfile(qualified_tarball_filename):
         base_error = FileNotFoundError(f"{qualified_tarball_filename} not found. "
-                                       f"stderr from tar process "
-                                       f"was: \n"
+                                       f"stderr from tar process was: \n"
                                        f"{tar_results.stderr}")
         raise SheFileWriteError(filename = tarball_filename, workdir = workdir) from base_error
     if tar_results.returncode:
@@ -2470,13 +2490,8 @@ def tar_files(tarball_filename: str,
 
     # Delete the files if desired
     if delete_files:
-        for filename in l_filenames:
-            qualified_filename = get_qualified_filename(filename, workdir)
-            try:
-                os.remove(qualified_filename)
-            except Exception:
-                # Don't need to fail the whole process, but log the issue
-                logger.warning(f"Cannot delete file: {qualified_filename}")
+        l_qualified_filenames = [get_qualified_filename(filename) for filename in l_filenames]
+        remove_files(l_qualified_filenames)
 
 
 T = TypeVar('T')
