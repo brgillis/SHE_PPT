@@ -2135,6 +2135,55 @@ def filename_exists(filename: Optional[str]) -> bool:
     return not filename_not_exists(filename)
 
 
+def find_web_file(filename: str) -> str:
+    """Searches on WebDAV for a file. If found, downloads it and returns the qualified name of it. If
+    it's an xml data product or listfile, will also download all associated files. If it isn't found,
+    raises an exception.
+
+    IMPORTANT: This function should be used with care. In production, there won't be internet access, so this will
+    fail for that reason. And for testing, it is preferred to use the common DataSync class to download test data.
+
+    Parameters
+    ----------
+    filename : str
+        The name of the file to retrieve from WebDAV, relative to the PF-SHE directory on it.
+
+    Returns
+    -------
+    qualified_filename : str
+        The fully-qualified path to where the file exists after download.
+    """
+
+    listfile_name: str = os.path.join(os.getcwd(),
+                                      os.path.splitext(os.path.split(filename)[-1])[0] + f"{os.getpid()}_list.txt")
+
+    try:
+        # We need a listfile to pass to the DataSync, so create one listing only this one filename
+        write_listfile(listfile_name, [filename])
+
+        sync = DataSync(SYNC_CONF, listfile_name)
+        sync.download()
+
+        qualified_filename: str = sync.absolutePath(filename)
+    finally:
+        # Cleanup the created listfile on either success or failure
+        if os.path.exists(listfile_name):
+            logger.debug("Cleaning up %s", listfile_name)
+            try_remove_file(listfile_name)
+
+    # If it's an xml data product, we'll also need to download all files it points to
+    if filename[-4:] == ".xml":
+
+        _find_web_file_xml(filename, qualified_filename)
+
+    # If it's json listfile, we'll also need to download all files it points to
+    elif filename[-5:] == ".json":
+
+        _find_web_file_json(filename, qualified_filename)
+
+    return qualified_filename
+
+
 def _find_web_file_xml(filename: str, qualified_filename: str) -> str:
     webpath: str = os.path.split(filename)[0]
 
@@ -2169,48 +2218,6 @@ def _find_web_file_json(filename: str, qualified_filename: str) -> None:
                 if not filename_exists(sub_element):
                     continue
                 find_web_file(os.path.join(webpath, sub_element))
-
-
-def find_web_file(filename: str) -> str:
-    """
-        Searches on WebDAV for a file. If found, downloads it and returns the qualified name of it. If
-        it's an xml data product, will also download all associated files.
-
-        If it isn't found, raises an exception.
-    """
-
-    listfile_name: str = os.path.join(os.getcwd(),
-                                      os.path.splitext(os.path.split(filename)[-1])[0] + f"{os.getpid()}_list.txt")
-
-    logger.debug("Writing listfile to %s", listfile_name)
-
-    try:
-        try:
-            with open(listfile_name, 'w') as fo:
-                fo.write(filename + "\n")
-        except Exception as e:
-            raise SheFileWriteError(listfile_name) from e
-
-        sync = DataSync(SYNC_CONF, listfile_name)
-        sync.download()
-
-        qualified_filename: str = sync.absolutePath(filename)
-    finally:
-        if os.path.exists(listfile_name):
-            logger.debug("Cleaning up %s", listfile_name)
-            os.remove(listfile_name)
-
-    # If it's an xml data product, we'll also need to download all files it points to
-    if filename[-4:] == ".xml":
-
-        _find_web_file_xml(filename, qualified_filename)
-
-    # If it's json listfile, we'll also need to download all files it points to
-    elif filename[-5:] == ".json":
-
-        _find_web_file_json(filename, qualified_filename)
-
-    return qualified_filename
 
 
 def find_file(filename: str, path: Optional[str] = None) -> str:
