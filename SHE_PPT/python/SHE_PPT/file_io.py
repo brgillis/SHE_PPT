@@ -2185,6 +2185,10 @@ def find_web_file(filename: str) -> str:
 
 
 def _find_web_file_xml(filename: str, qualified_filename: str) -> str:
+    """Private implementation of part of find_web_file, handling downloading data files pointed to by a downloaded
+    data product.
+    """
+
     webpath: str = os.path.split(filename)[0]
 
     try:
@@ -2195,14 +2199,18 @@ def _find_web_file_xml(filename: str, qualified_filename: str) -> str:
                 continue
             find_web_file(os.path.join(webpath, subfilename))
     except SheFileReadError as e:
+        # MDB files end in XML but can't be read this way, and will raise this exception, so silently pass in that case
         if "elementBinding" not in str(e.__cause__):
             raise
-        # MDB files end in XML but can't be read this way, and will raise this exception, so silently pass
 
     return webpath
 
 
 def _find_web_file_json(filename: str, qualified_filename: str) -> None:
+    """Private implementation of part of find_web_file, handling downloading data products pointed to by a downloaded
+    listfile.
+    """
+
     webpath: str = os.path.split(filename)[0]
 
     l_filenames = read_listfile(qualified_filename)
@@ -2221,9 +2229,21 @@ def _find_web_file_json(filename: str, qualified_filename: str) -> None:
 
 
 def find_file(filename: str, path: Optional[str] = None) -> str:
-    """
-        Locates a file based on the presence/absence of an AUX/ or CONF/ prefix, searching in the aux or conf
-        directories respectively for it, or else the work directory if supplied.
+    """Locates a file based on the presence/absence of an 'AUX/', 'CONF/', 'WEB/', or 'HOME/' prefix, searching in the
+    aux, conf, WebDAV, or home directories respectively for it, or else the provided path if one is supplied.
+
+    Parameters
+    ----------
+    filename : str
+        The name of the file to search for.
+    path : Optional[str]
+        The path to search for the file in, if the filename does not start with either the 'AUX/', 'CONF/',
+        'WEB/', or 'HOME/' prefixes.
+
+    Returns
+    -------
+    qualified_filename : str
+        The fully-qualified path to the located file.
     """
 
     logger.debug("Finding file %s, with path %s", filename, path)
@@ -2232,6 +2252,7 @@ def find_file(filename: str, path: Optional[str] = None) -> str:
     filename = str(filename)
     qualified_filename: Optional[str]
 
+    # Delegate to the appropriate method based on the prefix of the filename
     if filename[0:4] == "WEB/":
         qualified_filename = find_web_file(filename[4:])
     elif filename[0:4] == "AUX/":
@@ -2242,13 +2263,15 @@ def find_file(filename: str, path: Optional[str] = None) -> str:
         path = os.path.join(os.getenv('HOME'), os.path.dirname(filename[5:]))
         qualified_filename = find_file_in_path(os.path.basename(filename), path)
     elif filename[0] == "/":
+        # The file appears to already be fully-qualified, so check if it exists
         if not os.path.exists(filename):
             raise RuntimeError("File " + filename + " cannot be found.")
         qualified_filename = filename
     elif path is not None:
         qualified_filename = find_file_in_path(filename, path)
     else:
-        raise ValueError("path must be supplied if filename doesn't start with AUX/ or CONF/")
+        raise ValueError("path must be supplied if filename doesn't start with 'AUX/', 'CONF/', 'WEB/', or 'HOME/'.")
+
     return qualified_filename
 
 
