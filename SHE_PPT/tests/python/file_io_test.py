@@ -122,6 +122,10 @@ class TestIO(SheTestCase):
         # Check it raises a ValueError if not properly initialised
         with pytest.raises(ValueError):
             _ = SheFileAccessError()
+        with pytest.raises(ValueError):
+            _ = SheFileAccessError(filename = test_filename,
+                                   workdir = self.workdir,
+                                   qualified_filename = "/not/the/right.filename")
 
     def test_get_allowed_filename(self):
         """Test the function and classes to get a filename.
