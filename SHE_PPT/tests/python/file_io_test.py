@@ -132,25 +132,48 @@ class TestIO(SheTestCase):
         get_allowed_filename above.
         """
         file_namer = SheFileNamer(version = "1.2", workdir = self.workdir, subdir = "", extension = "junk")
-        file_namer.type_name_head = "TNH"
-        file_namer.type_name_body = "TNB"
-        file_namer.type_name_tail = "TNT"
-        file_namer.instance_id_head = None
-        file_namer.instance_id_body = "IIB"
-        file_namer.instance_id_tail = "IIT"
 
+        # Set up type name and instance ID, testing setters and getters while we do so
+
+        str_tnh = "TNH"
+        file_namer.type_name_head = str_tnh
+        assert file_namer.type_name_head == str_tnh
+
+        str_tnb = "TNB"
+        file_namer.type_name_body = str_tnb
+        assert file_namer.type_name_body == str_tnb
+
+        str_tnt = "TNT"
+        file_namer.type_name_tail = str_tnt
+        assert file_namer.type_name_tail == str_tnt
+
+        file_namer.instance_id_head = None
+        assert file_namer.instance_id_head == None
+
+        str_iib = "IIB"
+        file_namer.instance_id_body = str_iib
+        assert file_namer.instance_id_body == str_iib
+
+        str_iit = "IIT"
+        file_namer.instance_id_tail = str_iit
+        assert file_namer.instance_id_tail == str_iit
+
+        # Check that the constructed filename is as expected
         filename = file_namer.filename
         qualified_filename = file_namer.qualified_filename
 
         # Check type name
-        assert f"_{file_namer.type_name_head}-{file_namer.type_name_body}-{file_namer.type_name_tail}_" in filename
+        ex_type_name = f"{str_tnh}-{str_tnb}-{str_tnt}"
+        assert file_namer.type_name == ex_type_name
+        assert f"_{ex_type_name}_" in filename
 
         # Check instance ID
-        assert f"_{file_namer.instance_id_body}-{file_namer.instance_id_tail}_" in filename
+        ex_instance_id = f"{str_iib}-{str_iit}"
+        assert f"_{ex_instance_id}_" in filename
 
         # Check version was properly converted to release
-        expect_filename_tail = "Z_01.02.junk"
-        assert filename[-len(expect_filename_tail):] == expect_filename_tail
+        ex_filename_tail = "Z_01.02.junk"
+        assert filename[-len(ex_filename_tail):] == ex_filename_tail
 
         # Check qualified filename is as expected
         assert get_qualified_filename(filename, self.workdir) == qualified_filename
@@ -164,6 +187,40 @@ class TestIO(SheTestCase):
 
         assert new_filename != filename
         assert new_qualified_filename != qualified_filename
+
+        # Check that all other getters and setters function as expected
+        file_namer.type_name = "1"
+        assert file_namer.type_name == "1"
+
+        file_namer.instance_id = "2"
+        assert file_namer.instance_id == "2"
+
+        file_namer.extension = ".ext"
+        assert file_namer.extension == ".ext"
+
+        file_namer.release = "40.03"
+        assert file_namer.release == "40.03"
+
+        file_namer.version = "5.1.0"
+        assert file_namer.version == "5.1.0"
+
+        file_namer.subdir = "foo/"
+        assert file_namer.subdir == "foo/"
+
+        file_namer.processing_function = "EXT"
+        assert file_namer.processing_function == "EXT"
+
+        file_namer.timestamp = False
+        assert file_namer.timestamp == False
+
+        file_namer.workdir = "/home/user"
+        assert file_namer.workdir == "/home/user"
+
+        file_namer.filename = "foo.bar"
+        assert file_namer.filename == "foo.bar"
+
+        file_namer.qualified_filename = "/etc/conf/this.file"
+        assert file_namer.qualified_filename == "/etc/conf/this.file"
 
     def test_read_xml_product(self):
         """Tests of the read_xml_product function.
