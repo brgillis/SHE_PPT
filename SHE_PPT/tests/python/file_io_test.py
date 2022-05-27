@@ -38,13 +38,15 @@ from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_S
                              processing_function_maxlen, read_listfile, read_product_and_table, read_table,
                              read_table_from_product, read_xml_product,
                              safe_copy, tar_files, type_name_maxlen, update_xml_with_value, write_listfile,
-                             write_product_and_table, )
+                             write_product_and_table, write_xml_product, )
 from SHE_PPT.products.mer_final_catalog import create_dpd_mer_final_catalog
 from SHE_PPT.table_formats.mer_final_catalog import MerFinalCatalogFormat
 from SHE_PPT.testing.mock_mer_final_cat import MockMFCGalaxyTableGenerator
 from SHE_PPT.testing.utility import SheTestCase
 from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
 from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
+
+PATH_NO_DIRECTORY = "/no/directory/"
 
 
 class TestIO(SheTestCase):
@@ -270,29 +272,44 @@ class TestIO(SheTestCase):
         file_namer.qualified_filename = "/etc/conf/this.file"
         assert file_namer.qualified_filename == "/etc/conf/this.file"
 
-    def test_read_xml_product(self):
-        """Tests of the read_xml_product function.
+    def test_rw_xml_product(self):
+        """Tests of the read_xml_product and write_xml_product functions.
         """
 
         # Use one of the sample data products in the auxdir for testing
-        test_filename = find_aux_file('SHE_PPT/sample_vis_stacked_frame.xml')
+        test_qualified_filename = find_aux_file('SHE_PPT/sample_vis_stacked_frame.xml')
         ex_type = dpdVisStackedFrame
         non_ex_type = dpdVisCalibratedFrame
 
+        test_write_filename = "product.xml"
+        test_qualified_write_filename = get_qualified_filename(test_write_filename,
+                                                               workdir = self.workdir)
+
         # Test that we can read it successfully, both type checking and not
-        p1 = read_xml_product(test_filename)
+        p1 = read_xml_product(test_qualified_filename)
         p1.validateBinding()
 
-        p2 = read_xml_product(test_filename, product_type = ex_type)
+        write_xml_product(p1, test_qualified_write_filename)
+
+        p2 = read_xml_product(test_qualified_write_filename, product_type = ex_type)
         p2.validateBinding()
 
         assert type(p1) == type(p2)
 
         # Test that if we specify the wrong type, a TypeError is raised
         with pytest.raises(TypeError):
-            _ = read_xml_product(test_filename, product_type = non_ex_type)
+            _ = read_xml_product(test_qualified_filename, product_type = non_ex_type)
 
-        # TODO: Add test that we get expected errors
+        # Test that we get expected read/write errors
+        with pytest.raises(SheFileWriteError):
+            write_xml_product(p1,
+                              test_write_filename,
+                              workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY, ),
+                              log_info = True)
+        with pytest.raises(SheFileReadError):
+            _ = read_xml_product(test_write_filename,
+                                 workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY),
+                                 log_info = True)
 
     def test_rw_listfile(self):
         """Tests of reading and writing listfiles.
@@ -309,7 +326,15 @@ class TestIO(SheTestCase):
         assert read_listfile(self.tuple_listfile_name, workdir = self.workdir) == l_tupled
         os.remove(os.path.join(self.workdir, self.tuple_listfile_name))
 
-        # TODO: Add test that we get expected errors
+        with pytest.raises(SheFileWriteError):
+            write_listfile(self.listfile_name,
+                           l_simple,
+                           workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY, ),
+                           log_info = True)
+        with pytest.raises(SheFileReadError):
+            _ = read_listfile(self.listfile_name,
+                              workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY),
+                              log_info = True)
 
     def test_replace_in_file(self):
 
