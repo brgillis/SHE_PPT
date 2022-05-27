@@ -54,7 +54,6 @@ class TestIO(SheTestCase):
     """
 
     listfile_name: str = "test_listfile.junk"
-    tuple_listfile_name: str = "test_listfile.junk"
     src_subdir = "src"
     dest_subdir = "dest"
 
@@ -316,15 +315,21 @@ class TestIO(SheTestCase):
         """
 
         l_simple = ["file1.ext", "file2.ext", "file3.ext"]
-        l_tupled = [("file1a.ext", "file1b.ext"), ("file2a.ext", "file2b.ext"), ("file2a.ext", "file2b.ext")]
+        l_tupled = [("file1a.ext", "file1b.ext"), ("file2a.ext", "file2b.ext"), ("file3a.ext", "file3b.ext")]
+        l_single_tupled = [("file1.ext",), ("file2.ext",), ("file3.ext",)]
 
         write_listfile(self.listfile_name, l_simple, workdir = self.workdir)
         assert read_listfile(self.listfile_name, workdir = self.workdir) == l_simple
         os.remove(os.path.join(self.workdir, self.listfile_name))
 
-        write_listfile(self.tuple_listfile_name, l_tupled, workdir = self.workdir)
-        assert read_listfile(self.tuple_listfile_name, workdir = self.workdir) == l_tupled
-        os.remove(os.path.join(self.workdir, self.tuple_listfile_name))
+        write_listfile(self.listfile_name, l_tupled, workdir = self.workdir)
+        assert read_listfile(self.listfile_name, workdir = self.workdir) == l_tupled
+        os.remove(os.path.join(self.workdir, self.listfile_name))
+
+        # Test that the singly-tupled listfile is properly flattened when read back in
+        write_listfile(self.listfile_name, l_single_tupled, workdir = self.workdir)
+        assert read_listfile(self.listfile_name, workdir = self.workdir) == l_simple
+        os.remove(os.path.join(self.workdir, self.listfile_name))
 
         with pytest.raises(SheFileWriteError):
             write_listfile(self.listfile_name,
