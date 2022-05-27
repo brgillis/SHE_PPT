@@ -127,7 +127,43 @@ class TestIO(SheTestCase):
             get_allowed_filename("test", instance_id, extension = ".junk", release = "06.66", subdir = "subdir",
                                  processing_function = "p" * (processing_function_maxlen + 1))
 
-        # TODO: Add test of constructing type name and instance id via FileNamer class
+    def test_file_namer(self):
+        """Test the functionality of the SheFileNamer class, except that which was already tested through the test of
+        get_allowed_filename above.
+        """
+        file_namer = SheFileNamer(version = "1.2", workdir = self.workdir, subdir = "", extension = "junk")
+        file_namer.type_name_head = "TNH"
+        file_namer.type_name_body = "TNB"
+        file_namer.type_name_tail = "TNT"
+        file_namer.instance_id_head = None
+        file_namer.instance_id_body = "IIB"
+        file_namer.instance_id_tail = "IIT"
+
+        filename = file_namer.filename
+        qualified_filename = file_namer.qualified_filename
+
+        # Check type name
+        assert f"_{file_namer.type_name_head}-{file_namer.type_name_body}-{file_namer.type_name_tail}_" in filename
+
+        # Check instance ID
+        assert f"_{file_namer.instance_id_body}-{file_namer.instance_id_tail}_" in filename
+
+        # Check version was properly converted to release
+        expect_filename_tail = "Z_01.02.junk"
+        assert filename[-len(expect_filename_tail):] == expect_filename_tail
+
+        # Check qualified filename is as expected
+        assert get_qualified_filename(filename, self.workdir) == qualified_filename
+
+        # Check that the filename updates when a setter is called
+        sleep(0.1)
+        file_namer.type_name_head = file_namer.type_name_head
+
+        new_filename = file_namer.filename
+        new_qualified_filename = file_namer.qualified_filename
+
+        assert new_filename != filename
+        assert new_qualified_filename != qualified_filename
 
     def test_read_xml_product(self):
         """Tests of the read_xml_product function.
