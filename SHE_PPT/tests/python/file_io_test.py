@@ -30,7 +30,7 @@ import pytest
 
 import SHE_PPT
 from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_SUBDIR, DEFAULT_INSTANCE_ID,
-                             DEFAULT_TYPE_NAME, SheFileNamer, SheFileReadError, SheFileWriteError,
+                             DEFAULT_TYPE_NAME, SheFileAccessError, SheFileNamer, SheFileReadError, SheFileWriteError,
                              copy_listfile_between_dirs,
                              copy_product_between_dirs,
                              find_aux_file,
@@ -78,6 +78,46 @@ class TestIO(SheTestCase):
         self.table_filename = mfc_table_gen.table_filename
         self.product_filename = mfc_table_gen.product_filename
         self.listfile_filename = mfc_table_gen.listfile_filename
+
+    def test_she_file_access_error(self):
+        """Unit test of the SheAccessError exception class and child classes of it.
+        """
+
+        test_filename = "filename.txt"
+        test_qualified_filename = get_qualified_filename(test_filename,
+                                                         workdir = self.workdir)
+        test_message = "This is a test message."
+
+        test_access_error = SheFileAccessError(filename = test_filename,
+                                               workdir = self.workdir)
+        test_write_error = SheFileWriteError(qualified_filename = test_qualified_filename)
+        test_read_error = SheFileReadError(filename = test_filename,
+                                           workdir = self.workdir,
+                                           qualified_filename = test_qualified_filename,
+                                           message = test_message)
+
+        # Check that all attrs are as expected
+
+        assert test_access_error.filename == test_filename
+        assert test_access_error.workdir == self.workdir
+        assert test_access_error.qualified_filename == test_qualified_filename
+        assert test_access_error.operation == SheFileAccessError.operation
+
+        assert test_write_error.qualified_filename == test_qualified_filename
+        assert test_write_error.operation == SheFileWriteError.operation
+
+        assert test_read_error.filename == test_filename
+        assert test_read_error.workdir == self.workdir
+        assert test_read_error.qualified_filename == test_qualified_filename
+        assert test_read_error.operation == SheFileReadError.operation
+        assert test_read_error.message == test_message
+
+        # Check that they can all be raised and caught as expected parent classes
+        for test_error in (test_access_error, test_write_error, test_read_error):
+            with pytest.raises(IOError):
+                raise test_error
+            with pytest.raises(SheFileAccessError):
+                raise test_error
 
     def test_get_allowed_filename(self):
         """Test the function and classes to get a filename.
