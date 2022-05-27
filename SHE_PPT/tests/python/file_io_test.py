@@ -34,9 +34,9 @@ from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_S
                              copy_listfile_between_dirs,
                              copy_product_between_dirs,
                              find_aux_file,
-                             get_allowed_filename, instance_id_maxlen,
+                             get_allowed_filename, get_qualified_filename, instance_id_maxlen,
                              processing_function_maxlen, read_listfile, read_product_and_table, read_table,
-                             read_xml_product,
+                             read_table_from_product, read_xml_product,
                              safe_copy, tar_files, type_name_maxlen, update_xml_with_value, write_listfile,
                              write_product_and_table, )
 from SHE_PPT.products.mer_final_catalog import create_dpd_mer_final_catalog
@@ -80,6 +80,8 @@ class TestIO(SheTestCase):
         self.listfile_filename = mfc_table_gen.listfile_filename
 
     def test_get_allowed_filename(self):
+        """Test the function and classes to get a filename.
+        """
 
         instance_id = "instance"
 
@@ -125,9 +127,13 @@ class TestIO(SheTestCase):
             get_allowed_filename("test", instance_id, extension = ".junk", release = "06.66", subdir = "subdir",
                                  processing_function = "p" * (processing_function_maxlen + 1))
 
-    def test_read_xml_product(self):
-        """ Tests of the read_xml_product function."""
+        # TODO: Add test of constructing type name and instance id via FileNamer class
 
+    def test_read_xml_product(self):
+        """Tests of the read_xml_product function.
+        """
+
+        # Use one of the sample data products in the auxdir for testing
         test_filename = find_aux_file('SHE_PPT/sample_vis_stacked_frame.xml')
         ex_type = dpdVisStackedFrame
         non_ex_type = dpdVisCalibratedFrame
@@ -145,40 +151,50 @@ class TestIO(SheTestCase):
         with pytest.raises(TypeError):
             _ = read_xml_product(test_filename, product_type = non_ex_type)
 
+        # TODO: Add test that we get expected errors
+
     def test_rw_listfile(self):
-
-        simple_list = ["file1.ext", "file2.ext", "file3.ext"]
-        tuple_list = [("file1a.ext", "file1b.ext"), ("file2a.ext", "file2b.ext"), ("file2a.ext", "file2b.ext")]
-
-        write_listfile(self.listfile_name, simple_list)
-        assert read_listfile(self.listfile_name) == simple_list
-        os.remove(self.listfile_name)
-
-        write_listfile(self.tuple_listfile_name, tuple_list)
-        assert read_listfile(self.tuple_listfile_name) == tuple_list
-        os.remove(self.tuple_listfile_name)
-
-    # TODO: Tests for replace_(multiple_)in_file
-
-    def test_update_xml_with_value(self):
-        """ Creates simple xml file
-        Updates with <Value>
-
+        """Tests of reading and writing listfiles.
         """
 
-        test_filename = find_aux_file('SHE_PPT/sample_vis_stacked_frame.xml')
+        l_simple = ["file1.ext", "file2.ext", "file3.ext"]
+        l_tupled = [("file1a.ext", "file1b.ext"), ("file2a.ext", "file2b.ext"), ("file2a.ext", "file2b.ext")]
 
-        product = read_xml_product(test_filename)
-        lines = open(test_filename).readlines()
+        write_listfile(self.listfile_name, l_simple, workdir = self.workdir)
+        assert read_listfile(self.listfile_name, workdir = self.workdir) == l_simple
+        os.remove(os.path.join(self.workdir, self.listfile_name))
+
+        write_listfile(self.tuple_listfile_name, l_tupled, workdir = self.workdir)
+        assert read_listfile(self.tuple_listfile_name, workdir = self.workdir) == l_tupled
+        os.remove(os.path.join(self.workdir, self.tuple_listfile_name))
+
+        # TODO: Add test that we get expected errors
+
+    def test_replace_in_file(self):
+
+        # Create a file to test some replacement commands
+        # TODO
+        pass
+
+    def test_update_xml_with_value(self):
+        """ Test creating a simple xml file and updating with <Value>
+        """
+
+        qualified_test_filename = find_aux_file('SHE_PPT/sample_vis_stacked_frame.xml')
+
+        product = read_xml_product(qualified_test_filename)
+        lines = open(qualified_test_filename).readlines()
         num_lines = len(lines)
         lines = [line for ii, line in enumerate(lines) if not ('<Value>' in line and '<Key>' in lines[ii - 1])]
         if len(lines) < num_lines:
-            temp_test_filename = 'temp_test.xml'
-            open(temp_test_filename, 'w').writelines(lines)
+            qualified_temp_test_filename = os.path.join(self.workdir, 'temp_test.xml')
+            open(qualified_temp_test_filename, 'w').writelines(lines)
 
-            update_xml_with_value(temp_test_filename)
-            product = read_xml_product(temp_test_filename)
+            update_xml_with_value(qualified_temp_test_filename)
+            product = read_xml_product(qualified_temp_test_filename)
         product.validateBinding()
+
+    # TODO add tests of get_qualified_filename
 
     def test_tar_files(self):
         """ Runs test of tarring files.
@@ -186,36 +202,39 @@ class TestIO(SheTestCase):
 
         # Set up the files
 
-        filenames = ["a.txt", "b.txt"]
-        texts = ["foo/n", "bar/n"]
+        l_filenames = ["a.txt", "b.txt"]
+        l_texts = ["foo/n", "bar/n"]
 
-        for filename, text in zip(filenames, texts):
+        l_qualified_filenames = [get_qualified_filename(filename, self.workdir) for filename in l_filenames]
+
+        for filename, text in zip(l_filenames, l_texts):
             with open(os.path.join(self.workdir, filename), "w") as fo:
                 fo.write(text)
 
         tarball_filename = "tarball.tar"
+        qualified_tarball_filename = get_qualified_filename(tarball_filename, self.workdir)
 
         # Check everything is set up as expected
-        assert os.path.isfile(os.path.join(self.workdir, filenames[0]))
-        assert os.path.isfile(os.path.join(self.workdir, filenames[1]))
+        assert os.path.isfile(l_qualified_filenames[0])
+        assert os.path.isfile(l_qualified_filenames[1])
 
         tar_files(tarball_filename = tarball_filename,
-                  l_filenames = filenames,
+                  l_filenames = l_filenames,
                   workdir = self.workdir,
                   delete_files = True)
 
         # Check things have been tarred up
-        assert not os.path.isfile(os.path.join(self.workdir, filenames[0]))
-        assert not os.path.isfile(os.path.join(self.workdir, filenames[1]))
-        assert os.path.isfile(os.path.join(self.workdir, tarball_filename))
+        assert not os.path.isfile(l_qualified_filenames[0])
+        assert not os.path.isfile(l_qualified_filenames[1])
+        assert os.path.isfile(qualified_tarball_filename)
 
-        # Check that we can untar and retrieve the data
+        # Check that we can un-tar and retrieve the data
         subprocess.call(f"cd {self.workdir} && tar xf {tarball_filename}", shell = True)
 
-        assert os.path.isfile(os.path.join(self.workdir, filenames[0]))
-        assert os.path.isfile(os.path.join(self.workdir, filenames[1]))
+        assert os.path.isfile(l_qualified_filenames[0])
+        assert os.path.isfile(l_qualified_filenames[1])
 
-        for filename, text in zip(filenames, texts):
+        for filename, text in zip(l_filenames, l_texts):
             with open(os.path.join(self.workdir, filename), "r") as fi:
                 read_text = fi.read()
                 assert read_text == text
@@ -260,7 +279,7 @@ class TestIO(SheTestCase):
         # Check that they're the same as was written out
         assert p2.Header.ProductId.value() == p.Header.ProductId.value()
         assert p2.get_data_filename() == p.get_data_filename()
-        assert (t2 == t).all()
+        assert np.all(t2 == t)
 
         # Now try while specifying the table filename
         input_table_filename = get_allowed_filename(type_name = "TABLE", instance_id = "1",
@@ -282,7 +301,11 @@ class TestIO(SheTestCase):
         # Check that they're the same as was written out
         assert p3.Header.ProductId.value() == p.Header.ProductId.value()
         assert p3.get_data_filename() == p.get_data_filename()
-        assert (t3 == t).all()
+        assert np.all(t3 == t)
+
+        # And try reading just the table from the product
+        t4 = read_table_from_product(product_filename, workdir = self.workdir)
+        assert np.all(t4 == t)
 
     def test_safe_copy(self):
         """ Unit test of SHE_PPT.file_io.safe_copy
@@ -385,7 +408,7 @@ class TestIO(SheTestCase):
         l_src_products = read_listfile(qualified_src_listfile_filename)
         l_dest_products = read_listfile(qualified_dest_listfile_filename)
 
-        assert l_src_products == l_dest_products
+        assert np.all(l_src_products == l_dest_products)
 
         # Test that the function doesn't raise any error if the destination file already exists, as it now does
         copy_listfile_between_dirs(listfile_filename = self.listfile_filename,
