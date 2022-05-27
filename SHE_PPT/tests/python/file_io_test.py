@@ -672,3 +672,18 @@ class TestIO(SheTestCase):
         os.remove(qualified_dest_listfile_filename)
         os.remove(qualified_dest_product_filename)
         os.remove(qualified_dest_table_filename)
+
+    # TODO: Add test of rw table
+    # TODO: Add test of rw fits
+    # TODO: Add test of FileLoader, MultiFileLoader, and child classes
+    # TODO: Add tests of read_d_l_method_table_filenames etc.
+    # TODO: Add test of append_hdu
+    # TODO: Add test of try_remove_file
+    # TODO: Add test of find_conf_file
+    # TODO: Add test of filename_not_exists
+    # TODO: Add test of find_web_file
+    # TODO: Add test of find_file
+    # TODO: Add test of first_in_path
+    # TODO: Add test of first_writable_in_path
+    # TODO: Add test of get_data_filename
+    # TODO: Add test of remove_files
