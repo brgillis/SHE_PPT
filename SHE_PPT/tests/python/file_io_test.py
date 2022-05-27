@@ -82,6 +82,24 @@ class TestIO(SheTestCase):
         self.product_filename = mfc_table_gen.product_filename
         self.listfile_filename = mfc_table_gen.listfile_filename
 
+    def test_get_qualified_filename(self):
+        """Unit test of get_qualified_filename.
+        """
+
+        test_local_filename = "filename.txt"
+        test_qualified_filename = "/path/filename.txt"
+
+        # Check it combines properly
+        assert get_qualified_filename(test_local_filename, self.workdir) == os.path.join(self.workdir,
+                                                                                         test_local_filename, )
+
+        # Check a fully-qualified filename is used without incorporating workdir
+        assert get_qualified_filename(test_qualified_filename, self.workdir) == test_qualified_filename
+
+        # Check an error is raised when expected
+        with pytest.raises(ValueError):
+            _ = get_qualified_filename("")
+
     def test_she_file_access_error(self):
         """Unit test of the SheAccessError exception class and child classes of it.
         """
@@ -390,6 +408,29 @@ class TestIO(SheTestCase):
             for input_line, output_line in zip(l_input_lines, fi):
                 assert input_line.replace(str_val1, str_val1a).replace(str_key3, str_key3a) == output_line
 
+        # Test expected exceptions
+
+        with pytest.raises(ValueError):
+            # Same file as input and output
+            replace_in_file(input_filename = qualified_filename_in,
+                            output_filename = qualified_filename_in,
+                            input_string = str_val1,
+                            output_string = str_val1a)
+
+        with pytest.raises(ValueError):
+            # Same file as input and output
+            replace_multiple_in_file(input_filename = qualified_filename_in,
+                                     output_filename = qualified_filename_in,
+                                     input_strings = [str_val1, str_key3],
+                                     output_strings = [str_val1a, str_key3a])
+
+        with pytest.raises(ValueError):
+            # Different list lengths
+            replace_multiple_in_file(input_filename = qualified_filename_in,
+                                     output_filename = qualified_filename_out,
+                                     input_strings = [str_val1, str_key3],
+                                     output_strings = [str_val1a])
+
     def test_update_xml_with_value(self):
         """ Test creating a simple xml file and updating with <Value>
         """
@@ -407,8 +448,6 @@ class TestIO(SheTestCase):
             update_xml_with_value(qualified_temp_test_filename)
             product = read_xml_product(qualified_temp_test_filename)
         product.validateBinding()
-
-    # TODO add tests of get_qualified_filename
 
     def test_tar_files(self):
         """ Runs test of tarring files.
