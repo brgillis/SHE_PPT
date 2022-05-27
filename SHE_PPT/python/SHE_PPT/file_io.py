@@ -2490,7 +2490,7 @@ def tar_files(tarball_filename: str,
 
     # Delete the files if desired
     if delete_files:
-        l_qualified_filenames = [get_qualified_filename(filename) for filename in l_filenames]
+        l_qualified_filenames = [get_qualified_filename(filename, workdir) for filename in l_filenames]
         remove_files(l_qualified_filenames)
 
 
