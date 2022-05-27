@@ -187,27 +187,27 @@ class SheFileAccessError(IOError):
         # Set the filename, workdir, and qualified_filename attributes, checking that enough information is provided
         # and it doesn't conflict
 
-        if qualified_filename is not None:
-
-            self.qualified_filename = qualified_filename
-
-        elif (filename is not None) and (workdir is not None):
+        if (filename is not None) and (workdir is not None):
 
             self.filename = filename
             self.workdir = workdir
 
             # Check that the provided value for qualified_filename doesn't conflict with what we construct here
             constructed_qualified_filename = get_qualified_filename(filename = filename, workdir = workdir)
-            if self.qualified_filename is not None and self.qualified_filename != constructed_qualified_filename:
-                if self.qualified_filename != constructed_qualified_filename:
-                    raise ValueError("In construction of `SheFileAccessError`, `qualified_filename`, `filename`, "
-                                     "and `workdir` were all supplied, and give conflicting qualified filenames: "
-                                     f"`qualified_filename` = '{qualified_filename}', "
-                                     f"`filename` = '{filename}', "
-                                     f"`workdir` = '{workdir}', "
-                                     f"`constructed_qualified_filename` = '{constructed_qualified_filename}'")
+            if qualified_filename is not None and qualified_filename != constructed_qualified_filename:
+                raise ValueError("In construction of `SheFileAccessError`, `qualified_filename`, `filename`, "
+                                 "and `workdir` were all supplied, and give conflicting qualified filenames: "
+                                 f"`qualified_filename` = '{qualified_filename}', "
+                                 f"`filename` = '{filename}', "
+                                 f"`workdir` = '{workdir}', "
+                                 f"`constructed_qualified_filename` = '{constructed_qualified_filename}'")
 
             self.qualified_filename = constructed_qualified_filename
+
+        elif qualified_filename is not None:
+
+            self.qualified_filename = qualified_filename
+
         else:
             raise ValueError("Cannot construct `SheFileAccessError` without either `qualified_filename` argument or "
                              "both `filename` and `workdir` arguments. Arguments were: "
