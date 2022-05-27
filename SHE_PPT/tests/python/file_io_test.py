@@ -148,7 +148,7 @@ class TestIO(SheTestCase):
         assert file_namer.type_name_tail == str_tnt
 
         file_namer.instance_id_head = None
-        assert file_namer.instance_id_head == None
+        assert file_namer.instance_id_head is None
 
         str_iib = "IIB"
         file_namer.instance_id_body = str_iib
@@ -211,7 +211,7 @@ class TestIO(SheTestCase):
         assert file_namer.processing_function == "EXT"
 
         file_namer.timestamp = False
-        assert file_namer.timestamp == False
+        assert file_namer.timestamp is False
 
         file_namer.workdir = "/home/user"
         assert file_namer.workdir == "/home/user"
