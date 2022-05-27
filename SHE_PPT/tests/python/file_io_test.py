@@ -37,7 +37,9 @@ from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_S
                              get_allowed_filename, get_qualified_filename, instance_id_maxlen,
                              processing_function_maxlen, read_listfile, read_product_and_table, read_table,
                              read_table_from_product, read_xml_product,
-                             safe_copy, tar_files, type_name_maxlen, update_xml_with_value, write_listfile,
+                             replace_in_file, replace_multiple_in_file, safe_copy, tar_files, type_name_maxlen,
+                             update_xml_with_value,
+                             write_listfile,
                              write_product_and_table, write_xml_product, )
 from SHE_PPT.products.mer_final_catalog import create_dpd_mer_final_catalog
 from SHE_PPT.table_formats.mer_final_catalog import MerFinalCatalogFormat
@@ -342,10 +344,51 @@ class TestIO(SheTestCase):
                               log_info = True)
 
     def test_replace_in_file(self):
+        """Unit test of replace_in_file and replace_multiple_in_file functions.
+        """
+
+        # Define variables for input and output strings
+        str_key1 = "key1"
+        str_key2 = "key2"
+        str_key3 = "key3"
+
+        str_val1 = "val1"
+        str_val2 = "val2"
+
+        str_val1a = "val1a"
+        str_key3a = "key3a"
+
+        l_input_lines = [f"{str_key1}: {str_val1}\n",
+                         f"{str_key2}: {str_val1} {str_val1}\n",
+                         f"{str_key3}: {str_val2}\n"]
 
         # Create a file to test some replacement commands
-        # TODO
-        pass
+        filename_in = "test.txt"
+        qualified_filename_in = get_qualified_filename(filename_in, workdir = self.workdir)
+        with open(qualified_filename_in, "w") as fo:
+            for line in l_input_lines:
+                fo.write(line)
+
+        filename_out = "test_out.txt"
+        qualified_filename_out = get_qualified_filename(filename_out, workdir = self.workdir)
+
+        # Try replacing a single value
+        replace_in_file(input_filename = qualified_filename_in,
+                        output_filename = qualified_filename_out,
+                        input_string = str_val1,
+                        output_string = str_val1a)
+        with open(qualified_filename_out, "r") as fi:
+            for input_line, output_line in zip(l_input_lines, fi):
+                assert input_line.replace(str_val1, str_val1a) == output_line
+
+        # Try replacing multiple values
+        replace_multiple_in_file(input_filename = qualified_filename_in,
+                                 output_filename = qualified_filename_out,
+                                 input_strings = [str_val1, str_key3],
+                                 output_strings = [str_val1a, str_key3a])
+        with open(qualified_filename_out, "r") as fi:
+            for input_line, output_line in zip(l_input_lines, fi):
+                assert input_line.replace(str_val1, str_val1a).replace(str_key3, str_key3a) == output_line
 
     def test_update_xml_with_value(self):
         """ Test creating a simple xml file and updating with <Value>
