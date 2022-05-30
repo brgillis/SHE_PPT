@@ -22,6 +22,7 @@ __updated__ = "2021-08-20"
 
 import os
 import shutil
+import stat
 import subprocess
 from time import sleep
 from typing import Type
@@ -41,7 +42,7 @@ from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_S
                              SheFileNamer,
                              SheFileReadError,
                              SheFileWriteError,
-                             TableLoader, copy_listfile_between_dirs,
+                             TableLoader, append_hdu, copy_listfile_between_dirs,
                              copy_product_between_dirs,
                              find_aux_file,
                              get_allowed_filename, get_qualified_filename, instance_id_maxlen,
@@ -320,34 +321,34 @@ class TestIO(SheTestCase):
         ex_type = dpdVisStackedFrame
         non_ex_type = dpdVisCalibratedFrame
 
-        test_write_filename = "product.xml"
-        test_qualified_write_filename = get_qualified_filename(test_write_filename,
-                                                               workdir = self.workdir)
+        test_filename = "product.xml"
+        test_qualified_filename = get_qualified_filename(test_filename,
+                                                         workdir = self.workdir)
 
         # Test that we can write out the sample product and read it back in
-        write_xml_product(self.test_xml_product, test_qualified_write_filename)
+        write_xml_product(self.test_xml_product, test_qualified_filename)
 
-        p2 = read_xml_product(test_qualified_write_filename, product_type = ex_type)
+        p2 = read_xml_product(test_qualified_filename, product_type = ex_type)
         p2.validateBinding()
 
         assert type(self.test_xml_product) == type(p2)
 
         # Test that if we specify the wrong type, a TypeError is raised
         with pytest.raises(TypeError):
-            _ = read_xml_product(test_qualified_write_filename, product_type = non_ex_type)
+            _ = read_xml_product(test_qualified_filename, product_type = non_ex_type)
 
         # Test that we get expected read/write errors
         with pytest.raises(SheFileWriteError):
             write_xml_product(self.test_xml_product,
-                              test_write_filename,
+                              test_filename,
                               workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY, ),
                               log_info = True)
         with pytest.raises(SheFileReadError):
-            _ = read_xml_product(test_write_filename,
+            _ = read_xml_product(test_filename,
                                  workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY),
                                  log_info = True)
 
-        try_remove_file(test_qualified_write_filename)
+        try_remove_file(test_qualified_filename)
 
     @staticmethod
     def _run_file_loader_test(file_loader: FileLoader, ex_type: Type):
@@ -377,20 +378,20 @@ class TestIO(SheTestCase):
         """Test that the ProductLoader class works as expected.
         """
 
-        test_write_filename = "product_loader_product.xml"
-        test_qualified_write_filename = get_qualified_filename(test_write_filename,
-                                                               workdir = self.workdir)
+        test_filename = "product_loader_product.xml"
+        test_qualified_filename = get_qualified_filename(test_filename,
+                                                         workdir = self.workdir)
 
         # Test that we can write out the sample product and read it back in with the ProductLoader
-        write_xml_product(self.test_xml_product, test_qualified_write_filename)
+        write_xml_product(self.test_xml_product, test_qualified_filename)
 
-        product_loader = ProductLoader(filename = test_write_filename,
+        product_loader = ProductLoader(filename = test_filename,
                                        workdir = self.workdir)
 
         # Test that the ProductLoader is set up as expected
-        assert product_loader.filename == test_write_filename
+        assert product_loader.filename == test_filename
         assert product_loader.workdir == self.workdir
-        assert product_loader.qualified_filename == test_qualified_write_filename
+        assert product_loader.qualified_filename == test_qualified_filename
         assert product_loader.object is None
         assert product_loader.obj is None
 
@@ -404,7 +405,7 @@ class TestIO(SheTestCase):
         self._run_file_loader_test(product_loader, ex_type)
         self._run_multi_file_loader_test(multi_product_loader, ex_type)
 
-        try_remove_file(test_qualified_write_filename)
+        try_remove_file(test_qualified_filename)
 
     def test_rw_listfile(self):
         """Tests of reading and writing listfiles.
@@ -443,46 +444,46 @@ class TestIO(SheTestCase):
         """Tests of the read_table and write_table functions.
         """
 
-        test_write_filename = "table.fits"
-        test_qualified_write_filename = get_qualified_filename(test_write_filename,
-                                                               workdir = self.workdir)
+        test_filename = "table.fits"
+        test_qualified_filename = get_qualified_filename(test_filename,
+                                                         workdir = self.workdir)
 
         # Test that we can write out the sample table and read it back in
-        write_table(self.test_table, test_qualified_write_filename)
+        write_table(self.test_table, test_qualified_filename)
 
-        t2 = read_table(test_qualified_write_filename)
+        t2 = read_table(test_qualified_filename)
         assert np.all(self.test_table == t2)
 
         # Test that we get expected read/write errors
         with pytest.raises(SheFileWriteError):
-            write_table(self.test_xml_product,
-                        test_write_filename,
+            write_table(self.test_table,
+                        test_filename,
                         workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY, ),
                         log_info = True)
         with pytest.raises(SheFileReadError):
-            _ = read_table(test_write_filename,
+            _ = read_table(test_filename,
                            workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY),
                            log_info = True)
 
-        try_remove_file(test_qualified_write_filename)
+        try_remove_file(test_qualified_filename)
 
     def test_table_loader(self):
         """Test that the TableLoader class works as expected.
         """
 
-        test_write_filename = "table_loader_table.fits"
-        test_qualified_write_filename = get_qualified_filename(test_write_filename,
-                                                               workdir = self.workdir)
+        test_filename = "table_loader_table.fits"
+        test_qualified_filename = get_qualified_filename(test_filename,
+                                                         workdir = self.workdir)
 
         # Test that we can write out the sample table and read it back in
-        write_table(self.test_table, test_qualified_write_filename)
+        write_table(self.test_table, test_qualified_filename)
 
-        table_loader = TableLoader(filename = test_write_filename,
+        table_loader = TableLoader(filename = test_filename,
                                    workdir = self.workdir)
 
         # Test making a MultiProductLoader with this
         multi_table_loader = MultiTableLoader(workdir = self.workdir,
-                                              l_filenames = [test_write_filename],
+                                              l_filenames = [test_filename],
                                               file_loader_type = TableLoader)
 
         # Run common tests on this and the Multi version
@@ -490,52 +491,52 @@ class TestIO(SheTestCase):
         self._run_file_loader_test(table_loader, ex_type)
         self._run_multi_file_loader_test(multi_table_loader, ex_type)
 
-        try_remove_file(test_qualified_write_filename)
+        try_remove_file(test_qualified_filename)
 
     def test_rw_fits(self):
         """Tests of the read_fits and write_fits functions.
         """
 
-        test_write_filename = "fits.fits"
-        test_qualified_write_filename = get_qualified_filename(test_write_filename,
-                                                               workdir = self.workdir)
+        test_filename = "fits.fits"
+        test_qualified_filename = get_qualified_filename(test_filename,
+                                                         workdir = self.workdir)
 
         # Test that we can write out the sample fits and read it back in
-        write_fits(self.test_hdulist, test_qualified_write_filename)
+        write_fits(self.test_hdulist, test_qualified_filename)
 
-        f2 = read_fits(test_qualified_write_filename)
+        f2 = read_fits(test_qualified_filename)
         assert np.all(self.test_hdulist[1].data == f2[1].data)
 
         # Test that we get expected read/write errors
         with pytest.raises(SheFileWriteError):
-            write_fits(self.test_xml_product,
-                       test_write_filename,
+            write_fits(self.test_hdulist,
+                       test_filename,
                        workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY, ),
                        log_info = True)
         with pytest.raises(SheFileReadError):
-            _ = read_fits(test_write_filename,
+            _ = read_fits(test_filename,
                           workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY),
                           log_info = True)
 
-        try_remove_file(test_qualified_write_filename)
+        try_remove_file(test_qualified_filename)
 
     def test_fits_loader(self):
         """Test that the FitsLoader class works as expected.
         """
 
-        test_write_filename = "fits_loader_fits.fits"
-        test_qualified_write_filename = get_qualified_filename(test_write_filename,
-                                                               workdir = self.workdir)
+        test_filename = "fits_loader_fits.fits"
+        test_qualified_filename = get_qualified_filename(test_filename,
+                                                         workdir = self.workdir)
 
         # Test that we can write out the sample fits and read it back in
-        write_fits(self.test_hdulist, test_qualified_write_filename)
+        write_fits(self.test_hdulist, test_qualified_filename)
 
-        fits_loader = FitsLoader(filename = test_write_filename,
+        fits_loader = FitsLoader(filename = test_filename,
                                  workdir = self.workdir)
 
         # Test making a MultiProductLoader with this
         multi_fits_loader = MultiFitsLoader(workdir = self.workdir,
-                                            l_filenames = [test_write_filename],
+                                            l_filenames = [test_filename],
                                             file_loader_type = FitsLoader)
 
         # Run common tests on this and the Multi version
@@ -543,7 +544,57 @@ class TestIO(SheTestCase):
         self._run_file_loader_test(fits_loader, ex_type)
         self._run_multi_file_loader_test(multi_fits_loader, ex_type)
 
-        try_remove_file(test_qualified_write_filename)
+        # Test that we get expected read/write errors
+        with pytest.raises(SheFileWriteError):
+            write_fits(self.test_xml_product,
+                       test_filename,
+                       workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY, ),
+                       log_info = True)
+        with pytest.raises(SheFileReadError):
+            _ = read_fits(test_filename,
+                          workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY),
+                          log_info = True)
+
+        try_remove_file(test_qualified_filename)
+
+    def test_append_hdu(self):
+        """Tests of the append_hdu function.
+        """
+
+        # Start by writing a file to disk
+        test_filename = "append_hdu.fits"
+        test_qualified_filename = get_qualified_filename(test_filename,
+                                                         workdir = self.workdir)
+        write_fits(self.test_hdulist, test_qualified_filename)
+
+        # Create a new file and try appending it
+        t = Table([[10, 20]])
+        t_hdu = table_to_hdu(t)
+
+        append_hdu(test_qualified_filename, t_hdu)
+
+        # Check that the new HDU was in fact appended
+
+        f2 = read_fits(test_qualified_filename)
+        assert np.all(t_hdu.data == f2[2].data)
+
+        # Test that we get expected read/write errors
+        with pytest.raises(SheFileReadError):
+            append_hdu(test_filename,
+                       hdu = t_hdu,
+                       workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY),
+                       log_info = True)
+        try:
+            with pytest.raises(SheFileWriteError):
+                os.chmod(test_qualified_filename, stat.S_IREAD)
+                write_fits(self.test_hdulist,
+                           test_filename,
+                           workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY, ),
+                           log_info = True)
+        finally:
+            os.chmod(test_qualified_filename, stat.S_IREAD | stat.S_IWRITE)
+
+        try_remove_file(test_qualified_filename)
 
     def test_replace_in_file(self):
         """Unit test of replace_in_file and replace_multiple_in_file functions.
