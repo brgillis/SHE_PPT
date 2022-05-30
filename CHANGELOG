@@ -38,6 +38,7 @@ Miscellaneous
 -------------
 - Version number is now determined in the code directly from what's in the CMakeLists.txt file, and no longer needs to
   be maintained separately
+- Added unit test of setting default values in pipeline_config
 
 
 Changes in v8.12
