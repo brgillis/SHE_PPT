@@ -2116,7 +2116,7 @@ def filename_not_exists(filename: Optional[str]):
     bool
         True if the filename is a value indicating the file does not exist; False otherwise
     """
-    return filename not in S_NON_FILENAMES
+    return filename in S_NON_FILENAMES
 
 
 def filename_exists(filename: Optional[str]) -> bool:

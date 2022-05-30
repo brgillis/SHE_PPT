@@ -24,6 +24,7 @@ import os
 import shutil
 import stat
 import subprocess
+from copy import deepcopy
 from time import sleep
 from typing import Type
 
@@ -38,13 +39,13 @@ from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_S
                              MultiProductLoader,
                              MultiTableLoader,
                              ProductLoader,
-                             SheFileAccessError,
+                             S_NON_FILENAMES, SheFileAccessError,
                              SheFileNamer,
                              SheFileReadError,
                              SheFileWriteError,
                              TableLoader, append_hdu, copy_listfile_between_dirs,
                              copy_product_between_dirs,
-                             find_aux_file,
+                             filename_exists, filename_not_exists, find_aux_file,
                              get_allowed_filename, get_qualified_filename, instance_id_maxlen,
                              processing_function_maxlen, read_fits, read_listfile, read_product_and_table, read_table,
                              read_table_from_product, read_xml_product,
@@ -666,6 +667,19 @@ class TestIO(SheTestCase):
                                      input_strings = [str_val1, str_key3],
                                      output_strings = [str_val1a])
 
+    def test_filename_exists(self):
+        """Unit tests of `filename_(not_)exists`.
+        """
+
+        # Create a set of values to test
+        s_test_vals = deepcopy(S_NON_FILENAMES)
+        s_test_vals.add("actual_filename.text")
+
+        for test_val in s_test_vals:
+            ex_filename_exists = test_val not in S_NON_FILENAMES
+            assert filename_exists(test_val) == ex_filename_exists
+            assert filename_not_exists(test_val) == (not ex_filename_exists)
+
     def test_update_xml_with_value(self):
         """ Test creating a simple xml file and updating with <Value>
         """
@@ -911,7 +925,6 @@ class TestIO(SheTestCase):
     # TODO: Add tests of read_d_l_method_table_filenames etc.
     # TODO: Add test of try_remove_file
     # TODO: Add test of find_conf_file
-    # TODO: Add test of filename_not_exists
     # TODO: Add test of find_web_file
     # TODO: Add test of find_file
     # TODO: Add test of first_in_path
