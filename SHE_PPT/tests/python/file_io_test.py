@@ -28,11 +28,14 @@ from typing import Type
 
 import numpy as np
 import pytest
+from astropy.io.fits import HDUList, PrimaryHDU, table_to_hdu
 from astropy.table import Table
 
 import SHE_PPT
 from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_SUBDIR, DEFAULT_INSTANCE_ID,
-                             DEFAULT_TYPE_NAME, FileLoader, MultiFileLoader, MultiProductLoader, MultiTableLoader,
+                             DEFAULT_TYPE_NAME, FileLoader, FitsLoader, MultiFileLoader, MultiFitsLoader,
+                             MultiProductLoader,
+                             MultiTableLoader,
                              ProductLoader,
                              SheFileAccessError,
                              SheFileNamer,
@@ -42,13 +45,13 @@ from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_S
                              copy_product_between_dirs,
                              find_aux_file,
                              get_allowed_filename, get_qualified_filename, instance_id_maxlen,
-                             processing_function_maxlen, read_listfile, read_product_and_table, read_table,
+                             processing_function_maxlen, read_fits, read_listfile, read_product_and_table, read_table,
                              read_table_from_product, read_xml_product,
                              replace_in_file, replace_multiple_in_file, safe_copy, tar_files,
                              try_remove_file,
                              type_name_maxlen,
                              update_xml_with_value,
-                             write_listfile,
+                             write_fits, write_listfile,
                              write_product_and_table, write_table, write_xml_product, )
 from SHE_PPT.products.mer_final_catalog import create_dpd_mer_final_catalog
 from SHE_PPT.table_formats.mer_final_catalog import MerFinalCatalogFormat
@@ -96,6 +99,10 @@ class TestIO(SheTestCase):
 
         # Make a sample table for testing
         self.test_table = Table(data = [[0.0, 1.0], [0.1, 1.1]])
+
+        table_hdu = table_to_hdu(self.test_table)
+
+        self.test_hdulist = HDUList([PrimaryHDU(), table_hdu])
 
     def test_get_qualified_filename(self):
         """Unit test of get_qualified_filename.
@@ -485,6 +492,59 @@ class TestIO(SheTestCase):
 
         try_remove_file(test_qualified_write_filename)
 
+    def test_rw_fits(self):
+        """Tests of the read_fits and write_fits functions.
+        """
+
+        test_write_filename = "fits.fits"
+        test_qualified_write_filename = get_qualified_filename(test_write_filename,
+                                                               workdir = self.workdir)
+
+        # Test that we can write out the sample fits and read it back in
+        write_fits(self.test_hdulist, test_qualified_write_filename)
+
+        f2 = read_fits(test_qualified_write_filename)
+        assert np.all(self.test_hdulist[1].data == f2[1].data)
+
+        # Test that we get expected read/write errors
+        with pytest.raises(SheFileWriteError):
+            write_fits(self.test_xml_product,
+                       test_write_filename,
+                       workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY, ),
+                       log_info = True)
+        with pytest.raises(SheFileReadError):
+            _ = read_fits(test_write_filename,
+                          workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY),
+                          log_info = True)
+
+        try_remove_file(test_qualified_write_filename)
+
+    def test_fits_loader(self):
+        """Test that the FitsLoader class works as expected.
+        """
+
+        test_write_filename = "fits_loader_fits.fits"
+        test_qualified_write_filename = get_qualified_filename(test_write_filename,
+                                                               workdir = self.workdir)
+
+        # Test that we can write out the sample fits and read it back in
+        write_fits(self.test_hdulist, test_qualified_write_filename)
+
+        fits_loader = FitsLoader(filename = test_write_filename,
+                                 workdir = self.workdir)
+
+        # Test making a MultiProductLoader with this
+        multi_fits_loader = MultiFitsLoader(workdir = self.workdir,
+                                            l_filenames = [test_write_filename],
+                                            file_loader_type = FitsLoader)
+
+        # Run common tests on this and the Multi version
+        ex_type = HDUList
+        self._run_file_loader_test(fits_loader, ex_type)
+        self._run_multi_file_loader_test(multi_fits_loader, ex_type)
+
+        try_remove_file(test_qualified_write_filename)
+
     def test_replace_in_file(self):
         """Unit test of replace_in_file and replace_multiple_in_file functions.
         """
@@ -797,7 +857,6 @@ class TestIO(SheTestCase):
         os.remove(qualified_dest_product_filename)
         os.remove(qualified_dest_table_filename)
 
-    # TODO: Add test of rw fits and its FileLoader and MultiFileLoader
     # TODO: Add tests of read_d_l_method_table_filenames etc.
     # TODO: Add test of append_hdu
     # TODO: Add test of try_remove_file
