@@ -64,11 +64,28 @@ class ClineArgType(Enum):
 
 
 class SheArgumentParser(ArgumentParser):
-    """ Argument parser specialized for OU-SHE executables.
+    """ Argument parser specialized for OU-SHE executables. This child class adds various methods to conveniently add
+    cline-args formatted in the SHE standard way, and methods to add various common cline-args.
+
+    This class also automatically adds all cline-args which are used in all OU-SHE executables:
+
+    * --pipeline_config
+    * --workdir
+    * --logdir
+    * --profile
+    * --dry_run
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        """Initializes an instance of a SheArgumentParser object.
+
+        Parameters
+        ----------
+        *args, **kwargs : Any
+            Any additional args and kwargs are forwarded to the parent-class initializer.
+        """
+
+        super().__init__(*args, **kwargs)
 
         # Input filenames
         self.add_input_arg(f'--{CA_PIPELINE_CONFIG}', type = str, default = None,
@@ -94,18 +111,66 @@ class SheArgumentParser(ArgumentParser):
                       *args,
                       help: Optional[str] = None,
                       **kwargs) -> Action:
+        """Adds a cline-arg to this parser, with the help text formatted to specify that it's an input argument.
+
+        Parameters
+        ----------
+        help : Optional[str], default=None
+            The desired help text for this cline-arg.
+        *args, **kwargs : Any
+            Any additional arguments are forwarded to the call to the self.add_arg_with_type method. This method
+            recognizes the `suppress_warnings` kwarg, and forwards any other args and kwargs to its call to the
+            parent-class's `add_argument` method.
+
+        Returns
+        -------
+        Action
+            The constructed Action for this cline-arg.
+        """
         return self.add_arg_with_type(*args, arg_type = ClineArgType.INPUT, help = help, **kwargs)
 
     def add_output_arg(self,
                        *args,
                        help: Optional[str] = None,
                        **kwargs) -> Action:
+        """Adds a cline-arg to this parser, with the help text formatted to specify that it's an output argument.
+
+        Parameters
+        ----------
+        help : Optional[str], default=None
+            The desired help text for this cline-arg.
+        *args, **kwargs : Any
+            Any additional arguments are forwarded to the call to the self.add_arg_with_type method. This method
+            recognizes the `suppress_warnings` kwarg, and forwards any other args and kwargs to its call to the
+            parent-class's `add_argument` method.
+
+        Returns
+        -------
+        Action
+            The constructed Action for this cline-arg.
+        """
         return self.add_arg_with_type(*args, arg_type = ClineArgType.OUTPUT, help = help, **kwargs)
 
     def add_option_arg(self,
                        *args,
                        help: Optional[str] = None,
                        **kwargs) -> Action:
+        """Adds a cline-arg to this parser, with the help text formatted to specify that it's an input argument.
+
+        Parameters
+        ----------
+        help : Optional[str], default=None
+            The desired help text for this cline-arg.
+        *args, **kwargs : Any
+            Any additional arguments are forwarded to the call to the self.add_arg_with_type method. This method
+            recognizes the `suppress_warnings` kwarg, and forwards any other args and kwargs to its call to the
+            parent-class's `add_argument` method.
+
+        Returns
+        -------
+        Action
+            The constructed Action for this cline-arg.
+        """
         return self.add_arg_with_type(*args, arg_type = ClineArgType.OPTION, help = help, **kwargs)
 
     def add_arg_with_type(self,
@@ -114,7 +179,27 @@ class SheArgumentParser(ArgumentParser):
                           help: Optional[str] = None,
                           suppress_warnings: bool = False,
                           **kwargs) -> Action:
-        """ Function to add an argument with help formatted depending on the argument type.
+        """Adds a cline-arg to this parser, with help formatted to specify the type of argument it is.
+
+        Parameters
+        ----------
+        arg_type : ClineArgType, default=ClineArgType.INPUT
+            The type of cline-arg this is, specified as an element of the `ClineArgType` Enum. Possibilities are:
+            * ClineArgType.INPUT (default)
+            * ClineArgType.OUTPUT
+            * ClineArgType.OPTION
+        help : Optional[str], default=None
+            The desired help text for this cline-arg.
+        suppress_warnings : bool, default=False
+            If `True`, will not warn if a default value is set for a cline-arg with a `store_true` or `store_false`
+            action.
+        *args, **kwargs : Any
+            Any additional arguments are forwarded to the call to the parent-class's `add_argument` method.
+
+        Returns
+        -------
+        Action
+            The constructed Action for this cline-arg.
         """
 
         formatted_help: Optional[str] = None
@@ -142,6 +227,9 @@ class SheArgumentParser(ArgumentParser):
     # Convenience methods to add option args
 
     def add_disable_failsafe_arg(self):
+        """Adds a command-line argument to disable failsafe blocks, `--disable_failsafe`. This is added as a
+        `store_true` option cline-arg.
+        """
         self.add_option_arg(f'--{CA_DISABLE_FAILSAFE}', action = ACT_STORE_TRUE,
                             help = f'Disable any failsafe blocks in the code. If this is set and such a block is hit, '
                                    f'any exception will be re-raised.')
@@ -149,26 +237,75 @@ class SheArgumentParser(ArgumentParser):
     # Convenience functions to add input filename cline-args
 
     def add_mdb_arg(self, arg_type: ClineArgType = ClineArgType.INPUT):
+        """Adds a command-line argument for a Mission Database (MDB) file.
+
+        Parameters
+        ----------
+        arg_type : ClineArgType, default=ClineArgType.INPUT
+            The type of cline-arg this is, specified as an element of the `ClineArgType` Enum. Possibilities are:
+            * ClineArgType.INPUT (default)
+            * ClineArgType.OUTPUT
+        """
         self.add_arg_with_type(f'--{CA_MDB}', type = str, default = None, arg_type = arg_type,
                                help = 'Mission Database .xml file')
 
     def add_data_images_arg(self, arg_type: ClineArgType = ClineArgType.INPUT):
+        """Adds a command-line argument for a listfile of VIS Calibrated Frame data products,
+        `--data_images`.
+
+        Parameters
+        ----------
+        arg_type : {ClineArgType.INPUT, ClineArgType.OUTPUT}, default=ClineArgType.INPUT
+            The type of cline-arg this is, specified as an element of the `ClineArgType` Enum.
+        """
         self.add_arg_with_type(f'--{CA_DATA_IMAGES}', type = str, default = None, arg_type = arg_type,
                                help = '.json listfile containing filenames of data image products. Only'
                                       ' needs to be set if adding bin columns.')
 
     def add_measurements_arg(self, arg_type: ClineArgType = ClineArgType.INPUT):
+        """Adds a command-line argument for a validated shear measurements data product,
+        `--she_validated_measurements_product`.
+
+        Parameters
+        ----------
+        arg_type : {ClineArgType.INPUT, ClineArgType.OUTPUT}, default=ClineArgType.INPUT
+            The type of cline-arg this is, specified as an element of the `ClineArgType` Enum.
+        """
         self.add_arg_with_type(f'--{CA_SHE_MEAS}', type = str, arg_type = arg_type,
-                               help = 'Filename of the cross-validated shear measurements .xml data product.')
+                               help = 'Filename of the validated shear measurements .xml data product.')
 
     def add_final_catalog_arg(self, arg_type: ClineArgType = ClineArgType.INPUT):
+        """Adds a command-line argument for a listfile of MER Final Catalog data products,
+        `--mer_final_catalog_listfile`.
+
+        Parameters
+        ----------
+        arg_type : {ClineArgType.INPUT, ClineArgType.OUTPUT}, default=ClineArgType.INPUT
+            The type of cline-arg this is, specified as an element of the `ClineArgType` Enum.
+        """
         self.add_arg_with_type(f'--{CA_MER_CAT}', type = str, arg_type = arg_type,
                                help = '.json listfile containing filenames of mer final catalogs.')
 
     def add_calibrated_frame_arg(self, arg_type: ClineArgType = ClineArgType.INPUT):
+        """Adds a command-line argument for a listfile of VIS Calibrated Frame data products,
+        `--vis_calibrated_frame_listfile`.
+
+        Parameters
+        ----------
+        arg_type : {ClineArgType.INPUT, ClineArgType.OUTPUT}, default=ClineArgType.INPUT
+            The type of cline-arg this is, specified as an element of the `ClineArgType` Enum.
+        """
         self.add_arg_with_type(f'--{CA_VIS_CAL_FRAME}', type = str, arg_type = arg_type,
                                help = '.json listfile containing filenames of exposure image products.')
 
     def add_star_catalog_arg(self, arg_type: ClineArgType = ClineArgType.INPUT):
+        """Adds a command-line argument for a SHE Star Catalog data product,
+        `--star_catalog_product`.
+
+        Parameters
+        ----------
+        arg_type : {ClineArgType.INPUT, ClineArgType.OUTPUT}, default=ClineArgType.INPUT
+            The type of cline-arg this is, specified as an element of the `ClineArgType` Enum.
+        """
         self.add_arg_with_type(f"--{CA_SHE_STAR_CAT}", type = str, arg_type = arg_type,
                                help = ".xml data product for SHE star catalog for an observation.")
