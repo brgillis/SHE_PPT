@@ -22,7 +22,9 @@ __updated__ = "2021-08-12"
 
 from copy import deepcopy
 
-from SHE_PPT.argument_parser import CA_DRY_RUN, CA_LOGDIR, CA_PIPELINE_CONFIG, CA_PROFILE, CA_WORKDIR, SheArgumentParser
+from SHE_PPT.argument_parser import (CA_DATA_IMAGES, CA_DISABLE_FAILSAFE, CA_DRY_RUN, CA_LOGDIR, CA_MDB,
+                                     CA_MER_CAT, CA_PIPELINE_CONFIG, CA_PROFILE,
+                                     CA_SHE_MEAS, CA_SHE_STAR_CAT, CA_VIS_CAL_FRAME, CA_WORKDIR, SheArgumentParser, )
 from SHE_PPT.testing.utility import SheTestCase
 
 
@@ -51,11 +53,10 @@ class TestArgumentParser(SheTestCase):
                     f"[--{cline_arg}]" in usage_str)
 
     def test_add_arg(self):
-        """Test that we can add args with the various methods.
+        """Test that we can add args with the various general methods.
         """
 
         # Make a copy of the argument_parser we can modify
-
         test_argument_parser = deepcopy(self.argument_parser)
 
         input_arg_str = "input_cline_arg"
@@ -73,3 +74,30 @@ class TestArgumentParser(SheTestCase):
         assert f"[--{input_arg_str} {input_arg_str.upper()}]" in usage_str
         assert f"[--{output_arg_str} {output_arg_str.upper()}]" in usage_str
         assert f"[--{option_arg_str}]" in usage_str
+
+    def test_predefined_add_arg(self):
+        """Test that we can add args with the various predefined methods for specific arguments.
+        """
+
+        # Make a copy of the argument_parser we can modify
+        test_argument_parser = deepcopy(self.argument_parser)
+
+        # Test adding an arg with each method
+        test_argument_parser.add_disable_failsafe_arg()
+        test_argument_parser.add_mdb_arg()
+        test_argument_parser.add_data_images_arg()
+        test_argument_parser.add_measurements_arg()
+        test_argument_parser.add_final_catalog_arg()
+        test_argument_parser.add_calibrated_frame_arg()
+        test_argument_parser.add_star_catalog_arg()
+
+        # Get the usage string to check that args were set successfully
+        usage_str = test_argument_parser.format_usage()
+
+        assert f"[--{CA_DISABLE_FAILSAFE}]" in usage_str
+        assert f"[--{CA_MDB} {CA_MDB.upper()}]" in usage_str
+        assert f"[--{CA_DATA_IMAGES} {CA_DATA_IMAGES.upper()}]" in usage_str
+        assert f"[--{CA_SHE_MEAS} {CA_SHE_MEAS.upper()}]" in usage_str
+        assert f"[--{CA_MER_CAT} {CA_MER_CAT.upper()}]" in usage_str
+        assert f"[--{CA_VIS_CAL_FRAME} {CA_VIS_CAL_FRAME.upper()}]" in usage_str
+        assert f"[--{CA_SHE_STAR_CAT} {CA_SHE_STAR_CAT.upper()}]" in usage_str
