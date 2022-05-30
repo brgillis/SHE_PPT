@@ -24,13 +24,18 @@ import os
 import shutil
 import subprocess
 from time import sleep
+from typing import Type
 
 import numpy as np
 import pytest
 
 import SHE_PPT
 from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_SUBDIR, DEFAULT_INSTANCE_ID,
-                             DEFAULT_TYPE_NAME, SheFileAccessError, SheFileNamer, SheFileReadError, SheFileWriteError,
+                             DEFAULT_TYPE_NAME, FileLoader, MultiFileLoader, MultiProductLoader, ProductLoader,
+                             SheFileAccessError,
+                             SheFileNamer,
+                             SheFileReadError,
+                             SheFileWriteError,
                              copy_listfile_between_dirs,
                              copy_product_between_dirs,
                              find_aux_file,
@@ -331,6 +336,59 @@ class TestIO(SheTestCase):
             _ = read_xml_product(test_write_filename,
                                  workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY),
                                  log_info = True)
+
+    def _run_file_loader_test(self, file_loader: FileLoader, ex_type: Type):
+        """Run common tests that a FileLoader works as expected.
+        """
+        file_loader.load()
+        assert isinstance(file_loader.obj, ex_type)
+        file_loader.close()
+        assert file_loader.obj is None
+        file_loader.open()
+        assert isinstance(file_loader.obj, ex_type)
+        file_loader.close()
+
+    def _run_multi_file_loader_test(self, multi_file_loader: MultiFileLoader, ex_type: Type):
+        """Run common tests that a MultiFileLoader works as expected.
+        """
+        multi_file_loader.load_all()
+        assert isinstance(multi_file_loader.l_file_loaders[0].obj, ex_type)
+        multi_file_loader.close_all()
+        assert multi_file_loader.l_file_loaders[0].obj is None
+        multi_file_loader.open_all()
+        assert isinstance(multi_file_loader.l_file_loaders[0].obj, ex_type)
+        multi_file_loader.close_all()
+
+    def test_product_loader(self):
+        """Test that the ProductLoader class works as expected.
+        """
+
+        test_write_filename = "product.xml"
+        test_qualified_write_filename = get_qualified_filename(test_write_filename,
+                                                               workdir = self.workdir)
+
+        # Test that we can write out the sample product and read it back in with the ProductLoader
+        write_xml_product(self.test_xml_product, test_qualified_write_filename)
+
+        product_loader = ProductLoader(filename = test_write_filename,
+                                       workdir = self.workdir)
+
+        # Test that the ProductLoader is set up as expected
+        assert product_loader.filename == test_write_filename
+        assert product_loader.workdir == self.workdir
+        assert product_loader.qualified_filename == test_qualified_write_filename
+        assert product_loader.object is None
+        assert product_loader.obj is None
+
+        # Test making a MultiProductLoader with this
+        multi_product_loader = MultiProductLoader(workdir = self.workdir,
+                                                  l_file_loaders = [product_loader],
+                                                  file_loader_type = ProductLoader)
+
+        # Run common tests on this and the Multi version
+        ex_type = dpdVisStackedFrame
+        self._run_file_loader_test(product_loader, ex_type)
+        self._run_multi_file_loader_test(multi_product_loader, ex_type)
 
     def test_rw_listfile(self):
         """Tests of reading and writing listfiles.
