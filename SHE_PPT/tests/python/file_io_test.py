@@ -34,6 +34,7 @@ from astropy.io.fits import HDUList, PrimaryHDU, table_to_hdu
 from astropy.table import Table
 
 import SHE_PPT
+from SHE_PPT.constants.test_data import SYNC_CONF
 from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_SUBDIR, DEFAULT_INSTANCE_ID,
                              DEFAULT_TYPE_NAME, FileLoader, FitsLoader, MultiFileLoader, MultiFitsLoader,
                              MultiProductLoader,
@@ -46,7 +47,8 @@ from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_S
                              TableLoader, append_hdu, copy_listfile_between_dirs,
                              copy_product_between_dirs,
                              filename_exists, filename_not_exists, find_aux_file,
-                             find_file_in_path, get_allowed_filename, get_qualified_filename, instance_id_maxlen,
+                             find_conf_file, find_file_in_path, get_allowed_filename, get_qualified_filename,
+                             instance_id_maxlen,
                              processing_function_maxlen, read_fits, read_listfile, read_product_and_table, read_table,
                              read_table_from_product, read_xml_product,
                              replace_in_file, replace_multiple_in_file, safe_copy, tar_files,
@@ -62,6 +64,8 @@ from SHE_PPT.testing.utility import SheTestCase
 from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
 from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
 
+TEST_AUX_FILE = 'SHE_PPT/sample_vis_stacked_frame.xml'
+FILENAME_NO_FILE = "nonexistent_file"
 PATH_NO_DIRECTORY = "/no/directory/"
 
 
@@ -97,7 +101,7 @@ class TestIO(SheTestCase):
         self.listfile_filename = mfc_table_gen.listfile_filename
 
         # Use one of the sample data products in the auxdir for testing
-        self.test_xml_product = read_xml_product(find_aux_file('SHE_PPT/sample_vis_stacked_frame.xml'))
+        self.test_xml_product = read_xml_product(find_aux_file(TEST_AUX_FILE))
 
         # Make a sample table for testing
         self.test_table = Table(data = [[0.0, 1.0], [0.1, 1.1]])
@@ -695,7 +699,31 @@ class TestIO(SheTestCase):
 
         # Test it raises an exception when expected
         with pytest.raises(RuntimeError):
-            _ = find_file_in_path("nonexistent_file", test_path)
+            _ = find_file_in_path(FILENAME_NO_FILE, test_path)
+
+    def test_find_conf_file(self):
+        """Unit tests of `find_conf_file`.
+        """
+
+        # Try searching for a file we know exists
+        test_qualified_filename = find_conf_file(SYNC_CONF)
+        assert os.path.isfile(test_qualified_filename)
+
+        # Test it raises an exception when expected
+        with pytest.raises(RuntimeError):
+            _ = find_conf_file(FILENAME_NO_FILE)
+
+    def test_find_aux_file(self):
+        """Unit tests of `find_aux_file`.
+        """
+
+        # Try searching for a file we know exists
+        test_qualified_filename = find_aux_file(TEST_AUX_FILE)
+        assert os.path.isfile(test_qualified_filename)
+
+        # Test it raises an exception when expected
+        with pytest.raises(RuntimeError):
+            _ = find_aux_file(FILENAME_NO_FILE)
 
     def test_update_xml_with_value(self):
         """ Test creating a simple xml file and updating with <Value>
@@ -941,7 +969,6 @@ class TestIO(SheTestCase):
 
     # TODO: Add tests of read_d_l_method_table_filenames etc.
     # TODO: Add test of try_remove_file
-    # TODO: Add test of find_conf_file
     # TODO: Add test of find_web_file
     # TODO: Add test of find_file
     # TODO: Add test of first_in_path
