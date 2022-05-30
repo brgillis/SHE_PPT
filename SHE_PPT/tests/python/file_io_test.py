@@ -44,7 +44,9 @@ from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_S
                              get_allowed_filename, get_qualified_filename, instance_id_maxlen,
                              processing_function_maxlen, read_listfile, read_product_and_table, read_table,
                              read_table_from_product, read_xml_product,
-                             replace_in_file, replace_multiple_in_file, safe_copy, tar_files, type_name_maxlen,
+                             replace_in_file, replace_multiple_in_file, safe_copy, tar_files,
+                             try_remove_file,
+                             type_name_maxlen,
                              update_xml_with_value,
                              write_listfile,
                              write_product_and_table, write_table, write_xml_product, )
@@ -338,6 +340,8 @@ class TestIO(SheTestCase):
                                  workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY),
                                  log_info = True)
 
+        try_remove_file(test_qualified_write_filename)
+
     @staticmethod
     def _run_file_loader_test(file_loader: FileLoader, ex_type: Type):
         """Run common tests that a FileLoader works as expected.
@@ -366,7 +370,7 @@ class TestIO(SheTestCase):
         """Test that the ProductLoader class works as expected.
         """
 
-        test_write_filename = "product.xml"
+        test_write_filename = "product_loader_product.xml"
         test_qualified_write_filename = get_qualified_filename(test_write_filename,
                                                                workdir = self.workdir)
 
@@ -392,6 +396,8 @@ class TestIO(SheTestCase):
         ex_type = dpdVisStackedFrame
         self._run_file_loader_test(product_loader, ex_type)
         self._run_multi_file_loader_test(multi_product_loader, ex_type)
+
+        try_remove_file(test_qualified_write_filename)
 
     def test_rw_listfile(self):
         """Tests of reading and writing listfiles.
@@ -424,6 +430,8 @@ class TestIO(SheTestCase):
                               workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY),
                               log_info = True)
 
+        try_remove_file(self.listfile_name, workdir = self.workdir)
+
     def test_rw_table(self):
         """Tests of the read_table and write_table functions.
         """
@@ -449,6 +457,8 @@ class TestIO(SheTestCase):
                            workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY),
                            log_info = True)
 
+        try_remove_file(test_qualified_write_filename)
+
     def test_table_loader(self):
         """Test that the TableLoader class works as expected.
         """
@@ -472,6 +482,8 @@ class TestIO(SheTestCase):
         ex_type = Table
         self._run_file_loader_test(table_loader, ex_type)
         self._run_multi_file_loader_test(multi_table_loader, ex_type)
+
+        try_remove_file(test_qualified_write_filename)
 
     def test_replace_in_file(self):
         """Unit test of replace_in_file and replace_multiple_in_file functions.
