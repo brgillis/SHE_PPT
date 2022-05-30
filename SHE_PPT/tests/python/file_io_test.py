@@ -32,12 +32,13 @@ from astropy.table import Table
 
 import SHE_PPT
 from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_SUBDIR, DEFAULT_INSTANCE_ID,
-                             DEFAULT_TYPE_NAME, FileLoader, MultiFileLoader, MultiProductLoader, ProductLoader,
+                             DEFAULT_TYPE_NAME, FileLoader, MultiFileLoader, MultiProductLoader, MultiTableLoader,
+                             ProductLoader,
                              SheFileAccessError,
                              SheFileNamer,
                              SheFileReadError,
                              SheFileWriteError,
-                             copy_listfile_between_dirs,
+                             TableLoader, copy_listfile_between_dirs,
                              copy_product_between_dirs,
                              find_aux_file,
                              get_allowed_filename, get_qualified_filename, instance_id_maxlen,
@@ -447,6 +448,30 @@ class TestIO(SheTestCase):
             _ = read_table(test_write_filename,
                            workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY),
                            log_info = True)
+
+    def test_table_loader(self):
+        """Test that the TableLoader class works as expected.
+        """
+
+        test_write_filename = "table.fits"
+        test_qualified_write_filename = get_qualified_filename(test_write_filename,
+                                                               workdir = self.workdir)
+
+        # Test that we can write out the sample table and read it back in
+        write_table(self.test_table, test_qualified_write_filename)
+
+        table_loader = TableLoader(filename = test_write_filename,
+                                   workdir = self.workdir)
+
+        # Test making a MultiProductLoader with this
+        multi_table_loader = MultiTableLoader(workdir = self.workdir,
+                                              l_filenames = [test_write_filename],
+                                              file_loader_type = TableLoader)
+
+        # Run common tests on this and the Multi version
+        ex_type = Table
+        self._run_file_loader_test(table_loader, ex_type)
+        self._run_multi_file_loader_test(multi_table_loader, ex_type)
 
     def test_replace_in_file(self):
         """Unit test of replace_in_file and replace_multiple_in_file functions.
