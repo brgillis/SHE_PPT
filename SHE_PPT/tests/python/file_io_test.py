@@ -337,7 +337,8 @@ class TestIO(SheTestCase):
                                  workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY),
                                  log_info = True)
 
-    def _run_file_loader_test(self, file_loader: FileLoader, ex_type: Type):
+    @staticmethod
+    def _run_file_loader_test(file_loader: FileLoader, ex_type: Type):
         """Run common tests that a FileLoader works as expected.
         """
         file_loader.load()
@@ -348,7 +349,8 @@ class TestIO(SheTestCase):
         assert isinstance(file_loader.obj, ex_type)
         file_loader.close()
 
-    def _run_multi_file_loader_test(self, multi_file_loader: MultiFileLoader, ex_type: Type):
+    @staticmethod
+    def _run_multi_file_loader_test(multi_file_loader: MultiFileLoader, ex_type: Type):
         """Run common tests that a MultiFileLoader works as expected.
         """
         multi_file_loader.load_all()
