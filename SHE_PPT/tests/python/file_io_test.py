@@ -28,6 +28,7 @@ from typing import Type
 
 import numpy as np
 import pytest
+from astropy.table import Table
 
 import SHE_PPT
 from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_SUBDIR, DEFAULT_INSTANCE_ID,
@@ -45,7 +46,7 @@ from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_S
                              replace_in_file, replace_multiple_in_file, safe_copy, tar_files, type_name_maxlen,
                              update_xml_with_value,
                              write_listfile,
-                             write_product_and_table, write_xml_product, )
+                             write_product_and_table, write_table, write_xml_product, )
 from SHE_PPT.products.mer_final_catalog import create_dpd_mer_final_catalog
 from SHE_PPT.table_formats.mer_final_catalog import MerFinalCatalogFormat
 from SHE_PPT.testing.mock_mer_final_cat import MockMFCGalaxyTableGenerator
@@ -88,11 +89,10 @@ class TestIO(SheTestCase):
         self.listfile_filename = mfc_table_gen.listfile_filename
 
         # Use one of the sample data products in the auxdir for testing
-        test_qualified_filename = find_aux_file('SHE_PPT/sample_vis_stacked_frame.xml')
+        self.test_xml_product = read_xml_product(find_aux_file('SHE_PPT/sample_vis_stacked_frame.xml'))
 
-        # Test that we can read it successfully, both type checking and not
-        self.test_xml_product = read_xml_product(test_qualified_filename)
-        self.test_xml_product.validateBinding()
+        # Make a sample table for testing
+        self.test_table = Table(data = [[0.0, 1.0], [0.1, 1.1]])
 
     def test_get_qualified_filename(self):
         """Unit test of get_qualified_filename.
@@ -422,6 +422,31 @@ class TestIO(SheTestCase):
             _ = read_listfile(self.listfile_name,
                               workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY),
                               log_info = True)
+
+    def test_rw_table(self):
+        """Tests of the read_table and write_table functions.
+        """
+
+        test_write_filename = "table.fits"
+        test_qualified_write_filename = get_qualified_filename(test_write_filename,
+                                                               workdir = self.workdir)
+
+        # Test that we can write out the sample table and read it back in
+        write_table(self.test_table, test_qualified_write_filename)
+
+        t2 = read_table(test_qualified_write_filename)
+        assert np.all(self.test_table == t2)
+
+        # Test that we get expected read/write errors
+        with pytest.raises(SheFileWriteError):
+            write_table(self.test_xml_product,
+                        test_write_filename,
+                        workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY, ),
+                        log_info = True)
+        with pytest.raises(SheFileReadError):
+            _ = read_table(test_write_filename,
+                           workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY),
+                           log_info = True)
 
     def test_replace_in_file(self):
         """Unit test of replace_in_file and replace_multiple_in_file functions.
