@@ -985,7 +985,6 @@ class TestIO(SheTestCase):
 
     # TODO: Add tests of read_d_l_method_table_filenames etc.
     # TODO: Add test of try_remove_file
-    # TODO: Add test of find_web_file
     # TODO: Add test of find_file
     # TODO: Add test of first_in_path
     # TODO: Add test of first_writable_in_path
