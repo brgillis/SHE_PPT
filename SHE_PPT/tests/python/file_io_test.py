@@ -82,6 +82,13 @@ class TestIO(SheTestCase):
         self.product_filename = mfc_table_gen.product_filename
         self.listfile_filename = mfc_table_gen.listfile_filename
 
+        # Use one of the sample data products in the auxdir for testing
+        test_qualified_filename = find_aux_file('SHE_PPT/sample_vis_stacked_frame.xml')
+
+        # Test that we can read it successfully, both type checking and not
+        self.test_xml_product = read_xml_product(test_qualified_filename)
+        self.test_xml_product.validateBinding()
+
     def test_get_qualified_filename(self):
         """Unit test of get_qualified_filename.
         """
@@ -295,8 +302,6 @@ class TestIO(SheTestCase):
         """Tests of the read_xml_product and write_xml_product functions.
         """
 
-        # Use one of the sample data products in the auxdir for testing
-        test_qualified_filename = find_aux_file('SHE_PPT/sample_vis_stacked_frame.xml')
         ex_type = dpdVisStackedFrame
         non_ex_type = dpdVisCalibratedFrame
 
@@ -304,24 +309,21 @@ class TestIO(SheTestCase):
         test_qualified_write_filename = get_qualified_filename(test_write_filename,
                                                                workdir = self.workdir)
 
-        # Test that we can read it successfully, both type checking and not
-        p1 = read_xml_product(test_qualified_filename)
-        p1.validateBinding()
-
-        write_xml_product(p1, test_qualified_write_filename)
+        # Test that we can write out the sample product and read it back in
+        write_xml_product(self.test_xml_product, test_qualified_write_filename)
 
         p2 = read_xml_product(test_qualified_write_filename, product_type = ex_type)
         p2.validateBinding()
 
-        assert type(p1) == type(p2)
+        assert type(self.test_xml_product) == type(p2)
 
         # Test that if we specify the wrong type, a TypeError is raised
         with pytest.raises(TypeError):
-            _ = read_xml_product(test_qualified_filename, product_type = non_ex_type)
+            _ = read_xml_product(test_qualified_write_filename, product_type = non_ex_type)
 
         # Test that we get expected read/write errors
         with pytest.raises(SheFileWriteError):
-            write_xml_product(p1,
+            write_xml_product(self.test_xml_product,
                               test_write_filename,
                               workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY, ),
                               log_info = True)
