@@ -785,9 +785,7 @@ class TestIO(SheTestCase):
         os.remove(qualified_dest_product_filename)
         os.remove(qualified_dest_table_filename)
 
-    # TODO: Add test of rw table
-    # TODO: Add test of rw fits
-    # TODO: Add test of FileLoader, MultiFileLoader, and child classes
+    # TODO: Add test of rw fits and its FileLoader and MultiFileLoader
     # TODO: Add tests of read_d_l_method_table_filenames etc.
     # TODO: Add test of append_hdu
     # TODO: Add test of try_remove_file
