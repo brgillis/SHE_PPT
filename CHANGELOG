@@ -38,6 +38,7 @@ Miscellaneous
 - Version number is now determined in the code directly from what's in the CMakeLists.txt file, and no longer needs to
   be maintained separately
 - Added unit tests of setting default values in pipeline_config and of the SheArgumentParser class
+- Fully documented SheArgumentParser class
 
 
 Changes in v8.12
