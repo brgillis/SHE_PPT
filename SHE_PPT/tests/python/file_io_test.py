@@ -46,7 +46,7 @@ from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_S
                              TableLoader, append_hdu, copy_listfile_between_dirs,
                              copy_product_between_dirs,
                              filename_exists, filename_not_exists, find_aux_file,
-                             get_allowed_filename, get_qualified_filename, instance_id_maxlen,
+                             find_file_in_path, get_allowed_filename, get_qualified_filename, instance_id_maxlen,
                              processing_function_maxlen, read_fits, read_listfile, read_product_and_table, read_table,
                              read_table_from_product, read_xml_product,
                              replace_in_file, replace_multiple_in_file, safe_copy, tar_files,
@@ -82,7 +82,7 @@ class TestIO(SheTestCase):
         os.makedirs(os.path.join(self.src_dir, DATA_SUBDIR), exist_ok = True)
 
         self.dest_dir = os.path.join(self.workdir, self.dest_subdir)
-        os.makedirs(os.path.join(self.src_dir, DATA_SUBDIR), exist_ok = True)
+        os.makedirs(os.path.join(self.dest_dir, DATA_SUBDIR), exist_ok = True)
 
         # Create a table, data product, and listfile we wish to test copying
         mfc_table_gen = MockMFCGalaxyTableGenerator(workdir = self.src_dir,
@@ -679,6 +679,23 @@ class TestIO(SheTestCase):
             ex_filename_exists = test_val not in S_NON_FILENAMES
             assert filename_exists(test_val) == ex_filename_exists
             assert filename_not_exists(test_val) == (not ex_filename_exists)
+
+    def test_find_file_in_path(self):
+        """Unit tests of `find_file_in_path`.
+        """
+
+        # Try searching for a file we know exists
+        test_qualified_filename = find_file_in_path(self.table_filename, self.src_dir)
+        assert os.path.isfile(test_qualified_filename)
+
+        # Now test with a more complicated path
+        test_path = ":".join([self.workdir, self.src_dir, self.dest_dir])
+        test_qualified_filename = find_file_in_path(self.table_filename, test_path)
+        assert os.path.isfile(test_qualified_filename)
+
+        # Test it raises an exception when expected
+        with pytest.raises(RuntimeError):
+            _ = find_file_in_path("nonexistent_file", test_path)
 
     def test_update_xml_with_value(self):
         """ Test creating a simple xml file and updating with <Value>
