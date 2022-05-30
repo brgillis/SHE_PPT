@@ -453,7 +453,7 @@ class TestIO(SheTestCase):
         """Test that the TableLoader class works as expected.
         """
 
-        test_write_filename = "table.fits"
+        test_write_filename = "table_loader_table.fits"
         test_qualified_write_filename = get_qualified_filename(test_write_filename,
                                                                workdir = self.workdir)
 
