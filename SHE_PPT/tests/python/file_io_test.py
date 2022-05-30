@@ -34,7 +34,9 @@ from astropy.io.fits import HDUList, PrimaryHDU, table_to_hdu
 from astropy.table import Table
 
 import SHE_PPT
-from SHE_PPT.constants.test_data import SYNC_CONF
+from ElementsServices.DataSync.DataSynchronizer import DownloadFailed
+from SHE_PPT.constants.test_data import (MER_FINAL_CATALOG_LISTFILE_FILENAME, SYNC_CONF,
+                                         TEST_DATA_LOCATION, )
 from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_SUBDIR, DEFAULT_INSTANCE_ID,
                              DEFAULT_TYPE_NAME, FileLoader, FitsLoader, MultiFileLoader, MultiFitsLoader,
                              MultiProductLoader,
@@ -47,7 +49,8 @@ from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_S
                              TableLoader, append_hdu, copy_listfile_between_dirs,
                              copy_product_between_dirs,
                              filename_exists, filename_not_exists, find_aux_file,
-                             find_conf_file, find_file_in_path, get_allowed_filename, get_qualified_filename,
+                             find_conf_file, find_file_in_path, find_web_file, get_allowed_filename,
+                             get_qualified_filename,
                              instance_id_maxlen,
                              processing_function_maxlen, read_fits, read_listfile, read_product_and_table, read_table,
                              read_table_from_product, read_xml_product,
@@ -724,6 +727,19 @@ class TestIO(SheTestCase):
         # Test it raises an exception when expected
         with pytest.raises(RuntimeError):
             _ = find_aux_file(FILENAME_NO_FILE)
+
+    def test_find_web_file(self):
+        """Unit tests of `find_web_file`.
+        """
+
+        # Try searching for a file we know exists
+        test_qualified_filename = find_web_file(os.path.join(TEST_DATA_LOCATION,
+                                                             MER_FINAL_CATALOG_LISTFILE_FILENAME))
+        assert os.path.isfile(test_qualified_filename)
+
+        # Test it raises an exception when expected
+        with pytest.raises(DownloadFailed):
+            _ = find_web_file(FILENAME_NO_FILE)
 
     def test_update_xml_with_value(self):
         """ Test creating a simple xml file and updating with <Value>

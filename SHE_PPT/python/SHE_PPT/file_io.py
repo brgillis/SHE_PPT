@@ -42,11 +42,12 @@ from pyxb.exceptions_ import NamespaceError
 import SHE_PPT
 from EL_PythonUtils.utilities import time_to_timestamp
 from ElementsServices.DataSync import DataSync
+from ElementsServices.DataSync.DataSynchronizer import DownloadFailed
 from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider
 from ST_DataModelBindings.sys_stub import CreateFromDocument
 from . import __version__
 from .constants.classes import ShearEstimationMethods
-from .constants.test_data import SYNC_CONF
+from .constants.test_data import SYNC_CONF, TEST_DATADIR
 from .logging import getLogger
 from .utility import get_release_from_version, is_any_type_of_none, join_without_none
 
@@ -2138,7 +2139,7 @@ def filename_exists(filename: Optional[str]) -> bool:
 def find_web_file(filename: str) -> str:
     """Searches on WebDAV for a file. If found, downloads it and returns the qualified name of it. If
     it's an xml data product or listfile, will also download all associated files. If it isn't found,
-    raises an exception.
+    raises a `ElementsServices.DataSync.DataSynchronizer.DownloadFailed` exception.
 
     IMPORTANT: This function should be used with care. In production, there won't be internet access, so this will
     fail for that reason. And for testing, it is preferred to use the common DataSync class to download test data.
@@ -2154,22 +2155,27 @@ def find_web_file(filename: str) -> str:
         The fully-qualified path to where the file exists after download.
     """
 
-    listfile_name: str = os.path.join(os.getcwd(),
-                                      os.path.splitext(os.path.split(filename)[-1])[0] + f"{os.getpid()}_list.txt")
+    file_list_name: str = os.path.join(os.getcwd(),
+                                       os.path.splitext(os.path.split(filename)[-1])[0] + f"{os.getpid()}_list.txt")
 
     try:
         # We need a listfile to pass to the DataSync, so create one listing only this one filename
-        write_listfile(listfile_name, [filename])
+        with open(file_list_name, "w") as fo:
+            fo.write(filename + "\n")
 
-        sync = DataSync(SYNC_CONF, listfile_name)
+        sync = DataSync(SYNC_CONF, file_list_name)
         sync.download()
 
         qualified_filename: str = sync.absolutePath(filename)
+    except DownloadFailed:
+        # Cleanup any attempt to create the file if the download failed
+        try_remove_file(os.path.join(TEST_DATADIR, filename))
+        raise
     finally:
         # Cleanup the created listfile on either success or failure
-        if os.path.exists(listfile_name):
-            logger.debug("Cleaning up %s", listfile_name)
-            try_remove_file(listfile_name)
+        if os.path.exists(file_list_name):
+            logger.debug("Cleaning up %s", file_list_name)
+            try_remove_file(file_list_name)
 
     # If it's an xml data product, we'll also need to download all files it points to
     if filename[-4:] == ".xml":
