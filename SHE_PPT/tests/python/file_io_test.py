@@ -867,6 +867,30 @@ class TestIO(SheTestCase):
                 read_text = fi.read()
                 assert read_text == text
 
+        # Check that we get expected errors
+
+        for filename, text in zip(l_filenames, l_texts):
+            with open(os.path.join(self.workdir, filename), "w") as fo:
+                fo.write(text)
+
+        # Try writing to an un-writable file
+        try:
+            os.chmod(qualified_tarball_filename, stat.S_IREAD)
+            with pytest.raises(SheFileWriteError):
+                tar_files(tarball_filename = qualified_tarball_filename,
+                          l_filenames = l_filenames,
+                          workdir = self.workdir,
+                          delete_files = False)
+        finally:
+            os.chmod(qualified_tarball_filename, stat.S_IREAD | stat.S_IWRITE)
+
+        # Try writing files that don't exist
+        with pytest.raises(SheFileWriteError):
+            tar_files(tarball_filename = qualified_tarball_filename,
+                      l_filenames = [FILENAME_NO_FILE],
+                      workdir = self.workdir,
+                      delete_files = False)
+
     def test_rw_product_and_table(self):
         """ Test reading and writing a product and table together with utility functions.
         """
