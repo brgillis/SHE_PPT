@@ -1838,14 +1838,19 @@ def append_hdu(filename: str,
     try:
         f = fits.open(qualified_filename, 'append', *args, **kwargs)
     except Exception as e:
-        raise SheFileReadError(filename = filename, workdir = workdir) from e
+        # If we can open in read-only, raise a SheFileWriteError, otherwise raise a SheFileReadError
+        try:
+            f2 = fits.open(qualified_filename, 'readonly', *args, **kwargs)
+            f2.close()
+            raise SheFileWriteError(filename = filename, workdir = workdir) from e
+        except Exception as e2:
+            # Re-raise if this was caught from the try block above
+            if isinstance(e2, SheFileWriteError):
+                raise
+            raise SheFileReadError(filename = filename, workdir = workdir) from e
 
-    try:
-        f.append(hdu)
-    except Exception as e:
-        raise SheFileWriteError(filename = filename, workdir = workdir) from e
-    finally:
-        f.close()
+    f.append(hdu)
+    f.close()
 
     logger.debug("Finished appending HDU to file %s in workdir %s", filename, workdir)
 

@@ -454,7 +454,7 @@ class TestIO(SheTestCase):
                                    file_loader_type = ProductLoader)
 
         # TypeError if type mismatch
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeError):
             _ = MultiProductLoader(workdir = self.workdir,
                                    l_file_loaders = [product_loader],
                                    file_loader_type = FitsLoader)
