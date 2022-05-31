@@ -108,29 +108,6 @@ class TestIO(SheTestCase):
 
         self.test_hdulist = HDUList([PrimaryHDU(), table_hdu])
 
-        # Create a shear measurements product and tables for tests on reading these in
-
-        self.lmc_table_filename = "lmc_table.fits"
-        lensmc_table_gen = MockShearEstimateTableGenerator(workdir = self.workdir,
-                                                           num_test_points = 2,
-                                                           method = ShearEstimationMethods.LENSMC,
-                                                           table_filename = self.lmc_table_filename,
-                                                           seed = EST_SEED)
-        lensmc_table_gen.write_mock_table()
-
-        self.ksb_table_filename = "ksb_table.fits"
-        ksb_table_gen = MockShearEstimateTableGenerator(workdir = self.workdir,
-                                                        num_test_points = 2,
-                                                        method = ShearEstimationMethods.KSB,
-                                                        table_filename = self.ksb_table_filename,
-                                                        seed = EST_SEED + 1)
-        ksb_table_gen.write_mock_table()
-
-        self.shm_product_filename = "shm_product.xml"
-        self.shm_product = create_dpd_she_validated_measurements(KSB_filename = self.ksb_table_filename,
-                                                                 LensMC_filename = self.lmc_table_filename)
-        write_xml_product(self.shm_product, self.shm_product_filename, workdir = self.workdir)
-
     def test_get_qualified_filename(self):
         """Unit test of get_qualified_filename.
         """
