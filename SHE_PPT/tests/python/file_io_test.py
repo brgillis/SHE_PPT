@@ -615,9 +615,8 @@ class TestIO(SheTestCase):
         try:
             with pytest.raises(SheFileWriteError):
                 os.chmod(test_qualified_filename, stat.S_IREAD)
-                write_fits(self.test_hdulist,
-                           test_filename,
-                           workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY, ),
+                append_hdu(test_qualified_filename,
+                           hdu = t_hdu,
                            log_info = True)
         finally:
             os.chmod(test_qualified_filename, stat.S_IREAD | stat.S_IWRITE)
