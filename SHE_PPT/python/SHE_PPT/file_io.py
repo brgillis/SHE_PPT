@@ -39,7 +39,6 @@ from astropy.io.fits.hdu.base import ExtensionHDU
 from astropy.table import Table
 from pyxb.exceptions_ import NamespaceError
 
-import SHE_PPT
 from EL_PythonUtils.utilities import time_to_timestamp
 from ElementsServices.DataSync import DataSync
 from ElementsServices.DataSync.DataSynchronizer import DownloadFailed
@@ -51,7 +50,7 @@ from .constants.test_data import SYNC_CONF, TEST_DATADIR
 from .logging import getLogger
 from .utility import get_release_from_version, is_any_type_of_none, join_without_none
 
-# CONSTANT strings for default values in filenames
+# Constant strings for default values in filenames
 DEFAULT_WORKDIR = "."
 DEFAULT_TYPE_NAME = "UNKNOWN-FILE-TYPE"
 DEFAULT_INSTANCE_ID = "0"
@@ -1440,7 +1439,7 @@ def write_product_and_table(product: Any,
 
     # Generate a filename for the table if one hasn't been provided
     if table_filename is None:
-        table_filename = get_allowed_filename(version = SHE_PPT.__version__)
+        table_filename = get_allowed_filename(version = __version__)
 
     # Write the table
     write_table(table, *args, filename = table_filename, workdir = workdir, log_info = log_info, **kwargs)
