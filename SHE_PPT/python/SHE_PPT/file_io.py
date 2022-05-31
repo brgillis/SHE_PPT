@@ -91,6 +91,9 @@ MSG_DEST_EXIST = "In safe_copy, destination file %s already exists"
 # Constant string for the data subdirectory, where datafiles are expected to be stored during pipeline execution
 DATA_SUBDIR = "data/"
 
+# Constant string to represent that a file does not exist
+FILENAME_NONE = "None"
+
 # Constants for strings in xml files
 STR_KEY = '<Key>'
 STR_VALUE = '<Value>'
@@ -1739,7 +1742,11 @@ def read_d_method_table_filenames(product_filename: str,
     d_method_table_filenames: Dict[ShearEstimationMethods, str] = {}
 
     for method in ShearEstimationMethods:
-        d_method_table_filenames[method] = d_l_method_table_filenames[method][0]
+        l_method_table_filenames = d_l_method_table_filenames[method]
+        if len(l_method_table_filenames) == 0:
+            d_method_table_filenames[method] = FILENAME_NONE
+        else:
+            d_method_table_filenames[method] = d_l_method_table_filenames[method][0]
 
     product = l_products[0]
 
@@ -2101,7 +2108,7 @@ def find_conf_file(filename) -> str:
     return find_file_in_path(filename, os.environ['ELEMENTS_CONF_PATH'])
 
 
-S_NON_FILENAMES = {None, "None", f"{DATA_SUBDIR}None", "", DATA_SUBDIR}
+S_NON_FILENAMES = {None, FILENAME_NONE, f"{DATA_SUBDIR}{FILENAME_NONE}", "", DATA_SUBDIR}
 
 
 def filename_not_exists(filename: Optional[str]):

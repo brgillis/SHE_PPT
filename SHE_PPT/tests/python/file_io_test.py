@@ -35,6 +35,7 @@ from astropy.table import Table
 
 import SHE_PPT
 from ElementsServices.DataSync.DataSynchronizer import DownloadFailed
+from SHE_PPT.constants.classes import ShearEstimationMethods
 from SHE_PPT.constants.test_data import (MER_FINAL_CATALOG_LISTFILE_FILENAME, SYNC_CONF,
                                          TEST_DATA_LOCATION, )
 from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_SUBDIR, DEFAULT_INSTANCE_ID,
@@ -53,7 +54,9 @@ from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_S
                              first_writable_in_path, get_allowed_filename,
                              get_data_filename, get_qualified_filename,
                              instance_id_maxlen,
-                             processing_function_maxlen, read_fits, read_listfile, read_product_and_table, read_table,
+                             processing_function_maxlen, read_d_l_method_table_filenames, read_d_method_table_filenames,
+                             read_fits, read_listfile,
+                             read_product_and_table, read_table,
                              read_table_from_product, read_xml_product,
                              remove_files, replace_in_file, replace_multiple_in_file, safe_copy, tar_files,
                              try_remove_file,
@@ -62,9 +65,12 @@ from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_S
                              write_fits, write_listfile,
                              write_product_and_table, write_table, write_xml_product, )
 from SHE_PPT.products.mer_final_catalog import create_dpd_mer_final_catalog
+from SHE_PPT.products.she_validated_measurements import create_dpd_she_validated_measurements
 from SHE_PPT.table_formats.mer_final_catalog import MerFinalCatalogFormat
+from SHE_PPT.testing.mock_measurements_cat import EST_SEED, MockShearEstimateTableGenerator
 from SHE_PPT.testing.mock_mer_final_cat import MockMFCGalaxyTableGenerator
 from SHE_PPT.testing.utility import SheTestCase
+from ST_DataModelBindings.dpd.she.raw.validatedmeasurements_stub import (dpdSheValidatedMeasurements, )
 from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
 from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
 
@@ -74,7 +80,7 @@ PATH_NO_DIRECTORY = "/no/directory/"
 
 
 class TestIO(SheTestCase):
-    """ A class to handle tests of functions in the SHE_PPT/file_io.py module.
+    """ A class to handle tests of functions and classes in the SHE_PPT/file_io.py module.
     """
 
     listfile_name: str = "test_listfile.junk"
@@ -82,7 +88,7 @@ class TestIO(SheTestCase):
     dest_subdir = "dest"
 
     def post_setup(self):
-        """ Perform some setup tasks for functions tested here.
+        """ Perform some setup tasks for functions tested here, setting up data which is used for multiple tests.
         """
 
         # Create source and destination subdirs of the workdir to test copying functions
@@ -113,6 +119,29 @@ class TestIO(SheTestCase):
         table_hdu = table_to_hdu(self.test_table)
 
         self.test_hdulist = HDUList([PrimaryHDU(), table_hdu])
+
+        # Create a shear measurements product and tables for tests on reading these in
+
+        self.lmc_table_filename = "lmc_table.fits"
+        lensmc_table_gen = MockShearEstimateTableGenerator(workdir = self.workdir,
+                                                           num_test_points = 2,
+                                                           method = ShearEstimationMethods.LENSMC,
+                                                           table_filename = self.lmc_table_filename,
+                                                           seed = EST_SEED)
+        lensmc_table_gen.write_mock_table()
+
+        self.ksb_table_filename = "ksb_table.fits"
+        ksb_table_gen = MockShearEstimateTableGenerator(workdir = self.workdir,
+                                                        num_test_points = 2,
+                                                        method = ShearEstimationMethods.KSB,
+                                                        table_filename = self.ksb_table_filename,
+                                                        seed = EST_SEED + 1)
+        ksb_table_gen.write_mock_table()
+
+        self.shm_product_filename = "shm_product.xml"
+        self.shm_product = create_dpd_she_validated_measurements(KSB_filename = self.ksb_table_filename,
+                                                                 LensMC_filename = self.lmc_table_filename)
+        write_xml_product(self.shm_product, self.shm_product_filename, workdir = self.workdir)
 
     def test_get_qualified_filename(self):
         """Unit test of get_qualified_filename.
@@ -1116,4 +1145,75 @@ class TestIO(SheTestCase):
         # Cleanup
         try_remove_file(test_qualified_filename_2)
 
-    # TODO: Add tests of read_d_l_method_table_filenames etc.
+
+class TestMeasurementsProductIO(SheTestCase):
+    """ A class to handle tests of functions and classes in the SHE_PPT/file_io.py module related to reading in
+    measurements products.
+    """
+
+    # Define some constant class attributes
+    LMC_TABLE_FILENAME = "data/lmc_table.fits"
+    KSB_TABLE_FILENAME = "data/ksb_table.fits"
+    SHM_PRODUCT_FILENAME = "shm_product.xml"
+
+    def post_setup(self):
+        """ Perform some setup tasks for functions tested here, setting up data which is used for multiple tests.
+        """
+
+        lensmc_table_gen = MockShearEstimateTableGenerator(workdir = self.workdir,
+                                                           num_test_points = 4,
+                                                           method = ShearEstimationMethods.LENSMC,
+                                                           table_filename = self.LMC_TABLE_FILENAME,
+                                                           seed = EST_SEED)
+        lensmc_table_gen.write_mock_table()
+
+        ksb_table_gen = MockShearEstimateTableGenerator(workdir = self.workdir,
+                                                        num_test_points = 4,
+                                                        method = ShearEstimationMethods.KSB,
+                                                        table_filename = self.KSB_TABLE_FILENAME,
+                                                        seed = EST_SEED + 1)
+        ksb_table_gen.write_mock_table()
+
+        self.shm_product = create_dpd_she_validated_measurements(KSB_filename = self.KSB_TABLE_FILENAME,
+                                                                 LensMC_filename = self.LMC_TABLE_FILENAME)
+        write_xml_product(self.shm_product, self.SHM_PRODUCT_FILENAME, workdir = self.workdir)
+
+        # Get the expected product ID for when the product is read in
+        self.ex_product_id = self.shm_product.Header.ProductId.value()
+
+    def test_read_d_l_method_table_filenames(self):
+        """Unit test of `read_d_l_method_table_filenames` function.
+        """
+
+        # Try reading in the product created at init
+        (d_l_method_table_filenames,
+         l_products) = read_d_l_method_table_filenames(l_product_filenames = [self.SHM_PRODUCT_FILENAME],
+                                                       workdir = self.workdir,
+                                                       log_info = True)
+
+        # Check that the filenames are as expected
+        assert d_l_method_table_filenames[ShearEstimationMethods.LENSMC][0] == self.LMC_TABLE_FILENAME
+        assert d_l_method_table_filenames[ShearEstimationMethods.KSB][0] == self.KSB_TABLE_FILENAME
+
+        # Check that the product is as expected
+        test_product = l_products[0]
+        assert isinstance(test_product, dpdSheValidatedMeasurements)
+        assert test_product.Header.ProductId.value() == self.ex_product_id
+
+    def test_read_d_method_table_filenames(self):
+        """Unit test of `read_d_method_table_filenames` function.
+        """
+
+        # Try reading in the product created at init
+        (d_method_table_filenames,
+         test_product) = read_d_method_table_filenames(product_filename = self.SHM_PRODUCT_FILENAME,
+                                                       workdir = self.workdir,
+                                                       log_info = True)
+
+        # Check that the filenames are as expected
+        assert d_method_table_filenames[ShearEstimationMethods.LENSMC] == self.LMC_TABLE_FILENAME
+        assert d_method_table_filenames[ShearEstimationMethods.KSB] == self.KSB_TABLE_FILENAME
+
+        # Check that the product is as expected
+        assert isinstance(test_product, dpdSheValidatedMeasurements)
+        assert test_product.Header.ProductId.value() == self.ex_product_id
