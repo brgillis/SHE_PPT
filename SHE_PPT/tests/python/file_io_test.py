@@ -40,38 +40,25 @@ from SHE_PPT.constants.test_data import (MER_FINAL_CATALOG_LISTFILE_FILENAME, SY
                                          TEST_DATA_LOCATION, )
 from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_SUBDIR, DEFAULT_INSTANCE_ID,
                              DEFAULT_TYPE_NAME, FileLoader, FitsLoader, MultiFileLoader, MultiFitsLoader,
-                             MultiProductLoader,
-                             MultiTableLoader,
-                             ProductLoader,
-                             S_NON_FILENAMES, SheFileAccessError,
-                             SheFileNamer,
-                             SheFileReadError,
-                             SheFileWriteError,
-                             TableLoader, append_hdu, copy_listfile_between_dirs,
-                             copy_product_between_dirs,
-                             filename_exists, filename_not_exists, find_aux_file,
-                             find_conf_file, find_file, find_file_in_path, find_web_file, first_in_path,
-                             first_writable_in_path, get_allowed_filename,
-                             get_data_filename, get_qualified_filename,
-                             instance_id_maxlen,
-                             processing_function_maxlen, read_d_l_method_table_filenames, read_d_l_method_tables,
-                             read_d_method_table_filenames,
-                             read_d_method_tables, read_fits, read_listfile,
-                             read_product_and_table, read_table,
-                             read_table_from_product, read_xml_product,
-                             remove_files, replace_in_file, replace_multiple_in_file, safe_copy, tar_files,
-                             try_remove_file,
-                             type_name_maxlen,
-                             update_xml_with_value,
-                             write_fits, write_listfile,
-                             write_product_and_table, write_table, write_xml_product, )
+                             MultiProductLoader, MultiTableLoader, ProductLoader, S_NON_FILENAMES, SheFileAccessError,
+                             SheFileNamer, SheFileReadError, SheFileWriteError, TableLoader, append_hdu,
+                             copy_listfile_between_dirs, copy_product_between_dirs, filename_exists,
+                             filename_not_exists, find_aux_file, find_conf_file, find_file, find_file_in_path,
+                             find_web_file, first_in_path, first_writable_in_path, get_allowed_filename,
+                             get_data_filename, get_qualified_filename, instance_id_maxlen, processing_function_maxlen,
+                             read_d_l_method_table_filenames, read_d_l_method_tables, read_d_method_table_filenames,
+                             read_d_method_tables, read_fits, read_listfile, read_product_and_table, read_table,
+                             read_table_from_product, read_xml_product, remove_files, replace_in_file,
+                             replace_multiple_in_file, safe_copy, tar_files, try_remove_file, type_name_maxlen,
+                             update_xml_with_value, write_fits, write_listfile, write_product_and_table, write_table,
+                             write_xml_product, )
 from SHE_PPT.products.mer_final_catalog import create_dpd_mer_final_catalog
 from SHE_PPT.products.she_validated_measurements import create_dpd_she_validated_measurements
 from SHE_PPT.table_formats.mer_final_catalog import MerFinalCatalogFormat
 from SHE_PPT.testing.mock_measurements_cat import EST_SEED, MockShearEstimateTableGenerator
 from SHE_PPT.testing.mock_mer_final_cat import MockMFCGalaxyTableGenerator
 from SHE_PPT.testing.utility import SheTestCase
-from ST_DataModelBindings.dpd.she.raw.validatedmeasurements_stub import (dpdSheValidatedMeasurements, )
+from ST_DataModelBindings.dpd.she.raw.validatedmeasurements_stub import dpdSheValidatedMeasurements
 from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
 from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
 
