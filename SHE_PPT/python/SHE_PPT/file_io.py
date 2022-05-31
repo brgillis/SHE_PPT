@@ -2446,7 +2446,7 @@ def remove_files(l_qualified_filenames: Sequence[str]) -> None:
     for qualified_filename in l_qualified_filenames:
         try:
             os.remove(qualified_filename)
-        except Exception:
+        except IOError:
             # Don't need to fail the whole process, but log the issue
             logger.warning(f"Cannot delete file: {qualified_filename}")
 

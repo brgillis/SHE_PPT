@@ -55,7 +55,7 @@ from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_S
                              instance_id_maxlen,
                              processing_function_maxlen, read_fits, read_listfile, read_product_and_table, read_table,
                              read_table_from_product, read_xml_product,
-                             replace_in_file, replace_multiple_in_file, safe_copy, tar_files,
+                             remove_files, replace_in_file, replace_multiple_in_file, safe_copy, tar_files,
                              try_remove_file,
                              type_name_maxlen,
                              update_xml_with_value,
@@ -1087,5 +1087,33 @@ class TestIO(SheTestCase):
         test_filename = get_data_filename(self.table_filename, workdir = self.src_dir)
         assert test_filename == self.table_filename
 
+    def test_remove_files(self):
+        """Unit test of `remove_files`.
+        """
+
+        # Create a few files, one non-writable, plus a nonexistent file
+        test_filename_1 = "rm_f_1.txt"
+        test_qualified_filename_1 = get_qualified_filename(test_filename_1, self.workdir)
+        write_listfile(test_qualified_filename_1, [])
+
+        test_filename_2 = "rm_f_2.txt"
+        test_qualified_filename_2 = get_qualified_filename(test_filename_2, self.dest_dir)
+        write_listfile(test_qualified_filename_2, [])
+
+        qualified_noexist_filename = get_qualified_filename(FILENAME_NO_FILE, self.workdir)
+
+        # Try removing them, and make sure no errors are raised
+        try:
+            os.chmod(self.dest_dir, stat.S_IREAD)
+            remove_files([test_qualified_filename_1, test_qualified_filename_2, qualified_noexist_filename])
+        finally:
+            os.chmod(self.dest_dir, stat.S_IREAD | stat.S_IWRITE | stat.S_IEXEC)
+
+        # Check that file 1 doesn't exist and file 2 does
+        assert not os.path.exists(test_qualified_filename_1)
+        assert os.path.exists(test_qualified_filename_2)
+
+        # Cleanup
+        try_remove_file(test_qualified_filename_2)
+
     # TODO: Add tests of read_d_l_method_table_filenames etc.
-    # TODO: Add test of remove_files
