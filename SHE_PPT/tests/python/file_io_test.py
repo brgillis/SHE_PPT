@@ -36,7 +36,7 @@ from astropy.table import Table
 import SHE_PPT
 from ElementsServices.DataSync.DataSynchronizer import DownloadFailed
 from SHE_PPT.constants.classes import ShearEstimationMethods
-from SHE_PPT.constants.test_data import (MER_FINAL_CATALOG_LISTFILE_FILENAME, SYNC_CONF,
+from SHE_PPT.constants.test_data import (MDB_PRODUCT_FILENAME, MER_FINAL_CATALOG_LISTFILE_FILENAME, SYNC_CONF,
                                          TEST_DATA_LOCATION, )
 from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_SUBDIR, DEFAULT_INSTANCE_ID,
                              DEFAULT_TYPE_NAME, FileLoader, FitsLoader, MultiFileLoader, MultiFitsLoader,
@@ -754,6 +754,11 @@ class TestIO(SheTestCase):
         # Try searching for a file we know exists
         test_qualified_filename = find_web_file(os.path.join(TEST_DATA_LOCATION,
                                                              MER_FINAL_CATALOG_LISTFILE_FILENAME))
+        assert os.path.isfile(test_qualified_filename)
+
+        # Also try searching for an MDB file, which follows a different code branch
+        test_qualified_filename = find_web_file(os.path.join(TEST_DATA_LOCATION,
+                                                             MDB_PRODUCT_FILENAME))
         assert os.path.isfile(test_qualified_filename)
 
         # Test it raises an exception when expected
