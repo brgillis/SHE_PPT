@@ -298,6 +298,7 @@ class TestIO(SheTestCase):
 
         file_namer.version = "5.1.0"
         assert file_namer.version == "5.1.0"
+        file_namer.version = None
 
         file_namer.subdir = "foo/"
         assert file_namer.subdir == "foo/"
@@ -317,13 +318,29 @@ class TestIO(SheTestCase):
         file_namer.qualified_filename = "/etc/conf/this.file"
         assert file_namer.qualified_filename == "/etc/conf/this.file"
 
+        # Check that setting subdir to None is the same as setting it to an empty string
+        file_namer.subdir = None
+        f1 = file_namer.get()
+        file_namer.subdir = ""
+        f2 = file_namer.get()
+        assert f1 == f2
+
         # Test we get expected exceptions when we don't have a type name or instance ID
         with pytest.raises(NotImplementedError):
             file_namer.type_name_body = None
             _ = file_namer.type_name
+        file_namer.type_name_body = "type_name"
         with pytest.raises(NotImplementedError):
             file_namer.instance_id_body = None
             _ = file_namer.instance_id
+        file_namer.instance_id_body = "instance_id"
+
+        # Check we get a ValueError if both release and version are None
+        with pytest.raises(ValueError):
+            file_namer.release = None
+            file_namer.version = None
+            _ = file_namer.get()
+        file_namer.version = "1.0"
 
     def test_rw_xml_product(self):
         """Tests of the read_xml_product and write_xml_product functions.
