@@ -1082,11 +1082,10 @@ class TestIO(SheTestCase):
         # Check that we get the expected table filename for the MER Final Catalog product created for testing here
         test_filename = get_data_filename(self.product_filename, workdir = self.src_dir)
         assert test_filename == self.table_filename
-        
+
         # Check that if we input the data filename directly, we get it back
         test_filename = get_data_filename(self.table_filename, workdir = self.src_dir)
         assert test_filename == self.table_filename
 
     # TODO: Add tests of read_d_l_method_table_filenames etc.
-    # TODO: Add test of get_data_filename
     # TODO: Add test of remove_files
