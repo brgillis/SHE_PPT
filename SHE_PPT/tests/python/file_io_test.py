@@ -49,7 +49,8 @@ from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_S
                              TableLoader, append_hdu, copy_listfile_between_dirs,
                              copy_product_between_dirs,
                              filename_exists, filename_not_exists, find_aux_file,
-                             find_conf_file, find_file, find_file_in_path, find_web_file, get_allowed_filename,
+                             find_conf_file, find_file, find_file_in_path, find_web_file, first_in_path,
+                             first_writable_in_path, get_allowed_filename,
                              get_qualified_filename,
                              instance_id_maxlen,
                              processing_function_maxlen, read_fits, read_listfile, read_product_and_table, read_table,
@@ -1043,8 +1044,37 @@ class TestIO(SheTestCase):
                         workdir = self.workdir,
                         warn = True)
 
+    def test_first_in_path(self):
+        """Unit test of `first_(writable_)in_path`.
+        """
+
+        # Make a path to test
+        test_path = ":".join([self.src_dir, self.workdir, self.dest_dir])
+
+        # Test we get the expected directory
+        test_dir = first_in_path(test_path)
+        assert test_dir == self.src_dir
+
+        # Test we get the first writable, by making the workdir temporarily read-only
+        try:
+            os.chmod(self.src_dir, stat.S_IREAD)
+            test_dir = first_writable_in_path(test_path)
+            assert test_dir == self.workdir
+        finally:
+            os.chmod(self.src_dir, stat.S_IREAD | stat.S_IWRITE | stat.S_IEXEC)
+
+        # Test we get the expected error when no path is writable
+        try:
+            os.chmod(self.src_dir, stat.S_IREAD)
+            os.chmod(self.dest_dir, stat.S_IREAD)
+            os.chmod(self.workdir, stat.S_IREAD)
+            with pytest.raises(IOError):
+                _ = first_writable_in_path(test_path)
+        finally:
+            os.chmod(self.workdir, stat.S_IREAD | stat.S_IWRITE | stat.S_IEXEC)
+            os.chmod(self.src_dir, stat.S_IREAD | stat.S_IWRITE | stat.S_IEXEC)
+            os.chmod(self.dest_dir, stat.S_IREAD | stat.S_IWRITE | stat.S_IEXEC)
+
     # TODO: Add tests of read_d_l_method_table_filenames etc.
-    # TODO: Add test of first_in_path
-    # TODO: Add test of first_writable_in_path
     # TODO: Add test of get_data_filename
     # TODO: Add test of remove_files
