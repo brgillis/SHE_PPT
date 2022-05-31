@@ -1488,7 +1488,7 @@ def read_product_and_table(product_filename: str,
     p = read_xml_product(product_filename, workdir = workdir, log_info = log_info, product_type = product_type)
     table_filename: str = p.get_data_filename()
 
-    t = read_table(table_filename, workdir = workdir, log_info = log_info, *args, **kwargs)
+    t = read_table(table_filename, *args, workdir = workdir, log_info = log_info, **kwargs)
 
     return p, t
 
@@ -1799,7 +1799,7 @@ def read_d_method_tables(product_filename: str,
         if len(l_method_table_filenames) == 0:
             d_method_tables[method] = None
         else:
-            d_method_tables[method] = read_table(d_l_method_table_filenames[method][0], workdir)
+            d_method_tables[method] = read_table(d_l_method_table_filenames[method][0], workdir = workdir)
 
     product = l_products[0]
 
@@ -2682,7 +2682,7 @@ class TableLoader(FileLoader[Table]):
         Table
             The loaded-in table.
         """
-        return read_table(filename = self.filename, workdir = self.workdir, *args, **kwargs)
+        return read_table(self.filename, *args, workdir = self.workdir, *args, **kwargs)
 
 
 class FitsLoader(FileLoader[HDUList]):
@@ -2702,7 +2702,7 @@ class FitsLoader(FileLoader[HDUList]):
         HDUList
             The HDUList for the opened `FITS` file.
         """
-        return read_fits(self.filename, self.workdir, *args, **kwargs)
+        return read_fits(filename = self.filename, *args, workdir = self.workdir, *args, **kwargs)
 
     def close(self):
         """Inherit parent `close` method to also close the file handle.
