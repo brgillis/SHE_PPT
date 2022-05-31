@@ -1036,7 +1036,7 @@ class TestIO(SheTestCase):
 
         # Try removing the file, and check that it doesn't exist after
         try_remove_file(test_qualified_filename)
-        assert os.path.exists(test_qualified_filename)
+        assert not os.path.exists(test_qualified_filename)
 
         # Now try removing a file that doesn't exist, and make sure an exception isn't raised
         try_remove_file(FILENAME_NO_FILE,
