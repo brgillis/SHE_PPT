@@ -54,8 +54,9 @@ from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_S
                              first_writable_in_path, get_allowed_filename,
                              get_data_filename, get_qualified_filename,
                              instance_id_maxlen,
-                             processing_function_maxlen, read_d_l_method_table_filenames, read_d_method_table_filenames,
-                             read_fits, read_listfile,
+                             processing_function_maxlen, read_d_l_method_table_filenames, read_d_l_method_tables,
+                             read_d_method_table_filenames,
+                             read_d_method_tables, read_fits, read_listfile,
                              read_product_and_table, read_table,
                              read_table_from_product, read_xml_product,
                              remove_files, replace_in_file, replace_multiple_in_file, safe_copy, tar_files,
@@ -1178,6 +1179,12 @@ class TestMeasurementsProductIO(SheTestCase):
                                                                  LensMC_filename = self.LMC_TABLE_FILENAME)
         write_xml_product(self.shm_product, self.SHM_PRODUCT_FILENAME, workdir = self.workdir)
 
+        # Since astropy or numpy converts NaN values to masked when reading in a table, we read-in the tables here
+        # from what we just wrote, rather than comparing to what's in-memory (which will have some NaNs, as opposed
+        # to the masked values when read in)
+        self.lmc_table = read_table(self.LMC_TABLE_FILENAME, workdir = self.workdir)
+        self.ksb_table = read_table(self.KSB_TABLE_FILENAME, workdir = self.workdir)
+
         # Get the expected product ID for when the product is read in
         self.ex_product_id = self.shm_product.Header.ProductId.value()
 
@@ -1213,6 +1220,51 @@ class TestMeasurementsProductIO(SheTestCase):
         # Check that the filenames are as expected
         assert d_method_table_filenames[ShearEstimationMethods.LENSMC] == self.LMC_TABLE_FILENAME
         assert d_method_table_filenames[ShearEstimationMethods.KSB] == self.KSB_TABLE_FILENAME
+
+        # Check that the product is as expected
+        assert isinstance(test_product, dpdSheValidatedMeasurements)
+        assert test_product.Header.ProductId.value() == self.ex_product_id
+
+    def test_read_d_l_method_tables(self):
+        """Unit test of `read_d_l_method_tables` function.
+        """
+
+        # Try reading in the product created at init
+        (d_l_method_tables,
+         l_products) = read_d_l_method_tables(l_product_filenames = [self.SHM_PRODUCT_FILENAME],
+                                              workdir = self.workdir,
+                                              log_info = True)
+
+        # Check that the tables are as expected
+        test_lmc_table = d_l_method_tables[ShearEstimationMethods.LENSMC][0]
+        for colname in self.lmc_table.colnames:
+            assert np.all(test_lmc_table[colname] == self.lmc_table[colname])
+        test_ksb_table = d_l_method_tables[ShearEstimationMethods.KSB][0]
+        for colname in self.ksb_table.colnames:
+            assert np.all(test_ksb_table[colname] == self.ksb_table[colname])
+
+        # Check that the product is as expected
+        test_product = l_products[0]
+        assert isinstance(test_product, dpdSheValidatedMeasurements)
+        assert test_product.Header.ProductId.value() == self.ex_product_id
+
+    def test_read_d_method_tables(self):
+        """Unit test of `read_d_method_tables` function.
+        """
+
+        # Try reading in the product created at init
+        (d_method_tables,
+         test_product) = read_d_method_tables(product_filename = self.SHM_PRODUCT_FILENAME,
+                                              workdir = self.workdir,
+                                              log_info = True)
+
+        # Check that the tables are as expected
+        test_lmc_table = d_method_tables[ShearEstimationMethods.LENSMC]
+        for colname in self.lmc_table.colnames:
+            assert np.all(test_lmc_table[colname] == self.lmc_table[colname])
+        test_ksb_table = d_method_tables[ShearEstimationMethods.KSB]
+        for colname in self.ksb_table.colnames:
+            assert np.all(test_ksb_table[colname] == self.ksb_table[colname])
 
         # Check that the product is as expected
         assert isinstance(test_product, dpdSheValidatedMeasurements)
