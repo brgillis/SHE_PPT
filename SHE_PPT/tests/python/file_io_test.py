@@ -382,12 +382,16 @@ class TestIO(SheTestCase):
     def _run_file_loader_test(file_loader: FileLoader, ex_type: Type):
         """Run common tests that a FileLoader works as expected.
         """
+
         file_loader.load()
         assert isinstance(file_loader.obj, ex_type)
+
         file_loader.close()
         assert file_loader.obj is None
+
         file_loader.open()
         assert isinstance(file_loader.obj, ex_type)
+
         file_loader.close()
 
     @staticmethod
@@ -396,8 +400,13 @@ class TestIO(SheTestCase):
         """
         multi_file_loader.load_all()
         assert isinstance(multi_file_loader.l_file_loaders[0].obj, ex_type)
+
         multi_file_loader.close_all()
         assert multi_file_loader.l_file_loaders[0].obj is None
+
+        l_objects = multi_file_loader.get_all()
+        assert isinstance(l_objects[0], ex_type)
+
         multi_file_loader.open_all()
         assert isinstance(multi_file_loader.l_file_loaders[0].obj, ex_type)
         multi_file_loader.close_all()
@@ -434,6 +443,29 @@ class TestIO(SheTestCase):
         self._run_multi_file_loader_test(multi_product_loader, ex_type)
 
         try_remove_file(test_qualified_filename)
+
+        # Test we get expected exceptions with making the MultiProductLoader
+
+        # ValueError if providing both a list of filenames and a list of file loaders
+        with pytest.raises(ValueError):
+            _ = MultiProductLoader(workdir = self.workdir,
+                                   l_filenames = [test_filename],
+                                   l_file_loaders = [product_loader],
+                                   file_loader_type = ProductLoader)
+
+        # TypeError if type mismatch
+        with pytest.raises(ValueError):
+            _ = MultiProductLoader(workdir = self.workdir,
+                                   l_file_loaders = [product_loader],
+                                   file_loader_type = FitsLoader)
+
+        # ValueError if l_filenames but not file_loader_type
+        with pytest.raises(ValueError):
+            _ = MultiProductLoader(workdir = self.workdir,
+                                   l_filenames = [test_filename], )
+
+        # Check init with only workdir works though
+        _ = MultiProductLoader(workdir = self.workdir)
 
     def test_rw_listfile(self):
         """Tests of reading and writing listfiles.
