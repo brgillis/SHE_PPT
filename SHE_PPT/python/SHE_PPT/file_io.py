@@ -1362,9 +1362,10 @@ def write_table(t: Table,
 
 
 def read_table(filename: str,
+               *args,
                workdir: str = DEFAULT_WORKDIR,
                log_info: bool = False,
-               *args, **kwargs) -> Table:
+               **kwargs) -> Table:
     """Reads in an astropy Table stored on disk. Reads in an astropy Table file on disk. In addition to the standard
     functionality provided by the `Table.read` method, this function handles logging, determination of qualified
     filename, and raising an exception of the common SheFileReadError type on error.
@@ -1452,10 +1453,11 @@ def write_product_and_table(product: Any,
 
 
 def read_product_and_table(product_filename: str,
+                           *args,
                            workdir: str = DEFAULT_WORKDIR,
                            log_info: bool = False,
                            product_type: Optional[Type] = None,
-                           *args, **kwargs) -> Tuple[Any, Table]:
+                           **kwargs) -> Tuple[Any, Table]:
     """ Convenience function to read in a data product and the data table it points to, and return both as a tuple.
     Note that this function is not compatible with all types of data products; it requires that the product's binding
     class is set up with a `get_data_filename` which provides the workdir-relative filename of the desired data table.
@@ -1493,10 +1495,11 @@ def read_product_and_table(product_filename: str,
 
 
 def read_table_from_product(product_filename: str,
+                            *args,
                             workdir: str = DEFAULT_WORKDIR,
                             log_info: bool = False,
                             product_type: Optional[Type] = None,
-                            *args, **kwargs) -> Table:
+                            **kwargs) -> Table:
     """Convenience function to read in a data table given the filename of the xml data product which points to it.
     Note that this function is not compatible with all types of data products; it requires that the product's binding
     class is set up with a `get_data_filename` which provides the workdir-relative filename of the desired data table.
@@ -1571,9 +1574,10 @@ def write_fits(hdu_list: HDUList,
 
 
 def read_fits(filename: str,
+              *args,
               workdir: str = DEFAULT_WORKDIR,
               log_info: bool = False,
-              *args, **kwargs) -> HDUList:
+              **kwargs) -> HDUList:
     """Reads in a FITS file on disk. In addition to the standard functionality provided by the `fits.open` method,
     this function handles logging, determination of qualified filename, and raising an
     exception of the common SheFileReadError type on error.
