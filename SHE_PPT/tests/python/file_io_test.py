@@ -983,6 +983,25 @@ class TestIO(SheTestCase):
         os.remove(qualified_dest_product_filename)
         os.remove(qualified_dest_table_filename)
 
+    def test_try_remove_file(self):
+        """Unit test of the `try_remove_file` function.
+        """
+
+        # Start by writing a file to disk which we'll try to remove
+        test_filename = "try_remove_file.txt"
+        test_qualified_filename = get_qualified_filename(test_filename,
+                                                         workdir = self.workdir)
+        write_listfile(test_qualified_filename, [])
+
+        # Try removing the file, and check that it doesn't exist after
+        try_remove_file(test_qualified_filename)
+        assert os.path.exists(test_qualified_filename)
+
+        # Now try removing a file that doesn't exist, and make sure an exception isn't raised
+        try_remove_file(FILENAME_NO_FILE,
+                        workdir = self.workdir,
+                        warn = True)
+
     # TODO: Add tests of read_d_l_method_table_filenames etc.
     # TODO: Add test of try_remove_file
     # TODO: Add test of find_file
