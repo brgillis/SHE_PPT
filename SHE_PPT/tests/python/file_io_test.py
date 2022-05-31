@@ -49,7 +49,7 @@ from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_S
                              TableLoader, append_hdu, copy_listfile_between_dirs,
                              copy_product_between_dirs,
                              filename_exists, filename_not_exists, find_aux_file,
-                             find_conf_file, find_file_in_path, find_web_file, get_allowed_filename,
+                             find_conf_file, find_file, find_file_in_path, find_web_file, get_allowed_filename,
                              get_qualified_filename,
                              instance_id_maxlen,
                              processing_function_maxlen, read_fits, read_listfile, read_product_and_table, read_table,
@@ -741,6 +741,47 @@ class TestIO(SheTestCase):
         with pytest.raises(DownloadFailed):
             _ = find_web_file(FILENAME_NO_FILE)
 
+    def test_find_file(self):
+        """Unit test of `find_file`.
+        """
+
+        # Check that we can find files of each type using the standard prefix
+
+        # auxdir - AUX/
+        test_qualified_filename = find_file("CONF/" + SYNC_CONF)
+        assert os.path.isfile(test_qualified_filename)
+
+        # conf - CONF/
+        test_qualified_filename = find_file("AUX/" + TEST_AUX_FILE)
+        assert os.path.isfile(test_qualified_filename)
+
+        # WebDAV - WEB/
+        test_qualified_filename = find_file(os.path.join("WEB", TEST_DATA_LOCATION,
+                                                         MER_FINAL_CATALOG_LISTFILE_FILENAME))
+        assert os.path.isfile(test_qualified_filename)
+
+        # $HOME - HOME/
+        test_qualified_filename = find_file("HOME/.bashrc")
+        assert os.path.isfile(test_qualified_filename)
+
+        # Already fully-qualified
+        test_qualified_filename = find_file(test_qualified_filename)
+        assert os.path.isfile(test_qualified_filename)
+
+        # Find in path
+        test_qualified_filename = find_file(SYNC_CONF, path = os.environ['ELEMENTS_CONF_PATH'])
+        assert os.path.isfile(test_qualified_filename)
+
+        # Test expected errors
+
+        # Can't find fully-qualified file
+        with pytest.raises(RuntimeError):
+            _ = find_file("/" + FILENAME_NO_FILE)
+
+        # Path not supplied
+        with pytest.raises(ValueError):
+            _ = find_file(SYNC_CONF)
+
     def test_update_xml_with_value(self):
         """ Test creating a simple xml file and updating with <Value>
         """
@@ -1003,7 +1044,6 @@ class TestIO(SheTestCase):
                         warn = True)
 
     # TODO: Add tests of read_d_l_method_table_filenames etc.
-    # TODO: Add test of find_file
     # TODO: Add test of first_in_path
     # TODO: Add test of first_writable_in_path
     # TODO: Add test of get_data_filename
