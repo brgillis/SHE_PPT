@@ -814,8 +814,9 @@ class SheFileNamer(FileNameProvider):
         self._type_name_body = "TYPE_NAME"
         ```
         """
-        raise TypeError("`_determine_type_name_body` must be overridden if `type_name` is not passed to `__init__` of "
-                        "`SheFileNamer` and `_type_name_body` is not directly set as a class attribute.")
+        raise NotImplementedError(
+            "`_determine_type_name_body` must be overridden if `type_name` is not passed to `__init__` of "
+            "`SheFileNamer` and `_type_name_body` is not directly set as a class attribute.")
 
     def _determine_instance_id_body(self) -> None:
         """A child class of this may override this method with an implementation which sets the `self._instance_id_body`
@@ -830,8 +831,9 @@ class SheFileNamer(FileNameProvider):
         self._instance_id_body = "INSTANCE_ID"
         ```
         """
-        raise TypeError("`_determine_instance_id_body` must be overridden if `instance_id` is not passed to `__init__` "
-                        "of `SheFileNamer` and `_instance_id_body` is not directly set as a class attribute.")
+        raise NotImplementedError(
+            "`_determine_instance_id_body` must be overridden if `instance_id` is not passed to `__init__` "
+            "of `SheFileNamer` and `_instance_id_body` is not directly set as a class attribute.")
 
     # Public methods
 

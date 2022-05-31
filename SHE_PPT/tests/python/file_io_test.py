@@ -317,6 +317,14 @@ class TestIO(SheTestCase):
         file_namer.qualified_filename = "/etc/conf/this.file"
         assert file_namer.qualified_filename == "/etc/conf/this.file"
 
+        # Test we get expected exceptions when we don't have a type name or instance ID
+        with pytest.raises(NotImplementedError):
+            file_namer.type_name_body = None
+            _ = file_namer.type_name
+        with pytest.raises(NotImplementedError):
+            file_namer.instance_id_body = None
+            _ = file_namer.instance_id
+
     def test_rw_xml_product(self):
         """Tests of the read_xml_product and write_xml_product functions.
         """
