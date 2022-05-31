@@ -51,7 +51,7 @@ from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_S
                              filename_exists, filename_not_exists, find_aux_file,
                              find_conf_file, find_file, find_file_in_path, find_web_file, first_in_path,
                              first_writable_in_path, get_allowed_filename,
-                             get_qualified_filename,
+                             get_data_filename, get_qualified_filename,
                              instance_id_maxlen,
                              processing_function_maxlen, read_fits, read_listfile, read_product_and_table, read_table,
                              read_table_from_product, read_xml_product,
@@ -1074,6 +1074,18 @@ class TestIO(SheTestCase):
             os.chmod(self.workdir, stat.S_IREAD | stat.S_IWRITE | stat.S_IEXEC)
             os.chmod(self.src_dir, stat.S_IREAD | stat.S_IWRITE | stat.S_IEXEC)
             os.chmod(self.dest_dir, stat.S_IREAD | stat.S_IWRITE | stat.S_IEXEC)
+
+    def test_get_data_filename(self):
+        """Unit test of `get_data_filename`.
+        """
+
+        # Check that we get the expected table filename for the MER Final Catalog product created for testing here
+        test_filename = get_data_filename(self.product_filename, workdir = self.src_dir)
+        assert test_filename == self.table_filename
+        
+        # Check that if we input the data filename directly, we get it back
+        test_filename = get_data_filename(self.table_filename, workdir = self.src_dir)
+        assert test_filename == self.table_filename
 
     # TODO: Add tests of read_d_l_method_table_filenames etc.
     # TODO: Add test of get_data_filename
