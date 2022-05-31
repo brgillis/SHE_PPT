@@ -2466,7 +2466,7 @@ def remove_files(l_qualified_filenames: Sequence[str]) -> None:
             os.remove(qualified_filename)
         except IOError:
             # Don't need to fail the whole process, but log the issue
-            logger.warning(f"Cannot delete file: {qualified_filename}")
+            logger.warning("Cannot delete file: %s", qualified_filename)
 
 
 def tar_files(tarball_filename: str,
@@ -2493,7 +2493,7 @@ def tar_files(tarball_filename: str,
     filename_string = " ".join(l_filenames)
 
     # Tar the files and fully log the process
-    logger.info(f"Creating tarball {qualified_tarball_filename}.")
+    logger.info("Creating tarball %s", qualified_tarball_filename)
 
     tar_cmd = f"cd {workdir} && tar -cf {qualified_tarball_filename} {filename_string}"
     tar_results = subprocess.run(tar_cmd, shell = True, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
