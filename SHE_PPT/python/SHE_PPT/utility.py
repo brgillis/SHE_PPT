@@ -543,20 +543,51 @@ def any_is_inf_nan_or_masked(l_x: Sequence[Union[float, Sequence[float]]]) -> bo
 Number = TypeVar('Number', float, int)
 
 
-def is_zero(x: Number):
+def is_zero(x: Number) -> bool:
     """ Checks if a value is zero - needed if a callable function is required to perform this test.
+
+    Parameters
+    ----------
+    x : Number
+        The value to check.
+
+    Returns
+    -------
+    bool
+        True if the value is zero, False otherwise.
     """
     return x == 0
 
 
 def any_is_zero(l_x: Sequence[Number]) -> bool:
-    """ Checks if any value in a sequence of numbers is zero.
+    """Checks if any value in a sequence of numbers is zero.
+
+    Parameters
+    ----------
+    l_x : Sequence[Number]
+        The sequence to check.
+
+    Returns
+    -------
+    bool
+        True if any value is zero, False otherwise.
     """
+
     return (np.asarray(l_x) == 0).any()
 
 
 def all_are_zero(l_x: Sequence[Number]) -> bool:
-    """ Checks if all values in a sequence of numbers are zero.
+    """Checks if all values in a sequence of numbers are zero.
+
+    Parameters
+    ----------
+    l_x : Sequence[Number]
+        The sequence to check.
+
+    Returns
+    -------
+    bool
+        True if all values are zero, False otherwise.
     """
     return (np.asarray(l_x) == 0).all()
 
