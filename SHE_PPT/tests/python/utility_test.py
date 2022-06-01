@@ -243,9 +243,9 @@ class TestUtility(SheTestCase):
 
         # Test the 'any' methods on full arrays
 
-        assert any_is_inf_or_nan(l_x) is True
-        assert any_is_nan_or_masked(l_x) is True
-        assert any_is_inf_nan_or_masked(l_x) is True
+        assert any_is_inf_or_nan(l_x)
+        assert any_is_nan_or_masked(l_x)
+        assert any_is_inf_nan_or_masked(l_x)
 
     def test_is_zero(self):
         """Test the `is_zero` functions.
