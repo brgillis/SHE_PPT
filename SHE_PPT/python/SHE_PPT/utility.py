@@ -26,9 +26,8 @@ import re
 from typing import Any, Dict, List, MutableSequence, Optional, Sequence, Set, Tuple, Type, TypeVar, Union
 
 import numpy as np
-from astropy.io.fits import HDUList, TableHDU
+from astropy.io.fits import BinTableHDU, HDUList, ImageHDU, PrimaryHDU, TableHDU
 from astropy.table import Table
-from fitsio.hdu.base import HDUBase
 
 from . import detector as dtc
 from .constants.fits import CCDID_LABEL, EXTNAME_LABEL
@@ -227,7 +226,7 @@ def find_extension(hdulist: HDUList,
     return None
 
 
-def get_detector(obj: Union[HDUBase, Table]) -> Tuple[int, int]:
+def get_detector(obj: Union[TableHDU, BinTableHDU, ImageHDU, PrimaryHDU, Table]) -> Tuple[int, int]:
     """Find the detector indices for a fits hdu or table.
 
     Parameters
