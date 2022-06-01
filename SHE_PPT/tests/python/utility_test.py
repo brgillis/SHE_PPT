@@ -26,6 +26,7 @@ import shutil
 import numpy as np
 
 from EL_PythonUtils.utilities import get_arguments_string, hash_any
+from SHE_PPT.testing.utility import SheTestCase
 from SHE_PPT.utility import (any_is_inf_nan_or_masked, any_is_inf_or_nan, any_is_nan_or_masked, get_all_files,
                              get_nested_attr,
                              is_inf, is_inf_nan_or_masked, is_inf_or_nan,
@@ -34,21 +35,13 @@ from SHE_PPT.utility import (any_is_inf_nan_or_masked, any_is_inf_or_nan, any_is
                              set_nested_attr, )
 
 
-class TestUtility:
+class TestUtility(SheTestCase):
+    """Class to handle unit tests for functions in the `SHE_PPT.utility` module.
     """
-
-
-    """
-
-    @classmethod
-    def setup_class(cls):
-        return
-
-    @classmethod
-    def teardown_class(cls):
-        return
 
     def test_get_set_nested_attr(self):
+        """Unit test of `get/set_nested_attr` functions.
+        """
 
         class DoubleNestedClass(object):
 
