@@ -33,8 +33,10 @@ from astropy.table import Table
 
 from SHE_PPT.constants.fits import CCDID_LABEL, EXTNAME_LABEL, SCI_TAG
 from SHE_PPT.testing.utility import SheTestCase
-from SHE_PPT.utility import (any_is_inf_nan_or_masked, any_is_inf_or_nan,
-                             any_is_nan_or_masked, find_extension, get_all_files, get_attr_with_index, get_detector,
+from SHE_PPT.utility import (any_is_inf, any_is_inf_nan_or_masked, any_is_inf_or_nan,
+                             any_is_masked, any_is_nan, any_is_nan_or_masked, find_extension, get_all_files,
+                             get_attr_with_index,
+                             get_detector,
                              get_nested_attr,
                              get_release_from_version, is_inf,
                              is_inf_nan_or_masked,
@@ -248,6 +250,10 @@ class TestUtility(SheTestCase):
             assert is_inf_nan_or_masked(x) == (is_inf(x) or is_nan(x) or is_masked(x))
 
             # Check with `any` methods on this individual value
+            assert any_is_inf(x) == is_inf(x)
+            assert any_is_nan(x) == is_nan(x)
+            assert any_is_masked(x) == is_masked(x)
+
             assert any_is_inf_or_nan(x) == (is_inf(x) or is_nan(x) and not is_masked(x))
             assert any_is_nan_or_masked(x) == (is_nan(x) or is_masked(x))
             assert any_is_inf_nan_or_masked(x) == (is_inf(x) or is_nan(x) or is_masked(x))
