@@ -288,14 +288,7 @@ def read_config(config_filename: Optional[str] = None,
     """
 
     # Make sure we have a dictionary of parsed arguments
-    d_args: Dict[str, Any]
-    if parsed_args is None:
-        d_args = {}
-    elif isinstance(parsed_args, dict):
-        d_args = parsed_args
-    else:
-        # Assume parsed_args is a Namespace or similar
-        d_args = vars(parsed_args)
+    d_args = _coerce_parsed_args_to_dict(parsed_args)
 
     # Use empty dicts for d_cline_args and defaults if None provided
     if d_cline_args is None:
@@ -369,6 +362,20 @@ def read_config(config_filename: Optional[str] = None,
                                         task_head = task_head)
 
     return d_config
+
+
+def _coerce_parsed_args_to_dict(parsed_args: Optional[Union[Namespace, Dict[str, Any]]]) -> Dict[str, Any]:
+    """Private function to coerce a parsed arguments object into a dict.
+    """
+    d_args: Dict[str, Any]
+    if parsed_args is None:
+        d_args = {}
+    elif isinstance(parsed_args, dict):
+        d_args = parsed_args
+    else:
+        # Assume parsed_args is a Namespace or similar
+        d_args = vars(parsed_args)
+    return d_args
 
 
 def _read_config_product(config_filename: str,
