@@ -36,14 +36,36 @@ from .logging import getLogger
 logger = getLogger(__name__)
 
 
-def get_attr_with_index(obj: Any, attr: Any) -> Any:
-    # Check for an index at the end of attr, using a regex which matches anything, followed by [,
-    # followed by a positive integer, followed by ], followed by the end of the string.
-    # Matching groups are 1. the attribute, and 2. the index
+def get_attr_with_index(obj: Any, attr: str) -> Any:
+    """Check for an index at the end of attr, using a regex which matches anything, followed by [, followed
+    by a digit, followed by ]. If found, gets this index of the desired attribute.
+
+    Parameters
+    ----------
+    obj : Any
+        The object to check.
+    attr : str
+        The attribute to check, which may optionally end with an index, e.g. 'l_x[0]'.
+
+    Returns
+    -------
+    Any
+        The attribute, optionally indexed by the value provided in the string.
+
+    Examples
+    --------
+    Let's say we have an object with an attribute 'l_x' which is a list of length 3. Calling this function
+    as `get_attr_with_index(obj, 'l_x[0]')` would be equivalent to calling `obj.l_x[0]`.
+
+    This function can also be used with an un-indexed attribute, e.g. calling this function as
+    `get_attr_with_index(obj, 'l_x')` would be equivalent to calling `obj.l_x`.
+    """
+
     regex_match = re.match(r"(.*)\[([0-9]+)\]\Z", attr)
 
     if not regex_match:
         return getattr(obj, attr)
+
     # Get the attribute (matching group 1), indexed by the index (matching group 2)
     return getattr(obj, regex_match.group(1))[int(regex_match.group(2))]
 
