@@ -30,7 +30,7 @@ from SHE_PPT import products
 from SHE_PPT.constants.shear_estimation_methods import ShearEstimationMethods
 from SHE_PPT.file_io import write_listfile, write_xml_product
 from SHE_PPT.pipeline_utility import (AnalysisConfigKeys, CalibrationConfigKeys, GlobalConfigKeys,
-                                      ReconciliationConfigKeys, convert_config_types, get_conditional_product,
+                                      ReconciliationConfigKeys, _convert_config_types, get_conditional_product,
                                       read_analysis_config, read_calibration_config, read_reconciliation_config,
                                       write_analysis_config, write_calibration_config, write_reconciliation_config, )
 
@@ -243,8 +243,8 @@ class TestUtility:
                    "want_str_from_enum_list_or_str"      : ((list, GlobalConfigKeys), str)}
 
         # Run the function
-        new_config: Dict[str, Any] = convert_config_types(pipeline_config = config,
-                                                          d_types = d_types)
+        new_config: Dict[str, Any] = _convert_config_types(pipeline_config = config,
+                                                           d_types = d_types)
 
         # Check the results
         assert np.isclose(new_config["want_float"], 0.)
