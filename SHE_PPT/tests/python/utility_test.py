@@ -78,7 +78,7 @@ class TestUtility(SheTestCase):
         return
 
     def test_process_directory(self):
-        """
+        """Unit test of the `process_directory` function.
         """
         test_dir = os.path.join(os.getenv('HOME'), 'fgdyteihth')
         os.mkdir(test_dir)
@@ -96,7 +96,7 @@ class TestUtility(SheTestCase):
         shutil.rmtree(test_dir)
 
     def test_get_all_files(self):
-        """
+        """Unit test of the `get_all_files` function.
         """
         test_dir = os.path.join(os.getenv('HOME'), 'fgdytedggdsth')
         os.mkdir(test_dir)
@@ -125,7 +125,7 @@ class TestUtility(SheTestCase):
         shutil.rmtree(test_dir)
 
     def test_bad_value_checks(self):
-        """ Test the various "bad value" checks for Inf, NaN, and masked values.
+        """Test the various "bad value" checks for Inf, NaN, and masked values.
         """
 
         # Create a test array
