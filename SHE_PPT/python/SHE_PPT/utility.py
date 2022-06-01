@@ -155,11 +155,6 @@ def set_nested_attr(obj: Any, attr: Any, val: Any):
     head, tail = attr.split('.', 1)
 
     set_nested_attr(get_attr_with_index(obj, head), tail, val)
-    if "." not in attr:
-        set_attr_with_index(obj, attr, val)
-    else:
-        head, tail = attr.split('.', 1)
-        set_nested_attr(get_attr_with_index(obj, head), tail, val)
 
 
 def get_release_from_version(version: str) -> str:
