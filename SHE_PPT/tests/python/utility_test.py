@@ -42,7 +42,8 @@ from SHE_PPT.utility import (all_are_zero, any_is_inf, any_is_inf_nan_or_masked,
                              get_nested_attr,
                              get_release_from_version, is_inf,
                              is_inf_nan_or_masked,
-                             is_inf_or_nan, is_masked, is_nan, is_nan_or_masked, is_zero, set_attr_with_index,
+                             is_inf_or_nan, is_masked, is_nan, is_nan_or_masked, is_zero, join_without_none,
+                             set_attr_with_index,
                              set_nested_attr, )
 
 
@@ -302,3 +303,22 @@ class TestUtility(SheTestCase):
         # Test with (not) keeping None
         assert coerce_to_list(None, keep_none = False) == []
         assert coerce_to_list(None, keep_none = True) is None
+
+    def test_join_without_none(self):
+        """Test the `join_without_none` function.
+        """
+
+        # Test with a single value
+        assert join_without_none([1]) == "1"
+
+        # Test with a few values
+        assert join_without_none([1, 2]) == "1-2"
+
+        # Test with None
+        assert join_without_none([1, None, 2]) == "1-2"
+
+        # Test with a custom joiner
+        assert join_without_none([1, 2], joiner = ",") == "1,2"
+
+        # Test with a default
+        assert join_without_none([None], default = "default") == "default"
