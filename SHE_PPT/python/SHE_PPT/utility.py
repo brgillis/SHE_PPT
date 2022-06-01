@@ -228,6 +228,16 @@ def find_extension(hdulist: HDUList,
 
 def get_detector(obj: Union[TableHDU, Table]) -> Tuple[int, int]:
     """Find the detector indices for a fits hdu or table.
+
+    Parameters
+    ----------
+    obj : Union[TableHDU, Table]
+        The HDU or table to get the detector indices for.
+
+    Returns
+    -------
+    Tuple[int, int]
+        The indices of the detector.
     """
 
     if hasattr(obj, "header"):
@@ -235,10 +245,9 @@ def get_detector(obj: Union[TableHDU, Table]) -> Tuple[int, int]:
     elif hasattr(obj, "meta"):
         header = obj.meta
     else:
-        raise ValueError(
-            "Unable to determine detector - no 'header' or 'meta' attribute present.")
+        raise ValueError("Unable to determine detector - no 'header' or 'meta' attribute present.")
 
-    extname = header["EXTNAME"]
+    extname = header[EXTNAME_LABEL]
 
     detector_x = int(extname[dtc.x_index])
     detector_y = int(extname[dtc.y_index])
