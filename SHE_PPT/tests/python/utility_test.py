@@ -34,7 +34,8 @@ from astropy.table import Table
 from SHE_PPT.constants.fits import CCDID_LABEL, EXTNAME_LABEL, SCI_TAG
 from SHE_PPT.testing.utility import SheTestCase
 from SHE_PPT.utility import (all_are_zero, any_is_inf, any_is_inf_nan_or_masked, any_is_inf_or_nan,
-                             any_is_masked, any_is_nan, any_is_nan_or_masked, any_is_zero, find_extension,
+                             any_is_masked, any_is_nan, any_is_nan_or_masked, any_is_zero, coerce_to_list,
+                             find_extension,
                              get_all_files,
                              get_attr_with_index,
                              get_detector,
@@ -281,3 +282,23 @@ class TestUtility(SheTestCase):
         # Test with a numpy array - all
         assert all_are_zero(np.array([0, 0]))
         assert not all_are_zero(np.array([0, 1]))
+
+    def test_coerce_to_list(self):
+        """Test the `coerce_to_list` function.
+        """
+
+        # Test with a scalar
+        assert coerce_to_list(1) == [1]
+
+        # Test with a numpy array
+        assert coerce_to_list(np.array([1, 2])) == [1, 2]
+
+        # Test with a list
+        assert coerce_to_list([1, 2]) == [1, 2]
+
+        # Test with a string
+        assert coerce_to_list("1,2") == ["1,2"]
+
+        # Test with (not) keeping None
+        assert coerce_to_list(None, keep_none = False) == []
+        assert coerce_to_list(None, keep_none = True) is None
