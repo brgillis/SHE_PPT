@@ -23,14 +23,18 @@ __updated__ = "2021-02-10"
 import os
 import shutil
 from copy import deepcopy
-from dataclasses import dataclass
-from typing import Optional
+from dataclasses import dataclass, field
+from typing import Dict, Optional
 
 import numpy as np
+import pytest
+from astropy.io.fits import HDUList, PrimaryHDU
 
+from SHE_PPT.constants.fits import CCDID_LABEL, EXTNAME_LABEL, SCI_TAG
 from SHE_PPT.testing.utility import SheTestCase
-from SHE_PPT.utility import (_process_directory_for_files, any_is_inf_nan_or_masked, any_is_inf_or_nan,
-                             any_is_nan_or_masked, get_all_files, get_attr_with_index, get_nested_attr, is_inf,
+from SHE_PPT.utility import (any_is_inf_nan_or_masked, any_is_inf_or_nan,
+                             any_is_nan_or_masked, find_extension, get_all_files, get_attr_with_index, get_nested_attr,
+                             get_release_from_version, is_inf,
                              is_inf_nan_or_masked,
                              is_inf_or_nan, is_masked, is_nan, is_nan_or_masked, set_attr_with_index, set_nested_attr, )
 
@@ -45,6 +49,13 @@ class MockClass:
     d: bool = False
     e: np.ndarray = np.array([1, 2, 3])
     r: "Optional[MockClass]" = None
+
+
+@dataclass
+class MockHDU:
+    """A mock HDU for use in testing the `find_extension` function.
+    """
+    header: Dict[str, str] = field(default_factory = dict)
 
 
 class TestUtility(SheTestCase):
@@ -115,43 +126,69 @@ class TestUtility(SheTestCase):
         set_nested_attr(copied_object, 'r.r.e[0]', 3.2)
         assert copied_object.r.r.e[0] == 3.2
 
-    def test_process_directory(self):
-        """Unit test of the `process_directory` function.
+    def test_get_release_from_version(self):
+        """Unit test of the `get_release_from_version` function.
         """
-        test_dir = os.path.join(self.workdir, 'fgdyteihth')
-        os.mkdir(test_dir)
-        subdir_name1 = 'sub_a'
-        os.mkdir(os.path.join(test_dir, subdir_name1))
-        # subdir_name2='sub_b'
-        # os.mkdir(os.path.join(test_dir,subdir_name2))
-        file_name1 = 'file1.txt'
-        file_name2 = 'file2.txt'
-        open(os.path.join(test_dir, file_name1), 'w').writelines(['1\n'])
-        open(os.path.join(test_dir, file_name2), 'w').writelines(['2\n'])
-        file_list, sbdir_list = _process_directory_for_files(test_dir)
-        assert len(file_list) == 2
-        assert len(sbdir_list) == 1
-        shutil.rmtree(test_dir)
+
+        # Test with a version string
+        assert get_release_from_version("1.1") == "01.01"
+
+        # Test with a version string with a bugfix number
+        assert get_release_from_version("22.3.4") == "22.03"
+
+        # Test it raises an exception when expected
+        with pytest.raises(ValueError):
+            _ = get_release_from_version("101.0")
+
+    def test_find_extension(self):
+        """Unit test of the `find_extension` function.
+        """
+
+        # Create a list of mock HDUs to test
+        mock_hdu_list = HDUList([PrimaryHDU,
+                                 MockHDU(header = {EXTNAME_LABEL: f"1-0.{SCI_TAG}",
+                                                   CCDID_LABEL  : "1-0"}),
+                                 MockHDU(header = {EXTNAME_LABEL: f"1-1.{SCI_TAG}",
+                                                   CCDID_LABEL  : "1-1"})])
+
+        # Check that it finds the correct HDU when specifying either extname or ccdid
+        for i in range(2):
+            assert find_extension(mock_hdu_list, extname = f"1-{i}.{SCI_TAG}") == i
+            assert find_extension(mock_hdu_list, ccdid = f"1-{i}") == i
+
+        # Test that it raises an exception when required input isn't provided
+        with pytest.raises(ValueError):
+            _ = find_extension(mock_hdu_list)
+
+        # Test that it returns None when the HDU isn't found
+        assert find_extension(mock_hdu_list, extname = "1-2.sci") is None
 
     def test_get_all_files(self):
         """Unit test of the `get_all_files` function.
         """
-        test_dir = os.path.join(self.workdir, 'fgdytedggdsth')
+
+        test_dir = os.path.join(self.workdir, 'test_dir')
         os.mkdir(test_dir)
+
         subdir_name1 = 'sub_a'
         os.mkdir(os.path.join(test_dir, subdir_name1))
+
         subdir_name2 = 'sub_b'
         os.mkdir(os.path.join(test_dir, subdir_name2))
+
         file_name1 = 'file1.txt'
         file_name2 = 'file2.txt'
         open(os.path.join(test_dir, file_name1), 'w').writelines(['1\n'])
         open(os.path.join(test_dir, file_name2), 'w').writelines(['2\n'])
+
         file_name3 = 'file3.txt'
         file_name4 = 'file4.txt'
         open(os.path.join(test_dir, subdir_name1, file_name3), 'w').writelines(['1\n'])
         open(os.path.join(test_dir, subdir_name2, file_name4), 'w').writelines(['2\n'])
+
         subdir_name3 = 'sub_b1'
         os.mkdir(os.path.join(test_dir, subdir_name2, subdir_name3))
+
         file_name5 = 'file5.txt'
         open(os.path.join(test_dir, subdir_name2, subdir_name3, file_name5), 'w').writelines(['1\n'])
 
