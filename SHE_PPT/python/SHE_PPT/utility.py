@@ -99,7 +99,7 @@ def get_nested_attr(obj: Any,
 
 def set_index_zero_attr(obj: Any, attr: Any, val: Any) -> None:
     """Deprecated in favor of `set_indexed_attr`."""
-    if not "[0]" in attr:
+    if "[0]" not in attr:
         setattr(obj, attr, val)
     elif attr[-3:] == "[0]":
         getattr(obj, attr[:-3])[0] = val
@@ -256,30 +256,47 @@ def get_detector(obj: Union[TableHDU, Table]) -> Tuple[int, int]:
 
 
 def get_all_files(directory_name: str) -> List[str]:
+    """Search through a directory to get a full list of files in it and all of its sub-directories.
+
+    Parameters
+    ----------
+    directory_name : str
+        The name of the directory to search.
+
+    Returns
+    -------
+    List[str]
+        A list of all files in the directory, including its subdirectories.
     """
-    """
+    # TODO: This should be moved to SHE_PPT.file_io
+
     full_file_list = []
     dir_list = [directory_name]
+
     is_complete = False
+
     while not is_complete:
+
         new_dir_list = []
+
         for dir_name in dir_list:
-            file_list, sb_dir_list = process_directory(
-                dir_name)
-            full_file_list += [os.path.join(dir_name, fname)
-                               for fname in file_list]
+
+            file_list, sb_dir_list = _process_directory_for_files(dir_name)
+            full_file_list += [os.path.join(dir_name, filename)
+                               for filename in file_list]
+
             if sb_dir_list:
                 new_dir_list += [os.path.join(dir_name, sb_dir)
                                  for sb_dir in sb_dir_list]
+
         dir_list = new_dir_list
         is_complete = len(dir_list) == 0
 
     return full_file_list
 
 
-def process_directory(directory_name: str) -> Tuple[List[str], List[str]]:
-    """ Check for files, subdirectories
-
+def _process_directory_for_files(directory_name: str) -> Tuple[List[str], List[str]]:
+    """ Recursively check a directory for files; used within `get_all_files`.
     """
     file_list = []
     subdir_list = []

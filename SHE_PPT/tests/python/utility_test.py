@@ -26,12 +26,9 @@ import shutil
 import numpy as np
 
 from SHE_PPT.testing.utility import SheTestCase
-from SHE_PPT.utility import (any_is_inf_nan_or_masked, any_is_inf_or_nan, any_is_nan_or_masked, get_all_files,
-                             get_nested_attr,
-                             is_inf, is_inf_nan_or_masked, is_inf_or_nan,
-                             is_masked, is_nan, is_nan_or_masked,
-                             process_directory,
-                             set_nested_attr, )
+from SHE_PPT.utility import (_process_directory_for_files, any_is_inf_nan_or_masked, any_is_inf_or_nan,
+                             any_is_nan_or_masked, get_all_files, get_nested_attr, is_inf, is_inf_nan_or_masked,
+                             is_inf_or_nan, is_masked, is_nan, is_nan_or_masked, set_nested_attr, )
 
 
 class TestUtility(SheTestCase):
@@ -90,7 +87,7 @@ class TestUtility(SheTestCase):
         file_name2 = 'file2.txt'
         open(os.path.join(test_dir, file_name1), 'w').writelines(['1\n'])
         open(os.path.join(test_dir, file_name2), 'w').writelines(['2\n'])
-        file_list, sbdir_list = process_directory(test_dir)
+        file_list, sbdir_list = _process_directory_for_files(test_dir)
         assert len(file_list) == 2
         assert len(sbdir_list) == 1
         shutil.rmtree(test_dir)
