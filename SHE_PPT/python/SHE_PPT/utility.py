@@ -97,7 +97,9 @@ def get_nested_attr(obj: Any,
     return get_nested_attr(get_attr_with_index(obj, head), tail)
 
 
-def set_index_zero_attr(obj: Any, attr: Any, val: Any) -> None:
+def set_index_zero_attr(obj: Any,
+                        attr: Any,
+                        val: Any) -> None:
     """Deprecated in favor of `set_indexed_attr`."""
     if "[0]" not in attr:
         setattr(obj, attr, val)
@@ -133,7 +135,9 @@ def set_attr_with_index(obj: Any,
     getattr(obj, regex_match.group(1))[int(regex_match.group(2))] = val
 
 
-def set_nested_attr(obj: Any, attr: Any, val: Any):
+def set_nested_attr(obj: Any,
+                    attr: Any,
+                    val: Any):
     """Sets a nested attribute of an object, e.g. `set_nested_attr(obj, 'a.b.c', val)` is equivalent to `obj.a.b.c =
     val`.
 
