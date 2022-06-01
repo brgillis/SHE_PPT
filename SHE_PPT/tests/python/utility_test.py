@@ -80,7 +80,7 @@ class TestUtility(SheTestCase):
     def test_process_directory(self):
         """Unit test of the `process_directory` function.
         """
-        test_dir = os.path.join(os.getenv('HOME'), 'fgdyteihth')
+        test_dir = os.path.join(self.workdir, 'fgdyteihth')
         os.mkdir(test_dir)
         subdir_name1 = 'sub_a'
         os.mkdir(os.path.join(test_dir, subdir_name1))
@@ -98,7 +98,7 @@ class TestUtility(SheTestCase):
     def test_get_all_files(self):
         """Unit test of the `get_all_files` function.
         """
-        test_dir = os.path.join(os.getenv('HOME'), 'fgdytedggdsth')
+        test_dir = os.path.join(self.workdir, 'fgdytedggdsth')
         os.mkdir(test_dir)
         subdir_name1 = 'sub_a'
         os.mkdir(os.path.join(test_dir, subdir_name1))
