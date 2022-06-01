@@ -163,8 +163,18 @@ def set_nested_attr(obj: Any, attr: Any, val: Any):
 
 
 def get_release_from_version(version: str) -> str:
-    """Gets a 'release' format string ('XX.XX' where X is 0-9) from a 'version' format string ('X.X(.Y)',
-       where each X is 0-99, and Y is any integer).
+    """Gets a 'release' format string ('XX.XX' where X is 0-9) from a 'version' format string ('X.Y(.Z)',
+       where XX is 0-99, and X, Y, and Z are any integers).
+
+    Parameters
+    ----------
+    version : str
+        The version string to convert (e.g. '1.1.0').
+
+    Returns
+    -------
+    release : str
+        The converted release string  (e.g. '01.01').
     """
 
     period_split_version = version.split('.')
