@@ -28,7 +28,7 @@ from typing import Dict, Optional
 
 import numpy as np
 import pytest
-from astropy.io.fits import HDUList, PrimaryHDU
+from astropy.io.fits import BinTableHDU, HDUList, Header, PrimaryHDU
 
 from SHE_PPT.constants.fits import CCDID_LABEL, EXTNAME_LABEL, SCI_TAG
 from SHE_PPT.testing.utility import SheTestCase
@@ -145,14 +145,14 @@ class TestUtility(SheTestCase):
         """
 
         # Create a list of mock HDUs to test
-        mock_hdu_list = HDUList([PrimaryHDU,
-                                 MockHDU(header = {EXTNAME_LABEL: f"1-0.{SCI_TAG}",
-                                                   CCDID_LABEL  : "1-0"}),
-                                 MockHDU(header = {EXTNAME_LABEL: f"1-1.{SCI_TAG}",
-                                                   CCDID_LABEL  : "1-1"})])
+        mock_hdu_list = HDUList([PrimaryHDU(),
+                                 BinTableHDU(header = Header({EXTNAME_LABEL: f"1-1.{SCI_TAG}",
+                                                              CCDID_LABEL  : "1-1"})),
+                                 BinTableHDU(header = Header({EXTNAME_LABEL: f"1-2.{SCI_TAG}",
+                                                              CCDID_LABEL  : "1-2"}))])
 
         # Check that it finds the correct HDU when specifying either extname or ccdid
-        for i in range(2):
+        for i in (1, 2):
             assert find_extension(mock_hdu_list, extname = f"1-{i}.{SCI_TAG}") == i
             assert find_extension(mock_hdu_list, ccdid = f"1-{i}") == i
 
@@ -161,7 +161,7 @@ class TestUtility(SheTestCase):
             _ = find_extension(mock_hdu_list)
 
         # Test that it returns None when the HDU isn't found
-        assert find_extension(mock_hdu_list, extname = "1-2.sci") is None
+        assert find_extension(mock_hdu_list, extname = f"1-3.{SCI_TAG}") is None
 
     def test_get_all_files(self):
         """Unit test of the `get_all_files` function.
