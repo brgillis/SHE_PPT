@@ -43,7 +43,7 @@ def get_attr_with_index(obj: Any, attr: str) -> Any:
     Parameters
     ----------
     obj : Any
-        The object to check.
+        The object to whose attribute to get.
     attr : str
         The attribute to check, which may optionally end with an index, e.g. 'l_x[0]'.
 
@@ -70,10 +70,28 @@ def get_attr_with_index(obj: Any, attr: str) -> Any:
     return getattr(obj, regex_match.group(1))[int(regex_match.group(2))]
 
 
-def get_nested_attr(obj: Any, attr: Any) -> Any:
-    if not "." in attr:
+def get_nested_attr(obj: Any, attr: str) -> Any:
+    """Gets a nested attribute of an object, e.g. `obj.a.b.c`
+
+    Parameters
+    ----------
+    obj : Any
+        The object whose attribute to get.
+    attr : str
+        The attribute to check, which may optionally be nested, e.g. 'a.b.c'. Each attribute may also optionally end
+        with an index, e.g. 'a.b[0].c'.
+
+    Returns
+    -------
+    Any
+        The ultimate nested attribute.
+    """
+
+    if "." not in attr:
         return get_attr_with_index(obj, attr)
+
     head, tail = attr.split('.', 1)
+
     return get_nested_attr(get_attr_with_index(obj, head), tail)
 
 
