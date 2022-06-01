@@ -34,7 +34,7 @@ from .constants.config import (AnalysisConfigKeys, CTI_GAL_VALIDATION_HEAD, Cali
                                GlobalConfigKeys, ReconciliationConfigKeys, SHEAR_BIAS_VALIDATION_HEAD,
                                ScalingExperimentsConfigKeys, VALIDATION_HEAD,
                                ValidationConfigKeys, )
-from .file_io import SheFileReadError, find_file, read_listfile, read_xml_product
+from .file_io import DEFAULT_WORKDIR, SheFileReadError, find_file, read_listfile, read_xml_product
 from .logging import getLogger
 from .utility import is_any_type_of_none
 
@@ -248,7 +248,7 @@ def read_scaling_config(*args, **kwargs):
 
 
 def read_config(config_filename: Optional[str] = None,
-                workdir: str = ".",
+                workdir: str = DEFAULT_WORKDIR,
                 config_keys: Union[EnumMeta, Tuple[EnumMeta, ...]] = (AnalysisConfigKeys,
                                                                       ValidationConfigKeys,
                                                                       ReconciliationConfigKeys,
@@ -258,32 +258,33 @@ def read_config(config_filename: Optional[str] = None,
                 d_types: Optional[Dict[ConfigKeys, Type]] = None,
                 parsed_args: Optional[Union[Namespace, Dict[str, Any]]] = None,
                 task_head: Optional[str] = None) -> Dict[ConfigKeys, Any]:
-    """ Reads in a generic configuration file to a dictionary. Note that all arguments will be read as strings unless
-        a cline_arg value is used.
+    """Reads in a generic configuration file to a dictionary. Note that all arguments will be read as strings unless
+    a cline_arg value is used.
 
-        Parameters
-        ----------
-        config_filename : Optional[str]
-            The workspace-relative name of the config file.
-        config_keys : enum or iterable of enums
-            ConfigKeys enum or iterable of enums listing allowed keys
-        workdir : string
-            The working directory.
-        d_cline_args: Dict[ConfigKeys, Optional[str]]
-            Dict listing cline-args which can override each config value in the config file.
-        d_defaults : Dict[ConfigKeys, Any]
-            Dict of default values to use if no value (or None) is supplied in the config and no value (or None) is
-            supplied in the parsed_args.
-        d_types: Dict[ConfigKeys, Type]
-            Dict of desired types to convert values in the config to. If not provided, all values will be left
-            as strings.
-        parsed_args : Union[Namespace, Dict[str, Any]]
-            Namespace or dict giving values passed at the command line. If these aren't None, they will override
-            values in the config file
-        task_head: string
-            Should only be set if reading configs for a Validation task. In this case, this refers to the "head" of
-            the task-specific configuration keys. These task-specific arguments will be used to override the
-            global arguments if set to anything other than None.
+    Parameters
+    ----------
+    config_filename : Optional[str], default=None
+        The workspace-relative name of the config file.
+    workdir : str, default="."
+        The working directory.
+    config_keys : Union[EnumMeta, Tuple[EnumMeta, ...]], default=(AnalysisConfigKeys, ValidationConfigKeys,
+    ReconciliationConfigKeys, CalibrationConfigKeys)
+        ConfigKeys enum or iterable of enums listing allowed keys.
+    d_cline_args: Optional[Dict[ConfigKeys, str]], default=None
+        Dict listing cline-args which can override each config value in the config file.
+    d_defaults : Optional[Dict[ConfigKeys, Any]], default=None
+        Dict of default values to use if no value (or None) is supplied in the config and no value (or None) is
+        supplied in the parsed_args.
+    d_types: OptionalDict[ConfigKeys, Type]], default=None
+        Dict of desired types to convert values in the config to. If not provided, all values will be left
+        as strings.
+    parsed_args : Optional[Union[Namespace, Dict[str, Any]]], default=None
+        Namespace or dict giving values passed at the command line. If these aren't None, they will override
+        values in the config file
+    task_head: Optional[str], default=None
+        Should only be set if reading configs for a Validation task. In this case, this refers to the "head" of
+        the task-specific configuration keys. These task-specific arguments will be used to override the
+        global arguments if set to anything other than None.
     """
 
     # Make sure we have a dictionary of parsed arguments
