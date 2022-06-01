@@ -30,6 +30,7 @@ from astropy.io.fits import HDUList, TableHDU
 from astropy.table import Table
 
 from . import detector as dtc
+from .constants.fits import CCDID_LABEL, EXTNAME_LABEL
 from .logging import getLogger
 
 logger = getLogger(__name__)
@@ -95,24 +96,34 @@ def get_release_from_version(version: str) -> str:
 
 def find_extension(hdulist: HDUList,
                    extname: Optional[str] = None,
-                   ccdid: Optional[str] = None):
+                   ccdid: Optional[str] = None) -> Optional[int]:
     """Find the index of the extension of a fits HDUList with the correct EXTNAME or CCDID value.
+
+    Parameters
+    ----------
+    hdulist : HDUList
+        The HDUList to search.
+    extname : str, optional
+        The EXTNAME value to search for. Either this or `ccdid` must be specified.
+    ccdid : str, optional
+        The CCDID value to search for. Either this or `extname` must be specified.
     """
+
+    # Determine which key and value to search for based on what's been specified
     if extname is not None:
-        for i, hdu in enumerate(hdulist):
-            if not "EXTNAME" in hdu.header:
-                continue
-            if hdu.header["EXTNAME"] == extname:
-                return i
-        return None
-    if ccdid is not None:
-        for i, hdu in enumerate(hdulist):
-            if not "CCDID" in hdu.header:
-                continue
-            if hdu.header["CCDID"] == ccdid:
-                return i
-        return None
-    raise ValueError("Either extname or ccdid must be supplied.")
+        val: str = extname
+        key = EXTNAME_LABEL
+    elif ccdid is not None:
+        val: str = ccdid
+        key = CCDID_LABEL
+    else:
+        raise ValueError("Either `extname` or `ccdid` must be supplied to the `find_extension` function.")
+
+    for i, hdu in enumerate(hdulist):
+        if key in hdu.header and hdu.header[key] == val:
+            return i
+
+    return None
 
 
 def get_detector(obj: Union[TableHDU, Table]) -> Tuple[int, int]:
