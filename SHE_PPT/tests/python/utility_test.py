@@ -22,57 +22,98 @@ __updated__ = "2021-02-10"
 
 import os
 import shutil
+from copy import deepcopy
+from dataclasses import dataclass
+from typing import Optional
 
 import numpy as np
 
 from SHE_PPT.testing.utility import SheTestCase
 from SHE_PPT.utility import (_process_directory_for_files, any_is_inf_nan_or_masked, any_is_inf_or_nan,
-                             any_is_nan_or_masked, get_all_files, get_nested_attr, is_inf, is_inf_nan_or_masked,
-                             is_inf_or_nan, is_masked, is_nan, is_nan_or_masked, set_nested_attr, )
+                             any_is_nan_or_masked, get_all_files, get_attr_with_index, get_nested_attr, is_inf,
+                             is_inf_nan_or_masked,
+                             is_inf_or_nan, is_masked, is_nan, is_nan_or_masked, set_attr_with_index, set_nested_attr, )
+
+
+@dataclass
+class MockClass:
+    """A mock class to test the utility functions which deal with setting/getting attrs.
+    """
+    a: int = 0
+    b: float = 1.1
+    c: str = "2.2.2"
+    d: bool = False
+    e: np.ndarray = np.array([1, 2, 3])
+    r: "Optional[MockClass]" = None
 
 
 class TestUtility(SheTestCase):
     """Class to handle unit tests for functions in the `SHE_PPT.utility` module.
     """
 
-    def test_get_set_nested_attr(self):
-        """Unit test of `get/set_nested_attr` functions.
+    def post_setup(self):
+        """Set up some data used in multiple tests.
         """
 
-        class DoubleNestedClass(object):
+        # Create an object of the MockClass type, with a complicated nested structure
+        mock_object_s2 = MockClass()
+        mock_object_s1 = MockClass(r = mock_object_s2)
+        self.mock_object = MockClass(r = mock_object_s1)
 
-            def __init__(self):
-                self.subsubval = "foo"
+    def test_get_attr_with_index(self):
+        """Unit test of the `get_nested_attr` function.
+        """
 
-        class NestedClass(object):
+        # Test getting a simple attribute
+        assert get_attr_with_index(self.mock_object, 'a') == self.mock_object.a
 
-            def __init__(self):
-                self.subobj = DoubleNestedClass()
-                self.subval = "bar"
+        # Test getting an indexed attribute
+        assert get_attr_with_index(self.mock_object, 'e[1]') == self.mock_object.e[1]
 
-        class ContainingClass(object):
+    def test_get_nested_attr(self):
+        """Unit test of the `get_nested_attr` function.
+        """
 
-            def __init__(self):
-                self.obj = NestedClass()
-                self.val = "me"
+        # Test getting a simple attribute
+        assert get_nested_attr(self.mock_object, 'a') == self.mock_object.a
 
-        c = ContainingClass()
+        # Test getting a nested attribute
+        assert get_nested_attr(self.mock_object, 'r.b') == self.mock_object.r.b
 
-        # Check basic get_nested_attr functionality
-        assert get_nested_attr(c, "val") == "me"
-        assert get_nested_attr(c, "obj.subval") == "bar"
-        assert get_nested_attr(c, "obj.subobj.subsubval") == "foo"
+        # Test getting a nested indexed attribute
+        assert get_nested_attr(self.mock_object, 'r.e[1]') == self.mock_object.r.e[1]
 
-        # Check set_nested_attr functionality
-        set_nested_attr(c, "val", 15)
-        set_nested_attr(c, "obj.subval", "Fif.teen")
-        set_nested_attr(c, "obj.subobj.subsubval", (5, "t.e.e.n"))
+    def test_set_attr_with_index(self):
+        """Unit test of the `set_nested_attr` function.
+        """
 
-        assert get_nested_attr(c, "val") == 15
-        assert get_nested_attr(c, "obj.subval") == "Fif.teen"
-        assert get_nested_attr(c, "obj.subobj.subsubval") == (5, "t.e.e.n")
+        copied_object = deepcopy(self.mock_object)
 
-        return
+        # Test setting a simple attribute
+        set_attr_with_index(copied_object, 'a', 2)
+        assert copied_object.a == 2
+
+        # Test setting an indexed attribute
+        set_attr_with_index(copied_object, 'e[1]', 3)
+        assert copied_object.e[1] == 3
+
+    def test_set_nested_attr(self):
+        """Unit test of the `set_nested_attr` function.
+        """
+
+        copied_object = deepcopy(self.mock_object)
+
+        # Test setting a simple attribute
+        set_attr_with_index(copied_object, 'a', 2)
+        assert copied_object.a == 2
+
+        # Test setting a nested attribute
+        set_nested_attr(copied_object, 'r.b', 2.2)
+        assert copied_object.r.b == 2.2
+
+        # Test setting a nested indexed attribute
+        set_nested_attr(copied_object, 'r.r.e[0]', 3.2)
+        assert copied_object.r.r.e[0] == 3.2
 
     def test_process_directory(self):
         """Unit test of the `process_directory` function.
