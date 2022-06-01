@@ -33,14 +33,16 @@ from astropy.table import Table
 
 from SHE_PPT.constants.fits import CCDID_LABEL, EXTNAME_LABEL, SCI_TAG
 from SHE_PPT.testing.utility import SheTestCase
-from SHE_PPT.utility import (any_is_inf, any_is_inf_nan_or_masked, any_is_inf_or_nan,
-                             any_is_masked, any_is_nan, any_is_nan_or_masked, find_extension, get_all_files,
+from SHE_PPT.utility import (all_are_zero, any_is_inf, any_is_inf_nan_or_masked, any_is_inf_or_nan,
+                             any_is_masked, any_is_nan, any_is_nan_or_masked, any_is_zero, find_extension,
+                             get_all_files,
                              get_attr_with_index,
                              get_detector,
                              get_nested_attr,
                              get_release_from_version, is_inf,
                              is_inf_nan_or_masked,
-                             is_inf_or_nan, is_masked, is_nan, is_nan_or_masked, set_attr_with_index, set_nested_attr, )
+                             is_inf_or_nan, is_masked, is_nan, is_nan_or_masked, is_zero, set_attr_with_index,
+                             set_nested_attr, )
 
 
 @dataclass
@@ -263,3 +265,19 @@ class TestUtility(SheTestCase):
         assert any_is_inf_or_nan(l_x) == True
         assert any_is_nan_or_masked(l_x) == True
         assert any_is_inf_nan_or_masked(l_x) == True
+
+    def test_is_zero(self):
+        """Test the `is_zero` functions.
+        """
+
+        # Test with a scalar
+        assert is_zero(0)
+        assert not is_zero(1)
+
+        # Test with a numpy array - any
+        assert any_is_zero(np.array([0, 1]))
+        assert not any_is_zero(np.array([1, 1]))
+
+        # Test with a numpy array - all
+        assert all_are_zero(np.array([0, 0]))
+        assert not all_are_zero(np.array([0, 1]))
