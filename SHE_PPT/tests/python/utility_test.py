@@ -23,8 +23,8 @@ __updated__ = "2021-02-10"
 import os
 import shutil
 from copy import deepcopy
-from dataclasses import dataclass, field
-from typing import Dict, Optional
+from dataclasses import dataclass
+from typing import Optional
 
 import numpy as np
 import pytest
@@ -49,13 +49,6 @@ class MockClass:
     d: bool = False
     e: np.ndarray = np.array([1, 2, 3])
     r: "Optional[MockClass]" = None
-
-
-@dataclass
-class MockHDU:
-    """A mock HDU for use in testing the `find_extension` function.
-    """
-    header: Dict[str, str] = field(default_factory = dict)
 
 
 class TestUtility(SheTestCase):
