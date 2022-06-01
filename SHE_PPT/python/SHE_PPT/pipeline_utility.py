@@ -25,7 +25,7 @@ from argparse import Namespace
 from enum import EnumMeta
 from functools import lru_cache
 from shutil import copyfile
-from typing import Any, Callable, Dict, Iterable, List, Optional, TextIO, Tuple, Type, TypeVar, Union
+from typing import Any, Callable, Dict, Iterable, List, Optional, Set, TextIO, Tuple, Type, TypeVar, Union
 
 import numpy as np
 
@@ -447,57 +447,74 @@ def _read_config_dict_from_file(config_filehandle: TextIO,
     # Read in the file, except for comment lines
     for config_line in config_filehandle:
 
-        stripped_line = config_line.strip()
-
-        # Ignore comment or empty lines
-        if config_line[0] == '#' or len(stripped_line) == 0:
-            continue
-
-        # Ignore comment portion
-        non_comment_line = config_line.split('#')[0]
-
-        # Get the key and value from the line
-        equal_split_line = non_comment_line.split('=')
-
-        key_string = equal_split_line[0].strip()
-        if key_string in blocked_keys:
-            continue
-        try:
-
-            enum_key = _check_key_is_valid(key_string, config_keys)
-
-        except ValueError as e:
-
-            # If we're allowing task-specific keys, check if that's the case
-            if task_head is None:
-                raise
-
-            # Check if this is a valid task-specific key
-            global_key_string = get_global_value(key_string, task_head)
-            try:
-                enum_key = _check_key_is_valid(global_key_string, config_keys)
-            except Exception:
-                # The global key isn't valid, so raise the original exception
-                raise e
-
-            # If we get here, this is a valid task-specific key, so set it to the dict in
-            # place of the global key
-            key_string = global_key_string
-
-            # Add it to the blocked_keys set, so if we encounter the global key later, we
-            # won't override this for this task
-            blocked_keys.update(key_string)
-
-        # In case the value contains an = char
-        value = non_comment_line.replace(equal_split_line[0] + '=', '').strip()
-
-        # If the value is None or equivalent, don't set it (use the default)
-        if not (is_any_type_of_none(value) and enum_key in d_defaults):
-            config_dict[enum_key] = value
-
-    # End for config_line in config_file:
+        _read_config_line(config_line = config_line,
+                          config_dict = config_dict,
+                          config_keys = config_keys,
+                          d_defaults = d_defaults,
+                          blocked_keys = blocked_keys,
+                          task_head = task_head, )
 
     return config_dict
+
+
+def _read_config_line(config_line: str,
+                      config_dict: Dict[ConfigKeys, Any],
+                      config_keys: Tuple[EnumMeta, ...],
+                      d_defaults: Dict[ConfigKeys, Any],
+                      blocked_keys: Set[ConfigKeys],
+                      task_head: Optional[str], ) -> None:
+    """Private implementation of reading a single line of a config file and updating the config dict.
+    """
+
+    stripped_line = config_line.strip()
+
+    # Ignore comment or empty lines
+    if config_line[0] == '#' or len(stripped_line) == 0:
+        return
+
+    # Ignore comment portion
+    non_comment_line = config_line.split('#')[0]
+
+    # Get the key and value from the line
+    equal_split_line = non_comment_line.split('=')
+    key_string = equal_split_line[0].strip()
+
+    if key_string in blocked_keys:
+        return
+
+    try:
+
+        enum_key = _check_key_is_valid(key_string, config_keys)
+
+    except ValueError as e:
+
+        # If we're allowing task-specific keys, check if that's the case
+        if task_head is None:
+            raise
+
+        # Check if this is a valid task-specific key
+        global_key_string = get_global_value(key_string, task_head)
+
+        try:
+            enum_key = _check_key_is_valid(global_key_string, config_keys)
+        except Exception:
+            # The global key isn't valid, so raise the original exception
+            raise e
+
+        # If we get here, this is a valid task-specific key, so set it to the dict in
+        # place of the global key
+        key_string = global_key_string
+
+        # Add it to the blocked_keys set, so if we encounter the global key later, we
+        # won't override this for this task
+        blocked_keys.update(key_string)
+
+    # In case the value contains an = char
+    value = non_comment_line.replace(equal_split_line[0] + '=', '').strip()
+
+    # If the value is None or equivalent, don't set it (use the default)
+    if not (is_any_type_of_none(value) and enum_key in d_defaults):
+        config_dict[enum_key] = value
 
 
 def _make_config_from_defaults(config_keys: Tuple[EnumMeta, ...],
