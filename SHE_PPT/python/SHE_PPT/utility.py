@@ -23,7 +23,7 @@ __updated__ = "2021-08-30"
 
 import os
 import re
-from typing import Any, Dict, List, Optional, Sequence, Set, Tuple, Type, TypeVar, Union
+from typing import Any, Dict, List, MutableSequence, Optional, Sequence, Set, Tuple, Type, TypeVar, Union
 
 import numpy as np
 from astropy.io.fits import HDUList, TableHDU
@@ -174,15 +174,36 @@ def process_directory(directory_name: str) -> Tuple[List[str], List[str]]:
 # Value testing functions
 
 
-def is_any_type_of_none(value: Any) -> bool:
-    """Quick function to check if a value (which might be a string) is None or empty
+def is_any_type_of_none(value: Union[None, str]) -> bool:
+    """Quick function to check if a value (which might be a string) is None or empty.
+
+    Parameters
+    ----------
+    value : Union[None, str]
+        The value to test.
+
+    Returns
+    -------
+    bool
+        True if the value is of any type of None, False otherwise.
     """
+    # TODO: This duplicates `filename_not_exists` in SHE_PPT.file_io - one should be deprecated in favor of the other.
     return value in (None, "None", "", "data/None", "data/")
 
 
-def is_inf(x: Union[float, Sequence[float]]) -> bool:
-    """ Custom implementation if np.isinf check, which returns False for any masked values, unlike np.isinf, which
-        returns masked for any masked values.
+def is_inf(x: Union[float, Sequence[float]]) -> Union[bool, MutableSequence[bool]]:
+    """Custom implementation if np.isinf check, which returns False for any masked values, unlike np.isinf, which
+    returns masked for any masked values.
+
+    Parameters
+    ----------
+    x : Union[float, Sequence[float]]
+        The value to check.
+
+    Returns
+    -------
+    Union[bool, Sequence[bool]]
+        True if the value is inf or infinite, False otherwise.
     """
     # If no values are masked, we can simply forward to numpy
     if not np.ma.is_masked(x):
@@ -192,9 +213,19 @@ def is_inf(x: Union[float, Sequence[float]]) -> bool:
     return np.where(is_masked(x), False, np.isinf(x))
 
 
-def is_nan(x: Union[float, Sequence[float]]) -> bool:
-    """ Custom implementation if np.isnan check, which returns False for any masked values, unlike np.isinf, which
-        returns masked for any masked values.
+def is_nan(x: Union[float, Sequence[float]]) -> Union[bool, MutableSequence[bool]]:
+    """Custom implementation if np.isnan check, which returns False for any masked values, unlike np.isinf, which
+    returns masked for any masked values.
+
+    Parameters
+    ----------
+    x : Union[float, Sequence[float]]
+        The value to check.
+
+    Returns
+    -------
+    Union[bool, Sequence[bool]]
+        True if the value is nan, False otherwise.
     """
     # If no values are masked, we can simply forward to numpy
     if not np.ma.is_masked(x):
@@ -204,9 +235,19 @@ def is_nan(x: Union[float, Sequence[float]]) -> bool:
     return np.where(is_masked(x), False, np.isnan(x))
 
 
-def is_masked(x: Union[float, Sequence[float]]) -> bool:
-    """ Element-wise implementation of checking if an array is masked. np.ma.is_masked doesn't do this, as it always
-        returns a summary bool of if any values are masked.
+def is_masked(x: Union[float, Sequence[float]]) -> Union[bool, MutableSequence[bool]]:
+    """Element-wise implementation of checking if an array is masked. `np.ma.is_masked` doesn't do this, as it always
+    returns a summary bool of if any values are masked.
+
+    Parameters
+    ----------
+    x : Union[float, Sequence[float]]
+        The value to check.
+
+    Returns
+    -------
+    Union[bool, Sequence[bool]]
+        True if the value is masked, False otherwise.
     """
     # Test if the object is iterable, and if so, give element-wise results
     try:
@@ -217,59 +258,149 @@ def is_masked(x: Union[float, Sequence[float]]) -> bool:
 
 
 def any_is_inf(l_x: Sequence[Union[float, Sequence[float]]]) -> bool:
-    """ Checks if any value in a sequence of values is inf.
+    """Checks if any value in a sequence of values is `inf`.
+
+    Parameters
+    ----------
+    l_x : Sequence[Union[float, Sequence[float]]]
+        The sequence to check.
+
+    Returns
+    -------
+    bool
+        True if any value is `inf`, False otherwise.
     """
-    return np.logical_or.reduce(is_inf(l_x))
+    return np.any(is_inf(l_x))
 
 
 def any_is_nan(l_x: Sequence[Union[float, Sequence[float]]]) -> bool:
-    """ Checks if any value in a sequence of values is NaN.
+    """Checks if any value in a sequence of values is `nan`.
+
+    Parameters
+    ----------
+    l_x : Sequence[Union[float, Sequence[float]]]
+        The sequence to check.
+
+    Returns
+    -------
+    bool
+        True if any value is `nan`, False otherwise.
     """
-    return np.logical_or.reduce(is_nan(l_x))
+    return np.any(is_nan(l_x))
 
 
 def any_is_masked(l_x: Sequence[Union[float, Sequence[float]]]) -> bool:
-    """ Checks if any value in a sequence of values is masked. This can actually be done by a single function call with
-        numpy, but this wrapper is presented here for consistency with Inf and NaN checks, so a user searching for a
-        function to do this isn't left confused by its absence.
+    """Checks if any value in a sequence of values is masked. This can actually be done by a single function call with
+    numpy, but this wrapper is presented here for consistency with `inf` and `nan` checks, so a user searching for a
+    function to do this isn't left confused by its absence.
+
+    Parameters
+    ----------
+    l_x : Sequence[Union[float, Sequence[float]]]
+        The sequence to check.
+
+    Returns
+    -------
+    bool
+        True if any value is masked, False otherwise.
     """
     return np.ma.is_masked(l_x)
 
 
-def is_inf_or_nan(x: Union[float, Sequence[float]]) -> bool:
-    """ Checks if a value is inf or NaN.
+def is_inf_or_nan(x: Union[float, Sequence[float]]) -> Union[bool, MutableSequence[bool]]:
+    """Checks if a value is `inf` or `nan`.
+
+    Parameters
+    ----------
+    x : Union[float, Sequence[float]]
+        The value to check.
+
+    Returns
+    -------
+    Union[bool, Sequence[bool]]
+        True if the value is `inf` or `nan`, False otherwise.
     """
     return np.logical_or(is_inf(x), is_nan(x))
 
 
 def any_is_inf_or_nan(l_x: Sequence[Union[float, Sequence[float]]]) -> bool:
-    """ Checks if any value in a sequence of values is inf or nan.
+    """Checks if any value in a sequence of values is `inf` or `nan`.
+
+    Parameters
+    ----------
+    l_x : Sequence[Union[float, Sequence[float]]]
+        The sequence to check.
+
+    Returns
+    -------
+    bool
+        True if any value is `inf` or `nan`, False otherwise.
     """
-    return np.logical_or.reduce(is_inf_or_nan(l_x))
+    return np.any(is_inf_or_nan(l_x))
 
 
-def is_nan_or_masked(x: Union[float, Sequence[float]]) -> bool:
-    """ Checks if a value is NaN or masked.
+def is_nan_or_masked(x: Union[float, Sequence[float]]) -> Union[bool, MutableSequence[bool]]:
+    """Checks if a value is `nan` or masked.
+
+    Parameters
+    ----------
+    x : Union[float, Sequence[float]]
+        The value to check.
+
+    Returns
+    -------
+    Union[bool, Sequence[bool]]
+        True if the value is `nan` or masked, False otherwise.
     """
     return np.logical_or(is_nan(x), is_masked(x))
 
 
 def any_is_nan_or_masked(l_x: Sequence[Union[float, Sequence[float]]]) -> bool:
-    """ Checks if any value in a sequence of values is NaN or masked.
+    """Checks if any value in a sequence of values is `nan` or masked.
+
+    Parameters
+    ----------
+    l_x : Sequence[Union[float, Sequence[float]]]
+        The sequence to check.
+
+    Returns
+    -------
+    bool
+        True if any value is `nan` or masked, False otherwise.
     """
-    return np.logical_or.reduce(is_nan_or_masked(l_x))
+    return np.any(is_nan_or_masked(l_x))
 
 
-def is_inf_nan_or_masked(x: Union[float, Sequence[float]]) -> bool:
-    """ Checks if a value is Inf, NaN, or masked.
+def is_inf_nan_or_masked(x: Union[float, Sequence[float]]) -> Union[bool, MutableSequence[bool]]:
+    """Checks if a value is `inf`, `nan` or masked.
+
+    Parameters
+    ----------
+    x : Union[float, Sequence[float]]
+        The value to check.
+
+    Returns
+    -------
+    Union[bool, Sequence[bool]]
+        True if the value is `inf`, `nan` or masked, False otherwise.
     """
     return np.logical_or(is_inf(x), is_nan_or_masked(x))
 
 
 def any_is_inf_nan_or_masked(l_x: Sequence[Union[float, Sequence[float]]]) -> bool:
-    """ Checks if any value in a sequence of values is Inf, NaN or masked.
+    """Checks if any value in a sequence of values is `inf`, `nan` or masked.
+
+    Parameters
+    ----------
+    l_x : Sequence[Union[float, Sequence[float]]]
+        The sequence to check.
+
+    Returns
+    -------
+    bool
+        True if any value is `inf`, `nan` or masked, False otherwise.
     """
-    return np.logical_or.reduce(is_inf_nan_or_masked(l_x))
+    return np.any(is_inf_nan_or_masked(l_x))
 
 
 Number = TypeVar('Number', float, int)
