@@ -40,8 +40,22 @@ from .utility import is_any_type_of_none
 
 
 @lru_cache(maxsize = None)
-def get_task_value(global_enum, task_head):
-    """ Given one of the global enums for config options, return the name for the task-specific option.
+def get_task_value(global_enum: ConfigKeys,
+                   task_head: str) -> str:
+    """Given one of the global enums for a validation config option, return the value for the task-specific option.
+
+    Parameters
+    ----------
+    global_enum : ConfigKeys
+        The ConfigKeys enum for the global option, e.g. `ValidationConfigKeys.VAL_SNR_BIN_LIMITS`
+    task_head : str
+        The task-specific head to add to the option name, once it's been stripped of the global head,
+        e.g. SHEAR_BIAS_VALIDATION_HEAD
+
+    Returns
+    -------
+    str
+        The value of the task-specific option.
     """
     if isinstance(global_enum, str):
         value = global_enum
@@ -50,28 +64,72 @@ def get_task_value(global_enum, task_head):
     return value.replace(VALIDATION_HEAD, task_head)
 
 
-def get_cti_gal_value(global_enum):
-    """ Given one of the global enums for config options, return the name for the CTI-Gal task-specific option.
+def get_cti_gal_value(global_enum: ConfigKeys) -> str:
+    """Given one of the global enums for a validation config option, return the value for the CTI-Gal task-specific
+    option.
+
+    Parameters
+    ----------
+    global_enum : ConfigKeys
+        The ConfigKeys enum for the global option, e.g. `ValidationConfigKeys.VAL_SNR_BIN_LIMITS`
+
+    Returns
+    -------
+    str
+        The value of the CTI-Gal task-specific option.
     """
     return get_task_value(global_enum, SHEAR_BIAS_VALIDATION_HEAD)
 
 
-def get_shear_bias_value(global_enum):
-    """ Given one of the global enums for config options, return the name for the CTI-Gal task-specific option.
+def get_shear_bias_value(global_enum: ConfigKeys) -> str:
+    """Given one of the global enums for a validation config option, return the value for the Shear Bias task-specific
+    option.
+
+    Parameters
+    ----------
+    global_enum : ConfigKeys
+        The ConfigKeys enum for the global option, e.g. `ValidationConfigKeys.VAL_SNR_BIN_LIMITS`
+
+    Returns
+    -------
+    str
+        The value of the Shear Bias task-specific option.
     """
     return get_task_value(global_enum, CTI_GAL_VALIDATION_HEAD)
 
 
 @lru_cache(maxsize = None)
-def get_global_value(task_value, task_head):
-    """ Reverse of task_value, returning the value - gives the value for the global option given the task option.
+def get_global_value(task_value: str,
+                     task_head: str) -> str:
+    """ Reverse of get_task_value, returning the value - gives the value for the global option given the task option.
+
+    Parameters
+    ----------
+    task_value : str
+        The ConfigKeys enum for the global option, e.g. `ValidationConfigKeys.VAL_SNR_BIN_LIMITS`
+
+    Returns
+    -------
+    str
+        The value of the global option.
     """
     return task_value.replace(task_head, VALIDATION_HEAD)
 
 
 @lru_cache(maxsize = None)
-def get_global_enum(task_value, task_head):
+def get_global_enum(task_value: str,
+                    task_head: str) -> ConfigKeys:
     """ Reverse of task_value, returning the enum - gives the enum for the global option given the task option.
+
+    Parameters
+    ----------
+    task_value : str
+        The ConfigKeys enum for the global option, e.g. `ValidationConfigKeys.VAL_SNR_BIN_LIMITS`
+
+    Returns
+    -------
+    ConfigKeys
+        The enum of the global option.
     """
     return ValidationConfigKeys(get_global_value(task_value, task_head))
 
