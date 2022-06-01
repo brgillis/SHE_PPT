@@ -107,6 +107,8 @@ def get_global_value(task_value: str,
     ----------
     task_value : str
         The ConfigKeys enum for the global option, e.g. `ValidationConfigKeys.VAL_SNR_BIN_LIMITS`
+    task_head : str
+        The task-specific head to remove from the option name, to be repalced with the global head,
 
     Returns
     -------
@@ -125,6 +127,8 @@ def get_global_enum(task_value: str,
     ----------
     task_value : str
         The ConfigKeys enum for the global option, e.g. `ValidationConfigKeys.VAL_SNR_BIN_LIMITS`
+    task_head : str
+        The task-specific head to remove from the option name, to be repalced with the global head,
 
     Returns
     -------
