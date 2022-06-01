@@ -36,7 +36,8 @@ from .logging import getLogger
 logger = getLogger(__name__)
 
 
-def get_attr_with_index(obj: Any, attr: str) -> Any:
+def get_attr_with_index(obj: Any,
+                        attr: str) -> Any:
     """Check for an index at the end of attr, using a regex which matches anything, followed by [, followed
     by a digit, followed by ]. If found, gets this index of the desired attribute.
 
@@ -61,7 +62,7 @@ def get_attr_with_index(obj: Any, attr: str) -> Any:
     `get_attr_with_index(obj, 'l_x')` would be equivalent to calling `obj.l_x`.
     """
 
-    regex_match = re.match(r"(.*)\[([0-9]+)\]\Z", attr)
+    regex_match = re.match(r"(.*)\[([0-9]+)]\Z", attr)
 
     if not regex_match:
         return getattr(obj, attr)
@@ -70,7 +71,8 @@ def get_attr_with_index(obj: Any, attr: str) -> Any:
     return getattr(obj, regex_match.group(1))[int(regex_match.group(2))]
 
 
-def get_nested_attr(obj: Any, attr: str) -> Any:
+def get_nested_attr(obj: Any,
+                    attr: str) -> Any:
     """Gets a nested attribute of an object, e.g. `obj.a.b.c`
 
     Parameters
@@ -96,6 +98,7 @@ def get_nested_attr(obj: Any, attr: str) -> Any:
 
 
 def set_index_zero_attr(obj: Any, attr: Any, val: Any) -> None:
+    """Deprecated in favor of `set_indexed_attr`."""
     if not "[0]" in attr:
         setattr(obj, attr, val)
     elif attr[-3:] == "[0]":
@@ -104,9 +107,35 @@ def set_index_zero_attr(obj: Any, attr: Any, val: Any) -> None:
         raise ValueError("Invalid format of attribute passed to get_attr_with_index: " + str(attr))
 
 
+def set_attr_with_index(obj: Any,
+                        attr: str,
+                        val: Any) -> None:
+    """Sets an attribute of an object, optionally indexed at some value, e.g. `set_indexed_attr(obj, 'l_x[0]', val)` is
+    equivalent to `obj.l_x[0] = val`.
+
+    Parameters
+    ----------
+    obj : Any
+        The object whose attribute to set.
+    attr : str
+        The attribute whose value is to be set.
+    val : Any
+        The value to set the attribute to.
+    """
+
+    regex_match = re.match(r"(.*)\[([0-9]+)]\Z", attr)
+
+    if not regex_match:
+        setattr(obj, attr, val)
+        return
+
+    # Get the attribute (matching group 1), indexed by the index (matching group 2), and set it to the value
+    getattr(obj, regex_match.group(1))[int(regex_match.group(2))] = val
+
+
 def set_nested_attr(obj: Any, attr: Any, val: Any):
     if not "." in attr:
-        set_index_zero_attr(obj, attr, val)
+        set_attr_with_index(obj, attr, val)
     else:
         head, tail = attr.split('.', 1)
         set_nested_attr(get_attr_with_index(obj, head), tail, val)
