@@ -599,10 +599,23 @@ TK = TypeVar('TK')
 TV = TypeVar('TV')
 
 
+# TODO: These default/empty_if... functions should probably be deprecated in favor of the ternary operator
+
 def default_value_if_none(x: Optional[T],
                           default_x: T) -> T:
-    """ If input value is None, returns a provided default value, otherwise returns the input
-        value.
+    """If input value is None, returns a provided default value, otherwise returns the input value.
+
+    Parameters
+    ----------
+    x : Optional[T]
+        The input value.
+    default_x : T
+        The default value to return if input `x` is None.
+
+    Returns
+    -------
+    T
+        The input value if it is not None, otherwise the default value.
     """
     if x is None:
         return default_x
@@ -615,47 +628,110 @@ def default_init_if_none(x: Optional[Any],
                          coerce: bool = False,
                          **kwargs) -> T:
     """ If input value is None, returns a default initialization of the provided type, otherwise returns the input
-        value. Optionally tries to coerce to desired type.
+    value. Optionally tries to coerce to desired type.
+
+    Parameters
+    ----------
+    x : Optional[Any]
+        The input value.
+    type : Type[T]
+        The type to initialize if input `x` is None.
+    args : Sequence[Any]
+        The positional arguments to pass to the type's constructor.
+    coerce : bool
+        If True, the type is coerced to the input value's type.
+    kwargs : Mapping[str, Any]
+        The keyword arguments to pass to the type's constructor.
+
+    Returns
+    -------
+    T
+        The input value if it is not None, otherwise a default initialized value of the provided type.
     """
     if x is None:
         return type(*args, **kwargs)
     if coerce:
-        return type(x)
+        x = type(x)
     return x
 
 
 def empty_list_if_none(l_x: Optional[Sequence[T]],
                        coerce: bool = False) -> List[T]:
-    """ If input value is None, returns an empty list, otherwise returns the input value.
+    """ If input value is None, constructs and returns an empty list, otherwise returns the input value.
+
+    Parameters
+    ----------
+    l_x : Optional[Sequence[T]]
+        The input value.
+    coerce : bool
+        If True, the input value is coerced to be a list.
+
+    Returns
+    -------
+    List[T]
+        The input value if it is not None, otherwise an empty list.
     """
     return default_init_if_none(l_x, list, coerce = coerce)
 
 
 def empty_set_if_none(s_x: Optional[Union[Sequence[T], Set[T]]],
                       coerce: bool = False) -> Set[T]:
-    """ If input value is None, returns an empty set, otherwise returns the input value.
+    """If input value is None, constructs and returns an empty set, otherwise returns the input value.
+
+    Parameters
+    ----------
+    s_x : Optional[Union[Sequence[T], Set[T]]]
+        The input value.
+    coerce : bool
+        If True, the input value is coerced to be a list.
+
+    Returns
+    -------
+    Set[T]
+        The input value if it is not None, otherwise an empty set.
     """
     return default_init_if_none(s_x, type = set, coerce = coerce)
 
 
 def empty_dict_if_none(d_x: Optional[Dict[TK, TV]],
                        coerce: bool = False) -> Dict[TK, TV]:
-    """ If input value is None, returns an empty dict, otherwise returns the input value.
+    """ If input value is None, constructs and returns an empty dict, otherwise returns the input value.
+
+    Parameters
+    ----------
+    d_x : Optional[Dict[TK, TV]]
+        The input value.
+    coerce : bool
+        If True, the input value is coerced to be a dict.
+
+    Returns
+    -------
+    Dict[TK, TV]
+        The input value if it is not None, otherwise an empty dict.
     """
     return default_init_if_none(d_x, type = dict, coerce = coerce)
 
 
 def coerce_to_list(a: Union[None, T, List[T]],
                    keep_none: bool = False) -> Union[List[T], None]:
-    """ Coerces either None, a single item, or a list to a list of items.
+    """Coerces either None, a single item, or a list to a list of items.
 
-        If keep_none is False, will convert None to an empty list.
-        If keep_none is True, will return None if None is input.
+    Parameters
+    ----------
+    a : Union[None, T, List[T]]
+        The input value.
+    keep_none : bool
+        If True, None is returned if input `a` is None. Otherwise an empty list is constructed and returned.
+
+    Returns
+    -------
+    Union[List[T], None]
+        The input value if it is not None, otherwise an empty list, unless the input is None and `keep_none` is True,
     """
     if a is None:
         l_a = None if keep_none else []
     elif isinstance(a, str):
-        # Special handling for strings, which are interable, but we don't want lists of their characters
+        # Special handling for strings, which are iterable, but we don't want lists of their characters
         l_a = [a]
     else:
         # Check if it's iterable, and convert to list if so
@@ -668,8 +744,24 @@ def coerce_to_list(a: Union[None, T, List[T]],
     return l_a
 
 
-def join_without_none(l_s: List[Optional[Any]], joiner: str = "-", default: Optional[str] = "") -> Optional[str]:
+def join_without_none(l_s: List[Optional[Any]],
+                      joiner: str = "-",
+                      default: Optional[str] = "") -> Optional[str]:
     """ Join a list of values into a single string, excepting any Nones.
+
+    Parameters
+    ----------
+    l_s : List[Optional[Any]]
+        The list of values to join.
+    joiner : str
+        The string to join the list elements with.
+    default : Optional[str]
+        The default string to return if the list is empty.
+
+    Returns
+    -------
+    Optional[str]
+        The joined string, or None if the list is empty.
     """
 
     # Get a list to join without any Nones
