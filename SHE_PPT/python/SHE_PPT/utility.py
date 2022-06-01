@@ -28,6 +28,7 @@ from typing import Any, Dict, List, MutableSequence, Optional, Sequence, Set, Tu
 import numpy as np
 from astropy.io.fits import HDUList, TableHDU
 from astropy.table import Table
+from fitsio.hdu.base import HDUBase
 
 from . import detector as dtc
 from .constants.fits import CCDID_LABEL, EXTNAME_LABEL
@@ -226,7 +227,7 @@ def find_extension(hdulist: HDUList,
     return None
 
 
-def get_detector(obj: Union[TableHDU, Table]) -> Tuple[int, int]:
+def get_detector(obj: Union[HDUBase, Table]) -> Tuple[int, int]:
     """Find the detector indices for a fits hdu or table.
 
     Parameters
@@ -240,12 +241,14 @@ def get_detector(obj: Union[TableHDU, Table]) -> Tuple[int, int]:
         The indices of the detector.
     """
 
+    # As long as typing conditions are met, the object will have either the header or meta attribute
     if hasattr(obj, "header"):
         header = obj.header
-    elif hasattr(obj, "meta"):
-        header = obj.meta
     else:
-        raise ValueError("Unable to determine detector - no 'header' or 'meta' attribute present.")
+        header = obj.meta
+
+    if EXTNAME_LABEL not in header:
+        raise ValueError(f"Key '{EXTNAME_LABEL}' not found in header.")
 
     extname = header[EXTNAME_LABEL]
 

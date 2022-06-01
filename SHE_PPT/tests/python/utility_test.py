@@ -23,17 +23,19 @@ __updated__ = "2021-02-10"
 import os
 import shutil
 from copy import deepcopy
-from dataclasses import dataclass
-from typing import Optional
+from dataclasses import dataclass, field
+from typing import Dict, Optional
 
 import numpy as np
 import pytest
 from astropy.io.fits import BinTableHDU, HDUList, Header, PrimaryHDU
+from astropy.table import Table
 
 from SHE_PPT.constants.fits import CCDID_LABEL, EXTNAME_LABEL, SCI_TAG
 from SHE_PPT.testing.utility import SheTestCase
 from SHE_PPT.utility import (any_is_inf_nan_or_masked, any_is_inf_or_nan,
-                             any_is_nan_or_masked, find_extension, get_all_files, get_attr_with_index, get_nested_attr,
+                             any_is_nan_or_masked, find_extension, get_all_files, get_attr_with_index, get_detector,
+                             get_nested_attr,
                              get_release_from_version, is_inf,
                              is_inf_nan_or_masked,
                              is_inf_or_nan, is_masked, is_nan, is_nan_or_masked, set_attr_with_index, set_nested_attr, )
@@ -49,6 +51,20 @@ class MockClass:
     d: bool = False
     e: np.ndarray = np.array([1, 2, 3])
     r: "Optional[MockClass]" = None
+
+
+@dataclass
+class MockHDU:
+    """A mock HDU for use in testing the `find_extension` function.
+    """
+    header: Dict[str, str] = field(default_factory = dict)
+
+
+@dataclass
+class MockTable:
+    """A mock HDU for use in testing the `find_extension` function.
+    """
+    meta: Dict[str, str] = field(default_factory = dict)
 
 
 class TestUtility(SheTestCase):
@@ -139,22 +155,41 @@ class TestUtility(SheTestCase):
 
         # Create a list of mock HDUs to test
         mock_hdu_list = HDUList([PrimaryHDU(),
-                                 BinTableHDU(header = Header({EXTNAME_LABEL: f"1-1.{SCI_TAG}",
-                                                              CCDID_LABEL  : "1-1"})),
-                                 BinTableHDU(header = Header({EXTNAME_LABEL: f"1-2.{SCI_TAG}",
-                                                              CCDID_LABEL  : "1-2"}))])
+                                 BinTableHDU(header = Header({EXTNAME_LABEL: f"CCDID 1-1.{SCI_TAG}",
+                                                              CCDID_LABEL  : "CCDID 1-1"})),
+                                 BinTableHDU(header = Header({EXTNAME_LABEL: f"CCDID 1-2.{SCI_TAG}",
+                                                              CCDID_LABEL  : "CCDID 1-2"}))])
 
         # Check that it finds the correct HDU when specifying either extname or ccdid
         for i in (1, 2):
-            assert find_extension(mock_hdu_list, extname = f"1-{i}.{SCI_TAG}") == i
-            assert find_extension(mock_hdu_list, ccdid = f"1-{i}") == i
+            assert find_extension(mock_hdu_list, extname = f"CCDID 1-{i}.{SCI_TAG}") == i
+            assert find_extension(mock_hdu_list, ccdid = f"CCDID 1-{i}") == i
 
         # Test that it raises an exception when required input isn't provided
         with pytest.raises(ValueError):
             _ = find_extension(mock_hdu_list)
 
         # Test that it returns None when the HDU isn't found
-        assert find_extension(mock_hdu_list, extname = f"1-3.{SCI_TAG}") is None
+        assert find_extension(mock_hdu_list, extname = f"CCDID 1-3.{SCI_TAG}") is None
+
+    def test_get_detector(self):
+        """Unit test of the `get_detector` function.
+        """
+
+        # Create a mock HDU and table to test with
+        mock_hdu = BinTableHDU(header = Header({EXTNAME_LABEL: f"CCDID 1-2.{SCI_TAG}",
+                                                CCDID_LABEL  : "CCDID 1-2"}))
+        mock_table = Table(meta = {EXTNAME_LABEL: f"CCDID 1-2.{SCI_TAG}",
+                                   CCDID_LABEL  : "CCDID 1-2"})
+        bad_obj = Table()
+
+        # Test we get the expected result with each object
+
+        assert get_detector(mock_hdu) == (1, 2)
+        assert get_detector(mock_table) == (1, 2)
+
+        with pytest.raises(ValueError):
+            _ = get_detector(bad_obj)
 
     def test_get_all_files(self):
         """Unit test of the `get_all_files` function.
