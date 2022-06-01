@@ -134,7 +134,28 @@ def set_attr_with_index(obj: Any,
 
 
 def set_nested_attr(obj: Any, attr: Any, val: Any):
-    if not "." in attr:
+    """Sets a nested attribute of an object, e.g. `set_nested_attr(obj, 'a.b.c', val)` is equivalent to `obj.a.b.c =
+    val`.
+
+    Parameters
+    ----------
+    obj : Any
+        The object whose attribute to set.
+    attr : str
+        The attribute to set, which may optionally be nested, e.g. 'a.b.c'. Each attribute may also optionally end
+        with an index, e.g. 'a.b[0].c'.
+    val : Any
+        The value to set the attribute to.
+    """
+
+    if "." not in attr:
+        set_attr_with_index(obj, attr, val)
+        return
+
+    head, tail = attr.split('.', 1)
+
+    set_nested_attr(get_attr_with_index(obj, head), tail, val)
+    if "." not in attr:
         set_attr_with_index(obj, attr, val)
     else:
         head, tail = attr.split('.', 1)
