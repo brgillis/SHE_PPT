@@ -123,8 +123,8 @@ class TestUtility(SheTestCase):
         assert copied_object.r.b == 2.2
 
         # Test setting a nested indexed attribute
-        set_nested_attr(copied_object, 'r.r.e[0]', 3.2)
-        assert copied_object.r.r.e[0] == 3.2
+        set_nested_attr(copied_object, 'r.r.e[0]', 3)
+        assert copied_object.r.r.e[0] == 3
 
     def test_get_release_from_version(self):
         """Unit test of the `get_release_from_version` function.
