@@ -141,18 +141,17 @@ def get_global_enum(task_value: str,
 def archive_product(product_filename: str,
                     archive_dir: str,
                     workdir: str) -> None:
-    """ Copies an already-written data product to an archive directory.
+    """Copies an already-written data product to an archive directory.
 
-        Parameters
-        ----------
-        product_filename : string
-            The (unqualified) name of the product to copy
-        archive_dir : string
-            The root of the archive directory (note, the most-specific part of the workdir path (normally "workspace")
-            will be added after this to keep separate runs from conflicting).
-        workdir : string
-            The working directory for this task
-
+    Parameters
+    ----------
+    product_filename : str
+        The workdir-relative name of the product to copy
+    archive_dir : str
+        The root of the archive directory (note, the most-specific part of the workdir path (normally "workspace")
+        will be added after this to keep separate runs from conflicting).
+    workdir : str
+        The working directory for this task
     """
 
     logger = getLogger(__name__)
@@ -206,7 +205,17 @@ def archive_product(product_filename: str,
 
 
 def read_analysis_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
-    """ Reads in a configuration file for the SHE Analysis pipeline to a dictionary.
+    """Reads in a configuration file for the SHE Analysis pipeline to a dictionary.
+
+    Parameters
+    ----------
+    *args, **kwargs : Any
+        Any position and keyword arguments to pass to `read_config`.
+
+    Returns
+    -------
+    Dict[ConfigKeys, Any]
+        A dictionary of the configuration options.
     """
 
     return read_config(*args, config_keys = AnalysisConfigKeys, **kwargs)
@@ -214,34 +223,50 @@ def read_analysis_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
 
 def read_calibration_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
     """ Reads in a configuration file for the SHE Calibration pipeline to a dictionary.
+
+    Parameters
+    ----------
+    *args, **kwargs : Any
+        Any position and keyword arguments to pass to `read_config`.
+
+    Returns
+    -------
+    Dict[ConfigKeys, Any]
+        A dictionary of the configuration options.
     """
 
     return read_config(*args, config_keys = CalibrationConfigKeys, **kwargs)
 
 
 def read_reconciliation_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
-    """ Reads in a configuration file for the SHE Reconciliation pipeline to a dictionary. Note that all arguments will
-        be read as strings.
+    """Reads in a configuration file for the SHE Reconciliation pipeline to a dictionary.
 
-        Parameters
-        ----------
-        config_filename : string
-            The workspace-relative name of the config file.
-        workdir : string
-            The working directory.
-        d_args : Dict[str, Any]
-            Dict of config keys giving values passed at the command line. If these aren't None, they will override
-            values in the config file
-        d_defaults : Dict[str, Any]
-            Dict of default values to use if no value (or None) is supplied in the config and no value (or None) is
-            supplied in the parsed_args.
+    Parameters
+    ----------
+    *args, **kwargs : Any
+        Any position and keyword arguments to pass to `read_config`.
+
+    Returns
+    -------
+    Dict[ConfigKeys, Any]
+        A dictionary of the configuration options.
     """
 
     return read_config(*args, config_keys = ReconciliationConfigKeys, **kwargs)
 
 
-def read_scaling_config(*args, **kwargs):
-    """ Reads in a configuration file for the SHE Scaling pipeline to a dictionary.
+def read_scaling_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
+    """Reads in a configuration file for the SHE Scaling pipeline to a dictionary.
+
+    Parameters
+    ----------
+    *args, **kwargs : Any
+        Any position and keyword arguments to pass to `read_config`.
+
+    Returns
+    -------
+    Dict[ConfigKeys, Any]
+        A dictionary of the configuration options.
     """
 
     return read_config(*args, config_keys = ScalingExperimentsConfigKeys, **kwargs)
