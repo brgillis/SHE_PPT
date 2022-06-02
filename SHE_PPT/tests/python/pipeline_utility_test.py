@@ -527,7 +527,9 @@ class TestUtility(SheTestCase):
                                                                                   d_types = d_types)
         assert new_new_config == new_config
 
-        # Test some alternate branches of conversion functions behave as expected
+    def test_convert_config_types_branches(self):
+        """Test some alternate branches of conversion functions behave as expected
+        """
 
         # ValueError if a string can't be converted to a list of the desired type
         with pytest.raises(ValueError):
