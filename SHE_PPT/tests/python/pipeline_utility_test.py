@@ -285,6 +285,14 @@ class TestUtility(SheTestCase):
         read_dict_global = read_config(None,
                                        config_keys = (AnalysisConfigKeys,),
                                        d_defaults = {GlobalConfigKeys.PIP_PROFILE: True}, )
+        write_config({GlobalConfigKeys.PIP_PROFILE: True},
+                     config_filename = "test_global_config.txt",
+                     workdir = self.workdir,
+                     config_keys = AnalysisConfigKeys)
+        write_config({GlobalConfigKeys.PIP_PROFILE: True},
+                     config_filename = "test_global_config.txt",
+                     workdir = self.workdir,
+                     config_keys = (AnalysisConfigKeys,))
         assert read_dict_global[GlobalConfigKeys.PIP_PROFILE] is True
 
         # Check that we get a ValueError if we provide a config key from the wrong ConfigKeys Enum

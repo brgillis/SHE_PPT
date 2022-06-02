@@ -781,7 +781,7 @@ def write_scaling_config(config_dict: Dict[ConfigKeys, Any],
 def write_config(config_dict: Dict[ConfigKeys, Any],
                  config_filename: str,
                  workdir: str = DEFAULT_WORKDIR,
-                 config_keys: EnumMeta = ConfigKeys, ) -> None:
+                 config_keys: Union[EnumMeta, Sequence[EnumMeta]] = ConfigKeys, ) -> None:
     """Writes a dictionary to a configuration file.
 
     Parameters
