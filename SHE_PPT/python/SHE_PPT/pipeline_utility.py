@@ -431,7 +431,7 @@ def _read_config_product(config_filename: str,
 def _read_config_file(qualified_config_filename: str,
                       config_keys: Sequence[EnumMeta],
                       d_args: Dict[str, Any],
-                      d_cline_args: Optional[Dict[ConfigKeys, str]],
+                      d_cline_args: Dict[ConfigKeys, str],
                       d_defaults: Dict[ConfigKeys, Any],
                       d_types: Optional[Dict[str, Type]] = None,
                       task_head: Optional[str] = None, ) -> Dict[ConfigKeys, Any]:
