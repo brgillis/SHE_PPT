@@ -71,7 +71,7 @@ class TestUtility(SheTestCase):
         assert (get_cti_gal_value(global_enum = ValidationConfigKeys.VAL_SNR_BIN_LIMITS.value) ==
                 ValidationConfigKeys.CG_SNR_BIN_LIMITS.value)
         assert (get_shear_bias_value(global_enum = ValidationConfigKeys.VAL_SNR_BIN_LIMITS.value) ==
-                ValidationConfigKeys.SB_SNR_BIN_LIMITS.value)
+                ValidationConfigKeys.SBV_SNR_BIN_LIMITS.value)
 
     def test_get_global_enum_value(self):
         """Unit test of the `get_global_enum` and `get_global_value` functions
