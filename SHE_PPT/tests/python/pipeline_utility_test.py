@@ -269,6 +269,8 @@ class TestUtility(SheTestCase):
         """Unit tests of read_config, focused on special handling for the validation config keys.
         """
 
+        test_filename = "val_config.txt"
+
         # Test the ValidationConfigKeys can be read in, using task_head for overriding keys
 
         test_validation_dict = {ValidationConfigKeys.CG_SNR_BIN_LIMITS    : "0 2 4",
@@ -305,10 +307,10 @@ class TestUtility(SheTestCase):
                                          ValidationConfigKeys.VAL_SIZE_BIN_LIMITS  : np.array([30, 40, 50]),
                                          }
 
-        write_config(test_validation_dict, test1_filename, workdir = self.workdir, config_keys = ValidationConfigKeys)
+        write_config(test_validation_dict, test_filename, workdir = self.workdir, config_keys = ValidationConfigKeys)
 
         # Read in and test with no task head
-        read_dict_no_task_head = read_config(test1_filename,
+        read_dict_no_task_head = read_config(test_filename,
                                              workdir = self.workdir,
                                              config_keys = ValidationConfigKeys,
                                              d_types = test_validation_types_dict,
@@ -319,7 +321,7 @@ class TestUtility(SheTestCase):
         assert np.all(read_dict_no_task_head[ValidationConfigKeys.VAL_SIZE_BIN_LIMITS] == np.array([30, 40, 50]))
 
         # Read in and test with CTI-Gal task head
-        read_dict_cti_gal = read_config(test1_filename,
+        read_dict_cti_gal = read_config(test_filename,
                                         workdir = self.workdir,
                                         config_keys = ValidationConfigKeys,
                                         d_types = test_validation_types_dict,
@@ -335,7 +337,7 @@ class TestUtility(SheTestCase):
         assert np.all(read_dict_cti_gal[ValidationConfigKeys.CG_SIZE_BIN_LIMITS] == np.array([30, 40, 50]))
 
         # Read in and test with Shear Bias Validation task head
-        read_dict_sbv = read_config(test1_filename,
+        read_dict_sbv = read_config(test_filename,
                                     workdir = self.workdir,
                                     config_keys = ValidationConfigKeys,
                                     d_types = test_validation_types_dict,
