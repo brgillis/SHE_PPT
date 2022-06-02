@@ -798,9 +798,10 @@ def write_config(config_dict: Dict[ConfigKeys, Any],
 
     # Silently coerce config_keys into iterable if just one enum is supplied, and also include GlobalConfigKeys
     # in the list
-    if issubclass(config_keys, ConfigKeys):
-        config_keys = (config_keys, GlobalConfigKeys)
-    elif GlobalConfigKeys not in config_keys:
+    try:
+        if issubclass(config_keys, ConfigKeys):
+            config_keys = (config_keys, GlobalConfigKeys)
+    except TypeError:
         config_keys = (*config_keys, GlobalConfigKeys)
 
     qualified_config_filename = os.path.join(workdir, config_filename)
