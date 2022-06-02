@@ -555,8 +555,7 @@ def _read_config_line(config_line: str,
                                        d_global_task_keys = d_global_task_keys,
                                        enum_key = enum_key,
                                        key_string = key_string,
-                                       task_head = task_head,
-                                       value = value, )
+                                       task_head = task_head, )
 
     # If the value is None or equivalent, don't set it (use the default or the global value)
     if not (is_any_type_of_none(value) and (enum_key in d_defaults or task_head is not None)):
@@ -567,8 +566,7 @@ def _check_for_task_key(config_keys: Sequence[EnumMeta],
                         d_global_task_keys: Dict[ConfigKeys, ConfigKeys],
                         enum_key: ConfigKeys,
                         key_string: str,
-                        task_head: str,
-                        value: str, ) -> ConfigKeys:
+                        task_head: str) -> ConfigKeys:
     """Private function to handle sorting out overriding of a global key with a task-specific key when reading in a
        pipeline config.
     """
