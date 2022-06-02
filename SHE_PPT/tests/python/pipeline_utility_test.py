@@ -265,6 +265,10 @@ class TestUtility(SheTestCase):
         # Test the `read_scaling_config` function simply - the more complicated paths are covered by other tests above
         assert read_scaling_config(None, workdir = self.workdir) == {}
 
+    def test_read_validation_config(self):
+        """Unit tests of read_config, focused on special handling for the validation config keys.
+        """
+
         # Test the ValidationConfigKeys can be read in, using task_head for overriding keys
 
         test_validation_dict = {ValidationConfigKeys.CG_SNR_BIN_LIMITS    : "0 2 4",
