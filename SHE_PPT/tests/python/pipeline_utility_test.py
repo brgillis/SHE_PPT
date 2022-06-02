@@ -23,7 +23,7 @@ __updated__ = "2021-08-12"
 import os
 import shutil
 from argparse import Namespace
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 import numpy as np
 import pytest
@@ -31,7 +31,7 @@ import pytest
 from SHE_PPT import products
 from SHE_PPT.constants.classes import ShearEstimationMethods
 from SHE_PPT.constants.config import (AnalysisConfigKeys, CTI_GAL_VALIDATION_HEAD, CalibrationConfigKeys,
-                                      GlobalConfigKeys,
+                                      ConfigKeys, GlobalConfigKeys,
                                       PSF_RES_SP_VALIDATION_HEAD, ReconciliationConfigKeys, SHEAR_BIAS_VALIDATION_HEAD,
                                       ValidationConfigKeys, )
 from SHE_PPT.file_io import write_listfile, write_xml_product
@@ -462,37 +462,41 @@ class TestUtility(SheTestCase):
         """
 
         # Make mock input data
-        config = {"want_float"                          : "0.",
-                  "want_array"                          : "0. 1",
-                  "want_true"                           : "True",
-                  "want_false"                          : "False",
-                  "want_enum"                           : GlobalConfigKeys.PIP_PROFILE.value.upper(),
-                  "want_int_list"                       : "0 1 7",
-                  "want_float_list"                     : "0 10 4.5",
-                  "want_int_from_int_or_int_list"       : "17",
-                  "want_int_list_from_int_or_int_list"  : "4 1",
-                  "want_ndarray_from_ndarray_or_str"    : "1 2 3",
-                  "want_str_from_ndarray_or_str"        : "auto",
-                  "want_enum_list_from_enum_list_or_str": (f"{GlobalConfigKeys.PIP_PLACEHOLDER_0.value.upper()} "
-                                                           f"{GlobalConfigKeys.PIP_PLACEHOLDER_1.value.upper()}"),
-                  "want_str_from_enum_list_or_str"      : "N/A"}
-        d_types = {"want_float"                          : float,
-                   "want_array"                          : np.ndarray,
-                   "want_true"                           : bool,
-                   "want_false"                          : bool,
-                   "want_enum"                           : GlobalConfigKeys,
-                   "want_int_list"                       : (list, int),
-                   "want_float_list"                     : (list, float),
-                   "want_int_from_int_or_int_list"       : (int, (list, int)),
-                   "want_int_list_from_int_or_int_list"  : (int, (list, int)),
-                   "want_ndarray_from_ndarray_or_str"    : (np.ndarray, str),
-                   "want_str_from_ndarray_or_str"        : (np.ndarray, str),
-                   "want_enum_list_from_enum_list_or_str": ((list, GlobalConfigKeys), str),
-                   "want_str_from_enum_list_or_str"      : ((list, GlobalConfigKeys), str)}
+        config: Dict[Union[str, ConfigKeys], Any] = {"want_float"                          : "0.",
+                                                     "want_array"                          : "0. 1",
+                                                     "want_true"                           : "True",
+                                                     "want_false"                          : "False",
+                                                     "want_enum"                           :
+                                                         GlobalConfigKeys.PIP_PROFILE.value.upper(),
+                                                     "want_int_list"                       : "0 1 7",
+                                                     "want_float_list"                     : "0 10 4.5",
+                                                     "want_int_from_int_or_int_list"       : "17",
+                                                     "want_int_list_from_int_or_int_list"  : "4 1",
+                                                     "want_ndarray_from_ndarray_or_str"    : "1 2 3",
+                                                     "want_str_from_ndarray_or_str"        : "auto",
+                                                     "want_enum_list_from_enum_list_or_str": (
+                                                         f"{GlobalConfigKeys.PIP_PLACEHOLDER_0.value.upper()} "
+                                                         f"{GlobalConfigKeys.PIP_PLACEHOLDER_1.value.upper()}"),
+                                                     "want_str_from_enum_list_or_str"      : "N/A"}
+        d_types: Dict[Union[str, ConfigKeys], Any] = {"want_float"                          : float,
+                                                      "want_array"                          : np.ndarray,
+                                                      "want_true"                           : bool,
+                                                      "want_false"                          : bool,
+                                                      "want_enum"                           : GlobalConfigKeys,
+                                                      "want_int_list"                       : (list, int),
+                                                      "want_float_list"                     : (list, float),
+                                                      "want_int_from_int_or_int_list"       : (int, (list, int)),
+                                                      "want_int_list_from_int_or_int_list"  : (int, (list, int)),
+                                                      "want_ndarray_from_ndarray_or_str"    : (np.ndarray, str),
+                                                      "want_str_from_ndarray_or_str"        : (np.ndarray, str),
+                                                      "want_enum_list_from_enum_list_or_str": (
+                                                          (list, GlobalConfigKeys), str),
+                                                      "want_str_from_enum_list_or_str"      : (
+                                                          (list, GlobalConfigKeys), str)}
 
         # Run the function
-        new_config: Dict[str, Any] = _convert_config_types(pipeline_config = config,
-                                                           d_types = d_types)
+        new_config: Dict[Union[str, ConfigKeys], Any] = _convert_config_types(pipeline_config = config,
+                                                                              d_types = d_types)
 
         # Check the results
         assert np.isclose(new_config["want_float"], 0.)
