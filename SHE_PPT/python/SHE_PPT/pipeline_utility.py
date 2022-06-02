@@ -959,7 +959,7 @@ def _convert_with_backup_type(pipeline_config: Dict[ConfigKeys, Any],
 
     value = pipeline_config[enum_key]
     converted_value: Union[PrimaryType, BackupType]
-    # Return if the value is already in one of the desired types (with an exception if the backup type is str, since
+    # Return if the value is already is one of the desired types (with an exception if the backup type is str, since
     # values are initially parsed as strings, and we don't know if it's an unconverted string or not)
     if isinstance(value, primary_type) or (backup_type != str and isinstance(value, backup_type)):
         return
@@ -994,10 +994,6 @@ def _convert_enum_type(pipeline_config: Dict[ConfigKeys, Any],
     """Private function to check that the value in the pipeline_config is properly a value of the given enum_type,
     and sets the entry in the pipeline_config to the proper enum.
     """
-
-    # Skip if not present in the config
-    if enum_key not in pipeline_config:
-        return
 
     # Check that the value is in the enum (silently convert to lower case)
     value = pipeline_config[enum_key]
