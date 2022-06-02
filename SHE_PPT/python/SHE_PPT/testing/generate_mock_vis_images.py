@@ -110,7 +110,7 @@ def __generate_detector_images(detector_shape=(4136,4096), nobjs=10, background=
     wgt = np.ones(detector_shape,dtype=np.float32)
 
     #generate bkg image (bkg = noise)
-    bkg = np.ones(detector_shape,dtype=np.float32) * np.sqrt(background)
+    bkg = np.ones(detector_shape,dtype=np.float32) * background
 
     return sci, rms, flg, wgt, bkg, x_px, y_px
 
