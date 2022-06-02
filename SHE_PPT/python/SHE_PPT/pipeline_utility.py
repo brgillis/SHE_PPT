@@ -803,10 +803,6 @@ def write_config(config_dict: Dict[ConfigKeys, Any],
     elif GlobalConfigKeys not in config_keys:
         config_keys = (*config_keys, GlobalConfigKeys)
 
-    # Silently return if dict and filename are None
-    if config_dict is None and config_filename is None:
-        return
-
     qualified_config_filename = os.path.join(workdir, config_filename)
 
     if os.path.exists(qualified_config_filename):
