@@ -182,7 +182,7 @@ def archive_product(product_filename: str,
     try:
         p = read_xml_product(qualified_filename)
 
-        # Remove all files this points to
+        # Copy all files this points to
         if hasattr(p, "get_all_filenames"):
             data_filenames = p.get_all_filenames()
             for data_filename in data_filenames:
