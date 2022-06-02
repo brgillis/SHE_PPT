@@ -25,7 +25,7 @@ from argparse import Namespace
 from enum import EnumMeta
 from functools import lru_cache
 from shutil import copyfile
-from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Set, TextIO, Tuple, Type, TypeVar, Union
+from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, TextIO, Tuple, Type, TypeVar, Union
 
 import numpy as np
 
@@ -477,8 +477,8 @@ def _read_config_dict_from_file(config_filehandle: TextIO,
     config_dict = _make_config_from_defaults(config_keys = config_keys,
                                              d_defaults = d_defaults)
 
-    # Keep a set of any keys we want to block from being able to overwrite
-    blocked_keys = set()
+    # Keep a dict relating global and task keys, so we can sync them at the end
+    d_global_task_keys: Dict[ConfigKeys, ConfigKeys] = {}
 
     # Read in the file, except for comment lines
     for config_line in config_filehandle:
@@ -487,8 +487,12 @@ def _read_config_dict_from_file(config_filehandle: TextIO,
                           config_dict = config_dict,
                           config_keys = config_keys,
                           d_defaults = d_defaults,
-                          blocked_keys = blocked_keys,
+                          d_global_task_keys = d_global_task_keys,
                           task_head = task_head, )
+
+    # Sync the global and task keys
+    for global_enum_key, local_enum_key in d_global_task_keys.items():
+        config_dict[local_enum_key] = config_dict[global_enum_key]
 
     return config_dict
 
@@ -497,7 +501,7 @@ def _read_config_line(config_line: str,
                       config_dict: Dict[ConfigKeys, Any],
                       config_keys: Sequence[EnumMeta],
                       d_defaults: Dict[ConfigKeys, Any],
-                      blocked_keys: Set[ConfigKeys],
+                      d_global_task_keys: Dict[ConfigKeys, ConfigKeys],
                       task_head: Optional[str], ) -> None:
     """Private implementation of reading a single line of a config file and updating the config dict.
     """
@@ -515,41 +519,44 @@ def _read_config_line(config_line: str,
     equal_split_line = non_comment_line.split('=')
     key_string = equal_split_line[0].strip()
 
-    if key_string in blocked_keys:
+    enum_key = _check_key_is_valid(key_string, config_keys)
+
+    # Skip if this key has already been set by its task version
+    if (enum_key in d_global_task_keys) and (enum_key in config_dict):
         return
-
-    try:
-
-        enum_key = _check_key_is_valid(key_string, config_keys)
-
-    except ValueError as e:
-
-        # If we're allowing task-specific keys, check if that's the case
-        if task_head is None:
-            raise
-
-        # Check if this is a valid task-specific key
-        global_key_string = get_global_value(key_string, task_head)
-
-        try:
-            enum_key = _check_key_is_valid(global_key_string, config_keys)
-        except Exception:
-            # The global key isn't valid, so raise the original exception
-            raise e
-
-        # If we get here, this is a valid task-specific key, so set it to the dict in
-        # place of the global key
-        key_string = global_key_string
-
-        # Add it to the blocked_keys set, so if we encounter the global key later, we
-        # won't override this for this task
-        blocked_keys.update(key_string)
 
     # In case the value contains an = char
     value = non_comment_line.replace(equal_split_line[0] + '=', '').strip()
 
-    # If the value is None or equivalent, don't set it (use the default)
-    if not (is_any_type_of_none(value) and enum_key in d_defaults):
+    # If we're allowing task-specific keys, check if that's the case
+    if task_head is not None:
+
+        # Check if this is a valid task-specific key
+        global_key_string = get_global_value(key_string, task_head)
+
+        if global_key_string != key_string:
+
+            # This is a possible task-specific key
+            local_enum_key = enum_key
+
+            try:
+
+                enum_key = _check_key_is_valid(global_key_string, config_keys)
+
+                # Add it to the dict relating known global and task keys
+                d_global_task_keys[enum_key] = local_enum_key
+
+                # Set the value in the dict for the local key (global will be done in the main branch below)
+                if not (is_any_type_of_none(value) and local_enum_key in d_defaults):
+                    config_dict[local_enum_key] = value
+
+            except ValueError:
+                # This is a key unique to the task, so don't override and block the global key,
+                # and use what we thought might have been the local key instead
+                enum_key = local_enum_key
+
+    # If the value is None or equivalent, don't set it (use the default or the global value)
+    if not (is_any_type_of_none(value) and (enum_key in d_defaults or task_head is not None)):
         config_dict[enum_key] = value
 
 
@@ -858,9 +865,13 @@ def _get_converted_type(value: str, desired_type: Type):
         converted_value = value.lower() in ['true', 't', '1', 1]
 
     elif desired_type is np.ndarray:
-        # Convert space-separated lists into arrays of floats
-        values_list = list(map(float, value.strip().split()))
-        converted_value = np.array(values_list, dtype = float)
+        # Check first if the value is None
+        if is_any_type_of_none(value):
+            converted_value = np.array([])
+        else:
+            # Convert space-separated lists into arrays of floats
+            values_list = list(map(float, value.strip().split()))
+            converted_value = np.array(values_list, dtype = float)
 
     else:
         converted_value = desired_type(value)

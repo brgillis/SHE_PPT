@@ -32,7 +32,7 @@ from SHE_PPT import products
 from SHE_PPT.constants.classes import ShearEstimationMethods
 from SHE_PPT.constants.config import (AnalysisConfigKeys, CTI_GAL_VALIDATION_HEAD, CalibrationConfigKeys,
                                       GlobalConfigKeys,
-                                      ReconciliationConfigKeys, ValidationConfigKeys, )
+                                      ReconciliationConfigKeys, SHEAR_BIAS_VALIDATION_HEAD, ValidationConfigKeys, )
 from SHE_PPT.file_io import write_listfile, write_xml_product
 from SHE_PPT.pipeline_utility import (_coerce_parsed_args_to_dict, _convert_config_types, archive_product,
                                       get_conditional_product,
@@ -41,7 +41,7 @@ from SHE_PPT.pipeline_utility import (_coerce_parsed_args_to_dict, _convert_conf
                                       read_analysis_config, read_calibration_config, read_config,
                                       read_reconciliation_config,
                                       read_scaling_config, write_analysis_config,
-                                      write_calibration_config, write_reconciliation_config, )
+                                      write_calibration_config, write_config, write_reconciliation_config, )
 from SHE_PPT.products.she_analysis_config import create_dpd_she_analysis_config
 from SHE_PPT.testing.mock_mer_final_cat import MockMFCGalaxyTableGenerator
 from SHE_PPT.testing.utility import SheTestCase
@@ -148,6 +148,10 @@ class TestUtility(SheTestCase):
                                    AnalysisConfigKeys.OID_MAX_BATCHES: int,
                                    GlobalConfigKeys.PIP_PROFILE      : bool}
 
+        test_analysis_cline_args_dict = {AnalysisConfigKeys.ES_METHODS     : "methods",
+                                         AnalysisConfigKeys.OID_BATCH_SIZE : "batch_size",
+                                         AnalysisConfigKeys.OID_MAX_BATCHES: None}
+
         write_analysis_config(test_analysis_dict, test1_filename, workdir = self.workdir)
         analysis_config_product = create_dpd_she_analysis_config(test1_filename)
         write_xml_product(analysis_config_product, product_filename, workdir = self.workdir)
@@ -180,12 +184,9 @@ class TestUtility(SheTestCase):
             read_analysis_config(lf2_filename, workdir = self.workdir)
 
         # Check that cline_args properly override values in the config dict
-        d_cline_args = {AnalysisConfigKeys.ES_METHODS     : "methods",
-                        AnalysisConfigKeys.OID_BATCH_SIZE : "batch_size",
-                        AnalysisConfigKeys.OID_MAX_BATCHES: None}
         read_dict_with_cline_args = read_analysis_config(lf1_filename,
                                                          workdir = self.workdir,
-                                                         d_cline_args = d_cline_args,
+                                                         d_cline_args = test_analysis_cline_args_dict,
                                                          parsed_args = {"batch_size": "10",
                                                                         "methods"   : None},
                                                          d_types = test_analysis_type_dict)
@@ -263,6 +264,59 @@ class TestUtility(SheTestCase):
 
         # Test the `read_scaling_config` function simply - the more complicated paths are covered by other tests above
         assert read_scaling_config(None, workdir = self.workdir) == {}
+
+        # Test the ValidationConfigKeys can be read in, using task_head for overriding keys
+
+        test_validation_dict = {ValidationConfigKeys.CG_SNR_BIN_LIMITS    : "0 2 4",
+                                ValidationConfigKeys.CG_BG_BIN_LIMITS     : None,
+                                ValidationConfigKeys.SBV_SNR_BIN_LIMITS   : "0 3 6",
+                                ValidationConfigKeys.SBV_BG_BIN_LIMITS    : None,
+                                ValidationConfigKeys.VAL_SNR_BIN_LIMITS   : "0 1 2",
+                                ValidationConfigKeys.VAL_BG_BIN_LIMITS    : "1 2 3",
+                                ValidationConfigKeys.VAL_COLOUR_BIN_LIMITS: "2 3 4",
+                                }
+
+        test_validation_types_dict = {ValidationConfigKeys.CG_SNR_BIN_LIMITS    : np.ndarray,
+                                      ValidationConfigKeys.CG_BG_BIN_LIMITS     : np.ndarray,
+                                      ValidationConfigKeys.CG_COLOUR_BIN_LIMITS : np.ndarray,
+                                      ValidationConfigKeys.SBV_SNR_BIN_LIMITS   : np.ndarray,
+                                      ValidationConfigKeys.SBV_BG_BIN_LIMITS    : np.ndarray,
+                                      ValidationConfigKeys.SBV_COLOUR_BIN_LIMITS: np.ndarray,
+                                      ValidationConfigKeys.VAL_SNR_BIN_LIMITS   : np.ndarray,
+                                      ValidationConfigKeys.VAL_BG_BIN_LIMITS    : np.ndarray,
+                                      ValidationConfigKeys.VAL_COLOUR_BIN_LIMITS: np.ndarray,
+                                      }
+
+        write_config(test_validation_dict, test1_filename, workdir = self.workdir, config_keys = ValidationConfigKeys)
+
+        # Read in and test with no task head
+        read_dict_no_task_head = read_config(test1_filename,
+                                             workdir = self.workdir,
+                                             config_keys = ValidationConfigKeys,
+                                             d_types = test_validation_types_dict)
+        assert np.all(read_dict_no_task_head[ValidationConfigKeys.VAL_SNR_BIN_LIMITS] == np.array([0, 1, 2]))
+        assert np.all(read_dict_no_task_head[ValidationConfigKeys.VAL_BG_BIN_LIMITS] == np.array([1, 2, 3]))
+        assert np.all(read_dict_no_task_head[ValidationConfigKeys.VAL_COLOUR_BIN_LIMITS] == np.array([2, 3, 4]))
+
+        # Read in and test with CTI-Gal task head
+        read_dict_cti_gal = read_config(test1_filename,
+                                        workdir = self.workdir,
+                                        config_keys = ValidationConfigKeys,
+                                        d_types = test_validation_types_dict,
+                                        task_head = CTI_GAL_VALIDATION_HEAD)
+        assert np.all(read_dict_cti_gal[ValidationConfigKeys.VAL_SNR_BIN_LIMITS] == np.array([0, 2, 4]))
+        assert np.all(read_dict_cti_gal[ValidationConfigKeys.VAL_BG_BIN_LIMITS] == np.array([1, 2, 3]))
+        assert np.all(read_dict_cti_gal[ValidationConfigKeys.VAL_COLOUR_BIN_LIMITS] == np.array([2, 3, 4]))
+
+        # Read in and test with Shear Bias Validation task head
+        read_dict_sbv = read_config(test1_filename,
+                                    workdir = self.workdir,
+                                    config_keys = ValidationConfigKeys,
+                                    d_types = test_validation_types_dict,
+                                    task_head = SHEAR_BIAS_VALIDATION_HEAD)
+        assert np.all(read_dict_sbv[ValidationConfigKeys.VAL_SNR_BIN_LIMITS] == np.array([0, 3, 6]))
+        assert np.all(read_dict_sbv[ValidationConfigKeys.VAL_BG_BIN_LIMITS] == np.array([1, 2, 3]))
+        assert np.all(read_dict_sbv[ValidationConfigKeys.VAL_COLOUR_BIN_LIMITS] == np.array([2, 3, 4]))
 
         # Test that we get a ValueError if providing task_head for the wrong pipeline type
         with pytest.raises(ValueError):
