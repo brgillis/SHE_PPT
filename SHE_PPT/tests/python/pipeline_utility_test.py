@@ -22,6 +22,7 @@ __updated__ = "2021-08-12"
 
 import os
 import shutil
+from argparse import Namespace
 from typing import Any, Dict
 
 import numpy as np
@@ -33,7 +34,8 @@ from SHE_PPT.constants.config import (AnalysisConfigKeys, CTI_GAL_VALIDATION_HEA
                                       GlobalConfigKeys,
                                       ReconciliationConfigKeys, ValidationConfigKeys, )
 from SHE_PPT.file_io import write_listfile, write_xml_product
-from SHE_PPT.pipeline_utility import (_convert_config_types, archive_product, get_conditional_product,
+from SHE_PPT.pipeline_utility import (_coerce_parsed_args_to_dict, _convert_config_types, archive_product,
+                                      get_conditional_product,
                                       get_cti_gal_value,
                                       get_global_enum, get_global_value, get_shear_bias_value, get_task_value,
                                       read_analysis_config, read_calibration_config, read_config,
@@ -263,6 +265,21 @@ class TestUtility(SheTestCase):
         assert read_config(None,
                            workdir = self.workdir,
                            config_keys = (ReconciliationConfigKeys, ValidationConfigKeys)) == {}
+
+    def test_coerce_parsed_args_to_dict(self):
+        """Unit test of the `coerce_parsed_args_to_dict` function.
+        """
+
+        # Test None
+        assert _coerce_parsed_args_to_dict(None) == {}
+
+        # Test dict
+        test_dict = {"a": 1, "b": 2}
+        assert _coerce_parsed_args_to_dict(test_dict) == test_dict
+
+        # Test Namespace
+        test_namespace = Namespace(**test_dict)
+        assert _coerce_parsed_args_to_dict(test_namespace) == test_dict
 
     def test_get_conditional_product(self):
         # We'll set up some test files to work with, using the object_id_list product
