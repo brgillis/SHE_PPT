@@ -871,8 +871,8 @@ def _get_converted_list_type(value: str,
 
     # Convert each item in the list in turn
     l_values: Any = [None] * len(l_str_values)
-    for i in range(len(l_str_values)):
-        l_values[i] = convert_func(l_str_values[i], item_type)
+    for i, str_value in enumerate(l_str_values):
+        l_values[i] = convert_func(str_value, item_type)
 
     return l_values
 
