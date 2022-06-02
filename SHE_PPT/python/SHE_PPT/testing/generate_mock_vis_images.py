@@ -34,19 +34,22 @@ from SHE_PPT.logging import getLogger
 
 logger = getLogger(__name__)
 
+# how much larger the radius of the stamp is than the radius of the object
+stampscale = 5
 
 def __generate_gausian_blob(objsize=10):
-    """generates a (objsize*5 x objsize*5) pixel image of a gaussian blob with width of objsize"""
+    """generates a (objsize*stampscale*2 x objsize*stampscale*2) pixel image of a sersic profile (n=1) with width of objsize pixels"""
     
     #size of the stamp
-    size = objsize*5
+    size = int(objsize*stampscale*2)
     
     blob = np.zeros((size,size))
     
     x = np.arange(size)-size/2.
     for j in range(size):
         y=x[j]
-        blob[j,:] = np.exp(-(x*x + y*y)/(objsize)**2)
+        r = np.sqrt(x*x + y*y)
+        blob[j,:] = np.exp(-(r/objsize))
     
     return blob
 
@@ -82,7 +85,7 @@ def __generate_detector_images(detector_shape=(4136,4096), nobjs=10, background=
     y_px = []
     for i in range(nobjs):
         blob = __generate_gausian_blob(objsize)
-        stampsize=objsize*5
+        stampsize=int(objsize*stampscale*2)
 
         #select (randomly) the x and y coordinates of the blob's bottom corner
         x = rng.randint(0, detector_shape[1]-stampsize)
@@ -133,7 +136,7 @@ def __create_header(wcs=None, **kwargs):
     
 
 
-def create_exposure(n_detectors=1, detector_shape=(100,100), workdir=".", seed = 1, n_objs_per_det = 10):
+def create_exposure(n_detectors=1, detector_shape=(100,100), workdir=".", seed = 1, n_objs_per_det = 10, objsize=10):
     """
         Creates a mock dpdVisCalibratedFrame data product for use in smoke tests
         
@@ -144,6 +147,7 @@ def create_exposure(n_detectors=1, detector_shape=(100,100), workdir=".", seed =
            - workdir: workdir for the files (default ".")
            - seed: seed for the random number generator
            - n_objs_per_det: Number of objects generated per detector
+           - objsize: size of the objects in pixels
 
         Returns:
            - prod_filename (The name of the created data product)
@@ -191,7 +195,8 @@ def create_exposure(n_detectors=1, detector_shape=(100,100), workdir=".", seed =
         #create image data
         sci, rms, flg, wgt, bkg, x_px, y_px = __generate_detector_images(detector_shape=detector_shape,
                                                                            rng=rng,
-                                                                           nobjs= n_objs_per_det)
+                                                                           nobjs= n_objs_per_det,
+                                                                           objsize=objsize)
 
         #create WCS (Use Airy projection - arbitrary decision, we just want something in valid sky coordinates!)
         wcs = WCS(naxis=2)

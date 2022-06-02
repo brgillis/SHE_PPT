@@ -33,22 +33,30 @@ from SHE_PPT.logging import getLogger
 
 logger = getLogger(__name__)
 
+#how larger the mask is than the object
+masksize = 5
+
 
 def __generate_segmentation_mask(radius=10):
     """Returns a 2*radius by 2*radius array with a circle of 1s within radius, and zero elsewhere"""
-    mask = np.zeros((radius*2,radius*2),dtype=np.int64)
+    
+    size = int(radius*2)
+    
+    mask = np.zeros((size,size),dtype=np.int64)
 
-    for j in range(radius*2):
+    for j in range(size):
         y = 0.5+j-radius
-        for i in range(radius*2):
+        for i in range(size):
             x = 0.5+i-radius
             mask[j,i] = x*x  + y*y < radius**2
 
     return mask
 
-def __create_detector_map(object_ids, pixel_coords, detector_shape, mask_radius=20):
+def __create_detector_map(object_ids, pixel_coords, detector_shape, objsize = 10):
     """For a given detector, produce a segmentation map"""
     img = np.zeros(detector_shape, dtype=np.int64)
+
+    mask_radius = int(masksize*objsize)
 
     mask = __generate_segmentation_mask(radius=mask_radius)
 
@@ -57,7 +65,7 @@ def __create_detector_map(object_ids, pixel_coords, detector_shape, mask_radius=
         xmax = int(coords[0])+mask_radius
         ymin = int(coords[1])-mask_radius
         ymax = int(coords[1])+mask_radius
-        
+
         #zero where the object will go
         img[ymin:ymax, xmin:xmax] *= (1-mask)
         #set the pixel values to the object_id
@@ -67,7 +75,7 @@ def __create_detector_map(object_ids, pixel_coords, detector_shape, mask_radius=
 
 
 
-def create_reprojected_segmentation_map(object_ids, pixel_coords, detectors, wcs_list, workdir=".", detector_shape=(100,100)):
+def create_reprojected_segmentation_map(object_ids, pixel_coords, detectors, wcs_list, workdir=".", detector_shape=(100,100), objsize = 10):
     """
     Creates a DpdSheExposureReprojectedSegmentationMap product from a list of input objects, their image positions, the detectors they belong to and the detectors' WCSs
     
@@ -78,6 +86,7 @@ def create_reprojected_segmentation_map(object_ids, pixel_coords, detectors, wcs
        - wcs_list: A list of astropy.wcs.WCS objects, one per detector
        - workdir: The work directory to write the product to (default ".")
        - detector_shape: The size of the detector in pixels
+       - objsize: The size of an object in pixels
 
     Outputs:
        - prod_filename: The filename of the created data product
@@ -105,7 +114,7 @@ def create_reprojected_segmentation_map(object_ids, pixel_coords, detectors, wcs
         
         #create the seg map for the detector from the objects in that detector
         inds = np.where(detectors == det)
-        img = __create_detector_map(object_ids[inds], pixel_coords[inds], detector_shape)
+        img = __create_detector_map(object_ids[inds], pixel_coords[inds], detector_shape, objsize=objsize)
 
         #create the HDU and append it to the HDUlist  
         header = wcs_list[det].to_header()
