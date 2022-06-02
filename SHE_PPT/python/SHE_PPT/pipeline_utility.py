@@ -199,9 +199,8 @@ def archive_product(product_filename: str,
             logger.warning("Product %s has no 'get_all_filenames' method.", qualified_filename)
 
     except Exception as e:
-        logger.warning(("Failsafe exception block triggered when trying to save statistics product "
-                        "in archive. Exception was: %s"),
-                       str(e))
+        logger.warning(("Failsafe exception block triggered when trying to save product "
+                        "in archive. Exception was: %s"), str(e))
 
 
 def read_analysis_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:

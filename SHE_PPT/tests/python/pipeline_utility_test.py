@@ -21,6 +21,7 @@
 __updated__ = "2021-08-12"
 
 import os
+import shutil
 from typing import Any, Dict
 
 import numpy as np
@@ -32,11 +33,13 @@ from SHE_PPT.constants.config import (AnalysisConfigKeys, CTI_GAL_VALIDATION_HEA
                                       GlobalConfigKeys,
                                       ReconciliationConfigKeys, ValidationConfigKeys, )
 from SHE_PPT.file_io import write_listfile, write_xml_product
-from SHE_PPT.pipeline_utility import (_convert_config_types, get_conditional_product, get_cti_gal_value,
+from SHE_PPT.pipeline_utility import (_convert_config_types, archive_product, get_conditional_product,
+                                      get_cti_gal_value,
                                       get_global_enum, get_global_value, get_shear_bias_value, get_task_value,
                                       read_analysis_config, read_calibration_config, read_reconciliation_config,
                                       write_analysis_config,
                                       write_calibration_config, write_reconciliation_config, )
+from SHE_PPT.testing.mock_mer_final_cat import MockMFCGalaxyTableGenerator
 from SHE_PPT.testing.utility import SheTestCase
 
 
@@ -78,6 +81,46 @@ class TestUtility(SheTestCase):
         # Test with providing the enum's value
         assert get_global_value(task_value = ValidationConfigKeys.CG_SNR_BIN_LIMITS.value,
                                 task_head = CTI_GAL_VALIDATION_HEAD) == ValidationConfigKeys.VAL_SNR_BIN_LIMITS.value
+
+    def test_archive_product(self):
+        """Unit test of the `archive_product` function
+        """
+
+        # We'll set up some test files to work with, using a MER Final Catalog table and product
+
+        mfc_table_gen = MockMFCGalaxyTableGenerator(workdir = self.workdir,
+                                                    num_test_points = 2, )
+
+        mfc_table_gen.write_mock_product()
+
+        product_filename = mfc_table_gen.product_filename
+        table_filename = mfc_table_gen.table_filename
+
+        base_subdir_name = "archive_dir"
+        qualified_base_subdir_name = os.path.join(self.workdir, base_subdir_name)
+        qualified_subdir_name = os.path.join(qualified_base_subdir_name, os.path.split(self.workdir)[-1])
+
+        # Delete the subdir if it already exists in the workdir, so that we can test it's properly created
+        if os.path.exists(qualified_base_subdir_name):
+            shutil.rmtree(qualified_base_subdir_name)
+
+        # Test archiving the product
+        archive_product(product_filename = product_filename,
+                        archive_dir = qualified_base_subdir_name,
+                        workdir = self.workdir)
+
+        # Check that the product and table were copied to the archive directory
+        assert os.path.exists(os.path.join(qualified_subdir_name, product_filename))
+        assert os.path.exists(os.path.join(qualified_subdir_name, table_filename))
+
+        # Check that we can also copy a non-product, getting only a warning
+        table_filename_2 = "test_table_2.fits"
+        shutil.copy(os.path.join(self.workdir, table_filename),
+                    os.path.join(self.workdir, table_filename_2))
+        archive_product(product_filename = table_filename_2,
+                        archive_dir = qualified_base_subdir_name,
+                        workdir = self.workdir)
+        assert os.path.exists(os.path.join(qualified_subdir_name, table_filename_2))
 
     def test_rw_config(self):
         test1_filename = "test1.txt"
