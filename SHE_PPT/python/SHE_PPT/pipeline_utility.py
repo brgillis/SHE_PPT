@@ -159,14 +159,11 @@ def archive_product(product_filename: str,
     logger = getLogger(__name__)
 
     # Start by figuring out the subdirectory to store it in, based off of the workdir we're using
-    subdir = os.path.split(workdir)[1]
-    full_archive_dir = os.path.join(archive_dir, subdir)
-
-    # The filename will likely also contain a subdir, so figure that out
-    product_subpath = os.path.split(product_filename)[0]
+    full_archive_dir = os.path.join(archive_dir, os.path.split(workdir)[1])
 
     # Make the directory to store it in
-    full_archive_subdir = os.path.join(full_archive_dir, product_subpath)
+    # The filename will likely also contain a subdir, include that
+    full_archive_subdir = os.path.join(full_archive_dir, os.path.split(product_filename)[0])
     full_archive_datadir = os.path.join(full_archive_dir, "data")
     if not os.path.exists(full_archive_subdir):
         os.makedirs(full_archive_subdir)
@@ -175,8 +172,7 @@ def archive_product(product_filename: str,
 
     # Copy the file to the archive
     qualified_filename = os.path.join(workdir, product_filename)
-    qualified_archive_product_filename = os.path.join(full_archive_dir, product_filename)
-    copyfile(qualified_filename, qualified_archive_product_filename)
+    copyfile(qualified_filename, os.path.join(full_archive_dir, product_filename))
 
     # Copy any files it points to to the archive as well
     try:
@@ -184,8 +180,7 @@ def archive_product(product_filename: str,
 
         # Copy all files this points to
         if hasattr(p, "get_all_filenames"):
-            data_filenames = p.get_all_filenames()
-            for data_filename in data_filenames:
+            for data_filename in p.get_all_filenames():
                 if data_filename is not None and data_filename != "default_filename.fits" and data_filename != "":
                     qualified_data_filename = os.path.join(workdir, data_filename)
                     qualified_archive_data_filename = os.path.join(full_archive_dir, data_filename)
