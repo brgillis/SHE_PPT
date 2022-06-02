@@ -129,7 +129,9 @@ class TestUtility(SheTestCase):
                         workdir = self.workdir)
         assert os.path.exists(os.path.join(qualified_subdir_name, table_filename_2))
 
-    def test_rw_config(self):
+    def test_read_analysis_config(self):
+        """Unit tests of reading the analysis config file and general tests of `read_config`.
+        """
 
         # Set up files to test reading in
         test1_filename = "data/test1.txt"
@@ -211,50 +213,6 @@ class TestUtility(SheTestCase):
         assert read_dict_with_cline_args[AnalysisConfigKeys.OID_MAX_BATCHES] == 3
         assert read_dict_with_cline_args[GlobalConfigKeys.PIP_PROFILE] is True
 
-        # Test we get out of the file what we put in, for each type of configuration file
-
-        test_reconciliation_dict = {ReconciliationConfigKeys.REC_METHOD: "Best"}
-
-        write_reconciliation_config(test_reconciliation_dict, test1_filename, workdir = self.workdir)
-
-        read_dict1 = read_reconciliation_config(test1_filename, workdir = self.workdir)
-
-        # Check it's been read in correctly
-        assert read_dict1[ReconciliationConfigKeys.REC_METHOD] == "Best"
-
-        # Check we get expected results from trying to read in other variants
-
-        assert read_reconciliation_config(lf1_filename, workdir = self.workdir) == read_dict1
-
-        with pytest.raises(ValueError):
-            read_reconciliation_config(lf2_filename, workdir = self.workdir)
-
-        # Test we get out of the file what we put in, for each type of configuration file
-
-        test_calibration_dict = {CalibrationConfigKeys.ES_METHODS : ShearEstimationMethods.KSB,
-                                 CalibrationConfigKeys.CBM_CLEANUP: False}
-
-        test_calibration_type_dict = {CalibrationConfigKeys.ES_METHODS : (list, ShearEstimationMethods),
-                                      CalibrationConfigKeys.CBM_CLEANUP: bool}
-
-        write_calibration_config(test_calibration_dict, test1_filename, workdir = self.workdir)
-
-        read_dict1 = read_calibration_config(test1_filename,
-                                             workdir = self.workdir,
-                                             d_types = test_calibration_type_dict)
-
-        # Check it's been read in correctly
-        assert read_dict1[CalibrationConfigKeys.ES_METHODS] == [ShearEstimationMethods.KSB]
-        assert read_dict1[CalibrationConfigKeys.CBM_CLEANUP] == False
-
-        # Check we get expected results from trying to read in other variants
-
-        assert read_calibration_config(lf1_filename,
-                                       workdir = self.workdir,
-                                       d_types = test_calibration_type_dict) == read_dict1
-        with pytest.raises(ValueError):
-            read_calibration_config(lf2_filename, workdir = self.workdir)
-
         # Test that we can parse a more complicated file
         test2_filename = "test2.txt"
         with open(os.path.join(self.workdir, test2_filename), "w") as fo:
@@ -278,29 +236,58 @@ class TestUtility(SheTestCase):
         assert read_dict2[AnalysisConfigKeys.REMAP_NUM_SWARP_THREADS_EXP] == 4
         assert "ignore this" not in read_dict2
 
-        # Test the `read_scaling_config` functions simply - the more complicated paths are covered by other tests above
-        write_scaling_config({}, "test_scaling_config.txt", workdir = self.workdir)
-        assert read_scaling_config(None, workdir = self.workdir) == {}
-
-        # Test the Global config keys are recognized even if not passed explicitly
-        read_dict_global = read_config(None,
-                                       config_keys = (AnalysisConfigKeys,),
-                                       d_defaults = {GlobalConfigKeys.PIP_PROFILE: True}, )
-        write_config({GlobalConfigKeys.PIP_PROFILE: True},
-                     config_filename = "test_global_config.txt",
-                     workdir = self.workdir,
-                     config_keys = AnalysisConfigKeys)
-        write_config({GlobalConfigKeys.PIP_PROFILE: True},
-                     config_filename = "test_global_config.txt",
-                     workdir = self.workdir,
-                     config_keys = (AnalysisConfigKeys,))
-        assert read_dict_global[GlobalConfigKeys.PIP_PROFILE] is True
-
         # Check that we get a ValueError if we provide a config key from the wrong ConfigKeys Enum
         with pytest.raises(ValueError):
             _ = read_analysis_config(None,
                                      workdir = self.workdir,
                                      d_defaults = {ValidationConfigKeys.VAL_SNR_BIN_LIMITS: np.array([0, 1])})
+
+    def test_rw_reconciliation_config(self):
+        """Unit tests of reading and writing a reconciliation config file.
+        """
+
+        test_filename = "test_reconciliation_config.txt"
+
+        test_reconciliation_dict = {ReconciliationConfigKeys.REC_METHOD: "Best"}
+
+        write_reconciliation_config(test_reconciliation_dict, test_filename, workdir = self.workdir)
+
+        read_dict1 = read_reconciliation_config(test_filename, workdir = self.workdir)
+
+        # Check it's been read in correctly
+        assert read_dict1[ReconciliationConfigKeys.REC_METHOD] == "Best"
+
+    def test_rw_calibration_config(self):
+        """Unit tests of reading and writing a calibration config file.
+        """
+
+        test_filename = "test_calibration_config.txt"
+
+        # Test we get out of the file what we put in, for each type of configuration file
+
+        test_calibration_dict = {CalibrationConfigKeys.ES_METHODS : ShearEstimationMethods.KSB,
+                                 CalibrationConfigKeys.CBM_CLEANUP: False}
+
+        test_calibration_type_dict = {CalibrationConfigKeys.ES_METHODS : (list, ShearEstimationMethods),
+                                      CalibrationConfigKeys.CBM_CLEANUP: bool}
+
+        write_calibration_config(test_calibration_dict, test_filename, workdir = self.workdir)
+
+        read_dict1 = read_calibration_config(test_filename,
+                                             workdir = self.workdir,
+                                             d_types = test_calibration_type_dict)
+
+        # Check it's been read in correctly
+        assert read_dict1[CalibrationConfigKeys.ES_METHODS] == [ShearEstimationMethods.KSB]
+        assert read_dict1[CalibrationConfigKeys.CBM_CLEANUP] == False
+
+    def test_rw_scaling_config(self):
+        """Unit tests of reading and writing a scaling config file.
+        """
+
+        # Test the `read_scaling_config` functions simply - the more complicated paths are covered by other tests above
+        write_scaling_config({}, "test_scaling_config.txt", workdir = self.workdir)
+        assert read_scaling_config(None, workdir = self.workdir) == {}
 
     def test_read_validation_config(self):
         """Unit tests of read_config, focused on special handling for the validation config keys.
@@ -412,6 +399,22 @@ class TestUtility(SheTestCase):
         assert read_config(None,
                            workdir = self.workdir,
                            config_keys = (ReconciliationConfigKeys, ValidationConfigKeys)) == {}
+
+    def test_read_global_config_keys(self):
+        """Test the Global config keys are recognized even if not passed explicitly.
+        """
+        read_dict_global = read_config(None,
+                                       config_keys = (AnalysisConfigKeys,),
+                                       d_defaults = {GlobalConfigKeys.PIP_PROFILE: True}, )
+        write_config({GlobalConfigKeys.PIP_PROFILE: True},
+                     config_filename = "test_global_config.txt",
+                     workdir = self.workdir,
+                     config_keys = AnalysisConfigKeys)
+        write_config({GlobalConfigKeys.PIP_PROFILE: True},
+                     config_filename = "test_global_config.txt",
+                     workdir = self.workdir,
+                     config_keys = (AnalysisConfigKeys,))
+        assert read_dict_global[GlobalConfigKeys.PIP_PROFILE] is True
 
     def test_coerce_parsed_args_to_dict(self):
         """Unit test of the `coerce_parsed_args_to_dict` function.
