@@ -140,11 +140,13 @@ class TestUtility(SheTestCase):
 
         test_analysis_dict = {AnalysisConfigKeys.ES_METHODS     : ShearEstimationMethods.KSB,
                               AnalysisConfigKeys.OID_BATCH_SIZE : "26",
-                              AnalysisConfigKeys.OID_MAX_BATCHES: "3", }
+                              AnalysisConfigKeys.OID_MAX_BATCHES: "3",
+                              GlobalConfigKeys.PIP_PROFILE      : "T"}
 
         test_analysis_type_dict = {AnalysisConfigKeys.ES_METHODS     : (list, ShearEstimationMethods),
                                    AnalysisConfigKeys.OID_BATCH_SIZE : int,
-                                   AnalysisConfigKeys.OID_MAX_BATCHES: int}
+                                   AnalysisConfigKeys.OID_MAX_BATCHES: int,
+                                   GlobalConfigKeys.PIP_PROFILE      : bool}
 
         write_analysis_config(test_analysis_dict, test1_filename, workdir = self.workdir)
         analysis_config_product = create_dpd_she_analysis_config(test1_filename)
@@ -162,6 +164,7 @@ class TestUtility(SheTestCase):
         assert read_dict1[AnalysisConfigKeys.ES_METHODS] == [ShearEstimationMethods.KSB]
         assert read_dict1[AnalysisConfigKeys.OID_BATCH_SIZE] == 26
         assert read_dict1[AnalysisConfigKeys.OID_MAX_BATCHES] == 3
+        assert read_dict1[GlobalConfigKeys.PIP_PROFILE] is True
 
         # Check we get expected results from trying to read in other variants
 
@@ -177,8 +180,9 @@ class TestUtility(SheTestCase):
             read_analysis_config(lf2_filename, workdir = self.workdir)
 
         # Check that cline_args properly override values in the config dict
-        d_cline_args = {AnalysisConfigKeys.OID_BATCH_SIZE: "batch_size",
-                        AnalysisConfigKeys.ES_METHODS    : "methods"}
+        d_cline_args = {AnalysisConfigKeys.ES_METHODS     : "methods",
+                        AnalysisConfigKeys.OID_BATCH_SIZE : "batch_size",
+                        AnalysisConfigKeys.OID_MAX_BATCHES: None}
         read_dict_with_cline_args = read_analysis_config(lf1_filename,
                                                          workdir = self.workdir,
                                                          d_cline_args = d_cline_args,
@@ -188,6 +192,7 @@ class TestUtility(SheTestCase):
         assert read_dict_with_cline_args[AnalysisConfigKeys.ES_METHODS] == [ShearEstimationMethods.KSB]
         assert read_dict_with_cline_args[AnalysisConfigKeys.OID_BATCH_SIZE] == 10
         assert read_dict_with_cline_args[AnalysisConfigKeys.OID_MAX_BATCHES] == 3
+        assert read_dict_with_cline_args[GlobalConfigKeys.PIP_PROFILE] is True
 
         # Test we get out of the file what we put in, for each type of configuration file
 
