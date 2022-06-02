@@ -173,6 +173,18 @@ class TestUtility(SheTestCase):
         with pytest.raises(ValueError):
             read_analysis_config(lf2_filename, workdir = self.workdir)
 
+        # Check that cline_args properly override values in the config dict
+        d_cline_args = {AnalysisConfigKeys.OID_BATCH_SIZE: "batch_size",
+                        AnalysisConfigKeys.ES_METHODS    : "methods"}
+        read_dict_with_cline_args = read_analysis_config(lf1_filename,
+                                                         workdir = self.workdir,
+                                                         d_cline_args = d_cline_args,
+                                                         parsed_args = {"batch_size": "10",
+                                                                        "methods"   : None},
+                                                         d_types = test_analysis_type_dict)
+        assert read_dict_with_cline_args[AnalysisConfigKeys.OID_BATCH_SIZE] == 10
+        assert read_dict_with_cline_args[AnalysisConfigKeys.ES_METHODS] == [ShearEstimationMethods.KSB]
+
         # Test we get out of the file what we put in, for each type of configuration file
 
         test_reconciliation_dict = {ReconciliationConfigKeys.REC_METHOD: "Best"}
@@ -186,12 +198,8 @@ class TestUtility(SheTestCase):
 
         # Check we get expected results from trying to read in other variants
 
-        assert read_reconciliation_config(None, workdir = self.workdir) == {}
-        assert read_reconciliation_config("", workdir = self.workdir) == {}
-        assert read_reconciliation_config("None", workdir = self.workdir) == {}
-
-        assert read_reconciliation_config(lf0_filename, workdir = self.workdir) == {}
         assert read_reconciliation_config(lf1_filename, workdir = self.workdir) == read_dict1
+
         with pytest.raises(ValueError):
             read_reconciliation_config(lf2_filename, workdir = self.workdir)
 
@@ -215,11 +223,6 @@ class TestUtility(SheTestCase):
 
         # Check we get expected results from trying to read in other variants
 
-        assert read_calibration_config(None, workdir = self.workdir) == {}
-        assert read_calibration_config("", workdir = self.workdir) == {}
-        assert read_calibration_config("None", workdir = self.workdir) == {}
-
-        assert read_calibration_config(lf0_filename, workdir = self.workdir) == {}
         assert read_calibration_config(lf1_filename,
                                        workdir = self.workdir,
                                        d_types = test_calibration_type_dict) == read_dict1
