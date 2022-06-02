@@ -138,11 +138,13 @@ class TestUtility(SheTestCase):
 
         # Test we get out of the file what we put in, for each type of configuration file
 
-        test_analysis_dict = {AnalysisConfigKeys.ES_METHODS    : ShearEstimationMethods.KSB,
-                              AnalysisConfigKeys.OID_BATCH_SIZE: "26"}
+        test_analysis_dict = {AnalysisConfigKeys.ES_METHODS     : ShearEstimationMethods.KSB,
+                              AnalysisConfigKeys.OID_BATCH_SIZE : "26",
+                              AnalysisConfigKeys.OID_MAX_BATCHES: "3", }
 
-        test_analysis_type_dict = {AnalysisConfigKeys.ES_METHODS    : (list, ShearEstimationMethods),
-                                   AnalysisConfigKeys.OID_BATCH_SIZE: int}
+        test_analysis_type_dict = {AnalysisConfigKeys.ES_METHODS     : (list, ShearEstimationMethods),
+                                   AnalysisConfigKeys.OID_BATCH_SIZE : int,
+                                   AnalysisConfigKeys.OID_MAX_BATCHES: int}
 
         write_analysis_config(test_analysis_dict, test1_filename, workdir = self.workdir)
         analysis_config_product = create_dpd_she_analysis_config(test1_filename)
@@ -159,6 +161,7 @@ class TestUtility(SheTestCase):
         # Check it's been read in correctly
         assert read_dict1[AnalysisConfigKeys.ES_METHODS] == [ShearEstimationMethods.KSB]
         assert read_dict1[AnalysisConfigKeys.OID_BATCH_SIZE] == 26
+        assert read_dict1[AnalysisConfigKeys.OID_MAX_BATCHES] == 3
 
         # Check we get expected results from trying to read in other variants
 
@@ -182,8 +185,9 @@ class TestUtility(SheTestCase):
                                                          parsed_args = {"batch_size": "10",
                                                                         "methods"   : None},
                                                          d_types = test_analysis_type_dict)
-        assert read_dict_with_cline_args[AnalysisConfigKeys.OID_BATCH_SIZE] == 10
         assert read_dict_with_cline_args[AnalysisConfigKeys.ES_METHODS] == [ShearEstimationMethods.KSB]
+        assert read_dict_with_cline_args[AnalysisConfigKeys.OID_BATCH_SIZE] == 10
+        assert read_dict_with_cline_args[AnalysisConfigKeys.OID_MAX_BATCHES] == 3
 
         # Test we get out of the file what we put in, for each type of configuration file
 
