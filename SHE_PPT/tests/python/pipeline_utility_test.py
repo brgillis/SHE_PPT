@@ -279,6 +279,12 @@ class TestUtility(SheTestCase):
         # Test the `read_scaling_config` function simply - the more complicated paths are covered by other tests above
         assert read_scaling_config(None, workdir = self.workdir) == {}
 
+        # Check that we get a ValueError if we provide a config key from the wrong ConfigKeys Enum
+        with pytest.raises(ValueError):
+            _ = read_analysis_config(None,
+                                     workdir = self.workdir,
+                                     d_defaults = {ValidationConfigKeys.VAL_SNR_BIN_LIMITS: np.array([0, 1])})
+
     def test_read_validation_config(self):
         """Unit tests of read_config, focused on special handling for the validation config keys.
         """
