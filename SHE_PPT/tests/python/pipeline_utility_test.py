@@ -33,25 +33,17 @@ from SHE_PPT.pipeline_utility import (AnalysisConfigKeys, CalibrationConfigKeys,
                                       ReconciliationConfigKeys, _convert_config_types, get_conditional_product,
                                       read_analysis_config, read_calibration_config, read_reconciliation_config,
                                       write_analysis_config, write_calibration_config, write_reconciliation_config, )
+from SHE_PPT.testing.utility import SheTestCase
 
 
-class TestUtility:
+class TestUtility(SheTestCase):
+    """Unit tests for the SHE_PPT.pipeline_utility module.
     """
 
-
-    """
-
-    @classmethod
-    def setup_class(cls):
-        return
-
-    @classmethod
-    def teardown_class(cls):
-        return
-
-    @pytest.fixture(autouse = True)
-    def setup(self, tmpdir):
-        self.workdir = tmpdir.strpath
+    def post_setup(self):
+        """Set up data used for multiple unit tests.
+        """
+        pass
 
     def test_rw_config(self):
         test1_filename = "test1.txt"
