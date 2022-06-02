@@ -348,7 +348,7 @@ def read_config(config_filename: Optional[str] = None,
                                                          d_types = d_types)
 
     # Get the qualified filename of the config file
-    qualified_config_filename = get_qualified_filename(workdir, config_filename)
+    qualified_config_filename = get_qualified_filename(config_filename, workdir = workdir)
 
     try:
 
