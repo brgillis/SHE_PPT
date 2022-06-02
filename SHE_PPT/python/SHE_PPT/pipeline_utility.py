@@ -31,8 +31,8 @@ import numpy as np
 
 from .constants.classes import AllowedEnum
 from .constants.config import (AnalysisConfigKeys, CTI_GAL_VALIDATION_HEAD, CalibrationConfigKeys, ConfigKeys,
-                               GlobalConfigKeys, ReconciliationConfigKeys, SHEAR_BIAS_VALIDATION_HEAD,
-                               ScalingExperimentsConfigKeys, VALIDATION_HEAD,
+                               GlobalConfigKeys, ReconciliationConfigKeys, ScalingExperimentsConfigKeys,
+                               VALIDATION_HEAD,
                                ValidationConfigKeys, )
 from .file_io import (DEFAULT_WORKDIR, SheFileReadError, find_file, get_qualified_filename, read_listfile,
                       read_xml_product, )
@@ -79,7 +79,7 @@ def get_cti_gal_value(global_enum: ConfigKeys) -> str:
     str
         The value of the CTI-Gal task-specific option.
     """
-    return get_task_value(global_enum, SHEAR_BIAS_VALIDATION_HEAD)
+    return get_task_value(global_enum, CTI_GAL_VALIDATION_HEAD)
 
 
 def get_shear_bias_value(global_enum: ConfigKeys) -> str:
