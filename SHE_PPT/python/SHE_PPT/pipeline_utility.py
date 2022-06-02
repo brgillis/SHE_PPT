@@ -539,33 +539,51 @@ def _read_config_line(config_line: str,
     # If we're allowing task-specific keys, check if that's the case
     if task_head is not None:
 
-        # Check if this is a valid task-specific key
-        global_key_string = get_global_value(key_string, task_head)
-
-        if global_key_string != key_string:
-
-            # This is a possible task-specific key
-            local_enum_key = enum_key
-
-            try:
-
-                enum_key = _check_key_is_valid(global_key_string, config_keys)
-
-                # Add it to the dict relating known global and task keys
-                d_global_task_keys[enum_key] = local_enum_key
-
-                # Set the value in the dict for the local key (global will be done in the main branch below)
-                if not (is_any_type_of_none(value) and local_enum_key in d_defaults):
-                    config_dict[local_enum_key] = value
-
-            except ValueError:
-                # This is a key unique to the task, so don't override and block the global key,
-                # and use what we thought might have been the local key instead
-                enum_key = local_enum_key
+        enum_key = _check_for_task_key(config_dict = config_dict,
+                                       config_keys = config_keys,
+                                       d_defaults = d_defaults,
+                                       d_global_task_keys = d_global_task_keys,
+                                       enum_key = enum_key,
+                                       key_string = key_string,
+                                       task_head = task_head,
+                                       value = value, )
 
     # If the value is None or equivalent, don't set it (use the default or the global value)
     if not (is_any_type_of_none(value) and (enum_key in d_defaults or task_head is not None)):
         config_dict[enum_key] = value
+
+
+def _check_for_task_key(config_dict: Dict[ConfigKeys, Any],
+                        config_keys: Sequence[EnumMeta],
+                        d_defaults: Dict[ConfigKeys, Any],
+                        d_global_task_keys: Dict[ConfigKeys, ConfigKeys],
+                        enum_key: ConfigKeys,
+                        key_string: str,
+                        task_head: str,
+                        value: str, ) -> ConfigKeys:
+    """Private function to handle sorting out overriding of a global key with a task-specific key when reading in a
+       pipeline config.
+    """
+    # Check if this is a valid task-specific key
+    global_key_string = get_global_value(key_string, task_head)
+    if global_key_string != key_string:
+
+        # This is a possible task-specific key
+        local_enum_key = enum_key
+
+        try:
+
+            enum_key = _check_key_is_valid(global_key_string, config_keys)
+
+            # Add it to the dict relating known global and task keys
+            d_global_task_keys[enum_key] = local_enum_key
+
+        except ValueError:
+            # This is a key unique to the task, so don't override and block the global key,
+            # and use what we thought might have been the local key instead
+            enum_key = local_enum_key
+
+    return enum_key
 
 
 def _make_config_from_defaults(config_keys: Sequence[EnumMeta],
