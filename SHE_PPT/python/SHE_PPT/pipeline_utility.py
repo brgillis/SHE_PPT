@@ -983,7 +983,7 @@ def _get_convert_func(item_type: Union[Type, Tuple[Type[list], Type]]) -> Callab
     """
     if isinstance(item_type, tuple) and item_type[0] == list:
         return _get_converted_list_type
-    elif issubclass(item_type, AllowedEnum):
+    if issubclass(item_type, AllowedEnum):
         return _get_converted_enum_type
     return _get_converted_type
 

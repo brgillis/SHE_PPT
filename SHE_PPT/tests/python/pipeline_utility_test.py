@@ -557,3 +557,6 @@ class TestUtility(SheTestCase):
         assert _get_converted_type(x, float) == 11.0
         with pytest.raises(TypeError):
             _get_converted_type(x, list)
+
+        # Convert None to empty array
+        assert np.all(_get_converted_type("None", np.ndarray) == np.array([]))
