@@ -35,7 +35,8 @@ from SHE_PPT.constants.config import (AnalysisConfigKeys, CTI_GAL_VALIDATION_HEA
                                       PSF_RES_SP_VALIDATION_HEAD, ReconciliationConfigKeys, SHEAR_BIAS_VALIDATION_HEAD,
                                       ValidationConfigKeys, )
 from SHE_PPT.file_io import write_listfile, write_xml_product
-from SHE_PPT.pipeline_utility import (_coerce_parsed_args_to_dict, _convert_config_types, archive_product,
+from SHE_PPT.pipeline_utility import (_coerce_parsed_args_to_dict, _convert_config_types, _convert_list_type,
+                                      archive_product,
                                       get_conditional_product,
                                       get_cti_gal_value,
                                       get_global_enum, get_global_value, get_shear_bias_value, get_task_value,
@@ -522,3 +523,9 @@ class TestUtility(SheTestCase):
         new_new_config: Dict[Union[str, ConfigKeys], Any] = _convert_config_types(pipeline_config = new_config,
                                                                                   d_types = d_types)
         assert new_new_config == new_config
+
+        # Test some alternate branches of conversion functions behave as expected
+        with pytest.raises(ValueError):
+            _convert_list_type(pipeline_config = {GlobalConfigKeys.PIP_PLACEHOLDER_0: "1.1.1"},
+                               enum_key = GlobalConfigKeys.PIP_PLACEHOLDER_0,
+                               item_type = int)

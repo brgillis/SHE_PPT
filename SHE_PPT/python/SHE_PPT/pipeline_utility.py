@@ -945,9 +945,9 @@ def _convert_list_type(pipeline_config: Dict[ConfigKeys, Any],
 
     try:
         pipeline_config[enum_key] = _get_converted_list_type(value, (list, item_type))
-    except TypeError as e:
-        raise TypeError(f"Value {value} provided with key {enum_key} in the pipeline config cannot be converted "
-                        f"to a list of type {item_type}.") from e
+    except (TypeError, ValueError) as e:
+        raise type(e)(f"Value {value} provided with key {enum_key} in the pipeline config cannot be converted "
+                      f"to a list of type {item_type}.") from e
 
 
 def _convert_with_backup_type(pipeline_config: Dict[ConfigKeys, Any],
