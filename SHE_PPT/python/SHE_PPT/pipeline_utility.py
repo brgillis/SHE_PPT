@@ -500,9 +500,14 @@ def _read_config_dict_from_file(config_filehandle: TextIO,
     # If we're using a task_head, update the d_global_task_keys dict using the defaults
     if task_head is not None:
         for enum_key in d_default_config:
-            if enum_key.value.startswith(task_head):
+            if not enum_key.value.startswith(task_head):
+                continue
+            try:
                 global_enum_key = get_global_enum(enum_key.value, task_head)
-                d_global_task_keys[global_enum_key] = enum_key
+            except ValueError:
+                # Continue if it's a key unique to the task
+                continue
+            d_global_task_keys[global_enum_key] = enum_key
 
     # Sync the global and task keys
     for global_enum_key, local_enum_key in d_global_task_keys.items():

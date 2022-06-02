@@ -32,7 +32,8 @@ from SHE_PPT import products
 from SHE_PPT.constants.classes import ShearEstimationMethods
 from SHE_PPT.constants.config import (AnalysisConfigKeys, CTI_GAL_VALIDATION_HEAD, CalibrationConfigKeys,
                                       GlobalConfigKeys,
-                                      ReconciliationConfigKeys, SHEAR_BIAS_VALIDATION_HEAD, ValidationConfigKeys, )
+                                      PSF_RES_SP_VALIDATION_HEAD, ReconciliationConfigKeys, SHEAR_BIAS_VALIDATION_HEAD,
+                                      ValidationConfigKeys, )
 from SHE_PPT.file_io import write_listfile, write_xml_product
 from SHE_PPT.pipeline_utility import (_coerce_parsed_args_to_dict, _convert_config_types, archive_product,
                                       get_conditional_product,
@@ -281,6 +282,7 @@ class TestUtility(SheTestCase):
                                 ValidationConfigKeys.VAL_SNR_BIN_LIMITS   : "0 1 2",
                                 ValidationConfigKeys.VAL_BG_BIN_LIMITS    : "1 2 3",
                                 ValidationConfigKeys.VAL_COLOUR_BIN_LIMITS: "2 3 4",
+                                ValidationConfigKeys.PRSP_P_FAIL          : "0.1",
                                 }
 
         test_validation_types_dict = {ValidationConfigKeys.CG_SNR_BIN_LIMITS    : np.ndarray,
@@ -292,6 +294,7 @@ class TestUtility(SheTestCase):
                                       ValidationConfigKeys.VAL_SNR_BIN_LIMITS   : np.ndarray,
                                       ValidationConfigKeys.VAL_BG_BIN_LIMITS    : np.ndarray,
                                       ValidationConfigKeys.VAL_COLOUR_BIN_LIMITS: np.ndarray,
+                                      ValidationConfigKeys.PRSP_P_FAIL          : float,
                                       }
 
         test_validation_defaults_dict = {ValidationConfigKeys.CG_SNR_BIN_LIMITS    : np.array([0, 20, 40]),
@@ -306,6 +309,7 @@ class TestUtility(SheTestCase):
                                          ValidationConfigKeys.VAL_BG_BIN_LIMITS    : np.array([10, 20, 30]),
                                          ValidationConfigKeys.VAL_COLOUR_BIN_LIMITS: np.array([20, 30, 40]),
                                          ValidationConfigKeys.VAL_SIZE_BIN_LIMITS  : np.array([30, 40, 50]),
+                                         ValidationConfigKeys.PRSP_P_FAIL          : 0.2,
                                          }
 
         write_config(test_validation_dict, test_filename, workdir = self.workdir, config_keys = ValidationConfigKeys)
@@ -352,6 +356,15 @@ class TestUtility(SheTestCase):
         assert np.all(read_dict_sbv[ValidationConfigKeys.SBV_BG_BIN_LIMITS] == np.array([1, 2, 3]))
         assert np.all(read_dict_sbv[ValidationConfigKeys.SBV_COLOUR_BIN_LIMITS] == np.array([2, 3, 4]))
         assert np.all(read_dict_sbv[ValidationConfigKeys.SBV_SIZE_BIN_LIMITS] == np.array([30, 40, 50]))
+
+        # Read in and test with PSF Res (Star Pos) task head
+        read_dict_sbv = read_config(test_filename,
+                                    workdir = self.workdir,
+                                    config_keys = ValidationConfigKeys,
+                                    d_types = test_validation_types_dict,
+                                    d_defaults = test_validation_defaults_dict,
+                                    task_head = PSF_RES_SP_VALIDATION_HEAD)
+        assert read_dict_sbv[ValidationConfigKeys.PRSP_P_FAIL] == 0.1
 
         # Test that we get a ValueError if providing task_head for the wrong pipeline type
         with pytest.raises(ValueError):
