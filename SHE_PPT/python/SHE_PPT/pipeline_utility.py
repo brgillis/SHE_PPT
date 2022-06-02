@@ -473,9 +473,11 @@ def _read_config_dict_from_file(config_filehandle: TextIO,
     """Private implementation of reading in a config dict from a file.
     """
 
-    # Start with a config dict generated from defaults
-    config_dict = _make_config_from_defaults(config_keys = config_keys,
-                                             d_defaults = d_defaults)
+    # Make a config dict from defaults
+    d_default_config = _make_config_from_defaults(config_keys = config_keys,
+                                                  d_defaults = d_defaults)
+
+    config_dict: Dict[ConfigKeys, Any] = {}
 
     # Keep a dict relating global and task keys, so we can sync them at the end
     d_global_task_keys: Dict[ConfigKeys, ConfigKeys] = {}
@@ -489,6 +491,11 @@ def _read_config_dict_from_file(config_filehandle: TextIO,
                           d_defaults = d_defaults,
                           d_global_task_keys = d_global_task_keys,
                           task_head = task_head, )
+
+    # Fill in any missing keys with defaults
+    for enum_key in d_default_config:
+        if not (enum_key in config_dict and not is_any_type_of_none(config_dict[enum_key])):
+            config_dict[enum_key] = d_default_config[enum_key]
 
     # Sync the global and task keys
     for global_enum_key, local_enum_key in d_global_task_keys.items():
