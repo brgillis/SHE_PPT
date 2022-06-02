@@ -932,14 +932,14 @@ def _convert_tuple_type(pipeline_config: Dict[ConfigKeys, Any],
 
     # Forward to appropriate method for the type of conversion appropriate for the tuple type provided
     if tuple_type[0] == list:
-        return _convert_list_type(pipeline_config = pipeline_config,
-                                  enum_key = enum_key,
-                                  item_type = tuple_type[1])
+        _convert_list_type(pipeline_config = pipeline_config,
+                           enum_key = enum_key,
+                           item_type = tuple_type[1])
     else:
-        return _convert_with_backup_type(pipeline_config = pipeline_config,
-                                         enum_key = enum_key,
-                                         primary_type = tuple_type[0],
-                                         backup_type = tuple_type[1])
+        _convert_with_backup_type(pipeline_config = pipeline_config,
+                                  enum_key = enum_key,
+                                  primary_type = tuple_type[0],
+                                  backup_type = tuple_type[1])
 
 
 def _convert_list_type(pipeline_config: Dict[ConfigKeys, Any],
@@ -992,8 +992,7 @@ def _get_convert_func(item_type: Union[Type, Tuple[Type[list], Type]]) -> Callab
         return _get_converted_list_type
     elif issubclass(item_type, AllowedEnum):
         return _get_converted_enum_type
-    else:
-        return _get_converted_type
+    return _get_converted_type
 
 
 def _convert_enum_type(pipeline_config: Dict[ConfigKeys, Any],
