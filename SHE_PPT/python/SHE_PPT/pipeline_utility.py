@@ -2,10 +2,10 @@
 
     Created 9 Aug 2018
 
-    Misc. utility functions for the pipeline.
+    Misc. utility functions used for pipeline-related tasks.
 """
 
-__updated__ = "2021-08-19"
+__updated__ = "2022-06-02"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
