@@ -37,7 +37,7 @@ from SHE_PPT.pipeline_utility import (_convert_config_types, archive_product, ge
                                       get_cti_gal_value,
                                       get_global_enum, get_global_value, get_shear_bias_value, get_task_value,
                                       read_analysis_config, read_calibration_config, read_reconciliation_config,
-                                      write_analysis_config,
+                                      read_scaling_config, write_analysis_config,
                                       write_calibration_config, write_reconciliation_config, )
 from SHE_PPT.testing.mock_mer_final_cat import MockMFCGalaxyTableGenerator
 from SHE_PPT.testing.utility import SheTestCase
@@ -247,6 +247,9 @@ class TestUtility(SheTestCase):
         assert read_dict2[AnalysisConfigKeys.REMAP_NUM_THREADS_EXP] == 8
         assert read_dict2[AnalysisConfigKeys.REMAP_NUM_SWARP_THREADS_EXP] == 4
         assert "ignore this" not in read_dict2
+
+        # Test the `read_scaling_config` function simply - the more complicated paths are covered by other tests above
+        assert read_scaling_config(None, workdir = self.workdir) == {}
 
     def test_get_conditional_product(self):
         # We'll set up some test files to work with, using the object_id_list product
