@@ -497,6 +497,13 @@ def _read_config_dict_from_file(config_filehandle: TextIO,
         if not (enum_key in config_dict and not is_any_type_of_none(config_dict[enum_key])):
             config_dict[enum_key] = d_default_config[enum_key]
 
+    # If we're using a task_head, update the d_global_task_keys dict using the defaults
+    if task_head is not None:
+        for enum_key in d_default_config:
+            if enum_key.value.startswith(task_head):
+                global_enum_key = get_global_enum(enum_key.value, task_head)
+                d_global_task_keys[global_enum_key] = enum_key
+
     # Sync the global and task keys
     for global_enum_key, local_enum_key in d_global_task_keys.items():
         config_dict[local_enum_key] = config_dict[global_enum_key]
@@ -539,9 +546,7 @@ def _read_config_line(config_line: str,
     # If we're allowing task-specific keys, check if that's the case
     if task_head is not None:
 
-        enum_key = _check_for_task_key(config_dict = config_dict,
-                                       config_keys = config_keys,
-                                       d_defaults = d_defaults,
+        enum_key = _check_for_task_key(config_keys = config_keys,
                                        d_global_task_keys = d_global_task_keys,
                                        enum_key = enum_key,
                                        key_string = key_string,
@@ -553,9 +558,7 @@ def _read_config_line(config_line: str,
         config_dict[enum_key] = value
 
 
-def _check_for_task_key(config_dict: Dict[ConfigKeys, Any],
-                        config_keys: Sequence[EnumMeta],
-                        d_defaults: Dict[ConfigKeys, Any],
+def _check_for_task_key(config_keys: Sequence[EnumMeta],
                         d_global_task_keys: Dict[ConfigKeys, ConfigKeys],
                         enum_key: ConfigKeys,
                         key_string: str,

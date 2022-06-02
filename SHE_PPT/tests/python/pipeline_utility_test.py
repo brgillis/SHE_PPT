@@ -290,12 +290,15 @@ class TestUtility(SheTestCase):
         test_validation_defaults_dict = {ValidationConfigKeys.CG_SNR_BIN_LIMITS    : np.array([0, 20, 40]),
                                          ValidationConfigKeys.CG_BG_BIN_LIMITS     : np.array([20, 40, 60]),
                                          ValidationConfigKeys.CG_COLOUR_BIN_LIMITS : np.array([40, 60, 80]),
+                                         ValidationConfigKeys.CG_SIZE_BIN_LIMITS   : np.array([60, 80, 100]),
                                          ValidationConfigKeys.SBV_SNR_BIN_LIMITS   : np.array([0, 30, 60]),
                                          ValidationConfigKeys.SBV_BG_BIN_LIMITS    : np.array([30, 60, 90]),
                                          ValidationConfigKeys.SBV_COLOUR_BIN_LIMITS: np.array([60, 90, 120]),
+                                         ValidationConfigKeys.SBV_SIZE_BIN_LIMITS  : np.array([90, 120, 150]),
                                          ValidationConfigKeys.VAL_SNR_BIN_LIMITS   : np.array([0, 10, 20]),
                                          ValidationConfigKeys.VAL_BG_BIN_LIMITS    : np.array([10, 20, 30]),
                                          ValidationConfigKeys.VAL_COLOUR_BIN_LIMITS: np.array([20, 30, 40]),
+                                         ValidationConfigKeys.VAL_SIZE_BIN_LIMITS  : np.array([30, 40, 50]),
                                          }
 
         write_config(test_validation_dict, test1_filename, workdir = self.workdir, config_keys = ValidationConfigKeys)
@@ -309,6 +312,7 @@ class TestUtility(SheTestCase):
         assert np.all(read_dict_no_task_head[ValidationConfigKeys.VAL_SNR_BIN_LIMITS] == np.array([0, 1, 2]))
         assert np.all(read_dict_no_task_head[ValidationConfigKeys.VAL_BG_BIN_LIMITS] == np.array([1, 2, 3]))
         assert np.all(read_dict_no_task_head[ValidationConfigKeys.VAL_COLOUR_BIN_LIMITS] == np.array([2, 3, 4]))
+        assert np.all(read_dict_no_task_head[ValidationConfigKeys.VAL_SIZE_BIN_LIMITS] == np.array([30, 40, 50]))
 
         # Read in and test with CTI-Gal task head
         read_dict_cti_gal = read_config(test1_filename,
@@ -320,6 +324,11 @@ class TestUtility(SheTestCase):
         assert np.all(read_dict_cti_gal[ValidationConfigKeys.VAL_SNR_BIN_LIMITS] == np.array([0, 2, 4]))
         assert np.all(read_dict_cti_gal[ValidationConfigKeys.VAL_BG_BIN_LIMITS] == np.array([1, 2, 3]))
         assert np.all(read_dict_cti_gal[ValidationConfigKeys.VAL_COLOUR_BIN_LIMITS] == np.array([2, 3, 4]))
+        assert np.all(read_dict_cti_gal[ValidationConfigKeys.VAL_SIZE_BIN_LIMITS] == np.array([30, 40, 50]))
+        assert np.all(read_dict_cti_gal[ValidationConfigKeys.CG_SNR_BIN_LIMITS] == np.array([0, 2, 4]))
+        assert np.all(read_dict_cti_gal[ValidationConfigKeys.CG_BG_BIN_LIMITS] == np.array([1, 2, 3]))
+        assert np.all(read_dict_cti_gal[ValidationConfigKeys.CG_COLOUR_BIN_LIMITS] == np.array([2, 3, 4]))
+        assert np.all(read_dict_cti_gal[ValidationConfigKeys.CG_SIZE_BIN_LIMITS] == np.array([30, 40, 50]))
 
         # Read in and test with Shear Bias Validation task head
         read_dict_sbv = read_config(test1_filename,
@@ -331,6 +340,11 @@ class TestUtility(SheTestCase):
         assert np.all(read_dict_sbv[ValidationConfigKeys.VAL_SNR_BIN_LIMITS] == np.array([0, 3, 6]))
         assert np.all(read_dict_sbv[ValidationConfigKeys.VAL_BG_BIN_LIMITS] == np.array([1, 2, 3]))
         assert np.all(read_dict_sbv[ValidationConfigKeys.VAL_COLOUR_BIN_LIMITS] == np.array([2, 3, 4]))
+        assert np.all(read_dict_sbv[ValidationConfigKeys.VAL_SIZE_BIN_LIMITS] == np.array([30, 40, 50]))
+        assert np.all(read_dict_sbv[ValidationConfigKeys.SBV_SNR_BIN_LIMITS] == np.array([0, 3, 6]))
+        assert np.all(read_dict_sbv[ValidationConfigKeys.SBV_BG_BIN_LIMITS] == np.array([1, 2, 3]))
+        assert np.all(read_dict_sbv[ValidationConfigKeys.SBV_COLOUR_BIN_LIMITS] == np.array([2, 3, 4]))
+        assert np.all(read_dict_sbv[ValidationConfigKeys.SBV_SIZE_BIN_LIMITS] == np.array([30, 40, 50]))
 
         # Test that we get a ValueError if providing task_head for the wrong pipeline type
         with pytest.raises(ValueError):
