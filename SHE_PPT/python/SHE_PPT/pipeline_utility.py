@@ -665,8 +665,8 @@ def _check_enum_key_is_valid(enum_key: ConfigKeys,
     if not found:
         err_string = f"{enum_key} is not a valid member of any of the EnumMetas: {config_keys}. Allowed keys are:\n"
         for config_key_enum_meta in config_keys:
-            for enum_key in config_key_enum_meta:
-                err_string += f"{enum_key}"
+            for possible_enum_key in config_key_enum_meta:
+                err_string += f"{possible_enum_key}"
         raise ValueError(err_string)
 
     return config_key_enum_meta
