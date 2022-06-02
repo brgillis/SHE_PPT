@@ -177,7 +177,12 @@ def process_directory(directory_name: str) -> Tuple[List[str], List[str]]:
 def is_any_type_of_none(value: Any) -> bool:
     """Quick function to check if a value (which might be a string) is None or empty
     """
-    return value in (None, "None", "", "data/None", "data/")
+    try:
+        return value in (None, "None", "", "data/None", "data/")
+    except (TypeError, ValueError):
+        # We might get an exception if the value is of certain types, such as a numpy array. In that case,
+        # it's not None as understood here, so return False
+        return False
 
 
 def is_inf(x: Union[float, Sequence[float]]) -> bool:
