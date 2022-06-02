@@ -25,7 +25,7 @@ from argparse import Namespace
 from enum import EnumMeta
 from functools import lru_cache
 from shutil import copyfile
-from typing import Any, Callable, Dict, Iterable, List, Optional, Set, TextIO, Tuple, Type, TypeVar, Union
+from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Set, TextIO, Type, TypeVar, Union
 
 import numpy as np
 
@@ -34,7 +34,8 @@ from .constants.config import (AnalysisConfigKeys, CTI_GAL_VALIDATION_HEAD, Cali
                                GlobalConfigKeys, ReconciliationConfigKeys, SHEAR_BIAS_VALIDATION_HEAD,
                                ScalingExperimentsConfigKeys, VALIDATION_HEAD,
                                ValidationConfigKeys, )
-from .file_io import DEFAULT_WORKDIR, SheFileReadError, find_file, read_listfile, read_xml_product
+from .file_io import (DEFAULT_WORKDIR, SheFileReadError, find_file, get_qualified_filename, read_listfile,
+                      read_xml_product, )
 from .logging import getLogger
 from .utility import is_any_type_of_none
 
@@ -273,10 +274,10 @@ def read_scaling_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
 
 def read_config(config_filename: Optional[str] = None,
                 workdir: str = DEFAULT_WORKDIR,
-                config_keys: Union[EnumMeta, Tuple[EnumMeta, ...]] = (AnalysisConfigKeys,
-                                                                      ValidationConfigKeys,
-                                                                      ReconciliationConfigKeys,
-                                                                      CalibrationConfigKeys),
+                config_keys: Union[EnumMeta, Sequence[EnumMeta, ...]] = (AnalysisConfigKeys,
+                                                                         ValidationConfigKeys,
+                                                                         ReconciliationConfigKeys,
+                                                                         CalibrationConfigKeys),
                 d_cline_args: Optional[Dict[ConfigKeys, str]] = None,
                 d_defaults: Optional[Dict[ConfigKeys, Any]] = None,
                 d_types: Optional[Dict[ConfigKeys, Type]] = None,
@@ -291,7 +292,7 @@ def read_config(config_filename: Optional[str] = None,
         The workspace-relative name of the config file.
     workdir : str, default="."
         The working directory.
-    config_keys : Union[EnumMeta, Tuple[EnumMeta, ...]], default=(AnalysisConfigKeys, ValidationConfigKeys,
+    config_keys : Union[EnumMeta, Sequence[EnumMeta, ...]], default=(AnalysisConfigKeys, ValidationConfigKeys,
     ReconciliationConfigKeys, CalibrationConfigKeys)
         ConfigKeys enum or iterable of enums listing allowed keys.
     d_cline_args: Optional[Dict[ConfigKeys, str]], default=None
@@ -346,11 +347,8 @@ def read_config(config_filename: Optional[str] = None,
                                                          d_defaults = d_defaults,
                                                          d_types = d_types)
 
-    # Look in the workdir for the config filename if it isn't fully-qualified
-    if not config_filename[0] == "/":
-        qualified_config_filename = os.path.join(workdir, config_filename)
-    else:
-        qualified_config_filename = config_filename
+    # Get the qualified filename of the config file
+    qualified_config_filename = get_qualified_filename(workdir, config_filename)
 
     try:
 
@@ -430,7 +428,7 @@ def _read_config_product(config_filename: str,
 
 
 def _read_config_file(qualified_config_filename: str,
-                      config_keys: Tuple[EnumMeta, ...],
+                      config_keys: Sequence[EnumMeta, ...],
                       d_args: Dict[str, Any],
                       d_cline_args: Optional[Dict[ConfigKeys, str]],
                       d_defaults: Dict[ConfigKeys, Any],
@@ -468,7 +466,7 @@ def _read_config_file(qualified_config_filename: str,
 
 
 def _read_config_dict_from_file(config_filehandle: TextIO,
-                                config_keys: Tuple[EnumMeta, ...],
+                                config_keys: Sequence[EnumMeta, ...],
                                 d_defaults: Dict[ConfigKeys, Any],
                                 task_head: Optional[str] = None, ) -> Dict[ConfigKeys, Any]:
     """Private implementation of reading in a config dict from a file.
@@ -496,7 +494,7 @@ def _read_config_dict_from_file(config_filehandle: TextIO,
 
 def _read_config_line(config_line: str,
                       config_dict: Dict[ConfigKeys, Any],
-                      config_keys: Tuple[EnumMeta, ...],
+                      config_keys: Sequence[EnumMeta, ...],
                       d_defaults: Dict[ConfigKeys, Any],
                       blocked_keys: Set[ConfigKeys],
                       task_head: Optional[str], ) -> None:
@@ -554,7 +552,7 @@ def _read_config_line(config_line: str,
         config_dict[enum_key] = value
 
 
-def _make_config_from_defaults(config_keys: Tuple[EnumMeta, ...],
+def _make_config_from_defaults(config_keys: Sequence[EnumMeta, ...],
                                d_defaults: Dict[ConfigKeys, Any],
                                d_types: Optional[Dict[ConfigKeys, Type]] = None) -> Dict[ConfigKeys, Any]:
     """Make a pipeline config dict from just the defaults.
@@ -572,7 +570,7 @@ def _make_config_from_defaults(config_keys: Tuple[EnumMeta, ...],
     return config_dict
 
 
-def _make_config_from_cline_args_and_defaults(config_keys: Tuple[EnumMeta, ...],
+def _make_config_from_cline_args_and_defaults(config_keys: Sequence[EnumMeta, ...],
                                               d_args: Dict[str, Any],
                                               d_cline_args: Dict[ConfigKeys, str],
                                               d_defaults: Dict[ConfigKeys, Any],
@@ -633,7 +631,7 @@ def _check_enum_key_is_valid(enum_key: ConfigKeys,
 
 
 def _check_key_is_valid(key: str,
-                        config_keys: Tuple[EnumMeta, ...]) -> ConfigKeys:
+                        config_keys: Sequence[EnumMeta, ...]) -> ConfigKeys:
     """Checks if a pipeline config key is valid by searching for it in the provided config keys Enums. If found,
     returns the Enum for it.
     """
@@ -816,7 +814,7 @@ def _get_converted_enum_type(value: str, enum_type: EnumMeta):
 
 
 def _get_converted_list_type(value: str,
-                             list_type: Tuple[Type[list], Type]):
+                             list_type: Sequence[Type[list], Type]):
     """Private function to get and return the value converted to a list of the desired type.
     """
     item_type = list_type[1]
@@ -875,7 +873,7 @@ BackupType = TypeVar("BackupType")
 
 def _convert_tuple_type(pipeline_config: Dict[ConfigKeys, Any],
                         enum_key: ConfigKeys,
-                        tuple_type: Tuple[Union[Type[List], PrimaryType], Union[Type, BackupType]]) -> None:
+                        tuple_type: Sequence[Union[Type[List], PrimaryType], Union[Type, BackupType]]) -> None:
     """Private function to convert a type expressed as a tuple. The formats currently accepted are:
         * Element 0 is "list" and Element 1 is the type of item in the list
         * Element 0 is the primary desired type, and Element 1 is the backup desired type, if it cannot be
@@ -945,7 +943,7 @@ def _convert_with_backup_type(pipeline_config: Dict[ConfigKeys, Any],
     pipeline_config[enum_key] = converted_value
 
 
-def _get_convert_func(item_type: Union[Type, Tuple[Type[list], Type]]) -> Callable:
+def _get_convert_func(item_type: Union[Type, Sequence[Type[list], Type]]) -> Callable:
     """Private function to get the proper function to handle conversion to the desired type.
     """
     if isinstance(item_type, tuple) and item_type[0] == list:

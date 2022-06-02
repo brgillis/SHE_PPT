@@ -36,7 +36,8 @@ from SHE_PPT.file_io import write_listfile, write_xml_product
 from SHE_PPT.pipeline_utility import (_convert_config_types, archive_product, get_conditional_product,
                                       get_cti_gal_value,
                                       get_global_enum, get_global_value, get_shear_bias_value, get_task_value,
-                                      read_analysis_config, read_calibration_config, read_reconciliation_config,
+                                      read_analysis_config, read_calibration_config, read_config,
+                                      read_reconciliation_config,
                                       read_scaling_config, write_analysis_config,
                                       write_calibration_config, write_reconciliation_config, )
 from SHE_PPT.testing.mock_mer_final_cat import MockMFCGalaxyTableGenerator
@@ -250,6 +251,18 @@ class TestUtility(SheTestCase):
 
         # Test the `read_scaling_config` function simply - the more complicated paths are covered by other tests above
         assert read_scaling_config(None, workdir = self.workdir) == {}
+
+        # Test that we get a ValueError if providing task_head for the wrong pipeline type
+        with pytest.raises(ValueError):
+            _ = read_config(None,
+                            workdir = self.workdir,
+                            config_keys = ReconciliationConfigKeys,
+                            task_head = CTI_GAL_VALIDATION_HEAD)
+
+        # Check that it handles a list of config_keys fine
+        assert read_config(None,
+                           workdir = self.workdir,
+                           config_keys = (ReconciliationConfigKeys, ValidationConfigKeys)) == {}
 
     def test_get_conditional_product(self):
         # We'll set up some test files to work with, using the object_id_list product
