@@ -306,6 +306,45 @@ class SHEFrame(object):
 
         return detector, x, y, x_i, y_i
 
+    def get_objects_in_exposure(self,object_coords):
+        """Returns the indices of the input object coorinates that are found within this observation, 
+           along with lists of their x and y coordinates, and the detector they belong to"""
+
+        num_x, num_y = np.shape(self.detectors)
+        
+        #get arrays/lists to hold all the objects and their attributes found in this exposure
+        all_inds = np.empty(0,np.int64)
+        all_xs = np.empty(0,np.float64)
+        all_ys = np.empty(0,np.float64)
+        detectors = []
+        
+        for x_i in range(num_x):
+            for y_i in range(num_y):
+                
+                detector = self.detectors[x_i,y_i]
+
+                if detector is None:
+                    continue
+
+                inds, xs, ys = detector.get_objects_in_dectector(object_coords)
+
+                all_inds = np.concatenate((all_inds,inds))
+                all_xs = np.concatenate((all_xs,xs))
+                all_ys = np.concatenate((all_ys,ys))
+                detectors += [(x_i,y_i) for i in range(len(inds))]
+        
+        n_objs = len(all_inds)
+        logger.info(f"Found {n_objs} objects in exposure")
+
+        detectors = np.asarray(detectors)
+
+        return all_inds, all_xs, all_ys, detectors
+
+
+
+
+        
+
     def extract_wcs_stamp(self, x_world, y_world):
         """ Extracts an "empty" stamp, which contains only information needed for WCS operations, having the
             interface of a standard SHEImage.
