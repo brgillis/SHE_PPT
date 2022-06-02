@@ -205,10 +205,6 @@ class TestUtility(SheTestCase):
 
         write_calibration_config(test_calibration_dict, test1_filename, workdir = self.workdir)
 
-        write_listfile(os.path.join(self.workdir, lf0_filename), [])
-        write_listfile(os.path.join(self.workdir, lf1_filename), [test1_filename])
-        write_listfile(os.path.join(self.workdir, lf2_filename), [test1_filename, test1_filename])
-
         read_dict1 = read_calibration_config(test1_filename,
                                              workdir = self.workdir,
                                              d_types = test_calibration_type_dict)
