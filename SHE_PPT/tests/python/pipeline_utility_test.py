@@ -151,7 +151,7 @@ class TestUtility(SheTestCase):
         write_xml_product(analysis_config_product, product_filename, workdir = self.workdir)
 
         write_listfile(os.path.join(self.workdir, lf0_filename), [])
-        write_listfile(os.path.join(self.workdir, lf1_filename), [test1_filename])
+        write_listfile(os.path.join(self.workdir, lf1_filename), [product_filename])
         write_listfile(os.path.join(self.workdir, lf2_filename), [test1_filename, product_filename])
 
         read_dict1 = read_analysis_config(test1_filename,
