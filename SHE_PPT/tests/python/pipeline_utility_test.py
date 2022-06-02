@@ -517,3 +517,8 @@ class TestUtility(SheTestCase):
         assert new_config["want_enum_list_from_enum_list_or_str"] == [GlobalConfigKeys.PIP_PLACEHOLDER_0,
                                                                       GlobalConfigKeys.PIP_PLACEHOLDER_1]
         assert new_config["want_str_from_enum_list_or_str"] == "N/A"
+
+        # Check that nothing goes wrong if we try to convert again
+        new_new_config: Dict[Union[str, ConfigKeys], Any] = _convert_config_types(pipeline_config = new_config,
+                                                                                  d_types = d_types)
+        assert new_new_config == new_config
