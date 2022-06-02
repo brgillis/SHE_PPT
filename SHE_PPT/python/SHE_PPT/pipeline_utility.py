@@ -880,8 +880,8 @@ def _get_converted_type(value: str, desired_type: Type):
             return value
         try:
             return desired_type(value)
-        except TypeError:
-            raise TypeError(f"Value {value} cannot be converted to type {desired_type}.")
+        except (TypeError, ValueError) as e:
+            raise type(e)(f"Value {value} cannot be converted to type {desired_type}.")
 
     # Special handling for certain types
     if desired_type is bool:

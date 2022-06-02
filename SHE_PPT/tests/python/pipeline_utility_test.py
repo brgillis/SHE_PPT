@@ -36,7 +36,7 @@ from SHE_PPT.constants.config import (AnalysisConfigKeys, CTI_GAL_VALIDATION_HEA
                                       ValidationConfigKeys, )
 from SHE_PPT.file_io import write_listfile, write_xml_product
 from SHE_PPT.pipeline_utility import (_coerce_parsed_args_to_dict, _convert_config_types, _convert_list_type,
-                                      _convert_with_backup_type, archive_product,
+                                      _convert_with_backup_type, _get_converted_type, archive_product,
                                       get_conditional_product,
                                       get_cti_gal_value,
                                       get_global_enum, get_global_value, get_shear_bias_value, get_task_value,
@@ -551,3 +551,9 @@ class TestUtility(SheTestCase):
                                       enum_key = GlobalConfigKeys.PIP_PLACEHOLDER_0,
                                       primary_type = GlobalConfigKeys,
                                       backup_type = int)
+
+        # Convert similar type if possible
+        x: Union[str, int] = 11
+        assert _get_converted_type(x, float) == 11.0
+        with pytest.raises(TypeError):
+            _get_converted_type(x, list)
