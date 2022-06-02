@@ -150,7 +150,8 @@ class TestUtility(SheTestCase):
 
         test_analysis_cline_args_dict = {AnalysisConfigKeys.ES_METHODS     : "methods",
                                          AnalysisConfigKeys.OID_BATCH_SIZE : "batch_size",
-                                         AnalysisConfigKeys.OID_MAX_BATCHES: None}
+                                         AnalysisConfigKeys.OID_MAX_BATCHES: None,
+                                         GlobalConfigKeys.PIP_PLACEHOLDER_1: None}
 
         write_analysis_config(test_analysis_dict, test1_filename, workdir = self.workdir)
         analysis_config_product = create_dpd_she_analysis_config(test1_filename)
