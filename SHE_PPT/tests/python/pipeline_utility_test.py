@@ -197,6 +197,18 @@ class TestUtility(SheTestCase):
         assert read_dict_with_cline_args[AnalysisConfigKeys.OID_MAX_BATCHES] == 3
         assert read_dict_with_cline_args[GlobalConfigKeys.PIP_PROFILE] is True
 
+        # Test creation with just cline_args and defaults
+        read_dict_from_cline_args_and_defaults = read_analysis_config(None,
+                                                                      d_cline_args = test_analysis_cline_args_dict,
+                                                                      parsed_args = {"batch_size": "10",
+                                                                                     "methods"   : None},
+                                                                      d_defaults = {},
+                                                                      d_types = test_analysis_type_dict)
+        assert read_dict_with_cline_args[AnalysisConfigKeys.ES_METHODS] == [ShearEstimationMethods.KSB]
+        assert read_dict_with_cline_args[AnalysisConfigKeys.OID_BATCH_SIZE] == 10
+        assert read_dict_with_cline_args[AnalysisConfigKeys.OID_MAX_BATCHES] == 3
+        assert read_dict_with_cline_args[GlobalConfigKeys.PIP_PROFILE] is True
+
         # Test we get out of the file what we put in, for each type of configuration file
 
         test_reconciliation_dict = {ReconciliationConfigKeys.REC_METHOD: "Best"}
