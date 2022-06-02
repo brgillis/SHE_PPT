@@ -42,6 +42,7 @@ from SHE_PPT.pipeline_utility import (_coerce_parsed_args_to_dict, _convert_conf
                                       read_reconciliation_config,
                                       read_scaling_config, write_analysis_config,
                                       write_calibration_config, write_reconciliation_config, )
+from SHE_PPT.products.she_analysis_config import create_dpd_she_analysis_config
 from SHE_PPT.testing.mock_mer_final_cat import MockMFCGalaxyTableGenerator
 from SHE_PPT.testing.utility import SheTestCase
 
@@ -126,7 +127,10 @@ class TestUtility(SheTestCase):
         assert os.path.exists(os.path.join(qualified_subdir_name, table_filename_2))
 
     def test_rw_config(self):
-        test1_filename = "test1.txt"
+
+        # Set up files to test reading in
+        test1_filename = "data/test1.txt"
+        product_filename = "test_product.xml"
 
         lf0_filename = "empty_listfile.json"
         lf1_filename = "one_listfile.json"
@@ -141,10 +145,12 @@ class TestUtility(SheTestCase):
                                    AnalysisConfigKeys.OID_BATCH_SIZE: int}
 
         write_analysis_config(test_analysis_dict, test1_filename, workdir = self.workdir)
+        analysis_config_product = create_dpd_she_analysis_config(test1_filename)
+        write_xml_product(analysis_config_product, product_filename, workdir = self.workdir)
 
         write_listfile(os.path.join(self.workdir, lf0_filename), [])
         write_listfile(os.path.join(self.workdir, lf1_filename), [test1_filename])
-        write_listfile(os.path.join(self.workdir, lf2_filename), [test1_filename, test1_filename])
+        write_listfile(os.path.join(self.workdir, lf2_filename), [test1_filename, product_filename])
 
         read_dict1 = read_analysis_config(test1_filename,
                                           workdir = self.workdir,
@@ -172,10 +178,6 @@ class TestUtility(SheTestCase):
         test_reconciliation_dict = {ReconciliationConfigKeys.REC_METHOD: "Best"}
 
         write_reconciliation_config(test_reconciliation_dict, test1_filename, workdir = self.workdir)
-
-        write_listfile(os.path.join(self.workdir, lf0_filename), [])
-        write_listfile(os.path.join(self.workdir, lf1_filename), [test1_filename])
-        write_listfile(os.path.join(self.workdir, lf2_filename), [test1_filename, test1_filename])
 
         read_dict1 = read_reconciliation_config(test1_filename, workdir = self.workdir)
 
