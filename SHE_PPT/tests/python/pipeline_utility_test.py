@@ -281,6 +281,12 @@ class TestUtility(SheTestCase):
         write_scaling_config({}, "test_scaling_config.txt", workdir = self.workdir)
         assert read_scaling_config(None, workdir = self.workdir) == {}
 
+        # Test the Global config keys are recognized even if not passed explicitly
+        read_dict_global = read_config(None,
+                                       config_keys = (AnalysisConfigKeys,),
+                                       d_defaults = {GlobalConfigKeys.PIP_PROFILE: True}, )
+        assert read_dict_global[GlobalConfigKeys.PIP_PROFILE] is True
+
         # Check that we get a ValueError if we provide a config key from the wrong ConfigKeys Enum
         with pytest.raises(ValueError):
             _ = read_analysis_config(None,
