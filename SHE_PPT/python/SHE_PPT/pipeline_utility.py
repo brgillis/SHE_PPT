@@ -198,7 +198,7 @@ def archive_product(product_filename: str,
         else:
             logger.warning("Product %s has no 'get_all_filenames' method.", qualified_filename)
 
-    except Exception as e:
+    except IOError as e:
         logger.warning(("Failsafe exception block triggered when trying to save product "
                         "in archive. Exception was: %s"), str(e))
 
