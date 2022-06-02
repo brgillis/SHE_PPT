@@ -287,13 +287,25 @@ class TestUtility(SheTestCase):
                                       ValidationConfigKeys.VAL_COLOUR_BIN_LIMITS: np.ndarray,
                                       }
 
+        test_validation_defaults_dict = {ValidationConfigKeys.CG_SNR_BIN_LIMITS    : np.array([0, 20, 40]),
+                                         ValidationConfigKeys.CG_BG_BIN_LIMITS     : np.array([20, 40, 60]),
+                                         ValidationConfigKeys.CG_COLOUR_BIN_LIMITS : np.array([40, 60, 80]),
+                                         ValidationConfigKeys.SBV_SNR_BIN_LIMITS   : np.array([0, 30, 60]),
+                                         ValidationConfigKeys.SBV_BG_BIN_LIMITS    : np.array([30, 60, 90]),
+                                         ValidationConfigKeys.SBV_COLOUR_BIN_LIMITS: np.array([60, 90, 120]),
+                                         ValidationConfigKeys.VAL_SNR_BIN_LIMITS   : np.array([0, 10, 20]),
+                                         ValidationConfigKeys.VAL_BG_BIN_LIMITS    : np.array([10, 20, 30]),
+                                         ValidationConfigKeys.VAL_COLOUR_BIN_LIMITS: np.array([20, 30, 40]),
+                                         }
+
         write_config(test_validation_dict, test1_filename, workdir = self.workdir, config_keys = ValidationConfigKeys)
 
         # Read in and test with no task head
         read_dict_no_task_head = read_config(test1_filename,
                                              workdir = self.workdir,
                                              config_keys = ValidationConfigKeys,
-                                             d_types = test_validation_types_dict)
+                                             d_types = test_validation_types_dict,
+                                             d_defaults = test_validation_defaults_dict)
         assert np.all(read_dict_no_task_head[ValidationConfigKeys.VAL_SNR_BIN_LIMITS] == np.array([0, 1, 2]))
         assert np.all(read_dict_no_task_head[ValidationConfigKeys.VAL_BG_BIN_LIMITS] == np.array([1, 2, 3]))
         assert np.all(read_dict_no_task_head[ValidationConfigKeys.VAL_COLOUR_BIN_LIMITS] == np.array([2, 3, 4]))
@@ -303,6 +315,7 @@ class TestUtility(SheTestCase):
                                         workdir = self.workdir,
                                         config_keys = ValidationConfigKeys,
                                         d_types = test_validation_types_dict,
+                                        d_defaults = test_validation_defaults_dict,
                                         task_head = CTI_GAL_VALIDATION_HEAD)
         assert np.all(read_dict_cti_gal[ValidationConfigKeys.VAL_SNR_BIN_LIMITS] == np.array([0, 2, 4]))
         assert np.all(read_dict_cti_gal[ValidationConfigKeys.VAL_BG_BIN_LIMITS] == np.array([1, 2, 3]))
@@ -313,6 +326,7 @@ class TestUtility(SheTestCase):
                                     workdir = self.workdir,
                                     config_keys = ValidationConfigKeys,
                                     d_types = test_validation_types_dict,
+                                    d_defaults = test_validation_defaults_dict,
                                     task_head = SHEAR_BIAS_VALIDATION_HEAD)
         assert np.all(read_dict_sbv[ValidationConfigKeys.VAL_SNR_BIN_LIMITS] == np.array([0, 3, 6]))
         assert np.all(read_dict_sbv[ValidationConfigKeys.VAL_BG_BIN_LIMITS] == np.array([1, 2, 3]))

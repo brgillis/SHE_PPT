@@ -522,7 +522,8 @@ def _read_config_line(config_line: str,
     enum_key = _check_key_is_valid(key_string, config_keys)
 
     # Skip if this key has already been set by its task version
-    if (enum_key in d_global_task_keys) and (enum_key in config_dict):
+    if ((enum_key in d_global_task_keys) and (enum_key in config_dict) and not is_any_type_of_none(
+            config_dict[enum_key])):
         return
 
     # In case the value contains an = char
