@@ -216,7 +216,7 @@ def read_analysis_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
 
 
 def read_calibration_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
-    """ Reads in a configuration file for the SHE Calibration pipeline to a dictionary.
+    """Reads in a configuration file for the SHE Calibration pipeline to a dictionary.
 
     Parameters
     ----------
@@ -428,7 +428,7 @@ def _read_config_file(qualified_config_filename: str,
                       d_defaults: Dict[ConfigKeys, Any],
                       d_types: Optional[Dict[str, Type]] = None,
                       task_head: Optional[str] = None, ) -> Dict[ConfigKeys, Any]:
-    """ Private implementation of reading in a configuration text file.
+    """Private implementation of reading in a configuration text file.
     """
 
     with open(qualified_config_filename, 'r') as config_file:
@@ -561,7 +561,7 @@ def _check_for_task_key(config_keys: Sequence[EnumMeta],
                         key_string: str,
                         task_head: str) -> ConfigKeys:
     """Private function to handle sorting out overriding of a global key with a task-specific key when reading in a
-       pipeline config.
+    pipeline config.
     """
     # Check if this is a valid task-specific key
     global_key_string = get_global_value(key_string, task_head)
