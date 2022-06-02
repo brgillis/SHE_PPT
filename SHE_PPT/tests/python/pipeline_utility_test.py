@@ -27,12 +27,16 @@ import numpy as np
 import pytest
 
 from SHE_PPT import products
-from SHE_PPT.constants.shear_estimation_methods import ShearEstimationMethods
+from SHE_PPT.constants.classes import ShearEstimationMethods
+from SHE_PPT.constants.config import (AnalysisConfigKeys, CTI_GAL_VALIDATION_HEAD, CalibrationConfigKeys,
+                                      GlobalConfigKeys,
+                                      ReconciliationConfigKeys, ValidationConfigKeys, )
 from SHE_PPT.file_io import write_listfile, write_xml_product
-from SHE_PPT.pipeline_utility import (AnalysisConfigKeys, CalibrationConfigKeys, GlobalConfigKeys,
-                                      ReconciliationConfigKeys, _convert_config_types, get_conditional_product,
+from SHE_PPT.pipeline_utility import (_convert_config_types, get_conditional_product, get_cti_gal_value,
+                                      get_global_enum, get_global_value, get_shear_bias_value, get_task_value,
                                       read_analysis_config, read_calibration_config, read_reconciliation_config,
-                                      write_analysis_config, write_calibration_config, write_reconciliation_config, )
+                                      write_analysis_config,
+                                      write_calibration_config, write_reconciliation_config, )
 from SHE_PPT.testing.utility import SheTestCase
 
 
@@ -44,6 +48,36 @@ class TestUtility(SheTestCase):
         """Set up data used for multiple unit tests.
         """
         pass
+
+    def test_get_task_value(self):
+        """Unit test of the `get_task_value` function and its specialized versions.
+        """
+
+        # Test with providing the enum
+        assert get_task_value(global_enum = ValidationConfigKeys.VAL_SNR_BIN_LIMITS,
+                              task_head = CTI_GAL_VALIDATION_HEAD) == ValidationConfigKeys.CG_SNR_BIN_LIMITS.value
+
+        # Test with providing the enum's value
+        assert get_task_value(global_enum = ValidationConfigKeys.VAL_SNR_BIN_LIMITS.value,
+                              task_head = CTI_GAL_VALIDATION_HEAD) == ValidationConfigKeys.CG_SNR_BIN_LIMITS.value
+
+        # Test with specialized functions
+        assert (get_cti_gal_value(global_enum = ValidationConfigKeys.VAL_SNR_BIN_LIMITS.value) ==
+                ValidationConfigKeys.CG_SNR_BIN_LIMITS.value)
+        assert (get_shear_bias_value(global_enum = ValidationConfigKeys.VAL_SNR_BIN_LIMITS.value) ==
+                ValidationConfigKeys.SB_SNR_BIN_LIMITS.value)
+
+    def test_get_global_enum_value(self):
+        """Unit test of the `get_global_enum` and `get_global_value` functions
+        """
+
+        # Test with providing the enum
+        assert get_global_enum(task_value = ValidationConfigKeys.CG_SNR_BIN_LIMITS.value,
+                               task_head = CTI_GAL_VALIDATION_HEAD) == ValidationConfigKeys.VAL_SNR_BIN_LIMITS
+
+        # Test with providing the enum's value
+        assert get_global_value(task_value = ValidationConfigKeys.CG_SNR_BIN_LIMITS.value,
+                                task_head = CTI_GAL_VALIDATION_HEAD) == ValidationConfigKeys.VAL_SNR_BIN_LIMITS.value
 
     def test_rw_config(self):
         test1_filename = "test1.txt"
@@ -202,7 +236,7 @@ class TestUtility(SheTestCase):
             get_conditional_product(lf2_filename, workdir = self.workdir)
 
     def test_convert_config_types(self):
-        """ Runs tests of the convert_config_types function.
+        """Runs tests of the convert_config_typesfunction.
         """
 
         # Make mock input data
