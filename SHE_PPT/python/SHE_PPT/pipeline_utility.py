@@ -32,9 +32,7 @@ import numpy as np
 from .constants.classes import AllowedEnum
 from .constants.config import (AnalysisConfigKeys, CTI_GAL_VALIDATION_HEAD, CalibrationConfigKeys, ConfigKeys,
                                GlobalConfigKeys, ReconciliationConfigKeys, SHEAR_BIAS_VALIDATION_HEAD,
-                               ScalingExperimentsConfigKeys,
-                               VALIDATION_HEAD,
-                               ValidationConfigKeys, )
+                               ScalingExperimentsConfigKeys, VALIDATION_HEAD, ValidationConfigKeys, )
 from .file_io import (DEFAULT_WORKDIR, SheFileReadError, find_file, get_qualified_filename, read_listfile,
                       read_xml_product, )
 from .logging import getLogger
