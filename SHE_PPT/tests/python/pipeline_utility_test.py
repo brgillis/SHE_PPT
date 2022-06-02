@@ -42,7 +42,8 @@ from SHE_PPT.pipeline_utility import (_coerce_parsed_args_to_dict, _convert_conf
                                       read_analysis_config, read_calibration_config, read_config,
                                       read_reconciliation_config,
                                       read_scaling_config, write_analysis_config,
-                                      write_calibration_config, write_config, write_reconciliation_config, )
+                                      write_calibration_config, write_config, write_reconciliation_config,
+                                      write_scaling_config, )
 from SHE_PPT.products.she_analysis_config import create_dpd_she_analysis_config
 from SHE_PPT.testing.mock_mer_final_cat import MockMFCGalaxyTableGenerator
 from SHE_PPT.testing.utility import SheTestCase
@@ -276,7 +277,8 @@ class TestUtility(SheTestCase):
         assert read_dict2[AnalysisConfigKeys.REMAP_NUM_SWARP_THREADS_EXP] == 4
         assert "ignore this" not in read_dict2
 
-        # Test the `read_scaling_config` function simply - the more complicated paths are covered by other tests above
+        # Test the `read_scaling_config` functions simply - the more complicated paths are covered by other tests above
+        write_scaling_config({}, "test_scaling_config.txt", workdir = self.workdir)
         assert read_scaling_config(None, workdir = self.workdir) == {}
 
         # Check that we get a ValueError if we provide a config key from the wrong ConfigKeys Enum
