@@ -36,6 +36,7 @@ Miscellaneous
 -------------
 - Version number is now determined in the code directly from what's in the CMakeLists.txt file, and no longer needs to
   be maintained separately
+- General cleanup and expansion of unit testing for the SHE_PPT.file_io module
 
 
 Changes in v8.12
