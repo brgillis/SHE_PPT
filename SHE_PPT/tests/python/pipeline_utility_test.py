@@ -27,31 +27,19 @@ import numpy as np
 import pytest
 
 from SHE_PPT import products
+from SHE_PPT.constants.config import D_GLOBAL_CONFIG_DEFAULTS
 from SHE_PPT.constants.shear_estimation_methods import ShearEstimationMethods
 from SHE_PPT.file_io import write_listfile, write_xml_product
 from SHE_PPT.pipeline_utility import (AnalysisConfigKeys, CalibrationConfigKeys, GlobalConfigKeys,
                                       ReconciliationConfigKeys, convert_config_types, get_conditional_product,
                                       read_analysis_config, read_calibration_config, read_reconciliation_config,
                                       write_analysis_config, write_calibration_config, write_reconciliation_config, )
+from SHE_PPT.testing.utility import SheTestCase
 
 
-class TestUtility:
+class TestUtility(SheTestCase):
+    """ Unit tests for functions and classes in the SHE_PPT.pipeline_utility module.
     """
-
-
-    """
-
-    @classmethod
-    def setup_class(cls):
-        return
-
-    @classmethod
-    def teardown_class(cls):
-        return
-
-    @pytest.fixture(autouse = True)
-    def setup(self, tmpdir):
-        self.workdir = tmpdir.strpath
 
     def test_rw_config(self):
         test1_filename = "test1.txt"
@@ -265,3 +253,21 @@ class TestUtility:
         assert new_config["want_enum_list_from_enum_list_or_str"] == [GlobalConfigKeys.PIP_PLACEHOLDER_0,
                                                                       GlobalConfigKeys.PIP_PLACEHOLDER_1]
         assert new_config["want_str_from_enum_list_or_str"] == "N/A"
+
+    def test_pipeline_config_defaults(self):
+        """Test that default values for the pipeline config are set as expected.
+
+        The creation of `args` and `d_args` attributes of this class is handled automaticatlly by the parent
+        `SheTestCase` class, so we only need to access them and check here.
+        """
+
+        for key in GlobalConfigKeys:
+            # Skip any placeholder keys
+            if "PLACEHOLDER" in key.name:
+                continue
+
+            # Check that a default value is provided for the key
+            assert key in D_GLOBAL_CONFIG_DEFAULTS
+
+            # Check that the default value is properly set
+            assert self.pipeline_config[key] == D_GLOBAL_CONFIG_DEFAULTS[key]

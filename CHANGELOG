@@ -30,12 +30,15 @@ New Features
 
 New config features
 -------------------
-
+- Added support for pipeline config option "SHE_Pipeline_disable_failsafe", which can be used by other projects to
+  disably any failsafe blocks they've implemented
 
 Miscellaneous
 -------------
 - Version number is now determined in the code directly from what's in the CMakeLists.txt file, and no longer needs to
   be maintained separately
+- Added unit tests of setting default values in pipeline_config and of the SheArgumentParser class
+- Fully documented SheArgumentParser class
 - General cleanup and expansion of unit testing for the SHE_PPT.utility module
 
 
