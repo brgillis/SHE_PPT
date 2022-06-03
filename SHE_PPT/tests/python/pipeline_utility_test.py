@@ -565,3 +565,21 @@ class TestUtility(SheTestCase):
 
         # Convert None to empty array
         assert np.all(_get_converted_type("None", np.ndarray) == np.array([]))
+
+    def test_pipeline_config_defaults(self):
+        """Test that default values for the pipeline config are set as expected.
+
+        The creation of `args` and `d_args` attributes of this class is handled automaticatlly by the parent
+        `SheTestCase` class, so we only need to access them and check here.
+        """
+
+        for key in GlobalConfigKeys:
+            # Skip any placeholder keys
+            if "PLACEHOLDER" in key.name:
+                continue
+
+            # Check that a default value is provided for the key
+            assert key in D_GLOBAL_CONFIG_DEFAULTS
+
+            # Check that the default value is properly set
+            assert self.pipeline_config[key] == D_GLOBAL_CONFIG_DEFAULTS[key]
