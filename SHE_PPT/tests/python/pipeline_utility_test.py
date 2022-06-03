@@ -31,7 +31,7 @@ import pytest
 from SHE_PPT import products
 from SHE_PPT.constants.classes import ShearEstimationMethods
 from SHE_PPT.constants.config import (AnalysisConfigKeys, CTI_GAL_VALIDATION_HEAD, CalibrationConfigKeys,
-                                      ConfigKeys, GlobalConfigKeys,
+                                      ConfigKeys, D_GLOBAL_CONFIG_DEFAULTS, GlobalConfigKeys,
                                       PSF_RES_SP_VALIDATION_HEAD, ReconciliationConfigKeys, SHEAR_BIAS_VALIDATION_HEAD,
                                       ValidationConfigKeys, )
 from SHE_PPT.file_io import write_listfile, write_xml_product
