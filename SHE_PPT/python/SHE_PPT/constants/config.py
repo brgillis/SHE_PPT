@@ -25,6 +25,7 @@ from typing import Any, Dict, Tuple, Type, Union
 
 # Task name for generic config keys
 from .classes import AllowedEnum
+from ..argument_parser import CA_DISABLE_FAILSAFE, CA_PROFILE
 
 PIPELINE_HEAD = "SHE_Pipeline_"
 
@@ -42,6 +43,7 @@ class GlobalConfigKeys(ConfigKeys):
     # Pipeline-wide options
 
     PIP_PROFILE = PIPELINE_HEAD + "profile"
+    PIP_DISABLE_FAILSAFE = PIPELINE_HEAD + "disable_failsafe"
 
     # Placeholder options
 
@@ -390,15 +392,18 @@ class CalibrationConfigKeys(ConfigKeys):
 
 # Set up dicts for pipeline config defaults and types
 D_GLOBAL_CONFIG_DEFAULTS: Dict[ConfigKeys, Any] = {
-    GlobalConfigKeys.PIP_PROFILE: False,
+    GlobalConfigKeys.PIP_PROFILE         : False,
+    GlobalConfigKeys.PIP_DISABLE_FAILSAFE: False,
     }
 
 D_GLOBAL_CONFIG_TYPES: Dict[ConfigKeys, Union[Type, Tuple[Type, Type]]] = {
-    GlobalConfigKeys.PIP_PROFILE: bool,
+    GlobalConfigKeys.PIP_PROFILE         : bool,
+    GlobalConfigKeys.PIP_DISABLE_FAILSAFE: bool,
     }
 
 D_GLOBAL_CONFIG_CLINE_ARGS: Dict[ConfigKeys, str] = {
-    GlobalConfigKeys.PIP_PROFILE: "profile",
+    GlobalConfigKeys.PIP_PROFILE         : CA_PROFILE,
+    GlobalConfigKeys.PIP_DISABLE_FAILSAFE: CA_DISABLE_FAILSAFE,
     }
 
 
