@@ -367,6 +367,21 @@ def check_data_quality(gal_stamp: SHEImage,
     flags = 0
 
     # Check for issues with the PSF
+    flags |= _get_psf_quality_flags(psf_stamp)
+
+    # Now check for issues with the galaxy image
+
+    flags |= _get_galaxy_quality_flags(gal_stamp, stacked)
+
+    return flags
+
+
+def _get_psf_quality_flags(psf_stamp: SHEImage) -> int:
+    """Private function to check a PSF stamp for data quality issues and return a set of flags for it.
+    """
+
+    flags = 0
+
     if psf_stamp is None or psf_stamp.data is None:
         flags |= she_flags.flag_no_psf
 
@@ -374,7 +389,14 @@ def check_data_quality(gal_stamp: SHEImage,
     if (good_psf_data.sum() == 0) or ((good_psf_data < -0.01 * good_psf_data.max()).any()):
         flags |= she_flags.flag_corrupt_psf
 
-    # Now check for issues with the galaxy image
+    return flags
+
+
+def _get_galaxy_quality_flags(gal_stamp, stacked):
+    """Private function to check a galaxy stamp for data quality issues and return a set of flags for it.
+    """
+
+    flags = 0
 
     # Check if the mask exists
     if gal_stamp.mask is None:
@@ -411,14 +433,11 @@ def check_data_quality(gal_stamp: SHEImage,
     # Check how much of the data is unmasked, and if we have enough
     unmasked_count = ravelled_antimask.sum()
     total_count = len(ravelled_antimask)
-
     frac_unmasked = float(unmasked_count) / total_count
-
     if frac_unmasked < 0.25:
         flags |= she_flags.flag_insufficient_data
 
     # Check for missing or corrupt data
-
     if stacked:
         data = gal_stamp.data + gal_stamp.background_map
     else:
