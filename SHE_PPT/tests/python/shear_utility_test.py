@@ -2,7 +2,7 @@
 
     Created 14 May 2019
 
-    Unit tests relating to shear utility functions
+    Unit tests of functions in the SHE_PPT.shear_utility module
 """
 
 __updated__ = "2021-08-12"
@@ -20,37 +20,28 @@ __updated__ = "2021-08-12"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-import os
 from copy import deepcopy
 
 import galsim
 import numpy as np
-import pytest
 from astropy.io import fits
 
-from ElementsServices.DataSync import DataSync
-from SHE_PPT import mdb
 from SHE_PPT.constants.fits import GAIN_LABEL, SCALE_LABEL
-from SHE_PPT.constants.test_data import (MDB_PRODUCT_FILENAME, SYNC_CONF, TEST_DATA_LOCATION, TEST_FILES_MDB)
 from SHE_PPT.she_image import SHEImage
 from SHE_PPT.shear_utility import (ShearEstimate, correct_for_wcs_shear_and_rotation,
                                    uncorrect_for_wcs_shear_and_rotation, )
+from SHE_PPT.testing.utility import SheTestCase
 
 
-class TestCase:
+class TestCase(SheTestCase):
     """ Test case class for shear utility tests
     """
 
-    @pytest.fixture(autouse = True)
-    def setup(self):
+    def setup_workdir(self):
         """ Set up a default galaxy stamp and PSF stamp for testing.
         """
 
-        sync = DataSync(SYNC_CONF, TEST_FILES_MDB)
-        sync.download()
-        mdb_filename = sync.absolutePath(os.path.join(TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME))
-
-        mdb.init(mdb_files = mdb_filename)
+        self._download_mdb()
 
         self.sky_var = 0
         self.bkg_level = 1000
@@ -77,7 +68,8 @@ class TestCase:
         self.ss_psf_image = galsim.Image(self.psf_xs, self.psf_ys, scale = self.psf_pixel_scale)
         self.psf.drawImage(self.ss_psf_image, use_true_center = False)
 
-        self.bkg_image = galsim.Image(self.xs, self.ys, scale = self.gal_pixel_scale) + self.bkg_level
+        self.bkg_image = galsim.Image(self.xs, self.ys, scale = self.gal_pixel_scale)
+        self.bkg_image += self.bkg_level
 
         self.psf_stamp = SHEImage(self.ss_psf_image.array.transpose())
         self.psf_stamp.add_default_header()
@@ -170,8 +162,8 @@ class TestCase:
                 (45 * galsim.degrees, 0.3, -0.5, gerr, gerr, 0.),
                 (22.5 * galsim.degrees, 0.565685424949238, -0.14142135623730948, gerr, gerr, 0)):
 
-            sintheta = p2w_theta.sin()
-            costheta = p2w_theta.cos()
+            sin_theta = p2w_theta.sin()
+            cos_theta = p2w_theta.cos()
 
             # Expected values are easy with a 45-degree rotation
             gal_shear = galsim.Shear(g1 = 0.5, g2 = 0.3)
@@ -188,8 +180,8 @@ class TestCase:
 
             # Create a mock SHEImage stamp for testing
             gs_header = galsim.FitsHeader()
-            wcs = galsim.AffineTransform(dudx = costheta, dudy = -sintheta,
-                                         dvdx = sintheta, dvdy = costheta)
+            wcs = galsim.AffineTransform(dudx = cos_theta, dudy = -sin_theta,
+                                         dvdx = sin_theta, dvdy = cos_theta)
             wcs.writeToFitsHeader(gs_header, galsim.BoundsI(1, 1, 2, 2))
             ap_header = fits.Header(gs_header.header)
             mock_stamp = SHEImage(data = np.zeros((1, 1)), offset = np.array((0., 0.)),
@@ -231,15 +223,15 @@ class TestCase:
 
         p2w_theta = 45 * galsim.degrees
 
-        sintheta = p2w_theta.sin()
-        costheta = p2w_theta.cos()
+        sin_theta = p2w_theta.sin()
+        cos_theta = p2w_theta.cos()
 
         gal_shear_rotated = galsim.Shear(g1 = 0.3, g2 = -0.5)
 
         shear_matrix = np.array([[1 + wcs_shear.g1, wcs_shear.g2],
                                  [wcs_shear.g2, 1 - wcs_shear.g1]])
-        rotation_matrix = np.array([[costheta, -sintheta],
-                                    [sintheta, costheta]])
+        rotation_matrix = np.array([[cos_theta, -sin_theta],
+                                    [sin_theta, cos_theta]])
 
         transform_matrix = 1.0 / np.sqrt(1 - wcs_shear.g1 ** 2 - wcs_shear.g2 ** 2) * shear_matrix @ rotation_matrix
 
