@@ -35,6 +35,8 @@ from scipy.optimize import minimize
 from . import flags as she_flags
 from .she_image import SHEImage
 
+REQUIRED_FRAC_UNMASKED = 0.25
+
 MSG_TOO_BIG_SHEAR = "Requested shear exceeds 1"
 
 
@@ -503,7 +505,7 @@ def _get_galaxy_mask_flags(gal_stamp):
     unmasked_count = ravelled_antimask.sum()
     total_count = len(ravelled_antimask)
     frac_unmasked = float(unmasked_count) / total_count
-    if frac_unmasked < 0.25:
+    if frac_unmasked < REQUIRED_FRAC_UNMASKED:
         flags |= she_flags.flag_insufficient_data
 
     return flags, ravelled_antimask
