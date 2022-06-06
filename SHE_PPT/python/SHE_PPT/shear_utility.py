@@ -155,11 +155,9 @@ def correct_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
     g_pix_polar = np.array([[shear_estimate.g1], [shear_estimate.g2]])
 
     # We first have to rotate into the proper frame
-    sin_theta = w2p_theta.sin()
-    cos_theta = w2p_theta.cos()
 
     # Get the reverse rotation matrix
-    p2w_rotation_matrix = np.array([[cos_theta, sin_theta], [-sin_theta, cos_theta]])
+    p2w_rotation_matrix = _get_rot_matrix(-w2p_theta)
 
     double_p2w_rotation_matrix = p2w_rotation_matrix @ p2w_rotation_matrix
     g_world_polar = double_p2w_rotation_matrix @ g_pix_polar
@@ -284,11 +282,9 @@ def uncorrect_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
     g_world_polar = np.array([[res_shear.g1], [res_shear.g2]])
 
     # We secondly rotate into the proper frame
-    sin_theta = w2p_theta.sin()
-    cos_theta = w2p_theta.cos()
 
     # Get the rotation matrix
-    w2p_rotation_matrix = np.array([[cos_theta, -sin_theta], [sin_theta, cos_theta]])
+    w2p_rotation_matrix = _get_rot_matrix(w2p_theta)
 
     double_w2p_rotation_matrix = w2p_rotation_matrix @ w2p_rotation_matrix  # 2x2 so it's commutative
     g_pix_polar = double_w2p_rotation_matrix @ g_world_polar
@@ -307,6 +303,16 @@ def uncorrect_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
     shear_estimate.g1_err = np.sqrt(covar_world[0, 0])
     shear_estimate.g2_err = np.sqrt(covar_world[1, 1])
     shear_estimate.g1g2_covar = covar_world[0, 1]
+
+
+def _get_rot_matrix(theta: galsim.Angle) -> np.ndarray:
+    """Private function to get the world-to-pixel rotation matrix for a given WCS rotation angle. The pixel-to-world
+    matrix can also be obtained from this by negating the input angle.
+    """
+    sin_theta = theta.sin()
+    cos_theta = theta.cos()
+    w2p_rotation_matrix = np.array([[cos_theta, -sin_theta], [sin_theta, cos_theta]])
+    return w2p_rotation_matrix
 
 
 def _make_ministamp_from_wcs(wcs: Union[AstropyWCS, GalsimWCS],
