@@ -371,7 +371,7 @@ def check_data_quality(gal_stamp: SHEImage,
 
     # Now check for issues with the galaxy image
 
-    flags |= _get_galaxy_quality_flags(gal_stamp, stacked)
+    flags |= get_galaxy_quality_flags(gal_stamp, stacked)
 
     return flags
 
@@ -402,8 +402,8 @@ def get_psf_quality_flags(psf_stamp: SHEImage) -> int:
     return flags
 
 
-def _get_galaxy_quality_flags(gal_stamp: SHEImage,
-                              stacked: bool) -> int:
+def get_galaxy_quality_flags(gal_stamp: SHEImage,
+                             stacked: bool) -> int:
     """Check a galaxy stamp for data quality issues and return a set of flags for it.
 
     Parameters
