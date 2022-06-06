@@ -364,6 +364,11 @@ class TestCase(SheTestCase):
         # Check with corrupt stamp
         assert get_psf_quality_flags(self.corrupt_psf_stamp) == she_flags.flag_corrupt_psf
 
+        # Check with no PSF
+        psf_no_data = deepcopy(self.psf_stamp)
+        psf_no_data._data = None
+        assert get_psf_quality_flags(psf_no_data) == she_flags.flag_no_psf
+
     def test_get_galaxy_quality_flags(self):
         """Unit test of the `get_galaxy_quality_flags` function.
         """

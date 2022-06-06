@@ -405,6 +405,7 @@ def get_psf_quality_flags(psf_stamp: SHEImage) -> int:
 
     if psf_stamp is None or psf_stamp.data is None:
         flags |= she_flags.flag_no_psf
+        return flags
 
     good_psf_data = psf_stamp.data.ravel()
     if (good_psf_data.sum() == 0) or ((good_psf_data < -0.01 * good_psf_data.max()).any()):
