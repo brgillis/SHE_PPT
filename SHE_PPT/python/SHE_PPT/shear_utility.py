@@ -28,6 +28,7 @@ from typing import Optional, Tuple, Union
 import galsim
 import numpy as np
 # noinspection PyPep8Naming
+from astropy.io import fits
 from astropy.wcs import WCS as AstropyWCS
 from galsim.wcs import BaseWCS as GalsimWCS
 from scipy.optimize import minimize
@@ -244,6 +245,7 @@ def uncorrect_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
         If `wcs` is supplied, the position of the object must be provided, either through `x` and `y` or `ra` and `dec`.
     ra, dec : Optional[float]
         If `wcs` is supplied, the position of the object must be provided, either through `x` and `y` or `ra` and `dec`.
+        `ra` and `dec` may only be provided alongside an astropy WCS in the current implementation.
     """
 
     # Check for valid input
@@ -317,8 +319,13 @@ def _make_ministamp_from_wcs(wcs: Union[AstropyWCS, GalsimWCS],
 
     # Add the WCS to the stamp
     if isinstance(wcs, AstropyWCS):
+        stamp.header = wcs.to_header()
         stamp.wcs = wcs
     elif isinstance(wcs, GalsimWCS):
+        gs_header = galsim.FitsHeader()
+        wcs.writeToFitsHeader(gs_header, galsim.BoundsI(1, 1, 2, 2))
+        stamp.header = fits.Header(gs_header.header)
+        stamp.wcs = AstropyWCS(stamp.header)
         stamp.galsim_wcs = wcs
     else:
         raise TypeError("wcs is of invalid type: " + str(type(wcs)))

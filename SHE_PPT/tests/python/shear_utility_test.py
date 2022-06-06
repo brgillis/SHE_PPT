@@ -30,7 +30,8 @@ from astropy.io import fits
 from SHE_PPT import flags as she_flags
 from SHE_PPT.constants.fits import GAIN_LABEL, SCALE_LABEL
 from SHE_PPT.she_image import SHEImage
-from SHE_PPT.shear_utility import (ShearEstimate, check_data_quality, correct_for_wcs_shear_and_rotation,
+from SHE_PPT.shear_utility import (ShearEstimate, check_data_quality,
+                                   correct_for_wcs_shear_and_rotation,
                                    get_g_from_e, get_galaxy_quality_flags, get_psf_quality_flags,
                                    uncorrect_for_wcs_shear_and_rotation, )
 from SHE_PPT.testing.utility import SheTestCase
@@ -161,7 +162,9 @@ class TestCase(SheTestCase):
 
         # Try correcting the shear estimate
         correct_for_wcs_shear_and_rotation(shear_estimate,
-                                           stamp = mock_stamp)
+                                           wcs = galsim_wcs,
+                                           ra = 0,
+                                           dec = 0, )
 
         assert np.isclose(shear_estimate.g1, gal_shear.g1)
         assert np.isclose(shear_estimate.g2, gal_shear.g2)
@@ -172,7 +175,9 @@ class TestCase(SheTestCase):
 
         # Now test that uncorrecting also works as expected
         uncorrect_for_wcs_shear_and_rotation(shear_estimate,
-                                             stamp = mock_stamp)
+                                             wcs = galsim_wcs,
+                                             ra = 0,
+                                             dec = 0, )
 
         assert np.isclose(shear_estimate.g1, init_shear_estimate.g1)
         assert np.isclose(shear_estimate.g2, init_shear_estimate.g2)
