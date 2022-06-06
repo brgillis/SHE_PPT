@@ -30,7 +30,7 @@ from SHE_PPT import flags as she_flags
 from SHE_PPT.constants.fits import GAIN_LABEL, SCALE_LABEL
 from SHE_PPT.she_image import SHEImage
 from SHE_PPT.shear_utility import (ShearEstimate, check_data_quality, correct_for_wcs_shear_and_rotation,
-                                   get_galaxy_quality_flags, get_psf_quality_flags,
+                                   get_g_from_e, get_galaxy_quality_flags, get_psf_quality_flags,
                                    uncorrect_for_wcs_shear_and_rotation, )
 from SHE_PPT.testing.utility import SheTestCase
 
@@ -103,6 +103,27 @@ class TestCase(SheTestCase):
 
         self.corrupt_gal_stamp = deepcopy(self.gal_stamp)
         self.corrupt_gal_stamp.data[0, 0] = -1e99
+
+    def test_get_g_from_e(self):
+        """Unit test of the `get_g_from_e` function.
+        """
+
+        # Test with some known values at the limits
+        assert get_g_from_e(0, 0) == (0, 0)
+        assert np.allclose(get_g_from_e(1, 0), (1, 0))
+        assert np.allclose(get_g_from_e(0, 1), (0, 1))
+
+        # Test some intermediate values
+        r = 2
+        beta = np.pi / 4
+
+        e = (1 - r ** 2) / (1 + r ** 2)
+        e1, e2 = (e * np.cos(beta), e * np.sin(beta))
+
+        ex_g = (1 - r) / (1 + r)
+        ex_g1, ex_g2 = (ex_g * np.cos(beta), ex_g * np.sin(beta))
+
+        assert np.allclose(get_g_from_e(e1, e2), (ex_g1, ex_g2))
 
     def test_correct_wcs_shear(self):
         """Tests of the calculations for correcting for a WCS shear.

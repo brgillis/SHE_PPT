@@ -75,7 +75,7 @@ def get_g_from_e(e1: float, e2: float) -> Tuple[float, float]:
     """Calculates the g-style shear from e-style, using GalSim's convention of e and g shear, where:
 
     g = (1-r)/(1+r)
-    e = (1+r^2)/(1-r^2)
+    e = (1-r^2)/(1+r^2)
 
     where `r` is the axis ratio of an ellipse sheared by this amount.
 
