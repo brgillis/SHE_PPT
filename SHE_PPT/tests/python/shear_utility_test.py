@@ -26,9 +26,11 @@ import galsim
 import numpy as np
 from astropy.io import fits
 
+from SHE_PPT import flags as she_flags
 from SHE_PPT.constants.fits import GAIN_LABEL, SCALE_LABEL
 from SHE_PPT.she_image import SHEImage
-from SHE_PPT.shear_utility import (ShearEstimate, correct_for_wcs_shear_and_rotation,
+from SHE_PPT.shear_utility import (ShearEstimate, check_data_quality, correct_for_wcs_shear_and_rotation,
+                                   get_galaxy_quality_flags, get_psf_quality_flags,
                                    uncorrect_for_wcs_shear_and_rotation, )
 from SHE_PPT.testing.utility import SheTestCase
 
@@ -94,7 +96,13 @@ class TestCase(SheTestCase):
         self.gal_stamp.header[SCALE_LABEL] = self.observed_gal_image.scale
         self.gal_stamp.header[GAIN_LABEL] = 1.0
 
-        return
+        # Make some "corrupt" galaxy and PSF stamps
+
+        self.corrupt_psf_stamp = deepcopy(self.psf_stamp)
+        self.corrupt_psf_stamp.data[0, 0] = -1e99
+
+        self.corrupt_gal_stamp = deepcopy(self.gal_stamp)
+        self.corrupt_gal_stamp.data[0, 0] = -1e99
 
     def test_correct_wcs_shear(self):
         """Tests of the calculations for correcting for a WCS shear.
@@ -277,3 +285,34 @@ class TestCase(SheTestCase):
         assert np.isclose(shear_estimate.g2_err, init_shear_estimate.g1_err)
         assert np.isclose(shear_estimate.g1g2_covar, init_shear_estimate.g1g2_covar)
         assert np.isclose(shear_estimate.weight, init_shear_estimate.weight)
+
+    def test_get_psf_quality_flags(self):
+        """Unit test of the `get_psf_quality_flags` function.
+        """
+
+        # Check with good stamp
+        assert get_psf_quality_flags(self.psf_stamp) == 0
+
+        # Check with corrupt stamp
+        assert get_psf_quality_flags(self.corrupt_psf_stamp) == she_flags.flag_corrupt_psf
+
+    def test_get_galaxy_quality_flags(self):
+        """Unit test of the `get_galaxy_quality_flags` function.
+        """
+
+        # Check with good stamp
+        assert get_galaxy_quality_flags(self.gal_stamp, stacked = False) == 0
+
+        # Check with corrupt stamp
+        assert get_galaxy_quality_flags(self.corrupt_gal_stamp, stacked = False) == she_flags.flag_corrupt_science_image
+
+    def test_check_data_quality(self):
+        """Unit test of the `check_data_quality` function.
+        """
+
+        # Check with good stamp
+        assert check_data_quality(self.gal_stamp, self.psf_stamp) == 0
+
+        # Check with corrupt stamp
+        ex_corrupt_flags = she_flags.flag_corrupt_psf | she_flags.flag_corrupt_science_image
+        assert check_data_quality(self.corrupt_gal_stamp, self.corrupt_psf_stamp) == ex_corrupt_flags
