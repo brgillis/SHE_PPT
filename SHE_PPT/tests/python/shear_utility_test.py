@@ -186,39 +186,42 @@ class TestCase(SheTestCase):
         assert np.isclose(shear_estimate.g1g2_covar, init_shear_estimate.g1g2_covar)
         assert np.isclose(shear_estimate.weight, init_shear_estimate.weight)
 
-        # Test that we get expected exceptions
+        # Test that we get expected exceptions for each correction function
 
-        # Value error if neither stamp nor WCS is supplied
-        with pytest.raises(ValueError):
-            correct_for_wcs_shear_and_rotation(shear_estimate,
-                                               stamp = None,
-                                               wcs = None)
+        for correction_function in (correct_for_wcs_shear_and_rotation,
+                                    uncorrect_for_wcs_shear_and_rotation):
 
-        # Value error if both stamp and WCS are supplied
-        with pytest.raises(ValueError):
-            correct_for_wcs_shear_and_rotation(shear_estimate,
-                                               stamp = mock_stamp,
-                                               wcs = galsim_wcs,
-                                               x = 0,
-                                               y = 0, )
+            # Value error if neither stamp nor WCS is supplied
+            with pytest.raises(ValueError):
+                correction_function(shear_estimate,
+                                    stamp = None,
+                                    wcs = None)
 
-        # Value error if WCS supplied, but no coordinates supplied
-        with pytest.raises(ValueError):
-            correct_for_wcs_shear_and_rotation(shear_estimate,
-                                               wcs = galsim_wcs, )
+            # Value error if both stamp and WCS are supplied
+            with pytest.raises(ValueError):
+                correction_function(shear_estimate,
+                                    stamp = mock_stamp,
+                                    wcs = galsim_wcs,
+                                    x = 0,
+                                    y = 0, )
 
-        # Shear estimate flagged as bad if supplied shear is too big
-        big_shear_estimate = ShearEstimate(g1 = 1.1, g2 = 0.2)
-        correct_for_wcs_shear_and_rotation(big_shear_estimate,
-                                           stamp = mock_stamp)
-        assert big_shear_estimate.flags & she_flags.flag_too_large_shear
+            # Value error if WCS supplied, but no coordinates supplied
+            with pytest.raises(ValueError):
+                correction_function(shear_estimate,
+                                    wcs = galsim_wcs, )
 
-        # Test we don't hit issues if shear is close to 1
-        near_1_shear_estimate = ShearEstimate(g1 = 0.99, g2 = 0.)
-        correct_for_wcs_shear_and_rotation(near_1_shear_estimate,
-                                           stamp = mock_stamp)
+            # Shear estimate flagged as bad if supplied shear is too big
+            big_shear_estimate = ShearEstimate(g1 = 1.1, g2 = 0.2)
+            correction_function(big_shear_estimate,
+                                stamp = mock_stamp)
+            assert big_shear_estimate.flags & she_flags.flag_too_large_shear
 
-        # Test we get expected error if we can't correct of the distortion
+            # Test we don't hit issues if shear is close to 1
+            near_1_shear_estimate = ShearEstimate(g1 = 0.99, g2 = 0.)
+            correction_function(near_1_shear_estimate,
+                                stamp = mock_stamp)
+
+        # Test we get expected error if we can't correct of the distortion - only for "correct" function
         nan_shear_estimate = ShearEstimate(g1 = np.nan, g2 = np.nan)
         correct_for_wcs_shear_and_rotation(nan_shear_estimate,
                                            stamp = mock_stamp)
