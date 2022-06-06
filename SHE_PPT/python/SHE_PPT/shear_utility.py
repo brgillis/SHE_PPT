@@ -23,6 +23,7 @@ __updated__ = "2021-08-13"
 
 import math
 from dataclasses import dataclass
+from typing import Optional, Tuple, Union
 
 import galsim
 import numpy as np
@@ -30,7 +31,7 @@ from astropy.wcs import WCS as AstropyWCS
 from galsim.wcs import BaseWCS as GalsimWCS
 from scipy.optimize import minimize
 
-from . import flags
+from . import flags as she_flags
 from .she_image import SHEImage
 
 MSG_TOO_BIG_SHEAR = "Requested shear exceeds 1"
@@ -67,7 +68,7 @@ class ShearEstimate():
     weight: float = 1
 
 
-def get_g_from_e(e1, e2):
+def get_g_from_e(e1: float, e2: float) -> Tuple[float, float]:
     """Calculates the g-style shear from e-style, using GalSim's convention of e and g shear, where:
 
     g = (1-r)/(1+r)
@@ -107,13 +108,13 @@ def get_g_from_e(e1, e2):
     return g * math.cos(beta), g * math.sin(beta)
 
 
-def correct_for_wcs_shear_and_rotation(shear_estimate,
-                                       stamp = None,
-                                       wcs = None,
-                                       x = None,
-                                       y = None,
-                                       ra = None,
-                                       dec = None):
+def correct_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
+                                       stamp: Optional[SHEImage] = None,
+                                       wcs: Optional[Union[AstropyWCS, GalsimWCS]] = None,
+                                       x: Optional[float] = None,
+                                       y: Optional[float] = None,
+                                       ra: Optional[float] = None,
+                                       dec: Optional[float] = None) -> None:
     """Corrects (in-place) a shear_estimate object for the shear and rotation information contained within the
     provided WCS (or provided stamp's wcs). Note that this function ignores any flipping, so if e.g. transforming
     from image to sky coordinates, the resulting shear will be in the (-R.A.,Dec.) frame, not (R.A.,Dec.).
@@ -122,51 +123,26 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
     ----------
     shear_estimate : ShearEstimate
         An object containing the shear estimate and errors. This can either be the ShearEstimate class defined in
-        this module, or another class that has the g1, g2, g1_err, g2_err, g1g2_covar, and flags members.
-    stamp : SHEImage
-        A SHEImage, at the center of which is the object in question. Either this or "wcs" must be supplied
-    wcs : an astropy or galsim WCS
-        Either this or "stamp" must be supplied
-    x, y : float
-        If wcs is supplied, the position of the object must be provided, either through x and y or ra and dec
-    ra, dec : float
-        If wcs is supplied, the position of the object must be provided, either through x and y or ra and dec
-
-    Returns
-    -------
-    None
-
-    Side-effects
-    ------------
-    shear_estimate is corrected to be in the (-R.A.,Dec.) frame.
-
+        this module, or another class that has the g1, g2, g1_err, g2_err, g1g2_covar, and flags members. This object
+        will be modified in-place by this function.
+    stamp : Optional[SHEImage]
+        A SHEImage, at the center of which is the object in question. Either this or "wcs" must be supplied.
+    wcs : Optional[Union[AstropyWCS, GalsimWCS]]
+        Either this or "stamp" must be supplied.
+    x, y : Optional[float]
+        If wcs is supplied, the position of the object must be provided, either through x and y or ra and dec.
+    ra, dec : Optional[float]
+        If wcs is supplied, the position of the object must be provided, either through x and y or ra and dec.
     """
 
     # Check for valid input
     if (stamp is None) == (wcs is None):
-        raise ValueError("Exactly one of \"stamp\" and \"wcs\" must be supplied to " +
-                         "correct_for_wcs_shear_and_rotation.")
+        raise ValueError("Exactly one of `stamp` and `wcs` must be supplied to " +
+                         "`correct_for_wcs_shear_and_rotation`.")
 
     # If no stamp is supplied, create a ministamp to work with
     if stamp is None:
-
-        stamp = SHEImage(data = np.zeros((1, 1)))
-
-        # Add the WCS to the stamp
-        if isinstance(wcs, AstropyWCS):
-            stamp.wcs = wcs
-        elif isinstance(wcs, GalsimWCS):
-            stamp.galsim_wcs = wcs
-        else:
-            raise TypeError("wcs is of invalid type: " + str(type(wcs)))
-
-        # Set the offset of the stamp from the provided position
-        if ra is not None and dec is not None:
-            x, y = stamp.world2pix(ra, dec)
-        if x is None or y is None:
-            raise ValueError("x and y or ra and dec must be supplied to correct_for_wcs_shear_and_rotation.")
-
-        stamp.offset = np.array((x, y))
+        stamp = _make_ministamp_from_wcs(wcs, x, y, ra, dec)
 
     # Since we have to solve for the pre-wcs shear, we get the world2pix decomposition and work backwards
     _scale, w2p_shear, w2p_theta, _w2p_flip = stamp.get_world2pix_decomposition()
@@ -175,11 +151,11 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
     g_pix_polar = np.array([[shear_estimate.g1], [shear_estimate.g2]])
 
     # We first have to rotate into the proper frame
-    sintheta = w2p_theta.sin()
-    costheta = w2p_theta.cos()
+    sin_theta = w2p_theta.sin()
+    cos_theta = w2p_theta.cos()
 
     # Get the reverse rotation matrix
-    p2w_rotation_matrix = np.array([[costheta, sintheta], [-sintheta, costheta]])
+    p2w_rotation_matrix = np.array([[cos_theta, sin_theta], [-sin_theta, cos_theta]])
 
     double_p2w_rotation_matrix = p2w_rotation_matrix @ p2w_rotation_matrix  # 2x2 so it's commutative
     g_world_polar = double_p2w_rotation_matrix @ g_pix_polar
@@ -210,12 +186,11 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
         # Shear is greater than 1, so note this in the flags
         shear_estimate.g1 = np.NaN
         shear_estimate.g2 = np.NaN
-        shear_estimate.gerr = np.inf
         shear_estimate.g1_err = np.inf
         shear_estimate.g2_err = np.inf
         shear_estimate.g1g2_covar = np.inf
 
-        shear_estimate.flags |= flags.flag_too_large_shear
+        shear_estimate.flags |= she_flags.flag_too_large_shear
 
         return
 
@@ -243,12 +218,42 @@ def correct_for_wcs_shear_and_rotation(shear_estimate,
         shear_estimate.g2_err = np.inf
         shear_estimate.g1g2_covar = np.inf
 
-        shear_estimate.flags |= flags.flag_cannot_correct_distortion
+        shear_estimate.flags |= she_flags.flag_cannot_correct_distortion
 
         return
 
     shear_estimate.g1 = fitting_result.x[0]
     shear_estimate.g2 = fitting_result.x[1]
+
+
+def _make_ministamp_from_wcs(wcs: Union[AstropyWCS, GalsimWCS],
+                             x: Optional[float],
+                             y: Optional[float],
+                             ra: Optional[float],
+                             dec: Optional[float]) -> SHEImage:
+    """Private function to generate a trivial stamp from a WCS object and a position.
+    """
+
+    # Initialize a trivial stamp
+    stamp = SHEImage(data = np.zeros((1, 1)))
+
+    # Add the WCS to the stamp
+    if isinstance(wcs, AstropyWCS):
+        stamp.wcs = wcs
+    elif isinstance(wcs, GalsimWCS):
+        stamp.galsim_wcs = wcs
+    else:
+        raise TypeError("wcs is of invalid type: " + str(type(wcs)))
+
+    # Set the offset of the stamp from the provided position
+    if ra is not None and dec is not None:
+        x, y = stamp.world2pix(ra, dec)
+    if x is None or y is None:
+        raise ValueError("`x` and `y` or `ra` and `dec` must be supplied to `correct_for_wcs_shear_and_rotation`.")
+
+    stamp.offset = np.array((x, y))
+
+    return stamp
 
 
 def uncorrect_for_wcs_shear_and_rotation(shear_estimate,
@@ -333,7 +338,7 @@ def uncorrect_for_wcs_shear_and_rotation(shear_estimate,
         shear_estimate.g2_err = np.inf
         shear_estimate.g1g2_covar = np.inf
 
-        shear_estimate.flags |= flags.flag_too_large_shear
+        shear_estimate.flags |= she_flags.flag_too_large_shear
 
         return
 
@@ -378,26 +383,26 @@ def check_data_quality(gal_stamp, psf_stamp, stacked = False):
 
     # Check for issues with the PSF
     if psf_stamp is None or psf_stamp.data is None:
-        flag |= flags.flag_no_psf
+        flag |= she_flags.flag_no_psf
 
     good_psf_data = psf_stamp.data.ravel()
     if (good_psf_data.sum() == 0) or ((good_psf_data < -0.01 * good_psf_data.max()).any()):
-        flag |= flags.flag_corrupt_psf
+        flag |= she_flags.flag_corrupt_psf
 
     # Now check for issues with the galaxy image
 
     # Check if the mask exists
     if gal_stamp.mask is None:
 
-        flag |= flags.flag_no_mask
+        flag |= she_flags.flag_no_mask
 
         # Check if we have at least some other data; in which case make mask shaped like it
         have_some_data = False
 
-        for a, missing_flag in ((gal_stamp.data, flags.flag_no_science_image),
-                                (gal_stamp.background_map, flags.flag_no_background_map),
-                                (gal_stamp.noisemap, flags.flag_no_noisemap),
-                                (gal_stamp.segmentation_map, flags.flag_no_segmentation_map),):
+        for a, missing_flag in ((gal_stamp.data, she_flags.flag_no_science_image),
+                                (gal_stamp.background_map, she_flags.flag_no_background_map),
+                                (gal_stamp.noisemap, she_flags.flag_no_noisemap),
+                                (gal_stamp.segmentation_map, she_flags.flag_no_segmentation_map),):
 
             if a is None:
                 flag |= missing_flag
@@ -413,7 +418,7 @@ def check_data_quality(gal_stamp, psf_stamp, stacked = False):
     else:
         # Check for any possible corruption issues in the mask
         if (gal_stamp.mask < 0).any():
-            flag |= flags.flag_corrupt_mask
+            flag |= she_flags.flag_corrupt_mask
 
         ravelled_mask = gal_stamp.boolmask.ravel()
         ravelled_antimask = ~ravelled_mask
@@ -425,7 +430,7 @@ def check_data_quality(gal_stamp, psf_stamp, stacked = False):
     frac_unmasked = float(unmasked_count) / total_count
 
     if frac_unmasked < 0.25:
-        flag |= flags.flag_insufficient_data
+        flag |= she_flags.flag_insufficient_data
 
     # Check for missing or corrupt data
 
@@ -434,14 +439,14 @@ def check_data_quality(gal_stamp, psf_stamp, stacked = False):
     else:
         data = gal_stamp.data
 
-    for a, missing_flag, corrupt_flag in ((data, flags.flag_no_science_image,
-                                           flags.flag_corrupt_science_image),
-                                          (gal_stamp.background_map, flags.flag_no_background_map,
-                                           flags.flag_corrupt_background_map),
-                                          (gal_stamp.noisemap, flags.flag_no_noisemap,
-                                           flags.flag_corrupt_noisemap),
-                                          (gal_stamp.segmentation_map, flags.flag_no_segmentation_map,
-                                           flags.flag_corrupt_segmentation_map),):
+    for a, missing_flag, corrupt_flag in ((data, she_flags.flag_no_science_image,
+                                           she_flags.flag_corrupt_science_image),
+                                          (gal_stamp.background_map, she_flags.flag_no_background_map,
+                                           she_flags.flag_corrupt_background_map),
+                                          (gal_stamp.noisemap, she_flags.flag_no_noisemap,
+                                           she_flags.flag_corrupt_noisemap),
+                                          (gal_stamp.segmentation_map, she_flags.flag_no_segmentation_map,
+                                           she_flags.flag_corrupt_segmentation_map),):
 
         # Check for missing data
         if a is None:
@@ -450,7 +455,7 @@ def check_data_quality(gal_stamp, psf_stamp, stacked = False):
 
         # Check for corrupt data by checking that all data are valid
 
-        if corrupt_flag == flags.flag_corrupt_segmentation_map:
+        if corrupt_flag == she_flags.flag_corrupt_segmentation_map:
             min_value = -1
         else:
             min_value = 0
