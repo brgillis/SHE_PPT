@@ -184,6 +184,7 @@ def correct_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
 
     except ValueError as e:
 
+        # Failsafe check for other errors
         if MSG_TOO_BIG_SHEAR not in str(e):
             raise
 

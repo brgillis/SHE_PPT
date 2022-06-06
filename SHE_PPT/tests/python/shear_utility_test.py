@@ -187,10 +187,31 @@ class TestCase(SheTestCase):
         assert np.isclose(shear_estimate.weight, init_shear_estimate.weight)
 
         # Test that we get expected exceptions
+
+        # Value error if neither stamp nor WCS is supplied
         with pytest.raises(ValueError):
             correct_for_wcs_shear_and_rotation(shear_estimate,
                                                stamp = None,
                                                wcs = None)
+
+        # Value error if both stamp and WCS are supplied
+        with pytest.raises(ValueError):
+            correct_for_wcs_shear_and_rotation(shear_estimate,
+                                               stamp = mock_stamp,
+                                               wcs = galsim_wcs,
+                                               x = 0,
+                                               y = 0, )
+
+        # Value error if WCS supplied, but no coordinates supplied
+        with pytest.raises(ValueError):
+            correct_for_wcs_shear_and_rotation(shear_estimate,
+                                               wcs = galsim_wcs, )
+
+        # Shear estimate flagged as bad if supplied shear is too big
+        big_shear_estimate = ShearEstimate(g1 = 1.1, g2 = 0.2)
+        correct_for_wcs_shear_and_rotation(big_shear_estimate,
+                                           stamp = mock_stamp)
+        assert big_shear_estimate.flags & she_flags.flag_too_large_shear
 
     def test_correct_wcs_rotation(self):
         """Tests of the calculations for correcting for a WCS rotation.
