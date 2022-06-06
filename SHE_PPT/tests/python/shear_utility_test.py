@@ -24,6 +24,7 @@ from copy import deepcopy
 
 import galsim
 import numpy as np
+import pytest
 from astropy.io import fits
 
 from SHE_PPT import flags as she_flags
@@ -159,7 +160,8 @@ class TestCase(SheTestCase):
         mock_stamp.galsim_wcs = galsim_wcs
 
         # Try correcting the shear estimate
-        correct_for_wcs_shear_and_rotation(shear_estimate, mock_stamp)
+        correct_for_wcs_shear_and_rotation(shear_estimate,
+                                           stamp = mock_stamp)
 
         assert np.isclose(shear_estimate.g1, gal_shear.g1)
         assert np.isclose(shear_estimate.g2, gal_shear.g2)
@@ -169,7 +171,8 @@ class TestCase(SheTestCase):
         assert np.isclose(shear_estimate.weight, weight)
 
         # Now test that uncorrecting also works as expected
-        uncorrect_for_wcs_shear_and_rotation(shear_estimate, mock_stamp)
+        uncorrect_for_wcs_shear_and_rotation(shear_estimate,
+                                             stamp = mock_stamp)
 
         assert np.isclose(shear_estimate.g1, init_shear_estimate.g1)
         assert np.isclose(shear_estimate.g2, init_shear_estimate.g2)
@@ -178,7 +181,11 @@ class TestCase(SheTestCase):
         assert np.isclose(shear_estimate.g1g2_covar, init_shear_estimate.g1g2_covar)
         assert np.isclose(shear_estimate.weight, init_shear_estimate.weight)
 
-        return
+        # Test that we get expected exceptions
+        with pytest.raises(ValueError):
+            correct_for_wcs_shear_and_rotation(shear_estimate,
+                                               stamp = None,
+                                               wcs = None)
 
     def test_correct_wcs_rotation(self):
         """Tests of the calculations for correcting for a WCS rotation.
