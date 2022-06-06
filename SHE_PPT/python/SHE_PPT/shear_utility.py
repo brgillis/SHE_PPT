@@ -27,6 +27,7 @@ from typing import Optional, Tuple, Union
 
 import galsim
 import numpy as np
+# noinspection PyPep8Naming
 from astropy.wcs import WCS as AstropyWCS
 from galsim.wcs import BaseWCS as GalsimWCS
 from scipy.optimize import minimize
@@ -38,7 +39,7 @@ MSG_TOO_BIG_SHEAR = "Requested shear exceeds 1"
 
 
 @dataclass
-class ShearEstimate():
+class ShearEstimate:
     """Dataclass to represent a shear estimate and closely-associated information.
 
     Attributes
@@ -276,11 +277,11 @@ def uncorrect_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
     g_world_polar = np.array([[res_shear.g1], [res_shear.g2]])
 
     # We secondly rotate into the proper frame
-    sintheta = w2p_theta.sin()
-    costheta = w2p_theta.cos()
+    sin_theta = w2p_theta.sin()
+    cos_theta = w2p_theta.cos()
 
     # Get the rotation matrix
-    w2p_rotation_matrix = np.array([[costheta, -sintheta], [sintheta, costheta]])
+    w2p_rotation_matrix = np.array([[cos_theta, -sin_theta], [sin_theta, cos_theta]])
 
     double_w2p_rotation_matrix = w2p_rotation_matrix @ w2p_rotation_matrix  # 2x2 so it's commutative
     g_pix_polar = double_w2p_rotation_matrix @ g_world_polar
@@ -466,13 +467,14 @@ def _get_galaxy_mask_flags(gal_stamp):
 
     flags = 0
 
+    ravelled_antimask: Optional[np.ndarray] = None
+
     # Check if the mask exists
     if gal_stamp.mask is None:
 
         flags |= she_flags.flag_no_mask
 
         # Check if we have at least some other data; in which case make mask shaped like it
-        have_some_data = False
 
         for a, missing_flag in ((gal_stamp.data, she_flags.flag_no_science_image),
                                 (gal_stamp.background_map, she_flags.flag_no_background_map),
@@ -484,9 +486,8 @@ def _get_galaxy_mask_flags(gal_stamp):
             else:
                 ravelled_mask = np.zeros_like(a.ravel(), dtype = bool)
                 ravelled_antimask = ~ravelled_mask
-                have_some_data = True
 
-        if not have_some_data:
+        if ravelled_antimask is None:
             # We don't have any data, so we can't do any further checks; return the flag so far
             return flags
 
