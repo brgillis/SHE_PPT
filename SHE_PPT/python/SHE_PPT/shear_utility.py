@@ -217,47 +217,6 @@ def correct_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
     shear_estimate.g2 = fitting_result.x[1]
 
 
-def _make_ministamp_from_wcs(wcs: Union[AstropyWCS, GalsimWCS],
-                             x: Optional[float],
-                             y: Optional[float],
-                             ra: Optional[float],
-                             dec: Optional[float]) -> SHEImage:
-    """Private function to generate a trivial stamp from a WCS object and a position.
-    """
-
-    # Initialize a trivial stamp
-    stamp = SHEImage(data = np.zeros((1, 1)))
-
-    # Add the WCS to the stamp
-    if isinstance(wcs, AstropyWCS):
-        stamp.wcs = wcs
-    elif isinstance(wcs, GalsimWCS):
-        stamp.galsim_wcs = wcs
-    else:
-        raise TypeError("wcs is of invalid type: " + str(type(wcs)))
-
-    # Set the offset of the stamp from the provided position
-    if ra is not None and dec is not None:
-        x, y = stamp.world2pix(ra, dec)
-    if x is None or y is None:
-        raise ValueError("`x` and `y` or `ra` and `dec` must be supplied to `correct_for_wcs_shear_and_rotation`.")
-
-    stamp.offset = np.array((x, y))
-
-    return stamp
-
-
-def _set_as_failed_shear_estimate(shear_estimate, err_flag):
-    """Local function to modify a ShearEstimate object in-place to flag it as a failure, with a given failure flag.
-    """
-    shear_estimate.g1 = np.NaN
-    shear_estimate.g2 = np.NaN
-    shear_estimate.g1_err = np.inf
-    shear_estimate.g2_err = np.inf
-    shear_estimate.g1g2_covar = np.inf
-    shear_estimate.flags |= err_flag
-
-
 def uncorrect_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
                                          stamp: Optional[SHEImage] = None,
                                          wcs: Optional[Union[AstropyWCS, GalsimWCS]] = None,
@@ -286,29 +245,12 @@ def uncorrect_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
 
     # Check for valid input
     if (stamp is None) == (wcs is None):
-        raise ValueError("Exactly one of \"stamp\" and \"wcs\" must be supplied to " +
-                         "correct_for_wcs_shear_and_rotation.")
+        raise ValueError("Exactly one of `stamp` and `wcs` must be supplied to " +
+                         "`correct_for_wcs_shear_and_rotation`.")
 
     # If no stamp is supplied, create a ministamp to work with
     if stamp is None:
-
-        stamp = SHEImage(data = np.zeros((1, 1)))
-
-        # Add the WCS to the stamp
-        if isinstance(wcs, AstropyWCS):
-            stamp.wcs = wcs
-        elif isinstance(wcs, GalsimWCS):
-            stamp.galsim_wcs = wcs
-        else:
-            raise TypeError("wcs is of invalid type: " + str(type(wcs)))
-
-        # Set the offset of the stamp from the provided position
-        if ra is not None and dec is not None:
-            x, y = stamp.world2pix(ra, dec)
-        if x is None or y is None:
-            raise ValueError("x and y or ra and dec must be supplied to correct_for_wcs_shear_and_rotation.")
-
-        stamp.offset = np.array((x, y))
+        stamp = _make_ministamp_from_wcs(wcs, x, y, ra, dec)
 
     # In this direction, we can straightforwardly apply the world2pix transformation
     _scale, w2p_shear, w2p_theta, _w2p_flip = stamp.get_world2pix_decomposition()
@@ -357,6 +299,47 @@ def uncorrect_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
     shear_estimate.g1_err = np.sqrt(covar_world[0, 0])
     shear_estimate.g2_err = np.sqrt(covar_world[1, 1])
     shear_estimate.g1g2_covar = covar_world[0, 1]
+
+
+def _make_ministamp_from_wcs(wcs: Union[AstropyWCS, GalsimWCS],
+                             x: Optional[float],
+                             y: Optional[float],
+                             ra: Optional[float],
+                             dec: Optional[float]) -> SHEImage:
+    """Private function to generate a trivial stamp from a WCS object and a position.
+    """
+
+    # Initialize a trivial stamp
+    stamp = SHEImage(data = np.zeros((1, 1)))
+
+    # Add the WCS to the stamp
+    if isinstance(wcs, AstropyWCS):
+        stamp.wcs = wcs
+    elif isinstance(wcs, GalsimWCS):
+        stamp.galsim_wcs = wcs
+    else:
+        raise TypeError("wcs is of invalid type: " + str(type(wcs)))
+
+    # Set the offset of the stamp from the provided position
+    if ra is not None and dec is not None:
+        x, y = stamp.world2pix(ra, dec)
+    if x is None or y is None:
+        raise ValueError("`x` and `y` or `ra` and `dec` must be supplied to `correct_for_wcs_shear_and_rotation`.")
+
+    stamp.offset = np.array((x, y))
+
+    return stamp
+
+
+def _set_as_failed_shear_estimate(shear_estimate, err_flag):
+    """Local function to modify a ShearEstimate object in-place to flag it as a failure, with a given failure flag.
+    """
+    shear_estimate.g1 = np.NaN
+    shear_estimate.g2 = np.NaN
+    shear_estimate.g1_err = np.inf
+    shear_estimate.g2_err = np.inf
+    shear_estimate.g1g2_covar = np.inf
+    shear_estimate.flags |= err_flag
 
 
 def check_data_quality(gal_stamp, psf_stamp, stacked = False):
