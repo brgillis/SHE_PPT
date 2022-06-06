@@ -103,8 +103,8 @@ class TestCase(SheTestCase):
         wcs_shear = galsim.Shear(g1 = 0.1, g2 = 0.2)
         gal_shear = galsim.Shear(g1 = 0.5, g2 = 0.3)
 
-        gerr = 0.3
-        weight = 1 / gerr ** 2
+        g_err = 0.3
+        weight = 1 / g_err ** 2
 
         # Ordering is important here. Galaxy shear is in reality applied first, so it's last in addition
         tot_shear = wcs_shear + gal_shear
@@ -112,8 +112,8 @@ class TestCase(SheTestCase):
         # Create a ShearEstimate object for testing
         shear_estimate = ShearEstimate(g1 = tot_shear.g1,
                                        g2 = tot_shear.g2,
-                                       g1_err = gerr,
-                                       g2_err = gerr,
+                                       g1_err = g_err,
+                                       g2_err = g_err,
                                        weight = weight)
 
         init_shear_estimate = deepcopy(shear_estimate)
@@ -134,8 +134,8 @@ class TestCase(SheTestCase):
 
         assert np.isclose(shear_estimate.g1, gal_shear.g1)
         assert np.isclose(shear_estimate.g2, gal_shear.g2)
-        assert np.isclose(shear_estimate.g1_err, gerr)
-        assert np.isclose(shear_estimate.g2_err, gerr)
+        assert np.isclose(shear_estimate.g1_err, g_err)
+        assert np.isclose(shear_estimate.g2_err, g_err)
         assert np.isclose(shear_estimate.g1g2_covar, 0.)
         assert np.isclose(shear_estimate.weight, weight)
 
@@ -155,12 +155,12 @@ class TestCase(SheTestCase):
         """Tests of the calculations for correcting for a WCS rotation.
         """
 
-        gerr = 0.3
-        weight = 1 / gerr ** 2
+        g_err = 0.3
+        weight = 1 / g_err ** 2
 
         for (p2w_theta, tot_g1, tot_g2, ex_g1_err, ex_g2_err, ex_g1g2covar) in (
-                (45 * galsim.degrees, 0.3, -0.5, gerr, gerr, 0.),
-                (22.5 * galsim.degrees, 0.565685424949238, -0.14142135623730948, gerr, gerr, 0)):
+                (45 * galsim.degrees, 0.3, -0.5, g_err, g_err, 0.),
+                (22.5 * galsim.degrees, 0.565685424949238, -0.14142135623730948, g_err, g_err, 0)):
 
             sin_theta = p2w_theta.sin()
             cos_theta = p2w_theta.cos()
@@ -172,8 +172,8 @@ class TestCase(SheTestCase):
             # Create a ShearEstimate object for testing
             shear_estimate = ShearEstimate(g1 = tot_shear.g1,
                                            g2 = tot_shear.g2,
-                                           g1_err = gerr,
-                                           g2_err = gerr,
+                                           g1_err = g_err,
+                                           g2_err = g_err,
                                            weight = weight)
 
             init_shear_estimate = deepcopy(shear_estimate)
