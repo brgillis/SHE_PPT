@@ -34,11 +34,11 @@ from SHE_PPT.testing.utility import SheTestCase
 
 
 class TestCase(SheTestCase):
-    """ Test case class for shear utility tests
+    """Test case class for shear utility tests
     """
 
     def setup_workdir(self):
-        """ Set up a default galaxy stamp and PSF stamp for testing.
+        """Set up a default galaxy stamp and PSF stamp for testing.
         """
 
         self._download_mdb()
@@ -97,7 +97,7 @@ class TestCase(SheTestCase):
         return
 
     def test_correct_wcs_shear(self):
-        """ Tests of the calculations for correcting for a WCS shear.
+        """Tests of the calculations for correcting for a WCS shear.
         """
 
         wcs_shear = galsim.Shear(g1 = 0.1, g2 = 0.2)
@@ -152,7 +152,7 @@ class TestCase(SheTestCase):
         return
 
     def test_correct_wcs_rotation(self):
-        """ Tests of the calculations for correcting for a WCS rotation.
+        """Tests of the calculations for correcting for a WCS rotation.
         """
 
         gerr = 0.3
@@ -212,7 +212,7 @@ class TestCase(SheTestCase):
         return
 
     def test_correct_wcs_shear_and_rotation(self):
-        """ Tests of the calculations for correcting for a WCS with both shear and rotation.
+        """Tests of the calculations for correcting for a WCS with both shear and rotation.
         """
 
         gerr = 0.3
@@ -277,5 +277,3 @@ class TestCase(SheTestCase):
         assert np.isclose(shear_estimate.g2_err, init_shear_estimate.g1_err)
         assert np.isclose(shear_estimate.g1g2_covar, init_shear_estimate.g1g2_covar)
         assert np.isclose(shear_estimate.weight, init_shear_estimate.weight)
-
-        return
