@@ -389,10 +389,41 @@ class TestCase(SheTestCase):
         gal_no_background.background_map = None
         assert get_galaxy_quality_flags(gal_no_background, stacked = True) & she_flags.flag_no_background_map
 
-        # Check with a missing mask
+        # Check with a missing mask, stacked
         stamp_missing_mask = deepcopy(self.gal_stamp)
         stamp_missing_mask.mask = None
-        assert get_galaxy_quality_flags(stamp_missing_mask, stacked = False) & she_flags.flag_no_mask
+        assert get_galaxy_quality_flags(stamp_missing_mask, stacked = True) & she_flags.flag_no_mask
+
+        # Check with a missing segmentation map
+        stamp_missing_seg = deepcopy(self.gal_stamp)
+        stamp_missing_seg.segmentation_map = None
+        assert get_galaxy_quality_flags(stamp_missing_seg, stacked = False) & she_flags.flag_no_segmentation_map
+
+        # Check with a missing noisemap
+        stamp_missing_noise = deepcopy(self.gal_stamp)
+        stamp_missing_noise.noisemap = None
+        assert get_galaxy_quality_flags(stamp_missing_noise, stacked = False) & she_flags.flag_no_noisemap
+
+        # Check with everything other than science image missing
+        stamp_missing_most = deepcopy(self.gal_stamp)
+        stamp_missing_most.background_map = None
+        stamp_missing_most.mask = None
+        stamp_missing_most.segmentation_map = None
+        stamp_missing_most.noisemap = None
+        assert get_galaxy_quality_flags(stamp_missing_most, stacked = False) & she_flags.flag_no_background_map
+        assert get_galaxy_quality_flags(stamp_missing_most, stacked = False) & she_flags.flag_no_mask
+        assert get_galaxy_quality_flags(stamp_missing_most, stacked = False) & she_flags.flag_no_segmentation_map
+        assert get_galaxy_quality_flags(stamp_missing_most, stacked = False) & she_flags.flag_no_noisemap
+
+        # Check with entirely masked out
+        stamp_masked = deepcopy(self.gal_stamp)
+        stamp_masked.mask += 1
+        assert get_galaxy_quality_flags(stamp_masked, stacked = False) & she_flags.flag_insufficient_data
+        
+        # Check with corrupt mask
+        stamp_corrupt_mask = deepcopy(self.gal_stamp)
+        stamp_corrupt_mask.mask[0, 0] = -1
+        assert get_galaxy_quality_flags(stamp_corrupt_mask, stacked = False) & she_flags.flag_corrupt_mask
 
     def test_check_data_quality(self):
         """Unit test of the `check_data_quality` function.

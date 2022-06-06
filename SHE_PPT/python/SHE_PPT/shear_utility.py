@@ -415,7 +415,7 @@ def get_psf_quality_flags(psf_stamp: SHEImage) -> int:
 
 
 def get_galaxy_quality_flags(gal_stamp: SHEImage,
-                             stacked: bool) -> int:
+                             stacked: bool = False) -> int:
     """Check a galaxy stamp for data quality issues and return a set of flags for it.
 
     Parameters
