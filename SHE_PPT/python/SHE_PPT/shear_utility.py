@@ -68,14 +68,31 @@ class ShearEstimate():
 
 
 def get_g_from_e(e1, e2):
-    """
-    @brief
-        Calculates the g-style shear from e-style
+    """Calculates the g-style shear from e-style, using GalSim's convention of e and g shear, where:
 
-    @param e1
-    @param e2
+    g = (1-r)/(1+r)
+    e = (1+r^2)/(1-r^2)
 
-    @return g1, g2
+    where `r` is the axis ratio of an ellipse sheared by this amount.
+
+    Parameters
+    ----------
+    e1 : float
+        The first component of the e-style shear value.
+    e2 : float
+        The second component of the e-style shear value.
+
+    Returns
+    -------
+    g1 : float
+        The first component of the g-style shear value.
+    g2 : float
+        The second component of the g-style shear value.
+
+    Raises
+    ------
+    ValueError
+        If the magnitude of the input e-style shear is greater than 1, i.e. sqrt(e1^2 + e2^2) > 1.
     """
 
     e = math.sqrt(e1 * e1 + e2 * e2)
