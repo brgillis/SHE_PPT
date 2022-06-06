@@ -184,13 +184,8 @@ def correct_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
             raise
 
         # Shear is greater than 1, so note this in the flags
-        shear_estimate.g1 = np.NaN
-        shear_estimate.g2 = np.NaN
-        shear_estimate.g1_err = np.inf
-        shear_estimate.g2_err = np.inf
-        shear_estimate.g1g2_covar = np.inf
 
-        shear_estimate.flags |= she_flags.flag_too_large_shear
+        _set_as_failed_shear_estimate(shear_estimate, she_flags.flag_too_large_shear)
 
         return
 
@@ -213,14 +208,8 @@ def correct_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
 
     # If we can't find a solution, return NaN shear
     if not fitting_result.success:
-        shear_estimate.g1 = np.NaN
-        shear_estimate.g2 = np.NaN
-        shear_estimate.gerr = np.inf
-        shear_estimate.g1_err = np.inf
-        shear_estimate.g2_err = np.inf
-        shear_estimate.g1g2_covar = np.inf
 
-        shear_estimate.flags |= she_flags.flag_cannot_correct_distortion
+        _set_as_failed_shear_estimate(shear_estimate, she_flags.flag_cannot_correct_distortion)
 
         return
 
@@ -256,6 +245,17 @@ def _make_ministamp_from_wcs(wcs: Union[AstropyWCS, GalsimWCS],
     stamp.offset = np.array((x, y))
 
     return stamp
+
+
+def _set_as_failed_shear_estimate(shear_estimate, err_flag):
+    """Local function to modify a ShearEstimate object in-place to flag it as a failure, with a given failure flag.
+    """
+    shear_estimate.g1 = np.NaN
+    shear_estimate.g2 = np.NaN
+    shear_estimate.g1_err = np.inf
+    shear_estimate.g2_err = np.inf
+    shear_estimate.g1g2_covar = np.inf
+    shear_estimate.flags |= err_flag
 
 
 def uncorrect_for_wcs_shear_and_rotation(shear_estimate,
@@ -332,15 +332,7 @@ def uncorrect_for_wcs_shear_and_rotation(shear_estimate,
         if MSG_TOO_BIG_SHEAR not in str(e):
             raise
 
-        # Shear is greater than 1, so note this in the flags
-        shear_estimate.g1 = np.NaN
-        shear_estimate.g2 = np.NaN
-        shear_estimate.gerr = np.inf
-        shear_estimate.g1_err = np.inf
-        shear_estimate.g2_err = np.inf
-        shear_estimate.g1g2_covar = np.inf
-
-        shear_estimate.flags |= she_flags.flag_too_large_shear
+        _set_as_failed_shear_estimate(shear_estimate, she_flags.flag_too_large_shear)
 
         return
 
