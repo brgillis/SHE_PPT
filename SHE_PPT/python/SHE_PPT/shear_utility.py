@@ -22,6 +22,7 @@ __updated__ = "2021-08-13"
 # Boston, MA 02110-1301 USA
 
 import math
+from dataclasses import dataclass
 
 import galsim
 import numpy as np
@@ -35,23 +36,35 @@ from .she_image import SHEImage
 MSG_TOO_BIG_SHEAR = "Requested shear exceeds 1"
 
 
+@dataclass
 class ShearEstimate():
+    """Dataclass to represent a shear estimate and closely-associated information.
 
-    def __init__(self,
-                 g1 = np.NaN,
-                 g2 = np.NaN,
-                 g1_err = np.inf,
-                 g2_err = np.inf,
-                 g1g2_covar = 0,
-                 flags = 0,
-                 weight = 1):
-        self.g1 = g1
-        self.g2 = g2
-        self.g1_err = g1_err
-        self.g2_err = g2_err
-        self.g1g2_covar = g1g2_covar
-        self.flags = flags
-        self.weight = weight
+    Attributes
+    ----------
+    g1 : float
+        The first component of the shear value.
+    g2 : float
+        The second component of the shear value.
+    g1_err : float
+        The uncertainty in the first component of the shear value.
+    g2_err : float
+        The uncertainty in the second component of the shear value.
+    g1g2_covar : float
+        The covariance between the first and second components of the shear value.
+    flags : int
+        The bit flags associated with this shear estimate, stored as an unsigned integer.
+    weight : float
+        The weight associated with this shear estimate.
+    """
+
+    g1: float = np.NaN
+    g2: float = np.NaN
+    g1_err: float = np.inf
+    g2_err: float = np.inf
+    g1g2_covar: float = 0.
+    flags: int = 0
+    weight: float = 1
 
 
 def get_g_from_e(e1, e2):
