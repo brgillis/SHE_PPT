@@ -342,28 +342,44 @@ def _set_as_failed_shear_estimate(shear_estimate, err_flag):
     shear_estimate.flags |= err_flag
 
 
-def check_data_quality(gal_stamp, psf_stamp, stacked = False):
-    """ Checks the galaxy and PSF stamps for any data quality issues, and returns an
-        appropriate set of flags.
+def check_data_quality(gal_stamp: SHEImage,
+                       psf_stamp: SHEImage,
+                       stacked: bool = False) -> int:
+    """Checks the galaxy and PSF stamps for any data quality issues, and returns an
+    appropriate set of flags.
+
+    Parameters
+    ----------
+    gal_stamp : SHEImage
+        The galaxy stamp to check.
+    psf_stamp : SHEImage
+        The PSF stamp to check.
+    stacked : bool
+        Whether the stamps are from stacked images or not.
+
+    Returns
+    -------
+    flags : int
+        A set of bitwise flags indicating any data quality issues.
     """
 
     # Start with a 0 flag that we'll |= (bitwise or-set) to if/when we find issues
-    flag = 0
+    flags = 0
 
     # Check for issues with the PSF
     if psf_stamp is None or psf_stamp.data is None:
-        flag |= she_flags.flag_no_psf
+        flags |= she_flags.flag_no_psf
 
     good_psf_data = psf_stamp.data.ravel()
     if (good_psf_data.sum() == 0) or ((good_psf_data < -0.01 * good_psf_data.max()).any()):
-        flag |= she_flags.flag_corrupt_psf
+        flags |= she_flags.flag_corrupt_psf
 
     # Now check for issues with the galaxy image
 
     # Check if the mask exists
     if gal_stamp.mask is None:
 
-        flag |= she_flags.flag_no_mask
+        flags |= she_flags.flag_no_mask
 
         # Check if we have at least some other data; in which case make mask shaped like it
         have_some_data = False
@@ -374,7 +390,7 @@ def check_data_quality(gal_stamp, psf_stamp, stacked = False):
                                 (gal_stamp.segmentation_map, she_flags.flag_no_segmentation_map),):
 
             if a is None:
-                flag |= missing_flag
+                flags |= missing_flag
             else:
                 ravelled_mask = np.zeros_like(a.ravel(), dtype = bool)
                 ravelled_antimask = ~ravelled_mask
@@ -382,12 +398,12 @@ def check_data_quality(gal_stamp, psf_stamp, stacked = False):
 
         if not have_some_data:
             # We don't have any data, so we can't do any further checks; return the flag so far
-            return flag
+            return flags
 
     else:
         # Check for any possible corruption issues in the mask
         if (gal_stamp.mask < 0).any():
-            flag |= she_flags.flag_corrupt_mask
+            flags |= she_flags.flag_corrupt_mask
 
         ravelled_mask = gal_stamp.boolmask.ravel()
         ravelled_antimask = ~ravelled_mask
@@ -399,7 +415,7 @@ def check_data_quality(gal_stamp, psf_stamp, stacked = False):
     frac_unmasked = float(unmasked_count) / total_count
 
     if frac_unmasked < 0.25:
-        flag |= she_flags.flag_insufficient_data
+        flags |= she_flags.flag_insufficient_data
 
     # Check for missing or corrupt data
 
@@ -419,7 +435,7 @@ def check_data_quality(gal_stamp, psf_stamp, stacked = False):
 
         # Check for missing data
         if a is None:
-            flag |= missing_flag
+            flags |= missing_flag
             continue
 
         # Check for corrupt data by checking that all data are valid
@@ -432,6 +448,6 @@ def check_data_quality(gal_stamp, psf_stamp, stacked = False):
         good_data = a.ravel()[ravelled_antimask]
         if (np.isnan(good_data).any() or np.isinf(good_data).any() or
                 ((good_data.sum() == 0) or (good_data < min_value).any())):
-            flag |= corrupt_flag
+            flags |= corrupt_flag
 
-    return flag
+    return flags
