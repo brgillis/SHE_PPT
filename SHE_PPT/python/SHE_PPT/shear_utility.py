@@ -123,16 +123,16 @@ def correct_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
     ----------
     shear_estimate : ShearEstimate
         An object containing the shear estimate and errors. This can either be the ShearEstimate class defined in
-        this module, or another class that has the g1, g2, g1_err, g2_err, g1g2_covar, and flags members. This object
+        this module, or another class that has the g1, g2, g2_err, g1g2_covar, and flags members. This object
         will be modified in-place by this function.
     stamp : Optional[SHEImage]
-        A SHEImage, at the center of which is the object in question. Either this or "wcs" must be supplied.
+        A SHEImage, at the center of which is the object in question. Either this or `wcs` must be supplied.
     wcs : Optional[Union[AstropyWCS, GalsimWCS]]
-        Either this or "stamp" must be supplied.
+        Either this or `stamp` must be supplied.
     x, y : Optional[float]
-        If wcs is supplied, the position of the object must be provided, either through x and y or ra and dec.
+        If `wcs` is supplied, the position of the object must be provided, either through `x` and `y` or `ra` and `dec`.
     ra, dec : Optional[float]
-        If wcs is supplied, the position of the object must be provided, either through x and y or ra and dec.
+        If `wcs` is supplied, the position of the object must be provided, either through `x` and `y` or `ra` and `dec`.
     """
 
     # Check for valid input
@@ -258,13 +258,13 @@ def _set_as_failed_shear_estimate(shear_estimate, err_flag):
     shear_estimate.flags |= err_flag
 
 
-def uncorrect_for_wcs_shear_and_rotation(shear_estimate,
-                                         stamp = None,
-                                         wcs = None,
-                                         x = None,
-                                         y = None,
-                                         ra = None,
-                                         dec = None):
+def uncorrect_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
+                                         stamp: Optional[SHEImage] = None,
+                                         wcs: Optional[Union[AstropyWCS, GalsimWCS]] = None,
+                                         x: Optional[float] = None,
+                                         y: Optional[float] = None,
+                                         ra: Optional[float] = None,
+                                         dec: Optional[float] = None) -> None:
     """Uncorrects (in-place) a shear_estimate object for the shear and rotation information contained within the
     provided WCS (or provided stamp's wcs). Note that this function ignores any flipping.
 
@@ -272,24 +272,16 @@ def uncorrect_for_wcs_shear_and_rotation(shear_estimate,
     ----------
     shear_estimate : ShearEstimate
         An object containing the shear estimate and errors. This can either be the ShearEstimate class defined in
-        this module, or another class that has the g1, g2, g1_err, g2_err, g1g2_covar, and flags members.
-    stamp : SHEImage
-        A SHEImage, at the center of which is the object in question. Either this or "wcs" must be supplied
-    wcs : an astropy or galsim WCS
-        Either this or "stamp" must be supplied
-    x, y : float
-        If wcs is supplied, the position of the object must be provided, either through x and y or ra and dec
-    ra, dec : float
-        If wcs is supplied, the position of the object must be provided, either through x and y or ra and dec
-
-    Returns
-    -------
-    None
-
-    Side-effects
-    ------------
-    shear_estimate is corrected to be in the image frame.
-
+        this module, or another class that has the g1, g2, g2_err, g1g2_covar, and flags members. This object
+        will be modified in-place by this function.
+    stamp : Optional[SHEImage]
+        A SHEImage, at the center of which is the object in question. Either this or `wcs` must be supplied.
+    wcs : Optional[Union[AstropyWCS, GalsimWCS]]
+        Either this or `stamp` must be supplied.
+    x, y : Optional[float]
+        If `wcs` is supplied, the position of the object must be provided, either through `x` and `y` or `ra` and `dec`.
+    ra, dec : Optional[float]
+        If `wcs` is supplied, the position of the object must be provided, either through `x` and `y` or `ra` and `dec`.
     """
 
     # Check for valid input
