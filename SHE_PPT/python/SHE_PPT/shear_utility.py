@@ -184,7 +184,7 @@ def correct_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
 
     except ValueError as e:
 
-        # Failsafe check for other errors
+        # If some other ValueError is somehow raised, re-raise it
         if MSG_TOO_BIG_SHEAR not in str(e):
             raise
 
@@ -203,7 +203,7 @@ def correct_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
             res_shear = w2p_shear + galsim.Shear(g1 = g1, g2 = g2)
             dist2 = (rot_est_shear.g1 - res_shear.g1) ** 2 + (rot_est_shear.g2 - res_shear.g2) ** 2
         except ValueError as local_e:
-            # Failsafe check for other errors
+            # If some other ValueError is somehow raised, re-raise it
             if MSG_TOO_BIG_SHEAR not in str(local_e):
                 raise
             # Requested a too-high shear value, so return an appropriately high distance
@@ -270,6 +270,7 @@ def uncorrect_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
 
     except ValueError as e:
 
+        # If some other ValueError is somehow raised, re-raise it
         if MSG_TOO_BIG_SHEAR not in str(e):
             raise
 
