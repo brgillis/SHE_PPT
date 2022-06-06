@@ -194,7 +194,9 @@ def correct_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
 
         return
 
-    def get_shear_adding_diff(g):
+    def _get_shear_adding_diff(g):
+        """Local function to be minimized in the fitting.
+        """
         g1 = g[0]
         g2 = g[1]
         try:
@@ -207,7 +209,7 @@ def correct_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
             dist2 = (w2p_shear.g1 + g1 - rot_est_shear.g1) ** 2 + (w2p_shear.g2 + g2 - rot_est_shear.g2) ** 2
         return dist2
 
-    fitting_result = minimize(get_shear_adding_diff, np.array((0, 0)))
+    fitting_result = minimize(_get_shear_adding_diff, np.array((0, 0)))
 
     # If we can't find a solution, return NaN shear
     if not fitting_result.success:
