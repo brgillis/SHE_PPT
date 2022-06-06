@@ -161,7 +161,7 @@ def correct_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
     # Get the reverse rotation matrix
     p2w_rotation_matrix = np.array([[cos_theta, sin_theta], [-sin_theta, cos_theta]])
 
-    double_p2w_rotation_matrix = p2w_rotation_matrix @ p2w_rotation_matrix  # 2x2 so it's commutative
+    double_p2w_rotation_matrix = p2w_rotation_matrix @ p2w_rotation_matrix
     g_world_polar = double_p2w_rotation_matrix @ g_pix_polar
 
     # TODO: Update errors from the WCS shear
