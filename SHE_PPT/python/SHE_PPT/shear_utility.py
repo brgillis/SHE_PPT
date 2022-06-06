@@ -318,17 +318,15 @@ def _make_ministamp_from_wcs(wcs: Union[AstropyWCS, GalsimWCS],
     stamp = SHEImage(data = np.zeros((1, 1)))
 
     # Add the WCS to the stamp
-    if isinstance(wcs, AstropyWCS):
-        stamp.header = wcs.to_header()
-        stamp.wcs = wcs
-    elif isinstance(wcs, GalsimWCS):
+    if isinstance(wcs, GalsimWCS):
         gs_header = galsim.FitsHeader()
         wcs.writeToFitsHeader(gs_header, galsim.BoundsI(1, 1, 2, 2))
         stamp.header = fits.Header(gs_header.header)
         stamp.wcs = AstropyWCS(stamp.header)
         stamp.galsim_wcs = wcs
     else:
-        raise TypeError("wcs is of invalid type: " + str(type(wcs)))
+        stamp.header = wcs.to_header()
+        stamp.wcs = wcs
 
     # Set the offset of the stamp from the provided position
     if ra is not None and dec is not None:
