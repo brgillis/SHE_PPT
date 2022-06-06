@@ -213,6 +213,11 @@ class TestCase(SheTestCase):
                                            stamp = mock_stamp)
         assert big_shear_estimate.flags & she_flags.flag_too_large_shear
 
+        # Test we don't hit issues if shear is close to 1
+        near_1_shear_estimate = ShearEstimate(g1 = 0.99, g2 = 0.)
+        correct_for_wcs_shear_and_rotation(near_1_shear_estimate,
+                                           stamp = mock_stamp)
+
     def test_correct_wcs_rotation(self):
         """Tests of the calculations for correcting for a WCS rotation.
         """
