@@ -218,6 +218,12 @@ class TestCase(SheTestCase):
         correct_for_wcs_shear_and_rotation(near_1_shear_estimate,
                                            stamp = mock_stamp)
 
+        # Test we get expected error if we can't correct of the distortion
+        nan_shear_estimate = ShearEstimate(g1 = np.nan, g2 = np.nan)
+        correct_for_wcs_shear_and_rotation(nan_shear_estimate,
+                                           stamp = mock_stamp)
+        assert nan_shear_estimate.flags & she_flags.flag_cannot_correct_distortion
+
     def test_correct_wcs_rotation(self):
         """Tests of the calculations for correcting for a WCS rotation.
         """
