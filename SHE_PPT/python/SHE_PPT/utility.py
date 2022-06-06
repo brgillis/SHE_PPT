@@ -325,8 +325,8 @@ def is_any_type_of_none(value: Union[None, str]) -> bool:
     bool
         True if the value is of any type of None, False otherwise.
     """
-    try:
     # TODO: This duplicates `filename_not_exists` in SHE_PPT.file_io - one should be deprecated in favor of the other.
+    try:
         return value in (None, "None", "", "data/None", "data/")
     except (TypeError, ValueError):
         # We might get an exception if the value is of certain types, such as a numpy array. In that case,
