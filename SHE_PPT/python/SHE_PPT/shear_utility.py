@@ -149,16 +149,11 @@ def correct_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
         stamp = _make_ministamp_from_wcs(wcs, x, y, ra, dec)
 
     # Since we have to solve for the pre-wcs shear, we get the world2pix decomposition and work backwards
-    _scale, w2p_shear, w2p_theta, _w2p_flip = stamp.get_world2pix_decomposition()
+    _, w2p_shear, w2p_theta, _ = stamp.get_world2pix_decomposition()
 
-    # Set up the shear as a matrix
-    g_pix_polar = np.array([[shear_estimate.g1], [shear_estimate.g2]])
-
-    # We first have to rotate into the proper frame
-
-    # Get the reverse rotation matrix
+    # We first have to rotate into the proper frame. Get the reverse rotation matrix, and apply it to the shear polar
     double_p2w_rotation_matrix = _get_double_rot_matrix(-w2p_theta)
-    g_world_polar = double_p2w_rotation_matrix @ g_pix_polar
+    g_world_polar = double_p2w_rotation_matrix @ np.array([[shear_estimate.g1], [shear_estimate.g2]])
 
     # TODO: Update errors from the WCS shear
 
@@ -193,17 +188,15 @@ def correct_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
     def _get_shear_adding_diff(g):
         """Local function to be minimized in the fitting.
         """
-        g1 = g[0]
-        g2 = g[1]
         try:
-            res_shear = w2p_shear + galsim.Shear(g1 = g1, g2 = g2)
+            res_shear = w2p_shear + galsim.Shear(g1 = g[0], g2 = g[1])
             dist2 = (rot_est_shear.g1 - res_shear.g1) ** 2 + (rot_est_shear.g2 - res_shear.g2) ** 2
         except ValueError as local_e:
             # If some other ValueError is somehow raised, re-raise it
             if MSG_TOO_BIG_SHEAR not in str(local_e):
                 raise
             # Requested a too-high shear value, so return an appropriately high distance
-            dist2 = (w2p_shear.g1 + g1 - rot_est_shear.g1) ** 2 + (w2p_shear.g2 + g2 - rot_est_shear.g2) ** 2
+            dist2 = (w2p_shear.g1 + g[0] - rot_est_shear.g1) ** 2 + (w2p_shear.g2 + g[1] - rot_est_shear.g2) ** 2
         return dist2
 
     fitting_result = minimize(_get_shear_adding_diff, np.array((0, 0)))
@@ -256,7 +249,7 @@ def uncorrect_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
         stamp = _make_ministamp_from_wcs(wcs, x, y, ra, dec)
 
     # In this direction, we can straightforwardly apply the world2pix transformation
-    _scale, w2p_shear, w2p_theta, _w2p_flip = stamp.get_world2pix_decomposition()
+    _, w2p_shear, w2p_theta, _ = stamp.get_world2pix_decomposition()
 
     # Apply the shear first
 
@@ -276,14 +269,11 @@ def uncorrect_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
 
     res_shear = w2p_shear + world_shear
 
-    # Set up the shear as a matrix
-    g_world_polar = np.array([[res_shear.g1], [res_shear.g2]])
-
     # We secondly rotate into the proper frame
 
-    # Get the rotation matrix
+    # Get the rotation matrix, and apply it to the shear polar
     double_w2p_rotation_matrix = _get_double_rot_matrix(w2p_theta)
-    g_pix_polar = double_w2p_rotation_matrix @ g_world_polar
+    g_pix_polar = double_w2p_rotation_matrix @ np.array([[res_shear.g1], [res_shear.g2]])
 
     shear_estimate.g1 = g_pix_polar[0, 0]
     shear_estimate.g2 = g_pix_polar[1, 0]
