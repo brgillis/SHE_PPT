@@ -148,6 +148,14 @@ def correct_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
     if stamp is None:
         stamp = _make_ministamp_from_wcs(wcs, x, y, ra, dec)
 
+    _correct_for_wcs_shear_and_rotation(shear_estimate, stamp)
+
+
+def _correct_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
+                                        stamp: SHEImage) -> None:
+    """Private implementation of uncorrect_for_wcs_shear_and_rotation, after input has been validated.
+    """
+
     # Since we have to solve for the pre-wcs shear, we get the world2pix decomposition and work backwards
     _, w2p_shear, w2p_theta, _ = stamp.get_world2pix_decomposition()
 
@@ -248,14 +256,20 @@ def uncorrect_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
     if stamp is None:
         stamp = _make_ministamp_from_wcs(wcs, x, y, ra, dec)
 
+    _uncorrect_shear_for_wcs_and_rotation(shear_estimate, stamp)
+
+
+def _uncorrect_shear_for_wcs_and_rotation(shear_estimate: ShearEstimate, stamp: SHEImage) -> None:
+    """Private implementation of uncorrect_for_wcs_shear_and_rotation, after input has been validated.
+    """
+
     # In this direction, we can straightforwardly apply the world2pix transformation
     _, w2p_shear, w2p_theta, _ = stamp.get_world2pix_decomposition()
 
     # Apply the shear first
-
     try:
 
-        world_shear = galsim.Shear(g1 = shear_estimate.g1, g2 = shear_estimate.g2)
+        res_shear = w2p_shear + galsim.Shear(g1 = shear_estimate.g1, g2 = shear_estimate.g2)
 
     except ValueError as e:
 
@@ -267,10 +281,7 @@ def uncorrect_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
 
         return
 
-    res_shear = w2p_shear + world_shear
-
     # We secondly rotate into the proper frame
-
     # Get the rotation matrix, and apply it to the shear polar
     double_w2p_rotation_matrix = _get_double_rot_matrix(w2p_theta)
     g_pix_polar = double_w2p_rotation_matrix @ np.array([[res_shear.g1], [res_shear.g2]])
