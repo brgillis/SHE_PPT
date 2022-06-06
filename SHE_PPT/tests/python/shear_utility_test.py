@@ -377,12 +377,22 @@ class TestCase(SheTestCase):
         assert get_galaxy_quality_flags(self.gal_stamp, stacked = False) == 0
 
         # Check with corrupt stamp
-        assert get_galaxy_quality_flags(self.corrupt_gal_stamp, stacked = False) == she_flags.flag_corrupt_science_image
+        assert get_galaxy_quality_flags(self.corrupt_gal_stamp, stacked = False) & she_flags.flag_corrupt_science_image
+
+        # Check with no science data
+        gal_no_data = deepcopy(self.gal_stamp)
+        gal_no_data._data = None
+        assert get_galaxy_quality_flags(gal_no_data, stacked = False) & she_flags.flag_no_science_image
+
+        # Check with no background map, stacked
+        gal_no_background = deepcopy(self.gal_stamp)
+        gal_no_background.background_map = None
+        assert get_galaxy_quality_flags(gal_no_background, stacked = True) & she_flags.flag_no_background_map
 
         # Check with a missing mask
         stamp_missing_mask = deepcopy(self.gal_stamp)
         stamp_missing_mask.mask = None
-        assert get_galaxy_quality_flags(stamp_missing_mask, stacked = False) == she_flags.flag_no_mask
+        assert get_galaxy_quality_flags(stamp_missing_mask, stacked = False) & she_flags.flag_no_mask
 
     def test_check_data_quality(self):
         """Unit test of the `check_data_quality` function.

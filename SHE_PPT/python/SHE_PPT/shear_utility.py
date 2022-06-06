@@ -433,12 +433,17 @@ def get_galaxy_quality_flags(gal_stamp: SHEImage,
 
     flags = 0
 
+    # Check for simple presence of data before anything else
+    if gal_stamp is None or gal_stamp.data is None:
+        flags |= she_flags.flag_no_science_image
+        return flags
+
     mask_flags, ravelled_antimask = _get_galaxy_mask_flags(gal_stamp)
 
     flags |= mask_flags
 
     # Check for missing or corrupt data
-    if stacked:
+    if stacked and gal_stamp.background_map is not None:
         data = gal_stamp.data + gal_stamp.background_map
     else:
         data = gal_stamp.data
