@@ -197,8 +197,8 @@ def correct_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
         try:
             res_shear = w2p_shear + galsim.Shear(g1 = g1, g2 = g2)
             dist2 = (rot_est_shear.g1 - res_shear.g1) ** 2 + (rot_est_shear.g2 - res_shear.g2) ** 2
-        except ValueError as e:
-            if MSG_TOO_BIG_SHEAR not in str(e):
+        except ValueError as local_e:
+            if MSG_TOO_BIG_SHEAR not in str(local_e):
                 raise
             # Requested a too-high shear value, so return an appropriately high distance
             dist2 = (w2p_shear.g1 + g1 - rot_est_shear.g1) ** 2 + (w2p_shear.g2 + g2 - rot_est_shear.g2) ** 2
@@ -421,6 +421,51 @@ def get_galaxy_quality_flags(gal_stamp: SHEImage,
 
     flags = 0
 
+    mask_flags, ravelled_antimask = _get_galaxy_mask_flags(gal_stamp)
+
+    flags |= mask_flags
+
+    # Check for missing or corrupt data
+    if stacked:
+        data = gal_stamp.data + gal_stamp.background_map
+    else:
+        data = gal_stamp.data
+
+    for a, missing_flag, corrupt_flag in ((data, she_flags.flag_no_science_image,
+                                           she_flags.flag_corrupt_science_image),
+                                          (gal_stamp.background_map, she_flags.flag_no_background_map,
+                                           she_flags.flag_corrupt_background_map),
+                                          (gal_stamp.noisemap, she_flags.flag_no_noisemap,
+                                           she_flags.flag_corrupt_noisemap),
+                                          (gal_stamp.segmentation_map, she_flags.flag_no_segmentation_map,
+                                           she_flags.flag_corrupt_segmentation_map),):
+
+        # Check for missing data
+        if a is None:
+            flags |= missing_flag
+            continue
+
+        # Check for corrupt data by checking that all data are valid
+
+        if corrupt_flag == she_flags.flag_corrupt_segmentation_map:
+            min_value = -1
+        else:
+            min_value = 0
+
+        good_data = a.ravel()[ravelled_antimask]
+        if (np.isnan(good_data).any() or np.isinf(good_data).any() or
+                ((good_data.sum() == 0) or (good_data < min_value).any())):
+            flags |= corrupt_flag
+
+    return flags
+
+
+def _get_galaxy_mask_flags(gal_stamp):
+    """Private function to check a galaxy stamp's mask for data quality issues and return a set of flags for it.
+    """
+
+    flags = 0
+
     # Check if the mask exists
     if gal_stamp.mask is None:
 
@@ -460,36 +505,4 @@ def get_galaxy_quality_flags(gal_stamp: SHEImage,
     if frac_unmasked < 0.25:
         flags |= she_flags.flag_insufficient_data
 
-    # Check for missing or corrupt data
-    if stacked:
-        data = gal_stamp.data + gal_stamp.background_map
-    else:
-        data = gal_stamp.data
-
-    for a, missing_flag, corrupt_flag in ((data, she_flags.flag_no_science_image,
-                                           she_flags.flag_corrupt_science_image),
-                                          (gal_stamp.background_map, she_flags.flag_no_background_map,
-                                           she_flags.flag_corrupt_background_map),
-                                          (gal_stamp.noisemap, she_flags.flag_no_noisemap,
-                                           she_flags.flag_corrupt_noisemap),
-                                          (gal_stamp.segmentation_map, she_flags.flag_no_segmentation_map,
-                                           she_flags.flag_corrupt_segmentation_map),):
-
-        # Check for missing data
-        if a is None:
-            flags |= missing_flag
-            continue
-
-        # Check for corrupt data by checking that all data are valid
-
-        if corrupt_flag == she_flags.flag_corrupt_segmentation_map:
-            min_value = -1
-        else:
-            min_value = 0
-
-        good_data = a.ravel()[ravelled_antimask]
-        if (np.isnan(good_data).any() or np.isinf(good_data).any() or
-                ((good_data.sum() == 0) or (good_data < min_value).any())):
-            flags |= corrupt_flag
-
-    return flags
+    return flags, ravelled_antimask
