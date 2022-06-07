@@ -2,7 +2,7 @@
 
     Created 17 Aug 2017
 
-    Defines a class for an image object with multiple data types (i.e. science, background, etc.) and exposures.
+    Defines a class for an image object with multiple data types (i.e. science, background, etc.).
 """
 
 __updated__ = "2021-08-13"
@@ -82,47 +82,44 @@ def _read_stamp(xmin, ymin, xmax, ymax, filename, hdu_i):
 # We need new-style classes for properties, hence inherit from object
 
 
-class SHEImage():
-    """ Structure to hold an image together with a mask, a noisemap, and a header (for metadata).
+class SHEImage:
+    """Structure to hold a representation of a science image and associated images (background, weight, etc.),
+    and supply various useful methods.
 
-        The structure can be written into a FITS file, and stamps can be extracted.
-        The properties .data, .mask, .noisemap and .header are meant to be accessed directly:
-          - .data is a numpy array
-          - .mask is a numpy array
-          - .noisemap is a numpy array
-          - .segmentation_map is a numpy array
-          - .header is an astropy.io.fits.Header object
-              (for an intro to those, see http://docs.astropy.org/en/stable/io/fits/#working-with-fits-headers )
+    All image attributes are stored as 2D numby arrays, indexed as (x,y), consistent with DS9, SExtractor,
+    and GalSim orientation conventions, and NOT consistent with the astroy (y,x) convention (which arises from
+    the fact that image data in FITS files is stored in column-major order, but astropy reads it in as row-major).
+    If an image is needed with the astropy convention, use the array's `transpose()` method to convert it - this
+    returns a view of the array with the (x,y) axes swapped (not a copy).
 
-        Note that the shape (and size) of data, mask and noisemap cannot be modified once the object exists, as such a
-        change would probably not be wanted. If you really want to change the size of a SHEImage, make a new object.
-
-        Parameters
-        ----------
-        data : np.ndarray<float>
-            A 2D array, with indices [x,y], consistent with DS9 and SExtractor orientation conventions
-        mask : np.ndarray<np.int32>
-            A 2D array of the same shape as data
-        noisemap : np.ndarray<float>
-            A 2D array of the same shape as data
-        segmentation_map : np.ndarray<np.int32>
-            A 2D array of the same shape as data
-        background_map : np.ndarray<float>
-            A 2D array of the same shape as data
-        weight_map : np.ndarray<float>
-            A 2D array of the same shape as data
-        header : astropy.io.fits.Header
-            Leaving None creates an empty header.
-        offset : tuple<float,float>
-            x, y offsets
-        wcs : astropy.wcs.WCS object
-            An astropy WCS for this image
-        parent_frame_stack : SHE_PPT.she_frame_stack.SHEFrameStack
-            Reference to the parent SHEFrameStack, if it exists; None otherwise
-        parent_frame : SHE_PPT.parent_frame.SHEFrameStack
-            Reference to the parent SHEFrame, if it exists; None otherwise
-        parent_image_stack : SHE_PPT.parent_image_stack.SHEImageStack
-            Reference to the parent SHEImageStack, if it exists; None otherwise
+    Attributes
+    ----------
+    data : np.ndarray[float]
+        The science image.
+    mask : Optional[np.ndarray[np.int64]]
+        The mask image, of the same shape as the science image.
+    noisemap : Optional[np.ndarray[float]]
+        The noise image (for only background noise, not including source noise), of the same shape as the science image.
+    segmentation_map : Optional[np.ndarray[np.int64]]
+        The segmentation map image (associating pixels with objects), of the same shape as the science image.
+    background_map : Optional[np.ndarray[float]]
+        The background map, of the same shape as the science image.
+    weight_map : Optional[np.ndarray[float]]
+        The weight map, of the same shape as the science image.
+    header : astropy.io.fits.Header
+        The image header, typically copied from the science image's HDU's header.
+    offset : Tuple[float,float]
+        The offset of this image relative to the image (if any) it was extracted from, indexed as (x_offset, y_offset).
+    wcs : Optional[astropy.wcs.WCS]
+        An astropy WCS object for this image.
+    galsim_wcs : Optional[galsim.wcs.BaseWCS]
+        A galsim WCS object for this image.
+    parent_frame_stack : Optional[SHEFrameStack]
+        Reference to the parent SHEFrameStack, if it exists; None otherwise
+    parent_frame : Optional[SHEFrame]
+        Reference to the parent SHEFrame, if it exists; None otherwise
+    parent_image_stack : Optional[SHEImageStack]
+        Reference to the parent SHEImageStack, if it exists; None otherwise
     """
 
     # Parent references
