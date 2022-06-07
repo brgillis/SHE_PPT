@@ -41,8 +41,7 @@ from .mask import (as_bool, is_masked_bad,
 DETECTOR_SHAPE = (4096, 4136)
 DEFAULT_STAMP_SIZE = 384
 
-allowed_int_dtypes = (
-    np.int8, np.int16, np.int32, np.uint8, np.uint16, np.uint32)
+S_ALLOWED_INT_DTYPES = {np.int8, np.int16, np.int32, np.uint8, np.uint16, np.uint32}
 
 logger = logging.getLogger(__name__)
 
@@ -337,7 +336,7 @@ class SHEImage():
                 raise ValueError(
                     "The mask array must have the same size as the data {}".format(self._data.shape))
             # Quietly ignore if byte order is the only difference
-            if not mask_array.dtype.newbyteorder('<') in allowed_int_dtypes:
+            if not mask_array.dtype.newbyteorder('<') in S_ALLOWED_INT_DTYPES:
                 logger.warning(
                     "Received mask array of type '%s'. Attempting safe casting to np.int32.", mask_array.dtype)
                 try:
