@@ -79,7 +79,11 @@ def _read_stamp(xmin, ymin, xmax, ymax, filename, hdu_i):
     return data
 
 
-# We need new-style classes for properties, hence inherit from object
+def _return_none() -> None:
+    """A private function which does nothing and returns None. This is used to be bound in place of a weak reference
+    if no object is referenced.
+    """
+    return None
 
 
 class SHEImage:
@@ -233,14 +237,14 @@ class SHEImage:
     def parent_frame_stack(self, parent_frame_stack):
 
         if parent_frame_stack is None:
-            self._parent_frame_stack = lambda: None
+            self._parent_frame_stack = _return_none
         else:
             # Use a weak reference so we don't keep the parent alive indefinitely
             self._parent_frame_stack = weakref.ref(parent_frame_stack)
 
     @parent_frame_stack.deleter
     def parent_frame_stack(self):
-        self._parent_frame_stack = lambda: None
+        self._parent_frame_stack = _return_none
 
     @property
     def parent_frame(self):
@@ -250,14 +254,14 @@ class SHEImage:
     def parent_frame(self, parent_frame):
 
         if parent_frame is None:
-            self._parent_frame = lambda: None
+            self._parent_frame = _return_none
         else:
             # Use a weak reference so we don't keep the parent alive indefinitely
             self._parent_frame = weakref.ref(parent_frame)
 
     @parent_frame.deleter
     def parent_frame(self):
-        self._parent_frame = lambda: None
+        self._parent_frame = _return_none
 
     @property
     def parent_image_stack(self):
@@ -267,14 +271,14 @@ class SHEImage:
     def parent_image_stack(self, parent_image_stack):
 
         if parent_image_stack is None:
-            self._parent_image_stack = lambda: None
+            self._parent_image_stack = _return_none
         else:
             # Use a weak reference so we don't keep the parent alive indefinitely
             self._parent_image_stack = weakref.ref(parent_image_stack)
 
     @parent_image_stack.deleter
     def parent_image_stack(self):
-        self._parent_image_stack = lambda: None
+        self._parent_image_stack = _return_none
 
     @property
     def parent_image(self):
@@ -284,14 +288,14 @@ class SHEImage:
     def parent_image(self, parent_image):
 
         if parent_image is None:
-            self._parent_image = lambda: None
+            self._parent_image = _return_none
         else:
             # Use a weak reference so we don't keep the parent alive indefinitely
             self._parent_image = weakref.ref(parent_image)
 
     @parent_image.deleter
     def parent_image(self):
-        self._parent_image = lambda: None
+        self._parent_image = _return_none
 
     @property
     def data(self):
