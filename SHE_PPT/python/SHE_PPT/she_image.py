@@ -55,20 +55,28 @@ D_ATTR_CONVERSIONS = {"data"    : "data",
 
 @lru_cache(maxsize = 50)
 def _get_fits_handle(filename):
+    """Private function to open a FITS file handle from a filename. Uses caching to limit number of open
+    FITS file handles to 50.
+    """
     f = fitsio.FITS(filename)
     return f
 
 
 @lru_cache(maxsize = 50)
 def _get_hdu_handle(filename, hdu_i):
+    """Private function to open a FITS HDU file handle from a filename and HDU index. Uses caching to limit number of
+    open HDU file handles to 50.
+    """
     h = _get_fits_handle(filename)[hdu_i]
     return h
 
 
 @lru_cache(maxsize = 2000)
 def _read_stamp(xmin, ymin, xmax, ymax, filename, hdu_i):
-    out = _get_hdu_handle(filename, hdu_i)[ymin:ymax, xmin:xmax].transpose()
-    return out
+    """Private function to read a stamp from a FITS file. Uses caching to limit number of stamps in memory to 2000.
+    """
+    data = _get_hdu_handle(filename, hdu_i)[ymin:ymax, xmin:xmax].transpose()
+    return data
 
 
 # We need new-style classes for properties, hence inherit from object
