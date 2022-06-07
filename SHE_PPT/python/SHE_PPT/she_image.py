@@ -45,12 +45,12 @@ S_ALLOWED_INT_DTYPES = {np.int8, np.int16, np.int32, np.uint8, np.uint16, np.uin
 
 logger = logging.getLogger(__name__)
 
-ATTR_CONVERSIONS = {"data"    : "data",
-                    "noisemap": "noisemap",
-                    "mask"    : "mask",
-                    "bkg"     : "background_map",
-                    "wgt"     : "weight_map",
-                    "seg"     : "segmentation_map", }
+D_ATTR_CONVERSIONS = {"data"    : "data",
+                      "noisemap": "noisemap",
+                      "mask"    : "mask",
+                      "bkg"     : "background_map",
+                      "wgt"     : "weight_map",
+                      "seg"     : "segmentation_map", }
 
 
 @lru_cache(maxsize = 50)
@@ -958,7 +958,7 @@ class SHEImage():
     def _extract_attr_stamp(self, xmin, ymin, xmax, ymax, attr, filename, hdu_i):
         if (xmax - xmin) <= 0 or (ymax - ymin) <= 0:
             return None
-        a = getattr(self, ATTR_CONVERSIONS[attr])
+        a = getattr(self, D_ATTR_CONVERSIONS[attr])
         if a is not None and a.shape[0] > 0 and a.shape[1] > 0:
             out = a[xmin:xmax, ymin:ymax]
         elif filename is not None and hdu_i is not None:
