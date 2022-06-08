@@ -628,7 +628,7 @@ class SHEImage:
             try:
                 return bool(lhs != rhs)
             except ValueError:
-                return (lhs != rhs).any()
+                return np.any(lhs != rhs)
 
         if neq(self.data, rhs.data):
             return False
