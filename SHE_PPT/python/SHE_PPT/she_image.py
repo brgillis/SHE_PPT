@@ -766,7 +766,7 @@ class SHEImage:
 
         # Note that we transpose the numpy arrays, so to have the same pixel
         # convention as DS9 and SExtractor.
-        data_hdu = astropy.io.fits.PrimaryHDU(self.data.transpose())
+        data_hdu = astropy.io.fits.PrimaryHDU(self.data.transpose(), header = full_header)
 
         hdu_list = astropy.io.fits.HDUList([data_hdu])
 
@@ -1025,8 +1025,15 @@ class SHEImage:
 
         return new_image
 
-    def extract_stamp(self, x, y, width = DEFAULT_STAMP_SIZE, height = None, indexconv = "numpy", keep_header = False,
-                      none_if_out_of_bounds = False, force_all_properties = False,
+    def extract_stamp(self,
+                      x,
+                      y,
+                      width = DEFAULT_STAMP_SIZE,
+                      height = None,
+                      indexconv = "numpy",
+                      keep_header = False,
+                      none_if_out_of_bounds = False,
+                      force_all_properties = False,
                       data_filename = None,
                       data_hdu = None,
                       noisemap_filename = None,
