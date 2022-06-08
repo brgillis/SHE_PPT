@@ -630,22 +630,13 @@ class SHEImage:
             except ValueError:
                 return np.any(_lhs != _rhs)
 
-        if neq(self.data, rhs.data):
-            return False
-        if neq(self.mask, rhs.mask):
-            return False
-        if neq(self.noisemap, rhs.noisemap):
-            return False
-        if neq(self.background_map, rhs.background_map):
-            return False
-        if neq(self.segmentation_map, rhs.segmentation_map):
-            return False
-        if neq(self.weight_map, rhs.weight_map):
-            return False
-        if neq(self.header, rhs.header):
-            return False
-        if neq(self.offset, rhs.offset):
-            return False
+        # If not same identity, check that all the data is the same
+        for attr in ["data", "mask", "noisemap", "background_map", "segmentation_map", "weight_map", "header",
+                     "offset"]:
+            if neq(getattr(self, attr), getattr(rhs, attr)):
+                return False
+
+        # Special test for WCS; try comparing them as headers too
         if neq(self.wcs, rhs.wcs):
             try:
                 if neq(self.wcs.to_header(), rhs.wcs.to_header()):
