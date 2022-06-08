@@ -34,44 +34,41 @@ import pytest
 from astropy.wcs import WCS
 
 import SHE_PPT.she_image
-from ElementsServices.DataSync import DataSync
 from SHE_PPT import file_io, mdb
 from SHE_PPT.constants.misc import SEGMAP_UNASSIGNED_VALUE
-from SHE_PPT.constants.test_data import (MDB_PRODUCT_FILENAME, SYNC_CONF, TEST_DATA_LOCATION, TEST_FILES_MDB)
+from SHE_PPT.testing.utility import SheTestCase
 
 logging.basicConfig(level = logging.DEBUG)
 
 
-class TestSheImage():
+class TestSheImage(SheTestCase):
+
+    def setup_workdir(self):
+
+        self._download_mdb()
+
+        self.gain = mdb.get_gain(suppress_warnings = True)
+        self.read_noise = mdb.get_read_noise(suppress_warnings = True)
+
+        # A WCS to use (from the auxdir)
+        header_file = file_io.find_file("AUX/SHE_PPT/tpv_header.bin")
+        header = file_io.read_pickled_product(header_file)
+        self.wcs = WCS(header)
+
+        # A SHEImage object to play with
+        self.w = 50
+        self.h = 20
+        array = np.random.randn(self.w * self.h).reshape((self.w, self.h))
+        self.img = SHE_PPT.she_image.SHEImage(array, header = header, wcs = self.wcs)
 
     @classmethod
     def setup_class(cls):
-
-        sync = DataSync(SYNC_CONF, TEST_FILES_MDB)
-        sync.download()
-        mdb_filename = sync.absolutePath(os.path.join(TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME))
-
-        mdb.init(mdb_filename)
-
-        cls.gain = mdb.get_gain(suppress_warnings = True)
-        cls.read_noise = mdb.get_read_noise(suppress_warnings = True)
 
         # A filename for testing the file-saving:
         cls.testfilepath = "test_SHEImage.fits"  # Will be deleted by teardown_class()
         # For some tests we need several files:
         cls.testfilepaths = ["test_SHEImage_0.fits", "test_SHEImage_1.fits", "test_SHEImage_2.fits",
                              "test_SHEImage_3.fits"]
-
-        # A WCS to use (from the auxdir)
-        header_file = file_io.find_file("AUX/SHE_PPT/tpv_header.bin")
-        header = file_io.read_pickled_product(header_file)
-        cls.wcs = WCS(header)
-
-        # A SHEImage object to play with
-        cls.w = 50
-        cls.h = 20
-        array = np.random.randn(cls.w * cls.h).reshape((cls.w, cls.h))
-        cls.img = SHE_PPT.she_image.SHEImage(array, header = header, wcs = cls.wcs)
 
     @classmethod
     def teardown_class(cls):
