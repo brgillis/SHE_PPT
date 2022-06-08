@@ -624,11 +624,11 @@ class SHEImage:
         """Equality test for SHEImage class.
         """
 
-        def neq(lhs, rhs):
+        def neq(_lhs, _rhs):
             try:
-                return bool(lhs != rhs)
+                return bool(_lhs != _rhs)
             except ValueError:
-                return np.any(lhs != rhs)
+                return np.any(_lhs != _rhs)
 
         if neq(self.data, rhs.data):
             return False
