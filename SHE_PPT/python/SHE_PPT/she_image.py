@@ -624,28 +624,39 @@ class SHEImage:
         """Equality test for SHEImage class.
         """
 
+        # Identity implies equality
+        if self is rhs:
+            return True
+
         def neq(_lhs, _rhs):
             try:
                 return bool(_lhs != _rhs)
             except ValueError:
                 return np.any(_lhs != _rhs)
 
-        # If not same identity, check that all the data is the same
+        res: bool = True
+
+        # Check that all the data is the same
         for attr in ["data", "mask", "noisemap", "background_map", "segmentation_map", "weight_map", "header",
                      "offset"]:
             if neq(getattr(self, attr), getattr(rhs, attr)):
-                return False
+                res = False
+                break
+        else:
+            # Check WCS if everything else passes
+            if neq(self.wcs, rhs.wcs):
 
-        # Special test for WCS; try comparing them as headers too
-        if neq(self.wcs, rhs.wcs):
-            try:
-                if neq(self.wcs.to_header(), rhs.wcs.to_header()):
-                    return False
-            except AttributeError:
-                # In this case, only one is None, so return False
-                return False
+                # Special test for WCS, comparing them as headers if not equal, since they can be a bit finicky
+                try:
+                    if neq(self.wcs.to_header(), rhs.wcs.to_header()):
+                        res = False
+                        logger.debug(f"In SHEImage.__eq__, WCS is not equal. Values were: %s, %s",
+                                     str(self.wcs.to_header()), str(rhs.wcs.to_header()))
+                except AttributeError:
+                    # In this case, only one is None, so return False
+                    res = False
 
-        return True
+        return res
 
     def get_object_mask(self, seg_id, mask_suspect = False, mask_unassigned = False):
         """Get a mask for pixels that are either bad (and optionally suspect)
