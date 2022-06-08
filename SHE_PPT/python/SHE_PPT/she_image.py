@@ -45,7 +45,7 @@ from EL_PythonUtils.utilities import run_only_once
 from . import logging, mdb
 from .constants.fits import BACKGROUND_TAG, CCDID_LABEL, MASK_TAG, NOISEMAP_TAG, SEGMENTATION_TAG, WEIGHT_TAG
 from .constants.misc import SEGMAP_UNASSIGNED_VALUE
-from .file_io import write_fits
+from .file_io import DEFAULT_WORKDIR, write_fits
 from .mask import (as_bool, is_masked_bad,
                    is_masked_suspect_or_bad, masked_off_image, )
 
@@ -796,7 +796,7 @@ class SHEImage:
                        segmentation_map_filepath = None,
                        background_map_filepath = None,
                        weight_map_filepath = None,
-                       workdir = ".", ):
+                       workdir = DEFAULT_WORKDIR, ):
         """Reads an image from a FITS file, such as written by write_to_fits(), and returns it as a SHEImage object.
 
         This function can be used to read previously saved SHEImage objects (in this case, just give the filepath),
