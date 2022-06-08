@@ -22,7 +22,7 @@ __updated__ = "2021-08-13"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from typing import TYPE_CHECKING
+from typing import Iterable, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .she_frame_stack import SHEFrameStack
@@ -860,13 +860,11 @@ class SHEImage:
         # Removing the mandatory cards (that were automatically added to the
         # header if write_to_fits was used)
         logger.debug("The raw primary header has %d keys", len(list(header.keys())))
-        for keyword in ["SIMPLE", "BITPIX", "NAXIS", "NAXIS1", "NAXIS2", "EXTEND"]:
-            if keyword in header:
-                header.remove(keyword)
+        cls.__remove_header_keywords(header = header,
+                                     l_keywords_to_remove = ["SIMPLE", "BITPIX", "NAXIS", "NAXIS1", "NAXIS2", "EXTEND"])
         if wcs is not None:
-            for keyword in list(wcs.to_header().keys()):
-                if keyword in header:
-                    header.remove(keyword)
+            cls.__remove_header_keywords(header = header,
+                                         l_keywords_to_remove = list(wcs.to_header().keys()))
 
         logger.debug("The cleaned header has %d keys", len(list(header.keys())))
 
@@ -928,6 +926,15 @@ class SHEImage:
 
         logger.info("Read %s from the file '%s'", str(new_image), filepath)
         return new_image
+
+    @staticmethod
+    def __remove_header_keywords(header: astropy.io.fits.Header,
+                                 l_keywords_to_remove: Iterable[str], ):
+        """Private method to remove a list of keywords from a FITS header.
+        """
+        for keyword in l_keywords_to_remove:
+            if keyword in header:
+                header.remove(keyword)
 
     @classmethod
     def _get_secondary_data_from_fits(cls, primary_filepath, special_filepath, ext):
