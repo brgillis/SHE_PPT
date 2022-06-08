@@ -33,11 +33,17 @@ import numpy as np
 
 from EL_PythonUtils.utilities import run_only_once
 from . import logging, mdb
-from .constants.fits import CCDID_LABEL
+from .constants.fits import BACKGROUND_TAG, CCDID_LABEL, MASK_TAG, NOISEMAP_TAG, SEGMENTATION_TAG, WEIGHT_TAG
 from .constants.misc import SEGMAP_UNASSIGNED_VALUE
 from .file_io import DEFAULT_WORKDIR, write_fits
 from .mask import (as_bool, is_masked_bad,
                    is_masked_suspect_or_bad, masked_off_image, )
+
+PRIMARY_TAG = "PRIMARY"
+
+KEY_Y_OFFSET = "SHEIOFY"
+
+KEY_X_OFFSET = "SHEIOFX"
 
 DETECTOR_SHAPE = (4096, 4136)
 DEFAULT_STAMP_SIZE = 384
@@ -740,22 +746,22 @@ class SHEImage:
             full_header = deepcopy(self.header)
 
         # Add offset data to the header
-        full_header["SHEIOFX"] = self.offset[0]
-        full_header["SHEIOFY"] = self.offset[1]
+        full_header[KEY_X_OFFSET] = self.offset[0]
+        full_header[KEY_Y_OFFSET] = self.offset[1]
 
         # Note that we transpose the numpy arrays, so to have the same pixel
         # convention as DS9 and SExtractor.
-        data_hdu = astropy.io.fits.PrimaryHDU(self.data.transpose(), header = full_header)
+        data_hdu = astropy.io.fits.PrimaryHDU(self.data.transpose())
 
         hdu_list = astropy.io.fits.HDUList([data_hdu])
 
         if not data_only:
 
-            for attr, name in [("mask", "MASK"),
-                               ("noisemap", "NOISEMAP"),
-                               ("segmentation_map", "SEGMENTATION"),
-                               ("background_map", "BACKGROUND"),
-                               ("weight_map", "WEIGHT")]:
+            for attr, name in [("mask", MASK_TAG),
+                               ("noisemap", NOISEMAP_TAG),
+                               ("segmentation_map", SEGMENTATION_TAG),
+                               ("background_map", BACKGROUND_TAG),
+                               ("weight_map", WEIGHT_TAG)]:
                 if getattr(self, attr) is not None:
                     hdu = astropy.io.fits.ImageHDU(getattr(self, attr).transpose(), name = name)
                     hdu_list.append(hdu)
@@ -768,12 +774,12 @@ class SHEImage:
     @classmethod
     def read_from_fits(cls,
                        filepath,
-                       data_ext = 'PRIMARY',
-                       mask_ext = 'MASK',
-                       noisemap_ext = 'NOISEMAP',
-                       segmentation_map_ext = 'SEGMAP',
-                       background_map_ext = 'BKGMAP',
-                       weight_map_ext = 'WGTMAP',
+                       data_ext = PRIMARY_TAG,
+                       mask_ext = MASK_TAG,
+                       noisemap_ext = NOISEMAP_TAG,
+                       segmentation_map_ext = SEGMENTATION_TAG,
+                       background_map_ext = BACKGROUND_TAG,
+                       weight_map_ext = WEIGHT_TAG,
                        mask_filepath = None,
                        noisemap_filepath = None,
                        segmentation_map_filepath = None,
@@ -893,16 +899,16 @@ class SHEImage:
                 workdir, weight_map_filepath)
         else:
             qualified_weight_map_filepath = None
-            weight_map = cls._get_secondary_data_from_fits(qualified_filepath, qualified_weight_map_filepath,
-                                                           weight_map_ext)
+        weight_map = cls._get_secondary_data_from_fits(qualified_filepath, qualified_weight_map_filepath,
+                                                       weight_map_ext)
 
         # Getting the offset from the header
-        if not "SHEIOFX" in header and "SHEIOFY" in header:
+        if not KEY_X_OFFSET in header and KEY_Y_OFFSET in header:
             offset = np.array([0., 0.])
         else:
-            offset = np.array([header["SHEIOFX"], header["SHEIOFY"]])
-            header.remove("SHEIOFX")
-            header.remove("SHEIOFY")
+            offset = np.array([header[KEY_X_OFFSET], header[KEY_Y_OFFSET]])
+            header.remove(KEY_X_OFFSET)
+            header.remove(KEY_Y_OFFSET)
 
         # Building and returning the new object
         newimg = SHEImage(data = data, mask = mask, noisemap = noisemap, segmentation_map = segmentation_map,
@@ -946,17 +952,17 @@ class SHEImage:
         logger.debug("Reading from file '%s'...", filepath)
 
         hdulist = astropy.io.fits.open(filepath)
-        nhdu = len(hdulist)
+        num_hdus = len(hdulist)
 
         if ext is None:
             # Warn the user, as the situation is not clear
-            if nhdu > 1:
+            if num_hdus > 1:
                 logger.warning(
                     "File '%s' has several HDUs, but no extension was specified! Using primary HDU.",
                     filepath)
-            ext = "PRIMARY"
+            ext = PRIMARY_TAG
 
-        logger.debug("Accessing extension '%s' out of %d available HDUs...", ext, nhdu)
+        logger.debug("Accessing extension '%s' out of %d available HDUs...", ext, num_hdus)
         data = hdulist[ext].data.transpose()
         if not data.ndim == 2:
             raise ValueError("Primary HDU must contain a 2D image")
