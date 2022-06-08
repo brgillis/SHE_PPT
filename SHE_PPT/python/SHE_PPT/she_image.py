@@ -736,33 +736,20 @@ class SHEImage:
 
         # Note that we transpose the numpy arrays, so to have the same pixel
         # convention as DS9 and SExtractor.
-        datahdu = astropy.io.fits.PrimaryHDU(
-            self.data.transpose(), header = full_header)
+        data_hdu = astropy.io.fits.PrimaryHDU(self.data.transpose(), header = full_header)
 
-        hdulist = astropy.io.fits.HDUList([datahdu])
+        hdulist = astropy.io.fits.HDUList([data_hdu])
 
         if not data_only:
 
-            if self.mask is not None:
-                maskhdu = astropy.io.fits.ImageHDU(
-                    data = self.mask.transpose(), name = "MASK")
-                hdulist.append(maskhdu)
-            if self.noisemap is not None:
-                noisemaphdu = astropy.io.fits.ImageHDU(
-                    data = self.noisemap.transpose(), name = "NOISEMAP")
-                hdulist.append(noisemaphdu)
-            if self.segmentation_map is not None:
-                segmaphdu = astropy.io.fits.ImageHDU(
-                    data = self.segmentation_map.transpose(), name = "SEGMAP")
-                hdulist.append(segmaphdu)
-            if self.background_map is not None:
-                bkgmaphdu = astropy.io.fits.ImageHDU(
-                    data = self.background_map.transpose(), name = "BKGMAP")
-                hdulist.append(bkgmaphdu)
-            if self.weight_map is not None:
-                wgtmaphdu = astropy.io.fits.ImageHDU(
-                    data = self.weight_map.transpose(), name = "WGTMAP")
-                hdulist.append(wgtmaphdu)
+            for attr, name in [("mask", "MASK"),
+                               ("noisemap", "NOISEMAP"),
+                               ("segmentation_map", "SEGMENTATION"),
+                               ("background_map", "BACKGROUND"),
+                               ("weight_map", "WEIGHT")]:
+                if getattr(self, attr) is not None:
+                    hdu = astropy.io.fits.ImageHDU(getattr(self, attr).transpose(), name = name)
+                    hdulist.append(hdu)
 
         if overwrite is True and os.path.exists(filepath):
             logger.debug("The output file exists and will get overwritten")
