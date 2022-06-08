@@ -35,6 +35,7 @@ from EL_PythonUtils.utilities import run_only_once
 from . import logging, mdb
 from .constants.fits import CCDID_LABEL
 from .constants.misc import SEGMAP_UNASSIGNED_VALUE
+from .file_io import DEFAULT_WORKDIR, write_fits
 from .mask import (as_bool, is_masked_bad,
                    is_masked_suspect_or_bad, masked_off_image, )
 
@@ -701,20 +702,28 @@ class SHEImage:
 
         return object_mask
 
-    def write_to_fits(self, filepath, overwrite = False, data_only = False, **kwargs):
-        """Writes the image to disk, in form of a multi-extension FITS cube.
+    def write_to_fits(self,
+                      filename: str,
+                      workdir: str = DEFAULT_WORKDIR,
+                      data_only: bool = False,
+                      **kwargs) -> None:
+        """Writes the image to disk, in the form of a multi-extension FITS cube.
 
-        The data is written in the primary HDU, the mask in the extension 'MASK' and the
-        noisemap in the extensions 'NOISEMAP'.
-        All the attributes of this image object are (should be ?) saved into the FITS file.
+        The data is written in the primary HDU, and the ancillary data to following HDUs.
 
         Technical note: the function "transposes" all the arrays written into the FITS file, so that the arrays will
         get shown by DS9 using the convention that the pixel with index [0,0] is bottom left.
 
-        Args:
-            filepath: where the FITS file should be written
-            overwrite: if True, overwrites any existing file.
-            data_only: if True, will only write the data image.
+        Parameters
+        ----------
+        filename : str
+            The name of the file to write to.
+        workdir : str
+            The directory where the file should be written.
+        data_only:  bool
+            If True, only the science image (`data` attribute) will be written to disk.
+        **kwargs : Any
+            Additional keyword arguments are passed to the `astropy.io.fits.writeto` function.
         """
 
         # Set up a fits header with the wcs
@@ -738,7 +747,7 @@ class SHEImage:
         # convention as DS9 and SExtractor.
         data_hdu = astropy.io.fits.PrimaryHDU(self.data.transpose(), header = full_header)
 
-        hdulist = astropy.io.fits.HDUList([data_hdu])
+        hdu_list = astropy.io.fits.HDUList([data_hdu])
 
         if not data_only:
 
@@ -749,16 +758,12 @@ class SHEImage:
                                ("weight_map", "WEIGHT")]:
                 if getattr(self, attr) is not None:
                     hdu = astropy.io.fits.ImageHDU(getattr(self, attr).transpose(), name = name)
-                    hdulist.append(hdu)
+                    hdu_list.append(hdu)
 
-        if overwrite is True and os.path.exists(filepath):
-            logger.debug("The output file exists and will get overwritten")
-
-        hdulist.writeto(filepath, overwrite = overwrite)
-        # Note that overwrite is called overwrite in the latest astropy, but
-        # backwards compatible.
-
-        logger.debug("Wrote %s to the FITS file %s", self, filepath)
+        write_fits(hdu_list = hdu_list,
+                   filename = filename,
+                   workdir = workdir,
+                   **kwargs)
 
     @classmethod
     def read_from_fits(cls,
