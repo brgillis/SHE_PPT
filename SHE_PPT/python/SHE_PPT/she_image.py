@@ -926,12 +926,12 @@ class SHEImage:
             header.remove(KEY_Y_OFFSET)
 
         # Building and returning the new object
-        newimg = SHEImage(data = data, mask = mask, noisemap = noisemap, segmentation_map = segmentation_map,
-                          background_map = background_map, weight_map = weight_map,
-                          header = header, offset = offset, wcs = wcs)
+        new_image = SHEImage(data = data, mask = mask, noisemap = noisemap, segmentation_map = segmentation_map,
+                             background_map = background_map, weight_map = weight_map,
+                             header = header, offset = offset, wcs = wcs)
 
-        logger.info("Read %s from the file '%s'", str(newimg), filepath)
-        return newimg
+        logger.info("Read %s from the file '%s'", str(new_image), filepath)
+        return new_image
 
     @classmethod
     def _get_secondary_data_from_fits(cls, primary_filepath, special_filepath, ext):
@@ -1010,7 +1010,7 @@ class SHEImage:
 
         new_offset = self.offset + np.array([x, y])
 
-        newimg = SHEImage(
+        new_image = SHEImage(
             data = np.ndarray(shape = (0, 0), dtype = float),
             mask = None,
             noisemap = None,
@@ -1023,7 +1023,7 @@ class SHEImage:
             parent_image = self,
             )
 
-        return newimg
+        return new_image
 
     def extract_stamp(self, x, y, width = DEFAULT_STAMP_SIZE, height = None, indexconv = "numpy", keep_header = False,
                       none_if_out_of_bounds = False, force_all_properties = False,
@@ -1142,7 +1142,7 @@ class SHEImage:
 
                 attr_stamps[attr] = self._extract_attr_stamp(xmin, ymin, xmax, ymax, attr, filename, hdu_i)
 
-            newimg = SHEImage(
+            new_image = SHEImage(
                 data = attr_stamps["data"],
                 mask = attr_stamps["mask"],
                 noisemap = attr_stamps["noisemap"],
@@ -1253,7 +1253,7 @@ class SHEImage:
                     weight_map_stamp[overlap_slice_stamp] = attr_stamps["wgt"]
 
             # Create the new object
-            newimg = SHEImage(
+            new_image = SHEImage(
                 data = data_stamp,
                 mask = mask_stamp,
                 noisemap = noisemap_stamp,
@@ -1271,19 +1271,19 @@ class SHEImage:
             if overlap_width == 0 and overlap_height == 0:
                 logger.warning("The extracted stamp is entirely outside of the image bounds!")
 
-        assert newimg.shape == (width, height)
+        assert new_image.shape == (width, height)
 
         # If we're forcing all properties, add defaults now
         if force_all_properties:
-            newimg.add_default_mask(force = False)
-            newimg.add_default_noisemap(force = False)
-            newimg.add_default_segmentation_map(force = False)
-            newimg.add_default_background_map(force = False)
-            newimg.add_default_weight_map(force = False)
-            newimg.add_default_header(force = False)
-            newimg.add_default_wcs(force = False)
+            new_image.add_default_mask(force = False)
+            new_image.add_default_noisemap(force = False)
+            new_image.add_default_segmentation_map(force = False)
+            new_image.add_default_background_map(force = False)
+            new_image.add_default_weight_map(force = False)
+            new_image.add_default_header(force = False)
+            new_image.add_default_wcs(force = False)
 
-        return newimg
+        return new_image
 
     def add_default_mask(self, force = False):
         """Adds a default mask to this object (all unmasked). If force=True, will overwrite an existing mask.
@@ -1628,14 +1628,14 @@ class SHEImage:
         # We'll calculate the transformation empirically by using small steps
         # in x and y
         x_0, y_0 = self.world2pix(ra, dec, origin = origin)
-        x_pra, y_pra = self.world2pix(ra + dra, dec, origin = origin)
-        x_pdec, y_pdec = self.world2pix(ra, dec + ddec, origin = origin)
+        x_p_ra, y_p_ra = self.world2pix(ra + dra, dec, origin = origin)
+        x_p_dec, y_p_dec = self.world2pix(ra, dec + ddec, origin = origin)
 
-        d_x_ra = (x_pra - x_0) / (dra * ra_scale)
-        d_y_ra = (y_pra - y_0) / (dra * ra_scale)
+        d_x_ra = (x_p_ra - x_0) / (dra * ra_scale)
+        d_y_ra = (y_p_ra - y_0) / (dra * ra_scale)
 
-        d_x_dec = (x_pdec - x_0) / ddec
-        d_y_dec = (y_pdec - y_0) / ddec
+        d_x_dec = (x_p_dec - x_0) / ddec
+        d_y_dec = (y_p_dec - y_0) / ddec
 
         world2pix_transformation = np.array([[d_x_ra, d_x_dec],
                                              [d_y_ra, d_y_dec]])
@@ -1925,10 +1925,10 @@ class SHEImage:
         dra = -(ra_1 - ra_0)
         ddec = (dec_1 - dec_0)
 
-        xy_angle = np.arctan2(dx, dy)
-        radec_angle = np.arctan2(dra * cos_dec, ddec)
+        x_y_angle = np.arctan2(dx, dy)
+        ra_dec_angle = np.arctan2(dra * cos_dec, ddec)
 
-        rotation_angle = radec_angle - xy_angle
+        rotation_angle = ra_dec_angle - x_y_angle
 
         return rotation_angle
 
