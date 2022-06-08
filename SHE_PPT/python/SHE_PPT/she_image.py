@@ -5,6 +5,8 @@
     Defines a class for an image object with multiple data types (i.e. science, background, etc.).
 """
 
+from __future__ import annotations
+
 __updated__ = "2021-08-13"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -20,10 +22,18 @@ __updated__ = "2021-08-13"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .she_frame_stack import SHEFrameStack
+    from .she_frame import SHEFrame
+    from .she_image_stack import SHEImageStack
+
 import os
 import weakref
 from copy import deepcopy
 from functools import lru_cache
+from typing import Optional, Tuple
 
 import astropy.io.fits
 import astropy.wcs
@@ -97,8 +107,8 @@ class SHEImage:
     """Structure to hold a representation of a science image and associated images (background, weight, etc.),
     and supply various useful methods.
 
-    All image attributes are stored as 2D numby arrays, indexed as (x,y), consistent with DS9, SExtractor,
-    and GalSim orientation conventions, and NOT consistent with the astroy (y,x) convention (which arises from
+    All image attributes are stored as 2D numpy arrays, indexed as (x,y), consistent with DS9, SExtractor,
+    and GalSim orientation conventions, and NOT consistent with the astropy (y,x) convention (which arises from
     the fact that image data in FITS files is stored in column-major order, but astropy reads it in as row-major).
     If an image is needed with the astropy convention, use the array's `transpose()` method to convert it - this
     returns a view of the array with the (x,y) axes swapped (not a copy).
@@ -137,7 +147,7 @@ class SHEImage:
         Reference to the parent SHEImageStack, if it exists; None otherwise. This is stored as a weak reference to
         prevent a circular reference, and so this may be initialized to reference an object, but later be returned
         as None if that object goes out of scope.
-    parent_image_stack : Optional[SHEImageStack]
+    parent_image : Optional[SHEImage]
         Reference to the parent SHEImage, if it exists; None otherwise. This is stored as a weak reference to
         prevent a circular reference, and so this may be initialized to reference an object, but later be returned
         as None if that object goes out of scope.
@@ -167,49 +177,54 @@ class SHEImage:
     _images_loaded = True
 
     def __init__(self,
-                 data,
-                 mask = None,
-                 noisemap = None,
-                 segmentation_map = None,
-                 background_map = None,
-                 weight_map = None,
-                 header = None,
-                 offset = None,
-                 wcs = None,
-                 parent_frame_stack = None,
-                 parent_frame = None,
-                 parent_image_stack = None,
-                 parent_image = None):
-        """ Initialiser for a SHEImage object
+                 data: np.ndarray[float],
+                 mask: Optional[np.ndarray[np.int64]] = None,
+                 noisemap: Optional[np.ndarray[float]] = None,
+                 segmentation_map: Optional[np.ndarray[np.int64]] = None,
+                 background_map: Optional[np.ndarray[float]] = None,
+                 weight_map: Optional[np.ndarray[float]] = None,
+                 header: astropy.io.fits.Header = None,
+                 offset: Tuple[float, float] = None,
+                 wcs: Optional[astropy.wcs.WCS] = None,
+                 parent_frame_stack: Optional[SHEFrameStack] = None,
+                 parent_frame: Optional[SHEFrame] = None,
+                 parent_image_stack: Optional[SHEImageStack] = None,
+                 parent_image: Optional[SHEImage] = None):
+        """ Initializer for a SHEImage object
 
             Parameters
             ----------
-            data : np.ndarray<float>
-                A 2D array, with indices [x,y], consistent with DS9 and SExtractor orientation conventions
-            mask : np.ndarray<np.int32>
-                A 2D array of the same shape as data
-            noisemap : np.ndarray<float>
-                A 2D array of the same shape as data
-            segmentation_map : np.ndarray<np.int32>
-                A 2D array of the same shape as data
-            background_map : np.ndarray<float>
-                A 2D array of the same shape as data
-            weight_map : np.ndarray<float>
-                A 2D array of the same shape as data
+            data : np.ndarray[float]
+                The science image.
+            mask : Optional[np.ndarray[np.int64]]
+                The mask image, of the same shape as the science image.
+            noisemap : Optional[np.ndarray[float]]
+                The noise image (for only background noise, not including source noise), of the same shape as the
+                science image.
+            segmentation_map : Optional[np.ndarray[np.int64]]
+                The segmentation map image (associating pixels with objects), of the same shape as the science image.
+            background_map : Optional[np.ndarray[float]]
+                The background map, of the same shape as the science image.
+            weight_map : Optional[np.ndarray[float]]
+                The weight map, of the same shape as the science image.
             header : astropy.io.fits.Header
-                Leaving None creates an empty header.
-            offset : tuple<float,float>
-                x, y offsets
-            wcs : astropy.wcs.WCS object
-                An astropy WCS for this image
-            parent_frame_stack : SHE_PPT.she_frame_stack.SHEFrameStack
-                Reference to the parent SHEFrameStack, if it exists; None otherwise
-            parent_frame : SHE_PPT.parent_frame.SHEFrameStack
-                Reference to the parent SHEFrame, if it exists; None otherwise
-            parent_image_stack : SHE_PPT.parent_image_stack.SHEImageStack
-                Reference to the parent SHEImageStack, if it exists; None otherwise
-            parent_image_stack : SHE_PPT.parent_image_stack.SHEImageStack
-                Reference to the parent SHEImage, if it exists; None otherwise
+                The image header, typically copied from the science image's HDU's header.
+            offset : Tuple[float,float]
+                The offset of this image relative to the image (if any) it was extracted from, indexed as (x_offset,
+                y_offset).
+            wcs : Optional[astropy.wcs.WCS]
+                An astropy WCS object for this image.
+            parent_frame_stack : Optional[SHEFrameStack]
+                Reference to the parent SHEFrameStack, if it exists; None otherwise.
+                as None if that object goes out of scope.
+            parent_frame : Optional[SHEFrame]
+                Reference to the parent SHEFrame, if it exists; None otherwise.
+                as None if that object goes out of scope.
+            parent_image_stack : Optional[SHEImageStack]
+                Reference to the parent SHEImageStack, if it exists; None otherwise.
+                as None if that object goes out of scope.
+            parent_image : Optional[SHEImage]
+                Reference to the parent SHEImage, if it exists; None otherwise.
         """
 
         # References to parent objects
@@ -247,11 +262,11 @@ class SHEImage:
     # -SHOULD-use-properties-to-protect-the-service-from-the-implementation
 
     @property
-    def parent_frame_stack(self):
+    def parent_frame_stack(self) -> Optional[SHEFrameStack]:
         return self._parent_frame_stack()
 
     @parent_frame_stack.setter
-    def parent_frame_stack(self, parent_frame_stack):
+    def parent_frame_stack(self, parent_frame_stack: Optional[SHEFrameStack]) -> None:
 
         if parent_frame_stack is None:
             self._parent_frame_stack = _return_none
@@ -260,15 +275,15 @@ class SHEImage:
             self._parent_frame_stack = weakref.ref(parent_frame_stack)
 
     @parent_frame_stack.deleter
-    def parent_frame_stack(self):
+    def parent_frame_stack(self) -> None:
         self._parent_frame_stack = _return_none
 
     @property
-    def parent_frame(self):
+    def parent_frame(self) -> Optional[SHEFrame]:
         return self._parent_frame()
 
     @parent_frame.setter
-    def parent_frame(self, parent_frame):
+    def parent_frame(self, parent_frame: Optional[SHEFrame]) -> None:
 
         if parent_frame is None:
             self._parent_frame = _return_none
@@ -277,15 +292,15 @@ class SHEImage:
             self._parent_frame = weakref.ref(parent_frame)
 
     @parent_frame.deleter
-    def parent_frame(self):
+    def parent_frame(self) -> None:
         self._parent_frame = _return_none
 
     @property
-    def parent_image_stack(self):
+    def parent_image_stack(self) -> Optional[SHEImageStack]:
         return self._parent_image_stack()
 
     @parent_image_stack.setter
-    def parent_image_stack(self, parent_image_stack):
+    def parent_image_stack(self, parent_image_stack: Optional[SHEImageStack]) -> None:
 
         if parent_image_stack is None:
             self._parent_image_stack = _return_none
@@ -294,15 +309,15 @@ class SHEImage:
             self._parent_image_stack = weakref.ref(parent_image_stack)
 
     @parent_image_stack.deleter
-    def parent_image_stack(self):
+    def parent_image_stack(self) -> None:
         self._parent_image_stack = _return_none
 
     @property
-    def parent_image(self):
+    def parent_image(self) -> Optional[SHEImage]:
         return self._parent_image()
 
     @parent_image.setter
-    def parent_image(self, parent_image):
+    def parent_image(self, parent_image: Optional[SHEImage]) -> None:
 
         if parent_image is None:
             self._parent_image = _return_none
@@ -311,7 +326,7 @@ class SHEImage:
             self._parent_image = weakref.ref(parent_image)
 
     @parent_image.deleter
-    def parent_image(self):
+    def parent_image(self) -> None:
         self._parent_image = _return_none
 
     @property
@@ -627,7 +642,7 @@ class SHEImage:
 
         return "SHEImage(" + ", ".join(str_list) + ")"
 
-    def __eq__(self, rhs: "SHEImage") -> bool:
+    def __eq__(self, rhs: SHEImage) -> bool:
         """Equality test for SHEImage class.
         """
 
@@ -903,7 +918,7 @@ class SHEImage:
                                                        weight_map_ext)
 
         # Getting the offset from the header
-        if not KEY_X_OFFSET in header and KEY_Y_OFFSET in header:
+        if KEY_X_OFFSET not in header or KEY_Y_OFFSET not in header:
             offset = np.array([0., 0.])
         else:
             offset = np.array([header[KEY_X_OFFSET], header[KEY_Y_OFFSET]])
@@ -926,20 +941,16 @@ class SHEImage:
         exist in the file.
         """
 
-        outarray = None
-
         if special_filepath is None:
             filepath = primary_filepath
         else:
             filepath = special_filepath
 
         try:
-            outarray = cls._get_specific_hdu_content_from_fits(filepath, ext = ext)
+            return cls._get_specific_hdu_content_from_fits(filepath, ext = ext)
         except KeyError:
             logger.debug("Extension %s not found in fits file %s", ext, filepath)
             return None
-
-        return outarray
 
     @classmethod
     def _get_specific_hdu_content_from_fits(cls, filepath, ext = None, return_header = False):
@@ -1167,7 +1178,7 @@ class SHEImage:
 
             # Compute the bounds of this same overlapping part in the new stamp
             # The indexes of the stamp are simply shifted with respect to those
-            # of the orinigal image by (xmin, ymin)
+            # of the original image by (xmin, ymin)
             overlap_xmin_stamp = overlap_xmin - xmin
             overlap_xmax_stamp = overlap_xmax - xmin
             overlap_ymin_stamp = overlap_ymin - ymin
@@ -1616,9 +1627,9 @@ class SHEImage:
 
         # We'll calculate the transformation empirically by using small steps
         # in x and y
-        x_0, y_0 = self.world2pix(ra, dec)
-        x_pra, y_pra = self.world2pix(ra + dra, dec)
-        x_pdec, y_pdec = self.world2pix(ra, dec + ddec)
+        x_0, y_0 = self.world2pix(ra, dec, origin = origin)
+        x_pra, y_pra = self.world2pix(ra + dra, dec, origin = origin)
+        x_pdec, y_pdec = self.world2pix(ra, dec + ddec, origin = origin)
 
         d_x_ra = (x_pra - x_0) / (dra * ra_scale)
         d_y_ra = (y_pra - y_0) / (dra * ra_scale)
@@ -1721,7 +1732,7 @@ class SHEImage:
         # check here
 
         world2pix_transformation = self.get_world2pix_transformation(
-            ra, dec, dra, ddec, spatial_ra = True)
+            ra, dec, dra, ddec, spatial_ra = True, origin = origin)
 
         u, _, vh = np.linalg.svd(world2pix_transformation)
 
@@ -1754,7 +1765,7 @@ class SHEImage:
         theta : galsim.Angle
         flip : bool
 
-        Note 1: Since shear and rotation are noncommutative, the rotation operation must be applied before shear.
+        Note 1: Since shear and rotation are non-commutative, the rotation operation must be applied before shear.
 
         Note 2: If testing against a galsim.wcs.ShearWCS class, note that the shear defined as input to that class
           is the world-to-pixel shear, while the scale is the pixel-to-world scale, which can lead to some confusion
@@ -1803,7 +1814,7 @@ class SHEImage:
         theta : galsim.Angle
         flip : bool
 
-        Note 1: Since shear and rotation are noncommutative, the rotation operation must be applied before shear.
+        Note 1: Since shear and rotation are non-commutative, the rotation operation must be applied before shear.
 
         Note 2: If testing against a galsim.wcs.ShearWCS class, note that the shear defined as input to that class
           is the world-to-pixel shear, while the scale is the pixel-to-world scale, which can lead to some confusion
@@ -1828,32 +1839,31 @@ class SHEImage:
 
             local_wcs = self.galsim_wcs.jacobian(world_pos = world_pos)
         except ValueError as e:
-            if "WCS does not have longitude type" not in str(e):
+            if "WCS does not have longitude type" not in str(e) or len(self.header) == 0:
                 raise
-            if len(self.header) > 0:
 
-                # If we hit this bug, read the WCS directly from the header
+            # If we hit this bug, read the WCS directly from the header
 
-                warn_galsim_wcs_bug_workaround()
+            warn_galsim_wcs_bug_workaround()
 
-                self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.header)[0]
+            self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.header)[0]
 
-                if self.galsim_wcs.isPixelScale() and np.isclose(self.galsim_wcs.scale, 1.0):
+            if self.galsim_wcs.isPixelScale() and np.isclose(self.galsim_wcs.scale, 1.0):
 
-                    # Don't have the information in this stamp's header - check for a parent image
-                    if self.parent_image is not None:
-                        self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.parent_image.header)[0]
-                        if self.galsim_wcs.isPixelScale() and np.isclose(self.galsim_wcs.scale, 1.0):
-                            raise ValueError("Galsim WCS seems to not have been loaded correctly.")
-                    else:
+                # Don't have the information in this stamp's header - check for a parent image
+                if self.parent_image is not None:
+                    self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.parent_image.header)[0]
+                    if self.galsim_wcs.isPixelScale() and np.isclose(self.galsim_wcs.scale, 1.0):
                         raise ValueError("Galsim WCS seems to not have been loaded correctly.")
-
-                if isinstance(self.galsim_wcs, galsim.wcs.CelestialWCS):
-                    world_pos = galsim.CelestialCoord(ra * galsim.degrees, dec * galsim.degrees)
                 else:
-                    world_pos = galsim.PositionD(ra, dec)
+                    raise ValueError("Galsim WCS seems to not have been loaded correctly.")
 
-                local_wcs = self.galsim_wcs.jacobian(world_pos = world_pos)
+            if isinstance(self.galsim_wcs, galsim.wcs.CelestialWCS):
+                world_pos = galsim.CelestialCoord(ra * galsim.degrees, dec * galsim.degrees)
+            else:
+                world_pos = galsim.PositionD(ra, dec)
+
+            local_wcs = self.galsim_wcs.jacobian(world_pos = world_pos)
 
         return local_wcs.inverse().getDecomposition()
 
@@ -1866,7 +1876,8 @@ class SHEImage:
         Parameters
         ----------
         x : float
-            x pixel coordinate
+            x pixel coordinate. Note: dx and dy are required here since, due to distortion in the transformation,
+            we can't assume the rotation angle will be independent of them.
         y : float
             idem for y
         dx : float
@@ -1878,9 +1889,6 @@ class SHEImage:
             In FITS and Fortran standards, this is 1.
             In Numpy and C standards this is 0.
             (from astropy.wcs)
-
-        Note: dx and dy are required here since, due to distortion in the transformation, we can't assume the
-        rotation angle will be independent of them.
 
         Raises
         ------
@@ -1909,16 +1917,16 @@ class SHEImage:
         ra_0, dec_0 = self.pix2world(x, y, origin = origin)
         ra_1, dec_1 = self.pix2world(x + dx, y + dy, origin = origin)
 
-        cosdec = np.cos(dec_0 * np.pi / 180)
+        cos_dec = np.cos(dec_0 * np.pi / 180)
 
-        if cosdec <= 0.01:
+        if cos_dec <= 0.01:
             raise ValueError("Dec too close to pole for accurate calculation.")
 
         dra = -(ra_1 - ra_0)
         ddec = (dec_1 - dec_0)
 
         xy_angle = np.arctan2(dx, dy)
-        radec_angle = np.arctan2(dra * cosdec, ddec)
+        radec_angle = np.arctan2(dra * cos_dec, ddec)
 
         rotation_angle = radec_angle - xy_angle
 
@@ -1937,12 +1945,13 @@ class SHEImage:
         dec : float
             Declination (Dec) world coordinate in degrees
         dra : float
-            Differential ra step in degrees to use in calculating transformation matrix
+            Differential ra step in degrees to use in calculating transformation matrix. Note: dra and ddec are
+            required here since, due to distortion in the transformation, we can't assume the rotation angle will be
+            independent of them.
         ddec : float
             idem for dec
 
-        Note: dra and ddec are required here since, due to distortion in the transformation, we can't assume the
-        rotation angle will be independent of them.
+
 
         Raises
         ------
@@ -1961,27 +1970,26 @@ class SHEImage:
         if (dra == 0) and (ddec == 0):
             raise ValueError("Differentials dx and dy must not both be zero.")
 
-        cosdec = np.cos(dec * np.pi / 180)
+        cos_dec = np.cos(dec * np.pi / 180)
 
-        if cosdec <= 0.01:
+        if cos_dec <= 0.01:
             raise ValueError("Dec too close to pole for accurate calculation.")
 
-        # We'll calculate the transformation empirically by using small steps
-        # in x and y
-        x_0, y_0 = self.world2pix(ra, dec)
-        x_1, y_1 = self.world2pix(ra - dra, dec + ddec)
+        # We'll calculate the transformation empirically by using small steps in x and y
+        x_0, y_0 = self.world2pix(ra, dec, origin = origin)
+        x_1, y_1 = self.world2pix(ra - dra, dec + ddec, origin = origin)
 
         dx = (x_1 - x_0)
         dy = (y_1 - y_0)
 
         xy_angle = np.arctan2(dx, dy)
-        radec_angle = np.arctan2(dra * cosdec, ddec)
+        radec_angle = np.arctan2(dra * cos_dec, ddec)
 
         rotation_angle = xy_angle - radec_angle
 
         return rotation_angle
 
-    def get_objects_in_dectector(self, objects_coords, x_buffer = 0., y_buffer = 0.):
+    def get_objects_in_detector(self, objects_coords, x_buffer = 0., y_buffer = 0.):
         """Returns an array containing the indices of the objects in the detector, and arrays of the x and y pixel
         coordinates for these objects"""
 
@@ -2007,7 +2015,7 @@ class SHEImage:
         # get the distances of all objects from the centre pixel of the detector
         all_distances = objects_coords.separation(centre_coords).deg
 
-        # we consider objects only closer to the centre than max_dist as candiates for being in the image
+        # we consider objects only closer to the centre than max_dist as candidates for being in the image
         candidate_indices = np.where(all_distances <= max_dist)[0]
 
         # For these candidates, get their sky coords and convert them into pixel coordinates
@@ -2022,12 +2030,11 @@ class SHEImage:
         for i in range(len(x_candidates)):
             x, y = x_candidates[i], y_candidates[i]
 
-            if x >= 1. - x_buffer and x <= nx + x_buffer:
-                if y >= 1. - y_buffer and y <= ny + y_buffer:
+            if 1. - x_buffer <= x <= nx + x_buffer and 1. - y_buffer <= y <= ny + y_buffer:
 
-                    indices_confirmed.append(candidate_indices[i])
-                    x_confirmed.append(x)
-                    y_confirmed.append(y)
+                indices_confirmed.append(candidate_indices[i])
+                x_confirmed.append(x)
+                y_confirmed.append(y)
 
         return np.asarray(indices_confirmed), np.asarray(x_confirmed), np.asarray(y_confirmed)
 
