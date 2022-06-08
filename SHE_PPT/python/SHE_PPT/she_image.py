@@ -620,7 +620,7 @@ class SHEImage:
 
         return "SHEImage(" + ", ".join(str_list) + ")"
 
-    def __eq__(self, rhs):
+    def __eq__(self, rhs: "SHEImage") -> bool:
         """Equality test for SHEImage class.
         """
 
