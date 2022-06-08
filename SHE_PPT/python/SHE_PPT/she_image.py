@@ -45,7 +45,7 @@ from EL_PythonUtils.utilities import run_only_once
 from . import logging, mdb
 from .constants.fits import BACKGROUND_TAG, CCDID_LABEL, MASK_TAG, NOISEMAP_TAG, SEGMENTATION_TAG, WEIGHT_TAG
 from .constants.misc import SEGMAP_UNASSIGNED_VALUE
-from .file_io import DEFAULT_WORKDIR, write_fits
+from .file_io import write_fits
 from .mask import (as_bool, is_masked_bad,
                    is_masked_suspect_or_bad, masked_off_image, )
 
@@ -724,8 +724,7 @@ class SHEImage:
         return object_mask
 
     def write_to_fits(self,
-                      filename: str,
-                      workdir: str = DEFAULT_WORKDIR,
+                      filepath: str,
                       data_only: bool = False,
                       **kwargs) -> None:
         """Writes the image to disk, in the form of a multi-extension FITS cube.
@@ -737,10 +736,8 @@ class SHEImage:
 
         Parameters
         ----------
-        filename : str
-            The name of the file to write to.
-        workdir : str
-            The directory where the file should be written.
+        filepath : str
+            The qualified filename where the file should be written.
         data_only:  bool
             If True, only the science image (`data` attribute) will be written to disk.
         **kwargs : Any
@@ -782,8 +779,7 @@ class SHEImage:
                     hdu_list.append(hdu)
 
         write_fits(hdu_list = hdu_list,
-                   filename = filename,
-                   workdir = workdir,
+                   filename = filepath,
                    **kwargs)
 
     @classmethod
