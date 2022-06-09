@@ -786,19 +786,19 @@ class SHEImage:
 
     @classmethod
     def read_from_fits(cls,
-                       filepath,
-                       data_ext = PRIMARY_TAG,
-                       mask_ext = MASK_TAG,
-                       noisemap_ext = NOISEMAP_TAG,
-                       segmentation_map_ext = SEGMENTATION_TAG,
-                       background_map_ext = BACKGROUND_TAG,
-                       weight_map_ext = WEIGHT_TAG,
-                       mask_filepath = None,
-                       noisemap_filepath = None,
-                       segmentation_map_filepath = None,
-                       background_map_filepath = None,
-                       weight_map_filepath = None,
-                       workdir = DEFAULT_WORKDIR, ):
+                       filepath: str,
+                       data_ext: str = PRIMARY_TAG,
+                       mask_ext: Optional[str] = MASK_TAG,
+                       noisemap_ext: Optional[str] = NOISEMAP_TAG,
+                       segmentation_map_ext: Optional[str] = SEGMENTATION_TAG,
+                       background_map_ext: Optional[str] = BACKGROUND_TAG,
+                       weight_map_ext: Optional[str] = WEIGHT_TAG,
+                       mask_filepath: Optional[str] = None,
+                       noisemap_filepath: Optional[str] = None,
+                       segmentation_map_filepath: Optional[str] = None,
+                       background_map_filepath: Optional[str] = None,
+                       weight_map_filepath: Optional[str] = None,
+                       workdir: str = DEFAULT_WORKDIR, ):
         """Reads an image from a FITS file, such as written by write_to_fits(), and returns it as a SHEImage object.
 
         This function can be used to read previously saved SHEImage objects (in this case, just give the filepath),
@@ -816,33 +816,33 @@ class SHEImage:
 
         Parameters
         ----------
-        filepath: str
+        filepath : str
             path to the FITS file containing the primary data and header to be read
-        data_ext: str
+        data_ext : str
             name or index of the primary HDU, containing the data and the header.
-        mask_ext: str
+        mask_ext : Optional[str]
             name or index of the extension HDU containing the mask.
             Set both mask_ext and mask_filepath to None to not read in any mask.
-        noisemap_ext: str
+        noisemap_ext : Optional[str]
             idem, for the noisemap
-        segmentation_map_ext: str
+        segmentation_map_ext : Optional[str]
             idem, for the segmentation_map
-        background_map_ext: str
+        background_map_ext : Optional[str]
             idem, for the background_map
-        weight_map_ext: str
+        weight_map_ext : Optional[str]
             idem, for the weight_map
-        mask_filepath: str
+        mask_filepath : Optional[str]
             a separate filepath to read the mask from.
             If you specify this, also set mask_ext accordingly (at least set it to 0 if the file has only one HDU).
-        noisemap_filepath: str
+        noisemap_filepath : Optional[str]
             idem, for the noisemap
-        segmentation_map_filepath: str
+        segmentation_map_filepath : Optional[str]
             idem, for the segmentation_map
-        background_map_filepath: str
+        background_map_filepath : Optional[str]
             idem, for the background_map
-        weight_map_filepath: str
+        weight_map_filepath : Optional[str]
             idem, for the weight_map
-        workdir: str
+        workdir : str
             The working directory, where files can be found
 
         """
