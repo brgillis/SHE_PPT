@@ -770,25 +770,25 @@ class TestSheImage(SheTestCase):
                               (24, 38, 52.53677316085, -28.75899827058671),
                               (1012, 4111, 52.876229370322626, -28.686527560717373)):
 
-            world2pix_decomposition = self.img.get_world2pix_decomposition(ra, dec)
-            pix2world_decomposition = self.img.get_pix2world_decomposition(x, y)
+            w2p_scale, _, w2p_angle, w2p_flip = self.img.get_world2pix_decomposition(ra, dec)
+            p2w_scale, _, p2w_angle, p2w_flip = self.img.get_pix2world_decomposition(x, y)
 
             # Check the scales are inverses
-            assert np.isclose(world2pix_decomposition[0], 1. / pix2world_decomposition[0])
+            assert np.isclose(w2p_scale, 1. / p2w_scale)
 
             # Shear is checked for the non-celestial WCS
 
             # Check the angles are opposite (need to divide out units for numpy to understand the values)
-            assert np.isclose(world2pix_decomposition[2] / galsim.degrees, -
-            pix2world_decomposition[2] / galsim.degrees)
+            assert np.isclose(w2p_angle / galsim.degrees, -
+            p2w_angle / galsim.degrees)
 
             # Check the flip is the same
-            assert world2pix_decomposition[3] == pix2world_decomposition[3]
+            assert w2p_flip == p2w_flip
 
             # Check the angle matches what we get in the rotation matrix
             pix2world_rotation_matrix = self.img.get_pix2world_rotation(x, y, origin = 1)
-            assert np.isclose(pix2world_decomposition[2].cos(), pix2world_rotation_matrix[0, 0], rtol = 1e-4)
-            assert np.isclose(pix2world_decomposition[2].sin(), pix2world_rotation_matrix[0, 1], rtol = 1e-4)
+            assert np.isclose(p2w_angle.cos(), pix2world_rotation_matrix[0, 0], rtol = 1e-4)
+            assert np.isclose(p2w_angle.sin(), pix2world_rotation_matrix[0, 1], rtol = 1e-4)
 
         # Test with a simple Shear WCS
 
