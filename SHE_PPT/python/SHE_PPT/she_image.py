@@ -1137,14 +1137,16 @@ class SHEImage:
         # any current offset.
         new_offset = self.offset + np.array([xmin, ymin])
 
+        new_stamps = {}
+
         # If these bounds are fully within the image range, the extraction is
         # easy.
         if xmin >= 0 and xmax < self.shape[0] and ymin >= 0 and ymax < self.shape[1]:
-            # We are fully within ghe image
+
+            # We are fully within the image
             logger.debug("Extracting stamp [%d:%d,%d:%d] fully within image of shape (%d,%d)",
                          xmin, xmax, ymin, ymax, self.shape[0], self.shape[1])
 
-            extracted_stamps = {}
             for attr_name, filename, hdu_i in (("data", data_filename, data_hdu),
                                                ("noisemap", noisemap_filename, noisemap_hdu),
                                                ("mask", mask_filename, mask_hdu),
@@ -1152,23 +1154,8 @@ class SHEImage:
                                                ("wgt", wgt_filename, wgt_hdu),
                                                ("seg", seg_filename, seg_hdu),):
 
-                extracted_stamps[attr_name] = self._extract_attr_stamp(xmin, ymin, xmax, ymax, attr_name, filename,
-                                                                       hdu_i)
-
-            new_image = SHEImage(
-                data = extracted_stamps["data"],
-                mask = extracted_stamps["mask"],
-                noisemap = extracted_stamps["noisemap"],
-                segmentation_map = extracted_stamps["seg"],
-                background_map = extracted_stamps["bkg"],
-                weight_map = extracted_stamps["wgt"],
-                header = new_header,
-                offset = new_offset,
-                wcs = self.wcs,
-                parent_image = self,
-                parent_frame = self.parent_frame,
-                parent_frame_stack = self.parent_frame_stack,
-                )
+                new_stamps[attr_name] = self._extract_attr_stamp(xmin, ymin, xmax, ymax, attr_name, filename,
+                                                                 hdu_i)
 
         else:
             logger.debug("Extracting stamp [%d:%d,%d:%d] not entirely within image of shape (%d,%d)",
@@ -1199,7 +1186,6 @@ class SHEImage:
             overlap_slice_stamp = (slice(overlap_xmin_stamp, overlap_xmax_stamp), slice(
                 overlap_ymin_stamp, overlap_ymax_stamp))
 
-            new_stamps = {}
             extracted_stamps = {}
 
             # Read in the overlap data
@@ -1237,24 +1223,24 @@ class SHEImage:
                     if extracted_stamps[attr_name] is not None:
                         new_stamps[attr_name][overlap_slice_stamp] = extracted_stamps[attr_name]
 
-            # Create the new object
-            new_image = SHEImage(
-                data = new_stamps["data"],
-                mask = new_stamps["mask"],
-                noisemap = new_stamps["noisemap"],
-                segmentation_map = new_stamps["seg"],
-                background_map = new_stamps["bkg"],
-                weight_map = new_stamps["wgt"],
-                header = new_header,
-                offset = new_offset,
-                wcs = self.wcs,
-                parent_image = self,
-                parent_frame = self.parent_frame,
-                parent_frame_stack = self.parent_frame_stack,
-                )
-
             if overlap_width == 0 and overlap_height == 0:
                 logger.warning("The extracted stamp is entirely outside of the image bounds!")
+
+        # Create the new object
+        new_image = SHEImage(
+            data = new_stamps["data"],
+            mask = new_stamps["mask"],
+            noisemap = new_stamps["noisemap"],
+            segmentation_map = new_stamps["seg"],
+            background_map = new_stamps["bkg"],
+            weight_map = new_stamps["wgt"],
+            header = new_header,
+            offset = new_offset,
+            wcs = self.wcs,
+            parent_image = self,
+            parent_frame = self.parent_frame,
+            parent_frame_stack = self.parent_frame_stack,
+            )
 
         assert new_image.shape == (width, height)
 
