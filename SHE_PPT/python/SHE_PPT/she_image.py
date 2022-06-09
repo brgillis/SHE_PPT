@@ -1191,9 +1191,15 @@ class SHEImage:
 
         return new_image
 
-    def _extract_stamp_in_bounds(self, xmin, xmax, ymin, ymax, data_filename, data_hdu, noisemap_filename, noisemap_hdu,
-                                 mask_filename, mask_hdu, bkg_filename, bkg_hdu, seg_filename, seg_hdu, wgt_filename,
-                                 wgt_hdu):
+    def _extract_stamp_in_bounds(self,
+                                 xmin, xmax,
+                                 ymin, ymax,
+                                 data_filename, data_hdu,
+                                 noisemap_filename, noisemap_hdu,
+                                 mask_filename, mask_hdu,
+                                 bkg_filename, bkg_hdu,
+                                 seg_filename, seg_hdu,
+                                 wgt_filename, wgt_hdu):
         """Private method to handle extraction of a postage stamp when we know it's entirely within bounds.
         """
 
