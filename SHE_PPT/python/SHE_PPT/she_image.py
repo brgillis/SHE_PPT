@@ -22,7 +22,7 @@ __updated__ = "2021-08-13"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from typing import Dict, Iterable, TYPE_CHECKING, Type, Union
+from typing import Any, Dict, Iterable, TYPE_CHECKING, Type, Union
 
 if TYPE_CHECKING:
     from .she_frame_stack import SHEFrameStack
@@ -1172,18 +1172,7 @@ class SHEImage:
                       keep_header: bool = False,
                       none_if_out_of_bounds: bool = False,
                       force_all_properties: bool = False,
-                      data_filename: Optional[str] = None,
-                      data_hdu: Optional[str] = None,
-                      noisemap_filename: Optional[str] = None,
-                      noisemap_hdu: Optional[str] = None,
-                      mask_filename: Optional[str] = None,
-                      mask_hdu: Optional[str] = None,
-                      bkg_filename: Optional[str] = None,
-                      bkg_hdu: Optional[str] = None,
-                      wgt_filename: Optional[str] = None,
-                      wgt_hdu: Optional[str] = None,
-                      seg_filename: Optional[str] = None,
-                      seg_hdu: Optional[str] = None):
+                      **kwargs):
         """Extracts a stamp and returns it as a new None (using views of numpy arrays, i.e., without making a copy)
 
         The extracted stamp is centered on the given (x,y) coordinates and has shape (width, height).
@@ -1225,6 +1214,8 @@ class SHEImage:
         force_all_properties : bool
             Set this to True if you want to ensure that all properties of the stamp exist, even if they don't for
             the parent. This will fill them in with default values.
+        **kwargs : Dict
+            (Deprecated and to be removed soon; do not use.)
 
         Return
         ------
@@ -1262,23 +1253,13 @@ class SHEImage:
 
             new_stamps = self._extract_stamp_in_bounds(xmin, xmax,
                                                        ymin, ymax,
-                                                       data_filename, data_hdu,
-                                                       noisemap_filename, noisemap_hdu,
-                                                       mask_filename, mask_hdu,
-                                                       bkg_filename, bkg_hdu,
-                                                       seg_filename, seg_hdu,
-                                                       wgt_filename, wgt_hdu)
+                                                       **kwargs)
 
         else:
 
             new_stamps = self._extract_stamp_not_in_bounds(xmin, xmax,
                                                            ymin, ymax,
-                                                           data_filename, data_hdu,
-                                                           noisemap_filename, noisemap_hdu,
-                                                           mask_filename, mask_hdu,
-                                                           bkg_filename, bkg_hdu,
-                                                           seg_filename, seg_hdu,
-                                                           wgt_filename, wgt_hdu)
+                                                           **kwargs)
 
         # Create the new object
         new_image = SHEImage(
@@ -1313,12 +1294,7 @@ class SHEImage:
     def _extract_stamp_in_bounds(self,
                                  xmin, xmax,
                                  ymin, ymax,
-                                 data_filename, data_hdu,
-                                 noisemap_filename, noisemap_hdu,
-                                 mask_filename, mask_hdu,
-                                 bkg_filename, bkg_hdu,
-                                 seg_filename, seg_hdu,
-                                 wgt_filename, wgt_hdu):
+                                 **kwargs):
         """Private method to handle extraction of a postage stamp when we know it's entirely within bounds.
         """
 
@@ -1327,23 +1303,17 @@ class SHEImage:
         # We are fully within the image
         logger.debug("Extracting stamp [%d:%d,%d:%d] fully within image of shape (%d,%d)",
                      xmin, xmax, ymin, ymax, self.shape[0], self.shape[1])
-        for attr_name, filename, hdu_i in ((SCI_TAG, data_filename, data_hdu),
-                                           (MASK_TAG, mask_filename, mask_hdu),
-                                           (NOISEMAP_TAG, noisemap_filename, noisemap_hdu),
-                                           (SEGMENTATION_TAG, seg_filename, seg_hdu),
-                                           (BACKGROUND_TAG, bkg_filename, bkg_hdu),
-                                           (WEIGHT_TAG, wgt_filename, wgt_hdu),):
+        for attr_name in D_ATTR_CONVERSIONS:
+
+            filename = self.__get_filename_kwarg(attr_name, kwargs)
+            hdu = self.__get_hdu_kwarg(attr_name, kwargs)
 
             new_stamps[attr_name] = self._extract_attr_stamp(xmin, ymin, xmax, ymax, attr_name, filename,
-                                                             hdu_i)
+                                                             hdu)
 
         return new_stamps
 
-    def _extract_stamp_not_in_bounds(self, xmin, xmax, ymin, ymax, data_filename, data_hdu, noisemap_filename,
-                                     noisemap_hdu,
-                                     mask_filename, mask_hdu, bkg_filename, bkg_hdu, seg_filename, seg_hdu,
-                                     wgt_filename,
-                                     wgt_hdu):
+    def _extract_stamp_not_in_bounds(self, xmin, xmax, ymin, ymax, **kwargs):
         """Private method to handle extraction of a postage stamp when we know it's not entirely within bounds.
         """
 
@@ -1384,12 +1354,10 @@ class SHEImage:
                                slice(overlap_ymin_stamp, overlap_ymax_stamp))
 
         # Read in the overlap data
-        for attr_name, filename, hdu_i in ((SCI_TAG, data_filename, data_hdu),
-                                           (MASK_TAG, mask_filename, mask_hdu),
-                                           (NOISEMAP_TAG, noisemap_filename, noisemap_hdu),
-                                           (SEGMENTATION_TAG, seg_filename, seg_hdu),
-                                           (BACKGROUND_TAG, bkg_filename, bkg_hdu),
-                                           (WEIGHT_TAG, wgt_filename, wgt_hdu),):
+        for attr_name in D_ATTR_CONVERSIONS:
+
+            filename = self.__get_filename_kwarg(attr_name, kwargs)
+            hdu = self.__get_hdu_kwarg(attr_name, kwargs)
 
             # We first create new stamps, and we will later fill part of them
             # with slices of the original.
@@ -1410,7 +1378,7 @@ class SHEImage:
                                                        overlap_ymax,
                                                        attr_name,
                                                        filename,
-                                                       hdu_i)
+                                                       hdu)
 
             # Fill the stamp arrays:
             # If there is any overlap
@@ -2256,6 +2224,29 @@ class SHEImage:
                            f"Attempting safe casting to {attr_dtype}.")
             array = array.astype(attr_dtype, casting = casting)
         setattr(self, f"_{attr_name}", array)
+
+    @staticmethod
+    def __get_kwarg(attr_name: str, kwarg_tail: str, kwargs: Dict[str, Any]) -> str:
+        """Private method to get the filename keyword argument for a given attribute.
+        """
+
+        filename = kwargs.get(f"{attr_name.lower()}_{kwarg_tail}", None)
+        if filename is None:
+            # Fall back to the attribute itself
+            filename = kwargs.get(f"{D_ATTR_CONVERSIONS[attr_name]}_{kwarg_tail}")
+        return filename
+
+    def __get_filename_kwarg(self, attr_name: str, kwargs: Dict[str, Any]) -> str:
+        """Private method to get the filename keyword argument for a given attribute.
+        """
+
+        return self.__get_kwarg(attr_name, "filename", kwargs)
+
+    def __get_hdu_kwarg(self, attr_name: str, kwargs: Dict[str, Any]) -> str:
+        """Private method to get the HDU keyword argument for a given attribute.
+        """
+
+        return self.__get_kwarg(attr_name, "hdu", kwargs)
 
 
 @run_only_once
