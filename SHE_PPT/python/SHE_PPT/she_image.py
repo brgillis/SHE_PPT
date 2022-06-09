@@ -22,7 +22,7 @@ __updated__ = "2021-08-13"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from typing import Iterable, TYPE_CHECKING
+from typing import Iterable, TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
     from .she_frame_stack import SHEFrameStack
@@ -1857,43 +1857,46 @@ class SHEImage:
             raise ValueError("In get_world2pix_transformation, either both ra and dec must be specified or both " +
                              "must be None/unspecified.")
 
+        world_pos: Union[galsim.PositionD, galsim.CelestialCoord]
+        if isinstance(self.galsim_wcs, galsim.wcs.CelestialWCS):
+            world_pos = galsim.CelestialCoord(ra * galsim.degrees, dec * galsim.degrees)
+        else:
+            world_pos = galsim.PositionD(ra, dec)
+
         try:
-            if isinstance(self.galsim_wcs, galsim.wcs.CelestialWCS):
-                world_pos = galsim.CelestialCoord(ra * galsim.degrees, dec * galsim.degrees)
-            else:
-                world_pos = galsim.PositionD(ra, dec)
 
             local_wcs: galsim.wcs.JacobianWCS = self.galsim_wcs.jacobian(world_pos = world_pos)
+
         except ValueError as e:
+
             if "WCS does not have longitude type" not in str(e) or len(self.header) == 0:
                 raise
 
-            # If we hit this bug, read the WCS directly from the header
-
-            warn_galsim_wcs_bug_workaround()
-
-            self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.header)[0]
-
-            if self.galsim_wcs.isPixelScale() and np.isclose(self.galsim_wcs.scale, 1.0):
-
-                # Don't have the information in this stamp's header - check for a parent image
-                if self.parent_image is not None:
-                    self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.parent_image.header)[0]
-                    if self.galsim_wcs.isPixelScale() and np.isclose(self.galsim_wcs.scale, 1.0):
-                        raise ValueError("Galsim WCS seems to not have been loaded correctly.")
-                else:
-                    raise ValueError("Galsim WCS seems to not have been loaded correctly.")
-
-            if isinstance(self.galsim_wcs, galsim.wcs.CelestialWCS):
-                world_pos = galsim.CelestialCoord(ra * galsim.degrees, dec * galsim.degrees)
-            else:
-                world_pos = galsim.PositionD(ra, dec)
+            self._apply_galsim_bug_workaround()
 
             local_wcs: galsim.wcs.JacobianWCS = self.galsim_wcs.jacobian(world_pos = world_pos)
 
         # We need to use the inverse of the local wcs to get the pix2world decomposition
 
         return local_wcs.inverse().getDecomposition()
+
+    def _apply_galsim_bug_workaround(self):
+        """Workaround for a bug with GalSim WCS, by reading WCS directly from the header.
+        """
+
+        warn_galsim_wcs_bug_workaround()
+
+        self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.header)[0]
+
+        if self.galsim_wcs.isPixelScale() and np.isclose(self.galsim_wcs.scale, 1.0):
+
+            # Don't have the information in this stamp's header - check for a parent image
+            if self.parent_image is not None:
+                self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.parent_image.header)[0]
+                if self.galsim_wcs.isPixelScale() and np.isclose(self.galsim_wcs.scale, 1.0):
+                    raise ValueError("Galsim WCS seems to not have been loaded correctly.")
+            else:
+                raise ValueError("Galsim WCS seems to not have been loaded correctly.")
 
     def estimate_pix2world_rotation_angle(self, x, y, dx, dy, origin = 0):
         """Estimates the local rotation angle between pixel and world (-ra/dec) coordinates at the specified location.
@@ -1912,7 +1915,7 @@ class SHEImage:
             Differential x step to use in calculating transformation matrix
         dy : float
             idem for y
-        origin : int
+        origin : {0,1}
             Coordinate in the upper left corner of the image.
             In FITS and Fortran standards, this is 1.
             In Numpy and C standards this is 0.
@@ -1960,7 +1963,12 @@ class SHEImage:
 
         return rotation_angle
 
-    def estimate_world2pix_rotation_angle(self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, origin = 0):
+    def estimate_world2pix_rotation_angle(self,
+                                          ra: float,
+                                          dec: float,
+                                          dra: float = 0.01 / 3600,
+                                          ddec: float = 0.01 / 3600,
+                                          origin: {0, 1} = 0) -> float:
         """Gets the local rotation angle between world (-ra/dec) and pixel coordinates at the specified location.
         Note that due to distortion in the transformation, this method is inaccurate and depends on the choice of dra
         and ddec; get_world2pix_rotation should be used instead to provide the rotation matrix. This method is retained
@@ -1978,6 +1986,11 @@ class SHEImage:
             independent of them.
         ddec : float
             idem for dec
+        origin : {0,1}
+            Coordinate in the upper left corner of the image.
+            In FITS and Fortran standards, this is 1.
+            In Numpy and C standards this is 0.
+            (from astropy.wcs)
 
 
 
