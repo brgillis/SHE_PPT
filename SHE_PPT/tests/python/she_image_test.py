@@ -38,6 +38,7 @@ import SHE_PPT.she_image
 from SHE_PPT import file_io, mdb
 from SHE_PPT.constants.misc import SEGMAP_UNASSIGNED_VALUE
 from SHE_PPT.file_io import get_qualified_filename
+from SHE_PPT.she_image import NOISEMAP_DTYPE, SEG_DTYPE, WGT_DTYPE
 from SHE_PPT.testing.utility import SheTestCase
 
 logging.basicConfig(level = logging.DEBUG)
@@ -143,7 +144,7 @@ class TestSheImage(SheTestCase):
 
         # Add a default noisemap and check its data type and values
         img.add_default_noisemap(force = True)
-        assert img.noisemap.dtype == float
+        assert img.noisemap.dtype == NOISEMAP_DTYPE
         assert np.allclose(img.noisemap,
                            self.read_noise / self.gain * np.ones_like(img.data, dtype = img.noisemap.dtype))
         assert img.noisemap.shape == (self.w, self.h)
@@ -171,7 +172,7 @@ class TestSheImage(SheTestCase):
 
         # Add a default segmentation_map and check its data type and values
         img.add_default_segmentation_map(force = True)
-        assert img.segmentation_map.dtype == np.int32
+        assert img.segmentation_map.dtype == SEG_DTYPE
         assert np.allclose(img.segmentation_map,
                            SEGMAP_UNASSIGNED_VALUE * np.ones_like(img.data, dtype = img.segmentation_map.dtype))
         assert img.segmentation_map.shape == (self.w, self.h)
@@ -193,7 +194,7 @@ class TestSheImage(SheTestCase):
 
         # Add a default weight_map and check its data type and values
         img.add_default_weight_map(force = True)
-        assert img.weight_map.dtype == float
+        assert img.weight_map.dtype == WGT_DTYPE
         assert np.allclose(img.weight_map, np.ones_like(img.data, dtype = img.weight_map.dtype))
         assert img.weight_map.shape == (self.w, self.h)
 
@@ -327,7 +328,8 @@ class TestSheImage(SheTestCase):
         assert rimg.noisemap[0, 0] > 500.0
         assert rimg.segmentation_map[0, 0] == 4
 
-        with pytest.raises(ValueError):  # As the primary HDU of mask_filepath is not a np.uint8, this will fail:
+        # As the primary HDU of mask_filepath is not a np.uint8, this will fail:
+        with pytest.raises(TypeError):
             _ = SHE_PPT.she_image.SHEImage.read_from_fits(self.l_qualified_test_filenames[0],
                                                           mask_filepath = self.l_qualified_test_filenames[1],
                                                           noisemap_filepath = self.l_qualified_test_filenames[2],

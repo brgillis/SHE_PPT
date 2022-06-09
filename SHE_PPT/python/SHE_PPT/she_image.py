@@ -76,12 +76,18 @@ D_DEFAULT_IMAGE_VALUES = {"data"    : 0,
                           "bkg"     : 0,
                           "wgt"     : 0,
                           "seg"     : SEGMAP_UNASSIGNED_VALUE, }
+
+NOISEMAP_DTYPE = np.float32
+MASK_DTYPE = np.int32
+BKG_DTYPE = np.float32
+WGT_DTYPE = np.float32
+SEG_DTYPE = np.int64
 D_IMAGE_DTYPES: Dict[str, Optional[Type]] = {"data"    : None,
-                                             "noisemap": np.float32,
-                                             "mask"    : np.int32,
-                                             "bkg"     : np.float32,
-                                             "wgt"     : np.float32,
-                                             "seg"     : np.int64, }
+                                             "noisemap": NOISEMAP_DTYPE,
+                                             "mask"    : MASK_DTYPE,
+                                             "bkg"     : BKG_DTYPE,
+                                             "wgt"     : WGT_DTYPE,
+                                             "seg"     : SEG_DTYPE, }
 
 logger = logging.getLogger(__name__)
 
@@ -138,11 +144,8 @@ class SHEImage:
     Attributes
     ----------
     data : np.ndarray[float]
-        The science image.
     mask : Optional[np.ndarray[np.int64]]
-        The mask image, of the same shape as the science image.
     noisemap : Optional[np.ndarray[float]]
-        The noise image (for only background noise, not including source noise), of the same shape as the science image.
     segmentation_map : Optional[np.ndarray[np.int64]]
         The segmentation map image (associating pixels with objects), of the same shape as the science image.
     background_map : Optional[np.ndarray[float]]
@@ -273,20 +276,30 @@ class SHEImage:
     @property
     def data(self) -> np.ndarray[float]:
         """The primary science image.
+
+        Returns
+        -------
+        data : np.ndarray[float]
+            The science image.
         """
         return self._data
 
     @data.setter
-    def data(self, data_array: Optional[np.ndarray[float]]):
+    def data(self, data: Optional[np.ndarray[float]]):
         """Setter for the primary science image, doing some validity checks on the input.
+
+        Parameters
+        ----------
+        data : Optional[np.ndarray[float]]
+            The science image.
         """
 
         # If setting data as None, set as a dim-0 array for interface safety
-        if data_array is None:
-            data_array = np.ndarray((0, 0), dtype = float)
+        if data is None:
+            data = np.ndarray((0, 0), dtype = float)
 
         # Ensure we have a 2-dimensional array
-        if data_array.ndim != 2:
+        if data.ndim != 2:
             raise ValueError("Data array of a SHEImage must have 2 dimensions")
 
         # Also test that the shape isn't modified by the setter
@@ -295,72 +308,87 @@ class SHEImage:
         except AttributeError:
             existing_shape = None
 
-        if existing_shape and data_array.shape != existing_shape:
+        if existing_shape and data.shape != existing_shape:
             raise ValueError(f"Shape of a SHEImage can not be modified. Current is {existing_shape}, new data is "
-                             f"{data_array.shape}.")
+                             f"{data.shape}.")
 
         # Finally, perform the attribution
-        self._data = data_array
+        self._data = data
 
     @data.deleter
     def data(self):
+        """Simple deleter for the `data` attribute.
+        """
         del self._data
 
     @property
-    def mask(self) -> Optional[np.ndarray[int]]:
-        """The pixel mask of the image, if present.
+    def mask(self) -> Optional[np.ndarray[np.int32]]:
+        """The pixel mask of the image, if present; None otherwise.
+
+        Returns
+        -------
+        mask : Optional[np.ndarray[np.int32]]
+            The pixel mask of the image, if present; None otherwise.
         """
         return self._mask
 
     @mask.setter
-    def mask(self, mask_array: Optional[np.ndarray[int]]):
-        if mask_array is None:
-            self._mask = None
-            return
+    def mask(self, mask: Optional[np.ndarray[int]]):
+        """Setter for the pixel mask of the image, doing some validity checks on the input.
 
-        if mask_array.ndim != 2:
-            raise ValueError("The mask array must have 2 dimensions")
-        if mask_array.shape != self._data.shape:
-            raise ValueError(
-                "The mask array must have the same size as the data {}".format(self._data.shape))
-        # Quietly ignore if byte order is the only difference
-        if not mask_array.dtype.newbyteorder('<') in S_ALLOWED_INT_DTYPES:
-            logger.warning(
-                "Received mask array of type '%s'. Attempting safe casting to np.int32.", mask_array.dtype)
-            try:
-                mask_array = mask_array.astype(np.int32, casting = 'safe')
-            except Exception:
-                raise ValueError(
-                    "The mask array must be of integer type (it is {})".format(mask_array.dtype))
-        self._mask = mask_array
+        Parameters
+        ----------
+        mask : Optional[np.ndarray[int]]
+            The pixel mask of the image.
+        """
+
+        # We use safe casting for the mask, since we could lose very relevant data if we cast e.g. an int64 to an int32
+        self.__set_array_attr(array = mask,
+                              name = "mask",
+                              casting = "safe")
 
     @mask.deleter
     def mask(self):
+        """Simple deleter for the `mask` attribute.
+        """
         del self._mask
 
     @property
-    def boolmask(self):
-        """A boolean summary of the mask, cannot be set, only get"""
+    def boolmask(self) -> np.ndarray[np.bool]:
+        """A boolean summary of the mask, cannot be set, only get.
+
+        Returns
+        -------
+        boolmask : np.ndarray[np.bool]
+            A boolean summary of the mask.
+        """
         if self.mask is None:
             return None
         return self.mask.astype(np.bool)
 
     @property
     def noisemap(self):
-        """A noisemap of the image"""
+        """The noise image (for only background noise, not including source noise), if present; None otherwise.
+
+        Returns
+        -------
+        noisemap : Optional[np.ndarray[float]]
+            The noise map, if present; None otherwise.
+        """
         return self._noisemap
 
     @noisemap.setter
-    def noisemap(self, noisemap_array):
-        if noisemap_array is None:
-            self._noisemap = None
-        else:
-            if noisemap_array.ndim != 2:
-                raise ValueError("The noisemap array must have 2 dimensions")
-            if noisemap_array.shape != self._data.shape:
-                raise ValueError(
-                    "The noisemap array must have the same size as its data {}".format(self._data.shape))
-            self._noisemap = noisemap_array
+    def noisemap(self, noisemap: Optional[np.ndarray[float]]):
+        """Setter for the noise map, doing some validity checks on the input.
+
+        Parameters
+        ----------
+        noisemap : Optional[np.ndarray[float]]
+            The noise map.
+        """
+
+        self.__set_array_attr(array = noisemap,
+                              name = "noisemap")
 
     @noisemap.deleter
     def noisemap(self):
@@ -368,21 +396,15 @@ class SHEImage:
 
     @property
     def segmentation_map(self):
-        """The segmentation map of the image"""
+        """The segmentation map of the image.
+        """
         return self._segmentation_map
 
     @segmentation_map.setter
-    def segmentation_map(self, segmentation_map_array):
-        if segmentation_map_array is None:
-            self._segmentation_map = None
-        else:
-            if segmentation_map_array.ndim != 2:
-                raise ValueError(
-                    "The segmentation map array must have 2 dimensions")
-            if segmentation_map_array.shape != self._data.shape:
-                raise ValueError(
-                    "The segmentation map array must have the same size as the data {}".format(self._data.shape))
-            self._segmentation_map = segmentation_map_array
+    def segmentation_map(self, segmentation_map):
+
+        self.__set_array_attr(array = segmentation_map,
+                              name = "seg")
 
     @segmentation_map.deleter
     def segmentation_map(self):
@@ -390,21 +412,15 @@ class SHEImage:
 
     @property
     def background_map(self):
-        """A background map of the image"""
+        """A background map of the image.
+        """
         return self._background_map
 
     @background_map.setter
-    def background_map(self, background_map_array):
-        if background_map_array is None:
-            self._background_map = None
-        else:
-            if background_map_array.ndim != 2:
-                raise ValueError(
-                    "The background map array must have 2 dimensions")
-            if background_map_array.shape != self._data.shape:
-                raise ValueError(
-                    "The background map array must have the same size as its data {}".format(self._data.shape))
-            self._background_map = background_map_array
+    def background_map(self, background_map):
+
+        self.__set_array_attr(array = background_map,
+                              name = "bkg")
 
     @background_map.deleter
     def background_map(self):
@@ -416,17 +432,10 @@ class SHEImage:
         return self._weight_map
 
     @weight_map.setter
-    def weight_map(self, weight_map_array):
-        if weight_map_array is None:
-            self._weight_map = None
-        else:
-            if weight_map_array.ndim != 2:
-                raise ValueError(
-                    "The weight map array must have 2 dimensions")
-            if weight_map_array.shape != self._data.shape:
-                raise ValueError(
-                    "The weight map array must have the same size as its data {}".format(self._data.shape))
-            self._weight_map = weight_map_array
+    def weight_map(self, weight_map):
+
+        self.__set_array_attr(array = weight_map,
+                              name = "wgt")
 
     @weight_map.deleter
     def weight_map(self):
@@ -2179,6 +2188,38 @@ class SHEImage:
                 y_confirmed.append(y)
 
         return np.asarray(indices_confirmed), np.asarray(x_confirmed), np.asarray(y_confirmed)
+
+    # Private methods
+
+    def __set_array_attr(self,
+                         array: Optional[np.ndarray],
+                         name: str,
+                         casting: str = "unsafe"):
+        """Private method to handle setting one of the various data arrays other than `data`.
+        """
+
+        attr_name: str = D_ATTR_CONVERSIONS[name]
+
+        # Set simply if input is None
+        if array is None:
+            setattr(self, f"_{attr_name}", None)
+            return
+
+        # Validate number of dimensions
+        if array.ndim != 2:
+            raise ValueError(f"The {attr_name} array must have 2 dimensions")
+
+        # Validate shape
+        if array.shape != self._data.shape:
+            raise ValueError(f"The {attr_name} array must have the same size as its data {self.shape}")
+
+        # Convert to expected type, ignoring byte order
+        attr_dtype = D_IMAGE_DTYPES[name]
+        if array.dtype.newbyteorder('<') != attr_dtype:
+            logger.warning(f"Received {attr_name} array of type {array.dtype}. "
+                           f"Attempting safe casting to {attr_dtype}.")
+            array = array.astype(attr_dtype, casting = casting)
+        setattr(self, f"_{attr_name}", array)
 
 
 @run_only_once
