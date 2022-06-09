@@ -175,11 +175,7 @@ class SHEImage:
         as None if that object goes out of scope.
     """
 
-    # Parent references
-    _parent_frame_stack = None
-    _parent_frame = None
-    _parent_image_stack = None
-    _parent_image = None
+    # Class attributes
 
     # Images
     _data = None
@@ -189,11 +185,17 @@ class SHEImage:
     _background_map = None
     _weight_map = None
 
-    # Other public values
+    # Misc. public values
     _header = None
     _offset = (0, 0)
     _wcs = None
     _shape = None
+
+    # Parent references
+    _parent_frame_stack = None
+    _parent_frame = None
+    _parent_image_stack = None
+    _parent_image = None
 
     # Private values
     _images_loaded = True
@@ -212,34 +214,34 @@ class SHEImage:
                  parent_frame: Optional[SHEFrame] = None,
                  parent_image_stack: Optional[SHEImageStack] = None,
                  parent_image: Optional[SHEImage] = None):
-        """ Initializer for a SHEImage object
+        """Initializer for a SHEImage object
 
-            Parameters
-            ----------
-            data : np.ndarray[float]
-                The science image.
-            mask : Optional[np.ndarray[np.int64]]
-                The mask image, of the same shape as the science image.
-            noisemap : Optional[np.ndarray[float]]
-                The noise image (for only background noise, not including source noise), of the same shape as the
-                science image.
-            segmentation_map : Optional[np.ndarray[np.int64]]
-                The segmentation map image (associating pixels with objects), of the same shape as the science image.
-            background_map : Optional[np.ndarray[float]]
-                The background map, of the same shape as the science image.
-            weight_map : Optional[np.ndarray[float]]
-                The weight map, of the same shape as the science image.
-            header : astropy.io.fits.Header
-                The image header, typically copied from the science image's HDU's header.
-            offset : Tuple[float,float]
-                The offset of this image relative to the image (if any) it was extracted from, indexed as (x_offset,
-                y_offset).
-            wcs : Optional[astropy.wcs.WCS]
-                An astropy WCS object for this image.
-            parent_frame_stack : Optional[SHEFrameStack]
-            parent_frame : Optional[SHEFrame]
-            parent_image_stack : Optional[SHEImageStack]
-            parent_image : Optional[SHEImage]
+        Parameters
+        ----------
+        data : np.ndarray[float]
+            The science image.
+        mask : Optional[np.ndarray[np.int64]]
+            The mask image, of the same shape as the science image.
+        noisemap : Optional[np.ndarray[float]]
+            The noise image (for only background noise, not including source noise), of the same shape as the
+            science image.
+        segmentation_map : Optional[np.ndarray[np.int64]]
+            The segmentation map image (associating pixels with objects), of the same shape as the science image.
+        background_map : Optional[np.ndarray[float]]
+            The background map, of the same shape as the science image.
+        weight_map : Optional[np.ndarray[float]]
+            The weight map, of the same shape as the science image.
+        header : astropy.io.fits.Header
+            The image header, typically copied from the science image's HDU's header.
+        offset : Tuple[float,float]
+            The offset of this image relative to the image (if any) it was extracted from, indexed as (x_offset,
+            y_offset).
+        wcs : Optional[astropy.wcs.WCS]
+            An astropy WCS object for this image.
+        parent_frame_stack : Optional[SHEFrameStack]
+        parent_frame : Optional[SHEFrame]
+        parent_image_stack : Optional[SHEImageStack]
+        parent_image : Optional[SHEImage]
         """
 
         # References to parent objects
@@ -275,149 +277,6 @@ class SHEImage:
     # We define properties of the SHEImage object, following
     # https://euclid.roe.ac.uk/projects/codeen-users/wiki/User_Cod_Std-pythonstandard-v1-0#PNAMA-020-m-Developer
     # -SHOULD-use-properties-to-protect-the-service-from-the-implementation
-
-    @property
-    def parent_frame_stack(self) -> Optional[SHEFrameStack]:
-        """Reference to the parent SHEFrameStack, if it exists; None otherwise. This is stored internally as a weak
-        reference to prevent a reference circle which would prevent garbage collection. This means that if the parent
-        goes out of scope, this may become None even if previously set to reference the parent.
-
-        Returns
-        -------
-        parent_frame_stack : Optional[SHEFrameStack]
-            This object's parent SHEFrameStack, if it exists; None otherwise.
-        """
-        return self._parent_frame_stack()
-
-    @parent_frame_stack.setter
-    def parent_frame_stack(self, parent_frame_stack: Optional[SHEFrameStack]) -> None:
-        """Setter for parent_frame_stack, storing the input as a weak reference.
-
-        Parameters
-        ----------
-        parent_frame_stack : Optional[SHEFrameStack]
-            The SHEFrameStack object to be referenced as this object's parent.
-        """
-
-        if parent_frame_stack is None:
-            self._parent_frame_stack = _return_none
-        else:
-            # Use a weak reference so we don't keep the parent alive indefinitely
-            self._parent_frame_stack = weakref.ref(parent_frame_stack)
-
-    @parent_frame_stack.deleter
-    def parent_frame_stack(self) -> None:
-        """Deleter for parent_frame_stack, setting it to return None.
-        """
-        self._parent_frame_stack = _return_none
-
-    @property
-    def parent_frame(self) -> Optional[SHEFrame]:
-        """Reference to the parent SHEFrame, if it exists; None otherwise. This is stored internally as a weak
-        reference to prevent a reference circle which would prevent garbage collection. This means that if the parent
-        goes out of scope, this may become None even if previously set to reference the parent.
-
-        Returns
-        -------
-        parent_frame : Optional[SHEFrame]
-            This object's parent SHEFrame, if it exists; None otherwise.
-        """
-        return self._parent_frame()
-
-    @parent_frame.setter
-    def parent_frame(self, parent_frame: Optional[SHEFrame]) -> None:
-        """Setter for parent_frame, storing the input as a weak reference.
-
-        Parameters
-        ----------
-        parent_frame : Optional[SHEFrame]
-            The SHEFrame object to be referenced as this object's parent.
-        """
-
-        if parent_frame is None:
-            self._parent_frame = _return_none
-        else:
-            # Use a weak reference so we don't keep the parent alive indefinitely
-            self._parent_frame = weakref.ref(parent_frame)
-
-    @parent_frame.deleter
-    def parent_frame(self) -> None:
-        """Deleter for parent_frame, setting it to return None.
-        """
-        self._parent_frame = _return_none
-
-    @property
-    def parent_image_stack(self) -> Optional[SHEImageStack]:
-        """Reference to the parent SHEImageStack, if it exists; None otherwise. This is stored internally as a weak
-        reference to prevent a reference circle which would prevent garbage collection. This means that if the parent
-        goes out of scope, this may become None even if previously set to reference the parent.
-
-        Returns
-        -------
-        parent_image_stack : Optional[SHEImageStack]
-            This object's parent SHEImageStack, if it exists; None otherwise.
-        """
-        return self._parent_image_stack()
-
-    @parent_image_stack.setter
-    def parent_image_stack(self, parent_image_stack: Optional[SHEImageStack]) -> None:
-        """Setter for parent_image_stack, storing the input as a weak reference.
-
-        Parameters
-        ----------
-        parent_image_stack : Optional[SHEImageStack]
-            The SHEImageStack object to be referenced as this object's parent.
-        """
-
-        if parent_image_stack is None:
-            self._parent_image_stack = _return_none
-        else:
-            # Use a weak reference so we don't keep the parent alive indefinitely
-            self._parent_image_stack = weakref.ref(parent_image_stack)
-
-    @parent_image_stack.deleter
-    def parent_image_stack(self) -> None:
-        """Deleter for parent_image_stack, setting it to return None.
-        """
-        self._parent_image_stack = _return_none
-
-    @property
-    def parent_image(self) -> Optional[SHEImage]:
-        """Reference to the immediate SHEImage, if it exists; None otherwise. This is stored internally as a weak
-        reference to prevent a reference circle which would prevent garbage collection. This means that if the parent
-        goes out of scope, this may become None even if previously set to reference the parent.
-
-        It is possible for a SHEImage to have an indefinite chain of parent SHEImage through repeated stamp
-        extraction. This attribute stores only the reference to the most-immediate parent SHEImage.
-
-        Returns
-        -------
-        parent_image : Optional[SHEImage]
-            This object's most-immediate parent SHEImage, if it exists; None otherwise.
-        """
-        return self._parent_image()
-
-    @parent_image.setter
-    def parent_image(self, parent_image: Optional[SHEImage]) -> None:
-        """Setter for parent_image, storing the input as a weak reference.
-
-        Parameters
-        ----------
-        parent_image : Optional[SHEImage]
-            The SHEImage object to be referenced as this object's parent.
-        """
-
-        if parent_image is None:
-            self._parent_image = _return_none
-        else:
-            # Use a weak reference so we don't keep the parent alive indefinitely
-            self._parent_image = weakref.ref(parent_image)
-
-    @parent_image.deleter
-    def parent_image(self) -> None:
-        """Deleter for parent_image, setting it to return None.
-        """
-        self._parent_image = _return_none
 
     @property
     def data(self) -> np.ndarray[float]:
@@ -721,6 +580,149 @@ class SHEImage:
         if self._det_iy is None:
             self._determine_det_ixy()
         return self._det_iy
+
+    @property
+    def parent_frame_stack(self) -> Optional[SHEFrameStack]:
+        """Reference to the parent SHEFrameStack, if it exists; None otherwise. This is stored internally as a weak
+        reference to prevent a reference circle which would prevent garbage collection. This means that if the parent
+        goes out of scope, this may become None even if previously set to reference the parent.
+
+        Returns
+        -------
+        parent_frame_stack : Optional[SHEFrameStack]
+            This object's parent SHEFrameStack, if it exists; None otherwise.
+        """
+        return self._parent_frame_stack()
+
+    @parent_frame_stack.setter
+    def parent_frame_stack(self, parent_frame_stack: Optional[SHEFrameStack]) -> None:
+        """Setter for parent_frame_stack, storing the input as a weak reference.
+
+        Parameters
+        ----------
+        parent_frame_stack : Optional[SHEFrameStack]
+            The SHEFrameStack object to be referenced as this object's parent.
+        """
+
+        if parent_frame_stack is None:
+            self._parent_frame_stack = _return_none
+        else:
+            # Use a weak reference so we don't keep the parent alive indefinitely
+            self._parent_frame_stack = weakref.ref(parent_frame_stack)
+
+    @parent_frame_stack.deleter
+    def parent_frame_stack(self) -> None:
+        """Deleter for parent_frame_stack, setting it to return None.
+        """
+        self._parent_frame_stack = _return_none
+
+    @property
+    def parent_frame(self) -> Optional[SHEFrame]:
+        """Reference to the parent SHEFrame, if it exists; None otherwise. This is stored internally as a weak
+        reference to prevent a reference circle which would prevent garbage collection. This means that if the parent
+        goes out of scope, this may become None even if previously set to reference the parent.
+
+        Returns
+        -------
+        parent_frame : Optional[SHEFrame]
+            This object's parent SHEFrame, if it exists; None otherwise.
+        """
+        return self._parent_frame()
+
+    @parent_frame.setter
+    def parent_frame(self, parent_frame: Optional[SHEFrame]) -> None:
+        """Setter for parent_frame, storing the input as a weak reference.
+
+        Parameters
+        ----------
+        parent_frame : Optional[SHEFrame]
+            The SHEFrame object to be referenced as this object's parent.
+        """
+
+        if parent_frame is None:
+            self._parent_frame = _return_none
+        else:
+            # Use a weak reference so we don't keep the parent alive indefinitely
+            self._parent_frame = weakref.ref(parent_frame)
+
+    @parent_frame.deleter
+    def parent_frame(self) -> None:
+        """Deleter for parent_frame, setting it to return None.
+        """
+        self._parent_frame = _return_none
+
+    @property
+    def parent_image_stack(self) -> Optional[SHEImageStack]:
+        """Reference to the parent SHEImageStack, if it exists; None otherwise. This is stored internally as a weak
+        reference to prevent a reference circle which would prevent garbage collection. This means that if the parent
+        goes out of scope, this may become None even if previously set to reference the parent.
+
+        Returns
+        -------
+        parent_image_stack : Optional[SHEImageStack]
+            This object's parent SHEImageStack, if it exists; None otherwise.
+        """
+        return self._parent_image_stack()
+
+    @parent_image_stack.setter
+    def parent_image_stack(self, parent_image_stack: Optional[SHEImageStack]) -> None:
+        """Setter for parent_image_stack, storing the input as a weak reference.
+
+        Parameters
+        ----------
+        parent_image_stack : Optional[SHEImageStack]
+            The SHEImageStack object to be referenced as this object's parent.
+        """
+
+        if parent_image_stack is None:
+            self._parent_image_stack = _return_none
+        else:
+            # Use a weak reference so we don't keep the parent alive indefinitely
+            self._parent_image_stack = weakref.ref(parent_image_stack)
+
+    @parent_image_stack.deleter
+    def parent_image_stack(self) -> None:
+        """Deleter for parent_image_stack, setting it to return None.
+        """
+        self._parent_image_stack = _return_none
+
+    @property
+    def parent_image(self) -> Optional[SHEImage]:
+        """Reference to the immediate SHEImage, if it exists; None otherwise. This is stored internally as a weak
+        reference to prevent a reference circle which would prevent garbage collection. This means that if the parent
+        goes out of scope, this may become None even if previously set to reference the parent.
+
+        It is possible for a SHEImage to have an indefinite chain of parent SHEImage through repeated stamp
+        extraction. This attribute stores only the reference to the most-immediate parent SHEImage.
+
+        Returns
+        -------
+        parent_image : Optional[SHEImage]
+            This object's most-immediate parent SHEImage, if it exists; None otherwise.
+        """
+        return self._parent_image()
+
+    @parent_image.setter
+    def parent_image(self, parent_image: Optional[SHEImage]) -> None:
+        """Setter for parent_image, storing the input as a weak reference.
+
+        Parameters
+        ----------
+        parent_image : Optional[SHEImage]
+            The SHEImage object to be referenced as this object's parent.
+        """
+
+        if parent_image is None:
+            self._parent_image = _return_none
+        else:
+            # Use a weak reference so we don't keep the parent alive indefinitely
+            self._parent_image = weakref.ref(parent_image)
+
+    @parent_image.deleter
+    def parent_image(self) -> None:
+        """Deleter for parent_image, setting it to return None.
+        """
+        self._parent_image = _return_none
 
     def __str__(self):
         """A short string with size information and the percentage of masked pixels"""
