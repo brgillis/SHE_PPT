@@ -1767,6 +1767,12 @@ class SHEImage:
         """Gets the local WCS decomposition between image (x/y) and world (ra/dec) coordinates at the specified
         location.
 
+        Note 1: Since shear and rotation are non-commutative, the rotation operation must be applied before shear.
+
+        Note 2: If testing against a galsim.wcs.ShearWCS class, note that the shear defined as input to that class
+          is the world-to-pixel shear, while the scale is the pixel-to-world scale, which can lead to some confusion
+          if decomposed.
+
         Parameters
         ----------
         x : float
@@ -1781,18 +1787,11 @@ class SHEImage:
 
         Returns
         -------
-        (scale, shear, theta, flip)
         scale : float
             Scale factor of the decomposition
         shear : galsim.Shear
-        theta : galsim.Angle
+        theta : coord.Angle
         flip : bool
-
-        Note 1: Since shear and rotation are non-commutative, the rotation operation must be applied before shear.
-
-        Note 2: If testing against a galsim.wcs.ShearWCS class, note that the shear defined as input to that class
-          is the world-to-pixel shear, while the scale is the pixel-to-world scale, which can lead to some confusion
-          if decomposed.
 
         """
 
@@ -1821,13 +1820,20 @@ class SHEImage:
                                                                           bool]:
         """Gets the local WCS decomposition between world (ra/dec) and pixel coordinates at the specified location.
 
+        Note 1: Since shear and rotation are non-commutative, the rotation operation must be applied before shear.
+
+        Note 2: If testing against a galsim.wcs.ShearWCS class, note that the shear defined as input to that class
+          is the world-to-pixel shear, while the scale is the pixel-to-world scale, which can lead to some confusion
+          if decomposed.
+
         Parameters
         ----------
-        ra : float
-            Right Ascension (RA) world coordinate in degrees
-        dec : float
-            Declination (Dec) world coordinate in degrees
-        If both ra and dec are None, will use the centre of the image
+        ra : Optional[float]
+            Right Ascension (RA) world coordinate in degrees. If both ra and dec are None, will use the centre of the
+            image
+        dec : Optional[float]
+            Declination (Dec) world coordinate in degrees. If both ra and dec are None, will use the centre of the image
+
 
         Raises
         ------
@@ -1836,18 +1842,11 @@ class SHEImage:
 
         Returns
         -------
-        (scale, shear, theta, flip)
         scale : float
             Scale factor of the decomposition
         shear : galsim.Shear
         theta : galsim.Angle
         flip : bool
-
-        Note 1: Since shear and rotation are non-commutative, the rotation operation must be applied before shear.
-
-        Note 2: If testing against a galsim.wcs.ShearWCS class, note that the shear defined as input to that class
-          is the world-to-pixel shear, while the scale is the pixel-to-world scale, which can lead to some confusion
-          if decomposed.
 
         """
 
