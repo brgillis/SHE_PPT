@@ -35,6 +35,8 @@ from copy import deepcopy
 from functools import lru_cache
 from typing import Optional, Tuple
 
+from coord import Angle
+from galsim import Shear
 import astropy.io.fits
 import astropy.wcs
 import fitsio
@@ -1498,15 +1500,21 @@ class SHEImage:
 
         return x, y
 
-    def get_pix2world_transformation(self, x = None, y = None, dx = 0.1, dy = 0.1, spatial_ra = False, origin = 0,
-                                     norm = False):
+    def get_pix2world_transformation(self,
+                                     x: Optional[float] = None,
+                                     y: Optional[float] = None,
+                                     dx: float = 0.1,
+                                     dy: float = 0.1,
+                                     spatial_ra: bool = False,
+                                     origin: {0, 1} = 0,
+                                     norm: bool = False) -> np.ndarray:
         """Gets the local transformation matrix between pixel and world (ra/dec) coordinates at the specified location.
 
         Parameters
         ----------
-        x : float
+        x : Optional[float]
             x pixel coordinate. If not provided, will use centre of image
-        y : float
+        y : Optional[float]
             idem for y
         dx : float
             Differential x step to use in calculating transformation matrix. Default 0.1 pixels
@@ -1514,7 +1522,7 @@ class SHEImage:
             idem for y
         spatial_ra : bool
             If True, will give a matrix for (-ra*cos(dec),dec) co-ordinates instead of (ra,dec) (default False)
-        origin : int
+        origin : {0,1}
             Coordinate in the upper left corner of the image.
             In FITS and Fortran standards, this is 1.
             In Numpy and C standards this is 0.
@@ -1750,7 +1758,12 @@ class SHEImage:
 
         return world2pix_rotation
 
-    def get_pix2world_decomposition(self, x = None, y = None):
+    def get_pix2world_decomposition(self,
+                                    x: Optional[float] = None,
+                                    y: Optional[float] = None) -> Tuple[float,
+                                                                        Shear,
+                                                                        Angle,
+                                                                        bool]:
         """Gets the local WCS decomposition between image (x/y) and world (ra/dec) coordinates at the specified
         location.
 
@@ -1794,12 +1807,18 @@ class SHEImage:
             x = x + self.offset[0]
             y = y + self.offset[1]
 
-        local_wcs = self.galsim_wcs.jacobian(image_pos = galsim.PositionD(x, y))
+        local_wcs: galsim.wcs.JacobianWCS = self.galsim_wcs.jacobian(image_pos = galsim.PositionD(x, y))
 
         # We need to use the inverse of the local wcs to get the pix2world decomposition
+
         return local_wcs.getDecomposition()
 
-    def get_world2pix_decomposition(self, ra = None, dec = None):
+    def get_world2pix_decomposition(self,
+                                    ra: Optional[float] = None,
+                                    dec: Optional[float] = None) -> Tuple[float,
+                                                                          Shear,
+                                                                          Angle,
+                                                                          bool]:
         """Gets the local WCS decomposition between world (ra/dec) and pixel coordinates at the specified location.
 
         Parameters
@@ -1847,7 +1866,7 @@ class SHEImage:
             else:
                 world_pos = galsim.PositionD(ra, dec)
 
-            local_wcs = self.galsim_wcs.jacobian(world_pos = world_pos)
+            local_wcs: galsim.wcs.JacobianWCS = self.galsim_wcs.jacobian(world_pos = world_pos)
         except ValueError as e:
             if "WCS does not have longitude type" not in str(e) or len(self.header) == 0:
                 raise
@@ -1873,9 +1892,9 @@ class SHEImage:
             else:
                 world_pos = galsim.PositionD(ra, dec)
 
-            local_wcs = self.galsim_wcs.jacobian(world_pos = world_pos)
+            local_wcs: galsim.wcs.JacobianWCS = self.galsim_wcs.jacobian(world_pos = world_pos)
 
-        return local_wcs.inverse().getDecomposition()
+        return local_wcs.getDecomposition()
 
     def estimate_pix2world_rotation_angle(self, x, y, dx, dy, origin = 0):
         """Estimates the local rotation angle between pixel and world (-ra/dec) coordinates at the specified location.
