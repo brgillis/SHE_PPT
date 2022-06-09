@@ -1,7 +1,8 @@
-"""
-File: tests/python/she_image_test.py
+""" @file she_image_test.py
 
-Created on: 08/18/17
+    Created 18 Aug 2017
+
+    Unit tests for the `SHE_PPT.she_image` module.
 """
 
 __updated__ = "2021-08-16"
@@ -43,15 +44,20 @@ logging.basicConfig(level = logging.DEBUG)
 
 
 class TestSheImage(SheTestCase):
+    """Unit tests for the SHEImage class.
+    """
+
     # Class attributes
 
     # A filename for testing the file-saving
-    TEST_FILENAME = "test_SHEImage.fits"  # Will be deleted by teardown_class()
+    TEST_FILENAME = "test_SHEImage.fits"
     # For some tests we need several files:
     L_TEST_FILENAMES = ["test_SHEImage_0.fits", "test_SHEImage_1.fits", "test_SHEImage_2.fits",
                         "test_SHEImage_3.fits"]
 
     def setup_workdir(self):
+        """Set up a workdir for tests, with a downloaded MDB file.
+        """
 
         self._download_mdb()
 
@@ -77,27 +83,23 @@ class TestSheImage(SheTestCase):
         # Clean up any test files that might have been left behind by a previous test
         self.cleanup()
 
-    @pytest.fixture(scope = "session", autouse = True)
-    def __teardown(self, request):
-        """Cleanup any created test files after the tests are done.
-        """
-
-        request.addfinalizer(self.teardown)
-
     def teardown(self):
         """Override teardown to cleanup any created files.
         """
+
         self.cleanup()
 
     def cleanup(self):
-        """Cleanup any created test files after the tests are done.
+        """Cleanup any created test files.
         """
+
         for qualified_filename in self.l_qualified_test_filenames + [self.qualified_test_filename]:
             if os.path.exists(qualified_filename):
                 os.remove(qualified_filename)
 
     def test_init(self):
-        """Test that the object created by setup_class is as expected"""
+        """Test that the object created by setup_class is as expected.
+        """
 
         assert self.img.shape == (self.w, self.h)
         assert self.img.data.shape == self.img.shape
@@ -109,7 +111,8 @@ class TestSheImage(SheTestCase):
         assert self.img.weight_map is None
 
     def test_mask(self):
-        """Tests some mask functionality"""
+        """Tests some mask functionality.
+        """
 
         img = deepcopy(self.img)
 
@@ -133,7 +136,8 @@ class TestSheImage(SheTestCase):
         assert img.boolmask[5, 5] == False
 
     def test_noisemap(self):
-        """Test that the noisemap behaves appropriately."""
+        """Test that the noisemap behaves appropriately.
+        """
 
         img = deepcopy(self.img)
 
@@ -160,7 +164,8 @@ class TestSheImage(SheTestCase):
                            np.ones_like(img.data, dtype = img.noisemap.dtype))
 
     def test_segmentation_map(self):
-        """Test that the segmentation map behaves appropriately."""
+        """Test that the segmentation map behaves appropriately.
+        """
 
         img = deepcopy(self.img)
 
@@ -181,7 +186,8 @@ class TestSheImage(SheTestCase):
         assert img.segmentation_map[5, 5] == 0
 
     def test_weight_map(self):
-        """Test that the weight_map behaves appropriately."""
+        """Test that the weight_map behaves appropriately.
+        """
 
         img = deepcopy(self.img)
 
@@ -201,7 +207,8 @@ class TestSheImage(SheTestCase):
         assert np.isclose(img.weight_map[5, 5], 1.)
 
     def test_header(self):
-        """Test the header behaves as expected."""
+        """Test the header behaves as expected.
+        """
 
         img = deepcopy(self.img)
 
@@ -223,7 +230,8 @@ class TestSheImage(SheTestCase):
         assert "INSTR" not in img.header
 
     def test_wcs_default(self):
-        """Test the default wcs behaves as expected."""
+        """Test the default WCS behaves as expected.
+        """
 
         img = deepcopy(self.img)
 
@@ -242,7 +250,8 @@ class TestSheImage(SheTestCase):
         assert np.isclose(img.wcs.wcs.cdelt[0], 1.)
 
     def test_fits_read_write(self):
-        """We save the small SHEImage, read it again, and compare both versions"""
+        """We save the small SHEImage, read it again, and compare both versions.
+        """
 
         img = deepcopy(self.img)
 
@@ -295,7 +304,8 @@ class TestSheImage(SheTestCase):
         # assert str(repr(img.header)) == str(repr(rimg.header))
 
     def test_read_from_fits_files(self):
-        """At least a small test of reading from individual FITS files"""
+        """At least a small test of reading from individual FITS files.
+        """
 
         img = SHE_PPT.she_image.SHEImage(np.random.randn(100).reshape(10, 10) + 200.0)
         img.mask = np.ones_like(img.data, dtype = np.int32)
@@ -330,7 +340,8 @@ class TestSheImage(SheTestCase):
                                                           mask_ext = None)
 
     def test_extracted_stamp_is_view(self):
-        """Checks that the extracted stamp is a view, not a copy"""
+        """Checks that the extracted stamp is a view, not a copy.
+        """
 
         stamp = self.img.extract_stamp(10.5, 10.5, 3)  # central pixel of stamp is index [10, 10] of the big array
         stamp.data[1, 1] = -50.0  # the central pixel, modifed both here and in img
@@ -338,7 +349,8 @@ class TestSheImage(SheTestCase):
         assert self.img.data[10, 10] == stamp.data[1, 1]
 
     def test_extract_stamp_not_square(self):
-        """Testing that non-square stamps are correctly extracted"""
+        """Testing that non-square stamps are correctly extracted.
+        """
 
         stamp = self.img.extract_stamp(10.0, 10.0, 5)
         assert stamp.shape == (5, 5)
@@ -346,14 +358,16 @@ class TestSheImage(SheTestCase):
         assert stamp.shape == (4, 6)
 
     def test_extract_stamp_indexconvs(self):
-        """Test the effect of different indexconvs"""
+        """Test the effect of different indexconvs.
+        """
 
         bottomleftpixel_numpy = self.img.extract_stamp(0.5, 0.5, 1)
         bottomleftpixel_sex = self.img.extract_stamp(1.0, 1.0, 1, indexconv = "sextractor")
         assert bottomleftpixel_numpy.data == bottomleftpixel_sex.data
 
     def test_extract_stamp(self):
-        """We test that the stamp extraction get the correct data"""
+        """We test that the stamp extraction get the correct data.
+        """
 
         size = 64
         array = np.random.randn(size ** 2).reshape((size, size))
@@ -417,7 +431,8 @@ class TestSheImage(SheTestCase):
         assert default_stamp.wcs is not None
 
     def test_extract_stamp_oob(self):
-        """We test that the stamp extraction works as desired for stamps not entirely within the image"""
+        """We test that the stamp extraction works as desired for stamps not entirely within the image.
+        """
 
         array = np.array([[0, 1, 2, 3, 4], [10, 11, 12, 13, 14], [20, 21, 22, 23, 24], [30, 31, 32, 33, 34]])
         img = SHE_PPT.she_image.SHEImage(array)
@@ -456,7 +471,8 @@ class TestSheImage(SheTestCase):
         assert stamp.boolmask[2, 0] == True
 
     def test_offset(self):
-        """Testing the offset property"""
+        """Testing the offset property.
+        """
 
         size = 64
         array = np.random.randn(size ** 2).reshape((size, size))
@@ -474,7 +490,8 @@ class TestSheImage(SheTestCase):
         assert rstamp.offset[1] == 3
 
     def test_get_object_mask(self):
-        """Test that the get_object_mask function behaves as expected."""
+        """Test that the get_object_mask function behaves as expected.
+        """
 
         import SHE_PPT.mask as m
 
@@ -545,7 +562,8 @@ class TestSheImage(SheTestCase):
             assert np.allclose((ra1, dec1), (ex_ra, ex_dec))
 
     def test_world2pix(self):
-        """Test that world2pix works properly"""
+        """Test that world2pix works properly.
+        """
 
         # Test with values coming from calculation assuming origin=1
         for ex_x, ex_y, ra, dec in ((0, 0, 52.53373984070186, -28.760675854311447),
@@ -559,6 +577,8 @@ class TestSheImage(SheTestCase):
             assert np.allclose((x1, y1), (ex_x, ex_y))
 
     def test_transformations(self):
+        """Test that the transformations work properly.
+        """
 
         # Check that the transformations are approximately the inverses of each other
 
@@ -619,6 +639,8 @@ class TestSheImage(SheTestCase):
                                    rtol = 1e-2, atol = 1e-4)
 
     def test_rotation(self):
+        """Test that the rotation works properly.
+        """
 
         for x, y, ra, dec in ((0, 0, 52.53373984070186, -28.760675854311447),
                               (24, 38, 52.53677316085, -28.75899827058671),
@@ -675,7 +697,8 @@ class TestSheImage(SheTestCase):
             return
 
     def test_galsim_wcs(self):
-        """Test that we can generate and use a GalSim-style WCS."""
+        """Test that we can generate and use a GalSim-style WCS.
+        """
 
         # Make a copy of the image so we can modify it safely
         img = deepcopy(self.img)
@@ -739,7 +762,8 @@ class TestSheImage(SheTestCase):
         assert np.allclose((world_pos.x, world_pos.y), (test_world_pos.x, test_world_pos.y))
 
     def test_decomposition(self):
-        """Test that we can get the expected local decomposition of a WCS."""
+        """Test that we can get the expected local decomposition of a WCS.
+        """
 
         # Test with values coming from calculation assuming origin=1
         for x, y, ra, dec in ((0, 0, 52.53373984070186, -28.760675854311447),
@@ -789,6 +813,8 @@ class TestSheImage(SheTestCase):
         assert np.allclose((-w2p_shear.g1, -w2p_shear.g2), (test_p2w_shear.g1, test_p2w_shear.g2))
 
     def test_equality(self):
+        """Test of the custom __eq__ method for equality comparisons.
+        """
 
         # Test we get equal when we expect it
         img_copy = deepcopy(self.img)
