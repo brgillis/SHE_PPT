@@ -517,8 +517,8 @@ class TestSheImage(SheTestCase):
                                       (True, True, True)),
                                      dtype = bool)
 
-        assert (img.get_object_mask(1, mask_suspect = False, mask_unassigned = False)
-                == desired_bool_mask).all()
+        assert np.all(img.get_object_mask(1, mask_suspect = False, mask_unassigned = False)
+                      == desired_bool_mask)
 
         # Mask suspect, not unassigned
         desired_bool_mask = np.array(((False, True, True),
@@ -526,8 +526,8 @@ class TestSheImage(SheTestCase):
                                       (True, True, True)),
                                      dtype = bool)
 
-        assert (img.get_object_mask(1, mask_suspect = True, mask_unassigned = False)
-                == desired_bool_mask).all()
+        assert np.all(img.get_object_mask(1, mask_suspect = True, mask_unassigned = False)
+                      == desired_bool_mask)
 
         # Mask unassigned, not suspect
         desired_bool_mask = np.array(((False, False, True),
@@ -535,8 +535,8 @@ class TestSheImage(SheTestCase):
                                       (True, True, True)),
                                      dtype = bool)
 
-        assert (img.get_object_mask(1, mask_suspect = False, mask_unassigned = True)
-                == desired_bool_mask).all()
+        assert np.all(img.get_object_mask(1, mask_suspect = False, mask_unassigned = True)
+                      == desired_bool_mask)
 
         # Mask suspect and unassigned
         desired_bool_mask = np.array(((False, True, True),
@@ -544,8 +544,8 @@ class TestSheImage(SheTestCase):
                                       (True, True, True)),
                                      dtype = bool)
 
-        assert (img.get_object_mask(1, mask_suspect = True, mask_unassigned = True)
-                == desired_bool_mask).all()
+        assert np.all(img.get_object_mask(1, mask_suspect = True, mask_unassigned = True)
+                      == desired_bool_mask)
 
     def test_pix2world(self):
         """Test that pix2world works properly"""
