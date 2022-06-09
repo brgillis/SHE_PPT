@@ -61,8 +61,8 @@ DETECTOR_SHAPE = (4096, 4136)
 DEFAULT_STAMP_SIZE = 384
 
 S_ALLOWED_INT_DTYPES = {np.int8, np.int16, np.int32, np.uint8, np.uint16, np.uint32}
-
-logger = logging.getLogger(__name__)
+D_INDEXCONV_DEFS = {"numpy"     : 0.0,
+                    "sextractor": 0.5}
 
 D_ATTR_CONVERSIONS = {"data"    : "data",
                       "noisemap": "noisemap",
@@ -70,6 +70,8 @@ D_ATTR_CONVERSIONS = {"data"    : "data",
                       "bkg"     : "background_map",
                       "wgt"     : "weight_map",
                       "seg"     : "segmentation_map", }
+
+logger = logging.getLogger(__name__)
 
 
 @lru_cache(maxsize = 50)
@@ -1031,26 +1033,26 @@ class SHEImage:
         return new_image
 
     def extract_stamp(self,
-                      x,
-                      y,
-                      width = DEFAULT_STAMP_SIZE,
-                      height = None,
-                      indexconv = "numpy",
-                      keep_header = False,
-                      none_if_out_of_bounds = False,
-                      force_all_properties = False,
-                      data_filename = None,
-                      data_hdu = None,
-                      noisemap_filename = None,
-                      noisemap_hdu = None,
-                      mask_filename = None,
-                      mask_hdu = None,
-                      bkg_filename = None,
-                      bkg_hdu = None,
-                      wgt_filename = None,
-                      wgt_hdu = None,
-                      seg_filename = None,
-                      seg_hdu = None):
+                      x: float,
+                      y: float,
+                      width: int = DEFAULT_STAMP_SIZE,
+                      height: Optional[int] = None,
+                      indexconv: str = "numpy",
+                      keep_header: bool = False,
+                      none_if_out_of_bounds: bool = False,
+                      force_all_properties: bool = False,
+                      data_filename: Optional[str] = None,
+                      data_hdu: Optional[str] = None,
+                      noisemap_filename: Optional[str] = None,
+                      noisemap_hdu: Optional[str] = None,
+                      mask_filename: Optional[str] = None,
+                      mask_hdu: Optional[str] = None,
+                      bkg_filename: Optional[str] = None,
+                      bkg_hdu: Optional[str] = None,
+                      wgt_filename: Optional[str] = None,
+                      wgt_hdu: Optional[str] = None,
+                      seg_filename: Optional[str] = None,
+                      seg_hdu: Optional[str] = None):
         """Extracts a stamp and returns it as a new None (using views of numpy arrays, i.e., without making a copy)
 
         The extracted stamp is centered on the given (x,y) coordinates and has shape (width, height).
@@ -1096,28 +1098,17 @@ class SHEImage:
         Return
         ------
         SHEImage
+            The extracted stamp.
 
         """
 
-        # Should we extract a square stamp?
-        if height is None:
-            height = width
-
-        # Checking stamp size
-        width = int(round(width))
-        height = int(round(height))
-        if width < 1 or height < 1:
-            raise ValueError("Stamp height and width must at least be 1")
-
-        # Dealing with the indexing conventions
-        indexconv_defs = {"numpy": 0.0, "sextractor": 0.5}
-        if indexconv not in list(indexconv_defs.keys()):
-            raise ValueError(
-                "Argument indexconv must be among {}".format(list(indexconv_defs.keys())))
+        width, height = self._validate_read_stamp_input(width = width,
+                                                        height = height,
+                                                        indexconv = indexconv)
 
         # Identifying the numpy stamp boundaries
-        xmin = int(round(x - width / 2.0 - indexconv_defs[indexconv]))
-        ymin = int(round(y - height / 2.0 - indexconv_defs[indexconv]))
+        xmin = int(round(x - width / 2.0 - D_INDEXCONV_DEFS[indexconv]))
+        ymin = int(round(y - height / 2.0 - D_INDEXCONV_DEFS[indexconv]))
         xmax = xmin + width
         ymax = ymin + height
 
@@ -1296,6 +1287,30 @@ class SHEImage:
             new_image.add_default_wcs(force = False)
 
         return new_image
+
+    @staticmethod
+    def _validate_read_stamp_input(width: float,
+                                   height: Optional[float],
+                                   indexconv: str) -> Tuple[int, int]:
+        """Validates input to the `read_stamp` method, and adjusts height and width as appropriate.
+
+        """
+        # Should we extract a square stamp?
+        if height is None:
+            height = width
+
+        # Silently coerce width and height to integers
+        width = int(round(width))
+        height = int(round(height))
+
+        # Check stamp size
+        if width < 1 or height < 1:
+            raise ValueError("Stamp height and width must at least be 1")
+        # Dealing with the indexing conventions
+        if indexconv not in D_INDEXCONV_DEFS:
+            raise ValueError("Argument indexconv must be among {}".format(list(D_INDEXCONV_DEFS.keys())))
+
+        return width, height
 
     def add_default_mask(self, force = False):
         """Adds a default mask to this object (all unmasked). If force=True, will overwrite an existing mask.
