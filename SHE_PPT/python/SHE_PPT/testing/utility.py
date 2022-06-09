@@ -89,7 +89,7 @@ class SheTestCase:
             self._d_args = vars(self.args)
         return self._d_args
 
-    # Class methods, for when setup/teardown_class can be used
+    # Class methods
 
     @classmethod
     def teardown_class(cls):
@@ -144,6 +144,8 @@ class SheTestCase:
         if cls.workdir is None:
             cls.workdir = os.path.split(qualified_filename)[0]
 
+    # Overridable methods to setup/teardown for tests
+
     def setup_workdir(self) -> None:
         """Overridable method, where the user can specify any unique setup for a given testing class, to be performed
            before the workdir is setup. This is normally used when it's needed to download test data, which will set
@@ -156,6 +158,18 @@ class SheTestCase:
            after the workdir is setup.
         """
         return None
+
+    def teardown(self) -> None:
+        """Overridable method, where the user can specify any commands to be run at the end of any tests.
+        """
+        return None
+
+    def _make_mock_args(self) -> Namespace:
+        """Overridable method to create a mock self.args Namespace. Not necessary to implement if no args are used.
+        """
+        return Namespace()
+
+    # Fixtures used in setup. These can be used as arguments for new fixtures to control when they're created.
 
     @pytest.fixture(scope = 'class')
     def class_setup(self, tmpdir_factory):
@@ -191,12 +205,7 @@ class SheTestCase:
 
         return self
 
-    # Convenience methods for when setting up with autouse = True
-
-    def _make_mock_args(self) -> Namespace:
-        """Overridable method to create a mock self.args Namespace. Not necessary to implement if no args are used.
-        """
-        return Namespace()
+    # Private methods used for setup
 
     def _setup_workdir_from_tmpdir(self, tmpdir: LocalPath):
         """ Sets up workdir and logdir based on a tmpdir fixture.
@@ -253,3 +262,10 @@ class SheTestCase:
 
         # Set log level to debug to make sure there aren't any issues with logging strings
         set_log_level_debug()
+
+    @pytest.fixture(scope = "session", autouse = True)
+    def _teardown(self, request):
+        """Method set up to be run at session-level, to define the `teardown` method to be run at end of all tests.
+        """
+
+        request.addfinalizer(self.teardown)
