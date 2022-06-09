@@ -1137,94 +1137,29 @@ class SHEImage:
         # any current offset.
         new_offset = self.offset + np.array([xmin, ymin])
 
-        new_stamps = {}
-
         # If these bounds are fully within the image range, the extraction is
         # easy.
         if xmin >= 0 and xmax < self.shape[0] and ymin >= 0 and ymax < self.shape[1]:
 
-            # We are fully within the image
-            logger.debug("Extracting stamp [%d:%d,%d:%d] fully within image of shape (%d,%d)",
-                         xmin, xmax, ymin, ymax, self.shape[0], self.shape[1])
-
-            for attr_name, filename, hdu_i in (("data", data_filename, data_hdu),
-                                               ("noisemap", noisemap_filename, noisemap_hdu),
-                                               ("mask", mask_filename, mask_hdu),
-                                               ("bkg", bkg_filename, bkg_hdu),
-                                               ("wgt", wgt_filename, wgt_hdu),
-                                               ("seg", seg_filename, seg_hdu),):
-
-                new_stamps[attr_name] = self._extract_attr_stamp(xmin, ymin, xmax, ymax, attr_name, filename,
-                                                                 hdu_i)
+            new_stamps = self._extract_stamp_in_bounds(xmin, xmax,
+                                                       ymin, ymax,
+                                                       data_filename, data_hdu,
+                                                       noisemap_filename, noisemap_hdu,
+                                                       mask_filename, mask_hdu,
+                                                       bkg_filename, bkg_hdu,
+                                                       seg_filename, seg_hdu,
+                                                       wgt_filename, wgt_hdu)
 
         else:
-            logger.debug("Extracting stamp [%d:%d,%d:%d] not entirely within image of shape (%d,%d)",
-                         xmin, xmax, ymin, ymax, self.shape[0], self.shape[1])
 
-            # One solution would be to pad the image and extract, but that would need a lot of memory.
-            # So instead we go for the more explicit bound computations.
-
-            # Compute the bounds of the overlapping part of the stamp in the
-            # original image
-            overlap_xmin = max(xmin, 0)
-            overlap_ymin = max(ymin, 0)
-            overlap_xmax = min(xmax, self.shape[0])
-            overlap_ymax = min(ymax, self.shape[1])
-            overlap_width = overlap_xmax - overlap_xmin
-            overlap_height = overlap_ymax - overlap_ymin
-            overlap_slice = (
-                slice(overlap_xmin, overlap_xmax), slice(overlap_ymin, overlap_ymax))
-            logger.debug("overlap_slice: %s", str(overlap_slice))
-
-            # Compute the bounds of this same overlapping part in the new stamp
-            # The indexes of the stamp are simply shifted with respect to those
-            # of the original image by (xmin, ymin)
-            overlap_xmin_stamp = overlap_xmin - xmin
-            overlap_xmax_stamp = overlap_xmax - xmin
-            overlap_ymin_stamp = overlap_ymin - ymin
-            overlap_ymax_stamp = overlap_ymax - ymin
-            overlap_slice_stamp = (slice(overlap_xmin_stamp, overlap_xmax_stamp), slice(
-                overlap_ymin_stamp, overlap_ymax_stamp))
-
-            extracted_stamps = {}
-
-            # Read in the overlap data
-            for attr_name, filename, hdu_i in (("data", data_filename, data_hdu),
-                                               ("noisemap", noisemap_filename, noisemap_hdu),
-                                               ("mask", mask_filename, mask_hdu),
-                                               ("bkg", bkg_filename, bkg_hdu),
-                                               ("wgt", wgt_filename, wgt_hdu),
-                                               ("seg", seg_filename, seg_hdu),):
-
-                # We first create new stamps, and we will later fill part of them
-                # with slices of the original.
-                base_image = getattr(self, attr_name)
-                if base_image is None and filename is None:
-                    new_stamps[attr_name] = None
-                else:
-                    # Get the data type for this image
-                    new_dtype = D_IMAGE_DTYPES[attr_name] if D_IMAGE_DTYPES[attr_name] is not None else base_image.dtype
-
-                    # Construct a base image filles with the default value
-                    new_stamps[attr_name] = D_DEFAULT_IMAGE_VALUES[attr_name] * np.ones((width, height),
-                                                                                        dtype = new_dtype)
-
-                extracted_stamps[attr_name] = self._extract_attr_stamp(overlap_xmin,
-                                                                       overlap_ymin,
-                                                                       overlap_xmax,
-                                                                       overlap_ymax,
-                                                                       attr_name,
-                                                                       filename,
-                                                                       hdu_i)
-
-                # Fill the stamp arrays:
-                # If there is any overlap
-                if (overlap_width > 0) and (overlap_height > 0):
-                    if extracted_stamps[attr_name] is not None:
-                        new_stamps[attr_name][overlap_slice_stamp] = extracted_stamps[attr_name]
-
-            if overlap_width == 0 and overlap_height == 0:
-                logger.warning("The extracted stamp is entirely outside of the image bounds!")
+            new_stamps = self._extract_stamp_not_in_bounds(xmin, xmax,
+                                                           ymin, ymax,
+                                                           data_filename, data_hdu,
+                                                           noisemap_filename, noisemap_hdu,
+                                                           mask_filename, mask_hdu,
+                                                           bkg_filename, bkg_hdu,
+                                                           seg_filename, seg_hdu,
+                                                           wgt_filename, wgt_hdu)
 
         # Create the new object
         new_image = SHEImage(
@@ -1255,6 +1190,106 @@ class SHEImage:
             new_image.add_default_wcs(force = False)
 
         return new_image
+
+    def _extract_stamp_in_bounds(self, xmin, xmax, ymin, ymax, data_filename, data_hdu, noisemap_filename, noisemap_hdu,
+                                 mask_filename, mask_hdu, bkg_filename, bkg_hdu, seg_filename, seg_hdu, wgt_filename,
+                                 wgt_hdu):
+
+        new_stamps = {}
+
+        # We are fully within the image
+        logger.debug("Extracting stamp [%d:%d,%d:%d] fully within image of shape (%d,%d)",
+                     xmin, xmax, ymin, ymax, self.shape[0], self.shape[1])
+        for attr_name, filename, hdu_i in (("data", data_filename, data_hdu),
+                                           ("noisemap", noisemap_filename, noisemap_hdu),
+                                           ("mask", mask_filename, mask_hdu),
+                                           ("bkg", bkg_filename, bkg_hdu),
+                                           ("wgt", wgt_filename, wgt_hdu),
+                                           ("seg", seg_filename, seg_hdu),):
+
+            new_stamps[attr_name] = self._extract_attr_stamp(xmin, ymin, xmax, ymax, attr_name, filename,
+                                                             hdu_i)
+
+        return new_stamps
+
+    def _extract_stamp_not_in_bounds(self, xmin, xmax, ymin, ymax, data_filename, data_hdu, noisemap_filename,
+                                     noisemap_hdu,
+                                     mask_filename, mask_hdu, bkg_filename, bkg_hdu, seg_filename, seg_hdu,
+                                     wgt_filename,
+                                     wgt_hdu):
+
+        new_stamps = {}
+
+        # We are not fully within the image
+        logger.debug("Extracting stamp [%d:%d,%d:%d] not entirely within image of shape (%d,%d)",
+                     xmin, xmax, ymin, ymax, self.shape[0], self.shape[1])
+
+        # One solution would be to pad the image and extract, but that would need a lot of memory.
+        # So instead we go for the more explicit bound computations.
+
+        # Compute the bounds of the overlapping part of the stamp in the
+        # original image
+        overlap_xmin = max(xmin, 0)
+        overlap_ymin = max(ymin, 0)
+        overlap_xmax = min(xmax, self.shape[0])
+        overlap_ymax = min(ymax, self.shape[1])
+        overlap_width = overlap_xmax - overlap_xmin
+        overlap_height = overlap_ymax - overlap_ymin
+        overlap_slice = (
+            slice(overlap_xmin, overlap_xmax), slice(overlap_ymin, overlap_ymax))
+        logger.debug("overlap_slice: %s", str(overlap_slice))
+
+        # Compute the bounds of this same overlapping part in the new stamp
+        # The indexes of the stamp are simply shifted with respect to those
+        # of the original image by (xmin, ymin)
+        overlap_xmin_stamp = overlap_xmin - xmin
+        overlap_xmax_stamp = overlap_xmax - xmin
+        overlap_ymin_stamp = overlap_ymin - ymin
+        overlap_ymax_stamp = overlap_ymax - ymin
+        overlap_slice_stamp = (slice(overlap_xmin_stamp, overlap_xmax_stamp), slice(
+            overlap_ymin_stamp, overlap_ymax_stamp))
+
+        extracted_stamps = {}
+
+        # Read in the overlap data
+        for attr_name, filename, hdu_i in (("data", data_filename, data_hdu),
+                                           ("noisemap", noisemap_filename, noisemap_hdu),
+                                           ("mask", mask_filename, mask_hdu),
+                                           ("bkg", bkg_filename, bkg_hdu),
+                                           ("wgt", wgt_filename, wgt_hdu),
+                                           ("seg", seg_filename, seg_hdu),):
+
+            # We first create new stamps, and we will later fill part of them
+            # with slices of the original.
+            base_image = getattr(self, attr_name)
+            if base_image is None and filename is None:
+                new_stamps[attr_name] = None
+            else:
+                # Get the data type for this image
+                new_dtype = D_IMAGE_DTYPES[attr_name] if D_IMAGE_DTYPES[attr_name] is not None else base_image.dtype
+
+                # Construct a base image filled with the default value
+                new_stamps[attr_name] = D_DEFAULT_IMAGE_VALUES[attr_name] * np.ones((xmax - xmin, ymax - ymin),
+                                                                                    dtype = new_dtype)
+
+            extracted_stamps[attr_name] = self._extract_attr_stamp(overlap_xmin,
+                                                                   overlap_ymin,
+                                                                   overlap_xmax,
+                                                                   overlap_ymax,
+                                                                   attr_name,
+                                                                   filename,
+                                                                   hdu_i)
+
+            # Fill the stamp arrays:
+            # If there is any overlap
+            if (overlap_width > 0) and (overlap_height > 0):
+                if extracted_stamps[attr_name] is not None:
+                    new_stamps[attr_name][overlap_slice_stamp] = extracted_stamps[attr_name]
+
+        if overlap_width == 0 and overlap_height == 0:
+            logger.warning("The extracted stamp is entirely outside of the image bounds!")
+
+        return new_stamps
 
     @staticmethod
     def _validate_read_stamp_input(width: float,
