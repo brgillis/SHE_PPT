@@ -22,7 +22,7 @@ __updated__ = "2021-08-13"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from typing import Iterable, TYPE_CHECKING, Union
+from typing import Dict, Iterable, TYPE_CHECKING, Type, Union
 
 if TYPE_CHECKING:
     from .she_frame_stack import SHEFrameStack
@@ -49,7 +49,7 @@ from .constants.fits import BACKGROUND_TAG, CCDID_LABEL, MASK_TAG, NOISEMAP_TAG,
 from .constants.misc import SEGMAP_UNASSIGNED_VALUE
 from .file_io import DEFAULT_WORKDIR, write_fits
 from .mask import (as_bool, is_masked_bad,
-                   is_masked_suspect_or_bad, masked_off_image, )
+                   is_masked_suspect_or_bad, )
 
 PRIMARY_TAG = "PRIMARY"
 
@@ -70,6 +70,18 @@ D_ATTR_CONVERSIONS = {"data"    : "data",
                       "bkg"     : "background_map",
                       "wgt"     : "weight_map",
                       "seg"     : "segmentation_map", }
+D_DEFAULT_IMAGE_VALUES = {"data"    : 0,
+                          "noisemap": 0,
+                          "mask"    : 1,
+                          "bkg"     : 0,
+                          "wgt"     : 0,
+                          "seg"     : SEGMAP_UNASSIGNED_VALUE, }
+D_IMAGE_DTYPES: Dict[str, Optional[Type]] = {"data"    : None,
+                                             "noisemap": np.float32,
+                                             "mask"    : np.int32,
+                                             "bkg"     : np.float32,
+                                             "wgt"     : np.float32,
+                                             "seg"     : np.int64, }
 
 logger = logging.getLogger(__name__)
 
@@ -992,10 +1004,10 @@ class SHEImage:
             return data, header
         return data
 
-    def _extract_attr_stamp(self, xmin, ymin, xmax, ymax, attr, filename, hdu_i):
+    def _extract_attr_stamp(self, xmin, ymin, xmax, ymax, attr_name, filename, hdu_i):
         if (xmax - xmin) <= 0 or (ymax - ymin) <= 0:
             return None
-        a = getattr(self, D_ATTR_CONVERSIONS[attr])
+        a = getattr(self, D_ATTR_CONVERSIONS[attr_name])
         if a is not None and a.shape[0] > 0 and a.shape[1] > 0:
             out = a[xmin:xmax, ymin:ymax]
         elif filename is not None and hdu_i is not None:
@@ -1106,7 +1118,7 @@ class SHEImage:
                                                         height = height,
                                                         indexconv = indexconv)
 
-        # Identifying the numpy stamp boundaries
+        # Identify the numpy stamp boundaries
         xmin = int(round(x - width / 2.0 - D_INDEXCONV_DEFS[indexconv]))
         ymin = int(round(y - height / 2.0 - D_INDEXCONV_DEFS[indexconv]))
         xmax = xmin + width
@@ -1118,11 +1130,8 @@ class SHEImage:
                                       (ymax < 0) or (ymin >= self.shape[1])):
             return None
 
-        # And the header:
-        if keep_header:
-            new_header = self.header
-        else:
-            new_header = None
+        # Get the header we'll use for the new stamp
+        new_header = self.header if keep_header else None
 
         # And defining the offset property of the stamp, taking into account
         # any current offset.
@@ -1135,23 +1144,24 @@ class SHEImage:
             logger.debug("Extracting stamp [%d:%d,%d:%d] fully within image of shape (%d,%d)",
                          xmin, xmax, ymin, ymax, self.shape[0], self.shape[1])
 
-            attr_stamps = {}
-            for attr, filename, hdu_i in (("data", data_filename, data_hdu),
-                                          ("noisemap", noisemap_filename, noisemap_hdu),
-                                          ("mask", mask_filename, mask_hdu),
-                                          ("bkg", bkg_filename, bkg_hdu),
-                                          ("wgt", wgt_filename, wgt_hdu),
-                                          ("seg", seg_filename, seg_hdu),):
+            extracted_stamps = {}
+            for attr_name, filename, hdu_i in (("data", data_filename, data_hdu),
+                                               ("noisemap", noisemap_filename, noisemap_hdu),
+                                               ("mask", mask_filename, mask_hdu),
+                                               ("bkg", bkg_filename, bkg_hdu),
+                                               ("wgt", wgt_filename, wgt_hdu),
+                                               ("seg", seg_filename, seg_hdu),):
 
-                attr_stamps[attr] = self._extract_attr_stamp(xmin, ymin, xmax, ymax, attr, filename, hdu_i)
+                extracted_stamps[attr_name] = self._extract_attr_stamp(xmin, ymin, xmax, ymax, attr_name, filename,
+                                                                       hdu_i)
 
             new_image = SHEImage(
-                data = attr_stamps["data"],
-                mask = attr_stamps["mask"],
-                noisemap = attr_stamps["noisemap"],
-                segmentation_map = attr_stamps["seg"],
-                background_map = attr_stamps["bkg"],
-                weight_map = attr_stamps["wgt"],
+                data = extracted_stamps["data"],
+                mask = extracted_stamps["mask"],
+                noisemap = extracted_stamps["noisemap"],
+                segmentation_map = extracted_stamps["seg"],
+                background_map = extracted_stamps["bkg"],
+                weight_map = extracted_stamps["wgt"],
                 header = new_header,
                 offset = new_offset,
                 wcs = self.wcs,
@@ -1189,80 +1199,52 @@ class SHEImage:
             overlap_slice_stamp = (slice(overlap_xmin_stamp, overlap_xmax_stamp), slice(
                 overlap_ymin_stamp, overlap_ymax_stamp))
 
-            # We first create new stamps, and we will later fill part of them
-            # with slices of the original.
-            if self.data is None and data_filename is None:
-                data_stamp = None
-            else:
-                data_stamp = np.zeros((width, height), dtype = self.data.dtype)
-
-            if self.mask is None and mask_filename is None:
-                mask_stamp = None
-            else:
-                mask_stamp = np.ones((width, height), dtype = np.int32) * masked_off_image
-
-            if self.noisemap is None and noisemap_filename is None:
-                noisemap_stamp = None
-            else:
-                noisemap_stamp = np.zeros((width, height), dtype = np.float32)
-
-            if self.segmentation_map is None and seg_filename is None:
-                segmentation_map_stamp = None
-            else:
-                segmentation_map_stamp = np.ones(
-                    (width, height), dtype = np.int64) * SEGMAP_UNASSIGNED_VALUE
-
-            if self.background_map is None and bkg_filename is None:
-                background_map_stamp = None
-            else:
-                background_map_stamp = np.zeros((width, height), dtype = np.float32)
-
-            if self.weight_map is None and wgt_filename is None:
-                weight_map_stamp = None
-            else:
-                weight_map_stamp = np.zeros((width, height), dtype = np.float32)
+            new_stamps = {}
+            extracted_stamps = {}
 
             # Read in the overlap data
-            attr_stamps = {}
-            for attr, filename, hdu_i in (("data", data_filename, data_hdu),
-                                          ("noisemap", noisemap_filename, noisemap_hdu),
-                                          ("mask", mask_filename, mask_hdu),
-                                          ("bkg", bkg_filename, bkg_hdu),
-                                          ("wgt", wgt_filename, wgt_hdu),
-                                          ("seg", seg_filename, seg_hdu),):
+            for attr_name, filename, hdu_i in (("data", data_filename, data_hdu),
+                                               ("noisemap", noisemap_filename, noisemap_hdu),
+                                               ("mask", mask_filename, mask_hdu),
+                                               ("bkg", bkg_filename, bkg_hdu),
+                                               ("wgt", wgt_filename, wgt_hdu),
+                                               ("seg", seg_filename, seg_hdu),):
 
-                attr_stamps[attr] = self._extract_attr_stamp(overlap_xmin,
-                                                             overlap_ymin,
-                                                             overlap_xmax,
-                                                             overlap_ymax,
-                                                             attr,
-                                                             filename,
-                                                             hdu_i)
+                # We first create new stamps, and we will later fill part of them
+                # with slices of the original.
+                base_image = getattr(self, attr_name)
+                if base_image is None and filename is None:
+                    new_stamps[attr_name] = None
+                else:
+                    # Get the data type for this image
+                    new_dtype = D_IMAGE_DTYPES[attr_name] if D_IMAGE_DTYPES[attr_name] is not None else base_image.dtype
 
-            # Fill the stamp arrays:
-            # If there is any overlap
-            if (overlap_width > 0) and (overlap_height > 0):
-                if attr_stamps["data"] is not None:
-                    data_stamp[overlap_slice_stamp] = attr_stamps["data"]
-                if attr_stamps["mask"] is not None:
-                    mask_stamp[overlap_slice_stamp] = attr_stamps["mask"]
-                if attr_stamps["noisemap"] is not None:
-                    noisemap_stamp[overlap_slice_stamp] = attr_stamps["noisemap"]
-                if attr_stamps["seg"] is not None:
-                    segmentation_map_stamp[overlap_slice_stamp] = attr_stamps["seg"]
-                if attr_stamps["bkg"] is not None:
-                    background_map_stamp[overlap_slice_stamp] = attr_stamps["bkg"]
-                if attr_stamps["wgt"] is not None:
-                    weight_map_stamp[overlap_slice_stamp] = attr_stamps["wgt"]
+                    # Construct a base image filles with the default value
+                    new_stamps[attr_name] = D_DEFAULT_IMAGE_VALUES[attr_name] * np.ones((width, height),
+                                                                                        dtype = new_dtype)
+
+                extracted_stamps[attr_name] = self._extract_attr_stamp(overlap_xmin,
+                                                                       overlap_ymin,
+                                                                       overlap_xmax,
+                                                                       overlap_ymax,
+                                                                       attr_name,
+                                                                       filename,
+                                                                       hdu_i)
+
+                # Fill the stamp arrays:
+                # If there is any overlap
+                if (overlap_width > 0) and (overlap_height > 0):
+                    if extracted_stamps[attr_name] is not None:
+                        new_stamps[attr_name][overlap_slice_stamp] = extracted_stamps[attr_name]
 
             # Create the new object
             new_image = SHEImage(
-                data = data_stamp,
-                mask = mask_stamp,
-                noisemap = noisemap_stamp,
-                segmentation_map = segmentation_map_stamp,
-                background_map = background_map_stamp,
-                weight_map = weight_map_stamp,
+                data = new_stamps["data"],
+                mask = new_stamps["mask"],
+                noisemap = new_stamps["noisemap"],
+                segmentation_map = new_stamps["seg"],
+                background_map = new_stamps["bkg"],
+                weight_map = new_stamps["wgt"],
                 header = new_header,
                 offset = new_offset,
                 wcs = self.wcs,
