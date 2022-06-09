@@ -45,7 +45,7 @@ import numpy as np
 
 from EL_PythonUtils.utilities import run_only_once
 from . import logging, mdb
-from .constants.fits import BACKGROUND_TAG, CCDID_LABEL, MASK_TAG, NOISEMAP_TAG, SEGMENTATION_TAG, WEIGHT_TAG
+from .constants.fits import BACKGROUND_TAG, CCDID_LABEL, MASK_TAG, NOISEMAP_TAG, SCI_TAG, SEGMENTATION_TAG, WEIGHT_TAG
 from .constants.misc import SEGMAP_UNASSIGNED_VALUE
 from .file_io import DEFAULT_WORKDIR, write_fits
 from .mask import (as_bool, is_masked_bad,
@@ -53,9 +53,8 @@ from .mask import (as_bool, is_masked_bad,
 
 PRIMARY_TAG = "PRIMARY"
 
-KEY_Y_OFFSET = "SHEIOFY"
-
 KEY_X_OFFSET = "SHEIOFX"
+KEY_Y_OFFSET = "SHEIOFY"
 
 DETECTOR_SHAPE = (4096, 4136)
 DEFAULT_STAMP_SIZE = 384
@@ -64,30 +63,30 @@ S_ALLOWED_INT_DTYPES = {np.int8, np.int16, np.int32, np.uint8, np.uint16, np.uin
 D_INDEXCONV_DEFS = {"numpy"     : 0.0,
                     "sextractor": 0.5}
 
-D_ATTR_CONVERSIONS = {"data"    : "data",
-                      "noisemap": "noisemap",
-                      "mask"    : "mask",
-                      "bkg"     : "background_map",
-                      "wgt"     : "weight_map",
-                      "seg"     : "segmentation_map", }
-D_DEFAULT_IMAGE_VALUES = {"data"    : 0,
-                          "noisemap": 0,
-                          "mask"    : 1,
-                          "bkg"     : 0,
-                          "wgt"     : 0,
-                          "seg"     : SEGMAP_UNASSIGNED_VALUE, }
+D_ATTR_CONVERSIONS = {SCI_TAG         : "data",
+                      MASK_TAG        : "mask",
+                      NOISEMAP_TAG    : "noisemap",
+                      SEGMENTATION_TAG: "segmentation_map",
+                      BACKGROUND_TAG  : "background_map",
+                      WEIGHT_TAG      : "weight_map", }
+D_DEFAULT_IMAGE_VALUES = {SCI_TAG         : 0,
+                          MASK_TAG        : 1,
+                          NOISEMAP_TAG    : 0,
+                          SEGMENTATION_TAG: SEGMAP_UNASSIGNED_VALUE,
+                          BACKGROUND_TAG  : 0,
+                          WEIGHT_TAG      : 0, }
 
 NOISEMAP_DTYPE = np.float32
 MASK_DTYPE = np.int32
 BKG_DTYPE = np.float32
 WGT_DTYPE = np.float32
 SEG_DTYPE = np.int64
-D_IMAGE_DTYPES: Dict[str, Optional[Type]] = {"data"    : None,
-                                             "noisemap": NOISEMAP_DTYPE,
-                                             "mask"    : MASK_DTYPE,
-                                             "bkg"     : BKG_DTYPE,
-                                             "wgt"     : WGT_DTYPE,
-                                             "seg"     : SEG_DTYPE, }
+D_IMAGE_DTYPES: Dict[str, Optional[Type]] = {SCI_TAG         : None,
+                                             MASK_TAG        : MASK_DTYPE,
+                                             NOISEMAP_TAG    : NOISEMAP_DTYPE,
+                                             SEGMENTATION_TAG: SEG_DTYPE,
+                                             BACKGROUND_TAG  : BKG_DTYPE,
+                                             WEIGHT_TAG      : WGT_DTYPE, }
 
 logger = logging.getLogger(__name__)
 
@@ -343,7 +342,7 @@ class SHEImage:
 
         # We use safe casting for the mask, since we could lose very relevant data if we cast e.g. an int64 to an int32
         self.__set_array_attr(array = mask,
-                              name = "mask",
+                              name = MASK_TAG,
                               casting = "safe")
 
     @mask.deleter
@@ -388,7 +387,7 @@ class SHEImage:
         """
 
         self.__set_array_attr(array = noisemap,
-                              name = "noisemap")
+                              name = NOISEMAP_TAG)
 
     @noisemap.deleter
     def noisemap(self):
@@ -414,7 +413,7 @@ class SHEImage:
         # We use safe casting for the segmentation map, since we could lose very relevant data if we cast e.g. an
         # int64 to an int32
         self.__set_array_attr(array = segmentation_map,
-                              name = "seg",
+                              name = SEGMENTATION_TAG,
                               casting = "safe")
 
     @segmentation_map.deleter
@@ -443,7 +442,7 @@ class SHEImage:
         """
 
         self.__set_array_attr(array = background_map,
-                              name = "bkg")
+                              name = BACKGROUND_TAG)
 
     @background_map.deleter
     def background_map(self) -> None:
@@ -473,7 +472,7 @@ class SHEImage:
         """
 
         self.__set_array_attr(array = weight_map,
-                              name = "wgt")
+                              name = WEIGHT_TAG)
 
     @weight_map.deleter
     def weight_map(self):
@@ -798,8 +797,7 @@ class SHEImage:
         res: bool = True
 
         # Check that all the data is the same
-        for attr in ["data", "mask", "noisemap", "background_map", "segmentation_map", "weight_map", "header",
-                     "offset"]:
+        for attr in [*D_ATTR_CONVERSIONS.values(), "header", "offset"]:
             if neq(getattr(self, attr), getattr(rhs, attr)):
                 res = False
                 break
@@ -908,11 +906,9 @@ class SHEImage:
 
         if not data_only:
 
-            for attr, name in [("mask", MASK_TAG),
-                               ("noisemap", NOISEMAP_TAG),
-                               ("segmentation_map", SEGMENTATION_TAG),
-                               ("background_map", BACKGROUND_TAG),
-                               ("weight_map", WEIGHT_TAG)]:
+            for name, attr in D_ATTR_CONVERSIONS.items():
+                if name == SCI_TAG:
+                    continue
                 if getattr(self, attr) is not None:
                     hdu = astropy.io.fits.ImageHDU(getattr(self, attr).transpose(), name = name)
                     hdu_list.append(hdu)
@@ -1286,12 +1282,12 @@ class SHEImage:
 
         # Create the new object
         new_image = SHEImage(
-            data = new_stamps["data"],
-            mask = new_stamps["mask"],
-            noisemap = new_stamps["noisemap"],
-            segmentation_map = new_stamps["seg"],
-            background_map = new_stamps["bkg"],
-            weight_map = new_stamps["wgt"],
+            data = new_stamps[SCI_TAG],
+            mask = new_stamps[MASK_TAG],
+            noisemap = new_stamps[NOISEMAP_TAG],
+            segmentation_map = new_stamps[SEGMENTATION_TAG],
+            background_map = new_stamps[BACKGROUND_TAG],
+            weight_map = new_stamps[WEIGHT_TAG],
             header = new_header,
             offset = new_offset,
             wcs = self.wcs,
@@ -1331,12 +1327,12 @@ class SHEImage:
         # We are fully within the image
         logger.debug("Extracting stamp [%d:%d,%d:%d] fully within image of shape (%d,%d)",
                      xmin, xmax, ymin, ymax, self.shape[0], self.shape[1])
-        for attr_name, filename, hdu_i in (("data", data_filename, data_hdu),
-                                           ("noisemap", noisemap_filename, noisemap_hdu),
-                                           ("mask", mask_filename, mask_hdu),
-                                           ("bkg", bkg_filename, bkg_hdu),
-                                           ("wgt", wgt_filename, wgt_hdu),
-                                           ("seg", seg_filename, seg_hdu),):
+        for attr_name, filename, hdu_i in ((SCI_TAG, data_filename, data_hdu),
+                                           (MASK_TAG, mask_filename, mask_hdu),
+                                           (NOISEMAP_TAG, noisemap_filename, noisemap_hdu),
+                                           (SEGMENTATION_TAG, seg_filename, seg_hdu),
+                                           (BACKGROUND_TAG, bkg_filename, bkg_hdu),
+                                           (WEIGHT_TAG, wgt_filename, wgt_hdu),):
 
             new_stamps[attr_name] = self._extract_attr_stamp(xmin, ymin, xmax, ymax, attr_name, filename,
                                                              hdu_i)
@@ -1388,12 +1384,12 @@ class SHEImage:
                                slice(overlap_ymin_stamp, overlap_ymax_stamp))
 
         # Read in the overlap data
-        for attr_name, filename, hdu_i in (("data", data_filename, data_hdu),
-                                           ("noisemap", noisemap_filename, noisemap_hdu),
-                                           ("mask", mask_filename, mask_hdu),
-                                           ("bkg", bkg_filename, bkg_hdu),
-                                           ("wgt", wgt_filename, wgt_hdu),
-                                           ("seg", seg_filename, seg_hdu),):
+        for attr_name, filename, hdu_i in ((SCI_TAG, data_filename, data_hdu),
+                                           (MASK_TAG, mask_filename, mask_hdu),
+                                           (NOISEMAP_TAG, noisemap_filename, noisemap_hdu),
+                                           (SEGMENTATION_TAG, seg_filename, seg_hdu),
+                                           (BACKGROUND_TAG, bkg_filename, bkg_hdu),
+                                           (WEIGHT_TAG, wgt_filename, wgt_hdu),):
 
             # We first create new stamps, and we will later fill part of them
             # with slices of the original.
