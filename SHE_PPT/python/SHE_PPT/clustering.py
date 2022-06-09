@@ -243,7 +243,7 @@ def identify_all_groups(x,y, sep=1., metric = euclidean_metric, batchsize = 2000
             xp, yp, indices = get_subregion(xs,ys,xmin,xmax, ymin, ymax)
 
             if len(xp) < 1:
-                logger.debug("Batch(%d,%d): Skipping as no objects in batch",(i,j))
+                logger.debug("Batch(%d,%d): Skipping as no objects in batch",i,j)
                 continue
             
             #get the list of groups. Each group is a list of indices of the objects in that group
