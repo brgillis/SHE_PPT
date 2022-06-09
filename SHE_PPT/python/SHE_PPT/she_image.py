@@ -158,21 +158,9 @@ class SHEImage:
     galsim_wcs : Optional[galsim.wcs.BaseWCS]
         A galsim WCS object for this image.
     parent_frame_stack : Optional[SHEFrameStack]
-        Reference to the parent SHEFrameStack, if it exists; None otherwise. This is stored as a weak reference to
-        prevent a circular reference, and so this may be initialized to reference an object, but later be returned
-        as None if that object goes out of scope.
     parent_frame : Optional[SHEFrame]
-        Reference to the parent SHEFrame, if it exists; None otherwise. This is stored as a weak reference to
-        prevent a circular reference, and so this may be initialized to reference an object, but later be returned
-        as None if that object goes out of scope.
     parent_image_stack : Optional[SHEImageStack]
-        Reference to the parent SHEImageStack, if it exists; None otherwise. This is stored as a weak reference to
-        prevent a circular reference, and so this may be initialized to reference an object, but later be returned
-        as None if that object goes out of scope.
     parent_image : Optional[SHEImage]
-        Reference to the parent SHEImage, if it exists; None otherwise. This is stored as a weak reference to
-        prevent a circular reference, and so this may be initialized to reference an object, but later be returned
-        as None if that object goes out of scope.
     """
 
     # Class attributes
@@ -239,9 +227,13 @@ class SHEImage:
         wcs : Optional[astropy.wcs.WCS]
             An astropy WCS object for this image.
         parent_frame_stack : Optional[SHEFrameStack]
+            Reference to the parent SHEFrameStack, if it exists; None otherwise.
         parent_frame : Optional[SHEFrame]
+            Reference to the parent SHEFrame, if it exists; None otherwise.
         parent_image_stack : Optional[SHEImageStack]
+            Reference to the parent SHEImageStack, if it exists; None otherwise.
         parent_image : Optional[SHEImage]
+            Reference to the parent SHEImage, if it exists; None otherwise.
         """
 
         # References to parent objects
