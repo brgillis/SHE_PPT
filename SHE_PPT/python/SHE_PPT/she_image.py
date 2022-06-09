@@ -1194,6 +1194,8 @@ class SHEImage:
     def _extract_stamp_in_bounds(self, xmin, xmax, ymin, ymax, data_filename, data_hdu, noisemap_filename, noisemap_hdu,
                                  mask_filename, mask_hdu, bkg_filename, bkg_hdu, seg_filename, seg_hdu, wgt_filename,
                                  wgt_hdu):
+        """Private method to handle extraction of a postage stamp when we know it's entirely within bounds.
+        """
 
         new_stamps = {}
 
@@ -1217,6 +1219,8 @@ class SHEImage:
                                      mask_filename, mask_hdu, bkg_filename, bkg_hdu, seg_filename, seg_hdu,
                                      wgt_filename,
                                      wgt_hdu):
+        """Private method to handle extraction of a postage stamp when we know it's not entirely within bounds.
+        """
 
         new_stamps = {}
 
@@ -1235,9 +1239,14 @@ class SHEImage:
         overlap_ymax = min(ymax, self.shape[1])
         overlap_width = overlap_xmax - overlap_xmin
         overlap_height = overlap_ymax - overlap_ymin
-        overlap_slice = (
-            slice(overlap_xmin, overlap_xmax), slice(overlap_ymin, overlap_ymax))
+        overlap_slice = (slice(overlap_xmin, overlap_xmax),
+                         slice(overlap_ymin, overlap_ymax))
         logger.debug("overlap_slice: %s", str(overlap_slice))
+
+        # Check if we have any actual overlap
+        overlap_exists = overlap_width > 0 and overlap_height > 0
+        if not overlap_exists:
+            logger.warning("The extracted stamp is entirely outside of the image bounds!")
 
         # Compute the bounds of this same overlapping part in the new stamp
         # The indexes of the stamp are simply shifted with respect to those
@@ -1246,10 +1255,8 @@ class SHEImage:
         overlap_xmax_stamp = overlap_xmax - xmin
         overlap_ymin_stamp = overlap_ymin - ymin
         overlap_ymax_stamp = overlap_ymax - ymin
-        overlap_slice_stamp = (slice(overlap_xmin_stamp, overlap_xmax_stamp), slice(
-            overlap_ymin_stamp, overlap_ymax_stamp))
-
-        extracted_stamps = {}
+        overlap_slice_stamp = (slice(overlap_xmin_stamp, overlap_xmax_stamp),
+                               slice(overlap_ymin_stamp, overlap_ymax_stamp))
 
         # Read in the overlap data
         for attr_name, filename, hdu_i in (("data", data_filename, data_hdu),
@@ -1272,22 +1279,18 @@ class SHEImage:
                 new_stamps[attr_name] = D_DEFAULT_IMAGE_VALUES[attr_name] * np.ones((xmax - xmin, ymax - ymin),
                                                                                     dtype = new_dtype)
 
-            extracted_stamps[attr_name] = self._extract_attr_stamp(overlap_xmin,
-                                                                   overlap_ymin,
-                                                                   overlap_xmax,
-                                                                   overlap_ymax,
-                                                                   attr_name,
-                                                                   filename,
-                                                                   hdu_i)
+            extracted_stamp = self._extract_attr_stamp(overlap_xmin,
+                                                       overlap_ymin,
+                                                       overlap_xmax,
+                                                       overlap_ymax,
+                                                       attr_name,
+                                                       filename,
+                                                       hdu_i)
 
             # Fill the stamp arrays:
             # If there is any overlap
-            if (overlap_width > 0) and (overlap_height > 0):
-                if extracted_stamps[attr_name] is not None:
-                    new_stamps[attr_name][overlap_slice_stamp] = extracted_stamps[attr_name]
-
-        if overlap_width == 0 and overlap_height == 0:
-            logger.warning("The extracted stamp is entirely outside of the image bounds!")
+            if overlap_exists and extracted_stamp is not None:
+                new_stamps[attr_name][overlap_slice_stamp] = extracted_stamp
 
         return new_stamps
 
