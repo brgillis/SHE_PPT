@@ -36,12 +36,20 @@ from astropy.wcs import WCS
 import SHE_PPT.she_image
 from SHE_PPT import file_io, mdb
 from SHE_PPT.constants.misc import SEGMAP_UNASSIGNED_VALUE
+from SHE_PPT.file_io import get_qualified_filename
 from SHE_PPT.testing.utility import SheTestCase
 
 logging.basicConfig(level = logging.DEBUG)
 
 
 class TestSheImage(SheTestCase):
+    # Class attributes
+
+    # A filename for testing the file-saving
+    TEST_FILENAME = "test_SHEImage.fits"  # Will be deleted by teardown_class()
+    # For some tests we need several files:
+    L_TEST_FILENAMES = ["test_SHEImage_0.fits", "test_SHEImage_1.fits", "test_SHEImage_2.fits",
+                        "test_SHEImage_3.fits"]
 
     def setup_workdir(self):
 
@@ -61,22 +69,32 @@ class TestSheImage(SheTestCase):
         array = np.random.randn(self.w * self.h).reshape((self.w, self.h))
         self.img = SHE_PPT.she_image.SHEImage(array, header = header, wcs = self.wcs)
 
-    @classmethod
-    def setup_class(cls):
+        # Set up qualified filenames to test
+        self.qualified_test_filename = get_qualified_filename(self.TEST_FILENAME, self.workdir)
+        self.l_qualified_test_filenames = [get_qualified_filename(filename, self.workdir)
+                                           for filename in self.L_TEST_FILENAMES]
 
-        # A filename for testing the file-saving:
-        cls.testfilepath = "test_SHEImage.fits"  # Will be deleted by teardown_class()
-        # For some tests we need several files:
-        cls.testfilepaths = ["test_SHEImage_0.fits", "test_SHEImage_1.fits", "test_SHEImage_2.fits",
-                             "test_SHEImage_3.fits"]
+        # Clean up any test files that might have been left behind by a previous test
+        self.cleanup()
 
-    @classmethod
-    def teardown_class(cls):
+    @pytest.fixture(scope = "session", autouse = True)
+    def __teardown(self, request):
+        """Cleanup any created test files after the tests are done.
+        """
 
-        # Delete all potentially created files:
-        for testfilepath in cls.testfilepaths + [cls.testfilepath]:
-            if os.path.exists(testfilepath):
-                os.remove(testfilepath)
+        request.addfinalizer(self.teardown)
+
+    def teardown(self):
+        """Override teardown to cleanup any created files.
+        """
+        self.cleanup()
+
+    def cleanup(self):
+        """Cleanup any created test files after the tests are done.
+        """
+        for qualified_filename in self.l_qualified_test_filenames + [self.qualified_test_filename]:
+            if os.path.exists(qualified_filename):
+                os.remove(qualified_filename)
 
     def test_init(self):
         """Test that the object created by setup_class is as expected"""
@@ -239,9 +257,9 @@ class TestSheImage(SheTestCase):
 
         img.wcs = self.wcs
 
-        img.write_to_fits(self.testfilepath, overwrite = False)
+        img.write_to_fits(self.qualified_test_filename, overwrite = False)
 
-        rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepath)
+        rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.qualified_test_filename)
 
         assert np.allclose(img.data, rimg.data)
         assert np.allclose(img.mask, rimg.mask)
@@ -282,32 +300,33 @@ class TestSheImage(SheTestCase):
         img = SHE_PPT.she_image.SHEImage(np.random.randn(100).reshape(10, 10) + 200.0)
         img.mask = np.ones_like(img.data, dtype = np.int32)
         img.noisemap = 1.0 + 0.01 * np.random.randn(100).reshape(10, 10)
-        img.write_to_fits(self.testfilepaths[0])
+        img.write_to_fits(self.l_qualified_test_filenames[0])
 
         img.mask[:, :] = 2
-        img.write_to_fits(self.testfilepaths[1])
+        img.write_to_fits(self.l_qualified_test_filenames[1])
 
         img.noisemap = 1000.0 + 0.01 * np.random.randn(100).reshape(10, 10)
-        img.write_to_fits(self.testfilepaths[2])
+        img.write_to_fits(self.l_qualified_test_filenames[2])
 
         img.segmentation_map = 4 * np.ones_like(img.data, dtype = np.int32)
-        img.write_to_fits(self.testfilepaths[3])
+        img.write_to_fits(self.l_qualified_test_filenames[3])
 
-        rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepaths[0])
+        rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.l_qualified_test_filenames[0])
         assert rimg.mask[0, 0] == 1
 
-        rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepaths[0],
-                                                         mask_filepath = self.testfilepaths[1],
-                                                         noisemap_filepath = self.testfilepaths[2],
-                                                         segmentation_map_filepath = self.testfilepaths[3])
+        rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.l_qualified_test_filenames[0],
+                                                         mask_filepath = self.l_qualified_test_filenames[1],
+                                                         noisemap_filepath = self.l_qualified_test_filenames[2],
+                                                         segmentation_map_filepath = self.l_qualified_test_filenames[3])
         assert rimg.noisemap[0, 0] > 500.0
         assert rimg.segmentation_map[0, 0] == 4
 
         with pytest.raises(ValueError):  # As the primary HDU of mask_filepath is not a np.uint8, this will fail:
-            _ = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepaths[0],
-                                                          mask_filepath = self.testfilepaths[1],
-                                                          noisemap_filepath = self.testfilepaths[2],
-                                                          segmentation_map_filepath = self.testfilepaths[3],
+            _ = SHE_PPT.she_image.SHEImage.read_from_fits(self.l_qualified_test_filenames[0],
+                                                          mask_filepath = self.l_qualified_test_filenames[1],
+                                                          noisemap_filepath = self.l_qualified_test_filenames[2],
+                                                          segmentation_map_filepath = self.l_qualified_test_filenames[
+                                                              3],
                                                           mask_ext = None)
 
     def test_extracted_stamp_is_view(self):
@@ -449,8 +468,8 @@ class TestSheImage(SheTestCase):
         assert stamp.offset[1] == 3
 
         # Does it survive FITS io?
-        stamp.write_to_fits(self.testfilepath, overwrite = True)
-        rstamp = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepath)
+        stamp.write_to_fits(self.qualified_test_filename, overwrite = True)
+        rstamp = SHE_PPT.she_image.SHEImage.read_from_fits(self.qualified_test_filename)
         assert rstamp.offset[0] == 2
         assert rstamp.offset[1] == 3
 
