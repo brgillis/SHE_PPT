@@ -1808,8 +1808,6 @@ class SHEImage:
 
         local_wcs: galsim.wcs.JacobianWCS = self.galsim_wcs.jacobian(image_pos = galsim.PositionD(x, y))
 
-        # We need to use the inverse of the local wcs to get the pix2world decomposition
-
         return local_wcs.getDecomposition()
 
     def get_world2pix_decomposition(self,
@@ -1893,7 +1891,9 @@ class SHEImage:
 
             local_wcs: galsim.wcs.JacobianWCS = self.galsim_wcs.jacobian(world_pos = world_pos)
 
-        return local_wcs.getDecomposition()
+        # We need to use the inverse of the local wcs to get the pix2world decomposition
+
+        return local_wcs.inverse().getDecomposition()
 
     def estimate_pix2world_rotation_angle(self, x, y, dx, dy, origin = 0):
         """Estimates the local rotation angle between pixel and world (-ra/dec) coordinates at the specified location.

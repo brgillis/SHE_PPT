@@ -120,20 +120,20 @@ class TestSheImage(SheTestCase):
         img.add_default_mask(force = True)
         assert img.mask.dtype == np.int32
         assert img.mask[5, 5] == 0
-        assert img.boolmask[5, 5] == False
+        assert bool(img.boolmask[5, 5]) is False
         assert img.mask.shape == (self.w, self.h)
 
         # Check that boolmask works if we change the mask
         img.mask[5, 5] = 100
-        assert img.boolmask[5, 5] == True
+        assert bool(img.boolmask[5, 5]) is True
 
         # Check that non-forcibly adding a default mask doesn't affect the existing mask
         img.add_default_mask(force = False)
-        assert img.boolmask[5, 5] == True
+        assert bool(img.boolmask[5, 5]) is True
 
         # Check that forcibly adding a default mask does affect the existing mask
         img.add_default_mask(force = True)
-        assert img.boolmask[5, 5] == False
+        assert bool(img.boolmask[5, 5]) is False
 
     def test_noisemap(self):
         """Test that the noisemap behaves appropriately.
@@ -215,7 +215,7 @@ class TestSheImage(SheTestCase):
         img.add_default_header(force = True)
 
         img.header["temp1"] = (22.3, "Outside temp in degrees Celsius")
-        img.header["INSTR"] = ("DMK21")
+        img.header["INSTR"] = "DMK21"
         img.header.set("tel", "14-inch Martini Dobson")
 
         assert img.header["TEMP1"] > 20.0  # capitalization does not matter
@@ -268,12 +268,12 @@ class TestSheImage(SheTestCase):
 
         img.write_to_fits(self.qualified_test_filename, overwrite = False)
 
-        rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.qualified_test_filename)
+        read_img = SHE_PPT.she_image.SHEImage.read_from_fits(self.qualified_test_filename)
 
-        assert np.allclose(img.data, rimg.data)
-        assert np.allclose(img.mask, rimg.mask)
-        assert np.allclose(img.noisemap, rimg.noisemap)
-        assert np.allclose(img.segmentation_map, rimg.segmentation_map)
+        assert np.allclose(img.data, read_img.data)
+        assert np.allclose(img.mask, read_img.mask)
+        assert np.allclose(img.noisemap, read_img.noisemap)
+        assert np.allclose(img.segmentation_map, read_img.segmentation_map)
 
         # Check the wcs behaves the same
         for x, y, ra, dec in ((0, 0, 52.53373984070186, -28.760675854311447),
@@ -284,24 +284,20 @@ class TestSheImage(SheTestCase):
             # Just testing WCS from writing/reading is the same here
 
             ra1, dec1 = img.pix2world(x, y, origin = 1)
-            ra2, dec2 = rimg.pix2world(x, y, origin = 1)
+            ra2, dec2 = read_img.pix2world(x, y, origin = 1)
 
             assert np.allclose((ra1, dec1), (ra2, dec2))
 
             x1, y1 = img.world2pix(ra, dec, origin = 1)
-            x2, y2 = rimg.world2pix(ra, dec, origin = 1)
+            x2, y2 = read_img.world2pix(ra, dec, origin = 1)
 
             assert np.allclose((x1, y1), (x2, y2))
 
         # Also check the transformation matrices match up
         assert np.allclose(img.get_world2pix_transformation(0, 0),
-                           rimg.get_world2pix_transformation(0, 0))
+                           read_img.get_world2pix_transformation(0, 0))
         assert np.allclose(img.get_pix2world_transformation(0, 0),
-                           rimg.get_pix2world_transformation(0, 0))
-
-        # We test that the header did not get changed # FIXME disabled for now
-        # assert len(list(rimg.header.keys())) == 3
-        # assert str(repr(img.header)) == str(repr(rimg.header))
+                           read_img.get_pix2world_transformation(0, 0))
 
     def test_read_from_fits_files(self):
         """At least a small test of reading from individual FITS files.
@@ -393,7 +389,7 @@ class TestSheImage(SheTestCase):
         assert np.sum(eimg.mask) == 0  # Nothing should be masked
         assert np.sum(eimg.segmentation_map) == 1 * np.product(eimg.shape)  # Should all belong to object 1
         assert np.std(eimg.data) < 1.0e-10
-        assert np.mean(eimg.noisemap) > 900.0 and np.mean(eimg.noisemap) < 1100.0
+        assert 900.0 < np.mean(eimg.noisemap) < 1100.0
 
         eimg = img.extract_stamp(32 + 16.4, 32 + 15.6, 32)
         assert eimg.shape == (32, 32)
@@ -451,8 +447,8 @@ class TestSheImage(SheTestCase):
         assert stamp.data[2, 2] == 11
         assert stamp.data[2, 1] == 10
         assert stamp.data[0, 0] == 0
-        assert stamp.boolmask[1, 1] == False
-        assert stamp.boolmask[0, 0] == True
+        assert bool(stamp.boolmask[1, 1]) is False
+        assert bool(stamp.boolmask[0, 0]) is True
 
         img.add_default_mask()
         img.add_default_noisemap()
@@ -468,7 +464,7 @@ class TestSheImage(SheTestCase):
         # 21 31 XX
         assert stamp.data[0, 0] == 21
         assert stamp.data[1, 0] == 31
-        assert stamp.boolmask[2, 0] == True
+        assert bool(stamp.boolmask[2, 0]) is True
 
     def test_offset(self):
         """Testing the offset property.
@@ -779,8 +775,7 @@ class TestSheImage(SheTestCase):
             # Shear is checked for the non-celestial WCS
 
             # Check the angles are opposite (need to divide out units for numpy to understand the values)
-            assert np.isclose(w2p_angle / galsim.degrees, -
-            p2w_angle / galsim.degrees)
+            assert np.isclose(w2p_angle / galsim.degrees, - p2w_angle / galsim.degrees)
 
             # Check the flip is the same
             assert w2p_flip == p2w_flip
