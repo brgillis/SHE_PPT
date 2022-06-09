@@ -147,11 +147,8 @@ class SHEImage:
     mask : Optional[np.ndarray[np.int64]]
     noisemap : Optional[np.ndarray[float]]
     segmentation_map : Optional[np.ndarray[np.int64]]
-        The segmentation map image (associating pixels with objects), of the same shape as the science image.
     background_map : Optional[np.ndarray[float]]
-        The background map, of the same shape as the science image.
     weight_map : Optional[np.ndarray[float]]
-        The weight map, of the same shape as the science image.
     header : astropy.io.fits.Header
         The image header, typically copied from the science image's HDU's header.
     offset : Tuple[float,float]
@@ -285,7 +282,8 @@ class SHEImage:
         return self._data
 
     @data.setter
-    def data(self, data: Optional[np.ndarray[float]]):
+    def data(self,
+             data: Optional[np.ndarray[float]]) -> None:
         """Setter for the primary science image, doing some validity checks on the input.
 
         Parameters
@@ -316,7 +314,7 @@ class SHEImage:
         self._data = data
 
     @data.deleter
-    def data(self):
+    def data(self) -> None:
         """Simple deleter for the `data` attribute.
         """
         del self._data
@@ -333,7 +331,8 @@ class SHEImage:
         return self._mask
 
     @mask.setter
-    def mask(self, mask: Optional[np.ndarray[int]]):
+    def mask(self,
+             mask: Optional[np.ndarray[int]]) -> None:
         """Setter for the pixel mask of the image, doing some validity checks on the input.
 
         Parameters
@@ -348,7 +347,7 @@ class SHEImage:
                               casting = "safe")
 
     @mask.deleter
-    def mask(self):
+    def mask(self) -> None:
         """Simple deleter for the `mask` attribute.
         """
         del self._mask
@@ -367,8 +366,8 @@ class SHEImage:
         return self.mask.astype(np.bool)
 
     @property
-    def noisemap(self):
-        """The noise image (for only background noise, not including source noise), if present; None otherwise.
+    def noisemap(self) -> Optional[np.ndarray[np.float32]]:
+        """The noisemap (for only background noise, not including source noise) for the image
 
         Returns
         -------
@@ -378,7 +377,8 @@ class SHEImage:
         return self._noisemap
 
     @noisemap.setter
-    def noisemap(self, noisemap: Optional[np.ndarray[float]]):
+    def noisemap(self,
+                 noisemap: Optional[np.ndarray[float]]) -> None:
         """Setter for the noise map, doing some validity checks on the input.
 
         Parameters
@@ -392,53 +392,93 @@ class SHEImage:
 
     @noisemap.deleter
     def noisemap(self):
+        """Simple deleter for the `noisemap` attribute.
+        """
         del self._noisemap
 
     @property
-    def segmentation_map(self):
-        """The segmentation map of the image.
+    def segmentation_map(self) -> Optional[np.ndarray[np.int64]]:
+        """The segmentation map of the image, which details which pixels correspond to which objects.
+
+        Returns
+        -------
+        segmentation_map : Optional[np.ndarray[int]]
+            The segmentation map of the image, if present; None otherwise.
         """
         return self._segmentation_map
 
     @segmentation_map.setter
-    def segmentation_map(self, segmentation_map):
+    def segmentation_map(self,
+                         segmentation_map: Optional[np.ndarray[int]]) -> None:
 
+        # We use safe casting for the segmentation map, since we could lose very relevant data if we cast e.g. an
+        # int64 to an int32
         self.__set_array_attr(array = segmentation_map,
-                              name = "seg")
+                              name = "seg",
+                              casting = "safe")
 
     @segmentation_map.deleter
-    def segmentation_map(self):
+    def segmentation_map(self) -> None:
         del self._segmentation_map
 
     @property
-    def background_map(self):
+    def background_map(self) -> Optional[np.ndarray[np.float32]]:
         """A background map of the image.
+
+        Returns
+        -------
+        background_map : Optional[np.ndarray[float]]
+            The background map, if present; None otherwise.
         """
         return self._background_map
 
     @background_map.setter
-    def background_map(self, background_map):
+    def background_map(self, background_map: Optional[np.ndarray[float]]) -> None:
+        """Setter for the background map, doing some validity checks on the input.
+
+        Parameters
+        ----------
+        background_map : Optional[np.ndarray[float]]
+            The background map.
+        """
 
         self.__set_array_attr(array = background_map,
                               name = "bkg")
 
     @background_map.deleter
-    def background_map(self):
+    def background_map(self) -> None:
+        """Simple deleter for the `background_map` attribute.
+        """
         del self._background_map
 
     @property
-    def weight_map(self):
-        """A weight map of the image"""
+    def weight_map(self) -> Optional[np.ndarray[np.float32]]:
+        """The weight map of the image.
+
+        Returns
+        -------
+        weight_map : Optional[np.ndarray[np.float32]]
+            The weight map, if present; None otherwise.
+        """
         return self._weight_map
 
     @weight_map.setter
-    def weight_map(self, weight_map):
+    def weight_map(self, weight_map: Optional[np.ndarray[float]]) -> None:
+        """Setter for the weight map, doing some validity checks on the input.
+
+        Parameters
+        ----------
+        weight_map : Optional[np.ndarray[float]]
+            The weight map.
+        """
 
         self.__set_array_attr(array = weight_map,
                               name = "wgt")
 
     @weight_map.deleter
     def weight_map(self):
+        """Simple deleter for the `weight_map` attribute.
+        """
         del self._weight_map
 
     @property
