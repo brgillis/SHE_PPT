@@ -87,28 +87,34 @@ logger = logging.getLogger(__name__)
 
 
 @lru_cache(maxsize = 50)
-def _get_fits_handle(filename):
+def _get_fits_handle(qualified_filename: str) -> fitsio.FITS:
     """Private function to open a FITS file handle from a filename. Uses caching to limit number of open
     FITS file handles to 50.
     """
-    f = fitsio.FITS(filename)
+    f = fitsio.FITS(qualified_filename)
     return f
 
 
 @lru_cache(maxsize = 50)
-def _get_hdu_handle(filename, hdu_i):
+def _get_hdu_handle(qualified_filename: str,
+                    hdu_i: Union[int, str]) -> fitsio.hdu.base.HDUBase:
     """Private function to open a FITS HDU file handle from a filename and HDU index. Uses caching to limit number of
     open HDU file handles to 50.
     """
-    h = _get_fits_handle(filename)[hdu_i]
+    h = _get_fits_handle(qualified_filename)[hdu_i]
     return h
 
 
 @lru_cache(maxsize = 2000)
-def _read_stamp(xmin, ymin, xmax, ymax, filename, hdu_i):
+def _read_stamp(xmin: int,
+                ymin: int,
+                xmax: int,
+                ymax: int,
+                qualified_filename: str,
+                hdu_i: Union[int, str]) -> np.ndarray:
     """Private function to read a stamp from a FITS file. Uses caching to limit number of stamps in memory to 2000.
     """
-    data = _get_hdu_handle(filename, hdu_i)[ymin:ymax, xmin:xmax].transpose()
+    data = _get_hdu_handle(qualified_filename, hdu_i)[ymin:ymax, xmin:xmax].transpose()
     return data
 
 
@@ -346,31 +352,35 @@ class SHEImage:
         self._parent_image = _return_none
 
     @property
-    def data(self):
-        """The image array"""
+    def data(self) -> np.ndarray[float]:
+        """The primary science image.
+        """
         return self._data
 
     @data.setter
-    def data(self, data_array):
+    def data(self, data_array: Optional[np.ndarray[float]]):
+        """Setter for the primary science image, doing some validity checks on the input.
+        """
 
         # If setting data as None, set as a dim-0 array for interface safety
         if data_array is None:
             data_array = np.ndarray((0, 0), dtype = float)
 
-        # We test the dimensionality
+        # Ensure we have a 2-dimensional array
         if data_array.ndim != 2:
             raise ValueError("Data array of a SHEImage must have 2 dimensions")
-        # We test that the shape is not modified by the setter, if a shape
-        # already exists.
+
+        # Also test that the shape isn't modified by the setter
         try:
-            existing_shape = self.shape
+            existing_shape: Optional[Tuple[int, int]] = self.shape
         except AttributeError:
             existing_shape = None
+
         if existing_shape and data_array.shape != existing_shape:
-            raise ValueError("Shape of a SHEImage can not be modified. Current is {}, new data is {}.".format(
-                existing_shape, data_array.shape
-                ))
-        # And perform the attribution
+            raise ValueError(f"Shape of a SHEImage can not be modified. Current is {existing_shape}, new data is "
+                             f"{data_array.shape}.")
+
+        # Finally, perform the attribution
         self._data = data_array
 
     @data.deleter
@@ -378,30 +388,32 @@ class SHEImage:
         del self._data
 
     @property
-    def mask(self):
-        """The pixel mask of the image"""
+    def mask(self) -> Optional[np.ndarray[int]]:
+        """The pixel mask of the image, if present.
+        """
         return self._mask
 
     @mask.setter
-    def mask(self, mask_array):
+    def mask(self, mask_array: Optional[np.ndarray[int]]):
         if mask_array is None:
             self._mask = None
-        else:
-            if mask_array.ndim != 2:
-                raise ValueError("The mask array must have 2 dimensions")
-            if mask_array.shape != self._data.shape:
+            return
+
+        if mask_array.ndim != 2:
+            raise ValueError("The mask array must have 2 dimensions")
+        if mask_array.shape != self._data.shape:
+            raise ValueError(
+                "The mask array must have the same size as the data {}".format(self._data.shape))
+        # Quietly ignore if byte order is the only difference
+        if not mask_array.dtype.newbyteorder('<') in S_ALLOWED_INT_DTYPES:
+            logger.warning(
+                "Received mask array of type '%s'. Attempting safe casting to np.int32.", mask_array.dtype)
+            try:
+                mask_array = mask_array.astype(np.int32, casting = 'safe')
+            except Exception:
                 raise ValueError(
-                    "The mask array must have the same size as the data {}".format(self._data.shape))
-            # Quietly ignore if byte order is the only difference
-            if not mask_array.dtype.newbyteorder('<') in S_ALLOWED_INT_DTYPES:
-                logger.warning(
-                    "Received mask array of type '%s'. Attempting safe casting to np.int32.", mask_array.dtype)
-                try:
-                    mask_array = mask_array.astype(np.int32, casting = 'safe')
-                except Exception:
-                    raise ValueError(
-                        "The mask array must be of integer type (it is {})".format(mask_array.dtype))
-            self._mask = mask_array
+                    "The mask array must be of integer type (it is {})".format(mask_array.dtype))
+        self._mask = mask_array
 
     @mask.deleter
     def mask(self):
@@ -1274,7 +1286,7 @@ class SHEImage:
 
             # We first create new stamps, and we will later fill part of them
             # with slices of the original.
-            base_image = getattr(self, attr_name)
+            base_image = getattr(self, D_ATTR_CONVERSIONS[attr_name])
             if base_image is None and filename is None:
                 new_stamps[attr_name] = None
             else:
