@@ -803,9 +803,8 @@ class SHEImage:
                         seg_id: int,
                         mask_suspect: bool = False,
                         mask_unassigned: bool = False) -> np.ndarray[np.bool]:
-        """Get a mask for pixels that are either bad (and optionally suspect)
-        or don't belong to an object with a given ID. The returned mask follows the convention that 0/False = good,
-        1/True = bad.
+        """Get a mask for pixels that are either bad (and optionally suspect) or don't belong to an object with a
+        given ID. The returned mask follows the convention that 0/False = good, 1/True = bad.
 
         Parameters
         ----------
