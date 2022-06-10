@@ -2150,10 +2150,10 @@ class SHEImage:
         dx = (x_1 - x_0)
         dy = (y_1 - y_0)
 
-        xy_angle = np.arctan2(dx, dy)
-        radec_angle = np.arctan2(dra * cos_dec, ddec)
+        x_y_angle = np.arctan2(dx, dy)
+        ra_dec_angle = np.arctan2(dra * cos_dec, ddec)
 
-        rotation_angle = xy_angle - radec_angle
+        rotation_angle = x_y_angle - ra_dec_angle
 
         return rotation_angle
 
