@@ -22,34 +22,31 @@ __updated__ = "2021-08-13"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from typing import Any, Dict, Iterable, TYPE_CHECKING, Type, Union
-
-if TYPE_CHECKING:
-    from .she_frame_stack import SHEFrameStack
-    from .she_frame import SHEFrame
-    from .she_image_stack import SHEImageStack
-
 import os
 import weakref
 from copy import deepcopy
 from functools import lru_cache
-from typing import Optional, Tuple
+from typing import Any, Dict, Iterable, Optional, TYPE_CHECKING, Tuple, Type, Union
 
-from coord import Angle
-from galsim import Shear
 import astropy.io.fits
 import astropy.wcs
 import fitsio
 import galsim
 import numpy as np
+from coord import Angle
+from galsim import Shear
 
 from EL_PythonUtils.utilities import run_only_once
 from . import logging, mdb
 from .constants.fits import BACKGROUND_TAG, CCDID_LABEL, MASK_TAG, NOISEMAP_TAG, SCI_TAG, SEGMENTATION_TAG, WEIGHT_TAG
 from .constants.misc import SEGMAP_UNASSIGNED_VALUE
 from .file_io import DEFAULT_WORKDIR, write_fits
-from .mask import (as_bool, is_masked_bad,
-                   is_masked_suspect_or_bad, )
+from .mask import as_bool, is_masked_bad, is_masked_suspect_or_bad
+
+if TYPE_CHECKING:
+    from .she_frame_stack import SHEFrameStack
+    from .she_frame import SHEFrame
+    from .she_image_stack import SHEImageStack
 
 PRIMARY_TAG = "PRIMARY"
 
