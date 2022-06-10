@@ -799,25 +799,29 @@ class SHEImage:
 
     # Public methods
 
-    def get_object_mask(self, seg_id, mask_suspect = False, mask_unassigned = False):
+    def get_object_mask(self,
+                        seg_id: int,
+                        mask_suspect: bool = False,
+                        mask_unassigned: bool = False) -> np.ndarray[np.bool]:
         """Get a mask for pixels that are either bad (and optionally suspect)
-        or don't belong to an object with a given ID.
+        or don't belong to an object with a given ID. The returned mask follows the convention that 0/False = good,
+        1/True = bad.
 
-        Arguments
-        ---------
-        seg_id: int
-            Segmentation map ID of the object for which to generate a mask
-        mask_suspect: bool
+        Parameters
+        ----------
+        seg_id : int
+            Segmentation map ID of the object for which to generate a mask. Note that this is generally different
+            from the object ID.
+        mask_suspect : bool
             If True, suspect pixels will also be masked True.
-        mask_unassigned: bool
-            If True, pixels which are not assigned to any object will also be
-            masked True.
+        mask_unassigned : bool
+            If True, pixels which are not assigned to any object will also be masked True.
 
-        Return
-        ------
-        object_mask: np.ndarray<bool>
-            Mask for the desired object. Values of True correspond to masked
-            pixels (bad(/suspect) or don't belong to this object).
+        Returns
+        -------
+        object_mask: np.ndarray[np.bool]
+            Mask for the desired object. Values of True correspond to masked pixels (bad(/suspect) or don't belong to
+            this object).
         """
         # Raise an exception if the mask or segmentation map is None
         if self.mask is None:
