@@ -848,7 +848,7 @@ class SHEImage:
     def write_to_fits(self,
                       filepath: str,
                       data_only: bool = False,
-                      **kwargs) -> None:
+                      **kwargs: Any) -> None:
         """Writes the image to disk, in the form of a multi-extension FITS cube.
 
         The data is written in the primary HDU, and the ancillary data to following HDUs.
