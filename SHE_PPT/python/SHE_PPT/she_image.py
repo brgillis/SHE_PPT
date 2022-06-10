@@ -630,23 +630,6 @@ class SHEImage:
         """
         return self._shape
 
-    def _determine_det_ixy(self) -> None:
-        """Private method to determine detector x and y position from the header.
-        """
-
-        if self.header is None or CCDID_LABEL not in self.header:
-            # If no header, assume we're using detector 1-1
-            self._det_ix = 1
-            self._det_iy = 1
-        else:
-            try:
-                self._det_iy = int(self.header[CCDID_LABEL][0])
-                self._det_ix = int(self.header[CCDID_LABEL][2])
-            except ValueError:
-                # Check after "CCDID "
-                self._det_iy = int(self.header[CCDID_LABEL][6])
-                self._det_ix = int(self.header[CCDID_LABEL][8])
-
     @property
     def det_ix(self) -> int:
         """The x-position of the detector for this image. Will be a value between 1 and 6 inclusive.
@@ -657,7 +640,7 @@ class SHEImage:
             The x-position of the detector for this image.
         """
         if self._det_ix is None:
-            self._determine_det_ixy()
+            self.__determine_det_ixy()
         return self._det_ix
 
     @property
@@ -670,7 +653,7 @@ class SHEImage:
             The y-position of the detector for this image.
         """
         if self._det_iy is None:
-            self._determine_det_ixy()
+            self.__determine_det_ixy()
         return self._det_iy
 
     @property
@@ -2240,6 +2223,23 @@ class SHEImage:
         return np.asarray(indices_confirmed), np.asarray(x_confirmed), np.asarray(y_confirmed)
 
     # Private methods
+
+    def __determine_det_ixy(self) -> None:
+        """Private method to determine detector x and y position from the header.
+        """
+
+        if self.header is None or CCDID_LABEL not in self.header:
+            # If no header, assume we're using detector 1-1
+            self._det_ix = 1
+            self._det_iy = 1
+        else:
+            try:
+                self._det_iy = int(self.header[CCDID_LABEL][0])
+                self._det_ix = int(self.header[CCDID_LABEL][2])
+            except ValueError:
+                # Check after "CCDID "
+                self._det_iy = int(self.header[CCDID_LABEL][6])
+                self._det_ix = int(self.header[CCDID_LABEL][8])
 
     def __set_array_attr(self,
                          array: Optional[np.ndarray],
