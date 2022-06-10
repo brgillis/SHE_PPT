@@ -33,6 +33,7 @@ import astropy.wcs
 import fitsio
 import galsim
 import numpy as np
+from astropy.io.fits import Header
 from coord import Angle
 from galsim import Shear
 
@@ -147,7 +148,7 @@ class SHEImage:
     segmentation_map : Optional[np.ndarray[np.int64]]
     background_map : Optional[np.ndarray[float]]
     weight_map : Optional[np.ndarray[float]]
-    header : astropy.io.fits.Header
+    header : Header
         The image header, typically copied from the science image's HDU's header.
     offset : Tuple[float,float]
         The offset of this image relative to the image (if any) it was extracted from, indexed as (x_offset, y_offset).
@@ -194,8 +195,8 @@ class SHEImage:
                  segmentation_map: Optional[np.ndarray[np.int64]] = None,
                  background_map: Optional[np.ndarray[float]] = None,
                  weight_map: Optional[np.ndarray[float]] = None,
-                 header: astropy.io.fits.Header = None,
-                 offset: Tuple[float, float] = None,
+                 header: Optional[Header] = None,
+                 offset: Optional[Tuple[float, float]] = None,
                  wcs: Optional[astropy.wcs.WCS] = None,
                  parent_frame_stack: Optional[SHEFrameStack] = None,
                  parent_frame: Optional[SHEFrame] = None,
@@ -218,9 +219,9 @@ class SHEImage:
             The background map, of the same shape as the science image.
         weight_map : Optional[np.ndarray[float]]
             The weight map, of the same shape as the science image.
-        header : astropy.io.fits.Header
+        header : Optional[astropy.io.fits.Header]
             The image header, typically copied from the science image's HDU's header.
-        offset : Tuple[float,float]
+        offset : Optional[Tuple[float,float]]
             The offset of this image relative to the image (if any) it was extracted from, indexed as (x_offset,
             y_offset).
         wcs : Optional[astropy.wcs.WCS]
@@ -481,28 +482,38 @@ class SHEImage:
         del self._weight_map
 
     @property
-    def header(self):
-        """An astropy.io.fits.Header to contain metadata"""
+    def header(self) -> Optional[Header]:
+        """An Astropy Header to contain metadata.
+
+        Returns
+        -------
+        header : Optional[Header]
+            The header, if present; None otherwise.
+        """
         return self._header
 
     @header.setter
-    def header(self, header_object):
+    def header(self, header: Optional[Header]) -> None:
         """Setter for the header of this image. Note that since the offset is stored in the header,
-           it's always deepcopied when set to avoid surprisingly changing the input.
+        it's always deepcopied when set to avoid surprisingly changing the input.
+
+        Parameters
+        ----------
+        header : Header
+            The header to set.
         """
-        if header_object is None:
-            self._header = None
-        else:
-            # Not very pythonic, but I suggest this to
-            if isinstance(header_object, astropy.io.fits.Header):
-                # to avoid misuse, which could lead to problems when writing
-                # FITS files.
-                self._header = header_object
-            else:
-                raise ValueError("The header must be an astropy.io.fits.Header instance")
+
+        # Not very pythonic, but to avoid misuse, which could lead to problems when writing to
+        # FITS files.
+        if not (header is None or isinstance(header, Header)):
+            raise ValueError("The header must be an astropy.io.fits.Header instance")
+
+        self._header = header
 
     @header.deleter
     def header(self):
+        """Simple deleter for the `header` attribute.
+        """
         del self._header
         self._galsim_wcs = None
 
@@ -882,7 +893,7 @@ class SHEImage:
                 full_header[label] = (wcs_header[label], wcs_header.comments[label])
         elif self.header is None:
             # An empty header
-            full_header = astropy.io.fits.Header()
+            full_header = Header()
         else:
             full_header = deepcopy(self.header)
 
@@ -1055,7 +1066,7 @@ class SHEImage:
         return new_image
 
     @staticmethod
-    def __remove_header_keywords(header: astropy.io.fits.Header,
+    def __remove_header_keywords(header: Header,
                                  l_keywords_to_remove: Iterable[str], ):
         """Private method to remove a list of keywords from a FITS header.
         """
@@ -1502,7 +1513,7 @@ class SHEImage:
                 logger.debug("Not overwriting existing header with default.")
                 return
 
-        self.header = astropy.io.fits.Header()
+        self.header = Header()
 
     def add_default_wcs(self, force = False):
         """Adds a default wcs to this object (pixel scale 1.0). If force=True, will overwrite an existing wcs.
@@ -1515,7 +1526,7 @@ class SHEImage:
                 logger.debug("Not overwriting existing wcs with default.")
                 return
 
-        self.wcs = astropy.wcs.WCS(astropy.io.fits.Header())
+        self.wcs = astropy.wcs.WCS(Header())
 
     def pix2world(self, x, y, origin = 0):
         """Converts x and y pixel coordinates to ra and dec world coordinates.
