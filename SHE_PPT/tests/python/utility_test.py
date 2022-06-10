@@ -30,7 +30,7 @@ from SHE_PPT.utility import (any_is_inf_nan_or_masked, any_is_inf_or_nan, any_is
                              get_nested_attr,
                              is_inf, is_inf_nan_or_masked, is_inf_or_nan,
                              is_masked, is_nan, is_nan_or_masked,
-                             process_directory,
+                             neq, process_directory,
                              set_nested_attr, )
 
 
@@ -210,6 +210,18 @@ class TestUtility:
         for ii, fName in enumerate(sorted(file_list)):
             assert os.path.basename(fName) == 'file%s.txt' % (ii + 1)
         shutil.rmtree(test_dir)
+
+    def test_neq(self):
+        """Unit test of the `neq` function.
+        """
+
+        # Test with simple values
+        assert neq(1, 1) == False
+        assert neq(1, 2) == True
+
+        # Test with numpy arrays
+        assert neq(np.array([1, 2, 3]), np.array([1, 2, 3])) == False
+        assert neq(np.array([1, 2, 3]), np.array([1, 2, 4])) == True
 
     def test_bad_value_checks(self):
         """ Test the various "bad value" checks for Inf, NaN, and masked values.
