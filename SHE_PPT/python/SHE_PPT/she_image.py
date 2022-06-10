@@ -175,6 +175,7 @@ class SHEImage:
     _header = None
     _offset = np.array([0., 0.], dtype = float)
     _wcs = None
+    _shape = None
     _galsim_wcs = None
 
     # Parent references
@@ -242,6 +243,7 @@ class SHEImage:
 
         # Public values - Note the tests done in the setter methods
         self.data = data
+        self._shape = self.data.shape
         self.mask = mask
 
         if self.data is not None and self.mask is None:
@@ -258,11 +260,6 @@ class SHEImage:
         # If no WCS is provided, try to set one up from the header
         if self.wcs is None and self.header is not None:
             self.wcs = astropy.wcs.WCS(self.header)
-
-        # Cached values
-        self.galsim_wcs = None
-        self._det_ix = None
-        self._det_iy = None
 
     # We define properties of the SHEImage object, following
     # https://euclid.roe.ac.uk/projects/codeen-users/wiki/User_Cod_Std-pythonstandard-v1-0#PNAMA-020-m-Developer
@@ -300,11 +297,11 @@ class SHEImage:
 
         # Also test that the shape isn't modified by the setter
         try:
-            existing_shape: Optional[Tuple[int, int]] = self.shape
+            existing_shape: Optional[np.ndarray[int]] = self.shape
         except AttributeError:
             existing_shape = None
 
-        if existing_shape and data.shape != existing_shape:
+        if existing_shape is not None and np.any(data.shape != existing_shape):
             raise ValueError(f"Shape of a SHEImage can not be modified. Current is {existing_shape}, new data is "
                              f"{data.shape}.")
 
@@ -631,11 +628,7 @@ class SHEImage:
         shape : np.ndarray[int]
             The shape of the image, as (x_len,y_len)
         """
-        if self._images_loaded:
-            return self.data.shape
-        else:
-            # Failsafe to hardcoded shape
-            return DETECTOR_SHAPE
+        return self._shape
 
     def _determine_det_ixy(self) -> None:
         """Private method to determine detector x and y position from the header.
@@ -2055,7 +2048,7 @@ class SHEImage:
 
         self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.header)[0]
 
-        if self.galsim_wcs.isPixelScale() and np.isclose(self.galsim_wcs.scale, 1.0):
+        if hasattr(self.galsim_wcs, "scale") and np.isclose(self.galsim_wcs.scale, 1.0):
 
             # Don't have the information in this stamp's header - check for a parent image
             if self.parent_image is not None:
