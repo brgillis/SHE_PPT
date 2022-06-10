@@ -174,6 +174,7 @@ class SHEImage:
     _offset = (0, 0)
     _wcs = None
     _shape = None
+    _galsim_wcs = None
 
     # Parent references
     _parent_frame_stack = None
@@ -238,8 +239,8 @@ class SHEImage:
         self.parent_image_stack = parent_image_stack
         self.parent_image = parent_image
 
-        # Public values
-        self.data = data  # Note the tests done in the setter method
+        # Public values - Note the tests done in the setter methods
+        self.data = data
         self.mask = mask
 
         if self.data is not None and self.mask is None:
@@ -501,8 +502,7 @@ class SHEImage:
     @header.deleter
     def header(self):
         del self._header
-        if hasattr(self, "_galsim_wcs"):
-            self._galsim_wcs = None
+        self._galsim_wcs = None
 
     @property
     def offset(self):
@@ -544,8 +544,7 @@ class SHEImage:
     @wcs.deleter
     def wcs(self):
         del self._wcs
-        if hasattr(self, "_galsim_wcs"):
-            self._galsim_wcs = None
+        self._galsim_wcs = None
 
     @property
     def galsim_wcs(self):
@@ -784,12 +783,6 @@ class SHEImage:
         # Identity implies equality
         if self is rhs:
             return True
-
-        def neq(_lhs, _rhs):
-            try:
-                return bool(_lhs != _rhs)
-            except ValueError:
-                return np.any(_lhs != _rhs)
 
         res: bool = True
 
@@ -2254,3 +2247,24 @@ def warn_mdb_not_loaded():
 @run_only_once
 def warn_galsim_wcs_bug_workaround():
     logger.warning("Hit bug with GalSim WCS. Applying workaround.")
+
+
+def neq(lhs: Any, rhs: Any) -> bool:
+    """Returns True if the two objects are not equal, False otherwise. This function includes handling of
+    numpy arrays, which otherwise would raise a ValueError if attempting to convert to a single boolean value
+    after an equality test.
+
+    Parameters
+    ----------
+    lhs, rhs : Any
+        The objects to compare.
+
+    Returns
+    -------
+    bool
+        True if the two objects are not equal, False otherwise.
+    """
+    try:
+        return bool(lhs != rhs)
+    except ValueError:
+        return np.any(lhs != rhs)
