@@ -42,6 +42,7 @@ from .constants.fits import BACKGROUND_TAG, CCDID_LABEL, MASK_TAG, NOISEMAP_TAG,
 from .constants.misc import SEGMAP_UNASSIGNED_VALUE
 from .file_io import DEFAULT_WORKDIR, write_fits
 from .mask import as_bool, is_masked_bad, is_masked_suspect_or_bad
+from .utility import neq
 
 if TYPE_CHECKING:
     from .she_frame_stack import SHEFrameStack
@@ -2247,24 +2248,3 @@ def warn_mdb_not_loaded():
 @run_only_once
 def warn_galsim_wcs_bug_workaround():
     logger.warning("Hit bug with GalSim WCS. Applying workaround.")
-
-
-def neq(lhs: Any, rhs: Any) -> bool:
-    """Returns True if the two objects are not equal, False otherwise. This function includes handling of
-    numpy arrays, which otherwise would raise a ValueError if attempting to convert to a single boolean value
-    after an equality test.
-
-    Parameters
-    ----------
-    lhs, rhs : Any
-        The objects to compare.
-
-    Returns
-    -------
-    bool
-        True if the two objects are not equal, False otherwise.
-    """
-    try:
-        return bool(lhs != rhs)
-    except ValueError:
-        return np.any(lhs != rhs)

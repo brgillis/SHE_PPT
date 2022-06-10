@@ -173,6 +173,26 @@ def process_directory(directory_name: str) -> Tuple[List[str], List[str]]:
 
 # Value testing functions
 
+def neq(lhs: Any, rhs: Any) -> bool:
+    """Returns True if the two objects are not equal, False otherwise. This function includes handling of
+    numpy arrays, which otherwise would raise a ValueError if attempting to convert to a single boolean value
+    after an equality test.
+
+    Parameters
+    ----------
+    lhs, rhs : Any
+        The objects to compare.
+
+    Returns
+    -------
+    bool
+        True if the two objects are not equal, False otherwise.
+    """
+    try:
+        return bool(lhs != rhs)
+    except ValueError:
+        return np.any(lhs != rhs)
+
 
 def is_any_type_of_none(value: Any) -> bool:
     """Quick function to check if a value (which might be a string) is None or empty
