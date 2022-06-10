@@ -261,9 +261,7 @@ class SHEImage:
         if self.wcs is None and self.header is not None:
             self.wcs = astropy.wcs.WCS(self.header)
 
-    # We define properties of the SHEImage object, following
-    # https://euclid.roe.ac.uk/projects/codeen-users/wiki/User_Cod_Std-pythonstandard-v1-0#PNAMA-020-m-Developer
-    # -SHOULD-use-properties-to-protect-the-service-from-the-implementation
+    # Properties
 
     @property
     def data(self) -> np.ndarray[float]:
@@ -478,7 +476,7 @@ class SHEImage:
 
     @property
     def header(self) -> Optional[Header]:
-        """An Astropy Header to contain metadata.
+        """An astropy header to contain metadata.
 
         Returns
         -------
@@ -658,14 +656,14 @@ class SHEImage:
 
     @property
     def parent_frame_stack(self) -> Optional[SHEFrameStack]:
-        """Reference to the parent SHEFrameStack, if it exists; None otherwise. This is stored internally as a weak
+        """Reference to the parent `SHEFrameStack`, if it exists; None otherwise. This is stored internally as a weak
         reference to prevent a reference circle which would prevent garbage collection. This means that if the parent
         goes out of scope, this may become None even if previously set to reference the parent.
 
         Returns
         -------
         parent_frame_stack : Optional[SHEFrameStack]
-            This object's parent SHEFrameStack, if it exists; None otherwise.
+            This object's parent `SHEFrameStack`, if it exists; None otherwise.
         """
         return self._parent_frame_stack()
 
@@ -676,7 +674,7 @@ class SHEImage:
         Parameters
         ----------
         parent_frame_stack : Optional[SHEFrameStack]
-            The SHEFrameStack object to be referenced as this object's parent.
+            The `SHEFrameStack` object to be referenced as this object's parent.
         """
 
         if parent_frame_stack is None:
@@ -693,14 +691,14 @@ class SHEImage:
 
     @property
     def parent_frame(self) -> Optional[SHEFrame]:
-        """Reference to the parent SHEFrame, if it exists; None otherwise. This is stored internally as a weak
+        """Reference to the parent `SHEFrame`, if it exists; None otherwise. This is stored internally as a weak
         reference to prevent a reference circle which would prevent garbage collection. This means that if the parent
         goes out of scope, this may become None even if previously set to reference the parent.
 
         Returns
         -------
         parent_frame : Optional[SHEFrame]
-            This object's parent SHEFrame, if it exists; None otherwise.
+            This object's parent `SHEFrame`, if it exists; None otherwise.
         """
         return self._parent_frame()
 
@@ -711,7 +709,7 @@ class SHEImage:
         Parameters
         ----------
         parent_frame : Optional[SHEFrame]
-            The SHEFrame object to be referenced as this object's parent.
+            The `SHEFrame` object to be referenced as this object's parent.
         """
 
         if parent_frame is None:
@@ -728,14 +726,14 @@ class SHEImage:
 
     @property
     def parent_image_stack(self) -> Optional[SHEImageStack]:
-        """Reference to the parent SHEImageStack, if it exists; None otherwise. This is stored internally as a weak
+        """Reference to the parent `SHEImageStack`, if it exists; None otherwise. This is stored internally as a weak
         reference to prevent a reference circle which would prevent garbage collection. This means that if the parent
         goes out of scope, this may become None even if previously set to reference the parent.
 
         Returns
         -------
         parent_image_stack : Optional[SHEImageStack]
-            This object's parent SHEImageStack, if it exists; None otherwise.
+            This object's parent `SHEImageStack`, if it exists; None otherwise.
         """
         return self._parent_image_stack()
 
@@ -746,7 +744,7 @@ class SHEImage:
         Parameters
         ----------
         parent_image_stack : Optional[SHEImageStack]
-            The SHEImageStack object to be referenced as this object's parent.
+            The `SHEImageStack` object to be referenced as this object's parent.
         """
 
         if parent_image_stack is None:
@@ -763,17 +761,17 @@ class SHEImage:
 
     @property
     def parent_image(self) -> Optional[SHEImage]:
-        """Reference to the immediate SHEImage, if it exists; None otherwise. This is stored internally as a weak
-        reference to prevent a reference circle which would prevent garbage collection. This means that if the parent
-        goes out of scope, this may become None even if previously set to reference the parent.
+        """Reference to the immediate parent `SHEImage`, if it exists; None otherwise. This is stored internally as a
+        weak reference to prevent a reference circle which would prevent garbage collection. This means that
+        if the parent goes out of scope, this may become None even if previously set to reference the parent.
 
-        It is possible for a SHEImage to have an indefinite chain of parent SHEImage through repeated stamp
+        It is possible for a `SHEImage` to have an indefinite chain of parent SHEImage through repeated stamp
         extraction. This attribute stores only the reference to the most-immediate parent SHEImage.
 
         Returns
         -------
         parent_image : Optional[SHEImage]
-            This object's most-immediate parent SHEImage, if it exists; None otherwise.
+            This object's most-immediate parent `SHEImage`, if it exists; None otherwise.
         """
         return self._parent_image()
 
@@ -784,7 +782,7 @@ class SHEImage:
         Parameters
         ----------
         parent_image : Optional[SHEImage]
-            The SHEImage object to be referenced as this object's parent.
+            The `SHEImage` object to be referenced as this object's parent.
         """
 
         if parent_image is None:
@@ -799,52 +797,7 @@ class SHEImage:
         """
         self._parent_image = _return_none
 
-    def __str__(self):
-        """A short string with size information and the percentage of masked pixels"""
-
-        shape_str = "{}x{}".format(self.shape[0], self.shape[1])
-        str_list = [shape_str]
-
-        if self.mask is not None:
-            mask_str = "{}% masked".format(
-                100.0 * float(np.sum(self.boolmask)) / float(np.size(self.data)))
-            str_list.append(mask_str)
-
-        offset_str = "offset [{}, {}]".format(*self.offset)
-        str_list.append(offset_str)
-
-        return "SHEImage(" + ", ".join(str_list) + ")"
-
-    def __eq__(self, rhs: SHEImage) -> bool:
-        """Equality test for SHEImage class.
-        """
-
-        # Identity implies equality
-        if self is rhs:
-            return True
-
-        res: bool = True
-
-        # Check that all the data is the same
-        for attr in [*D_ATTR_CONVERSIONS.values(), "header", "offset"]:
-            if neq(getattr(self, attr), getattr(rhs, attr)):
-                res = False
-                break
-        else:
-            # Check WCS if everything else passes
-            if neq(self.wcs, rhs.wcs):
-
-                # Special test for WCS, comparing them as headers if not equal, since they can be a bit finicky
-                try:
-                    if neq(self.wcs.to_header(), rhs.wcs.to_header()):
-                        res = False
-                        logger.debug(f"In SHEImage.__eq__, WCS is not equal. Values were: %s, %s",
-                                     str(self.wcs.to_header()), str(rhs.wcs.to_header()))
-                except AttributeError:
-                    # In this case, only one is None, so return False
-                    res = False
-
-        return res
+    # Public methods
 
     def get_object_mask(self, seg_id, mask_suspect = False, mask_unassigned = False):
         """Get a mask for pixels that are either bad (and optionally suspect)
@@ -2221,6 +2174,55 @@ class SHEImage:
                 y_confirmed.append(y)
 
         return np.asarray(indices_confirmed), np.asarray(x_confirmed), np.asarray(y_confirmed)
+
+    # Operator overloads
+
+    def __str__(self):
+        """A short string with size information and the percentage of masked pixels"""
+
+        shape_str = "{}x{}".format(self.shape[0], self.shape[1])
+        str_list = [shape_str]
+
+        if self.mask is not None:
+            mask_str = "{}% masked".format(
+                100.0 * float(np.sum(self.boolmask)) / float(np.size(self.data)))
+            str_list.append(mask_str)
+
+        offset_str = "offset [{}, {}]".format(*self.offset)
+        str_list.append(offset_str)
+
+        return "SHEImage(" + ", ".join(str_list) + ")"
+
+    def __eq__(self, rhs: SHEImage) -> bool:
+        """Equality test for SHEImage class.
+        """
+
+        # Identity implies equality
+        if self is rhs:
+            return True
+
+        res: bool = True
+
+        # Check that all the data is the same
+        for attr in [*D_ATTR_CONVERSIONS.values(), "header", "offset"]:
+            if neq(getattr(self, attr), getattr(rhs, attr)):
+                res = False
+                break
+        else:
+            # Check WCS if everything else passes
+            if neq(self.wcs, rhs.wcs):
+
+                # Special test for WCS, comparing them as headers if not equal, since they can be a bit finicky
+                try:
+                    if neq(self.wcs.to_header(), rhs.wcs.to_header()):
+                        res = False
+                        logger.debug(f"In SHEImage.__eq__, WCS is not equal. Values were: %s, %s",
+                                     str(self.wcs.to_header()), str(rhs.wcs.to_header()))
+                except AttributeError:
+                    # In this case, only one is None, so return False
+                    res = False
+
+        return res
 
     # Private methods
 
