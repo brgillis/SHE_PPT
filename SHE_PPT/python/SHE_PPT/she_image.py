@@ -26,7 +26,7 @@ import os
 import weakref
 from copy import deepcopy
 from functools import lru_cache
-from typing import Any, Dict, Iterable, Optional, TYPE_CHECKING, Tuple, Type, Union
+from typing import Any, Dict, Iterable, Optional, Sequence, TYPE_CHECKING, Tuple, Type, Union
 
 import astropy.io.fits
 import astropy.wcs
@@ -149,9 +149,7 @@ class SHEImage:
     background_map : Optional[np.ndarray[float]]
     weight_map : Optional[np.ndarray[float]]
     header : Header
-        The image header, typically copied from the science image's HDU's header.
     offset : Tuple[float,float]
-        The offset of this image relative to the image (if any) it was extracted from, indexed as (x_offset, y_offset).
     wcs : Optional[astropy.wcs.WCS]
         An astropy WCS object for this image.
     galsim_wcs : Optional[galsim.wcs.BaseWCS]
@@ -174,7 +172,7 @@ class SHEImage:
 
     # Misc. public values
     _header = None
-    _offset = (0, 0)
+    _offset = np.array([0., 0.], dtype = float)
     _wcs = None
     _shape = None
     _galsim_wcs = None
@@ -518,23 +516,35 @@ class SHEImage:
         self._galsim_wcs = None
 
     @property
-    def offset(self):
-        """A [x_offset, y_offset] numpy array with 2 values, tracking the offset of extracted stamps
+    def offset(self) -> np.ndarray[float]:
+        """An (x_offset, y_offset) tuple, tracking the offset of extracted stamps compared to the base image they
+        were originally extracted from (that is, the most-distant parent SHEImage).
+
+        Returns
+        -------
+        offset : np.ndarray[float]
+            The (x_offset, y_offset) values, represented as a 1D, 2-element numpy array.
         """
         return self._offset
 
     @offset.setter
-    def offset(self, offset_tuple):
-        """Convenience setter of the offset values, which are stored in the header
+    def offset(self, offset: Optional[Sequence[float]]) -> None:
+        """Setter for the offset attribute, which stores it as (0, 0) if None is set.
 
-        We only set these header values if the offset_tuple is not None.
+        Parameters
+        ----------
+        offset : Optional[Sequence[float]]
+            The offset to set. This must have exactly 2 elements, in the order (x_offset, y_offset). If provided as
+            None, the offset will be stored as (0,0).
         """
-        if offset_tuple is None:
+        if offset is None:
             self._offset = np.array([0., 0.], dtype = float)
-        else:
-            if len(offset_tuple) != 2:
-                raise ValueError("A SHEImage.offset must have 2 items")
-            self._offset = np.array(offset_tuple, dtype = float)
+            return
+
+        if len(offset) != 2:
+            raise ValueError("A SHEImage.offset must have exactly 2 items")
+
+        self._offset = np.asarray(offset, dtype = float)
 
     @property
     # Just a shortcut, defined as a property in case we need to change
