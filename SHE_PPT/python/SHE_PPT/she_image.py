@@ -49,6 +49,8 @@ if TYPE_CHECKING:
     from .she_frame import SHEFrame
     from .she_image_stack import SHEImageStack
 
+# Define various constants used in this module
+
 PRIMARY_TAG = "PRIMARY"
 
 KEY_X_OFFSET = "SHEIOFX"
@@ -57,7 +59,6 @@ KEY_Y_OFFSET = "SHEIOFY"
 DETECTOR_SHAPE = (4096, 4136)
 DEFAULT_STAMP_SIZE = 384
 
-S_ALLOWED_INT_DTYPES = {np.int8, np.int16, np.int32, np.uint8, np.uint16, np.uint32}
 D_INDEXCONV_DEFS = {"numpy"     : 0.0,
                     "sextractor": 0.5}
 
