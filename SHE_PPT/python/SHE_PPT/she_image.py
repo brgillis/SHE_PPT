@@ -175,7 +175,6 @@ class SHEImage:
     _header = None
     _offset = np.array([0., 0.], dtype = float)
     _wcs = None
-    _shape = None
     _galsim_wcs = None
 
     # Parent references
@@ -624,18 +623,16 @@ class SHEImage:
         del self._galsim_wcs
 
     @property
-    def shape(self) -> np.ndarray:
+    def shape(self) -> np.ndarray[int]:
         """The shape of the image, equivalent to `self.data.shape`.
 
         Returns
         -------
-        shape : np.ndarray
+        shape : np.ndarray[int]
             The shape of the image, as (x_len,y_len)
         """
         if self._images_loaded:
             return self.data.shape
-        elif self._shape is not None:
-            return self._shape
         else:
             # Failsafe to hardcoded shape
             return DETECTOR_SHAPE
