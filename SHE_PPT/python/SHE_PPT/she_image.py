@@ -57,7 +57,7 @@ PRIMARY_TAG = "PRIMARY"
 KEY_X_OFFSET = "SHEIOFX"
 KEY_Y_OFFSET = "SHEIOFY"
 
-DETECTOR_SHAPE = (4096, 4136)
+DETECTOR_SHAPE = np.array((4096, 4136), dtype = int)
 DEFAULT_STAMP_SIZE = 384
 
 D_INDEXCONV_DEFS = {"numpy"     : 0.0,
@@ -151,9 +151,10 @@ class SHEImage:
     header : Header
     offset : Tuple[float,float]
     wcs : Optional[astropy.wcs.WCS]
-        An astropy WCS object for this image.
     galsim_wcs : Optional[galsim.wcs.BaseWCS]
-        A galsim WCS object for this image.
+    shape : np.ndarray[int]
+    det_ix : int
+    det_iy : int
     parent_frame_stack : Optional[SHEFrameStack]
     parent_frame : Optional[SHEFrame]
     parent_image_stack : Optional[SHEImageStack]
@@ -542,36 +543,53 @@ class SHEImage:
             return
 
         if len(offset) != 2:
-            raise ValueError("A SHEImage.offset must have exactly 2 items")
+            raise ValueError("A `SHEImage.offset` must have exactly 2 items")
 
         self._offset = np.asarray(offset, dtype = float)
 
     @property
-    # Just a shortcut, defined as a property in case we need to change
-    # implementation later
-    def wcs(self):
-        """The WCS of the images"""
+    def wcs(self) -> Optional[astropy.wcs.WCS]:
+        """The WCS of the images.
+
+        Returns
+        -------
+        wcs : Optional[astropy.wcs.WCS]
+            The WCS of the images, if present; None otherwise.
+        """
         return self._wcs
 
     @wcs.setter
-    def wcs(self, wcs):
+    def wcs(self, wcs: Optional[astropy.wcs.WCS]) -> None:
         """Convenience setter of the WCS.
+
+        Parameters
+        ----------
+        wcs : Optional[astropy.wcs.WCS]
+            The WCS of the images.
         """
         if not (isinstance(wcs, astropy.wcs.WCS) or (wcs is None)):
-            raise TypeError("wcs must be of type astropy.wcs.WCS")
+            raise TypeError("`wcs` must be None or an instance of `astropy.wcs.WCS`")
         self._wcs = wcs
 
         # Unload the galsim wcs
         self._galsim_wcs = None
 
     @wcs.deleter
-    def wcs(self):
+    def wcs(self) -> None:
+        """Simple deleter for the `wcs` attribute.
+        """
         del self._wcs
         self._galsim_wcs = None
 
     @property
-    def galsim_wcs(self):
-        """Get a GalSim-style WCS, which has some functions that astropy's lacks"""
+    def galsim_wcs(self) -> Optional[galsim.wcs.BaseWCS]:
+        """Property to provide a GalSim-style WCS, which has some functions that astropy's lacks.
+
+        Returns
+        -------
+        galsim_wcs : Optional[galsim.wcs.BaseWCS]
+            The WCS, converted to an appropriate GalSim WCS class, if present; None otherwise.
+        """
 
         # If not already loaded, load it
         if self._galsim_wcs is None:
@@ -581,27 +599,39 @@ class SHEImage:
             elif self.header is not None and len(self.header) > 0:
                 self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.header)[0]
             else:
-                raise ValueError("SHEImage must have a WCS set up or a WCS in its header in order to get a GalSim WCS.")
+                raise ValueError(
+                    "`SHEImage` must have a WCS set up or a WCS in its header in order to get a GalSim WCS.")
 
         return self._galsim_wcs
 
     @galsim_wcs.setter
-    def galsim_wcs(self, galsim_wcs):
+    def galsim_wcs(self, galsim_wcs: Optional[galsim.wcs.BaseWCS]):
         """Convenience setter of the GalSim WCS.
+
+        Parameters
+        ----------
+        galsim_wcs : Optional[galsim.wcs.BaseWCS]
+            The GalSim-style WCS to be set.
         """
         if not (isinstance(galsim_wcs, galsim.wcs.BaseWCS) or (galsim_wcs is None)):
-            raise TypeError("wcs must be of type galsim.wcs.BaseWCS")
+            raise TypeError("`galsim_wcs` must be None or an instance of `galsim.wcs.BaseWCS`")
         self._galsim_wcs = galsim_wcs
 
     @galsim_wcs.deleter
     def galsim_wcs(self):
+        """Simple deleter for the `galsim_wcs` attribute.
+        """
         del self._galsim_wcs
 
     @property
-    # Just a shortcut, also to stress that all arrays (data, mask, noisemap)
-    # have the same shape.
-    def shape(self):
-        """The shape of the image, equivalent to self.data.shape"""
+    def shape(self) -> np.ndarray:
+        """The shape of the image, equivalent to `self.data.shape`.
+
+        Returns
+        -------
+        shape : np.ndarray
+            The shape of the image, as (x_len,y_len)
+        """
         if self._images_loaded:
             return self.data.shape
         elif self._shape is not None:
@@ -610,8 +640,9 @@ class SHEImage:
             # Failsafe to hardcoded shape
             return DETECTOR_SHAPE
 
-    def _determine_det_ixy(self):
-        """Determine detector x and y position from header."""
+    def _determine_det_ixy(self) -> None:
+        """Private method to determine detector x and y position from the header.
+        """
 
         if self.header is None or CCDID_LABEL not in self.header:
             # If no header, assume we're using detector 1-1
@@ -627,15 +658,27 @@ class SHEImage:
                 self._det_ix = int(self.header[CCDID_LABEL][8])
 
     @property
-    def det_ix(self):
-        """The x-position of the detector for this image."""
+    def det_ix(self) -> int:
+        """The x-position of the detector for this image. Will be a value between 1 and 6 inclusive.
+
+        Returns
+        -------
+        det_ix : int
+            The x-position of the detector for this image.
+        """
         if self._det_ix is None:
             self._determine_det_ixy()
         return self._det_ix
 
     @property
     def det_iy(self):
-        """The y-position of the detector for this image."""
+        """The y-position of the detector for this image. Will be a value between 1 and 6 inclusive.
+
+        Returns
+        -------
+        det_iy : int
+            The y-position of the detector for this image.
+        """
         if self._det_iy is None:
             self._determine_det_ixy()
         return self._det_iy
