@@ -1040,7 +1040,7 @@ class SHEImage:
         y : float
             idem for y
         none_if_out_of_bounds : bool
-            If True, returns None if the stamp is out of bounds. If False, raises an exception.
+            If True, returns None if the desired center position is out of bounds. If False, raises an exception.
 
         Returns
         -------
