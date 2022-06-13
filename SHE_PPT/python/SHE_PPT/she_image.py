@@ -1341,16 +1341,19 @@ class SHEImage:
 
         self.wcs = astropy.wcs.WCS(Header())
 
-    def pix2world(self, x, y, origin = 0):
-        """Converts x and y pixel coordinates to ra and dec world coordinates.
+    def pix2world(self,
+                  x: Union[float, Sequence[float]],
+                  y: Union[float, Sequence[float]],
+                  origin: {0, 1} = 0) -> Union[Tuple[float, float], Tuple[np.ndarray[float], np.ndarray[float]]]:
+        """Converts x and y pixel coordinates to ra and dec world coordinates, using this objects WCS.
 
         Parameters
         ----------
-        x : float
-            x pixel coordinate
-        y : float
+        x : Union[float, Sequence[float]]
+            x pixel coordinate, or sequence of x pixel coordinates.
+        y : Union[float, Sequence[float]]
             idem for y
-        origin : int
+        origin : {0, 1}
             Coordinate in the upper left corner of the image.
             In FITS and Fortran standards, this is 1.
             In Numpy and C standards this is 0.
@@ -1362,14 +1365,14 @@ class SHEImage:
 
         Returns
         -------
-        ra : float (in degrees)
-        dec : float (in degrees)
-
+        ra : Union[float, np.ndarray[float]]
+            Right ascension in degrees, or array of such values if an array of x/y values was passed as input
+        dec : Union[float, np.ndarray[float]]
+            idem for Declination
         """
 
         if self.wcs is None:
-            raise AttributeError(
-                "pix2world called by SHEImage object that doesn't have a WCS set up.")
+            raise AttributeError("`pix2world` called by SHEImage object that doesn't have a WCS set up.")
 
         # Correct for offset if applicable
         if self.offset is not None:
@@ -1385,16 +1388,19 @@ class SHEImage:
 
         return ra, dec
 
-    def world2pix(self, ra, dec, origin = 0):
+    def world2pix(self,
+                  ra: Union[float, Sequence[float]],
+                  dec: Union[float, Sequence[float]],
+                  origin: {0, 1} = 0) -> Union[Tuple[float, float], Tuple[np.ndarray[float], np.ndarray[float]]]:
         """Converts ra and dec world coordinates to x and y pixel coordinates
 
         Parameters
         ----------
-        ra : float
-            Right Ascension (RA) world coordinate in degrees
+        ra : Union[float, Sequence[float]]
+            Right Ascension (RA) world coordinate in degrees, or sequence of such values.
         dec : float
-            Declination (Dec) world coordinate in degrees
-        origin : int
+            idem for Declination
+        origin : {0, 1}
             Coordinate in the upper left corner of the image.
             In FITS and Fortran standards, this is 1.
             In Numpy and C standards this is 0.
@@ -1407,14 +1413,14 @@ class SHEImage:
 
         Returns
         -------
-        x : float
-        y : float
-
+        x : Union[float, np.ndarray[float]]
+            x pixel coordinate, or sequence of x pixel coordinates.
+        y : Union[float, np.ndarray[float]]
+            idem for y
         """
 
         if self.wcs is None:
-            raise AttributeError(
-                "world2pix called by SHEImage object that doesn't have a WCS set up.")
+            raise AttributeError("`world2pix` called by SHEImage object that doesn't have a WCS set up.")
 
         x, y = self.wcs.all_world2pix(ra, dec, origin)
 
