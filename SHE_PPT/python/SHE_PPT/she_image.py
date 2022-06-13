@@ -175,7 +175,7 @@ class SHEImage:
     _header = None
     _offset = np.array([0., 0.], dtype = float)
     _wcs = None
-    _shape: np.ndarray[int]
+    _shape: Optional[np.ndarray[int]] = None
     _galsim_wcs = None
 
     # Parent references
@@ -185,7 +185,7 @@ class SHEImage:
     _parent_image = None
 
     # Private values
-    _images_loaded: bool = True
+    _images_loaded: bool = False
 
     def __init__(self,
                  data: Optional[np.ndarray[float]],
@@ -242,16 +242,10 @@ class SHEImage:
         self.parent_image = parent_image
 
         # Public values - Note the tests done in the setter methods
-        if data is None:
-            self._shape = np.array((0, 0), dtype = int)
-            self._images_loaded = False
-        else:
-            self._shape = data.shape
-            self._images_loaded = True
         self.data = data
         self.mask = mask
 
-        if self.data is not None and self.mask is None:
+        if self._images_loaded and self.mask is None:
             self.add_default_mask()
 
         self.noisemap = noisemap
@@ -293,6 +287,9 @@ class SHEImage:
         # If setting data as None, set as a dim-0 array for interface safety
         if data is None:
             data = np.ndarray((0, 0), dtype = float)
+            images_loaded = False
+        else:
+            images_loaded = True
 
         # Ensure we have a 2-dimensional array
         if data.ndim != 2:
@@ -310,6 +307,7 @@ class SHEImage:
 
         # Finally, perform the attribution
         self._data = data
+        self._images_loaded = images_loaded
 
     @data.deleter
     def data(self) -> None:
@@ -631,9 +629,11 @@ class SHEImage:
         shape : np.ndarray[int]
             The shape of the image, as (x_len,y_len)
         """
-        if not self._images_loaded:
-            return DETECTOR_SHAPE
-        return self._shape
+        if self.data is not None:
+            return self.data.shape
+        elif self._shape is not None:
+            return self._shape
+        return DETECTOR_SHAPE
 
     @property
     def det_ix(self) -> int:

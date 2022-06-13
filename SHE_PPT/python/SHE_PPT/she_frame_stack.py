@@ -1101,6 +1101,7 @@ class SHEFrameStack():
                                      wcs = astropy.wcs.WCS(stacked_image_header))
 
             stacked_image._images_loaded = load_images
+            stacked_image._shape = stacked_image_shape
 
         # Construct a SHEFrameStack object
         new_frame_stack = SHEFrameStack(exposures = exposures,
