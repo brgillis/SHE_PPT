@@ -185,7 +185,7 @@ class SHEImage:
     _parent_image = None
 
     # Private values
-    _images_loaded = True
+    _images_loaded: bool = True
 
     def __init__(self,
                  data: Optional[np.ndarray[float]],
@@ -242,7 +242,12 @@ class SHEImage:
         self.parent_image = parent_image
 
         # Public values - Note the tests done in the setter methods
-        self._shape = data.shape if data is not None else np.array([0., 0.], dtype = int)
+        if data is None:
+            self._shape = np.array((0, 0), dtype = int)
+            self._images_loaded = False
+        else:
+            self._shape = data.shape
+            self._images_loaded = True
         self.data = data
         self.mask = mask
 
@@ -299,7 +304,7 @@ class SHEImage:
         except AttributeError:
             existing_shape = None
 
-        if existing_shape is not None and np.any(data.shape != existing_shape):
+        if self._images_loaded and existing_shape is not None and np.any(data.shape != existing_shape):
             raise ValueError(f"Shape of a SHEImage can not be modified. Current is {existing_shape}, new data is "
                              f"{data.shape}.")
 
@@ -626,6 +631,8 @@ class SHEImage:
         shape : np.ndarray[int]
             The shape of the image, as (x_len,y_len)
         """
+        if not self._images_loaded:
+            return DETECTOR_SHAPE
         return self._shape
 
     @property
@@ -1076,26 +1083,25 @@ class SHEImage:
             interface of a standard SHEImage.
         """
 
-        # If we're returning None if out of bounds, check now so we can exit
-        # early
-        if none_if_out_of_bounds and ((x < 0) or (x >= self.shape[0]) or
-                                      (x < 0) or (x >= self.shape[1])):
+        new_offset = self.offset + np.array([x, y])
+        new_x, new_y = new_offset[0], new_offset[1]
+
+        # If we're returning None if out of bounds, check now
+        if none_if_out_of_bounds and ((new_x < 0) or (new_y >= self.shape[0]) or
+                                      (new_x < 0) or (new_y >= self.shape[1])):
             return None
 
-        new_offset = self.offset + np.array([x, y])
-
-        new_image = SHEImage(
-            data = np.ndarray(shape = (0, 0), dtype = float),
-            mask = None,
-            noisemap = None,
-            segmentation_map = None,
-            background_map = None,
-            weight_map = None,
-            header = self.header,
-            offset = new_offset,
-            wcs = self.wcs,
-            parent_image = self,
-            )
+        new_image = SHEImage(data = None,
+                             mask = None,
+                             noisemap = None,
+                             segmentation_map = None,
+                             background_map = None,
+                             weight_map = None,
+                             header = self.header,
+                             offset = new_offset,
+                             wcs = self.wcs,
+                             parent_image = self,
+                             )
 
         return new_image
 
