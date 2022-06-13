@@ -930,9 +930,8 @@ class SHEImage:
                    filename = filepath,
                    **kwargs)
 
-    @classmethod
-    def read_from_fits(cls,
-                       filepath: str,
+    @staticmethod
+    def read_from_fits(filepath: str,
                        workdir: str = DEFAULT_WORKDIR,
                        **kwargs: Optional[str]) -> SHEImage:
         """Reads an image from a FITS file, such as written by write_to_fits(), and returns it as a SHEImage object.
@@ -966,11 +965,13 @@ class SHEImage:
         """
         # Reading the primary extension, which also contains the header
         qualified_filepath = os.path.join(workdir, filepath)
-        (data, header) = cls._get_specific_hdu_content_from_fits(qualified_filepath,
-                                                                 ext = cls.__get_hdu_kwarg(attr_name = SCI_TAG,
-                                                                                           kwargs = kwargs,
-                                                                                           default_value = PRIMARY_TAG),
-                                                                 return_header = True)
+        (data, header) = SHEImage.__get_specific_hdu_content_from_fits(qualified_filepath,
+                                                                       ext = SHEImage.__get_hdu_kwarg(
+                                                                           attr_name = SCI_TAG,
+                                                                           kwargs = kwargs,
+                                                                           default_value =
+                                                                           PRIMARY_TAG),
+                                                                       return_header = True)
 
         # Set up the WCS before we clean the header
         try:
@@ -982,11 +983,12 @@ class SHEImage:
         # Removing the mandatory cards (that were automatically added to the
         # header if write_to_fits was used)
         logger.debug("The raw primary header has %d keys", len(list(header.keys())))
-        cls.__remove_header_keywords(header = header,
-                                     l_keywords_to_remove = ["SIMPLE", "BITPIX", "NAXIS", "NAXIS1", "NAXIS2", "EXTEND"])
+        SHEImage.__remove_header_keywords(header = header,
+                                          l_keywords_to_remove = ["SIMPLE", "BITPIX", "NAXIS", "NAXIS1", "NAXIS2",
+                                                                  "EXTEND"])
         if wcs is not None:
-            cls.__remove_header_keywords(header = header,
-                                         l_keywords_to_remove = list(wcs.to_header().keys()))
+            SHEImage.__remove_header_keywords(header = header,
+                                              l_keywords_to_remove = list(wcs.to_header().keys()))
 
         logger.debug("The cleaned header has %d keys", len(list(header.keys())))
 
@@ -995,15 +997,15 @@ class SHEImage:
         for name, attr in D_ATTR_CONVERSIONS.items():
             if name == SCI_TAG:
                 continue
-            special_filepath = cls.__get_filename_kwarg(attr_name = name,
-                                                        kwargs = kwargs,
-                                                        default_value = None)
-            ext = cls.__get_hdu_kwarg(attr_name = name,
-                                      kwargs = kwargs,
-                                      default_value = name)
-            d_attrs[attr] = cls._get_secondary_data_from_fits(primary_filepath = qualified_filepath,
-                                                              special_filepath = special_filepath,
-                                                              ext = ext)
+            special_filepath = SHEImage.__get_filename_kwarg(attr_name = name,
+                                                             kwargs = kwargs,
+                                                             default_value = None)
+            ext = SHEImage.__get_hdu_kwarg(attr_name = name,
+                                           kwargs = kwargs,
+                                           default_value = name)
+            d_attrs[attr] = SHEImage.__get_secondary_data_from_fits(primary_filepath = qualified_filepath,
+                                                                    special_filepath = special_filepath,
+                                                                    ext = ext)
 
         # Getting the offset from the header
         if KEY_X_OFFSET not in header or KEY_Y_OFFSET not in header:
@@ -1022,79 +1024,6 @@ class SHEImage:
 
         logger.info("Read %s from the file '%s'", str(new_image), filepath)
         return new_image
-
-    @staticmethod
-    def __remove_header_keywords(header: Header,
-                                 l_keywords_to_remove: Iterable[str], ):
-        """Private method to remove a list of keywords from a FITS header.
-        """
-        for keyword in l_keywords_to_remove:
-            if keyword in header:
-                header.remove(keyword)
-
-    @classmethod
-    def _get_secondary_data_from_fits(cls, primary_filepath, special_filepath, ext):
-        """Private helper for getting mask or noisemap, defining the logic of the related keyword arguments
-
-        This function might return None, if both special_filepath and ext are None, or if the extension doesn't
-        exist in the file.
-        """
-
-        if special_filepath is None:
-            filepath = primary_filepath
-        else:
-            filepath = special_filepath
-
-        try:
-            return cls._get_specific_hdu_content_from_fits(filepath, ext = ext)
-        except KeyError:
-            logger.debug("Extension %s not found in fits file %s", ext, filepath)
-            return None
-
-    @classmethod
-    def _get_specific_hdu_content_from_fits(cls, filepath, ext = None, return_header = False):
-        """Private helper to handle access to particular extensions of a FITS file
-
-        This function either returns something not-None, or raises an exception.
-        Note that this function also takes care of transposing the data.
-        """
-
-        logger.debug("Reading from file '%s'...", filepath)
-
-        hdulist = astropy.io.fits.open(filepath)
-        num_hdus = len(hdulist)
-
-        if ext is None:
-            # Warn the user, as the situation is not clear
-            if num_hdus > 1:
-                logger.warning(
-                    "File '%s' has several HDUs, but no extension was specified! Using primary HDU.",
-                    filepath)
-            ext = PRIMARY_TAG
-
-        logger.debug("Accessing extension '%s' out of %d available HDUs...", ext, num_hdus)
-        data = hdulist[ext].data.transpose()
-        if not data.ndim == 2:
-            raise ValueError("Primary HDU must contain a 2D image")
-        header = hdulist[ext].header
-
-        hdulist.close()
-
-        if return_header:
-            return data, header
-        return data
-
-    def _extract_attr_stamp(self, xmin, ymin, xmax, ymax, attr_name, filename, hdu_i):
-        if (xmax - xmin) <= 0 or (ymax - ymin) <= 0:
-            return None
-        a = getattr(self, D_ATTR_CONVERSIONS[attr_name])
-        if a is not None and a.shape[0] > 0 and a.shape[1] > 0:
-            out = a[xmin:xmax, ymin:ymax]
-        elif filename is not None and hdu_i is not None:
-            out = _read_stamp(xmin, ymin, xmax, ymax, filename, hdu_i)
-        else:
-            out = None
-        return out
 
     def extract_wcs_stamp(self, x, y, none_if_out_of_bounds = False):
         """ Extracts an "empty" stamp, which contains only information needed for WCS operations, having the
@@ -1268,8 +1197,8 @@ class SHEImage:
             filename = self.__get_filename_kwarg(attr_name, kwargs)
             hdu = self.__get_hdu_kwarg(attr_name, kwargs)
 
-            new_stamps[attr_name] = self._extract_attr_stamp(xmin, ymin, xmax, ymax, attr_name, filename,
-                                                             hdu)
+            new_stamps[attr_name] = self.__extract_attr_stamp(xmin, ymin, xmax, ymax, attr_name, filename,
+                                                              hdu)
 
         return new_stamps
 
@@ -1332,13 +1261,13 @@ class SHEImage:
                 new_stamps[attr_name] = D_DEFAULT_IMAGE_VALUES[attr_name] * np.ones((xmax - xmin, ymax - ymin),
                                                                                     dtype = new_dtype)
 
-            extracted_stamp = self._extract_attr_stamp(overlap_xmin,
-                                                       overlap_ymin,
-                                                       overlap_xmax,
-                                                       overlap_ymax,
-                                                       attr_name,
-                                                       filename,
-                                                       hdu)
+            extracted_stamp = self.__extract_attr_stamp(overlap_xmin,
+                                                        overlap_ymin,
+                                                        overlap_xmax,
+                                                        overlap_ymax,
+                                                        attr_name,
+                                                        filename,
+                                                        hdu)
 
             # Fill the stamp arrays:
             # If there is any overlap
@@ -2301,6 +2230,88 @@ class SHEImage:
             if filename is not None:
                 return filename
         return default_value
+
+    @staticmethod
+    def __get_secondary_data_from_fits(primary_filepath, special_filepath, ext):
+        """Private helper for getting mask or noisemap, defining the logic of the related keyword arguments
+
+        This function might return None, if both special_filepath and ext are None, or if the extension doesn't
+        exist in the file.
+        """
+
+        if special_filepath is None:
+            filepath = primary_filepath
+        else:
+            filepath = special_filepath
+
+        try:
+            return SHEImage.__get_specific_hdu_content_from_fits(filepath, ext = ext)
+        except KeyError:
+            logger.debug("Extension %s not found in fits file %s", ext, filepath)
+            return None
+
+    @staticmethod
+    def __get_specific_hdu_content_from_fits(filepath, ext = None, return_header = False):
+        """Private helper to handle access to particular extensions of a FITS file
+
+        This function either returns something not-None, or raises an exception.
+        Note that this function also takes care of transposing the data.
+        """
+
+        logger.debug("Reading from file '%s'...", filepath)
+
+        hdulist = astropy.io.fits.open(filepath)
+        num_hdus = len(hdulist)
+
+        if ext is None:
+            # Warn the user, as the situation is not clear
+            if num_hdus > 1:
+                logger.warning(
+                    "File '%s' has several HDUs, but no extension was specified! Using primary HDU.",
+                    filepath)
+            ext = PRIMARY_TAG
+
+        logger.debug("Accessing extension '%s' out of %d available HDUs...", ext, num_hdus)
+        data = hdulist[ext].data.transpose()
+        if not data.ndim == 2:
+            raise ValueError("Primary HDU must contain a 2D image")
+        header = hdulist[ext].header
+
+        hdulist.close()
+
+        if return_header:
+            return data, header
+        return data
+
+    @staticmethod
+    def __remove_header_keywords(header: Header,
+                                 l_keywords_to_remove: Iterable[str], ):
+        """Private method to remove a list of keywords from a FITS header.
+        """
+        for keyword in l_keywords_to_remove:
+            if keyword in header:
+                header.remove(keyword)
+
+    def __extract_attr_stamp(self,
+                             xmin: int,
+                             ymin: int,
+                             xmax: int,
+                             ymax: int,
+                             attr_name: str,
+                             filename: Optional[str],
+                             hdu_i: Optional[Union[str, int]]):
+        """Private method to extract a stamp for a specific attr from the image.
+        """
+        if (xmax - xmin) <= 0 or (ymax - ymin) <= 0:
+            return None
+        a = getattr(self, D_ATTR_CONVERSIONS[attr_name])
+        if a is not None and a.shape[0] > 0 and a.shape[1] > 0:
+            out = a[xmin:xmax, ymin:ymax]
+        elif filename is not None and hdu_i is not None:
+            out = _read_stamp(xmin, ymin, xmax, ymax, filename, hdu_i)
+        else:
+            out = None
+        return out
 
 
 @run_only_once
