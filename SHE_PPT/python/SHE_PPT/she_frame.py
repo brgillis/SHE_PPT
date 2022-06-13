@@ -877,8 +877,8 @@ class SHEFrame(object):
                                     header = detector_header,
                                     wcs = detector_wcs)
 
-                detector._images_loaded = load_images
-                detector._shape = detector_shape
+                if not load_detector:
+                    detector.shape = detector_shape
 
                 detectors[x_i, y_i] = detector
 

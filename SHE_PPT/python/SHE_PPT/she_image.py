@@ -629,11 +629,32 @@ class SHEImage:
         shape : np.ndarray[int]
             The shape of the image, as (x_len,y_len)
         """
-        if self.data is not None:
-            return self.data.shape
-        elif self._shape is not None:
+        if self._shape is not None:
             return self._shape
+        elif self.data is not None:
+            return self.data.shape
         return DETECTOR_SHAPE
+
+    @shape.setter
+    def shape(self, shape: Optional[Sequence[int]]) -> None:
+        """Setter for the shape attribute.
+
+        Parameters
+        ----------
+        shape : Optional[Sequence[int]]
+            The shape to set. This must have exactly 2 elements, in the order (x_len, y_len).
+        """
+        # Only allow if images aren't loaded
+        if self._images_loaded:
+            raise ValueError("Cannot set the shape of an image that has been loaded.")
+
+        self._shape = np.asarray(shape, dtype = int)
+
+    @shape.deleter
+    def shape(self):
+        """Simple deleter for the `shape` attribute.
+        """
+        self._shape = None
 
     @property
     def det_ix(self) -> int:
@@ -943,16 +964,13 @@ class SHEImage:
         image : SHEImage
             The image object read from the FITS file.
         """
-
-        # Get the HDU name of the `data` attribute from the kwargs
-        data_hdu = cls.__get_hdu_kwarg(attr_name = SCI_TAG,
-                                       kwargs = kwargs,
-                                       default_value = PRIMARY_TAG)
-
         # Reading the primary extension, which also contains the header
         qualified_filepath = os.path.join(workdir, filepath)
-        (data, header) = cls._get_specific_hdu_content_from_fits(
-            qualified_filepath, ext = data_hdu, return_header = True)
+        (data, header) = cls._get_specific_hdu_content_from_fits(qualified_filepath,
+                                                                 ext = cls.__get_hdu_kwarg(attr_name = SCI_TAG,
+                                                                                           kwargs = kwargs,
+                                                                                           default_value = PRIMARY_TAG),
+                                                                 return_header = True)
 
         # Set up the WCS before we clean the header
         try:
