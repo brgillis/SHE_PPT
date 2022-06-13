@@ -937,30 +937,15 @@ class SHEImage:
             The image object read from the FITS file.
         """
 
-        # Get the filepaths and extension names of each attr
-        d_filenames = {}
-        d_hdus = {}
-        for name, attr in D_ATTR_CONVERSIONS.items():
-            # Special handling for `data` attribute
-            if name == SCI_TAG:
-                d_filenames[name] = filepath
-                d_hdus[name] = cls.__get_hdu_kwarg(attr_name = name,
-                                                   kwargs = kwargs,
-                                                   default_value = PRIMARY_TAG)
-            else:
-                d_filenames[name] = cls.__get_filename_kwarg(attr_name = name,
-                                                             kwargs = kwargs,
-                                                             default_value = None)
-                d_hdus[name] = cls.__get_hdu_kwarg(attr_name = name,
-                                                   kwargs = kwargs,
-                                                   default_value = name)
-
-            # Get the filepath and extension name
+        # Get the HDU name of the `data` attribute from the kwargs
+        data_hdu = cls.__get_hdu_kwarg(attr_name = SCI_TAG,
+                                       kwargs = kwargs,
+                                       default_value = PRIMARY_TAG)
 
         # Reading the primary extension, which also contains the header
         qualified_filepath = os.path.join(workdir, filepath)
         (data, header) = cls._get_specific_hdu_content_from_fits(
-            qualified_filepath, ext = d_hdus[SCI_TAG], return_header = True)
+            qualified_filepath, ext = data_hdu, return_header = True)
 
         # Set up the WCS before we clean the header
         try:
@@ -983,9 +968,15 @@ class SHEImage:
         # Read in each attr
         d_attrs: Dict[str, Optional[np.ndarray]] = {}
         for name, attr in D_ATTR_CONVERSIONS.items():
+            special_filepath = cls.__get_filename_kwarg(attr_name = name,
+                                                        kwargs = kwargs,
+                                                        default_value = None)
+            ext = cls.__get_hdu_kwarg(attr_name = name,
+                                      kwargs = kwargs,
+                                      default_value = name)
             d_attrs[attr] = cls._get_secondary_data_from_fits(primary_filepath = qualified_filepath,
-                                                              special_filepath = d_filenames[name],
-                                                              ext = d_hdus[name])
+                                                              special_filepath = special_filepath,
+                                                              ext = ext)
 
         # Getting the offset from the header
         if KEY_X_OFFSET not in header or KEY_Y_OFFSET not in header:
