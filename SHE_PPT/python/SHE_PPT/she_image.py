@@ -70,11 +70,17 @@ D_ATTR_CONVERSIONS = {SCI_TAG         : "data",
                       BACKGROUND_TAG  : "background_map",
                       WEIGHT_TAG      : "weight_map", }
 D_DEFAULT_IMAGE_VALUES = {SCI_TAG         : 0,
-                          MASK_TAG        : 1,
+                          MASK_TAG        : 0,
                           NOISEMAP_TAG    : 0,
                           SEGMENTATION_TAG: SEGMAP_UNASSIGNED_VALUE,
                           BACKGROUND_TAG  : 0,
-                          WEIGHT_TAG      : 0, }
+                          WEIGHT_TAG      : 1, }
+D_OOB_VALUES = {SCI_TAG         : 0,
+                MASK_TAG        : 1,
+                NOISEMAP_TAG    : 0,
+                SEGMENTATION_TAG: SEGMAP_UNASSIGNED_VALUE,
+                BACKGROUND_TAG  : 0,
+                WEIGHT_TAG      : 0, }
 
 NOISEMAP_DTYPE = np.float32
 MASK_DTYPE = np.int32
@@ -87,6 +93,9 @@ D_IMAGE_DTYPES: Dict[str, Optional[Type]] = {SCI_TAG         : None,
                                              SEGMENTATION_TAG: SEG_DTYPE,
                                              BACKGROUND_TAG  : BKG_DTYPE,
                                              WEIGHT_TAG      : WGT_DTYPE, }
+
+MSG_NOT_ADDING_DEFAULT_ATTR = "`SHEImage` attribute `%s` already exists; not adding default."
+MSG_ADDING_DEFAULT_ATTR = "Adding default `%s` to `SHEImage`."
 
 logger = logging.getLogger(__name__)
 
@@ -1083,8 +1092,9 @@ class SHEImage:
                       keep_header: bool = False,
                       none_if_out_of_bounds: bool = False,
                       force_all_properties: bool = False,
-                      **kwargs):
-        """Extracts a stamp and returns it as a new None (using views of numpy arrays, i.e., without making a copy)
+                      **kwargs: Optional[Union[str, int]]):
+        """Extracts a stamp and returns it as a new SHEImage (using views of numpy arrays if possible, i.e.,
+        without making a copy)
 
         The extracted stamp is centered on the given (x,y) coordinates and has shape (width, height).
         To define this center, two alternative indexing-conventions are implemented, which differ by a small shift:
@@ -1111,7 +1121,7 @@ class SHEImage:
             idem for y
         width : int
             the width of the stamp to extract
-        height : int
+        height : Optional[int]
             the height. If left to None, a square stamp (width x width) will get extracted.
         indexconv : {"numpy", "sextractor"}
             Selects the indexing convention to use to interpret the position (x,y). See text above.
@@ -1125,7 +1135,7 @@ class SHEImage:
         force_all_properties : bool
             Set this to True if you want to ensure that all properties of the stamp exist, even if they don't for
             the parent. This will fill them in with default values.
-        **kwargs : Dict
+        **kwargs : Optional[Union[str, int]]
             (Deprecated and to be removed soon; do not use.)
 
         Return
@@ -1135,9 +1145,9 @@ class SHEImage:
 
         """
 
-        width, height = self._validate_read_stamp_input(width = width,
-                                                        height = height,
-                                                        indexconv = indexconv)
+        width, height = self.__validate_read_stamp_input(width = width,
+                                                         height = height,
+                                                         indexconv = indexconv)
 
         # Identify the numpy stamp boundaries
         xmin = int(round(x - width / 2.0 - D_INDEXCONV_DEFS[indexconv]))
@@ -1162,33 +1172,36 @@ class SHEImage:
         # easy.
         if xmin >= 0 and xmax < self.shape[0] and ymin >= 0 and ymax < self.shape[1]:
 
-            new_stamps = self._extract_stamp_in_bounds(xmin, xmax,
-                                                       ymin, ymax,
-                                                       **kwargs)
+            d_ex_stamp_attrs = self.__extract_stamp_in_bounds(xmin, xmax,
+                                                              ymin, ymax,
+                                                              **kwargs)
 
         else:
 
-            new_stamps = self._extract_stamp_not_in_bounds(xmin, xmax,
-                                                           ymin, ymax,
-                                                           **kwargs)
+            d_ex_stamp_attrs = self.__extract_stamp_not_in_bounds(xmin, xmax,
+                                                                  ymin, ymax,
+                                                                  **kwargs)
 
         # Create the new object
-        new_image = SHEImage(
-            data = new_stamps[SCI_TAG],
-            mask = new_stamps[MASK_TAG],
-            noisemap = new_stamps[NOISEMAP_TAG],
-            segmentation_map = new_stamps[SEGMENTATION_TAG],
-            background_map = new_stamps[BACKGROUND_TAG],
-            weight_map = new_stamps[WEIGHT_TAG],
-            header = new_header,
-            offset = new_offset,
-            wcs = self.wcs,
-            parent_image = self,
-            parent_frame = self.parent_frame,
-            parent_frame_stack = self.parent_frame_stack,
-            )
+        new_image = SHEImage(data = d_ex_stamp_attrs[SCI_TAG],
+                             mask = d_ex_stamp_attrs[MASK_TAG],
+                             noisemap = d_ex_stamp_attrs[NOISEMAP_TAG],
+                             segmentation_map = d_ex_stamp_attrs[SEGMENTATION_TAG],
+                             background_map = d_ex_stamp_attrs[BACKGROUND_TAG],
+                             weight_map = d_ex_stamp_attrs[WEIGHT_TAG],
+                             header = new_header,
+                             offset = new_offset,
+                             wcs = self.wcs,
+                             parent_frame = self.parent_frame,
+                             parent_frame_stack = self.parent_frame_stack,
+                             parent_image_stack = self.parent_image_stack,
+                             parent_image = self,
+                             )
 
-        assert new_image.shape == (width, height)
+        if not np.all(new_image.shape == (width, height)):
+            raise ValueError(f"The extracted stamp has shape {new_image.shape}, but the requested shape was "
+                             f"{(width, height)}. This could perhaps be due to the image's `shape` attribute being "
+                             f"manually set to an incorrect value.")
 
         # If we're forcing all properties, add defaults now
         if force_all_properties:
@@ -1202,149 +1215,35 @@ class SHEImage:
 
         return new_image
 
-    def _extract_stamp_in_bounds(self,
-                                 xmin, xmax,
-                                 ymin, ymax,
-                                 **kwargs):
-        """Private method to handle extraction of a postage stamp when we know it's entirely within bounds.
+    def add_default_mask(self,
+                         force: bool = False) -> None:
+        """Adds a default mask to this object (all unmasked).
+
+        Parameters
+        ----------
+        force : bool
+            If True, will overwrite an existing mask.
         """
 
-        new_stamps = {}
+        self._add_default_attr(attr_name = MASK_TAG,
+                               force = force)
 
-        # We are fully within the image
-        logger.debug("Extracting stamp [%d:%d,%d:%d] fully within image of shape (%d,%d)",
-                     xmin, xmax, ymin, ymax, self.shape[0], self.shape[1])
-        for attr_name in D_ATTR_CONVERSIONS:
+    def add_default_noisemap(self, force = False, suppress_warnings = False) -> None:
+        """Adds a default noisemap to this object.
 
-            filename = self.__get_filename_kwarg(attr_name, kwargs)
-            hdu = self.__get_hdu_kwarg(attr_name, kwargs)
-
-            new_stamps[attr_name] = self.__extract_attr_stamp(xmin, ymin, xmax, ymax, attr_name, filename,
-                                                              hdu)
-
-        return new_stamps
-
-    def _extract_stamp_not_in_bounds(self, xmin, xmax, ymin, ymax, **kwargs):
-        """Private method to handle extraction of a postage stamp when we know it's not entirely within bounds.
+        Parameters
+        ----------
+        force : bool
+            If True, will overwrite an existing noisemap.
+        suppress_warnings : bool
+            If True, will suppress MDB-related warnings.
         """
 
-        new_stamps = {}
-
-        # We are not fully within the image
-        logger.debug("Extracting stamp [%d:%d,%d:%d] not entirely within image of shape (%d,%d)",
-                     xmin, xmax, ymin, ymax, self.shape[0], self.shape[1])
-
-        # One solution would be to pad the image and extract, but that would need a lot of memory.
-        # So instead we go for the more explicit bound computations.
-
-        # Compute the bounds of the overlapping part of the stamp in the
-        # original image
-        overlap_xmin = max(xmin, 0)
-        overlap_ymin = max(ymin, 0)
-        overlap_xmax = min(xmax, self.shape[0])
-        overlap_ymax = min(ymax, self.shape[1])
-        overlap_width = overlap_xmax - overlap_xmin
-        overlap_height = overlap_ymax - overlap_ymin
-        overlap_slice = (slice(overlap_xmin, overlap_xmax),
-                         slice(overlap_ymin, overlap_ymax))
-        logger.debug("overlap_slice: %s", str(overlap_slice))
-
-        # Check if we have any actual overlap
-        overlap_exists = overlap_width > 0 and overlap_height > 0
-        if not overlap_exists:
-            logger.warning("The extracted stamp is entirely outside of the image bounds!")
-
-        # Compute the bounds of this same overlapping part in the new stamp
-        # The indexes of the stamp are simply shifted with respect to those
-        # of the original image by (xmin, ymin)
-        overlap_xmin_stamp = overlap_xmin - xmin
-        overlap_xmax_stamp = overlap_xmax - xmin
-        overlap_ymin_stamp = overlap_ymin - ymin
-        overlap_ymax_stamp = overlap_ymax - ymin
-        overlap_slice_stamp = (slice(overlap_xmin_stamp, overlap_xmax_stamp),
-                               slice(overlap_ymin_stamp, overlap_ymax_stamp))
-
-        # Read in the overlap data
-        for attr_name in D_ATTR_CONVERSIONS:
-
-            filename = self.__get_filename_kwarg(attr_name, kwargs)
-            hdu = self.__get_hdu_kwarg(attr_name, kwargs)
-
-            # We first create new stamps, and we will later fill part of them
-            # with slices of the original.
-            base_image = getattr(self, D_ATTR_CONVERSIONS[attr_name])
-            if base_image is None and filename is None:
-                new_stamps[attr_name] = None
-            else:
-                # Get the data type for this image
-                new_dtype = D_IMAGE_DTYPES[attr_name] if D_IMAGE_DTYPES[attr_name] is not None else base_image.dtype
-
-                # Construct a base image filled with the default value
-                new_stamps[attr_name] = D_DEFAULT_IMAGE_VALUES[attr_name] * np.ones((xmax - xmin, ymax - ymin),
-                                                                                    dtype = new_dtype)
-
-            extracted_stamp = self.__extract_attr_stamp(overlap_xmin,
-                                                        overlap_ymin,
-                                                        overlap_xmax,
-                                                        overlap_ymax,
-                                                        attr_name,
-                                                        filename,
-                                                        hdu)
-
-            # Fill the stamp arrays:
-            # If there is any overlap
-            if overlap_exists and extracted_stamp is not None:
-                new_stamps[attr_name][overlap_slice_stamp] = extracted_stamp
-
-        return new_stamps
-
-    @staticmethod
-    def _validate_read_stamp_input(width: float,
-                                   height: Optional[float],
-                                   indexconv: str) -> Tuple[int, int]:
-        """Validates input to the `read_stamp` method, and adjusts height and width as appropriate.
-
-        """
-        # Should we extract a square stamp?
-        if height is None:
-            height = width
-
-        # Silently coerce width and height to integers
-        width = int(round(width))
-        height = int(round(height))
-
-        # Check stamp size
-        if width < 1 or height < 1:
-            raise ValueError("Stamp height and width must at least be 1")
-        # Dealing with the indexing conventions
-        if indexconv not in D_INDEXCONV_DEFS:
-            raise ValueError("Argument indexconv must be among {}".format(list(D_INDEXCONV_DEFS.keys())))
-
-        return width, height
-
-    def add_default_mask(self, force = False):
-        """Adds a default mask to this object (all unmasked). If force=True, will overwrite an existing mask.
-        """
-
-        if self.mask is not None:
-            if force is True:
-                logger.debug("Overwriting existing mask with default.")
-            else:
-                logger.debug("Not overwriting existing mask with default.")
-                return
-
-        self.mask = np.zeros_like(self.data, dtype = np.int32)
-
-    def add_default_noisemap(self, force = False, suppress_warnings = False):
-        """Adds a default noisemap to this object (all 0.). If force=True, will overwrite an existing noisemap.
-        """
-
-        if self.noisemap is not None:
-            if force is True:
-                logger.debug("Overwriting existing noisemap with default.")
-            else:
-                logger.debug("Not overwriting existing noisemap with default.")
-                return
+        attr = D_ATTR_CONVERSIONS[NOISEMAP_TAG]
+        if not force and getattr(self, attr) is not None:
+            logger.debug(MSG_NOT_ADDING_DEFAULT_ATTR, attr)
+            return
+        logger.debug(MSG_ADDING_DEFAULT_ATTR, attr)
 
         # Try to calculate the noisemap
 
@@ -1367,72 +1266,78 @@ class SHEImage:
         if self.background_map is not None:
             self.noisemap += np.sqrt(self.background_map / gain)
 
-    def add_default_segmentation_map(self, force = False):
-        """Adds a default segmentation_map to this object (all unassigned). If force=True, will overwrite an existing
-        segmentation_map.
+    def add_default_segmentation_map(self,
+                                     force: bool = False) -> None:
+        """Adds a default segmentation_map to this object (all unassigned).
+
+        Parameters
+        ----------
+        force : bool
+            If True, will overwrite an existing mask.
         """
 
-        if self.segmentation_map is not None:
-            if force is True:
-                logger.debug("Overwriting existing segmentation_map with default.")
-            else:
-                logger.debug("Not overwriting existing segmentation_map with default.")
-                return
+        self._add_default_attr(attr_name = SEGMENTATION_TAG,
+                               force = force)
 
-        self.segmentation_map = SEGMAP_UNASSIGNED_VALUE * np.ones_like(self.data, dtype = np.int32)
+    def add_default_background_map(self,
+                                   force: bool = False) -> None:
+        """Adds a default background_map to this object (all 0.).
 
-    def add_default_background_map(self, force = False):
-        """Adds a default background_map to this object (all 0.). If force=True, will overwrite an existing
-        background_map.
+        Parameters
+        ----------
+        force : bool
+            If True, will overwrite an existing mask.
         """
 
-        if self.background_map is not None:
-            if force is True:
-                logger.debug("Overwriting existing background_map with default.")
-            else:
-                logger.debug("Not overwriting existing background_map with default.")
-                return
+        self._add_default_attr(attr_name = BACKGROUND_TAG,
+                               force = force)
 
-        self.background_map = np.zeros_like(self.data, dtype = float)
+    def add_default_weight_map(self,
+                               force: bool = False) -> None:
+        """Adds a default weight_map to this object (all 0.).
 
-    def add_default_weight_map(self, force = False):
-        """Adds a default weight_map to this object (all 0.). If force=True, will overwrite an existing
-        weight_map.
+        Parameters
+        ----------
+        force : bool
+            If True, will overwrite an existing mask.
         """
 
-        if self.weight_map is not None:
-            if force is True:
-                logger.debug("Overwriting existing weight_map with default.")
-            else:
-                logger.debug("Not overwriting existing weight_map with default.")
-                return
+        self._add_default_attr(attr_name = WEIGHT_TAG,
+                               force = force)
 
-        self.weight_map = np.ones_like(self.data, dtype = float)
+    def add_default_header(self,
+                           force: bool = False) -> None:
+        """Adds a default header to this object (only required values).
 
-    def add_default_header(self, force = False):
-        """Adds a default header to this object (only required values). If force=True, will overwrite an existing
-        header.
+        Parameters
+        ----------
+        force : bool
+            If True, will overwrite an existing header.
         """
 
-        if self.header is not None:
-            if force is True:
-                logger.debug("Overwriting existing header with default.")
-            else:
-                logger.debug("Not overwriting existing header with default.")
-                return
+        attr = "header"
+        if not force and getattr(self, attr) is not None:
+            logger.debug(MSG_NOT_ADDING_DEFAULT_ATTR, attr)
+            return
+        logger.debug(MSG_ADDING_DEFAULT_ATTR, attr)
 
         self.header = Header()
 
-    def add_default_wcs(self, force = False):
-        """Adds a default wcs to this object (pixel scale 1.0). If force=True, will overwrite an existing wcs.
+    def add_default_wcs(self,
+                        force: bool = False) -> None:
+        """Adds a default wcs to this object (pixel scale 1.0).
+
+        Parameters
+        ----------
+        force : bool
+            If True, will overwrite an existing wcs.
         """
 
-        if self.wcs is not None:
-            if force is True:
-                logger.debug("Overwriting existing wcs with default.")
-            else:
-                logger.debug("Not overwriting existing wcs with default.")
-                return
+        attr = "wcs"
+        if not force and getattr(self, attr) is not None:
+            logger.debug(MSG_NOT_ADDING_DEFAULT_ATTR, attr)
+            return
+        logger.debug(MSG_ADDING_DEFAULT_ATTR, attr)
 
         self.wcs = astropy.wcs.WCS(Header())
 
@@ -2104,6 +2009,24 @@ class SHEImage:
 
         return np.asarray(indices_confirmed), np.asarray(x_confirmed), np.asarray(y_confirmed)
 
+    # Protected methods
+
+    def _add_default_attr(self,
+                          attr_name: str,
+                          force: bool = False):
+        """Protected method to add a default attribute to the image.
+        """
+
+        attr = D_ATTR_CONVERSIONS[attr_name]
+
+        if not force and getattr(self, attr) is not None:
+            logger.debug(MSG_NOT_ADDING_DEFAULT_ATTR, attr)
+            return
+
+        logger.debug(MSG_ADDING_DEFAULT_ATTR, attr)
+        setattr(self, attr,
+                D_DEFAULT_IMAGE_VALUES[attr_name] * np.ones(self.shape, dtype = D_IMAGE_DTYPES[attr_name]))
+
     # Operator overloads
 
     def __str__(self):
@@ -2334,6 +2257,125 @@ class SHEImage:
         else:
             out = None
         return out
+
+    def __extract_stamp_in_bounds(self,
+                                  xmin, xmax,
+                                  ymin, ymax,
+                                  **kwargs):
+        """Private method to handle extraction of a postage stamp when we know it's entirely within bounds.
+        """
+
+        new_stamps = {}
+
+        # We are fully within the image
+        logger.debug("Extracting stamp [%d:%d,%d:%d] fully within image of shape (%d,%d)",
+                     xmin, xmax, ymin, ymax, self.shape[0], self.shape[1])
+        for attr_name in D_ATTR_CONVERSIONS:
+
+            filename = self.__get_filename_kwarg(attr_name, kwargs)
+            hdu = self.__get_hdu_kwarg(attr_name, kwargs)
+
+            new_stamps[attr_name] = self.__extract_attr_stamp(xmin, ymin, xmax, ymax, attr_name, filename,
+                                                              hdu)
+
+        return new_stamps
+
+    @staticmethod
+    def __validate_read_stamp_input(width: float,
+                                    height: Optional[float],
+                                    indexconv: str) -> Tuple[int, int]:
+        """Private method to validate input to the `read_stamp` method, and adjust height and width as appropriate.
+        """
+        # Should we extract a square stamp?
+        if height is None:
+            height = width
+
+        # Silently coerce width and height to integers
+        width = int(round(width))
+        height = int(round(height))
+
+        # Check stamp size
+        if width < 1 or height < 1:
+            raise ValueError("Stamp height and width must at least be 1")
+        # Dealing with the indexing conventions
+        if indexconv not in D_INDEXCONV_DEFS:
+            raise ValueError("Argument indexconv must be among {}".format(list(D_INDEXCONV_DEFS.keys())))
+
+        return width, height
+
+    def __extract_stamp_not_in_bounds(self, xmin, xmax, ymin, ymax, **kwargs):
+        """Private method to handle extraction of a postage stamp when we know it's not entirely within bounds.
+        """
+
+        new_stamps = {}
+
+        # We are not fully within the image
+        logger.debug("Extracting stamp [%d:%d,%d:%d] not entirely within image of shape (%d,%d)",
+                     xmin, xmax, ymin, ymax, self.shape[0], self.shape[1])
+
+        # One solution would be to pad the image and extract, but that would need a lot of memory.
+        # So instead we go for the more explicit bound computations.
+
+        # Compute the bounds of the overlapping part of the stamp in the
+        # original image
+        overlap_xmin = max(xmin, 0)
+        overlap_ymin = max(ymin, 0)
+        overlap_xmax = min(xmax, self.shape[0])
+        overlap_ymax = min(ymax, self.shape[1])
+        overlap_width = overlap_xmax - overlap_xmin
+        overlap_height = overlap_ymax - overlap_ymin
+        overlap_slice = (slice(overlap_xmin, overlap_xmax),
+                         slice(overlap_ymin, overlap_ymax))
+        logger.debug("overlap_slice: %s", str(overlap_slice))
+
+        # Check if we have any actual overlap
+        overlap_exists = overlap_width > 0 and overlap_height > 0
+        if not overlap_exists:
+            logger.warning("The extracted stamp is entirely outside of the image bounds!")
+
+        # Compute the bounds of this same overlapping part in the new stamp
+        # The indexes of the stamp are simply shifted with respect to those
+        # of the original image by (xmin, ymin)
+        overlap_xmin_stamp = overlap_xmin - xmin
+        overlap_xmax_stamp = overlap_xmax - xmin
+        overlap_ymin_stamp = overlap_ymin - ymin
+        overlap_ymax_stamp = overlap_ymax - ymin
+        overlap_slice_stamp = (slice(overlap_xmin_stamp, overlap_xmax_stamp),
+                               slice(overlap_ymin_stamp, overlap_ymax_stamp))
+
+        # Read in the overlap data
+        for attr_name in D_ATTR_CONVERSIONS:
+
+            filename = self.__get_filename_kwarg(attr_name, kwargs)
+            hdu = self.__get_hdu_kwarg(attr_name, kwargs)
+
+            # We first create new stamps, and we will later fill part of them
+            # with slices of the original.
+            base_image = getattr(self, D_ATTR_CONVERSIONS[attr_name])
+            if base_image is None and filename is None:
+                new_stamps[attr_name] = None
+            else:
+                # Get the data type for this image
+                new_dtype = D_IMAGE_DTYPES[attr_name] if D_IMAGE_DTYPES[attr_name] is not None else base_image.dtype
+
+                # Construct a base image filled with the out-of-bounds values
+                new_stamps[attr_name] = D_OOB_VALUES[attr_name] * np.ones((xmax - xmin, ymax - ymin),
+                                                                          dtype = new_dtype)
+
+            extracted_stamp = self.__extract_attr_stamp(overlap_xmin,
+                                                        overlap_ymin,
+                                                        overlap_xmax,
+                                                        overlap_ymax,
+                                                        attr_name,
+                                                        filename,
+                                                        hdu)
+
+            # Fill the stamp arrays:
+            # If there is any overlap
+            if overlap_exists and extracted_stamp is not None:
+                new_stamps[attr_name][overlap_slice_stamp] = extracted_stamp
+
+        return new_stamps
 
 
 @run_only_once
