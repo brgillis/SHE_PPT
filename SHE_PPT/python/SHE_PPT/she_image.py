@@ -1025,9 +1025,27 @@ class SHEImage:
         logger.info("Read %s from the file '%s'", str(new_image), filepath)
         return new_image
 
-    def extract_wcs_stamp(self, x, y, none_if_out_of_bounds = False):
-        """ Extracts an "empty" stamp, which contains only information needed for WCS operations, having the
-            interface of a standard SHEImage.
+    def extract_wcs_stamp(self,
+                          x: float,
+                          y: float,
+                          none_if_out_of_bounds: bool = False):
+        """Extracts an "empty" stamp, which contains only information needed for WCS operations, having the
+        interface of a standard SHEImage. This should be used in preference to `extract_stamp` if only WCS-related
+        operations will be performed on the stamp.
+
+        Parameters
+        ----------
+        x : float
+            x pixel coordinate on which to center the stamp.
+        y : float
+            idem for y
+        none_if_out_of_bounds : bool
+            If True, returns None if the stamp is out of bounds. If False, raises an exception.
+
+        Returns
+        -------
+        stamp : SHEImage
+            The extracted stamp.
         """
 
         new_offset = self.offset + np.array([x, y])
