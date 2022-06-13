@@ -1065,8 +1065,12 @@ class SHEImage:
                              header = self.header,
                              offset = new_offset,
                              wcs = self.wcs,
+                             parent_frame_stack = self.parent_frame_stack,
+                             parent_frame = self.parent_frame,
+                             parent_image_stack = self.parent_image_stack,
                              parent_image = self,
                              )
+        new_image.shape = (0, 0)
 
         return new_image
 
