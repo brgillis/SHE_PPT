@@ -905,18 +905,8 @@ class SHEImage:
     @classmethod
     def read_from_fits(cls,
                        filepath: str,
-                       data_ext: str = PRIMARY_TAG,
-                       mask_ext: Optional[str] = MASK_TAG,
-                       noisemap_ext: Optional[str] = NOISEMAP_TAG,
-                       segmentation_map_ext: Optional[str] = SEGMENTATION_TAG,
-                       background_map_ext: Optional[str] = BACKGROUND_TAG,
-                       weight_map_ext: Optional[str] = WEIGHT_TAG,
-                       mask_filepath: Optional[str] = None,
-                       noisemap_filepath: Optional[str] = None,
-                       segmentation_map_filepath: Optional[str] = None,
-                       background_map_filepath: Optional[str] = None,
-                       weight_map_filepath: Optional[str] = None,
-                       workdir: str = DEFAULT_WORKDIR, ):
+                       workdir: str = DEFAULT_WORKDIR,
+                       **kwargs: str) -> SHEImage:
         """Reads an image from a FITS file, such as written by write_to_fits(), and returns it as a SHEImage object.
 
         This function can be used to read previously saved SHEImage objects (in this case, just give the filepath),
@@ -936,39 +926,41 @@ class SHEImage:
         ----------
         filepath : str
             path to the FITS file containing the primary data and header to be read
-        data_ext : str
-            name or index of the primary HDU, containing the data and the header.
-        mask_ext : Optional[str]
-            name or index of the extension HDU containing the mask.
-            Set both mask_ext and mask_filepath to None to not read in any mask.
-        noisemap_ext : Optional[str]
-            idem, for the noisemap
-        segmentation_map_ext : Optional[str]
-            idem, for the segmentation_map
-        background_map_ext : Optional[str]
-            idem, for the background_map
-        weight_map_ext : Optional[str]
-            idem, for the weight_map
-        mask_filepath : Optional[str]
-            a separate filepath to read the mask from.
-            If you specify this, also set mask_ext accordingly (at least set it to 0 if the file has only one HDU).
-        noisemap_filepath : Optional[str]
-            idem, for the noisemap
-        segmentation_map_filepath : Optional[str]
-            idem, for the segmentation_map
-        background_map_filepath : Optional[str]
-            idem, for the background_map
-        weight_map_filepath : Optional[str]
-            idem, for the weight_map
         workdir : str
             The working directory, where files can be found
+        **kwargs : str
+            Deprecated keyword arguments, maintained for now to avoid breaking existing interfaces.
 
+        Returns
+        -------
+        image : SHEImage
+            The image object read from the FITS file.
         """
+
+        # Get the filepaths and extension names of each attr
+        d_filenames = {}
+        d_hdus = {}
+        for name, attr in D_ATTR_CONVERSIONS.items():
+            # Special handling for `data` attribute
+            if name == SCI_TAG:
+                d_filenames[name] = filepath
+                d_hdus[name] = cls.__get_hdu_kwarg(attr_name = name,
+                                                   kwargs = kwargs,
+                                                   default_value = PRIMARY_TAG)
+            else:
+                d_filenames[name] = cls.__get_filename_kwarg(attr_name = name,
+                                                             kwargs = kwargs,
+                                                             default_value = None)
+                d_hdus[name] = cls.__get_hdu_kwarg(attr_name = name,
+                                                   kwargs = kwargs,
+                                                   default_value = name)
+
+            # Get the filepath and extension name
 
         # Reading the primary extension, which also contains the header
         qualified_filepath = os.path.join(workdir, filepath)
         (data, header) = cls._get_specific_hdu_content_from_fits(
-            qualified_filepath, ext = data_ext, return_header = True)
+            qualified_filepath, ext = d_hdus[SCI_TAG], return_header = True)
 
         # Set up the WCS before we clean the header
         try:
@@ -988,48 +980,12 @@ class SHEImage:
 
         logger.debug("The cleaned header has %d keys", len(list(header.keys())))
 
-        # Reading the mask
-        if mask_filepath is not None:
-            qualified_mask_filepath = os.path.join(workdir, mask_filepath)
-        else:
-            qualified_mask_filepath = None
-        mask = cls._get_secondary_data_from_fits(
-            qualified_filepath, qualified_mask_filepath, mask_ext)
-
-        # Reading the noisemap
-        if noisemap_filepath is not None:
-            qualified_noisemap_filepath = os.path.join(
-                workdir, noisemap_filepath)
-        else:
-            qualified_noisemap_filepath = None
-        noisemap = cls._get_secondary_data_from_fits(
-            qualified_filepath, qualified_noisemap_filepath, noisemap_ext)
-
-        # Reading the segmentation map
-        if segmentation_map_filepath is not None:
-            qualified_segmentation_map_filepath = os.path.join(
-                workdir, segmentation_map_filepath)
-        else:
-            qualified_segmentation_map_filepath = None
-        segmentation_map = cls._get_secondary_data_from_fits(qualified_filepath, qualified_segmentation_map_filepath,
-                                                             segmentation_map_ext)
-
-        # Reading the background map
-        if background_map_filepath is not None:
-            qualified_background_map_filepath = os.path.join(
-                workdir, background_map_filepath)
-        else:
-            qualified_background_map_filepath = None
-        background_map = cls._get_secondary_data_from_fits(qualified_filepath, qualified_background_map_filepath,
-                                                           background_map_ext)
-        # Reading the weight map
-        if weight_map_filepath is not None:
-            qualified_weight_map_filepath = os.path.join(
-                workdir, weight_map_filepath)
-        else:
-            qualified_weight_map_filepath = None
-        weight_map = cls._get_secondary_data_from_fits(qualified_filepath, qualified_weight_map_filepath,
-                                                       weight_map_ext)
+        # Read in each attr
+        d_attrs: Dict[str, Optional[np.ndarray]] = {}
+        for name, attr in D_ATTR_CONVERSIONS.items():
+            d_attrs[attr] = cls._get_secondary_data_from_fits(primary_filepath = qualified_filepath,
+                                                              special_filepath = d_filenames[name],
+                                                              ext = d_hdus[name])
 
         # Getting the offset from the header
         if KEY_X_OFFSET not in header or KEY_Y_OFFSET not in header:
@@ -1040,9 +996,11 @@ class SHEImage:
             header.remove(KEY_Y_OFFSET)
 
         # Building and returning the new object
-        new_image = SHEImage(data = data, mask = mask, noisemap = noisemap, segmentation_map = segmentation_map,
-                             background_map = background_map, weight_map = weight_map,
-                             header = header, offset = offset, wcs = wcs)
+        new_image = SHEImage(data = data,
+                             **d_attrs,
+                             header = header,
+                             offset = offset,
+                             wcs = wcs)
 
         logger.info("Read %s from the file '%s'", str(new_image), filepath)
         return new_image
@@ -2277,7 +2235,10 @@ class SHEImage:
         setattr(self, f"_{attr_name}", array)
 
     @staticmethod
-    def __get_kwarg(attr_name: str, kwarg_tail: str, kwargs: Dict[str, Any]) -> str:
+    def __get_kwarg(attr_name: str,
+                    kwarg_tail: str,
+                    kwargs: Dict[str, Any],
+                    default_value: Optional[Union[str, int]] = None) -> Optional[Union[str, int]]:
         """Private method to get the filename keyword argument for a given attribute.
         """
 
@@ -2285,19 +2246,39 @@ class SHEImage:
         if filename is None:
             # Fall back to the attribute itself
             filename = kwargs.get(f"{D_ATTR_CONVERSIONS[attr_name]}_{kwarg_tail}")
+        if filename is None:
+            # Return the default if we didn't find it in either format
+            return default_value
         return filename
 
-    def __get_filename_kwarg(self, attr_name: str, kwargs: Dict[str, Any]) -> str:
+    @staticmethod
+    def __get_filename_kwarg(attr_name: str,
+                             kwargs: Dict[str, Any],
+                             default_value: Optional[Union[str, int]] = None) -> Optional[str]:
         """Private method to get the filename keyword argument for a given attribute.
         """
 
-        return self.__get_kwarg(attr_name, "filename", kwargs)
+        # The kwarg could be called either "filename" or "filepath", so try both
+        for kwarg_tail in ("filename", "filepath"):
+            filename = SHEImage.__get_kwarg(attr_name = attr_name,
+                                            kwarg_tail = kwarg_tail,
+                                            kwargs = kwargs,
+                                            default_value = default_value)
+            if filename is not None:
+                return filename
+        return None
 
-    def __get_hdu_kwarg(self, attr_name: str, kwargs: Dict[str, Any]) -> str:
+    @staticmethod
+    def __get_hdu_kwarg(attr_name: str,
+                        kwargs: Dict[str, Any],
+                        default_value: Optional[Union[str, int]] = None) -> Optional[Union[str, int]]:
         """Private method to get the HDU keyword argument for a given attribute.
         """
 
-        return self.__get_kwarg(attr_name, "hdu", kwargs)
+        return SHEImage.__get_kwarg(attr_name = attr_name,
+                                    kwarg_tail = "hdu",
+                                    kwargs = kwargs,
+                                    default_value = default_value)
 
 
 @run_only_once
