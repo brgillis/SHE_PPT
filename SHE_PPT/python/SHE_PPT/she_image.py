@@ -1443,7 +1443,7 @@ class SHEImage:
                                      dy: float = 0.1,
                                      spatial_ra: bool = False,
                                      origin: {0, 1} = 0,
-                                     norm: bool = False) -> np.ndarray:
+                                     norm: bool = False) -> np.ndarray[float]:
         """Gets the local transformation matrix between pixel and world (ra/dec) coordinates at the specified location.
 
         Parameters
@@ -1458,7 +1458,7 @@ class SHEImage:
             idem for y
         spatial_ra : bool
             If True, will give a matrix for (-ra*cos(dec),dec) co-ordinates instead of (ra,dec) (default False)
-        origin : {0,1}
+        origin : {0, 1}
             Coordinate in the upper left corner of the image.
             In FITS and Fortran standards, this is 1.
             In Numpy and C standards this is 0.
@@ -1476,7 +1476,7 @@ class SHEImage:
 
         Returns
         -------
-        pix2world_transformation : np.array
+        pix2world_transformation : np.ndarray[float]
             Transformation matrix in the format [[  dra/dx ,  dra/dy ],
                                                  [ ddec/dx , ddec/dy ]]
 
@@ -1522,27 +1522,36 @@ class SHEImage:
 
         return pix2world_transformation
 
-    def get_world2pix_transformation(self, ra = None, dec = None, dra = 0.01 / 3600, ddec = 0.01 / 3600,
-                                     spatial_ra = False,
-                                     origin = 0, norm = False):
+    def get_world2pix_transformation(self,
+                                     ra: Optional[float] = None,
+                                     dec: Optional[float] = None,
+                                     dra: float = 0.01 / 3600,
+                                     ddec: float = 0.01 / 3600,
+                                     spatial_ra: bool = False,
+                                     origin: {0, 1} = 0,
+                                     norm: bool = False) -> np.ndarray[float]:
         """Gets the local transformation matrix between world (ra/dec) and pixel coordinates at the specified location.
 
         Parameters
         ----------
-        ra : float
+        ra : Optional[float]
             Right Ascension (RA) world coordinate in degrees. If both this and dec are None, will default to centre of
-            image
-        dec : float
-            Declination (Dec) world coordinate in degrees. If both this and ra are None, will default to centre of
-            image
+            image.
+        dec : Optional[float]
+            idem for Declination
         dra : float
             Differential ra step in degrees to use in calculating transformation matrix. Default 0.01 arcsec
         ddec : float
             idem for dec
         spatial_ra : bool
             If True, will give a matrix for (-ra*cos(dec),dec) co-ordinates instead of (ra,dec) (default False)
-        origin : int
-            Unused for this method; left in to prevent user surprise
+        origin : {0, 1}
+            Coordinate in the upper left corner of the image.
+            In FITS and Fortran standards, this is 1.
+            In Numpy and C standards this is 0.
+            (from astropy.wcs)
+            (Due to cancellation, the value here has no effect on the output, but the kwarg is left in to avoid user
+            surprise which might arise from an inconsistent interface.)
         norm : bool
             If True, will divide the result by the determinant, resulting in the area-free transformation
             (default False)
@@ -1556,7 +1565,7 @@ class SHEImage:
 
         Returns
         -------
-        world2pix_transformation : np.array
+        world2pix_transformation : np.ndarray[float]
             Transformation matrix in the format [[ dx/dra , dx/ddec ],
                                                  [ dy/dra , dy/ddec ]]
 
@@ -1600,15 +1609,20 @@ class SHEImage:
 
         return world2pix_transformation
 
-    def get_pix2world_rotation(self, x, y, dx = 0.1, dy = 0.1, origin = 0):
+    def get_pix2world_rotation(self,
+                               x: Optional[float] = None,
+                               y: Optional[float] = None,
+                               dx: float = 0.1,
+                               dy: float = 0.1,
+                               origin: {0, 1} = 0, ) -> np.ndarray[float]:
         """Gets the local rotation matrix between pixel and world (ra/dec) coordinates at the specified location.
         Note that this doesn't provide the full transformation since it lacks scaling and shearing terms.
 
         Parameters
         ----------
-        x : float
-            x pixel coordinate
-        y : float
+        x : Optional[float]
+            x pixel coordinate. If not provided, will use centre of image
+        y : Optional[float]
             idem for y
         dx : float
             Differential x step to use in calculating rotation matrix. Default 0.1 pixels
@@ -1648,22 +1662,33 @@ class SHEImage:
 
         return pix2world_rotation
 
-    def get_world2pix_rotation(self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, origin = 0):
+    def get_world2pix_rotation(self,
+                               ra: Optional[float] = None,
+                               dec: Optional[float] = None,
+                               dra: float = 0.01 / 3600,
+                               ddec: float = 0.01 / 3600,
+                               origin: {0, 1} = 0, ) -> np.ndarray[float]:
         """Gets the local rotation matrix between world (ra/dec) and pixel coordinates at the specified location.
         Note that this doesn't provide the full transformation since it lacks scaling and shearing terms.
 
         Parameters
         ----------
-        ra : float
-            Right Ascension (RA) world coordinate in degrees
-        dec : float
-            Declination (Dec) world coordinate in degrees
+        ra : Optional[float]
+            Right Ascension (RA) world coordinate in degrees. If both this and dec are None, will default to centre of
+            image.
+        dec : Optional[float]
+            idem for Declination
         dra : float
             Differential ra step in degrees to use in calculating transformation matrix. Default 0.01 arcsec
         ddec : float
             idem for dec
-        origin : int
-            Unused for this method; left in to prevent user surprise
+        origin : {0, 1}
+            Coordinate in the upper left corner of the image.
+            In FITS and Fortran standards, this is 1.
+            In Numpy and C standards this is 0.
+            (from astropy.wcs)
+            (Due to cancellation, the value here has no effect on the output, but the kwarg is left in to avoid user
+            surprise which might arise from an inconsistent interface.)
 
         Raises
         ------
@@ -1674,7 +1699,7 @@ class SHEImage:
 
         Returns
         -------
-        world2pix_rotation : np.array
+        world2pix_rotation : np.ndarray[float]
             Transformation matrix in the format [[ cos(theta) , -sin(theta) ],
                                                  [ sin(theta) ,  cos(theta) ]]
             Note that due to the method of calculation, the matrix may differ very slightly from an ideal
@@ -1711,9 +1736,9 @@ class SHEImage:
 
         Parameters
         ----------
-        x : float
-            x pixel coordinate. If None, will use centre
-        y : float
+        x : Optional[float]
+            x pixel coordinate. If None, will use centre of the image.
+        y : Optional[float]
             idem for y
 
         Raises
@@ -1726,9 +1751,11 @@ class SHEImage:
         scale : float
             Scale factor of the decomposition
         shear : galsim.Shear
+            Shear of the decomposition
         theta : coord.Angle
+            Rotation angle of the decomposition
         flip : bool
-
+            Whether or not the WCS includes a flip (e.g. due to R.A being mirrored on the sky)
         """
 
         # If x or y isn't provided, use the centre of the image
@@ -1764,9 +1791,9 @@ class SHEImage:
         ----------
         ra : Optional[float]
             Right Ascension (RA) world coordinate in degrees. If both ra and dec are None, will use the centre of the
-            image
+            image.
         dec : Optional[float]
-            Declination (Dec) world coordinate in degrees. If both ra and dec are None, will use the centre of the image
+            idem for Declination.
 
 
         Raises
@@ -1779,8 +1806,11 @@ class SHEImage:
         scale : float
             Scale factor of the decomposition
         shear : galsim.Shear
-        theta : galsim.Angle
+            Shear of the decomposition
+        theta : coord.Angle
+            Rotation angle of the decomposition
         flip : bool
+            Whether or not the WCS includes a flip (e.g. due to R.A being mirrored on the sky)
 
         """
 
@@ -1808,31 +1838,13 @@ class SHEImage:
             if "WCS does not have longitude type" not in str(e) or len(self.header) == 0:
                 raise
 
-            self._apply_galsim_bug_workaround()
+            self.__apply_galsim_bug_workaround()
 
             local_wcs: galsim.wcs.JacobianWCS = self.galsim_wcs.jacobian(world_pos = world_pos)
 
         # We need to use the inverse of the local wcs to get the pix2world decomposition
 
         return local_wcs.inverse().getDecomposition()
-
-    def _apply_galsim_bug_workaround(self):
-        """Workaround for a bug with GalSim WCS, by reading WCS directly from the header.
-        """
-
-        warn_galsim_wcs_bug_workaround()
-
-        self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.header)[0]
-
-        if hasattr(self.galsim_wcs, "scale") and np.isclose(self.galsim_wcs.scale, 1.0):
-
-            # Don't have the information in this stamp's header - check for a parent image
-            if self.parent_image is not None:
-                self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.parent_image.header)[0]
-                if self.galsim_wcs.isPixelScale() and np.isclose(self.galsim_wcs.scale, 1.0):
-                    raise ValueError("Galsim WCS seems to not have been loaded correctly.")
-            else:
-                raise ValueError("Galsim WCS seems to not have been loaded correctly.")
 
     def estimate_pix2world_rotation_angle(self, x, y, dx, dy, origin = 0):
         """Estimates the local rotation angle between pixel and world (-ra/dec) coordinates at the specified location.
@@ -2382,6 +2394,24 @@ class SHEImage:
                 new_stamps[attr_name][overlap_slice_stamp] = extracted_stamp
 
         return new_stamps
+
+    def __apply_galsim_bug_workaround(self):
+        """Workaround for a bug with GalSim WCS, by reading WCS directly from the header.
+        """
+
+        warn_galsim_wcs_bug_workaround()
+
+        self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.header)[0]
+
+        if hasattr(self.galsim_wcs, "scale") and np.isclose(self.galsim_wcs.scale, 1.0):
+
+            # Don't have the information in this stamp's header - check for a parent image
+            if self.parent_image is not None:
+                self._galsim_wcs = galsim.wcs.readFromFitsHeader(self.parent_image.header)[0]
+                if self.galsim_wcs.isPixelScale() and np.isclose(self.galsim_wcs.scale, 1.0):
+                    raise ValueError("Galsim WCS seems to not have been loaded correctly.")
+            else:
+                raise ValueError("Galsim WCS seems to not have been loaded correctly.")
 
 
 @run_only_once
