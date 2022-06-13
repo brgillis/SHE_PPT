@@ -188,7 +188,7 @@ class SHEImage:
     _images_loaded = True
 
     def __init__(self,
-                 data: np.ndarray[float],
+                 data: Optional[np.ndarray[float]],
                  mask: Optional[np.ndarray[np.int64]] = None,
                  noisemap: Optional[np.ndarray[float]] = None,
                  segmentation_map: Optional[np.ndarray[np.int64]] = None,
@@ -205,8 +205,8 @@ class SHEImage:
 
         Parameters
         ----------
-        data : np.ndarray[float]
-            The science image.
+        data : Optional[np.ndarray[float][
+            The science image. If None is provided, will be stored as a 0x0 array.
         mask : Optional[np.ndarray[np.int64]]
             The mask image, of the same shape as the science image.
         noisemap : Optional[np.ndarray[float]]
@@ -242,7 +242,7 @@ class SHEImage:
         self.parent_image = parent_image
 
         # Public values - Note the tests done in the setter methods
-        self._shape = data.shape
+        self._shape = data.shape if data is not None else np.array([0., 0.], dtype = int)
         self.data = data
         self.mask = mask
 
