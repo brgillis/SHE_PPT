@@ -38,7 +38,7 @@ import SHE_PPT.she_image
 from SHE_PPT import file_io, mdb
 from SHE_PPT.constants.misc import SEGMAP_UNASSIGNED_VALUE
 from SHE_PPT.file_io import get_qualified_filename
-from SHE_PPT.she_image import NOISEMAP_DTYPE, SEG_DTYPE, WGT_DTYPE
+from SHE_PPT.she_image import NOISEMAP_DTYPE, PRIMARY_TAG, SEG_DTYPE, WGT_DTYPE
 from SHE_PPT.testing.utility import SheTestCase
 
 logging.basicConfig(level = logging.DEBUG)
@@ -335,7 +335,7 @@ class TestSheImage(SheTestCase):
                                                           noisemap_filepath = self.l_qualified_test_filenames[2],
                                                           segmentation_map_filepath = self.l_qualified_test_filenames[
                                                               3],
-                                                          mask_ext = None)
+                                                          mask_ext = PRIMARY_TAG)
 
     def test_extracted_stamp_is_view(self):
         """Checks that the extracted stamp is a view, not a copy.

@@ -906,7 +906,7 @@ class SHEImage:
     def read_from_fits(cls,
                        filepath: str,
                        workdir: str = DEFAULT_WORKDIR,
-                       **kwargs: str) -> SHEImage:
+                       **kwargs: Optional[str]) -> SHEImage:
         """Reads an image from a FITS file, such as written by write_to_fits(), and returns it as a SHEImage object.
 
         This function can be used to read previously saved SHEImage objects (in this case, just give the filepath),
@@ -968,6 +968,8 @@ class SHEImage:
         # Read in each attr
         d_attrs: Dict[str, Optional[np.ndarray]] = {}
         for name, attr in D_ATTR_CONVERSIONS.items():
+            if name == SCI_TAG:
+                continue
             special_filepath = cls.__get_filename_kwarg(attr_name = name,
                                                         kwargs = kwargs,
                                                         default_value = None)
@@ -2254,10 +2256,10 @@ class SHEImage:
             filename = SHEImage.__get_kwarg(attr_name = attr_name,
                                             kwarg_tail = kwarg_tail,
                                             kwargs = kwargs,
-                                            default_value = default_value)
+                                            default_value = None)
             if filename is not None:
                 return filename
-        return None
+        return default_value
 
     @staticmethod
     def __get_hdu_kwarg(attr_name: str,
@@ -2266,10 +2268,15 @@ class SHEImage:
         """Private method to get the HDU keyword argument for a given attribute.
         """
 
-        return SHEImage.__get_kwarg(attr_name = attr_name,
-                                    kwarg_tail = "hdu",
-                                    kwargs = kwargs,
-                                    default_value = default_value)
+        # The kwarg could be called either "hdu" or "ext", so try both
+        for kwarg_tail in ("hdu", "ext"):
+            filename = SHEImage.__get_kwarg(attr_name = attr_name,
+                                            kwarg_tail = kwarg_tail,
+                                            kwargs = kwargs,
+                                            default_value = None)
+            if filename is not None:
+                return filename
+        return default_value
 
 
 @run_only_once
