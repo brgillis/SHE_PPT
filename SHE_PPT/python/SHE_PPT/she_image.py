@@ -175,7 +175,7 @@ class SHEImage:
     _header = None
     _offset = np.array([0., 0.], dtype = float)
     _wcs = None
-    _shape = None
+    _shape: np.ndarray[int]
     _galsim_wcs = None
 
     # Parent references
@@ -242,8 +242,8 @@ class SHEImage:
         self.parent_image = parent_image
 
         # Public values - Note the tests done in the setter methods
+        self._shape = data.shape
         self.data = data
-        self._shape = self.data.shape
         self.mask = mask
 
         if self.data is not None and self.mask is None:

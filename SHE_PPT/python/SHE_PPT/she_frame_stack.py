@@ -441,23 +441,23 @@ class SHEFrameStack():
 
     def get_objects_in_observation(self, objects_coords):
         """ Given a list (array) of object coordinates, returns the indices of the objects found in this observation"""
-        #TODO also return some structure containing info on which exposure, detector and pixels the objects can be found in
-        
-        all_inds = np.empty(0,np.int64)
+        # TODO also return some structure containing info on which exposure, detector and pixels the objects can be
+        #  found in
+
+        all_inds = np.empty(0, np.int64)
         for exposure in self.exposures:
 
             inds, xs, ys, detectors = exposure.get_objects_in_exposure(objects_coords)
-            
-            all_inds = np.concatenate((all_inds,inds))
-        
+
+            all_inds = np.concatenate((all_inds, inds))
+
         unique_inds = np.asarray(list(set(all_inds)))
-       
+
         num_objects = len(unique_inds)
 
         logger.info(f"Found {num_objects} unique objects in the observation")
 
         return unique_inds
-
 
     def extract_wcs_stamp_stack(self, x_world, y_world, none_if_out_of_bounds = False, extract_stacked_stamp = True,
                                 extract_exposure_stamps = True):
@@ -1101,7 +1101,6 @@ class SHEFrameStack():
                                      wcs = astropy.wcs.WCS(stacked_image_header))
 
             stacked_image._images_loaded = load_images
-            stacked_image._shape = stacked_image_shape
 
         # Construct a SHEFrameStack object
         new_frame_stack = SHEFrameStack(exposures = exposures,
