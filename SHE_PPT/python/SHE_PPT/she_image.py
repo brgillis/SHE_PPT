@@ -2012,19 +2012,17 @@ class SHEImage:
             idem for y
         """
 
-        wcs = self.wcs
-
         nx = float(self.shape[0])
         ny = float(self.shape[1])
 
         # Get the sky coordinates of the centre pixels in the detector
-        x_centre, y_centre = nx / 2, ny / 2
-        centre_coords = wcs.pixel_to_world(x_centre, y_centre)
+        x_centre, y_centre = (nx + 1) / 2, (ny + 1) / 2
+        centre_coords = SkyCoord(self.pix2world(x_centre, y_centre, origin = 1))
 
-        # now get the sky coords for the 4 corners of the image
+        # now get the sky coords for the 4 corners of the image, using convention where first pixel is indexed as 1
         x_corners = [1, nx, nx, 1]
         y_corners = [1, 1, ny, ny]
-        corners_coords = wcs.pixel_to_world(x_corners, y_corners)
+        corners_coords = SkyCoord(self.pix2world(x_corners, y_corners, origin = 1))
 
         # now measure the angular distance between the corners and the image centre, and get the maximum distance (
         # plus a 5% tolerance) away from the centre
@@ -2039,7 +2037,7 @@ class SHEImage:
 
         # For these candidates, get their sky coords and convert them into pixel coordinates
         candidate_coords = objects_coords[candidate_indices]
-        x_candidates, y_candidates = wcs.world_to_pixel(candidate_coords)
+        x_candidates, y_candidates = self.world2pix(*candidate_coords, origin = 1)
 
         # now check if these pixel coordinates are in the image, and construct a list of these "good" objects'
         # indices and x,y positions
