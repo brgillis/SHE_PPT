@@ -2016,14 +2016,14 @@ class SHEImage:
         ny = float(self.shape[1])
 
         # Get the sky coordinates of the centre pixels in the detector
-        sc_centre_coords = SkyCoord(self.pix2world(x = (nx + 1) / 2,
-                                                   y = (ny + 1) / 2,
-                                                   origin = 1))
+        sc_centre_coords = SkyCoord(*self.pix2world(x = np.array((nx + 1) / 2),
+                                                    y = np.array((ny + 1) / 2),
+                                                    origin = 1), unit = 'deg')
 
         # now get the sky coords for the 4 corners of the image, using convention where first pixel is indexed as 1
-        sc_corners_coords = SkyCoord(self.pix2world(x = [1 - x_buffer, nx + x_buffer, nx + x_buffer, 1 - x_buffer],
-                                                    y = [1 - y_buffer, 1 - y_buffer, ny + y_buffer, ny + y_buffer],
-                                                    origin = 1))
+        sc_corners_coords = SkyCoord(*self.pix2world(x = [1 - x_buffer, nx + x_buffer, nx + x_buffer, 1 - x_buffer],
+                                                     y = [1 - y_buffer, 1 - y_buffer, ny + y_buffer, ny + y_buffer],
+                                                     origin = 1), unit = 'deg')
 
         # now measure the angular distance between the corners and the image centre, and get the maximum distance (
         # plus a 5% tolerance) away from the centre
@@ -2039,12 +2039,16 @@ class SHEImage:
 
         l_x_candidates: np.ndarray[float]
         l_y_candidates: np.ndarray[float]
-        l_x_candidates, l_y_candidates = self.world2pix(*sc_candidate_coords, origin = 1)
+        l_x_candidates, l_y_candidates = self.world2pix(ra = sc_candidate_coords.ra,
+                                                        dec = sc_candidate_coords.dec,
+                                                        origin = 1)
 
         # now check if these pixel coordinates are in the image
 
-        l_in_bounds: np.ndarray[bool] = ((1. - x_buffer <= l_x_candidates <= nx + x_buffer) &
-                                         (1. - y_buffer <= l_y_candidates <= ny + y_buffer))
+        l_in_bounds: np.ndarray[bool] = np.logical_and.reduce(((1. - x_buffer <= l_x_candidates),
+                                                               (l_x_candidates <= nx + x_buffer),
+                                                               (1. - y_buffer <= l_y_candidates),
+                                                               (l_y_candidates <= ny + y_buffer)))
 
         # Return arrays of these "good" objects' indices and x,y positions
         return np.where(l_in_bounds)[0], l_x_candidates[l_in_bounds], l_y_candidates[l_in_bounds]

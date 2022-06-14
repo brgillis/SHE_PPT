@@ -23,7 +23,6 @@ __updated__ = "2021-08-16"
 # You should have received a copy of the GNU Lesser General Public License
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-# """This script gives a small demo of the image object.
 
 import logging
 import os
@@ -32,6 +31,7 @@ from copy import deepcopy
 import galsim
 import numpy as np
 import pytest
+from astropy.coordinates import SkyCoord
 from astropy.wcs import WCS
 
 import SHE_PPT.she_image
@@ -954,6 +954,30 @@ class TestSheImage(SheTestCase):
 
         assert np.isclose(test_p2w_scale, p2w_scale)
         assert np.allclose((-w2p_shear.g1, -w2p_shear.g2), (test_p2w_shear.g1, test_p2w_shear.g2))
+
+    def test_get_objects_in_detector(self):
+        """Unit test of the `get_objects_in_detector` method.
+        """
+
+        # We set up points to test first based on pixel coords, since we can tell easily what's in or not
+
+        # Set up lists, using each possible combination of each x and y test point
+        l = 6
+        l_x = np.array([x for x in [-100, -1, 2, self.w - 2, self.w + 1, self.w + 100] for _ in range(l)])
+        l_y = np.array([-100, -1, 2, self.h - 2, self.h + 1, self.h + 100] * l)
+
+        l_ra, l_dec = self.img.pix2world(l_x, l_y, origin = 0)
+
+        sc = SkyCoord(l_ra, l_dec, unit = 'deg')
+
+        for x_buffer in (0, 5, -5):
+            (l_indices_confirmed,
+             l_x_confirmed,
+             l_y_confirmed) = self.img.get_objects_in_detector(sc,
+                                                               x_buffer = x_buffer,
+                                                               y_buffer = 0)
+
+        pass
 
     def test_equality(self):
         """Test of the custom __eq__ method for equality comparisons.
