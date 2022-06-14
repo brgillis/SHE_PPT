@@ -2033,8 +2033,7 @@ class SHEImage:
 
         # now measure the angular distance between the corners and the image centre, and get the maximum distance (
         # plus a 5% tolerance) away from the centre
-        l_corners_distance: np.ndarray[float] = sc_corners_coords.separation(sc_centre_coords).deg
-        max_dist = l_corners_distance.max() * 1.05
+        max_dist = sc_corners_coords.separation(sc_centre_coords).deg.max() * 1.05
 
         # get the distances of all objects from the centre pixel of the detector
         # we consider objects only closer to the centre than max_dist as candidates for being in the image
