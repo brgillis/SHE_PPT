@@ -2016,13 +2016,14 @@ class SHEImage:
         ny = float(self.shape[1])
 
         # Get the sky coordinates of the centre pixels in the detector
-        x_centre, y_centre = (nx + 1) / 2, (ny + 1) / 2
-        sc_centre_coords = SkyCoord(self.pix2world(x_centre, y_centre, origin = 1))
+        sc_centre_coords = SkyCoord(self.pix2world(x = (nx + 1) / 2,
+                                                   y = (ny + 1) / 2,
+                                                   origin = 1))
 
         # now get the sky coords for the 4 corners of the image, using convention where first pixel is indexed as 1
-        x_corners = [1 - x_buffer, nx + x_buffer, nx + x_buffer, 1 - x_buffer]
-        y_corners = [1 - y_buffer, 1 - y_buffer, ny + y_buffer, ny + y_buffer]
-        sc_corners_coords = SkyCoord(self.pix2world(x_corners, y_corners, origin = 1))
+        sc_corners_coords = SkyCoord(self.pix2world(x = [1 - x_buffer, nx + x_buffer, nx + x_buffer, 1 - x_buffer],
+                                                    y = [1 - y_buffer, 1 - y_buffer, ny + y_buffer, ny + y_buffer],
+                                                    origin = 1))
 
         # now measure the angular distance between the corners and the image centre, and get the maximum distance (
         # plus a 5% tolerance) away from the centre
@@ -2030,10 +2031,8 @@ class SHEImage:
         max_dist = l_corners_distance.max() * 1.05
 
         # get the distances of all objects from the centre pixel of the detector
-        l_all_distances: np.ndarray[float] = objects_coords.separation(sc_centre_coords).deg
-
         # we consider objects only closer to the centre than max_dist as candidates for being in the image
-        l_candidate_indices: np.ndarray[int] = np.where(l_all_distances <= max_dist)[0]
+        l_candidate_indices: np.ndarray[int] = np.where(objects_coords.separation(sc_centre_coords).deg <= max_dist)[0]
 
         # For these candidates, get their sky coords and convert them into pixel coordinates
         sc_candidate_coords = objects_coords[l_candidate_indices]
@@ -2042,12 +2041,12 @@ class SHEImage:
         l_y_candidates: np.ndarray[float]
         l_x_candidates, l_y_candidates = self.world2pix(*sc_candidate_coords, origin = 1)
 
-        # now check if these pixel coordinates are in the image, and construct a list of these "good" objects'
-        # indices and x,y positions
+        # now check if these pixel coordinates are in the image
 
         l_in_bounds: np.ndarray[bool] = ((1. - x_buffer <= l_x_candidates <= nx + x_buffer) &
                                          (1. - y_buffer <= l_y_candidates <= ny + y_buffer))
 
+        # Return arrays of these "good" objects' indices and x,y positions
         return np.where(l_in_bounds)[0], l_x_candidates[l_in_bounds], l_y_candidates[l_in_bounds]
 
     # Protected methods
