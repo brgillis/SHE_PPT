@@ -38,10 +38,149 @@ import SHE_PPT.she_image
 from SHE_PPT import file_io, mdb
 from SHE_PPT.constants.misc import SEGMAP_UNASSIGNED_VALUE
 from SHE_PPT.file_io import get_qualified_filename
-from SHE_PPT.she_image import NOISEMAP_DTYPE, PRIMARY_TAG, SEG_DTYPE, WGT_DTYPE
+from SHE_PPT.she_image import NOISEMAP_DTYPE, PRIMARY_TAG, SEG_DTYPE, SHEImage, WGT_DTYPE
 from SHE_PPT.testing.utility import SheTestCase
 
 logging.basicConfig(level = logging.DEBUG)
+
+
+def estimate_pix2world_rotation_angle(image: SHEImage,
+                                      x: float,
+                                      y: float,
+                                      dx: float = 0.01,
+                                      dy: float = 0.01,
+                                      origin = 0):
+    """Estimates the local rotation angle between pixel and world (-ra/dec) coordinates at the specified location.
+    This function is used to test the `get_pix2world_rotation` method of the `SHEImage` class for validity.
+
+    Parameters
+    ----------
+    image : SHEImage
+        The image object to use.
+    x : float
+        x pixel coordinate. Note: dx and dy are required here since, due to distortion in the transformation,
+        we can't assume the rotation angle will be independent of them.
+    y : float
+        idem for y
+    dx : float, default=0.01
+        Differential x step to use in calculating transformation matrix
+    dy : float, default=0.01
+        idem for y
+    origin : {0,1}
+        Coordinate in the upper left corner of the image.
+        In FITS and Fortran standards, this is 1.
+        In Numpy and C standards this is 0.
+        (from astropy.wcs)
+
+    Raises
+    ------
+    AttributeError
+        This object does not have a wcs set up
+    ValueError
+        dx and dy are 0, or dec is too close to pole
+
+    Returns
+    -------
+    rotation_angle : float
+        Rotation angle from pixel coords to world coords in radians
+
+    """
+
+    # Correct for offset if applicable
+    if image.offset is not None:
+        x = x + image.offset[0]
+        y = y + image.offset[1]
+
+    if (dx == 0) and (dy == 0):
+        raise ValueError("Differentials dx and dy must not both be zero.")
+
+    # We'll calculate the transformation empirically by using small steps
+    # in x and y
+    ra_0, dec_0 = image.pix2world(x, y, origin = origin)
+    ra_1, dec_1 = image.pix2world(x + dx, y + dy, origin = origin)
+
+    cos_dec = np.cos(dec_0 * np.pi / 180)
+
+    if cos_dec <= 0.01:
+        raise ValueError("Dec too close to pole for accurate calculation.")
+
+    dra = -(ra_1 - ra_0)
+    ddec = (dec_1 - dec_0)
+
+    x_y_angle = np.arctan2(dx, dy)
+    ra_dec_angle = np.arctan2(dra * cos_dec, ddec)
+
+    rotation_angle = ra_dec_angle - x_y_angle
+
+    return rotation_angle
+
+
+def estimate_world2pix_rotation_angle(image: SHEImage,
+                                      ra: float,
+                                      dec: float,
+                                      dra: float = 0.01 / 3600,
+                                      ddec: float = 0.01 / 3600,
+                                      origin: {0, 1} = 0) -> float:
+    """Gets the local rotation angle between world (-ra/dec) and pixel coordinates at the specified location.
+    This function is used to test the `get_world2pix_rotation` method of the `SHEImage` class for validity.
+
+    Parameters
+    ----------
+    image : SHEImage
+        The image object to use.
+    ra : float
+        Right Ascension (RA) world coordinate in degrees
+    dec : float
+        Declination (Dec) world coordinate in degrees
+    dra : float, default=0.01/3600
+        Differential ra step in degrees to use in calculating transformation matrix. Note: dra and ddec are
+        required here since, due to distortion in the transformation, we can't assume the rotation angle will be
+        independent of them.
+    ddec : float, default=0.01/3600
+        idem for dec
+    origin : {0,1}
+        Coordinate in the upper left corner of the image.
+        In FITS and Fortran standards, this is 1.
+        In Numpy and C standards this is 0.
+        (from astropy.wcs)
+
+
+
+    Raises
+    ------
+    AttributeError
+        This object does not have a wcs set up
+    ValueError
+        dra and ddec are 0, or dec is too close to pole
+
+    Returns
+    -------
+    rotation_angle : float
+        Rotation angle from world coords to pixel coords in radians
+
+    """
+
+    if (dra == 0) and (ddec == 0):
+        raise ValueError("Differentials dx and dy must not both be zero.")
+
+    cos_dec = np.cos(dec * np.pi / 180)
+
+    if cos_dec <= 0.01:
+        raise ValueError("Dec too close to pole for accurate calculation.")
+
+    # We'll calculate the transformation empirically by using small steps in x and y
+    x_0, y_0 = image.world2pix(ra, dec, origin = origin)
+    x_1, y_1 = image.world2pix(ra - dra, dec + ddec, origin = origin)
+
+    dx = (x_1 - x_0)
+    dy = (y_1 - y_0)
+
+    x_y_angle = np.arctan2(dx, dy)
+    ra_dec_angle = np.arctan2(dra * cos_dec, ddec)
+
+    rotation_angle = x_y_angle - ra_dec_angle
+
+    return rotation_angle
 
 
 class TestSheImage(SheTestCase):
@@ -655,16 +794,23 @@ class TestSheImage(SheTestCase):
                            (-0.1, -0.1),
                            (0.0, -0.1),
                            (0.1, -0.1)):
-                pix2world_angle = self.img.estimate_pix2world_rotation_angle(x, y, dx = dx, dy = dy, origin = 1)
+                pix2world_angle = estimate_pix2world_rotation_angle(self.img,
+                                                                    x = x,
+                                                                    y = y,
+                                                                    dx = dx,
+                                                                    dy = dy,
+                                                                    origin = 1)
                 if pix2world_angle < 0:
                     pix2world_angle += 2 * np.pi
                 elif pix2world_angle > 2 * np.pi:
                     pix2world_angle -= 2 * np.pi
 
-                world2pix_angle = self.img.estimate_world2pix_rotation_angle(ra, dec,
-                                                                             dra = dx / 3600,
-                                                                             ddec = dy / 3600,
-                                                                             origin = 1)
+                world2pix_angle = estimate_world2pix_rotation_angle(self.img,
+                                                                    ra = ra,
+                                                                    dec = dec,
+                                                                    dra = dx / 3600,
+                                                                    ddec = dy / 3600,
+                                                                    origin = 1)
                 if world2pix_angle < 0:
                     world2pix_angle += 2 * np.pi
                 elif world2pix_angle > 2 * np.pi:

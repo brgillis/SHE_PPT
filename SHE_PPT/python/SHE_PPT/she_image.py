@@ -1847,7 +1847,10 @@ class SHEImage:
         return local_wcs.inverse().getDecomposition()
 
     def estimate_pix2world_rotation_angle(self, x, y, dx, dy, origin = 0):
-        """Estimates the local rotation angle between pixel and world (-ra/dec) coordinates at the specified location.
+        """Note: To be deprecated. To get rotation matrix, please use `get_pix2world_rotation`, and to get
+        the rotation angle, please use `get_pix2world_decomposition`.
+
+        Estimates the local rotation angle between pixel and world (-ra/dec) coordinates at the specified location.
         Note that due to distortion in the transformation, this method is inaccurate and depends on the choice of dx
         and dy; get_pix2world_rotation should be used instead to provide the rotation matrix. This method is retained
         to aid testing of that method.
@@ -1859,9 +1862,9 @@ class SHEImage:
             we can't assume the rotation angle will be independent of them.
         y : float
             idem for y
-        dx : float
+        dx : float, default=0.01/3600
             Differential x step to use in calculating transformation matrix
-        dy : float
+        dy : float, default=0.01/3600
             idem for y
         origin : {0,1}
             Coordinate in the upper left corner of the image.
@@ -1917,7 +1920,10 @@ class SHEImage:
                                           dra: float = 0.01 / 3600,
                                           ddec: float = 0.01 / 3600,
                                           origin: {0, 1} = 0) -> float:
-        """Gets the local rotation angle between world (-ra/dec) and pixel coordinates at the specified location.
+        """Note: To be deprecated. To get rotation matrix, please use `get_world2pix_rotation`, and to get
+        the rotation angle, please use `get_world2pix_decomposition`.
+
+        Gets the local rotation angle between world (-ra/dec) and pixel coordinates at the specified location.
         Note that due to distortion in the transformation, this method is inaccurate and depends on the choice of dra
         and ddec; get_world2pix_rotation should be used instead to provide the rotation matrix. This method is retained
         to aid testing of that method.
@@ -1926,9 +1932,9 @@ class SHEImage:
         ----------
         ra : float
             Right Ascension (RA) world coordinate in degrees
-        dec : float
+        dec : float, default=0.01/3600
             Declination (Dec) world coordinate in degrees
-        dra : float
+        dra : float, default=0.01/3600
             Differential ra step in degrees to use in calculating transformation matrix. Note: dra and ddec are
             required here since, due to distortion in the transformation, we can't assume the rotation angle will be
             independent of them.
