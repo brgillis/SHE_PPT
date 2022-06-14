@@ -289,8 +289,8 @@ class TestSheImage(SheTestCase):
 
         img_copy = deepcopy(self.img)
 
-        # ValueError if setting to an improper type
-        with pytest.raises(ValueError):
+        # TypeError if setting to an improper type
+        with pytest.raises(TypeError):
             img_copy.header = {"foo": "bar"}
 
         # Check that GalSim WCS, based on this header
@@ -301,6 +301,30 @@ class TestSheImage(SheTestCase):
         del img_copy.wcs
         assert img_copy.header is None
         assert img_copy.wcs is None
+
+        # GalSim WCS should also be deleted now
+        with pytest.raises(ValueError):
+            _ = img_copy.galsim_wcs
+
+        # Now do some tests of the GalSim WCS
+        # Start with a fresh copy of the image
+        img_copy = deepcopy(self.img)
+
+        # TypeError if setting to an improper type
+        with pytest.raises(TypeError):
+            img_copy.galsim_wcs = img_copy.wcs
+
+        # Test deletion of the GalSim WCS
+
+        # Can recreate if wcs still exists
+        del img_copy.galsim_wcs
+        del img_copy.header
+        assert img_copy.galsim_wcs is not None
+
+        # Can't recreate without wcs
+        del img_copy.wcs
+        del img_copy.header
+        del img_copy.galsim_wcs
         with pytest.raises(ValueError):
             _ = img_copy.galsim_wcs
 

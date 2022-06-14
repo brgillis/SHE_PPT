@@ -512,7 +512,7 @@ class SHEImage:
         # Not very pythonic, but to avoid misuse, which could lead to problems when writing to
         # FITS files.
         if not (header is None or isinstance(header, Header)):
-            raise ValueError("The header must be an astropy.io.fits.Header instance")
+            raise TypeError("The header must be an astropy.io.fits.Header instance")
 
         self._header = header
 
