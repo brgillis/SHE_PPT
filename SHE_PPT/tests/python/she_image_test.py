@@ -37,7 +37,8 @@ from astropy.wcs import WCS
 from SHE_PPT import file_io, mdb
 from SHE_PPT.constants.misc import SEGMAP_UNASSIGNED_VALUE
 from SHE_PPT.file_io import get_qualified_filename
-from SHE_PPT.she_image import (D_ATTR_CONVERSIONS, D_IMAGE_DTYPES, NOISEMAP_DTYPE, PRIMARY_TAG, SEG_DTYPE, SHEImage,
+from SHE_PPT.she_image import (DETECTOR_SHAPE, D_ATTR_CONVERSIONS, D_IMAGE_DTYPES, NOISEMAP_DTYPE, PRIMARY_TAG,
+                               SEG_DTYPE, SHEImage,
                                WGT_DTYPE, )
 from SHE_PPT.testing.utility import SheTestCase
 
@@ -292,6 +293,8 @@ class TestSheImage(SheTestCase):
         # TypeError if setting to an improper type
         with pytest.raises(TypeError):
             img_copy.header = {"foo": "bar"}
+        with pytest.raises(TypeError):
+            img_copy.wcs = img_copy.galsim_wcs
 
         # Check that GalSim WCS, based on this header
         assert img_copy.galsim_wcs is not None
@@ -479,7 +482,12 @@ class TestSheImage(SheTestCase):
         with pytest.raises(ValueError):
             img.shape = (self.w, self.h)
         del img.data
-        img.shape = (self.w, self.h)
+        img.shape = (self.w, self.h + 1)
+        assert np.all(img.shape == (self.w, self.h + 1))
+
+        # Test deletion
+        del img.shape
+        assert np.all(img.shape == DETECTOR_SHAPE)
 
     def test_fits_read_write(self):
         """We save the small SHEImage, read it again, and compare both versions.
