@@ -308,13 +308,9 @@ class SHEImage:
             raise ValueError("Data array of a SHEImage must have 2 dimensions")
 
         # Also test that the shape isn't modified by the setter
-        try:
-            existing_shape: Optional[np.ndarray[int]] = self.shape
-        except AttributeError:
-            existing_shape = None
 
-        if self._images_loaded and existing_shape is not None and np.any(data.shape != existing_shape):
-            raise ValueError(f"Shape of a SHEImage can not be modified. Current is {existing_shape}, new data is "
+        if self._images_loaded and self.shape is not None and np.any(data.shape != self.shape):
+            raise ValueError(f"Shape of a SHEImage can not be modified. Current is {self.shape}, new data is "
                              f"{data.shape}.")
 
         # Finally, perform the attribution
@@ -325,7 +321,7 @@ class SHEImage:
     def data(self) -> None:
         """Simple deleter for the `data` attribute.
         """
-        del self._data
+        self._data = None
 
     @property
     def mask(self) -> Optional[np.ndarray[np.int32]]:
@@ -358,7 +354,7 @@ class SHEImage:
     def mask(self) -> None:
         """Simple deleter for the `mask` attribute.
         """
-        del self._mask
+        self._mask = None
 
     @property
     def boolmask(self) -> np.ndarray[np.bool]:
@@ -402,7 +398,7 @@ class SHEImage:
     def noisemap(self):
         """Simple deleter for the `noisemap` attribute.
         """
-        del self._noisemap
+        self._noisemap = None
 
     @property
     def segmentation_map(self) -> Optional[np.ndarray[np.int64]]:
@@ -427,7 +423,9 @@ class SHEImage:
 
     @segmentation_map.deleter
     def segmentation_map(self) -> None:
-        del self._segmentation_map
+        """Simple deleter for the `segmentation_map` attribute.
+        """
+        self._segmentation_map = None
 
     @property
     def background_map(self) -> Optional[np.ndarray[np.float32]]:
@@ -457,7 +455,7 @@ class SHEImage:
     def background_map(self) -> None:
         """Simple deleter for the `background_map` attribute.
         """
-        del self._background_map
+        self._background_map = None
 
     @property
     def weight_map(self) -> Optional[np.ndarray[np.float32]]:
@@ -487,7 +485,7 @@ class SHEImage:
     def weight_map(self):
         """Simple deleter for the `weight_map` attribute.
         """
-        del self._weight_map
+        self._weight_map = None
 
     @property
     def header(self) -> Optional[Header]:
@@ -522,7 +520,7 @@ class SHEImage:
     def header(self):
         """Simple deleter for the `header` attribute.
         """
-        del self._header
+        self._header = None
         self._galsim_wcs = None
 
     @property
@@ -587,7 +585,7 @@ class SHEImage:
     def wcs(self) -> None:
         """Simple deleter for the `wcs` attribute.
         """
-        del self._wcs
+        self._wcs = None
         self._galsim_wcs = None
 
     @property
@@ -630,7 +628,7 @@ class SHEImage:
     def galsim_wcs(self):
         """Simple deleter for the `galsim_wcs` attribute.
         """
-        del self._galsim_wcs
+        self._galsim_wcs = None
 
     @property
     def shape(self) -> np.ndarray[int]:
