@@ -2041,19 +2041,15 @@ class SHEImage:
 
         # now check if these pixel coordinates are in the image, and construct a list of these "good" objects'
         # indices and x,y positions
-        l_indices_confirmed = []
-        l_x_confirmed = []
-        l_y_confirmed = []
-        for i in range(len(x_candidates)):
-            x, y = x_candidates[i], y_candidates[i]
 
-            if 1. - x_buffer <= x <= nx + x_buffer and 1. - y_buffer <= y <= ny + y_buffer:
+        l_in_bounds: np.ndarray[bool] = ((1. - x_buffer <= x_candidates <= nx + x_buffer) &
+                                         (1. - y_buffer <= y_candidates <= ny + y_buffer))
 
-                l_indices_confirmed.append(l_candidate_indices[i])
-                l_x_confirmed.append(x)
-                l_y_confirmed.append(y)
+        l_indices_confirmed = np.where(l_in_bounds)[0]
+        l_x_confirmed = x_candidates[l_in_bounds]
+        l_y_confirmed = y_candidates[l_in_bounds]
 
-        return np.asarray(l_indices_confirmed), np.asarray(l_x_confirmed), np.asarray(l_y_confirmed)
+        return l_indices_confirmed, l_x_confirmed, l_y_confirmed
 
     # Protected methods
 
