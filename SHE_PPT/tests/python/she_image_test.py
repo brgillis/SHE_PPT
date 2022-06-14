@@ -976,20 +976,36 @@ class TestSheImage(SheTestCase):
                  l_x_confirmed,
                  l_y_confirmed) = self.img.get_objects_in_detector(sc,
                                                                    x_buffer = x_buffer,
-                                                                   y_buffer = y_buffer)
+                                                                   y_buffer = y_buffer,
+                                                                   origin = 0)
 
                 # Do a manual check of in-bounds-ness, which we'll use for comparison
                 l_in_bounds: np.ndarray[bool] = np.logical_and.reduce(((-x_buffer <= l_x),
                                                                        (l_x <= self.w - 1 + x_buffer),
                                                                        (-y_buffer <= l_y),
                                                                        (l_y <= self.h - 1 + y_buffer)))
-                l_test_indices = np.where(l_in_bounds)[0]
 
                 # Check that the results are as expected
                 buffer_str = f"{x_buffer=}, {y_buffer=}"
-                assert np.all(l_indices_confirmed == l_test_indices), buffer_str
+                assert np.all(l_indices_confirmed == np.where(l_in_bounds)[0]), buffer_str
                 assert np.allclose(l_x_confirmed, l_x[l_in_bounds]), buffer_str
                 assert np.allclose(l_y_confirmed, l_y[l_in_bounds]), buffer_str
+
+        # Test the 'origin' kwarg behaves as expected by setting it to 1, and checking that the result x and y
+        # increase by 1
+        (l_indices_confirmed,
+         l_x_confirmed,
+         l_y_confirmed) = self.img.get_objects_in_detector(sc,
+                                                           x_buffer = 0,
+                                                           y_buffer = 0,
+                                                           origin = 1)
+        l_in_bounds: np.ndarray[bool] = np.logical_and.reduce(((0 <= l_x),
+                                                               (l_x <= self.w - 1),
+                                                               (0 <= l_y),
+                                                               (l_y <= self.h - 1)))
+        assert np.all(l_indices_confirmed == np.where(l_in_bounds)[0])
+        assert np.allclose(l_x_confirmed, l_x[l_in_bounds] + 1)
+        assert np.allclose(l_y_confirmed, l_y[l_in_bounds] + 1)
 
     def test_equality(self):
         """Test of the custom __eq__ method for equality comparisons.
