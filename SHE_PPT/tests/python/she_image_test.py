@@ -250,6 +250,31 @@ class TestSheImage(SheTestCase):
         assert self.img.background_map is None
         assert self.img.weight_map is None
 
+    def test_data_property(self):
+        """Test that the `data` property behaves as expected.
+        """
+
+        img_copy = deepcopy(self.img)
+
+        # ValueError if setting to an array of improper dimensions
+        with pytest.raises(ValueError):
+            img_copy.data = np.zeros((self.w,))
+        with pytest.raises(ValueError):
+            img_copy.data = np.zeros((self.w, self.h, self.w))
+
+        # ValueError if try to modify shape
+        with pytest.raises(ValueError):
+            img_copy.data = np.zeros((self.w, self.h + 1))
+
+        # Test we can modify it
+        img_copy.data = np.zeros((self.w, self.h))
+        img_copy.data += 1
+        assert np.allclose(img_copy.data, np.ones((self.w, self.h)))
+
+        # Test we can delete it
+        del img_copy.data
+        assert img_copy.data is None
+
     def test_mask(self):
         """Tests some mask functionality.
         """
