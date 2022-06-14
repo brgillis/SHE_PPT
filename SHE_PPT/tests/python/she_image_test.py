@@ -34,11 +34,11 @@ import pytest
 from astropy.coordinates import SkyCoord
 from astropy.wcs import WCS
 
-import SHE_PPT.she_image
 from SHE_PPT import file_io, mdb
 from SHE_PPT.constants.misc import SEGMAP_UNASSIGNED_VALUE
 from SHE_PPT.file_io import get_qualified_filename
-from SHE_PPT.she_image import NOISEMAP_DTYPE, PRIMARY_TAG, SEG_DTYPE, SHEImage, WGT_DTYPE
+from SHE_PPT.she_image import (D_ATTR_CONVERSIONS, D_IMAGE_DTYPES, NOISEMAP_DTYPE, PRIMARY_TAG, SEG_DTYPE, SHEImage,
+                               WGT_DTYPE, )
 from SHE_PPT.testing.utility import SheTestCase
 
 logging.basicConfig(level = logging.DEBUG)
@@ -213,7 +213,7 @@ class TestSheImage(SheTestCase):
         self.w = 50
         self.h = 20
         array = np.random.randn(self.w * self.h).reshape((self.w, self.h))
-        self.img = SHE_PPT.she_image.SHEImage(array, header = header, wcs = self.wcs)
+        self.img = SHEImage(array, header = header, wcs = self.wcs)
 
         # Set up qualified filenames to test
         self.qualified_test_filename = get_qualified_filename(self.TEST_FILENAME, self.workdir)
@@ -251,7 +251,7 @@ class TestSheImage(SheTestCase):
         assert self.img.weight_map is None
 
     def test_data_property(self):
-        """Test that the `data` property behaves as expected.
+        """Test that the `data` property behaves as expected, for its unique behaviours
         """
 
         img_copy = deepcopy(self.img)
@@ -266,14 +266,22 @@ class TestSheImage(SheTestCase):
         with pytest.raises(ValueError):
             img_copy.data = np.zeros((self.w, self.h + 1))
 
-        # Test we can modify it
-        img_copy.data = np.zeros((self.w, self.h))
-        img_copy.data += 1
-        assert np.allclose(img_copy.data, np.ones((self.w, self.h)))
+    def test_attr_properties(self):
+        """Test that the various `attr` properties behave as expected.
+        """
 
-        # Test we can delete it
-        del img_copy.data
-        assert img_copy.data is None
+        for attr_name, attr in D_ATTR_CONVERSIONS.items():
+
+            img_copy = deepcopy(self.img)
+
+            setattr(img_copy, attr, np.zeros((self.w, self.h), dtype = D_IMAGE_DTYPES[attr_name]))
+            a = getattr(img_copy, attr)
+            a += 1
+            assert np.allclose(getattr(img_copy, attr), np.ones((self.w, self.h)))
+
+            # Test we can delete it
+            delattr(img_copy, attr)
+            assert getattr(img_copy, attr) is None
 
     def test_mask(self):
         """Tests some mask functionality.
@@ -433,7 +441,7 @@ class TestSheImage(SheTestCase):
 
         img.write_to_fits(self.qualified_test_filename, overwrite = False)
 
-        read_img = SHE_PPT.she_image.SHEImage.read_from_fits(self.qualified_test_filename)
+        read_img = SHEImage.read_from_fits(self.qualified_test_filename)
 
         assert np.allclose(img.data, read_img.data)
         assert np.allclose(img.mask, read_img.mask)
@@ -468,7 +476,7 @@ class TestSheImage(SheTestCase):
         """At least a small test of reading from individual FITS files.
         """
 
-        img = SHE_PPT.she_image.SHEImage(np.random.randn(100).reshape(10, 10) + 200.0)
+        img = SHEImage(np.random.randn(100).reshape(10, 10) + 200.0)
         img.mask = np.ones_like(img.data, dtype = np.int32)
         img.noisemap = 1.0 + 0.01 * np.random.randn(100).reshape(10, 10)
         img.write_to_fits(self.l_qualified_test_filenames[0])
@@ -482,24 +490,24 @@ class TestSheImage(SheTestCase):
         img.segmentation_map = 4 * np.ones_like(img.data, dtype = np.int32)
         img.write_to_fits(self.l_qualified_test_filenames[3])
 
-        rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.l_qualified_test_filenames[0])
+        rimg = SHEImage.read_from_fits(self.l_qualified_test_filenames[0])
         assert rimg.mask[0, 0] == 1
 
-        rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.l_qualified_test_filenames[0],
-                                                         mask_filepath = self.l_qualified_test_filenames[1],
-                                                         noisemap_filepath = self.l_qualified_test_filenames[2],
-                                                         segmentation_map_filepath = self.l_qualified_test_filenames[3])
+        rimg = SHEImage.read_from_fits(self.l_qualified_test_filenames[0],
+                                       mask_filepath = self.l_qualified_test_filenames[1],
+                                       noisemap_filepath = self.l_qualified_test_filenames[2],
+                                       segmentation_map_filepath = self.l_qualified_test_filenames[3])
         assert rimg.noisemap[0, 0] > 500.0
         assert rimg.segmentation_map[0, 0] == 4
 
         # As the primary HDU of mask_filepath is not a np.uint8, this will fail:
         with pytest.raises(TypeError):
-            _ = SHE_PPT.she_image.SHEImage.read_from_fits(self.l_qualified_test_filenames[0],
-                                                          mask_filepath = self.l_qualified_test_filenames[1],
-                                                          noisemap_filepath = self.l_qualified_test_filenames[2],
-                                                          segmentation_map_filepath = self.l_qualified_test_filenames[
-                                                              3],
-                                                          mask_ext = PRIMARY_TAG)
+            _ = SHEImage.read_from_fits(self.l_qualified_test_filenames[0],
+                                        mask_filepath = self.l_qualified_test_filenames[1],
+                                        noisemap_filepath = self.l_qualified_test_filenames[2],
+                                        segmentation_map_filepath = self.l_qualified_test_filenames[
+                                            3],
+                                        mask_ext = PRIMARY_TAG)
 
     def test_extracted_stamp_is_view(self):
         """Checks that the extracted stamp is a view, not a copy.
@@ -535,7 +543,7 @@ class TestSheImage(SheTestCase):
         array = np.random.randn(size ** 2).reshape((size, size))
         array[0:32, 0:32] = 1.0e15  # bottom-left stamp is high and constant
 
-        img = SHE_PPT.she_image.SHEImage(array)
+        img = SHEImage(array)
 
         img.add_default_mask()
         img.mask[32:64, :] = True
@@ -570,7 +578,7 @@ class TestSheImage(SheTestCase):
         assert len(list(eimg.header.keys())) == 1  # The "foo"
 
         # Test setting or not setting default properties for an extracted stamp
-        simple_img = SHE_PPT.she_image.SHEImage(array)
+        simple_img = SHEImage(array)
 
         simple_stamp = simple_img.extract_stamp(16.4, 15.6, 32)
 
@@ -597,7 +605,7 @@ class TestSheImage(SheTestCase):
         """
 
         array = np.array([[0, 1, 2, 3, 4], [10, 11, 12, 13, 14], [20, 21, 22, 23, 24], [30, 31, 32, 33, 34]])
-        img = SHE_PPT.she_image.SHEImage(array)
+        img = SHEImage(array)
         # This image looks like (values give xy coords...)
         # 04 14 24 34
         # 03 13 23 33
@@ -638,7 +646,7 @@ class TestSheImage(SheTestCase):
 
         size = 64
         array = np.random.randn(size ** 2).reshape((size, size))
-        img = SHE_PPT.she_image.SHEImage(array)
+        img = SHEImage(array)
 
         # Testing expected behavior of stamp extraction
         stamp = img.extract_stamp(2.5, 3.5, 1)
@@ -647,7 +655,7 @@ class TestSheImage(SheTestCase):
 
         # Does it survive FITS io?
         stamp.write_to_fits(self.qualified_test_filename, overwrite = True)
-        rstamp = SHE_PPT.she_image.SHEImage.read_from_fits(self.qualified_test_filename)
+        rstamp = SHEImage.read_from_fits(self.qualified_test_filename)
         assert rstamp.offset[0] == 2
         assert rstamp.offset[1] == 3
 
@@ -667,9 +675,9 @@ class TestSheImage(SheTestCase):
                            (SEGMAP_UNASSIGNED_VALUE, SEGMAP_UNASSIGNED_VALUE, SEGMAP_UNASSIGNED_VALUE),
                            (2, 2, 2)),
                           dtype = np.int32)
-        img = SHE_PPT.she_image.SHEImage(data = np.zeros_like(mask),
-                                         mask = mask,
-                                         segmentation_map = segmap)
+        img = SHEImage(data = np.zeros_like(mask),
+                       mask = mask,
+                       segmentation_map = segmap)
 
         # Test for various possible cases
 
