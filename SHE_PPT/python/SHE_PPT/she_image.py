@@ -187,6 +187,8 @@ class SHEImage:
     _wcs = None
     _shape: Optional[np.ndarray[int]] = None
     _galsim_wcs = None
+    _det_ix: Optional[int] = None
+    _det_iy: Optional[int] = None
 
     # Parent references
     _parent_frame_stack = None
