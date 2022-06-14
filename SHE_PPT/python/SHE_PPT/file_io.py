@@ -2776,7 +2776,7 @@ class MultiFileLoader(Generic[T]):
             self.file_loader_type = file_loader_type_in_list
 
         elif l_filenames:
-            if not file_loader_type:
+            if not self.file_loader_type:
                 raise ValueError("`file_loader_type` must be specified when initializing a `MultiFileLoader` object "
                                  f"with a list of filenames: {l_filenames=}, {file_loader_type=}")
             self.l_filenames = l_filenames
