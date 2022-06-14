@@ -2037,19 +2037,18 @@ class SHEImage:
 
         # For these candidates, get their sky coords and convert them into pixel coordinates
         sc_candidate_coords = objects_coords[l_candidate_indices]
-        x_candidates, y_candidates = self.world2pix(*sc_candidate_coords, origin = 1)
+
+        l_x_candidates: np.ndarray[float]
+        l_y_candidates: np.ndarray[float]
+        l_x_candidates, l_y_candidates = self.world2pix(*sc_candidate_coords, origin = 1)
 
         # now check if these pixel coordinates are in the image, and construct a list of these "good" objects'
         # indices and x,y positions
 
-        l_in_bounds: np.ndarray[bool] = ((1. - x_buffer <= x_candidates <= nx + x_buffer) &
-                                         (1. - y_buffer <= y_candidates <= ny + y_buffer))
+        l_in_bounds: np.ndarray[bool] = ((1. - x_buffer <= l_x_candidates <= nx + x_buffer) &
+                                         (1. - y_buffer <= l_y_candidates <= ny + y_buffer))
 
-        l_indices_confirmed = np.where(l_in_bounds)[0]
-        l_x_confirmed = x_candidates[l_in_bounds]
-        l_y_confirmed = y_candidates[l_in_bounds]
-
-        return l_indices_confirmed, l_x_confirmed, l_y_confirmed
+        return np.where(l_in_bounds)[0], l_x_candidates[l_in_bounds], l_y_candidates[l_in_bounds]
 
     # Protected methods
 
