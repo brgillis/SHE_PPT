@@ -33,6 +33,7 @@ import astropy.wcs
 import fitsio
 import galsim
 import numpy as np
+from astropy.coordinates import SkyCoord
 from astropy.io.fits import Header
 from coord import Angle
 from galsim import Shear
@@ -1984,9 +1985,32 @@ class SHEImage:
 
         return rotation_angle
 
-    def get_objects_in_detector(self, objects_coords, x_buffer = 0., y_buffer = 0.):
+    def get_objects_in_detector(self,
+                                objects_coords: SkyCoord,
+                                x_buffer: float = 0.,
+                                y_buffer: float = 0.):
         """Returns an array containing the indices of the objects in the detector, and arrays of the x and y pixel
-        coordinates for these objects"""
+        coordinates for these objects.
+
+        Parameters
+        ----------
+        objects_coords : SkyCoord
+            The coordinates of the objects to be checked.
+        x_buffer : float, default=0.
+            The x size of the buffer outside of the image to also allow objects to be in. Positive values effectively
+            expand the region, negative values contract it.
+        y_buffer : float, default=0.
+            idem for y
+
+        Returns
+        -------
+        indices_confirmed : np.ndarray[int]
+            The indices of the objects that are in the detector.
+        x_confirmed : np.ndarray[float]
+            The x pixel coordinates of the objects that are in the detector.
+        y_confirmed : np.ndarray[float]
+            idem for y
+        """
 
         wcs = self.wcs
 
