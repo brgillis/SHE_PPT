@@ -971,13 +971,24 @@ class TestSheImage(SheTestCase):
         sc = SkyCoord(l_ra, l_dec, unit = 'deg')
 
         for x_buffer in (0, 5, -5):
-            (l_indices_confirmed,
-             l_x_confirmed,
-             l_y_confirmed) = self.img.get_objects_in_detector(sc,
-                                                               x_buffer = x_buffer,
-                                                               y_buffer = 0)
+            for y_buffer in (0, 5, -5):
+                (l_indices_confirmed,
+                 l_x_confirmed,
+                 l_y_confirmed) = self.img.get_objects_in_detector(sc,
+                                                                   x_buffer = x_buffer,
+                                                                   y_buffer = 0)
 
-        pass
+                # Do a manual check of in-bounds-ness, which we'll use for comparison
+                l_in_bounds: np.ndarray[bool] = np.logical_and.reduce(((-x_buffer <= l_x),
+                                                                       (l_x <= self.w + x_buffer),
+                                                                       (-y_buffer <= l_y),
+                                                                       (l_y <= self.h + y_buffer)))
+                l_test_indices = np.where(l_in_bounds)[0]
+
+                # Check that the results are as expected
+                assert np.all(l_indices_confirmed == l_test_indices)
+                assert np.all(l_x_confirmed == l_x[l_in_bounds])
+                assert np.all(l_y_confirmed == l_y[l_in_bounds])
 
     def test_equality(self):
         """Test of the custom __eq__ method for equality comparisons.
