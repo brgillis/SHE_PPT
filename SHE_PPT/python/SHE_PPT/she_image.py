@@ -2051,7 +2051,7 @@ class SHEImage:
                                                                (l_y_candidates <= ny + y_buffer)))
 
         # Return arrays of these "good" objects' indices and x,y positions
-        return np.where(l_in_bounds)[0], l_x_candidates[l_in_bounds], l_y_candidates[l_in_bounds]
+        return l_candidate_indices[l_in_bounds], l_x_candidates[l_in_bounds], l_y_candidates[l_in_bounds]
 
     # Protected methods
 
