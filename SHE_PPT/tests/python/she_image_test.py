@@ -283,6 +283,27 @@ class TestSheImage(SheTestCase):
             delattr(img_copy, attr)
             assert getattr(img_copy, attr) is None
 
+    def test_header_wcs_properties(self):
+        """Test that the `header`, `wcs`, and `galsim_wcs` properties behave as expected.
+        """
+
+        img_copy = deepcopy(self.img)
+
+        # ValueError if setting to an improper type
+        with pytest.raises(ValueError):
+            img_copy.header = {"foo": "bar"}
+
+        # Check that GalSim WCS, based on this header
+        assert img_copy.galsim_wcs is not None
+
+        # Check that deleting the header works as expected
+        del img_copy.header
+        del img_copy.wcs
+        assert img_copy.header is None
+        assert img_copy.wcs is None
+        with pytest.raises(ValueError):
+            _ = img_copy.galsim_wcs
+
     def test_mask(self):
         """Tests some mask functionality.
         """
