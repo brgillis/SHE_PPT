@@ -976,19 +976,20 @@ class TestSheImage(SheTestCase):
                  l_x_confirmed,
                  l_y_confirmed) = self.img.get_objects_in_detector(sc,
                                                                    x_buffer = x_buffer,
-                                                                   y_buffer = 0)
+                                                                   y_buffer = y_buffer)
 
                 # Do a manual check of in-bounds-ness, which we'll use for comparison
                 l_in_bounds: np.ndarray[bool] = np.logical_and.reduce(((-x_buffer <= l_x),
-                                                                       (l_x <= self.w + x_buffer),
+                                                                       (l_x <= self.w - 1 + x_buffer),
                                                                        (-y_buffer <= l_y),
-                                                                       (l_y <= self.h + y_buffer)))
+                                                                       (l_y <= self.h - 1 + y_buffer)))
                 l_test_indices = np.where(l_in_bounds)[0]
 
                 # Check that the results are as expected
-                assert np.all(l_indices_confirmed == l_test_indices)
-                assert np.all(l_x_confirmed == l_x[l_in_bounds])
-                assert np.all(l_y_confirmed == l_y[l_in_bounds])
+                buffer_str = f"{x_buffer=}, {y_buffer=}"
+                assert np.all(l_indices_confirmed == l_test_indices), buffer_str
+                assert np.allclose(l_x_confirmed, l_x[l_in_bounds]), buffer_str
+                assert np.allclose(l_y_confirmed, l_y[l_in_bounds]), buffer_str
 
     def test_equality(self):
         """Test of the custom __eq__ method for equality comparisons.

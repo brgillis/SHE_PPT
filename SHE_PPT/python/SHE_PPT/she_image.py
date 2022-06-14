@@ -1988,7 +1988,8 @@ class SHEImage:
     def get_objects_in_detector(self,
                                 objects_coords: SkyCoord,
                                 x_buffer: float = 0.,
-                                y_buffer: float = 0.):
+                                y_buffer: float = 0.,
+                                origin: {0, 1} = 0):
         """Returns an array containing the indices of the objects in the detector, and arrays of the x and y pixel
         coordinates for these objects.
 
@@ -2001,6 +2002,11 @@ class SHEImage:
             expand the region, negative values contract it.
         y_buffer : float, default=0.
             idem for y
+        origin : {0,1}
+            Coordinate in the upper left corner of the image.
+            In FITS and Fortran standards, this is 1.
+            In Numpy and C standards this is 0.
+            (from astropy.wcs)
 
         Returns
         -------
@@ -2041,7 +2047,7 @@ class SHEImage:
         l_y_candidates: np.ndarray[float]
         l_x_candidates, l_y_candidates = self.world2pix(ra = sc_candidate_coords.ra,
                                                         dec = sc_candidate_coords.dec,
-                                                        origin = 1)
+                                                        origin = origin)
 
         # now check if these pixel coordinates are in the image
 
