@@ -2004,11 +2004,11 @@ class SHEImage:
 
         Returns
         -------
-        indices_confirmed : np.ndarray[int]
+        l_indices_confirmed : np.ndarray[int]
             The indices of the objects that are in the detector.
-        x_confirmed : np.ndarray[float]
+        l_x_confirmed : np.ndarray[float]
             The x pixel coordinates of the objects that are in the detector.
-        y_confirmed : np.ndarray[float]
+        l_y_confirmed : np.ndarray[float]
             idem for y
         """
 
@@ -2017,43 +2017,43 @@ class SHEImage:
 
         # Get the sky coordinates of the centre pixels in the detector
         x_centre, y_centre = (nx + 1) / 2, (ny + 1) / 2
-        centre_coords = SkyCoord(self.pix2world(x_centre, y_centre, origin = 1))
+        sc_centre_coords = SkyCoord(self.pix2world(x_centre, y_centre, origin = 1))
 
         # now get the sky coords for the 4 corners of the image, using convention where first pixel is indexed as 1
-        x_corners = [1, nx, nx, 1]
-        y_corners = [1, 1, ny, ny]
-        corners_coords = SkyCoord(self.pix2world(x_corners, y_corners, origin = 1))
+        x_corners = [1 - x_buffer, nx + x_buffer, nx + x_buffer, 1 - x_buffer]
+        y_corners = [1 - y_buffer, 1 - y_buffer, ny + y_buffer, ny + y_buffer]
+        sc_corners_coords = SkyCoord(self.pix2world(x_corners, y_corners, origin = 1))
 
         # now measure the angular distance between the corners and the image centre, and get the maximum distance (
         # plus a 5% tolerance) away from the centre
-        corners_distance = corners_coords.separation(centre_coords).deg
-        max_dist = corners_distance.max() * 1.05
+        l_corners_distance: np.ndarray[float] = sc_corners_coords.separation(sc_centre_coords).deg
+        max_dist = l_corners_distance.max() * 1.05
 
         # get the distances of all objects from the centre pixel of the detector
-        all_distances = objects_coords.separation(centre_coords).deg
+        l_all_distances: np.ndarray[float] = objects_coords.separation(sc_centre_coords).deg
 
         # we consider objects only closer to the centre than max_dist as candidates for being in the image
-        candidate_indices = np.where(all_distances <= max_dist)[0]
+        l_candidate_indices: np.ndarray[int] = np.where(l_all_distances <= max_dist)[0]
 
         # For these candidates, get their sky coords and convert them into pixel coordinates
-        candidate_coords = objects_coords[candidate_indices]
-        x_candidates, y_candidates = self.world2pix(*candidate_coords, origin = 1)
+        sc_candidate_coords = objects_coords[l_candidate_indices]
+        x_candidates, y_candidates = self.world2pix(*sc_candidate_coords, origin = 1)
 
         # now check if these pixel coordinates are in the image, and construct a list of these "good" objects'
         # indices and x,y positions
-        indices_confirmed = []
-        x_confirmed = []
-        y_confirmed = []
+        l_indices_confirmed = []
+        l_x_confirmed = []
+        l_y_confirmed = []
         for i in range(len(x_candidates)):
             x, y = x_candidates[i], y_candidates[i]
 
             if 1. - x_buffer <= x <= nx + x_buffer and 1. - y_buffer <= y <= ny + y_buffer:
 
-                indices_confirmed.append(candidate_indices[i])
-                x_confirmed.append(x)
-                y_confirmed.append(y)
+                l_indices_confirmed.append(l_candidate_indices[i])
+                l_x_confirmed.append(x)
+                l_y_confirmed.append(y)
 
-        return np.asarray(indices_confirmed), np.asarray(x_confirmed), np.asarray(y_confirmed)
+        return np.asarray(l_indices_confirmed), np.asarray(l_x_confirmed), np.asarray(l_y_confirmed)
 
     # Protected methods
 
