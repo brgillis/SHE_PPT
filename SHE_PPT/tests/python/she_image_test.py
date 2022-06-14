@@ -467,6 +467,20 @@ class TestSheImage(SheTestCase):
         img.add_default_wcs(force = True)
         assert np.isclose(img.wcs.wcs.cdelt[0], 1.)
 
+    def test_shape_property(self):
+        """Test the shape property behaves as expected.
+        """
+
+        img = deepcopy(self.img)
+
+        assert img.shape == (self.w, self.h)
+
+        # Disallow setting unless images aren't loaded
+        with pytest.raises(ValueError):
+            img.shape = (self.w, self.h)
+        del img.data
+        img.shape = (self.w, self.h)
+
     def test_fits_read_write(self):
         """We save the small SHEImage, read it again, and compare both versions.
         """

@@ -322,6 +322,7 @@ class SHEImage:
         """Simple deleter for the `data` attribute.
         """
         self._data = None
+        self._images_loaded = False
 
     @property
     def mask(self) -> Optional[np.ndarray[np.int32]]:
