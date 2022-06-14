@@ -641,7 +641,7 @@ class SHEImage:
         """
         if self._shape is not None:
             return self._shape
-        elif self.data is not None:
+        if self.data is not None:
             return self.data.shape
         return DETECTOR_SHAPE
 
@@ -1162,13 +1162,6 @@ class SHEImage:
                                       (ymax < 0) or (ymin >= self.shape[1])):
             return None
 
-        # Get the header we'll use for the new stamp
-        new_header = self.header if keep_header else None
-
-        # And defining the offset property of the stamp, taking into account
-        # any current offset.
-        new_offset = self.offset + np.array([xmin, ymin])
-
         # If these bounds are fully within the image range, the extraction is
         # easy.
         if xmin >= 0 and xmax < self.shape[0] and ymin >= 0 and ymax < self.shape[1]:
@@ -1190,8 +1183,8 @@ class SHEImage:
                              segmentation_map = d_ex_stamp_attrs[SEGMENTATION_TAG],
                              background_map = d_ex_stamp_attrs[BACKGROUND_TAG],
                              weight_map = d_ex_stamp_attrs[WEIGHT_TAG],
-                             header = new_header,
-                             offset = new_offset,
+                             header = self.header if keep_header else None,
+                             offset = self.offset + np.array([xmin, ymin]),
                              wcs = self.wcs,
                              parent_frame = self.parent_frame,
                              parent_frame_stack = self.parent_frame_stack,
@@ -2118,7 +2111,7 @@ class SHEImage:
                     if neq(self.wcs.to_header(), rhs.wcs.to_header()):
                         res = False
                         logger.debug(f"In SHEImage.__eq__, WCS is not equal. Values were: %s, %s",
-                                     str(self.wcs.to_header()), str(rhs.wcs.to_header()))
+                                     self.wcs.to_header(), rhs.wcs.to_header())
                 except AttributeError:
                     # In this case, only one is None, so return False
                     res = False
@@ -2199,7 +2192,7 @@ class SHEImage:
         """
 
         # The kwarg could be called either "filename" or "filepath", so try both
-        for kwarg_tail in ("filename", "filepath"):
+        for kwarg_tail in "filename", "filepath":
             filename = SHEImage.__get_kwarg(attr_name = attr_name,
                                             kwarg_tail = kwarg_tail,
                                             kwargs = kwargs,
@@ -2216,7 +2209,7 @@ class SHEImage:
         """
 
         # The kwarg could be called either "hdu" or "ext", so try both
-        for kwarg_tail in ("hdu", "ext"):
+        for kwarg_tail in "hdu", "ext":
             filename = SHEImage.__get_kwarg(attr_name = attr_name,
                                             kwarg_tail = kwarg_tail,
                                             kwargs = kwargs,
@@ -2447,9 +2440,13 @@ class SHEImage:
 
 @run_only_once
 def warn_mdb_not_loaded():
+    """Only once, log a warning that the MDB hasn't been loaded and default values will be used.
+    """
     logger.warning("MDB is not loaded, so default values will be assumed in calculating a noisemap.")
 
 
 @run_only_once
 def warn_galsim_wcs_bug_workaround():
+    """Only once, log a warning that the GalSim WCS bug workaround is being used.
+    """
     logger.warning("Hit bug with GalSim WCS. Applying workaround.")
