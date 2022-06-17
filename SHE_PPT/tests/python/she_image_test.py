@@ -439,7 +439,8 @@ class TestSheImage(SheTestCase):
         img.header["INSTR"] = "DMK21"
         img.header.set("tel", "14-inch Martini Dobson")
 
-        assert img.header["TEMP1"] > 20.0  # capitalization does not matter
+        # Confirm capitalization does not matter
+        assert img.header["TEMP1"] > 20.0
         assert len(img.header["INSTR"]) == 5
 
         # Check that non-forcibly adding a default header doesn't affect the existing header
@@ -500,7 +501,8 @@ class TestSheImage(SheTestCase):
         img.add_default_mask()
         img.mask[0:10, :] = 1
         img.mask[10:20, :] = 255
-        img.mask[30:40, :] = -10456.34  # will get converted and should not prevent the test from working
+        # The below will get converted and should not prevent the test from working
+        img.mask[30:40, :] = -10456.34
         img.add_default_segmentation_map()
         img.segmentation_map[10:20, 20:30] = 1
 
@@ -580,8 +582,10 @@ class TestSheImage(SheTestCase):
         """Checks that the extracted stamp is a view, not a copy.
         """
 
-        stamp = self.img.extract_stamp(10.5, 10.5, 3)  # central pixel of stamp is index [10, 10] of the big array
-        stamp.data[1, 1] = -50.0  # the central pixel, modified both here and in img
+        # central pixel of stamp is index [10, 10] of the big array
+        stamp = self.img.extract_stamp(10.5, 10.5, 3)
+        # the central pixel, modified both here and in img
+        stamp.data[1, 1] = -50.0
 
         assert self.img.data[10, 10] == stamp.data[1, 1]
 
@@ -627,17 +631,19 @@ class TestSheImage(SheTestCase):
         # Testing extracted shape and extracted mask
         extracted_img = img.extract_stamp(16.4, 15.6, 32)
         assert extracted_img.shape == (32, 32)
-        assert np.sum(extracted_img.mask) == 0  # Nothing should be masked
-        assert np.sum(extracted_img.segmentation_map) == 1 * np.product(
-            extracted_img.shape)  # Should all belong to object 1
+        # Nothing should be masked
+        assert np.sum(extracted_img.mask) == 0
+        # Should all belong to object 1
+        assert np.sum(extracted_img.segmentation_map) == 1 * np.product(extracted_img.shape)
         assert np.std(extracted_img.data) < 1.0e-10
         assert 900.0 < np.mean(extracted_img.noisemap) < 1100.0
 
         extracted_img = img.extract_stamp(32 + 16.4, 32 + 15.6, 32)
         assert extracted_img.shape == (32, 32)
-        assert np.sum(extracted_img.mask) == 1 * np.product(extracted_img.shape)  # This one is fully masked
-        assert np.sum(extracted_img.segmentation_map) == 2 * np.product(
-            extracted_img.shape)  # Should all belong to object 2
+        # This one is fully masked
+        assert np.sum(extracted_img.mask) == 1 * np.product(extracted_img.shape)
+        # Should all belong to object 2
+        assert np.sum(extracted_img.segmentation_map) == 2 * np.product(extracted_img.shape)
         assert np.std(extracted_img.data) > 1.0e-10
 
         # And the header:
@@ -855,8 +861,8 @@ class TestSheImage(SheTestCase):
 
                 if spatial_ra:
                     continue
-                # Check that these can be applied successfully
 
+                # Check that these can be applied successfully
                 dx = 2.0
                 dy = 0.5
 
