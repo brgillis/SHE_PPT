@@ -62,6 +62,7 @@ KEY_Y_OFFSET = "SHEIOFY"
 DETECTOR_SHAPE = np.array((4096, 4136), dtype = int)
 DEFAULT_STAMP_SIZE = 384
 
+# TODO: Replace use of indexconv with origin
 D_INDEXCONV_DEFS = {"numpy"     : 0.0,
                     "sextractor": 0.5}
 
@@ -1912,6 +1913,7 @@ class SHEImage:
 
         return local_wcs.inverse().getDecomposition()
 
+    # TODO: Remove these deprecated methods
     @deprecated("9.1",
                 message = "To get rotation matrix, please use `get_pix2world_rotation`, and to get "
                           "the rotation angle, please use `get_pix2world_decomposition`.")
