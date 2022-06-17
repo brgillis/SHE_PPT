@@ -24,7 +24,6 @@ __updated__ = "2021-08-16"
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-import logging
 import os
 from copy import deepcopy
 
@@ -43,7 +42,10 @@ from SHE_PPT.she_image import (DETECTOR_SHAPE, D_ATTR_CONVERSIONS, D_IMAGE_DTYPE
                                WGT_DTYPE, )
 from SHE_PPT.testing.utility import SheTestCase
 
-logging.basicConfig(level = logging.DEBUG)
+# Define a set of test points, with x,y positions precalculated to correspond to ra,dec positions
+L_TEST_X_Y_RA_DEC = ((0, 0, 52.53373984070186, -28.760675854311447),
+                     (24, 38, 52.53677316085, -28.75899827058671),
+                     (1012, 4111, 52.876229370322626, -28.686527560717373))
 
 
 def estimate_pix2world_rotation_angle(image: SHEImage,
@@ -281,9 +283,19 @@ class TestSheImage(SheTestCase):
             a += 1
             assert np.allclose(getattr(img_copy, attr), np.ones((self.w, self.h)))
 
+            # ValueError if changing shape
+            with pytest.raises(ValueError):
+                setattr(img_copy, attr, np.zeros((self.w + 1, self.h), dtype = D_IMAGE_DTYPES[attr_name]))
+
             # Test we can delete it
             delattr(img_copy, attr)
             assert getattr(img_copy, attr) is None
+
+            # ValueError if setting to a malformed array
+            with pytest.raises(ValueError):
+                setattr(img_copy, attr, np.zeros((self.w,), dtype = D_IMAGE_DTYPES[attr_name]))
+            with pytest.raises(ValueError):
+                setattr(img_copy, attr, np.zeros((self.w, self.h, self.w), dtype = D_IMAGE_DTYPES[attr_name]))
 
     def test_header_wcs_properties(self):
         """Test that the `header`, `wcs`, and `galsim_wcs` properties behave as expected.
@@ -522,7 +534,7 @@ class TestSheImage(SheTestCase):
 
         img.det_ix = None
         img.det_iy = None
-        img.header[CCDID_LABEL] = "5-4"
+        img.header[CCDID_LABEL] = "CCDID 5-4"
         assert img.det_ix == 4
         assert img.det_iy == 5
 
@@ -700,6 +712,20 @@ class TestSheImage(SheTestCase):
         bl_pix_numpy = self.img.extract_stamp(0.5, 0.5, 1)
         bl_pix_sex = self.img.extract_stamp(1.0, 1.0, 1, indexconv = "sextractor")
         assert bl_pix_numpy.data == bl_pix_sex.data
+
+    def test_extract_stamp_exceptions(self):
+        """Test that we get expected exceptions from the `extract_stamp` method.
+        """
+
+        # ValueError if bad width or height
+        with pytest.raises(ValueError):
+            _ = self.img.extract_stamp(0.5, 0.5, 0, 1)
+        with pytest.raises(ValueError):
+            _ = self.img.extract_stamp(0.5, 0.5, 1, 0)
+
+        # ValueError if bad indexconv
+        with pytest.raises(ValueError):
+            _ = self.img.extract_stamp(0.5, 0.5, 1, indexconv = "null")
 
     def test_extract_stamp(self):
         """We test that the stamp extraction get the correct data.
@@ -944,9 +970,7 @@ class TestSheImage(SheTestCase):
     def test_pix2world2pix(self):
         """Test that pix2world and world2pix work properly"""
 
-        for x, y, ra, dec in ((0, 0, 52.53373984070186, -28.760675854311447),
-                              (24, 38, 52.53677316085, -28.75899827058671),
-                              (1012, 4111, 52.876229370322626, -28.686527560717373)):
+        for x, y, ra, dec in L_TEST_X_Y_RA_DEC:
 
             ra0, dec0 = self.img.pix2world(x + 1, y + 1, origin = 0)
             assert np.allclose((ra0, dec0), (ra, dec))
@@ -975,9 +999,7 @@ class TestSheImage(SheTestCase):
         # Check that the transformations are approximately the inverses of each other
 
         for spatial_ra in (False, True):
-            for x, y, ra, dec in ((0, 0, 52.53373984070186, -28.760675854311447),
-                                  (24, 38, 52.53677316085, -28.75899827058671),
-                                  (1012, 4111, 52.876229370322626, -28.686527560717373),
+            for x, y, ra, dec in (*L_TEST_X_Y_RA_DEC,
                                   (None, None, None, None)):
 
                 pix2world_transformation = self.img.get_pix2world_transformation(x, y, spatial_ra = spatial_ra,
@@ -1056,9 +1078,7 @@ class TestSheImage(SheTestCase):
         """Test that the rotation works properly.
         """
 
-        for x, y, ra, dec in ((0, 0, 52.53373984070186, -28.760675854311447),
-                              (24, 38, 52.53677316085, -28.75899827058671),
-                              (1012, 4111, 52.876229370322626, -28.686527560717373)):
+        for x, y, ra, dec in L_TEST_X_Y_RA_DEC:
 
             # Get pix2world angles for each of a few different test steps
             pix2world_angles = []
@@ -1128,9 +1148,7 @@ class TestSheImage(SheTestCase):
         img.wcs = None
 
         # Test with values coming from calculation assuming origin=1
-        for x, y, ra, dec in ((0, 0, 52.53373984070186, -28.760675854311447),
-                              (24, 38, 52.53677316085, -28.75899827058671),
-                              (1012, 4111, 52.876229370322626, -28.686527560717373)):
+        for x, y, ra, dec in L_TEST_X_Y_RA_DEC:
 
             xy_pos = img.galsim_wcs.toImage(galsim.CelestialCoord(ra * galsim.degrees, dec * galsim.degrees))
             assert np.allclose((xy_pos.x, xy_pos.y), (x, y))
@@ -1145,9 +1163,7 @@ class TestSheImage(SheTestCase):
         img.header = None
 
         # Test with values coming from calculation assuming origin=1
-        for x, y, ra, dec in ((0, 0, 52.53373984070186, -28.760675854311447),
-                              (24, 38, 52.53677316085, -28.75899827058671),
-                              (1012, 4111, 52.876229370322626, -28.686527560717373)):
+        for x, y, ra, dec in L_TEST_X_Y_RA_DEC:
 
             xy_pos = img.galsim_wcs.toImage(galsim.CelestialCoord(ra * galsim.degrees, dec * galsim.degrees))
             assert np.allclose((xy_pos.x, xy_pos.y), (x, y))
@@ -1186,16 +1202,14 @@ class TestSheImage(SheTestCase):
         """Test that we can get the expected local decomposition of a WCS.
         """
 
-        # Test with values coming from calculation assuming origin=1
-        for x, y, ra, dec in ((0, 0, 52.53373984070186, -28.760675854311447),
-                              (24, 38, 52.53677316085, -28.75899827058671),
-                              (1012, 4111, 52.876229370322626, -28.686527560717373)):
+        for x, y, ra, dec in (*L_TEST_X_Y_RA_DEC,
+                              (None, None, None, None)):
 
-            w2p_scale, _, w2p_angle, w2p_flip = self.img.get_world2pix_decomposition(ra, dec)
-            p2w_scale, _, p2w_angle, p2w_flip = self.img.get_pix2world_decomposition(x, y)
+            w2p_scale, _, w2p_angle, w2p_flip = self.img.get_world2pix_decomposition(ra, dec, origin = 1)
+            p2w_scale, _, p2w_angle, p2w_flip = self.img.get_pix2world_decomposition(x, y, origin = 1)
 
             # Check the scales are inverses
-            assert np.isclose(w2p_scale, 1. / p2w_scale)
+            assert np.isclose(w2p_scale, 1. / p2w_scale), f"{x=}, {y=}, {ra=}, {dec=}"
 
             # Shear is checked for the non-celestial WCS
 
@@ -1209,6 +1223,12 @@ class TestSheImage(SheTestCase):
             pix2world_rotation_matrix = self.img.get_pix2world_rotation(x, y, origin = 1)
             assert np.isclose(p2w_angle.cos(), pix2world_rotation_matrix[0, 0], rtol = 1e-4)
             assert np.isclose(p2w_angle.sin(), pix2world_rotation_matrix[0, 1], rtol = 1e-4)
+
+        # ValueError if only one of ra and dec is None
+        with pytest.raises(ValueError):
+            _ = self.img.get_world2pix_decomposition(ra = 0, dec = None)
+        with pytest.raises(ValueError):
+            _ = self.img.get_world2pix_decomposition(ra = None, dec = 0)
 
         # Test with a simple Shear WCS
 
@@ -1287,6 +1307,9 @@ class TestSheImage(SheTestCase):
     def test_equality(self):
         """Test of the custom __eq__ method for equality comparisons.
         """
+
+        # Test equal to self
+        assert self.img == self.img
 
         # Test we get equal when we expect it
         img_copy = deepcopy(self.img)

@@ -1510,9 +1510,9 @@ class SHEImage:
 
         # If x or y isn't provided, use the centre of the image
         if x is None:
-            x = (self.shape[0] - 1) / 2.
+            x = (self.shape[0] - 1) / 2. + origin
         if y is None:
-            y = (self.shape[1] - 1) / 2.
+            y = (self.shape[1] - 1) / 2. + origin
 
         # Correct for offset if applicable
         if self.offset is not None:
@@ -1744,10 +1744,11 @@ class SHEImage:
 
     def get_pix2world_decomposition(self,
                                     x: Optional[float] = None,
-                                    y: Optional[float] = None) -> Tuple[float,
-                                                                        Shear,
-                                                                        Angle,
-                                                                        bool]:
+                                    y: Optional[float] = None,
+                                    origin: {0, 1} = 0) -> Tuple[float,
+                                                                 Shear,
+                                                                 Angle,
+                                                                 bool]:
         """Gets the local WCS decomposition between image (x/y) and world (ra/dec) coordinates at the specified
         location.
 
@@ -1763,6 +1764,11 @@ class SHEImage:
             x pixel coordinate. If None, will use centre of the image.
         y : Optional[float]
             idem for y
+        origin : {0, 1}
+            Coordinate in the upper left corner of the image.
+            In FITS and Fortran standards, this is 1.
+            In Numpy and C standards this is 0.
+            (from astropy.wcs)
 
         Raises
         ------
@@ -1783,14 +1789,18 @@ class SHEImage:
 
         # If x or y isn't provided, use the centre of the image
         if x is None:
-            x = (self.shape[0] - 1) / 2.
+            x = (self.shape[0] - 1) / 2. + origin
         if y is None:
-            y = (self.shape[1] - 1) / 2.
+            y = (self.shape[1] - 1) / 2. + origin
 
         # Correct for offset if applicable
         if self.offset is not None:
             x = x + self.offset[0]
             y = y + self.offset[1]
+
+        # GalSim assumes origin of 1, so correct for that
+        x += 1 - origin
+        y += 1 - origin
 
         local_wcs: galsim.wcs.JacobianWCS = self.galsim_wcs.jacobian(image_pos = galsim.PositionD(x, y))
 
@@ -1798,10 +1808,11 @@ class SHEImage:
 
     def get_world2pix_decomposition(self,
                                     ra: Optional[float] = None,
-                                    dec: Optional[float] = None) -> Tuple[float,
-                                                                          Shear,
-                                                                          Angle,
-                                                                          bool]:
+                                    dec: Optional[float] = None,
+                                    origin: {0, 1} = 0) -> Tuple[float,
+                                                                 Shear,
+                                                                 Angle,
+                                                                 bool]:
         """Gets the local WCS decomposition between world (ra/dec) and pixel coordinates at the specified location.
 
         Note 1: Since shear and rotation are non-commutative, the rotation operation must be applied before shear.
@@ -1817,6 +1828,13 @@ class SHEImage:
             image.
         dec : Optional[float]
             idem for Declination.
+        origin : {0, 1}
+            Coordinate in the upper left corner of the image.
+            In FITS and Fortran standards, this is 1.
+            In Numpy and C standards this is 0.
+            (from astropy.wcs)
+            (Due to cancellation, the value here has no effect on the output, but the kwarg is left in to avoid user
+            surprise which might arise from an inconsistent interface.)
 
 
         Raises
@@ -1838,10 +1856,11 @@ class SHEImage:
         """
 
         if ra is None and dec is None:
-            x = (self.shape[0] - 1) / 2.
-            y = (self.shape[1] - 1) / 2.
+            # Convert the centre of the stamp's pixel coords to sky coords
+            x = (self.shape[0] - 1) / 2. + origin
+            y = (self.shape[1] - 1) / 2. + origin
 
-            ra, dec = self.pix2world(x, y, origin = 0)
+            ra, dec = self.pix2world(x, y, origin = origin)
         elif (ra is None) != (dec is None):
             raise ValueError("In get_world2pix_transformation, either both ra and dec must be specified or both " +
                              "must be None/unspecified.")
@@ -2355,7 +2374,7 @@ class SHEImage:
     def __validate_read_stamp_input(width: float,
                                     height: Optional[float],
                                     indexconv: str) -> Tuple[int, int]:
-        """Private method to validate input to the `read_stamp` method, and adjust height and width as appropriate.
+        """Private method to validate input to the `extract_stamp` method, and adjust height and width as appropriate.
         """
         # Should we extract a square stamp?
         if height is None:
