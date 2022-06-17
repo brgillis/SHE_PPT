@@ -2244,8 +2244,9 @@ class SHEImage:
             array = array.astype(attr_dtype, casting = casting)
         setattr(self, f"_{attr_name}", array)
 
-    @staticmethod
-    def __get_kwarg(attr_name: str,
+    @classmethod
+    def __get_kwarg(cls,
+                    attr_name: str,
                     kwarg_tail: str,
                     kwargs: Dict[str, Any],
                     default_value: Optional[Union[str, int]] = None) -> Optional[Union[str, int]]:
@@ -2261,8 +2262,9 @@ class SHEImage:
             return default_value
         return filename
 
-    @staticmethod
-    def __get_filename_kwarg(attr_name: str,
+    @classmethod
+    def __get_filename_kwarg(cls,
+                             attr_name: str,
                              kwargs: Dict[str, Any],
                              default_value: Optional[Union[str, int]] = None) -> Optional[str]:
         """Private method to get the filename keyword argument for a given attribute.
@@ -2270,16 +2272,17 @@ class SHEImage:
 
         # The kwarg could be called either "filename" or "filepath", so try both
         for kwarg_tail in "filename", "filepath":
-            filename = SHEImage.__get_kwarg(attr_name = attr_name,
-                                            kwarg_tail = kwarg_tail,
-                                            kwargs = kwargs,
-                                            default_value = None)
+            filename = cls.__get_kwarg(attr_name = attr_name,
+                                       kwarg_tail = kwarg_tail,
+                                       kwargs = kwargs,
+                                       default_value = None)
             if filename is not None:
                 return filename
         return default_value
 
-    @staticmethod
-    def __get_hdu_kwarg(attr_name: str,
+    @classmethod
+    def __get_hdu_kwarg(cls,
+                        attr_name: str,
                         kwargs: Dict[str, Any],
                         default_value: Optional[Union[str, int]] = None) -> Optional[Union[str, int]]:
         """Private method to get the HDU keyword argument for a given attribute.
@@ -2287,16 +2290,16 @@ class SHEImage:
 
         # The kwarg could be called either "hdu" or "ext", so try both
         for kwarg_tail in "hdu", "ext":
-            filename = SHEImage.__get_kwarg(attr_name = attr_name,
-                                            kwarg_tail = kwarg_tail,
-                                            kwargs = kwargs,
-                                            default_value = None)
+            filename = cls.__get_kwarg(attr_name = attr_name,
+                                       kwarg_tail = kwarg_tail,
+                                       kwargs = kwargs,
+                                       default_value = None)
             if filename is not None:
                 return filename
         return default_value
 
-    @staticmethod
-    def __get_secondary_data_from_fits(primary_filepath, special_filepath, ext):
+    @classmethod
+    def __get_secondary_data_from_fits(cls, primary_filepath, special_filepath, ext):
         """Private helper for getting mask or noisemap, defining the logic of the related keyword arguments
 
         This function might return None, if both special_filepath and ext are None, or if the extension doesn't
@@ -2309,7 +2312,7 @@ class SHEImage:
             filepath = special_filepath
 
         try:
-            return SHEImage.__get_specific_hdu_content_from_fits(filepath, ext = ext)
+            return cls.__get_specific_hdu_content_from_fits(filepath, ext = ext)
         except KeyError:
             logger.debug("Extension %s not found in fits file %s", ext, filepath)
             return None
