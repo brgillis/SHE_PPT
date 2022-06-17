@@ -996,7 +996,18 @@ class SHEImage:
         workdir : str
             The working directory, where files can be found
         **kwargs : str
-            Deprecated keyword arguments, maintained for now to avoid breaking existing interfaces.
+            Additional keyword arguments are allowed to specify the specific HDU an attribute can be found in,
+            if not the default, and similarly if it's found in a different file. These take the format:
+            `{attr}_{filename/hdu} = {value}`
+            where {attr} is one of "data", "mask", "noisemap", "segmentation_map", "background_map", "weight_map",
+            and {filename/hdu} is either "filename" or "hdu".
+
+            For filenames, the fully-qualified filename should be provided, e.g.:
+            `mask_filename = "/path/to/mask.fits"`
+
+            For HDUs, either the HDU's index may be provided, or else its `EXTNAME`:
+            `background_map_hdu = 0`
+            `segmentation_map_hdu = "SEGMAP"`
 
         Returns
         -------
@@ -1167,7 +1178,19 @@ class SHEImage:
             Set this to True if you want to ensure that all properties of the stamp exist, even if they don't for
             the parent. This will fill them in with default values.
         **kwargs : Optional[Union[str, int]]
-            (Deprecated and to be removed soon; do not use.)
+            If the image is not already be loaded, additional keyword arguments can be used to specify the file which
+            each attribute can be loaded from, and similarly the HDU of that file it can be found in. These take the
+            format:
+            `{attr}_{filename/hdu} = {value}`
+            where {attr} is one of "data", "mask", "noisemap", "segmentation_map", "background_map", "weight_map",
+            and {filename/hdu} is either "filename" or "hdu".
+
+            For filenames, the fully-qualified filename should be provided, e.g.:
+            `mask_filename = "/path/to/mask.fits"`
+
+            For HDUs, either the HDU's index may be provided, or else its `EXTNAME`:
+            `background_map_hdu = 0`
+            `segmentation_map_hdu = "SEGMAP"`
 
         Return
         ------
