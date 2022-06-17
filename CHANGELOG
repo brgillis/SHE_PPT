@@ -41,6 +41,7 @@ Miscellaneous
 - Added unit tests of setting default values in pipeline_config and of the SheArgumentParser class
 - Fully documented SheArgumentParser class
 - General cleanup and expansion of unit testing of the SHE_PPT.she_image module
+- General cleanup and expansion of unit testing for the SHE_PPT.utility module
 - General cleanup and expansion of unit testing for the SHE_PPT.file_io module
 
 
