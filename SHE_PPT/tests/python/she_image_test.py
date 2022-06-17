@@ -806,6 +806,45 @@ class TestSheImage(SheTestCase):
         assert stamp.data[1, 0] == 31
         assert bool(stamp.boolmask[2, 0]) is True
 
+        # Check that none_if_out_of_bounds works correctly
+        stamp = img.extract_stamp(-1000, -1000, 10, none_if_out_of_bounds = True)
+        assert stamp is None
+
+    def test_extract_wcs_stamp(self):
+        """Test that extracting a WCS-only stamp behaves as expected.
+        """
+
+        offset_x = 10
+        offset_y = 20
+
+        # Testing extracted shape and extracted mask
+        extracted_img = self.img.extract_wcs_stamp(offset_x, offset_y)
+
+        # Check that the offset is correct
+        assert np.all(extracted_img.offset == (offset_x, offset_y))
+
+        # Check that all properties aside from header and WCS are None or other appropriate null value
+        assert extracted_img.data.shape == (0, 0)
+        assert extracted_img.mask is None
+        assert extracted_img.noisemap is None
+        assert extracted_img.segmentation_map is None
+        assert extracted_img.background_map is None
+        assert extracted_img.weight_map is None
+
+        # Check that we inherit appropriate attributes from the parent
+        assert extracted_img.wcs is self.img.wcs
+        assert extracted_img.header is self.img.header
+        assert extracted_img.parent_frame_stack is self.img.parent_frame_stack
+        assert extracted_img.parent_frame is self.img.parent_frame
+        assert extracted_img.parent_image_stack is self.img.parent_image_stack
+
+        # Check that the parent image is set appropriately
+        assert extracted_img.parent_image is self.img
+
+        # Check that none_if_out_of_bounds works correctly
+        stamp = self.img.extract_wcs_stamp(-1000, -1000, none_if_out_of_bounds = True)
+        assert stamp is None
+
     def test_offset(self):
         """Testing the offset property.
         """
