@@ -669,7 +669,9 @@ class SHEImage:
 
     @property
     def det_ix(self) -> int:
-        """The x-position of the detector for this image. Will be a value between 1 and 6 inclusive.
+        """The x-position of the detector for this image. Will be a value between 1 and 6 inclusive. Note that this
+        is cached the first time it is accessed, and will not be updated if the header subsequently changes unless
+        first set to None.
 
         Returns
         -------
@@ -680,9 +682,23 @@ class SHEImage:
             self.__determine_det_ixy()
         return self._det_ix
 
+    @det_ix.setter
+    def det_ix(self, det_ix: Optional[int]) -> None:
+        """Setter for the det_ix attribute. If set to None, the `det_ix` property will be determined from the header
+        next time it's accessed.
+
+        Parameters
+        ----------
+        det_ix : Optional[Sequence[int]]
+            The detector index to set. This should normally be in the range 1-6, but other integers are accepted.
+        """
+        self._det_ix = det_ix
+
     @property
     def det_iy(self):
-        """The y-position of the detector for this image. Will be a value between 1 and 6 inclusive.
+        """The y-position of the detector for this image. Will be a value between 1 and 6 inclusive. Note that this
+        is cached the first time it is accessed, and will not be updated if the header subsequently changes unless
+        first set to None.
 
         Returns
         -------
@@ -692,6 +708,18 @@ class SHEImage:
         if self._det_iy is None:
             self.__determine_det_ixy()
         return self._det_iy
+
+    @det_iy.setter
+    def det_iy(self, det_iy: Optional[int]) -> None:
+        """Setter for the det_iy attribute. If set to None, the `det_iy` property will be determined from the header
+        next time it's accessed.
+
+        Parameters
+        ----------
+        det_iy : Optional[Sequence[int]]
+            The detector index to set. This should normally be in the range 1-6, but other integers are accepted.
+        """
+        self._det_iy = det_iy
 
     @property
     def parent_frame_stack(self) -> Optional[SHEFrameStack]:

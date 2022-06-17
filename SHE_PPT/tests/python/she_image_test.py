@@ -35,6 +35,7 @@ from astropy.coordinates import SkyCoord
 from astropy.wcs import WCS
 
 from SHE_PPT import file_io, mdb
+from SHE_PPT.constants.fits import CCDID_LABEL
 from SHE_PPT.constants.misc import SEGMAP_UNASSIGNED_VALUE
 from SHE_PPT.file_io import get_qualified_filename
 from SHE_PPT.she_image import (DETECTOR_SHAPE, D_ATTR_CONVERSIONS, D_IMAGE_DTYPES, NOISEMAP_DTYPE, PRIMARY_TAG,
@@ -356,6 +357,10 @@ class TestSheImage(SheTestCase):
         img.add_default_mask(force = True)
         assert bool(img.boolmask[5, 5]) is False
 
+        # Check that boolmask is None if mask is None
+        del img.mask
+        assert img.boolmask is None
+
     def test_noisemap(self):
         """Test that the noisemap behaves appropriately.
         """
@@ -489,6 +494,39 @@ class TestSheImage(SheTestCase):
         # Test deletion
         del img.shape
         assert np.all(img.shape == DETECTOR_SHAPE)
+
+    def test_det_ixy(self):
+        """Test that the properties for detector x and y position behave as expected.
+        """
+
+        img = deepcopy(self.img)
+
+        # Test with no header - will default to detector 1-1
+        del img.header
+        assert img.det_ix == 1
+        assert img.det_iy == 1
+
+        # Try putting the values in the header in both possible formats. Note that the header stores them in the
+        # order Y-X
+        img.add_default_header()
+
+        img.det_ix = None
+        img.det_iy = None
+        img.header[CCDID_LABEL] = "3-2"
+        assert img.det_ix == 2
+        assert img.det_iy == 3
+
+        img.det_ix = None
+        img.det_iy = None
+        img.header[CCDID_LABEL] = "5-4"
+        assert img.det_ix == 4
+        assert img.det_iy == 5
+
+        # Try to set it to something other than what's in the header
+        img.det_ix = 6
+        img.det_iy = 1
+        assert img.det_ix == 6
+        assert img.det_iy == 1
 
     def test_fits_read_write(self):
         """We save the small SHEImage, read it again, and compare both versions.
@@ -733,6 +771,12 @@ class TestSheImage(SheTestCase):
         read_stamp = SHEImage.read_from_fits(self.qualified_test_filename)
         assert read_stamp.offset[0] == 2
         assert read_stamp.offset[1] == 3
+
+        # ValueError if setting to something where length is not 2
+        with pytest.raises(ValueError):
+            stamp.offset = [1]
+        with pytest.raises(ValueError):
+            stamp.offset = [1, 2, 3]
 
     def test_get_object_mask(self):
         """Test that the get_object_mask function behaves as expected.
