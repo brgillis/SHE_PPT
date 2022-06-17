@@ -509,11 +509,15 @@ class TestSheImage(SheTestCase):
         # Try putting the values in the header in both possible formats. Note that the header stores them in the
         # order Y-X
         img.add_default_header()
+        img.header[CCDID_LABEL] = "3-2"
 
         img.det_ix = None
-        img.det_iy = None
-        img.header[CCDID_LABEL] = "3-2"
         assert img.det_ix == 2
+        img.det_iy = None
+        assert img.det_iy == 3
+
+        # And check det_iy generates both as well
+        img.det_iy = None
         assert img.det_iy == 3
 
         img.det_ix = None
@@ -973,7 +977,8 @@ class TestSheImage(SheTestCase):
         for spatial_ra in (False, True):
             for x, y, ra, dec in ((0, 0, 52.53373984070186, -28.760675854311447),
                                   (24, 38, 52.53677316085, -28.75899827058671),
-                                  (1012, 4111, 52.876229370322626, -28.686527560717373)):
+                                  (1012, 4111, 52.876229370322626, -28.686527560717373),
+                                  (None, None, None, None)):
 
                 pix2world_transformation = self.img.get_pix2world_transformation(x, y, spatial_ra = spatial_ra,
                                                                                  origin = 1)
@@ -1002,7 +1007,8 @@ class TestSheImage(SheTestCase):
                 assert np.isclose(np.abs(np.linalg.det(normed_pix2world_transformation)), 1.)
                 assert np.isclose(np.abs(np.linalg.det(normed_world2pix_transformation)), 1.)
 
-                if spatial_ra:
+                # Skip detailed tests in cases where it's unnecessary
+                if spatial_ra or x is None:
                     continue
 
                 # Check that these can be applied successfully
@@ -1025,6 +1031,26 @@ class TestSheImage(SheTestCase):
 
                 assert np.allclose((new_x, new_y), self.img.world2pix(ra + dra, dec + ddec, origin = 1),
                                    rtol = 1e-2, atol = 1e-4)
+
+        # Check that we get expected errors
+
+        # ValueError if dx==0 or dy==0 for get_pix2world_transformation
+        with pytest.raises(ValueError):
+            _ = self.img.get_pix2world_transformation(x = None, y = None, dx = 0)
+        with pytest.raises(ValueError):
+            _ = self.img.get_pix2world_transformation(x = None, y = None, dy = 0)
+
+        # ValueError if dra==0 or ddec==0 for get_world2pix_transformation
+        with pytest.raises(ValueError):
+            _ = self.img.get_world2pix_transformation(ra = None, dec = None, dra = 0)
+        with pytest.raises(ValueError):
+            _ = self.img.get_world2pix_transformation(ra = None, dec = None, ddec = 0)
+
+        # ValueError if only one of ra and dec is None
+        with pytest.raises(ValueError):
+            _ = self.img.get_world2pix_transformation(ra = 0, dec = None)
+        with pytest.raises(ValueError):
+            _ = self.img.get_world2pix_transformation(ra = None, dec = 0)
 
     def test_rotation(self):
         """Test that the rotation works properly.
