@@ -937,34 +937,32 @@ class TestSheImage(SheTestCase):
         with pytest.raises(ValueError):
             img.get_object_mask(1)
 
-    def test_pix2world(self):
-        """Test that pix2world works properly"""
+    def test_pix2world2pix(self):
+        """Test that pix2world and world2pix work properly"""
 
-        # Test with values coming from calculation assuming origin=1
-        for x, y, ex_ra, ex_dec in ((0, 0, 52.53373984070186, -28.760675854311447),
-                                    (24, 38, 52.53677316085, -28.75899827058671),
-                                    (1012, 4111, 52.876229370322626, -28.686527560717373)):
+        for x, y, ra, dec in ((0, 0, 52.53373984070186, -28.760675854311447),
+                              (24, 38, 52.53677316085, -28.75899827058671),
+                              (1012, 4111, 52.876229370322626, -28.686527560717373)):
 
             ra0, dec0 = self.img.pix2world(x + 1, y + 1, origin = 0)
-            assert np.allclose((ra0, dec0), (ex_ra, ex_dec))
+            assert np.allclose((ra0, dec0), (ra, dec))
 
             ra1, dec1 = self.img.pix2world(x, y, origin = 1)
-            assert np.allclose((ra1, dec1), (ex_ra, ex_dec))
-
-    def test_world2pix(self):
-        """Test that world2pix works properly.
-        """
-
-        # Test with values coming from calculation assuming origin=1
-        for ex_x, ex_y, ra, dec in ((0, 0, 52.53373984070186, -28.760675854311447),
-                                    (24, 38, 52.53677316085, -28.75899827058671),
-                                    (1012, 4111, 52.876229370322626, -28.686527560717373)):
+            assert np.allclose((ra1, dec1), (ra, dec))
 
             x0, y0 = self.img.world2pix(ra, dec, origin = 0)
-            assert np.allclose((x0 + 1, y0 + 1), (ex_x, ex_y))
+            assert np.allclose((x0 + 1, y0 + 1), (x, y))
 
             x1, y1 = self.img.world2pix(ra, dec, origin = 1)
-            assert np.allclose((x1, y1), (ex_x, ex_y))
+            assert np.allclose((x1, y1), (x, y))
+
+        # Test that we get an expected exception if the WCS isn't set up
+        img = deepcopy(self.img)
+        del img.wcs, img.galsim_wcs, img.header
+        with pytest.raises(AttributeError):
+            _ = img.pix2world(0, 0)
+        with pytest.raises(AttributeError):
+            _ = img.world2pix(0, 0)
 
     def test_transformations(self):
         """Test that the transformations work properly.
