@@ -625,6 +625,13 @@ class TestSheImage(SheTestCase):
         assert np.allclose(img.get_pix2world_transformation(0, 0),
                            read_img.get_pix2world_transformation(0, 0))
 
+        # Test writing with header but no WCS
+        del img.wcs
+        img.header["FOO"] = "BAR"
+        img.write_to_fits(self.qualified_test_filename, overwrite = True)
+        read_img = SHEImage.read_from_fits(self.qualified_test_filename)
+        assert read_img.header["FOO"] == "BAR"
+
     def test_read_from_fits_files(self):
         """At least a small test of reading from individual FITS files.
         """
@@ -881,6 +888,15 @@ class TestSheImage(SheTestCase):
 
         assert np.all(img.get_object_mask(1, mask_suspect = True, mask_unassigned = True)
                       == desired_bool_mask)
+
+        # Test we get expected errors
+        del img.mask
+        with pytest.raises(ValueError):
+            img.get_object_mask(1)
+        img.add_default_mask()
+        del img.segmentation_map
+        with pytest.raises(ValueError):
+            img.get_object_mask(1)
 
     def test_pix2world(self):
         """Test that pix2world works properly"""
