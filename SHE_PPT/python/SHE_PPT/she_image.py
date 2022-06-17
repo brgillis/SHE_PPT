@@ -2164,7 +2164,8 @@ class SHEImage:
 
         return "SHEImage(" + ", ".join(str_list) + ")"
 
-    def __eq__(self, rhs: SHEImage) -> bool:
+    def __eq__(self,
+               rhs: SHEImage) -> bool:
         """Equality test for SHEImage class.
         """
 
@@ -2299,7 +2300,10 @@ class SHEImage:
         return default_value
 
     @classmethod
-    def __get_secondary_data_from_fits(cls, primary_filepath, special_filepath, ext):
+    def __get_secondary_data_from_fits(cls,
+                                       primary_filepath: str,
+                                       special_filepath: Optional[str],
+                                       ext: Optional[Union[int, str]]) -> Optional[np.ndarray]:
         """Private helper for getting mask or noisemap, defining the logic of the related keyword arguments
 
         This function might return None, if both special_filepath and ext are None, or if the extension doesn't
@@ -2318,7 +2322,9 @@ class SHEImage:
             return None
 
     @staticmethod
-    def __get_specific_hdu_content_from_fits(filepath, ext = None, return_header = False):
+    def __get_specific_hdu_content_from_fits(filepath: str,
+                                             ext: Optional[Union[int, str]] = None,
+                                             return_header: bool = False) -> np.ndarray:
         """Private helper to handle access to particular extensions of a FITS file
 
         This function either returns something not-None, or raises an exception.
@@ -2352,7 +2358,7 @@ class SHEImage:
 
     @staticmethod
     def __remove_header_keywords(header: Header,
-                                 l_keywords_to_remove: Iterable[str], ):
+                                 l_keywords_to_remove: Iterable[str], ) -> None:
         """Private method to remove a list of keywords from a FITS header.
         """
         for keyword in l_keywords_to_remove:
@@ -2366,7 +2372,7 @@ class SHEImage:
                              ymax: int,
                              attr_name: str,
                              filename: Optional[str],
-                             hdu_i: Optional[Union[str, int]]):
+                             hdu_i: Optional[Union[str, int]]) -> Optional[np.ndarray]:
         """Private method to extract a stamp for a specific attr from the image.
         """
         if (xmax - xmin) <= 0 or (ymax - ymin) <= 0:
@@ -2379,28 +2385,6 @@ class SHEImage:
         else:
             out = None
         return out
-
-    def __extract_stamp_in_bounds(self,
-                                  xmin, xmax,
-                                  ymin, ymax,
-                                  **kwargs):
-        """Private method to handle extraction of a postage stamp when we know it's entirely within bounds.
-        """
-
-        new_stamps = {}
-
-        # We are fully within the image
-        logger.debug("Extracting stamp [%d:%d,%d:%d] fully within image of shape (%d,%d)",
-                     xmin, xmax, ymin, ymax, self.shape[0], self.shape[1])
-        for attr_name in D_ATTR_CONVERSIONS:
-
-            filename = self.__get_filename_kwarg(attr_name, kwargs)
-            hdu = self.__get_hdu_kwarg(attr_name, kwargs)
-
-            new_stamps[attr_name] = self.__extract_attr_stamp(xmin, ymin, xmax, ymax, attr_name, filename,
-                                                              hdu)
-
-        return new_stamps
 
     @staticmethod
     def __validate_read_stamp_input(width: float,
@@ -2425,7 +2409,36 @@ class SHEImage:
 
         return width, height
 
-    def __extract_stamp_not_in_bounds(self, xmin, xmax, ymin, ymax, **kwargs):
+    def __extract_stamp_in_bounds(self,
+                                  xmin: int,
+                                  xmax: int,
+                                  ymin: int,
+                                  ymax: int,
+                                  **kwargs: Union[str, int]) -> Dict[str, Optional[np.ndarray]]:
+        """Private method to handle extraction of a postage stamp when we know it's entirely within bounds.
+        """
+
+        new_stamps: Dict[str, Optional[np.ndarray]] = {}
+
+        # We are fully within the image
+        logger.debug("Extracting stamp [%d:%d,%d:%d] fully within image of shape (%d,%d)",
+                     xmin, xmax, ymin, ymax, self.shape[0], self.shape[1])
+        for attr_name in D_ATTR_CONVERSIONS:
+
+            filename = self.__get_filename_kwarg(attr_name, kwargs)
+            hdu = self.__get_hdu_kwarg(attr_name, kwargs)
+
+            new_stamps[attr_name] = self.__extract_attr_stamp(xmin, ymin, xmax, ymax, attr_name, filename,
+                                                              hdu)
+
+        return new_stamps
+
+    def __extract_stamp_not_in_bounds(self,
+                                      xmin: int,
+                                      xmax: int,
+                                      ymin: int,
+                                      ymax: int,
+                                      **kwargs: Union[str, int]) -> Dict[str, Optional[np.ndarray]]:
         """Private method to handle extraction of a postage stamp when we know it's not entirely within bounds.
         """
 
@@ -2499,7 +2512,7 @@ class SHEImage:
 
         return new_stamps
 
-    def __apply_galsim_bug_workaround(self):
+    def __apply_galsim_bug_workaround(self) -> None:
         """Workaround for a bug with GalSim WCS, by reading WCS directly from the header.
         """
 
