@@ -528,6 +528,52 @@ class TestSheImage(SheTestCase):
         assert img.det_ix == 6
         assert img.det_iy == 1
 
+    def test_parent_properties(self):
+        """Test that the parent properties work as expected.
+        """
+
+        img = deepcopy(self.img)
+
+        # Check that we get None if set to None
+        img.parent_frame_stack = None
+        img.parent_frame = None
+        img.parent_image_stack = None
+        img.parent_image = None
+
+        assert img.parent_frame_stack is None
+        assert img.parent_frame is None
+        assert img.parent_image_stack is None
+        assert img.parent_image is None
+
+        # Check that we get the object we set to. We set each parent to a different deepcopy of this image,
+        # since we need something we can create a weak reference to, and will just be checking identity,
+        # so this image works for that
+        mock_parent_frame_stack = deepcopy(img)
+        mock_parent_frame = deepcopy(img)
+        mock_parent_image_stack = deepcopy(img)
+        mock_parent_image = deepcopy(img)
+
+        img.parent_frame_stack = mock_parent_frame_stack
+        img.parent_frame = mock_parent_frame
+        img.parent_image_stack = mock_parent_image_stack
+        img.parent_image = mock_parent_image
+
+        assert img.parent_frame_stack is mock_parent_frame_stack
+        assert img.parent_frame is mock_parent_frame
+        assert img.parent_image_stack is mock_parent_image_stack
+        assert img.parent_image is mock_parent_image
+
+        # Check that the deleter sets each parent back to None
+        del img.parent_frame_stack
+        del img.parent_frame
+        del img.parent_image_stack
+        del img.parent_image
+
+        assert img.parent_frame_stack is None
+        assert img.parent_frame is None
+        assert img.parent_image_stack is None
+        assert img.parent_image is None
+
     def test_fits_read_write(self):
         """We save the small SHEImage, read it again, and compare both versions.
         """
