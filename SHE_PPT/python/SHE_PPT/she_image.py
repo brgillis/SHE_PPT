@@ -35,6 +35,7 @@ import galsim
 import numpy as np
 from astropy.coordinates import SkyCoord
 from astropy.io.fits import Header
+from astropy.utils import deprecated
 from coord import Angle
 from galsim import Shear
 
@@ -1888,9 +1889,11 @@ class SHEImage:
 
         return local_wcs.inverse().getDecomposition()
 
+    @deprecated("9.1",
+                message = "To get rotation matrix, please use `get_pix2world_rotation`, and to get "
+                          "the rotation angle, please use `get_pix2world_decomposition`.")
     def estimate_pix2world_rotation_angle(self, x, y, dx, dy, origin = 0):
-        """Note: To be deprecated. To get rotation matrix, please use `get_pix2world_rotation`, and to get
-        the rotation angle, please use `get_pix2world_decomposition`.
+        """To be deprecated.
 
         Estimates the local rotation angle between pixel and world (-ra/dec) coordinates at the specified location.
         Note that due to distortion in the transformation, this method is inaccurate and depends on the choice of dx
@@ -1956,6 +1959,9 @@ class SHEImage:
 
         return rotation_angle
 
+    @deprecated("9.1",
+                message = "To be deprecated. To get rotation matrix, please use `get_world2pix_rotation`, and to get "
+                          "the rotation angle, please use `get_world2pix_decomposition`.")
     def estimate_world2pix_rotation_angle(self,
                                           ra: float,
                                           dec: float,
