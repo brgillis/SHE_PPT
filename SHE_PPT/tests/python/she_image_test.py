@@ -557,17 +557,17 @@ class TestSheImage(SheTestCase):
         img.segmentation_map = 4 * np.ones_like(img.data, dtype = np.int32)
         img.write_to_fits(self.l_qualified_test_filenames[3])
 
-        rimg = SHEImage.read_from_fits(self.l_qualified_test_filenames[0])
-        assert rimg.mask[0, 0] == 1
+        read_img = SHEImage.read_from_fits(self.l_qualified_test_filenames[0])
+        assert read_img.mask[0, 0] == 1
 
-        rimg = SHEImage.read_from_fits(self.l_qualified_test_filenames[0],
-                                       mask_filepath = self.l_qualified_test_filenames[1],
-                                       noisemap_filepath = self.l_qualified_test_filenames[2],
-                                       segmentation_map_filepath = self.l_qualified_test_filenames[3])
-        assert rimg.noisemap[0, 0] > 500.0
-        assert rimg.segmentation_map[0, 0] == 4
+        read_img = SHEImage.read_from_fits(self.l_qualified_test_filenames[0],
+                                           mask_filepath = self.l_qualified_test_filenames[1],
+                                           noisemap_filepath = self.l_qualified_test_filenames[2],
+                                           segmentation_map_filepath = self.l_qualified_test_filenames[3])
+        assert read_img.noisemap[0, 0] > 500.0
+        assert read_img.segmentation_map[0, 0] == 4
 
-        # As the primary HDU of mask_filepath is not a np.uint8, this will fail:
+        # As the primary HDU of mask_filepath is not an int, this will fail:
         with pytest.raises(TypeError):
             _ = SHEImage.read_from_fits(self.l_qualified_test_filenames[0],
                                         mask_filepath = self.l_qualified_test_filenames[1],
@@ -581,7 +581,7 @@ class TestSheImage(SheTestCase):
         """
 
         stamp = self.img.extract_stamp(10.5, 10.5, 3)  # central pixel of stamp is index [10, 10] of the big array
-        stamp.data[1, 1] = -50.0  # the central pixel, modifed both here and in img
+        stamp.data[1, 1] = -50.0  # the central pixel, modified both here and in img
 
         assert self.img.data[10, 10] == stamp.data[1, 1]
 
@@ -598,9 +598,9 @@ class TestSheImage(SheTestCase):
         """Test the effect of different indexconvs.
         """
 
-        bottomleftpixel_numpy = self.img.extract_stamp(0.5, 0.5, 1)
-        bottomleftpixel_sex = self.img.extract_stamp(1.0, 1.0, 1, indexconv = "sextractor")
-        assert bottomleftpixel_numpy.data == bottomleftpixel_sex.data
+        bl_pix_numpy = self.img.extract_stamp(0.5, 0.5, 1)
+        bl_pix_sex = self.img.extract_stamp(1.0, 1.0, 1, indexconv = "sextractor")
+        assert bl_pix_numpy.data == bl_pix_sex.data
 
     def test_extract_stamp(self):
         """We test that the stamp extraction get the correct data.
@@ -625,24 +625,26 @@ class TestSheImage(SheTestCase):
         img.header["foo"] = "bar"
 
         # Testing extracted shape and extracted mask
-        eimg = img.extract_stamp(16.4, 15.6, 32)
-        assert eimg.shape == (32, 32)
-        assert np.sum(eimg.mask) == 0  # Nothing should be masked
-        assert np.sum(eimg.segmentation_map) == 1 * np.product(eimg.shape)  # Should all belong to object 1
-        assert np.std(eimg.data) < 1.0e-10
-        assert 900.0 < np.mean(eimg.noisemap) < 1100.0
+        extracted_img = img.extract_stamp(16.4, 15.6, 32)
+        assert extracted_img.shape == (32, 32)
+        assert np.sum(extracted_img.mask) == 0  # Nothing should be masked
+        assert np.sum(extracted_img.segmentation_map) == 1 * np.product(
+            extracted_img.shape)  # Should all belong to object 1
+        assert np.std(extracted_img.data) < 1.0e-10
+        assert 900.0 < np.mean(extracted_img.noisemap) < 1100.0
 
-        eimg = img.extract_stamp(32 + 16.4, 32 + 15.6, 32)
-        assert eimg.shape == (32, 32)
-        assert np.sum(eimg.mask) == 1 * np.product(eimg.shape)  # This one is fully masked
-        assert np.sum(eimg.segmentation_map) == 2 * np.product(eimg.shape)  # Should all belong to object 2
-        assert np.std(eimg.data) > 1.0e-10
+        extracted_img = img.extract_stamp(32 + 16.4, 32 + 15.6, 32)
+        assert extracted_img.shape == (32, 32)
+        assert np.sum(extracted_img.mask) == 1 * np.product(extracted_img.shape)  # This one is fully masked
+        assert np.sum(extracted_img.segmentation_map) == 2 * np.product(
+            extracted_img.shape)  # Should all belong to object 2
+        assert np.std(extracted_img.data) > 1.0e-10
 
         # And the header:
-        eimg = img.extract_stamp(5, 5, 5)
-        assert eimg.header is None
-        eimg = img.extract_stamp(5, 5, 5, keep_header = True)
-        assert len(list(eimg.header.keys())) == 1  # The "foo"
+        extracted_img = img.extract_stamp(5, 5, 5)
+        assert extracted_img.header is None
+        extracted_img = img.extract_stamp(5, 5, 5, keep_header = True)
+        assert len(list(extracted_img.header.keys())) == 1  # The "foo"
 
         # Test setting or not setting default properties for an extracted stamp
         simple_img = SHEImage(array)
@@ -722,9 +724,9 @@ class TestSheImage(SheTestCase):
 
         # Does it survive FITS io?
         stamp.write_to_fits(self.qualified_test_filename, overwrite = True)
-        rstamp = SHEImage.read_from_fits(self.qualified_test_filename)
-        assert rstamp.offset[0] == 2
-        assert rstamp.offset[1] == 3
+        read_stamp = SHEImage.read_from_fits(self.qualified_test_filename)
+        assert read_stamp.offset[0] == 2
+        assert read_stamp.offset[1] == 3
 
     def test_get_object_mask(self):
         """Test that the get_object_mask function behaves as expected.
@@ -858,9 +860,9 @@ class TestSheImage(SheTestCase):
                 dx = 2.0
                 dy = 0.5
 
-                new_radec = np.array([[ra], [dec]]) + pix2world_transformation @ np.array([[dx], [dy]])
-                new_ra = new_radec[0, 0]
-                new_dec = new_radec[1, 0]
+                new_ra_dec = np.array([[ra], [dec]]) + pix2world_transformation @ np.array([[dx], [dy]])
+                new_ra = new_ra_dec[0, 0]
+                new_dec = new_ra_dec[1, 0]
 
                 assert np.allclose((new_ra, new_dec), self.img.pix2world(x + dx, y + dy),
                                    rtol = 1e-5, atol = 1e-4)
@@ -957,9 +959,9 @@ class TestSheImage(SheTestCase):
 
             xy_pos = img.galsim_wcs.toImage(galsim.CelestialCoord(ra * galsim.degrees, dec * galsim.degrees))
             assert np.allclose((xy_pos.x, xy_pos.y), (x, y))
-            radec_pos = img.galsim_wcs.toWorld(galsim.PositionD(x, y))
+            ra_dec_pos = img.galsim_wcs.toWorld(galsim.PositionD(x, y))
             # Need to divide out units for numpy to understand the values
-            assert np.allclose((radec_pos.ra / galsim.degrees, radec_pos.dec / galsim.degrees), (ra, dec))
+            assert np.allclose((ra_dec_pos.ra / galsim.degrees, ra_dec_pos.dec / galsim.degrees), (ra, dec))
 
         # Make another copy of the image so we can start fresh
         img = deepcopy(self.img)
@@ -974,9 +976,9 @@ class TestSheImage(SheTestCase):
 
             xy_pos = img.galsim_wcs.toImage(galsim.CelestialCoord(ra * galsim.degrees, dec * galsim.degrees))
             assert np.allclose((xy_pos.x, xy_pos.y), (x, y))
-            radec_pos = img.galsim_wcs.toWorld(galsim.PositionD(x, y))
+            ra_dec_pos = img.galsim_wcs.toWorld(galsim.PositionD(x, y))
             # Need to divide out units for numpy to understand the values
-            assert np.allclose((radec_pos.ra / galsim.degrees, radec_pos.dec / galsim.degrees), (ra, dec))
+            assert np.allclose((ra_dec_pos.ra / galsim.degrees, ra_dec_pos.dec / galsim.degrees), (ra, dec))
 
         # Test with an OffsetWCS as well
 
@@ -1062,9 +1064,9 @@ class TestSheImage(SheTestCase):
         # We set up points to test first based on pixel coords, since we can tell easily what's in or not
 
         # Set up lists, using each possible combination of each x and y test point
-        l = 6
-        l_x = np.array([x for x in [-100, -1, 2, self.w - 2, self.w + 1, self.w + 100] for _ in range(l)])
-        l_y = np.array([-100, -1, 2, self.h - 2, self.h + 1, self.h + 100] * l)
+        base_len = 6
+        l_x = np.array([x for x in [-100, -1, 2, self.w - 2, self.w + 1, self.w + 100] for _ in range(base_len)])
+        l_y = np.array([-100, -1, 2, self.h - 2, self.h + 1, self.h + 100] * base_len)
 
         l_ra, l_dec = self.img.pix2world(l_x, l_y, origin = 0)
 
@@ -1115,6 +1117,6 @@ class TestSheImage(SheTestCase):
         img_copy = deepcopy(self.img)
         assert self.img == img_copy
 
-        # Test we get inequal when we change the copy
+        # Test we get unequal when we change the copy
         img_copy.data += 1
         assert self.img != img_copy
