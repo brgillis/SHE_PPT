@@ -37,6 +37,8 @@ from SHE_PPT.logging import set_log_level_debug
 from SHE_PPT.she_frame_stack import SHEFrameStack
 from SHE_PPT.testing.mock_pipeline_config import MockPipelineConfigFactory
 
+ENVVAR_WORKSPACE = "WORKSPACE"
+
 MSG_CANT_FIND_FILE = "Cannot find file: %s"
 
 
@@ -162,11 +164,18 @@ class SheTestCase:
         """ This performs setup once per initialization of the test class, calling the overridable setup_workdir and
             post_setup methods.
         """
+
+        # Call initialisation tasks first
+        self.__init()
+
+        # Call to overridable `setup_workdir` method
         self.setup_workdir()
 
+        # Internal setup using the state of the class at the end of the `setup_workdir` method.
         self.tmpdir_factory = tmpdir_factory
-        self._setup()
+        self.__setup()
 
+        # Call to overridable `post_setup` method
         self.post_setup()
 
         return self
@@ -191,14 +200,24 @@ class SheTestCase:
 
         return self
 
-    # Convenience methods for when setting up with autouse = True
+    # Protected methods
 
     def _make_mock_args(self) -> Namespace:
         """Overridable method to create a mock self.args Namespace. Not necessary to implement if no args are used.
         """
         return Namespace()
 
-    def _setup_workdir_from_tmpdir(self, tmpdir: LocalPath):
+    # Private methods
+
+    def __init(self):
+        """Run initialization tasks at the very beginning of tests.
+        """
+
+        # Make sure the "WORKSPACE" envvar is set to be unique to this user, if it's not already set
+        if ENVVAR_WORKSPACE not in os.environ or os.environ[ENVVAR_WORKSPACE] == "":
+            os.environ[ENVVAR_WORKSPACE] = os.path.join("/tmp", os.environ["USER"])
+
+    def __setup_workdir_from_tmpdir(self, tmpdir: LocalPath):
         """ Sets up workdir and logdir based on a tmpdir fixture.
         """
 
@@ -208,23 +227,23 @@ class SheTestCase:
             self.workdir = tmpdir.strpath
         elif not hasattr(self, "workdir"):
             raise ValueError("self.workdir must be set if tmpdir is not provided to _setup_workdir_from_tmpdir.")
-        self._setup_workdir()
+        self.__setup_workdir()
 
-    def _setup_workdir(self):
+    def __setup_workdir(self):
         """ Sets up self.logdir and the expected subdirs of the workdir.
         """
         self.logdir = os.path.join(self.workdir, "logs")
         os.makedirs(os.path.join(self.workdir, "logs"), exist_ok = True)
         os.makedirs(os.path.join(self.workdir, "data"), exist_ok = True)
 
-    def _set_workdir_args(self) -> None:
+    def __set_workdir_args(self) -> None:
         """ Set the workdir and logdir in the self.args attribute. Both must already be set for this object when this
             method is called.
         """
         setattr(self.args, CA_WORKDIR, self.workdir)
         setattr(self.args, CA_LOGDIR, self.logdir)
 
-    def _write_mock_pipeline_config(self):
+    def __write_mock_pipeline_config(self):
         """ Write the pipeline config we'll be using and note its filename. This uses the class member
             pipeline_config_factory_type to construct the pipeline_config if it doesn't already exist, and thus
             modifying that variable in subclasses will modify the pipeline_config created here.
@@ -240,16 +259,16 @@ class SheTestCase:
 
         setattr(self.args, CA_PIPELINE_CONFIG, self.mock_pipeline_config_factory.file_namer.filename)
 
-    def _setup(self):
+    def __setup(self):
         """ Implements common setup tasks. These include ensuring the workdir is set up, setting the workdir-related
             arguments to self.args, and creating a mock pipeline_config.
         """
         if self.workdir is None:
-            self._setup_workdir_from_tmpdir(self.tmpdir_factory.mktemp("test"))
+            self.__setup_workdir_from_tmpdir(self.tmpdir_factory.mktemp("test"))
         else:
-            self._setup_workdir()
-        self._set_workdir_args()
-        self._write_mock_pipeline_config()
+            self.__setup_workdir()
+        self.__set_workdir_args()
+        self.__write_mock_pipeline_config()
 
         # Set log level to debug to make sure there aren't any issues with logging strings
         set_log_level_debug()
