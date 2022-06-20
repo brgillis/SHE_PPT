@@ -51,8 +51,6 @@ def create_catalogue(obj_coords=[], workdir="."):
     #initialise the mer_final_catalog table
     table = initialise_mer_final_catalog()
 
-    object_ids = []
-
     n_objs = len(obj_coords)
     
     #create the table columns

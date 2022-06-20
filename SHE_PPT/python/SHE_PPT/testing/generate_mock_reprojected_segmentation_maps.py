@@ -44,11 +44,9 @@ def __generate_segmentation_mask(radius=10):
     
     mask = np.zeros((size,size),dtype=np.int64)
 
-    for j in range(size):
-        y = 0.5+j-radius
-        for i in range(size):
-            x = 0.5+i-radius
-            mask[j,i] = x*x  + y*y < radius**2
+    x = np.arange(size) + 0.5 - radius
+    y = np.arange(size)[:, np.newaxis] + 0.5 - radius
+    mask = np.square(x)  + np.square(y) < np.square(radius)
 
     return mask
 

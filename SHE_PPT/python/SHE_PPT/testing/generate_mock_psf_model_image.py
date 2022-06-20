@@ -90,9 +90,9 @@ def __create_mock_psf_image(stampsize=800, radius = 5):
     c = stampsize/2
 
     #create the gaussian
-    x = np.asarray(range(stampsize))-c
-    for i in range(stampsize):
-        img[i,:] = np.exp(-(x*x + x[i]*x[i])/radius**2)
+    x_r = (np.arange(stampsize) - c) / radius
+    y_r = (np.arange(stampsize)[:, np.newaxis] - c) / radius
+    img = np.exp(-np.square(x_r)-np.square(y_r))
     
     #normalise
     img = img/img.sum()
@@ -164,20 +164,4 @@ def create_model_image_product(object_ids, pixel_coords, workdir=".", stampsize=
     write_xml_product(dpd, prod_filename, workdir=workdir)
 
     return prod_filename
-
-
-    
-
-
-
-    
-
-
-
-
-
-    
-    
-
-
 
