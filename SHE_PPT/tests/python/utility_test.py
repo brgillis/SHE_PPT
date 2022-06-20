@@ -22,185 +22,186 @@ __updated__ = "2021-02-10"
 
 import os
 import shutil
+from copy import deepcopy
+from dataclasses import dataclass
+from typing import Optional
 
 import numpy as np
+import pytest
+from astropy.io.fits import BinTableHDU, HDUList, Header, PrimaryHDU
+from astropy.table import Table
 
-from EL_PythonUtils.utilities import get_arguments_string, hash_any
-from SHE_PPT.utility import (any_is_inf_nan_or_masked, any_is_inf_or_nan, any_is_nan_or_masked, get_all_files,
-                             get_nested_attr,
-                             is_inf, is_inf_nan_or_masked, is_inf_or_nan,
-                             is_masked, is_nan, is_nan_or_masked,
-                             process_directory,
-                             set_nested_attr, )
+from SHE_PPT.constants.fits import CCDID_LABEL, EXTNAME_LABEL, SCI_TAG
+from SHE_PPT.testing.utility import SheTestCase
+from SHE_PPT.utility import (all_are_zero, any_is_inf, any_is_inf_nan_or_masked, any_is_inf_or_nan, any_is_masked,
+                             any_is_nan, any_is_nan_or_masked, any_is_zero, coerce_to_list, find_extension,
+                             get_all_files, get_attr_with_index, get_detector, get_nested_attr,
+                             get_release_from_version, is_inf, is_inf_nan_or_masked, is_inf_or_nan, is_masked, is_nan,
+                             is_nan_or_masked, is_zero, join_without_none, set_attr_with_index, set_nested_attr, )
 
 
-class TestUtility:
+@dataclass
+class MockClass:
+    """A mock class to test the utility functions which deal with setting/getting attrs.
+    """
+    a: int = 0
+    b: float = 1.1
+    c: str = "2.2.2"
+    d: bool = False
+    e: np.ndarray = np.array([1, 2, 3])
+    r: "Optional[MockClass]" = None
+
+
+class TestUtility(SheTestCase):
+    """Class to handle unit tests for functions in the `SHE_PPT.utility` module.
     """
 
-
-    """
-
-    @classmethod
-    def setup_class(cls):
-        return
-
-    @classmethod
-    def teardown_class(cls):
-        return
-
-    def test_get_set_nested_attr(self):
-
-        class DoubleNestedClass(object):
-
-            def __init__(self):
-                self.subsubval = "foo"
-
-        class NestedClass(object):
-
-            def __init__(self):
-                self.subobj = DoubleNestedClass()
-                self.subval = "bar"
-
-        class ContainingClass(object):
-
-            def __init__(self):
-                self.obj = NestedClass()
-                self.val = "me"
-
-        c = ContainingClass()
-
-        # Check basic get_nested_attr functionality
-        assert get_nested_attr(c, "val") == "me"
-        assert get_nested_attr(c, "obj.subval") == "bar"
-        assert get_nested_attr(c, "obj.subobj.subsubval") == "foo"
-
-        # Check set_nested_attr functionality
-        set_nested_attr(c, "val", 15)
-        set_nested_attr(c, "obj.subval", "Fif.teen")
-        set_nested_attr(c, "obj.subobj.subsubval", (5, "t.e.e.n"))
-
-        assert get_nested_attr(c, "val") == 15
-        assert get_nested_attr(c, "obj.subval") == "Fif.teen"
-        assert get_nested_attr(c, "obj.subobj.subsubval") == (5, "t.e.e.n")
-
-        return
-
-    def test_hash_any(self):
-
-        test_str = "my_string"
-        test_obj = ("this_is_my_tuple", 1)
-
-        # Check that maximum length is enforced properly
-        max_length = 16
-        assert len(hash_any(test_str, max_length = max_length)) == max_length
-        assert len(hash_any(test_obj, max_length = max_length)) == max_length
-        assert len(hash_any(test_obj, format = "base64", max_length = max_length)) == max_length
-
-        smaller_max_length = 8
-        assert hash_any(test_str, max_length = max_length)[
-               :max_length - smaller_max_length] == hash_any(test_str, max_length = smaller_max_length)
-        assert hash_any(test_obj, max_length = max_length)[
-               :max_length - smaller_max_length] == hash_any(test_obj, max_length = smaller_max_length)
-        assert (hash_any(test_obj, max_length = max_length, format = "base64")[:max_length - smaller_max_length] ==
-                hash_any(test_obj, max_length = smaller_max_length, format = "base64"))
-
-        # Check that base64 encoding is working as expected - should be shorter than hex encoding
-        assert len(hash_any(test_str, format = "hex")) > len(hash_any(test_str, format = "base64"))
-        assert len(hash_any(test_obj, format = "hex")) > len(hash_any(test_obj, format = "base64"))
-
-    def test_get_arguments_string(self):
-
-        # Set up a mock arguments object
-        class TestArgs(object):
-
-            def __init__(self):
-                self.foo = "bar"
-                self.foobar = ["bar", "foo "]
-                return
-
-        test_args = TestArgs()
-
-        # Test with no command string
-        arg_string = get_arguments_string(test_args)
-
-        # Have to test both possible orders of arguments since it's indeterminate
-        assert ((arg_string == "--foo bar --foobar bar foo") or
-                (arg_string == "--foobar bar foo --foo bar"))
-
-        # Test with a command string
-        cmd_string = get_arguments_string(test_args, cmd = "run")
-        assert ((cmd_string == "run --foo bar --foobar bar foo") or
-                (cmd_string == "run --foobar bar foo --foo bar"))
-
-        # Test it strips the command string properly
-        cmd_string2 = get_arguments_string(test_args, cmd = "run ")
-        assert ((cmd_string2 == "run --foo bar --foobar bar foo") or
-                (cmd_string2 == "run --foobar bar foo --foo bar"))
-
-        # Try with store_true/false
-        class TestBoolArgs(object):
-
-            def __init__(self):
-                self.stt = True
-                self.stf = False
-                self.sff = False
-                self.sft = True
-                return
-
-        test_bool_args = TestBoolArgs()
-        bool_arg_string = get_arguments_string(test_bool_args, store_true = ["stt", "stf"],
-                                               store_false = ["sff", "sft"])
-        assert ((bool_arg_string == "--stt --sff") or
-                (bool_arg_string == "--sff --stt"))
-
-        # Test if it properly puts quotes around args with spaces in them
-        test_space_args = TestArgs()
-        test_space_args.foo = "b a r"
-        test_space_args.foobar = ["bar", "f o o"]
-
-        space_arg_string = get_arguments_string(test_space_args)
-        assert ((space_arg_string == '--foo "b a r" --foobar bar "f o o"') or
-                (space_arg_string == '--foobar bar "f o o" --foo "b a r"'))
-
-        return
-
-    def test_process_directory(self):
+    def post_setup(self):
+        """Set up some data used in multiple tests.
         """
+
+        # Create an object of the MockClass type, with a complicated nested structure
+        mock_object_s2 = MockClass()
+        mock_object_s1 = MockClass(r = mock_object_s2)
+        self.mock_object = MockClass(r = mock_object_s1)
+
+    def test_get_attr_with_index(self):
+        """Unit test of the `get_nested_attr` function.
         """
-        test_dir = os.path.join(os.getenv('HOME'), 'fgdyteihth')
-        os.mkdir(test_dir)
-        subdir_name1 = 'sub_a'
-        os.mkdir(os.path.join(test_dir, subdir_name1))
-        # subdir_name2='sub_b'
-        # os.mkdir(os.path.join(test_dir,subdir_name2))
-        file_name1 = 'file1.txt'
-        file_name2 = 'file2.txt'
-        open(os.path.join(test_dir, file_name1), 'w').writelines(['1\n'])
-        open(os.path.join(test_dir, file_name2), 'w').writelines(['2\n'])
-        file_list, sbdir_list = process_directory(test_dir)
-        assert len(file_list) == 2
-        assert len(sbdir_list) == 1
-        shutil.rmtree(test_dir)
+
+        # Test getting a simple attribute
+        assert get_attr_with_index(self.mock_object, 'a') == self.mock_object.a
+
+        # Test getting an indexed attribute
+        assert get_attr_with_index(self.mock_object, 'e[1]') == self.mock_object.e[1]
+
+    def test_get_nested_attr(self):
+        """Unit test of the `get_nested_attr` function.
+        """
+
+        # Test getting a simple attribute
+        assert get_nested_attr(self.mock_object, 'a') == self.mock_object.a
+
+        # Test getting a nested attribute
+        assert get_nested_attr(self.mock_object, 'r.b') == self.mock_object.r.b
+
+        # Test getting a nested indexed attribute
+        assert get_nested_attr(self.mock_object, 'r.e[1]') == self.mock_object.r.e[1]
+
+    def test_set_attr_with_index(self):
+        """Unit test of the `set_nested_attr` function.
+        """
+
+        copied_object = deepcopy(self.mock_object)
+
+        # Test setting a simple attribute
+        set_attr_with_index(copied_object, 'a', 2)
+        assert copied_object.a == 2
+
+        # Test setting an indexed attribute
+        set_attr_with_index(copied_object, 'e[1]', 3)
+        assert copied_object.e[1] == 3
+
+    def test_set_nested_attr(self):
+        """Unit test of the `set_nested_attr` function.
+        """
+
+        copied_object = deepcopy(self.mock_object)
+
+        # Test setting a simple attribute
+        set_attr_with_index(copied_object, 'a', 2)
+        assert copied_object.a == 2
+
+        # Test setting a nested attribute
+        set_nested_attr(copied_object, 'r.b', 2.2)
+        assert copied_object.r.b == 2.2
+
+        # Test setting a nested indexed attribute
+        set_nested_attr(copied_object, 'r.r.e[0]', 3)
+        assert copied_object.r.r.e[0] == 3
+
+    def test_get_release_from_version(self):
+        """Unit test of the `get_release_from_version` function.
+        """
+
+        # Test with a version string
+        assert get_release_from_version("1.1") == "01.01"
+
+        # Test with a version string with a bugfix number
+        assert get_release_from_version("22.3.4") == "22.03"
+
+        # Test it raises an exception when expected
+        with pytest.raises(ValueError):
+            _ = get_release_from_version("101.0")
+
+    def test_find_extension(self):
+        """Unit test of the `find_extension` function.
+        """
+
+        # Create a list of mock HDUs to test
+        mock_hdu_list = HDUList([PrimaryHDU(),
+                                 BinTableHDU(header = Header({EXTNAME_LABEL: f"CCDID 1-1.{SCI_TAG}",
+                                                              CCDID_LABEL  : "CCDID 1-1"})),
+                                 BinTableHDU(header = Header({EXTNAME_LABEL: f"CCDID 1-2.{SCI_TAG}",
+                                                              CCDID_LABEL  : "CCDID 1-2"}))])
+
+        # Check that it finds the correct HDU when specifying either extname or ccdid
+        for i in (1, 2):
+            assert find_extension(mock_hdu_list, extname = f"CCDID 1-{i}.{SCI_TAG}") == i
+            assert find_extension(mock_hdu_list, ccdid = f"CCDID 1-{i}") == i
+
+        # Test that it raises an exception when required input isn't provided
+        with pytest.raises(ValueError):
+            _ = find_extension(mock_hdu_list)
+
+        # Test that it returns None when the HDU isn't found
+        assert find_extension(mock_hdu_list, extname = f"CCDID 1-3.{SCI_TAG}") is None
+
+    def test_get_detector(self):
+        """Unit test of the `get_detector` function.
+        """
+
+        # Create a mock HDU and table to test with
+        mock_hdu = BinTableHDU(header = Header({EXTNAME_LABEL: f"CCDID 1-2.{SCI_TAG}",
+                                                CCDID_LABEL  : "CCDID 1-2"}))
+        mock_table = Table(meta = {EXTNAME_LABEL: f"CCDID 1-2.{SCI_TAG}",
+                                   CCDID_LABEL  : "CCDID 1-2"})
+        bad_obj = Table()
+
+        # Test we get the expected result with each object
+
+        assert get_detector(mock_hdu) == (1, 2)
+        assert get_detector(mock_table) == (1, 2)
+
+        with pytest.raises(ValueError):
+            _ = get_detector(bad_obj)
 
     def test_get_all_files(self):
+        """Unit test of the `get_all_files` function.
         """
-        """
-        test_dir = os.path.join(os.getenv('HOME'), 'fgdytedggdsth')
+
+        test_dir = os.path.join(self.workdir, 'test_dir')
         os.mkdir(test_dir)
+
         subdir_name1 = 'sub_a'
         os.mkdir(os.path.join(test_dir, subdir_name1))
+
         subdir_name2 = 'sub_b'
         os.mkdir(os.path.join(test_dir, subdir_name2))
+
         file_name1 = 'file1.txt'
         file_name2 = 'file2.txt'
         open(os.path.join(test_dir, file_name1), 'w').writelines(['1\n'])
         open(os.path.join(test_dir, file_name2), 'w').writelines(['2\n'])
+
         file_name3 = 'file3.txt'
         file_name4 = 'file4.txt'
         open(os.path.join(test_dir, subdir_name1, file_name3), 'w').writelines(['1\n'])
         open(os.path.join(test_dir, subdir_name2, file_name4), 'w').writelines(['2\n'])
+
         subdir_name3 = 'sub_b1'
         os.mkdir(os.path.join(test_dir, subdir_name2, subdir_name3))
+
         file_name5 = 'file5.txt'
         open(os.path.join(test_dir, subdir_name2, subdir_name3, file_name5), 'w').writelines(['1\n'])
 
@@ -212,7 +213,7 @@ class TestUtility:
         shutil.rmtree(test_dir)
 
     def test_bad_value_checks(self):
-        """ Test the various "bad value" checks for Inf, NaN, and masked values.
+        """Test the various "bad value" checks for Inf, NaN, and masked values.
         """
 
         # Create a test array
@@ -232,12 +233,71 @@ class TestUtility:
             assert is_inf_nan_or_masked(x) == (is_inf(x) or is_nan(x) or is_masked(x))
 
             # Check with `any` methods on this individual value
+            assert any_is_inf(x) == is_inf(x)
+            assert any_is_nan(x) == is_nan(x)
+            assert any_is_masked(x) == is_masked(x)
+
             assert any_is_inf_or_nan(x) == (is_inf(x) or is_nan(x) and not is_masked(x))
             assert any_is_nan_or_masked(x) == (is_nan(x) or is_masked(x))
             assert any_is_inf_nan_or_masked(x) == (is_inf(x) or is_nan(x) or is_masked(x))
 
         # Test the 'any' methods on full arrays
 
-        assert any_is_inf_or_nan(l_x) == True
-        assert any_is_nan_or_masked(l_x) == True
-        assert any_is_inf_nan_or_masked(l_x) == True
+        assert any_is_inf_or_nan(l_x)
+        assert any_is_nan_or_masked(l_x)
+        assert any_is_inf_nan_or_masked(l_x)
+
+    def test_is_zero(self):
+        """Test the `is_zero` functions.
+        """
+
+        # Test with a scalar
+        assert is_zero(0)
+        assert not is_zero(1)
+
+        # Test with a numpy array - any
+        assert any_is_zero(np.array([0, 1]))
+        assert not any_is_zero(np.array([1, 1]))
+
+        # Test with a numpy array - all
+        assert all_are_zero(np.array([0, 0]))
+        assert not all_are_zero(np.array([0, 1]))
+
+    def test_coerce_to_list(self):
+        """Test the `coerce_to_list` function.
+        """
+
+        # Test with a scalar
+        assert coerce_to_list(1) == [1]
+
+        # Test with a numpy array
+        assert coerce_to_list(np.array([1, 2])) == [1, 2]
+
+        # Test with a list
+        assert coerce_to_list([1, 2]) == [1, 2]
+
+        # Test with a string
+        assert coerce_to_list("1,2") == ["1,2"]
+
+        # Test with (not) keeping None
+        assert coerce_to_list(None, keep_none = False) == []
+        assert coerce_to_list(None, keep_none = True) is None
+
+    def test_join_without_none(self):
+        """Test the `join_without_none` function.
+        """
+
+        # Test with a single value
+        assert join_without_none([1]) == "1"
+
+        # Test with a few values
+        assert join_without_none([1, 2]) == "1-2"
+
+        # Test with None
+        assert join_without_none([1, None, 2]) == "1-2"
+
+        # Test with a custom joiner
+        assert join_without_none([1, 2], joiner = ",") == "1,2"
+
+        # Test with a default
+        assert join_without_none([None], default = "default") == "default"
