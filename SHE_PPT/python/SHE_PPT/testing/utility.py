@@ -35,6 +35,7 @@ from SHE_PPT.constants.test_data import (MDB_PRODUCT_FILENAME, MER_FINAL_CATALOG
                                          TEST_DATA_LOCATION,
                                          TEST_FILES_DATA_STACK, TEST_FILES_MDB,
                                          VIS_CALIBRATED_FRAME_LISTFILE_FILENAME, )
+from SHE_PPT.file_io import symlink_contents
 from SHE_PPT.logging import set_log_level_debug
 from SHE_PPT.she_frame_stack import SHEFrameStack
 from SHE_PPT.testing.mock_pipeline_config import MockPipelineConfigFactory
@@ -51,6 +52,7 @@ class SheTestCase:
     _args: Optional[Namespace] = None
     _d_args: Optional[Dict[str, Any]] = None
 
+    download_dir: Optional[str] = None
     workdir: Optional[str] = None
     logdir: Optional[str] = None
 
@@ -102,39 +104,36 @@ class SheTestCase:
         if cls.mock_pipeline_config_factory:
             cls.mock_pipeline_config_factory.cleanup()
 
-    @classmethod
-    def _download_mdb(cls):
+    def _download_mdb(self):
         """ Download the test MDB from WebDAV.
         """
         sync = DataSync(SYNC_CONF, TEST_FILES_MDB)
         sync.download()
-        cls.mdb_filename = MDB_PRODUCT_FILENAME
+        self.mdb_filename = MDB_PRODUCT_FILENAME
 
-        cls._finalize_download(cls.mdb_filename, sync)
+        self._finalize_download(self.mdb_filename, sync)
 
-        mdb.init(os.path.join(cls.workdir, cls.mdb_filename))
+        mdb.init(os.path.join(self.download_dir, self.mdb_filename))
 
-    @classmethod
-    def _download_datastack(cls,
+    def _download_datastack(self,
                             read_in: bool = True, ):
         """ Download the test data stack from WebDAV.
         """
         sync = DataSync(SYNC_CONF, TEST_FILES_DATA_STACK)
         sync.download()
 
-        cls._finalize_download(VIS_CALIBRATED_FRAME_LISTFILE_FILENAME, sync)
+        self._finalize_download(VIS_CALIBRATED_FRAME_LISTFILE_FILENAME, sync)
 
         # Read in the test data if desired
         if read_in:
-            cls.data_stack = SHEFrameStack.read(exposure_listfile_filename = VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
-                                                detections_listfile_filename = MER_FINAL_CATALOG_LISTFILE_FILENAME,
-                                                workdir = cls.workdir,
-                                                clean_detections = False,
-                                                memmap = True,
-                                                mode = 'denywrite')
+            self.data_stack = SHEFrameStack.read(exposure_listfile_filename = VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
+                                                 detections_listfile_filename = MER_FINAL_CATALOG_LISTFILE_FILENAME,
+                                                 workdir = self.download_dir,
+                                                 clean_detections = False,
+                                                 memmap = True,
+                                                 mode = 'denywrite')
 
-    @classmethod
-    def _finalize_download(cls,
+    def _finalize_download(self,
                            filename: str,
                            sync_mdb: DataSync):
         """ Check that the desired file has been downloaded successfully and set the workdir based on its location.
@@ -144,9 +143,9 @@ class SheTestCase:
         qualified_filename = sync_mdb.absolutePath(os.path.join(TEST_DATA_LOCATION, filename))
         assert os.path.isfile(qualified_filename), MSG_CANT_FIND_FILE % qualified_filename
 
-        # Set the workdir if it's not already set
-        if cls.workdir is None:
-            cls.workdir = os.path.split(qualified_filename)[0]
+        # Set the download_dir if it's not already set
+        if self.download_dir is None:
+            self.download_dir = os.path.split(qualified_filename)[0]
 
     def setup_workdir(self) -> None:
         """Overridable method, where the user can specify any unique setup for a given testing class, to be performed
@@ -223,16 +222,17 @@ class SheTestCase:
         """ Sets up workdir and logdir based on a tmpdir fixture.
         """
 
-        # If workdir is already set (which will happen if any method to download data is called), leave it. Otherwise,
-        # set it from the tmpdir passed to this function.
-        if tmpdir is not None and self.workdir is None:
-            self.workdir = tmpdir.strpath
-        elif not hasattr(self, "workdir"):
-            raise ValueError("self.workdir must be set if tmpdir is not provided to _setup_workdir_from_tmpdir.")
+        # Set the workdir to the tmpdir provided by the factory
+        self.workdir = tmpdir.strpath
+
+        # If any data was downloaded, symlink it to the workdir
+        if self.download_dir is not None:
+            symlink_contents(self.download_dir, self.workdir)
+
         self.__setup_workdir()
 
     def __setup_workdir(self):
-        """ Sets up self.logdir and the expected subdirs of the workdir.
+        """ Sets up self.logdir and the expected subdirs of the workdir if they don't already exist.
         """
         self.logdir = os.path.join(self.workdir, "logs")
         os.makedirs(os.path.join(self.workdir, "logs"), exist_ok = True)
@@ -265,10 +265,7 @@ class SheTestCase:
         """ Implements common setup tasks. These include ensuring the workdir is set up, setting the workdir-related
             arguments to self.args, and creating a mock pipeline_config.
         """
-        if self.workdir is None:
-            self.__setup_workdir_from_tmpdir(self.tmpdir_factory.mktemp("test"))
-        else:
-            self.__setup_workdir()
+        self.__setup_workdir_from_tmpdir(self.tmpdir_factory.mktemp("test"))
         self.__set_workdir_args()
         self.__write_mock_pipeline_config()
 
