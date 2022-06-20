@@ -2043,7 +2043,7 @@ def copy_listfile_between_dirs(listfile_filename: str,
 
 
 def symlink_contents(src_dir: str,
-                     dest_dir: str):
+                     dest_dir: str) -> None:
     """Symbolically links the contents of one directory to another directory. Any folders in the source directory
     are re-created in the target directory, with their contents symlinked.
 
