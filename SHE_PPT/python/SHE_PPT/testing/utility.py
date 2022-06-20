@@ -31,7 +31,9 @@ from ElementsServices.DataSync import DataSync
 from SHE_PPT import mdb
 from SHE_PPT.argument_parser import CA_LOGDIR, CA_PIPELINE_CONFIG, CA_WORKDIR
 from SHE_PPT.constants.config import ConfigKeys
-from SHE_PPT.constants.test_data import (MDB_PRODUCT_FILENAME, MER_FINAL_CATALOG_LISTFILE_FILENAME, TEST_DATA_LOCATION,
+from SHE_PPT.constants.test_data import (MDB_PRODUCT_FILENAME, MER_FINAL_CATALOG_LISTFILE_FILENAME, SYNC_CONF,
+                                         TEST_DATA_LOCATION,
+                                         TEST_FILES_DATA_STACK, TEST_FILES_MDB,
                                          VIS_CALIBRATED_FRAME_LISTFILE_FILENAME, )
 from SHE_PPT.logging import set_log_level_debug
 from SHE_PPT.she_frame_stack import SHEFrameStack
@@ -104,7 +106,7 @@ class SheTestCase:
     def _download_mdb(cls):
         """ Download the test MDB from WebDAV.
         """
-        sync = DataSync("testdata/sync.conf", "testdata/test_mdb.txt")
+        sync = DataSync(SYNC_CONF, TEST_FILES_MDB)
         sync.download()
         cls.mdb_filename = MDB_PRODUCT_FILENAME
 
@@ -117,7 +119,7 @@ class SheTestCase:
                             read_in: bool = True, ):
         """ Download the test data stack from WebDAV.
         """
-        sync = DataSync("testdata/sync.conf", "testdata/test_data_stack.txt")
+        sync = DataSync(SYNC_CONF, TEST_FILES_DATA_STACK)
         sync.download()
 
         cls._finalize_download(VIS_CALIBRATED_FRAME_LISTFILE_FILENAME, sync)
