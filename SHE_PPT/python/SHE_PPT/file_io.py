@@ -2042,6 +2042,45 @@ def copy_listfile_between_dirs(listfile_filename: str,
     return qualified_copied_listfile_filename
 
 
+def symlink_contents(src_dir: str,
+                     dest_dir: str):
+    """Symbolically links the contents of one directory to another directory. Any folders in the source directory
+    are re-created in the target directory, with their contents symlinked.
+
+    Parameters
+    ----------
+    src_dir : str
+        The fully-qualified path to the source directory.
+    dest_dir : str
+        The fully-qualified path to the target directory.
+    """
+
+    # Make sure the target directory exists
+    os.makedirs(dest_dir, exist_ok = True)
+
+    # Get the list of files in the source directory
+    l_src_filenames = os.listdir(src_dir)
+
+    # Loop over the files in the source directory
+    for src_filename in l_src_filenames:
+
+        # Get the fully-qualified path of the file in the source directory
+        qualified_src_filename = os.path.join(src_dir, src_filename)
+
+        # Get the fully-qualified path of the file in the target directory
+        qualified_dest_filename = os.path.join(dest_dir, src_filename)
+
+        # If the file is a directory, create a new directory in the target directory, and recursively call this
+        # function on it
+        if os.path.isdir(qualified_src_filename):
+            os.makedirs(qualified_dest_filename, exist_ok = True)
+            symlink_contents(src_dir = qualified_src_filename,
+                             dest_dir = qualified_dest_filename)
+        else:
+            # Otherwise, create a symbolic link to the file in the source directory
+            os.symlink(qualified_src_filename, qualified_dest_filename)
+
+
 def find_file_in_path(filename: str, path: str) -> str:
     """Searches through a colon-separated path for a file and returns the qualified name of it if found,
     or raises a RuntimeError otherwise. The first instance of the file in the provided path is always returned in
