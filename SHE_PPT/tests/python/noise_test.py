@@ -29,7 +29,7 @@ from SHE_PPT.testing.utility import SheTestCase
 
 class TestNoise(SheTestCase):
 
-    def setUp(self):
+    def post_setup(self):
         self.pixel_scale = 0.1
         self.gain = 2.5
         self.pixel_value_ADU = 500
