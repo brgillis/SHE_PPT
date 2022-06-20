@@ -214,6 +214,9 @@ class SheTestCase:
         """Run initialization tasks at the very beginning of tests.
         """
 
+        # Set log level to debug to make sure there aren't any issues with logging strings
+        set_log_level_debug()
+
         # Make sure the "WORKSPACE" envvar is set to be unique to this user, if it's not already set
         if ENVVAR_WORKSPACE not in os.environ or os.environ[ENVVAR_WORKSPACE] == "":
             os.environ[ENVVAR_WORKSPACE] = os.path.join("/tmp", os.environ["USER"])
@@ -268,6 +271,3 @@ class SheTestCase:
         self.__setup_workdir_from_tmpdir(self.tmpdir_factory.mktemp("test"))
         self.__set_workdir_args()
         self.__write_mock_pipeline_config()
-
-        # Set log level to debug to make sure there aren't any issues with logging strings
-        set_log_level_debug()
