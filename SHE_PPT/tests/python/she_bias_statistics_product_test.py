@@ -31,11 +31,12 @@ from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.math import BiasMeasurements, LinregressStatistics, linregress_with_errors
 from SHE_PPT.products import she_bias_statistics as prod
 from SHE_PPT.table_formats.she_bias_statistics import calculate_bias_measurements
+from SHE_PPT.testing.utility import SheTestCase
 
 seed = 10245
 
 
-class TestShearBiasStatsProduct(object):
+class TestShearBiasStatsProduct(SheTestCase):
     """A collection of tests for the shear bias statistics data product.
 
     """

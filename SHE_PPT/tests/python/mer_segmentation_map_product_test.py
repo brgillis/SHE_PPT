@@ -28,9 +28,10 @@ from SHE_PPT import detector as dtc
 from SHE_PPT.constants.fits import SEGMENTATION_TAG
 from SHE_PPT.file_io import (SheFileReadError, read_xml_product, write_xml_product)
 from SHE_PPT.products import mer_segmentation_map as prod
+from SHE_PPT.testing.utility import SheTestCase
 
 
-class TestMosaicProduct(object):
+class TestMosaicProduct(SheTestCase):
     """A collection of tests for the mosaic data product.
 
     """

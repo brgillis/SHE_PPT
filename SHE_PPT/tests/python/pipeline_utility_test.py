@@ -37,7 +37,7 @@ from SHE_PPT.pipeline_utility import (AnalysisConfigKeys, CalibrationConfigKeys,
 from SHE_PPT.testing.utility import SheTestCase
 
 
-class TestUtility(SheTestCase):
+class TestPipelineUtility(SheTestCase):
     """ Unit tests for functions and classes in the SHE_PPT.pipeline_utility module.
     """
 

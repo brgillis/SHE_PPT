@@ -29,9 +29,10 @@ import numpy as np
 
 from SHE_PPT.she_image import SHEImage
 from SHE_PPT.she_image_stack import SHEImageStack
+from SHE_PPT.testing.utility import SheTestCase
 
 
-class TestSheStack(object):
+class TestSheImageStack(SheTestCase):
 
     @classmethod
     def setup_class(cls):

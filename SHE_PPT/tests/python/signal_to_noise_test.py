@@ -36,11 +36,12 @@ from SHE_PPT.constants.test_data import (MDB_PRODUCT_FILENAME, MER_FINAL_CATALOG
 from SHE_PPT.she_frame_stack import SHEFrameStack
 from SHE_PPT.signal_to_noise import get_SN_of_image
 from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
+from SHE_PPT.testing.utility import SheTestCase
 
 ex_signal_to_noises = [59, 32]
 
 
-class TestCase:
+class TestCase(SheTestCase):
     """
 
 

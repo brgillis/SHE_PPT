@@ -24,26 +24,18 @@ Created on: 26 Oct, 2017
 
 __updated__ = "2019-02-27"
 
-import logging
-
 import numpy as np
 
 import SHE_PPT.mask as m
+from SHE_PPT.testing.utility import SheTestCase
 
-logging.basicConfig(level = logging.DEBUG)
 
+class TestMask(SheTestCase):
 
-class Test_mask():
-
-    @classmethod
-    def setup_class(cls):
-        cls.test_mask = np.array(((0, m.masked_near_edge, m.masked_off_image),
-                                  (m.masked_bad_pixel, m.masked_near_edge, m.masked_off_image)),
-                                 dtype = np.int32)
-
-    @classmethod
-    def teardown_class(cls):
-        del cls.test_mask
+    def post_setup(self):
+        self.test_mask = np.array(((0, m.masked_near_edge, m.masked_off_image),
+                                   (m.masked_bad_pixel, m.masked_near_edge, m.masked_off_image)),
+                                  dtype = np.int32)
 
     def test_as_bool(self):
         desired_bool_mask = np.array(((False, True, True),
