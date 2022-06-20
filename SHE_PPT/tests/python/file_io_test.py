@@ -37,7 +37,7 @@ import SHE_PPT
 from ElementsServices.DataSync.DataSynchronizer import DownloadFailed
 from SHE_PPT.constants.classes import ShearEstimationMethods
 from SHE_PPT.constants.test_data import (MDB_PRODUCT_FILENAME, MER_FINAL_CATALOG_LISTFILE_FILENAME, SYNC_CONF,
-                                         TEST_DATA_LOCATION, )
+                                         TEST_DATADIR, TEST_DATA_LOCATION, )
 from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_SUBDIR, DEFAULT_INSTANCE_ID,
                              DEFAULT_TYPE_NAME, FileLoader, FitsLoader, MultiFileLoader, MultiFitsLoader,
                              MultiProductLoader, MultiTableLoader, ProductLoader, S_NON_FILENAMES, SheFileAccessError,
@@ -57,7 +57,7 @@ from SHE_PPT.products.she_validated_measurements import create_dpd_she_validated
 from SHE_PPT.table_formats.mer_final_catalog import MerFinalCatalogFormat
 from SHE_PPT.testing.mock_measurements_cat import EST_SEED, MockShearEstimateTableGenerator
 from SHE_PPT.testing.mock_mer_final_cat import MockMFCGalaxyTableGenerator
-from SHE_PPT.testing.utility import SheTestCase
+from SHE_PPT.testing.utility import ENVVAR_WORKSPACE, SheTestCase
 from ST_DataModelBindings.dpd.she.raw.validatedmeasurements_stub import dpdSheValidatedMeasurements
 from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
 from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
@@ -794,8 +794,15 @@ class TestIO(SheTestCase):
         assert os.path.isfile(test_qualified_filename)
 
         # Test it raises an exception when expected
+
+        # Delete any potentially cached version of the null file, both before and after the test
+        qualified_null_filename = os.path.join(os.environ[ENVVAR_WORKSPACE], TEST_DATADIR[1:], FILENAME_NO_FILE)
+        try_remove_file(qualified_null_filename)
+
         with pytest.raises(DownloadFailed):
             _ = find_web_file(FILENAME_NO_FILE)
+
+        try_remove_file(qualified_null_filename)
 
     def test_find_file(self):
         """Unit test of `find_file`.
