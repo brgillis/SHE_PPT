@@ -27,6 +27,7 @@ Bug Fixes
 New Features
 ------------
 - Added new functions to test if a value is either NaN or masked, or NaN, Inf, or masked
+- Added new functions for generation of mock data for VIS frames, MER tables, MER segmentation maps, PSF model images and object id lists.
 
 
 New config features
