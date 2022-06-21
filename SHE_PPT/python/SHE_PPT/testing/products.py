@@ -25,7 +25,8 @@ import abc
 import os
 from typing import Any, Optional
 
-from SHE_PPT.file_io import DATA_SUBDIR, read_xml_product, write_xml_product
+from SHE_PPT.constants.misc import DATA_SUBDIR
+from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.utility import is_any_type_of_none
 
 

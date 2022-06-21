@@ -24,7 +24,6 @@ import os
 import shutil
 import stat
 import subprocess
-from copy import deepcopy
 from time import sleep
 from typing import Type
 
@@ -36,22 +35,22 @@ from astropy.table import Table
 import SHE_PPT
 from ElementsServices.DataSync.DataSynchronizer import DownloadFailed
 from SHE_PPT.constants.classes import ShearEstimationMethods
+from SHE_PPT.constants.misc import DATA_SUBDIR
 from SHE_PPT.constants.test_data import (MDB_PRODUCT_FILENAME, MER_FINAL_CATALOG_LISTFILE_FILENAME, SYNC_CONF,
                                          TEST_DATA_LOCATION, )
-from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_SUBDIR, DEFAULT_INSTANCE_ID,
+from SHE_PPT.file_io import (DEFAULT_FILE_EXTENSION, DEFAULT_FILE_SUBDIR, DEFAULT_INSTANCE_ID,
                              DEFAULT_TYPE_NAME, FileLoader, FitsLoader, MultiFileLoader, MultiFitsLoader,
-                             MultiProductLoader, MultiTableLoader, ProductLoader, S_NON_FILENAMES, SheFileAccessError,
+                             MultiProductLoader, MultiTableLoader, ProductLoader, SheFileAccessError,
                              SheFileNamer, SheFileReadError, SheFileWriteError, TableLoader, append_hdu,
-                             copy_listfile_between_dirs, copy_product_between_dirs, filename_exists,
-                             filename_not_exists, find_aux_file, find_conf_file, find_file, find_file_in_path,
-                             find_web_file, first_in_path, first_writable_in_path, get_allowed_filename,
-                             get_data_filename, get_qualified_filename, instance_id_maxlen, processing_function_maxlen,
-                             read_d_l_method_table_filenames, read_d_l_method_tables, read_d_method_table_filenames,
-                             read_d_method_tables, read_fits, read_listfile, read_product_and_table, read_table,
-                             read_table_from_product, read_xml_product, remove_files, replace_in_file,
-                             replace_multiple_in_file, safe_copy, tar_files, try_remove_file, type_name_maxlen,
-                             update_xml_with_value, write_fits, write_listfile, write_product_and_table, write_table,
-                             write_xml_product, )
+                             copy_listfile_between_dirs, copy_product_between_dirs, find_aux_file, find_conf_file,
+                             find_file, find_file_in_path, find_web_file, first_in_path, first_writable_in_path,
+                             get_allowed_filename, get_data_filename, get_qualified_filename, instance_id_maxlen,
+                             processing_function_maxlen, read_d_l_method_table_filenames, read_d_l_method_tables,
+                             read_d_method_table_filenames, read_d_method_tables, read_fits, read_listfile,
+                             read_product_and_table, read_table, read_table_from_product, read_xml_product,
+                             remove_files, replace_in_file, replace_multiple_in_file, safe_copy, tar_files,
+                             try_remove_file, type_name_maxlen, update_xml_with_value, write_fits, write_listfile,
+                             write_product_and_table, write_table, write_xml_product, )
 from SHE_PPT.products.mer_final_catalog import create_dpd_mer_final_catalog
 from SHE_PPT.products.she_validated_measurements import create_dpd_she_validated_measurements
 from SHE_PPT.table_formats.mer_final_catalog import MerFinalCatalogFormat
@@ -724,19 +723,6 @@ class TestIO(SheTestCase):
                                      output_filename = qualified_filename_out,
                                      input_strings = [str_val1, str_key3],
                                      output_strings = [str_val1a])
-
-    def test_filename_exists(self):
-        """Unit tests of `filename_(not_)exists`.
-        """
-
-        # Create a set of values to test
-        s_test_vals = deepcopy(S_NON_FILENAMES)
-        s_test_vals.add("actual_filename.text")
-
-        for test_val in s_test_vals:
-            ex_filename_exists = test_val not in S_NON_FILENAMES
-            assert filename_exists(test_val) == ex_filename_exists
-            assert filename_not_exists(test_val) == (not ex_filename_exists)
 
     def test_find_file_in_path(self):
         """Unit tests of `find_file_in_path`.

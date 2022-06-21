@@ -31,6 +31,7 @@ from astropy.table import Table
 
 from . import detector as dtc
 from .constants.fits import CCDID_LABEL, EXTNAME_LABEL
+from .constants.misc import S_NON_FILENAMES
 from .logging import getLogger
 
 logger = getLogger(__name__)
@@ -325,9 +326,8 @@ def is_any_type_of_none(value: Union[None, str]) -> bool:
     bool
         True if the value is of any type of None, False otherwise.
     """
-    # TODO: This duplicates `filename_not_exists` in SHE_PPT.file_io - one should be deprecated in favor of the other.
     try:
-        return value in (None, "None", "", "data/None", "data/")
+        return value in S_NON_FILENAMES
     except (TypeError, ValueError):
         # We might get an exception if the value is of certain types, such as a numpy array. In that case,
         # it's not None as understood here, so return False
