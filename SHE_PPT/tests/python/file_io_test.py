@@ -365,7 +365,7 @@ class TestIO(SheTestCase):
         with pytest.raises(TypeError):
             _ = read_xml_product(test_qualified_filename, product_type = non_ex_type)
 
-        # Test that we get expected read/write errors
+        # Test that we get expected read/write errors if the path doesn't exist
         with pytest.raises(SheFileWriteError):
             write_xml_product(self.test_xml_product,
                               test_filename,
