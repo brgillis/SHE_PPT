@@ -21,10 +21,12 @@ __updated__ = "2021-08-16"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 import os
+import warnings
 from argparse import Namespace
 from typing import Any, Dict, Optional
 
 import pytest
+from astropy.utils.exceptions import AstropyDeprecationWarning
 from py._path.local import LocalPath
 
 from ElementsServices.DataSync import DataSync
@@ -253,3 +255,6 @@ class SheTestCase:
 
         # Set log level to debug to make sure there aren't any issues with logging strings
         set_log_level_debug()
+
+        # Set to raise an error on any deprecation warnings, to be sure they're caught and fixed in tests
+        warnings.simplefilter("error", category = AstropyDeprecationWarning)
