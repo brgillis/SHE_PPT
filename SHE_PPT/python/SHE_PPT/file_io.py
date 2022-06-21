@@ -2310,6 +2310,58 @@ def first_writable_in_path(path: str) -> str:
     return first_writable_dir
 
 
+def get_all_files(directory_name: str) -> List[str]:
+    """Search through a directory to get a full list of files in it and all of its sub-directories.
+
+    Parameters
+    ----------
+    directory_name : str
+        The name of the directory to search.
+
+    Returns
+    -------
+    List[str]
+        A list of all files in the directory, including its subdirectories.
+    """
+
+    full_file_list = []
+    dir_list = [directory_name]
+
+    is_complete = False
+
+    while not is_complete:
+
+        new_dir_list = []
+
+        for dir_name in dir_list:
+
+            file_list, sb_dir_list = _process_directory_for_files(dir_name)
+            full_file_list += [os.path.join(dir_name, filename)
+                               for filename in file_list]
+
+            if sb_dir_list:
+                new_dir_list += [os.path.join(dir_name, sb_dir)
+                                 for sb_dir in sb_dir_list]
+
+        dir_list = new_dir_list
+        is_complete = len(dir_list) == 0
+
+    return full_file_list
+
+
+def _process_directory_for_files(directory_name: str) -> Tuple[List[str], List[str]]:
+    """ Recursively check a directory for files; used within `get_all_files`.
+    """
+    file_list = []
+    subdir_list = []
+    for file_name in os.listdir(directory_name):
+        if os.path.isdir(os.path.join(directory_name, file_name)):
+            subdir_list.append(file_name)
+        elif not file_name.startswith('.'):
+            file_list.append(file_name)
+    return file_list, subdir_list
+
+
 def get_data_filename(filename: str, workdir: str = DEFAULT_WORKDIR) -> Optional[str]:
     """Given the unqualified name of a file and the work directory, determine if it's an XML data
     product or not, and get the filename of its DataContainer if so; otherwise, just return

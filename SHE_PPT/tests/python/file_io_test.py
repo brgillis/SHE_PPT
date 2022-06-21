@@ -46,7 +46,8 @@ from SHE_PPT.file_io import (DATA_SUBDIR, DEFAULT_FILE_EXTENSION, DEFAULT_FILE_S
                              SheFileNamer, SheFileReadError, SheFileWriteError, TableLoader, append_hdu,
                              copy_listfile_between_dirs, copy_product_between_dirs, find_aux_file, find_conf_file,
                              find_file, find_file_in_path, find_web_file, first_in_path, first_writable_in_path,
-                             get_allowed_filename, get_data_filename, get_qualified_filename, instance_id_maxlen,
+                             get_all_files, get_allowed_filename, get_data_filename, get_qualified_filename,
+                             instance_id_maxlen,
                              processing_function_maxlen, read_d_l_method_table_filenames, read_d_l_method_tables,
                              read_d_method_table_filenames, read_d_method_tables, read_fits, read_listfile,
                              read_product_and_table, read_table, read_table_from_product, read_xml_product,
@@ -842,6 +843,42 @@ class TestIO(SheTestCase):
         # Path not supplied
         with pytest.raises(ValueError):
             _ = find_file(SYNC_CONF)
+
+    def test_get_all_files(self):
+        """Unit test of the `get_all_files` function.
+        """
+
+        test_dir = os.path.join(self.workdir, 'test_dir')
+        os.mkdir(test_dir)
+
+        subdir_name1 = 'sub_a'
+        os.mkdir(os.path.join(test_dir, subdir_name1))
+
+        subdir_name2 = 'sub_b'
+        os.mkdir(os.path.join(test_dir, subdir_name2))
+
+        file_name1 = 'file1.txt'
+        file_name2 = 'file2.txt'
+        open(os.path.join(test_dir, file_name1), 'w').writelines(['1\n'])
+        open(os.path.join(test_dir, file_name2), 'w').writelines(['2\n'])
+
+        file_name3 = 'file3.txt'
+        file_name4 = 'file4.txt'
+        open(os.path.join(test_dir, subdir_name1, file_name3), 'w').writelines(['1\n'])
+        open(os.path.join(test_dir, subdir_name2, file_name4), 'w').writelines(['2\n'])
+
+        subdir_name3 = 'sub_b1'
+        os.mkdir(os.path.join(test_dir, subdir_name2, subdir_name3))
+
+        file_name5 = 'file5.txt'
+        open(os.path.join(test_dir, subdir_name2, subdir_name3, file_name5), 'w').writelines(['1\n'])
+
+        file_list = get_all_files(test_dir)
+        assert len(file_list) == 5
+
+        for ii, fName in enumerate(sorted(file_list)):
+            assert os.path.basename(fName) == 'file%s.txt' % (ii + 1)
+        shutil.rmtree(test_dir)
 
     def test_update_xml_with_value(self):
         """ Test creating a simple xml file and updating with <Value>
