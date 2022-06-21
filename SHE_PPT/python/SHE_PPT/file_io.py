@@ -30,13 +30,13 @@ import subprocess
 from datetime import datetime
 from os.path import exists, join
 from typing import Any, Callable, Dict, Generic, List, Optional, Sequence, Tuple, Type, TypeVar, Union
-from xml.sax import SAXParseException
 
 import numpy as np
 from astropy.io import fits
 from astropy.io.fits import HDUList
 from astropy.io.fits.hdu.base import ExtensionHDU
 from astropy.table import Table
+from astropy.utils import deprecated_renamed_argument
 from pyxb.exceptions_ import NamespaceError
 
 from EL_PythonUtils.utilities import time_to_timestamp
@@ -1092,6 +1092,9 @@ def replace_multiple_in_file(input_filename: str,
                 f_out.write(new_line)
 
 
+@deprecated_renamed_argument("allow_pickled",
+                             new_name = None,
+                             since = "9.1")
 def write_xml_product(product: Any,
                       xml_filename: str,
                       workdir: str = DEFAULT_WORKDIR,
@@ -1122,14 +1125,14 @@ def write_xml_product(product: Any,
     xml_filename = str(xml_filename)
 
     try:
-        _write_xml_product(product, xml_filename, workdir, allow_pickled)
+        _write_xml_product(product, xml_filename, workdir)
     except Exception as e:
         raise SheFileWriteError(filename = xml_filename, workdir = workdir) from e
 
     logger.debug(MSG_FINISHED_WRITING_DATA_PRODUCT, xml_filename, workdir)
 
 
-def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pickled: bool) -> None:
+def _write_xml_product(product: Any, xml_filename: str, workdir: str) -> None:
     """Private implementation of the core operations of `write_xml_product`; see that function's documentation for
     information on functionality and parameters.
     """
@@ -1168,19 +1171,13 @@ def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pick
 
     qualified_xml_filename = get_qualified_filename(xml_filename, workdir)
 
-    try:
-        with open(str(qualified_xml_filename), "w") as f:
-            f.write(product.toDOM().toprettyxml(encoding = "utf-8").decode("utf-8"))
-    except AttributeError as e:
-        if not allow_pickled:
-            raise
-        if "object has no attribute 'toDOM'" not in str(e):
-            raise
-        logger.warning(
-            "XML writing is not available; falling back to pickled writing instead.")
-        write_pickled_product(product, qualified_xml_filename)
+    with open(str(qualified_xml_filename), "w") as f:
+        f.write(product.toDOM().toprettyxml(encoding = "utf-8").decode("utf-8"))
 
 
+@deprecated_renamed_argument("allow_pickled",
+                             new_name = None,
+                             since = "9.1")
 def read_xml_product(xml_filename: str,
                      workdir: str = ".",
                      log_info: bool = False,
@@ -1222,7 +1219,7 @@ def read_xml_product(xml_filename: str,
 
     try:
 
-        product = _read_xml_product(xml_filename, workdir, allow_pickled)
+        product = _read_xml_product(xml_filename, workdir)
 
     except NamespaceError:
         # If we hit a namespace error, it likely means the SHE_PPT.products module hasn't been imported.
@@ -1230,7 +1227,7 @@ def read_xml_product(xml_filename: str,
         from . import products
 
         try:
-            product = _read_xml_product(xml_filename, workdir, allow_pickled)
+            product = _read_xml_product(xml_filename, workdir)
         except Exception as e:
             raise SheFileReadError(filename = xml_filename, workdir = workdir) from e
 
@@ -1247,27 +1244,18 @@ def read_xml_product(xml_filename: str,
     return product
 
 
-def _read_xml_product(xml_filename: str, workdir: str, allow_pickled: bool) -> Any:
+def _read_xml_product(xml_filename: str, workdir: str) -> Any:
     """Private implementation of the core functionality of `read_xml_product`. See that function's documentation for
     details on functionality and parameters.
     """
 
     qualified_xml_filename = find_file(xml_filename, workdir)
 
-    try:
-        with open(str(qualified_xml_filename), "r") as f:
-            xml_string = f.read()
+    with open(str(qualified_xml_filename), "r") as f:
+        xml_string = f.read()
 
-        # Create a new product instance using the proper data product dictionary
-        product = CreateFromDocument(xml_string)
-
-    except (UnicodeDecodeError, SAXParseException):
-        # Not actually saved as xml
-        if allow_pickled:
-            # Revert to pickled product
-            product = read_pickled_product(qualified_xml_filename)
-        else:
-            raise
+    # Create a new product instance using the proper data product dictionary
+    product = CreateFromDocument(xml_string)
 
     return product
 
@@ -2372,7 +2360,7 @@ def get_data_filename(filename: str, workdir: str = DEFAULT_WORKDIR) -> Optional
     try:
         qualified_filename = find_file(filename, workdir)
 
-        prod = read_xml_product(qualified_filename, allow_pickled = True)
+        prod = read_xml_product(qualified_filename)
 
         # If we get here, it is indeed an XML data product. Has it been monkey-patched
         # to have a get_filename method?
