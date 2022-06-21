@@ -15,6 +15,14 @@ Dependency Changes
 
 Deprecated Features
 -------------------
+- The functions `read_pickled_product` and `write_pickled_product` are deprecated, as are the `allow_pickled` options
+  of `read_xml_product` and `write_xml_product`.
+- The function `write_xml_product` no longer creates a dummy catalog product if one doesn't exist.
+- The functions `_is_no_file` and `filename_exists` in SHE_PPT.file_io are deprecated. The function
+  `is_any_type_of_none` from SHE_PPT.utility should be used instead.
+- The function `get_all_files` has been moved from SHE_PPT.utility to SHE_PPT.file_io
+- The constants `DATA_SUBDIR`, `FILENAME_NONE`, and `S_NON_FILENAMES` have been moved from SHE_PPT.file_io to
+  SHE_PPT.constants.misc
 
 
 Bug Fixes
