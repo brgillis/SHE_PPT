@@ -21,10 +21,12 @@ __updated__ = "2021-08-16"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 import os
+import warnings
 from argparse import Namespace
 from typing import Any, Dict, Optional
 
 import pytest
+from astropy.utils.exceptions import AstropyDeprecationWarning
 from py._path.local import LocalPath
 
 from ElementsServices.DataSync import DataSync
@@ -271,3 +273,6 @@ class SheTestCase:
         self.__setup_workdir_from_tmpdir(self.tmpdir_factory.mktemp("test"))
         self.__set_workdir_args()
         self.__write_mock_pipeline_config()
+
+        # Set to raise an error on any deprecation warnings, to be sure they're caught and fixed in tests
+        warnings.simplefilter("error", category = AstropyDeprecationWarning)
