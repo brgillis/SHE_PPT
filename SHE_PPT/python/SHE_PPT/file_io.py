@@ -1146,29 +1146,6 @@ def _write_xml_product(product: Any, xml_filename: str, workdir: str) -> None:
     except AttributeError:
         pass
 
-    # Check if the product has a catalog file object, and set the name and write a dummy one if necessary
-    try:
-        cat_filename = product.Data.CatalogStorage.CatalogFileStorage.StorageSpace[0].DataContainer.FileName
-        if cat_filename == "None":
-            # Create a name for the catalog file
-            cat_filename = get_allowed_filename(type_name = "CAT", instance_id = DEFAULT_INSTANCE_ID,
-                                                extension = ".csv",
-                                                version = __version__, subdir = None)
-            product.Data.CatalogStorage.CatalogFileStorage.StorageSpace[0].DataContainer.FileName = cat_filename
-
-        # Check if the catalogue exists, and create it if necessary
-
-        datadir = os.path.join(workdir, DATA_SUBDIR)
-        if not os.path.isdir(datadir):
-            os.makedirs(datadir)
-
-        qualified_cat_filename = os.path.join(workdir, DATA_SUBDIR + cat_filename)
-        if not os.path.isfile(qualified_cat_filename):
-            open(qualified_cat_filename, 'a').close()
-
-    except AttributeError:
-        pass
-
     qualified_xml_filename = get_qualified_filename(xml_filename, workdir)
 
     with open(str(qualified_xml_filename), "w") as f:
