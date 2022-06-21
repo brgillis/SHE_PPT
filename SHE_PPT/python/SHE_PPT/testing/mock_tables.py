@@ -26,7 +26,8 @@ from typing import Any, Dict, Optional, Sequence, Type, TypeVar
 import numpy as np
 from astropy.table import Table
 
-from SHE_PPT.file_io import DEFAULT_WORKDIR, try_remove_file, write_listfile, write_product_and_table, write_table
+from SHE_PPT.constants.misc import DEFAULT_WORKDIR
+from SHE_PPT.file_io import try_remove_file, write_listfile, write_product_and_table, write_table
 from SHE_PPT.logging import getLogger
 from SHE_PPT.table_utility import SheTableFormat
 from SHE_PPT.testing.mock_data import MockDataGenerator, NUM_TEST_POINTS

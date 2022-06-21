@@ -32,11 +32,13 @@ from astropy.io.fits import BinTableHDU, HDUList, Header, PrimaryHDU
 from astropy.table import Table
 
 from SHE_PPT.constants.fits import CCDID_LABEL, EXTNAME_LABEL, SCI_TAG
+from SHE_PPT.constants.misc import S_NON_FILENAMES
 from SHE_PPT.testing.utility import SheTestCase
 from SHE_PPT.utility import (all_are_zero, any_is_inf, any_is_inf_nan_or_masked, any_is_inf_or_nan, any_is_masked,
                              any_is_nan, any_is_nan_or_masked, any_is_zero, coerce_to_list, find_extension,
                              get_all_files, get_attr_with_index, get_detector, get_nested_attr,
-                             get_release_from_version, is_inf, is_inf_nan_or_masked, is_inf_or_nan, is_masked, is_nan,
+                             get_release_from_version, is_any_type_of_none, is_inf, is_inf_nan_or_masked, is_inf_or_nan,
+                             is_masked, is_nan,
                              is_nan_or_masked, is_zero, join_without_none, set_attr_with_index, set_nested_attr, )
 
 
@@ -211,6 +213,20 @@ class TestUtility(SheTestCase):
         for ii, fName in enumerate(sorted(file_list)):
             assert os.path.basename(fName) == 'file%s.txt' % (ii + 1)
         shutil.rmtree(test_dir)
+
+    def test_is_any_type_of_none(self):
+        """Unit tests of `is_any_type_of_none(not_)exists`.
+        """
+
+        # Create a set of values to test
+        s_test_vals = deepcopy(S_NON_FILENAMES)
+        s_test_vals.add("actual_filename.text")
+
+        for test_val in s_test_vals:
+            assert is_any_type_of_none(test_val) == (test_val in S_NON_FILENAMES)
+
+        # Test with a numpy array
+        assert is_any_type_of_none(np.array([1, 2, 3])) == False
 
     def test_bad_value_checks(self):
         """Test the various "bad value" checks for Inf, NaN, and masked values.

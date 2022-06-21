@@ -46,12 +46,12 @@ from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider
 from ST_DataModelBindings.sys_stub import CreateFromDocument
 from . import __version__
 from .constants.classes import ShearEstimationMethods
+from .constants.misc import DATA_SUBDIR, DEFAULT_WORKDIR, FILENAME_NONE
 from .constants.test_data import SYNC_CONF, TEST_DATADIR
 from .logging import getLogger
 from .utility import get_release_from_version, is_any_type_of_none, join_without_none
 
 # Constant strings for default values in filenames
-DEFAULT_WORKDIR = "."
 DEFAULT_TYPE_NAME = "UNKNOWN-FILE-TYPE"
 DEFAULT_INSTANCE_ID = "0"
 DEFAULT_FILE_EXTENSION = ".fits"
@@ -86,12 +86,6 @@ MSG_FINISHED_WRITING_FITS_FILE = f"Finished writing FITS file to %s in workdir %
 
 MSG_SRC_NOT_EXIST = "In safe_copy, source file %s does not exist"
 MSG_DEST_EXIST = "In safe_copy, destination file %s already exists"
-
-# Constant string for the data subdirectory, where datafiles are expected to be stored during pipeline execution
-DATA_SUBDIR = "data/"
-
-# Constant string to represent that a file does not exist
-FILENAME_NONE = "None"
 
 # Constants for strings in xml files
 STR_KEY = '<Key>'
@@ -2126,41 +2120,6 @@ def find_conf_file(filename) -> str:
     return find_file_in_path(filename, os.environ['ELEMENTS_CONF_PATH'])
 
 
-S_NON_FILENAMES = {None, FILENAME_NONE, f"{DATA_SUBDIR}{FILENAME_NONE}", "", DATA_SUBDIR}
-
-
-def filename_not_exists(filename: Optional[str]):
-    """Check if a filename is one of several possible values indicating that no such file exists.
-
-    Parameters
-    ----------
-    filename : Optional[str]
-        The filename to check
-
-    Returns
-    -------
-    bool
-        True if the filename is a value indicating the file does not exist; False otherwise
-    """
-    return filename in S_NON_FILENAMES
-
-
-def filename_exists(filename: Optional[str]) -> bool:
-    """Check if a filename is not one of several possible values indicating that no such file exists.
-
-    Parameters
-    ----------
-    filename : Optional[str]
-        The filename to check
-
-    Returns
-    -------
-    bool
-        False if the filename is a value indicating the file does not exist; True otherwise
-    """
-    return not filename_not_exists(filename)
-
-
 def find_web_file(filename: str) -> str:
     """Searches on WebDAV for a file. If found, downloads it and returns the qualified name of it. If
     it's an xml data product or listfile, will also download all associated files. If it isn't found,
@@ -2226,7 +2185,7 @@ def _find_web_file_xml(filename: str, qualified_filename: str) -> str:
         p = read_xml_product(qualified_filename, workdir = "")
         for subfilename in p.get_all_filenames():
             # Skip if there's no file to download
-            if not filename_exists(subfilename):
+            if is_any_type_of_none(subfilename):
                 continue
             find_web_file(os.path.join(webpath, subfilename))
     except SheFileReadError as e:
@@ -2248,13 +2207,13 @@ def _find_web_file_json(filename: str, qualified_filename: str) -> None:
     for element in l_filenames:
         if isinstance(element, str):
             # Skip if there's no file to download
-            if not filename_exists(element):
+            if is_any_type_of_none(element):
                 continue
             find_web_file(os.path.join(webpath, element))
         else:
             for sub_element in element:
                 # Skip if there's no file to download
-                if not filename_exists(sub_element):
+                if is_any_type_of_none(sub_element):
                     continue
                 find_web_file(os.path.join(webpath, sub_element))
 
