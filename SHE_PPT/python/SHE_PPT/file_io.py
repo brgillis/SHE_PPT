@@ -36,7 +36,7 @@ from astropy.io import fits
 from astropy.io.fits import HDUList
 from astropy.io.fits.hdu.base import ExtensionHDU
 from astropy.table import Table
-from astropy.utils import deprecated_renamed_argument
+from astropy.utils import deprecated, deprecated_renamed_argument
 from pyxb.exceptions_ import NamespaceError
 
 from EL_PythonUtils.utilities import time_to_timestamp
@@ -1260,6 +1260,8 @@ def _read_xml_product(xml_filename: str, workdir: str) -> Any:
     return product
 
 
+@deprecated(since = "9.1",
+            alternative = "write_xml_product")
 def write_pickled_product(product,
                           pickled_filename: str,
                           workdir: str = ".",
@@ -1284,6 +1286,8 @@ def write_pickled_product(product,
     logger.debug(MSG_FINISHED_WRITING_DATA_PRODUCT, pickled_filename, workdir)
 
 
+@deprecated(since = "9.1",
+            alternative = "read_xml_product")
 def read_pickled_product(pickled_filename,
                          workdir = DEFAULT_WORKDIR,
                          log_info: bool = False) -> Any:
