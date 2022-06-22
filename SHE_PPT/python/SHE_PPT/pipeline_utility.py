@@ -2,10 +2,10 @@
 
     Created 9 Aug 2018
 
-    Misc. utility functions for the pipeline.
+    Misc. utility functions used for pipeline-related tasks.
 """
 
-__updated__ = "2021-08-19"
+__updated__ = "2022-06-02"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -25,23 +25,37 @@ from argparse import Namespace
 from enum import EnumMeta
 from functools import lru_cache
 from shutil import copyfile
-from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple, Type, TypeVar, Union
+from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, TextIO, Tuple, Type, TypeVar, Union
 
 import numpy as np
 
 from .constants.classes import AllowedEnum
 from .constants.config import (AnalysisConfigKeys, CTI_GAL_VALIDATION_HEAD, CalibrationConfigKeys, ConfigKeys,
                                GlobalConfigKeys, ReconciliationConfigKeys, SHEAR_BIAS_VALIDATION_HEAD,
-                               ScalingExperimentsConfigKeys, VALIDATION_HEAD,
-                               ValidationConfigKeys, )
-from .file_io import SheFileReadError, find_file, read_listfile, read_xml_product
+                               ScalingExperimentsConfigKeys, VALIDATION_HEAD, ValidationConfigKeys, )
+from .file_io import (DEFAULT_WORKDIR, SheFileReadError, find_file, get_qualified_filename, read_listfile,
+                      read_xml_product, )
 from .logging import getLogger
 from .utility import is_any_type_of_none
 
 
 @lru_cache(maxsize = None)
-def get_task_value(global_enum, task_head):
-    """ Given one of the global enums for config options, return the name for the task-specific option.
+def get_task_value(global_enum: ConfigKeys,
+                   task_head: str) -> str:
+    """Given one of the global enums for a validation config option, return the value for the task-specific option.
+
+    Parameters
+    ----------
+    global_enum : ConfigKeys
+        The ConfigKeys enum for the global option, e.g. `ValidationConfigKeys.VAL_SNR_BIN_LIMITS`
+    task_head : str
+        The task-specific head to add to the option name, once it's been stripped of the global head,
+        e.g. SHEAR_BIAS_VALIDATION_HEAD
+
+    Returns
+    -------
+    str
+        The value of the task-specific option.
     """
     if isinstance(global_enum, str):
         value = global_enum
@@ -50,28 +64,76 @@ def get_task_value(global_enum, task_head):
     return value.replace(VALIDATION_HEAD, task_head)
 
 
-def get_cti_gal_value(global_enum):
-    """ Given one of the global enums for config options, return the name for the CTI-Gal task-specific option.
-    """
-    return get_task_value(global_enum, SHEAR_BIAS_VALIDATION_HEAD)
+def get_cti_gal_value(global_enum: ConfigKeys) -> str:
+    """Given one of the global enums for a validation config option, return the value for the CTI-Gal task-specific
+    option.
 
+    Parameters
+    ----------
+    global_enum : ConfigKeys
+        The ConfigKeys enum for the global option, e.g. `ValidationConfigKeys.VAL_SNR_BIN_LIMITS`
 
-def get_shear_bias_value(global_enum):
-    """ Given one of the global enums for config options, return the name for the CTI-Gal task-specific option.
+    Returns
+    -------
+    str
+        The value of the CTI-Gal task-specific option.
     """
     return get_task_value(global_enum, CTI_GAL_VALIDATION_HEAD)
 
 
+def get_shear_bias_value(global_enum: ConfigKeys) -> str:
+    """Given one of the global enums for a validation config option, return the value for the Shear Bias task-specific
+    option.
+
+    Parameters
+    ----------
+    global_enum : ConfigKeys
+        The ConfigKeys enum for the global option, e.g. `ValidationConfigKeys.VAL_SNR_BIN_LIMITS`
+
+    Returns
+    -------
+    str
+        The value of the Shear Bias task-specific option.
+    """
+    return get_task_value(global_enum, SHEAR_BIAS_VALIDATION_HEAD)
+
+
 @lru_cache(maxsize = None)
-def get_global_value(task_value, task_head):
-    """ Reverse of task_value, returning the value - gives the value for the global option given the task option.
+def get_global_value(task_value: str,
+                     task_head: str) -> str:
+    """ Reverse of get_task_value, returning the value - gives the value for the global option given the task option.
+
+    Parameters
+    ----------
+    task_value : str
+        The ConfigKeys enum for the global option, e.g. `ValidationConfigKeys.VAL_SNR_BIN_LIMITS`
+    task_head : str
+        The task-specific head to remove from the option name, to be repalced with the global head,
+
+    Returns
+    -------
+    str
+        The value of the global option.
     """
     return task_value.replace(task_head, VALIDATION_HEAD)
 
 
 @lru_cache(maxsize = None)
-def get_global_enum(task_value, task_head):
+def get_global_enum(task_value: str,
+                    task_head: str) -> ConfigKeys:
     """ Reverse of task_value, returning the enum - gives the enum for the global option given the task option.
+
+    Parameters
+    ----------
+    task_value : str
+        The ConfigKeys enum for the global option, e.g. `ValidationConfigKeys.VAL_SNR_BIN_LIMITS`
+    task_head : str
+        The task-specific head to remove from the option name, to be repalced with the global head,
+
+    Returns
+    -------
+    ConfigKeys
+        The enum of the global option.
     """
     return ValidationConfigKeys(get_global_value(task_value, task_head))
 
@@ -79,31 +141,27 @@ def get_global_enum(task_value, task_head):
 def archive_product(product_filename: str,
                     archive_dir: str,
                     workdir: str) -> None:
-    """ Copies an already-written data product to an archive directory.
+    """Copies an already-written data product to an archive directory.
 
-        Parameters
-        ----------
-        product_filename : string
-            The (unqualified) name of the product to copy
-        archive_dir : string
-            The root of the archive directory (note, the most-specific part of the workdir path (normally "workspace")
-            will be added after this to keep separate runs from conflicting).
-        workdir : string
-            The working directory for this task
-
+    Parameters
+    ----------
+    product_filename : str
+        The workdir-relative name of the product to copy
+    archive_dir : str
+        The root of the archive directory (note, the most-specific part of the workdir path (normally "workspace")
+        will be added after this to keep separate runs from conflicting).
+    workdir : str
+        The working directory for this task
     """
 
     logger = getLogger(__name__)
 
     # Start by figuring out the subdirectory to store it in, based off of the workdir we're using
-    subdir = os.path.split(workdir)[1]
-    full_archive_dir = os.path.join(archive_dir, subdir)
-
-    # The filename will likely also contain a subdir, so figure that out
-    product_subpath = os.path.split(product_filename)[0]
+    full_archive_dir = os.path.join(archive_dir, os.path.split(workdir)[1])
 
     # Make the directory to store it in
-    full_archive_subdir = os.path.join(full_archive_dir, product_subpath)
+    # The filename will likely also contain a subdir, include that
+    full_archive_subdir = os.path.join(full_archive_dir, os.path.split(product_filename)[0])
     full_archive_datadir = os.path.join(full_archive_dir, "data")
     if not os.path.exists(full_archive_subdir):
         os.makedirs(full_archive_subdir)
@@ -112,17 +170,15 @@ def archive_product(product_filename: str,
 
     # Copy the file to the archive
     qualified_filename = os.path.join(workdir, product_filename)
-    qualified_archive_product_filename = os.path.join(full_archive_dir, product_filename)
-    copyfile(qualified_filename, qualified_archive_product_filename)
+    copyfile(qualified_filename, os.path.join(full_archive_dir, product_filename))
 
     # Copy any files it points to to the archive as well
     try:
         p = read_xml_product(qualified_filename)
 
-        # Remove all files this points to
+        # Copy all files this points to
         if hasattr(p, "get_all_filenames"):
-            data_filenames = p.get_all_filenames()
-            for data_filename in data_filenames:
+            for data_filename in p.get_all_filenames():
                 if data_filename is not None and data_filename != "default_filename.fits" and data_filename != "":
                     qualified_data_filename = os.path.join(workdir, data_filename)
                     qualified_archive_data_filename = os.path.join(full_archive_dir, data_filename)
@@ -137,102 +193,126 @@ def archive_product(product_filename: str,
         else:
             logger.warning("Product %s has no 'get_all_filenames' method.", qualified_filename)
 
-    except Exception as e:
-        logger.warning(("Failsafe exception block triggered when trying to save statistics product "
-                        "in archive. Exception was: %s"),
-                       str(e))
+    except IOError as e:
+        logger.warning(("Failsafe exception block triggered when trying to save product "
+                        "in archive. Exception was: %s"), str(e))
 
 
 def read_analysis_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
-    """ Reads in a configuration file for the SHE Analysis pipeline to a dictionary.
+    """Reads in a configuration file for the SHE Analysis pipeline to a dictionary.
+
+    Parameters
+    ----------
+    *args, **kwargs : Any
+        Any position and keyword arguments to pass to `read_config`.
+
+    Returns
+    -------
+    Dict[ConfigKeys, Any]
+        A dictionary of the configuration options.
     """
 
     return read_config(*args, config_keys = AnalysisConfigKeys, **kwargs)
 
 
 def read_calibration_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
-    """ Reads in a configuration file for the SHE Calibration pipeline to a dictionary.
+    """Reads in a configuration file for the SHE Calibration pipeline to a dictionary.
+
+    Parameters
+    ----------
+    *args, **kwargs : Any
+        Any position and keyword arguments to pass to `read_config`.
+
+    Returns
+    -------
+    Dict[ConfigKeys, Any]
+        A dictionary of the configuration options.
     """
 
     return read_config(*args, config_keys = CalibrationConfigKeys, **kwargs)
 
 
 def read_reconciliation_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
-    """ Reads in a configuration file for the SHE Reconciliation pipeline to a dictionary. Note that all arguments will
-        be read as strings.
+    """Reads in a configuration file for the SHE Reconciliation pipeline to a dictionary.
 
-        Parameters
-        ----------
-        config_filename : string
-            The workspace-relative name of the config file.
-        workdir : string
-            The working directory.
-        d_args : Dict[str, Any]
-            Dict of config keys giving values passed at the command line. If these aren't None, they will override
-            values in the config file
-        d_defaults : Dict[str, Any]
-            Dict of default values to use if no value (or None) is supplied in the config and no value (or None) is
-            supplied in the parsed_args.
+    Parameters
+    ----------
+    *args, **kwargs : Any
+        Any position and keyword arguments to pass to `read_config`.
+
+    Returns
+    -------
+    Dict[ConfigKeys, Any]
+        A dictionary of the configuration options.
     """
 
     return read_config(*args, config_keys = ReconciliationConfigKeys, **kwargs)
 
 
-def read_scaling_config(*args, **kwargs):
-    """ Reads in a configuration file for the SHE Scaling pipeline to a dictionary.
+def read_scaling_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
+    """Reads in a configuration file for the SHE Scaling pipeline to a dictionary.
+
+    Parameters
+    ----------
+    *args, **kwargs : Any
+        Any position and keyword arguments to pass to `read_config`.
+
+    Returns
+    -------
+    Dict[ConfigKeys, Any]
+        A dictionary of the configuration options.
     """
 
     return read_config(*args, config_keys = ScalingExperimentsConfigKeys, **kwargs)
 
 
 def read_config(config_filename: Optional[str] = None,
-                workdir: str = ".",
-                config_keys: Union[EnumMeta, Tuple[EnumMeta, ...]] = (AnalysisConfigKeys,
-                                                                      ValidationConfigKeys,
-                                                                      ReconciliationConfigKeys,
-                                                                      CalibrationConfigKeys),
+                workdir: str = DEFAULT_WORKDIR,
+                config_keys: Union[EnumMeta, Sequence[EnumMeta]] = (AnalysisConfigKeys,
+                                                                    ValidationConfigKeys,
+                                                                    ReconciliationConfigKeys,
+                                                                    CalibrationConfigKeys),
                 d_cline_args: Optional[Dict[ConfigKeys, str]] = None,
                 d_defaults: Optional[Dict[ConfigKeys, Any]] = None,
                 d_types: Optional[Dict[ConfigKeys, Type]] = None,
                 parsed_args: Optional[Union[Namespace, Dict[str, Any]]] = None,
                 task_head: Optional[str] = None) -> Dict[ConfigKeys, Any]:
-    """ Reads in a generic configuration file to a dictionary. Note that all arguments will be read as strings unless
-        a cline_arg value is used.
+    """Reads in a generic configuration file to a dictionary. Note that all arguments will be read as strings unless
+    a cline_arg value is used.
 
-        Parameters
-        ----------
-        config_filename : Optional[str]
-            The workspace-relative name of the config file.
-        config_keys : enum or iterable of enums
-            ConfigKeys enum or iterable of enums listing allowed keys
-        workdir : string
-            The working directory.
-        d_cline_args: Dict[ConfigKeys, Optional[str]]
-            Dict listing cline-args which can override each config value in the config file.
-        d_defaults : Dict[ConfigKeys, Any]
-            Dict of default values to use if no value (or None) is supplied in the config and no value (or None) is
-            supplied in the parsed_args.
-        d_types: Dict[ConfigKeys, Type]
-            Dict of desired types to convert values in the config to. If not provided, all values will be left
-            as strings.
-        parsed_args : Union[Namespace, Dict[str, Any]]
-            Namespace or dict giving values passed at the command line. If these aren't None, they will override
-            values in the config file
-        task_head: string
-            Should only be set if reading configs for a Validation task. In this case, this refers to the "head" of
-            the task-specific configuration keys. These task-specific arguments will be used to override the
-            global arguments if set to anything other than None.
+    Parameters
+    ----------
+    config_filename : Optional[str], default=None
+        The workspace-relative name of the config file.
+    workdir : str, default="."
+        The working directory.
+    config_keys : Union[EnumMeta, Sequence[EnumMeta]], default=(AnalysisConfigKeys, ValidationConfigKeys,
+    ReconciliationConfigKeys, CalibrationConfigKeys)
+        ConfigKeys enum or iterable of enums listing allowed keys.
+    d_cline_args: Optional[Dict[ConfigKeys, str]], default=None
+        Dict listing cline-args which can override each config value in the config file.
+    d_defaults : Optional[Dict[ConfigKeys, Any]], default=None
+        Dict of default values to use if no value (or None) is supplied in the config and no value (or None) is
+        supplied in the parsed_args.
+    d_types: OptionalDict[ConfigKeys, Type]], default=None
+        Dict of desired types to convert values in the config to. If not provided, all values will be left
+        as strings.
+    parsed_args : Optional[Union[Namespace, Dict[str, Any]]], default=None
+        Namespace or dict giving values passed at the command line. If these aren't None, they will override
+        values in the config file
+    task_head: Optional[str], default=None
+        Should only be set if reading configs for a Validation task. In this case, this refers to the "head" of
+        the task-specific configuration keys. These task-specific arguments will be used to override the
+        global arguments if set to anything other than None.
+
+    Returns
+    -------
+    Dict[ConfigKeys, Any]
+        A dictionary of the configuration options.
     """
 
     # Make sure we have a dictionary of parsed arguments
-    d_args: Dict[str, Any]
-    if parsed_args is None:
-        d_args = {}
-    elif isinstance(parsed_args, dict):
-        d_args = parsed_args
-    else:
-        # Assume parsed_args is a Namespace or similar
-        d_args = vars(parsed_args)
+    d_args = _coerce_parsed_args_to_dict(parsed_args)
 
     # Use empty dicts for d_cline_args and defaults if None provided
     if d_cline_args is None:
@@ -261,11 +341,8 @@ def read_config(config_filename: Optional[str] = None,
                                                          d_defaults = d_defaults,
                                                          d_types = d_types)
 
-    # Look in the workdir for the config filename if it isn't fully-qualified
-    if not config_filename[0] == "/":
-        qualified_config_filename = os.path.join(workdir, config_filename)
-    else:
-        qualified_config_filename = config_filename
+    # Get the qualified filename of the config file
+    qualified_config_filename = get_qualified_filename(config_filename, workdir = workdir)
 
     try:
 
@@ -308,6 +385,20 @@ def read_config(config_filename: Optional[str] = None,
     return d_config
 
 
+def _coerce_parsed_args_to_dict(parsed_args: Optional[Union[Namespace, Dict[str, Any]]]) -> Dict[str, Any]:
+    """Private function to coerce a parsed arguments object into a dict.
+    """
+    d_args: Dict[str, Any]
+    if parsed_args is None:
+        d_args = {}
+    elif isinstance(parsed_args, dict):
+        d_args = parsed_args
+    else:
+        # Assume parsed_args is a Namespace or similar
+        d_args = vars(parsed_args)
+    return d_args
+
+
 def _read_config_product(config_filename: str,
                          workdir: str,
                          *args, **kwargs) -> Dict[ConfigKeys, Any]:
@@ -331,74 +422,21 @@ def _read_config_product(config_filename: str,
 
 
 def _read_config_file(qualified_config_filename: str,
-                      config_keys: Tuple[EnumMeta, ...],
+                      config_keys: Sequence[EnumMeta],
                       d_args: Dict[str, Any],
-                      d_cline_args: Optional[Dict[ConfigKeys, str]],
+                      d_cline_args: Dict[ConfigKeys, str],
                       d_defaults: Dict[ConfigKeys, Any],
                       d_types: Optional[Dict[str, Type]] = None,
                       task_head: Optional[str] = None, ) -> Dict[ConfigKeys, Any]:
-    """ Reads in a configuration text file.
+    """Private implementation of reading in a configuration text file.
     """
-
-    # Start with a config generated from defaults
-    config_dict = _make_config_from_defaults(config_keys = config_keys,
-                                             d_defaults = d_defaults)
 
     with open(qualified_config_filename, 'r') as config_file:
 
-        # Keep a set of any keys we want to block from being able to overwrite
-        blocked_keys = set()
-
-        # Read in the file, except for comment lines
-        for config_line in config_file:
-
-            stripped_line = config_line.strip()
-
-            # Ignore comment or empty lines
-            if config_line[0] == '#' or len(stripped_line) == 0:
-                continue
-
-            # Ignore comment portion
-            noncomment_line = config_line.split('#')[0]
-
-            # Get the key and value from the line
-            equal_split_line = noncomment_line.split('=')
-
-            key_string = equal_split_line[0].strip()
-            if key_string in blocked_keys:
-                continue
-            try:
-                enum_key = _check_key_is_valid(key_string, config_keys)
-            except ValueError as e:
-
-                # If we're allowing task-specific keys, check if that's the case
-                if task_head is None:
-                    raise
-
-                # Check if this is a valid task-specific key
-                global_key_string = get_global_value(key_string, task_head)
-                try:
-                    enum_key = _check_key_is_valid(global_key_string, config_keys)
-                except Exception:
-                    # The global key isn't valid, so raise the original exception
-                    raise e
-
-                # If we get here, this is a valid task-specific key, so set it to the dict in
-                # place of the global key
-                key_string = global_key_string
-
-                # Add it to the blocked_keys set, so if we encounter the global key later, we
-                # won't override this for this task
-                blocked_keys.update(key_string)
-
-            # In case the value contains an = char
-            value = noncomment_line.replace(equal_split_line[0] + '=', '').strip()
-
-            # If the value is None or equivalent, don't set it (use the default)
-            if not (is_any_type_of_none(value) and enum_key in d_defaults):
-                config_dict[enum_key] = value
-
-        # End for config_line in config_file:
+        config_dict = _read_config_dict_from_file(config_filehandle = config_file,
+                                                  config_keys = config_keys,
+                                                  d_defaults = d_defaults,
+                                                  task_head = task_head, )
 
     # End with open(qualified_config_filename, 'r') as config_file:
 
@@ -416,15 +454,141 @@ def _read_config_file(qualified_config_filename: str,
             config_dict[enum_key] = val_from_cline_args
 
     # Convert the types in the config as desired
-    config_dict = convert_config_types(config_dict, d_types)
+    config_dict = _convert_config_types(config_dict, d_types)
 
     return config_dict
 
 
-def _make_config_from_defaults(config_keys: Tuple[EnumMeta, ...],
+def _read_config_dict_from_file(config_filehandle: TextIO,
+                                config_keys: Sequence[EnumMeta],
+                                d_defaults: Dict[ConfigKeys, Any],
+                                task_head: Optional[str] = None, ) -> Dict[ConfigKeys, Any]:
+    """Private implementation of reading in a config dict from a file.
+    """
+
+    # Make a config dict from defaults
+    d_default_config = _make_config_from_defaults(config_keys = config_keys,
+                                                  d_defaults = d_defaults)
+
+    config_dict: Dict[ConfigKeys, Any] = {}
+
+    # Keep a dict relating global and task keys, so we can sync them at the end
+    d_global_task_keys: Dict[ConfigKeys, ConfigKeys] = {}
+
+    # Read in the file, except for comment lines
+    for config_line in config_filehandle:
+
+        _read_config_line(config_line = config_line,
+                          config_dict = config_dict,
+                          config_keys = config_keys,
+                          d_defaults = d_defaults,
+                          d_global_task_keys = d_global_task_keys,
+                          task_head = task_head, )
+
+    # Fill in any missing keys with defaults
+    for enum_key in d_default_config:
+        if not (enum_key in config_dict and not is_any_type_of_none(config_dict[enum_key])):
+            config_dict[enum_key] = d_default_config[enum_key]
+
+    # If we're using a task_head, update the d_global_task_keys dict using the defaults
+    if task_head is not None:
+        for enum_key in d_default_config:
+            if not enum_key.value.startswith(task_head):
+                continue
+            try:
+                global_enum_key = get_global_enum(enum_key.value, task_head)
+            except ValueError:
+                # Continue if it's a key unique to the task
+                continue
+            d_global_task_keys[global_enum_key] = enum_key
+
+    # Sync the global and task keys
+    for global_enum_key, local_enum_key in d_global_task_keys.items():
+        config_dict[local_enum_key] = config_dict[global_enum_key]
+
+    return config_dict
+
+
+def _read_config_line(config_line: str,
+                      config_dict: Dict[ConfigKeys, Any],
+                      config_keys: Sequence[EnumMeta],
+                      d_defaults: Dict[ConfigKeys, Any],
+                      d_global_task_keys: Dict[ConfigKeys, ConfigKeys],
+                      task_head: Optional[str], ) -> None:
+    """Private implementation of reading a single line of a config file and updating the config dict.
+    """
+
+    stripped_line = config_line.strip()
+
+    # Ignore comment or empty lines
+    if config_line[0] == '#' or len(stripped_line) == 0:
+        return
+
+    # Ignore comment portion
+    non_comment_line = config_line.split('#')[0]
+
+    # Get the key and value from the line
+    equal_split_line = non_comment_line.split('=')
+    key_string = equal_split_line[0].strip()
+
+    enum_key = _check_key_is_valid(key_string, config_keys)
+
+    # Skip if this key has already been set by its task version
+    if ((enum_key in d_global_task_keys) and (enum_key in config_dict) and not is_any_type_of_none(
+            config_dict[enum_key])):
+        return
+
+    # In case the value contains an = char
+    value = non_comment_line.replace(equal_split_line[0] + '=', '').strip()
+
+    # If we're allowing task-specific keys, check if that's the case
+    if task_head is not None:
+
+        enum_key = _check_for_task_key(config_keys = config_keys,
+                                       d_global_task_keys = d_global_task_keys,
+                                       enum_key = enum_key,
+                                       key_string = key_string,
+                                       task_head = task_head, )
+
+    # If the value is None or equivalent, don't set it (use the default or the global value)
+    if not (is_any_type_of_none(value) and (enum_key in d_defaults or task_head is not None)):
+        config_dict[enum_key] = value
+
+
+def _check_for_task_key(config_keys: Sequence[EnumMeta],
+                        d_global_task_keys: Dict[ConfigKeys, ConfigKeys],
+                        enum_key: ConfigKeys,
+                        key_string: str,
+                        task_head: str) -> ConfigKeys:
+    """Private function to handle sorting out overriding of a global key with a task-specific key when reading in a
+    pipeline config.
+    """
+    # Check if this is a valid task-specific key
+    global_key_string = get_global_value(key_string, task_head)
+    if global_key_string != key_string:
+
+        # This is a possible task-specific key
+        local_enum_key = enum_key
+
+        try:
+
+            enum_key = _check_key_is_valid(global_key_string, config_keys)
+
+            # Add it to the dict relating known global and task keys
+            d_global_task_keys[enum_key] = local_enum_key
+
+        except ValueError:
+            # This is a key unique to the task, so don't override and block the global key,
+            # and use what we thought might have been the local key instead
+            enum_key = local_enum_key
+
+    return enum_key
+
+
+def _make_config_from_defaults(config_keys: Sequence[EnumMeta],
                                d_defaults: Dict[ConfigKeys, Any],
                                d_types: Optional[Dict[ConfigKeys, Type]] = None) -> Dict[ConfigKeys, Any]:
-    """ Make a pipeline config dict from just the defaults.
+    """Make a pipeline config dict from just the defaults.
     """
 
     config_dict = {}
@@ -434,20 +598,21 @@ def _make_config_from_defaults(config_keys: Tuple[EnumMeta, ...],
         config_dict[enum_key] = d_defaults[enum_key]
 
     # Convert the types in the config as desired
-    config_dict = convert_config_types(config_dict, d_types)
+    config_dict = _convert_config_types(config_dict, d_types)
 
     return config_dict
 
 
-def _make_config_from_cline_args_and_defaults(config_keys: Tuple[EnumMeta, ...],
+def _make_config_from_cline_args_and_defaults(config_keys: Sequence[EnumMeta],
                                               d_args: Dict[str, Any],
                                               d_cline_args: Dict[ConfigKeys, str],
                                               d_defaults: Dict[ConfigKeys, Any],
                                               d_types: Optional[Dict[ConfigKeys, Type]] = None) -> \
         Dict[ConfigKeys, Any]:
-    """ Make a pipeline config dict from the cline-args and defaults, preferring
-        the cline-args if they're available.
+    """Make a pipeline config dict from the cline-args and defaults, preferring
+    the cline-args if they're available.
     """
+
     # Start with a config generated from defaults
     config_dict = _make_config_from_defaults(config_keys = config_keys,
                                              d_defaults = d_defaults)
@@ -471,7 +636,7 @@ def _make_config_from_cline_args_and_defaults(config_keys: Tuple[EnumMeta, ...],
             config_dict[enum_key] = val_from_cline_args
 
     # Convert the types in the config as desired
-    config_dict = convert_config_types(config_dict, d_types)
+    config_dict = _convert_config_types(config_dict, d_types)
 
     return config_dict
 
@@ -491,17 +656,17 @@ def _check_enum_key_is_valid(enum_key: ConfigKeys,
     if not found:
         err_string = f"{enum_key} is not a valid member of any of the EnumMetas: {config_keys}. Allowed keys are:\n"
         for config_key_enum_meta in config_keys:
-            for enum_key in config_key_enum_meta:
-                err_string += f"{enum_key}"
+            for possible_enum_key in config_key_enum_meta:
+                err_string += f"{possible_enum_key}"
         raise ValueError(err_string)
 
     return config_key_enum_meta
 
 
 def _check_key_is_valid(key: str,
-                        config_keys: Tuple[EnumMeta, ...]) -> ConfigKeys:
-    """ Checks if a pipeline config key is valid by searching for it in the provided config keys Enums. If found,
-        returns the Enum for it.
+                        config_keys: Sequence[EnumMeta]) -> ConfigKeys:
+    """Checks if a pipeline config key is valid by searching for it in the provided config keys Enums. If found,
+    returns the Enum for it.
     """
 
     enum = None
@@ -522,116 +687,113 @@ def _check_key_is_valid(key: str,
 
 def write_analysis_config(config_dict: Dict[ConfigKeys, Any],
                           config_filename: str,
-                          workdir: str = ".", ) -> None:
-    """ Writes a dictionary to an Analysis configuration file.
+                          workdir: str = DEFAULT_WORKDIR, ) -> None:
+    """Writes a dictionary to an Analysis configuration file.
 
-        Parameters
-        ----------
-        config_dict : Dict[ConfigKeys, Any]
-            The config dictionary to write out.
-        config_filename : str
-            The desired workspace-relative name of the config file.
-        workdir : str
-            The working directory.
+    Parameters
+    ----------
+    config_dict : Dict[ConfigKeys, Any]
+        The config dictionary to write out.
+    config_filename : str
+        The desired workspace-relative name of the config file.
+    workdir : str, default='.'
+        The working directory.
     """
 
-    return write_config(config_dict = config_dict,
-                        config_filename = config_filename,
-                        workdir = workdir,
-                        config_keys = AnalysisConfigKeys)
+    write_config(config_dict = config_dict,
+                 config_filename = config_filename,
+                 workdir = workdir,
+                 config_keys = AnalysisConfigKeys)
 
 
 def write_reconciliation_config(config_dict: Dict[ConfigKeys, Any],
                                 config_filename: str,
-                                workdir: str = ".", ) -> None:
-    """ Writes a dictionary to an Reconciliation configuration file.
+                                workdir: str = DEFAULT_WORKDIR, ) -> None:
+    """Writes a dictionary to an Reconciliation configuration file.
 
-        Parameters
-        ----------
-        config_dict : Dict[ConfigKeys, Any]
-            The config dictionary to write out.
-        config_filename : str
-            The desired workspace-relative name of the config file.
-        workdir : str
-            The working directory.
+    Parameters
+    ----------
+    config_dict : Dict[ConfigKeys, Any]
+        The config dictionary to write out.
+    config_filename : str
+        The desired workspace-relative name of the config file.
+    workdir : str, default='.'
+        The working directory.
     """
 
-    return write_config(config_dict = config_dict,
-                        config_filename = config_filename,
-                        workdir = workdir,
-                        config_keys = ReconciliationConfigKeys)
+    write_config(config_dict = config_dict,
+                 config_filename = config_filename,
+                 workdir = workdir,
+                 config_keys = ReconciliationConfigKeys)
 
 
 def write_calibration_config(config_dict: Dict[ConfigKeys, Any],
                              config_filename: str,
-                             workdir: str = ".", ) -> None:
-    """ Writes a dictionary to an Calibration configuration file.
+                             workdir: str = DEFAULT_WORKDIR, ) -> None:
+    """Writes a dictionary to an Calibration configuration file.
 
-        Parameters
-        ----------
-        config_dict : Dict[ConfigKeys, Any]
-            The config dictionary to write out.
-        config_filename : str
-            The desired workspace-relative name of the config file.
-        workdir : str
-            The working directory.
+    Parameters
+    ----------
+    config_dict : Dict[ConfigKeys, Any]
+        The config dictionary to write out.
+    config_filename : str
+        The desired workspace-relative name of the config file.
+    workdir : str, default='.'
+        The working directory.
     """
 
-    return write_config(config_dict = config_dict,
-                        config_filename = config_filename,
-                        workdir = workdir,
-                        config_keys = CalibrationConfigKeys)
+    write_config(config_dict = config_dict,
+                 config_filename = config_filename,
+                 workdir = workdir,
+                 config_keys = CalibrationConfigKeys)
 
 
 def write_scaling_config(config_dict: Dict[ConfigKeys, Any],
                          config_filename: str,
-                         workdir: str = ".", ) -> None:
-    """ Writes a dictionary to an ScalingExperiments configuration file.
+                         workdir: str = DEFAULT_WORKDIR, ) -> None:
+    """Writes a dictionary to an ScalingExperiments configuration file.
 
-        Parameters
-        ----------
-        config_dict : Dict[ConfigKeys, Any]
-            The config dictionary to write out.
-        config_filename : str
-            The desired workspace-relative name of the config file.
-        workdir : str
-            The working directory.
+    Parameters
+    ----------
+    config_dict : Dict[ConfigKeys, Any]
+        The config dictionary to write out.
+    config_filename : str
+        The desired workspace-relative name of the config file.
+    workdir : str, default='.'
+        The working directory.
     """
 
-    return write_config(config_dict = config_dict,
-                        config_filename = config_filename,
-                        workdir = workdir,
-                        config_keys = ScalingExperimentsConfigKeys)
+    write_config(config_dict = config_dict,
+                 config_filename = config_filename,
+                 workdir = workdir,
+                 config_keys = ScalingExperimentsConfigKeys)
 
 
 def write_config(config_dict: Dict[ConfigKeys, Any],
                  config_filename: str,
-                 workdir: str = ".",
-                 config_keys: EnumMeta = ConfigKeys, ) -> None:
-    """ Writes a dictionary to a configuration file.
+                 workdir: str = DEFAULT_WORKDIR,
+                 config_keys: Union[EnumMeta, Sequence[EnumMeta]] = ConfigKeys, ) -> None:
+    """Writes a dictionary to a configuration file.
 
-        Parameters
-        ----------
-        config_dict : Dict[ConfigKeys, Any]
-            The config dictionary to write out.
-        config_filename : str
-            The desired workspace-relative name of the config file.
-        workdir : str
-            The working directory.
-        config_keys : EnumMeta
-            ConfigKeys EnumMeta listing allowed keys
+    Parameters
+    ----------
+    config_dict : Dict[ConfigKeys, Any]
+        The config dictionary to write out.
+    config_filename : str
+        The desired workspace-relative name of the config file.
+    workdir : str, default='.'
+        The working directory.
+    config_keys : EnumMeta, default=ConfigKeys
+        ConfigKeys EnumMeta listing allowed keys
     """
 
     # Silently coerce config_keys into iterable if just one enum is supplied, and also include GlobalConfigKeys
     # in the list
-    if issubclass(config_keys, ConfigKeys):
-        config_keys = (config_keys, GlobalConfigKeys)
-    elif GlobalConfigKeys not in config_keys:
+    try:
+        if issubclass(config_keys, ConfigKeys):
+            config_keys = (config_keys, GlobalConfigKeys)
+    except TypeError:
         config_keys = (*config_keys, GlobalConfigKeys)
-
-    # Silently return if dict and filename are None
-    if config_dict is None and config_filename is None:
-        return
 
     qualified_config_filename = os.path.join(workdir, config_filename)
 
@@ -662,8 +824,8 @@ def write_config(config_dict: Dict[ConfigKeys, Any],
 
 
 def _get_converted_enum_type(value: str, enum_type: EnumMeta):
-    """ Gets and returns the value converted to a desired type of Enum, assuming it's originally the string value of
-        that Enum.
+    """Private function to get and return the value converted to a desired type of Enum, assuming it's originally
+    the string value of that Enum.
     """
 
     # Check if it's already been converted to the proper type
@@ -683,12 +845,12 @@ def _get_converted_enum_type(value: str, enum_type: EnumMeta):
 
 def _get_converted_list_type(value: str,
                              list_type: Tuple[Type[list], Type]):
-    """ Gets and returns the value converted to a list of the desired type.
+    """Private function to get and return the value converted to a list of the desired type.
     """
     item_type = list_type[1]
 
     # Get the function to handle conversion
-    convert_func = get_convert_func(item_type)
+    convert_func = _get_convert_func(item_type)
 
     # Split the list by whitespace
     if isinstance(value, list) and isinstance(value[0], str):
@@ -700,14 +862,14 @@ def _get_converted_list_type(value: str,
 
     # Convert each item in the list in turn
     l_values: Any = [None] * len(l_str_values)
-    for i in range(len(l_str_values)):
-        l_values[i] = convert_func(l_str_values[i], item_type)
+    for i, str_value in enumerate(l_str_values):
+        l_values[i] = convert_func(str_value, item_type)
 
     return l_values
 
 
 def _get_converted_type(value: str, desired_type: Type):
-    """ Gets and returns the value converted to a desired type.
+    """Private function to get and return the value converted to a desired type.
     """
 
     # Check if it's already been converted
@@ -716,8 +878,8 @@ def _get_converted_type(value: str, desired_type: Type):
             return value
         try:
             return desired_type(value)
-        except TypeError:
-            raise TypeError(f"Value {value} cannot be converted to type {desired_type}.")
+        except (TypeError, ValueError) as e:
+            raise type(e)(f"Value {value} cannot be converted to type {desired_type}.")
 
     # Special handling for certain types
     if desired_type is bool:
@@ -725,9 +887,13 @@ def _get_converted_type(value: str, desired_type: Type):
         converted_value = value.lower() in ['true', 't', '1', 1]
 
     elif desired_type is np.ndarray:
-        # Convert space-separated lists into arrays of floats
-        values_list = list(map(float, value.strip().split()))
-        converted_value = np.array(values_list, dtype = float)
+        # Check first if the value is None
+        if is_any_type_of_none(value):
+            converted_value = np.array([])
+        else:
+            # Convert space-separated lists into arrays of floats
+            values_list = list(map(float, value.strip().split()))
+            converted_value = np.array(values_list, dtype = float)
 
     else:
         converted_value = desired_type(value)
@@ -742,96 +908,90 @@ BackupType = TypeVar("BackupType")
 def _convert_tuple_type(pipeline_config: Dict[ConfigKeys, Any],
                         enum_key: ConfigKeys,
                         tuple_type: Tuple[Union[Type[List], PrimaryType], Union[Type, BackupType]]) -> None:
-    """ Converts a type expressed as a tuple. The formats currently accepted are:
-            * Element 0 is "list" and Element 1 is the type of item in the list
-            * Element 0 is the primary desired type, and Element 1 is the backup desired type, if it cannot be
-              converted to the primary desired type. In this case, Element 0 cannot simply be "list" - if a list is
-              desired, Element 0 should instead be a tuple of "list" and the desired item type.
+    """Private function to convert a type expressed as a tuple. The formats currently accepted are:
+        * Element 0 is "list" and Element 1 is the type of item in the list
+        * Element 0 is the primary desired type, and Element 1 is the backup desired type, if it cannot be
+          converted to the primary desired type. In this case, Element 0 cannot simply be "list" - if a list is
+          desired, Element 0 should instead be a tuple of "list" and the desired item type.
     """
 
     # Skip if not present in the config or already converted
     # noinspection PyTypeHints
     if ((enum_key not in pipeline_config or pipeline_config[enum_key] is None) or
-            (isinstance(pipeline_config[enum_key], tuple_type[0]) and isinstance(pipeline_config[enum_key][0],
-                                                                                 tuple_type[1]))):
+            (not isinstance(pipeline_config[enum_key], str))):
         return
 
     # Forward to appropriate method for the type of conversion appropriate for the tuple type provided
     if tuple_type[0] == list:
-        return _convert_list_type(pipeline_config = pipeline_config,
-                                  enum_key = enum_key,
-                                  item_type = tuple_type[1])
+        _convert_list_type(pipeline_config = pipeline_config,
+                           enum_key = enum_key,
+                           item_type = tuple_type[1])
     else:
-        return _convert_with_backup_type(pipeline_config = pipeline_config,
-                                         enum_key = enum_key,
-                                         primary_type = tuple_type[0],
-                                         backup_type = tuple_type[1])
+        _convert_with_backup_type(pipeline_config = pipeline_config,
+                                  enum_key = enum_key,
+                                  primary_type = tuple_type[0],
+                                  backup_type = tuple_type[1])
 
 
 def _convert_list_type(pipeline_config: Dict[ConfigKeys, Any],
                        enum_key: ConfigKeys,
                        item_type: Type) -> None:
-    """ Converts a config item into a list of the desired type.
+    """Private function to convert a config item into a list of the desired type.
     """
 
     value = pipeline_config[enum_key]
 
     try:
         pipeline_config[enum_key] = _get_converted_list_type(value, (list, item_type))
-    except TypeError as e:
-        raise TypeError(f"Value {value} provided with key {enum_key} in the pipeline config cannot be converted "
-                        f"to a list of type {item_type}.") from e
+    except (TypeError, ValueError) as e:
+        raise type(e)(f"Value {value} provided with key {enum_key} in the pipeline config cannot be converted "
+                      f"to a list of type {item_type}.") from e
 
 
 def _convert_with_backup_type(pipeline_config: Dict[ConfigKeys, Any],
                               enum_key: ConfigKeys,
                               primary_type: Type[PrimaryType],
                               backup_type: Type[BackupType]) -> None:
-    """ Converts a config item into the primary type if possible, or the backup type if not.
+    """Private function to convert a config item into the primary type if possible, or the backup type if not.
     """
 
     value = pipeline_config[enum_key]
     converted_value: Union[PrimaryType, BackupType]
-    # Return if the value is already in one of the desired types (with an exception if the backup type is str, since
+    # Return if the value is already is one of the desired types (with an exception if the backup type is str, since
     # values are initially parsed as strings, and we don't know if it's an unconverted string or not)
     if isinstance(value, primary_type) or (backup_type != str and isinstance(value, backup_type)):
         return
 
-    primary_convert_func = get_convert_func(primary_type)
+    primary_convert_func = _get_convert_func(primary_type)
     try:
         converted_value = primary_convert_func(value, primary_type)
     except (TypeError, ValueError):
         try:
-            backup_convert_func = get_convert_func(backup_type)
+            backup_convert_func = _get_convert_func(backup_type)
             converted_value = backup_convert_func(value, backup_type)
-        except (TypeError, ValueError):
-            raise TypeError(f"Value {value} provided with key {enum_key} in the pipeline config cannot be converted "
-                            f"to either type {primary_type} or {backup_type}.")
+        except (TypeError, ValueError) as e:
+            raise type(e)(f"Value {value} provided with key {enum_key} in the pipeline config cannot be converted "
+                          f"to either type {primary_type} or {backup_type}.") from e
 
     pipeline_config[enum_key] = converted_value
 
 
-def get_convert_func(item_type: Union[Type, Tuple[Type[list], Type]]) -> Callable:
-    """ Return the proper function to handle conversion to the desired type.
+def _get_convert_func(item_type: Union[Type, Tuple[Type[list], Type]]) -> Callable:
+    """Private function to get the proper function to handle conversion to the desired type.
     """
     if isinstance(item_type, tuple) and item_type[0] == list:
         return _get_converted_list_type
-    elif issubclass(item_type, AllowedEnum):
+    if issubclass(item_type, AllowedEnum):
         return _get_converted_enum_type
-    else:
-        return _get_converted_type
+    return _get_converted_type
 
 
 def _convert_enum_type(pipeline_config: Dict[ConfigKeys, Any],
                        enum_key: ConfigKeys,
                        enum_type: EnumMeta) -> None:
-    """ Checks that the value in the pipeline_config is properly a value of the given enum_type,
-        and sets the entry in the pipeline_config to the proper enum.
+    """Private function to check that the value in the pipeline_config is properly a value of the given enum_type,
+    and sets the entry in the pipeline_config to the proper enum.
     """
-
-    # Skip if not present in the config
-    if enum_key not in pipeline_config:
-        return
 
     # Check that the value is in the enum (silently convert to lower case)
     value = pipeline_config[enum_key]
@@ -845,7 +1005,7 @@ def _convert_enum_type(pipeline_config: Dict[ConfigKeys, Any],
 def _convert_type(pipeline_config: Dict[ConfigKeys, Any],
                   enum_key: ConfigKeys,
                   desired_type: Type) -> None:
-    """ Checks if a key is in the pipeline_config. If so, converts the value to the desired type.
+    """Private function to check if a key is in the pipeline_config. If so, converts the value to the desired type.
     """
 
     if enum_key not in pipeline_config:
@@ -858,9 +1018,9 @@ def _convert_type(pipeline_config: Dict[ConfigKeys, Any],
     pipeline_config[enum_key] = converted_value
 
 
-def convert_config_types(pipeline_config: Dict[ConfigKeys, str],
-                         d_types: Dict[ConfigKeys, Type] = None) -> Dict[ConfigKeys, Any]:
-    """ Converts values in the pipeline config to the proper types.
+def _convert_config_types(pipeline_config: Dict[ConfigKeys, str],
+                          d_types: Dict[ConfigKeys, Type] = None) -> Dict[ConfigKeys, Any]:
+    """Private function to convert values in the pipeline config to the proper types.
     """
 
     # If d_types is None, return without making any changes
@@ -882,8 +1042,20 @@ def convert_config_types(pipeline_config: Dict[ConfigKeys, str],
 
 def get_conditional_product(filename: Optional[str],
                             workdir: str = ".") -> Optional[Any]:
-    """ Returns None in all cases where a data product isn't provided, otherwise read and return the data
-        product.
+    """Returns None in all cases where a data product isn't provided, otherwise read and return the data
+    product.
+
+    Parameters
+    ----------
+    filename : Optional[str],
+        The filename of the data product to read.
+    workdir : str, default='.'
+        The directory to read the data product from.
+
+    Returns
+    -------
+    Optional[Any]
+        The data product, or None if the data product is not provided.
     """
 
     # First check for None
