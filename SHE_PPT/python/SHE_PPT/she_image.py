@@ -26,7 +26,7 @@ import os
 import weakref
 from copy import deepcopy
 from functools import lru_cache
-from typing import Any, Dict, Iterable, Optional, Sequence, TYPE_CHECKING, Tuple, Type, Union
+from typing import Any, Dict, Iterable, Optional, Sequence, TYPE_CHECKING, Tuple, Type, TypeVar, Union
 
 import astropy.io.fits
 import astropy.wcs
@@ -40,8 +40,11 @@ from coord import Angle
 from galsim import Shear
 
 from EL_PythonUtils.utilities import run_only_once
-from . import logging, mdb
-from .constants.fits import BACKGROUND_TAG, CCDID_LABEL, MASK_TAG, NOISEMAP_TAG, SCI_TAG, SEGMENTATION_TAG, WEIGHT_TAG
+from . import logging
+from .constants.fits import (BACKGROUND_TAG, CCDID_LABEL, EXPTIME_LABEL, GAIN_LABEL, MASK_TAG, NOISEMAP_TAG,
+                             OBS_ID_LABEL, PNT_ID_LABEL, READ_NOISE_LABEL, SCI_TAG,
+                             SEGMENTATION_TAG,
+                             WEIGHT_TAG, ZERO_POINT_LABEL, )
 from .constants.misc import SEGMAP_UNASSIGNED_VALUE
 from .file_io import DEFAULT_WORKDIR, write_fits
 from .mask import as_bool, is_masked_bad, is_masked_suspect_or_bad
@@ -560,57 +563,156 @@ class SHEImage:
 
     @property
     def qualified_science_data_filename(self) -> Optional[str]:
-        """Qualified science data filename of the loaded FITS file
+        """Qualified science data filename of the loaded FITS file.
+
+        Returns
+        -------
+        qualified_science_data_filename : Optional[str]
+            The qualified science data filename, if present; None otherwise.
         """
         return self._qualified_science_data_filename
 
     @qualified_science_data_filename.setter
-    def qualified_science_data_filename(self, filename):
-        """Set the qualified science data filename property
+    def qualified_science_data_filename(self, filename: Optional[str]):
+        """Setter for the qualified science data filename.
+
+        Parameters
+        ----------
+        filename : Optional[str]
+            The qualified science data filename.
         """
         self._qualified_science_data_filename = filename
 
     @property
     def observation_id(self) -> Optional[int]:
         """Observation ID. Returns None if header or keyword not present.
+
+        Returns
+        -------
+        observation_id : Optional[int]
+            The observation ID, if present; None otherwise.
         """
-        if self.header is not None and 'OBSID' in self.header:
-            return int(self.header['OBSID'])
+        return self.__get_header_property(OBS_ID_LABEL, dtype = int)
+
+    @observation_id.setter
+    def observation_id(self, observation_id: Optional[int]) -> None:
+        """Setter for the observation ID.
+
+            Parameters
+            ----------
+            observation_id : Optional[int]
+                The observation ID.
+        """
+        self.__set_header_property(OBS_ID_LABEL, observation_id)
 
     @property
     def pointing_id(self) -> Optional[int]:
         """Pointing ID. Returns None if header or keyword not present.
+
+        Returns
+        -------
+        pointing_id : Optional[int]
+            The pointing ID, if present; None otherwise.
         """
-        if self.header is not None and 'PTGID' in self.header:
-            return int(self.header['PTGID'])
+        return self.__get_header_property(PNT_ID_LABEL, dtype = int)
+
+    @pointing_id.setter
+    def pointing_id(self, pointing_id: Optional[int]) -> None:
+        """Setter for the pointing ID.
+
+            Parameters
+            ----------
+            pointing_id : Optional[int]
+                The pointing ID.
+        """
+        self.__set_header_property(PNT_ID_LABEL, pointing_id)
 
     @property
     def exposure_time(self) -> Optional[float]:
         """Exposure time in sec. Returns None if header or keyword not present.
+
+        Returns
+        -------
+        exposure_time : Optional[float]
+            The exposure time, if present; None otherwise.
         """
-        if self.header is not None and 'EXPTIME' in self.header:
-            return float(self.header['EXPTIME'])
+        return self.__get_header_property(EXPTIME_LABEL)
+
+    @exposure_time.setter
+    def exposure_time(self, exposure_time: Optional[float]) -> None:
+        """Setter for the exposure time.
+
+        Parameters
+        ----------
+        exposure_time : Optional[float]
+            The exposure time.
+        """
+        self.__set_header_property(EXPTIME_LABEL, exposure_time)
 
     @property
     def gain(self) -> Optional[float]:
         """Gain in e-/ADU. Returns None if header or keyword not present.
+
+        Returns
+        -------
+        gain : Optional[float]
+            The gain, if present; None otherwise.
         """
-        if self.header is not None and 'GAIN' in self.header:
-            return float(self.header['GAIN'])
+        return self.__get_header_property(GAIN_LABEL)
+
+    @gain.setter
+    def gain(self, gain: Optional[float]) -> None:
+        """Setter for the gain.
+
+        Parameters
+        ----------
+        gain : Optional[float]
+        """
+        self.__set_header_property(GAIN_LABEL, gain)
 
     @property
     def read_noise(self) -> Optional[float]:
         """Read noise in units of ADU/pixel. Returns None if header or keyword not present.
+
+        Returns
+        -------
+        read_noise : Optional[float]
+            The read noise, if present; None otherwise.
         """
-        if self.header is not None and 'RDNOISE' in self.header:
-            return float(self.header['RDNOISE'])
+        return self.__get_header_property(READ_NOISE_LABEL)
+
+    @read_noise.setter
+    def read_noise(self, read_noise: Optional[float]) -> None:
+        """Setter for the read noise.
+
+        Parameters
+        ----------
+        read_noise : Optional[float]
+            The read noise.
+        """
+        self.__set_header_property(READ_NOISE_LABEL, read_noise)
 
     @property
     def zero_point(self) -> Optional[float]:
         """Magnitude zero-point. Returns None if header or keyword not present.
+
+        Returns
+        -------
+        zero_point : Optional[float]
+            The zero point, if present; None otherwise.
         """
-        if self.header is not None and 'MAGZEROP' in self.header:
-            return float(self.header['MAGZEROP'])
+        return self.__get_header_property(ZERO_POINT_LABEL)
+
+    @zero_point.setter
+    def zero_point(self, zero_point: Optional[float]) -> None:
+        """Setter for the zero point.
+
+        Parameters
+        ----------
+        zero_point : Optional[float]
+            The zero point.
+        """
+        self.__set_header_property(ZERO_POINT_LABEL, zero_point)
 
     @property
     def wcs(self) -> Optional[astropy.wcs.WCS]:
@@ -1128,7 +1230,7 @@ class SHEImage:
                              header = header,
                              offset = offset,
                              wcs = wcs)
-        newimg.science_data_filename = qualified_filepath
+        new_image.science_data_filename = qualified_filepath
 
         logger.info("Read %s from the file '%s'", str(new_image), filepath)
         return new_image
@@ -1283,10 +1385,6 @@ class SHEImage:
             if self.read_noise is not None:
                 new_header['RDNOISE'] = self.read_noise
 
-        # And defining the offset property of the stamp, taking into account
-        # any current offset.
-        new_offset = self.offset + np.array([xmin, ymin])
-
         # If these bounds are fully within the image range, the extraction is
         # easy.
         if xmin >= 0 and xmax < self.shape[0] and ymin >= 0 and ymax < self.shape[1]:
@@ -1347,15 +1445,13 @@ class SHEImage:
         self._add_default_attr(attr_name = MASK_TAG,
                                force = force)
 
-    def add_default_noisemap(self, force = False, suppress_warnings = False) -> None:
+    def add_default_noisemap(self, force = False) -> None:
         """Adds a default noisemap to this object.
 
         Parameters
         ----------
         force : bool
             If True, will overwrite an existing noisemap.
-        suppress_warnings : bool
-            If True, will suppress MDB-related warnings.
         """
 
         attr = D_ATTR_CONVERSIONS[NOISEMAP_TAG]
@@ -2314,6 +2410,34 @@ class SHEImage:
             array = array.astype(attr_dtype, casting = casting)
         setattr(self, f"_{attr_name}", array)
 
+    T = TypeVar("T")
+
+    def __get_header_property(self,
+                              key: str,
+                              dtype: Type[T] = float) -> Optional[T]:
+        """Private method to return a property which is stored in the FITS header.
+        """
+        if self.header is not None and key in self.header:
+            return dtype(self.header[key])
+
+    def __set_header_property(self,
+                              key: str,
+                              val: Optional[Union[int, float]]) -> None:
+        """Private method to set a property which is stored in the FITS header.
+        """
+
+        # Ensure the header exists first if setting to a value other than None
+        if self.header is None:
+            if val is None:
+                return
+            self.header = Header()
+
+        # Delete the value if setting to None, otherwise set it
+        if val is None:
+            del self.header[key]
+        else:
+            self.header[key] = val
+
     @classmethod
     def __get_kwarg(cls,
                     attr_name: str,
@@ -2415,7 +2539,7 @@ class SHEImage:
 
         logger.debug("Accessing extension '%s' out of %d available HDUs...", ext, num_hdus)
         data = hdulist[ext].data.transpose()
-        if not data.ndim == 2:
+        if data.ndim != 2:
             raise ValueError("Primary HDU must contain a 2D image")
         header = hdulist[ext].header
 

@@ -34,7 +34,9 @@ from astropy.coordinates import SkyCoord
 from astropy.wcs import WCS
 
 from SHE_PPT import file_io, mdb
-from SHE_PPT.constants.fits import CCDID_LABEL
+from SHE_PPT.constants.fits import (CCDID_LABEL, EXPTIME_LABEL, GAIN_LABEL, OBS_ID_LABEL, PNT_ID_LABEL,
+                                    READ_NOISE_LABEL,
+                                    ZERO_POINT_LABEL, )
 from SHE_PPT.constants.misc import SEGMAP_UNASSIGNED_VALUE
 from SHE_PPT.file_io import get_qualified_filename
 from SHE_PPT.she_image import (DETECTOR_SHAPE, D_ATTR_CONVERSIONS, D_IMAGE_DTYPES, NOISEMAP_DTYPE, PRIMARY_TAG,
@@ -923,41 +925,35 @@ class TestSheImage(SheTestCase):
         retrieved_filename = self.img.qualified_science_data_filename
         assert retrieved_filename == test_filepath
 
-    def test_observation_id(self):
-        """Testing the observation ID property"""
-        obs_id = self.img.observation_id
-        if obs_id is not None:
-            assert isinstance(obs_id, int)
+    def test_header_properties(self):
+        """Test the various properties which are stored in the FITS header.
+        """
 
-    def test_pointing_id(self):
-        """Testing the pointing ID property"""
-        id = self.img.pointing_id
-        if id is not None:
-            assert isinstance(id, int)
+        for attr_name, header_key, dtype in (("observation_id", OBS_ID_LABEL, int),
+                                             ("pointing_id", PNT_ID_LABEL, int),
+                                             ("exposure_time", EXPTIME_LABEL, float),
+                                             ("gain", GAIN_LABEL, float),
+                                             ("read_noise", READ_NOISE_LABEL, float),
+                                             ("zero_point", ZERO_POINT_LABEL, float)):
 
-    def test_exposure_time(self):
-        """Testing the exposure time property"""
-        t = self.img.exposure_time
-        if t is not None:
-            assert isinstance(t, float)
+            # Try setting the property and then retrieving it
+            test_value = dtype(1.5)
+            setattr(self.img, attr_name, test_value)
+            retrieved_value = getattr(self.img, attr_name)
+            assert retrieved_value == test_value
+            assert isinstance(retrieved_value, dtype)
 
-    def test_gain(self):
-        """Testing the gain property"""
-        g = self.img.gain
-        if g is not None:
-            assert isinstance(g, float)
+            # Check that the header key is set correctly
+            assert self.img.header[header_key] == test_value
 
-    def test_read_noise(self):
-        """Testing the read noise property"""
-        r = self.img.read_noise
-        if r is not None:
-            assert isinstance(r, float)
+            # Try setting to None
+            setattr(self.img, attr_name, None)
+            assert getattr(self.img, attr_name) is None
+            assert header_key not in self.img.header
 
-    def test_zero_point(self):
-        """Testing the zero point property"""
-        z = self.img.zero_point
-        if z is not None:
-            assert isinstance(z, float)
+            # Try setting via the header
+            self.img.header[header_key] = test_value
+            assert getattr(self.img, attr_name) == test_value
 
     def test_get_object_mask(self):
         """Test that the get_object_mask function behaves as expected.
