@@ -969,6 +969,16 @@ class TestSheImage(SheTestCase):
             self.img.header[header_key] = test_value
             assert getattr(self.img, attr_name) == test_value
 
+            # Test when the header is None
+            self.img.header = None
+            assert getattr(self.img, attr_name) is None
+
+            setattr(self.img, attr_name, None)
+            assert getattr(self.img, attr_name) is None
+
+            setattr(self.img, attr_name, test_value)
+            assert getattr(self.img, attr_name) == test_value
+
     def test_get_object_mask(self):
         """Test that the get_object_mask function behaves as expected.
         """
