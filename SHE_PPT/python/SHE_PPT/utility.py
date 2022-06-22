@@ -312,7 +312,7 @@ def _process_directory_for_files(directory_name: str) -> Tuple[List[str], List[s
 # Value testing functions
 
 
-def is_any_type_of_none(value: Union[None, str]) -> bool:
+def is_any_type_of_none(value: Any) -> bool:
     """Quick function to check if a value (which might be a string) is None or empty.
 
     Parameters
