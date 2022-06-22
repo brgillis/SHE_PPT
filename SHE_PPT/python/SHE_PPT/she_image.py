@@ -7,7 +7,7 @@
 
 from __future__ import annotations
 
-__updated__ = "2021-08-13"
+__updated__ = "2022-02-25"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -191,6 +191,7 @@ class SHEImage:
     _galsim_wcs = None
     _det_ix: Optional[int] = None
     _det_iy: Optional[int] = None
+    _qualified_science_data_filename = None
 
     # Parent references
     _parent_frame_stack = None
@@ -556,6 +557,60 @@ class SHEImage:
             raise ValueError("A `SHEImage.offset` must have exactly 2 items")
 
         self._offset = np.asarray(offset, dtype = float)
+
+    @property
+    def qualified_science_data_filename(self) -> Optional[str]:
+        """Qualified science data filename of the loaded FITS file
+        """
+        return self._qualified_science_data_filename
+
+    @qualified_science_data_filename.setter
+    def qualified_science_data_filename(self, filename):
+        """Set the qualified science data filename property
+        """
+        self._qualified_science_data_filename = filename
+
+    @property
+    def observation_id(self) -> Optional[int]:
+        """Observation ID. Returns None if header or keyword not present.
+        """
+        if self.header is not None and 'OBSID' in self.header:
+            return int(self.header['OBSID'])
+
+    @property
+    def pointing_id(self) -> Optional[int]:
+        """Pointing ID. Returns None if header or keyword not present.
+        """
+        if self.header is not None and 'PTGID' in self.header:
+            return int(self.header['PTGID'])
+
+    @property
+    def exposure_time(self) -> Optional[float]:
+        """Exposure time in sec. Returns None if header or keyword not present.
+        """
+        if self.header is not None and 'EXPTIME' in self.header:
+            return float(self.header['EXPTIME'])
+
+    @property
+    def gain(self) -> Optional[float]:
+        """Gain in e-/ADU. Returns None if header or keyword not present.
+        """
+        if self.header is not None and 'GAIN' in self.header:
+            return float(self.header['GAIN'])
+
+    @property
+    def read_noise(self) -> Optional[float]:
+        """Read noise in units of ADU/pixel. Returns None if header or keyword not present.
+        """
+        if self.header is not None and 'RDNOISE' in self.header:
+            return float(self.header['RDNOISE'])
+
+    @property
+    def zero_point(self) -> Optional[float]:
+        """Magnitude zero-point. Returns None if header or keyword not present.
+        """
+        if self.header is not None and 'MAGZEROP' in self.header:
+            return float(self.header['MAGZEROP'])
 
     @property
     def wcs(self) -> Optional[astropy.wcs.WCS]:
@@ -1073,6 +1128,7 @@ class SHEImage:
                              header = header,
                              offset = offset,
                              wcs = wcs)
+        newimg.science_data_filename = qualified_filepath
 
         logger.info("Read %s from the file '%s'", str(new_image), filepath)
         return new_image
@@ -1216,6 +1272,21 @@ class SHEImage:
                                       (ymax < 0) or (ymin >= self.shape[1])):
             return None
 
+        # And the header:
+        if keep_header:
+            new_header = self.header
+        else:
+            # Create a default header with minimally-necessary values
+            new_header = astropy.io.fits.Header()
+            if self.gain is not None:
+                new_header['GAIN'] = self.gain
+            if self.read_noise is not None:
+                new_header['RDNOISE'] = self.read_noise
+
+        # And defining the offset property of the stamp, taking into account
+        # any current offset.
+        new_offset = self.offset + np.array([xmin, ymin])
+
         # If these bounds are fully within the image range, the extraction is
         # easy.
         if xmin >= 0 and xmax < self.shape[0] and ymin >= 0 and ymax < self.shape[1]:
@@ -1237,7 +1308,7 @@ class SHEImage:
                              segmentation_map = d_ex_stamp_attrs[SEGMENTATION_TAG],
                              background_map = d_ex_stamp_attrs[BACKGROUND_TAG],
                              weight_map = d_ex_stamp_attrs[WEIGHT_TAG],
-                             header = self.header if keep_header else None,
+                             header = new_header,
                              offset = self.offset + np.array([xmin, ymin]),
                              wcs = self.wcs,
                              parent_frame = self.parent_frame,
@@ -1295,17 +1366,13 @@ class SHEImage:
 
         # Try to calculate the noisemap
 
-        # Get the gain and read_noise from the MDB if possible
-        try:
-            gain = mdb.get_gain(suppress_warnings = suppress_warnings)
-            read_noise = mdb.get_read_noise(suppress_warnings = suppress_warnings)
-        except RuntimeError as e:
-            if "mdb module must be initialised with MDB xml object before use." not in str(e):
-                raise
-            warn_mdb_not_loaded()
-            # Use default values for gain and read_noise
-            gain = 3.1
-            read_noise = 4.5
+        # get the gain and read_noise properties
+        gain = self.gain
+        if gain is None:
+            raise RuntimeError('Gain property not read in from header.')
+        read_noise = self.read_noise
+        if read_noise is None:
+            raise RuntimeError('Read noise property not read in from header.')
 
         # Start by setting to the read noise level
         self.noisemap = read_noise / gain * np.ones_like(self.data, dtype = float)

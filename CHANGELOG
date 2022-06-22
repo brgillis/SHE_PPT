@@ -27,6 +27,7 @@ Bug Fixes
 New Features
 ------------
 - Added new functions to test if a value is either NaN or masked, or NaN, Inf, or masked
+- Added new functions for generation of mock data for VIS frames, MER tables, MER segmentation maps, PSF model images and object id lists.
 
 
 New config features
@@ -40,7 +41,8 @@ Miscellaneous
   be maintained separately
 - Added unit tests of setting default values in pipeline_config and of the SheArgumentParser class
 - Fully documented SheArgumentParser class
-- General cleanup and expansion of unit testing of the SHE_PPT.she_image module
+- General cleanup and expansion of unit testing for the SHE_PPT.she_image module
+- General cleanup and expansion of unit testing for the SHE_PPT.pipeline_utility module
 - General cleanup and expansion of unit testing for the SHE_PPT.utility module
 - General cleanup and expansion of unit testing for the SHE_PPT.file_io module
 
