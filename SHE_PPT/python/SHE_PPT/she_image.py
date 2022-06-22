@@ -1178,8 +1178,7 @@ class SHEImage:
                                                                        ext = SHEImage.__get_hdu_kwarg(
                                                                            attr_name = SCI_TAG,
                                                                            kwargs = kwargs,
-                                                                           default_value =
-                                                                           PRIMARY_TAG),
+                                                                           default_value = PRIMARY_TAG),
                                                                        return_header = True)
 
         # Set up the WCS before we clean the header
@@ -1381,9 +1380,9 @@ class SHEImage:
             # Create a default header with minimally-necessary values
             new_header = astropy.io.fits.Header()
             if self.gain is not None:
-                new_header['GAIN'] = self.gain
+                new_header[GAIN_LABEL] = self.gain
             if self.read_noise is not None:
-                new_header['RDNOISE'] = self.read_noise
+                new_header[READ_NOISE_LABEL] = self.read_noise
 
         # If these bounds are fully within the image range, the extraction is
         # easy.
@@ -2040,7 +2039,6 @@ class SHEImage:
             Rotation angle of the decomposition
         flip : bool
             Whether or not the WCS includes a flip (e.g. due to R.A being mirrored on the sky)
-
         """
 
         if ra is None and dec is None:
@@ -2116,7 +2114,6 @@ class SHEImage:
         -------
         rotation_angle : float
             Rotation angle from pixel coords to world coords in radians
-
         """
 
         # Correct for offset if applicable
@@ -2195,7 +2192,6 @@ class SHEImage:
         -------
         rotation_angle : float
             Rotation angle from world coords to pixel coords in radians
-
         """
 
         if (dra == 0) and (ddec == 0):
