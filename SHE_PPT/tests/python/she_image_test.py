@@ -909,22 +909,19 @@ class TestSheImage(SheTestCase):
             stamp.offset = [1, 2, 3]
 
     def test_qualified_science_data_filename(self):
-        """Testing the qualified science data filename property"""
+        """Test the qualified science data filename property.
+        """
 
-        # test non-existence of property
-        fname = self.img.qualified_science_data_filename
-        if fname is None:
-            pass
-        else:
-            assert isinstance(fname, str)
+        # Test initial non-existence of property
+        filename = self.img.qualified_science_data_filename
+        assert filename is None
 
-        # set property and get it
-        self.img.qualified_science_data_filename = '/mock_dir/mock_file.fits'
-        fname = self.img.qualified_science_data_filename
-        assert isinstance(fname, str)
-        if isinstance(fname, str):
-            assert os.path.isabs(fname)
-            assert os.path.splitext(fname)[1] == '.fits'
+        # Try setting the property and then retrieving it
+        test_filepath = "/mock_dir/mock_file.fits"
+        self.img.qualified_science_data_filename = test_filepath
+
+        retrieved_filename = self.img.qualified_science_data_filename
+        assert retrieved_filename == test_filepath
 
     def test_observation_id(self):
         """Testing the observation ID property"""
