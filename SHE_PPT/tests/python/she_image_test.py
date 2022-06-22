@@ -943,6 +943,8 @@ class TestSheImage(SheTestCase):
         """Test the various properties which are stored in the FITS header.
         """
 
+        img = deepcopy(self.img)
+
         for attr_name, header_key, dtype in (("observation_id", OBS_ID_LABEL, int),
                                              ("pointing_id", PNT_ID_LABEL, int),
                                              ("exposure_time", EXPTIME_LABEL, float),
@@ -952,32 +954,32 @@ class TestSheImage(SheTestCase):
 
             # Try setting the property and then retrieving it
             test_value = dtype(1.5)
-            setattr(self.img, attr_name, test_value)
-            retrieved_value = getattr(self.img, attr_name)
+            setattr(img, attr_name, test_value)
+            retrieved_value = getattr(img, attr_name)
             assert retrieved_value == test_value
             assert isinstance(retrieved_value, dtype)
 
             # Check that the header key is set correctly
-            assert self.img.header[header_key] == test_value
+            assert img.header[header_key] == test_value
 
             # Try setting to None
-            setattr(self.img, attr_name, None)
-            assert getattr(self.img, attr_name) is None
-            assert header_key not in self.img.header
+            setattr(img, attr_name, None)
+            assert getattr(img, attr_name) is None
+            assert header_key not in img.header
 
             # Try setting via the header
-            self.img.header[header_key] = test_value
-            assert getattr(self.img, attr_name) == test_value
+            img.header[header_key] = test_value
+            assert getattr(img, attr_name) == test_value
 
             # Test when the header is None
-            self.img.header = None
-            assert getattr(self.img, attr_name) is None
+            img.header = None
+            assert getattr(img, attr_name) is None
 
-            setattr(self.img, attr_name, None)
-            assert getattr(self.img, attr_name) is None
+            setattr(img, attr_name, None)
+            assert getattr(img, attr_name) is None
 
-            setattr(self.img, attr_name, test_value)
-            assert getattr(self.img, attr_name) == test_value
+            setattr(img, attr_name, test_value)
+            assert getattr(img, attr_name) == test_value
 
     def test_get_object_mask(self):
         """Test that the get_object_mask function behaves as expected.
