@@ -5,7 +5,7 @@
     Utilities to generate mock vis calibrated frames for smoke tests.
 """
 
-__updated__ = "2022-03-24"
+__updated__ = "2022-05-04"
 
 # Copyright (C) 2012-2022 Euclid Science Ground Segment
 #
@@ -23,6 +23,7 @@ __updated__ = "2022-03-24"
 import os
 
 import numpy as np
+
 from astropy.io import fits
 from astropy.wcs import WCS
 
@@ -33,19 +34,22 @@ from SHE_PPT.logging import getLogger
 
 logger = getLogger(__name__)
 
+# how much larger the radius of the stamp is than the radius of the object
+stampscale = 5
 
 def __generate_gausian_blob(objsize=10):
-    """generates a (objsize*5 x objsize*5) pixel image of a gaussian blob with width of objsize"""
+    """generates a (objsize*stampscale*2 x objsize*stampscale*2) pixel image of a sersic profile (n=1) with width of objsize pixels"""
     
     #size of the stamp
-    size = objsize*5
+    size = int(objsize*stampscale*2)
     
     blob = np.zeros((size,size))
     
     x = np.arange(size)-size/2.
     for j in range(size):
         y=x[j]
-        blob[j,:] = np.exp(-(x*x + y*y)/(objsize)**2)
+        r = np.sqrt(x*x + y*y)
+        blob[j,:] = np.exp(-(r/objsize))
     
     return blob
 
@@ -81,7 +85,7 @@ def __generate_detector_images(detector_shape=(4136,4096), nobjs=10, background=
     y_px = []
     for i in range(nobjs):
         blob = __generate_gausian_blob(objsize)
-        stampsize=objsize*5
+        stampsize=int(objsize*stampscale*2)
 
         #select (randomly) the x and y coordinates of the blob's bottom corner
         x = rng.randint(0, detector_shape[1]-stampsize)
@@ -106,7 +110,7 @@ def __generate_detector_images(detector_shape=(4136,4096), nobjs=10, background=
     wgt = np.ones(detector_shape,dtype=np.float32)
 
     #generate bkg image (bkg = noise)
-    bkg = np.ones(detector_shape,dtype=np.float32) * np.sqrt(background)
+    bkg = np.ones(detector_shape,dtype=np.float32) * background
 
     return sci, rms, flg, wgt, bkg, x_px, y_px
 
@@ -132,25 +136,32 @@ def __create_header(wcs=None, **kwargs):
     
 
 
-def create_exposure(n_detectors=1, detector_shape=(500,500), workdir=".", seed = 1, n_objs_per_det = 10):
+def create_exposure(n_detectors=1, detector_shape=(100,100), workdir=".", seed = 1, n_objs_per_det = 10, objsize=10):
     """
         Creates a mock dpdVisCalibratedFrame data product for use in smoke tests
         
         Arguments:
            - n_detectors: The number of detectors to create (default 1)
-           - detector_shape: The shape of the detector in pixels (ny, nx) (default (1000,1000))
+           - detector_shape: The shape of the detector in pixels (ny, nx) (default (100,100))
            - objs_per_detector: Number of objects per detector (default 10)
            - workdir: workdir for the files (default ".")
            - seed: seed for the random number generator
            - n_objs_per_det: Number of objects generated per detector
+           - objsize: size of the objects in pixels
 
         Returns:
            - prod_filename (The name of the created data product)
-           - object_coords (a list of world coodinates for the objects in the image - to be used when creating
+           - sky_coords (a list of world coodinates for the objects in the image - to be used when creating
              mock mer catalogues for this exposure (astropy.coordinates.SkyCoord))
+           - img_coords (a list of image coordinates (x,y) of each object)
+           - detectors (a list stating which detector (0:ndetectors-1) the object is in)
+           - wcs_list (a list of all the WCSs used for each detector)
     """
     #pixelsize = 0.1"
     PIXELSIZE = 1./3600/10.
+
+    if n_detectors not in (1,36):
+        raise ValueError("Number of detectors seems to be %d. The only valid numbers are 1 or 36"%n_detectors)
 
     rng = np.random.RandomState(seed=seed)
 
@@ -167,7 +178,10 @@ def create_exposure(n_detectors=1, detector_shape=(500,500), workdir=".", seed =
     bkg_primary = fits.PrimaryHDU(bkg_hdr)
     bkg_hdul = fits.HDUList([bkg_primary])
 
-    object_coords = []
+    sky_coords = []
+    img_coords = []
+    detectors = []
+    wcs_list = []
 
     #loop over all detectors in the exposure
     for det in range(n_detectors):
@@ -181,7 +195,8 @@ def create_exposure(n_detectors=1, detector_shape=(500,500), workdir=".", seed =
         #create image data
         sci, rms, flg, wgt, bkg, x_px, y_px = __generate_detector_images(detector_shape=detector_shape,
                                                                            rng=rng,
-                                                                           nobjs= n_objs_per_det)
+                                                                           nobjs= n_objs_per_det,
+                                                                           objsize=objsize)
 
         #create WCS (Use Airy projection - arbitrary decision, we just want something in valid sky coordinates!)
         wcs = WCS(naxis=2)
@@ -195,12 +210,19 @@ def create_exposure(n_detectors=1, detector_shape=(500,500), workdir=".", seed =
         #obtain the world coordinates of the objects in the image, and append them to the object_positions list
         world_coords = wcs.pixel_to_world(x_px, y_px)
         for coord in world_coords:
-            object_coords.append(coord)
+            sky_coords.append(coord)
+        
+        #also store the pixel coordinates of each object and the detector it belongs to
+        for coord in zip(x_px, y_px):
+            img_coords.append(coord)
+            detectors.append(det)
+        
+        wcs_list.append(wcs)
 
         #now make the hdus for these images
         
         #common header tor HDUs in the DET file (sci, flg, rms)
-        det_hdr = __create_header(wcs = wcs, EXPTIME=500., GAIN=3.0, RDNOISE=3.0, MAGZEROP = 25.0)
+        det_hdr = __create_header(wcs = wcs, EXPTIME=500., GAIN=3.0, RDNOISE=3.0, MAGZEROP = 25.0, CCDID=det_id)
         
         #create hdus for the DET file and append them to the HDUlist
         sci_hdu = fits.ImageHDU(data=sci, header=det_hdr, name="CCDID %s.SCI"%det_id)
@@ -220,7 +242,7 @@ def create_exposure(n_detectors=1, detector_shape=(500,500), workdir=".", seed =
         wgt_hdu = fits.ImageHDU(data=wgt, header=wgt_hdr, name="CCDID %s"%det_id)
         wgt_hdul.append(wgt_hdu)
 
-    logger.info("Created %d detector(s) with a total of %d object(s)"%(n_detectors, len(object_coords)))
+    logger.info("Created %d detector(s) with a total of %d object(s)"%(n_detectors, len(sky_coords)))
 
     #determine the data directory, creating it if it doesn't already exist
     datadir = os.path.join(workdir,"data")
@@ -234,11 +256,11 @@ def create_exposure(n_detectors=1, detector_shape=(500,500), workdir=".", seed =
     bkg_fname = get_allowed_filename("VIS-BKG", "00", release=ppt_version, extension=".fits")
 
     #write the fits files
-    logger.info("Writing DET file to %s"%det_fname)
+    logger.info("Writing DET file to %s"%os.path.join(workdir,det_fname))
     det_hdul.writeto(os.path.join(workdir,det_fname), overwrite=True)
-    logger.info("Writing WGT file to %s"%wgt_fname)
+    logger.info("Writing WGT file to %s"%os.path.join(workdir,wgt_fname))
     wgt_hdul.writeto(os.path.join(workdir,wgt_fname), overwrite=True)
-    logger.info("Writing BKG file to %s"%bkg_fname)
+    logger.info("Writing BKG file to %s"%os.path.join(workdir,bkg_fname))
     bkg_hdul.writeto(os.path.join(workdir,bkg_fname), overwrite=True)
     
     #create the data product
@@ -249,10 +271,10 @@ def create_exposure(n_detectors=1, detector_shape=(500,500), workdir=".", seed =
     #Write it to file
     prod_filename = get_allowed_filename("VIS-CAL-FRAME", "00", release=ppt_version, extension=".xml",subdir="")
     qualified_prod_filename = os.path.join(workdir, prod_filename)
-    logger.info("Writing dpdVisCalibratedFrame product to %s"%prod_filename)
+    logger.info("Writing dpdVisCalibratedFrame product to %s"%qualified_prod_filename)
     write_xml_product(exposure_prod, qualified_prod_filename)
 
-    return prod_filename, object_coords
+    return prod_filename, sky_coords, img_coords, detectors, wcs_list
 
         
 
