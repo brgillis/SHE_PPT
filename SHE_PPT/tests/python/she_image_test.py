@@ -4,7 +4,7 @@ File: tests/python/she_image_test.py
 Created on: 08/18/17
 """
 
-__updated__ = "2021-08-16"
+__updated__ = "2022-02-25"
 
 #
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -52,9 +52,6 @@ class TestSheImage():
         mdb_filename = sync.absolutePath(os.path.join(TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME))
 
         mdb.init(mdb_filename)
-
-        cls.gain = mdb.get_gain(suppress_warnings = True)
-        cls.read_noise = mdb.get_read_noise(suppress_warnings = True)
 
         # A filename for testing the file-saving:
         cls.testfilepath = "test_SHEImage.fits"  # Will be deleted by teardown_class()
@@ -126,7 +123,7 @@ class TestSheImage():
         img.add_default_noisemap(force = True)
         assert img.noisemap.dtype == float
         assert np.allclose(img.noisemap,
-                           self.read_noise / self.gain * np.ones_like(img.data, dtype = img.noisemap.dtype))
+                           img.read_noise / img.gain * np.ones_like(img.data, dtype = img.noisemap.dtype))
         assert img.noisemap.shape == (self.w, self.h)
 
         # Check that non-forcibly adding a default noisemap doesn't affect the existing noisemap
@@ -136,12 +133,12 @@ class TestSheImage():
 
         # Check that forcibly adding a default noisemap does affect the existing noisemap
         img.add_default_noisemap(force = True)
-        assert np.isclose(img.noisemap[5, 5], self.read_noise / self.gain)
+        assert np.isclose(img.noisemap[5, 5], img.read_noise / img.gain)
 
         # Check that the noisemap is calculated correctly when a background map is present
         img.background_map = 1000 * np.ones_like(img.data, dtype = float)
         img.add_default_noisemap(force = True)
-        assert np.allclose(img.noisemap, (self.read_noise / self.gain) + np.sqrt(1000 / self.gain) *
+        assert np.allclose(img.noisemap, (img.read_noise / img.gain) + np.sqrt(1000 / img.gain) *
                            np.ones_like(img.data, dtype = img.noisemap.dtype))
 
     def test_segmentation_map(self):
@@ -356,6 +353,8 @@ class TestSheImage():
 
         img.add_default_header()
         img.header["foo"] = "bar"
+        img.header['GAIN'] = 3.3
+        img.header['RDNOISE'] = 3.1
 
         # Testing extracted shape and extracted mask
         eimg = img.extract_stamp(16.4, 15.6, 32)
@@ -373,9 +372,9 @@ class TestSheImage():
 
         # And the header:
         eimg = img.extract_stamp(5, 5, 5)
-        assert eimg.header is None
+        assert "foo" not in eimg.header
         eimg = img.extract_stamp(5, 5, 5, keep_header = True)
-        assert len(list(eimg.header.keys())) == 1  # The "foo"
+        assert len(list(eimg.header.keys())) == 3  # The "foo", gain, and read noise
 
         # Test setting or not setting default properties for an extracted stamp
         simple_img = SHE_PPT.she_image.SHEImage(array)
@@ -387,8 +386,10 @@ class TestSheImage():
         assert simple_stamp.segmentation_map is None
         assert simple_stamp.background_map is None
         assert simple_stamp.weight_map is None
-        assert simple_stamp.header is None
-        assert simple_stamp.wcs is None
+
+        simple_img.add_default_header()
+        simple_img.header['GAIN'] = 3.3
+        simple_img.header['RDNOISE'] = 3.1
 
         default_stamp = simple_img.extract_stamp(16.4, 15.6, 32, force_all_properties = True)
 
@@ -423,6 +424,10 @@ class TestSheImage():
         assert stamp.boolmask[1, 1] == False
         assert stamp.boolmask[0, 0] == True
 
+        img.add_default_header()
+        img.header['GAIN'] = 3.3
+        img.header['RDNOISE'] = 3.1
+
         img.add_default_mask()
         img.add_default_noisemap()
         img.add_default_segmentation_map()
@@ -456,6 +461,60 @@ class TestSheImage():
         rstamp = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepath)
         assert rstamp.offset[0] == 2
         assert rstamp.offset[1] == 3
+
+    def test_qualified_science_data_filename(self):
+        """Testing the qualified science data filename property"""
+
+        # test non-existence of property
+        fname = self.img.qualified_science_data_filename
+        if fname is None:
+            pass
+        else:
+            assert isinstance(fname, str)
+
+        # set property and get it
+        self.img.qualified_science_data_filename = '/mock_dir/mock_file.fits'
+        fname = self.img.qualified_science_data_filename
+        assert isinstance(fname, str)
+        if isinstance(fname, str):
+            assert os.path.isabs(fname)
+            assert os.path.splitext(fname)[1] == '.fits'
+
+    def test_observation_id(self):
+        """Testing the observation ID property"""
+        obs_id = self.img.observation_id
+        if obs_id is not None:
+            assert isinstance(obs_id, int)
+
+    def test_pointing_id(self):
+        """Testing the pointing ID property"""
+        id = self.img.pointing_id
+        if id is not None:
+            assert isinstance(id, int)
+
+    def test_exposure_time(self):
+        """Testing the exposure time property"""
+        t = self.img.exposure_time
+        if t is not None:
+            assert isinstance(t, float)
+
+    def test_gain(self):
+        """Testing the gain property"""
+        g = self.img.gain
+        if g is not None:
+            assert isinstance(g, float)
+
+    def test_read_noise(self):
+        """Testing the read noise property"""
+        r = self.img.read_noise
+        if r is not None:
+            assert isinstance(r, float)
+
+    def test_zero_point(self):
+        """Testing the zero point property"""
+        z = self.img.zero_point
+        if z is not None:
+            assert isinstance(z, float)
 
     def test_get_object_mask(self):
         """Test that the get_object_mask function behaves as expected."""
