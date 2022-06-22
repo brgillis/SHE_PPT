@@ -1464,10 +1464,10 @@ class SHEImage:
         # get the gain and read_noise properties
         gain = self.gain
         if gain is None:
-            raise RuntimeError('Gain property not read in from header.')
+            raise ValueError('Default noisemap cannot be generated if `gain` attribute is not present.')
         read_noise = self.read_noise
         if read_noise is None:
-            raise RuntimeError('Read noise property not read in from header.')
+            raise ValueError('Default noisemap cannot be generated if `read_noise` attribute is not present.')
 
         # Start by setting to the read noise level
         self.noisemap = read_noise / gain * np.ones_like(self.data, dtype = float)

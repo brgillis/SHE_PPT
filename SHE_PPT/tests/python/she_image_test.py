@@ -381,6 +381,10 @@ class TestSheImage(SheTestCase):
 
         img = deepcopy(self.img)
 
+        # Make sure the read_noise and gain properties are set
+        img.gain = 3.4
+        img.read_noise = 3.0
+
         # Add a default noisemap and check its data type and values
         img.add_default_noisemap(force = True)
         assert img.noisemap.dtype == NOISEMAP_DTYPE
@@ -402,6 +406,16 @@ class TestSheImage(SheTestCase):
         img.add_default_noisemap(force = True)
         assert np.allclose(img.noisemap, (img.read_noise / img.gain) + np.sqrt(1000 / img.gain) *
                            np.ones_like(img.data, dtype = img.noisemap.dtype))
+
+        # Check that we get expected exceptions if gain or read noise is not set
+        img.gain = None
+        with pytest.raises(ValueError):
+            img.add_default_noisemap(force = True)
+
+        img.gain = 3.4
+        img.read_noise = None
+        with pytest.raises(ValueError):
+            img.add_default_noisemap(force = True)
 
     def test_segmentation_map(self):
         """Test that the segmentation map behaves appropriately.
