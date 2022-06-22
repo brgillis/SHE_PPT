@@ -789,7 +789,7 @@ class TestSheImage(SheTestCase):
         extracted_img = img.extract_stamp(5, 5, 5)
         assert "foo" not in extracted_img.header
         extracted_img = img.extract_stamp(5, 5, 5, keep_header = True)
-        assert len(list(extracted_img.header.keys())) == 1  # The "foo"
+        assert len(list(extracted_img.header.keys())) == 3  # The "foo", gain, and read noise
 
         # Test setting or not setting default properties for an extracted stamp
         simple_img = SHEImage(array)
@@ -803,8 +803,8 @@ class TestSheImage(SheTestCase):
         assert simple_stamp.weight_map is None
 
         simple_img.add_default_header()
-        simple_img.header['GAIN'] = 3.3
-        simple_img.header['RDNOISE'] = 3.1
+        simple_img.gain = 3.3
+        simple_img.read_noise = 3.1
 
         default_stamp = simple_img.extract_stamp(16.4, 15.6, 32, force_all_properties = True)
 
@@ -841,8 +841,8 @@ class TestSheImage(SheTestCase):
         assert bool(stamp.boolmask[0, 0]) is True
 
         img.add_default_header()
-        img.header['GAIN'] = 3.3
-        img.header['RDNOISE'] = 3.1
+        img.gain = 3.3
+        img.read_noise = 3.1
 
         img.add_default_mask()
         img.add_default_noisemap()
