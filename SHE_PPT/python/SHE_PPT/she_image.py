@@ -4,7 +4,7 @@ File: she_image.py
 Created on: Aug 17, 2017
 """
 
-__updated__ = "2021-08-13"
+__updated__ = "2022-02-25"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -23,6 +23,7 @@ import os
 import weakref
 from copy import deepcopy
 from functools import lru_cache
+from typing import Optional
 
 import astropy.io.fits
 import astropy.wcs
@@ -32,7 +33,7 @@ import numpy as np
 from astropy.coordinates import SkyCoord
 
 from EL_PythonUtils.utilities import run_only_once
-from . import logging, mdb
+from . import logging
 from .constants.fits import CCDID_LABEL
 from .constants.misc import SEGMAP_UNASSIGNED_VALUE
 from .mask import (as_bool, is_masked_bad,
@@ -216,6 +217,9 @@ class SHEImage():
         self.galsim_wcs = None
         self._det_ix = None
         self._det_iy = None
+
+        # qualified science data filename
+        self._qualified_science_data_filename = None
 
     # We define properties of the SHEImage object, following
     # https://euclid.roe.ac.uk/projects/codeen-users/wiki/User_Cod_Std-pythonstandard-v1-0#PNAMA-020-m-Developer
@@ -490,6 +494,60 @@ class SHEImage():
             if len(offset_tuple) != 2:
                 raise ValueError("A SHEImage.offset must have 2 items")
             self._offset = np.array(offset_tuple, dtype = float)
+
+    @property
+    def qualified_science_data_filename(self) -> Optional[str]:
+        """Qualified science data filename of the loaded FITS file
+        """
+        return self._qualified_science_data_filename
+
+    @qualified_science_data_filename.setter
+    def qualified_science_data_filename(self, filename):
+        """Set the qualified science data filename property
+        """
+        self._qualified_science_data_filename = filename
+
+    @property
+    def observation_id(self) -> Optional[int]:
+        """Observation ID. Returns None if header or keyword not present.
+        """
+        if self.header is not None and 'OBSID' in self.header:
+            return int(self.header['OBSID'])
+
+    @property
+    def pointing_id(self) -> Optional[int]:
+        """Pointing ID. Returns None if header or keyword not present.
+        """
+        if self.header is not None and 'PTGID' in self.header:
+            return int(self.header['PTGID'])
+
+    @property
+    def exposure_time(self) -> Optional[float]:
+        """Exposure time in sec. Returns None if header or keyword not present.
+        """
+        if self.header is not None and 'EXPTIME' in self.header:
+            return float(self.header['EXPTIME'])
+
+    @property
+    def gain(self) -> Optional[float]:
+        """Gain in e-/ADU. Returns None if header or keyword not present.
+        """
+        if self.header is not None and 'GAIN' in self.header:
+            return float(self.header['GAIN'])
+
+    @property
+    def read_noise(self) -> Optional[float]:
+        """Read noise in units of ADU/pixel. Returns None if header or keyword not present.
+        """
+        if self.header is not None and 'RDNOISE' in self.header:
+            return float(self.header['RDNOISE'])
+
+    @property
+    def zero_point(self) -> Optional[float]:
+        """Magnitude zero-point. Returns None if header or keyword not present.
+        """
+        if self.header is not None and 'MAGZEROP' in self.header:
+            return float(self.header['MAGZEROP'])
 
     @property
     # Just a shortcut, defined as a property in case we need to change
@@ -896,6 +954,7 @@ class SHEImage():
         newimg = SHEImage(data = data, mask = mask, noisemap = noisemap, segmentation_map = segmentation_map,
                           background_map = background_map, weight_map = weight_map,
                           header = header, offset = offset, wcs = wcs)
+        newimg.science_data_filename = qualified_filepath
 
         logger.info("Read %s from the file '%s'", str(newimg), filepath)
         return newimg
@@ -1090,7 +1149,12 @@ class SHEImage():
         if keep_header:
             new_header = self.header
         else:
-            new_header = None
+            # Create a default header with minimally-necessary values
+            new_header = astropy.io.fits.Header()
+            if self.gain is not None:
+                new_header['GAIN'] = self.gain
+            if self.read_noise is not None:
+                new_header['RDNOISE'] = self.read_noise
 
         # And defining the offset property of the stamp, taking into account
         # any current offset.
@@ -1282,17 +1346,13 @@ class SHEImage():
 
         # Try to calculate the noisemap
 
-        # Get the gain and read_noise from the MDB if possible
-        try:
-            gain = mdb.get_gain(suppress_warnings = suppress_warnings)
-            read_noise = mdb.get_read_noise(suppress_warnings = suppress_warnings)
-        except RuntimeError as e:
-            if "mdb module must be initialised with MDB xml object before use." not in str(e):
-                raise
-            warn_mdb_not_loaded()
-            # Use default values for gain and read_noise
-            gain = 3.1
-            read_noise = 4.5
+        # get the gain and read_noise properties
+        gain = self.gain
+        if gain is None:
+            raise RuntimeError('Gain property not read in from header.')
+        read_noise = self.read_noise
+        if read_noise is None:
+            raise RuntimeError('Read noise property not read in from header.')
 
         # Start by setting to the read noise level
         self.noisemap = read_noise / gain * np.ones_like(self.data, dtype = float)
@@ -2010,11 +2070,6 @@ class SHEImage():
                     y_confirmed.append(y)
 
         return np.asarray(indices_confirmed), np.asarray(x_confirmed), np.asarray(y_confirmed)
-
-
-@run_only_once
-def warn_mdb_not_loaded():
-    logger.warning("MDB is not loaded, so default values will be assumed in calculating a noisemap.")
 
 
 @run_only_once

@@ -462,8 +462,8 @@ class TestIO(SheTestCase):
 
         # ValueError if l_filenames but not file_loader_type
         with pytest.raises(ValueError):
-            _ = MultiProductLoader(workdir = self.workdir,
-                                   l_filenames = [test_filename], )
+            _ = MultiFileLoader(workdir = self.workdir,
+                                l_filenames = [test_filename], )
 
         # Check init with only workdir works though
         _ = MultiProductLoader(workdir = self.workdir)
@@ -597,8 +597,7 @@ class TestIO(SheTestCase):
 
         # Test making a MultiProductLoader with this
         multi_fits_loader = MultiFitsLoader(workdir = self.workdir,
-                                            l_filenames = [test_filename],
-                                            file_loader_type = FitsLoader)
+                                            l_filenames = [test_filename])
 
         # Run common tests on this and the Multi version
         ex_type = HDUList
