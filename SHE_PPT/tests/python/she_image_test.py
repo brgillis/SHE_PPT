@@ -771,7 +771,7 @@ class TestSheImage(SheTestCase):
 
         # And the header:
         extracted_img = img.extract_stamp(5, 5, 5)
-        assert extracted_img.header is None
+        assert "foo" not in extracted_img.header
         extracted_img = img.extract_stamp(5, 5, 5, keep_header = True)
         assert len(list(extracted_img.header.keys())) == 1  # The "foo"
 
