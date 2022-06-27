@@ -239,6 +239,8 @@ class TestSheImage(SheTestCase):
         """Cleanup any created test files.
         """
 
+        if not hasattr(self, "l_qualified_test_filenames"):
+            return
         for qualified_filename in self.l_qualified_test_filenames + [self.qualified_test_filename]:
             if os.path.exists(qualified_filename):
                 os.remove(qualified_filename)

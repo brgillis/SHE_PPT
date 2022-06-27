@@ -34,12 +34,9 @@ from SHE_PPT.constants.misc import S_NON_FILENAMES
 from SHE_PPT.testing.utility import SheTestCase
 from SHE_PPT.utility import (all_are_zero, any_is_inf, any_is_inf_nan_or_masked, any_is_inf_or_nan, any_is_masked,
                              any_is_nan, any_is_nan_or_masked, any_is_zero, coerce_to_list, find_extension,
-                             get_all_files, get_attr_with_index, get_detector, get_nested_attr,
-                             get_release_from_version, is_inf, is_inf_nan_or_masked, is_inf_or_nan, is_masked, is_nan,
-                             is_nan_or_masked, is_zero, join_without_none, neq, set_attr_with_index, set_nested_attr, )
                              get_attr_with_index, get_detector, get_nested_attr, get_release_from_version,
                              is_any_type_of_none, is_inf, is_inf_nan_or_masked, is_inf_or_nan, is_masked, is_nan,
-                             is_nan_or_masked, is_zero, join_without_none, set_attr_with_index, set_nested_attr, )
+                             is_nan_or_masked, is_zero, join_without_none, neq, set_attr_with_index, set_nested_attr, )
 
 
 @dataclass
