@@ -25,6 +25,7 @@ __updated__ = "2022-02-25"
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 import os
+import pickle
 from copy import deepcopy
 
 import galsim
@@ -212,7 +213,8 @@ class TestSheImage(SheTestCase):
 
         # A WCS to use (from the auxdir)
         header_file = file_io.find_file("AUX/SHE_PPT/tpv_header.bin")
-        header = file_io.read_pickled_product(header_file)
+        with open(str(header_file), "rb") as f:
+            header = pickle.load(f)
         self.wcs = WCS(header)
 
         # A SHEImage object to play with
