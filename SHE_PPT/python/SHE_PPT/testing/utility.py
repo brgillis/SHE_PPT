@@ -276,3 +276,6 @@ class SheTestCase:
 
         # Set to raise an error on any deprecation warnings, to be sure they're caught and fixed in tests
         warnings.simplefilter("error", category = AstropyDeprecationWarning)
+
+        # Set to raise an error on any deprecation warnings, to be sure they're caught and fixed in tests
+        warnings.simplefilter("error", category = AstropyDeprecationWarning)
