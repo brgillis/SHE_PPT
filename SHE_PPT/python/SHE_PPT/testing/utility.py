@@ -5,7 +5,7 @@
     Utility classes and functions for unit testing
 """
 
-__updated__ = "2021-08-16"
+__updated__ = "2022-06-27"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -20,6 +20,7 @@ __updated__ = "2021-08-16"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
+
 import os
 from argparse import Namespace
 from typing import Any, Dict, Optional
@@ -104,6 +105,35 @@ class SheTestCase:
         if cls.mock_pipeline_config_factory:
             cls.mock_pipeline_config_factory.cleanup()
 
+    # Overridable methods to setup/teardown for tests
+
+    def setup_workdir(self) -> None:
+        """Overridable method, where the user can specify any unique setup for a given testing class, to be performed
+           before the workdir is setup. This is normally used when it's needed to download test data, which will set
+           the self.workdir member to the location of the workdir.
+        """
+        return None
+
+    def post_setup(self) -> None:
+        """Overridable method, where the user can specify any unique setup for a given testing class, to be performed
+           after the workdir is setup.
+        """
+        return None
+
+    def teardown(self) -> None:
+        """Overridable method, where the user can specify any commands to be run at the end of any tests.
+        """
+        return None
+
+    # Protected methods
+
+    def _make_mock_args(self) -> Namespace:
+        """Overridable method to create a mock self.args Namespace. Not necessary to implement if no args are used.
+        """
+        return Namespace()
+
+    # Protected convenience methods for downloading data
+
     def _download_mdb(self):
         """ Download the test MDB from WebDAV.
         """
@@ -147,31 +177,6 @@ class SheTestCase:
         if self.download_dir is None:
             self.download_dir = os.path.split(qualified_filename)[0]
 
-    # Overridable methods to setup/teardown for tests
-
-    def setup_workdir(self) -> None:
-        """Overridable method, where the user can specify any unique setup for a given testing class, to be performed
-           before the workdir is setup. This is normally used when it's needed to download test data, which will set
-           the self.workdir member to the location of the workdir.
-        """
-        return None
-
-    def post_setup(self) -> None:
-        """Overridable method, where the user can specify any unique setup for a given testing class, to be performed
-           after the workdir is setup.
-        """
-        return None
-
-    def teardown(self) -> None:
-        """Overridable method, where the user can specify any commands to be run at the end of any tests.
-        """
-        return None
-
-    def _make_mock_args(self) -> Namespace:
-        """Overridable method to create a mock self.args Namespace. Not necessary to implement if no args are used.
-        """
-        return Namespace()
-
     # Fixtures used in setup. These can be used as arguments for new fixtures to control when they're created.
 
     @pytest.fixture(scope = 'class')
@@ -214,13 +219,6 @@ class SheTestCase:
                     pass
 
         return self
-
-    # Protected methods
-
-    def _make_mock_args(self) -> Namespace:
-        """Overridable method to create a mock self.args Namespace. Not necessary to implement if no args are used.
-        """
-        return Namespace()
 
     # Private methods
 

@@ -91,8 +91,6 @@ def estimate_pix2world_rotation_angle(image: SHEImage,
         Rotation angle from pixel coords to world coords in radians
 
     """
-from SHE_PPT.constants.test_data import (MDB_PRODUCT_FILENAME, SYNC_CONF, TEST_DATA_LOCATION, TEST_FILES_MDB)
-from SHE_PPT.testing.utility import SheTestCase
 
     # Correct for offset if applicable
     if image.offset is not None:
@@ -102,7 +100,10 @@ from SHE_PPT.testing.utility import SheTestCase
     if (dx == 0) and (dy == 0):
         raise ValueError("Differentials dx and dy must not both be zero.")
 
-class TestSheImage(SheTestCase):
+    # We'll calculate the transformation empirically by using small steps
+    # in x and y
+    ra_0, dec_0 = image.pix2world(x, y, origin = origin)
+    ra_1, dec_1 = image.pix2world(x + dx, y + dy, origin = origin)
 
     cos_dec = np.cos(dec_0 * np.pi / 180)
 
