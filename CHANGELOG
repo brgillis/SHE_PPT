@@ -57,9 +57,6 @@ Miscellaneous
 - Unit tests run as part of a SheTestCase test class will now fail if a deprecated function, method, or kwarg is used
   within the test. (This does not affect code run by executables or with tests run without use of this parent class. In
   those cases, a warning will be printed when such a function/method/kwarg is used.)
-- Unit tests run as part of a SheTestCase test class will now fail if a deprecated function, method, or kwarg is used
-  within the test. (This does not affect code run by executables or with tests run without use of this parent class. In
-  those cases, a warning will be printed when such a function/method/kwarg is used.)
 
 
 Changes in v8.12
