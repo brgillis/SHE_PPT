@@ -21,10 +21,6 @@ __updated__ = "2021-08-20"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-# Test importing first some modules which have had trouble with circular dependencies in the past
-# noinspection PyUnresolvedReferences
-from SHE_PPT.table_utility import SheTableFormat
-
 # noinspection PyUnresolvedReferences
 from SHE_PPT import *
 # noinspection PyUnresolvedReferences
@@ -33,11 +29,15 @@ from SHE_PPT.constants import *
 from SHE_PPT.products import *
 # noinspection PyUnresolvedReferences
 from SHE_PPT.table_formats import *
+# Test importing first some modules which have had trouble with circular dependencies in the past
+# noinspection PyUnresolvedReferences
+from SHE_PPT.table_utility import SheTableFormat
 # noinspection PyUnresolvedReferences
 from SHE_PPT.testing import *
+from SHE_PPT.testing.utility import SheTestCase
 
 
-class TestImports():
+class TestImports(SheTestCase):
 
     def test_import(self):
         """ Dummy test - the actual testing is done in the wildcard imports above, which can only be done at the

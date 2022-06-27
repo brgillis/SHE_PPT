@@ -20,17 +20,16 @@
 
 __updated__ = "2019-02-27"
 
-import unittest
-
 from numpy.testing import assert_almost_equal
 
 from SHE_PPT.noise import (get_count_lambda_per_pixel, get_sky_level_adu_per_pixel, get_sky_level_count_per_pixel,
                            get_var_ADU_per_pixel, )
+from SHE_PPT.testing.utility import SheTestCase
 
 
-class NoiseTestCase(unittest.TestCase):
+class TestNoise(SheTestCase):
 
-    def setUp(self):
+    def post_setup(self):
         self.pixel_scale = 0.1
         self.gain = 2.5
         self.pixel_value_ADU = 500

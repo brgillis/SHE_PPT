@@ -52,9 +52,10 @@ from SHE_PPT.table_formats.she_simulation_plan import tf as simp_tf
 from SHE_PPT.table_formats.she_star_catalog import TF as sc_tf
 from SHE_PPT.table_utility import add_row, is_in_format
 from SHE_PPT.testing.tables import _test_is_in_format
+from SHE_PPT.testing.utility import SheTestCase
 
 
-class TestTableFormats:
+class TestTableFormats(SheTestCase):
     """
 
 

@@ -50,8 +50,8 @@ from SHE_PPT.testing.mock_mer_final_cat import MockMFCGalaxyTableGenerator
 from SHE_PPT.testing.utility import SheTestCase
 
 
-class TestUtility(SheTestCase):
-    """Unit tests for the SHE_PPT.pipeline_utility module.
+class TestPipelineUtility(SheTestCase):
+    """ Unit tests for functions and classes in the SHE_PPT.pipeline_utility module.
     """
 
     def post_setup(self):

@@ -30,9 +30,10 @@ from SHE_PPT.constants.test_data import (MER_FINAL_CATALOG_LISTFILE_FILENAME, SY
                                          VIS_STACKED_FRAME_PRODUCT_FILENAME, )
 from SHE_PPT.file_io import read_listfile, read_xml_product, write_xml_product
 from SHE_PPT.products import she_validation_test_results as prod
+from SHE_PPT.testing.utility import SheTestCase
 
 
-class TestValidationTestResults(object):
+class TestValidationTestResults(SheTestCase):
     """A collection of tests for the she_validation_test_results data product.
 
     """

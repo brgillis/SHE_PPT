@@ -24,31 +24,19 @@ __updated__ = "2021-08-13"
 # """This script gives a small demo of the image object.
 
 
-import logging
-import os
-
 import pytest
 
-from ElementsServices.DataSync import DataSync
 from SHE_PPT import mdb
-from SHE_PPT.constants.test_data import (MDB_PRODUCT_FILENAME, SYNC_CONF, TEST_DATA_LOCATION, TEST_FILES_MDB)
 from SHE_PPT.detector import (VIS_DETECTOR_PIXELS_X, VIS_DETECTOR_PIXELS_Y, detector_int_to_xy, detector_xy_to_int,
                               get_detector_xy, get_id_string, get_vis_quadrant, resolve_detector_xy, )
+from SHE_PPT.testing.utility import SheTestCase
 
-logging.basicConfig(level = logging.DEBUG)
 
+class TestDetector(SheTestCase):
 
-class TestDetector():
+    def setup_workdir(self):
+        self._download_mdb()
 
-    @classmethod
-    def setup_class(cls):
-        cls.sync = DataSync(SYNC_CONF, TEST_FILES_MDB)
-        cls.sync.download()
-        cls.mdb_filename = cls.sync.absolutePath(os.path.join(TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME))
-
-        mdb.init(mdb_files = cls.mdb_filename)
-
-    @classmethod
     def teardown_class(cls):
         mdb.reset()
 

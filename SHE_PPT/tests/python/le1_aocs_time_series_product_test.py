@@ -22,9 +22,10 @@ __updated__ = "2020-10-15"
 
 from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.products import le1_aocs_time_series as prod
+from SHE_PPT.testing.utility import SheTestCase
 
 
-class TestAocsTimeSeriesProduct(object):
+class TestAocsTimeSeriesProduct(SheTestCase):
     """A collection of tests for the aocs_time_series data product.
 
     """
