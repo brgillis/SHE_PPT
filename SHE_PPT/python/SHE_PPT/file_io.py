@@ -30,13 +30,13 @@ import subprocess
 from datetime import datetime
 from os.path import exists, join
 from typing import Any, Callable, Dict, Generic, List, Optional, Sequence, Tuple, Type, TypeVar, Union
-from xml.sax import SAXParseException
 
 import numpy as np
 from astropy.io import fits
 from astropy.io.fits import HDUList
 from astropy.io.fits.hdu.base import ExtensionHDU
 from astropy.table import Table
+from astropy.utils import deprecated, deprecated_renamed_argument
 from pyxb.exceptions_ import NamespaceError
 
 from EL_PythonUtils.utilities import time_to_timestamp
@@ -46,12 +46,12 @@ from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider
 from ST_DataModelBindings.sys_stub import CreateFromDocument
 from . import __version__
 from .constants.classes import ShearEstimationMethods
+from .constants.misc import DATA_SUBDIR, DEFAULT_WORKDIR, FILENAME_NONE
 from .constants.test_data import SYNC_CONF, TEST_DATADIR
 from .logging import getLogger
 from .utility import get_release_from_version, is_any_type_of_none, join_without_none
 
 # Constant strings for default values in filenames
-DEFAULT_WORKDIR = "."
 DEFAULT_TYPE_NAME = "UNKNOWN-FILE-TYPE"
 DEFAULT_INSTANCE_ID = "0"
 DEFAULT_FILE_EXTENSION = ".fits"
@@ -86,12 +86,6 @@ MSG_FINISHED_WRITING_FITS_FILE = f"Finished writing FITS file to %s in workdir %
 
 MSG_SRC_NOT_EXIST = "In safe_copy, source file %s does not exist"
 MSG_DEST_EXIST = "In safe_copy, destination file %s already exists"
-
-# Constant string for the data subdirectory, where datafiles are expected to be stored during pipeline execution
-DATA_SUBDIR = "data/"
-
-# Constant string to represent that a file does not exist
-FILENAME_NONE = "None"
 
 # Constants for strings in xml files
 STR_KEY = '<Key>'
@@ -1092,6 +1086,9 @@ def replace_multiple_in_file(input_filename: str,
                 f_out.write(new_line)
 
 
+@deprecated_renamed_argument("allow_pickled",
+                             new_name = None,
+                             since = "9.1")
 def write_xml_product(product: Any,
                       xml_filename: str,
                       workdir: str = DEFAULT_WORKDIR,
@@ -1122,14 +1119,14 @@ def write_xml_product(product: Any,
     xml_filename = str(xml_filename)
 
     try:
-        _write_xml_product(product, xml_filename, workdir, allow_pickled)
+        _write_xml_product(product, xml_filename, workdir)
     except Exception as e:
         raise SheFileWriteError(filename = xml_filename, workdir = workdir) from e
 
     logger.debug(MSG_FINISHED_WRITING_DATA_PRODUCT, xml_filename, workdir)
 
 
-def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pickled: bool) -> None:
+def _write_xml_product(product: Any, xml_filename: str, workdir: str) -> None:
     """Private implementation of the core operations of `write_xml_product`; see that function's documentation for
     information on functionality and parameters.
     """
@@ -1143,44 +1140,15 @@ def _write_xml_product(product: Any, xml_filename: str, workdir: str, allow_pick
     except AttributeError:
         pass
 
-    # Check if the product has a catalog file object, and set the name and write a dummy one if necessary
-    try:
-        cat_filename = product.Data.CatalogStorage.CatalogFileStorage.StorageSpace[0].DataContainer.FileName
-        if cat_filename == "None":
-            # Create a name for the catalog file
-            cat_filename = get_allowed_filename(type_name = "CAT", instance_id = DEFAULT_INSTANCE_ID,
-                                                extension = ".csv",
-                                                version = __version__, subdir = None)
-            product.Data.CatalogStorage.CatalogFileStorage.StorageSpace[0].DataContainer.FileName = cat_filename
-
-        # Check if the catalogue exists, and create it if necessary
-
-        datadir = os.path.join(workdir, DATA_SUBDIR)
-        if not os.path.isdir(datadir):
-            os.makedirs(datadir)
-
-        qualified_cat_filename = os.path.join(workdir, DATA_SUBDIR + cat_filename)
-        if not os.path.isfile(qualified_cat_filename):
-            open(qualified_cat_filename, 'a').close()
-
-    except AttributeError:
-        pass
-
     qualified_xml_filename = get_qualified_filename(xml_filename, workdir)
 
-    try:
-        with open(str(qualified_xml_filename), "w") as f:
-            f.write(product.toDOM().toprettyxml(encoding = "utf-8").decode("utf-8"))
-    except AttributeError as e:
-        if not allow_pickled:
-            raise
-        if "object has no attribute 'toDOM'" not in str(e):
-            raise
-        logger.warning(
-            "XML writing is not available; falling back to pickled writing instead.")
-        write_pickled_product(product, qualified_xml_filename)
+    with open(str(qualified_xml_filename), "w") as f:
+        f.write(product.toDOM().toprettyxml(encoding = "utf-8").decode("utf-8"))
 
 
+@deprecated_renamed_argument("allow_pickled",
+                             new_name = None,
+                             since = "9.1")
 def read_xml_product(xml_filename: str,
                      workdir: str = ".",
                      log_info: bool = False,
@@ -1222,7 +1190,7 @@ def read_xml_product(xml_filename: str,
 
     try:
 
-        product = _read_xml_product(xml_filename, workdir, allow_pickled)
+        product = _read_xml_product(xml_filename, workdir)
 
     except NamespaceError:
         # If we hit a namespace error, it likely means the SHE_PPT.products module hasn't been imported.
@@ -1230,7 +1198,7 @@ def read_xml_product(xml_filename: str,
         from . import products
 
         try:
-            product = _read_xml_product(xml_filename, workdir, allow_pickled)
+            product = _read_xml_product(xml_filename, workdir)
         except Exception as e:
             raise SheFileReadError(filename = xml_filename, workdir = workdir) from e
 
@@ -1247,31 +1215,24 @@ def read_xml_product(xml_filename: str,
     return product
 
 
-def _read_xml_product(xml_filename: str, workdir: str, allow_pickled: bool) -> Any:
+def _read_xml_product(xml_filename: str, workdir: str) -> Any:
     """Private implementation of the core functionality of `read_xml_product`. See that function's documentation for
     details on functionality and parameters.
     """
 
     qualified_xml_filename = find_file(xml_filename, workdir)
 
-    try:
-        with open(str(qualified_xml_filename), "r") as f:
-            xml_string = f.read()
+    with open(str(qualified_xml_filename), "r") as f:
+        xml_string = f.read()
 
-        # Create a new product instance using the proper data product dictionary
-        product = CreateFromDocument(xml_string)
-
-    except (UnicodeDecodeError, SAXParseException):
-        # Not actually saved as xml
-        if allow_pickled:
-            # Revert to pickled product
-            product = read_pickled_product(qualified_xml_filename)
-        else:
-            raise
+    # Create a new product instance using the proper data product dictionary
+    product = CreateFromDocument(xml_string)
 
     return product
 
 
+@deprecated(since = "9.1",
+            alternative = "write_xml_product")
 def write_pickled_product(product,
                           pickled_filename: str,
                           workdir: str = ".",
@@ -1296,6 +1257,8 @@ def write_pickled_product(product,
     logger.debug(MSG_FINISHED_WRITING_DATA_PRODUCT, pickled_filename, workdir)
 
 
+@deprecated(since = "9.1",
+            alternative = "read_xml_product")
 def read_pickled_product(pickled_filename,
                          workdir = DEFAULT_WORKDIR,
                          log_info: bool = False) -> Any:
@@ -2157,41 +2120,6 @@ def find_conf_file(filename) -> str:
     return find_file_in_path(filename, os.environ['ELEMENTS_CONF_PATH'])
 
 
-S_NON_FILENAMES = {None, FILENAME_NONE, f"{DATA_SUBDIR}{FILENAME_NONE}", "", DATA_SUBDIR}
-
-
-def filename_not_exists(filename: Optional[str]):
-    """Check if a filename is one of several possible values indicating that no such file exists.
-
-    Parameters
-    ----------
-    filename : Optional[str]
-        The filename to check
-
-    Returns
-    -------
-    bool
-        True if the filename is a value indicating the file does not exist; False otherwise
-    """
-    return filename in S_NON_FILENAMES
-
-
-def filename_exists(filename: Optional[str]) -> bool:
-    """Check if a filename is not one of several possible values indicating that no such file exists.
-
-    Parameters
-    ----------
-    filename : Optional[str]
-        The filename to check
-
-    Returns
-    -------
-    bool
-        False if the filename is a value indicating the file does not exist; True otherwise
-    """
-    return not filename_not_exists(filename)
-
-
 def find_web_file(filename: str) -> str:
     """Searches on WebDAV for a file. If found, downloads it and returns the qualified name of it. If
     it's an xml data product or listfile, will also download all associated files. If it isn't found,
@@ -2257,7 +2185,7 @@ def _find_web_file_xml(filename: str, qualified_filename: str) -> str:
         p = read_xml_product(qualified_filename, workdir = "")
         for subfilename in p.get_all_filenames():
             # Skip if there's no file to download
-            if not filename_exists(subfilename):
+            if is_any_type_of_none(subfilename):
                 continue
             find_web_file(os.path.join(webpath, subfilename))
     except SheFileReadError as e:
@@ -2279,13 +2207,13 @@ def _find_web_file_json(filename: str, qualified_filename: str) -> None:
     for element in l_filenames:
         if isinstance(element, str):
             # Skip if there's no file to download
-            if not filename_exists(element):
+            if is_any_type_of_none(element):
                 continue
             find_web_file(os.path.join(webpath, element))
         else:
             for sub_element in element:
                 # Skip if there's no file to download
-                if not filename_exists(sub_element):
+                if is_any_type_of_none(sub_element):
                     continue
                 find_web_file(os.path.join(webpath, sub_element))
 
@@ -2382,6 +2310,58 @@ def first_writable_in_path(path: str) -> str:
     return first_writable_dir
 
 
+def get_all_files(directory_name: str) -> List[str]:
+    """Search through a directory to get a full list of files in it and all of its sub-directories.
+
+    Parameters
+    ----------
+    directory_name : str
+        The name of the directory to search.
+
+    Returns
+    -------
+    List[str]
+        A list of all files in the directory, including its subdirectories.
+    """
+
+    full_file_list = []
+    dir_list = [directory_name]
+
+    is_complete = False
+
+    while not is_complete:
+
+        new_dir_list = []
+
+        for dir_name in dir_list:
+
+            file_list, sb_dir_list = _process_directory_for_files(dir_name)
+            full_file_list += [os.path.join(dir_name, filename)
+                               for filename in file_list]
+
+            if sb_dir_list:
+                new_dir_list += [os.path.join(dir_name, sb_dir)
+                                 for sb_dir in sb_dir_list]
+
+        dir_list = new_dir_list
+        is_complete = len(dir_list) == 0
+
+    return full_file_list
+
+
+def _process_directory_for_files(directory_name: str) -> Tuple[List[str], List[str]]:
+    """ Recursively check a directory for files; used within `get_all_files`.
+    """
+    file_list = []
+    subdir_list = []
+    for file_name in os.listdir(directory_name):
+        if os.path.isdir(os.path.join(directory_name, file_name)):
+            subdir_list.append(file_name)
+        elif not file_name.startswith('.'):
+            file_list.append(file_name)
+    return file_list, subdir_list
+
+
 def get_data_filename(filename: str, workdir: str = DEFAULT_WORKDIR) -> Optional[str]:
     """Given the unqualified name of a file and the work directory, determine if it's an XML data
     product or not, and get the filename of its DataContainer if so; otherwise, just return
@@ -2411,7 +2391,7 @@ def get_data_filename(filename: str, workdir: str = DEFAULT_WORKDIR) -> Optional
     try:
         qualified_filename = find_file(filename, workdir)
 
-        prod = read_xml_product(qualified_filename, allow_pickled = True)
+        prod = read_xml_product(qualified_filename)
 
         # If we get here, it is indeed an XML data product. Has it been monkey-patched
         # to have a get_filename method?

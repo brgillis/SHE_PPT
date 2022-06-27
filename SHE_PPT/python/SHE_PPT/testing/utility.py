@@ -22,10 +22,12 @@ __updated__ = "2022-06-27"
 # Boston, MA 02110-1301 USA
 
 import os
+import warnings
 from argparse import Namespace
 from typing import Any, Dict, Optional
 
 import pytest
+from astropy.utils.exceptions import AstropyDeprecationWarning
 from py._path.local import LocalPath
 
 from ElementsServices.DataSync import DataSync
@@ -290,3 +292,6 @@ class SheTestCase:
         """
 
         request.addfinalizer(self.teardown)
+
+        # Set to raise an error on any deprecation warnings, to be sure they're caught and fixed in tests
+        warnings.simplefilter("error", category = AstropyDeprecationWarning)
