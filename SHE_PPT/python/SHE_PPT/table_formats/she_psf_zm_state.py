@@ -64,16 +64,18 @@ class ShePsfZmStateFormat(ShePsfStateFormat):
         super().__init__(data_type)
 
         # Column names and info
-
+        
+        """
         self.fovrngx = self.set_column_properties(
             "SHE_PSF_%s_FOVRNGX" % data_type, dtype=">f4",
             fits_dtype="E", length=2)
         self.fovrngy = self.set_column_properties(
             "SHE_PSF_%s_FOVRNGY" % data_type, dtype=">f4",
             fits_dtype="E", length=2)
+        """
         self.zer_ply_amp = self.set_column_properties(
             "SHE_PSF_%s_ZNKPLYAMP" % data_type, dtype=">f4",
-            fits_dtype="E", length=50)
+            fits_dtype="E", length=45)
 
         self._finalize_init()
 
