@@ -208,6 +208,10 @@ class TestSheImage(SheTestCase):
 
         self._download_mdb()
 
+    def post_setup(self):
+        """Set up things to work with once the workdir has been created for us.
+        """
+
         self.gain = mdb.get_gain(suppress_warnings = True)
         self.read_noise = mdb.get_read_noise(suppress_warnings = True)
 
@@ -228,17 +232,8 @@ class TestSheImage(SheTestCase):
         self.l_qualified_test_filenames = [get_qualified_filename(filename, self.workdir)
                                            for filename in self.L_TEST_FILENAMES]
 
-        # Clean up any test files that might have been left behind by a previous test
-        self.cleanup()
-
     def teardown(self):
         """Override teardown to cleanup any created files.
-        """
-
-        self.cleanup()
-
-    def cleanup(self):
-        """Cleanup any created test files.
         """
 
         if not hasattr(self, "l_qualified_test_filenames"):
