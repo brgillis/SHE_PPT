@@ -24,9 +24,10 @@ import pytest
 
 from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.products import she_object_id_list as prod
+from SHE_PPT.testing.utility import SheTestCase
 
 
-class TestObjectIdList(object):
+class TestObjectIdList(SheTestCase):
     """A collection of tests for the she_object_id_list data product.
 
     """

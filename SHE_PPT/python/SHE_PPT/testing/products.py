@@ -26,10 +26,11 @@ import os
 from typing import Any, Optional
 
 from SHE_PPT.file_io import DATA_SUBDIR, read_xml_product, write_xml_product
+from SHE_PPT.testing.utility import SheTestCase
 from SHE_PPT.utility import is_any_type_of_none
 
 
-class ProductTester(abc.ABC):
+class ProductTester(SheTestCase, abc.ABC):
     """A collection of tests for the shear estimates data product.
     """
 

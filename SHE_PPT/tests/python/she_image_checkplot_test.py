@@ -33,8 +33,9 @@ import pytest
 
 import SHE_PPT.she_image
 import SHE_PPT.she_image_checkplot
-
 # Disable tests if we don't have a display
+from SHE_PPT.testing.utility import SheTestCase
+
 if 'DISPLAY' in os.environ:
     disable_tests = False
 else:
@@ -43,7 +44,7 @@ else:
 logging.basicConfig(format = '%(levelname)s: %(name)s(%(funcName)s): %(message)s', level = logging.DEBUG)
 
 
-class Testshe_image_checkplot(object):
+class TestSheImageCheckplot(SheTestCase):
     """
     @class Testshe_image_checkplot
     @brief Unit Test class

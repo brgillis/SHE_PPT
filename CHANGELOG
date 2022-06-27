@@ -45,6 +45,8 @@ Miscellaneous
 - General cleanup and expansion of unit testing for the SHE_PPT.pipeline_utility module
 - General cleanup and expansion of unit testing for the SHE_PPT.utility module
 - General cleanup and expansion of unit testing for the SHE_PPT.file_io module
+- Data downloaded for unit tests is now always stored in a directory unique to each user, and is symlinked to the
+  directory used by the unit tests created by pytest's `tmpdir` fixture
 
 
 Changes in v8.12

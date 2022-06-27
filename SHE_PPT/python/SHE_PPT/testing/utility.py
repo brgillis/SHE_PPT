@@ -31,11 +31,16 @@ from ElementsServices.DataSync import DataSync
 from SHE_PPT import mdb
 from SHE_PPT.argument_parser import CA_LOGDIR, CA_PIPELINE_CONFIG, CA_WORKDIR
 from SHE_PPT.constants.config import ConfigKeys
-from SHE_PPT.constants.test_data import (MDB_PRODUCT_FILENAME, MER_FINAL_CATALOG_LISTFILE_FILENAME, TEST_DATA_LOCATION,
+from SHE_PPT.constants.test_data import (MDB_PRODUCT_FILENAME, MER_FINAL_CATALOG_LISTFILE_FILENAME, SYNC_CONF,
+                                         TEST_DATA_LOCATION,
+                                         TEST_FILES_DATA_STACK, TEST_FILES_MDB,
                                          VIS_CALIBRATED_FRAME_LISTFILE_FILENAME, )
+from SHE_PPT.file_io import symlink_contents
 from SHE_PPT.logging import set_log_level_debug
 from SHE_PPT.she_frame_stack import SHEFrameStack
 from SHE_PPT.testing.mock_pipeline_config import MockPipelineConfigFactory
+
+ENVVAR_WORKSPACE = "WORKSPACE"
 
 MSG_CANT_FIND_FILE = "Cannot find file: %s"
 
@@ -47,6 +52,7 @@ class SheTestCase:
     _args: Optional[Namespace] = None
     _d_args: Optional[Dict[str, Any]] = None
 
+    download_dir: Optional[str] = None
     workdir: Optional[str] = None
     logdir: Optional[str] = None
 
@@ -98,39 +104,36 @@ class SheTestCase:
         if cls.mock_pipeline_config_factory:
             cls.mock_pipeline_config_factory.cleanup()
 
-    @classmethod
-    def _download_mdb(cls):
+    def _download_mdb(self):
         """ Download the test MDB from WebDAV.
         """
-        sync = DataSync("testdata/sync.conf", "testdata/test_mdb.txt")
+        sync = DataSync(SYNC_CONF, TEST_FILES_MDB)
         sync.download()
-        cls.mdb_filename = MDB_PRODUCT_FILENAME
+        self.mdb_filename = MDB_PRODUCT_FILENAME
 
-        cls._finalize_download(cls.mdb_filename, sync)
+        self._finalize_download(self.mdb_filename, sync)
 
-        mdb.init(os.path.join(cls.workdir, cls.mdb_filename))
+        mdb.init(os.path.join(self.download_dir, self.mdb_filename))
 
-    @classmethod
-    def _download_datastack(cls,
+    def _download_datastack(self,
                             read_in: bool = True, ):
         """ Download the test data stack from WebDAV.
         """
-        sync = DataSync("testdata/sync.conf", "testdata/test_data_stack.txt")
+        sync = DataSync(SYNC_CONF, TEST_FILES_DATA_STACK)
         sync.download()
 
-        cls._finalize_download(VIS_CALIBRATED_FRAME_LISTFILE_FILENAME, sync)
+        self._finalize_download(VIS_CALIBRATED_FRAME_LISTFILE_FILENAME, sync)
 
         # Read in the test data if desired
         if read_in:
-            cls.data_stack = SHEFrameStack.read(exposure_listfile_filename = VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
-                                                detections_listfile_filename = MER_FINAL_CATALOG_LISTFILE_FILENAME,
-                                                workdir = cls.workdir,
-                                                clean_detections = False,
-                                                memmap = True,
-                                                mode = 'denywrite')
+            self.data_stack = SHEFrameStack.read(exposure_listfile_filename = VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
+                                                 detections_listfile_filename = MER_FINAL_CATALOG_LISTFILE_FILENAME,
+                                                 workdir = self.download_dir,
+                                                 clean_detections = False,
+                                                 memmap = True,
+                                                 mode = 'denywrite')
 
-    @classmethod
-    def _finalize_download(cls,
+    def _finalize_download(self,
                            filename: str,
                            sync_mdb: DataSync):
         """ Check that the desired file has been downloaded successfully and set the workdir based on its location.
@@ -140,9 +143,9 @@ class SheTestCase:
         qualified_filename = sync_mdb.absolutePath(os.path.join(TEST_DATA_LOCATION, filename))
         assert os.path.isfile(qualified_filename), MSG_CANT_FIND_FILE % qualified_filename
 
-        # Set the workdir if it's not already set
-        if cls.workdir is None:
-            cls.workdir = os.path.split(qualified_filename)[0]
+        # Set the download_dir if it's not already set
+        if self.download_dir is None:
+            self.download_dir = os.path.split(qualified_filename)[0]
 
     # Overridable methods to setup/teardown for tests
 
@@ -176,11 +179,18 @@ class SheTestCase:
         """ This performs setup once per initialization of the test class, calling the overridable setup_workdir and
             post_setup methods.
         """
+
+        # Call initialisation tasks first
+        self.__init()
+
+        # Call to overridable `setup_workdir` method
         self.setup_workdir()
 
+        # Internal setup using the state of the class at the end of the `setup_workdir` method.
         self.tmpdir_factory = tmpdir_factory
-        self._setup()
+        self.__setup()
 
+        # Call to overridable `post_setup` method
         self.post_setup()
 
         return self
@@ -205,35 +215,54 @@ class SheTestCase:
 
         return self
 
-    # Private methods used for setup
+    # Protected methods
 
-    def _setup_workdir_from_tmpdir(self, tmpdir: LocalPath):
+    def _make_mock_args(self) -> Namespace:
+        """Overridable method to create a mock self.args Namespace. Not necessary to implement if no args are used.
+        """
+        return Namespace()
+
+    # Private methods
+
+    def __init(self):
+        """Run initialization tasks at the very beginning of tests.
+        """
+
+        # Set log level to debug to make sure there aren't any issues with logging strings
+        set_log_level_debug()
+
+        # Make sure the "WORKSPACE" envvar is set to be unique to this user, if it's not already set
+        if ENVVAR_WORKSPACE not in os.environ or os.environ[ENVVAR_WORKSPACE] == "":
+            os.environ[ENVVAR_WORKSPACE] = os.path.join("/tmp", os.environ["USER"])
+
+    def __setup_workdir_from_tmpdir(self, tmpdir: LocalPath):
         """ Sets up workdir and logdir based on a tmpdir fixture.
         """
 
-        # If workdir is already set (which will happen if any method to download data is called), leave it. Otherwise,
-        # set it from the tmpdir passed to this function.
-        if tmpdir is not None and self.workdir is None:
-            self.workdir = tmpdir.strpath
-        elif not hasattr(self, "workdir"):
-            raise ValueError("self.workdir must be set if tmpdir is not provided to _setup_workdir_from_tmpdir.")
-        self._setup_workdir()
+        # Set the workdir to the tmpdir provided by the factory
+        self.workdir = tmpdir.strpath
 
-    def _setup_workdir(self):
-        """ Sets up self.logdir and the expected subdirs of the workdir.
+        # If any data was downloaded, symlink it to the workdir
+        if self.download_dir is not None:
+            symlink_contents(self.download_dir, self.workdir)
+
+        self.__setup_workdir()
+
+    def __setup_workdir(self):
+        """ Sets up self.logdir and the expected subdirs of the workdir if they don't already exist.
         """
         self.logdir = os.path.join(self.workdir, "logs")
         os.makedirs(os.path.join(self.workdir, "logs"), exist_ok = True)
         os.makedirs(os.path.join(self.workdir, "data"), exist_ok = True)
 
-    def _set_workdir_args(self) -> None:
+    def __set_workdir_args(self) -> None:
         """ Set the workdir and logdir in the self.args attribute. Both must already be set for this object when this
             method is called.
         """
         setattr(self.args, CA_WORKDIR, self.workdir)
         setattr(self.args, CA_LOGDIR, self.logdir)
 
-    def _write_mock_pipeline_config(self):
+    def __write_mock_pipeline_config(self):
         """ Write the pipeline config we'll be using and note its filename. This uses the class member
             pipeline_config_factory_type to construct the pipeline_config if it doesn't already exist, and thus
             modifying that variable in subclasses will modify the pipeline_config created here.
@@ -249,19 +278,13 @@ class SheTestCase:
 
         setattr(self.args, CA_PIPELINE_CONFIG, self.mock_pipeline_config_factory.file_namer.filename)
 
-    def _setup(self):
+    def __setup(self):
         """ Implements common setup tasks. These include ensuring the workdir is set up, setting the workdir-related
             arguments to self.args, and creating a mock pipeline_config.
         """
-        if self.workdir is None:
-            self._setup_workdir_from_tmpdir(self.tmpdir_factory.mktemp("test"))
-        else:
-            self._setup_workdir()
-        self._set_workdir_args()
-        self._write_mock_pipeline_config()
-
-        # Set log level to debug to make sure there aren't any issues with logging strings
-        set_log_level_debug()
+        self.__setup_workdir_from_tmpdir(self.tmpdir_factory.mktemp("test"))
+        self.__set_workdir_args()
+        self.__write_mock_pipeline_config()
 
     @pytest.fixture(scope = "session", autouse = True)
     def _teardown(self, request):
