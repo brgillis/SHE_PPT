@@ -41,7 +41,7 @@ New Features
 New config features
 -------------------
 - Added support for pipeline config option "SHE_Pipeline_disable_failsafe", which can be used by other projects to
-  disably any failsafe blocks they've implemented
+  disable any failsafe blocks they've implemented
 
 Miscellaneous
 -------------
