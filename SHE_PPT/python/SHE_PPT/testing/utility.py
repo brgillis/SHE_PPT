@@ -286,12 +286,12 @@ class SheTestCase:
         self.__set_workdir_args()
         self.__write_mock_pipeline_config()
 
+        # Set to raise an error on any deprecation warnings, to be sure they're caught and fixed in tests
+        warnings.simplefilter("error", category = AstropyDeprecationWarning)
+
     @pytest.fixture(scope = "session", autouse = True)
     def _teardown(self, request):
         """Method set up to be run at session-level, to define the `teardown` method to be run at end of all tests.
         """
 
         request.addfinalizer(self.teardown)
-
-        # Set to raise an error on any deprecation warnings, to be sure they're caught and fixed in tests
-        warnings.simplefilter("error", category = AstropyDeprecationWarning)
