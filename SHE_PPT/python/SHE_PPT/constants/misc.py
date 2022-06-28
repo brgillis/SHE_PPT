@@ -33,3 +33,13 @@ SEGMAP_OTHER_VALUE = -1
 # MAG_VIS_ZEROPOINT = 25.4534 # From Sami's sims' config file
 MAG_VIS_ZEROPOINT = 25.6527  # From Lance's code
 MAG_I_ZEROPOINT = 25.3884  # From Lance's code
+DEFAULT_WORKDIR = "."
+
+# Constant string for the data subdirectory, where datafiles are expected to be stored during pipeline execution
+DATA_SUBDIR = "data/"
+
+# Constant string to represent that a file does not exist
+FILENAME_NONE = "None"
+
+# Constant set of values which correspond to no file being present
+S_NON_FILENAMES = {None, FILENAME_NONE, f"{DATA_SUBDIR}{FILENAME_NONE}", "", DATA_SUBDIR}

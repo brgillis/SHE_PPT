@@ -39,7 +39,7 @@ from .utility import get_nested_attr
 logger = getLogger(__name__)
 
 FILENAME_INCLUDE_DATA_SUBDIR = False
-from .file_io import DATA_SUBDIR
+from .constants.misc import DATA_SUBDIR
 
 LEN_DATA_SUBDIR = len(DATA_SUBDIR)
 
