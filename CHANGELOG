@@ -1,5 +1,34 @@
 Changelog for SHE_PPT
 
+Changes in v9.2
+=========================
+
+API Changes
+-----------
+
+Dependency Changes
+------------------
+
+Deprecated Features
+-------------------
+
+Bug Fixes
+---------
+
+New Features
+------------
+
+New config features
+-------------------
+
+Miscellaneous
+-------------
+- Changed GAIN_LABEL from "CCDGAIN" to "GAIN" and added READ_NOISE_LABEL in SHE_PPT.constants.fits
+- Updated test data to SHE_PPT_9_1
+
+
+
+
 Changes in v9.1
 =========================
 
