@@ -29,9 +29,9 @@ from argparse import Namespace
 from typing import Any, Dict, Optional, Type
 
 import pytest
-from pytest import TempdirFactory
 from astropy.utils.exceptions import AstropyDeprecationWarning
-from py._path.local import LocalPath
+from py.path import local
+from pytest import TempdirFactory
 
 from ElementsServices.DataSync import DataSync
 from SHE_PPT import mdb
@@ -329,7 +329,7 @@ class SheTestCase:
         if ENVVAR_WORKSPACE not in os.environ or os.environ[ENVVAR_WORKSPACE] == "":
             os.environ[ENVVAR_WORKSPACE] = os.path.join("/tmp", os.environ["USER"])
 
-    def __setup_workdir_from_tmpdir(self, tmpdir: LocalPath) -> None:
+    def __setup_workdir_from_tmpdir(self, tmpdir: local) -> None:
         """ Sets up workdir and logdir based on a tmpdir fixture.
         """
 
