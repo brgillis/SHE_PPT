@@ -251,9 +251,9 @@ def create_exposure(n_detectors=1, detector_shape=(100,100), workdir=".", seed =
         os.mkdir(datadir)
     
     #get qualified filename for the fits files
-    det_fname = get_allowed_filename("VIS-DET", "00", release=ppt_version, extension=".fits")
-    wgt_fname = get_allowed_filename("VIS-WGT", "00", release=ppt_version, extension=".fits")
-    bkg_fname = get_allowed_filename("VIS-BKG", "00", release=ppt_version, extension=".fits")
+    det_fname = get_allowed_filename("VIS-DET", "00", version=ppt_version, extension=".fits")
+    wgt_fname = get_allowed_filename("VIS-WGT", "00", version=ppt_version, extension=".fits")
+    bkg_fname = get_allowed_filename("VIS-BKG", "00", version=ppt_version, extension=".fits")
 
     #write the fits files
     logger.info("Writing DET file to %s"%os.path.join(workdir,det_fname))
@@ -269,7 +269,7 @@ def create_exposure(n_detectors=1, detector_shape=(100,100), workdir=".", seed =
                                                                          wgt_filename = wgt_fname)
     
     #Write it to file
-    prod_filename = get_allowed_filename("VIS-CAL-FRAME", "00", release=ppt_version, extension=".xml",subdir="")
+    prod_filename = get_allowed_filename("VIS-CAL-FRAME", "00", version=ppt_version, extension=".xml",subdir="")
     qualified_prod_filename = os.path.join(workdir, prod_filename)
     logger.info("Writing dpdVisCalibratedFrame product to %s"%qualified_prod_filename)
     write_xml_product(exposure_prod, qualified_prod_filename)

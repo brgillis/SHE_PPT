@@ -14,6 +14,7 @@ Deprecated Features
 
 Bug Fixes
 ---------
+- mock data generation now correctly uses the "version" keyword of get_allowed_filename.
 
 New Features
 ------------

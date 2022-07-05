@@ -131,7 +131,7 @@ def __create_fits(object_ids, pixel_coords, workdir, stampsize, stamp_per_obj):
         hdul.append(dpsf_hdu)
     
     #get a valid filename and write to this
-    fits_filename = get_allowed_filename("PSF-IMG", "00", release=ppt_version, extension=".fits")
+    fits_filename = get_allowed_filename("PSF-IMG", "00", version=ppt_version, extension=".fits")
     
     qualified_fits_filename = os.path.join(workdir,fits_filename)
     
@@ -158,7 +158,7 @@ def create_model_image_product(object_ids, pixel_coords, workdir=".", stampsize=
     #create the data product
     dpd = she_psf_model_image.create_dpd_she_psf_model_image(data_filename=fits_filename)
 
-    prod_filename = get_allowed_filename("PSF-IMG", "00", release=ppt_version, extension=".xml",subdir="")
+    prod_filename = get_allowed_filename("PSF-IMG", "00", version=ppt_version, extension=".xml",subdir="")
     
     logger.info("Writing mock PSF model image product to %s"%os.path.join(workdir,prod_filename))
     write_xml_product(dpd, prod_filename, workdir=workdir)
