@@ -126,25 +126,50 @@ class SheTestCase:
             pipeline_config_factory_type = MyMockPipelineConfigFactory
             ...
         ```
-    """
 
-    _args: Optional[Namespace] = None
-    _d_args: Optional[Dict[str, Any]] = None
+    Attributes
+    ----------
+
+    download_dir : str or None
+        The location to which test data was downloaded, if any.
+    workdir : str or None
+        The path to the workdir created to be used for testing.
+    logdir : str or None
+        The path to the logging directory created to be used for testing.
+
+    args : Namespace
+    d_args : Dict[str, Any]
+    pipeline_config : Dict[str, Any] or None
+        The pipeline configuration dictionary created for use in testing.
+
+    mdb_filename : str or None
+        The filename of the MDB file downloaded, if any.
+    data_stack : SHEFrameStack or None
+        The SHEFrameStack download for testing, if any.
+
+    pipeline_config_factory_type : Type[MockPipelineConfigFactory]
+        The class to be used to create the mock pipeline configuration dictionary.
+    mock_pipeline_config_factory : MockPipelineConfigFactory or None
+        The instance of the class specified by `pipeline_config_factory_type` that was used to create the mock
+        pipeline configuration dictionary.
+    """
 
     download_dir: Optional[str] = None
     workdir: Optional[str] = None
     logdir: Optional[str] = None
 
-    mdb_filename: Optional[str] = None
-
-    data_stack: Optional[SHEFrameStack] = None
+    _args: Optional[Namespace] = None
+    _d_args: Optional[Dict[str, Any]] = None
 
     pipeline_config: Optional[Dict[ConfigKeys, Any]] = None
+
+    mdb_filename: Optional[str] = None
+    data_stack: Optional[SHEFrameStack] = None
 
     pipeline_config_factory_type = MockPipelineConfigFactory
     mock_pipeline_config_factory: Optional[MockPipelineConfigFactory] = None
 
-    tmpdir_factory = None
+    _tmpdir_factory = None
 
     # Properties
 
@@ -252,7 +277,7 @@ class SheTestCase:
         self.setup_workdir()
 
         # Internal setup using the state of the class at the end of the `setup_workdir` method.
-        self.tmpdir_factory = tmpdir_factory
+        self._tmpdir_factory = tmpdir_factory
         self.__setup()
 
         # Call to overridable `post_setup` method
@@ -350,7 +375,7 @@ class SheTestCase:
         """ Implements common setup tasks. These include ensuring the workdir is set up, setting the workdir-related
             arguments to self.args, and creating a mock pipeline_config.
         """
-        self.__setup_workdir_from_tmpdir(self.tmpdir_factory.mktemp("test"))
+        self.__setup_workdir_from_tmpdir(self._tmpdir_factory.mktemp("test"))
         self.__set_workdir_args()
         self.__write_mock_pipeline_config()
 
