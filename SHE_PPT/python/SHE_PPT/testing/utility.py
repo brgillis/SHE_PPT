@@ -345,7 +345,7 @@ class SheTestCase:
 
     @pytest.fixture(autouse = True)
     def local_setup(self, class_setup: SheTestCase) -> SheTestCase:
-        """An automatically-used fixture which mports all changes made to this class in the `class_setup` fixture
+        """An automatically-used fixture which imports all changes made to this class in the `class_setup` fixture
         locally. This gets around the fact that normally, after executing class-level fixtures, `pytest` resets the
         state of the class. So if we want to retain changes made in our class-level setup, we have to return the
         results of them as a fixture, then copy over the modifications.
