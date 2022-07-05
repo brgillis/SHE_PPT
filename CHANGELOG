@@ -25,6 +25,7 @@ Miscellaneous
 -------------
 - Changed GAIN_LABEL from "CCDGAIN" to "GAIN" and added READ_NOISE_LABEL in SHE_PPT.constants.fits
 - Updated test data to SHE_PPT_9_1
+- General cleanup and expansion of unit testing for the SHE_PPT.she_image_stack and SHE_PPT.she_frame modules
 
 
 
