@@ -54,7 +54,7 @@ class TestPipelineUtility(SheTestCase):
     """ Unit tests for functions and classes in the SHE_PPT.pipeline_utility module.
     """
 
-    def post_setup(self):
+    def setup_test_data(self):
         """Set up data used for multiple unit tests.
         """
         pass

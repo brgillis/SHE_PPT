@@ -38,38 +38,22 @@ class TestValidationTestResults(SheTestCase):
 
     """
 
-    @pytest.fixture(autouse = True)
-    def setup(self):
+    def download_test_data(self):
         # Download the data stack files from WebDAV
 
-        self.sync_datastack = DataSync(SYNC_CONF, TEST_FILES_DATA_STACK)
-        self.sync_datastack.download()
-        self.qualified_mer_final_catalog_listfile_filename = self.sync_datastack.absolutePath(
-            os.path.join(TEST_DATA_LOCATION, MER_FINAL_CATALOG_LISTFILE_FILENAME))
+        self._download_datastack()
 
-        assert os.path.isfile(
-            self.qualified_mer_final_catalog_listfile_filename), \
-            f"Cannot find file: {self.qualified_mer_final_catalog_listfile_filename}"
+    def setup_test_data(self):
+        self.filename = "she_validation_test_results.xml"
+        self.filename_zero = "she_validation_test_results_0.xml"
+        self.filename_three = "she_validation_test_results_3.xml"
+        self.filename_tile = "she_validation_test_results_tile.xml"
+        self.filename_exp = "she_validation_test_results_exp.xml"
+        self.filename_obs = "she_validation_test_results_obs.xml"
 
-        # Get the workdir based on where the final catalog listfile is
-        self.workdir = os.path.split(self.qualified_mer_final_catalog_listfile_filename)[0]
-
-    @classmethod
-    def setup_class(cls):
-        cls.filename = "she_validation_test_results.xml"
-        cls.filename_zero = "she_validation_test_results_0.xml"
-        cls.filename_three = "she_validation_test_results_3.xml"
-        cls.filename_tile = "she_validation_test_results_tile.xml"
-        cls.filename_exp = "she_validation_test_results_exp.xml"
-        cls.filename_obs = "she_validation_test_results_obs.xml"
-
-        cls.source_pipeline = "sheReconciliation"
-        cls.observation_mode = "WIDE"
-        cls.num_exposures = 3
-
-    @classmethod
-    def teardown_class(cls):
-        return
+        self.source_pipeline = "sheReconciliation"
+        self.observation_mode = "WIDE"
+        self.num_exposures = 3
 
     def test_xml_writing_and_reading(self):
         # Create the product

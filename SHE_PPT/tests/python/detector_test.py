@@ -34,7 +34,7 @@ from SHE_PPT.testing.utility import SheTestCase
 
 class TestDetector(SheTestCase):
 
-    def setup_workdir(self):
+    def download_test_data(self):
         self._download_mdb()
 
     def teardown_class(cls):

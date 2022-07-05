@@ -33,7 +33,7 @@ from SHE_PPT.testing.utility import SheTestCase
 
 class TestMath(SheTestCase):
 
-    def post_setup(self):
+    def setup_test_data(self):
 
         # Set up test input
 

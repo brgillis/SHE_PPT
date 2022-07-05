@@ -34,11 +34,11 @@ class TestMDB(SheTestCase):
     """Unit tests of the SHE_PPT.mdb module.
     """
 
-    def setup_workdir(self):
+    def download_test_data(self):
 
         self._download_mdb()
 
-    def post_setup(self):
+    def setup_test_data(self):
 
         self.qualified_mdb_filename = os.path.join(self.workdir, self.mdb_filename)
 

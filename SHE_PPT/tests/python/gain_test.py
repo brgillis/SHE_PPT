@@ -28,7 +28,7 @@ from SHE_PPT.testing.utility import SheTestCase
 
 class GainTestCase(SheTestCase):
 
-    def post_setup(self):
+    def setup_test_data(self):
         self.count = 1000
         self.gain = 2.5
         self.ADU = 400

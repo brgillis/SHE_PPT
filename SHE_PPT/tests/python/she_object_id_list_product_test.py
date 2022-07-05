@@ -32,18 +32,9 @@ class TestObjectIdList(SheTestCase):
 
     """
 
-    @pytest.fixture(autouse = True)
-    def setup(self, tmpdir):
-        self.workdir = tmpdir.strpath
-
-    @classmethod
-    def setup_class(cls):
-        cls.ex_ids = [12, 14]
-        cls.filename = "she_object_id_list.bin"
-
-    @classmethod
-    def teardown_class(cls):
-        del cls.ex_ids
+    def setup_test_data(self):
+        self.ex_ids = [12, 14]
+        self.filename = "she_object_id_list.bin"
 
     def test_xml_writing_and_reading(self):
         # Create the product

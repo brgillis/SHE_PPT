@@ -32,7 +32,7 @@ from SHE_PPT.testing.utility import SheTestCase
 
 class TestMask(SheTestCase):
 
-    def post_setup(self):
+    def setup_test_data(self):
         self.test_mask = np.array(((0, m.masked_near_edge, m.masked_off_image),
                                    (m.masked_bad_pixel, m.masked_near_edge, m.masked_off_image)),
                                   dtype = np.int32)

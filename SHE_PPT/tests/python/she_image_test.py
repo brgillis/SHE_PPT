@@ -45,42 +45,31 @@ logging.basicConfig(level = logging.DEBUG)
 
 class TestSheImage(SheTestCase):
 
-    @classmethod
-    def setup_class(cls):
+    def download_test_data(self):
 
-        sync = DataSync(SYNC_CONF, TEST_FILES_MDB)
-        sync.download()
-        mdb_filename = sync.absolutePath(os.path.join(TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME))
+        self._download_mdb()
 
-        mdb.init(mdb_filename)
+    def setup_test_data(self):
 
         # A filename for testing the file-saving:
-        cls.testfilepath = "test_SHEImage.fits"  # Will be deleted by teardown_class()
+        self.testfilepath = "test_SHEImage.fits"  # Will be deleted by teardown_class()
         # For some tests we need several files:
-        cls.testfilepaths = ["test_SHEImage_0.fits", "test_SHEImage_1.fits", "test_SHEImage_2.fits",
-                             "test_SHEImage_3.fits"]
+        self.testfilepaths = ["test_SHEImage_0.fits", "test_SHEImage_1.fits", "test_SHEImage_2.fits",
+                              "test_SHEImage_3.fits"]
 
         # A WCS to use (from the auxdir)
         header_file = file_io.find_file("AUX/SHE_PPT/tpv_header.bin")
         header = file_io.read_pickled_product(header_file)
-        cls.wcs = WCS(header)
+        self.wcs = WCS(header)
 
         # A SHEImage object to play with
-        cls.w = 50
-        cls.h = 20
-        array = np.random.randn(cls.w * cls.h).reshape((cls.w, cls.h))
-        cls.img = SHE_PPT.she_image.SHEImage(array, header = header, wcs = cls.wcs)
-
-    @classmethod
-    def teardown_class(cls):
-
-        # Delete all potentially created files:
-        for testfilepath in cls.testfilepaths + [cls.testfilepath]:
-            if os.path.exists(testfilepath):
-                os.remove(testfilepath)
+        self.w = 50
+        self.h = 20
+        array = np.random.randn(self.w * self.h).reshape((self.w, self.h))
+        self.img = SHE_PPT.she_image.SHEImage(array, header = header, wcs = self.wcs)
 
     def test_init(self):
-        """Test that the object created by setup_class is as expected"""
+        """Test that the object created by setup_test_data is as expected"""
 
         assert self.img.shape == (self.w, self.h)
         assert self.img.data.shape == self.img.shape

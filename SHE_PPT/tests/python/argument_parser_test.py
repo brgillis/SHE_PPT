@@ -32,7 +32,7 @@ class TestArgumentParser(SheTestCase):
     """ Unit tests for functions and classes in the SHE_PPT.argument_parser module.
     """
 
-    def post_setup(self):
+    def setup_test_data(self):
         """Define a SheArgumentParser object to work with.
         """
 

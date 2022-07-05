@@ -28,7 +28,7 @@ class TestLensMcMeasurementsTableFormat(SheTestCase):
     """ Unit tests class for LensMC Measurements Table Format
     """
 
-    def post_setup(self):
+    def setup_test_data(self):
         # Define a list of the table formats we'll be testing
         self.table = initialise_lensmc_measurements_table(optional_columns = [tf.m1_ical,
                                                                               tf.m2_ical,

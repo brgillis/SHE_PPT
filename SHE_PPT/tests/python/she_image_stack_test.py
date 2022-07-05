@@ -35,7 +35,7 @@ from SHE_PPT.testing.utility import SheTestCase
 class TestSheImageStack(SheTestCase):
 
     @classmethod
-    def setup_class(cls):
+    def setup_test_data(cls):
 
         # Filenames for testing the file io, will be deleted by teardown_class
         cls.sci_filepath_1 = "test_SHEImageStack_sci_SHEImage.fits"

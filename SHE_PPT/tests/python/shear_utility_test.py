@@ -41,7 +41,7 @@ class TestCase(SheTestCase):
     """Test case class for shear utility tests
     """
 
-    def setup_workdir(self):
+    def download_test_data(self):
         """Set up a default galaxy stamp and PSF stamp for testing.
         """
 
@@ -419,7 +419,7 @@ class TestCase(SheTestCase):
         stamp_masked = deepcopy(self.gal_stamp)
         stamp_masked.mask += 1
         assert get_galaxy_quality_flags(stamp_masked, stacked = False) & she_flags.flag_insufficient_data
-        
+
         # Check with corrupt mask
         stamp_corrupt_mask = deepcopy(self.gal_stamp)
         stamp_corrupt_mask.mask[0, 0] = -1

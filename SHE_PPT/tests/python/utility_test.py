@@ -55,7 +55,7 @@ class TestUtility(SheTestCase):
     """Class to handle unit tests for functions in the `SHE_PPT.utility` module.
     """
 
-    def post_setup(self):
+    def setup_test_data(self):
         """Set up some data used in multiple tests.
         """
 
