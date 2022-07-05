@@ -20,6 +20,7 @@ __updated__ = "2021-08-16"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
+
 import os
 import warnings
 from argparse import Namespace
@@ -48,7 +49,83 @@ MSG_CANT_FIND_FILE = "Cannot find file: %s"
 
 
 class SheTestCase:
-    """ Base class for test cases, which provides various utility methods.
+    """A base class to be used as a parent for all testing classes throughout the project (except where there's a good
+    reason not to). This class performes the following tasks at the beginning of each test run:
+
+    1. Sets the logging level to DEBUG, to ensure that any bugs in debug-level logging are caught during tests.
+    2. Sets the WORKSPACE environment variable to be unique to the user, if it's not already set, so that any
+       downloaded data will be stored in a unique location for each user; preventing conflicts from arising.
+    3. Sets it so that any warning raised from the use of deprecated PF-SHE functions or parameters will be raised as
+       an exception.
+    4. Prepares a workdir for the tests (assigned to the `self.workdir` attribute) using `pytest`'s `tmpdir` fixture,
+       with all test data symlinked to it, as well as a logging directory (assigned to the `self.logdir` attribute).
+    5. Creates a mock pipeline configuration dictionary at `self.pipeline_config`.
+    6. Creates a mock `Namespace` for read-in arguments at `self.args`, along with dictionary equivalent `d_args`.
+
+    This class provides the following features for subclasses to use:
+
+    1. Overridable method `download_test_data`, which can be used to handle any downloading of data needed for unit
+       tests, along with various convenience functions to download commonly-used test data, which can be used within
+       this method:
+
+        - `download_mdb`
+        - `download_datastack`
+
+       The formats of these methods can be followed if a download of other data is required. It is important that,
+       if any data is downloaded, the method `_finalize_download` is called, passing to it the
+       download-location-relative filename of any file downloaded and the `DataSync` object used to download it. This
+       is used to determine the location to which data was downloaded. (This is already done by the methods listed
+       above, and so does not need to be done with them.)
+
+       Some example implementations of `download_test_data`:
+
+        ```
+        def download_test_data(self):
+            self.download_mdb()
+        ```
+
+        ```
+        def download_test_data(self):
+            sync = DataSync(SYNC_CONF, MY_TEST_FILE_CONF)
+            sync.download()
+            self._finalize_download(MY_TEST_FILE_NAME, sync)
+        ```
+
+    2. Overridable method `setup`, to handle any other setup tasks the user desires for a test, outside of
+       downloading test data. This may look something like:
+
+        ```
+        def setup(self):
+            self.my_test_data = np.zeros((100, 100))
+
+            self.test_filename = "my_test_file.txt"
+            with open(get_qualified_filename(self.test_filename, self.workdir), "w") as f:
+                f.write("Test text")
+        ```
+
+    3. Overridable method `teardown`, to handle any teardown tasks the user desires for a test. This should generally
+       not be needed, as all data should be written to the workdir, and `pytest`'s `tmpdir` fixture will automatically
+       handle deleting old directories created with this fixture, but it is provided in case it proves to be necessary.
+
+    4. Overridable method `_make_mock_args`, which is used to create the mock `Namespace`, `self.args`.
+
+    5. Overridable class attribute `pipeline_config_factory_type`, which is a class that will be used to create a mock
+       pipeline configuration dictionary at `self.pipeline_config`. It is possible to generate a custom pipeline
+       config by creating a new class that inherits from `MockPipelineConfigFactory`. overriding its
+       `_make_pipeline_config` method to set the desired configuration, and then passing the class to this attribute as
+       e.g.:
+
+        ```
+        class MyMockPipelineConfigFactory(MockPipelineConfigFactory):
+            def _make_pipeline_config(self):
+                config = super()._make_pipeline_config()
+                config[AnalysisConfigKeys.ES_METHODS] = "KSB REGAUSS"
+                return config
+
+        class MyTestCase(SheTestCase):
+            pipeline_config_factory_type = MyMockPipelineConfigFactory
+            ...
+        ```
     """
 
     _args: Optional[Namespace] = None
@@ -137,12 +214,12 @@ class SheTestCase:
 
     def _finalize_download(self,
                            filename: str,
-                           sync_mdb: DataSync):
+                           sync: DataSync):
         """ Check that the desired file has been downloaded successfully and set the workdir based on its location.
         """
 
         # Check that the file was downloaded successfully
-        qualified_filename = sync_mdb.absolutePath(os.path.join(TEST_DATA_LOCATION, filename))
+        qualified_filename = sync.absolutePath(os.path.join(TEST_DATA_LOCATION, filename))
         assert os.path.isfile(qualified_filename), MSG_CANT_FIND_FILE % qualified_filename
 
         # Set the download_dir if it's not already set
@@ -251,9 +328,12 @@ class SheTestCase:
         setattr(self.args, CA_LOGDIR, self.logdir)
 
     def __write_mock_pipeline_config(self):
-        """ Write the pipeline config we'll be using and note its filename. This uses the class member
-            pipeline_config_factory_type to construct the pipeline_config if it doesn't already exist, and thus
-            modifying that variable in subclasses will modify the pipeline_config created here.
+        """Write the pipeline config we'll be using and store it in the `self.pipeline_config` attribute. This uses
+        the class member `pipeline_config_factory_type` to construct the pipeline_config if it doesn't already exist,
+        and thus modifying that variable in subclasses will modify the pipeline_config created here.
+
+        The filename of the written pipeline config is stored in the `self.args` attribute's `pipeline_config`
+        attribute.
         """
 
         # Don't overwrite if a config is already set up to use
@@ -264,7 +344,7 @@ class SheTestCase:
         self.mock_pipeline_config_factory.write(self.workdir)
         self.pipeline_config = self.mock_pipeline_config_factory.pipeline_config
 
-        setattr(self.args, CA_PIPELINE_CONFIG, self.mock_pipeline_config_factory.file_namer.filename)
+        setattr(self.args, CA_PIPELINE_CONFIG, self.mock_pipeline_config_factory.filename)
 
     def __setup(self):
         """ Implements common setup tasks. These include ensuring the workdir is set up, setting the workdir-related
