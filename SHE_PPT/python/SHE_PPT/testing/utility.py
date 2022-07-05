@@ -5,6 +5,8 @@
     Utility classes and functions for unit testing
 """
 
+from __future__ import annotations
+
 __updated__ = "2021-08-16"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -24,9 +26,10 @@ __updated__ = "2021-08-16"
 import os
 import warnings
 from argparse import Namespace
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Type
 
 import pytest
+from pytest import TempdirFactory
 from astropy.utils.exceptions import AstropyDeprecationWarning
 from py._path.local import LocalPath
 
@@ -166,10 +169,10 @@ class SheTestCase:
     mdb_filename: Optional[str] = None
     data_stack: Optional[SHEFrameStack] = None
 
-    pipeline_config_factory_type = MockPipelineConfigFactory
+    pipeline_config_factory_type: Type[MockPipelineConfigFactory] = MockPipelineConfigFactory
     mock_pipeline_config_factory: Optional[MockPipelineConfigFactory] = None
 
-    _tmpdir_factory = None
+    _tmpdir_factory: Optional[TempdirFactory] = None
 
     # Properties
 
@@ -202,13 +205,13 @@ class SheTestCase:
     # Class methods, for when setup/teardown_class can be used
 
     @classmethod
-    def teardown_class(cls):
+    def teardown_class(cls) -> None:
         """ Delete the pipeline config if it's been created.
         """
         if cls.mock_pipeline_config_factory:
             cls.mock_pipeline_config_factory.cleanup()
 
-    def _download_mdb(self):
+    def _download_mdb(self) -> None:
         """ Download the test MDB from WebDAV.
         """
         sync = DataSync(SYNC_CONF, TEST_FILES_MDB)
@@ -220,7 +223,7 @@ class SheTestCase:
         mdb.init(os.path.join(self.download_dir, self.mdb_filename))
 
     def _download_datastack(self,
-                            read_in: bool = True, ):
+                            read_in: bool = True, ) -> None:
         """ Download the test data stack from WebDAV.
         """
         sync = DataSync(SYNC_CONF, TEST_FILES_DATA_STACK)
@@ -239,7 +242,7 @@ class SheTestCase:
 
     def _finalize_download(self,
                            filename: str,
-                           sync: DataSync):
+                           sync: DataSync) -> None:
         """ Check that the desired file has been downloaded successfully and set the workdir based on its location.
         """
 
@@ -265,7 +268,7 @@ class SheTestCase:
         return None
 
     @pytest.fixture(scope = 'class')
-    def class_setup(self, tmpdir_factory):
+    def class_setup(self, tmpdir_factory: TempdirFactory) -> SheTestCase:
         """ This performs setup once per initialization of the test class, calling the overridable setup_workdir and
             post_setup methods.
         """
@@ -286,7 +289,7 @@ class SheTestCase:
         return self
 
     @pytest.fixture(autouse = True)
-    def local_setup(self, class_setup):
+    def local_setup(self, class_setup: SheTestCase) -> SheTestCase:
         """ Import all changes made to this class in the class_setup locally. This gets around the fact that normally,
             after executing class-level fixtures, PyTest resets the state of the class. So if we want to retain changes
             made in our class-level setup, we have to return the results of them as a fixture, then copy over the
@@ -294,7 +297,7 @@ class SheTestCase:
         """
         for x in dir(class_setup):
             # Skip any private attributes, which always start with "__"
-            if len(x) < 2 or x[0:2] != "__":
+            if not x.startswith("__"):
                 try:
                     setattr(self, x, getattr(class_setup, x))
                 except AttributeError:
@@ -314,7 +317,8 @@ class SheTestCase:
 
     # Private methods
 
-    def __init(self):
+    @staticmethod
+    def __init() -> None:
         """Run initialization tasks at the very beginning of tests.
         """
 
@@ -325,7 +329,7 @@ class SheTestCase:
         if ENVVAR_WORKSPACE not in os.environ or os.environ[ENVVAR_WORKSPACE] == "":
             os.environ[ENVVAR_WORKSPACE] = os.path.join("/tmp", os.environ["USER"])
 
-    def __setup_workdir_from_tmpdir(self, tmpdir: LocalPath):
+    def __setup_workdir_from_tmpdir(self, tmpdir: LocalPath) -> None:
         """ Sets up workdir and logdir based on a tmpdir fixture.
         """
 
@@ -338,7 +342,7 @@ class SheTestCase:
 
         self.__setup_workdir()
 
-    def __setup_workdir(self):
+    def __setup_workdir(self) -> None:
         """ Sets up self.logdir and the expected subdirs of the workdir if they don't already exist.
         """
         self.logdir = os.path.join(self.workdir, "logs")
@@ -352,7 +356,7 @@ class SheTestCase:
         setattr(self.args, CA_WORKDIR, self.workdir)
         setattr(self.args, CA_LOGDIR, self.logdir)
 
-    def __write_mock_pipeline_config(self):
+    def __write_mock_pipeline_config(self) -> None:
         """Write the pipeline config we'll be using and store it in the `self.pipeline_config` attribute. This uses
         the class member `pipeline_config_factory_type` to construct the pipeline_config if it doesn't already exist,
         and thus modifying that variable in subclasses will modify the pipeline_config created here.
@@ -371,16 +375,13 @@ class SheTestCase:
 
         setattr(self.args, CA_PIPELINE_CONFIG, self.mock_pipeline_config_factory.filename)
 
-    def __setup(self):
+    def __setup(self) -> None:
         """ Implements common setup tasks. These include ensuring the workdir is set up, setting the workdir-related
             arguments to self.args, and creating a mock pipeline_config.
         """
         self.__setup_workdir_from_tmpdir(self._tmpdir_factory.mktemp("test"))
         self.__set_workdir_args()
         self.__write_mock_pipeline_config()
-
-        # Set to raise an error on any deprecation warnings, to be sure they're caught and fixed in tests
-        warnings.simplefilter("error", category = AstropyDeprecationWarning)
 
         # Set to raise an error on any deprecation warnings, to be sure they're caught and fixed in tests
         warnings.simplefilter("error", category = AstropyDeprecationWarning)
