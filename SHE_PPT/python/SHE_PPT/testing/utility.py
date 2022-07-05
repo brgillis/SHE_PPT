@@ -178,10 +178,15 @@ class SheTestCase:
 
     @property
     def args(self) -> Namespace:
-        """ A Namespace object which can be passed to tested functions which normally used the args Namespace
-            returned from parse_args(). For subclasses, this should be set up by overriding the _make_mock_args
-            method to generate a Namespace object with the expected attributes for the executable in which the
-            function is run.
+        """A `Namespace` object which can be passed to tested functions which normally used the `args` `Namespace`
+        returned from `parse_args()`. For subclasses, this should be set up by overriding the `_make_mock_args`
+        method to generate a Namespace object with the expected attributes for the executable in which the
+        function is run.
+
+        Returns
+        -------
+        args : Namespace
+            The generated `Namespace` mock parsed arguments to be used for testing.
         """
         if self._args is None:
             self._args = self._make_mock_args()
@@ -189,20 +194,32 @@ class SheTestCase:
 
     @args.setter
     def args(self, args: Namespace) -> None:
+        """Basic setter for the `args` property.
+
+        Parameters
+        ----------
+        args : Namespace
+            The `Namespace` object to be stored in this attribute.
+        """
         self._args = args
 
     @property
     def d_args(self) -> Dict[str, Any]:
-        """ Similar to the args attribute, except converted to a Dict. This is used for any functions which
-            normally take such an object. The Dict form is preferred when command-line arguments are set using
-            constant variables, as it provides a cleaner interface to access these them, using d_args[key] instead of
-            getattr(args, key).
+        """Similar to the args attribute, except converted to a Dict. This is used for any functions which
+        normally take such an object. The Dict form is preferred when command-line arguments are set using
+        constant variables, as it provides a cleaner interface to access these them, using d_args[key] instead of
+        getattr(args, key).
+
+        Returns
+        -------
+        d_args : Dict[str, Any]
+            The generated dictionary version of the mock parsed arguments to be used for testing.
         """
         if self._d_args is None:
             self._d_args = vars(self.args)
         return self._d_args
 
-    # Class methods, for when setup/teardown_class can be used
+    # Class methods
 
     @classmethod
     def teardown_class(cls) -> None:
@@ -211,8 +228,11 @@ class SheTestCase:
         if cls.mock_pipeline_config_factory:
             cls.mock_pipeline_config_factory.cleanup()
 
+    # Convenience methods to help with downloading data
+
     def _download_mdb(self) -> None:
-        """ Download the test MDB from WebDAV.
+        """Download the test Mission Database (MDB) from WebDAV. This stores the filename of the downloaded MDB file
+        in the `self.mdb_filename` attribute and initializes the `SHE_PPT.mdb` module with the downloaded MDB.
         """
         sync = DataSync(SYNC_CONF, TEST_FILES_MDB)
         sync.download()
@@ -224,7 +244,13 @@ class SheTestCase:
 
     def _download_datastack(self,
                             read_in: bool = True, ) -> None:
-        """ Download the test data stack from WebDAV.
+        """Download the test `SHEFrameStack` data stack files from WebDAV.
+
+        Parameters
+        ----------
+        read_in : bool, default=True
+            If True, the downloaded data will be read in as a `SHEFrameStack` and stored in the
+            `self.she_frame_stack` attribute.
         """
         sync = DataSync(SYNC_CONF, TEST_FILES_DATA_STACK)
         sync.download()
@@ -243,7 +269,17 @@ class SheTestCase:
     def _finalize_download(self,
                            filename: str,
                            sync: DataSync) -> None:
-        """ Check that the desired file has been downloaded successfully and set the workdir based on its location.
+        """A method to check that the desired file has been downloaded successfully and set the `self.download_dir`
+        attribute based on its location. If you are manually downloading data or setting up your own method to
+        download data, this should be called on one of the downloaded files to ensure that the download was
+        successful and to set up the `self.download_dir` attribute of this class.
+
+        Parameters
+        ----------
+        filename : str
+            The local filename of one of the files that you expect to have been downloaded (e.g. "test_mdb.xml")
+        sync : DataSync
+            The `DataSync` object used to download the file.
         """
 
         # Check that the file was downloaded successfully
@@ -256,21 +292,40 @@ class SheTestCase:
 
     def setup_workdir(self) -> None:
         """Overridable method, where the user can specify any unique setup for a given testing class, to be performed
-           before the workdir is set up. This is normally used when it's needed to download test data, which will set
-           the self.workdir member to the location of the workdir.
+        before the workdir is set up. This is normally used when it's needed to download test data, which will set
+        the `self.download_dir` member to the location of the downloaded data.
         """
         return None
 
     def post_setup(self) -> None:
         """Overridable method, where the user can specify any unique setup for a given testing class, to be performed
-           after the workdir is set up.
+        after the workdir is set up.
         """
         return None
 
-    @pytest.fixture(scope = 'class')
+    @pytest.fixture(scope = "class")
     def class_setup(self, tmpdir_factory: TempdirFactory) -> SheTestCase:
-        """ This performs setup once per initialization of the test class, calling the overridable setup_workdir and
-            post_setup methods.
+        """A fixture which performs setup once per initialization of the test class, calling the overridable
+        `self.setup_workdir()` and `self.post_setup()` methods.
+
+        As this functions as a fixture, it may be used as an argument for any fixtures with "class" scope which
+        depend upon any setup done in these two methods, e.g.:
+
+        ```
+        @pytest.fixture(scope = "class")
+        def my_fixture(self, class_setup):
+            ...
+        ```
+
+        Parameters
+        ----------
+        tmpdir_factory : TempdirFactory
+            `pytest`'s `tmpdir_factory` fixture, which is used to generate temporary directories for testing.
+
+        Returns
+        -------
+        self : SheTestCase
+            This object at the end of executing all setup operations.
         """
 
         # Call initialisation tasks first
@@ -290,10 +345,21 @@ class SheTestCase:
 
     @pytest.fixture(autouse = True)
     def local_setup(self, class_setup: SheTestCase) -> SheTestCase:
-        """ Import all changes made to this class in the class_setup locally. This gets around the fact that normally,
-            after executing class-level fixtures, PyTest resets the state of the class. So if we want to retain changes
-            made in our class-level setup, we have to return the results of them as a fixture, then copy over the
-            modifications.
+        """An automatically-used fixture which mports all changes made to this class in the `class_setup` fixture
+        locally. This gets around the fact that normally, after executing class-level fixtures, `pytest` resets the
+        state of the class. So if we want to retain changes made in our class-level setup, we have to return the
+        results of them as a fixture, then copy over the modifications.
+
+        Parameters
+        ----------
+        class_setup : SheTestCase
+            The `SheTestCase` object at the end of the execution of the `class_setup` fixture, which is used to copy
+            over any changes to it to the object used for running this fixture and all tests.
+
+        Returns
+        -------
+        self : SheTestCase
+            This object at the end of executing all setup operations.
         """
         for x in dir(class_setup):
             # Skip any private attributes, which always start with "__"
@@ -308,10 +374,15 @@ class SheTestCase:
 
         return self
 
-    # Protected methods
+    # Protected methods which can be overridden to modify the setup
 
     def _make_mock_args(self) -> Namespace:
-        """Overridable method to create a mock self.args Namespace. Not necessary to implement if no args are used.
+        """Overridable method to create a mock `self.args` `Namespace`. Not necessary to implement if no args are used.
+
+        Returns
+        -------
+        args : Namespace
+            The mock parsed-arguments `Namespace` to be used for testing.
         """
         return Namespace()
 
@@ -330,7 +401,7 @@ class SheTestCase:
             os.environ[ENVVAR_WORKSPACE] = os.path.join("/tmp", os.environ["USER"])
 
     def __setup_workdir_from_tmpdir(self, tmpdir: local) -> None:
-        """ Sets up workdir and logdir based on a tmpdir fixture.
+        """Sets up `self.workdir` and `self.logdir` based on a `tmpdir` fixture.
         """
 
         # Set the workdir to the tmpdir provided by the factory
@@ -343,15 +414,15 @@ class SheTestCase:
         self.__setup_workdir()
 
     def __setup_workdir(self) -> None:
-        """ Sets up self.logdir and the expected subdirs of the workdir if they don't already exist.
+        """Sets up `self.logdir` and the other expected subdirs of the workdir if they don't already exist.
         """
         self.logdir = os.path.join(self.workdir, "logs")
         os.makedirs(os.path.join(self.workdir, "logs"), exist_ok = True)
         os.makedirs(os.path.join(self.workdir, "data"), exist_ok = True)
 
     def __set_workdir_args(self) -> None:
-        """ Set the workdir and logdir in the self.args attribute. Both must already be set for this object when this
-            method is called.
+        """Set the workdir and logdir in the `self.args` `Namespace`. Both must already be set for this object
+        when this method is called.
         """
         setattr(self.args, CA_WORKDIR, self.workdir)
         setattr(self.args, CA_LOGDIR, self.logdir)
@@ -376,8 +447,8 @@ class SheTestCase:
         setattr(self.args, CA_PIPELINE_CONFIG, self.mock_pipeline_config_factory.filename)
 
     def __setup(self) -> None:
-        """ Implements common setup tasks. These include ensuring the workdir is set up, setting the workdir-related
-            arguments to self.args, and creating a mock pipeline_config.
+        """Implements common setup tasks. These include ensuring the workdir is set up, setting the workdir-related
+        arguments to self.args, and creating a mock pipeline_config.
         """
         self.__setup_workdir_from_tmpdir(self._tmpdir_factory.mktemp("test"))
         self.__set_workdir_args()
