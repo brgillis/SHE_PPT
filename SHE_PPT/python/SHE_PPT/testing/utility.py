@@ -53,7 +53,7 @@ MSG_CANT_FIND_FILE = "Cannot find file: %s"
 
 class SheTestCase:
     """A base class to be used as a parent for all testing classes throughout the project (except where there's a good
-    reason not to). This class performes the following tasks at the beginning of each test run:
+    reason not to). This class performs the following tasks at the beginning of each test run:
 
     1. Sets the logging level to DEBUG, to ensure that any bugs in debug-level logging are caught during tests.
     2. Sets the WORKSPACE environment variable to be unique to the user, if it's not already set, so that any
@@ -256,14 +256,14 @@ class SheTestCase:
 
     def setup_workdir(self) -> None:
         """Overridable method, where the user can specify any unique setup for a given testing class, to be performed
-           before the workdir is setup. This is normally used when it's needed to download test data, which will set
+           before the workdir is set up. This is normally used when it's needed to download test data, which will set
            the self.workdir member to the location of the workdir.
         """
         return None
 
     def post_setup(self) -> None:
         """Overridable method, where the user can specify any unique setup for a given testing class, to be performed
-           after the workdir is setup.
+           after the workdir is set up.
         """
         return None
 
