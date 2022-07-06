@@ -137,12 +137,13 @@ class SheTestCase:
 
     def _finalize_download(self,
                            filename: str,
-                           sync_mdb: DataSync):
+                           sync_mdb: DataSync,
+                           test_data_location: str = TEST_DATA_LOCATION, ):
         """ Check that the desired file has been downloaded successfully and set the workdir based on its location.
         """
 
         # Check that the file was downloaded successfully
-        qualified_filename = sync_mdb.absolutePath(os.path.join(TEST_DATA_LOCATION, filename))
+        qualified_filename = sync_mdb.absolutePath(os.path.join(test_data_location, filename))
         assert os.path.isfile(qualified_filename), MSG_CANT_FIND_FILE % qualified_filename
 
         # Set the download_dir if it's not already set
