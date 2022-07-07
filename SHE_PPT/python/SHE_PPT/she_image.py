@@ -2440,7 +2440,7 @@ class SHEImage:
                     kwarg_tail: str,
                     kwargs: Dict[str, Any],
                     default_value: Optional[Union[str, int]] = None) -> Optional[Union[str, int]]:
-        """Private method to get the filename keyword argument for a given attribute.
+        """Private method to get a keyword argument for a given attribute that ends in a desired "tail".
         """
 
         filename = kwargs.get(f"{attr_name.lower()}_{kwarg_tail}", None)
