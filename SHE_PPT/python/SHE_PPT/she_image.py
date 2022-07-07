@@ -62,7 +62,7 @@ PRIMARY_TAG = "PRIMARY"
 KEY_X_OFFSET = "SHEIOFX"
 KEY_Y_OFFSET = "SHEIOFY"
 
-DETECTOR_SHAPE = np.array((4096, 4136), dtype = int)
+DETECTOR_SHAPE = (4096, 4136)
 DEFAULT_STAMP_SIZE = 384
 
 # TODO: Replace use of indexconv with origin
@@ -167,7 +167,7 @@ class SHEImage:
     offset : Tuple[float,float]
     wcs : Optional[astropy.wcs.WCS]
     galsim_wcs : Optional[galsim.wcs.BaseWCS]
-    shape : np.ndarray[int]
+    shape : Tuple[int, int]
     det_ix : int
     det_iy : int
     parent_frame_stack : Optional[SHEFrameStack]
@@ -190,7 +190,7 @@ class SHEImage:
     _header = None
     _offset = np.array([0., 0.], dtype = float)
     _wcs = None
-    _shape: Optional[np.ndarray[int]] = None
+    _shape: Optional[Tuple[int, int]] = None
     _galsim_wcs = None
     _det_ix: Optional[int] = None
     _det_iy: Optional[int] = None
@@ -791,12 +791,12 @@ class SHEImage:
         self._galsim_wcs = None
 
     @property
-    def shape(self) -> np.ndarray[int]:
+    def shape(self) -> Tuple[int, int]:
         """The shape of the image, equivalent to `self.data.shape`.
 
         Returns
         -------
-        shape : np.ndarray[int]
+        shape : Tuple[int, int]
             The shape of the image, as (x_len,y_len)
         """
         if self._shape is not None:
@@ -818,7 +818,7 @@ class SHEImage:
         if self._images_loaded:
             raise ValueError("Cannot set the shape of an image that has been loaded.")
 
-        self._shape = np.asarray(shape, dtype = int)
+        self._shape = tuple(shape)
 
     @shape.deleter
     def shape(self):
