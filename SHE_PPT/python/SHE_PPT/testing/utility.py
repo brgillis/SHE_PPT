@@ -99,6 +99,9 @@ class SheTestCase:
 
         ```
         class MyMockPipelineConfigFactory(MockPipelineConfigFactory):
+
+            _config_keys = AnalysisConfigKeys
+
             def _make_pipeline_config(self):
                 config = super()._make_pipeline_config()
                 config[AnalysisConfigKeys.ES_METHODS] = "KSB REGAUSS"
