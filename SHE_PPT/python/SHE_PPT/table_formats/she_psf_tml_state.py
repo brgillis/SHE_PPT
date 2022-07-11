@@ -25,10 +25,9 @@ __updated__ = "2021-08-13"
 from collections import OrderedDict
 from typing import Type
 
-from ..constants.fits import PSF_TML_STATE_TAG, PSF_TML_IDENTITY
+from ..constants.fits import PSF_TML_IDENTITY, PSF_TML_STATE_TAG
 from ..logging import getLogger
 from ..table_formats.she_psf_state import ShePsfStateFormat, ShePsfStateMeta
-
 
 fits_version = "8.0"
 
@@ -45,7 +44,7 @@ class ShePsfTmlStateMeta(ShePsfStateMeta):
 
     def init_meta(self,
                   **kwargs: str) -> OrderedDict:
-        return super().init_meta(extname=PSF_TML_STATE_TAG,
+        return super().init_meta(extname = PSF_TML_STATE_TAG,
                                  **kwargs)
 
 
@@ -58,15 +57,14 @@ class ShePsfTmlStateFormat(ShePsfStateFormat):
     _data_type: str = "CAL"
     _meta_type: Type = ShePsfTmlStateMeta
 
-    def __init__(self, data_type="FIELD"):
-
+    def __init__(self, data_type = "FIELD"):
         super().__init__(data_type)
 
         # Column names and info
 
         self.zer_ply_amp = self.set_column_properties(
-            f"SHE_PSF_{self._data_type}_ZNKPLYAMP", dtype=">f4",
-            fits_dtype="E", length=50)
+            f"SHE_PSF_{self._data_type}_ZNKPLYAMP", dtype = ">f4",
+            fits_dtype = "E", length = 50)
 
         self._finalize_init()
 

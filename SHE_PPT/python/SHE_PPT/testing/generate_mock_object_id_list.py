@@ -23,24 +23,23 @@ __updated__ = "2022-05-05"
 import os
 
 from SHE_PPT import __version__ as ppt_version
-from SHE_PPT.products import she_object_id_list
-from SHE_PPT.file_io import write_xml_product, get_allowed_filename
-
+from SHE_PPT.file_io import get_allowed_filename, write_xml_product
 from SHE_PPT.logging import getLogger
+from SHE_PPT.products import she_object_id_list
 
-logger=getLogger(__name__)
+logger = getLogger(__name__)
 
-def create_object_id_list(id_list,workdir="."):
 
-    dpd = she_object_id_list.create_dpd_she_object_id_list(id_list=id_list)
+def create_object_id_list(id_list, workdir = "."):
 
-    filename = get_allowed_filename("OBJ-IDS", "00", version=ppt_version, extension=".xml", subdir="")
+    dpd = she_object_id_list.create_dpd_she_object_id_list(id_list = id_list)
 
-    qualified_filename = os.path.join(workdir,filename)
+    filename = get_allowed_filename("OBJ-IDS", "00", version = ppt_version, extension = ".xml", subdir = "")
 
-    logger.info("Writing object_id_list product to %s"%qualified_filename)
+    qualified_filename = os.path.join(workdir, filename)
 
-    write_xml_product(dpd, filename, workdir=workdir)
+    logger.info("Writing object_id_list product to %s" % qualified_filename)
+
+    write_xml_product(dpd, filename, workdir = workdir)
 
     return filename
-

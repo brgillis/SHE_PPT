@@ -24,9 +24,7 @@ __updated__ = "2021-08-16"
 # Boston, MA 02110-1301 USA
 
 from ST_DataModelBindings.dpd.she.reconciledmeasurements_stub import dpdSheReconciledMeasurements
-
-from ..product_utility import init_method_files, create_measurements_product_from_template
-
+from ..product_utility import create_measurements_product_from_template, init_method_files
 
 sample_file_name = "SHE_PPT/sample_reconciled_shear_measurements.xml"
 product_type_name = "DpdSheReconciledMeasurements"
@@ -37,25 +35,25 @@ def init():
         Adds some extra functionality to the dpdSheReconciledMeasurements product
     """
 
-    init_method_files(binding_class=dpdSheReconciledMeasurements,
-                      init_function=create_dpd_she_reconciled_measurements)
+    init_method_files(binding_class = dpdSheReconciledMeasurements,
+                      init_function = create_dpd_she_reconciled_measurements)
 
 
-def create_dpd_she_reconciled_measurements(KSB_filename=None,
-                                           LensMC_filename=None,
-                                           MomentsML_filename=None,
-                                           REGAUSS_filename=None,
-                                           spatial_footprint=None):
+def create_dpd_she_reconciled_measurements(KSB_filename = None,
+                                           LensMC_filename = None,
+                                           MomentsML_filename = None,
+                                           REGAUSS_filename = None,
+                                           spatial_footprint = None):
     """ Create a product of this type.
     """
 
-    return create_measurements_product_from_template(template_filename=sample_file_name,
-                                                     product_type_name=product_type_name,
-                                                     KSB_filename=KSB_filename,
-                                                     LensMC_filename=LensMC_filename,
-                                                     MomentsML_filename=MomentsML_filename,
-                                                     REGAUSS_filename=REGAUSS_filename,
-                                                     spatial_footprint=spatial_footprint)
+    return create_measurements_product_from_template(template_filename = sample_file_name,
+                                                     product_type_name = product_type_name,
+                                                     KSB_filename = KSB_filename,
+                                                     LensMC_filename = LensMC_filename,
+                                                     MomentsML_filename = MomentsML_filename,
+                                                     REGAUSS_filename = REGAUSS_filename,
+                                                     spatial_footprint = spatial_footprint)
 
 
 # Add a useful alias

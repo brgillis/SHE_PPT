@@ -3,8 +3,12 @@
     Created: 2019/02/26
 
     Run with a command such as:
-    
-    E-Run SHE_PPT 0.9 python3 /home/brg/Work/Projects/SHE_PPT/SHE_PPT/scripts/convert_sim_catalog.py EUC_SIM_TUGALCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --star_cat EUC_SIM_TUSTARCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --source_dir /mnt/cephfs/share/SC456/SIM-VIS/vis_science_T2/intermediate/TU/data --max_mag_vis 25.5 --obj_cat obj_cat.xml --dest_dir .
+
+    E-Run SHE_PPT 0.9 python3 /home/brg/Work/Projects/SHE_PPT/SHE_PPT/scripts/convert_sim_catalog.py
+    EUC_SIM_TUGALCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --star_cat
+    EUC_SIM_TUSTARCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --source_dir
+    /mnt/cephfs/share/SC456/SIM-VIS/vis_science_T2/intermediate/TU/data --max_mag_vis 25.5 --obj_cat obj_cat.xml
+    --dest_dir .
 
 """
 
@@ -25,16 +29,11 @@ __updated__ = "2019-06-24"
 # Boston, MA 02110-1301 USA
 
 import argparse
-from operator import itemgetter
 import os
-
-from astropy.io import fits
-from astropy.table import Table
+from operator import itemgetter
 
 from SHE_PPT import products
-from SHE_PPT.file_io import (find_file, get_allowed_filename, write_xml_product,
-                             read_xml_product, get_data_filename_from_product)
-import numpy as np
+from SHE_PPT.file_io import (find_file, get_data_filename_from_product, read_xml_product, write_xml_product)
 
 
 def main():
@@ -46,19 +45,19 @@ def main():
     parser = argparse.ArgumentParser()
 
     # Input arguments
-    parser.add_argument('--segm_image', default=None, type=str,
-                        help="pre-SC8 segmentation image file")
-    parser.add_argument('--segm_type', default=None, type=str,
-                        help="segmentation type: stack, exposure, mer")
-    parser.add_argument('--source_dir', default='.', type=str,
-                        help="Directory in which segm-images are contained (default '.').")
-    parser.add_argument('--datadir', default='data', type=str,
-                        help='subdir containing fits image')
+    parser.add_argument('--segm_image', default = None, type = str,
+                        help = "pre-SC8 segmentation image file")
+    parser.add_argument('--segm_type', default = None, type = str,
+                        help = "segmentation type: stack, exposure, mer")
+    parser.add_argument('--source_dir', default = '.', type = str,
+                        help = "Directory in which segm-images are contained (default '.').")
+    parser.add_argument('--datadir', default = 'data', type = str,
+                        help = 'subdir containing fits image')
     # Output arguments
-    parser.add_argument('--dest_dir', default='.', type=str,
-                        help="Directory in which output segm-images are contained (default '.').")
-    parser.add_argument('--out_segm_image', default="obj_cat.xml", type=str,
-                        help="Target Final PSF image product to be created (default segm_model_image.xml)")
+    parser.add_argument('--dest_dir', default = '.', type = str,
+                        help = "Directory in which output segm-images are contained (default '.').")
+    parser.add_argument('--out_segm_image', default = "obj_cat.xml", type = str,
+                        help = "Target Final PSF image product to be created (default segm_model_image.xml)")
 
     args = parser.parse_args()
 
@@ -85,7 +84,7 @@ def main():
     # Updates to xml?
     # E.g. WCS?
 
-    write_xml_product(prod, args.out_segm_image, workdir=args.dest_dir)
+    write_xml_product(prod, args.out_segm_image, workdir = args.dest_dir)
 
     return
 
@@ -110,7 +109,7 @@ def find_fits_file(xml_file_name, datadir):
                 # Find matches in name...
                 metric = calc_match_name(file_name, xml_file_name)
                 metric_list.append((file_name, metric))
-        metric_list = sorted(metric_list, key=itemgetter(1))
+        metric_list = sorted(metric_list, key = itemgetter(1))
         if metric_list[-1][1] > 0:
             fits_file = metric_list[-1][0]
         elif 'STACK' in xml_file_name.upper():

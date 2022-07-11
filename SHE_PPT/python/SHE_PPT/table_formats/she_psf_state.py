@@ -21,10 +21,10 @@ __updated__ = "2021-08-12"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-from typing import Type, List, Optional
+from typing import List, Optional, Type
 
-from ..constants.fits import (FITS_VERSION_LABEL, FITS_DEF_LABEL, EXTNAME_LABEL,
-                              PSF_FIELD_PARAM_DEF, PSF_CALIB_PARAM_DEF)
+from ..constants.fits import (EXTNAME_LABEL, FITS_DEF_LABEL, FITS_VERSION_LABEL, PSF_CALIB_PARAM_DEF,
+                              PSF_FIELD_PARAM_DEF, )
 from ..logging import getLogger
 from ..table_utility import SheTableFormat, SheTableMeta
 
@@ -51,8 +51,7 @@ class ShePsfStateMeta(SheTableMeta):
     _identity: str
     _format: str
 
-    def __init__(self, data_type="CAL", **kwargs):
-
+    def __init__(self, data_type = "CAL", **kwargs):
         self._data_type = data_type
 
         self._main_data_type = (PSF_FIELD_PARAM_DEF
@@ -70,7 +69,7 @@ class ShePsfStateFormat(SheTableFormat):
     _l_colnames: Optional[List[str]] = None
 
     def __init__(self,
-                 data_type="CAL"):
+                 data_type = "CAL"):
         super().__init__(self._meta_type(data_type))
 
         # Get the metadata (contained within its own class)
@@ -84,8 +83,8 @@ class ShePsfStateFormat(SheTableFormat):
 
         for colname in self._l_colnames:
             setattr(self, colname.lower(),
-                    self.set_column_properties(name=self.get_colname(colname),
-                                               dtype=">f4", fits_dtype="E"))
+                    self.set_column_properties(name = self.get_colname(colname),
+                                               dtype = ">f4", fits_dtype = "E"))
 
         self._finalize_init()
 

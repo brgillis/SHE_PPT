@@ -3,8 +3,12 @@
     Created: 2019/02/26
 
     Run with a command such as:
-    
-    E-Run SHE_PPT 0.9 python3 /home/brg/Work/Projects/SHE_PPT/SHE_PPT/scripts/convert_sim_catalog.py EUC_SIM_TUGALCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --star_cat EUC_SIM_TUSTARCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --source_dir /mnt/cephfs/share/SC456/SIM-VIS/vis_science_T2/intermediate/TU/data --max_mag_vis 25.5 --obj_cat obj_cat.xml --dest_dir .
+
+    E-Run SHE_PPT 0.9 python3 /home/brg/Work/Projects/SHE_PPT/SHE_PPT/scripts/convert_sim_catalog.py
+    EUC_SIM_TUGALCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --star_cat
+    EUC_SIM_TUSTARCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --source_dir
+    /mnt/cephfs/share/SC456/SIM-VIS/vis_science_T2/intermediate/TU/data --max_mag_vis 25.5 --obj_cat obj_cat.xml
+    --dest_dir .
 
 """
 
@@ -30,11 +34,8 @@ import os
 from astropy.io import fits
 from astropy.table import Table
 
-from SHE_PPT import products
-from SHE_PPT.file_io import find_file, get_allowed_filename, read_xml_product, write_xml_product
-from SHE_PPT.table_formats.she_psf_model_image import initialise_psf_table
-from SHE_PPT.table_formats.she_psf_model_image import tf as pstf
-import numpy as np
+from SHE_PPT.file_io import read_xml_product
+from SHE_PPT.table_formats.she_psf_model_image import initialise_psf_table, tf as pstf
 
 
 def main():
@@ -46,16 +47,16 @@ def main():
     parser = argparse.ArgumentParser()
 
     # Input arguments
-    parser.add_argument('--source_dir', default='.', type=str,
-                        help="Directory in which psf-images are contained (default '.').")
-    parser.add_argument('--mer_catalogue', type=str,
-                        help="Mer catalogue")
+    parser.add_argument('--source_dir', default = '.', type = str,
+                        help = "Directory in which psf-images are contained (default '.').")
+    parser.add_argument('--mer_catalogue', type = str,
+                        help = "Mer catalogue")
 
     # Output arguments
-    parser.add_argument('--dest_dir', default='.', type=str,
-                        help="Directory in which output psf-images are contained (default '.').")
-    parser.add_argument('--out_psf_image', default="obj_cat.xml", type=str,
-                        help="Target Final PSF image product to be created (default psf_model_image.xml)")
+    parser.add_argument('--dest_dir', default = '.', type = str,
+                        help = "Directory in which output psf-images are contained (default '.').")
+    parser.add_argument('--out_psf_image', default = "obj_cat.xml", type = str,
+                        help = "Target Final PSF image product to be created (default psf_model_image.xml)")
 
     args = parser.parse_args()
 
@@ -91,7 +92,7 @@ def main():
     psf_tables[0].add_index(pstf.ID)  # Allow it to be indexed by galaxy ID
 
     # Write out the table
-    hdulist.writeto(os.path.join(args.source_dir, 'data', filename), overwrite=True)
+    hdulist.writeto(os.path.join(args.source_dir, 'data', filename), overwrite = True)
 
     return
 

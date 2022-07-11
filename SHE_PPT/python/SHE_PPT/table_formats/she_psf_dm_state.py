@@ -25,10 +25,9 @@ __updated__ = "2021-08-13"
 from collections import OrderedDict
 from typing import Type
 
-from ..constants.fits import PSF_DM_STATE_TAG, PSF_DM_IDENTITY
+from ..constants.fits import PSF_DM_IDENTITY, PSF_DM_STATE_TAG
 from ..logging import getLogger
 from ..table_formats.she_psf_state import ShePsfStateFormat, ShePsfStateMeta
-
 
 fits_version = "8.0"
 
@@ -45,7 +44,7 @@ class ShePsfDmStateMeta(ShePsfStateMeta):
 
     def init_meta(self,
                   **kwargs: str) -> OrderedDict:
-        return super().init_meta(extname=PSF_DM_STATE_TAG,
+        return super().init_meta(extname = PSF_DM_STATE_TAG,
                                  **kwargs)
 
 

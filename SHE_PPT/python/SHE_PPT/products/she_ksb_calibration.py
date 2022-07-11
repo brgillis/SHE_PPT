@@ -26,11 +26,8 @@ __updated__ = "2021-08-16"
 
 
 from ST_DataModelBindings.dpd.she.ksbcalibration_stub import dpdSheKsbCalibration
-
-from ..product_utility import (get_all_filenames_just_data, set_data_filename_of_product,
-                               get_data_filename_from_product, create_product_from_template,
-                               init_binding_class)
-
+from ..product_utility import (create_product_from_template, get_all_filenames_just_data,
+                               get_data_filename_from_product, init_binding_class, set_data_filename_of_product, )
 
 sample_file_name = "SHE_PPT/sample_ksb_calibration.xml"
 product_type_name = "DpdSheKsbCalibration"
@@ -44,7 +41,7 @@ def init():
     binding_class = dpdSheKsbCalibration
 
     if not init_binding_class(binding_class,
-                              init_function=create_dpd_she_ksb_calibration):
+                              init_function = create_dpd_she_ksb_calibration):
         return
 
     # Add the data file name methods
@@ -67,15 +64,15 @@ def _get_filename(self):
     return get_data_filename_from_product(self, "KsbCalibrationFileList[0].DataStorage")
 
 
-def create_dpd_she_ksb_calibration(filename=None,
-                                   data_filename=None):
+def create_dpd_she_ksb_calibration(filename = None,
+                                   data_filename = None):
     """ Creates a product of this type.
     """
 
-    return create_product_from_template(template_filename=sample_file_name,
-                                        product_type_name=product_type_name,
-                                        filename=filename,
-                                        data_filename=data_filename)
+    return create_product_from_template(template_filename = sample_file_name,
+                                        product_type_name = product_type_name,
+                                        filename = filename,
+                                        data_filename = data_filename)
 
 
 # Add a useful alias

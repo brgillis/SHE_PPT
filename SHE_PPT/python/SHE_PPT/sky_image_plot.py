@@ -26,11 +26,9 @@ __updated__ = "2021-08-13"
 import os
 
 import astropy.io.fits
-
 import numpy as np
 
 from . import logging
-
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +51,7 @@ class SkyImage():
     Todo : use properties for z1 z2 !
     """
 
-    def __init__(self, data, z1=None, z2=None):
+    def __init__(self, data, z1 = None, z2 = None):
         """
 
         """
@@ -93,7 +91,7 @@ class SkyImage():
         if (self.z1 in autolist) or (self.z2 in autolist):
             self.set_auto_z_scale()
 
-    def set_auto_z_scale(self, full_sample_limit=10000, nsig=5.0):
+    def set_auto_z_scale(self, full_sample_limit = 10000, nsig = 5.0):
         """Automatic z-scale determination"""
 
         # if a.size > full_sample_limit :
@@ -126,11 +124,11 @@ def draw_sky_image(ax, si, **kwargs):
 
     """
     # "origin":"lower" as well as the tranpose() within the imshow arguments both combined give the right orientation
-    imshow_kwargs = {"aspect": "equal", "origin": "lower",
+    imshow_kwargs = {"aspect"       : "equal", "origin": "lower",
                      "interpolation": "none", "cmap": matplotlib.cm.get_cmap('Greys_r')}
     imshow_kwargs.update(kwargs)
 
-    return ax.imshow(si.data.transpose(), vmin=si.z1, vmax=si.z2, extent=si.extent, **imshow_kwargs)
+    return ax.imshow(si.data.transpose(), vmin = si.z1, vmax = si.z2, extent = si.extent, **imshow_kwargs)
 
 
 def draw_mask(ax, si, **kwargs):
@@ -147,19 +145,19 @@ def draw_mask(ax, si, **kwargs):
     mask_bounds = [-1, 0.5, 1]
     mask_norm = matplotlib.colors.BoundaryNorm(mask_bounds, mask_cmap.N)
 
-    imshow_kwargs = {"aspect": "equal", "origin": "lower",
+    imshow_kwargs = {"aspect"       : "equal", "origin": "lower",
                      "interpolation": "none", "alpha": 0.5}
     imshow_kwargs.update(kwargs)
 
     if isinstance(si, SkyImage):
-        return ax.imshow(si.data.tranpose(), vmin=0, vmax=1, extent=si.extent,
-                         cmap=mask_cmap, norm=mask_norm, **imshow_kwargs)
+        return ax.imshow(si.data.tranpose(), vmin = 0, vmax = 1, extent = si.extent,
+                         cmap = mask_cmap, norm = mask_norm, **imshow_kwargs)
     # We can also work with simple numpy arrays
-    return ax.imshow(si.transpose(), vmin=0, vmax=1, extent=get_extent(si),
-                     cmap=mask_cmap, norm=mask_norm, **imshow_kwargs)
+    return ax.imshow(si.transpose(), vmin = 0, vmax = 1, extent = get_extent(si),
+                     cmap = mask_cmap, norm = mask_norm, **imshow_kwargs)
 
 
-def draw_ellipse(ax, x, y, a=5, b=None, angle=None, **kwargs):
+def draw_ellipse(ax, x, y, a = 5, b = None, angle = None, **kwargs):
     """Draws an ellipse patch on the axes
 
     """
@@ -173,7 +171,7 @@ def draw_ellipse(ax, x, y, a=5, b=None, angle=None, **kwargs):
     ellipse_kwargs.update(kwargs)
 
     ellipse = matplotlib.patches.Ellipse(
-        (x, y), width=2 * a, height=2 * b, angle=angle, **ellipse_kwargs)
+        (x, y), width = 2 * a, height = 2 * b, angle = angle, **ellipse_kwargs)
 
     return ax.add_artist(ellipse)
 
@@ -194,7 +192,7 @@ def draw_g_ellipse(ax, x, y, g1, g2, sigma, **kwargs):
     return draw_ellipse(ax, x, y, a, b, angle, **kwargs)
 
 
-def draw_g_ellipses(ax, cat, x="x", y="y", g1="g1", g2="g2", sigma="sigma", **kwargs):
+def draw_g_ellipses(ax, cat, x = "x", y = "y", g1 = "g1", g2 = "g2", sigma = "sigma", **kwargs):
     """Draws ellipses from a catalog (that is an astropy table or a list of dicts) of sources
 
     Parameters
@@ -222,13 +220,13 @@ def draw_g_ellipses(ax, cat, x="x", y="y", g1="g1", g2="g2", sigma="sigma", **kw
             ax, row[x], row[y], row[g1], row[g2], row[sigma], **kwargs)
 
 
-def annotate(ax, cat, x="x", y="y", text="Hello", **kwargs):
+def annotate(ax, cat, x = "x", y = "y", text = "Hello", **kwargs):
     """Annotates the positions (x, y) from a catalog
 
     """
 
     annotate_kwargs = {"horizontalalignment": "left", "verticalalignment": "top", "color": "red",
-                       "xytext": (0, 0), "textcoords": 'offset points'}
+                       "xytext"             : (0, 0), "textcoords": 'offset points'}
     annotate_kwargs.update(**kwargs)
 
     for row in cat:
@@ -237,9 +235,9 @@ def annotate(ax, cat, x="x", y="y", text="Hello", **kwargs):
         if getattr(row[x], "mask", False) or getattr(row[y], "mask", False):
             continue
 
-        rowtext = text.format(row=row)
+        rowtext = text.format(row = row)
         ax.annotate(rowtext,
-                    xy=(row[x], row[y]),
+                    xy = (row[x], row[y]),
                     **annotate_kwargs
                     )
 
@@ -249,7 +247,7 @@ class SimpleFigure():
 
     """
 
-    def __init__(self, img_array, z1=None, z2=None, scale=1):
+    def __init__(self, img_array, z1 = None, z2 = None, scale = 1):
         """
 
         Parameters
@@ -270,7 +268,7 @@ class SimpleFigure():
         self.dpi = 72
         self.figsize = float(scale) * np.array(img_array.shape) / self.dpi
 
-        self.fig = plt.figure(figsize=self.figsize)
+        self.fig = plt.figure(figsize = self.figsize)
         self.ax = self.fig.add_subplot(111)
 
         self.has_been_drawn = False
@@ -278,7 +276,7 @@ class SimpleFigure():
     def __str__(self):
         return "SimpleFigure"  # ({})".format(str(self.si))
 
-    def draw(self, si=None):
+    def draw(self, si = None):
         """Draw the image pixels on the axes.
 
         Usually you leave si to None, in which case a new SkyImage is built from what was passed to init.
@@ -309,7 +307,8 @@ class SimpleFigure():
     def save_to_file(self, filepath):
         self.check_drawn()
         logger.info("Saving %s to '%s'...", self, filepath)
-        self.fig.savefig(filepath, bbox_inches='tight')
+        self.fig.savefig(filepath, bbox_inches = 'tight')
+
 
 # Some utility functions
 
@@ -344,7 +343,7 @@ def read_fits(filepath):
     return a
 
 
-def write_fits(a, filepath, overwrite=True):
+def write_fits(a, filepath, overwrite = True):
     """Writes a simple 2D numpy array into a FITS file
 
     As for read_fits, a transposition is applied to conserve the orientation.
@@ -360,5 +359,5 @@ def write_fits(a, filepath, overwrite=True):
     if os.path.exists(filepath) and overwrite:
         logger.info("File %s exists, I will overwrite it!", filepath)
 
-    astropy.io.fits.writeto(filepath, a.transpose(), overwrite=overwrite)
+    astropy.io.fits.writeto(filepath, a.transpose(), overwrite = overwrite)
     logger.info("Wrote %s array into %s", a.shape, filepath)

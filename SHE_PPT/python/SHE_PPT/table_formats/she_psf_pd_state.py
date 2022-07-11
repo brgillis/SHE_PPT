@@ -25,10 +25,9 @@ __updated__ = "2021-08-13"
 from collections import OrderedDict
 from typing import Type
 
-from ..constants.fits import PSF_PD_STATE_TAG, PSF_PD_IDENTITY
+from ..constants.fits import PSF_PD_IDENTITY, PSF_PD_STATE_TAG
 from ..logging import getLogger
 from ..table_formats.she_psf_state import ShePsfStateFormat, ShePsfStateMeta
-
 
 fits_version = "8.0"
 
@@ -45,7 +44,7 @@ class ShePsfPdStateMeta(ShePsfStateMeta):
 
     def init_meta(self,
                   **kwargs: str) -> OrderedDict:
-        return super().init_meta(extname=PSF_PD_STATE_TAG,
+        return super().init_meta(extname = PSF_PD_STATE_TAG,
                                  **kwargs)
 
 
@@ -58,16 +57,15 @@ class ShePsfPdStateFormat(ShePsfStateFormat):
     _data_type: str = "CAL"
     _meta_type: Type = ShePsfPdStateMeta
 
-    def __init__(self, data_type="FIELD"):
-
+    def __init__(self, data_type = "FIELD"):
         super().__init__(data_type)
 
         # Column names and info
 
         self.id = self.set_column_properties(self,
-                                             "OBJECT_ID", dtype=">i8", fits_dtype="K")
+                                             "OBJECT_ID", dtype = ">i8", fits_dtype = "K")
         self.chisq = self.set_column_properties(
-            f"SHE_PSF_{self._data_type}_CHISQ", dtype=">f4", fits_dtype="E")
+            f"SHE_PSF_{self._data_type}_CHISQ", dtype = ">f4", fits_dtype = "E")
 
         self._finalize_init()
 

@@ -23,14 +23,11 @@ __updated__ = "2021-08-16"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
 import ST_DataModelBindings.pro.vis_stub as vis_pro
+from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
 from ST_DataModelBindings.sys.dss_stub import dataContainer
-
-from ..product_utility import (get_data_filename_from_product, set_data_filename_of_product,
-                               set_filename_datastorage, get_filename_datastorage,
-                               create_product_from_template)
-
+from ..product_utility import (create_product_from_template, get_data_filename_from_product, get_filename_datastorage,
+                               set_data_filename_of_product, set_filename_datastorage, )
 
 sample_file_name = "SHE_PPT/sample_vis_calibrated_frame.xml"
 product_type_name = "DpdVisCalibratedFrame"
@@ -116,17 +113,17 @@ def _get_all_filenames(self):
     return all_filenames
 
 
-def create_dpd_vis_calibrated_frame(data_filename="None",
-                                    psf_filename="None",
-                                    bkg_filename="None",
-                                    wgt_filename="None"):
+def create_dpd_vis_calibrated_frame(data_filename = "None",
+                                    psf_filename = "None",
+                                    bkg_filename = "None",
+                                    wgt_filename = "None"):
     """
         @TODO fill in docstring
     """
 
-    dpd_vis_calibrated_frame = create_product_from_template(template_filename=sample_file_name,
-                                                            product_type_name=product_type_name,
-                                                            data_filename=data_filename)
+    dpd_vis_calibrated_frame = create_product_from_template(template_filename = sample_file_name,
+                                                            product_type_name = product_type_name,
+                                                            data_filename = data_filename)
     dpd_vis_calibrated_frame.set_psf_filename(psf_filename)
     dpd_vis_calibrated_frame.set_bkg_filename(bkg_filename)
     dpd_vis_calibrated_frame.set_wgt_filename(wgt_filename)
@@ -148,7 +145,7 @@ def init_storage(type, filename, format, version, filestatus):
     return data_storage
 
 
-def create_vis_data_storage(filename, format="vis.calibratedFrame", version="0.1", filestatus="PROPOSED"):
+def create_vis_data_storage(filename, format = "vis.calibratedFrame", version = "0.1", filestatus = "PROPOSED"):
 
     data_storage = init_storage(
         vis_pro.visCalibratedStorageFitsFile, filename, format, version, filestatus)
@@ -156,7 +153,7 @@ def create_vis_data_storage(filename, format="vis.calibratedFrame", version="0.1
     return data_storage
 
 
-def create_vis_psf_storage(filename, format="vis.psfModel", version="0.1", filestatus="PROPOSED"):
+def create_vis_psf_storage(filename, format = "vis.psfModel", version = "0.1", filestatus = "PROPOSED"):
 
     data_storage = init_storage(
         vis_pro.visPsfModelStorageFitsFile, filename, format, version, filestatus)
@@ -164,7 +161,7 @@ def create_vis_psf_storage(filename, format="vis.psfModel", version="0.1", files
     return data_storage
 
 
-def create_vis_bkg_storage(filename, format="vis.backgroundMap", version="0.1", filestatus="PROPOSED"):
+def create_vis_bkg_storage(filename, format = "vis.backgroundMap", version = "0.1", filestatus = "PROPOSED"):
 
     data_storage = init_storage(
         vis_pro.visBackgroundStorageFitsFile, filename, format, version, filestatus)
@@ -172,7 +169,7 @@ def create_vis_bkg_storage(filename, format="vis.backgroundMap", version="0.1", 
     return data_storage
 
 
-def create_vis_wgt_storage(filename, format="vis.weightMap", version="0.1", filestatus="PROPOSED"):
+def create_vis_wgt_storage(filename, format = "vis.weightMap", version = "0.1", filestatus = "PROPOSED"):
 
     data_storage = init_storage(
         vis_pro.visWeightStorageFitsFile, filename, format, version, filestatus)

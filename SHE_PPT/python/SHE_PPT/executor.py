@@ -22,10 +22,9 @@ __updated__ = "2021-10-14"
 
 import os
 from argparse import Namespace
+from dataclasses import dataclass
 from logging import Logger
 from typing import Any, Callable, Dict, Optional, Sequence, Set, Type, Union
-
-from dataclasses import dataclass
 
 from EL_PythonUtils.utilities import get_arguments_string
 from . import __version__

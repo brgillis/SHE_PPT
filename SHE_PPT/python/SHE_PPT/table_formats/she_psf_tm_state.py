@@ -23,12 +23,11 @@ __updated__ = "2021-08-13"
 # Boston, MA 02110-1301 USA
 
 from collections import OrderedDict
-from typing import Optional, List, Type
+from typing import List, Optional, Type
 
-from ..constants.fits import PSF_TM_STATE_TAG, PSF_TM_IDENTITY
+from ..constants.fits import PSF_TM_IDENTITY, PSF_TM_STATE_TAG
 from ..logging import getLogger
 from ..table_formats.she_psf_state import ShePsfStateFormat, ShePsfStateMeta
-
 
 fits_version = "8.0"
 
@@ -45,7 +44,7 @@ class ShePsfTmStateMeta(ShePsfStateMeta):
 
     def init_meta(self,
                   **kwargs: str) -> OrderedDict:
-        return super().init_meta(extname=PSF_TM_STATE_TAG,
+        return super().init_meta(extname = PSF_TM_STATE_TAG,
                                  **kwargs)
 
 

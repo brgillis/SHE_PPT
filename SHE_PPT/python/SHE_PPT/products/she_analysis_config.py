@@ -25,9 +25,7 @@ __updated__ = "2021-08-16"
 # Boston, MA 02110-1301 USA
 
 from ST_DataModelBindings.dpd.she.analysisconfig_stub import dpdSheAnalysisConfig
-
-from ..product_utility import init_just_datastorage, create_product_from_template
-
+from ..product_utility import create_product_from_template, init_just_datastorage
 
 sample_file_name = "SHE_PPT/sample_analysis_config.xml"
 product_type_name = "DpdSheAnalysisConfig"
@@ -36,16 +34,16 @@ product_type_name = "DpdSheAnalysisConfig"
 def init():
     """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    init_just_datastorage(binding_class=dpdSheAnalysisConfig,
-                          init_function=create_dpd_she_analysis_config)
+    init_just_datastorage(binding_class = dpdSheAnalysisConfig,
+                          init_function = create_dpd_she_analysis_config)
 
 
-def create_dpd_she_analysis_config(filename=None,
-                                   data_filename=None):
+def create_dpd_she_analysis_config(filename = None,
+                                   data_filename = None):
     """ Creates a product of this type.
     """
 
-    return create_product_from_template(template_filename=sample_file_name,
-                                        product_type_name=product_type_name,
-                                        filename=filename,
-                                        data_filename=data_filename)
+    return create_product_from_template(template_filename = sample_file_name,
+                                        product_type_name = product_type_name,
+                                        filename = filename,
+                                        data_filename = data_filename)

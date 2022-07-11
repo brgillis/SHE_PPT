@@ -24,14 +24,12 @@ __updated__ = "2021-08-13"
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-from . import logging
-from . import sky_image_plot as sip
-
+from . import logging, sky_image_plot as sip
 
 logger = logging.getLogger(__name__)
 
 
-def draw_to_axes(img, ax, z1=None, z2=None, **kwargs):
+def draw_to_axes(img, ax, z1 = None, z2 = None, **kwargs):
     """Visualizes a SHEImage using Matplotlib on some existing Matplotlib axes
 
     This function implements a simple default style for plotting a SHEImage on some existing axes, and can therefore
@@ -65,7 +63,6 @@ class Checkplot(sip.SimpleFigure):
     """
 
     def __init__(self, img, **kwargs):
-
         self.sheimage = img
         sip.SimpleFigure.__init__(self, img.data, **kwargs)
 
