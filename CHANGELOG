@@ -26,6 +26,7 @@ Miscellaneous
 -------------
 - Changed GAIN_LABEL from "CCDGAIN" to "GAIN" and added READ_NOISE_LABEL in SHE_PPT.constants.fits
 - Updated test data to SHE_PPT_9_1
+- Applied autoformatting to standardize code format in project
 
 
 
