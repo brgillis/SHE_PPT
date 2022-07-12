@@ -76,7 +76,7 @@ class TestIO(SheTestCase):
     dest_subdir = "dest"
 
     def post_setup(self):
-        """ Perform some post_setup tasks for functions tested here, setting up data which is used for multiple
+        """ Perform some setup tasks for functions tested here, setting up data which is used for multiple
         tests.
         """
 
@@ -1289,7 +1289,7 @@ class TestMeasurementsProductIO(SheTestCase):
     SHM_PRODUCT_FILENAME = "shm_product.xml"
 
     def post_setup(self):
-        """ Perform some post_setup tasks for functions tested here, setting up data which is used for multiple
+        """ Perform some setup tasks for functions tested here, setting up data which is used for multiple
         tests.
         """
 

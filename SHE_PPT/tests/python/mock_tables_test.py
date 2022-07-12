@@ -43,13 +43,12 @@ class TestMockTables(SheTestCase):
     """
 
     def post_setup(self):
-        """ In the parent SheTestCase class, this method does nothing, and is performed after normal post_setup
-        tasks
+        """ In the parent SheTestCase class, this method does nothing, and is performed after normal setup tasks
             (e.g. setting up a tmpdir as the workdir). So we override this in order to demonstrate how mock tables
-            can be written in the post_setup of a test class.
+            can be written in the setup of a test class.
         """
 
-        # Normally, we would have something like the below to write a table in the post_setup:
+        # Normally, we would have something like the below to write a table in the setup:
         # MockMFCGalaxyTableGenerator(workdir=self.workdir).write_mock_listfile()
         # But here, we actually want to test the writing of tables, so we do that in the actual tests
 
