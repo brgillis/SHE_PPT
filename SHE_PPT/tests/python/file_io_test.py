@@ -75,21 +75,21 @@ class TestIO(SheTestCase):
     src_subdir = "src"
     dest_subdir = "dest"
 
-    def setup_test_data(self):
-        """ Perform some setup_test_data tasks for functions tested here, setting up data which is used for multiple
+    def post_setup(self):
+        """ Perform some post_setup tasks for functions tested here, setting up data which is used for multiple
         tests.
         """
 
         # Create source and destination subdirs of the workdir to test copying functions
         self.src_dir = os.path.join(self.workdir, self.src_subdir)
-        os.makedirs(os.path.join(self.src_dir, DATA_SUBDIR), exist_ok = True)
+        os.makedirs(os.path.join(self.src_dir, DATA_SUBDIR), exist_ok=True)
 
         self.dest_dir = os.path.join(self.workdir, self.dest_subdir)
-        os.makedirs(os.path.join(self.dest_dir, DATA_SUBDIR), exist_ok = True)
+        os.makedirs(os.path.join(self.dest_dir, DATA_SUBDIR), exist_ok=True)
 
         # Create a table, data product, and listfile we wish to test copying
-        mfc_table_gen = MockMFCGalaxyTableGenerator(workdir = self.src_dir,
-                                                    num_test_points = 2)
+        mfc_table_gen = MockMFCGalaxyTableGenerator(workdir=self.src_dir,
+                                                    num_test_points=2)
 
         # write_mock_listfile writes all the files we need, so just call it
         mfc_table_gen.write_mock_listfile()
@@ -103,7 +103,7 @@ class TestIO(SheTestCase):
         self.test_xml_product = read_xml_product(find_aux_file(TEST_AUX_FILE))
 
         # Make a sample table for testing
-        self.test_table = Table(data = [[0.0, 1.0], [0.1, 1.1]])
+        self.test_table = Table(data=[[0.0, 1.0], [0.1, 1.1]])
 
         table_hdu = table_to_hdu(self.test_table)
 
@@ -133,16 +133,16 @@ class TestIO(SheTestCase):
 
         test_filename = "filename.txt"
         test_qualified_filename = get_qualified_filename(test_filename,
-                                                         workdir = self.workdir)
+                                                         workdir=self.workdir)
         test_message = "This is a test message."
 
-        test_access_error = SheFileAccessError(filename = test_filename,
-                                               workdir = self.workdir)
-        test_write_error = SheFileWriteError(qualified_filename = test_qualified_filename)
-        test_read_error = SheFileReadError(filename = test_filename,
-                                           workdir = self.workdir,
-                                           qualified_filename = test_qualified_filename,
-                                           message = test_message)
+        test_access_error = SheFileAccessError(filename=test_filename,
+                                               workdir=self.workdir)
+        test_write_error = SheFileWriteError(qualified_filename=test_qualified_filename)
+        test_read_error = SheFileReadError(filename=test_filename,
+                                           workdir=self.workdir,
+                                           qualified_filename=test_qualified_filename,
+                                           message=test_message)
 
         # Check that all attrs are as expected
 
@@ -171,9 +171,9 @@ class TestIO(SheTestCase):
         with pytest.raises(ValueError):
             _ = SheFileAccessError()
         with pytest.raises(ValueError):
-            _ = SheFileAccessError(filename = test_filename,
-                                   workdir = self.workdir,
-                                   qualified_filename = "/not/the/right.filename")
+            _ = SheFileAccessError(filename=test_filename,
+                                   workdir=self.workdir,
+                                   qualified_filename="/not/the/right.filename")
 
     def test_get_allowed_filename(self):
         """Test the function and classes to get a filename.
@@ -181,7 +181,7 @@ class TestIO(SheTestCase):
 
         instance_id = "instance"
 
-        filename = get_allowed_filename("test", instance_id, extension = ".junk", release = "06.66", subdir = "subdir")
+        filename = get_allowed_filename("test", instance_id, extension=".junk", release="06.66", subdir="subdir")
 
         expect_filename_head = "subdir/EUC_SHE_TEST_INSTANCE_"
         expect_filename_tail = "Z_06.66.junk"
@@ -192,42 +192,42 @@ class TestIO(SheTestCase):
 
         # Check that if we wait a tenth of a second, it will change
         sleep(0.1)
-        new_filename = get_allowed_filename("test", instance_id, extension = ".junk", release = "06.66",
-                                            subdir = "subdir")
+        new_filename = get_allowed_filename("test", instance_id, extension=".junk", release="06.66",
+                                            subdir="subdir")
         assert new_filename != filename
 
         # Test that it raises when we expect it to
 
         # Test for forbidden character
         with pytest.raises(ValueError):
-            get_allowed_filename("test*", instance_id, extension = ".junk", release = "06.66", subdir = "subdir")
+            get_allowed_filename("test*", instance_id, extension=".junk", release="06.66", subdir="subdir")
         with pytest.raises(ValueError):
-            get_allowed_filename("test", instance_id + "/", extension = ".junk", release = "06.66", subdir = "subdir")
+            get_allowed_filename("test", instance_id + "/", extension=".junk", release="06.66", subdir="subdir")
 
         # Test for bad release
         with pytest.raises(ValueError):
-            get_allowed_filename("test", instance_id, extension = ".junk", release = "06.666", subdir = "subdir")
+            get_allowed_filename("test", instance_id, extension=".junk", release="06.666", subdir="subdir")
         with pytest.raises(ValueError):
-            get_allowed_filename("test", instance_id, extension = ".junk", release = "06.6a", subdir = "subdir")
+            get_allowed_filename("test", instance_id, extension=".junk", release="06.6a", subdir="subdir")
         with pytest.raises(ValueError):
-            get_allowed_filename("test", instance_id, extension = ".junk", release = "06.", subdir = "subdir")
+            get_allowed_filename("test", instance_id, extension=".junk", release="06.", subdir="subdir")
 
         # Test for too long
         with pytest.raises(ValueError):
             get_allowed_filename("t" * (type_name_maxlen + 1), instance_id,
-                                 extension = ".junk", release = "06.66", subdir = "subdir")
+                                 extension=".junk", release="06.66", subdir="subdir")
         with pytest.raises(ValueError):
             get_allowed_filename("test", "i" * (instance_id_maxlen + 3),
-                                 extension = ".junk", release = "06.66", subdir = "subdir", timestamp = True)
+                                 extension=".junk", release="06.66", subdir="subdir", timestamp=True)
         with pytest.raises(ValueError):
-            get_allowed_filename("test", instance_id, extension = ".junk", release = "06.66", subdir = "subdir",
-                                 processing_function = "p" * (processing_function_maxlen + 1))
+            get_allowed_filename("test", instance_id, extension=".junk", release="06.66", subdir="subdir",
+                                 processing_function="p" * (processing_function_maxlen + 1))
 
     def test_file_namer(self):
         """Test the functionality of the SheFileNamer class, except that which was already tested through the test of
         get_allowed_filename above.
         """
-        file_namer = SheFileNamer(version = "1.2", workdir = self.workdir, subdir = "", extension = "junk")
+        file_namer = SheFileNamer(version="1.2", workdir=self.workdir, subdir="", extension="junk")
 
         # Set up type name and instance ID, testing setters and getters while we do so
 
@@ -352,30 +352,30 @@ class TestIO(SheTestCase):
 
         test_filename = "product.xml"
         test_qualified_filename = get_qualified_filename(test_filename,
-                                                         workdir = self.workdir)
+                                                         workdir=self.workdir)
 
         # Test that we can write out the sample product and read it back in
         write_xml_product(self.test_xml_product, test_qualified_filename)
 
-        p2 = read_xml_product(test_qualified_filename, product_type = ex_type)
+        p2 = read_xml_product(test_qualified_filename, product_type=ex_type)
         p2.validateBinding()
 
         assert type(self.test_xml_product) == type(p2)
 
         # Test that if we specify the wrong type, a TypeError is raised
         with pytest.raises(TypeError):
-            _ = read_xml_product(test_qualified_filename, product_type = non_ex_type)
+            _ = read_xml_product(test_qualified_filename, product_type=non_ex_type)
 
         # Test that we get expected read/write errors if the path doesn't exist
         with pytest.raises(SheFileWriteError):
             write_xml_product(self.test_xml_product,
                               test_filename,
-                              workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY, ),
-                              log_info = True)
+                              workdir=os.path.join(self.workdir, PATH_NO_DIRECTORY, ),
+                              log_info=True)
         with pytest.raises(SheFileReadError):
             _ = read_xml_product(test_filename,
-                                 workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY),
-                                 log_info = True)
+                                 workdir=os.path.join(self.workdir, PATH_NO_DIRECTORY),
+                                 log_info=True)
 
         try_remove_file(test_qualified_filename)
 
@@ -418,13 +418,13 @@ class TestIO(SheTestCase):
 
         test_filename = "product_loader_product.xml"
         test_qualified_filename = get_qualified_filename(test_filename,
-                                                         workdir = self.workdir)
+                                                         workdir=self.workdir)
 
         # Test that we can write out the sample product and read it back in with the ProductLoader
         write_xml_product(self.test_xml_product, test_qualified_filename)
 
-        product_loader = ProductLoader(filename = test_filename,
-                                       workdir = self.workdir)
+        product_loader = ProductLoader(filename=test_filename,
+                                       workdir=self.workdir)
 
         # Test that the ProductLoader is set up as expected
         assert product_loader.filename == test_filename
@@ -434,9 +434,9 @@ class TestIO(SheTestCase):
         assert product_loader.obj is None
 
         # Test making a MultiProductLoader with this
-        multi_product_loader = MultiProductLoader(workdir = self.workdir,
-                                                  l_file_loaders = [product_loader],
-                                                  file_loader_type = ProductLoader)
+        multi_product_loader = MultiProductLoader(workdir=self.workdir,
+                                                  l_file_loaders=[product_loader],
+                                                  file_loader_type=ProductLoader)
 
         # Run common tests on this and the Multi version
         ex_type = dpdVisStackedFrame
@@ -449,24 +449,24 @@ class TestIO(SheTestCase):
 
         # ValueError if providing both a list of filenames and a list of file loaders
         with pytest.raises(ValueError):
-            _ = MultiProductLoader(workdir = self.workdir,
-                                   l_filenames = [test_filename],
-                                   l_file_loaders = [product_loader],
-                                   file_loader_type = ProductLoader)
+            _ = MultiProductLoader(workdir=self.workdir,
+                                   l_filenames=[test_filename],
+                                   l_file_loaders=[product_loader],
+                                   file_loader_type=ProductLoader)
 
         # TypeError if type mismatch
         with pytest.raises(TypeError):
-            _ = MultiProductLoader(workdir = self.workdir,
-                                   l_file_loaders = [product_loader],
-                                   file_loader_type = FitsLoader)
+            _ = MultiProductLoader(workdir=self.workdir,
+                                   l_file_loaders=[product_loader],
+                                   file_loader_type=FitsLoader)
 
         # ValueError if l_filenames but not file_loader_type
         with pytest.raises(ValueError):
-            _ = MultiFileLoader(workdir = self.workdir,
-                                l_filenames = [test_filename], )
+            _ = MultiFileLoader(workdir=self.workdir,
+                                l_filenames=[test_filename], )
 
         # Check init with only workdir works though
-        _ = MultiProductLoader(workdir = self.workdir)
+        _ = MultiProductLoader(workdir=self.workdir)
 
     def test_rw_listfile(self):
         """Tests of reading and writing listfiles.
@@ -476,30 +476,30 @@ class TestIO(SheTestCase):
         l_tupled = [("file1a.ext", "file1b.ext"), ("file2a.ext", "file2b.ext"), ("file3a.ext", "file3b.ext")]
         l_single_tupled = [("file1.ext",), ("file2.ext",), ("file3.ext",)]
 
-        write_listfile(self.listfile_name, l_simple, workdir = self.workdir)
-        assert read_listfile(self.listfile_name, workdir = self.workdir) == l_simple
+        write_listfile(self.listfile_name, l_simple, workdir=self.workdir)
+        assert read_listfile(self.listfile_name, workdir=self.workdir) == l_simple
         os.remove(os.path.join(self.workdir, self.listfile_name))
 
-        write_listfile(self.listfile_name, l_tupled, workdir = self.workdir)
-        assert read_listfile(self.listfile_name, workdir = self.workdir) == l_tupled
+        write_listfile(self.listfile_name, l_tupled, workdir=self.workdir)
+        assert read_listfile(self.listfile_name, workdir=self.workdir) == l_tupled
         os.remove(os.path.join(self.workdir, self.listfile_name))
 
         # Test that the singly-tupled listfile is properly flattened when read back in
-        write_listfile(self.listfile_name, l_single_tupled, workdir = self.workdir)
-        assert read_listfile(self.listfile_name, workdir = self.workdir) == l_simple
+        write_listfile(self.listfile_name, l_single_tupled, workdir=self.workdir)
+        assert read_listfile(self.listfile_name, workdir=self.workdir) == l_simple
         os.remove(os.path.join(self.workdir, self.listfile_name))
 
         with pytest.raises(SheFileWriteError):
             write_listfile(self.listfile_name,
                            l_simple,
-                           workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY, ),
-                           log_info = True)
+                           workdir=os.path.join(self.workdir, PATH_NO_DIRECTORY, ),
+                           log_info=True)
         with pytest.raises(SheFileReadError):
             _ = read_listfile(self.listfile_name,
-                              workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY),
-                              log_info = True)
+                              workdir=os.path.join(self.workdir, PATH_NO_DIRECTORY),
+                              log_info=True)
 
-        try_remove_file(self.listfile_name, workdir = self.workdir)
+        try_remove_file(self.listfile_name, workdir=self.workdir)
 
     def test_rw_table(self):
         """Tests of the read_table and write_table functions.
@@ -507,7 +507,7 @@ class TestIO(SheTestCase):
 
         test_filename = "table.fits"
         test_qualified_filename = get_qualified_filename(test_filename,
-                                                         workdir = self.workdir)
+                                                         workdir=self.workdir)
 
         # Test that we can write out the sample table and read it back in
         write_table(self.test_table, test_qualified_filename)
@@ -519,12 +519,12 @@ class TestIO(SheTestCase):
         with pytest.raises(SheFileWriteError):
             write_table(self.test_table,
                         test_filename,
-                        workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY, ),
-                        log_info = True)
+                        workdir=os.path.join(self.workdir, PATH_NO_DIRECTORY, ),
+                        log_info=True)
         with pytest.raises(SheFileReadError):
             _ = read_table(test_filename,
-                           workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY),
-                           log_info = True)
+                           workdir=os.path.join(self.workdir, PATH_NO_DIRECTORY),
+                           log_info=True)
 
         try_remove_file(test_qualified_filename)
 
@@ -534,18 +534,18 @@ class TestIO(SheTestCase):
 
         test_filename = "table_loader_table.fits"
         test_qualified_filename = get_qualified_filename(test_filename,
-                                                         workdir = self.workdir)
+                                                         workdir=self.workdir)
 
         # Test that we can write out the sample table and read it back in
         write_table(self.test_table, test_qualified_filename)
 
-        table_loader = TableLoader(filename = test_filename,
-                                   workdir = self.workdir)
+        table_loader = TableLoader(filename=test_filename,
+                                   workdir=self.workdir)
 
         # Test making a MultiProductLoader with this
-        multi_table_loader = MultiTableLoader(workdir = self.workdir,
-                                              l_filenames = [test_filename],
-                                              file_loader_type = TableLoader)
+        multi_table_loader = MultiTableLoader(workdir=self.workdir,
+                                              l_filenames=[test_filename],
+                                              file_loader_type=TableLoader)
 
         # Run common tests on this and the Multi version
         ex_type = Table
@@ -560,7 +560,7 @@ class TestIO(SheTestCase):
 
         test_filename = "fits.fits"
         test_qualified_filename = get_qualified_filename(test_filename,
-                                                         workdir = self.workdir)
+                                                         workdir=self.workdir)
 
         # Test that we can write out the sample fits and read it back in
         write_fits(self.test_hdulist, test_qualified_filename)
@@ -572,12 +572,12 @@ class TestIO(SheTestCase):
         with pytest.raises(SheFileWriteError):
             write_fits(self.test_hdulist,
                        test_filename,
-                       workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY, ),
-                       log_info = True)
+                       workdir=os.path.join(self.workdir, PATH_NO_DIRECTORY, ),
+                       log_info=True)
         with pytest.raises(SheFileReadError):
             _ = read_fits(test_filename,
-                          workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY),
-                          log_info = True)
+                          workdir=os.path.join(self.workdir, PATH_NO_DIRECTORY),
+                          log_info=True)
 
         try_remove_file(test_qualified_filename)
 
@@ -587,17 +587,17 @@ class TestIO(SheTestCase):
 
         test_filename = "fits_loader_fits.fits"
         test_qualified_filename = get_qualified_filename(test_filename,
-                                                         workdir = self.workdir)
+                                                         workdir=self.workdir)
 
         # Test that we can write out the sample fits and read it back in
         write_fits(self.test_hdulist, test_qualified_filename)
 
-        fits_loader = FitsLoader(filename = test_filename,
-                                 workdir = self.workdir)
+        fits_loader = FitsLoader(filename=test_filename,
+                                 workdir=self.workdir)
 
         # Test making a MultiProductLoader with this
-        multi_fits_loader = MultiFitsLoader(workdir = self.workdir,
-                                            l_filenames = [test_filename])
+        multi_fits_loader = MultiFitsLoader(workdir=self.workdir,
+                                            l_filenames=[test_filename])
 
         # Run common tests on this and the Multi version
         ex_type = HDUList
@@ -608,12 +608,12 @@ class TestIO(SheTestCase):
         with pytest.raises(SheFileWriteError):
             write_fits(self.test_xml_product,
                        test_filename,
-                       workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY, ),
-                       log_info = True)
+                       workdir=os.path.join(self.workdir, PATH_NO_DIRECTORY, ),
+                       log_info=True)
         with pytest.raises(SheFileReadError):
             _ = read_fits(test_filename,
-                          workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY),
-                          log_info = True)
+                          workdir=os.path.join(self.workdir, PATH_NO_DIRECTORY),
+                          log_info=True)
 
         try_remove_file(test_qualified_filename)
 
@@ -624,7 +624,7 @@ class TestIO(SheTestCase):
         # Start by writing a file to disk
         test_filename = "append_hdu.fits"
         test_qualified_filename = get_qualified_filename(test_filename,
-                                                         workdir = self.workdir)
+                                                         workdir=self.workdir)
         write_fits(self.test_hdulist, test_qualified_filename)
 
         # Create a new file and try appending it
@@ -641,15 +641,15 @@ class TestIO(SheTestCase):
         # Test that we get expected read/write errors
         with pytest.raises(SheFileReadError):
             append_hdu(test_filename,
-                       hdu = t_hdu,
-                       workdir = os.path.join(self.workdir, PATH_NO_DIRECTORY),
-                       log_info = True)
+                       hdu=t_hdu,
+                       workdir=os.path.join(self.workdir, PATH_NO_DIRECTORY),
+                       log_info=True)
         try:
             with pytest.raises(SheFileWriteError):
                 os.chmod(test_qualified_filename, stat.S_IREAD)
                 append_hdu(test_qualified_filename,
-                           hdu = t_hdu,
-                           log_info = True)
+                           hdu=t_hdu,
+                           log_info=True)
         finally:
             os.chmod(test_qualified_filename, stat.S_IREAD | stat.S_IWRITE)
 
@@ -676,28 +676,28 @@ class TestIO(SheTestCase):
 
         # Create a file to test some replacement commands
         filename_in = "test.txt"
-        qualified_filename_in = get_qualified_filename(filename_in, workdir = self.workdir)
+        qualified_filename_in = get_qualified_filename(filename_in, workdir=self.workdir)
         with open(qualified_filename_in, "w") as fo:
             for line in l_input_lines:
                 fo.write(line)
 
         filename_out = "test_out.txt"
-        qualified_filename_out = get_qualified_filename(filename_out, workdir = self.workdir)
+        qualified_filename_out = get_qualified_filename(filename_out, workdir=self.workdir)
 
         # Try replacing a single value
-        replace_in_file(input_filename = qualified_filename_in,
-                        output_filename = qualified_filename_out,
-                        input_string = str_val1,
-                        output_string = str_val1a)
+        replace_in_file(input_filename=qualified_filename_in,
+                        output_filename=qualified_filename_out,
+                        input_string=str_val1,
+                        output_string=str_val1a)
         with open(qualified_filename_out, "r") as fi:
             for input_line, output_line in zip(l_input_lines, fi):
                 assert input_line.replace(str_val1, str_val1a) == output_line
 
         # Try replacing multiple values
-        replace_multiple_in_file(input_filename = qualified_filename_in,
-                                 output_filename = qualified_filename_out,
-                                 input_strings = [str_val1, str_key3],
-                                 output_strings = [str_val1a, str_key3a])
+        replace_multiple_in_file(input_filename=qualified_filename_in,
+                                 output_filename=qualified_filename_out,
+                                 input_strings=[str_val1, str_key3],
+                                 output_strings=[str_val1a, str_key3a])
         with open(qualified_filename_out, "r") as fi:
             for input_line, output_line in zip(l_input_lines, fi):
                 assert input_line.replace(str_val1, str_val1a).replace(str_key3, str_key3a) == output_line
@@ -706,24 +706,24 @@ class TestIO(SheTestCase):
 
         with pytest.raises(ValueError):
             # Same file as input and output
-            replace_in_file(input_filename = qualified_filename_in,
-                            output_filename = qualified_filename_in,
-                            input_string = str_val1,
-                            output_string = str_val1a)
+            replace_in_file(input_filename=qualified_filename_in,
+                            output_filename=qualified_filename_in,
+                            input_string=str_val1,
+                            output_string=str_val1a)
 
         with pytest.raises(ValueError):
             # Same file as input and output
-            replace_multiple_in_file(input_filename = qualified_filename_in,
-                                     output_filename = qualified_filename_in,
-                                     input_strings = [str_val1, str_key3],
-                                     output_strings = [str_val1a, str_key3a])
+            replace_multiple_in_file(input_filename=qualified_filename_in,
+                                     output_filename=qualified_filename_in,
+                                     input_strings=[str_val1, str_key3],
+                                     output_strings=[str_val1a, str_key3a])
 
         with pytest.raises(ValueError):
             # Different list lengths
-            replace_multiple_in_file(input_filename = qualified_filename_in,
-                                     output_filename = qualified_filename_out,
-                                     input_strings = [str_val1, str_key3],
-                                     output_strings = [str_val1a])
+            replace_multiple_in_file(input_filename=qualified_filename_in,
+                                     output_filename=qualified_filename_out,
+                                     input_strings=[str_val1, str_key3],
+                                     output_strings=[str_val1a])
 
     def test_find_file_in_path(self):
         """Unit tests of `find_file_in_path`.
@@ -819,7 +819,7 @@ class TestIO(SheTestCase):
         assert os.path.isfile(test_qualified_filename)
 
         # Find in path
-        test_qualified_filename = find_file(SYNC_CONF, path = os.environ['ELEMENTS_CONF_PATH'])
+        test_qualified_filename = find_file(SYNC_CONF, path=os.environ['ELEMENTS_CONF_PATH'])
         assert os.path.isfile(test_qualified_filename)
 
         # Test expected errors
@@ -908,10 +908,10 @@ class TestIO(SheTestCase):
         assert os.path.isfile(l_qualified_filenames[0])
         assert os.path.isfile(l_qualified_filenames[1])
 
-        tar_files(tarball_filename = tarball_filename,
-                  l_filenames = l_filenames,
-                  workdir = self.workdir,
-                  delete_files = True)
+        tar_files(tarball_filename=tarball_filename,
+                  l_filenames=l_filenames,
+                  workdir=self.workdir,
+                  delete_files=True)
 
         # Check things have been tarred up
         assert not os.path.isfile(l_qualified_filenames[0])
@@ -919,7 +919,7 @@ class TestIO(SheTestCase):
         assert os.path.isfile(qualified_tarball_filename)
 
         # Check that we can un-tar and retrieve the data
-        subprocess.call(f"cd {self.workdir} && tar xf {tarball_filename}", shell = True)
+        subprocess.call(f"cd {self.workdir} && tar xf {tarball_filename}", shell=True)
 
         assert os.path.isfile(l_qualified_filenames[0])
         assert os.path.isfile(l_qualified_filenames[1])
@@ -939,19 +939,19 @@ class TestIO(SheTestCase):
         try:
             os.chmod(qualified_tarball_filename, stat.S_IREAD)
             with pytest.raises(SheFileWriteError):
-                tar_files(tarball_filename = qualified_tarball_filename,
-                          l_filenames = l_filenames,
-                          workdir = self.workdir,
-                          delete_files = False)
+                tar_files(tarball_filename=qualified_tarball_filename,
+                          l_filenames=l_filenames,
+                          workdir=self.workdir,
+                          delete_files=False)
         finally:
             os.chmod(qualified_tarball_filename, stat.S_IREAD | stat.S_IWRITE)
 
         # Try writing files that don't exist
         with pytest.raises(SheFileWriteError):
-            tar_files(tarball_filename = qualified_tarball_filename,
-                      l_filenames = [FILENAME_NO_FILE],
-                      workdir = self.workdir,
-                      delete_files = False)
+            tar_files(tarball_filename=qualified_tarball_filename,
+                      l_filenames=[FILENAME_NO_FILE],
+                      workdir=self.workdir,
+                      delete_files=False)
 
     def test_rw_product_and_table(self):
         """ Test reading and writing a product and table together with utility functions.
@@ -959,21 +959,21 @@ class TestIO(SheTestCase):
 
         # Create sample product and table
         p = create_dpd_mer_final_catalog()
-        t = MerFinalCatalogFormat.init_table(size = 2)
+        t = MerFinalCatalogFormat.init_table(size=2)
 
         # Write them out together
 
-        product_filename = SheFileNamer(type_name = "TESTPROD",
-                                        instance_id = "0",
-                                        workdir = self.workdir,
-                                        subdir = "",
-                                        version = SHE_PPT.__version__).filename
+        product_filename = SheFileNamer(type_name="TESTPROD",
+                                        instance_id="0",
+                                        workdir=self.workdir,
+                                        subdir="",
+                                        version=SHE_PPT.__version__).filename
 
         # Try first without specifying a table filename
-        write_product_and_table(product = p,
-                                product_filename = product_filename,
-                                table = t,
-                                workdir = self.workdir)
+        write_product_and_table(product=p,
+                                product_filename=product_filename,
+                                table=t,
+                                workdir=self.workdir)
 
         table_filename = p.get_data_filename()
 
@@ -988,7 +988,7 @@ class TestIO(SheTestCase):
         assert os.path.exists(os.path.join(self.workdir, table_filename))
 
         # Read the product and table back in
-        p2, t2 = read_product_and_table(product_filename, workdir = self.workdir)
+        p2, t2 = read_product_and_table(product_filename, workdir=self.workdir)
 
         # Check that they're the same as was written out
         assert p2.Header.ProductId.value() == p.Header.ProductId.value()
@@ -996,13 +996,13 @@ class TestIO(SheTestCase):
         assert np.all(t2 == t)
 
         # Now try while specifying the table filename
-        input_table_filename = get_allowed_filename(type_name = "TABLE", instance_id = "1",
-                                                    version = SHE_PPT.__version__)
-        write_product_and_table(product = p,
-                                product_filename = product_filename,
-                                table = t,
-                                table_filename = input_table_filename,
-                                workdir = self.workdir)
+        input_table_filename = get_allowed_filename(type_name="TABLE", instance_id="1",
+                                                    version=SHE_PPT.__version__)
+        write_product_and_table(product=p,
+                                product_filename=product_filename,
+                                table=t,
+                                table_filename=input_table_filename,
+                                workdir=self.workdir)
 
         # Check that the files have been written out
         output_table_filename = p.get_data_filename()
@@ -1010,7 +1010,7 @@ class TestIO(SheTestCase):
         assert os.path.exists(os.path.join(self.workdir, output_table_filename))
 
         # Read the product and table back in
-        p3, t3 = read_product_and_table(product_filename, workdir = self.workdir)
+        p3, t3 = read_product_and_table(product_filename, workdir=self.workdir)
 
         # Check that they're the same as was written out
         assert p3.Header.ProductId.value() == p.Header.ProductId.value()
@@ -1018,7 +1018,7 @@ class TestIO(SheTestCase):
         assert np.all(t3 == t)
 
         # And try reading just the table from the product
-        t4 = read_table_from_product(product_filename, workdir = self.workdir)
+        t4 = read_table_from_product(product_filename, workdir=self.workdir)
         assert np.all(t4 == t)
 
     def test_safe_copy(self):
@@ -1032,18 +1032,18 @@ class TestIO(SheTestCase):
         safe_copy(qualified_src_filename, qualified_dest_filename)
 
         # Check that both input and output match
-        src_table = read_table(self.table_filename, workdir = self.src_dir)
-        dest_table = read_table(self.table_filename, workdir = self.dest_dir)
+        src_table = read_table(self.table_filename, workdir=self.src_dir)
+        dest_table = read_table(self.table_filename, workdir=self.dest_dir)
 
         assert np.all(src_table == dest_table)
 
         # Check that it succeeds without issue if the destination file exists, as it now does, unless we require the
         # destination is free
         safe_copy(qualified_src_filename, qualified_dest_filename,
-                  require_dest_free = False)
+                  require_dest_free=False)
         with pytest.raises(SheFileWriteError):
             safe_copy(qualified_src_filename, qualified_dest_filename,
-                      require_dest_free = True)
+                      require_dest_free=True)
 
         # Cleanup the created file for future checks
         os.remove(qualified_dest_filename)
@@ -1052,10 +1052,10 @@ class TestIO(SheTestCase):
         qualified_nonexistent_src_filename = os.path.join(self.src_dir, "no_file_here")
 
         safe_copy(qualified_nonexistent_src_filename, qualified_dest_filename,
-                  require_src_exist = False)
+                  require_src_exist=False)
         with pytest.raises(SheFileReadError):
             safe_copy(qualified_nonexistent_src_filename, qualified_dest_filename,
-                      require_src_exist = True)
+                      require_src_exist=True)
 
         # Check that if we copy to a directory that doesn't yet exist, that directory is created
         dest_subdir = os.path.join(self.dest_dir, "subdir")
@@ -1075,9 +1075,9 @@ class TestIO(SheTestCase):
         qualified_dest_table_filename = os.path.join(self.dest_dir, self.table_filename)
 
         # Try running the function and make sure it succeeds
-        copy_product_between_dirs(product_filename = self.product_filename,
-                                  src_dir = self.src_dir,
-                                  dest_dir = self.dest_dir)
+        copy_product_between_dirs(product_filename=self.product_filename,
+                                  src_dir=self.src_dir,
+                                  dest_dir=self.dest_dir)
 
         # Check that expected files exist and match input
         assert os.path.exists(qualified_dest_product_filename)
@@ -1091,9 +1091,9 @@ class TestIO(SheTestCase):
         assert src_product.get_all_filenames() == dest_product.get_all_filenames()
 
         # Test that the function doesn't raise any error if the destination file already exists, as it now does
-        copy_product_between_dirs(product_filename = self.product_filename,
-                                  src_dir = self.src_dir,
-                                  dest_dir = self.dest_dir)
+        copy_product_between_dirs(product_filename=self.product_filename,
+                                  src_dir=self.src_dir,
+                                  dest_dir=self.dest_dir)
 
         # Cleanup the created files
         os.remove(qualified_dest_product_filename)
@@ -1109,9 +1109,9 @@ class TestIO(SheTestCase):
         qualified_dest_table_filename = os.path.join(self.dest_dir, self.table_filename)
 
         # Try running the function and make sure it succeeds
-        copy_listfile_between_dirs(listfile_filename = self.listfile_filename,
-                                   src_dir = self.src_dir,
-                                   dest_dir = self.dest_dir)
+        copy_listfile_between_dirs(listfile_filename=self.listfile_filename,
+                                   src_dir=self.src_dir,
+                                   dest_dir=self.dest_dir)
 
         # Check that expected files exist and match input
         assert os.path.exists(qualified_dest_listfile_filename)
@@ -1125,9 +1125,9 @@ class TestIO(SheTestCase):
         assert np.all(l_src_products == l_dest_products)
 
         # Test that the function doesn't raise any error if the destination file already exists, as it now does
-        copy_listfile_between_dirs(listfile_filename = self.listfile_filename,
-                                   src_dir = self.src_dir,
-                                   dest_dir = self.dest_dir)
+        copy_listfile_between_dirs(listfile_filename=self.listfile_filename,
+                                   src_dir=self.src_dir,
+                                   dest_dir=self.dest_dir)
 
         # Cleanup the created files
         os.remove(qualified_dest_listfile_filename)
@@ -1142,8 +1142,8 @@ class TestIO(SheTestCase):
         shutil.rmtree(self.dest_dir)
 
         # Symlink the contents of the source directory to the destination directory
-        symlink_contents(src_dir = self.src_dir,
-                         dest_dir = self.dest_dir)
+        symlink_contents(src_dir=self.src_dir,
+                         dest_dir=self.dest_dir)
 
         # Check that the destination directory now contains the same files as the source directory
 
@@ -1193,7 +1193,7 @@ class TestIO(SheTestCase):
         # Start by writing a file to disk which we'll try to remove
         test_filename = "try_remove_file.txt"
         test_qualified_filename = get_qualified_filename(test_filename,
-                                                         workdir = self.workdir)
+                                                         workdir=self.workdir)
         write_listfile(test_qualified_filename, [])
 
         # Try removing the file, and check that it doesn't exist after
@@ -1202,8 +1202,8 @@ class TestIO(SheTestCase):
 
         # Now try removing a file that doesn't exist, and make sure an exception isn't raised
         try_remove_file(FILENAME_NO_FILE,
-                        workdir = self.workdir,
-                        warn = True)
+                        workdir=self.workdir,
+                        warn=True)
 
     def test_first_in_path(self):
         """Unit test of `first_(writable_)in_path`.
@@ -1241,11 +1241,11 @@ class TestIO(SheTestCase):
         """
 
         # Check that we get the expected table filename for the MER Final Catalog product created for testing here
-        test_filename = get_data_filename(self.product_filename, workdir = self.src_dir)
+        test_filename = get_data_filename(self.product_filename, workdir=self.src_dir)
         assert test_filename == self.table_filename
 
         # Check that if we input the data filename directly, we get it back
-        test_filename = get_data_filename(self.table_filename, workdir = self.src_dir)
+        test_filename = get_data_filename(self.table_filename, workdir=self.src_dir)
         assert test_filename == self.table_filename
 
     def test_remove_files(self):
@@ -1288,34 +1288,34 @@ class TestMeasurementsProductIO(SheTestCase):
     KSB_TABLE_FILENAME = "data/ksb_table.fits"
     SHM_PRODUCT_FILENAME = "shm_product.xml"
 
-    def setup_test_data(self):
-        """ Perform some setup_test_data tasks for functions tested here, setting up data which is used for multiple
+    def post_setup(self):
+        """ Perform some post_setup tasks for functions tested here, setting up data which is used for multiple
         tests.
         """
 
-        lensmc_table_gen = MockShearEstimateTableGenerator(workdir = self.workdir,
-                                                           num_test_points = 4,
-                                                           method = ShearEstimationMethods.LENSMC,
-                                                           table_filename = self.LMC_TABLE_FILENAME,
-                                                           seed = EST_SEED)
+        lensmc_table_gen = MockShearEstimateTableGenerator(workdir=self.workdir,
+                                                           num_test_points=4,
+                                                           method=ShearEstimationMethods.LENSMC,
+                                                           table_filename=self.LMC_TABLE_FILENAME,
+                                                           seed=EST_SEED)
         lensmc_table_gen.write_mock_table()
 
-        ksb_table_gen = MockShearEstimateTableGenerator(workdir = self.workdir,
-                                                        num_test_points = 4,
-                                                        method = ShearEstimationMethods.KSB,
-                                                        table_filename = self.KSB_TABLE_FILENAME,
-                                                        seed = EST_SEED + 1)
+        ksb_table_gen = MockShearEstimateTableGenerator(workdir=self.workdir,
+                                                        num_test_points=4,
+                                                        method=ShearEstimationMethods.KSB,
+                                                        table_filename=self.KSB_TABLE_FILENAME,
+                                                        seed=EST_SEED + 1)
         ksb_table_gen.write_mock_table()
 
-        self.shm_product = create_dpd_she_validated_measurements(KSB_filename = self.KSB_TABLE_FILENAME,
-                                                                 LensMC_filename = self.LMC_TABLE_FILENAME)
-        write_xml_product(self.shm_product, self.SHM_PRODUCT_FILENAME, workdir = self.workdir)
+        self.shm_product = create_dpd_she_validated_measurements(KSB_filename=self.KSB_TABLE_FILENAME,
+                                                                 LensMC_filename=self.LMC_TABLE_FILENAME)
+        write_xml_product(self.shm_product, self.SHM_PRODUCT_FILENAME, workdir=self.workdir)
 
         # Since astropy or numpy converts NaN values to masked when reading in a table, we read-in the tables here
         # from what we just wrote, rather than comparing to what's in-memory (which will have some NaNs, as opposed
         # to the masked values when read in)
-        self.lmc_table = read_table(self.LMC_TABLE_FILENAME, workdir = self.workdir)
-        self.ksb_table = read_table(self.KSB_TABLE_FILENAME, workdir = self.workdir)
+        self.lmc_table = read_table(self.LMC_TABLE_FILENAME, workdir=self.workdir)
+        self.ksb_table = read_table(self.KSB_TABLE_FILENAME, workdir=self.workdir)
 
         # Get the expected product ID for when the product is read in
         self.ex_product_id = self.shm_product.Header.ProductId.value()
@@ -1326,9 +1326,9 @@ class TestMeasurementsProductIO(SheTestCase):
 
         # Try reading in the product created at init
         (d_l_method_table_filenames,
-         l_products) = read_d_l_method_table_filenames(l_product_filenames = [self.SHM_PRODUCT_FILENAME],
-                                                       workdir = self.workdir,
-                                                       log_info = True)
+         l_products) = read_d_l_method_table_filenames(l_product_filenames=[self.SHM_PRODUCT_FILENAME],
+                                                       workdir=self.workdir,
+                                                       log_info=True)
 
         # Check that the filenames are as expected
         assert d_l_method_table_filenames[ShearEstimationMethods.LENSMC][0] == self.LMC_TABLE_FILENAME
@@ -1345,9 +1345,9 @@ class TestMeasurementsProductIO(SheTestCase):
 
         # Try reading in the product created at init
         (d_method_table_filenames,
-         test_product) = read_d_method_table_filenames(product_filename = self.SHM_PRODUCT_FILENAME,
-                                                       workdir = self.workdir,
-                                                       log_info = True)
+         test_product) = read_d_method_table_filenames(product_filename=self.SHM_PRODUCT_FILENAME,
+                                                       workdir=self.workdir,
+                                                       log_info=True)
 
         # Check that the filenames are as expected
         assert d_method_table_filenames[ShearEstimationMethods.LENSMC] == self.LMC_TABLE_FILENAME
@@ -1363,9 +1363,9 @@ class TestMeasurementsProductIO(SheTestCase):
 
         # Try reading in the product created at init
         (d_l_method_tables,
-         l_products) = read_d_l_method_tables(l_product_filenames = [self.SHM_PRODUCT_FILENAME],
-                                              workdir = self.workdir,
-                                              log_info = True)
+         l_products) = read_d_l_method_tables(l_product_filenames=[self.SHM_PRODUCT_FILENAME],
+                                              workdir=self.workdir,
+                                              log_info=True)
 
         # Check that the tables are as expected
         test_lmc_table = d_l_method_tables[ShearEstimationMethods.LENSMC][0]
@@ -1386,9 +1386,9 @@ class TestMeasurementsProductIO(SheTestCase):
 
         # Try reading in the product created at init
         (d_method_tables,
-         test_product) = read_d_method_tables(product_filename = self.SHM_PRODUCT_FILENAME,
-                                              workdir = self.workdir,
-                                              log_info = True)
+         test_product) = read_d_method_tables(product_filename=self.SHM_PRODUCT_FILENAME,
+                                              workdir=self.workdir,
+                                              log_info=True)
 
         # Check that the tables are as expected
         test_lmc_table = d_method_tables[ShearEstimationMethods.LENSMC]

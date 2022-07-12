@@ -35,7 +35,7 @@ from SHE_PPT.testing.utility import SheTestCase
 class TestSheImageStack(SheTestCase):
 
     @classmethod
-    def setup_test_data(cls):
+    def post_setup(cls):
 
         # Filenames for testing the file io, will be deleted by teardown_class
         cls.sci_filepath_1 = "test_SHEImageStack_sci_SHEImage.fits"
@@ -67,7 +67,7 @@ class TestSheImageStack(SheTestCase):
             [self.sci_filepath_2]
             ]
 
-        mystack = SHEImageStack.read(filepaths_list, mask_ext = 'MASK')  # Testing kwargs as well
+        mystack = SHEImageStack.read(filepaths_list, mask_ext='MASK')  # Testing kwargs as well
         print(mystack.exposures[0])
 
     def test_equality(self):
@@ -77,7 +77,7 @@ class TestSheImageStack(SheTestCase):
         sci_image_2 = SHEImage(np.random.randn(100).reshape(10, 10))
         sci_image_s = SHEImage(np.random.randn(100).reshape(10, 10))
 
-        stack = SHEImageStack(stacked_image = sci_image_s, exposures = [sci_image_1, sci_image_2])
+        stack = SHEImageStack(stacked_image=sci_image_s, exposures=[sci_image_1, sci_image_2])
 
         stack_copy = deepcopy(stack)
         assert stack == stack_copy

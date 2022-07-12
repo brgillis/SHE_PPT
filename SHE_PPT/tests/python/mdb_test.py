@@ -34,11 +34,11 @@ class TestMDB(SheTestCase):
     """Unit tests of the SHE_PPT.mdb module.
     """
 
-    def download_test_data(self):
+    def setup_workdir(self):
 
         self._download_mdb()
 
-    def setup_test_data(self):
+    def post_setup(self):
 
         self.qualified_mdb_filename = os.path.join(self.workdir, self.mdb_filename)
 
@@ -130,7 +130,7 @@ class TestMDB(SheTestCase):
 
         # Check we can get a single gain successfully
 
-        gain = mdb.get_gain(detector = self.test_detector, quadrant = self.test_quadrant)
+        gain = mdb.get_gain(detector=self.test_detector, quadrant=self.test_quadrant)
         assert np.isclose(gain, self.ex_gain)
 
         # Check that averaging works successfully
@@ -138,10 +138,10 @@ class TestMDB(SheTestCase):
         # Disable warnings, since they're expected here
         logging.disable(logging.WARNING)
 
-        gain = mdb.get_gain(quadrant = self.test_quadrant)
+        gain = mdb.get_gain(quadrant=self.test_quadrant)
         assert np.isclose(gain, self.ex_gain)
 
-        gain = mdb.get_gain(detector = self.test_detector)
+        gain = mdb.get_gain(detector=self.test_detector)
         assert np.isclose(gain, self.ex_gain)
 
         gain = mdb.get_gain()
@@ -149,10 +149,10 @@ class TestMDB(SheTestCase):
 
         # Repeat the average tests to make sure they work with cached results
 
-        gain = mdb.get_gain(quadrant = self.test_quadrant)
+        gain = mdb.get_gain(quadrant=self.test_quadrant)
         assert np.isclose(gain, self.ex_gain)
 
-        gain = mdb.get_gain(detector = self.test_detector)
+        gain = mdb.get_gain(detector=self.test_detector)
         assert np.isclose(gain, self.ex_gain)
 
         gain = mdb.get_gain()
@@ -164,7 +164,7 @@ class TestMDB(SheTestCase):
 
         mdb.init(self.qualified_mdb_filename)
 
-        read_noise = mdb.get_read_noise(detector = self.test_detector, quadrant = self.test_quadrant)
+        read_noise = mdb.get_read_noise(detector=self.test_detector, quadrant=self.test_quadrant)
         assert np.isclose(read_noise, self.ex_read_noise)
 
         # Check that averaging works successfully
@@ -172,20 +172,20 @@ class TestMDB(SheTestCase):
         # Disable warnings, since they're expected here
         logging.disable(logging.WARNING)
 
-        read_noise = mdb.get_read_noise(quadrant = self.test_quadrant)
+        read_noise = mdb.get_read_noise(quadrant=self.test_quadrant)
         assert np.isclose(read_noise, self.ex_read_noise_no_det)
 
-        read_noise = mdb.get_read_noise(detector = self.test_detector)
+        read_noise = mdb.get_read_noise(detector=self.test_detector)
         assert np.isclose(read_noise, self.ex_read_noise_no_quad)
 
         read_noise = mdb.get_read_noise()
         assert np.isclose(read_noise, self.ex_read_noise_no_det_no_quad)
 
         # Repeat the average tests to make sure they work with cached results
-        read_noise = mdb.get_read_noise(quadrant = self.test_quadrant)
+        read_noise = mdb.get_read_noise(quadrant=self.test_quadrant)
         assert np.isclose(read_noise, self.ex_read_noise_no_det)
 
-        read_noise = mdb.get_read_noise(detector = self.test_detector)
+        read_noise = mdb.get_read_noise(detector=self.test_detector)
         assert np.isclose(read_noise, self.ex_read_noise_no_quad)
 
         read_noise = mdb.get_read_noise()

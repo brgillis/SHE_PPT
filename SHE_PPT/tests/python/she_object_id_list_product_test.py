@@ -32,7 +32,7 @@ class TestObjectIdList(SheTestCase):
 
     """
 
-    def setup_test_data(self):
+    def post_setup(self):
         self.ex_ids = [12, 14]
         self.filename = "she_object_id_list.bin"
 
@@ -41,10 +41,10 @@ class TestObjectIdList(SheTestCase):
         product = prod.create_dpd_she_object_id_list(self.ex_ids)
 
         # Save the product in an xml file
-        write_xml_product(product, self.filename, workdir = self.workdir)
+        write_xml_product(product, self.filename, workdir=self.workdir)
 
         # Read back the xml file
-        loaded_product = read_xml_product(self.filename, workdir = self.workdir)
+        loaded_product = read_xml_product(self.filename, workdir=self.workdir)
 
         # Check that it's the same
         assert loaded_product.get_id_list() == product.get_id_list()

@@ -32,7 +32,7 @@ class TestArgumentParser(SheTestCase):
     """ Unit tests for functions and classes in the SHE_PPT.argument_parser module.
     """
 
-    def setup_test_data(self):
+    def post_setup(self):
         """Define a SheArgumentParser object to work with.
         """
 
@@ -64,9 +64,9 @@ class TestArgumentParser(SheTestCase):
         option_arg_str = "option_cline_arg"
 
         # Test adding an arg with each method
-        test_argument_parser.add_input_arg(f"--{input_arg_str}", help = "This is an input arg")
+        test_argument_parser.add_input_arg(f"--{input_arg_str}", help="This is an input arg")
         test_argument_parser.add_output_arg(f"--{output_arg_str}")
-        test_argument_parser.add_option_arg(f"--{option_arg_str}", action = "store_true")
+        test_argument_parser.add_option_arg(f"--{option_arg_str}", action="store_true")
 
         # Get the usage string to check that args were set successfully
         usage_str = test_argument_parser.format_usage()

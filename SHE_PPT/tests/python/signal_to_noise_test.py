@@ -47,7 +47,7 @@ class TestCase(SheTestCase):
 
     """
 
-    def download_test_data(self):
+    def setup_workdir(self):
 
         # Download the MDB from WebDAV
 
@@ -65,13 +65,13 @@ class TestCase(SheTestCase):
 
         # Get the S/N for each galaxy
         for i, row in enumerate(self.data_stack.detections_catalogue):
-            gal_stack = self.data_stack.extract_galaxy_stack(row[mfc_tf.ID], width = 128)
+            gal_stack = self.data_stack.extract_galaxy_stack(row[mfc_tf.ID], width=128)
 
             signal_to_noise_estimates = []
             for exposure in gal_stack.exposures:
                 signal_to_noise_estimates.append(get_SN_of_image(exposure.data - exposure.background_map,
-                                                                 gain = gain))
+                                                                 gain=gain))
 
-            assert np.allclose(signal_to_noise_estimates, ex_signal_to_noises[i], rtol = 0.1)
+            assert np.allclose(signal_to_noise_estimates, ex_signal_to_noises[i], rtol=0.1)
 
         return

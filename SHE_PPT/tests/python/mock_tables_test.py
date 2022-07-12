@@ -42,14 +42,14 @@ class TestMockTables(SheTestCase):
     """ Test case for PSF-Res validation test code.
     """
 
-    def setup_test_data(self):
-        """ In the parent SheTestCase class, this method does nothing, and is performed after normal setup_test_data
+    def post_setup(self):
+        """ In the parent SheTestCase class, this method does nothing, and is performed after normal post_setup
         tasks
             (e.g. setting up a tmpdir as the workdir). So we override this in order to demonstrate how mock tables
-            can be written in the setup_test_data of a test class.
+            can be written in the post_setup of a test class.
         """
 
-        # Normally, we would have something like the below to write a table in the setup_test_data:
+        # Normally, we would have something like the below to write a table in the post_setup:
         # MockMFCGalaxyTableGenerator(workdir=self.workdir).write_mock_listfile()
         # But here, we actually want to test the writing of tables, so we do that in the actual tests
 
@@ -60,8 +60,8 @@ class TestMockTables(SheTestCase):
         """
 
         # Create a table generator to test
-        table_generator = MockMFCGalaxyTableGenerator(num_test_points = TEST_LEN,
-                                                      workdir = self.workdir)
+        table_generator = MockMFCGalaxyTableGenerator(num_test_points=TEST_LEN,
+                                                      workdir=self.workdir)
 
         # Make sure nothing exists beforehand
         table_generator.cleanup()
@@ -96,19 +96,19 @@ class TestMockTables(SheTestCase):
         t = table_generator.get_mock_table()
 
         assert len(t) == TEST_LEN
-        assert is_in_format(t, table_generator.tf, verbose = True)
+        assert is_in_format(t, table_generator.tf, verbose=True)
 
     def test_filenames(self):
         """ Test that filenames in written products and listfiles are correct.
         """
 
         # Create a table generator to test
-        table_generator = MockMFCGalaxyTableGenerator(workdir = self.workdir)
+        table_generator = MockMFCGalaxyTableGenerator(workdir=self.workdir)
 
         # Test the results of write_mock_product
         table_generator.write_mock_product()
 
-        p = read_xml_product(table_generator.product_filename, workdir = self.workdir)
+        p = read_xml_product(table_generator.product_filename, workdir=self.workdir)
         assert p.get_data_filename() == table_generator.table_filename
 
         table_generator.cleanup()
@@ -119,7 +119,7 @@ class TestMockTables(SheTestCase):
         l = read_listfile(os.path.join(self.workdir, table_generator.listfile_filename))
         assert l[0] == table_generator.product_filename
 
-        p = read_xml_product(l[0], workdir = self.workdir)
+        p = read_xml_product(l[0], workdir=self.workdir)
         assert p.get_data_filename() == table_generator.table_filename
 
         table_generator.cleanup()
@@ -129,8 +129,8 @@ class TestMockTables(SheTestCase):
         """
 
         # Create a table generator to test
-        table_generator = MockStarCatTableGenerator(num_test_points = TEST_LEN,
-                                                    workdir = self.workdir)
+        table_generator = MockStarCatTableGenerator(num_test_points=TEST_LEN,
+                                                    workdir=self.workdir)
 
         table_generator.write_mock_listfile()
         assert os.path.exists(os.path.join(self.workdir, table_generator.table_filename))
@@ -142,15 +142,15 @@ class TestMockTables(SheTestCase):
         t = table_generator.get_mock_table()
 
         assert len(t) == TEST_LEN
-        assert is_in_format(t, table_generator.tf, verbose = True)
+        assert is_in_format(t, table_generator.tf, verbose=True)
 
     def test_mock_tu_gal_cat(self):
         """ Test creating a mock TU galaxy catalog.
         """
 
         # Create a table generator to test
-        table_generator = MockTUGalaxyTableGenerator(num_test_points = TEST_LEN,
-                                                     workdir = self.workdir)
+        table_generator = MockTUGalaxyTableGenerator(num_test_points=TEST_LEN,
+                                                     workdir=self.workdir)
 
         # We don't have a product creator for this set up, so just test writing the table
         table_generator.write_mock_table()
@@ -161,16 +161,16 @@ class TestMockTables(SheTestCase):
         t = table_generator.get_mock_table()
 
         assert len(t) == TEST_LEN
-        assert is_in_format(t, table_generator.tf, verbose = True)
+        assert is_in_format(t, table_generator.tf, verbose=True)
 
     def test_mock_measurements_cat(self):
         """ Test creating a mock shear estimates catalog.
         """
 
         # Create a table generator to test
-        table_generator = MockShearEstimateTableGenerator(num_test_points = TEST_LEN,
-                                                          workdir = self.workdir,
-                                                          method = ShearEstimationMethods.LENSMC)
+        table_generator = MockShearEstimateTableGenerator(num_test_points=TEST_LEN,
+                                                          workdir=self.workdir,
+                                                          method=ShearEstimationMethods.LENSMC)
 
         table_generator.write_mock_listfile()
         assert os.path.exists(os.path.join(self.workdir, table_generator.table_filename))
@@ -182,14 +182,14 @@ class TestMockTables(SheTestCase):
         t = table_generator.get_mock_table()
 
         assert len(t) == TEST_LEN
-        assert is_in_format(t, table_generator.tf, verbose = True)
+        assert is_in_format(t, table_generator.tf, verbose=True)
 
         # Test the convenience method to create both LensMC and KSB tables
-        p_filename = write_mock_measurements_tables(workdir = self.workdir)
+        p_filename = write_mock_measurements_tables(workdir=self.workdir)
         assert os.path.exists(os.path.join(self.workdir, EST_LENSMC_TABLE_FILENAME))
         assert os.path.exists(os.path.join(self.workdir, EST_KSB_TABLE_FILENAME))
 
-        p = read_xml_product(p_filename, workdir = self.workdir)
+        p = read_xml_product(p_filename, workdir=self.workdir)
         assert p.get_LensMC_filename() == EST_LENSMC_TABLE_FILENAME
         assert p.get_KSB_filename() == EST_KSB_TABLE_FILENAME
 
@@ -198,9 +198,9 @@ class TestMockTables(SheTestCase):
         """
 
         # Create a table generator to test
-        table_generator = MockTUMatchedTableGenerator(num_test_points = TEST_LEN,
-                                                      workdir = self.workdir,
-                                                      method = ShearEstimationMethods.LENSMC)
+        table_generator = MockTUMatchedTableGenerator(num_test_points=TEST_LEN,
+                                                      workdir=self.workdir,
+                                                      method=ShearEstimationMethods.LENSMC)
 
         table_generator.write_mock_listfile()
         assert os.path.exists(os.path.join(self.workdir, table_generator.table_filename))
@@ -212,13 +212,13 @@ class TestMockTables(SheTestCase):
         t = table_generator.get_mock_table()
 
         assert len(t) == TEST_LEN
-        assert is_in_format(t, table_generator.tf, verbose = True)
+        assert is_in_format(t, table_generator.tf, verbose=True)
 
         # Test the convenience method to create both LensMC and KSB tables
-        p_filename = write_mock_tum_tables(workdir = self.workdir)
+        p_filename = write_mock_tum_tables(workdir=self.workdir)
         assert os.path.exists(os.path.join(self.workdir, TUM_LENSMC_TABLE_FILENAME))
         assert os.path.exists(os.path.join(self.workdir, TUM_KSB_TABLE_FILENAME))
 
-        p = read_xml_product(p_filename, workdir = self.workdir)
+        p = read_xml_product(p_filename, workdir=self.workdir)
         assert p.get_LensMC_filename() == TUM_LENSMC_TABLE_FILENAME
         assert p.get_KSB_filename() == TUM_KSB_TABLE_FILENAME
