@@ -128,7 +128,7 @@ def draw_sky_image(ax, si, **kwargs):
                      "interpolation": "none", "cmap": matplotlib.cm.get_cmap('Greys_r')}
     imshow_kwargs.update(kwargs)
 
-    return ax.imshow(si.data.transpose(), vmin = si.z1, vmax = si.z2, extent = si.extent, **imshow_kwargs)
+    return ax.imshow(si.data.transpose(), vmin=si.z1, vmax=si.z2, extent=si.extent, **imshow_kwargs)
 
 
 def draw_mask(ax, si, **kwargs):
@@ -150,11 +150,11 @@ def draw_mask(ax, si, **kwargs):
     imshow_kwargs.update(kwargs)
 
     if isinstance(si, SkyImage):
-        return ax.imshow(si.data.tranpose(), vmin = 0, vmax = 1, extent = si.extent,
-                         cmap = mask_cmap, norm = mask_norm, **imshow_kwargs)
+        return ax.imshow(si.data.tranpose(), vmin=0, vmax=1, extent=si.extent,
+                         cmap=mask_cmap, norm=mask_norm, **imshow_kwargs)
     # We can also work with simple numpy arrays
-    return ax.imshow(si.transpose(), vmin = 0, vmax = 1, extent = get_extent(si),
-                     cmap = mask_cmap, norm = mask_norm, **imshow_kwargs)
+    return ax.imshow(si.transpose(), vmin=0, vmax=1, extent=get_extent(si),
+                     cmap=mask_cmap, norm=mask_norm, **imshow_kwargs)
 
 
 def draw_ellipse(ax, x, y, a = 5, b = None, angle = None, **kwargs):
@@ -171,7 +171,7 @@ def draw_ellipse(ax, x, y, a = 5, b = None, angle = None, **kwargs):
     ellipse_kwargs.update(kwargs)
 
     ellipse = matplotlib.patches.Ellipse(
-        (x, y), width = 2 * a, height = 2 * b, angle = angle, **ellipse_kwargs)
+        (x, y), width=2 * a, height=2 * b, angle=angle, **ellipse_kwargs)
 
     return ax.add_artist(ellipse)
 
@@ -235,9 +235,9 @@ def annotate(ax, cat, x = "x", y = "y", text = "Hello", **kwargs):
         if getattr(row[x], "mask", False) or getattr(row[y], "mask", False):
             continue
 
-        rowtext = text.format(row = row)
+        rowtext = text.format(row=row)
         ax.annotate(rowtext,
-                    xy = (row[x], row[y]),
+                    xy=(row[x], row[y]),
                     **annotate_kwargs
                     )
 
@@ -268,7 +268,7 @@ class SimpleFigure():
         self.dpi = 72
         self.figsize = float(scale) * np.array(img_array.shape) / self.dpi
 
-        self.fig = plt.figure(figsize = self.figsize)
+        self.fig = plt.figure(figsize=self.figsize)
         self.ax = self.fig.add_subplot(111)
 
         self.has_been_drawn = False
@@ -307,7 +307,7 @@ class SimpleFigure():
     def save_to_file(self, filepath):
         self.check_drawn()
         logger.info("Saving %s to '%s'...", self, filepath)
-        self.fig.savefig(filepath, bbox_inches = 'tight')
+        self.fig.savefig(filepath, bbox_inches='tight')
 
 
 # Some utility functions
@@ -359,5 +359,5 @@ def write_fits(a, filepath, overwrite = True):
     if os.path.exists(filepath) and overwrite:
         logger.info("File %s exists, I will overwrite it!", filepath)
 
-    astropy.io.fits.writeto(filepath, a.transpose(), overwrite = overwrite)
+    astropy.io.fits.writeto(filepath, a.transpose(), overwrite=overwrite)
     logger.info("Wrote %s array into %s", a.shape, filepath)

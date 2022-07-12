@@ -103,16 +103,16 @@ def __generate_detector_images(detector_shape = (4136, 4096), nobjs = 10, backgr
 
     # generate rms image (standard deviation of the image in this case)
     rms_val = np.std(sci)
-    rms = np.ones(detector_shape, dtype = np.float32) * rms_val
+    rms = np.ones(detector_shape, dtype=np.float32) * rms_val
 
     # generate FLG image (flag = 0)
-    flg = np.zeros(detector_shape, dtype = np.int32)
+    flg = np.zeros(detector_shape, dtype=np.int32)
 
     # generate wgt image (wgt = 1.0)
-    wgt = np.ones(detector_shape, dtype = np.float32)
+    wgt = np.ones(detector_shape, dtype=np.float32)
 
     # generate bkg image (bkg = noise)
-    bkg = np.ones(detector_shape, dtype = np.float32) * background
+    bkg = np.ones(detector_shape, dtype=np.float32) * background
 
     return sci, rms, flg, wgt, bkg, x_px, y_px
 
@@ -165,7 +165,7 @@ def create_exposure(n_detectors = 1, detector_shape = (100, 100), workdir = ".",
     if n_detectors not in (1, 36):
         raise ValueError("Number of detectors seems to be %d. The only valid numbers are 1 or 36" % n_detectors)
 
-    rng = np.random.RandomState(seed = seed)
+    rng = np.random.RandomState(seed=seed)
 
     # create hdulists for the 3 fits files (DET, WGT, BKG)
     det_hdr = __create_header()
@@ -195,13 +195,13 @@ def create_exposure(n_detectors = 1, detector_shape = (100, 100), workdir = ".",
         logger.info("Creating detector %s" % det_id)
 
         # create image data
-        sci, rms, flg, wgt, bkg, x_px, y_px = __generate_detector_images(detector_shape = detector_shape,
-                                                                         rng = rng,
-                                                                         nobjs = n_objs_per_det,
-                                                                         objsize = objsize)
+        sci, rms, flg, wgt, bkg, x_px, y_px = __generate_detector_images(detector_shape=detector_shape,
+                                                                         rng=rng,
+                                                                         nobjs=n_objs_per_det,
+                                                                         objsize=objsize)
 
         # create WCS (Use Airy projection - arbitrary decision, we just want something in valid sky coordinates!)
-        wcs = WCS(naxis = 2)
+        wcs = WCS(naxis=2)
         x_c = (1.1 * detector_shape[1]) * (det_i - 1) * PIXELSIZE
         y_c = (1.1 * detector_shape[0]) * (det_j - 1) * PIXELSIZE
         wcs.wcs.crpix = [0., 0.]
@@ -224,24 +224,24 @@ def create_exposure(n_detectors = 1, detector_shape = (100, 100), workdir = ".",
         # now make the hdus for these images
 
         # common header tor HDUs in the DET file (sci, flg, rms)
-        det_hdr = __create_header(wcs = wcs, EXPTIME = 500., GAIN = 3.0, RDNOISE = 3.0, MAGZEROP = 25.0, CCDID = det_id)
+        det_hdr = __create_header(wcs=wcs, EXPTIME=500., GAIN=3.0, RDNOISE=3.0, MAGZEROP=25.0, CCDID=det_id)
 
         # create hdus for the DET file and append them to the HDUlist
-        sci_hdu = fits.ImageHDU(data = sci, header = det_hdr, name = "CCDID %s.SCI" % det_id)
-        rms_hdu = fits.ImageHDU(data = rms, header = det_hdr, name = "CCDID %s.RMS" % det_id)
-        flg_hdu = fits.ImageHDU(data = flg, header = det_hdr, name = "CCDID %s.FLG" % det_id)
+        sci_hdu = fits.ImageHDU(data=sci, header=det_hdr, name="CCDID %s.SCI" % det_id)
+        rms_hdu = fits.ImageHDU(data=rms, header=det_hdr, name="CCDID %s.RMS" % det_id)
+        flg_hdu = fits.ImageHDU(data=flg, header=det_hdr, name="CCDID %s.FLG" % det_id)
         det_hdul.append(sci_hdu)
         det_hdul.append(rms_hdu)
         det_hdul.append(flg_hdu)
 
         # BKG HDU
         bkg_hdr = __create_header()
-        bkg_hdu = fits.ImageHDU(data = bkg, header = bkg_hdr, name = "CCDID %s" % det_id)
+        bkg_hdu = fits.ImageHDU(data=bkg, header=bkg_hdr, name="CCDID %s" % det_id)
         bkg_hdul.append(bkg_hdu)
 
         # WGT HDU
         wgt_hdr = __create_header()
-        wgt_hdu = fits.ImageHDU(data = wgt, header = wgt_hdr, name = "CCDID %s" % det_id)
+        wgt_hdu = fits.ImageHDU(data=wgt, header=wgt_hdr, name="CCDID %s" % det_id)
         wgt_hdul.append(wgt_hdu)
 
     logger.info("Created %d detector(s) with a total of %d object(s)" % (n_detectors, len(sky_coords)))
@@ -253,25 +253,25 @@ def create_exposure(n_detectors = 1, detector_shape = (100, 100), workdir = ".",
         os.mkdir(datadir)
 
     # get qualified filename for the fits files
-    det_fname = get_allowed_filename("VIS-DET", "00", version = ppt_version, extension = ".fits")
-    wgt_fname = get_allowed_filename("VIS-WGT", "00", version = ppt_version, extension = ".fits")
-    bkg_fname = get_allowed_filename("VIS-BKG", "00", version = ppt_version, extension = ".fits")
+    det_fname = get_allowed_filename("VIS-DET", "00", version=ppt_version, extension=".fits")
+    wgt_fname = get_allowed_filename("VIS-WGT", "00", version=ppt_version, extension=".fits")
+    bkg_fname = get_allowed_filename("VIS-BKG", "00", version=ppt_version, extension=".fits")
 
     # write the fits files
     logger.info("Writing DET file to %s" % os.path.join(workdir, det_fname))
-    det_hdul.writeto(os.path.join(workdir, det_fname), overwrite = True)
+    det_hdul.writeto(os.path.join(workdir, det_fname), overwrite=True)
     logger.info("Writing WGT file to %s" % os.path.join(workdir, wgt_fname))
-    wgt_hdul.writeto(os.path.join(workdir, wgt_fname), overwrite = True)
+    wgt_hdul.writeto(os.path.join(workdir, wgt_fname), overwrite=True)
     logger.info("Writing BKG file to %s" % os.path.join(workdir, bkg_fname))
-    bkg_hdul.writeto(os.path.join(workdir, bkg_fname), overwrite = True)
+    bkg_hdul.writeto(os.path.join(workdir, bkg_fname), overwrite=True)
 
     # create the data product
-    exposure_prod = vis_calibrated_frame.create_dpd_vis_calibrated_frame(data_filename = det_fname,
-                                                                         bkg_filename = bkg_fname,
-                                                                         wgt_filename = wgt_fname)
+    exposure_prod = vis_calibrated_frame.create_dpd_vis_calibrated_frame(data_filename=det_fname,
+                                                                         bkg_filename=bkg_fname,
+                                                                         wgt_filename=wgt_fname)
 
     # Write it to file
-    prod_filename = get_allowed_filename("VIS-CAL-FRAME", "00", version = ppt_version, extension = ".xml", subdir = "")
+    prod_filename = get_allowed_filename("VIS-CAL-FRAME", "00", version=ppt_version, extension=".xml", subdir="")
     qualified_prod_filename = os.path.join(workdir, prod_filename)
     logger.info("Writing dpdVisCalibratedFrame product to %s" % qualified_prod_filename)
     write_xml_product(exposure_prod, qualified_prod_filename)

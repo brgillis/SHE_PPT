@@ -35,8 +35,8 @@ product_type_name = "DpdSheLensMcCalibration"
 def init():
     """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    init_just_datastorage(binding_class = dpdSheLensMcCalibration,
-                          init_function = create_dpd_she_lensmc_calibration)
+    init_just_datastorage(binding_class=dpdSheLensMcCalibration,
+                          init_function=create_dpd_she_lensmc_calibration)
 
 
 def create_dpd_she_lensmc_calibration(filename = None,
@@ -44,10 +44,10 @@ def create_dpd_she_lensmc_calibration(filename = None,
     """ Creates a product of this type.
     """
 
-    return create_product_from_template(template_filename = sample_file_name,
-                                        product_type_name = product_type_name,
-                                        filename = filename,
-                                        data_filename = data_filename)
+    return create_product_from_template(template_filename=sample_file_name,
+                                        product_type_name=product_type_name,
+                                        filename=filename,
+                                        data_filename=data_filename)
 
 
 # Add a useful alias

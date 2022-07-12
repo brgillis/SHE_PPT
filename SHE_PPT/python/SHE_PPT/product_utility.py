@@ -348,7 +348,7 @@ def init_intermediate_general(product_type_name = None,
                               init_function = None, ):
     binding_class = dpdSheIntermediateGeneral
 
-    first_init = _init_general_binding_class(binding_class = binding_class)
+    first_init = _init_general_binding_class(binding_class=binding_class)
 
     # Set the init_function in the dict even if already inited
     if product_type_name:
@@ -386,7 +386,7 @@ def init_int_obs_cat(product_type_name = None,
                      init_function = None, ):
     binding_class = dpdSheIntermediateObservationCatalog
 
-    first_init = _init_general_binding_class(binding_class = binding_class)
+    first_init = _init_general_binding_class(binding_class=binding_class)
 
     # Set the init_function in the dict even if already inited
     if product_type_name:
@@ -424,7 +424,7 @@ def init_placeholder_general(product_type_name = None,
                              init_function = None, ):
     binding_class = dpdShePlaceholderGeneral
 
-    first_init = _init_general_binding_class(binding_class = binding_class)
+    first_init = _init_general_binding_class(binding_class=binding_class)
 
     # Set the init_function in the dict even if already inited
     if product_type_name:
@@ -484,9 +484,9 @@ def create_measurements_product_from_template(template_filename,
         products.
     """
 
-    p = create_product_from_template(template_filename = template_filename,
-                                     product_type_name = product_type_name,
-                                     spatial_footprint = spatial_footprint)
+    p = create_product_from_template(template_filename=template_filename,
+                                     product_type_name=product_type_name,
+                                     spatial_footprint=spatial_footprint)
 
     p.set_KSB_filename(KSB_filename)
     p.set_LensMC_filename(LensMC_filename)
@@ -504,9 +504,9 @@ def create_general_product_from_template(template_filename: str,
         products.
     """
 
-    p = create_product_from_template(template_filename = template_filename,
-                                     product_type_name = general_product_type_name,
-                                     filename = filename)
+    p = create_product_from_template(template_filename=template_filename,
+                                     product_type_name=general_product_type_name,
+                                     filename=filename)
 
     # Set the data we don't need to empty
     p.Data.IntData = []
@@ -551,7 +551,7 @@ def create_method_filestorage(method: ShearEstimationMethods,
     shear_estimates.DataStorage = dm_utils.create_fits_storage(getattr(she_pro, f"she{method_caps}MeasurementsFile"),
                                                                filename,
                                                                f"she.{method_cc}Measurements",
-                                                               version = D_METHOD_FITS_VERSIONS[method])
+                                                               version=D_METHOD_FITS_VERSIONS[method])
     shear_estimates.Valid = "VALID"
 
     return shear_estimates

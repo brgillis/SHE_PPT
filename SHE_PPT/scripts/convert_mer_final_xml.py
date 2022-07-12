@@ -45,11 +45,11 @@ def main():
     parser = argparse.ArgumentParser()
 
     # Input arguments
-    parser.add_argument('--input_dir', default = None, type = str,
-                        help = "Directory containing existing MER final data")
+    parser.add_argument('--input_dir', default=None, type=str,
+                        help="Directory containing existing MER final data")
     # Output arguments
-    parser.add_argument('--dest_dir', default = '.', type = str,
-                        help = "Directory in which output xml files are contained (default '.').")
+    parser.add_argument('--dest_dir', default='.', type=str,
+                        help="Directory in which output xml files are contained (default '.').")
 
     args = parser.parse_args()
 

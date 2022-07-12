@@ -128,12 +128,12 @@ class SheTestCase:
 
         # Read in the test data if desired
         if read_in:
-            self.data_stack = SHEFrameStack.read(exposure_listfile_filename = VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
-                                                 detections_listfile_filename = MER_FINAL_CATALOG_LISTFILE_FILENAME,
-                                                 workdir = self.download_dir,
-                                                 clean_detections = False,
-                                                 memmap = True,
-                                                 mode = 'denywrite')
+            self.data_stack = SHEFrameStack.read(exposure_listfile_filename=VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
+                                                 detections_listfile_filename=MER_FINAL_CATALOG_LISTFILE_FILENAME,
+                                                 workdir=self.download_dir,
+                                                 clean_detections=False,
+                                                 memmap=True,
+                                                 mode='denywrite')
 
     def _finalize_download(self,
                            filename: str,
@@ -162,7 +162,7 @@ class SheTestCase:
         """
         return None
 
-    @pytest.fixture(scope = 'class')
+    @pytest.fixture(scope='class')
     def class_setup(self, tmpdir_factory):
         """ This performs setup once per initialization of the test class, calling the overridable setup_workdir and
             post_setup methods.
@@ -183,7 +183,7 @@ class SheTestCase:
 
         return self
 
-    @pytest.fixture(autouse = True)
+    @pytest.fixture(autouse=True)
     def local_setup(self, class_setup):
         """ Import all changes made to this class in the class_setup locally. This gets around the fact that normally,
             after executing class-level fixtures, PyTest resets the state of the class. So if we want to retain changes
@@ -240,8 +240,8 @@ class SheTestCase:
         """ Sets up self.logdir and the expected subdirs of the workdir if they don't already exist.
         """
         self.logdir = os.path.join(self.workdir, "logs")
-        os.makedirs(os.path.join(self.workdir, "logs"), exist_ok = True)
-        os.makedirs(os.path.join(self.workdir, "data"), exist_ok = True)
+        os.makedirs(os.path.join(self.workdir, "logs"), exist_ok=True)
+        os.makedirs(os.path.join(self.workdir, "data"), exist_ok=True)
 
     def __set_workdir_args(self) -> None:
         """ Set the workdir and logdir in the self.args attribute. Both must already be set for this object when this
@@ -260,7 +260,7 @@ class SheTestCase:
         if self.pipeline_config is not None:
             return
 
-        self.mock_pipeline_config_factory = self.pipeline_config_factory_type(workdir = self.workdir)
+        self.mock_pipeline_config_factory = self.pipeline_config_factory_type(workdir=self.workdir)
         self.mock_pipeline_config_factory.write(self.workdir)
         self.pipeline_config = self.mock_pipeline_config_factory.pipeline_config
 
@@ -275,7 +275,7 @@ class SheTestCase:
         self.__write_mock_pipeline_config()
 
         # Set to raise an error on any deprecation warnings, to be sure they're caught and fixed in tests
-        warnings.simplefilter("error", category = AstropyDeprecationWarning)
+        warnings.simplefilter("error", category=AstropyDeprecationWarning)
 
         # Set to raise an error on any deprecation warnings, to be sure they're caught and fixed in tests
-        warnings.simplefilter("error", category = AstropyDeprecationWarning)
+        warnings.simplefilter("error", category=AstropyDeprecationWarning)

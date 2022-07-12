@@ -53,7 +53,7 @@ class SheLensMcTUMatchedFormat(SheTUMatchedFormat):
     meta_type = SheLensMcTUMatchedMeta
 
     def __init__(self):
-        super().__init__(finalize = False)
+        super().__init__(finalize=False)
 
         self.setup_child_table_format(child_label)
 
@@ -145,7 +145,7 @@ def initialise_lensmc_tu_matched_table(mer_final_catalog = None,
     """
 
     assert (mer_final_catalog is None) or (
-        is_in_format(mer_final_catalog, mfc_tf, strict = False))
+        is_in_format(mer_final_catalog, mfc_tf, strict=False))
 
     if optional_columns is None:
         optional_columns = []
@@ -155,17 +155,17 @@ def initialise_lensmc_tu_matched_table(mer_final_catalog = None,
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    lensmc_tu_matched_table = init_table(tf, optional_columns = optional_columns, init_cols = init_cols, size = size)
+    lensmc_tu_matched_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
 
     lensmc_tu_matched_table.meta = make_lensmc_tu_matched_table_header(
-        model_hash = model_hash,
-        model_seed = model_seed,
-        noise_seed = noise_seed,
-        observation_id = observation_id,
-        pointing_id = pointing_id,
-        observation_time = observation_time,
-        tile_id = tile_id)
+        model_hash=model_hash,
+        model_seed=model_seed,
+        noise_seed=noise_seed,
+        observation_id=observation_id,
+        pointing_id=pointing_id,
+        observation_time=observation_time,
+        tile_id=tile_id)
 
-    assert is_in_format(lensmc_tu_matched_table, tf, verbose = True)
+    assert is_in_format(lensmc_tu_matched_table, tf, verbose=True)
 
     return lensmc_tu_matched_table

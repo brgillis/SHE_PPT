@@ -48,13 +48,13 @@ def main():
     parser = argparse.ArgumentParser()
 
     # Input arguments
-    parser.add_argument('--segm_type', default = None, type = str,
-                        help = "Type exposure/stack")
+    parser.add_argument('--segm_type', default=None, type=str,
+                        help="Type exposure/stack")
     # Output arguments
-    parser.add_argument('--dest_dir', default = '.', type = str,
-                        help = "Directory in which output xml files are contained (default '.').")
-    parser.add_argument('--out_segm_filename', default = "obj_cat.xml", type = str,
-                        help = "Target Final xml  product to be created (default psf_model_image.xml)")
+    parser.add_argument('--dest_dir', default='.', type=str,
+                        help="Directory in which output xml files are contained (default '.').")
+    parser.add_argument('--out_segm_filename', default="obj_cat.xml", type=str,
+                        help="Target Final xml  product to be created (default psf_model_image.xml)")
 
     args = parser.parse_args()
 
@@ -112,7 +112,7 @@ def main():
     #    merdqc_dict.sqfDpdMerSegmentationMap)
 
     output_filename = os.path.join(args.dest_dir, args.out_segm_filename)
-    write_xml_product(dp, output_filename, allow_pickled = False)
+    write_xml_product(dp, output_filename, allow_pickled=False)
 
 
 def _add_general_segm_metadata(data_binding):

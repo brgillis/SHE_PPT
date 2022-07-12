@@ -44,7 +44,7 @@ class ShePsfOmStateMeta(ShePsfStateMeta):
 
     def init_meta(self,
                   **kwargs: str) -> OrderedDict:
-        return super().init_meta(extname = PSF_OM_STATE_TAG,
+        return super().init_meta(extname=PSF_OM_STATE_TAG,
                                  **kwargs)
 
 

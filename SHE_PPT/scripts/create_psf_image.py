@@ -47,16 +47,16 @@ def main():
     parser = argparse.ArgumentParser()
 
     # Input arguments
-    parser.add_argument('--source_dir', default = '.', type = str,
-                        help = "Directory in which psf-images are contained (default '.').")
-    parser.add_argument('--mer_catalogue', type = str,
-                        help = "Mer catalogue")
+    parser.add_argument('--source_dir', default='.', type=str,
+                        help="Directory in which psf-images are contained (default '.').")
+    parser.add_argument('--mer_catalogue', type=str,
+                        help="Mer catalogue")
 
     # Output arguments
-    parser.add_argument('--dest_dir', default = '.', type = str,
-                        help = "Directory in which output psf-images are contained (default '.').")
-    parser.add_argument('--out_psf_image', default = "obj_cat.xml", type = str,
-                        help = "Target Final PSF image product to be created (default psf_model_image.xml)")
+    parser.add_argument('--dest_dir', default='.', type=str,
+                        help="Directory in which output psf-images are contained (default '.').")
+    parser.add_argument('--out_psf_image', default="obj_cat.xml", type=str,
+                        help="Target Final PSF image product to be created (default psf_model_image.xml)")
 
     args = parser.parse_args()
 
@@ -92,7 +92,7 @@ def main():
     psf_tables[0].add_index(pstf.ID)  # Allow it to be indexed by galaxy ID
 
     # Write out the table
-    hdulist.writeto(os.path.join(args.source_dir, 'data', filename), overwrite = True)
+    hdulist.writeto(os.path.join(args.source_dir, 'data', filename), overwrite=True)
 
     return
 

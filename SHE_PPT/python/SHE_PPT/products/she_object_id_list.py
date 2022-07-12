@@ -38,7 +38,7 @@ def init():
     binding_class = dpdSheObjectIdList
 
     if not init_binding_class(binding_class,
-                              init_function = create_dpd_she_object_id_list):
+                              init_function=create_dpd_she_object_id_list):
         return
 
     binding_class.get_all_filenames = get_all_filenames_none
@@ -63,8 +63,8 @@ def create_dpd_she_object_id_list(id_list = None):
         @TODO fill in docstring
     """
 
-    dpd_she_object_id_list = create_product_from_template(template_filename = sample_file_name,
-                                                          product_type_name = product_type_name, )
+    dpd_she_object_id_list = create_product_from_template(template_filename=sample_file_name,
+                                                          product_type_name=product_type_name, )
 
     if id_list:
         dpd_she_object_id_list.set_id_list(id_list)

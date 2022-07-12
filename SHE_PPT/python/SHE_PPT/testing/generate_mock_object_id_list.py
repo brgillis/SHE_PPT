@@ -32,14 +32,14 @@ logger = getLogger(__name__)
 
 def create_object_id_list(id_list, workdir = "."):
 
-    dpd = she_object_id_list.create_dpd_she_object_id_list(id_list = id_list)
+    dpd = she_object_id_list.create_dpd_she_object_id_list(id_list=id_list)
 
-    filename = get_allowed_filename("OBJ-IDS", "00", version = ppt_version, extension = ".xml", subdir = "")
+    filename = get_allowed_filename("OBJ-IDS", "00", version=ppt_version, extension=".xml", subdir="")
 
     qualified_filename = os.path.join(workdir, filename)
 
     logger.info("Writing object_id_list product to %s" % qualified_filename)
 
-    write_xml_product(dpd, filename, workdir = workdir)
+    write_xml_product(dpd, filename, workdir=workdir)
 
     return filename

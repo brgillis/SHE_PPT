@@ -35,8 +35,8 @@ def init():
         Adds some extra functionality to the dpdSheValidatedMeasurements product
     """
 
-    init_method_files(binding_class = dpdSheValidatedMeasurements,
-                      init_function = create_dpd_she_validated_measurements)
+    init_method_files(binding_class=dpdSheValidatedMeasurements,
+                      init_function=create_dpd_she_validated_measurements)
 
 
 def create_dpd_she_validated_measurements(KSB_filename = None,
@@ -47,13 +47,13 @@ def create_dpd_she_validated_measurements(KSB_filename = None,
     """ Create a product of this type.
     """
 
-    return create_measurements_product_from_template(template_filename = sample_file_name,
-                                                     product_type_name = product_type_name,
-                                                     KSB_filename = KSB_filename,
-                                                     LensMC_filename = LensMC_filename,
-                                                     MomentsML_filename = MomentsML_filename,
-                                                     REGAUSS_filename = REGAUSS_filename,
-                                                     spatial_footprint = spatial_footprint)
+    return create_measurements_product_from_template(template_filename=sample_file_name,
+                                                     product_type_name=product_type_name,
+                                                     KSB_filename=KSB_filename,
+                                                     LensMC_filename=LensMC_filename,
+                                                     MomentsML_filename=MomentsML_filename,
+                                                     REGAUSS_filename=REGAUSS_filename,
+                                                     spatial_footprint=spatial_footprint)
 
 
 # Add a useful alias

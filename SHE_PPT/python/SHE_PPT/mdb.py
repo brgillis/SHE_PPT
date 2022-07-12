@@ -137,7 +137,7 @@ def _find_mdb_data_file(data_filenames, qualified_mdb_files):
 
 
 def _load_quadrant_table(qualified_data_filename, colname):
-    f = fits.open(qualified_data_filename, mode = 'readonly')
+    f = fits.open(qualified_data_filename, mode='readonly')
 
     quadrant_dict = {}
 
@@ -154,19 +154,19 @@ def _load_quadrant_table(qualified_data_filename, colname):
 
 
 def get_gain(detector = None, quadrant = None, suppress_warnings = False):
-    return _get_quadrant_data(dictionary = _gain_dict,
-                              ave_dict = _gain_ave_dict,
-                              detector = detector,
-                              quadrant = quadrant,
-                              suppress_warnings = suppress_warnings)
+    return _get_quadrant_data(dictionary=_gain_dict,
+                              ave_dict=_gain_ave_dict,
+                              detector=detector,
+                              quadrant=quadrant,
+                              suppress_warnings=suppress_warnings)
 
 
 def get_read_noise(detector = None, quadrant = None, suppress_warnings = False):
-    return _get_quadrant_data(dictionary = _read_noise_dict,
-                              ave_dict = _read_noise_ave_dict,
-                              detector = detector,
-                              quadrant = quadrant,
-                              suppress_warnings = suppress_warnings)
+    return _get_quadrant_data(dictionary=_read_noise_dict,
+                              ave_dict=_read_noise_ave_dict,
+                              detector=detector,
+                              quadrant=quadrant,
+                              suppress_warnings=suppress_warnings)
 
 
 @run_only_once

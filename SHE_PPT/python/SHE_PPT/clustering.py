@@ -54,13 +54,13 @@ def _find_groups(xs, ys, sep = 1., metric = euclidean_metric):
     """
 
     # get distance matrix for all points to all other points
-    dist = get_distance_matrix(xs, ys, metric = metric)
+    dist = get_distance_matrix(xs, ys, metric=metric)
 
     # construct hierarchical linkage for all the objects
     linkage = H.linkage(dist)
 
     # now cluster those closer than sep, returning a list of cluster labels (this ranges from 1:n_clusters)
-    labels = H.fcluster(linkage, t = sep, criterion = "distance")
+    labels = H.fcluster(linkage, t=sep, criterion="distance")
 
     # count how many objects are in each cluster
     # (returns an int array of length of the number of clusters)
@@ -247,7 +247,7 @@ def identify_all_groups(x, y, sep = 1., metric = euclidean_metric, batchsize = 2
                 continue
 
             # get the list of groups. Each group is a list of indices of the objects in that group
-            local_groups = _find_groups(xp, yp, sep, metric = metric)
+            local_groups = _find_groups(xp, yp, sep, metric=metric)
 
             # store the groups in the global array, update their positions to the centre of mass of the group
             new_group_count = _update_grouped(local_groups, group_ids, indices, xs, ys, group_count)
@@ -311,7 +311,7 @@ def partition_into_batches(xs, ys, batchsize = 20, nbatches = None, seed = RANDO
 
     # cluster the objects
     t0 = time.time()
-    clusters, labels = K.kmeans2(obs, k, iter = 20, minit = "points", check_finite = False, seed = seed)
+    clusters, labels = K.kmeans2(obs, k, iter=20, minit="points", check_finite=False, seed=seed)
     t1 = time.time()
     logger.info("Batching took %f s", (t1 - t0))
 

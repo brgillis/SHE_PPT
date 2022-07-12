@@ -41,7 +41,7 @@ def init():
     binding_class = dpdSheKsbCalibration
 
     if not init_binding_class(binding_class,
-                              init_function = create_dpd_she_ksb_calibration):
+                              init_function=create_dpd_she_ksb_calibration):
         return
 
     # Add the data file name methods
@@ -69,10 +69,10 @@ def create_dpd_she_ksb_calibration(filename = None,
     """ Creates a product of this type.
     """
 
-    return create_product_from_template(template_filename = sample_file_name,
-                                        product_type_name = product_type_name,
-                                        filename = filename,
-                                        data_filename = data_filename)
+    return create_product_from_template(template_filename=sample_file_name,
+                                        product_type_name=product_type_name,
+                                        filename=filename,
+                                        data_filename=data_filename)
 
 
 # Add a useful alias

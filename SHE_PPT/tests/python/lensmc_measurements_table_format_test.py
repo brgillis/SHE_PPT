@@ -30,10 +30,10 @@ class TestLensMcMeasurementsTableFormat(SheTestCase):
 
     def post_setup(self):
         # Define a list of the table formats we'll be testing
-        self.table = initialise_lensmc_measurements_table(optional_columns = [tf.m1_ical,
-                                                                              tf.m2_ical,
-                                                                              tf.shape_weight,
-                                                                              tf.shape_weight_uncal])
+        self.table = initialise_lensmc_measurements_table(optional_columns=[tf.m1_ical,
+                                                                            tf.m2_ical,
+                                                                            tf.shape_weight,
+                                                                            tf.shape_weight_uncal])
 
     def test_meta(self):
         # Run through all the meta variables and check that they exist in the table format and table

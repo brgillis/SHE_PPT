@@ -51,23 +51,23 @@ def set_lensmc_column_properties(tf):
         reuse with the she_lensmc_tu_matched table.
     """
     tf.snr_err = tf.set_column_properties(
-        "SHE_LENSMC_SNR_ERR", dtype = ">f4", fits_dtype = "E")
+        "SHE_LENSMC_SNR_ERR", dtype=">f4", fits_dtype="E")
     tf.bulge_frac = tf.set_column_properties(
-        "SHE_LENSMC_BULGE_FRAC", dtype = ">f4", fits_dtype = "E")
+        "SHE_LENSMC_BULGE_FRAC", dtype=">f4", fits_dtype="E")
     tf.bulge_frac_err = tf.set_column_properties(
-        "SHE_LENSMC_BULGE_FRAC_ERR", dtype = ">f4", fits_dtype = "E")
+        "SHE_LENSMC_BULGE_FRAC_ERR", dtype=">f4", fits_dtype="E")
     tf.gal_pvalue = tf.set_column_properties(
-        "SHE_LENSMC_GAL_PVALUE", dtype = ">f4", fits_dtype = "E")
+        "SHE_LENSMC_GAL_PVALUE", dtype=">f4", fits_dtype="E")
     tf.chi2 = tf.set_column_properties(
-        "SHE_LENSMC_CHI2", dtype = ">f4", fits_dtype = "E")
+        "SHE_LENSMC_CHI2", dtype=">f4", fits_dtype="E")
     tf.dof = tf.set_column_properties(
-        "SHE_LENSMC_DOF", dtype = ">i4", fits_dtype = "K")
+        "SHE_LENSMC_DOF", dtype=">i4", fits_dtype="K")
     tf.acc = tf.set_column_properties(
-        "SHE_LENSMC_ACCEPTANCE", dtype = ">f4", fits_dtype = "E")
+        "SHE_LENSMC_ACCEPTANCE", dtype=">f4", fits_dtype="E")
     tf.m1_ical = tf.set_column_properties(
-        "SHE_LENSMC_M1_ICAL", dtype = ">f4", fits_dtype = "E")
+        "SHE_LENSMC_M1_ICAL", dtype=">f4", fits_dtype="E")
     tf.m2_ical = tf.set_column_properties(
-        "SHE_LENSMC_M2_ICAL", dtype = ">f4", fits_dtype = "E")
+        "SHE_LENSMC_M2_ICAL", dtype=">f4", fits_dtype="E")
 
 
 class SheLensMcMeasurementsFormat(SheMeasurementsFormat):
@@ -78,7 +78,7 @@ class SheLensMcMeasurementsFormat(SheMeasurementsFormat):
     meta_type = SheLensMcMeasurementsMeta
 
     def __init__(self):
-        super().__init__(finalize = False)
+        super().__init__(finalize=False)
 
         self.setup_child_table_format(child_label)
 
@@ -170,7 +170,7 @@ def initialise_lensmc_measurements_table(mer_final_catalog = None,
     """
 
     assert (mer_final_catalog is None) or (
-        is_in_format(mer_final_catalog, mfc_tf, strict = False))
+        is_in_format(mer_final_catalog, mfc_tf, strict=False))
 
     if optional_columns is None:
         optional_columns = []
@@ -180,16 +180,16 @@ def initialise_lensmc_measurements_table(mer_final_catalog = None,
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    lensmc_measurements_table = init_table(tf, optional_columns = optional_columns, init_cols = init_cols, size = size)
+    lensmc_measurements_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
 
     lensmc_measurements_table.meta = make_lensmc_measurements_table_header(
-        model_hash = model_hash,
-        model_seed = model_seed,
-        noise_seed = noise_seed,
-        observation_id = observation_id,
-        pointing_id = pointing_id,
-        observation_time = observation_time,
-        tile_id = tile_id)
+        model_hash=model_hash,
+        model_seed=model_seed,
+        noise_seed=noise_seed,
+        observation_id=observation_id,
+        pointing_id=pointing_id,
+        observation_time=observation_time,
+        tile_id=tile_id)
 
     assert is_in_format(lensmc_measurements_table, tf)
 

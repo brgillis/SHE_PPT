@@ -66,21 +66,21 @@ class SheBiasStatisticsMeta(SheTableMeta):
 
     def __init__(self):
         # Store the less-used comments in a dict
-        super().__init__(comments = OrderedDict(((self.fits_version, None),
-                                                 (self.fits_def, None),
-                                                 (self.ID, None),
-                                                 (self.method,
-                                                  "One of 'KSB', 'REGAUSS', 'MomentsML', or 'LensMC', "),
-                                                 (self.m1, None),
-                                                 (self.m1_err, None),
-                                                 (self.c1, None),
-                                                 (self.c1_err, None),
-                                                 (self.m1c1_covar, None),
-                                                 (self.m2, None),
-                                                 (self.m2_err, None),
-                                                 (self.c2, None),
-                                                 (self.c2_err, None),
-                                                 (self.m2c2_covar, None),)))
+        super().__init__(comments=OrderedDict(((self.fits_version, None),
+                                               (self.fits_def, None),
+                                               (self.ID, None),
+                                               (self.method,
+                                                "One of 'KSB', 'REGAUSS', 'MomentsML', or 'LensMC', "),
+                                               (self.m1, None),
+                                               (self.m1_err, None),
+                                               (self.c1, None),
+                                               (self.c1_err, None),
+                                               (self.m1c1_covar, None),
+                                               (self.m2, None),
+                                               (self.m2_err, None),
+                                               (self.c2, None),
+                                               (self.c2_err, None),
+                                               (self.m2c2_covar, None),)))
 
 
 class SheBiasStatisticsFormat(SheTableFormat):
@@ -95,19 +95,19 @@ class SheBiasStatisticsFormat(SheTableFormat):
 
         # Table column labels and properties
 
-        self.ID = self.set_column_properties("RUN_ID", dtype = "str", fits_dtype = "A", length = 20, is_optional = True)
+        self.ID = self.set_column_properties("RUN_ID", dtype="str", fits_dtype="A", length=20, is_optional=True)
 
-        self.w1 = self.set_column_properties("W1", dtype = ">f4", fits_dtype = "E")
-        self.xm1 = self.set_column_properties("XM1", dtype = ">f4", fits_dtype = "E")
-        self.x2m1 = self.set_column_properties("X2M1", dtype = ">f4", fits_dtype = "E")
-        self.ym1 = self.set_column_properties("YM1", dtype = ">f4", fits_dtype = "E")
-        self.xym1 = self.set_column_properties("XY1", dtype = ">f4", fits_dtype = "E")
+        self.w1 = self.set_column_properties("W1", dtype=">f4", fits_dtype="E")
+        self.xm1 = self.set_column_properties("XM1", dtype=">f4", fits_dtype="E")
+        self.x2m1 = self.set_column_properties("X2M1", dtype=">f4", fits_dtype="E")
+        self.ym1 = self.set_column_properties("YM1", dtype=">f4", fits_dtype="E")
+        self.xym1 = self.set_column_properties("XY1", dtype=">f4", fits_dtype="E")
 
-        self.w2 = self.set_column_properties("W2", dtype = ">f4", fits_dtype = "E")
-        self.xm2 = self.set_column_properties("XM2", dtype = ">f4", fits_dtype = "E")
-        self.x2m2 = self.set_column_properties("X2M2", dtype = ">f4", fits_dtype = "E")
-        self.ym2 = self.set_column_properties("YM2", dtype = ">f4", fits_dtype = "E")
-        self.xym2 = self.set_column_properties("XY2", dtype = ">f4", fits_dtype = "E")
+        self.w2 = self.set_column_properties("W2", dtype=">f4", fits_dtype="E")
+        self.xm2 = self.set_column_properties("XM2", dtype=">f4", fits_dtype="E")
+        self.x2m2 = self.set_column_properties("X2M2", dtype=">f4", fits_dtype="E")
+        self.ym2 = self.set_column_properties("YM2", dtype=">f4", fits_dtype="E")
+        self.xym2 = self.set_column_properties("XY2", dtype=">f4", fits_dtype="E")
 
         self._finalize_init()
 
@@ -251,7 +251,7 @@ def initialise_bias_statistics_table(size = None,
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    bias_statistics_table = init_table(tf, optional_columns = optional_columns, init_cols = init_cols, size = size)
+    bias_statistics_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
 
     # Check validity of initial values
 
@@ -310,10 +310,10 @@ def initialise_bias_statistics_table(size = None,
         g2_bias_measurements = BiasMeasurements(LinregressResults(g2_bias_statistics))
 
     # Create the table's header
-    bias_statistics_table.meta = make_bias_statistics_table_header(ID = ID,
-                                                                   method = method,
-                                                                   g1_bias_measurements = g1_bias_measurements,
-                                                                   g2_bias_measurements = g2_bias_measurements, )
+    bias_statistics_table.meta = make_bias_statistics_table_header(ID=ID,
+                                                                   method=method,
+                                                                   g1_bias_measurements=g1_bias_measurements,
+                                                                   g2_bias_measurements=g2_bias_measurements, )
 
     # Add a row for each statistics object
     for row_index in range(num_rows):
@@ -334,10 +334,10 @@ def initialise_bias_statistics_table(size = None,
         if not len_run_IDs == 0:
             new_row[tf.ID] = run_IDs[row_index]
 
-        bias_statistics_table.add_row(vals = new_row)
+        bias_statistics_table.add_row(vals=new_row)
 
     # Check we meet the requirements of the table format
-    assert is_in_format(bias_statistics_table, tf, verbose = True)
+    assert is_in_format(bias_statistics_table, tf, verbose=True)
 
     return bias_statistics_table
 
@@ -362,7 +362,7 @@ def get_bias_statistics(table, compress = False):
 
     """
 
-    if not is_in_format(table, tf, ignore_metadata = True, strict = False):
+    if not is_in_format(table, tf, ignore_metadata=True, strict=False):
         raise ValueError("table must be in bias_statistics format for get_bias_statistics method")
 
     l_g1_bias_statistics = []
@@ -455,7 +455,7 @@ def get_bias_measurements(table):
 
     """
 
-    if not (is_in_format(table, tf, ignore_metadata = True, strict = False)):
+    if not (is_in_format(table, tf, ignore_metadata=True, strict=False)):
         raise ValueError(
             "table must be in bias_statistics format for get_bias_measurements method")
 

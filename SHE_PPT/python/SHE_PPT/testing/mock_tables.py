@@ -35,7 +35,7 @@ from SHE_PPT.utility import default_init_if_none, default_value_if_none, empty_l
 
 logger = getLogger(__name__)
 
-MockDataGeneratorType = TypeVar('MockDataGeneratorType', bound = MockDataGenerator)
+MockDataGeneratorType = TypeVar('MockDataGeneratorType', bound=MockDataGenerator)
 
 DEFAULT_TABLE_FILENAME = "table.fits"
 DEFAULT_PRODUCT_FILENAME = "product.xml"
@@ -90,24 +90,24 @@ class MockTableGenerator(abc.ABC):
         """
 
         # Init values, using defaults if not provided
-        self.tf = default_value_if_none(x = tf, default_x = self.tf)
+        self.tf = default_value_if_none(x=tf, default_x=self.tf)
 
-        self.optional_columns = empty_list_if_none(optional_columns, coerce = True)
+        self.optional_columns = empty_list_if_none(optional_columns, coerce=True)
 
-        self.seed = default_value_if_none(x = seed, default_x = self.seed)
-        self.num_test_points = default_value_if_none(x = num_test_points, default_x = self.num_test_points)
+        self.seed = default_value_if_none(x=seed, default_x=self.seed)
+        self.num_test_points = default_value_if_none(x=num_test_points, default_x=self.num_test_points)
 
-        self.table_filename = default_value_if_none(x = table_filename, default_x = self.table_filename)
-        self.product_filename = default_value_if_none(x = product_filename, default_x = self.product_filename)
-        self.listfile_filename = default_value_if_none(x = listfile_filename, default_x = self.listfile_filename)
+        self.table_filename = default_value_if_none(x=table_filename, default_x=self.table_filename)
+        self.product_filename = default_value_if_none(x=product_filename, default_x=self.product_filename)
+        self.listfile_filename = default_value_if_none(x=listfile_filename, default_x=self.listfile_filename)
 
-        self.workdir = default_value_if_none(x = workdir, default_x = self.workdir)
+        self.workdir = default_value_if_none(x=workdir, default_x=self.workdir)
 
         self.mock_data_generator = default_init_if_none(mock_data_generator,
-                                                        type = self.mock_data_generator_type,
-                                                        tf = self.tf,
-                                                        num_test_points = self.num_test_points,
-                                                        seed = self.seed)
+                                                        type=self.mock_data_generator_type,
+                                                        tf=self.tf,
+                                                        num_test_points=self.num_test_points,
+                                                        seed=self.seed)
 
     def _make_mock_table(self) -> None:
         """ Method to generate the mock table, filling in self._mock_table with a Table of the desired format. Can
@@ -119,12 +119,12 @@ class MockTableGenerator(abc.ABC):
             raise ValueError("Mock table cannot be generated if table format (tf) is None.")
 
         # Init with just the size, to avoid irrelevant errors about wrong datatypes
-        self._mock_table = self.tf.init_table(size = self.mock_data_generator.num_test_points)
+        self._mock_table = self.tf.init_table(size=self.mock_data_generator.num_test_points)
 
         # Fill in the data
         data: Dict[str, np.ndarray] = self.mock_data_generator.data
         for colname in data:
-            self._mock_table[colname] = np.asarray(data[colname], dtype = self.tf.dtypes[colname])
+            self._mock_table[colname] = np.asarray(data[colname], dtype=self.tf.dtypes[colname])
 
     def get_mock_table(self) -> Table:
         """ Gets the generated mock table.
@@ -137,9 +137,9 @@ class MockTableGenerator(abc.ABC):
             Returns workdir-relative filename of the written-out table.
         """
 
-        write_table(t = self.mock_table,
-                    filename = self.table_filename,
-                    workdir = self.workdir)
+        write_table(t=self.mock_table,
+                    filename=self.table_filename,
+                    workdir=self.workdir)
 
         # Uncache the mock table - workaround for a bug in astropy where tables that have been written out can
         # behave oddly
@@ -154,11 +154,11 @@ class MockTableGenerator(abc.ABC):
             Returns workdir-relative filename of the written-out data product.
         """
 
-        write_product_and_table(product = self.create_product(),
-                                product_filename = self.product_filename,
-                                table = self.mock_table,
-                                table_filename = self.table_filename,
-                                workdir = self.workdir)
+        write_product_and_table(product=self.create_product(),
+                                product_filename=self.product_filename,
+                                table=self.mock_table,
+                                table_filename=self.table_filename,
+                                workdir=self.workdir)
 
         # Uncache the mock table - workaround for a bug in astropy where tables that have been written out can
         # behave oddly
@@ -179,6 +179,6 @@ class MockTableGenerator(abc.ABC):
         """ To be called in cleanup, deletes any table, product, and/or listfile which has been written out
         """
 
-        try_remove_file(self.table_filename, workdir = self.workdir)
-        try_remove_file(self.product_filename, workdir = self.workdir)
-        try_remove_file(self.listfile_filename, workdir = self.workdir)
+        try_remove_file(self.table_filename, workdir=self.workdir)
+        try_remove_file(self.product_filename, workdir=self.workdir)
+        try_remove_file(self.listfile_filename, workdir=self.workdir)

@@ -57,12 +57,12 @@ def create_catalogue(obj_coords = [], workdir = "."):
     object_ids = [i + 1 for i in range(n_objs)]
     ras = [c.ra.deg for c in obj_coords]
     decs = [c.dec.deg for c in obj_coords]
-    vis_det = np.ones(n_objs, dtype = np.int16)
-    flux_vis_aper = np.ones(n_objs, dtype = np.float32) * 1E-10
-    seg_area = np.ones(n_objs, dtype = np.int32)
+    vis_det = np.ones(n_objs, dtype=np.int16)
+    flux_vis_aper = np.ones(n_objs, dtype=np.float32) * 1E-10
+    seg_area = np.ones(n_objs, dtype=np.int32)
 
     # create the table
-    table = initialise_mer_final_catalog(init_cols = {
+    table = initialise_mer_final_catalog(init_cols={
         tf.ID               : object_ids,
         tf.gal_x_world      : ras,
         tf.gal_y_world      : decs,
@@ -72,7 +72,7 @@ def create_catalogue(obj_coords = [], workdir = "."):
         tf.SEGMENTATION_AREA: seg_area})
 
     # get a filename for the table
-    table_filename = get_allowed_filename("MER-CAT", "00", version = ppt_version)
+    table_filename = get_allowed_filename("MER-CAT", "00", version=ppt_version)
     qualified_table_filename = os.path.join(workdir, table_filename)
 
     # write the table to file
@@ -80,11 +80,11 @@ def create_catalogue(obj_coords = [], workdir = "."):
     table.write(qualified_table_filename)
 
     # create the data product
-    product = mer_final_catalog.create_dpd_mer_final_catalog(filename = table_filename)
+    product = mer_final_catalog.create_dpd_mer_final_catalog(filename=table_filename)
 
     # get a name for it
-    product_filename = get_allowed_filename("PROD-MER-CAT", "00", version = ppt_version, subdir = "",
-                                            extension = ".xml")
+    product_filename = get_allowed_filename("PROD-MER-CAT", "00", version=ppt_version, subdir="",
+                                            extension=".xml")
     qualified_product_filename = os.path.join(workdir, product_filename)
 
     # write the product to file

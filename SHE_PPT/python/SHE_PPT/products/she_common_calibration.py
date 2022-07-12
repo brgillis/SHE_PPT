@@ -44,7 +44,7 @@ def init():
     binding_class = dpdSheCommonCalibration
 
     if not init_binding_class(binding_class,
-                              init_function = create_dpd_she_common_calibration):
+                              init_function=create_dpd_she_common_calibration):
         return
 
     # Add the data file name methods

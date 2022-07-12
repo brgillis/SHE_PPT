@@ -64,15 +64,15 @@ class TestCase(SheTestCase):
         self.gal_ID = 4
 
         # Set up the galaxy profile we'll be using
-        self.base_gal = galsim.Sersic(n = 1, half_light_radius = 0.5)
+        self.base_gal = galsim.Sersic(n=1, half_light_radius=0.5)
 
         # Set up the psf we'll be using and a subsampled image of it
-        self.psf = galsim.Airy(lam_over_diam = 0.2)
+        self.psf = galsim.Airy(lam_over_diam=0.2)
 
-        self.ss_psf_image = galsim.Image(self.psf_xs, self.psf_ys, scale = self.psf_pixel_scale)
-        self.psf.drawImage(self.ss_psf_image, use_true_center = False)
+        self.ss_psf_image = galsim.Image(self.psf_xs, self.psf_ys, scale=self.psf_pixel_scale)
+        self.psf.drawImage(self.ss_psf_image, use_true_center=False)
 
-        self.bkg_image = galsim.Image(self.xs, self.ys, scale = self.gal_pixel_scale)
+        self.bkg_image = galsim.Image(self.xs, self.ys, scale=self.gal_pixel_scale)
         self.bkg_image += self.bkg_level
 
         self.psf_stamp = SHEImage(self.ss_psf_image.array.transpose())
@@ -80,20 +80,20 @@ class TestCase(SheTestCase):
         self.psf_stamp.header[SCALE_LABEL] = self.ss_psf_image.scale
 
         # Draw the default galaxy
-        self.observed_gal = galsim.Convolve([self.base_gal.shear(g1 = self.g1, g2 = self.g2), self.psf])
-        self.observed_gal_image = galsim.Image(self.xs, self.ys, scale = self.gal_pixel_scale)
-        self.observed_gal.drawImage(self.observed_gal_image, use_true_center = False)
+        self.observed_gal = galsim.Convolve([self.base_gal.shear(g1=self.g1, g2=self.g2), self.psf])
+        self.observed_gal_image = galsim.Image(self.xs, self.ys, scale=self.gal_pixel_scale)
+        self.observed_gal.drawImage(self.observed_gal_image, use_true_center=False)
 
         self.observed_gal_image += self.bkg_image
 
         self.gal_stamp = SHEImage(self.observed_gal_image.array.transpose(),
-                                  mask = np.zeros_like(self.observed_gal_image.array.transpose(), dtype = np.int8),
-                                  segmentation_map = self.gal_ID * np.ones_like(
-                                      self.observed_gal_image.array.transpose(), dtype = np.int8),
-                                  background_map = self.bkg_image.array.transpose(),
-                                  noisemap = 0.0001 * np.ones_like(
-                                      self.observed_gal_image.array.transpose(), dtype = float),
-                                  header = fits.Header())
+                                  mask=np.zeros_like(self.observed_gal_image.array.transpose(), dtype=np.int8),
+                                  segmentation_map=self.gal_ID * np.ones_like(
+                                      self.observed_gal_image.array.transpose(), dtype=np.int8),
+                                  background_map=self.bkg_image.array.transpose(),
+                                  noisemap=0.0001 * np.ones_like(
+                                      self.observed_gal_image.array.transpose(), dtype=float),
+                                  header=fits.Header())
         self.gal_stamp.add_default_header()
         self.gal_stamp.header[SCALE_LABEL] = self.observed_gal_image.scale
         self.gal_stamp.header[GAIN_LABEL] = 1.0
@@ -131,8 +131,8 @@ class TestCase(SheTestCase):
         """Tests of the calculations for correcting for a WCS shear.
         """
 
-        wcs_shear = galsim.Shear(g1 = 0.1, g2 = 0.2)
-        gal_shear = galsim.Shear(g1 = 0.5, g2 = 0.3)
+        wcs_shear = galsim.Shear(g1=0.1, g2=0.2)
+        gal_shear = galsim.Shear(g1=0.5, g2=0.3)
 
         g_err = 0.3
         weight = 1 / g_err ** 2
@@ -141,30 +141,30 @@ class TestCase(SheTestCase):
         tot_shear = wcs_shear + gal_shear
 
         # Create a ShearEstimate object for testing
-        shear_estimate = ShearEstimate(g1 = tot_shear.g1,
-                                       g2 = tot_shear.g2,
-                                       g1_err = g_err,
-                                       g2_err = g_err,
-                                       weight = weight)
+        shear_estimate = ShearEstimate(g1=tot_shear.g1,
+                                       g2=tot_shear.g2,
+                                       g1_err=g_err,
+                                       g2_err=g_err,
+                                       weight=weight)
 
         init_shear_estimate = deepcopy(shear_estimate)
 
         # Create a mock SHEImage stamp for testing
         gs_header = galsim.FitsHeader()
-        galsim_wcs = galsim.ShearWCS(shear = wcs_shear, scale = 1.0)
+        galsim_wcs = galsim.ShearWCS(shear=wcs_shear, scale=1.0)
         galsim_wcs.writeToFitsHeader(gs_header, galsim.BoundsI(1, 1, 2, 2))
 
         ap_header = fits.Header(gs_header.header)
-        mock_stamp = SHEImage(data = np.zeros((1, 1)), offset = np.array((0., 0.)),
-                              header = ap_header)
+        mock_stamp = SHEImage(data=np.zeros((1, 1)), offset=np.array((0., 0.)),
+                              header=ap_header)
 
         mock_stamp.galsim_wcs = galsim_wcs
 
         # Try correcting the shear estimate
         correct_for_wcs_shear_and_rotation(shear_estimate,
-                                           wcs = galsim_wcs,
-                                           ra = 0,
-                                           dec = 0, )
+                                           wcs=galsim_wcs,
+                                           ra=0,
+                                           dec=0, )
 
         assert np.isclose(shear_estimate.g1, gal_shear.g1)
         assert np.isclose(shear_estimate.g2, gal_shear.g2)
@@ -175,9 +175,9 @@ class TestCase(SheTestCase):
 
         # Now test that uncorrecting also works as expected
         uncorrect_for_wcs_shear_and_rotation(shear_estimate,
-                                             wcs = galsim_wcs,
-                                             ra = 0,
-                                             dec = 0, )
+                                             wcs=galsim_wcs,
+                                             ra=0,
+                                             dec=0, )
 
         assert np.isclose(shear_estimate.g1, init_shear_estimate.g1)
         assert np.isclose(shear_estimate.g2, init_shear_estimate.g2)
@@ -194,37 +194,37 @@ class TestCase(SheTestCase):
             # Value error if neither stamp nor WCS is supplied
             with pytest.raises(ValueError):
                 correction_function(shear_estimate,
-                                    stamp = None,
-                                    wcs = None)
+                                    stamp=None,
+                                    wcs=None)
 
             # Value error if both stamp and WCS are supplied
             with pytest.raises(ValueError):
                 correction_function(shear_estimate,
-                                    stamp = mock_stamp,
-                                    wcs = galsim_wcs,
-                                    x = 0,
-                                    y = 0, )
+                                    stamp=mock_stamp,
+                                    wcs=galsim_wcs,
+                                    x=0,
+                                    y=0, )
 
             # Value error if WCS supplied, but no coordinates supplied
             with pytest.raises(ValueError):
                 correction_function(shear_estimate,
-                                    wcs = galsim_wcs, )
+                                    wcs=galsim_wcs, )
 
             # Shear estimate flagged as bad if supplied shear is too big
-            big_shear_estimate = ShearEstimate(g1 = 1.1, g2 = 0.2)
+            big_shear_estimate = ShearEstimate(g1=1.1, g2=0.2)
             correction_function(big_shear_estimate,
-                                stamp = mock_stamp)
+                                stamp=mock_stamp)
             assert big_shear_estimate.flags & she_flags.flag_too_large_shear
 
             # Test we don't hit issues if shear is close to 1
-            near_1_shear_estimate = ShearEstimate(g1 = 0.99, g2 = 0.)
+            near_1_shear_estimate = ShearEstimate(g1=0.99, g2=0.)
             correction_function(near_1_shear_estimate,
-                                stamp = mock_stamp)
+                                stamp=mock_stamp)
 
         # Test we get expected error if we can't correct of the distortion - only for "correct" function
-        nan_shear_estimate = ShearEstimate(g1 = np.nan, g2 = np.nan)
+        nan_shear_estimate = ShearEstimate(g1=np.nan, g2=np.nan)
         correct_for_wcs_shear_and_rotation(nan_shear_estimate,
-                                           stamp = mock_stamp)
+                                           stamp=mock_stamp)
         assert nan_shear_estimate.flags & she_flags.flag_cannot_correct_distortion
 
     def test_correct_wcs_rotation(self):
@@ -242,26 +242,26 @@ class TestCase(SheTestCase):
             cos_theta = p2w_theta.cos()
 
             # Expected values are easy with a 45-degree rotation
-            gal_shear = galsim.Shear(g1 = 0.5, g2 = 0.3)
-            tot_shear = galsim.Shear(g1 = tot_g1, g2 = tot_g2)
+            gal_shear = galsim.Shear(g1=0.5, g2=0.3)
+            tot_shear = galsim.Shear(g1=tot_g1, g2=tot_g2)
 
             # Create a ShearEstimate object for testing
-            shear_estimate = ShearEstimate(g1 = tot_shear.g1,
-                                           g2 = tot_shear.g2,
-                                           g1_err = g_err,
-                                           g2_err = g_err,
-                                           weight = weight)
+            shear_estimate = ShearEstimate(g1=tot_shear.g1,
+                                           g2=tot_shear.g2,
+                                           g1_err=g_err,
+                                           g2_err=g_err,
+                                           weight=weight)
 
             init_shear_estimate = deepcopy(shear_estimate)
 
             # Create a mock SHEImage stamp for testing
             gs_header = galsim.FitsHeader()
-            wcs = galsim.AffineTransform(dudx = cos_theta, dudy = -sin_theta,
-                                         dvdx = sin_theta, dvdy = cos_theta)
+            wcs = galsim.AffineTransform(dudx=cos_theta, dudy=-sin_theta,
+                                         dvdx=sin_theta, dvdy=cos_theta)
             wcs.writeToFitsHeader(gs_header, galsim.BoundsI(1, 1, 2, 2))
             ap_header = fits.Header(gs_header.header)
-            mock_stamp = SHEImage(data = np.zeros((1, 1)), offset = np.array((0., 0.)),
-                                  header = ap_header)
+            mock_stamp = SHEImage(data=np.zeros((1, 1)), offset=np.array((0., 0.)),
+                                  header=ap_header)
 
             mock_stamp.galsim_wcs = wcs
 
@@ -294,15 +294,15 @@ class TestCase(SheTestCase):
         gerr = 0.3
         weight = 1 / gerr ** 2
 
-        wcs_shear = galsim.Shear(g1 = 0.2, g2 = 0.)
-        gal_shear = galsim.Shear(g1 = 0.5, g2 = 0.3)
+        wcs_shear = galsim.Shear(g1=0.2, g2=0.)
+        gal_shear = galsim.Shear(g1=0.5, g2=0.3)
 
         p2w_theta = 45 * galsim.degrees
 
         sin_theta = p2w_theta.sin()
         cos_theta = p2w_theta.cos()
 
-        gal_shear_rotated = galsim.Shear(g1 = 0.3, g2 = -0.5)
+        gal_shear_rotated = galsim.Shear(g1=0.3, g2=-0.5)
 
         shear_matrix = np.array([[1 + wcs_shear.g1, wcs_shear.g2],
                                  [wcs_shear.g2, 1 - wcs_shear.g1]])
@@ -315,22 +315,22 @@ class TestCase(SheTestCase):
         tot_shear = wcs_shear + gal_shear_rotated
 
         # Create a ShearEstimate object for testing
-        shear_estimate = ShearEstimate(g1 = tot_shear.g1,
-                                       g2 = tot_shear.g2,
-                                       g1_err = gerr,
-                                       g2_err = gerr,
-                                       weight = weight)
+        shear_estimate = ShearEstimate(g1=tot_shear.g1,
+                                       g2=tot_shear.g2,
+                                       g1_err=gerr,
+                                       g2_err=gerr,
+                                       weight=weight)
 
         init_shear_estimate = deepcopy(shear_estimate)
 
         # Create a mock SHEImage stamp for testing
         gs_header = galsim.FitsHeader()
-        wcs = galsim.AffineTransform(dudx = transform_matrix[0, 0], dudy = transform_matrix[0, 1],
-                                     dvdx = transform_matrix[1, 0], dvdy = transform_matrix[1, 1])
+        wcs = galsim.AffineTransform(dudx=transform_matrix[0, 0], dudy=transform_matrix[0, 1],
+                                     dvdx=transform_matrix[1, 0], dvdy=transform_matrix[1, 1])
         wcs.writeToFitsHeader(gs_header, galsim.BoundsI(1, 1, 2, 2))
         ap_header = fits.Header(gs_header.header)
-        mock_stamp = SHEImage(data = np.zeros((1, 1)), offset = np.array((0., 0.)),
-                              header = ap_header)
+        mock_stamp = SHEImage(data=np.zeros((1, 1)), offset=np.array((0., 0.)),
+                              header=ap_header)
 
         mock_stamp.galsim_wcs = wcs
 
@@ -374,35 +374,35 @@ class TestCase(SheTestCase):
         """
 
         # Check with good stamp
-        assert get_galaxy_quality_flags(self.gal_stamp, stacked = False) == 0
+        assert get_galaxy_quality_flags(self.gal_stamp, stacked=False) == 0
 
         # Check with corrupt stamp
-        assert get_galaxy_quality_flags(self.corrupt_gal_stamp, stacked = False) & she_flags.flag_corrupt_science_image
+        assert get_galaxy_quality_flags(self.corrupt_gal_stamp, stacked=False) & she_flags.flag_corrupt_science_image
 
         # Check with no science data
         gal_no_data = deepcopy(self.gal_stamp)
         gal_no_data._data = None
-        assert get_galaxy_quality_flags(gal_no_data, stacked = False) & she_flags.flag_no_science_image
+        assert get_galaxy_quality_flags(gal_no_data, stacked=False) & she_flags.flag_no_science_image
 
         # Check with no background map, stacked
         gal_no_background = deepcopy(self.gal_stamp)
         gal_no_background.background_map = None
-        assert get_galaxy_quality_flags(gal_no_background, stacked = True) & she_flags.flag_no_background_map
+        assert get_galaxy_quality_flags(gal_no_background, stacked=True) & she_flags.flag_no_background_map
 
         # Check with a missing mask, stacked
         stamp_missing_mask = deepcopy(self.gal_stamp)
         stamp_missing_mask.mask = None
-        assert get_galaxy_quality_flags(stamp_missing_mask, stacked = True) & she_flags.flag_no_mask
+        assert get_galaxy_quality_flags(stamp_missing_mask, stacked=True) & she_flags.flag_no_mask
 
         # Check with a missing segmentation map
         stamp_missing_seg = deepcopy(self.gal_stamp)
         stamp_missing_seg.segmentation_map = None
-        assert get_galaxy_quality_flags(stamp_missing_seg, stacked = False) & she_flags.flag_no_segmentation_map
+        assert get_galaxy_quality_flags(stamp_missing_seg, stacked=False) & she_flags.flag_no_segmentation_map
 
         # Check with a missing noisemap
         stamp_missing_noise = deepcopy(self.gal_stamp)
         stamp_missing_noise.noisemap = None
-        assert get_galaxy_quality_flags(stamp_missing_noise, stacked = False) & she_flags.flag_no_noisemap
+        assert get_galaxy_quality_flags(stamp_missing_noise, stacked=False) & she_flags.flag_no_noisemap
 
         # Check with everything other than science image missing
         stamp_missing_most = deepcopy(self.gal_stamp)
@@ -410,20 +410,20 @@ class TestCase(SheTestCase):
         stamp_missing_most.mask = None
         stamp_missing_most.segmentation_map = None
         stamp_missing_most.noisemap = None
-        assert get_galaxy_quality_flags(stamp_missing_most, stacked = False) & she_flags.flag_no_background_map
-        assert get_galaxy_quality_flags(stamp_missing_most, stacked = False) & she_flags.flag_no_mask
-        assert get_galaxy_quality_flags(stamp_missing_most, stacked = False) & she_flags.flag_no_segmentation_map
-        assert get_galaxy_quality_flags(stamp_missing_most, stacked = False) & she_flags.flag_no_noisemap
+        assert get_galaxy_quality_flags(stamp_missing_most, stacked=False) & she_flags.flag_no_background_map
+        assert get_galaxy_quality_flags(stamp_missing_most, stacked=False) & she_flags.flag_no_mask
+        assert get_galaxy_quality_flags(stamp_missing_most, stacked=False) & she_flags.flag_no_segmentation_map
+        assert get_galaxy_quality_flags(stamp_missing_most, stacked=False) & she_flags.flag_no_noisemap
 
         # Check with entirely masked out
         stamp_masked = deepcopy(self.gal_stamp)
         stamp_masked.mask += 1
-        assert get_galaxy_quality_flags(stamp_masked, stacked = False) & she_flags.flag_insufficient_data
+        assert get_galaxy_quality_flags(stamp_masked, stacked=False) & she_flags.flag_insufficient_data
 
         # Check with corrupt mask
         stamp_corrupt_mask = deepcopy(self.gal_stamp)
         stamp_corrupt_mask.mask[0, 0] = -1
-        assert get_galaxy_quality_flags(stamp_corrupt_mask, stacked = False) & she_flags.flag_corrupt_mask
+        assert get_galaxy_quality_flags(stamp_corrupt_mask, stacked=False) & she_flags.flag_corrupt_mask
 
     def test_check_data_quality(self):
         """Unit test of the `check_data_quality` function.

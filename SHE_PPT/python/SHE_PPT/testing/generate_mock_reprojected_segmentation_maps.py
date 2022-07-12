@@ -41,7 +41,7 @@ def __generate_segmentation_mask(radius = 10):
 
     size = int(radius * 2)
 
-    mask = np.zeros((size, size), dtype = np.int64)
+    mask = np.zeros((size, size), dtype=np.int64)
 
     x = np.arange(size) + 0.5 - radius
     y = np.arange(size)[:, np.newaxis] + 0.5 - radius
@@ -52,11 +52,11 @@ def __generate_segmentation_mask(radius = 10):
 
 def __create_detector_map(object_ids, pixel_coords, detector_shape, objsize = 10):
     """For a given detector, produce a segmentation map"""
-    img = np.zeros(detector_shape, dtype = np.int64)
+    img = np.zeros(detector_shape, dtype=np.int64)
 
     mask_radius = int(masksize * objsize)
 
-    mask = __generate_segmentation_mask(radius = mask_radius)
+    mask = __generate_segmentation_mask(radius=mask_radius)
 
     for id, coords in zip(object_ids, pixel_coords):
         xmin = int(coords[0]) - mask_radius
@@ -113,23 +113,23 @@ def create_reprojected_segmentation_map(object_ids, pixel_coords, detectors, wcs
 
         # create the seg map for the detector from the objects in that detector
         inds = np.where(detectors == det)
-        img = __create_detector_map(object_ids[inds], pixel_coords[inds], detector_shape, objsize = objsize)
+        img = __create_detector_map(object_ids[inds], pixel_coords[inds], detector_shape, objsize=objsize)
 
         # create the HDU and append it to the HDUlist
         header = wcs_list[det].to_header()
-        img_hdu = fits.ImageHDU(data = img, header = header, name = "CCDID %s.SEG" % det_id)
+        img_hdu = fits.ImageHDU(data=img, header=header, name="CCDID %s.SEG" % det_id)
         hdul.append(img_hdu)
 
-    fits_filename = get_allowed_filename("EXP-RPJ-SEG", "00", version = ppt_version, extension = ".fits")
+    fits_filename = get_allowed_filename("EXP-RPJ-SEG", "00", version=ppt_version, extension=".fits")
     qualified_fits_filename = os.path.join(workdir, fits_filename)
     logger.info("Writing fits file to %s" % qualified_fits_filename)
 
-    hdul.writeto(qualified_fits_filename, overwrite = True)
+    hdul.writeto(qualified_fits_filename, overwrite=True)
 
-    dpd = create_dpd_she_exposure_segmentation_map(data_filename = fits_filename)
-    prod_filename = get_allowed_filename("EXP-RPJ-SEG", "00", version = ppt_version, extension = ".xml", subdir = "")
+    dpd = create_dpd_she_exposure_segmentation_map(data_filename=fits_filename)
+    prod_filename = get_allowed_filename("EXP-RPJ-SEG", "00", version=ppt_version, extension=".xml", subdir="")
     qualified_prod_filename = os.path.join(workdir, prod_filename)
     logger.info("Writing xml product to %s" % qualified_prod_filename)
-    write_xml_product(dpd, prod_filename, workdir = workdir)
+    write_xml_product(dpd, prod_filename, workdir=workdir)
 
     return prod_filename

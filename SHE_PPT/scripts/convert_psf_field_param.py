@@ -48,8 +48,8 @@ def main():
     parser = argparse.ArgumentParser()
 
     # Input arguments
-    parser.add_argument('--workdir', default = '.', type = str,
-                        help = "Work directory")
+    parser.add_argument('--workdir', default='.', type=str,
+                        help="Work directory")
 
     args = parser.parse_args()
 
@@ -86,7 +86,7 @@ def main():
         time_stamp = get_timestamp(tel_mode_params_filename)
         hdulist[0].header['DATE_OBS'] = time_stamp
 
-        psf_field_param_fits_filename = get_allowed_filename('PSF-FIELD-PARAMS', time_stamp, release = '8.0')
+        psf_field_param_fits_filename = get_allowed_filename('PSF-FIELD-PARAMS', time_stamp, release='8.0')
 
         field_param_prod.set_filename(psf_field_param_fits_filename)
 
@@ -94,8 +94,8 @@ def main():
                 and not os.path.exists(os.path.join(args.workdir, 'data'))):
             psf_field_param_fits_filename = os.path.basename(psf_field_param_fits_filename)
 
-        hdulist.writeto(os.path.join(args.workdir, psf_field_param_fits_filename), overwrite = True)
-        write_xml_product(field_param_prod, field_params_filename, allow_pickled = False)
+        hdulist.writeto(os.path.join(args.workdir, psf_field_param_fits_filename), overwrite=True)
+        write_xml_product(field_param_prod, field_params_filename, allow_pickled=False)
         print("Updated %s with new FITS file %s" % (field_params_filename, psf_field_param_fits_filename))
     return
 

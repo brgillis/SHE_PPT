@@ -53,8 +53,8 @@ class LogOptions:
         """
 
         # Init empty sets if None was provided
-        self.s_store_true = empty_set_if_none(self.s_store_true, coerce = True)
-        self.s_store_false = empty_set_if_none(self.s_store_false, coerce = True)
+        self.s_store_true = empty_set_if_none(self.s_store_true, coerce=True)
+        self.s_store_false = empty_set_if_none(self.s_store_false, coerce=True)
 
         # Make sure defaults are always included in store_true/false sets
         self.s_store_true.update(S_DEFAULT_STORE_TRUE)
@@ -77,7 +77,7 @@ class ReadConfigArgs:
         self.d_config_defaults = empty_dict_if_none(self.d_config_defaults)
         self.d_config_types = empty_dict_if_none(self.d_config_types)
         self.d_config_cline_args = empty_dict_if_none(self.d_config_cline_args)
-        self.s_config_keys_types = empty_set_if_none(self.s_config_keys_types, coerce = True)
+        self.s_config_keys_types = empty_set_if_none(self.s_config_keys_types, coerce=True)
 
 
 @dataclass
@@ -168,12 +168,12 @@ class SheExecutor:
         # load the pipeline config in
         # noinspection PyTypeChecker
         pipeline_config: Dict[ConfigKeys, Any] = read_config(d_args[CA_PIPELINE_CONFIG],
-                                                             workdir = d_args[CA_WORKDIR],
-                                                             config_keys = self.config_args.s_config_keys_types,
-                                                             d_cline_args = self.config_args.d_config_cline_args,
-                                                             d_defaults = self.config_args.d_config_defaults,
-                                                             d_types = self.config_args.d_config_types,
-                                                             parsed_args = args_to_pass)
+                                                             workdir=d_args[CA_WORKDIR],
+                                                             config_keys=self.config_args.s_config_keys_types,
+                                                             d_cline_args=self.config_args.d_config_cline_args,
+                                                             d_defaults=self.config_args.d_config_defaults,
+                                                             d_types=self.config_args.d_config_types,
+                                                             parsed_args=args_to_pass)
 
         # set args.pipeline_config to the read-in pipeline_config
         args.pipeline_config = pipeline_config
@@ -208,7 +208,7 @@ class SheExecutor:
                          "args"                  : args,
                          "l_run_args"            : self.run_args.l_run_args,
                          "d_run_kwargs"          : self.run_args.d_run_kwargs},
-                        filename = "validate_shear_bias_from_args.prof")
+                        filename="validate_shear_bias_from_args.prof")
 
     def __log_exec_cmd(self, args: Namespace) -> None:
         """ Construct the run command and log it at info level.
@@ -218,9 +218,9 @@ class SheExecutor:
                               f"{self.log_options.executable_name}")
 
         exec_cmd: str = get_arguments_string(args,
-                                             cmd = exec_cmd_base,
-                                             store_true = self.log_options.s_store_true,
-                                             store_false = self.log_options.s_store_false)
+                                             cmd=exec_cmd_base,
+                                             store_true=self.log_options.s_store_true,
+                                             store_false=self.log_options.s_store_false)
 
         self._logger.info('Execution command for this step:')
         self._logger.info(exec_cmd)

@@ -34,8 +34,8 @@ product_type_name = "DpdShePsfFieldParameters"
 def init():
     """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    init_just_datastorage(binding_class = dpdShePsfFieldParameters,
-                          init_function = create_dpd_she_psf_field_parameters)
+    init_just_datastorage(binding_class=dpdShePsfFieldParameters,
+                          init_function=create_dpd_she_psf_field_parameters)
 
 
 def create_dpd_she_psf_field_parameters(filename = None,
@@ -43,10 +43,10 @@ def create_dpd_she_psf_field_parameters(filename = None,
     """ Creates a product of this type.
     """
 
-    return create_product_from_template(template_filename = sample_file_name,
-                                        product_type_name = product_type_name,
-                                        filename = filename,
-                                        data_filename = data_filename)
+    return create_product_from_template(template_filename=sample_file_name,
+                                        product_type_name=product_type_name,
+                                        filename=filename,
+                                        data_filename=data_filename)
 
 
 # Add a useful alias

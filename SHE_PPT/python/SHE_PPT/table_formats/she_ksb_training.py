@@ -46,7 +46,7 @@ class SheKsbTrainingFormat(SheTrainingFormat):
     meta_type = meta = SheKsbTrainingMeta
 
     def __init__(self):
-        super().__init__(finalize = False)
+        super().__init__(finalize=False)
 
         self.setup_child_table_format(child_label)
 

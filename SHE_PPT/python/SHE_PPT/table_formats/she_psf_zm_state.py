@@ -44,7 +44,7 @@ class ShePsfZmStateMeta(ShePsfStateMeta):
 
     def init_meta(self,
                   **kwargs: str) -> OrderedDict:
-        return super().init_meta(extname = PSF_ZM_STATE_TAG,
+        return super().init_meta(extname=PSF_ZM_STATE_TAG,
                                  **kwargs)
 
 
@@ -64,14 +64,14 @@ class ShePsfZmStateFormat(ShePsfStateFormat):
         # Column names and info
 
         self.fovrngx = self.set_column_properties(
-            "SHE_PSF_%s_FOVRNGX" % data_type, dtype = ">f4",
-            fits_dtype = "E", length = 2)
+            "SHE_PSF_%s_FOVRNGX" % data_type, dtype=">f4",
+            fits_dtype="E", length=2)
         self.fovrngy = self.set_column_properties(
-            "SHE_PSF_%s_FOVRNGY" % data_type, dtype = ">f4",
-            fits_dtype = "E", length = 2)
+            "SHE_PSF_%s_FOVRNGY" % data_type, dtype=">f4",
+            fits_dtype="E", length=2)
         self.zer_ply_amp = self.set_column_properties(
-            "SHE_PSF_%s_ZNKPLYAMP" % data_type, dtype = ">f4",
-            fits_dtype = "E", length = 50)
+            "SHE_PSF_%s_ZNKPLYAMP" % data_type, dtype=">f4",
+            fits_dtype="E", length=50)
 
         self._finalize_init()
 

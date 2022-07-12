@@ -54,16 +54,16 @@ def __create_table(object_ids, pixel_coords, stampsize, stamp_per_obj):
     sed_template = [-1] * len(pixel_coords)
 
     # convert to the correct dtypes for the table (init_table seemingly fails to do this)
-    sed_template = np.asarray(sed_template, dtype = np.int64)
-    bulge_index = np.asarray(bulge_index, dtype = np.int32)
-    disk_index = np.asarray(disk_index, dtype = np.int32)
-    psf_image_x = np.asarray(psf_image_x, dtype = np.int16)
-    psf_image_y = np.asarray(psf_image_y, dtype = np.int16)
-    psf_x = np.asarray(psf_x, dtype = np.float32)
-    psf_y = np.asarray(psf_y, dtype = np.float32)
+    sed_template = np.asarray(sed_template, dtype=np.int64)
+    bulge_index = np.asarray(bulge_index, dtype=np.int32)
+    disk_index = np.asarray(disk_index, dtype=np.int32)
+    psf_image_x = np.asarray(psf_image_x, dtype=np.int16)
+    psf_image_y = np.asarray(psf_image_y, dtype=np.int16)
+    psf_x = np.asarray(psf_x, dtype=np.float32)
+    psf_y = np.asarray(psf_y, dtype=np.float32)
 
     # construct the table
-    t = init_table(tf, init_cols = {
+    t = init_table(tf, init_cols={
         tf.ID         : object_ids,
         tf.template   : sed_template,
         tf.bulge_index: bulge_index,
@@ -82,7 +82,7 @@ def __create_table(object_ids, pixel_coords, stampsize, stamp_per_obj):
 def __create_mock_psf_image(stampsize = 800, radius = 5):
     """Creates a mock PSF image (gausian)"""
 
-    img = np.zeros((stampsize, stampsize), dtype = np.float32)
+    img = np.zeros((stampsize, stampsize), dtype=np.float32)
 
     # centre coord of the image
     c = stampsize / 2
@@ -105,37 +105,37 @@ def __create_fits(object_ids, pixel_coords, workdir, stampsize, stamp_per_obj):
 
     # create the table and append it to the HDU list
     table = __create_table(object_ids, pixel_coords, stampsize, stamp_per_obj)
-    table_hdu = fits.BinTableHDU(table, name = "PSFC")
+    table_hdu = fits.BinTableHDU(table, name="PSFC")
     hdul.append(table_hdu)
 
     # create the PSF image
-    img = __create_mock_psf_image(stampsize = stampsize)
+    img = __create_mock_psf_image(stampsize=stampsize)
 
     # create the appropriate HDUlists for the bulge and disk PSF images
     if stamp_per_obj:
         for obj_id in object_ids:
-            bpsf_hdu = fits.ImageHDU(img, name = "%d.BPSF" % obj_id,
-                                     header = fits.Header({"GS_SCALE": 5.55555555555555E-06}))
-            dpsf_hdu = fits.ImageHDU(img, name = "%d.DPSF" % obj_id,
-                                     header = fits.Header({"GS_SCALE": 5.55555555555555E-06}))
+            bpsf_hdu = fits.ImageHDU(img, name="%d.BPSF" % obj_id,
+                                     header=fits.Header({"GS_SCALE": 5.55555555555555E-06}))
+            dpsf_hdu = fits.ImageHDU(img, name="%d.DPSF" % obj_id,
+                                     header=fits.Header({"GS_SCALE": 5.55555555555555E-06}))
 
             hdul.append(bpsf_hdu)
             hdul.append(dpsf_hdu)
 
     else:
-        bpsf_hdu = fits.ImageHDU(img, name = "ALL.BPSF", header = fits.Header({"GS_SCALE": 5.55555555555555E-06}))
-        dpsf_hdu = fits.ImageHDU(img, name = "ALL.DPSF", header = fits.Header({"GS_SCALE": 5.55555555555555E-06}))
+        bpsf_hdu = fits.ImageHDU(img, name="ALL.BPSF", header=fits.Header({"GS_SCALE": 5.55555555555555E-06}))
+        dpsf_hdu = fits.ImageHDU(img, name="ALL.DPSF", header=fits.Header({"GS_SCALE": 5.55555555555555E-06}))
 
         hdul.append(bpsf_hdu)
         hdul.append(dpsf_hdu)
 
     # get a valid filename and write to this
-    fits_filename = get_allowed_filename("PSF-IMG", "00", version = ppt_version, extension = ".fits")
+    fits_filename = get_allowed_filename("PSF-IMG", "00", version=ppt_version, extension=".fits")
 
     qualified_fits_filename = os.path.join(workdir, fits_filename)
 
     logger.info("Writing mock PSF model image FITS to %s" % qualified_fits_filename)
-    hdul.writeto(qualified_fits_filename, overwrite = True)
+    hdul.writeto(qualified_fits_filename, overwrite=True)
 
     return fits_filename
 
@@ -155,11 +155,11 @@ def create_model_image_product(object_ids, pixel_coords, workdir = ".", stampsiz
     fits_filename = __create_fits(object_ids, pixel_coords, workdir, stampsize, stamp_per_obj)
 
     # create the data product
-    dpd = she_psf_model_image.create_dpd_she_psf_model_image(data_filename = fits_filename)
+    dpd = she_psf_model_image.create_dpd_she_psf_model_image(data_filename=fits_filename)
 
-    prod_filename = get_allowed_filename("PSF-IMG", "00", version = ppt_version, extension = ".xml", subdir = "")
+    prod_filename = get_allowed_filename("PSF-IMG", "00", version=ppt_version, extension=".xml", subdir="")
 
     logger.info("Writing mock PSF model image product to %s" % os.path.join(workdir, prod_filename))
-    write_xml_product(dpd, prod_filename, workdir = workdir)
+    write_xml_product(dpd, prod_filename, workdir=workdir)
 
     return prod_filename

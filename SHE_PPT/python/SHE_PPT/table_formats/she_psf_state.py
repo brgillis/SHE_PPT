@@ -83,8 +83,8 @@ class ShePsfStateFormat(SheTableFormat):
 
         for colname in self._l_colnames:
             setattr(self, colname.lower(),
-                    self.set_column_properties(name = self.get_colname(colname),
-                                               dtype = ">f4", fits_dtype = "E"))
+                    self.set_column_properties(name=self.get_colname(colname),
+                                               dtype=">f4", fits_dtype="E"))
 
         self._finalize_init()
 

@@ -36,15 +36,15 @@ def init():
         Adds some extra functionality to the product
     """
 
-    init_placeholder_general(product_type_name = product_type_name,
-                             init_function = create_dpd_she_expected_shear_validation_statistics)
+    init_placeholder_general(product_type_name=product_type_name,
+                             init_function=create_dpd_she_expected_shear_validation_statistics)
 
 
 def create_dpd_she_expected_shear_validation_statistics(filename = None):
     """ Initialize a product of this type
     """
 
-    return create_general_product_from_template(template_filename = sample_file_name,
-                                                product_type_name = product_type_name,
-                                                general_product_type_name = ProductName.PLC_GENERAL.value,
-                                                filename = filename, )
+    return create_general_product_from_template(template_filename=sample_file_name,
+                                                product_type_name=product_type_name,
+                                                general_product_type_name=ProductName.PLC_GENERAL.value,
+                                                filename=filename, )

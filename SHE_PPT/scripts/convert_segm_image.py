@@ -45,19 +45,19 @@ def main():
     parser = argparse.ArgumentParser()
 
     # Input arguments
-    parser.add_argument('--segm_image', default = None, type = str,
-                        help = "pre-SC8 segmentation image file")
-    parser.add_argument('--segm_type', default = None, type = str,
-                        help = "segmentation type: stack, exposure, mer")
-    parser.add_argument('--source_dir', default = '.', type = str,
-                        help = "Directory in which segm-images are contained (default '.').")
-    parser.add_argument('--datadir', default = 'data', type = str,
-                        help = 'subdir containing fits image')
+    parser.add_argument('--segm_image', default=None, type=str,
+                        help="pre-SC8 segmentation image file")
+    parser.add_argument('--segm_type', default=None, type=str,
+                        help="segmentation type: stack, exposure, mer")
+    parser.add_argument('--source_dir', default='.', type=str,
+                        help="Directory in which segm-images are contained (default '.').")
+    parser.add_argument('--datadir', default='data', type=str,
+                        help='subdir containing fits image')
     # Output arguments
-    parser.add_argument('--dest_dir', default = '.', type = str,
-                        help = "Directory in which output segm-images are contained (default '.').")
-    parser.add_argument('--out_segm_image', default = "obj_cat.xml", type = str,
-                        help = "Target Final PSF image product to be created (default segm_model_image.xml)")
+    parser.add_argument('--dest_dir', default='.', type=str,
+                        help="Directory in which output segm-images are contained (default '.').")
+    parser.add_argument('--out_segm_image', default="obj_cat.xml", type=str,
+                        help="Target Final PSF image product to be created (default segm_model_image.xml)")
 
     args = parser.parse_args()
 
@@ -84,7 +84,7 @@ def main():
     # Updates to xml?
     # E.g. WCS?
 
-    write_xml_product(prod, args.out_segm_image, workdir = args.dest_dir)
+    write_xml_product(prod, args.out_segm_image, workdir=args.dest_dir)
 
     return
 
@@ -109,7 +109,7 @@ def find_fits_file(xml_file_name, datadir):
                 # Find matches in name...
                 metric = calc_match_name(file_name, xml_file_name)
                 metric_list.append((file_name, metric))
-        metric_list = sorted(metric_list, key = itemgetter(1))
+        metric_list = sorted(metric_list, key=itemgetter(1))
         if metric_list[-1][1] > 0:
             fits_file = metric_list[-1][0]
         elif 'STACK' in xml_file_name.upper():

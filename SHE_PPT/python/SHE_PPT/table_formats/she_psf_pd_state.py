@@ -44,7 +44,7 @@ class ShePsfPdStateMeta(ShePsfStateMeta):
 
     def init_meta(self,
                   **kwargs: str) -> OrderedDict:
-        return super().init_meta(extname = PSF_PD_STATE_TAG,
+        return super().init_meta(extname=PSF_PD_STATE_TAG,
                                  **kwargs)
 
 
@@ -63,9 +63,9 @@ class ShePsfPdStateFormat(ShePsfStateFormat):
         # Column names and info
 
         self.id = self.set_column_properties(self,
-                                             "OBJECT_ID", dtype = ">i8", fits_dtype = "K")
+                                             "OBJECT_ID", dtype=">i8", fits_dtype="K")
         self.chisq = self.set_column_properties(
-            f"SHE_PSF_{self._data_type}_CHISQ", dtype = ">f4", fits_dtype = "E")
+            f"SHE_PSF_{self._data_type}_CHISQ", dtype=">f4", fits_dtype="E")
 
         self._finalize_init()
 

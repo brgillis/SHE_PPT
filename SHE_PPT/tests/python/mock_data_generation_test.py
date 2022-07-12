@@ -49,13 +49,13 @@ class TestMockData(SheTestCase):
         n_objs_per_det = 10
 
         # Create the frame product
-        prod_filename, sky_coords, img_coords, detectors, wcs_list = create_exposure(n_detectors = n_detectors,
-                                                                                     detector_shape = detector_shape,
-                                                                                     workdir = workdir,
-                                                                                     n_objs_per_det = n_objs_per_det)
+        prod_filename, sky_coords, img_coords, detectors, wcs_list = create_exposure(n_detectors=n_detectors,
+                                                                                     detector_shape=detector_shape,
+                                                                                     workdir=workdir,
+                                                                                     n_objs_per_det=n_objs_per_det)
         # check the product is readable, and that its FITS files exist
         # NOTE: We don't check the validity of the FITS files
-        dpd = read_xml_product(prod_filename, workdir = workdir)
+        dpd = read_xml_product(prod_filename, workdir=workdir)
 
         assert type(dpd) is vis_calibrated_frame.dpdVisCalibratedFrame
 
@@ -94,13 +94,13 @@ class TestMockData(SheTestCase):
         workdir = self.workdir
 
         # generate random coordinates
-        obj_coords = [SkyCoord(ra = np.random.random(), dec = np.random.random(), unit = degree) for i in range(n_objs)]
+        obj_coords = [SkyCoord(ra=np.random.random(), dec=np.random.random(), unit=degree) for i in range(n_objs)]
 
         # create product
         prod_filename, object_ids = create_catalogue(obj_coords, workdir)
 
         # verify output product
-        dpd = read_xml_product(prod_filename, workdir = workdir)
+        dpd = read_xml_product(prod_filename, workdir=workdir)
         assert type(dpd) is mer_final_catalog.dpdMerFinalCatalog
 
         # Make sure the FITS file was created
@@ -121,10 +121,10 @@ class TestMockData(SheTestCase):
 
         # create the product
 
-        prod_filename = create_object_id_list(object_list, workdir = workdir)
+        prod_filename = create_object_id_list(object_list, workdir=workdir)
 
         # make sure the product is correct
-        dpd = read_xml_product(prod_filename, workdir = workdir)
+        dpd = read_xml_product(prod_filename, workdir=workdir)
         assert type(dpd) == she_object_id_list.dpdSheObjectIdList
 
         # make sure we can get the object_list from the product
@@ -141,10 +141,10 @@ class TestMockData(SheTestCase):
         pixel_coords = [tuple(np.random.random(2)) for i in range(n_objs)]
 
         # create the product
-        prod_filename = create_model_image_product(object_ids, pixel_coords, workdir = workdir)
+        prod_filename = create_model_image_product(object_ids, pixel_coords, workdir=workdir)
 
         # check the product is valid
-        dpd = read_xml_product(prod_filename, workdir = workdir)
+        dpd = read_xml_product(prod_filename, workdir=workdir)
         assert type(dpd) is she_psf_model_image.dpdShePsfModelImage
 
         # make sure the fits exists
@@ -170,10 +170,10 @@ class TestMockData(SheTestCase):
 
         # create the product
         prod_filename = create_reprojected_segmentation_map(object_ids, pixel_coords, detectors, wcs_list,
-                                                            workdir = workdir, detector_shape = detector_shape)
+                                                            workdir=workdir, detector_shape=detector_shape)
 
         # check the product is valid
-        dpd = read_xml_product(prod_filename, workdir = workdir)
+        dpd = read_xml_product(prod_filename, workdir=workdir)
         assert type(dpd) == she_exposure_segmentation_map.dpdSheExposureReprojectedSegmentationMap
 
         # make sure its FITS file exists

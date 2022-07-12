@@ -121,9 +121,9 @@ def create_dpd_vis_calibrated_frame(data_filename = "None",
         @TODO fill in docstring
     """
 
-    dpd_vis_calibrated_frame = create_product_from_template(template_filename = sample_file_name,
-                                                            product_type_name = product_type_name,
-                                                            data_filename = data_filename)
+    dpd_vis_calibrated_frame = create_product_from_template(template_filename=sample_file_name,
+                                                            product_type_name=product_type_name,
+                                                            data_filename=data_filename)
     dpd_vis_calibrated_frame.set_psf_filename(psf_filename)
     dpd_vis_calibrated_frame.set_bkg_filename(bkg_filename)
     dpd_vis_calibrated_frame.set_wgt_filename(wgt_filename)
