@@ -67,7 +67,7 @@ class SheTestCase:
 
     This class provides the following features for subclasses to use:
 
-    1. Overridable method `download_test_data`, which can be used to handle any downloading of data needed for unit
+    1. Overridable method `setup_workdir`, which can be used to handle any downloading of data needed for unit
        tests, along with various convenience functions to download commonly-used test data, which can be used within
        this method:
 
@@ -80,9 +80,9 @@ class SheTestCase:
        is used to determine the location to which data was downloaded. (This is already done by the methods listed
        above, and so does not need to be done with them.)
 
-       See the documentation for the `download_test_data` method for more details and example implementations.
+       See the documentation for the `setup_workdir` method for more details and example implementations.
 
-    2. Overridable method `setup_test_data`, to handle any other setup_test_data tasks the user desires for a test,
+    2. Overridable method `post_setup`, to handle any other setup tasks the user desires for tests,
        outside of downloading test data. See the documentation for this method for example implementations.
 
     3. Overridable method `teardown`, to handle any teardown tasks the user desires for a test. This should generally
@@ -241,12 +241,12 @@ class SheTestCase:
 
         # Read in the test data if desired
         if read_in:
-            self.data_stack = SHEFrameStack.read(exposure_listfile_filename = VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
-                                                 detections_listfile_filename = MER_FINAL_CATALOG_LISTFILE_FILENAME,
-                                                 workdir = self.download_dir,
-                                                 clean_detections = False,
-                                                 memmap = True,
-                                                 mode = 'denywrite')
+            self.data_stack = SHEFrameStack.read(exposure_listfile_filename=VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
+                                                 detections_listfile_filename=MER_FINAL_CATALOG_LISTFILE_FILENAME,
+                                                 workdir=self.download_dir,
+                                                 clean_detections=False,
+                                                 memmap=True,
+                                                 mode='denywrite')
 
     def _finalize_download(self,
                            filename: str,
@@ -272,44 +272,44 @@ class SheTestCase:
         if self.download_dir is None:
             self.download_dir = os.path.split(qualified_filename)[0]
 
-    # Overridable setup_test_data methods
+    # Overridable setup methods
 
-    def download_test_data(self) -> None:
-        """Overridable method, where the user can specify any unique setup_test_data for a given testing class,
+    def setup_workdir(self) -> None:
+        """Overridable method, where the user can specify any unique setup for a given testing class,
         to be performed before the workdir is set up. This is normally used when it's needed to download test data,
         which will set the `self.download_dir` member to the location of the downloaded data.
 
         If nothing needs to be setup within the workdir, it is possible to use this function to perform all setup tasks
-        for tests. Otherwise, the `self.setup_test_data()` method should be overridden to handle any setup tasks
+        for tests. Otherwise, the `self.post_setup()` method should be overridden to handle any setup tasks
         beyond downloading data.
 
         Example implementation:
 
         ```
-        def download_test_data(self):
+        def setup_workdir(self):
             self._download_mdb()
         ```
 
         ```
-        def download_test_data(self):
+        def setup_workdir(self):
             sync = DataSync(SYNC_CONF, MY_TEST_FILE_CONF)
             sync.download()
             self._finalize_download(MY_TEST_FILE_NAME, sync)
         ```
         ```
         """
-        self.setup_workdir()
+        pass
 
-    def setup_test_data(self) -> None:
-        """Overridable method, where the user can specify any unique setup_test_data for a given testing class,
+    def post_setup(self) -> None:
+        """Overridable method, where the user can specify any unique setup for a given testing class,
         to be performed after the workdir is set up. If any test data needs to be downloaded, that should be handled
-        by the overriding the `self.download_test_data()` method, and this method should be used to perform any
+        by the overriding the `self.setup_workdir()` method, and this method should be used to perform any
         other setup tasks.
 
         Example implementation:
 
         ```
-        def setup_test_data(self):
+        def post_setup(self):
             self.my_test_data = np.zeros((100, 100))
 
             self.test_filename = "my_test_file.txt"
@@ -317,29 +317,15 @@ class SheTestCase:
                 f_out.write("Test text")
         ```
         """
-        self.post_setup()
+        pass
 
-    # Former names of overridable setup_test_data methods, now used as aliases so either can be overridden. Will be
-    # deprecated
-    # soon.
-
-    def setup_workdir(self) -> None:
-        """Deprecated former name of `self.download_test_data()` method.
-        """
-        return None
-
-    def post_setup(self) -> None:
-        """Deprecated former name of `self.setup_test_data()` method.
-        """
-        return None
-
-    @pytest.fixture(scope = "class")
+    @pytest.fixture(scope="class")
     def class_setup(self, tmpdir_factory: TempdirFactory) -> SheTestCase:
-        """A fixture which performs setup_test_data once per initialization of the test class, calling the overridable
-        `self.download_test_data()` and `self.setup_test_data()` methods.
+        """A fixture which performs setup once per initialization of the test class, calling the overridable
+        `self.setup_workdir()` and `self.post_setup()` methods.
 
         As this functions as a fixture, it may be used as an argument for any fixtures with "class" scope which
-        depend upon any setup_test_data done in these two methods, e.g.:
+        depend upon any setup done in these two methods, e.g.:
 
         ```
         @pytest.fixture(scope = "class")
@@ -355,29 +341,29 @@ class SheTestCase:
         Returns
         -------
         self : SheTestCase
-            This object at the end of executing all setup_test_data operations.
+            This object at the end of executing all setup operations.
         """
 
         # Call initialisation tasks first
         self.__init()
 
-        # Call to overridable `download_test_data` method
-        self.download_test_data()
+        # Call to overridable `setup_workdir` method
+        self.setup_workdir()
 
-        # Internal setup_test_data using the state of the class at the end of the `download_test_data` method.
+        # Internal setup using the state of the class at the end of the `setup_workdir` method.
         self._tmpdir_factory = tmpdir_factory
         self.__setup()
 
-        # Call to overridable `setup_test_data` method
-        self.setup_test_data()
+        # Call to overridable `post_setup` method
+        self.post_setup()
 
         return self
 
-    @pytest.fixture(autouse = True)
+    @pytest.fixture(autouse=True)
     def local_setup(self, class_setup: SheTestCase) -> SheTestCase:
         """An automatically-used fixture which imports all changes made to this class in the `class_setup` fixture
         locally. This gets around the fact that normally, after executing class-level fixtures, `pytest` resets the
-        state of the class. So if we want to retain changes made in our class-level setup_test_data, we have to
+        state of the class. So if we want to retain changes made in our class-level setup, we have to
         return the
         results of them as a fixture, then copy over the modifications.
 
@@ -390,7 +376,7 @@ class SheTestCase:
         Returns
         -------
         self : SheTestCase
-            This object at the end of executing all setup_test_data operations.
+            This object at the end of executing all setup operations.
         """
         for x in dir(class_setup):
             # Skip any private attributes, which always start with "__"
@@ -405,7 +391,7 @@ class SheTestCase:
 
         return self
 
-    # Protected methods which can be overridden to modify the setup_test_data
+    # Protected methods which can be overridden to modify the setup
 
     def _make_mock_args(self) -> Namespace:
         """Overridable method to create a mock `self.args` `Namespace`. Not necessary to implement if no args are used.
@@ -448,8 +434,8 @@ class SheTestCase:
         """Sets up `self.logdir` and the other expected subdirs of the workdir if they don't already exist.
         """
         self.logdir = os.path.join(self.workdir, "logs")
-        os.makedirs(os.path.join(self.workdir, "logs"), exist_ok = True)
-        os.makedirs(os.path.join(self.workdir, "data"), exist_ok = True)
+        os.makedirs(os.path.join(self.workdir, "logs"), exist_ok=True)
+        os.makedirs(os.path.join(self.workdir, "data"), exist_ok=True)
 
     def __set_workdir_args(self) -> None:
         """Set the workdir and logdir in the `self.args` `Namespace`. Both must already be set for this object
@@ -471,14 +457,14 @@ class SheTestCase:
         if self.pipeline_config is not None:
             return
 
-        self.mock_pipeline_config_factory = self.pipeline_config_factory_type(workdir = self.workdir)
+        self.mock_pipeline_config_factory = self.pipeline_config_factory_type(workdir=self.workdir)
         self.mock_pipeline_config_factory.write(self.workdir)
         self.pipeline_config = self.mock_pipeline_config_factory.pipeline_config
 
         setattr(self.args, CA_PIPELINE_CONFIG, self.mock_pipeline_config_factory.filename)
 
     def __setup(self) -> None:
-        """Implements common setup_test_data tasks. These include ensuring the workdir is set up, setting the
+        """Implements common setup tasks. These include ensuring the workdir is set up, setting the
         workdir-related
         arguments to self.args, and creating a mock pipeline_config.
         """
@@ -487,4 +473,4 @@ class SheTestCase:
         self.__write_mock_pipeline_config()
 
         # Set to raise an error on any deprecation warnings, to be sure they're caught and fixed in tests
-        warnings.simplefilter("error", category = AstropyDeprecationWarning)
+        warnings.simplefilter("error", category=AstropyDeprecationWarning)
