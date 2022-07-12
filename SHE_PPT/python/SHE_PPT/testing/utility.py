@@ -275,13 +275,13 @@ class SheTestCase:
     # Overridable setup methods
 
     def setup_workdir(self) -> None:
-        """Overridable method, where the user can specify any unique setup for a given testing class,
-        to be performed before the workdir is set up. This is normally used when it's needed to download test data,
-        which will set the `self.download_dir` member to the location of the downloaded data.
+        """Overridable method, where the user can specify any unique setup for a given testing class, to be performed
+        before the workdir is set up. This is normally used when it's needed to download test data, which will set
+        the `self.download_dir` member to the location of the downloaded data.
 
         If nothing needs to be setup within the workdir, it is possible to use this function to perform all setup tasks
-        for tests. Otherwise, the `self.post_setup()` method should be overridden to handle any setup tasks
-        beyond downloading data.
+        for tests. Otherwise, the `self.post_setup()` method should be overridden to handle any setup tasks beyond
+        downloading data.
 
         Example implementation:
 
@@ -301,10 +301,9 @@ class SheTestCase:
         pass
 
     def post_setup(self) -> None:
-        """Overridable method, where the user can specify any unique setup for a given testing class,
-        to be performed after the workdir is set up. If any test data needs to be downloaded, that should be handled
-        by the overriding the `self.setup_workdir()` method, and this method should be used to perform any
-        other setup tasks.
+        """Overridable method, where the user can specify any unique setup for a given testing class, to be performed
+        after the workdir is set up. If any test data needs to be downloaded, that should be handled by the
+        overriding the `self.setup_workdir()` method, and this method should be used to perform any other setup tasks.
 
         Example implementation:
 
@@ -364,8 +363,7 @@ class SheTestCase:
         """An automatically-used fixture which imports all changes made to this class in the `class_setup` fixture
         locally. This gets around the fact that normally, after executing class-level fixtures, `pytest` resets the
         state of the class. So if we want to retain changes made in our class-level setup, we have to
-        return the
-        results of them as a fixture, then copy over the modifications.
+        return the results of them as a fixture, then copy over the modifications.
 
         Parameters
         ----------
@@ -465,8 +463,7 @@ class SheTestCase:
 
     def __setup(self) -> None:
         """Implements common setup tasks. These include ensuring the workdir is set up, setting the
-        workdir-related
-        arguments to self.args, and creating a mock pipeline_config.
+        workdir-related arguments to `self.args`, and creating a mock pipeline_config.
         """
         self.__setup_workdir_from_tmpdir(self._tmpdir_factory.mktemp("test"))
         self.__set_workdir_args()
