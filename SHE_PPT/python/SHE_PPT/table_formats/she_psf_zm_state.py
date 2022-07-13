@@ -58,7 +58,7 @@ class ShePsfZmStateFormat(ShePsfStateFormat):
     _meta_type: Type = ShePsfZmStateMeta
     _l_colnames: Optional[List[str]] = None
 
-    def __init__(self, data_type = "FIELD"):
+    def __init__(self, data_type="FIELD"):
         super().__init__(data_type)
 
         # Column names and info

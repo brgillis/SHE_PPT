@@ -57,7 +57,7 @@ class ShePsfPdStateFormat(ShePsfStateFormat):
     _data_type: str = "CAL"
     _meta_type: Type = ShePsfPdStateMeta
 
-    def __init__(self, data_type = "FIELD"):
+    def __init__(self, data_type="FIELD"):
         super().__init__(data_type)
 
         # Column names and info

@@ -38,7 +38,7 @@ product_type_name = "DpdSheStackReprojectedSegmentationMap"
 
 
 # Convenience function to easily load the actual map
-def load_stack_segmentation_map(filename, workdir = None, **kwargs):
+def load_stack_segmentation_map(filename, workdir=None, **kwargs):
     """Directly loads the stack_segmentation_map image from the filename of the data product.
 
     Parameters
@@ -92,8 +92,8 @@ def init():
                           init_function=create_dpd_she_stack_segmentation_map)
 
 
-def create_dpd_she_stack_segmentation_map(filename = None,
-                                          data_filename = None):
+def create_dpd_she_stack_segmentation_map(filename=None,
+                                          data_filename=None):
     """ Creates a product of this type.
     """
 

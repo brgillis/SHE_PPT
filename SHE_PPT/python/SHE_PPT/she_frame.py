@@ -109,9 +109,9 @@ class SHEFrame(object):
 
     def __init__(self,
                  detectors,
-                 psf_data_hdulist = None,
-                 psf_catalogue = None,
-                 parent_frame_stack = None, ):
+                 psf_data_hdulist=None,
+                 psf_catalogue=None,
+                 parent_frame_stack=None, ):
         """
         Parameters
         ----------
@@ -272,7 +272,7 @@ class SHEFrame(object):
 
         return True
 
-    def _find_position(self, x_world, y_world, x_buffer = 0, y_buffer = 0):
+    def _find_position(self, x_world, y_world, x_buffer=0, y_buffer=0):
         """ Finds the detector where a given position in world coordinates is.
         """
 
@@ -368,7 +368,7 @@ class SHEFrame(object):
 
         return wcs_stamp
 
-    def extract_stamp(self, x_world, y_world, width, height = None, x_buffer = 0, y_buffer = 0, keep_header = False):
+    def extract_stamp(self, x_world, y_world, width, height=None, x_buffer=0, y_buffer=0, keep_header=False):
         """Extracts a postage stamp centred on the provided sky co-ordinates, by using each detector's WCS
            to determine which (if any) it lies on. If x/y_buffer > 0, it will also extract from a detector if
            the position is within this many pixels of the edge of it.
@@ -467,7 +467,7 @@ class SHEFrame(object):
 
         return stamp
 
-    def extract_psf(self, gal_id, keep_header = False):
+    def extract_psf(self, gal_id, keep_header=False):
         """Extracts the bulge and disk psfs for a given galaxy.
 
         Parameters
@@ -507,8 +507,8 @@ class SHEFrame(object):
 
         return bulge_psf_stamp, disk_psf_stamp
 
-    def get_fov_coords(self, x_world, y_world, x_buffer = 0, y_buffer = 0,
-                       return_det_coords_too = False):
+    def get_fov_coords(self, x_world, y_world, x_buffer=0, y_buffer=0,
+                       return_det_coords_too=False):
         """ Calculates the Field-of-View (FOV) co-ordinates of a given sky position, and returns a (fov_x, fov_y)
             tuple. If the position isn't present in the exposure, None will be returned instead.
 
@@ -578,16 +578,16 @@ class SHEFrame(object):
 
     @classmethod
     def read(cls,
-             frame_product_filename = None,
-             seg_product_filename = None,
-             psf_product_filename = None,
-             detections_catalogue = None,
-             prune_images = False,
-             workdir = ".",
-             x_max = 6,
-             y_max = 6,
-             save_products = False,
-             load_images = True,
+             frame_product_filename=None,
+             seg_product_filename=None,
+             psf_product_filename=None,
+             detections_catalogue=None,
+             prune_images=False,
+             workdir=".",
+             x_max=6,
+             y_max=6,
+             save_products=False,
+             load_images=True,
              **kwargs):
         """Reads a SHEFrame from disk
 
@@ -630,7 +630,7 @@ class SHEFrame(object):
             ra_list = detections_catalogue[mfc_tf.gal_x_world].data
             dec_list = detections_catalogue[mfc_tf.gal_y_world].data
 
-            def check_for_objects(header, buffer = 4):
+            def check_for_objects(header, buffer=4):
 
                 wcs = WCS(header)
 
@@ -678,7 +678,7 @@ class SHEFrame(object):
             else:
                 return os.path.join(a, b)
 
-        def open_or_none(filename, memmap = None):
+        def open_or_none(filename, memmap=None):
             qualified_filename = join_or_none(workdir, filename)
             if qualified_filename is None:
                 return None, None

@@ -51,7 +51,7 @@ class SkyImage():
     Todo : use properties for z1 z2 !
     """
 
-    def __init__(self, data, z1 = None, z2 = None):
+    def __init__(self, data, z1=None, z2=None):
         """
 
         """
@@ -91,7 +91,7 @@ class SkyImage():
         if (self.z1 in autolist) or (self.z2 in autolist):
             self.set_auto_z_scale()
 
-    def set_auto_z_scale(self, full_sample_limit = 10000, nsig = 5.0):
+    def set_auto_z_scale(self, full_sample_limit=10000, nsig=5.0):
         """Automatic z-scale determination"""
 
         # if a.size > full_sample_limit :
@@ -157,7 +157,7 @@ def draw_mask(ax, si, **kwargs):
                      cmap=mask_cmap, norm=mask_norm, **imshow_kwargs)
 
 
-def draw_ellipse(ax, x, y, a = 5, b = None, angle = None, **kwargs):
+def draw_ellipse(ax, x, y, a=5, b=None, angle=None, **kwargs):
     """Draws an ellipse patch on the axes
 
     """
@@ -192,7 +192,7 @@ def draw_g_ellipse(ax, x, y, g1, g2, sigma, **kwargs):
     return draw_ellipse(ax, x, y, a, b, angle, **kwargs)
 
 
-def draw_g_ellipses(ax, cat, x = "x", y = "y", g1 = "g1", g2 = "g2", sigma = "sigma", **kwargs):
+def draw_g_ellipses(ax, cat, x="x", y="y", g1="g1", g2="g2", sigma="sigma", **kwargs):
     """Draws ellipses from a catalog (that is an astropy table or a list of dicts) of sources
 
     Parameters
@@ -220,7 +220,7 @@ def draw_g_ellipses(ax, cat, x = "x", y = "y", g1 = "g1", g2 = "g2", sigma = "si
             ax, row[x], row[y], row[g1], row[g2], row[sigma], **kwargs)
 
 
-def annotate(ax, cat, x = "x", y = "y", text = "Hello", **kwargs):
+def annotate(ax, cat, x="x", y="y", text="Hello", **kwargs):
     """Annotates the positions (x, y) from a catalog
 
     """
@@ -247,7 +247,7 @@ class SimpleFigure():
 
     """
 
-    def __init__(self, img_array, z1 = None, z2 = None, scale = 1):
+    def __init__(self, img_array, z1=None, z2=None, scale=1):
         """
 
         Parameters
@@ -276,7 +276,7 @@ class SimpleFigure():
     def __str__(self):
         return "SimpleFigure"  # ({})".format(str(self.si))
 
-    def draw(self, si = None):
+    def draw(self, si=None):
         """Draw the image pixels on the axes.
 
         Usually you leave si to None, in which case a new SkyImage is built from what was passed to init.
@@ -343,7 +343,7 @@ def read_fits(filepath):
     return a
 
 
-def write_fits(a, filepath, overwrite = True):
+def write_fits(a, filepath, overwrite=True):
     """Writes a simple 2D numpy array into a FITS file
 
     As for read_fits, a transposition is applied to conserve the orientation.

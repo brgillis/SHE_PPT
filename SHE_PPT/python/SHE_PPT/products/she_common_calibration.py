@@ -173,10 +173,10 @@ def _set_method_filename(self, method, filename):
     return name
 
 
-def create_dpd_she_common_calibration(KSB_filename = None,
-                                      LensMC_filename = None,
-                                      MomentsML_filename = None,
-                                      REGAUSS_filename = None):
+def create_dpd_she_common_calibration(KSB_filename=None,
+                                      LensMC_filename=None,
+                                      MomentsML_filename=None,
+                                      REGAUSS_filename=None):
     """
         @TODO fill in docstring
     """

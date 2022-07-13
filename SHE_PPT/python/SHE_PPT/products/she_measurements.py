@@ -39,11 +39,11 @@ def init():
                       init_function=create_dpd_she_measurements)
 
 
-def create_dpd_she_measurements(KSB_filename = None,
-                                LensMC_filename = None,
-                                MomentsML_filename = None,
-                                REGAUSS_filename = None,
-                                spatial_footprint = None):
+def create_dpd_she_measurements(KSB_filename=None,
+                                LensMC_filename=None,
+                                MomentsML_filename=None,
+                                REGAUSS_filename=None,
+                                spatial_footprint=None):
     """ Create a product of this type.
     """
 

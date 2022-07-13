@@ -39,7 +39,7 @@ product_type_name = "DpdSheExposureReprojectedSegmentationMap"
 
 
 # Convenience function to easily load the actual map
-def load_she_exposure_segmentation_map(filename, directory = None, **kwargs):
+def load_she_exposure_segmentation_map(filename, directory=None, **kwargs):
     """Directly loads the she_exposure_segmentation_map image from the filename of the data product.
 
     Parameters
@@ -93,8 +93,8 @@ def init():
                           init_function=create_dpd_she_exposure_segmentation_map)
 
 
-def create_dpd_she_exposure_segmentation_map(filename = None,
-                                             data_filename = None):
+def create_dpd_she_exposure_segmentation_map(filename=None,
+                                             data_filename=None):
     """ Creates a product of this type.
     """
 

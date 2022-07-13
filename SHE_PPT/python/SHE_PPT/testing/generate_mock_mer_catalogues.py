@@ -33,7 +33,7 @@ from SHE_PPT.table_formats.mer_final_catalog import initialise_mer_final_catalog
 logger = getLogger(__name__)
 
 
-def create_catalogue(obj_coords = [], workdir = "."):
+def create_catalogue(obj_coords=[], workdir="."):
     """
        Creates a mock dpdMerFinalCatalog for a list of object coordinates
 

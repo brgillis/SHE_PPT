@@ -37,8 +37,8 @@ def init():
                           init_function=create_dpd_she_detections)
 
 
-def create_dpd_she_detections(filename = None,
-                              data_filename = None):
+def create_dpd_she_detections(filename=None,
+                              data_filename=None):
     """ Creates a product of this type.
     """
 

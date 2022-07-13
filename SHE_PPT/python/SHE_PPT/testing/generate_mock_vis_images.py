@@ -37,7 +37,7 @@ logger = getLogger(__name__)
 stampscale = 5
 
 
-def __generate_gausian_blob(objsize = 10):
+def __generate_gausian_blob(objsize=10):
     """generates a (objsize*stampscale*2 x objsize*stampscale*2) pixel image of a sersic profile (n=1) with width of
     objsize pixels"""
 
@@ -55,8 +55,8 @@ def __generate_gausian_blob(objsize = 10):
     return blob
 
 
-def __generate_detector_images(detector_shape = (4136, 4096), nobjs = 10, background = 10., snr = 10, objsize = 10,
-                               rng = None):
+def __generate_detector_images(detector_shape=(4136, 4096), nobjs=10, background=10., snr=10, objsize=10,
+                               rng=None):
     """Generates the SCI, RMG, FLG, WGT and BKG pixel maps for a detector
 
        Arguments:
@@ -117,7 +117,7 @@ def __generate_detector_images(detector_shape = (4136, 4096), nobjs = 10, backgr
     return sci, rms, flg, wgt, bkg, x_px, y_px
 
 
-def __create_header(wcs = None, **kwargs):
+def __create_header(wcs=None, **kwargs):
     """Returns a newly created FITS header
        Args:
          wcs - adds the wcs information to the header
@@ -137,8 +137,8 @@ def __create_header(wcs = None, **kwargs):
     return h
 
 
-def create_exposure(n_detectors = 1, detector_shape = (100, 100), workdir = ".", seed = 1, n_objs_per_det = 10,
-                    objsize = 10):
+def create_exposure(n_detectors=1, detector_shape=(100, 100), workdir=".", seed=1, n_objs_per_det=10,
+                    objsize=10):
     """
         Creates a mock dpdVisCalibratedFrame data product for use in smoke tests
 

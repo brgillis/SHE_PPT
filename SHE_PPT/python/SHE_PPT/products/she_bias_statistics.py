@@ -158,7 +158,7 @@ def _get_method_bias_statistics_filename(self, method):
     return filename
 
 
-def _set_method_bias_statistics(self, method, stats, workdir = "."):
+def _set_method_bias_statistics(self, method, stats, workdir="."):
     # If a previous file exists, delete it
     old_filename = _get_method_bias_statistics_filename(self, method)
     if old_filename is not None:
@@ -202,7 +202,7 @@ def _set_method_bias_statistics(self, method, stats, workdir = "."):
     self.set_method_bias_statistics_filename(method, new_filename)
 
 
-def _get_method_bias_statistics(self, method, workdir = "."):
+def _get_method_bias_statistics(self, method, workdir="."):
     filename = self.get_method_bias_statistics_filename(method)
 
     if filename is None:
@@ -217,7 +217,7 @@ def _get_method_bias_statistics(self, method, workdir = "."):
     return bias_statistics
 
 
-def _set_method_bias_measurements(self, method, measurements, workdir = "."):
+def _set_method_bias_measurements(self, method, measurements, workdir="."):
     filename = None
     qualified_filename = None
 
@@ -268,7 +268,7 @@ def _set_method_bias_measurements(self, method, measurements, workdir = "."):
     bias_statistics_table.write(qualified_filename)
 
 
-def _get_method_bias_measurements(self, method, workdir = "."):
+def _get_method_bias_measurements(self, method, workdir="."):
     filename = _get_method_bias_statistics_filename(self, method)
 
     if filename is None:
@@ -291,20 +291,20 @@ def _get_KSB_bias_statistics_filename(self):
     return _get_method_bias_statistics_filename(self, method=ShearEstimationMethods.KSB)
 
 
-def _set_KSB_bias_statistics(self, stats, workdir = "."):
+def _set_KSB_bias_statistics(self, stats, workdir="."):
     return _set_method_bias_statistics(self, method=ShearEstimationMethods.KSB, stats=stats, workdir=workdir)
 
 
-def _get_KSB_bias_statistics(self, workdir = "."):
+def _get_KSB_bias_statistics(self, workdir="."):
     return _get_method_bias_statistics(self, method=ShearEstimationMethods.KSB, workdir=workdir)
 
 
-def _set_KSB_bias_measurements(self, measurements, workdir = "."):
+def _set_KSB_bias_measurements(self, measurements, workdir="."):
     return _set_method_bias_measurements(self, method=ShearEstimationMethods.KSB, measurements=measurements,
                                          workdir=workdir)
 
 
-def _get_KSB_bias_measurements(self, workdir = "."):
+def _get_KSB_bias_measurements(self, workdir="."):
     return _get_method_bias_measurements(self, method=ShearEstimationMethods.KSB, workdir=workdir)
 
 
@@ -316,20 +316,20 @@ def _get_LensMC_bias_statistics_filename(self):
     return _get_method_bias_statistics_filename(self, method=ShearEstimationMethods.LENSMC)
 
 
-def _set_LensMC_bias_statistics(self, stats, workdir = "."):
+def _set_LensMC_bias_statistics(self, stats, workdir="."):
     return _set_method_bias_statistics(self, method=ShearEstimationMethods.LENSMC, stats=stats, workdir=workdir)
 
 
-def _get_LensMC_bias_statistics(self, workdir = "."):
+def _get_LensMC_bias_statistics(self, workdir="."):
     return _get_method_bias_statistics(self, method=ShearEstimationMethods.LENSMC, workdir=workdir)
 
 
-def _set_LensMC_bias_measurements(self, measurements, workdir = "."):
+def _set_LensMC_bias_measurements(self, measurements, workdir="."):
     return _set_method_bias_measurements(self, method=ShearEstimationMethods.LENSMC, measurements=measurements,
                                          workdir=workdir)
 
 
-def _get_LensMC_bias_measurements(self, workdir = "."):
+def _get_LensMC_bias_measurements(self, workdir="."):
     return _get_method_bias_measurements(self, method=ShearEstimationMethods.LENSMC, workdir=workdir)
 
 
@@ -341,21 +341,21 @@ def _get_MomentsML_bias_statistics_filename(self):
     return _get_method_bias_statistics_filename(self, method=ShearEstimationMethods.MOMENTSML)
 
 
-def _set_MomentsML_bias_statistics(self, stats, workdir = "."):
+def _set_MomentsML_bias_statistics(self, stats, workdir="."):
     return _set_method_bias_statistics(self, method=ShearEstimationMethods.MOMENTSML, stats=stats,
                                        workdir=workdir)
 
 
-def _get_MomentsML_bias_statistics(self, workdir = "."):
+def _get_MomentsML_bias_statistics(self, workdir="."):
     return _get_method_bias_statistics(self, method=ShearEstimationMethods.MOMENTSML, workdir=workdir)
 
 
-def _set_MomentsML_bias_measurements(self, measurements, workdir = "."):
+def _set_MomentsML_bias_measurements(self, measurements, workdir="."):
     return _set_method_bias_measurements(self, method=ShearEstimationMethods.MOMENTSML, measurements=measurements,
                                          workdir=workdir)
 
 
-def _get_MomentsML_bias_measurements(self, workdir = "."):
+def _get_MomentsML_bias_measurements(self, workdir="."):
     return _get_method_bias_measurements(self, method=ShearEstimationMethods.MOMENTSML, workdir=workdir)
 
 
@@ -367,27 +367,27 @@ def _get_REGAUSS_bias_statistics_filename(self):
     return _get_method_bias_statistics_filename(self, method=ShearEstimationMethods.REGAUSS)
 
 
-def _set_REGAUSS_bias_statistics(self, stats, workdir = "."):
+def _set_REGAUSS_bias_statistics(self, stats, workdir="."):
     return _set_method_bias_statistics(self, method=ShearEstimationMethods.REGAUSS, stats=stats, workdir=workdir)
 
 
-def _get_REGAUSS_bias_statistics(self, workdir = "."):
+def _get_REGAUSS_bias_statistics(self, workdir="."):
     return _get_method_bias_statistics(self, method=ShearEstimationMethods.REGAUSS, workdir=workdir)
 
 
-def _set_REGAUSS_bias_measurements(self, measurements, workdir = "."):
+def _set_REGAUSS_bias_measurements(self, measurements, workdir="."):
     return _set_method_bias_measurements(self, method=ShearEstimationMethods.REGAUSS, measurements=measurements,
                                          workdir=workdir)
 
 
-def _get_REGAUSS_bias_measurements(self, workdir = "."):
+def _get_REGAUSS_bias_measurements(self, workdir="."):
     return _get_method_bias_measurements(self, method=ShearEstimationMethods.REGAUSS, workdir=workdir)
 
 
-def create_dpd_she_bias_statistics(KSB_bias_statistics_filename = None,
-                                   LensMC_bias_statistics_filename = None,
-                                   MomentsML_bias_statistics_filename = None,
-                                   REGAUSS_bias_statistics_filename = None, ):
+def create_dpd_she_bias_statistics(KSB_bias_statistics_filename=None,
+                                   LensMC_bias_statistics_filename=None,
+                                   MomentsML_bias_statistics_filename=None,
+                                   REGAUSS_bias_statistics_filename=None, ):
     """
         @TODO fill in docstring
     """
@@ -406,11 +406,11 @@ def create_dpd_she_bias_statistics(KSB_bias_statistics_filename = None,
     return dpd_shear_bias_stats
 
 
-def create_dpd_she_bias_statistics_from_stats(KSB_bias_statistics = None,
-                                              LensMC_bias_statistics = None,
-                                              MomentsML_bias_statistics = None,
-                                              REGAUSS_bias_statistics = None,
-                                              workdir = "."):
+def create_dpd_she_bias_statistics_from_stats(KSB_bias_statistics=None,
+                                              LensMC_bias_statistics=None,
+                                              MomentsML_bias_statistics=None,
+                                              REGAUSS_bias_statistics=None,
+                                              workdir="."):
     """
         @TODO fill in docstring
     """

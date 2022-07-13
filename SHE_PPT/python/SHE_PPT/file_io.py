@@ -1260,7 +1260,7 @@ def write_pickled_product(product,
 @deprecated(since="9.1",
             alternative="read_xml_product")
 def read_pickled_product(pickled_filename,
-                         workdir = DEFAULT_WORKDIR,
+                         workdir=DEFAULT_WORKDIR,
                          log_info: bool = False) -> Any:
     """This function is now deprecated and should not generally be used.
     """

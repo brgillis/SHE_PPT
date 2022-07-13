@@ -371,7 +371,7 @@ class SHEFrameStack():
 
         return self.extract_stamp_stack(x_world, y_world, width, *args, **kwargs)
 
-    def extract_psf_stacks(self, gal_id, make_stacked_psf = False, keep_header = False):
+    def extract_psf_stacks(self, gal_id, make_stacked_psf=False, keep_header=False):
         """Extracts bulge and disk PSF stacks for a given galaxy in the detections catalogue.
 
            Parameters
@@ -459,8 +459,8 @@ class SHEFrameStack():
 
         return unique_inds
 
-    def extract_wcs_stamp_stack(self, x_world, y_world, none_if_out_of_bounds = False, extract_stacked_stamp = True,
-                                extract_exposure_stamps = True):
+    def extract_wcs_stamp_stack(self, x_world, y_world, none_if_out_of_bounds=False, extract_stacked_stamp=True,
+                                extract_exposure_stamps=True):
         """Extracts an "empty" postage stamp centred on the provided sky co-ordinates, which only contains WCS
            information but otherwise has the same interface as a SHEImage, for each exposure and the stacked
            image.
@@ -525,10 +525,10 @@ class SHEFrameStack():
 
         return stamp_stack
 
-    def extract_stamp_stack(self, x_world, y_world, width, height = None, x_buffer = 0, y_buffer = 0,
-                            keep_header = False,
-                            none_if_out_of_bounds = False, extract_stacked_stamp = True,
-                            extract_exposure_stamps = True):
+    def extract_stamp_stack(self, x_world, y_world, width, height=None, x_buffer=0, y_buffer=0,
+                            keep_header=False,
+                            none_if_out_of_bounds=False, extract_stacked_stamp=True,
+                            extract_exposure_stamps=True):
         """Extracts a postage stamp centred on the provided sky co-ordinates, by using each detector's WCS
            to determine which (if any) it lies on. If x/y_buffer >0, it will also extract from a detector if
            the position is within this many pixels of the edge of it.
@@ -636,8 +636,8 @@ class SHEFrameStack():
 
         return stamp_stack
 
-    def get_fov_coords(self, x_world, y_world, x_buffer = 0, y_buffer = 0, none_if_out_of_bounds = False,
-                       return_det_coords_too = False):
+    def get_fov_coords(self, x_world, y_world, x_buffer=0, y_buffer=0, none_if_out_of_bounds=False,
+                       return_det_coords_too=False):
         """ Calculates the Field-of-View (FOV) co-ordinates of a given sky position for each exposure, and
             returns a list of (fov_x, fov_y) tuples. If the position isn't present in a given exposure, None will be
             returned in that list index.
@@ -685,8 +685,8 @@ class SHEFrameStack():
         return fov_coords_list
 
     @classmethod
-    def _read_product_extension(cls, product_filename, tags = None, workdir = ".", dtype = None,
-                                filetype = "science", load_images = True, **kwargs):
+    def _read_product_extension(cls, product_filename, tags=None, workdir=".", dtype=None,
+                                filetype="science", load_images=True, **kwargs):
 
         product = read_xml_product(os.path.join(workdir, product_filename))
 
@@ -733,7 +733,7 @@ class SHEFrameStack():
         return product, header, data, qualified_filename, hdu_indices
 
     @classmethod
-    def _read_file_extension(cls, filename, tags = None, workdir = ".", dtype = None, **kwargs):
+    def _read_file_extension(cls, filename, tags=None, workdir=".", dtype=None, **kwargs):
 
         hdulist = fits.open(
             os.path.join(workdir, filename), **kwargs)

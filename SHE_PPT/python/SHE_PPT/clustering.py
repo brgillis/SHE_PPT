@@ -39,7 +39,7 @@ logger = getLogger(__name__)
 RANDOM_SEED = 1
 
 
-def _find_groups(xs, ys, sep = 1., metric = euclidean_metric):
+def _find_groups(xs, ys, sep=1., metric=euclidean_metric):
     """returns a list of groups of potential blends. Each group is a list of the array indices of the identified objects
 
     Parameters:
@@ -176,7 +176,7 @@ def _merge_grouped(xs, ys, global_groups):
     return xs, ys
 
 
-def identify_all_groups(x, y, sep = 1., metric = euclidean_metric, batchsize = 2000):
+def identify_all_groups(x, y, sep=1., metric=euclidean_metric, batchsize=2000):
     """Finds all the grouped objects in the input list of x and y coordinates of objects.
        returns updated x and y coordinate lists where all the grouped objects' coordinates
        have been changed to the centre of mass of the group, along with an array that
@@ -273,7 +273,7 @@ def identify_all_groups(x, y, sep = 1., metric = euclidean_metric, batchsize = 2
     return xs, ys, group_ids
 
 
-def partition_into_batches(xs, ys, batchsize = 20, nbatches = None, seed = RANDOM_SEED):
+def partition_into_batches(xs, ys, batchsize=20, nbatches=None, seed=RANDOM_SEED):
     """Given arrays of the objects' x and y coordinates, spatially partition them into many batches
        approximately of size batchsize, or if nbatches != None, partition them into nbatches batches
 

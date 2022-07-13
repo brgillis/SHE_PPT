@@ -69,8 +69,8 @@ def _get_all_filenames(self):
     return all_filenames
 
 
-def create_dpd_she_galaxy_population_priors(filename = None,
-                                            data_filename = None):
+def create_dpd_she_galaxy_population_priors(filename=None,
+                                            data_filename=None):
     """ Creates a product of this type.
     """
 

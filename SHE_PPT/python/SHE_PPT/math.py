@@ -31,7 +31,7 @@ DEFAULT_C_TARGET = 5e-6
 
 class LinregressStatistics():
 
-    def __init__(self, lx = None, ly = None, ly_err = None):
+    def __init__(self, lx=None, ly=None, ly_err=None):
         """Initialises and calculates statistics as member variables.
         """
 
@@ -150,7 +150,7 @@ class LinregressResults():
 
         return self._intercept_sigma
 
-    def __init__(self, lstats = None):
+    def __init__(self, lstats=None):
 
         if lstats is None:
 
@@ -240,7 +240,7 @@ class BiasMeasurements():
     _m_sigma = None
     _c_sigma = None
 
-    def __init__(self, linregress_results = None, m = 0., m_err = 0., c = 0., c_err = 0., mc_covar = 0.):
+    def __init__(self, linregress_results=None, m=0., m_err=0., c=0., c_err=0., mc_covar=0.):
 
         if linregress_results is not None:
             # Init from linregress results
@@ -355,7 +355,7 @@ class BiasMeasurements():
         return self._c_sigma
 
 
-def get_linregress_statistics(lx, ly, ly_err = None):
+def get_linregress_statistics(lx, ly, ly_err=None):
     """Functional interface to get a linear regression statistics object.
     """
 

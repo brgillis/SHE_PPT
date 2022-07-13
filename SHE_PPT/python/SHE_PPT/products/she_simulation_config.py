@@ -39,7 +39,7 @@ def init():
                               init_function=create_dpd_she_simulation_config)
 
 
-def create_dpd_she_simulation_config(filename = None):
+def create_dpd_she_simulation_config(filename=None):
     """ Initialize a product of this type
     """
 

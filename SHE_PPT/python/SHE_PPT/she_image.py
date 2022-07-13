@@ -143,18 +143,18 @@ class SHEImage():
 
     def __init__(self,
                  data,
-                 mask = None,
-                 noisemap = None,
-                 segmentation_map = None,
-                 background_map = None,
-                 weight_map = None,
-                 header = None,
-                 offset = None,
-                 wcs = None,
-                 parent_frame_stack = None,
-                 parent_frame = None,
-                 parent_image_stack = None,
-                 parent_image = None):
+                 mask=None,
+                 noisemap=None,
+                 segmentation_map=None,
+                 background_map=None,
+                 weight_map=None,
+                 header=None,
+                 offset=None,
+                 wcs=None,
+                 parent_frame_stack=None,
+                 parent_frame=None,
+                 parent_image_stack=None,
+                 parent_image=None):
         """ Initialiser for a SHEImage object
 
             Parameters
@@ -695,7 +695,7 @@ class SHEImage():
 
         return True
 
-    def get_object_mask(self, seg_id, mask_suspect = False, mask_unassigned = False):
+    def get_object_mask(self, seg_id, mask_suspect=False, mask_unassigned=False):
         """Get a mask for pixels that are either bad (and optionally suspect)
         or don't belong to an object with a given ID.
 
@@ -738,7 +738,7 @@ class SHEImage():
 
         return object_mask
 
-    def write_to_fits(self, filepath, overwrite = False, data_only = False, **kwargs):
+    def write_to_fits(self, filepath, overwrite=False, data_only=False, **kwargs):
         """Writes the image to disk, in form of a multi-extension FITS cube.
 
         The data is written in the primary HDU, the mask in the extension 'MASK' and the
@@ -813,18 +813,18 @@ class SHEImage():
     @classmethod
     def read_from_fits(cls,
                        filepath,
-                       data_ext = 'PRIMARY',
-                       mask_ext = 'MASK',
-                       noisemap_ext = 'NOISEMAP',
-                       segmentation_map_ext = 'SEGMAP',
-                       background_map_ext = 'BKGMAP',
-                       weight_map_ext = 'WGTMAP',
-                       mask_filepath = None,
-                       noisemap_filepath = None,
-                       segmentation_map_filepath = None,
-                       background_map_filepath = None,
-                       weight_map_filepath = None,
-                       workdir = ".", ):
+                       data_ext='PRIMARY',
+                       mask_ext='MASK',
+                       noisemap_ext='NOISEMAP',
+                       segmentation_map_ext='SEGMAP',
+                       background_map_ext='BKGMAP',
+                       weight_map_ext='WGTMAP',
+                       mask_filepath=None,
+                       noisemap_filepath=None,
+                       segmentation_map_filepath=None,
+                       background_map_filepath=None,
+                       weight_map_filepath=None,
+                       workdir=".", ):
         """Reads an image from a FITS file, such as written by write_to_fits(), and returns it as a SHEImage object.
 
         This function can be used to read previously saved SHEImage objects (in this case, just give the filepath),
@@ -982,7 +982,7 @@ class SHEImage():
         return outarray
 
     @classmethod
-    def _get_specific_hdu_content_from_fits(cls, filepath, ext = None, return_header = False):
+    def _get_specific_hdu_content_from_fits(cls, filepath, ext=None, return_header=False):
         """Private helper to handle access to particular extensions of a FITS file
 
         This function either returns something not-None, or raises an exception.
@@ -1026,7 +1026,7 @@ class SHEImage():
             out = None
         return out
 
-    def extract_wcs_stamp(self, x, y, none_if_out_of_bounds = False):
+    def extract_wcs_stamp(self, x, y, none_if_out_of_bounds=False):
         """ Extracts an "empty" stamp, which contains only information needed for WCS operations, having the
             interface of a standard SHEImage.
         """
@@ -1054,20 +1054,20 @@ class SHEImage():
 
         return newimg
 
-    def extract_stamp(self, x, y, width = DEFAULT_STAMP_SIZE, height = None, indexconv = "numpy", keep_header = False,
-                      none_if_out_of_bounds = False, force_all_properties = False,
-                      data_filename = None,
-                      data_hdu = None,
-                      noisemap_filename = None,
-                      noisemap_hdu = None,
-                      mask_filename = None,
-                      mask_hdu = None,
-                      bkg_filename = None,
-                      bkg_hdu = None,
-                      wgt_filename = None,
-                      wgt_hdu = None,
-                      seg_filename = None,
-                      seg_hdu = None):
+    def extract_stamp(self, x, y, width=DEFAULT_STAMP_SIZE, height=None, indexconv="numpy", keep_header=False,
+                      none_if_out_of_bounds=False, force_all_properties=False,
+                      data_filename=None,
+                      data_hdu=None,
+                      noisemap_filename=None,
+                      noisemap_hdu=None,
+                      mask_filename=None,
+                      mask_hdu=None,
+                      bkg_filename=None,
+                      bkg_hdu=None,
+                      wgt_filename=None,
+                      wgt_hdu=None,
+                      seg_filename=None,
+                      seg_hdu=None):
         """Extracts a stamp and returns it as a new None (using views of numpy arrays, i.e., without making a copy)
 
         The extracted stamp is centered on the given (x,y) coordinates and has shape (width, height).
@@ -1319,7 +1319,7 @@ class SHEImage():
 
         return newimg
 
-    def add_default_mask(self, force = False):
+    def add_default_mask(self, force=False):
         """Adds a default mask to this object (all unmasked). If force=True, will overwrite an existing mask.
         """
 
@@ -1332,7 +1332,7 @@ class SHEImage():
 
         self.mask = np.zeros_like(self.data, dtype=np.int32)
 
-    def add_default_noisemap(self, force = False, suppress_warnings = False):
+    def add_default_noisemap(self, force=False, suppress_warnings=False):
         """Adds a default noisemap to this object (all 0.). If force=True, will overwrite an existing noisemap.
         """
 
@@ -1360,7 +1360,7 @@ class SHEImage():
         if self.background_map is not None:
             self.noisemap += np.sqrt(self.background_map / gain)
 
-    def add_default_segmentation_map(self, force = False):
+    def add_default_segmentation_map(self, force=False):
         """Adds a default segmentation_map to this object (all unassigned). If force=True, will overwrite an existing
         segmentation_map.
         """
@@ -1374,7 +1374,7 @@ class SHEImage():
 
         self.segmentation_map = SEGMAP_UNASSIGNED_VALUE * np.ones_like(self.data, dtype=np.int32)
 
-    def add_default_background_map(self, force = False):
+    def add_default_background_map(self, force=False):
         """Adds a default background_map to this object (all 0.). If force=True, will overwrite an existing
         background_map.
         """
@@ -1388,7 +1388,7 @@ class SHEImage():
 
         self.background_map = np.zeros_like(self.data, dtype=float)
 
-    def add_default_weight_map(self, force = False):
+    def add_default_weight_map(self, force=False):
         """Adds a default weight_map to this object (all 0.). If force=True, will overwrite an existing
         weight_map.
         """
@@ -1402,7 +1402,7 @@ class SHEImage():
 
         self.weight_map = np.ones_like(self.data, dtype=float)
 
-    def add_default_header(self, force = False):
+    def add_default_header(self, force=False):
         """Adds a default header to this object (only required values). If force=True, will overwrite an existing
         header.
         """
@@ -1416,7 +1416,7 @@ class SHEImage():
 
         self.header = astropy.io.fits.Header()
 
-    def add_default_wcs(self, force = False):
+    def add_default_wcs(self, force=False):
         """Adds a default wcs to this object (pixel scale 1.0). If force=True, will overwrite an existing wcs.
         """
 
@@ -1429,7 +1429,7 @@ class SHEImage():
 
         self.wcs = astropy.wcs.WCS(astropy.io.fits.Header())
 
-    def pix2world(self, x, y, origin = 0):
+    def pix2world(self, x, y, origin=0):
         """Converts x and y pixel coordinates to ra and dec world coordinates.
 
         Parameters
@@ -1473,7 +1473,7 @@ class SHEImage():
 
         return ra, dec
 
-    def world2pix(self, ra, dec, origin = 0):
+    def world2pix(self, ra, dec, origin=0):
         """Converts ra and dec world coordinates to x and y pixel coordinates
 
         Parameters
@@ -1518,8 +1518,8 @@ class SHEImage():
 
         return x, y
 
-    def get_pix2world_transformation(self, x = None, y = None, dx = 0.1, dy = 0.1, spatial_ra = False, origin = 0,
-                                     norm = False):
+    def get_pix2world_transformation(self, x=None, y=None, dx=0.1, dy=0.1, spatial_ra=False, origin=0,
+                                     norm=False):
         """Gets the local transformation matrix between pixel and world (ra/dec) coordinates at the specified location.
 
         Parameters
@@ -1598,9 +1598,9 @@ class SHEImage():
 
         return pix2world_transformation
 
-    def get_world2pix_transformation(self, ra = None, dec = None, dra = 0.01 / 3600, ddec = 0.01 / 3600,
-                                     spatial_ra = False,
-                                     origin = 0, norm = False):
+    def get_world2pix_transformation(self, ra=None, dec=None, dra=0.01 / 3600, ddec=0.01 / 3600,
+                                     spatial_ra=False,
+                                     origin=0, norm=False):
         """Gets the local transformation matrix between world (ra/dec) and pixel coordinates at the specified location.
 
         Parameters
@@ -1676,7 +1676,7 @@ class SHEImage():
 
         return world2pix_transformation
 
-    def get_pix2world_rotation(self, x, y, dx = 0.1, dy = 0.1, origin = 0):
+    def get_pix2world_rotation(self, x, y, dx=0.1, dy=0.1, origin=0):
         """Gets the local rotation matrix between pixel and world (ra/dec) coordinates at the specified location.
         Note that this doesn't provide the full transformation since it lacks scaling and shearing terms.
 
@@ -1724,7 +1724,7 @@ class SHEImage():
 
         return pix2world_rotation
 
-    def get_world2pix_rotation(self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, origin = 0):
+    def get_world2pix_rotation(self, ra, dec, dra=0.01 / 3600, ddec=0.01 / 3600, origin=0):
         """Gets the local rotation matrix between world (ra/dec) and pixel coordinates at the specified location.
         Note that this doesn't provide the full transformation since it lacks scaling and shearing terms.
 
@@ -1770,7 +1770,7 @@ class SHEImage():
 
         return world2pix_rotation
 
-    def get_pix2world_decomposition(self, x = None, y = None):
+    def get_pix2world_decomposition(self, x=None, y=None):
         """Gets the local WCS decomposition between image (x/y) and world (ra/dec) coordinates at the specified
         location.
 
@@ -1819,7 +1819,7 @@ class SHEImage():
         # We need to use the inverse of the local wcs to get the pix2world decomposition
         return local_wcs.getDecomposition()
 
-    def get_world2pix_decomposition(self, ra = None, dec = None):
+    def get_world2pix_decomposition(self, ra=None, dec=None):
         """Gets the local WCS decomposition between world (ra/dec) and pixel coordinates at the specified location.
 
         Parameters
@@ -1898,7 +1898,7 @@ class SHEImage():
 
         return local_wcs.inverse().getDecomposition()
 
-    def estimate_pix2world_rotation_angle(self, x, y, dx, dy, origin = 0):
+    def estimate_pix2world_rotation_angle(self, x, y, dx, dy, origin=0):
         """Estimates the local rotation angle between pixel and world (-ra/dec) coordinates at the specified location.
         Note that due to distortion in the transformation, this method is inaccurate and depends on the choice of dx
         and dy; get_pix2world_rotation should be used instead to provide the rotation matrix. This method is retained
@@ -1965,7 +1965,7 @@ class SHEImage():
 
         return rotation_angle
 
-    def estimate_world2pix_rotation_angle(self, ra, dec, dra = 0.01 / 3600, ddec = 0.01 / 3600, origin = 0):
+    def estimate_world2pix_rotation_angle(self, ra, dec, dra=0.01 / 3600, ddec=0.01 / 3600, origin=0):
         """Gets the local rotation angle between world (-ra/dec) and pixel coordinates at the specified location.
         Note that due to distortion in the transformation, this method is inaccurate and depends on the choice of dra
         and ddec; get_world2pix_rotation should be used instead to provide the rotation matrix. This method is retained
@@ -2022,7 +2022,7 @@ class SHEImage():
 
         return rotation_angle
 
-    def get_objects_in_dectector(self, objects_coords, x_buffer = 0., y_buffer = 0.):
+    def get_objects_in_dectector(self, objects_coords, x_buffer=0., y_buffer=0.):
         """Returns an array containing the indices of the objects in the detector, and arrays of the x and y pixel
         coordinates for these objects"""
 

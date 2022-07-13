@@ -30,7 +30,7 @@ from SHE_PPT.products import she_object_id_list
 logger = getLogger(__name__)
 
 
-def create_object_id_list(id_list, workdir = "."):
+def create_object_id_list(id_list, workdir="."):
 
     dpd = she_object_id_list.create_dpd_she_object_id_list(id_list=id_list)
 

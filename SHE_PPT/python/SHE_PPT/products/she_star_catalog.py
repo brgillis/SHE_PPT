@@ -38,9 +38,9 @@ def init():
                           init_function=create_dpd_she_star_catalog)
 
 
-def create_dpd_she_star_catalog(filename = None,
-                                data_filename = None,
-                                spatial_footprint = None):
+def create_dpd_she_star_catalog(filename=None,
+                                data_filename=None,
+                                spatial_footprint=None):
     """ Creates a product of this type.
     """
 

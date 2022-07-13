@@ -64,8 +64,8 @@ def _get_filename(self):
     return get_data_filename_from_product(self, "KsbCalibrationFileList[0].DataStorage")
 
 
-def create_dpd_she_ksb_calibration(filename = None,
-                                   data_filename = None):
+def create_dpd_she_ksb_calibration(filename=None,
+                                   data_filename=None):
     """ Creates a product of this type.
     """
 

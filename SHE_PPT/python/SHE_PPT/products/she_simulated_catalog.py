@@ -40,7 +40,7 @@ def init():
                      init_function=create_dpd_she_simulated_catalog)
 
 
-def create_dpd_she_simulated_catalog(filename = None):
+def create_dpd_she_simulated_catalog(filename=None):
     """ Initialize a product of this type
     """
 

@@ -36,7 +36,7 @@ logger = getLogger(__name__)
 masksize = 5
 
 
-def __generate_segmentation_mask(radius = 10):
+def __generate_segmentation_mask(radius=10):
     """Returns a 2*radius by 2*radius array with a circle of 1s within radius, and zero elsewhere"""
 
     size = int(radius * 2)
@@ -50,7 +50,7 @@ def __generate_segmentation_mask(radius = 10):
     return mask
 
 
-def __create_detector_map(object_ids, pixel_coords, detector_shape, objsize = 10):
+def __create_detector_map(object_ids, pixel_coords, detector_shape, objsize=10):
     """For a given detector, produce a segmentation map"""
     img = np.zeros(detector_shape, dtype=np.int64)
 
@@ -72,8 +72,8 @@ def __create_detector_map(object_ids, pixel_coords, detector_shape, objsize = 10
     return img
 
 
-def create_reprojected_segmentation_map(object_ids, pixel_coords, detectors, wcs_list, workdir = ".",
-                                        detector_shape = (100, 100), objsize = 10):
+def create_reprojected_segmentation_map(object_ids, pixel_coords, detectors, wcs_list, workdir=".",
+                                        detector_shape=(100, 100), objsize=10):
     """
     Creates a DpdSheExposureReprojectedSegmentationMap product from a list of input objects, their image positions,
     the detectors they belong to and the detectors' WCSs

@@ -37,8 +37,8 @@ logger = getLogger(__name__)
 MSG_ERR_COL_ABSENT = "Table not in correct format due to absence of required column: %s"
 
 
-def is_in_format(table, table_format, ignore_metadata = False, strict = True, verbose = False,
-                 fix_bool = True):
+def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbose=False,
+                 fix_bool=True):
     """
         @brief Checks if a table is in the given format
 

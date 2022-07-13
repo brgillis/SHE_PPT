@@ -42,7 +42,7 @@ def init():
                              init_function=create_dpd_le1_aocs_time_series)
 
 
-def create_dpd_le1_aocs_time_series(filename = None):
+def create_dpd_le1_aocs_time_series(filename=None):
     """ Initialize a product of this type
     """
 

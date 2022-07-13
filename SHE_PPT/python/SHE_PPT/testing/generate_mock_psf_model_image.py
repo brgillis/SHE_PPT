@@ -79,7 +79,7 @@ def __create_table(object_ids, pixel_coords, stampsize, stamp_per_obj):
     return t
 
 
-def __create_mock_psf_image(stampsize = 800, radius = 5):
+def __create_mock_psf_image(stampsize=800, radius=5):
     """Creates a mock PSF image (gausian)"""
 
     img = np.zeros((stampsize, stampsize), dtype=np.float32)
@@ -140,7 +140,7 @@ def __create_fits(object_ids, pixel_coords, workdir, stampsize, stamp_per_obj):
     return fits_filename
 
 
-def create_model_image_product(object_ids, pixel_coords, workdir = ".", stampsize = 800, stamp_per_obj = False):
+def create_model_image_product(object_ids, pixel_coords, workdir=".", stampsize=800, stamp_per_obj=False):
     """Creates a dpdShePsfModelImage product given a list of object ids and pixel coordinates.
        Inputs:
            object_ids: List of object IDs

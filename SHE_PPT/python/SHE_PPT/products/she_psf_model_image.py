@@ -37,8 +37,8 @@ def init():
                           init_function=create_dpd_she_psf_model_image)
 
 
-def create_dpd_she_psf_model_image(filename = None,
-                                   data_filename = None):
+def create_dpd_she_psf_model_image(filename=None,
+                                   data_filename=None):
     """ Creates a product of this type.
     """
 

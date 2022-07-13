@@ -126,10 +126,10 @@ bias_statistics_table_format = SheBiasStatisticsFormat()
 tf = bias_statistics_table_format
 
 
-def make_bias_statistics_table_header(ID = None,
+def make_bias_statistics_table_header(ID=None,
                                       method: ShearEstimationMethods = ShearEstimationMethods.LENSMC,
-                                      g1_bias_measurements = None,
-                                      g2_bias_measurements = None):
+                                      g1_bias_measurements=None,
+                                      g2_bias_measurements=None):
     """
     Generate a header for a bias statistics table.
 
@@ -207,16 +207,16 @@ def make_bias_statistics_table_header(ID = None,
     return header
 
 
-def initialise_bias_statistics_table(size = None,
-                                     optional_columns = None,
-                                     init_cols = None,
-                                     ID = None,
+def initialise_bias_statistics_table(size=None,
+                                     optional_columns=None,
+                                     init_cols=None,
+                                     ID=None,
                                      method: ShearEstimationMethods = ShearEstimationMethods.LENSMC,
-                                     g1_bias_measurements = None,
-                                     g2_bias_measurements = None,
-                                     run_IDs = None,
-                                     g1_bias_statistics = None,
-                                     g2_bias_statistics = None,
+                                     g1_bias_measurements=None,
+                                     g2_bias_measurements=None,
+                                     run_IDs=None,
+                                     g1_bias_statistics=None,
+                                     g2_bias_statistics=None,
                                      ):
     """
     Initialise a bias statistics table.
@@ -345,7 +345,7 @@ def initialise_bias_statistics_table(size = None,
 # Utility functions related to this table format
 
 
-def get_bias_statistics(table, compress = False):
+def get_bias_statistics(table, compress=False):
     """
 
     Gets the bias statistics from a table, in the format of a pair of lists of LinregressStatistics objects.
@@ -401,7 +401,7 @@ def get_bias_statistics(table, compress = False):
     return l_g1_bias_statistics, l_g2_bias_statistics
 
 
-def calculate_bias_measurements(table, update = False):
+def calculate_bias_measurements(table, update=False):
     """
 
     Calculates the bias measurements from the data in a table and returns them in the format of a pair of

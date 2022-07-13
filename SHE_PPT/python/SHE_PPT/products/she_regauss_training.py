@@ -38,8 +38,8 @@ def init():
                           init_function=create_dpd_she_regauss_training)
 
 
-def create_dpd_she_regauss_training(filename = None,
-                                    data_filename = None):
+def create_dpd_she_regauss_training(filename=None,
+                                    data_filename=None):
     """ Creates a product of this type.
     """
 

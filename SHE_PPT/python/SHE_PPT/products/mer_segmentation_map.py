@@ -40,7 +40,7 @@ product_type_name = "DpdMerSegmentationMap"
 
 
 # Convenience function to easily load the actual map
-def load_mosaic_hdu(filename, workdir = None, hdu = 0, detector_x = None, detector_y = None, **kwargs):
+def load_mosaic_hdu(filename, workdir=None, hdu=0, detector_x=None, detector_y=None, **kwargs):
     """Directly loads the mosaic image from the filename of the data product.
 
     Parameters
@@ -105,8 +105,8 @@ def init():
                           init_function=create_dpd_mer_mosaic)
 
 
-def create_dpd_mer_mosaic(filename = None,
-                          data_filename = None):
+def create_dpd_mer_mosaic(filename=None,
+                          data_filename=None):
     """ Creates a product of this type.
     """
 

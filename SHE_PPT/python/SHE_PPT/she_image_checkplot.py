@@ -29,7 +29,7 @@ from . import logging, sky_image_plot as sip
 logger = logging.getLogger(__name__)
 
 
-def draw_to_axes(img, ax, z1 = None, z2 = None, **kwargs):
+def draw_to_axes(img, ax, z1=None, z2=None, **kwargs):
     """Visualizes a SHEImage using Matplotlib on some existing Matplotlib axes
 
     This function implements a simple default style for plotting a SHEImage on some existing axes, and can therefore

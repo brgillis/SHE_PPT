@@ -44,11 +44,11 @@ def init():
                   init_function=create_dpd_she_validation_test_results)
 
 
-def create_dpd_she_validation_test_results(reference_product = None,
-                                           source_pipeline = "sheAnalysis",
-                                           observation_mode = None,
-                                           num_tests = 1,
-                                           num_exposures = -1, ):
+def create_dpd_she_validation_test_results(reference_product=None,
+                                           source_pipeline="sheAnalysis",
+                                           observation_mode=None,
+                                           num_tests=1,
+                                           num_exposures=-1, ):
     """
         @TODO fill in docstring
     """

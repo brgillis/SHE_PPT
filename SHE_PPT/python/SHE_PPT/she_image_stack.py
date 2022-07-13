@@ -42,7 +42,7 @@ class SHEImageStack():
 
     """
 
-    def __init__(self, exposures, stacked_image = None, x_world = None, y_world = None, parent_frame_stack = None):
+    def __init__(self, exposures, stacked_image=None, x_world=None, y_world=None, parent_frame_stack=None):
         """
         Parameters
         ----------
@@ -125,7 +125,7 @@ class SHEImageStack():
         return empty
 
     @classmethod
-    def read(cls, filename_list, stacked_image_filename = None, workdir = ".", **kwargs):
+    def read(cls, filename_list, stacked_image_filename=None, workdir=".", **kwargs):
         """Reads a SHEImageStack from disk
 
         This function successively calls SHEImage.read_from_fits() on contents of filename_list.

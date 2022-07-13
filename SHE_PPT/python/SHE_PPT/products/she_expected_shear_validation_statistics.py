@@ -40,7 +40,7 @@ def init():
                              init_function=create_dpd_she_expected_shear_validation_statistics)
 
 
-def create_dpd_she_expected_shear_validation_statistics(filename = None):
+def create_dpd_she_expected_shear_validation_statistics(filename=None):
     """ Initialize a product of this type
     """
 

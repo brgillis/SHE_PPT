@@ -51,7 +51,7 @@ class ShePsfStateMeta(SheTableMeta):
     _identity: str
     _format: str
 
-    def __init__(self, data_type = "CAL", **kwargs):
+    def __init__(self, data_type="CAL", **kwargs):
         self._data_type = data_type
 
         self._main_data_type = (PSF_FIELD_PARAM_DEF
@@ -69,7 +69,7 @@ class ShePsfStateFormat(SheTableFormat):
     _l_colnames: Optional[List[str]] = None
 
     def __init__(self,
-                 data_type = "CAL"):
+                 data_type="CAL"):
         super().__init__(self._meta_type(data_type))
 
         # Get the metadata (contained within its own class)

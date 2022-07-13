@@ -178,14 +178,14 @@ lensmc_chains_table_format = SheLensMcChainsFormat()
 tf = lensmc_chains_table_format
 
 
-def make_lensmc_chains_table_header(model_hash = None,
-                                    model_seed = None,
-                                    noise_seed = None,
-                                    observation_id = None,
-                                    pointing_id = None,
-                                    observation_time = None,
-                                    method = ShearEstimationMethods.LENSMC.value,
-                                    tile_id = None):
+def make_lensmc_chains_table_header(model_hash=None,
+                                    model_seed=None,
+                                    noise_seed=None,
+                                    observation_id=None,
+                                    pointing_id=None,
+                                    observation_time=None,
+                                    method=ShearEstimationMethods.LENSMC.value,
+                                    tile_id=None):
     """
         @brief Generate a header for a shear estimates table.
 
@@ -230,18 +230,18 @@ def make_lensmc_chains_table_header(model_hash = None,
     return header
 
 
-def initialise_lensmc_chains_table(mer_final_catalog = None,
-                                   size = None,
-                                   optional_columns = None,
-                                   init_cols = None,
-                                   model_hash = None,
-                                   model_seed = None,
-                                   noise_seed = None,
-                                   observation_id = None,
-                                   pointing_id = None,
-                                   observation_time = None,
-                                   method = ShearEstimationMethods.LENSMC.value,
-                                   tile_id = None,
+def initialise_lensmc_chains_table(mer_final_catalog=None,
+                                   size=None,
+                                   optional_columns=None,
+                                   init_cols=None,
+                                   model_hash=None,
+                                   model_seed=None,
+                                   noise_seed=None,
+                                   observation_id=None,
+                                   pointing_id=None,
+                                   observation_time=None,
+                                   method=ShearEstimationMethods.LENSMC.value,
+                                   tile_id=None,
                                    ):
     """
         @brief Initialise a shear estimates table based on a detections table, with the

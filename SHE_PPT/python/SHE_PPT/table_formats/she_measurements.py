@@ -64,7 +64,7 @@ class SheMeasurementsFormat(SheTableFormat):
     meta_type = SheMeasurementsMeta
 
     def __init__(self,
-                 finalize = True):
+                 finalize=True):
         super().__init__(finalize=False)
 
         # Table column labels and properties

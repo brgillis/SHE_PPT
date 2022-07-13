@@ -37,7 +37,7 @@ def init():
                               init_function=create_dpd_she_simulation_plan)
 
 
-def create_dpd_she_simulation_plan(filename = None):
+def create_dpd_she_simulation_plan(filename=None):
     """ Initialize a product of this type
     """
 

@@ -136,13 +136,13 @@ details_table_format = SheSimulatedCatalogFormat()
 tf = details_table_format
 
 
-def make_details_table_header(subtracted_sky_level = None,
-                              unsubtracted_sky_level = None,
-                              read_noise = None,
-                              gain = None,
-                              model_hash = None,
-                              model_seed = None,
-                              noise_seed = None):
+def make_details_table_header(subtracted_sky_level=None,
+                              unsubtracted_sky_level=None,
+                              read_noise=None,
+                              gain=None,
+                              model_hash=None,
+                              model_seed=None,
+                              noise_seed=None):
     """
         @brief Generate a header for a galaxy details table.
 
@@ -180,18 +180,18 @@ def make_details_table_header(subtracted_sky_level = None,
     return header
 
 
-def initialise_simulated_catalog(image_group_phl = None,
-                                 options = None,
-                                 size = None,
-                                 optional_columns = None,
-                                 init_cols = None,
-                                 subtracted_sky_level = None,
-                                 unsubtracted_sky_level = None,
-                                 read_noise = None,
-                                 gain = None,
-                                 model_hash = None,
-                                 model_seed = None,
-                                 noise_seed = None, ):
+def initialise_simulated_catalog(image_group_phl=None,
+                                 options=None,
+                                 size=None,
+                                 optional_columns=None,
+                                 init_cols=None,
+                                 subtracted_sky_level=None,
+                                 unsubtracted_sky_level=None,
+                                 read_noise=None,
+                                 gain=None,
+                                 model_hash=None,
+                                 model_seed=None,
+                                 noise_seed=None, ):
     """
         @brief Initialise a detections table.
 

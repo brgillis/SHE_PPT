@@ -56,7 +56,7 @@ def euclidean_metric(x1, y1, x2, y2):
     return d
 
 
-def get_distance_matrix(x, y, metric = euclidean_metric):
+def get_distance_matrix(x, y, metric=euclidean_metric):
     """Given a set of N points (given by their x and y coordinates), returns a flattened distance matrix of
        size N(N-1)/2 between every point. This is similar to scipy.spatial.distance.pdist, but allows for a
        custom metric to be used efficiently

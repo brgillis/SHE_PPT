@@ -58,7 +58,7 @@ def _set_id_list(self, l):
     self.Data.ObjectIdList = l
 
 
-def create_dpd_she_object_id_list(id_list = None):
+def create_dpd_she_object_id_list(id_list=None):
     """
         @TODO fill in docstring
     """
