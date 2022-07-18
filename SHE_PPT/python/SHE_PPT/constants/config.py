@@ -392,17 +392,17 @@ class CalibrationConfigKeys(ConfigKeys):
 
 # Set up dicts for pipeline config defaults and types
 D_GLOBAL_CONFIG_DEFAULTS: Dict[ConfigKeys, Any] = {
-    GlobalConfigKeys.PIP_PROFILE         : False,
+    GlobalConfigKeys.PIP_PROFILE: False,
     GlobalConfigKeys.PIP_DISABLE_FAILSAFE: False,
     }
 
 D_GLOBAL_CONFIG_TYPES: Dict[ConfigKeys, Union[Type, Tuple[Type, Type]]] = {
-    GlobalConfigKeys.PIP_PROFILE         : bool,
+    GlobalConfigKeys.PIP_PROFILE: bool,
     GlobalConfigKeys.PIP_DISABLE_FAILSAFE: bool,
     }
 
 D_GLOBAL_CONFIG_CLINE_ARGS: Dict[ConfigKeys, str] = {
-    GlobalConfigKeys.PIP_PROFILE         : CA_PROFILE,
+    GlobalConfigKeys.PIP_PROFILE: CA_PROFILE,
     GlobalConfigKeys.PIP_DISABLE_FAILSAFE: CA_DISABLE_FAILSAFE,
     }
 

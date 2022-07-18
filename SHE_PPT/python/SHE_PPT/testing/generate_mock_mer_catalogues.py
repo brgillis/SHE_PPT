@@ -63,12 +63,12 @@ def create_catalogue(obj_coords=[], workdir="."):
 
     # create the table
     table = initialise_mer_final_catalog(init_cols={
-        tf.ID               : object_ids,
-        tf.gal_x_world      : ras,
-        tf.gal_y_world      : decs,
-        tf.seg_ID           : object_ids,
-        tf.vis_det          : vis_det,
-        tf.FLUX_VIS_APER    : flux_vis_aper,
+        tf.ID: object_ids,
+        tf.gal_x_world: ras,
+        tf.gal_y_world: decs,
+        tf.seg_ID: object_ids,
+        tf.vis_det: vis_det,
+        tf.FLUX_VIS_APER: flux_vis_aper,
         tf.SEGMENTATION_AREA: seg_area})
 
     # get a filename for the table

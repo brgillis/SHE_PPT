@@ -124,7 +124,7 @@ def draw_sky_image(ax, si, **kwargs):
 
     """
     # "origin":"lower" as well as the tranpose() within the imshow arguments both combined give the right orientation
-    imshow_kwargs = {"aspect"       : "equal", "origin": "lower",
+    imshow_kwargs = {"aspect": "equal", "origin": "lower",
                      "interpolation": "none", "cmap": matplotlib.cm.get_cmap('Greys_r')}
     imshow_kwargs.update(kwargs)
 
@@ -145,7 +145,7 @@ def draw_mask(ax, si, **kwargs):
     mask_bounds = [-1, 0.5, 1]
     mask_norm = matplotlib.colors.BoundaryNorm(mask_bounds, mask_cmap.N)
 
-    imshow_kwargs = {"aspect"       : "equal", "origin": "lower",
+    imshow_kwargs = {"aspect": "equal", "origin": "lower",
                      "interpolation": "none", "alpha": 0.5}
     imshow_kwargs.update(kwargs)
 
@@ -226,7 +226,7 @@ def annotate(ax, cat, x="x", y="y", text="Hello", **kwargs):
     """
 
     annotate_kwargs = {"horizontalalignment": "left", "verticalalignment": "top", "color": "red",
-                       "xytext"             : (0, 0), "textcoords": 'offset points'}
+                       "xytext": (0, 0), "textcoords": 'offset points'}
     annotate_kwargs.update(**kwargs)
 
     for row in cat:

@@ -76,25 +76,25 @@ def main():
 
     stringArray = np.array(['TT' for _ii in range(num_gals)])
     # Initialize the output table with the desired columns
-    obj_psf_image = initialise_psf_table(init_columns={pstf.ID        : sim_psf_image['Object ID'],
-                                                       pstf.template  : sim_psf_image['SED template'],
-                                                       pstf.bulge_idx : sim_psf_image['Bulge Index'],
-                                                       pstf.disk_idx  : sim_psf_image['Disk Index'],
-                                                       pstf.image_x   : np.linspace(1, num_gals, num_gals,
-                                                                                    endpoint=True,
-                                                                                    dtype=pstf.dtypes[
-                                                                                        pstf.image_x]),
-                                                       pstf.image_y   : np.linspace(1, num_gals, num_gals,
-                                                                                    endpoint=True,
-                                                                                    dtype=pstf.dtypes[
-                                                                                        pstf.image_y]),
-                                                       pstf.x         : np.linspace(1, num_gals, num_gals,
-                                                                                    endpoint=True,
-                                                                                    dtype=pstf.dtypes[pstf.x]),
-                                                       pstf.y         : np.linspace(1, num_gals, num_gals,
-                                                                                    endpoint=True,
-                                                                                    dtype=pstf.dtypes[pstf.y]),
-                                                       pstf.cal_time  : stringArray,
+    obj_psf_image = initialise_psf_table(init_columns={pstf.ID: sim_psf_image['Object ID'],
+                                                       pstf.template: sim_psf_image['SED template'],
+                                                       pstf.bulge_idx: sim_psf_image['Bulge Index'],
+                                                       pstf.disk_idx: sim_psf_image['Disk Index'],
+                                                       pstf.image_x: np.linspace(1, num_gals, num_gals,
+                                                                                 endpoint=True,
+                                                                                 dtype=pstf.dtypes[
+                                                                                     pstf.image_x]),
+                                                       pstf.image_y: np.linspace(1, num_gals, num_gals,
+                                                                                 endpoint=True,
+                                                                                 dtype=pstf.dtypes[
+                                                                                     pstf.image_y]),
+                                                       pstf.x: np.linspace(1, num_gals, num_gals,
+                                                                           endpoint=True,
+                                                                           dtype=pstf.dtypes[pstf.x]),
+                                                       pstf.y: np.linspace(1, num_gals, num_gals,
+                                                                           endpoint=True,
+                                                                           dtype=pstf.dtypes[pstf.y]),
+                                                       pstf.cal_time: stringArray,
                                                        pstf.field_time: stringArray})
 
     # Create a data product for the output

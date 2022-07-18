@@ -140,9 +140,9 @@ class TestUtility(SheTestCase):
         # Create a list of mock HDUs to test
         mock_hdu_list = HDUList([PrimaryHDU(),
                                  BinTableHDU(header=Header({EXTNAME_LABEL: f"CCDID 1-1.{SCI_TAG}",
-                                                            CCDID_LABEL  : "CCDID 1-1"})),
+                                                            CCDID_LABEL: "CCDID 1-1"})),
                                  BinTableHDU(header=Header({EXTNAME_LABEL: f"CCDID 1-2.{SCI_TAG}",
-                                                            CCDID_LABEL  : "CCDID 1-2"}))])
+                                                            CCDID_LABEL: "CCDID 1-2"}))])
 
         # Check that it finds the correct HDU when specifying either extname or ccdid
         for i in (1, 2):
@@ -162,9 +162,9 @@ class TestUtility(SheTestCase):
 
         # Create a mock HDU and table to test with
         mock_hdu = BinTableHDU(header=Header({EXTNAME_LABEL: f"CCDID 1-2.{SCI_TAG}",
-                                              CCDID_LABEL  : "CCDID 1-2"}))
+                                              CCDID_LABEL: "CCDID 1-2"}))
         mock_table = Table(meta={EXTNAME_LABEL: f"CCDID 1-2.{SCI_TAG}",
-                                 CCDID_LABEL  : "CCDID 1-2"})
+                                 CCDID_LABEL: "CCDID 1-2"})
         bad_obj = Table()
 
         # Test we get the expected result with each object
