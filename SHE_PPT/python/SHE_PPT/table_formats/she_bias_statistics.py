@@ -320,15 +320,15 @@ def initialise_bias_statistics_table(size=None,
         g1_bias_stats = g1_bias_statistics[row_index]
         g2_bias_stats = g2_bias_statistics[row_index]
 
-        new_row = {tf.w1  : g1_bias_stats.w,
-                   tf.xm1 : g1_bias_stats.xm,
+        new_row = {tf.w1: g1_bias_stats.w,
+                   tf.xm1: g1_bias_stats.xm,
                    tf.x2m1: g1_bias_stats.x2m,
-                   tf.ym1 : g1_bias_stats.ym,
+                   tf.ym1: g1_bias_stats.ym,
                    tf.xym1: g1_bias_stats.xym,
-                   tf.w2  : g2_bias_stats.w,
-                   tf.xm2 : g2_bias_stats.xm,
+                   tf.w2: g2_bias_stats.w,
+                   tf.xm2: g2_bias_stats.xm,
                    tf.x2m2: g2_bias_stats.x2m,
-                   tf.ym2 : g2_bias_stats.ym,
+                   tf.ym2: g2_bias_stats.ym,
                    tf.xym2: g2_bias_stats.xym, }
 
         if not len_run_IDs == 0:

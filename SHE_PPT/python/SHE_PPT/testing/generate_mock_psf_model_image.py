@@ -64,14 +64,14 @@ def __create_table(object_ids, pixel_coords, stampsize, stamp_per_obj):
 
     # construct the table
     t = init_table(tf, init_cols={
-        tf.ID         : object_ids,
-        tf.template   : sed_template,
+        tf.ID: object_ids,
+        tf.template: sed_template,
         tf.bulge_index: bulge_index,
-        tf.disk_index : disk_index,
-        tf.image_x    : psf_image_x,
-        tf.image_y    : psf_image_y,
-        tf.x          : psf_x,
-        tf.y          : psf_y
+        tf.disk_index: disk_index,
+        tf.image_x: psf_image_x,
+        tf.image_y: psf_image_y,
+        tf.x: psf_x,
+        tf.y: psf_y
         })
 
     assert is_in_format(t, tf)

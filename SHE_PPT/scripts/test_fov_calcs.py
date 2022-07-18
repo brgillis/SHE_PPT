@@ -51,8 +51,8 @@ for (det_specs, instrument) in ((tc.vis_det_specs, "VIS"), (tc.nisp_det_specs, "
                                                                    det_iy=det_iy,
                                                                    instrument=instrument)
                     # Store it in the table
-                    coord_table.add_row({"XP"   : xp,
-                                         "YP"   : yp,
+                    coord_table.add_row({"XP": xp,
+                                         "YP": yp,
                                          "DET_X": det_ix,
                                          "DET_Y": det_iy,
                                          "FOV_X": fov_x,

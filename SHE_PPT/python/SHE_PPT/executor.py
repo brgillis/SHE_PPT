@@ -205,9 +205,9 @@ class SheExecutor:
 
         cProfile.runctx("run_from_args_function(args)", {},
                         {"run_from_args_function": self.run_from_args_function,
-                         "args"                  : args,
-                         "l_run_args"            : self.run_args.l_run_args,
-                         "d_run_kwargs"          : self.run_args.d_run_kwargs},
+                         "args": args,
+                         "l_run_args": self.run_args.l_run_args,
+                         "d_run_kwargs": self.run_args.d_run_kwargs},
                         filename="validate_shear_bias_from_args.prof")
 
     def __log_exec_cmd(self, args: Namespace) -> None:

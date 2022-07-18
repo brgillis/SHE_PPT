@@ -46,12 +46,12 @@ allowed_int_dtypes = (
 
 logger = logging.getLogger(__name__)
 
-ATTR_CONVERSIONS = {"data"    : "data",
+ATTR_CONVERSIONS = {"data": "data",
                     "noisemap": "noisemap",
-                    "mask"    : "mask",
-                    "bkg"     : "background_map",
-                    "wgt"     : "weight_map",
-                    "seg"     : "segmentation_map", }
+                    "mask": "mask",
+                    "bkg": "background_map",
+                    "wgt": "weight_map",
+                    "seg": "segmentation_map", }
 
 
 @lru_cache(maxsize=50)

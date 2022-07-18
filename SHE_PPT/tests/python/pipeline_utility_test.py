@@ -143,18 +143,18 @@ class TestPipelineUtility(SheTestCase):
 
         # Test we get out of the file what we put in, for each type of configuration file
 
-        test_analysis_dict = {AnalysisConfigKeys.ES_METHODS     : ShearEstimationMethods.KSB,
-                              AnalysisConfigKeys.OID_BATCH_SIZE : "26",
+        test_analysis_dict = {AnalysisConfigKeys.ES_METHODS: ShearEstimationMethods.KSB,
+                              AnalysisConfigKeys.OID_BATCH_SIZE: "26",
                               AnalysisConfigKeys.OID_MAX_BATCHES: "3",
-                              GlobalConfigKeys.PIP_PROFILE      : "T"}
+                              GlobalConfigKeys.PIP_PROFILE: "T"}
 
-        test_analysis_type_dict = {AnalysisConfigKeys.ES_METHODS     : (list, ShearEstimationMethods),
-                                   AnalysisConfigKeys.OID_BATCH_SIZE : int,
+        test_analysis_type_dict = {AnalysisConfigKeys.ES_METHODS: (list, ShearEstimationMethods),
+                                   AnalysisConfigKeys.OID_BATCH_SIZE: int,
                                    AnalysisConfigKeys.OID_MAX_BATCHES: int,
-                                   GlobalConfigKeys.PIP_PROFILE      : bool}
+                                   GlobalConfigKeys.PIP_PROFILE: bool}
 
-        test_analysis_cline_args_dict = {AnalysisConfigKeys.ES_METHODS     : "methods",
-                                         AnalysisConfigKeys.OID_BATCH_SIZE : "batch_size",
+        test_analysis_cline_args_dict = {AnalysisConfigKeys.ES_METHODS: "methods",
+                                         AnalysisConfigKeys.OID_BATCH_SIZE: "batch_size",
                                          AnalysisConfigKeys.OID_MAX_BATCHES: None,
                                          GlobalConfigKeys.PIP_PLACEHOLDER_1: None}
 
@@ -194,7 +194,7 @@ class TestPipelineUtility(SheTestCase):
                                                          workdir=self.workdir,
                                                          d_cline_args=test_analysis_cline_args_dict,
                                                          parsed_args={"batch_size": "10",
-                                                                      "methods"   : None},
+                                                                      "methods": None},
                                                          d_types=test_analysis_type_dict)
         assert read_dict_with_cline_args[AnalysisConfigKeys.ES_METHODS] == [ShearEstimationMethods.KSB]
         assert read_dict_with_cline_args[AnalysisConfigKeys.OID_BATCH_SIZE] == 10
@@ -205,7 +205,7 @@ class TestPipelineUtility(SheTestCase):
         read_dict_from_cline_args_and_defaults = read_analysis_config(None,
                                                                       d_cline_args=test_analysis_cline_args_dict,
                                                                       parsed_args={"batch_size": "10",
-                                                                                   "methods"   : None},
+                                                                                   "methods": None},
                                                                       d_defaults={},
                                                                       d_types=test_analysis_type_dict)
         assert read_dict_with_cline_args[AnalysisConfigKeys.ES_METHODS] == [ShearEstimationMethods.KSB]
@@ -224,10 +224,10 @@ class TestPipelineUtility(SheTestCase):
                      f"{AnalysisConfigKeys.REMAP_NUM_SWARP_THREADS_EXP.value}=4 #==2\n")
 
         read_dict2 = read_analysis_config(test2_filename, workdir=self.workdir,
-                                          d_types={AnalysisConfigKeys.ES_METHODS            : (
+                                          d_types={AnalysisConfigKeys.ES_METHODS: (
                                               list, ShearEstimationMethods),
-                                              AnalysisConfigKeys.OID_BATCH_SIZE             : int,
-                                              AnalysisConfigKeys.REMAP_NUM_THREADS_EXP      : int,
+                                              AnalysisConfigKeys.OID_BATCH_SIZE: int,
+                                              AnalysisConfigKeys.REMAP_NUM_THREADS_EXP: int,
                                               AnalysisConfigKeys.REMAP_NUM_SWARP_THREADS_EXP: int, })
 
         assert read_dict2[AnalysisConfigKeys.ES_METHODS] == [ShearEstimationMethods.KSB]
@@ -265,10 +265,10 @@ class TestPipelineUtility(SheTestCase):
 
         # Test we get out of the file what we put in, for each type of configuration file
 
-        test_calibration_dict = {CalibrationConfigKeys.ES_METHODS : ShearEstimationMethods.KSB,
+        test_calibration_dict = {CalibrationConfigKeys.ES_METHODS: ShearEstimationMethods.KSB,
                                  CalibrationConfigKeys.CBM_CLEANUP: False}
 
-        test_calibration_type_dict = {CalibrationConfigKeys.ES_METHODS : (list, ShearEstimationMethods),
+        test_calibration_type_dict = {CalibrationConfigKeys.ES_METHODS: (list, ShearEstimationMethods),
                                       CalibrationConfigKeys.CBM_CLEANUP: bool}
 
         write_calibration_config(test_calibration_dict, test_filename, workdir=self.workdir)
@@ -297,41 +297,41 @@ class TestPipelineUtility(SheTestCase):
 
         # Test the ValidationConfigKeys can be read in, using task_head for overriding keys
 
-        test_validation_dict = {ValidationConfigKeys.CG_SNR_BIN_LIMITS    : "0 2 4",
-                                ValidationConfigKeys.CG_BG_BIN_LIMITS     : None,
-                                ValidationConfigKeys.SBV_SNR_BIN_LIMITS   : "0 3 6",
-                                ValidationConfigKeys.SBV_BG_BIN_LIMITS    : None,
-                                ValidationConfigKeys.VAL_SNR_BIN_LIMITS   : "0 1 2",
-                                ValidationConfigKeys.VAL_BG_BIN_LIMITS    : "1 2 3",
+        test_validation_dict = {ValidationConfigKeys.CG_SNR_BIN_LIMITS: "0 2 4",
+                                ValidationConfigKeys.CG_BG_BIN_LIMITS: None,
+                                ValidationConfigKeys.SBV_SNR_BIN_LIMITS: "0 3 6",
+                                ValidationConfigKeys.SBV_BG_BIN_LIMITS: None,
+                                ValidationConfigKeys.VAL_SNR_BIN_LIMITS: "0 1 2",
+                                ValidationConfigKeys.VAL_BG_BIN_LIMITS: "1 2 3",
                                 ValidationConfigKeys.VAL_COLOUR_BIN_LIMITS: "2 3 4",
-                                ValidationConfigKeys.PRSP_P_FAIL          : "0.1",
+                                ValidationConfigKeys.PRSP_P_FAIL: "0.1",
                                 }
 
-        test_validation_types_dict = {ValidationConfigKeys.CG_SNR_BIN_LIMITS    : np.ndarray,
-                                      ValidationConfigKeys.CG_BG_BIN_LIMITS     : np.ndarray,
-                                      ValidationConfigKeys.CG_COLOUR_BIN_LIMITS : np.ndarray,
-                                      ValidationConfigKeys.SBV_SNR_BIN_LIMITS   : np.ndarray,
-                                      ValidationConfigKeys.SBV_BG_BIN_LIMITS    : np.ndarray,
+        test_validation_types_dict = {ValidationConfigKeys.CG_SNR_BIN_LIMITS: np.ndarray,
+                                      ValidationConfigKeys.CG_BG_BIN_LIMITS: np.ndarray,
+                                      ValidationConfigKeys.CG_COLOUR_BIN_LIMITS: np.ndarray,
+                                      ValidationConfigKeys.SBV_SNR_BIN_LIMITS: np.ndarray,
+                                      ValidationConfigKeys.SBV_BG_BIN_LIMITS: np.ndarray,
                                       ValidationConfigKeys.SBV_COLOUR_BIN_LIMITS: np.ndarray,
-                                      ValidationConfigKeys.VAL_SNR_BIN_LIMITS   : np.ndarray,
-                                      ValidationConfigKeys.VAL_BG_BIN_LIMITS    : np.ndarray,
+                                      ValidationConfigKeys.VAL_SNR_BIN_LIMITS: np.ndarray,
+                                      ValidationConfigKeys.VAL_BG_BIN_LIMITS: np.ndarray,
                                       ValidationConfigKeys.VAL_COLOUR_BIN_LIMITS: np.ndarray,
-                                      ValidationConfigKeys.PRSP_P_FAIL          : float,
+                                      ValidationConfigKeys.PRSP_P_FAIL: float,
                                       }
 
-        test_validation_defaults_dict = {ValidationConfigKeys.CG_SNR_BIN_LIMITS    : np.array([0, 20, 40]),
-                                         ValidationConfigKeys.CG_BG_BIN_LIMITS     : np.array([20, 40, 60]),
-                                         ValidationConfigKeys.CG_COLOUR_BIN_LIMITS : np.array([40, 60, 80]),
-                                         ValidationConfigKeys.CG_SIZE_BIN_LIMITS   : np.array([60, 80, 100]),
-                                         ValidationConfigKeys.SBV_SNR_BIN_LIMITS   : np.array([0, 30, 60]),
-                                         ValidationConfigKeys.SBV_BG_BIN_LIMITS    : np.array([30, 60, 90]),
+        test_validation_defaults_dict = {ValidationConfigKeys.CG_SNR_BIN_LIMITS: np.array([0, 20, 40]),
+                                         ValidationConfigKeys.CG_BG_BIN_LIMITS: np.array([20, 40, 60]),
+                                         ValidationConfigKeys.CG_COLOUR_BIN_LIMITS: np.array([40, 60, 80]),
+                                         ValidationConfigKeys.CG_SIZE_BIN_LIMITS: np.array([60, 80, 100]),
+                                         ValidationConfigKeys.SBV_SNR_BIN_LIMITS: np.array([0, 30, 60]),
+                                         ValidationConfigKeys.SBV_BG_BIN_LIMITS: np.array([30, 60, 90]),
                                          ValidationConfigKeys.SBV_COLOUR_BIN_LIMITS: np.array([60, 90, 120]),
-                                         ValidationConfigKeys.SBV_SIZE_BIN_LIMITS  : np.array([90, 120, 150]),
-                                         ValidationConfigKeys.VAL_SNR_BIN_LIMITS   : np.array([0, 10, 20]),
-                                         ValidationConfigKeys.VAL_BG_BIN_LIMITS    : np.array([10, 20, 30]),
+                                         ValidationConfigKeys.SBV_SIZE_BIN_LIMITS: np.array([90, 120, 150]),
+                                         ValidationConfigKeys.VAL_SNR_BIN_LIMITS: np.array([0, 10, 20]),
+                                         ValidationConfigKeys.VAL_BG_BIN_LIMITS: np.array([10, 20, 30]),
                                          ValidationConfigKeys.VAL_COLOUR_BIN_LIMITS: np.array([20, 30, 40]),
-                                         ValidationConfigKeys.VAL_SIZE_BIN_LIMITS  : np.array([30, 40, 50]),
-                                         ValidationConfigKeys.PRSP_P_FAIL          : 0.2,
+                                         ValidationConfigKeys.VAL_SIZE_BIN_LIMITS: np.array([30, 40, 50]),
+                                         ValidationConfigKeys.PRSP_P_FAIL: 0.2,
                                          }
 
         write_config(test_validation_dict, test_filename, workdir=self.workdir, config_keys=ValidationConfigKeys)
@@ -466,36 +466,36 @@ class TestPipelineUtility(SheTestCase):
         """
 
         # Make mock input data
-        config: Dict[Union[str, ConfigKeys], Any] = {"want_float"                          : "0.",
-                                                     "want_array"                          : "0. 1",
-                                                     "want_true"                           : "True",
-                                                     "want_false"                          : "False",
-                                                     "want_enum"                           :
+        config: Dict[Union[str, ConfigKeys], Any] = {"want_float": "0.",
+                                                     "want_array": "0. 1",
+                                                     "want_true": "True",
+                                                     "want_false": "False",
+                                                     "want_enum":
                                                          GlobalConfigKeys.PIP_PROFILE.value.upper(),
-                                                     "want_int_list"                       : "0 1 7",
-                                                     "want_float_list"                     : "0 10 4.5",
-                                                     "want_int_from_int_or_int_list"       : "17",
-                                                     "want_int_list_from_int_or_int_list"  : "4 1",
-                                                     "want_ndarray_from_ndarray_or_str"    : "1 2 3",
-                                                     "want_str_from_ndarray_or_str"        : "auto",
+                                                     "want_int_list": "0 1 7",
+                                                     "want_float_list": "0 10 4.5",
+                                                     "want_int_from_int_or_int_list": "17",
+                                                     "want_int_list_from_int_or_int_list": "4 1",
+                                                     "want_ndarray_from_ndarray_or_str": "1 2 3",
+                                                     "want_str_from_ndarray_or_str": "auto",
                                                      "want_enum_list_from_enum_list_or_str": (
                                                          f"{GlobalConfigKeys.PIP_PLACEHOLDER_0.value.upper()} "
                                                          f"{GlobalConfigKeys.PIP_PLACEHOLDER_1.value.upper()}"),
-                                                     "want_str_from_enum_list_or_str"      : "N/A"}
-        d_types: Dict[Union[str, ConfigKeys], Any] = {"want_float"                          : float,
-                                                      "want_array"                          : np.ndarray,
-                                                      "want_true"                           : bool,
-                                                      "want_false"                          : bool,
-                                                      "want_enum"                           : GlobalConfigKeys,
-                                                      "want_int_list"                       : (list, int),
-                                                      "want_float_list"                     : (list, float),
-                                                      "want_int_from_int_or_int_list"       : (int, (list, int)),
-                                                      "want_int_list_from_int_or_int_list"  : (int, (list, int)),
-                                                      "want_ndarray_from_ndarray_or_str"    : (np.ndarray, str),
-                                                      "want_str_from_ndarray_or_str"        : (np.ndarray, str),
+                                                     "want_str_from_enum_list_or_str": "N/A"}
+        d_types: Dict[Union[str, ConfigKeys], Any] = {"want_float": float,
+                                                      "want_array": np.ndarray,
+                                                      "want_true": bool,
+                                                      "want_false": bool,
+                                                      "want_enum": GlobalConfigKeys,
+                                                      "want_int_list": (list, int),
+                                                      "want_float_list": (list, float),
+                                                      "want_int_from_int_or_int_list": (int, (list, int)),
+                                                      "want_int_list_from_int_or_int_list": (int, (list, int)),
+                                                      "want_ndarray_from_ndarray_or_str": (np.ndarray, str),
+                                                      "want_str_from_ndarray_or_str": (np.ndarray, str),
                                                       "want_enum_list_from_enum_list_or_str": (
                                                           (list, GlobalConfigKeys), str),
-                                                      "want_str_from_enum_list_or_str"      : (
+                                                      "want_str_from_enum_list_or_str": (
                                                           (list, GlobalConfigKeys), str)}
 
         # Run the function

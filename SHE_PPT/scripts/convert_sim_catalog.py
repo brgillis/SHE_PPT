@@ -83,28 +83,28 @@ def main():
     # Initialize the output table with the desired columns
     obj_gal_cat = initialise_mer_final_catalog(optional_columns=[mfc_tf.SHE_FLAG, mfc_tf.STAR_FLAG, mfc_tf.STAR_PROB],
                                                init_cols={
-                                                   mfc_tf.ID         : np.linspace(1, num_gals, num_gals,
-                                                                                   endpoint=True,
-                                                                                   dtype=mfc_tf.dtypes[mfc_tf.ID]),
+                                                   mfc_tf.ID: np.linspace(1, num_gals, num_gals,
+                                                                          endpoint=True,
+                                                                          dtype=mfc_tf.dtypes[mfc_tf.ID]),
                                                    mfc_tf.gal_x_world: sim_gal_cat['ra'][observed_gal_mask].data.astype(
                                                        mfc_tf.dtypes[mfc_tf.gal_x_world]),
                                                    mfc_tf.gal_y_world: sim_gal_cat['dec'][
                                                        observed_gal_mask].data.astype(
                                                        mfc_tf.dtypes[mfc_tf.gal_y_world]),
-                                                   mfc_tf.seg_ID     : np.linspace(1, num_gals, num_gals,
-                                                                                   endpoint=True,
-                                                                                   dtype=mfc_tf.dtypes[
-                                                                                       mfc_tf.seg_ID]),
-                                                   mfc_tf.vis_det    : np.ones(num_gals,
-                                                                               dtype=mfc_tf.dtypes[mfc_tf.vis_det]),
-                                                   mfc_tf.SHE_FLAG   : np.zeros(num_gals,
-                                                                                dtype=mfc_tf.dtypes[mfc_tf.SHE_FLAG]),
-                                                   mfc_tf.STAR_FLAG  : np.zeros(num_gals,
-                                                                                dtype=mfc_tf.dtypes[
-                                                                                    mfc_tf.STAR_FLAG]),
-                                                   mfc_tf.STAR_PROB  : np.zeros(num_gals,
-                                                                                dtype=mfc_tf.dtypes[
-                                                                                    mfc_tf.STAR_PROB]),
+                                                   mfc_tf.seg_ID: np.linspace(1, num_gals, num_gals,
+                                                                              endpoint=True,
+                                                                              dtype=mfc_tf.dtypes[
+                                                                                  mfc_tf.seg_ID]),
+                                                   mfc_tf.vis_det: np.ones(num_gals,
+                                                                           dtype=mfc_tf.dtypes[mfc_tf.vis_det]),
+                                                   mfc_tf.SHE_FLAG: np.zeros(num_gals,
+                                                                             dtype=mfc_tf.dtypes[mfc_tf.SHE_FLAG]),
+                                                   mfc_tf.STAR_FLAG: np.zeros(num_gals,
+                                                                              dtype=mfc_tf.dtypes[
+                                                                                  mfc_tf.STAR_FLAG]),
+                                                   mfc_tf.STAR_PROB: np.zeros(num_gals,
+                                                                              dtype=mfc_tf.dtypes[
+                                                                                  mfc_tf.STAR_PROB]),
                                                    })
 
     # If we're including a star catalogue, create and stack that with the galaxy catalogue
@@ -117,22 +117,22 @@ def main():
 
         obj_star_cat = initialise_mer_final_catalog(
             optional_columns=[mfc_tf.SHE_FLAG, mfc_tf.STAR_FLAG, mfc_tf.STAR_PROB],
-            init_cols={mfc_tf.ID         : np.linspace(1, num_stars, num_stars, endpoint=True,
-                                                       dtype=mfc_tf.dtypes[mfc_tf.ID]),
+            init_cols={mfc_tf.ID: np.linspace(1, num_stars, num_stars, endpoint=True,
+                                              dtype=mfc_tf.dtypes[mfc_tf.ID]),
                        mfc_tf.gal_x_world: sim_star_cat['RA2000.0'][observed_star_mask].data.astype(
                            mfc_tf.dtypes[mfc_tf.gal_x_world]),
                        mfc_tf.gal_y_world: sim_star_cat['DEC2000.0'][observed_star_mask].data.astype(
                            mfc_tf.dtypes[mfc_tf.gal_y_world]),
-                       mfc_tf.seg_ID     : np.linspace(1, num_stars, num_stars, endpoint=True,
-                                                       dtype=mfc_tf.dtypes[mfc_tf.seg_ID]),
-                       mfc_tf.vis_det    : np.ones(num_stars,
-                                                   dtype=mfc_tf.dtypes[mfc_tf.vis_det]),
-                       mfc_tf.SHE_FLAG   : np.zeros(num_stars,
-                                                    dtype=mfc_tf.dtypes[mfc_tf.SHE_FLAG]),
-                       mfc_tf.STAR_FLAG  : np.ones(num_stars,
-                                                   dtype=mfc_tf.dtypes[mfc_tf.STAR_FLAG]),
-                       mfc_tf.STAR_PROB  : np.ones(num_stars,
-                                                   dtype=mfc_tf.dtypes[mfc_tf.STAR_PROB]),
+                       mfc_tf.seg_ID: np.linspace(1, num_stars, num_stars, endpoint=True,
+                                                  dtype=mfc_tf.dtypes[mfc_tf.seg_ID]),
+                       mfc_tf.vis_det: np.ones(num_stars,
+                                               dtype=mfc_tf.dtypes[mfc_tf.vis_det]),
+                       mfc_tf.SHE_FLAG: np.zeros(num_stars,
+                                                 dtype=mfc_tf.dtypes[mfc_tf.SHE_FLAG]),
+                       mfc_tf.STAR_FLAG: np.ones(num_stars,
+                                                 dtype=mfc_tf.dtypes[mfc_tf.STAR_FLAG]),
+                       mfc_tf.STAR_PROB: np.ones(num_stars,
+                                                 dtype=mfc_tf.dtypes[mfc_tf.STAR_PROB]),
                        })
 
         obj_cat = vstack([obj_gal_cat, obj_star_cat])

@@ -86,10 +86,10 @@ class ProductName(Enum):
 
 
 # Dict to store the fits table versions for each shear estimation method
-D_METHOD_FITS_VERSIONS = {ShearEstimationMethods.KSB      : "8.0",
-                          ShearEstimationMethods.LENSMC   : "8.0.1",
+D_METHOD_FITS_VERSIONS = {ShearEstimationMethods.KSB: "8.0",
+                          ShearEstimationMethods.LENSMC: "8.0.1",
                           ShearEstimationMethods.MOMENTSML: "8.0",
-                          ShearEstimationMethods.REGAUSS  : "8.0"}
+                          ShearEstimationMethods.REGAUSS: "8.0"}
 
 
 # Enum for names of placeholder and intermediate products
