@@ -18,8 +18,8 @@ Bug Fixes
 
 New Features
 ------------
-- The SheStarCatalogFormat table format now has additional column "EXP_INDEX" (attribute 'exp_i') for the index of the
-  exposure for data in a given row.
+- The SheStarCatalogFormat table format now has additional column "PNT_ID" (attribute 'pnt_id') for the pointing
+  (exposure) ID of data in a given row
 
 New config features
 -------------------
