@@ -480,7 +480,7 @@ class SheTestCase:
         # Set to raise an error on any deprecation warnings, to be sure they're caught and fixed in tests
         warnings.simplefilter("error", category=AstropyDeprecationWarning)
 
-    @pytest.fixture(scope = "session", autouse = True)
+    @pytest.fixture(scope="session", autouse=True)
     def _teardown(self, request):
         """Method set up to be run at session-level, to define the `teardown` method to be run at end of all tests.
         """
