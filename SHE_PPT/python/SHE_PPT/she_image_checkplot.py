@@ -24,9 +24,7 @@ __updated__ = "2021-08-13"
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-from . import logging
-from . import sky_image_plot as sip
-
+from . import logging, sky_image_plot as sip
 
 logger = logging.getLogger(__name__)
 
@@ -65,7 +63,6 @@ class Checkplot(sip.SimpleFigure):
     """
 
     def __init__(self, img, **kwargs):
-
         self.sheimage = img
         sip.SimpleFigure.__init__(self, img.data, **kwargs)
 

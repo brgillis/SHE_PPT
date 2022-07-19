@@ -64,12 +64,12 @@ class MockStarCatDataGenerator(MockDataGenerator):
         # Fill in catalog data
 
         # Detector position - random detector for each mock star
-        self.data[self.tf.det_x] = self._rng.integers(low = 1, high = 6, size = self.num_test_points)
-        self.data[self.tf.det_y] = self._rng.integers(low = 1, high = 6, size = self.num_test_points)
+        self.data[self.tf.det_x] = self._rng.integers(low=1, high=6, size=self.num_test_points)
+        self.data[self.tf.det_y] = self._rng.integers(low=1, high=6, size=self.num_test_points)
 
         # Position on detector - random uniform position
-        self.data[self.tf.x] = self._rng.uniform(low = 0, high = VIS_DETECTOR_PIXELS_X, size = self.num_test_points)
-        self.data[self.tf.y] = self._rng.uniform(low = 0, high = VIS_DETECTOR_PIXELS_Y, size = self.num_test_points)
+        self.data[self.tf.x] = self._rng.uniform(low=0, high=VIS_DETECTOR_PIXELS_X, size=self.num_test_points)
+        self.data[self.tf.y] = self._rng.uniform(low=0, high=VIS_DETECTOR_PIXELS_Y, size=self.num_test_points)
 
         # Position on error - same for all
         self.data[self.tf.x_err] = STAR_CAT_POS_ERR_PIX * self._ones
@@ -82,13 +82,13 @@ class MockStarCatDataGenerator(MockDataGenerator):
         self.data[self.tf.dec_err] = self.data[self.tf.y_err] * STAR_CAT_PIXEL_SCALE
 
         # Uniform distribution for flux, fixed value for flux error
-        self.data[self.tf.flux] = self._rng.uniform(low = STAR_CAT_FLUX_MIN, high = STAR_CAT_FLUX_MAX,
-                                                    size = self.num_test_points)
+        self.data[self.tf.flux] = self._rng.uniform(low=STAR_CAT_FLUX_MIN, high=STAR_CAT_FLUX_MAX,
+                                                    size=self.num_test_points)
         self.data[self.tf.flux_err] = STAR_CAT_FLUX_ERR * self._ones
 
         # Gaussian distributions for e1 and e2, fixed values for errors
-        self.data[self.tf.e1] = self._rng.normal(loc = 0, scale = STAR_CAT_SIGMA_E, size = self.num_test_points)
-        self.data[self.tf.e2] = self._rng.normal(loc = 0, scale = STAR_CAT_SIGMA_E, size = self.num_test_points)
+        self.data[self.tf.e1] = self._rng.normal(loc=0, scale=STAR_CAT_SIGMA_E, size=self.num_test_points)
+        self.data[self.tf.e2] = self._rng.normal(loc=0, scale=STAR_CAT_SIGMA_E, size=self.num_test_points)
         self.data[self.tf.e1_err] = STAR_CAT_E_ERR * self._ones
         self.data[self.tf.e2_err] = STAR_CAT_E_ERR * self._ones
 
@@ -114,7 +114,7 @@ class MockStarCatDataGenerator(MockDataGenerator):
             dofs = d_group_num_unmasked_pix[group_id] - d_group_num_fitted_params[group_id]
 
             p = self._rng.uniform()
-            d_group_chisqs[group_id] = chi2.ppf(p, df = dofs)
+            d_group_chisqs[group_id] = chi2.ppf(p, df=dofs)
 
         # And assign this data to arrays for the table, applying the dicts to each element of the arrays
         self.data[self.tf.group_unmasked_pix] = np.array([d_group_num_unmasked_pix[self.data[self.tf.group_id][i]]
@@ -127,8 +127,8 @@ class MockStarCatDataGenerator(MockDataGenerator):
         # Assign per-star data
         self.data[self.tf.star_unmasked_pix] = STAR_CAT_NUM_UNMASKED_PER_STAR * self._ones
 
-        l_p = self._rng.uniform(size = self.num_test_points)
-        self.data[self.tf.star_chisq] = chi2.ppf(l_p, df = STAR_CAT_NUM_UNMASKED_PER_STAR)
+        l_p = self._rng.uniform(size=self.num_test_points)
+        self.data[self.tf.star_chisq] = chi2.ppf(l_p, df=STAR_CAT_NUM_UNMASKED_PER_STAR)
 
 
 class MockStarCatTableGenerator(MockTableGenerator):

@@ -32,7 +32,7 @@ class TestObjectIdList(SheTestCase):
 
     """
 
-    @pytest.fixture(autouse = True)
+    @pytest.fixture(autouse=True)
     def setup(self, tmpdir):
         self.workdir = tmpdir.strpath
 
@@ -50,10 +50,10 @@ class TestObjectIdList(SheTestCase):
         product = prod.create_dpd_she_object_id_list(self.ex_ids)
 
         # Save the product in an xml file
-        write_xml_product(product, self.filename, workdir = self.workdir)
+        write_xml_product(product, self.filename, workdir=self.workdir)
 
         # Read back the xml file
-        loaded_product = read_xml_product(self.filename, workdir = self.workdir)
+        loaded_product = read_xml_product(self.filename, workdir=self.workdir)
 
         # Check that it's the same
         assert loaded_product.get_id_list() == product.get_id_list()

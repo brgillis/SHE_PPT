@@ -190,7 +190,7 @@ class SheFileAccessError(IOError):
             self.workdir = workdir
 
             # Check that the provided value for qualified_filename doesn't conflict with what we construct here
-            constructed_qualified_filename = get_qualified_filename(filename = filename, workdir = workdir)
+            constructed_qualified_filename = get_qualified_filename(filename=filename, workdir=workdir)
             if qualified_filename is not None and qualified_filename != constructed_qualified_filename:
                 raise ValueError("In construction of `SheFileAccessError`, `qualified_filename`, `filename`, "
                                  "and `workdir` were all supplied, and give conflicting qualified filenames: "
@@ -779,18 +779,18 @@ class SheFileNamer(FileNameProvider):
     def __determine_type_name(self) -> None:
         """Piece together the type name from the components, leaving out any which are `None`.
         """
-        self._type_name = join_without_none(l_s = [self.type_name_head,
-                                                   self.type_name_body,
-                                                   self.type_name_tail],
-                                            default = self.default_type_name)
+        self._type_name = join_without_none(l_s=[self.type_name_head,
+                                                 self.type_name_body,
+                                                 self.type_name_tail],
+                                            default=self.default_type_name)
 
     def __determine_instance_id(self) -> None:
         """Piece together the instance ID from the components, leaving out any which are `None`.
         """
-        self._instance_id = join_without_none(l_s = [self.instance_id_head,
-                                                     self.instance_id_body,
-                                                     self.instance_id_tail],
-                                              default = self.default_instance_id)
+        self._instance_id = join_without_none(l_s=[self.instance_id_head,
+                                                   self.instance_id_body,
+                                                   self.instance_id_tail],
+                                              default=self.default_instance_id)
 
     # Protected methods
 
@@ -858,12 +858,12 @@ class SheFileNamer(FileNameProvider):
             extension = self.extension
 
         # Call the parent class's method to get an allowed filename, relative to the sub-directory
-        local_filename: str = self.get_allowed_filename(processing_function = self.processing_function,
-                                                        type_name = self.type_name.upper(),
-                                                        instance_id = self.instance_id.upper(),
-                                                        extension = extension,
-                                                        release = release,
-                                                        timestamp = self.timestamp)
+        local_filename: str = self.get_allowed_filename(processing_function=self.processing_function,
+                                                        type_name=self.type_name.upper(),
+                                                        instance_id=self.instance_id.upper(),
+                                                        extension=extension,
+                                                        release=release,
+                                                        timestamp=self.timestamp)
 
         # Add the sub-directory to get the full filename - check if it's None, just in case a child class overrides
         # the class attribute to be None
@@ -921,14 +921,14 @@ def get_allowed_filename(type_name: str = DEFAULT_TYPE_NAME,
         The generated workdir-relative filename.
     """
 
-    return SheFileNamer(type_name = type_name,
-                        instance_id = instance_id,
-                        extension = extension,
-                        release = release,
-                        version = version,
-                        subdir = subdir,
-                        processing_function = processing_function,
-                        timestamp = timestamp).get()
+    return SheFileNamer(type_name=type_name,
+                        instance_id=instance_id,
+                        extension=extension,
+                        release=release,
+                        version=version,
+                        subdir=subdir,
+                        processing_function=processing_function,
+                        timestamp=timestamp).get()
 
 
 def write_listfile(listfile_name: str,
@@ -951,7 +951,7 @@ def write_listfile(listfile_name: str,
         it is not necessary for this to be provided (and it will be ignored if it is).
     """
 
-    qualified_listfile_name = get_qualified_filename(filename = listfile_name, workdir = workdir)
+    qualified_listfile_name = get_qualified_filename(filename=listfile_name, workdir=workdir)
 
     log_method = _get_optional_log_method(log_info)
     log_method(MSG_WRITING_LISTFILE, listfile_name)
@@ -961,7 +961,7 @@ def write_listfile(listfile_name: str,
             paths_json = json.dumps(filenames)
             listfile.write(paths_json)
     except Exception as e:
-        raise SheFileWriteError(filename = listfile_name, workdir = workdir) from e
+        raise SheFileWriteError(filename=listfile_name, workdir=workdir) from e
 
     logger.debug(MSG_FINISHED_WRITING_LISTFILE, qualified_listfile_name)
 
@@ -989,7 +989,7 @@ def read_listfile(listfile_name: str,
         is read in is formatted.
     """
 
-    qualified_listfile_name = get_qualified_filename(filename = listfile_name, workdir = workdir)
+    qualified_listfile_name = get_qualified_filename(filename=listfile_name, workdir=workdir)
 
     log_method = _get_optional_log_method(log_info)
     log_method(MSG_READING_LISTFILE, qualified_listfile_name)
@@ -1005,7 +1005,7 @@ def read_listfile(listfile_name: str,
                     tupled_list = [t[0] for t in tupled_list]
                 return tupled_list
     except Exception as e:
-        raise SheFileReadError(filename = listfile_name, workdir = workdir) from e
+        raise SheFileReadError(filename=listfile_name, workdir=workdir) from e
 
     log_method(MSG_FINISHED_READING_LISTFILE, qualified_listfile_name)
 
@@ -1087,8 +1087,8 @@ def replace_multiple_in_file(input_filename: str,
 
 
 @deprecated_renamed_argument("allow_pickled",
-                             new_name = None,
-                             since = "9.1")
+                             new_name=None,
+                             since="9.1")
 def write_xml_product(product: Any,
                       xml_filename: str,
                       workdir: str = DEFAULT_WORKDIR,
@@ -1121,7 +1121,7 @@ def write_xml_product(product: Any,
     try:
         _write_xml_product(product, xml_filename, workdir)
     except Exception as e:
-        raise SheFileWriteError(filename = xml_filename, workdir = workdir) from e
+        raise SheFileWriteError(filename=xml_filename, workdir=workdir) from e
 
     logger.debug(MSG_FINISHED_WRITING_DATA_PRODUCT, xml_filename, workdir)
 
@@ -1143,12 +1143,12 @@ def _write_xml_product(product: Any, xml_filename: str, workdir: str) -> None:
     qualified_xml_filename = get_qualified_filename(xml_filename, workdir)
 
     with open(str(qualified_xml_filename), "w") as f:
-        f.write(product.toDOM().toprettyxml(encoding = "utf-8").decode("utf-8"))
+        f.write(product.toDOM().toprettyxml(encoding="utf-8").decode("utf-8"))
 
 
 @deprecated_renamed_argument("allow_pickled",
-                             new_name = None,
-                             since = "9.1")
+                             new_name=None,
+                             since="9.1")
 def read_xml_product(xml_filename: str,
                      workdir: str = ".",
                      log_info: bool = False,
@@ -1200,10 +1200,10 @@ def read_xml_product(xml_filename: str,
         try:
             product = _read_xml_product(xml_filename, workdir)
         except Exception as e:
-            raise SheFileReadError(filename = xml_filename, workdir = workdir) from e
+            raise SheFileReadError(filename=xml_filename, workdir=workdir) from e
 
     except Exception as e:
-        raise SheFileReadError(filename = xml_filename, workdir = workdir) from e
+        raise SheFileReadError(filename=xml_filename, workdir=workdir) from e
 
     # Check the type of the read-in product if `product_type` is not None
     if (product_type is not None) and not isinstance(product, product_type):
@@ -1231,8 +1231,8 @@ def _read_xml_product(xml_filename: str, workdir: str) -> Any:
     return product
 
 
-@deprecated(since = "9.1",
-            alternative = "write_xml_product")
+@deprecated(since="9.1",
+            alternative="write_xml_product")
 def write_pickled_product(product,
                           pickled_filename: str,
                           workdir: str = ".",
@@ -1252,15 +1252,15 @@ def write_pickled_product(product,
         with open(str(qualified_pickled_filename), "wb") as f:
             pickle.dump(product, f)
     except Exception as e:
-        raise SheFileWriteError(filename = pickled_filename, workdir = workdir) from e
+        raise SheFileWriteError(filename=pickled_filename, workdir=workdir) from e
 
     logger.debug(MSG_FINISHED_WRITING_DATA_PRODUCT, pickled_filename, workdir)
 
 
-@deprecated(since = "9.1",
-            alternative = "read_xml_product")
+@deprecated(since="9.1",
+            alternative="read_xml_product")
 def read_pickled_product(pickled_filename,
-                         workdir = DEFAULT_WORKDIR,
+                         workdir=DEFAULT_WORKDIR,
                          log_info: bool = False) -> Any:
     """This function is now deprecated and should not generally be used.
     """
@@ -1277,7 +1277,7 @@ def read_pickled_product(pickled_filename,
         with open(str(qualified_pickled_filename), "rb") as f:
             product = pickle.load(f)
     except Exception as e:
-        raise SheFileReadError(filename = pickled_filename, workdir = workdir) from e
+        raise SheFileReadError(filename=pickled_filename, workdir=workdir) from e
 
     logger.debug(MSG_FINISHED_READING_DATA_PRODUCT, pickled_filename, workdir)
 
@@ -1318,7 +1318,7 @@ def write_table(t: Table,
     try:
         t.write(qualified_filename, *args, **kwargs)
     except Exception as e:
-        raise SheFileWriteError(filename = filename, workdir = workdir) from e
+        raise SheFileWriteError(filename=filename, workdir=workdir) from e
 
     logger.debug(MSG_FINISHED_WRITING_TABLE, filename, workdir)
 
@@ -1359,7 +1359,7 @@ def read_table(filename: str,
     try:
         t: Table = Table.read(qualified_filename, *args, **kwargs)
     except Exception as e:
-        raise SheFileReadError(filename = filename, workdir = workdir) from e
+        raise SheFileReadError(filename=filename, workdir=workdir) from e
 
     logger.debug(MSG_FINISHED_READING_TABLE, filename, workdir)
 
@@ -1402,16 +1402,16 @@ def write_product_and_table(product: Any,
 
     # Generate a filename for the table if one hasn't been provided
     if table_filename is None:
-        table_filename = get_allowed_filename(version = __version__)
+        table_filename = get_allowed_filename(version=__version__)
 
     # Write the table
-    write_table(table, *args, filename = table_filename, workdir = workdir, log_info = log_info, **kwargs)
+    write_table(table, *args, filename=table_filename, workdir=workdir, log_info=log_info, **kwargs)
 
     # Set the table filename within the product
     product.set_data_filename(table_filename)
 
     # Write the product
-    write_xml_product(product, xml_filename = product_filename, workdir = workdir, log_info = log_info)
+    write_xml_product(product, xml_filename=product_filename, workdir=workdir, log_info=log_info)
 
 
 def read_product_and_table(product_filename: str,
@@ -1448,10 +1448,10 @@ def read_product_and_table(product_filename: str,
         An instance of the table which was stored on disk and pointed to by the data product.
     """
 
-    p = read_xml_product(product_filename, workdir = workdir, log_info = log_info, product_type = product_type)
+    p = read_xml_product(product_filename, workdir=workdir, log_info=log_info, product_type=product_type)
     table_filename: str = p.get_data_filename()
 
-    t = read_table(table_filename, *args, workdir = workdir, log_info = log_info, **kwargs)
+    t = read_table(table_filename, *args, workdir=workdir, log_info=log_info, **kwargs)
 
     return p, t
 
@@ -1488,10 +1488,10 @@ def read_table_from_product(product_filename: str,
         An instance of the table which was stored on disk and pointed to by the data product.
     """
 
-    _, t = read_product_and_table(product_filename = product_filename,
-                                  workdir = workdir,
-                                  log_info = log_info,
-                                  product_type = product_type,
+    _, t = read_product_and_table(product_filename=product_filename,
+                                  workdir=workdir,
+                                  log_info=log_info,
+                                  product_type=product_type,
                                   *args, *kwargs)
 
     return t
@@ -1531,7 +1531,7 @@ def write_fits(hdu_list: HDUList,
     try:
         hdu_list.writeto(qualified_filename, *args, **kwargs)
     except Exception as e:
-        raise SheFileWriteError(filename = filename, workdir = workdir) from e
+        raise SheFileWriteError(filename=filename, workdir=workdir) from e
     logger.debug(MSG_FINISHED_WRITING_FITS_FILE, filename, workdir)
 
 
@@ -1571,7 +1571,7 @@ def read_fits(filename: str,
     try:
         f: HDUList = fits.open(qualified_filename, *args, **kwargs)
     except Exception as e:
-        raise SheFileReadError(filename = filename, workdir = workdir) from e
+        raise SheFileReadError(filename=filename, workdir=workdir) from e
     logger.debug(MSG_FINISHED_READING_FITS_FILE, filename, workdir)
 
     return f
@@ -1614,10 +1614,10 @@ def read_d_l_method_table_filenames(l_product_filenames: Sequence[str],
     for product_filename in l_product_filenames:
 
         qualified_product_filename: str = get_qualified_filename(product_filename,
-                                                                 workdir = workdir)
+                                                                 workdir=workdir)
 
         product = read_xml_product(qualified_product_filename,
-                                   log_info = log_info)
+                                   log_info=log_info)
         l_products.append(product)
 
         # Get the list of table filenames for each method and store it if it exists
@@ -1657,9 +1657,9 @@ def read_d_l_method_tables(l_product_filenames: Sequence[str],
 
     # Use the read_d_l_method_table_filenames function for reading, to share common code
     (d_l_method_table_filenames,
-     l_products) = read_d_l_method_table_filenames(l_product_filenames = l_product_filenames,
-                                                   workdir = workdir,
-                                                   log_info = log_info)
+     l_products) = read_d_l_method_table_filenames(l_product_filenames=l_product_filenames,
+                                                   workdir=workdir,
+                                                   log_info=log_info)
 
     # Load each table into a new dict
     d_l_method_tables: Dict[ShearEstimationMethods, List[Table]] = {}
@@ -1667,9 +1667,9 @@ def read_d_l_method_tables(l_product_filenames: Sequence[str],
     for method in ShearEstimationMethods:
         d_l_method_tables[method] = []
         for filename in d_l_method_table_filenames[method]:
-            d_l_method_tables[method].append(read_table(filename = filename,
-                                                        workdir = workdir,
-                                                        log_info = log_info))
+            d_l_method_tables[method].append(read_table(filename=filename,
+                                                        workdir=workdir,
+                                                        log_info=log_info))
 
     return d_l_method_tables, l_products
 
@@ -1702,9 +1702,9 @@ def read_d_method_table_filenames(product_filename: str,
 
     # Use the read_d_l_method_table_filenames function for reading, to share common code
     (d_l_method_table_filenames,
-     l_products) = read_d_l_method_table_filenames(l_product_filenames = [product_filename],
-                                                   workdir = workdir,
-                                                   log_info = log_info)
+     l_products) = read_d_l_method_table_filenames(l_product_filenames=[product_filename],
+                                                   workdir=workdir,
+                                                   log_info=log_info)
 
     # Turn each list into a scalar, in a new dict
     d_method_table_filenames: Dict[ShearEstimationMethods, str] = {}
@@ -1750,9 +1750,9 @@ def read_d_method_tables(product_filename: str,
 
     # Use the read_d_l_method_table_filenames function for reading, to share common code
     (d_l_method_table_filenames,
-     l_products) = read_d_l_method_table_filenames(l_product_filenames = [product_filename],
-                                                   workdir = workdir,
-                                                   log_info = log_info)
+     l_products) = read_d_l_method_table_filenames(l_product_filenames=[product_filename],
+                                                   workdir=workdir,
+                                                   log_info=log_info)
 
     # Turn each list into a scalar, in a new dict
     d_method_tables: Dict[ShearEstimationMethods, Optional[Table]] = {}
@@ -1762,7 +1762,7 @@ def read_d_method_tables(product_filename: str,
         if len(l_method_table_filenames) == 0:
             d_method_tables[method] = None
         else:
-            d_method_tables[method] = read_table(d_l_method_table_filenames[method][0], workdir = workdir)
+            d_method_tables[method] = read_table(d_l_method_table_filenames[method][0], workdir=workdir)
 
     product = l_products[0]
 
@@ -1798,8 +1798,8 @@ def append_hdu(filename: str,
     log_method = _get_optional_log_method(log_info)
     log_method("Appending HDU to file %s in workdir %s", filename, workdir)
 
-    qualified_filename = get_qualified_filename(filename = filename,
-                                                workdir = workdir)
+    qualified_filename = get_qualified_filename(filename=filename,
+                                                workdir=workdir)
 
     try:
         f = fits.open(qualified_filename, 'append', *args, **kwargs)
@@ -1808,12 +1808,12 @@ def append_hdu(filename: str,
         try:
             f2 = fits.open(qualified_filename, 'readonly', *args, **kwargs)
             f2.close()
-            raise SheFileWriteError(filename = filename, workdir = workdir) from e
+            raise SheFileWriteError(filename=filename, workdir=workdir) from e
         except Exception as e2:
             # Re-raise if this was caught from the try block above
             if isinstance(e2, SheFileWriteError):
                 raise
-            raise SheFileReadError(filename = filename, workdir = workdir) from e
+            raise SheFileReadError(filename=filename, workdir=workdir) from e
 
     f.append(hdu)
     f.close()
@@ -1837,7 +1837,7 @@ def try_remove_file(filename: str,
         If True, will log a warning if anything goes wrong while trying to remove the file.
     """
     try:
-        qualified_filename = get_qualified_filename(filename, workdir = workdir)
+        qualified_filename = get_qualified_filename(filename, workdir=workdir)
         os.remove(os.path.join(qualified_filename))
     except IOError:
         if warn:
@@ -1868,8 +1868,8 @@ def safe_copy(qualified_src_filename: str,
 
         # Raise an exception if we require that the destination is free
         if require_dest_free:
-            raise SheFileWriteError(qualified_filename = qualified_dest_filename,
-                                    message = MSG_DEST_EXIST % qualified_dest_filename)
+            raise SheFileWriteError(qualified_filename=qualified_dest_filename,
+                                    message=MSG_DEST_EXIST % qualified_dest_filename)
 
         # We don't require that it's free, so just note in debug log and return
         logger.debug(MSG_DEST_EXIST, qualified_dest_filename)
@@ -1881,8 +1881,8 @@ def safe_copy(qualified_src_filename: str,
 
         # Raise an exception if we require that the file exists
         if require_src_exist:
-            raise SheFileReadError(qualified_filename = qualified_src_filename,
-                                   message = MSG_SRC_NOT_EXIST % qualified_src_filename)
+            raise SheFileReadError(qualified_filename=qualified_src_filename,
+                                   message=MSG_SRC_NOT_EXIST % qualified_src_filename)
 
         # We don't require that it exists, so just note in debug log and return
         logger.debug(MSG_SRC_NOT_EXIST, qualified_src_filename)
@@ -1890,7 +1890,7 @@ def safe_copy(qualified_src_filename: str,
         return
 
     # Make the containing directory for the file
-    os.makedirs(os.path.split(qualified_dest_filename)[0], exist_ok = True)
+    os.makedirs(os.path.split(qualified_dest_filename)[0], exist_ok=True)
 
     # Now that we know it's safe, copy the file
     shutil.copy(qualified_src_filename, qualified_dest_filename)
@@ -1924,18 +1924,18 @@ def copy_product_between_dirs(product_filename: str,
     """
 
     # Ensure a data subdirectory exists in the tmpdir
-    os.makedirs(os.path.join(dest_dir, DATA_SUBDIR), exist_ok = True)
+    os.makedirs(os.path.join(dest_dir, DATA_SUBDIR), exist_ok=True)
 
     # Copy the product itself
     qualified_product_filename = os.path.join(src_dir, product_filename)
     qualified_copied_product_filename = os.path.join(dest_dir, product_filename)
 
-    safe_copy(qualified_src_filename = qualified_product_filename,
-              qualified_dest_filename = qualified_copied_product_filename,
-              require_src_exist = True)
+    safe_copy(qualified_src_filename=qualified_product_filename,
+              qualified_dest_filename=qualified_copied_product_filename,
+              require_src_exist=True)
 
     # Read in the product and get all filenames
-    p = read_xml_product(product_filename, workdir = src_dir)
+    p = read_xml_product(product_filename, workdir=src_dir)
     l_filenames = p.get_all_filenames()
 
     for filename in l_filenames:
@@ -1947,10 +1947,10 @@ def copy_product_between_dirs(product_filename: str,
         qualified_filename = os.path.join(src_dir, filename)
         qualified_copied_filename = os.path.join(dest_dir, filename)
 
-        safe_copy(qualified_src_filename = qualified_filename,
-                  qualified_dest_filename = qualified_copied_filename,
-                  require_src_exist = require_all_src_datafiles_exist,
-                  require_dest_free = require_all_dest_datafiles_free)
+        safe_copy(qualified_src_filename=qualified_filename,
+                  qualified_dest_filename=qualified_copied_filename,
+                  require_src_exist=require_all_src_datafiles_exist,
+                  require_dest_free=require_all_dest_datafiles_free)
 
     return qualified_copied_product_filename
 
@@ -1988,19 +1988,19 @@ def copy_listfile_between_dirs(listfile_filename: str,
     qualified_listfile_filename = os.path.join(src_dir, listfile_filename)
     qualified_copied_listfile_filename = os.path.join(dest_dir, listfile_filename)
 
-    safe_copy(qualified_src_filename = qualified_listfile_filename,
-              qualified_dest_filename = qualified_copied_listfile_filename,
-              require_src_exist = True)
+    safe_copy(qualified_src_filename=qualified_listfile_filename,
+              qualified_dest_filename=qualified_copied_listfile_filename,
+              require_src_exist=True)
 
     # Read in the list of products
     l_product_filenames = read_listfile(qualified_listfile_filename)
 
     for product_filename in l_product_filenames:
-        copy_product_between_dirs(product_filename = product_filename,
-                                  src_dir = src_dir,
-                                  dest_dir = dest_dir,
-                                  require_all_src_datafiles_exist = require_all_datafiles_exist,
-                                  require_all_dest_datafiles_free = require_all_dest_datafiles_free)
+        copy_product_between_dirs(product_filename=product_filename,
+                                  src_dir=src_dir,
+                                  dest_dir=dest_dir,
+                                  require_all_src_datafiles_exist=require_all_datafiles_exist,
+                                  require_all_dest_datafiles_free=require_all_dest_datafiles_free)
 
     return qualified_copied_listfile_filename
 
@@ -2019,7 +2019,7 @@ def symlink_contents(src_dir: str,
     """
 
     # Make sure the target directory exists
-    os.makedirs(dest_dir, exist_ok = True)
+    os.makedirs(dest_dir, exist_ok=True)
 
     # Get the list of files in the source directory
     l_src_filenames = os.listdir(src_dir)
@@ -2036,9 +2036,9 @@ def symlink_contents(src_dir: str,
         # If the file is a directory, create a new directory in the target directory, and recursively call this
         # function on it
         if os.path.isdir(qualified_src_filename):
-            os.makedirs(qualified_dest_filename, exist_ok = True)
-            symlink_contents(src_dir = qualified_src_filename,
-                             dest_dir = qualified_dest_filename)
+            os.makedirs(qualified_dest_filename, exist_ok=True)
+            symlink_contents(src_dir=qualified_src_filename,
+                             dest_dir=qualified_dest_filename)
         else:
             # Otherwise, create a symbolic link to the file in the source directory
             os.symlink(qualified_src_filename, qualified_dest_filename)
@@ -2182,7 +2182,7 @@ def _find_web_file_xml(filename: str, qualified_filename: str) -> str:
     webpath: str = os.path.split(filename)[0]
 
     try:
-        p = read_xml_product(qualified_filename, workdir = "")
+        p = read_xml_product(qualified_filename, workdir="")
         for subfilename in p.get_all_filenames():
             # Skip if there's no file to download
             if is_any_type_of_none(subfilename):
@@ -2514,7 +2514,7 @@ def tar_files(tarball_filename: str,
     logger.info("Creating tarball %s", qualified_tarball_filename)
 
     tar_cmd = f"cd {workdir} && tar -cf {qualified_tarball_filename} {filename_string}"
-    tar_results = subprocess.run(tar_cmd, shell = True, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+    tar_results = subprocess.run(tar_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     logger.info("tar stdout: %s", tar_results.stdout)
     logger.debug("tar stderr: %s", tar_results.stderr)
@@ -2524,11 +2524,11 @@ def tar_files(tarball_filename: str,
         base_error = FileNotFoundError(f"{qualified_tarball_filename} not found. "
                                        f"stderr from tar process was: \n"
                                        f"{tar_results.stderr}")
-        raise SheFileWriteError(filename = tarball_filename, workdir = workdir) from base_error
+        raise SheFileWriteError(filename=tarball_filename, workdir=workdir) from base_error
     if tar_results.returncode:
         base_error = ValueError(f"Tarring of {qualified_tarball_filename} failed. stderr from tar process was: \n"
                                 f"{tar_results.stderr}")
-        raise SheFileWriteError(filename = tarball_filename, workdir = workdir) from base_error
+        raise SheFileWriteError(filename=tarball_filename, workdir=workdir) from base_error
 
     # Delete the files if desired
     if delete_files:
@@ -2681,7 +2681,7 @@ class ProductLoader(FileLoader):
         Any
             The loaded-in data product.
         """
-        return read_xml_product(xml_filename = self.filename, workdir = self.workdir, *args, **kwargs)
+        return read_xml_product(xml_filename=self.filename, workdir=self.workdir, *args, **kwargs)
 
 
 class TableLoader(FileLoader[Table]):
@@ -2701,7 +2701,7 @@ class TableLoader(FileLoader[Table]):
         Table
             The loaded-in table.
         """
-        return read_table(self.filename, *args, workdir = self.workdir, *args, **kwargs)
+        return read_table(self.filename, *args, workdir=self.workdir, *args, **kwargs)
 
 
 class FitsLoader(FileLoader[HDUList]):
@@ -2721,7 +2721,7 @@ class FitsLoader(FileLoader[HDUList]):
         HDUList
             The HDUList for the opened `FITS` file.
         """
-        return read_fits(filename = self.filename, *args, workdir = self.workdir, *args, **kwargs)
+        return read_fits(filename=self.filename, *args, workdir=self.workdir, *args, **kwargs)
 
     def close(self):
         """Inherit parent `close` method to also close the file handle.
@@ -2799,7 +2799,7 @@ class MultiFileLoader(Generic[T]):
                 raise ValueError("`file_loader_type` must be specified when initializing a `MultiFileLoader` object "
                                  f"with a list of filenames: {l_filenames=}, {file_loader_type=}")
             self.l_filenames = l_filenames
-            self.l_file_loaders = [self.file_loader_type(filename = filename, workdir = self.workdir) for
+            self.l_file_loaders = [self.file_loader_type(filename=filename, workdir=self.workdir) for
                                    filename in self.l_filenames]
 
         else:

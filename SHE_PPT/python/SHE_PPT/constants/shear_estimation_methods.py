@@ -38,16 +38,16 @@ from ..table_formats.she_regauss_tu_matched import tf as regtm_tf
 from ..table_formats.she_tu_matched import SheTUMatchedFormat
 
 D_SHEAR_ESTIMATION_METHOD_TABLE_FORMATS: Dict[ShearEstimationMethods, SheMeasurementsFormat] = {
-    ShearEstimationMethods.KSB      : ksbm_tf,
-    ShearEstimationMethods.REGAUSS  : regm_tf,
+    ShearEstimationMethods.KSB: ksbm_tf,
+    ShearEstimationMethods.REGAUSS: regm_tf,
     ShearEstimationMethods.MOMENTSML: mmlm_tf,
-    ShearEstimationMethods.LENSMC   : lmcm_tf}
+    ShearEstimationMethods.LENSMC: lmcm_tf}
 
 D_SHEAR_ESTIMATION_METHOD_TUM_TABLE_FORMATS: Dict[ShearEstimationMethods, SheTUMatchedFormat] = {
-    ShearEstimationMethods.KSB      : ksbtm_tf,
-    ShearEstimationMethods.REGAUSS  : regtm_tf,
+    ShearEstimationMethods.KSB: ksbtm_tf,
+    ShearEstimationMethods.REGAUSS: regtm_tf,
     ShearEstimationMethods.MOMENTSML: mmltm_tf,
-    ShearEstimationMethods.LENSMC   : lmctm_tf}
+    ShearEstimationMethods.LENSMC: lmctm_tf}
 
 NUM_METHODS: int = len(ShearEstimationMethods)
 METHOD_NAMES: List[str] = [method_enum.value for method_enum in ShearEstimationMethods]

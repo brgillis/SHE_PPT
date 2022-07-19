@@ -47,7 +47,7 @@ class TestCase(SheTestCase):
 
     """
 
-    @pytest.fixture(autouse = True)
+    @pytest.fixture(autouse=True)
     def setup(self, tmpdir):
 
         # Download the MDB from WebDAV
@@ -76,17 +76,17 @@ class TestCase(SheTestCase):
         self.logdir = os.path.join(self.workdir, "logs")
 
         # Read in the test data
-        self.data_stack = SHEFrameStack.read(exposure_listfile_filename = VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
-                                             seg_listfile_filename = SHE_EXPOSURE_SEGMENTATION_MAPS_LISTFILE_FILENAME,
-                                             stacked_image_product_filename = VIS_STACKED_FRAME_PRODUCT_FILENAME,
-                                             stacked_seg_product_filename = SHE_STACK_SEGMENTATION_MAP_FILENAME,
-                                             psf_listfile_filename = SHE_PSF_MODEL_IMAGES_LISTFILE_FILENAME,
-                                             detections_listfile_filename = MER_FINAL_CATALOG_LISTFILE_FILENAME,
-                                             workdir = self.workdir,
-                                             clean_detections = True,
-                                             memmap = True,
-                                             mode = 'denywrite',
-                                             load_images = False)
+        self.data_stack = SHEFrameStack.read(exposure_listfile_filename=VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
+                                             seg_listfile_filename=SHE_EXPOSURE_SEGMENTATION_MAPS_LISTFILE_FILENAME,
+                                             stacked_image_product_filename=VIS_STACKED_FRAME_PRODUCT_FILENAME,
+                                             stacked_seg_product_filename=SHE_STACK_SEGMENTATION_MAP_FILENAME,
+                                             psf_listfile_filename=SHE_PSF_MODEL_IMAGES_LISTFILE_FILENAME,
+                                             detections_listfile_filename=MER_FINAL_CATALOG_LISTFILE_FILENAME,
+                                             workdir=self.workdir,
+                                             clean_detections=True,
+                                             memmap=True,
+                                             mode='denywrite',
+                                             load_images=False)
 
     def test_get_signal_to_noise(self):
         """Test that the interface for the KSB method works properly.
@@ -96,13 +96,13 @@ class TestCase(SheTestCase):
 
         # Get the S/N for each galaxy
         for i, row in enumerate(self.data_stack.detections_catalogue):
-            gal_stack = self.data_stack.extract_galaxy_stack(row[mfc_tf.ID], width = 128)
+            gal_stack = self.data_stack.extract_galaxy_stack(row[mfc_tf.ID], width=128)
 
             signal_to_noise_estimates = []
             for exposure in gal_stack.exposures:
                 signal_to_noise_estimates.append(get_SN_of_image(exposure.data - exposure.background_map,
-                                                                 gain = gain))
+                                                                 gain=gain))
 
-            assert np.allclose(signal_to_noise_estimates, ex_signal_to_noises[i], rtol = 0.1)
+            assert np.allclose(signal_to_noise_estimates, ex_signal_to_noises[i], rtol=0.1)
 
         return

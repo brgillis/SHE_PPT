@@ -21,9 +21,8 @@ __updated__ = "2021-08-16"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-from astropy.table import Column
-
 import numpy as np
+from astropy.table import Column
 
 from ..table_utility import is_in_format
 

@@ -28,10 +28,9 @@ import ST_DM_DmUtils.DmUtils as dm_utils
 from ST_DM_HeaderProvider import GenericHeaderProvider as HeaderProvider
 from ST_DataModelBindings.dpd.she.commoncalibration_stub import dpdSheCommonCalibration
 from ST_DataModelBindings.pro import she_stub as she_pro
-
 from ..constants.shear_estimation_methods import ShearEstimationMethods
-from ..file_io import read_xml_product, find_aux_file
-from ..product_utility import init_binding_class, get_data_filename_from_product, set_data_filename_of_product
+from ..file_io import find_aux_file, read_xml_product
+from ..product_utility import get_data_filename_from_product, init_binding_class, set_data_filename_of_product
 
 sample_file_name = "SHE_PPT/sample_common_calibration.xml"
 product_type_name = "DpdSheCommonCalibration"

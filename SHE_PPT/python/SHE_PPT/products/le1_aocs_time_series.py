@@ -38,15 +38,15 @@ def init():
 
     """
 
-    init_placeholder_general(product_type_name = product_type_name,
-                             init_function = create_dpd_le1_aocs_time_series)
+    init_placeholder_general(product_type_name=product_type_name,
+                             init_function=create_dpd_le1_aocs_time_series)
 
 
-def create_dpd_le1_aocs_time_series(filename = None):
+def create_dpd_le1_aocs_time_series(filename=None):
     """ Initialize a product of this type
     """
 
-    return create_general_product_from_template(template_filename = sample_file_name,
-                                                product_type_name = product_type_name,
-                                                general_product_type_name = ProductName.PLC_GENERAL.value,
-                                                filename = filename, )
+    return create_general_product_from_template(template_filename=sample_file_name,
+                                                product_type_name=product_type_name,
+                                                general_product_type_name=ProductName.PLC_GENERAL.value,
+                                                filename=filename, )

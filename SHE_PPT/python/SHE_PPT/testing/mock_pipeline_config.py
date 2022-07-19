@@ -41,9 +41,9 @@ class MockPipelineConfigFactory:
     _config_defaults = D_GLOBAL_CONFIG_DEFAULTS
 
     # Utilities
-    file_namer: SheFileNamer = SheFileNamer(type_name = "PIPELINE-CONFIG",
-                                            extension = ".txt",
-                                            version = SHE_PPT.__version__)
+    file_namer: SheFileNamer = SheFileNamer(type_name="PIPELINE-CONFIG",
+                                            extension=".txt",
+                                            version=SHE_PPT.__version__)
 
     # Generated values
     _pipeline_config: Optional[Dict[ConfigKeys, Any]] = None
@@ -106,7 +106,7 @@ class MockPipelineConfigFactory:
         """ Create and return a mock pipeline config dict.
         """
 
-        return read_config(config_filename = None, config_keys = self.config_keys, d_defaults = self.config_defaults)
+        return read_config(config_filename=None, config_keys=self.config_keys, d_defaults=self.config_defaults)
 
     # Public methods
 
@@ -114,10 +114,10 @@ class MockPipelineConfigFactory:
         """ Create and output a mock pipeline config file.
         """
 
-        write_config(config_dict = self.pipeline_config,
-                     config_filename = self.file_namer.filename,
-                     workdir = self.file_namer.workdir,
-                     config_keys = self.config_keys)
+        write_config(config_dict=self.pipeline_config,
+                     config_filename=self.file_namer.filename,
+                     workdir=self.file_namer.workdir,
+                     config_keys=self.config_keys)
 
     def cleanup(self):
         os.remove(os.path.join(self.file_namer.qualified_filename))
