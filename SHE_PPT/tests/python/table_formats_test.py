@@ -62,7 +62,7 @@ class TestTableFormats(SheTestCase):
     """
 
     @classmethod
-    def setup_class(cls):
+    def post_setup(cls):
         # Define a list of the table formats we'll be testing
         cls.formats = [bs_tf,
                        cc_tf,
