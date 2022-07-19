@@ -61,8 +61,8 @@ class TestUtility(SheTestCase):
 
         # Create an object of the MockClass type, with a complicated nested structure
         mock_object_s2 = MockClass()
-        mock_object_s1 = MockClass(r = mock_object_s2)
-        self.mock_object = MockClass(r = mock_object_s1)
+        mock_object_s1 = MockClass(r=mock_object_s2)
+        self.mock_object = MockClass(r=mock_object_s1)
 
     def test_get_attr_with_index(self):
         """Unit test of the `get_nested_attr` function.
@@ -139,32 +139,32 @@ class TestUtility(SheTestCase):
 
         # Create a list of mock HDUs to test
         mock_hdu_list = HDUList([PrimaryHDU(),
-                                 BinTableHDU(header = Header({EXTNAME_LABEL: f"CCDID 1-1.{SCI_TAG}",
-                                                              CCDID_LABEL  : "CCDID 1-1"})),
-                                 BinTableHDU(header = Header({EXTNAME_LABEL: f"CCDID 1-2.{SCI_TAG}",
-                                                              CCDID_LABEL  : "CCDID 1-2"}))])
+                                 BinTableHDU(header=Header({EXTNAME_LABEL: f"CCDID 1-1.{SCI_TAG}",
+                                                            CCDID_LABEL: "CCDID 1-1"})),
+                                 BinTableHDU(header=Header({EXTNAME_LABEL: f"CCDID 1-2.{SCI_TAG}",
+                                                            CCDID_LABEL: "CCDID 1-2"}))])
 
         # Check that it finds the correct HDU when specifying either extname or ccdid
         for i in (1, 2):
-            assert find_extension(mock_hdu_list, extname = f"CCDID 1-{i}.{SCI_TAG}") == i
-            assert find_extension(mock_hdu_list, ccdid = f"CCDID 1-{i}") == i
+            assert find_extension(mock_hdu_list, extname=f"CCDID 1-{i}.{SCI_TAG}") == i
+            assert find_extension(mock_hdu_list, ccdid=f"CCDID 1-{i}") == i
 
         # Test that it raises an exception when required input isn't provided
         with pytest.raises(ValueError):
             _ = find_extension(mock_hdu_list)
 
         # Test that it returns None when the HDU isn't found
-        assert find_extension(mock_hdu_list, extname = f"CCDID 1-3.{SCI_TAG}") is None
+        assert find_extension(mock_hdu_list, extname=f"CCDID 1-3.{SCI_TAG}") is None
 
     def test_get_detector(self):
         """Unit test of the `get_detector` function.
         """
 
         # Create a mock HDU and table to test with
-        mock_hdu = BinTableHDU(header = Header({EXTNAME_LABEL: f"CCDID 1-2.{SCI_TAG}",
-                                                CCDID_LABEL  : "CCDID 1-2"}))
-        mock_table = Table(meta = {EXTNAME_LABEL: f"CCDID 1-2.{SCI_TAG}",
-                                   CCDID_LABEL  : "CCDID 1-2"})
+        mock_hdu = BinTableHDU(header=Header({EXTNAME_LABEL: f"CCDID 1-2.{SCI_TAG}",
+                                              CCDID_LABEL: "CCDID 1-2"}))
+        mock_table = Table(meta={EXTNAME_LABEL: f"CCDID 1-2.{SCI_TAG}",
+                                 CCDID_LABEL: "CCDID 1-2"})
         bad_obj = Table()
 
         # Test we get the expected result with each object
@@ -269,8 +269,8 @@ class TestUtility(SheTestCase):
         assert coerce_to_list("1,2") == ["1,2"]
 
         # Test with (not) keeping None
-        assert coerce_to_list(None, keep_none = False) == []
-        assert coerce_to_list(None, keep_none = True) is None
+        assert coerce_to_list(None, keep_none=False) == []
+        assert coerce_to_list(None, keep_none=True) is None
 
     def test_join_without_none(self):
         """Test the `join_without_none` function.
@@ -286,7 +286,7 @@ class TestUtility(SheTestCase):
         assert join_without_none([1, None, 2]) == "1-2"
 
         # Test with a custom joiner
-        assert join_without_none([1, 2], joiner = ",") == "1,2"
+        assert join_without_none([1, 2], joiner=",") == "1,2"
 
         # Test with a default
-        assert join_without_none([None], default = "default") == "default"
+        assert join_without_none([None], default="default") == "default"

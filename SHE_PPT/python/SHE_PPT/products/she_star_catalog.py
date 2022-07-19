@@ -34,21 +34,21 @@ product_type_name = "DpdSheStarCatalog"
 def init():
     """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    init_just_datastorage(binding_class = dpdSheStarCatalog,
-                          init_function = create_dpd_she_star_catalog)
+    init_just_datastorage(binding_class=dpdSheStarCatalog,
+                          init_function=create_dpd_she_star_catalog)
 
 
-def create_dpd_she_star_catalog(filename = None,
-                                data_filename = None,
-                                spatial_footprint = None):
+def create_dpd_she_star_catalog(filename=None,
+                                data_filename=None,
+                                spatial_footprint=None):
     """ Creates a product of this type.
     """
 
-    return create_product_from_template(template_filename = sample_file_name,
-                                        product_type_name = product_type_name,
-                                        filename = filename,
-                                        data_filename = data_filename,
-                                        spatial_footprint = spatial_footprint)
+    return create_product_from_template(template_filename=sample_file_name,
+                                        product_type_name=product_type_name,
+                                        filename=filename,
+                                        data_filename=data_filename,
+                                        spatial_footprint=spatial_footprint)
 
 
 # Add a useful alias

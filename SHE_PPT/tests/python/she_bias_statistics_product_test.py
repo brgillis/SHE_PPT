@@ -54,8 +54,8 @@ class TestShearBiasStatsProduct(SheTestCase):
                        ShearEstimationMethods.LENSMC,
                        ShearEstimationMethods.MOMENTSML,
                        ShearEstimationMethods.REGAUSS):
-            x1 = np.linspace(0, n - 1, n, endpoint = True)
-            x2 = np.linspace(0, n - 1, n, endpoint = True)
+            x1 = np.linspace(0, n - 1, n, endpoint=True)
+            x2 = np.linspace(0, n - 1, n, endpoint=True)
             y_err = 0.25 * np.ones_like(x1)
             y1 = x1 + np.random.randn(n) * y_err
             y2 = x2 + np.random.randn(n) * y_err
@@ -68,11 +68,11 @@ class TestShearBiasStatsProduct(SheTestCase):
 
         # Create the product
         product = prod.create_dpd_she_bias_statistics_from_stats(
-            KSB_bias_statistics = stats[ShearEstimationMethods.KSB],
-            LensMC_bias_statistics = stats[ShearEstimationMethods.LENSMC],
-            MomentsML_bias_statistics = stats[ShearEstimationMethods.MOMENTSML],
-            REGAUSS_bias_statistics = stats[ShearEstimationMethods.REGAUSS],
-            workdir = workdir)
+            KSB_bias_statistics=stats[ShearEstimationMethods.KSB],
+            LensMC_bias_statistics=stats[ShearEstimationMethods.LENSMC],
+            MomentsML_bias_statistics=stats[ShearEstimationMethods.MOMENTSML],
+            REGAUSS_bias_statistics=stats[ShearEstimationMethods.REGAUSS],
+            workdir=workdir)
 
         # Check that it validates the schema
         product.validateBinding()
@@ -82,12 +82,12 @@ class TestShearBiasStatsProduct(SheTestCase):
         # Check the other methods' statistics are correct
         for val in ("w", "xm", "x2m", "ym", "xym"):
             for new_object, original_object in (
-                    (product.get_KSB_bias_statistics(workdir = workdir), stats[ShearEstimationMethods.KSB]),
+                    (product.get_KSB_bias_statistics(workdir=workdir), stats[ShearEstimationMethods.KSB]),
                     (product.get_LensMC_bias_statistics(
-                        workdir = workdir), stats[ShearEstimationMethods.LENSMC]),
+                        workdir=workdir), stats[ShearEstimationMethods.LENSMC]),
                     (product.get_MomentsML_bias_statistics(
-                        workdir = workdir), stats[ShearEstimationMethods.MOMENTSML]),
-                    (product.get_REGAUSS_bias_statistics(workdir = workdir), stats[ShearEstimationMethods.REGAUSS])):
+                        workdir=workdir), stats[ShearEstimationMethods.MOMENTSML]),
+                    (product.get_REGAUSS_bias_statistics(workdir=workdir), stats[ShearEstimationMethods.REGAUSS])):
 
                 assert np.isclose(getattr(new_object[0], val), getattr(original_object[0], val))
                 assert np.isclose(getattr(new_object[1], val), getattr(original_object[1], val))
@@ -95,12 +95,12 @@ class TestShearBiasStatsProduct(SheTestCase):
         # Check that all the bias measurements are correct
         for val in ("m", "m_err", "c", "c_err", "mc_covar"):
             for new_object, original_object in (
-                    (product.get_KSB_bias_measurements(workdir = workdir), measurements[ShearEstimationMethods.KSB]),
+                    (product.get_KSB_bias_measurements(workdir=workdir), measurements[ShearEstimationMethods.KSB]),
                     (product.get_LensMC_bias_measurements(
-                        workdir = workdir), measurements[ShearEstimationMethods.LENSMC]),
+                        workdir=workdir), measurements[ShearEstimationMethods.LENSMC]),
                     (product.get_MomentsML_bias_measurements(
-                        workdir = workdir), measurements[ShearEstimationMethods.MOMENTSML]),
-                    (product.get_REGAUSS_bias_measurements(workdir = workdir),
+                        workdir=workdir), measurements[ShearEstimationMethods.MOMENTSML]),
+                    (product.get_REGAUSS_bias_measurements(workdir=workdir),
                      measurements[ShearEstimationMethods.REGAUSS])):
 
                 assert np.isclose(getattr(new_object[0], val), getattr(original_object[0], val))
@@ -113,8 +113,8 @@ class TestShearBiasStatsProduct(SheTestCase):
                        ShearEstimationMethods.LENSMC,
                        ShearEstimationMethods.MOMENTSML,
                        ShearEstimationMethods.REGAUSS):
-            x1 = np.linspace(0, n - 1, n, endpoint = True)
-            x2 = np.linspace(0, n - 1, n, endpoint = True)
+            x1 = np.linspace(0, n - 1, n, endpoint=True)
+            x2 = np.linspace(0, n - 1, n, endpoint=True)
             y_err = 0.25 * np.ones_like(x1)
             y1 = x1 + np.random.randn(n) * y_err
             y2 = x2 + np.random.randn(n) * y_err
@@ -122,7 +122,7 @@ class TestShearBiasStatsProduct(SheTestCase):
             stats2[method] = (LinregressStatistics(x1, y1, y_err),
                               LinregressStatistics(x2, y2, y_err),)
 
-            product.set_method_bias_statistics(method, stats2[method], workdir = workdir)
+            product.set_method_bias_statistics(method, stats2[method], workdir=workdir)
 
             measurements2[method] = (BiasMeasurements(linregress_with_errors(x1, y1, y_err)),
                                      BiasMeasurements(linregress_with_errors(x2, y2, y_err)),)
@@ -131,12 +131,12 @@ class TestShearBiasStatsProduct(SheTestCase):
                        ShearEstimationMethods.REGAUSS):
             for val in ("w", "xm", "x2m", "ym", "xym"):
                 for new_object, original_object in (
-                        (product.get_KSB_bias_statistics(workdir = workdir), stats2[ShearEstimationMethods.KSB]),
+                        (product.get_KSB_bias_statistics(workdir=workdir), stats2[ShearEstimationMethods.KSB]),
                         (product.get_LensMC_bias_statistics(
-                            workdir = workdir), stats2[ShearEstimationMethods.LENSMC]),
+                            workdir=workdir), stats2[ShearEstimationMethods.LENSMC]),
                         (product.get_MomentsML_bias_statistics(
-                            workdir = workdir), stats2[ShearEstimationMethods.MOMENTSML]),
-                        (product.get_REGAUSS_bias_statistics(workdir = workdir),
+                            workdir=workdir), stats2[ShearEstimationMethods.MOMENTSML]),
+                        (product.get_REGAUSS_bias_statistics(workdir=workdir),
                          stats2[ShearEstimationMethods.REGAUSS])):
 
                     assert np.isclose(getattr(new_object[0], val), getattr(original_object[0], val))
@@ -145,12 +145,12 @@ class TestShearBiasStatsProduct(SheTestCase):
         # Check that all the updated bias measurements are correct
         for val in ("m", "m_err", "c", "c_err", "mc_covar"):
             for new_object, original_object in (
-                    (product.get_KSB_bias_measurements(workdir = workdir), measurements2[ShearEstimationMethods.KSB]),
+                    (product.get_KSB_bias_measurements(workdir=workdir), measurements2[ShearEstimationMethods.KSB]),
                     (product.get_LensMC_bias_measurements(
-                        workdir = workdir), measurements2[ShearEstimationMethods.LENSMC]),
+                        workdir=workdir), measurements2[ShearEstimationMethods.LENSMC]),
                     (product.get_MomentsML_bias_measurements(
-                        workdir = workdir), measurements2[ShearEstimationMethods.MOMENTSML]),
-                    (product.get_REGAUSS_bias_measurements(workdir = workdir),
+                        workdir=workdir), measurements2[ShearEstimationMethods.MOMENTSML]),
+                    (product.get_REGAUSS_bias_measurements(workdir=workdir),
                      measurements2[ShearEstimationMethods.REGAUSS])):
 
                 assert np.isclose(getattr(new_object[0], val), getattr(original_object[0], val))
@@ -166,13 +166,13 @@ class TestShearBiasStatsProduct(SheTestCase):
 
                 table = Table.read(os.path.join(workdir, filename))
 
-                new_object = calculate_bias_measurements(table, update = False)
+                new_object = calculate_bias_measurements(table, update=False)
                 original_object = measurements2[method]
 
                 assert np.isclose(getattr(new_object[0], val), getattr(original_object[0], val),
-                                  rtol = 1e-4, atol = 1e-5), "Method: " + method
+                                  rtol=1e-4, atol=1e-5), "Method: " + method
                 assert np.isclose(getattr(new_object[1], val), getattr(original_object[1], val),
-                                  rtol = 1e-4, atol = 1e-5), "Method: " + method
+                                  rtol=1e-4, atol=1e-5), "Method: " + method
 
     def test_xml_writing_and_reading(self, tmpdir):
 
@@ -188,8 +188,8 @@ class TestShearBiasStatsProduct(SheTestCase):
                        ShearEstimationMethods.LENSMC,
                        ShearEstimationMethods.MOMENTSML,
                        ShearEstimationMethods.REGAUSS):
-            x1 = np.linspace(0, n - 1, n, endpoint = True)
-            x2 = np.linspace(0, n - 1, n, endpoint = True)
+            x1 = np.linspace(0, n - 1, n, endpoint=True)
+            x2 = np.linspace(0, n - 1, n, endpoint=True)
             y_err = 0.25 * np.ones_like(x1)
             y1 = x1 + np.random.randn(n) * y_err
             y2 = x2 + np.random.randn(n) * y_err
@@ -197,29 +197,29 @@ class TestShearBiasStatsProduct(SheTestCase):
                              LinregressStatistics(x2, y2, y_err),)
         # Create the product
         product = prod.create_dpd_she_bias_statistics_from_stats(
-            KSB_bias_statistics = stats[ShearEstimationMethods.KSB],
-            LensMC_bias_statistics = stats[ShearEstimationMethods.LENSMC],
-            MomentsML_bias_statistics = stats[ShearEstimationMethods.MOMENTSML],
-            REGAUSS_bias_statistics = stats[ShearEstimationMethods.REGAUSS],
-            workdir = workdir)
+            KSB_bias_statistics=stats[ShearEstimationMethods.KSB],
+            LensMC_bias_statistics=stats[ShearEstimationMethods.LENSMC],
+            MomentsML_bias_statistics=stats[ShearEstimationMethods.MOMENTSML],
+            REGAUSS_bias_statistics=stats[ShearEstimationMethods.REGAUSS],
+            workdir=workdir)
 
         # Save the product in an XML file
         filename = "she_shear_estimates.xml"
-        write_xml_product(product, filename, workdir = workdir)
+        write_xml_product(product, filename, workdir=workdir)
 
         # Read back the XML file
-        loaded_product = read_xml_product(filename, workdir = workdir)
+        loaded_product = read_xml_product(filename, workdir=workdir)
 
         # Check that the products coincide
 
         for val in ("w", "xm", "x2m", "ym", "xym"):
             for loaded_object, original_object in (
-                    (loaded_product.get_KSB_bias_statistics(workdir = workdir), stats[ShearEstimationMethods.KSB]),
+                    (loaded_product.get_KSB_bias_statistics(workdir=workdir), stats[ShearEstimationMethods.KSB]),
                     (loaded_product.get_LensMC_bias_statistics(
-                        workdir = workdir), stats[ShearEstimationMethods.LENSMC]),
+                        workdir=workdir), stats[ShearEstimationMethods.LENSMC]),
                     (loaded_product.get_MomentsML_bias_statistics(
-                        workdir = workdir), stats[ShearEstimationMethods.MOMENTSML]),
-                    (loaded_product.get_REGAUSS_bias_statistics(workdir = workdir),
+                        workdir=workdir), stats[ShearEstimationMethods.MOMENTSML]),
+                    (loaded_product.get_REGAUSS_bias_statistics(workdir=workdir),
                      stats[ShearEstimationMethods.REGAUSS])):
 
                 assert np.isclose(getattr(loaded_object[0], val), getattr(original_object[0], val))

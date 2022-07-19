@@ -179,7 +179,7 @@ def _correct_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
 
     try:
 
-        rot_est_shear = galsim.Shear(g1 = g_world_polar[0, 0], g2 = g_world_polar[1, 0])
+        rot_est_shear = galsim.Shear(g1=g_world_polar[0, 0], g2=g_world_polar[1, 0])
 
     except ValueError as e:
 
@@ -197,7 +197,7 @@ def _correct_for_wcs_shear_and_rotation(shear_estimate: ShearEstimate,
         """Local function to be minimized in the fitting.
         """
         try:
-            res_shear = w2p_shear + galsim.Shear(g1 = g[0], g2 = g[1])
+            res_shear = w2p_shear + galsim.Shear(g1=g[0], g2=g[1])
             dist2 = (rot_est_shear.g1 - res_shear.g1) ** 2 + (rot_est_shear.g2 - res_shear.g2) ** 2
         except ValueError as local_e:
             # If some other ValueError is somehow raised, re-raise it
@@ -269,7 +269,7 @@ def _uncorrect_shear_for_wcs_and_rotation(shear_estimate: ShearEstimate, stamp: 
     # Apply the shear first
     try:
 
-        res_shear = w2p_shear + galsim.Shear(g1 = shear_estimate.g1, g2 = shear_estimate.g2)
+        res_shear = w2p_shear + galsim.Shear(g1=shear_estimate.g1, g2=shear_estimate.g2)
 
     except ValueError as e:
 
@@ -326,7 +326,7 @@ def _make_ministamp_from_wcs(wcs: Union[AstropyWCS, GalsimWCS],
     """
 
     # Initialize a trivial stamp
-    stamp = SHEImage(data = np.zeros((1, 1)))
+    stamp = SHEImage(data=np.zeros((1, 1)))
 
     # Add the WCS to the stamp
     if isinstance(wcs, GalsimWCS):
@@ -508,7 +508,7 @@ def _get_galaxy_mask_flags(gal_stamp):
             if a is None:
                 flags |= missing_flag
             else:
-                ravelled_mask = np.zeros_like(a.ravel(), dtype = bool)
+                ravelled_mask = np.zeros_like(a.ravel(), dtype=bool)
                 ravelled_antimask = ~ravelled_mask
 
         if ravelled_antimask is None:

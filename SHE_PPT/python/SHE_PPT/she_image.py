@@ -1470,7 +1470,7 @@ class SHEImage:
             raise ValueError('Default noisemap cannot be generated if `read_noise` attribute is not present.')
 
         # Start by setting to the read noise level
-        self.noisemap = read_noise / gain * np.ones_like(self.data, dtype = float)
+        self.noisemap = read_noise / gain * np.ones_like(self.data, dtype=float)
 
         # Check if we have a background map
         if self.background_map is not None:
@@ -1708,9 +1708,9 @@ class SHEImage:
 
         # We'll calculate the transformation empirically by using small steps
         # in x and y
-        ra_0, dec_0 = self.pix2world(x, y, origin = origin)
-        ra_px, dec_px = self.pix2world(x + dx, y, origin = origin)
-        ra_py, dec_py = self.pix2world(x, y + dy, origin = origin)
+        ra_0, dec_0 = self.pix2world(x, y, origin=origin)
+        ra_px, dec_px = self.pix2world(x + dx, y, origin=origin)
+        ra_py, dec_py = self.pix2world(x, y + dy, origin=origin)
 
         if spatial_ra:
             ra_scale = -np.cos(dec_0 * np.pi / 180)
@@ -1788,7 +1788,7 @@ class SHEImage:
             x = (self.shape[0] - 1) / 2.
             y = (self.shape[1] - 1) / 2.
 
-            ra, dec = self.pix2world(x, y, origin = 0)
+            ra, dec = self.pix2world(x, y, origin=0)
         elif (ra is None) != (dec is None):
             raise ValueError("In get_world2pix_transformation, either both ra and dec must be specified or both " +
                              "must be None/unspecified.")
@@ -1864,7 +1864,7 @@ class SHEImage:
         # It also handles the addition of the offset to x and y
 
         pix2world_transformation = self.get_pix2world_transformation(
-            x, y, dx, dy, spatial_ra = True, origin = origin)
+            x, y, dx, dy, spatial_ra=True, origin=origin)
 
         u, _, vh = np.linalg.svd(pix2world_transformation)
 
@@ -2126,8 +2126,8 @@ class SHEImage:
 
         # We'll calculate the transformation empirically by using small steps
         # in x and y
-        ra_0, dec_0 = self.pix2world(x, y, origin = origin)
-        ra_1, dec_1 = self.pix2world(x + dx, y + dy, origin = origin)
+        ra_0, dec_0 = self.pix2world(x, y, origin=origin)
+        ra_1, dec_1 = self.pix2world(x + dx, y + dy, origin=origin)
 
         cos_dec = np.cos(dec_0 * np.pi / 180)
 

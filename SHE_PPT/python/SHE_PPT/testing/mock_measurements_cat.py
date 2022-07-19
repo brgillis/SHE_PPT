@@ -57,31 +57,31 @@ EXTRA_EST_G_ERR = 0.005
 EXTRA_EST_G_ERR_ERR = 0.005
 
 D_D_L_D_INPUT_BIAS: Dict[ShearEstimationMethods, Dict[BinParameters, List[Dict[str, float]]]] = {
-    ShearEstimationMethods.LENSMC: {BinParameters.TOT: [{"m1"    : 0.05,
+    ShearEstimationMethods.LENSMC: {BinParameters.TOT: [{"m1": 0.05,
                                                          "m1_err": 0.015,
-                                                         "c1"    : -0.2,
+                                                         "c1": -0.2,
                                                          "c1_err": 0.05,
-                                                         "m2"    : -0.1,
+                                                         "m2": -0.1,
                                                          "m2_err": 0.04,
-                                                         "c2"    : 0.01,
+                                                         "c2": 0.01,
                                                          "c2_err": 0.003, }]},
-    ShearEstimationMethods.KSB   : {BinParameters.SNR: [{"m1"    : 0.2,
-                                                         "m1_err": 0.003,
-                                                         "c1"    : -0.3,
-                                                         "c1_err": 0.03,
-                                                         "m2"    : 0.1,
-                                                         "m2_err": 0.21,
-                                                         "c2"    : -0.4,
-                                                         "c2_err": 0.43, },
-                                                        {"m1"    : -0.3,
-                                                         "m1_err": 0.031,
-                                                         "c1"    : -0.5,
-                                                         "c1_err": 0.05,
-                                                         "m2"    : 0.35,
-                                                         "m2_err": 0.15,
-                                                         "c2"    : 0.,
-                                                         "c2_err": 0.1,
-                                                         }]}}
+    ShearEstimationMethods.KSB: {BinParameters.SNR: [{"m1": 0.2,
+                                                      "m1_err": 0.003,
+                                                      "c1": -0.3,
+                                                      "c1_err": 0.03,
+                                                      "m2": 0.1,
+                                                      "m2_err": 0.21,
+                                                      "c2": -0.4,
+                                                      "c2_err": 0.43, },
+                                                     {"m1": -0.3,
+                                                      "m1_err": 0.031,
+                                                      "c1": -0.5,
+                                                      "c1_err": 0.05,
+                                                      "m2": 0.35,
+                                                      "m2_err": 0.15,
+                                                      "c2": 0.,
+                                                      "c2_err": 0.1,
+                                                      }]}}
 
 
 class MockShearEstimateDataGenerator(MockDataGenerator):
@@ -119,9 +119,9 @@ class MockShearEstimateDataGenerator(MockDataGenerator):
 
         # Init the data generator
         self.mock_tu_galaxy_data_generator = default_init_if_none(mock_tu_galaxy_data_generator,
-                                                                  type = MockTUGalaxyDataGenerator,
-                                                                  num_test_points = self.num_test_points,
-                                                                  seed = self.seed)
+                                                                  type=MockTUGalaxyDataGenerator,
+                                                                  num_test_points=self.num_test_points,
+                                                                  seed=self.seed)
 
         # Init and check the numbers of test points
         self.num_test_points = self.mock_tu_galaxy_data_generator.num_test_points
@@ -224,23 +224,23 @@ class MockShearEstimateTableGenerator(MockTableGenerator):
                  method: Optional[ShearEstimationMethods] = None,
                  **kwargs, ):
         # Initialize new attributes for this subtype
-        self.method = default_value_if_none(x = method, default_x = self.method)
+        self.method = default_value_if_none(x=method, default_x=self.method)
 
         # Set up the mock data generator with the proper type
-        self.tf = default_value_if_none(x = tf, default_x = D_SHEAR_ESTIMATION_METHOD_TABLE_FORMATS[self.method])
+        self.tf = default_value_if_none(x=tf, default_x=D_SHEAR_ESTIMATION_METHOD_TABLE_FORMATS[self.method])
 
-        self.seed = default_value_if_none(x = seed, default_x = self.seed)
-        self.num_test_points = default_value_if_none(x = num_test_points, default_x = self.num_test_points)
+        self.seed = default_value_if_none(x=seed, default_x=self.seed)
+        self.num_test_points = default_value_if_none(x=num_test_points, default_x=self.num_test_points)
 
         mock_data_generator = default_init_if_none(mock_data_generator,
-                                                   type = self.mock_data_generator_type,
-                                                   tf = self.tf,
-                                                   num_test_points = self.num_test_points,
-                                                   seed = self.seed,
-                                                   method = self.method)
+                                                   type=self.mock_data_generator_type,
+                                                   tf=self.tf,
+                                                   num_test_points=self.num_test_points,
+                                                   seed=self.seed,
+                                                   method=self.method)
 
         super().__init__(*args,
-                         mock_data_generator = mock_data_generator,
+                         mock_data_generator=mock_data_generator,
                          **kwargs)
 
     def write_mock_product(self) -> str:
@@ -253,7 +253,7 @@ class MockShearEstimateTableGenerator(MockTableGenerator):
         measurements_table_product = self.create_product()
         measurements_table_product.set_method_filename(self.method, self.table_filename)
 
-        write_xml_product(measurements_table_product, self.product_filename, workdir = self.workdir)
+        write_xml_product(measurements_table_product, self.product_filename, workdir=self.workdir)
 
         return self.product_filename
 
@@ -262,15 +262,15 @@ def write_mock_measurements_tables(workdir: str) -> str:
     """ Convenience function to write tables for both LensMC and KSB in one product
     """
 
-    lensmc_table_generator = MockShearEstimateTableGenerator(method = ShearEstimationMethods.LENSMC,
-                                                             seed = EST_SEED,
-                                                             table_filename = EST_LENSMC_TABLE_FILENAME,
-                                                             workdir = workdir)
+    lensmc_table_generator = MockShearEstimateTableGenerator(method=ShearEstimationMethods.LENSMC,
+                                                             seed=EST_SEED,
+                                                             table_filename=EST_LENSMC_TABLE_FILENAME,
+                                                             workdir=workdir)
     lensmc_table_generator.write_mock_table()
-    ksb_table_generator = MockShearEstimateTableGenerator(method = ShearEstimationMethods.KSB,
-                                                          seed = EST_SEED + 1,
-                                                          table_filename = EST_KSB_TABLE_FILENAME,
-                                                          workdir = workdir)
+    ksb_table_generator = MockShearEstimateTableGenerator(method=ShearEstimationMethods.KSB,
+                                                          seed=EST_SEED + 1,
+                                                          table_filename=EST_KSB_TABLE_FILENAME,
+                                                          workdir=workdir)
     ksb_table_generator.write_mock_table()
 
     # Set up and write the data product
@@ -278,6 +278,6 @@ def write_mock_measurements_tables(workdir: str) -> str:
     measurements_table_product.set_LensMC_filename(EST_LENSMC_TABLE_FILENAME)
     measurements_table_product.set_KSB_filename(EST_KSB_TABLE_FILENAME)
 
-    write_xml_product(measurements_table_product, EST_TABLE_PRODUCT_FILENAME, workdir = workdir)
+    write_xml_product(measurements_table_product, EST_TABLE_PRODUCT_FILENAME, workdir=workdir)
 
     return EST_TABLE_PRODUCT_FILENAME

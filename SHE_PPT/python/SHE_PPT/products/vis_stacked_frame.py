@@ -24,13 +24,9 @@ __updated__ = "2021-08-16"
 # Boston, MA 02110-1301 USA
 
 from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedFrame
-
-from ..product_utility import (get_data_filename_from_product, set_data_filename_of_product,
-                               set_filename_datastorage, get_filename_datastorage,
-                               create_product_from_template)
-from ..products.vis_calibrated_frame import (create_vis_psf_storage,
-                                             create_vis_bkg_storage, create_vis_wgt_storage)
-
+from ..product_utility import (create_product_from_template, get_data_filename_from_product, get_filename_datastorage,
+                               set_data_filename_of_product, set_filename_datastorage, )
+from ..products.vis_calibrated_frame import (create_vis_bkg_storage, create_vis_psf_storage, create_vis_wgt_storage)
 
 sample_file_name = "SHE_PPT/sample_vis_stacked_frame.xml"
 product_type_name = "DpdVisStackedFrame"

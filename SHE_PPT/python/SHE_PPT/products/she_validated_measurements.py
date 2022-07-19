@@ -24,9 +24,7 @@ __updated__ = "2021-08-16"
 # Boston, MA 02110-1301 USA
 
 from ST_DataModelBindings.dpd.she.validatedmeasurements_stub import dpdSheValidatedMeasurements
-
-from ..product_utility import init_method_files, create_measurements_product_from_template
-
+from ..product_utility import create_measurements_product_from_template, init_method_files
 
 sample_file_name = "SHE_PPT/sample_validated_shear_measurements.xml"
 product_type_name = "DpdSheValidatedMeasurements"
