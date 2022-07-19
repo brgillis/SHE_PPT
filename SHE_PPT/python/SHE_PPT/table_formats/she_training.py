@@ -51,22 +51,22 @@ class SheTrainingFormat(SheTableFormat):
 
     def __init__(self, finalize: bool = True):
 
-        super().__init__(finalize = False)
+        super().__init__(finalize=False)
 
         # Column names and info
 
-        self.id = self.set_column_properties("OBJECT_ID", dtype = ">i8", fits_dtype = "K", unlabelled = True,
-                                             comment = "ID of this object in the galaxy population priors table.")
-        self.e1 = self.set_column_properties("E1", dtype = ">f4", fits_dtype = "E",
-                                             comment = "Mean ellipticity measurement of this object, component 1")
-        self.e2 = self.set_column_properties("E2", dtype = ">f4", fits_dtype = "E",
-                                             comment = "Mean ellipticity measurement of this object, component 2")
-        self.e1_err = self.set_column_properties("E1_ERR", dtype = ">f4", fits_dtype = "E",
-                                                 comment = "Error on mean ellipticity measurement of this object, "
-                                                           "component 1")
-        self.e2_err = self.set_column_properties("E2_ERR", dtype = ">f4", fits_dtype = "E",
-                                                 comment = "Error on mean ellipticity measurement of this object, "
-                                                           "component 2")
+        self.id = self.set_column_properties("OBJECT_ID", dtype=">i8", fits_dtype="K", unlabelled=True,
+                                             comment="ID of this object in the galaxy population priors table.")
+        self.e1 = self.set_column_properties("E1", dtype=">f4", fits_dtype="E",
+                                             comment="Mean ellipticity measurement of this object, component 1")
+        self.e2 = self.set_column_properties("E2", dtype=">f4", fits_dtype="E",
+                                             comment="Mean ellipticity measurement of this object, component 2")
+        self.e1_err = self.set_column_properties("E1_ERR", dtype=">f4", fits_dtype="E",
+                                                 comment="Error on mean ellipticity measurement of this object, "
+                                                         "component 1")
+        self.e2_err = self.set_column_properties("E2_ERR", dtype=">f4", fits_dtype="E",
+                                                 comment="Error on mean ellipticity measurement of this object, "
+                                                         "component 2")
 
         if finalize:
             self._finalize_init()

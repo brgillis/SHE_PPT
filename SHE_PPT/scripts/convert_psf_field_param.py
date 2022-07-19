@@ -3,8 +3,12 @@
     Created: 2019/02/26
 
     Run with a command such as:
-    
-    E-Run SHE_PPT 0.9 python3 /home/brg/Work/Projects/SHE_PPT/SHE_PPT/scripts/convert_sim_catalog.py EUC_SIM_TUGALCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --star_cat EUC_SIM_TUSTARCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --source_dir /mnt/cephfs/share/SC456/SIM-VIS/vis_science_T2/intermediate/TU/data --max_mag_vis 25.5 --obj_cat obj_cat.xml --dest_dir .
+
+    E-Run SHE_PPT 0.9 python3 /home/brg/Work/Projects/SHE_PPT/SHE_PPT/scripts/convert_sim_catalog.py
+    EUC_SIM_TUGALCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --star_cat
+    EUC_SIM_TUSTARCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --source_dir
+    /mnt/cephfs/share/SC456/SIM-VIS/vis_science_T2/intermediate/TU/data --max_mag_vis 25.5 --obj_cat obj_cat.xml
+    --dest_dir .
 
 """
 
@@ -28,16 +32,11 @@ import argparse
 import os
 
 from astropy.io import fits
-from astropy.table import Table
 
-from SHE_PPT import products
-from SHE_PPT.file_io import (find_file, get_allowed_filename,
-                             write_xml_product, read_xml_product)
 import SHE_PPT.table_formats.she_psf_dm_state as dm
 import SHE_PPT.table_formats.she_psf_om_state as om
-import SHE_PPT.table_formats.she_psf_tm_state as tm
 import SHE_PPT.table_formats.she_psf_zm_state as zm
-import numpy as np
+from SHE_PPT.file_io import (get_allowed_filename, read_xml_product, write_xml_product)
 
 
 def main():

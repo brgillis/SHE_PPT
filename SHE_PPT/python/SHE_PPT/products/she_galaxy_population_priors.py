@@ -24,10 +24,8 @@ __updated__ = "2021-08-16"
 # Boston, MA 02110-1301 USA
 
 from ST_DataModelBindings.dpd.she.galaxypopulationpriors_stub import dpdSheGalaxyPopulationPriors
-
-from ..product_utility import (set_data_filename_of_product, get_data_filename_from_product,
-                               create_product_from_template, init_binding_class)
-
+from ..product_utility import (create_product_from_template, get_data_filename_from_product, init_binding_class,
+                               set_data_filename_of_product, )
 
 sample_file_name = "SHE_PPT/sample_galaxy_population_priors.xml"
 product_type_name = "DpdSheGalaxyPopulationPriors"

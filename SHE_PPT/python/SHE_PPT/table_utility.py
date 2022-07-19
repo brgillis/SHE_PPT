@@ -37,8 +37,8 @@ logger = getLogger(__name__)
 MSG_ERR_COL_ABSENT = "Table not in correct format due to absence of required column: %s"
 
 
-def is_in_format(table, table_format, ignore_metadata = False, strict = True, verbose = False,
-                 fix_bool = True):
+def is_in_format(table, table_format, ignore_metadata=False, strict=True, verbose=False,
+                 fix_bool=True):
     """
         @brief Checks if a table is in the given format
 
@@ -147,7 +147,7 @@ def is_in_format(table, table_format, ignore_metadata = False, strict = True, ve
             # Is it an issue with a bool column being read as a string?
             elif col_dtype.str[1] == 'U' and ex_dtype.str == '|b1':
                 if fix_bool:
-                    col = Column(data = np.empty_like(table[child_colname].data, dtype = bool))
+                    col = Column(data=np.empty_like(table[child_colname].data, dtype=bool))
                     for i in range(len(col)):
                         col[i] = (table[child_colname] == "True" or table[child_colname]
                                   == "true" or table[child_colname] == "1")
@@ -223,7 +223,7 @@ def add_row(table, **kwargs):
         Side-effects: Row is appended to end of table.
     """
 
-    table.add_row(vals = kwargs)
+    table.add_row(vals=kwargs)
 
 
 def output_tables(otable, file_name_base, output_format):
@@ -232,11 +232,11 @@ def output_tables(otable, file_name_base, output_format):
 
     if output_format in ('ascii', "both"):
         text_file_name = file_name_base + ".ecsv"
-        otable.write(text_file_name, format = 'ascii.ecsv')
+        otable.write(text_file_name, format='ascii.ecsv')
 
     if output_format in ('fits', 'both'):
         fits_file_name = file_name_base + ".fits"
-        otable.write(fits_file_name, format = 'fits', overwrite = True)
+        otable.write(fits_file_name, format='fits', overwrite=True)
 
 
 def init_table(tf: "SheTableFormat",
@@ -293,7 +293,7 @@ def init_table(tf: "SheTableFormat",
             if size == 0 and len(col) > 0:
                 size = len(col)
         else:
-            col = Column(name = colname, data = np.zeros(size, dtype = dtype))
+            col = Column(name=colname, data=np.zeros(size, dtype=dtype))
 
             full_init_cols.append(col)
 
@@ -301,18 +301,18 @@ def init_table(tf: "SheTableFormat",
 
         # We have to use a bit of a workaround if the table has any array columns, due to a bug in astropy
 
-        t_template = Table(names = names, dtype = dtypes)
+        t_template = Table(names=names, dtype=dtypes)
 
-        t_data = np.zeros((size,), dtype = t_template.dtype)
+        t_data = np.zeros((size,), dtype=t_template.dtype)
 
-        t = Table(t_data, meta = t_template.meta)
+        t = Table(t_data, meta=t_template.meta)
 
         for colname in tf.all:
             if colname in init_cols.keys():
                 t[colname] = init_cols[colname]
 
     else:
-        t = Table(full_init_cols, names = names, dtype = dtypes)
+        t = Table(full_init_cols, names=names, dtype=dtypes)
 
     return t
 
@@ -383,7 +383,7 @@ class SheTableMeta:
         return m
 
 
-SheTableMetaType = TypeVar("SheTableMetaType", bound = SheTableMeta)
+SheTableMetaType = TypeVar("SheTableMetaType", bound=SheTableMeta)
 
 
 class SheTableFormat:
@@ -535,13 +535,13 @@ class SheTableFormat:
             with the kwarg being the attribute of the table's meta class.
         """
 
-        t = init_table(tf = self,
-                       size = size,
-                       optional_columns = optional_columns,
-                       init_cols = init_cols)
+        t = init_table(tf=self,
+                       size=size,
+                       optional_columns=optional_columns,
+                       init_cols=init_cols)
 
         t.meta = self.m.init_meta(**kwargs)
 
-        assert is_in_format(t, self, verbose = True)
+        assert is_in_format(t, self, verbose=True)
 
         return t

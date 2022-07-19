@@ -53,17 +53,17 @@ class ShePsfModelImageMeta(SheTableMeta):
     field_time: str = "FLD_TIME"
 
     def __init__(self):
-        super().__init__(comments = OrderedDict(((self.fits_version, None),
-                                                 (self.fits_def, None),
-                                                 (self.extname, PSF_CAT_TAG),
-                                                 (self.calibration_product, None),
-                                                 (self.calibration_time, None),
-                                                 (self.field_product, None),
-                                                 (self.field_time, None)
-                                                 )))
+        super().__init__(comments=OrderedDict(((self.fits_version, None),
+                                               (self.fits_def, None),
+                                               (self.extname, PSF_CAT_TAG),
+                                               (self.calibration_product, None),
+                                               (self.calibration_time, None),
+                                               (self.field_product, None),
+                                               (self.field_time, None)
+                                               )))
 
     def init_meta(self, **kwargs: str):
-        return super().init_meta(extname = PSF_CAT_TAG,
+        return super().init_meta(extname=PSF_CAT_TAG,
                                  **kwargs)
 
 
@@ -80,29 +80,29 @@ class ShePsfModelImageFormat(SheTableFormat):
         # Column names and info
 
         self.ID = self.set_column_properties(
-            "OBJECT_ID", dtype = ">i8", fits_dtype = "K")
+            "OBJECT_ID", dtype=">i8", fits_dtype="K")
 
         self.template = self.set_column_properties(
-            "SHE_PSF_SED_TEMPLATE", dtype = ">i8", fits_dtype = "K")
+            "SHE_PSF_SED_TEMPLATE", dtype=">i8", fits_dtype="K")
         self.bulge_index = self.set_column_properties(
-            "SHE_PSF_BULGE_INDEX", dtype = ">i4", fits_dtype = "J")
+            "SHE_PSF_BULGE_INDEX", dtype=">i4", fits_dtype="J")
         self.disk_index = self.set_column_properties(
-            "SHE_PSF_DISK_INDEX", dtype = ">i4", fits_dtype = "J")
+            "SHE_PSF_DISK_INDEX", dtype=">i4", fits_dtype="J")
         self.image_x = self.set_column_properties(
-            "SHE_PSF_IMAGE_X", dtype = ">i2", fits_dtype = "I")
+            "SHE_PSF_IMAGE_X", dtype=">i2", fits_dtype="I")
         self.image_y = self.set_column_properties(
-            "SHE_PSF_IMAGE_Y", dtype = ">i2", fits_dtype = "I")
+            "SHE_PSF_IMAGE_Y", dtype=">i2", fits_dtype="I")
         self.x = self.set_column_properties(
-            "SHE_PSF_X", dtype = ">f4", fits_dtype = "E")
+            "SHE_PSF_X", dtype=">f4", fits_dtype="E")
         self.y = self.set_column_properties(
-            "SHE_PSF_Y", dtype = ">f4", fits_dtype = "E")
+            "SHE_PSF_Y", dtype=">f4", fits_dtype="E")
 
         self.calibration_time = self.set_column_properties(
-            "SHE_PSF_CALIB_TIME", dtype = "str", fits_dtype = "A", length = 20)
+            "SHE_PSF_CALIB_TIME", dtype="str", fits_dtype="A", length=20)
         self.field_time = self.set_column_properties(
-            "SHE_PSF_FIELD_TIME", dtype = "str", fits_dtype = "A", length = 20)
+            "SHE_PSF_FIELD_TIME", dtype="str", fits_dtype="A", length=20)
         self.qual_flag = self.set_column_properties(
-            "SHE_PSF_QUAL_FLAG", dtype = ">i4", fits_dtype = "J")
+            "SHE_PSF_QUAL_FLAG", dtype=">i4", fits_dtype="J")
 
         self._finalize_init()
 

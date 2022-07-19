@@ -23,12 +23,11 @@ __updated__ = "2021-08-13"
 # Boston, MA 02110-1301 USA
 
 from collections import OrderedDict
-from typing import Optional, List, Type
+from typing import List, Optional, Type
 
-from ..constants.fits import PSF_ZM_STATE_TAG, PSF_ZM_IDENTITY
+from ..constants.fits import PSF_ZM_IDENTITY, PSF_ZM_STATE_TAG
 from ..logging import getLogger
 from ..table_formats.she_psf_state import ShePsfStateFormat, ShePsfStateMeta
-
 
 fits_version = "8.0"
 
@@ -60,7 +59,6 @@ class ShePsfZmStateFormat(ShePsfStateFormat):
     _l_colnames: Optional[List[str]] = None
 
     def __init__(self, data_type="FIELD"):
-
         super().__init__(data_type)
 
         # Column names and info

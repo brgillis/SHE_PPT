@@ -93,9 +93,9 @@ def get_intensity(intensity_parameter, parameter_type, gain, exp_time):
     elif parameter_type == 'flux':
         intensity = get_ADU_from_count(intensity_parameter * exp_time, gain)
     elif parameter_type == 'mag_vis':
-        intensity = get_ADU_from_count(get_count_from_mag_vis(intensity_parameter, exp_time = exp_time), gain)
+        intensity = get_ADU_from_count(get_count_from_mag_vis(intensity_parameter, exp_time=exp_time), gain)
     elif parameter_type == 'mag_i':
-        intensity = get_ADU_from_count(get_count_from_mag_i(intensity_parameter, exp_time = exp_time), gain)
+        intensity = get_ADU_from_count(get_count_from_mag_i(intensity_parameter, exp_time=exp_time), gain)
     else:
         raise ValueError("get_I can't handle parameter type '" + str(parameter_type) + "'")
 

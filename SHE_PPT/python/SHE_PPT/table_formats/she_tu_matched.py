@@ -53,18 +53,18 @@ class SheTUMatchedMeta(SheTableMeta):
     valid: str = VALID_LABEL
 
     def __init__(self):
-        super().__init__(comments = OrderedDict(((self.fits_version, None),
-                                                 (self.fits_def, None),
-                                                 (self.she_flag_version, None),
-                                                 (self.model_hash, None),
-                                                 (self.model_seed, None),
-                                                 (self.noise_seed, None),
-                                                 (self.observation_id, "Individual ID or list of IDs"),
-                                                 (self.pointing_id, "List of pointing IDs"),
-                                                 (self.observation_time, "Individual time or list of times"),
-                                                 (self.tile_id, "Individual ID or list of IDs"),
-                                                 (self.valid, "0: Not tested; 1: Pass; -1: Fail")
-                                                 )))
+        super().__init__(comments=OrderedDict(((self.fits_version, None),
+                                               (self.fits_def, None),
+                                               (self.she_flag_version, None),
+                                               (self.model_hash, None),
+                                               (self.model_seed, None),
+                                               (self.noise_seed, None),
+                                               (self.observation_id, "Individual ID or list of IDs"),
+                                               (self.pointing_id, "List of pointing IDs"),
+                                               (self.observation_time, "Individual time or list of times"),
+                                               (self.tile_id, "Individual ID or list of IDs"),
+                                               (self.valid, "0: Not tested; 1: Pass; -1: Fail")
+                                               )))
 
 
 class SheTUMatchedFormat(SheMeasurementsFormat):
@@ -80,52 +80,52 @@ class SheTUMatchedFormat(SheMeasurementsFormat):
     def __init__(self,
                  finalize: bool = True):
 
-        super().__init__(finalize = False)
+        super().__init__(finalize=False)
 
         # Table column labels and properties unique to this table, from the TU Galaxy table
-        self.tu_ra = self.set_column_properties("RA_MAG", fits_dtype = "E", dtype = ">f4", comment = "",
-                                                unlabelled = True)
-        self.tu_dec = self.set_column_properties("DEC_MAG", fits_dtype = "E", dtype = ">f4", comment = "",
-                                                 unlabelled = True)
-        self.tu_gamma1 = self.set_column_properties("GAMMA1", fits_dtype = "E", dtype = ">f4", comment = "",
-                                                    unlabelled = True)
-        self.tu_gamma2 = self.set_column_properties("GAMMA2", fits_dtype = "E", dtype = ">f4", comment = "",
-                                                    unlabelled = True)
-        self.tu_kappa = self.set_column_properties("KAPPA", fits_dtype = "E", dtype = ">f4", comment = "",
-                                                   unlabelled = True)
-        self.tu_disk_angle = self.set_column_properties("DISK_ANGLE", fits_dtype = "E",
-                                                        dtype = ">f4", comment = "", unlabelled = True)
-        self.tu_disk_axis_ratio = self.set_column_properties("DISK_AXIS_RATIO", fits_dtype = "E",
-                                                             dtype = ">f4", comment = "", unlabelled = True)
+        self.tu_ra = self.set_column_properties("RA_MAG", fits_dtype="E", dtype=">f4", comment="",
+                                                unlabelled=True)
+        self.tu_dec = self.set_column_properties("DEC_MAG", fits_dtype="E", dtype=">f4", comment="",
+                                                 unlabelled=True)
+        self.tu_gamma1 = self.set_column_properties("GAMMA1", fits_dtype="E", dtype=">f4", comment="",
+                                                    unlabelled=True)
+        self.tu_gamma2 = self.set_column_properties("GAMMA2", fits_dtype="E", dtype=">f4", comment="",
+                                                    unlabelled=True)
+        self.tu_kappa = self.set_column_properties("KAPPA", fits_dtype="E", dtype=">f4", comment="",
+                                                   unlabelled=True)
+        self.tu_disk_angle = self.set_column_properties("DISK_ANGLE", fits_dtype="E",
+                                                        dtype=">f4", comment="", unlabelled=True)
+        self.tu_disk_axis_ratio = self.set_column_properties("DISK_AXIS_RATIO", fits_dtype="E",
+                                                             dtype=">f4", comment="", unlabelled=True)
 
         # Column labels for summary galaxy properties calculated from the TU Galaxy table
-        self.tu_gal_index = self.set_column_properties("GAL_INDEX", fits_dtype = "E", dtype = ">f4",
-                                                       comment = "", unlabelled = True, is_optional = True)
-        self.tu_star_index = self.set_column_properties("STAR_INDEX", fits_dtype = "E", dtype = ">f4",
-                                                        comment = "", unlabelled = True, is_optional = True)
-        self.tu_g_beta = self.set_column_properties("Beta_Input_Shear", fits_dtype = "E", dtype = ">f4",
-                                                    comment = "", unlabelled = True, is_optional = True)
-        self.tu_g_mag = self.set_column_properties("Mag_Input_Shear", fits_dtype = "E", dtype = ">f4",
-                                                   comment = "", unlabelled = True, is_optional = True)
-        self.tu_bulge_beta = self.set_column_properties("Beta_Input_Bulge_Unsheared_Shape", fits_dtype = "E",
-                                                        dtype = ">f4", comment = "", unlabelled = True,
-                                                        is_optional = True)
-        self.tu_disk_beta = self.set_column_properties("Beta_Input_Disk_Unsheared_Shape", fits_dtype = "E",
-                                                       dtype = ">f4", comment = "", unlabelled = True,
-                                                       is_optional = True)
+        self.tu_gal_index = self.set_column_properties("GAL_INDEX", fits_dtype="E", dtype=">f4",
+                                                       comment="", unlabelled=True, is_optional=True)
+        self.tu_star_index = self.set_column_properties("STAR_INDEX", fits_dtype="E", dtype=">f4",
+                                                        comment="", unlabelled=True, is_optional=True)
+        self.tu_g_beta = self.set_column_properties("Beta_Input_Shear", fits_dtype="E", dtype=">f4",
+                                                    comment="", unlabelled=True, is_optional=True)
+        self.tu_g_mag = self.set_column_properties("Mag_Input_Shear", fits_dtype="E", dtype=">f4",
+                                                   comment="", unlabelled=True, is_optional=True)
+        self.tu_bulge_beta = self.set_column_properties("Beta_Input_Bulge_Unsheared_Shape", fits_dtype="E",
+                                                        dtype=">f4", comment="", unlabelled=True,
+                                                        is_optional=True)
+        self.tu_disk_beta = self.set_column_properties("Beta_Input_Disk_Unsheared_Shape", fits_dtype="E",
+                                                       dtype=">f4", comment="", unlabelled=True,
+                                                       is_optional=True)
 
         # Column labels for summary galaxy properties calculated from measurements tables
-        self.g_beta = self.set_column_properties("Beta_Est_Shear", fits_dtype = "E", dtype = ">f4",
-                                                 comment = "", unlabelled = False, is_optional = True)
-        self.g_mag = self.set_column_properties("Mag_Est_Shear", fits_dtype = "E",
-                                                dtype = ">f4", comment = "", unlabelled = False, is_optional = True)
+        self.g_beta = self.set_column_properties("Beta_Est_Shear", fits_dtype="E", dtype=">f4",
+                                                 comment="", unlabelled=False, is_optional=True)
+        self.g_mag = self.set_column_properties("Mag_Est_Shear", fits_dtype="E",
+                                                dtype=">f4", comment="", unlabelled=False, is_optional=True)
 
         # Column labels for properties that are binned on in validation tests
         # SNR is already defined in measurements table
-        self.colour = self.set_column_properties("COLOUR", is_optional = True)
-        self.size = self.set_column_properties("SIZE", is_optional = True)
-        self.bg = self.set_column_properties("BG", is_optional = True)
-        self.epoch = self.set_column_properties("EPOCH", is_optional = True)
+        self.colour = self.set_column_properties("COLOUR", is_optional=True)
+        self.size = self.set_column_properties("SIZE", is_optional=True)
+        self.bg = self.set_column_properties("BG", is_optional=True)
+        self.epoch = self.set_column_properties("EPOCH", is_optional=True)
 
         if finalize:
             self._finalize_init()

@@ -24,8 +24,7 @@ __updated__ = "2021-08-16"
 # Boston, MA 02110-1301 USA
 
 from ST_DataModelBindings.dpd.sim.raw.starscatalogproduct_stub import dpdStarsCatalogProduct
-
-from ..product_utility import get_data_filename_from_product, get_all_filenames_just_data
+from ..product_utility import get_all_filenames_just_data, get_data_filename_from_product
 
 
 def init():

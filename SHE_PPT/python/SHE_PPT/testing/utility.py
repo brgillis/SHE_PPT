@@ -250,7 +250,8 @@ class SheTestCase:
 
     def _finalize_download(self,
                            filename: str,
-                           sync: DataSync) -> None:
+                           sync: DataSync,
+                           test_data_location: str = TEST_DATA_LOCATION, ):) -> None:
         """A method to check that the desired file has been downloaded successfully and set the `self.download_dir`
         attribute based on its location. If you are manually downloading data or setting up your own method to
         download data, this should be called on one of the downloaded files to ensure that the download was
@@ -262,10 +263,12 @@ class SheTestCase:
             The local filename of one of the files that you expect to have been downloaded (e.g. "test_mdb.xml")
         sync : DataSync
             The `DataSync` object used to download the file.
+        test_data_location : str
+            The directory set in the test data list file (in the conf directory) where test data is located.
         """
 
         # Check that the file was downloaded successfully
-        qualified_filename = sync.absolutePath(os.path.join(TEST_DATA_LOCATION, filename))
+        qualified_filename = sync.absolutePath(os.path.join(test_data_location, filename))
         assert os.path.isfile(qualified_filename), MSG_CANT_FIND_FILE % qualified_filename
 
         # Set the download_dir if it's not already set

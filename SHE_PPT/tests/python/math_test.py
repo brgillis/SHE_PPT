@@ -106,7 +106,7 @@ class TestMath(SheTestCase):
             linregress_function = linregress_with_errors_bootstrap
             n_bootstrap_samples = 100
             self.n_tests = self.n_tests // 10
-            kwargs = {"bootstrap_seed"     : DEFAULT_BOOTSTRAP_SEED,
+            kwargs = {"bootstrap_seed": DEFAULT_BOOTSTRAP_SEED,
                       "n_bootstrap_samples": n_bootstrap_samples}
 
         x = np.linspace(0, 100, num=self.n_test_points, endpoint=True, dtype=float)
