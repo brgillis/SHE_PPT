@@ -251,7 +251,7 @@ class SheTestCase:
     def _finalize_download(self,
                            filename: str,
                            sync: DataSync,
-                           test_data_location: str = TEST_DATA_LOCATION, ):) -> None:
+                           test_data_location: str = TEST_DATA_LOCATION, ) -> None:
         """A method to check that the desired file has been downloaded successfully and set the `self.download_dir`
         attribute based on its location. If you are manually downloading data or setting up your own method to
         download data, this should be called on one of the downloaded files to ensure that the download was
