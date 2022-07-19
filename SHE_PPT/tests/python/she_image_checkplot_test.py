@@ -51,7 +51,7 @@ class TestSheImageCheckplot(SheTestCase):
     """
 
     @classmethod
-    def setup_class(cls):
+    def post_setup(cls):
         cls.testfilepath = "test_checkplot.png"
 
     @classmethod
