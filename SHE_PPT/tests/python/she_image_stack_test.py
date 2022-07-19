@@ -36,8 +36,8 @@ class TestSheImageStack(SheTestCase):
 
     def post_setup(self):
         # Filenames for testing the file io, will be deleted by teardown_class
-        self.sci_filepath_1 = "test_SHEImageStack_sci_SHEImage.fits"
-        self.sci_filepath_2 = "test_SHEImageStack_sci_SHEImage2.fits"
+        self.sci_filepath_1 = os.path.join(self.workdir, "test_SHEImageStack_sci_SHEImage.fits")
+        self.sci_filepath_2 = os.path.join(self.workdir, "test_SHEImageStack_sci_SHEImage2.fits")
 
     def test_read(self):
         """We create the minimum required files, and read a SHEImageStack"""
