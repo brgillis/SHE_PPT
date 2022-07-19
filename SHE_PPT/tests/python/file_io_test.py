@@ -76,8 +76,7 @@ class TestIO(SheTestCase):
     dest_subdir = "dest"
 
     def post_setup(self):
-        """ Perform some setup tasks for functions tested here, setting up data which is used for multiple
-        tests.
+        """ Perform some setup tasks for functions tested here, setting up data which is used for multiple tests.
         """
 
         # Create source and destination subdirs of the workdir to test copying functions
@@ -1289,8 +1288,7 @@ class TestMeasurementsProductIO(SheTestCase):
     SHM_PRODUCT_FILENAME = "shm_product.xml"
 
     def post_setup(self):
-        """ Perform some setup tasks for functions tested here, setting up data which is used for multiple
-        tests.
+        """ Perform some setup tasks for functions tested here, setting up data which is used for multiple tests.
         """
 
         lensmc_table_gen = MockShearEstimateTableGenerator(workdir=self.workdir,
