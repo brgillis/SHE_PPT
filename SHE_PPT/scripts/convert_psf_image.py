@@ -3,8 +3,12 @@
     Created: 2019/02/26
 
     Run with a command such as:
-    
-    E-Run SHE_PPT 0.9 python3 /home/brg/Work/Projects/SHE_PPT/SHE_PPT/scripts/convert_sim_catalog.py EUC_SIM_TUGALCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --star_cat EUC_SIM_TUSTARCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --source_dir /mnt/cephfs/share/SC456/SIM-VIS/vis_science_T2/intermediate/TU/data --max_mag_vis 25.5 --obj_cat obj_cat.xml --dest_dir .
+
+    E-Run SHE_PPT 0.9 python3 /home/brg/Work/Projects/SHE_PPT/SHE_PPT/scripts/convert_sim_catalog.py
+    EUC_SIM_TUGALCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --star_cat
+    EUC_SIM_TUSTARCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --source_dir
+    /mnt/cephfs/share/SC456/SIM-VIS/vis_science_T2/intermediate/TU/data --max_mag_vis 25.5 --obj_cat obj_cat.xml
+    --dest_dir .
 
 """
 
@@ -27,14 +31,13 @@ __updated__ = "2019-06-24"
 import argparse
 import os
 
+import numpy as np
+from SHE_PPT.table_formats.psf import initialise_psf_table, tf as pstf
 from astropy.io import fits
 from astropy.table import Table
 
 from SHE_PPT import products
-from SHE_PPT.file_io import find_file, get_allowed_filename, write_xml_product
-from SHE_PPT.table_formats.psf import initialise_psf_table
-from SHE_PPT.table_formats.psf import tf as pstf
-import numpy as np
+from SHE_PPT.file_io import find_file, write_xml_product
 
 
 def main():
@@ -77,13 +80,19 @@ def main():
                                                        pstf.template: sim_psf_image['SED template'],
                                                        pstf.bulge_idx: sim_psf_image['Bulge Index'],
                                                        pstf.disk_idx: sim_psf_image['Disk Index'],
-                                                       pstf.image_x: np.linspace(1, num_gals, num_gals, endpoint=True,
-                                                                                 dtype=pstf.dtypes[pstf.image_x]),
-                                                       pstf.image_y: np.linspace(1, num_gals, num_gals, endpoint=True,
-                                                                                 dtype=pstf.dtypes[pstf.image_y]),
-                                                       pstf.x: np.linspace(1, num_gals, num_gals, endpoint=True,
+                                                       pstf.image_x: np.linspace(1, num_gals, num_gals,
+                                                                                 endpoint=True,
+                                                                                 dtype=pstf.dtypes[
+                                                                                     pstf.image_x]),
+                                                       pstf.image_y: np.linspace(1, num_gals, num_gals,
+                                                                                 endpoint=True,
+                                                                                 dtype=pstf.dtypes[
+                                                                                     pstf.image_y]),
+                                                       pstf.x: np.linspace(1, num_gals, num_gals,
+                                                                           endpoint=True,
                                                                            dtype=pstf.dtypes[pstf.x]),
-                                                       pstf.y: np.linspace(1, num_gals, num_gals, endpoint=True,
+                                                       pstf.y: np.linspace(1, num_gals, num_gals,
+                                                                           endpoint=True,
                                                                            dtype=pstf.dtypes[pstf.y]),
                                                        pstf.cal_time: stringArray,
                                                        pstf.field_time: stringArray})

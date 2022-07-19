@@ -3,8 +3,12 @@
     Created: 2019/02/26
 
     Run with a command such as:
-    
-    E-Run SHE_PPT 0.9 python3 /home/brg/Work/Projects/SHE_PPT/SHE_PPT/scripts/convert_sim_catalog.py EUC_SIM_TUGALCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --star_cat EUC_SIM_TUSTARCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --source_dir /mnt/cephfs/share/SC456/SIM-VIS/vis_science_T2/intermediate/TU/data --max_mag_vis 25.5 --obj_cat obj_cat.xml --dest_dir .
+
+    E-Run SHE_PPT 0.9 python3 /home/brg/Work/Projects/SHE_PPT/SHE_PPT/scripts/convert_sim_catalog.py
+    EUC_SIM_TUGALCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --star_cat
+    EUC_SIM_TUSTARCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --source_dir
+    /mnt/cephfs/share/SC456/SIM-VIS/vis_science_T2/intermediate/TU/data --max_mag_vis 25.5 --obj_cat obj_cat.xml
+    --dest_dir .
 
 """
 
@@ -30,11 +34,8 @@ import os
 from astropy.io import fits
 from astropy.table import Table
 
-from SHE_PPT import products
-from SHE_PPT.file_io import find_file, get_allowed_filename, read_xml_product, write_xml_product
-from SHE_PPT.table_formats.she_psf_model_image import initialise_psf_table
-from SHE_PPT.table_formats.she_psf_model_image import tf as pstf
-import numpy as np
+from SHE_PPT.file_io import read_xml_product
+from SHE_PPT.table_formats.she_psf_model_image import initialise_psf_table, tf as pstf
 
 
 def main():

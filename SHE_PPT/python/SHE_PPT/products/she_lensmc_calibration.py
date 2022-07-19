@@ -26,9 +26,7 @@ __updated__ = "2021-08-16"
 
 
 from ST_DataModelBindings.dpd.she.lensmccalibration_stub import dpdSheLensMcCalibration
-
-from ..product_utility import init_just_datastorage, create_product_from_template
-
+from ..product_utility import create_product_from_template, init_just_datastorage
 
 sample_file_name = "SHE_PPT/sample_lensmc_calibration.xml"
 product_type_name = "DpdSheLensMcCalibration"

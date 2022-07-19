@@ -56,19 +56,19 @@ class MockDataGenerator(ABC):
                  seed: Optional[int] = None) -> None:
         """ Initializes the class.
         """
-        self.tf = default_value_if_none(x = tf,
-                                        default_x = self.tf)
-        self.num_test_points = default_value_if_none(x = num_test_points,
-                                                     default_x = self.num_test_points)
-        self.seed = default_value_if_none(x = seed,
-                                          default_x = self.seed)
+        self.tf = default_value_if_none(x=tf,
+                                        default_x=self.tf)
+        self.num_test_points = default_value_if_none(x=num_test_points,
+                                                     default_x=self.num_test_points)
+        self.seed = default_value_if_none(x=seed,
+                                          default_x=self.seed)
 
     def _generate_base_data(self):
         """ Set up base data which is commonly used.
         """
-        self._indices = np.indices((self.num_test_points,), dtype = int, )[0]
-        self._zeros = np.zeros(self.num_test_points, dtype = '>f4')
-        self._ones = np.ones(self.num_test_points, dtype = '>f4')
+        self._indices = np.indices((self.num_test_points,), dtype=int, )[0]
+        self._zeros = np.zeros(self.num_test_points, dtype='>f4')
+        self._ones = np.ones(self.num_test_points, dtype='>f4')
 
         self.data = {}
 

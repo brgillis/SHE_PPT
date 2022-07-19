@@ -39,7 +39,7 @@ from .logging import getLogger
 from .utility import is_any_type_of_none
 
 
-@lru_cache(maxsize = None)
+@lru_cache(maxsize=None)
 def get_task_value(global_enum: ConfigKeys,
                    task_head: str) -> str:
     """Given one of the global enums for a validation config option, return the value for the task-specific option.
@@ -98,7 +98,7 @@ def get_shear_bias_value(global_enum: ConfigKeys) -> str:
     return get_task_value(global_enum, SHEAR_BIAS_VALIDATION_HEAD)
 
 
-@lru_cache(maxsize = None)
+@lru_cache(maxsize=None)
 def get_global_value(task_value: str,
                      task_head: str) -> str:
     """ Reverse of get_task_value, returning the value - gives the value for the global option given the task option.
@@ -118,7 +118,7 @@ def get_global_value(task_value: str,
     return task_value.replace(task_head, VALIDATION_HEAD)
 
 
-@lru_cache(maxsize = None)
+@lru_cache(maxsize=None)
 def get_global_enum(task_value: str,
                     task_head: str) -> ConfigKeys:
     """ Reverse of task_value, returning the enum - gives the enum for the global option given the task option.
@@ -212,7 +212,7 @@ def read_analysis_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
         A dictionary of the configuration options.
     """
 
-    return read_config(*args, config_keys = AnalysisConfigKeys, **kwargs)
+    return read_config(*args, config_keys=AnalysisConfigKeys, **kwargs)
 
 
 def read_calibration_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
@@ -229,7 +229,7 @@ def read_calibration_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
         A dictionary of the configuration options.
     """
 
-    return read_config(*args, config_keys = CalibrationConfigKeys, **kwargs)
+    return read_config(*args, config_keys=CalibrationConfigKeys, **kwargs)
 
 
 def read_reconciliation_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
@@ -246,7 +246,7 @@ def read_reconciliation_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
         A dictionary of the configuration options.
     """
 
-    return read_config(*args, config_keys = ReconciliationConfigKeys, **kwargs)
+    return read_config(*args, config_keys=ReconciliationConfigKeys, **kwargs)
 
 
 def read_scaling_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
@@ -263,7 +263,7 @@ def read_scaling_config(*args, **kwargs) -> Dict[ConfigKeys, Any]:
         A dictionary of the configuration options.
     """
 
-    return read_config(*args, config_keys = ScalingExperimentsConfigKeys, **kwargs)
+    return read_config(*args, config_keys=ScalingExperimentsConfigKeys, **kwargs)
 
 
 def read_config(config_filename: Optional[str] = None,
@@ -335,14 +335,14 @@ def read_config(config_filename: Optional[str] = None,
 
     # Return None if input filename is None
     if is_any_type_of_none(config_filename):
-        return _make_config_from_cline_args_and_defaults(config_keys = config_keys,
-                                                         d_args = d_args,
-                                                         d_cline_args = d_cline_args,
-                                                         d_defaults = d_defaults,
-                                                         d_types = d_types)
+        return _make_config_from_cline_args_and_defaults(config_keys=config_keys,
+                                                         d_args=d_args,
+                                                         d_cline_args=d_cline_args,
+                                                         d_defaults=d_defaults,
+                                                         d_types=d_types)
 
     # Get the qualified filename of the config file
-    qualified_config_filename = get_qualified_filename(config_filename, workdir = workdir)
+    qualified_config_filename = get_qualified_filename(config_filename, workdir=workdir)
 
     try:
 
@@ -351,20 +351,20 @@ def read_config(config_filename: Optional[str] = None,
         # If we get here, it is a listfile. If no files in it, return an empty dict. If one, return that.
         # If more than one,raise an exception
         if len(l_filenames) == 0:
-            d_config = _make_config_from_cline_args_and_defaults(config_keys = config_keys,
-                                                                 d_args = d_args,
-                                                                 d_cline_args = d_cline_args,
-                                                                 d_defaults = d_defaults,
-                                                                 d_types = d_types, )
+            d_config = _make_config_from_cline_args_and_defaults(config_keys=config_keys,
+                                                                 d_args=d_args,
+                                                                 d_cline_args=d_cline_args,
+                                                                 d_defaults=d_defaults,
+                                                                 d_types=d_types, )
         elif len(l_filenames) == 1:
-            d_config = _read_config_product(config_filename = l_filenames[0],
-                                            workdir = workdir,
-                                            config_keys = config_keys,
-                                            d_args = d_args,
-                                            d_cline_args = d_cline_args,
-                                            d_defaults = d_defaults,
-                                            d_types = d_types,
-                                            task_head = task_head, )
+            d_config = _read_config_product(config_filename=l_filenames[0],
+                                            workdir=workdir,
+                                            config_keys=config_keys,
+                                            d_args=d_args,
+                                            d_cline_args=d_cline_args,
+                                            d_defaults=d_defaults,
+                                            d_types=d_types,
+                                            task_head=task_head, )
         else:
             raise ValueError(
                 "File " + qualified_config_filename + " is a listfile with more than one file listed, and " +
@@ -373,14 +373,14 @@ def read_config(config_filename: Optional[str] = None,
     except SheFileReadError:
 
         # This isn't a listfile, so try to open and return it
-        d_config = _read_config_product(config_filename = config_filename,
-                                        workdir = workdir,
-                                        config_keys = config_keys,
-                                        d_args = d_args,
-                                        d_cline_args = d_cline_args,
-                                        d_defaults = d_defaults,
-                                        d_types = d_types,
-                                        task_head = task_head)
+        d_config = _read_config_product(config_filename=config_filename,
+                                        workdir=workdir,
+                                        config_keys=config_keys,
+                                        d_args=d_args,
+                                        d_cline_args=d_cline_args,
+                                        d_defaults=d_defaults,
+                                        d_types=d_types,
+                                        task_head=task_head)
 
     return d_config
 
@@ -411,13 +411,13 @@ def _read_config_product(config_filename: str,
 
         config_data_filename = p.get_data_filename()
 
-        return _read_config_file(qualified_config_filename = find_file(config_data_filename, workdir),
+        return _read_config_file(qualified_config_filename=find_file(config_data_filename, workdir),
                                  *args, **kwargs)
 
     except SheFileReadError:
 
         # Try to read it as a plain text file
-        return _read_config_file(qualified_config_filename = find_file(config_filename, workdir),
+        return _read_config_file(qualified_config_filename=find_file(config_filename, workdir),
                                  *args, **kwargs)
 
 
@@ -433,10 +433,10 @@ def _read_config_file(qualified_config_filename: str,
 
     with open(qualified_config_filename, 'r') as config_file:
 
-        config_dict = _read_config_dict_from_file(config_filehandle = config_file,
-                                                  config_keys = config_keys,
-                                                  d_defaults = d_defaults,
-                                                  task_head = task_head, )
+        config_dict = _read_config_dict_from_file(config_filehandle=config_file,
+                                                  config_keys=config_keys,
+                                                  d_defaults=d_defaults,
+                                                  task_head=task_head, )
 
     # End with open(qualified_config_filename, 'r') as config_file:
 
@@ -467,8 +467,8 @@ def _read_config_dict_from_file(config_filehandle: TextIO,
     """
 
     # Make a config dict from defaults
-    d_default_config = _make_config_from_defaults(config_keys = config_keys,
-                                                  d_defaults = d_defaults)
+    d_default_config = _make_config_from_defaults(config_keys=config_keys,
+                                                  d_defaults=d_defaults)
 
     config_dict: Dict[ConfigKeys, Any] = {}
 
@@ -478,12 +478,12 @@ def _read_config_dict_from_file(config_filehandle: TextIO,
     # Read in the file, except for comment lines
     for config_line in config_filehandle:
 
-        _read_config_line(config_line = config_line,
-                          config_dict = config_dict,
-                          config_keys = config_keys,
-                          d_defaults = d_defaults,
-                          d_global_task_keys = d_global_task_keys,
-                          task_head = task_head, )
+        _read_config_line(config_line=config_line,
+                          config_dict=config_dict,
+                          config_keys=config_keys,
+                          d_defaults=d_defaults,
+                          d_global_task_keys=d_global_task_keys,
+                          task_head=task_head, )
 
     # Fill in any missing keys with defaults
     for enum_key in d_default_config:
@@ -544,11 +544,11 @@ def _read_config_line(config_line: str,
     # If we're allowing task-specific keys, check if that's the case
     if task_head is not None:
 
-        enum_key = _check_for_task_key(config_keys = config_keys,
-                                       d_global_task_keys = d_global_task_keys,
-                                       enum_key = enum_key,
-                                       key_string = key_string,
-                                       task_head = task_head, )
+        enum_key = _check_for_task_key(config_keys=config_keys,
+                                       d_global_task_keys=d_global_task_keys,
+                                       enum_key=enum_key,
+                                       key_string=key_string,
+                                       task_head=task_head, )
 
     # If the value is None or equivalent, don't set it (use the default or the global value)
     if not (is_any_type_of_none(value) and (enum_key in d_defaults or task_head is not None)):
@@ -614,8 +614,8 @@ def _make_config_from_cline_args_and_defaults(config_keys: Sequence[EnumMeta],
     """
 
     # Start with a config generated from defaults
-    config_dict = _make_config_from_defaults(config_keys = config_keys,
-                                             d_defaults = d_defaults)
+    config_dict = _make_config_from_defaults(config_keys=config_keys,
+                                             d_defaults=d_defaults)
 
     # Return if we don't have any parsed_args to deal with
     if not (d_cline_args or d_args):
@@ -700,10 +700,10 @@ def write_analysis_config(config_dict: Dict[ConfigKeys, Any],
         The working directory.
     """
 
-    write_config(config_dict = config_dict,
-                 config_filename = config_filename,
-                 workdir = workdir,
-                 config_keys = AnalysisConfigKeys)
+    write_config(config_dict=config_dict,
+                 config_filename=config_filename,
+                 workdir=workdir,
+                 config_keys=AnalysisConfigKeys)
 
 
 def write_reconciliation_config(config_dict: Dict[ConfigKeys, Any],
@@ -721,10 +721,10 @@ def write_reconciliation_config(config_dict: Dict[ConfigKeys, Any],
         The working directory.
     """
 
-    write_config(config_dict = config_dict,
-                 config_filename = config_filename,
-                 workdir = workdir,
-                 config_keys = ReconciliationConfigKeys)
+    write_config(config_dict=config_dict,
+                 config_filename=config_filename,
+                 workdir=workdir,
+                 config_keys=ReconciliationConfigKeys)
 
 
 def write_calibration_config(config_dict: Dict[ConfigKeys, Any],
@@ -742,10 +742,10 @@ def write_calibration_config(config_dict: Dict[ConfigKeys, Any],
         The working directory.
     """
 
-    write_config(config_dict = config_dict,
-                 config_filename = config_filename,
-                 workdir = workdir,
-                 config_keys = CalibrationConfigKeys)
+    write_config(config_dict=config_dict,
+                 config_filename=config_filename,
+                 workdir=workdir,
+                 config_keys=CalibrationConfigKeys)
 
 
 def write_scaling_config(config_dict: Dict[ConfigKeys, Any],
@@ -763,10 +763,10 @@ def write_scaling_config(config_dict: Dict[ConfigKeys, Any],
         The working directory.
     """
 
-    write_config(config_dict = config_dict,
-                 config_filename = config_filename,
-                 workdir = workdir,
-                 config_keys = ScalingExperimentsConfigKeys)
+    write_config(config_dict=config_dict,
+                 config_filename=config_filename,
+                 workdir=workdir,
+                 config_keys=ScalingExperimentsConfigKeys)
 
 
 def write_config(config_dict: Dict[ConfigKeys, Any],
@@ -893,7 +893,7 @@ def _get_converted_type(value: str, desired_type: Type):
         else:
             # Convert space-separated lists into arrays of floats
             values_list = list(map(float, value.strip().split()))
-            converted_value = np.array(values_list, dtype = float)
+            converted_value = np.array(values_list, dtype=float)
 
     else:
         converted_value = desired_type(value)
@@ -923,14 +923,14 @@ def _convert_tuple_type(pipeline_config: Dict[ConfigKeys, Any],
 
     # Forward to appropriate method for the type of conversion appropriate for the tuple type provided
     if tuple_type[0] == list:
-        _convert_list_type(pipeline_config = pipeline_config,
-                           enum_key = enum_key,
-                           item_type = tuple_type[1])
+        _convert_list_type(pipeline_config=pipeline_config,
+                           enum_key=enum_key,
+                           item_type=tuple_type[1])
     else:
-        _convert_with_backup_type(pipeline_config = pipeline_config,
-                                  enum_key = enum_key,
-                                  primary_type = tuple_type[0],
-                                  backup_type = tuple_type[1])
+        _convert_with_backup_type(pipeline_config=pipeline_config,
+                                  enum_key=enum_key,
+                                  primary_type=tuple_type[0],
+                                  backup_type=tuple_type[1])
 
 
 def _convert_list_type(pipeline_config: Dict[ConfigKeys, Any],

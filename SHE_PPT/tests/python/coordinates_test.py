@@ -163,13 +163,13 @@ class Test_coordinates(SheTestCase):
         # checks if a set of points has been reprojected correctly
         def check_reprojection(ras, decs):
             # get the distances between all the original points
-            original_dists = get_distance_matrix(ras, decs, metric = haversine_metric_deg)
+            original_dists = get_distance_matrix(ras, decs, metric=haversine_metric_deg)
 
             # reproject points
             new_ras, new_decs = reproject_to_equator(ras, decs)
 
             # get the distances between all reprojected points
-            new_dists = get_distance_matrix(new_ras, new_decs, metric = haversine_metric_deg)
+            new_dists = get_distance_matrix(new_ras, new_decs, metric=haversine_metric_deg)
 
             # ensure the distances aren't altered by the reprojection
             assert (np.allclose(original_dists, new_dists))
@@ -178,8 +178,8 @@ class Test_coordinates(SheTestCase):
             xc = new_ras.mean()
             yc = new_decs.mean()
 
-            assert (np.isclose(0., xc, rtol = 0.001, atol = 0.001))
-            assert (np.isclose(0., yc, rtol = 0.001, atol = 0.001))
+            assert (np.isclose(0., xc, rtol=0.001, atol=0.001))
+            assert (np.isclose(0., yc, rtol=0.001, atol=0.001))
 
         n = 100
 

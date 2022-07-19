@@ -622,7 +622,7 @@ def empty_list_if_none(l_x: Optional[Sequence[T]],
     List[T]
         The input value if it is not None, otherwise an empty list.
     """
-    return default_init_if_none(l_x, list, coerce = coerce)
+    return default_init_if_none(l_x, list, coerce=coerce)
 
 
 def empty_set_if_none(s_x: Optional[Union[Sequence[T], Set[T]]],
@@ -641,7 +641,7 @@ def empty_set_if_none(s_x: Optional[Union[Sequence[T], Set[T]]],
     Set[T]
         The input value if it is not None, otherwise an empty set.
     """
-    return default_init_if_none(s_x, type = set, coerce = coerce)
+    return default_init_if_none(s_x, type=set, coerce=coerce)
 
 
 def empty_dict_if_none(d_x: Optional[Dict[TK, TV]],
@@ -660,7 +660,7 @@ def empty_dict_if_none(d_x: Optional[Dict[TK, TV]],
     Dict[TK, TV]
         The input value if it is not None, otherwise an empty dict.
     """
-    return default_init_if_none(d_x, type = dict, coerce = coerce)
+    return default_init_if_none(d_x, type=dict, coerce=coerce)
 
 
 def coerce_to_list(a: Union[None, T, List[T]],

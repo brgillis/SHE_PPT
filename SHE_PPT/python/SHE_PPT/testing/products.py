@@ -93,13 +93,13 @@ class SimpleDataProductTester(ProductTester, abc.ABC):
             os.remove(qualified_filename)
 
         # Save the product in an XML file
-        write_xml_product(p, filename, workdir = str(tmpdir))
+        write_xml_product(p, filename, workdir=str(tmpdir))
 
         # Check that the file exists
         assert os.path.exists(qualified_filename)
 
         # Read back the XML file
-        loaded_p = read_xml_product(filename, workdir = str(tmpdir))
+        loaded_p = read_xml_product(filename, workdir=str(tmpdir))
 
         # Check that the filenames match
         assert loaded_p.get_data_filename() == f"data/{subfilename}"
@@ -125,10 +125,10 @@ class MethodsProductTester(ProductTester, abc.ABC):
         p.set_REGAUSS_filename(r_filename)
 
         # Save the product in an XML file
-        write_xml_product(p, "she_she_measurements.xml", workdir = str(tmpdir))
+        write_xml_product(p, "she_she_measurements.xml", workdir=str(tmpdir))
 
         # Read back the XML file
-        loaded_p = read_xml_product("she_she_measurements.xml", workdir = str(tmpdir))
+        loaded_p = read_xml_product("she_she_measurements.xml", workdir=str(tmpdir))
 
         # Check that the filenames coincide
         assert loaded_p.get_KSB_filename() == DATA_SUBDIR + k_filename

@@ -21,10 +21,10 @@ __updated__ = "2021-08-12"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-from typing import Type, List, Optional
+from typing import List, Optional, Type
 
-from ..constants.fits import (FITS_VERSION_LABEL, FITS_DEF_LABEL, EXTNAME_LABEL,
-                              PSF_FIELD_PARAM_DEF, PSF_CALIB_PARAM_DEF)
+from ..constants.fits import (EXTNAME_LABEL, FITS_DEF_LABEL, FITS_VERSION_LABEL, PSF_CALIB_PARAM_DEF,
+                              PSF_FIELD_PARAM_DEF, )
 from ..logging import getLogger
 from ..table_utility import SheTableFormat, SheTableMeta
 
@@ -52,7 +52,6 @@ class ShePsfStateMeta(SheTableMeta):
     _format: str
 
     def __init__(self, data_type="CAL", **kwargs):
-
         self._data_type = data_type
 
         self._main_data_type = (PSF_FIELD_PARAM_DEF

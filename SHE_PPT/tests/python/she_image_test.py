@@ -26,6 +26,7 @@ __updated__ = "2022-02-25"
 
 import logging
 import os
+import pickle
 from copy import deepcopy
 
 import galsim
@@ -34,53 +35,44 @@ import pytest
 from astropy.wcs import WCS
 
 import SHE_PPT.she_image
-from ElementsServices.DataSync import DataSync
 from SHE_PPT import file_io, mdb
 from SHE_PPT.constants.misc import SEGMAP_UNASSIGNED_VALUE
-from SHE_PPT.constants.test_data import (MDB_PRODUCT_FILENAME, SYNC_CONF, TEST_DATA_LOCATION, TEST_FILES_MDB)
 from SHE_PPT.testing.utility import SheTestCase
 
-logging.basicConfig(level = logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
 
 
 class TestSheImage(SheTestCase):
 
-    @classmethod
-    def setup_class(cls):
+    def setup_workdir(self):
 
-        sync = DataSync(SYNC_CONF, TEST_FILES_MDB)
-        sync.download()
-        mdb_filename = sync.absolutePath(os.path.join(TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME))
+        self._download_mdb()
 
-        mdb.init(mdb_filename)
+    def post_setup(self):
 
         # A filename for testing the file-saving:
-        cls.testfilepath = "test_SHEImage.fits"  # Will be deleted by teardown_class()
+        self.test_qualified_filename = os.path.join(self.workdir, "test_SHEImage.fits")
         # For some tests we need several files:
-        cls.testfilepaths = ["test_SHEImage_0.fits", "test_SHEImage_1.fits", "test_SHEImage_2.fits",
-                             "test_SHEImage_3.fits"]
+        self.l_test_qualified_filenames = [os.path.join(self.workdir, filename)
+                                           for filename in ["test_SHEImage_0.fits",
+                                                            "test_SHEImage_1.fits",
+                                                            "test_SHEImage_2.fits",
+                                                            "test_SHEImage_3.fits"]]
 
         # A WCS to use (from the auxdir)
         header_file = file_io.find_file("AUX/SHE_PPT/tpv_header.bin")
-        header = file_io.read_pickled_product(header_file)
-        cls.wcs = WCS(header)
+        with open(str(header_file), "rb") as f:
+            header = pickle.load(f)
+        self.wcs = WCS(header)
 
         # A SHEImage object to play with
-        cls.w = 50
-        cls.h = 20
-        array = np.random.randn(cls.w * cls.h).reshape((cls.w, cls.h))
-        cls.img = SHE_PPT.she_image.SHEImage(array, header = header, wcs = cls.wcs)
-
-    @classmethod
-    def teardown_class(cls):
-
-        # Delete all potentially created files:
-        for testfilepath in cls.testfilepaths + [cls.testfilepath]:
-            if os.path.exists(testfilepath):
-                os.remove(testfilepath)
+        self.w = 50
+        self.h = 20
+        array = np.random.randn(self.w * self.h).reshape((self.w, self.h))
+        self.img = SHE_PPT.she_image.SHEImage(array, header=header, wcs=self.wcs)
 
     def test_init(self):
-        """Test that the object created by setup_class is as expected"""
+        """Test that the object created by post_setup is as expected"""
 
         assert self.img.shape == (self.w, self.h)
         assert self.img.data.shape == self.img.shape
@@ -97,7 +89,7 @@ class TestSheImage(SheTestCase):
         img = deepcopy(self.img)
 
         # Add a default mask and check its data type and values
-        img.add_default_mask(force = True)
+        img.add_default_mask(force=True)
         assert img.mask.dtype == np.int32
         assert img.mask[5, 5] == 0
         assert img.boolmask[5, 5] == False
@@ -108,11 +100,11 @@ class TestSheImage(SheTestCase):
         assert img.boolmask[5, 5] == True
 
         # Check that non-forcibly adding a default mask doesn't affect the existing mask
-        img.add_default_mask(force = False)
+        img.add_default_mask(force=False)
         assert img.boolmask[5, 5] == True
 
         # Check that forcibly adding a default mask does affect the existing mask
-        img.add_default_mask(force = True)
+        img.add_default_mask(force=True)
         assert img.boolmask[5, 5] == False
 
     def test_noisemap(self):
@@ -121,26 +113,26 @@ class TestSheImage(SheTestCase):
         img = deepcopy(self.img)
 
         # Add a default noisemap and check its data type and values
-        img.add_default_noisemap(force = True)
+        img.add_default_noisemap(force=True)
         assert img.noisemap.dtype == float
         assert np.allclose(img.noisemap,
-                           img.read_noise / img.gain * np.ones_like(img.data, dtype = img.noisemap.dtype))
+                           img.read_noise / img.gain * np.ones_like(img.data, dtype=img.noisemap.dtype))
         assert img.noisemap.shape == (self.w, self.h)
 
         # Check that non-forcibly adding a default noisemap doesn't affect the existing noisemap
         img.noisemap[5, 5] = 1.
-        img.add_default_noisemap(force = False)
+        img.add_default_noisemap(force=False)
         assert np.isclose(img.noisemap[5, 5], 1.)
 
         # Check that forcibly adding a default noisemap does affect the existing noisemap
-        img.add_default_noisemap(force = True)
+        img.add_default_noisemap(force=True)
         assert np.isclose(img.noisemap[5, 5], img.read_noise / img.gain)
 
         # Check that the noisemap is calculated correctly when a background map is present
-        img.background_map = 1000 * np.ones_like(img.data, dtype = float)
-        img.add_default_noisemap(force = True)
+        img.background_map = 1000 * np.ones_like(img.data, dtype=float)
+        img.add_default_noisemap(force=True)
         assert np.allclose(img.noisemap, (img.read_noise / img.gain) + np.sqrt(1000 / img.gain) *
-                           np.ones_like(img.data, dtype = img.noisemap.dtype))
+                           np.ones_like(img.data, dtype=img.noisemap.dtype))
 
     def test_segmentation_map(self):
         """Test that the segmentation map behaves appropriately."""
@@ -148,19 +140,19 @@ class TestSheImage(SheTestCase):
         img = deepcopy(self.img)
 
         # Add a default segmentation_map and check its data type and values
-        img.add_default_segmentation_map(force = True)
+        img.add_default_segmentation_map(force=True)
         assert img.segmentation_map.dtype == np.int32
         assert np.allclose(img.segmentation_map,
-                           SEGMAP_UNASSIGNED_VALUE * np.ones_like(img.data, dtype = img.segmentation_map.dtype))
+                           SEGMAP_UNASSIGNED_VALUE * np.ones_like(img.data, dtype=img.segmentation_map.dtype))
         assert img.segmentation_map.shape == (self.w, self.h)
 
         # Check that non-forcibly adding a default segmentation_map doesn't affect the existing segmentation_map
         img.segmentation_map[5, 5] = 100
-        img.add_default_segmentation_map(force = False)
+        img.add_default_segmentation_map(force=False)
         assert img.segmentation_map[5, 5] == 100
 
         # Check that forcibly adding a default segmentation_map does affect the existing segmentation_map
-        img.add_default_segmentation_map(force = True)
+        img.add_default_segmentation_map(force=True)
         assert img.segmentation_map[5, 5] == 0
 
     def test_weight_map(self):
@@ -169,18 +161,18 @@ class TestSheImage(SheTestCase):
         img = deepcopy(self.img)
 
         # Add a default weight_map and check its data type and values
-        img.add_default_weight_map(force = True)
+        img.add_default_weight_map(force=True)
         assert img.weight_map.dtype == float
-        assert np.allclose(img.weight_map, np.ones_like(img.data, dtype = img.weight_map.dtype))
+        assert np.allclose(img.weight_map, np.ones_like(img.data, dtype=img.weight_map.dtype))
         assert img.weight_map.shape == (self.w, self.h)
 
         # Check that non-forcibly adding a default weight_map doesn't affect the existing weight_map
         img.weight_map[5, 5] = 0.
-        img.add_default_weight_map(force = False)
+        img.add_default_weight_map(force=False)
         assert np.isclose(img.weight_map[5, 5], 0.)
 
         # Check that forcibly adding a default weight_map does affect the existing weight_map
-        img.add_default_weight_map(force = True)
+        img.add_default_weight_map(force=True)
         assert np.isclose(img.weight_map[5, 5], 1.)
 
     def test_header(self):
@@ -188,7 +180,7 @@ class TestSheImage(SheTestCase):
 
         img = deepcopy(self.img)
 
-        img.add_default_header(force = True)
+        img.add_default_header(force=True)
 
         img.header["temp1"] = (22.3, "Outside temp in degrees Celsius")
         img.header["INSTR"] = ("DMK21")
@@ -198,11 +190,11 @@ class TestSheImage(SheTestCase):
         assert len(img.header["INSTR"]) == 5
 
         # Check that non-forcibly adding a default header doesn't affect the existing header
-        img.add_default_header(force = False)
+        img.add_default_header(force=False)
         assert "INSTR" in img.header
 
         # Check that forcibly adding a default header does affect the existing header
-        img.add_default_header(force = True)
+        img.add_default_header(force=True)
         assert "INSTR" not in img.header
 
     def test_wcs_default(self):
@@ -210,18 +202,18 @@ class TestSheImage(SheTestCase):
 
         img = deepcopy(self.img)
 
-        img.add_default_wcs(force = True)
+        img.add_default_wcs(force=True)
 
         assert np.allclose(img.wcs.wcs.cdelt, np.array([1., 1.]))
         assert np.allclose(img.wcs.wcs.crval, np.array([0., 0.]))
 
         # Check that non-forcibly adding a default wcs doesn't affect the existing wcs
         img.wcs.wcs.cdelt[0] = 2.
-        img.add_default_wcs(force = False)
+        img.add_default_wcs(force=False)
         assert np.isclose(img.wcs.wcs.cdelt[0], 2.)
 
         # Check that forcibly adding a default wcs does affect the existing wcs
-        img.add_default_wcs(force = True)
+        img.add_default_wcs(force=True)
         assert np.isclose(img.wcs.wcs.cdelt[0], 1.)
 
     def test_fits_read_write(self):
@@ -240,9 +232,9 @@ class TestSheImage(SheTestCase):
 
         img.wcs = self.wcs
 
-        img.write_to_fits(self.testfilepath, overwrite = False)
+        img.write_to_fits(self.test_qualified_filename, overwrite=False)
 
-        rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepath)
+        rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.test_qualified_filename)
 
         assert np.allclose(img.data, rimg.data)
         assert np.allclose(img.mask, rimg.mask)
@@ -257,13 +249,13 @@ class TestSheImage(SheTestCase):
             # Note - not testing here that we recover proper ra/dec or x/y, since that's covered in separate test
             # Just testing WCS from writing/reading is the same here
 
-            ra1, dec1 = img.pix2world(x, y, origin = 1)
-            ra2, dec2 = rimg.pix2world(x, y, origin = 1)
+            ra1, dec1 = img.pix2world(x, y, origin=1)
+            ra2, dec2 = rimg.pix2world(x, y, origin=1)
 
             assert np.allclose((ra1, dec1), (ra2, dec2))
 
-            x1, y1 = img.world2pix(ra, dec, origin = 1)
-            x2, y2 = rimg.world2pix(ra, dec, origin = 1)
+            x1, y1 = img.world2pix(ra, dec, origin=1)
+            x2, y2 = rimg.world2pix(ra, dec, origin=1)
 
             assert np.allclose((x1, y1), (x2, y2))
 
@@ -281,35 +273,36 @@ class TestSheImage(SheTestCase):
         """At least a small test of reading from individual FITS files"""
 
         img = SHE_PPT.she_image.SHEImage(np.random.randn(100).reshape(10, 10) + 200.0)
-        img.mask = np.ones_like(img.data, dtype = np.int32)
+        img.mask = np.ones_like(img.data, dtype=np.int32)
         img.noisemap = 1.0 + 0.01 * np.random.randn(100).reshape(10, 10)
-        img.write_to_fits(self.testfilepaths[0])
+        img.write_to_fits(self.l_test_qualified_filenames[0])
 
         img.mask[:, :] = 2
-        img.write_to_fits(self.testfilepaths[1])
+        img.write_to_fits(self.l_test_qualified_filenames[1])
 
         img.noisemap = 1000.0 + 0.01 * np.random.randn(100).reshape(10, 10)
-        img.write_to_fits(self.testfilepaths[2])
+        img.write_to_fits(self.l_test_qualified_filenames[2])
 
-        img.segmentation_map = 4 * np.ones_like(img.data, dtype = np.int32)
-        img.write_to_fits(self.testfilepaths[3])
+        img.segmentation_map = 4 * np.ones_like(img.data, dtype=np.int32)
+        img.write_to_fits(self.l_test_qualified_filenames[3])
 
-        rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepaths[0])
+        rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.l_test_qualified_filenames[0])
         assert rimg.mask[0, 0] == 1
 
-        rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepaths[0],
-                                                         mask_filepath = self.testfilepaths[1],
-                                                         noisemap_filepath = self.testfilepaths[2],
-                                                         segmentation_map_filepath = self.testfilepaths[3])
+        rimg = SHE_PPT.she_image.SHEImage.read_from_fits(self.l_test_qualified_filenames[0],
+                                                         mask_filepath=self.l_test_qualified_filenames[1],
+                                                         noisemap_filepath=self.l_test_qualified_filenames[2],
+                                                         segmentation_map_filepath=self.l_test_qualified_filenames[3])
         assert rimg.noisemap[0, 0] > 500.0
         assert rimg.segmentation_map[0, 0] == 4
 
         with pytest.raises(ValueError):  # As the primary HDU of mask_filepath is not a np.uint8, this will fail:
-            _ = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepaths[0],
-                                                          mask_filepath = self.testfilepaths[1],
-                                                          noisemap_filepath = self.testfilepaths[2],
-                                                          segmentation_map_filepath = self.testfilepaths[3],
-                                                          mask_ext = None)
+            _ = SHE_PPT.she_image.SHEImage.read_from_fits(self.l_test_qualified_filenames[0],
+                                                          mask_filepath=self.l_test_qualified_filenames[1],
+                                                          noisemap_filepath=self.l_test_qualified_filenames[2],
+                                                          segmentation_map_filepath=self.l_test_qualified_filenames[
+                                                              3],
+                                                          mask_ext=None)
 
     def test_extracted_stamp_is_view(self):
         """Checks that the extracted stamp is a view, not a copy"""
@@ -331,7 +324,7 @@ class TestSheImage(SheTestCase):
         """Test the effect of different indexconvs"""
 
         bottomleftpixel_numpy = self.img.extract_stamp(0.5, 0.5, 1)
-        bottomleftpixel_sex = self.img.extract_stamp(1.0, 1.0, 1, indexconv = "sextractor")
+        bottomleftpixel_sex = self.img.extract_stamp(1.0, 1.0, 1, indexconv="sextractor")
         assert bottomleftpixel_numpy.data == bottomleftpixel_sex.data
 
     def test_extract_stamp(self):
@@ -374,7 +367,7 @@ class TestSheImage(SheTestCase):
         # And the header:
         eimg = img.extract_stamp(5, 5, 5)
         assert "foo" not in eimg.header
-        eimg = img.extract_stamp(5, 5, 5, keep_header = True)
+        eimg = img.extract_stamp(5, 5, 5, keep_header=True)
         assert len(list(eimg.header.keys())) == 3  # The "foo", gain, and read noise
 
         # Test setting or not setting default properties for an extracted stamp
@@ -392,7 +385,7 @@ class TestSheImage(SheTestCase):
         simple_img.header['GAIN'] = 3.3
         simple_img.header['RDNOISE'] = 3.1
 
-        default_stamp = simple_img.extract_stamp(16.4, 15.6, 32, force_all_properties = True)
+        default_stamp = simple_img.extract_stamp(16.4, 15.6, 32, force_all_properties=True)
 
         assert default_stamp.mask is not None
         assert default_stamp.noisemap is not None
@@ -458,8 +451,8 @@ class TestSheImage(SheTestCase):
         assert stamp.offset[1] == 3
 
         # Does it survive FITS io?
-        stamp.write_to_fits(self.testfilepath, overwrite = True)
-        rstamp = SHE_PPT.she_image.SHEImage.read_from_fits(self.testfilepath)
+        stamp.write_to_fits(self.test_qualified_filename, overwrite=True)
+        rstamp = SHE_PPT.she_image.SHEImage.read_from_fits(self.test_qualified_filename)
         assert rstamp.offset[0] == 2
         assert rstamp.offset[1] == 3
 
@@ -526,15 +519,15 @@ class TestSheImage(SheTestCase):
         mask = np.array(((0, m.masked_near_edge, m.masked_off_image),
                          (0, m.masked_near_edge, m.masked_off_image),
                          (m.masked_bad_pixel, m.masked_near_edge, m.masked_off_image)),
-                        dtype = np.int32)
+                        dtype=np.int32)
 
         segmap = np.array(((1, 1, 1),
                            (SEGMAP_UNASSIGNED_VALUE, SEGMAP_UNASSIGNED_VALUE, SEGMAP_UNASSIGNED_VALUE),
                            (2, 2, 2)),
-                          dtype = np.int32)
-        img = SHE_PPT.she_image.SHEImage(data = np.zeros_like(mask),
-                                         mask = mask,
-                                         segmentation_map = segmap)
+                          dtype=np.int32)
+        img = SHE_PPT.she_image.SHEImage(data=np.zeros_like(mask),
+                                         mask=mask,
+                                         segmentation_map=segmap)
 
         # Test for various possible cases
 
@@ -542,36 +535,36 @@ class TestSheImage(SheTestCase):
         desired_bool_mask = np.array(((False, False, True),
                                       (False, False, True),
                                       (True, True, True)),
-                                     dtype = bool)
+                                     dtype=bool)
 
-        assert (img.get_object_mask(1, mask_suspect = False, mask_unassigned = False)
+        assert (img.get_object_mask(1, mask_suspect=False, mask_unassigned=False)
                 == desired_bool_mask).all()
 
         # Mask suspect, not unassigned
         desired_bool_mask = np.array(((False, True, True),
                                       (False, True, True),
                                       (True, True, True)),
-                                     dtype = bool)
+                                     dtype=bool)
 
-        assert (img.get_object_mask(1, mask_suspect = True, mask_unassigned = False)
+        assert (img.get_object_mask(1, mask_suspect=True, mask_unassigned=False)
                 == desired_bool_mask).all()
 
         # Mask unassigned, not suspect
         desired_bool_mask = np.array(((False, False, True),
                                       (True, True, True),
                                       (True, True, True)),
-                                     dtype = bool)
+                                     dtype=bool)
 
-        assert (img.get_object_mask(1, mask_suspect = False, mask_unassigned = True)
+        assert (img.get_object_mask(1, mask_suspect=False, mask_unassigned=True)
                 == desired_bool_mask).all()
 
         # Mask suspect and unassigned
         desired_bool_mask = np.array(((False, True, True),
                                       (True, True, True),
                                       (True, True, True)),
-                                     dtype = bool)
+                                     dtype=bool)
 
-        assert (img.get_object_mask(1, mask_suspect = True, mask_unassigned = True)
+        assert (img.get_object_mask(1, mask_suspect=True, mask_unassigned=True)
                 == desired_bool_mask).all()
 
     def test_pix2world(self):
@@ -582,10 +575,10 @@ class TestSheImage(SheTestCase):
                                     (24, 38, 52.53677316085, -28.75899827058671),
                                     (1012, 4111, 52.876229370322626, -28.686527560717373)):
 
-            ra0, dec0 = self.img.pix2world(x + 1, y + 1, origin = 0)
+            ra0, dec0 = self.img.pix2world(x + 1, y + 1, origin=0)
             assert np.allclose((ra0, dec0), (ex_ra, ex_dec))
 
-            ra1, dec1 = self.img.pix2world(x, y, origin = 1)
+            ra1, dec1 = self.img.pix2world(x, y, origin=1)
             assert np.allclose((ra1, dec1), (ex_ra, ex_dec))
 
     def test_world2pix(self):
@@ -596,10 +589,10 @@ class TestSheImage(SheTestCase):
                                     (24, 38, 52.53677316085, -28.75899827058671),
                                     (1012, 4111, 52.876229370322626, -28.686527560717373)):
 
-            x0, y0 = self.img.world2pix(ra, dec, origin = 0)
+            x0, y0 = self.img.world2pix(ra, dec, origin=0)
             assert np.allclose((x0 + 1, y0 + 1), (ex_x, ex_y))
 
-            x1, y1 = self.img.world2pix(ra, dec, origin = 1)
+            x1, y1 = self.img.world2pix(ra, dec, origin=1)
             assert np.allclose((x1, y1), (ex_x, ex_y))
 
     def test_transformations(self):
@@ -611,27 +604,27 @@ class TestSheImage(SheTestCase):
                                   (24, 38, 52.53677316085, -28.75899827058671),
                                   (1012, 4111, 52.876229370322626, -28.686527560717373)):
 
-                pix2world_transformation = self.img.get_pix2world_transformation(x, y, spatial_ra = spatial_ra,
-                                                                                 origin = 1)
+                pix2world_transformation = self.img.get_pix2world_transformation(x, y, spatial_ra=spatial_ra,
+                                                                                 origin=1)
                 world2pix_transformation = self.img.get_world2pix_transformation(
-                    ra, dec, spatial_ra = spatial_ra, origin = 1)
+                    ra, dec, spatial_ra=spatial_ra, origin=1)
 
                 double_transformation = pix2world_transformation @ world2pix_transformation
 
                 assert np.allclose(double_transformation, np.array([[1., 0.], [0., 1.]]),
-                                   rtol = 1e-2, atol = 1e-3)
+                                   rtol=1e-2, atol=1e-3)
 
                 # Check for the normalized transformations as well
-                normed_pix2world_transformation = self.img.get_pix2world_transformation(x, y, spatial_ra = spatial_ra,
-                                                                                        origin = 1,
-                                                                                        norm = True)
+                normed_pix2world_transformation = self.img.get_pix2world_transformation(x, y, spatial_ra=spatial_ra,
+                                                                                        origin=1,
+                                                                                        norm=True)
                 normed_world2pix_transformation = self.img.get_world2pix_transformation(
-                    ra, dec, spatial_ra = spatial_ra, origin = 1, norm = True)
+                    ra, dec, spatial_ra=spatial_ra, origin=1, norm=True)
 
                 normed_double_transformation = pix2world_transformation @ world2pix_transformation
 
                 assert np.allclose(normed_double_transformation, np.array([[1., 0.], [0., 1.]]),
-                                   rtol = 1e-2, atol = 1e-3)
+                                   rtol=1e-2, atol=1e-3)
 
                 # These should also all have a determinant of 1 or -1
 
@@ -650,7 +643,7 @@ class TestSheImage(SheTestCase):
                 new_dec = new_radec[1, 0]
 
                 assert np.allclose((new_ra, new_dec), self.img.pix2world(x + dx, y + dy),
-                                   rtol = 1e-5, atol = 1e-4)
+                                   rtol=1e-5, atol=1e-4)
 
                 dra = 2.0 / 3600
                 ddec = 0.5 / 3600
@@ -659,8 +652,8 @@ class TestSheImage(SheTestCase):
                 new_x = new_xy[0, 0]
                 new_y = new_xy[1, 0]
 
-                assert np.allclose((new_x, new_y), self.img.world2pix(ra + dra, dec + ddec, origin = 1),
-                                   rtol = 1e-2, atol = 1e-4)
+                assert np.allclose((new_x, new_y), self.img.world2pix(ra + dra, dec + ddec, origin=1),
+                                   rtol=1e-2, atol=1e-4)
 
     def test_rotation(self):
 
@@ -679,16 +672,16 @@ class TestSheImage(SheTestCase):
                            (-0.1, -0.1),
                            (0.0, -0.1),
                            (0.1, -0.1)):
-                pix2world_angle = self.img.estimate_pix2world_rotation_angle(x, y, dx = dx, dy = dy, origin = 1)
+                pix2world_angle = self.img.estimate_pix2world_rotation_angle(x, y, dx=dx, dy=dy, origin=1)
                 if pix2world_angle < 0:
                     pix2world_angle += 2 * np.pi
                 elif pix2world_angle > 2 * np.pi:
                     pix2world_angle -= 2 * np.pi
 
                 world2pix_angle = self.img.estimate_world2pix_rotation_angle(ra, dec,
-                                                                             dra = dx / 3600,
-                                                                             ddec = dy / 3600,
-                                                                             origin = 1)
+                                                                             dra=dx / 3600,
+                                                                             ddec=dy / 3600,
+                                                                             origin=1)
                 if world2pix_angle < 0:
                     world2pix_angle += 2 * np.pi
                 elif world2pix_angle > 2 * np.pi:
@@ -701,7 +694,7 @@ class TestSheImage(SheTestCase):
             pix2world_angle = np.mean(pix2world_angles)
             world2pix_angle = np.mean(world2pix_angles)
 
-            assert np.isclose(pix2world_angle, world2pix_angle + np.pi, rtol = 0.05)
+            assert np.isclose(pix2world_angle, world2pix_angle + np.pi, rtol=0.05)
 
             # Now, create rotation matrices for both, and check these match what we get
             # from the SVD method
@@ -710,11 +703,11 @@ class TestSheImage(SheTestCase):
             world2pix_rotation_matrix_1 = np.array([[np.cos(world2pix_angle), -np.sin(world2pix_angle)],
                                                     [np.sin(world2pix_angle), np.cos(world2pix_angle)]])
 
-            pix2world_rotation_matrix_2 = self.img.get_pix2world_rotation(x, y, origin = 1)
-            world2pix_rotation_matrix_2 = self.img.get_world2pix_rotation(ra, dec, origin = 1)
+            pix2world_rotation_matrix_2 = self.img.get_pix2world_rotation(x, y, origin=1)
+            world2pix_rotation_matrix_2 = self.img.get_world2pix_rotation(ra, dec, origin=1)
 
-            assert np.allclose(pix2world_rotation_matrix_1, pix2world_rotation_matrix_2, rtol = 0.02, atol = 0.002)
-            assert np.allclose(world2pix_rotation_matrix_1, world2pix_rotation_matrix_2, rtol = 0.02, atol = 0.002)
+            assert np.allclose(pix2world_rotation_matrix_1, pix2world_rotation_matrix_2, rtol=0.02, atol=0.002)
+            assert np.allclose(world2pix_rotation_matrix_1, world2pix_rotation_matrix_2, rtol=0.02, atol=0.002)
 
             return
 
@@ -769,9 +762,9 @@ class TestSheImage(SheTestCase):
         test_x_world = test_x_offset + test_scale * test_x_im
         test_y_world = test_y_offset + test_scale * test_y_im
 
-        img.galsim_wcs = galsim.wcs.OffsetWCS(scale = test_scale,
-                                              origin = galsim.PositionD(0., 0.),
-                                              world_origin = galsim.PositionD(test_x_offset, test_y_offset))
+        img.galsim_wcs = galsim.wcs.OffsetWCS(scale=test_scale,
+                                              origin=galsim.PositionD(0., 0.),
+                                              world_origin=galsim.PositionD(test_x_offset, test_y_offset))
 
         im_pos = galsim.PositionD(test_x_im, test_y_im)
         world_pos = galsim.PositionD(test_x_world, test_y_world)
@@ -806,9 +799,9 @@ class TestSheImage(SheTestCase):
             assert world2pix_decomposition[3] == pix2world_decomposition[3]
 
             # Check the angle matches what we get in the rotation matrix
-            pix2world_rotation_matrix = self.img.get_pix2world_rotation(x, y, origin = 1)
-            assert np.isclose(pix2world_decomposition[2].cos(), pix2world_rotation_matrix[0, 0], rtol = 1e-4)
-            assert np.isclose(pix2world_decomposition[2].sin(), pix2world_rotation_matrix[0, 1], rtol = 1e-4)
+            pix2world_rotation_matrix = self.img.get_pix2world_rotation(x, y, origin=1)
+            assert np.isclose(pix2world_decomposition[2].cos(), pix2world_rotation_matrix[0, 0], rtol=1e-4)
+            assert np.isclose(pix2world_decomposition[2].sin(), pix2world_rotation_matrix[0, 1], rtol=1e-4)
 
         # Test with a simple Shear WCS
 
@@ -819,9 +812,9 @@ class TestSheImage(SheTestCase):
         w2p_g2 = 0.2
         p2w_scale = 0.01
 
-        w2p_shear = galsim.Shear(g1 = w2p_g1, g2 = w2p_g2)
+        w2p_shear = galsim.Shear(g1=w2p_g1, g2=w2p_g2)
 
-        img.galsim_wcs = galsim.wcs.ShearWCS(scale = p2w_scale, shear = w2p_shear)
+        img.galsim_wcs = galsim.wcs.ShearWCS(scale=p2w_scale, shear=w2p_shear)
 
         test_w2p_scale, test_w2p_shear, _, _ = img.get_world2pix_decomposition(0, 0)
         test_p2w_scale, test_p2w_shear, _, _ = img.get_pix2world_decomposition(0, 0)

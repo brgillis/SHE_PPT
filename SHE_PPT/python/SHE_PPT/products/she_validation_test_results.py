@@ -40,21 +40,21 @@ product_type_name = "DpdSheValidationTestResults"
 def init():
     """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    init_no_files(binding_class = dpdSheValidationTestResults,
-                  init_function = create_dpd_she_validation_test_results)
+    init_no_files(binding_class=dpdSheValidationTestResults,
+                  init_function=create_dpd_she_validation_test_results)
 
 
-def create_dpd_she_validation_test_results(reference_product = None,
-                                           source_pipeline = "sheAnalysis",
-                                           observation_mode = None,
-                                           num_tests = 1,
-                                           num_exposures = -1, ):
+def create_dpd_she_validation_test_results(reference_product=None,
+                                           source_pipeline="sheAnalysis",
+                                           observation_mode=None,
+                                           num_tests=1,
+                                           num_exposures=-1, ):
     """
         @TODO fill in docstring
     """
 
-    dpd_she_validation_test_results = create_product_from_template(template_filename = sample_file_name,
-                                                                   product_type_name = product_type_name, )
+    dpd_she_validation_test_results = create_product_from_template(template_filename=sample_file_name,
+                                                                   product_type_name=product_type_name, )
 
     # Quick alias to data_attr to save text
     data_attr = dpd_she_validation_test_results.Data
@@ -77,29 +77,29 @@ def create_dpd_she_validation_test_results(reference_product = None,
     if reference_product is not None:
         if isinstance(reference_product, dpdMerFinalCatalog):
 
-            _init_for_tile(data_attr, tile_id = reference_product.Data.TileIndex)
+            _init_for_tile(data_attr, tile_id=reference_product.Data.TileIndex)
 
         elif isinstance(reference_product, dpdVisCalibratedFrame):
 
             _init_for_exposure(data_attr,
-                               exp_product_id = reference_product.Header.ProductId.value(),
-                               obs_id = reference_product.Data.ObservationSequence.ObservationId,
-                               pointing_id = reference_product.Data.ObservationSequence.PointingId)
+                               exp_product_id=reference_product.Header.ProductId.value(),
+                               obs_id=reference_product.Data.ObservationSequence.ObservationId,
+                               pointing_id=reference_product.Data.ObservationSequence.PointingId)
 
         elif isinstance(reference_product, dpdSheStarCatalog):
 
             _init_for_exposure(data_attr,
-                               exp_product_id = reference_product.Data.ExposureProductIdList[0],
-                               obs_id = reference_product.Data.ObservationId,
-                               pointing_id = reference_product.Data.PointingIdList[0])
+                               exp_product_id=reference_product.Data.ExposureProductIdList[0],
+                               obs_id=reference_product.Data.ObservationId,
+                               pointing_id=reference_product.Data.PointingIdList[0])
 
         elif isinstance(reference_product, dpdVisStackedFrame):
 
             obs_id = reference_product.Data.ObservationId
 
             _init_for_observation(data_attr,
-                                  obs_id = reference_product.Data.ObservationId,
-                                  num_exposures = num_exposures)
+                                  obs_id=reference_product.Data.ObservationId,
+                                  num_exposures=num_exposures)
 
         else:
             raise TypeError("Unrecognized type of reference product: " + str(type(reference_product)))
