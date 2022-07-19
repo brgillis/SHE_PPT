@@ -67,7 +67,7 @@ class TestSheImageStack(SheTestCase):
             [self.sci_filepath_2]
             ]
 
-        mystack = SHEImageStack.read(filepaths_list, mask_ext = 'MASK')  # Testing kwargs as well
+        mystack = SHEImageStack.read(filepaths_list, mask_ext='MASK')  # Testing kwargs as well
         print(mystack.exposures[0])
 
     def test_equality(self):
@@ -77,7 +77,7 @@ class TestSheImageStack(SheTestCase):
         sci_image_2 = SHEImage(np.random.randn(100).reshape(10, 10))
         sci_image_s = SHEImage(np.random.randn(100).reshape(10, 10))
 
-        stack = SHEImageStack(stacked_image = sci_image_s, exposures = [sci_image_1, sci_image_2])
+        stack = SHEImageStack(stacked_image=sci_image_s, exposures=[sci_image_1, sci_image_2])
 
         stack_copy = deepcopy(stack)
         assert stack == stack_copy

@@ -27,7 +27,6 @@ import weakref
 from . import logging
 from .she_image import SHEImage
 
-
 logger = logging.getLogger(__name__)
 
 

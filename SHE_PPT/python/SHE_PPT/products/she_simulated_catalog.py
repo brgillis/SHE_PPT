@@ -36,18 +36,18 @@ def init():
 
     """
 
-    init_int_obs_cat(product_type_name = product_type_name,
-                     init_function = create_dpd_she_simulated_catalog)
+    init_int_obs_cat(product_type_name=product_type_name,
+                     init_function=create_dpd_she_simulated_catalog)
 
 
-def create_dpd_she_simulated_catalog(filename = None):
+def create_dpd_she_simulated_catalog(filename=None):
     """ Initialize a product of this type
     """
 
-    return create_general_product_from_template(template_filename = sample_file_name,
-                                                product_type_name = product_type_name,
-                                                general_product_type_name = ProductName.INT_OBS_CAT.value,
-                                                filename = filename, )
+    return create_general_product_from_template(template_filename=sample_file_name,
+                                                product_type_name=product_type_name,
+                                                general_product_type_name=ProductName.INT_OBS_CAT.value,
+                                                filename=filename, )
 
 
 # Add a useful alias

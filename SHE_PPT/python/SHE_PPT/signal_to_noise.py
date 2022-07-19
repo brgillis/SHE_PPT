@@ -32,7 +32,7 @@ logger = getLogger(__name__)
 
 def get_SN_of_image(galaxy_image,
                     gain,
-                    sigma_sky = None,
+                    sigma_sky=None,
                     *args,
                     **kwargs):
     """Calculates the S/N of a galaxy, when give a galsim image or numpy array as input.

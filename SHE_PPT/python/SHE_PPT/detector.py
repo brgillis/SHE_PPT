@@ -23,7 +23,6 @@ __updated__ = "2021-08-13"
 
 import numpy as np
 
-
 id_template = "CCDID X-Y"
 
 # Indices of x and y detector id in the detector string
@@ -142,6 +141,7 @@ def resolve_detector_xy(v):
     if isinstance(v, tuple) and len(v) == 2:
         return v
     raise TypeError("v must be int, string, or tuple[2] type.")
+
 
 # Quadrant layout - note that due to column/row-major flip and the visual layout starting from bottom-left,
 # this is transposed and flipped vertically compared to how the layout actually looks

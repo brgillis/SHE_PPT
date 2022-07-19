@@ -23,14 +23,11 @@ __updated__ = "2021-08-16"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
 import ST_DataModelBindings.pro.vis_stub as vis_pro
+from ST_DataModelBindings.dpd.vis.raw.calibratedframe_stub import dpdVisCalibratedFrame
 from ST_DataModelBindings.sys.dss_stub import dataContainer
-
-from ..product_utility import (get_data_filename_from_product, set_data_filename_of_product,
-                               set_filename_datastorage, get_filename_datastorage,
-                               create_product_from_template)
-
+from ..product_utility import (create_product_from_template, get_data_filename_from_product, get_filename_datastorage,
+                               set_data_filename_of_product, set_filename_datastorage, )
 
 sample_file_name = "SHE_PPT/sample_vis_calibrated_frame.xml"
 product_type_name = "DpdVisCalibratedFrame"

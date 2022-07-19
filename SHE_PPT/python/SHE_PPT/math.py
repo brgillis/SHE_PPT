@@ -31,7 +31,7 @@ DEFAULT_C_TARGET = 5e-6
 
 class LinregressStatistics():
 
-    def __init__(self, lx = None, ly = None, ly_err = None):
+    def __init__(self, lx=None, ly=None, ly_err=None):
         """Initialises and calculates statistics as member variables.
         """
 
@@ -46,7 +46,7 @@ class LinregressStatistics():
             # Calculate statistics
 
             if ly_err is None:
-                ly_err = np.ones_like(lx, dtype = float)
+                ly_err = np.ones_like(lx, dtype=float)
 
             lw = ly_err ** -2
 
@@ -150,7 +150,7 @@ class LinregressResults():
 
         return self._intercept_sigma
 
-    def __init__(self, lstats = None):
+    def __init__(self, lstats=None):
 
         if lstats is None:
 
@@ -197,11 +197,11 @@ class LinregressResults():
 
         # Set up arrays for each value
         n = len(lstats)
-        lw = np.zeros(n, dtype = float)
-        lxm = np.zeros(n, dtype = float)
-        lx2m = np.zeros(n, dtype = float)
-        lym = np.zeros(n, dtype = float)
-        lxym = np.zeros(n, dtype = float)
+        lw = np.zeros(n, dtype=float)
+        lxm = np.zeros(n, dtype=float)
+        lx2m = np.zeros(n, dtype=float)
+        lym = np.zeros(n, dtype=float)
+        lxym = np.zeros(n, dtype=float)
 
         # Fill in each array
         for i in range(n):
@@ -240,7 +240,7 @@ class BiasMeasurements():
     _m_sigma = None
     _c_sigma = None
 
-    def __init__(self, linregress_results = None, m = 0., m_err = 0., c = 0., c_err = 0., mc_covar = 0.):
+    def __init__(self, linregress_results=None, m=0., m_err=0., c=0., c_err=0., mc_covar=0.):
 
         if linregress_results is not None:
             # Init from linregress results
@@ -355,11 +355,11 @@ class BiasMeasurements():
         return self._c_sigma
 
 
-def get_linregress_statistics(lx, ly, ly_err = None):
+def get_linregress_statistics(lx, ly, ly_err=None):
     """Functional interface to get a linear regression statistics object.
     """
 
-    return LinregressStatistics(lx = lx, ly = ly, ly_err = ly_err)
+    return LinregressStatistics(lx=lx, ly=ly, ly_err=ly_err)
 
 
 def combine_linregress_statistics(lstats):
@@ -367,7 +367,7 @@ def combine_linregress_statistics(lstats):
        into the result of a regression.
     """
 
-    return LinregressResults(lstats = lstats)
+    return LinregressResults(lstats=lstats)
 
 
 DEFAULT_N_BOOTSTRAP_SAMPLES = 50
@@ -414,16 +414,16 @@ def linregress_with_errors(x: np.ndarray,
     """
 
     if bootstrap:
-        return linregress_with_errors_bootstrap(x = x,
-                                                y = y,
-                                                y_err = y_err,
-                                                id = id,
-                                                n_bootstrap_samples = n_bootstrap_samples,
-                                                bootstrap_seed = bootstrap_seed)
+        return linregress_with_errors_bootstrap(x=x,
+                                                y=y,
+                                                y_err=y_err,
+                                                id=id,
+                                                n_bootstrap_samples=n_bootstrap_samples,
+                                                bootstrap_seed=bootstrap_seed)
     else:
-        return linregress_with_errors_no_bootstrap(x = x,
-                                                   y = y,
-                                                   y_err = y_err)
+        return linregress_with_errors_no_bootstrap(x=x,
+                                                   y=y,
+                                                   y_err=y_err)
 
 
 def linregress_with_errors_bootstrap(x: np.ndarray,
@@ -468,16 +468,16 @@ def linregress_with_errors_bootstrap(x: np.ndarray,
     else:
         id_in_table = id
     xy_table = Table([np.asarray(id_in_table), np.asarray(x), np.asarray(y), np.asarray(y_err_in_table)],
-                     names = ("id", "x", "y", "y_err"))
+                     names=("id", "x", "y", "y_err"))
     xy_table.add_index("id")
 
     # Seed the random number generator
     rng = np.random.default_rng(bootstrap_seed)
 
     # Get a base object for the slope and intercept calculations
-    results = linregress_with_errors_no_bootstrap(x = xy_table["x"],
-                                                  y = xy_table["y"],
-                                                  y_err = xy_table["y_err"])
+    results = linregress_with_errors_no_bootstrap(x=xy_table["x"],
+                                                  y=xy_table["y"],
+                                                  y_err=xy_table["y_err"])
 
     # Bootstrap to get errors on slope and intercept
 
@@ -494,9 +494,9 @@ def linregress_with_errors_bootstrap(x: np.ndarray,
         sample_table = xy_table.loc[l_ids]
 
         # Calculate a linear regression without bootstrapping on this sample of values
-        results_bs = linregress_with_errors_no_bootstrap(x = sample_table["x"],
-                                                         y = sample_table["y"],
-                                                         y_err = sample_table["y_err"])
+        results_bs = linregress_with_errors_no_bootstrap(x=sample_table["x"],
+                                                         y=sample_table["y"],
+                                                         y_err=sample_table["y_err"])
 
         # Store the slope and intercept from this calculation
         slope_bs[b_i] = results_bs.slope

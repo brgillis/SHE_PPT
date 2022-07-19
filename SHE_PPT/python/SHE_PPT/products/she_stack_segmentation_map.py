@@ -38,7 +38,7 @@ product_type_name = "DpdSheStackReprojectedSegmentationMap"
 
 
 # Convenience function to easily load the actual map
-def load_stack_segmentation_map(filename, workdir = None, **kwargs):
+def load_stack_segmentation_map(filename, workdir=None, **kwargs):
     """Directly loads the stack_segmentation_map image from the filename of the data product.
 
     Parameters
@@ -73,7 +73,7 @@ def load_stack_segmentation_map(filename, workdir = None, **kwargs):
         workdir = ""
 
     stack_segmentation_map_product = read_xml_product(
-        xml_filename = os.path.join(workdir, filename))
+        xml_filename=os.path.join(workdir, filename))
 
     data_filename = stack_segmentation_map_product.get_data_filename()
 
@@ -88,19 +88,19 @@ def load_stack_segmentation_map(filename, workdir = None, **kwargs):
 def init():
     """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    init_just_datastorage(binding_class = dpdSheStackReprojectedSegmentationMap,
-                          init_function = create_dpd_she_stack_segmentation_map)
+    init_just_datastorage(binding_class=dpdSheStackReprojectedSegmentationMap,
+                          init_function=create_dpd_she_stack_segmentation_map)
 
 
-def create_dpd_she_stack_segmentation_map(filename = None,
-                                          data_filename = None):
+def create_dpd_she_stack_segmentation_map(filename=None,
+                                          data_filename=None):
     """ Creates a product of this type.
     """
 
-    return create_product_from_template(template_filename = sample_file_name,
-                                        product_type_name = product_type_name,
-                                        filename = filename,
-                                        data_filename = data_filename)
+    return create_product_from_template(template_filename=sample_file_name,
+                                        product_type_name=product_type_name,
+                                        filename=filename,
+                                        data_filename=data_filename)
 
 
 # Add a useful alias

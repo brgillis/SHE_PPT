@@ -31,10 +31,8 @@ from astropy.io import fits
 
 from ST_DataModelBindings.dpd.she.exposurereprojectedsegmentationmap_stub \
     import dpdSheExposureReprojectedSegmentationMap
-
 from ..file_io import read_xml_product
-from ..product_utility import init_just_datastorage, create_product_from_template
-
+from ..product_utility import create_product_from_template, init_just_datastorage
 
 sample_file_name = "SHE_PPT/sample_exposure_reprojected_segmentation_map.xml"
 product_type_name = "DpdSheExposureReprojectedSegmentationMap"
@@ -84,6 +82,7 @@ def load_she_exposure_segmentation_map(filename, directory=None, **kwargs):
 
     return she_exposure_segmentation_map_hdulist[0]
 
+
 # Initialisation function, to add methods to an imported XML class
 
 
@@ -103,6 +102,7 @@ def create_dpd_she_exposure_segmentation_map(filename=None,
                                         product_type_name=product_type_name,
                                         filename=filename,
                                         data_filename=data_filename)
+
 
 # Add a useful alias
 

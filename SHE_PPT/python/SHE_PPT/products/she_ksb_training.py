@@ -26,9 +26,7 @@ __updated__ = "2021-08-16"
 
 
 from ST_DataModelBindings.dpd.she.ksbtraining_stub import dpdSheKsbTraining
-
-from ..product_utility import init_just_datastorage, create_product_from_template
-
+from ..product_utility import create_product_from_template, init_just_datastorage
 
 sample_file_name = "SHE_PPT/sample_ksb_training.xml"
 product_type_name = "DpdSheKsbTraining"

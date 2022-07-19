@@ -86,14 +86,14 @@ class ProductName(Enum):
 
 
 # Dict to store the fits table versions for each shear estimation method
-D_METHOD_FITS_VERSIONS = {ShearEstimationMethods.KSB      : "8.0",
-                          ShearEstimationMethods.LENSMC   : "8.0.1",
+D_METHOD_FITS_VERSIONS = {ShearEstimationMethods.KSB: "8.0",
+                          ShearEstimationMethods.LENSMC: "8.0.1",
                           ShearEstimationMethods.MOMENTSML: "8.0",
-                          ShearEstimationMethods.REGAUSS  : "8.0"}
+                          ShearEstimationMethods.REGAUSS: "8.0"}
 
 
 # Enum for names of placeholder and intermediate products
-def get_data_filename_from_product(p, attr_name = None):
+def get_data_filename_from_product(p, attr_name=None):
     """ Helper function to get a data filename from a product, adjusting for whether to include the data subdir
         as desired.
     """
@@ -111,7 +111,7 @@ def get_data_filename_from_product(p, attr_name = None):
     return coerce_include_data_subdir(data_filename)
 
 
-def set_data_filename_of_product(p, data_filename, attr_name = None):
+def set_data_filename_of_product(p, data_filename, attr_name=None):
     """ Helper function to set a data filename of a product, adjusting for whether to include the
         data subdir as desired.
     """
@@ -212,7 +212,7 @@ def get_all_filenames_methods(self):
 
 
 def init_binding_class(binding_class,
-                       init_function = None, ):
+                       init_function=None, ):
     """ Boilerplate code for initing any class.
     """
 
@@ -232,7 +232,7 @@ def init_binding_class(binding_class,
 
 
 def init_no_files(binding_class,
-                  init_function = None, ):
+                  init_function=None, ):
     """ Adds some extra functionality to a product, assuming it doesn't point to any files.
     """
 
@@ -247,7 +247,7 @@ def init_no_files(binding_class,
 
 
 def init_just_datastorage(binding_class,
-                          init_function = None, ):
+                          init_function=None, ):
     """ Adds some extra functionality to a product, assuming it only only points to one file, in the data storage
         attribute.
     """
@@ -269,7 +269,7 @@ def init_just_datastorage(binding_class,
 
 
 def init_method_files(binding_class,
-                      init_function = None, ):
+                      init_function=None, ):
     """ Adds some extra functionality to a product, assuming it points to one file per shear estimation method
         in standard locations.
     """
@@ -299,11 +299,11 @@ def init_method_files(binding_class,
     binding_class.has_files = True
 
 
-def _set_int_gen_data_filename(self, filename, i = 0):
+def _set_int_gen_data_filename(self, filename, i=0):
     set_data_filename_of_product(self, filename, f"DataStorage[{i}]")
 
 
-def _get_int_gen_data_filename(self, i = 0):
+def _get_int_gen_data_filename(self, i=0):
     return get_data_filename_from_product(self, f"DataStorage[{i}]")
 
 
@@ -344,11 +344,11 @@ def _init_general_binding_class(binding_class):
         return False
 
 
-def init_intermediate_general(product_type_name = None,
-                              init_function = None, ):
+def init_intermediate_general(product_type_name=None,
+                              init_function=None, ):
     binding_class = dpdSheIntermediateGeneral
 
-    first_init = _init_general_binding_class(binding_class = binding_class)
+    first_init = _init_general_binding_class(binding_class=binding_class)
 
     # Set the init_function in the dict even if already inited
     if product_type_name:
@@ -382,11 +382,11 @@ def _get_all_int_obs_cat_filenames(self):
     return _get_all_generic_filenames(self, _get_int_obs_cat_data_filename)
 
 
-def init_int_obs_cat(product_type_name = None,
-                     init_function = None, ):
+def init_int_obs_cat(product_type_name=None,
+                     init_function=None, ):
     binding_class = dpdSheIntermediateObservationCatalog
 
-    first_init = _init_general_binding_class(binding_class = binding_class)
+    first_init = _init_general_binding_class(binding_class=binding_class)
 
     # Set the init_function in the dict even if already inited
     if product_type_name:
@@ -408,11 +408,11 @@ def init_int_obs_cat(product_type_name = None,
     binding_class.has_files = True
 
 
-def _set_plc_gen_data_filename(self, filename, i = 0):
+def _set_plc_gen_data_filename(self, filename, i=0):
     set_data_filename_of_product(self, filename, f"DataStorage[{i}]")
 
 
-def _get_plc_gen_data_filename(self, i = 0):
+def _get_plc_gen_data_filename(self, i=0):
     return get_data_filename_from_product(self, f"DataStorage[{i}]")
 
 
@@ -420,11 +420,11 @@ def _get_all_plc_gen_filenames(self):
     return _get_all_generic_filenames(self, _get_plc_gen_data_filename)
 
 
-def init_placeholder_general(product_type_name = None,
-                             init_function = None, ):
+def init_placeholder_general(product_type_name=None,
+                             init_function=None, ):
     binding_class = dpdShePlaceholderGeneral
 
-    first_init = _init_general_binding_class(binding_class = binding_class)
+    first_init = _init_general_binding_class(binding_class=binding_class)
 
     # Set the init_function in the dict even if already inited
     if product_type_name:
@@ -448,9 +448,9 @@ def init_placeholder_general(product_type_name = None,
 
 def create_product_from_template(template_filename,
                                  product_type_name,
-                                 filename = None,
-                                 data_filename = None,
-                                 spatial_footprint = None):
+                                 filename=None,
+                                 data_filename=None,
+                                 spatial_footprint=None):
     """ Generic function to create a data product object, using a template file as a base.
     """
 
@@ -475,18 +475,18 @@ def create_product_from_template(template_filename,
 
 def create_measurements_product_from_template(template_filename,
                                               product_type_name,
-                                              KSB_filename = None,
-                                              LensMC_filename = None,
-                                              MomentsML_filename = None,
-                                              REGAUSS_filename = None,
-                                              spatial_footprint = None):
+                                              KSB_filename=None,
+                                              LensMC_filename=None,
+                                              MomentsML_filename=None,
+                                              REGAUSS_filename=None,
+                                              spatial_footprint=None):
     """ Function to create a data product object, using a template file as a base, specialized for shear measurements
         products.
     """
 
-    p = create_product_from_template(template_filename = template_filename,
-                                     product_type_name = product_type_name,
-                                     spatial_footprint = spatial_footprint)
+    p = create_product_from_template(template_filename=template_filename,
+                                     product_type_name=product_type_name,
+                                     spatial_footprint=spatial_footprint)
 
     p.set_KSB_filename(KSB_filename)
     p.set_LensMC_filename(LensMC_filename)
@@ -504,9 +504,9 @@ def create_general_product_from_template(template_filename: str,
         products.
     """
 
-    p = create_product_from_template(template_filename = template_filename,
-                                     product_type_name = general_product_type_name,
-                                     filename = filename)
+    p = create_product_from_template(template_filename=template_filename,
+                                     product_type_name=general_product_type_name,
+                                     filename=filename)
 
     # Set the data we don't need to empty
     p.Data.IntData = []
@@ -551,7 +551,7 @@ def create_method_filestorage(method: ShearEstimationMethods,
     shear_estimates.DataStorage = dm_utils.create_fits_storage(getattr(she_pro, f"she{method_caps}MeasurementsFile"),
                                                                filename,
                                                                f"she.{method_cc}Measurements",
-                                                               version = D_METHOD_FITS_VERSIONS[method])
+                                                               version=D_METHOD_FITS_VERSIONS[method])
     shear_estimates.Valid = "VALID"
 
     return shear_estimates

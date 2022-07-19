@@ -28,7 +28,6 @@ __updated__ = "2021-08-13"
 
 import numpy as np
 
-
 # Mask format - increment version whenever there are non-trivial changes
 # to this file
 mask_fmt_label = "MSK_FMT_V"
@@ -84,6 +83,7 @@ def as_bool(a):
     if np.isscalar(a):
         return bool(a)
     return a.astype(bool)
+
 
 # Various convenience functions to return bools (or arrays of bools) based
 # on a mask test
@@ -158,6 +158,7 @@ def is_masked_suspect_or_bad(a):
     """
 
     return a & masked_suspect_or_bad
+
 
 # Inverse mask tests - will return true if not masked
 

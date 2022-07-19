@@ -26,11 +26,9 @@ __updated__ = "2021-08-13"
 import os
 
 import astropy.io.fits
-
 import numpy as np
 
 from . import logging
-
 
 logger = logging.getLogger(__name__)
 
@@ -310,6 +308,7 @@ class SimpleFigure():
         self.check_drawn()
         logger.info("Saving %s to '%s'...", self, filepath)
         self.fig.savefig(filepath, bbox_inches='tight')
+
 
 # Some utility functions
 

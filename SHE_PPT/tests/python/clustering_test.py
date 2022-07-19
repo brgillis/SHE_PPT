@@ -47,7 +47,7 @@ class Test_coordinates(SheTestCase):
             y += [j for j in range(ny)]
 
         # identify groups in this with separation of 0.9 - should find 0 groups as all points have a separation of >= 1
-        xx, yy, groups = identify_all_groups(x, y, sep = 0.9)
+        xx, yy, groups = identify_all_groups(x, y, sep=0.9)
 
         # make sure there are 0 groups
         n_groups = groups.max() + 1
@@ -56,7 +56,7 @@ class Test_coordinates(SheTestCase):
         # now add two points in the middle of squares of points, creating two groups of 5 objects
         x2, y2 = x + [1.5, 10.5], y + [1.5, 10.5]
 
-        xx, yy, groups = identify_all_groups(x2, y2, sep = 0.9)
+        xx, yy, groups = identify_all_groups(x2, y2, sep=0.9)
 
         # make sure there are now two groups
         n_groups = groups.max() + 1
@@ -73,7 +73,7 @@ class Test_coordinates(SheTestCase):
         x_chain = x + [i + 0.5 for i in range(nx - 1)]
         y_chain = y + [20 for i in range(nx + 1)]
 
-        xx, yy, groups = identify_all_groups(x_chain, y_chain, sep = 0.9)
+        xx, yy, groups = identify_all_groups(x_chain, y_chain, sep=0.9)
 
         # ensure we have one group
         n_groups = groups.max() + 1
@@ -86,7 +86,7 @@ class Test_coordinates(SheTestCase):
         assert (counts[1] == nx * 2 - 1)
 
         # extreme test case: have separation large enough that all objects are collected into one group
-        xx, yy, groups = identify_all_groups(x, y, sep = 1.1)
+        xx, yy, groups = identify_all_groups(x, y, sep=1.1)
 
         # ensure we have one group
         n_groups = groups.max() + 1
@@ -101,7 +101,7 @@ class Test_coordinates(SheTestCase):
 
         # partition into 20 batches
         nbatches = 20
-        clusters, batch_ids, n_per_batch = partition_into_batches(x, y, nbatches = nbatches)
+        clusters, batch_ids, n_per_batch = partition_into_batches(x, y, nbatches=nbatches)
         # make sure we have 20 batches
         assert (len(n_per_batch) == nbatches)
         # make sure all the objects have been batched
@@ -113,7 +113,7 @@ class Test_coordinates(SheTestCase):
 
         # partition into batches with batchsize 20
         batchsize = 20
-        clusters, batch_ids, n_per_batch = partition_into_batches(x, y, batchsize = batchsize)
+        clusters, batch_ids, n_per_batch = partition_into_batches(x, y, batchsize=batchsize)
 
         # make sure we have the expected number of batches
         n_expected = math.ceil(n / batchsize)

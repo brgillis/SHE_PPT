@@ -155,7 +155,7 @@ class TestTableFormats(SheTestCase):
         for i in range(len(self.child_initializers)):
 
             # Try non-strict test
-            if not is_in_format(empty_tables[i], self.parent_format, strict = False, verbose = True):
+            if not is_in_format(empty_tables[i], self.parent_format, strict=False, verbose=True):
                 raise ValueError("Table format " + self.parent_format.m.table_format +
                                  " doesn't match initialized child table " + str(i) + ".")
 
@@ -178,13 +178,13 @@ class TestTableFormats(SheTestCase):
 
         # Test initialization methods
 
-        mer_final_catalog = mfc_tf.init_table(model_hash = model_hash,
-                                              model_seed = model_seed,
-                                              noise_seed = noise_seed)
+        mer_final_catalog = mfc_tf.init_table(model_hash=model_hash,
+                                              model_seed=model_seed,
+                                              noise_seed=noise_seed)
 
-        _ = simc_tf.init_table(model_hash = model_hash,
-                               model_seed = model_seed,
-                               noise_seed = noise_seed)
+        _ = simc_tf.init_table(model_hash=model_hash,
+                               model_seed=model_seed,
+                               noise_seed=noise_seed)
 
         psf_table = psfm_tf.init_table()
 
@@ -192,8 +192,8 @@ class TestTableFormats(SheTestCase):
 
         # Try to initialize the shear estimates table based on the detections table
 
-        _ = lmcm_tf.init_table(mer_final_catalog = mer_final_catalog)
+        _ = lmcm_tf.init_table(mer_final_catalog=mer_final_catalog)
 
-        shear_chains_table = lmcc_tf.init_table(mer_final_catalog = mer_final_catalog)
+        shear_chains_table = lmcc_tf.init_table(mer_final_catalog=mer_final_catalog)
 
         assert (shear_chains_table.meta[lmcc_tf.m.len_chain] == len_chain)

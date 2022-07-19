@@ -57,7 +57,7 @@ class SheRegaussTUMatchedFormat(SheTUMatchedFormat):
     meta_type = SheRegaussTUMatchedMeta
 
     def __init__(self):
-        super().__init__(finalize = False)
+        super().__init__(finalize=False)
 
         self.setup_child_table_format(child_label)
 
@@ -81,13 +81,13 @@ tf = regauss_tu_matched_table_format
 
 
 def make_regauss_tu_matched_table_header(
-        model_hash = None,
-        model_seed = None,
-        noise_seed = None,
-        observation_id = None,
-        pointing_id = None,
-        observation_time = None,
-        tile_id = None, ):
+        model_hash=None,
+        model_seed=None,
+        noise_seed=None,
+        observation_id=None,
+        pointing_id=None,
+        observation_time=None,
+        tile_id=None, ):
     """
         @brief Generate a header for a shear estimates table.
 
@@ -120,17 +120,17 @@ def make_regauss_tu_matched_table_header(
     return header
 
 
-def initialise_regauss_tu_matched_table(mer_final_catalog = None,
-                                        size = None,
-                                        optional_columns = None,
-                                        init_cols = None,
-                                        model_hash = None,
-                                        model_seed = None,
-                                        noise_seed = None,
-                                        observation_id = None,
-                                        pointing_id = None,
-                                        observation_time = None,
-                                        tile_id = None,
+def initialise_regauss_tu_matched_table(mer_final_catalog=None,
+                                        size=None,
+                                        optional_columns=None,
+                                        init_cols=None,
+                                        model_hash=None,
+                                        model_seed=None,
+                                        noise_seed=None,
+                                        observation_id=None,
+                                        pointing_id=None,
+                                        observation_time=None,
+                                        tile_id=None,
                                         ):
     """
         @brief Initialise a shear estimates table based on a detections table, with the
@@ -145,7 +145,7 @@ def initialise_regauss_tu_matched_table(mer_final_catalog = None,
     """
 
     assert (mer_final_catalog is None) or (
-        is_in_format(mer_final_catalog, mfc_tf, strict = False))
+        is_in_format(mer_final_catalog, mfc_tf, strict=False))
 
     if optional_columns is None:
         optional_columns = []
@@ -155,16 +155,16 @@ def initialise_regauss_tu_matched_table(mer_final_catalog = None,
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    regauss_tu_matched_table = init_table(tf, optional_columns = optional_columns, init_cols = init_cols, size = size)
+    regauss_tu_matched_table = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
 
     regauss_tu_matched_table.meta = make_regauss_tu_matched_table_header(
-        model_hash = model_hash,
-        model_seed = model_seed,
-        noise_seed = noise_seed,
-        observation_id = observation_id,
-        pointing_id = pointing_id,
-        observation_time = observation_time,
-        tile_id = tile_id)
+        model_hash=model_hash,
+        model_seed=model_seed,
+        noise_seed=noise_seed,
+        observation_id=observation_id,
+        pointing_id=pointing_id,
+        observation_time=observation_time,
+        tile_id=tile_id)
 
     assert is_in_format(regauss_tu_matched_table, tf)
 

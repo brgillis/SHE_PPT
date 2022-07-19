@@ -12,13 +12,9 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-import os.path
-import pdb
 from timeit import default_timer as timer
 
-from SHE_PPT import file_io
 from SHE_PPT.she_frame_stack import SHEFrameStack
-
 
 workdir = "/home/brg/Data/sc3-workdir"
 
@@ -66,7 +62,8 @@ while num_output < 10:
     image_stack.stacked_image.header['CEN_XW'] = ra
     image_stack.stacked_image.header['CEN_YW'] = dec
 
-    image_stack.stacked_image.write_to_fits('test_stack_' + str(num_output) + '.fits', overwrite=True, data_only=False)
+    image_stack.stacked_image.write_to_fits('test_stack_' + str(num_output) + '.fits', overwrite=True,
+                                            data_only=False)
     print("Printed image " + str(num_output) + ".")
 
     for x in range(4):
