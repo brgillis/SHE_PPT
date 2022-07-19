@@ -34,20 +34,10 @@ from SHE_PPT.testing.utility import SheTestCase
 
 class TestSheImageStack(SheTestCase):
 
-    @classmethod
-    def post_setup(cls):
-
+    def post_setup(self):
         # Filenames for testing the file io, will be deleted by teardown_class
-        cls.sci_filepath_1 = "test_SHEImageStack_sci_SHEImage.fits"
-        cls.sci_filepath_2 = "test_SHEImageStack_sci_SHEImage2.fits"
-
-    @classmethod
-    def teardown_class(cls):
-
-        # Delete all potentially created files:
-        for testfilepath in [cls.sci_filepath_1, cls.sci_filepath_2]:
-            if os.path.exists(testfilepath):
-                os.remove(testfilepath)
+        self.sci_filepath_1 = "test_SHEImageStack_sci_SHEImage.fits"
+        self.sci_filepath_2 = "test_SHEImageStack_sci_SHEImage2.fits"
 
     def test_read(self):
         """We create the minimum required files, and read a SHEImageStack"""
@@ -71,7 +61,6 @@ class TestSheImageStack(SheTestCase):
         print(mystack.exposures[0])
 
     def test_equality(self):
-
         # Test we get equal when we expect it
         sci_image_1 = SHEImage(np.random.randn(100).reshape(10, 10))
         sci_image_2 = SHEImage(np.random.randn(100).reshape(10, 10))
