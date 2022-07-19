@@ -1049,7 +1049,7 @@ class TestSheImage(SheTestCase):
     def test_pix2world2pix(self):
         """Test that pix2world and world2pix work properly"""
 
-        for x, y, ra, dec in L_TEST_X_Y_RA_DEC:
+        for x, y, ex_ra, ex_dec in L_TEST_X_Y_RA_DEC:
 
             ra0, dec0 = self.img.pix2world(x + 1, y + 1, origin=0)
             assert np.allclose((ra0, dec0), (ex_ra, ex_dec))
