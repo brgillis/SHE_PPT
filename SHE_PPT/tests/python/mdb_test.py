@@ -118,7 +118,7 @@ class TestMDB(SheTestCase):
             # Try to get the value of this key in the MDB
             try:
                 mdb.get_mdb_value(key)
-            except KeyError as e:
+            except KeyError:
                 raise KeyError("Key \"" + key + "\" from mdb_keys attribute \"" + key_name + "\" not found in " +
                                "MDB dictionary. Check that it and the MDB are up-to-date.")
 
