@@ -28,7 +28,7 @@ import os
 
 try:
     import ElementsKernel.Logging as log
-except ImportError as _e:
+except ImportError:
     import logging as log
 
 

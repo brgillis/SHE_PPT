@@ -27,6 +27,7 @@ __updated__ = "2022-02-25"
 import os
 import pickle
 from copy import deepcopy
+from typing import Literal
 
 import galsim
 import numpy as np
@@ -127,7 +128,7 @@ def estimate_world2pix_rotation_angle(image: SHEImage,
                                       dec: float,
                                       dra: float = 0.01 / 3600,
                                       ddec: float = 0.01 / 3600,
-                                      origin: {0, 1} = 0) -> float:
+                                      origin: Literal[0, 1] = 0) -> float:
     """Gets the local rotation angle between world (-ra/dec) and pixel coordinates at the specified location.
     This function is used to test the `get_world2pix_rotation` method of the `SHEImage` class for validity.
 
@@ -695,8 +696,7 @@ class TestSheImage(SheTestCase):
             _ = SHEImage.read_from_fits(self.l_qualified_test_filenames[0],
                                         mask_filepath=self.l_qualified_test_filenames[1],
                                         noisemap_filepath=self.l_qualified_test_filenames[2],
-                                        segmentation_map_filepath=
-                                        self.l_qualified_test_filenames[3],
+                                        segmentation_map_filepath=self.l_qualified_test_filenames[3],
                                         mask_ext=PRIMARY_TAG)
 
     def test_extracted_stamp_is_view(self):
