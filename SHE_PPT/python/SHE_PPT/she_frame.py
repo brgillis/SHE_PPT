@@ -326,7 +326,7 @@ class SHEFrame(object):
                 if detector is None:
                     continue
 
-                inds, xs, ys = detector.get_objects_in_dectector(object_coords)
+                inds, xs, ys = detector.get_objects_in_detector(object_coords)
 
                 all_inds = np.concatenate((all_inds, inds))
                 all_xs = np.concatenate((all_xs, xs))
@@ -877,8 +877,8 @@ class SHEFrame(object):
                                     header=detector_header,
                                     wcs=detector_wcs)
 
-                detector._images_loaded = load_images
-                detector._shape = detector_shape
+                if not load_detector:
+                    detector.shape = detector_shape
 
                 detectors[x_i, y_i] = detector
 
