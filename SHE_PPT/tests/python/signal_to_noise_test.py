@@ -20,20 +20,9 @@ __updated__ = "2021-08-12"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-import os
-
 import numpy as np
-import pytest
 
-from ElementsServices.DataSync import DataSync
-from SHE_PPT import mdb
 from SHE_PPT.constants.fits import GAIN_LABEL
-from SHE_PPT.constants.test_data import (MDB_PRODUCT_FILENAME, MER_FINAL_CATALOG_LISTFILE_FILENAME,
-                                         SHE_EXPOSURE_SEGMENTATION_MAPS_LISTFILE_FILENAME,
-                                         SHE_PSF_MODEL_IMAGES_LISTFILE_FILENAME, SHE_STACK_SEGMENTATION_MAP_FILENAME,
-                                         SYNC_CONF, TEST_DATA_LOCATION, TEST_FILES_DATA_STACK, TEST_FILES_MDB,
-                                         VIS_CALIBRATED_FRAME_LISTFILE_FILENAME, VIS_STACKED_FRAME_PRODUCT_FILENAME, )
-from SHE_PPT.she_frame_stack import SHEFrameStack
 from SHE_PPT.signal_to_noise import get_SN_of_image
 from SHE_PPT.table_formats.mer_final_catalog import tf as mfc_tf
 from SHE_PPT.testing.utility import SheTestCase
