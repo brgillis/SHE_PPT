@@ -115,8 +115,6 @@ class TestMockData(SheTestCase):
 
         workdir = self.workdir
 
-        n_objs = 10
-
         object_list = [i for i in range(10)]
 
         # create the product

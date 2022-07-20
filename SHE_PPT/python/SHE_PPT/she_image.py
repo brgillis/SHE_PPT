@@ -26,7 +26,7 @@ import os
 import weakref
 from copy import deepcopy
 from functools import lru_cache
-from typing import Any, Dict, Iterable, Optional, Sequence, TYPE_CHECKING, Tuple, Type, TypeVar, Union
+from typing import Any, Dict, Iterable, Literal, Optional, Sequence, TYPE_CHECKING, Tuple, Type, TypeVar, Union
 
 import astropy.io.fits
 import astropy.wcs
@@ -1554,7 +1554,7 @@ class SHEImage:
     def pix2world(self,
                   x: Union[float, Sequence[float]],
                   y: Union[float, Sequence[float]],
-                  origin: {0, 1} = 0) -> Union[Tuple[float, float], Tuple[np.ndarray[float], np.ndarray[float]]]:
+                  origin: Literal[0, 1] = 0) -> Union[Tuple[float, float], Tuple[np.ndarray[float], np.ndarray[float]]]:
         """Converts x and y pixel coordinates to ra and dec world coordinates, using this objects WCS.
 
         Parameters
@@ -1601,7 +1601,7 @@ class SHEImage:
     def world2pix(self,
                   ra: Union[float, Sequence[float]],
                   dec: Union[float, Sequence[float]],
-                  origin: {0, 1} = 0) -> Union[Tuple[float, float], Tuple[np.ndarray[float], np.ndarray[float]]]:
+                  origin: Literal[0, 1] = 0) -> Union[Tuple[float, float], Tuple[np.ndarray[float], np.ndarray[float]]]:
         """Converts ra and dec world coordinates to x and y pixel coordinates
 
         Parameters
@@ -1652,7 +1652,7 @@ class SHEImage:
                                      dx: float = 0.1,
                                      dy: float = 0.1,
                                      spatial_ra: bool = False,
-                                     origin: {0, 1} = 0,
+                                     origin: Literal[0, 1] = 0,
                                      norm: bool = False) -> np.ndarray[float]:
         """Gets the local transformation matrix between pixel and world (ra/dec) coordinates at the specified location.
 
@@ -1738,7 +1738,7 @@ class SHEImage:
                                      dra: float = 0.01 / 3600,
                                      ddec: float = 0.01 / 3600,
                                      spatial_ra: bool = False,
-                                     origin: {0, 1} = 0,
+                                     origin: Literal[0, 1] = 0,
                                      norm: bool = False) -> np.ndarray[float]:
         """Gets the local transformation matrix between world (ra/dec) and pixel coordinates at the specified location.
 
@@ -1824,7 +1824,7 @@ class SHEImage:
                                y: Optional[float] = None,
                                dx: float = 0.1,
                                dy: float = 0.1,
-                               origin: {0, 1} = 0, ) -> np.ndarray[float]:
+                               origin: Literal[0, 1] = 0, ) -> np.ndarray[float]:
         """Gets the local rotation matrix between pixel and world (ra/dec) coordinates at the specified location.
         Note that this doesn't provide the full transformation since it lacks scaling and shearing terms.
 
@@ -1877,7 +1877,7 @@ class SHEImage:
                                dec: Optional[float] = None,
                                dra: float = 0.01 / 3600,
                                ddec: float = 0.01 / 3600,
-                               origin: {0, 1} = 0, ) -> np.ndarray[float]:
+                               origin: Literal[0, 1] = 0, ) -> np.ndarray[float]:
         """Gets the local rotation matrix between world (ra/dec) and pixel coordinates at the specified location.
         Note that this doesn't provide the full transformation since it lacks scaling and shearing terms.
 
@@ -1932,10 +1932,10 @@ class SHEImage:
     def get_pix2world_decomposition(self,
                                     x: Optional[float] = None,
                                     y: Optional[float] = None,
-                                    origin: {0, 1} = 0) -> Tuple[float,
-                                                                 Shear,
-                                                                 Angle,
-                                                                 bool]:
+                                    origin: Literal[0, 1] = 0) -> Tuple[float,
+                                                                        Shear,
+                                                                        Angle,
+                                                                        bool]:
         """Gets the local WCS decomposition between image (x/y) and world (ra/dec) coordinates at the specified
         location.
 
@@ -1996,10 +1996,10 @@ class SHEImage:
     def get_world2pix_decomposition(self,
                                     ra: Optional[float] = None,
                                     dec: Optional[float] = None,
-                                    origin: {0, 1} = 0) -> Tuple[float,
-                                                                 Shear,
-                                                                 Angle,
-                                                                 bool]:
+                                    origin: Literal[0, 1] = 0) -> Tuple[float,
+                                                                        Shear,
+                                                                        Angle,
+                                                                        bool]:
         """Gets the local WCS decomposition between world (ra/dec) and pixel coordinates at the specified location.
 
         Note 1: Since shear and rotation are non-commutative, the rotation operation must be applied before shear.
@@ -2152,7 +2152,7 @@ class SHEImage:
                                           dec: float,
                                           dra: float = 0.01 / 3600,
                                           ddec: float = 0.01 / 3600,
-                                          origin: {0, 1} = 0) -> float:
+                                          origin: Literal[0, 1] = 0) -> float:
         """Note: To be deprecated. To get rotation matrix, please use `get_world2pix_rotation`, and to get
         the rotation angle, please use `get_world2pix_decomposition`.
 
@@ -2220,7 +2220,7 @@ class SHEImage:
                                 objects_coords: SkyCoord,
                                 x_buffer: float = 0.,
                                 y_buffer: float = 0.,
-                                origin: {0, 1} = 0):
+                                origin: Literal[0, 1] = 0):
         """Returns an array containing the indices of the objects in the detector, and arrays of the x and y pixel
         coordinates for these objects.
 
@@ -2349,7 +2349,7 @@ class SHEImage:
                 try:
                     if neq(self.wcs.to_header(), rhs.wcs.to_header()):
                         res = False
-                        logger.debug(f"In SHEImage.__eq__, WCS is not equal. Values were: %s, %s",
+                        logger.debug("In SHEImage.__eq__, WCS is not equal. Values were: %s, %s",
                                      self.wcs.to_header(), rhs.wcs.to_header())
                 except AttributeError:
                     # In this case, only one is None, so return False

@@ -194,12 +194,12 @@ class TestUtility(SheTestCase):
         """
 
         # Test with simple values
-        assert neq(1, 1) == False
-        assert neq(1, 2) == True
+        assert not neq(1, 1)
+        assert neq(1, 2)
 
         # Test with numpy arrays
-        assert neq(np.array([1, 2, 3]), np.array([1, 2, 3])) == False
-        assert neq(np.array([1, 2, 3]), np.array([1, 2, 4])) == True
+        assert not neq(np.array([1, 2, 3]), np.array([1, 2, 3]))
+        assert neq(np.array([1, 2, 3]), np.array([1, 2, 4]))
 
     def test_bad_value_checks(self):
         """Test the various "bad value" checks for Inf, NaN, and masked values.

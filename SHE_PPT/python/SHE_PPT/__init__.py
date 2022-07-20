@@ -20,13 +20,14 @@ __updated__ = "2021-08-13"
 # Boston, MA 02110-1301 USA
 
 # noinspection PyUnresolvedReferences
-from SHE_PPT_VERSION import SHE_PPT_VERSION_STRING
-# noinspection PyUnresolvedReferences
 import glob
 # noinspection PyUnresolvedReferences
 from os.path import basename, dirname, isfile
 
-from . import *
+# noinspection PyUnresolvedReferences
+from SHE_PPT_VERSION import SHE_PPT_VERSION_STRING
+
+from . import *  # noqa: F401,F403
 
 modules = glob.glob(dirname(__file__) + "/*.py")
 __all__ = [basename(f)[:-3]
