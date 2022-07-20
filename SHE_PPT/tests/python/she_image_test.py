@@ -35,7 +35,7 @@ import pytest
 from astropy.wcs import WCS
 
 import SHE_PPT.she_image
-from SHE_PPT import file_io, mdb
+from SHE_PPT import file_io
 from SHE_PPT.constants.misc import SEGMAP_UNASSIGNED_VALUE
 from SHE_PPT.testing.utility import SheTestCase
 
