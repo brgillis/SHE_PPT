@@ -816,11 +816,25 @@ def write_config(config_dict: Dict[ConfigKeys, Any],
             # Now check if it's a list
             try:
                 if not isinstance(value, str):
-                    value = " ".join(map(str, value))
+                    value = _convert_config_value_list_to_str(value)
             except TypeError:
                 pass
 
             config_file.write(f"{enum_key.value} = {value}\n")
+
+
+def _convert_config_value_list_to_str(l_values: Sequence[Any]) -> str:
+    """Converts a list of values to a string, checking if they might be Enums, and if so, converting those
+    to their string representations.
+    """
+
+    # Try converting Enums
+    try:
+        l_values = [value.value for value in l_values]
+    except AttributeError:
+        pass
+
+    return " ".join(map(str, l_values))
 
 
 def _get_converted_enum_type(value: str, enum_type: EnumMeta):
