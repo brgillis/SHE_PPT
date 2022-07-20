@@ -115,10 +115,10 @@ class TestMockTables(SheTestCase):
         # Test the results of write_mock_listfile
         table_generator.write_mock_listfile()
 
-        l = read_listfile(os.path.join(self.workdir, table_generator.listfile_filename))
-        assert l[0] == table_generator.product_filename
+        l_table_filenames = read_listfile(os.path.join(self.workdir, table_generator.listfile_filename))
+        assert l_table_filenames[0] == table_generator.product_filename
 
-        p = read_xml_product(l[0], workdir=self.workdir)
+        p = read_xml_product(l_table_filenames[0], workdir=self.workdir)
         assert p.get_data_filename() == table_generator.table_filename
 
         table_generator.cleanup()

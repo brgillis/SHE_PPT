@@ -20,6 +20,7 @@ __updated__ = "2021-08-19"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
+
 from enum import Enum
 from typing import Optional
 
@@ -32,6 +33,7 @@ from ST_DataModelBindings.dpd.she.intermediategeneral_stub import dpdSheIntermed
 from ST_DataModelBindings.dpd.she.intermediateobservationcatalog_stub import dpdSheIntermediateObservationCatalog
 from ST_DataModelBindings.dpd.she.placeholdergeneral_stub import dpdShePlaceholderGeneral
 from ST_DataModelBindings.pro import she_stub as she_pro
+from .constants.misc import DATA_SUBDIR
 from .file_io import find_aux_file
 from .logging import getLogger
 from .utility import get_nested_attr
@@ -39,7 +41,6 @@ from .utility import get_nested_attr
 logger = getLogger(__name__)
 
 FILENAME_INCLUDE_DATA_SUBDIR = False
-from .constants.misc import DATA_SUBDIR
 
 LEN_DATA_SUBDIR = len(DATA_SUBDIR)
 

@@ -85,13 +85,6 @@ class TestMask(SheTestCase):
         assert (m.as_bool(m.is_masked_suspect_or_bad(self.test_mask)) == desired_bool_mask).all()
 
     def test_is_not_masked_with(self):
-        ol_mask = np.array(((False, True, True),
-                            (True, True, True)),
-                           dtype=bool)
-
-        assert (m.as_bool(self.test_mask) == desired_bool_mask).all()
-
-    def test_is_not_masked_with(self):
         desired_bool_mask_1 = ~np.array(((False, True, False),
                                          (False, True, False)),
                                         dtype=bool)
