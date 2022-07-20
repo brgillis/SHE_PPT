@@ -15,7 +15,7 @@ Deprecated Features
 Bug Fixes
 ---------
 - mock data generation now correctly uses the "version" keyword of get_allowed_filename.
-- `write_pipeline_config` now properly writes out lists of Enums in the proper format
+- `write_config` now properly writes out lists of Enums in the proper format
 
 New Features
 ------------
