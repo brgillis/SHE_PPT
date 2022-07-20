@@ -94,16 +94,16 @@ class SheArgumentParser(ArgumentParser):
 
         # Arguments needed by the pipeline runner
         self.add_option_arg(f'--{CA_WORKDIR}', type=str, default=".",
-                            help=f'Work directory, where input data is stored and output data will be created. '
-                                 f'Should be fully-qualified.')
+                            help='Work directory, where input data is stored and output data will be created. '
+                                 'Should be fully-qualified.')
         self.add_option_arg(f'--{CA_LOGDIR}', type=str, default=".",
-                            help=f"Logging directory (relative to work directory.")
+                            help="Logging directory (relative to work directory).")
 
         # Optional arguments (can't be used with pipeline runner)
         self.add_option_arg(f'--{CA_PROFILE}', action=ACT_STORE_TRUE,
-                            help=f'Store profiling data for execution.')
+                            help='Store profiling data for execution.')
         self.add_option_arg(f'--{CA_DRY_RUN}', action=ACT_STORE_TRUE,
-                            help=f'Skip processing and just output dummy data.')
+                            help='Skip processing and just output dummy data.')
 
     # Public functions
 
@@ -231,8 +231,8 @@ class SheArgumentParser(ArgumentParser):
         `store_true` option cline-arg.
         """
         self.add_option_arg(f'--{CA_DISABLE_FAILSAFE}', action=ACT_STORE_TRUE,
-                            help=f'Disable any failsafe blocks in the code. If this is set and such a block is hit, '
-                                 f'any exception will be re-raised.')
+                            help='Disable any failsafe blocks in the code. If this is set and such a block is hit, '
+                                 'any exception will be re-raised.')
 
     # Convenience functions to add input filename cline-args
 

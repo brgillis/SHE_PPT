@@ -279,7 +279,7 @@ class TestPipelineUtility(SheTestCase):
 
         # Check it's been read in correctly
         assert read_dict1[CalibrationConfigKeys.ES_METHODS] == [ShearEstimationMethods.KSB]
-        assert read_dict1[CalibrationConfigKeys.CBM_CLEANUP] == False
+        assert read_dict1[CalibrationConfigKeys.CBM_CLEANUP] is False
 
     def test_rw_scaling_config(self):
         """Unit tests of reading and writing a scaling config file.
@@ -505,8 +505,8 @@ class TestPipelineUtility(SheTestCase):
         # Check the results
         assert np.isclose(new_config["want_float"], 0.)
         assert np.allclose(new_config["want_array"], np.array([0., 1.]))
-        assert new_config["want_true"] == True
-        assert new_config["want_false"] == False
+        assert new_config["want_true"] is True
+        assert new_config["want_false"] is False
         assert new_config["want_enum"] == GlobalConfigKeys.PIP_PROFILE
 
         assert new_config["want_int_list"] == [0, 1, 7]

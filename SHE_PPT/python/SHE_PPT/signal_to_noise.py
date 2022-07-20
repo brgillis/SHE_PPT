@@ -121,8 +121,7 @@ def get_intensity_from_snr(galaxy_snr,
     # Estimate the half-light radius of the galaxy (using the magic number 0.674490, which represents the
     # sigma for a Gaussian which contains half the distribution), and use it to calculate the area within
     # the half-light aperture in arcsec
-    size_of_gal = np.pi * 0.674490 * \
-                  ((galaxy_stddev_arcsec) ** 2 + (psf_stddev_arcsec) ** 2)
+    size_of_gal = np.pi * 0.674490 * ((galaxy_stddev_arcsec) ** 2 + (psf_stddev_arcsec) ** 2)
 
     # Calculate the sky noise and read noise in the half-light aperture, remembering that noise scales with
     # the sqrt of area.
@@ -145,7 +144,6 @@ def get_intensity_from_snr(galaxy_snr,
     # The galaxy's S/N is calculated from both its own Poisson noise and the background noise within its
     # half-light aperture. This can be analytically inverted to give the
     # expression below.
-    I = galaxy_snr * \
-        (galaxy_snr + np.sqrt(4 * background_noise ** 2 + galaxy_snr ** 2))
+    intensity = galaxy_snr * (galaxy_snr + np.sqrt(4 * background_noise ** 2 + galaxy_snr ** 2))
 
-    return I
+    return intensity

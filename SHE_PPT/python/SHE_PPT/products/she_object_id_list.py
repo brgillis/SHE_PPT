@@ -53,9 +53,9 @@ def _get_id_list(self):
     return self.Data.ObjectIdList
 
 
-def _set_id_list(self, l):
+def _set_id_list(self, id_list):
 
-    self.Data.ObjectIdList = l
+    self.Data.ObjectIdList = id_list
 
 
 def create_dpd_she_object_id_list(id_list=None):

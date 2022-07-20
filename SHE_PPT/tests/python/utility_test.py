@@ -187,7 +187,7 @@ class TestUtility(SheTestCase):
             assert is_any_type_of_none(test_val) == (test_val in S_NON_FILENAMES)
 
         # Test with a numpy array
-        assert is_any_type_of_none(np.array([1, 2, 3])) == False
+        assert is_any_type_of_none(np.array([1, 2, 3])) is False
 
     def test_bad_value_checks(self):
         """Test the various "bad value" checks for Inf, NaN, and masked values.
