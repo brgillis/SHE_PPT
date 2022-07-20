@@ -208,10 +208,10 @@ class TestPipelineUtility(SheTestCase):
                                                                                    "methods": None},
                                                                       d_defaults={},
                                                                       d_types=test_analysis_type_dict)
-        assert read_dict_with_cline_args[AnalysisConfigKeys.ES_METHODS] == [ShearEstimationMethods.KSB]
-        assert read_dict_with_cline_args[AnalysisConfigKeys.OID_BATCH_SIZE] == 10
-        assert read_dict_with_cline_args[AnalysisConfigKeys.OID_MAX_BATCHES] == 3
-        assert read_dict_with_cline_args[GlobalConfigKeys.PIP_PROFILE] is True
+        assert read_dict_from_cline_args_and_defaults[AnalysisConfigKeys.ES_METHODS] == [ShearEstimationMethods.KSB]
+        assert read_dict_from_cline_args_and_defaults[AnalysisConfigKeys.OID_BATCH_SIZE] == 10
+        assert read_dict_from_cline_args_and_defaults[AnalysisConfigKeys.OID_MAX_BATCHES] == 3
+        assert read_dict_from_cline_args_and_defaults[GlobalConfigKeys.PIP_PROFILE] is True
 
         # Test that we can parse a more complicated file
         test2_filename = "test2.txt"
