@@ -143,7 +143,7 @@ class TestPipelineUtility(SheTestCase):
 
         # Test we get out of the file what we put in, for each type of configuration file
 
-        test_analysis_dict = {AnalysisConfigKeys.ES_METHODS: ShearEstimationMethods.KSB,
+        test_analysis_dict = {AnalysisConfigKeys.ES_METHODS: [ShearEstimationMethods.KSB],
                               AnalysisConfigKeys.OID_BATCH_SIZE: "26",
                               AnalysisConfigKeys.OID_MAX_BATCHES: "3",
                               GlobalConfigKeys.PIP_PROFILE: "T"}
@@ -206,12 +206,12 @@ class TestPipelineUtility(SheTestCase):
                                                                       d_cline_args=test_analysis_cline_args_dict,
                                                                       parsed_args={"batch_size": "10",
                                                                                    "methods": None},
-                                                                      d_defaults={},
+                                                                      d_defaults=test_analysis_dict,
                                                                       d_types=test_analysis_type_dict)
-        assert read_dict_with_cline_args[AnalysisConfigKeys.ES_METHODS] == [ShearEstimationMethods.KSB]
-        assert read_dict_with_cline_args[AnalysisConfigKeys.OID_BATCH_SIZE] == 10
-        assert read_dict_with_cline_args[AnalysisConfigKeys.OID_MAX_BATCHES] == 3
-        assert read_dict_with_cline_args[GlobalConfigKeys.PIP_PROFILE] is True
+        assert read_dict_from_cline_args_and_defaults[AnalysisConfigKeys.ES_METHODS] == [ShearEstimationMethods.KSB]
+        assert read_dict_from_cline_args_and_defaults[AnalysisConfigKeys.OID_BATCH_SIZE] == 10
+        assert read_dict_from_cline_args_and_defaults[AnalysisConfigKeys.OID_MAX_BATCHES] == 3
+        assert read_dict_from_cline_args_and_defaults[GlobalConfigKeys.PIP_PROFILE] is True
 
         # Test that we can parse a more complicated file
         test2_filename = "test2.txt"
@@ -279,7 +279,7 @@ class TestPipelineUtility(SheTestCase):
 
         # Check it's been read in correctly
         assert read_dict1[CalibrationConfigKeys.ES_METHODS] == [ShearEstimationMethods.KSB]
-        assert read_dict1[CalibrationConfigKeys.CBM_CLEANUP] == False
+        assert read_dict1[CalibrationConfigKeys.CBM_CLEANUP] is False
 
     def test_rw_scaling_config(self):
         """Unit tests of reading and writing a scaling config file.
@@ -505,8 +505,8 @@ class TestPipelineUtility(SheTestCase):
         # Check the results
         assert np.isclose(new_config["want_float"], 0.)
         assert np.allclose(new_config["want_array"], np.array([0., 1.]))
-        assert new_config["want_true"] == True
-        assert new_config["want_false"] == False
+        assert new_config["want_true"] is True
+        assert new_config["want_false"] is False
         assert new_config["want_enum"] == GlobalConfigKeys.PIP_PROFILE
 
         assert new_config["want_int_list"] == [0, 1, 7]

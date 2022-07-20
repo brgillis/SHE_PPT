@@ -83,15 +83,13 @@ class MockTUMatchedDataGenerator(MockDataGenerator):
                                                                   type=MockTUGalaxyDataGenerator,
                                                                   num_test_points=self.num_test_points,
                                                                   seed=self.seed)
-        self.mock_shear_estimate_data_generator = MockShearEstimateDataGenerator(method=method,
-                                                                                 mock_tu_galaxy_data_generator=
-                                                                                 self.mock_tu_galaxy_data_generator,
-                                                                                 num_nan_test_points=
-                                                                                 num_nan_test_points,
-                                                                                 num_zero_weight_test_points=
-                                                                                 num_zero_weight_test_points,
-                                                                                 num_test_points=self.num_test_points,
-                                                                                 seed=self.seed)
+        self.mock_shear_estimate_data_generator = (
+            MockShearEstimateDataGenerator(method=method,
+                                           mock_tu_galaxy_data_generator=self.mock_tu_galaxy_data_generator,
+                                           num_nan_test_points=num_nan_test_points,
+                                           num_zero_weight_test_points=num_zero_weight_test_points,
+                                           num_test_points=self.num_test_points,
+                                           seed=self.seed))
 
     # Implement abstract methods
     def _generate_unique_data(self):

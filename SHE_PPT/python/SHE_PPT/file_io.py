@@ -69,20 +69,20 @@ MSG_READING_LISTFILE = "Reading listfile from %s"
 MSG_FINISHED_WRITING_LISTFILE = "Finished writing listfile to %s"
 MSG_WRITING_LISTFILE = "Writing listfile to %s"
 
-MSG_READING_DATA_PRODUCT = f"Reading data product from %s in workdir %s"
-MSG_WRITING_DATA_PRODUCT = f"Writing data product to %s in workdir %s"
-MSG_FINISHED_READING_DATA_PRODUCT = f"Finished reading data product from %s in workdir %s successfully"
-MSG_FINISHED_WRITING_DATA_PRODUCT = f"Finished writing data product to %s in workdir %s successfully"
+MSG_READING_DATA_PRODUCT = "Reading data product from %s in workdir %s"
+MSG_WRITING_DATA_PRODUCT = "Writing data product to %s in workdir %s"
+MSG_FINISHED_READING_DATA_PRODUCT = "Finished reading data product from %s in workdir %s successfully"
+MSG_FINISHED_WRITING_DATA_PRODUCT = "Finished writing data product to %s in workdir %s successfully"
 
-MSG_READING_TABLE = f"Reading table from %s in workdir %s"
-MSG_WRITING_TABLE = f"Writing table to %s in workdir %s"
-MSG_FINISHED_READING_TABLE = f"Finished reading table from %s in workdir %s successfully"
-MSG_FINISHED_WRITING_TABLE = f"Finished writing table to %s in workdir %s successfully"
+MSG_READING_TABLE = "Reading table from %s in workdir %s"
+MSG_WRITING_TABLE = "Writing table to %s in workdir %s"
+MSG_FINISHED_READING_TABLE = "Finished reading table from %s in workdir %s successfully"
+MSG_FINISHED_WRITING_TABLE = "Finished writing table to %s in workdir %s successfully"
 
-MSG_READING_FITS_FILE = f"Reading FITS file from %s in workdir %s"
-MSG_WRITING_FITS_FILE = f"Writing FITS file to %s in workdir %s"
-MSG_FINISHED_READING_FITS_FILE = f"Finished reading FITS file from %s in workdir %s successfully"
-MSG_FINISHED_WRITING_FITS_FILE = f"Finished writing FITS file to %s in workdir %s successfully"
+MSG_READING_FITS_FILE = "Reading FITS file from %s in workdir %s"
+MSG_WRITING_FITS_FILE = "Writing FITS file to %s in workdir %s"
+MSG_FINISHED_READING_FITS_FILE = "Finished reading FITS file from %s in workdir %s successfully"
+MSG_FINISHED_WRITING_FITS_FILE = "Finished writing FITS file to %s in workdir %s successfully"
 
 MSG_SRC_NOT_EXIST = "In safe_copy, source file %s does not exist"
 MSG_DEST_EXIST = "In safe_copy, destination file %s already exists"
@@ -1194,7 +1194,8 @@ def read_xml_product(xml_filename: str,
 
     except NamespaceError:
         # If we hit a namespace error, it likely means the SHE_PPT.products module hasn't been imported.
-        # Try importing it and reading again
+        # Try importing it and reading again. Note, this raises PEP8 violation errors, but actually serves a purpose
+        # with how reading data model products work. If we move to requiring the data product type, this can be removed.
         from . import products
 
         try:

@@ -15,6 +15,7 @@ Deprecated Features
 Bug Fixes
 ---------
 - mock data generation now correctly uses the "version" keyword of get_allowed_filename.
+- `write_config` now properly writes out lists of Enums in the proper format
 
 New Features
 ------------
@@ -29,6 +30,9 @@ Miscellaneous
 - SheTestCase's _finalize_download method now allows specification of the test data location
 - Applied autoformatting to standardize code format in project
 - General cleanup of the SheTestCase base class for running unit tests
+- General cleanup and expansion of unit testing for the SHE_PPT.she_image module
+- Fixed an issue in the pipeline_config read/write test, where reading with only cline-args and defaults wasn't being
+  properly tested
 - SheTestCase's method to download and read in a SHEFrameStack now reads in the stacked images, the PSF data, and saves
   the product references.
 

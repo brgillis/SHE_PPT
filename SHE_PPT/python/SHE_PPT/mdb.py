@@ -143,7 +143,7 @@ def _load_quadrant_table(qualified_data_filename, colname):
 
     for hdu in f:
         # Check if this is the zeroeth hdu, which doesn't have a table in it
-        if not EXTNAME_LABEL in hdu.header:
+        if EXTNAME_LABEL not in hdu.header:
             continue
 
         quadrant_dict[hdu.header[EXTNAME_LABEL]] = hdu.data[colname][0]

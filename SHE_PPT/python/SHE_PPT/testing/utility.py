@@ -7,7 +7,7 @@
 
 from __future__ import annotations
 
-__updated__ = "2021-08-16"
+__updated__ = "2022-06-27"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -330,6 +330,11 @@ class SheTestCase:
         """
         pass
 
+    def teardown(self) -> None:
+        """Overridable method, where the user can specify any commands to be run at the end of any tests.
+        """
+        return None
+
     @pytest.fixture(scope="class")
     def class_setup(self, tmpdir_factory: TempdirFactory) -> SheTestCase:
         """A fixture which performs setup once per initialization of the test class, calling the overridable
@@ -483,3 +488,10 @@ class SheTestCase:
 
         # Set to raise an error on any deprecation warnings, to be sure they're caught and fixed in tests
         warnings.simplefilter("error", category=AstropyDeprecationWarning)
+
+    @pytest.fixture(scope="session", autouse=True)
+    def _teardown(self, request):
+        """Method set up to be run at session-level, to define the `teardown` method to be run at end of all tests.
+        """
+
+        request.addfinalizer(self.teardown)
