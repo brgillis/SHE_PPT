@@ -23,7 +23,6 @@ __updated__ = "2021-08-13"
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 import os.path
-import os.path
 from copy import deepcopy
 from typing import Iterable, List, Optional
 
@@ -495,8 +494,7 @@ class SHEFrameStack():
 
             stacked_image_wcs_stamp = self.stacked_image.extract_wcs_stamp(x=stacked_image_x,
                                                                            y=stacked_image_y,
-                                                                           none_if_out_of_bounds=
-                                                                           none_if_out_of_bounds)
+                                                                           none_if_out_of_bounds=none_if_out_of_bounds)
 
             # Return None if none_if_out_of_bounds and out of bounds of stacked
             # image
@@ -584,25 +582,25 @@ class SHEFrameStack():
                                                                        keep_header=keep_header,
                                                                        none_if_out_of_bounds=none_if_out_of_bounds)
             else:
-                stacked_image_stamp = self.stacked_image.extract_stamp(x=stacked_image_x,
-                                                                       y=stacked_image_y,
-                                                                       width=stack_stamp_width,
-                                                                       height=stack_stamp_height,
-                                                                       keep_header=keep_header,
-                                                                       none_if_out_of_bounds=none_if_out_of_bounds,
-                                                                       data_filename=self._stacked_data_filename,
-                                                                       data_hdu=self._stacked_data_hdu,
-                                                                       noisemap_filename=
-                                                                       self._stacked_noisemap_filename,
-                                                                       noisemap_hdu=self._stacked_noisemap_hdu,
-                                                                       mask_filename=self._stacked_mask_filename,
-                                                                       mask_hdu=self._stacked_mask_hdu,
-                                                                       bkg_filename=self._stacked_bkg_filename,
-                                                                       bkg_hdu=self._stacked_bkg_hdu,
-                                                                       wgt_filename=self._stacked_wgt_filename,
-                                                                       wgt_hdu=self._stacked_wgt_hdu,
-                                                                       seg_filename=self._stacked_seg_filename,
-                                                                       seg_hdu=self._stacked_seg_hdu)
+                stacked_image_stamp = self.stacked_image.extract_stamp(
+                    x=stacked_image_x,
+                    y=stacked_image_y,
+                    width=stack_stamp_width,
+                    height=stack_stamp_height,
+                    keep_header=keep_header,
+                    none_if_out_of_bounds=none_if_out_of_bounds,
+                    data_filename=self._stacked_data_filename,
+                    data_hdu=self._stacked_data_hdu,
+                    noisemap_filename=self._stacked_noisemap_filename,
+                    noisemap_hdu=self._stacked_noisemap_hdu,
+                    mask_filename=self._stacked_mask_filename,
+                    mask_hdu=self._stacked_mask_hdu,
+                    bkg_filename=self._stacked_bkg_filename,
+                    bkg_hdu=self._stacked_bkg_hdu,
+                    wgt_filename=self._stacked_wgt_filename,
+                    wgt_hdu=self._stacked_wgt_hdu,
+                    seg_filename=self._stacked_seg_filename,
+                    seg_hdu=self._stacked_seg_hdu)
 
             # Return None if none_if_out_of_bounds and out of bounds of stacked
             # image
@@ -795,7 +793,7 @@ class SHEFrameStack():
                         if key in new_row.colnames:
                             try:
                                 new_row[key] = row[key]
-                            except np.ma.core.MaskError as e:
+                            except np.ma.core.MaskError:
                                 logger.warning("Masked element for column %s cannot be added "
                                                "to table; default value will be used.", str(key))
                 # If we do have an object id list, construct a new table with just the desired rows

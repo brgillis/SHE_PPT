@@ -1196,7 +1196,7 @@ def read_xml_product(xml_filename: str,
         # If we hit a namespace error, it likely means the SHE_PPT.products module hasn't been imported.
         # Try importing it and reading again. Note, this raises PEP8 violation errors, but actually serves a purpose
         # with how reading data model products work. If we move to requiring the data product type, this can be removed.
-        from . import products
+        from . import products  # noqa: F401
 
         try:
             product = _read_xml_product(xml_filename, workdir)

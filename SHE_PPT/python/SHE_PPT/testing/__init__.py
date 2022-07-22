@@ -30,4 +30,4 @@ __all__ = [basename(f)[:-3]
 
 del modules, dirname, basename, isfile, glob
 
-from . import *
+from . import *  # noqa: F401,E402,F403
