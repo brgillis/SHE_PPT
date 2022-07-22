@@ -95,8 +95,6 @@ def create_dpd_she_validation_test_results(reference_product=None,
 
         elif isinstance(reference_product, dpdVisStackedFrame):
 
-            obs_id = reference_product.Data.ObservationId
-
             _init_for_observation(data_attr,
                                   obs_id=reference_product.Data.ObservationId,
                                   num_exposures=num_exposures)

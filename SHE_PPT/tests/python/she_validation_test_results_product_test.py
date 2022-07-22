@@ -22,11 +22,7 @@ __updated__ = "2021-08-16"
 
 import os
 
-import pytest
-
-from ElementsServices.DataSync import DataSync
-from SHE_PPT.constants.test_data import (MER_FINAL_CATALOG_LISTFILE_FILENAME, SYNC_CONF, TEST_DATA_LOCATION,
-                                         TEST_FILES_DATA_STACK, VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
+from SHE_PPT.constants.test_data import (MER_FINAL_CATALOG_LISTFILE_FILENAME, VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
                                          VIS_STACKED_FRAME_PRODUCT_FILENAME, )
 from SHE_PPT.file_io import read_listfile, read_xml_product, write_xml_product
 from SHE_PPT.products import she_validation_test_results as prod

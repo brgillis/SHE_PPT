@@ -36,7 +36,7 @@ from SHE_PPT.utility import (all_are_zero, any_is_inf, any_is_inf_nan_or_masked,
                              any_is_nan, any_is_nan_or_masked, any_is_zero, coerce_to_list, find_extension,
                              get_attr_with_index, get_detector, get_nested_attr, get_release_from_version,
                              is_any_type_of_none, is_inf, is_inf_nan_or_masked, is_inf_or_nan, is_masked, is_nan,
-                             is_nan_or_masked, is_zero, join_without_none, set_attr_with_index, set_nested_attr, )
+                             is_nan_or_masked, is_zero, join_without_none, neq, set_attr_with_index, set_nested_attr, )
 
 
 @dataclass
@@ -187,7 +187,19 @@ class TestUtility(SheTestCase):
             assert is_any_type_of_none(test_val) == (test_val in S_NON_FILENAMES)
 
         # Test with a numpy array
-        assert is_any_type_of_none(np.array([1, 2, 3])) == False
+        assert is_any_type_of_none(np.array([1, 2, 3])) is False
+
+    def test_neq(self):
+        """Unit test of the `neq` function.
+        """
+
+        # Test with simple values
+        assert not neq(1, 1)
+        assert neq(1, 2)
+
+        # Test with numpy arrays
+        assert not neq(np.array([1, 2, 3]), np.array([1, 2, 3]))
+        assert neq(np.array([1, 2, 3]), np.array([1, 2, 4]))
 
     def test_bad_value_checks(self):
         """Test the various "bad value" checks for Inf, NaN, and masked values.

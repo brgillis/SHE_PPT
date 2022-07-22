@@ -19,13 +19,15 @@ __updated__ = "2021-08-13"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-
 # noinspection PyUnresolvedReferences
 import glob
 # noinspection PyUnresolvedReferences
 from os.path import basename, dirname, isfile
 
-from . import *
+# noinspection PyUnresolvedReferences
+from SHE_PPT_VERSION import SHE_PPT_VERSION_STRING
+
+from . import *  # noqa: F401,F403
 
 modules = glob.glob(dirname(__file__) + "/*.py")
 __all__ = [basename(f)[:-3]
@@ -34,6 +36,4 @@ __all__ = [basename(f)[:-3]
 del modules, dirname, basename, isfile, glob
 
 # Get the version from the compiled file created by Elements
-from SHE_PPT_VERSION import SHE_PPT_VERSION_STRING
-
 __version__ = SHE_PPT_VERSION_STRING

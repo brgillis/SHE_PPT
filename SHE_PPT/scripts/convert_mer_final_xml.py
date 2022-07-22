@@ -58,7 +58,6 @@ def main():
     for xml_file in input_xml_list:
         xml_info = get_xml_info(os.path.join(args.input_dir, xml_file))
         mer_cat_fitsfile = xml_info.mer_cat_fits
-        cutouts_fitsfile = xml_info.cutout_fits
         mer_final_prod = mpd.create_dpd_she_detections(mer_cat_fitsfile)
         # mer_final_prod.Data.CutoutsCatalogStorage.DataContainer.Filename=cutouts_fitsfile
         mer_final_prod.Data.TileIndex = int(xml_info.TileIndex)
@@ -94,7 +93,6 @@ def find_value(key, lines):
         parts = [key]
 
     line_no = None
-    exist_line_no = None
     for jj, prt in enumerate(parts):
         if line_no:
             exist_line_no = line_no

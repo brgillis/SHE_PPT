@@ -97,9 +97,9 @@ def find_fits_file(xml_file_name, datadir):
         prod = read_xml_product(xml_file_name)
         try:
             fits_file = get_data_filename_from_product(prod)
-        except:
+        except Exception:
             fits_file = get_data_filename_from_product(prod, "DataStorage")
-    except:
+    except Exception:
 
         file_list = os.listdir(os.path.join(os.path.dirname(xml_file_name), datadir))
 

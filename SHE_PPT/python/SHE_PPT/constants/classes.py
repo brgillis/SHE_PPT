@@ -5,6 +5,8 @@
     Classed and Enums used to hold constant values.
 """
 
+from __future__ import annotations
+
 __updated__ = "2021-08-12"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -22,7 +24,7 @@ __updated__ = "2021-08-12"
 # Boston, MA 02110-1301 USA
 
 from enum import Enum
-from typing import Any
+from typing import Any, Optional
 
 
 class AllowedEnum(Enum):
@@ -34,14 +36,14 @@ class AllowedEnum(Enum):
         return value in [item.value for item in cls]
 
     @classmethod
-    def find_value(cls, value: Any) -> "Optional[AllowedEnum]":
+    def find_value(cls, value: Any) -> Optional[AllowedEnum]:
         for item in cls:
             if item.value == value:
                 return item
         return None
 
     @classmethod
-    def find_lower_value(cls, lower_value: str) -> "Optional[AllowedEnum]":
+    def find_lower_value(cls, lower_value: str) -> Optional[AllowedEnum]:
         for item in cls:
             if item.value.lower() == lower_value:
                 return item
