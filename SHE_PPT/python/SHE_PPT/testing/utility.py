@@ -244,9 +244,9 @@ class SheTestCase:
 
         # Read in the test data if desired
         if read_in:
-            self.data_stack = SHEFrameStack.read(exposure_listfile_filename=VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
-                                                 seg_listfile_filename=
-                                                 SHE_EXPOSURE_SEGMENTATION_MAPS_LISTFILE_FILENAME,
+            self.data_stack = (
+                SHEFrameStack.read(exposure_listfile_filename=VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
+                                                 seg_listfile_filename=SHE_EXPOSURE_SEGMENTATION_MAPS_LISTFILE_FILENAME,
                                                  stacked_image_product_filename=VIS_STACKED_FRAME_PRODUCT_FILENAME,
                                                  stacked_seg_product_filename=SHE_STACK_SEGMENTATION_MAP_FILENAME,
                                                  psf_listfile_filename=SHE_PSF_MODEL_IMAGES_LISTFILE_FILENAME,
@@ -255,7 +255,7 @@ class SheTestCase:
                                                  clean_detections=False,
                                                  save_products=True,
                                                  memmap=True,
-                                                 mode='denywrite')
+                                                 mode='denywrite'))
 
     def _finalize_download(self,
                            filename: str,
