@@ -61,6 +61,9 @@ class SheStarCatalogFormat(SheTableFormat):
         self.id = self.set_column_properties(
             "OBJECT_ID", dtype=">i8", fits_dtype="K",
             comment="ID of this object in the galaxy population priors table.")
+        self.pnt_id = self.set_column_properties(
+            "PNT_ID", dtype=">i4", fits_dtype="I",
+            comment="ID of the Pointing (exposure) for data in this row.")
 
         self.det_x = self.set_column_properties(
             "SHE_STARCAT_DET_X", dtype=">i4", fits_dtype="I")
