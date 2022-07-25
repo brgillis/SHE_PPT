@@ -37,10 +37,13 @@ from ElementsServices.DataSync import DataSync
 from SHE_PPT import mdb
 from SHE_PPT.argument_parser import CA_LOGDIR, CA_PIPELINE_CONFIG, CA_WORKDIR
 from SHE_PPT.constants.config import ConfigKeys
-from SHE_PPT.constants.test_data import (MDB_PRODUCT_FILENAME, MER_FINAL_CATALOG_LISTFILE_FILENAME, SYNC_CONF,
+from SHE_PPT.constants.test_data import (MDB_PRODUCT_FILENAME, MER_FINAL_CATALOG_LISTFILE_FILENAME,
+                                         SHE_EXPOSURE_SEGMENTATION_MAPS_LISTFILE_FILENAME,
+                                         SHE_PSF_MODEL_IMAGES_LISTFILE_FILENAME, SHE_STACK_SEGMENTATION_MAP_FILENAME,
+                                         SYNC_CONF,
                                          TEST_DATA_LOCATION,
                                          TEST_FILES_DATA_STACK, TEST_FILES_MDB,
-                                         VIS_CALIBRATED_FRAME_LISTFILE_FILENAME, )
+                                         VIS_CALIBRATED_FRAME_LISTFILE_FILENAME, VIS_STACKED_FRAME_PRODUCT_FILENAME, )
 from SHE_PPT.file_io import symlink_contents
 from SHE_PPT.logging import set_log_level_debug
 from SHE_PPT.she_frame_stack import SHEFrameStack
@@ -241,12 +244,18 @@ class SheTestCase:
 
         # Read in the test data if desired
         if read_in:
-            self.data_stack = SHEFrameStack.read(exposure_listfile_filename=VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
-                                                 detections_listfile_filename=MER_FINAL_CATALOG_LISTFILE_FILENAME,
-                                                 workdir=self.download_dir,
-                                                 clean_detections=False,
-                                                 memmap=True,
-                                                 mode='denywrite')
+            self.data_stack = (
+                SHEFrameStack.read(exposure_listfile_filename=VIS_CALIBRATED_FRAME_LISTFILE_FILENAME,
+                                   seg_listfile_filename=SHE_EXPOSURE_SEGMENTATION_MAPS_LISTFILE_FILENAME,
+                                   stacked_image_product_filename=VIS_STACKED_FRAME_PRODUCT_FILENAME,
+                                   stacked_seg_product_filename=SHE_STACK_SEGMENTATION_MAP_FILENAME,
+                                   psf_listfile_filename=SHE_PSF_MODEL_IMAGES_LISTFILE_FILENAME,
+                                   detections_listfile_filename=MER_FINAL_CATALOG_LISTFILE_FILENAME,
+                                   workdir=self.download_dir,
+                                   clean_detections=False,
+                                   save_products=True,
+                                   memmap=True,
+                                   mode='denywrite'))
 
     def _finalize_download(self,
                            filename: str,

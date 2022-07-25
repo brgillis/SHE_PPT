@@ -35,6 +35,8 @@ Miscellaneous
 - General cleanup and expansion of unit testing for the SHE_PPT.she_image module
 - Fixed an issue in the pipeline_config read/write test, where reading with only cline-args and defaults wasn't being
   properly tested
+- SheTestCase's method to download and read in a SHEFrameStack now reads in the stacked images, the PSF data, and saves
+  the product references.
 
 
 
