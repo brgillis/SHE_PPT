@@ -3,26 +3,26 @@
     Created: 2019/02/26
 
     Run with a command such as:
-    
-    E-Run SHE_PPT 0.9 python3 /home/brg/Work/Projects/SHE_PPT/SHE_PPT/scripts/convert_sim_catalog.py EUC_SIM_TUGALCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --star_cat EUC_SIM_TUSTARCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --source_dir /mnt/cephfs/share/SC456/SIM-VIS/vis_science_T2/intermediate/TU/data --max_mag_vis 25.5 --obj_cat obj_cat.xml --dest_dir .
+
+    E-Run SHE_PPT 0.9 python3 /home/brg/Work/Projects/SHE_PPT/SHE_PPT/scripts/convert_sim_catalog.py
+    EUC_SIM_TUGALCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --star_cat
+    EUC_SIM_TUSTARCAT-52929_20181009T103007.403Z_SC456-VIS-C7a_T2.fits --source_dir
+    /mnt/cephfs/share/SC456/SIM-VIS/vis_science_T2/intermediate/TU/data --max_mag_vis 25.5 --obj_cat obj_cat.xml
+    --dest_dir .
 
 """
 import argparse
 import os
 
-from astropy._erfa.core import zp
-
-from SHE_PPT import products
-from SHE_PPT.file_io import find_file, get_allowed_filename, write_xml_product
 import ST_DM_DmUtils.DmUtils as dm_utils
-import ST_DM_DmUtils.DqcDmUtils as dqc_utils
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 import ST_DataModelBindings.dpd.she.exposurereprojectedsegmentationmap_stub as expsegm_stub
 import ST_DataModelBindings.dpd.she.stackreprojectedsegmentationmap_stub as stacksegm_stub
 import ST_DataModelBindings.pro.she_stub as she_dict
-
+from SHE_PPT.file_io import write_xml_product
 
 __updated__ = "2021-08-13"
+
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #

@@ -22,9 +22,10 @@ __updated__ = "2020-10-15"
 
 from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.products import mer_final_catalog as prod
+from SHE_PPT.testing.utility import SheTestCase
 
 
-class TestDetectionsProduct(object):
+class TestDetectionsProduct(SheTestCase):
     """A collection of tests for the shear estimates data product.
 
     """
@@ -47,10 +48,10 @@ class TestDetectionsProduct(object):
         product.set_data_filename(subfilename)
 
         # Save the product in an XML file
-        write_xml_product(product, "she_detections.xml", workdir = str(tmpdir))
+        write_xml_product(product, "she_detections.xml", workdir=str(tmpdir))
 
         # Read back the XML file
-        loaded_product = read_xml_product("she_detections.xml", workdir = str(tmpdir))
+        loaded_product = read_xml_product("she_detections.xml", workdir=str(tmpdir))
 
         # Check that the filenames match
         assert loaded_product.get_data_filename() == "data/" + subfilename

@@ -22,7 +22,6 @@
 __updated__ = "2021-07-05"
 
 import numpy as np
-from numpy.testing import assert_almost_equal
 from scipy.stats import linregress
 
 from SHE_PPT.math import (BiasMeasurements, DEFAULT_BOOTSTRAP_SEED, LinregressResults,
@@ -32,7 +31,7 @@ from SHE_PPT.math import (BiasMeasurements, DEFAULT_BOOTSTRAP_SEED, LinregressRe
 from SHE_PPT.testing.utility import SheTestCase
 
 
-class Test_math(SheTestCase):
+class TestMath(SheTestCase):
 
     def post_setup(self):
 
@@ -77,14 +76,14 @@ class Test_math(SheTestCase):
            to test results, for a non-bootstrap approach.
         """
 
-        self._test_linregress_with_errors_full(bootstrap = False)
+        self._test_linregress_with_errors_full(bootstrap=False)
 
     def test_linregress_with_errors_full_bootstrap(self):
         """Unit test of linregress_with_errors that does a full simulation
            to test results, for a bootstrap approach.
         """
 
-        self._test_linregress_with_errors_full(bootstrap = True)
+        self._test_linregress_with_errors_full(bootstrap=True)
 
     def _test_linregress_with_errors_full(self, bootstrap: bool):
         """Unit test of linregress_with_errors that does a full simulation
@@ -97,7 +96,7 @@ class Test_math(SheTestCase):
         def assert_close(a: float, b: float) -> None:
             """ Conveniece function to check values are close with our chosen tolerances.
             """
-            assert np.isclose(a, b, rtol = rtol, atol = atol)
+            assert np.isclose(a, b, rtol=rtol, atol=atol)
 
         # Set up some things differently depending on whether we're bootstrapping or not
         if not bootstrap:
@@ -107,15 +106,15 @@ class Test_math(SheTestCase):
             linregress_function = linregress_with_errors_bootstrap
             n_bootstrap_samples = 100
             self.n_tests = self.n_tests // 10
-            kwargs = {"bootstrap_seed"     : DEFAULT_BOOTSTRAP_SEED,
+            kwargs = {"bootstrap_seed": DEFAULT_BOOTSTRAP_SEED,
                       "n_bootstrap_samples": n_bootstrap_samples}
 
-        x = np.linspace(0, 100, num = self.n_test_points, endpoint = True, dtype = float)
+        x = np.linspace(0, 100, num=self.n_test_points, endpoint=True, dtype=float)
         base_y = self.ex_intercept + self.ex_slope * x
 
         rng = np.random.default_rng(1234)
 
-        y_err = self.y_err_mag * (0.5 + rng.uniform(size = self.n_test_points))
+        y_err = self.y_err_mag * (0.5 + rng.uniform(size=self.n_test_points))
 
         # Run a set of tests
         slopes = np.zeros(self.n_tests)
@@ -126,7 +125,7 @@ class Test_math(SheTestCase):
         lstats = []
 
         for i in range(self.n_tests):
-            yz = rng.normal(size = self.n_test_points)
+            yz = rng.normal(size=self.n_test_points)
             y = base_y + y_err * yz
 
             if bootstrap:
@@ -173,13 +172,13 @@ class Test_math(SheTestCase):
         """
 
         id = np.arange(self.n_test_points)
-        x = np.linspace(0, 100, num = self.n_test_points, endpoint = True, dtype = float)
+        x = np.linspace(0, 100, num=self.n_test_points, endpoint=True, dtype=float)
         base_y = self.ex_intercept + self.ex_slope * x
 
         rng = np.random.default_rng(1234)
 
-        y_err = self.y_err_mag * (0.5 + rng.uniform(size = self.n_test_points))
-        yz = rng.normal(size = self.n_test_points)
+        y_err = self.y_err_mag * (0.5 + rng.uniform(size=self.n_test_points))
+        yz = rng.normal(size=self.n_test_points)
         y = base_y + y_err * yz
 
         def duplicate_data(a: np.ndarray, times: int) -> np.ndarray:
@@ -189,7 +188,7 @@ class Test_math(SheTestCase):
             return a_out
 
         # Get the base results first
-        base_results = linregress_with_errors_bootstrap(x, y, y_err = y_err, id = id)
+        base_results = linregress_with_errors_bootstrap(x, y, y_err=y_err, id=id)
 
         # Not get results with duplicated data
         n_duplicates = 4
@@ -198,13 +197,13 @@ class Test_math(SheTestCase):
         y_dup = duplicate_data(y, n_duplicates)
         y_err_dup = duplicate_data(y_err, n_duplicates)
 
-        dup_results = linregress_with_errors_bootstrap(x_dup, y_dup, y_err_dup, id = id_dup)
+        dup_results = linregress_with_errors_bootstrap(x_dup, y_dup, y_err_dup, id=id_dup)
 
         # Check slope, intercept, and errors are all about the same
-        assert np.isclose(base_results.slope, dup_results.slope, rtol = 0.1)
-        assert np.isclose(base_results.slope_err, dup_results.slope_err, rtol = 0.1)
-        assert np.isclose(base_results.intercept, dup_results.intercept, rtol = 0.1)
-        assert np.isclose(base_results.intercept_err, dup_results.intercept_err, rtol = 0.1)
+        assert np.isclose(base_results.slope, dup_results.slope, rtol=0.1)
+        assert np.isclose(base_results.slope_err, dup_results.slope_err, rtol=0.1)
+        assert np.isclose(base_results.intercept, dup_results.intercept, rtol=0.1)
+        assert np.isclose(base_results.intercept_err, dup_results.intercept_err, rtol=0.1)
 
     def test_bias_measurement(self):
 

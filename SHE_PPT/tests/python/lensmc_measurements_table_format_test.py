@@ -21,27 +21,19 @@
 __updated__ = "2021-02-09"
 
 from SHE_PPT.table_formats.she_lensmc_measurements import initialise_lensmc_measurements_table, tf as tf
+from SHE_PPT.testing.utility import SheTestCase
 
 
-class TestLensMcMeasurementsTableFormat:
+class TestLensMcMeasurementsTableFormat(SheTestCase):
     """ Unit tests class for LensMC Measurements Table Format
     """
 
-    @classmethod
-    def setup_class(cls):
+    def post_setup(self):
         # Define a list of the table formats we'll be testing
-        cls.table = initialise_lensmc_measurements_table(optional_columns = [tf.m1_ical,
-                                                                             tf.m2_ical,
-                                                                             tf.shape_weight,
-                                                                             tf.shape_weight_uncal])
-
-        return
-
-    @classmethod
-    def teardown_class(cls):
-        del cls.table
-
-        return
+        self.table = initialise_lensmc_measurements_table(optional_columns=[tf.m1_ical,
+                                                                            tf.m2_ical,
+                                                                            tf.shape_weight,
+                                                                            tf.shape_weight_uncal])
 
     def test_meta(self):
         # Run through all the meta variables and check that they exist in the table format and table

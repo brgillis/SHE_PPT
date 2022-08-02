@@ -22,9 +22,10 @@ __updated__ = "2020-10-15"
 
 from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.products import vis_calibrated_frame as prod
+from SHE_PPT.testing.utility import SheTestCase
 
 
-class TestCalibratedFrameProduct(object):
+class TestCalibratedFrameProduct(SheTestCase):
     """A collection of tests for the shear estimates data product.
 
     """
@@ -33,7 +34,7 @@ class TestCalibratedFrameProduct(object):
 
         # Create the product
         subfilename = "foo.fits"
-        product = prod.create_dpd_vis_calibrated_frame(data_filename = subfilename)
+        product = prod.create_dpd_vis_calibrated_frame(data_filename=subfilename)
 
         # Check that it validates the schema
         product.validateBinding()
@@ -72,10 +73,10 @@ class TestCalibratedFrameProduct(object):
         product.set_bkg_filename(sub_bkg_filename)
 
         # Save the product in an XML file
-        write_xml_product(product, "vis_calibrated_frame.xml", workdir = str(tmpdir))
+        write_xml_product(product, "vis_calibrated_frame.xml", workdir=str(tmpdir))
 
         # Read back the XML file
-        loaded_product = read_xml_product("vis_calibrated_frame.xml", workdir = str(tmpdir))
+        loaded_product = read_xml_product("vis_calibrated_frame.xml", workdir=str(tmpdir))
 
         # Check that the filenames match
         assert loaded_product.get_data_filename() == "data/" + sub_data_filename

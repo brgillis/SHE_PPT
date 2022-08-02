@@ -80,18 +80,16 @@ class MockTUMatchedDataGenerator(MockDataGenerator):
 
         # Init the data generators
         self.mock_tu_galaxy_data_generator = default_init_if_none(mock_tu_galaxy_data_generator,
-                                                                  type = MockTUGalaxyDataGenerator,
-                                                                  num_test_points = self.num_test_points,
-                                                                  seed = self.seed)
-        self.mock_shear_estimate_data_generator = MockShearEstimateDataGenerator(method = method,
-                                                                                 mock_tu_galaxy_data_generator =
-                                                                                 self.mock_tu_galaxy_data_generator,
-                                                                                 num_nan_test_points =
-                                                                                 num_nan_test_points,
-                                                                                 num_zero_weight_test_points =
-                                                                                 num_zero_weight_test_points,
-                                                                                 num_test_points = self.num_test_points,
-                                                                                 seed = self.seed)
+                                                                  type=MockTUGalaxyDataGenerator,
+                                                                  num_test_points=self.num_test_points,
+                                                                  seed=self.seed)
+        self.mock_shear_estimate_data_generator = (
+            MockShearEstimateDataGenerator(method=method,
+                                           mock_tu_galaxy_data_generator=self.mock_tu_galaxy_data_generator,
+                                           num_nan_test_points=num_nan_test_points,
+                                           num_zero_weight_test_points=num_zero_weight_test_points,
+                                           num_test_points=self.num_test_points,
+                                           seed=self.seed))
 
     # Implement abstract methods
     def _generate_unique_data(self):
@@ -135,23 +133,23 @@ class MockTUMatchedTableGenerator(MockTableGenerator):
         """
 
         # Initialize new attributes for this subtype
-        self.method = default_value_if_none(x = method, default_x = self.method)
+        self.method = default_value_if_none(x=method, default_x=self.method)
 
         # Set up the mock data generator with the proper type
-        self.tf = default_value_if_none(x = tf, default_x = D_SHEAR_ESTIMATION_METHOD_TUM_TABLE_FORMATS[self.method])
+        self.tf = default_value_if_none(x=tf, default_x=D_SHEAR_ESTIMATION_METHOD_TUM_TABLE_FORMATS[self.method])
 
-        self.seed = default_value_if_none(x = seed, default_x = self.seed)
-        self.num_test_points = default_value_if_none(x = num_test_points, default_x = self.num_test_points)
+        self.seed = default_value_if_none(x=seed, default_x=self.seed)
+        self.num_test_points = default_value_if_none(x=num_test_points, default_x=self.num_test_points)
 
         mock_data_generator = default_init_if_none(mock_data_generator,
-                                                   type = self.mock_data_generator_type,
-                                                   tf = self.tf,
-                                                   num_test_points = self.num_test_points,
-                                                   seed = self.seed,
-                                                   method = self.method)
+                                                   type=self.mock_data_generator_type,
+                                                   tf=self.tf,
+                                                   num_test_points=self.num_test_points,
+                                                   seed=self.seed,
+                                                   method=self.method)
 
         super().__init__(*args,
-                         mock_data_generator = mock_data_generator,
+                         mock_data_generator=mock_data_generator,
                          **kwargs)
 
     def write_mock_product(self) -> str:
@@ -164,7 +162,7 @@ class MockTUMatchedTableGenerator(MockTableGenerator):
         measurements_table_product = self.create_product()
         measurements_table_product.set_method_filename(self.method, self.table_filename)
 
-        write_xml_product(measurements_table_product, self.product_filename, workdir = self.workdir)
+        write_xml_product(measurements_table_product, self.product_filename, workdir=self.workdir)
 
         return self.product_filename
 
@@ -173,15 +171,15 @@ def write_mock_tum_tables(workdir: str) -> str:
     """ Convenience function to write tables for both LensMC and KSB in one product
     """
 
-    lensmc_table_generator = MockTUMatchedTableGenerator(method = ShearEstimationMethods.LENSMC,
-                                                         seed = TUM_SEED,
-                                                         table_filename = TUM_LENSMC_TABLE_FILENAME,
-                                                         workdir = workdir)
+    lensmc_table_generator = MockTUMatchedTableGenerator(method=ShearEstimationMethods.LENSMC,
+                                                         seed=TUM_SEED,
+                                                         table_filename=TUM_LENSMC_TABLE_FILENAME,
+                                                         workdir=workdir)
     lensmc_table_generator.write_mock_table()
-    ksb_table_generator = MockTUMatchedTableGenerator(method = ShearEstimationMethods.KSB,
-                                                      seed = TUM_SEED + 1,
-                                                      table_filename = TUM_KSB_TABLE_FILENAME,
-                                                      workdir = workdir)
+    ksb_table_generator = MockTUMatchedTableGenerator(method=ShearEstimationMethods.KSB,
+                                                      seed=TUM_SEED + 1,
+                                                      table_filename=TUM_KSB_TABLE_FILENAME,
+                                                      workdir=workdir)
     ksb_table_generator.write_mock_table()
 
     # Set up and write the data product
@@ -189,6 +187,6 @@ def write_mock_tum_tables(workdir: str) -> str:
     measurements_table_product.set_LensMC_filename(TUM_LENSMC_TABLE_FILENAME)
     measurements_table_product.set_KSB_filename(TUM_KSB_TABLE_FILENAME)
 
-    write_xml_product(measurements_table_product, TUM_TABLE_PRODUCT_FILENAME, workdir = workdir)
+    write_xml_product(measurements_table_product, TUM_TABLE_PRODUCT_FILENAME, workdir=workdir)
 
     return TUM_TABLE_PRODUCT_FILENAME

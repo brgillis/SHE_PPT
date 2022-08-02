@@ -88,22 +88,22 @@ class SheArgumentParser(ArgumentParser):
         super().__init__(*args, **kwargs)
 
         # Input filenames
-        self.add_input_arg(f'--{CA_PIPELINE_CONFIG}', type = str, default = None,
-                           help = 'Pipeline configuration file (.xml data product or .json listfile of 0-1 '
-                                  'such data products.')
+        self.add_input_arg(f'--{CA_PIPELINE_CONFIG}', type=str, default=None,
+                           help='Pipeline configuration file (.xml data product or .json listfile of 0-1 '
+                                'such data products.')
 
         # Arguments needed by the pipeline runner
-        self.add_option_arg(f'--{CA_WORKDIR}', type = str, default = ".",
-                            help = f'Work directory, where input data is stored and output data will be created. '
-                                   f'Should be fully-qualified.')
-        self.add_option_arg(f'--{CA_LOGDIR}', type = str, default = ".",
-                            help = f"Logging directory (relative to work directory.")
+        self.add_option_arg(f'--{CA_WORKDIR}', type=str, default=".",
+                            help='Work directory, where input data is stored and output data will be created. '
+                                 'Should be fully-qualified.')
+        self.add_option_arg(f'--{CA_LOGDIR}', type=str, default=".",
+                            help="Logging directory (relative to work directory).")
 
         # Optional arguments (can't be used with pipeline runner)
-        self.add_option_arg(f'--{CA_PROFILE}', action = ACT_STORE_TRUE,
-                            help = f'Store profiling data for execution.')
-        self.add_option_arg(f'--{CA_DRY_RUN}', action = ACT_STORE_TRUE,
-                            help = f'Skip processing and just output dummy data.')
+        self.add_option_arg(f'--{CA_PROFILE}', action=ACT_STORE_TRUE,
+                            help='Store profiling data for execution.')
+        self.add_option_arg(f'--{CA_DRY_RUN}', action=ACT_STORE_TRUE,
+                            help='Skip processing and just output dummy data.')
 
     # Public functions
 
@@ -127,7 +127,7 @@ class SheArgumentParser(ArgumentParser):
         Action
             The constructed Action for this cline-arg.
         """
-        return self.add_arg_with_type(*args, arg_type = ClineArgType.INPUT, help = help, **kwargs)
+        return self.add_arg_with_type(*args, arg_type=ClineArgType.INPUT, help=help, **kwargs)
 
     def add_output_arg(self,
                        *args,
@@ -149,7 +149,7 @@ class SheArgumentParser(ArgumentParser):
         Action
             The constructed Action for this cline-arg.
         """
-        return self.add_arg_with_type(*args, arg_type = ClineArgType.OUTPUT, help = help, **kwargs)
+        return self.add_arg_with_type(*args, arg_type=ClineArgType.OUTPUT, help=help, **kwargs)
 
     def add_option_arg(self,
                        *args,
@@ -171,7 +171,7 @@ class SheArgumentParser(ArgumentParser):
         Action
             The constructed Action for this cline-arg.
         """
-        return self.add_arg_with_type(*args, arg_type = ClineArgType.OPTION, help = help, **kwargs)
+        return self.add_arg_with_type(*args, arg_type=ClineArgType.OPTION, help=help, **kwargs)
 
     def add_arg_with_type(self,
                           *args,
@@ -222,7 +222,7 @@ class SheArgumentParser(ArgumentParser):
 
         logger.debug(f"Adding cline-arg {args[0]} to SheArgumentParser.")
 
-        return self.add_argument(*args, **kwargs, help = formatted_help)
+        return self.add_argument(*args, **kwargs, help=formatted_help)
 
     # Convenience methods to add option args
 
@@ -230,9 +230,9 @@ class SheArgumentParser(ArgumentParser):
         """Adds a command-line argument to disable failsafe blocks, `--disable_failsafe`. This is added as a
         `store_true` option cline-arg.
         """
-        self.add_option_arg(f'--{CA_DISABLE_FAILSAFE}', action = ACT_STORE_TRUE,
-                            help = f'Disable any failsafe blocks in the code. If this is set and such a block is hit, '
-                                   f'any exception will be re-raised.')
+        self.add_option_arg(f'--{CA_DISABLE_FAILSAFE}', action=ACT_STORE_TRUE,
+                            help='Disable any failsafe blocks in the code. If this is set and such a block is hit, '
+                                 'any exception will be re-raised.')
 
     # Convenience functions to add input filename cline-args
 
@@ -246,8 +246,8 @@ class SheArgumentParser(ArgumentParser):
             * ClineArgType.INPUT (default)
             * ClineArgType.OUTPUT
         """
-        self.add_arg_with_type(f'--{CA_MDB}', type = str, default = None, arg_type = arg_type,
-                               help = 'Mission Database .xml file')
+        self.add_arg_with_type(f'--{CA_MDB}', type=str, default=None, arg_type=arg_type,
+                               help='Mission Database .xml file')
 
     def add_data_images_arg(self, arg_type: ClineArgType = ClineArgType.INPUT):
         """Adds a command-line argument for a listfile of VIS Calibrated Frame data products,
@@ -258,9 +258,9 @@ class SheArgumentParser(ArgumentParser):
         arg_type : {ClineArgType.INPUT, ClineArgType.OUTPUT}, default=ClineArgType.INPUT
             The type of cline-arg this is, specified as an element of the `ClineArgType` Enum.
         """
-        self.add_arg_with_type(f'--{CA_DATA_IMAGES}', type = str, default = None, arg_type = arg_type,
-                               help = '.json listfile containing filenames of data image products. Only'
-                                      ' needs to be set if adding bin columns.')
+        self.add_arg_with_type(f'--{CA_DATA_IMAGES}', type=str, default=None, arg_type=arg_type,
+                               help='.json listfile containing filenames of data image products. Only'
+                                    ' needs to be set if adding bin columns.')
 
     def add_measurements_arg(self, arg_type: ClineArgType = ClineArgType.INPUT):
         """Adds a command-line argument for a validated shear measurements data product,
@@ -271,8 +271,8 @@ class SheArgumentParser(ArgumentParser):
         arg_type : {ClineArgType.INPUT, ClineArgType.OUTPUT}, default=ClineArgType.INPUT
             The type of cline-arg this is, specified as an element of the `ClineArgType` Enum.
         """
-        self.add_arg_with_type(f'--{CA_SHE_MEAS}', type = str, arg_type = arg_type,
-                               help = 'Filename of the validated shear measurements .xml data product.')
+        self.add_arg_with_type(f'--{CA_SHE_MEAS}', type=str, arg_type=arg_type,
+                               help='Filename of the validated shear measurements .xml data product.')
 
     def add_final_catalog_arg(self, arg_type: ClineArgType = ClineArgType.INPUT):
         """Adds a command-line argument for a listfile of MER Final Catalog data products,
@@ -283,8 +283,8 @@ class SheArgumentParser(ArgumentParser):
         arg_type : {ClineArgType.INPUT, ClineArgType.OUTPUT}, default=ClineArgType.INPUT
             The type of cline-arg this is, specified as an element of the `ClineArgType` Enum.
         """
-        self.add_arg_with_type(f'--{CA_MER_CAT}', type = str, arg_type = arg_type,
-                               help = '.json listfile containing filenames of mer final catalogs.')
+        self.add_arg_with_type(f'--{CA_MER_CAT}', type=str, arg_type=arg_type,
+                               help='.json listfile containing filenames of mer final catalogs.')
 
     def add_calibrated_frame_arg(self, arg_type: ClineArgType = ClineArgType.INPUT):
         """Adds a command-line argument for a listfile of VIS Calibrated Frame data products,
@@ -295,8 +295,8 @@ class SheArgumentParser(ArgumentParser):
         arg_type : {ClineArgType.INPUT, ClineArgType.OUTPUT}, default=ClineArgType.INPUT
             The type of cline-arg this is, specified as an element of the `ClineArgType` Enum.
         """
-        self.add_arg_with_type(f'--{CA_VIS_CAL_FRAME}', type = str, arg_type = arg_type,
-                               help = '.json listfile containing filenames of exposure image products.')
+        self.add_arg_with_type(f'--{CA_VIS_CAL_FRAME}', type=str, arg_type=arg_type,
+                               help='.json listfile containing filenames of exposure image products.')
 
     def add_star_catalog_arg(self, arg_type: ClineArgType = ClineArgType.INPUT):
         """Adds a command-line argument for a SHE Star Catalog data product,
@@ -307,5 +307,5 @@ class SheArgumentParser(ArgumentParser):
         arg_type : {ClineArgType.INPUT, ClineArgType.OUTPUT}, default=ClineArgType.INPUT
             The type of cline-arg this is, specified as an element of the `ClineArgType` Enum.
         """
-        self.add_arg_with_type(f"--{CA_SHE_STAR_CAT}", type = str, arg_type = arg_type,
-                               help = ".xml data product for SHE star catalog for an observation.")
+        self.add_arg_with_type(f"--{CA_SHE_STAR_CAT}", type=str, arg_type=arg_type,
+                               help=".xml data product for SHE star catalog for an observation.")

@@ -21,7 +21,6 @@ __updated__ = "2021-08-30"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-import os
 import re
 from typing import Any, Dict, List, MutableSequence, Optional, Sequence, Set, Tuple, Type, TypeVar, Union
 
@@ -31,6 +30,7 @@ from astropy.table import Table
 
 from . import detector as dtc
 from .constants.fits import CCDID_LABEL, EXTNAME_LABEL
+from .constants.misc import S_NON_FILENAMES
 from .logging import getLogger
 
 logger = getLogger(__name__)
@@ -256,60 +256,27 @@ def get_detector(obj: Union[TableHDU, BinTableHDU, ImageHDU, PrimaryHDU, Table])
     return detector_x, detector_y
 
 
-def get_all_files(directory_name: str) -> List[str]:
-    """Search through a directory to get a full list of files in it and all of its sub-directories.
+# Value testing functions
+
+def neq(lhs: Any, rhs: Any) -> bool:
+    """Returns True if the two objects are not equal, False otherwise. This function includes handling of
+    numpy arrays, which otherwise would raise a ValueError if attempting to convert to a single boolean value
+    after an equality test.
 
     Parameters
     ----------
-    directory_name : str
-        The name of the directory to search.
+    lhs, rhs : Any
+        The objects to compare.
 
     Returns
     -------
-    List[str]
-        A list of all files in the directory, including its subdirectories.
+    bool
+        True if the two objects are not equal, False otherwise.
     """
-    # TODO: This should be moved to SHE_PPT.file_io
-
-    full_file_list = []
-    dir_list = [directory_name]
-
-    is_complete = False
-
-    while not is_complete:
-
-        new_dir_list = []
-
-        for dir_name in dir_list:
-
-            file_list, sb_dir_list = _process_directory_for_files(dir_name)
-            full_file_list += [os.path.join(dir_name, filename)
-                               for filename in file_list]
-
-            if sb_dir_list:
-                new_dir_list += [os.path.join(dir_name, sb_dir)
-                                 for sb_dir in sb_dir_list]
-
-        dir_list = new_dir_list
-        is_complete = len(dir_list) == 0
-
-    return full_file_list
-
-
-def _process_directory_for_files(directory_name: str) -> Tuple[List[str], List[str]]:
-    """ Recursively check a directory for files; used within `get_all_files`.
-    """
-    file_list = []
-    subdir_list = []
-    for file_name in os.listdir(directory_name):
-        if os.path.isdir(os.path.join(directory_name, file_name)):
-            subdir_list.append(file_name)
-        elif not file_name.startswith('.'):
-            file_list.append(file_name)
-    return file_list, subdir_list
-
-
-# Value testing functions
+    try:
+        return bool(lhs != rhs)
+    except ValueError:
+        return np.any(lhs != rhs)
 
 
 def is_any_type_of_none(value: Any) -> bool:
@@ -325,9 +292,8 @@ def is_any_type_of_none(value: Any) -> bool:
     bool
         True if the value is of any type of None, False otherwise.
     """
-    # TODO: This duplicates `filename_not_exists` in SHE_PPT.file_io - one should be deprecated in favor of the other.
     try:
-        return value in (None, "None", "", "data/None", "data/")
+        return value in S_NON_FILENAMES
     except (TypeError, ValueError):
         # We might get an exception if the value is of certain types, such as a numpy array. In that case,
         # it's not None as understood here, so return False
@@ -677,7 +643,7 @@ def empty_list_if_none(l_x: Optional[Sequence[T]],
     List[T]
         The input value if it is not None, otherwise an empty list.
     """
-    return default_init_if_none(l_x, list, coerce = coerce)
+    return default_init_if_none(l_x, list, coerce=coerce)
 
 
 def empty_set_if_none(s_x: Optional[Union[Sequence[T], Set[T]]],
@@ -696,7 +662,7 @@ def empty_set_if_none(s_x: Optional[Union[Sequence[T], Set[T]]],
     Set[T]
         The input value if it is not None, otherwise an empty set.
     """
-    return default_init_if_none(s_x, type = set, coerce = coerce)
+    return default_init_if_none(s_x, type=set, coerce=coerce)
 
 
 def empty_dict_if_none(d_x: Optional[Dict[TK, TV]],
@@ -715,7 +681,7 @@ def empty_dict_if_none(d_x: Optional[Dict[TK, TV]],
     Dict[TK, TV]
         The input value if it is not None, otherwise an empty dict.
     """
-    return default_init_if_none(d_x, type = dict, coerce = coerce)
+    return default_init_if_none(d_x, type=dict, coerce=coerce)
 
 
 def coerce_to_list(a: Union[None, T, List[T]],

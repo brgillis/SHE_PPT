@@ -49,7 +49,7 @@ DEFAULT_MDB_FILE = os.path.join("WEB", TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME)
 logger = getLogger(__name__)
 
 
-def init(mdb_files = None, path = None):
+def init(mdb_files=None, path=None):
     """Initialises module by loading MDB data from file(s).
 
     Arguments
@@ -137,13 +137,13 @@ def _find_mdb_data_file(data_filenames, qualified_mdb_files):
 
 
 def _load_quadrant_table(qualified_data_filename, colname):
-    f = fits.open(qualified_data_filename, mode = 'readonly')
+    f = fits.open(qualified_data_filename, mode='readonly')
 
     quadrant_dict = {}
 
     for hdu in f:
         # Check if this is the zeroeth hdu, which doesn't have a table in it
-        if not EXTNAME_LABEL in hdu.header:
+        if EXTNAME_LABEL not in hdu.header:
             continue
 
         quadrant_dict[hdu.header[EXTNAME_LABEL]] = hdu.data[colname][0]
@@ -153,20 +153,20 @@ def _load_quadrant_table(qualified_data_filename, colname):
     return quadrant_dict
 
 
-def get_gain(detector = None, quadrant = None, suppress_warnings = False):
-    return _get_quadrant_data(dictionary = _gain_dict,
-                              ave_dict = _gain_ave_dict,
-                              detector = detector,
-                              quadrant = quadrant,
-                              suppress_warnings = suppress_warnings)
+def get_gain(detector=None, quadrant=None, suppress_warnings=False):
+    return _get_quadrant_data(dictionary=_gain_dict,
+                              ave_dict=_gain_ave_dict,
+                              detector=detector,
+                              quadrant=quadrant,
+                              suppress_warnings=suppress_warnings)
 
 
-def get_read_noise(detector = None, quadrant = None, suppress_warnings = False):
-    return _get_quadrant_data(dictionary = _read_noise_dict,
-                              ave_dict = _read_noise_ave_dict,
-                              detector = detector,
-                              quadrant = quadrant,
-                              suppress_warnings = suppress_warnings)
+def get_read_noise(detector=None, quadrant=None, suppress_warnings=False):
+    return _get_quadrant_data(dictionary=_read_noise_dict,
+                              ave_dict=_read_noise_ave_dict,
+                              detector=detector,
+                              quadrant=quadrant,
+                              suppress_warnings=suppress_warnings)
 
 
 @run_only_once
@@ -179,7 +179,7 @@ def warn_missing_quadrant():
     logger.warning("No quadrant value supplied to get_gain or get_read_noise - average value will be used instead.")
 
 
-def _get_quadrant_data(dictionary, ave_dict, detector = None, quadrant = None, suppress_warnings = False):
+def _get_quadrant_data(dictionary, ave_dict, detector=None, quadrant=None, suppress_warnings=False):
     # If we have both the detector and quadrant, get the value for that quadrant
     if detector is not None and quadrant is not None:
         return dictionary[detector + "." + quadrant]

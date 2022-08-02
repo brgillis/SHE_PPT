@@ -20,16 +20,15 @@
 
 __updated__ = "2019-02-27"
 
-import unittest
-
 from numpy.testing import assert_almost_equal
 
 from SHE_PPT.gain import get_ADU_from_count, get_count_from_ADU
+from SHE_PPT.testing.utility import SheTestCase
 
 
-class GainTestCase(unittest.TestCase):
+class GainTestCase(SheTestCase):
 
-    def setUp(self):
+    def post_setup(self):
         self.count = 1000
         self.gain = 2.5
         self.ADU = 400

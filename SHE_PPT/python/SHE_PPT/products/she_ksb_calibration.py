@@ -26,11 +26,8 @@ __updated__ = "2021-08-16"
 
 
 from ST_DataModelBindings.dpd.she.ksbcalibration_stub import dpdSheKsbCalibration
-
-from ..product_utility import (get_all_filenames_just_data, set_data_filename_of_product,
-                               get_data_filename_from_product, create_product_from_template,
-                               init_binding_class)
-
+from ..product_utility import (create_product_from_template, get_all_filenames_just_data,
+                               get_data_filename_from_product, init_binding_class, set_data_filename_of_product, )
 
 sample_file_name = "SHE_PPT/sample_ksb_calibration.xml"
 product_type_name = "DpdSheKsbCalibration"

@@ -26,44 +26,42 @@ import os
 import numpy as np
 import pytest
 
-from ElementsServices.DataSync import DataSync
 from SHE_PPT import mdb
-from SHE_PPT.constants.test_data import (MDB_PRODUCT_FILENAME, SYNC_CONF, TEST_DATA_LOCATION, TEST_FILES_MDB)
+from SHE_PPT.testing.utility import SheTestCase
 
 
-class TestMDB:
+class TestMDB(SheTestCase):
+    """Unit tests of the SHE_PPT.mdb module.
     """
 
+    def setup_workdir(self):
 
-    """
+        self._download_mdb()
 
-    @classmethod
-    def setup_class(cls):
+    def post_setup(self):
 
-        cls.sync = DataSync(SYNC_CONF, TEST_FILES_MDB)
-        cls.sync.download()
-        cls.filename = cls.sync.absolutePath(os.path.join(TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME))
+        self.qualified_mdb_filename = os.path.join(self.workdir, self.mdb_filename)
 
-        cls.test_key = "SpaceSegment.Instrument.VIS.VISDetectorPixelLongDimensionFormat"
-        cls.test_detector = "1-2"
-        cls.test_quadrant = "E"
+        self.test_key = "SpaceSegment.Instrument.VIS.VISDetectorPixelLongDimensionFormat"
+        self.test_detector = "1-2"
+        self.test_quadrant = "E"
 
-        cls.ex_gain = 3.1
-        cls.ex_read_noise = 3.1307833277073978
-        cls.ex_read_noise_no_det = 3.3223757053329757
-        cls.ex_read_noise_no_quad = 3.1288953698554054
-        cls.ex_read_noise_no_det_no_quad = 3.3209775151504393
-
-        return
+        self.ex_gain = 3.1
+        self.ex_read_noise = 3.1307833277073978
+        self.ex_read_noise_no_det = 3.3223757053329757
+        self.ex_read_noise_no_quad = 3.1288953698554054
+        self.ex_read_noise_no_det_no_quad = 3.3209775151504393
 
     @classmethod
     def teardown_class(cls):
+        """Cleanup changes made during tests.
+        """
+
+        super().teardown_class()
 
         logging.disable(logging.NOTSET)
 
         mdb.reset()
-
-        return
 
     def test_get_mdb_details(self):
         """ Test that the mdb methods work when initialised
@@ -79,7 +77,7 @@ class TestMDB:
         ex_expression = None
         ex_unit = 'pixel'
 
-        mdb.init(self.filename)
+        mdb.init(self.qualified_mdb_filename)
         assert mdb.get_mdb_value(self.test_key) == ex_value
         assert mdb.get_mdb_description(self.test_key) == ex_description
         assert mdb.get_mdb_source(self.test_key) == ex_source
@@ -109,7 +107,7 @@ class TestMDB:
         """ Test that each key in the mdb_keys object corresponds to a real key in the MDB.
         """
 
-        mdb.init(self.filename)
+        mdb.init(self.qualified_mdb_filename)
 
         # For each key we've assigned an attribute for
         for key_name in vars(mdb.mdb_keys):
@@ -120,19 +118,19 @@ class TestMDB:
             # Try to get the value of this key in the MDB
             try:
                 mdb.get_mdb_value(key)
-            except KeyError as e:
+            except KeyError:
                 raise KeyError("Key \"" + key + "\" from mdb_keys attribute \"" + key_name + "\" not found in " +
                                "MDB dictionary. Check that it and the MDB are up-to-date.")
 
-        return
-
     def test_get_gain(self):
+        """Test of the `get_gain` function.
+        """
 
-        mdb.init(self.filename)
+        mdb.init(self.qualified_mdb_filename)
 
         # Check we can get a single gain successfully
 
-        gain = mdb.get_gain(detector = self.test_detector, quadrant = self.test_quadrant)
+        gain = mdb.get_gain(detector=self.test_detector, quadrant=self.test_quadrant)
         assert np.isclose(gain, self.ex_gain)
 
         # Check that averaging works successfully
@@ -140,10 +138,10 @@ class TestMDB:
         # Disable warnings, since they're expected here
         logging.disable(logging.WARNING)
 
-        gain = mdb.get_gain(quadrant = self.test_quadrant)
+        gain = mdb.get_gain(quadrant=self.test_quadrant)
         assert np.isclose(gain, self.ex_gain)
 
-        gain = mdb.get_gain(detector = self.test_detector)
+        gain = mdb.get_gain(detector=self.test_detector)
         assert np.isclose(gain, self.ex_gain)
 
         gain = mdb.get_gain()
@@ -151,22 +149,22 @@ class TestMDB:
 
         # Repeat the average tests to make sure they work with cached results
 
-        gain = mdb.get_gain(quadrant = self.test_quadrant)
+        gain = mdb.get_gain(quadrant=self.test_quadrant)
         assert np.isclose(gain, self.ex_gain)
 
-        gain = mdb.get_gain(detector = self.test_detector)
+        gain = mdb.get_gain(detector=self.test_detector)
         assert np.isclose(gain, self.ex_gain)
 
         gain = mdb.get_gain()
         assert np.isclose(gain, self.ex_gain)
 
-        return
-
     def test_get_read_noise(self):
+        """Test of the `get_read_noise` function.
+        """
 
-        mdb.init(self.filename)
+        mdb.init(self.qualified_mdb_filename)
 
-        read_noise = mdb.get_read_noise(detector = self.test_detector, quadrant = self.test_quadrant)
+        read_noise = mdb.get_read_noise(detector=self.test_detector, quadrant=self.test_quadrant)
         assert np.isclose(read_noise, self.ex_read_noise)
 
         # Check that averaging works successfully
@@ -174,23 +172,21 @@ class TestMDB:
         # Disable warnings, since they're expected here
         logging.disable(logging.WARNING)
 
-        read_noise = mdb.get_read_noise(quadrant = self.test_quadrant)
+        read_noise = mdb.get_read_noise(quadrant=self.test_quadrant)
         assert np.isclose(read_noise, self.ex_read_noise_no_det)
 
-        read_noise = mdb.get_read_noise(detector = self.test_detector)
+        read_noise = mdb.get_read_noise(detector=self.test_detector)
         assert np.isclose(read_noise, self.ex_read_noise_no_quad)
 
         read_noise = mdb.get_read_noise()
         assert np.isclose(read_noise, self.ex_read_noise_no_det_no_quad)
 
         # Repeat the average tests to make sure they work with cached results
-        read_noise = mdb.get_read_noise(quadrant = self.test_quadrant)
+        read_noise = mdb.get_read_noise(quadrant=self.test_quadrant)
         assert np.isclose(read_noise, self.ex_read_noise_no_det)
 
-        read_noise = mdb.get_read_noise(detector = self.test_detector)
+        read_noise = mdb.get_read_noise(detector=self.test_detector)
         assert np.isclose(read_noise, self.ex_read_noise_no_quad)
 
         read_noise = mdb.get_read_noise()
         assert np.isclose(read_noise, self.ex_read_noise_no_det_no_quad)
-
-        return

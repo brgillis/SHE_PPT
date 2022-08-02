@@ -24,31 +24,19 @@ __updated__ = "2021-08-13"
 # """This script gives a small demo of the image object.
 
 
-import logging
-import os
-
 import pytest
 
-from ElementsServices.DataSync import DataSync
 from SHE_PPT import mdb
-from SHE_PPT.constants.test_data import (MDB_PRODUCT_FILENAME, SYNC_CONF, TEST_DATA_LOCATION, TEST_FILES_MDB)
 from SHE_PPT.detector import (VIS_DETECTOR_PIXELS_X, VIS_DETECTOR_PIXELS_Y, detector_int_to_xy, detector_xy_to_int,
                               get_detector_xy, get_id_string, get_vis_quadrant, resolve_detector_xy, )
+from SHE_PPT.testing.utility import SheTestCase
 
-logging.basicConfig(level = logging.DEBUG)
 
+class TestDetector(SheTestCase):
 
-class TestDetector():
+    def setup_workdir(self):
+        self._download_mdb()
 
-    @classmethod
-    def setup_class(cls):
-        cls.sync = DataSync(SYNC_CONF, TEST_FILES_MDB)
-        cls.sync.download()
-        cls.mdb_filename = cls.sync.absolutePath(os.path.join(TEST_DATA_LOCATION, MDB_PRODUCT_FILENAME))
-
-        mdb.init(mdb_files = cls.mdb_filename)
-
-    @classmethod
     def teardown_class(cls):
         mdb.reset()
 
@@ -122,27 +110,27 @@ class TestDetector():
         assert VIS_DETECTOR_PIXELS_Y == mdb.get_mdb_value(mdb.mdb_keys.vis_detector_pixel_long_dimension_format)
 
         # Test values on the detector, in the left half of detectors
-        assert get_vis_quadrant(x_pix = 2047, y_pix = 2067, det_iy = 1) == "E"
-        assert get_vis_quadrant(x_pix = 2048, y_pix = 2067, det_iy = 2) == "F"
-        assert get_vis_quadrant(x_pix = 2047, y_pix = 2068, det_iy = 3) == "H"
-        assert get_vis_quadrant(x_pix = 2048, y_pix = 2068, det_iy = 1) == "G"
+        assert get_vis_quadrant(x_pix=2047, y_pix=2067, det_iy=1) == "E"
+        assert get_vis_quadrant(x_pix=2048, y_pix=2067, det_iy=2) == "F"
+        assert get_vis_quadrant(x_pix=2047, y_pix=2068, det_iy=3) == "H"
+        assert get_vis_quadrant(x_pix=2048, y_pix=2068, det_iy=1) == "G"
 
         # Test values on the detector, in the right half of detectors
-        assert get_vis_quadrant(x_pix = 2047, y_pix = 2067, det_iy = 4) == "G"
-        assert get_vis_quadrant(x_pix = 2048, y_pix = 2067, det_iy = 5) == "H"
-        assert get_vis_quadrant(x_pix = 2047, y_pix = 2068, det_iy = 5) == "F"
-        assert get_vis_quadrant(x_pix = 2048, y_pix = 2068, det_iy = 6) == "E"
+        assert get_vis_quadrant(x_pix=2047, y_pix=2067, det_iy=4) == "G"
+        assert get_vis_quadrant(x_pix=2048, y_pix=2067, det_iy=5) == "H"
+        assert get_vis_quadrant(x_pix=2047, y_pix=2068, det_iy=5) == "F"
+        assert get_vis_quadrant(x_pix=2048, y_pix=2068, det_iy=6) == "E"
 
         # Test that outside values will report "X"
-        assert get_vis_quadrant(x_pix = -1, y_pix = -1, det_iy = 1) == "X"
-        assert get_vis_quadrant(x_pix = 1000, y_pix = -1, det_iy = 1) == "X"
-        assert get_vis_quadrant(x_pix = 3000, y_pix = -1, det_iy = 1) == "X"
-        assert get_vis_quadrant(x_pix = 5000, y_pix = -1, det_iy = 1) == "X"
-        assert get_vis_quadrant(x_pix = 5000, y_pix = 1000, det_iy = 1) == "X"
-        assert get_vis_quadrant(x_pix = 5000, y_pix = 3000, det_iy = 1) == "X"
-        assert get_vis_quadrant(x_pix = 5000, y_pix = 5000, det_iy = 1) == "X"
-        assert get_vis_quadrant(x_pix = 3000, y_pix = 5000, det_iy = 1) == "X"
-        assert get_vis_quadrant(x_pix = 1000, y_pix = 5000, det_iy = 1) == "X"
-        assert get_vis_quadrant(x_pix = -1, y_pix = 5000, det_iy = 1) == "X"
-        assert get_vis_quadrant(x_pix = -1, y_pix = 3000, det_iy = 1) == "X"
-        assert get_vis_quadrant(x_pix = -1, y_pix = 1000, det_iy = 1) == "X"
+        assert get_vis_quadrant(x_pix=-1, y_pix=-1, det_iy=1) == "X"
+        assert get_vis_quadrant(x_pix=1000, y_pix=-1, det_iy=1) == "X"
+        assert get_vis_quadrant(x_pix=3000, y_pix=-1, det_iy=1) == "X"
+        assert get_vis_quadrant(x_pix=5000, y_pix=-1, det_iy=1) == "X"
+        assert get_vis_quadrant(x_pix=5000, y_pix=1000, det_iy=1) == "X"
+        assert get_vis_quadrant(x_pix=5000, y_pix=3000, det_iy=1) == "X"
+        assert get_vis_quadrant(x_pix=5000, y_pix=5000, det_iy=1) == "X"
+        assert get_vis_quadrant(x_pix=3000, y_pix=5000, det_iy=1) == "X"
+        assert get_vis_quadrant(x_pix=1000, y_pix=5000, det_iy=1) == "X"
+        assert get_vis_quadrant(x_pix=-1, y_pix=5000, det_iy=1) == "X"
+        assert get_vis_quadrant(x_pix=-1, y_pix=3000, det_iy=1) == "X"
+        assert get_vis_quadrant(x_pix=-1, y_pix=1000, det_iy=1) == "X"

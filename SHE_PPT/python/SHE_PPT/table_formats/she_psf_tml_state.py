@@ -25,10 +25,9 @@ __updated__ = "2021-08-13"
 from collections import OrderedDict
 from typing import Type
 
-from ..constants.fits import PSF_TML_STATE_TAG, PSF_TML_IDENTITY
+from ..constants.fits import PSF_TML_IDENTITY, PSF_TML_STATE_TAG
 from ..logging import getLogger
 from ..table_formats.she_psf_state import ShePsfStateFormat, ShePsfStateMeta
-
 
 fits_version = "8.0"
 
@@ -59,7 +58,6 @@ class ShePsfTmlStateFormat(ShePsfStateFormat):
     _meta_type: Type = ShePsfTmlStateMeta
 
     def __init__(self, data_type="FIELD"):
-
         super().__init__(data_type)
 
         # Column names and info

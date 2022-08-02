@@ -1,5 +1,46 @@
 Changelog for SHE_PPT
 
+Changes in v9.2
+=========================
+
+API Changes
+-----------
+
+Dependency Changes
+------------------
+
+Deprecated Features
+-------------------
+
+Bug Fixes
+---------
+- mock data generation now correctly uses the "version" keyword of get_allowed_filename.
+- `write_config` now properly writes out lists of Enums in the proper format
+
+New Features
+------------
+- The SheStarCatalogFormat table format now has additional column "PNT_ID" (attribute 'pnt_id') for the pointing
+  (exposure) ID of data in a given row
+
+New config features
+-------------------
+
+Miscellaneous
+-------------
+- Changed GAIN_LABEL from "CCDGAIN" to "GAIN" and added READ_NOISE_LABEL in SHE_PPT.constants.fits
+- Updated test data to SHE_PPT_9_1
+- SheTestCase's _finalize_download method now allows specification of the test data location
+- Applied autoformatting to standardize code format in project
+- General cleanup of the SheTestCase base class for running unit tests
+- General cleanup and expansion of unit testing for the SHE_PPT.she_image module
+- Fixed an issue in the pipeline_config read/write test, where reading with only cline-args and defaults wasn't being
+  properly tested
+- SheTestCase's method to download and read in a SHEFrameStack now reads in the stacked images, the PSF data, and saves
+  the product references.
+
+
+
+
 Changes in v9.1
 =========================
 
@@ -15,6 +56,14 @@ Dependency Changes
 
 Deprecated Features
 -------------------
+- The functions `read_pickled_product` and `write_pickled_product` are deprecated, as are the `allow_pickled` options
+  of `read_xml_product` and `write_xml_product`.
+- The function `write_xml_product` no longer creates a dummy catalog product if one doesn't exist.
+- The functions `_is_no_file` and `filename_exists` in SHE_PPT.file_io are deprecated. The function
+  `is_any_type_of_none` from SHE_PPT.utility should be used instead.
+- The function `get_all_files` has been moved from SHE_PPT.utility to SHE_PPT.file_io
+- The constants `DATA_SUBDIR`, `FILENAME_NONE`, and `S_NON_FILENAMES` have been moved from SHE_PPT.file_io to
+  SHE_PPT.constants.misc
 
 
 Bug Fixes
@@ -33,7 +82,7 @@ New Features
 New config features
 -------------------
 - Added support for pipeline config option "SHE_Pipeline_disable_failsafe", which can be used by other projects to
-  disably any failsafe blocks they've implemented
+  disable any failsafe blocks they've implemented
 
 Miscellaneous
 -------------
@@ -44,6 +93,11 @@ Miscellaneous
 - General cleanup and expansion of unit testing for the SHE_PPT.pipeline_utility module
 - General cleanup and expansion of unit testing for the SHE_PPT.utility module
 - General cleanup and expansion of unit testing for the SHE_PPT.file_io module
+- Data downloaded for unit tests is now always stored in a directory unique to each user, and is symlinked to the
+  directory used by the unit tests created by pytest's `tmpdir` fixture
+- Unit tests run as part of a SheTestCase test class will now fail if a deprecated function, method, or kwarg is used
+  within the test. (This does not affect code run by executables or with tests run without use of this parent class. In
+  those cases, a warning will be printed when such a function/method/kwarg is used.)
 - Modified number of Zernike polynomial parameters. 
 
 Changes in v8.12

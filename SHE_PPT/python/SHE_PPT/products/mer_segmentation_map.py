@@ -40,7 +40,7 @@ product_type_name = "DpdMerSegmentationMap"
 
 
 # Convenience function to easily load the actual map
-def load_mosaic_hdu(filename, workdir = None, hdu = 0, detector_x = None, detector_y = None, **kwargs):
+def load_mosaic_hdu(filename, workdir=None, hdu=0, detector_x=None, detector_y=None, **kwargs):
     """Directly loads the mosaic image from the filename of the data product.
 
     Parameters
@@ -80,14 +80,14 @@ def load_mosaic_hdu(filename, workdir = None, hdu = 0, detector_x = None, detect
         workdir = ""
 
     mosaic_product = read_xml_product(
-        xml_filename = os.path.join(workdir, filename))
+        xml_filename=os.path.join(workdir, filename))
 
     data_filename = mosaic_product.get_data_filename()
 
     mosaic_hdulist = fits.open(data_filename, **kwargs)
 
     if detector_x is not None and detector_y is not None:
-        hdu = find_extension(mosaic_hdulist, extname = dtc.get_id_string(
+        hdu = find_extension(mosaic_hdulist, extname=dtc.get_id_string(
             detector_x, detector_y) + "." + SEGMENTATION_TAG)
 
     mosaic_hdu = mosaic_hdulist[hdu]
@@ -101,19 +101,19 @@ def load_mosaic_hdu(filename, workdir = None, hdu = 0, detector_x = None, detect
 def init():
     """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    init_just_datastorage(binding_class = dpdMerSegmentationMap,
-                          init_function = create_dpd_mer_mosaic)
+    init_just_datastorage(binding_class=dpdMerSegmentationMap,
+                          init_function=create_dpd_mer_mosaic)
 
 
-def create_dpd_mer_mosaic(filename = None,
-                          data_filename = None):
+def create_dpd_mer_mosaic(filename=None,
+                          data_filename=None):
     """ Creates a product of this type.
     """
 
-    return create_product_from_template(template_filename = sample_file_name,
-                                        product_type_name = "DpdMerSegmentationMap",
-                                        filename = filename,
-                                        data_filename = data_filename)
+    return create_product_from_template(template_filename=sample_file_name,
+                                        product_type_name="DpdMerSegmentationMap",
+                                        filename=filename,
+                                        data_filename=data_filename)
 
 
 # Add a useful alias
