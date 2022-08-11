@@ -178,7 +178,7 @@ class SheExecutor:
         else:
             # We create a deepcopy of the args that were input, to avoid surprising the user by modifying it
             args_to_pass = deepcopy(args)
-            modified_args.pipeline_config = pipeline_config
+            args_to_pass.pipeline_config = pipeline_config
 
         # check if profiling is to be enabled from the args, or else from the pipeline config
         if profile is not None:
