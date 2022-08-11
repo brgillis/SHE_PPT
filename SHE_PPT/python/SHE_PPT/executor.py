@@ -170,7 +170,7 @@ class SheExecutor:
                                                              d_types=self.config_args.d_config_types,
                                                              parsed_args=args)
 
-        # set args.pipeline_config to the read-in pipeline_config, and pass the args as the desired type
+        # Pass the args as the desired type, and set the pipeline_config of the new object to be the read-in dict
         args_to_pass: Union[Namespace, Dict[str, Any]]
         if pass_args_as_dict:
             args_to_pass = d_args
