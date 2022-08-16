@@ -83,7 +83,7 @@ def __generate_detector_images(detector_shape=(4136, 4096), nobjs=10, background
     stampsize = int(objsize * stampscale * 2)
 
     if stampsize >= min(detector_shape):
-        raise ValueError("Detector size must be at least %d pixels"%stampsize)
+        raise ValueError("Detector size must be at least %d pixels" % stampsize)
 
     # generate sci image with poisson noise
     sci = rng.poisson(background, detector_shape).astype(np.float32)

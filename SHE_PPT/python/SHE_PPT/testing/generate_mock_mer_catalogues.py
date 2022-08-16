@@ -34,7 +34,7 @@ from SHE_PPT.table_utility import is_in_format
 logger = getLogger(__name__)
 
 
-def create_catalogue(obj_coords=[], workdir=".", group_ids = None):
+def create_catalogue(obj_coords=[], workdir=".", group_ids=None):
     """
        Creates a mock dpdMerFinalCatalog for a list of object coordinates
 
@@ -50,7 +50,6 @@ def create_catalogue(obj_coords=[], workdir=".", group_ids = None):
     """
 
     logger.info("Creating MER final catalogue table with %d object(s)" % len(obj_coords))
-
 
     n_objs = len(obj_coords)
 
@@ -73,9 +72,9 @@ def create_catalogue(obj_coords=[], workdir=".", group_ids = None):
         tf.SEGMENTATION_AREA: seg_area})
 
     if group_ids is not None:
-      table.add_column(group_ids,name=tf.GROUP_ID)
+        table.add_column(group_ids, name=tf.GROUP_ID)
 
-    assert is_in_format(table,tf)
+    assert is_in_format(table, tf)
 
     # get a filename for the table
     table_filename = get_allowed_filename("MER-CAT", "00", version=ppt_version)
