@@ -80,6 +80,11 @@ def __generate_detector_images(detector_shape=(4136, 4096), nobjs=10, background
     if rng is None:
         rng = np.random.RandomState()
 
+    stampsize = int(objsize * stampscale * 2)
+
+    if stampsize >= min(detector_shape):
+        raise ValueError("Detector size must be at least %d pixels" % stampsize)
+
     # generate sci image with poisson noise
     sci = rng.poisson(background, detector_shape).astype(np.float32)
 
@@ -88,7 +93,6 @@ def __generate_detector_images(detector_shape=(4136, 4096), nobjs=10, background
     y_px = []
     for i in range(nobjs):
         blob = __generate_gausian_blob(objsize)
-        stampsize = int(objsize * stampscale * 2)
 
         # select (randomly) the x and y coordinates of the blob's bottom corner
         x = rng.randint(0, detector_shape[1] - stampsize)

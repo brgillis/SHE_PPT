@@ -29,17 +29,20 @@ from SHE_PPT.file_io import get_allowed_filename, write_xml_product
 from SHE_PPT.logging import getLogger
 from SHE_PPT.products import mer_final_catalog
 from SHE_PPT.table_formats.mer_final_catalog import initialise_mer_final_catalog, tf
+from SHE_PPT.table_utility import is_in_format
 
 logger = getLogger(__name__)
 
 
-def create_catalogue(obj_coords=[], workdir="."):
+def create_catalogue(obj_coords=[], workdir=".", group_ids=None):
     """
        Creates a mock dpdMerFinalCatalog for a list of object coordinates
 
        Arguments:
          - obj_coords: a list of world coordinates (astropy.coordinates.SkyCoord)
          - workdir: the workdir to write the files to
+         - group_ids: the group_ids of the objects. If None, this column is not created
+           in the table
 
        Outputs:
          - product_filename: The filename of the created dpdMerFinalCatalog product
@@ -47,9 +50,6 @@ def create_catalogue(obj_coords=[], workdir="."):
     """
 
     logger.info("Creating MER final catalogue table with %d object(s)" % len(obj_coords))
-
-    # initialise the mer_final_catalog table
-    table = initialise_mer_final_catalog()
 
     n_objs = len(obj_coords)
 
@@ -70,6 +70,11 @@ def create_catalogue(obj_coords=[], workdir="."):
         tf.vis_det: vis_det,
         tf.FLUX_VIS_APER: flux_vis_aper,
         tf.SEGMENTATION_AREA: seg_area})
+
+    if group_ids is not None:
+        table.add_column(group_ids, name=tf.GROUP_ID)
+
+    assert is_in_format(table, tf)
 
     # get a filename for the table
     table_filename = get_allowed_filename("MER-CAT", "00", version=ppt_version)
