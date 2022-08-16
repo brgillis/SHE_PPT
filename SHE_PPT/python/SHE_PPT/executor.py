@@ -22,6 +22,7 @@ __updated__ = "2021-10-14"
 
 import os
 from argparse import Namespace
+from copy import deepcopy
 from dataclasses import dataclass
 from logging import Logger
 from typing import Any, Callable, Dict, Optional, Sequence, Set, Type, Union
@@ -147,12 +148,6 @@ class SheExecutor:
         # Get a dictionary of the arguments, and determine which type to pass
         d_args: Dict[str, Any] = vars(args)
 
-        args_to_pass: Union[Namespace, Dict[str, Any]]
-        if pass_args_as_dict:
-            args_to_pass = d_args
-        else:
-            args_to_pass = args
-
         # If a logger is provided, use that, otherwise construct one
         if logger is not None:
             self._logger = logger
@@ -173,10 +168,17 @@ class SheExecutor:
                                                              d_cline_args=self.config_args.d_config_cline_args,
                                                              d_defaults=self.config_args.d_config_defaults,
                                                              d_types=self.config_args.d_config_types,
-                                                             parsed_args=args_to_pass)
+                                                             parsed_args=args)
 
-        # set args.pipeline_config to the read-in pipeline_config
-        args.pipeline_config = pipeline_config
+        # Pass the args as the desired type, and set the pipeline_config of the new object to be the read-in dict
+        args_to_pass: Union[Namespace, Dict[str, Any]]
+        if pass_args_as_dict:
+            args_to_pass = d_args
+            args_to_pass[CA_PIPELINE_CONFIG] = pipeline_config
+        else:
+            # We create a deepcopy of the args that were input, to avoid surprising the user by modifying it
+            args_to_pass = deepcopy(args)
+            args_to_pass.pipeline_config = pipeline_config
 
         # check if profiling is to be enabled from the args, or else from the pipeline config
         if profile is not None:
