@@ -90,7 +90,7 @@ class MerFinalCatalogFormat(SheTableFormat):
         super().__init__()
 
         # The code in MER where the final catalog format is set up can now be found here:
-        # https://gitlab.euclid-sgs.uk/PF-MER/MER_CatalogAssembly/-/blob/develop/MER_CatalogAssembly/python/MER_CatalogAssembly/io_manager.py 
+        # https://gitlab.euclid-sgs.uk/PF-MER/MER_CatalogAssembly/-/blob/develop/MER_CatalogAssembly/python/MER_CatalogAssembly/io_manager.py
         # in the method create_dm_template
 
         # Column names and info
@@ -178,9 +178,9 @@ class MerFinalCatalogFormat(SheTableFormat):
         # Blended associations
 
         setattr(self, "PARENT_ID", self.set_column_properties(
-             "PARENT_ID", dtype = ">i8", fits_dtype = "K", comment = "", is_optional = False))
+             "PARENT_ID", dtype=">i8", fits_dtype="K", comment="", is_optional=False))
         setattr(self, "PARENT_VISNIR", self.set_column_properties(
-             "PARENT_VISNIR", dtype = ">i8", fits_dtype = "K", comment = "", is_optional = False))
+             "PARENT_VISNIR", dtype=">i8", fits_dtype="K", comment="", is_optional=False))
 
         # Blending probability
         setattr(self, "BLENDED_PROB", self.set_column_properties(
