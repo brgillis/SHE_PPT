@@ -2253,8 +2253,8 @@ def find_file(filename: str, path: Optional[str] = None) -> str:
     elif filename[0:5] == "HOME/":
         path = os.path.join(os.getenv('HOME'), os.path.dirname(filename[5:]))
         qualified_filename = find_file_in_path(os.path.basename(filename), path)
-    elif filename[0] == "/":
-        # The file appears to already be fully-qualified, so check if it exists
+    elif filename[0] == "/" or filename[0] == ".":
+        # The file appears to already be fully-qualified or relative to the CWD, so check if it exists
         if not os.path.exists(filename):
             raise RuntimeError("File " + filename + " cannot be found.")
         qualified_filename = filename

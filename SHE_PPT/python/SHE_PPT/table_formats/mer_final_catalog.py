@@ -89,13 +89,9 @@ class MerFinalCatalogFormat(SheTableFormat):
     def __init__(self):
         super().__init__()
 
-        # To keep this up to date, copy from https://gitlab.euclid-sgs.uk/PF-MER/MER_CatalogAssembly/blob/develop
-        # /MER_CatalogAssembly/python/MER_CatalogAssembly/dm_template.py,
-        # then replace the regex columns\.append\(fits\.Column\(name='([%0-9A-Za-z_]+)'(%filt)?, format='([
-        # 0-9A-Z]+)'(?:, unit='([A-Za-z/0-9]+)')?.*\)
-        # with setattr(self, "$1"$2, set_column_properties(self, "$1"$2, fits_dtype="$3", comment="$4",
-        # is_optional=False))
-        # Then finally go in and fix length for arrays, special names we want to keep, and datatypes that aren't 'E'
+        # The code in MER where the final catalog format is set up can now be found here:
+        # https://gitlab.euclid-sgs.uk/PF-MER/MER_CatalogAssembly/-/blob/develop/MER_CatalogAssembly/python/MER_CatalogAssembly/io_manager.py
+        # in the method create_dm_template
 
         # Column names and info
 
@@ -180,8 +176,12 @@ class MerFinalCatalogFormat(SheTableFormat):
         setattr(self, "DEBLENDED_FLAG", self.set_column_properties(
             "DEBLENDED_FLAG", dtype=">i2", fits_dtype="I", comment="", is_optional=False))
         # Blended associations
-        setattr(self, "DEBLENDED_COMPANIONS", self.set_column_properties(
-            "DEBLENDED_COMPANIONS", dtype=">i8", length=5, fits_dtype="5K", comment="", is_optional=False))
+
+        setattr(self, "PARENT_ID", self.set_column_properties(
+             "PARENT_ID", dtype=">i8", fits_dtype="K", comment="", is_optional=False))
+        setattr(self, "PARENT_VISNIR", self.set_column_properties(
+             "PARENT_VISNIR", dtype=">i8", fits_dtype="K", comment="", is_optional=False))
+
         # Blending probability
         setattr(self, "BLENDED_PROB", self.set_column_properties(
             "BLENDED_PROB", fits_dtype="E", comment="", is_optional=False))
