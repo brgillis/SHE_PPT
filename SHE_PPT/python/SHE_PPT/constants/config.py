@@ -154,7 +154,8 @@ class AnalysisConfigKeys(ConfigKeys):
     PSF_DET_TO_FIT = PSF_HEAD + "det_to_fit"
     PSF_FIT_CHECKPOINT_ITER = PSF_HEAD + "checkpoint_iter"
     PSF_MODEL_MASK_SIZE = PSF_HEAD + "model_mask_size"
-
+    PSF_NUM_PROCESS = PSF_HEAD + "number_process"
+    
     # Options for SHE_CTE_ObjectIdSplit
 
     OID_BATCH_SIZE = OBJECT_ID_SPLIT_HEAD + "batch_size"
