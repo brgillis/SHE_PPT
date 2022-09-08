@@ -70,7 +70,6 @@ def __create_detector_map(object_ids, pixel_coords, detector_shape, objsize=10):
     pixel_coords = np.asarray(pixel_coords)
 
     for id, coords, group_id in zip(object_ids, pixel_coords, group_ids):
-        print(id)
 
         x = coords[0]
         y = coords[1]
