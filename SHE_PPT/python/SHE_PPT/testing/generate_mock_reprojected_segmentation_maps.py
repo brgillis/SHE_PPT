@@ -58,14 +58,14 @@ def __create_detector_map(object_ids, pixel_coords, detector_shape, objsize=10):
 
     mask_radius = int(masksize * objsize)
 
-    x_coords = np.asarray( [c1 for c1, c2 in pixel_coords])
-    y_coords = np.asarray( [c2 for c1, c2 in pixel_coords])
-    
-    # group the objects according to their separation... 
+    x_coords = np.asarray([c1 for c1, c2 in pixel_coords])
+    y_coords = np.asarray([c2 for c1, c2 in pixel_coords])
+
+    # group the objects according to their separation...
     _, _, group_ids = identify_all_groups(x_coords, y_coords, sep=mask_radius*2)
 
     mask, xs, ys = __generate_segmentation_mask(radius=mask_radius)
-    
+
     # convert to numpy array so we can index using np.where
     pixel_coords = np.asarray(pixel_coords)
 
@@ -75,29 +75,29 @@ def __create_detector_map(object_ids, pixel_coords, detector_shape, objsize=10):
         x = coords[0]
         y = coords[1]
 
-        # if objects have been grouped, their segmentation masks will overlap, 
+        # if objects have been grouped, their segmentation masks will overlap,
         # so we need to treat these carefully.
         if group_id == -1:
             mymask = mask
         else:
             # We identify the distance of each pixel in the mask from its object,
-            # and the minimum distance of that pixel to other objects in the group 
-            
+            # and the minimum distance of that pixel to other objects in the group
+
             my_dist = np.square(xs) + np.square(ys)
 
-            #initial "maximum" distance from others
+            # initial "maximum" distance from others
             their_dist = np.full_like(my_dist, np.max(my_dist) + 1)
-            
+
             # loop over all objects in group, determine the minimum distance to the other objects
             inds = np.where(group_ids == group_id)
             for (x_other, y_other), other_id in zip(pixel_coords[inds], object_ids[inds]):
-                
+
                 if other_id == id:
                     continue
 
                 dist = np.square(xs - (x_other-x)) + np.square(ys - (y_other-y))
                 their_dist = np.minimum(their_dist, dist)
-            
+
             # only set the mask to 1 where the pixel is closer to the object of interest than others in the group
             mymask = mask & (my_dist <= their_dist)
 
