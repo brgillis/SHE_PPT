@@ -74,7 +74,6 @@ def __create_detector_map(object_ids, pixel_coords, detector_shape, objsize=10):
         x = coords[0]
         y = coords[1]
 
-        
         if group_id == -1:
             # Object is not grouped
             mymask = mask
