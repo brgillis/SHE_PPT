@@ -33,7 +33,7 @@ from SHE_PPT.clustering import identify_all_groups
 
 logger = getLogger(__name__)
 
-# factor that the mask is latger than the object radius
+# factor that the mask is larger than the object radius
 masksize = 4
 
 
@@ -74,13 +74,13 @@ def __create_detector_map(object_ids, pixel_coords, detector_shape, objsize=10):
         x = coords[0]
         y = coords[1]
 
-        # if objects have been grouped, their segmentation masks will overlap,
-        # so we need to treat these carefully.
+        
         if group_id == -1:
+            # Object is not grouped
             mymask = mask
         else:
-            # We identify the distance of each pixel in the mask from its object,
-            # and the minimum distance of that pixel to other objects in the group
+            # Object is grouped so its segmentation mask will overlap with other objects'
+            # We want the mask to be only the pixels closest to this object in the group.
 
             my_dist = np.square(xs) + np.square(ys)
 
