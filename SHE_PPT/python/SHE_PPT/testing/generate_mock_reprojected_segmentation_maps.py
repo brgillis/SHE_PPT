@@ -39,7 +39,7 @@ masksize = 4
 
 def __generate_segmentation_mask(radius=10):
     """Returns a 2*radius by 2*radius array with a circle of 1s within radius, and zero elsewhere.
-       Also returns the x and y coordinates for the mask array, centred on the object"""
+       Also returns the length size x and y coordinates for the mask array, centred on the object"""
 
     size = int(radius * 2)
 
