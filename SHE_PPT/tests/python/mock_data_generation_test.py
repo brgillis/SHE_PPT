@@ -163,7 +163,7 @@ class TestMockData(SheTestCase):
         detector_shape = (100, 100)
         objsize = 2.5
 
-        nx, ny = detector_shape
+        ny, nx = detector_shape
 
         # allowed min/max coordinates of the object positions
         xmin = ymin = objsize*masksize
