@@ -39,7 +39,7 @@ Miscellaneous
   the product references.
 - Fixed a "surprise" where when args were passed to an Executor and run, they would be modified by it. The input args
   are now kept unchanged.
-
+- Improved the creation of mock segmentation maps for blended objects
 
 
 
