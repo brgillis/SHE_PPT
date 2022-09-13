@@ -29,15 +29,17 @@ from SHE_PPT import __version__ as ppt_version
 from SHE_PPT.file_io import get_allowed_filename, write_xml_product
 from SHE_PPT.logging import getLogger
 from SHE_PPT.products.she_exposure_segmentation_map import create_dpd_she_exposure_segmentation_map
+from SHE_PPT.clustering import identify_all_groups
 
 logger = getLogger(__name__)
 
-# how larger the mask is than the object
-masksize = 5
+# factor that the mask is larger than the object radius
+masksize = 4
 
 
 def __generate_segmentation_mask(radius=10):
-    """Returns a 2*radius by 2*radius array with a circle of 1s within radius, and zero elsewhere"""
+    """Returns a 2*radius by 2*radius array with a circle of 1s within radius, and zero elsewhere.
+       Also returns the length size x and y coordinates for the mask array, centred on the object"""
 
     size = int(radius * 2)
 
@@ -47,7 +49,7 @@ def __generate_segmentation_mask(radius=10):
     y = np.arange(size)[:, np.newaxis] + 0.5 - radius
     mask = np.square(x) + np.square(y) < np.square(radius)
 
-    return mask
+    return mask, x, y
 
 
 def __create_detector_map(object_ids, pixel_coords, detector_shape, objsize=10):
@@ -56,18 +58,56 @@ def __create_detector_map(object_ids, pixel_coords, detector_shape, objsize=10):
 
     mask_radius = int(masksize * objsize)
 
-    mask = __generate_segmentation_mask(radius=mask_radius)
+    x_coords = np.asarray([c1 for c1, _ in pixel_coords])
+    y_coords = np.asarray([c2 for _, c2 in pixel_coords])
 
-    for id, coords in zip(object_ids, pixel_coords):
-        xmin = int(coords[0]) - mask_radius
-        xmax = int(coords[0]) + mask_radius
-        ymin = int(coords[1]) - mask_radius
-        ymax = int(coords[1]) + mask_radius
+    # group the objects according to their separation...
+    _, _, group_ids = identify_all_groups(x_coords, y_coords, sep=mask_radius*2)
+
+    mask, xs, ys = __generate_segmentation_mask(radius=mask_radius)
+
+    # convert to numpy array so we can index using np.where
+    pixel_coords = np.asarray(pixel_coords)
+
+    for my_id, coords, group_id in zip(object_ids, pixel_coords, group_ids):
+
+        x = coords[0]
+        y = coords[1]
+
+        if group_id == -1:
+            # Object is not grouped
+            my_mask = mask
+        else:
+            # Object is grouped so its segmentation mask will overlap with other objects'
+            # We want the mask to be only the pixels closest to this object in the group.
+
+            my_dist = np.square(xs) + np.square(ys)
+
+            # initial "maximum" distance from others
+            their_dist = np.full_like(my_dist, np.max(my_dist) + 1)
+
+            # loop over all objects in group, determine the minimum distance to the other objects
+            inds = np.where(group_ids == group_id)
+            for (x_other, y_other), other_id in zip(pixel_coords[inds], object_ids[inds]):
+
+                if other_id == my_id:
+                    continue
+
+                dist = np.square(xs - (x_other-x)) + np.square(ys - (y_other-y))
+                their_dist = np.minimum(their_dist, dist)
+
+            # only set the mask to 1 where the pixel is closer to the object of interest than others in the group
+            my_mask = mask & (my_dist <= their_dist)
+
+        xmin = int(x) - mask_radius
+        xmax = int(x) + mask_radius
+        ymin = int(y) - mask_radius
+        ymax = int(y) + mask_radius
 
         # zero where the object will go
-        img[ymin:ymax, xmin:xmax] *= (1 - mask)
+        img[ymin:ymax, xmin:xmax] *= (1 - my_mask)
         # set the pixel values to the object_id
-        img[ymin:ymax, xmin:xmax] += id * (mask)
+        img[ymin:ymax, xmin:xmax] += my_id * (my_mask)
 
     return img
 

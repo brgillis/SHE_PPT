@@ -27,6 +27,7 @@ import numpy as np
 from astropy.coordinates import SkyCoord
 from astropy.units import degree
 from astropy.wcs import WCS
+from astropy.io import fits
 
 from SHE_PPT.file_io import read_xml_product
 from SHE_PPT.products import (mer_final_catalog, she_exposure_segmentation_map, she_object_id_list, she_psf_model_image,
@@ -34,9 +35,13 @@ from SHE_PPT.products import (mer_final_catalog, she_exposure_segmentation_map, 
 from SHE_PPT.testing.generate_mock_mer_catalogues import create_catalogue
 from SHE_PPT.testing.generate_mock_object_id_list import create_object_id_list
 from SHE_PPT.testing.generate_mock_psf_model_image import create_model_image_product
-from SHE_PPT.testing.generate_mock_reprojected_segmentation_maps import create_reprojected_segmentation_map
+from SHE_PPT.testing.generate_mock_reprojected_segmentation_maps import create_reprojected_segmentation_map, masksize
 from SHE_PPT.testing.generate_mock_vis_images import create_exposure
 from SHE_PPT.testing.utility import SheTestCase
+
+RANDOM_SEED = 1
+
+rng = np.random.RandomState(RANDOM_SEED)
 
 
 class TestMockData(SheTestCase):
@@ -156,11 +161,19 @@ class TestMockData(SheTestCase):
         n_detectors = 1
         n_objs = n_objs_per_det * n_detectors
         detector_shape = (100, 100)
+        objsize = 2.5
+
+        ny, nx = detector_shape
+
+        # allowed min/max coordinates of the object positions
+        xmin = ymin = objsize*masksize
+        xmax = nx - objsize*masksize
+        ymax = ny - objsize*masksize
 
         # set up the inputs
-        object_ids = [i for i in range(n_objs)]
+        object_ids = [i+1 for i in range(n_objs)]
 
-        pixel_coords = [(detector_shape[1] / 2, detector_shape[0] / 2) for i in range(n_objs)]
+        pixel_coords = [(rng.uniform(xmin, xmax), rng.uniform(ymin, ymax)) for i in range(n_objs)]
 
         detectors = [i // n_objs_per_det for i in range(n_objs)]
 
@@ -168,7 +181,8 @@ class TestMockData(SheTestCase):
 
         # create the product
         prod_filename = create_reprojected_segmentation_map(object_ids, pixel_coords, detectors, wcs_list,
-                                                            workdir=workdir, detector_shape=detector_shape)
+                                                            workdir=workdir, detector_shape=detector_shape,
+                                                            objsize=objsize)
 
         # check the product is valid
         dpd = read_xml_product(prod_filename, workdir=workdir)
@@ -176,4 +190,19 @@ class TestMockData(SheTestCase):
 
         # make sure its FITS file exists
         map_fits = dpd.get_data_filename()
-        assert os.path.exists(os.path.join(workdir, map_fits))
+        qualified_fits_filename = os.path.join(workdir, map_fits)
+        assert os.path.exists(qualified_fits_filename)
+
+        # Nominal test of validity of segmap - make sure pixel values are correct at the centre of the objects
+        with fits.open(qualified_fits_filename) as hdul:
+            for det in range(n_detectors):
+                data = hdul[det+1].data
+
+                for i, (x, y) in enumerate(pixel_coords):
+                    if detectors[i] != det:
+                        # object not on this detector
+                        continue
+
+                    assert (
+                        data[int(y), int(x)] == object_ids[i]
+                    ), "Segmentation map has the wrong value at the object's location"
