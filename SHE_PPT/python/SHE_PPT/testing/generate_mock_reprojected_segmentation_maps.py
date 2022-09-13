@@ -69,7 +69,7 @@ def __create_detector_map(object_ids, pixel_coords, detector_shape, objsize=10):
     # convert to numpy array so we can index using np.where
     pixel_coords = np.asarray(pixel_coords)
 
-    for id, coords, group_id in zip(object_ids, pixel_coords, group_ids):
+    for my_id, coords, group_id in zip(object_ids, pixel_coords, group_ids):
 
         x = coords[0]
         y = coords[1]
@@ -77,7 +77,7 @@ def __create_detector_map(object_ids, pixel_coords, detector_shape, objsize=10):
         # if objects have been grouped, their segmentation masks will overlap,
         # so we need to treat these carefully.
         if group_id == -1:
-            mymask = mask
+            my_mask = mask
         else:
             # We identify the distance of each pixel in the mask from its object,
             # and the minimum distance of that pixel to other objects in the group
@@ -91,14 +91,14 @@ def __create_detector_map(object_ids, pixel_coords, detector_shape, objsize=10):
             inds = np.where(group_ids == group_id)
             for (x_other, y_other), other_id in zip(pixel_coords[inds], object_ids[inds]):
 
-                if other_id == id:
+                if other_id == my_id:
                     continue
 
                 dist = np.square(xs - (x_other-x)) + np.square(ys - (y_other-y))
                 their_dist = np.minimum(their_dist, dist)
 
             # only set the mask to 1 where the pixel is closer to the object of interest than others in the group
-            mymask = mask & (my_dist <= their_dist)
+            my_mask = mask & (my_dist <= their_dist)
 
         xmin = int(x) - mask_radius
         xmax = int(x) + mask_radius
@@ -106,9 +106,9 @@ def __create_detector_map(object_ids, pixel_coords, detector_shape, objsize=10):
         ymax = int(y) + mask_radius
 
         # zero where the object will go
-        img[ymin:ymax, xmin:xmax] *= (1 - mymask)
+        img[ymin:ymax, xmin:xmax] *= (1 - my_mask)
         # set the pixel values to the object_id
-        img[ymin:ymax, xmin:xmax] += id * (mymask)
+        img[ymin:ymax, xmin:xmax] += my_id * (my_mask)
 
     return img
 
