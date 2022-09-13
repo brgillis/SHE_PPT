@@ -58,8 +58,8 @@ def __create_detector_map(object_ids, pixel_coords, detector_shape, objsize=10):
 
     mask_radius = int(masksize * objsize)
 
-    x_coords = np.asarray([c1 for c1, c2 in pixel_coords])
-    y_coords = np.asarray([c2 for c1, c2 in pixel_coords])
+    x_coords = np.asarray([c1 for c1, _ in pixel_coords])
+    y_coords = np.asarray([c2 for _, c2 in pixel_coords])
 
     # group the objects according to their separation...
     _, _, group_ids = identify_all_groups(x_coords, y_coords, sep=mask_radius*2)
