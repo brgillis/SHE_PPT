@@ -1,7 +1,7 @@
 Changelog for SHE_PPT
 
-Changes in v9.2
-=========================
+Changes in v9.3
+===============
 
 API Changes
 -----------
@@ -14,6 +14,22 @@ Deprecated Features
 
 Bug Fixes
 ---------
+
+New Features
+------------
+
+New config features
+-------------------
+
+Miscellaneous
+-------------
+
+
+Changes in v9.2
+===============
+
+Bug Fixes
+---------
 - mock data generation now correctly uses the "version" keyword of get_allowed_filename.
 - `write_config` now properly writes out lists of Enums in the proper format
 
@@ -21,9 +37,6 @@ New Features
 ------------
 - The SheStarCatalogFormat table format now has additional column "PNT_ID" (attribute 'pnt_id') for the pointing
   (exposure) ID of data in a given row
-
-New config features
--------------------
 
 Miscellaneous
 -------------
@@ -40,7 +53,6 @@ Miscellaneous
 - Fixed a "surprise" where when args were passed to an Executor and run, they would be modified by it. The input args
   are now kept unchanged.
 - Improved the creation of mock segmentation maps for blended objects
-
 
 
 Changes in v9.1
@@ -100,7 +112,7 @@ Miscellaneous
 - Unit tests run as part of a SheTestCase test class will now fail if a deprecated function, method, or kwarg is used
   within the test. (This does not affect code run by executables or with tests run without use of this parent class. In
   those cases, a warning will be printed when such a function/method/kwarg is used.)
-- Modified number of Zernike polynomial parameters. 
+- Modified number of Zernike polynomial parameters.
 
 Changes in v8.12
 =========================
