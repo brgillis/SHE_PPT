@@ -49,6 +49,12 @@ class AllowedEnum(Enum):
                 return item
         return None
 
+class PhotozCatalogMethods(AllowedEnum):
+    PHOTOZ = "PhotoZCatalog"
+    CLASSIFICATION = "ClassificationCatalog"
+    GALSED = "GalaxySedCatalog"
+    STARSED = "StarSedCatalog"
+    PHYSPARAM = "PhysicalParametersCatalog"
 
 class ShearEstimationMethods(AllowedEnum):
     KSB = "KSB"
