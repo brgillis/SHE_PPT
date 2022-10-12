@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dpd-phz-outputcatalog:DpdPhzPfOutputCatalog xmlns:dpd-phz-outputcatalog="http://euclid.esa.org/schema/dpd/phz/outputcatalog" xmlns:sys="http://euclid.esa.org/schema/sys" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:pro-phz="http://euclid.esa.org/schema/pro/phz" xmlns:bas-cat="http://euclid.esa.org/schema/bas/cat" xmlns:bas-cot="http://euclid.esa.org/schema/bas/cot" xmlns:bas-imp-stc="http://euclid.esa.org/schema/bas/imp/stc" xmlns:bas-dtd="http://euclid.esa.org/schema/bas/dtd" xmlns:bas-utd="http://euclid.esa.org/schema/bas/utd" xmlns:bas-fit="http://euclid.esa.org/schema/bas/fit" xmlns:sys-dss="http://euclid.esa.org/schema/sys/dss" xmlns:bas-dqc="http://euclid.esa.org/schema/bas/dqc" xmlns:bas-ppr="http://euclid.esa.org/schema/bas/ppr">
+ <Header>
+  <ProductId>PHZ_Prod_1.0.10-ON_THE_FLY-cdabin-PLAN-0019-MFYFV40V-20210724-223928-010-ecdm_phz_catalog-0</ProductId>
+  <ProductType>dpdPhzPfOutputCatalog</ProductType>
+  <SoftwareName>NA</SoftwareName>
+  <SoftwareRelease>0.0</SoftwareRelease>
+  <EuclidPipelineSoftwareRelease>0.0</EuclidPipelineSoftwareRelease>
+  <ProdSDC>SDC-UK</ProdSDC>
+  <DataSetRelease>SC8_MAIN_V0</DataSetRelease>
+  <Purpose>ON_THE_FLY</Purpose>
+  <PlanId>PHZ_Prod_1.0.10-ON_THE_FLY-cdabin-PLAN-0019</PlanId>
+  <PPOId>PHZ_Prod_1.0.10-ON_THE_FLY-cdabin-PLAN-0019-MFYFV40V-20210724-223928-010</PPOId>
+  <PipelineDefinitionId>PHZ_Prod_1.0.10</PipelineDefinitionId>
+  <PipelineRun>PHZ_Prod_1.0.10-ON_THE_FLY-cdabin-PLAN-0019-MFYFV40V-20210724-223928-010</PipelineRun>
+  <ExitStatusCode>0</ExitStatusCode>
+  <ManualValidationStatus>UNKNOWN</ManualValidationStatus>
+  <ExpirationDate>2021-07-25T07:20:58.250000Z</ExpirationDate>
+  <ToBePublished>1</ToBePublished>
+  <Published>false</Published>
+  <Curator>Curator0</Curator>
+  <CreationDate>2021-07-25T07:20:58.250000Z</CreationDate>
+ </Header>
+ <Data>
+  <SpatialCoverage>
+   <Polygon>
+    <Vertex>
+     <Position coordUnit="deg">
+      <C1>235.70080678244219</C1>
+      <C2>47.25334356500612</C2>
+     </Position>
+    </Vertex>
+    <Vertex>
+     <Position coordUnit="deg">
+      <C1>234.9747025844387</C1>
+      <C2>47.25334356500612</C2>
+     </Position>
+    </Vertex>
+    <Vertex>
+     <Position coordUnit="deg">
+      <C1>234.9671862182116</C1>
+      <C2>47.24721107688839</C2>
+     </Position>
+    </Vertex>
+    <Vertex>
+     <Position coordUnit="deg">
+      <C1>234.96652548162317</C1>
+      <C2>47.2165467088622</C2>
+     </Position>
+    </Vertex>
+    <Vertex>
+     <Position coordUnit="deg">
+      <C1>234.96586564718731</C1>
+      <C2>47.18587912608868</C2>
+     </Position>
+    </Vertex>
+    <Vertex>
+     <Position coordUnit="deg">
+      <C1>234.96520671305768</C1>
+      <C2>47.15520832535937</C2>
+     </Position>
+    </Vertex>
+    <Vertex>
+     <Position coordUnit="deg">
+      <C1>234.96546119463633</C1>
+      <C2>46.82375775459087</C2>
+     </Position>
+    </Vertex>
+    <Vertex>
+     <Position coordUnit="deg">
+      <C1>234.96685157624137</C1>
+      <C2>46.77462176504131</C2>
+     </Position>
+    </Vertex>
+    <Vertex>
+     <Position coordUnit="deg">
+      <C1>234.96889369759265</C1>
+      <C2>46.75619361728035</C2>
+     </Position>
+    </Vertex>
+    <Vertex>
+     <Position coordUnit="deg">
+      <C1>234.97836668469444</C1>
+      <C2>46.74390753285302</C2>
+     </Position>
+    </Vertex>
+    <Vertex>
+     <Position coordUnit="deg">
+      <C1>235.69632233639805</C1>
+      <C2>46.74390753285302</C2>
+     </Position>
+    </Vertex>
+    <Vertex>
+     <Position coordUnit="deg">
+      <C1>235.70385395537525</C1>
+      <C2>46.750050640342664</C2>
+     </Position>
+    </Vertex>
+    <Vertex>
+     <Position coordUnit="deg">
+      <C1>235.70964686781224</C1>
+      <C2>46.77462176504131</C2>
+     </Position>
+    </Vertex>
+    <Vertex>
+     <Position coordUnit="deg">
+      <C1>235.71021957169964</C1>
+      <C2>46.854463514398525</C2>
+     </Position>
+    </Vertex>
+    <Vertex>
+     <Position coordUnit="deg">
+      <C1>235.71020796520315</C1>
+      <C2>46.98339222298103</C2>
+     </Position>
+    </Vertex>
+    <Vertex>
+     <Position coordUnit="deg">
+      <C1>235.71019629225736</C1>
+      <C2>47.11226379205817</C2>
+     </Position>
+    </Vertex>
+    <Vertex>
+     <Position coordUnit="deg">
+      <C1>235.71018455228983</C1>
+      <C2>47.24107846030902</C2>
+     </Position>
+    </Vertex>
+    <Vertex>
+     <Position coordUnit="deg">
+      <C1>235.70549630844954</C1>
+      <C2>47.24721107688839</C2>
+     </Position>
+    </Vertex>
+   </Polygon>
+  </SpatialCoverage>
+  <CatalogDescription>
+   <CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
+   <CatalogType>NOT_PROXY</CatalogType>
+   <PathToCatalogFile>Data.PhzCatalog.DataContainer.FileName</PathToCatalogFile>
+   <CatalogName>Phz-PhotoZ-Catalog</CatalogName>
+   <CatalogFormatHDU>1</CatalogFormatHDU>
+  </CatalogDescription>
+  <TileIndex>90346</TileIndex>
+  <PhzCatalog format="phz.photoZCatalog" version="0.9">
+   <DataContainer filestatus="PROPOSED">
+    <FileName>EUC_PHZ_PHZCAT__20210725T082053.111168Z_00.00.fits</FileName>
+   </DataContainer>
+  </PhzCatalog>
+  <StarSedCatalog format="phz.sedCatalog" version="0.9">
+   <DataContainer filestatus="PROPOSED">
+    <FileName>EUC_PHZ_STARSED__20210725T082053.578905Z_00.00.fits</FileName>
+   </DataContainer>
+  </StarSedCatalog>
+  <GalaxySedCatalog format="phz.sedCatalog" version="0.9">
+   <DataContainer filestatus="PROPOSED">
+    <FileName>EUC_PHZ_GALAXYSED__20210725T082055.086576Z_00.00.fits</FileName>
+   </DataContainer>
+  </GalaxySedCatalog>
+ </Data>
+</dpd-phz-outputcatalog:DpdPhzPfOutputCatalog>

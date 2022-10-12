@@ -29,32 +29,28 @@ class TestPhotozProduct(object):
     """A collection of tests for the shear estimates data product.
 
     """
-    @pytest.mark.skip(reason="Skip for now")
+    # @pytest.mark.skip(reason="Skip for now")
     def test_validation(self):
 
         # Create the product
         product = prod.create_dpd_photoz_catalog(
             "photoz_catalog.fits",
-            "class_catalog.fits",
             "gal_sed_catalog.fits",
-            "star_sed_catalog.fits",
-            "phys_param_catalog.fits")
+            "star_sed_catalog.fits")
 
         # Check that it validates the schema
         product.validateBinding()
 
         return
 
-    # @pytest.mark.skip(reason="Skip for now")
+    @pytest.mark.skip(reason="Skip for now")
     def test_xml_writing_and_reading(self, tmpdir):
 
         # Create the product
         product = prod.create_dpd_photoz_catalog(
             "photoz_catalog.fits",
-            "class_catalog.fits",
             "gal_sed_catalog.fits",
-            "star_sed_catalog.fits",
-            "phys_param_catalog.fits")
+            "star_sed_catalog.fits")
 
         # Change the fits filenames
         subfilename = "test_phz_file.fits"

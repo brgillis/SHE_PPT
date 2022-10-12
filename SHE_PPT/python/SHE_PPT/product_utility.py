@@ -303,18 +303,12 @@ def init_method_files(binding_class,
     binding_class.set_photoz_filename = set_photoz_filename
     binding_class.get_photoz_filename = get_photoz_filename
 
-    binding_class.set_classification_filename = set_classification_filename
-    binding_class.get_classification_filename = get_classification_filename
-
+    
     binding_class.set_star_sed_filename = set_star_sed_filename
     binding_class.get_star_sed_filename = get_star_sed_filename
 
     binding_class.set_gal_sed_filename = set_gal_sed_filename
     binding_class.get_gal_sed_filename = get_gal_sed_filename
-
-    binding_class.set_phys_param_filename = set_phys_param_filename
-    binding_class.get_phys_param_filename = get_phys_param_filename
-
 
     binding_class.get_all_filenames = get_all_filenames_methods
 
@@ -523,10 +517,8 @@ def create_measurements_product_from_template(template_filename,
 def create_photoz_product_from_template(template_filename,
                                               product_type_name,
                                               photoz_filename=None,
-                                              classification_filename=None,
                                               gal_sed_filename=None,
                                               star_sed_filename=None,
-                                              phys_param_filename=None,
                                               spatial_footprint=None):
     """ Function to create a data product object, using a template file as a base, specialized for shear measurements
         products.
@@ -537,10 +529,8 @@ def create_photoz_product_from_template(template_filename,
     # How to check p...
     
     p.set_photoz_filename(photoz_filename)
-    p.set_classification_filename(classification_filename)
     p.set_gal_sed_filename(gal_sed_filename)
     p.set_star_sed_filename(star_sed_filename)
-    p.set_phys_param_filename(phys_param_filename)
     
     return p
 def create_general_product_from_template(template_filename: str,
@@ -598,10 +588,7 @@ def create_method_filestorage(method: ShearEstimationMethods,
             format='sedCatalog'
         elif 'photoz' in method_val.lower():
             format='photoZCatalog'
-        elif 'classification' in method_val.lower():
-            format='classificationCatalog'
-        else:
-            format='physicalParametersCatalog'
+        
         phz_catalog = getattr(phz_pro, f"phz{method_val}")()
         phz_catalog.DataStorage = dm_utils.create_fits_storage(getattr(phz_pro, f"phz{method_val}"),
                                                                    filename,
@@ -707,9 +694,6 @@ def set_photoz_filename(self,
                          filename: Optional[str] = None):
     return set_method_filename(self, PhotozCatalogMethods.PHOTOZ, filename)
 
-def set_classification_filename(self,
-                         filename: Optional[str] = None):
-    return set_method_filename(self, PhotozCatalogMethods.CLASSIFICATION, filename)
 
 def set_gal_sed_filename(self,
                          filename: Optional[str] = None):
@@ -719,15 +703,10 @@ def set_star_sed_filename(self,
                          filename: Optional[str] = None):
     return set_method_filename(self, PhotozCatalogMethods.STARSED, filename)
 
-def set_phys_param_filename(self,
-                         filename: Optional[str] = None):
-    return set_method_filename(self, PhotozCatalogMethods.PHYSPARAM, filename)
 
 def get_photoz_filename(self):
     return get_method_filename(self, PhotozCatalogMethods.PHOTOZ)
 
-def get_classification_filename(self):
-    return get_method_filename(self, PhotozCatalogMethods.CLASSIFICATION)
 
 def get_gal_sed_filename(self):
     return get_method_filename(self, PhotozCatalogMethods.GALSED)
@@ -735,6 +714,4 @@ def get_gal_sed_filename(self):
 def get_star_sed_filename(self):
     return get_method_filename(self, PhotozCatalogMethods.STARSED)
 
-def get_phys_param_filename(self):
-    return get_method_filename(self, PhotozCatalogMethods.PHYSPARAM)
 
