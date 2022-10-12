@@ -34,6 +34,10 @@ from ST_DataModelBindings.dpd.she.intermediateobservationcatalog_stub import dpd
 from ST_DataModelBindings.dpd.she.placeholdergeneral_stub import dpdShePlaceholderGeneral
 from ST_DataModelBindings.pro import she_stub as she_pro
 from ST_DataModelBindings.pro import phz_stub as phz_pro
+import PHZ_DMUtils.PHZ_DataModelUtils as phz_dm
+import ST_DataModelBindings.bas.cot_stub as cot_dict
+import ST_DataModelBindings.bas.imp.stc_stub as stc_dict
+import ST_DataModelBindings.bas.dtd_stub as dtd_dict
 from .constants.misc import DATA_SUBDIR
 from .file_io import find_aux_file
 from .logging import getLogger
@@ -207,10 +211,8 @@ def get_all_filenames_just_data(self):
 def get_all_filenames_methods(self):
     if self.Header.ProductType.lower()=='dpdphzpfoutputcatalog':
         all_filenames = [self.get_photoz_filename(),
-                         self.get_classification_filename(),
                          self.get_gal_sed_filename(),
-                         self.get_star_sed_filename(),
-                         self.get_phys_param_filename(),]
+                         self.get_star_sed_filename()]
     else:
         all_filenames = [self.get_KSB_filename(),
                      self.get_LensMC_filename(),
@@ -514,9 +516,18 @@ def create_measurements_product_from_template(template_filename,
 
     return p
 
-def create_photoz_product_from_template(template_filename,
-                                              product_type_name,
-                                              photoz_filename=None,
+def create_catalog_coverage():
+    SpatialCoverage = cot_dict.spatialFootprint()
+    SpatialCoverage.Polygon = stc_dict.polygonType()
+    SpatialCoverage.Polygon.Vertex.append(stc_dict.vertexType())
+    vertex = SpatialCoverage.Polygon.Vertex[0]
+    vertex.Position = dtd_dict.double2Type(C1=0, C2=0)
+
+
+    return SpatialCoverage
+
+
+def create_photoz_product_from_template(photoz_filename=None,
                                               gal_sed_filename=None,
                                               star_sed_filename=None,
                                               spatial_footprint=None):
@@ -524,15 +535,27 @@ def create_photoz_product_from_template(template_filename,
         products.
     """
 
-    p = create_product_from_template(template_filename=template_filename,
-                                     product_type_name=product_type_name,                                     spatial_footprint=spatial_footprint)
+    # @FIXME: replace with code from PHZDMUilts.
+    #p = create_product_from_template(template_filename=template_filename,
+    #                                 product_type_name=product_type_name,                                     spatial_footprint=spatial_footprint)
+    cov = create_catalog_coverage()
+    tile_index=0
+
+    p =  phz_dm.create_PHZ_catalog(photoz_filename,star_sed_filename,
+                                          gal_sed_filename,cov,tile_index)
+    #p.toDOM()
     # How to check p...
+    if spatial_footprint:
+        p.set_spatial_footprint(spatial_footprint)
+
     
-    p.set_photoz_filename(photoz_filename)
-    p.set_gal_sed_filename(gal_sed_filename)
-    p.set_star_sed_filename(star_sed_filename)
+    #p.set_photoz_filename(photoz_filename)
+    #p.set_gal_sed_filename(gal_sed_filename)
+    #p.set_star_sed_filename(star_sed_filename)
     
     return p
+
+
 def create_general_product_from_template(template_filename: str,
                                          product_type_name: str,
                                          general_product_type_name: str,

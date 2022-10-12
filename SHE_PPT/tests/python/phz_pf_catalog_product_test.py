@@ -43,7 +43,7 @@ class TestPhotozProduct(object):
 
         return
 
-    @pytest.mark.skip(reason="Skip for now")
+    # @pytest.mark.skip(reason="Skip for now")
     def test_xml_writing_and_reading(self, tmpdir):
 
         # Create the product
@@ -63,8 +63,7 @@ class TestPhotozProduct(object):
 
         # Check that the filenames match
         assert loaded_product.get_photoz_filename() == "data/" + subfilename
-        print("DP: ",loaded_product.Header.ProductType)
         all_filenames = loaded_product.get_all_filenames()
-        assert len(all_filenames)==5
-        assert len([fname for fname in all_filenames if fname])==5
+        assert len(all_filenames)==3
+        assert len([fname for fname in all_filenames if fname])==3
         return
