@@ -557,9 +557,7 @@ def create_photoz_product_from_template(
     products.
     """
 
-    # @FIXME: replace with code from PHZDMUilts.
-    # p = create_product_from_template(template_filename=template_filename,
-    #                                 product_type_name=product_type_name,                                     spatial_footprint=spatial_footprint)
+    # replaced template with code from PHZDMUilts.
     cov = create_catalog_coverage()
     tile_index = 0
 
