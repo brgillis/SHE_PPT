@@ -20,7 +20,6 @@
 
 __updated__ = "2020-10-15"
 
-import pytest
 from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.products import phz_pf_output_catalog as prod
 
@@ -64,6 +63,6 @@ class TestPhotozProduct(object):
         # Check that the filenames match
         assert loaded_product.get_photoz_filename() == "data/" + subfilename
         all_filenames = loaded_product.get_all_filenames()
-        assert len(all_filenames)==3
-        assert len([fname for fname in all_filenames if fname])==3
+        assert len(all_filenames) == 3
+        assert len([fname for fname in all_filenames if fname]) == 3
         return
