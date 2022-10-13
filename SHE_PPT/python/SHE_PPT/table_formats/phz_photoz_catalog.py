@@ -180,7 +180,8 @@ def initialise_phz_photoz_catalog(image_group_phl = None,
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    phz_photoz_catalog = init_table(tf, optional_columns = optional_columns, init_cols = init_cols, size = size)
+    phz_photoz_catalog = init_table(tf, optional_columns=optional_columns, 
+                                    init_cols=init_cols, size=size)
 
     phz_photoz_catalog.meta = tf.m.init_meta()
 
