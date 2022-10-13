@@ -31,12 +31,12 @@ fits_def = "phz.photozCatalog"
 logger = getLogger(__name__)
 
 
-filter_list = ['U_EXT_LSST', 'G_EXT_LSST', 'R_EXT_LSST', 'I_EXT_LSST', 'Z_EXT_LSST','VIS', 'Y', 'J', 'H']
+filter_list = ["U_EXT_LSST", "G_EXT_LSST", "R_EXT_LSST", "I_EXT_LSST", "Z_EXT_LSST", "VIS", "Y", "J", "H"]
 
 
 class PhzPhotozCatalogMeta(SheTableMeta):
     """
-        @brief A class defining the metadata for detections tables.
+    @brief A class defining the metadata for detections tables.
     """
 
     __version__: str = fits_version
@@ -51,19 +51,17 @@ class PhzPhotozCatalogMeta(SheTableMeta):
     objsel: str = "OBJSEL"
 
     def init_meta(self, **kwargs: str):
-        return super().init_meta(extname = "N/A",
-                                 **kwargs)
+        return super().init_meta(extname="N/A", **kwargs)
 
 
 class PhzPhotozCatalogFormat(SheTableFormat):
     """
-        @brief A class defining the format for detections tables. Only the mer_final_catalog_format
-               instance of this should generally be accessed, and it should not be changed.
+    @brief A class defining the format for detections tables. Only the mer_final_catalog_format
+           instance of this should generally be accessed, and it should not be changed.
     """
 
     # Explicitly specify some of the columns we use from this table to suppress spurious IDE errors
     ID: str
-    
 
     def __init__(self):
         super().__init__(PhzPhotozCatalogMeta())
@@ -79,67 +77,98 @@ class PhzPhotozCatalogFormat(SheTableFormat):
         # Column names and info
 
         # Euclid unique source identifier
-        setattr(self, "ID", self.set_column_properties("OBJECT_ID", fits_dtype = "K", dtype = ">i8", comment = "",
-                                                       is_optional = False))
+        setattr(
+            self,
+            "ID",
+            self.set_column_properties("OBJECT_ID", fits_dtype="K", dtype=">i8", comment="", is_optional=False),
+        )
         # PHZ PDF
-        setattr(self, "phz_pdf", self.set_column_properties("PHZ_PDF", fits_dtype = "E", dtype = ">f4", comment = "",
-                                                       is_optional = False, length=601))
+        setattr(
+            self,
+            "phz_pdf",
+            self.set_column_properties(
+                "PHZ_PDF", fits_dtype="E", dtype=">f4", comment="", is_optional=False, length=601
+            ),
+        )
         # PHZ MEDIAN
-        setattr(self, "phz_med", self.set_column_properties("PHZ_MEDIAN", fits_dtype = "E", dtype = ">f4", comment = "",
-                                                       is_optional = False))
-        
-        for cnf_int in [70,90,95]:
+        setattr(
+            self,
+            "phz_med",
+            self.set_column_properties("PHZ_MEDIAN", fits_dtype="E", dtype=">f4", comment="", is_optional=False),
+        )
+
+        for cnf_int in [70, 90, 95]:
             col_name = "PHZ_%sINT" % cnf_int
-            setattr(self, col_name, self.set_column_properties(col_name, fits_dtype = "E", dtype = ">f4", comment = "",
-                                                       is_optional = False, length=2))
-        
-        for phz_mode in [1,2]:
-            
+            setattr(
+                self,
+                col_name,
+                self.set_column_properties(
+                    col_name, fits_dtype="E", dtype=">f4", comment="", is_optional=False, length=2
+                ),
+            )
+
+        for phz_mode in [1, 2]:
+
             # PHZ MODE_1
-            col_name ='PHZ_MODE_%s' % phz_mode
-            setattr(self, col_name, self.set_column_properties(col_name, fits_dtype = "E", dtype = ">f4", comment = "",
-                                                       is_optional = False))
-            col_name = col_name+'_AREA'
+            col_name = "PHZ_MODE_%s" % phz_mode
+            setattr(
+                self,
+                col_name,
+                self.set_column_properties(col_name, fits_dtype="E", dtype=">f4", comment="", is_optional=False),
+            )
+            col_name = col_name + "_AREA"
             # PHZ MODE_1_AREA
-            setattr(self, col_name, self.set_column_properties(col_name, fits_dtype = "E", dtype = ">f4", comment = "",
-                                                       is_optional = False))
-        
-         
-        
+            setattr(
+                self,
+                col_name,
+                self.set_column_properties(col_name, fits_dtype="E", dtype=">f4", comment="", is_optional=False),
+            )
+
         # PHZ_FLAGS
-        setattr(self, "phz_flags", self.set_column_properties("PHZ_FLAGS", fits_dtype = "K", dtype = ">i8", comment = "",
-                                                       is_optional = False))
-        
+        setattr(
+            self,
+            "phz_flags",
+            self.set_column_properties("PHZ_FLAGS", fits_dtype="K", dtype=">i8", comment="", is_optional=False),
+        )
+
         # BIAS_ID
-        setattr(self, "bias_id", self.set_column_properties("BIAS_ID", fits_dtype = "J", dtype = ">i4", comment = "",
-                                                       is_optional = False))
-        
+        setattr(
+            self,
+            "bias_id",
+            self.set_column_properties("BIAS_ID", fits_dtype="J", dtype=">i4", comment="", is_optional=False),
+        )
+
         # TOM_BIN_ID
-        setattr(self, "tom_bin_id", self.set_column_properties("TOM_BIN_ID", fits_dtype = "J", dtype = ">i4", comment = "",
-                                                       is_optional = False))
-        
+        setattr(
+            self,
+            "tom_bin_id",
+            self.set_column_properties("TOM_BIN_ID", fits_dtype="J", dtype=">i4", comment="", is_optional=False),
+        )
+
         # @TODO: replace with a for loop....
         for band in filter_list:
             # FLUX_U_EXT_LSST_TOTAL_UNIF" unit="uJy" format="E" />
             col_name = "FLUX_%s+TOTAL_UNIF" % band
-            setattr(self, col_name, 
-                    self.set_column_properties(col_name, fits_dtype = "E", 
-                    dtype = ">f4", comment = "", is_optional = False))
-        
+            setattr(
+                self,
+                col_name,
+                self.set_column_properties(col_name, fits_dtype="E", dtype=">f4", comment="", is_optional=False),
+            )
+
         for band in filter_list:
             # FLUX_U_EXT_LSST_TOTAL_UNIF" unit="uJy" format="E" />
             col_name = "FLUXERR_%s+TOTAL_UNIF" % band
-            setattr(self, col_name, 
-                    self.set_column_properties(col_name, fits_dtype = "E", 
-                    dtype = ">f4", comment = "",is_optional = False))
-        
-         
+            setattr(
+                self,
+                col_name,
+                self.set_column_properties(col_name, fits_dtype="E", dtype=">f4", comment="", is_optional=False),
+            )
+
         self._finalize_init()
 
     @staticmethod
     def init_table(*args, **kwargs):
-        """ Bound alias to the free table initialisation function, using this table format.
-        """
+        """Bound alias to the free table initialisation function, using this table format."""
 
         return initialise_phz_photoz_catalog(*args, **kwargs)
 
@@ -151,25 +180,27 @@ phz_photoz_catalog_format = PhzPhotozCatalogFormat()
 tf = phz_photoz_catalog_format
 
 
-def initialise_phz_photoz_catalog(image_group_phl = None,
-                                 options = None,
-                                 size = None,
-                                 optional_columns = None,
-                                 init_cols = None,
-                                 model_hash = None,
-                                 model_seed = None,
-                                 noise_seed = None):
+def initialise_phz_photoz_catalog(
+    image_group_phl=None,
+    options=None,
+    size=None,
+    optional_columns=None,
+    init_cols=None,
+    model_hash=None,
+    model_seed=None,
+    noise_seed=None,
+):
     """
-        @brief Initialise a detections table.
+    @brief Initialise a detections table.
 
-        @param image_group_phl <SHE_SIM.ImageGroup>
+    @param image_group_phl <SHE_SIM.ImageGroup>
 
-        @param options <dict> Options dictionary
+    @param options <dict> Options dictionary
 
-        @param optional_columns <list<str>> List of names for optional columns to include.
-               Default is none
+    @param optional_columns <list<str>> List of names for optional columns to include.
+           Default is none
 
-        @return phz_photoz_catalog <astropy.Table>
+    @return phz_photoz_catalog <astropy.Table>
     """
 
     if optional_columns is None:
@@ -180,8 +211,7 @@ def initialise_phz_photoz_catalog(image_group_phl = None,
             if colname not in tf.all:
                 raise ValueError("Invalid optional column name: " + colname)
 
-    phz_photoz_catalog = init_table(tf, optional_columns=optional_columns, 
-                                    init_cols=init_cols, size=size)
+    phz_photoz_catalog = init_table(tf, optional_columns=optional_columns, init_cols=init_cols, size=size)
 
     phz_photoz_catalog.meta = tf.m.init_meta()
 

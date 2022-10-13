@@ -24,30 +24,26 @@ __updated__ = "2021-11-18"
 # Boston, MA 02110-1301 USA
 
 from ST_DataModelBindings.dpd.phz.raw.outputcatalog_stub import dpdPhzPfOutputCatalog
-from ..product_utility import init_method_files,create_photoz_product_from_template
-
-
+from ..product_utility import init_method_files, create_photoz_product_from_template
 
 
 def init():
-    """ Adds some extra functionality to this product, with functions to get filenames. """
+    """Adds some extra functionality to this product, with functions to get filenames."""
 
-    init_method_files(binding_class=dpdPhzPfOutputCatalog,
-                          init_function=create_dpd_photoz_catalog)
+    init_method_files(binding_class=dpdPhzPfOutputCatalog, init_function=create_dpd_photoz_catalog)
 
 
-def create_dpd_photoz_catalog(photoz_filename=None,
-                          gal_sed_filename=None,
-                          star_sed_filename=None,
-                          spatial_footprint=None):
-    """ Creates a product of this type.
-    """
+def create_dpd_photoz_catalog(
+    photoz_filename=None, gal_sed_filename=None, star_sed_filename=None, spatial_footprint=None
+):
+    """Creates a product of this type."""
     return create_photoz_product_from_template(
-                                        photoz_filename=photoz_filename,
-                                        gal_sed_filename=gal_sed_filename,
-                                        star_sed_filename=star_sed_filename,
-                                        spatial_footprint=spatial_footprint)
-   
+        photoz_filename=photoz_filename,
+        gal_sed_filename=gal_sed_filename,
+        star_sed_filename=star_sed_filename,
+        spatial_footprint=spatial_footprint,
+    )
+
 
 # Add useful aliases
 create_detections_product = create_dpd_photoz_catalog
