@@ -18,6 +18,9 @@ Bug Fixes
 New Features
 ------------
 
+Added PHZ catalog products, using PHZ_DmUtils to avoid using sample file
+Added additional functions - getters, setters.
+ 
 New config features
 -------------------
 
