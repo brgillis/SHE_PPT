@@ -34,10 +34,11 @@ from ST_DataModelBindings.dpd.she.intermediateobservationcatalog_stub import dpd
 from ST_DataModelBindings.dpd.she.placeholdergeneral_stub import dpdShePlaceholderGeneral
 from ST_DataModelBindings.pro import she_stub as she_pro
 from ST_DataModelBindings.pro import phz_stub as phz_pro
-import PHZ_DMUtils.PHZ_DataModelUtils as phz_dm
 import ST_DataModelBindings.bas.cot_stub as cot_dict
 import ST_DataModelBindings.bas.imp.stc_stub as stc_dict
 import ST_DataModelBindings.bas.dtd_stub as dtd_dict
+import ST_DataModelBindings.sys.dss_stub as dss_dict
+
 from .constants.misc import DATA_SUBDIR
 from .file_io import find_aux_file
 from .logging import getLogger
@@ -562,6 +563,8 @@ def create_photoz_product_from_template(
     tile_index = 0
 
     p = phz_dm.create_PHZ_catalog(photoz_filename, star_sed_filename, gal_sed_filename, cov, tile_index)
+    
+    
     # p.toDOM()
     # How to check p...
     if spatial_footprint:
@@ -750,3 +753,61 @@ def get_gal_sed_filename(self):
 
 def get_star_sed_filename(self):
     return get_method_filename(self, PhotozCatalogMethods.STARSED)
+
+def create_data_container(file_name, file_status="PROPOSED"):
+    """Creates a data container binding.
+
+    Parameters
+    ----------
+    file_name: str
+        The data file name.
+    file_status: str, optional
+        The status of the file: PROPOSED, PROCESSING, COMMITTED, VALIDATED,
+        ARCHIVED or DELETED. Default is PROPOSED.
+
+    Returns:
+    --------
+    object
+        The data container binding.
+
+    """
+    # Create the data container binding
+    data_container = dss_dict.dataContainer()
+
+    # Fill it with the given values
+    data_container.FileName = file_name
+    data_container.filestatus = file_status
+
+    return data_container
+
+def create_fits_storage(binding_class, file_name, file_format, version):
+    """Creates a fits file storage binding.
+
+    Parameters
+    ----------
+    binding_class: class
+        The fits file binding class.
+    file_name: str
+        The fits file name.
+    file_format: str
+        The fits file format.
+    version: str
+        The fits file format version.
+
+    Returns
+    -------
+    object
+        The fits file storage binding.
+
+    """
+    # Create the appropriate fits file storage binding
+    storage = binding_class.Factory()
+
+    # Fill it with the given values
+    storage.format = file_format
+    if version!="":
+        storage.version = version
+    storage.DataContainer = create_data_container(file_name)
+
+    return storage
+

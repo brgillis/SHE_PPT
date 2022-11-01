@@ -24,7 +24,14 @@ __updated__ = "2021-11-18"
 # Boston, MA 02110-1301 USA
 
 from ST_DataModelBindings.dpd.phz.raw.outputcatalog_stub import dpdPhzPfOutputCatalog
-from ..product_utility import init_method_files, create_photoz_product_from_template
+import ST_DataModelBindings.dpd.phz.outputcatalog_stub as phz_dpd_output
+import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
+import ST_DataModelBindings.bas.cat_stub as cat_dict
+import ST_DataModelBindings.pro.phz_stub as phz_dict
+
+
+from ..product_utility import (init_method_files, create_catalog_coverage, 
+                               create_data_container, create_fits_storage)
 
 
 def init():
@@ -33,17 +40,92 @@ def init():
     init_method_files(binding_class=dpdPhzPfOutputCatalog, init_function=create_dpd_photoz_catalog)
 
 
-def create_dpd_photoz_catalog(
-    photoz_filename=None, gal_sed_filename=None, star_sed_filename=None, spatial_footprint=None
-):
-    """Creates a product of this type."""
-    return create_photoz_product_from_template(
-        photoz_filename=photoz_filename,
-        gal_sed_filename=gal_sed_filename,
-        star_sed_filename=star_sed_filename,
-        spatial_footprint=spatial_footprint,
-    )
+def create_dpd_photoz_catalog(photoz_filename = None,  star_sed_filename = None, galaxy_sed_filename = None, spatial_footprint = None ):
+    """Creates the PHZ output catalog bindings.
 
+    Inputs
+    ------
+    photo_Z_file
+        The name of the photo_z file to be wrapped in the binding.
+    star_sed_file
+        The name of the star_sed file to be wrapped in the binding. Can be ""
+    Galaxy_sed_file
+        The name of the galaxy_sed file to be wrapped in the binding. Can be ""
+    spatialFootprint
+        The coverage of the input catalog
+    TileIndex
+        the index of the MER tile
+    Returns
+    -------
+    object
+        The PHZ output catalog bindings.
+
+    """
+    version = "0.9"
+    spatial_footprint = create_catalog_coverage()
+    tile_index = 0
+
+    # Create the appropriate data product binding
+    dpd = phz_dpd_output.DpdPhzPfOutputCatalog()
+    
+    # Add the generic header to the data product
+    dpd.Header = HeaderProvider.create_generic_header('DpdPhzPfOutputCatalog')
+
+    dpd.Data = phz_dict.phzPfOutputCatalog.Factory()
+
+    # Add the catalog id
+    dpd.Data.IdCatalog = 0
+
+    # Add the coverage
+    dpd.Data.SpatialCoverage = spatial_footprint
+    dpd.Data.TileIndex = tile_index
+
+
+
+
+    # Add the catalog descriptions
+    # NOTE: We have multiple catalogs, but conceptually they are part of a single one,
+    #       partitioned by columns. However, the XSD only let us define one (and only one)
+    #       PathToCatalogDefinition. MER situation is similar (they have final and cutout catalogs),
+    #       and they do the same.
+
+    description = cat_dict.catalogDescription()
+
+    description.PathToCatalogFile = "Data.PhzCatalog.DataContainer.FileName"
+    description.CatalogType = "NOT_PROXY"
+    description.CatalogOrigin = "MEASURED_WIDE"
+    description.CatalogOrigin = "MEASURED_WIDE"
+    description.CatalogName = "Phz-PhotoZ-Catalog"
+    description.CatalogFormatHDU = 1
+
+
+    dpd.Data.CatalogDescription.append(description)
+
+    # Add the files
+    
+    dpd.Data.PhzCatalog = create_fits_storage(
+        phz_dict.phzPhotoZCatalog,
+        photoz_filename,
+        "phz.photoZCatalog",
+        version)
+
+    if star_sed_filename!="":
+        dpd.Data.StarSedCatalog = create_fits_storage(
+            phz_dict.phzStarSedCatalog,
+            star_sed_filename,
+            "phz.sedCatalog",
+            version)
+
+    if galaxy_sed_filename!="":
+        dpd.Data.GalaxySedCatalog = create_fits_storage(
+            phz_dict.phzGalaxySedCatalog,
+            galaxy_sed_filename,
+            "phz.sedCatalog",
+            version)
+    
+    if spatial_footprint:
+        dpd.set_spatial_footprint(spatial_footprint)
+    return dpd
 
 # Add useful aliases
 create_detections_product = create_dpd_photoz_catalog
