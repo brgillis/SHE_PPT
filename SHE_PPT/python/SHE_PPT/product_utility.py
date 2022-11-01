@@ -26,14 +26,13 @@ from typing import Optional
 
 import ST_DM_DmUtils.DmUtils as dm_utils
 import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
-from SHE_PPT.constants.classes import ShearEstimationMethods, PhotozCatalogMethods
+from SHE_PPT.constants.classes import ShearEstimationMethods
 from SHE_PPT.file_io import read_xml_product
 from ST_DataModelBindings.bas.imp.raw.stc_stub import polygonType
 from ST_DataModelBindings.dpd.she.intermediategeneral_stub import dpdSheIntermediateGeneral
 from ST_DataModelBindings.dpd.she.intermediateobservationcatalog_stub import dpdSheIntermediateObservationCatalog
 from ST_DataModelBindings.dpd.she.placeholdergeneral_stub import dpdShePlaceholderGeneral
 from ST_DataModelBindings.pro import she_stub as she_pro
-from ST_DataModelBindings.pro import phz_stub as phz_pro
 import ST_DataModelBindings.bas.cot_stub as cot_dict
 import ST_DataModelBindings.bas.imp.stc_stub as stc_dict
 import ST_DataModelBindings.bas.dtd_stub as dtd_dict
@@ -219,15 +218,12 @@ def get_all_filenames_just_data(self):
 
 
 def get_all_filenames_methods(self):
-    if self.Header.ProductType.lower() == "dpdphzpfoutputcatalog":
-        all_filenames = [self.get_photoz_filename(), self.get_gal_sed_filename(), self.get_star_sed_filename()]
-    else:
-        all_filenames = [
-            self.get_KSB_filename(),
-            self.get_LensMC_filename(),
-            self.get_MomentsML_filename(),
-            self.get_REGAUSS_filename(),
-        ]
+    all_filenames = [
+        self.get_KSB_filename(),
+        self.get_LensMC_filename(),
+        self.get_MomentsML_filename(),
+        self.get_REGAUSS_filename(),
+    ]
 
     return all_filenames
 
@@ -317,16 +313,7 @@ def init_method_files(
 
     binding_class.set_REGAUSS_filename = set_REGAUSS_filename
     binding_class.get_REGAUSS_filename = get_REGAUSS_filename
-
-    binding_class.set_photoz_filename = set_photoz_filename
-    binding_class.get_photoz_filename = get_photoz_filename
-
-    binding_class.set_star_sed_filename = set_star_sed_filename
-    binding_class.get_star_sed_filename = get_star_sed_filename
-
-    binding_class.set_gal_sed_filename = set_gal_sed_filename
-    binding_class.get_gal_sed_filename = get_gal_sed_filename
-
+    
     binding_class.get_all_filenames = get_all_filenames_methods
 
     binding_class.set_method_filename = set_method_filename
@@ -550,33 +537,6 @@ def create_catalog_coverage():
 
     return SpatialCoverage
 
-
-def create_photoz_product_from_template(
-    photoz_filename=None, gal_sed_filename=None, star_sed_filename=None, spatial_footprint=None
-):
-    """Function to create a data product object, using a template file as a base, specialized for shear measurements
-    products.
-    """
-
-    # replaced template with code from PHZDMUilts.
-    cov = create_catalog_coverage()
-    tile_index = 0
-
-    p = phz_dm.create_PHZ_catalog(photoz_filename, star_sed_filename, gal_sed_filename, cov, tile_index)
-    
-    
-    # p.toDOM()
-    # How to check p...
-    if spatial_footprint:
-        p.set_spatial_footprint(spatial_footprint)
-
-    # p.set_photoz_filename(photoz_filename)
-    # p.set_gal_sed_filename(gal_sed_filename)
-    # p.set_star_sed_filename(star_sed_filename)
-
-    return p
-
-
 def create_general_product_from_template(
     template_filename: str,
     product_type_name: str,
@@ -627,49 +587,29 @@ def create_method_filestorage(
     """Create a file storage object for a given shear estimates method."""
 
     method_cc, method_caps = get_method_cc_name(method)
-    if isinstance(method, PhotozCatalogMethods):
-        method_val = method.value
-        version = "0.9"
-        if "sed" in method_val.lower():
-            format = "sedCatalog"
-        elif "photoz" in method_val.lower():
-            format = "photoZCatalog"
+    
 
-        phz_catalog = getattr(phz_pro, f"phz{method_val}")()
-        phz_catalog.DataStorage = dm_utils.create_fits_storage(
-            getattr(phz_pro, f"phz{method_val}"), filename, f"phz.{format}", version
-        )
-        phz_catalog.Valid = "VALID"
-        return phz_catalog
-    else:
+    # Initialize the object
+    shear_estimates = getattr(she_pro, f"she{method_caps}Measurements")()
 
-        # Initialize the object
-        shear_estimates = getattr(she_pro, f"she{method_caps}Measurements")()
+    shear_estimates.DataStorage = dm_utils.create_fits_storage(
+        getattr(she_pro, f"she{method_caps}MeasurementsFile"),
+        filename,
+        f"she.{method_cc}Measurements",
+        version=D_METHOD_FITS_VERSIONS[method],
+    )
+    shear_estimates.Valid = "VALID"
 
-        shear_estimates.DataStorage = dm_utils.create_fits_storage(
-            getattr(she_pro, f"she{method_caps}MeasurementsFile"),
-            filename,
-            f"she.{method_cc}Measurements",
-            version=D_METHOD_FITS_VERSIONS[method],
-        )
-        shear_estimates.Valid = "VALID"
-
-        return shear_estimates
+    return shear_estimates
 
 
 # Functions to set or get filenames for specific shear estimation methods
 def set_method_filename(self, method: ShearEstimationMethods, filename: Optional[str] = None):
 
-    if not isinstance(method, PhotozCatalogMethods):
-        _, method_caps = get_method_cc_name(method)
-        method_attr = f"{method_caps}ShearMeasurements"
-        data_attr = f"{method_attr}.DataStorage"
-    else:
-        method_caps = method.value
-        if method_caps.startswith("PhotoZ"):
-            method_caps = "PhzCatalog"
-        method_attr = f"{method_caps}"
-        data_attr = f"{method_attr}"
+    _, method_caps = get_method_cc_name(method)
+    method_attr = f"{method_caps}ShearMeasurements"
+    data_attr = f"{method_attr}.DataStorage"
+
 
     if filename is None:
         if hasattr(self.Data, method_attr):
@@ -682,16 +622,10 @@ def set_method_filename(self, method: ShearEstimationMethods, filename: Optional
 
 def get_method_filename(self, method: ShearEstimationMethods):
 
-    if not isinstance(method, PhotozCatalogMethods):
-        _, method_caps = get_method_cc_name(method)
-        method_attr = f"{method_caps}ShearMeasurements"
-        data_attr = f"{method_attr}.DataStorage"
-    else:
-        method_caps = method.value
-        if method_caps.startswith("PhotoZ"):
-            method_caps = "PhzCatalog"
-        method_attr = f"{method_caps}"
-        data_attr = f"{method_attr}"
+    _, method_caps = get_method_cc_name(method)
+    method_attr = f"{method_caps}ShearMeasurements"
+    data_attr = f"{method_attr}.DataStorage"
+
 
     if not hasattr(self.Data, method_attr) or getattr(self.Data, method_attr) is None:
         return None
@@ -731,28 +665,7 @@ def get_REGAUSS_filename(self):
     return get_method_filename(self, ShearEstimationMethods.REGAUSS)
 
 
-def set_photoz_filename(self, filename: Optional[str] = None):
-    return set_method_filename(self, PhotozCatalogMethods.PHOTOZ, filename)
 
-
-def set_gal_sed_filename(self, filename: Optional[str] = None):
-    return set_method_filename(self, PhotozCatalogMethods.GALSED, filename)
-
-
-def set_star_sed_filename(self, filename: Optional[str] = None):
-    return set_method_filename(self, PhotozCatalogMethods.STARSED, filename)
-
-
-def get_photoz_filename(self):
-    return get_method_filename(self, PhotozCatalogMethods.PHOTOZ)
-
-
-def get_gal_sed_filename(self):
-    return get_method_filename(self, PhotozCatalogMethods.GALSED)
-
-
-def get_star_sed_filename(self):
-    return get_method_filename(self, PhotozCatalogMethods.STARSED)
 
 def create_data_container(file_name, file_status="PROPOSED"):
     """Creates a data container binding.
