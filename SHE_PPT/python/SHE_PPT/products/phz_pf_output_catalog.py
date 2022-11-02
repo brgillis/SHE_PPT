@@ -92,7 +92,6 @@ def create_dpd_photoz_catalog(photoz_filename = None,  star_sed_filename = None,
 
     """
     version = "0.9"
-    spatial_footprint = create_catalog_coverage()
     tile_index = 0
 
     # Create the appropriate data product binding
@@ -153,8 +152,9 @@ def create_dpd_photoz_catalog(photoz_filename = None,  star_sed_filename = None,
             "phz.sedCatalog",
             version)
     
+    dpd.Data.SpatialCoverage = create_catalog_coverage()
     if spatial_footprint:
-        dpd.set_spatial_footprint(spatial_footprint)
+        dpd.Data.SpatialCoverage = spatial_footprint
     return dpd
 
 
