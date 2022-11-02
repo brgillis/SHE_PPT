@@ -31,17 +31,17 @@ import ST_DM_HeaderProvider.GenericHeaderProvider as HeaderProvider
 import ST_DataModelBindings.bas.cat_stub as cat_dict
 import ST_DataModelBindings.pro.phz_stub as phz_dict
 from SHE_PPT.constants.classes import PhotozCatalogMethods
+import ST_DM_DmUtils.DmUtils as dm_utils
 
 
-from ..product_utility import (init_binding_class, create_catalog_coverage, 
-                               create_data_container, create_fits_storage,
+from ..product_utility import (init_binding_class, create_fits_storage,
                                set_data_filename_of_product, get_data_filename_from_product)
 
 
 
 def init():
     """
-        Adds some extra functionality to the dpdSheMeasurements product
+        Adds some extra functionality to the dpdPhzPfOutputCatalog product
     """
 
     binding_class = dpdPhzPfOutputCatalog
@@ -152,7 +152,7 @@ def create_dpd_photoz_catalog(photoz_filename = None,  star_sed_filename = None,
             "phz.sedCatalog",
             version)
     
-    dpd.Data.SpatialCoverage = create_catalog_coverage()
+    dpd.Data.SpatialCoverage = dm_utils.create_spatial_footprint()
     if spatial_footprint:
         dpd.Data.SpatialCoverage = spatial_footprint
     return dpd
