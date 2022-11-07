@@ -34,20 +34,23 @@ from SHE_PPT.constants.classes import PhotozCatalogMethods
 import ST_DM_DmUtils.DmUtils as dm_utils
 
 
-from ..product_utility import (init_binding_class, create_fits_storage, 
-                               get_method_cc_name, get_data_filename_from_product,
-                               set_data_filename_of_product)
+from ..product_utility import (
+    init_binding_class,
+    create_fits_storage,
+    get_method_cc_name,
+    get_data_filename_from_product,
+    set_data_filename_of_product,
+)
 
 
 def init():
     """
-        Adds some extra functionality to the dpdPhzPfOutputCatalog product
+    Adds some extra functionality to the dpdPhzPfOutputCatalog product
     """
 
     binding_class = dpdPhzPfOutputCatalog
 
-    if not init_binding_class(binding_class,
-                              init_function=create_dpd_photoz_catalog):
+    if not init_binding_class(binding_class, init_function=create_dpd_photoz_catalog):
         return
 
     # Add the data file name methods
@@ -69,8 +72,9 @@ def init():
     binding_class.has_files = True
 
 
-
-def create_dpd_photoz_catalog(photoz_filename = None,  star_sed_filename = None, galaxy_sed_filename = None, spatial_footprint = None ):
+def create_dpd_photoz_catalog(
+    photoz_filename=None, star_sed_filename=None, galaxy_sed_filename=None, spatial_footprint=None
+):
     """Creates the PHZ output catalog bindings.
 
     Inputs
@@ -96,9 +100,9 @@ def create_dpd_photoz_catalog(photoz_filename = None,  star_sed_filename = None,
 
     # Create the appropriate data product binding
     dpd = phz_dpd_output.DpdPhzPfOutputCatalog()
-    
+
     # Add the generic header to the data product
-    dpd.Header = HeaderProvider.create_generic_header('DpdPhzPfOutputCatalog')
+    dpd.Header = HeaderProvider.create_generic_header("DpdPhzPfOutputCatalog")
 
     dpd.Data = phz_dict.phzPfOutputCatalog.Factory()
 
@@ -108,9 +112,6 @@ def create_dpd_photoz_catalog(photoz_filename = None,  star_sed_filename = None,
     # Add the coverage
     dpd.Data.SpatialCoverage = spatial_footprint
     dpd.Data.TileIndex = tile_index
-
-
-
 
     # Add the catalog descriptions
     # NOTE: We have multiple catalogs, but conceptually they are part of a single one,
@@ -127,43 +128,34 @@ def create_dpd_photoz_catalog(photoz_filename = None,  star_sed_filename = None,
     description.CatalogName = "Phz-PhotoZ-Catalog"
     description.CatalogFormatHDU = 1
 
-
     dpd.Data.CatalogDescription.append(description)
 
     # Add the files
-    
-    dpd.Data.PhzCatalog = create_fits_storage(
-        phz_dict.phzPhotoZCatalog,
-        photoz_filename,
-        "phz.photoZCatalog",
-        version)
 
-    if star_sed_filename and star_sed_filename!="":
+    dpd.Data.PhzCatalog = create_fits_storage(phz_dict.phzPhotoZCatalog, photoz_filename, "phz.photoZCatalog", version)
+
+    if star_sed_filename and star_sed_filename != "":
         dpd.Data.StarSedCatalog = create_fits_storage(
-            phz_dict.phzStarSedCatalog,
-            star_sed_filename,
-            "phz.sedCatalog",
-            version)
+            phz_dict.phzStarSedCatalog, star_sed_filename, "phz.sedCatalog", version
+        )
 
-    if galaxy_sed_filename and galaxy_sed_filename!="":
+    if galaxy_sed_filename and galaxy_sed_filename != "":
         dpd.Data.GalaxySedCatalog = create_fits_storage(
-            phz_dict.phzGalaxySedCatalog,
-            galaxy_sed_filename,
-            "phz.sedCatalog",
-            version)
-    
+            phz_dict.phzGalaxySedCatalog, galaxy_sed_filename, "phz.sedCatalog", version
+        )
+
     dpd.Data.SpatialCoverage = dm_utils.create_spatial_footprint()
     if spatial_footprint:
         dpd.Data.SpatialCoverage = spatial_footprint
     return dpd
 
 
-def set_method_filename(self, method, filename = None):
-   
+def set_method_filename(self, method, filename=None):
+
     method_caps = method.value
     if method_caps.startswith("PhotoZ"):
         method_caps = "PhzCatalog"
-    
+
     method_attr = f"{method_caps}"
     data_attr = f"{method_attr}"
 
@@ -177,7 +169,7 @@ def set_method_filename(self, method, filename = None):
 
 
 def get_method_filename(self, method: PhotozCatalogMethods):
-    
+
     method_caps = method.value
     if method_caps.startswith("PhotoZ"):
         method_caps = "PhzCatalog"
@@ -191,22 +183,18 @@ def get_method_filename(self, method: PhotozCatalogMethods):
 
 
 def get_all_filenames(self):
-        
-    all_filenames = [self.get_photoz_filename(), 
-                     self.get_gal_sed_filename(), 
-                     self.get_star_sed_filename()]
-    
+
+    all_filenames = [self.get_photoz_filename(), self.get_gal_sed_filename(), self.get_star_sed_filename()]
+
     return all_filenames
 
-def create_method_filestorage(
-    method: PhotozCatalogMethods,
-    filename: Optional[str] = None,
-    version = "0.9"):
+
+def create_method_filestorage(method: PhotozCatalogMethods, filename: Optional[str] = None, version="0.9"):
     """Create a file storage object for a given shear estimates method."""
 
     method_cc, method_caps = get_method_cc_name(method)
     method_val = method.value
-    
+
     if "sed" in method_val.lower():
         format = "sedCatalog"
     elif "photoz" in method_val.lower():
@@ -220,7 +208,6 @@ def create_method_filestorage(
     return phz_catalog
 
 
-    
 def set_photoz_filename(self, filename: Optional[str] = None):
     return set_method_filename(self, PhotozCatalogMethods.PHOTOZ, filename)
 

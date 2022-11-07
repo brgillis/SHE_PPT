@@ -26,17 +26,13 @@ from SHE_PPT.constants.classes import PhotozCatalogMethods
 
 
 class TestPhotozProduct(object):
-    """A collection of tests for the shear estimates data product.
+    """A collection of tests for the shear estimates data product."""
 
-    """
     # @pytest.mark.skip(reason="Skip for now")
     def test_validation(self):
 
         # Create the product
-        product = prod.create_dpd_photoz_catalog(
-            "photoz_catalog.fits",
-            "gal_sed_catalog.fits",
-            "star_sed_catalog.fits")
+        product = prod.create_dpd_photoz_catalog("photoz_catalog.fits", "gal_sed_catalog.fits", "star_sed_catalog.fits")
 
         # Check that it validates the schema
         product.validateBinding()
@@ -47,10 +43,7 @@ class TestPhotozProduct(object):
     def test_xml_writing_and_reading(self, tmpdir):
 
         # Create the product
-        product = prod.create_dpd_photoz_catalog(
-            "photoz_catalog.fits",
-            "gal_sed_catalog.fits",
-            "star_sed_catalog.fits")
+        product = prod.create_dpd_photoz_catalog("photoz_catalog.fits", "gal_sed_catalog.fits", "star_sed_catalog.fits")
 
         # Change the fits filenames
         subfilename = "test_phz_file.fits"
@@ -70,14 +63,11 @@ class TestPhotozProduct(object):
 
     def test_set_method_filename1(self, tmpdir):
         # Create the product
-        product = prod.create_dpd_photoz_catalog(
-            "photoz_catalog.fits",
-            "gal_sed_catalog.fits",
-            "star_sed_catalog.fits")
+        product = prod.create_dpd_photoz_catalog("photoz_catalog.fits", "gal_sed_catalog.fits", "star_sed_catalog.fits")
 
         # Change the fits filenames
         subfilename = "test_phz_file.fits"
-        product.set_method_filename(PhotozCatalogMethods.PHOTOZ,subfilename)
+        product.set_method_filename(PhotozCatalogMethods.PHOTOZ, subfilename)
 
         # Save the product in an XML file
         write_xml_product(product, "phz_photoz.xml", workdir=str(tmpdir))
@@ -93,13 +83,11 @@ class TestPhotozProduct(object):
 
     def test_set_method_filename2(self, tmpdir):
         # Create the product
-        product = prod.create_dpd_photoz_catalog(
-            "photoz_catalog.fits")
-
+        product = prod.create_dpd_photoz_catalog("photoz_catalog.fits")
 
         # Change the fits filenames
         subfilename = "test_gal_sd_file.fits"
-        product.set_method_filename(PhotozCatalogMethods.GALSED,subfilename)
+        product.set_method_filename(PhotozCatalogMethods.GALSED, subfilename)
 
         # Save the product in an XML file
         write_xml_product(product, "phz_photoz.xml", workdir=str(tmpdir))
