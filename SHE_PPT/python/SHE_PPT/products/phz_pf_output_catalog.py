@@ -34,9 +34,9 @@ from SHE_PPT.constants.classes import PhotozCatalogMethods
 import ST_DM_DmUtils.DmUtils as dm_utils
 
 
-from ..product_utility import (init_binding_class, create_fits_storage,
-                               set_data_filename_of_product, get_data_filename_from_product)
-
+from ..product_utility import (init_binding_class, create_fits_storage, 
+                               get_method_cc_name, get_data_filename_from_product,
+                               set_data_filename_of_product)
 
 
 def init():
@@ -138,14 +138,14 @@ def create_dpd_photoz_catalog(photoz_filename = None,  star_sed_filename = None,
         "phz.photoZCatalog",
         version)
 
-    if star_sed_filename!="":
+    if star_sed_filename and star_sed_filename!="":
         dpd.Data.StarSedCatalog = create_fits_storage(
             phz_dict.phzStarSedCatalog,
             star_sed_filename,
             "phz.sedCatalog",
             version)
 
-    if galaxy_sed_filename!="":
+    if galaxy_sed_filename and galaxy_sed_filename!="":
         dpd.Data.GalaxySedCatalog = create_fits_storage(
             phz_dict.phzGalaxySedCatalog,
             galaxy_sed_filename,
@@ -163,6 +163,7 @@ def set_method_filename(self, method, filename = None):
     method_caps = method.value
     if method_caps.startswith("PhotoZ"):
         method_caps = "PhzCatalog"
+    
     method_attr = f"{method_caps}"
     data_attr = f"{method_attr}"
 
@@ -173,6 +174,7 @@ def set_method_filename(self, method, filename = None):
         if not hasattr(self.Data, method_attr) or getattr(self.Data, method_attr) is None:
             setattr(self.Data, method_attr, create_method_filestorage(method, filename))
         set_data_filename_of_product(self, filename, data_attr)
+
 
 def get_method_filename(self, method: PhotozCatalogMethods):
     
@@ -199,23 +201,25 @@ def get_all_filenames(self):
 def create_method_filestorage(
     method: PhotozCatalogMethods,
     filename: Optional[str] = None,
-):
+    version = "0.9"):
     """Create a file storage object for a given shear estimates method."""
 
     method_cc, method_caps = get_method_cc_name(method)
     method_val = method.value
-    version = "0.9"
+    
     if "sed" in method_val.lower():
         format = "sedCatalog"
     elif "photoz" in method_val.lower():
         format = "photoZCatalog"
 
-    phz_catalog = getattr(phz_pro, f"phz{method_val}")()
-    phz_catalog.DataStorage = dm_utils.create_fits_storage(
-        getattr(phz_pro, f"phz{method_val}"), filename, f"phz.{format}", version
+    phz_catalog = getattr(phz_dict, f"phz{method_val}")()
+    phz_catalog = dm_utils.create_fits_storage(
+        getattr(phz_dict, f"phz{method_val}"), filename, f"phz.{format}", version
     )
     phz_catalog.Valid = "VALID"
     return phz_catalog
+
+
     
 def set_photoz_filename(self, filename: Optional[str] = None):
     return set_method_filename(self, PhotozCatalogMethods.PHOTOZ, filename)

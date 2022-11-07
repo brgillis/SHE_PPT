@@ -22,6 +22,7 @@ __updated__ = "2020-10-15"
 
 from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.products import phz_pf_output_catalog as prod
+from SHE_PPT.constants.classes import PhotozCatalogMethods
 
 
 class TestPhotozProduct(object):
@@ -65,4 +66,49 @@ class TestPhotozProduct(object):
         all_filenames = loaded_product.get_all_filenames()
         assert len(all_filenames) == 3
         assert len([fname for fname in all_filenames if fname]) == 3
+        return
+
+    def test_set_method_filename1(self, tmpdir):
+        # Create the product
+        product = prod.create_dpd_photoz_catalog(
+            "photoz_catalog.fits",
+            "gal_sed_catalog.fits",
+            "star_sed_catalog.fits")
+
+        # Change the fits filenames
+        subfilename = "test_phz_file.fits"
+        product.set_method_filename(PhotozCatalogMethods.PHOTOZ,subfilename)
+
+        # Save the product in an XML file
+        write_xml_product(product, "phz_photoz.xml", workdir=str(tmpdir))
+        # Read back the XML file
+        loaded_product = read_xml_product("phz_photoz.xml", workdir=str(tmpdir))
+
+        # Check that the filenames match
+        assert loaded_product.get_photoz_filename() == "data/" + subfilename
+        all_filenames = loaded_product.get_all_filenames()
+        assert len(all_filenames) == 3
+        assert len([fname for fname in all_filenames if fname]) == 3
+        return
+
+    def test_set_method_filename2(self, tmpdir):
+        # Create the product
+        product = prod.create_dpd_photoz_catalog(
+            "photoz_catalog.fits")
+
+
+        # Change the fits filenames
+        subfilename = "test_gal_sd_file.fits"
+        product.set_method_filename(PhotozCatalogMethods.GALSED,subfilename)
+
+        # Save the product in an XML file
+        write_xml_product(product, "phz_photoz.xml", workdir=str(tmpdir))
+        # Read back the XML file
+        loaded_product = read_xml_product("phz_photoz.xml", workdir=str(tmpdir))
+
+        # Check that the filenames match
+        assert loaded_product.get_gal_sed_filename() == "data/" + subfilename
+        all_filenames = loaded_product.get_all_filenames()
+        assert len(all_filenames) == 3
+        assert len([fname for fname in all_filenames if fname]) == 2
         return
