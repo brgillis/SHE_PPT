@@ -313,7 +313,7 @@ def init_method_files(
 
     binding_class.set_REGAUSS_filename = set_REGAUSS_filename
     binding_class.get_REGAUSS_filename = get_REGAUSS_filename
-    
+
     binding_class.get_all_filenames = get_all_filenames_methods
 
     binding_class.set_method_filename = set_method_filename
@@ -537,6 +537,7 @@ def create_catalog_coverage():
 
     return SpatialCoverage
 
+
 def create_general_product_from_template(
     template_filename: str,
     product_type_name: str,
@@ -587,7 +588,6 @@ def create_method_filestorage(
     """Create a file storage object for a given shear estimates method."""
 
     method_cc, method_caps = get_method_cc_name(method)
-    
 
     # Initialize the object
     shear_estimates = getattr(she_pro, f"she{method_caps}Measurements")()
@@ -610,7 +610,6 @@ def set_method_filename(self, method: ShearEstimationMethods, filename: Optional
     method_attr = f"{method_caps}ShearMeasurements"
     data_attr = f"{method_attr}.DataStorage"
 
-
     if filename is None:
         if hasattr(self.Data, method_attr):
             setattr(self.Data, method_attr, None)
@@ -625,7 +624,6 @@ def get_method_filename(self, method: ShearEstimationMethods):
     _, method_caps = get_method_cc_name(method)
     method_attr = f"{method_caps}ShearMeasurements"
     data_attr = f"{method_attr}.DataStorage"
-
 
     if not hasattr(self.Data, method_attr) or getattr(self.Data, method_attr) is None:
         return None
@@ -664,6 +662,7 @@ def get_MomentsML_filename(self):
 def get_REGAUSS_filename(self):
     return get_method_filename(self, ShearEstimationMethods.REGAUSS)
 
+
 def create_data_container(file_name, file_status="PROPOSED"):
     """Creates a data container binding.
 
@@ -690,6 +689,7 @@ def create_data_container(file_name, file_status="PROPOSED"):
 
     return data_container
 
+
 def create_fits_storage(binding_class, file_name, file_format, version):
     """Creates a fits file storage binding.
 
@@ -715,9 +715,8 @@ def create_fits_storage(binding_class, file_name, file_format, version):
 
     # Fill it with the given values
     storage.format = file_format
-    if version!="":
+    if version != "":
         storage.version = version
     storage.DataContainer = create_data_container(file_name)
 
     return storage
-
