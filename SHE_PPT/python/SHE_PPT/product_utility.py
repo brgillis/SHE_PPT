@@ -651,5 +651,3 @@ def get_MomentsML_filename(self):
 
 def get_REGAUSS_filename(self):
     return get_method_filename(self, ShearEstimationMethods.REGAUSS)
-
-

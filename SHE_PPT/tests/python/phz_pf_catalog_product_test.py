@@ -26,6 +26,7 @@ from SHE_PPT.constants.classes import PhotozCatalogMethods
 
 import pytest
 
+
 class TestPhotozProduct(object):
     """A collection of tests for the shear estimates data product."""
 
