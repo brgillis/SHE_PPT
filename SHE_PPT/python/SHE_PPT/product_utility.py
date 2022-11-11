@@ -528,16 +528,6 @@ def create_measurements_product_from_template(
     return p
 
 
-def create_catalog_coverage():
-    SpatialCoverage = cot_dict.spatialFootprint()
-    SpatialCoverage.Polygon = stc_dict.polygonType()
-    SpatialCoverage.Polygon.Vertex.append(stc_dict.vertexType())
-    vertex = SpatialCoverage.Polygon.Vertex[0]
-    vertex.Position = dtd_dict.double2Type(C1=0, C2=0)
-
-    return SpatialCoverage
-
-
 def create_general_product_from_template(
     template_filename: str,
     product_type_name: str,
@@ -663,60 +653,3 @@ def get_REGAUSS_filename(self):
     return get_method_filename(self, ShearEstimationMethods.REGAUSS)
 
 
-def create_data_container(file_name, file_status="PROPOSED"):
-    """Creates a data container binding.
-
-    Parameters
-    ----------
-    file_name: str
-        The data file name.
-    file_status: str, optional
-        The status of the file: PROPOSED, PROCESSING, COMMITTED, VALIDATED,
-        ARCHIVED or DELETED. Default is PROPOSED.
-
-    Returns:
-    --------
-    object
-        The data container binding.
-
-    """
-    # Create the data container binding
-    data_container = dss_dict.dataContainer()
-
-    # Fill it with the given values
-    data_container.FileName = file_name
-    data_container.filestatus = file_status
-
-    return data_container
-
-
-def create_fits_storage(binding_class, file_name, file_format, version):
-    """Creates a fits file storage binding.
-
-    Parameters
-    ----------
-    binding_class: class
-        The fits file binding class.
-    file_name: str
-        The fits file name.
-    file_format: str
-        The fits file format.
-    version: str
-        The fits file format version.
-
-    Returns
-    -------
-    object
-        The fits file storage binding.
-
-    """
-    # Create the appropriate fits file storage binding
-    storage = binding_class.Factory()
-
-    # Fill it with the given values
-    storage.format = file_format
-    if version != "":
-        storage.version = version
-    storage.DataContainer = create_data_container(file_name)
-
-    return storage

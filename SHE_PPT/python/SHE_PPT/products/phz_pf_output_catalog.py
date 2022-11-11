@@ -36,7 +36,6 @@ import ST_DM_DmUtils.DmUtils as dm_utils
 
 from ..product_utility import (
     init_binding_class,
-    create_fits_storage,
     get_method_cc_name,
     get_data_filename_from_product,
     set_data_filename_of_product,
@@ -66,8 +65,8 @@ def init():
 
     binding_class.get_all_filenames = get_all_filenames
 
-    binding_class.get_method_filename = get_method_filename
-    binding_class.set_method_filename = set_method_filename
+    binding_class.get_fits_filename = get_fits_filename
+    binding_class.set_fits_filename = set_fits_filename
 
     binding_class.has_files = True
 
@@ -110,7 +109,6 @@ def create_dpd_photoz_catalog(
     dpd.Data.IdCatalog = 0
 
     # Add the coverage
-    dpd.Data.SpatialCoverage = spatial_footprint
     dpd.Data.TileIndex = tile_index
 
     # Add the catalog descriptions
@@ -132,25 +130,26 @@ def create_dpd_photoz_catalog(
 
     # Add the files
 
-    dpd.Data.PhzCatalog = create_fits_storage(phz_dict.phzPhotoZCatalog, photoz_filename, "phz.photoZCatalog", version)
+    dpd.Data.PhzCatalog = dm_utils.create_fits_storage(phz_dict.phzPhotoZCatalog, photoz_filename, "phz.photoZCatalog", version)
 
     if star_sed_filename and star_sed_filename != "":
-        dpd.Data.StarSedCatalog = create_fits_storage(
+        dpd.Data.StarSedCatalog = dm_utils.create_fits_storage(
             phz_dict.phzStarSedCatalog, star_sed_filename, "phz.sedCatalog", version
         )
 
     if galaxy_sed_filename and galaxy_sed_filename != "":
-        dpd.Data.GalaxySedCatalog = create_fits_storage(
+        dpd.Data.GalaxySedCatalog = dm_utils.create_fits_storage(
             phz_dict.phzGalaxySedCatalog, galaxy_sed_filename, "phz.sedCatalog", version
         )
 
-    dpd.Data.SpatialCoverage = dm_utils.create_spatial_footprint()
     if spatial_footprint:
         dpd.Data.SpatialCoverage = spatial_footprint
+    else:
+        dpd.Data.SpatialCoverage = dm_utils.create_spatial_footprint()
     return dpd
 
 
-def set_method_filename(self, method, filename=None):
+def set_fits_filename(self, method, filename=None):
 
     method_caps = method.value
     if method_caps.startswith("PhotoZ"):
@@ -164,11 +163,11 @@ def set_method_filename(self, method, filename=None):
             setattr(self.Data, method_attr, None)
     else:
         if not hasattr(self.Data, method_attr) or getattr(self.Data, method_attr) is None:
-            setattr(self.Data, method_attr, create_method_filestorage(method, filename))
+            setattr(self.Data, method_attr, create_fits_filestorage(method, filename))
         set_data_filename_of_product(self, filename, data_attr)
 
 
-def get_method_filename(self, method: PhotozCatalogMethods):
+def get_fits_filename(self, method: PhotozCatalogMethods):
 
     method_caps = method.value
     if method_caps.startswith("PhotoZ"):
@@ -189,7 +188,7 @@ def get_all_filenames(self):
     return all_filenames
 
 
-def create_method_filestorage(method: PhotozCatalogMethods, filename: Optional[str] = None, version="0.9"):
+def create_fits_filestorage(method: PhotozCatalogMethods, filename: Optional[str] = None, version="0.9"):
     """Create a file storage object for a given shear estimates method."""
 
     method_cc, method_caps = get_method_cc_name(method)
@@ -209,24 +208,24 @@ def create_method_filestorage(method: PhotozCatalogMethods, filename: Optional[s
 
 
 def set_photoz_filename(self, filename: Optional[str] = None):
-    return set_method_filename(self, PhotozCatalogMethods.PHOTOZ, filename)
+    return set_fits_filename(self, PhotozCatalogMethods.PHOTOZ, filename)
 
 
 def set_gal_sed_filename(self, filename: Optional[str] = None):
-    return set_method_filename(self, PhotozCatalogMethods.GALSED, filename)
+    return set_fits_filename(self, PhotozCatalogMethods.GALSED, filename)
 
 
 def set_star_sed_filename(self, filename: Optional[str] = None):
-    return set_method_filename(self, PhotozCatalogMethods.STARSED, filename)
+    return set_fits_filename(self, PhotozCatalogMethods.STARSED, filename)
 
 
 def get_photoz_filename(self):
-    return get_method_filename(self, PhotozCatalogMethods.PHOTOZ)
+    return get_fits_filename(self, PhotozCatalogMethods.PHOTOZ)
 
 
 def get_gal_sed_filename(self):
-    return get_method_filename(self, PhotozCatalogMethods.GALSED)
+    return get_fits_filename(self, PhotozCatalogMethods.GALSED)
 
 
 def get_star_sed_filename(self):
-    return get_method_filename(self, PhotozCatalogMethods.STARSED)
+    return get_fits_filename(self, PhotozCatalogMethods.STARSED)

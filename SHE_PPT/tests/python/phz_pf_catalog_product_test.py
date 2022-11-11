@@ -24,6 +24,7 @@ from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.products import phz_pf_output_catalog as prod
 from SHE_PPT.constants.classes import PhotozCatalogMethods
 
+import pytest
 
 class TestPhotozProduct(object):
     """A collection of tests for the shear estimates data product."""
@@ -61,13 +62,14 @@ class TestPhotozProduct(object):
         assert len([fname for fname in all_filenames if fname]) == 3
         return
 
-    def test_set_method_filename1(self, tmpdir):
+    # @pytest.mark.skip(reason="Skip for now")
+    def test_set_fits_filename1(self, tmpdir):
         # Create the product
         product = prod.create_dpd_photoz_catalog("photoz_catalog.fits", "gal_sed_catalog.fits", "star_sed_catalog.fits")
 
         # Change the fits filenames
         subfilename = "test_phz_file.fits"
-        product.set_method_filename(PhotozCatalogMethods.PHOTOZ, subfilename)
+        product.set_fits_filename(PhotozCatalogMethods.PHOTOZ, subfilename)
 
         # Save the product in an XML file
         write_xml_product(product, "phz_photoz.xml", workdir=str(tmpdir))
@@ -81,13 +83,14 @@ class TestPhotozProduct(object):
         assert len([fname for fname in all_filenames if fname]) == 3
         return
 
-    def test_set_method_filename2(self, tmpdir):
+    # @pytest.mark.skip(reason="Skip for now")
+    def test_set_fits_filename2(self, tmpdir):
         # Create the product
         product = prod.create_dpd_photoz_catalog("photoz_catalog.fits")
 
         # Change the fits filenames
         subfilename = "test_gal_sd_file.fits"
-        product.set_method_filename(PhotozCatalogMethods.GALSED, subfilename)
+        product.set_fits_filename(PhotozCatalogMethods.GALSED, subfilename)
 
         # Save the product in an XML file
         write_xml_product(product, "phz_photoz.xml", workdir=str(tmpdir))
