@@ -33,10 +33,6 @@ from ST_DataModelBindings.dpd.she.intermediategeneral_stub import dpdSheIntermed
 from ST_DataModelBindings.dpd.she.intermediateobservationcatalog_stub import dpdSheIntermediateObservationCatalog
 from ST_DataModelBindings.dpd.she.placeholdergeneral_stub import dpdShePlaceholderGeneral
 from ST_DataModelBindings.pro import she_stub as she_pro
-import ST_DataModelBindings.bas.cot_stub as cot_dict
-import ST_DataModelBindings.bas.imp.stc_stub as stc_dict
-import ST_DataModelBindings.bas.dtd_stub as dtd_dict
-import ST_DataModelBindings.sys.dss_stub as dss_dict
 
 from .constants.misc import DATA_SUBDIR
 from .file_io import find_aux_file

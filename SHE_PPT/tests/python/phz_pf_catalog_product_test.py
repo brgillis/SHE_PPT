@@ -24,8 +24,6 @@ from SHE_PPT.file_io import read_xml_product, write_xml_product
 from SHE_PPT.products import phz_pf_output_catalog as prod
 from SHE_PPT.constants.classes import PhotozCatalogMethods
 
-import pytest
-
 
 class TestPhotozProduct(object):
     """A collection of tests for the shear estimates data product."""
