@@ -43,6 +43,7 @@ PNT_ID_LABEL = "PNT_ID"
 OBS_TIME_LABEL = "DATE_OBS"
 TILE_ID_LABEL = "TILE_ID"
 VALID_LABEL = "VALID"
+SED_TYPE_LABEL = "SED_TYPE"
 
 # Fits definitions
 PSF_FIELD_PARAM_DEF = "she.psfFieldParameters"

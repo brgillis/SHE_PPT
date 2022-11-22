@@ -28,8 +28,7 @@ from typing import Any, Optional
 
 
 class AllowedEnum(Enum):
-    """ An extension of the base Enum class with methods to check if a value is allowed, or to find a value.
-    """
+    """An extension of the base Enum class with methods to check if a value is allowed, or to find a value."""
 
     @classmethod
     def is_allowed_value(cls, value: str) -> bool:
@@ -50,6 +49,14 @@ class AllowedEnum(Enum):
         return None
 
 
+class PhotozCatalogMethods(AllowedEnum):
+    PHOTOZ = "PhotoZCatalog"
+    CLASSIFICATION = "ClassificationCatalog"
+    GALSED = "GalaxySedCatalog"
+    STARSED = "StarSedCatalog"
+    PHYSPARAM = "PhysicalParametersCatalog"
+
+
 class ShearEstimationMethods(AllowedEnum):
     KSB = "KSB"
     REGAUSS = "REGAUSS"
@@ -58,8 +65,8 @@ class ShearEstimationMethods(AllowedEnum):
 
 
 class BinParameters(AllowedEnum):
-    """ Enum of possible binning parameters for test cases.
-    """
+    """Enum of possible binning parameters for test cases."""
+
     TOT = "tot"
     SNR = "snr"
     BG = "bg"

@@ -18,6 +18,9 @@ Bug Fixes
 New Features
 ------------
 
+Added PHZ catalog products, using DmUtils to avoid using sample file
+Added additional functions - getters, setters.
+ 
 New config features
 -------------------
 - Added possible pipeline configuration option "SHE_PSFToolkit_frac_stars_to_test_interp", to control the fraction of candidate stars for PSF Fitting which should be excluded from use for the fit and instead used to test the interpolation of the fit
