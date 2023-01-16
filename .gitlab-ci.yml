@@ -11,6 +11,10 @@ pytest:
   image:
     name: gitlab.euclid-sgs.uk:4567/pf-she/she_containers/el_utils:1.2.2
     entrypoint: [ '/bin/sh', '-c' ]
+  variables:
+    ELEMENTS_AUX_PATH: /usr/share/auxdir
+    ELEMENTS_CONF_PATH: /usr/share/conf
+    USER: $GITLAB_USER_LOGIN
   script:
     - mkdir build
     - cd build
