@@ -27,6 +27,7 @@ New config features
 
 Miscellaneous
 -------------
+- Run pytest in a GitLab CI/CD pipeline
 
 
 Changes in v9.2
