@@ -1,6 +1,6 @@
 Changelog for SHE_PPT
 
-Changes in v9.3
+Changes in v9.4
 ===============
 
 API Changes
@@ -8,7 +8,6 @@ API Changes
 
 Dependency Changes
 ------------------
-- EL_Utils 1.2.3
 
 Deprecated Features
 -------------------
@@ -19,15 +18,28 @@ Bug Fixes
 New Features
 ------------
 
-Added PHZ catalog products, using DmUtils to avoid using sample file
-Added additional functions - getters, setters.
- 
 New config features
 -------------------
-- Added possible pipeline configuration option "SHE_PSFToolkit_frac_stars_to_test_interp", to control the fraction of candidate stars for PSF Fitting which should be excluded from use for the fit and instead used to test the interpolation of the fit
 
 Miscellaneous
 -------------
+
+
+Changes in v9.3
+===============
+
+Dependency Changes
+------------------
+- EL_Utils 1.2.3
+
+New Features
+------------
+- Added PHZ catalog products, using DmUtils to avoid using sample file
+- Added additional functions - getters, setters.
+
+New config features
+-------------------
+- Added possible pipeline configuration option "SHE_PSFToolkit_frac_stars_to_test_interp", to control the fraction of candidate stars for PSF Fitting which should be excluded from use for the fit and instead used to test the interpolation of the fit
 
 
 Changes in v9.2
