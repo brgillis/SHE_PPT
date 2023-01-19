@@ -7,7 +7,7 @@ SHE_PPT is a module with many common tools used throughout the SHE pipeline.
 * Processing Element Name: PF-SHE
 * Project Name: SHE_PPT
 * Profile: develop
-* Version: 9.3 (19/09/2022)
+* Version: 9.4 (19/01/2023)
 
 ## Contributors
 
