@@ -9,7 +9,7 @@ PEP8:
 pytest:
   stage: test
   image:
-    name: gitlab.euclid-sgs.uk:4567/pf-she/she_containers/el_utils:1.2.2
+    name: gitlab.euclid-sgs.uk:4567/pf-she/she_containers/el_utils:1.2.3
     entrypoint: [ '/bin/sh', '-c' ]
   variables:
     ELEMENTS_AUX_PATH: /usr/share/auxdir
