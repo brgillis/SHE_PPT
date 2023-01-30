@@ -65,6 +65,7 @@ from ST_DataModelBindings.dpd.vis.raw.visstackedframe_stub import dpdVisStackedF
 TEST_AUX_FILE = 'SHE_PPT/sample_vis_stacked_frame.xml'
 FILENAME_NO_FILE = "nonexistent_file"
 PATH_NO_DIRECTORY = "/no/directory/"
+IS_ROOT = os.geteuid() == 0
 
 
 class TestIO(SheTestCase):
@@ -616,6 +617,7 @@ class TestIO(SheTestCase):
 
         try_remove_file(test_qualified_filename)
 
+    @pytest.mark.xfail(IS_ROOT, reason="root has unrestricted capabilities to write files")
     def test_append_hdu(self):
         """Tests of the append_hdu function.
         """
@@ -885,6 +887,7 @@ class TestIO(SheTestCase):
             product = read_xml_product(qualified_temp_test_filename)
         product.validateBinding()
 
+    @pytest.mark.xfail(IS_ROOT, reason="root has unrestricted capabilities to write files")
     def test_tar_files(self):
         """ Runs test of tarring files.
         """
@@ -1204,6 +1207,7 @@ class TestIO(SheTestCase):
                         workdir=self.workdir,
                         warn=True)
 
+    @pytest.mark.xfail(IS_ROOT, reason="root has unrestricted capabilities to write files")
     def test_first_in_path(self):
         """Unit test of `first_(writable_)in_path`.
         """
@@ -1247,6 +1251,7 @@ class TestIO(SheTestCase):
         test_filename = get_data_filename(self.table_filename, workdir=self.src_dir)
         assert test_filename == self.table_filename
 
+    @pytest.mark.xfail(IS_ROOT, reason="root has unrestricted capabilities to write files")
     def test_remove_files(self):
         """Unit test of `remove_files`.
         """
