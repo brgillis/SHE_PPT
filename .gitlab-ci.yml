@@ -1,3 +1,6 @@
+variables:
+  EL_UTILS_VERSION: 1.2.3
+
 PEP8:
   stage: test
   image:
@@ -9,7 +12,7 @@ PEP8:
 pytest:
   stage: test
   image:
-    name: gitlab.euclid-sgs.uk:4567/pf-she/she_containers/el_utils:1.2.3
+    name: gitlab.euclid-sgs.uk:4567/pf-she/she_containers/el_utils:$EL_UTILS_VERSION
     entrypoint: [ '/bin/sh', '-c' ]
   variables:
     ELEMENTS_AUX_PATH: /usr/share/auxdir
@@ -21,3 +24,22 @@ pytest:
     - cmake -DPYTHON_EXPLICIT_VERSION=3 -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RELEASE ..
     - make install
     - pytest ../SHE_PPT/tests/python
+
+rpm-build:
+  stage: deploy
+  only:
+    - tags
+  image:
+    name: gitlab.euclid-sgs.uk:4567/pf-she/she_containers/el_utils:$EL_UTILS_VERSION
+    entrypoint: [ '/bin/sh', '-c' ]
+  variables:
+    SHE_CONTAINERS_PROJECT_ID: 2094
+  script:
+    - dnf update -y
+    - dnf install -y rpm-build
+    - mkdir build
+    - cd build
+    - cmake -DPYTHON_EXPLICIT_VERSION=3 -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RELEASE ..
+    - make rpm
+    - 'curl -s --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file Packages/RPM/RPMS/x86_64/SHE_PPT-$CI_COMMIT_TAG-1.fc34.x86_64.rpm "$CI_API_V4_URL/projects/$SHE_CONTAINERS_PROJECT_ID/packages/generic/SHE_PPT/$CI_COMMIT_TAG/SHE_PPT-$CI_COMMIT_TAG-1.fc34.x86_64.rpm"'
+    - 'curl -s --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file Packages/RPM/RPMS/x86_64/SHE_PPT-devel-$CI_COMMIT_TAG-1.fc34.x86_64.rpm "$CI_API_V4_URL/projects/$SHE_CONTAINERS_PROJECT_ID/packages/generic/SHE_PPT/$CI_COMMIT_TAG/SHE_PPT-devel-$CI_COMMIT_TAG-1.fc34.x86_64.rpm"'
