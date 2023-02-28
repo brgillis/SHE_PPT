@@ -15,6 +15,7 @@ Deprecated Features
 Bug Fixes
 ---------
 - Expect that unit tests relating to file permission will fail when run as root
+- Test WCS transformations at CRVAL
 
 New Features
 ------------

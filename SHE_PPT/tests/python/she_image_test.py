@@ -651,10 +651,10 @@ class TestSheImage(SheTestCase):
             assert np.allclose((x1, y1), (x2, y2))
 
         # Also check the transformation matrices match up
-        assert np.allclose(img.get_world2pix_transformation(0, 0),
-                           read_img.get_world2pix_transformation(0, 0))
-        assert np.allclose(img.get_pix2world_transformation(0, 0),
-                           read_img.get_pix2world_transformation(0, 0))
+        assert np.allclose(img.get_world2pix_transformation(*img.wcs.wcs.crval),
+                           read_img.get_world2pix_transformation(*img.wcs.wcs.crval))
+        assert np.allclose(img.get_pix2world_transformation(*img.wcs.wcs.crval),
+                           read_img.get_pix2world_transformation(*img.wcs.wcs.crval))
 
         # Test writing with header but no WCS
         del img.wcs
