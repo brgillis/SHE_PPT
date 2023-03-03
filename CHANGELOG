@@ -11,6 +11,7 @@ Dependency Changes
 
 Deprecated Features
 -------------------
+- Replace SheTestCase.teardown with SheTestCase.teardown_session due to pytest warnings regarding the method name
 
 Bug Fixes
 ---------
