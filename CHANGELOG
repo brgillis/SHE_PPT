@@ -28,6 +28,7 @@ Miscellaneous
 -------------
 - Run pytest in a GitLab CI/CD pipeline
 - Deploy RPMs for tagged releases to SHE_Containers
+- Replace np.bool (deprecated) with bool
 
 
 Changes in v9.3
