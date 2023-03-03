@@ -364,17 +364,17 @@ class SHEImage:
         self._mask = None
 
     @property
-    def boolmask(self) -> np.ndarray[np.bool]:
+    def boolmask(self) -> np.ndarray[bool]:
         """A boolean summary of the mask, cannot be set, only get.
 
         Returns
         -------
-        boolmask : np.ndarray[np.bool]
+        boolmask : np.ndarray[bool]
             A boolean summary of the mask.
         """
         if self.mask is None:
             return None
-        return self.mask.astype(np.bool)
+        return self.mask.astype(bool)
 
     @property
     def noisemap(self) -> Optional[np.ndarray[np.float32]]:
@@ -1028,7 +1028,7 @@ class SHEImage:
     def get_object_mask(self,
                         seg_id: int,
                         mask_suspect: bool = False,
-                        mask_unassigned: bool = False) -> np.ndarray[np.bool]:
+                        mask_unassigned: bool = False) -> np.ndarray[bool]:
         """Get a mask for pixels that are either bad (and optionally suspect) or don't belong to an object with a
         given ID. The returned mask follows the convention that 0/False = good, 1/True = bad.
 
@@ -1044,7 +1044,7 @@ class SHEImage:
 
         Returns
         -------
-        object_mask: np.ndarray[np.bool]
+        object_mask: np.ndarray[bool]
             Mask for the desired object. Values of True correspond to masked pixels (bad(/suspect) or don't belong to
             this object).
         """

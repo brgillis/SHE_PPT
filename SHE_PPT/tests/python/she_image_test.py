@@ -233,8 +233,8 @@ class TestSheImage(SheTestCase):
         self.l_qualified_test_filenames = [get_qualified_filename(filename, self.workdir)
                                            for filename in self.L_TEST_FILENAMES]
 
-    def teardown(self):
-        """Override teardown to cleanup any created files.
+    def teardown_session(self):
+        """Override teardown_session to cleanup any created files.
         """
 
         if not hasattr(self, "l_qualified_test_filenames"):

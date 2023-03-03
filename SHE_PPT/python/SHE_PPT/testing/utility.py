@@ -88,9 +88,10 @@ class SheTestCase:
     2. Overridable method `post_setup`, to handle any other setup tasks the user desires for tests,
        outside of downloading test data. See the documentation for this method for example implementations.
 
-    3. Overridable method `teardown`, to handle any teardown tasks the user desires for a test. This should generally
-       not be needed, as all data should be written to the workdir, and `pytest`'s `tmpdir` fixture will automatically
-       handle deleting old directories created with this fixture, but it is provided in case it proves to be necessary.
+    3. Overridable method `teardown_session`, to handle any teardown tasks the user desires for a test. This should
+       generally not be needed, as all data should be written to the workdir, and `pytest`'s `tmpdir` fixture will
+       automatically handle deleting old directories created with this fixture, but it is provided in case it proves to
+       be necessary.
 
     4. Overridable method `_make_mock_args`, which is used to create the mock `Namespace`, `self.args`.
 
@@ -330,7 +331,7 @@ class SheTestCase:
         """
         pass
 
-    def teardown(self) -> None:
+    def teardown_session(self) -> None:
         """Overridable method, where the user can specify any commands to be run at the end of any tests.
         """
         return None
@@ -491,7 +492,8 @@ class SheTestCase:
 
     @pytest.fixture(scope="session", autouse=True)
     def _teardown(self, request):
-        """Method set up to be run at session-level, to define the `teardown` method to be run at end of all tests.
+        """Method set up to be run at session-level, to define the `teardown_session` method to be run at end of all
+        tests.
         """
 
-        request.addfinalizer(self.teardown)
+        request.addfinalizer(self.teardown_session)
