@@ -534,12 +534,15 @@ class SHEFrame(object):
         # Loop over the detectors, and use the WCS of each to determine if it's on it or not
         found = False
 
-        num_x, num_y = np.shape(self.detectors)
+        # detector IDs are "y-x", and indexing self.detectors[i,j] gives detector "i-j"
+        # Therefore to get detector x, y, we need self.detectors[y_i, x_i]
 
-        for x_i in range(num_x):
-            for y_i in range(num_y):
+        num_y, num_x = np.shape(self.detectors)
 
-                detector = self.detectors[x_i, y_i]
+        for y_i in range(num_y):
+            for x_i in range(num_x):
+
+                detector = self.detectors[y_i, x_i]
                 if detector is None:
                     continue
 
