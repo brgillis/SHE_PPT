@@ -36,7 +36,7 @@ filter_list_ext = ['G_EXT_DECAM', 'R_EXT_DECAM', 'I_EXT_DECAM', 'Z_EXT_DECAM',
                    'U_EXT_MEGACAM', 'R_EXT_MEGACAM',
                    'G_EXT_JPCAM',
                    'I_EXT_PANSTARRS', 'Z_EXT_PANSTARRS',
-                   'Z_EXT_HSC']
+                   'Z_EXT_HSC', 'G_EXT_HSC']
 
 filter_list = ['VIS', 'Y', 'J', 'H']
 
