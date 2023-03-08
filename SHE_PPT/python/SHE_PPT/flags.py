@@ -27,6 +27,12 @@ __updated__ = "2021-08-13"
 
 she_flag_version = "0.1"
 
+# PSF model quality flags
+
+flag_psf_quality_good = 0
+flag_psf_quality_outside_fov = 1
+flag_psf_quality_invalid = 2
+
 # Fitclas values for what we believe the object is
 
 fitclass_galaxy = 0
