@@ -20,6 +20,7 @@ Bug Fixes
 
 New Features
 ------------
+- Added the G_EXT_HSC columns to the MER final catalogue table
 
 New config features
 -------------------
