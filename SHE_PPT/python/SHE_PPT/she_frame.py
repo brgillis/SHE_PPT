@@ -51,6 +51,8 @@ MSG_INVALID_TYPE = "Data image product from %s is invalid type."
 
 logger = logging.getLogger(__name__)
 
+CoordTuple = namedtuple("CoordTuple", "x_fov y_fov detno_x detno_y x_det y_det")
+
 
 class SHEFrame(object):
     """Structure containing an array of SHEImageData objects, representing either an individual exposure or the
@@ -545,11 +547,10 @@ class SHEFrame(object):
                 detector = self.detectors[y_i, x_i]
                 if detector is None:
                     continue
-
                 x, y = detector.world2pix(x_world, y_world)
-                if (x < 1 - x_buffer) or (x > detector.shape[0] + x_buffer):
+                if (x <= 1 - x_buffer) or (x >= detector.shape[0] + x_buffer):
                     continue
-                if (y < 1 - y_buffer) or (y > detector.shape[1] + y_buffer):
+                if (y <= 1 - y_buffer) or (y >= detector.shape[1] + y_buffer):
                     continue
 
                 found = True
@@ -572,9 +573,6 @@ class SHEFrame(object):
         x_fov, y_fov = tc.get_fov_coords_from_detector(
             x, y, x_i, y_i, 'VIS')
         if return_det_coords_too:
-            # Do as astropy Table
-            CoordTuple = namedtuple("CoordTuple",
-                                    "x_fov y_fov detno_x detno_y x_det y_det")
             return CoordTuple(*[x_fov, y_fov, x_i, y_i, x, y])
         else:
             return (x_fov, y_fov)
