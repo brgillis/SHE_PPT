@@ -39,11 +39,12 @@ from astropy.io.misc.hdf5 import read_table_hdf5
 
 import ElementsKernel.Logging as log
 
+from ST_DM_DmUtils.DmUtils import read_product_metadata
+
 from .profiling import io_stats
 
 logger = log.getLogger(__name__)
 
-from ST_DM_DmUtils.DmUtils import read_product_metadata
 
 def read_psf_model_images(psf_listfile, workdir="."):
     """
@@ -56,31 +57,30 @@ def read_psf_model_images(psf_listfile, workdir="."):
      - psf_model_images: list of PSFModelImage objects
     """
 
-    datadir = os.path.join(workdir,"data")
-    
-    logger.info("Opening psf model images listfile %s", os.path.join(workdir,psf_listfile))
-    with open(os.path.join(workdir,psf_listfile), "r") as f:
+    datadir = os.path.join(workdir, "data")
+
+    logger.info("Opening psf model images listfile %s", os.path.join(workdir, psf_listfile))
+    with open(os.path.join(workdir, psf_listfile), "r") as f:
         psf_prods = json.load(f)
 
     n_exps = len(psf_prods)
-    
-    psf_dpds = [read_product_metadata(os.path.join(workdir,p)) for p in psf_prods]
 
-    psf_files = [ p.Data.DataStorage.DataContainer.FileName for p in psf_dpds]
+    psf_dpds = [read_product_metadata(os.path.join(workdir, p)) for p in psf_prods]
+
+    psf_files = [p.Data.DataStorage.DataContainer.FileName for p in psf_dpds]
 
     psf_model_images = []
     # Read get the appropriate PSFModelImages object depending on the file extension of the files to be read
     for psf_file in psf_files:
-        qualified_psf_file = os.path.join(datadir,psf_file)
+        qualified_psf_file = os.path.join(datadir, psf_file)
         _, ext = os.path.splitext(psf_file)
 
-        if ext in (".h5",".hdf5"):
+        if ext in (".h5", ".hdf5"):
             psf_model_images.append(PSFModelImageHDF5(qualified_psf_file))
         elif ext in (".fits"):
             psf_model_images.append(PSFModelImageFITS(qualified_psf_file))
         else:
-            raise ValueError("Unknown file extension for psf_model_images file %s"%qualified_psf_file)
-
+            raise ValueError("Unknown file extension for psf_model_images file %s" % qualified_psf_file)
 
     logger.info("Created %d %s objects", n_exps, psf_model_images[-1].__class__.__name__)
 
@@ -90,14 +90,15 @@ def read_psf_model_images(psf_listfile, workdir="."):
 @dataclass
 class ObjectModelImage:
     """Contains the bulge and disk model images for an object, along with the quality flag"""
+
     bulge: np.ndarray
     disk: np.ndarray
     quality_flag: np.int32
     # Table row included in case any information from the table is required in future
-    table_row: "astropy.table.row.Row"
+    table_row: "astropy.table.row.Row"  # noqa: F821
+
 
 class PSFModelImage(ABC):
-
     def __init__(self, filename):
         """
         Sets up the class
@@ -107,7 +108,6 @@ class PSFModelImage(ABC):
         """
         pass
 
-    
     @abstractmethod
     def get_model_images(self, obj_id):
         """
@@ -128,13 +128,12 @@ class PSFModelImage(ABC):
 
 class PSFModelImageFITS(PSFModelImage):
     """Class for interfacing with a psf_model_image fits file"""
-    
+
     @io_stats
     def __init__(self, filename):
 
         self.filename = filename
-        
-        
+
         # No point in memory mapping as we wish to access the whole HDU at once.
         # We do not lazy load HDUs so that the whole file is traversed and the locations/offsets of
         # each HDU is known. This means when we call self.get_model_images (below) it knows where in
@@ -148,14 +147,14 @@ class PSFModelImageFITS(PSFModelImage):
 
         # index table by object_id
         self.table.add_index("OBJECT_ID")
-    
+
     @io_stats
     def get_model_images(self, obj_id):
-        
+
         try:
             row = self.table.loc[obj_id]
         except KeyError as e:
-            raise KeyError("Object %s not present in PSFModelImages file %s"%(obj_id, self.filename)) from e
+            raise KeyError("Object %s not present in PSFModelImages file %s" % (obj_id, self.filename)) from e
 
         bulge_idx = row["SHE_PSF_BULGE_INDEX"]
         disk_idx = row["SHE_PSF_DISK_INDEX"]
@@ -172,11 +171,11 @@ class PSFModelImageFITS(PSFModelImage):
 
 class PSFModelImageHDF5(PSFModelImage):
     """Class for interfacing with a psf_model_image HDF5 file"""
-    
+
     @io_stats
     def __init__(self, filename):
-        
-        self.file = h5py.File(filename,"r")
+
+        self.file = h5py.File(filename, "r")
 
         # NOTE: We can do Table.read(self.file["TABLE"]) directly but this uses hundreds
         # of read ops... I presume astropy tries everything before defaulting to HDF5.
@@ -186,25 +185,24 @@ class PSFModelImageHDF5(PSFModelImage):
 
         # index table by object_id
         self.table.add_index("OBJECT_ID")
-        
+
         # store reference to the IMAGES group
         self.images = self.file["IMAGES"]
 
         # Get the list of objects in the file
         self.objects = list(self.images.keys())
-    
+
     @io_stats
     def get_model_images(self, obj_id):
-        
+
         # a HDF5 dataset's name is a string
         if str(obj_id) not in self.objects:
-            raise KeyError("Object %s not present in PSFModelImages file %s"%(obj_id, self.file.filename))
-        
-        image = self.images[str(obj_id)][:,:]
+            raise KeyError("Object %s not present in PSFModelImages file %s" % (obj_id, self.file.filename))
+
+        image = self.images[str(obj_id)][:, :]
 
         row = self.table[int(obj_id)]
 
         quality_flag = row["SHE_PSF_QUAL_FLAG"]
 
         return ObjectModelImage(bulge=image, disk=image, quality_flag=quality_flag, table_row=row)
-

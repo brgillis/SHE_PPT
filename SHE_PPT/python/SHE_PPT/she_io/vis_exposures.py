@@ -65,75 +65,76 @@ def read_vis_data(vis_listfile, seg_listfile=None, workdir=".", method="astropy"
      - vis_exposures: a list of VisExposure objects
     """
 
-    datadir = os.path.join(workdir,"data")
+    datadir = os.path.join(workdir, "data")
 
     # Make sure we have a valid method:
     if method not in ("astropy", "fitsio", "hdf5"):
-        raise ValueError("VIS IO method %s not know. Choose from %s"%(method,"astropy, fitsio, hdf5"))
-    
-    # Regardless of the method, we always need the VIS products
-    logger.info("Opening VIS listfile %s", os.path.join(workdir,vis_listfile))
+        raise ValueError("VIS IO method %s not know. Choose from %s" % (method, "astropy, fitsio, hdf5"))
 
-    with open(os.path.join(workdir,vis_listfile), "r") as f:
+    # Regardless of the method, we always need the VIS products
+    logger.info("Opening VIS listfile %s", os.path.join(workdir, vis_listfile))
+
+    with open(os.path.join(workdir, vis_listfile), "r") as f:
         vis_prods = json.load(f)
-    vis_dpds = [ read_product_metadata(os.path.join(workdir,p)) for p in vis_prods]
+    vis_dpds = [read_product_metadata(os.path.join(workdir, p)) for p in vis_prods]
 
     n_exps = len(vis_dpds)
 
     if n_exps == 0:
         raise ValueError("VIS listfile is empty")
-    
+
     # HDF5 is different to the other two methods as it does not need the FITS files,
     # so deal with this first and return
     if method == "hdf5":
-        with open(os.path.join(workdir,hdf5_listfile), "r") as f:
+        with open(os.path.join(workdir, hdf5_listfile), "r") as f:
             hdf5_files = json.load(f)
 
         if len(hdf5_files) != n_exps:
-            raise ValueError("HDF5 listfile (len %d) has different length from vis listfile (len %d)"%(len(seg_dpds), n_exps))
+            raise ValueError(
+                "HDF5 listfile (len %d) has different length from vis listfile (len %d)" % (len(vis_dpds), n_exps)
+            )
 
-        qualified_hdf5_files = [ os.path.join(datadir,f) for f in hdf5_files]
-        
-        vis_exposures = [ VisExposureHDF5(h5,dpd=dpd) for h5, dpd in zip(qualified_hdf5_files,vis_dpds)]
+        qualified_hdf5_files = [os.path.join(datadir, f) for f in hdf5_files]
+
+        vis_exposures = [VisExposureHDF5(h5, dpd=dpd) for h5, dpd in zip(qualified_hdf5_files, vis_dpds)]
 
         logger.info("Created %d %s exposures", n_exps, vis_exposures[-1].__class__.__name__)
 
         return vis_exposures
-    
+
     # get the FITS files we need to access
-    dets = [os.path.join(datadir,p.Data.DataStorage.DataContainer.FileName) for p in vis_dpds]
-    wgts = [os.path.join(datadir,p.Data.WeightStorage.DataContainer.FileName) for p in vis_dpds]
-    bkgs = [os.path.join(datadir,p.Data.BackgroundStorage.DataContainer.FileName) for p in vis_dpds]
-    
+    dets = [os.path.join(datadir, p.Data.DataStorage.DataContainer.FileName) for p in vis_dpds]
+    wgts = [os.path.join(datadir, p.Data.WeightStorage.DataContainer.FileName) for p in vis_dpds]
+    bkgs = [os.path.join(datadir, p.Data.BackgroundStorage.DataContainer.FileName) for p in vis_dpds]
+
     # get the segmentation FITS file (if provided)
     if seg_listfile:
-        with open(os.path.join(workdir,seg_listfile), "r") as f:
+        with open(os.path.join(workdir, seg_listfile), "r") as f:
             seg_prods = json.load(f)
-        seg_dpds = [ read_product_metadata(os.path.join(workdir,p)) for p in seg_prods]
+        seg_dpds = [read_product_metadata(os.path.join(workdir, p)) for p in seg_prods]
 
         if len(seg_dpds) != len(vis_dpds):
-            raise ValueError("Segmentation listfile (len %d) has different length from vis listfile (len %d)"%(len(seg_dpds), n_exps))
+            raise ValueError(
+                "Segmentation listfile (len %d) has different length from vis listfile (len %d)"
+                % (len(seg_dpds), n_exps)
+            )
 
-        segs = [os.path.join(datadir,p.Data.DataStorage.DataContainer.FileName) for p in seg_dpds]
+        segs = [os.path.join(datadir, p.Data.DataStorage.DataContainer.FileName) for p in seg_dpds]
     else:
         segs = [None for _ in range(n_exps)]
-    
+
     vis_exposures = []
     for det, wgt, bkg, seg, dpd in zip(dets, wgts, bkgs, segs, vis_dpds):
         if method == "astropy":
-            exp = VisExposureAstropyFITS(det,bkg,wgt,seg,dpd=dpd)
+            exp = VisExposureAstropyFITS(det, bkg, wgt, seg, dpd=dpd)
         else:
-            exp = VisExposureFitsIO(det,bkg,wgt,seg,dpd=dpd)
-        
+            exp = VisExposureFitsIO(det, bkg, wgt, seg, dpd=dpd)
+
         vis_exposures.append(exp)
 
     logger.info("Created %d %s exposures", n_exps, vis_exposures[-1].__class__.__name__)
 
     return vis_exposures
-
-
-
-
 
 
 @dataclass
@@ -148,7 +149,7 @@ class Detector:
     wgt: np.ndarray
     bkg: np.ndarray
     seg: np.ndarray
-    dpd: "DpdVisCalibratedFrame"
+    dpd: "DpdVisCalibratedFrame"  # noqa: F821
 
     def __eq__(self, other):
         if self.header != other.header:
@@ -259,7 +260,7 @@ class VisExposure(ABC):
 
     def get_dpd(self):
         return self.dpd
-    
+
     @abstractmethod
     def _get_wcs_and_header_list(self):
         # OVERRIDE ME
@@ -271,21 +272,12 @@ class VisExposure(ABC):
         pass
 
 
-
 class VisExposureAstropyFITS(VisExposure):
     """Implementation of the VisExposure class using astropy.io.fits"""
 
     @io_stats
     def __init__(
-        self,
-        det_file,
-        bkg_file=None,
-        wgt_file=None,
-        seg_file=None,
-        load_rms=True,
-        load_flg=True,
-        memmap=True,
-        dpd=None
+        self, det_file, bkg_file=None, wgt_file=None, seg_file=None, load_rms=True, load_flg=True, memmap=True, dpd=None
     ):
 
         super().__init__()
@@ -330,10 +322,10 @@ class VisExposureAstropyFITS(VisExposure):
         self.sci_hdus = [hdu for hdu in self._det_hdul[offset::3]]
 
         if load_rms:
-            self.rms_hdus = [hdu for hdu in self._det_hdul[offset + 1 :: 3]]
+            self.rms_hdus = [hdu for hdu in self._det_hdul[(offset + 1)::3]]
 
         if load_flg:
-            self.flg_hdus = [hdu for hdu in self._det_hdul[offset + 2 :: 3]]
+            self.flg_hdus = [hdu for hdu in self._det_hdul[(offset + 2)::3]]
 
         if self._bkg_hdul:
             offset = len(self._bkg_hdul) - self.n_detectors
@@ -364,7 +356,7 @@ class VisExposureAstropyFITS(VisExposure):
 
                 shape = tuple(hdu.shape)
                 dtype = hdu.dtype
-                
+
                 obj = super().__new__(cls, shape, dtype=dtype, buffer=None, offset=0, strides=None, order=None)
                 obj.hdu = hdu
 
@@ -397,16 +389,7 @@ class VisExposureFitsIO(VisExposure):
     """Implementation of the VisExposure class using fitsio"""
 
     @io_stats
-    def __init__(
-        self,
-        det_file,
-        bkg_file=None,
-        wgt_file=None,
-        seg_file=None,
-        load_rms=True,
-        load_flg=True,
-        dpd=None
-    ):
+    def __init__(self, det_file, bkg_file=None, wgt_file=None, seg_file=None, load_rms=True, load_flg=True, dpd=None):
 
         super().__init__()
 
@@ -458,10 +441,10 @@ class VisExposureFitsIO(VisExposure):
         self.sci_hdus = [hdu for hdu in self._det_hdul[offset::3]]
 
         if load_rms:
-            self.rms_hdus = [hdu for hdu in self._det_hdul[offset + 1 :: 3]]
+            self.rms_hdus = [hdu for hdu in self._det_hdul[(offset + 1)::3]]
 
         if load_flg:
-            self.flg_hdus = [hdu for hdu in self._det_hdul[offset + 2 :: 3]]
+            self.flg_hdus = [hdu for hdu in self._det_hdul[(offset + 2)::3]]
 
         if self._bkg_hdul:
             offset = len(self._bkg_hdul) - self.n_detectors
@@ -495,7 +478,6 @@ class VisExposureFitsIO(VisExposure):
 
                 obj = super().__new__(cls, shape, dtype=dtype, buffer=None, offset=0, strides=None, order=None)
                 obj.hdu = hdu
-                
 
                 return obj
 
@@ -568,7 +550,7 @@ class VisExposureHDF5(VisExposure):
                 shape = dataset.shape
                 dtype = dataset.dtype
 
-                obj = super().__new__(cls, shape, dtype=float, buffer=None, offset=0, strides=None, order=None)
+                obj = super().__new__(cls, shape, dtype=dtype, buffer=None, offset=0, strides=None, order=None)
                 obj.dataset = dataset
 
                 return obj
@@ -591,8 +573,6 @@ class VisExposureHDF5(VisExposure):
 
         self._detectors[det_id] = det
         self._detectors[det_num] = det
-
-
 
 
 def _correct_header(hdr):
@@ -620,8 +600,3 @@ def _fitsio_to_astropy_header(hdr):
         card.verify()
         cards.append(card)
     return fits.Header(cards)
-
-
-
-
-    

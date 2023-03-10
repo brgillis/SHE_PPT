@@ -44,7 +44,7 @@ def io_stats(f):
         m = p.memory_info()
         read0 = c0.read_count
         bytes0 = c0.read_chars
-        
+
         t0 = time.time()
         ret = f(*args, **kwargs)
         t1 = time.time()
@@ -61,9 +61,9 @@ def io_stats(f):
             read1 - read0,
             (bytes1 - bytes0) // 1024,
             open_files,
-            m.rss/1024**2,
-            m.vms/1024**2,
-            t1 - t0
+            m.rss / 1024**2,
+            m.vms / 1024**2,
+            t1 - t0,
         )
         return ret
 

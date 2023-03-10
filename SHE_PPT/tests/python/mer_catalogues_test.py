@@ -100,4 +100,3 @@ class TestMerCatalogues(object):
 
         with pytest.raises(ValueError):
             pruned_cat, dpds = prune_mer_catalogue(mer_cat, unique_objs)
-
