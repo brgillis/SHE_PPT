@@ -22,6 +22,7 @@ New Features
 ------------
 - Added the G_EXT_HSC columns to the MER final catalogue table
 - Added PSF model image quality flags
+- Added VIS flags
 
 New config features
 -------------------
