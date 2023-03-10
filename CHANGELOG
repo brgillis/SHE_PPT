@@ -5,6 +5,7 @@ Changes in v9.4
 
 API Changes
 -----------
+- Added new she_io functions/classes to facilitate opening VIS exposures and PSF Model Images, as well as stamp extraction functions.
 
 Dependency Changes
 ------------------
