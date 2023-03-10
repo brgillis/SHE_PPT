@@ -39,9 +39,9 @@ PIXEL_SIZE = 0.1 / 3600.0
 def frame():
     """
     Returns a valid SHEFrame with 36 detectors with valid WCSs but no data.
-    
+
     NOTE: This is a dummy layout of detectors. All the WCSs are needed for is to convert ra/dec
-    into valid x and y pixel coords for a given detector. The relative positioning of the 
+    into valid x and y pixel coords for a given detector. The relative positioning of the
     detectors is irrelevent as the underlying tc.get_fov_coords_from_detector has no knowledge of this
     """
 
