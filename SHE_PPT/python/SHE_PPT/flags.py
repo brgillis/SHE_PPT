@@ -7,6 +7,8 @@ This module contains definitions of flag bits and fitclass values, as defined by
 https://euclid.roe.ac.uk/projects/sgsshear/wiki/ShearMeasurementFlags
 """
 
+import numpy as np
+
 __updated__ = "2021-08-13"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
@@ -82,8 +84,35 @@ non_failure_flags = (flag_no_noisemap | flag_corrupt_noisemap | flag_no_segmenta
                      flag_corrupt_segmentation_map | flag_too_low_shape_error | flag_exposures_dropped)
 failure_flags = (2 ** 33 - 1) ^ non_failure_flags
 
+# VIS flags for their flg data.
+# See https://gitlab.euclid-sgs.uk/PF-VIS/VIS_ImageTools/-/blob/develop/VIS_ImageTools_M/python/VIS_ImageTools_M/FlagMap.py (where this code was lifted from...)  # noqa: E501
+# and https://euclid.roe.ac.uk/projects/vis_pf/wiki/VIS_Flags
+
+VIS_FLAGS = {
+  'GOOD':          np.int32(0x00000000),
+  'INVALID':       np.int32(0x00000001),  # bit  0
+  'HOT':           np.int32(0x00000002),  # bit  1
+  'COLD':          np.int32(0x00000004),  # bit  2
+  'SAT':           np.int32(0x00000008),  # bit  3
+  'COSMIC':        np.int32(0x00000010),  # bit  4
+  'GHOST':         np.int32(0x00000020),  # bit  5
+  'OVRCOL':        np.int32(0x00001000),  # bit 12
+  'EXTOBJ':        np.int32(0x00002000),  # bit 13
+  'SCATLIGHT':     np.int32(0x00004000),  # bit 14
+  'CHARINJ':       np.int32(0x00008000),  # bit 15
+  'NEARCHARINJ':   np.int32(0x00010000),  # bit 16
+  'SATXTALKGHOST': np.int32(0x00020000),  # bit 17
+  'STARSIGNAL':    np.int32(0x00040000),  # bit 18
+  'SATURATEDSTAR': np.int32(0x00080000),  # bit 19
+  'CTICORRECTION': np.int32(0x00100000),  # bit 20
+  'ADCMAX':        np.int32(0x00200000),  # bit 21
+  'TXERROR':       np.int32(0x00400000),  # bit 22
+  'STITCHBLOCK':   np.int32(0x00800000),  # bit 23
+  'OBJECTS':       np.int32(0x01000000),  # bit 24
+}
 
 # Utility functions
+
 
 def combine_flags(*flags):
     """ Returns an integer with the bit flags combined into one value.
