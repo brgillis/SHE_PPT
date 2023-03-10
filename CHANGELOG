@@ -17,6 +17,7 @@ Bug Fixes
 ---------
 - Expect that unit tests relating to file permission will fail when run as root
 - Test WCS transformations at CRVAL
+- SHEFrame.get_fov_coords now passes the correct detector indices, not their transpose
 
 New Features
 ------------
