@@ -127,11 +127,7 @@ def convert_to_hdf5(det_file, bkg_file, wgt_file, seg_file, output_filename, chu
 
         @io_stats
         def create_dataset_from_hdu(group, name, hdu, chunk):
-            if chunk:
-                ds = group.create_dataset(name, data=hdu.data, chunks=chunk)
-            else:
-                ds = group.create_dataset(name, data=hdu.data)
-
+            ds = group.create_dataset(name, data=hdu.data, chunks=chunk)
             ds.attrs["header"] = hdu.header.tostring()
 
             logger.info("Created dataset %s", ds.name)
