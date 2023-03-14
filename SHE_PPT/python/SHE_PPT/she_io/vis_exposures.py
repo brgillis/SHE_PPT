@@ -230,7 +230,7 @@ class VisExposure(ABC):
     def delete_detector(self, det_name):
         if det_name in self._detectors:
             det_num, det_id = self._parse_detector_name(det_name)
-            logger.info("Deleted detector %d with ID %s" % (det_num, det_id))
+            logger.info("Deleting detector %d with ID %s", det_num, det_id)
             del self._detectors[det_num]
             del self._detectors[det_id]
         # It can't hurt to garbage collect regardless of whether we have deleted the detector or not
