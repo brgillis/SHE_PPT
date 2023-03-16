@@ -44,37 +44,37 @@ from SHE_PPT.she_io.psf_model_images import (
 # NOTE the file conftest.py contains the pytest fixtures used by this test
 
 
+def validate_psf_model_image(psf):
+    """Tests the API of a PSFModelImages object"""
+
+    object_ids = psf.table["OBJECT_ID"]
+
+    # check that a valid object id returns ndarrays
+    object_id = object_ids[0]
+    model = psf[object_id]
+    assert type(model) is ObjectModelImage, "Output is an unexpected type"
+    assert type(model.bulge) is np.ndarray, "Bulge PSF is an unexpected type"
+    assert type(model.disk) is np.ndarray, "Disk PSF is an unexpected type"
+    assert type(model.quality_flag) is np.int32, "Quality flag is unexpected type"
+
+    # check that an invalid object id raises an exception
+    while True:
+        invalid_obj_id = np.random.randint(0, 2**32 - 1)
+        if invalid_obj_id not in object_ids:
+            break
+
+    with pytest.raises(KeyError):
+        model = psf[invalid_obj_id]
+
+
 class Testpsf_model_images(object):
-    def testPSFModelImageFITS(self, workdir, input_fits):
+    def test_PSFModelImage(self, workdir, input_fits):
+        """Tests the API of the PSFModelImages objects (FITS and HDF5 versions)"""
         _, _, _, _, psf_file, _ = input_fits
 
         psf_fits = os.path.join(workdir, "data", psf_file)
 
-        psf = PSFModelImageFITS(psf_fits)
-
-        object_ids = psf.table["OBJECT_ID"]
-
-        # check that a valid object id returns ndarrays
-        object_id = object_ids[0]
-        model = psf[object_id]
-        assert type(model) is ObjectModelImage, "Output is an unexpected type"
-        assert type(model.bulge) is np.ndarray, "Bulge PSF is an unexpected type"
-        assert type(model.disk) is np.ndarray, "Disk PSF is an unexpected type"
-        assert type(model.quality_flag) is np.int32, "Quality flag is unexpected type"
-
-        # check that an invalid object id raises an exception
-        while True:
-            invalid_obj_id = np.random.randint(0, 2**32 - 1)
-            if invalid_obj_id not in object_ids:
-                break
-
-        with pytest.raises(KeyError):
-            model = psf[invalid_obj_id]
-
-    def testPSFModelImageHDF5(self, workdir, input_fits):
-        _, _, _, _, psf_file, _ = input_fits
-
-        psf_fits = os.path.join(workdir, "data", psf_file)
+        # Convert the FITS PSFModelImages file to hdf5
         psf_h5 = os.path.splitext(psf_fits)[0] + ".h5"
 
         hdul = fits.open(psf_fits)
@@ -92,26 +92,9 @@ class Testpsf_model_images(object):
 
         hdul.close()
 
-        psf = PSFModelImageHDF5(psf_h5)
-
-        object_ids = psf.table["OBJECT_ID"]
-
-        # check that a valid object id returns ndarrays
-        object_id = object_ids[0]
-        model = psf[object_id]
-        assert type(model) is ObjectModelImage, "Output is an unexpected type"
-        assert type(model.bulge) is np.ndarray, "Bulge PSF is an unexpected type"
-        assert type(model.disk) is np.ndarray, "Disk PSF is an unexpected type"
-        assert type(model.quality_flag) is np.int32, "Quality flag is unexpected type"
-
-        # check that an invalid object id raises an exception
-        while True:
-            invalid_obj_id = np.random.randint(0, 2**32 - 1)
-            if invalid_obj_id not in object_ids:
-                break
-
-        with pytest.raises(KeyError):
-            model = psf[invalid_obj_id]
+        # Validate the PSFModelImages objects
+        validate_psf_model_image(PSFModelImageFITS(psf_fits))
+        validate_psf_model_image(PSFModelImageHDF5(psf_h5))
 
     def test_read_psf_model_images(self, workdir, input_products):
         _, _, psf_listfile, _, _ = input_products
