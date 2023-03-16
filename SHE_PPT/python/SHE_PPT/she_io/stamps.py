@@ -60,9 +60,7 @@ class Stamp:
     dpd: "DpdVisCalibratedFrame"  # noqa: F821
 
 
-def extract_stamps_from_exposures(
-    exposures: List[VisExposure], ra, dec, size=400, x_buffer=0, y_buffer=0
-) -> List[Stamp]:
+def extract_stamps_from_exposures(exposures: List[VisExposure], ra, dec, size, x_buffer=0, y_buffer=0) -> List[Stamp]:
     """
     Extracts a list of stamps from a list of VisExposure objects
 
@@ -88,7 +86,7 @@ def extract_stamps_from_exposures(
 
 
 @io_stats
-def extract_exposure_stamp(exposure: VisExposure, ra, dec, size=400, x_buffer=0, y_buffer=0):
+def extract_exposure_stamp(exposure: VisExposure, ra, dec, size, x_buffer=0, y_buffer=0):
     """
     Extracts a stamp from a VisExposure object
 

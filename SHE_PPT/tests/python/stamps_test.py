@@ -60,7 +60,7 @@ class Teststamps(object):
         ra = mer_t[0]["RIGHT_ASCENSION"]
         dec = mer_t[0]["DECLINATION"]
 
-        stamp = extract_exposure_stamp(exp, ra, dec)
+        stamp = extract_exposure_stamp(exp, ra, dec, size=200)
 
         assert type(stamp) is Stamp, "Extracted stamp is an unexpected type"
 
@@ -69,7 +69,7 @@ class Teststamps(object):
         bad_ra = (ra + 180) % 360
         bad_dec = -dec
 
-        stamp = extract_exposure_stamp(exp, bad_ra, bad_dec)
+        stamp = extract_exposure_stamp(exp, bad_ra, bad_dec, size=200)
 
         assert stamp is None, "Extracted stamp from invalid coordinates, but the returned stamp was not None"
 
