@@ -36,7 +36,7 @@ from SHE_PPT.testing import (
 )
 from SHE_PPT.file_io import write_listfile, read_listfile
 
-from SHE_PPT import __version__ as lensmc_version
+from SHE_PPT import SHE_PPT_RELEASE_STRING as lensmc_version
 from SHE_PPT.she_io.hdf5 import convert_to_hdf5
 
 from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider

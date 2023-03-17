@@ -21,6 +21,8 @@ __updated__ = "2021-08-13"
 
 # noinspection PyUnresolvedReferences
 import glob
+import re
+
 # noinspection PyUnresolvedReferences
 from os.path import basename, dirname, isfile
 
@@ -30,10 +32,12 @@ from SHE_PPT_VERSION import SHE_PPT_VERSION_STRING
 from . import *  # noqa: F401,F403
 
 modules = glob.glob(dirname(__file__) + "/*.py")
-__all__ = [basename(f)[:-3]
-           for f in modules if isfile(f) and not f.endswith('__init__.py')]
+__all__ = [basename(f)[:-3] for f in modules if isfile(f) and not f.endswith("__init__.py")]
 
 del modules, dirname, basename, isfile, glob
 
 # Get the version from the compiled file created by Elements
 __version__ = SHE_PPT_VERSION_STRING
+
+# Use this for passing into ST_DM_FilenameProvider.FilenameProvider.FileNameProvider
+SHE_PPT_RELEASE_STRING = re.match(r"[0-9]{1,2}\.[0-9]{1,2}", SHE_PPT_VERSION_STRING).group()
