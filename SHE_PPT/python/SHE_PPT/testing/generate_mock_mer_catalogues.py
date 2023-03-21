@@ -54,7 +54,10 @@ def create_catalogue(obj_coords=[], workdir=".", group_ids=None):
     n_objs = len(obj_coords)
 
     # create the table columns
-    object_ids = [i + 1 for i in range(n_objs)]
+
+    # NOTE: we wish to make sure the object_ids do not overlap with their indices (e.g. 0...n-1),
+    # so the ID list starts at n to prevent this.
+    object_ids = [n_objs + i for i in range(n_objs)]
     ras = [c.ra.deg for c in obj_coords]
     decs = [c.dec.deg for c in obj_coords]
     vis_det = np.ones(n_objs, dtype=np.int16)
