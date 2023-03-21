@@ -201,7 +201,7 @@ class PSFModelImageHDF5(PSFModelImage):
 
         image = self.images[str(obj_id)][:, :]
 
-        row = self.table[int(obj_id)]
+        row = self.table.loc[int(obj_id)]
 
         quality_flag = row["SHE_PSF_QUAL_FLAG"]
 
