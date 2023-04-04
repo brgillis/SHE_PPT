@@ -133,8 +133,6 @@ class TestGetFovCoords:
         #               |  |                |                   |
         #       1-1     |->|    1-2          ---> foc x         | fov x
 
-
-
         # sky coords of upper right corner of 1-1
         ra11, dec11 = frame.detectors[1, 1].pix2world(PIXEL_SHAPE[0], PIXEL_SHAPE[1])
         # sky coords of upper left corner of 1-2
