@@ -251,10 +251,10 @@ class VisExposure(ABC):
             i, j = int(si) - 1, int(sj) - 1
             det_num = 6 * i + j
         else:
-            raise ValueError("Invalid detector name %s" % det_name)
+            raise IndexError("Invalid detector name %s" % det_name)
 
         if det_num >= self.n_detectors:
-            raise ValueError("Invalid detector name %s" % det_name)
+            raise IndexError("Invalid detector name %s" % det_name)
 
         return det_num, det_id
 
@@ -512,8 +512,8 @@ class VisExposureHDF5(VisExposure):
         super().__init__()
 
         # Open the file, with a chunk cache of chunk_cache_mb
-        # NOTE This is the cache per dataset, so if we were to open all datasets (6x36=216)
-        # this would amount to potentially a lot of RAM usage
+        # NOTE This is the cache per dataset, so if we were to open all datasets per exposure
+        # this would be: 6 dataset per CCD x 36 CCDs x 8MB cache = 1728 MB
         self.file = h5py.File(exposure_file, "r", rdcc_nbytes=(1024 * 1024 * chunk_cache_mb))
 
         det_list_json = self.file.attrs["det_list"]

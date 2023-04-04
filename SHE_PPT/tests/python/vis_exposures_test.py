@@ -53,9 +53,18 @@ def verify_exposure(exp):
 
         assert type(det) is Detector, "Detector object is an unexpected type"
 
-    # make sure a Value error is thrown if we try to extract an invalid detector ID
-    with pytest.raises(ValueError):
+    # make sure a IndexError is thrown if we try to extract an invalid detector ID
+    with pytest.raises(IndexError):
         det = exp[n_detectors]
+
+    # make sure we can iterate through detectors:
+    for i, det in enumerate(exp):
+        pass
+
+    assert i + 1 == len(exp), "iterated through exposure, but got an unexpected number of iterations: %d vs %d" % (
+        i + 1,
+        len(exp),
+    )
 
 
 class Testvis_exposures(object):
