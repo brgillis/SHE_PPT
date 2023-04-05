@@ -19,6 +19,7 @@ Bug Fixes
 
 New Features
 ------------
+- VisExposure class is now iterable
 
 New config features
 -------------------
