@@ -120,16 +120,18 @@ class TestGetFovCoords:
     def test_no_transpose(self, frame):
         # This test checks to see if SHEFrame.get_fov_coords incorrectly transposes the detectors
         #
-        # Vertical distance between 1-1 and 2-1 should be greater
-        # than horizontal distance between 1-1 and 1-2
+        # focal plane y (FOV x) distance between 1-1 and 2-1 should be greater
+        # than the focal plane x (FOV y) distance between 1-1 and 1-2
+        #
+        # NOTE: focal plane x, y -> FOV y, -x, a rotation of 90 degrees
         #
         #       2-1     |  |    2-2
         #   ____________|  |__________
         #        ^
         #        |
-        #   ____________    __________
-        #               |  |
-        #       1-1     |->|    1-2
+        #   ____________    __________      ^foc y              -----> fov y
+        #               |  |                |                   |
+        #       1-1     |->|    1-2          ---> foc x         | fov x
 
         # sky coords of upper right corner of 1-1
         ra11, dec11 = frame.detectors[1, 1].pix2world(PIXEL_SHAPE[0], PIXEL_SHAPE[1])
@@ -140,10 +142,10 @@ class TestGetFovCoords:
 
         # get FOV coords of these positions (buffer to avoid any weird rounding at detector edge)
         x11, y11 = frame.get_fov_coords(ra11, dec11, x_buffer=0.1, y_buffer=0.1)
-        x12, _ = frame.get_fov_coords(ra12, dec12, x_buffer=0.1, y_buffer=0.1)
-        _, y21 = frame.get_fov_coords(ra21, dec21, x_buffer=0.1, y_buffer=0.1)
+        x12, y12 = frame.get_fov_coords(ra12, dec12, x_buffer=0.1, y_buffer=0.1)
+        x21, y21 = frame.get_fov_coords(ra21, dec21, x_buffer=0.1, y_buffer=0.1)
 
-        # make sure distance between detectors is bigger in the y direction than the x
-        assert np.abs(x11 - x12) < np.abs(
-            y11 - y21
-        ), "Gap between detectors is bigger in x than y - detector IDs may be transposed?"
+        # make sure FOV distance between detectors is bigger in the x direction than y
+        assert np.abs(y12 - y11) < np.abs(
+            x11 - x21
+        ), "Gap between detectors is bigger in y than x - detector IDs may be transposed?"
