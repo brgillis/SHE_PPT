@@ -43,7 +43,6 @@ from EL_PythonUtils.utilities import time_to_timestamp
 from ElementsServices.DataSync import DataSync
 from ElementsServices.DataSync.DataSynchronizer import DownloadFailed
 from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider
-from ST_DataModelBindings.sys_stub import CreateFromDocument
 from ST_DM_DmUtils.DmUtils import read_product_metadata, save_product_metadata
 from . import __version__
 from .constants.classes import ShearEstimationMethods

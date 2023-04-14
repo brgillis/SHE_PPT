@@ -28,5 +28,4 @@ from ..product_utility import init_no_files
 def init():
     """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    init_no_files(binding_class=dpdMdbDataBase,
-                          init_function=None)
+    init_no_files(binding_class=dpdMdbDataBase, init_function=None)

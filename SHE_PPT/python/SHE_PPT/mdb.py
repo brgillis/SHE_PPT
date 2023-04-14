@@ -389,7 +389,7 @@ class MDBKeys():
 
         #   SpaceSegment.SVM
 
-        #self.dither_step_angular_error = "SpaceSegment.SVM.DitherStepAngularError" # deprecated
+        # self.dither_step_angular_error = "SpaceSegment.SVM.DitherStepAngularError" # deprecated
         self.dither_step_angular_minimum = "SpaceSegment.SVM.DitherStepAngularMinimum"
         self.max_field_2_field_overlap = "SpaceSegment.SVM.MaxField2FieldOverlap"
         self.min_field_2_field_overlap = "SpaceSegment.SVM.MinField2FieldOverlap"
@@ -397,8 +397,8 @@ class MDBKeys():
 
         # SpaceSegment.Instrument.VIS
 
-        #self.shutter_closing_duration = "SpaceSegment.Instrument.VIS.ShutterClosingDuration" # deprecated
-        #self.shutter_opening_duration = "SpaceSegment.Instrument.VIS.ShutterOpeningDuration" # deprecated
+        # self.shutter_closing_duration = "SpaceSegment.Instrument.VIS.ShutterClosingDuration" # deprecated
+        # self.shutter_opening_duration = "SpaceSegment.Instrument.VIS.ShutterOpeningDuration" # deprecated
         self.vis_adc_dynamics = "SpaceSegment.Instrument.VIS.VISADCDynamics"
         self.cu_uniformity_map_normalised = "SpaceSegment.Instrument.VIS.CUUniformityMapNormalised"
         self.vis_average_pixel_sizemicron = "SpaceSegment.Instrument.VIS.VISAveragePixelSizemicron"

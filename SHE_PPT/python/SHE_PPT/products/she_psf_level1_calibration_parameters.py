@@ -32,21 +32,23 @@ product_type_name = "DpdShePsfLevel1CalibrationParameters"
 
 
 def init():
-    """ Adds some extra functionality to this product, with functions to get filenames. """
+    """Adds some extra functionality to this product, with functions to get filenames."""
 
-    init_just_datastorage(binding_class=dpdShePsfLevel1CalibrationParameters,
-                          init_function=create_dpd_she_psf_level1_calibration_parameters)
+    init_just_datastorage(
+        binding_class=dpdShePsfLevel1CalibrationParameters,
+        init_function=create_dpd_she_psf_level1_calibration_parameters,
+    )
 
 
-def create_dpd_she_psf_level1_calibration_parameters(filename=None,
-                                              data_filename=None):
-    """ Creates a product of this type.
-    """
+def create_dpd_she_psf_level1_calibration_parameters(filename=None, data_filename=None):
+    """Creates a product of this type."""
 
-    return create_product_from_template(template_filename=sample_file_name,
-                                        product_type_name=product_type_name,
-                                        filename=filename,
-                                        data_filename=data_filename)
+    return create_product_from_template(
+        template_filename=sample_file_name,
+        product_type_name=product_type_name,
+        filename=filename,
+        data_filename=data_filename,
+    )
 
 
 # Add a useful alias
