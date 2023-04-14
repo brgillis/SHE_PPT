@@ -1,102 +1,115 @@
-<?xml version="1.0" ?>
-<ns1:DpdSheLensMcChains xmlns:ns1="http://euclid.esa.org/schema/dpd/she/lensmcchains">
-    <Header>
-        <ProductId>1ac650fb-03b6-4806-8770-f7fe6c5b95b7</ProductId>
-        <ProductType>DpdSheLensMcChains</ProductType>
-        <SoftwareName>FISfE</SoftwareName>
-        <SoftwareRelease>uym</SoftwareRelease>
-        <EuclidPipelineSoftwareRelease>mw0</EuclidPipelineSoftwareRelease>
-        <ProdSDC>paxOxsSAwle46MrlEPa68U2KeoAGZ990U23QNWVVYb1ClBWz6lIjFpCbm7Ac</ProdSDC>
-        <DataSetRelease>fFwaY</DataSetRelease>
-        <Purpose>PRODUCTION</Purpose>
-        <PlanId>dQvox</PlanId>
-        <PPOId>QVVzc</PPOId>
-        <PipelineDefinitionId>Fw9eB</PipelineDefinitionId>
-        <PpoStatus>NA</PpoStatus>
-        <ManualValidationStatus>INVALID</ManualValidationStatus>
-        <ExpirationDate>2020-06-03T15:11:05.387Z</ExpirationDate>
-        <ToBePublished>0</ToBePublished>
-        <Published>0</Published>
-        <Curator>SHE</Curator>
-        <CreationDate>2020-06-03T15:11:05.388Z</CreationDate>
-    </Header>
-    <Data>
-        <SpatialCoverage>
-            <Polygon>
-                <Vertex>
-                    <Position coordUnit="min">
-                        <C1 unit="deg">0.0</C1>
-                        <C2 unit="deg2">0.0</C2>
-                    </Position>
-                    <SmallCircle>
-                        <Pole coordUnit="J">
-                            <C1 unit="Jy">0.0</C1>
-                            <C2 unit="mK">0.0</C2>
-                        </Pole>
-                    </SmallCircle>
-                </Vertex>
-            </Polygon>
-            <Circle>
-                <Center coordUnit="m">
-                    <C1 unit="s">1.0</C1>
-                    <C2 unit="1/mol">0.0</C2>
-                </Center>
-                <Radius unit="cy">0.0</Radius>
-            </Circle>
-            <BBox>
-                <RaCenter unit="m2/s">1.0</RaCenter>
-                <DecCenter unit="MHz">1.0</DecCenter>
-                <RaHalfWidth unit="m2">0.0</RaHalfWidth>
-                <DecHalfWidth unit="kHz">1.0</DecHalfWidth>
-            </BBox>
-        </SpatialCoverage>
-        <SpectralCoverage>
-            <Filter>
-                <Name>DECAM_i</Name>
-                <MagId>Z</MagId>
-                <CentralWavelength>7.0</CentralWavelength>
-                <MinWavelength>3.0</MinWavelength>
-                <MaxWavelength>-8.0</MaxWavelength>
-                <Reference>EuL4B</Reference>
-                <HasFringes>-299501832</HasFringes>
-            </Filter>
-        </SpectralCoverage>
-        <CatalogDescription>
-            <CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
-            <CatalogType>NOT_PROXY</CatalogType>
-            <PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-            <CatalogName>She-Lensmc-Chains</CatalogName>
-            <CatalogFormatHDU>1</CatalogFormatHDU>
-        </CatalogDescription>
-        <ObservationId>-1</ObservationId>
-        <IslandLabel>aXINP</IslandLabel>
-        <DataStorage format="she.lensMcChains" version="8.0">
-            <DataContainer filestatus="DELETED">
-                <FileName>None</FileName>
-            </DataContainer>
-        </DataStorage>
-        <ObservationDateTime>
-            <OBT>2020-06-03T15:11:05.399Z</OBT>
-            <UTC>2020-06-03T15:11:05.4Z</UTC>
-            <MJD>3.0</MJD>
-        </ObservationDateTime>
-        <PointingIdList>-1</PointingIdList>
-        <TileList>-1</TileList>
-        <Valid>VALID</Valid>
-        <ShearEstimationMethod>LensMC</ShearEstimationMethod>
-    </Data>
-    <QualityFlags>
-        <DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false
-        </DummyFlag>
-        <AuxiliaryFlags flagName="ciDvn" flagged="false" maxLimit="-8.0" minLimit="-8.0" xpath="LPgYO">true
-        </AuxiliaryFlags>
-    </QualityFlags>
-    <Parameters>
-        <Parameter>
-            <Key>80eq1</Key>
-            <Description>n89oN</Description>
-            <StringValue>p65uq</StringValue>
-            <Unit>whoUH</Unit>
-        </Parameter>
-    </Parameters>
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:DpdSheLensMcChains xmlns:ns1="http://ecdm.euclid-ec.org/schema/dpd/she/lensmcchains">
+	<Header>
+		<ProductId>rxFLl</ProductId>
+		<ProductType>DpdSheLensMcChains</ProductType>
+		<SoftwareName>79IGu</SoftwareName>
+		<SoftwareRelease>1cg8W</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>pVnR3BYX</EuclidPipelineSoftwareRelease>
+		<ProdSDC>sIhOkWya4qVqNJzrbAFOG1HoVLDNnYOgduce4cW6EBmpv83y</ProdSDC>
+		<DataSetRelease>gyP8h</DataSetRelease>
+		<Purpose>UNKNOWN</Purpose>
+		<PlanId>rtq6z</PlanId>
+		<PPOId>6tW19ANNFwis6TLrcS1ZSXaUqQkNxODnZSIF7TyqdwadSsl2UfoOp5ycu8knJ1QxFiiU95x5DefSXlltxWzX6snsI0302TR4cI35HTWlYNQOy487DGc1FckdwdrtHvj64z7e8BcdjjYkLSTijTDWlEtPqjqtJMBfXgdxKq</PPOId>
+		<PipelineDefinitionId>nbpo4</PipelineDefinitionId>
+		<PpoStatus>SmoNw</PpoStatus>
+		<ManualValidationStatus>VALID</ManualValidationStatus>
+		<ProductNotifiedToBeChecked>TOBECHECKED</ProductNotifiedToBeChecked>
+		<AutomatedValidationStatus>UNKNOWN</AutomatedValidationStatus>
+		<ExpirationDate>2023-04-12T19:53:48.016Z</ExpirationDate>
+		<ToBePublished>-379509431</ToBePublished>
+		<Published>968611901</Published>
+		<Curator>MF8Hb</Curator>
+		<CreationDate>2023-04-12T19:53:48.016Z</CreationDate>
+	</Header>
+	<Data>
+		<SpatialCoverage unit="S">
+			<Polygon>
+				<Vertex>
+					<C1>-2.0</C1>
+					<C2>6.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="d">
+							<C1 unit="m2">0.0</C1>
+							<C2 unit="mas">1.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</Polygon>
+			<MultiPolygon>
+				<Vertex>
+					<C1>-9.0</C1>
+					<C2>-4.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="h">
+							<C1 unit="Myr">0.0</C1>
+							<C2 unit="MHz">0.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</MultiPolygon>
+			<Circle>
+				<Center coordUnit="um/um">
+					<C1 unit="s">1.0</C1>
+					<C2 unit="eV/K">0.0</C2>
+				</Center>
+				<Radius unit="W/m2/K4">1.0</Radius>
+			</Circle>
+			<BBox>
+				<RaCenter>-2.0</RaCenter>
+				<DecCenter>-10.0</DecCenter>
+				<RaHalfWidth>-5.0</RaHalfWidth>
+				<DecHalfWidth>1.0</DecHalfWidth>
+			</BBox>
+		</SpatialCoverage>
+		<SpectralCoverage>
+			<Filter>
+				<Name>HSC_r</Name>
+				<MagId>J</MagId>
+				<CentralWavelength>6.0</CentralWavelength>
+				<MinWavelength>-6.0</MinWavelength>
+				<MaxWavelength>4.0</MaxWavelength>
+				<Reference>cCwgc</Reference>
+				<HasFringes>-1891054578</HasFringes>
+			</Filter>
+		</SpectralCoverage>
+		<CatalogDescription>
+			<CatalogOrigin>RANDOM_DEEP</CatalogOrigin>
+			<CatalogType>NOT_PROXY</CatalogType>
+			<PathToCatalogFile>n2NU5</PathToCatalogFile>
+			<CatalogName>Vis-Cal-Catalog</CatalogName>
+			<CatalogFormatHDU>784269973</CatalogFormatHDU>
+		</CatalogDescription>
+		<ObservationId>724866834485590102</ObservationId>
+		<CalblockId>113wH</CalblockId>
+		<CalblockVariant>6Ofaj</CalblockVariant>
+		<IslandLabel>QkEaG</IslandLabel>
+		<PlaceholderData>None</PlaceholderData>
+		<DataStorage format="she.lensMcChains" version="8.0">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+		<ObservationDateTime>
+			<OBT>2023-04-12T19:53:48.021Z</OBT>
+			<UTC>2023-04-12T19:53:48.021Z</UTC>
+			<MJD>-3.0</MJD>
+		</ObservationDateTime>
+		<PointingIdList>1 2</PointingIdList>
+		<TileList>3 4 5</TileList>
+		<Valid>INVALID</Valid>
+		<ShearEstimationMethod>KSB</ShearEstimationMethod>
+	</Data>
+	<QualityFlags>
+		<DummyFlag xpath="//Data/Some/Path/To/Quality/Parameter" minLimit="0.05" maxLimit="10.0" flagged="false">false</DummyFlag>
+		<AuxiliaryFlags flagName="*)[KVT2uOQxdLD0gBz}%y?Al3I_aRM&amp;1)&quot;GRZy|My52v&lt;!43HXi.=Y&quot;&lt;&quot;@R^/`E0{S~J" xpath="npqlp" minLimit="3.0" maxLimit="-2.0" flagged="false">true</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>0uuf9</Key>
+			<Description>fhrcj</Description>
+			<StringValue>4EOot</StringValue>
+			<Unit>pjfew</Unit>
+		</Parameter>
+	</Parameters>
 </ns1:DpdSheLensMcChains>

@@ -1,108 +1,119 @@
-<?xml version="1.0" ?>
-<ns1:DpdSheFinalEuclidizedHstImages xmlns:ns1="http://euclid.esa.org/schema/dpd/she/finaleuclidizedhstimages">
-    <Header>
-        <ProductId>2102d769-30da-46b5-87b2-ab9e01727d31</ProductId>
-        <ProductType>DpdSheFinalEuclidizedHstImages</ProductType>
-        <SoftwareName>262jw</SoftwareName>
-        <SoftwareRelease>yEIB</SoftwareRelease>
-        <EuclidPipelineSoftwareRelease>yylb</EuclidPipelineSoftwareRelease>
-        <ProdSDC>A828He9KtDRKlIlzRl</ProdSDC>
-        <DataSetRelease>6Myxn</DataSetRelease>
-        <Purpose>ON_THE_FLY</Purpose>
-        <PlanId>68Xo4</PlanId>
-        <PPOId>78OZM</PPOId>
-        <PipelineDefinitionId>bjwVU</PipelineDefinitionId>
-        <PpoStatus>NA</PpoStatus>
-        <ManualValidationStatus>UNKNOWN</ManualValidationStatus>
-        <ExpirationDate>2020-06-01T15:19:56.072Z</ExpirationDate>
-        <ToBePublished>0</ToBePublished>
-        <Published>0</Published>
-        <Curator>SHE</Curator>
-        <CreationDate>2020-06-01T15:19:56.074Z</CreationDate>
-    </Header>
-    <Data>
-        <ValidityRange>
-            <Name>Dummy</Name>
-            <Type>SheFinalEuclidizedHstImages</Type>
-            <TimestampStart>2020-06-01T15:19:56.075Z</TimestampStart>
-            <TimestampEnd>9999-06-01T15:19:56.075Z</TimestampEnd>
-        </ValidityRange>
-        <EuclidizedHSTImageCatalog>
-            <SpatialCoverage>
-                <Polygon>
-                    <Vertex>
-                        <Position coordUnit="J/mol/K">
-                            <C1 unit="uNewton/kg">1.0</C1>
-                            <C2 unit="cy">1.0</C2>
-                        </Position>
-                        <SmallCircle>
-                            <Pole coordUnit="rad/s">
-                                <C1 unit="arcsec2">0.0</C1>
-                                <C2 unit="J/m3/K4">1.0</C2>
-                            </Pole>
-                        </SmallCircle>
-                    </Vertex>
-                </Polygon>
-                <Circle>
-                    <Center coordUnit="m/s2">
-                        <C1 unit="solLum">0.0</C1>
-                        <C2 unit="N">0.0</C2>
-                    </Center>
-                    <Radius unit="s">1.0</Radius>
-                </Circle>
-                <BBox>
-                    <RaCenter unit="kg">1.0</RaCenter>
-                    <DecCenter unit="MHz">1.0</DecCenter>
-                    <RaHalfWidth unit="m/s">1.0</RaHalfWidth>
-                    <DecHalfWidth unit="solMass">1.0</DecHalfWidth>
-                </BBox>
-            </SpatialCoverage>
-            <SpectralCoverage>
-                <Filter>
-                    <Name>OMEGACAM_u</Name>
-                    <MagId>M</MagId>
-                    <CentralWavelength>8.0</CentralWavelength>
-                    <MinWavelength>3.0</MinWavelength>
-                    <MaxWavelength>-4.0</MaxWavelength>
-                    <Reference>XTOQ9</Reference>
-                    <HasFringes>465382203</HasFringes>
-                </Filter>
-            </SpectralCoverage>
-            <CatalogDescription>
-                <CatalogOrigin>OTHERS</CatalogOrigin>
-                <CatalogType>PROXY</CatalogType>
-                <PathToCatalogFile>Data.EuclidizedHSTImageCatalog.DataStorage.FileName</PathToCatalogFile>
-                <CatalogName>She-Euclidized-Hst</CatalogName>
-                <CatalogFormatHDU>1</CatalogFormatHDU>
-            </CatalogDescription>
-            <DataStorage filestatus="ARCHIVED_CERNVMFS">
-                <FileName>None</FileName>
-            </DataStorage>
-            <PsfStorage filestatus="DELETED">
-                <FileName>None</FileName>
-            </PsfStorage>
-        </EuclidizedHSTImageCatalog>
-        <EuclidizedHSTObjectList>
-            <DataStorage filestatus="PROPOSED">
-                <FileName>None</FileName>
-            </DataStorage>
-            <PsfStorage filestatus="PROPOSED">
-                <FileName>None</FileName>
-            </PsfStorage>
-        </EuclidizedHSTObjectList>
-    </Data>
-    <QualityFlags>
-        <DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false
-        </DummyFlag>
-        <AuxiliaryFlags flagName="Mnvy9" flagged="true" maxLimit="-2.0" minLimit="-1.0" xpath="1YN87">true
-        </AuxiliaryFlags>
-    </QualityFlags>
-    <Parameters>
-        <Parameter>
-            <Key>34OVf</Key>
-            <Description>b6xeb</Description>
-            <StringValue>bZZTw</StringValue>
-            <Unit>EZQaC</Unit>
-        </Parameter>
-    </Parameters>
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:DpdSheFinalEuclidizedHstImages xmlns:ns1="http://ecdm.euclid-ec.org/schema/dpd/she/finaleuclidizedhstimages">
+	<Header>
+		<ProductId>Jn8uv</ProductId>
+		<ProductType>DpdSheFinalEuclidizedHstImages</ProductType>
+		<SoftwareName>3pect</SoftwareName>
+		<SoftwareRelease>0Cr7</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>EovE</EuclidPipelineSoftwareRelease>
+		<ProdSDC>wcwPL7rrpn1FDbXLd4sd7zudZQlwb2vQIacCvj1BIA1lbObcXQUqz22Yg1QFnBNa58MtFyYRh0ml5s6MiNIYaju0Yr5Pif6TgAaQt8D4CdXW</ProdSDC>
+		<DataSetRelease>TIGOV</DataSetRelease>
+		<Purpose>TEST</Purpose>
+		<PlanId>XJzi4</PlanId>
+		<PPOId>88arWHUDYMZiroPCHj2lKAauo7n3JVGABhEEt1yxxeXmSZRPatLopf805YrwmJcEZnvHv8gCp2e2TgGJww8UZ8z13Q9McmneaK62lqrTcApcdj4GuAslFnJEUkJVmXZMB5aeqVBey0X6Xfy4bf9pb3GadvamQCosXGeZtEJjB5NY6gRRK6cEoNNYBZX0DtQYEYxpomOb7rVgs34tnmsltpP9fNkhh3n6tQlOIoye7EV3KINKoEuuD7aV5ulu8UgbCaPszru887cEo0M1NdfbFLsoDOidfNacba4</PPOId>
+		<PipelineDefinitionId>BXe4p</PipelineDefinitionId>
+		<PpoStatus>Vw5Ot</PpoStatus>
+		<ManualValidationStatus>VALID</ManualValidationStatus>
+		<ProductNotifiedToBeChecked>NOTTOBECHECKED</ProductNotifiedToBeChecked>
+		<AutomatedValidationStatus>INVALID</AutomatedValidationStatus>
+		<ExpirationDate>2023-04-12T19:53:47.382Z</ExpirationDate>
+		<ToBePublished>1129893735</ToBePublished>
+		<Published>570940203</Published>
+		<Curator>MCmIC</Curator>
+		<CreationDate>2023-04-12T19:53:47.383Z</CreationDate>
+	</Header>
+	<Data>
+		<PlaceholderData>None</PlaceholderData>
+		<ValidityRange>
+			<Name>f9hsZ</Name>
+			<Type>hXz65</Type>
+			<TimestampStart>2023-04-12T19:53:47.383Z</TimestampStart>
+			<TimestampEnd>2023-04-12T19:53:47.383Z</TimestampEnd>
+		</ValidityRange>
+		<EuclidizedHSTImageCatalog>
+			<SpatialCoverage unit="cd">
+				<Polygon>
+					<Vertex>
+						<C1>-3.0</C1>
+						<C2>9.0</C2>
+						<SmallCircle>
+							<Pole coordUnit="erg">
+								<C1 unit="min">1.0</C1>
+								<C2 unit="um/um">1.0</C2>
+							</Pole>
+						</SmallCircle>
+					</Vertex>
+				</Polygon>
+				<MultiPolygon>
+					<Vertex>
+						<C1>9.0</C1>
+						<C2>-7.0</C2>
+						<SmallCircle>
+							<Pole coordUnit="solLum">
+								<C1 unit="kHz">0.0</C1>
+								<C2 unit="Hz">0.0</C2>
+							</Pole>
+						</SmallCircle>
+					</Vertex>
+				</MultiPolygon>
+				<Circle>
+					<Center coordUnit="arcsec/h">
+						<C1 unit="J">1.0</C1>
+						<C2 unit="lm">0.0</C2>
+					</Center>
+					<Radius unit="uNewton/kg">0.0</Radius>
+				</Circle>
+				<BBox>
+					<RaCenter>3.0</RaCenter>
+					<DecCenter>2.0</DecCenter>
+					<RaHalfWidth>-1.0</RaHalfWidth>
+					<DecHalfWidth>-6.0</DecHalfWidth>
+				</BBox>
+			</SpatialCoverage>
+			<SpectralCoverage>
+				<Filter>
+					<Name>GAIA_RP</Name>
+					<MagId>H</MagId>
+					<CentralWavelength>0.0</CentralWavelength>
+					<MinWavelength>-9.0</MinWavelength>
+					<MaxWavelength>-2.0</MaxWavelength>
+					<Reference>rtHsA</Reference>
+					<HasFringes>721685597</HasFringes>
+				</Filter>
+			</SpectralCoverage>
+			<CatalogDescription>
+				<CatalogOrigin>MASTER_DEEP</CatalogOrigin>
+				<CatalogType>PROXY</CatalogType>
+				<PathToCatalogFile>sqhw3</PathToCatalogFile>
+				<CatalogName>She-Val-Momentsml-Shear</CatalogName>
+				<CatalogFormatHDU>1595593721</CatalogFormatHDU>
+			</CatalogDescription>
+			<DataStorage filestatus="ARCHIVED_ONLINE" checksumMethod="MD5" checksumValue="aOAGA">
+				<FileName>G5SX67ZzJCCgjo3CyWirE796Bkeea9dFF2JnYnxX1</FileName>
+			</DataStorage>
+			<PsfStorage filestatus="PROPOSED" checksumMethod="MD5" checksumValue="kKNIU">
+				<FileName>D9WbyeEFFmoRNWQpCMIyVGjrK0moWIsPyWqV1vmg73grnXsdBKpUaysvWNL6MuGnBYBWzs8pLRjaDmkIjNmnl9mWliDysMOguPklrG5MVZRnwhZSuzfm</FileName>
+			</PsfStorage>
+		</EuclidizedHSTImageCatalog>
+		<EuclidizedHSTObjectList>
+			<DataStorage filestatus="ARCHIVED_OFFLINE" checksumMethod="Adler32" checksumValue="Ew90Y">
+				<FileName>hpdEjMDTczSZak1ZZYAdDadLcm1oNuBpS81vI60EdivnCgixjPwDwhbTKa9lN5FLT4wB</FileName>
+			</DataStorage>
+			<PsfStorage filestatus="ARCHIVED_CERNVMFS" checksumMethod="Adler32" checksumValue="y5d6V">
+				<FileName>dVYnU0072PnRk5YIMY6GU1wvosiTDEvRaZI8zz9Gd2juARiiEauII9wRMMnRXw8IDH77wJUZnaZwm81SjujklESQHoU26x3XJJWoWB5DbGiluJTy0l5Sf4</FileName>
+			</PsfStorage>
+		</EuclidizedHSTObjectList>
+	</Data>
+	<QualityFlags>
+		<DummyFlag xpath="//Data/Some/Path/To/Quality/Parameter" minLimit="0.05" maxLimit="10.0" flagged="true">true</DummyFlag>
+		<AuxiliaryFlags flagName="+`k0(f`C#4.c5:&gt;,?a+czyg^Xd%Aek)r`x0q" xpath="LT1dn" minLimit="-9.0" maxLimit="-9.0" flagged="true">false</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>FTlBz</Key>
+			<Description>tnv8T</Description>
+			<StringValue>KvEJa</StringValue>
+			<Unit>Z1rdH</Unit>
+		</Parameter>
+	</Parameters>
 </ns1:DpdSheFinalEuclidizedHstImages>

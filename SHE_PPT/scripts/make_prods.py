@@ -25,6 +25,50 @@ app = QApplication(sys.argv)
 random_dm = RandomDataModel(ST_DataModelBindings)
 
 
+def get_fits_defs_dict():
+    """Goes through all the table formats in SHE_PPT.table_formats and constructs a dict of the fits_def
+       and the fits_version"""
+    import SHE_PPT.table_formats as tfs
+
+    fits_defs = {}
+    for table_name in tfs.__all__:
+        table_module = getattr(tfs, table_name)
+        try:
+            fits_def = table_module.fits_def
+            fits_ver = table_module.fits_version
+            # NOTE: we use the lowercase version here as some have case mismatches between the fits_def
+            # and the DataStorage format
+            fits_defs[fits_def.lower()] = fits_ver
+            
+            # Edge case for the PSFModelImage where its table def is "she.psfModelImage.shePsfC"
+            # Here we trim the .shePsfC off
+            if len(fits_def.split(".")) > 2:
+                fits_def_short = "%s.%s"%tuple(fits_def.split(".")[:-1])
+                fits_defs[fits_def_short.lower()] = fits_ver
+                print(fits_def_short)
+        except Exception as e:
+            pass
+        
+    return fits_defs
+
+FITS_DEFS = get_fits_defs_dict()
+
+
+def fix_datastorage(datastorage, default_version=0.1):
+    """Cleans up the randomly generated DataStorage"""
+
+    # Tries to get the version number from SHE_PPT.table_format, else uses a default
+    if hasattr(datastorage,"format"):
+        if datastorage.format.lower() in FITS_DEFS:
+            datastorage.version = FITS_DEFS[datastorage.format.lower()]
+        else:
+            datastorage.version = default_version
+    datastorage.DataContainer.FileName = "None"
+    datastorage.DataContainer.filestatus = "PROPOSED"
+    datastorage.DataContainer.checksumMethod = None
+    datastorage.DataContainer.checksumValue = None
+
+
 def create_dpd(dpd_type, output_filename, directory = ""):
     print("Creating sample %s with filename %s"%(dpd_type, output_filename))
     
@@ -32,7 +76,56 @@ def create_dpd(dpd_type, output_filename, directory = ""):
     
     # fix some aspects of the dpd
     dpd.Header.ProductType = dpd_type
-    
+
+    if hasattr(dpd.Data,"PlaceholderData"):
+        dpd.Data.PlaceholderData = ["None"]
+
+    if hasattr(dpd.Data, "DataStorage"):
+        try:
+            fix_datastorage(dpd.Data.DataStorage)
+        except AttributeError:
+            # Some products have DataStorage as a list, so we need to modify the 0th element
+            fix_datastorage(dpd.Data.DataStorage[0])
+            
+    if hasattr(dpd.Data,"KsbCalibrationFileList"):
+        fix_datastorage(dpd.Data.KsbCalibrationFileList[0].DataStorage)
+
+    if hasattr(dpd.Data,"RegaussCalibrationFileList"):
+        fix_datastorage(dpd.Data.RegaussCalibrationFileList[0].DataStorage)
+
+    if hasattr(dpd.Data,"DataStorageList"):
+        fix_datastorage(dpd.Data.DataStorageList[0])
+
+    if hasattr(dpd.Data,"RegaussShearMeasurements"):
+        fix_datastorage(dpd.Data.RegaussShearMeasurements.DataStorage)
+
+    if hasattr(dpd.Data,"LensMcShearMeasurements"):
+        fix_datastorage(dpd.Data.LensMcShearMeasurements.DataStorage)
+
+    if hasattr(dpd.Data,"MomentsMlShearMeasurements"):
+        fix_datastorage(dpd.Data.MomentsMlShearMeasurements.DataStorage)
+
+    if hasattr(dpd.Data,"KsbShearMeasurements"):
+        fix_datastorage(dpd.Data.KsbShearMeasurements.DataStorage)
+
+    if hasattr(dpd.Data,"KSB"):
+        fix_datastorage(dpd.Data.KSB)
+
+    if hasattr(dpd.Data,"LensMC"):
+        fix_datastorage(dpd.Data.LensMC)
+
+    if hasattr(dpd.Data,"MomentsML"):
+        fix_datastorage(dpd.Data.MomentsML)
+
+    if hasattr(dpd.Data,"REGAUSS"):
+        fix_datastorage(dpd.Data.REGAUSS)
+
+    if hasattr(dpd.Data,"BfdMoments"):
+        dpd.Data.BfdMoments = None
+
+    if "LensMcChains" in dpd_type:
+        fix_datastorage(dpd.Data.DataStorage)
+
     dpd.validateBinding()
     dm_utils.save_product_metadata(dpd, output_filename)
     
@@ -88,7 +181,8 @@ prods = {
   "DpdShePsfCalibrationConfig": "SHE_PPT/auxdir/SHE_PPT/sample_psf_calibration_config.xml",
   "DpdSheLensMcChains": "SHE_PPT/auxdir/SHE_PPT/sample_lensmc_chains.xml",
   "DpdSheKsbTraining": "SHE_PPT/auxdir/SHE_PPT/sample_ksb_training.xml",
-  "DpdPhzPfOutputCatalog": "SHE_PPT/auxdir/SHE_PPT/sample_phz_pf_output_catalog.xml"
+  "DpdPhzPfOutputCatalog": "SHE_PPT/auxdir/SHE_PPT/sample_phz_pf_output_catalog.xml",
+  "DpdSheBiasParams": "SHE_PPT/auxdir/SHE_PPT/sample_she_bias_parameters.xml"
 }
 
 if __name__ == "__main__":

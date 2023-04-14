@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:DpdShePsfLevel1CalibrationParameters xmlns:ns1="http://ecdm.euclid-ec.org/schema/dpd/she/psflevel1calibrationparameters">
+	<Header>
+		<ProductId>OyN3v</ProductId>
+		<ProductType>DpdShePsfLevel1CalibrationParameters</ProductType>
+		<SoftwareName>7AbqK</SoftwareName>
+		<SoftwareRelease>WjO8g1YwG</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>Bam0UT4M</EuclidPipelineSoftwareRelease>
+		<ProdSDC>kwNIZOlJjHFqRW1MU</ProdSDC>
+		<DataSetRelease>Cqtxp</DataSetRelease>
+		<Purpose>VALIDATION</Purpose>
+		<PlanId>h71Bu</PlanId>
+		<PPOId>ee3VdHHpjDcPxsEya0ZKV9AdhdTzaG50750HSIxIsMFgZ4i4JeVUNEEEaARB6X7Ybcmqex2t0Sh4k9kNZB3CgWtkOLR57g5fKc9gVc5kyOXGjii2DGMX6mjx8kgzqC7ppQ9uWPoGhMa4Rv500lod0K6UWvcgHS2Q2InUMDzDRQVOQMZGAxu2wvV0UOzQMeyHg3XD7eUhY1au9jjypRGxUxZz3zePB6cxa4tFxkHKZfjU2NWIcEcDMqmZDUZu8iF2Hp8jARfnST0HVrTHIvCtwogaQ9xgYG2mJJ</PPOId>
+		<PipelineDefinitionId>GbqIV</PipelineDefinitionId>
+		<PpoStatus>sFwtM</PpoStatus>
+		<ManualValidationStatus>VALID</ManualValidationStatus>
+		<ProductNotifiedToBeChecked>NOTTOBECHECKED</ProductNotifiedToBeChecked>
+		<AutomatedValidationStatus>VALID</AutomatedValidationStatus>
+		<ExpirationDate>2023-04-12T19:53:45.037Z</ExpirationDate>
+		<ToBePublished>1191495157</ToBePublished>
+		<Published>1907298299</Published>
+		<Curator>kvabX</Curator>
+		<CreationDate>2023-04-12T19:53:45.037Z</CreationDate>
+	</Header>
+	<Data>
+		<PlaceholderData>None</PlaceholderData>
+		<ValidityRange>
+			<Name>vfWby</Name>
+			<Type>JXHiI</Type>
+			<TimestampStart>2023-04-12T19:53:45.038Z</TimestampStart>
+			<TimestampEnd>2023-04-12T19:53:45.038Z</TimestampEnd>
+		</ValidityRange>
+		<ExposureList>L7tdG</ExposureList>
+		<Level1CalibrationParametersProductId>3SG64</Level1CalibrationParametersProductId>
+		<SolarAngle>-1.0</SolarAngle>
+		<MeanTemperature>3.0</MeanTemperature>
+		<NumberZernikeModes>1761968236</NumberZernikeModes>
+		<NumberZernikePolynomialCoeffs>-736336344</NumberZernikePolynomialCoeffs>
+		<ToolkitConfigParamFileName>YJkGT</ToolkitConfigParamFileName>
+		<DataStorage format="she.psfLevel1CalibrationParameters" version="0.1">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+	</Data>
+	<QualityFlags>
+		<DummyFlag xpath="//Data/Some/Path/To/Quality/Parameter" minLimit="0.05" maxLimit="10.0" flagged="true">false</DummyFlag>
+		<AuxiliaryFlags flagName="l#&lt;:oE]S)6crI@7doR4" xpath="gBUMH" minLimit="-6.0" maxLimit="-9.0" flagged="true">false</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>5wF1L</Key>
+			<Description>L3Gvv</Description>
+			<StringValue>UBhjM</StringValue>
+			<Unit>EC3Pi</Unit>
+		</Parameter>
+	</Parameters>
+</ns1:DpdShePsfLevel1CalibrationParameters>

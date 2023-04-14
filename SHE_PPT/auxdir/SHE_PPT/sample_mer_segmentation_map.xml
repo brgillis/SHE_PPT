@@ -1,196 +1,207 @@
-<?xml version="1.0" ?>
-<ns1:DpdMerSegmentationMap xmlns:ns1="http://euclid.esa.org/schema/dpd/mer/segmentationmap">
-    <Header>
-        <ProductId>c016854c-ede6-4bd1-9e25-17a169dc58b8</ProductId>
-        <ProductType>DpdMerSegmentationMap</ProductType>
-        <SoftwareName>gEGN2</SoftwareName>
-        <SoftwareRelease>vZJ</SoftwareRelease>
-        <EuclidPipelineSoftwareRelease>hkcO</EuclidPipelineSoftwareRelease>
-        <ProdSDC>ltF4ScaR4N4lOD6TR6ptLnIl633Xa0nIJr63vqNW15jztVxXI9T79YXTJjsLV8LkxSpY5y5SvADpjVu2wnIN7e</ProdSDC>
-        <DataSetRelease>XzAg9</DataSetRelease>
-        <Purpose>INTERMEDIATE_DATA_RELEASE</Purpose>
-        <PlanId>3Qwmk</PlanId>
-        <PPOId>HIAH4</PPOId>
-        <PipelineDefinitionId>Cug5B</PipelineDefinitionId>
-        <PpoStatus>NA</PpoStatus>
-        <ManualValidationStatus>VALID</ManualValidationStatus>
-        <ExpirationDate>2020-06-10T14:53:11.483Z</ExpirationDate>
-        <ToBePublished>0</ToBePublished>
-        <Published>0</Published>
-        <Curator>SHE</Curator>
-        <CreationDate>2020-06-10T14:53:11.485Z</CreationDate>
-    </Header>
-    <Data>
-        <ExposureTime>
-            <Value>-7.0</Value>
-            <Unit>min</Unit>
-        </ExposureTime>
-        <ImgType>
-            <Category>SCIENCE</Category>
-            <FirstType>OTHER</FirstType>
-            <SecondType>SKY</SecondType>
-            <Technique>IMAGE</Technique>
-        </ImgType>
-        <ImgArea>
-            <Name>V70N3v7</Name>
-        </ImgArea>
-        <ImgNumber>-1</ImgNumber>
-        <AxisNumber>2</AxisNumber>
-        <AxisLengths>3 4</AxisLengths>
-        <DataSize>-64</DataSize>
-        <DataLength>-1339107468</DataLength>
-        <ImgStatistics>
-            <Min>-4.0</Min>
-            <Max>6.0</Max>
-            <Mean>4.0</Mean>
-            <Stdev>2.0</Stdev>
-            <Median>4.0</Median>
-            <MinX>54278998</MinX>
-            <MinY>-1635658592</MinY>
-            <MaxX>-1153974442</MaxX>
-            <MaxY>-1303550387</MaxY>
-            <NPix>7708689868765163373</NPix>
-            <XLower>-1052520426</XLower>
-            <YLower>1837880460</YLower>
-            <XUpper>1448665261</XUpper>
-            <YUpper>813116575</YUpper>
-        </ImgStatistics>
-        <FilterList>
-            <Filter>
-                <Name>Undefined</Name>
-                <MagId>UNKNOWN</MagId>
-                <CentralWavelength>0.0</CentralWavelength>
-                <MinWavelength>0.0</MinWavelength>
-                <MaxWavelength>0.0</MaxWavelength>
-                <Reference>N/A</Reference>
-                <HasFringes>-1</HasFringes>
-            </Filter>
-        </FilterList>
-        <WCS>
-            <CTYPE1>
-                <CoordinateType>RA</CoordinateType>
-                <ProjectionType>TSC</ProjectionType>
-            </CTYPE1>
-            <CTYPE2>
-                <CoordinateType>RA</CoordinateType>
-                <ProjectionType>MOL</ProjectionType>
-            </CTYPE2>
-            <CRVAL1>5.0</CRVAL1>
-            <CRVAL2>3.0</CRVAL2>
-            <CRPIX1>-5.0</CRPIX1>
-            <CRPIX2>-3.0</CRPIX2>
-            <CD1_1>7.0</CD1_1>
-            <CD1_2>-6.0</CD1_2>
-            <CD2_1>-5.0</CD2_1>
-            <CD2_2>-1.0</CD2_2>
-            <NonLinearCoeffs>
-                <NonLinearTPVAstromCoeffs>
-                    <PV1_0>5.0</PV1_0>
-                    <PV1_1>-9.0</PV1_1>
-                    <PV1_2>9.0</PV1_2>
-                    <PV1_3>4.0</PV1_3>
-                    <PV1_4>-10.0</PV1_4>
-                    <PV1_5>-6.0</PV1_5>
-                    <PV1_6>6.0</PV1_6>
-                    <PV1_7>5.0</PV1_7>
-                    <PV1_8>-2.0</PV1_8>
-                    <PV1_9>-10.0</PV1_9>
-                    <PV1_10>9.0</PV1_10>
-                    <PV2_0>-9.0</PV2_0>
-                    <PV2_1>-3.0</PV2_1>
-                    <PV2_2>-10.0</PV2_2>
-                    <PV2_3>7.0</PV2_3>
-                    <PV2_4>-7.0</PV2_4>
-                    <PV2_5>-3.0</PV2_5>
-                    <PV2_6>-10.0</PV2_6>
-                    <PV2_7>5.0</PV2_7>
-                    <PV2_8>5.0</PV2_8>
-                    <PV2_9>4.0</PV2_9>
-                    <PV2_10>3.0</PV2_10>
-                </NonLinearTPVAstromCoeffs>
-            </NonLinearCoeffs>
-            <DetectorId>HWPvZn2rp5j9oabqTALftDwvb5C4Uv0uSoLllw9tVfx7KY6RZAA4Jers2fQDlS</DetectorId>
-        </WCS>
-        <TileIndex>-1</TileIndex>
-        <ObservationIdList>-1</ObservationIdList>
-        <ProcessingMode>WIDE</ProcessingMode>
-        <ImgSpatialFootprint>
-            <Polygon>
-                <Vertex>
-                    <Position coordUnit="g/cm3">
-                        <C1 unit="lm">0.0</C1>
-                        <C2 unit="nm">1.0</C2>
-                    </Position>
-                    <SmallCircle>
-                        <Pole coordUnit="m2/s2">
-                            <C1 unit="m2/s2">1.0</C1>
-                            <C2 unit="s/mas/km/yr">0.0</C2>
-                        </Pole>
-                    </SmallCircle>
-                </Vertex>
-            </Polygon>
-            <Circle>
-                <Center coordUnit="min">
-                    <C1 unit="arcmin">1.0</C1>
-                    <C2 unit="J/K">1.0</C2>
-                </Center>
-                <Radius unit="um">1.0</Radius>
-            </Circle>
-            <BBox>
-                <RaCenter unit="K">1.0</RaCenter>
-                <DecCenter unit="uarcsec/yr">0.0</DecCenter>
-                <RaHalfWidth unit="m2/s2/K">1.0</RaHalfWidth>
-                <DecHalfWidth unit="erg">0.0</DecHalfWidth>
-            </BBox>
-        </ImgSpatialFootprint>
-        <DataStorage format="mer.segmentationMap" version="0.4">
-            <DataContainer filestatus="ARCHIVED_ONLINE">
-                <FileName>None</FileName>
-            </DataContainer>
-        </DataStorage>
-        <ConvolutionKernelStorage>
-            <DataContainer filestatus="DELETED">
-                <FileName>None</FileName>
-            </DataContainer>
-        </ConvolutionKernelStorage>
-        <QualityParams>
-            <NonZeroFraction flagged="true">0.0</NonZeroFraction>
-        </QualityParams>
-        <ProcessingSteps>
-            <ProcessingStep>
-                <Name>tW6D3</Name>
-                <ProgramName>p4oBB</ProgramName>
-                <SoftwareVersion>pSHtu</SoftwareVersion>
-                <ParametersList>
-                    <Parameter>
-                        <Key>fhuTb</Key>
-                        <Description>bwfFV</Description>
-                        <StringValue>9rgKS</StringValue>
-                        <Unit>TsD7c</Unit>
-                    </Parameter>
-                </ParametersList>
-                <ProcessExecuted>true</ProcessExecuted>
-                <ExitCode>CL2bK</ExitCode>
-                <LogFile filestatus="PROPOSED">
-                    <FileName>None</FileName>
-                </LogFile>
-                <OutputDataFileList>
-                    tObNp5kHb9HmYF3lskwmBhjQC98RU6uSLbWX7scXB03AiGGVBJ6eJnESf93FNsLqUDW9BU1Ly5LPFnf0BAZRwSOAoq
-                </OutputDataFileList>
-            </ProcessingStep>
-        </ProcessingSteps>
-    </Data>
-    <QualityFlags>
-        <NonZeroFractionRangeExceeded flagged="false" maxLimit="-1.0" minLimit="-5.0"
-                                      xpath="/*/Data/QualityParams/NonZeroFraction">true
-        </NonZeroFractionRangeExceeded>
-    </QualityFlags>
-    <Parameters>
-        <Parameter>
-            <Key>RVrdi</Key>
-            <Description>fvcDS</Description>
-            <StringValue>4zEj3</StringValue>
-            <Unit>8XYXU</Unit>
-        </Parameter>
-    </Parameters>
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:DpdMerSegmentationMap xmlns:ns1="http://ecdm.euclid-ec.org/schema/dpd/mer/segmentationmap">
+	<Header>
+		<ProductId>Dikhf</ProductId>
+		<ProductType>DpdMerSegmentationMap</ProductType>
+		<SoftwareName>XUz6j</SoftwareName>
+		<SoftwareRelease>tpIEcJ</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>8UgJlyDa</EuclidPipelineSoftwareRelease>
+		<ProdSDC>Dw9WsatJH62DWT6uq3wnuFr73MZ8Jc0q8JEA8KSpzlWy</ProdSDC>
+		<DataSetRelease>NAKfV</DataSetRelease>
+		<Purpose>DATA_RELEASE</Purpose>
+		<PlanId>yXa1p</PlanId>
+		<PPOId>rguiRjT7IaOCUxocxCU4lKe7cPGFj9Q09aK5U108yjTfOmczUiIkQSaST6T6ShnBOYrgylrOErDkWUzzoOmW8Hjncwv6JTlRetXrEaxewWNzgya3VDGgIo8CxcaKEB74vtYGPLaE7cnkZ8iJeQcZFPDFD7lfFQMOFB0ZaqNMYjqfQWu8WkTGFRoa7ht1l8mlDrhDgHd3kWAiRfgqc26MP5331JbhMcYh29eLRYbNO1URQWGhXOtj1Dxq6EjjZvZEpZp9wrrXCq3RTx8SYUbsSAXhd</PPOId>
+		<PipelineDefinitionId>IMnsO</PipelineDefinitionId>
+		<PpoStatus>hudJO</PpoStatus>
+		<ManualValidationStatus>INVALID</ManualValidationStatus>
+		<ProductNotifiedToBeChecked>UNKNOWN</ProductNotifiedToBeChecked>
+		<AutomatedValidationStatus>UNKNOWN</AutomatedValidationStatus>
+		<ExpirationDate>2023-04-12T19:53:47.557Z</ExpirationDate>
+		<ToBePublished>132434657</ToBePublished>
+		<Published>1242897415</Published>
+		<Curator>oVo9p</Curator>
+		<CreationDate>2023-04-12T19:53:47.557Z</CreationDate>
+	</Header>
+	<Data>
+		<ExposureTime>
+			<Value>8.0</Value>
+			<Unit>rad/day</Unit>
+		</ExposureTime>
+		<ImgType>
+			<Category>TEST</Category>
+			<FirstType>TRAP_PUMPING</FirstType>
+			<SecondType>SCREEN</SecondType>
+			<Technique>OTHER</Technique>
+		</ImgType>
+		<ImgArea>
+			<Name>pVr</Name>
+		</ImgArea>
+		<ImgNumber>1578906339</ImgNumber>
+		<AxisNumber>-861774561</AxisNumber>
+		<AxisLengths>3 4 5</AxisLengths>
+		<DataSize>-32</DataSize>
+		<DataLength>-5231219009494821994</DataLength>
+		<ImgStatistics>
+			<Min>-8.0</Min>
+			<Max>-10.0</Max>
+			<Mean>-5.0</Mean>
+			<Stdev>4.0</Stdev>
+			<Median>-3.0</Median>
+			<MinX>-1791384896</MinX>
+			<MinY>1444924050</MinY>
+			<MaxX>836972399</MaxX>
+			<MaxY>-388719955</MaxY>
+			<NPix>3117658311727300783</NPix>
+			<XLower>-961833491</XLower>
+			<YLower>1702712016</YLower>
+			<XUpper>-311771176</XUpper>
+			<YUpper>-1269333350</YUpper>
+		</ImgStatistics>
+		<SimInputConfId>QOOYz</SimInputConfId>
+		<FilterList>
+			<Filter>
+				<Name>DECAM_r</Name>
+				<MagId>U</MagId>
+				<CentralWavelength>5.0</CentralWavelength>
+				<MinWavelength>-4.0</MinWavelength>
+				<MaxWavelength>-8.0</MaxWavelength>
+				<Reference>CoFxX</Reference>
+				<HasFringes>-1563371357</HasFringes>
+			</Filter>
+		</FilterList>
+		<WCS>
+			<CTYPE1>
+				<CoordinateType>DEC</CoordinateType>
+				<ProjectionType>CSC</ProjectionType>
+			</CTYPE1>
+			<CTYPE2>
+				<CoordinateType>RA</CoordinateType>
+				<ProjectionType>COO</ProjectionType>
+			</CTYPE2>
+			<CRVAL1>3.0</CRVAL1>
+			<CRVAL2>3.0</CRVAL2>
+			<CRPIX1>-10.0</CRPIX1>
+			<CRPIX2>-4.0</CRPIX2>
+			<CD1_1>-3.0</CD1_1>
+			<CD1_2>-2.0</CD1_2>
+			<CD2_1>0.0</CD2_1>
+			<CD2_2>8.0</CD2_2>
+			<NonLinearCoeffs>
+				<NonLinearTPVAstromCoeffs>
+					<PV1_0>-6.0</PV1_0>
+					<PV1_1>0.0</PV1_1>
+					<PV1_2>4.0</PV1_2>
+					<PV1_3>-10.0</PV1_3>
+					<PV1_4>-4.0</PV1_4>
+					<PV1_5>0.0</PV1_5>
+					<PV1_6>0.0</PV1_6>
+					<PV1_7>7.0</PV1_7>
+					<PV1_8>3.0</PV1_8>
+					<PV1_9>6.0</PV1_9>
+					<PV1_10>1.0</PV1_10>
+					<PV2_0>5.0</PV2_0>
+					<PV2_1>5.0</PV2_1>
+					<PV2_2>-4.0</PV2_2>
+					<PV2_3>4.0</PV2_3>
+					<PV2_4>-10.0</PV2_4>
+					<PV2_5>7.0</PV2_5>
+					<PV2_6>0.0</PV2_6>
+					<PV2_7>0.0</PV2_7>
+					<PV2_8>0.0</PV2_8>
+					<PV2_9>1.0</PV2_9>
+					<PV2_10>7.0</PV2_10>
+				</NonLinearTPVAstromCoeffs>
+			</NonLinearCoeffs>
+			<DetectorId>CNupI7BMfOJxZhvJpOF4ZJD6I92gUlrOgivraKEMdri6Oj97xrPCxYKVXNQCdNK9nF4j4QeCIQdozEWtLhfqrOEU7i0JD6q</DetectorId>
+		</WCS>
+		<TileIndex>-3710807183740997448</TileIndex>
+		<PatchIdList>0</PatchIdList>
+		<ObservationIdList>0</ObservationIdList>
+		<CalblockIdList>edTKn</CalblockIdList>
+		<ProcessingMode>HIGH DENSITY</ProcessingMode>
+		<ImgSpatialFootprint unit="rad/s">
+			<Polygon>
+				<Vertex>
+					<C1>8.0</C1>
+					<C2>-4.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="H">
+							<C1 unit="m2/s2/K">0.0</C1>
+							<C2 unit="Pa">1.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</Polygon>
+			<MultiPolygon>
+				<Vertex>
+					<C1>-9.0</C1>
+					<C2>-3.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="uPa">
+							<C1 unit="J/K">0.0</C1>
+							<C2 unit="km/s/Mpc">0.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</MultiPolygon>
+			<Circle>
+				<Center coordUnit="K">
+					<C1 unit="mas/year">0.0</C1>
+					<C2 unit="yr">0.0</C2>
+				</Center>
+				<Radius unit="Mstars/deg2">0.0</Radius>
+			</Circle>
+			<BBox>
+				<RaCenter>7.0</RaCenter>
+				<DecCenter>2.0</DecCenter>
+				<RaHalfWidth>9.0</RaHalfWidth>
+				<DecHalfWidth>-5.0</DecHalfWidth>
+			</BBox>
+		</ImgSpatialFootprint>
+		<DataStorage format="mer.segmentationMap" version="0.1">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+		<ConvolutionKernelStorage>
+			<DataContainer filestatus="PROPOSED" checksumMethod="Adler32" checksumValue="CBSXX">
+				<FileName>2FaCSEx4UmAHWCFIz3mZTVBDZuWJHCIG4FJDcfYNwdTrFLmhcE4HSgup80o5JrAWHunOeWeJqrCGh9QtBHJB5s7mv57kjwgMxk6WzTXYy4kL2u</FileName>
+			</DataContainer>
+		</ConvolutionKernelStorage>
+		<QualityParams>
+			<NonZeroFraction flagged="true">1.0</NonZeroFraction>
+		</QualityParams>
+		<ProcessingSteps>
+			<ProcessingStep>
+				<Name>RxbUH</Name>
+				<ProgramName>SU9Pb</ProgramName>
+				<SoftwareVersion>x0ohz</SoftwareVersion>
+				<ParametersList>
+					<Parameter>
+						<Key>CsmDz</Key>
+						<Description>QUbaF</Description>
+						<StringValue>wy4mo</StringValue>
+						<Unit>JD8RN</Unit>
+					</Parameter>
+				</ParametersList>
+				<ProcessExecuted>false</ProcessExecuted>
+				<ExitCode>vwuyV</ExitCode>
+				<LogFile filestatus="PROPOSED" checksumMethod="MD5" checksumValue="7Y2HR">
+					<FileName>I7eJv8er9DTNNWYVdnZ</FileName>
+				</LogFile>
+				<OutputDataFileList>O49a</OutputDataFileList>
+			</ProcessingStep>
+		</ProcessingSteps>
+	</Data>
+	<QualityFlags>
+		<NonZeroFractionRangeExceeded xpath="/*/Data/QualityParams/NonZeroFraction" minLimit="0.0" maxLimit="-2.0" flagged="false">false</NonZeroFractionRangeExceeded>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>x5zj0</Key>
+			<Description>TTNfT</Description>
+			<StringValue>3Sd5O</StringValue>
+			<Unit>lSxdf</Unit>
+		</Parameter>
+	</Parameters>
 </ns1:DpdMerSegmentationMap>

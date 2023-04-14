@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:DpdShePsfLevel2CalibrationParameters xmlns:ns1="http://ecdm.euclid-ec.org/schema/dpd/she/psflevel2calibrationparameters">
+	<Header>
+		<ProductId>YyYTF</ProductId>
+		<ProductType>DpdShePsfLevel2CalibrationParameters</ProductType>
+		<SoftwareName>FTPvx</SoftwareName>
+		<SoftwareRelease>SHB8jR</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>Dfv8GBV</EuclidPipelineSoftwareRelease>
+		<ProdSDC>2Vi4GHJrvyDSww2vDZ9oq3wlaVhIUa</ProdSDC>
+		<DataSetRelease>roRbu</DataSetRelease>
+		<Purpose>UNKNOWN</Purpose>
+		<PlanId>v5s6F</PlanId>
+		<PPOId>pZn0lWmUJ78tOdNO7ovBYPJ8W2mMudTvnlUzeHY0ghX1zLTsu9K6</PPOId>
+		<PipelineDefinitionId>OBwT5</PipelineDefinitionId>
+		<PpoStatus>jot7B</PpoStatus>
+		<ManualValidationStatus>INVALID</ManualValidationStatus>
+		<ProductNotifiedToBeChecked>UNKNOWN</ProductNotifiedToBeChecked>
+		<AutomatedValidationStatus>INVALID</AutomatedValidationStatus>
+		<ExpirationDate>2023-04-12T19:53:45.077Z</ExpirationDate>
+		<ToBePublished>-593300312</ToBePublished>
+		<Published>2048486497</Published>
+		<Curator>WABCi</Curator>
+		<CreationDate>2023-04-12T19:53:45.077Z</CreationDate>
+	</Header>
+	<Data>
+		<CalibrationList>nERPr</CalibrationList>
+		<ValidityRange>
+			<Name>G6EkN</Name>
+			<Type>pjF4S</Type>
+			<TimestampStart>2023-04-12T19:53:45.078Z</TimestampStart>
+			<TimestampEnd>2023-04-12T19:53:45.078Z</TimestampEnd>
+		</ValidityRange>
+		<NumberOfZernikeBases>2016927272</NumberOfZernikeBases>
+		<NumberZernikeModes>360013298</NumberZernikeModes>
+		<NumberZernikePolynomialCoeffs>-2049167551</NumberZernikePolynomialCoeffs>
+		<ToolkitConfigParamFileName>GsCAz</ToolkitConfigParamFileName>
+		<DataStorage format="she.psfLevel2CalibrationParameters" version="0.1">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+	</Data>
+	<QualityFlags>
+		<DummyFlag xpath="//Data/Some/Path/To/Quality/Parameter" minLimit="0.05" maxLimit="10.0" flagged="true">true</DummyFlag>
+		<AuxiliaryFlags flagName="b`PYg55C|}E~9y&quot;&amp;8e|nMdNq1A[`3&quot;p&quot;8(zk#Kv0Gg\%" xpath="N0S0U" minLimit="5.0" maxLimit="2.0" flagged="false">false</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>l3cIY</Key>
+			<Description>ZJJOo</Description>
+			<StringValue>KlZM4</StringValue>
+			<Unit>tal7C</Unit>
+		</Parameter>
+	</Parameters>
+</ns1:DpdShePsfLevel2CalibrationParameters>

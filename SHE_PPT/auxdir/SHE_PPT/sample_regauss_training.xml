@@ -1,97 +1,108 @@
-<?xml version="1.0" ?>
-<ns1:DpdSheRegaussTraining xmlns:ns1="http://euclid.esa.org/schema/dpd/she/regausstraining">
-    <Header>
-        <ProductId>ba3d20bf-bf26-4056-ac9d-a2ac90bff04a</ProductId>
-        <ProductType>DpdSheRegaussTraining</ProductType>
-        <SoftwareName>JxzKT</SoftwareName>
-        <SoftwareRelease>DEhqA</SoftwareRelease>
-        <EuclidPipelineSoftwareRelease>w4gt</EuclidPipelineSoftwareRelease>
-        <ProdSDC>ZkB3E3ZCnBr4C8SSdqvjdCMUErrRMEU4Zowon3SOFc4S8bBUhuAZkVxwohTdLNk8QactYO</ProdSDC>
-        <DataSetRelease>UuaWJ</DataSetRelease>
-        <Purpose>UNKNOWN</Purpose>
-        <PlanId>pKLoP</PlanId>
-        <PPOId>ZLc8S</PPOId>
-        <PipelineDefinitionId>R71Pt</PipelineDefinitionId>
-        <PpoStatus>NA</PpoStatus>
-        <ManualValidationStatus>VALID</ManualValidationStatus>
-        <ExpirationDate>2020-06-04T14:40:08.182Z</ExpirationDate>
-        <ToBePublished>0</ToBePublished>
-        <Published>0</Published>
-        <Curator>SHE</Curator>
-        <CreationDate>2020-06-04T14:40:08.184Z</CreationDate>
-    </Header>
-    <Data>
-        <SpatialCoverage>
-            <Polygon>
-                <Vertex>
-                    <Position coordUnit="pix">
-                        <C1 unit="J/K/kg">1.0</C1>
-                        <C2 unit="sr">1.0</C2>
-                    </Position>
-                    <SmallCircle>
-                        <Pole coordUnit="pixel">
-                            <C1 unit="solRad">1.0</C1>
-                            <C2 unit="deg/minute">1.0</C2>
-                        </Pole>
-                    </SmallCircle>
-                </Vertex>
-            </Polygon>
-            <Circle>
-                <Center coordUnit="d">
-                    <C1 unit="count">0.0</C1>
-                    <C2 unit="lyr">0.0</C2>
-                </Center>
-                <Radius unit="stars">1.0</Radius>
-            </Circle>
-            <BBox>
-                <RaCenter unit="m/s2">1.0</RaCenter>
-                <DecCenter unit="pixel**2">1.0</DecCenter>
-                <RaHalfWidth unit="N">0.0</RaHalfWidth>
-                <DecHalfWidth unit="arcsec/yr">1.0</DecHalfWidth>
-            </BBox>
-        </SpatialCoverage>
-        <SpectralCoverage>
-            <Filter>
-                <Name>LSST_Y</Name>
-                <MagId>Q</MagId>
-                <CentralWavelength>2.0</CentralWavelength>
-                <MinWavelength>5.0</MinWavelength>
-                <MaxWavelength>9.0</MaxWavelength>
-                <Reference>jOl8y</Reference>
-                <HasFringes>2078411945</HasFringes>
-            </Filter>
-        </SpectralCoverage>
-        <CatalogDescription>
-            <CatalogOrigin>MASTER_DEEP</CatalogOrigin>
-            <CatalogType>PROXY</CatalogType>
-            <PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-            <CatalogName>She-Regauss-Training</CatalogName>
-            <CatalogFormatHDU>1</CatalogFormatHDU>
-        </CatalogDescription>
-        <ValidityRange>
-            <Name>Dummy</Name>
-            <Type>sheRegaussTraining</Type>
-            <TimestampStart>2020-06-04T14:40:08.195Z</TimestampStart>
-            <TimestampEnd>9999-06-04T14:40:08.196Z</TimestampEnd>
-        </ValidityRange>
-        <DataStorage format="she.regaussTraining" version="8.0">
-            <DataContainer filestatus="ARCHIVED_ONLINE">
-                <FileName>None</FileName>
-            </DataContainer>
-        </DataStorage>
-    </Data>
-    <QualityFlags>
-        <DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true
-        </DummyFlag>
-        <AuxiliaryFlags flagName="PmMrF" flagged="false" maxLimit="-5.0" minLimit="7.0" xpath="0y1ey">false
-        </AuxiliaryFlags>
-    </QualityFlags>
-    <Parameters>
-        <Parameter>
-            <Key>VH5m4</Key>
-            <Description>5KKdA</Description>
-            <StringValue>dKIQj</StringValue>
-            <Unit>Qqulr</Unit>
-        </Parameter>
-    </Parameters>
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:DpdSheRegaussTraining xmlns:ns1="http://ecdm.euclid-ec.org/schema/dpd/she/regausstraining">
+	<Header>
+		<ProductId>RWS6h</ProductId>
+		<ProductType>DpdSheRegaussTraining</ProductType>
+		<SoftwareName>tU1By</SoftwareName>
+		<SoftwareRelease>xARjqwq</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>tCLFD</EuclidPipelineSoftwareRelease>
+		<ProdSDC>sBlI0STDgSfei4zQhhaOSizv</ProdSDC>
+		<DataSetRelease>ckRYJ</DataSetRelease>
+		<Purpose>ON_THE_FLY</Purpose>
+		<PlanId>FxixZ</PlanId>
+		<PPOId>41JpeTN046O7wmFN3Bz926ebGzyQAQs1zzZZ75qF8MtG38GplXaX0Fs2U9YTMwIrZNRdqBz1y8kdqctM4P8oHu3jOKJngzb1UpPXxE26E4s9iuhCCnOGg1FGbLErKsvhFdR2Ddde8Ng4B6ZcV7BbQ0hCcJPSFhk4w8fkEzGanoeK6VNwxwMHFKnnsAcO2pBWX2njB2erL4UqMgpQJI0gQF7c2REXaV4qJOChSi1UJ4M5</PPOId>
+		<PipelineDefinitionId>scgiU</PipelineDefinitionId>
+		<PpoStatus>GIvlS</PpoStatus>
+		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
+		<ProductNotifiedToBeChecked>NOTTOBECHECKED</ProductNotifiedToBeChecked>
+		<AutomatedValidationStatus>VALID</AutomatedValidationStatus>
+		<ExpirationDate>2023-04-12T19:53:46.429Z</ExpirationDate>
+		<ToBePublished>337662711</ToBePublished>
+		<Published>1359727396</Published>
+		<Curator>2pYLj</Curator>
+		<CreationDate>2023-04-12T19:53:46.429Z</CreationDate>
+	</Header>
+	<Data>
+		<SpatialCoverage unit="uJy">
+			<Polygon>
+				<Vertex>
+					<C1>2.0</C1>
+					<C2>-6.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="mol">
+							<C1 unit="Ry">0.0</C1>
+							<C2 unit="m2/s">1.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</Polygon>
+			<MultiPolygon>
+				<Vertex>
+					<C1>-4.0</C1>
+					<C2>-2.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="keV">
+							<C1 unit="J/m3/K4">1.0</C1>
+							<C2 unit="g/cm3">1.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</MultiPolygon>
+			<Circle>
+				<Center coordUnit="m/s2">
+					<C1 unit="J/K/kg">1.0</C1>
+					<C2 unit="arcsec/yr">0.0</C2>
+				</Center>
+				<Radius unit="mA">1.0</Radius>
+			</Circle>
+			<BBox>
+				<RaCenter>5.0</RaCenter>
+				<DecCenter>-9.0</DecCenter>
+				<RaHalfWidth>-1.0</RaHalfWidth>
+				<DecHalfWidth>-1.0</DecHalfWidth>
+			</BBox>
+		</SpatialCoverage>
+		<SpectralCoverage>
+			<Filter>
+				<Name>OMEGACAM_u</Name>
+				<MagId>I</MagId>
+				<CentralWavelength>5.0</CentralWavelength>
+				<MinWavelength>-5.0</MinWavelength>
+				<MaxWavelength>2.0</MaxWavelength>
+				<Reference>fr4tZ</Reference>
+				<HasFringes>-1147560187</HasFringes>
+			</Filter>
+		</SpectralCoverage>
+		<CatalogDescription>
+			<CatalogOrigin>OTHERS</CatalogOrigin>
+			<CatalogType>PROXY</CatalogType>
+			<PathToCatalogFile>v8o0n</PathToCatalogFile>
+			<CatalogName>Ext-Obs-Collection-Sc456</CatalogName>
+			<CatalogFormatHDU>2018163175</CatalogFormatHDU>
+		</CatalogDescription>
+		<PlaceholderData>None</PlaceholderData>
+		<ValidityRange>
+			<Name>VI3h2</Name>
+			<Type>j67pf</Type>
+			<TimestampStart>2023-04-12T19:53:46.433Z</TimestampStart>
+			<TimestampEnd>2023-04-12T19:53:46.433Z</TimestampEnd>
+		</ValidityRange>
+		<DataStorage format="she.regaussTraining" version="8.0">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+	</Data>
+	<QualityFlags>
+		<DummyFlag xpath="//Data/Some/Path/To/Quality/Parameter" minLimit="0.05" maxLimit="10.0" flagged="true">true</DummyFlag>
+		<AuxiliaryFlags flagName="Y22$kV)|c6'BqZ1.Qe!}U8=}3U2|sb(*:$NH.Krvdg+_&gt;/p2'ic^J[;d|&lt;v|VPm" xpath="Nr5Hs" minLimit="-8.0" maxLimit="1.0" flagged="true">true</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>p4IPT</Key>
+			<Description>ZCSpl</Description>
+			<StringValue>YCkS0</StringValue>
+			<Unit>e7hyA</Unit>
+		</Parameter>
+	</Parameters>
 </ns1:DpdSheRegaussTraining>
