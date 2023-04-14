@@ -1,14 +1,14 @@
-""" @file she_psf_calibration_parameters.py
+""" @file she_psf_level1_calibration_parameters.py
 
-    Created 24 Nov 2017
+    Created 12 Apr 2023
 
-    Functions to create and output a psf_calibration_parameters data product.
+    Functions to create and output a psf_level1_calibration_parameters data product.
 
     Origin: OU-SHE - Needs to be implemented in data model. Input to Analysis pipeline;
     must be persistent in archive.
 """
 
-__updated__ = "2021-08-16"
+__updated__ = "2023-04-12"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -24,21 +24,21 @@ __updated__ = "2021-08-16"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301 USA
 
-from ST_DataModelBindings.dpd.she.psfcalibrationparameters_stub import dpdShePsfCalibrationParameters
+from ST_DataModelBindings.dpd.she.psflevel1calibrationparameters_stub import dpdShePsfLevel1CalibrationParameters
 from ..product_utility import create_product_from_template, init_just_datastorage
 
-sample_file_name = "SHE_PPT/sample_psf_calibration_parameters.xml"
-product_type_name = "DpdShePsfCalibrationParameters"
+sample_file_name = "SHE_PPT/sample_psf_level1_calibration_parameters.xml"
+product_type_name = "DpdShePsfLevel1CalibrationParameters"
 
 
 def init():
     """ Adds some extra functionality to this product, with functions to get filenames. """
 
-    init_just_datastorage(binding_class=dpdShePsfCalibrationParameters,
-                          init_function=create_dpd_she_psf_calibration_parameters)
+    init_just_datastorage(binding_class=dpdShePsfLevel1CalibrationParameters,
+                          init_function=create_dpd_she_psf_level1_calibration_parameters)
 
 
-def create_dpd_she_psf_calibration_parameters(filename=None,
+def create_dpd_she_psf_level1_calibration_parameters(filename=None,
                                               data_filename=None):
     """ Creates a product of this type.
     """
@@ -50,4 +50,4 @@ def create_dpd_she_psf_calibration_parameters(filename=None,
 
 
 # Add a useful alias
-create_psf_calibration_parameters_data_product = create_dpd_she_psf_calibration_parameters
+create_psf_level1_calibration_parameters_data_product = create_dpd_she_psf_level1_calibration_parameters

@@ -136,7 +136,7 @@ def create_dpd_photoz_catalog(
 
     if star_sed_filename and star_sed_filename != "":
         dpd.Data.StarSedCatalog = dm_utils.create_fits_storage(
-            phz_dict.phzStarSedCatalog, star_sed_filename, "phz.sedCatalog", version
+            phz_dict.phzStarSedCatalog, star_sed_filename, "phz.starSedCatalog", version
         )
 
     if galaxy_sed_filename and galaxy_sed_filename != "":
