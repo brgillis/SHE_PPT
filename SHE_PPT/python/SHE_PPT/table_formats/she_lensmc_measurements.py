@@ -52,10 +52,24 @@ def set_lensmc_column_properties(tf):
     """
     tf.snr_err = tf.set_column_properties(
         "SHE_LENSMC_SNR_ERR", dtype=">f4", fits_dtype="E")
+
+    tf.flux_bulge = tf.set_column_properties(
+        "SHE_LENSMC_FLUX_BULGE", dtype=">f4", fits_dtype="E")
+    tf.flux_bulge_err = tf.set_column_properties(
+        "SHE_LENSMC_FLUX_BULGE_ERR", dtype=">f4", fits_dtype="E")
+    tf.flux_disk = tf.set_column_properties(
+        "SHE_LENSMC_FLUX_DISK", dtype=">f4", fits_dtype="E")
+    tf.flux_disk_err = tf.set_column_properties(
+        "SHE_LENSMC_FLUX_DISK_ERR", dtype=">f4", fits_dtype="E")
+
+    tf.zp = tf.set_column_properties(
+        "SHE_LENSMC_ZP", dtype=">f4", fits_dtype="E")
+
     tf.bulge_frac = tf.set_column_properties(
         "SHE_LENSMC_BULGE_FRAC", dtype=">f4", fits_dtype="E")
     tf.bulge_frac_err = tf.set_column_properties(
         "SHE_LENSMC_BULGE_FRAC_ERR", dtype=">f4", fits_dtype="E")
+
     tf.gal_pvalue = tf.set_column_properties(
         "SHE_LENSMC_GAL_PVALUE", dtype=">f4", fits_dtype="E")
     tf.chi2 = tf.set_column_properties(
