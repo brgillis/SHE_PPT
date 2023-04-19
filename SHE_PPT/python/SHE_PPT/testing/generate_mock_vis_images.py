@@ -56,7 +56,7 @@ def __generate_gausian_blob(objsize=10):
 
 
 def __generate_detector_images(detector_shape=(4136, 4096), nobjs=10, background=10., snr=10, objsize=10,
-                               rng=None):
+                               obj_rng=None, noise_rng=None):
     """Generates the SCI, RMG, FLG, WGT and BKG pixel maps for a detector
 
        Arguments:
@@ -77,8 +77,11 @@ def __generate_detector_images(detector_shape=(4136, 4096), nobjs=10, background
          - y_px: list of y pixel coordinates of the nobjs objects
     """
 
-    if rng is None:
-        rng = np.random.RandomState()
+    if obj_rng is None:
+        obj_rng = np.random.RandomState()
+
+    if noise_rng is None:
+        noise_rng = np.random.RandomState()
 
     stampsize = int(objsize * stampscale * 2)
 
@@ -86,7 +89,7 @@ def __generate_detector_images(detector_shape=(4136, 4096), nobjs=10, background
         raise ValueError("Detector size must be at least %d pixels" % stampsize)
 
     # generate sci image with poisson noise
-    sci = rng.poisson(background, detector_shape).astype(np.float32)
+    sci = noise_rng.poisson(background, detector_shape).astype(np.float32)
 
     # populate it with nobjs "galaxies"
     x_px = []
@@ -95,8 +98,8 @@ def __generate_detector_images(detector_shape=(4136, 4096), nobjs=10, background
         blob = __generate_gausian_blob(objsize)
 
         # select (randomly) the x and y coordinates of the blob's bottom corner
-        x = rng.randint(0, detector_shape[1] - stampsize)
-        y = rng.randint(0, detector_shape[0] - stampsize)
+        x = obj_rng.randint(0, detector_shape[1] - stampsize)
+        y = obj_rng.randint(0, detector_shape[0] - stampsize)
 
         # store the blob's centre coordinates
         x_px.append(x + stampsize / 2)
@@ -141,8 +144,8 @@ def __create_header(wcs=None, **kwargs):
     return h
 
 
-def create_exposure(n_detectors=1, detector_shape=(100, 100), workdir=".", seed=1, n_objs_per_det=10,
-                    objsize=10):
+def create_exposure(n_detectors=1, detector_shape=(100, 100), workdir=".", seed=1, noise_seed=1, n_objs_per_det=10,
+                    objsize=10, pointing_id=1, obs_id=1):
     """
         Creates a mock dpdVisCalibratedFrame data product for use in smoke tests
 
@@ -169,7 +172,8 @@ def create_exposure(n_detectors=1, detector_shape=(100, 100), workdir=".", seed=
     if n_detectors not in (1, 36):
         raise ValueError("Number of detectors seems to be %d. The only valid numbers are 1 or 36" % n_detectors)
 
-    rng = np.random.RandomState(seed=seed)
+    obj_rng = np.random.RandomState(seed=seed)
+    noise_rng = np.random.RandomState(seed=noise_seed)
 
     # create hdulists for the 3 fits files (DET, WGT, BKG)
     det_hdr = __create_header()
@@ -200,7 +204,8 @@ def create_exposure(n_detectors=1, detector_shape=(100, 100), workdir=".", seed=
 
         # create image data
         sci, rms, flg, wgt, bkg, x_px, y_px = __generate_detector_images(detector_shape=detector_shape,
-                                                                         rng=rng,
+                                                                         obj_rng=obj_rng,
+                                                                         noise_rng=noise_rng,
                                                                          nobjs=n_objs_per_det,
                                                                          objsize=objsize)
 
@@ -257,9 +262,10 @@ def create_exposure(n_detectors=1, detector_shape=(100, 100), workdir=".", seed=
         os.mkdir(datadir)
 
     # get qualified filename for the fits files
-    det_fname = get_allowed_filename("VIS-DET", "00", version=ppt_version, extension=".fits")
-    wgt_fname = get_allowed_filename("VIS-WGT", "00", version=ppt_version, extension=".fits")
-    bkg_fname = get_allowed_filename("VIS-BKG", "00", version=ppt_version, extension=".fits")
+    identifier = f"{obs_id}-{pointing_id}"
+    det_fname = get_allowed_filename("VIS-DET", identifier, version=ppt_version, extension=".fits")
+    wgt_fname = get_allowed_filename("VIS-WGT", identifier, version=ppt_version, extension=".fits")
+    bkg_fname = get_allowed_filename("VIS-BKG", identifier, version=ppt_version, extension=".fits")
 
     # write the fits files
     logger.info("Writing DET file to %s" % os.path.join(workdir, det_fname))
@@ -273,6 +279,8 @@ def create_exposure(n_detectors=1, detector_shape=(100, 100), workdir=".", seed=
     exposure_prod = vis_calibrated_frame.create_dpd_vis_calibrated_frame(data_filename=det_fname,
                                                                          bkg_filename=bkg_fname,
                                                                          wgt_filename=wgt_fname)
+    exposure_prod.Data.ObservationSequence.PointingId = pointing_id
+    exposure_prod.Data.ObservationSequence.ObservationId = obs_id
 
     # Write it to file
     prod_filename = get_allowed_filename("VIS-CAL-FRAME", "00", version=ppt_version, extension=".xml", subdir="")
