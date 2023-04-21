@@ -28,6 +28,8 @@ import numpy as np
 from astropy.io.fits import BinTableHDU, HDUList, ImageHDU, PrimaryHDU, TableHDU
 from astropy.table import Table
 
+from EL_NullValue.NullValueDefinition import NullValueDefinition
+
 from . import detector as dtc
 from .constants.fits import CCDID_LABEL, EXTNAME_LABEL
 from .constants.misc import S_NON_FILENAMES
@@ -745,3 +747,28 @@ def join_without_none(l_s: List[Optional[Any]],
 
     # Otherwise, join the pieces
     return joiner.join(l_s_no_none)
+
+
+def get_null_value_for_dtype(dtype):
+    """For a given dtype, returns its NULL value as defined in EL_NullValues"""
+
+    if np.issubdtype(dtype, str):
+        return NullValueDefinition.STRING
+    if np.issubdtype(dtype, np.int16):
+        return NullValueDefinition.SHORT
+    elif np.issubdtype(dtype, np.int32):
+        return NullValueDefinition.INT
+    elif np.issubdtype(dtype, np.int64):
+        return NullValueDefinition.LONG_LONG
+    elif np.issubdtype(dtype, np.float32):
+        return NullValueDefinition.FLOAT
+    elif np.issubdtype(dtype, np.float64):
+        return NullValueDefinition.DOUBLE
+    elif np.issubdtype(dtype, np.csingle):
+        return NullValueDefinition.COMPLEX_FLOAT
+    elif np.issubdtype(dtype, np.cdouble):
+        return NullValueDefinition.COMPLEX_DOUBLE
+    else:
+        # NOTE: EL_NullValue also defines NULL for unsigned ints, however these cannot be used in FITS,
+        # so it is very unlikely uints will be used in SHE code, so I have not implemented these checks here
+        raise TypeError("Unknown dtype %s" % dtype)

@@ -29,6 +29,8 @@ import pytest
 from astropy.io.fits import BinTableHDU, HDUList, Header, PrimaryHDU
 from astropy.table import Table
 
+from EL_NullValue.NullValueDefinition import NullValueDefinition
+
 from SHE_PPT.constants.fits import CCDID_LABEL, EXTNAME_LABEL, SCI_TAG
 from SHE_PPT.constants.misc import S_NON_FILENAMES
 from SHE_PPT.testing.utility import SheTestCase
@@ -36,7 +38,8 @@ from SHE_PPT.utility import (all_are_zero, any_is_inf, any_is_inf_nan_or_masked,
                              any_is_nan, any_is_nan_or_masked, any_is_zero, coerce_to_list, find_extension,
                              get_attr_with_index, get_detector, get_nested_attr, get_release_from_version,
                              is_any_type_of_none, is_inf, is_inf_nan_or_masked, is_inf_or_nan, is_masked, is_nan,
-                             is_nan_or_masked, is_zero, join_without_none, neq, set_attr_with_index, set_nested_attr, )
+                             is_nan_or_masked, is_zero, join_without_none, neq, set_attr_with_index, set_nested_attr,
+                             get_null_value_for_dtype, )
 
 
 @dataclass
@@ -290,3 +293,62 @@ class TestUtility(SheTestCase):
 
         # Test with a default
         assert join_without_none([None], default="default") == "default"
+
+    def test_get_null_value_for_dtype(self):
+        """Tests that we can correctly return the NULL values for a given datatype"""
+
+        # a dict of dtypes, and their expected NULL values
+        # (also defined are some FITS-like dtypes (e.g. '<i8') to make sure it can correctly identify these)
+        dtypes = {
+            # builtin python dtypes
+            str: NullValueDefinition.STRING,
+            int: NullValueDefinition.LONG_LONG,
+            float: NullValueDefinition.DOUBLE,
+            # 16-bit (short) ints
+            np.int16: NullValueDefinition.SHORT,
+            "<i2": NullValueDefinition.SHORT,
+            ">i2": NullValueDefinition.SHORT,
+            # 32-bit ints
+            np.int32: NullValueDefinition.INT,
+            "<i4": NullValueDefinition.INT,
+            ">i4": NullValueDefinition.INT,
+            # 64-bit (long) ints
+            np.int64: NullValueDefinition.LONG_LONG,
+            "<i8": NullValueDefinition.LONG_LONG,
+            ">i8": NullValueDefinition.LONG_LONG,
+            # 32-bit floats
+            np.float32: NullValueDefinition.FLOAT,
+            "<f4": NullValueDefinition.FLOAT,
+            ">f4": NullValueDefinition.FLOAT,
+            # 64 bit floats
+            np.float64: NullValueDefinition.DOUBLE,
+            "<f8": NullValueDefinition.DOUBLE,
+            ">f8": NullValueDefinition.DOUBLE,
+            # single precision complex
+            np.csingle: NullValueDefinition.COMPLEX_FLOAT,
+            "<c8": NullValueDefinition.COMPLEX_FLOAT,
+            ">c8": NullValueDefinition.COMPLEX_FLOAT,
+            # double precision complex
+            np.cdouble: NullValueDefinition.COMPLEX_DOUBLE,
+            "<c16": NullValueDefinition.COMPLEX_DOUBLE,
+            ">c16": NullValueDefinition.COMPLEX_DOUBLE,
+        }
+
+        # NOTE: we use "is" here rather than == as we are comparing strings, numbers and NaNs... a warning will be
+        # produced where numbers are compared with each other
+        for _dtype, value in dtypes.items():
+            assert get_null_value_for_dtype(_dtype) is value, "Unexpected NULL value returned for %s" % _dtype
+
+        # Make sure it raises a TypeError if unknown types are passed in:
+
+        with pytest.raises(TypeError):
+            # object is not something that has a dtype
+            get_null_value_for_dtype(object)
+
+        with pytest.raises(TypeError):
+            # unsigned ints have not been implemented
+            get_null_value_for_dtype(np.uint32)
+
+        with pytest.raises(TypeError):
+            # invalid dtype
+            get_null_value_for_dtype("fake_dtype")
