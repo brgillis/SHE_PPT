@@ -34,7 +34,7 @@ from SHE_PPT.table_utility import is_in_format
 logger = getLogger(__name__)
 
 
-def create_catalogue(obj_coords=[], workdir=".", group_ids=None):
+def create_catalogue(obj_coords=[], workdir=".", group_ids=None, tile_id=1):
     """
        Creates a mock dpdMerFinalCatalog for a list of object coordinates
 
@@ -89,6 +89,7 @@ def create_catalogue(obj_coords=[], workdir=".", group_ids=None):
 
     # create the data product
     product = mer_final_catalog.create_dpd_mer_final_catalog(filename=table_filename)
+    product.Data.TileIndex = tile_id
 
     # get a name for it
     product_filename = get_allowed_filename("PROD-MER-CAT", "00", version=ppt_version, subdir="",
