@@ -118,6 +118,8 @@ class SheMeasurementsFormat(SheTableFormat):
             "E_CAL_VAR", dtype=">f4", fits_dtype="E", is_optional=True)
         self.e1e2_cal_covar = self.set_column_properties(
             "E1E2_CAL_COVAR", dtype=">f4", fits_dtype="E")
+        self.weight_cal = self.set_column_properties(
+            "SHEAR_WEIGHT_CAL", dtype=">f4", fits_dtype="E")
 
         # calibration bias parameters for each object
         self.m11 = self.set_column_properties(
@@ -136,13 +138,6 @@ class SheMeasurementsFormat(SheTableFormat):
             "ALPHA1", dtype=">f4", fits_dtype="E")
         self.alpha2 = self.set_column_properties(
             "ALPHA2", dtype=">f4", fits_dtype="E")
-
-        # self.weight_uncal = self.set_column_properties(
-        #     "SHEAR_WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
-        # self.shape_weight_uncal = self.set_column_properties(
-        #     "SHAPE_WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
-        # self.shape_noise = self.set_column_properties(
-        #     "ASSUMED_SHAPE_NOISE", dtype=">f4", fits_dtype="E", is_optional=True)
 
         self.ra = self.set_column_properties(
             "RA", dtype=">f8", fits_dtype="D", comment="deg")

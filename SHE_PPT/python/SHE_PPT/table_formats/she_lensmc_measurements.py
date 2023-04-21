@@ -83,6 +83,10 @@ def set_lensmc_column_properties(tf):
     tf.m2_ical = tf.set_column_properties(
         "SHE_LENSMC_M2_ICAL", dtype=">f4", fits_dtype="E")
 
+    # group as identified in SHE_CTE_ObjectIdSplit
+    tf.group_id = tf.set_column_properties(
+            "GROUP_ID", dtype=">i8", fits_dtype="K")
+
 
 class SheLensMcMeasurementsFormat(SheMeasurementsFormat):
     """
