@@ -103,7 +103,7 @@ class SheMeasurementsFormat(SheTableFormat):
         self.weight = self.set_column_properties(
             "SHEAR_WEIGHT", dtype=">f4", fits_dtype="E")
         self.shape_noise = self.set_column_properties(
-            "SHAPE_NOISE", dtype=">f4", fits_dtype="E", is_optional=True)
+            "SHAPE_NOISE", dtype=">f4", fits_dtype="E")
 
         # shape information (calibrated)
         self.e1_cal = self.set_column_properties(
