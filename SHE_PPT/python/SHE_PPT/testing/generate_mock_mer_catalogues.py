@@ -34,7 +34,7 @@ from SHE_PPT.table_utility import is_in_format
 logger = getLogger(__name__)
 
 
-def create_catalogue(obj_coords=[], workdir=".", group_ids=None, tile_id=1, obs_ids = []):
+def create_catalogue(obj_coords=[], workdir=".", group_ids=None, tile_id=1, obs_ids=[]):
     """
        Creates a mock dpdMerFinalCatalog for a list of object coordinates
 
