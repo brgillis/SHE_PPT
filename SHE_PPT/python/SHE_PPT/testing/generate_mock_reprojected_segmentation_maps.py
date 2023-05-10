@@ -148,8 +148,8 @@ def create_reprojected_segmentation_map(
     """
     n_detectors = len(wcs_list)
 
-    if n_detectors not in (1, 36):
-        raise ValueError("Number of detectors seems to be %d. The only valid numbers are 1 or 36" % n_detectors)
+    if n_detectors < 1 or n_detectors > 36:
+        raise ValueError("Number of detectors seems to be %d. The only valid numbers are between 1 and 36 inclusive" % n_detectors)
 
     object_ids = np.asarray(object_ids)
     pixel_coords = np.asarray(pixel_coords)
