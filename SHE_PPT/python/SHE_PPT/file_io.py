@@ -951,6 +951,9 @@ def write_listfile(listfile_name: str,
         The workdir in which the file should be created. If `listfile_name` is provided fully-qualified,
         it is not necessary for this to be provided (and it will be ignored if it is).
     """
+    
+    # This could be input as a pathlib.Path object, so convert it to a string here to avoid errors later on
+    listfile_name = str(listfile_name)
 
     qualified_listfile_name = get_qualified_filename(filename=listfile_name, workdir=workdir)
 
