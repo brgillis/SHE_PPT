@@ -180,7 +180,9 @@ def create_exposure(
     PIXELSIZE = 1.0 / 3600 / 10.0
 
     if n_detectors < 1 or n_detectors > 36:
-        raise ValueError("Number of detectors seems to be %d. The only valid numbers are between 1 and 36 inclusive" % n_detectors)
+        raise ValueError(
+            "Number of detectors seems to be %d. The only valid numbers are between 1 and 36 inclusive" % n_detectors
+        )
 
     obj_rng = np.random.RandomState(seed=seed)
     noise_rng = np.random.RandomState(seed=noise_seed)
@@ -226,7 +228,7 @@ def create_exposure(
         y_c = (1.1 * detector_shape[0]) * (det_j - 1) * PIXELSIZE
         wcs.wcs.crpix = [0.0, 0.0]
         wcs.wcs.crval = [x_c, y_c]
-        wcs.wcs.cd = np.identity(2)*PIXELSIZE
+        wcs.wcs.cd = np.identity(2) * PIXELSIZE
         wcs.wcs.ctype = ["RA---TAN", "DEC--TAN"]
 
         # obtain the world coordinates of the objects in the image, and append them to the object_positions list
