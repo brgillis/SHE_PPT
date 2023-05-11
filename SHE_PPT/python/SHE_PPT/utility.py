@@ -751,7 +751,7 @@ def join_without_none(l_s: List[Optional[Any]],
 
 def get_null_value_for_dtype(dtype):
     """For a given dtype, returns its NULL value as defined in EL_NullValues"""
-    
+
     # Ensure the dtype passed in is turned into a numpy dtype
     dtype = np.dtype(dtype)
 
