@@ -79,7 +79,12 @@ def input_products(workdir, num_objects, objsize):
         obj_coords=sky_coords, workdir=workdir
     )
     id_list_product = generate_mock_object_id_list.create_object_id_list(object_ids, workdir=workdir)
-    psf_product = generate_mock_psf_model_image.create_model_image_product(object_ids, pixel_coords, workdir=workdir)
+    psf_product_fits = generate_mock_psf_model_image.create_model_image_product(
+        object_ids, pixel_coords, workdir=workdir, filetype="fits"
+    )
+    psf_product_hdf5 = generate_mock_psf_model_image.create_model_image_product(
+        object_ids, pixel_coords, workdir=workdir, filetype="hdf5"
+    )
     seg_map_product = generate_mock_reprojected_segmentation_maps.create_reprojected_segmentation_map(
         object_ids, pixel_coords, detectors, wcs_list, objsize=objsize, workdir=workdir
     )
@@ -87,7 +92,8 @@ def input_products(workdir, num_objects, objsize):
     # create the contents of the listfiles for the vis and mer products
     exposure_list = [exposure_product for i in range(NUM_EXP)]
     catalogue_list = [catalogue_product]
-    psf_list = [psf_product for i in range(NUM_EXP)]
+    psf_list_fits = [psf_product_fits for i in range(NUM_EXP)]
+    psf_list_hdf5 = [psf_product_hdf5 for i in range(NUM_EXP)]
     seg_map_list = [seg_map_product for i in range(NUM_EXP)]
 
     # write them to disk
@@ -97,46 +103,59 @@ def input_products(workdir, num_objects, objsize):
     mer_final_catalog_tables = os.path.join(workdir, "mer_final_catalog_tables.json")
     write_listfile(mer_final_catalog_tables, catalogue_list)
 
-    psf_model_images = os.path.join(workdir, "psf_model_images.json")
-    write_listfile(psf_model_images, psf_list)
+    psf_model_images = os.path.join(workdir, "psf_model_images_fits.json")
+    write_listfile(psf_model_images, psf_list_fits)
+
+    psf_model_images = os.path.join(workdir, "psf_model_images_hdf5.json")
+    write_listfile(psf_model_images, psf_list_hdf5)
 
     seg_maps = os.path.join(workdir, "segmaps.json")
     write_listfile(seg_maps, seg_map_list)
 
-    return "data_images.json", "mer_final_catalog_tables.json", "psf_model_images.json", "segmaps.json", id_list_product
+    return (
+        "data_images.json",
+        "mer_final_catalog_tables.json",
+        "psf_model_images_fits.json",
+        "psf_model_images_hdf5.json",
+        "segmaps.json",
+        id_list_product,
+    )
 
 
 @pytest.fixture
 def input_fits(workdir, input_products):
     """Returns the input FITS files (from input_products). Only one file from each is returned (e.g. one exposure)"""
 
-    vis_listfile, mer_listfile, psf_listfile, seg_listfile, _ = input_products
+    vis_listfile, mer_listfile, psf_listfile_fits, psf_listfile_hdf5, seg_listfile, _ = input_products
 
     vis_prod = read_listfile(vis_listfile, workdir=workdir)[0]
     mer_prod = read_listfile(mer_listfile, workdir=workdir)[0]
-    psf_prod = read_listfile(psf_listfile, workdir=workdir)[0]
+    psf_prod_fits = read_listfile(psf_listfile_fits, workdir=workdir)[0]
+    psf_prod_hdf5 = read_listfile(psf_listfile_hdf5, workdir=workdir)[0]
     seg_prod = read_listfile(seg_listfile, workdir=workdir)[0]
 
     vis_dpd = read_product_metadata(os.path.join(workdir, vis_prod))
     mer_dpd = read_product_metadata(os.path.join(workdir, mer_prod))
-    psf_dpd = read_product_metadata(os.path.join(workdir, psf_prod))
+    psf_dpd_fits = read_product_metadata(os.path.join(workdir, psf_prod_fits))
+    psf_dpd_hdf5 = read_product_metadata(os.path.join(workdir, psf_prod_hdf5))
     seg_dpd = read_product_metadata(os.path.join(workdir, seg_prod))
 
     det = vis_dpd.Data.DataStorage.DataContainer.FileName
     wgt = vis_dpd.Data.WeightStorage.DataContainer.FileName
     bkg = vis_dpd.Data.BackgroundStorage.DataContainer.FileName
     mer = mer_dpd.Data.DataStorage.DataContainer.FileName
-    psf = psf_dpd.Data.DataStorage.DataContainer.FileName
+    psf_fits = psf_dpd_fits.Data.DataStorage.DataContainer.FileName
+    psf_hdf5 = psf_dpd_hdf5.Data.DataStorage.DataContainer.FileName
     seg = seg_dpd.Data.DataStorage.DataContainer.FileName
 
-    return det, wgt, bkg, mer, psf, seg
+    return det, wgt, bkg, mer, psf_fits, psf_hdf5, seg
 
 
 @pytest.fixture
 def input_hdf5(workdir, input_fits):
     """Returns a HDF5 file corresponding to the data in input_fits"""
 
-    det, wgt, bkg, _, _, seg = input_fits
+    det, wgt, bkg, _, _, _, seg = input_fits
 
     det_file = os.path.join(workdir, "data", det)
     wgt_file = os.path.join(workdir, "data", wgt)
