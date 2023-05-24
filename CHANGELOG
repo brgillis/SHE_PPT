@@ -20,6 +20,8 @@ Bug Fixes
 New Features
 ------------
 - VisExposure class is now iterable
+- PSFModelImages class has get_oversampling_factor method
+- generate_mock_psf_model_image now can create either FITS or HDF5 data files
 
 New config features
 -------------------
