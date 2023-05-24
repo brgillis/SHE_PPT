@@ -111,7 +111,7 @@ class PSFModelImage(ABC):
     @abstractmethod
     def get_model_images(self, obj_id):
         """
-        Returns the disk and bulge PSF images from the file for the requested object id
+        Returns an ObjectModelImage object containing the disk and bulge PSF images for the requested object id
 
         Inputs:
           - obj_id: the object id for the object whose images we wish to extract
@@ -122,12 +122,21 @@ class PSFModelImage(ABC):
         """
         pass
 
+    @abstractmethod
+    def get_oversampling_factor(self):
+        """
+        Returns the oversampling factor for the PSF model images
+        """
+        pass
+
     def __getitem__(self, obj_id):
         return self.get_model_images(obj_id)
 
 
 class PSFModelImageFITS(PSFModelImage):
     """Class for interfacing with a psf_model_image fits file"""
+
+    # NOTE: Deprecate this class?
 
     @io_stats
     def __init__(self, filename):
@@ -168,6 +177,10 @@ class PSFModelImageFITS(PSFModelImage):
 
         return ObjectModelImage(bulge=bulge, disk=disk, quality_flag=quality_flag, table_row=row)
 
+    def get_oversampling_factor(self):
+        # NOTE: Not implemented for FITS as now ModelPSFs produces HDF5 files.
+        raise NotImplementedError("Oversampling factor not stored in FITS file")
+
 
 class PSFModelImageHDF5(PSFModelImage):
     """Class for interfacing with a psf_model_image HDF5 file"""
@@ -206,3 +219,6 @@ class PSFModelImageHDF5(PSFModelImage):
         quality_flag = row["SHE_PSF_QUAL_FLAG"]
 
         return ObjectModelImage(bulge=image, disk=image, quality_flag=quality_flag, table_row=row)
+
+    def get_oversampling_factor(self):
+        return self.file.attrs["PSF_OVERSAMPLING_FACTOR"]
