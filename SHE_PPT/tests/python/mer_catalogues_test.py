@@ -37,7 +37,7 @@ class TestMerCatalogues(object):
     def test_read_mer_final_catalog_listfile(self, workdir, input_products, num_objects):
         """Tests read_mer_final_catalogue when reading a listfile of MER catalogue products"""
 
-        _, mer_listfile, _, _, object_id_prod = input_products
+        _, mer_listfile, _, _, _, object_id_prod = input_products
 
         # test with no object_id_list product
         mer_cat, prods = read_mer_final_catalogue(mer_listfile, workdir)
@@ -53,7 +53,7 @@ class TestMerCatalogues(object):
     def test_read_mer_final_catalog_product(self, workdir, input_products, num_objects):
         """Tests read_mer_final_catalogue when reading a MER catalogue product directly"""
 
-        _, mer_listfile, _, _, object_id_prod = input_products
+        _, mer_listfile, _, _, _, object_id_prod = input_products
 
         with open(os.path.join(workdir, mer_listfile)) as f:
             (mer_prod,) = json.load(f)
@@ -71,7 +71,7 @@ class TestMerCatalogues(object):
 
     def test_prune_mer_catalog(self, workdir, input_products):
         """Tests pruning a MER catalogue with an object list"""
-        _, mer_listfile, _, _, _ = input_products
+        _, mer_listfile, _, _, _, _ = input_products
 
         mer_cat, prods = read_mer_final_catalogue(mer_listfile, workdir)
 

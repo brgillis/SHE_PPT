@@ -42,7 +42,7 @@ class Teststamps(object):
         """Tests extract_stamps"""
 
         # get the input FITS data, and their corresponding VisExposure object
-        det, wgt, bkg, mer, _, seg = input_fits
+        det, wgt, bkg, mer, _, _, seg = input_fits
 
         det_file = os.path.join(workdir, "data", det)
         wgt_file = os.path.join(workdir, "data", wgt)
