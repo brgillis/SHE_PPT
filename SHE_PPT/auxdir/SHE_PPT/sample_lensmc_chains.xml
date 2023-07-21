@@ -80,10 +80,11 @@
 			<CatalogName>Vis-Cal-Catalog</CatalogName>
 			<CatalogFormatHDU>784269973</CatalogFormatHDU>
 		</CatalogDescription>
-		<ObservationId>724866834485590102</ObservationId>
-		<CalblockId>113wH</CalblockId>
-		<CalblockVariant>6Ofaj</CalblockVariant>
-		<IslandLabel>QkEaG</IslandLabel>
+		<TileIndexList>-1</TileIndexList>
+		<ObservationIdList>-1</ObservationIdList>
+		<CalblockIdList>string</CalblockIdList>
+        <CalblockVariantList>string</CalblockVariantList>
+        <IslandLabelList>string</IslandLabelList>
 		<PlaceholderData>None</PlaceholderData>
 		<DataStorage format="she.lensMcChains" version="8.0">
 			<DataContainer filestatus="PROPOSED">
@@ -96,7 +97,6 @@
 			<MJD>-3.0</MJD>
 		</ObservationDateTime>
 		<PointingIdList>1 2</PointingIdList>
-		<TileList>3 4 5</TileList>
 		<Valid>INVALID</Valid>
 		<ShearEstimationMethod>KSB</ShearEstimationMethod>
 	</Data>

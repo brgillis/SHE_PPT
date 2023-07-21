@@ -80,10 +80,11 @@
 			<CatalogName>Sle-Model-Catalog</CatalogName>
 			<CatalogFormatHDU>89045781</CatalogFormatHDU>
 		</CatalogDescription>
-		<ObservationId>-7232958019892881773</ObservationId>
-		<CalblockId>kSv0L</CalblockId>
-		<CalblockVariant>ubkpf</CalblockVariant>
-		<IslandLabel>E6jYe</IslandLabel>
+		<TileIndexList>-1</TileIndexList>
+		<ObservationIdList>-1</ObservationIdList>
+		<CalblockIdList>string</CalblockIdList>
+        <CalblockVariantList>string</CalblockVariantList>
+        <IslandLabelList>string</IslandLabelList>
 		<PlaceholderData>None</PlaceholderData>
 		<KsbShearMeasurements>
 			<DataStorage format="she.ksbMeasurements" version="8.0">
@@ -118,7 +119,6 @@
 			<Valid>UNKNOWN</Valid>
 		</RegaussShearMeasurements>
 		<PointingIdList>3 4 5</PointingIdList>
-		<TileList>1 2</TileList>
 		<ObservationDateTime>
 			<OBT>2023-04-12T19:53:47.304Z</OBT>
 			<UTC>2023-04-12T19:53:47.304Z</UTC>
