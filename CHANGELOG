@@ -8,7 +8,9 @@ API Changes
 
 Dependency Changes
 ------------------
-- EL_Utils 1.2.3 -> 1.2.4
+- EL_Utils 1.2.3 -> 1.4.1
+- Eden 3.0 -> Eden 3.1
+- DataModel 9.0.x -> 9.2.1
 
 Deprecated Features
 -------------------
