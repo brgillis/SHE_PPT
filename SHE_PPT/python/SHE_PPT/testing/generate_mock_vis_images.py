@@ -66,7 +66,8 @@ def __generate_detector_images(
       - background: The background level (background noise is sqrt(background))
       - snr: signal to noise ratio for the created objects
       - objsize: the width (in pixels) of the gaussian representing an object
-      - rng: numpy.RandomState object for the random number generator
+      - obj_rng: numpy.RandomState object for the object random number generator
+      - noise_rng: numpy.RandomState object for the noise random number generator
 
     Outputs:
       - sci: sci image
@@ -164,9 +165,12 @@ def create_exposure(
        - detector_shape: The shape of the detector in pixels (ny, nx) (default (100,100))
        - objs_per_detector: Number of objects per detector (default 10)
        - workdir: workdir for the files (default ".")
-       - seed: seed for the random number generator
+       - seed: seed for the random number generator for objects
+       - noise_seed: seed for the random number generator for applying noise to images
        - n_objs_per_det: Number of objects generated per detector
        - objsize: size of the objects in pixels
+       - pointing_id: the pointing id to be used for the output product
+       - obs_id: the observation id to be used for the output product
 
     Returns:
        - prod_filename (The name of the created data product)
