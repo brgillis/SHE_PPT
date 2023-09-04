@@ -140,12 +140,6 @@ class SimTuGalaxyCatalogFormat(SheTableFormat):
         self.TU_FNU_Z_LSST_MAG = self.set_column_properties(name="TU_FNU_Z_LSST_MAG", dtype=">f4")
         self.TU_FNU_Y_LSST_MAG = self.set_column_properties(name="TU_FNU_Y_LSST_MAG", dtype=">f4")
 
-        # deprecated in dm 9.1
-        # self.TU_FNU_U_KIDS_MAG = self.set_column_properties(name="TU_FNU_U_KIDS_MAG", dtype=">f4")
-        # self.TU_FNU_G_KIDS_MAG = self.set_column_properties(name="TU_FNU_G_KIDS_MAG", dtype=">f4")
-        # self.TU_FNU_R_KIDS_MAG = self.set_column_properties(name="TU_FNU_R_KIDS_MAG", dtype=">f4")
-        # self.TU_FNU_I_KIDS_MAG = self.set_column_properties(name="TU_FNU_I_KIDS_MAG", dtype=">f4")
-
         self.TU_FNU_J_2MASS_MAG = self.set_column_properties(name="TU_FNU_J_2MASS_MAG", dtype=">f4")
         self.TU_FNU_H_2MASS_MAG = self.set_column_properties(name="TU_FNU_H_2MASS_MAG", dtype=">f4")
         self.TU_FNU_KS_2MASS_MAG = self.set_column_properties(name="TU_FNU_KS_2MASS_MAG", dtype=">f4")

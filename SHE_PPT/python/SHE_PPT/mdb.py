@@ -389,7 +389,6 @@ class MDBKeys():
 
         #   SpaceSegment.SVM
 
-        # self.dither_step_angular_error = "SpaceSegment.SVM.DitherStepAngularError" # deprecated
         self.dither_step_angular_minimum = "SpaceSegment.SVM.DitherStepAngularMinimum"
         self.max_field_2_field_overlap = "SpaceSegment.SVM.MaxField2FieldOverlap"
         self.min_field_2_field_overlap = "SpaceSegment.SVM.MinField2FieldOverlap"
@@ -397,8 +396,6 @@ class MDBKeys():
 
         # SpaceSegment.Instrument.VIS
 
-        # self.shutter_closing_duration = "SpaceSegment.Instrument.VIS.ShutterClosingDuration" # deprecated
-        # self.shutter_opening_duration = "SpaceSegment.Instrument.VIS.ShutterOpeningDuration" # deprecated
         self.vis_adc_dynamics = "SpaceSegment.Instrument.VIS.VISADCDynamics"
         self.cu_uniformity_map_normalised = "SpaceSegment.Instrument.VIS.CUUniformityMapNormalised"
         self.vis_average_pixel_sizemicron = "SpaceSegment.Instrument.VIS.VISAveragePixelSizemicron"
@@ -467,14 +464,6 @@ class MDBKeys():
         self.fwhm_ya_lambda_1y = "SpaceSegment.Instrument.VIS.FWHMyalambda1y"
         self.fwhm_yb_int_1y = "SpaceSegment.Instrument.VIS.FWHMybInt1y"
         self.fwhm_yb_lambda_1y = "SpaceSegment.Instrument.VIS.FWHMyblambda1y"
-        # deprecated
-        # self.ghost_model = "SpaceSegment.Instrument.VIS.GhostModel"
-        # self.ghost_model_position_matrix_a = "SpaceSegment.Instrument.VIS.GhostModelPositionMatrixA"
-        # self.ghost_model_position_matrix_b = "SpaceSegment.Instrument.VIS.GhostModelPositionMatrixB"
-        # self.ghost_model_shift_x = "SpaceSegment.Instrument.VIS.GhostModelShiftX"
-        # self.ghost_model_shift_y = "SpaceSegment.Instrument.VIS.GhostModelShiftY"
-        # self.ghost_model_star_brightness = "SpaceSegment.Instrument.VIS.GhostModelStarBrightness"
-        # end deprecated
         self.mean_detector_quantum_efficiency_cbenominal_bol = \
             "SpaceSegment.Instrument.VIS.MeanDetectorQuantumEfficiencyNominalBOL"
         self.mean_detector_quantum_efficiency_cbenominal_eol = \

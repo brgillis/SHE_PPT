@@ -135,8 +135,6 @@ def create_dpd(dpd_type, output_filename, directory=""):
 
 prods = {
     "DpdSheStarCatalog": "SHE_PPT/auxdir/SHE_PPT/sample_star_catalog.xml",
-    # Deprecated
-    # "DpdShePsfCalibrationParameters": "SHE_PPT/auxdir/SHE_PPT/sample_psf_calibration_parameters.xml",
     "DpdShePsfLevel1CalibrationParameters": "SHE_PPT/auxdir/SHE_PPT/sample_psf_level1_calibration_parameters.xml",
     "DpdShePsfLevel2CalibrationParameters": "SHE_PPT/auxdir/SHE_PPT/sample_psf_level2_calibration_parameters.xml",
     "DpdSheCommonCalibration": "SHE_PPT/auxdir/SHE_PPT/sample_common_calibration.xml",
