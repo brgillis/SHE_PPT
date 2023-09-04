@@ -67,18 +67,6 @@ class SHEFrameStack():
 
     """
 
-    exposures = None
-    exposure_products = None
-    psf_products = None
-
-    stacked_image = None
-    stacked_image_product = None
-
-    detections_catalogue = None
-    detections_catalogue_products = None
-
-    object_id_list_product = None
-
     stack_pixel_size_ratio = 1
 
     # File references and info
