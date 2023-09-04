@@ -128,7 +128,7 @@ class TestMockData(SheTestCase):
 
         # make sure the product is correct
         dpd = read_xml_product(prod_filename, workdir=workdir)
-        assert type(dpd) == she_object_id_list.dpdSheObjectIdList
+        assert type(dpd) is she_object_id_list.dpdSheObjectIdList
 
         # make sure we can get the object_list from the product
         obj_l = dpd.Data.ObjectIdList
@@ -186,7 +186,7 @@ class TestMockData(SheTestCase):
 
         # check the product is valid
         dpd = read_xml_product(prod_filename, workdir=workdir)
-        assert type(dpd) == she_exposure_segmentation_map.dpdSheExposureReprojectedSegmentationMap
+        assert type(dpd) is she_exposure_segmentation_map.dpdSheExposureReprojectedSegmentationMap
 
         # make sure its FITS file exists
         map_fits = dpd.get_data_filename()
