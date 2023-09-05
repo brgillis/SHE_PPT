@@ -28,12 +28,26 @@ import numpy as np
 from astropy.io.fits import BinTableHDU, HDUList, ImageHDU, PrimaryHDU, TableHDU
 from astropy.table import Table
 
+from EL_NullValue.NullValueDefinition import NullValueDefinition
+
 from . import detector as dtc
 from .constants.fits import CCDID_LABEL, EXTNAME_LABEL
 from .constants.misc import S_NON_FILENAMES
 from .logging import getLogger
 
 logger = getLogger(__name__)
+
+NULL_TYPE_DICT = {
+    np.str_: NullValueDefinition.STRING,
+    np.bytes_: NullValueDefinition.STRING,
+    np.int16: NullValueDefinition.SHORT,
+    np.int32: NullValueDefinition.INT,
+    np.int64: NullValueDefinition.LONG_LONG,
+    np.float32: NullValueDefinition.FLOAT,
+    np.float64: NullValueDefinition.DOUBLE,
+    np.complex64: NullValueDefinition.COMPLEX_FLOAT,
+    np.complex128: NullValueDefinition.COMPLEX_DOUBLE
+}
 
 
 def get_attr_with_index(obj: Any,
@@ -745,3 +759,15 @@ def join_without_none(l_s: List[Optional[Any]],
 
     # Otherwise, join the pieces
     return joiner.join(l_s_no_none)
+
+
+def get_null_value_for_dtype(dtype):
+    """For a given dtype, returns its NULL value as defined in EL_NullValues"""
+
+    # Ensure the dtype passed in is turned into a numpy dtype (as this can be a string)
+    dtype = np.dtype(dtype)
+
+    try:
+        return NULL_TYPE_DICT[dtype.type]
+    except KeyError as e:
+        raise TypeError("Unrecognised dtype: %s" % dtype) from e

@@ -69,7 +69,7 @@ class TestMDB(SheTestCase):
 
         ex_value = 4136
         ex_description = 'This is the minimum number of pixels in the longest dimension of the VIS focal plane. Due ' \
-                         'to the injection line inserted in the long\n                direction of the CCD format, ' \
+                         'to the injection line inserted in the long                direction of the CCD format, ' \
                          'the active array is split in 2 equal active arrays, with 4 inactive pixels in the middle ' \
                          'for injection line.'
         ex_source = 'Input by J.A. As required. Not validated, for test in the MDB. EUCL-EST-PS-7-001.'

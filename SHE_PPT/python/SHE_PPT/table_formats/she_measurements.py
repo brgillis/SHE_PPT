@@ -86,63 +86,67 @@ class SheMeasurementsFormat(SheTableFormat):
         self.rec_flags = self.set_column_properties(
             "REC_FLAGS", dtype=">i8", fits_dtype="K")
 
-        # Shear/shape information
-
-        self.g1 = self.set_column_properties(
-            "G1", dtype=">f4", fits_dtype="E")
-        self.g1_err = self.set_column_properties(
-            "G1_ERR", dtype=">f4", fits_dtype="E")
+        # Shear/shape information (uncalibrated)
+        self.e1 = self.set_column_properties(
+            "E1", dtype=">f4", fits_dtype="E")
         self.e1_err = self.set_column_properties(
             "E1_ERR", dtype=">f4", fits_dtype="E")
-        self.g2 = self.set_column_properties(
-            "G2", dtype=">f4", fits_dtype="E")
-        self.g2_err = self.set_column_properties(
-            "G2_ERR", dtype=">f4", fits_dtype="E")
+        self.e2 = self.set_column_properties(
+            "E2", dtype=">f4", fits_dtype="E")
         self.e2_err = self.set_column_properties(
             "E2_ERR", dtype=">f4", fits_dtype="E")
         self.e_var = self.set_column_properties(
             "E_VAR", dtype=">f4", fits_dtype="E", is_optional=True)
-        self.g1g2_covar = self.set_column_properties(
-            "G1G2_COVAR", dtype=">f4", fits_dtype="E")
         self.e1e2_covar = self.set_column_properties(
             "E1E2_COVAR", dtype=">f4", fits_dtype="E")
+
         self.weight = self.set_column_properties(
             "SHEAR_WEIGHT", dtype=">f4", fits_dtype="E")
-        self.shape_weight = self.set_column_properties(
-            "SHAPE_WEIGHT", dtype=">f4", fits_dtype="E", is_optional=True)
-        self.g1_uncal = self.set_column_properties(
-            "G1_UNCAL", dtype=">f4", fits_dtype="E")
-        self.g1_uncal_err = self.set_column_properties(
-            "G1_UNCAL_ERR", dtype=">f4", fits_dtype="E")
-        self.e1_uncal_err = self.set_column_properties(
-            "E1_UNCAL_ERR", dtype=">f4", fits_dtype="E")
-        self.g2_uncal = self.set_column_properties(
-            "G2_UNCAL", dtype=">f4", fits_dtype="E")
-        self.g2_uncal_err = self.set_column_properties(
-            "G2_UNCAL_ERR", dtype=">f4", fits_dtype="E")
-        self.e2_uncal_err = self.set_column_properties(
-            "E2_UNCAL_ERR", dtype=">f4", fits_dtype="E")
-        self.e_uncal_var = self.set_column_properties(
-            "E_UNCAL_VAR", dtype=">f4", fits_dtype="E", is_optional=True)
-        self.g1g2_uncal_covar = self.set_column_properties(
-            "G1G2_UNCAL_COVAR", dtype=">f4", fits_dtype="E")
-        self.e1e2_uncal_covar = self.set_column_properties(
-            "E1E2_UNCAL_COVAR", dtype=">f4", fits_dtype="E")
-        self.weight_uncal = self.set_column_properties(
-            "SHEAR_WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
-        self.shape_weight_uncal = self.set_column_properties(
-            "SHAPE_WEIGHT_UNCAL", dtype=">f4", fits_dtype="E")
         self.shape_noise = self.set_column_properties(
-            "ASSUMED_SHAPE_NOISE", dtype=">f4", fits_dtype="E", is_optional=True)
+            "SHAPE_NOISE", dtype=">f4", fits_dtype="E")
+
+        # shape information (calibrated)
+        self.e1_cal = self.set_column_properties(
+            "E1_CAL", dtype=">f4", fits_dtype="E")
+        self.e1_cal_err = self.set_column_properties(
+            "E1_CAL_ERR", dtype=">f4", fits_dtype="E")
+        self.e2_cal = self.set_column_properties(
+            "E2_CAL", dtype=">f4", fits_dtype="E")
+        self.e2_cal_err = self.set_column_properties(
+            "E2_CAL_ERR", dtype=">f4", fits_dtype="E")
+        self.e_cal_var = self.set_column_properties(
+            "E_CAL_VAR", dtype=">f4", fits_dtype="E", is_optional=True)
+        self.e1e2_cal_covar = self.set_column_properties(
+            "E1E2_CAL_COVAR", dtype=">f4", fits_dtype="E")
+        self.weight_cal = self.set_column_properties(
+            "SHEAR_WEIGHT_CAL", dtype=">f4", fits_dtype="E")
+
+        # calibration bias parameters for each object
+        self.m11 = self.set_column_properties(
+            "M11", dtype=">f4", fits_dtype="E")
+        self.m12 = self.set_column_properties(
+            "M12", dtype=">f4", fits_dtype="E")
+        self.m21 = self.set_column_properties(
+            "M21", dtype=">f4", fits_dtype="E")
+        self.m22 = self.set_column_properties(
+            "M22", dtype=">f4", fits_dtype="E")
+        self.c1 = self.set_column_properties(
+            "C1", dtype=">f4", fits_dtype="E")
+        self.c2 = self.set_column_properties(
+            "C2", dtype=">f4", fits_dtype="E")
+        self.alpha1 = self.set_column_properties(
+            "ALPHA1", dtype=">f4", fits_dtype="E")
+        self.alpha2 = self.set_column_properties(
+            "ALPHA2", dtype=">f4", fits_dtype="E")
 
         self.ra = self.set_column_properties(
-            "UPDATED_RA", dtype=">f8", fits_dtype="D", comment="deg")
+            "RA", dtype=">f8", fits_dtype="D", comment="deg")
         self.ra_err = self.set_column_properties(
-            "UPDATED_RA_ERR", dtype=">f4", fits_dtype="E", comment="deg")
+            "RA_ERR", dtype=">f4", fits_dtype="E", comment="deg")
         self.dec = self.set_column_properties(
-            "UPDATED_DEC", dtype=">f8", fits_dtype="D", comment="deg")
+            "DEC", dtype=">f8", fits_dtype="D", comment="deg")
         self.dec_err = self.set_column_properties(
-            "UPDATED_DEC_ERR", dtype=">f4", fits_dtype="E", comment="deg")
+            "DEC_ERR", dtype=">f4", fits_dtype="E", comment="deg")
 
         # Information on other galaxy properties
 
@@ -155,10 +159,9 @@ class SheMeasurementsFormat(SheTableFormat):
         self.flux_err = self.set_column_properties(
             "FLUX_ERR", dtype=">f4", fits_dtype="E")
         self.magnitude = self.set_column_properties(
-            "MAGNITUDE", dtype=">f4", fits_dtype="E", is_optional=True)
+            "MAG", dtype=">f4", fits_dtype="E", is_optional=True)
         self.magnitude_err = self.set_column_properties(
-            "MAGNITUDE_ERR", dtype=">f4", fits_dtype="E", is_optional=True)
-
+            "MAG_ERR", dtype=">f4", fits_dtype="E", is_optional=True)
         self.snr = self.set_column_properties(
             "SNR", dtype=">f4", fits_dtype="E")
 

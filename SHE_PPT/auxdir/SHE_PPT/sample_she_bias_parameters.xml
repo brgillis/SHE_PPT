@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:DpdSheBiasParams xmlns:ns1="http://ecdm.euclid-ec.org/schema/dpd/she/biasparams">
+	<Header>
+		<ProductId>w9V0E</ProductId>
+		<ProductType>DpdSheBiasParams</ProductType>
+		<SoftwareName>ODLCq</SoftwareName>
+		<SoftwareRelease>irmDkP</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>KyCgCzKrw</EuclidPipelineSoftwareRelease>
+		<ProdSDC>pcWDdVvngxhJttnsyrdzJsKRdhrgIH0DI8gVDoOhRnbxG4YKq59n9TlQ606nHrRhEnsIiuV8BcxaAwrueG7bHQ6zvIE6HMukzc5vkH7iTyrbs</ProdSDC>
+		<DataSetRelease>W5BPe</DataSetRelease>
+		<Purpose>TEST</Purpose>
+		<PlanId>1clm6</PlanId>
+		<PPOId>yfC4WHgBGNG2J7Qg4xMsseyfEtYzXB1fjPQYsouwEWMIVaFpbixDmpDG6X3PEl89jCBgtayJgzWPe6UedzbFnfQnq1s657YaFKMiNSWrJWvvXUT6jFGEPWouiOgZeXMPKq49DP1tyatu3F13yCqUlbLodagQhdQK9IbzZ3oKW4ZZW7oRN2EZ0ObWFuYlNPFQHZY8GXswV8rKJNnZCH3UJYfm971va1RAtnBRPqhwrCKUCv0oKMYA0Kvv7qq3tlAySqwBpQIINnWeh2rVUGg0cVZUdc</PPOId>
+		<PipelineDefinitionId>ONB5N</PipelineDefinitionId>
+		<PpoStatus>BIiFJ</PpoStatus>
+		<ManualValidationStatus>VALID</ManualValidationStatus>
+		<ProductNotifiedToBeChecked>UNKNOWN</ProductNotifiedToBeChecked>
+		<AutomatedValidationStatus>UNKNOWN</AutomatedValidationStatus>
+		<ExpirationDate>2023-04-12T19:53:48.233Z</ExpirationDate>
+		<ToBePublished>-966012791</ToBePublished>
+		<Published>1921478059</Published>
+		<Curator>NqGZZ</Curator>
+		<CreationDate>2023-04-12T19:53:48.234Z</CreationDate>
+	</Header>
+	<Data>
+		<SpatialCoverage unit="km/s/kpc">
+			<Polygon>
+				<Vertex>
+					<C1>-4.0</C1>
+					<C2>-3.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="arcsec/h">
+							<C1 unit="1/mol">0.0</C1>
+							<C2 unit="nm">0.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</Polygon>
+			<MultiPolygon>
+				<Vertex>
+					<C1>4.0</C1>
+					<C2>8.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="m2/s2/K">
+							<C1 unit="Jy">1.0</C1>
+							<C2 unit="W/m2/K4">1.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</MultiPolygon>
+			<Circle>
+				<Center coordUnit="MeV">
+					<C1 unit="mas">0.0</C1>
+					<C2 unit="TeV">0.0</C2>
+				</Center>
+				<Radius unit="m/s">0.0</Radius>
+			</Circle>
+			<BBox>
+				<RaCenter>-9.0</RaCenter>
+				<DecCenter>2.0</DecCenter>
+				<RaHalfWidth>7.0</RaHalfWidth>
+				<DecHalfWidth>-4.0</DecHalfWidth>
+			</BBox>
+		</SpatialCoverage>
+		<TileId>164670415324398527</TileId>
+		<KSB format="she.biasParams" version="0.1">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</KSB>
+		<LensMC format="she.biasParams" version="0.1">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</LensMC>
+		<MomentsML format="she.biasParams" version="0.1">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</MomentsML>
+		<REGAUSS format="she.biasParams" version="0.1">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</REGAUSS>
+		<PlaceholderData>None</PlaceholderData>
+	</Data>
+	<QualityFlags>
+		<DummyFlag xpath="//Data/Some/Path/To/Quality/Parameter" minLimit="0.05" maxLimit="10.0" flagged="true">true</DummyFlag>
+		<AuxiliaryFlags flagName=".$Cz!q%ZYpL%7x=~bWtO_!SW5('kgbAAoZk132`#$I~sY&quot;BBV;6" xpath="bTt3g" minLimit="9.0" maxLimit="-2.0" flagged="false">false</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>DxiEL</Key>
+			<Description>4LAA6</Description>
+			<StringValue>BHtBI</StringValue>
+			<Unit>XLkv4</Unit>
+		</Parameter>
+	</Parameters>
+</ns1:DpdSheBiasParams>

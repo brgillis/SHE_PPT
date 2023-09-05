@@ -101,6 +101,8 @@ class SheLensMcChainsFormat(SheTableFormat):
 
         self.ID = self.set_column_properties(
             "OBJECT_ID", dtype=">i8", fits_dtype="K")
+        self.group_id = self.set_column_properties(
+            "GROUP_ID", dtype=">i8", fits_dtype="K")
 
         self.fit_flags = self.set_column_properties(
             "SHE_LENSMC_FIT_FLAGS", dtype=">i8", fits_dtype="K")
@@ -110,27 +112,19 @@ class SheLensMcChainsFormat(SheTableFormat):
             "SHE_LENSMC_FIT_CLASS", dtype=">i2", fits_dtype="I")
         self.weight = self.set_column_properties(
             "SHE_LENSMC_CHAINS_SHEAR_WEIGHT", dtype=">f4", fits_dtype="E")
-        self.shape_weight = self.set_column_properties(
-            "SHE_LENSMC_CHAINS_SHAPE_WEIGHT", dtype=">f4",
-            fits_dtype="E", is_optional=True)
-        self.e_var = self.set_column_properties(
-            "SHE_LENSMC_E_VAR", dtype=">f4", fits_dtype="E", is_optional=True)
-        self.shape_noise = self.set_column_properties(
-            "SHE_LENSMC_ASSUMED_SHAPE_NOISE", dtype=">f4",
-            fits_dtype="E", is_optional=True)
 
-        self.g1 = self.set_column_properties(
-            "SHE_LENSMC_G1_CHAIN", dtype=">f4", fits_dtype="E",
+        self.e1 = self.set_column_properties(
+            "SHE_LENSMC_E1_CHAIN", dtype=">f4", fits_dtype="E",
             length=total_chain_length)
-        self.g2 = self.set_column_properties(
-            "SHE_LENSMC_G2_CHAIN", dtype=">f4", fits_dtype="E",
+        self.e2 = self.set_column_properties(
+            "SHE_LENSMC_E2_CHAIN", dtype=">f4", fits_dtype="E",
             length=total_chain_length)
 
         self.ra = self.set_column_properties(
-            "SHE_LENSMC_UPDATED_RA_CHAIN", is_optional=True, comment="deg",
+            "SHE_LENSMC_RA_CHAIN", is_optional=True, comment="deg",
             fits_dtype="D", length=total_chain_length)
         self.dec = self.set_column_properties(
-            "SHE_LENSMC_UPDATED_DEC_CHAIN", is_optional=True, comment="deg",
+            "SHE_LENSMC_DEC_CHAIN", is_optional=True, comment="deg",
             fits_dtype="D", length=total_chain_length)
 
         # lensmc specific columns
@@ -140,8 +134,14 @@ class SheLensMcChainsFormat(SheTableFormat):
         self.flux = self.set_column_properties(
             "SHE_LENSMC_FLUX_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E",
             length=total_chain_length)
+        self.flux_disk = self.set_column_properties(
+            "SHE_LENSMC_FLUX_DISK_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E",
+            length=total_chain_length)
+        self.flux_bulge = self.set_column_properties(
+            "SHE_LENSMC_FLUX_BULGE_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E",
+            length=total_chain_length)
         self.magnitude = self.set_column_properties(
-            "SHE_LENSMC_MAGNITUDE_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E",
+            "SHE_LENSMC_MAG_CHAIN", is_optional=True, dtype=">f4", fits_dtype="E",
             length=total_chain_length)
         self.bulge_frac = self.set_column_properties(
             "SHE_LENSMC_BULGE_FRAC_CHAIN", is_optional=True, dtype=">f4",

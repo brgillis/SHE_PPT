@@ -1,54 +1,56 @@
-<?xml version="1.0" ?>
-<ns1:DpdShePsfModelImage xmlns:ns1="http://euclid.esa.org/schema/dpd/she/psfmodelimage">
-    <Header>
-        <ProductId>4dd13a50-11ed-48dd-a14f-d1d382d35853</ProductId>
-        <ProductType>DpdShePsfModelImage</ProductType>
-        <SoftwareName>AkHhu</SoftwareName>
-        <SoftwareRelease>q5EqN</SoftwareRelease>
-        <EuclidPipelineSoftwareRelease>VHP6</EuclidPipelineSoftwareRelease>
-        <ProdSDC>drFUS4BgVSArIxT26mNmAiB</ProdSDC>
-        <DataSetRelease>7ez6i</DataSetRelease>
-        <Purpose>REPROCESSING</Purpose>
-        <PlanId>76SON</PlanId>
-        <PPOId>A89af</PPOId>
-        <PipelineDefinitionId>oLrvz</PipelineDefinitionId>
-        <PpoStatus>NA</PpoStatus>
-        <ManualValidationStatus>VALID</ManualValidationStatus>
-        <ExpirationDate>2020-06-03T15:55:29.163Z</ExpirationDate>
-        <ToBePublished>0</ToBePublished>
-        <Published>0</Published>
-        <Curator>SHE</Curator>
-        <CreationDate>2020-06-03T15:55:29.165Z</CreationDate>
-    </Header>
-    <Data>
-        <DataStorage format="she.psfModelImage" version="8.0">
-            <DataContainer filestatus="DELETED">
-                <FileName>None</FileName>
-            </DataContainer>
-        </DataStorage>
-        <ExposureProductId>wKl6V</ExposureProductId>
-        <ObservationId>5978780960610042093</ObservationId>
-        <PointingId>-1</PointingId>
-        <TileList>-1</TileList>
-        <ObservationDateTime>
-            <OBT>2020-06-03T15:55:29.166Z</OBT>
-            <UTC>2020-06-03T15:55:29.166Z</UTC>
-            <MJD>-10.0</MJD>
-        </ObservationDateTime>
-        <BatchIndex>-1</BatchIndex>
-    </Data>
-    <QualityFlags>
-        <DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true
-        </DummyFlag>
-        <AuxiliaryFlags flagName="05GjA" flagged="false" maxLimit="-6.0" minLimit="5.0" xpath="74kEF">false
-        </AuxiliaryFlags>
-    </QualityFlags>
-    <Parameters>
-        <Parameter>
-            <Key>r1URs</Key>
-            <Description>S7BEb</Description>
-            <StringValue>uxGD8</StringValue>
-            <Unit>VtxiN</Unit>
-        </Parameter>
-    </Parameters>
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:DpdShePsfModelImage xmlns:ns1="http://ecdm.euclid-ec.org/schema/dpd/she/psfmodelimage">
+	<Header>
+		<ProductId>1mtJ1</ProductId>
+		<ProductType>DpdShePsfModelImage</ProductType>
+		<SoftwareName>Hruqo</SoftwareName>
+		<SoftwareRelease>qRQmeBc</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>Y6Z1</EuclidPipelineSoftwareRelease>
+		<ProdSDC>eqTCYrmCwHSM03WKDssW5o4M78ScEeStU8627wZM6esUGo6FBfJO7l6zrPI1L</ProdSDC>
+		<DataSetRelease>GN8tu</DataSetRelease>
+		<Purpose>VALIDATION</Purpose>
+		<PlanId>5efSj</PlanId>
+		<PPOId>hjN3txkYIcSx53UQUJkq2BKZ8yU83w569J1vJ96E71klqj3PnqPK3Zyxxv9YtOwUEp1j4OK0wmEaH7OpR4xfqNhgZjKiiwkyLJeWgULUPjzY1fdtemqbtENDha678rmEG88Wqga6q3ikXtmNg2Hlse5nBh4ozVzS1tvUwELXMXpE8JhW</PPOId>
+		<PipelineDefinitionId>L6IDw</PipelineDefinitionId>
+		<PpoStatus>NO670</PpoStatus>
+		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
+		<ProductNotifiedToBeChecked>UNKNOWN</ProductNotifiedToBeChecked>
+		<AutomatedValidationStatus>UNKNOWN</AutomatedValidationStatus>
+		<ExpirationDate>2023-04-12T19:53:46.269Z</ExpirationDate>
+		<ToBePublished>500396629</ToBePublished>
+		<Published>1464916790</Published>
+		<Curator>cUStX</Curator>
+		<CreationDate>2023-04-12T19:53:46.269Z</CreationDate>
+	</Header>
+	<Data>
+		<PlaceholderData>None</PlaceholderData>
+		<DataStorage format="she.psfModelImage" version="8.0">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+		<ExposureProductId>H2214</ExposureProductId>
+		<FieldParametersProductId>JturO</FieldParametersProductId>
+		<ObservationId>6351290490141431039</ObservationId>
+		<PointingId>-4809891488396919068</PointingId>
+		<TileList>1</TileList>
+		<ObservationDateTime>
+			<OBT>2023-04-12T19:53:46.27Z</OBT>
+			<UTC>2023-04-12T19:53:46.271Z</UTC>
+			<MJD>-10.0</MJD>
+		</ObservationDateTime>
+		<BatchIndex>-27140</BatchIndex>
+	</Data>
+	<QualityFlags>
+		<DummyFlag xpath="//Data/Some/Path/To/Quality/Parameter" minLimit="0.05" maxLimit="10.0" flagged="true">false</DummyFlag>
+		<AuxiliaryFlags flagName="#+d3]K1w/_&amp;[M?v\4r6&amp;nJLJ,NklCIzQr1uuX" xpath="G7EeY" minLimit="-6.0" maxLimit="-1.0" flagged="true">false</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>WGV05</Key>
+			<Description>6DYMX</Description>
+			<StringValue>lnbZY</StringValue>
+			<Unit>oIqeg</Unit>
+		</Parameter>
+	</Parameters>
 </ns1:DpdShePsfModelImage>

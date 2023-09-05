@@ -78,13 +78,13 @@ class SheStarCatalogFormat(SheTableFormat):
         self.y_err = self.set_column_properties(
             "SHE_STARCAT_Y_ERR", dtype=">f4", fits_dtype="E")
         self.ra = self.set_column_properties(
-            "SHE_STARCAT_UPDATED_RA", comment="deg", dtype=">f8", fits_dtype="D")
+            "SHE_STARCAT_RA", comment="deg", dtype=">f8", fits_dtype="D")
         self.ra_err = self.set_column_properties(
-            "SHE_STARCAT_UPDATED_RA_ERR", comment="deg", dtype=">f8", fits_dtype="E")
+            "SHE_STARCAT_RA_ERR", comment="deg", dtype=">f8", fits_dtype="E")
         self.dec = self.set_column_properties(
-            "SHE_STARCAT_UPDATED_DEC", comment="deg", dtype=">f8", fits_dtype="D")
+            "SHE_STARCAT_DEC", comment="deg", dtype=">f8", fits_dtype="D")
         self.dec_err = self.set_column_properties(
-            "SHE_STARCAT_UPDATED_DEC_ERR", comment="deg", dtype=">f8", fits_dtype="E")
+            "SHE_STARCAT_DEC_ERR", comment="deg", dtype=">f8", fits_dtype="E")
         self.flux = self.set_column_properties(
             "SHE_STARCAT_FLUX", dtype=">f4", fits_dtype="E")
         self.flux_err = self.set_column_properties(
@@ -132,6 +132,29 @@ class SheStarCatalogFormat(SheTableFormat):
                                                   is_optional=True, comment="Distance from readout register - "
                                                                             "only used internally within CTI-PSF "
                                                                             "Validation test.")
+
+        self.r2 = self.set_column_properties("SHE_STARCAT_R2", dtype=">f4", fits_dtype="E",
+                                             comment="Star size - defined based on the quadrupole moments as"
+                                                     "SHE_STARCAT_STAR_QXX + SHE_STARCAT_STAR_QYY")
+
+        # All quadrupole moments are defined using a Gaussian weight function centered on the position of each star
+        # on the detector (provided by the SHE_STARCAT_X and SHE_STARCAT_Y columns) or the fiducial center of the
+        # PSF model, with a scale radius of 1 arcsec. In the case of the SHE_STARCAT_STAR_* and SHE_STARCAT_RES_*
+        # moments, the moments are normalized by the flux of the star using this weight function. In the case of the
+        # SHE_STARCAT_PSF_* moments, the moments are normalized by the flux of the model PSF using this weight
+        # function.
+
+        self.star_qxx = self.set_column_properties("SHE_STARCAT_STAR_QXX", dtype=">f4", fits_dtype="E")
+        self.star_qxy = self.set_column_properties("SHE_STARCAT_STAR_QXY", dtype=">f4", fits_dtype="E")
+        self.star_qyy = self.set_column_properties("SHE_STARCAT_STAR_QYY", dtype=">f4", fits_dtype="E")
+
+        self.psf_qxx = self.set_column_properties("SHE_STARCAT_PSF_QXX", dtype=">f4", fits_dtype="E")
+        self.psf_qxy = self.set_column_properties("SHE_STARCAT_PSF_QXY", dtype=">f4", fits_dtype="E")
+        self.psf_qyy = self.set_column_properties("SHE_STARCAT_PSF_QYY", dtype=">f4", fits_dtype="E")
+
+        self.res_qxx = self.set_column_properties("SHE_STARCAT_RES_QXX", dtype=">f4", fits_dtype="E")
+        self.res_qxy = self.set_column_properties("SHE_STARCAT_RES_QXY", dtype=">f4", fits_dtype="E")
+        self.res_qyy = self.set_column_properties("SHE_STARCAT_RES_QYY", dtype=">f4", fits_dtype="E")
 
         self._finalize_init()
 

@@ -38,18 +38,24 @@ def _hav(x):
 def haversine_metric(lon1, lat1, lon2, lat2):
     """Returns the great circle distance between two points on a sphere (radians)"""
 
-    d = 2 * np.arcsin(np.sqrt(_hav(lat2 - lat1) + np.cos(lat1) * np.cos(lat2) * _hav(lon2 - lon1)))
+    arg = np.sqrt(_hav(lat2 - lat1) + np.cos(lat1) * np.cos(lat2) * _hav(lon2 - lon1))
+
+    # NOTE: For antipodes, due to numerical errors we can get arg > 1
+    # Fix this by setting arg to the min(1, arg)
+    # e.g. see https://en.wikipedia.org/wiki/Haversine_formula
+    arg = np.minimum(1, arg)
+    d = 2 * np.arcsin(arg)
 
     return d
 
 
 def haversine_metric_deg(lon1, lat1, lon2, lat2):
     """Returns the great circle distance between two points, with the input and outputs in degrees"""
-    return haversine_metric(lon1 * DTOR, lat1 * DTOR, lon2 * DTOR, lat2 * DTOR)
+    return RTOD * haversine_metric(lon1 * DTOR, lat1 * DTOR, lon2 * DTOR, lat2 * DTOR)
 
 
 def euclidean_metric(x1, y1, x2, y2):
-    """Returns the Euclidean distance bwtween two points in two dimensions"""
+    """Returns the Euclidean distance between two points in two dimensions"""
 
     d = np.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 

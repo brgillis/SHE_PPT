@@ -1,44 +1,45 @@
-<?xml version="1.0" ?>
-<ns1:DpdShePsfAnalysisConfig xmlns:ns1="http://euclid.esa.org/schema/dpd/she/psfanalysisconfig">
-    <Header>
-        <ProductId>8c2bca1a-13f4-41e5-87fd-9b7e73ec83b2</ProductId>
-        <ProductType>DpdShePsfAnalysisConfig</ProductType>
-        <SoftwareName>ZEO0C</SoftwareName>
-        <SoftwareRelease>KwW</SoftwareRelease>
-        <EuclidPipelineSoftwareRelease>uGHc</EuclidPipelineSoftwareRelease>
-        <ProdSDC>H2BCheICqpR7gdTrkdfgwuqxMatWtF9y1nQYjkqZoU</ProdSDC>
-        <DataSetRelease>KgPWE</DataSetRelease>
-        <Purpose>REPROCESSING</Purpose>
-        <PlanId>cB9Hj</PlanId>
-        <PPOId>tQn3h</PPOId>
-        <PipelineDefinitionId>17aCa</PipelineDefinitionId>
-        <PpoStatus>NA</PpoStatus>
-        <ManualValidationStatus>VALID</ManualValidationStatus>
-        <ExpirationDate>2020-06-03T15:52:45.306Z</ExpirationDate>
-        <ToBePublished>0</ToBePublished>
-        <Published>0</Published>
-        <Curator>SHE</Curator>
-        <CreationDate>2020-06-03T15:52:45.307Z</CreationDate>
-    </Header>
-    <Data>
-        <DataStorage>
-            <DataContainer filestatus="ARCHIVED_CERNVMFS">
-                <FileName>None</FileName>
-            </DataContainer>
-        </DataStorage>
-    </Data>
-    <QualityFlags>
-        <DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false
-        </DummyFlag>
-        <AuxiliaryFlags flagName="0z7MN" flagged="false" maxLimit="-9.0" minLimit="7.0" xpath="j8Jzu">true
-        </AuxiliaryFlags>
-    </QualityFlags>
-    <Parameters>
-        <Parameter>
-            <Key>L4uMx</Key>
-            <Description>876Lz</Description>
-            <StringValue>kCPoK</StringValue>
-            <Unit>gF2eF</Unit>
-        </Parameter>
-    </Parameters>
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:DpdShePsfAnalysisConfig xmlns:ns1="http://ecdm.euclid-ec.org/schema/dpd/she/psfanalysisconfig">
+	<Header>
+		<ProductId>owNaz</ProductId>
+		<ProductType>DpdShePsfAnalysisConfig</ProductType>
+		<SoftwareName>weqKy</SoftwareName>
+		<SoftwareRelease>6vlry1JmMG</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>xOMtlZ</EuclidPipelineSoftwareRelease>
+		<ProdSDC>jp8iU1PZt5NuQMRiNaEcQO73zDFQRc37LAWNCvV2IVsciSlekyzdnnrAFXxAIbFCi7eBh42f51kvKeqCSlw</ProdSDC>
+		<DataSetRelease>IRxPu</DataSetRelease>
+		<Purpose>PRODUCTION</Purpose>
+		<PlanId>yad7W</PlanId>
+		<PPOId>lmPK2Sfh1Wj4Zn9bPia2Q8PREa1guBA04xyquLH8zTNVJTxt5N5tpxI12L5XOnZIrBxJbvQWcJEkKhqYEvwrCNKAibwM3H3HuJXuJD91vHCApci3Kg1dtY9eXczrUVQvdhtJunNLz4F0BqhVTK6JItSCzo5dSn</PPOId>
+		<PipelineDefinitionId>tYgc6</PipelineDefinitionId>
+		<PpoStatus>9HKYm</PpoStatus>
+		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
+		<ProductNotifiedToBeChecked>NOTTOBECHECKED</ProductNotifiedToBeChecked>
+		<AutomatedValidationStatus>INVALID</AutomatedValidationStatus>
+		<ExpirationDate>2023-04-12T19:53:47.93Z</ExpirationDate>
+		<ToBePublished>-480578675</ToBePublished>
+		<Published>487274453</Published>
+		<Curator>yKYYA</Curator>
+		<CreationDate>2023-04-12T19:53:47.93Z</CreationDate>
+	</Header>
+	<Data>
+		<PlaceholderData>None</PlaceholderData>
+		<DataStorage>
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+	</Data>
+	<QualityFlags>
+		<DummyFlag xpath="//Data/Some/Path/To/Quality/Parameter" minLimit="0.05" maxLimit="10.0" flagged="false">true</DummyFlag>
+		<AuxiliaryFlags flagName="b4]Y\W[NOY_vBB}f-" xpath="CNqCA" minLimit="5.0" maxLimit="7.0" flagged="false">false</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>iJGn1</Key>
+			<Description>L52AC</Description>
+			<StringValue>zoFyz</StringValue>
+			<Unit>XM1w1</Unit>
+		</Parameter>
+	</Parameters>
 </ns1:DpdShePsfAnalysisConfig>

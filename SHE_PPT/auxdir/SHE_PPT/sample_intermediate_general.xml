@@ -1,47 +1,47 @@
-<?xml version="1.0" ?>
-<ns1:DpdSheIntermediateGeneral xmlns:ns1="http://euclid.esa.org/schema/dpd/she/intermediategeneral">
-    <Header>
-        <ProductId>c01df353-b1bf-4121-b973-67b01df9f77d</ProductId>
-        <ProductType>DpdSheIntermediateGeneral</ProductType>
-        <SoftwareName>Pgc0w</SoftwareName>
-        <SoftwareRelease>6Wn3K</SoftwareRelease>
-        <EuclidPipelineSoftwareRelease>m9mc0</EuclidPipelineSoftwareRelease>
-        <ProdSDC>Blf8E8frc3oJwMvCaZGCVDCgTAGnUrCjPEVBUbOjaL8BVc4oZHjCn00nPRGTPgPx2</ProdSDC>
-        <DataSetRelease>Hwki8</DataSetRelease>
-        <Purpose>UNKNOWN</Purpose>
-        <PlanId>c6m4g</PlanId>
-        <PPOId>U7xQd</PPOId>
-        <PipelineDefinitionId>KwC44</PipelineDefinitionId>
-        <PpoStatus>NA</PpoStatus>
-        <ManualValidationStatus>UNKNOWN</ManualValidationStatus>
-        <ExpirationDate>2020-06-01T15:32:07.947Z</ExpirationDate>
-        <ToBePublished>0</ToBePublished>
-        <Published>0</Published>
-        <Curator>SHE</Curator>
-        <CreationDate>2020-06-01T15:32:07.948Z</CreationDate>
-    </Header>
-    <Data>
-        <IntData>0</IntData>
-        <FloatData>0.0</FloatData>
-        <StringData>M3MAB</StringData>
-        <DataStorage>
-            <DataContainer filestatus="ARCHIVED_CERNVMFS">
-                <FileName>None</FileName>
-            </DataContainer>
-        </DataStorage>
-    </Data>
-    <QualityFlags>
-        <DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false
-        </DummyFlag>
-        <AuxiliaryFlags flagName="UdYsR" flagged="false" maxLimit="-7.0" minLimit="8.0" xpath="IJsFG">false
-        </AuxiliaryFlags>
-    </QualityFlags>
-    <Parameters>
-        <Parameter>
-            <Key>WpnEA</Key>
-            <Description>rQuky</Description>
-            <StringValue>93w8x</StringValue>
-            <Unit>FoAnW</Unit>
-        </Parameter>
-    </Parameters>
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:DpdSheIntermediateGeneral xmlns:ns1="http://ecdm.euclid-ec.org/schema/dpd/she/intermediategeneral">
+	<Header>
+		<ProductId>AmEka</ProductId>
+		<ProductType>DpdSheIntermediateGeneral</ProductType>
+		<SoftwareName>cuBfm</SoftwareName>
+		<SoftwareRelease>zGsFP9le</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>iXavhpEuST</EuclidPipelineSoftwareRelease>
+		<ProdSDC>056Vu4rHG8vtlERmzK96X81yBz6QVTglUYXkbVHHCc6Pmk0LEZPWi433F26p5ze7tqIfGsnNgnPp3e7Pii4LUd7F9nU9Y3JYN</ProdSDC>
+		<DataSetRelease>YfsSO</DataSetRelease>
+		<Purpose>REPROCESSING</Purpose>
+		<PlanId>hegEK</PlanId>
+		<PPOId>e4iUpxqWtVUAysMGUQRmTSZa4qkYOhIX6EDiEK7k6ZMuwfZmOYd7oT6XsG70dzTAfipPSHw2a</PPOId>
+		<PipelineDefinitionId>OVskx</PipelineDefinitionId>
+		<PpoStatus>x9Hqe</PpoStatus>
+		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
+		<ProductNotifiedToBeChecked>TOBECHECKED</ProductNotifiedToBeChecked>
+		<AutomatedValidationStatus>VALID</AutomatedValidationStatus>
+		<ExpirationDate>2023-04-12T19:53:47.805Z</ExpirationDate>
+		<ToBePublished>1346005378</ToBePublished>
+		<Published>-896263080</Published>
+		<Curator>6L55M</Curator>
+		<CreationDate>2023-04-12T19:53:47.806Z</CreationDate>
+	</Header>
+	<Data>
+		<IntData>-6730641367273582857</IntData>
+		<FloatData>-3.0</FloatData>
+		<StringData>99Dpw</StringData>
+		<DataStorage>
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+	</Data>
+	<QualityFlags>
+		<DummyFlag xpath="//Data/Some/Path/To/Quality/Parameter" minLimit="0.05" maxLimit="10.0" flagged="false">false</DummyFlag>
+		<AuxiliaryFlags flagName="&gt;JO!`9%'xz3@sTFks%K57#z-umiIkwC" xpath="cii3l" minLimit="8.0" maxLimit="8.0" flagged="true">false</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>BZVWS</Key>
+			<Description>NQgVz</Description>
+			<StringValue>0tJ5G</StringValue>
+			<Unit>Ou8nD</Unit>
+		</Parameter>
+	</Parameters>
 </ns1:DpdSheIntermediateGeneral>

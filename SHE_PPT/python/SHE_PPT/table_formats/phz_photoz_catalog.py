@@ -31,7 +31,7 @@ fits_def = "phz.photozCatalog"
 logger = getLogger(__name__)
 
 
-filter_list = ["U_EXT_LSST", "G_EXT_LSST", "R_EXT_LSST", "I_EXT_LSST", "Z_EXT_LSST", "VIS", "Y", "J", "H"]
+filter_list = ["U_EXT_DECAM", "G_EXT_DECAM", "R_EXT_DECAM", "I_EXT_DECAM", "Z_EXT_DECAM", "VIS", "Y", "J", "H"]
 
 
 class PhzPhotozCatalogMeta(SheTableMeta):
@@ -97,8 +97,9 @@ class PhzPhotozCatalogFormat(SheTableFormat):
             self.set_column_properties("PHZ_MEDIAN", fits_dtype="E", dtype=">f4", comment="", is_optional=False),
         )
 
+        # Interval containing 70, 90 and 95% of the PDF probability
         for cnf_int in [70, 90, 95]:
-            col_name = "PHZ_%sINT" % cnf_int
+            col_name = "PHZ_%s_INT" % cnf_int
             setattr(
                 self,
                 col_name,
@@ -124,13 +125,6 @@ class PhzPhotozCatalogFormat(SheTableFormat):
                 self.set_column_properties(col_name, fits_dtype="E", dtype=">f4", comment="", is_optional=False),
             )
 
-        # PHZ_FLAGS
-        setattr(
-            self,
-            "phz_flags",
-            self.set_column_properties("PHZ_FLAGS", fits_dtype="K", dtype=">i8", comment="", is_optional=False),
-        )
-
         # BIAS_ID
         setattr(
             self,
@@ -143,6 +137,46 @@ class PhzPhotozCatalogFormat(SheTableFormat):
             self,
             "tom_bin_id",
             self.set_column_properties("TOM_BIN_ID", fits_dtype="J", dtype=">i4", comment="", is_optional=False),
+        )
+
+        # ALL_TOM_BIN_ID
+        setattr(
+            self,
+            "all_tom_bin_id",
+            self.set_column_properties("ALL_TOM_BIN_ID", fits_dtype="J", dtype=">i4", comment="", is_optional=False),
+        )
+
+        # PHOTOMETRIC_SYSTEM
+        setattr(
+            self,
+            "photometric_system",
+            self.set_column_properties(
+                "PHOTOMETRIC_SYSTEM", fits_dtype="J", dtype=">i4", comment="", is_optional=False
+            ),
+        )
+
+        # PHZ_CLASSIFICATION
+        # 1 if galaxy, 2 if star, 4 if QSO, 8 if globular cluster
+        setattr(
+            self,
+            "phz_classification",
+            self.set_column_properties(
+                "PHZ_CLASSIFICATION", fits_dtype="J", dtype=">i4", comment="", is_optional=False
+            ),
+        )
+
+        # PHZ_WEIGHT
+        setattr(
+            self,
+            "phz_weight",
+            self.set_column_properties("PHZ_WEIGHT", fits_dtype="E", dtype=">f4", comment="", is_optional=False),
+        )
+
+        # PHZ_FLAGS
+        setattr(
+            self,
+            "phz_flags",
+            self.set_column_properties("PHZ_FLAGS", fits_dtype="K", dtype=">i8", comment="", is_optional=False),
         )
 
         # @TODO: replace with a for loop....

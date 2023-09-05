@@ -117,9 +117,14 @@ class TestSheObjectIdList(ProductTester):
     product_type_name = products.she_object_id_list.product_type_name
 
 
-class TestShePsfCalibrationParameters(SimpleDataProductTester):
-    product_class = products.she_psf_calibration_parameters.dpdShePsfCalibrationParameters
-    product_type_name = products.she_psf_calibration_parameters.product_type_name
+class TestShePsfLevel1CalibrationParameters(SimpleDataProductTester):
+    product_class = products.she_psf_level1_calibration_parameters.dpdShePsfLevel1CalibrationParameters
+    product_type_name = products.she_psf_level1_calibration_parameters.product_type_name
+
+
+class TestShePsfLevel2CalibrationParameters(SimpleDataProductTester):
+    product_class = products.she_psf_level2_calibration_parameters.dpdShePsfLevel2CalibrationParameters
+    product_type_name = products.she_psf_level2_calibration_parameters.product_type_name
 
 
 class TestShePsfFieldParameters(SimpleDataProductTester):

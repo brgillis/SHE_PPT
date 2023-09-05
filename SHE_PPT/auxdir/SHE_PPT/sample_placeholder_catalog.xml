@@ -1,99 +1,109 @@
-<?xml version="1.0" ?>
-<ns1:DpdShePlaceholderCatalog xmlns:ns1="http://euclid.esa.org/schema/dpd/she/placeholdercatalog">
-    <Header>
-        <ProductId>31a085a7-eb6b-4465-af64-ecc7de1947bc</ProductId>
-        <ProductType>DpdShePlaceholderCatalog</ProductType>
-        <SoftwareName>AwJZy</SoftwareName>
-        <SoftwareRelease>RYhTw</SoftwareRelease>
-        <EuclidPipelineSoftwareRelease>PllN</EuclidPipelineSoftwareRelease>
-        <ProdSDC>VMUiibwARCgVudhNFjQ8iClUoghOtTa1mm0E2vXMDC0mjbha5z7DAkpnxp5cc79qWTil</ProdSDC>
-        <DataSetRelease>KMy3p</DataSetRelease>
-        <Purpose>DATA_RELEASE</Purpose>
-        <PlanId>zkYdu</PlanId>
-        <PPOId>QoN4Z</PPOId>
-        <PipelineDefinitionId>VBXy5</PipelineDefinitionId>
-        <PpoStatus>NA</PpoStatus>
-        <ManualValidationStatus>INVALID</ManualValidationStatus>
-        <ExpirationDate>2020-06-03T15:45:54.56Z</ExpirationDate>
-        <ToBePublished>0</ToBePublished>
-        <Published>0</Published>
-        <Curator>SHE</Curator>
-        <CreationDate>2020-06-03T15:45:54.562Z</CreationDate>
-    </Header>
-    <Data>
-        <SpatialCoverage>
-            <Polygon>
-                <Vertex>
-                    <Position coordUnit="a">
-                        <C1 unit="kg">0.0</C1>
-                        <C2 unit="km/s">1.0</C2>
-                    </Position>
-                    <SmallCircle>
-                        <Pole coordUnit="lx">
-                            <C1 unit="m2/s2">1.0</C1>
-                            <C2 unit="uarcsec/yr">1.0</C2>
-                        </Pole>
-                    </SmallCircle>
-                </Vertex>
-            </Polygon>
-            <Circle>
-                <Center coordUnit="s">
-                    <C1 unit="m3/kh/s2">0.0</C1>
-                    <C2 unit="m/s2">1.0</C2>
-                </Center>
-                <Radius unit="W/m2/K4">1.0</Radius>
-            </Circle>
-            <BBox>
-                <RaCenter unit="sr">1.0</RaCenter>
-                <DecCenter unit="S">1.0</DecCenter>
-                <RaHalfWidth unit="mm">0.0</RaHalfWidth>
-                <DecHalfWidth unit="C">1.0</DecHalfWidth>
-            </BBox>
-        </SpatialCoverage>
-        <SpectralCoverage>
-            <Filter>
-                <Name>Undefined</Name>
-                <MagId>K</MagId>
-                <CentralWavelength>5.0</CentralWavelength>
-                <MinWavelength>-9.0</MinWavelength>
-                <MaxWavelength>4.0</MaxWavelength>
-                <Reference>hu31j</Reference>
-                <HasFringes>1310754417</HasFringes>
-            </Filter>
-        </SpectralCoverage>
-        <CatalogDescription>
-            <CatalogOrigin>RANDOM_WIDE</CatalogOrigin>
-            <CatalogType>PROXY</CatalogType>
-            <PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-            <CatalogName>She-Placeholder</CatalogName>
-            <CatalogFormatHDU>1</CatalogFormatHDU>
-        </CatalogDescription>
-        <IntData>0</IntData>
-        <FloatData>0.0</FloatData>
-        <StringData></StringData>
-        <DataStorage>
-            <DataContainer filestatus="PROPOSED">
-                <FileName>None</FileName>
-            </DataContainer>
-        </DataStorage>
-        <ExtraDataStorage>
-            <DataContainer filestatus="PROPOSED">
-                <FileName>None</FileName>
-            </DataContainer>
-        </ExtraDataStorage>
-    </Data>
-    <QualityFlags>
-        <DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true
-        </DummyFlag>
-        <AuxiliaryFlags flagName="XR9YO" flagged="true" maxLimit="5.0" minLimit="3.0" xpath="qA0ZI">false
-        </AuxiliaryFlags>
-    </QualityFlags>
-    <Parameters>
-        <Parameter>
-            <Key>69zA1</Key>
-            <Description>EXjdL</Description>
-            <StringValue>jru9W</StringValue>
-            <Unit>Q8awN</Unit>
-        </Parameter>
-    </Parameters>
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:DpdShePlaceholderCatalog xmlns:ns1="http://ecdm.euclid-ec.org/schema/dpd/she/placeholdercatalog">
+	<Header>
+		<ProductId>vcfHh</ProductId>
+		<ProductType>DpdShePlaceholderCatalog</ProductType>
+		<SoftwareName>4xpVh</SoftwareName>
+		<SoftwareRelease>kuhqITf0Q</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>X0SbBP</EuclidPipelineSoftwareRelease>
+		<ProdSDC>pkX9KJCHKv42pnUPlYuSRRLSduV3aH3j003JAW8UZTvF3XyvtUZAj12FtFzd7UC9e4lQ0n3S3qGQdUk5rV2BxDDpaCPOsfI</ProdSDC>
+		<DataSetRelease>UdTSM</DataSetRelease>
+		<Purpose>UNKNOWN</Purpose>
+		<PlanId>tuIsP</PlanId>
+		<PPOId>uFXw8T8tj4N62rw6wtZV3iFaFoyvPfpjCEGFb9q8XwowOMSN1L8VKKnoBUaPY5Fw8Tw1xsR6AbtAG8qD5Mo2h98on7ceZzZ0qbwaYGpNTXcvQ0iZJIJ2gEyL8D0VB8bWLgzVbF3lEZyu5sdxpb45bLaYSZ2bm1iIpaZ4pxqZglfAuzYJ9sWIDA32e0Wqy4xwKEhYFqg7eJTjWkHcZVZo5mBFsEexGLC</PPOId>
+		<PipelineDefinitionId>Ny2mh</PipelineDefinitionId>
+		<PpoStatus>R56rx</PpoStatus>
+		<ManualValidationStatus>INVALID</ManualValidationStatus>
+		<ProductNotifiedToBeChecked>UNKNOWN</ProductNotifiedToBeChecked>
+		<AutomatedValidationStatus>UNKNOWN</AutomatedValidationStatus>
+		<ExpirationDate>2023-04-12T19:53:46.078Z</ExpirationDate>
+		<ToBePublished>255526513</ToBePublished>
+		<Published>-649060937</Published>
+		<Curator>DvAxX</Curator>
+		<CreationDate>2023-04-12T19:53:46.079Z</CreationDate>
+	</Header>
+	<Data>
+		<SpatialCoverage unit="ppm/K">
+			<Polygon>
+				<Vertex>
+					<C1>-7.0</C1>
+					<C2>-4.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="mas">
+							<C1 unit="km/s">0.0</C1>
+							<C2 unit="c/y">1.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</Polygon>
+			<MultiPolygon>
+				<Vertex>
+					<C1>-3.0</C1>
+					<C2>9.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="H">
+							<C1 unit="ms">1.0</C1>
+							<C2 unit="photon">1.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</MultiPolygon>
+			<Circle>
+				<Center coordUnit="JD">
+					<C1 unit="km/s/kpc">0.0</C1>
+					<C2 unit="s">1.0</C2>
+				</Center>
+				<Radius unit="Ohm">1.0</Radius>
+			</Circle>
+			<BBox>
+				<RaCenter>1.0</RaCenter>
+				<DecCenter>5.0</DecCenter>
+				<RaHalfWidth>3.0</RaHalfWidth>
+				<DecHalfWidth>-4.0</DecHalfWidth>
+			</BBox>
+		</SpatialCoverage>
+		<SpectralCoverage>
+			<Filter>
+				<Name>PANSTARRS_g</Name>
+				<MagId>K</MagId>
+				<CentralWavelength>1.0</CentralWavelength>
+				<MinWavelength>3.0</MinWavelength>
+				<MaxWavelength>8.0</MaxWavelength>
+				<Reference>lGhup</Reference>
+				<HasFringes>-954602465</HasFringes>
+			</Filter>
+		</SpectralCoverage>
+		<CatalogDescription>
+			<CatalogOrigin>MASTER_WIDE</CatalogOrigin>
+			<CatalogType>NOT_PROXY</CatalogType>
+			<PathToCatalogFile>kz85M</PathToCatalogFile>
+			<CatalogName>She-Val-Ksb-Shear</CatalogName>
+			<CatalogFormatHDU>-1033815205</CatalogFormatHDU>
+		</CatalogDescription>
+		<IntData>-1672216129589491437</IntData>
+		<FloatData>-9.0</FloatData>
+		<StringData>wJ1qK</StringData>
+		<DataStorage>
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+		<ExtraDataStorage>
+			<DataContainer filestatus="ARCHIVED_OFFLINE" checksumMethod="Adler32" checksumValue="jOkUb">
+				<FileName>CqULOGxbVdqESR5sb5r2YQ3xlZCryFZiz7jDswtvPk2f2GAhPML0yR4MpZ4XPsWOqvT2ni3bqrcqJAAqBd04x905</FileName>
+			</DataContainer>
+		</ExtraDataStorage>
+	</Data>
+	<QualityFlags>
+		<DummyFlag xpath="//Data/Some/Path/To/Quality/Parameter" minLimit="0.05" maxLimit="10.0" flagged="false">true</DummyFlag>
+		<AuxiliaryFlags flagName="@\jv*w3W&quot;S&lt;!`%Tj_w|eL[z;.U`5X'8V0(gk;W&amp;28ZK." xpath="a5xmF" minLimit="0.0" maxLimit="-9.0" flagged="true">true</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>y05my</Key>
+			<Description>mZINQ</Description>
+			<StringValue>7RdTn</StringValue>
+			<Unit>8wRyf</Unit>
+		</Parameter>
+	</Parameters>
 </ns1:DpdShePlaceholderCatalog>
