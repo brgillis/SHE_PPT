@@ -37,6 +37,18 @@ from .logging import getLogger
 
 logger = getLogger(__name__)
 
+NULL_TYPE_DICT = {
+    np.str_: NullValueDefinition.STRING,
+    np.bytes_: NullValueDefinition.STRING,
+    np.int16: NullValueDefinition.SHORT,
+    np.int32: NullValueDefinition.INT,
+    np.int64: NullValueDefinition.LONG_LONG,
+    np.float32: NullValueDefinition.FLOAT,
+    np.float64: NullValueDefinition.DOUBLE,
+    np.complex64: NullValueDefinition.COMPLEX_FLOAT,
+    np.complex128: NullValueDefinition.COMPLEX_DOUBLE
+}
+
 
 def get_attr_with_index(obj: Any,
                         attr: str) -> Any:
@@ -752,26 +764,10 @@ def join_without_none(l_s: List[Optional[Any]],
 def get_null_value_for_dtype(dtype):
     """For a given dtype, returns its NULL value as defined in EL_NullValues"""
 
-    # Ensure the dtype passed in is turned into a numpy dtype
+    # Ensure the dtype passed in is turned into a numpy dtype (as this can be a string)
     dtype = np.dtype(dtype)
 
-    if np.issubdtype(dtype, np.character):
-        return NullValueDefinition.STRING
-    if np.issubdtype(dtype, np.int16):
-        return NullValueDefinition.SHORT
-    elif np.issubdtype(dtype, np.int32):
-        return NullValueDefinition.INT
-    elif np.issubdtype(dtype, np.int64):
-        return NullValueDefinition.LONG_LONG
-    elif np.issubdtype(dtype, np.float32):
-        return NullValueDefinition.FLOAT
-    elif np.issubdtype(dtype, np.float64):
-        return NullValueDefinition.DOUBLE
-    elif np.issubdtype(dtype, np.csingle):
-        return NullValueDefinition.COMPLEX_FLOAT
-    elif np.issubdtype(dtype, np.cdouble):
-        return NullValueDefinition.COMPLEX_DOUBLE
-    else:
-        # NOTE: EL_NullValue also defines NULL for unsigned ints, however these cannot be used in FITS,
-        # so it is very unlikely uints will be used in SHE code, so I have not implemented these checks here
-        raise TypeError("Unknown dtype %s" % dtype)
+    try:
+        return NULL_TYPE_DICT[dtype.type]
+    except KeyError as e:
+        raise TypeError("Unrecognised dtype: %s" % dtype) from e
