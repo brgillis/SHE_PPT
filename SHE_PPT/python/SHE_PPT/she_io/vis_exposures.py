@@ -49,14 +49,14 @@ from .profiling import io_stats
 logger = log.getLogger(__name__)
 
 
-def read_vis_data(vis_prods, seg_listfile=None, workdir=".", method="astropy", hdf5_listfile=None):
+def read_vis_data(vis_prods, seg_prods=None, workdir=".", method="astropy", hdf5_listfile=None):
     """
     Reads a list of DpdVisCalibratedFrame (and optionally dpdSheExposureReprojectedSegmentationMap),
     returning a list of VisExposure objects
 
     Inputs:
      - vis_prods: a list of VIS product filenames
-     - seg_listfile: a listfile of the reprojected segmentation map products
+     - seg_prods: a list of reprojected segmentation map product filenames
      - workdir: the workdir
      - method: the IO method to use... options are astropy, fitsio, hdf5
      - hdf5_listfile: the listfile of hdf5 files to use (only if method == "hdf5")
@@ -104,9 +104,7 @@ def read_vis_data(vis_prods, seg_listfile=None, workdir=".", method="astropy", h
     bkgs = [os.path.join(datadir, p.Data.BackgroundStorage.DataContainer.FileName) for p in vis_dpds]
 
     # get the segmentation FITS file (if provided)
-    if seg_listfile:
-        with open(os.path.join(workdir, seg_listfile), "r") as f:
-            seg_prods = json.load(f)
+    if seg_prods:
         seg_dpds = [read_product_metadata(os.path.join(workdir, p)) for p in seg_prods]
 
         if len(seg_dpds) != len(vis_dpds):
