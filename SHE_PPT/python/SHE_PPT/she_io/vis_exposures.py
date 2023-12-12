@@ -49,13 +49,13 @@ from .profiling import io_stats
 logger = log.getLogger(__name__)
 
 
-def read_vis_data(vis_listfile, seg_listfile=None, workdir=".", method="astropy", hdf5_listfile=None):
+def read_vis_data(vis_prods, seg_listfile=None, workdir=".", method="astropy", hdf5_listfile=None):
     """
-    Reads listfiles of DpdVisCalibratedFrame (and optionally dpdSheExposureReprojectedSegmentationMap),
+    Reads a list of DpdVisCalibratedFrame (and optionally dpdSheExposureReprojectedSegmentationMap),
     returning a list of VisExposure objects
 
     Inputs:
-     - vis_listfile: a listfile of the vis products
+     - vis_prods: a list of VIS product filenames
      - seg_listfile: a listfile of the reprojected segmentation map products
      - workdir: the workdir
      - method: the IO method to use... options are astropy, fitsio, hdf5
@@ -72,10 +72,6 @@ def read_vis_data(vis_listfile, seg_listfile=None, workdir=".", method="astropy"
         raise ValueError("VIS IO method %s not know. Choose from %s" % (method, "astropy, fitsio, hdf5"))
 
     # Regardless of the method, we always need the VIS products
-    logger.info("Opening VIS listfile %s", os.path.join(workdir, vis_listfile))
-
-    with open(os.path.join(workdir, vis_listfile), "r") as f:
-        vis_prods = json.load(f)
     vis_dpds = [read_product_metadata(os.path.join(workdir, p)) for p in vis_prods]
 
     n_exps = len(vis_dpds)
