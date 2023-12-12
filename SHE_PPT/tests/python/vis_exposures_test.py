@@ -25,6 +25,7 @@
 
 import pytest
 import os
+import json
 
 from SHE_PPT.she_io.vis_exposures import (
     VisExposureAstropyFITS,
@@ -110,25 +111,33 @@ class Testvis_exposures(object):
             assert det_astropy == det_hdf5
 
     def test_read_vis_data(self, workdir, input_products, hdf5_listfile):
-        vis, _, _, seg, _ = input_products
+        vis_listfile, _, _, seg_listfile, _ = input_products
+
+        # Read listfiles
+        with open(os.path.join(workdir, vis_listfile)) as fs:
+            vis_prods = json.load(fs)
+        with open(os.path.join(workdir, seg_listfile)) as fs:
+            seg_prods = json.load(fs)
+        with open(os.path.join(workdir, hdf5_listfile)) as fs:
+            hdf5_files = json.load(fs)
 
         # check astropy
-        exps = read_vis_data(vis_listfile=vis, seg_listfile=seg, workdir=workdir, method="astropy")
+        exps = read_vis_data(vis_prods=vis_prods, seg_prods=seg_prods, workdir=workdir, method="astropy")
         for exp in exps:
             assert type(exp) is VisExposureAstropyFITS
 
         # check fitsio
-        exps = read_vis_data(vis_listfile=vis, seg_listfile=seg, workdir=workdir, method="fitsio")
+        exps = read_vis_data(vis_prods=vis_prods, seg_prods=seg_prods, workdir=workdir, method="fitsio")
         for exp in exps:
             assert type(exp) is VisExposureFitsIO
 
         # check hdf5
         exps = read_vis_data(
-            vis_listfile=vis, seg_listfile=seg, workdir=workdir, method="hdf5", hdf5_listfile=hdf5_listfile
+            vis_prods=vis_prods, seg_prods=seg_prods, workdir=workdir, method="hdf5", hdf5_files=hdf5_files
         )
         for exp in exps:
             assert type(exp) is VisExposureHDF5
 
         # check invalid method
         with pytest.raises(ValueError):
-            exps = read_vis_data(vis_listfile=vis, seg_listfile=seg, workdir=workdir, method="invalid method")
+            exps = read_vis_data(vis_prods=vis_prods, seg_prods=seg_prods, workdir=workdir, method="invalid method")
