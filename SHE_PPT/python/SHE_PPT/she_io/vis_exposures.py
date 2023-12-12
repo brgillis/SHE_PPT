@@ -27,6 +27,7 @@
 import os
 import json
 import gc
+from itertools import repeat
 
 from abc import ABC, abstractmethod
 
@@ -115,7 +116,7 @@ def read_vis_data(vis_prods, seg_prods=None, workdir=".", method="astropy", hdf5
 
         segs = [os.path.join(datadir, p.Data.DataStorage.DataContainer.FileName) for p in seg_dpds]
     else:
-        segs = [None for _ in range(n_exps)]
+        segs = repeat(None, n_exps)
 
     vis_exposures = []
     for det, wgt, bkg, seg, dpd in zip(dets, wgts, bkgs, segs, vis_dpds):
