@@ -6,6 +6,8 @@ Changes in v9.6
 API Changes
 -----------
 
+- Refactor read_vis_data to take lists of VIS products, reprojected segmentation map products and HDF5 filenames instead of listfiles
+
 Dependency Changes
 ------------------
 

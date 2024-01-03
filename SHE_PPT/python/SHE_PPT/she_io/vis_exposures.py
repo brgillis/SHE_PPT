@@ -27,6 +27,7 @@
 import os
 import json
 import gc
+from itertools import repeat
 
 from abc import ABC, abstractmethod
 
@@ -49,17 +50,17 @@ from .profiling import io_stats
 logger = log.getLogger(__name__)
 
 
-def read_vis_data(vis_listfile, seg_listfile=None, workdir=".", method="astropy", hdf5_listfile=None):
+def read_vis_data(vis_prods, seg_prods=None, workdir=".", method="astropy", hdf5_files=None):
     """
-    Reads listfiles of DpdVisCalibratedFrame (and optionally dpdSheExposureReprojectedSegmentationMap),
+    Reads a list of DpdVisCalibratedFrame (and optionally dpdSheExposureReprojectedSegmentationMap),
     returning a list of VisExposure objects
 
     Inputs:
-     - vis_listfile: a listfile of the vis products
-     - seg_listfile: a listfile of the reprojected segmentation map products
+     - vis_prods: a list of VIS product filenames
+     - seg_prods: a list of reprojected segmentation map product filenames
      - workdir: the workdir
      - method: the IO method to use... options are astropy, fitsio, hdf5
-     - hdf5_listfile: the listfile of hdf5 files to use (only if method == "hdf5")
+     - hdf5_files: a list of hdf5 filenames to use (only if method == "hdf5")
 
     returns:
      - vis_exposures: a list of VisExposure objects
@@ -72,10 +73,6 @@ def read_vis_data(vis_listfile, seg_listfile=None, workdir=".", method="astropy"
         raise ValueError("VIS IO method %s not know. Choose from %s" % (method, "astropy, fitsio, hdf5"))
 
     # Regardless of the method, we always need the VIS products
-    logger.info("Opening VIS listfile %s", os.path.join(workdir, vis_listfile))
-
-    with open(os.path.join(workdir, vis_listfile), "r") as f:
-        vis_prods = json.load(f)
     vis_dpds = [read_product_metadata(os.path.join(workdir, p)) for p in vis_prods]
 
     n_exps = len(vis_dpds)
@@ -86,9 +83,6 @@ def read_vis_data(vis_listfile, seg_listfile=None, workdir=".", method="astropy"
     # HDF5 is different to the other two methods as it does not need the FITS files,
     # so deal with this first and return
     if method == "hdf5":
-        with open(os.path.join(workdir, hdf5_listfile), "r") as f:
-            hdf5_files = json.load(f)
-
         if len(hdf5_files) != n_exps:
             raise ValueError(
                 "HDF5 listfile (len %d) has different length from vis listfile (len %d)" % (len(vis_dpds), n_exps)
@@ -108,9 +102,7 @@ def read_vis_data(vis_listfile, seg_listfile=None, workdir=".", method="astropy"
     bkgs = [os.path.join(datadir, p.Data.BackgroundStorage.DataContainer.FileName) for p in vis_dpds]
 
     # get the segmentation FITS file (if provided)
-    if seg_listfile:
-        with open(os.path.join(workdir, seg_listfile), "r") as f:
-            seg_prods = json.load(f)
+    if seg_prods:
         seg_dpds = [read_product_metadata(os.path.join(workdir, p)) for p in seg_prods]
 
         if len(seg_dpds) != len(vis_dpds):
@@ -121,7 +113,7 @@ def read_vis_data(vis_listfile, seg_listfile=None, workdir=".", method="astropy"
 
         segs = [os.path.join(datadir, p.Data.DataStorage.DataContainer.FileName) for p in seg_dpds]
     else:
-        segs = [None for _ in range(n_exps)]
+        segs = repeat(None, n_exps)
 
     vis_exposures = []
     for det, wgt, bkg, seg, dpd in zip(dets, wgts, bkgs, segs, vis_dpds):
