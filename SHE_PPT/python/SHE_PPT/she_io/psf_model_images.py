@@ -25,7 +25,6 @@
 """
 
 import os
-import json
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -46,11 +45,11 @@ from .profiling import io_stats
 logger = log.getLogger(__name__)
 
 
-def read_psf_model_images(psf_listfile, workdir="."):
+def read_psf_model_images(psf_prods, workdir="."):
     """
-    Reads a PSFModelImages listfile, returning a list of PSFModelImage objects
+    Reads a list of PSFModelImages data product filenames, returning a list of PSFModelImage objects
     Inputs:
-     - psf_listfile: name of the PSF model images listfile
+     - psf_prods: list of PSF model image data product filenames
      - workdir: name of the working directory
 
     Returns:
@@ -58,10 +57,6 @@ def read_psf_model_images(psf_listfile, workdir="."):
     """
 
     datadir = os.path.join(workdir, "data")
-
-    logger.info("Opening psf model images listfile %s", os.path.join(workdir, psf_listfile))
-    with open(os.path.join(workdir, psf_listfile), "r") as f:
-        psf_prods = json.load(f)
 
     n_exps = len(psf_prods)
 
