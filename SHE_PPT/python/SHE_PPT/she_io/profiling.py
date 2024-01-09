@@ -24,13 +24,12 @@
 
 """
 
+import logging
 import os
 import psutil
 import time
 
-import ElementsKernel.Logging as log
-
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 LOG_LEVEL = logger.info
 
