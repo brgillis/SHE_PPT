@@ -30,8 +30,7 @@ import psutil
 import time
 
 logger = logging.getLogger(__name__)
-
-LOG_LEVEL = logger.info
+LOG_LEVEL = logging.INFO
 
 
 def io_stats(f):
@@ -54,7 +53,8 @@ def io_stats(f):
 
         open_files = len(p.open_files())
 
-        LOG_LEVEL(
+        logger.log(
+            LOG_LEVEL,
             "IOSTATS: %s: read_ops = %d, read = %d kB, open_files = %d, rss = %i, vms = %i, walltime = %fs",
             f.__qualname__,
             read1 - read0,
