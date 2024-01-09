@@ -30,7 +30,7 @@ import psutil
 import time
 
 logger = logging.getLogger(__name__)
-LOG_LEVEL = logging.INFO
+LOG_LEVEL = logging.DEBUG
 
 
 def io_stats(f):
