@@ -28,6 +28,7 @@ import os
 
 import numpy as np
 import h5py
+import json
 
 from astropy.io import fits
 from astropy.table import Table
@@ -98,8 +99,10 @@ class Testpsf_model_images(object):
 
     def test_read_psf_model_images(self, workdir, input_products):
         _, _, psf_listfile, _, _ = input_products
+        with open(os.path.join(workdir, psf_listfile)) as fs:
+            psf_prods = json.load(fs)
 
-        psfs = read_psf_model_images(psf_listfile, workdir)
+        psfs = read_psf_model_images(psf_prods, workdir)
 
         assert psfs is not None, "Returned PSF object list is None"
 
