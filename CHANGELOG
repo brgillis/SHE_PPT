@@ -27,6 +27,8 @@ New config features
 Miscellaneous
 -------------
 
+- Profile I/O stats at debug level by default
+
 
 Changes in v9.5
 ===============
