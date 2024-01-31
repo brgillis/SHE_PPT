@@ -18,13 +18,16 @@
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-__updated__ = "2021-08-12"
+__updated__ = "2024-01-31"
 
+from argparse import ArgumentParser, ArgumentTypeError
 from copy import deepcopy
+import pytest
 
 from SHE_PPT.argument_parser import (CA_DATA_IMAGES, CA_DISABLE_FAILSAFE, CA_DRY_RUN, CA_LOGDIR, CA_MDB,
                                      CA_MER_CAT, CA_PIPELINE_CONFIG, CA_PROFILE,
-                                     CA_SHE_MEAS, CA_SHE_STAR_CAT, CA_VIS_CAL_FRAME, CA_WORKDIR, SheArgumentParser, )
+                                     CA_SHE_MEAS, CA_SHE_STAR_CAT, CA_VIS_CAL_FRAME, CA_WORKDIR, SheArgumentParser,
+                                     dir_path, )
 from SHE_PPT.testing.utility import SheTestCase
 
 
@@ -101,3 +104,30 @@ class TestArgumentParser(SheTestCase):
         assert f"[--{CA_MER_CAT} {CA_MER_CAT.upper()}]" in usage_str
         assert f"[--{CA_VIS_CAL_FRAME} {CA_VIS_CAL_FRAME.upper()}]" in usage_str
         assert f"[--{CA_SHE_STAR_CAT} {CA_SHE_STAR_CAT.upper()}]" in usage_str
+
+
+def test_dir_path(tmp_path):
+    valid_directory = str(tmp_path)
+    assert dir_path(valid_directory) == tmp_path
+
+
+def test_dir_path_argument_parser(tmp_path):
+    valid_directory = str(tmp_path)
+    parser = ArgumentParser()
+    parser.add_argument('--directory', type=dir_path)
+    args = parser.parse_args(['--directory', valid_directory])
+    assert args.directory == tmp_path
+
+
+def test_dir_path_invalid(tmp_path):
+    invalid_directory = str(tmp_path / 'invalid')
+    with pytest.raises(ArgumentTypeError):
+        dir_path(invalid_directory)
+
+
+def test_dir_path_file(tmp_path):
+    file_path = tmp_path / 'filename'
+    file_path.touch()
+    invalid_file = str(file_path)
+    with pytest.raises(ArgumentTypeError):
+        dir_path(invalid_file)

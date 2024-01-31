@@ -5,7 +5,7 @@
     Base class for an argument parser for OU-SHE executables.
 """
 
-__updated__ = "2021-08-27"
+__updated__ = "2024-01-31"
 
 # Copyright (C) 2012-2020 Euclid Science Ground Segment
 #
@@ -20,8 +20,9 @@ __updated__ = "2021-08-27"
 # You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from argparse import Action, ArgumentParser
+from argparse import Action, ArgumentParser, ArgumentTypeError
 from enum import Enum
+from pathlib import Path
 from typing import Optional
 
 from SHE_PPT.logging import getLogger
@@ -309,3 +310,11 @@ class SheArgumentParser(ArgumentParser):
         """
         self.add_arg_with_type(f"--{CA_SHE_STAR_CAT}", type=str, arg_type=arg_type,
                                help=".xml data product for SHE star catalog for an observation.")
+
+
+def dir_path(arg: str) -> Path:
+    """Custom ArgumentParser argument type that checks if the argument is a valid directory"""
+    path = Path(arg)
+    if not path.is_dir():
+        raise ArgumentTypeError(f"{path} is not a valid directory")
+    return path

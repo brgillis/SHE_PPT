@@ -21,6 +21,8 @@ Bug Fixes
 New Features
 ------------
 
+- Custom ArgumentParser argument type 'dir_path' that checks if the argument is a valid directory
+
 New config features
 -------------------
 
