@@ -233,11 +233,11 @@ class VisExposure(ABC):
 
     def _parse_detector_name(self, det_name):
         # detector name can be either its index (0-35) or its id (e.g. "5-3")
-        if type(det_name) is int:
+        if isinstance(det_name, (int, np.integer)):
             det_num = det_name
             i, j = (det_num // 6) + 1, (det_num % 6) + 1
             det_id = "%d-%d" % (i, j)
-        elif type(det_name) is str:
+        elif isinstance(det_name, str):
             det_id = det_name
             si, sj = det_name.split("-")
             i, j = int(si) - 1, int(sj) - 1
@@ -291,6 +291,7 @@ class VisExposureAstropyFITS(VisExposure):
         # open the files
 
         self._det_hdul = fits.open(det_file, memmap=memmap)
+        self.primary_header = self._det_hdul[0].header
 
         if bkg_file:
             self._bkg_hdul = fits.open(bkg_file, memmap=memmap)
@@ -404,6 +405,7 @@ class VisExposureFitsIO(VisExposure):
         self._det_hdul = fitsio.FITS(
             det_file,
         )
+        self.primary_header = self._det_hdul[0].header
 
         if bkg_file:
             self._bkg_hdul = fitsio.FITS(
@@ -571,7 +573,7 @@ def _correct_header(hdr):
     """Corrects strings in headers that may be shorter than 8 chars"""
     cards = []
     for c in hdr.cards:
-        if type(c.value) is str:
+        if isinstance(c.value, str):
             if len(c.value) < 8:
                 c.value = "%-8s" % c.value
         card = fits.Card(keyword=c.keyword, value=c.value, comment=c.comment)
