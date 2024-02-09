@@ -73,7 +73,6 @@ def __create_detector_map(object_ids, pixel_coords, detector_shape, objsize=10, 
     pixel_coords = np.asarray(pixel_coords)
 
     for my_id, coords, group_id in zip(object_ids, pixel_coords, group_ids):
-
         x = coords[0]
         y = coords[1]
 
@@ -92,7 +91,6 @@ def __create_detector_map(object_ids, pixel_coords, detector_shape, objsize=10, 
             # loop over all objects in group, determine the minimum distance to the other objects
             inds = np.where(group_ids == group_id)
             for (x_other, y_other), other_id in zip(pixel_coords[inds], object_ids[inds]):
-
                 if other_id == my_id:
                     continue
 
@@ -148,10 +146,8 @@ def create_reprojected_segmentation_map(
     """
     n_detectors = len(wcs_list)
 
-    if n_detectors < 1 or n_detectors > 36:
-        raise ValueError(
-            "Number of detectors seems to be %d. The only valid numbers are between 1 and 36 inclusive" % n_detectors
-        )
+    if n_detectors != 36 and n_detectors != 144:
+        raise ValueError("Number of detectors seems to be %d. The only valid numbers are 36 and 144." % n_detectors)
 
     object_ids = np.asarray(object_ids)
     pixel_coords = np.asarray(pixel_coords)
@@ -162,12 +158,19 @@ def create_reprojected_segmentation_map(
 
     # loop over all detectors in the exposure
     for det in range(n_detectors):
-
         # get the detector's name
-        det_i = det // 6 + 1
-        det_j = det % 6 + 1
-        det_id = "%s-%s" % (str(det_i), str(det_j))
-        logger.info("Creating detector %s" % det_id)
+        if n_detectors == 36:
+            det_i = det // 6 + 1
+            det_j = det % 6 + 1
+            det_id = "%d-%d" % (det_i, det_j)
+        elif n_detectors == 144:
+            det_i = (det // 4) // 6 + 1
+            det_j = (det // 4) % 6 + 1
+            det_k = det % 4
+            det_sk = {0: "E", 1: "F", 2: "G", 3: "H"}[det_k]
+            det_id = "%d-%d.%s" % (det_i, det_j, det_sk)
+        else:
+            raise ValueError("Invalid number of detector %s" % n_detectors)
 
         # create the seg map for the detector from the objects in that detector
         inds = np.where(detectors == det)

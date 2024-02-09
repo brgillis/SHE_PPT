@@ -250,6 +250,31 @@ class VisExposure(ABC):
 
         return det_num, det_id
 
+    def _parse_quad_detector_name(self, det_name):
+        # CCD-based FITS: detector name can be either its index (0-35) or its id (e.g. "5-3")
+        # quadrant-based FITS: detector name can be either its index (0-143) or its id (e.g. "5-3.E")
+        if isinstance(det_name, (int, np.integer)):
+            det_num = det_name
+            i = (det_num // 4) // 6 + 1
+            j = (det_num // 4) % 6 + 1
+            k = det_num % 4
+            sk = {0: "E", 1: "F", 2: "G", 3: "H"}[k]
+            det_id = "%d-%d.%s" % (i, j, sk)
+        elif isinstance(det_name, str):
+            det_id = det_name
+            si, sj, sk = det_name.replace("-", ".").split(".")
+            i = int(si) - 1
+            j = int(sj) - 1
+            k = {"E": 0, "F": 1, "G": 2, "H": 3}[sk]
+            det_num = (6 * i + j) * 4 + k
+        else:
+            raise IndexError("Invalid detector name %s" % det_name)
+
+        if det_num >= self.n_detectors:
+            raise IndexError("Invalid detector name %s" % det_name)
+
+        return det_num, det_id
+
     def get_dpd(self):
         return self.dpd
 
@@ -271,7 +296,6 @@ class VisExposureAstropyFITS(VisExposure):
     def __init__(
         self, det_file, bkg_file=None, wgt_file=None, seg_file=None, load_rms=True, load_flg=True, memmap=True, dpd=None
     ):
-
         super().__init__()
 
         self._det_hdul = None
@@ -310,7 +334,15 @@ class VisExposureAstropyFITS(VisExposure):
         # "proper" files have an empty PrimaryHDU, so have an offset of 1
         offset = len(self._det_hdul) % 3
         if offset == 2:
-            raise ValueError("File has an unexpected number of HDUs")
+            raise ValueError(f"File has an unexpected number of HDUs: {len(self._det_hdul)}")
+
+        # decide if it is CCD-based or quadrant-based
+        if self.n_detectors == 36:
+            self.quadrant_based = False
+        elif self.n_detectors == 144:
+            self.quadrant_based = True
+        else:
+            raise ValueError(f"File has an unexpected number of HDUs: {len(self._det_hdul)}")
 
         self.sci_hdus = [hdu for hdu in self._det_hdul[offset::3]]
 
@@ -339,14 +371,12 @@ class VisExposureAstropyFITS(VisExposure):
 
     @io_stats
     def _create_detector(self, det_name):
-
         # Make a new class that inherits from np.ndarray.
         # Cutout2D converts all input data to np.ndarray (dtype=float64) unless it is already
         # an instance of this ndarray. This means we cast the HDUs to different dtypes.
         # This class disguises the hdu as an ndarray, allowing it to be used directly by Cutout2D.
         class CCDData(np.ndarray):
             def __new__(cls, hdu):
-
                 shape = tuple(hdu.shape)
                 dtype = hdu.dtype
 
@@ -359,7 +389,10 @@ class VisExposureAstropyFITS(VisExposure):
             def __getitem__(self, inds):
                 return self.hdu[inds]
 
-        det_num, det_id = self._parse_detector_name(det_name)
+        if self.quadrant_based:
+            det_num, det_id = self._parse_quad_detector_name(det_name)
+        else:
+            det_num, det_id = self._parse_detector_name(det_name)
 
         # get the data references for the detector object (where available)
         wcs = self._wcs_list[det_num]
@@ -383,7 +416,6 @@ class VisExposureFitsIO(VisExposure):
 
     @io_stats
     def __init__(self, det_file, bkg_file=None, wgt_file=None, seg_file=None, load_rms=True, load_flg=True, dpd=None):
-
         super().__init__()
 
         self._det_hdul = None
@@ -405,7 +437,7 @@ class VisExposureFitsIO(VisExposure):
         self._det_hdul = fitsio.FITS(
             det_file,
         )
-        self.primary_header = self._det_hdul[0].header
+        self.primary_header = self._det_hdul[0].read_header()
 
         if bkg_file:
             self._bkg_hdul = fitsio.FITS(
@@ -431,6 +463,13 @@ class VisExposureFitsIO(VisExposure):
         offset = len(self._det_hdul) % 3
         if offset == 2:
             raise ValueError("File has an unexpected number of HDUs")
+
+        if self.n_detectors == 36:
+            self.quadrant_based = False
+        elif self.n_detectors == 144:
+            self.quadrant_based = True
+        else:
+            raise ValueError(f"File has an unexpected number of HDUs: {len(self._det_hdul)}")
 
         self.sci_hdus = [hdu for hdu in self._det_hdul[offset::3]]
 
@@ -459,14 +498,12 @@ class VisExposureFitsIO(VisExposure):
 
     @io_stats
     def _create_detector(self, det_name):
-
         # Make a new class that inherits from np.ndarray.
         # Cutout2D converts all input data to np.ndarray unless it is already an instance
         # of this class. Numpy doesn't convert the fitsio.ImageHDU properly, breaking Cutout2D.
         # This class disguises the hdu as an ndarray, allowing it to be used directly.
         class CCDData(np.ndarray):
             def __new__(cls, hdu):
-
                 shape = tuple(hdu.get_dims())
                 dtype = hdu._get_image_numpy_dtype()
 
@@ -479,7 +516,10 @@ class VisExposureFitsIO(VisExposure):
             def __getitem__(self, inds):
                 return self.hdu[inds]
 
-        det_num, det_id = self._parse_detector_name(det_name)
+        if self.quadrant_based:
+            det_num, det_id = self._parse_quad_detector_name(det_name)
+        else:
+            det_num, det_id = self._parse_detector_name(det_name)
 
         # get the data references for the detector object (where available)
         wcs = self._wcs_list[det_num]
@@ -515,6 +555,13 @@ class VisExposureHDF5(VisExposure):
 
         self.n_detectors = len(self.det_list)
 
+        if self.n_detectors == 36:
+            self.quadrant_based = False
+        elif self.n_detectors == 144:
+            self.quadrant_based = True
+        else:
+            raise ValueError(f"File has an unexpected number of HDUs: {len(self._det_hdul)}")
+
         self.dpd = dpd
 
     @io_stats
@@ -527,7 +574,10 @@ class VisExposureHDF5(VisExposure):
 
     @io_stats
     def _create_detector(self, det_name):
-        det_num, det_id = self._parse_detector_name(det_name)
+        if self.quadrant_based:
+            det_num, det_id = self._parse_quad_detector_name(det_name)
+        else:
+            det_num, det_id = self._parse_detector_name(det_name)
 
         try:
             detector_group = self.file[det_id]
@@ -540,7 +590,6 @@ class VisExposureHDF5(VisExposure):
         # class wraps it into an np.ndarray, preventing this conversion.
         class CCDData(np.ndarray):
             def __new__(cls, dataset):
-
                 shape = dataset.shape
                 dtype = dataset.dtype
 

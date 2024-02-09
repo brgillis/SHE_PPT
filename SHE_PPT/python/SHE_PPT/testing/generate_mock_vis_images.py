@@ -108,7 +108,7 @@ def __generate_detector_images(
         y_px.append(y + stampsize / 2)
 
         # add the blob to the image
-        sci[y:y + stampsize, x:x + stampsize] += snr * np.sqrt(background) * blob
+        sci[y : y + stampsize, x : x + stampsize] += snr * np.sqrt(background) * blob
 
     # generate rms image (standard deviation of the image in this case)
     rms_val = np.std(sci)
@@ -183,25 +183,23 @@ def create_exposure(
     # pixelsize = 0.1"
     PIXELSIZE = 1.0 / 3600 / 10.0
 
-    if n_detectors < 1 or n_detectors > 36:
-        raise ValueError(
-            "Number of detectors seems to be %d. The only valid numbers are between 1 and 36 inclusive" % n_detectors
-        )
+    if n_detectors != 36 and n_detectors != 144:
+        raise ValueError("Number of detectors seems to be %d. The only valid numbers are 36 and 144." % n_detectors)
 
     obj_rng = np.random.RandomState(seed=seed)
     noise_rng = np.random.RandomState(seed=noise_seed)
 
     # create hdulists for the 3 fits files (DET, WGT, BKG)
     det_hdr = __create_header()
-    det_primary = fits.PrimaryHDU(det_hdr)
+    det_primary = fits.PrimaryHDU(data=None, header=det_hdr)
     det_hdul = fits.HDUList([det_primary])
 
     wgt_hdr = __create_header()
-    wgt_primary = fits.PrimaryHDU(wgt_hdr)
+    wgt_primary = fits.PrimaryHDU(data=None, header=wgt_hdr)
     wgt_hdul = fits.HDUList([wgt_primary])
 
     bkg_hdr = __create_header()
-    bkg_primary = fits.PrimaryHDU(bkg_hdr)
+    bkg_primary = fits.PrimaryHDU(data=None, header=bkg_hdr)
     bkg_hdul = fits.HDUList([bkg_primary])
 
     sky_coords = []
@@ -213,11 +211,20 @@ def create_exposure(
 
     # loop over all detectors in the exposure
     for det in range(n_detectors):
+        # get the detector's
+        if n_detectors == 36:
+            det_i = det // 6 + 1
+            det_j = det % 6 + 1
+            det_id = "%d-%d" % (det_i, det_j)
+        elif n_detectors == 144:
+            det_i = (det // 4) // 6 + 1
+            det_j = (det // 4) % 6 + 1
+            det_k = det % 4
+            det_sk = {0: "E", 1: "F", 2: "G", 3: "H"}[det_k]
+            det_id = "%d-%d.%s" % (det_i, det_j, det_sk)
+        else:
+            raise ValueError("Invalid number of detector %s" % n_detectors)
 
-        # get the detector's name
-        det_i = det // 6 + 1
-        det_j = det % 6 + 1
-        det_id = "%s-%s" % (str(det_i), str(det_j))
         detector_names.append(det_id)
         logger.info("Creating detector %s" % det_id)
 

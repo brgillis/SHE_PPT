@@ -43,6 +43,7 @@ from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider
 
 from ST_DM_DmUtils.DmUtils import read_product_metadata
 
+NUM_DETECTORS = 144
 NUM_OBJECTS = 2
 OBJSIZE = 2.5
 NUM_EXP = 4
@@ -60,6 +61,11 @@ def workdir(tmpdir):
 
 
 @pytest.fixture
+def num_detectors():
+    return NUM_DETECTORS
+
+
+@pytest.fixture
 def num_objects():
     return NUM_OBJECTS
 
@@ -70,10 +76,10 @@ def objsize():
 
 
 @pytest.fixture
-def input_products(workdir, num_objects, objsize):
+def input_products(num_detectors, workdir, num_objects, objsize):
     """Creates the data products/listfiles needed as an input to the various executables"""
     exposure_product, sky_coords, pixel_coords, detectors, wcs_list = generate_mock_vis_images.create_exposure(
-        workdir=workdir, n_objs_per_det=num_objects, objsize=objsize, seed=2
+        n_detectors=num_detectors, workdir=workdir, n_objs_per_det=num_objects, objsize=objsize, seed=2
     )
     catalogue_product, object_ids = generate_mock_mer_catalogues.create_catalogue(
         obj_coords=sky_coords, workdir=workdir
