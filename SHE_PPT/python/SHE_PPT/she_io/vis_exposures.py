@@ -470,10 +470,10 @@ class VisExposureFitsIO(VisExposure):
         self.sci_hdus = [hdu for hdu in self._det_hdul[offset::3]]
 
         if load_rms:
-            self.rms_hdus = [hdu for hdu in self._det_hdul[(offset + 1) :: 3]]
+            self.rms_hdus = [hdu for hdu in self._det_hdul[(offset + 1)::3]]
 
         if load_flg:
-            self.flg_hdus = [hdu for hdu in self._det_hdul[(offset + 2) :: 3]]
+            self.flg_hdus = [hdu for hdu in self._det_hdul[(offset + 2)::3]]
 
         if self._bkg_hdul:
             offset = len(self._bkg_hdul) - self.n_detectors

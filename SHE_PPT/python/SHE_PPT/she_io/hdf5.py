@@ -80,8 +80,8 @@ def convert_to_hdf5(det_file, bkg_file, wgt_file, seg_file, output_filename, chu
     # get the hdu lists for each detector
     offset = n_hdu % 3
     sci_list = [hdu for hdu in det_hdul[offset::3]]
-    rms_list = [hdu for hdu in det_hdul[(offset + 1) :: 3]]
-    flg_list = [hdu for hdu in det_hdul[(offset + 2) :: 3]]
+    rms_list = [hdu for hdu in det_hdul[(offset + 1)::3]]
+    flg_list = [hdu for hdu in det_hdul[(offset + 2)::3]]
 
     offset = len(bkg_hdul) - n_det
     bkg_list = [hdu for hdu in bkg_hdul[offset:]]
