@@ -80,8 +80,8 @@ def convert_to_hdf5(det_file, bkg_file, wgt_file, seg_file, output_filename, chu
     # get the hdu lists for each detector
     offset = n_hdu % 3
     sci_list = [hdu for hdu in det_hdul[offset::3]]
-    rms_list = [hdu for hdu in det_hdul[(offset + 1)::3]]
-    flg_list = [hdu for hdu in det_hdul[(offset + 2)::3]]
+    rms_list = [hdu for hdu in det_hdul[(offset + 1) :: 3]]
+    flg_list = [hdu for hdu in det_hdul[(offset + 2) :: 3]]
 
     offset = len(bkg_hdul) - n_det
     bkg_list = [hdu for hdu in bkg_hdul[offset:]]
@@ -95,13 +95,7 @@ def convert_to_hdf5(det_file, bkg_file, wgt_file, seg_file, output_filename, chu
     assert len(sci_list) == len(rms_list) == len(flg_list) == n_det
 
     detector_names = []
-    if n_det == 36:
-        for k in range(n_det):
-            i = k // 6 + 1
-            j = k % 6 + 1
-            name = "%d-%d" % (i, j)
-            detector_names.append(name)
-    elif n_det == 144:
+    if "QUADID" in det_hdul[1].header:
         for k in range(n_det):
             i = (k // 4) // 6 + 1
             j = (k // 4) % 6 + 1
@@ -110,7 +104,11 @@ def convert_to_hdf5(det_file, bkg_file, wgt_file, seg_file, output_filename, chu
             name = "%d-%d.%s" % (i, j, sq)
             detector_names.append(name)
     else:
-        raise ValueError("Invalid number of detector %s" % n_det)
+        for k in range(n_det):
+            i = k // 6 + 1
+            j = k % 6 + 1
+            name = "%d-%d" % (i, j)
+            detector_names.append(name)
 
     wcs_list = [WCS(sci.header) for sci in sci_list]
 

@@ -337,12 +337,10 @@ class VisExposureAstropyFITS(VisExposure):
             raise ValueError(f"File has an unexpected number of HDUs: {len(self._det_hdul)}")
 
         # decide if it is CCD-based or quadrant-based
-        if self.n_detectors == 36:
-            self.quadrant_based = False
-        elif self.n_detectors == 144:
+        if "QUADID" in self._det_hdul:
             self.quadrant_based = True
         else:
-            raise ValueError(f"File has an unexpected number of HDUs: {len(self._det_hdul)}")
+            self.quadrant_based = False
 
         self.sci_hdus = [hdu for hdu in self._det_hdul[offset::3]]
 
@@ -464,20 +462,18 @@ class VisExposureFitsIO(VisExposure):
         if offset == 2:
             raise ValueError("File has an unexpected number of HDUs")
 
-        if self.n_detectors == 36:
-            self.quadrant_based = False
-        elif self.n_detectors == 144:
+        if "QUADID" in self._det_hdul:
             self.quadrant_based = True
         else:
-            raise ValueError(f"File has an unexpected number of HDUs: {len(self._det_hdul)}")
+            self.quadrant_based = False
 
         self.sci_hdus = [hdu for hdu in self._det_hdul[offset::3]]
 
         if load_rms:
-            self.rms_hdus = [hdu for hdu in self._det_hdul[(offset + 1)::3]]
+            self.rms_hdus = [hdu for hdu in self._det_hdul[(offset + 1) :: 3]]
 
         if load_flg:
-            self.flg_hdus = [hdu for hdu in self._det_hdul[(offset + 2)::3]]
+            self.flg_hdus = [hdu for hdu in self._det_hdul[(offset + 2) :: 3]]
 
         if self._bkg_hdul:
             offset = len(self._bkg_hdul) - self.n_detectors
@@ -555,12 +551,10 @@ class VisExposureHDF5(VisExposure):
 
         self.n_detectors = len(self.det_list)
 
-        if self.n_detectors == 36:
-            self.quadrant_based = False
-        elif self.n_detectors == 144:
+        if "1-1.E" in self.det_list:
             self.quadrant_based = True
         else:
-            raise ValueError(f"File has an unexpected number of HDUs: {len(self._det_hdul)}")
+            self.quadrant_based = False
 
         self.dpd = dpd
 

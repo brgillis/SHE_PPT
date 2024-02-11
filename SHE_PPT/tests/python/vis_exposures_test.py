@@ -141,3 +141,149 @@ class Testvis_exposures(object):
         # check invalid method
         with pytest.raises(ValueError):
             exps = read_vis_data(vis_prods=vis_prods, seg_prods=seg_prods, workdir=workdir, method="invalid method")
+
+
+class Testvis_exposures_CCD(object):
+    def testExposures(self, workdir, input_fits_ccd, input_hdf5_ccd, num_detectors_ccd):
+        """Tests the Exposure classes"""
+
+        # Get the filenames of the FITS/HDF5 input files
+
+        det, wgt, bkg, _, _, seg = input_fits_ccd
+
+        hdf5_file = os.path.join(workdir, "data", input_hdf5_ccd)
+
+        det_file = os.path.join(workdir, "data", det)
+        wgt_file = os.path.join(workdir, "data", wgt)
+        bkg_file = os.path.join(workdir, "data", bkg)
+        seg_file = os.path.join(workdir, "data", seg)
+
+        # make the VisExposure objects (one per IO method)
+
+        exp_astropy = VisExposureAstropyFITS(det_file, bkg_file, wgt_file, seg_file)
+        verify_exposure(exp_astropy)
+
+        exp_fitsio = VisExposureFitsIO(det_file, bkg_file, wgt_file, seg_file)
+        verify_exposure(exp_fitsio)
+
+        exp_hdf5 = VisExposureHDF5(hdf5_file)
+        verify_exposure(exp_hdf5)
+
+        assert (
+            len(exp_hdf5) == len(exp_astropy) == len(exp_fitsio)
+        ), "astropy, fitsio and HDF5 VisExposure objects have different number of detectors"
+
+        # make sure the detectors for all 3 objects are the same
+
+        for i in range(num_detectors_ccd):
+            det_astropy = exp_astropy[i]
+            det_fitsio = exp_fitsio[i]
+            det_hdf5 = exp_hdf5[i]
+
+            assert det_astropy == det_fitsio
+            assert det_astropy == det_hdf5
+
+    def test_read_vis_data(self, workdir, input_products_ccd, hdf5_listfile_ccd):
+        vis_listfile, _, _, seg_listfile, _ = input_products_ccd
+
+        # Read listfiles
+        with open(os.path.join(workdir, vis_listfile)) as fs:
+            vis_prods = json.load(fs)
+        with open(os.path.join(workdir, seg_listfile)) as fs:
+            seg_prods = json.load(fs)
+        with open(os.path.join(workdir, hdf5_listfile_ccd)) as fs:
+            hdf5_files = json.load(fs)
+
+        # check astropy
+        exps = read_vis_data(vis_prods=vis_prods, seg_prods=seg_prods, workdir=workdir, method="astropy")
+        for exp in exps:
+            assert type(exp) is VisExposureAstropyFITS
+
+        # check fitsio
+        exps = read_vis_data(vis_prods=vis_prods, seg_prods=seg_prods, workdir=workdir, method="fitsio")
+        for exp in exps:
+            assert type(exp) is VisExposureFitsIO
+
+        # check hdf5
+        exps = read_vis_data(
+            vis_prods=vis_prods, seg_prods=seg_prods, workdir=workdir, method="hdf5", hdf5_files=hdf5_files
+        )
+        for exp in exps:
+            assert type(exp) is VisExposureHDF5
+
+        # check invalid method
+        with pytest.raises(ValueError):
+            exps = read_vis_data(vis_prods=vis_prods, seg_prods=seg_prods, workdir=workdir, method="invalid method")
+
+
+class Testvis_exposures_quadrant(object):
+    def testExposures(self, workdir, input_fits_quadrant, input_hdf5_quadrant, num_detectors_quadrant):
+        """Tests the Exposure classes"""
+
+        # Get the filenames of the FITS/HDF5 input files
+
+        det, wgt, bkg, _, _, seg = input_fits_quadrant
+
+        hdf5_file = os.path.join(workdir, "data", input_hdf5_quadrant)
+
+        det_file = os.path.join(workdir, "data", det)
+        wgt_file = os.path.join(workdir, "data", wgt)
+        bkg_file = os.path.join(workdir, "data", bkg)
+        seg_file = os.path.join(workdir, "data", seg)
+
+        # make the VisExposure objects (one per IO method)
+
+        exp_astropy = VisExposureAstropyFITS(det_file, bkg_file, wgt_file, seg_file)
+        verify_exposure(exp_astropy)
+
+        exp_fitsio = VisExposureFitsIO(det_file, bkg_file, wgt_file, seg_file)
+        verify_exposure(exp_fitsio)
+
+        exp_hdf5 = VisExposureHDF5(hdf5_file)
+        verify_exposure(exp_hdf5)
+
+        assert (
+            len(exp_hdf5) == len(exp_astropy) == len(exp_fitsio)
+        ), "astropy, fitsio and HDF5 VisExposure objects have different number of detectors"
+
+        # make sure the detectors for all 3 objects are the same
+
+        for i in range(num_detectors_quadrant):
+            det_astropy = exp_astropy[i]
+            det_fitsio = exp_fitsio[i]
+            det_hdf5 = exp_hdf5[i]
+
+            assert det_astropy == det_fitsio
+            assert det_astropy == det_hdf5
+
+    def test_read_vis_data(self, workdir, input_products_quadrant, hdf5_listfile_quadrant):
+        vis_listfile, _, _, seg_listfile, _ = input_products_quadrant
+
+        # Read listfiles
+        with open(os.path.join(workdir, vis_listfile)) as fs:
+            vis_prods = json.load(fs)
+        with open(os.path.join(workdir, seg_listfile)) as fs:
+            seg_prods = json.load(fs)
+        with open(os.path.join(workdir, hdf5_listfile_quadrant)) as fs:
+            hdf5_files = json.load(fs)
+
+        # check astropy
+        exps = read_vis_data(vis_prods=vis_prods, seg_prods=seg_prods, workdir=workdir, method="astropy")
+        for exp in exps:
+            assert type(exp) is VisExposureAstropyFITS
+
+        # check fitsio
+        exps = read_vis_data(vis_prods=vis_prods, seg_prods=seg_prods, workdir=workdir, method="fitsio")
+        for exp in exps:
+            assert type(exp) is VisExposureFitsIO
+
+        # check hdf5
+        exps = read_vis_data(
+            vis_prods=vis_prods, seg_prods=seg_prods, workdir=workdir, method="hdf5", hdf5_files=hdf5_files
+        )
+        for exp in exps:
+            assert type(exp) is VisExposureHDF5
+
+        # check invalid method
+        with pytest.raises(ValueError):
+            exps = read_vis_data(vis_prods=vis_prods, seg_prods=seg_prods, workdir=workdir, method="invalid method")
