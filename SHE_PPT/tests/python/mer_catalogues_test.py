@@ -100,3 +100,141 @@ class TestMerCatalogues(object):
 
         with pytest.raises(ValueError):
             pruned_cat, dpds = prune_mer_catalogue(mer_cat, unique_objs)
+
+
+class TestMerCataloguesCCD(object):
+    def test_read_mer_final_catalog_listfile(self, workdir, input_products_ccd, num_objects_ccd):
+        """Tests read_mer_final_catalogue when reading a listfile of MER catalogue products"""
+
+        _, mer_listfile, _, _, object_id_prod = input_products_ccd
+
+        # test with no object_id_list product
+        mer_cat, prods = read_mer_final_catalogue(mer_listfile, workdir)
+        assert len(mer_cat) == num_objects_ccd, "Read in MER catalogue is the wrong size"
+
+        # test with object_id_list product provided
+        mer_cat_obj_prod, prods = read_mer_final_catalogue(mer_listfile, workdir, object_id_prod)
+        assert len(mer_cat_obj_prod) == num_objects_ccd, "Read in MER catalogue is the wrong size"
+
+        # both output catalogues should be the same
+        assert (mer_cat == mer_cat_obj_prod).all()
+
+    def test_read_mer_final_catalog_product(self, workdir, input_products_ccd, num_objects_ccd):
+        """Tests read_mer_final_catalogue when reading a MER catalogue product directly"""
+
+        _, mer_listfile, _, _, object_id_prod = input_products_ccd
+
+        with open(os.path.join(workdir, mer_listfile)) as f:
+            (mer_prod,) = json.load(f)
+
+        # test with no object_id_list product
+        mer_cat, prods = read_mer_final_catalogue(mer_prod, workdir)
+        assert len(mer_cat) == num_objects_ccd, "Read in MER catalogue is the wrong size"
+
+        # test with object_id_list product provided
+        mer_cat_obj_prod, prods = read_mer_final_catalogue(mer_prod, workdir, object_id_prod)
+        assert len(mer_cat_obj_prod) == num_objects_ccd, "Read in MER catalogue is the wrong size"
+
+        # both output catalogues should be the same
+        assert (mer_cat == mer_cat_obj_prod).all()
+
+    def test_prune_mer_catalog(self, workdir, input_products_ccd):
+        """Tests pruning a MER catalogue with an object list"""
+        _, mer_listfile, _, _, _ = input_products_ccd
+
+        mer_cat, prods = read_mer_final_catalogue(mer_listfile, workdir)
+
+        all_objs = list(mer_cat["OBJECT_ID"])
+
+        # pass in the same object list, assert the output catalogue is the same
+        pruned_cat = prune_mer_catalogue(mer_cat, all_objs)
+        assert (pruned_cat == mer_cat).all(), "Pruned and original catalogues should match"
+
+        # use only one object from the table
+        pruned_cat = prune_mer_catalogue(mer_cat, [all_objs[0]])
+        assert len(pruned_cat) == 1, "Pruned catalogue should only have one row in it"
+        assert pruned_cat["OBJECT_ID"] == [
+            all_objs[0]
+        ], "Object remaining in pruned catalogue does not match the expected one"
+
+        # make sure an exception is thrown if we pass in a list of objects, none of which are in the catalogue to prune
+        unique_objs = []
+        i = 0
+        max_i = 5
+        while i < max_i:
+            obj = np.random.randint(2**32)
+            if obj not in all_objs:
+                unique_objs.append(obj)
+                i += 1
+
+        with pytest.raises(ValueError):
+            pruned_cat, dpds = prune_mer_catalogue(mer_cat, unique_objs)
+
+
+class TestMerCataloguesQuadrant(object):
+    def test_read_mer_final_catalog_listfile(self, workdir, input_products_quadrant, num_objects_quadrant):
+        """Tests read_mer_final_catalogue when reading a listfile of MER catalogue products"""
+
+        _, mer_listfile, _, _, object_id_prod = input_products_quadrant
+
+        # test with no object_id_list product
+        mer_cat, prods = read_mer_final_catalogue(mer_listfile, workdir)
+        assert len(mer_cat) == num_objects_quadrant, "Read in MER catalogue is the wrong size"
+
+        # test with object_id_list product provided
+        mer_cat_obj_prod, prods = read_mer_final_catalogue(mer_listfile, workdir, object_id_prod)
+        assert len(mer_cat_obj_prod) == num_objects_quadrant, "Read in MER catalogue is the wrong size"
+
+        # both output catalogues should be the same
+        assert (mer_cat == mer_cat_obj_prod).all()
+
+    def test_read_mer_final_catalog_product(self, workdir, input_products_quadrant, num_objects_quadrant):
+        """Tests read_mer_final_catalogue when reading a MER catalogue product directly"""
+
+        _, mer_listfile, _, _, object_id_prod = input_products_quadrant
+
+        with open(os.path.join(workdir, mer_listfile)) as f:
+            (mer_prod,) = json.load(f)
+
+        # test with no object_id_list product
+        mer_cat, prods = read_mer_final_catalogue(mer_prod, workdir)
+        assert len(mer_cat) == num_objects_quadrant, "Read in MER catalogue is the wrong size"
+
+        # test with object_id_list product provided
+        mer_cat_obj_prod, prods = read_mer_final_catalogue(mer_prod, workdir, object_id_prod)
+        assert len(mer_cat_obj_prod) == num_objects_quadrant, "Read in MER catalogue is the wrong size"
+
+        # both output catalogues should be the same
+        assert (mer_cat == mer_cat_obj_prod).all()
+
+    def test_prune_mer_catalog(self, workdir, input_products_quadrant):
+        """Tests pruning a MER catalogue with an object list"""
+        _, mer_listfile, _, _, _ = input_products_quadrant
+
+        mer_cat, prods = read_mer_final_catalogue(mer_listfile, workdir)
+
+        all_objs = list(mer_cat["OBJECT_ID"])
+
+        # pass in the same object list, assert the output catalogue is the same
+        pruned_cat = prune_mer_catalogue(mer_cat, all_objs)
+        assert (pruned_cat == mer_cat).all(), "Pruned and original catalogues should match"
+
+        # use only one object from the table
+        pruned_cat = prune_mer_catalogue(mer_cat, [all_objs[0]])
+        assert len(pruned_cat) == 1, "Pruned catalogue should only have one row in it"
+        assert pruned_cat["OBJECT_ID"] == [
+            all_objs[0]
+        ], "Object remaining in pruned catalogue does not match the expected one"
+
+        # make sure an exception is thrown if we pass in a list of objects, none of which are in the catalogue to prune
+        unique_objs = []
+        i = 0
+        max_i = 5
+        while i < max_i:
+            obj = np.random.randint(2**32)
+            if obj not in all_objs:
+                unique_objs.append(obj)
+                i += 1
+
+        with pytest.raises(ValueError):
+            pruned_cat, dpds = prune_mer_catalogue(mer_cat, unique_objs)

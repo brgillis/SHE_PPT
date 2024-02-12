@@ -153,7 +153,7 @@ class TestMockData(SheTestCase):
         model_fits = dpd.get_data_filename()
         assert os.path.exists(os.path.join(workdir, model_fits))
 
-    def test_mer_segmentation_map_ccd(self, num_detectors, num_objects_per_detector, num_objects):
+    def test_mer_segmentation_map_ccd(self, num_detectors, num_objects_per_detector, num_objects_ccd):
 
         workdir = self.workdir
         detector_shape = (100, 100)
@@ -167,11 +167,11 @@ class TestMockData(SheTestCase):
         ymax = ny - objsize * masksize
 
         # set up the inputs
-        object_ids = [i + 1 for i in range(num_objects)]
+        object_ids = [i + 1 for i in range(num_objects_ccd)]
 
-        pixel_coords = [(rng.uniform(xmin, xmax), rng.uniform(ymin, ymax)) for i in range(num_objects)]
+        pixel_coords = [(rng.uniform(xmin, xmax), rng.uniform(ymin, ymax)) for i in range(num_objects_ccd)]
 
-        detectors = [i // num_objects_per_detector for i in range(num_objects)]
+        detectors = [i // num_objects_per_detector for i in range(num_objects_ccd)]
 
         wcs_list = [WCS() for i in range(num_detectors)]
 
@@ -210,7 +210,7 @@ class TestMockData(SheTestCase):
                         data[int(y), int(x)] == object_ids[i]
                     ), "Segmentation map has the wrong value at the object's location"
 
-    def test_mer_segmentation_map_quadrant(self, num_detectors, num_objects_per_detector, num_objects):
+    def test_mer_segmentation_map_quadrant(self, num_detectors, num_objects_per_detector, num_objects_quadrant):
 
         workdir = self.workdir
         detector_shape = (100, 100)
@@ -224,11 +224,11 @@ class TestMockData(SheTestCase):
         ymax = ny - objsize * masksize
 
         # set up the inputs
-        object_ids = [i + 1 for i in range(num_objects)]
+        object_ids = [i + 1 for i in range(num_objects_quadrant)]
 
-        pixel_coords = [(rng.uniform(xmin, xmax), rng.uniform(ymin, ymax)) for i in range(num_objects)]
+        pixel_coords = [(rng.uniform(xmin, xmax), rng.uniform(ymin, ymax)) for i in range(num_objects_quadrant)]
 
-        detectors = [i // num_objects_per_detector for i in range(num_objects)]
+        detectors = [i // num_objects_per_detector for i in range(num_objects_quadrant)]
 
         wcs_list = [WCS() for i in range(num_detectors)]
 

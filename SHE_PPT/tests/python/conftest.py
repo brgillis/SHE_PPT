@@ -88,12 +88,27 @@ def num_objects():
 
 
 @pytest.fixture
+def num_objects_ccd():
+    return NUM_OBJECTS_PER_DETECTOR * NUM_DETECTORS_CCD
+
+
+@pytest.fixture
+def num_objects_quadrant():
+    return NUM_OBJECTS_PER_DETECTOR * NUM_DETECTORS_QUADRANT
+
+
+@pytest.fixture
 def objsize():
     return OBJSIZE
 
 
 @pytest.fixture
-def input_products(num_detectors, workdir, num_objects_per_detector, objsize):
+def num_exposures():
+    return NUM_EXP
+
+
+@pytest.fixture
+def input_products(num_detectors, workdir, num_objects_per_detector, objsize, num_exposures):
     """Creates the data products/listfiles needed as an input to the various executables"""
     exposure_product, sky_coords, pixel_coords, detectors, wcs_list = generate_mock_vis_images.create_exposure(
         n_detectors=num_detectors, workdir=workdir, n_objs_per_det=num_objects_per_detector, objsize=objsize, seed=2
@@ -108,10 +123,10 @@ def input_products(num_detectors, workdir, num_objects_per_detector, objsize):
     )
 
     # create the contents of the listfiles for the vis and mer products
-    exposure_list = [exposure_product for i in range(NUM_EXP)]
+    exposure_list = [exposure_product for i in range(num_exposures)]
     catalogue_list = [catalogue_product]
-    psf_list = [psf_product for i in range(NUM_EXP)]
-    seg_map_list = [seg_map_product for i in range(NUM_EXP)]
+    psf_list = [psf_product for i in range(num_exposures)]
+    seg_map_list = [seg_map_product for i in range(num_exposures)]
 
     # write them to disk
     data_images = os.path.join(workdir, "data_images.json")
@@ -182,7 +197,7 @@ def input_hdf5(workdir, input_fits):
 
 
 @pytest.fixture
-def hdf5_listfile(workdir, input_hdf5):
+def hdf5_listfile(workdir, input_hdf5, num_exposures):
     """Returns the listfile containing the HDF5 files"""
 
     listfile_filename = FileNameProvider().get_allowed_filename(
@@ -193,13 +208,13 @@ def hdf5_listfile(workdir, input_hdf5):
         processing_function="SHE",
     )
 
-    write_listfile(os.path.join(workdir, listfile_filename), [input_hdf5] * NUM_EXP)
+    write_listfile(os.path.join(workdir, listfile_filename), [input_hdf5] * num_exposures)
 
     return listfile_filename
 
 
 @pytest.fixture
-def input_products_ccd(num_detectors_ccd, workdir, num_objects_per_detector, objsize):
+def input_products_ccd(num_detectors_ccd, workdir, num_objects_per_detector, objsize, num_exposures):
     """Creates the data products/listfiles needed as an input to the various executables"""
     exposure_product, sky_coords, pixel_coords, detectors, wcs_list = generate_mock_vis_images.create_exposure(
         n_detectors=num_detectors_ccd, workdir=workdir, n_objs_per_det=num_objects_per_detector, objsize=objsize, seed=2
@@ -214,10 +229,10 @@ def input_products_ccd(num_detectors_ccd, workdir, num_objects_per_detector, obj
     )
 
     # create the contents of the listfiles for the vis and mer products
-    exposure_list = [exposure_product for i in range(NUM_EXP)]
+    exposure_list = [exposure_product for i in range(num_exposures)]
     catalogue_list = [catalogue_product]
-    psf_list = [psf_product for i in range(NUM_EXP)]
-    seg_map_list = [seg_map_product for i in range(NUM_EXP)]
+    psf_list = [psf_product for i in range(num_exposures)]
+    seg_map_list = [seg_map_product for i in range(num_exposures)]
 
     # write them to disk
     data_images = os.path.join(workdir, "data_images.json")
@@ -288,7 +303,7 @@ def input_hdf5_ccd(workdir, input_fits_ccd):
 
 
 @pytest.fixture
-def hdf5_listfile_ccd(workdir, input_hdf5_ccd):
+def hdf5_listfile_ccd(workdir, input_hdf5_ccd, num_exposures):
     """Returns the listfile containing the HDF5 files"""
 
     listfile_filename = FileNameProvider().get_allowed_filename(
@@ -299,13 +314,13 @@ def hdf5_listfile_ccd(workdir, input_hdf5_ccd):
         processing_function="SHE",
     )
 
-    write_listfile(os.path.join(workdir, listfile_filename), [input_hdf5_ccd] * NUM_EXP)
+    write_listfile(os.path.join(workdir, listfile_filename), [input_hdf5_ccd] * num_exposures)
 
     return listfile_filename
 
 
 @pytest.fixture
-def input_products_quadrant(num_detectors_quadrant, workdir, num_objects_per_detector, objsize):
+def input_products_quadrant(num_detectors_quadrant, workdir, num_objects_per_detector, objsize, num_exposures):
     """Creates the data products/listfiles needed as an input to the various executables"""
     exposure_product, sky_coords, pixel_coords, detectors, wcs_list = generate_mock_vis_images.create_exposure(
         n_detectors=num_detectors_quadrant,
@@ -324,10 +339,10 @@ def input_products_quadrant(num_detectors_quadrant, workdir, num_objects_per_det
     )
 
     # create the contents of the listfiles for the vis and mer products
-    exposure_list = [exposure_product for i in range(NUM_EXP)]
+    exposure_list = [exposure_product for i in range(num_exposures)]
     catalogue_list = [catalogue_product]
-    psf_list = [psf_product for i in range(NUM_EXP)]
-    seg_map_list = [seg_map_product for i in range(NUM_EXP)]
+    psf_list = [psf_product for i in range(num_exposures)]
+    seg_map_list = [seg_map_product for i in range(num_exposures)]
 
     # write them to disk
     data_images = os.path.join(workdir, "data_images.json")

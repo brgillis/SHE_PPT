@@ -97,14 +97,65 @@ class Testpsf_model_images(object):
         validate_psf_model_image(PSFModelImageFITS(psf_fits))
         validate_psf_model_image(PSFModelImageHDF5(psf_h5))
 
-    def test_read_psf_model_images(self, workdir, input_products):
+    def test_read_psf_model_images(self, workdir, input_products, num_exposures):
         _, _, psf_listfile, _, _ = input_products
+
         with open(os.path.join(workdir, psf_listfile)) as fs:
             psf_prods = json.load(fs)
+            print(psf_prods)
 
         psfs = read_psf_model_images(psf_prods, workdir)
 
         assert psfs is not None, "Returned PSF object list is None"
+
+        assert (
+            len(psf_prods) == num_exposures
+        ), "length of psf_listfile (%d) does not match the number of objects (%d)" % (
+            len(psf_prods),
+            num_exposures,
+        )
+
+        for psf in psfs:
+            assert issubclass(type(psf), PSFModelImage), "Returned PSF object does not seem to be the correct type"
+
+    def test_read_psf_model_images_ccd(self, workdir, input_products_ccd, num_exposures):
+        _, _, psf_listfile, _, _ = input_products_ccd
+
+        with open(os.path.join(workdir, psf_listfile)) as fs:
+            psf_prods = json.load(fs)
+            print(psf_prods)
+
+        psfs = read_psf_model_images(psf_prods, workdir)
+
+        assert psfs is not None, "Returned PSF object list is None"
+
+        assert (
+            len(psf_prods) == num_exposures
+        ), "length of psf_listfile (%d) does not match the number of objects (%d)" % (
+            len(psf_prods),
+            num_exposures,
+        )
+
+        for psf in psfs:
+            assert issubclass(type(psf), PSFModelImage), "Returned PSF object does not seem to be the correct type"
+
+    def test_read_psf_model_images_quadrant(self, workdir, input_products_quadrant, num_exposures):
+        _, _, psf_listfile, _, _ = input_products_quadrant
+
+        with open(os.path.join(workdir, psf_listfile)) as fs:
+            psf_prods = json.load(fs)
+            print(psf_prods)
+
+        psfs = read_psf_model_images(psf_prods, workdir)
+
+        assert psfs is not None, "Returned PSF object list is None"
+
+        assert (
+            len(psf_prods) == num_exposures
+        ), "length of psf_listfile (%d) does not match the number of objects (%d)" % (
+            len(psf_prods),
+            num_exposures,
+        )
 
         for psf in psfs:
             assert issubclass(type(psf), PSFModelImage), "Returned PSF object does not seem to be the correct type"
