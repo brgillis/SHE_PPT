@@ -337,7 +337,7 @@ class VisExposureAstropyFITS(VisExposure):
             raise ValueError(f"File has an unexpected number of HDUs: {len(self._det_hdul)}")
 
         # decide if it is CCD-based or quadrant-based
-        if "QUADID" in self._det_hdul:
+        if "QUADID" in self._det_hdul[1].header:
             self.quadrant_based = True
         else:
             self.quadrant_based = False
@@ -462,7 +462,7 @@ class VisExposureFitsIO(VisExposure):
         if offset == 2:
             raise ValueError("File has an unexpected number of HDUs")
 
-        if "QUADID" in self._det_hdul:
+        if "QUADID" in self._det_hdul[1].read_header():
             self.quadrant_based = True
         else:
             self.quadrant_based = False
