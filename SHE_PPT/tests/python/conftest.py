@@ -111,7 +111,12 @@ def num_exposures():
 def input_products(num_detectors, workdir, num_objects_per_detector, objsize, num_exposures):
     """Creates the data products/listfiles needed as an input to the various executables"""
     exposure_product, sky_coords, pixel_coords, detectors, wcs_list = generate_mock_vis_images.create_exposure(
-        n_detectors=num_detectors, workdir=workdir, n_objs_per_det=num_objects_per_detector, objsize=objsize, seed=2
+        n_detectors=num_detectors,
+        workdir=workdir,
+        n_objs_per_det=num_objects_per_detector,
+        objsize=objsize,
+        seed=2,
+        use_quadrant=False,
     )
     catalogue_product, object_ids = generate_mock_mer_catalogues.create_catalogue(
         obj_coords=sky_coords, workdir=workdir
@@ -217,7 +222,12 @@ def hdf5_listfile(workdir, input_hdf5, num_exposures):
 def input_products_ccd(num_detectors_ccd, workdir, num_objects_per_detector, objsize, num_exposures):
     """Creates the data products/listfiles needed as an input to the various executables"""
     exposure_product, sky_coords, pixel_coords, detectors, wcs_list = generate_mock_vis_images.create_exposure(
-        n_detectors=num_detectors_ccd, workdir=workdir, n_objs_per_det=num_objects_per_detector, objsize=objsize, seed=2
+        n_detectors=num_detectors_ccd,
+        workdir=workdir,
+        n_objs_per_det=num_objects_per_detector,
+        objsize=objsize,
+        seed=2,
+        use_quadrant=False,
     )
     catalogue_product, object_ids = generate_mock_mer_catalogues.create_catalogue(
         obj_coords=sky_coords, workdir=workdir

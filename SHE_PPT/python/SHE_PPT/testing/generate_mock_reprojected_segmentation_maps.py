@@ -167,11 +167,14 @@ def create_reprojected_segmentation_map(
             det_j = (det // 4) % 6 + 1
             det_k = det % 4
             det_sk = {0: "E", 1: "F", 2: "G", 3: "H"}[det_k]
-            det_id = "%d-%d.%s" % (det_i, det_j, det_sk)
+            det_id = "%d-%d" % (det_i, det_j)
+            quad_id = "%s" % (det_sk)
+            _detector_name = det_id + "." + quad_id
         else:
             det_i = det // 6 + 1
             det_j = det % 6 + 1
             det_id = "%d-%d" % (det_i, det_j)
+            _detector_name = det_id
 
         # create the seg map for the detector from the objects in that detector
         inds = np.where(detectors == det)
@@ -181,7 +184,7 @@ def create_reprojected_segmentation_map(
 
         # create the HDU and append it to the HDUlist
         header = wcs_list[det].to_header()
-        img_hdu = fits.ImageHDU(data=img, header=header, name="CCDID %s.SEG" % det_id)
+        img_hdu = fits.ImageHDU(data=img, header=header, name="%s.SEG" % _detector_name)
         hdul.append(img_hdu)
 
     fits_filename = get_allowed_filename("EXP-RPJ-SEG", "00", version=ppt_version, extension=".fits")
