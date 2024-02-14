@@ -51,6 +51,7 @@ logger = log.getLogger(__name__)
 
 QUADRANT_DICT = {0: "E", 1: "F", 2: "G", 3: "H", "E": 0, "F": 1, "G": 2, "H": 3}
 
+
 def read_vis_data(vis_prods, seg_prods=None, workdir=".", method="astropy", hdf5_files=None):
     """
     Reads a list of DpdVisCalibratedFrame (and optionally dpdSheExposureReprojectedSegmentationMap),
@@ -346,10 +347,10 @@ class VisExposureAstropyFITS(VisExposure):
         self.sci_hdus = [hdu for hdu in self._det_hdul[offset::3]]
 
         if load_rms:
-            self.rms_hdus = [hdu for hdu in self._det_hdul[(offset + 1) :: 3]]
+            self.rms_hdus = [hdu for hdu in self._det_hdul[(offset + 1)::3]]
 
         if load_flg:
-            self.flg_hdus = [hdu for hdu in self._det_hdul[(offset + 2) :: 3]]
+            self.flg_hdus = [hdu for hdu in self._det_hdul[(offset + 2)::3]]
 
         if self._bkg_hdul:
             offset = len(self._bkg_hdul) - self.n_detectors
@@ -471,10 +472,10 @@ class VisExposureFitsIO(VisExposure):
         self.sci_hdus = [hdu for hdu in self._det_hdul[offset::3]]
 
         if load_rms:
-            self.rms_hdus = [hdu for hdu in self._det_hdul[(offset + 1) :: 3]]
+            self.rms_hdus = [hdu for hdu in self._det_hdul[(offset + 1)::3]]
 
         if load_flg:
-            self.flg_hdus = [hdu for hdu in self._det_hdul[(offset + 2) :: 3]]
+            self.flg_hdus = [hdu for hdu in self._det_hdul[(offset + 2)::3]]
 
         if self._bkg_hdul:
             offset = len(self._bkg_hdul) - self.n_detectors
