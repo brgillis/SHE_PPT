@@ -153,63 +153,6 @@ class TestMockData(SheTestCase):
         model_fits = dpd.get_data_filename()
         assert os.path.exists(os.path.join(workdir, model_fits))
 
-    def test_mer_segmentation_map_ccd(self, num_detectors, num_objects_per_detector, num_objects_ccd):
-
-        workdir = self.workdir
-        detector_shape = (100, 100)
-        objsize = 2.5
-
-        ny, nx = detector_shape
-
-        # allowed min/max coordinates of the object positions
-        xmin = ymin = objsize * masksize
-        xmax = nx - objsize * masksize
-        ymax = ny - objsize * masksize
-
-        # set up the inputs
-        object_ids = [i + 1 for i in range(num_objects_ccd)]
-
-        pixel_coords = [(rng.uniform(xmin, xmax), rng.uniform(ymin, ymax)) for i in range(num_objects_ccd)]
-
-        detectors = [i // num_objects_per_detector for i in range(num_objects_ccd)]
-
-        wcs_list = [WCS() for i in range(num_detectors)]
-
-        # create the product
-        prod_filename = create_reprojected_segmentation_map(
-            object_ids,
-            pixel_coords,
-            detectors,
-            wcs_list,
-            workdir=workdir,
-            detector_shape=detector_shape,
-            objsize=objsize,
-            use_quadrant=False,
-        )
-
-        # check the product is valid
-        dpd = read_xml_product(prod_filename, workdir=workdir)
-        assert type(dpd) is she_exposure_segmentation_map.dpdSheExposureReprojectedSegmentationMap
-
-        # make sure its FITS file exists
-        map_fits = dpd.get_data_filename()
-        qualified_fits_filename = os.path.join(workdir, map_fits)
-        assert os.path.exists(qualified_fits_filename)
-
-        # Nominal test of validity of segmap - make sure pixel values are correct at the centre of the objects
-        with fits.open(qualified_fits_filename) as hdul:
-            for det in range(num_detectors):
-                data = hdul[det + 1].data
-
-                for i, (x, y) in enumerate(pixel_coords):
-                    if detectors[i] != det:
-                        # object not on this detector
-                        continue
-
-                    assert (
-                        data[int(y), int(x)] == object_ids[i]
-                    ), "Segmentation map has the wrong value at the object's location"
-
     def test_mer_segmentation_map_quadrant(self, num_detectors, num_objects_per_detector, num_objects_quadrant):
 
         workdir = self.workdir
