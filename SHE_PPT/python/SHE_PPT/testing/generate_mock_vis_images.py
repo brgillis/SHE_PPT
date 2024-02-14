@@ -191,7 +191,8 @@ def create_exposure(
 
     if n_detectors < 1 or n_detectors > n_detector_max:
         raise ValueError(
-            "Number of detectors seems to be %d. The only valid numbers are between 1 and 144 inclusive." % n_detectors
+            "Number of detectors seems to be %d. The only valid numbers are between 1 and %d inclusive."
+            % (n_detectors, n_detector_max),
         )
 
     obj_rng = np.random.RandomState(seed=seed)
