@@ -108,7 +108,7 @@ def __generate_detector_images(
         y_px.append(y + stampsize / 2)
 
         # add the blob to the image
-        sci[y : y + stampsize, x : x + stampsize] += snr * np.sqrt(background) * blob
+        sci[y:y + stampsize, x:x + stampsize] += snr * np.sqrt(background) * blob
 
     # generate rms image (standard deviation of the image in this case)
     rms_val = np.std(sci)
@@ -184,7 +184,12 @@ def create_exposure(
     # pixelsize = 0.1"
     PIXELSIZE = 1.0 / 3600 / 10.0
 
-    if n_detectors < 1 or n_detectors > 144:
+    if use_quadrant:
+        n_detector_max = 144
+    else:
+        n_detector_max = 36
+
+    if n_detectors < 1 or n_detectors > n_detector_max:
         raise ValueError(
             "Number of detectors seems to be %d. The only valid numbers are between 1 and 144 inclusive." % n_detectors
         )
@@ -266,9 +271,7 @@ def create_exposure(
                 wcs=wcs, EXPTIME=500.0, GAIN=3.0, RDNOISE=3.0, MAGZEROP=25.0, CCDID=det_id, QUADID=quad_id
             )
         else:
-            det_hdr = __create_header(
-                wcs=wcs, EXPTIME=500.0, GAIN=3.0, RDNOISE=3.0, MAGZEROP=25.0, CCDID=det_id
-            )
+            det_hdr = __create_header(wcs=wcs, EXPTIME=500.0, GAIN=3.0, RDNOISE=3.0, MAGZEROP=25.0, CCDID=det_id)
 
         # create hdus for the DET file and append them to the HDUlist
         sci_hdu = fits.ImageHDU(data=sci, header=det_hdr, name="%s.SCI" % _detector_name)

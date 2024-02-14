@@ -147,7 +147,12 @@ def create_reprojected_segmentation_map(
     """
     n_detectors = len(wcs_list)
 
-    if n_detectors < 1 or n_detectors > 144:
+    if use_quadrant:
+        n_detector_max = 144
+    else:
+        n_detector_max = 36
+
+    if n_detectors < 1 or n_detectors > n_detector_max:
         raise ValueError(
             "Number of detectors seems to be %d. The only valid numbers are between 1 and 144 inclusive." % n_detectors
         )
