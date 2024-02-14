@@ -49,6 +49,7 @@ from .profiling import io_stats
 
 logger = log.getLogger(__name__)
 
+QUADRANT_DICT = {0: "E", 1: "F", 2: "G", 3: "H", "E": 0, "F": 1, "G": 2, "H": 3}
 
 def read_vis_data(vis_prods, seg_prods=None, workdir=".", method="astropy", hdf5_files=None):
     """
@@ -258,14 +259,14 @@ class VisExposure(ABC):
             i = (det_num // 4) // 6 + 1
             j = (det_num // 4) % 6 + 1
             k = det_num % 4
-            sk = {0: "E", 1: "F", 2: "G", 3: "H"}[k]
+            sk = QUADRANT_DICT[k]
             det_id = "%d-%d.%s" % (i, j, sk)
         elif isinstance(det_name, str):
             det_id = det_name
             si, sj, sk = det_name.replace("-", ".").split(".")
             i = int(si) - 1
             j = int(sj) - 1
-            k = {"E": 0, "F": 1, "G": 2, "H": 3}[sk]
+            k = QUADRANT_DICT[sk]
             det_num = (6 * i + j) * 4 + k
         else:
             raise IndexError("Invalid detector name %s" % det_name)
