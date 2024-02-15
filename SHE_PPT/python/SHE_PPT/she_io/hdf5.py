@@ -95,11 +95,20 @@ def convert_to_hdf5(det_file, bkg_file, wgt_file, seg_file, output_filename, chu
     assert len(sci_list) == len(rms_list) == len(flg_list) == n_det
 
     detector_names = []
-    for k in range(n_det):
-        i = k % 6 + 1
-        j = k // 6 + 1
-        name = "%d-%d" % (j, i)
-        detector_names.append(name)
+    if "QUADID" in det_hdul[1].header:
+        for k in range(n_det):
+            i = (k // 4) // 6 + 1
+            j = (k // 4) % 6 + 1
+            q = k % 4
+            sq = {0: "E", 1: "F", 2: "G", 3: "H"}[q]
+            name = "%d-%d.%s" % (i, j, sq)
+            detector_names.append(name)
+    else:
+        for k in range(n_det):
+            i = k // 6 + 1
+            j = k % 6 + 1
+            name = "%d-%d" % (i, j)
+            detector_names.append(name)
 
     wcs_list = [WCS(sci.header) for sci in sci_list]
 
@@ -120,6 +129,7 @@ def convert_to_hdf5(det_file, bkg_file, wgt_file, seg_file, output_filename, chu
 
     logger.info("Set the detector, header and wcs list attributes")
 
+    logger.info(detector_names)
     # make the datasets
     for name, sci, rms, flg, wgt, bkg, seg, wcs in zip(
         detector_names, sci_list, rms_list, flg_list, wgt_list, bkg_list, seg_list, wcs_list

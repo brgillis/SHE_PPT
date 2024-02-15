@@ -18,10 +18,16 @@ Deprecated Features
 Bug Fixes
 ---------
 
+- Some minor pep8 fixes
+
 New Features
 ------------
 
 - Custom ArgumentParser argument type 'dir_path' that checks if the argument is a valid directory
+- Adapted to handle CCD- or quadrant-based FITS files automatically for all of Astropy, fitsio and hdf5
+- Modified conftest.py to generate mock data with a single-detector, 36-detector (CCD-based) and 144-detector (quadrant-based)
+- Expanded all tests using the fixture input_products to test on Quadrant-based inputs
+- Included the FITS header from the PrimaryHDU in a VisExposure object
 
 New config features
 -------------------

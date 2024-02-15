@@ -156,6 +156,7 @@ def create_exposure(
     objsize=10,
     pointing_id=1,
     obs_id=1,
+    use_quadrant=True,
 ):
     """
     Creates a mock dpdVisCalibratedFrame data product for use in smoke tests
@@ -183,9 +184,15 @@ def create_exposure(
     # pixelsize = 0.1"
     PIXELSIZE = 1.0 / 3600 / 10.0
 
-    if n_detectors < 1 or n_detectors > 36:
+    if use_quadrant:
+        n_detector_max = 144
+    else:
+        n_detector_max = 36
+
+    if n_detectors < 1 or n_detectors > n_detector_max:
         raise ValueError(
-            "Number of detectors seems to be %d. The only valid numbers are between 1 and 36 inclusive" % n_detectors
+            "Number of detectors seems to be %d. The only valid numbers are between 1 and %d inclusive."
+            % (n_detectors, n_detector_max),
         )
 
     obj_rng = np.random.RandomState(seed=seed)
@@ -193,15 +200,15 @@ def create_exposure(
 
     # create hdulists for the 3 fits files (DET, WGT, BKG)
     det_hdr = __create_header()
-    det_primary = fits.PrimaryHDU(det_hdr)
+    det_primary = fits.PrimaryHDU(data=None, header=det_hdr)
     det_hdul = fits.HDUList([det_primary])
 
     wgt_hdr = __create_header()
-    wgt_primary = fits.PrimaryHDU(wgt_hdr)
+    wgt_primary = fits.PrimaryHDU(data=None, header=wgt_hdr)
     wgt_hdul = fits.HDUList([wgt_primary])
 
     bkg_hdr = __create_header()
-    bkg_primary = fits.PrimaryHDU(bkg_hdr)
+    bkg_primary = fits.PrimaryHDU(data=None, header=bkg_hdr)
     bkg_hdul = fits.HDUList([bkg_primary])
 
     sky_coords = []
@@ -213,13 +220,23 @@ def create_exposure(
 
     # loop over all detectors in the exposure
     for det in range(n_detectors):
+        # get the detector's
+        if use_quadrant:
+            det_i = (det // 4) // 6 + 1
+            det_j = (det // 4) % 6 + 1
+            det_k = det % 4
+            det_sk = {0: "E", 1: "F", 2: "G", 3: "H"}[det_k]
+            det_id = "%d-%d" % (det_i, det_j)
+            quad_id = "%s" % (det_sk)
+            _detector_name = det_id + "." + quad_id
+        else:
+            det_i = det // 6 + 1
+            det_j = det % 6 + 1
+            det_id = "%d-%d" % (det_i, det_j)
+            _detector_name = det_id
 
-        # get the detector's name
-        det_i = det // 6 + 1
-        det_j = det % 6 + 1
-        det_id = "%s-%s" % (str(det_i), str(det_j))
-        detector_names.append(det_id)
-        logger.info("Creating detector %s" % det_id)
+        detector_names.append(_detector_name)
+        logger.info("Creating detector %s" % _detector_name)
 
         # create image data
         sci, rms, flg, wgt, bkg, x_px, y_px = __generate_detector_images(
@@ -250,24 +267,29 @@ def create_exposure(
         # now make the hdus for these images
 
         # common header tor HDUs in the DET file (sci, flg, rms)
-        det_hdr = __create_header(wcs=wcs, EXPTIME=500.0, GAIN=3.0, RDNOISE=3.0, MAGZEROP=25.0, CCDID=det_id)
+        if use_quadrant:
+            det_hdr = __create_header(
+                wcs=wcs, EXPTIME=500.0, GAIN=3.0, RDNOISE=3.0, MAGZEROP=25.0, CCDID=det_id, QUADID=quad_id
+            )
+        else:
+            det_hdr = __create_header(wcs=wcs, EXPTIME=500.0, GAIN=3.0, RDNOISE=3.0, MAGZEROP=25.0, CCDID=det_id)
 
         # create hdus for the DET file and append them to the HDUlist
-        sci_hdu = fits.ImageHDU(data=sci, header=det_hdr, name="CCDID %s.SCI" % det_id)
-        rms_hdu = fits.ImageHDU(data=rms, header=det_hdr, name="CCDID %s.RMS" % det_id)
-        flg_hdu = fits.ImageHDU(data=flg, header=det_hdr, name="CCDID %s.FLG" % det_id)
+        sci_hdu = fits.ImageHDU(data=sci, header=det_hdr, name="%s.SCI" % _detector_name)
+        rms_hdu = fits.ImageHDU(data=rms, header=det_hdr, name="%s.RMS" % _detector_name)
+        flg_hdu = fits.ImageHDU(data=flg, header=det_hdr, name="%s.FLG" % _detector_name)
         det_hdul.append(sci_hdu)
         det_hdul.append(rms_hdu)
         det_hdul.append(flg_hdu)
 
         # BKG HDU
         bkg_hdr = __create_header()
-        bkg_hdu = fits.ImageHDU(data=bkg, header=bkg_hdr, name="CCDID %s" % det_id)
+        bkg_hdu = fits.ImageHDU(data=bkg, header=bkg_hdr, name="%s" % _detector_name)
         bkg_hdul.append(bkg_hdu)
 
         # WGT HDU
         wgt_hdr = __create_header()
-        wgt_hdu = fits.ImageHDU(data=wgt, header=wgt_hdr, name="CCDID %s" % det_id)
+        wgt_hdu = fits.ImageHDU(data=wgt, header=wgt_hdr, name="%s" % _detector_name)
         wgt_hdul.append(wgt_hdu)
 
     logger.info("Created %d detector(s) with a total of %d object(s)" % (n_detectors, len(sky_coords)))

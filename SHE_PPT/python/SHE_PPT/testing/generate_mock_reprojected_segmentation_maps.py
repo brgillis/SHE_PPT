@@ -73,7 +73,6 @@ def __create_detector_map(object_ids, pixel_coords, detector_shape, objsize=10, 
     pixel_coords = np.asarray(pixel_coords)
 
     for my_id, coords, group_id in zip(object_ids, pixel_coords, group_ids):
-
         x = coords[0]
         y = coords[1]
 
@@ -92,7 +91,6 @@ def __create_detector_map(object_ids, pixel_coords, detector_shape, objsize=10, 
             # loop over all objects in group, determine the minimum distance to the other objects
             inds = np.where(group_ids == group_id)
             for (x_other, y_other), other_id in zip(pixel_coords[inds], object_ids[inds]):
-
                 if other_id == my_id:
                     continue
 
@@ -127,6 +125,7 @@ def create_reprojected_segmentation_map(
     tile_list=[1],
     obs_id=1,
     pointing_id=1,
+    use_quadrant=True,
 ):
     """
     Creates a DpdSheExposureReprojectedSegmentationMap product from a list of input objects, their image positions,
@@ -148,9 +147,15 @@ def create_reprojected_segmentation_map(
     """
     n_detectors = len(wcs_list)
 
-    if n_detectors < 1 or n_detectors > 36:
+    if use_quadrant:
+        n_detector_max = 144
+    else:
+        n_detector_max = 36
+
+    if n_detectors < 1 or n_detectors > n_detector_max:
         raise ValueError(
-            "Number of detectors seems to be %d. The only valid numbers are between 1 and 36 inclusive" % n_detectors
+            "Number of detectors seems to be %d. The only valid numbers are between 1 and %d inclusive."
+            % (n_detectors, n_detector_max)
         )
 
     object_ids = np.asarray(object_ids)
@@ -162,12 +167,20 @@ def create_reprojected_segmentation_map(
 
     # loop over all detectors in the exposure
     for det in range(n_detectors):
-
         # get the detector's name
-        det_i = det // 6 + 1
-        det_j = det % 6 + 1
-        det_id = "%s-%s" % (str(det_i), str(det_j))
-        logger.info("Creating detector %s" % det_id)
+        if use_quadrant:
+            det_i = (det // 4) // 6 + 1
+            det_j = (det // 4) % 6 + 1
+            det_k = det % 4
+            det_sk = {0: "E", 1: "F", 2: "G", 3: "H"}[det_k]
+            det_id = "%d-%d" % (det_i, det_j)
+            quad_id = "%s" % (det_sk)
+            _detector_name = det_id + "." + quad_id
+        else:
+            det_i = det // 6 + 1
+            det_j = det % 6 + 1
+            det_id = "%d-%d" % (det_i, det_j)
+            _detector_name = det_id
 
         # create the seg map for the detector from the objects in that detector
         inds = np.where(detectors == det)
@@ -177,7 +190,7 @@ def create_reprojected_segmentation_map(
 
         # create the HDU and append it to the HDUlist
         header = wcs_list[det].to_header()
-        img_hdu = fits.ImageHDU(data=img, header=header, name="CCDID %s.SEG" % det_id)
+        img_hdu = fits.ImageHDU(data=img, header=header, name="%s.SEG" % _detector_name)
         hdul.append(img_hdu)
 
     fits_filename = get_allowed_filename("EXP-RPJ-SEG", "00", version=ppt_version, extension=".fits")
