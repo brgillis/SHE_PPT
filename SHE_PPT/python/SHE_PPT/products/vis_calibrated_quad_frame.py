@@ -26,8 +26,13 @@ __updated__ = "2021-08-16"
 import ST_DataModelBindings.pro.vis_stub as vis_pro
 from ST_DataModelBindings.dpd.vis.raw.calibratedquadframe_stub import dpdVisCalibratedQuadFrame
 from ST_DataModelBindings.sys.dss_stub import dataContainer
-from ..product_utility import (create_product_from_template, get_data_filename_from_product, get_filename_datastorage,
-                               set_data_filename_of_product, set_filename_datastorage, )
+from ..product_utility import (
+    create_product_from_template,
+    get_data_filename_from_product,
+    get_filename_datastorage,
+    set_data_filename_of_product,
+    set_filename_datastorage,
+)
 
 sample_file_name = "SHE_PPT/sample_vis_calibrated_quad_frame.xml"
 product_type_name = "DpdVisCalibratedQuadFrame"
@@ -35,7 +40,7 @@ product_type_name = "DpdVisCalibratedQuadFrame"
 
 def init():
     """
-        Adds some extra functionality to the DpdVisCalibratedQuadFrame product
+    Adds some extra functionality to the DpdVisCalibratedQuadFrame product
     """
 
     binding_class = dpdVisCalibratedQuadFrame
@@ -104,26 +109,26 @@ def _get_wgt_filename(self):
 
 
 def _get_all_filenames(self):
-
-    all_filenames = [self.get_data_filename(),
-                     self.get_psf_filename(),
-                     self.get_bkg_filename(),
-                     self.get_wgt_filename(), ]
+    all_filenames = [
+        self.get_data_filename(),
+        self.get_psf_filename(),
+        self.get_bkg_filename(),
+        self.get_wgt_filename(),
+    ]
 
     return all_filenames
 
 
-def create_dpd_vis_calibrated_quad_frame(data_filename="None",
-                                    psf_filename="None",
-                                    bkg_filename="None",
-                                    wgt_filename="None"):
+def create_dpd_vis_calibrated_quad_frame(
+    data_filename="None", psf_filename="None", bkg_filename="None", wgt_filename="None"
+):
     """
-        @TODO fill in docstring
+    @TODO fill in docstring
     """
 
-    dpd_vis_calibrated_quad_frame = create_product_from_template(template_filename=sample_file_name,
-                                                            product_type_name=product_type_name,
-                                                            data_filename=data_filename)
+    dpd_vis_calibrated_quad_frame = create_product_from_template(
+        template_filename=sample_file_name, product_type_name=product_type_name, data_filename=data_filename
+    )
     dpd_vis_calibrated_quad_frame.set_psf_filename(psf_filename)
     dpd_vis_calibrated_quad_frame.set_bkg_filename(bkg_filename)
     dpd_vis_calibrated_quad_frame.set_wgt_filename(wgt_filename)
@@ -132,7 +137,6 @@ def create_dpd_vis_calibrated_quad_frame(data_filename="None",
 
 
 def init_storage(type, filename, format, version, filestatus):
-
     data_storage = type()
 
     data_storage.format = format
@@ -146,32 +150,24 @@ def init_storage(type, filename, format, version, filestatus):
 
 
 def create_vis_data_storage(filename, format="vis.calibratedFrame", version="0.1", filestatus="PROPOSED"):
-
-    data_storage = init_storage(
-        vis_pro.visCalibratedStorageFitsFile, filename, format, version, filestatus)
+    data_storage = init_storage(vis_pro.visCalibratedStorageFitsFile, filename, format, version, filestatus)
 
     return data_storage
 
 
 def create_vis_psf_storage(filename, format="vis.psfModel", version="0.1", filestatus="PROPOSED"):
-
-    data_storage = init_storage(
-        vis_pro.visPsfModelStorageFitsFile, filename, format, version, filestatus)
+    data_storage = init_storage(vis_pro.visPsfModelStorageFitsFile, filename, format, version, filestatus)
 
     return data_storage
 
 
 def create_vis_bkg_storage(filename, format="vis.backgroundMap", version="0.1", filestatus="PROPOSED"):
-
-    data_storage = init_storage(
-        vis_pro.visBackgroundStorageFitsFile, filename, format, version, filestatus)
+    data_storage = init_storage(vis_pro.visBackgroundStorageFitsFile, filename, format, version, filestatus)
 
     return data_storage
 
 
 def create_vis_wgt_storage(filename, format="vis.weightMap", version="0.1", filestatus="PROPOSED"):
-
-    data_storage = init_storage(
-        vis_pro.visWeightStorageFitsFile, filename, format, version, filestatus)
+    data_storage = init_storage(vis_pro.visWeightStorageFitsFile, filename, format, version, filestatus)
 
     return data_storage

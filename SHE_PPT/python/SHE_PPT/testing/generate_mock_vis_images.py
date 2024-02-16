@@ -333,10 +333,9 @@ def create_exposure(
         exposure_prod.Data.DetectorList.Detector = [det_template] * n_detectors
         for i, name in enumerate(detector_names):
             exposure_prod.Data.DetectorList.Detector[i].DetectorId = name
+
     exposure_prod.Data.ObservationSequence.PointingId = pointing_id
     exposure_prod.Data.ObservationSequence.ObservationId = obs_id
-
-    
 
     # Write it to file
     prod_filename = get_allowed_filename("VIS-CAL-FRAME", "00", version=ppt_version, extension=".xml", subdir="")
