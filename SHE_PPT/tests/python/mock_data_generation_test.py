@@ -66,7 +66,9 @@ class TestMockData(SheTestCase):
         # NOTE: We don't check the validity of the FITS files
         dpd = read_xml_product(prod_filename, workdir=workdir)
 
-        assert type(dpd) in (vis_calibrated_frame.dpdVisCalibratedFrame, vis_calibrated_quad_frame.dpdVisCalibratedQuadFrame)
+        assert type(dpd) in (
+            vis_calibrated_frame.dpdVisCalibratedFrame, vis_calibrated_quad_frame.dpdVisCalibratedQuadFrame
+        )
 
         det = dpd.get_data_filename()
         assert os.path.exists(os.path.join(workdir, det))
