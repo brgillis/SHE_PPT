@@ -36,6 +36,7 @@ from SHE_PPT.products import (
     she_object_id_list,
     she_psf_model_image,
     vis_calibrated_frame,
+    vis_calibrated_quad_frame
 )
 from SHE_PPT.testing.generate_mock_mer_catalogues import create_catalogue
 from SHE_PPT.testing.generate_mock_object_id_list import create_object_id_list
@@ -65,7 +66,7 @@ class TestMockData(SheTestCase):
         # NOTE: We don't check the validity of the FITS files
         dpd = read_xml_product(prod_filename, workdir=workdir)
 
-        assert type(dpd) is vis_calibrated_frame.dpdVisCalibratedFrame
+        assert type(dpd) in (vis_calibrated_frame.dpdVisCalibratedFrame, vis_calibrated_quad_frame.dpdVisCalibratedQuadFrame)
 
         det = dpd.get_data_filename()
         assert os.path.exists(os.path.join(workdir, det))
