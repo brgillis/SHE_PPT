@@ -28,6 +28,7 @@ New Features
 - Modified conftest.py to generate mock data with a single-detector, 36-detector (CCD-based) and 144-detector (quadrant-based)
 - Expanded all tests using the fixture input_products to test on Quadrant-based inputs
 - Included the FITS header from the PrimaryHDU in a VisExposure object
+- Added DpdVisCalibratedQuadFrame product template - use this for quadrants
 
 New config features
 -------------------
