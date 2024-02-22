@@ -29,7 +29,7 @@ from astropy.wcs import WCS
 from SHE_PPT import __version__ as ppt_version
 from SHE_PPT.file_io import get_allowed_filename, write_xml_product
 from SHE_PPT.logging import getLogger
-from SHE_PPT.products import vis_calibrated_frame
+from SHE_PPT.products import vis_calibrated_frame, vis_calibrated_quad_frame
 
 logger = getLogger(__name__)
 
@@ -315,17 +315,27 @@ def create_exposure(
     bkg_hdul.writeto(os.path.join(workdir, bkg_fname), overwrite=True)
 
     # create the data product
-    exposure_prod = vis_calibrated_frame.create_dpd_vis_calibrated_frame(
-        data_filename=det_fname, bkg_filename=bkg_fname, wgt_filename=wgt_fname
-    )
+    if use_quadrant:
+        exposure_prod = vis_calibrated_quad_frame.create_dpd_vis_calibrated_quad_frame(
+            data_filename=det_fname, bkg_filename=bkg_fname, wgt_filename=wgt_fname
+        )
+        # set up the correct number of Quadrants in the product, and make sure they have the correct names
+        quad_template = exposure_prod.Data.QuadrantList.Qadrant[0]
+        exposure_prod.Data.QuadrantList.Qadrant = [quad_template] * n_detectors
+        for i, name in enumerate(detector_names):
+            exposure_prod.Data.QuadrantList.Qadrant[i].QuadrantId = name
+    else:
+        exposure_prod = vis_calibrated_frame.create_dpd_vis_calibrated_frame(
+            data_filename=det_fname, bkg_filename=bkg_fname, wgt_filename=wgt_fname
+        )
+        # set up the correct number of Detectors in the product, and make sure they have the correct names
+        det_template = exposure_prod.Data.DetectorList.Detector[0]
+        exposure_prod.Data.DetectorList.Detector = [det_template] * n_detectors
+        for i, name in enumerate(detector_names):
+            exposure_prod.Data.DetectorList.Detector[i].DetectorId = name
+
     exposure_prod.Data.ObservationSequence.PointingId = pointing_id
     exposure_prod.Data.ObservationSequence.ObservationId = obs_id
-
-    # set up the correct number of Detectors in the product, and make sure they have the correct names
-    det_template = exposure_prod.Data.DetectorList.Detector[0]
-    exposure_prod.Data.DetectorList.Detector = [det_template] * n_detectors
-    for i, name in enumerate(detector_names):
-        exposure_prod.Data.DetectorList.Detector[i].DetectorId = name
 
     # Write it to file
     prod_filename = get_allowed_filename("VIS-CAL-FRAME", "00", version=ppt_version, extension=".xml", subdir="")

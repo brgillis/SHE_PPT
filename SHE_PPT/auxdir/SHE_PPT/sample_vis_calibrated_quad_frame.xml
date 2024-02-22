@@ -1,0 +1,561 @@
+<?xml version="1.0" ?>
+<ns1:DpdVisCalibratedQuadFrame xmlns:ns1="http://ecdm.euclid-ec.org/schema/dpd/vis/calibratedquadframe">
+	<Header>
+		<ProductId>016d53d5-9fa6-4766-821c-8b78010cd98b</ProductId>
+		<ProductType>DpdVisCalibratedQuadFrame</ProductType>
+		<SoftwareName>5h9rN</SoftwareName>
+		<SoftwareRelease>n5Ss1OQe</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>25Xmn4dm</EuclidPipelineSoftwareRelease>
+		<ProdSDC>CzsyiVzGfe1f6VsFJzrIJ1OFc0</ProdSDC>
+		<DataSetRelease>oe9RH</DataSetRelease>
+		<Purpose>ON_THE_FLY</Purpose>
+		<PlanId>7KdAn</PlanId>
+		<PPOId>QpGh4imxvEdKuo1ktuegwA5tKqKa5rvg5fGqsny3kSlFv0a9Zr3sghoT7iefk3Kndqov6c9G5pN7DIQaqSsUFNa5lqMoZ0wliqN797f27U2mUpC7</PPOId>
+		<PipelineDefinitionId>xuscq</PipelineDefinitionId>
+		<PpoStatus>AXKnU</PpoStatus>
+		<ManualValidationStatus>VALID</ManualValidationStatus>
+		<ProductNotifiedToBeChecked>TOBECHECKED</ProductNotifiedToBeChecked>
+		<AutomatedValidationStatus>UNKNOWN</AutomatedValidationStatus>
+		<ExpirationDate>2024-02-16T15:02:34.237Z</ExpirationDate>
+		<ToBePublished>1128621085</ToBePublished>
+		<Published>559824803</Published>
+		<Curator>HpoOg</Curator>
+		<CreationDate>2024-02-16T15:02:34.238Z</CreationDate>
+	</Header>
+	<Data>
+		<ExposureTime>
+			<Value>9.0</Value>
+			<Unit>mK</Unit>
+		</ExposureTime>
+		<ImgType>
+			<Category>SIMULATION</Category>
+			<FirstType>TRAP_PUMPING</FirstType>
+			<SecondType>LAMP</SecondType>
+			<Technique>OTHER</Technique>
+		</ImgType>
+		<ImgArea>
+			<Name>CA9TMqaNnW60sttKGW79sHs90esdDYmkfOVL94HsTSBhIs6HbXezcB9K41LFTt3YsaqLHMtV</Name>
+		</ImgArea>
+		<ImgNumber>-1116126558</ImgNumber>
+		<AxisNumber>1523661907</AxisNumber>
+		<AxisLengths>0</AxisLengths>
+		<DataSize>-64</DataSize>
+		<DataLength>8074654811898089426</DataLength>
+		<ImgStatistics>
+			<Min>8.0</Min>
+			<Max>-9.0</Max>
+			<Mean>6.0</Mean>
+			<Stdev>7.0</Stdev>
+			<Median>4.0</Median>
+			<MinX>1611743746</MinX>
+			<MinY>107135440</MinY>
+			<MaxX>2113782630</MaxX>
+			<MaxY>-1336820315</MaxY>
+			<NPix>256031692325593976</NPix>
+			<XLower>-390281344</XLower>
+			<YLower>-1910543016</YLower>
+			<XUpper>-1569651070</XUpper>
+			<YUpper>1819867012</YUpper>
+		</ImgStatistics>
+		<SimInputConfId>Bo8oI</SimInputConfId>
+		<Instrument>
+			<InstrumentName>SXDS</InstrumentName>
+			<TelescopeName>Hubble</TelescopeName>
+		</Instrument>
+		<Filter>
+			<Name>NIR_STACK</Name>
+			<MagId>Q</MagId>
+			<CentralWavelength>-8.0</CentralWavelength>
+			<MinWavelength>-10.0</MinWavelength>
+			<MaxWavelength>4.0</MaxWavelength>
+			<Reference>txPj7</Reference>
+			<HasFringes>264304163</HasFringes>
+		</Filter>
+		<ImgSpatialFootprint unit="mA">
+			<Polygon>
+				<Vertex>
+					<C1>1.0</C1>
+					<C2>-4.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="J">
+							<C1 unit="J/m3/K4">0.0</C1>
+							<C2 unit="S">0.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</Polygon>
+			<MultiPolygon>
+				<Vertex>
+					<C1>-10.0</C1>
+					<C2>-9.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="pixel**2">
+							<C1 unit="km">0.0</C1>
+							<C2 unit="rad/s">0.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</MultiPolygon>
+			<Circle>
+				<Center coordUnit="pixel">
+					<C1 unit="stars/deg2">0.0</C1>
+					<C2 unit="cd">1.0</C2>
+				</Center>
+				<Radius unit="uarcsec/yr">1.0</Radius>
+			</Circle>
+			<BBox>
+				<RaCenter>8.0</RaCenter>
+				<DecCenter>5.0</DecCenter>
+				<RaHalfWidth>1.0</RaHalfWidth>
+				<DecHalfWidth>4.0</DecHalfWidth>
+			</BBox>
+		</ImgSpatialFootprint>
+		<Masks>mIOGZ</Masks>
+		<QuadrantList>
+			<Qadrant>
+				<QuadrantId>26e10RsMRvCN1AmgvootqjOABWZGYoKDiUoaN2xQT4JtjdyPZi1hE</QuadrantId>
+				<WCS>
+					<CTYPE1>
+						<CoordinateType>RA</CoordinateType>
+						<ProjectionType>AIT</ProjectionType>
+					</CTYPE1>
+					<CTYPE2>
+						<CoordinateType>RA</CoordinateType>
+						<ProjectionType>MER</ProjectionType>
+					</CTYPE2>
+					<CRVAL1>2.0</CRVAL1>
+					<CRVAL2>-7.0</CRVAL2>
+					<CRPIX1>1.0</CRPIX1>
+					<CRPIX2>2.0</CRPIX2>
+					<CD1_1>8.0</CD1_1>
+					<CD1_2>3.0</CD1_2>
+					<CD2_1>6.0</CD2_1>
+					<CD2_2>9.0</CD2_2>
+					<NonLinearCoeffs>
+						<NonLinearTPVAstromCoeffs>
+							<PV1_0>3.0</PV1_0>
+							<PV1_1>0.0</PV1_1>
+							<PV1_2>-2.0</PV1_2>
+							<PV1_3>-1.0</PV1_3>
+							<PV1_4>-9.0</PV1_4>
+							<PV1_5>-3.0</PV1_5>
+							<PV1_6>-2.0</PV1_6>
+							<PV1_7>9.0</PV1_7>
+							<PV1_8>4.0</PV1_8>
+							<PV1_9>-3.0</PV1_9>
+							<PV1_10>-2.0</PV1_10>
+							<PV2_0>1.0</PV2_0>
+							<PV2_1>1.0</PV2_1>
+							<PV2_2>0.0</PV2_2>
+							<PV2_3>7.0</PV2_3>
+							<PV2_4>5.0</PV2_4>
+							<PV2_5>7.0</PV2_5>
+							<PV2_6>-8.0</PV2_6>
+							<PV2_7>8.0</PV2_7>
+							<PV2_8>6.0</PV2_8>
+							<PV2_9>6.0</PV2_9>
+							<PV2_10>-6.0</PV2_10>
+						</NonLinearTPVAstromCoeffs>
+					</NonLinearCoeffs>
+					<DetectorId>kN6mOmNyE6mdBgqTphV9lubgbmR6pLTffX0qexo76xI2SkYrQNHmEsrZaS3yVCvrFFoQyOdGeBQON7uPGQj</DetectorId>
+				</WCS>
+				<Gain>-5.0</Gain>
+				<RawGain>-1.0</RawGain>
+				<ZeroPoint>-8.0</ZeroPoint>
+				<ZeroPointRMS>-9.0</ZeroPointRMS>
+				<RA>2.0</RA>
+				<Dec>-1.0</Dec>
+				<Background_MJy_sr>9.0</Background_MJy_sr>
+				<BiasLevel>-6.0</BiasLevel>
+				<ReadOutNoise>-5.0</ReadOutNoise>
+				<InvalidPixelsPercent>-8.0</InvalidPixelsPercent>
+				<TXErrorPixelsPercent>-6.0</TXErrorPixelsPercent>
+				<CosmicPixelsPercent>-4.0</CosmicPixelsPercent>
+				<QuadrantTemperatureC>6.0</QuadrantTemperatureC>
+				<ROETemperatureC>0.0</ROETemperatureC>
+				<ImgSpatialFootprint unit="J">
+					<Polygon>
+						<Vertex>
+							<C1>-3.0</C1>
+							<C2>-7.0</C2>
+							<SmallCircle>
+								<Pole coordUnit="1/mol">
+									<C1 unit="m">0.0</C1>
+									<C2 unit="eV">0.0</C2>
+								</Pole>
+							</SmallCircle>
+						</Vertex>
+					</Polygon>
+					<MultiPolygon>
+						<Vertex>
+							<C1>1.0</C1>
+							<C2>3.0</C2>
+							<SmallCircle>
+								<Pole coordUnit="rad">
+									<C1 unit="kHz">0.0</C1>
+									<C2 unit="lm">1.0</C2>
+								</Pole>
+							</SmallCircle>
+						</Vertex>
+					</MultiPolygon>
+					<Circle>
+						<Center coordUnit="m2/s2/K">
+							<C1 unit="K">0.0</C1>
+							<C2 unit="Wb">0.0</C2>
+						</Center>
+						<Radius unit="a">1.0</Radius>
+					</Circle>
+					<BBox>
+						<RaCenter>2.0</RaCenter>
+						<DecCenter>-4.0</DecCenter>
+						<RaHalfWidth>-10.0</RaHalfWidth>
+						<DecHalfWidth>-3.0</DecHalfWidth>
+					</BBox>
+				</ImgSpatialFootprint>
+			</Qadrant>
+		</QuadrantList>
+		<ObservationDateTime>
+			<OBT>2024-02-16T15:02:34.254</OBT>
+			<UTC>2024-02-16T15:02:34.255Z</UTC>
+			<MJD>-1.0</MJD>
+		</ObservationDateTime>
+		<ObservationSequence>
+			<FieldId>-8298946263526530510</FieldId>
+			<PatchId>-3272745107420349227</PatchId>
+			<IslandId>616973954</IslandId>
+			<ObservationId>8135911541567827901</ObservationId>
+			<DitherObservation>-8663937817195032030</DitherObservation>
+			<PointingId>6122332214932171348</PointingId>
+			<CalblockId>CwQe4</CalblockId>
+			<CalblockVariant>xX6dZ</CalblockVariant>
+			<Exposure>12693</Exposure>
+			<TotalExposure>2566</TotalExposure>
+			<ObjectId>CCFr4</ObjectId>
+			<ObjectName>i4uOv</ObjectName>
+		</ObservationSequence>
+		<DateRange>
+			<Name>DbzWe</Name>
+			<Type>QPs7K</Type>
+			<TimestampStart>2024-02-16T15:02:34.256Z</TimestampStart>
+			<TimestampEnd>2024-02-16T15:02:34.256Z</TimestampEnd>
+		</DateRange>
+		<InstrumentMode>Science</InstrumentMode>
+		<CompressionAlgorithm>CCSDS121_NO_REORDERING_8PIX</CompressionAlgorithm>
+		<FrameChecksum>-1592821805</FrameChecksum>
+		<CommandedFPAPointing type="BottomLeft">
+			<RA>160.0</RA>
+			<Dec>-22.0</Dec>
+			<PositionAngle>195.0</PositionAngle>
+		</CommandedFPAPointing>
+		<ReconsFPAPointing type="BottomLeft">
+			<RA>278.0</RA>
+			<Dec>27.0</Dec>
+			<PositionAngle>188.0</PositionAngle>
+		</ReconsFPAPointing>
+		<PredictedOrbit>
+			<Position>3.0 4.0 5.0</Position>
+			<Velocity>3.0 4.0 5.0</Velocity>
+		</PredictedOrbit>
+		<ReconsOrbit>
+			<Position>3.0 4.0 5.0</Position>
+			<Velocity>3.0 4.0 5.0</Velocity>
+		</ReconsOrbit>
+		<CommandedAttitude>
+			<Longitude>2.0</Longitude>
+			<Latitude>-49.0</Latitude>
+			<PositionAngle>33.0</PositionAngle>
+			<Frame>UNKNOWNFrame</Frame>
+			<SolarAspectAngle>9.0</SolarAspectAngle>
+			<Alpha>88.0</Alpha>
+			<Beta>140.0</Beta>
+		</CommandedAttitude>
+		<ReconsAttitude>
+			<Longitude>144.0</Longitude>
+			<Latitude>34.0</Latitude>
+			<PositionAngle>98.0</PositionAngle>
+			<Frame>ECLIPTIC</Frame>
+			<SolarAspectAngle>137.0</SolarAspectAngle>
+			<Alpha>-26.0</Alpha>
+			<Beta>-157.0</Beta>
+		</ReconsAttitude>
+		<Readout>
+			<VerticalStart>1603691172</VerticalStart>
+			<VerticalEnd>-49050308</VerticalEnd>
+			<IdleTime>
+				<RawValue>1328553465</RawValue>
+				<Value>-8.0</Value>
+				<Unit>1/m</Unit>
+			</IdleTime>
+			<ROEConfigurationTableId>418295579</ROEConfigurationTableId>
+		</Readout>
+		<ShutterUnit>
+			<ConfigSINETableId>783928698</ConfigSINETableId>
+			<ConfigFreqTableId>-533339503</ConfigFreqTableId>
+			<ConfigShortFreqTableId>464961943</ConfigShortFreqTableId>
+			<ShutterUnitConfigurationStatus>CLOSED_LOOP</ShutterUnitConfigurationStatus>
+		</ShutterUnit>
+		<CalibUnit>
+			<Status>false</Status>
+			<Duration>
+				<RawValue>178230206</RawValue>
+				<Value>2.0</Value>
+				<Unit>1/m</Unit>
+			</Duration>
+			<LedMask>0</LedMask>
+			<Led1>
+				<RawValue>-1485537552</RawValue>
+				<NominalCurrent>
+					<RawValue>1445736555</RawValue>
+					<Value>-4.0</Value>
+					<Unit>m</Unit>
+				</NominalCurrent>
+				<NominalFluence>-8.0</NominalFluence>
+				<RedundantCurrent>
+					<RawValue>788347505</RawValue>
+					<Value>5.0</Value>
+					<Unit>lm</Unit>
+				</RedundantCurrent>
+				<RedundantFluence>7.0</RedundantFluence>
+			</Led1>
+			<Led2>
+				<RawValue>1014804559</RawValue>
+				<NominalCurrent>
+					<RawValue>-103102282</RawValue>
+					<Value>-3.0</Value>
+					<Unit>W/m/K</Unit>
+				</NominalCurrent>
+				<NominalFluence>-5.0</NominalFluence>
+				<RedundantCurrent>
+					<RawValue>-1105181206</RawValue>
+					<Value>-5.0</Value>
+					<Unit>Mstars</Unit>
+				</RedundantCurrent>
+				<RedundantFluence>-2.0</RedundantFluence>
+			</Led2>
+			<Led3>
+				<RawValue>17982576</RawValue>
+				<NominalCurrent>
+					<RawValue>-61363405</RawValue>
+					<Value>0.0</Value>
+					<Unit>sr</Unit>
+				</NominalCurrent>
+				<NominalFluence>3.0</NominalFluence>
+				<RedundantCurrent>
+					<RawValue>315438710</RawValue>
+					<Value>8.0</Value>
+					<Unit>erg/s</Unit>
+				</RedundantCurrent>
+				<RedundantFluence>-10.0</RedundantFluence>
+			</Led3>
+			<Led4>
+				<RawValue>-1868866616</RawValue>
+				<NominalCurrent>
+					<RawValue>-1809018165</RawValue>
+					<Value>-6.0</Value>
+					<Unit>pixel**2</Unit>
+				</NominalCurrent>
+				<NominalFluence>1.0</NominalFluence>
+				<RedundantCurrent>
+					<RawValue>-1186965895</RawValue>
+					<Value>-8.0</Value>
+					<Unit>MHz</Unit>
+				</RedundantCurrent>
+				<RedundantFluence>-5.0</RedundantFluence>
+			</Led4>
+			<Led5>
+				<RawValue>1752793708</RawValue>
+				<NominalCurrent>
+					<RawValue>-1397875783</RawValue>
+					<Value>8.0</Value>
+					<Unit>kg</Unit>
+				</NominalCurrent>
+				<NominalFluence>3.0</NominalFluence>
+				<RedundantCurrent>
+					<RawValue>838076603</RawValue>
+					<Value>5.0</Value>
+					<Unit>particles/s/cm2</Unit>
+				</RedundantCurrent>
+				<RedundantFluence>-6.0</RedundantFluence>
+			</Led5>
+			<Led6>
+				<RawValue>-1253074652</RawValue>
+				<NominalCurrent>
+					<RawValue>-2051237258</RawValue>
+					<Value>1.0</Value>
+					<Unit>GeV</Unit>
+				</NominalCurrent>
+				<NominalFluence>8.0</NominalFluence>
+				<RedundantCurrent>
+					<RawValue>-494147373</RawValue>
+					<Value>5.0</Value>
+					<Unit>MeV</Unit>
+				</RedundantCurrent>
+				<RedundantFluence>4.0</RedundantFluence>
+			</Led6>
+		</CalibUnit>
+		<ChargedInduced>
+			<Status>false</Status>
+			<Parameters>
+				<InjectionDrainLowBias>
+					<RawValue>1165458013</RawValue>
+					<Value>-9.0</Value>
+					<Unit>J/K</Unit>
+				</InjectionDrainLowBias>
+				<InjectionDrainPulseDuration>
+					<RawValue>-1666917203</RawValue>
+					<Value>3.0</Value>
+					<Unit>mag/kpc</Unit>
+				</InjectionDrainPulseDuration>
+				<InjectionDrainLowPulseDelay>
+					<RawValue>670362542</RawValue>
+					<Value>-6.0</Value>
+					<Unit>solRad</Unit>
+				</InjectionDrainLowPulseDelay>
+				<InjectionGate1Voltage>
+					<RawValue>-1211020218</RawValue>
+					<Value>6.0</Value>
+					<Unit>AU</Unit>
+				</InjectionGate1Voltage>
+				<InjectionGate2Voltage>
+					<RawValue>1187002478</RawValue>
+					<Value>-3.0</Value>
+					<Unit>arcsec/um</Unit>
+				</InjectionGate2Voltage>
+				<InjectedLinesCount>320101252</InjectedLinesCount>
+				<NonInjectedLinesCount>712044905</NonInjectedLinesCount>
+				<VerticalStart>-581737910</VerticalStart>
+				<VerticalEnd>-1775553860</VerticalEnd>
+				<TOI>
+					<RawValue>-858489252</RawValue>
+					<Value>-1.0</Value>
+					<Unit>keV</Unit>
+				</TOI>
+				<DwellTime>false</DwellTime>
+				<InjectionDrainHighBias>
+					<RawValue>372175385</RawValue>
+					<Value>2.0</Value>
+					<Unit>J/m3/K4</Unit>
+				</InjectionDrainHighBias>
+			</Parameters>
+		</ChargedInduced>
+		<WLQ2Exposures>
+			<PRNUCorrectedExposure>
+				<DataContainer filestatus="ARCHIVED_CERNVMFS" checksumMethod="MD5" checksumValue="cSyRQ">
+					<FileName>EUC_VIS_TYPE_INSTANCE_20240216T150234.268209Z_0.2.fits</FileName>
+				</DataContainer>
+			</PRNUCorrectedExposure>
+			<PreCTICorrectionExposure>
+				<DataContainer filestatus="ARCHIVED_CERNVMFS" checksumMethod="Adler32" checksumValue="L1ME0">
+					<FileName>EUC_VIS_TYPE_INSTANCE_20240216T150234.268648Z_0.2.fits</FileName>
+				</DataContainer>
+			</PreCTICorrectionExposure>
+			<PostCTICorrectionExposure>
+				<DataContainer filestatus="PROPOSED" checksumMethod="MD5" checksumValue="oPnHq">
+					<FileName>EUC_VIS_TYPE_INSTANCE_20240216T150234.268937Z_0.2.fits</FileName>
+				</DataContainer>
+			</PostCTICorrectionExposure>
+			<CTICorrectionComponent>
+				<DataContainer filestatus="DELETED" checksumMethod="Adler32" checksumValue="wxWDn">
+					<FileName>EUC_VIS_TYPE_INSTANCE_20240216T150234.269225Z_0.2.fits</FileName>
+				</DataContainer>
+			</CTICorrectionComponent>
+			<BFECorrectionComponent>
+				<DataContainer filestatus="ARCHIVED_CERNVMFS" checksumMethod="MD5" checksumValue="CEMyu">
+					<FileName>EUC_VIS_TYPE_INSTANCE_20240216T150234.269517Z_0.2.fits</FileName>
+				</DataContainer>
+			</BFECorrectionComponent>
+		</WLQ2Exposures>
+		<PsfModelStorage format="vis.psfModel" version="ff_ECRFocoATN\Ph%H9Dvn!">
+			<DataContainer filestatus="PROCESSED_LINEAGE" checksumMethod="MD5" checksumValue="AqY2J">
+				<FileName>EUC_VIS_TYPE_INSTANCE_20240216T150234.275604Z_0.2.fits</FileName>
+			</DataContainer>
+		</PsfModelStorage>
+		<BackgroundStorage format="vis.backgroundMap" version="J$|.}F}@*^mu==3{rB*!_vRdvHy)@z.5^B22MmK&amp;qG[9~J'%e9AT%#Yt">
+			<DataContainer filestatus="ARCHIVED_ONLINE" checksumMethod="Adler32" checksumValue="9IYcX">
+				<FileName>EUC_VIS_TYPE_INSTANCE_20240216T150234.276096Z_0.2.fits</FileName>
+			</DataContainer>
+		</BackgroundStorage>
+		<WeightStorage format="vis.weightMap" version="Q$%~q:NBkf8xtpU4AkbV[QhoQ7:UT80kahySOw7UaqvFTUg=IS|)e">
+			<DataContainer filestatus="DELETED" checksumMethod="Adler32" checksumValue="022aP">
+				<FileName>EUC_VIS_TYPE_INSTANCE_20240216T150234.276581Z_0.2.fits</FileName>
+			</DataContainer>
+		</WeightStorage>
+		<XTalkStorage>
+			<DataContainer filestatus="ARCHIVED_CERNVMFS" checksumMethod="Adler32" checksumValue="5czMt">
+				<FileName>EUC_VIS_TYPE_INSTANCE_20240216T150234.276875Z_0.2.fits</FileName>
+			</DataContainer>
+		</XTalkStorage>
+		<BFEStorage>
+			<DataContainer filestatus="DELETED" checksumMethod="Adler32" checksumValue="TIMdz">
+				<FileName>EUC_VIS_TYPE_INSTANCE_20240216T150234.277170Z_0.2.fits</FileName>
+			</DataContainer>
+		</BFEStorage>
+		<QualityParameterStorage>
+			<DataContainer filestatus="ARCHIVED_ONLINE" checksumMethod="Adler32" checksumValue="iI0Xz">
+				<FileName>EUC_VIS_TYPE_INSTANCE_20240216T150234.277553Z_0.2.fits</FileName>
+			</DataContainer>
+		</QualityParameterStorage>
+		<DataStorage format="vis.calibratedFrame" version="7iq!SBK!j4f&amp;k$5P1\J\eLzng21%*cyEk$VkV&gt;h`LT&amp;-q]]Bnm$^">
+			<DataContainer filestatus="ARCHIVED_ONLINE" checksumMethod="MD5" checksumValue="51S0H">
+				<FileName>EUC_VIS_TYPE_INSTANCE_20240216T150234.278151Z_0.2.fits</FileName>
+			</DataContainer>
+		</DataStorage>
+		<QualityParams>
+			<OBS_astro_internal_error_rms flagged="false">0.0</OBS_astro_internal_error_rms>
+			<OBS_astro_internal_error_mean flagged="true">1.0</OBS_astro_internal_error_mean>
+			<OBS_astro_internal_error_stdev flagged="false">0.0</OBS_astro_internal_error_stdev>
+			<OBS_astro_internal_error_count flagged="false">0</OBS_astro_internal_error_count>
+			<FPA_expcat_to_extcat_exterr_mean_residual flagged="true">0.0</FPA_expcat_to_extcat_exterr_mean_residual>
+			<FPA_expcat_to_extcat_exterr_stdev flagged="true">0.0</FPA_expcat_to_extcat_exterr_stdev>
+			<FPA_expcat_to_stackcat_interr_rms flagged="true">0.0</FPA_expcat_to_stackcat_interr_rms>
+			<FPA_pointing_jitter flagged="false">1.0</FPA_pointing_jitter>
+			<FPA_cr_pixel_count flagged="true">0</FPA_cr_pixel_count>
+			<FPA_cr_pixel_ratio flagged="true">1.0</FPA_cr_pixel_ratio>
+			<FPA_max_cr_pixel_ratio_per_quad flagged="true">0.0</FPA_max_cr_pixel_ratio_per_quad>
+			<FPA_cr_pixel_density flagged="true">1.0</FPA_cr_pixel_density>
+			<FPA_cr_regions_count flagged="false">1</FPA_cr_regions_count>
+			<FPA_avg_bkg flagged="true">1.0</FPA_avg_bkg>
+			<FPA_flagged_ghosts flagged="true">1</FPA_flagged_ghosts>
+			<FPA_flagged_stars flagged="false">1</FPA_flagged_stars>
+			<FPA_ghost_flag_quality flagged="true">1.0</FPA_ghost_flag_quality>
+			<FPA_zero_point flagged="false">0.0</FPA_zero_point>
+			<FPA_zero_point_rms flagged="false">1.0</FPA_zero_point_rms>
+			<FPA_spreadmodel_peak flagged="true">0.0</FPA_spreadmodel_peak>
+			<FPA_spreadmodel_sigma flagged="false">0.0</FPA_spreadmodel_sigma>
+			<FPA_moment_e1_med flagged="true">0.0</FPA_moment_e1_med>
+			<FPA_moment_e1_std flagged="false">1.0</FPA_moment_e1_std>
+			<FPA_moment_e2_med flagged="false">0.0</FPA_moment_e2_med>
+			<FPA_moment_e2_std flagged="true">1.0</FPA_moment_e2_std>
+			<FPA_moment_r2_med flagged="false">1.0</FPA_moment_r2_med>
+			<FPA_moment_r2_std flagged="true">0.0</FPA_moment_r2_std>
+			<FPA_psf_ellip_med flagged="false">1.0</FPA_psf_ellip_med>
+			<FPA_psf_ellip_std flagged="true">0.0</FPA_psf_ellip_std>
+			<FPA_psf_size_med flagged="false">0.0</FPA_psf_size_med>
+			<FPA_psf_size_std flagged="false">0.0</FPA_psf_size_std>
+			<FPA_psf_theta_med flagged="false">1.0</FPA_psf_theta_med>
+			<FPA_psf_theta_std flagged="false">0.0</FPA_psf_theta_std>
+			<FPA_fwhm_mean flagged="false">0.0</FPA_fwhm_mean>
+			<FPA_fwhm_std flagged="false">0.0</FPA_fwhm_std>
+		</QualityParams>
+		<QualityValidation>UNKNOWN</QualityValidation>
+		<InputRawFrameReference>
+			<ProductID>c34be61e-606f-4975-91ea-0381de242ba0</ProductID>
+			<ProductType>DpdStarTemplateModel</ProductType>
+		</InputRawFrameReference>
+	</Data>
+	<QualityFlags>
+		<CRPixelRatioMaxExceeded xpath="/*/Data/QualityParams/FPA_cr_pixel_ratio" maxLimit="9.0" flagged="true">false</CRPixelRatioMaxExceeded>
+		<GhostFlagQualityRangeExceeded xpath="/*/Data/QualityParams/FPA_ghost_flag_quality" minLimit="6.0" maxLimit="0.0" flagged="true">true</GhostFlagQualityRangeExceeded>
+		<AstroInternalErrorRangeExceeded xpath="/*/Data/QualityParams/OBS_astro_internal_error_rms" minLimit="-5.0" maxLimit="-6.0" flagged="false">false</AstroInternalErrorRangeExceeded>
+		<ExtErrMeanResidualRangeExceeded xpath="/*/Data/QualityParams/FPA_expcat_to_extcat_exterr_mean_residual" minLimit="-6.0" maxLimit="-9.0" flagged="true">false</ExtErrMeanResidualRangeExceeded>
+		<AuxiliaryFlags flagName="&quot;&quot;3}/QPl7?lz:axwoicq)pTz}q24/ACZ;GyVb,VQb/[w]3" xpath="cFweh" minLimit="-4.0" maxLimit="-5.0" flagged="false">false</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>Z7yN9</Key>
+			<Description>TXHZc</Description>
+			<StringValue>BchDD</StringValue>
+			<Unit>88Xxs</Unit>
+		</Parameter>
+	</Parameters>
+</ns1:DpdVisCalibratedQuadFrame>
