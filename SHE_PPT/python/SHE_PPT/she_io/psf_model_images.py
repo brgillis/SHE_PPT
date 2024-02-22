@@ -216,4 +216,8 @@ class PSFModelImageHDF5(PSFModelImage):
         return ObjectModelImage(bulge=image, disk=image, quality_flag=quality_flag, table_row=row)
 
     def get_oversampling_factor(self):
-        return self.file.attrs["PSF_OVERSAMPLING_FACTOR"]
+        try:
+            return self.file.attrs["PSF_OVERSAMPLING_FACTOR"]
+        except KeyError as e:
+            raise KeyError("PSF oversampling factor is not present in this file") from e
+
