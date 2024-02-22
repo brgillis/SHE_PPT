@@ -27,11 +27,7 @@ import pytest
 import os
 
 import numpy as np
-import h5py
 import json
-
-from astropy.io import fits
-from astropy.table import Table
 
 
 from SHE_PPT.she_io.psf_model_images import (
@@ -96,7 +92,6 @@ class Testpsf_model_images(object):
                 print(psf_prods)
 
             psfs = read_psf_model_images(psf_prods, workdir)
-
 
             assert (
                 len(psf_prods) == num_exposures

@@ -179,7 +179,7 @@ def __create_fits(object_ids, pixel_coords, workdir, stampsize, stamp_per_obj, o
 
 
 def create_model_image_product(
-    object_ids, pixel_coords, workdir=".", stampsize=800, stamp_per_obj=False, filetype="fits", oversampling=3
+    object_ids, pixel_coords, workdir=".", stampsize=800, stamp_per_obj=False, filetype="hdf5", oversampling=3
 ):
     """Creates a dpdShePsfModelImage product given a list of object ids and pixel coordinates.
     Inputs:
