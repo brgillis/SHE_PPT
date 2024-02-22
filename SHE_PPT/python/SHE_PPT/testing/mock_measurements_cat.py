@@ -152,8 +152,8 @@ class MockShearEstimateDataGenerator(MockDataGenerator):
         l_g2_deviates = l_g_err * self._rng.standard_normal(self.num_test_points)
 
         # Save the error in the table
-        self.data[self.tf.g1_err] = l_g_err
-        self.data[self.tf.g2_err] = l_g_err
+        self.data[self.tf.e1_err] = l_g_err
+        self.data[self.tf.e2_err] = l_g_err
         self.data[self.tf.weight] = 0.5 * l_g_err ** -2
 
         # Fill in rows with mock output data - this bit depends on which method we're using
@@ -172,19 +172,19 @@ class MockShearEstimateDataGenerator(MockDataGenerator):
         g2_1m2 = d_bias_1m2["c2"] + (1 + d_bias_1m2["m2"]) * self._tu_data[self._tu_tf.tu_gamma2] + l_g2_deviates
 
         # Add to table, flipping g1 due to SIM's format
-        self.data[self.tf.g1] = np.where(self._indices % 2 < 1, g1_0m2, g1_1m2)
-        self.data[self.tf.g2] = np.where(self._indices % 2 < 1, g2_0m2, g2_1m2)
+        self.data[self.tf.e1] = np.where(self._indices % 2 < 1, g1_0m2, g1_1m2)
+        self.data[self.tf.e2] = np.where(self._indices % 2 < 1, g2_0m2, g2_1m2)
 
         # Flag the last bit of data as bad or zero weight
-        self.data[self.tf.g1][-self.num_nan_test_points - self.num_zero_weight_test_points:
+        self.data[self.tf.e1][-self.num_nan_test_points - self.num_zero_weight_test_points:
                               -self.num_zero_weight_test_points] = np.NaN
-        self.data[self.tf.g1_err][-self.num_nan_test_points - self.num_zero_weight_test_points:] = np.NaN
-        self.data[self.tf.g2][-self.num_nan_test_points - self.num_zero_weight_test_points:
+        self.data[self.tf.e1_err][-self.num_nan_test_points - self.num_zero_weight_test_points:] = np.NaN
+        self.data[self.tf.e2][-self.num_nan_test_points - self.num_zero_weight_test_points:
                               -self.num_zero_weight_test_points] = np.NaN
-        self.data[self.tf.g2_err][-self.num_nan_test_points - self.num_zero_weight_test_points:] = np.NaN
+        self.data[self.tf.e2_err][-self.num_nan_test_points - self.num_zero_weight_test_points:] = np.NaN
 
-        self.data[self.tf.g1_err][-self.num_zero_weight_test_points:] = np.inf
-        self.data[self.tf.g2_err][-self.num_zero_weight_test_points:] = np.inf
+        self.data[self.tf.e1_err][-self.num_zero_weight_test_points:] = np.inf
+        self.data[self.tf.e2_err][-self.num_zero_weight_test_points:] = np.inf
         self.data[self.tf.weight][-self.num_zero_weight_test_points:] = 0
 
         # Set the fit flags

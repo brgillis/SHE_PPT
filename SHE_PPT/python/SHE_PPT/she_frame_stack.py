@@ -67,18 +67,6 @@ class SHEFrameStack():
 
     """
 
-    exposures = None
-    exposure_products = None
-    psf_products = None
-
-    stacked_image = None
-    stacked_image_product = None
-
-    detections_catalogue = None
-    detections_catalogue_products = None
-
-    object_id_list_product = None
-
     stack_pixel_size_ratio = 1
 
     # File references and info
@@ -116,17 +104,17 @@ class SHEFrameStack():
 
         """
 
-        self.exposures = exposures
-        self.exposure_products = None
-        self.psf_products = None
+        self._exposures = exposures
+        self._exposure_products = None
+        self._psf_products = None
 
-        self.stacked_image = stacked_image
-        self.stacked_image_product = None
+        self._stacked_image = stacked_image
+        self._stacked_image_product = None
 
-        self.detections_catalogue = detections_catalogue
-        self.detections_catalogue_products = None
+        self._detections_catalogue = detections_catalogue
+        self._detections_catalogue_products = None
 
-        self.object_id_list_product = None
+        self._object_id_list_product = None
 
         # Might have to manually calculate this later
         self.stack_pixel_size_ratio = 1

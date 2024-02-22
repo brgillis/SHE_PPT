@@ -30,9 +30,11 @@ from SHE_PPT.products import she_object_id_list
 logger = getLogger(__name__)
 
 
-def create_object_id_list(id_list, workdir="."):
+def create_object_id_list(id_list, workdir=".", obs_ids=[1], pointing_ids=[1]):
 
     dpd = she_object_id_list.create_dpd_she_object_id_list(id_list=id_list)
+    dpd.Data.ObservationIdList = obs_ids
+    dpd.Data.PointingIdList = pointing_ids
 
     filename = get_allowed_filename("OBJ-IDS", "00", version=ppt_version, extension=".xml", subdir="")
 

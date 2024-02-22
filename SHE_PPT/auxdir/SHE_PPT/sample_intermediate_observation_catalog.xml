@@ -1,102 +1,113 @@
-<?xml version="1.0" ?>
-<ns1:DpdSheIntermediateObservationCatalog
-        xmlns:ns1="http://euclid.esa.org/schema/dpd/she/intermediateobservationcatalog">
-    <Header>
-        <ProductId>3a29af4d-094d-4d76-96fd-657e5a3d6be8</ProductId>
-        <ProductType>DpdSheIntermediateObservationCatalog</ProductType>
-        <SoftwareName>srzTN</SoftwareName>
-        <SoftwareRelease>qGIO</SoftwareRelease>
-        <EuclidPipelineSoftwareRelease>vYZ4</EuclidPipelineSoftwareRelease>
-        <ProdSDC>DPtEyQ1wU9WHK1ApMzoiKjaOx9kdcZ4mVd0mqzkwmtEhtvP1EvZDs8Gs</ProdSDC>
-        <DataSetRelease>v51tf</DataSetRelease>
-        <Purpose>INTERMEDIATE_DATA_RELEASE</Purpose>
-        <PlanId>wMqgl</PlanId>
-        <PPOId>2iEHv</PPOId>
-        <PipelineDefinitionId>de7Br</PipelineDefinitionId>
-        <PpoStatus>NA</PpoStatus>
-        <ManualValidationStatus>VALID</ManualValidationStatus>
-        <ExpirationDate>2020-06-01T15:32:48.995Z</ExpirationDate>
-        <ToBePublished>0</ToBePublished>
-        <Published>0</Published>
-        <Curator>SHE</Curator>
-        <CreationDate>2020-06-01T15:32:48.996Z</CreationDate>
-    </Header>
-    <Data>
-        <SpatialCoverage>
-            <Polygon>
-                <Vertex>
-                    <Position coordUnit="m/s2">
-                        <C1 unit="min">0.0</C1>
-                        <C2 unit="stars">0.0</C2>
-                    </Position>
-                    <SmallCircle>
-                        <Pole coordUnit="ph">
-                            <C1 unit="km">0.0</C1>
-                            <C2 unit="Hz">1.0</C2>
-                        </Pole>
-                    </SmallCircle>
-                </Vertex>
-            </Polygon>
-            <Circle>
-                <Center coordUnit="um">
-                    <C1 unit="Ry">1.0</C1>
-                    <C2 unit="J/mol/K">1.0</C2>
-                </Center>
-                <Radius unit="solRad">1.0</Radius>
-            </Circle>
-            <BBox>
-                <RaCenter unit="ct">1.0</RaCenter>
-                <DecCenter unit="pixel">1.0</DecCenter>
-                <RaHalfWidth unit="J/mol/K">0.0</RaHalfWidth>
-                <DecHalfWidth unit="Hz">0.0</DecHalfWidth>
-            </BBox>
-        </SpatialCoverage>
-        <SpectralCoverage>
-            <Filter>
-                <Name>NIR_J</Name>
-                <MagId>UNKNOWN</MagId>
-                <CentralWavelength>9.0</CentralWavelength>
-                <MinWavelength>0.0</MinWavelength>
-                <MaxWavelength>2.0</MaxWavelength>
-                <Reference>lTlWy</Reference>
-                <HasFringes>-97767178</HasFringes>
-            </Filter>
-        </SpectralCoverage>
-        <CatalogDescription>
-            <CatalogOrigin>MASTER_DEEP</CatalogOrigin>
-            <CatalogType>NOT_PROXY</CatalogType>
-            <PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-            <CatalogName>She-Intermediate</CatalogName>
-            <CatalogFormatHDU>1</CatalogFormatHDU>
-        </CatalogDescription>
-        <ObservationId>-1</ObservationId>
-        <IslandLabel>aXINP</IslandLabel>
-        <IntData>0</IntData>
-        <FloatData>0.0</FloatData>
-        <StringData></StringData>
-        <DataStorage>
-            <DataContainer filestatus="PROPOSED">
-                <FileName>None</FileName>
-            </DataContainer>
-        </DataStorage>
-        <ExtraDataStorage>
-            <DataContainer filestatus="ARCHIVED_ONLINE">
-                <FileName>None</FileName>
-            </DataContainer>
-        </ExtraDataStorage>
-    </Data>
-    <QualityFlags>
-        <DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false
-        </DummyFlag>
-        <AuxiliaryFlags flagName="G12VY" flagged="true" maxLimit="-9.0" minLimit="-5.0" xpath="SQ07X">false
-        </AuxiliaryFlags>
-    </QualityFlags>
-    <Parameters>
-        <Parameter>
-            <Key>cbmuz</Key>
-            <Description>UVVNy</Description>
-            <StringValue>Ks2eA</StringValue>
-            <Unit>MX9Dh</Unit>
-        </Parameter>
-    </Parameters>
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:DpdSheIntermediateObservationCatalog xmlns:ns1="http://ecdm.euclid-ec.org/schema/dpd/she/intermediateobservationcatalog">
+	<Header>
+		<ProductId>CqOLf</ProductId>
+		<ProductType>DpdSheIntermediateObservationCatalog</ProductType>
+		<SoftwareName>8briH</SoftwareName>
+		<SoftwareRelease>rBl2MVwe7P</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>Mu66NavYmx</EuclidPipelineSoftwareRelease>
+		<ProdSDC>6R8BnYRIvVfIk</ProdSDC>
+		<DataSetRelease>o4h8D</DataSetRelease>
+		<Purpose>DATA_RELEASE</Purpose>
+		<PlanId>zMxSS</PlanId>
+		<PPOId>OnTjv9gnl7Vd0gev53YTfyoeCsXPDBN4K3fx2dviwGbWIc4nVKntRjIOYFtDEJNbQAhI8IN9NxDVQcKjVlWve0iuUhHSKWn9tiIQJbIBDF6</PPOId>
+		<PipelineDefinitionId>ObmS3</PipelineDefinitionId>
+		<PpoStatus>t3CCB</PpoStatus>
+		<ManualValidationStatus>VALID</ManualValidationStatus>
+		<ProductNotifiedToBeChecked>NOTTOBECHECKED</ProductNotifiedToBeChecked>
+		<AutomatedValidationStatus>UNKNOWN</AutomatedValidationStatus>
+		<ExpirationDate>2023-04-12T19:53:46.325Z</ExpirationDate>
+		<ToBePublished>-434465538</ToBePublished>
+		<Published>-476037098</Published>
+		<Curator>Cioxz</Curator>
+		<CreationDate>2023-04-12T19:53:46.326Z</CreationDate>
+	</Header>
+	<Data>
+		<SpatialCoverage unit="lx">
+			<Polygon>
+				<Vertex>
+					<C1>-3.0</C1>
+					<C2>8.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="uJy">
+							<C1 unit="C">0.0</C1>
+							<C2 unit="um">1.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</Polygon>
+			<MultiPolygon>
+				<Vertex>
+					<C1>5.0</C1>
+					<C2>-3.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="J/m3/K4">
+							<C1 unit="mm">0.0</C1>
+							<C2 unit="uJy">0.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</MultiPolygon>
+			<Circle>
+				<Center coordUnit="R">
+					<C1 unit="W/m2">1.0</C1>
+					<C2 unit="GHz">0.0</C2>
+				</Center>
+				<Radius unit="m2/s2/K">0.0</Radius>
+			</Circle>
+			<BBox>
+				<RaCenter>-7.0</RaCenter>
+				<DecCenter>-1.0</DecCenter>
+				<RaHalfWidth>-6.0</RaHalfWidth>
+				<DecHalfWidth>0.0</DecHalfWidth>
+			</BBox>
+		</SpatialCoverage>
+		<SpectralCoverage>
+			<Filter>
+				<Name>HSC_UD_i</Name>
+				<MagId>K</MagId>
+				<CentralWavelength>1.0</CentralWavelength>
+				<MinWavelength>-3.0</MinWavelength>
+				<MaxWavelength>-1.0</MaxWavelength>
+				<Reference>qUzHK</Reference>
+				<HasFringes>-82526174</HasFringes>
+			</Filter>
+		</SpectralCoverage>
+		<CatalogDescription>
+			<CatalogOrigin>RANDOM_WIDE</CatalogOrigin>
+			<CatalogType>PROXY</CatalogType>
+			<PathToCatalogFile>2anvn</PathToCatalogFile>
+			<CatalogName>She-Val-Regauss-Shear</CatalogName>
+			<CatalogFormatHDU>-721790902</CatalogFormatHDU>
+		</CatalogDescription>
+		<ObservationId>5769044052648134688</ObservationId>
+		<CalblockId>z5est</CalblockId>
+		<CalblockVariant>dhrxn</CalblockVariant>
+		<IslandLabel>rnGjr</IslandLabel>
+		<IntData>-8503059568725000288</IntData>
+		<FloatData>-1.0</FloatData>
+		<StringData>PYXpQ</StringData>
+		<DataStorage>
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+		<ExtraDataStorage>
+			<DataContainer filestatus="ARCHIVED_OFFLINE" checksumMethod="Adler32" checksumValue="6nbvg">
+				<FileName>pK3OJ7TmhO6not5oZsLFpDbcVB99SyRpX</FileName>
+			</DataContainer>
+		</ExtraDataStorage>
+	</Data>
+	<QualityFlags>
+		<DummyFlag xpath="//Data/Some/Path/To/Quality/Parameter" minLimit="0.05" maxLimit="10.0" flagged="true">false</DummyFlag>
+		<AuxiliaryFlags flagName="N(`@K)][qtK[:=,l:gNz~v\D9cO/#7DH)a0|d&amp;vZ&amp;:tBt%h)aL24zI" xpath="oE71v" minLimit="-7.0" maxLimit="-9.0" flagged="false">false</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>A9A73</Key>
+			<Description>uBc24</Description>
+			<StringValue>mGQqB</StringValue>
+			<Unit>bJ0ZR</Unit>
+		</Parameter>
+	</Parameters>
 </ns1:DpdSheIntermediateObservationCatalog>

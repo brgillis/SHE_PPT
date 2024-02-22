@@ -1,52 +1,53 @@
-<?xml version="1.0" ?>
-<ns1:DpdSheKsbCalibration xmlns:ns1="http://euclid.esa.org/schema/dpd/she/ksbcalibration">
-    <Header>
-        <ProductId>eb0d4c3a-dd29-4b68-87fe-ded67257272a</ProductId>
-        <ProductType>DpdSheKsbCalibration</ProductType>
-        <SoftwareName>fUVMy</SoftwareName>
-        <SoftwareRelease>RR7</SoftwareRelease>
-        <EuclidPipelineSoftwareRelease>AFZAs</EuclidPipelineSoftwareRelease>
-        <ProdSDC>HNX6OGt6</ProdSDC>
-        <DataSetRelease>ltWio</DataSetRelease>
-        <Purpose>VALIDATION</Purpose>
-        <PlanId>M60a9</PlanId>
-        <PPOId>KzJso</PPOId>
-        <PipelineDefinitionId>h3o17</PipelineDefinitionId>
-        <PpoStatus>NA</PpoStatus>
-        <ManualValidationStatus>UNKNOWN</ManualValidationStatus>
-        <ExpirationDate>2020-06-04T15:36:52.007Z</ExpirationDate>
-        <ToBePublished>0</ToBePublished>
-        <Published>0</Published>
-        <Curator>SHE</Curator>
-        <CreationDate>2020-06-04T15:36:52.01Z</CreationDate>
-    </Header>
-    <Data>
-        <ValidityRange>
-            <Name>Dummy</Name>
-            <Type>sheKsbCalibration</Type>
-            <TimestampStart>2020-06-04T15:36:52.011Z</TimestampStart>
-            <TimestampEnd>9999-06-04T15:36:52.011Z</TimestampEnd>
-        </ValidityRange>
-        <KsbCalibrationFileList>
-            <DataStorage format="she.ksbTraining" version="8.0">
-                <DataContainer filestatus="PROPOSED">
-                    <FileName>None</FileName>
-                </DataContainer>
-            </DataStorage>
-        </KsbCalibrationFileList>
-    </Data>
-    <QualityFlags>
-        <DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false
-        </DummyFlag>
-        <AuxiliaryFlags flagName="pXiBI" flagged="true" maxLimit="3.0" minLimit="-6.0" xpath="oRm4C">true
-        </AuxiliaryFlags>
-    </QualityFlags>
-    <Parameters>
-        <Parameter>
-            <Key>tYoHG</Key>
-            <Description>i1zTi</Description>
-            <StringValue>QsBdO</StringValue>
-            <Unit>XEFuc</Unit>
-        </Parameter>
-    </Parameters>
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:DpdSheKsbCalibration xmlns:ns1="http://ecdm.euclid-ec.org/schema/dpd/she/ksbcalibration">
+	<Header>
+		<ProductId>piKM6</ProductId>
+		<ProductType>DpdSheKsbCalibration</ProductType>
+		<SoftwareName>ytpHe</SoftwareName>
+		<SoftwareRelease>N7lsqgDoTn</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>oFTrGrp</EuclidPipelineSoftwareRelease>
+		<ProdSDC>Z1HFza9VH17t2ieecYDL9tP2j1VQATU7JUxOoowz9GCrtXhyWJagBynAUE8YkrpDItml4oSaWWBRBBjRSGO5ljOqU1o5yar</ProdSDC>
+		<DataSetRelease>urOwJ</DataSetRelease>
+		<Purpose>DATA_RELEASE</Purpose>
+		<PlanId>LzlcW</PlanId>
+		<PPOId>1QaRvDUC9dg3GSfGi1sObZIK03OSamxoItefNoYZcJDbNhYILOq0htKzt9ypUtUUMT23s4qXmPSwV8zm0ocHant77pLAp1dKauS48xQaNdsPDOepSjYYzdud59KaDUpWWG8ijEQgxKaYebEJyVebIS9Y8Du1SapWq90Myv21fYt43EEicgEh1mseMBDVuPJvyEptpGgfc5r5CAS1iAkQKbXgsLfUyF9a98NunPndtXEDpEv164VQtu0fYsYLj0VlvY9zrwOnnUryAipNKH</PPOId>
+		<PipelineDefinitionId>99UBL</PipelineDefinitionId>
+		<PpoStatus>hvKct</PpoStatus>
+		<ManualValidationStatus>INVALID</ManualValidationStatus>
+		<ProductNotifiedToBeChecked>NOTTOBECHECKED</ProductNotifiedToBeChecked>
+		<AutomatedValidationStatus>INVALID</AutomatedValidationStatus>
+		<ExpirationDate>2023-04-12T19:53:45.817Z</ExpirationDate>
+		<ToBePublished>-1893021414</ToBePublished>
+		<Published>-1554529282</Published>
+		<Curator>LAYpv</Curator>
+		<CreationDate>2023-04-12T19:53:45.817Z</CreationDate>
+	</Header>
+	<Data>
+		<PlaceholderData>None</PlaceholderData>
+		<ValidityRange>
+			<Name>KSGkR</Name>
+			<Type>euT7w</Type>
+			<TimestampStart>2023-04-12T19:53:45.818Z</TimestampStart>
+			<TimestampEnd>2023-04-12T19:53:45.818Z</TimestampEnd>
+		</ValidityRange>
+		<KsbCalibrationFileList>
+			<DataStorage format="she.ksbTraining" version="8.0">
+				<DataContainer filestatus="PROPOSED">
+					<FileName>None</FileName>
+				</DataContainer>
+			</DataStorage>
+		</KsbCalibrationFileList>
+	</Data>
+	<QualityFlags>
+		<DummyFlag xpath="//Data/Some/Path/To/Quality/Parameter" minLimit="0.05" maxLimit="10.0" flagged="true">true</DummyFlag>
+		<AuxiliaryFlags flagName="6^[]KLq$Mk(AO_tfw?B!U^L2qBt=YL2]u&amp;oCR4Mw" xpath="yUtTR" minLimit="0.0" maxLimit="-1.0" flagged="true">false</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>LpXyj</Key>
+			<Description>W6GGC</Description>
+			<StringValue>53Vq3</StringValue>
+			<Unit>CInY6</Unit>
+		</Parameter>
+	</Parameters>
 </ns1:DpdSheKsbCalibration>

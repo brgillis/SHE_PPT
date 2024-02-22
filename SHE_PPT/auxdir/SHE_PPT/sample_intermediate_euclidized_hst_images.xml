@@ -1,54 +1,54 @@
-<?xml version="1.0" ?>
-<ns1:DpdSheIntermediateEuclidizedHstImages
-        xmlns:ns1="http://euclid.esa.org/schema/dpd/she/intermediateeuclidizedhstimages">
-    <Header>
-        <ProductId>6d7f3775-c6e4-4691-9df0-3b7f37985390</ProductId>
-        <ProductType>DpdSheIntermediateEuclidizedHstImages</ProductType>
-        <SoftwareName>8uaIQ</SoftwareName>
-        <SoftwareRelease>gprnq</SoftwareRelease>
-        <EuclidPipelineSoftwareRelease>whh</EuclidPipelineSoftwareRelease>
-        <ProdSDC>SDC-UK</ProdSDC>
-        <DataSetRelease>BlOIN</DataSetRelease>
-        <Purpose>TEST</Purpose>
-        <PlanId>d7L0o</PlanId>
-        <PPOId>ioYWQ</PPOId>
-        <PipelineDefinitionId>HGsZC</PipelineDefinitionId>
-        <PpoStatus>NA</PpoStatus>
-        <ManualValidationStatus>UNKNOWN</ManualValidationStatus>
-        <ExpirationDate>2020-06-01T15:31:13.132Z</ExpirationDate>
-        <ToBePublished>0</ToBePublished>
-        <Published>0</Published>
-        <Curator>SHE</Curator>
-        <CreationDate>2020-06-01T15:31:13.133Z</CreationDate>
-    </Header>
-    <Data>
-        <ValidityRange>
-            <Name>Dummy</Name>
-            <Type>SheIntermediateEuclidizedHstImages</Type>
-            <TimestampStart>2020-06-01T15:31:13.134Z</TimestampStart>
-            <TimestampEnd>9999-06-01T15:31:13.136Z</TimestampEnd>
-        </ValidityRange>
-        <EuclidizedHSTObjectList>
-            <DataStorage filestatus="ARCHIVED_ONLINE">
-                <FileName>None</FileName>
-            </DataStorage>
-            <PsfStorage filestatus="ARCHIVED_OFFLINE">
-                <FileName>None</FileName>
-            </PsfStorage>
-        </EuclidizedHSTObjectList>
-    </Data>
-    <QualityFlags>
-        <DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true
-        </DummyFlag>
-        <AuxiliaryFlags flagName="rLAWo" flagged="false" maxLimit="-4.0" minLimit="-1.0" xpath="6jeww">false
-        </AuxiliaryFlags>
-    </QualityFlags>
-    <Parameters>
-        <Parameter>
-            <Key>MSaF5</Key>
-            <Description>z80Ac</Description>
-            <StringValue>8gLny</StringValue>
-            <Unit>T5pa3</Unit>
-        </Parameter>
-    </Parameters>
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:DpdSheIntermediateEuclidizedHstImages xmlns:ns1="http://ecdm.euclid-ec.org/schema/dpd/she/intermediateeuclidizedhstimages">
+	<Header>
+		<ProductId>OHwdJ</ProductId>
+		<ProductType>DpdSheIntermediateEuclidizedHstImages</ProductType>
+		<SoftwareName>xyRMS</SoftwareName>
+		<SoftwareRelease>9pou8</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>0aeMhvw</EuclidPipelineSoftwareRelease>
+		<ProdSDC>SiFa0tQZFxsqcm8UiPcgdLJkOJEQDLv6MPTY9nOaEDHRhuEPQedDLXrRkErEH</ProdSDC>
+		<DataSetRelease>EQVvQ</DataSetRelease>
+		<Purpose>PRODUCTION</Purpose>
+		<PlanId>9hP7B</PlanId>
+		<PPOId>oWtnqBgW0jcRf2Ps0FMxBrWIR9LvDMs9Vp8AMaRa5Wqu6KJ0sUmKDgEUbDYcuDrTUZAqzEvQfWWpVR6ElVmECfnc8Wv9tOqqTgOSA2mfZrJYqy4UGPnxS3qk9Zwkg0H</PPOId>
+		<PipelineDefinitionId>xPODY</PipelineDefinitionId>
+		<PpoStatus>Vnqfy</PpoStatus>
+		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
+		<ProductNotifiedToBeChecked>TOBECHECKED</ProductNotifiedToBeChecked>
+		<AutomatedValidationStatus>VALID</AutomatedValidationStatus>
+		<ExpirationDate>2023-04-12T19:53:45.986Z</ExpirationDate>
+		<ToBePublished>997785579</ToBePublished>
+		<Published>-2097803289</Published>
+		<Curator>DU71T</Curator>
+		<CreationDate>2023-04-12T19:53:45.986Z</CreationDate>
+	</Header>
+	<Data>
+		<PlaceholderData>None</PlaceholderData>
+		<ValidityRange>
+			<Name>I9m5Y</Name>
+			<Type>n0eWo</Type>
+			<TimestampStart>2023-04-12T19:53:45.987Z</TimestampStart>
+			<TimestampEnd>2023-04-12T19:53:45.987Z</TimestampEnd>
+		</ValidityRange>
+		<EuclidizedHSTObjectList>
+			<DataStorage filestatus="PROPOSED" checksumMethod="MD5" checksumValue="JhIPH">
+				<FileName>Ql3LMrkUs4OWXbgh0f</FileName>
+			</DataStorage>
+			<PsfStorage filestatus="ARCHIVED_ONLINE" checksumMethod="MD5" checksumValue="vwCO1">
+				<FileName>awsQe674lLp89ZY7kp2QiS4S</FileName>
+			</PsfStorage>
+		</EuclidizedHSTObjectList>
+	</Data>
+	<QualityFlags>
+		<DummyFlag xpath="//Data/Some/Path/To/Quality/Parameter" minLimit="0.05" maxLimit="10.0" flagged="true">true</DummyFlag>
+		<AuxiliaryFlags flagName="&lt;YHbR*!`X`gs}IZ`RDU?m56@3s9iMYc-&lt;^196rdu=!" xpath="ePfy7" minLimit="-10.0" maxLimit="-7.0" flagged="true">true</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>cIBzY</Key>
+			<Description>KqLEH</Description>
+			<StringValue>QmGgr</StringValue>
+			<Unit>NVdrP</Unit>
+		</Parameter>
+	</Parameters>
 </ns1:DpdSheIntermediateEuclidizedHstImages>

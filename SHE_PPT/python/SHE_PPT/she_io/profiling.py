@@ -24,15 +24,13 @@
 
 """
 
+import logging
 import os
 import psutil
 import time
 
-import ElementsKernel.Logging as log
-
-logger = log.getLogger(__name__)
-
-LOG_LEVEL = logger.info
+logger = logging.getLogger(__name__)
+LOG_LEVEL = logging.DEBUG
 
 
 def io_stats(f):
@@ -55,7 +53,8 @@ def io_stats(f):
 
         open_files = len(p.open_files())
 
-        LOG_LEVEL(
+        logger.log(
+            LOG_LEVEL,
             "IOSTATS: %s: read_ops = %d, read = %d kB, open_files = %d, rss = %i, vms = %i, walltime = %fs",
             f.__qualname__,
             read1 - read0,

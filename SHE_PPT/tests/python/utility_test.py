@@ -23,11 +23,14 @@ __updated__ = "2021-02-10"
 from copy import deepcopy
 from dataclasses import dataclass
 from typing import Optional
+from contextlib import nullcontext
 
 import numpy as np
 import pytest
 from astropy.io.fits import BinTableHDU, HDUList, Header, PrimaryHDU
 from astropy.table import Table
+
+from EL_NullValue.NullValueDefinition import NullValueDefinition
 
 from SHE_PPT.constants.fits import CCDID_LABEL, EXTNAME_LABEL, SCI_TAG
 from SHE_PPT.constants.misc import S_NON_FILENAMES
@@ -36,7 +39,8 @@ from SHE_PPT.utility import (all_are_zero, any_is_inf, any_is_inf_nan_or_masked,
                              any_is_nan, any_is_nan_or_masked, any_is_zero, coerce_to_list, find_extension,
                              get_attr_with_index, get_detector, get_nested_attr, get_release_from_version,
                              is_any_type_of_none, is_inf, is_inf_nan_or_masked, is_inf_or_nan, is_masked, is_nan,
-                             is_nan_or_masked, is_zero, join_without_none, neq, set_attr_with_index, set_nested_attr, )
+                             is_nan_or_masked, is_zero, join_without_none, neq, set_attr_with_index, set_nested_attr,
+                             get_null_value_for_dtype, )
 
 
 @dataclass
@@ -290,3 +294,40 @@ class TestUtility(SheTestCase):
 
         # Test with a default
         assert join_without_none([None], default="default") == "default"
+
+    @pytest.mark.parametrize(
+            "test_input, expected, context",
+            [
+                (str, NullValueDefinition.STRING, nullcontext()),
+                ("U", NullValueDefinition.STRING, nullcontext()),
+                ("|S", NullValueDefinition.STRING, nullcontext()),
+                (np.int16, NullValueDefinition.SHORT, nullcontext()),
+                ("<h", NullValueDefinition.SHORT, nullcontext()),
+                (">h", NullValueDefinition.SHORT, nullcontext()),
+                (np.int32, NullValueDefinition.INT, nullcontext()),
+                ("<i", NullValueDefinition.INT, nullcontext()),
+                (">i", NullValueDefinition.INT, nullcontext()),
+                (np.int64, NullValueDefinition.LONG_LONG, nullcontext()),
+                ("<l", NullValueDefinition.LONG_LONG, nullcontext()),
+                (">l", NullValueDefinition.LONG_LONG, nullcontext()),
+                (np.float32, NullValueDefinition.FLOAT, nullcontext()),
+                ("<f4", NullValueDefinition.FLOAT, nullcontext()),
+                (">f4", NullValueDefinition.FLOAT, nullcontext()),
+                (np.float64, NullValueDefinition.DOUBLE, nullcontext()),
+                ("<f8", NullValueDefinition.DOUBLE, nullcontext()),
+                (">f8", NullValueDefinition.DOUBLE, nullcontext()),
+                (np.complex64, NullValueDefinition.COMPLEX_FLOAT, nullcontext()),
+                ("<c8", NullValueDefinition.COMPLEX_FLOAT, nullcontext()),
+                (">c8", NullValueDefinition.COMPLEX_FLOAT, nullcontext()),
+                (np.complex128, NullValueDefinition.COMPLEX_DOUBLE, nullcontext()),
+                ("<c16", NullValueDefinition.COMPLEX_DOUBLE, nullcontext()),
+                (">c16", NullValueDefinition.COMPLEX_DOUBLE, nullcontext()),
+                (object, None, pytest.raises(TypeError)),
+                (np.uint32, None, pytest.raises(TypeError)),
+                ("fake_dtype", None, pytest.raises(TypeError)),
+            ])
+    def test_get_null_value_for_dtype(self, test_input, expected, context):
+        """Checks that the correct null type is returned (or exception is raised)"""
+        with context:
+            # NOTE: we use "is" to compare as we can be comparing NaNs in addition to numbers/strings
+            assert get_null_value_for_dtype(test_input) is expected

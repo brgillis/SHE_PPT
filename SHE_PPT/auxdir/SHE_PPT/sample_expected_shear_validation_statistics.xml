@@ -1,92 +1,102 @@
-<?xml version="1.0" ?>
-<ns1:DpdSheExpectedShearValidationStatistics
-        xmlns:ns1="http://euclid.esa.org/schema/dpd/she/expectedshearvalidationstatistics">
-    <Header>
-        <ProductId>e5288559-b96e-46b3-bf76-add55091b9fd</ProductId>
-        <ProductType>DpdSheExpectedShearValidationStatistics</ProductType>
-        <SoftwareName>EFjTh</SoftwareName>
-        <SoftwareRelease>yEODz</SoftwareRelease>
-        <EuclidPipelineSoftwareRelease>98ked</EuclidPipelineSoftwareRelease>
-        <ProdSDC>14Yw6MhhqDjEmqnq8stSz09SCHXkRbs39Pj63LUV34FKGkCzyZ5hHNC</ProdSDC>
-        <DataSetRelease>ZWDel</DataSetRelease>
-        <Purpose>REPROCESSING</Purpose>
-        <PlanId>dXwy7</PlanId>
-        <PPOId>9QLgK</PPOId>
-        <PipelineDefinitionId>Viu2k</PipelineDefinitionId>
-        <PpoStatus>NA</PpoStatus>
-        <ManualValidationStatus>INVALID</ManualValidationStatus>
-        <ExpirationDate>2020-06-01T14:51:57.903Z</ExpirationDate>
-        <ToBePublished>0</ToBePublished>
-        <Published>0</Published>
-        <Curator>SHE</Curator>
-        <CreationDate>2020-06-01T14:51:57.904Z</CreationDate>
-    </Header>
-    <Data>
-        <SpatialCoverage>
-            <Polygon>
-                <Vertex>
-                    <Position coordUnit="N">
-                        <C1 unit="mag/kpc">0.0</C1>
-                        <C2 unit="pc">0.0</C2>
-                    </Position>
-                    <SmallCircle>
-                        <Pole coordUnit="T">
-                            <C1 unit="km/s/Mpc">0.0</C1>
-                            <C2 unit="eV">1.0</C2>
-                        </Pole>
-                    </SmallCircle>
-                </Vertex>
-            </Polygon>
-            <Circle>
-                <Center coordUnit="uNewton/kg">
-                    <C1 unit="s">0.0</C1>
-                    <C2 unit="Myr">1.0</C2>
-                </Center>
-                <Radius unit="Hz">0.0</Radius>
-            </Circle>
-            <BBox>
-                <RaCenter unit="mag/arcsec2">1.0</RaCenter>
-                <DecCenter unit="ph">1.0</DecCenter>
-                <RaHalfWidth unit="m3/s2">0.0</RaHalfWidth>
-                <DecHalfWidth unit="W/m2/K4">0.0</DecHalfWidth>
-            </BBox>
-        </SpatialCoverage>
-        <SpectralCoverage>
-            <Filter>
-                <Name>DECAM_i</Name>
-                <MagId>Y</MagId>
-                <CentralWavelength>-10.0</CentralWavelength>
-                <MinWavelength>-6.0</MinWavelength>
-                <MaxWavelength>-3.0</MaxWavelength>
-                <Reference>P9FFE</Reference>
-                <HasFringes>85268162</HasFringes>
-            </Filter>
-        </SpectralCoverage>
-        <CatalogDescription>
-            <CatalogOrigin>SIMULATED_WIDE</CatalogOrigin>
-            <CatalogType>PROXY</CatalogType>
-            <PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-            <CatalogName>She-Ex-Shear-Validation</CatalogName>
-            <CatalogFormatHDU>1</CatalogFormatHDU>
-        </CatalogDescription>
-        <DataStorage>
-            <DataContainer filestatus="ARCHIVED_ONLINE">
-                <FileName>None</FileName>
-            </DataContainer>
-        </DataStorage>
-    </Data>
-    <QualityFlags>
-        <DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false
-        </DummyFlag>
-        <AuxiliaryFlags flagName="p9qc9" flagged="false" maxLimit="-4.0" minLimit="3.0" xpath="sOWBU">true
-        </AuxiliaryFlags>
-    </QualityFlags>
-    <Parameters>
-        <Parameter>
-            <Key>UznCF</Key>
-            <Description>5w5mc</Description>
-            <StringValue>Y7hRc</StringValue>
-            <Unit>CCUNl</Unit>
-        </Parameter>
-    </Parameters>
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:DpdSheExpectedShearValidationStatistics xmlns:ns1="http://ecdm.euclid-ec.org/schema/dpd/she/expectedshearvalidationstatistics">
+	<Header>
+		<ProductId>lMLRp</ProductId>
+		<ProductType>DpdSheExpectedShearValidationStatistics</ProductType>
+		<SoftwareName>2mQhV</SoftwareName>
+		<SoftwareRelease>2IP</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>iOZ</EuclidPipelineSoftwareRelease>
+		<ProdSDC>VBJdH2z6rvxigMj37bBJgJYxeZXqNfmK44mfmncx8SGyBJnK5ARYOu08vXlJjHFO</ProdSDC>
+		<DataSetRelease>66pv3</DataSetRelease>
+		<Purpose>VALIDATION</Purpose>
+		<PlanId>7tJnv</PlanId>
+		<PPOId>EknyO8SHJBJWe22OKGz5nY7DnDFqFmS3nfF0lVGqRG2UYDCQENcVQ7yseBEI51ezi5DMAHqU3VVNQEJHLx</PPOId>
+		<PipelineDefinitionId>qDX7e</PipelineDefinitionId>
+		<PpoStatus>jnoNM</PpoStatus>
+		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
+		<ProductNotifiedToBeChecked>UNKNOWN</ProductNotifiedToBeChecked>
+		<AutomatedValidationStatus>UNKNOWN</AutomatedValidationStatus>
+		<ExpirationDate>2023-04-12T19:53:46.59Z</ExpirationDate>
+		<ToBePublished>-1472050855</ToBePublished>
+		<Published>1053919818</Published>
+		<Curator>Vw8G0</Curator>
+		<CreationDate>2023-04-12T19:53:46.59Z</CreationDate>
+	</Header>
+	<Data>
+		<SpatialCoverage unit="uarcsec">
+			<Polygon>
+				<Vertex>
+					<C1>-2.0</C1>
+					<C2>7.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="pixel">
+							<C1 unit="s/mas/km/yr">1.0</C1>
+							<C2 unit="mag/arcsec2">1.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</Polygon>
+			<MultiPolygon>
+				<Vertex>
+					<C1>-1.0</C1>
+					<C2>6.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="J/mol/K">
+							<C1 unit="km">0.0</C1>
+							<C2 unit="F">1.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</MultiPolygon>
+			<Circle>
+				<Center coordUnit="s/mas/km/yr">
+					<C1 unit="Angstrom/pixel">0.0</C1>
+					<C2 unit="C">1.0</C2>
+				</Center>
+				<Radius unit="AU">0.0</Radius>
+			</Circle>
+			<BBox>
+				<RaCenter>-8.0</RaCenter>
+				<DecCenter>8.0</DecCenter>
+				<RaHalfWidth>4.0</RaHalfWidth>
+				<DecHalfWidth>-9.0</DecHalfWidth>
+			</BBox>
+		</SpatialCoverage>
+		<SpectralCoverage>
+			<Filter>
+				<Name>HSC_i</Name>
+				<MagId>G</MagId>
+				<CentralWavelength>0.0</CentralWavelength>
+				<MinWavelength>3.0</MinWavelength>
+				<MaxWavelength>-3.0</MaxWavelength>
+				<Reference>RtSY5</Reference>
+				<HasFringes>-304968259</HasFringes>
+			</Filter>
+		</SpectralCoverage>
+		<CatalogDescription>
+			<CatalogOrigin>SIMULATED_WIDE</CatalogOrigin>
+			<CatalogType>NOT_PROXY</CatalogType>
+			<PathToCatalogFile>ezdFL</PathToCatalogFile>
+			<CatalogName>Spe-Spectro-Z-Catalog</CatalogName>
+			<CatalogFormatHDU>-1546136894</CatalogFormatHDU>
+		</CatalogDescription>
+		<PlaceholderData>None</PlaceholderData>
+		<DataStorage>
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+	</Data>
+	<QualityFlags>
+		<DummyFlag xpath="//Data/Some/Path/To/Quality/Parameter" minLimit="0.05" maxLimit="10.0" flagged="false">false</DummyFlag>
+		<AuxiliaryFlags flagName="9=f.OR_.eregEMFwPmLBPw90?6eRd$}!{\?Wu(B*sG(Lw.zTz" xpath="JSvVX" minLimit="2.0" maxLimit="-1.0" flagged="false">false</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>YiM4m</Key>
+			<Description>qIFlR</Description>
+			<StringValue>0uq3x</StringValue>
+			<Unit>VIAtp</Unit>
+		</Parameter>
+	</Parameters>
 </ns1:DpdSheExpectedShearValidationStatistics>

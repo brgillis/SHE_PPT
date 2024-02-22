@@ -1,101 +1,115 @@
-<?xml version="1.0" ?>
-<ns1:DpdShePlaceholderTileCatalog xmlns:ns1="http://euclid.esa.org/schema/dpd/she/placeholdertilecatalog">
-    <Header>
-        <ProductId>b58bfda7-cc44-411d-9133-7ef601cbe065</ProductId>
-        <ProductType>DpdShePlaceholderTileCatalog</ProductType>
-        <SoftwareName>N3vCm</SoftwareName>
-        <SoftwareRelease>C9BX</SoftwareRelease>
-        <EuclidPipelineSoftwareRelease>cqaP1</EuclidPipelineSoftwareRelease>
-        <ProdSDC>mNJrTsu5RD5rnxsCFzPQFjvOwtAgpO84Zaw2pSvB7tOcnRz01Hhs9KxroodbY9btclU0SvvsKvbxzebB7znCR1CAh8IPDG9glM9
-        </ProdSDC>
-        <DataSetRelease>2E3Pg</DataSetRelease>
-        <Purpose>PRODUCTION</Purpose>
-        <PlanId>dCxhC</PlanId>
-        <PPOId>zZFIZ</PPOId>
-        <PipelineDefinitionId>ebPl5</PipelineDefinitionId>
-        <PpoStatus>NA</PpoStatus>
-        <ManualValidationStatus>UNKNOWN</ManualValidationStatus>
-        <ExpirationDate>2020-06-03T15:49:56.353Z</ExpirationDate>
-        <ToBePublished>0</ToBePublished>
-        <Published>0</Published>
-        <Curator>SHE</Curator>
-        <CreationDate>2020-06-03T15:49:56.355Z</CreationDate>
-    </Header>
-    <Data>
-        <SpatialCoverage>
-            <Polygon>
-                <Vertex>
-                    <Position coordUnit="deg/minute">
-                        <C1 unit="um2">0.0</C1>
-                        <C2 unit="lx">0.0</C2>
-                    </Position>
-                    <SmallCircle>
-                        <Pole coordUnit="lyr">
-                            <C1 unit="deg">1.0</C1>
-                            <C2 unit="uarcsec/yr">0.0</C2>
-                        </Pole>
-                    </SmallCircle>
-                </Vertex>
-            </Polygon>
-            <Circle>
-                <Center coordUnit="a">
-                    <C1 unit="arcsec/um">1.0</C1>
-                    <C2 unit="solLum">0.0</C2>
-                </Center>
-                <Radius unit="lyr">0.0</Radius>
-            </Circle>
-            <BBox>
-                <RaCenter unit="J/K/kg">1.0</RaCenter>
-                <DecCenter unit="TeV">1.0</DecCenter>
-                <RaHalfWidth unit="pc">0.0</RaHalfWidth>
-                <DecHalfWidth unit="V">0.0</DecHalfWidth>
-            </BBox>
-        </SpatialCoverage>
-        <SpectralCoverage>
-            <Filter>
-                <Name>DECAM_i</Name>
-                <MagId>Y</MagId>
-                <CentralWavelength>-10.0</CentralWavelength>
-                <MinWavelength>-6.0</MinWavelength>
-                <MaxWavelength>-3.0</MaxWavelength>
-                <Reference>P9FFE</Reference>
-                <HasFringes>85268162</HasFringes>
-            </Filter>
-        </SpectralCoverage>
-        <CatalogDescription>
-            <CatalogOrigin>SIMULATED_WIDE</CatalogOrigin>
-            <CatalogType>NOT_PROXY</CatalogType>
-            <PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-            <CatalogName>She-Placeholder</CatalogName>
-            <CatalogFormatHDU>1</CatalogFormatHDU>
-        </CatalogDescription>
-        <TileIndex>-1</TileIndex>
-        <IntData>0</IntData>
-        <FloatData>0.0</FloatData>
-        <StringData>zocGU</StringData>
-        <DataStorage>
-            <DataContainer filestatus="PROPOSED">
-                <FileName>None</FileName>
-            </DataContainer>
-        </DataStorage>
-        <ExtraDataStorage>
-            <DataContainer filestatus="PROPOSED">
-                <FileName>None</FileName>
-            </DataContainer>
-        </ExtraDataStorage>
-    </Data>
-    <QualityFlags>
-        <DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true
-        </DummyFlag>
-        <AuxiliaryFlags flagName="NevEO" flagged="false" maxLimit="2.0" minLimit="-1.0" xpath="jPiCk">true
-        </AuxiliaryFlags>
-    </QualityFlags>
-    <Parameters>
-        <Parameter>
-            <Key>1CA1p</Key>
-            <Description>vVCeK</Description>
-            <StringValue>xtf3M</StringValue>
-            <Unit>8YTmx</Unit>
-        </Parameter>
-    </Parameters>
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:DpdShePlaceholderTileCatalog xmlns:ns1="http://ecdm.euclid-ec.org/schema/dpd/she/placeholdertilecatalog">
+	<Header>
+		<ProductId>4MoJP</ProductId>
+		<ProductType>DpdShePlaceholderTileCatalog</ProductType>
+		<SoftwareName>GnWCX</SoftwareName>
+		<SoftwareRelease>0b3Nk4</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>84j</EuclidPipelineSoftwareRelease>
+		<ProdSDC>gbhAMlYZ0rq9wupV3OkEZX1sunR8RgQOBTVa6OGtGXn5TMTlZUM96Q6AAkqdNdYGVW2eRyIavEjZ6ijZupYzg0uv3</ProdSDC>
+		<DataSetRelease>O7O12</DataSetRelease>
+		<Purpose>QUICK_RELEASE</Purpose>
+		<PlanId>F4YTr</PlanId>
+		<PPOId>0SfydOfTgZTLjL07ugMbe</PPOId>
+		<PipelineDefinitionId>0LW57</PipelineDefinitionId>
+		<PpoStatus>IOx7Y</PpoStatus>
+		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
+		<ProductNotifiedToBeChecked>NOTTOBECHECKED</ProductNotifiedToBeChecked>
+		<AutomatedValidationStatus>VALID</AutomatedValidationStatus>
+		<ExpirationDate>2023-04-12T19:53:47.648Z</ExpirationDate>
+		<ToBePublished>-2632122</ToBePublished>
+		<Published>255290122</Published>
+		<Curator>9YWNd</Curator>
+		<CreationDate>2023-04-12T19:53:47.649Z</CreationDate>
+	</Header>
+	<Data>
+		<SpatialCoverage unit="mag/arcsec2">
+			<Polygon>
+				<Vertex>
+					<C1>8.0</C1>
+					<C2>4.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="pix">
+							<C1 unit="1/m">1.0</C1>
+							<C2 unit="yr">0.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</Polygon>
+			<MultiPolygon>
+				<Vertex>
+					<C1>-2.0</C1>
+					<C2>2.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="pix">
+							<C1 unit="pc">0.0</C1>
+							<C2 unit="R">1.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</MultiPolygon>
+			<Circle>
+				<Center coordUnit="CelsiusDeg">
+					<C1 unit="mA">0.0</C1>
+					<C2 unit="lm">0.0</C2>
+				</Center>
+				<Radius unit="ct">0.0</Radius>
+			</Circle>
+			<BBox>
+				<RaCenter>3.0</RaCenter>
+				<DecCenter>-9.0</DecCenter>
+				<RaHalfWidth>-10.0</RaHalfWidth>
+				<DecHalfWidth>9.0</DecHalfWidth>
+			</BBox>
+		</SpatialCoverage>
+		<SpectralCoverage>
+			<Filter>
+				<Name>UKIRT_k</Name>
+				<MagId>R</MagId>
+				<CentralWavelength>-3.0</CentralWavelength>
+				<MinWavelength>-4.0</MinWavelength>
+				<MaxWavelength>2.0</MaxWavelength>
+				<Reference>6xSDx</Reference>
+				<HasFringes>1512849277</HasFringes>
+			</Filter>
+		</SpectralCoverage>
+		<CatalogDescription>
+			<CatalogOrigin>RANDOM_DEEP</CatalogOrigin>
+			<CatalogType>NOT_PROXY</CatalogType>
+			<PathToCatalogFile>Lnssk</PathToCatalogFile>
+			<CatalogName>Le3-Wl-Input-ProxyShear-Catalog</CatalogName>
+			<CatalogFormatHDU>1672505794</CatalogFormatHDU>
+		</CatalogDescription>
+		<TileIndex>1002716985766386338</TileIndex>
+		<PatchIdList>1</PatchIdList>
+		<ObservationIdList>1</ObservationIdList>
+		<CalblockIdList>tpeso</CalblockIdList>
+		<CalblockVariantList>Wi76x</CalblockVariantList>
+		<IslandLabel>XBDAY</IslandLabel>
+		<IntData>4872813362107985734</IntData>
+		<FloatData>8.0</FloatData>
+		<StringData>hnGz6</StringData>
+		<DataStorage>
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+		<ExtraDataStorage>
+			<DataContainer filestatus="ARCHIVED_ONLINE" checksumMethod="Adler32" checksumValue="8iErS">
+				<FileName>asY1PIrdCr2FPLrV7LzQ3wR561OtVpg6a6vE9mFRPqR5eow3B1D8z</FileName>
+			</DataContainer>
+		</ExtraDataStorage>
+	</Data>
+	<QualityFlags>
+		<DummyFlag xpath="//Data/Some/Path/To/Quality/Parameter" minLimit="0.05" maxLimit="10.0" flagged="true">false</DummyFlag>
+		<AuxiliaryFlags flagName="B00f\)]2M&gt;D&lt;1W&amp;R~r%&lt;qlMCB]{ZZNP66kA~ok&quot;x`T.J0d_I!q-8M7." xpath="VQ1j8" minLimit="-9.0" maxLimit="4.0" flagged="false">false</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>Kgm1R</Key>
+			<Description>0UwZw</Description>
+			<StringValue>xwwNA</StringValue>
+			<Unit>cIdki</Unit>
+		</Parameter>
+	</Parameters>
 </ns1:DpdShePlaceholderTileCatalog>

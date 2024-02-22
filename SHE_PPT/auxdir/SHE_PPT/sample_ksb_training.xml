@@ -1,97 +1,108 @@
-<?xml version="1.0" ?>
-<ns1:DpdSheKsbTraining xmlns:ns1="http://euclid.esa.org/schema/dpd/she/ksbtraining">
-    <Header>
-        <ProductId>d8faa723-4739-4d21-a948-b3b8f5fc7772</ProductId>
-        <ProductType>DpdSheKsbTraining</ProductType>
-        <SoftwareName>z8FUw</SoftwareName>
-        <SoftwareRelease>RbR</SoftwareRelease>
-        <EuclidPipelineSoftwareRelease>HvMI</EuclidPipelineSoftwareRelease>
-        <ProdSDC>SDC-UK</ProdSDC>
-        <DataSetRelease>kZkLV</DataSetRelease>
-        <Purpose>REPROCESSING</Purpose>
-        <PlanId>o8dyT</PlanId>
-        <PPOId>rK20s</PPOId>
-        <PipelineDefinitionId>BF0kX</PipelineDefinitionId>
-        <PpoStatus>NA</PpoStatus>
-        <ManualValidationStatus>UNKNOWN</ManualValidationStatus>
-        <ExpirationDate>2020-06-03T15:06:27.402Z</ExpirationDate>
-        <ToBePublished>0</ToBePublished>
-        <Published>0</Published>
-        <Curator>SHE</Curator>
-        <CreationDate>2020-06-03T15:06:27.404Z</CreationDate>
-    </Header>
-    <Data>
-        <SpatialCoverage>
-            <Polygon>
-                <Vertex>
-                    <Position coordUnit="m2">
-                        <C1 unit="N">1.0</C1>
-                        <C2 unit="a">0.0</C2>
-                    </Position>
-                    <SmallCircle>
-                        <Pole coordUnit="arcsec/yr">
-                            <C1 unit="m2">1.0</C1>
-                            <C2 unit="arcsec">0.0</C2>
-                        </Pole>
-                    </SmallCircle>
-                </Vertex>
-            </Polygon>
-            <Circle>
-                <Center coordUnit="R">
-                    <C1 unit="ppm/K">1.0</C1>
-                    <C2 unit="J/mol/K">0.0</C2>
-                </Center>
-                <Radius unit="km">0.0</Radius>
-            </Circle>
-            <BBox>
-                <RaCenter unit="MeV">1.0</RaCenter>
-                <DecCenter unit="c/y">0.0</DecCenter>
-                <RaHalfWidth unit="arcsec/um">0.0</RaHalfWidth>
-                <DecHalfWidth unit="m/s">1.0</DecHalfWidth>
-            </BBox>
-        </SpatialCoverage>
-        <SpectralCoverage>
-            <Filter>
-                <Name>NIR_Y</Name>
-                <MagId>R</MagId>
-                <CentralWavelength>9.0</CentralWavelength>
-                <MinWavelength>-6.0</MinWavelength>
-                <MaxWavelength>6.0</MaxWavelength>
-                <Reference>O5tWH</Reference>
-                <HasFringes>-1995768412</HasFringes>
-            </Filter>
-        </SpectralCoverage>
-        <CatalogDescription>
-            <CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
-            <CatalogType>NOT_PROXY</CatalogType>
-            <PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-            <CatalogName>She-Ksb-Training</CatalogName>
-            <CatalogFormatHDU>1</CatalogFormatHDU>
-        </CatalogDescription>
-        <ValidityRange>
-            <Name>Dummy</Name>
-            <Type>sheKsbTraining</Type>
-            <TimestampStart>2020-06-03T15:06:27.415Z</TimestampStart>
-            <TimestampEnd>9999-06-03T15:06:27.415Z</TimestampEnd>
-        </ValidityRange>
-        <DataStorage format="she.ksbTraining" version="8.0">
-            <DataContainer filestatus="ARCHIVED_CERNVMFS">
-                <FileName>None</FileName>
-            </DataContainer>
-        </DataStorage>
-    </Data>
-    <QualityFlags>
-        <DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true
-        </DummyFlag>
-        <AuxiliaryFlags flagName="nJI2R" flagged="true" maxLimit="-1.0" minLimit="-1.0" xpath="hiMcj">false
-        </AuxiliaryFlags>
-    </QualityFlags>
-    <Parameters>
-        <Parameter>
-            <Key>fgjBa</Key>
-            <Description>qNabt</Description>
-            <StringValue>olCvJ</StringValue>
-            <Unit>XoZ7F</Unit>
-        </Parameter>
-    </Parameters>
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:DpdSheKsbTraining xmlns:ns1="http://ecdm.euclid-ec.org/schema/dpd/she/ksbtraining">
+	<Header>
+		<ProductId>A2at4</ProductId>
+		<ProductType>DpdSheKsbTraining</ProductType>
+		<SoftwareName>HnM9F</SoftwareName>
+		<SoftwareRelease>CD9</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>LUIDBTAb</EuclidPipelineSoftwareRelease>
+		<ProdSDC>GlwZScFMzVFaDbAT9Dr3Cv5IPvlR8VGpK5cRfKM4tpHLTEliotUcjQkekpjzxqN1r1HfRXesC2ZVUiveOmL86fmRWjvvNsy3OWmaNrW</ProdSDC>
+		<DataSetRelease>0bBOz</DataSetRelease>
+		<Purpose>ON_THE_FLY</Purpose>
+		<PlanId>rQrQM</PlanId>
+		<PPOId>vLx7wMGlml79YIN3v0iELFSETNXw3YZchfbaxvDmxc0jqW9bGfu5lnQo9CCSL3nkEgE0eXWWw7IuzLtaaPVuYUt020JBZdtY5rsiH8DcuNWlsaoKl4r5TguEwbCmWcsWnFc</PPOId>
+		<PipelineDefinitionId>VnYoc</PipelineDefinitionId>
+		<PpoStatus>VDVjQ</PpoStatus>
+		<ManualValidationStatus>UNKNOWN</ManualValidationStatus>
+		<ProductNotifiedToBeChecked>NOTTOBECHECKED</ProductNotifiedToBeChecked>
+		<AutomatedValidationStatus>UNKNOWN</AutomatedValidationStatus>
+		<ExpirationDate>2023-04-12T19:53:48.087Z</ExpirationDate>
+		<ToBePublished>1126160501</ToBePublished>
+		<Published>-1636515077</Published>
+		<Curator>dJXDp</Curator>
+		<CreationDate>2023-04-12T19:53:48.088Z</CreationDate>
+	</Header>
+	<Data>
+		<SpatialCoverage unit="kpc">
+			<Polygon>
+				<Vertex>
+					<C1>-1.0</C1>
+					<C2>9.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="m3/kh/s2">
+							<C1 unit="mas">1.0</C1>
+							<C2 unit="eV">1.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</Polygon>
+			<MultiPolygon>
+				<Vertex>
+					<C1>-7.0</C1>
+					<C2>0.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="s">
+							<C1 unit="deg2">0.0</C1>
+							<C2 unit="um/um">1.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</MultiPolygon>
+			<Circle>
+				<Center coordUnit="rad/day">
+					<C1 unit="nm">0.0</C1>
+					<C2 unit="km">0.0</C2>
+				</Center>
+				<Radius unit="m2/s">1.0</Radius>
+			</Circle>
+			<BBox>
+				<RaCenter>7.0</RaCenter>
+				<DecCenter>-4.0</DecCenter>
+				<RaHalfWidth>3.0</RaHalfWidth>
+				<DecHalfWidth>-3.0</DecHalfWidth>
+			</BBox>
+		</SpatialCoverage>
+		<SpectralCoverage>
+			<Filter>
+				<Name>VIS</Name>
+				<MagId>UNKNOWN</MagId>
+				<CentralWavelength>-8.0</CentralWavelength>
+				<MinWavelength>4.0</MinWavelength>
+				<MaxWavelength>6.0</MaxWavelength>
+				<Reference>l6dC0</Reference>
+				<HasFringes>-1214839930</HasFringes>
+			</Filter>
+		</SpectralCoverage>
+		<CatalogDescription>
+			<CatalogOrigin>SIMULATED_WIDE</CatalogOrigin>
+			<CatalogType>PROXY</CatalogType>
+			<PathToCatalogFile>WcY2B</PathToCatalogFile>
+			<CatalogName>Le3-Wl-Input-ProxyShear-Catalog</CatalogName>
+			<CatalogFormatHDU>-1153105466</CatalogFormatHDU>
+		</CatalogDescription>
+		<PlaceholderData>None</PlaceholderData>
+		<ValidityRange>
+			<Name>SWVTD</Name>
+			<Type>H2TD6</Type>
+			<TimestampStart>2023-04-12T19:53:48.092Z</TimestampStart>
+			<TimestampEnd>2023-04-12T19:53:48.092Z</TimestampEnd>
+		</ValidityRange>
+		<DataStorage format="she.ksbTraining" version="8.0">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+	</Data>
+	<QualityFlags>
+		<DummyFlag xpath="//Data/Some/Path/To/Quality/Parameter" minLimit="0.05" maxLimit="10.0" flagged="true">false</DummyFlag>
+		<AuxiliaryFlags flagName="r&amp;a:K}fzY^A[vEF}a&quot;U2XTM\1m$!{Gd=c2EO33u/7O}wL[?Hh71^wIJ&lt;B^t3@~Z|_NYKnv*UgGM2[KW_CAaWfXHNO[x&quot;" xpath="PolgS" minLimit="3.0" maxLimit="-8.0" flagged="false">false</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>4BkLa</Key>
+			<Description>mRlT3</Description>
+			<StringValue>kgpSn</StringValue>
+			<Unit>9i4dJ</Unit>
+		</Parameter>
+	</Parameters>
 </ns1:DpdSheKsbTraining>

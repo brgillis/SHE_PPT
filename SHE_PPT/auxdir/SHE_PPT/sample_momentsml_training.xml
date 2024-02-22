@@ -1,98 +1,108 @@
-<?xml version="1.0" ?>
-<ns1:DpdSheMomentsMlTraining xmlns:ns1="http://euclid.esa.org/schema/dpd/she/momentsmltraining">
-    <Header>
-        <ProductId>c5bb700d-58e3-494e-b343-b3614037dae8</ProductId>
-        <ProductType>DpdSheMomentsMlTraining</ProductType>
-        <SoftwareName>bfzh5</SoftwareName>
-        <SoftwareRelease>YG0X</SoftwareRelease>
-        <EuclidPipelineSoftwareRelease>qFbIm</EuclidPipelineSoftwareRelease>
-        <ProdSDC>eU8pbcggPYOP2DFXytvyLZVApuzDk4dwrGfAjoo886JuTvjZGcEXxyaIgTzFbLkFePey8mSBbwIqK9jRsZImxoQNmFU9ypVvIg4eu
-        </ProdSDC>
-        <DataSetRelease>NJqXg</DataSetRelease>
-        <Purpose>DATA_RELEASE</Purpose>
-        <PlanId>96jLk</PlanId>
-        <PPOId>pprou</PPOId>
-        <PipelineDefinitionId>mD9Ft</PipelineDefinitionId>
-        <PpoStatus>NA</PpoStatus>
-        <ManualValidationStatus>UNKNOWN</ManualValidationStatus>
-        <ExpirationDate>2020-06-04T16:41:16.818Z</ExpirationDate>
-        <ToBePublished>0</ToBePublished>
-        <Published>0</Published>
-        <Curator>SHE</Curator>
-        <CreationDate>2020-06-04T16:41:16.822Z</CreationDate>
-    </Header>
-    <Data>
-        <SpatialCoverage>
-            <Polygon>
-                <Vertex>
-                    <Position coordUnit="keV">
-                        <C1 unit="mV">0.0</C1>
-                        <C2 unit="TeV">0.0</C2>
-                    </Position>
-                    <SmallCircle>
-                        <Pole coordUnit="H">
-                            <C1 unit="rad/day">0.0</C1>
-                            <C2 unit="T">0.0</C2>
-                        </Pole>
-                    </SmallCircle>
-                </Vertex>
-            </Polygon>
-            <Circle>
-                <Center coordUnit="m3/kh/s2">
-                    <C1 unit="m">1.0</C1>
-                    <C2 unit="h">0.0</C2>
-                </Center>
-                <Radius unit="ADU">1.0</Radius>
-            </Circle>
-            <BBox>
-                <RaCenter unit="arcsec/yr">0.0</RaCenter>
-                <DecCenter unit="S">0.0</DecCenter>
-                <RaHalfWidth unit="rad/s">1.0</RaHalfWidth>
-                <DecHalfWidth unit="eV">1.0</DecHalfWidth>
-            </BBox>
-        </SpatialCoverage>
-        <SpectralCoverage>
-            <Filter>
-                <Name>VIS</Name>
-                <MagId>K</MagId>
-                <CentralWavelength>9.0</CentralWavelength>
-                <MinWavelength>-8.0</MinWavelength>
-                <MaxWavelength>-2.0</MaxWavelength>
-                <Reference>GtTrw</Reference>
-                <HasFringes>-128828438</HasFringes>
-            </Filter>
-        </SpectralCoverage>
-        <CatalogDescription>
-            <CatalogOrigin>MASTER_DEEP</CatalogOrigin>
-            <CatalogType>NOT_PROXY</CatalogType>
-            <PathToCatalogFile>Data.DataStorage.DataContainer.FileName</PathToCatalogFile>
-            <CatalogName>She-Placeholder</CatalogName>
-            <CatalogFormatHDU>1</CatalogFormatHDU>
-        </CatalogDescription>
-        <ValidityRange>
-            <Name>Dummy</Name>
-            <Type>sheMomentsMlTraining</Type>
-            <TimestampStart>2020-06-04T16:41:16.834Z</TimestampStart>
-            <TimestampEnd>9999-06-04T16:41:16.834Z</TimestampEnd>
-        </ValidityRange>
-        <DataStorage>
-            <DataContainer filestatus="DELETED">
-                <FileName>None</FileName>
-            </DataContainer>
-        </DataStorage>
-    </Data>
-    <QualityFlags>
-        <DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false
-        </DummyFlag>
-        <AuxiliaryFlags flagName="S6Ge5" flagged="false" maxLimit="-7.0" minLimit="-4.0" xpath="DlE4i">false
-        </AuxiliaryFlags>
-    </QualityFlags>
-    <Parameters>
-        <Parameter>
-            <Key>6x60N</Key>
-            <Description>vpZvR</Description>
-            <StringValue>bEEYx</StringValue>
-            <Unit>cAwKS</Unit>
-        </Parameter>
-    </Parameters>
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:DpdSheMomentsMlTraining xmlns:ns1="http://ecdm.euclid-ec.org/schema/dpd/she/momentsmltraining">
+	<Header>
+		<ProductId>D921e</ProductId>
+		<ProductType>DpdSheMomentsMlTraining</ProductType>
+		<SoftwareName>2sMEz</SoftwareName>
+		<SoftwareRelease>B72Q</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>0n7Qn</EuclidPipelineSoftwareRelease>
+		<ProdSDC>uTDn3fT5BatCBsn5yH1I9josQDqTXzLsS45wVnkJNfnxO04QtXBm7JyYaQgoyc0Q737kUqTo0hD9HViDnvBmEdzs8X5SU7X3ehBvYSgb0L7wAjsxp890</ProdSDC>
+		<DataSetRelease>b17vn</DataSetRelease>
+		<Purpose>TEST</Purpose>
+		<PlanId>5zEVg</PlanId>
+		<PPOId>KiN3KZNsJWXkQrmn1BfFcrIi5cikA0vrUPDxX9EgBgSbK</PPOId>
+		<PipelineDefinitionId>qLNhR</PipelineDefinitionId>
+		<PpoStatus>JQvOD</PpoStatus>
+		<ManualValidationStatus>INVALID</ManualValidationStatus>
+		<ProductNotifiedToBeChecked>NOTTOBECHECKED</ProductNotifiedToBeChecked>
+		<AutomatedValidationStatus>VALID</AutomatedValidationStatus>
+		<ExpirationDate>2023-04-12T19:53:46.858Z</ExpirationDate>
+		<ToBePublished>747050750</ToBePublished>
+		<Published>711827310</Published>
+		<Curator>Ax0wh</Curator>
+		<CreationDate>2023-04-12T19:53:46.858Z</CreationDate>
+	</Header>
+	<Data>
+		<SpatialCoverage unit="ph">
+			<Polygon>
+				<Vertex>
+					<C1>-1.0</C1>
+					<C2>-5.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="count">
+							<C1 unit="CelsiusDeg">0.0</C1>
+							<C2 unit="Pa">0.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</Polygon>
+			<MultiPolygon>
+				<Vertex>
+					<C1>1.0</C1>
+					<C2>-8.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="kHz">
+							<C1 unit="Myr">1.0</C1>
+							<C2 unit="mag/arcsec2">1.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</MultiPolygon>
+			<Circle>
+				<Center coordUnit="Angstrom">
+					<C1 unit="mm">1.0</C1>
+					<C2 unit="uPa">0.0</C2>
+				</Center>
+				<Radius unit="km/s/kpc">0.0</Radius>
+			</Circle>
+			<BBox>
+				<RaCenter>-8.0</RaCenter>
+				<DecCenter>-1.0</DecCenter>
+				<RaHalfWidth>-10.0</RaHalfWidth>
+				<DecHalfWidth>-10.0</DecHalfWidth>
+			</BBox>
+		</SpatialCoverage>
+		<SpectralCoverage>
+			<Filter>
+				<Name>HSC_r</Name>
+				<MagId>UNKNOWN</MagId>
+				<CentralWavelength>9.0</CentralWavelength>
+				<MinWavelength>-3.0</MinWavelength>
+				<MaxWavelength>3.0</MaxWavelength>
+				<Reference>CNor7</Reference>
+				<HasFringes>1618318120</HasFringes>
+			</Filter>
+		</SpectralCoverage>
+		<CatalogDescription>
+			<CatalogOrigin>SIMULATED_WIDE</CatalogOrigin>
+			<CatalogType>NOT_PROXY</CatalogType>
+			<PathToCatalogFile>E75AB</PathToCatalogFile>
+			<CatalogName>She-Ksb-Training</CatalogName>
+			<CatalogFormatHDU>1150577382</CatalogFormatHDU>
+		</CatalogDescription>
+		<PlaceholderData>None</PlaceholderData>
+		<ValidityRange>
+			<Name>anp4p</Name>
+			<Type>CN1Mr</Type>
+			<TimestampStart>2023-04-12T19:53:46.862Z</TimestampStart>
+			<TimestampEnd>2023-04-12T19:53:46.862Z</TimestampEnd>
+		</ValidityRange>
+		<DataStorage>
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+	</Data>
+	<QualityFlags>
+		<DummyFlag xpath="//Data/Some/Path/To/Quality/Parameter" minLimit="0.05" maxLimit="10.0" flagged="false">true</DummyFlag>
+		<AuxiliaryFlags flagName="[E1DcB&gt;ah7N]V3aAX;g/.Mz02mct\Weih0+t+@n'su'uNVBiq8c^N" xpath="D2Bv1" minLimit="2.0" maxLimit="4.0" flagged="false">false</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>Bqd1c</Key>
+			<Description>AjRTY</Description>
+			<StringValue>urZO0</StringValue>
+			<Unit>Rgz36</Unit>
+		</Parameter>
+	</Parameters>
 </ns1:DpdSheMomentsMlTraining>

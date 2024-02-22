@@ -43,13 +43,14 @@ from EL_PythonUtils.utilities import time_to_timestamp
 from ElementsServices.DataSync import DataSync
 from ElementsServices.DataSync.DataSynchronizer import DownloadFailed
 from ST_DM_FilenameProvider.FilenameProvider import FileNameProvider
-from ST_DataModelBindings.sys_stub import CreateFromDocument
+from ST_DM_DmUtils.DmUtils import read_product_metadata, save_product_metadata
 from . import __version__
 from .constants.classes import ShearEstimationMethods
 from .constants.misc import DATA_SUBDIR, DEFAULT_WORKDIR, FILENAME_NONE
 from .constants.test_data import SYNC_CONF, TEST_DATADIR
 from .logging import getLogger
 from .utility import get_release_from_version, is_any_type_of_none, join_without_none
+
 
 # Constant strings for default values in filenames
 DEFAULT_TYPE_NAME = "UNKNOWN-FILE-TYPE"
@@ -951,6 +952,9 @@ def write_listfile(listfile_name: str,
         it is not necessary for this to be provided (and it will be ignored if it is).
     """
 
+    # This could be input as a pathlib.Path object, so convert it to a string here to avoid errors later on
+    listfile_name = str(listfile_name)
+
     qualified_listfile_name = get_qualified_filename(filename=listfile_name, workdir=workdir)
 
     log_method = _get_optional_log_method(log_info)
@@ -1142,8 +1146,7 @@ def _write_xml_product(product: Any, xml_filename: str, workdir: str) -> None:
 
     qualified_xml_filename = get_qualified_filename(xml_filename, workdir)
 
-    with open(str(qualified_xml_filename), "w") as f:
-        f.write(product.toDOM().toprettyxml(encoding="utf-8").decode("utf-8"))
+    save_product_metadata(product, qualified_xml_filename)
 
 
 @deprecated_renamed_argument("allow_pickled",
@@ -1223,11 +1226,7 @@ def _read_xml_product(xml_filename: str, workdir: str) -> Any:
 
     qualified_xml_filename = find_file(xml_filename, workdir)
 
-    with open(str(qualified_xml_filename), "r") as f:
-        xml_string = f.read()
-
-    # Create a new product instance using the proper data product dictionary
-    product = CreateFromDocument(xml_string)
+    product = read_product_metadata(qualified_xml_filename)
 
     return product
 

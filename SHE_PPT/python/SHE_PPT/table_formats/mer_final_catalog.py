@@ -98,6 +98,9 @@ class MerFinalCatalogFormat(SheTableFormat):
         # Euclid unique source identifier
         setattr(self, "ID", self.set_column_properties("OBJECT_ID", fits_dtype="K", dtype=">i8", comment="",
                                                        is_optional=False))
+        # GAIA source ID
+        setattr(self, "GAIA_ID", self.set_column_properties("GAIA_ID", fits_dtype="K", dtype=">i8", comment="",
+                                                            is_optional=True))
         # Source barycenter RA coordinate
         setattr(self, "gal_x_world", self.set_column_properties(
             "RIGHT_ASCENSION", dtype=">f8",

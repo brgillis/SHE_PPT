@@ -27,6 +27,7 @@
 import os
 import json
 import gc
+from itertools import repeat
 
 from abc import ABC, abstractmethod
 
@@ -48,18 +49,20 @@ from .profiling import io_stats
 
 logger = log.getLogger(__name__)
 
+QUADRANT_DICT = {0: "E", 1: "F", 2: "G", 3: "H", "E": 0, "F": 1, "G": 2, "H": 3}
 
-def read_vis_data(vis_listfile, seg_listfile=None, workdir=".", method="astropy", hdf5_listfile=None):
+
+def read_vis_data(vis_prods, seg_prods=None, workdir=".", method="astropy", hdf5_files=None):
     """
-    Reads listfiles of DpdVisCalibratedFrame (and optionally dpdSheExposureReprojectedSegmentationMap),
+    Reads a list of DpdVisCalibratedFrame (and optionally dpdSheExposureReprojectedSegmentationMap),
     returning a list of VisExposure objects
 
     Inputs:
-     - vis_listfile: a listfile of the vis products
-     - seg_listfile: a listfile of the reprojected segmentation map products
+     - vis_prods: a list of VIS product filenames
+     - seg_prods: a list of reprojected segmentation map product filenames
      - workdir: the workdir
      - method: the IO method to use... options are astropy, fitsio, hdf5
-     - hdf5_listfile: the listfile of hdf5 files to use (only if method == "hdf5")
+     - hdf5_files: a list of hdf5 filenames to use (only if method == "hdf5")
 
     returns:
      - vis_exposures: a list of VisExposure objects
@@ -72,10 +75,6 @@ def read_vis_data(vis_listfile, seg_listfile=None, workdir=".", method="astropy"
         raise ValueError("VIS IO method %s not know. Choose from %s" % (method, "astropy, fitsio, hdf5"))
 
     # Regardless of the method, we always need the VIS products
-    logger.info("Opening VIS listfile %s", os.path.join(workdir, vis_listfile))
-
-    with open(os.path.join(workdir, vis_listfile), "r") as f:
-        vis_prods = json.load(f)
     vis_dpds = [read_product_metadata(os.path.join(workdir, p)) for p in vis_prods]
 
     n_exps = len(vis_dpds)
@@ -86,9 +85,6 @@ def read_vis_data(vis_listfile, seg_listfile=None, workdir=".", method="astropy"
     # HDF5 is different to the other two methods as it does not need the FITS files,
     # so deal with this first and return
     if method == "hdf5":
-        with open(os.path.join(workdir, hdf5_listfile), "r") as f:
-            hdf5_files = json.load(f)
-
         if len(hdf5_files) != n_exps:
             raise ValueError(
                 "HDF5 listfile (len %d) has different length from vis listfile (len %d)" % (len(vis_dpds), n_exps)
@@ -108,9 +104,7 @@ def read_vis_data(vis_listfile, seg_listfile=None, workdir=".", method="astropy"
     bkgs = [os.path.join(datadir, p.Data.BackgroundStorage.DataContainer.FileName) for p in vis_dpds]
 
     # get the segmentation FITS file (if provided)
-    if seg_listfile:
-        with open(os.path.join(workdir, seg_listfile), "r") as f:
-            seg_prods = json.load(f)
+    if seg_prods:
         seg_dpds = [read_product_metadata(os.path.join(workdir, p)) for p in seg_prods]
 
         if len(seg_dpds) != len(vis_dpds):
@@ -121,7 +115,7 @@ def read_vis_data(vis_listfile, seg_listfile=None, workdir=".", method="astropy"
 
         segs = [os.path.join(datadir, p.Data.DataStorage.DataContainer.FileName) for p in seg_dpds]
     else:
-        segs = [None for _ in range(n_exps)]
+        segs = repeat(None, n_exps)
 
     vis_exposures = []
     for det, wgt, bkg, seg, dpd in zip(dets, wgts, bkgs, segs, vis_dpds):
@@ -241,15 +235,40 @@ class VisExposure(ABC):
 
     def _parse_detector_name(self, det_name):
         # detector name can be either its index (0-35) or its id (e.g. "5-3")
-        if type(det_name) is int:
+        if isinstance(det_name, (int, np.integer)):
             det_num = det_name
             i, j = (det_num // 6) + 1, (det_num % 6) + 1
             det_id = "%d-%d" % (i, j)
-        elif type(det_name) is str:
+        elif isinstance(det_name, str):
             det_id = det_name
             si, sj = det_name.split("-")
             i, j = int(si) - 1, int(sj) - 1
             det_num = 6 * i + j
+        else:
+            raise IndexError("Invalid detector name %s" % det_name)
+
+        if det_num >= self.n_detectors:
+            raise IndexError("Invalid detector name %s" % det_name)
+
+        return det_num, det_id
+
+    def _parse_quad_detector_name(self, det_name):
+        # CCD-based FITS: detector name can be either its index (0-35) or its id (e.g. "5-3")
+        # quadrant-based FITS: detector name can be either its index (0-143) or its id (e.g. "5-3.E")
+        if isinstance(det_name, (int, np.integer)):
+            det_num = det_name
+            i = (det_num // 4) // 6 + 1
+            j = (det_num // 4) % 6 + 1
+            k = det_num % 4
+            sk = QUADRANT_DICT[k]
+            det_id = "%d-%d.%s" % (i, j, sk)
+        elif isinstance(det_name, str):
+            det_id = det_name
+            si, sj, sk = det_name.replace("-", ".").split(".")
+            i = int(si) - 1
+            j = int(sj) - 1
+            k = QUADRANT_DICT[sk]
+            det_num = (6 * i + j) * 4 + k
         else:
             raise IndexError("Invalid detector name %s" % det_name)
 
@@ -279,7 +298,6 @@ class VisExposureAstropyFITS(VisExposure):
     def __init__(
         self, det_file, bkg_file=None, wgt_file=None, seg_file=None, load_rms=True, load_flg=True, memmap=True, dpd=None
     ):
-
         super().__init__()
 
         self._det_hdul = None
@@ -299,6 +317,7 @@ class VisExposureAstropyFITS(VisExposure):
         # open the files
 
         self._det_hdul = fits.open(det_file, memmap=memmap)
+        self.primary_header = self._det_hdul[0].header
 
         if bkg_file:
             self._bkg_hdul = fits.open(bkg_file, memmap=memmap)
@@ -317,7 +336,13 @@ class VisExposureAstropyFITS(VisExposure):
         # "proper" files have an empty PrimaryHDU, so have an offset of 1
         offset = len(self._det_hdul) % 3
         if offset == 2:
-            raise ValueError("File has an unexpected number of HDUs")
+            raise ValueError(f"File has an unexpected number of HDUs: {len(self._det_hdul)}")
+
+        # decide if it is CCD-based or quadrant-based
+        if "QUADID" in self._det_hdul[1].header:
+            self.quadrant_based = True
+        else:
+            self.quadrant_based = False
 
         self.sci_hdus = [hdu for hdu in self._det_hdul[offset::3]]
 
@@ -346,14 +371,12 @@ class VisExposureAstropyFITS(VisExposure):
 
     @io_stats
     def _create_detector(self, det_name):
-
         # Make a new class that inherits from np.ndarray.
         # Cutout2D converts all input data to np.ndarray (dtype=float64) unless it is already
         # an instance of this ndarray. This means we cast the HDUs to different dtypes.
         # This class disguises the hdu as an ndarray, allowing it to be used directly by Cutout2D.
         class CCDData(np.ndarray):
             def __new__(cls, hdu):
-
                 shape = tuple(hdu.shape)
                 dtype = hdu.dtype
 
@@ -366,7 +389,10 @@ class VisExposureAstropyFITS(VisExposure):
             def __getitem__(self, inds):
                 return self.hdu[inds]
 
-        det_num, det_id = self._parse_detector_name(det_name)
+        if self.quadrant_based:
+            det_num, det_id = self._parse_quad_detector_name(det_name)
+        else:
+            det_num, det_id = self._parse_detector_name(det_name)
 
         # get the data references for the detector object (where available)
         wcs = self._wcs_list[det_num]
@@ -390,7 +416,6 @@ class VisExposureFitsIO(VisExposure):
 
     @io_stats
     def __init__(self, det_file, bkg_file=None, wgt_file=None, seg_file=None, load_rms=True, load_flg=True, dpd=None):
-
         super().__init__()
 
         self._det_hdul = None
@@ -412,6 +437,7 @@ class VisExposureFitsIO(VisExposure):
         self._det_hdul = fitsio.FITS(
             det_file,
         )
+        self.primary_header = self._det_hdul[0].read_header()
 
         if bkg_file:
             self._bkg_hdul = fitsio.FITS(
@@ -437,6 +463,11 @@ class VisExposureFitsIO(VisExposure):
         offset = len(self._det_hdul) % 3
         if offset == 2:
             raise ValueError("File has an unexpected number of HDUs")
+
+        if "QUADID" in self._det_hdul[1].read_header():
+            self.quadrant_based = True
+        else:
+            self.quadrant_based = False
 
         self.sci_hdus = [hdu for hdu in self._det_hdul[offset::3]]
 
@@ -465,14 +496,12 @@ class VisExposureFitsIO(VisExposure):
 
     @io_stats
     def _create_detector(self, det_name):
-
         # Make a new class that inherits from np.ndarray.
         # Cutout2D converts all input data to np.ndarray unless it is already an instance
         # of this class. Numpy doesn't convert the fitsio.ImageHDU properly, breaking Cutout2D.
         # This class disguises the hdu as an ndarray, allowing it to be used directly.
         class CCDData(np.ndarray):
             def __new__(cls, hdu):
-
                 shape = tuple(hdu.get_dims())
                 dtype = hdu._get_image_numpy_dtype()
 
@@ -485,7 +514,10 @@ class VisExposureFitsIO(VisExposure):
             def __getitem__(self, inds):
                 return self.hdu[inds]
 
-        det_num, det_id = self._parse_detector_name(det_name)
+        if self.quadrant_based:
+            det_num, det_id = self._parse_quad_detector_name(det_name)
+        else:
+            det_num, det_id = self._parse_detector_name(det_name)
 
         # get the data references for the detector object (where available)
         wcs = self._wcs_list[det_num]
@@ -519,7 +551,14 @@ class VisExposureHDF5(VisExposure):
         det_list_json = self.file.attrs["det_list"]
         self.det_list = json.loads(det_list_json)
 
+        self.primary_header = fits.Header.fromstring(self.file.attrs["header"])
+
         self.n_detectors = len(self.det_list)
+
+        if "1-1.E" in self.det_list:
+            self.quadrant_based = True
+        else:
+            self.quadrant_based = False
 
         self.dpd = dpd
 
@@ -533,7 +572,10 @@ class VisExposureHDF5(VisExposure):
 
     @io_stats
     def _create_detector(self, det_name):
-        det_num, det_id = self._parse_detector_name(det_name)
+        if self.quadrant_based:
+            det_num, det_id = self._parse_quad_detector_name(det_name)
+        else:
+            det_num, det_id = self._parse_detector_name(det_name)
 
         try:
             detector_group = self.file[det_id]
@@ -546,7 +588,6 @@ class VisExposureHDF5(VisExposure):
         # class wraps it into an np.ndarray, preventing this conversion.
         class CCDData(np.ndarray):
             def __new__(cls, dataset):
-
                 shape = dataset.shape
                 dtype = dataset.dtype
 
@@ -579,7 +620,7 @@ def _correct_header(hdr):
     """Corrects strings in headers that may be shorter than 8 chars"""
     cards = []
     for c in hdr.cards:
-        if type(c.value) is str:
+        if isinstance(c.value, str):
             if len(c.value) < 8:
                 c.value = "%-8s" % c.value
         card = fits.Card(keyword=c.keyword, value=c.value, comment=c.comment)

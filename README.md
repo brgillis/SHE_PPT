@@ -7,7 +7,7 @@ SHE_PPT is a module with many common tools used throughout the SHE pipeline.
 * Processing Element Name: PF-SHE
 * Project Name: SHE_PPT
 * Profile: develop
-* Version: 9.5 (19/01/2023)
+* Version: 9.6 (2023/09/20)
 
 ## Contributors
 
@@ -46,19 +46,19 @@ N/A
 
 ### External Euclid Dependencies
 
-* [EL_Utils 1.2.4](https://gitlab.euclid-sgs.uk/EuclidLibs/EL_Utils)
-* [ST_DataModelTools 9.0.2](https://gitlab.euclid-sgs.uk/ST-DM/ST_DataModelTools)
-* [ST_DataModel 9.0.2](https://gitlab.euclid-sgs.uk/ST-DM/ST_DataModel)
-* [Elements 6.0.1](https://gitlab.euclid-sgs.uk/ST-TOOLS/Elements)
+* [EL_Utils 1.5.2](https://gitlab.euclid-sgs.uk/EuclidLibs/EL_Utils)
+* [ST_DataModelTools 9.2.2](https://gitlab.euclid-sgs.uk/ST-DM/ST_DataModelTools)
+* [ST_DataModel 9.2.0](https://gitlab.euclid-sgs.uk/ST-DM/ST_DataModel)
+* [Elements 6.2.1](https://gitlab.euclid-sgs.uk/ST-TOOLS/Elements)
 
 ### Configuration
 
-**EDEN 3.0**
+**EDEN 3.1**
 ```
-    - astropy 5.0
-    - scipy 1.7.1
-    - numpy 1.20.3
-    - python 3.9.9
+    - astropy 5.2.1
+    - scipy 1.10.1
+    - numpy 1.23.5
+    - python 3.9.15
 ```
 
 ### Dependant Projects

@@ -1,65 +1,117 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<dpd-phz-outputcatalog:DpdPhzPfOutputCatalog xmlns:dpd-phz-outputcatalog="http://euclid.esa.org/schema/dpd/phz/outputcatalog" xmlns:sys="http://euclid.esa.org/schema/sys" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:pro-phz="http://euclid.esa.org/schema/pro/phz" xmlns:bas-cat="http://euclid.esa.org/schema/bas/cat" xmlns:bas-cot="http://euclid.esa.org/schema/bas/cot" xmlns:bas-imp-stc="http://euclid.esa.org/schema/bas/imp/stc" xmlns:bas-dtd="http://euclid.esa.org/schema/bas/dtd" xmlns:bas-utd="http://euclid.esa.org/schema/bas/utd" xmlns:bas-fit="http://euclid.esa.org/schema/bas/fit" xmlns:sys-dss="http://euclid.esa.org/schema/sys/dss" xmlns:bas-dqc="http://euclid.esa.org/schema/bas/dqc" xmlns:bas-ppr="http://euclid.esa.org/schema/bas/ppr">
- <Header>
-  <ProductId>PHZ_Prod_1.0.10-ON_THE_FLY-cdabin-PLAN-0019-MFYFV40V-20210724-223928-010-ecdm_phz_catalog-0</ProductId>
-  <ProductType>dpdPhzPfOutputCatalog</ProductType>
-  <SoftwareName>NA</SoftwareName>
-  <SoftwareRelease>0.0</SoftwareRelease>
-  <EuclidPipelineSoftwareRelease>0.0</EuclidPipelineSoftwareRelease>
-  <ProdSDC>SDC-UK</ProdSDC>
-  <DataSetRelease>SC8_MAIN_V0</DataSetRelease>
-  <Purpose>ON_THE_FLY</Purpose>
-  <PlanId>PHZ_Prod_1.0.10-ON_THE_FLY-cdabin-PLAN-0019</PlanId>
-  <PPOId>PHZ_Prod_1.0.10-ON_THE_FLY-cdabin-PLAN-0019-MFYFV40V-20210724-223928-010</PPOId>
-  <PipelineDefinitionId>PHZ_Prod_1.0.10</PipelineDefinitionId>
-  <PipelineRun>PHZ_Prod_1.0.10-ON_THE_FLY-cdabin-PLAN-0019-MFYFV40V-20210724-223928-010</PipelineRun>
-  <ExitStatusCode>0</ExitStatusCode>
-  <ManualValidationStatus>UNKNOWN</ManualValidationStatus>
-  <ExpirationDate>2021-07-25T07:20:58.250000Z</ExpirationDate>
-  <ToBePublished>1</ToBePublished>
-  <Published>false</Published>
-  <Curator>Curator0</Curator>
-  <CreationDate>2021-07-25T07:20:58.250000Z</CreationDate>
- </Header>
- <Data>
-  <SpatialCoverage>
-   <Polygon>
-    <Vertex>
-     <Position coordUnit="deg">
-      <C1>234.96520671305768</C1>
-      <C2>47.15520832535937</C2>
-     </Position>
-    </Vertex>
-    <Vertex>
-     <Position coordUnit="deg">
-      <C1>235.70549630844954</C1>
-      <C2>47.24721107688839</C2>
-     </Position>
-    </Vertex>
-   </Polygon>
-  </SpatialCoverage>
-  <CatalogDescription>
-   <CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
-   <CatalogType>NOT_PROXY</CatalogType>
-   <PathToCatalogFile>Data.PhzCatalog.DataContainer.FileName</PathToCatalogFile>
-   <CatalogName>Phz-PhotoZ-Catalog</CatalogName>
-   <CatalogFormatHDU>1</CatalogFormatHDU>
-  </CatalogDescription>
-  <TileIndex>90346</TileIndex>
-  <PhzCatalog format="phz.photoZCatalog" version="0.9">
-   <DataContainer filestatus="PROPOSED">
-    <FileName>EUC_PHZ_PHZCAT__20210725T082053.111168Z_00.00.fits</FileName>
-   </DataContainer>
-  </PhzCatalog>
-  <StarSedCatalog format="phz.sedCatalog" version="0.9">
-   <DataContainer filestatus="PROPOSED">
-    <FileName>EUC_PHZ_STARSED__20210725T082053.578905Z_00.00.fits</FileName>
-   </DataContainer>
-  </StarSedCatalog>
-  <GalaxySedCatalog format="phz.sedCatalog" version="0.9">
-   <DataContainer filestatus="PROPOSED">
-    <FileName>EUC_PHZ_GALAXYSED__20210725T082055.086576Z_00.00.fits</FileName>
-   </DataContainer>
-  </GalaxySedCatalog>
- </Data>
-</dpd-phz-outputcatalog:DpdPhzPfOutputCatalog>
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:DpdPhzPfOutputCatalog xmlns:ns1="http://ecdm.euclid-ec.org/schema/dpd/phz/outputcatalog">
+	<Header>
+		<ProductId>pN73U</ProductId>
+		<ProductType>DpdPhzPfOutputCatalog</ProductType>
+		<SoftwareName>iJ63D</SoftwareName>
+		<SoftwareRelease>fNiSg1Ga</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>40NNfDB</EuclidPipelineSoftwareRelease>
+		<ProdSDC>xnM1mQcrBfLEEi5Lb5EhgBKAbO2Nxuzy6MmMQoDJKzjwQ2qvrXtdSknrdi5rDBq7mRGa9o7sJUOKjmdFBgTdRm0GTikBrFp9VkBHR2XpN1ym1IzEjJ1b6Orcra</ProdSDC>
+		<DataSetRelease>JDtk3</DataSetRelease>
+		<Purpose>UNKNOWN</Purpose>
+		<PlanId>b8iGF</PlanId>
+		<PPOId>cC4U5BuiVKlmMEfC2neqVfe6eCSGpUUi2vHLEXfcLTnQtpdgDLHpiMcJ0eI2hgsH7O2OemJeGqiIhQJGiiTezwSozrKJLI2UqiRHIyArhWFlBAUyY3XpcVaaPwslxU83nflGuw3vziBR4huCr4goxyuIQCgaaGYRu6OMGnSQromaSjWzqmjF9hBAeQlYmzXkBE7RskwDkHTpaXp4tibbwaP4TvtGDoDkIVWW6xFv9VMCifTOcRs</PPOId>
+		<PipelineDefinitionId>m5xsr</PipelineDefinitionId>
+		<PpoStatus>02d63</PpoStatus>
+		<ManualValidationStatus>VALID</ManualValidationStatus>
+		<ProductNotifiedToBeChecked>UNKNOWN</ProductNotifiedToBeChecked>
+		<AutomatedValidationStatus>UNKNOWN</AutomatedValidationStatus>
+		<ExpirationDate>2023-04-12T19:53:48.161Z</ExpirationDate>
+		<ToBePublished>1015132293</ToBePublished>
+		<Published>-502794807</Published>
+		<Curator>NKD5L</Curator>
+		<CreationDate>2023-04-12T19:53:48.162Z</CreationDate>
+	</Header>
+	<Data>
+		<SpatialCoverage unit="mV">
+			<Polygon>
+				<Vertex>
+					<C1>-4.0</C1>
+					<C2>1.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="photon">
+							<C1 unit="sr">1.0</C1>
+							<C2 unit="pix">1.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</Polygon>
+			<MultiPolygon>
+				<Vertex>
+					<C1>4.0</C1>
+					<C2>-10.0</C2>
+					<SmallCircle>
+						<Pole coordUnit="particles/s/cm2">
+							<C1 unit="rad/s">1.0</C1>
+							<C2 unit="ms">1.0</C2>
+						</Pole>
+					</SmallCircle>
+				</Vertex>
+			</MultiPolygon>
+			<Circle>
+				<Center coordUnit="AU">
+					<C1 unit="Hz">0.0</C1>
+					<C2 unit="AU">1.0</C2>
+				</Center>
+				<Radius unit="W/m2">1.0</Radius>
+			</Circle>
+			<BBox>
+				<RaCenter>9.0</RaCenter>
+				<DecCenter>-10.0</DecCenter>
+				<RaHalfWidth>5.0</RaHalfWidth>
+				<DecHalfWidth>-7.0</DecHalfWidth>
+			</BBox>
+		</SpatialCoverage>
+		<SpectralCoverage>
+			<Filter>
+				<Name>HSC_D_z</Name>
+				<MagId>Y</MagId>
+				<CentralWavelength>-8.0</CentralWavelength>
+				<MinWavelength>-5.0</MinWavelength>
+				<MaxWavelength>7.0</MaxWavelength>
+				<Reference>IdC8f</Reference>
+				<HasFringes>850183797</HasFringes>
+			</Filter>
+		</SpectralCoverage>
+		<CatalogDescription>
+			<CatalogOrigin>MEASURED_WIDE</CatalogOrigin>
+			<CatalogType>NOT_PROXY</CatalogType>
+			<PathToCatalogFile>kP95a</PathToCatalogFile>
+			<CatalogName>She-Euclidized-Hst</CatalogName>
+			<CatalogFormatHDU>626962556</CatalogFormatHDU>
+		</CatalogDescription>
+		<TileIndex>5717818400712049998</TileIndex>
+		<PatchIdList>0</PatchIdList>
+		<ObservationIdList>0</ObservationIdList>
+		<CalblockIdList>uFtfG</CalblockIdList>
+		<CalblockVariantList>ZmZqN</CalblockVariantList>
+		<IslandLabel>3fJVd</IslandLabel>
+		<PhzCatalog format="phz.photoZCatalog" version="Ouvk]);=6[)kz,omPD_rC.@jqQ2As0?wool&quot;b\&lt;cd!qp}o~pj7)^WwVnt^Tebl/';l;R{2DpgQlS'Ez,">
+			<DataContainer filestatus="PROPOSED" checksumMethod="Adler32" checksumValue="jWnbz">
+				<FileName>imt3YpWzWzBsi76nTQKFaTrkafBXvoDT9FJMmXuhHNT</FileName>
+			</DataContainer>
+		</PhzCatalog>
+		<StarSedCatalog format="phz.starSedCatalog" version="jwGVOu;]X!',8{s|n:R8(5/ce4cg:E/*s%eh&amp;">
+			<DataContainer filestatus="PROPOSED" checksumMethod="Adler32" checksumValue="2ENZV">
+				<FileName>DNMHMwxaLC</FileName>
+			</DataContainer>
+		</StarSedCatalog>
+		<GalaxySedCatalog format="phz.sedCatalog" version="G6&quot;O!h(CJQs!(BTtGQJl'3VOrfj]?7)Mhbq">
+			<DataContainer filestatus="DELETED" checksumMethod="MD5" checksumValue="Bjd5x">
+				<FileName>D3mJVypwOEEZF5WRBg6bPhy6w2RCvQU0e57mIq3Ht9ObEBDrITgM9H0B14s9bHkKjr2CML2ucSBvq9xanUctM722p</FileName>
+			</DataContainer>
+		</GalaxySedCatalog>
+	</Data>
+	<QualityFlags>
+		<DummyFlag xpath="//Data/Some/Path/To/Quality/Parameter" minLimit="0.05" maxLimit="10.0" flagged="false">true</DummyFlag>
+		<AuxiliaryFlags flagName="&amp;-t/3v,Kd,Ac?NK1-pU)'Wb&gt;b$w/wv~F`_}y$8[PJ,_" xpath="4wXjP" minLimit="-6.0" maxLimit="-10.0" flagged="false">false</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>kGU9T</Key>
+			<Description>rNhns</Description>
+			<StringValue>5VlE7</StringValue>
+			<Unit>dtnIm</Unit>
+		</Parameter>
+	</Parameters>
+</ns1:DpdPhzPfOutputCatalog>

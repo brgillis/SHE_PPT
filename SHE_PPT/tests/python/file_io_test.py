@@ -360,7 +360,7 @@ class TestIO(SheTestCase):
         p2 = read_xml_product(test_qualified_filename, product_type=ex_type)
         p2.validateBinding()
 
-        assert type(self.test_xml_product) == type(p2)
+        assert type(self.test_xml_product) is type(p2)
 
         # Test that if we specify the wrong type, a TypeError is raised
         with pytest.raises(TypeError):

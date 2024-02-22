@@ -1,64 +1,71 @@
-<?xml version="1.0" ?>
-<ns1:DpdSheCommonCalibration xmlns:ns1="http://euclid.esa.org/schema/dpd/she/commoncalibration">
-    <Header>
-        <ProductId>c6e75e8d-3b8c-4e73-8257-e3f99da58fd7</ProductId>
-        <ProductType>DpdSheCommonCalibration</ProductType>
-        <SoftwareName>nSut2</SoftwareName>
-        <SoftwareRelease>wZ7</SoftwareRelease>
-        <EuclidPipelineSoftwareRelease>tqL</EuclidPipelineSoftwareRelease>
-        <ProdSDC>gjFecMwzQBLoOoMT7qA</ProdSDC>
-        <DataSetRelease>ZTv7e</DataSetRelease>
-        <Purpose>REPROCESSING</Purpose>
-        <PlanId>SdJya</PlanId>
-        <PPOId>OSkg1</PPOId>
-        <PipelineDefinitionId>uZrWK</PipelineDefinitionId>
-        <PpoStatus>NA</PpoStatus>
-        <ManualValidationStatus>VALID</ManualValidationStatus>
-        <ExpirationDate>2020-06-01T14:48:08.455Z</ExpirationDate>
-        <Published>0</Published>
-        <Curator>SHE</Curator>
-        <CreationDate>2020-06-01T14:48:08.457Z</CreationDate>
-    </Header>
-    <Data>
-        <ValidityRange>
-            <Name>Dummy</Name>
-            <Type>SheCommonCalibration</Type>
-            <TimestampStart>2020-06-01T14:48:08.458Z</TimestampStart>
-            <TimestampEnd>9999-06-01T14:48:08.458Z</TimestampEnd>
-        </ValidityRange>
-        <KsbCalibrationStorage format="she.commonCalibration" version="8.0">
-            <DataContainer filestatus="PROPOSED">
-                <FileName>None</FileName>
-            </DataContainer>
-        </KsbCalibrationStorage>
-        <LensMcCalibrationStorage format="she.commonCalibration" version="8.0">
-            <DataContainer filestatus="ARCHIVED_CERNVMFS">
-                <FileName>None</FileName>
-            </DataContainer>
-        </LensMcCalibrationStorage>
-        <MomentsMlCalibrationStorage format="she.commonCalibration" version="8.0">
-            <DataContainer filestatus="ARCHIVED_OFFLINE">
-                <FileName>None</FileName>
-            </DataContainer>
-        </MomentsMlCalibrationStorage>
-        <RegaussCalibrationStorage format="she.commonCalibration" version="8.0">
-            <DataContainer filestatus="ARCHIVED_CERNVMFS">
-                <FileName>None</FileName>
-            </DataContainer>
-        </RegaussCalibrationStorage>
-    </Data>
-    <QualityFlags>
-        <DummyFlag flagged="true" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false
-        </DummyFlag>
-        <AuxiliaryFlags flagName="faZaS" flagged="false" maxLimit="9.0" minLimit="-8.0" xpath="iOXlh">true
-        </AuxiliaryFlags>
-    </QualityFlags>
-    <Parameters>
-        <Parameter>
-            <Key>pzlDy</Key>
-            <Description>CciAX</Description>
-            <StringValue>hyDvT</StringValue>
-            <Unit>OXd9D</Unit>
-        </Parameter>
-    </Parameters>
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:DpdSheCommonCalibration xmlns:ns1="http://ecdm.euclid-ec.org/schema/dpd/she/commoncalibration">
+	<Header>
+		<ProductId>ciVgl</ProductId>
+		<ProductType>DpdSheCommonCalibration</ProductType>
+		<SoftwareName>mUAra</SoftwareName>
+		<SoftwareRelease>eDCuMz7RVf</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>eCMqEHf</EuclidPipelineSoftwareRelease>
+		<ProdSDC>oYLj1oMvbZMMQu0zunL</ProdSDC>
+		<DataSetRelease>KxsPx</DataSetRelease>
+		<Purpose>ON_THE_FLY</Purpose>
+		<PlanId>3FGOL</PlanId>
+		<PPOId>Xdyvl1f0PPZAixtJ7wXxwBOEEd0LklV9h01DVJaXkwWow789Vc5NMxRdy4F4WY0193KSul6PATg5VGCarnzgN0JJlQz2Sqg7ZdpdSDIXF35vo3YJ0MT25h2XgkYzYYuiXUCzUnG2y91vUCscvtxtc4sPoxDWpFYcSCCGut5C3ISFQeNKDGZVoyJUswArYXAMzlRNt75ounAMVHlB6YV3GLAIhnjimtTH0</PPOId>
+		<PipelineDefinitionId>rN2qC</PipelineDefinitionId>
+		<PpoStatus>qX47z</PpoStatus>
+		<ManualValidationStatus>VALID</ManualValidationStatus>
+		<ProductNotifiedToBeChecked>NOTTOBECHECKED</ProductNotifiedToBeChecked>
+		<AutomatedValidationStatus>INVALID</AutomatedValidationStatus>
+		<ExpirationDate>2023-04-12T19:53:45.123Z</ExpirationDate>
+		<ToBePublished>42809683</ToBePublished>
+		<Published>1429018072</Published>
+		<Curator>huibH</Curator>
+		<CreationDate>2023-04-12T19:53:45.124Z</CreationDate>
+	</Header>
+	<Data>
+		<PlaceholderData>None</PlaceholderData>
+		<ValidityRange>
+			<Name>vhqww</Name>
+			<Type>C3Mix</Type>
+			<TimestampStart>2023-04-12T19:53:45.124Z</TimestampStart>
+			<TimestampEnd>2023-04-12T19:53:45.124Z</TimestampEnd>
+		</ValidityRange>
+		<BfdCalibrationStorage format="she.commonCalibration" version="$k*D_TpOAk/_*Eb]ddj8{VH7%^jGZ@[J,d&quot;K440Ay.&amp;s%:A1/F8)}nbU,Ob;mb[B">
+			<DataContainer filestatus="ARCHIVED_ONLINE" checksumMethod="MD5" checksumValue="EJuyT">
+				<FileName>DLL9nCw30K4aNxv4X6QnTUIdNUWZte7ShaD0p2JNnvSCAwaBVlp2N3uw</FileName>
+			</DataContainer>
+		</BfdCalibrationStorage>
+		<KsbCalibrationStorage format="she.commonCalibration" version="4rg}N9bCp\63E$'_=Y1]T129e&gt;kg1u35F)J&amp;W|@hS:%@&quot;=C6G7XIb&amp;)o%212pn">
+			<DataContainer filestatus="ARCHIVED_OFFLINE" checksumMethod="Adler32" checksumValue="LEBAD">
+				<FileName>tgpqEcfs8HbyZZ6rnhNfPFwEBnqKIsIKT1tKb1e4Q5L6Q4VeCgRWeqQRNPzFc1uzpyRQNS8cCFMShfRAcsqwBGNqWprdG5lQeVhhm3W2QYe</FileName>
+			</DataContainer>
+		</KsbCalibrationStorage>
+		<LensMcCalibrationStorage format="she.commonCalibration" version="-J|3!AmUd:B2e|2}Gm46L@`cC4($+_)RVT-Z^!0u6A$hK)K!#9g&amp;(XR&lt;nl+C~z">
+			<DataContainer filestatus="ARCHIVED_CERNVMFS" checksumMethod="MD5" checksumValue="z56Kn">
+				<FileName>wvo2Nyhat0kblHUWKpcWKFsg6uKmanxNoBT1mcbyjtefwkKdXIsiYZTbqCEgvsbVbIiekvaymS9lJNAlmVW1LYId1tg27nXsRPxTlXpgX0Oc4Ogt1P7e2Vt</FileName>
+			</DataContainer>
+		</LensMcCalibrationStorage>
+		<MomentsMlCalibrationStorage format="she.commonCalibration" version="D|H`^I4eV]}&amp;%Fm7I0;]yIbA_*&amp;NM%7K&gt;4FWLf/'yVCK'w8VsVmXiEzVXO\">
+			<DataContainer filestatus="DELETED" checksumMethod="Adler32" checksumValue="ufngJ">
+				<FileName>rIWdNUVXungwGaSaAPcT57VKrm1JBNAg9rlfT0xvUug5MRwVA6lU4yajVvk3U3RHACtG8U8M9KBOSMNCSg4pO</FileName>
+			</DataContainer>
+		</MomentsMlCalibrationStorage>
+		<RegaussCalibrationStorage format="she.commonCalibration" version="7J5$g?,.PJ&amp;Mp8#A|85'6:wL|zQhhc:~C@uBml&lt;|[MLDI_u">
+			<DataContainer filestatus="ARCHIVED_CERNVMFS" checksumMethod="Adler32" checksumValue="GLUHr">
+				<FileName>mQRnw2dMGZ4aYXNxn3Zr1nsJSDUPccGVblTVxpRDVbOMTC74i6WefCiqKfcmxyQZzGLAFEKLnVkpMeFhMESLVF61iXumRlHH4eT5DRrn8dOEO6E9J2nDnUHa</FileName>
+			</DataContainer>
+		</RegaussCalibrationStorage>
+	</Data>
+	<QualityFlags>
+		<DummyFlag xpath="//Data/Some/Path/To/Quality/Parameter" minLimit="0.05" maxLimit="10.0" flagged="true">true</DummyFlag>
+		<AuxiliaryFlags flagName="IC'P*D1FLF!F_BXCVJ+1!JgE-m55&gt;Cx&amp;~v3I&lt;v&amp;n0[agIQ&quot;W75(" xpath="25vib" minLimit="8.0" maxLimit="9.0" flagged="false">true</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>Bh5ZT</Key>
+			<Description>dydrI</Description>
+			<StringValue>w4VyG</StringValue>
+			<Unit>zdebm</Unit>
+		</Parameter>
+	</Parameters>
 </ns1:DpdSheCommonCalibration>

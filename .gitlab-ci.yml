@@ -1,5 +1,5 @@
 variables:
-  EL_UTILS_VERSION: 1.2.4
+  EL_UTILS_VERSION: 1.6.2
 
 PEP8:
   stage: test

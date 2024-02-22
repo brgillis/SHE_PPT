@@ -29,7 +29,7 @@ from astropy.wcs import WCS
 from SHE_PPT import __version__ as ppt_version
 from SHE_PPT.file_io import get_allowed_filename, write_xml_product
 from SHE_PPT.logging import getLogger
-from SHE_PPT.products import vis_calibrated_frame
+from SHE_PPT.products import vis_calibrated_frame, vis_calibrated_quad_frame
 
 logger = getLogger(__name__)
 
@@ -46,7 +46,7 @@ def __generate_gausian_blob(objsize=10):
 
     blob = np.zeros((size, size))
 
-    x = np.arange(size) - size / 2.
+    x = np.arange(size) - size / 2.0
     for j in range(size):
         y = x[j]
         r = np.sqrt(x * x + y * y)
@@ -55,30 +55,35 @@ def __generate_gausian_blob(objsize=10):
     return blob
 
 
-def __generate_detector_images(detector_shape=(4136, 4096), nobjs=10, background=10., snr=10, objsize=10,
-                               rng=None):
+def __generate_detector_images(
+    detector_shape=(4136, 4096), nobjs=10, background=10.0, snr=10, objsize=10, obj_rng=None, noise_rng=None
+):
     """Generates the SCI, RMG, FLG, WGT and BKG pixel maps for a detector
 
-       Arguments:
-         - detector_shape: the shape of the detector (ny, nx)
-         - nobjs: the number of simulated objects to place in the image
-         - background: The background level (background noise is sqrt(background))
-         - snr: signal to noise ratio for the created objects
-         - objsize: the width (in pixels) of the gaussian representing an object
-         - rng: numpy.RandomState object for the random number generator
+    Arguments:
+      - detector_shape: the shape of the detector (ny, nx)
+      - nobjs: the number of simulated objects to place in the image
+      - background: The background level (background noise is sqrt(background))
+      - snr: signal to noise ratio for the created objects
+      - objsize: the width (in pixels) of the gaussian representing an object
+      - obj_rng: numpy.RandomState object for the object random number generator
+      - noise_rng: numpy.RandomState object for the noise random number generator
 
-       Outputs:
-         - sci: sci image
-         - rms: rms image
-         - flg: flg image
-         - wgt: wgt image
-         - bkg: bkg image
-         - x_px: list of x pixel coordinates of the nobjs objects
-         - y_px: list of y pixel coordinates of the nobjs objects
+    Outputs:
+      - sci: sci image
+      - rms: rms image
+      - flg: flg image
+      - wgt: wgt image
+      - bkg: bkg image
+      - x_px: list of x pixel coordinates of the nobjs objects
+      - y_px: list of y pixel coordinates of the nobjs objects
     """
 
-    if rng is None:
-        rng = np.random.RandomState()
+    if obj_rng is None:
+        obj_rng = np.random.RandomState()
+
+    if noise_rng is None:
+        noise_rng = np.random.RandomState()
 
     stampsize = int(objsize * stampscale * 2)
 
@@ -86,7 +91,7 @@ def __generate_detector_images(detector_shape=(4136, 4096), nobjs=10, background
         raise ValueError("Detector size must be at least %d pixels" % stampsize)
 
     # generate sci image with poisson noise
-    sci = rng.poisson(background, detector_shape).astype(np.float32)
+    sci = noise_rng.poisson(background, detector_shape).astype(np.float32)
 
     # populate it with nobjs "galaxies"
     x_px = []
@@ -95,8 +100,8 @@ def __generate_detector_images(detector_shape=(4136, 4096), nobjs=10, background
         blob = __generate_gausian_blob(objsize)
 
         # select (randomly) the x and y coordinates of the blob's bottom corner
-        x = rng.randint(0, detector_shape[1] - stampsize)
-        y = rng.randint(0, detector_shape[0] - stampsize)
+        x = obj_rng.randint(0, detector_shape[1] - stampsize)
+        y = obj_rng.randint(0, detector_shape[0] - stampsize)
 
         # store the blob's centre coordinates
         x_px.append(x + stampsize / 2)
@@ -123,9 +128,9 @@ def __generate_detector_images(detector_shape=(4136, 4096), nobjs=10, background
 
 def __create_header(wcs=None, **kwargs):
     """Returns a newly created FITS header
-       Args:
-         wcs - adds the wcs information to the header
-         **kwargs - additional keywords to put into the header
+    Args:
+      wcs - adds the wcs information to the header
+      **kwargs - additional keywords to put into the header
     """
     if wcs is None:
         # generate new empty header
@@ -141,47 +146,69 @@ def __create_header(wcs=None, **kwargs):
     return h
 
 
-def create_exposure(n_detectors=1, detector_shape=(100, 100), workdir=".", seed=1, n_objs_per_det=10,
-                    objsize=10):
+def create_exposure(
+    n_detectors=1,
+    detector_shape=(100, 100),
+    workdir=".",
+    seed=1,
+    noise_seed=1,
+    n_objs_per_det=10,
+    objsize=10,
+    pointing_id=1,
+    obs_id=1,
+    use_quadrant=True,
+):
     """
-        Creates a mock dpdVisCalibratedFrame data product for use in smoke tests
+    Creates a mock dpdVisCalibratedFrame data product for use in smoke tests
 
-        Arguments:
-           - n_detectors: The number of detectors to create (default 1)
-           - detector_shape: The shape of the detector in pixels (ny, nx) (default (100,100))
-           - objs_per_detector: Number of objects per detector (default 10)
-           - workdir: workdir for the files (default ".")
-           - seed: seed for the random number generator
-           - n_objs_per_det: Number of objects generated per detector
-           - objsize: size of the objects in pixels
+    Arguments:
+       - n_detectors: The number of detectors to create (default 1)
+       - detector_shape: The shape of the detector in pixels (ny, nx) (default (100,100))
+       - objs_per_detector: Number of objects per detector (default 10)
+       - workdir: workdir for the files (default ".")
+       - seed: seed for the random number generator for objects
+       - noise_seed: seed for the random number generator for applying noise to images
+       - n_objs_per_det: Number of objects generated per detector
+       - objsize: size of the objects in pixels
+       - pointing_id: the pointing id to be used for the output product
+       - obs_id: the observation id to be used for the output product
 
-        Returns:
-           - prod_filename (The name of the created data product)
-           - sky_coords (a list of world coodinates for the objects in the image - to be used when creating
-             mock mer catalogues for this exposure (astropy.coordinates.SkyCoord))
-           - img_coords (a list of image coordinates (x,y) of each object)
-           - detectors (a list stating which detector (0:ndetectors-1) the object is in)
-           - wcs_list (a list of all the WCSs used for each detector)
+    Returns:
+       - prod_filename (The name of the created data product)
+       - sky_coords (a list of world coodinates for the objects in the image - to be used when creating
+         mock mer catalogues for this exposure (astropy.coordinates.SkyCoord))
+       - img_coords (a list of image coordinates (x,y) of each object)
+       - detectors (a list stating which detector (0:ndetectors-1) the object is in)
+       - wcs_list (a list of all the WCSs used for each detector)
     """
     # pixelsize = 0.1"
-    PIXELSIZE = 1. / 3600 / 10.
+    PIXELSIZE = 1.0 / 3600 / 10.0
 
-    if n_detectors not in (1, 36):
-        raise ValueError("Number of detectors seems to be %d. The only valid numbers are 1 or 36" % n_detectors)
+    if use_quadrant:
+        n_detector_max = 144
+    else:
+        n_detector_max = 36
 
-    rng = np.random.RandomState(seed=seed)
+    if n_detectors < 1 or n_detectors > n_detector_max:
+        raise ValueError(
+            "Number of detectors seems to be %d. The only valid numbers are between 1 and %d inclusive."
+            % (n_detectors, n_detector_max),
+        )
+
+    obj_rng = np.random.RandomState(seed=seed)
+    noise_rng = np.random.RandomState(seed=noise_seed)
 
     # create hdulists for the 3 fits files (DET, WGT, BKG)
     det_hdr = __create_header()
-    det_primary = fits.PrimaryHDU(det_hdr)
+    det_primary = fits.PrimaryHDU(data=None, header=det_hdr)
     det_hdul = fits.HDUList([det_primary])
 
     wgt_hdr = __create_header()
-    wgt_primary = fits.PrimaryHDU(wgt_hdr)
+    wgt_primary = fits.PrimaryHDU(data=None, header=wgt_hdr)
     wgt_hdul = fits.HDUList([wgt_primary])
 
     bkg_hdr = __create_header()
-    bkg_primary = fits.PrimaryHDU(bkg_hdr)
+    bkg_primary = fits.PrimaryHDU(data=None, header=bkg_hdr)
     bkg_hdul = fits.HDUList([bkg_primary])
 
     sky_coords = []
@@ -189,29 +216,41 @@ def create_exposure(n_detectors=1, detector_shape=(100, 100), workdir=".", seed=
     detectors = []
     wcs_list = []
 
+    detector_names = []
+
     # loop over all detectors in the exposure
     for det in range(n_detectors):
+        # get the detector's
+        if use_quadrant:
+            det_i = (det // 4) // 6 + 1
+            det_j = (det // 4) % 6 + 1
+            det_k = det % 4
+            det_sk = {0: "E", 1: "F", 2: "G", 3: "H"}[det_k]
+            det_id = "%d-%d" % (det_i, det_j)
+            quad_id = "%s" % (det_sk)
+            _detector_name = det_id + "." + quad_id
+        else:
+            det_i = det // 6 + 1
+            det_j = det % 6 + 1
+            det_id = "%d-%d" % (det_i, det_j)
+            _detector_name = det_id
 
-        # get the detector's name
-        det_i = det // 6 + 1
-        det_j = det % 6 + 1
-        det_id = "%s-%s" % (str(det_i), str(det_j))
-        logger.info("Creating detector %s" % det_id)
+        detector_names.append(_detector_name)
+        logger.info("Creating detector %s" % _detector_name)
 
         # create image data
-        sci, rms, flg, wgt, bkg, x_px, y_px = __generate_detector_images(detector_shape=detector_shape,
-                                                                         rng=rng,
-                                                                         nobjs=n_objs_per_det,
-                                                                         objsize=objsize)
+        sci, rms, flg, wgt, bkg, x_px, y_px = __generate_detector_images(
+            detector_shape=detector_shape, obj_rng=obj_rng, noise_rng=noise_rng, nobjs=n_objs_per_det, objsize=objsize
+        )
 
         # create WCS (Use Airy projection - arbitrary decision, we just want something in valid sky coordinates!)
         wcs = WCS(naxis=2)
         x_c = (1.1 * detector_shape[1]) * (det_i - 1) * PIXELSIZE
         y_c = (1.1 * detector_shape[0]) * (det_j - 1) * PIXELSIZE
-        wcs.wcs.crpix = [0., 0.]
+        wcs.wcs.crpix = [0.0, 0.0]
         wcs.wcs.crval = [x_c, y_c]
-        wcs.wcs.cdelt = [PIXELSIZE, PIXELSIZE]
-        wcs.wcs.ctype = ["RA---AIR", "DEC--AIR"]
+        wcs.wcs.cd = np.identity(2) * PIXELSIZE
+        wcs.wcs.ctype = ["RA---TAN", "DEC--TAN"]
 
         # obtain the world coordinates of the objects in the image, and append them to the object_positions list
         world_coords = wcs.pixel_to_world(x_px, y_px)
@@ -228,24 +267,29 @@ def create_exposure(n_detectors=1, detector_shape=(100, 100), workdir=".", seed=
         # now make the hdus for these images
 
         # common header tor HDUs in the DET file (sci, flg, rms)
-        det_hdr = __create_header(wcs=wcs, EXPTIME=500., GAIN=3.0, RDNOISE=3.0, MAGZEROP=25.0, CCDID=det_id)
+        if use_quadrant:
+            det_hdr = __create_header(
+                wcs=wcs, EXPTIME=500.0, GAIN=3.0, RDNOISE=3.0, MAGZEROP=25.0, CCDID=det_id, QUADID=quad_id
+            )
+        else:
+            det_hdr = __create_header(wcs=wcs, EXPTIME=500.0, GAIN=3.0, RDNOISE=3.0, MAGZEROP=25.0, CCDID=det_id)
 
         # create hdus for the DET file and append them to the HDUlist
-        sci_hdu = fits.ImageHDU(data=sci, header=det_hdr, name="CCDID %s.SCI" % det_id)
-        rms_hdu = fits.ImageHDU(data=rms, header=det_hdr, name="CCDID %s.RMS" % det_id)
-        flg_hdu = fits.ImageHDU(data=flg, header=det_hdr, name="CCDID %s.FLG" % det_id)
+        sci_hdu = fits.ImageHDU(data=sci, header=det_hdr, name="%s.SCI" % _detector_name)
+        rms_hdu = fits.ImageHDU(data=rms, header=det_hdr, name="%s.RMS" % _detector_name)
+        flg_hdu = fits.ImageHDU(data=flg, header=det_hdr, name="%s.FLG" % _detector_name)
         det_hdul.append(sci_hdu)
         det_hdul.append(rms_hdu)
         det_hdul.append(flg_hdu)
 
         # BKG HDU
         bkg_hdr = __create_header()
-        bkg_hdu = fits.ImageHDU(data=bkg, header=bkg_hdr, name="CCDID %s" % det_id)
+        bkg_hdu = fits.ImageHDU(data=bkg, header=bkg_hdr, name="%s" % _detector_name)
         bkg_hdul.append(bkg_hdu)
 
         # WGT HDU
         wgt_hdr = __create_header()
-        wgt_hdu = fits.ImageHDU(data=wgt, header=wgt_hdr, name="CCDID %s" % det_id)
+        wgt_hdu = fits.ImageHDU(data=wgt, header=wgt_hdr, name="%s" % _detector_name)
         wgt_hdul.append(wgt_hdu)
 
     logger.info("Created %d detector(s) with a total of %d object(s)" % (n_detectors, len(sky_coords)))
@@ -257,9 +301,10 @@ def create_exposure(n_detectors=1, detector_shape=(100, 100), workdir=".", seed=
         os.mkdir(datadir)
 
     # get qualified filename for the fits files
-    det_fname = get_allowed_filename("VIS-DET", "00", version=ppt_version, extension=".fits")
-    wgt_fname = get_allowed_filename("VIS-WGT", "00", version=ppt_version, extension=".fits")
-    bkg_fname = get_allowed_filename("VIS-BKG", "00", version=ppt_version, extension=".fits")
+    identifier = f"{obs_id}-{pointing_id}"
+    det_fname = get_allowed_filename("VIS-DET", identifier, version=ppt_version, extension=".fits")
+    wgt_fname = get_allowed_filename("VIS-WGT", identifier, version=ppt_version, extension=".fits")
+    bkg_fname = get_allowed_filename("VIS-BKG", identifier, version=ppt_version, extension=".fits")
 
     # write the fits files
     logger.info("Writing DET file to %s" % os.path.join(workdir, det_fname))
@@ -270,9 +315,27 @@ def create_exposure(n_detectors=1, detector_shape=(100, 100), workdir=".", seed=
     bkg_hdul.writeto(os.path.join(workdir, bkg_fname), overwrite=True)
 
     # create the data product
-    exposure_prod = vis_calibrated_frame.create_dpd_vis_calibrated_frame(data_filename=det_fname,
-                                                                         bkg_filename=bkg_fname,
-                                                                         wgt_filename=wgt_fname)
+    if use_quadrant:
+        exposure_prod = vis_calibrated_quad_frame.create_dpd_vis_calibrated_quad_frame(
+            data_filename=det_fname, bkg_filename=bkg_fname, wgt_filename=wgt_fname
+        )
+        # set up the correct number of Quadrants in the product, and make sure they have the correct names
+        quad_template = exposure_prod.Data.QuadrantList.Qadrant[0]
+        exposure_prod.Data.QuadrantList.Qadrant = [quad_template] * n_detectors
+        for i, name in enumerate(detector_names):
+            exposure_prod.Data.QuadrantList.Qadrant[i].QuadrantId = name
+    else:
+        exposure_prod = vis_calibrated_frame.create_dpd_vis_calibrated_frame(
+            data_filename=det_fname, bkg_filename=bkg_fname, wgt_filename=wgt_fname
+        )
+        # set up the correct number of Detectors in the product, and make sure they have the correct names
+        det_template = exposure_prod.Data.DetectorList.Detector[0]
+        exposure_prod.Data.DetectorList.Detector = [det_template] * n_detectors
+        for i, name in enumerate(detector_names):
+            exposure_prod.Data.DetectorList.Detector[i].DetectorId = name
+
+    exposure_prod.Data.ObservationSequence.PointingId = pointing_id
+    exposure_prod.Data.ObservationSequence.ObservationId = obs_id
 
     # Write it to file
     prod_filename = get_allowed_filename("VIS-CAL-FRAME", "00", version=ppt_version, extension=".xml", subdir="")

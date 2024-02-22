@@ -1,44 +1,45 @@
-<?xml version="1.0" ?>
-<ns1:DpdSheCalibrationConfig xmlns:ns1="http://euclid.esa.org/schema/dpd/she/calibrationconfig">
-    <Header>
-        <ProductId>e7b078bc-a24d-4798-9802-e92a4a46ccab</ProductId>
-        <ProductType>DpdSheCalibrationConfig</ProductType>
-        <SoftwareName>Eq8gJ</SoftwareName>
-        <SoftwareRelease>1Rxs8</SoftwareRelease>
-        <EuclidPipelineSoftwareRelease>28YJ5</EuclidPipelineSoftwareRelease>
-        <ProdSDC>SDC-UK</ProdSDC>
-        <DataSetRelease>sdRX6</DataSetRelease>
-        <Purpose>VALIDATION</Purpose>
-        <PlanId>h85Ej</PlanId>
-        <PPOId>0WzXQ</PPOId>
-        <PipelineDefinitionId>ncalA</PipelineDefinitionId>
-        <PpoStatus>NA</PpoStatus>
-        <ManualValidationStatus>VALID</ManualValidationStatus>
-        <ExpirationDate>2020-06-01T14:47:38.674Z</ExpirationDate>
-        <ToBePublished>0</ToBePublished>
-        <Published>0</Published>
-        <Curator>SHE</Curator>
-        <CreationDate>2020-06-01T14:47:38.676Z</CreationDate>
-    </Header>
-    <Data>
-        <DataStorage>
-            <DataContainer filestatus="ARCHIVED_CERNVMFS">
-                <FileName>None</FileName>
-            </DataContainer>
-        </DataStorage>
-    </Data>
-    <QualityFlags>
-        <DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">false
-        </DummyFlag>
-        <AuxiliaryFlags flagName="h72WL" flagged="false" maxLimit="-2.0" minLimit="8.0" xpath="4OXUA">true
-        </AuxiliaryFlags>
-    </QualityFlags>
-    <Parameters>
-        <Parameter>
-            <Key>n3ADr</Key>
-            <Description>yx0Wh</Description>
-            <StringValue>Q2yqX</StringValue>
-            <Unit>A9uJx</Unit>
-        </Parameter>
-    </Parameters>
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:DpdSheCalibrationConfig xmlns:ns1="http://ecdm.euclid-ec.org/schema/dpd/she/calibrationconfig">
+	<Header>
+		<ProductId>nMEDb</ProductId>
+		<ProductType>DpdSheCalibrationConfig</ProductType>
+		<SoftwareName>X1M4P</SoftwareName>
+		<SoftwareRelease>wLkQ5mM</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>XgMOQp</EuclidPipelineSoftwareRelease>
+		<ProdSDC>qCFjbpTvU8ugxNf082</ProdSDC>
+		<DataSetRelease>0iPTd</DataSetRelease>
+		<Purpose>INTERMEDIATE_DATA_RELEASE</Purpose>
+		<PlanId>IuOGL</PlanId>
+		<PPOId>TzFBo3QpXk0B1kAF7Ir9jwFKzf7Dd369A7uuZptxII2BTKvzN0at3AIj5uceTlQiXbQ152gSBoaLIRRHxRCDHbl72kGaOW3oLm1W9IETSHtQYYG77R5WSoFj8SabfNhQN27SSUAKWCAQjaGk1u7e2qTP1MvLeBKseuCWB92ZHJ9544pSCWdJP2MfUIcaI6HT8v1AK7j4v0WlVudIM0dlm9PTiZXUKakdzEDPxYP4cWCWku8F3RvgG</PPOId>
+		<PipelineDefinitionId>c3CJR</PipelineDefinitionId>
+		<PpoStatus>L0nYO</PpoStatus>
+		<ManualValidationStatus>INVALID</ManualValidationStatus>
+		<ProductNotifiedToBeChecked>UNKNOWN</ProductNotifiedToBeChecked>
+		<AutomatedValidationStatus>UNKNOWN</AutomatedValidationStatus>
+		<ExpirationDate>2023-04-12T19:53:46.477Z</ExpirationDate>
+		<ToBePublished>-712945144</ToBePublished>
+		<Published>-755553129</Published>
+		<Curator>HOTjz</Curator>
+		<CreationDate>2023-04-12T19:53:46.477Z</CreationDate>
+	</Header>
+	<Data>
+		<PlaceholderData>None</PlaceholderData>
+		<DataStorage>
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+	</Data>
+	<QualityFlags>
+		<DummyFlag xpath="//Data/Some/Path/To/Quality/Parameter" minLimit="0.05" maxLimit="10.0" flagged="true">true</DummyFlag>
+		<AuxiliaryFlags flagName="F$U+\0i:eDD^k=hb;B9Y#tqFDb(V9@+:7u}jGw|gRItvKS9MkD" xpath="QK9U7" minLimit="-7.0" maxLimit="-9.0" flagged="false">true</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>wxPAy</Key>
+			<Description>Bn8Fl</Description>
+			<StringValue>qXuaD</StringValue>
+			<Unit>jovwp</Unit>
+		</Parameter>
+	</Parameters>
 </ns1:DpdSheCalibrationConfig>

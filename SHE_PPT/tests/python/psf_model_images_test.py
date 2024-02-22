@@ -27,6 +27,11 @@ import pytest
 import os
 
 import numpy as np
+import h5py
+import json
+
+from astropy.io import fits
+from astropy.table import Table
 
 
 from SHE_PPT.she_io.psf_model_images import (
@@ -81,14 +86,24 @@ class Testpsf_model_images(object):
         validate_psf_model_image(psf_h5)
         psf_h5.get_oversampling_factor()
 
-    def test_read_psf_model_images(self, workdir, input_products):
+    def test_read_psf_model_images(self, workdir, input_products, num_exposures):
         _, _, psf_listfile_fits, psf_listfile_hdf5, _, _ = input_products
 
-        for f in (psf_listfile_fits, psf_listfile_hdf5):
+        for psf_listfile in (psf_listfile_fits, psf_listfile_hdf5):
 
-            psfs = read_psf_model_images(f, workdir)
+            with open(os.path.join(workdir, psf_listfile)) as fs:
+                psf_prods = json.load(fs)
+                print(psf_prods)
 
-            assert psfs is not None, "Returned PSF object list is None"
+            psfs = read_psf_model_images(psf_prods, workdir)
+
+
+            assert (
+                len(psf_prods) == num_exposures
+            ), "length of psf_listfile (%d) does not match the number of objects (%d)" % (
+                len(psf_prods),
+                num_exposures,
+            )
 
             for psf in psfs:
                 assert issubclass(type(psf), PSFModelImage), "Returned PSF object does not seem to be the correct type"

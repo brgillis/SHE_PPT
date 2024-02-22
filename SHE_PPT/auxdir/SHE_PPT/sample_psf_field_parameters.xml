@@ -1,51 +1,55 @@
-<?xml version="1.0" ?>
-<ns1:DpdShePsfFieldParameters xmlns:ns1="http://euclid.esa.org/schema/dpd/she/psffieldparameters">
-    <Header>
-        <ProductId>984ef6ab-e881-462a-b4e7-33bebd424d17</ProductId>
-        <ProductType>DpdShePsfFieldParameters</ProductType>
-        <SoftwareName>Z0oue</SoftwareName>
-        <SoftwareRelease>aptFM</SoftwareRelease>
-        <EuclidPipelineSoftwareRelease>8xham</EuclidPipelineSoftwareRelease>
-        <ProdSDC>SDC-UK</ProdSDC>
-        <DataSetRelease>3pqAF</DataSetRelease>
-        <Purpose>TEST</Purpose>
-        <PlanId>76WSB</PlanId>
-        <PPOId>j3sbF</PPOId>
-        <PipelineDefinitionId>5jsSe</PipelineDefinitionId>
-        <PpoStatus>NA</PpoStatus>
-        <ManualValidationStatus>UNKNOWN</ManualValidationStatus>
-        <ExpirationDate>2020-06-03T15:54:55.317Z</ExpirationDate>
-        <ToBePublished>0</ToBePublished>
-        <Published>0</Published>
-        <Curator>SHE</Curator>
-        <CreationDate>2020-06-03T15:54:55.319Z</CreationDate>
-    </Header>
-    <Data>
-        <ExposureProductId>7v2IZ</ExposureProductId>
-        <ObservationId>3855916959153192483</ObservationId>
-        <ObservationDateTime>
-            <OBT>2020-06-03T15:54:55.321Z</OBT>
-            <UTC>2020-06-03T15:54:55.321Z</UTC>
-            <MJD>9.0</MJD>
-        </ObservationDateTime>
-        <DataStorage format="she.psfFieldParameters" version="8.0">
-            <DataContainer filestatus="PROPOSED">
-                <FileName>None</FileName>
-            </DataContainer>
-        </DataStorage>
-    </Data>
-    <QualityFlags>
-        <DummyFlag flagged="false" maxLimit="10.0" minLimit="0.05" xpath="//Data/Some/Path/To/Quality/Parameter">true
-        </DummyFlag>
-        <AuxiliaryFlags flagName="i7UKS" flagged="true" maxLimit="-9.0" minLimit="-2.0" xpath="SfL5c">true
-        </AuxiliaryFlags>
-    </QualityFlags>
-    <Parameters>
-        <Parameter>
-            <Key>IOY7b</Key>
-            <Description>oFJe3</Description>
-            <StringValue>dYwsq</StringValue>
-            <Unit>3281w</Unit>
-        </Parameter>
-    </Parameters>
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:DpdShePsfFieldParameters xmlns:ns1="http://ecdm.euclid-ec.org/schema/dpd/she/psffieldparameters">
+	<Header>
+		<ProductId>rJA0z</ProductId>
+		<ProductType>DpdShePsfFieldParameters</ProductType>
+		<SoftwareName>LCwBk</SoftwareName>
+		<SoftwareRelease>IsC1a6HG</SoftwareRelease>
+		<EuclidPipelineSoftwareRelease>VKbZ</EuclidPipelineSoftwareRelease>
+		<ProdSDC>R7EhMqijncSNa58qr</ProdSDC>
+		<DataSetRelease>bUK8O</DataSetRelease>
+		<Purpose>QUICK_RELEASE</Purpose>
+		<PlanId>oU4r7</PlanId>
+		<PPOId>KVsVSWqjnrxWa1gXWy3LJXyZOnoqU6G6i4AbPWR7DaRw4ipNOFwIyTILnB3i0aeQ1fFEQTc5HjT9BdPiemx4PULg7rkFHc8iH9LQm4sJIImHZnGvVZxEwczHrttrvg3AwKYSvXf2t8qyfx87gGOx2vQDVNjyC4JhBBkgZyuSprFkk7rM4ZLN0g</PPOId>
+		<PipelineDefinitionId>Emmct</PipelineDefinitionId>
+		<PpoStatus>rRVTG</PpoStatus>
+		<ManualValidationStatus>VALID</ManualValidationStatus>
+		<ProductNotifiedToBeChecked>TOBECHECKED</ProductNotifiedToBeChecked>
+		<AutomatedValidationStatus>UNKNOWN</AutomatedValidationStatus>
+		<ExpirationDate>2023-04-12T19:53:46.023Z</ExpirationDate>
+		<ToBePublished>969411972</ToBePublished>
+		<Published>-2065901660</Published>
+		<Curator>R681f</Curator>
+		<CreationDate>2023-04-12T19:53:46.024Z</CreationDate>
+	</Header>
+	<Data>
+		<PlaceholderData>None</PlaceholderData>
+		<ExposureProductId>qKUyU</ExposureProductId>
+		<Level2CalibrationParametersProductId>ofWYZ</Level2CalibrationParametersProductId>
+		<ObservationId>6254473636241444141</ObservationId>
+		<PointingId>8891431186106682664</PointingId>
+		<ObservationDateTime>
+			<OBT>2023-04-12T19:53:46.024Z</OBT>
+			<UTC>2023-04-12T19:53:46.024Z</UTC>
+			<MJD>5.0</MJD>
+		</ObservationDateTime>
+		<ToolkitConfigParamFileName>bZa88</ToolkitConfigParamFileName>
+		<DataStorage format="she.psfFieldParameters" version="0.1">
+			<DataContainer filestatus="PROPOSED">
+				<FileName>None</FileName>
+			</DataContainer>
+		</DataStorage>
+	</Data>
+	<QualityFlags>
+		<DummyFlag xpath="//Data/Some/Path/To/Quality/Parameter" minLimit="0.05" maxLimit="10.0" flagged="false">false</DummyFlag>
+		<AuxiliaryFlags flagName="x)b/v\8O=Kk_8yCeIp'szly&lt;@=@N:4mfX?^" xpath="xKOxg" minLimit="-6.0" maxLimit="7.0" flagged="false">false</AuxiliaryFlags>
+	</QualityFlags>
+	<Parameters>
+		<Parameter>
+			<Key>HGl1m</Key>
+			<Description>e92Xz</Description>
+			<StringValue>HfjlI</StringValue>
+			<Unit>Jpbm6</Unit>
+		</Parameter>
+	</Parameters>
 </ns1:DpdShePsfFieldParameters>

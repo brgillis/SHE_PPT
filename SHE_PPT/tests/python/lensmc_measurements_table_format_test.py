@@ -32,8 +32,7 @@ class TestLensMcMeasurementsTableFormat(SheTestCase):
         # Define a list of the table formats we'll be testing
         self.table = initialise_lensmc_measurements_table(optional_columns=[tf.m1_ical,
                                                                             tf.m2_ical,
-                                                                            tf.shape_weight,
-                                                                            tf.shape_weight_uncal])
+                                                                            tf.shape_noise])
 
     def test_meta(self):
         # Run through all the meta variables and check that they exist in the table format and table
@@ -61,26 +60,18 @@ class TestLensMcMeasurementsTableFormat(SheTestCase):
         _ = self.table[tf.unmasked_fraction]
         _ = self.table[tf.rec_flags]
 
-        _ = self.table[tf.g1]
-        _ = self.table[tf.g1_err]
+        _ = self.table[tf.e1]
         _ = self.table[tf.e1_err]
-        _ = self.table[tf.g2]
-        _ = self.table[tf.g2_err]
+        _ = self.table[tf.e2]
         _ = self.table[tf.e2_err]
-        _ = self.table[tf.g1g2_covar]
         _ = self.table[tf.e1e2_covar]
         _ = self.table[tf.weight]
-        _ = self.table[tf.shape_weight]
-        _ = self.table[tf.g1_uncal]
-        _ = self.table[tf.g1_uncal_err]
-        _ = self.table[tf.e1_uncal_err]
-        _ = self.table[tf.g2_uncal]
-        _ = self.table[tf.g2_uncal_err]
-        _ = self.table[tf.e2_uncal_err]
-        _ = self.table[tf.g1g2_uncal_covar]
-        _ = self.table[tf.e1e2_uncal_covar]
-        _ = self.table[tf.weight_uncal]
-        _ = self.table[tf.shape_weight_uncal]
+        _ = self.table[tf.shape_noise]
+        _ = self.table[tf.e1_cal]
+        _ = self.table[tf.e1_cal_err]
+        _ = self.table[tf.e2_cal]
+        _ = self.table[tf.e2_cal_err]
+        _ = self.table[tf.e1e2_cal_covar]
 
         _ = self.table[tf.ra]
         _ = self.table[tf.ra_err]
