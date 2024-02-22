@@ -220,4 +220,3 @@ class PSFModelImageHDF5(PSFModelImage):
             return self.file.attrs["PSF_OVERSAMPLING_FACTOR"]
         except KeyError as e:
             raise KeyError("PSF oversampling factor is not present in this file") from e
-
