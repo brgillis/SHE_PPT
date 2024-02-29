@@ -137,7 +137,14 @@ def convert_to_hdf5(det_file, bkg_file, wgt_file, seg_file, output_filename, chu
 
         @io_stats
         def create_dataset_from_hdu(group, name, hdu, chunk):
-            ds = group.create_dataset(name, data=hdu.data, chunks=chunk)
+            # NOTE: If chunking is requested, we want to compress the images.
+            # This saves disk space. If chunking is not enabled, it is not possible to
+            # compress the data :(
+            if chunk:
+                compression = "gzip"
+            else:
+                compression = None
+            ds = group.create_dataset(name, data=hdu.data, chunks=chunk, compression=compression)
             ds.attrs["header"] = hdu.header.tostring()
 
             logger.info("Created dataset %s", ds.name)
