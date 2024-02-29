@@ -76,7 +76,7 @@ class Testvis_exposures(object):
 
         det, wgt, bkg, _, _, seg = input_fits
 
-        hdf5_file = os.path.join(workdir, "data", input_hdf5)
+        hdf5_file = os.path.join(workdir, input_hdf5)
 
         det_file = os.path.join(workdir, "data", det)
         wgt_file = os.path.join(workdir, "data", wgt)
