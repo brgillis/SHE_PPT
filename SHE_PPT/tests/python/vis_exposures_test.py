@@ -76,7 +76,7 @@ class Testvis_exposures(object):
 
         det, wgt, bkg, _, _, seg = input_fits
 
-        hdf5_file = os.path.join(workdir, "data", input_hdf5)
+        hdf5_file = os.path.join(workdir, input_hdf5)
 
         det_file = os.path.join(workdir, "data", det)
         wgt_file = os.path.join(workdir, "data", wgt)
@@ -155,7 +155,7 @@ class Testvis_exposures_CCD(object):
 
         det, wgt, bkg, _, _, seg = input_fits_ccd
 
-        hdf5_file = os.path.join(workdir, "data", input_hdf5_ccd)
+        hdf5_file = os.path.join(workdir, input_hdf5_ccd)
 
         det_file = os.path.join(workdir, "data", det)
         wgt_file = os.path.join(workdir, "data", wgt)
@@ -232,7 +232,7 @@ class Testvis_exposures_quadrant(object):
 
         det, wgt, bkg, _, _, seg = input_fits_quadrant
 
-        hdf5_file = os.path.join(workdir, "data", input_hdf5_quadrant)
+        hdf5_file = os.path.join(workdir, input_hdf5_quadrant)
 
         det_file = os.path.join(workdir, "data", det)
         wgt_file = os.path.join(workdir, "data", wgt)

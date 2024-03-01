@@ -90,7 +90,7 @@ def read_vis_data(vis_prods, seg_prods=None, workdir=".", method="astropy", hdf5
                 "HDF5 listfile (len %d) has different length from vis listfile (len %d)" % (len(vis_dpds), n_exps)
             )
 
-        qualified_hdf5_files = [os.path.join(datadir, f) for f in hdf5_files]
+        qualified_hdf5_files = [os.path.join(workdir, f) for f in hdf5_files]
 
         vis_exposures = [VisExposureHDF5(h5, dpd=dpd) for h5, dpd in zip(qualified_hdf5_files, vis_dpds)]
 
