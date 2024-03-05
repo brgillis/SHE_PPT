@@ -31,7 +31,6 @@ import json
 
 
 from SHE_PPT.she_io.psf_model_images import (
-    PSFModelImageFITS,
     PSFModelImageHDF5,
     PSFModelImage,
     read_psf_model_images,
@@ -66,39 +65,31 @@ def validate_psf_model_image(psf):
 
 class Testpsf_model_images(object):
     def test_PSFModelImage(self, workdir, input_fits):
-        """Tests the API of the PSFModelImages objects (FITS and HDF5 versions)"""
-        _, _, _, _, psf_file_fits, psf_file_hdf5, _ = input_fits
+        """Tests the API of the PSFModelImages objects"""
+        _, _, _, _, psf_file_hdf5, _ = input_fits
 
-        qualified_fits_file = os.path.join(workdir, "data", psf_file_fits)
         qualified_h5_file = os.path.join(workdir, "data", psf_file_hdf5)
 
-        # Validate the PSFModelImages objects
-        psf_fits = PSFModelImageFITS(qualified_fits_file)
-        validate_psf_model_image(psf_fits)
-        with pytest.raises(NotImplementedError):
-            psf_fits.get_oversampling_factor()
-
+        # Validate the PSFModelImages object
         psf_h5 = PSFModelImageHDF5(qualified_h5_file)
         validate_psf_model_image(psf_h5)
         psf_h5.get_oversampling_factor()
 
     def test_read_psf_model_images(self, workdir, input_products, num_exposures):
-        _, _, psf_listfile_fits, psf_listfile_hdf5, _, _ = input_products
+        _, _, psf_listfile, _, _ = input_products
 
-        for psf_listfile in (psf_listfile_fits, psf_listfile_hdf5):
+        with open(os.path.join(workdir, psf_listfile)) as fs:
+            psf_prods = json.load(fs)
+            print(psf_prods)
 
-            with open(os.path.join(workdir, psf_listfile)) as fs:
-                psf_prods = json.load(fs)
-                print(psf_prods)
+        psfs = read_psf_model_images(psf_prods, workdir)
 
-            psfs = read_psf_model_images(psf_prods, workdir)
+        assert (
+            len(psf_prods) == num_exposures
+        ), "length of psf_listfile (%d) does not match the number of objects (%d)" % (
+            len(psf_prods),
+            num_exposures,
+        )
 
-            assert (
-                len(psf_prods) == num_exposures
-            ), "length of psf_listfile (%d) does not match the number of objects (%d)" % (
-                len(psf_prods),
-                num_exposures,
-            )
-
-            for psf in psfs:
-                assert issubclass(type(psf), PSFModelImage), "Returned PSF object does not seem to be the correct type"
+        for psf in psfs:
+            assert issubclass(type(psf), PSFModelImage), "Returned PSF object does not seem to be the correct type"

@@ -74,7 +74,7 @@ class Testvis_exposures(object):
 
         # Get the filenames of the FITS/HDF5 input files
 
-        det, wgt, bkg, _, _, _, seg = input_fits
+        det, wgt, bkg, _, _, seg = input_fits
 
         hdf5_file = os.path.join(workdir, input_hdf5)
 
@@ -115,7 +115,7 @@ class Testvis_exposures(object):
             assert det_astropy == det_hdf5
 
     def test_read_vis_data(self, workdir, input_products, hdf5_listfile):
-        vis_listfile, _, _, _, seg_listfile, _ = input_products
+        vis_listfile, _, _, seg_listfile, _ = input_products
 
         # Read listfiles
         with open(os.path.join(workdir, vis_listfile)) as fs:
