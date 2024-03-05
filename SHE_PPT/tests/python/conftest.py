@@ -171,7 +171,6 @@ def input_fits(workdir, input_products):
     vis_dpd = read_product_metadata(os.path.join(workdir, vis_prod))
     mer_dpd = read_product_metadata(os.path.join(workdir, mer_prod))
     psf_dpd = read_product_metadata(os.path.join(workdir, psf_prod))
-
     seg_dpd = read_product_metadata(os.path.join(workdir, seg_prod))
 
     det = vis_dpd.Data.DataStorage.DataContainer.FileName
@@ -179,7 +178,6 @@ def input_fits(workdir, input_products):
     bkg = vis_dpd.Data.BackgroundStorage.DataContainer.FileName
     mer = mer_dpd.Data.DataStorage.DataContainer.FileName
     psf = psf_dpd.Data.DataStorage.DataContainer.FileName
-
     seg = seg_dpd.Data.DataStorage.DataContainer.FileName
 
     return det, wgt, bkg, mer, psf, seg

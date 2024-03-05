@@ -23,7 +23,6 @@ __updated__ = "2022-05-02"
 import os
 
 import numpy as np
-from astropy.io import fits
 import h5py
 
 from SHE_PPT import __version__ as ppt_version
@@ -134,50 +133,6 @@ def __create_hdf5(object_ids, pixel_coords, workdir, stampsize, stamp_per_obj, o
     return h5_filename
 
 
-# def __create_fits(object_ids, pixel_coords, workdir, stampsize, stamp_per_obj, oversampling):
-#     """Creates the FITS file pointed to by the psf model image data product"""
-
-#     hdul = fits.HDUList()
-
-#     # create the table and append it to the HDU list
-#     table = __create_table(object_ids, pixel_coords, stampsize, stamp_per_obj)
-#     table_hdu = fits.BinTableHDU(table, name="PSFC")
-#     hdul.append(table_hdu)
-
-#     # create the PSF image
-#     img = __create_mock_psf_image(stampsize=stampsize)
-
-#     # create the appropriate HDUlists for the bulge and disk PSF images
-#     if stamp_per_obj:
-#         for obj_id in object_ids:
-#             bpsf_hdu = fits.ImageHDU(
-#                 img, name="%d.BPSF" % obj_id, header=fits.Header({"GS_SCALE": 5.55555555555555e-06})
-#             )
-#             dpsf_hdu = fits.ImageHDU(
-#                 img, name="%d.DPSF" % obj_id, header=fits.Header({"GS_SCALE": 5.55555555555555e-06})
-#             )
-
-#             hdul.append(bpsf_hdu)
-#             hdul.append(dpsf_hdu)
-
-#     else:
-#         bpsf_hdu = fits.ImageHDU(img, name="ALL.BPSF", header=fits.Header({"GS_SCALE": 5.55555555555555e-06}))
-#         dpsf_hdu = fits.ImageHDU(img, name="ALL.DPSF", header=fits.Header({"GS_SCALE": 5.55555555555555e-06}))
-
-#         hdul.append(bpsf_hdu)
-#         hdul.append(dpsf_hdu)
-
-#     # get a valid filename and write to this
-#     fits_filename = get_allowed_filename("PSF-IMG", "00", version=ppt_version, extension=".fits")
-
-#     qualified_fits_filename = os.path.join(workdir, fits_filename)
-
-#     logger.info("Writing mock PSF model image FITS to %s" % qualified_fits_filename)
-#     hdul.writeto(qualified_fits_filename, overwrite=True)
-
-#     return fits_filename
-
-
 def create_model_image_product(
     object_ids, pixel_coords, workdir=".", stampsize=480, stamp_per_obj=False, oversampling=3
 ):
@@ -191,19 +146,10 @@ def create_model_image_product(
     Returns:
         prod_filename: The filename of the output product"""
 
-    # create the fits file (table and PSF stamps)
-    # if filetype == "fits":
-    #     data_filename = __create_fits(
-    #         object_ids, pixel_coords, workdir, stampsize, stamp_per_obj, oversampling=oversampling
-    #     )
-    # elif filetype == "hdf5":
     data_filename = __create_hdf5(
         object_ids, pixel_coords, workdir, stampsize, stamp_per_obj, oversampling=oversampling
     )
-    # else:
-    #     raise ValueError("Unrecognised filetype %s. Expected 'fits' or 'hdf5'" % filetype)
 
-    # create the data product
     dpd = she_psf_model_image.create_dpd_she_psf_model_image(data_filename=data_filename)
 
     prod_filename = get_allowed_filename("PSF-IMG", "00", version=ppt_version, extension=".xml", subdir="")
