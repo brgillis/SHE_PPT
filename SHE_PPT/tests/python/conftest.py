@@ -213,7 +213,7 @@ def input_hdf5(workdir, input_fits):
         processing_function="SHE",
     )
 
-    qualified_output_filename = os.path.join(workdir, "data", output_filename)
+    qualified_output_filename = os.path.join(workdir, output_filename)
 
     convert_to_hdf5(det_file, bkg_file, wgt_file, seg_file, qualified_output_filename, chunk=(100, 100))
 
@@ -324,7 +324,7 @@ def input_hdf5_ccd(workdir, input_fits_ccd):
         processing_function="SHE",
     )
 
-    qualified_output_filename = os.path.join(workdir, "data", output_filename)
+    qualified_output_filename = os.path.join(workdir, output_filename)
 
     convert_to_hdf5(det_file, bkg_file, wgt_file, seg_file, qualified_output_filename, chunk=(100, 100))
 
@@ -434,7 +434,7 @@ def input_hdf5_quadrant(workdir, input_fits_quadrant):
         processing_function="SHE",
     )
 
-    qualified_output_filename = os.path.join(workdir, "data", output_filename)
+    qualified_output_filename = os.path.join(workdir, output_filename)
 
     convert_to_hdf5(det_file, bkg_file, wgt_file, seg_file, qualified_output_filename, chunk=(100, 100))
 
