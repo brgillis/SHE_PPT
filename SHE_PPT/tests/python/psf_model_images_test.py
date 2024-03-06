@@ -27,15 +27,10 @@ import pytest
 import os
 
 import numpy as np
-import h5py
 import json
-
-from astropy.io import fits
-from astropy.table import Table
 
 
 from SHE_PPT.she_io.psf_model_images import (
-    PSFModelImageFITS,
     PSFModelImageHDF5,
     PSFModelImage,
     read_psf_model_images,
@@ -69,33 +64,16 @@ def validate_psf_model_image(psf):
 
 
 class Testpsf_model_images(object):
-    def test_PSFModelImage(self, workdir, input_fits):
-        """Tests the API of the PSFModelImages objects (FITS and HDF5 versions)"""
-        _, _, _, _, psf_file, _ = input_fits
+    def test_PSFModelImage(self, workdir, input_fits, psf_oversampling_factor):
+        """Tests the API of the PSFModelImages objects"""
+        _, _, _, _, psf_file_hdf5, _ = input_fits
 
-        psf_fits = os.path.join(workdir, "data", psf_file)
+        qualified_h5_file = os.path.join(workdir, "data", psf_file_hdf5)
 
-        # Convert the FITS PSFModelImages file to hdf5
-        psf_h5 = os.path.splitext(psf_fits)[0] + ".h5"
-
-        hdul = fits.open(psf_fits)
-        t = Table.read(hdul[1])
-
-        # create HDF5 version of this file
-        with h5py.File(psf_h5, "w") as f:
-            g = f.create_group("IMAGES")
-            for row in t:
-                obj_id = row["OBJECT_ID"]
-                hdu = row["SHE_PSF_BULGE_INDEX"]
-                data = hdul[hdu].data
-                g.create_dataset(str(obj_id), data=data)
-            t.write(f, "TABLE")
-
-        hdul.close()
-
-        # Validate the PSFModelImages objects
-        validate_psf_model_image(PSFModelImageFITS(psf_fits))
-        validate_psf_model_image(PSFModelImageHDF5(psf_h5))
+        # Validate the PSFModelImages object
+        psf_h5 = PSFModelImageHDF5(qualified_h5_file)
+        validate_psf_model_image(psf_h5)
+        assert psf_h5.get_oversampling_factor() == psf_oversampling_factor
 
     def test_read_psf_model_images(self, workdir, input_products, num_exposures):
         _, _, psf_listfile, _, _ = input_products
@@ -105,8 +83,6 @@ class Testpsf_model_images(object):
             print(psf_prods)
 
         psfs = read_psf_model_images(psf_prods, workdir)
-
-        assert psfs is not None, "Returned PSF object list is None"
 
         assert (
             len(psf_prods) == num_exposures

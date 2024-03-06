@@ -23,7 +23,7 @@ __updated__ = "2022-05-02"
 import os
 
 import numpy as np
-from astropy.io import fits
+import h5py
 
 from SHE_PPT import __version__ as ppt_version
 from SHE_PPT.file_io import get_allowed_filename, write_xml_product
@@ -63,23 +63,26 @@ def __create_table(object_ids, pixel_coords, stampsize, stamp_per_obj):
     psf_y = np.asarray(psf_y, dtype=np.float32)
 
     # construct the table
-    t = init_table(tf, init_cols={
-        tf.ID: object_ids,
-        tf.template: sed_template,
-        tf.bulge_index: bulge_index,
-        tf.disk_index: disk_index,
-        tf.image_x: psf_image_x,
-        tf.image_y: psf_image_y,
-        tf.x: psf_x,
-        tf.y: psf_y
-        })
+    t = init_table(
+        tf,
+        init_cols={
+            tf.ID: object_ids,
+            tf.template: sed_template,
+            tf.bulge_index: bulge_index,
+            tf.disk_index: disk_index,
+            tf.image_x: psf_image_x,
+            tf.image_y: psf_image_y,
+            tf.x: psf_x,
+            tf.y: psf_y,
+        },
+    )
 
     assert is_in_format(t, tf)
 
     return t
 
 
-def __create_mock_psf_image(stampsize=800, radius=5):
+def __create_mock_psf_image(stampsize=480, radius=5):
     """Creates a mock PSF image (gausian)"""
 
     img = np.zeros((stampsize, stampsize), dtype=np.float32)
@@ -98,64 +101,56 @@ def __create_mock_psf_image(stampsize=800, radius=5):
     return img
 
 
-def __create_fits(object_ids, pixel_coords, workdir, stampsize, stamp_per_obj):
-    """Creates the FITS file pointed to by the psf model image data product"""
-
-    hdul = fits.HDUList()
+def __create_hdf5(object_ids, pixel_coords, workdir, stampsize, stamp_per_obj, oversampling):
+    """Creates the HDF5 file pointed to by the psf model image data product"""
 
     # create the table and append it to the HDU list
     table = __create_table(object_ids, pixel_coords, stampsize, stamp_per_obj)
-    table_hdu = fits.BinTableHDU(table, name="PSFC")
-    hdul.append(table_hdu)
 
     # create the PSF image
     img = __create_mock_psf_image(stampsize=stampsize)
 
-    # create the appropriate HDUlists for the bulge and disk PSF images
-    if stamp_per_obj:
-        for obj_id in object_ids:
-            bpsf_hdu = fits.ImageHDU(img, name="%d.BPSF" % obj_id,
-                                     header=fits.Header({"GS_SCALE": 5.55555555555555E-06}))
-            dpsf_hdu = fits.ImageHDU(img, name="%d.DPSF" % obj_id,
-                                     header=fits.Header({"GS_SCALE": 5.55555555555555E-06}))
-
-            hdul.append(bpsf_hdu)
-            hdul.append(dpsf_hdu)
-
-    else:
-        bpsf_hdu = fits.ImageHDU(img, name="ALL.BPSF", header=fits.Header({"GS_SCALE": 5.55555555555555E-06}))
-        dpsf_hdu = fits.ImageHDU(img, name="ALL.DPSF", header=fits.Header({"GS_SCALE": 5.55555555555555E-06}))
-
-        hdul.append(bpsf_hdu)
-        hdul.append(dpsf_hdu)
-
     # get a valid filename and write to this
-    fits_filename = get_allowed_filename("PSF-IMG", "00", version=ppt_version, extension=".fits")
+    h5_filename = get_allowed_filename("PSF-IMG", "00", version=ppt_version, extension=".h5")
 
-    qualified_fits_filename = os.path.join(workdir, fits_filename)
+    qualified_filename = os.path.join(workdir, h5_filename)
 
-    logger.info("Writing mock PSF model image FITS to %s" % qualified_fits_filename)
-    hdul.writeto(qualified_fits_filename, overwrite=True)
+    with h5py.File(qualified_filename, "w") as f:
+        f.attrs["PSF_OVERSAMPLING_FACTOR"] = oversampling
 
-    return fits_filename
+        mock_psf = f.create_dataset(name="MOCK_PSF", data=img)
+
+        img_group = f.create_group("IMAGES")
+
+        for obj_id in object_ids:
+            if stamp_per_obj:
+                img_group.create_dataset(name=str(obj_id), data=img)
+            else:
+                img_group[str(obj_id)] = mock_psf
+
+        table.write(f, "TABLE")
+
+    return h5_filename
 
 
-def create_model_image_product(object_ids, pixel_coords, workdir=".", stampsize=800, stamp_per_obj=False):
+def create_model_image_product(
+    object_ids, pixel_coords, workdir=".", stampsize=480, stamp_per_obj=False, oversampling=3
+):
     """Creates a dpdShePsfModelImage product given a list of object ids and pixel coordinates.
-       Inputs:
-           object_ids: List of object IDs
-           pixel_coords: List of tuples of (x,y) pixel coords corresponding to the object_ids
-           workdir: The work directory to write the product to (default ".")
-           stampsize: Size of the postagestamp in pixels (default 800)
-           stamp_per_obj: Use a postage stamp per object (T) or use one stamp for all objects (F) (default False)
-       Returns:
-           prod_filename: The filename of the output product"""
+    Inputs:
+        object_ids: List of object IDs
+        pixel_coords: List of tuples of (x,y) pixel coords corresponding to the object_ids
+        workdir: The work directory to write the product to (default ".")
+        stampsize: Size of the postagestamp in pixels
+        stamp_per_obj: Use a postage stamp per object (T) or use one stamp for all objects (F) (default False)
+    Returns:
+        prod_filename: The filename of the output product"""
 
-    # create the fits file (table and PSF stamps)
-    fits_filename = __create_fits(object_ids, pixel_coords, workdir, stampsize, stamp_per_obj)
+    data_filename = __create_hdf5(
+        object_ids, pixel_coords, workdir, stampsize, stamp_per_obj, oversampling=oversampling
+    )
 
-    # create the data product
-    dpd = she_psf_model_image.create_dpd_she_psf_model_image(data_filename=fits_filename)
+    dpd = she_psf_model_image.create_dpd_she_psf_model_image(data_filename=data_filename)
 
     prod_filename = get_allowed_filename("PSF-IMG", "00", version=ppt_version, extension=".xml", subdir="")
 
