@@ -113,7 +113,7 @@ def __generate_detector_images(
         y_px.append(y + stampsize / 2)
 
         # add the blob to the image
-        sci[y:y + stampsize, x:x + stampsize] += snr * np.sqrt(background) * blob
+        sci[y : y + stampsize, x : x + stampsize] += snr * np.sqrt(background) * blob
 
     # generate rms image (standard deviation of the image in this case)
     rms_val = np.std(sci)
@@ -317,6 +317,7 @@ def create_exposure(
                 CCDID=det_id,
                 **kwargs_header_image,
             )
+            det_hdr.pop("QUADID")
 
         # create hdus for the DET file and append them to the HDUlist
         sci_hdu = fits.ImageHDU(data=sci, header=det_hdr, name="%s.SCI" % _detector_name)
