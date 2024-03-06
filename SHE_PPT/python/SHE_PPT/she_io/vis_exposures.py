@@ -144,6 +144,8 @@ class Detector:
     bkg: np.ndarray
     seg: np.ndarray
     dpd: "DpdVisCalibratedFrame"  # noqa: F821
+    name: str
+    number: int
 
     def __eq__(self, other):
         if self.header != other.header:
@@ -168,6 +170,9 @@ class Detector:
             return False
 
         if not np.array_equal(self.seg[:, :], other.seg[:, :]):
+            return False
+
+        if not self.name == other.name:
             return False
 
         return True
@@ -405,7 +410,19 @@ class VisExposureAstropyFITS(VisExposure):
         seg = CCDData(self.seg_hdus[det_num].data) if self.seg_hdus else None
 
         # create the detector object and add it to this class's detector's dictionary
-        det = Detector(header=header, wcs=wcs, sci=sci, rms=rms, flg=flg, wgt=wgt, bkg=bkg, seg=seg, dpd=self.dpd)
+        det = Detector(
+            header=header,
+            wcs=wcs,
+            sci=sci,
+            rms=rms, 
+            flg=flg,
+            wgt=wgt,
+            bkg=bkg,
+            seg=seg,
+            dpd=self.dpd,
+            name=det_id,
+            number=det_num
+        )
 
         self._detectors[det_id] = det
         self._detectors[det_num] = det
@@ -530,7 +547,19 @@ class VisExposureFitsIO(VisExposure):
         seg = CCDData(self.seg_hdus[det_num]) if self.seg_hdus else None
 
         # create the detector object and add it to this class's detector's dictionary
-        det = Detector(header=header, wcs=wcs, sci=sci, rms=rms, flg=flg, wgt=wgt, bkg=bkg, seg=seg, dpd=self.dpd)
+        det = Detector(
+            header=header,
+            wcs=wcs,
+            sci=sci,
+            rms=rms, 
+            flg=flg,
+            wgt=wgt,
+            bkg=bkg,
+            seg=seg,
+            dpd=self.dpd,
+            name=det_id,
+            number=det_num
+        )
 
         self._detectors[det_id] = det
         self._detectors[det_num] = det
@@ -610,7 +639,19 @@ class VisExposureHDF5(VisExposure):
         seg = CCDData(detector_group["seg"])
 
         # create the detector object and add it to this class's detector's dictionary
-        det = Detector(header=header, wcs=wcs, sci=sci, rms=rms, flg=flg, wgt=wgt, bkg=bkg, seg=seg, dpd=self.dpd)
+        det = Detector(
+            header=header,
+            wcs=wcs,
+            sci=sci,
+            rms=rms, 
+            flg=flg,
+            wgt=wgt,
+            bkg=bkg,
+            seg=seg,
+            dpd=self.dpd,
+            name=det_id,
+            number=det_num
+        )
 
         self._detectors[det_id] = det
         self._detectors[det_num] = det
