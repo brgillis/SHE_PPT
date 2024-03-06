@@ -32,8 +32,6 @@ from dataclasses import dataclass
 import numpy as np
 import h5py
 
-from astropy.io import fits
-from astropy.table import Table
 from astropy.io.misc.hdf5 import read_table_hdf5
 
 import ElementsKernel.Logging as log

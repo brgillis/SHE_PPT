@@ -107,6 +107,7 @@ def objsize():
 def num_exposures():
     return NUM_EXP
 
+
 @pytest.fixture
 def psf_oversampling_factor():
     return PSF_OVERSAMPLING
