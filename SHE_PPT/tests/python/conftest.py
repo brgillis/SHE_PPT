@@ -49,6 +49,7 @@ NUM_DETECTORS_QUADRANT = 144
 NUM_OBJECTS_PER_DETECTOR = 2
 OBJSIZE = 2.5
 NUM_EXP = 4
+PSF_OVERSAMPLING = 3
 
 
 @pytest.fixture
@@ -106,9 +107,13 @@ def objsize():
 def num_exposures():
     return NUM_EXP
 
+@pytest.fixture
+def psf_oversampling_factor():
+    return PSF_OVERSAMPLING
+
 
 @pytest.fixture
-def input_products(num_detectors, workdir, num_objects_per_detector, objsize, num_exposures):
+def input_products(num_detectors, workdir, num_objects_per_detector, objsize, num_exposures, psf_oversampling_factor):
     """Creates the data products/listfiles needed as an input to the various executables"""
     exposure_product, sky_coords, pixel_coords, detectors, wcs_list = generate_mock_vis_images.create_exposure(
         n_detectors=num_detectors,
@@ -123,7 +128,7 @@ def input_products(num_detectors, workdir, num_objects_per_detector, objsize, nu
     )
     id_list_product = generate_mock_object_id_list.create_object_id_list(object_ids, workdir=workdir)
     psf_product = generate_mock_psf_model_image.create_model_image_product(
-        object_ids, pixel_coords, workdir=workdir
+        object_ids, pixel_coords, workdir=workdir, oversampling=psf_oversampling_factor
     )
     seg_map_product = generate_mock_reprojected_segmentation_maps.create_reprojected_segmentation_map(
         object_ids, pixel_coords, detectors, wcs_list, objsize=objsize, workdir=workdir
@@ -227,7 +232,9 @@ def hdf5_listfile(workdir, input_hdf5, num_exposures):
 
 
 @pytest.fixture
-def input_products_ccd(num_detectors_ccd, workdir, num_objects_per_detector, objsize, num_exposures):
+def input_products_ccd(
+    num_detectors_ccd, workdir, num_objects_per_detector, objsize, num_exposures, psf_oversampling_factor
+):
     """Creates the data products/listfiles needed as an input to the various executables"""
     exposure_product, sky_coords, pixel_coords, detectors, wcs_list = generate_mock_vis_images.create_exposure(
         n_detectors=num_detectors_ccd,
@@ -241,7 +248,9 @@ def input_products_ccd(num_detectors_ccd, workdir, num_objects_per_detector, obj
         obj_coords=sky_coords, workdir=workdir
     )
     id_list_product = generate_mock_object_id_list.create_object_id_list(object_ids, workdir=workdir)
-    psf_product = generate_mock_psf_model_image.create_model_image_product(object_ids, pixel_coords, workdir=workdir)
+    psf_product = generate_mock_psf_model_image.create_model_image_product(
+        object_ids, pixel_coords, workdir=workdir, oversampling=psf_oversampling_factor
+    )
     seg_map_product = generate_mock_reprojected_segmentation_maps.create_reprojected_segmentation_map(
         object_ids, pixel_coords, detectors, wcs_list, objsize=objsize, workdir=workdir
     )
@@ -338,7 +347,9 @@ def hdf5_listfile_ccd(workdir, input_hdf5_ccd, num_exposures):
 
 
 @pytest.fixture
-def input_products_quadrant(num_detectors_quadrant, workdir, num_objects_per_detector, objsize, num_exposures):
+def input_products_quadrant(
+    num_detectors_quadrant, workdir, num_objects_per_detector, objsize, num_exposures, psf_oversampling_factor
+):
     """Creates the data products/listfiles needed as an input to the various executables"""
     exposure_product, sky_coords, pixel_coords, detectors, wcs_list = generate_mock_vis_images.create_exposure(
         n_detectors=num_detectors_quadrant,
@@ -351,7 +362,9 @@ def input_products_quadrant(num_detectors_quadrant, workdir, num_objects_per_det
         obj_coords=sky_coords, workdir=workdir
     )
     id_list_product = generate_mock_object_id_list.create_object_id_list(object_ids, workdir=workdir)
-    psf_product = generate_mock_psf_model_image.create_model_image_product(object_ids, pixel_coords, workdir=workdir)
+    psf_product = generate_mock_psf_model_image.create_model_image_product(
+        object_ids, pixel_coords, workdir=workdir, oversampling=psf_oversampling_factor
+    )
     seg_map_product = generate_mock_reprojected_segmentation_maps.create_reprojected_segmentation_map(
         object_ids, pixel_coords, detectors, wcs_list, objsize=objsize, workdir=workdir
     )

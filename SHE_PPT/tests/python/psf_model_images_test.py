@@ -64,7 +64,7 @@ def validate_psf_model_image(psf):
 
 
 class Testpsf_model_images(object):
-    def test_PSFModelImage(self, workdir, input_fits):
+    def test_PSFModelImage(self, workdir, input_fits, psf_oversampling_factor):
         """Tests the API of the PSFModelImages objects"""
         _, _, _, _, psf_file_hdf5, _ = input_fits
 
@@ -73,7 +73,7 @@ class Testpsf_model_images(object):
         # Validate the PSFModelImages object
         psf_h5 = PSFModelImageHDF5(qualified_h5_file)
         validate_psf_model_image(psf_h5)
-        psf_h5.get_oversampling_factor()
+        assert psf_h5.get_oversampling_factor() == psf_oversampling_factor
 
     def test_read_psf_model_images(self, workdir, input_products, num_exposures):
         _, _, psf_listfile, _, _ = input_products
