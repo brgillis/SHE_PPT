@@ -20,6 +20,7 @@ Bug Fixes
 
 - Some minor pep8 fixes
 - Read HDF5 VIS files from workdir not datadir
+- Changed default objsize in SHE_PPT.testing.generate_mock_vis_images to a valid value (2 pixels) 
 
 New Features
 ------------

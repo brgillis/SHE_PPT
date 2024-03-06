@@ -52,13 +52,11 @@ rng = np.random.RandomState(RANDOM_SEED)
 
 class TestMockData(SheTestCase):
     def test_vis_images(self, num_detectors, num_objects_per_detector, num_objects):
-        detector_shape = (200, 200)
         workdir = self.workdir
 
         # Create the frame product
         prod_filename, sky_coords, img_coords, detectors, wcs_list = create_exposure(
             n_detectors=num_detectors,
-            detector_shape=detector_shape,
             workdir=workdir,
             n_objs_per_det=num_objects_per_detector,
         )

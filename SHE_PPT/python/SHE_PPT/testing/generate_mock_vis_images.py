@@ -37,7 +37,7 @@ logger = getLogger(__name__)
 stampscale = 5
 
 
-def __generate_gausian_blob(objsize=10):
+def __generate_gausian_blob(objsize=2):
     """generates a (objsize*stampscale*2 x objsize*stampscale*2) pixel image of a sersic profile (n=1) with width of
     objsize pixels"""
 
@@ -56,7 +56,7 @@ def __generate_gausian_blob(objsize=10):
 
 
 def __generate_detector_images(
-    detector_shape=(4136, 4096), nobjs=10, background=10.0, snr=10, objsize=10, obj_rng=None, noise_rng=None
+    detector_shape=(4136, 4096), nobjs=10, background=10.0, snr=10, objsize=2, obj_rng=None, noise_rng=None
 ):
     """Generates the SCI, RMG, FLG, WGT and BKG pixel maps for a detector
 
@@ -153,7 +153,7 @@ def create_exposure(
     seed=1,
     noise_seed=1,
     n_objs_per_det=10,
-    objsize=10,
+    objsize=2,
     pointing_id=1,
     obs_id=1,
     use_quadrant=True,
