@@ -230,25 +230,16 @@ def create_exposure(
     if kwargs_header_image is None:
         kwargs_header_image = {}
 
-    # create dummy WCS (Use Airy projection - arbitrary decision, we just want something in valid sky coordinates!)
-    wcs = WCS(naxis=2)
-    x_c = (1.1 * detector_shape[1]) * 3 * PIXELSIZE
-    y_c = (1.1 * detector_shape[0]) * 3 * PIXELSIZE
-    wcs.wcs.crpix = [0.0, 0.0]
-    wcs.wcs.crval = [x_c, y_c]
-    wcs.wcs.cd = np.identity(2) * PIXELSIZE
-    wcs.wcs.ctype = ["RA---TAN", "DEC--TAN"]
-
     # create hdulists for the 3 fits files (DET, WGT, BKG)
-    det_hdr = _create_primary_header(header=header_primary, wcs=wcs, **kwargs_header_primary)
+    det_hdr = _create_primary_header(header=header_primary, **kwargs_header_primary)
     det_primary = fits.PrimaryHDU(data=None, header=det_hdr)
     det_hdul = fits.HDUList([det_primary])
 
-    wgt_hdr = _create_primary_header(header=header_primary, wcs=wcs, **kwargs_header_primary)
+    wgt_hdr = _create_primary_header(header=header_primary, **kwargs_header_primary)
     wgt_primary = fits.PrimaryHDU(data=None, header=wgt_hdr)
     wgt_hdul = fits.HDUList([wgt_primary])
 
-    bkg_hdr = _create_primary_header(header=header_primary, wcs=wcs, **kwargs_header_primary)
+    bkg_hdr = _create_primary_header(header=header_primary, **kwargs_header_primary)
     bkg_primary = fits.PrimaryHDU(data=None, header=bkg_hdr)
     bkg_hdul = fits.HDUList([bkg_primary])
 
@@ -291,6 +282,7 @@ def create_exposure(
         wcs.wcs.crpix = [0.0, 0.0]
         wcs.wcs.crval = [x_c, y_c]
         wcs.wcs.cd = np.identity(2) * PIXELSIZE
+        wcs.wcs.cd[0, 0] *= -1
         wcs.wcs.ctype = ["RA---TAN", "DEC--TAN"]
 
         # obtain the world coordinates of the objects in the image, and append them to the object_positions list

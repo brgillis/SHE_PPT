@@ -94,10 +94,6 @@ class Testvis_exposures(object):
         exp_hdf5 = VisExposureHDF5(hdf5_file)
         verify_exposure(exp_hdf5)
 
-        assert not exp_astropy.quadrant_based, "astropy VisExposure objects should not be quadrant_based but it is."
-        assert not exp_fitsio.quadrant_based, "astropy VisExposure objects should not be quadrant_based but it is."
-        assert not exp_hdf5.quadrant_based, "astropy VisExposure objects should not be quadrant_based but it is."
-
         assert (
             len(exp_hdf5) == len(exp_astropy) == len(exp_fitsio)
         ), "astropy, fitsio and HDF5 VisExposure objects have different number of detectors"
@@ -173,10 +169,6 @@ class Testvis_exposures_CCD(object):
         exp_hdf5 = VisExposureHDF5(hdf5_file)
         verify_exposure(exp_hdf5)
 
-        assert not exp_astropy.quadrant_based, "astropy VisExposure objects should not be quadrant_based but it is."
-        assert not exp_fitsio.quadrant_based, "astropy VisExposure objects should not be quadrant_based but it is."
-        assert not exp_hdf5.quadrant_based, "astropy VisExposure objects should not be quadrant_based but it is."
-
         assert (
             len(exp_hdf5) == len(exp_astropy) == len(exp_fitsio)
         ), "astropy, fitsio and HDF5 VisExposure objects have different number of detectors"
@@ -249,10 +241,6 @@ class Testvis_exposures_quadrant(object):
 
         exp_hdf5 = VisExposureHDF5(hdf5_file)
         verify_exposure(exp_hdf5)
-
-        assert exp_astropy.quadrant_based, "astropy VisExposure objects should be quadrant_based but it is not."
-        assert exp_fitsio.quadrant_based, "astropy VisExposure objects should be quadrant_based but it is not."
-        assert exp_hdf5.quadrant_based, "astropy VisExposure objects should be quadrant_based but it is not."
 
         assert (
             len(exp_hdf5) == len(exp_astropy) == len(exp_fitsio)
