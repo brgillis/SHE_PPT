@@ -141,7 +141,7 @@ def create_model_image_product(
         object_ids: List of object IDs
         pixel_coords: List of tuples of (x,y) pixel coords corresponding to the object_ids
         workdir: The work directory to write the product to (default ".")
-        stampsize: Size of the postagestamp in pixels (default 800)
+        stampsize: Size of the postagestamp in pixels
         stamp_per_obj: Use a postage stamp per object (T) or use one stamp for all objects (F) (default False)
     Returns:
         prod_filename: The filename of the output product"""
