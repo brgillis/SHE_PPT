@@ -317,7 +317,6 @@ def create_exposure(
                 CCDID=det_id,
                 **kwargs_header_image,
             )
-            det_hdr.pop("QUADID")
 
         # create hdus for the DET file and append them to the HDUlist
         sci_hdu = fits.ImageHDU(data=sci, header=det_hdr, name="%s.SCI" % _detector_name)

@@ -5,8 +5,6 @@ PCOUNT  =                    0 / required keyword; must = 0
 GCOUNT  =                    1 / required keyword; must = 1                     
 EXTNAME = '1-1.E.SCI'                                                           
 DETID   =                    0 / CCD-ID field from science TM (0-35)            
-CCDID   = '1-1     '           / e.g. Detector ID, e.g. '0-0', '1-1' ... '6-6'  
-QUADID  = 'E       '           / e.g. Quadrant ID, e.g. 'E', 'F', 'G' or 'H'    
 ROEID   =                    1 / ROE ID: 1-12                                   
 ROECTV  =                  200 / ROE configuration table version                
 BUNIT   = 'ADU     '           / Pixel data unit, e.g. 'electrons' or 'adu'     
