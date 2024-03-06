@@ -113,7 +113,7 @@ def __generate_detector_images(
         y_px.append(y + stampsize / 2)
 
         # add the blob to the image
-        sci[y : y + stampsize, x : x + stampsize] += snr * np.sqrt(background) * blob
+        sci[y:y + stampsize, x:x + stampsize] += snr * np.sqrt(background) * blob
 
     # generate rms image (standard deviation of the image in this case)
     rms_val = np.std(sci)
