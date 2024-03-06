@@ -32,8 +32,6 @@ from dataclasses import dataclass
 import numpy as np
 import h5py
 
-from astropy.io import fits
-from astropy.table import Table
 from astropy.io.misc.hdf5 import read_table_hdf5
 
 import ElementsKernel.Logging as log
@@ -68,14 +66,7 @@ def read_psf_model_images(psf_prods, workdir="."):
     # Read get the appropriate PSFModelImages object depending on the file extension of the files to be read
     for psf_file in psf_files:
         qualified_psf_file = os.path.join(datadir, psf_file)
-        _, ext = os.path.splitext(psf_file)
-
-        if ext in (".h5", ".hdf5"):
-            psf_model_images.append(PSFModelImageHDF5(qualified_psf_file))
-        elif ext in (".fits"):
-            psf_model_images.append(PSFModelImageFITS(qualified_psf_file))
-        else:
-            raise ValueError("Unknown file extension for psf_model_images file %s" % qualified_psf_file)
+        psf_model_images.append(PSFModelImageHDF5(qualified_psf_file))
 
     logger.info("Created %d %s objects", n_exps, psf_model_images[-1].__class__.__name__)
 
@@ -106,7 +97,7 @@ class PSFModelImage(ABC):
     @abstractmethod
     def get_model_images(self, obj_id):
         """
-        Returns the disk and bulge PSF images from the file for the requested object id
+        Returns an ObjectModelImage object containing the disk and bulge PSF images for the requested object id
 
         Inputs:
           - obj_id: the object id for the object whose images we wish to extract
@@ -117,51 +108,15 @@ class PSFModelImage(ABC):
         """
         pass
 
+    @abstractmethod
+    def get_oversampling_factor(self):
+        """
+        Returns the oversampling factor for the PSF model images
+        """
+        pass
+
     def __getitem__(self, obj_id):
         return self.get_model_images(obj_id)
-
-
-class PSFModelImageFITS(PSFModelImage):
-    """Class for interfacing with a psf_model_image fits file"""
-
-    @io_stats
-    def __init__(self, filename):
-
-        self.filename = filename
-
-        # No point in memory mapping as we wish to access the whole HDU at once.
-        # We do not lazy load HDUs so that the whole file is traversed and the locations/offsets of
-        # each HDU is known. This means when we call self.get_model_images (below) it knows where in
-        # the FITS file to read from, so doesn't spend time seeking through the file. This means
-        # all the time in get_model_images is spent reading the image, not seeking through the FITS
-        # to find the data.
-
-        self.hdul = fits.open(filename, memmap=False, lazy_load_hdus=False)
-
-        self.table = Table.read(self.hdul[1])
-
-        # index table by object_id
-        self.table.add_index("OBJECT_ID")
-
-    @io_stats
-    def get_model_images(self, obj_id):
-
-        try:
-            row = self.table.loc[obj_id]
-        except KeyError as e:
-            raise KeyError("Object %s not present in PSFModelImages file %s" % (obj_id, self.filename)) from e
-
-        bulge_idx = row["SHE_PSF_BULGE_INDEX"]
-        disk_idx = row["SHE_PSF_DISK_INDEX"]
-        quality_flag = row["SHE_PSF_QUAL_FLAG"]
-
-        bulge = self.hdul[bulge_idx].data
-        if disk_idx == bulge_idx:
-            disk = bulge
-        else:
-            disk = self.hdul[disk_idx].data
-
-        return ObjectModelImage(bulge=bulge, disk=disk, quality_flag=quality_flag, table_row=row)
 
 
 class PSFModelImageHDF5(PSFModelImage):
@@ -201,3 +156,9 @@ class PSFModelImageHDF5(PSFModelImage):
         quality_flag = row["SHE_PSF_QUAL_FLAG"]
 
         return ObjectModelImage(bulge=image, disk=image, quality_flag=quality_flag, table_row=row)
+
+    def get_oversampling_factor(self):
+        try:
+            return self.file.attrs["PSF_OVERSAMPLING_FACTOR"]
+        except KeyError as e:
+            raise KeyError("PSF oversampling factor is not present in this file") from e
