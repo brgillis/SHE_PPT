@@ -132,8 +132,8 @@ def input_products(num_detectors, workdir, num_objects_per_detector, objsize, nu
     # create the contents of the listfiles for the vis and mer products
     exposure_list = [exposure_product for i in range(num_exposures)]
     catalogue_list = [catalogue_product]
-    psf_list = [psf_product for i in range(NUM_EXP)]
-    seg_map_list = [seg_map_product for i in range(NUM_EXP)]
+    psf_list = [psf_product for i in range(num_exposures)]
+    seg_map_list = [seg_map_product for i in range(num_exposures)]
 
     # write them to disk
     data_images = os.path.join(workdir, "data_images.json")
