@@ -8,6 +8,7 @@ API Changes
 
 - Refactor read_vis_data to take lists of VIS products, reprojected segmentation map products and HDF5 filenames instead of listfiles
 - Refactor read_psf_model_images to take a list of PSFModelImages product filenames instead of a listfile
+- Added detector name and number attributes to she_io.vis_exposures.Detector dataclass
 
 Dependency Changes
 ------------------
@@ -31,6 +32,7 @@ New Features
 - Included the FITS header from the PrimaryHDU in a VisExposure object
 - Added DpdVisCalibratedQuadFrame product template - use this for quadrants
 - Enable compression of HDF5 VIS images if chunking is enabled
+- Refactores vis_exposures_test.py to remove duplicated code
 
 New config features
 -------------------
