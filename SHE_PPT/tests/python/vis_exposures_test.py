@@ -157,11 +157,9 @@ class Testvis_exposures(object):
         """Tests the Exposure classes"""
         verify_all_exposure_types(workdir, input_fits, input_hdf5, num_detectors, quadrants=False)
 
-
     def test_read_vis_data(self, workdir, input_products, hdf5_listfile):
         """Tests read_vis_exposures"""
         verify_read_vis_data(workdir, input_products, hdf5_listfile)
-
 
 
 class Testvis_exposures_CCD(object):
@@ -169,20 +167,18 @@ class Testvis_exposures_CCD(object):
         """Tests the Exposure classes"""
         verify_all_exposure_types(workdir, input_fits_ccd, input_hdf5_ccd, num_detectors_ccd, quadrants=False)
 
-
     def test_read_vis_data(self, workdir, input_products_ccd, hdf5_listfile_ccd):
         """Tests read_vis_exposures"""
         verify_read_vis_data(workdir, input_products_ccd, hdf5_listfile_ccd)
 
 
-
 class Testvis_exposures_quadrant(object):
     def testExposures(self, workdir, input_fits_quadrant, input_hdf5_quadrant, num_detectors_quadrant):
         """Tests the Exposure classes"""
-        verify_all_exposure_types(workdir, input_fits_quadrant, input_hdf5_quadrant, num_detectors_quadrant, quadrants=True)
-
+        verify_all_exposure_types(
+            workdir, input_fits_quadrant, input_hdf5_quadrant, num_detectors_quadrant, quadrants=True
+        )
 
     def test_read_vis_data(self, workdir, input_products_quadrant, hdf5_listfile_quadrant):
         """Tests read_vis_exposures"""
         verify_read_vis_data(workdir, input_products_quadrant, hdf5_listfile_quadrant)
-
