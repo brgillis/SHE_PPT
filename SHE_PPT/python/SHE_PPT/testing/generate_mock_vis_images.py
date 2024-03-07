@@ -21,13 +21,14 @@ __updated__ = "2022-05-04"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 import os
+import pathlib
 
 import numpy as np
 from astropy.io import fits
 from astropy.wcs import WCS
 
 from SHE_PPT import __version__ as ppt_version
-from SHE_PPT.file_io import get_allowed_filename, write_xml_product
+from SHE_PPT.file_io import get_allowed_filename, write_xml_product, find_file
 from SHE_PPT.logging import getLogger
 from SHE_PPT.products import vis_calibrated_frame, vis_calibrated_quad_frame
 
@@ -35,6 +36,10 @@ logger = getLogger(__name__)
 
 # how much larger the radius of the stamp is than the radius of the object
 stampscale = 5
+
+# templates of the FITS Headers
+PRIMARY_HEADER_PATH = find_file(pathlib.Path("AUX") / "SHE_PPT" / "vis_quad_primary_header_20240305.txt")
+IMAGE_HEADER_PATH = find_file(pathlib.Path("AUX") / "SHE_PPT" / "vis_quad_image_header_20240305.txt")
 
 
 def __generate_gausian_blob(objsize=2):
@@ -126,22 +131,39 @@ def __generate_detector_images(
     return sci, rms, flg, wgt, bkg, x_px, y_px
 
 
-def __create_header(wcs=None, **kwargs):
+def __create_header(header, wcs, **kwargs):
     """Returns a newly created FITS header
     Args:
-      wcs - adds the wcs information to the header
+      header - an astropy.io.fits.Header object
+      wcs - an astropy.wcs.WCS object, this overwrites the existing wcs in the header if provided
       **kwargs - additional keywords to put into the header
     """
-    if wcs is None:
-        # generate new empty header
-        h = fits.Header()
-    else:
-        # generate header from wcs
-        h = wcs.to_header()
+
+    # if wcs is provided, overwrite the current header wcs
+    if wcs is not None:
+        header.update(wcs.to_header())
 
     # add in additional keywords to the header from the args
     for key, val in kwargs.items():
-        h[key] = val
+        header[key] = val
+
+    return header
+
+
+def _create_primary_header(header=None, wcs=None, **kwargs):
+    if header is None:
+        header_blob = fits.Header.fromtextfile(PRIMARY_HEADER_PATH)
+
+    h = __create_header(header_blob, wcs, **kwargs)
+
+    return h
+
+
+def _create_image_header(header=None, wcs=None, **kwargs):
+    if header is None:
+        header_blob = fits.Header.fromtextfile(IMAGE_HEADER_PATH)
+
+    h = __create_header(header_blob, wcs, **kwargs)
 
     return h
 
@@ -157,6 +179,10 @@ def create_exposure(
     pointing_id=1,
     obs_id=1,
     use_quadrant=True,
+    header_primary=None,
+    header_image=None,
+    kwargs_header_primary=None,
+    kwargs_header_image=None,
 ):
     """
     Creates a mock dpdVisCalibratedFrame data product for use in smoke tests
@@ -198,16 +224,22 @@ def create_exposure(
     obj_rng = np.random.RandomState(seed=seed)
     noise_rng = np.random.RandomState(seed=noise_seed)
 
+    if kwargs_header_primary is None:
+        kwargs_header_primary = {}
+
+    if kwargs_header_image is None:
+        kwargs_header_image = {}
+
     # create hdulists for the 3 fits files (DET, WGT, BKG)
-    det_hdr = __create_header()
+    det_hdr = _create_primary_header(header=header_primary, **kwargs_header_primary)
     det_primary = fits.PrimaryHDU(data=None, header=det_hdr)
     det_hdul = fits.HDUList([det_primary])
 
-    wgt_hdr = __create_header()
+    wgt_hdr = _create_primary_header(header=header_primary, **kwargs_header_primary)
     wgt_primary = fits.PrimaryHDU(data=None, header=wgt_hdr)
     wgt_hdul = fits.HDUList([wgt_primary])
 
-    bkg_hdr = __create_header()
+    bkg_hdr = _create_primary_header(header=header_primary, **kwargs_header_primary)
     bkg_primary = fits.PrimaryHDU(data=None, header=bkg_hdr)
     bkg_hdul = fits.HDUList([bkg_primary])
 
@@ -250,6 +282,7 @@ def create_exposure(
         wcs.wcs.crpix = [0.0, 0.0]
         wcs.wcs.crval = [x_c, y_c]
         wcs.wcs.cd = np.identity(2) * PIXELSIZE
+        wcs.wcs.cd[0, 0] *= -1
         wcs.wcs.ctype = ["RA---TAN", "DEC--TAN"]
 
         # obtain the world coordinates of the objects in the image, and append them to the object_positions list
@@ -268,11 +301,22 @@ def create_exposure(
 
         # common header tor HDUs in the DET file (sci, flg, rms)
         if use_quadrant:
-            det_hdr = __create_header(
-                wcs=wcs, EXPTIME=500.0, GAIN=3.0, RDNOISE=3.0, MAGZEROP=25.0, CCDID=det_id, QUADID=quad_id
+            det_hdr = _create_image_header(
+                wcs=wcs,
+                NAXIS1=detector_shape[0],
+                NAXIS2=detector_shape[1],
+                CCDID=det_id,
+                QUADID=quad_id,
+                **kwargs_header_image,
             )
         else:
-            det_hdr = __create_header(wcs=wcs, EXPTIME=500.0, GAIN=3.0, RDNOISE=3.0, MAGZEROP=25.0, CCDID=det_id)
+            det_hdr = _create_image_header(
+                wcs=wcs,
+                NAXIS1=detector_shape[0],
+                NAXIS2=detector_shape[1],
+                CCDID=det_id,
+                **kwargs_header_image,
+            )
 
         # create hdus for the DET file and append them to the HDUlist
         sci_hdu = fits.ImageHDU(data=sci, header=det_hdr, name="%s.SCI" % _detector_name)
@@ -283,12 +327,12 @@ def create_exposure(
         det_hdul.append(flg_hdu)
 
         # BKG HDU
-        bkg_hdr = __create_header()
+        bkg_hdr = _create_image_header(**kwargs_header_image)
         bkg_hdu = fits.ImageHDU(data=bkg, header=bkg_hdr, name="%s" % _detector_name)
         bkg_hdul.append(bkg_hdu)
 
         # WGT HDU
-        wgt_hdr = __create_header()
+        wgt_hdr = _create_image_header(**kwargs_header_image)
         wgt_hdu = fits.ImageHDU(data=wgt, header=wgt_hdr, name="%s" % _detector_name)
         wgt_hdul.append(wgt_hdu)
 
