@@ -33,6 +33,9 @@ New Features
 - Included the FITS header from the PrimaryHDU in a VisExposure object
 - Added DpdVisCalibratedQuadFrame product template - use this for quadrants
 - Enable compression of HDF5 VIS images if chunking is enabled
+- Added default FITS header
+- Mock VIS image includs a simplied version of Primary FITS header and Image FITS header
+- Key-value pairs can be added to a mock VIS image
 - PSFModelImages class has get_oversampling_factor method
 - generate_mock_psf_model_image now creates HDF5 output files
 
