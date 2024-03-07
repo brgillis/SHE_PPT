@@ -118,6 +118,13 @@ def verify_all_exposure_types(workdir, fits_files, hdf5_file, n_detectors, quadr
         assert det_astropy == det_fitsio
         assert det_astropy == det_hdf5
 
+    # Check for uniqueness of detector names and IDs
+    # NOTE: we only need to check one of the exposure objects as above we asserted that they are all equal
+    names = [det.name for det in exp_astropy]
+    numbers = [det.number for det in exp_astropy]
+    assert len(names) == len(set(names))
+    assert len(numbers) == len(set(numbers))
+
 
 def verify_read_vis_data(workdir, input_products, hdf5_listfile):
     vis_listfile, _, _, seg_listfile, _ = input_products
