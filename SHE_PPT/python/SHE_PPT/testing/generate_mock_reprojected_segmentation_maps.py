@@ -31,6 +31,8 @@ from SHE_PPT.logging import getLogger
 from SHE_PPT.products.she_exposure_segmentation_map import create_dpd_she_exposure_segmentation_map
 from SHE_PPT.clustering import identify_all_groups
 
+from .generate_mock_vis_images import DEFAULT_OBJ_SIZE
+
 logger = getLogger(__name__)
 
 # factor that the mask is larger than the object radius
@@ -52,7 +54,7 @@ def __generate_segmentation_mask(radius=10):
     return mask, x, y
 
 
-def __create_detector_map(object_ids, pixel_coords, detector_shape, objsize=10, grouped=True):
+def __create_detector_map(object_ids, pixel_coords, detector_shape, objsize=DEFAULT_OBJ_SIZE, grouped=True):
     """For a given detector, produce a segmentation map"""
     img = np.zeros(detector_shape, dtype=np.int64)
 
@@ -120,7 +122,7 @@ def create_reprojected_segmentation_map(
     wcs_list,
     workdir=".",
     detector_shape=(100, 100),
-    objsize=10,
+    objsize=DEFAULT_OBJ_SIZE,
     grouped=True,
     tile_list=[1],
     obs_id=1,

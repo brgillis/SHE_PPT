@@ -37,12 +37,14 @@ logger = getLogger(__name__)
 # how much larger the radius of the stamp is than the radius of the object
 stampscale = 5
 
+DEFAULT_OBJ_SIZE = 2
+
 # templates of the FITS Headers
 PRIMARY_HEADER_PATH = find_file(pathlib.Path("AUX") / "SHE_PPT" / "vis_quad_primary_header_20240305.txt")
 IMAGE_HEADER_PATH = find_file(pathlib.Path("AUX") / "SHE_PPT" / "vis_quad_image_header_20240305.txt")
 
 
-def __generate_gausian_blob(objsize=2):
+def __generate_gausian_blob(objsize=DEFAULT_OBJ_SIZE):
     """generates a (objsize*stampscale*2 x objsize*stampscale*2) pixel image of a sersic profile (n=1) with width of
     objsize pixels"""
 
@@ -61,7 +63,13 @@ def __generate_gausian_blob(objsize=2):
 
 
 def __generate_detector_images(
-    detector_shape=(4136, 4096), nobjs=10, background=10.0, snr=10, objsize=2, obj_rng=None, noise_rng=None
+    detector_shape=(4136, 4096),
+    nobjs=10,
+    background=10.0,
+    snr=10,
+    objsize=DEFAULT_OBJ_SIZE,
+    obj_rng=None,
+    noise_rng=None
 ):
     """Generates the SCI, RMG, FLG, WGT and BKG pixel maps for a detector
 
@@ -175,7 +183,7 @@ def create_exposure(
     seed=1,
     noise_seed=1,
     n_objs_per_det=10,
-    objsize=2,
+    objsize=DEFAULT_OBJ_SIZE,
     pointing_id=1,
     obs_id=1,
     use_quadrant=True,
