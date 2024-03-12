@@ -22,8 +22,10 @@
 __updated__ = "2022-06-30"
 
 import os
+import itertools
 
 import numpy as np
+
 from astropy.coordinates import SkyCoord
 from astropy.units import degree
 from astropy.wcs import WCS
@@ -48,6 +50,20 @@ from SHE_PPT.testing.utility import SheTestCase
 RANDOM_SEED = 1
 
 rng = np.random.RandomState(RANDOM_SEED)
+
+
+def _wcs_intersects(wcs_list):
+    """Makes sure that each WCS does not intersect with any other"""
+
+    for w1, w2 in itertools.combinations(wcs_list, 2):
+
+        # For each pair of WCSs, get their footprints, and check that neither of them contain
+        # the other detector's footprint
+        f1 = SkyCoord(*(w1.calc_footprint().T), unit=degree)
+        f2 = SkyCoord(*(w2.calc_footprint().T), unit=degree)
+
+        assert not (w1.footprint_contains(f2)).any(), "WCSs intersect"
+        assert not (w2.footprint_contains(f1)).any(), "WCSs intersect"
 
 
 class TestMockData(SheTestCase):
@@ -96,6 +112,16 @@ class TestMockData(SheTestCase):
         assert len(wcs_list) == num_detectors
         for w in wcs_list:
             assert type(w) is WCS
+
+    def test_vis_ccd_no_intersection(self):
+        _, _, _, _, wcs_list = create_exposure(n_detectors=36, use_quadrant=False, workdir=self.workdir)
+
+        _wcs_intersects(wcs_list)
+
+    def test_vis_quadrant_no_intersection(self):
+        _, _, _, _, wcs_list = create_exposure(n_detectors=144, use_quadrant=True, workdir=self.workdir)
+
+        _wcs_intersects(wcs_list)
 
     def test_mer_catalogues(self, num_objects):
 

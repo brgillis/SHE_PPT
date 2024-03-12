@@ -269,11 +269,15 @@ def create_exposure(
             det_id = "%d-%d" % (det_i, det_j)
             quad_id = "%s" % (det_sk)
             _detector_name = det_id + "." + quad_id
+            x_c = (1.1 * detector_shape[1]) * (2 * (det_i - 1) + (det_k % 2)) * PIXELSIZE
+            y_c = (1.1 * detector_shape[0]) * (2 * (det_j - 1) + (det_k // 2)) * PIXELSIZE
         else:
             det_i = det // 6 + 1
             det_j = det % 6 + 1
             det_id = "%d-%d" % (det_i, det_j)
             _detector_name = det_id
+            x_c = (1.1 * detector_shape[1]) * (det_i - 1) * PIXELSIZE
+            y_c = (1.1 * detector_shape[0]) * (det_j - 1) * PIXELSIZE
 
         detector_names.append(_detector_name)
         logger.info("Creating detector %s" % _detector_name)
@@ -285,13 +289,12 @@ def create_exposure(
 
         # create WCS (Use Airy projection - arbitrary decision, we just want something in valid sky coordinates!)
         wcs = WCS(naxis=2)
-        x_c = (1.1 * detector_shape[1]) * (det_i - 1) * PIXELSIZE
-        y_c = (1.1 * detector_shape[0]) * (det_j - 1) * PIXELSIZE
         wcs.wcs.crpix = [0.0, 0.0]
         wcs.wcs.crval = [x_c, y_c]
         wcs.wcs.cd = np.identity(2) * PIXELSIZE
         wcs.wcs.cd[0, 0] *= -1
         wcs.wcs.ctype = ["RA---TAN", "DEC--TAN"]
+        wcs.array_shape = detector_shape
 
         # obtain the world coordinates of the objects in the image, and append them to the object_positions list
         world_coords = wcs.pixel_to_world(x_px, y_px)
