@@ -14,6 +14,7 @@ Deprecated Features
 
 Bug Fixes
 ---------
+- Fixed bug where quadrants in mock VIS images intersected
 
 New Features
 ------------
