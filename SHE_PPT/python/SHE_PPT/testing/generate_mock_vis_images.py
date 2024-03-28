@@ -289,7 +289,7 @@ def create_exposure(
 
         # create WCS (Use Airy projection - arbitrary decision, we just want something in valid sky coordinates!)
         wcs = WCS(naxis=2)
-        wcs.wcs.crpix = [detector_shape[0] // 2, detector_shape[1] // 2]
+        wcs.wcs.crpix = [detector_shape[1] // 2, detector_shape[0] // 2]
         wcs.wcs.crval = [x_c, y_c]
         wcs.wcs.cd = np.identity(2) * PIXELSIZE
         wcs.wcs.cd[0, 0] *= -1

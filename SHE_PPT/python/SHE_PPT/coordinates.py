@@ -248,11 +248,11 @@ def skycoords_in_wcs(skycoords, wcs, filter_radius_multiplier=1.25):
         Containing True if the object is in the detector, False otherwise
     """
 
-    # this follows the Fortran-standard, so it is y then x
+    # this follows the C-standard, so it is y then x
     ny, nx = wcs.array_shape
 
     # First determine the coordinates of the centre of the detector, and its corners
-    # this follows the C-standard, so it is x then y
+    # this follows the Fortran-standard, so it is x then y
     centre_sk = wcs.pixel_to_world(nx / 2, ny / 2)
     corner_sk = wcs.pixel_to_world(0, 0)
 
