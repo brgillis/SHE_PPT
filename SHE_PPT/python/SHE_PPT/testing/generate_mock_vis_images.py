@@ -69,7 +69,7 @@ def __generate_detector_images(
     snr=10,
     objsize=DEFAULT_OBJ_SIZE,
     obj_rng=None,
-    noise_rng=None
+    noise_rng=None,
 ):
     """Generates the SCI, RMG, FLG, WGT and BKG pixel maps for a detector
 
@@ -289,7 +289,7 @@ def create_exposure(
 
         # create WCS (Use Airy projection - arbitrary decision, we just want something in valid sky coordinates!)
         wcs = WCS(naxis=2)
-        wcs.wcs.crpix = [0.0, 0.0]
+        wcs.wcs.crpix = [detector_shape[0] // 2, detector_shape[1] // 2]
         wcs.wcs.crval = [x_c, y_c]
         wcs.wcs.cd = np.identity(2) * PIXELSIZE
         wcs.wcs.cd[0, 0] *= -1

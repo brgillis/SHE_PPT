@@ -21,17 +21,24 @@
 
 __updated__ = "2022-01-27"
 
+from astropy.wcs import WCS
 import numpy as np
 from numpy.testing import assert_almost_equal
+import pytest
 from scipy.spatial.distance import pdist
 
-from SHE_PPT.coordinates import (get_distance_matrix, get_subregion, haversine_metric, haversine_metric_deg,
-                                 reproject_to_equator, )
+from SHE_PPT.coordinates import (
+    get_distance_matrix,
+    get_subregion,
+    haversine_metric,
+    haversine_metric_deg,
+    reproject_to_equator,
+    skycoords_in_wcs,
+)
 from SHE_PPT.testing.utility import SheTestCase
 
 
 class Test_coordinates(SheTestCase):
-
     def test_haversine_metric(self):
         """Generates many pairs of random points on a sphere and checks that the distances between them are
            calculated correctly"""
@@ -265,4 +272,36 @@ class Test_coordinates(SheTestCase):
             if x_s[i] >= xmin and x_s[i] < xmax and y_s[i] >= ymin and y_s[i] < ymax:
                 assert (True)
             else:
-                assert (False)
+                assert False
+
+    @pytest.mark.parametrize("ra", np.arange(0.0, 360.0, 90.0))
+    @pytest.mark.parametrize("dec", np.arange(-90.0, 90.0, 45.0))
+    def test_wcs_query(self, ra, dec):
+        pixel_scale = 0.1 / 3600.0
+
+        wcs = WCS(naxis=2)
+        # use rectangle to avoid bugs undetector due to symmetry
+        wcs.array_shape = [100, 150]
+        # note this starts counting from 1
+        wcs.wcs.crpix = [50.5, 75.5]
+        wcs.wcs.crval = [ra, dec]
+        wcs.wcs.cd = np.identity(2) * pixel_scale
+        # RA decreases with increasing pixel number
+        wcs.wcs.cd[0, 0] *= -1
+        wcs.wcs.ctype = ["RA---TAN", "DEC--TAN"]
+
+        # generate a range of random points *within* the footprint area
+        pix_x_in = np.random.random(1000) * wcs.array_shape[0]
+        pix_y_in = np.random.random(1000) * wcs.array_shape[1]
+        skycoords_in = wcs.pixel_to_world(pix_x_in, pix_y_in)
+
+        # generate a range of points *immediately outside* the footprint area
+        pix_x_out = np.array([-1, -1, -1, -1, 101, 101, 101, 101, -1, 1, 99, 101, -1, 1, 99, 101])
+        pix_y_out = np.array([-1, 1, 149, 151, -1, 1, 149, 151, -1, -1, -1, -1, 151, 151, 151, 151])
+        skycoord_out = wcs.pixel_to_world(pix_x_out, pix_y_out)
+
+        s_in = skycoords_in_wcs(skycoords_in, wcs)
+        s_out = skycoords_in_wcs(skycoord_out, wcs)
+
+        assert len(s_in) == len(pix_x_in)
+        assert len(s_out) == 0
