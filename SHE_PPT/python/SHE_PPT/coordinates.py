@@ -36,7 +36,7 @@ RTOD = 180 / np.pi
 
 
 def _hav(x):
-    return np.sin(x / 2.) ** 2
+    return np.sin(x / 2.0) ** 2
 
 
 def haversine_metric(lon1, lat1, lon2, lat2):
@@ -104,10 +104,10 @@ def get_distance_matrix(x, y, metric=euclidean_metric):
     for i in range(n):
         dind = n - i
         # print(ind, ind+dind)
-        x1[ind:ind + dind - 1] = x[i]
-        y1[ind:ind + dind - 1] = y[i]
-        x2[ind:ind + dind - 1] = x[i + 1:n]
-        y2[ind:ind + dind - 1] = y[i + 1:n]
+        x1[ind : ind + dind - 1] = x[i]
+        y1[ind : ind + dind - 1] = y[i]
+        x2[ind : ind + dind - 1] = x[i + 1 : n]
+        y2[ind : ind + dind - 1] = y[i + 1 : n]
         ind += dind - 1
 
     # now calculate the distances between all the points
@@ -182,7 +182,7 @@ def reproject_to_equator(ras, decs):
         dec_c = decs.mean()
     else:
         # objects are nearer the pole, use the centre of mass in the cartesian coords
-        dec_c = np.arccos(np.sqrt(xc ** 2 + yc ** 2)) * RTOD
+        dec_c = np.arccos(np.sqrt(xc**2 + yc**2)) * RTOD
         # If in the southern hemisphere, make sure dec_c is negative
         if decs.mean() < 0:
             dec_c *= -1
@@ -248,9 +248,11 @@ def skycoords_in_wcs(skycoords, wcs, filter_radius_multiplier=1.25):
         Containing True if the object is in the detector, False otherwise
     """
 
+    # this follows the Fortran-standard, so it is y then x
     ny, nx = wcs.array_shape
 
     # First determine the coordinates of the centre of the detector, and its corners
+    # this follows the C-standard, so it is x then y
     centre_sk = wcs.pixel_to_world(nx / 2, ny / 2)
     corner_sk = wcs.pixel_to_world(0, 0)
 

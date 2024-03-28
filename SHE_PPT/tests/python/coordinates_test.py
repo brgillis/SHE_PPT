@@ -284,9 +284,10 @@ class Test_coordinates(SheTestCase):
 
         wcs = WCS(naxis=2)
         # use rectangle to avoid bugs undetector due to symmetry
-        wcs.array_shape = [nx, ny]
+        # this follows the Fortran-standard, so it is y then x
+        wcs.array_shape = [ny, nx]
         # note this starts counting from 1
-        wcs.wcs.crpix = [nx / 2, ny / 2]
+        wcs.wcs.crpix = [ny / 2, nx / 2]
         wcs.wcs.crval = [ra, dec]
         wcs.wcs.cd = np.identity(2) * pixel_scale
         # RA decreases with increasing pixel number
@@ -294,14 +295,20 @@ class Test_coordinates(SheTestCase):
         wcs.wcs.ctype = ["RA---TAN", "DEC--TAN"]
 
         # generate a range of random points *within* the footprint area
-        pix_x_in = np.random.random(n_objs) * wcs.array_shape[0]
-        pix_y_in = np.random.random(n_objs) * wcs.array_shape[1]
-        skycoords_in = wcs.pixel_to_world(pix_y_in, pix_x_in)
+        # this follows the Fortran-standard, so it is y then x
+        # Note that:
+        # wcs.array_shape[0] = wcs.pixel_shape[1]
+        # wcs.array_shape[1] = wcs.pixel_shape[0]
+        pix_y_in = np.random.random(n_objs) * wcs.array_shape[0]
+        pix_x_in = np.random.random(n_objs) * wcs.array_shape[1]
+        # this follows the C-standard, so it is x then y
+        skycoords_in = wcs.pixel_to_world(pix_x_in, pix_y_in)
 
         # generate a range of points *immediately outside* the footprint area
         pix_x_out = np.array([-1, -1, -1, -1, 101, 101, 101, 101, -1, 1, 99, 101, -1, 1, 99, 101])
         pix_y_out = np.array([-1, 1, 149, 151, -1, 1, 149, 151, -1, -1, -1, -1, 151, 151, 151, 151])
-        skycoord_out = wcs.pixel_to_world(pix_y_out, pix_x_out)
+        # this follows the C-standard, so it is x then y
+        skycoord_out = wcs.pixel_to_world(pix_x_out, pix_y_out)
 
         s_in = skycoords_in_wcs(skycoords_in, wcs)
         s_out = skycoords_in_wcs(skycoord_out, wcs)
