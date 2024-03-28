@@ -104,10 +104,10 @@ def get_distance_matrix(x, y, metric=euclidean_metric):
     for i in range(n):
         dind = n - i
         # print(ind, ind+dind)
-        x1[ind : ind + dind - 1] = x[i]
-        y1[ind : ind + dind - 1] = y[i]
-        x2[ind : ind + dind - 1] = x[i + 1 : n]
-        y2[ind : ind + dind - 1] = y[i + 1 : n]
+        x1[ind:ind + dind - 1] = x[i]
+        y1[ind:ind + dind - 1] = y[i]
+        x2[ind:ind + dind - 1] = x[i + 1:n]
+        y2[ind:ind + dind - 1] = y[i + 1:n]
         ind += dind - 1
 
     # now calculate the distances between all the points
