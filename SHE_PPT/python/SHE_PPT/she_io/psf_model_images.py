@@ -33,11 +33,13 @@ import numpy as np
 import h5py
 
 from astropy.io.misc.hdf5 import read_table_hdf5
+from astropy.table import Table, Column
 
 import ElementsKernel.Logging as log
 
 from ST_DM_DmUtils.DmUtils import read_product_metadata
 
+from SHE_PPT.flags import flag_psf_quality_good, flag_psf_quality_invalid
 from .profiling import io_stats
 
 logger = log.getLogger(__name__)
@@ -162,3 +164,131 @@ class PSFModelImageHDF5(PSFModelImage):
             return self.file.attrs["PSF_OVERSAMPLING_FACTOR"]
         except KeyError as e:
             raise KeyError("PSF oversampling factor is not present in this file") from e
+
+
+class PSFModelImagesWriter():
+    """Class to create PSFModelImage HDF5 files"""
+    def __init__(self, object_ids, filename, oversampling_factor):
+        """
+        Initialises the PSFWriter class:
+          - opens the PSFModelImages file
+          - creates the table of objects
+
+        Inputs:
+          - object_ids: list of object_ids we wish to store in this file.
+          - filename: the name of the file to write to
+          - oversampling_factor - the oversampling factor for the PSFs
+        """
+
+        self.filename = filename
+
+        logger.info("Initialised PSF writer to write PSFModelImages to %s", self.filename)
+
+        self.hdf5_root = h5py.File(self.filename, "w")
+
+        self.hdf5_image_group = self.hdf5_root.create_group("IMAGES")
+
+        self.hdf5_root.attrs["PSF_OVERSAMPLING_FACTOR"] = oversampling_factor
+
+        n_objs = len(object_ids)
+
+        # Initialise the PSF table (with masked columns for FOV as these may not be present for all objects)
+        self.psf_table = Table(
+            [
+                Column(name="OBJECT_ID", data=object_ids),
+                Column(name="FOV_X", data=np.full(n_objs, np.nan)),
+                Column(name="FOV_Y", data=np.full(n_objs, np.nan)),
+                Column(name="SHE_PSF_QUAL_FLAG", data=np.full(n_objs, flag_psf_quality_invalid)),
+                Column(name="MODELLED", data=np.full(n_objs, False)),
+                Column(name="E1", data=np.full(n_objs, np.nan)),
+                Column(name="E2", data=np.full(n_objs, np.nan)),
+                Column(name="R", data=np.full(n_objs, np.nan)),
+            ]
+        )
+        self.psf_table.add_index("OBJECT_ID")
+
+        # create the null dataset for objects without PSFs (e.g. objects not in this exposure)
+        # This is used as a placeholder dataset for all objects not modelled
+        self.null_dataset = self.hdf5_image_group.create_dataset(
+            "NULL",
+            data=np.zeros((0, 0)),
+        )
+
+        self._finalised = False
+
+    def _check_finalised(self):
+        if self._finalised:
+            raise RuntimeError("This PSFWriter object is finalised!")
+
+    def write_psf(self, obj_id, psf, fov_coords=None, ellipticity=None, r=None, quality_flag=flag_psf_quality_good):
+        """
+        Writes the supplied psf for a given object to the file.
+
+        Inputs:
+          - obj_id: the object id of the object (must be an object in the object_ids passed in during __init__)
+          - psf: the PSF image
+          - fov_coords: a tuple of the x and y FOV coords
+          - ellipticity: a tuple of e1, e2 for the PSF
+          - r: the PSF size
+          - quality_flag: quality flag for the PSF
+        """
+
+        self._check_finalised()
+
+        # NOTE: we use compression to save disk space (around 40%). This requires chunking.
+        # A chunk size of 160 is chosen as this is the default size of a un-oversampled PSF,
+        # such that we will always have an integer number of chunks in each direction.
+        # We want a relatively large chunksize to minimize read/write operations.
+        self.hdf5_image_group.create_dataset(
+            str(obj_id),
+            data=psf,
+            chunks=(160, 160),
+            compression="gzip"
+        )
+
+        try:
+            row = self.psf_table.loc[obj_id]
+        except KeyError as e:
+            raise KeyError(f"Unexpected object id {obj_id}: not in table of objects") from e
+
+        row["SHE_PSF_QUAL_FLAG"] = quality_flag
+
+        row["MODELLED"] = True
+
+        if fov_coords:
+            x, y = fov_coords
+            row["FOV_X"] = x
+            row["FOV_Y"] = y
+
+        if ellipticity:
+            e1, e2 = ellipticity
+            row["E1"] = e1
+            row["E2"] = e2
+
+        if r:
+            row["R"] = r
+
+    def finalise(self):
+        """
+        Writes necessary bookkeeping data to the hdf5 file and closes it.
+
+        Returns:
+         - filename: The filename of the created HDF5 file
+        """
+
+        self._check_finalised()
+
+        # For all objects not modelled, link them to the null dataset
+        for row in self.psf_table:
+            if not row["MODELLED"]:
+                obj_id = str(row["OBJECT_ID"])
+                self.hdf5_image_group[obj_id] = self.null_dataset
+
+        # Write the table to the file
+        self.psf_table.write(self.hdf5_root, "TABLE")
+
+        self.hdf5_root.close()
+
+        self._finalised = True
+
+        logger.info("Written PSFModelImages to %s", self.filename)
