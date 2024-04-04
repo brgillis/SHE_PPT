@@ -145,7 +145,7 @@ class TestPSFModelImagesWriter:
             assert image.bulge.size == 0
 
         for row in psf_models.table[1:]:
-            assert row["MODELLED"] is False
+            assert bool(row["MODELLED"]) is False
 
     def test_writer_invalid_object(self, workdir):
         """Tests that the writer raises an error if an invalid object is written to it"""
