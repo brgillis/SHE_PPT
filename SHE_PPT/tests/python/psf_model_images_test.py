@@ -108,15 +108,12 @@ class TestPSFModelImagesWriter:
 
         psf_filename = workdir / "psf.h5"
 
-        writer = PSFModelImagesWriter(OBJECT_ID_LIST, psf_filename, OVERSAMPLING_FACTOR)
-
-        psfs = []
-
-        for obj in OBJECT_ID_LIST:
-            psf = np.random.random(PSF_SHAPE)
-            psfs.append(psf)
-            writer.write_psf(obj, psf)
-        writer.finalise()
+        with PSFModelImagesWriter(OBJECT_ID_LIST, psf_filename, OVERSAMPLING_FACTOR) as writer:
+            psfs = []
+            for obj in OBJECT_ID_LIST:
+                psf = np.random.random(PSF_SHAPE)
+                psfs.append(psf)
+                writer.write_psf(obj, psf)
 
         psf_models = PSFModelImageHDF5(psf_filename)
         for obj, psf in zip(OBJECT_ID_LIST, psfs):
@@ -133,10 +130,9 @@ class TestPSFModelImagesWriter:
 
         psf_filename = workdir / "psf.h5"
 
-        writer = PSFModelImagesWriter(OBJECT_ID_LIST, psf_filename, OVERSAMPLING_FACTOR)
-        psf = np.random.random(PSF_SHAPE)
-        writer.write_psf(OBJECT_ID_LIST[0], psf)
-        writer.finalise()
+        with PSFModelImagesWriter(OBJECT_ID_LIST, psf_filename, OVERSAMPLING_FACTOR) as writer:
+            psf = np.random.random(PSF_SHAPE)
+            writer.write_psf(OBJECT_ID_LIST[0], psf)
 
         psf_models = PSFModelImageHDF5(psf_filename)
 
@@ -152,10 +148,10 @@ class TestPSFModelImagesWriter:
 
         psf_filename = workdir / "psf.h5"
 
-        writer = PSFModelImagesWriter([], psf_filename, OVERSAMPLING_FACTOR)
-        psf = np.random.random(PSF_SHAPE)
-        with pytest.raises(KeyError, match="Unexpected object id"):
-            writer.write_psf(0, psf)
+        with PSFModelImagesWriter([], psf_filename, OVERSAMPLING_FACTOR) as writer:
+            psf = np.random.random(PSF_SHAPE)
+            with pytest.raises(KeyError, match="Unexpected object id"):
+                writer.write_psf(0, psf)
 
     def test_writer_already_finalised(self, workdir):
         """Tests that the writer raises an exception if it has already been finalised"""
@@ -163,11 +159,11 @@ class TestPSFModelImagesWriter:
         psf_filename = workdir / "psf.h5"
 
         writer = PSFModelImagesWriter(OBJECT_ID_LIST, psf_filename, OVERSAMPLING_FACTOR)
-        writer.finalise()
+        writer.close()
 
         with pytest.raises(RuntimeError, match="This PSFWriter object is finalised!"):
             psf = np.random.random(PSF_SHAPE)
             writer.write_psf(OBJECT_ID_LIST[0], psf)
 
         with pytest.raises(RuntimeError, match="This PSFWriter object is finalised!"):
-            writer.finalise()
+            writer.close()

@@ -81,14 +81,10 @@ def create_model_image_product(
             processing_function='SHE',
     )
 
-    writer = PSFModelImagesWriter(object_ids, datadir / h5_filename, oversampling_factor=oversampling)
-
-    psf_image = _create_mock_psf_image(stampsize=stampsize)
-
-    for obj in object_ids:
-        writer.write_psf(obj, psf_image)
-
-    writer.finalise()
+    with PSFModelImagesWriter(object_ids, datadir / h5_filename, oversampling_factor=oversampling) as writer:
+        psf_image = _create_mock_psf_image(stampsize=stampsize)
+        for obj in object_ids:
+            writer.write_psf(obj, psf_image)
 
     dpd = she_psf_model_image.create_dpd_she_psf_model_image(data_filename=h5_filename)
 

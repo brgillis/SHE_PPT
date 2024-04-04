@@ -268,7 +268,7 @@ class PSFModelImagesWriter():
         if r:
             row["R"] = r
 
-    def finalise(self):
+    def close(self):
         """
         Writes necessary bookkeeping data to the hdf5 file and closes it.
 
@@ -292,3 +292,9 @@ class PSFModelImagesWriter():
         self._finalised = True
 
         logger.info("Written PSFModelImages to %s", self.filename)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
