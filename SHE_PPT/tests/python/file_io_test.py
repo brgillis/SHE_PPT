@@ -21,7 +21,9 @@ __updated__ = "2021-08-20"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 import filecmp
+import json
 import os
+from pathlib import Path
 import shutil
 import stat
 import subprocess
@@ -480,6 +482,30 @@ class TestIO(SheTestCase):
         assert read_listfile(self.listfile_name, workdir=self.workdir) == l_simple
         os.remove(os.path.join(self.workdir, self.listfile_name))
 
+        # Test these functions work with pathlib.Path objects
+        write_listfile(Path(self.listfile_name), l_simple, workdir=Path(self.workdir))
+        assert read_listfile(Path(self.listfile_name), workdir=Path(self.workdir)) == l_simple
+        os.remove(os.path.join(self.workdir, self.listfile_name))
+
+        # check that write_listfile can take json.dump arguments (we try the indent=2 argument)
+        reference_string = json.dumps(l_simple, indent=2)
+        write_listfile(self.listfile_name, l_simple, workdir=self.workdir, indent=2)
+        with open(os.path.join(self.workdir, self.listfile_name)) as f:
+            string = f.read()
+        assert reference_string == string
+        os.remove(os.path.join(self.workdir, self.listfile_name))
+
+        # check that read_listfile can take json.load arguments
+        # We use the parse_float CLA, checking that we can convert all floats to numpy.float32
+        array = [1.0, 2.0, 3.0]
+        with open(os.path.join(self.workdir, self.listfile_name), "w") as f:
+            json.dump(array, f)
+        output_array = read_listfile(self.listfile_name, workdir=self.workdir, parse_float=np.float32)
+        for element in output_array:
+            assert type(element) is np.float32
+        os.remove(os.path.join(self.workdir, self.listfile_name))
+
+        # Test that tupled listfile is properly read in
         write_listfile(self.listfile_name, l_tupled, workdir=self.workdir)
         assert read_listfile(self.listfile_name, workdir=self.workdir) == l_tupled
         os.remove(os.path.join(self.workdir, self.listfile_name))
