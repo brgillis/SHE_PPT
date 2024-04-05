@@ -24,7 +24,11 @@ __updated__ = "2021-11-03"
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+import logging
+
 import numpy as np
+
+logger = logging.getLogger()
 
 # degree to/from radian conversion factors
 DTOR = np.pi / 180
@@ -32,7 +36,7 @@ RTOD = 180 / np.pi
 
 
 def _hav(x):
-    return np.sin(x / 2.) ** 2
+    return np.sin(x / 2.0) ** 2
 
 
 def haversine_metric(lon1, lat1, lon2, lat2):
@@ -64,16 +68,16 @@ def euclidean_metric(x1, y1, x2, y2):
 
 def get_distance_matrix(x, y, metric=euclidean_metric):
     """Given a set of N points (given by their x and y coordinates), returns a flattened distance matrix of
-       size N(N-1)/2 between every point. This is similar to scipy.spatial.distance.pdist, but allows for a
-       custom metric to be used efficiently
+    size N(N-1)/2 between every point. This is similar to scipy.spatial.distance.pdist, but allows for a
+    custom metric to be used efficiently
 
-        Parameters:
-            x (np.ndarray) : list of x coordinates of the objects
-            y (np.ndarray) : list of y coordinates of the objects
-            metric (function) : The distence metric of the form d = f(x1, y1, x2, y2)
+    Parameters:
+        x (np.ndarray) : list of x coordinates of the objects
+        y (np.ndarray) : list of y coordinates of the objects
+        metric (function) : The distence metric of the form d = f(x1, y1, x2, y2)
 
-        Returns:
-            dist (np.ndarray) : condensed distance matrix"""
+    Returns:
+        dist (np.ndarray) : condensed distance matrix"""
 
     # pair all the points up into large vectors so we can measure their distances between each other all at once
     n = len(x)
@@ -114,20 +118,20 @@ def get_distance_matrix(x, y, metric=euclidean_metric):
 
 def get_subregion(x, y, xmin, xmax, ymin, ymax):
     """Given arrays of x and y coordinates, creates new arrays containing only the objects in the specified ranges,
-       Also returns the indices of the original arrays for each point in the new arrays
+    Also returns the indices of the original arrays for each point in the new arrays
 
-        Parameters:
-            x (np.ndarray): List of all the objects' x coordinates
-            y (np.ndarray): List of all the objects' y coordinates
-            xmin (float) : minimum value of x to include
-            xmax (float) : maximum value of x to include
-            ymin (float) : minimum value of y to include
-            ymax (float) : maximum value of y to include
+    Parameters:
+        x (np.ndarray): List of all the objects' x coordinates
+        y (np.ndarray): List of all the objects' y coordinates
+        xmin (float) : minimum value of x to include
+        xmax (float) : maximum value of x to include
+        ymin (float) : minimum value of y to include
+        ymax (float) : maximum value of y to include
 
-        Returns:
-            xp (np.ndarray) : List of x coordinates for all the objects in the subregion
-            yp (np.ndarray) : List of y coordinates for all the objects in the subregion
-            indices (np.ndarray) : int array of indices of the output objects from the input arrays
+    Returns:
+        xp (np.ndarray) : List of x coordinates for all the objects in the subregion
+        yp (np.ndarray) : List of y coordinates for all the objects in the subregion
+        indices (np.ndarray) : int array of indices of the output objects from the input arrays
     """
     xp = []
     yp = []
@@ -148,15 +152,15 @@ def get_subregion(x, y, xmin, xmax, ymin, ymax):
 
 def reproject_to_equator(ras, decs):
     """Takes a list of sky coordinates (in degrees) and converts them to a new spherical coordinate system
-       where their centre of mass lies on the equator at (0,0) degrees
+    where their centre of mass lies on the equator at (0,0) degrees
 
-        Parameters:
-            ras (np.ndarray) : array of the right ascensions of the objects
-            decs (np.ndarray) : array of the declinations of the objects
+    Parameters:
+        ras (np.ndarray) : array of the right ascensions of the objects
+        decs (np.ndarray) : array of the declinations of the objects
 
-        Returns:
-            ras (np.ndarray) : array of the transformed right ascensions of the objects (range (-180:180])
-            decs (np.ndarray) : array of the transformed declinations of the objects
+    Returns:
+        ras (np.ndarray) : array of the transformed right ascensions of the objects (range (-180:180])
+        decs (np.ndarray) : array of the transformed declinations of the objects
     """
 
     # Estimate the centre of mass in ra and dec (ra_c, dec_c)
@@ -178,7 +182,7 @@ def reproject_to_equator(ras, decs):
         dec_c = decs.mean()
     else:
         # objects are nearer the pole, use the centre of mass in the cartesian coords
-        dec_c = np.arccos(np.sqrt(xc ** 2 + yc ** 2)) * RTOD
+        dec_c = np.arccos(np.sqrt(xc**2 + yc**2)) * RTOD
         # If in the southern hemisphere, make sure dec_c is negative
         if decs.mean() < 0:
             dec_c *= -1
@@ -216,3 +220,56 @@ def reproject_to_equator(ras, decs):
     ras = np.arctan2(yp, xp) * RTOD
 
     return ras, decs
+
+
+def skycoords_in_wcs(skycoords, wcs, filter_radius_multiplier=1.25):
+    """
+    Determines which of a set of skycoords are contained within a WCS.
+
+    Whilst one could just use SkyCoord.contained_by or WCS.footprint_contains, there is a bug
+    (fixed in Astropy 5.0.5) with WCS and TPV distortions (which VIS images use) whereby if one
+    point fails to converge, all subsequent points also fail. These bad points tend to be very
+    far from the detector, so manually excluding points far from the detector before applying
+    SkyCoord.contained_by mitigates this error. (This also speeds excution up as we no longer
+    need to process as many points!)
+
+    (See https://github.com/astropy/astropy/issues/13750 for details)
+
+    Parameters
+    ----------
+    skycoords: astropy.coordinates.SkyCoord object
+        Containing one or more object coordinates
+    wcs: astropy.wcs.WCS object
+        WCS of the detector
+
+    Returns
+    -------
+    numpy.ndarray(dtype=Bool)
+        Containing True if the object is in the detector, False otherwise
+    """
+
+    # this follows the C-standard, so it is y then x
+    ny, nx = wcs.array_shape
+
+    # First determine the coordinates of the centre of the detector, and its corners
+    # this follows the Fortran-standard, so it is x then y
+    centre_sk = wcs.pixel_to_world(nx / 2, ny / 2)
+    corner_sk = wcs.pixel_to_world(0, 0)
+
+    # now get the maximum distance between the centre and the corners (x1.25 buffer)
+    max_sep = centre_sk.separation(corner_sk) * filter_radius_multiplier
+
+    # We consider points within max_sep from the centre of the detector as candidate
+    # points to determine if they are in the detector's FOV
+    candidate_indices = skycoords.separation(centre_sk) < max_sep
+
+    # Now detemrine which candidates are within the detector
+    # (can alternatively use WCS.footprint_contains(SkyCoord))
+    candidates_contained_by = skycoords[candidate_indices].contained_by(wcs)
+
+    # Create and populate the output array
+    contained_by = np.full(len(skycoords), False, dtype=bool)
+
+    contained_by[candidate_indices] = candidates_contained_by
+
+    return contained_by
