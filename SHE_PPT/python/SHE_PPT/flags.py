@@ -85,8 +85,10 @@ non_failure_flags = (flag_no_noisemap | flag_corrupt_noisemap | flag_no_segmenta
 failure_flags = (2 ** 33 - 1) ^ non_failure_flags
 
 # VIS flags for their flg data.
-# See https://gitlab.euclid-sgs.uk/PF-VIS/VIS_ImageTools/-/blob/develop/VIS_ImageTools_M/python/VIS_ImageTools_M/FlagMap.py (where this code was lifted from...)  # noqa: E501
-# and https://euclid.roe.ac.uk/projects/vis_pf/wiki/VIS_Flags
+# See https://gitlab.euclid-sgs.uk/PF-VIS/VIS_ImageTools/-/blob/develop/VIS_ImageTools_M/python/VIS_ImageTools_M/FlagMap.py # noqa: E501
+# where this code was lifted from (with minor PEP8 changes)...
+# commit e5e5496a7aaeba8b003f2db7d0c3e903fafac26f, develop version 3.18
+# Also see https://euclid.roe.ac.uk/projects/vis_pf/wiki/VIS_Flags though this is not always kept up to date :(
 
 VIS_FLAGS = {
   # flag name           bit             hexadecimal  decimal      invalid
