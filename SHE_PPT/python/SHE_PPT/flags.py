@@ -89,30 +89,39 @@ failure_flags = (2 ** 33 - 1) ^ non_failure_flags
 # and https://euclid.roe.ac.uk/projects/vis_pf/wiki/VIS_Flags
 
 VIS_FLAGS = {
-  'GOOD':          np.int32(0x00000000),
-  'INVALID':       np.int32(0x00000001),  # bit  0
-  'HOT':           np.int32(0x00000002),  # bit  1
-  'COLD':          np.int32(0x00000004),  # bit  2
-  'SAT':           np.int32(0x00000008),  # bit  3
-  'COSMIC':        np.int32(0x00000010),  # bit  4
-  'GHOST':         np.int32(0x00000020),  # bit  5
-  'OVRCOL':        np.int32(0x00001000),  # bit 12
-  'EXTOBJ':        np.int32(0x00002000),  # bit 13
-  'SCATLIGHT':     np.int32(0x00004000),  # bit 14
-  'CHARINJ':       np.int32(0x00008000),  # bit 15
-  'NEARCHARINJ':   np.int32(0x00010000),  # bit 16
-  'SATXTALKGHOST': np.int32(0x00020000),  # bit 17
-  'STARSIGNAL':    np.int32(0x00040000),  # bit 18
-  'SATURATEDSTAR': np.int32(0x00080000),  # bit 19
-  'CTICORRECTION': np.int32(0x00100000),  # bit 20
-  'ADCMAX':        np.int32(0x00200000),  # bit 21
-  'TXERROR':       np.int32(0x00400000),  # bit 22
-  'STITCHBLOCK':   np.int32(0x00800000),  # bit 23
-  'OBJECTS':       np.int32(0x01000000),  # bit 24
+  # flag name           bit             hexadecimal  decimal      invalid
+  'GOOD':          np.int32(0),        # 0x00000000 |          0 |
+  'INVALID':       np.int32(1 << 0),   # 0x00000001 |          1 |
+  'HOT':           np.int32(1 << 1),   # 0x00000002 |          2 | X
+  'COLD':          np.int32(1 << 2),   # 0x00000004 |          4 | X
+  'SAT':           np.int32(1 << 3),   # 0x00000008 |          8 | X
+  'COSMIC':        np.int32(1 << 4),   # 0x00000010 |         16 | X
+  'GHOST':         np.int32(1 << 5),   # 0x00000020 |         32 | X
+  'QUADEDGE':      np.int32(1 << 6),   # 0x00000040 |         64 |
+  'BAD_COLUMN':    np.int32(1 << 7),   # 0x00000080 |        128 | X
+  'BAD_CLUSTER':   np.int32(1 << 8),   # 0x00000100 |        256 | X
+  'CR_REGION':     np.int32(1 << 9),   # 0x00000200 |        512 | X
+  'OVRCOL':        np.int32(1 << 12),  # 0x00001000 |      4,096 | X
+  'CHARINJ':       np.int32(1 << 15),  # 0x00008000 |     32,768 | X
+  'SATXTALKGHOST': np.int32(1 << 17),  # 0x00020000 |    131,072 | X
+  'STARSIGNAL':    np.int32(1 << 18),  # 0x00040000 |    262,144 |
+  'ADCMAX':        np.int32(1 << 21),  # 0x00200000 |  2,097,152 | X
+  'NO_DATA':       np.int32(1 << 22),  # 0x00400000 |  4,194,304 | X
+  'STITCHBLOCK':   np.int32(1 << 23),  # 0x00800000 |  8,388,608 |
+  'OBJECTS':       np.int32(1 << 24),  # 0x01000000 | 16,777,216 |
 }
 
-# Utility functions
+# names of flags used to build the INVALID flag
+INVALID_VIS_FLAG_NAMES = (
+    'HOT', 'COLD', 'SAT', 'COSMIC', 'GHOST', 'BAD_COLUMN', 'BAD_CLUSTER',
+    'CR_REGION', 'OVRCOL', 'CHARINJ', 'SATXTALKGHOST', 'ADCMAX', 'NO_DATA'
+)
 
+# INVALID flag bitmask is a bitwise OR of all invalid flags
+INVALID_VIS_FLAGS = np.int32(np.bitwise_or.reduce([VIS_FLAGS[bitname] for bitname in INVALID_VIS_FLAG_NAMES]))
+
+
+# Utility functions
 
 def combine_flags(*flags):
     """ Returns an integer with the bit flags combined into one value.
