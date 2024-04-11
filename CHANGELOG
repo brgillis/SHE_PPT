@@ -18,6 +18,8 @@ Bug Fixes
 
 New Features
 ------------
+- Add new PSFModelImagesWriter class to create PSFModelImages files
+- Switch mock PSFModelImages creation code to using PSFModelImagesWriter
 
 New config features
 -------------------
