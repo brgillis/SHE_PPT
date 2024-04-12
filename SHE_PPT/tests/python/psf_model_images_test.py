@@ -35,9 +35,14 @@ from SHE_PPT.she_io.psf_model_images import (
     PSFModelImage,
     read_psf_model_images,
     ObjectModelImage,
+    PSFModelImagesWriter
 )
 
 # NOTE the file conftest.py contains the pytest fixtures used by this test
+
+PSF_SHAPE = (480, 480)
+OVERSAMPLING_FACTOR = 3
+OBJECT_ID_LIST = [0, 1, 2, 3]
 
 
 def validate_psf_model_image(psf):
@@ -51,7 +56,7 @@ def validate_psf_model_image(psf):
     assert type(model) is ObjectModelImage, "Output is an unexpected type"
     assert type(model.bulge) is np.ndarray, "Bulge PSF is an unexpected type"
     assert type(model.disk) is np.ndarray, "Disk PSF is an unexpected type"
-    assert type(model.quality_flag) is np.int32, "Quality flag is unexpected type"
+    assert type(model.quality_flag) is np.int64, f"Quality flag is unexpected type: {type(model.quality_flag)}"
 
     # check that an invalid object id raises an exception
     while True:
@@ -93,3 +98,72 @@ class Testpsf_model_images(object):
 
         for psf in psfs:
             assert issubclass(type(psf), PSFModelImage), "Returned PSF object does not seem to be the correct type"
+
+
+class TestPSFModelImagesWriter:
+    """Tests the PSFModelImagesWriter class"""
+
+    def test_writer(self, workdir):
+        """Tests thw writer under basic conditions - write all objects"""
+
+        psf_filename = workdir / "psf.h5"
+
+        with PSFModelImagesWriter(OBJECT_ID_LIST, psf_filename, OVERSAMPLING_FACTOR) as writer:
+            psfs = []
+            for obj in OBJECT_ID_LIST:
+                psf = np.random.random(PSF_SHAPE)
+                psfs.append(psf)
+                writer.write_psf(obj, psf)
+
+        psf_models = PSFModelImageHDF5(psf_filename)
+        for obj, psf in zip(OBJECT_ID_LIST, psfs):
+            image = psf_models[obj]
+            assert np.array_equal(image.bulge, psf)
+
+        table = psf_models.table
+        assert table["MODELLED"].all()
+
+        assert psf_models.file.attrs["PSF_OVERSAMPLING_FACTOR"] == OVERSAMPLING_FACTOR
+
+    def test_writer_missing(self, workdir):
+        """Tests that PSFs for objects not written to the file are empty arrays"""
+
+        psf_filename = workdir / "psf.h5"
+
+        with PSFModelImagesWriter(OBJECT_ID_LIST, psf_filename, OVERSAMPLING_FACTOR) as writer:
+            psf = np.random.random(PSF_SHAPE)
+            writer.write_psf(OBJECT_ID_LIST[0], psf)
+
+        psf_models = PSFModelImageHDF5(psf_filename)
+
+        for obj_id in OBJECT_ID_LIST[1:]:
+            image = psf_models[obj_id]
+            assert image.bulge.size == 0
+
+        for row in psf_models.table[1:]:
+            assert bool(row["MODELLED"]) is False
+
+    def test_writer_invalid_object(self, workdir):
+        """Tests that the writer raises an error if an invalid object is written to it"""
+
+        psf_filename = workdir / "psf.h5"
+
+        with PSFModelImagesWriter([], psf_filename, OVERSAMPLING_FACTOR) as writer:
+            psf = np.random.random(PSF_SHAPE)
+            with pytest.raises(KeyError, match="Unexpected object id"):
+                writer.write_psf(0, psf)
+
+    def test_writer_already_finalised(self, workdir):
+        """Tests that the writer raises an exception if it has already been finalised"""
+
+        psf_filename = workdir / "psf.h5"
+
+        writer = PSFModelImagesWriter(OBJECT_ID_LIST, psf_filename, OVERSAMPLING_FACTOR)
+        writer.close()
+
+        with pytest.raises(RuntimeError, match="This PSFWriter object is finalised!"):
+            psf = np.random.random(PSF_SHAPE)
+            writer.write_psf(OBJECT_ID_LIST[0], psf)
+
+        with pytest.raises(RuntimeError, match="This PSFWriter object is finalised!"):
+            writer.close()

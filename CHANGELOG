@@ -19,13 +19,15 @@ Bug Fixes
 
 New Features
 ------------
+- Add new PSFModelImagesWriter class to create PSFModelImages files
+- Switch mock PSFModelImages creation code to using PSFModelImagesWriter
 
 New config features
 -------------------
 
 Miscellaneous
 -------------
-
+- Updated VIS_FLAGS to represent the latest set of flags from VIS
 
 Changes in v9.6
 ===============

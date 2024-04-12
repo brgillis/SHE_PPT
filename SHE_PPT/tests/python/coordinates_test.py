@@ -21,20 +21,27 @@
 
 __updated__ = "2022-01-27"
 
+from astropy.wcs import WCS
 import numpy as np
 from numpy.testing import assert_almost_equal
+import pytest
 from scipy.spatial.distance import pdist
 
-from SHE_PPT.coordinates import (get_distance_matrix, get_subregion, haversine_metric, haversine_metric_deg,
-                                 reproject_to_equator, )
+from SHE_PPT.coordinates import (
+    get_distance_matrix,
+    get_subregion,
+    haversine_metric,
+    haversine_metric_deg,
+    reproject_to_equator,
+    skycoords_in_wcs,
+)
 from SHE_PPT.testing.utility import SheTestCase
 
 
 class Test_coordinates(SheTestCase):
-
     def test_haversine_metric(self):
         """Generates many pairs of random points on a sphere and checks that the distances between them are
-           calculated correctly"""
+        calculated correctly"""
 
         # alternate but equivalent metric that works via dot products. Used to verify the haversine metric
         def test_metric(lon0, lat0, lon1, lat1):
@@ -55,10 +62,10 @@ class Test_coordinates(SheTestCase):
             # Sometimes due to rounding errors |dot| can end out > 1 if the separation of the points is zero
             # This causes np.arccos to fail, so correcting here
             # Ironically, the haversine metric doesn't have this problem!
-            if dot > 1.:
-                dot = 1.
-            if dot < -1.:
-                dot = -1.
+            if dot > 1.0:
+                dot = 1.0
+            if dot < -1.0:
+                dot = -1.0
 
             return np.arccos(dot)
 
@@ -99,7 +106,7 @@ class Test_coordinates(SheTestCase):
             lon0 = (np.random.random() * 2) * np.pi
 
             # set the second point as an antipode
-            lat1 = -1. * lat0
+            lat1 = -1.0 * lat0
             lon1 = (lon0 + np.pi) % (2 * np.pi)
 
             # measure distance between them with the two methods
@@ -133,8 +140,8 @@ class Test_coordinates(SheTestCase):
 
     def test_distance_matrix(self):
         """Ensures get_distance_matrix works correctly by comparing its results to scipy.spatial.distance.pdist.
-           This also incidentally tests SHE_PPT.coodinates.euclidean_metric against scipy.spatial.distance.pdist's
-           euclidean metric"""
+        This also incidentally tests SHE_PPT.coodinates.euclidean_metric against scipy.spatial.distance.pdist's
+        euclidean metric"""
 
         # generate n random points in 2D
         n = 1000
@@ -154,11 +161,11 @@ class Test_coordinates(SheTestCase):
         dists_ref = pdist(A)
 
         # Ensure they are equal (within a tolerance)
-        assert (np.allclose(dists, dists_ref))
+        assert np.allclose(dists, dists_ref)
 
     def test_reproject_to_equator(self):
         """Tests reproject_to_equator by generating many sets of points and reprojecting them, ensuring
-           the reprojection conserves distances between points, and repositions the points correctly"""
+        the reprojection conserves distances between points, and repositions the points correctly"""
 
         # checks if a set of points has been reprojected correctly
         def check_reprojection(ras, decs):
@@ -172,14 +179,14 @@ class Test_coordinates(SheTestCase):
             new_dists = get_distance_matrix(new_ras, new_decs, metric=haversine_metric_deg)
 
             # ensure the distances aren't altered by the reprojection
-            assert (np.allclose(original_dists, new_dists))
+            assert np.allclose(original_dists, new_dists)
 
             # check the centre of mass of the reprojected points is close to (0,0)
             xc = new_ras.mean()
             yc = new_decs.mean()
 
-            assert (np.isclose(0., xc, rtol=0.001, atol=0.001))
-            assert (np.isclose(0., yc, rtol=0.001, atol=0.001))
+            assert np.isclose(0.0, xc, rtol=0.001, atol=0.001)
+            assert np.isclose(0.0, yc, rtol=0.001, atol=0.001)
 
         n = 100
 
@@ -195,8 +202,8 @@ class Test_coordinates(SheTestCase):
             x, y = x * np.cos(theta) - y * np.sin(theta), x * np.sin(theta) + y * np.cos(theta)
 
             # shift these points by a random value
-            x += np.random.random() * 360.
-            y += (np.random.random() - 0.5) * 178.
+            x += np.random.random() * 360.0
+            y += (np.random.random() - 0.5) * 178.0
 
             # treat these shifted x/y coordinates as right ascensions and declinations (in degrees)
             ras = x
@@ -228,7 +235,7 @@ class Test_coordinates(SheTestCase):
             decs = 90 - np.sqrt(x * x + y * y)
             # randomly pick northern or southern hemisphere
             decs *= (-1) ** np.random.choice(2)
-            ras = np.arctan2(y, x) * 180. / np.pi
+            ras = np.arctan2(y, x) * 180.0 / np.pi
 
             # make sure ras are in the range [0:360)
             ras = ras % 360
@@ -256,13 +263,56 @@ class Test_coordinates(SheTestCase):
         # make sure that the indices returned are correct
         for i in range(n):
             if x[i] >= xmin and x[i] < xmax and y[i] >= ymin and y[i] < ymax:
-                assert (flag[i] == 1)
+                assert flag[i] == 1
             else:
-                assert (flag[i] == 0)
+                assert flag[i] == 0
 
         # make sure all points extracted are within the sub region
         for i in range(len(x_s)):
             if x_s[i] >= xmin and x_s[i] < xmax and y_s[i] >= ymin and y_s[i] < ymax:
-                assert (True)
+                assert True
             else:
-                assert (False)
+                assert False
+
+    @pytest.mark.parametrize("ra", np.arange(0.0, 360.0, 90.0))
+    @pytest.mark.parametrize("dec", np.arange(-90.0, 90.0, 45.0))
+    def test_wcs_query(self, ra, dec):
+        pixel_scale = 0.1 / 3600.0
+        nx = 100
+        ny = 150
+        n_objs = 1000
+
+        wcs = WCS(naxis=2)
+        # use rectangle to avoid bugs undetector due to symmetry
+        # this follows the C-standard, so it is y then x
+        wcs.array_shape = [ny, nx]
+        # note this starts counting from 1
+        # this follows the Fortran-standard, so it is x then y
+        wcs.wcs.crpix = [nx / 2, ny / 2]
+        wcs.wcs.crval = [ra, dec]
+        wcs.wcs.cd = np.identity(2) * pixel_scale
+        # RA decreases with increasing pixel number
+        wcs.wcs.cd[0, 0] *= -1
+        wcs.wcs.ctype = ["RA---TAN", "DEC--TAN"]
+
+        # generate a range of random points *within* the footprint area
+        # this follows the C-standard, so it is y then x
+        # Note that:
+        # wcs.array_shape[0] = wcs.pixel_shape[1]
+        # wcs.array_shape[1] = wcs.pixel_shape[0]
+        pix_y_in = np.random.random(n_objs) * wcs.array_shape[0]
+        pix_x_in = np.random.random(n_objs) * wcs.array_shape[1]
+        # this follows the Fortran-standard, so it is x then y
+        skycoords_in = wcs.pixel_to_world(pix_x_in, pix_y_in)
+
+        # generate a range of points *immediately outside* the footprint area
+        pix_x_out = np.array([-1, -1, -1, -1, 101, 101, 101, 101, -1, 1, 99, 101, -1, 1, 99, 101])
+        pix_y_out = np.array([-1, 1, 149, 151, -1, 1, 149, 151, -1, -1, -1, -1, 151, 151, 151, 151])
+        # this follows the Fortran-standard, so it is x then y
+        skycoord_out = wcs.pixel_to_world(pix_x_out, pix_y_out)
+
+        s_in = skycoords_in_wcs(skycoords_in, wcs)
+        s_out = skycoords_in_wcs(skycoord_out, wcs)
+
+        assert np.sum(s_in) == n_objs
+        assert np.sum(s_out) == 0
