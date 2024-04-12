@@ -937,7 +937,7 @@ def write_listfile(
     listfile_name: Union[str, pathlib.Path],
     filenames: Sequence[Union[str, Tuple[str, ...]]],
     log_info: bool = False,
-    workdir: Union[str, pathlib.Path] = DEFAULT_WORKDIR,
+    workdir: Union[str, pathlib.Path] = "",
     **kwargs
 ) -> None:
     """Writes a listfile in json format. The implementation here is copied from
@@ -957,11 +957,7 @@ def write_listfile(
     **kwargs : kwargs to be passed into json.dump
     """
 
-    # These could be input as a pathlib.Path object, so convert it to a string here to avoid errors later on
-    listfile_name = str(listfile_name)
-    workdir = str(workdir)
-
-    qualified_listfile_name = get_qualified_filename(filename=listfile_name, workdir=workdir)
+    qualified_listfile_name = pathlib.Path(workdir, listfile_name)
 
     log_method = _get_optional_log_method(log_info)
     log_method(MSG_WRITING_LISTFILE, listfile_name)
@@ -978,7 +974,7 @@ def write_listfile(
 def read_listfile(
         listfile_name: Union[str, pathlib.Path],
         log_info: bool = False,
-        workdir: Union[str, pathlib.Path] = DEFAULT_WORKDIR,
+        workdir: Union[str, pathlib.Path] = "",
         **kwargs,
 ) -> List[Union[str, Tuple[str, ...]]]:
     """Reads a json listfile and returns a list of filenames. The implementation here is copied from
@@ -1003,11 +999,7 @@ def read_listfile(
         is read in is formatted.
     """
 
-    # These could be input as a pathlib.Path object, so convert it to a string here to avoid errors later on
-    listfile_name = str(listfile_name)
-    workdir = str(workdir)
-
-    qualified_listfile_name = get_qualified_filename(filename=listfile_name, workdir=workdir)
+    qualified_listfile_name = pathlib.Path(workdir, listfile_name)
 
     log_method = _get_optional_log_method(log_info)
     log_method(MSG_READING_LISTFILE, qualified_listfile_name)
