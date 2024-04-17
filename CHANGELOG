@@ -5,6 +5,7 @@ Changes in v9.7
 
 API Changes
 -----------
+- read_listfile and write_listfile now accept pathlib.Path objects, and can take **kwargs to be passed to json.dump and json.load
 
 Dependency Changes
 ------------------

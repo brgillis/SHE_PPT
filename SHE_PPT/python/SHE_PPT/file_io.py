@@ -24,6 +24,7 @@ __updated__ = "2021-08-31"
 import abc
 import json
 import os
+import pathlib
 import pickle
 import shutil
 import subprocess
@@ -932,10 +933,13 @@ def get_allowed_filename(type_name: str = DEFAULT_TYPE_NAME,
                         timestamp=timestamp).get()
 
 
-def write_listfile(listfile_name: str,
-                   filenames: Sequence[Union[str, Tuple[str, ...]]],
-                   log_info: bool = False,
-                   workdir: str = DEFAULT_WORKDIR) -> None:
+def write_listfile(
+    listfile_name: Union[str, pathlib.Path],
+    filenames: Sequence[Union[str, Tuple[str, ...]]],
+    log_info: bool = False,
+    workdir: Union[str, pathlib.Path] = "",
+    **kwargs
+) -> None:
     """Writes a listfile in json format. The implementation here is copied from
     https://euclid.roe.ac.uk/projects/codeen-users/wiki/Pipeline_Interfaces#List-Files with some modification.
 
@@ -950,29 +954,29 @@ def write_listfile(listfile_name: str,
     workdir : str, default="."
         The workdir in which the file should be created. If `listfile_name` is provided fully-qualified,
         it is not necessary for this to be provided (and it will be ignored if it is).
+    **kwargs : kwargs to be passed into json.dump
     """
 
-    # This could be input as a pathlib.Path object, so convert it to a string here to avoid errors later on
-    listfile_name = str(listfile_name)
-
-    qualified_listfile_name = get_qualified_filename(filename=listfile_name, workdir=workdir)
+    qualified_listfile_name = pathlib.Path(workdir, listfile_name)
 
     log_method = _get_optional_log_method(log_info)
     log_method(MSG_WRITING_LISTFILE, listfile_name)
 
     try:
         with open(qualified_listfile_name, 'w') as listfile:
-            paths_json = json.dumps(filenames)
-            listfile.write(paths_json)
+            json.dump(filenames, listfile, **kwargs)
     except Exception as e:
         raise SheFileWriteError(filename=listfile_name, workdir=workdir) from e
 
     logger.debug(MSG_FINISHED_WRITING_LISTFILE, qualified_listfile_name)
 
 
-def read_listfile(listfile_name: str,
-                  log_info: bool = False,
-                  workdir: str = "") -> List[Union[str, Tuple[str, ...]]]:
+def read_listfile(
+        listfile_name: Union[str, pathlib.Path],
+        log_info: bool = False,
+        workdir: Union[str, pathlib.Path] = "",
+        **kwargs,
+) -> List[Union[str, Tuple[str, ...]]]:
     """Reads a json listfile and returns a list of filenames. The implementation here is copied from
     https://euclid.roe.ac.uk/projects/codeen-users/wiki/Pipeline_Interfaces#List-Files with some modification.
 
@@ -985,6 +989,8 @@ def read_listfile(listfile_name: str,
     workdir: str
         The workdir in which the file exists. If `listfile_name` is provided fully-qualified, it is not necessary for
         this to be provided (and it will be ignored if it is).
+    **kwargs: dict
+        Keyword arguments to be passed to json.load
 
     Returns
     -------
@@ -993,14 +999,14 @@ def read_listfile(listfile_name: str,
         is read in is formatted.
     """
 
-    qualified_listfile_name = get_qualified_filename(filename=listfile_name, workdir=workdir)
+    qualified_listfile_name = pathlib.Path(workdir, listfile_name)
 
     log_method = _get_optional_log_method(log_info)
     log_method(MSG_READING_LISTFILE, qualified_listfile_name)
 
     try:
         with open(qualified_listfile_name, 'r') as f:
-            l_filenames = json.load(f)
+            l_filenames = json.load(f, **kwargs)
             if len(l_filenames) == 0:
                 return l_filenames
             if isinstance(l_filenames[0], list):

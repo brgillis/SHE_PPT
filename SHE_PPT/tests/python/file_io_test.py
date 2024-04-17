@@ -21,6 +21,7 @@ __updated__ = "2021-08-20"
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 import filecmp
+import json
 import os
 import shutil
 import stat
@@ -480,6 +481,7 @@ class TestIO(SheTestCase):
         assert read_listfile(self.listfile_name, workdir=self.workdir) == l_simple
         os.remove(os.path.join(self.workdir, self.listfile_name))
 
+        # Test that tupled listfile is properly read in
         write_listfile(self.listfile_name, l_tupled, workdir=self.workdir)
         assert read_listfile(self.listfile_name, workdir=self.workdir) == l_tupled
         os.remove(os.path.join(self.workdir, self.listfile_name))
@@ -500,6 +502,29 @@ class TestIO(SheTestCase):
                               log_info=True)
 
         try_remove_file(self.listfile_name, workdir=self.workdir)
+
+    def test_listfile_write_kwargs(self, tmp_path):
+        """check that write_listfile can take json.dump arguments"""
+
+        l_simple = ["file1.ext", "file2.ext", "file3.ext"]
+
+        # we try the indent=2 argument
+        reference_string = json.dumps(l_simple, indent=2)
+        write_listfile(self.listfile_name, l_simple, workdir=tmp_path, indent=2)
+        with open(tmp_path / self.listfile_name) as f:
+            string = f.read()
+        assert reference_string == string
+
+    def test_listfile_read_kwargs(self, tmp_path):
+        """check that read_listfile can take json.load arguments"""
+
+        # We use the parse_float CLA, checking that we can convert all floats to numpy.float32
+        array = [1.0, 2.0, 3.0]
+        with open(tmp_path / self.listfile_name, "w") as f:
+            json.dump(array, f)
+        output_array = read_listfile(self.listfile_name, workdir=tmp_path, parse_float=np.float32)
+        for element in output_array:
+            assert type(element) is np.float32
 
     def test_rw_table(self):
         """Tests of the read_table and write_table functions.
